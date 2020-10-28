@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B914429E2FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 091BA29E306
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:46:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbgJ1Vee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:34:34 -0400
+        id S1729892AbgJ2Coc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:44:32 -0400
 Received: from mga14.intel.com ([192.55.52.115]:47178 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726593AbgJ1Vea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:34:30 -0400
-IronPort-SDR: oI/XhhSkXIaFUiSXgxq9eOBGtkmiXBJ+U+c40hXqSWarCNR7LGKiEeGIdwd71POn+srEQtodaP
- 6r8O/GvBlTvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="167551728"
+        id S1726583AbgJ1Ve3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:34:29 -0400
+IronPort-SDR: ofYcoGZcB+n8lU0zhvO4SzILSO+F6If3V06yAY1oOOnRf97a/McFv6Vk0IO/7cV2z8w65mur5s
+ PtqdskJcjUWA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="167551732"
 X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
-   d="scan'208";a="167551728"
+   d="scan'208";a="167551732"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 13:28:15 -0700
-IronPort-SDR: eSWsD+YLyL9EsLweGjI5V04SiaUzruPWrbKGskVplgOE2vawWzgM+hEiuuQTEqeP7YrXjkNG3o
- 6v7ARumWN7xQ==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 13:28:16 -0700
+IronPort-SDR: SFG7HTid7wqrQJCsF+ljZA3BpGC2I0gxvYesRLCSYfz7ZV7x10k7ETzDE6B0yrBAJOcv+2d7EX
+ pcckhknQkmEw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
-   d="scan'208";a="526467866"
+   d="scan'208";a="526467877"
 Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
-  by fmsmga005.fm.intel.com with ESMTP; 28 Oct 2020 13:28:15 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 28 Oct 2020 13:28:16 -0700
 From:   Fenghua Yu <fenghua.yu@intel.com>
 To:     "Thomas Gleixner" <tglx@linutronix.de>,
         "Borislav Petkov" <bp@alien8.de>, "Ingo Molnar" <mingo@redhat.com>,
@@ -37,91 +37,98 @@ To:     "Thomas Gleixner" <tglx@linutronix.de>,
         "Ravi V Shankar" <ravi.v.shankar@intel.com>
 Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
         "x86" <x86@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH RFC v2 0/4] x86/bus_lock: Enable bus lock detection
-Date:   Wed, 28 Oct 2020 20:28:00 +0000
-Message-Id: <20201028202804.3562179-1-fenghua.yu@intel.com>
+Subject: [PATCH RFC v2 4/4] Documentation: Change doc for split_lock_detect parameter
+Date:   Wed, 28 Oct 2020 20:28:04 +0000
+Message-Id: <20201028202804.3562179-5-fenghua.yu@intel.com>
 X-Mailer: git-send-email 2.29.1
+In-Reply-To: <20201028202804.3562179-1-fenghua.yu@intel.com>
+References: <20201028202804.3562179-1-fenghua.yu@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A bus lock [1] is acquired either through split locked access to
-writeback (WB) memory or by using locks to uncacheable (UC) memory
-(e.g. direct device assignment). This is typically >1000 cycles slower
-than an atomic operation within a cache line. It also disrupts performance
-on other cores.
+Since #DB for bus lock detect changes the split_lock_detect parameter,
+update the documentation for the changes.
 
-Although split lock can be detected by #AC trap, the trap is triggered
-before the instruction acquires bus lock. This makes it difficult to
-mitigate bus lock (e.g. throttle the user application).
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+---
+ .../admin-guide/kernel-parameters.txt         | 47 +++++++++++++++----
+ 1 file changed, 39 insertions(+), 8 deletions(-)
 
-Some CPUs have ability to notify the kernel by an #DB trap after a user
-instruction acquires a bus lock and is executed. This allows the kernel
-to enforce user application throttling or mitigations.
-
-#DB for bus lock detect fixes issues in #AC for split lock detect:
-1) It's architectural ... just need to look at one CPUID bit to know it
-   exists
-2) The IA32_DEBUGCTL MSR, which reports bus lock in #DB, is per-thread.
-   So each process or guest can have different behavior.
-3) It has support for VMM/guests (new VMEXIT codes, etc).
-
-Hardware only generates #DB for bus lock detect when CPL>0 to avoid
-nested #DB from multiple bus locks while the first #DB is being handled.
-
-Use the existing kernel command line option "split_lock_detect=" to handle
-#DB for bus lock:
-
-split_lock_detect=
-		#AC for split lock		#DB for bus lock
-
-off		Do nothing			Do nothing
-
-warn		Kernel OOPs			Warn once per task and
-		Warn once per task and		and continues to run.
-		disable future checking 	When both features are
-						supported, warn in #DB
-
-fatal		Kernel OOPs			Send SIGBUS to user
-		Send SIGBUS to user
-		When both features are
-		supported, fatal in #AC.
-
-ratelimit:N	Do nothing			Limit bus lock rate to
-						N per second in the
-						current non root user.
-
-Default split_lock_detect is "warn".
-
-[1] Chapter 8 https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf
-
-Change Log:
-RFC v2:
-- Architecture changed based on feedback from Thomas and PeterZ. #DB is
-  no longer generated for bus lock in ring0.
-- Split the one single patch into four patches.
-[RFC v1 can be found at: https://lore.kernel.org/lkml/1595021700-68460-1-git-send-email-fenghua.yu@intel.com/]
-
-Fenghua Yu (4):
-  x86/cpufeatures: Enumerate #DB for bus lock detection
-  x86/bus_lock: Handle warn and fatal in #DB for bus lock
-  x86/bus_lock: Set rate limit for bus lock
-  Documentation: Change doc for split_lock_detect parameter
-
- .../admin-guide/kernel-parameters.txt         |  47 +++++-
- arch/x86/include/asm/cpu.h                    |  10 +-
- arch/x86/include/asm/cpufeatures.h            |   1 +
- arch/x86/include/asm/msr-index.h              |   1 +
- arch/x86/include/uapi/asm/debugreg.h          |   3 +-
- arch/x86/kernel/cpu/common.c                  |   2 +-
- arch/x86/kernel/cpu/intel.c                   | 145 +++++++++++++++---
- arch/x86/kernel/traps.c                       |   7 +
- include/linux/sched/user.h                    |   4 +-
- kernel/user.c                                 |   7 +
- 10 files changed, 193 insertions(+), 34 deletions(-)
-
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 526d65d8573a..51312484c2b6 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5044,27 +5044,58 @@
+ 	spia_peddr=
+ 
+ 	split_lock_detect=
+-			[X86] Enable split lock detection
++			[X86] Enable split lock detection or bus lock detection
+ 
+ 			When enabled (and if hardware support is present), atomic
+ 			instructions that access data across cache line
+-			boundaries will result in an alignment check exception.
++			boundaries will result in an alignment check exception
++			for split lock detection or an debug exception for
++			bus lock detection.
+ 
+ 			off	- not enabled
+ 
+-			warn	- the kernel will emit rate limited warnings
+-				  about applications triggering the #AC
+-				  exception. This mode is the default on CPUs
+-				  that supports split lock detection.
++			warn	- Default mode.
+ 
+-			fatal	- the kernel will send SIGBUS to applications
+-				  that trigger the #AC exception.
++				  If split lock detection is enabled in
++				  hardware, the kernel will emit rate limited
++				  warnings about applications triggering the #AC
++				  exception.
++
++				  If bus lock detection is enabled in hardware,
++				  the kernel will emit rate limited warnings
++				  about applications triggering the #DB
++				  exception.
++
++				  Default behavior is from bus lock detection
++				  if both features are enabled in hardware.
++
++			fatal	- If split lock detection is enabled in
++				  hardware, the kernel will send SIGBUS to
++				  applications that trigger the #AC exception.
++
++				  If bus lock detection is enabled in hardware,
++				  the kernel will send SIGBUS to application
++				  that trigger the #DB exception.
++
++				  Default behavior is from split lock detection
++				  if both are enabled in hardware.
++
++			ratelimit:N
++				  Set rate limit to N bus locks per second
++				  for bus lock detection. 0 < N <= HZ/2 and
++				  N is approximate. Only applied to non root
++				  user.
++
++				  N/A for split lock detection.
+ 
+ 			If an #AC exception is hit in the kernel or in
+ 			firmware (i.e. not while executing in user mode)
+ 			the kernel will oops in either "warn" or "fatal"
+ 			mode.
+ 
++			#DB exception for bus lock is triggered only when
++			CPL > 0.
++
+ 	srbds=		[X86,INTEL]
+ 			Control the Special Register Buffer Data Sampling
+ 			(SRBDS) mitigation.
 -- 
 2.29.0
 
