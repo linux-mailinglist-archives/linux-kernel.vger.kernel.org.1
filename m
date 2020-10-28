@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC0729DF9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B3F29E051
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730606AbgJ2BDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730508AbgJ1WKW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:10:22 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96363C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:10:22 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id s14so462708qkg.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:10:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a61uin/SMm84aFoeFhhwpsXIkHzjVZ1k0dxQ8owfxUg=;
-        b=A76MPonpnK+AbYDcMc+UjtSwVFu+UVf3Au8mEEB5ejzMN2+ux0slLM0Fkpsu9l8ZLo
-         OVOP0KoKmuDrhFn/+6W/mDKQ+fbM4AbeTO3UnUuOVzDz8UHkMvczG9qovr5nplUefb1/
-         Bh5jZwRE0P3ZXS1QM+EPLPKLO6l+FlBo9hFrdVwZiDrwpvAiccokW+D9Agr/oPfqtu5p
-         ysB2bt5B5OI+NQWUNmIVTRpxSuACWy8zMKnbTiVMLufBWfXIBL2rx08BB2bdYnOQpLPT
-         jH8D2R/w5Tv4LY/SNNdOcdTvzTZOOYD1GdHI1YnnilPljoV7PpqSFMXSpqUYIBOHHuGW
-         ZogQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=a61uin/SMm84aFoeFhhwpsXIkHzjVZ1k0dxQ8owfxUg=;
-        b=QhkTswcPDFqk/RKqSlvr1hZuN29bXMENP+HwlQjopR6e/IE99mv+z/qP4jWSA5SgJi
-         yChaWvUAqX8+jYd6b0NGFf7NTImzoDryQYiTN/7MCEIACJAOTe2dJ9ik4MIrevajVPWD
-         cQSpjqEzKDqMuQpjHuIMQXCoYHS8EW/QYDF6UJAqH3W3liokpmQDBu0Rbg8dOlDjIqJ+
-         HkIaLNEzL+8Yr/ymv6cyh5C8wthtW49EfW1Ndot1y5roTJQ+hea2wYAoiM8GPd16uo+/
-         L5mKOXrc6rJl5WeBRQ4i/ZvgiDsFeMOcjWBOdOu5NsdZW/Zmz0tlXcY8/+Rq2Cm72QuL
-         W41w==
-X-Gm-Message-State: AOAM5313inHA5xUC+2/bsuhA6IL6u1fsTy0sWWNhmBWiFlV3uUO6hici
-        P2kO8YJIMGIMS7Rfdp09zpvtsQqqlttrXQ==
-X-Google-Smtp-Source: ABdhPJzcjmhYcP0dQSEBhY/JqsSTKnRiXr1DiES/thiy46Mv5h95hsz0PVMNCqKlMYfOExX5O7+O7w==
-X-Received: by 2002:a37:de17:: with SMTP id h23mr2081926qkj.267.1603903809825;
-        Wed, 28 Oct 2020 09:50:09 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id m6sm3276437qki.112.2020.10.28.09.50.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 09:50:08 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Wed, 28 Oct 2020 12:50:07 -0400
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Joerg Roedel <jroedel@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
+        id S1729801AbgJ1WFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:05:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729508AbgJ1WCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:02:23 -0400
+Received: from e123331-lin.nice.arm.com (lfbn-nic-1-188-42.w2-15.abo.wanadoo.fr [2.15.37.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA850247F5;
+        Wed, 28 Oct 2020 17:15:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603905313;
+        bh=FsmcOn0XxpUX5de9S0UmGY+4ZGOqbW4cCRPICKIXKI4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NF6yHpW3jDsvWT6SJd9HhXl7b6oqz9sIEwd04rVK4NSy14dPU/rkmGH6SIv1YrILN
+         2gNIEFCQsug2/rZ1HaJlj57elsl5UcgBaYU4petFMPCGb7JZOhmYkhIDcuqzQ06lzI
+         B+TZ0wVcZ2fGIg/Q7v0lAo6dKYN2geM0EFiiH28c=
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, arnd@arndb.de,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Arvind Sankar <nivedita@alum.mit.edu>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/5] x86/boot/compressed/64: Introduce sev_status
-Message-ID: <20201028165007.GB1989568@rani.riverdale.lan>
-References: <20201021123938.3696-1-joro@8bytes.org>
- <20201021123938.3696-2-joro@8bytes.org>
- <20201026182706.GG22116@zn.tnic>
- <20201028082352.GA18723@8bytes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201028082352.GA18723@8bytes.org>
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH v2 0/2] get rid of GCC __attribute__((optimize)) for BPF
+Date:   Wed, 28 Oct 2020 18:15:04 +0100
+Message-Id: <20201028171506.15682-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 09:23:52AM +0100, Joerg Roedel wrote:
-> On Mon, Oct 26, 2020 at 07:27:06PM +0100, Borislav Petkov wrote:
-> > A couple of lines above you call get_sev_encryption_bit() which already
-> > reads MSR_AMD64_SEV. Why not set sev_status there too instead of reading
-> > that MSR again here?
-> > 
-> > It can read that MSR once and use sev_status(%rip) from then on to avoid
-> > reading that MSR multiple times...
-> 
-> Right, makes sense. I updated the patch.
+This is a followup to [0]:
+[PATCH] bpf: don't rely on GCC __attribute__((optimize)) to disable GCSE[0]
 
-Hang on, get_sev_encryption_bit() is also called from startup_32(),
-so it can't contain any 64-bit instructions to set sev_status.
+Changes since v1:
+- only use -fno-gcse when CONFIG_BPF_JIT_ALWAYS_ON=y and CONFIG_CC_IS_GCC=y
+  (but ignore CONFIG_RETPOLINE since we want to avoid GCSE in all cases)
+- to avoid potential impact of disabling GCSE on other code, put the
+  interpreter in a separate file (patch #2)
+
+Note that patch #1 is intended for backporting, as function scope GCC
+optimization attributes are really quite broken.
+
+I don't have a strong opinion on whether the interpreter code should be
+split off or not, but it looks like it can be done fairly painlessly,
+so it is probably a good idea to do it anyway.
+
+[0] https://lore.kernel.org/bpf/20201027205723.12514-1-ardb@kernel.org/
+
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Arvind Sankar <nivedita@alum.mit.edu>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Kees Cook <keescook@chromium.org>
+
+Ard Biesheuvel (2):
+  bpf: don't rely on GCC __attribute__((optimize)) to disable GCSE
+  bpf: move interpreter into separate source file
+
+ include/linux/compiler-gcc.h   |   2 -
+ include/linux/compiler_types.h |   4 -
+ include/linux/filter.h         |   1 +
+ kernel/bpf/Makefile            |   7 +-
+ kernel/bpf/core.c              | 567 ------------------
+ kernel/bpf/interp.c            | 601 ++++++++++++++++++++
+ 6 files changed, 607 insertions(+), 575 deletions(-)
+ create mode 100644 kernel/bpf/interp.c
+
+-- 
+2.17.1
+
