@@ -2,65 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511C229D5C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 066C829D71C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:22:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730071AbgJ1WHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:07:21 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6566 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730062AbgJ1WHV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:07:21 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CLjTF4MbwzhbTH;
-        Wed, 28 Oct 2020 17:10:09 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 28 Oct 2020 17:09:56 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH] staging: ks7010: fix missing destroy_workqueue() on error in ks7010_sdio_probe
-Date:   Wed, 28 Oct 2020 17:15:52 +0800
-Message-ID: <20201028091552.136445-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1732465AbgJ1WU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:20:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731688AbgJ1WRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:41 -0400
+Received: from kozik-lap.proceq-device.com (unknown [194.230.155.184])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF9FB2468F;
+        Wed, 28 Oct 2020 09:19:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603876799;
+        bh=C+i9hSG3DC7PYTlPO4OOMAUq70uMqJhl4BFFF/S06X4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RM7TbMkLhzXq4/+CiVWwwhRX47sqvNzIlBi1osRLRkrdgFVTIQiFT+vkcSt9woh3O
+         Ty7Obt2tA3yjv9dw9ZlmRBw+nHfRwEr7EBWdhx9CLhGz8DDlk5YoPrgLhF45L43hYw
+         n2LfQopbnC1CEPTAuLhWEW71z6y2+RB30bqq+q/U=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Jason Chen <jasonx.z.chen@intel.com>,
+        Andy Yeh <andy.yeh@intel.com>,
+        Alan Chiang <alanx.chiang@intel.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH] media: i2c: imx258: correct mode to GBGB/RGRG
+Date:   Wed, 28 Oct 2020 10:19:47 +0100
+Message-Id: <20201028091947.93097-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing destroy_workqueue() before return from
-ks7010_sdio_probe in the error handling case.
+The IMX258 sensor outputs pixels in GBGB/RGRG mode.  This is described
+explicitly in datasheet and was actually mentioned in a comment inside
+the driver.  Using other - wrong mode - leads to pinkish pictures.
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Fixes: e4802cb00bfe ("media: imx258: Add imx258 camera sensor driver")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/staging/ks7010/ks7010_sdio.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/i2c/imx258.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/staging/ks7010/ks7010_sdio.c b/drivers/staging/ks7010/ks7010_sdio.c
-index 6b2660c94..af68961dd 100644
---- a/drivers/staging/ks7010/ks7010_sdio.c
-+++ b/drivers/staging/ks7010/ks7010_sdio.c
-@@ -1029,10 +1029,12 @@ static int ks7010_sdio_probe(struct sdio_func *func,
- 
- 	ret = register_netdev(priv->net_dev);
- 	if (ret)
--		goto err_free_netdev;
-+		goto err_destroy_wq;
+diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+index ef069333a969..bf75d4e597af 100644
+--- a/drivers/media/i2c/imx258.c
++++ b/drivers/media/i2c/imx258.c
+@@ -715,7 +715,7 @@ static int imx258_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
+ 	/* Initialize try_fmt */
+ 	try_fmt->width = supported_modes[0].width;
+ 	try_fmt->height = supported_modes[0].height;
+-	try_fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
++	try_fmt->code = MEDIA_BUS_FMT_SGBRG10_1X10;
+ 	try_fmt->field = V4L2_FIELD_NONE;
  
  	return 0;
+@@ -827,7 +827,7 @@ static int imx258_enum_mbus_code(struct v4l2_subdev *sd,
+ 	if (code->index > 0)
+ 		return -EINVAL;
  
-+ err_destroy_wq:
-+	destroy_workqueue(priv->wq);
-  err_free_netdev:
- 	free_netdev(netdev);
-  err_release_irq:
+-	code->code = MEDIA_BUS_FMT_SGRBG10_1X10;
++	code->code = MEDIA_BUS_FMT_SGBRG10_1X10;
+ 
+ 	return 0;
+ }
+@@ -839,7 +839,7 @@ static int imx258_enum_frame_size(struct v4l2_subdev *sd,
+ 	if (fse->index >= ARRAY_SIZE(supported_modes))
+ 		return -EINVAL;
+ 
+-	if (fse->code != MEDIA_BUS_FMT_SGRBG10_1X10)
++	if (fse->code != MEDIA_BUS_FMT_SGBRG10_1X10)
+ 		return -EINVAL;
+ 
+ 	fse->min_width = supported_modes[fse->index].width;
+@@ -855,7 +855,7 @@ static void imx258_update_pad_format(const struct imx258_mode *mode,
+ {
+ 	fmt->format.width = mode->width;
+ 	fmt->format.height = mode->height;
+-	fmt->format.code = MEDIA_BUS_FMT_SGRBG10_1X10;
++	fmt->format.code = MEDIA_BUS_FMT_SGBRG10_1X10;
+ 	fmt->format.field = V4L2_FIELD_NONE;
+ }
+ 
+@@ -902,7 +902,7 @@ static int imx258_set_pad_format(struct v4l2_subdev *sd,
+ 	mutex_lock(&imx258->mutex);
+ 
+ 	/* Only one raw bayer(GBRG) order is supported */
+-	fmt->format.code = MEDIA_BUS_FMT_SGRBG10_1X10;
++	fmt->format.code = MEDIA_BUS_FMT_SGBRG10_1X10;
+ 
+ 	mode = v4l2_find_nearest_size(supported_modes,
+ 		ARRAY_SIZE(supported_modes), width, height,
 -- 
-2.23.0
+2.25.1
 
