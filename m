@@ -2,62 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4F329D90F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 962D329D92B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389489AbgJ1Wnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:43:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54414 "EHLO mail.kernel.org"
+        id S2389443AbgJ1WsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:48:14 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:62331 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389484AbgJ1Wns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:43:48 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEDEE20728;
-        Wed, 28 Oct 2020 22:43:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603925027;
-        bh=63BrwT+SKui6Vft0o9TS1cSwiWuz/qdwftnpJ2ggQPE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bbvlhVIjHjdbe0ADwT3W4GA9c9q8PlHCspg/NmOPB9M2wqfVFSFmwcVF1sdIdYi/z
-         XAfFtP0FnwXWr9EIu9cpfkZzKgkiDMp8NYA+YfAmA+F59QF/iADYXdbMucEA5o/C03
-         nWUW/y6bQrP1rizQI1EkmwjGJMLlVHopfi4/rYyQ=
-Date:   Wed, 28 Oct 2020 15:43:46 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     "Huang, Ying" <ying.huang@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Rafael Aquini <aquini@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH] mm: Fix a race during split THP
-Message-Id: <20201028154346.d8144f8ad7040e6b17592c58@linux-foundation.org>
-In-Reply-To: <20201027102519.GR20500@dhcp22.suse.cz>
-References: <20201009073647.1531083-1-ying.huang@intel.com>
-        <20201027102519.GR20500@dhcp22.suse.cz>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1733008AbgJ1WsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:48:10 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CM3d21XGFzB1;
+        Wed, 28 Oct 2020 23:48:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1603925287; bh=yHK8V58DLeNnIRye/EkDqjDsAYo8KqTDWpngbFEDW2k=;
+        h=Date:From:Subject:To:Cc:From;
+        b=VPOzHvI4U7ef/1rEvqJRf3fdux2eJp826q9PAo1J5O4m8KX4mWV3CbinyLpt0lbAx
+         Aqy+5jb0yrYvfAf4an6M8ikqvpy3hUJd7PZoQPGBI73Xh83MDgnDK9EZ4kbOOZJwJ/
+         66VYSJozuKlfx1s87uEIgUJ+xBfDe8XgRn3t4+jPs0eWHVHew3Z3f9HOgKGCp7wU7V
+         fMKFrmwSDoCKCMsb5j6odRdgilmk4q5zrxuby5LVgUNBGwWNXKGhGUyfdX4Hr4Ek7I
+         JdJCzqEv8Sg8RTbXRESIf2Y9nAci4V04cRNsSBT2jxDiFqBhQomGUK4p5pb9VOMR3A
+         TNKgvEJCIpTdA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Wed, 28 Oct 2020 23:48:05 +0100
+Message-Id: <8756eb5aac561173aa222c9cb64dd314ab1b1f9b.1603925200.git.mirq-linux@rere.qmqm.pl>
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH v3 1/2] ASoC: tegra20-spdif: remove "default m"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Stephen Warren <swarren@nvidia.com>
+Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 11:25:19 +0100 Michal Hocko <mhocko@suse.com> wrote:
+Make tegra20-spdif default to N as all other drivers do.
 
-> I have noticed this fix and I do not see it in the mmotm tree.
-> Is there anything blocking this patch or it simply fall through cracks?
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Fixes: 774fec338bfc ("ASoC: Tegra: Implement SPDIF CPU DAI")
+---
+v3: split-off the defconfig changes
+v2: add the symbol to defconfig as suggested by Thierry Reding
+---
+ sound/soc/tegra/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-It's merged into mainline.  Perhaps the grammatical fixlet in
-the title tricked you...
-
-commit c4f9c701f9b44299e6adbc58d1a4bb2c40383494
-Author:     Huang Ying <ying.huang@intel.com>
-AuthorDate: Thu Oct 15 20:06:07 2020 -0700
-Commit:     Linus Torvalds <torvalds@linux-foundation.org>
-CommitDate: Fri Oct 16 11:11:15 2020 -0700
-
-    mm: fix a race during THP splitting
+diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
+index 3d91bd3e59cd..a62cc87551ac 100644
+--- a/sound/soc/tegra/Kconfig
++++ b/sound/soc/tegra/Kconfig
+@@ -39,7 +39,6 @@ config SND_SOC_TEGRA20_I2S
+ config SND_SOC_TEGRA20_SPDIF
+ 	tristate "Tegra20 SPDIF interface"
+ 	depends on SND_SOC_TEGRA
+-	default m
+ 	help
+ 	  Say Y or M if you want to add support for the Tegra20 SPDIF interface.
+ 	  You will also need to select the individual machine drivers to support
+-- 
+2.20.1
 
