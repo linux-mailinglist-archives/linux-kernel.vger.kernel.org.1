@@ -2,201 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC0E29DB3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F72629DB52
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389023AbgJ1XqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:46:14 -0400
-Received: from mail.horus.com ([78.46.148.228]:54891 "EHLO mail.horus.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726094AbgJ1XqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:46:13 -0400
-X-Greylist: delayed 4201 seconds by postgrey-1.27 at vger.kernel.org; Wed, 28 Oct 2020 19:46:12 EDT
-Received: from lenny.lan (185-64-50-250.net.pr-link.at [185.64.50.250])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (2048 bits) client-digest SHA256)
-        (Client CN "E-Mail Matthias Reichl Lenny", Issuer "HiassofT CA 2014" (verified OK))
-        by mail.horus.com (Postfix) with ESMTPSA id E83E66409C;
-        Wed, 28 Oct 2020 10:39:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=horus.com;
-        s=20180324; t=1603877954;
-        bh=7d5a+3Ljqax+6DgAhxaIp1YXNLgsdlmutL9avA9nyb0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PDe75A2utxUug1bs+L89lLbN2+gpYqDsZltuxR1N4eqCE0wfG7XXHhST/kQHuro+a
-         NudA7t/3GS69ZfdzTOacOMO5vubvLVhyuk43bW8DYwiV0rGo4eKHdkmysoPJ1xRz4t
-         Wjl6oseLUN80/HQ0QKQFrK/XAnHYsgrZgCd6FUOw=
-Received: by lenny.lan (Postfix, from userid 1000)
-        id A8AC3200978; Wed, 28 Oct 2020 10:39:12 +0100 (CET)
-Date:   Wed, 28 Oct 2020 10:39:12 +0100
-From:   Matthias Reichl <hias@horus.com>
-To:     Allen Martin <armartin@gmail.com>
-Cc:     phil@raspberrypi.com, linux-rpi-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: bcm2835: Add enable/disable clock functions
-Message-ID: <20201028093912.GA25254@lenny.lan>
-Mail-Followup-To: Matthias Reichl <hias@horus.com>,
-        Allen Martin <armartin@gmail.com>, phil@raspberrypi.com,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20201010192617.12569-1-armartin@gmail.com>
- <CABfSH=oUfY=+eDDwccxMu724YAGOAf2kskZxvibxwOhYrd0_jQ@mail.gmail.com>
+        id S2389302AbgJ1XwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387563AbgJ1Xvq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 19:51:46 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE91C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:51:45 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id z1so406402plo.12
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:51:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tmTfdAqJelGk4mThvToPB+vvFy/o2Riv909vC5Pwsvc=;
+        b=PvnCwIef6PZCTFzgkQOE6JXpb70433VKOlFqHWLlBDtiPS9mCm8oVghA+eXAC6KxjB
+         j5R3n3VjyjW4vD3eVLDjTBVf1/lCrGPrAwyAGG8NFmzunydB3WwepFlnjhYNpJc4cvdl
+         WK6xIrldFzHeKcCCMKPLPErRCYpr4qMwZmjQVpYAlw/P2+XKWk4oM88xJLIx07qmVhlG
+         vVP4MBcP9wvJpKuwvN31PU+45Fh8W0+q9tF9hEWpvDZfxjq57UcwOkRZru/5mR7uwm8B
+         UGpPz2KxfASR16wNtW1LoSLgnwJiuykxEaWXRcZeji/OlQGhQMqWXSK5n5+ayycZGeN8
+         EX+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tmTfdAqJelGk4mThvToPB+vvFy/o2Riv909vC5Pwsvc=;
+        b=PscC0+YsMJEORxNhtRy20tWjcfRmWhXKtRO0kF4gYOZZs+gBlFVtsz7vtfeQezMt/9
+         y+sZ1/4qNVJ0fzpVW0ahAiV/50msgPAb6wl3SszrC46MD1nfCBMeD6EwHMwzpI8yUCel
+         z4fuXz6BgWYoiBUufcgndJ6w/W2A6fMn04BYCLrNGtbe8v93v76CjgyjY46Xi2CNM/Ca
+         X1qvp4rYQYTxOcFq1/J7x3xRVyowV/SnaWGQI2hkBVui+LIinZ7h+T1Fj9L3LEk1UnNO
+         KhoG8k8kB/CeYiRJOw3g/A/AD22MkJeACOJ8tRQiMtBMgfRIXEgEHeBeedqxpVg7P6LX
+         OjLA==
+X-Gm-Message-State: AOAM531Y0OIIzTCsoOI/GIVXoiQJyeX7aDviqxIXikl3KDWAZcnqVPd2
+        pD8h11CCxSFXWTTZ0O2FriNM3v8EW7v0pZdtSnWZPNuNEaB4DS0W
+X-Google-Smtp-Source: ABdhPJxA6mva6c9AuQcMDkfN09APtSH2RneKpFr1NrXpPaeWepLTqSsiRntY8LrK5rP3qon0g31a7FFbXKcv2+GSxOA=
+X-Received: by 2002:a05:6122:10eb:: with SMTP id m11mr4439593vko.8.1603878079032;
+ Wed, 28 Oct 2020 02:41:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABfSH=oUfY=+eDDwccxMu724YAGOAf2kskZxvibxwOhYrd0_jQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201023122950.60903-1-fparent@baylibre.com> <CAPDyKFrMwLeuQoFDgXYo_-T_e2AzfqM-rgp3-SgeuC6Qn6rxMA@mail.gmail.com>
+ <87wnzbg7on.fsf@baylibre.com> <1603869682.6198.23.camel@mhfsdcap03>
+In-Reply-To: <1603869682.6198.23.camel@mhfsdcap03>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 28 Oct 2020 10:40:42 +0100
+Message-ID: <CAPDyKFrjov40BxHRrG6WoUVLaVbPbvPPf_ot2xybVEfGerST9g@mail.gmail.com>
+Subject: Re: [PATCH] mmc: host: mtk-sd: enable recheck_sdio_irq for MT8516 SoC
+To:     "yong.mao@mediatek.com" <yong.mao@mediatek.com>
+Cc:     Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 01:18:33AM -0700, Allen Martin wrote:
-> Hi, just checking if you had a chance to review this patch.
-> 
-> On Sat, Oct 10, 2020 at 12:26 PM Allen Martin <armartin@gmail.com> wrote:
-> 
-> > Add functions to control enable/disable of BCLK output of bcm2835 I2S
-> > controller so that BCLK output only starts when dma starts.  This
-> > resolves issues of audio pop with DACs such as max98357 on rpi.  The
-> > LRCLK output of bcm2835 only starts when the frame size has been
-> > configured and there is data in the FIFO.  The max98357 dac makes a
-> > loud popping sound when BCLK is toggling but LRCLK is not.
+On Wed, 28 Oct 2020 at 08:22, yong.mao@mediatek.com
+<yong.mao@mediatek.com> wrote:
+>
+> On Tue, 2020-10-27 at 13:44 +0100, Mattijs Korpershoek wrote:
+> > Hi Ulf,
+> >
+> > Ulf Hansson <ulf.hansson@linaro.org> writes:
+> >
+> > > + Yong Mao, Chaotian Jing
+> > >
+> > > On Fri, 23 Oct 2020 at 14:29, Fabien Parent <fparent@baylibre.com> wrote:
+> > >>
+> > >> MT8516 SoC suffers from sometimes losing SDIO IRQs, this makes SDIO
+> > >> devices sometimes unstable. Make use of the new property
+> > >> recheck_sdio_irq to fix the SDIO stability issues on MT8516.
+> > >>
+> > >> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> > >
+> > > Maybe this is a common problem, thus I am thinking that potentially we
+> > > should enable the workaround for all variants?
+> > Not sure if this is of any help, but: we use the btmtksdio driver on a
+> > MT8183 soc with an Android kernel based on upstream.
+> >
+> > With that kernel, we did not to apply this work-around in order to
+> > have a stable bluetooth experience (pairing with a remote controller)
+> >
+> > However, on the MT8516 SoC, it's impossible for us to use btmtksdio
+> > without Fabien's fix.
+> >
+> Yes. For mt8516 SoC,recheck_sdio_irq should be set to true for avoiding
+> SDIO dat1 irq lost issue. But for mt8183 SoC, it does not need recheck
+> sdio irq mechanism.
 
-I'm afraid that changing the clocking in the way you proposed has a high
-potential of breaking existing setups which need bclk to be present
-after prepare(). And it complicates the already rather convoluted
-clock setup even more. So I don't think this patch should be applied.
+Okay, thanks for confirming.
 
-Since you mentioned max98357: have you properly connected and configured
-the sd-mode GPIO? This chip has very strict timing requirements and is
-known to "pop" without sd-mode wired up - see the datasheet and devicetree
-binding docs.
+>
+> > >
+> > > I have looped in Yong Mao (who invented the workaround) and Chaotian
+> > > Jing, to see if they can advise us how to proceed.
+> > >
+> > > In any case, I think we should add a stable tag and a fixes tag.
+> > >
+> > > Kind regards
+> > > Uffe
+>
+> Hi Ulf,
+> Sorry. On the patch "mmc:mediatek:fix SDIO irq issue", I only consider
+> fixing the issue on mt8173 SoC.But for the whole MTK upstream SoC,
+> mt8183, mt2712, mt6779 and mt8192 does not need this mechanism,
+> but the other upstream Soc such as mt8135, mt8173, mt2701, mt7622,
+> mt8516 and mt7620 need this recheck mechanism. And all future SoC of our
+> company does not need this mechanism.
+> If it's convenient for you, please help me to revise it.
+> Or I will submit a new patch to correct the value of setting.
+> Thanks.
 
-so long,
+Please submit a new patch to enable the "recheck_sdio_irq" flag for
+those variants that need it.
 
-Hias
+I would also add a fixes+stable tag and add reported-by tags from
+Fabien and Mattijs.
 
-> >
-> > Signed-off-by: Allen Martin <armartin@gmail.com>
-> > ---
-> >  sound/soc/bcm/bcm2835-i2s.c | 35 +++++++++++++++++++++++++++++++++++
-> >  1 file changed, 35 insertions(+)
-> >
-> > diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-> > index e6a12e271b07..5c8649864c0d 100644
-> > --- a/sound/soc/bcm/bcm2835-i2s.c
-> > +++ b/sound/soc/bcm/bcm2835-i2s.c
-> > @@ -122,9 +122,27 @@ struct bcm2835_i2s_dev {
-> >         struct regmap                           *i2s_regmap;
-> >         struct clk                              *clk;
-> >         bool                                    clk_prepared;
-> > +       bool                                    clk_enabled;
-> >         int                                     clk_rate;
-> >  };
-> >
-> > +static void bcm2835_i2s_enable_clock(struct bcm2835_i2s_dev *dev)
-> > +{
-> > +       if (dev->clk_enabled)
-> > +               return;
-> > +
-> > +       regmap_update_bits(dev->i2s_regmap, BCM2835_I2S_MODE_A_REG,
-> > BCM2835_I2S_CLKDIS, 0);
-> > +       dev->clk_enabled = true;
-> > +}
-> > +
-> > +static void bcm2835_i2s_disable_clock(struct bcm2835_i2s_dev *dev)
-> > +{
-> > +       if (dev->clk_enabled)
-> > +               regmap_update_bits(dev->i2s_regmap,
-> > BCM2835_I2S_MODE_A_REG, BCM2835_I2S_CLKDIS, BCM2835_I2S_CLKDIS);
-> > +
-> > +       dev->clk_enabled = false;
-> > +}
-> > +
-> >  static void bcm2835_i2s_start_clock(struct bcm2835_i2s_dev *dev)
-> >  {
-> >         unsigned int master = dev->fmt & SND_SOC_DAIFMT_MASTER_MASK;
-> > @@ -145,6 +163,7 @@ static void bcm2835_i2s_start_clock(struct
-> > bcm2835_i2s_dev *dev)
-> >
-> >  static void bcm2835_i2s_stop_clock(struct bcm2835_i2s_dev *dev)
-> >  {
-> > +       bcm2835_i2s_disable_clock(dev);
-> >         if (dev->clk_prepared)
-> >                 clk_disable_unprepare(dev->clk);
-> >         dev->clk_prepared = false;
-> > @@ -158,6 +177,7 @@ static void bcm2835_i2s_clear_fifos(struct
-> > bcm2835_i2s_dev *dev,
-> >         uint32_t csreg;
-> >         uint32_t i2s_active_state;
-> >         bool clk_was_prepared;
-> > +       bool clk_was_enabled;
-> >         uint32_t off;
-> >         uint32_t clr;
-> >
-> > @@ -176,6 +196,11 @@ static void bcm2835_i2s_clear_fifos(struct
-> > bcm2835_i2s_dev *dev,
-> >         if (!clk_was_prepared)
-> >                 bcm2835_i2s_start_clock(dev);
-> >
-> > +       /* Enable clock if not enabled */
-> > +       clk_was_enabled = dev->clk_enabled;
-> > +       if (!clk_was_enabled)
-> > +               bcm2835_i2s_enable_clock(dev);
-> > +
-> >         /* Stop I2S module */
-> >         regmap_update_bits(dev->i2s_regmap, BCM2835_I2S_CS_A_REG, off, 0);
-> >
-> > @@ -207,6 +232,10 @@ static void bcm2835_i2s_clear_fifos(struct
-> > bcm2835_i2s_dev *dev,
-> >         if (!timeout)
-> >                 dev_err(dev->dev, "I2S SYNC error!\n");
-> >
-> > +       /* Disable clock if it was not enabled before */
-> > +       if (!clk_was_enabled)
-> > +               bcm2835_i2s_disable_clock(dev);
-> > +
-> >         /* Stop clock if it was not running before */
-> >         if (!clk_was_prepared)
-> >                 bcm2835_i2s_stop_clock(dev);
-> > @@ -414,6 +443,8 @@ static int bcm2835_i2s_hw_params(struct
-> > snd_pcm_substream *substream,
-> >         /* Clock should only be set up here if CPU is clock master */
-> >         if (bit_clock_master &&
-> >             (!dev->clk_prepared || dev->clk_rate != bclk_rate)) {
-> > +               if (dev->clk_enabled)
-> > +                       bcm2835_i2s_disable_clock(dev);
-> >                 if (dev->clk_prepared)
-> >                         bcm2835_i2s_stop_clock(dev);
-> >
-> > @@ -534,6 +565,8 @@ static int bcm2835_i2s_hw_params(struct
-> > snd_pcm_substream *substream,
-> >                 mode |= BCM2835_I2S_FTXP | BCM2835_I2S_FRXP;
-> >         }
-> >
-> > +       if (!dev->clk_enabled)
-> > +               mode |= BCM2835_I2S_CLKDIS;
-> >         mode |= BCM2835_I2S_FLEN(frame_length - 1);
-> >         mode |= BCM2835_I2S_FSLEN(framesync_length);
-> >
-> > @@ -668,6 +701,7 @@ static int bcm2835_i2s_trigger(struct
-> > snd_pcm_substream *substream, int cmd,
-> >         case SNDRV_PCM_TRIGGER_RESUME:
-> >         case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> >                 bcm2835_i2s_start_clock(dev);
-> > +               bcm2835_i2s_enable_clock(dev);
-> >
-> >                 if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-> >                         mask = BCM2835_I2S_RXON;
-> > @@ -839,6 +873,7 @@ static int bcm2835_i2s_probe(struct platform_device
-> > *pdev)
-> >
-> >         /* get the clock */
-> >         dev->clk_prepared = false;
-> > +       dev->clk_enabled = false;
-> >         dev->clk = devm_clk_get(&pdev->dev, NULL);
-> >         if (IS_ERR(dev->clk)) {
-> >                 dev_err(&pdev->dev, "could not get clk: %ld\n",
-> > --
-> > 2.20.1
-> >
-> >
+Kind regards
+Uffe
+
+> > >
+> > >> ---
+> > >>  drivers/mmc/host/mtk-sd.c | 2 +-
+> > >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >>
+> > >> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> > >> index a704745e5882..3dc102eefe49 100644
+> > >> --- a/drivers/mmc/host/mtk-sd.c
+> > >> +++ b/drivers/mmc/host/mtk-sd.c
+> > >> @@ -524,7 +524,7 @@ static const struct mtk_mmc_compatible mt7622_compat = {
+> > >>
+> > >>  static const struct mtk_mmc_compatible mt8516_compat = {
+> > >>         .clk_div_bits = 12,
+> > >> -       .recheck_sdio_irq = false,
+> > >> +       .recheck_sdio_irq = true,
+> > >>         .hs400_tune = false,
+> > >>         .pad_tune_reg = MSDC_PAD_TUNE0,
+> > >>         .async_fifo = true,
+> > >> --
+> > >> 2.28.0
+> > >>
+> > >
+> > > _______________________________________________
+> > > Linux-mediatek mailing list
+> > > Linux-mediatek@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-mediatek
+>
