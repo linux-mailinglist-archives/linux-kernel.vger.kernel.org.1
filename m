@@ -2,135 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2E229DA4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:19:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B8B29DA06
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:10:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388017AbgJ1XS6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Oct 2020 19:18:58 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:34090 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728198AbgJ1XRk (ORCPT
+        id S1733193AbgJ1XKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbgJ1XJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:17:40 -0400
-Received: by mail-lj1-f193.google.com with SMTP id y16so1110040ljk.1;
-        Wed, 28 Oct 2020 16:17:38 -0700 (PDT)
+        Wed, 28 Oct 2020 19:09:41 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF2FC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:09:41 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id y16so1093714ljk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:09:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hatfo1xwFEDynogYQDEhCt1lpMjNGoJQpQEAAPUn4fY=;
+        b=o7y3xKxud6jpWJiD7Y/D54i7FmuhCdJjwT+WBVsmaMPt3nLT6r/eT2RK7+eSFFJh+N
+         C/QVs+MZ4Lm7rwEX2dqJ0I3QCAT+OdhVTJmk2WhagbTrBfLj3o895BBWKbRm1hIYCEMM
+         6/lB/QNEWcsELphJiVQmi94u/Boca3tez7YBz6e3p5yZjHRCFWwAGovezFOFSGFbS7kh
+         exEW3HvfxSOBS3fQp94B1TXeSks+8Zd21nrupBBq3K77pKSG5UOGVltHfNGOQVgDurTz
+         8e6vs6QD0PHSN243mURr9pUb6EWOPRR/E/U35y7EpmhJIQtMpHOxDXd/9HLLUOPrI7KR
+         pjsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=tOzGuUmz353raLqizP2rvx4LkjDP5IM9PyiPt5zQsck=;
-        b=jJtONSraL9jOMQSXwzrVOBF8qBnjdokxiP0xkykvx0UoBzDRKwhb5PZqWjHWdDVB9C
-         YuS00hM/NBYa8WzAtn5OmO97bw0/3sFsEbDxz5/QGPv3wLuq3iURn1cNiVxpELI3VZAP
-         YJI1EU4LjrnssbayFL/hxOJ+NVDcjw2xHqE+AoH4CTMD4DjdSuzqyg4D2Ism4/FNzOb1
-         Ysauw1RtbTsqvGr3A2WMa/RM8Zmjysq5rVe8PkZuwJBAbirBZ7OFTqA90gnd3v+PAQBe
-         xsw9XdSsX2ldssGidVfijOHBhKlCvW6Um/lAJVrnPtzro6bfxFb0BTEbBMWnemBA1VUx
-         LejA==
-X-Gm-Message-State: AOAM531j2wsgBjkMEHbaK601HeE2rQSGG2m6PHbxm6D1SGdzcMFoOvoV
-        Ag4t4w6bV2DyA6UbXxZExyW/PPOxq+Crdg==
-X-Google-Smtp-Source: ABdhPJx7uTojdx8c4uChsolOHCfdvqUlE8lbp5QLK2dcQNvxdYAlOS/eER5VjqNvSaVQADiGzYDahA==
-X-Received: by 2002:a17:906:52d5:: with SMTP id w21mr8600918ejn.501.1603899329605;
-        Wed, 28 Oct 2020 08:35:29 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id e2sm3163675edn.30.2020.10.28.08.35.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 08:35:27 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 16:35:25 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 04/52] dt-bindings: memory: tegra20: emc: Document
- nvidia,memory-controller property
-Message-ID: <20201028153525.GA133954@kozik-lap>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-5-digetx@gmail.com>
- <20201027085417.GD4244@kozik-lap>
- <54191034-dcb9-7cab-333b-5bb2553f0ed1@gmail.com>
- <20201027193039.GA140636@kozik-lap>
- <20201028152303.GA4041470@bogus>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hatfo1xwFEDynogYQDEhCt1lpMjNGoJQpQEAAPUn4fY=;
+        b=p9RDIVYIqG974uYjDMrRtNxh/ooNlLdgNAyfpGpg79+w2qcR3xYSAX7AZZGHOX6qTW
+         o9fGC76hjPCqE1zOIGVQUPlg+W6bsbxBJo1qdinFldjd+TaVg1WE3eMaKJmtz+gui14W
+         6O1t98Rq5FTnb/SZhRf/Z7MzW2HtJRDe8SPCMz4reR+yFetUiVjeWwsqFVV0oGtGaf9w
+         TZnCqvSsN3tBRF+8b4/eerfCCx4dnhUD+RrDcDfAuoJW2cetElaUnCrn1bChtSFj6T1M
+         UfLRElvcNnKg2pdk6c5yLZgFqQJMz8lMsLvVpJYiFPEIvxz0Bdt5LkSEsOGNf9lPxlfT
+         5aCQ==
+X-Gm-Message-State: AOAM533nivYt2zI7/59QCeMtoP/dcrv5i3qFT+jgjp5QQgVb1FSgEsGg
+        NJsJonXo+zkSusSLXX26nPv1Qa8cXva8Mc2P2gIDh1aBZ5fLFA==
+X-Google-Smtp-Source: ABdhPJw+Y+AFcpZE5IrWDaF75uBlkljVPeaRqxNXP6B8aDvxXTWl++DYovIgyPQUxwMCkmQBdRS/3260GiTYigirY18=
+X-Received: by 2002:a2e:86d4:: with SMTP id n20mr3755779ljj.293.1603900056645;
+ Wed, 28 Oct 2020 08:47:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201028152303.GA4041470@bogus>
+References: <20201007160611.942754-1-junak.pub@gmail.com>
+In-Reply-To: <20201007160611.942754-1-junak.pub@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 28 Oct 2020 16:47:25 +0100
+Message-ID: <CACRpkdb=0iEqT0+6UnB2y09_XdQWwf5za43Sn-g7vA_dEkgSuw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] pinctrl: qcom: add pinctrl driver for msm8953
+To:     Vladimir Lypak <junak.pub@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:23:03AM -0500, Rob Herring wrote:
-> On Tue, Oct 27, 2020 at 08:30:39PM +0100, Krzysztof Kozlowski wrote:
-> > On Tue, Oct 27, 2020 at 10:17:19PM +0300, Dmitry Osipenko wrote:
-> > > 27.10.2020 11:54, Krzysztof Kozlowski пишет:
-> > > > On Mon, Oct 26, 2020 at 01:16:47AM +0300, Dmitry Osipenko wrote:
-> > > >> Tegra20 External Memory Controller talks to DRAM chips and it needs to be
-> > > >> reprogrammed when memory frequency changes. Tegra Memory Controller sits
-> > > >> behind EMC and these controllers are tightly coupled. This patch adds the
-> > > >> new phandle property which allows to properly express connection of EMC
-> > > >> and MC hardware in a device-tree, it also put the Tegra20 EMC binding on
-> > > >> par with Tegra30+ EMC bindings, which is handy to have.
-> > > >>
-> > > >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > > >> ---
-> > > >>  .../bindings/memory-controllers/nvidia,tegra20-emc.txt          | 2 ++
-> > > >>  1 file changed, 2 insertions(+)
-> > > >>
-> > > >> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-> > > >> index 567cffd37f3f..1b0d4417aad8 100644
-> > > >> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-> > > >> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-> > > >> @@ -12,6 +12,7 @@ Properties:
-> > > >>    irrespective of ram-code configuration.
-> > > >>  - interrupts : Should contain EMC General interrupt.
-> > > >>  - clocks : Should contain EMC clock.
-> > > >> +- nvidia,memory-controller : Phandle of the Memory Controller node.
-> > > > 
-> > > > It looks like you adding a required property which is an ABI break.
-> > > The T20 EMC driver is unused so far in upstream and it will become used
-> > > only once this series is applied. Hence it's fine to change the ABI.
-> > 
-> > The ABI is not about upstream, but downstream. 
-> 
-> "If it's not upstream, it doesn't exist."
-> 
-> Though we do have to account for out of tree users where the DT is not 
-> in tree, but upstream drivers are used. Downstream as in vendor kernels 
-> typically has loads of other crap.
+On Wed, Oct 7, 2020 at 6:26 PM Vladimir Lypak <junak.pub@gmail.com> wrote:
 
-That's the case I am referring to. Maybe not in case of Tegra, but
-multiple other designs are quite popular in industrial uses and their
-DTSes were not upstreamed.
+> Add inititial pinctrl driver for MSM8953 platform. Compatible SoCs are:
+> MSM8953, APQ8053, SDM(SDA)450, SDM(SDA)632.
+> Based off CAF implementation.
+>
+> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
+> ---
+> Changes in V2:
+> - sorted SDC_QDSD_PINGROUP entries in msm8953_groups array.
 
-This is anyway different case, as Dmitry explained - nothing got broken
-because not much was working before around this.
+Bjorn can you look at this?
 
-> 
-> > There are no other
-> > upstreams using this ABI. Unless you have in mind that existing T20 EMC
-> > driver was a noop, doing absolutely nothing, therefore there is no
-> > breakage of any other users?
-> 
-> ABI breaks are ultimately up to the platform maintainers to decide.
+I was submitted right before the merge window so I guess it got
+lost in the storm.
 
-Cool! That reshapes significantly my existing point of view, especially
-about discussions on Exynos bindings (long time ago). Thanks for
-clarification.
-
-Best regards,
-Krzysztof
-
+Yours,
+Linus Walleij
