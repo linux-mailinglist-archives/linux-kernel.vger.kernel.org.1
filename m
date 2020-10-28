@@ -2,181 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF0929D6C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2CF29D70D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728730AbgJ1WST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:18:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60548 "EHLO mail.kernel.org"
+        id S1732112AbgJ1WUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:20:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731778AbgJ1WRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:45 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1731742AbgJ1WRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:44 -0400
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4C1A246A5;
-        Wed, 28 Oct 2020 10:03:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47F50246B0;
+        Wed, 28 Oct 2020 10:15:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603879432;
-        bh=NQhHQntLZbnUoS/6yc85poCYnBYFJB0tEBEoFqmqy00=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Quj9xe/wOc2qoLkwpTkRu8kIGxN+5+Zi3TDhn8yy78/ocub3k4+QHI3CIO/oKpqZc
-         32xw0NGlkrwLeWAN26hnncv/68VVX9pJZia/iMoSzI2FFq3yt0ckWHtrOg3exEjslz
-         XRJ9TXyJAsjshRSW4E2cTqU9vM/gnKoz1cYTMsiQ=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kXiJ3-0053dT-NI; Wed, 28 Oct 2020 10:03:49 +0000
+        s=default; t=1603880117;
+        bh=E57TRRP55Kk9vg5tur1KhYG5qx7b3ky4jZL+p+sXuoY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MrdU+GtBcZwjT+vZ+g8Hw6gZHvwWzT4GZ+SrmHeBOThKai89DQFRg3IRa6i/wLsbi
+         9oXfv2GsWan0iTEVWd6s8Uc7GCICsJ7Vb4CS+WAncE8FpLa9n0f9+F/iZgTmtEHQim
+         Sc2XD/nbGU1AmKMLAuCRjVRBJorO4jHJsQVP7IqU=
+Received: by mail-ed1-f44.google.com with SMTP id x1so4523300eds.1;
+        Wed, 28 Oct 2020 03:15:17 -0700 (PDT)
+X-Gm-Message-State: AOAM532qAFPQWwXKiy51ycWtsZvHgS1ewyTUIiBpduGY/UUKlO4W5CHD
+        4gNHuMLG0UkgcDWsp0LIV8MrkxtUQkpcia5swfY=
+X-Google-Smtp-Source: ABdhPJz4yllQgyYZ8Tamki1QBJ8R6wNyadcvzqNfdvF4QwTASSCCiWTVEZ36r/fo7dWTUfe04TsIynmfdLIh/mOJ5uk=
+X-Received: by 2002:a05:6402:cf:: with SMTP id i15mr2651762edu.246.1603880115644;
+ Wed, 28 Oct 2020 03:15:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 28 Oct 2020 10:03:49 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Andre Przywara <andre.przywara@arm.com>,
-        Steven Price <steven.price@arm.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v3] KVM: arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesn't return
- SMCCC_RET_NOT_REQUIRED
-In-Reply-To: <20201026132533.GC24349@willie-the-truck>
-References: <20201023154751.1973872-1-swboyd@chromium.org>
- <20201026132533.GC24349@willie-the-truck>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <5e9bded886e31f7c7aaee195e6c373e1@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: will@kernel.org, swboyd@chromium.org, catalin.marinas@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, andre.przywara@arm.com, steven.price@arm.com, stable@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201028091947.93097-1-krzk@kernel.org> <MWHPR11MB0046B799E9AD3648C6F67BFE87170@MWHPR11MB0046.namprd11.prod.outlook.com>
+ <CAJKOXPePfsRNZkY+L1XM3_iz6dMYFNZAJgrcut9JriuwYkKWsw@mail.gmail.com>
+ <CAJKOXPf6zhpu_3oQZ2bL_FnkBx7-NwH65N_OzVkH=Nh1bYkHxw@mail.gmail.com> <20201028100311.GF26150@paasikivi.fi.intel.com>
+In-Reply-To: <20201028100311.GF26150@paasikivi.fi.intel.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 28 Oct 2020 11:15:01 +0100
+X-Gmail-Original-Message-ID: <CAJKOXPcjtZidY1prH1ZCj+i-SM1mhABGbS_6_g1cH5WSGVhOAA@mail.gmail.com>
+Message-ID: <CAJKOXPcjtZidY1prH1ZCj+i-SM1mhABGbS_6_g1cH5WSGVhOAA@mail.gmail.com>
+Subject: Re: [PATCH] media: i2c: imx258: correct mode to GBGB/RGRG
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     "Yeh, Andy" <andy.yeh@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Jason Chen <jasonx.z.chen@intel.com>,
+        Alan Chiang <alanx.chiang@intel.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-26 13:25, Will Deacon wrote:
-> On Fri, Oct 23, 2020 at 08:47:50AM -0700, Stephen Boyd wrote:
->> According to the SMCCC spec[1](7.5.2 Discovery) the
->> ARM_SMCCC_ARCH_WORKAROUND_1 function id only returns 0, 1, and
->> SMCCC_RET_NOT_SUPPORTED.
->> 
->>  0 is "workaround required and safe to call this function"
->>  1 is "workaround not required but safe to call this function"
->>  SMCCC_RET_NOT_SUPPORTED is "might be vulnerable or might not be, who 
->> knows, I give up!"
->> 
->> SMCCC_RET_NOT_SUPPORTED might as well mean "workaround required, 
->> except
->> calling this function may not work because it isn't implemented in 
->> some
->> cases". Wonderful. We map this SMC call to
->> 
->>  0 is SPECTRE_MITIGATED
->>  1 is SPECTRE_UNAFFECTED
->>  SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
->> 
->> For KVM hypercalls (hvc), we've implemented this function id to return
->> SMCCC_RET_NOT_SUPPORTED, 0, and SMCCC_RET_NOT_REQUIRED. One of those
->> isn't supposed to be there. Per the code we call
->> arm64_get_spectre_v2_state() to figure out what to return for this
->> feature discovery call.
->> 
->>  0 is SPECTRE_MITIGATED
->>  SMCCC_RET_NOT_REQUIRED is SPECTRE_UNAFFECTED
->>  SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
->> 
->> Let's clean this up so that KVM tells the guest this mapping:
->> 
->>  0 is SPECTRE_MITIGATED
->>  1 is SPECTRE_UNAFFECTED
->>  SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
->> 
->> Note: SMCCC_RET_NOT_AFFECTED is 1 but isn't part of the SMCCC spec
->> 
->> Cc: Andre Przywara <andre.przywara@arm.com>
->> Cc: Steven Price <steven.price@arm.com>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: stable@vger.kernel.org
->> Link: https://developer.arm.com/documentation/den0028/latest [1]
->> Fixes: c118bbb52743 ("arm64: KVM: Propagate full Spectre v2 workaround 
->> state to KVM guests")
->> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
->> ---
->> 
->> I see that before commit c118bbb52743 ("arm64: KVM: Propagate full
->> Spectre v2 workaround state to KVM guests") we had this mapping:
->> 
->>  0 is SPECTRE_MITIGATED
->>  SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
->> 
->> so the return value '1' wasn't there then. Once the commit was merged 
->> we
->> introduced the notion of NOT_REQUIRED here when it shouldn't have been
->> introduced.
->> 
->> Changes from v2:
->>  * Moved define to header file and used it
->> 
->> Changes from v1:
->>  * Way longer commit text, more background (sorry)
->>  * Dropped proton-pack part because it was wrong
->>  * Rebased onto other patch accepted upstream
->> 
->>  arch/arm64/kernel/proton-pack.c | 2 --
->>  arch/arm64/kvm/hypercalls.c     | 2 +-
->>  include/linux/arm-smccc.h       | 2 ++
->>  3 files changed, 3 insertions(+), 3 deletions(-)
->> 
->> diff --git a/arch/arm64/kernel/proton-pack.c 
->> b/arch/arm64/kernel/proton-pack.c
->> index 25f3c80b5ffe..c18eb7d41274 100644
->> --- a/arch/arm64/kernel/proton-pack.c
->> +++ b/arch/arm64/kernel/proton-pack.c
->> @@ -135,8 +135,6 @@ static enum mitigation_state 
->> spectre_v2_get_cpu_hw_mitigation_state(void)
->>  	return SPECTRE_VULNERABLE;
->>  }
->> 
->> -#define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	(1)
->> -
->>  static enum mitigation_state 
->> spectre_v2_get_cpu_fw_mitigation_state(void)
->>  {
->>  	int ret;
->> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
->> index 9824025ccc5c..25ea4ecb6449 100644
->> --- a/arch/arm64/kvm/hypercalls.c
->> +++ b/arch/arm64/kvm/hypercalls.c
->> @@ -31,7 +31,7 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
->>  				val = SMCCC_RET_SUCCESS;
->>  				break;
->>  			case SPECTRE_UNAFFECTED:
->> -				val = SMCCC_RET_NOT_REQUIRED;
->> +				val = SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED;
->>  				break;
->>  			}
->>  			break;
->> diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
->> index 15c706fb0a37..0e50ba3e88d7 100644
->> --- a/include/linux/arm-smccc.h
->> +++ b/include/linux/arm-smccc.h
->> @@ -86,6 +86,8 @@
->>  			   ARM_SMCCC_SMC_32,				\
->>  			   0, 0x7fff)
->> 
->> +#define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	1
-> 
-> I thought we'd stick this in asm/spectre.h, but here is also good:
-> 
-> Acked-by: Will Deacon <will@kernel.org>
+On Wed, 28 Oct 2020 at 11:03, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+>
+> On Wed, Oct 28, 2020 at 10:56:55AM +0100, Krzysztof Kozlowski wrote:
+> > On Wed, 28 Oct 2020 at 10:45, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > >
+> > > On Wed, 28 Oct 2020 at 10:43, Yeh, Andy <andy.yeh@intel.com> wrote:
+> > > >
+> > > > But the sensor settings for the original submission is to output GRBG Bayer RAW.
+> > > >
+> > > > Regards, Andy
+> > >
+> > > No, not to my knowledge. There are no settings for color output
+> > > because it is fixed to GBGB/RGRG. I was looking a lot into this driver
+> > > (I have few other problems with it, already few other patches posted)
+> > > and I could not find a setting for this in datasheet. If you know the
+> > > setting for the other color - can you point me to it?
+> >
+> > And except the datasheet which mentions the specific format, the
+> > testing confirms it. With original color the pictures are pink/purple.
+> > With proper color, the pictures are correct (with more green color as
+> > expected for bayer).
+>
+> Quoting the driver's start_streaming function:
+>
+>         /* Set Orientation be 180 degree */
+>         ret = imx258_write_reg(imx258, REG_MIRROR_FLIP_CONTROL,
+>                                IMX258_REG_VALUE_08BIT, REG_CONFIG_MIRROR_FLIP);
 
-Acked-by: Marc Zyngier <maz@kernel.org>
+I understand that you think it will replace the lines and columns and
+the first line will be RG, instead of GB.... or actually BG because it
+flips horizontal and vertical? So why does it not work?
 
-Will, if you're about to send fixes to Linus, can you please pick
-this one up?
+BTW, this nicely points that the comment around
+device_property_read_u32() for rotation is a little bit misleading :)
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+>         if (ret) {
+>                 dev_err(&client->dev, "%s failed to set orientation\n",
+>                         __func__);
+>                 return ret;
+>         }
+>
+> Could it be you're taking pictures of pink objects? ;-)
+
+I can send a few sample pictures taken with GStreamer (RAW8, not
+original RAW10)...
+
+Best regards,
+Krzysztof
