@@ -2,85 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0647C29D955
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 216AF29D8DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389636AbgJ1Wu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:50:57 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:42694 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389543AbgJ1Wu4 (ORCPT
+        id S2389022AbgJ1Wk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:40:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388997AbgJ1WkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:50:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=Thn9yqgRHu/PXpLQKdHMdfKNVEezxunukJ744Cn+7Tk=; b=DCCY2JzqrNAIofTLINRtIninIU
-        a1rlBzms85wcDG6fpjkFODtWeJSnrEaf8/Ds/LP0Sy84xJMdvwhDwwpen+4bF1j9qsVdU8uvcQmvm
-        E1ZSyNJoGYJuxT+lQ5cszzKAgoXuNzfJCwLmHbJxWT8o5BgsBX3adXDxq+zeknWpPsuprjcowYWdA
-        jJviq7h4inNHF84G3URlltQwgjxkcC8ypRhvq6cJGvuplSJIZbZqzQmYuSKzYCAZug83bjyFcU+XJ
-        8JW4dzFsipINye1YWqN9YSjSlvvjyvYXsgqpQBKqVaU5w5MwHrOChxWkaXyJTfQ/xLxXy+dDOSIvN
-        AKXj2hxQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXjOP-0005LI-Fc; Wed, 28 Oct 2020 11:13:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A41C2307197;
-        Wed, 28 Oct 2020 12:13:21 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id D4F1F20B285AB; Wed, 28 Oct 2020 12:13:21 +0100 (CET)
-Message-ID: <20201028111221.464733855@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 28 Oct 2020 12:07:11 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, will@kernel.org, paulmck@kernel.org,
-        hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
-        davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
-        oleg@redhat.com, vincent.guittot@linaro.org, peterz@infradead.org
-Subject: [PATCH v3 4/6] irq_work: Unconditionally build on SMP
-References: <20201028110707.971887448@infradead.org>
+        Wed, 28 Oct 2020 18:40:05 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF323C0613CF;
+        Wed, 28 Oct 2020 15:40:05 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id w191so1293036oif.2;
+        Wed, 28 Oct 2020 15:40:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4VqXxfIJlTWg5JCY6WaiibiaF3Av1Vws4rOMWH/oaM0=;
+        b=bD76WB1brthOpLFfv36vGMmcP4BS6e19mPzrCOrXZ+Hd8gSxot+/WePxzOxICMi53p
+         BKbiqI/FpdzxYIUVSQvBeV6dAQRezv9anxIcKtuLYKQe6L31Yy4+rK5sKk83WM8usOMH
+         n5Ir0BcnCOdVshVI1GMRdnSsuTKpS7S0WG1EOmXjXhYY74fi/7EkfwuKffAAB+BC4WND
+         jayvmnKpEa2h7AUcGU+7m1cn3JXJFi9CbCUkQo5id26mirH/iNdLG6Rcr0tnVXTmHya4
+         qXLjqg0ZdJbcO5O1l3DhfG0Mvy/HnsQkexwq+4pN1LaNxwF78V3+RVnsHgOH+66A+t/h
+         tKTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4VqXxfIJlTWg5JCY6WaiibiaF3Av1Vws4rOMWH/oaM0=;
+        b=dZ8/d4jMT+1WauwXdKu2y24j/lghjFuPBnMMZYkXJlrxBJOZ6+t6srCPNHJAGZQ2Tv
+         oGFavrTmpNDKAXh1Lr4JNwPQjSRO8OfB/aDEuuEdXbu5CsJ+B3C0d1r/JSAyPLjzo5eZ
+         Bnf54WpCjueajfXhJGQPGkcIQYmlM+cDBa///VRoKfGztZp4KK5YonQaOpdz+idW0JFc
+         90fH897ABq24YQGS/OtkKggLWIk3ZgSXvnhH3pQ2LdaLEfnu8KalYIIk60OXZn6uuc80
+         H2i2H7HDUMbtvuA+V10kGvc5H1t0BrJeSA8i3EXtCsd8EUmBeyDJjpFer8d6TZfL6DEj
+         G1Eg==
+X-Gm-Message-State: AOAM530tQEq8l3kT72oZWAWxzGwlnnTrTdR64d6f1MMK4LKwyzpCEJC0
+        ZRqtbKsjK8lO7UoEkz50qv6Y0kSWgAf5ixOGVbMcrVVhkw==
+X-Google-Smtp-Source: ABdhPJx4S9NeGKBomtg+fa/VVwHqLjhQvXJ1U1E/K8q3oOWW5pYScZO11e/S6e2LVh8RvgnD3+DgJHW3RudeLMiSCSM=
+X-Received: by 2002:a17:90a:3f0f:: with SMTP id l15mr6747809pjc.190.1603884343625;
+ Wed, 28 Oct 2020 04:25:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20201026085141.1179-1-rsalvaterra@gmail.com> <20201027012204.GD2412725@google.com>
+ <CALjTZvbf4qK6SHEe7OhkTC_o7kaY4oOKQ+kk-D2OUq_ULsYAqQ@mail.gmail.com> <20201028101934.GB48825@google.com>
+In-Reply-To: <20201028101934.GB48825@google.com>
+From:   Rui Salvaterra <rsalvaterra@gmail.com>
+Date:   Wed, 28 Oct 2020 11:25:32 +0000
+Message-ID: <CALjTZvaTiAS1vMyrTNvrfy7KOjemy+tW5-hbTy5SHYfsbRE=_Q@mail.gmail.com>
+Subject: Re: [PATCH v3] zram: break the strict dependency from lzo
+To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Cc:     minchan@kernel.org, ngupta@vflare.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Sergey,
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/Makefile   |    1 +
- kernel/irq_work.c |    3 +++
- 2 files changed, 4 insertions(+)
+On Wed, 28 Oct 2020 at 10:19, Sergey Senozhatsky
+<sergey.senozhatsky.work@gmail.com> wrote:
+>
+> Can the following work then?
 
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -105,6 +105,7 @@ obj-$(CONFIG_TRACE_CLOCK) += trace/
- obj-$(CONFIG_RING_BUFFER) += trace/
- obj-$(CONFIG_TRACEPOINTS) += trace/
- obj-$(CONFIG_IRQ_WORK) += irq_work.o
-+obj-$(CONFIG_SMP) += irq_work.o
- obj-$(CONFIG_CPU_PM) += cpu_pm.o
- obj-$(CONFIG_BPF) += bpf/
- obj-$(CONFIG_KCSAN) += kcsan/
---- a/kernel/irq_work.c
-+++ b/kernel/irq_work.c
-@@ -20,6 +20,7 @@
- #include <linux/smp.h>
- #include <asm/processor.h>
- 
-+#ifdef CONFIG_IRQ_WORK
- 
- static DEFINE_PER_CPU(struct llist_head, raised_list);
- static DEFINE_PER_CPU(struct llist_head, lazy_list);
-@@ -212,3 +213,5 @@ void irq_work_sync(struct irq_work *work
- 		cpu_relax();
- }
- EXPORT_SYMBOL_GPL(irq_work_sync);
-+
-+#endif /* CONFIG_IRQ_WORK */
+Almost! See below. :)
 
+> Completely untested.
+>
+> ===8<===
+>
+> diff --git a/drivers/block/zram/Kconfig b/drivers/block/zram/Kconfig
+> index fe7a4b7d30cf..f93eed40e155 100644
+> --- a/drivers/block/zram/Kconfig
+> +++ b/drivers/block/zram/Kconfig
+> @@ -2,7 +2,7 @@
+>  config ZRAM
+>         tristate "Compressed RAM block device support"
+>         depends on BLOCK && SYSFS && ZSMALLOC && CRYPTO
+> -       select CRYPTO_LZO
+> +       depends on (CRYPTO_LZO || CRYPTO_LZ4 || CRYPTO_LZ4HC || CRYPTO_842 || CRYPTO_ZSTD)
 
+This reverses the dependency order, as now we have to select a
+supported compression algorithm in order for zram to be visible in the
+block device drivers list. This is why I wrote the ZRAM_AUTOSEL_ALGO
+kconfig symbol, which automatically selects lzo as a fallback. If the
+user chooses to select another supported algorithm, he will then be
+allowed to deselect lzo. We thus follow the principle of least
+surprise, IMHO.
+
+>         help
+>           Creates virtual block devices called /dev/zramX (X = 0, 1, ...).
+>           Pages written to these disks are compressed and stored in memory
+> diff --git a/drivers/block/zram/zcomp.c b/drivers/block/zram/zcomp.c
+> index 33e3b76c4fa9..98c7c46c9c3a 100644
+> --- a/drivers/block/zram/zcomp.c
+> +++ b/drivers/block/zram/zcomp.c
+> @@ -15,8 +15,10 @@
+>  #include "zcomp.h"
+>
+>  static const char * const backends[] = {
+> +#if IS_ENABLED(CONFIG_CRYPTO_LZO)
+>         "lzo",
+>         "lzo-rle",
+> +#endif
+>  #if IS_ENABLED(CONFIG_CRYPTO_LZ4)
+>         "lz4",
+>  #endif
+> @@ -202,6 +204,21 @@ void zcomp_destroy(struct zcomp *comp)
+>         kfree(comp);
+>  }
+>
+> +const char *default_compressor(void)
+> +{
+> +       /*
+> +        * Pick the first available one (there should be at least one).
+> +        *
+> +        * In theory, we can drop all the ifdefs from backends[] and
+> +        * just iterate backends array doing crypto_has_comp(comp, 0, 0)
+> +        * for each entry and return the first one which is recognized by
+> +        * crypto. But crypto_has_comp() modprobes compression drivers,
+> +        * so we may endup with extra loaded drivers, when the 'default'
+> +        * compressor is not what zram is configured to use.
+> +        */
+> +       return backends[0];
+> +}
+
+This is much more elegant, indeed, and I completely agree with just
+returning the first one. I'll incorporate your feedback and send a v4
+soon.
+
+Thanks a lot,
+Rui
