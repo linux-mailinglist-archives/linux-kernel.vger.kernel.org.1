@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4977829D856
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7430529D860
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387894AbgJ1WbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:31:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45048 "EHLO mail.kernel.org"
+        id S1730848AbgJ1Wbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:31:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387875AbgJ1WbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:31:22 -0400
+        id S2387889AbgJ1Wbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:31:33 -0400
 Received: from kozik-lap.proceq-device.com (unknown [194.230.155.184])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0EA6620714;
-        Wed, 28 Oct 2020 22:31:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDE8120724;
+        Wed, 28 Oct 2020 22:31:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603924281;
-        bh=cXZkQqnBM7BsBAWa7qmuKDksLHfG5eLFOsPLmtLUOEY=;
+        s=default; t=1603924292;
+        bh=bAzQYXPPSF1YQMJRkip+nRq3EjwY9NYLDzxEihLOUV8=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=NbNDFrxnLSbyUDveI6zmJh5L+3XcOiAPs2QIhHygHCadKk77N6FMLTS0IoqPh3ikH
-         Z0Cy2KJm638vj2PeMpJgjei22mVvr9s0k9U9IDgrwuYeyCLCJouDJ/8QeM9ORND3oP
-         cuVjVduevjguYpwOvMuKa942NWBhEsfZMmclQHcg=
+        b=kkOBr0OEQzTTynRTwofE/ZNcVU1OacpfiI1wCSVQ+8fE69vj/75t8I/hzgfm7kfGV
+         htL50WNdXKcBm0rrJdsxT0yZ7GlBF/v/E14pecIUn4FusFvE//EJT7cUBVf087rV1c
+         Ru9UUPGPEbTO9D81X85WiWiknXGtGILeER1jSIPA=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Lee Jones <lee.jones@linaro.org>,
         Nicolas Ferre <nicolas.ferre@microchip.com>,
@@ -44,9 +44,9 @@ To:     Lee Jones <lee.jones@linaro.org>,
         linux-arm-kernel@lists.infradead.org,
         linux-rpi-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: [RESEND PATCH 13/42] mfd: lp8788: use PLATFORM_DEVID_NONE
-Date:   Wed, 28 Oct 2020 23:29:40 +0100
-Message-Id: <20201028223009.369824-13-krzk@kernel.org>
+Subject: [RESEND PATCH 15/42] mfd: max14577: use PLATFORM_DEVID_NONE
+Date:   Wed, 28 Oct 2020 23:29:42 +0100
+Message-Id: <20201028223009.369824-15-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201028223009.369824-1-krzk@kernel.org>
 References: <20201028223009.369824-1-krzk@kernel.org>
@@ -61,23 +61,24 @@ Use PLATFORM_DEVID_NONE define instead of "-1" value because:
  - it might point attention why auto device ID was not used.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 ---
- drivers/mfd/lp8788.c | 2 +-
+ drivers/mfd/max14577.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/lp8788.c b/drivers/mfd/lp8788.c
-index 768d556b3fe9..8abd98bb1d9d 100644
---- a/drivers/mfd/lp8788.c
-+++ b/drivers/mfd/lp8788.c
-@@ -195,7 +195,7 @@ static int lp8788_probe(struct i2c_client *cl, const struct i2c_device_id *id)
- 	if (ret)
- 		return ret;
+diff --git a/drivers/mfd/max14577.c b/drivers/mfd/max14577.c
+index be185e9d5f16..93df79748a45 100644
+--- a/drivers/mfd/max14577.c
++++ b/drivers/mfd/max14577.c
+@@ -445,7 +445,7 @@ static int max14577_i2c_probe(struct i2c_client *i2c,
+ 			goto err_max77836;
+ 	}
  
--	return mfd_add_devices(lp->dev, -1, lp8788_devs,
-+	return mfd_add_devices(lp->dev, PLATFORM_DEVID_NONE, lp8788_devs,
- 			       ARRAY_SIZE(lp8788_devs), NULL, 0, NULL);
- }
- 
+-	ret = mfd_add_devices(max14577->dev, -1, mfd_devs,
++	ret = mfd_add_devices(max14577->dev, PLATFORM_DEVID_NONE, mfd_devs,
+ 			mfd_devs_size, NULL, 0, NULL);
+ 	if (ret < 0)
+ 		goto err_mfd;
 -- 
 2.25.1
 
