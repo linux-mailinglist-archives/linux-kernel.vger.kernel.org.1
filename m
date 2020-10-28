@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A8F29DFA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:03:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1358F29DF9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730753AbgJ2BDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:03:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:39124 "EHLO foss.arm.com"
+        id S1730808AbgJ2BDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:03:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:39114 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730474AbgJ1WKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:10:16 -0400
+        id S1730483AbgJ1WKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:10:21 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68B0D16F8;
-        Wed, 28 Oct 2020 15:10:14 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0611C176C;
+        Wed, 28 Oct 2020 15:10:21 -0700 (PDT)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 81E293F918;
-        Wed, 28 Oct 2020 15:10:13 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1B89C3F68F;
+        Wed, 28 Oct 2020 15:10:20 -0700 (PDT)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
         coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
         Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH v3 12/26] coresight: etm4x: Convert all register accesses
-Date:   Wed, 28 Oct 2020 22:09:31 +0000
-Message-Id: <20201028220945.3826358-14-suzuki.poulose@arm.com>
+Subject: [PATCH v3 18/26] coresight: etm4x: Clean up exception level masks
+Date:   Wed, 28 Oct 2020 22:09:37 +0000
+Message-Id: <20201028220945.3826358-20-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20201028220945.3826358-1-suzuki.poulose@arm.com>
 References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
@@ -34,664 +34,223 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert all register accesses from etm4x driver to use a wrapper
-to allow switching the access at runtime with little overhead.
+etm4_get_access_type() calculates the exception level bits
+for use in address comparator registers. This is also used
+by the TRCVICTLR register by shifting to the required position.
 
-co-developed by sed tool ;-), mostly equivalent to :
+This patch cleans up the logic to make etm4_get_access_type()
+calcualte a generic mask which can be used by all users by
+shifting to their field.
 
-s/readl\(_relaxed\)\?(drvdata->base + \(.*\))/etm4x_\1_read32(csdev, \2)
-s/writel\(_relaxed\)\?(\(.*\), drvdata->base + \(.*\))/etm4x_\1_write32(csdev, \2, \3)
+No functional changes, only code cleanups.
 
-We don't want to replace them with the csdev_access_* to
-avoid a function call for every register access for system
-register access. This is a prepartory step to add system
-register access later where the support is available.
-
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Mike Leach <mike.leach@linaro.org>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
- .../coresight/coresight-etm4x-core.c          | 326 +++++++++---------
- .../coresight/coresight-etm4x-sysfs.c         |   9 +-
- drivers/hwtracing/coresight/coresight-etm4x.h |  24 ++
- 3 files changed, 187 insertions(+), 172 deletions(-)
+Changes since previous version:
+  - Fix the duplicate shift. More commentary
+---
+ .../coresight/coresight-etm4x-core.c          | 47 +++++++++----------
+ .../coresight/coresight-etm4x-sysfs.c         | 12 ++---
+ drivers/hwtracing/coresight/coresight-etm4x.h | 46 +++++++++++-------
+ 3 files changed, 59 insertions(+), 46 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 4f1bcf98fefe..4af7d45dfe63 100644
+index 6e3f9cb7de3f..f038bb10bc78 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
 +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -56,18 +56,28 @@ static u64 etm4_get_access_type(struct etmv4_config *config);
- 
- static enum cpuhp_state hp_online;
- 
--static void etm4_os_unlock(struct etmv4_drvdata *drvdata)
-+static void etm4_os_unlock_csa(struct etmv4_drvdata *drvdata, struct csdev_access *csa)
- {
- 	/* Writing 0 to TRCOSLAR unlocks the trace registers */
--	writel_relaxed(0x0, drvdata->base + TRCOSLAR);
-+	etm4x_relaxed_write32(csa, 0x0, TRCOSLAR);
- 	drvdata->os_unlock = true;
- 	isb();
+@@ -852,20 +852,16 @@ static void etm4_init_arch_data(void *info)
+ 	etm4_cs_lock(drvdata, csa);
  }
  
-+static void etm4_os_unlock(struct etmv4_drvdata *drvdata)
++static inline u32 etm4_get_victlr_access_type(struct etmv4_config *config)
 +{
-+	if (!WARN_ON(!drvdata->csdev))
-+		etm4_os_unlock_csa(drvdata, &drvdata->csdev->access);
-+
++	return etm4_get_access_type(config) << TRCVICTLR_EXLEVEL_SHIFT;
 +}
 +
- static void etm4_os_lock(struct etmv4_drvdata *drvdata)
+ /* Set ELx trace filter access in the TRCVICTLR register */
+ static void etm4_set_victlr_access(struct etmv4_config *config)
  {
-+	if (WARN_ON(!drvdata->csdev))
-+		return;
-+
- 	/* Writing 0x1 to TRCOSLAR locks the trace registers */
--	writel_relaxed(0x1, drvdata->base + TRCOSLAR);
-+	etm4x_relaxed_write32(&drvdata->csdev->access, 0x1, TRCOSLAR);
- 	drvdata->os_unlock = false;
- 	isb();
+-	u64 access_type;
+-
+-	config->vinst_ctrl &= ~(ETM_EXLEVEL_S_VICTLR_MASK | ETM_EXLEVEL_NS_VICTLR_MASK);
+-
+-	/*
+-	 * TRCVICTLR::EXLEVEL_NS:EXLEVELS: Set kernel / user filtering
+-	 * bits in vinst_ctrl, same bit pattern as TRCACATRn values returned by
+-	 * etm4_get_access_type() but with a relative shift in this register.
+-	 */
+-	access_type = etm4_get_access_type(config) << ETM_EXLEVEL_LSHIFT_TRCVICTLR;
+-	config->vinst_ctrl |= (u32)access_type;
++	config->vinst_ctrl &= ~(TRCVICTLR_EXLEVEL_S_MASK | TRCVICTLR_EXLEVEL_NS_MASK);
++	config->vinst_ctrl |= etm4_get_victlr_access_type(config);
  }
-@@ -120,45 +130,39 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
- 		goto done;
  
- 	/* Disable the trace unit before programming trace registers */
--	writel_relaxed(0, drvdata->base + TRCPRGCTLR);
-+	etm4x_relaxed_write32(csa, 0, TRCPRGCTLR);
- 
- 	/* wait for TRCSTATR.IDLE to go up */
- 	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_IDLE_BIT, 1))
- 		dev_err(etm_dev,
- 			"timeout while waiting for Idle Trace Status\n");
- 	if (drvdata->nr_pe)
--		writel_relaxed(config->pe_sel, drvdata->base + TRCPROCSELR);
--	writel_relaxed(config->cfg, drvdata->base + TRCCONFIGR);
-+		etm4x_relaxed_write32(csa, config->pe_sel, TRCPROCSELR);
-+	etm4x_relaxed_write32(csa, config->cfg, TRCCONFIGR);
- 	/* nothing specific implemented */
--	writel_relaxed(0x0, drvdata->base + TRCAUXCTLR);
--	writel_relaxed(config->eventctrl0, drvdata->base + TRCEVENTCTL0R);
--	writel_relaxed(config->eventctrl1, drvdata->base + TRCEVENTCTL1R);
--	writel_relaxed(config->stall_ctrl, drvdata->base + TRCSTALLCTLR);
--	writel_relaxed(config->ts_ctrl, drvdata->base + TRCTSCTLR);
--	writel_relaxed(config->syncfreq, drvdata->base + TRCSYNCPR);
--	writel_relaxed(config->ccctlr, drvdata->base + TRCCCCTLR);
--	writel_relaxed(config->bb_ctrl, drvdata->base + TRCBBCTLR);
--	writel_relaxed(drvdata->trcid, drvdata->base + TRCTRACEIDR);
--	writel_relaxed(config->vinst_ctrl, drvdata->base + TRCVICTLR);
--	writel_relaxed(config->viiectlr, drvdata->base + TRCVIIECTLR);
--	writel_relaxed(config->vissctlr,
--		       drvdata->base + TRCVISSCTLR);
-+	etm4x_relaxed_write32(csa, 0x0, TRCAUXCTLR);
-+	etm4x_relaxed_write32(csa, config->eventctrl0, TRCEVENTCTL0R);
-+	etm4x_relaxed_write32(csa, config->eventctrl1, TRCEVENTCTL1R);
-+	etm4x_relaxed_write32(csa, config->stall_ctrl, TRCSTALLCTLR);
-+	etm4x_relaxed_write32(csa, config->ts_ctrl, TRCTSCTLR);
-+	etm4x_relaxed_write32(csa, config->syncfreq, TRCSYNCPR);
-+	etm4x_relaxed_write32(csa, config->ccctlr, TRCCCCTLR);
-+	etm4x_relaxed_write32(csa, config->bb_ctrl, TRCBBCTLR);
-+	etm4x_relaxed_write32(csa, drvdata->trcid, TRCTRACEIDR);
-+	etm4x_relaxed_write32(csa, config->vinst_ctrl, TRCVICTLR);
-+	etm4x_relaxed_write32(csa, config->viiectlr, TRCVIIECTLR);
-+	etm4x_relaxed_write32(csa, config->vissctlr, TRCVISSCTLR);
- 	if (drvdata->nr_pe_cmp)
--		writel_relaxed(config->vipcssctlr,
--			       drvdata->base + TRCVIPCSSCTLR);
-+		etm4x_relaxed_write32(csa, config->vipcssctlr, TRCVIPCSSCTLR);
- 	for (i = 0; i < drvdata->nrseqstate - 1; i++)
--		writel_relaxed(config->seq_ctrl[i],
--			       drvdata->base + TRCSEQEVRn(i));
--	writel_relaxed(config->seq_rst, drvdata->base + TRCSEQRSTEVR);
--	writel_relaxed(config->seq_state, drvdata->base + TRCSEQSTR);
--	writel_relaxed(config->ext_inp, drvdata->base + TRCEXTINSELR);
-+		etm4x_relaxed_write32(csa, config->seq_ctrl[i], TRCSEQEVRn(i));
-+	etm4x_relaxed_write32(csa, config->seq_rst, TRCSEQRSTEVR);
-+	etm4x_relaxed_write32(csa, config->seq_state, TRCSEQSTR);
-+	etm4x_relaxed_write32(csa, config->ext_inp, TRCEXTINSELR);
- 	for (i = 0; i < drvdata->nr_cntr; i++) {
--		writel_relaxed(config->cntrldvr[i],
--			       drvdata->base + TRCCNTRLDVRn(i));
--		writel_relaxed(config->cntr_ctrl[i],
--			       drvdata->base + TRCCNTCTLRn(i));
--		writel_relaxed(config->cntr_val[i],
--			       drvdata->base + TRCCNTVRn(i));
-+		etm4x_relaxed_write32(csa, config->cntrldvr[i], TRCCNTRLDVRn(i));
-+		etm4x_relaxed_write32(csa, config->cntr_ctrl[i], TRCCNTCTLRn(i));
-+		etm4x_relaxed_write32(csa, config->cntr_val[i], TRCCNTVRn(i));
- 	}
+ static void etm4_set_default_config(struct etmv4_config *config)
+@@ -895,12 +891,9 @@ static u64 etm4_get_ns_access_type(struct etmv4_config *config)
+ 	u64 access_type = 0;
  
  	/*
-@@ -166,52 +170,45 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
- 	 * such start at 2.
+-	 * EXLEVEL_NS, bits[15:12]
+-	 * The Exception levels are:
+-	 *   Bit[12] Exception level 0 - Application
+-	 *   Bit[13] Exception level 1 - OS
+-	 *   Bit[14] Exception level 2 - Hypervisor
+-	 *   Bit[15] Never implemented
++	 * EXLEVEL_NS, for NonSecure Exception levels.
++	 * The mask here is a generic value and must be
++	 * shifted to the corresponding field for the registers
  	 */
- 	for (i = 2; i < drvdata->nr_resource * 2; i++)
--		writel_relaxed(config->res_ctrl[i],
--			       drvdata->base + TRCRSCTLRn(i));
-+		etm4x_relaxed_write32(csa, config->res_ctrl[i], TRCRSCTLRn(i));
+ 	if (!is_kernel_in_hyp_mode()) {
+ 		/* Stay away from hypervisor mode for non-VHE */
+@@ -917,20 +910,26 @@ static u64 etm4_get_ns_access_type(struct etmv4_config *config)
+ 	return access_type;
+ }
  
- 	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
- 		/* always clear status bit on restart if using single-shot */
- 		if (config->ss_ctrl[i] || config->ss_pe_cmp[i])
- 			config->ss_status[i] &= ~BIT(31);
--		writel_relaxed(config->ss_ctrl[i],
--			       drvdata->base + TRCSSCCRn(i));
--		writel_relaxed(config->ss_status[i],
--			       drvdata->base + TRCSSCSRn(i));
-+		etm4x_relaxed_write32(csa, config->ss_ctrl[i], TRCSSCCRn(i));
-+		etm4x_relaxed_write32(csa, config->ss_status[i], TRCSSCSRn(i));
- 		if (drvdata->nr_pe)
--			writel_relaxed(config->ss_pe_cmp[i],
--				       drvdata->base + TRCSSPCICRn(i));
-+			etm4x_relaxed_write32(csa, config->ss_pe_cmp[i], TRCSSPCICRn(i));
- 	}
- 	for (i = 0; i < drvdata->nr_addr_cmp; i++) {
--		writeq_relaxed(config->addr_val[i],
--			       drvdata->base + TRCACVRn(i));
--		writeq_relaxed(config->addr_acc[i],
--			       drvdata->base + TRCACATRn(i));
-+		etm4x_relaxed_write64(csa, config->addr_val[i], TRCACVRn(i));
-+		etm4x_relaxed_write64(csa, config->addr_acc[i], TRCACATRn(i));
- 	}
- 	for (i = 0; i < drvdata->numcidc; i++)
--		writeq_relaxed(config->ctxid_pid[i],
--			       drvdata->base + TRCCIDCVRn(i));
--	writel_relaxed(config->ctxid_mask0, drvdata->base + TRCCIDCCTLR0);
-+		etm4x_relaxed_write64(csa, config->ctxid_pid[i], TRCCIDCVRn(i));
-+	etm4x_relaxed_write32(csa, config->ctxid_mask0, TRCCIDCCTLR0);
- 	if (drvdata->numcidc > 4)
--		writel_relaxed(config->ctxid_mask1, drvdata->base + TRCCIDCCTLR1);
-+		etm4x_relaxed_write32(csa, config->ctxid_mask1, TRCCIDCCTLR1);
- 
- 	for (i = 0; i < drvdata->numvmidc; i++)
--		writeq_relaxed(config->vmid_val[i],
--			       drvdata->base + TRCVMIDCVRn(i));
--	writel_relaxed(config->vmid_mask0, drvdata->base + TRCVMIDCCTLR0);
-+		etm4x_relaxed_write64(csa, config->vmid_val[i], TRCVMIDCVRn(i));
-+	etm4x_relaxed_write32(csa, config->vmid_mask0, TRCVMIDCCTLR0);
- 	if (drvdata->numvmidc > 4)
--		writel_relaxed(config->vmid_mask1, drvdata->base + TRCVMIDCCTLR1);
-+		etm4x_relaxed_write32(csa, config->vmid_mask1, TRCVMIDCCTLR1);
- 
- 	if (!drvdata->skip_power_up) {
-+		u32 trcpdcr = etm4x_relaxed_read32(csa, TRCPDCR);
-+
- 		/*
- 		 * Request to keep the trace unit powered and also
- 		 * emulation of powerdown
- 		 */
--		writel_relaxed(readl_relaxed(drvdata->base + TRCPDCR) |
--			       TRCPDCR_PU, drvdata->base + TRCPDCR);
-+		etm4x_relaxed_write32(csa, trcpdcr | TRCPDCR_PU, TRCPDCR);
- 	}
- 
- 	/* Enable the trace unit */
--	writel_relaxed(1, drvdata->base + TRCPRGCTLR);
-+	etm4x_relaxed_write32(csa, 1, TRCPRGCTLR);
- 
- 	/* wait for TRCSTATR.IDLE to go back down to '0' */
- 	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_IDLE_BIT, 0))
-@@ -487,12 +484,12 @@ static void etm4_disable_hw(void *info)
- 
- 	if (!drvdata->skip_power_up) {
- 		/* power can be removed from the trace unit now */
--		control = readl_relaxed(drvdata->base + TRCPDCR);
-+		control = etm4x_relaxed_read32(csa, TRCPDCR);
- 		control &= ~TRCPDCR_PU;
--		writel_relaxed(control, drvdata->base + TRCPDCR);
-+		etm4x_relaxed_write32(csa, control, TRCPDCR);
- 	}
- 
--	control = readl_relaxed(drvdata->base + TRCPRGCTLR);
-+	control = etm4x_relaxed_read32(csa, TRCPRGCTLR);
- 
- 	/* EN, bit[0] Trace unit enable bit */
- 	control &= ~0x1;
-@@ -504,7 +501,7 @@ static void etm4_disable_hw(void *info)
- 	 */
- 	dsb(sy);
- 	isb();
--	writel_relaxed(control, drvdata->base + TRCPRGCTLR);
-+	etm4x_relaxed_write32(csa, control, TRCPRGCTLR);
- 
- 	/* wait for TRCSTATR.PMSTABLE to go to '1' */
- 	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_PMSTABLE_BIT, 1))
-@@ -514,13 +511,13 @@ static void etm4_disable_hw(void *info)
- 	/* read the status of the single shot comparators */
- 	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
- 		config->ss_status[i] =
--			readl_relaxed(drvdata->base + TRCSSCSRn(i));
-+			etm4x_relaxed_read32(csa, TRCSSCSRn(i));
- 	}
- 
- 	/* read back the current counter values */
- 	for (i = 0; i < drvdata->nr_cntr; i++) {
- 		config->cntr_val[i] =
--			readl_relaxed(drvdata->base + TRCCNTVRn(i));
-+			etm4x_relaxed_read32(csa, TRCCNTVRn(i));
- 	}
- 
- 	coresight_disclaim_device_unlocked(csdev);
-@@ -549,7 +546,7 @@ static int etm4_disable_perf(struct coresight_device *csdev,
- 	 * scheduled again.  Configuration of the start/stop logic happens in
- 	 * function etm4_set_event_filters().
- 	 */
--	control = readl_relaxed(drvdata->base + TRCVICTLR);
-+	control = etm4x_relaxed_read32(&csdev->access, TRCVICTLR);
- 	/* TRCVICTLR::SSSTATUS, bit[9] */
- 	filters->ssstatus = (control & BIT(9));
- 
-@@ -629,15 +626,17 @@ static void etm4_init_arch_data(void *info)
- 	u32 etmidr4;
- 	u32 etmidr5;
- 	struct etmv4_drvdata *drvdata = info;
-+	struct csdev_access tmp_csa = CSDEV_ACCESS_IOMEM(drvdata->base);
-+	struct csdev_access *csa = &tmp_csa;
- 	int i;
- 
- 	/* Make sure all registers are accessible */
--	etm4_os_unlock(drvdata);
-+	etm4_os_unlock_csa(drvdata, csa);
- 
- 	CS_UNLOCK(drvdata->base);
- 
- 	/* find all capabilities of the tracing unit */
--	etmidr0 = readl_relaxed(drvdata->base + TRCIDR0);
-+	etmidr0 = etm4x_relaxed_read32(csa, TRCIDR0);
- 
- 	/* INSTP0, bits[2:1] P0 tracing support field */
- 	if (BMVAL(etmidr0, 1, 1) && BMVAL(etmidr0, 2, 2))
-@@ -677,7 +676,7 @@ static void etm4_init_arch_data(void *info)
- 	drvdata->ts_size = BMVAL(etmidr0, 24, 28);
- 
- 	/* base architecture of trace unit */
--	etmidr1 = readl_relaxed(drvdata->base + TRCIDR1);
-+	etmidr1 = etm4x_relaxed_read32(csa, TRCIDR1);
- 	/*
- 	 * TRCARCHMIN, bits[7:4] architecture the minor version number
- 	 * TRCARCHMAJ, bits[11:8] architecture major versin number
-@@ -686,7 +685,7 @@ static void etm4_init_arch_data(void *info)
- 	drvdata->config.arch = drvdata->arch;
- 
- 	/* maximum size of resources */
--	etmidr2 = readl_relaxed(drvdata->base + TRCIDR2);
-+	etmidr2 = etm4x_relaxed_read32(csa, TRCIDR2);
- 	/* CIDSIZE, bits[9:5] Indicates the Context ID size */
- 	drvdata->ctxid_size = BMVAL(etmidr2, 5, 9);
- 	/* VMIDSIZE, bits[14:10] Indicates the VMID size */
-@@ -694,7 +693,7 @@ static void etm4_init_arch_data(void *info)
- 	/* CCSIZE, bits[28:25] size of the cycle counter in bits minus 12 */
- 	drvdata->ccsize = BMVAL(etmidr2, 25, 28);
- 
--	etmidr3 = readl_relaxed(drvdata->base + TRCIDR3);
-+	etmidr3 = etm4x_relaxed_read32(csa, TRCIDR3);
- 	/* CCITMIN, bits[11:0] minimum threshold value that can be programmed */
- 	drvdata->ccitmin = BMVAL(etmidr3, 0, 11);
- 	/* EXLEVEL_S, bits[19:16] Secure state instruction tracing */
-@@ -744,7 +743,7 @@ static void etm4_init_arch_data(void *info)
- 		drvdata->nooverflow = false;
- 
- 	/* number of resources trace unit supports */
--	etmidr4 = readl_relaxed(drvdata->base + TRCIDR4);
-+	etmidr4 = etm4x_relaxed_read32(csa, TRCIDR4);
- 	/* NUMACPAIRS, bits[0:3] number of addr comparator pairs for tracing */
- 	drvdata->nr_addr_cmp = BMVAL(etmidr4, 0, 3);
- 	/* NUMPC, bits[15:12] number of PE comparator inputs for tracing */
-@@ -770,14 +769,14 @@ static void etm4_init_arch_data(void *info)
- 	drvdata->nr_ss_cmp = BMVAL(etmidr4, 20, 23);
- 	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
- 		drvdata->config.ss_status[i] =
--			readl_relaxed(drvdata->base + TRCSSCSRn(i));
-+			etm4x_relaxed_read32(csa, TRCSSCSRn(i));
- 	}
- 	/* NUMCIDC, bits[27:24] number of Context ID comparators for tracing */
- 	drvdata->numcidc = BMVAL(etmidr4, 24, 27);
- 	/* NUMVMIDC, bits[31:28] number of VMID comparators for tracing */
- 	drvdata->numvmidc = BMVAL(etmidr4, 28, 31);
- 
--	etmidr5 = readl_relaxed(drvdata->base + TRCIDR5);
-+	etmidr5 = etm4x_relaxed_read32(csa, TRCIDR5);
- 	/* NUMEXTIN, bits[8:0] number of external inputs implemented */
- 	drvdata->nr_ext_inp = BMVAL(etmidr5, 0, 8);
- 	/* TRACEIDSIZE, bits[21:16] indicates the trace ID width */
-@@ -1196,56 +1195,56 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
- 
- 	state = drvdata->save_state;
- 
--	state->trcprgctlr = readl(drvdata->base + TRCPRGCTLR);
-+	state->trcprgctlr = etm4x_read32(csa, TRCPRGCTLR);
- 	if (drvdata->nr_pe)
--		state->trcprocselr = readl(drvdata->base + TRCPROCSELR);
--	state->trcconfigr = readl(drvdata->base + TRCCONFIGR);
--	state->trcauxctlr = readl(drvdata->base + TRCAUXCTLR);
--	state->trceventctl0r = readl(drvdata->base + TRCEVENTCTL0R);
--	state->trceventctl1r = readl(drvdata->base + TRCEVENTCTL1R);
--	state->trcstallctlr = readl(drvdata->base + TRCSTALLCTLR);
--	state->trctsctlr = readl(drvdata->base + TRCTSCTLR);
--	state->trcsyncpr = readl(drvdata->base + TRCSYNCPR);
--	state->trcccctlr = readl(drvdata->base + TRCCCCTLR);
--	state->trcbbctlr = readl(drvdata->base + TRCBBCTLR);
--	state->trctraceidr = readl(drvdata->base + TRCTRACEIDR);
--	state->trcqctlr = readl(drvdata->base + TRCQCTLR);
--
--	state->trcvictlr = readl(drvdata->base + TRCVICTLR);
--	state->trcviiectlr = readl(drvdata->base + TRCVIIECTLR);
--	state->trcvissctlr = readl(drvdata->base + TRCVISSCTLR);
-+		state->trcprocselr = etm4x_read32(csa, TRCPROCSELR);
-+	state->trcconfigr = etm4x_read32(csa, TRCCONFIGR);
-+	state->trcauxctlr = etm4x_read32(csa, TRCAUXCTLR);
-+	state->trceventctl0r = etm4x_read32(csa, TRCEVENTCTL0R);
-+	state->trceventctl1r = etm4x_read32(csa, TRCEVENTCTL1R);
-+	state->trcstallctlr = etm4x_read32(csa, TRCSTALLCTLR);
-+	state->trctsctlr = etm4x_read32(csa, TRCTSCTLR);
-+	state->trcsyncpr = etm4x_read32(csa, TRCSYNCPR);
-+	state->trcccctlr = etm4x_read32(csa, TRCCCCTLR);
-+	state->trcbbctlr = etm4x_read32(csa, TRCBBCTLR);
-+	state->trctraceidr = etm4x_read32(csa, TRCTRACEIDR);
-+	state->trcqctlr = etm4x_read32(csa, TRCQCTLR);
-+
-+	state->trcvictlr = etm4x_read32(csa, TRCVICTLR);
-+	state->trcviiectlr = etm4x_read32(csa, TRCVIIECTLR);
-+	state->trcvissctlr = etm4x_read32(csa, TRCVISSCTLR);
- 	if (drvdata->nr_pe_cmp)
--		state->trcvipcssctlr = readl(drvdata->base + TRCVIPCSSCTLR);
--	state->trcvdctlr = readl(drvdata->base + TRCVDCTLR);
--	state->trcvdsacctlr = readl(drvdata->base + TRCVDSACCTLR);
--	state->trcvdarcctlr = readl(drvdata->base + TRCVDARCCTLR);
-+		state->trcvipcssctlr = etm4x_read32(csa, TRCVIPCSSCTLR);
-+	state->trcvdctlr = etm4x_read32(csa, TRCVDCTLR);
-+	state->trcvdsacctlr = etm4x_read32(csa, TRCVDSACCTLR);
-+	state->trcvdarcctlr = etm4x_read32(csa, TRCVDARCCTLR);
- 
- 	for (i = 0; i < drvdata->nrseqstate - 1; i++)
--		state->trcseqevr[i] = readl(drvdata->base + TRCSEQEVRn(i));
-+		state->trcseqevr[i] = etm4x_read32(csa, TRCSEQEVRn(i));
- 
--	state->trcseqrstevr = readl(drvdata->base + TRCSEQRSTEVR);
--	state->trcseqstr = readl(drvdata->base + TRCSEQSTR);
--	state->trcextinselr = readl(drvdata->base + TRCEXTINSELR);
-+	state->trcseqrstevr = etm4x_read32(csa, TRCSEQRSTEVR);
-+	state->trcseqstr = etm4x_read32(csa, TRCSEQSTR);
-+	state->trcextinselr = etm4x_read32(csa, TRCEXTINSELR);
- 
- 	for (i = 0; i < drvdata->nr_cntr; i++) {
--		state->trccntrldvr[i] = readl(drvdata->base + TRCCNTRLDVRn(i));
--		state->trccntctlr[i] = readl(drvdata->base + TRCCNTCTLRn(i));
--		state->trccntvr[i] = readl(drvdata->base + TRCCNTVRn(i));
-+		state->trccntrldvr[i] = etm4x_read32(csa, TRCCNTRLDVRn(i));
-+		state->trccntctlr[i] = etm4x_read32(csa, TRCCNTCTLRn(i));
-+		state->trccntvr[i] = etm4x_read32(csa, TRCCNTVRn(i));
- 	}
- 
- 	for (i = 0; i < drvdata->nr_resource * 2; i++)
--		state->trcrsctlr[i] = readl(drvdata->base + TRCRSCTLRn(i));
-+		state->trcrsctlr[i] = etm4x_read32(csa, TRCRSCTLRn(i));
- 
- 	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
--		state->trcssccr[i] = readl(drvdata->base + TRCSSCCRn(i));
--		state->trcsscsr[i] = readl(drvdata->base + TRCSSCSRn(i));
-+		state->trcssccr[i] = etm4x_read32(csa, TRCSSCCRn(i));
-+		state->trcsscsr[i] = etm4x_read32(csa, TRCSSCSRn(i));
- 		if (drvdata->nr_pe)
--			state->trcsspcicr[i] = readl(drvdata->base + TRCSSPCICRn(i));
-+			state->trcsspcicr[i] = etm4x_read32(csa, TRCSSPCICRn(i));
- 	}
- 
- 	for (i = 0; i < drvdata->nr_addr_cmp * 2; i++) {
--		state->trcacvr[i] = readq(drvdata->base + TRCACVRn(i));
--		state->trcacatr[i] = readq(drvdata->base + TRCACATRn(i));
-+		state->trcacvr[i] = etm4x_read64(csa, TRCACVRn(i));
-+		state->trcacatr[i] = etm4x_read64(csa, TRCACATRn(i));
- 	}
- 
- 	/*
-@@ -1256,22 +1255,22 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
- 	 */
- 
- 	for (i = 0; i < drvdata->numcidc; i++)
--		state->trccidcvr[i] = readq(drvdata->base + TRCCIDCVRn(i));
-+		state->trccidcvr[i] = etm4x_read64(csa, TRCCIDCVRn(i));
- 
- 	for (i = 0; i < drvdata->numvmidc; i++)
--		state->trcvmidcvr[i] = readq(drvdata->base + TRCVMIDCVRn(i));
-+		state->trcvmidcvr[i] = etm4x_read64(csa, TRCVMIDCVRn(i));
- 
--	state->trccidcctlr0 = readl(drvdata->base + TRCCIDCCTLR0);
-+	state->trccidcctlr0 = etm4x_read32(csa, TRCCIDCCTLR0);
- 	if (drvdata->numcidc > 4)
--		state->trccidcctlr1 = readl(drvdata->base + TRCCIDCCTLR1);
-+		state->trccidcctlr1 = etm4x_read32(csa, TRCCIDCCTLR1);
- 
--	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR0);
-+	state->trcvmidcctlr0 = etm4x_read32(csa, TRCVMIDCCTLR0);
- 	if (drvdata->numvmidc > 4)
--		state->trcvmidcctlr1 = readl(drvdata->base + TRCVMIDCCTLR1);
-+		state->trcvmidcctlr0 = etm4x_read32(csa, TRCVMIDCCTLR1);
- 
--	state->trcclaimset = readl(drvdata->base + TRCCLAIMCLR);
-+	state->trcclaimset = etm4x_read32(csa, TRCCLAIMCLR);
- 
--	state->trcpdcr = readl(drvdata->base + TRCPDCR);
-+	state->trcpdcr = etm4x_read32(csa, TRCPDCR);
- 
- 	/* wait for TRCSTATR.IDLE to go up */
- 	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_IDLE_BIT, 1)) {
-@@ -1289,8 +1288,7 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
- 	 * potentially save power on systems that respect the TRCPDCR_PU
- 	 * despite requesting software to save/restore state.
- 	 */
--	writel_relaxed((state->trcpdcr & ~TRCPDCR_PU),
--			drvdata->base + TRCPDCR);
-+	etm4x_relaxed_write32(csa, (state->trcpdcr & ~TRCPDCR_PU), TRCPDCR);
- 
- out:
- 	CS_LOCK(drvdata->base);
-@@ -1301,92 +1299,82 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
++/*
++ * Construct the exception level masks for a given config.
++ * This must be shifted to the corresponding register field
++ * for usage.
++ */
+ static u64 etm4_get_access_type(struct etmv4_config *config)
  {
- 	int i;
- 	struct etmv4_save_state *state = drvdata->save_state;
-+	struct csdev_access tmp_csa = CSDEV_ACCESS_IOMEM(drvdata->base);
-+	struct csdev_access *csa = &tmp_csa;
- 
- 	CS_UNLOCK(drvdata->base);
- 
--	writel_relaxed(state->trcclaimset, drvdata->base + TRCCLAIMSET);
-+	etm4x_relaxed_write32(csa, state->trcclaimset, TRCCLAIMSET);
- 
--	writel_relaxed(state->trcprgctlr, drvdata->base + TRCPRGCTLR);
-+	etm4x_relaxed_write32(csa, state->trcprgctlr, TRCPRGCTLR);
- 	if (drvdata->nr_pe)
--		writel_relaxed(state->trcprocselr, drvdata->base + TRCPROCSELR);
--	writel_relaxed(state->trcconfigr, drvdata->base + TRCCONFIGR);
--	writel_relaxed(state->trcauxctlr, drvdata->base + TRCAUXCTLR);
--	writel_relaxed(state->trceventctl0r, drvdata->base + TRCEVENTCTL0R);
--	writel_relaxed(state->trceventctl1r, drvdata->base + TRCEVENTCTL1R);
--	writel_relaxed(state->trcstallctlr, drvdata->base + TRCSTALLCTLR);
--	writel_relaxed(state->trctsctlr, drvdata->base + TRCTSCTLR);
--	writel_relaxed(state->trcsyncpr, drvdata->base + TRCSYNCPR);
--	writel_relaxed(state->trcccctlr, drvdata->base + TRCCCCTLR);
--	writel_relaxed(state->trcbbctlr, drvdata->base + TRCBBCTLR);
--	writel_relaxed(state->trctraceidr, drvdata->base + TRCTRACEIDR);
--	writel_relaxed(state->trcqctlr, drvdata->base + TRCQCTLR);
+-	u64 access_type = etm4_get_ns_access_type(config);
 -
--	writel_relaxed(state->trcvictlr, drvdata->base + TRCVICTLR);
--	writel_relaxed(state->trcviiectlr, drvdata->base + TRCVIIECTLR);
--	writel_relaxed(state->trcvissctlr, drvdata->base + TRCVISSCTLR);
-+		etm4x_relaxed_write32(csa, state->trcprocselr, TRCPROCSELR);
-+	etm4x_relaxed_write32(csa, state->trcconfigr, TRCCONFIGR);
-+	etm4x_relaxed_write32(csa, state->trcauxctlr, TRCAUXCTLR);
-+	etm4x_relaxed_write32(csa, state->trceventctl0r, TRCEVENTCTL0R);
-+	etm4x_relaxed_write32(csa, state->trceventctl1r, TRCEVENTCTL1R);
-+	etm4x_relaxed_write32(csa, state->trcstallctlr, TRCSTALLCTLR);
-+	etm4x_relaxed_write32(csa, state->trctsctlr, TRCTSCTLR);
-+	etm4x_relaxed_write32(csa, state->trcsyncpr, TRCSYNCPR);
-+	etm4x_relaxed_write32(csa, state->trcccctlr, TRCCCCTLR);
-+	etm4x_relaxed_write32(csa, state->trcbbctlr, TRCBBCTLR);
-+	etm4x_relaxed_write32(csa, state->trctraceidr, TRCTRACEIDR);
-+	etm4x_relaxed_write32(csa, state->trcqctlr, TRCQCTLR);
-+
-+	etm4x_relaxed_write32(csa, state->trcvictlr, TRCVICTLR);
-+	etm4x_relaxed_write32(csa, state->trcviiectlr, TRCVIIECTLR);
-+	etm4x_relaxed_write32(csa, state->trcvissctlr, TRCVISSCTLR);
- 	if (drvdata->nr_pe_cmp)
--		writel_relaxed(state->trcvipcssctlr, drvdata->base + TRCVIPCSSCTLR);
--	writel_relaxed(state->trcvdctlr, drvdata->base + TRCVDCTLR);
--	writel_relaxed(state->trcvdsacctlr, drvdata->base + TRCVDSACCTLR);
--	writel_relaxed(state->trcvdarcctlr, drvdata->base + TRCVDARCCTLR);
-+		etm4x_relaxed_write32(csa, state->trcvipcssctlr, TRCVIPCSSCTLR);
-+	etm4x_relaxed_write32(csa, state->trcvdctlr, TRCVDCTLR);
-+	etm4x_relaxed_write32(csa, state->trcvdsacctlr, TRCVDSACCTLR);
-+	etm4x_relaxed_write32(csa, state->trcvdarcctlr, TRCVDARCCTLR);
+-	/* All supported secure ELs are excluded */
+-	access_type |= (u64)config->s_ex_level << TRCACATR_EXLEVEL_SHIFT;
++	/* All Secure exception levels are excluded from the trace */
++	return etm4_get_ns_access_type(config) | (u64)config->s_ex_level;
++}
  
- 	for (i = 0; i < drvdata->nrseqstate - 1; i++)
--		writel_relaxed(state->trcseqevr[i],
--			       drvdata->base + TRCSEQEVRn(i));
-+		etm4x_relaxed_write32(csa, state->trcseqevr[i], TRCSEQEVRn(i));
+-	return access_type;
++static u64 etm4_get_comparator_access_type(struct etmv4_config *config)
++{
++	return etm4_get_access_type(config) << TRCACATR_EXLEVEL_SHIFT;
+ }
  
--	writel_relaxed(state->trcseqrstevr, drvdata->base + TRCSEQRSTEVR);
--	writel_relaxed(state->trcseqstr, drvdata->base + TRCSEQSTR);
--	writel_relaxed(state->trcextinselr, drvdata->base + TRCEXTINSELR);
-+	etm4x_relaxed_write32(csa, state->trcseqrstevr, TRCSEQRSTEVR);
-+	etm4x_relaxed_write32(csa, state->trcseqstr, TRCSEQSTR);
-+	etm4x_relaxed_write32(csa, state->trcextinselr, TRCEXTINSELR);
+ static void etm4_set_comparator_filter(struct etmv4_config *config,
+ 				       u64 start, u64 stop, int comparator)
+ {
+-	u64 access_type = etm4_get_access_type(config);
++	u64 access_type = etm4_get_comparator_access_type(config);
  
- 	for (i = 0; i < drvdata->nr_cntr; i++) {
--		writel_relaxed(state->trccntrldvr[i],
--			       drvdata->base + TRCCNTRLDVRn(i));
--		writel_relaxed(state->trccntctlr[i],
--			       drvdata->base + TRCCNTCTLRn(i));
--		writel_relaxed(state->trccntvr[i],
--			       drvdata->base + TRCCNTVRn(i));
-+		etm4x_relaxed_write32(csa, state->trccntrldvr[i], TRCCNTRLDVRn(i));
-+		etm4x_relaxed_write32(csa, state->trccntctlr[i], TRCCNTCTLRn(i));
-+		etm4x_relaxed_write32(csa, state->trccntvr[i], TRCCNTVRn(i));
- 	}
+ 	/* First half of default address comparator */
+ 	config->addr_val[comparator] = start;
+@@ -965,7 +964,7 @@ static void etm4_set_start_stop_filter(struct etmv4_config *config,
+ 				       enum etm_addr_type type)
+ {
+ 	int shift;
+-	u64 access_type = etm4_get_access_type(config);
++	u64 access_type = etm4_get_comparator_access_type(config);
  
- 	for (i = 0; i < drvdata->nr_resource * 2; i++)
--		writel_relaxed(state->trcrsctlr[i],
--			       drvdata->base + TRCRSCTLRn(i));
-+		etm4x_relaxed_write32(csa, state->trcrsctlr[i], TRCRSCTLRn(i));
- 
- 	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
--		writel_relaxed(state->trcssccr[i],
--			       drvdata->base + TRCSSCCRn(i));
--		writel_relaxed(state->trcsscsr[i],
--			       drvdata->base + TRCSSCSRn(i));
-+		etm4x_relaxed_write32(csa, state->trcssccr[i], TRCSSCCRn(i));
-+		etm4x_relaxed_write32(csa, state->trcsscsr[i], TRCSSCSRn(i));
- 		if (drvdata->nr_pe)
--			writel_relaxed(state->trcsspcicr[i],
--				       drvdata->base + TRCSSPCICRn(i));
-+			etm4x_relaxed_write32(csa, state->trcsspcicr[i], TRCSSPCICRn(i));
- 	}
- 
- 	for (i = 0; i < drvdata->nr_addr_cmp * 2; i++) {
--		writeq_relaxed(state->trcacvr[i],
--			       drvdata->base + TRCACVRn(i));
--		writeq_relaxed(state->trcacatr[i],
--			       drvdata->base + TRCACATRn(i));
-+		etm4x_relaxed_write64(csa, state->trcacvr[i], TRCACVRn(i));
-+		etm4x_relaxed_write64(csa, state->trcacatr[i], TRCACATRn(i));
- 	}
- 
- 	for (i = 0; i < drvdata->numcidc; i++)
--		writeq_relaxed(state->trccidcvr[i],
--			       drvdata->base + TRCCIDCVRn(i));
-+		etm4x_relaxed_write64(csa, state->trccidcvr[i], TRCCIDCVRn(i));
- 
- 	for (i = 0; i < drvdata->numvmidc; i++)
--		writeq_relaxed(state->trcvmidcvr[i],
--			       drvdata->base + TRCVMIDCVRn(i));
-+		etm4x_relaxed_write64(csa, state->trcvmidcvr[i], TRCVMIDCVRn(i));
- 
--	writel_relaxed(state->trccidcctlr0, drvdata->base + TRCCIDCCTLR0);
-+	etm4x_relaxed_write32(csa, state->trccidcctlr0, TRCCIDCCTLR0);
- 	if (drvdata->numcidc > 4)
--		writel_relaxed(state->trccidcctlr1, drvdata->base + TRCCIDCCTLR1);
-+		etm4x_relaxed_write32(csa, state->trccidcctlr1, TRCCIDCCTLR1);
- 
--	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR0);
-+	etm4x_relaxed_write32(csa, state->trcvmidcctlr0, TRCVMIDCCTLR0);
- 	if (drvdata->numvmidc > 4)
--		writel_relaxed(state->trcvmidcctlr1, drvdata->base + TRCVMIDCCTLR1);
-+		etm4x_relaxed_write32(csa, state->trcvmidcctlr0, TRCVMIDCCTLR1);
- 
--	writel_relaxed(state->trcclaimset, drvdata->base + TRCCLAIMSET);
-+	etm4x_relaxed_write32(csa, state->trcclaimset, TRCCLAIMSET);
- 
--	writel_relaxed(state->trcpdcr, drvdata->base + TRCPDCR);
-+	etm4x_relaxed_write32(csa, state->trcpdcr, TRCPDCR);
- 
- 	drvdata->state_needs_restore = false;
- 
+ 	/* Configure the comparator */
+ 	config->addr_val[comparator] = address;
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-index c4781d4e5886..fce9df16bfb5 100644
+index fce9df16bfb5..009818675928 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
 +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-@@ -2319,7 +2319,8 @@ static struct attribute *coresight_etmv4_attrs[] = {
- };
+@@ -743,7 +743,7 @@ static ssize_t s_exlevel_vinst_show(struct device *dev,
+ 	struct etmv4_drvdata *drvdata = dev_get_drvdata(dev->parent);
+ 	struct etmv4_config *config = &drvdata->config;
  
- struct etmv4_reg {
--	void __iomem *addr;
-+	struct coresight_device *csdev;
-+	u32 offset;
- 	u32 data;
- };
- 
-@@ -2327,7 +2328,7 @@ static void do_smp_cross_read(void *data)
- {
- 	struct etmv4_reg *reg = data;
- 
--	reg->data = readl_relaxed(reg->addr);
-+	reg->data = etm4x_relaxed_read32(&reg->csdev->access, reg->offset);
+-	val = (config->vinst_ctrl & ETM_EXLEVEL_S_VICTLR_MASK) >> 16;
++	val = (config->vinst_ctrl & TRCVICTLR_EXLEVEL_S_MASK) >> TRCVICTLR_EXLEVEL_S_SHIFT;
+ 	return scnprintf(buf, PAGE_SIZE, "%#lx\n", val);
  }
  
- static u32 etmv4_cross_read(const struct device *dev, u32 offset)
-@@ -2335,7 +2336,9 @@ static u32 etmv4_cross_read(const struct device *dev, u32 offset)
- 	struct etmv4_drvdata *drvdata = dev_get_drvdata(dev);
- 	struct etmv4_reg reg;
+@@ -760,10 +760,10 @@ static ssize_t s_exlevel_vinst_store(struct device *dev,
  
--	reg.addr = drvdata->base + offset;
-+	reg.offset = offset;
-+	reg.csdev = drvdata->csdev;
-+
- 	/*
- 	 * smp cross call ensures the CPU will be powered up before
- 	 * accessing the ETMv4 trace core registers
+ 	spin_lock(&drvdata->spinlock);
+ 	/* clear all EXLEVEL_S bits  */
+-	config->vinst_ctrl &= ~(ETM_EXLEVEL_S_VICTLR_MASK);
++	config->vinst_ctrl &= ~(TRCVICTLR_EXLEVEL_S_MASK);
+ 	/* enable instruction tracing for corresponding exception level */
+ 	val &= drvdata->s_ex_level;
+-	config->vinst_ctrl |= (val << 16);
++	config->vinst_ctrl |= (val << TRCVICTLR_EXLEVEL_S_SHIFT);
+ 	spin_unlock(&drvdata->spinlock);
+ 	return size;
+ }
+@@ -778,7 +778,7 @@ static ssize_t ns_exlevel_vinst_show(struct device *dev,
+ 	struct etmv4_config *config = &drvdata->config;
+ 
+ 	/* EXLEVEL_NS, bits[23:20] */
+-	val = (config->vinst_ctrl & ETM_EXLEVEL_NS_VICTLR_MASK) >> 20;
++	val = (config->vinst_ctrl & TRCVICTLR_EXLEVEL_NS_MASK) >> TRCVICTLR_EXLEVEL_NS_SHIFT;
+ 	return scnprintf(buf, PAGE_SIZE, "%#lx\n", val);
+ }
+ 
+@@ -795,10 +795,10 @@ static ssize_t ns_exlevel_vinst_store(struct device *dev,
+ 
+ 	spin_lock(&drvdata->spinlock);
+ 	/* clear EXLEVEL_NS bits  */
+-	config->vinst_ctrl &= ~(ETM_EXLEVEL_NS_VICTLR_MASK);
++	config->vinst_ctrl &= ~(TRCVICTLR_EXLEVEL_NS_MASK);
+ 	/* enable instruction tracing for corresponding exception level */
+ 	val &= drvdata->ns_ex_level;
+-	config->vinst_ctrl |= (val << 20);
++	config->vinst_ctrl |= (val << TRCVICTLR_EXLEVEL_NS_SHIFT);
+ 	spin_unlock(&drvdata->spinlock);
+ 	return size;
+ }
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-index eefc7371c6c4..14e0f29db6b3 100644
+index 2ac4ecb0af61..f1251ddf1984 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x.h
 +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-@@ -120,6 +120,30 @@
- #define TRCCIDR2			0xFF8
- #define TRCCIDR3			0xFFC
+@@ -548,24 +548,38 @@
  
-+#define etm4x_relaxed_read32(csa, offset)		\
-+	readl_relaxed((csa)->base + (offset))
+ #define TRCACATR_EXLEVEL_SHIFT		8
+ 
+-/* secure state access levels - TRCACATRn */
+-#define ETM_EXLEVEL_S_APP		BIT(8)
+-#define ETM_EXLEVEL_S_OS		BIT(9)
+-#define ETM_EXLEVEL_S_HYP		BIT(10)
+-#define ETM_EXLEVEL_S_MON		BIT(11)
+-/* non-secure state access levels - TRCACATRn */
+-#define ETM_EXLEVEL_NS_APP		BIT(12)
+-#define ETM_EXLEVEL_NS_OS		BIT(13)
+-#define ETM_EXLEVEL_NS_HYP		BIT(14)
+-#define ETM_EXLEVEL_NS_NA		BIT(15)
+-
+-/* access level control in TRCVICTLR - same bits as TRCACATRn but shifted */
+-#define ETM_EXLEVEL_LSHIFT_TRCVICTLR	8
++/*
++ * Exception level mask for Secure and Non-Secure ELs.
++ * ETM defines the bits for EL control (e.g, TRVICTLR, TRCACTRn).
++ * The Secure and Non-Secure ELs are always to gether.
++ * Non-secure EL3 is never implemented.
++ * We use the following generic mask as they appear in different
++ * registers and this can be shifted for the appropriate
++ * fields.
++ */
++#define ETM_EXLEVEL_S_APP		BIT(0)	/* Secure EL0		*/
++#define ETM_EXLEVEL_S_OS		BIT(1)	/* Secure EL1		*/
++#define ETM_EXLEVEL_S_HYP		BIT(2)	/* Secure EL2		*/
++#define ETM_EXLEVEL_S_MON		BIT(3)	/* Secure EL3/Montor	*/
++#define ETM_EXLEVEL_NS_APP		BIT(4)	/* NonSecure EL0	*/
++#define ETM_EXLEVEL_NS_OS		BIT(5)	/* NonSecure EL1	*/
++#define ETM_EXLEVEL_NS_HYP		BIT(6)	/* NonSecure EL2	*/
 +
-+#define etm4x_read32(csa, offset)			\
-+	readl((csa)->base + (offset))
++#define ETM_EXLEVEL_MASK		(GENMASK(6, 0))
++#define ETM_EXLEVEL_S_MASK		(GENMASK(3, 0))
++#define ETM_EXLEVEL_NS_MASK		(GENMASK(6, 4))
 +
-+#define etm4x_relaxed_write32(csa, val, offset)		\
-+	writel_relaxed((val), (csa)->base + (offset))
++/* access level controls in TRCACATRn */
++#define TRCACATR_EXLEVEL_SHIFT		8
 +
-+#define etm4x_write32(csa, val, offset)			\
-+	writel((val), (csa)->base + (offset))
-+
-+#define etm4x_relaxed_read64(csa, offset)		\
-+	readq_relaxed((csa)->base + (offset))
-+
-+#define etm4x_read64(csa, offset)			\
-+	readq((csa)->base + (offset))
-+
-+#define etm4x_relaxed_write64(csa, val, offset)		\
-+	writeq_relaxed((val), (csa)->base + (offset))
-+
-+#define etm4x_write64(csa, val, offset)			\
-+	writeq((val), (csa)->base + (offset))
-+
- /* ETMv4 resources */
- #define ETM_MAX_NR_PE			8
- #define ETMv4_MAX_CNTR			4
++/* access level control in TRCVICTLR */
++#define TRCVICTLR_EXLEVEL_SHIFT		16
++#define TRCVICTLR_EXLEVEL_S_SHIFT	16
++#define TRCVICTLR_EXLEVEL_NS_SHIFT	20
+ 
+ /* secure / non secure masks - TRCVICTLR, IDR3 */
+-#define ETM_EXLEVEL_S_VICTLR_MASK	GENMASK(19, 16)
+-/* NS MON (EL3) mode never implemented */
+-#define ETM_EXLEVEL_NS_VICTLR_MASK	GENMASK(22, 20)
++#define TRCVICTLR_EXLEVEL_S_MASK	(ETM_EXLEVEL_S_MASK << TRCVICTLR_EXLEVEL_S_SHIFT)
++#define TRCVICTLR_EXLEVEL_NS_MASK	(ETM_EXLEVEL_NS_MASK << TRCVICTLR_EXLEVEL_NS_SHIFT)
+ 
+ /* Interpretation of resource numbers change at ETM v4.3 architecture */
+ #define ETM4X_ARCH_4V3	0x43
 -- 
 2.24.1
 
