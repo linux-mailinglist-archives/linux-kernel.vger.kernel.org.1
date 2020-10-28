@@ -2,108 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C877029D5D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F3129D6B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730316AbgJ1WJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:09:11 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:50109 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730302AbgJ1WJJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:09:09 -0400
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1kXgkg-0006bG-1o; Wed, 28 Oct 2020 09:24:14 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1kXgke-00023H-St; Wed, 28 Oct 2020 09:24:12 +0100
-Date:   Wed, 28 Oct 2020 09:24:12 +0100
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>, linux-clk@vger.kernel.org,
+        id S1731600AbgJ1WRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:17:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731514AbgJ1WR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:26 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11C2A22267;
+        Wed, 28 Oct 2020 08:26:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603873569;
+        bh=veSX3TTwRY1vHW0t5Raf0u7Wsyf4g+ER3MIxByohPDc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KHW1m8Cuo3qrUPW3vKx4+z1BsVqNtdru/XFHJAeK7h7ZG8Tzyzli0RM4dFXR4D1cX
+         BDMev0IVPARRDEjFDrKZfN1ePx9g1ytYdc+Pm331fO8bUOzfWrNyRYIXTOZErkbiBT
+         sdtQEH92EGYffwgBhKRc1zyirFJkaoLvWTDzvfoE=
+Date:   Wed, 28 Oct 2020 16:26:04 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] clk: imx: gate2: Fix the is_enabled op
-Message-ID: <20201028082412.GU26805@pengutronix.de>
-References: <1603738248-8193-1-git-send-email-abel.vesa@nxp.com>
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 01/13] dt-bindings: arm: fsl: update TQ-Systems SoMs and
+ boards based on i.MX7
+Message-ID: <20201028082603.GA28467@dragon>
+References: <20200918112942.1367-1-matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1603738248-8193-1-git-send-email-abel.vesa@nxp.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:05:22 up 251 days, 15:35, 142 users,  load average: 0.56, 0.42,
- 0.30
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20200918112942.1367-1-matthias.schiffer@ew.tq-group.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Abel,
-
-On Mon, Oct 26, 2020 at 08:50:48PM +0200, Abel Vesa wrote:
-> The clock is considered to be enabled only if the controlling bits
-> match the cgr_val mask. Also make sure the is_enabled returns the
-> correct vaule by locking the access to the register.
+On Fri, Sep 18, 2020 at 01:29:30PM +0200, Matthias Schiffer wrote:
+> Introduce compatible strings for the TQMa7x SoMs.
 > 
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> Fixes: 1e54afe9fcfe ("clk: imx: gate2: Allow single bit gating clock")
-> ---
->  drivers/clk/imx/clk-gate2.c | 60 ++++++++++++++++++++-------------------------
->  drivers/clk/imx/clk.h       |  8 ++----
->  2 files changed, 29 insertions(+), 39 deletions(-)
-> 
-> diff --git a/drivers/clk/imx/clk-gate2.c b/drivers/clk/imx/clk-gate2.c
-> index 7eed708..f320bd2b 100644
-> --- a/drivers/clk/imx/clk-gate2.c
-> +++ b/drivers/clk/imx/clk-gate2.c
-> @@ -37,10 +37,22 @@ struct clk_gate2 {
->  
->  #define to_clk_gate2(_hw) container_of(_hw, struct clk_gate2, hw)
->  
-> +static void clk_gate2_do_shared_clks(struct clk_hw *hw, bool enable)
-> +{
-> +	struct clk_gate2 *gate = to_clk_gate2(hw);
-> +	u32 reg;
-> +
-> +	reg = readl(gate->reg);
-> +	if (enable)
-> +		reg |= gate->cgr_val << gate->bit_idx;
-> +	else
-> +		reg &= ~(gate->cgr_val << gate->bit_idx);
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 
-Shouldn't this be:
-
-	reg &= ~(3 << gate->bit_idx);
-	if (enable)
-		reg |= gate->cgr_val << gate->bit_idx;
-
-At least that's how it was without this patch and that's how it makes
-sense to me with cgr_val != 3.
-
-Sascha
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Applied, thanks.
