@@ -2,127 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F9429D34A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A458129D418
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725912AbgJ1Vma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:42:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38178 "EHLO mail.kernel.org"
+        id S1727458AbgJ1VtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:49:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726110AbgJ1VmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:42:25 -0400
+        id S1727683AbgJ1VrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:47:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4916124804;
-        Wed, 28 Oct 2020 18:06:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9637C247FD;
+        Wed, 28 Oct 2020 18:08:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603908397;
-        bh=diRpUytNGr4vcLPj80uDkTMwdSI1HzXRNGWbFmZNeE4=;
+        s=default; t=1603908538;
+        bh=yVEfc4+gOF4s/3xGZTQCBpdsAOxojMx9ZF/7nK6oM/I=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L1PUX5qJV3wrtoiw3Awx/J+kAC9EjUHUAglD5hffuzyV53Hpkp+mPkP+JXr35QK7c
-         4jcgeKlnR1Uz4YpSQXrMBKUV/1DYWtIJ6C5d2/4Y76zd20lMFTX47E16FohUOYzfWs
-         32G2AlRPxoQEZu2HTsTdMnRz/0KmfVzygY7KSfEI=
-Date:   Wed, 28 Oct 2020 19:07:28 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Torsten Duwe <duwe@lst.de>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
-        Willy Tarreau <w@1wt.eu>, linux-crypto@vger.kernel.org,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        And y Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Petr Tesarik <ptesarik@suse.cz>, simo@redhat.com
-Subject: Re: [PATCH v36 00/13] /dev/random - a new approach
-Message-ID: <20201028180728.GA2831268@kroah.com>
-References: <20200921075857.4424-1-nstange@suse.de>
- <2961243.vtBmWVcJkq@tauon.chronox.de>
- <20201016172619.GA18410@lst.de>
- <3073852.aeNJFYEL58@positron.chronox.de>
- <20201028185117.74300988@blackhole.lan>
+        b=E0YnPcnjOExKX6+eztVKyGMzzPpsfM8/XUjQvIDmiU3H8ekOh3AEAu/6VYxa7Yvxf
+         Wmw2Jkck3TiDXj+B8Xr2j/07yhl0fmpFIIzW00vaKKUnjA0Npv7L47E9eFwmEOhxWV
+         T6Bf/EknL7w8iqvyrUePpzRg3nJ/7Z0rM9BG4rf8=
+Date:   Wed, 28 Oct 2020 19:09:49 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Dutt, Sudeep" <sudeep.dutt@intel.com>
+Cc:     "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "sherry.sun@nxp.com" <sherry.sun@nxp.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "Rao, Nikhil" <nikhil.rao@intel.com>,
+        "Dixit, Ashutosh" <ashutosh.dixit@intel.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH char-misc-next 1/1] misc: mic: remove the MIC drivers
+Message-ID: <20201028180949.GB2831268@kroah.com>
+References: <8c1443136563de34699d2c084df478181c205db4.1603854416.git.sudeep.dutt@intel.com>
+ <20201028055429.GA244117@kroah.com>
+ <f64a1f67781441c8ed48b991afbf8dd2f9030289.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201028185117.74300988@blackhole.lan>
+In-Reply-To: <f64a1f67781441c8ed48b991afbf8dd2f9030289.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 06:51:17PM +0100, Torsten Duwe wrote:
-> On Mon, 19 Oct 2020 21:28:50 +0200
-> Stephan Müller <smueller@chronox.de> wrote:
-> [...]
-> > * Sole use of crypto for data processing:
-> [...]
-> >  - The LRNG uses only properly defined and implemented cryptographic
-> >    algorithms unlike the use of the SHA-1 transformation in the
-> > existing /dev/random implementation.
+On Wed, Oct 28, 2020 at 05:22:01PM +0000, Dutt, Sudeep wrote:
+> On Wed, 2020-10-28 at 06:54 +0100, Greg Kroah-Hartman wrote:
+> > On Tue, Oct 27, 2020 at 08:14:15PM -0700, Sudeep Dutt wrote:
+> > > This patch removes the MIC drivers from the kernel tree
+> > > since the corresponding devices have been discontinued.
 > > 
-> >  - Hash operations use NUMA-node-local hash instances to benefit large
-> >    parallel systems.
-> > 
-> >  - LRNG uses limited number of data post-processing steps
-> [...]
-> > * Performance
-> > 
-> >  - Faster by up to 75% in the critical code path of the interrupt
-> > handler depending on data collection size configurable at kernel
-> > compile time - the default is about equal in performance with
-> > existing /dev/random as outlined in [2] section 4.2.
+> > Does "discontinued" mean "never shipped a device so no one has access
+> > to
+> > this hardware anymore", or does it mean "we stopped shipping devices
+> > and
+> > there are customers with this?"
 > 
-> [...]
-> >  - ChaCha20 DRNG is significantly faster as implemented in the
-> > existing /dev/random as demonstrated with [2] table 2.
-> > 
-> >  - Faster entropy collection during boot time to reach fully seeded
-> >    level, including on virtual systems or systems with SSDs as
-> > outlined in [2] section 4.1.
-> > 
-> > * Testing
-> [...]
+> Hi Greg,
 > 
-> So we now have 2 proposals for a state-of-the-art RNG, and over a month
-> without a single comment on-topic from any `get_maintainer.pl`
-> 
-> I don't want to emphasise the certification aspects so much. The
-> interrelation is rather that those certifications require certain code
-> features, features which are reasonable per se. But the current code is
-> lagging way behind.
-> 
-> I see the focus namely on performance, scalability, testability and
-> virtualisation. And it certainly is an advantage to use the code
-> already present under crypto, with its optimisations, and not rely
-> on some home brew.
-> 
-> Can we please have a discussion about how to proceed?
-> Ted, Greg, Arnd: which approach would you prefer?
+> We are not aware of any customers of the upstreamed MIC drivers. The 
+> drivers were upstreamed primarily to lay a foundation for enabling the
+> next generation MIC devices which did not ship.
 
-Greg and Arnd are not the random driver maintainers, as is now correctly
-shown in the 5.10-rc1 MAINTAINERS file, so I doubt we (well at least I)
-have any say here, sorry.
+Ok, thanks for the explanation.
 
-good luck!
+> 
+> > > Removing the dma and char-misc changes in one patch and
+> > > merging via the char-misc tree is best to avoid any
+> > > potential build breakage.
+> > > 
+> > > Cc: Nikhil Rao <nikhil.rao@intel.com>
+> > > Reviewed-by: Ashutosh Dixit <ashutosh.dixit@intel.com>
+> > > Signed-off-by: Sudeep Dutt <sudeep.dutt@intel.com>
+> > 
+> > I like deleting code, can this go into 5.10-final?
+> 
+> Yes, we would prefer this goes into v5.10. I am hoping you can carry
+> the Ack from Vinod and the Reviewed-by from Sherry but I can resend the
+> patch with those updates in the commit message if required. I did
+> verify that this patch passes allmodconfig and allyesconfig builds with
+> your latest char-misc-next tree.
+
+I can pick them up automatically, no worries, thanks!
 
 greg k-h
