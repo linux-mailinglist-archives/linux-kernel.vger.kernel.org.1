@@ -2,136 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6D829D557
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E9829D4B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729402AbgJ1WAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729396AbgJ1WAK (ORCPT
+        id S1728551AbgJ1VyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:54:10 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:40155 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728433AbgJ1VyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:00:10 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF194C0613CF;
-        Wed, 28 Oct 2020 15:00:10 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id x23so301109plr.6;
-        Wed, 28 Oct 2020 15:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CwYcjUQ9n0ZM+r827p0TWJkTogeEds8umhVXpQGywJI=;
-        b=BoCFMRz4ffT0VFvro9CSY2MtQzfcrZXLSRRBIMQscg6M/ym8yVi7FIbqr6izdKht+N
-         weYRAzuZ+jpLU81fTDpdYa6atx55gTvqvL2cClz+uhHc2D0zcMxLuoUy6nnrJ9YrECXD
-         RQCOW8IeTVlrg7oTG3cdtIdNOj9G3kPEs3Okz9Kq3p++qdI+Vjsn6GUoIfjz3uQ2i/v9
-         sEFvZFyGXWG0De469unrtLvDUQuol4shhhSH62mAeK2UtrGFekEakmnwiPSeOQAoXXlr
-         FPYt92EtK/tQu2Pt2spAcZSeE2Lg3vuVR0G/CTCYYYRCu/erze61WD9pkMtGuEZxy9B3
-         uSAA==
+        Wed, 28 Oct 2020 17:54:08 -0400
+Received: by mail-lj1-f193.google.com with SMTP id 23so866004ljv.7
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:54:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CwYcjUQ9n0ZM+r827p0TWJkTogeEds8umhVXpQGywJI=;
-        b=duVBU3ZzflRyn4N7VssUCSzIqFeFkcnF6K1BOlx8rQp8mE+cYOrts8vM3jfqAWVj/5
-         ZXceaYvsNXUAAImhG+npKEsCj2p2s7CPaHyOPYClDUpeLvxdWCCoIkiObiOJoeJhsijI
-         pLNvWm5+DvZcfXGQV3SvFc0UeIMA5YL6DY9mUiySW3zF2T3ONhHH8YKFf9SNQ4VjeuMU
-         psw5W48FNT8ZLSfT/k4M5HbJNqN8G3V3uQCv6NSRjII3GOsf6cdzkakFhxShlex9ecn6
-         SOS4lPTEyrxGuLE72bUxKe7IHHrKGV5NdgYl7JIojwl2Jw9LN5ayqHxmQovxCn2QXSvm
-         hghw==
-X-Gm-Message-State: AOAM530CPbx84+xDFwwvnpn2QyD6JQpBG4wX2KNjOh66SLYtIym7tsVu
-        tfED0iySssfW+IO6GzYWeUVxGHOEIaY=
-X-Google-Smtp-Source: ABdhPJxH9u5TCOT2f00qm+z9/5Z98BTojmCESoV9x4IrB6x4AMCfgHtLspS3XeKRF+y+hixfUN7TXg==
-X-Received: by 2002:a0c:b65b:: with SMTP id q27mr586836qvf.8.1603908132941;
-        Wed, 28 Oct 2020 11:02:12 -0700 (PDT)
-Received: from soheil4.nyc.corp.google.com ([2620:0:1003:312:a6ae:11ff:fe18:6946])
-        by smtp.gmail.com with ESMTPSA id o2sm65054qkk.121.2020.10.28.11.02.11
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=hBvzK8lkv0/Kr6sllr3rVdlaKd0LEpV25zHBAjm2eYs=;
+        b=FQxkCrAaytd47GlTo5h0PICfrRUdHZ0JRSksQaAkIABXQl0OfC3HvUfh2mQNnNY/po
+         6NymwTsEZGd2nUdHuyYgm5flNlVP6Te+LVx7KTO8ne4lzNDnSMyro3ZMC5RmXILSIE6j
+         9FF1Bk3chfB8za4FwnU9k3DDQWSKBujp/3I8tNPTx/4d+G32KskMBta5rRDB8IcuD0gf
+         hNPSFZza5rN4EsyVIj6MRsaAcxn6PkWcQOcioRLXWHawmzDlR/OCuH7xtE5/8PruKP3f
+         SHZcOUKagxxp66mUFklyFeHGAGMZs7yOdbq6pAzo+XVTtbxFmpRDzwANNuAh/T9xdg/E
+         Lo2w==
+X-Gm-Message-State: AOAM533WlUnKSu8/cmltL4Cvo8gtLgxnIMw+bD7xtNOcSRkclyxMoR8v
+        6AGfHj65lPZiTbo0oPCXKgaNDlSDXLhERIvK
+X-Google-Smtp-Source: ABdhPJyGLZtL+SLHLS8mwY46Tb6XUV1LVkmU7GdD9NvRNoqlUSsJFjQEFs68oKmFwmLvpV/nb2SaqQ==
+X-Received: by 2002:aa7:c3c8:: with SMTP id l8mr69277edr.189.1603908298881;
+        Wed, 28 Oct 2020 11:04:58 -0700 (PDT)
+Received: from darkstar ([2a04:ee41:4:5025:8295:1d2:ca0d:985e])
+        by smtp.gmail.com with ESMTPSA id u14sm232746edv.6.2020.10.28.11.04.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 11:02:12 -0700 (PDT)
-From:   Soheil Hassas Yeganeh <soheil.kdev@gmail.com>
-To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        dave@stgolabs.net, Soheil Hassas Yeganeh <soheil@google.com>,
-        Guantao Liu <guantaol@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Khazhismel Kumykov <khazhy@google.com>
-Subject: [PATCH 1/2] epoll: check ep_events_available() upon timeout
-Date:   Wed, 28 Oct 2020 14:02:01 -0400
-Message-Id: <20201028180202.952079-1-soheil.kdev@gmail.com>
-X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
+        Wed, 28 Oct 2020 11:04:58 -0700 (PDT)
+References: <20201025073632.720393-1-hsiang023167@gmail.com>
+ <08b7cdda-291c-bdf1-b72d-0a3ef411fcf3@arm.com>
+ <20201026154538.GA807103@ubuntu>
+ <605c21f7-3c4d-5c24-6d23-9f2604e6757b@arm.com>
+ <20201027155813.GA818508@ubuntu> <87v9eumzic.derkling@matbug.net>
+ <20201028113943.7jzxbytizrv7wsm3@e107158-lin>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Patrick Bellasi <patrick.bellasi@matbug.net>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Yun Hsiang <hsiang023167@gmail.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        peterz@infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
+ flag to reset uclamp
+In-reply-to: <20201028113943.7jzxbytizrv7wsm3@e107158-lin>
+Message-ID: <87sg9ymdmw.derkling@matbug.net>
+Date:   Wed, 28 Oct 2020 19:03:35 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Soheil Hassas Yeganeh <soheil@google.com>
 
-After abc610e01c66, we break out of the ep_poll loop upon timeout,
-without checking whether there is any new events available.  Prior to
-that patch-series we always called ep_events_available() after
-exiting the loop.
+On Wed, Oct 28, 2020 at 12:39:43 +0100, Qais Yousef <qais.yousef@arm.com> wrote...
 
-This can cause races and missed wakeups. For example, consider
-the following scenario reported by Guantao Liu:
+> On 10/28/20 11:11, Patrick Bellasi wrote:
+>> >>  
+>> >>  		/*
+>> >>  		 * RT by default have a 100% boost value that could be modified
+>> >>  		 * at runtime.
+>> >>  		 */
+>> >>  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+>> >> -			__uclamp_update_util_min_rt_default(p);
+>> >> +			value = sysctl_sched_uclamp_util_min_rt_default;
+>> 
+>> By removing this usage of __uclamp_updadate_util_min_rt_default(p),
+>> the only other usage remaining is the call from:
+>>    uclamp_udpate_util_min_rt_default().
+>> 
+>> What about an additional cleanup by in-lining the only surviving usage?
+>
+> This is not a cleanup IMO. There is special rule about updating that are
+> encoded and documented in this helper function. Namely:
+>
+> 	* p->pi_lock must be held.
+> 	* p->uclamp_req[].user_defined must be false.
 
-Suppose we have an eventfd added using EPOLLET to an epollfd.
+Both these conditions are satisfied in the above call site:
+ - user_defined is tested just 4 lines above
+ - pi_lock is taken by the caller, i.e. __sched_setscheduler()
+Thus, there is no need to test them two times.
 
-Thread 1: Sleeps for just below 5ms and then writes to an eventfd.
-Thread 2: Calls epoll_wait with a timeout of 5 ms. If it sees an
-          event of the eventfd, it will write back on that fd.
-Thread 3: Calls epoll_wait with a negative timeout.
+Moreover, the same granted pi_lock you check in
+__ucalmp_update_util_min_rt_default() is not checked at all in the rest
+of __setscheduler_uclamp().
 
-Prior to abc610e01c66, it is guaranteed that Thread 3 will wake up
-either by Thread 1 or Thread 2.  After abc610e01c66, Thread 3 can
-be blocked indefinitely if Thread 2 sees a timeout right before
-the write to the eventfd by Thread 1. Thread 2 will be woken up from
-schedule_hrtimeout_range and, with evail 0, it will not call
-ep_send_events().
+Thus, perhaps we should have just avoided to add
+__uclamp_update_util_min_rt_default() since the beginning and:
+ - have all its logic in the _only_ place where it's required
+ - added the lockdep_assert_held() in __setscheduler_uclamp()
 
-To fix this issue, while holding the lock, try to remove the thread that
-timed out the wait queue and check whether it was woken up or not.
+That's why I consider this a very good cleanup opportunity.
 
-Fixes: abc610e01c66 ("fs/epoll: avoid barrier after an epoll_wait(2) timeout")
-Reported-by: Guantao Liu <guantaol@google.com>
-Tested-by: Guantao Liu <guantaol@google.com>
-Signed-off-by: Soheil Hassas Yeganeh <soheil@google.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Reviewed-by: Khazhismel Kumykov <khazhy@google.com>
-Cc: Davidlohr Bueso <dave@stgolabs.net>
----
- fs/eventpoll.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+> I don't see open coding helps but rather makes the code harder to read and
+> prone to introduce bugs if anything gets reshuffled in the future.
 
-diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-index 4df61129566d..11388436b85a 100644
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -1907,7 +1907,21 @@ static int ep_poll(struct eventpoll *ep, struct epoll_event __user *events,
- 
- 		if (!schedule_hrtimeout_range(to, slack, HRTIMER_MODE_ABS)) {
- 			timed_out = 1;
--			break;
-+			__set_current_state(TASK_RUNNING);
-+			/*
-+			 * Acquire the lock and try to remove this thread from
-+			 * the wait queue. If this thread is not on the wait
-+			 * queue, it has woken up after its timeout ended
-+			 * before it could re-acquire the lock. In that case,
-+			 * try to harvest some events.
-+			 */
-+			write_lock_irq(&ep->lock);
-+			if (!list_empty(&wait.entry))
-+				__remove_wait_queue(&ep->wq, &wait);
-+			else
-+				eavail = 1;
-+			write_unlock_irq(&ep->lock);
-+			goto send_events;
- 		}
- 
- 		/* We were woken up, thus go and try to harvest some events */
--- 
-2.29.0.rc2.309.g374f81d7ae-goog
+It's not open coding IMHO, it's just adding the code that's required.
 
