@@ -2,111 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B607D29E0C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB36B29E129
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729630AbgJ1WDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:03:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:38790 "EHLO foss.arm.com"
+        id S1728884AbgJ2ByA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:54:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729329AbgJ1WCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:02:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2E021A25;
-        Wed, 28 Oct 2020 07:55:19 -0700 (PDT)
-Received: from e107158-lin (unknown [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 929253F66E;
-        Wed, 28 Oct 2020 07:55:18 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 14:55:16 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Elliot Berman <eberman@codeaurora.org>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Trilok Soni <tsoni@codeaurora.org>,
-        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
-Message-ID: <20201028145516.23lm66mora5b3wqr@e107158-lin>
-References: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
- <87v9f04n8r.fsf@nanos.tec.linutronix.de>
- <a6d7f84679240fcf580520230a88c058@codeaurora.org>
- <20201026171224.GV2611@hirez.programming.kicks-ass.net>
- <a9fa1f8d-52c7-adca-9087-160b1ecda6b8@codeaurora.org>
+        id S1728695AbgJ1V5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:57:23 -0400
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55E62247D3;
+        Wed, 28 Oct 2020 15:44:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603899891;
+        bh=7sXQT4ZR+nTcwonoNPBkj99LF51RMNQ/vl6I6HLzpZQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=il0ZI6M0WRIWQjIRDISt42r222dqLMBo8RkQIOIMP1v1gUWoO9f8kkY3KwhLxftvr
+         hE/xPOo0ez68bVwvPRhAK91IKqEoAw9LvCpHY+SzHHowy1Kd0V92JifR3JipDByOtm
+         THPL8oqQp6D3z8WTO0OR+o8aTUHnwx+xM3zzNHrk=
+Received: by mail-lj1-f175.google.com with SMTP id d25so2477144ljc.11;
+        Wed, 28 Oct 2020 08:44:51 -0700 (PDT)
+X-Gm-Message-State: AOAM532aZB4gDM75UbyYQ/Xn7RiZSF4mx8ATXMzsSvXBnzJjG3mJsjRp
+        5ZFAlEd4uAjiELVAwoHJopi+ZgQ897B8PKPIacg=
+X-Google-Smtp-Source: ABdhPJyGyQATaChjnAKkfjkaaf3v7hztgZj7y5qe4Eyrxej1RU5umY6iPyGW4WCHiZryf/mQfxrdXTXEzDFHNKO6Qe0=
+X-Received: by 2002:a2e:8942:: with SMTP id b2mr3656627ljk.441.1603899889297;
+ Wed, 28 Oct 2020 08:44:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a9fa1f8d-52c7-adca-9087-160b1ecda6b8@codeaurora.org>
+References: <20201021073839.43935-1-zong.li@sifive.com>
+In-Reply-To: <20201021073839.43935-1-zong.li@sifive.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 28 Oct 2020 23:44:38 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTnGSYAc3AZKCPvhNJsPm_TchPjPrtqc_WzaK7K5eNt+w@mail.gmail.com>
+Message-ID: <CAJF2gTTnGSYAc3AZKCPvhNJsPm_TchPjPrtqc_WzaK7K5eNt+w@mail.gmail.com>
+Subject: Re: [PATCH] stop_machine: Mark functions as notrace
+To:     Zong Li <zong.li@sifive.com>, Atish Patra <atishp@atishpatra.org>
+Cc:     Paul McKenney <paulmck@kernel.org>, josh@joshtriplett.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, vincent.whitchurch@axis.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        colin.king@canonical.com, rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Elliot
+Hi Zong & Atish,
 
-+ Sudeep
+In our 2 harts c910 chip, we found:
 
-On 10/27/20 10:06, Elliot Berman wrote:
-> 
-> On 10/26/2020 10:12 AM, Peter Zijlstra wrote:
-> > On Mon, Oct 26, 2020 at 10:08:47AM -0700, psodagud@codeaurora.org wrote:
-> > > On 2020-10-23 14:59, Thomas Gleixner wrote:
-> > > > On Thu, Oct 22 2020 at 15:04, Elliot Berman wrote:
-> > > > > In a heterogeneous multiprocessor system, specifying the 'maxcpus'
-> > > > > parameter on kernel command line does not provide sufficient control
-> > > > > over which CPUs are brought online at kernel boot time, since CPUs may
-> > > > > have nonuniform performance characteristics. Thus, add bootcpus kernel
-> > > > > parameter to control which CPUs should be brought online during kernel
-> > > > > boot. When both maxcpus and bootcpus is set, the more restrictive of
-> > > > > the
-> > > > > two are booted.
-> > > > 
-> > > > What for? 'maxcpus' is a debug hack at best and outright dangerous on
-> > > > certain architectures. Why do we need more of that? Just let the machine
-> > > > boot and offline the CPUs from user space.
-> > > 
-> > > Hi Thomas and Peter,
-> > > 
-> > > Based on my understanding with maxcpus option provides, maximum no of CPUs
-> > > are brough up during the device boot up. There is a different case, in which
-> > > we want to restrict which CPUs to be brough up.
-> > > On a system with 8 cpus, if we set maxcpus as 3, cpu0, cpu1, and cpu2 are
-> > > brough up during the bootup.  For example, if we want to bring core0, core3
-> > > and core4 current maxcpu(as 3) setting would not help us.
-> > > On some platform we want the flexibility on which CPUs to bring up during
-> > > the device bootup. bootcpus command line is helping to bring specific CPUs
-> > > and these patches are working downstream.
-> > 
-> > That's a lot of words, but exactly 0 on _WHY_ you would want to do that.
-> > 
-> 
-> We find the ability to limit the number of cpus brought online at bootup
-> useful, and to possibly later enable those cores. One use case is when
-> device is undergoing initial testing is to use bootcpus to limit bootup to
-> only a couple cores and later bring up the other cores for a controlled
-> stress test. A core brought up during boot is also running device
-> initialization. Besides being useful for SoC vendor bringup which typically
-> occurs downstream, this particular use case could be exercised by developer
-> of upstream support for a SoC when initial CPU settings are being
-> determined.
-> 
-> Another use case is if user wishes to limit bootup only to the smaller or
-> bigger cores. maxcpus= is not sufficient here to ensure that only those
-> cores are booted since it limits only to the first N cores, which may not be
-> the desired small or big cores. User may want to bring up only the smaller
-> cores during bootup for thermal reasons. For instance, device may be later
-> sufficiently charged such that boot up of the bigger cores is now
-> permissible. Relying on thermal drivers to later take care of putting core
-> into lower power idle may not occur until much later in boot (for instance,
-> if the governor is a module).
+echo function > /sys/kernel/debug/tracing/current_tracer
+echo function_graph > /sys/kernel/debug/tracing/current_tracer
+echo function > /sys/kernel/debug/tracing/current_tracer
+echo function_graph > /sys/kernel/debug/tracing/current_tracer
 
-I would have thought that FW/SCP would have the power to block booting up the
-CPUs if it deemed that to be unsafe.
+Then one core halted at stop_machine_yield:
+arch_cpu_idle () at arch/riscv/kernel/process.c:39
+39              local_irq_enable();
+(gdb) i th
+  Id   Target Id         Frame
+* 1    Thread 1 (CPU#0)  arch_cpu_idle () at arch/riscv/kernel/process.c:39
+  2    Thread 2 (CPU#1)  stop_machine_yield
+(cpumask=0xffffffe001371fa8 <__cpu_online_mask>) at
+./arch/riscv/include/asm/vdso/processor.h:12
+(gdb) thread 2
+[Switching to thread 2 (Thread 2)]
+#0  stop_machine_yield (cpumask=0xffffffe001371fa8
+<__cpu_online_mask>) at ./arch/riscv/include/asm/vdso/processor.h:12
+12              __asm__ __volatile__ ("div %0, %0, zero" : "=r" (dummy));
 
-Any thoughts Sudeep?
+With your patch, it's solved. For this patch, I'll give:
+Tested by: Guo Ren <guoren@kernel.org>
 
-Thanks
+But that's not enough, we still need:
 
---
-Qais Yousef
+diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+index 226ccce..12b8808 100644
+--- a/arch/riscv/kernel/sbi.c
++++ b/arch/riscv/kernel/sbi.c
+@@ -376,7 +376,7 @@ EXPORT_SYMBOL(sbi_send_ipi);
+  *
+  * Return: None
+  */
+-void sbi_remote_fence_i(const unsigned long *hart_mask)
++void notrace sbi_remote_fence_i(const unsigned long *hart_mask)
+ {
+        __sbi_rfence(SBI_EXT_RFENCE_REMOTE_FENCE_I,
+                     hart_mask, 0, 0, 0, 0);
+diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
+index 400b945d..9467d987 100644
+--- a/arch/riscv/mm/cacheflush.c
++++ b/arch/riscv/mm/cacheflush.c
+@@ -9,12 +9,12 @@
+
+ #include <asm/sbi.h>
+
+-static void ipi_remote_fence_i(void *info)
++static void notrace ipi_remote_fence_i(void *info)
+ {
+        return local_flush_icache_all();
+ }
+
+-void flush_icache_all(void)
++void notrace flush_icache_all(void)
+ {
+        if (IS_ENABLED(CONFIG_RISCV_SBI))
+                sbi_remote_fence_i(NULL);
+
+Because:
+(gdb) bt
+#0  flush_icache_all () at arch/riscv/mm/cacheflush.c:20
+#1  0xffffffe00020473a in patch_text_nosync (addr=<optimized out>, insns=
+    <optimized out>, len=<optimized out>) at arch/riscv/kernel/patch.c:96
+#2  0xffffffe000206792 in ftrace_make_call (rec=<optimized out>,
+addr=<optimized out>) at arch/riscv/kernel/ftrace.c:109
+#3  0xffffffe0002c9be4 in __ftrace_replace_code (rec=0xffffffe01ae40020, e
+    nable=true) at kernel/trace/ftrace.c:2503
+#4  0xffffffe0002ca092 in ftrace_replace_code (mod_flags=<optimized
+    out>) at kernel/trace/ftrace.c:2530
+#5  0xffffffe0002ca24a in ftrace_modify_all_code (command=9) at kernel
+   /trace/ftrace.c:2677
+#6  0xffffffe0002ca2ee in __ftrace_modify_code (data=<optimized out>) at
+   kernel/trace/ftrace.c:2703
+#7  0xffffffe0002c1390 in multi_cpu_stop (data=0x0) at kernel/stop_machin
+   e.c:224
+#8  0xffffffe0002c0fbe in cpu_stopper_thread (cpu=<optimized out>) at kern
+   el/stop_machine.c:491
+#9  0xffffffe0002343be in smpboot_thread_fn (data=0x0) at kernel/smpboot.
+   c:165
+#10 0xffffffe00022f894 in kthread (_create=0xffffffe01af13040) at kern
+   el/kthread.c:292
+#11 0xffffffe000201fac in handle_exception () at arch/riscv/kernel/entry.S:236
+
+On Wed, Oct 21, 2020 at 3:38 PM Zong Li <zong.li@sifive.com> wrote:
+>
+> Like the commit cb9d7fd51d9f ("watchdog: Mark watchdog touch functions
+> as notrace"), some architectures assume that the stopped CPUs don't make
+> function calls to traceable functions when they are in the stopped
+> state. For example, it causes unexpected kernel crashed when switching
+> tracer on RISC-V.
+>
+> The following patches added calls to these two functions, fix it by
+> adding the notrace annotations.
+>
+> Fixes: 4ecf0a43e729 ("processor: get rid of cpu_relax_yield")
+> Fixes: 366237e7b083 ("stop_machine: Provide RCU quiescent state in
+> multi_cpu_stop()")
+>
+> Signed-off-by: Zong Li <zong.li@sifive.com>
+> ---
+>  kernel/rcu/tree.c     | 2 +-
+>  kernel/stop_machine.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 06895ef85d69..2a52f42f64b6 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -409,7 +409,7 @@ bool rcu_eqs_special_set(int cpu)
+>   *
+>   * The caller must have disabled interrupts and must not be idle.
+>   */
+> -void rcu_momentary_dyntick_idle(void)
+> +notrace void rcu_momentary_dyntick_idle(void)
+>  {
+>         int special;
+>
+> diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
+> index 865bb0228ab6..890b79cf0e7c 100644
+> --- a/kernel/stop_machine.c
+> +++ b/kernel/stop_machine.c
+> @@ -178,7 +178,7 @@ static void ack_state(struct multi_stop_data *msdata)
+>                 set_state(msdata, msdata->state + 1);
+>  }
+>
+> -void __weak stop_machine_yield(const struct cpumask *cpumask)
+> +notrace void __weak stop_machine_yield(const struct cpumask *cpumask)
+>  {
+>         cpu_relax();
+>  }
+> --
+> 2.28.0
+>
+
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
