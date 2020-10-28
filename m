@@ -2,56 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D21629D82A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B586529D985
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387680AbgJ1WaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:30:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733237AbgJ1WaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:30:08 -0400
-Subject: Re: [GIT PULL] tracing, synthetic events: Replace buggy strcat() with
- seq_buf operations
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603924208;
-        bh=Nmiw3GK3nD0EDAr4oHWj4CvtCEtFWx+EzHmRGEVMkc0=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=PVf/2+LdG2gMpsWVCLFUb9gzASsH7LBfbShac+yCv9tFWne0I5pM0VNpadcEmgaCk
-         JODxYRunT+jvGyBsJUGO+kQB3/cBlU2oyj71uE4Z+C5IAvkkrRN13ajUBfQcYMwImJ
-         taXg3ejJ+suZDKdpVdomO4GDtOOyK2DIUmVaJnbc=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201028074735.67b2ccf4@oasis.local.home>
-References: <20201028074735.67b2ccf4@oasis.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201028074735.67b2ccf4@oasis.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.10-rc1
-X-PR-Tracked-Commit-Id: 761a8c58db6bc884994b28cd6d9707b467d680c1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 23859ae44402f4d935b9ee548135dd1e65e2cbf4
-Message-Id: <160392420797.3598.17782423717511677349.pr-tracker-bot@kernel.org>
-Date:   Wed, 28 Oct 2020 22:30:07 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
+        id S2389841AbgJ1Wzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389789AbgJ1Wz0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:55:26 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3468FC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:55:26 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id z17so1260776iog.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=18t2/9BUdXVT3FrRrj2981btsIjhV7OAUvBATF+KIB0=;
+        b=k3loYIPiIcMAoy/iHvUGwPZSy6eOYNJ5ySXU0mvomWoI8EVBixJPtTbiWWBENmojE5
+         HVounQUUhJcyiFj7vRWtbUM0vAIfmxfoxhTzD2jeeXblPYr/B+osGTlY4zvfmrD6Dnc2
+         n83Xx/LHBU1ayGXESahM9ZnAAw9Fdj53NGBECTVEmklZqM9Xb2xEs5zD75v/PypwlJB/
+         zQGS3lerJaQ67/a9WmO4MKWNdjWOhBJPu0D2q/jYeP9OkxLfi668ZRRKRh4YoJEL5yoo
+         eB1ImiKGtkzeQrcRULLBMrp8KvKMjDePmGhAVk4lQ03OclTMTS+1OgAhqygAOUp4e6dD
+         wnfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=18t2/9BUdXVT3FrRrj2981btsIjhV7OAUvBATF+KIB0=;
+        b=VISQY6fGw1qsWrqJ4jpVcvgyDkF0qR3Iw3Oxc1usxm94/5BYAsschzx8CSbmEE2glA
+         HZz+gz6FWkV9XyT9Cpw1KVrr8/r+QFzttJZEymi4w8VcVW4yRHYBBiqeMkvA3hNNbZ24
+         8SNDlLUijyaikn/G5Y2sdB27jN6cz2Fp1haF+OMgX3TyWVyYljs38sjvG911UVx4GNSL
+         ZDziyIyEPvP57oB0VHaTlvxbFHx+pfXYEdy7BwIySgL+lktp469HA5f91SAk9qaYXeO8
+         pVnMhOzXaw1mHu4TLJwNrjqN+TW7M0xKA6UEFLwTSh/iaysQa7gPLC33sAkonqHcKemE
+         ZGWQ==
+X-Gm-Message-State: AOAM531FY2pjF7wYWn7Iam2DQwRBhC6DxZGDbLXxB/3Yj2SRf2yKEnlc
+        KgSk5tubpgjfG9nGrtHO5K/0EdWHZiYn5rwReyOqOvdj1hh7rQ==
+X-Google-Smtp-Source: ABdhPJzaNeVHtbW1lh9ufGbWPWDwwPouKVzBfung1oI4AWTnRzs2nfDWv2Ui3GTcr/CHWTwh7/sk06XVd1vyJ5wCV6I=
+X-Received: by 2002:aed:2f67:: with SMTP id l94mr4880669qtd.101.1603844962246;
+ Tue, 27 Oct 2020 17:29:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201023032944.399861-1-joshdon@google.com> <20201023104853.55ef1c20@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201023104853.55ef1c20@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Josh Don <joshdon@google.com>
+Date:   Tue, 27 Oct 2020 17:29:11 -0700
+Message-ID: <CABk29NsiTvSqJjyayHSc26gMoQ8fLtjdEY6wY7bK8v6KKjMm5A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sched: better handling for busy polling loops
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, kvm@vger.kernel.org,
+        Xi Wang <xii@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 28 Oct 2020 07:47:35 -0400:
+On Fri, Oct 23, 2020 at 10:49 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Thu, 22 Oct 2020 20:29:42 -0700 Josh Don wrote:
+> > Busy polling loops in the kernel such as network socket poll and kvm
+> > halt polling have performance problems related to process scheduler load
+> > accounting.
+> >
+> > Both of the busy polling examples are opportunistic - they relinquish
+> > the cpu if another thread is ready to run.
+>
+> That makes it sound like the busy poll code is trying to behave like an
+> idle task. I thought need_resched() meant we leave when we run out of
+> slice, or kernel needs to go through a resched for internal reasons. No?
+>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.10-rc1
+The issue is about the kernel's ability to identify the polling cpu,
+such that it _could_ send a task to that cpu and trigger a resched.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/23859ae44402f4d935b9ee548135dd1e65e2cbf4
+> > This design, however, doesn't
+> > extend to multiprocessor load balancing very well. The scheduler still
+> > sees the busy polling cpu as 100% busy and will be less likely to put
+> > another thread on that cpu. In other words, if all cores are 100%
+> > utilized and some of them are running real workloads and some others are
+> > running busy polling loops, newly woken up threads will not prefer the
+> > busy polling cpus. System wide throughput and latency may suffer.
+>
+> IDK how well this extends to networking. Busy polling in networking is
+> a conscious trade-off of CPU for latency, if application chooses to
+> busy poll (which isn't the default) we should respect that.
+>
+> Is your use case primarily kvm?
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Good point, we do make use of the networking portion but this might be
+less applicable to users in general for that reason.  KVM is the
+primary use case.
