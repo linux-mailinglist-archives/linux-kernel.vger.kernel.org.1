@@ -2,177 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE7C29E243
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5865529E1DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387766AbgJ2CMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726821AbgJ1Vgb (ORCPT
+        id S2387905AbgJ2CET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:04:19 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:34228 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727267AbgJ1Vkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:36:31 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3287C0613CF;
-        Wed, 28 Oct 2020 14:36:30 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id j18so558159pfa.0;
-        Wed, 28 Oct 2020 14:36:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w1z4WmWcLWyyqsDJon/u9K8bQjOmOpYyTbSE3GXlbcE=;
-        b=KmnzLyn6+i47a2oCXFfbgt2Tl8Pl3YHx/z1ecMXZptZN4+33a97ws0FeT7y7jVKJOV
-         JkZrCjLxHhLLjhAObO34l1ZOruX9V27jywR7gnnYUyENTcDmOFnHqs17aihRwsZCin92
-         WBmDtijEWJEifi1t8tBx8Ox4uhm/3p+ZrnbKqjs8eVcrZROtMAjXBdYVV6OqpxKaebr5
-         4yf+pklO5ndbVUsQwkvo9hqWmfV+pkzJ2HnHyHDOE6Yb5rjoe8pYoM7FK97ileQiaS6t
-         zQnbU14uXJfXVT2cqwSXYdHjFcUQRZc7SanlIjeBTz9uOTVyv0kREmVrfrxVtq6a0nrP
-         e4Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w1z4WmWcLWyyqsDJon/u9K8bQjOmOpYyTbSE3GXlbcE=;
-        b=jZ1+G0s5fDIHAM1T4xx6AzuzqNQR+DbQOulcwZonrhBx+wwBDGiV8g3pCXi2ksWOOj
-         jOiTqkHTC/ktKDPETJJ0tz1jGNWa5hOZPmNnq2mlEtRL/cv3FyFMwAcYMkZyLUGqejxH
-         54ab2fDe+y2RTasa4GZ3wRE49G80ciNLseJ985fzxesyvSeVhF7NZURNe+l9x9VwKKYI
-         E/U0EB9h3oO58es2tisCMgo/Z3gqZPRD1doSYEfGY59E91XVOOMk2OZmvlNSU5KeTU5B
-         HlHaUVrUFSeIQa1BhpT1GCnyCb42ditzkAO3DsVK7BIIJMIY8gHZpKyufaA4kClab+D6
-         3K8g==
-X-Gm-Message-State: AOAM53358mIZqQTHA3g1YMbaeP1rUWVLXRKPxkGE7lyx20rMGaZMmMwN
-        5EvXE7VjNaOVirTaMc8U4zk=
-X-Google-Smtp-Source: ABdhPJzc8SV3mCeTDsHSaTgxv1uPpdKkvU4mR2f4hj7joD1tL0pet8MnLxwK4NjP52rxZMSdgkeKnw==
-X-Received: by 2002:a17:90b:1043:: with SMTP id gq3mr873181pjb.213.1603920990427;
-        Wed, 28 Oct 2020 14:36:30 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::4:1c8])
-        by smtp.gmail.com with ESMTPSA id 189sm511557pfw.215.2020.10.28.14.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 14:36:29 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 14:36:14 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        kernel-toolchains@vger.kernel.org,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Subject: Re: [PATCH v6 13/29] arm64/build: Assert for unwanted sections
-Message-ID: <20201028213614.kqk7atvk6fcjely4@ast-mbp.dhcp.thefacebook.com>
-References: <20200821194310.3089815-14-keescook@chromium.org>
- <CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com>
- <CAMuHMdUw9KwC=EVB60yjg7mA7Fg-efOiKE7577p+uEdGJVS2OQ@mail.gmail.com>
- <CAMuHMdUJFEt3LxWHk73AsLDGhjzBvJGAML76UAxeGzb4zOf96w@mail.gmail.com>
- <CAMj1kXHXk3BX6mz6X_03sj_pSLj9Ck-=1S57tV3__N9JQOcDEw@mail.gmail.com>
- <CAMuHMdV4jKccjKkoj38EFC-5yN99pBvthFyrX81EG4GpassZwA@mail.gmail.com>
- <CAKwvOdkq3ZwW+FEui1Wtj_dWBevi0Mrt4fHa4oiMZTUZKOMi3g@mail.gmail.com>
- <CAMuHMdUDOzJbzf=0jom9dnSzkC+dkMdkyY_BOBMAivbJfF+Gmg@mail.gmail.com>
- <CAKwvOdkE=ViGOhvoBRcV=9anjowC_vb4Vtefp9010+sC4c_+Sw@mail.gmail.com>
- <CAMj1kXEhcQ_ngNVWddV76NqEz6d0tDhfStYGd5diydefzVLvdQ@mail.gmail.com>
+        Wed, 28 Oct 2020 17:40:52 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201028214027euoutp019446e550252d6d0d2f9624d1a56ccf2c~CRdve-Hos3240832408euoutp01m
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 21:40:27 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201028214027euoutp019446e550252d6d0d2f9624d1a56ccf2c~CRdve-Hos3240832408euoutp01m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603921227;
+        bh=2/xwxcxYv93eq31jsT80VcmPFIBIhKVvX8Jx5pcXie8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TH4mDl38RCnjzpIL5dFWtE0LA22bBouXmA5r3Py72isSFjsAgYq4ygaubyx4FrJ8b
+         JYutBxxheCctr283ygfOoUNoz8FxDKaatg9D47sW6aBsk+jAKY0D352lR0ydSzYDzE
+         s1WXfpz/QINczaSEhvroCmk9MUlBJaa5UTtCb/5I=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201028214016eucas1p2a66ef56297cc64b057451253e6cb19d9~CRdlPBpM72482524825eucas1p2a;
+        Wed, 28 Oct 2020 21:40:16 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 69.36.05997.045E99F5; Wed, 28
+        Oct 2020 21:40:16 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201028214016eucas1p1257ca6d0eacfbb97a42d97a5e45e0370~CRdkh91LX2589725897eucas1p1z;
+        Wed, 28 Oct 2020 21:40:16 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201028214016eusmtrp1e15dd8933392ab113bffcd3ca3a73d05~CRdkhMQ633223832238eusmtrp1i;
+        Wed, 28 Oct 2020 21:40:16 +0000 (GMT)
+X-AuditID: cbfec7f4-677ff7000000176d-45-5f99e540f0ba
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 06.7B.06017.045E99F5; Wed, 28
+        Oct 2020 21:40:16 +0000 (GMT)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201028214015eusmtip1289b80e5ab717c0523127d8517aa6cec~CRdkVuJPh1418714187eusmtip1R;
+        Wed, 28 Oct 2020 21:40:15 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v4 1/5] dt-bindings: vendor-prefixes: Add asix prefix
+Date:   Wed, 28 Oct 2020 22:40:08 +0100
+Message-Id: <20201028214012.9712-2-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201028214012.9712-1-l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXEhcQ_ngNVWddV76NqEz6d0tDhfStYGd5diydefzVLvdQ@mail.gmail.com>
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRju2zlnO45Wx6Pki4XBMigprxFfGqWlcH5FVH9Kai09qalTN7WU
+        wNZNK3Mxk9RmiSXp8taypcsJLlPLywpLE6+kYhniD+1iReV2uvjved/n9n7w0QQ7RnnScapU
+        Xq1SJsjFUtLcttCzOXSySOFv/R6A7cM2Aj8orKWwwX6exLdbeyhcNltI4b6ZIQrrxj8S2G6v
+        k+CX5jwKD9gqEDaN91G412IQ40J7swjbCqwIV7cOS3Bb6Sp8wdoqwb+aGiShLNfb94rg6isH
+        RFxj8bCEMxkvibmHd7O4xoY5EZdXb0TcnMlrL31Iuj2aT4hL59V+O45KY59aZsnkBfGpK112
+        6gxaoC4jFxqYLWC+9UZyGUlplqlAMPO5VewgWGYewdc76wRiDkHLZPM/x6ecBlIg7iGwdlRR
+        gmMKwUSbrwOLmTDQlXdQDpE7M0JAbfYYcgwEM4pgZOo+4VC5MRHQP9/txCSzHiqbq5zdMiYY
+        xp99kwh1ayH73mPn3oUJgYn5J5SgcYXnRROkA69kfKDqbL8TE4v6c49uEo4yYEpoMOj0i2Z6
+        cQgHrT5KyHSD6fb6P/lroDM/lxQkWZCv3ypYcxGYDV9JQRMCQz3fnDEEsxFqLX6CPAze92MB
+        roC3M67CAStAb75BCGsZ5FxkhQxvqNE1/cnzhKvTFegakhcveUrxkvOL/1eVIsKIPPg0TWIM
+        rwlU8Sd9NcpETZoqxjcqKdGEFv9d58/2+QZk+XHMhhgayZfLXg4WKVhKma7JSLQhoAm5u2xX
+        d+cRVhatzMjk1UkKdVoCr7Gh1TQp95AFlX04zDIxylQ+nueTefVfVkS7eJ5B2/Qd71ylgarr
+        7/yNU5Wb1nV2GQY3hKu9FEF1AS9C8ZybJcJYlW5KOphzYL+uNt9tQcsVpJRHiq9rR3eaRYpT
+        3uVeJZHLcvxGX2dWf/JPMdwJtsazLSGrfU/4NM36KxIqv+yOPk74aAdfZc+O1ETZLu4r6JNP
+        n9YOxe6Z3itWmeSkJlYZ4EOoNcrf8yZ3IHMDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCIsWRmVeSWpSXmKPExsVy+t/xu7oOT2fGG7yfymZx/u4hZouNM9az
+        Wsw538JiMf/IOVaLRe9nsFpce3uH1aL/8Wtmi/PnN7BbXNjWx2px89AKRotNj6+xWlzeNYfN
+        Ysb5fUwWh6buZbRYe+Quu8WxBWIWrXuPsFv837OD3UHI4/K1i8weW1beZPLYOesuu8emVZ1s
+        HpuX1Hvs3PGZyaNvyypGj8+b5AI4ovRsivJLS1IVMvKLS2yVog0tjPQMLS30jEws9QyNzWOt
+        jEyV9O1sUlJzMstSi/TtEvQyDu96z1Lwk62i+8x51gbGn6xdjJwcEgImEl87drB0MXJxCAks
+        ZZQ4desBUxcjB1BCSmLl3HSIGmGJP9e62CBqnjJKzD1zjgUkwSbgKNG/9AQrSEJE4A2zRNO9
+        t+wgDrPAfUaJX59eMIJUCQu4Slz/cpYZxGYRUJVYuW8NG4jNK2Al8fjoL3aIFfIS7cu3g8U5
+        BawlnnzZDXaeEFDNz29t7BD1ghInZz5hAbmOWUBdYv08IZAwv4CWxJqm62AHMQONad46m3kC
+        o9AsJB2zEDpmIalawMi8ilEktbQ4Nz232EivODG3uDQvXS85P3cTIzDGtx37uWUHY9e74EOM
+        AhyMSjy8F27PjBdiTSwrrsw9xCjBwawkwut09nScEG9KYmVValF+fFFpTmrxIUZToDcnMkuJ
+        JucD009eSbyhqaG5haWhubG5sZmFkjhvh8DBGCGB9MSS1OzU1ILUIpg+Jg5OqQbGiqyI67KZ
+        174Vz7nTuHEZj6H+Bmu1y6uXrdyVGRE8d55YfJpkceCP2gt8TxYuFFFf7yQRMXnRVPkV59n9
+        s6+yq/yXEeWO+LIyfX9VxrktykwfDx1wVZrzJeG9xYRNhglnjQJ5FeIdyw8GuAl01K679CPN
+        WdalQNlmgvrtkqfbPwmplKcsX3VDiaU4I9FQi7moOBEA7LtW9gcDAAA=
+X-CMS-MailID: 20201028214016eucas1p1257ca6d0eacfbb97a42d97a5e45e0370
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201028214016eucas1p1257ca6d0eacfbb97a42d97a5e45e0370
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201028214016eucas1p1257ca6d0eacfbb97a42d97a5e45e0370
+References: <20201028214012.9712-1-l.stelmach@samsung.com>
+        <CGME20201028214016eucas1p1257ca6d0eacfbb97a42d97a5e45e0370@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 09:15:17PM +0100, Ard Biesheuvel wrote:
-> On Tue, 27 Oct 2020 at 21:12, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > On Tue, Oct 27, 2020 at 12:25 PM Geert Uytterhoeven
-> > <geert@linux-m68k.org> wrote:
-> > >
-> > > Hi Nick,
-> > >
-> > > CC Josh
-> > >
-> > > On Mon, Oct 26, 2020 at 6:49 PM Nick Desaulniers
-> > > <ndesaulniers@google.com> wrote:
-> > > > On Mon, Oct 26, 2020 at 10:44 AM Geert Uytterhoeven
-> > > > <geert@linux-m68k.org> wrote:
-> > > > > On Mon, Oct 26, 2020 at 6:39 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > > > > On Mon, 26 Oct 2020 at 17:01, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > > > On Mon, Oct 26, 2020 at 2:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > > > > On Mon, Oct 26, 2020 at 1:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > > > > > I.e. including the ".eh_frame" warning. I have tried bisecting that
-> > > > > > > > > warning (i.e. with be2881824ae9eb92 reverted), but that leads me to
-> > > > > > > > > commit b3e5d80d0c48c0cc ("arm64/build: Warn on orphan section
-> > > > > > > > > placement"), which is another red herring.
-> > > > > > > >
-> > > > > > > > kernel/bpf/core.o is the only file containing an eh_frame section,
-> > > > > > > > causing the warning.
-> > > >
-> > > > When I see .eh_frame, I think -fno-asynchronous-unwind-tables is
-> > > > missing from someone's KBUILD_CFLAGS.
-> > > > But I don't see anything curious in kernel/bpf/Makefile, unless
-> > > > cc-disable-warning is somehow broken.
-> > >
-> > > I tracked it down to kernel/bpf/core.c:___bpf_prog_run() being tagged
-> > > with __no_fgcse aka __attribute__((optimize("-fno-gcse"))).
-> > >
-> > > Even if the function is trivially empty ("return 0;"), a ".eh_frame" section
-> > > is generated.  Removing the __no_fgcse tag fixes that.
-> >
-> > That's weird.  I feel pretty strongly that unless we're working around
-> > a well understood compiler bug with a comment that links to a
-> > submitted bug report, turning off rando compiler optimizations is a
-> > terrible hack for which one must proceed straight to jail; do not pass
-> > go; do not collect $200.  But maybe I'd feel differently for this case
-> > given the context of the change that added it.  (Ard mentions
-> > retpolines+orc+objtool; can someone share the relevant SHA if you have
-> > it handy so I don't have to go digging?)
-> 
-> commit 3193c0836f203a91bef96d88c64cccf0be090d9c
-> Author: Josh Poimboeuf <jpoimboe@redhat.com>
-> Date:   Wed Jul 17 20:36:45 2019 -0500
-> 
->     bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()
-> 
-> has
-> 
-> Fixes: e55a73251da3 ("bpf: Fix ORC unwinding in non-JIT BPF code")
+Add the prefix for ASIX Electronics Corporation.
 
-That commit is broken.
-I had this patch in my queue:
--#define __no_fgcse __attribute__((optimize("-fno-gcse")))
-+#define __no_fgcse __attribute__((optimize("-fno-gcse,-fno-omit-frame-pointer")))
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Sounds like you want to add -fno-asynchronous-unwind-tables to the above list?
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 2735be1a8470..ce3b3f6c9728 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -117,6 +117,8 @@ patternProperties:
+     description: Asahi Kasei Corp.
+   "^asc,.*":
+     description: All Sensors Corporation
++  "^asix,.*":
++    description: ASIX Electronics Corporation
+   "^aspeed,.*":
+     description: ASPEED Technology Inc.
+   "^asus,.*":
+-- 
+2.26.2
 
-> and mentions objtool and CONFIG_RETPOLINE.
-> 
-> >  (I feel the same about there
-> > being an empty asm(); statement in the definition of asm_volatile_goto
-> > for compiler-gcc.h).  Might be time to "fix the compiler."
-> >
-> > (It sounds like Arvind is both in agreement with my sentiment, and has
-> > the root cause).
-> >
-> 
-> I agree that the __no_fgcse hack is terrible. Does Clang support the
-> following pragmas?
-> 
-> #pragma GCC push_options
-> #pragma GCC optimize ("-fno-gcse")
-> #pragma GCC pop_options
-
-That will work too, but optimize("-fno...,-fno..,-fno..") is imo cleaner.
