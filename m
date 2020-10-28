@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2D029D713
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F7729D6C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732203AbgJ1WUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:20:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60524 "EHLO mail.kernel.org"
+        id S1731763AbgJ1WRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:17:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731614AbgJ1WRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:42 -0400
+        id S1731615AbgJ1WRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:36 -0400
 Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86FAF24768;
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A0EE24762;
         Wed, 28 Oct 2020 14:23:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603895014;
-        bh=kwkmiNSEQA9BqRwRpvTf/WssQkUD6Th0rlq3IkhA0gk=;
+        bh=WDrW5cgGfVq5Sg/5CIYBmqthC9evi33PkL3XOL4x3Yo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RsOxKR9pEfAwUZzWX0VPem4WT1UQsIo62IhxzWB9U50+OjhwyRiVpyNivK0AoWUUJ
-         Bi/IPZXbgs1FVW49nTyys9MojMDuDnz2VtZ8PH0RW9U4QPj1+WiMCiulHtHittz5bK
-         H2MJbv6JIZ3CtirsutMRgDPXa9sv+U1Gqe+FYzuk=
+        b=0EcSjW/Kkoo2kAaMaQa0etxna29Fd3RaToT7PGvj7rbqmzrRR+zDlGh0ycCXs9Y7J
+         EcQjT27l29M6/GGJuJf5Dnw0ENQO5DsSVGDQ6ArH+Leq9SfHz47i3SYJG10PgUSaMp
+         nH3Frau/v/rLr4mcSz808Jmrlx/nYUjGV5hQluvs=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kXmMO-003hkv-8F; Wed, 28 Oct 2020 15:23:32 +0100
+        id 1kXmMO-003hky-9v; Wed, 28 Oct 2020 15:23:32 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 05/33] scripts: get_abi.pl: cleanup ABI cross-reference logic
-Date:   Wed, 28 Oct 2020 15:23:03 +0100
-Message-Id: <2574d9c4c129591db1b2a9b9bbd479acef9d1b08.1603893146.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 06/33] scripts: get_abi.pl: detect duplicated ABI definitions
+Date:   Wed, 28 Oct 2020 15:23:04 +0100
+Message-Id: <973ab227f500e3e7d4743523a40c5df8246b5fb0.1603893146.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603893146.git.mchehab+huawei@kernel.org>
 References: <cover.1603893146.git.mchehab+huawei@kernel.org>
@@ -44,253 +44,193 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now, the cross-references are generated on a single
-step, when doing ReST output.
+The ABI should define only once each What. The current script
+logic assumes that.
 
-While this is nice optimization, it prevents auto-creating
-cross-references for ABI symbols.
+However, that's not the case, currently: there are several
+symbols with a generic definition, and per-driver ones.
 
-So, split it into a separate logic.
-
-While here, turn on Perl warnings, as it helps to debug
-problems inside the script.
+Better handle such cases, by preserving the cross-references
+with the files that define them, but also track such
+cases, producing warnings, as they should be fixed.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- scripts/get_abi.pl | 122 +++++++++++++++++++++++++--------------------
- 1 file changed, 69 insertions(+), 53 deletions(-)
+ scripts/get_abi.pl | 85 +++++++++++++++++++++++++++++++---------------
+ 1 file changed, 58 insertions(+), 27 deletions(-)
 
 diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
-index bd018eb3815b..df2efad11d88 100755
+index df2efad11d88..c88cb8ee6bfd 100755
 --- a/scripts/get_abi.pl
 +++ b/scripts/get_abi.pl
-@@ -2,15 +2,16 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- use strict;
-+use warnings;
- use Pod::Usage;
- use Getopt::Long;
- use File::Find;
- use Fcntl ':mode';
- 
--my $help;
--my $man;
--my $debug;
--my $enable_lineno;
-+my $help = 0;
-+my $man = 0;
-+my $debug = 0;
-+my $enable_lineno = 0;
- my $prefix="Documentation/ABI";
- 
- #
-@@ -40,6 +41,7 @@ pod2usage(2) if ($cmd eq "search" && !$arg);
- require Data::Dumper if ($debug);
- 
- my %data;
-+my %symbols;
- 
- #
- # Displays an error message, printing file name and line
-@@ -76,12 +78,12 @@ sub parse_abi {
- 
- 	my $what;
- 	my $new_what;
--	my $tag;
-+	my $tag = "";
- 	my $ln;
- 	my $xrefs;
- 	my $space;
- 	my @labels;
--	my $label;
-+	my $label = "";
- 
- 	print STDERR "Opening $file\n" if ($debug > 1);
- 	open IN, $file;
-@@ -110,10 +112,18 @@ sub parse_abi {
- 
- 			if ($new_tag =~ m/what/) {
+@@ -114,6 +114,8 @@ sub parse_abi {
  				$space = "";
-+				$content =~ s/[,.;]$//;
+ 				$content =~ s/[,.;]$//;
+ 
++				push @{$symbols{$content}->{file}}, " $content:" . ($ln - 1);
 +
  				if ($tag =~ m/what/) {
  					$what .= ", " . $content;
  				} else {
--					parse_error($file, $ln, "What '$what' doesn't have a description", "") if ($what && !$data{$what}->{description});
-+					if ($what) {
-+						parse_error($file, $ln, "What '$what' doesn't have a description", "") if (!$data{$what}->{description});
-+
-+						foreach my $w(split /, /, $what) {
-+							$symbols{$w} = $what;
-+						};
-+					}
+@@ -121,7 +123,7 @@ sub parse_abi {
+ 						parse_error($file, $ln, "What '$what' doesn't have a description", "") if (!$data{$what}->{description});
  
- 					$what = $content;
- 					$label = $content;
-@@ -122,7 +132,7 @@ sub parse_abi {
- 				push @labels, [($content, $label)];
+ 						foreach my $w(split /, /, $what) {
+-							$symbols{$w} = $what;
++							$symbols{$w}->{xref} = $what;
+ 						};
+ 					}
+ 
+@@ -139,8 +141,6 @@ sub parse_abi {
+ 			if ($tag ne "" && $new_tag) {
  				$tag = $new_tag;
  
--				push @{$data{$nametag}->{xrefs}}, [($content, $label)] if ($data{$nametag}->{what});
-+				push @{$data{$nametag}->{symbols}}, $content if ($data{$nametag}->{what});
- 				next;
- 			}
- 
-@@ -132,7 +142,7 @@ sub parse_abi {
- 				$data{$what}->{line_no} = $ln;
- 
+-				$data{$what}->{line_no} = $ln;
+-
  				if ($new_what) {
--					@{$data{$what}->{label}} = @labels if ($data{$nametag}->{what});
-+					@{$data{$what}->{label_list}} = @labels if ($data{$nametag}->{what});
+ 					@{$data{$what}->{label_list}} = @labels if ($data{$nametag}->{what});
  					@labels = ();
- 					$label = "";
+@@ -148,9 +148,19 @@ sub parse_abi {
  					$new_what = 0;
-@@ -203,36 +213,24 @@ sub parse_abi {
- 		# Everything else is error
- 		parse_error($file, $ln, "Unexpected line:", $_);
+ 
+ 					$data{$what}->{type} = $type;
+-					$data{$what}->{file} = $name;
+-					$data{$what}->{filepath} = $file;
++					if (!defined($data{$what}->{file})) {
++						$data{$what}->{file} = $name;
++						$data{$what}->{filepath} = $file;
++					} else {
++						if ($name ne $data{$what}->{file}) {
++							$data{$what}->{file} .= " " . $name;
++							$data{$what}->{filepath} .= " " . $file;
++						}
++					}
+ 					print STDERR "\twhat: $what\n" if ($debug > 1);
++					$data{$what}->{line_no} = $ln;
++				} else {
++					$data{$what}->{line_no} = $ln if (!defined($data{$what}->{line_no}));
+ 				}
+ 
+ 				if (!$what) {
+@@ -218,7 +228,7 @@ sub parse_abi {
+ 		parse_error($file, $ln, "What '$what' doesn't have a description", "") if (!$data{$what}->{description});
+ 
+ 		foreach my $w(split /, /,$what) {
+-			$symbols{$w} = $what;
++			$symbols{$w}->{xref} = $what;
+ 		};
  	}
--	$data{$nametag}->{description} =~ s/^\n+//;
-+	$data{$nametag}->{description} =~ s/^\n+// if ($data{$nametag}->{description});
-+	if ($what) {
-+		parse_error($file, $ln, "What '$what' doesn't have a description", "") if (!$data{$what}->{description});
-+
-+		foreach my $w(split /, /,$what) {
-+			$symbols{$w} = $what;
-+		};
-+	}
  	close IN;
- }
- 
--#
--# Outputs the book on ReST format
--#
-+sub create_labels {
-+	my %labels;
- 
--my %labels;
-+	foreach my $what (keys %data) {
-+		next if ($data{$what}->{file} eq "File");
- 
--sub output_rest {
--	foreach my $what (sort {
--				($data{$a}->{type} eq "File") cmp ($data{$b}->{type} eq "File") ||
--				$a cmp $b
--			       } keys %data) {
--		my $type = $data{$what}->{type};
+@@ -267,29 +277,20 @@ sub output_rest {
+ 				$a cmp $b
+ 			       } keys %data) {
+ 		my $type = $data{$what}->{type};
 -		my $file = $data{$what}->{file};
 -		my $filepath = $data{$what}->{filepath};
--
--		if ($enable_lineno) {
--			printf "#define LINENO %s%s#%s\n\n",
++
++		my @file = split / /, $data{$what}->{file};
++		my @filepath = split / /, $data{$what}->{filepath};
+ 
+ 		if ($enable_lineno) {
+ 			printf "#define LINENO %s%s#%s\n\n",
 -			       $prefix, $data{$what}->{file},
--			       $data{$what}->{line_no};
--		}
--
--		my $w = $what;
--		$w =~ s/([\(\)\_\-\*\=\^\~\\])/\\$1/g;
--
--
--		foreach my $p (@{$data{$what}->{label}}) {
-+		foreach my $p (@{$data{$what}->{label_list}}) {
- 			my ($content, $label) = @{$p};
- 			$label = "abi_" . $label . " ";
- 			$label =~ tr/A-Z/a-z/;
-@@ -249,16 +247,39 @@ sub output_rest {
- 			}
- 			$labels{$label} = 1;
- 
--			$data{$what}->{label} .= $label;
--
--			printf ".. _%s:\n\n", $label;
-+			$data{$what}->{label} = $label;
- 
- 			# only one label is enough
- 			last;
++			       $prefix, $file[0],
+ 			       $data{$what}->{line_no};
  		}
-+	}
-+}
  
-+#
-+# Outputs the book on ReST format
-+#
+ 		my $w = $what;
+ 		$w =~ s/([\(\)\_\-\*\=\^\~\\])/\\$1/g;
  
--		$filepath =~ s,.*/(.*/.*),\1,;;
-+sub output_rest {
-+	create_labels();
-+
-+	foreach my $what (sort {
-+				($data{$a}->{type} eq "File") cmp ($data{$b}->{type} eq "File") ||
-+				$a cmp $b
-+			       } keys %data) {
-+		my $type = $data{$what}->{type};
-+		my $file = $data{$what}->{file};
-+		my $filepath = $data{$what}->{filepath};
-+
-+		if ($enable_lineno) {
-+			printf "#define LINENO %s%s#%s\n\n",
-+			       $prefix, $data{$what}->{file},
-+			       $data{$what}->{line_no};
-+		}
-+
-+		my $w = $what;
-+		$w =~ s/([\(\)\_\-\*\=\^\~\\])/\\$1/g;
-+
-+		$filepath =~ s,.*/(.*/.*),$1,;;
- 		$filepath =~ s,[/\-],_,g;;
- 		my $fileref = "abi_file_".$filepath;
+-		$filepath =~ s,.*/(.*/.*),$1,;;
+-		$filepath =~ s,[/\-],_,g;;
+-		my $fileref = "abi_file_".$filepath;
+-
+-		if ($type eq "File") {
+-			my $bar = $w;
+-			$bar =~ s/./-/g;
+-
+-			print ".. _$fileref:\n\n";
+-			print "$w\n$bar\n\n";
+-		} else {
++		if ($type ne "File") {
+ 			printf ".. _%s:\n\n", $data{$what}->{label};
  
-@@ -269,8 +290,9 @@ sub output_rest {
- 			print ".. _$fileref:\n\n";
- 			print "$w\n$bar\n\n";
- 		} else {
--			my @names = split /\s*,\s*/,$w;
-+			printf ".. _%s:\n\n", $data{$what}->{label};
- 
-+			my @names = split /, /,$w;
- 			my $len = 0;
- 
- 			foreach my $name (@names) {
-@@ -284,12 +306,13 @@ sub output_rest {
- 				printf "| %s", $name . " " x ($len - length($name)) . " |\n";
+ 			my @names = split /, /,$w;
+@@ -307,7 +308,26 @@ sub output_rest {
  				print "+-" . "-" x $len . "-+\n";
  			}
--			print "\n";
+ 
+-			print "\nDefined on file :ref:`$file <$fileref>`\n\n";
++			print "\n";
++		}
 +
-+			print "\nDefined on file :ref:`$file <$fileref>`\n\n";
++		for (my $i = 0; $i < scalar(@filepath); $i++) {
++			my $path = $filepath[$i];
++			my $f = $file[$i];
++
++			$path =~ s,.*/(.*/.*),$1,;;
++			$path =~ s,[/\-],_,g;;
++			my $fileref = "abi_file_".$path;
++
++			if ($type eq "File") {
++				my $bar = $w;
++				$bar =~ s/./-/g;
++
++				print ".. _$fileref:\n\n";
++				print "$w\n$bar\n\n";
++			} else {
++				print "Defined on file :ref:`$f <$fileref>`\n\n";
++			}
  		}
  
--		print "Defined on file :ref:`$file <$fileref>`\n\n" if ($type ne "File");
--
--		my $desc = $data{$what}->{description};
-+		my $desc = "";
-+		$desc = $data{$what}->{description} if (defined($data{$what}->{description}));
-+		$desc =~ s/\s+$/\n/;
- 
- 		if (!($desc =~ /^\s*$/)) {
- 			if ($description_is_rst) {
-@@ -316,18 +339,11 @@ sub output_rest {
- 			print "DESCRIPTION MISSING for $what\n\n" if (!$data{$what}->{is_file});
- 		}
- 
--		if ($data{$what}->{xrefs}) {
-+		if ($data{$what}->{symbols}) {
+ 		my $desc = "";
+@@ -343,7 +363,7 @@ sub output_rest {
  			printf "Has the following ABI:\n\n";
  
--			foreach my $p(@{$data{$what}->{xrefs}}) {
--				my ($content, $label) = @{$p};
--				$label = "abi_" . $label . " ";
--				$label =~ tr/A-Z/a-z/;
--
--				# Convert special chars to "_"
--				$label =~s/([\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\xff])/_/g;
--				$label =~ s,_+,_,g;
--				$label =~ s,_$,,;
-+			foreach my $content(@{$data{$what}->{symbols}}) {
-+				my $label = $data{$symbols{$content}}->{label};
+ 			foreach my $content(@{$data{$what}->{symbols}}) {
+-				my $label = $data{$symbols{$content}}->{label};
++				my $label = $data{$symbols{$content}->{xref}}->{label};
  
  				# Escape special chars from content
  				$content =~s/([\x00-\x1f\x21-\x2f\x3a-\x40\x7b-\xff])/\\$1/g;
+@@ -387,7 +407,7 @@ sub search_symbols {
+ 		printf "Date:\t\t\t%s\n", $date if ($date);
+ 		printf "Contact:\t\t%s\n", $contact if ($contact);
+ 		printf "Users:\t\t\t%s\n", $users if ($users);
+-		print "Defined on file:\t$file\n\n";
++		print "Defined on file(s):\t$file\n\n";
+ 		print "Description:\n\n$desc";
+ 	}
+ }
+@@ -407,13 +427,24 @@ print STDERR Data::Dumper->Dump([\%data], [qw(*data)]) if ($debug);
+ #
+ # Handles the command
+ #
+-if ($cmd eq "rest") {
+-	output_rest;
+-} elsif ($cmd eq "search") {
++if ($cmd eq "search") {
+ 	search_symbols;
++} else {
++	if ($cmd eq "rest") {
++		output_rest;
++	}
++
++	# Warn about duplicated ABI entries
++	foreach my $what(sort keys %symbols) {
++		my @files = @{$symbols{$what}->{file}};
++
++		next if (scalar(@files) == 1);
++
++		printf STDERR "Warning: $what is defined %d times: @files\n",
++		    scalar(@files);
++	}
+ }
+ 
+-
+ __END__
+ 
+ =head1 NAME
 -- 
 2.26.2
 
