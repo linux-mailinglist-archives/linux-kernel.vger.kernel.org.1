@@ -2,89 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18A729D2D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AF329D2E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726724AbgJ1VfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:35:13 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:11845 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726703AbgJ1VfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:35:10 -0400
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f99732d0000>; Wed, 28 Oct 2020 21:33:33 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
- 2020 13:33:28 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 28 Oct 2020 13:33:28 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ck/wuCJEDTtJGfLj+hJiGD7cpCk7mJHek5bANWji2uvCZbBE2nWXlZPcphb7fcaRnuZ2SoW4FuJpLBYwBlMMl/8M/qTtKyjlaYK29Bn9cCPMFwydRQb5yCOnOV8w64kQgQ26tv7eJpkdaMcie5BMCiVnyLIwlFvuhpeChYZkYuZQYdog4zM4GeWiapVEyWfBi3NdGLhJU4Qs1SIj4GiaeRt2IRReIE5Mo8WoGPms8PtNamEpZjTwJ4aZfs6t+CKtkHvbTTlep9mf2w/LNtqY4VFcMakurfHgPHl0qfwEvJAM0xgJ4mnkGjnVWQ9pPkwnzzkY+778qLYVsBjdrao4WA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Psxsz9YuMQF8C6dHzvkuZjnpYRrloQUZ+WbtQ6jXfBg=;
- b=YcFtLLrxfliDzl+/a/LjBjvyj1E3gAIBoh27I1JyA4vkjeGRonFbDHSKgXDjqaBkNv1dcWDggc5OdKz0BYqgJZZCI6szoGrhPXKsjCTHdGu4iOAmlNf87U0AT3DjbROWF/dsS56LNC5JS7J8aVcnMK/bzhQfdILE41gVUoqB2tsFnKSgKIwkJGNMqDbD27RveqzLlmMCg92tA9QnN/SE6B+5aSnv3sbwKrGkWEodwIUkh79ZsooG/B8maNHvDRRJekFCuTwknYWzJpLIjXM8ukTDWzol6/08JmNZF/yJbz4etRazDnJGdfallSlb40KY7NUa3mMTij1AnBRjXIEhRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4943.namprd12.prod.outlook.com (2603:10b6:5:1bc::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Wed, 28 Oct
- 2020 13:33:24 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Wed, 28 Oct 2020
- 13:33:24 +0000
-Date:   Wed, 28 Oct 2020 10:33:22 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-CC:     <dledford@redhat.com>, <leon@kernel.org>, <maorg@mellanox.com>,
-        <parav@mellanox.com>, <galpress@amazon.com>, <monis@mellanox.com>,
-        <chuck.lever@oracle.com>, <maxg@mellanox.com>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] RDMA/core: Fix error return in _ib_modify_qp()
-Message-ID: <20201028133322.GA2410517@nvidia.com>
-References: <20201016075845.129562-1-jingxiangfeng@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201016075845.129562-1-jingxiangfeng@huawei.com>
-X-ClientProxiedBy: BL0PR02CA0034.namprd02.prod.outlook.com
- (2603:10b6:207:3c::47) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1727003AbgJ1Vhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726957AbgJ1VhZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:37:25 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81DAC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:37:24 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id k21so1048361ioa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:37:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=V5xT/TVNJaEN5+iWNdQc+ZQaG4gZCPhnf9TiZ66aFMc=;
+        b=0OZ20SAJwtEwhFAnooWd+EM+C1BJreT+JGFVuEjQ2FCq6IlFnFpbweNlMOGweIeXcK
+         12yLw6FMBrlxkyh8o1mMPwHoKeLm3EYqcmUoL7xbnDf0uoSG10g8VTldzP0gz6ozUQm/
+         KlnnbelMs8PCigZE71PsI6YcNxRvvT+FNRPKHH3/eudfPlTkyrUkSVyi3rFOy1m2LfeB
+         AlhKZlqWkqSG2JcWdzDGNMs7NfXTXISfuvx5vSNtxzyxsxBdyDkZUH96usLP0R0rLXz9
+         77YEGwX97Svf8k7Ol4iZFBfmIwPfYWLNvr2w9LjUjddvJYP5UuU5ALYV7mzdtZY4340n
+         J9hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V5xT/TVNJaEN5+iWNdQc+ZQaG4gZCPhnf9TiZ66aFMc=;
+        b=OJ7dbaMv768QS/Oh/K7QkvLp4HBrDUVlFbt8tFaoCd2nGRWOnePQdUYDrv8BQpWZiO
+         1yV5tSMIMk47PV0D+5pjggNhkwYBKekPx98Iy6Ur+mlSebMBgOs+3keJCCHa/YVuHoTW
+         ag5HC1w1Mg3omie5aqo1jRIg83mWmkDyrf8Otz3PqtAOPRQreBNgWcNpsk3SXfLfLjP6
+         gJvAWLQGm5KEbkTfLPcsqQvYHQMCjj/zzIqbmg1Wh+tSYA6f+LYyee5MOyiFquSVFO+I
+         lR4jLGGERjbdchv3dqhf6ieFKM0ds2VMxExx2Qny6ZYZSum5R1NEU57hsJwNhP3iIlNx
+         MtoA==
+X-Gm-Message-State: AOAM532/Eowg9EhG+3qqOV+wRXnkOyQM6wnOMTJvvIetjPKmJglnQ/Es
+        Y3if01o6qMralmhP9Ewzc5w6zrIkVggcNg==
+X-Google-Smtp-Source: ABdhPJyxZGbwrFiWBMmAn2MSWLAucBtK1gUChIjQgOeuSgYz6/DriQVdARII6bLA0yu6RBPggRHgeA==
+X-Received: by 2002:a6b:db06:: with SMTP id t6mr6131111ioc.204.1603892193673;
+        Wed, 28 Oct 2020 06:36:33 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id g185sm2729808ilh.35.2020.10.28.06.36.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 06:36:33 -0700 (PDT)
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIXSBpby13cTogc2V0IHRhc2sgVEFTS19J?=
+ =?UTF-8?Q?NTERRUPTIBLE_state_before_schedule=5ftimeout?=
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201027030911.16596-1-qiang.zhang@windriver.com>
+ <bc138db4-4609-b8e6-717a-489cf2027fc0@kernel.dk>
+ <BYAPR11MB2632A45DB4DA30E34D412528FF170@BYAPR11MB2632.namprd11.prod.outlook.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <32a5ce10-bdbf-57fe-4318-ce53ad47f161@kernel.dk>
+Date:   Wed, 28 Oct 2020 07:36:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0034.namprd02.prod.outlook.com (2603:10b6:207:3c::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 13:33:23 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXlZq-00A76G-Df; Wed, 28 Oct 2020 10:33:22 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603892013; bh=Psxsz9YuMQF8C6dHzvkuZjnpYRrloQUZ+WbtQ6jXfBg=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=Z+xFWBa8k8DuW3ZGy0gsgxTtIE8HGH8ZB9U+k0eIdcDiiPRZaAWXGtyuNIwzAmvhp
-         IEqsTyFMAVBtk7zUELD9toWKxaf3DVgRHtY3bJn4DaK+/UvUmHLZDgK1gpdLnQvFsp
-         aBsv26idm//P5hY5/9xizJVfdH0Gvp3GPCgwR0m8EB+m0rT/DU9XoffsDNEzr4s2A4
-         XcohJdMxzYqN0vVTVpR6a7fzTB+GxqgaN9RstIvd9OyPlAxsEnZh//MIUs9aoPpJIA
-         8aOSv8M/j+ZKHzoumzuE5DxfUmb6eMKH5YnSgWq2c0PuG5CMIcKTmp60V26gLjb1E1
-         EXcb+NaEstR5Q==
+In-Reply-To: <BYAPR11MB2632A45DB4DA30E34D412528FF170@BYAPR11MB2632.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=gbk
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 03:58:45PM +0800, Jing Xiangfeng wrote:
-> Fix to return error code PTR_ERR() from the error handling case instead of
-> 0.
+On 10/27/20 8:47 PM, Zhang, Qiang wrote:
 > 
-> Fixes: 51aab12631dd ("RDMA/core: Get xmit slave for LAG")
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-> Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
-> ---
->  drivers/infiniband/core/verbs.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> ________________________________________
+> 发件人: Jens Axboe <axboe@kernel.dk>
+> 发送时间: 2020年10月27日 21:35
+> 收件人: Zhang, Qiang
+> 抄送: io-uring@vger.kernel.org; linux-kernel@vger.kernel.org
+> 主题: Re: [PATCH] io-wq: set task TASK_INTERRUPTIBLE state before schedule_timeout
+> 
+> On 10/26/20 9:09 PM, qiang.zhang@windriver.com wrote:
+>> From: Zqiang <qiang.zhang@windriver.com>
+>>
+>> In 'io_wqe_worker' thread, if the work which in 'wqe->work_list' be
+>> finished, the 'wqe->work_list' is empty, and after that the
+>> '__io_worker_idle' func return false, the task state is TASK_RUNNING,
+>> need to be set TASK_INTERRUPTIBLE before call schedule_timeout func.
+>>
+>> I don't think that's safe - what if someone added work right before you
+>> call schedule_timeout_interruptible? Something ala:
+>>
+>>
+>> io_wq_enqueue()
+>>                        set_current_state(TASK_INTERRUPTIBLE();
+>>                        schedule_timeout(WORKER_IDLE_TIMEOUT);
+>>
+>> then we'll have work added and the task state set to running, but the
+>> worker itself just sets us to non-running and will hence wait
+>> WORKER_IDLE_TIMEOUT before the work is processed.
+>>
+>> The current situation will do one extra loop for this case, as the
+>> schedule_timeout() just ends up being a nop and we go around again
+> 
+> although the worker task state is running,  due to the call
+> schedule_timeout, the current worker still possible to be switched
+> out. if set current worker task is no-running, the current worker be
+> switched out, but the schedule will call io_wq_worker_sleeping func
+> to wake up free worker task, if wqe->free_list is not empty.  
 
-Applied to for-next, thanks
+It'll only be swapped out for TASK_RUNNING if we should be running other
+work, which would happen on next need-resched event anyway. And the miss
+you're describing is an expensive one, as it entails creating a new
+thread and switching to that. That's not a great way to handle a race.
 
-Jason
+So I'm a bit puzzled here - yes we'll do an extra loop and check for the
+dropping of mm, but that's really minor. The solution is a _lot_ more
+expensive for hitting the race of needing a new worker, but missing it
+because you unconditionally set the task to non-running. On top of that,
+it's also not the idiomatic way to wait for events, which is typically:
+
+is event true, break if so
+set_current_state(TASK_INTERRUPTIBLE);
+					event comes in, task set runnable
+check again, schedule
+doesn't schedule, since we were set runnable
+
+or variants thereof, using waitqueues.
+
+So while I'm of course not opposed to fixing the io-wq loop so that we
+don't do that last loop when going idle, a) it basically doesn't matter,
+and b) the proposed solution is much worse. If there was a more elegant
+solution without worse side effects, then we can discuss that.
+
+-- 
+Jens Axboe
+
