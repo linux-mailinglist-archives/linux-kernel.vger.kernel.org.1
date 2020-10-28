@@ -2,62 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A473D29D2BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7128829D292
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgJ1Ve0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:34:26 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56724 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726557AbgJ1VeX (ORCPT
+        id S1726061AbgJ1VdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:33:22 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:43971 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgJ1VdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:34:23 -0400
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09SFTUUZ013074
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 11:29:31 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 92AB1420107; Wed, 28 Oct 2020 11:29:30 -0400 (EDT)
-Date:   Wed, 28 Oct 2020 11:29:30 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     harshad shirwadkar <harshadshirwadkar@gmail.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: properly check for dirty state in
- ext4_inode_datasync_dirty()
-Message-ID: <20201028152930.GQ5691@mit.edu>
-References: <20201024140115.GA35973@xps-13-7390>
- <CAD+ocby3hA0GCm5Rf6T3UF+2UWgWoUjrz7=VzbeUMjX6Qx8D5g@mail.gmail.com>
- <da6697a0-4a23-ee68-fa2e-121b3d23c972@linux.ibm.com>
+        Wed, 28 Oct 2020 17:33:15 -0400
+Received: by mail-yb1-f194.google.com with SMTP id d15so392233ybl.10;
+        Wed, 28 Oct 2020 14:33:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nlJqqXXAH1t+pt7s0ccAWf7pcAID62bNuJtmD6PRncE=;
+        b=A7uIJO5L/ESrMYJbIAs9pb4sjGPenFSovbWB7VHfAvMfAIYeBaTKmHhpoxBwVkao6G
+         7ikFU4GeOWYFdRLu5QJgJ7j5BnuDaEhn2wF6/Umk+TzrMgr3iRFVAj5yVAK3bJF/OPyd
+         nx7VU9oVCTpBuZ6zkZkhdWSW8VxCCWdcUz/4SGJnW7qJkK268XjNZI11MTCeoF63nXhu
+         nFVn9sw8ju458ocL62tqP7W8oIs0EGCdj0G5FZm24I59fXqLwFlO6JN4ij6UucI9rc7D
+         /hYQ1LhMH+JAbs4rwLJ1a++kNa79XtCykIfGsF2o8Z2Fmf8glqWZGvTzrQZJlqPC6uaO
+         uY0g==
+X-Gm-Message-State: AOAM53215hzBxxfAMkozQo7OEYPqC9IiNvHTu7m2z9JVxiNCcOpkCNLP
+        tHFgvk8YAbZ3ugJMx/13Hl75J6ALjg==
+X-Google-Smtp-Source: ABdhPJy5UQJsgQmDLtE/+RjvN2Lhxh8sG17+hq4U7TOgu5yrnYqg9JmwYnTRx0VJDOZqz6UR5e+hJA==
+X-Received: by 2002:a9d:172f:: with SMTP id i47mr5804523ota.74.1603898986343;
+        Wed, 28 Oct 2020 08:29:46 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h6sm2714750oia.51.2020.10.28.08.29.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 08:29:45 -0700 (PDT)
+Received: (nullmailer pid 4059166 invoked by uid 1000);
+        Wed, 28 Oct 2020 15:29:44 -0000
+Date:   Wed, 28 Oct 2020 10:29:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Kyungmin Park <kyungmin.park@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Viresh Kumar <vireshk@kernel.org>, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v6 11/52] dt-bindings: memory: tegra30: emc: Document OPP
+ table and voltage regulator
+Message-ID: <20201028152944.GA4059076@bogus>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-12-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <da6697a0-4a23-ee68-fa2e-121b3d23c972@linux.ibm.com>
+In-Reply-To: <20201025221735.3062-12-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 08:57:03AM +0530, Ritesh Harjani wrote:
+On Mon, 26 Oct 2020 01:16:54 +0300, Dmitry Osipenko wrote:
+> Document new OPP table and voltage regulator properties which are needed
+> for supporting dynamic voltage-frequency scaling of the memory controller.
+> Some boards may have a fixed core voltage regulator, hence it's optional
+> because frequency scaling still may be desired.
 > 
-> Well, I too noticed this yesterday while I was testing xfstests -g swap.
-> Those tests were returning _notrun, hence that could be the reason why
-> it didn't get notice in XFSTESTing from Ted.
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../memory-controllers/nvidia,tegra30-emc.yaml       | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
 
-Yeah, one of the things I discussed with Harshad is we really need a
-test that looks like generic/472, but which is in shared/NNN, and
-which unconditionally tries to use swapon for those file systems where
-swapfiles are expected to work.  This is actually the second
-regression caused by our breaking swapfile support (the other being
-the iomap bmap change), which escaped our testing because we didn't
-notice that generic/472 was skipped.
-
-(Mental note; perhaps we should have a way of flagging tests that are
-skipped when previously they would run in the {kvm,gce}-xfstests
-framework.)
-
-						- Ted
+Reviewed-by: Rob Herring <robh@kernel.org>
