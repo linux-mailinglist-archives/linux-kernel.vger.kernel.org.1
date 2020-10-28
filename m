@@ -2,203 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1CE29D9C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CAA29DABE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:29:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390009AbgJ1XCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731974AbgJ1XBi (ORCPT
+        id S2390484AbgJ1X3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:29:05 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:38212 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390456AbgJ1X27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:01:38 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07EBEC0613D1;
-        Wed, 28 Oct 2020 16:01:38 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id s21so1355516oij.0;
-        Wed, 28 Oct 2020 16:01:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c2/gqc31dmi9zA2aGWplgme+HPGKlgH66xNk9nHvWto=;
-        b=bWYaHqkYPc2iXRaUYFoKv/DT1zz6MURWRCPi1TvR3qcDkoPbIekEzmPv9fA0tiUUHV
-         qLFaTfhYLwHIj4DXvnVBM9C9ZBrKzo9LkCpod1qq6woIR35hdnu1t+ycFMMKMOAj/Ouh
-         Q9AFojKT/trJllLTlX57BeemiX4Z1mRdSwoct7hXd8Vp7B1FgQsbEKOFHWUALeuneMxD
-         +RmzbZcrmxneBDs0XbGHQVgyB7Gh6cHVgphxBLSAspUH3QSEjFRkshzy5HcGkHRJf9+U
-         1cssz7sw1CpiMz1/fstMDGMBE2Jx5Wwgp5KyeFceoBBZV7jPIDSN+/Jvrpnb8p6qcPI8
-         9TFQ==
+        Wed, 28 Oct 2020 19:28:59 -0400
+Received: by mail-oi1-f196.google.com with SMTP id 9so1386093oir.5;
+        Wed, 28 Oct 2020 16:28:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c2/gqc31dmi9zA2aGWplgme+HPGKlgH66xNk9nHvWto=;
-        b=ZXIpwFAWqyOev8e2wEk5q2uqdZN0pMMnhGZRx1rab+VtWzjUm39BJNnP2QIZuvQUO7
-         J3AXgyx2mmZ11o7NN1Xn6Kf+rwf21bl9X2P6dVKZoSRL/IGDOsfvHFMo0LSLtQuoDCU7
-         hmGu7JryFsLhP3dJgzyAPGk1okLGWesPpVS+NNFuzNuqcF+/ossP3ReFmrIH4Fd4F3NH
-         WRk2pvTP47sLNDDqOnaL1l5W7OCGMw96X/9py5d1GEDyGcwW44Ho6DfloxcoJ6tsekr9
-         bLIzcCxTGQITAUEnroFGgeCuQ5VSpDSjO6SqxeMuLaS/udiqCZ+hNlN0iMvFzkYb7FWe
-         VQog==
-X-Gm-Message-State: AOAM530+TypIMzU2COnLGc30l7gCm4IwUZ66cj+UneybQvHSJntJmaJ0
-        X04JplqoOYIeB+aWYFzRGLmc+LfYuFg3LFIa
-X-Google-Smtp-Source: ABdhPJxovUxraliBkm/Bf6MK9y9XXJoeXrAW+xnL9AzhQOMP3GGXkLU/zxjXzieF+ZVTF8XwxspNyw==
-X-Received: by 2002:a17:90a:5885:: with SMTP id j5mr7498189pji.117.1603895264368;
-        Wed, 28 Oct 2020 07:27:44 -0700 (PDT)
-Received: from k5-sbwpb.flets-east.jp (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
-        by smtp.gmail.com with ESMTPSA id n25sm5977673pgd.67.2020.10.28.07.27.40
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=po6rWvf724844GvfQdAQJ9iq1eJb6p+ZDm6wv8whpKk=;
+        b=E5xxqK6y7A79J3A2gp3w3+vTOfQiOMxi6t5bTg7TpDNMz7tnwQw9NDm5ocCy8R9Qon
+         dVbxELWxqe0cs3lWe84efB6XhBt186vQeUul0ze6wwqW0AUGqprrSMJmcGIIdk3y1/R7
+         hn/NdDx/dQ7c3Cx+y0ayvqK1vMqTNIVRXf0NKTNDZafSGBzFfuHO4jGv8fs6VnfV/U5U
+         gC2tAzWHQpqxfp5xwGyVOHPgvXWTkkj8DuZVEDe/LrfOYsgWk+JDV4AvG+AKtYFPRmwk
+         yKwMKipu3dSf8O2M5ozM+Dtapg+CJ6BtxfL9qs+z8pczZiDmOzKMo9QM/6EdTYHlFwjU
+         sZOA==
+X-Gm-Message-State: AOAM531sm5KZhZpkpivhBe26LFj6sI3V0Yz7yT01b9aZ6LH3kjB77wst
+        J7/wTD9QFr3IdIyKApxtCO0ocRDXZQ==
+X-Google-Smtp-Source: ABdhPJyEh7pfMoCDgab0DcqZOZs2B3jYAs6qTKZm/Uw5JJr14+poImxFufG/tuafS8zONyupbh4GOQ==
+X-Received: by 2002:a05:6808:4d3:: with SMTP id a19mr5186027oie.10.1603896170982;
+        Wed, 28 Oct 2020 07:42:50 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 61sm2196489otc.9.2020.10.28.07.42.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 07:27:43 -0700 (PDT)
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl,
-        Tsuchiya Yuto <kitakar@gmail.com>
-Subject: [RFC PATCH] mwifiex: pcie: use shutdown_sw()/reinit_sw() on suspend/resume
-Date:   Wed, 28 Oct 2020 23:27:19 +0900
-Message-Id: <20201028142719.18765-1-kitakar@gmail.com>
-X-Mailer: git-send-email 2.29.1
+        Wed, 28 Oct 2020 07:42:50 -0700 (PDT)
+Received: (nullmailer pid 3992502 invoked by uid 1000);
+        Wed, 28 Oct 2020 14:42:49 -0000
+Date:   Wed, 28 Oct 2020 09:42:49 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sre@kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: power/supply: Add ltc4162-l-charger
+Message-ID: <20201028144249.GA3992062@bogus>
+References: <20201027070938.10157-1-mike.looijmans@topic.nl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027070938.10157-1-mike.looijmans@topic.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Microsoft Surface devices (PCIe-88W8897), there are issues with S0ix
-achievement and AP scanning after suspend with the current Host Sleep
-method.
+On Tue, 27 Oct 2020 08:09:38 +0100, Mike Looijmans wrote:
+> Add support for the LTC4162-L Li-Ion battery charger. The driver allows
+> reading back telemetry and to set some charging options like the input
+> current limit.
+> 
+> This adds the devicetree bindings.
+> 
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> ---
+> v2: Use microohms, add lltc,cell-count
+> 
+>  .../bindings/power/supply/ltc4162-l.yaml      | 68 +++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
+> 
 
-When using the Host Sleep method, it prevents the platform to reach S0ix
-during suspend. Also, sometimes AP scanning won't work, resulting in
-non-working wifi after suspend.
 
-To fix such issues, perform shutdown_sw()/reinit_sw() instead of Host
-Sleep on suspend/resume.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
----
-As a side effect, this patch disables wakeups (means that Wake-On-WLAN
-can't be used anymore, if it was working before), and might also reset
-some internal states.
+yamllint warnings/errors:
 
-Of course it's the best to rather fix Host Sleep itself. But if it's
-difficult, I'm afraid we have to go this way.
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/supply/ltc4162-l.example.dt.yaml: battery-charger@68: 'lltc,rsnsb', 'lltc,rsnsi' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
 
-I reused the contents of suspend()/resume() functions as much as possible,
-and removed only the parts that are incompatible or redundant with
-shutdown_sw()/reinit_sw().
 
-- Removed wait_for_completion() as redundant
-  mwifiex_shutdown_sw() does this.
-- Removed flush_workqueue() as incompatible
-  Causes kernel crashing.
-- Removed mwifiex_enable_wake()/mwifiex_disable_wake()
-  as incompatible and redundant because the driver will be shut down
-  instead of entering Host Sleep.
+See https://patchwork.ozlabs.org/patch/1388291
 
-I'm worried about why flush_workqueue() causes kernel crash with this
-suspend method. Is it OK to just drop it? At least We Microsoft Surface
-devices users used this method for about one month and haven't observed
-any issues.
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
 
-Note that suspend() no longer checks if it's already suspended.
-With the previous Host Sleep method, the check was done by looking at
-adapter->hs_activated in mwifiex_enable_hs() [sta_ioctl.c], but not
-MWIFIEX_IS_SUSPENDED. So, what the previous method checked was instead
-Host Sleep state, not suspend itself.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-Therefore, there is no need to check the suspend state now.
-Also removed comment for suspend state check at top of suspend()
-accordingly.
+pip3 install dtschema --upgrade
 
- drivers/net/wireless/marvell/mwifiex/pcie.c | 29 +++++++--------------
- 1 file changed, 10 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
-index 6a10ff0377a24..3b5c614def2f5 100644
---- a/drivers/net/wireless/marvell/mwifiex/pcie.c
-+++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
-@@ -293,8 +293,7 @@ static bool mwifiex_pcie_ok_to_access_hw(struct mwifiex_adapter *adapter)
-  * registered functions must have drivers with suspend and resume
-  * methods. Failing that the kernel simply removes the whole card.
-  *
-- * If already not suspended, this function allocates and sends a host
-- * sleep activate request to the firmware and turns off the traffic.
-+ * This function shuts down the adapter.
-  */
- static int mwifiex_pcie_suspend(struct device *dev)
- {
-@@ -302,31 +301,21 @@ static int mwifiex_pcie_suspend(struct device *dev)
- 	struct pcie_service_card *card = dev_get_drvdata(dev);
- 
- 
--	/* Might still be loading firmware */
--	wait_for_completion(&card->fw_done);
--
- 	adapter = card->adapter;
- 	if (!adapter) {
- 		dev_err(dev, "adapter is not valid\n");
- 		return 0;
- 	}
- 
--	mwifiex_enable_wake(adapter);
--
--	/* Enable the Host Sleep */
--	if (!mwifiex_enable_hs(adapter)) {
-+	/* Shut down SW */
-+	if (mwifiex_shutdown_sw(adapter)) {
- 		mwifiex_dbg(adapter, ERROR,
- 			    "cmd: failed to suspend\n");
--		clear_bit(MWIFIEX_IS_HS_ENABLING, &adapter->work_flags);
--		mwifiex_disable_wake(adapter);
- 		return -EFAULT;
- 	}
- 
--	flush_workqueue(adapter->workqueue);
--
- 	/* Indicate device suspended */
- 	set_bit(MWIFIEX_IS_SUSPENDED, &adapter->work_flags);
--	clear_bit(MWIFIEX_IS_HS_ENABLING, &adapter->work_flags);
- 
- 	return 0;
- }
-@@ -336,13 +325,13 @@ static int mwifiex_pcie_suspend(struct device *dev)
-  * registered functions must have drivers with suspend and resume
-  * methods. Failing that the kernel simply removes the whole card.
-  *
-- * If already not resumed, this function turns on the traffic and
-- * sends a host sleep cancel request to the firmware.
-+ * If already not resumed, this function reinits the adapter.
-  */
- static int mwifiex_pcie_resume(struct device *dev)
- {
- 	struct mwifiex_adapter *adapter;
- 	struct pcie_service_card *card = dev_get_drvdata(dev);
-+	int ret;
- 
- 
- 	if (!card->adapter) {
-@@ -360,9 +349,11 @@ static int mwifiex_pcie_resume(struct device *dev)
- 
- 	clear_bit(MWIFIEX_IS_SUSPENDED, &adapter->work_flags);
- 
--	mwifiex_cancel_hs(mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_STA),
--			  MWIFIEX_ASYNC_CMD);
--	mwifiex_disable_wake(adapter);
-+	ret = mwifiex_reinit_sw(adapter);
-+	if (ret)
-+		dev_err(dev, "reinit failed: %d\n", ret);
-+	else
-+		mwifiex_dbg(adapter, INFO, "%s, successful\n", __func__);
- 
- 	return 0;
- }
--- 
-2.29.1
+Please check and re-submit.
 
