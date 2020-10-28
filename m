@@ -2,161 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828C229DBB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B01D129DC48
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389236AbgJ1Wq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731875AbgJ1WqJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:46:09 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC18C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:46:08 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id l16so1204054eds.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1KKfnGnBEdd12X89nwYRLUfbpvsSCoekdcU0DHREQhE=;
-        b=tF7de7mbM6VeEXWhVjMrNC5cvKMpl0WDoIIp7fDbiFMyA9PP4g3gTmf4LaBzwarT14
-         4HlQUlmQiDgdPcyNEbZCIirlXnui4R0jL648Tx95iRiVKLtDrIrgQ3s56LWy8BP1Jh4m
-         e5D2GJEtVeWX660AowCOJZdoycU2F+72CGe2Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1KKfnGnBEdd12X89nwYRLUfbpvsSCoekdcU0DHREQhE=;
-        b=LzwlP0+gecVO/YoOSp3yGLyNd46tFu7k4J1xDCx+WLB6+b+0lQmx/+NTZ8MdKCXzQY
-         idHVJpgQTQOVy+lx/L7t1yjq7Cj5jXe47a0pxpB/9C3jhjg3VTy/FFHA7BmcKTK0STjO
-         lTCBOEYT0ewwkcNr2b7drqptKHmeOAHghpMzRNshjakiehmO091G05UzoEXONe0ve43Y
-         E6H32pc7zAorbYcya4gzXgsqE1lZBsn+exEkBYZtrLua1Z5KbhduUAcG6sv2Yvg+2c5f
-         N2c8l3yARPdF9q00yNTrNglzFSLLfTjof+PQZEsYmGvtozc7R4h+4OsGaJ3S5SilBxo1
-         WshQ==
-X-Gm-Message-State: AOAM531W1R1Keh3/7/gq5Zt9W+c4X/oj9YGI5ZwdWbDbgJ9yxgXlbEA+
-        qpnA7St8+K5qG0oc6PFbxOyej0e9JR74TnBneAQAAf1laIbApvYQ
-X-Google-Smtp-Source: ABdhPJxusKQfLH7ldNK0ZejYey8JceBXqtdks06+e2oAEK1AFi5yniwjLl5sysSu+nsrzKiTHTK4yg881qNZWDn/8tc=
-X-Received: by 2002:a17:906:bc42:: with SMTP id s2mr173094ejv.251.1603907070187;
- Wed, 28 Oct 2020 10:44:30 -0700 (PDT)
+        id S2388473AbgJ2AXt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Oct 2020 20:23:49 -0400
+Received: from verein.lst.de ([213.95.11.211]:45358 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388466AbgJ1Wh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:37:28 -0400
+Received: by verein.lst.de (Postfix, from userid 107)
+        id 9202368C65; Wed, 28 Oct 2020 18:52:06 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on verein.lst.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=5.0 tests=ALL_TRUSTED,BAYES_50
+        autolearn=disabled version=3.3.1
+Received: from blackhole.lan (p5b33f9d6.dip0.t-ipconnect.de [91.51.249.214])
+        by verein.lst.de (Postfix) with ESMTPSA id 73EA367357;
+        Wed, 28 Oct 2020 18:51:22 +0100 (CET)
+Date:   Wed, 28 Oct 2020 18:51:17 +0100
+From:   Torsten Duwe <duwe@lst.de>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Stephan =?UTF-8?B?TcO8bGxlcg==?= <smueller@chronox.de>,
+        Willy Tarreau <w@1wt.eu>, linux-crypto@vger.kernel.org,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        And y Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Petr Tesarik <ptesarik@suse.cz>, marcelo.cerri@canonical.com,
+        simo@redhat.com
+Subject: Re: [PATCH v36 00/13] /dev/random - a new approach
+Message-ID: <20201028185117.74300988@blackhole.lan>
+In-Reply-To: <3073852.aeNJFYEL58@positron.chronox.de>
+References: <20200921075857.4424-1-nstange@suse.de>
+        <2961243.vtBmWVcJkq@tauon.chronox.de>
+        <20201016172619.GA18410@lst.de>
+        <3073852.aeNJFYEL58@positron.chronox.de>
+Organization: LST e.V.
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
- <20200930230327.GA1260245@cisco> <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
- <20200930232456.GB1260245@cisco> <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
- <CAG48ez3kpEDO1x_HfvOM2R9M78Ach9O_4+Pjs-vLLfqvZL+13A@mail.gmail.com>
- <656a37b5-75e3-0ded-6ba8-3bb57b537b24@gmail.com> <CAG48ez2Uy8=Tz9k1hcr0suLPHjbJi1qUviSGzDQ-XWEGsdNU+A@mail.gmail.com>
- <e2643168-b5d5-4d8c-947a-7895bcabc268@gmail.com> <CAG48ez2Nb95ae+XwZPYRju1KO-Ps_4R6QxN6ioUhOy2Uok=uAg@mail.gmail.com>
- <CAMp4zn_Qt2MYuoLojn5ikRkr-J5yGimirjevoAvorK5wfzrBHg@mail.gmail.com> <CAG48ez1drOxgcpuKHiJc+khwmLvqoXfK4yBt9_KHPGQipDf6NQ@mail.gmail.com>
-In-Reply-To: <CAG48ez1drOxgcpuKHiJc+khwmLvqoXfK4yBt9_KHPGQipDf6NQ@mail.gmail.com>
-From:   Sargun Dhillon <sargun@sargun.me>
-Date:   Wed, 28 Oct 2020 10:43:54 -0700
-Message-ID: <CAMp4zn9O-a3_wzO1RLr8uujdS+fGYTC0+b=MRQK9TihLToU--w@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-To:     Jann Horn <jannh@google.com>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 2:43 AM Jann Horn <jannh@google.com> wrote:
->
-> On Wed, Oct 28, 2020 at 7:32 AM Sargun Dhillon <sargun@sargun.me> wrote:
-> > On Tue, Oct 27, 2020 at 3:28 AM Jann Horn <jannh@google.com> wrote:
-> > > On Tue, Oct 27, 2020 at 7:14 AM Michael Kerrisk (man-pages)
-> > > <mtk.manpages@gmail.com> wrote:
-> > > > On 10/26/20 4:54 PM, Jann Horn wrote:
-> > > > > I'm a bit on the fence now on whether non-blocking mode should use
-> > > > > ENOTCONN or not... I guess if we returned ENOENT even when there are
-> > > > > no more listeners, you'd have to disambiguate through the poll()
-> > > > > revents, which would be kinda ugly?
-> > > >
-> > > > I must confess, I'm not quite clear on which two cases you
-> > > > are trying to distinguish. Can you elaborate?
-> > >
-> > > Let's say someone writes a program whose responsibilities are just to
-> > > handle seccomp events and to listen on some other fd for commands. And
-> > > this is implemented with an event loop. Then once all the target
-> > > processes are gone (including zombie reaping), we'll start getting
-> > > EPOLLERR.
-> > >
-> > > If NOTIF_RECV starts returning -ENOTCONN at this point, the event loop
-> > > can just call into the seccomp logic without any arguments; it can
-> > > just call NOTIF_RECV one more time, see the -ENOTCONN, and terminate.
-> > > The downside is that there's one more error code userspace has to
-> > > special-case.
-> > > This would be more consistent with what we'd be doing in the blocking case.
-> > >
-> > > If NOTIF_RECV keeps returning -ENOENT, the event loop has to also tell
-> > > the seccomp logic what the revents are.
-> > >
-> > > I guess it probably doesn't really matter much.
-> >
-> > So, in practice, if you're emulating a blocking syscall (such as open,
-> > perf_event_open, or any of a number of other syscalls), you probably
-> > have to do it on a separate thread in the supervisor because you want
-> > to continue to be able to receive new notifications if any other process
-> > generates a seccomp notification event that you need to handle.
-> >
-> > In addition to that, some of these syscalls are preemptible, so you need
-> > to poll SECCOMP_IOCTL_NOTIF_ID_VALID to make sure that the program
-> > under supervision hasn't left the syscall.
-> >
-> > If we're to implement a mechanism that makes the seccomp ioctl receive
-> > non-blocking, it would be valuable to address this problem as well (getting
-> > a notification when the supervisor is processing a syscall and needs to
-> > preempt it). In the best case, this can be a minor inconvenience, and
-> > in the worst case this can result in weird errors where you're keeping
-> > resources open that the container expects to be closed.
->
-> Does "a notification" mean signals? Or would you want to have a second
-> thread in userspace that poll()s for cancellation events on the
-> seccomp fd and then somehow takes care of interrupting the first
-> thread, or something like that?
+On Mon, 19 Oct 2020 21:28:50 +0200
+Stephan Müller <smueller@chronox.de> wrote:
+[...]
+> * Sole use of crypto for data processing:
+[...]
+>  - The LRNG uses only properly defined and implemented cryptographic
+>    algorithms unlike the use of the SHA-1 transformation in the
+> existing /dev/random implementation.
+> 
+>  - Hash operations use NUMA-node-local hash instances to benefit large
+>    parallel systems.
+> 
+>  - LRNG uses limited number of data post-processing steps
+[...]
+> * Performance
+> 
+>  - Faster by up to 75% in the critical code path of the interrupt
+> handler depending on data collection size configurable at kernel
+> compile time - the default is about equal in performance with
+> existing /dev/random as outlined in [2] section 4.2.
 
-I would be reluctant to be prescriptive in that it be a signal. Right
-now, it's implemented
-as a second thread in userspace that does a ioctl(...) and checks if
-the notification
-is valid / alive, and does what's required if the notification has
-died (interrupting
-the first thread).
+[...]
+>  - ChaCha20 DRNG is significantly faster as implemented in the
+> existing /dev/random as demonstrated with [2] table 2.
+> 
+>  - Faster entropy collection during boot time to reach fully seeded
+>    level, including on virtual systems or systems with SSDs as
+> outlined in [2] section 4.1.
+> 
+> * Testing
+[...]
 
->
-> Either way, I think your proposal goes beyond the scope of patching
-> the existing weirdness, and should be a separate patch.
+So we now have 2 proposals for a state-of-the-art RNG, and over a month
+without a single comment on-topic from any `get_maintainer.pl`
 
-I agree it should be a separate patch, but I think that it'd be nice if there
-was a way to do something like:
-* opt-in to getting another message after receiving the notification
-  that indicates the program has left the syscall
-* when you do the RECV, you can specify a flag or some such asking
-  that you get signaled / notified about the program leaving the syscall
-* a multiplexed receive that can say if an existing notification in progress
-  has left the valid state.
+I don't want to emphasise the certification aspects so much. The
+interrelation is rather that those certifications require certain code
+features, features which are reasonable per se. But the current code is
+lagging way behind.
 
----
-The reason I bring this up as part of this current thread / discussion is that
-I think that they may be related in terms of how we want the behaviour to act.
+I see the focus namely on performance, scalability, testability and
+virtualisation. And it certainly is an advantage to use the code
+already present under crypto, with its optimisations, and not rely
+on some home brew.
 
-I would love to hear how people think this should work, or better suggestions
-than the second thread approach above, or the alternative approach of
-polling all the notifications in progress on some interval [and relying on
-epoll timeout to trigger that interval].
+Can we please have a discussion about how to proceed?
+Ted, Greg, Arnd: which approach would you prefer?
+
+	Torsten
+
