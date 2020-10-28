@@ -2,93 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B874F29D6E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C400929D72A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732138AbgJ1WTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
+        id S1732568AbgJ1WVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732189AbgJ1WSi (ORCPT
+        with ESMTP id S1732095AbgJ1WUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:18:38 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514A5C0613CF;
-        Wed, 28 Oct 2020 15:18:36 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id g12so680540wrp.10;
-        Wed, 28 Oct 2020 15:18:36 -0700 (PDT)
+        Wed, 28 Oct 2020 18:20:41 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FC8C0613CF;
+        Wed, 28 Oct 2020 15:20:41 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id y186so1233858oia.3;
+        Wed, 28 Oct 2020 15:20:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=crsJn958YPx+DfiUeCUXF8zFkw8B7ZgM1ok7UnCgjBc=;
-        b=SpU9X23c0TEXgzS51opwaIWf2xC0Vz5Mon/ZEP0E0lIupE5LmXZrhj7AOIdodA/mzF
-         SPMP5bd+zN5zwp6EoeedpLXqljCllRH1ennrUZ1C1gIrcbywAcJDLtvAsvE7h6PwR9Ge
-         HQKj+nRElMTqbeFrx2zkyvP/HGotboA9G3EV2fm61FDxdW224daICDMqU3YyN4uiZ2Qf
-         qSvGnPqK6Xc+GZQx9O1oWc+ko4hUfTcYiu3KwHsGXuzXZt2pAJnLaRGNLEZ6C/cHruBz
-         P/n3NREfc2KNd/zJeaJ11ebVmxIKxuLUz+1la0xdkxxDf3YzNzwUs7Qpoafwc2YAX4yU
-         W13A==
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=v9LBzPeLt3o9hNQa4Z+vPX3sn9BiYh8UaDTjER3bLdo=;
+        b=niGQm7OxJp2SMq5is4ZYkWmie5W+DInI/uXbNCLBXfscrzB11U1e9xYhTkIpJTgXBB
+         rFL5zCuWBpaFZEAB7uii0hg6r/nZF7bimxt7m+O4i2rXtWHORroTGpy4MazDl3wxCtH/
+         OTaAZziT+UViWxiOLS+NTnS4UPx5xtGJrbwHAwx0WFTsoir9udAA+JycdX+ugsITneVY
+         Pf5D13VXycj1PNWezZj2As2y7FAkHv3BRwKcTrb6Zu9KnikeeJNepMeJ/hdr79bumsVB
+         QVpTh/yaI4h1wfvBY5Srd07QjUz4FCdRIwq1ollIRNPm6TNq3RerD6lXe5T4WcA/S3mh
+         9Rsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=crsJn958YPx+DfiUeCUXF8zFkw8B7ZgM1ok7UnCgjBc=;
-        b=p4AJPLVbZlVOfXnkq8091Oj22pvoJ3niDzJD5TCC0mldMd6NnKRy5QiLkGbHp91Xch
-         BKJe2hocoiGRYTfcMiOeefOGiRcu1cMWheWPK5C1sOsfC0Evk5U3JBb3ZNwtN8F/0kDV
-         mzvkfTipVgm+Q8e5LxG4quIChCxK/eoJFKaIjBWvd02Jze3XWHDTkMPKH2fhDv88NZTL
-         eSpZ6o9D00hM4EkNREHWTRnjAnZ2xdAp8F/VAMTxJWesyyYaBwREOuIDxuAvp2v87acc
-         tvCd7bpoFbaUzTkmfOjrdAIGEHW77H2APJu2C3D+6xDLsng8S0r80/q8TJzjJIkprn8j
-         haBg==
-X-Gm-Message-State: AOAM531AX8kd5RIiHd/QErez3rtdMV71hWJ0rwOYVc9by+ymaGPagjUK
-        XhBeniBZGf0qLqs0C/gkozMen/5LbqA1RsGSLmPNzcIL2wAnUQ==
-X-Google-Smtp-Source: ABdhPJwoGVdRqfsqvWuWzdPRnNZe3lb2Vi57v7g4MvL1w570aMKiksqMTfhLx8AO2bJTRqclXeS9Facr25x2VLhnKkk=
-X-Received: by 2002:a17:906:ec9:: with SMTP id u9mr6992083eji.400.1603882986071;
- Wed, 28 Oct 2020 04:03:06 -0700 (PDT)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=v9LBzPeLt3o9hNQa4Z+vPX3sn9BiYh8UaDTjER3bLdo=;
+        b=g3mL8ubSn3QqDk8W1805O4xvW/0ruKqfQME87IcD71gmIE2Ic5kNCkkOZaFw91r2DV
+         cwGXHMbuSpOoaCO+SKA+xgp1WraAyYpCuSuAJo6exlcjJOhZAsEZWS9JsyeFE3wqoIZ9
+         rDhMvcC7J5svLESKBEgvoXEvlrsyxfSXg+CiYr4dIhgrZKCVC6V0sJvPKX20LkApB8ye
+         cGmf/9H9eALXYQ5WSTiVsaS7gYJbLQTi3IRGvF3rmleJoUccJRrE/Qyd1cu+q4Rlysju
+         4tRuAwKSEx1kfzwav/o5P416hai6er777wHptIu+Fq/dG/f9wZSlxzZZ7+7SDHzyzApt
+         U+Pw==
+X-Gm-Message-State: AOAM5320qapTuE7GVbvOgszwHRgdn12Q1meWyJRxwfRc07Ke4iL4buY2
+        fqZURS1D9361P/jk9aFZTOUCni7IMCs=
+X-Google-Smtp-Source: ABdhPJxTITOzrDIrwOR+VF0vrmuE9xC08OrVNt6GXqxcprc812L7kFcSAPs9K7lNu7FxreedvO7GHQ==
+X-Received: by 2002:aca:e046:: with SMTP id x67mr4506692oig.141.1603883225985;
+        Wed, 28 Oct 2020 04:07:05 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b92sm2085043otc.70.2020.10.28.04.07.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 04:07:05 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 4.14 000/191] 4.14.203-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+References: <20201027134909.701581493@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <be7a7531-d8bf-10c3-fb21-01dfdddb6216@roeck-us.net>
+Date:   Wed, 28 Oct 2020 04:07:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201012135517.19468-1-frank@allwinnertech.com>
- <20201012135517.19468-3-frank@allwinnertech.com> <20201028102942.zc5hgqpo2bfrn6in@vireshk-i7>
-In-Reply-To: <20201028102942.zc5hgqpo2bfrn6in@vireshk-i7>
-From:   Frank Lee <tiny.windzz@gmail.com>
-Date:   Wed, 28 Oct 2020 19:02:54 +0800
-Message-ID: <CAEExFWvNgK2wbvmxZjsJR4g-VBq=ggsBLew77rzmNdkpqTRuDA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] opp: Add devres wrapper for dev_pm_opp_set_prop_name
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Frank Lee <frank@allwinnertech.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        airlied@linux.ie, daniel@ffwll.ch,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, jcrouse@codeaurora.org,
-        eric@anholt.net, kholk11@gmail.com, emil.velikov@collabora.com,
-        gustavoars@kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 6:29 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 12-10-20, 21:55, Frank Lee wrote:
-> > From: Yangtao Li <tiny.windzz@gmail.com>
-> >
-> > Add devres wrapper for dev_pm_opp_set_prop_name() to simplify driver
-> > code.
-> >
-> > Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-> > Signed-off-by: Yangtao Li <frank@allwinnertech.com>
-> > ---
-> >  drivers/opp/core.c     | 39 +++++++++++++++++++++++++++++++++++++++
-> >  include/linux/pm_opp.h |  6 ++++++
-> >  2 files changed, 45 insertions(+)
->
-> On a second thought I am looking at dropping this one as you haven't
-> added any users yet and I am afraid it will stay unused.
+On 10/27/20 6:47 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.203 release.
+> There are 191 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 29 Oct 2020 13:48:36 +0000.
+> Anything received after that time might be too late.
+> 
 
-Now it looks like that dev_pm_opp_set_prop_name() is used relatively less.
-Maybe we can wait until a caller, and then pick up the patch.
 
-MBR,
-Yangtao
+Build reference: v4.14.202-192-ga42f5f48c6ae
+gcc version: powerpc64-linux-gcc (GCC) 10.2.0
+
+Building powerpc:defconfig ... failed
+--------------
+Error log:
+arch/powerpc/platforms/powernv/opal-dump.c: In function 'process_dump':
+arch/powerpc/platforms/powernv/opal-dump.c:409:7: error: void value not ignored as it ought to be
+  409 |  dump = create_dump_obj(dump_id, dump_size, dump_type);
+
+Full results will follow later.
+
+Guenter
