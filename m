@@ -2,116 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25A629D297
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA8129D4E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbgJ1Vde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:33:34 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:40739 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgJ1VdT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:33:19 -0400
-Received: by mail-wm1-f65.google.com with SMTP id k18so624986wmj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:33:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jxN7dwqApdR1ej5dh2h2T4IB4++cE/G2cOg1rxvC1QU=;
-        b=bVgcOJNDYGFVmRhLRE5zDu1fTUWAdDMpxxBtb+q8OcZmy5i6QdU4+VmbQQKjjt02SU
-         uf+n3paPdIQPEufyNwNrkkSC8uRV5UHdGk5fL6iKJwhxXsfK007LvehHdsIdkYD/vkwl
-         MF3RqolRLeULiKOhMAJ+KtH4XAyC9l0aOO7dY+oMvzchh72LIch6SRcr3Vxxsiv3d969
-         uDyHgZZ+lku4criVmIJ6F7ax7e0vb4zW8oy/yvd9pKD0qr2YNoiStv1aeVEOFH2HYLQn
-         wVKirUiTe5QH1258QCNhLvWqHrZcdPSYKgZ4+nJ/3pDnQkxtFLkkLZRNBYOwTuiN6lMe
-         tHCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jxN7dwqApdR1ej5dh2h2T4IB4++cE/G2cOg1rxvC1QU=;
-        b=hp2QtE0qFCgUe50y50VhQZAzpjIZmdkf3o5DLoO1XFo/R9+ZESZ6Cn2s1Rh6r3xXSA
-         VmPzLoQVWK8iWuDxeRAKMw5PaLzmF9GcU1oz3D/bJQUxYnv9jooeLIrJiHOIzUPLpClW
-         7DAVueoko8cqV0U1AX7X0RczVwb6wVKbEjUvB6kDtjCjMxWMBwhFVvjEinml5KOAuf2G
-         QLhBk8aqH76kFm+4x98cvFw3grx8dn2Mk4vH65QPLKKHR6Rq2Vx6Gx0vnJRt+xZ0E4me
-         4JSqgpJ8RjoD4J+pH7eXbLUmlh2ibrgMd9PVveDJEXr0Cnsvsr0y/CklOoObmKpBSApX
-         0OcQ==
-X-Gm-Message-State: AOAM531OdQuVzeAGnbPSL2mR2EJRWsf8hi3ycyJuGyZw/lSdM1lpMMG+
-        Myg2uoQaNyfox2bqjnZG7ETxbFvz+FLz/w==
-X-Google-Smtp-Source: ABdhPJxugL/06UijjpouyBtDh42aboeAqgIFcJ7a1QLSdDZlftvXVGOyggzHDRsaGqPXkkSDAVWXnQ==
-X-Received: by 2002:a05:600c:2049:: with SMTP id p9mr6483756wmg.147.1603899975882;
-        Wed, 28 Oct 2020 08:46:15 -0700 (PDT)
-Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id p4sm7367869wrf.67.2020.10.28.08.46.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 08:46:15 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 15:46:13 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: drivers/video/backlight/ltv350qv.c:192:12: warning: stack frame
- size of 13472 bytes in function 'ltv350qv_power'
-Message-ID: <20201028154613.fue7ilxdihj2cado@holly.lan>
-References: <202010260230.VivTG0Gb-lkp@intel.com>
- <20201025121708.04d4070a44e28146baf9a6a7@linux-foundation.org>
+        id S1728409AbgJ1Vyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:54:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728310AbgJ1VwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:52:24 -0400
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 111AB247D9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:50:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603900253;
+        bh=+fltwhrBNsbSzN01punGsYvOfjxgYJKWrVwmEfe9vgs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jtwo+tArJtv7N9Se/DtXjCWwXi9dawJY0o96P9kKNfuV7NisBo6AvxSVSjmTpeK1M
+         kQ7f6G6dBOn+PQkMODl1drfo4Xxcb8426Mu/nmE1reQO9p4ZEl79+8G44JMBx6GWFf
+         VdCRQL3zSW5X7Nf57oG4Cc5+R5mRSoJhws6lDCco=
+Received: by mail-qk1-f171.google.com with SMTP id z6so4954648qkz.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 08:50:53 -0700 (PDT)
+X-Gm-Message-State: AOAM532dzN18JGaRC5BQcWx1OzccVKjpmM9pAPUXrrJ8GgG0uzgjqRh7
+        PJ95PS5nM3bWbqGcOsUoYMyUN30riyQ/hO7KwHA=
+X-Google-Smtp-Source: ABdhPJyfVvnTcJuzPbdCf/DfsTdqy1FgAIenfqV3AJu6HyZtCYCOHGUB7g7dbfOyIaXnGnFebSGwegf2ClVSPC80ymQ=
+X-Received: by 2002:a37:4e57:: with SMTP id c84mr7906625qkb.394.1603900252080;
+ Wed, 28 Oct 2020 08:50:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201025121708.04d4070a44e28146baf9a6a7@linux-foundation.org>
+References: <20201022050638.29641-1-sherry.sun@nxp.com> <20201022050638.29641-3-sherry.sun@nxp.com>
+ <20201023092650.GB29066@infradead.org> <VI1PR04MB4960E9ECD7310B8CA1E053DC92190@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <20201027062802.GC207971@kroah.com> <VI1PR04MB4960C0E76374B2775D99A82192160@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <20201027151106.e4skr6dsbwvo4al6@axis.com> <VI1PR04MB49603783EF3FD3F3635FCDAF92170@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <93bd1c60ea4d910489a7592200856eaf8022ced0.camel@intel.com>
+ <AM0PR04MB4947F01860DE953B8496FA8892170@AM0PR04MB4947.eurprd04.prod.outlook.com>
+ <CAK8P3a1JRx32VfFcwFpK0i6F5MQMCK-yCKw8=d_R08Y3iQ7wLQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a1JRx32VfFcwFpK0i6F5MQMCK-yCKw8=d_R08Y3iQ7wLQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 28 Oct 2020 16:50:36 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3u06ZHdAb_n3byTqfxAvy_wi48X1g0N4ODuH2uEM0xLA@mail.gmail.com>
+Message-ID: <CAK8P3a3u06ZHdAb_n3byTqfxAvy_wi48X1g0N4ODuH2uEM0xLA@mail.gmail.com>
+Subject: Re: [PATCH V3 2/4] misc: vop: do not allocate and reassign the used ring
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     "Dutt, Sudeep" <sudeep.dutt@intel.com>,
+        "vincent.whitchurch@axis.com" <vincent.whitchurch@axis.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "kishon@ti.com" <kishon@ti.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Dixit, Ashutosh" <ashutosh.dixit@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 25, 2020 at 12:17:08PM -0700, Andrew Morton wrote:
-> On Mon, 26 Oct 2020 02:15:37 +0800 kernel test robot <lkp@intel.com> wrote:
-> 
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   d76913908102044f14381df865bb74df17a538cb
-> > commit: cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4 kasan: allow enabling stack tagging for tag-based mode
-> > date:   3 months ago
-> > config: arm64-randconfig-r005-20201026 (attached as .config)
-> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 1c8371692dfe8245bc6690ff1262dcced4649d21)
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # install arm64 cross compiling tool for clang build
-> >         # apt-get install binutils-aarch64-linux-gnu
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4
-> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >         git fetch --no-tags linus master
-> >         git checkout cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > All warnings (new ones prefixed by >>):
-> > 
-> > >> drivers/video/backlight/ltv350qv.c:192:12: warning: stack frame size of 13472 bytes in function 'ltv350qv_power' [-Wframe-larger-than=]
-> 
-> That's a lot of stack.
-> 
-> >    static int ltv350qv_power(struct ltv350qv *lcd, int power)
-> >               ^
-> >    1 warning generated.
-> > 
-> > vim +/ltv350qv_power +192 drivers/video/backlight/ltv350qv.c
-> 
-> Odd - the code looks pretty normal.  It is possible that your compiler
-> is (crazily) inlining ltv350qv_write_reg()?
+(resending from the kernel.org address after getting bounces again)
 
-Certainly could be.
+On Wed, Oct 28, 2020 at 7:29 AM Sherry Sun <sherry.sun@nxp.com> wrote:
+> > Subject: Re: [PATCH V3 2/4] misc: vop: do not allocate and reassign the used
+> >
+> > Both Ashutosh and I have moved on to other projects. The MIC devices have
+> > been discontinued. I have just sent across a patch to remove the MIC drivers
+> > from the kernel tree.
+> >
+> > We are very glad to see that Sherry is able to reuse some of the VOP logic
+> > and it is working well. It is best if the MIC drivers are removed so Sherry can
+> > add the specific VOP logic required for imx8qm subsequently without having
+> > to worry about other driver dependencies.
+> > Hoping this results in a cleaner imx8qm driver moving forward.
+>
+> I'm ok with your patch.
+> Since you have deprecated the MIC related code, may I ask do you have
+> a better solution instead of vop/scif?
 
-Same config compiled with gcc-9 gives ltv350qv_write_reg() a stack usage
-that is large but not crazy: 768 bytes and dropping to 480 bytes with
-the sanitizers disabled. With the sanitizers enabled then even the 
-cumulative stack usage of ltv350qv_power() through to ltv350qv_write_reg() is
-still less than 1k.
+I think we should try to do something on top of the PCIe endpoint subsystem
+to make it work across arbitrary combinations of host and device
+implementations,
+and provide a superset of what the MIC driver, (out-of-tree) Bluefield endpoint
+driver, and the NTB subsystem as well as a couple of others used to do,
+each of them tunneling block/network/serial/... over a PCIe link of some
+sort, usually with virtio.
 
+At the moment, there is only one driver for the endpoint framework in the
+kernel, in drivers/pci/endpoint/functions/pci-epf-test.c, but I think this can
+serve as a starting point.
 
-Daniel.
+The PCI endpoint subsystem already uses configfs for configuring the
+available devices, and this seems like a good fit for making it work
+in general. However, there are a number of use cases that have
+somewhat conflicting requirements, so the first step would be to
+figure out what everyone actually needs for virtio communication.
+
+These are some of the main differences that I have noticed in the
+past:
+
+- The simple case would be to use one PCIe endpoint device
+  for each virtio device, but I think this needs to be multiplexed
+  so that hardware that only supports a single PCIe endpoint
+  can still have multiple virtio devices tunneled through it.
+
+- While sometimes the configuration is hardcoded in the driver, ideally
+  the type of virtio device(s) that is tunneled over the PCIe link should
+  be configurable. The configuration of the endpoint device itself is
+  done on the machine running on the endpoint side, but for the
+  virtio devices, this might be either on the host or the endpoint.
+  Not sure if one of the two ways is common enough, or we have to
+  allow both.
+
+- When the link is configured, you still need one side to provide a
+  virtio device host implementation, while the other side would
+  run the normal virtio device driver. Again, these could be done
+  either way, and it is independent of which side has configured
+  the link, and we might want to only allow one of the two options,
+  or do both, or tie it to who configures it (e.g. the side that creates
+  the device must be the virtio device host, while the other side
+  just sees the device pop up and uses a virtio driver).
+
+       Arnd
