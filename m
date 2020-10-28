@@ -2,57 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4D329E169
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA1129E159
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727359AbgJ2CA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:00:58 -0400
+        id S1728940AbgJ2CAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:00:37 -0400
 Received: from casper.infradead.org ([90.155.50.34]:44160 "EHLO
         casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727777AbgJ1Vva (ORCPT
+        with ESMTP id S1728180AbgJ1Vvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:51:30 -0400
+        Wed, 28 Oct 2020 17:51:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
-        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=Mpdng4RuQf44ddf01qH6mfLCaTFkE0g2Rcb1wOeeIHU=; b=NRwfifkpHQUhXnJUZdVgLlXfe5
-        oqxhKZfB0LwJepg2if6yYDdgaYZASU0OTKfn4JrhHIoo4AYBREMWR6myzHL8ALDeB3MpPEnVwSoJ7
-        o9OWFc9bQPK+zxwyMKxaX+9xnLPLJ1vsEGFSKz9G2JWUylMgEdSP9y+Gmpq2Jos5CMWzqJ8vhfr/Z
-        wmuNY17B+3VK9A0jsdCTpATdZ8vIxMWj3uvcr63CrUOt6ytUM5yeFnGLbs4zdlEKLbS1VRyFoBTig
-        1+Lma9fmaD5IhjsksDHTfy8sq54IW7HJ7/RNpLgn6h6vXahj+1rLPuxgzufPu9Hof3IKGJzePqnui
-        FrQT3fzA==;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=tx4qoiH3PUHFWV8+AgjV+uBCV7VzasfH+zR58zkiQYE=; b=LjTEJ9FGCiPiQ0hyqiLxvpRpE3
+        NYR0z4PjM/+yVq1Yt9GT4Na+0EdrqSLUeWngyqBJdGrVa0bUJ2MYE5NB7DdBnQjRch+iX4hS9VI+a
+        g8p8psI8WT2W2/ZlZ4c+ZJoQQu83oiK34MEPU24cBBwudJDO+eXhY4388CD0ZvlybFRWRvJ9pxwfj
+        ga4KvJwnIGBRjknJvraRZVT6HCOKn4W0s5oq7WIyDV/5cVJWIyFwRsauncJc7j/Osyzki0B5Ph7tT
+        NJQdEgJX84sQf/7oBv5JmJ3hACJXoi6NZ/7fYyh5mo0hGq7m+P9yFLIkt7e5OQfqHTSycEkl3v+uE
+        bRCnI2cA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXjOO-0000QB-Qz; Wed, 28 Oct 2020 11:13:25 +0000
+        id 1kXjON-0000Pu-9l; Wed, 28 Oct 2020 11:13:24 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9B3823070F9;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 119C6305DD1;
         Wed, 28 Oct 2020 12:13:21 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id C577820B285A1; Wed, 28 Oct 2020 12:13:21 +0100 (CET)
-Message-ID: <20201028110707.971887448@infradead.org>
+        id CEE6520B285A4; Wed, 28 Oct 2020 12:13:21 +0100 (CET)
+Message-ID: <20201028111221.405177398@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 28 Oct 2020 12:07:07 +0100
+Date:   Wed, 28 Oct 2020 12:07:10 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org
 Cc:     linux-kernel@vger.kernel.org, will@kernel.org, paulmck@kernel.org,
         hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
         davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
         oleg@redhat.com, vincent.guittot@linaro.org, peterz@infradead.org
-Subject: [PATCH v3 0/6] smp: irq_work / smp_call_function rework
+Subject: [PATCH v3 3/6] irq_work: Optimize irq_work_single()
+References: <20201028110707.971887448@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Trade one atomic op for a full memory barrier.
 
-These are the non-controversial irq_work / smp_call_function integration /
-cleanup patches.
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ include/linux/irqflags.h |    8 ++++----
+ kernel/irq_work.c        |   29 +++++++++++++++++------------
+ 2 files changed, 21 insertions(+), 16 deletions(-)
 
-There's one RFC patch to use the new irq_work_queue_remote() which seems to
-survive rcutorture.
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -88,14 +88,14 @@ do {						\
+ 		  current->irq_config = 0;			\
+ 	  } while (0)
+ 
+-# define lockdep_irq_work_enter(__work)					\
++# define lockdep_irq_work_enter(_flags)					\
+ 	  do {								\
+-		  if (!(atomic_read(&__work->node.a_flags) & IRQ_WORK_HARD_IRQ))\
++		  if (!((_flags) & IRQ_WORK_HARD_IRQ))			\
+ 			current->irq_config = 1;			\
+ 	  } while (0)
+-# define lockdep_irq_work_exit(__work)					\
++# define lockdep_irq_work_exit(_flags)					\
+ 	  do {								\
+-		  if (!(atomic_read(&__work->node.a_flags) & IRQ_WORK_HARD_IRQ))\
++		  if (!((_flags) & IRQ_WORK_HARD_IRQ))			\
+ 			current->irq_config = 0;			\
+ 	  } while (0)
+ 
+--- a/kernel/irq_work.c
++++ b/kernel/irq_work.c
+@@ -34,7 +34,7 @@ static bool irq_work_claim(struct irq_wo
+ 	oflags = atomic_fetch_or(IRQ_WORK_CLAIMED | CSD_TYPE_IRQ_WORK, &work->node.a_flags);
+ 	/*
+ 	 * If the work is already pending, no need to raise the IPI.
+-	 * The pairing atomic_fetch_andnot() in irq_work_run() makes sure
++	 * The pairing smp_mb() in irq_work_single() makes sure
+ 	 * everything we did before is visible.
+ 	 */
+ 	if (oflags & IRQ_WORK_PENDING)
+@@ -136,22 +136,27 @@ void irq_work_single(void *arg)
+ 	int flags;
+ 
+ 	/*
+-	 * Clear the PENDING bit, after this point the @work
+-	 * can be re-used.
+-	 * Make it immediately visible so that other CPUs trying
+-	 * to claim that work don't rely on us to handle their data
+-	 * while we are in the middle of the func.
++	 * Clear the PENDING bit, after this point the @work can be re-used.
++	 * The PENDING bit acts as a lock, and we own it, so we can clear it
++	 * without atomic ops.
+ 	 */
+-	flags = atomic_fetch_andnot(IRQ_WORK_PENDING, &work->node.a_flags);
++	flags = atomic_read(&work->node.a_flags);
++	flags &= ~IRQ_WORK_PENDING;
++	atomic_set(&work->node.a_flags, flags);
++
++	/*
++	 * See irq_work_claim().
++	 */
++	smp_mb();
+ 
+-	lockdep_irq_work_enter(work);
++	lockdep_irq_work_enter(flags);
+ 	work->func(work);
+-	lockdep_irq_work_exit(work);
++	lockdep_irq_work_exit(flags);
++
+ 	/*
+-	 * Clear the BUSY bit and return to the free state if
+-	 * no-one else claimed it meanwhile.
++	 * Clear the BUSY bit, if set, and return to the free state if no-one
++	 * else claimed it meanwhile.
+ 	 */
+-	flags &= ~IRQ_WORK_PENDING;
+ 	(void)atomic_cmpxchg(&work->node.a_flags, flags, flags & ~IRQ_WORK_BUSY);
+ }
+ 
 
-Please consider.
 
