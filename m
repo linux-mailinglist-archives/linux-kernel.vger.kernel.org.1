@@ -2,106 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B586529D985
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2974529D8A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389841AbgJ1Wzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
+        id S2388212AbgJ1Wf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:35:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389789AbgJ1Wz0 (ORCPT
+        with ESMTP id S2388039AbgJ1Wf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:55:26 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3468FC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:55:26 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id z17so1260776iog.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:55:26 -0700 (PDT)
+        Wed, 28 Oct 2020 18:35:26 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9628C0613CF;
+        Wed, 28 Oct 2020 15:35:25 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b8so775863wrn.0;
+        Wed, 28 Oct 2020 15:35:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=18t2/9BUdXVT3FrRrj2981btsIjhV7OAUvBATF+KIB0=;
-        b=k3loYIPiIcMAoy/iHvUGwPZSy6eOYNJ5ySXU0mvomWoI8EVBixJPtTbiWWBENmojE5
-         HVounQUUhJcyiFj7vRWtbUM0vAIfmxfoxhTzD2jeeXblPYr/B+osGTlY4zvfmrD6Dnc2
-         n83Xx/LHBU1ayGXESahM9ZnAAw9Fdj53NGBECTVEmklZqM9Xb2xEs5zD75v/PypwlJB/
-         zQGS3lerJaQ67/a9WmO4MKWNdjWOhBJPu0D2q/jYeP9OkxLfi668ZRRKRh4YoJEL5yoo
-         eB1ImiKGtkzeQrcRULLBMrp8KvKMjDePmGhAVk4lQ03OclTMTS+1OgAhqygAOUp4e6dD
-         wnfg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=h23wKbfgYL9kDvhwDDhfkzOxIVFwm98tx6PSZ7ZaPyc=;
+        b=d5nxb9PQWiSrB05t/y0VzcAfef9CvGlc7T+yTsKRuP8Lx9+o0VgUozdtP383IzsurZ
+         VVfwVtj3gPgmPP269Mz3dmwe7fAuv2rwGzy0dhLMK8iBcKbtaqDz0oY6PIcfsr/WA4Eg
+         LCbNnQN3kHdLPRwWjz/FjGxxMZCVA9Fwxug5O3mrPiPsBB9nwEzxokoMkkJFqM+9fYpu
+         GxWz5WAR8Gitn6kxf8NXOMcT0PqR2sjrtrOwfXmFfN64yJFdmVE9wvlJ7/Ht4U56h2B5
+         7GVBfeMsG27rLvWfmQL4G6w5rXLD3zsJ9rhJPCRV1T9uUYKJyU2TnWWlUu6ltwJFhE9Y
+         qajg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=18t2/9BUdXVT3FrRrj2981btsIjhV7OAUvBATF+KIB0=;
-        b=VISQY6fGw1qsWrqJ4jpVcvgyDkF0qR3Iw3Oxc1usxm94/5BYAsschzx8CSbmEE2glA
-         HZz+gz6FWkV9XyT9Cpw1KVrr8/r+QFzttJZEymi4w8VcVW4yRHYBBiqeMkvA3hNNbZ24
-         8SNDlLUijyaikn/G5Y2sdB27jN6cz2Fp1haF+OMgX3TyWVyYljs38sjvG911UVx4GNSL
-         ZDziyIyEPvP57oB0VHaTlvxbFHx+pfXYEdy7BwIySgL+lktp469HA5f91SAk9qaYXeO8
-         pVnMhOzXaw1mHu4TLJwNrjqN+TW7M0xKA6UEFLwTSh/iaysQa7gPLC33sAkonqHcKemE
-         ZGWQ==
-X-Gm-Message-State: AOAM531FY2pjF7wYWn7Iam2DQwRBhC6DxZGDbLXxB/3Yj2SRf2yKEnlc
-        KgSk5tubpgjfG9nGrtHO5K/0EdWHZiYn5rwReyOqOvdj1hh7rQ==
-X-Google-Smtp-Source: ABdhPJzaNeVHtbW1lh9ufGbWPWDwwPouKVzBfung1oI4AWTnRzs2nfDWv2Ui3GTcr/CHWTwh7/sk06XVd1vyJ5wCV6I=
-X-Received: by 2002:aed:2f67:: with SMTP id l94mr4880669qtd.101.1603844962246;
- Tue, 27 Oct 2020 17:29:22 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h23wKbfgYL9kDvhwDDhfkzOxIVFwm98tx6PSZ7ZaPyc=;
+        b=GMVWankEpoFuAArjeI2Hva6YKQssnoN0thYNLFek7WWxtE6yuY62BdMDTLqr/FHydH
+         Wmu3v6Shiu6hZvH2XkqgCv6+Mu+RfPW4EUX29Z6gVzQIGOdUFalwNIZFYQ+bYuTYDcPb
+         ZiqAJze41TstWV4xx4C0NURPwXjNVyrVgYiDVrkZjd8/omLCXn0BYfU5GO5BuwlaqjNc
+         xEHwM9RXbhnmDn51sF21dfhbdcGZyUTjh5z+T2sQ/z6L/xylU2tp1t9gsnZnAOhxpDl5
+         OCVrsqbUbE10cddwXTCv08msGqf+Zn+UqnkQADbcgQbWLcppU4BWN84Wuubqj75/Pe9r
+         aFfA==
+X-Gm-Message-State: AOAM531LnefOJfJHOOcrxrHaQ0Sk6onHH1bKwosVRON25dMayaY/XE4d
+        4LaJvHD84q9ey/SRJRL1gMhLl7/PcV0=
+X-Google-Smtp-Source: ABdhPJzbfpPYavOCxjd2FrFrmJsnTEocICNJpvYVcYHQLVRW+ntIG5czUe7iNPFQ6EOxLuoizI/hig==
+X-Received: by 2002:a17:906:3150:: with SMTP id e16mr5084215eje.266.1603847049718;
+        Tue, 27 Oct 2020 18:04:09 -0700 (PDT)
+Received: from [192.168.0.48] (HSI-KBW-46-223-1-197.hsi.kabel-badenwuerttemberg.de. [46.223.1.197])
+        by smtp.gmail.com with ESMTPSA id ck19sm1886941ejb.99.2020.10.27.18.04.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Oct 2020 18:04:08 -0700 (PDT)
+Subject: Re: PROBLEM: Reiser4 hard lockup
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     David Niklas <Hgntkwis@vfemail.net>,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201025090422.D80F56FB40E1@huitzilopochtli.metztli-it.com>
+ <20201025210758.034aa947@Phenom-II-x6.niklas.com>
+ <2e2f8dc4-a48e-f09c-3f41-5dfa7f9a6387@gmail.com>
+ <20201027193633.GE5691@mit.edu>
+From:   Edward Shishkin <edward.shishkin@gmail.com>
+Message-ID: <b46d25c0-9f4a-5483-05f8-c104da20767e@gmail.com>
+Date:   Wed, 28 Oct 2020 02:04:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.5.2
 MIME-Version: 1.0
-References: <20201023032944.399861-1-joshdon@google.com> <20201023104853.55ef1c20@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201023104853.55ef1c20@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 27 Oct 2020 17:29:11 -0700
-Message-ID: <CABk29NsiTvSqJjyayHSc26gMoQ8fLtjdEY6wY7bK8v6KKjMm5A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sched: better handling for busy polling loops
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, kvm@vger.kernel.org,
-        Xi Wang <xii@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201027193633.GE5691@mit.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 10:49 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Thu, 22 Oct 2020 20:29:42 -0700 Josh Don wrote:
-> > Busy polling loops in the kernel such as network socket poll and kvm
-> > halt polling have performance problems related to process scheduler load
-> > accounting.
-> >
-> > Both of the busy polling examples are opportunistic - they relinquish
-> > the cpu if another thread is ready to run.
->
-> That makes it sound like the busy poll code is trying to behave like an
-> idle task. I thought need_resched() meant we leave when we run out of
-> slice, or kernel needs to go through a resched for internal reasons. No?
->
+On 10/27/2020 08:36 PM, Theodore Y. Ts'o wrote:
+> On Tue, Oct 27, 2020 at 01:53:31AM +0100, Edward Shishkin wrote:
+>>>> reiser4progs 1.1.x Software Framework Release Number (SFRN) 4.0.1 file
+>>>> system utilities should not be used to check/fix media formatted 'a
+>>>> priori' in SFRN 4.0.2 and vice-versa.
+>>>
+>>> Honestly, this is the first time I've heard about a Linux FS having
+>>> versioning other than a major one
+>>
+>> This is because, unlike other Linux file systems, reiser4 is a
+>> framework.
+>>
+>> In vanilla kernel having a filesystem-as-framework is discouraged for
+>> ideological reasons. As they explained: "nobody's interested in
+>> plugins". A huge monolithic mess without any internal structure -
+>> welcome :)
+> 
+> I wouldn't call it an ideological problem, but more about wanting to
+> assure interoperability issues and wanting to reduce confusion on the
+> part of users, especially if images get moved between systems.  There
+> is also plenty of way of introducing internal structure and code
+> cleanliness without going completely undisciplined with respect to
+> on-disk format extensions.  :-)
 
-The issue is about the kernel's ability to identify the polling cpu,
-such that it _could_ send a task to that cpu and trigger a resched.
 
-> > This design, however, doesn't
-> > extend to multiprocessor load balancing very well. The scheduler still
-> > sees the busy polling cpu as 100% busy and will be less likely to put
-> > another thread on that cpu. In other words, if all cores are 100%
-> > utilized and some of them are running real workloads and some others are
-> > running busy polling loops, newly woken up threads will not prefer the
-> > busy polling cpus. System wide throughput and latency may suffer.
->
-> IDK how well this extends to networking. Busy polling in networking is
-> a conscious trade-off of CPU for latency, if application chooses to
-> busy poll (which isn't the default) we should respect that.
->
-> Is your use case primarily kvm?
+Have you made this up right now?
+I remember very well all the requests for merging reiser4 to upstream
+(in 2004, 2005 and 2006 years) - compatibility claims had never been
+raised. Especially, it is not a problem to add mechanisms for keeping
+track of compatibility at any time.
 
-Good point, we do make use of the networking portion but this might be
-less applicable to users in general for that reason.  KVM is the
-primary use case.
+
+> 
+> Finally, I'll note that ext 2/3/4 does have a rather fine-grained set
+> of feature flags, with specific rules about what the kernel --- and
+> e2fsck --- should do if it finds a feature bit it doesn't understand
+> in the incompat, ro_compat, and compat feature flags set.  This is
+> especially helpful since we have multiple implementations of ext 2/3/4
+> out there (in FreeBSD, the GRUB bootloader, GNU HURD, Fuchsia, etc.)
+> and so using feature bits allow for safe and reliable interoperability
+> with the user being warned if they can safely only mount the file
+> system read-only, or not at all, if the file system has some new
+> feature that their current OS version does not support.  We can also
+> give appropriate warnings if they are using an insufficiently recent
+> version of the userspace tools.
+
+
+"Fine-grained" means per-volume decisions mount/not mount/read-only
+mount? It is even not yesterday technique. It is an ice age...
+
+Edward.
