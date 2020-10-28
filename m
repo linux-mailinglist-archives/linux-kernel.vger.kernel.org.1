@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D91329D5F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A393729D5F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730517AbgJ1WKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:10:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:39138 "EHLO foss.arm.com"
+        id S1730505AbgJ1WKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:10:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:39132 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730480AbgJ1WKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730488AbgJ1WKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Oct 2020 18:10:18 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 948811767;
-        Wed, 28 Oct 2020 15:10:16 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC502176B;
+        Wed, 28 Oct 2020 15:10:17 -0700 (PDT)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B0E403F73C;
-        Wed, 28 Oct 2020 15:10:15 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C96573F73C;
+        Wed, 28 Oct 2020 15:10:16 -0700 (PDT)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
         coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
         Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH v3 14/26] coresight: etm4x: Add sysreg access helpers
-Date:   Wed, 28 Oct 2020 22:09:33 +0000
-Message-Id: <20201028220945.3826358-16-suzuki.poulose@arm.com>
+Subject: [PATCH v3 15/26] coresight: etm4x: Define DEVARCH register fields
+Date:   Wed, 28 Oct 2020 22:09:34 +0000
+Message-Id: <20201028220945.3826358-17-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20201028220945.3826358-1-suzuki.poulose@arm.com>
 References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
@@ -34,433 +34,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ETMv4.4 architecture defines the system instructions for accessing
-ETM via register accesses. Add basic support for accessing a given
-register via system instructions.
+Define the fields of the DEVARCH register for identifying
+a component as an ETMv4.x unit. Going forward, we use the
+DEVARCH register for the component identification, rather
+than the TRCIDR3.
 
 Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
 Cc: Mike Leach <mike.leach@linaro.org>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
- .../coresight/coresight-etm4x-core.c          |  39 ++
- drivers/hwtracing/coresight/coresight-etm4x.h | 348 ++++++++++++++++--
- 2 files changed, 365 insertions(+), 22 deletions(-)
+ .../coresight/coresight-etm4x-core.c          |  4 +-
+ drivers/hwtracing/coresight/coresight-etm4x.h | 42 +++++++++++++++++++
+ 2 files changed, 44 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 4af7d45dfe63..90b80982c615 100644
+index 90b80982c615..a5c914b16e59 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
 +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -56,6 +56,45 @@ static u64 etm4_get_access_type(struct etmv4_config *config);
- 
- static enum cpuhp_state hp_online;
- 
-+u64 etm4x_sysreg_read(struct csdev_access *csa,
-+		      u32 offset,
-+		      bool _relaxed,
-+		      bool _64bit)
-+{
-+	u64 res = 0;
-+
-+	switch (offset) {
-+	ETM4x_READ_CASES(res)
-+	default :
-+		WARN_ONCE(1, "etm4x: trying to read unsupported register @%x\n",
-+			 offset);
-+	}
-+
-+	if (!_relaxed)
-+		__iormb(res);	/* Imitate the !relaxed I/O helpers */
-+
-+	return res;
-+}
-+
-+void etm4x_sysreg_write(struct csdev_access *csa,
-+			u64 val,
-+			u32 offset,
-+			bool _relaxed,
-+			bool _64bit)
-+{
-+	if (!_relaxed)
-+		__iowmb();	/* Imitate the !relaxed I/O helpers */
-+	if (!_64bit)
-+		val &= GENMASK(31, 0);
-+
-+	switch (offset) {
-+	ETM4x_WRITE_CASES(val)
-+	default :
-+		WARN_ONCE(1, "etm4x: trying to write to unsupported register @%x\n",
-+			offset);
-+	}
-+}
-+
- static void etm4_os_unlock_csa(struct etmv4_drvdata *drvdata, struct csdev_access *csa)
- {
- 	/* Writing 0 to TRCOSLAR unlocks the trace registers */
+@@ -1610,8 +1610,8 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
+ static struct amba_cs_uci_id uci_id_etm4[] = {
+ 	{
+ 		/*  ETMv4 UCI data */
+-		.devarch	= 0x47704a13,
+-		.devarch_mask	= 0xfff0ffff,
++		.devarch	= ETM_DEVARCH_ETMv4x_ARCH,
++		.devarch_mask	= ETM_DEVARCH_ID_MASK,
+ 		.devtype	= 0x00000013,
+ 	}
+ };
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-index 510828c73db6..5cf71b30a652 100644
+index 5cf71b30a652..e7f6b7b16fb7 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x.h
 +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-@@ -125,29 +125,323 @@
- #define TRCCIDR2			0xFF8
- #define TRCCIDR3			0xFFC
+@@ -497,6 +497,48 @@
+ 					 ETM_MODE_EXCL_KERN | \
+ 					 ETM_MODE_EXCL_USER)
  
--#define etm4x_relaxed_read32(csa, offset)		\
--	readl_relaxed((csa)->base + (offset))
--
--#define etm4x_read32(csa, offset)			\
--	readl((csa)->base + (offset))
--
--#define etm4x_relaxed_write32(csa, val, offset)		\
--	writel_relaxed((val), (csa)->base + (offset))
--
--#define etm4x_write32(csa, val, offset)			\
--	writel((val), (csa)->base + (offset))
--
--#define etm4x_relaxed_read64(csa, offset)		\
--	readq_relaxed((csa)->base + (offset))
--
--#define etm4x_read64(csa, offset)			\
--	readq((csa)->base + (offset))
--
--#define etm4x_relaxed_write64(csa, val, offset)		\
--	writeq_relaxed((val), (csa)->base + (offset))
 +/*
-+ * System instructions to access ETM registers.
-+ * See ETMv4.4 spec ARM IHI0064F section 4.3.6 System instructions
++ * TRCDEVARCH Bit field definitions
++ * Bits[31:21]	- ARCHITECT = Always Arm Ltd.
++ *                * Bits[31:28] = 0x4
++ *                * Bits[27:21] = 0b0111011
++ * Bit[20]	- PRESENT,  Indicates the presence of this register.
++ *
++ * Bit[19:16]	- REVISION, Revision of the architecture.
++ *
++ * Bit[15:0]	- ARCHID, Identifies this component as an ETM
++ *                * Bits[15:12] - architecture version of ETM
++ *                *             = 4 for ETMv4
++ *                * Bits[11:0] = 0xA13, architecture part number for ETM.
 + */
-+#define ETM4x_OFFSET_TO_REG(x)		((x) >> 2)
++#define ETM_DEVARCH_ARCHITECT_MASK		GENMASK(31, 21)
++#define ETM_DEVARCH_ARCHITECT_ARM		((0x4 << 28) | (0b0111011 << 21))
++#define ETM_DEVARCH_PRESENT			BIT(20)
++#define ETM_DEVARCH_REVISION_SHIFT		16
++#define ETM_DEVARCH_REVISION_MASK		GENMASK(19, 16)
++#define ETM_DEVARCH_REVISION(x)			\
++	(((x) & ETM_DEVARCH_REVISION_MASK) >> ETM_DEVARCH_REVISION_SHIFT)
++#define ETM_DEVARCH_ARCHID_MASK			GENMASK(15, 0)
++#define ETM_DEVARCH_ARCHID_ARCH_VER_SHIFT	12
++#define ETM_DEVARCH_ARCHID_ARCH_VER_MASK	GENMASK(15, 12)
++#define ETM_DEVARCH_ARCHID_ARCH_VER(x)		\
++	(((x) & ETM_DEVARCH_ARCHID_ARCH_VER_MASK) >> ETM_DEVARCH_ARCHID_ARCH_VER_SHIFT)
 +
-+#define ETM4x_CRn(n)			(((n) >> 7) & 0x7)
-+#define ETM4x_Op2(n)			(((n) >> 4) & 0x7)
-+#define ETM4x_CRm(n)			((n) & 0xf)
++#define ETM_DEVARCH_MAKE_ARCHID_ARCH_VER(ver)			\
++	(((ver) << ETM_DEVARCH_ARCHID_ARCH_VER_SHIFT) & ETM_DEVARCH_ARCHID_ARCH_VER_MASK)
 +
-+#include <asm/sysreg.h>
-+#define ETM4x_REG_NUM_TO_SYSREG(n)				\
-+	sys_reg(2, 1, ETM4x_CRn(n), ETM4x_CRm(n), ETM4x_Op2(n))
++#define ETM_DEVARCH_ARCHID_ARCH_PART(x)		((x) & 0xfffUL)
 +
-+#define READ_ETM4x_REG(reg)					\
-+	read_sysreg_s(ETM4x_REG_NUM_TO_SYSREG((reg)))
-+#define WRITE_ETM4x_REG(val, reg)				\
-+	write_sysreg_s(val, ETM4x_REG_NUM_TO_SYSREG((reg)))
++#define ETM_DEVARCH_MAKE_ARCHID(major)			\
++	((ETM_DEVARCH_MAKE_ARCHID_ARCH_VER(major)) | ETM_DEVARCH_ARCHID_ARCH_PART(0xA13))
 +
-+#define read_etm4x_sysreg_const_offset(offset)			\
-+	READ_ETM4x_REG(ETM4x_OFFSET_TO_REG(offset))
++#define ETM_DEVARCH_ARCHID_ETMv4x		ETM_DEVARCH_MAKE_ARCHID(0x4)
 +
-+#define write_etm4x_sysreg_const_offset(val, offset)		\
-+	WRITE_ETM4x_REG(val, ETM4x_OFFSET_TO_REG(offset))
++#define ETM_DEVARCH_ID_MASK						\
++	(ETM_DEVARCH_ARCHITECT_MASK | ETM_DEVARCH_ARCHID_MASK | ETM_DEVARCH_PRESENT)
++#define ETM_DEVARCH_ETMv4x_ARCH						\
++	(ETM_DEVARCH_ARCHITECT_ARM | ETM_DEVARCH_ARCHID_ETMv4x | ETM_DEVARCH_PRESENT)
 +
-+#define CASE_READ(res, x)					\
-+	case (x): { (res) = read_etm4x_sysreg_const_offset((x)); break; }
-+
-+#define CASE_WRITE(val, x)					\
-+	case (x): { write_etm4x_sysreg_const_offset((val), (x)); break; }
-+
-+#define CASE_LIST(op, val)			\
-+	CASE_##op((val), TRCPRGCTLR)		\
-+	CASE_##op((val), TRCPROCSELR)		\
-+	CASE_##op((val), TRCSTATR)		\
-+	CASE_##op((val), TRCCONFIGR)		\
-+	CASE_##op((val), TRCAUXCTLR)		\
-+	CASE_##op((val), TRCEVENTCTL0R)		\
-+	CASE_##op((val), TRCEVENTCTL1R)		\
-+	CASE_##op((val), TRCSTALLCTLR)		\
-+	CASE_##op((val), TRCTSCTLR)		\
-+	CASE_##op((val), TRCSYNCPR)		\
-+	CASE_##op((val), TRCCCCTLR)		\
-+	CASE_##op((val), TRCBBCTLR)		\
-+	CASE_##op((val), TRCTRACEIDR)		\
-+	CASE_##op((val), TRCQCTLR)		\
-+	CASE_##op((val), TRCVICTLR)		\
-+	CASE_##op((val), TRCVIIECTLR)		\
-+	CASE_##op((val), TRCVISSCTLR)		\
-+	CASE_##op((val), TRCVIPCSSCTLR)		\
-+	CASE_##op((val), TRCVDCTLR)		\
-+	CASE_##op((val), TRCVDSACCTLR)		\
-+	CASE_##op((val), TRCVDARCCTLR)		\
-+	CASE_##op((val), TRCSEQEVRn(0))		\
-+	CASE_##op((val), TRCSEQEVRn(1))		\
-+	CASE_##op((val), TRCSEQEVRn(2))		\
-+	CASE_##op((val), TRCSEQRSTEVR)		\
-+	CASE_##op((val), TRCSEQSTR)		\
-+	CASE_##op((val), TRCEXTINSELR)		\
-+	CASE_##op((val), TRCCNTRLDVRn(0))	\
-+	CASE_##op((val), TRCCNTRLDVRn(1))	\
-+	CASE_##op((val), TRCCNTRLDVRn(2))	\
-+	CASE_##op((val), TRCCNTRLDVRn(3))	\
-+	CASE_##op((val), TRCCNTCTLRn(0))	\
-+	CASE_##op((val), TRCCNTCTLRn(1))	\
-+	CASE_##op((val), TRCCNTCTLRn(2))	\
-+	CASE_##op((val), TRCCNTCTLRn(3))	\
-+	CASE_##op((val), TRCCNTVRn(0))		\
-+	CASE_##op((val), TRCCNTVRn(1))		\
-+	CASE_##op((val), TRCCNTVRn(2))		\
-+	CASE_##op((val), TRCCNTVRn(3))		\
-+	CASE_##op((val), TRCIDR8)		\
-+	CASE_##op((val), TRCIDR9)		\
-+	CASE_##op((val), TRCIDR10)		\
-+	CASE_##op((val), TRCIDR11)		\
-+	CASE_##op((val), TRCIDR12)		\
-+	CASE_##op((val), TRCIDR13)		\
-+	CASE_##op((val), TRCIMSPECn(0))		\
-+	CASE_##op((val), TRCIMSPECn(1))		\
-+	CASE_##op((val), TRCIMSPECn(2))		\
-+	CASE_##op((val), TRCIMSPECn(3))		\
-+	CASE_##op((val), TRCIMSPECn(4))		\
-+	CASE_##op((val), TRCIMSPECn(5))		\
-+	CASE_##op((val), TRCIMSPECn(6))		\
-+	CASE_##op((val), TRCIMSPECn(7))		\
-+	CASE_##op((val), TRCIDR0)		\
-+	CASE_##op((val), TRCIDR1)		\
-+	CASE_##op((val), TRCIDR2)		\
-+	CASE_##op((val), TRCIDR3)		\
-+	CASE_##op((val), TRCIDR4)		\
-+	CASE_##op((val), TRCIDR5)		\
-+	CASE_##op((val), TRCIDR6)		\
-+	CASE_##op((val), TRCIDR7)		\
-+	CASE_##op((val), TRCRSCTLRn(2))		\
-+	CASE_##op((val), TRCRSCTLRn(3))		\
-+	CASE_##op((val), TRCRSCTLRn(4))		\
-+	CASE_##op((val), TRCRSCTLRn(5))		\
-+	CASE_##op((val), TRCRSCTLRn(6))		\
-+	CASE_##op((val), TRCRSCTLRn(7))		\
-+	CASE_##op((val), TRCRSCTLRn(8))		\
-+	CASE_##op((val), TRCRSCTLRn(9))		\
-+	CASE_##op((val), TRCRSCTLRn(10))	\
-+	CASE_##op((val), TRCRSCTLRn(11))	\
-+	CASE_##op((val), TRCRSCTLRn(12))	\
-+	CASE_##op((val), TRCRSCTLRn(13))	\
-+	CASE_##op((val), TRCRSCTLRn(14))	\
-+	CASE_##op((val), TRCRSCTLRn(15))	\
-+	CASE_##op((val), TRCRSCTLRn(16))	\
-+	CASE_##op((val), TRCRSCTLRn(17))	\
-+	CASE_##op((val), TRCRSCTLRn(18))	\
-+	CASE_##op((val), TRCRSCTLRn(19))	\
-+	CASE_##op((val), TRCRSCTLRn(20))	\
-+	CASE_##op((val), TRCRSCTLRn(21))	\
-+	CASE_##op((val), TRCRSCTLRn(22))	\
-+	CASE_##op((val), TRCRSCTLRn(23))	\
-+	CASE_##op((val), TRCRSCTLRn(24))	\
-+	CASE_##op((val), TRCRSCTLRn(25))	\
-+	CASE_##op((val), TRCRSCTLRn(26))	\
-+	CASE_##op((val), TRCRSCTLRn(27))	\
-+	CASE_##op((val), TRCRSCTLRn(28))	\
-+	CASE_##op((val), TRCRSCTLRn(29))	\
-+	CASE_##op((val), TRCRSCTLRn(30))	\
-+	CASE_##op((val), TRCRSCTLRn(31))	\
-+	CASE_##op((val), TRCSSCCRn(0))		\
-+	CASE_##op((val), TRCSSCCRn(1))		\
-+	CASE_##op((val), TRCSSCCRn(2))		\
-+	CASE_##op((val), TRCSSCCRn(3))		\
-+	CASE_##op((val), TRCSSCCRn(4))		\
-+	CASE_##op((val), TRCSSCCRn(5))		\
-+	CASE_##op((val), TRCSSCCRn(6))		\
-+	CASE_##op((val), TRCSSCCRn(7))		\
-+	CASE_##op((val), TRCSSCSRn(0))		\
-+	CASE_##op((val), TRCSSCSRn(1))		\
-+	CASE_##op((val), TRCSSCSRn(2))		\
-+	CASE_##op((val), TRCSSCSRn(3))		\
-+	CASE_##op((val), TRCSSCSRn(4))		\
-+	CASE_##op((val), TRCSSCSRn(5))		\
-+	CASE_##op((val), TRCSSCSRn(6))		\
-+	CASE_##op((val), TRCSSCSRn(7))		\
-+	CASE_##op((val), TRCSSPCICRn(0))	\
-+	CASE_##op((val), TRCSSPCICRn(1))	\
-+	CASE_##op((val), TRCSSPCICRn(2))	\
-+	CASE_##op((val), TRCSSPCICRn(3))	\
-+	CASE_##op((val), TRCSSPCICRn(4))	\
-+	CASE_##op((val), TRCSSPCICRn(5))	\
-+	CASE_##op((val), TRCSSPCICRn(6))	\
-+	CASE_##op((val), TRCSSPCICRn(7))	\
-+	CASE_##op((val), TRCOSLAR)		\
-+	CASE_##op((val), TRCOSLSR)		\
-+	CASE_##op((val), TRCPDCR)		\
-+	CASE_##op((val), TRCPDSR)		\
-+	CASE_##op((val), TRCACVRn(0))		\
-+	CASE_##op((val), TRCACVRn(1))		\
-+	CASE_##op((val), TRCACVRn(2))		\
-+	CASE_##op((val), TRCACVRn(3))		\
-+	CASE_##op((val), TRCACVRn(4))		\
-+	CASE_##op((val), TRCACVRn(5))		\
-+	CASE_##op((val), TRCACVRn(6))		\
-+	CASE_##op((val), TRCACVRn(7))		\
-+	CASE_##op((val), TRCACVRn(8))		\
-+	CASE_##op((val), TRCACVRn(9))		\
-+	CASE_##op((val), TRCACVRn(10))		\
-+	CASE_##op((val), TRCACVRn(11))		\
-+	CASE_##op((val), TRCACVRn(12))		\
-+	CASE_##op((val), TRCACVRn(13))		\
-+	CASE_##op((val), TRCACVRn(14))		\
-+	CASE_##op((val), TRCACVRn(15))		\
-+	CASE_##op((val), TRCACATRn(0))		\
-+	CASE_##op((val), TRCACATRn(1))		\
-+	CASE_##op((val), TRCACATRn(2))		\
-+	CASE_##op((val), TRCACATRn(3))		\
-+	CASE_##op((val), TRCACATRn(4))		\
-+	CASE_##op((val), TRCACATRn(5))		\
-+	CASE_##op((val), TRCACATRn(6))		\
-+	CASE_##op((val), TRCACATRn(7))		\
-+	CASE_##op((val), TRCACATRn(8))		\
-+	CASE_##op((val), TRCACATRn(9))		\
-+	CASE_##op((val), TRCACATRn(10))		\
-+	CASE_##op((val), TRCACATRn(11))		\
-+	CASE_##op((val), TRCACATRn(12))		\
-+	CASE_##op((val), TRCACATRn(13))		\
-+	CASE_##op((val), TRCACATRn(14))		\
-+	CASE_##op((val), TRCACATRn(15))		\
-+	CASE_##op((val), TRCDVCVRn(0))		\
-+	CASE_##op((val), TRCDVCVRn(1))		\
-+	CASE_##op((val), TRCDVCVRn(2))		\
-+	CASE_##op((val), TRCDVCVRn(3))		\
-+	CASE_##op((val), TRCDVCVRn(4))		\
-+	CASE_##op((val), TRCDVCVRn(5))		\
-+	CASE_##op((val), TRCDVCVRn(6))		\
-+	CASE_##op((val), TRCDVCVRn(7))		\
-+	CASE_##op((val), TRCDVCMRn(0))		\
-+	CASE_##op((val), TRCDVCMRn(1))		\
-+	CASE_##op((val), TRCDVCMRn(2))		\
-+	CASE_##op((val), TRCDVCMRn(3))		\
-+	CASE_##op((val), TRCDVCMRn(4))		\
-+	CASE_##op((val), TRCDVCMRn(5))		\
-+	CASE_##op((val), TRCDVCMRn(6))		\
-+	CASE_##op((val), TRCDVCMRn(7))		\
-+	CASE_##op((val), TRCCIDCVRn(0))		\
-+	CASE_##op((val), TRCCIDCVRn(1))		\
-+	CASE_##op((val), TRCCIDCVRn(2))		\
-+	CASE_##op((val), TRCCIDCVRn(3))		\
-+	CASE_##op((val), TRCCIDCVRn(4))		\
-+	CASE_##op((val), TRCCIDCVRn(5))		\
-+	CASE_##op((val), TRCCIDCVRn(6))		\
-+	CASE_##op((val), TRCCIDCVRn(7))		\
-+	CASE_##op((val), TRCVMIDCVRn(0))	\
-+	CASE_##op((val), TRCVMIDCVRn(1))	\
-+	CASE_##op((val), TRCVMIDCVRn(2))	\
-+	CASE_##op((val), TRCVMIDCVRn(3))	\
-+	CASE_##op((val), TRCVMIDCVRn(4))	\
-+	CASE_##op((val), TRCVMIDCVRn(5))	\
-+	CASE_##op((val), TRCVMIDCVRn(6))	\
-+	CASE_##op((val), TRCVMIDCVRn(7))	\
-+	CASE_##op((val), TRCCIDCCTLR0)		\
-+	CASE_##op((val), TRCCIDCCTLR1)		\
-+	CASE_##op((val), TRCVMIDCCTLR0)		\
-+	CASE_##op((val), TRCVMIDCCTLR1)		\
-+	CASE_##op((val), TRCITCTRL)		\
-+	CASE_##op((val), TRCCLAIMSET)		\
-+	CASE_##op((val), TRCCLAIMCLR)		\
-+	CASE_##op((val), TRCDEVAFF0)		\
-+	CASE_##op((val), TRCDEVAFF1)		\
-+	CASE_##op((val), TRCLAR)		\
-+	CASE_##op((val), TRCLSR)		\
-+	CASE_##op((val), TRCAUTHSTATUS)		\
-+	CASE_##op((val), TRCDEVARCH)		\
-+	CASE_##op((val), TRCDEVID)		\
-+	CASE_##op((val), TRCDEVTYPE)		\
-+	CASE_##op((val), TRCPIDR4)		\
-+	CASE_##op((val), TRCPIDR5)		\
-+	CASE_##op((val), TRCPIDR6)		\
-+	CASE_##op((val), TRCPIDR7)		\
-+	CASE_##op((val), TRCPIDR0)		\
-+	CASE_##op((val), TRCPIDR1)		\
-+	CASE_##op((val), TRCPIDR2)		\
-+	CASE_##op((val), TRCPIDR3)
-+
-+#define ETM4x_READ_CASES(res)	CASE_LIST(READ, (res))
-+#define ETM4x_WRITE_CASES(val)	CASE_LIST(WRITE, (val))
-+
-+#define read_etm4x_sysreg_offset(csa, offset, _64bit)				\
-+	({									\
-+		u64 __val;							\
-+										\
-+		if (__builtin_constant_p((offset)))				\
-+			__val = read_etm4x_sysreg_const_offset((offset));	\
-+		else								\
-+			__val = etm4x_sysreg_read((csa), (offset),		\
-+						  true, _64bit);		\
-+		__val;								\
-+	 })
-+
-+#define write_etm4x_sysreg_offset(csa, val, offset, _64bit)		\
-+	do {								\
-+		if (__builtin_constant_p((offset)))			\
-+			write_etm4x_sysreg_const_offset((val),		\
-+							(offset));	\
-+		else							\
-+			etm4x_sysreg_write((csa), (val), (offset),	\
-+						true, _64bit);		\
-+	} while (0)
-+
-+
-+#define etm4x_relaxed_read32(csa, offset)				\
-+	((u32)((csa)->io_mem ?						\
-+		 readl_relaxed((csa)->base + (offset)) :		\
-+		 read_etm4x_sysreg_offset((csa), (offset), false)))
-+#define etm4x_relaxed_read64(csa, offset)				\
-+	((u64)((csa)->io_mem ?						\
-+		 readq_relaxed((csa)->base + (offset)) :		\
-+		 read_etm4x_sysreg_offset((csa), (offset), true)))
-+#define etm4x_read32(csa, offset)					\
-+	({								\
-+		u32 __val = etm4x_relaxed_read32((csa), (offset));	\
-+		__iormb(__val);						\
-+		__val;							\
-+	 })
-+
-+#define etm4x_read64(csa, offset)					\
-+	({								\
-+		u64 __val = etm4x_relaxed_read64((csa), (offset));	\
-+		__iormb(__val);						\
-+		__val;							\
-+	 })
-+
-+#define etm4x_relaxed_write32(csa, val, offset)				\
-+	do {								\
-+		if ((csa)->io_mem)					\
-+			writel_relaxed((val), (csa)->base + (offset));	\
-+		else							\
-+			write_etm4x_sysreg_offset((csa), (val),	\
-+						    (offset), false);	\
-+	} while (0)
-+
-+#define etm4x_relaxed_write64(csa, val, offset)				\
-+	do {								\
-+		if ((csa)->io_mem)					\
-+			writeq_relaxed((val), (csa)->base + (offset));	\
-+		else							\
-+			write_etm4x_sysreg_offset((csa), (val),	\
-+						    (offset), true);	\
-+	} while (0)
-+
-+#define etm4x_write32(csa, val, offset)					\
-+	do {								\
-+		__iowmb();						\
-+		etm4x_relaxed_write32((csa), (val), (offset));		\
-+	} while (0)
-+
-+#define etm4x_write64(csa, val, offset)					\
-+	do {								\
-+		__iowmb();						\
-+		etm4x_relaxed_write64((csa), (val), (offset));		\
-+	} while (0)
- 
--#define etm4x_write64(csa, val, offset)			\
--	writeq((val), (csa)->base + (offset))
- 
- /* ETMv4 resources */
- #define ETM_MAX_NR_PE			8
-@@ -512,4 +806,14 @@ enum etm_addr_ctxtype {
- 
- extern const struct attribute_group *coresight_etmv4_groups[];
- void etm4_config_trace_mode(struct etmv4_config *config);
-+
-+u64 etm4x_sysreg_read(struct csdev_access *csa,
-+		      u32 offset,
-+		      bool _relaxed,
-+		      bool _64bit);
-+void etm4x_sysreg_write(struct csdev_access *csa,
-+			u64 val,
-+			u32 offset,
-+			bool _relaxed,
-+			bool _64bit);
- #endif
+ #define TRCSTATR_IDLE_BIT		0
+ #define TRCSTATR_PMSTABLE_BIT		1
+ #define ETM_DEFAULT_ADDR_COMP		0
 -- 
 2.24.1
 
