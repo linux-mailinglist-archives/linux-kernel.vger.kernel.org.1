@@ -2,142 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F6E29DF7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB9329E092
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404092AbgJ2BBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:01:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60476 "EHLO mail.kernel.org"
+        id S1732786AbgJ2BXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:23:07 -0400
+Received: from mail.vivotek.com ([60.248.39.150]:59032 "EHLO mail.vivotek.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731506AbgJ1WRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:24 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 943282244C;
-        Wed, 28 Oct 2020 03:01:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603854090;
-        bh=CYqqIQeLVQ2GDg8Qk4O7/yPF87bpo8HOJdgeKmVSG7M=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=J34e3ugmDw0+RgNgHi7V7cZnahdwYN5VL3pKtKMK88THY++wGQRPmSL5RXWpre6+W
-         dWeTJBj1I+WlGeDc66wKb3HdjZ9gD2JJuoYHopHiwAwVcrUqKcuCX5kGYHh509xQ1f
-         fKaxChn52bKktbUlgXICpAo1sIW2WgfYZSTyDnaU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 4F3683521849; Tue, 27 Oct 2020 20:01:30 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 20:01:30 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qian Cai <cai@redhat.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
-Message-ID: <20201028030130.GB3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <160223032121.7002.1269740091547117869.tip-bot2@tip-bot2>
- <e438b231c5e1478527af6c3e69bf0b37df650110.camel@redhat.com>
- <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <1db80eb9676124836809421e85e1aa782c269a80.camel@redhat.com>
+        id S1729907AbgJ1WEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:04:04 -0400
+Received: from pps.filterd (vivotekpps.vivotek.com [127.0.0.1])
+        by vivotekpps.vivotek.com (8.16.0.42/8.16.0.42) with SMTP id 09S5NlOi028183;
+        Wed, 28 Oct 2020 13:24:26 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivotek.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=dkim;
+ bh=XWsKafwoBCMXGPRGJKSVlFm0WD27smvMp+c/m4XjJPU=;
+ b=VM4Jak4Cqd64+ksznrNTiMVCTvbSKKYmABWCXqeTfQvkdd55srER9iVx5FpGTu1G3qjd
+ JainmNlmKcyQ8CZLoPEWK+jo0D+xkyqzl3W4xh98/oFhHLqOzrdEnwWXh5890V96GatK
+ 3OUiXzSaaDvFWM8FN+KgLJD25AafDkuWWmA= 
+Received: from cas01.vivotek.tw ([192.168.0.58])
+        by vivotekpps.vivotek.com with ESMTP id 34c6q13vtv-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 13:24:26 +0800
+Received: from MBS07.vivotek.tw ([fe80::2027:4d67:6c01:78d8]) by
+ CAS01.vivotek.tw ([::1]) with mapi id 14.03.0487.000; Wed, 28 Oct 2020
+ 13:24:20 +0800
+From:   <Michael.Wu@vatics.com>
+To:     <jarkko.nikula@linux.intel.com>,
+        <andriy.shevchenko@linux.intel.com>,
+        <mika.westerberg@linux.intel.com>, <linux-i2c@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <morgan.chang@vatics.com>
+Subject: RE: [PATCH v3] i2c: designware: call
+ i2c_dw_read_clear_intrbits_slave() once
+Thread-Topic: [PATCH v3] i2c: designware: call
+ i2c_dw_read_clear_intrbits_slave() once
+Thread-Index: AQHWqP8ftBcyz8mHlUeZHq5yT12bhqmkMvSAgAhP5AA=
+Date:   Wed, 28 Oct 2020 05:24:18 +0000
+Message-ID: <5DB475451BAA174CB158B5E897FC1525B1294F5F@MBS07.vivotek.tw>
+References: <20201023054027.13540-1-michael.wu@vatics.com>
+ <a44aacbb-fcb4-f83f-b781-b69f52944f09@linux.intel.com>
+In-Reply-To: <a44aacbb-fcb4-f83f-b781-b69f52944f09@linux.intel.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [192.168.17.134]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1db80eb9676124836809421e85e1aa782c269a80.camel@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-28_01:2020-10-26,2020-10-28 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 03:31:41PM -0400, Qian Cai wrote:
-> On Mon, 2020-10-12 at 11:11 +0800, Boqun Feng wrote:
-> > Hi,
-> > 
-> > On Fri, Oct 09, 2020 at 09:41:24AM -0400, Qian Cai wrote:
-> > > On Fri, 2020-10-09 at 07:58 +0000, tip-bot2 for Peter Zijlstra wrote:
-> > > > The following commit has been merged into the locking/core branch of tip:
-> > > > 
-> > > > Commit-ID:     4d004099a668c41522242aa146a38cc4eb59cb1e
-> > > > Gitweb:        
-> > > > https://git.kernel.org/tip/4d004099a668c41522242aa146a38cc4eb59cb1e
-> > > > Author:        Peter Zijlstra <peterz@infradead.org>
-> > > > AuthorDate:    Fri, 02 Oct 2020 11:04:21 +02:00
-> > > > Committer:     Ingo Molnar <mingo@kernel.org>
-> > > > CommitterDate: Fri, 09 Oct 2020 08:53:30 +02:00
-> > > > 
-> > > > lockdep: Fix lockdep recursion
-> > > > 
-> > > > Steve reported that lockdep_assert*irq*(), when nested inside lockdep
-> > > > itself, will trigger a false-positive.
-> > > > 
-> > > > One example is the stack-trace code, as called from inside lockdep,
-> > > > triggering tracing, which in turn calls RCU, which then uses
-> > > > lockdep_assert_irqs_disabled().
-> > > > 
-> > > > Fixes: a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context} to per-
-> > > > cpu
-> > > > variables")
-> > > > Reported-by: Steven Rostedt <rostedt@goodmis.org>
-> > > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > > Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> > > 
-> > > Reverting this linux-next commit fixed booting RCU-list warnings everywhere.
-> > > 
-> > 
-> > I think this happened because in this commit debug_lockdep_rcu_enabled()
-> > didn't adopt to the change that made lockdep_recursion a percpu
-> > variable?
-> > 
-> > Qian, mind to try the following?
-> 
-> Boqun, Paul, may I ask what's the latest with the fixes? I must admit that I got
-> lost in this thread, but I remember that the patch from Boqun below at least
-> silence quite some of those warnings if not all. The problem is that some of
-> those warnings would trigger a lockdep circular locks warning due to printk()
-> with some locks held which in turn disabling the lockdep, makes our test runs
-> inefficient.
-
-If I have the right email thread associated with the right fixes, these
-commits in -rcu should be what you are looking for:
-
-73b658b6b7d5 ("rcu: Prevent lockdep-RCU splats on lock acquisition/release")
-626b79aa935a ("x86/smpboot:  Move rcu_cpu_starting() earlier")
-
-And maybe this one as well:
-
-3a6f638cb95b ("rcu,ftrace: Fix ftrace recursion")
-
-Please let me know if these commits do not fix things.
-
-							Thanx, Paul
-
-> > Although, arguably the problem still exists, i.e. we still have an RCU
-> > read-side critical section inside lock_acquire(), which may be called on
-> > a yet-to-online CPU, which RCU doesn't watch. I think this used to be OK
-> > because we don't "free" anything from lockdep, IOW, there is no
-> > synchronize_rcu() or call_rcu() that _needs_ to wait for the RCU
-> > read-side critical sections inside lockdep. But now we lock class
-> > recycling, so it might be a problem.
-> > 
-> > That said, currently validate_chain() and lock class recycling are
-> > mutually excluded via graph_lock, so we are safe for this one ;-)
-> > 
-> > ----------->8
-> > diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> > index 39334d2d2b37..35d9bab65b75 100644
-> > --- a/kernel/rcu/update.c
-> > +++ b/kernel/rcu/update.c
-> > @@ -275,8 +275,8 @@ EXPORT_SYMBOL_GPL(rcu_callback_map);
-> >  
-> >  noinstr int notrace debug_lockdep_rcu_enabled(void)
-> >  {
-> > -	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
-> > -	       current->lockdep_recursion == 0;
-> > +	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE &&
-> > +	       __lockdep_enabled;
-> >  }
-> >  EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
-> 
-> 
+SGksDQoNCj4gT24gMTAvMjMvMjAgODo0MCBBTSwgTWljaGFlbCBXdSB3cm90ZToNCj4gPiBJZiBz
+b21lIGJpdHMgd2VyZSBjbGVhcmVkIGJ5IGkyY19kd19yZWFkX2NsZWFyX2ludHJiaXRzX3NsYXZl
+KCkgaW4NCj4gPiBpMmNfZHdfaXNyX3NsYXZlKCkgYW5kIG5vdCBoYW5kbGVkIGltbWVkaWF0ZWx5
+LCB0aG9zZSBjbGVhcmVkIGJpdHMgd291bGQNCj4gPiBub3QgYmUgc2hvd24gYWdhaW4gYnkgbGF0
+ZXIgaTJjX2R3X3JlYWRfY2xlYXJfaW50cmJpdHNfc2xhdmUoKS4gVGhleQ0KPiA+IHRoZXJlZm9y
+ZSB3ZXJlIGZvcmdvdHRlbiB0byBiZSBoYW5kbGVkLg0KPiA+DQo+ID4gaTJjX2R3X3JlYWRfY2xl
+YXJfaW50cmJpdHNfc2xhdmUoKSBzaG91bGQgYmUgY2FsbGVkIG9uY2UgaW4gYW4gSVNSIGFuZCB0
+YWtlDQo+ID4gaXRzIHJldHVybmVkIHN0YXRlIGZvciBhbGwgbGF0ZXIgaGFuZGxpbmdzLg0KPiA+
+IC0tLQ0KPiA+ICAgZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1kZXNpZ253YXJlLXNsYXZlLmMgfCA3
+ICstLS0tLS0NCj4gPiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgNiBkZWxldGlv
+bnMoLSkNCj4gPg0KPiBBY2tlZC1ieTogSmFya2tvIE5pa3VsYSA8amFya2tvLm5pa3VsYUBsaW51
+eC5pbnRlbC5jb20+DQoNClRoZXJlIGlzIGFub3RoZXIgbG9naWMgaXNzdWUgYWJvdXQgdGhlIEky
+Q19TTEFWRV9XUklURV9SRVFVRVNURUQgcmVwb3J0aW5nLg0KTWF5IEkgZ2l2ZSBwYXRjaGVzIGJh
+c2VkIG9uIHRoaXMgY29tbWl0Pw0KDQpNaWNoYWVsIFd1DQo=
