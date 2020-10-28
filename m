@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C476229D4C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FB929D426
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:49:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728787AbgJ1Vyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:54:36 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:41555 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728764AbgJ1VyZ (ORCPT
+        id S1727406AbgJ1Vtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:49:47 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:57330 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgJ1VnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:54:25 -0400
-Received: by mail-oi1-f196.google.com with SMTP id k65so1137934oih.8;
-        Wed, 28 Oct 2020 14:54:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JaUb44Rael9RollufcGjxryeAFDxCaJy8yyWeBf3MYE=;
-        b=Ke0ylEFry4wyB8ur4pyJbFpduGcFUyRQNzyq09O1XvIvjrfovi0/T6TpH+7bmyfFei
-         UfK20LYKoRIuOGX5z5D+Xu2mEv1YjmrQ5jnna3BdJisSFje7Gzgw62htOEh9SmWlJXiC
-         M51skvLyC2l3SE0rYGmf8G4oYJt+JfYbZcpHp+JgC2OiTB1xCELl88docT8JIf+YQxLz
-         hFVeoppYLroBE3NSpElVnLa3l6a7V8IU//m+wKc3CVdFAglYBF9n/FthoV9NoI76I6yq
-         ArDd3mPeqjHFVRAl6eWZsSdNdJfdS+A+BRun4EHTD7vrpsBXLu8OZjn+m2HdbAnNRd3O
-         eaUg==
-X-Gm-Message-State: AOAM530DgM05Vsn8KOQtA3nTBI2r93raD/9ohvV+pecXtM9g7VBIxodt
-        6qPOi8iqUoOSuIyN34TYjSxkWOwoMq6/JFJwh0zkSETTR6M=
-X-Google-Smtp-Source: ABdhPJzePWTrTQrFoo0k2/Wped76/eKJoLwdjYRZVWJjY0cwBi5OOjzzJxM0qO7UsqY6ipkAu536zeF2iEbbw19JnUI=
-X-Received: by 2002:aca:f40c:: with SMTP id s12mr4365389oih.153.1603879193186;
- Wed, 28 Oct 2020 02:59:53 -0700 (PDT)
+        Wed, 28 Oct 2020 17:43:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tjSu2r9Bd9biMwop8Y+5xZtR8qA8hCA/zD7QW3Q6gMw=; b=CgD2LZ1Y5veuIIAid305ik/pa9
+        YXiupXv3xMxxpXUTfAwvU+hMTAVV2/HgYkdQbRyLz9K5Nem7UQbJmwNvO3LZbqNWk+RenntYKH0ln
+        G2f2QmL58EDN678aOzhm51beGQZBXKhme+/jAIaUz2dKbeWdkbo2zMG91Uj09Z2BpZok6/ZcJTbnG
+        rqKR4oINLS8FplmKtv/6T0j+feA87E24fqyA1taK+unANSq1wiRvkRDnQ2vrPQ6ANp1dBHptlJg0N
+        Rj67qcm6NlEFuRJZ53tI9Wzpbr8pEoYbfOtLG2FkiJ8iX89BFgWBGR2+qVyd6z6GF+04LBUDLZuNr
+        q3JRKBnQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXiJa-0003mv-N5; Wed, 28 Oct 2020 10:04:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DCEF9300455;
+        Wed, 28 Oct 2020 11:04:20 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C57CC20B28590; Wed, 28 Oct 2020 11:04:20 +0100 (CET)
+Date:   Wed, 28 Oct 2020 11:04:20 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Daniel Wagner <dwagner@suse.de>
+Subject: Re: [PATCH RFC] blk-mq: Don't IPI requests on PREEMPT_RT
+Message-ID: <20201028100420.GY2628@hirez.programming.kicks-ass.net>
+References: <20201021175059.GA4989@hmbx>
+ <20201023110400.bx3uzsb7xy5jtsea@linutronix.de>
+ <20201023112130.GA23790@infradead.org>
+ <20201023135219.mzzl76eqqy6tqwhe@linutronix.de>
+ <20201027092606.GA20805@infradead.org>
+ <20201027101102.cvczdb3mkvtoguo5@linutronix.de>
+ <20201027160742.GA19073@infradead.org>
+ <87eelj1tx0.fsf@nanos.tec.linutronix.de>
+ <20201027172309.GA15004@infradead.org>
 MIME-Version: 1.0
-References: <cover.1603788511.git.yepeilin.cs@gmail.com> <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
-In-Reply-To: <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 28 Oct 2020 10:59:42 +0100
-Message-ID: <CAMuHMdXJef0O9YTh9+kaOuanGJ9WiCXKQs1CUd6DhyWVjfi7MA@mail.gmail.com>
-Subject: Re: [PATCH 1/5] fbdev/atafb: Remove unused extern variables
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027172309.GA15004@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 6:12 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> Remove 6 unused extern variables to reduce confusion. It is worth
-> mentioning that lib/fonts/font_8x8.c and lib/fonts/font_8x16.c also
-> declare `fontdata_8x8` and `fontdata_8x16` respectively, and this file
-> has nothing to do with them.
->
-> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+On Tue, Oct 27, 2020 at 05:23:09PM +0000, Christoph Hellwig wrote:
+> Ok.  I was hoping we could hide this in core code somehow, especially
+> a peterz didn't like the use of smp_call_function_single_async in the
+> blk-mq completion code very much.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+It's smp_call_function_single_async() in general that I don't much like.
+But Linus seemed unconvinced, so we'll keep it for a while I suppose.
