@@ -2,63 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE2B29D45B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:51:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3C929D361
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728196AbgJ1Vvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:51:41 -0400
-Received: from casper.infradead.org ([90.155.50.34]:44160 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728165AbgJ1Vvf (ORCPT
+        id S1725974AbgJ1VnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:43:16 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:34783 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbgJ1VnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:51:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2SDn0M9nv4bcedmTJRWAQlXu0K5RKkS42iU0N8vEXgU=; b=G21GnSZbpM6NCtTezkcR78B+0u
-        RNexbqEXd49aKPg8kAXOypkrq4KHX8M4DSTyLuX2Vk4HWkAktL1UfXkKNR2lHKUii32dJXhcpw+sd
-        akfj4+Apt+QhBDZUcc3jQyO+v7awHhq3Yh00EpmrfsVZa6fSzFn4xqGb9YjPPVwUBg37S3XIQNlxr
-        IkpRR3a7z2AWJpg9Xw/pES8IJ0Kfr/S+ljQwAuklwtHYc/+JYzkIIKnaKKiIr6bUQthvafLGqCl8J
-        n4yGdSnDsVfXW0FXhLZwzFS11g47itqs5lI/zjrPKze1rI6Hb/rh7UEwZ+NX4v5yUaqbr9QtLTUs/
-        UUtJPkgA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXmqL-0005Y9-7E; Wed, 28 Oct 2020 14:54:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD2203006D0;
-        Wed, 28 Oct 2020 15:54:28 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9FA942B064B32; Wed, 28 Oct 2020 15:54:28 +0100 (CET)
-Date:   Wed, 28 Oct 2020 15:54:28 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, will@kernel.org, paulmck@kernel.org,
-        hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
-        davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
-        oleg@redhat.com, vincent.guittot@linaro.org
-Subject: Re: [RFC][PATCH v3 6/6] rcu/tree: Use irq_work_queue_remote()
-Message-ID: <20201028145428.GE2628@hirez.programming.kicks-ass.net>
-References: <20201028110707.971887448@infradead.org>
- <20201028111221.584884062@infradead.org>
+        Wed, 28 Oct 2020 17:43:05 -0400
+Received: by mail-lf1-f68.google.com with SMTP id i6so722215lfd.1;
+        Wed, 28 Oct 2020 14:43:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tMPZp2gGW1Ll/G7hRvYbgrAcEJlQ4MJVtT7xPcRIvB4=;
+        b=p4fdMgksUs4dMZucOXpEaCDgCxZSgy/e4UnCAwKG19akQdQ8huNzMh5+VuHe4Wm/EN
+         n7IwIsiN+5MIs+dIy7FVy3D+SRevl4Z//lRyDp1wQtlVRhOpe3Jww0tNok71DGEnGueL
+         sXlkiW4qFBmtY9mpEAtZGnNZBhjWfokthE87WWPOpB7nfTC/vbvqYwgtInYqoLxfmDTO
+         NHJFgK0wCU0oetakKkWIV//BBgZDeHCl0d+swh4dlGWiNSkVVwd4Dj47Kmj5cN0h/67I
+         Jfb40c1f/QCHr6Zonr55JB3aqpCKonuQcohji4RP+FEnKooxNLqmpCqguNXS0+YKG3If
+         NF+g==
+X-Gm-Message-State: AOAM531MqPzsoS3D3blAjG3ylHirpCkBcSihtnVqKiMBwc8YROeW5JYP
+        xMMWVl0ZtfIu/6FU4rqjdXnb/EW1HsE=
+X-Google-Smtp-Source: ABdhPJzHK5PK4dU1NppRDYMBMySGxcisu6x+tk5WpHOessvQinOP+UbedEH8rlxg/Bw3+CGh2FgqjQ==
+X-Received: by 2002:a05:6000:4c:: with SMTP id k12mr9068884wrx.278.1603897035378;
+        Wed, 28 Oct 2020 07:57:15 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id m1sm6749870wmm.34.2020.10.28.07.57.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 07:57:14 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 14:57:12 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 32/33] docs: ABI: stable: remove a duplicated
+ documentation
+Message-ID: <20201028145712.a6yk5jxagt5tmmik@liuwe-devbox-debian-v2>
+References: <cover.1603893146.git.mchehab+huawei@kernel.org>
+ <b0138bf07d3933ce023229e718abca279c29a994.1603893146.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201028111221.584884062@infradead.org>
+In-Reply-To: <b0138bf07d3933ce023229e718abca279c29a994.1603893146.git.mchehab+huawei@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 12:07:13PM +0100, Peter Zijlstra wrote:
-> AFAICT we only need/use irq_work_queue_on() on remote CPUs, since we
-> can directly access local state.  So avoid the IRQ_WORK dependency and
-> use the unconditionally available irq_work_queue_remote().
+On Wed, Oct 28, 2020 at 03:23:30PM +0100, Mauro Carvalho Chehab wrote:
+> Perhaps due to a wrong cut-and-paste, this entry:
 > 
-> This survives a number of TREE01 runs.
+> 	What:		/sys/bus/vmbus/devices/<UUID>/channels/<N>/cpu
+> 
+> was added twice by the same patch, one following the other.
+> 
+> Remove the duplication.
+> 
+> Fixes: c2e5df616e1a ("vmbus: add per-channel sysfs info")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-OK, Paul mentioned on IRC that while it is extremely unlikely, this code
-does not indeed guarantee it will not try to IPI self.
-
-I'll try again.
+Acked-by: Wei Liu <wei.liu@kernel.org>
