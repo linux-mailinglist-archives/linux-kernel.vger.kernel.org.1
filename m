@@ -2,113 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A628F29E25B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D0229E18A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728140AbgJ2CN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
+        id S1727792AbgJ2CBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726794AbgJ1VgL (ORCPT
+        with ESMTP id S1727794AbgJ1Vt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:36:11 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E884C0613D1;
-        Wed, 28 Oct 2020 14:36:11 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id bn26so978011ejb.6;
-        Wed, 28 Oct 2020 14:36:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dOPkG51cqcEG4Loikdan84KA22neIPGBmd1iXgPOKvU=;
-        b=iDIv2msWfduRF2KUPmTlwpSPN7p2DRaRX3aZ5hTffZ/cqBxD9HXlc+D7ru4zK7oEdE
-         GK/1YB95Caxv7AYmph3nuO8X/nCYcRIVwU5YLPwJLsFr5LlcCwNHpD8TuuBGCiDBokPa
-         6gsvmVLuYS4RxWuUUatoEfqi3145ApZYC4n0n8l2WQfkbS/Sqz/dJtLsk0zvxOzEWo/O
-         Jq00xGMnE/sI/maF54/cVDUZdzJDSJEMP8kKq9bdMCljNkTDA8FJVa1VvGxvhOXVcmrS
-         icg8DaoKJzfTtIfUHRGnLRSJPmFA3k2Yx+PTmsfgHtxAnAX0xlZFs8Fp23GLWlQYNWUF
-         EJVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dOPkG51cqcEG4Loikdan84KA22neIPGBmd1iXgPOKvU=;
-        b=fIY7SJptVH+0TpRdqadIiWaYY3taw30RUFmsSkUia7fDLMBRuBlFvjVvmh4SzowCN4
-         BKq4SiGbpc1uCMf4K43c0m6AuOxXeUA0UfHOqb0oJvktJNoKtyhL4t1ooJjGrudL8n30
-         ta9yys7ycANaOk8Bt+cIQW21A6FdXGAskQmO0B4go1gucfjk2SwCAh1MKxESO8j2w8M1
-         hNa0Zx8caEgxIFDQtua69IZgfjppHKc98tbswNuiwTU9YVgWyLnHnxILJe8GDW1dpia3
-         sUrh6L12R6PxX+vzGm1D3TQjs2Q6A1EoobI1Agxb3yfRpVYNKhp7qmJeVi5Uc6GEKcM1
-         4ciw==
-X-Gm-Message-State: AOAM5323HKhgBEBfXWdHvpGUv+1HWy8i//g7HnuBOSnjCPTWgjwniPAF
-        /bbNsXfuYZmcWtl+6q3JF2nNei2LBR0=
-X-Google-Smtp-Source: ABdhPJz8U5e7kOuZlcVkoCb+Fk2dIbgZSZkC0ZmwrNSPTAHUTS1jsLlYq8a778c/jEL/XkeyVB5Umw==
-X-Received: by 2002:a05:6512:3fa:: with SMTP id n26mr319207lfq.199.1603919313380;
-        Wed, 28 Oct 2020 14:08:33 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a315:5445:5300:a6d2:8b6b:ef28:12ae])
-        by smtp.googlemail.com with ESMTPSA id x6sm67712lfn.185.2020.10.28.14.08.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 14:08:32 -0700 (PDT)
-From:   =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
-To:     kgene@kernel.org, krzk@kernel.org, alim.akhtar@samsung.com
-Cc:     robh+dt@kernel.org, a.kesavan@samsung.com,
-        naveenkrishna.ch@gmail.com, thomas.ab@samsung.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
-Subject: [PATCH] arm64: dts: exynos: Fix reboot/poweroff issues on Exynos7
-Date:   Wed, 28 Oct 2020 22:08:13 +0100
-Message-Id: <20201028210813.49874-1-pawel.mikolaj.chmiel@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 28 Oct 2020 17:49:27 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA867C0613D3;
+        Wed, 28 Oct 2020 14:49:26 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603919633;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZN7gTMaQE9rZtoF/3JClNUhpDPOWII3Z0v/zsk1pW7Y=;
+        b=DvOqsTCfJb//Gu7QniTg8aS3rdwxklw2TVI+sHxcDpoVjSql6wCXVQXYegUolgA+d1mElE
+        tbylmYcxS3byoU49CeslFOqrj1SYPqXk00NPmWPVNsNwpSvKMJbJ7jx2c7G4WRXXhIFAC+
+        CPeUOshJVPkcBe0C4CLLDINzO4Ec0dvdzld+HhYYl+S82ZxoHUg/xsH9fGPq22aoDNGL/K
+        mhGheXQunw7P8/igcnAToSOwKUisFT9x6VVPdFHJvbqpamRoRYUcy7ziiLKenlaGpxR3+0
+        0crL/f5reEyrGLxAE4MFUM+fQBN8sakeQnHRmtIKDhu6afo1sUoigwWkXXdIow==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603919633;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZN7gTMaQE9rZtoF/3JClNUhpDPOWII3Z0v/zsk1pW7Y=;
+        b=R8WZe//0NE888iRDVHM3pZcAHWnxRbe/zZzK4/MnQh4TllKWr+JrVaCiEyALu4243gwqiZ
+        Q37ahmWu/3/IosDA==
+To:     Kees Cook <keescook@chromium.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     x86@kernel.org, kvm <kvm@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, joro@8bytes.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-hyperv@vger.kernel.org, maz@misterjones.org,
+        Dexuan Cui <decui@microsoft.com>
+Subject: Re: [PATCH v3 15/35] PCI: vmd: Use msi_msg shadow structs
+In-Reply-To: <202010281347.2943F5B7@keescook>
+References: <e6601ff691afb3266e365a91e8b221179daf22c2.camel@infradead.org> <20201024213535.443185-1-dwmw2@infradead.org> <20201024213535.443185-16-dwmw2@infradead.org> <202010281347.2943F5B7@keescook>
+Date:   Wed, 28 Oct 2020 22:13:52 +0100
+Message-ID: <87blgmf3zj.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In vendor sources for Exynos 7420, psci is not used to reboot or
-poweroff device. Instead we should use syscon reboot/poweroff.
-Previously it was not possible to poweroff (no syscon poweroff node) or
-reboot (because it was handled by psci and this way is not working for
-Exynos).
+On Wed, Oct 28 2020 at 13:49, Kees Cook wrote:
+> On Sat, Oct 24, 2020 at 10:35:15PM +0100, David Woodhouse wrote:
+>> +	memset(&msg, 0, sizeof(*msg);
+>
+> This should be:
+>
+> +	memset(msg, 0, sizeof(*msg);
 
-Fixes: fb026cb65247 ("arm64: dts: Add reboot node for exynos7")
-Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
-Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
----
- arch/arm64/boot/dts/exynos/exynos7.dtsi | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+        memset(msg, 0, sizeof(*msg));
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
-index 959918f4ca45..47d54c369d03 100644
---- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
-@@ -117,8 +117,10 @@ cpu_atlas3: cpu@3 {
- 	};
- 
- 	psci {
--		compatible = "arm,psci-0.2";
-+		compatible = "arm,psci";
- 		method = "smc";
-+		cpu_off = <0x84000002>;
-+		cpu_on = <0xC4000003>;
- 	};
- 
- 	soc: soc@0 {
-@@ -552,6 +554,13 @@ pmu_system_controller: system-controller@105c0000 {
- 			compatible = "samsung,exynos7-pmu", "syscon";
- 			reg = <0x105c0000 0x5000>;
- 
-+			poweroff: syscon-poweroff {
-+				compatible = "syscon-poweroff";
-+				regmap = <&pmu_system_controller>;
-+				offset = <0x330C>; /* PS_HOLD_CONTROL */
-+				mask = <0x5200>; /* reset value */
-+			};
-+
- 			reboot: syscon-reboot {
- 				compatible = "syscon-reboot";
- 				regmap = <&pmu_system_controller>;
--- 
-2.27.0
-
+Then it compiles _and_ is correct :)
