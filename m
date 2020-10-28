@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D74F29D7C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 361C329D775
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733105AbgJ1W0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733094AbgJ1W0i (ORCPT
+        id S1733003AbgJ1WYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:24:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25208 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732908AbgJ1WY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:26:38 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E852C0613D1;
-        Wed, 28 Oct 2020 15:26:38 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id p7so1212080ioo.6;
-        Wed, 28 Oct 2020 15:26:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sjEb0zN49oaIgAufe8xKhLgOv463zV86NX/WiY9lMDg=;
-        b=ins/48je6GCuzC77llgddm1BWOhvZ6uazsomXrcWJwl9hv29UzUQLz9mXKQ1dQrzon
-         GTRPslbb9K5uBXJj2gwvYX+LIKUP+0wVC4IstAQucpRuKed0cq8EONeycmWDPlhwGB1P
-         wF5W9zuEcjT1HQf0yZ3ppS9KwE2Lm6ac7WmgjRaUw1w09VkIp7Y1g762KEenVNHlaEdY
-         IJjf21Eg70oUsTB5yUAcmGAuKzF3LthEaQOfPnivZN5Al7Ipy4sh1Mnf3QN5Et6nEHEw
-         U1+u7Xxm+QhJHx4Aof9mQRhKDsCu0wvFwqLML/DN0p20Rw7rdfe1iuITaF2mbdq1Nxqw
-         YyKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sjEb0zN49oaIgAufe8xKhLgOv463zV86NX/WiY9lMDg=;
-        b=sgXRSDcJRqIkARJ9fWdVdop3nGZAKMGBikXV9amHGBmI81nIcm3eoXFBQdUlfTwdAA
-         +lFQ6a+LSjFlstBrAksZcBSOoN5bv0fToWwHjPX3hO0b0pASLhjbeNYtRmkDdfClLIPH
-         yJSihSD4HmTLAF7ifO7uGRD4CmDcCaSw9zxIylN98VnsERbracm6Thfpjciqi41ViZ14
-         EOmMjuS6/GsZHOjSmWpB0Vw9E9VfOA6Q3ctM+2gMyf9Lf4HPvI8I+fLORSgVPPfi1iKy
-         pDG9WiEBitBREbyBZ/lnPmhRpenPIjDsaidkFRnTEEFgneNNfI+DnQrZ0buIUd1hObdh
-         zj+g==
-X-Gm-Message-State: AOAM530J5+gFYiKomVbRPg9ihDcpgxBcqGRDFORwhwzGGBnMJ99MKDIG
-        EAiZa0MZdsS9xYiLEgu6IY0UDTVAyfk=
-X-Google-Smtp-Source: ABdhPJy/9p8gddGaTW5w39lJapijT3I+Qdeklbh+tEf1vk7pVfid4diusK/CP48SGgLCOD9c8BlcxA==
-X-Received: by 2002:a63:1d12:: with SMTP id d18mr618273pgd.314.1603909321194;
-        Wed, 28 Oct 2020 11:22:01 -0700 (PDT)
-Received: from localhost ([2401:fa00:8f:203:a6ae:11ff:fe11:4b46])
-        by smtp.gmail.com with ESMTPSA id b67sm276268pfa.151.2020.10.28.11.21.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 11:22:00 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 03:21:58 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-To:     Rui Salvaterra <rsalvaterra@gmail.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        minchan@kernel.org, ngupta@vflare.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH v3] zram: break the strict dependency from lzo
-Message-ID: <20201028182158.GA128655@google.com>
-References: <20201026085141.1179-1-rsalvaterra@gmail.com>
- <20201027012204.GD2412725@google.com>
- <CALjTZvbf4qK6SHEe7OhkTC_o7kaY4oOKQ+kk-D2OUq_ULsYAqQ@mail.gmail.com>
- <20201028101934.GB48825@google.com>
- <CALjTZvaTiAS1vMyrTNvrfy7KOjemy+tW5-hbTy5SHYfsbRE=_Q@mail.gmail.com>
+        Wed, 28 Oct 2020 18:24:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603923865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oZiyvKbthkSVXmetaH/Tg/ylLfcMHsx8WKqlppb05Vw=;
+        b=dysoh9f5dGKTtEw2I0z+WFgnPROOLwiNKbP9UwQDR5aiJSlxEOsrM3PrOPVecKRjm0msLl
+        0XWuaV2hugxpg4nePSEaJ5cbCVXUt26tdFmRUMEcP3U0rFu36NxhBr0MZXpQUtERRHiUkK
+        PMTwB5+/2OVE6kES8DZy5XDdSuW1pIY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-477-NQE2bf9XOEqbiPyFFQ9_dg-1; Wed, 28 Oct 2020 14:23:46 -0400
+X-MC-Unique: NQE2bf9XOEqbiPyFFQ9_dg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D3836408F;
+        Wed, 28 Oct 2020 18:23:44 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-66-92.rdu2.redhat.com [10.10.66.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 402CF6EF53;
+        Wed, 28 Oct 2020 18:23:40 +0000 (UTC)
+From:   Qian Cai <cai@redhat.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Qian Cai <cai@redhat.com>
+Subject: [PATCH] powerpc/smp: Move rcu_cpu_starting() earlier
+Date:   Wed, 28 Oct 2020 14:23:34 -0400
+Message-Id: <20201028182334.13466-1-cai@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALjTZvaTiAS1vMyrTNvrfy7KOjemy+tW5-hbTy5SHYfsbRE=_Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The call to rcu_cpu_starting() in start_secondary() is not early enough
+in the CPU-hotplug onlining process, which results in lockdep splats as
+follows:
 
-On (20/10/28 11:25), Rui Salvaterra wrote:
-> > diff --git a/drivers/block/zram/Kconfig b/drivers/block/zram/Kconfig
-> > index fe7a4b7d30cf..f93eed40e155 100644
-> > --- a/drivers/block/zram/Kconfig
-> > +++ b/drivers/block/zram/Kconfig
-> > @@ -2,7 +2,7 @@
-> >  config ZRAM
-> >         tristate "Compressed RAM block device support"
-> >         depends on BLOCK && SYSFS && ZSMALLOC && CRYPTO
-> > -       select CRYPTO_LZO
-> > +       depends on (CRYPTO_LZO || CRYPTO_LZ4 || CRYPTO_LZ4HC || CRYPTO_842 || CRYPTO_ZSTD)
-> 
-> This reverses the dependency order, as now we have to select a
-> supported compression algorithm in order for zram to be visible in the
-> block device drivers list.
+ WARNING: suspicious RCU usage
+ -----------------------------
+ kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
 
-Right, but well we also need to select ZSMALLOC and CRYPTO for
-zram to become visible (the thing that I found out recently is
-that you can always check the hidden/blocked items by hitting
-'z' in menuconfig).
+ other info that might help us debug this:
 
-> This is why I wrote the ZRAM_AUTOSEL_ALGO
-> kconfig symbol, which automatically selects lzo as a fallback. If the
-> user chooses to select another supported algorithm, he will then be
-> allowed to deselect lzo. We thus follow the principle of least
-> surprise, IMHO.
+ RCU used illegally from offline CPU!
+ rcu_scheduler_active = 1, debug_locks = 1
+ no locks held by swapper/1/0.
 
-OK, makes sense.
+ Call Trace:
+ dump_stack+0xec/0x144 (unreliable)
+ lockdep_rcu_suspicious+0x128/0x14c
+ __lock_acquire+0x1060/0x1c60
+ lock_acquire+0x140/0x5f0
+ _raw_spin_lock_irqsave+0x64/0xb0
+ clockevents_register_device+0x74/0x270
+ register_decrementer_clockevent+0x94/0x110
+ start_secondary+0x134/0x800
+ start_secondary_prolog+0x10/0x14
 
-	-ss
+This is avoided by moving the call to rcu_cpu_starting up near the
+beginning of the start_secondary() function. Note that the
+raw_smp_processor_id() is required in order to avoid calling into
+lockdep before RCU has declared the CPU to be watched for readers.
+
+Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
+Signed-off-by: Qian Cai <cai@redhat.com>
+---
+ arch/powerpc/kernel/smp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+index 3c6b9822f978..8c2857cbd960 100644
+--- a/arch/powerpc/kernel/smp.c
++++ b/arch/powerpc/kernel/smp.c
+@@ -1393,13 +1393,14 @@ static void add_cpu_to_masks(int cpu)
+ /* Activate a secondary processor. */
+ void start_secondary(void *unused)
+ {
+-	unsigned int cpu = smp_processor_id();
++	unsigned int cpu = raw_smp_processor_id();
+ 
+ 	mmgrab(&init_mm);
+ 	current->active_mm = &init_mm;
+ 
+ 	smp_store_cpu_info(cpu);
+ 	set_dec(tb_ticks_per_jiffy);
++	rcu_cpu_starting(cpu);
+ 	preempt_disable();
+ 	cpu_callin_map[cpu] = 1;
+ 
+-- 
+2.28.0
+
