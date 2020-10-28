@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FC829DA21
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E965429DA26
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390253AbgJ1XOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:14:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45038 "EHLO mail.kernel.org"
+        id S2390279AbgJ1XPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:15:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389529AbgJ1XM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:12:58 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        id S2390273AbgJ1XPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 19:15:05 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1779206FB;
-        Wed, 28 Oct 2020 23:12:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 262F6206FB;
+        Wed, 28 Oct 2020 23:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603926778;
-        bh=YtGhFLTEWh3IhMSk1JUw+QTsMFqJxiOvCyFwJrfTBNE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=T6qHpw87q6laRew2i8fV7gJ22HUBQEjIxpWzLEyNFuGUNHe9+gTTpjY+gsCekJsTF
-         9zA1Ue7ZQtBntE7hXpnNoh2TNHusF90/LCdac5PNlKZ4eSRfMgdy7VWhz0NGRRPAF4
-         KiGqOB3NLeX0z4EdtMNA9t296LxbxLypQs5XLi8c=
-Date:   Wed, 28 Oct 2020 16:12:56 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Pavana Sharma <pavana.sharma@digi.com>
-Cc:     f.fainelli@gmail.com, andrew@lunn.ch, davem@davemloft.net,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, vivien.didelot@gmail.com
-Subject: Re: [PATCH v5 3/3] net: dsa: mv88e6xxx: Add support for mv88e6393x
- family of Marvell
-Message-ID: <20201028161256.399bd045@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <e5fdcddeda21884a21162e441d1e8a04994f2825.1603837679.git.pavana.sharma@digi.com>
-References: <cover.1603837678.git.pavana.sharma@digi.com>
-        <e5fdcddeda21884a21162e441d1e8a04994f2825.1603837679.git.pavana.sharma@digi.com>
+        s=default; t=1603926905;
+        bh=fOIDlzpAqyABbNY+P2PRe8x4YzZuz/sC9KM32cPf/5M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XPZq4sY3JCfcvIVrQAwM1oC0gWhP6h5YPUDArmR+ONvM4tynk3CEsW8qGYCASu0vh
+         owY/MeP5chXdGoqazdeGOprfjWlhBpOHtLIWsjmB134vYw3q3MXsPR5Xy7Xl5lNOHB
+         PAieaYoy9HIidmKLa3WUf7sH5XDVAbOjg/9KmPcM=
+Date:   Wed, 28 Oct 2020 19:15:03 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.14 000/191] 4.14.203-rc1 review
+Message-ID: <20201028231503.GE87646@sasha-vm>
+References: <20201027134909.701581493@linuxfoundation.org>
+ <20201028170853.GC118534@roeck-us.net>
+ <20201028195610.GB124982@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201028195610.GB124982@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 10:09:50 +1000 Pavana Sharma wrote:
-> The Marvell 88E6393X device is a single-chip integration of a 11-port
-> Ethernet switch with eight integrated Gigabit Ethernet (GbE) transceivers
-> and three 10-Gigabit interfaces.
->=20
-> This patch adds functionalities specific to mv88e6393x family (88E6393X,
-> 88E6193X and 88E6191X)
->=20
-> Signed-off-by: Pavana Sharma <pavana.sharma@digi.com>
-> ---
-> Changes in v2:
->   - Fix a warning (Reported-by: kernel test robot <lkp@intel.com>)
-> Changes in v3:
->   - Fix 'unused function' warning
-> Changes in v4, v5:
->   - Incorporated feedback from maintainers.
+On Wed, Oct 28, 2020 at 12:56:10PM -0700, Guenter Roeck wrote:
+>Retry.
+>
+>On Wed, Oct 28, 2020 at 10:08:53AM -0700, Guenter Roeck wrote:
+>> On Tue, Oct 27, 2020 at 02:47:35PM +0100, Greg Kroah-Hartman wrote:
+>> > This is the start of the stable review cycle for the 4.14.203 release.
+>> > There are 191 patches in this series, all will be posted as a response
+>> > to this one.  If anyone has any issues with these being applied, please
+>> > let me know.
+>> >
+>> > Responses should be made by Thu, 29 Oct 2020 13:48:36 +0000.
+>> > Anything received after that time might be too late.
+>> >
+>>
+>> Build results:
+>> 	total: 168 pass: 166 fail: 2
+>> Failed builds:
+>> 	powerpc:defconfig
+>> 	powerpc:allmodconfig
+>> Qemu test results:
+>> 	total: 404 pass: 385 fail: 19
+>> Failed tests:
+>> 	<various powerpc64>
+>>
+>> Error log:
+>> arch/powerpc/platforms/powernv/opal-dump.c: In function 'process_dump':
+>> arch/powerpc/platforms/powernv/opal-dump.c:409:7: error: void value not ignored as it ought to be
 
-drivers/net/dsa/mv88e6xxx/port.c:29:5: warning: no previous prototype for =
-=E2=80=98mv88e6xxx_port_wait_bit=E2=80=99 [-Wmissing-prototypes]
-   29 | int mv88e6xxx_port_wait_bit(struct mv88e6xxx_chip *chip, int port, =
-int reg,
-      |     ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/dsa/mv88e6xxx/port.c:29:5: warning: symbol 'mv88e6xxx_port_wait=
-_bit' was not declared. Should it be static?
-drivers/net/dsa/mv88e6xxx/port.c:29:5: warning: no previous prototype for =
-=E2=80=98mv88e6xxx_port_wait_bit=E2=80=99 [-Wmissing-prototypes]
-   29 | int mv88e6xxx_port_wait_bit(struct mv88e6xxx_chip *chip, int port, =
-int reg,
-      |     ^~~~~~~~~~~~~~~~~~~~~~~
+I'll grab b29336c0e178 ("powerpc/powernv/opal-dump : Use IRQ_HANDLED
+instead of numbers in interrupt handler") to fix that, thanks!
+
+-- 
+Thanks,
+Sasha
