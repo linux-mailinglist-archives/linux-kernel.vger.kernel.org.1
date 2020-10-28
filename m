@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3321829D80C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D9029D834
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387507AbgJ1W3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:29:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42286 "EHLO mail.kernel.org"
+        id S2387702AbgJ1Wa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:30:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387529AbgJ1W3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:29:12 -0400
+        id S2387665AbgJ1WaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:30:24 -0400
 Received: from kozik-lap.proceq-device.com (unknown [194.230.155.184])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6461D2070E;
-        Wed, 28 Oct 2020 22:29:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC70720720;
+        Wed, 28 Oct 2020 22:30:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603924152;
-        bh=2kWIOEH/KcIuHZlj3LQjGfE/KRmEsQxNgUBxZTqQXR0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=xAfMd+hX3L/aRRKqFpkAUWCsG/m9w8cTpR9m9a1o/TF2RBimn294+yDG9kUJb7G/S
-         VPQ/gvTiOU+OG8nT8jlREUW7t+qQpCCk7yDgQUsjxUgu1si7v3PF5V3VwHjo0mcthz
-         UoJvCtnhsG85n1LI9y6VaK6ZQ1/Z/CuSMGDWkxBg=
+        s=default; t=1603924223;
+        bh=GBQ0jA1UbDnOOxIlEwQgVuqIYDKm0O9dv+Q1uOL6pdA=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=tIn300E8Rzj6BZFs3bCXHp75IHLpBjGoOYIqtoovMUMHGn0FHLBGyVHUD48m7tUDX
+         /Za588QEIRJrpHNilXkNTADwp8hua11g9jS+fzjo9eQnezVpQrclTURxm+3+eL2hL1
+         5nG6mYSYxD3yprPQXPjmtMWOFeYbRLZIfCcgC/pY=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
+To:     Lee Jones <lee.jones@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Andy Shevchenko <andy@kernel.org>, Milo Kim <milo.kim@ti.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: [RESEND PATCH] mfd: sec: initialize driver via module_platform_driver
-Date:   Wed, 28 Oct 2020 23:28:49 +0100
-Message-Id: <20201028222849.365998-1-krzk@kernel.org>
+        Tony Lindgren <tony@atomide.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: [RESEND PATCH 02/42] mfd: as3711: use PLATFORM_DEVID_NONE
+Date:   Wed, 28 Oct 2020 23:29:29 +0100
+Message-Id: <20201028223009.369824-2-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201028223009.369824-1-krzk@kernel.org>
+References: <20201028223009.369824-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver was using subsys_initcall() because in old times deferred
-probe was not supported everywhere and specific ordering was needed.
-Since probe deferral works fine and specific ordering is discouraged
-(hides dependencies between drivers and couples their boot order), the
-driver can be converted to regular module_platform_driver.
+Use PLATFORM_DEVID_NONE define instead of "-1" value because:
+ - it brings some meaning,
+ - it might point attention why auto device ID was not used.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 ---
- drivers/mfd/sec-core.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+ drivers/mfd/as3711.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mfd/sec-core.c b/drivers/mfd/sec-core.c
-index 7bfab43b455e..804f32d0ae22 100644
---- a/drivers/mfd/sec-core.c
-+++ b/drivers/mfd/sec-core.c
-@@ -549,19 +549,7 @@ static struct i2c_driver sec_pmic_driver = {
- 	.shutdown = sec_pmic_shutdown,
- 	.id_table = sec_pmic_id,
- };
--
--static int __init sec_pmic_init(void)
--{
--	return i2c_add_driver(&sec_pmic_driver);
--}
--
--subsys_initcall(sec_pmic_init);
--
--static void __exit sec_pmic_exit(void)
--{
--	i2c_del_driver(&sec_pmic_driver);
--}
--module_exit(sec_pmic_exit);
-+module_i2c_driver(sec_pmic_driver);
+diff --git a/drivers/mfd/as3711.c b/drivers/mfd/as3711.c
+index 3adaec6c37df..5933f322ad52 100644
+--- a/drivers/mfd/as3711.c
++++ b/drivers/mfd/as3711.c
+@@ -184,8 +184,9 @@ static int as3711_i2c_probe(struct i2c_client *client,
+ 		as3711_subdevs[AS3711_BACKLIGHT].pdata_size = 0;
+ 	}
  
- MODULE_AUTHOR("Sangbeom Kim <sbkim73@samsung.com>");
- MODULE_DESCRIPTION("Core support for the S5M MFD");
+-	ret = devm_mfd_add_devices(as3711->dev, -1, as3711_subdevs,
+-				   ARRAY_SIZE(as3711_subdevs), NULL, 0, NULL);
++	ret = devm_mfd_add_devices(as3711->dev, PLATFORM_DEVID_NONE,
++				   as3711_subdevs, ARRAY_SIZE(as3711_subdevs),
++				   NULL, 0, NULL);
+ 	if (ret < 0)
+ 		dev_err(&client->dev, "add mfd devices failed: %d\n", ret);
+ 
 -- 
 2.25.1
 
