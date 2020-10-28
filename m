@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D88329D5B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 872D629D59F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:07:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730172AbgJ1WIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:08:01 -0400
-Received: from mga11.intel.com ([192.55.52.93]:9420 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730357AbgJ1WHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:07:54 -0400
-IronPort-SDR: 40FHPcWqQj1zxW/9cQqRsalTkTN8+904YEC5PXmBkLXB00Ob4qcHRmK1QaHzHqiKw7hzTkifXK
- H3lQQaixz6sQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="164795977"
-X-IronPort-AV: E=Sophos;i="5.77,427,1596524400"; 
-   d="scan'208";a="164795977"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 10:04:33 -0700
-IronPort-SDR: Wk+cwQAX4UPPu1+Li/FegkOVOmBdRomPZlJPiY7KK86Ir7CYzhZssJFvA7qlf0OpQ6e3vs4Slo
- YNNYDIsRR5Eg==
-X-IronPort-AV: E=Sophos;i="5.77,427,1596524400"; 
-   d="scan'208";a="351078828"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 10:04:33 -0700
-Date:   Wed, 28 Oct 2020 10:04:32 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Gleb Natapov <gleb@redhat.com>, Avi Kivity <avi@redhat.com>,
-        Ingo Molnar <mingo@elte.hu>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86: kvm: avoid -Wshadow warning in header
-Message-ID: <20201028170430.GC7584@linux.intel.com>
-References: <20201026161512.3708919-1-arnd@kernel.org>
+        id S1730077AbgJ1WHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:07:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50829 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729419AbgJ1WHR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:07:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603922836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O/BGLtzgfmF0SgLWDxB+OjnwScbwNx4rvirjwHvdxu8=;
+        b=TkJlsHOTF19GsnnXXudJHW4flnIJnzy0DkLPUg/kXTVgZFpykQyE6mXFMnw6GszPbgzuS5
+        xrfI7YNWrzphNXRbfNvUomCAO1VV7xB2Sx6+eJIuSRl8P8685ZLDYlT/7TyylM9wuCbvNK
+        7t2QOTHdzUL0+oKAAozxaavUq5bNHJ8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-356-w0Cal7W0O1KKXv-zA7kNsg-1; Wed, 28 Oct 2020 13:05:11 -0400
+X-MC-Unique: w0Cal7W0O1KKXv-zA7kNsg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F60B802B66;
+        Wed, 28 Oct 2020 17:05:10 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1511D100164C;
+        Wed, 28 Oct 2020 17:05:08 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20201028143442.GA20115@casper.infradead.org>
+References: <20201028143442.GA20115@casper.infradead.org> <160389418807.300137.8222864749005731859.stgit@warthog.procyon.org.uk> <160389426655.300137.17487677797144804730.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        kernel test robot <lkp@intel.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/11] afs: Fix dirty-region encoding on ppc32 with 64K pages
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026161512.3708919-1-arnd@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <548208.1603904708.1@warthog.procyon.org.uk>
+Date:   Wed, 28 Oct 2020 17:05:08 +0000
+Message-ID: <548209.1603904708@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 05:14:39PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> There are hundreds of warnings in a W=2 build about a local
-> variable shadowing the global 'apic' definition:
-> 
-> arch/x86/kvm/lapic.h:149:65: warning: declaration of 'apic' shadows a global declaration [-Wshadow]
-> 
-> Avoid this by renaming the local in the kvm/lapic.h header
+Matthew Wilcox <willy@infradead.org> wrote:
 
-Rather than change KVM, and presumably other files as well, e.g. kvm/lapic.c and
-apic/io_apic.c also shadow 'apic' all over the place, what about renaming the
-global 'apic' to something more unique?  KVM aside, using such a common name for
-a global variable has always struck me as a bit odd/dangerous/confusing.
+> > +{
+> > +	if (PAGE_SIZE - 1 <= __AFS_PAGE_PRIV_MASK)
+> > +		return 1;
+> > +	else
+> > +		return PAGE_SIZE / (__AFS_PAGE_PRIV_MASK + 1);
+> 
+> Could this be DIV_ROUND_UP(PAGE_SIZE, __AFS_PAGE_PRIV_MASK + 1); avoiding
+> a conditional?  I appreciate it's calculated at compile time today, but
+> it'll be dynamic with THP.
+
+Hmmm - actually, I want a shift size, not a number of bytes as I divide by it
+twice in afs_page_dirty().
+
+David
+
