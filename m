@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A39E29E219
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C686929E23F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727062AbgJ1ViD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:38:03 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:38084 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726997AbgJ1ViB (ORCPT
+        id S2387597AbgJ2CL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:11:59 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:60972 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726823AbgJ1Vgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:38:01 -0400
-Date:   Wed, 28 Oct 2020 13:52:41 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     Camille Mougey <commial@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Denis Efremov <efremov@linux.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [seccomp] Request for a "enable on execve" mode for Seccomp
- filters
-Message-ID: <20201028175241.GD534@brightrain.aerifal.cx>
-References: <CAAnLoWnS74dK9Wq4EQ-uzQ0qCRfSK-dLqh+HCais-5qwDjrVzg@mail.gmail.com>
- <CAG48ez3ZXmJ1ndEmZtoieOAm05p+5X7+HXo61LwpuiWFWGWK4w@mail.gmail.com>
- <20201028164936.GC534@brightrain.aerifal.cx>
- <CAG48ez2rC1OKYMM6eG4Fyq2xvTit6t3PUY0VE8A56EAqNmEVzg@mail.gmail.com>
+        Wed, 28 Oct 2020 17:36:32 -0400
+X-UUID: 8a47760e811a42968c2e7d60a0a6ab76-20201029
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=RYETYlae4iO6GU8GFOfcOxXXaKOlfrIac/CifbWh6Vw=;
+        b=BjHkX+IvZPgDq+7JzGY+nHP0lymaLmxvm7712hpivokjnbcG9pXavwuBJY2EHf4kRStgk6gt9oYkIkvOrwlB2Ov3avlTvb605Pgcn4pq9oJIUSaWRNXF0rJ3DMvfeRyTM4L6FN+TcB3LBa91I1V3baaZgCNVr6Fzy0veKzoIiB8=;
+X-UUID: 8a47760e811a42968c2e7d60a0a6ab76-20201029
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 496800390; Thu, 29 Oct 2020 01:55:36 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 29 Oct 2020 01:55:27 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 29 Oct 2020 01:55:27 +0800
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+To:     <macpaul@gmail.com>, <chunfeng.yun@mediatek.com>,
+        <eddie.hung@mediatek.com>
+CC:     Ainge Hsu <ainge.hsu@mediatek.com>,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Macpaul Lin <macpaul.lin@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-usb@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <stable@vger.kernel.org>
+Subject: [PATCH v2] usb: gadget: configfs: Fix use-after-free issue with udc_name
+Date:   Thu, 29 Oct 2020 01:55:23 +0800
+Message-ID: <1603907723-19499-1-git-send-email-macpaul.lin@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG48ez2rC1OKYMM6eG4Fyq2xvTit6t3PUY0VE8A56EAqNmEVzg@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 8BA88157233FE31D320A44BF339572E794FB14D30A408FA9247CAD67040C28E02000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 06:34:56PM +0100, Jann Horn wrote:
-> On Wed, Oct 28, 2020 at 5:49 PM Rich Felker <dalias@libc.org> wrote:
-> > On Wed, Oct 28, 2020 at 01:42:13PM +0100, Jann Horn wrote:
-> > > On Wed, Oct 28, 2020 at 12:18 PM Camille Mougey <commial@gmail.com> wrote:
-> > > You're just focusing on execve() - I think it's important to keep in
-> > > mind what happens after execve() for normal, dynamically-linked
-> > > binaries: The next step is that the dynamic linker runs, and it will
-> > > poke around in the file system with access() and openat() and fstat(),
-> > > it will mmap() executable libraries into memory, it will mprotect()
-> > > some memory regions, it will set up thread-local storage (e.g. using
-> > > arch_prctl(); even if the process is single-threaded), and so on.
-> > >
-> > > The earlier you install the seccomp filter, the more of these steps
-> > > you have to permit in the filter. And if you want the filter to take
-> > > effect directly after execve(), the syscalls you'll be forced to
-> > > permit are sufficient to cobble something together in userspace that
-> > > effectively does almost the same thing as execve().
-> >
-> > I would assume you use SECCOMP_RET_USER_NOTIF to implement policy for
-> > controlling these operations and allowing only the ones that are valid
-> > during dynamic linking. This also allows you to defer application of
-> > the filter until after execve. So unless I'm missing some reason why
-> > this doesn't work, I think the requested functionality is already
-> > available.
-> 
-> Ah, yeah, good point.
-> 
-> > If you really just want the "activate at exec" behavior, it might be
-> > possible (depending on how SECCOMP_RET_USER_NOTIF behaves when there's
-> > no notify fd open; I forget)
-> 
-> syscall returns -ENOSYS. Yeah, that'd probably do the job. (Even
-> though it might be a bit nicer if userspace had control over the errno
-> there, such that it could be EPERM instead... oh well.)
+RnJvbTogRWRkaWUgSHVuZyA8ZWRkaWUuaHVuZ0BtZWRpYXRlay5jb20+DQoNClRoZXJlIGlzIGEg
+dXNlLWFmdGVyLWZyZWUgaXNzdWUsIGlmIGFjY2VzcyB1ZGNfbmFtZQ0KaW4gZnVuY3Rpb24gZ2Fk
+Z2V0X2Rldl9kZXNjX1VEQ19zdG9yZSBhZnRlciBhbm90aGVyIGNvbnRleHQNCmZyZWUgdWRjX25h
+bWUgaW4gZnVuY3Rpb24gdW5yZWdpc3Rlcl9nYWRnZXQuDQoNCkNvbnRleHQgMToNCmdhZGdldF9k
+ZXZfZGVzY19VRENfc3RvcmUoKS0+dW5yZWdpc3Rlcl9nYWRnZXQoKS0+DQpmcmVlIHVkY19uYW1l
+LT5zZXQgdWRjX25hbWUgdG8gTlVMTA0KDQpDb250ZXh0IDI6DQpnYWRnZXRfZGV2X2Rlc2NfVURD
+X3Nob3coKS0+IGFjY2VzcyB1ZGNfbmFtZQ0KDQpDYWxsIHRyYWNlOg0KZHVtcF9iYWNrdHJhY2Ur
+MHgwLzB4MzQwDQpzaG93X3N0YWNrKzB4MTQvMHgxYw0KZHVtcF9zdGFjaysweGU0LzB4MTM0DQpw
+cmludF9hZGRyZXNzX2Rlc2NyaXB0aW9uKzB4NzgvMHg0NzgNCl9fa2FzYW5fcmVwb3J0KzB4Mjcw
+LzB4MmVjDQprYXNhbl9yZXBvcnQrMHgxMC8weDE4DQpfX2FzYW5fcmVwb3J0X2xvYWQxX25vYWJv
+cnQrMHgxOC8weDIwDQpzdHJpbmcrMHhmNC8weDEzOA0KdnNucHJpbnRmKzB4NDI4LzB4MTRkMA0K
+c3ByaW50ZisweGU0LzB4MTJjDQpnYWRnZXRfZGV2X2Rlc2NfVURDX3Nob3crMHg1NC8weDY0DQpj
+b25maWdmc19yZWFkX2ZpbGUrMHgyMTAvMHgzYTANCl9fdmZzX3JlYWQrMHhmMC8weDQ5Yw0KdmZz
+X3JlYWQrMHgxMzAvMHgyYjQNClN5U19yZWFkKzB4MTE0LzB4MjA4DQplbDBfc3ZjX25ha2VkKzB4
+MzQvMHgzOA0KDQpBZGQgbXV0ZXhfbG9jayB0byBwcm90ZWN0IHRoaXMga2luZCBvZiBzY2VuYXJp
+by4NCg0KU2lnbmVkLW9mZi1ieTogRWRkaWUgSHVuZyA8ZWRkaWUuaHVuZ0BtZWRpYXRlay5jb20+
+DQpTaWduZWQtb2ZmLWJ5OiBNYWNwYXVsIExpbiA8bWFjcGF1bC5saW5AbWVkaWF0ZWsuY29tPg0K
+UmV2aWV3ZWQtYnk6IFBldGVyIENoZW4gPHBldGVyLmNoZW5AbnhwLmNvbT4NCkNjOiBzdGFibGVA
+dmdlci5rZXJuZWwub3JnDQotLS0NCkNoYW5nZXMgZm9yIHYyOg0KICAtIEZpeCB0eXBvICVzL2Nv
+bnRleC9jb250ZXh0LCBUaGFua3MgUGV0ZXIuDQoNCiBkcml2ZXJzL3VzYi9nYWRnZXQvY29uZmln
+ZnMuYyB8ICAgMTEgKysrKysrKysrLS0NCiAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCsp
+LCAyIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2FkZ2V0L2NvbmZp
+Z2ZzLmMgYi9kcml2ZXJzL3VzYi9nYWRnZXQvY29uZmlnZnMuYw0KaW5kZXggNTYwNTFiYi4uZDk3
+NDNmNCAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvdXNiL2dhZGdldC9jb25maWdmcy5jDQorKysgYi9k
+cml2ZXJzL3VzYi9nYWRnZXQvY29uZmlnZnMuYw0KQEAgLTIyMSw5ICsyMjEsMTYgQEAgc3RhdGlj
+IHNzaXplX3QgZ2FkZ2V0X2Rldl9kZXNjX2JjZFVTQl9zdG9yZShzdHJ1Y3QgY29uZmlnX2l0ZW0g
+Kml0ZW0sDQogDQogc3RhdGljIHNzaXplX3QgZ2FkZ2V0X2Rldl9kZXNjX1VEQ19zaG93KHN0cnVj
+dCBjb25maWdfaXRlbSAqaXRlbSwgY2hhciAqcGFnZSkNCiB7DQotCWNoYXIgKnVkY19uYW1lID0g
+dG9fZ2FkZ2V0X2luZm8oaXRlbSktPmNvbXBvc2l0ZS5nYWRnZXRfZHJpdmVyLnVkY19uYW1lOw0K
+KwlzdHJ1Y3QgZ2FkZ2V0X2luZm8gKmdpID0gdG9fZ2FkZ2V0X2luZm8oaXRlbSk7DQorCWNoYXIg
+KnVkY19uYW1lOw0KKwlpbnQgcmV0Ow0KKw0KKwltdXRleF9sb2NrKCZnaS0+bG9jayk7DQorCXVk
+Y19uYW1lID0gZ2ktPmNvbXBvc2l0ZS5nYWRnZXRfZHJpdmVyLnVkY19uYW1lOw0KKwlyZXQgPSBz
+cHJpbnRmKHBhZ2UsICIlc1xuIiwgdWRjX25hbWUgPzogIiIpOw0KKwltdXRleF91bmxvY2soJmdp
+LT5sb2NrKTsNCiANCi0JcmV0dXJuIHNwcmludGYocGFnZSwgIiVzXG4iLCB1ZGNfbmFtZSA/OiAi
+Iik7DQorCXJldHVybiByZXQ7DQogfQ0KIA0KIHN0YXRpYyBpbnQgdW5yZWdpc3Rlcl9nYWRnZXQo
+c3RydWN0IGdhZGdldF9pbmZvICpnaSkNCi0tIA0KMS43LjkuNQ0K
 
-EPERM is a major bug in current sandbox implementations, so ENOSYS is
-at least mildly better, but indeed it should be controllable, probably
-by allowing a code path for the BPF to continue with a jump to a
-different logic path if the notify listener is missing.
-
-Rich
