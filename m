@@ -2,167 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4409429E036
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AAC29DFAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729826AbgJ1WFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:05:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728553AbgJ1WCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:02:24 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72958247CA;
-        Wed, 28 Oct 2020 15:41:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603899668;
-        bh=zOJDHvxAOzkt5Os8SlOZ13QHa0aFK9IK3J1D0wsqnHA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k/r+56tdl0xlwkYmlH+MWBq5lmWTQT7/pxd8Vwsb35WO0flZzuFApTEDboQM0KncS
-         B1SJbO0SnpL7IVwCeF/2eY30sxIitNa1+02swnmeBxVfQDpp7jSsOpCBss4dmdFMhG
-         cI/SQ1fIaZ5Ul3yxgIJp1E2SSusvDQFphdCmCpx8=
-Date:   Wed, 28 Oct 2020 16:42:00 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andy Duan <fugang.duan@nxp.com>
-Cc:     Sherry Sun <sherry.sun@nxp.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "vincent.whitchurch@axis.com" <vincent.whitchurch@axis.com>,
-        "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
-        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, "kishon@ti.com" <kishon@ti.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [EXT] Re: [PATCH V5 0/2] Change vring space from nomal memory to
- dma coherent memory
-Message-ID: <20201028154200.GB2780014@kroah.com>
-References: <20201028020305.10593-1-sherry.sun@nxp.com>
- <20201028055836.GA244690@kroah.com>
- <AM0PR04MB4947032368486CC9874C812692170@AM0PR04MB4947.eurprd04.prod.outlook.com>
- <20201028070712.GA1649838@kroah.com>
- <AM8PR04MB7315D583A9490E642ED13071FF170@AM8PR04MB7315.eurprd04.prod.outlook.com>
- <20201028111351.GA1964851@kroah.com>
- <AM8PR04MB731570801A528203647FAD0AFF170@AM8PR04MB7315.eurprd04.prod.outlook.com>
+        id S1730419AbgJ1WKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:10:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730408AbgJ1WKA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:10:00 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB50DC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:10:00 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id f37so556687otf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:10:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gCivUbStvJDP8xgScYqBn5b1q1aHgztV8Ojsrk4C91c=;
+        b=R1NA7ex6ineh2ONOHDYzR/H1eDdpkpozALl1ENbG0AQDqLUe8oixe2OmztHrWu/UuW
+         rgAjYdpP3EvHACRsAzNenjTW64Dv8c9cVpCuYGS1pkpsH9dHpwETZozqGRohAucORyhL
+         rgife7OAqVe/CtQfe8hzSEDLFnMTNIiCO54oW3OfY0CPQx3nuSey/2eXFWKQFEfle22V
+         4ZNHow+sFw4NYMtuTZxdRYXellxgOzoskqXvXHrvkWCQuWCXUjPVxYXj1UjEJ3jG4n/R
+         MNCaif7kvbpg6JHpsU3vgGU9rUAIgitZ5qibn7Q16stxQKcqKR2BKKpf6bO9JUj2AhX/
+         V6zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gCivUbStvJDP8xgScYqBn5b1q1aHgztV8Ojsrk4C91c=;
+        b=c31+mWbda05NUPphWTaaaV45oADifTQhZwD4lOVtJgfJh4ibhh2VS2qQqrI0hC98rd
+         IkuLTACXJzBC80YPBG0+lVhNFNw8cDzm/rIwBVe0InyY0Am0Icdl4ZWDbqGU3E/QFEjI
+         dZzin9p3NQcsn7PsxWIXBUzCoaokhUs3+LsiZ4Tfv+5vRVg7qB4vKu+w7kO/3FEoYCZg
+         3zN5C1y2P0iLLgC7o70+TCaJHc38GSs7+KEfmVAAGzZTk89sK1nP3NUkQzSouokBWUzd
+         WgcaiYMzQGkcsIVPTbyn81zg+kK5ZNQj8pI4RXqDlXnuiCVvsb2c9g7jAuV6weesS5+h
+         2aeA==
+X-Gm-Message-State: AOAM531evvygxX2BtAmWtr2PtSCe8uAmUXRIPb38Av7uQ0RXWc27Ol4v
+        cXp725iAwOnJQ+pgTotNBsNRwLdZ1COzlg==
+X-Google-Smtp-Source: ABdhPJwt5bhTrOYWSh8rilMCFuSjSlAfXcv+D8iu3ECZYewD+u0IiIXA0/qWTmEb9g15/NQ3iJ99DQ==
+X-Received: by 2002:a9d:5e87:: with SMTP id f7mr1257018otl.230.1603900727475;
+        Wed, 28 Oct 2020 08:58:47 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id p17sm2692876oov.1.2020.10.28.08.58.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 08:58:46 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 10:58:44 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vladimir Lypak <junak.pub@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: pinctrl: qcom: add msm8953 pinctrl
+ bindings
+Message-ID: <20201028155844.GC3151@builder.lan>
+References: <20201007160611.942754-1-junak.pub@gmail.com>
+ <20201007160611.942754-2-junak.pub@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <AM8PR04MB731570801A528203647FAD0AFF170@AM8PR04MB7315.eurprd04.prod.outlook.com>
+In-Reply-To: <20201007160611.942754-2-junak.pub@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 03:11:15PM +0000, Andy Duan wrote:
-> From: Greg KH <gregkh@linuxfoundation.org> Sent: Wednesday, October 28, 2020 7:14 PM
-> > On Wed, Oct 28, 2020 at 10:17:39AM +0000, Andy Duan wrote:
-> > > From: Greg KH <gregkh@linuxfoundation.org> Sent: Wednesday, October
-> > > 28, 2020 3:07 PM
-> > > > On Wed, Oct 28, 2020 at 06:05:28AM +0000, Sherry Sun wrote:
-> > > > > Hi Greg,
-> > > > >
-> > > > > > Subject: Re: [PATCH V5 0/2] Change vring space from nomal memory
-> > > > > > to dma coherent memory
-> > > > > >
-> > > > > > On Wed, Oct 28, 2020 at 10:03:03AM +0800, Sherry Sun wrote:
-> > > > > > > Changes in V5:
-> > > > > > > 1. Reorganize the vop_mmap function code in patch 1, which is
-> > > > > > > done by
-> > > > > > Christoph.
-> > > > > > > 2. Completely remove the unnecessary code related to reassign
-> > > > > > > the used ring for card in patch 2.
-> > > > > > >
-> > > > > > > The original vop driver only supports dma coherent device, as
-> > > > > > > it allocates and maps vring by _get_free_pages and
-> > > > > > > dma_map_single, but not use dma_sync_single_for_cpu/device to
-> > > > > > > sync the updates of device_page/vring between EP and RC, which
-> > > > > > > will cause memory synchronization problem for device don't support
-> > hardware dma coherent.
-> > > > > > >
-> > > > > > > And allocate vrings use dma_alloc_coherent is a common way in
-> > > > > > > kernel, as the memory interacted between two systems should
-> > > > > > > use consistent memory to avoid caching effects. So here add
-> > > > > > > noncoherent platform
-> > > > > > support for vop driver.
-> > > > > > > Also add some related dma changes to make sure noncoherent
-> > > > > > > platform works well.
-> > > > > > >
-> > > > > > > Sherry Sun (2):
-> > > > > > >   misc: vop: change the way of allocating vrings and device page
-> > > > > > >   misc: vop: do not allocate and reassign the used ring
-> > > > > > >
-> > > > > > >  drivers/misc/mic/bus/vop_bus.h     |   2 +
-> > > > > > >  drivers/misc/mic/host/mic_boot.c   |   9 ++
-> > > > > > >  drivers/misc/mic/host/mic_main.c   |  43 ++------
-> > > > > > >  drivers/misc/mic/vop/vop_debugfs.c |   4 -
-> > > > > > >  drivers/misc/mic/vop/vop_main.c    |  70 +-----------
-> > > > > > >  drivers/misc/mic/vop/vop_vringh.c  | 166 ++++++++++-------------------
-> > > > > > >  include/uapi/linux/mic_common.h    |   9 +-
-> > > > > > >  7 files changed, 85 insertions(+), 218 deletions(-)
-> > > > > >
-> > > > > > Have you all seen:
-> > > > > >
-> > > > > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%
-> > > > > > 25
-> > > > > >
-> > > >
-> > 2Flore.kernel.org%2Fr%2F8c1443136563de34699d2c084df478181c205db4.16
-> > > > > >
-> > > >
-> > 03854416.git.sudeep.dutt%40intel.com&amp;data=04%7C01%7Csherry.sun%
-> > > > > >
-> > > >
-> > 40nxp.com%7Cc19c987667434969847e08d87b0685e8%7C686ea1d3bc2b4c6f
-> > > > > >
-> > > >
-> > a92cd99c5c301635%7C0%7C0%7C637394615238940323%7CUnknown%7CTW
-> > > > > >
-> > > >
-> > FpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJX
-> > > > > >
-> > > >
-> > VCI6Mn0%3D%7C1000&amp;sdata=Zq%2FtHWTq%2BuIVBYXFGoeBmq0JJzYd
-> > > > > > 9zDyv4NVN4TpC%2FU%3D&amp;reserved=0
-> > > > > >
-> > > > > > Looks like this code is asking to just be deleted, is that ok with you?
-> > > > >
-> > > > > Yes, I saw that patch. I'm ok with it.
-> > > >
-> > > > Great, can you please provide a "Reviewed-by:" or "Acked-by:" for it?
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > >
-> > > Sherry took much effort on the features support on i.MX series like
-> > i.MX8QM/i.MX8QXP/i.MX8MM.
-> > >
-> > > Now it is a pity to delete the vop code.
-> > >
-> > > One question,
-> > > can we resubmit vop code by clean up, now only for i.MX series as Dutt's
-> > suggestion ?
-> > > Or we have to drop the design and switch to select other solutions ?
-> >
+On Wed 07 Oct 11:06 CDT 2020, Vladimir Lypak wrote:
+
+> Add device tree bindings documentation for Qualcomm MSM8953
+> pinctrl driver.
 > 
-> Okay, we plan to switch to NTB solution.
+> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
 
-What is a "NTB solution" exactly?
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
->  
-> > If this whole subsystem is being deleted because it is not used and never shipped,
-> > yes, please use a different solution.
-> > 
-> > I don't understand why you were trying to piggy-back on this codebase if the
-> > hardware was totally different, for some reason I thought this was the same
-> > hardware.  What exactly is this?
+Regards,
+Bjorn
+
+> ---
+> Changes in V2:
+>  - removed "wakeup-parent" property.
+>  - changed pincfg property pattern to '-pins$' and added its description.
+>  - added "serial-pins" subnode to example.
+> ---
+>  .../pinctrl/qcom,msm8953-pinctrl.yaml         | 167 ++++++++++++++++++
+>  1 file changed, 167 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml
 > 
-> Not the whole codebase, just the vop framework.
-
-That didn't answer the question at all, what are you all trying to do
-here, with what hardware, that the VOP code seemed like a good fit?
-
-thanks,
-
-greg k-h
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..abe9f4c9b1e3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml
+> @@ -0,0 +1,167 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/qcom,msm8953-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies, Inc. MSM8953 TLMM block
+> +
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +
+> +description: |
+> +  This binding describes the Top Level Mode Multiplexer block found in the
+> +  MSM8953 platform.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,msm8953-pinctrl
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: Specifies the TLMM summary IRQ
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  '#interrupt-cells':
+> +    description:
+> +      Specifies the PIN numbers and Flags, as defined in defined in
+> +      include/dt-bindings/interrupt-controller/irq.h
+> +    const: 2
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    description: Specifying the pin number and flags, as defined in
+> +      include/dt-bindings/gpio/gpio.h
+> +    const: 2
+> +
+> +  gpio-ranges:
+> +    maxItems: 1
+> +
+> +#PIN CONFIGURATION NODES
+> +patternProperties:
+> +  '-pins$':
+> +    type: object
+> +    description:
+> +      Pinctrl node's client devices use subnodes for desired pin configuration.
+> +      Client device subnodes use below standard properties.
+> +    $ref: "/schemas/pinctrl/pincfg-node.yaml"
+> +
+> +    properties:
+> +      pins:
+> +        description:
+> +          List of gpio pins affected by the properties specified in this
+> +          subnode.
+> +        items:
+> +          oneOf:
+> +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-7][0-9])$"
+> +            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc1_rclk, sdc2_clk,
+> +                      sdc2_cmd, sdc2_data, qdsd_clk, qdsd_cmd, qdsd_data0,
+> +                      qdsd_data1, qdsd_data2, qdsd_data3 ]
+> +        minItems: 1
+> +        maxItems: 16
+> +
+> +      function:
+> +        description:
+> +          Specify the alternative function to be configured for the specified
+> +          pins.
+> +
+> +        enum: [ accel_int, adsp_ext, alsp_int, atest_bbrx0, atest_bbrx1,
+> +                atest_char, atest_char0, atest_char1, atest_char2, atest_char3,
+> +                atest_gpsadc_dtest0_native, atest_gpsadc_dtest1_native, atest_tsens,
+> +                atest_wlan0, atest_wlan1, bimc_dte0, bimc_dte1, blsp1_spi,
+> +                blsp3_spi, blsp6_spi, blsp7_spi, blsp_i2c1, blsp_i2c2, blsp_i2c3,
+> +                blsp_i2c4, blsp_i2c5, blsp_i2c6, blsp_i2c7, blsp_i2c8, blsp_spi1,
+> +                blsp_spi2, blsp_spi3, blsp_spi4, blsp_spi5, blsp_spi6, blsp_spi7,
+> +                blsp_spi8, blsp_uart2, blsp_uart4, blsp_uart5, blsp_uart6, cam0_ldo,
+> +                cam1_ldo, cam1_rst, cam1_standby, cam2_rst, cam2_standby, cam3_rst,
+> +                cam3_standby, cam_irq, cam_mclk, cap_int, cci_async, cci_i2c,
+> +                cci_timer0, cci_timer1, cci_timer2, cci_timer3, cci_timer4,
+> +                cdc_pdm0, codec_int1, codec_int2, codec_reset, cri_trng, cri_trng0,
+> +                cri_trng1, dac_calib0, dac_calib1, dac_calib10, dac_calib11,
+> +                dac_calib12, dac_calib13, dac_calib14, dac_calib15, dac_calib16,
+> +                dac_calib17, dac_calib18, dac_calib19, dac_calib2, dac_calib20,
+> +                dac_calib21, dac_calib22, dac_calib23, dac_calib24, dac_calib25,
+> +                dac_calib3, dac_calib4, dac_calib5, dac_calib6, dac_calib7,
+> +                dac_calib8, dac_calib9, dbg_out, ddr_bist, dmic0_clk, dmic0_data,
+> +                ebi_cdc, ebi_ch0, ext_lpass, flash_strobe, fp_int, gcc_gp1_clk_a,
+> +                gcc_gp1_clk_b, gcc_gp2_clk_a, gcc_gp2_clk_b, gcc_gp3_clk_a,
+> +                gcc_gp3_clk_b, gcc_plltest, gcc_tlmm, gpio, gsm0_tx, gsm1_tx,
+> +                gyro_int, hall_int, hdmi_int, key_focus, key_home, key_snapshot,
+> +                key_volp, ldo_en, ldo_update, lpass_slimbus, lpass_slimbus0,
+> +                lpass_slimbus1, m_voc, mag_int, mdp_vsync, mipi_dsi0, modem_tsync,
+> +                mss_lte, nav_pps, nav_pps_in_a, nav_pps_in_b, nav_tsync,
+> +                nfc_disable, nfc_dwl, nfc_irq, ois_sync, pa_indicator, pbs0, pbs1,
+> +                pbs2, pressure_int, pri_mi2s, pri_mi2s_mclk_a, pri_mi2s_mclk_b,
+> +                pri_mi2s_ws, prng_rosc, pwr_crypto_enabled_a, pwr_crypto_enabled_b,
+> +                pwr_down, pwr_modem_enabled_a, pwr_modem_enabled_b,
+> +                pwr_nav_enabled_a, pwr_nav_enabled_b, qdss_cti_trig_in_a0,
+> +                qdss_cti_trig_in_a1, qdss_cti_trig_in_b0, qdss_cti_trig_in_b1,
+> +                qdss_cti_trig_out_a0, qdss_cti_trig_out_a1, qdss_cti_trig_out_b0,
+> +                qdss_cti_trig_out_b1, qdss_traceclk_a, qdss_traceclk_b,
+> +                qdss_tracectl_a, qdss_tracectl_b, qdss_tracedata_a,
+> +                qdss_tracedata_b, sd_write, sdcard_det, sec_mi2s, sec_mi2s_mclk_a,
+> +                sec_mi2s_mclk_b, smb_int, ss_switch, ssbi_wtr1, ts_resout,
+> +                ts_sample, ts_xvdd, tsens_max, uim1_clk, uim1_data, uim1_present,
+> +                uim1_reset, uim2_clk, uim2_data, uim2_present, uim2_reset,
+> +                uim_batt, us_emitter, us_euro, wcss_bt, wcss_fm, wcss_wlan,
+> +                wcss_wlan0, wcss_wlan1, wcss_wlan2, wsa_en, wsa_io, wsa_irq ]
+> +
+> +      drive-strength:
+> +        enum: [2, 4, 6, 8, 10, 12, 14, 16]
+> +        default: 2
+> +        description:
+> +          Selects the drive strength for the specified pins, in mA.
+> +
+> +      bias-pull-down: true
+> +
+> +      bias-pull-up: true
+> +
+> +      bias-disable: true
+> +
+> +      output-high: true
+> +
+> +      output-low: true
+> +
+> +    required:
+> +      - pins
+> +      - function
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - interrupt-controller
+> +  - '#interrupt-cells'
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +  - gpio-ranges
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +        tlmm: pinctrl@1000000 {
+> +              compatible = "qcom,msm8953-pinctrl";
+> +              reg = <0x01000000 0x300000>;
+> +              interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+> +              interrupt-controller;
+> +              #interrupt-cells = <2>;
+> +              gpio-controller;
+> +              #gpio-cells = <2>;
+> +              gpio-ranges = <&tlmm 0 0 142>;
+> +
+> +              serial_default: serial-pins {
+> +                    pins = "gpio4", "gpio5";
+> +                    function = "blsp_uart2";
+> +                    drive-strength = <2>;
+> +                    bias-disable;
+> +              };
+> +        };
+> -- 
+> 2.28.0
+> 
