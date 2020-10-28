@@ -2,167 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF3E29DF81
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D7629DF8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404111AbgJ2BBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:01:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731485AbgJ1WRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:23 -0400
-Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95DF8247BF;
-        Wed, 28 Oct 2020 14:23:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603895015;
-        bh=YqWvLG/HlVMMTDoxlArrGqJGoB3hGxiNvQNMWzmgHsI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bpoeatvNSyNRCdqK1dq4YsN5UKoiMHbM/HVm4w394g+4AUxwntJqDbxhLLheG8E+5
-         0hcyBUk6PSRUb3JT9SfETt3lqxxFWl66r9w0cCvBJ/MsvSFPhymuG4tN3xdzw9MBkd
-         9YLd/DGT3edQaadPcfTBM+j0eKAbgQWy3Iwga0Uo=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kXmMP-003hls-E5; Wed, 28 Oct 2020 15:23:33 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Mauro Carvalho Chehab" <mchehab+huawei@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Changbin Du <changbin.du@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Peter Enderborg <peter.enderborg@sony.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 25/33] docs: Kconfig/Makefile: add a check for broken ABI files
-Date:   Wed, 28 Oct 2020 15:23:23 +0100
-Message-Id: <f97df0ea6dd59cf5fe1655c71eb34af71c67d20c.1603893146.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1603893146.git.mchehab+huawei@kernel.org>
-References: <cover.1603893146.git.mchehab+huawei@kernel.org>
+        id S1731076AbgJ2BCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730901AbgJ1WND (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:13:03 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3106C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:13:02 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id 67so489512ybt.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:13:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=kBQEJAcsNoDypblzItIVRGC5xJLK4RkxOtKNMPRA5Z8=;
+        b=M4LUqheCRVN4aDlx34+QxY/4pY3jpcrJREx0gbY0u9MfglfuhcSTufiKC6drQol5GY
+         RjFX3yP1cSgS+W3lGG4ggcRHlYoTEIuUgNow6adQ6cHP6YMEjWoGOP8Lj/sV/7uB5fxy
+         hViG/0s2Oer/cQ5vkGhBNAv6FTV3qzFqPFWbE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kBQEJAcsNoDypblzItIVRGC5xJLK4RkxOtKNMPRA5Z8=;
+        b=gbdYYZGnhkVAex/NgVxIS7Y5iJ6J5Rm/3wOh/heGPiHGzIJzBzTYzLv9yaQY+Hk1Ih
+         KjsgcJ0VL5Zz9/7nO7aQTnnc4qgNfKuwSSYOOMYEra7GEsjl6Tk4nFfw6Gz5ndYYkGTy
+         6jiHLYSHZ2D/Buu2QnM0tjvdjgLtNITvkJgeOn5gGEqWaE8kgtFu77ky1uHM1nDaMqwf
+         YALX6TnlpyORmWM2jfCxfryVNb1iZ5U63NyJYa5LPQ4G6zJOF1V5a4NwxewEz3jnfKko
+         CXnkLKuY+VGiYsJwBdZMnpANZUVWkDieu40AaMZGMwlQi+fox10Fu4tFdY9t103V1kob
+         /g1w==
+X-Gm-Message-State: AOAM533vwcHVl561qt5PskT164PIu2yHab2qjgdkyenujabuOpqx2szo
+        n6Q4AN7ACA/JdZ3FFdZ2RJCVrfrrSmNZzg==
+X-Google-Smtp-Source: ABdhPJxjTy3T36nWQmk8c0DFM/H14BocDfoMWVqNtagjPo1S/SOliv1XFcYQLMM5E1xEglS9gQWtRQ==
+X-Received: by 2002:a05:6830:400d:: with SMTP id h13mr5615792ots.371.1603897570814;
+        Wed, 28 Oct 2020 08:06:10 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 19sm2498132oin.54.2020.10.28.08.06.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 08:06:10 -0700 (PDT)
+Subject: Re: [PATCH] selftests: intel_pstate: ftime() is deprecated
+To:     "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201016132245.73378-1-tommi.t.rantala@nokia.com>
+ <d315994a-3398-be41-1b26-e78f8359aa5c@linuxfoundation.org>
+ <d4adb97b3325ac93295d5e42dc07e8381fb9efab.camel@nokia.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <459bc6a0-8046-e223-f88e-10e643a36dd7@linuxfoundation.org>
+Date:   Wed, 28 Oct 2020 09:06:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+In-Reply-To: <d4adb97b3325ac93295d5e42dc07e8381fb9efab.camel@nokia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+On 10/28/20 1:36 AM, Rantala, Tommi T. (Nokia - FI/Espoo) wrote:
+> On Tue, 2020-10-27 at 14:08 -0600, Shuah Khan wrote:
+>>
+>>> @@ -73,8 +80,8 @@ int main(int argc, char **argv) {
+>>>    	aperf = new_aperf-old_aperf;
+>>>    	mperf = new_mperf-old_mperf;
+>>>    
+>>> -	start = before.time*1000 + before.millitm;
+>>> -	finish = after.time*1000 + after.millitm;
+>>> +	start = before.tv_sec*1000 + before.tv_nsec/1000000L;
+>>> +	finish = after.tv_sec*1000 + after.tv_nsec/1000000L;
+>>
+>> Why not use timespec dNSEC_PER_MSEC define from  include/vdso/time64.h?
+> 
+> Hi,
+> 
+> If the define was available in the UAPI headers, then certainly would make
+> sense to use it. But I would not mess with the kernel internal headers here.
 
-The files under Documentation/ABI should follow the syntax
-as defined at Documentation/ABI/README.
+Suggested the wrong file while looking up the define. I was thinking
+linux/time64.h
 
-Allow checking if they're following the syntax by running
-the ABI parser script on COMPILE_TEST.
+However it isn't part of headers_install, so can't use that one.
 
-With that, when there's a problem with a file under
-Documentation/ABI, it would produce a warning like:
+Considering the number of places NSEC_PER_MSEC is hard coded
+and defined in headers e.g: tools/include/linux/time64.h, probably
+should be included in timespec block in time.h
 
-	Warning: file ./Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats#14:
-		What '/sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_cor' doesn't have a description
-	Warning: file ./Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats#21:
-		What '/sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_fatal' doesn't have a description
+Not something to worry about for this patch. Please add a NSEC_PER_MSEC
+define for now in this file.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/Kconfig  | 10 ++++++++++
- Documentation/Makefile |  5 +++++
- lib/Kconfig.debug      |  2 ++
- scripts/get_abi.pl     | 14 +++++++++++---
- 4 files changed, 28 insertions(+), 3 deletions(-)
+thanks,
+-- Shuah
 
-diff --git a/Documentation/Kconfig b/Documentation/Kconfig
-index 66046fa1c341..e549a61f4d96 100644
---- a/Documentation/Kconfig
-+++ b/Documentation/Kconfig
-@@ -10,4 +10,14 @@ config WARN_MISSING_DOCUMENTS
- 
- 	   If unsure, select 'N'.
- 
-+config WARN_ABI_ERRORS
-+	bool "Warn if there are errors at ABI files"
-+	depends on COMPILE_TEST
-+	help
-+	   The files under Documentation/ABI should follow what's
-+	   described at Documentation/ABI/README. Yet, as they're manually
-+	   written, it would be possible that some of those files would
-+	   have errors that would break them for being parsed by
-+	   scripts/get_abi.pl. Add a check to verify them.
- 
-+	   If unsure, select 'N'.
-diff --git a/Documentation/Makefile b/Documentation/Makefile
-index 4e47dff8b315..61a7310b49e0 100644
---- a/Documentation/Makefile
-+++ b/Documentation/Makefile
-@@ -10,6 +10,11 @@ ifeq ($(CONFIG_WARN_MISSING_DOCUMENTS),y)
- $(shell $(srctree)/scripts/documentation-file-ref-check --warn)
- endif
- 
-+# Check for broken ABI files
-+ifeq ($(CONFIG_WARN_ABI_ERRORS),y)
-+$(shell $(srctree)/scripts/get_abi.pl validate --dir $(srctree)/Documentation/ABI)
-+endif
-+
- # You can set these variables from the command line.
- SPHINXBUILD   = sphinx-build
- SPHINXOPTS    =
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index d7a7bc3b6098..c789b39ed527 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2446,4 +2446,6 @@ config HYPERV_TESTING
- 
- endmenu # "Kernel Testing and Coverage"
- 
-+source "Documentation/Kconfig"
-+
- endmenu # Kernel hacking
-diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
-index 3cff7cdf1397..413349789145 100755
---- a/scripts/get_abi.pl
-+++ b/scripts/get_abi.pl
-@@ -50,7 +50,15 @@ my %symbols;
- sub parse_error($$$$) {
- 	my ($file, $ln, $msg, $data) = @_;
- 
--	print STDERR "file $file#$ln: $msg at\n\t$data";
-+	$data =~ s/\s+$/\n/;
-+
-+	print STDERR "Warning: file $file#$ln:\n\t$msg";
-+
-+	if ($data ne "") {
-+		print STDERR ". Line\n\t\t$data";
-+	} else {
-+	    print STDERR "\n";
-+	}
- }
- 
- #
-@@ -110,7 +118,7 @@ sub parse_abi {
- 
- 			# Invalid, but it is a common mistake
- 			if ($new_tag eq "where") {
--				parse_error($file, $ln, "tag 'Where' is invalid. Should be 'What:' instead", $_);
-+				parse_error($file, $ln, "tag 'Where' is invalid. Should be 'What:' instead", "");
- 				$new_tag = "what";
- 			}
- 
-@@ -225,7 +233,7 @@ sub parse_abi {
- 		}
- 
- 		# Everything else is error
--		parse_error($file, $ln, "Unexpected line:", $_);
-+		parse_error($file, $ln, "Unexpected content", $_);
- 	}
- 	$data{$nametag}->{description} =~ s/^\n+// if ($data{$nametag}->{description});
- 	if ($what) {
--- 
-2.26.2
+
+
+
+
 
