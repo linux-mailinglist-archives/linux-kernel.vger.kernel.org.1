@@ -2,78 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B9C29D93A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E5429D94B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389537AbgJ1WuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58998 "EHLO
+        id S2389618AbgJ1Wui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733178AbgJ1Wth (ORCPT
+        with ESMTP id S2389609AbgJ1Wue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:49:37 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803EFC0613CF;
-        Wed, 28 Oct 2020 15:49:37 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id x203so1260944oia.10;
-        Wed, 28 Oct 2020 15:49:37 -0700 (PDT)
+        Wed, 28 Oct 2020 18:50:34 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65ABCC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:50:34 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id j24so1166508ejc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:50:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZyqI9WOFaFFLuncAlq6I3YmM/P3bEkVE3YcPg4W+494=;
-        b=E+Wika7ptI5ifQPb2cHteAT5F6W79VkngYR1MAtRRAeojvQ/E/ieLEb9q6W3VVdoD/
-         hTm9vLdXc+D4dSwielSw1QZeo9libI7ddPayszguUD1VQNCkjnCGvuxEjWEoKW77dC57
-         mUwguKgypXHjLxa1bE8kl61XDQEIPDlKtNou2R/pd+2N/UXShkmya91i5KwXSUh/83nI
-         cAwYbbme9gB/cPdpUbQB8T3K7I5cWZVz79oW/yOl9sNP7F7SWaDMHpuuIQ359rFbwRBL
-         EnXMuNp7tC+DMJdmMc9c0pnfOQ8Dy9h2+9ieORza2v0IpbpqmhNmIiPW4ns3Onu4WuCZ
-         rffQ==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T/mISl4pg2C3Yg5kNFUKUKGfi4SXF1l5cc8dUSNajpE=;
+        b=lVPgk539IYHFg5Ur5L1PfIGULcCeChL7FwHoUoDv1+mm6SG4DS2Xy1L/B/F7fd5+mP
+         f5ADCVWTqB+KUcGrgPIXDxiVUctXLtzHuZJGtBP5hwmDhc8Okj9Cg3KvFn/EqBSoInjW
+         HBvkqW1DpVt/VW6Hw8UQ4zfyvuAx8OcUMB6CjXeBvwIAkM5qMGZez67+8iuB134XJffR
+         APakBda1Pa9buNE9GBl9n8v3BTW0+g4X/Hv0dLM8xCP+lhZ2VYUObPhvXmy/kZgdY027
+         pyXF3k/yAbW7Dy8sg/6pJ/vWonHbtg6z7Hq1WNj2rRh60pk+h93L2Pe7NTrC2V0LJ983
+         H2WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZyqI9WOFaFFLuncAlq6I3YmM/P3bEkVE3YcPg4W+494=;
-        b=hFKKPiYgV7OVcmZ+tfVmg1+PjeGZKFDHZNEV08dZKAPQVfJpIB1EgalSBSeWDXurL0
-         WsuO+HdXkh2xHWLKajF1AD6+uZCNzQGYjqVO3OE7PlLQx+8g467oFeE1AuYEUpX+MBQV
-         l7h4GTGX7B+FkLjClZ+8ZJ+Zpjr4TRhwqfeW2dQxlcYEyJHqNGFE7TMcLPSd+qbqcj9F
-         ZUF00m2EnH2Qxj55aWVnK4JZO1LvChlXdlG3owvZUo0mbWLzOCTL/H1m8IpD15yDYpZa
-         8JypNvZU+tWj9LkpK5MQTgIxAzU4wuX0j44ow+4GJokiynkS4XVCzDU4ZavodGlspJPM
-         XtgA==
-X-Gm-Message-State: AOAM530mwK/L+E4cmy2ezDe8N102VuqvLmwqNYFXEFjzpAKuUDFYfL0o
-        VMXgVzGkvW9P6LwjbMbv9Eloog4wdcjv+uAropoMTq1tWfg=
-X-Google-Smtp-Source: ABdhPJxhOiKXDSjpjWn5c5s0E1t3ewEDz3qZiFvrZXffc8HZHIKZefVK5Ht5LUdgjI4/0wJDumOU5PqE/2AlVBZPvRs=
-X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr6599112pjb.129.1603885353672;
- Wed, 28 Oct 2020 04:42:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T/mISl4pg2C3Yg5kNFUKUKGfi4SXF1l5cc8dUSNajpE=;
+        b=rA1xfvlZSR02FSILTmgKLUYfwPPMZLJKEdWnakwZ8VP5Ndtdh8toSODqcO1kkOd1pw
+         Q0sX1yb5lB7SctWQqL1mLWpFo8rzqGe/qf61rR1GPhjspwfuttNsTKHIaPWrK+S7yiu0
+         9niWJfqwb1+tnWRgus58RphGEkLu5ic9uTpCPXpTGYt1Htfhs1BWtUAKVMhDDOitv3Js
+         0wmvUQiE5qO7aeLhUWfZ0MuiuPu02+ebt3xK061UgNxZCcLAw26/QFhbTDSgNIm6ucqj
+         YosW09WTN0fmigiCXeTOWFwPYRfVR2PqGxhAalADEbLe8vSBR3KwbtSk+5Eei1X7qtMg
+         NNqw==
+X-Gm-Message-State: AOAM531s5Ums3F8JLQUf5P828OvDX+e8qVFxS5As0fBKYqMYB8dS5cek
+        8FZuNYfCGe+EbvEbqoi9PJcaO9kIo42PkB5T
+X-Google-Smtp-Source: ABdhPJwaYxESH8zh1v1ocaDitaPtaxX2VCV1QfjTTXry7ovuw85IrQFJV99PZPRQnGLR73/7yfPDnw==
+X-Received: by 2002:a5d:5387:: with SMTP id d7mr8316847wrv.224.1603885603821;
+        Wed, 28 Oct 2020 04:46:43 -0700 (PDT)
+Received: from localhost.localdomain (dh207-98-200.xnet.hr. [88.207.98.200])
+        by smtp.googlemail.com with ESMTPSA id f11sm5873604wml.43.2020.10.28.04.46.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 04:46:43 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        wim@linux-watchdog.org, linux@roeck-us.net,
+        linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>
+Subject: [PATCH v2] watchdog: qcom_wdt: set WDOG_HW_RUNNING bit when appropriate
+Date:   Wed, 28 Oct 2020 12:46:35 +0100
+Message-Id: <20201028114635.7570-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201027135325.22235-1-vincent.whitchurch@axis.com>
-In-Reply-To: <20201027135325.22235-1-vincent.whitchurch@axis.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 28 Oct 2020 13:43:22 +0200
-Message-ID: <CAHp75Vcy-m6tT3ChPYQ8vvsAOwV4CUM3feewb5bpk8h7mqa+AA@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: mockup: Allow probing from device tree
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kernel@axis.com, devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:00 AM Vincent Whitchurch
-<vincent.whitchurch@axis.com> wrote:
->
-> Allow the mockup driver to be probed via the device tree without any
-> module parameters, allowing it to be used to configure and test higher
-> level drivers like the leds-gpio driver and corresponding userspace
-> before actual hardware is available.
+If the watchdog hardware is enabled/running during boot, e.g.
+due to a boot loader configuring it, we must tell the
+watchdog framework about this fact so that it can ping the
+watchdog until userspace opens the device and takes over
+control.
 
-You have to officially announce a DT binding for that.
+Do so using the WDOG_HW_RUNNING flag that exists for exactly
+that use-case.
 
+Given the watchdog driver core doesn't know what timeout was
+originally set by whoever started the watchdog (boot loader),
+we make sure to update the timeout in the hardware according
+to what the watchdog core thinks it is.
 
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+---
+Changes in v2:
+* Correct authorship
+
+ drivers/watchdog/qcom-wdt.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
+index ab7465d186fd..28c93a918e38 100644
+--- a/drivers/watchdog/qcom-wdt.c
++++ b/drivers/watchdog/qcom-wdt.c
+@@ -152,6 +152,13 @@ static int qcom_wdt_restart(struct watchdog_device *wdd, unsigned long action,
+ 	return 0;
+ }
+ 
++static int qcom_wdt_is_running(struct watchdog_device *wdd)
++{
++	struct qcom_wdt *wdt = to_qcom_wdt(wdd);
++
++	return (readl(wdt_addr(wdt, WDT_EN)) & 1);
++}
++
+ static const struct watchdog_ops qcom_wdt_ops = {
+ 	.start		= qcom_wdt_start,
+ 	.stop		= qcom_wdt_stop,
+@@ -294,6 +301,21 @@ static int qcom_wdt_probe(struct platform_device *pdev)
+ 	wdt->wdd.timeout = min(wdt->wdd.max_timeout, 30U);
+ 	watchdog_init_timeout(&wdt->wdd, 0, dev);
+ 
++	if (qcom_wdt_is_running(&wdt->wdd)) {
++		/*
++		 * Make sure to apply timeout from watchdog core, taking
++		 * the prescaler of this driver here into account (the
++		 * boot loader might be using a different prescaler).
++		 *
++		 * To avoid spurious resets because of different scaling,
++		 * we first disable the watchdog, set the new prescaler
++		 * and timeout, and then re-enable the watchdog.
++		 */
++		qcom_wdt_stop(&wdt->wdd);
++		qcom_wdt_start(&wdt->wdd);
++		set_bit(WDOG_HW_RUNNING, &wdt->wdd.status);
++	}
++
+ 	ret = devm_watchdog_register_device(dev, &wdt->wdd);
+ 	if (ret)
+ 		return ret;
 -- 
-With Best Regards,
-Andy Shevchenko
+2.28.0
+
