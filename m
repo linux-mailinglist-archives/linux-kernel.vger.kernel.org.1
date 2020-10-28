@@ -2,151 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BC329DB16
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DAC729DAC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388224AbgJ1XnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
+        id S1728648AbgJ1XbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389653AbgJ1Wvw (ORCPT
+        with ESMTP id S2390353AbgJ1X3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:51:52 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1FEC0613CF;
-        Wed, 28 Oct 2020 15:51:51 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id 184so880967lfd.6;
-        Wed, 28 Oct 2020 15:51:51 -0700 (PDT)
+        Wed, 28 Oct 2020 19:29:16 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A062C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:29:16 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id l2so673533qkf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:29:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=a42ZTHpfclzQndPssC2x9RBSnJnu5sEHiL3sczOvFqA=;
-        b=nSAhtm47X+auPNjUm0Gl04eSiakBsPenJVVSoyFzU/pprU0XGr5DEMq6OgTxpjZ3Ih
-         jDgFuT/bFvUfv/l/vwh6+JUo0MCPFT1Af5T2UYRwpPeqUCzIFv6IrfmrePzRNrKuH8Y4
-         iyh6Nw6+eOT7PmlnYh78R1ZV2+nmph/lraPLKOZIOrMo+7VSCarC4ysZkfcIv3GHSQNe
-         t/ICb5hIzvQcDGo7ZUtiYWJaaWHqlOdlMSZ/kGRCYUct7YHIXSSlQIbaFF2cwHEXxNbC
-         OUwfggreYv+T5rsWA3WxHrR2D2LrMqyOtXbXD5QYzTZ3pAkZa9eP0VBgxoi9kTTiJzOw
-         Enkg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OCUxgFfsZm5hmmiU0cs7ogr7Bp2NfxesKIPOcc2vAD8=;
+        b=hMNvDItCFow179z1oxcHvXX45C4OvX0NHNzQYXw3NOLZRdKOHb7/k8PJHkRXA1QFJl
+         pk4gDtrKVkv+68G5uSD3zOid4BSZRsEsQi5HePycxB6Udp4BL/tC3yDZhkgvdxnz3UD2
+         BwtSfod1QwR5YHWuaScvBUFj66f8gr4LjNSq5BH3m+fTh4bYBvrERiJBrvNWldI7X6kB
+         Jt4Rj64I7XLd3+I0cjjD0cDdy+Q6Maa8sovvdg7tKV6G2GnT8J/cO/WmtP97mpVxmd5G
+         97dp2HRrG3vu3e+B1uea5tM11zQcDL7TffkUpNymvHZ/0SnvvyzkUpL6pza1VunZwUee
+         8qoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a42ZTHpfclzQndPssC2x9RBSnJnu5sEHiL3sczOvFqA=;
-        b=jmRxWBSMXtMhxgp8wfIRX28g3XmbsIgjSEINrJY1Hiz0t+GltIpMKHx9Yx9YIZTlMV
-         RC50/8MX0LfcCHlXVZ+ZZZkhdYrbkBKrmDtUSPMWEprwt8ch69O5ZJTGWVEgoVJ5QjPK
-         Pr1dH6E6eyIGBtbWaMD1UJPtIdESHTZ816Y1pkm/j8XvhNJKQNpkUewFl2NS51lHk+Bs
-         9ugOzj3nDqqAue8PxlzbLklnrw8QjE3B7pJueq4U7DWNn98Ad8ncfumrQl3nvpn4kH5H
-         IVz1t5EIUpmlu83mt92hciZOrnD5HjoqVdm40DuXoL1SxRqimwsyR0Ol6y/oOv9DfVaK
-         uQow==
-X-Gm-Message-State: AOAM533DQmZgSiQATBjSVwYZULM1/2vL3eyJ0kVgSFpZi+TU/4Ul4ZEB
-        H08cG60NhTPXnoc3GFrg7YrnJfxVa2E=
-X-Google-Smtp-Source: ABdhPJxvjU/xZUgOs4eh3F51nFtkUBZ6AEgyIFVgPqBSDyfZZVgMO38UPP7i42q2dbewbtNJ96R4Sg==
-X-Received: by 2002:a17:906:77d9:: with SMTP id m25mr3816259ejn.190.1603883227986;
-        Wed, 28 Oct 2020 04:07:07 -0700 (PDT)
-Received: from ?IPv6:2a01:110f:b59:fd00:588e:5ef8:851e:45b6? ([2a01:110f:b59:fd00:588e:5ef8:851e:45b6])
-        by smtp.gmail.com with ESMTPSA id r24sm2664105edm.95.2020.10.28.04.07.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 04:07:07 -0700 (PDT)
-Subject: Re: [PATCH v1 1/2] leds: rt4505: Add support for Richtek RT4505 flash
- led controller
-To:     ChiYuan Huang <u0084500@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, dmurphy@ti.com, robh+dt@kernel.org,
-        linux-leds@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        cy_huang <cy_huang@richtek.com>, devicetree@vger.kernel.org
-References: <1603784069-24114-1-git-send-email-u0084500@gmail.com>
- <20201027082900.GA21354@amd> <b0f5b3c8-bebd-eeb6-20b2-15529816720c@gmail.com>
- <CADiBU3_x=9wvPv4_YxWx4H_ecV7Kbt5ur91SDv+unH4z2hzS_Q@mail.gmail.com>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <e49d4119-48da-9dba-bbbe-b688cf28bfb8@gmail.com>
-Date:   Wed, 28 Oct 2020 12:07:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OCUxgFfsZm5hmmiU0cs7ogr7Bp2NfxesKIPOcc2vAD8=;
+        b=D+qxWwigs8A3vO8clpTI/wmWk3Tf1pM+FgiK7J7OFVNth16fUE/DPkQMgYDTogVpPB
+         4C1+2L9smDaEbvAauRvb0MJU8E+wgV6oaLzLfbJtwhy6Zt6mPTui9mjqDJMb7eSQnpTO
+         YbuMedlLGAdtt3Q8BbW+JK+OgUeun2LuVfYxqbRFAS3txi7i8mLdzAK3YDrjTaUTWRng
+         0drAnRXj4JCf3kFPnKjgCJtjxFfOyQjo6SO3GvUFLW5N98lK/7cNW+dQPKe0Hi4TFrsK
+         Fsx23R80dQCiNc8jc+5vfB+Bdvf5ka4E625xEE2H5xvkJDoyhYkonwo3CPVKtdAiClSd
+         nTdw==
+X-Gm-Message-State: AOAM531BWpNh0G/wV44euRUDcsk3svqiFh8Pl5E6Z9RKwGbHysdsLLLo
+        LXoQ8hTHFJqD1tYHNfB4LfqF3LQoBb0blAJYWA40rMSZ5H4IwQ==
+X-Google-Smtp-Source: ABdhPJwkWF7ICS/T3u9QAuLg00nKns5VS6z2SJ/Sxr55S1s/LWN6PMgsgimncWAvlLi6nA80amMcWtDJanh/ewW5rgQ=
+X-Received: by 2002:a37:a00c:: with SMTP id j12mr931915qke.231.1603884553300;
+ Wed, 28 Oct 2020 04:29:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CADiBU3_x=9wvPv4_YxWx4H_ecV7Kbt5ur91SDv+unH4z2hzS_Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1603372719.git.andreyknvl@google.com> <a3cd7d83cc1f9ca06ef6d8c84e70f122212bf8ef.1603372719.git.andreyknvl@google.com>
+In-Reply-To: <a3cd7d83cc1f9ca06ef6d8c84e70f122212bf8ef.1603372719.git.andreyknvl@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 28 Oct 2020 12:29:02 +0100
+Message-ID: <CACT4Y+ZXp1+_EV5=1Zwf4LCi+RR1tiRYesTsjhFBdZ5owrSCZw@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 11/21] kasan: inline kasan_poison_memory and check_invalid_free
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/20 5:57 AM, ChiYuan Huang wrote:
-> Hi,
-> 
-> Jacek Anaszewski <jacek.anaszewski@gmail.com> 於 2020年10月28日 週三 上午12:40寫道：
->>
->> Hi Pavel, ChiYuan,
->>
->> On 10/27/20 9:29 AM, Pavel Machek wrote:
->>> Hi!
->>>
->>>> From: ChiYuan Huang <cy_huang@richtek.com>
->>>>
->>>> Add support for RT4505 flash led controller. It can support up to 1.5A
->>>> flash current with hardware timeout and low input voltage
->>>> protection.
->>>
->>> Please use upper-case "LED" everywhere.
->>>
->>> This should be 2nd in the series, after DT changes.
->>>
->>>> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
->>>> ---
->>>>    drivers/leds/Kconfig       |  11 ++
->>>>    drivers/leds/Makefile      |   1 +
->>>>    drivers/leds/leds-rt4505.c | 397 +++++++++++++++++++++++++++++++++++++++++++++
->>>>    3 files changed, 409 insertions(+)
->>>>    create mode 100644 drivers/leds/leds-rt4505.c
->> [...]
->>>> +static int rt4505_torch_brightness_set(struct led_classdev *lcdev, enum led_brightness level)
->>>> +{
->>>
->>> 80 columns, where easy.
->>>
->>>> +    struct rt4505_priv *priv = container_of(lcdev, struct rt4505_priv, flash.led_cdev);
->>>> +    u32 val = 0;
->>>> +    int ret;
->>>> +
->>>> +    mutex_lock(&priv->lock);
->>>> +
->>>> +    if (level != LED_OFF) {
->>>> +            ret = regmap_update_bits(priv->regmap, RT4505_REG_ILED, RT4505_ITORCH_MASK,
->>>> +                                     (level - 1) << RT4505_ITORCH_SHIFT);
->>>> +            if (ret)
->>>> +                    goto unlock;
->>>> +
->>>> +            val = RT4505_TORCH_SET;
->>>> +    }
->>>> +
->>>> +    ret = regmap_update_bits(priv->regmap, RT4505_REG_ENABLE, RT4505_ENABLE_MASK, val);
->>>> +
->>>> +unlock:
->>>> +    mutex_unlock(&priv->lock);
->>>> +    return ret;
->>>> +}
->>>
->>> Why is the locking needed? What will the /sys/class/leds interface
->>> look like on system with your flash?
->>
->> The locking is needed since this can be called via led_set_brightness()
->> from any place in the kernel, and especially from triggers.
->>From this case, It means only led classdev
-> brihtness_get/brightness_set need to be protected.
-> I search led_flash_classdev, it only can be controlled via sysfs or V4l2.
-> Like as described in last mail, flash related operation is protected
-> by led access_lock and v4l2 framework.
-> I'll keep the locking only in led classdev brightness_get/brightness_set API.
-> If I misunderstand something, please help to point out.
+On Thu, Oct 22, 2020 at 3:19 PM 'Andrey Konovalov' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+>
+> Using kasan_poison_memory() or check_invalid_free() currently results in
+> function calls. Move their definitions to mm/kasan/kasan.h and turn them
+> into static inline functions for hardware tag-based mode to avoid uneeded
+> function calls.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/Ia9d8191024a12d1374675b3d27197f10193f50bb
 
-Locking have to be used consistently for each access to the resource
-being protected with the lock. Otherwise you can end up in a situation
-when rt4505_torch_brightness_set and rt4505_flash_brightness_set will
-try concurrently alter hardware state. Regardless of how harmful could
-it be in case of this particular device it is certainly against
-programming rules.
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 
--- 
-Best regards,
-Jacek Anaszewski
+> ---
+>  mm/kasan/hw_tags.c | 15 ---------------
+>  mm/kasan/kasan.h   | 28 ++++++++++++++++++++++++----
+>  2 files changed, 24 insertions(+), 19 deletions(-)
+>
+> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+> index 4c24bfcfeff9..f03161f3da19 100644
+> --- a/mm/kasan/hw_tags.c
+> +++ b/mm/kasan/hw_tags.c
+> @@ -24,27 +24,12 @@ void __init kasan_init_tags(void)
+>         pr_info("KernelAddressSanitizer initialized\n");
+>  }
+>
+> -void kasan_poison_memory(const void *address, size_t size, u8 value)
+> -{
+> -       set_mem_tag_range(reset_tag(address),
+> -                         round_up(size, KASAN_GRANULE_SIZE), value);
+> -}
+> -
+>  void kasan_unpoison_memory(const void *address, size_t size)
+>  {
+>         set_mem_tag_range(reset_tag(address),
+>                           round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
+>  }
+>
+> -bool check_invalid_free(void *addr)
+> -{
+> -       u8 ptr_tag = get_tag(addr);
+> -       u8 mem_tag = get_mem_tag(addr);
+> -
+> -       return (mem_tag == KASAN_TAG_INVALID) ||
+> -               (ptr_tag != KASAN_TAG_KERNEL && ptr_tag != mem_tag);
+> -}
+> -
+>  void kasan_set_free_info(struct kmem_cache *cache,
+>                                 void *object, u8 tag)
+>  {
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 94ba15c2f860..8d84ae6f58f1 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -153,8 +153,6 @@ struct kasan_alloc_meta *kasan_get_alloc_meta(struct kmem_cache *cache,
+>  struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
+>                                                 const void *object);
+>
+> -void kasan_poison_memory(const void *address, size_t size, u8 value);
+> -
+>  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+>
+>  static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
+> @@ -194,8 +192,6 @@ void print_tags(u8 addr_tag, const void *addr);
+>  static inline void print_tags(u8 addr_tag, const void *addr) { }
+>  #endif
+>
+> -bool check_invalid_free(void *addr);
+> -
+>  void *find_first_bad_addr(void *addr, size_t size);
+>  const char *get_bug_type(struct kasan_access_info *info);
+>  void metadata_fetch_row(char *buffer, void *row);
+> @@ -276,6 +272,30 @@ static inline u8 random_tag(void)
+>  }
+>  #endif
+>
+> +#ifdef CONFIG_KASAN_HW_TAGS
+> +
+> +static inline void kasan_poison_memory(const void *address, size_t size, u8 value)
+> +{
+> +       set_mem_tag_range(reset_tag(address),
+> +                         round_up(size, KASAN_GRANULE_SIZE), value);
+> +}
+> +
+> +static inline bool check_invalid_free(void *addr)
+> +{
+> +       u8 ptr_tag = get_tag(addr);
+> +       u8 mem_tag = get_mem_tag(addr);
+> +
+> +       return (mem_tag == KASAN_TAG_INVALID) ||
+> +               (ptr_tag != KASAN_TAG_KERNEL && ptr_tag != mem_tag);
+> +}
+> +
+> +#else /* CONFIG_KASAN_HW_TAGS */
+> +
+> +void kasan_poison_memory(const void *address, size_t size, u8 value);
+> +bool check_invalid_free(void *addr);
+> +
+> +#endif /* CONFIG_KASAN_HW_TAGS */
+> +
+>  /*
+>   * Exported functions for interfaces called from assembly or from generated
+>   * code. Declarations here to avoid warning about missing declarations.
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/a3cd7d83cc1f9ca06ef6d8c84e70f122212bf8ef.1603372719.git.andreyknvl%40google.com.
