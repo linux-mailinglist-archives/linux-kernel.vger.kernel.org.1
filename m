@@ -2,183 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C0329D522
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F53D29D537
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:59:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729171AbgJ1V63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:58:29 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:39475 "EHLO
+        id S1729278AbgJ1V7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:59:21 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:39462 "EHLO
         rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727942AbgJ1V6Q (ORCPT
+        with ESMTP id S1729148AbgJ1V57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:58:16 -0400
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 09S2887q8027987, This message is accepted by code: ctloc85258
-Received: from RSEXMBS02.realsil.com.cn ([172.29.17.196])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 09S2887q8027987
+        Wed, 28 Oct 2020 17:57:59 -0400
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 09S2axIW3006266, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 09S2axIW3006266
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 28 Oct 2020 10:08:09 +0800
-Received: from RSEXMBS02.realsil.com.cn (172.29.17.196) by
- RSEXMBS02.realsil.com.cn (172.29.17.196) with Microsoft SMTP Server
+        Wed, 28 Oct 2020 10:36:59 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.34) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Wed, 28 Oct 2020 10:08:08 +0800
-Received: from RSEXMBS02.realsil.com.cn ([fe80::f8fc:93be:88f4:52ef]) by
- RSEXMBS02.realsil.com.cn ([fe80::f8fc:93be:88f4:52ef%7]) with mapi id
- 15.01.2044.004; Wed, 28 Oct 2020 10:08:08 +0800
-From:   =?utf-8?B?5Yav6ZSQ?= <rui_feng@realsil.com.cn>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggMy8zXSBtbWM6IHJ0c3g6IEFkZCBTRCBFeHByZXNz?= =?utf-8?Q?_mode_support_for_RTS5261?=
-Thread-Topic: [PATCH 3/3] mmc: rtsx: Add SD Express mode support for RTS5261
-Thread-Index: AQHWkt9BwBVjFlHHd0at7hFkgpI9BamhuQuAgAGMm/CAATQjgIAAlwdAgAYEBgCAAV+VAA==
-Date:   Wed, 28 Oct 2020 02:08:07 +0000
-Message-ID: <d81f915717994ce6b2112c6b93492874@realsil.com.cn>
-References: <1600999061-13669-1-git-send-email-rui_feng@realsil.com.cn>
- <CAPDyKFrnkF3mU5PJsy0VtEjPSToktSsRRtyMvQF97vymc+rY5A@mail.gmail.com>
- <dd210290eef6467cbffca8cbaddb8b84@realsil.com.cn>
- <CAPDyKFqwsJaYrXMVabR7qui6yqr4FAHfYq1ghfsf0HtRSZpGGw@mail.gmail.com>
- <ba3c68fea4614434838a0a8cbc0e892a@realsil.com.cn>
- <CAPDyKFrDLJtDkkWsSENLDu2xLqptkjDk94YxYfkfW7UPBoG+bg@mail.gmail.com>
-In-Reply-To: <CAPDyKFrDLJtDkkWsSENLDu2xLqptkjDk94YxYfkfW7UPBoG+bg@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.29.40.150]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ 15.1.2044.4; Wed, 28 Oct 2020 10:36:59 +0800
+Received: from localhost.localdomain (172.21.132.186) by
+ RTEXMBS03.realtek.com.tw (172.21.6.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 28 Oct 2020 10:36:58 +0800
+From:   <max.chou@realtek.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <matthias.bgg@gmail.com>
+CC:     <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <kidman@realtek.com>,
+        <hildawu@realtek.com>, <alex_lu@realsil.com.cn>,
+        <abhishekpandit@chromium.org>, <josephsih@chromium.org>,
+        <max.chou@realtek.com>
+Subject: [PATCH] Bluetooth: btusb: Add more IDs to usb_device_id table for Realtek RTL8822CE
+Date:   Wed, 28 Oct 2020 10:36:53 +0800
+Message-ID: <20201028023653.2760-1-max.chou@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [172.21.132.186]
+X-ClientProxiedBy: RTEXMB03.realtek.com.tw (172.21.6.96) To
+ RTEXMBS03.realtek.com.tw (172.21.6.34)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiANCj4gT24gTW9uLCAyNiBPY3QgMjAyMCBhdCAwOToyMiwg5Yav6ZSQIDxydWlfZmVuZ0ByZWFs
-c2lsLmNvbS5jbj4gd3JvdGU6DQo+ID4NCj4gPiA+DQo+ID4gPiArIENocmlzdG9waCAodG8gaGVs
-cCB1cyB1bmRlcnN0YW5kIGlmIFBDSWUvTlZNZSBkZXZpY2VzIGNhbiBiZQ0KPiA+ID4gKyBtYXJr
-ZWQNCj4gPiA+ICsgcmVhZC1vbmx5KQ0KPiA+ID4NCj4gPiA+IE9uIFRodSwgMjIgT2N0IDIwMjAg
-YXQgMDg6MDQsIOWGr+mUkCA8cnVpX2ZlbmdAcmVhbHNpbC5jb20uY24+IHdyb3RlOg0KPiA+ID4g
-Pg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gT24gRnJpLCAyNSBTZXAgMjAyMCBhdCAwMzo1NywgPHJ1
-aV9mZW5nQHJlYWxzaWwuY29tLmNuPiB3cm90ZToNCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBG
-cm9tOiBSdWkgRmVuZyA8cnVpX2ZlbmdAcmVhbHNpbC5jb20uY24+DQo+ID4gPiA+ID4gPg0KPiA+
-ID4gPiA+ID4gUlRTNTI2MSBzdXBwb3J0IGxlZ2FjeSBTRCBtb2RlIGFuZCBTRCBFeHByZXNzIG1v
-ZGUuDQo+ID4gPiA+ID4gPiBJbiBTRDcueCwgU0QgYXNzb2NpYXRpb24gaW50cm9kdWNlIFNEIEV4
-cHJlc3MgYXMgYSBuZXcgbW9kZS4NCj4gPiA+ID4gPiA+IFRoaXMgcGF0Y2ggbWFrZXMgUlRTNTI2
-MSBzdXBwb3J0IFNEIEV4cHJlc3MgbW9kZS4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IEFzIHBlciBw
-YXRjaCAyLCBjYW4geW91IHBsZWFzZSBhZGQgc29tZSBtb3JlIGluZm9ybWF0aW9uIGFib3V0DQo+
-ID4gPiA+ID4gd2hhdCBjaGFuZ2VzIGFyZSBuZWVkZWQgdG8gc3VwcG9ydCBTRCBFeHByZXNzPyBU
-aGlzIGp1c3Qgc3RhdGVzDQo+ID4gPiA+ID4gdGhhdCB0aGUgc3VwcG9ydCBpcyBpbXBsZW1lbnRl
-ZCwgYnV0IHBsZWFzZSBlbGFib3JhdGUgaG93Lg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gPg0KPiA+
-ID4gPiA+ID4gU2lnbmVkLW9mZi1ieTogUnVpIEZlbmcgPHJ1aV9mZW5nQHJlYWxzaWwuY29tLmNu
-Pg0KPiA+ID4gPiA+ID4gLS0tDQo+ID4gPiA+ID4gPiAgZHJpdmVycy9tbWMvaG9zdC9ydHN4X3Bj
-aV9zZG1tYy5jIHwgNTkNCj4gPiA+ID4gPiA+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysNCj4gPiA+ID4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgNTkgaW5zZXJ0aW9ucygrKQ0KPiA+ID4g
-PiA+ID4NCj4gPiA+ID4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21tYy9ob3N0L3J0c3hfcGNp
-X3NkbW1jLmMNCj4gPiA+ID4gPiA+IGIvZHJpdmVycy9tbWMvaG9zdC9ydHN4X3BjaV9zZG1tYy5j
-DQo+ID4gPiA+ID4gPiBpbmRleCAyNzYzYTM3NmIwNTQuLmVmZGUzNzRhNGE1ZSAxMDA2NDQNCj4g
-PiA+ID4gPiA+IC0tLSBhL2RyaXZlcnMvbW1jL2hvc3QvcnRzeF9wY2lfc2RtbWMuYw0KPiA+ID4g
-PiA+ID4gKysrIGIvZHJpdmVycy9tbWMvaG9zdC9ydHN4X3BjaV9zZG1tYy5jDQo+ID4gPiA+ID4g
-PiBAQCAtODk1LDcgKzg5NSw5IEBAIHN0YXRpYyBpbnQgc2Rfc2V0X2J1c193aWR0aChzdHJ1Y3QN
-Cj4gPiA+ID4gPiA+IHJlYWx0ZWtfcGNpX3NkbW1jICpob3N0LCAgc3RhdGljIGludCBzZF9wb3dl
-cl9vbihzdHJ1Y3QNCj4gPiA+ID4gPiA+IHJlYWx0ZWtfcGNpX3NkbW1jICpob3N0KSAgew0KPiA+
-ID4gPiA+ID4gICAgICAgICBzdHJ1Y3QgcnRzeF9wY3IgKnBjciA9IGhvc3QtPnBjcjsNCj4gPiA+
-ID4gPiA+ICsgICAgICAgc3RydWN0IG1tY19ob3N0ICptbWMgPSBob3N0LT5tbWM7DQo+ID4gPiA+
-ID4gPiAgICAgICAgIGludCBlcnI7DQo+ID4gPiA+ID4gPiArICAgICAgIHUzMiB2YWw7DQo+ID4g
-PiA+ID4gPg0KPiA+ID4gPiA+ID4gICAgICAgICBpZiAoaG9zdC0+cG93ZXJfc3RhdGUgPT0gU0RN
-TUNfUE9XRVJfT04pDQo+ID4gPiA+ID4gPiAgICAgICAgICAgICAgICAgcmV0dXJuIDA7DQo+ID4g
-PiA+ID4gPiBAQCAtOTIyLDYgKzkyNCwxNCBAQCBzdGF0aWMgaW50IHNkX3Bvd2VyX29uKHN0cnVj
-dA0KPiA+ID4gPiA+ID4gcmVhbHRla19wY2lfc2RtbWMNCj4gPiA+ID4gPiAqaG9zdCkNCj4gPiA+
-ID4gPiA+ICAgICAgICAgaWYgKGVyciA8IDApDQo+ID4gPiA+ID4gPiAgICAgICAgICAgICAgICAg
-cmV0dXJuIGVycjsNCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiArICAgICAgIGlmIChQQ0lfUElE
-KHBjcikgPT0gUElEXzUyNjEpIHsNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICB2YWwgPSBy
-dHN4X3BjaV9yZWFkbChwY3IsIFJUU1hfQklQUik7DQo+ID4gPiA+ID4gPiArICAgICAgICAgICAg
-ICAgaWYgKHZhbCAmIFNEX1dSSVRFX1BST1RFQ1QpIHsNCj4gPiA+ID4gPiA+ICsgICAgICAgICAg
-ICAgICAgICAgICAgIHBjci0+ZXh0cmFfY2FwcyAmPQ0KPiA+ID4gPiA+IH5FWFRSQV9DQVBTX1NE
-X0VYUFJFU1M7DQo+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICBtbWMtPmNhcHMy
-ICY9IH4oTU1DX0NBUDJfU0RfRVhQDQo+IHwNCj4gPiA+ID4gPiA+ICsgTU1DX0NBUDJfU0RfRVhQ
-XzFfMlYpOw0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gVGhpcyBsb29rcyBhIGJpdCB3ZWlyZCB0byBt
-ZS4gRm9yIGEgd3JpdGUgcHJvdGVjdGVkIGNhcmQgeW91DQo+ID4gPiA+ID4gd2FudCB0byBkaXNh
-YmxlIHRoZSBTRF9FWFBSRVNTIHN1cHBvcnQsIHJpZ2h0Pw0KPiA+ID4gPiA+DQo+ID4gPiA+IFJp
-Z2h0LiBJZiBlbmQgdXNlciBpbnNlcnQgYSB3cml0ZSBwcm90ZWN0ZWQgU0QgZXhwcmVzcyBjYXJk
-LCBJDQo+ID4gPiA+IHdpbGwgZGlzYWJsZQ0KPiA+ID4gU0RfRVhQUkVTUyBzdXBwb3J0Lg0KPiA+
-ID4gPiBJZiBob3N0IHN3aXRjaCB0byBTRCBFWFBSRVNTIG1vZGUsIHRoZSBjYXJkIHdpbGwgYmUg
-cmVjb2duaXplZCBhcw0KPiA+ID4gPiBhIHdyaXRhYmxlIFBDSWUvTlZNZSBkZXZpY2UsIEkgdGhp
-bmsgdGhpcyBpcyBub3QgZW5kIHVzZXIncyBwdXJwb3NlLg0KPiA+ID4NCj4gPiA+IEhtbS4NCj4g
-PiA+DQo+ID4gPiBGYWxsaW5nIGJhY2sgdG8gdXNlIHRoZSBsZWdhY3kgU0QgaW50ZXJmYWNlIGlz
-IHByb2JhYmx5IG5vdCB3aGF0IHRoZQ0KPiA+ID4gdXNlciBleHBlY3RzIGVpdGhlci4NCj4gPiA+
-DQo+ID4gPiBOb3RlIHRoYXQgdGhlIHBoeXNpY2FsIHdyaXRlIHByb3RlY3Qgc3dpdGNoL3BpbiBp
-c24ndCBtYW5kYXRvcnkgdG8NCj4gPiA+IHN1cHBvcnQgYW5kIGl0IGRvZXNuJ3QgZXZlbiBleGlz
-dCBmb3IgYWxsIGZvcm1hdHMgb2YgU0QgY2FyZHMuIEluDQo+ID4gPiB0aGUgbW1jIGNvcmUsIHdl
-IGFyZSBkZWZhdWx0aW5nIHRvIG1ha2UgdGhlIGNhcmQgd3JpdGUgZW5hYmxlZCwgaWYNCj4gPiA+
-IHRoZSBzd2l0Y2ggaXNuJ3Qgc3VwcG9ydGVkIGJ5IHRoZSBob3N0IGRyaXZlci4gQWRkaXRpb25h
-bGx5LCBub3RoaW5nDQo+ID4gPiBwcmV2ZW50cyB0aGUgZW5kIHVzZXIgZnJvbSBtb3VudGluZyB0
-aGUgZmlsZXN5c3RlbSBpbiByZWFkLW9ubHkgbW9kZSwgaWYNCj4gdGhhdCBpcyBwcmVmZXJyZWQu
-DQo+ID4gPg0KPiA+ID4gPg0KPiA+ID4gPiA+IElzIHRoZXJlIG5vIG1lY2hhbmlzbSB0byBzdXBw
-b3J0IHJlYWQtb25seSBQQ0llL05WTWUgYmFzZWQNCj4gPiA+ID4gPiBzdG9yYWdlDQo+ID4gPiBk
-ZXZpY2VzPw0KPiA+ID4gPiA+IElmIHRoYXQgaXMgdGhlIGNhc2UsIG1heWJlIGl0J3Mgc2ltcGx5
-IGJldHRlciB0byBub3Qgc3VwcG9ydCB0aGUNCj4gPiA+ID4gPiByZWFkb25seSBvcHRpb24gYXQg
-YWxsIGZvciBTRCBleHByZXNzIGNhcmRzPw0KPiA+ID4gPiA+DQo+ID4gPiA+IEkgdGhpbmsgdGhl
-cmUncyBubyBtZWNoYW5pc20gdG8gc3VwcG9ydCByZWFkLW9ubHkgUENJZS9OVk1lIGJhc2VkDQo+
-ID4gPiA+IHN0b3JhZ2UNCj4gPiA+IGRldmljZXMuDQo+ID4gPg0KPiA+ID4gSSBoYXZlIGxvb3Bl
-ZCBpbiBDaHJpc3RvcGgsIG1heWJlIGhlIGNhbiBnaXZlIHVzIGhpcyBvcGluaW9uIG9uIHRoaXMu
-DQo+ID4gPg0KPiA+ID4gPiBCdXQgZGlmZmVyZW50IHZlbmRlcnMgbWF5IGhhdmUgZGlmZmVyZW50
-IG9waW5pb25zLiBUaGlzIGlzIG9ubHkNCj4gPiA+ID4gUmVhbHRlaydzDQo+ID4gPiBvcGluaW9u
-Lg0KPiA+ID4NCj4gPiA+IEkgdW5kZXJzdGFuZC4gSG93ZXZlciwgdGhlIG1vc3QgaW1wb3J0YW50
-IHBvaW50IGZvciBtZSwgaXMgdGhhdCB3ZQ0KPiA+ID4gZG9uJ3QgZW5kIHVwIGluIGEgc2l0dWF0
-aW9uIHdoZXJlIGVhY2ggbW1jIGhvc3QgaGFuZGxlcyB0aGlzDQo+ID4gPiBkaWZmZXJlbnRseS4g
-V2Ugc2hvdWxkIHN0cml2ZSB0b3dhcmRzIGEgY29uc2lzdGVudCBiZWhhdmlvci4NCj4gPiA+DQo+
-ID4gPiBBdCB0aGlzIHBvaW50IEkgdGVuZCB0byBwcmVmZXIgdG8gZGVmYXVsdCB0byBpZ25vcmUg
-dGhlIHdyaXRlDQo+ID4gPiBwcm90ZWN0IHN3aXRjaCBmb3IgU0QgZXhwcmVzcywgdW5sZXNzIHdl
-IGNhbiBmaW5kIGEgd2F5IHRvIHByb3Blcmx5IHN1cHBvcnQNCj4gaXQuDQo+ID4gPg0KPiA+IEZv
-ciBpbmZvcm1hdGlvbiBzZWN1cml0eSBwdXJwb3NlLCBzb21lIGNvbXBhbmllcyBvciBidXNpbmVz
-cyB1c2VycyBzZXQgdGhlaXINCj4gbm90ZWJvb2sgU0QgYXMgInJlYWQgb25seSIuDQo+ID4gQmVj
-YXVzZSBhIGxvdCBvZiAicmVhZCBvbmx5IiByZXF1aXJlbWVudHMgZnJvbSB0aG9zZSBjb21wYW5p
-ZXMgb3IgYnVzaW5lc3MNCj4gdXNlcnMsIG5vdGVib29rIHZlbmRvciBjb250cm9scyByZWFkZXIg
-d3JpdGUgcHJvdGVjdCBwaW4gdG8gYWNoaWV2ZSBpdC4NCj4gPiBOb3RlYm9vayBCSU9TIG1pZ2h0
-IGhhdmUgb3B0aW9uIHRvIGNob29zZSAicmVhZCBvbmx5IiBvciBub3QuDQo+ID4gVGhpcyBpcyB3
-aHkgd2UgdGhpbmsgd3JpdGUgcHJvdGVjdCBpcyBtb3JlIGltcG9ydGFudCB0aGFuIHNwZWVkLg0K
-PiANCj4gSSB1bmRlcnN0YW5kIHRoYXQgaXQgbWF5IGJlIHVzZWQsIGluIHNvbWUgd2F5IG9yIHRo
-ZSBvdGhlciB0byBwcm92aWRlIGEgaGludCB0bw0KPiB0aGUgb3BlcmF0aW5nIHN5c3RlbSB0byBt
-b3VudCBpdCBpbiByZWFkLW9ubHkgbW9kZS4NCj4gDQo+IEFsdGhvdWdoLCBpZiB0aGVyZSB3ZXJl
-IGEgcmVhbCBzZWN1cml0eSBmZWF0dXJlIGludm9sdmVkLCB0aGUgaW50ZXJuYWwgRlcgb2YgdGhl
-DQo+IFNEIGNhcmQgd291bGQgYWxzbyBtb25pdG9yIHRoZSBzd2l0Y2gsIHRvIHN1cHBvcnQgcmVh
-ZC1vbmx5IG1vZGUuIEFzIEkNCj4gdW5kZXJzdGFuZCBpdCwgdGhhdCdzIG5vdCB0aGUgY29tbW9u
-IGNhc2UuDQo+IA0KPiA+IElmIHlvdSBwcmVmZXIgdG8gY29uc2lzdGVudCBiZWhhdmlvciwgSSBj
-YW4gaWdub3JlIHRoZSB3cml0ZSBwcm90ZWN0IHN3aXRjaCBmb3INCj4gU0QgZXhwcmVzcy4NCj4g
-DQo+IEF0IHRoaXMgcG9pbnQsIEkgcHJlZmVyIGlmIHlvdSB3b3VsZCBpZ25vcmUgdGhlIHdyaXRl
-IHByb3RlY3Qgc3dpdGNoIGluIHRoZSBTRA0KPiBjb250cm9sbGVyIGRyaXZlci4NCj4gDQpJIHdp
-bGwgaWdub3JlIHdyaXRlIHByb3RlY3Qgc3dpdGNoIGluIFYzLg0KDQo+IEFjY29yZGluZyB0byBD
-aHJpc3RvcGgsIGl0IHNob3VsZCBiZSBwb3NzaWJsZSB0byBzdXBwb3J0IHJlYWQtb25seSBtb2Rl
-IHZpYQ0KPiBQQ0llL05WTWUuIFlvdSBtYXkgbmVlZCB0byBhZGQgc29tZSB0d2Vha3MgdG8gc3Vw
-cG9ydCB0aGlzIGluIHRoZSBQQ0llDQo+IGNvbnRyb2xsZXIgZHJpdmVyLCBidXQgSSBjYW4ndCBh
-ZHZpc2UgeW91IGhvdyB0byBleGFjdGx5IGRvIHRoaXMuDQo+IA0KPiBQZXJoYXBzIHlvdSBuZWVk
-IHRvIHJlYWQvc3RvcmUgdGhlIHN0YXRlIG9mIFNEIHdyaXRlLXByb3RlY3QgcGluIGJlZm9yZQ0K
-PiBzd2l0Y2hpbmcgdG8gU0QgZXhwcmVzcyBtb2RlLCBiZWNhdXNlIHlvdSBtYXkgbm90IGJlIGFi
-bGUgdG8gcmVhZCBpdCBiZXlvbmQNCj4gc29tZSBwb2ludD8NCj4gDQo+ID4NCj4gPiA+DQo+ID4g
-PiBGcm9tIHRoaXMsIEkgYXNzdW1lIHRoYXQgbXkgaW50ZXJwcmV0YXRpb25zIG9mIHRoZSBiZWhh
-dmlvciB3YXMgY29ycmVjdC4NCj4gPiA+DQo+ID4gPiBBbHRob3VnaCwgY2FuIHlvdSBwbGVhc2Ug
-ZWxhYm9yYXRlIG9uIHdoYXQgeW91IG1lYW4gYnkgdGhhdCBpdCB3aWxsDQo+ID4gPiAibm90IHdv
-cmsiPw0KPiA+ID4NCj4gPiA+IERvIHlvdSBtZWFuIHRoYXQgcnRzeF9wY2lfY2FyZF9leGNsdXNp
-dmVfY2hlY2soKSB0aGF0IGlzIGNhbGxlZA0KPiA+ID4gZWFybHkgaW4NCj4gPiA+IHNkbW1jX3Nl
-dF9pb3MoKSB3aWxsIGZhaWwgYW5kIHRoZW4gbWFrZSBpdCBiYWlsIG91dD8gVGhlbiwgY291bGQg
-eW91DQo+ID4gPiBwbGVhc2UgYWRkIGEgY29tbWVudCBhYm91dCB0aGF0IGluIHRoZSBjb2RlPw0K
-PiA+ID4NCj4gPiBJbiBpbml0X3NkX2V4cHJlc3MoKSBkcml2ZXIgc2V0cyAweEZGNTQgYml0MD0x
-IGFuZCAweEZGNTUgYml0ND0wLCB0aGVuDQo+IFJUUzUyNjEgd2lsbCBzd2l0Y2ggTUNVIGFuZCBl
-bnRlciBTRCBFWFBSRVNTIG1vZGUuDQo+ID4gQWZ0ZXIgdGhhdCBSVFM1MjYxIGNhbid0IHJlY2Vp
-dmUgYW55IENNRCBmcm9tIFBDSWUsIHNvIG1tY19wb3dlcl9vZmYoKQ0KPiB3aWxsIG5vdCB3b3Jr
-Lg0KPiANCj4gVGhhbmtzIGZvciB0cnlpbmcgdG8gY2xhcmlmeS4NCj4gDQo+IEhvd2V2ZXIsIHRo
-aXMgc3RpbGwgZG9lc24ndCBleHBsYWluIHRvIG1lLCB3aGF0ICpleGFjdGx5KiB3aWxsIGhhcHBl
-biB3aGVuDQo+IHJ0c3hfcGNpX2NhcmRfZXhjbHVzaXZlX2NoZWNrKCkgaXMgY2FsbGVkIChvciBh
-bnkgb3RoZXIgZnVuY3Rpb25zIGluIC0+c2V0X2lvcygpKS4NCj4gDQo+IEluIHByaW5jaXBsZSwg
-IndpbGwgbm90IHdvcmsiIGNvdWxkIG1lYW4gdGhhdCB0aGUgY2FsbHMgdG8gdGhlDQo+IHJ0c3hf
-cGNpXyogY2FyZHJlYWRlciBpbnRlcmZhY2UgaGFuZ3MgLSBhbmQgdGhhdCB3b3VsZCBub3QgYmUg
-b2theSAoYXMgaXQgY291bGQNCj4gbGVhZCB0byB0aGF0IHRoZSAtPnJlbW92ZSgpIGNhbGxiYWNr
-IGhhbmdzKS4gU28sIGVpdGhlciB5b3UgbmVlZCB0byBwdXQgYSB3ZWxsDQo+IHdyaXR0ZW4gY29t
-bWVudCBpbiB0aGUgY29kZSBhYm91dCB3aGF0IHdpbGwgaGFwcGVuDQo+IC0gb3IgYWRkIHNvbWUg
-a2luZCBvZiBwcm90ZWN0aW9uIGFnYWluc3QgcG90ZW50aWFsIHByb2JsZW1zIGZvciB0aGlzLg0K
-PiANCiJ3aWxsIG5vdCB3b3JrIiBtZWFuIGZhaWwgYW5kIHdpbGwgbm90IGhhbmcgaW50ZXJmYWNl
-LiBJIHdpbGwgYWRkICJob3N0LT5lamVjdCA9IHRydWUiIGluIHRoZSBlbmQgb2YgaW5pdF9zZF9l
-eHByZXNzKCksDQpzbyB0aGF0IHNldF9pb3MoKSB3aWxsIGRvIG5vdGhpbmcganVzdCByZXR1cm4u
-DQoNCj4gS2luZCByZWdhcmRzDQo+IFVmZmUNCj4gDQo+IC0tLS0tLVBsZWFzZSBjb25zaWRlciB0
-aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZS1tYWlsLg0K
+From: Max Chou <max.chou@realtek.com>
+
+Add more IDs to usb_device_id table for Realtek
+RTL8822CE and also support the wideband speech capability.
+
+Signed-off-by: Max Chou <max.chou@realtek.com>
+---
+ drivers/bluetooth/btusb.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 1005b6e8ff74..4a1f877616d6 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -425,8 +425,22 @@ static const struct usb_device_id blacklist_table[] = {
+ 	{ USB_DEVICE(0x0b05, 0x185c), .driver_info = BTUSB_REALTEK },
+ 
+ 	/* Additional Realtek 8822CE Bluetooth devices */
+-	{ USB_DEVICE(0x04ca, 0x4005), .driver_info = BTUSB_REALTEK },
+-	{ USB_DEVICE(0x13d3, 0x3548), .driver_info = BTUSB_REALTEK },
++	{ USB_DEVICE(0x04ca, 0x4005), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x04c5, 0x161f), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x0b05, 0x18ef), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x13d3, 0x3548), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x13d3, 0x3549), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x13d3, 0x3553), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x13d3, 0x3555), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x2ff8, 0x3051), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
+ 
+ 	/* Silicon Wave based devices */
+ 	{ USB_DEVICE(0x0c10, 0x0000), .driver_info = BTUSB_SWAVE },
+-- 
+2.17.1
+
