@@ -2,127 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1EB29DF90
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5455C29DFCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730934AbgJ1WMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:12:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54248 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730696AbgJ1WLg (ORCPT
+        id S1730047AbgJ2BEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728543AbgJ1WGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:11:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603923095;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SUuHqBu02RDH7y/ePmq8mZIPwAVRS5g/Og4KHeFUFfk=;
-        b=ZawpRARj6FXCYE9M7F8rWkaZtI0FTCDigWm3bFFrRaPlwUb8DrT9SGtJ7/yd2fxsSz4p2b
-        ey51TyrO1TtGrN7NhqZr5FBxiGy1ybxSyhByn4lZT3dL62GRxA+srW2yHSP8Ma7gWR7Vfu
-        UvB0rv+RcDU3B7Yu0qe1TFpFkHPn9r8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-VdivdnJDPRycjhOiUNr6cw-1; Wed, 28 Oct 2020 10:10:35 -0400
-X-MC-Unique: VdivdnJDPRycjhOiUNr6cw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA37F101962B;
-        Wed, 28 Oct 2020 14:10:33 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B6204100238E;
-        Wed, 28 Oct 2020 14:10:32 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 06/11] afs: Fix page leak on afs_write_begin() failure
-From:   David Howells <dhowells@redhat.com>
-To:     linux-afs@lists.infradead.org
-Cc:     Nick Piggin <npiggin@gmail.com>, dhowells@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 28 Oct 2020 14:10:31 +0000
-Message-ID: <160389423194.300137.6010089051775505793.stgit@warthog.procyon.org.uk>
-In-Reply-To: <160389418807.300137.8222864749005731859.stgit@warthog.procyon.org.uk>
-References: <160389418807.300137.8222864749005731859.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Wed, 28 Oct 2020 18:06:09 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D13C0613CF;
+        Wed, 28 Oct 2020 15:06:08 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id p7so1151611ioo.6;
+        Wed, 28 Oct 2020 15:06:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=AMavcgab6f/G1LUhaSL/VnJNMSO60VRuV52F7ID9Z1w=;
+        b=EEBx/en4jUjbpcytmaGqmQqZoK88eThP+DK9XrxHaN1SQ97f4DrSYomDP9X0SkW/q0
+         0Ber+eFxG+cd5uPhS9kdMvcxwOsNyvUepSmCzF0TsiaP4hVWzXTUgLvgS/dMFSOxyzGk
+         16u+I0XQc8qsTHSPvYyz4rHV/3lQF3ThUC3tsDsCPS7dA5Ch0eGbrwSUZZ0hL3TNeOZG
+         CN+mzBK34uZp1FOpOIHpgudSrBlFlgzn5ZeXE3KM3F4rVihVfxpyLVG39v8DBIYrtkyE
+         jP4hkiJ1Zb4zzHVZo4l6i5dRHdIorBBpHSNi4Xnn8MEx3bY91Z+6rCAstCz6GCl+fxKY
+         ymrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=AMavcgab6f/G1LUhaSL/VnJNMSO60VRuV52F7ID9Z1w=;
+        b=CKpYiUzKGjXL4CxtU6+GaP15fd6Xsqjtz/dqg2P6v2vodl49iA5RdZr4bSTV2cy3iq
+         dDGX8FUFw7YMQtmDKOSZqmTLmMMc6SbFohuC0uRg8/dPmhHvjf1BcQSlHvjsyQnGjGFm
+         PO/UnaQuUbBrWTzN9BLdxsAKQNQzZ3w7gG3ikuLPaNCy6GuHmgyFhVRSb2Lfmr8qHkKG
+         vyPvBQwGayPlrdRRB4rwyd8/xg4a7ir6gcrv9BOCwY1HddWTFv4js6LL8QMRdQRndrjJ
+         WDjJCvVJohq3qmvoiFy9Qu615C/JZqc39FQ/l8nKsda9eP/sli9WSfkSz2sDPW81acKZ
+         2C9Q==
+X-Gm-Message-State: AOAM530SG7VqaJa7OiXisKna++lsnFpXsOKaIaweltNijmCeZU1ZQYhU
+        nQtB9MEYCrhWfa5sFo05UoYfxYh0LodR5Nde
+X-Google-Smtp-Source: ABdhPJxizRPARCHdEsCXjgrcYCTJx2PzRg4bj6IZWfYbOoEie0tP3vFgu3sgYYebDUS52otqnjvptw==
+X-Received: by 2002:a65:62ca:: with SMTP id m10mr6618468pgv.407.1603894962096;
+        Wed, 28 Oct 2020 07:22:42 -0700 (PDT)
+Received: from k5-sbwpb.flets-east.jp (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
+        by smtp.gmail.com with ESMTPSA id c12sm6293543pgi.14.2020.10.28.07.22.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 07:22:41 -0700 (PDT)
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl,
+        Tsuchiya Yuto <kitakar@gmail.com>
+Subject: [PATCH 1/2] mwifiex: fix mwifiex_shutdown_sw() causing sw reset failure
+Date:   Wed, 28 Oct 2020 23:21:09 +0900
+Message-Id: <20201028142110.18144-2-kitakar@gmail.com>
+X-Mailer: git-send-email 2.29.1
+In-Reply-To: <20201028142110.18144-1-kitakar@gmail.com>
+References: <20201028142110.18144-1-kitakar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the leak of the target page in afs_write_begin() when it fails.
+When FLR is performed but without fw reset for some reasons (e.g. on
+Surface devices, fw reset requires another quirk), it fails to reset
+properly. You can trigger the issue on such devices via debugfs entry
+for reset:
 
-Fixes: 15b4650e55e0 ("afs: convert to new aops")
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Nick Piggin <npiggin@gmail.com>
+    $ echo 1 | sudo tee /sys/kernel/debug/mwifiex/mlan0/reset
+
+and the resulting dmesg log:
+
+    [   45.740508] mwifiex_pcie 0000:03:00.0: Resetting per request
+    [   45.742937] mwifiex_pcie 0000:03:00.0: info: successfully disconnected from [BSSID]: reason code 3
+    [   45.744666] mwifiex_pcie 0000:03:00.0: info: shutdown mwifiex...
+    [   45.751530] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
+    [   45.751539] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
+    [   45.771691] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
+    [   45.771695] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
+    [   45.771697] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
+    [   45.771698] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
+    [   45.771699] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
+    [   45.771701] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
+    [   45.771702] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
+    [   45.771703] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
+    [   45.771704] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
+    [   45.771705] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
+    [   45.771707] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
+    [   45.771708] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
+    [   53.099343] mwifiex_pcie 0000:03:00.0: info: trying to associate to '[SSID]' bssid [BSSID]
+    [   53.241870] mwifiex_pcie 0000:03:00.0: info: associated to bssid [BSSID] successfully
+    [   75.377942] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
+    [   85.385491] mwifiex_pcie 0000:03:00.0: info: successfully disconnected from [BSSID]: reason code 15
+    [   87.539408] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
+    [   87.539412] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
+    [   99.699917] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
+    [   99.699925] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
+    [  111.859802] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
+    [  111.859808] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
+    [...]
+
+When comparing mwifiex_shutdown_sw() with mwifiex_pcie_remove(), it
+lacks mwifiex_init_shutdown_fw().
+
+This commit fixes mwifiex_shutdown_sw() by adding the missing
+mwifiex_init_shutdown_fw().
+
+Fixes: 4c5dae59d2e9 ("mwifiex: add PCIe function level reset support")
+Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
 ---
+ drivers/net/wireless/marvell/mwifiex/main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
- fs/afs/write.c |   23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
-
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 29685947324e..16a896096ccf 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -76,7 +76,7 @@ static int afs_fill_page(struct afs_vnode *vnode, struct key *key,
-  */
- int afs_write_begin(struct file *file, struct address_space *mapping,
- 		    loff_t pos, unsigned len, unsigned flags,
--		    struct page **pagep, void **fsdata)
-+		    struct page **_page, void **fsdata)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
- 	struct page *page;
-@@ -110,9 +110,6 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 		SetPageUptodate(page);
- 	}
+diff --git a/drivers/net/wireless/marvell/mwifiex/main.c b/drivers/net/wireless/marvell/mwifiex/main.c
+index 9ba8a8f64976b..6283df5aaaf8b 100644
+--- a/drivers/net/wireless/marvell/mwifiex/main.c
++++ b/drivers/net/wireless/marvell/mwifiex/main.c
+@@ -1471,6 +1471,8 @@ int mwifiex_shutdown_sw(struct mwifiex_adapter *adapter)
+ 	priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_ANY);
+ 	mwifiex_deauthenticate(priv, NULL);
  
--	/* page won't leak in error case: it eventually gets cleaned off LRU */
--	*pagep = page;
--
- try_again:
- 	/* See if this page is already partially written in a way that we can
- 	 * merge the new write with.
-@@ -154,6 +151,7 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 	if (!TestSetPagePrivate(page))
- 		get_page(page);
- 	set_page_private(page, priv);
-+	*_page = page;
- 	_leave(" = 0");
- 	return 0;
- 
-@@ -163,17 +161,18 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- flush_conflicting_write:
- 	_debug("flush conflict");
- 	ret = write_one_page(page);
--	if (ret < 0) {
--		_leave(" = %d", ret);
--		return ret;
--	}
-+	if (ret < 0)
-+		goto error;
- 
- 	ret = lock_page_killable(page);
--	if (ret < 0) {
--		_leave(" = %d", ret);
--		return ret;
--	}
-+	if (ret < 0)
-+		goto error;
- 	goto try_again;
++	mwifiex_init_shutdown_fw(priv, MWIFIEX_FUNC_SHUTDOWN);
 +
-+error:
-+	put_page(page);
-+	_leave(" = %d", ret);
-+	return ret;
- }
+ 	mwifiex_uninit_sw(adapter);
+ 	adapter->is_up = false;
  
- /*
-
+-- 
+2.29.1
 
