@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E4F29D846
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F090029D84A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387828AbgJ1WbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:31:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44404 "EHLO mail.kernel.org"
+        id S2387851AbgJ1WbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:31:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387821AbgJ1WbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:31:01 -0400
+        id S2387814AbgJ1WbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:31:06 -0400
 Received: from kozik-lap.proceq-device.com (unknown [194.230.155.184])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B23DC2070E;
-        Wed, 28 Oct 2020 22:30:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1686020714;
+        Wed, 28 Oct 2020 22:31:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603924260;
-        bh=isBHM4+ny8b7IJ/F7UtgN3v5rFfF9HueJMr217mfu0c=;
+        s=default; t=1603924265;
+        bh=VCI2z1U690+gy2/g7ipJ4jAAws2M6QcgNV8q6Id1J30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fq0VbUh1BGpZL5v8S7rnDvmi6nfUO8wAu3dcVo1ZDwcGxhuW3nKgaeNqWiFglw8fO
-         fSO2cxU7z1ZA/U4mBO1xvlrsOKtRVPq7sI6RTRlwHXp/6zQ+/uQY2VdinfFmfJcTUb
-         5UU7ztI6SknI1JjBznGb/K/rzLvWq0VC+myUm7Ks=
+        b=x1MZwqSn02evnnoX6GtFpoEy/Tk1Vng+ATRhLm/W1RBVO9FjvZ+1qyawFdz8Rh5En
+         JUw6sMFTVAc3gURhIT+kSv1tva3a9A2pz0VmjEPyJ3pdRySWfMhlmm8eKleBmna/8R
+         coqu5GgDD4cADMwtQLCOA9mpm4/zrOICeXJgAag0=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Lee Jones <lee.jones@linaro.org>,
         Nicolas Ferre <nicolas.ferre@microchip.com>,
@@ -44,10 +44,10 @@ To:     Lee Jones <lee.jones@linaro.org>,
         linux-arm-kernel@lists.infradead.org,
         linux-rpi-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
-Cc:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [RESEND PATCH 09/42] mfd: da9150: use PLATFORM_DEVID_NONE
-Date:   Wed, 28 Oct 2020 23:29:36 +0100
-Message-Id: <20201028223009.369824-9-krzk@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [RESEND PATCH 10/42] mfd: intel_msic: use PLATFORM_DEVID_NONE
+Date:   Wed, 28 Oct 2020 23:29:37 +0100
+Message-Id: <20201028223009.369824-10-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201028223009.369824-1-krzk@kernel.org>
 References: <20201028223009.369824-1-krzk@kernel.org>
@@ -62,24 +62,27 @@ Use PLATFORM_DEVID_NONE define instead of "-1" value because:
  - it might point attention why auto device ID was not used.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- drivers/mfd/da9150-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mfd/intel_msic.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mfd/da9150-core.c b/drivers/mfd/da9150-core.c
-index 7f0aa1e8db96..e335cf718442 100644
---- a/drivers/mfd/da9150-core.c
-+++ b/drivers/mfd/da9150-core.c
-@@ -453,7 +453,7 @@ static int da9150_probe(struct i2c_client *client,
+diff --git a/drivers/mfd/intel_msic.c b/drivers/mfd/intel_msic.c
+index bb24c2a07900..e9944a81dc44 100644
+--- a/drivers/mfd/intel_msic.c
++++ b/drivers/mfd/intel_msic.c
+@@ -317,8 +317,9 @@ static int intel_msic_init_devices(struct intel_msic *msic)
+ 		if (!pdata->irq[i])
+ 			continue;
  
- 	enable_irq_wake(da9150->irq);
- 
--	ret = mfd_add_devices(da9150->dev, -1, da9150_devs,
-+	ret = mfd_add_devices(da9150->dev, PLATFORM_DEVID_NONE, da9150_devs,
- 			      ARRAY_SIZE(da9150_devs), NULL,
- 			      da9150->irq_base, NULL);
- 	if (ret) {
+-		ret = mfd_add_devices(&pdev->dev, -1, &msic_devs[i], 1, NULL,
+-				      pdata->irq[i], NULL);
++		ret = mfd_add_devices(&pdev->dev, PLATFORM_DEVID_NONE,
++				      &msic_devs[i], 1, NULL, pdata->irq[i],
++				      NULL);
+ 		if (ret)
+ 			goto fail;
+ 	}
 -- 
 2.25.1
 
