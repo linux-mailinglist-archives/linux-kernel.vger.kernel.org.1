@@ -2,160 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F72629DB52
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA16029DB6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389302AbgJ1XwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
+        id S1730640AbgJ1X4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387563AbgJ1Xvq (ORCPT
+        with ESMTP id S1726723AbgJ1Xyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:51:46 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE91C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:51:45 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id z1so406402plo.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:51:45 -0700 (PDT)
+        Wed, 28 Oct 2020 19:54:49 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8F0C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:54:48 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id c5so834795qtw.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:54:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tmTfdAqJelGk4mThvToPB+vvFy/o2Riv909vC5Pwsvc=;
-        b=PvnCwIef6PZCTFzgkQOE6JXpb70433VKOlFqHWLlBDtiPS9mCm8oVghA+eXAC6KxjB
-         j5R3n3VjyjW4vD3eVLDjTBVf1/lCrGPrAwyAGG8NFmzunydB3WwepFlnjhYNpJc4cvdl
-         WK6xIrldFzHeKcCCMKPLPErRCYpr4qMwZmjQVpYAlw/P2+XKWk4oM88xJLIx07qmVhlG
-         vVP4MBcP9wvJpKuwvN31PU+45Fh8W0+q9tF9hEWpvDZfxjq57UcwOkRZru/5mR7uwm8B
-         UGpPz2KxfASR16wNtW1LoSLgnwJiuykxEaWXRcZeji/OlQGhQMqWXSK5n5+ayycZGeN8
-         EX+w==
+        bh=a6vE6h4Lrq3PfD6ZhI4bffn/VCoz5p+kVa9GnDZBqBg=;
+        b=K1alOVg7BbsaWoIzM3EPt/XFxBj6CfPzSYGObFnKmJp7VbMWXtUo2wEub9s1GDaGHk
+         lxopwSHtCrI5rbwcViDOKa7z7exOSdV8ylieshQIkI490N7n3HqHk5KCpFK6JRRNHLB9
+         56qGofT5bOcT1aUgH4aQIAILIIM3qjkChzQL7xSefwfbrA/5wrlPyn/zyWV6NgJcMrqq
+         c4gxYGkhThcN0gedsthpRzw7BxnfOcilw1snStWwIkeoRHuF7DEzT3zEC4pNAYOnL5tg
+         hRSNj6YRCY3J7n/iMsCrY78y942DN0Wi6x+DA1NUcEmjlov4n9/PkkaC+g1wFrR6A3ge
+         sjJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tmTfdAqJelGk4mThvToPB+vvFy/o2Riv909vC5Pwsvc=;
-        b=PscC0+YsMJEORxNhtRy20tWjcfRmWhXKtRO0kF4gYOZZs+gBlFVtsz7vtfeQezMt/9
-         y+sZ1/4qNVJ0fzpVW0ahAiV/50msgPAb6wl3SszrC46MD1nfCBMeD6EwHMwzpI8yUCel
-         z4fuXz6BgWYoiBUufcgndJ6w/W2A6fMn04BYCLrNGtbe8v93v76CjgyjY46Xi2CNM/Ca
-         X1qvp4rYQYTxOcFq1/J7x3xRVyowV/SnaWGQI2hkBVui+LIinZ7h+T1Fj9L3LEk1UnNO
-         KhoG8k8kB/CeYiRJOw3g/A/AD22MkJeACOJ8tRQiMtBMgfRIXEgEHeBeedqxpVg7P6LX
-         OjLA==
-X-Gm-Message-State: AOAM531Y0OIIzTCsoOI/GIVXoiQJyeX7aDviqxIXikl3KDWAZcnqVPd2
-        pD8h11CCxSFXWTTZ0O2FriNM3v8EW7v0pZdtSnWZPNuNEaB4DS0W
-X-Google-Smtp-Source: ABdhPJxA6mva6c9AuQcMDkfN09APtSH2RneKpFr1NrXpPaeWepLTqSsiRntY8LrK5rP3qon0g31a7FFbXKcv2+GSxOA=
-X-Received: by 2002:a05:6122:10eb:: with SMTP id m11mr4439593vko.8.1603878079032;
- Wed, 28 Oct 2020 02:41:19 -0700 (PDT)
+        bh=a6vE6h4Lrq3PfD6ZhI4bffn/VCoz5p+kVa9GnDZBqBg=;
+        b=KBEu9tHAfSFIMjc7dpQZLwpN3JcZGhSramoNlg/RyoZsDCN6AsU1M8OIGHbfo+pgoF
+         9ysIolTWFT8mClaSWirIwj3WoEq56qQuOUxY1Vm6ENo1oQI9KnBMtKphwRQo1neW8lGt
+         a1nxZZV6zbNyL35wRSvuEV+YbeTl6wA0X27oSgkmBSwZ/UxAyNlxllz7HB/rKUoXHlRA
+         IC/tES0fYmvM9YpEZStaOWPjX20tRlq6k/rZOxo1zDzENmZlsmUtXrm3vDgPlvtJRF+L
+         wee4fxfAOZXvtQA3RkAxaDAkGYe1HtLNj2fsZif6i/6t339ijU55akaKPrKqx7hbqZkr
+         8kcg==
+X-Gm-Message-State: AOAM531Mx4euWVVTSNgfd7Q22ZTDFO13cCyfx8WEU09L7zfleUtwRrp7
+        z7Up9UFO4cTkx0lTq0EB0I+TKiEZQzFP3NjG1wEasUSzSqOOww==
+X-Google-Smtp-Source: ABdhPJzGlSt5aAv1ZLGB7xNjiUUvxmmxT2DKA0N0WRSAio1BCjdgbKuaIweZa1+5o4vyE+PoaK/loQrgkpTt4gNbQmg=
+X-Received: by 2002:ac8:6c54:: with SMTP id z20mr5877605qtu.337.1603878075857;
+ Wed, 28 Oct 2020 02:41:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201023122950.60903-1-fparent@baylibre.com> <CAPDyKFrMwLeuQoFDgXYo_-T_e2AzfqM-rgp3-SgeuC6Qn6rxMA@mail.gmail.com>
- <87wnzbg7on.fsf@baylibre.com> <1603869682.6198.23.camel@mhfsdcap03>
-In-Reply-To: <1603869682.6198.23.camel@mhfsdcap03>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 28 Oct 2020 10:40:42 +0100
-Message-ID: <CAPDyKFrjov40BxHRrG6WoUVLaVbPbvPPf_ot2xybVEfGerST9g@mail.gmail.com>
-Subject: Re: [PATCH] mmc: host: mtk-sd: enable recheck_sdio_irq for MT8516 SoC
-To:     "yong.mao@mediatek.com" <yong.mao@mediatek.com>
-Cc:     Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20201026125227.54520-1-a.nogikh@gmail.com> <20201026125227.54520-3-a.nogikh@gmail.com>
+ <CAC5umyjZn+gtO=u8GhptVggzodbY-vnk9NNTOqyZyUW2up2ASQ@mail.gmail.com> <CANp29Y7sDaxrw+0wEVU0vo56AhKFRvbQSGeRc168gs6S8iK_-g@mail.gmail.com>
+In-Reply-To: <CANp29Y7sDaxrw+0wEVU0vo56AhKFRvbQSGeRc168gs6S8iK_-g@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 28 Oct 2020 10:41:04 +0100
+Message-ID: <CACT4Y+ZX=FjO0Ohoxnyjb3RqaTdGDpYs-Z4pJyiTo2TYY_ROqQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 2/2] docs: add fail_lsm_hooks info to fault-injection.rst
+To:     Aleksandr Nogikh <nogikh@google.com>
+Cc:     Akinobu Mita <akinobu.mita@gmail.com>,
+        Aleksandr Nogikh <a.nogikh@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Kees Cook <keescook@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 at 08:22, yong.mao@mediatek.com
-<yong.mao@mediatek.com> wrote:
+On Tue, Oct 27, 2020 at 6:34 PM Aleksandr Nogikh <nogikh@google.com> wrote:
+> [...]
+> > In addition to this global one, what do you think about per-hook fault
+> > injection,
+> > i.e. /sys/kernel/debug/fail_lsm_hooks/<FUNC>/retval ?
 >
-> On Tue, 2020-10-27 at 13:44 +0100, Mattijs Korpershoek wrote:
-> > Hi Ulf,
-> >
-> > Ulf Hansson <ulf.hansson@linaro.org> writes:
-> >
-> > > + Yong Mao, Chaotian Jing
-> > >
-> > > On Fri, 23 Oct 2020 at 14:29, Fabien Parent <fparent@baylibre.com> wrote:
-> > >>
-> > >> MT8516 SoC suffers from sometimes losing SDIO IRQs, this makes SDIO
-> > >> devices sometimes unstable. Make use of the new property
-> > >> recheck_sdio_irq to fix the SDIO stability issues on MT8516.
-> > >>
-> > >> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> > >
-> > > Maybe this is a common problem, thus I am thinking that potentially we
-> > > should enable the workaround for all variants?
-> > Not sure if this is of any help, but: we use the btmtksdio driver on a
-> > MT8183 soc with an Android kernel based on upstream.
-> >
-> > With that kernel, we did not to apply this work-around in order to
-> > have a stable bluetooth experience (pairing with a remote controller)
-> >
-> > However, on the MT8516 SoC, it's impossible for us to use btmtksdio
-> > without Fabien's fix.
-> >
-> Yes. For mt8516 SoC,recheck_sdio_irq should be set to true for avoiding
-> SDIO dat1 irq lost issue. But for mt8183 SoC, it does not need recheck
-> sdio irq mechanism.
+> I was thinking about this, but decided to begin with a simple version
+> that could definitely be useful in practice (for syzbot/syzkaller it is just
+> necessary to have a fault injection capability that will be triggered via
+> fail-nth). If per-hook fault injection can also be useful to someone, I
+> can try to add it as well.
 
-Okay, thanks for confirming.
+Yes, before we add it, it would be useful to have a clear use case
+(otherwise we can add an unused thing, or implement it in a way that
+slightly misses the use case).
+Note that fail-nth allows to fail a single concrete site for testing,
+though it's not super convenient for this as one would need to figure
+out the right N first. But as a one-off test it should do.
 
+
+> > In this case, we need a fault_attr for each hook. (Maybe, we can use the same
+> > technique that is used to define security_hook_heads).
 >
-> > >
-> > > I have looped in Yong Mao (who invented the workaround) and Chaotian
-> > > Jing, to see if they can advise us how to proceed.
-> > >
-> > > In any case, I think we should add a stable tag and a fixes tag.
-> > >
-> > > Kind regards
-> > > Uffe
->
-> Hi Ulf,
-> Sorry. On the patch "mmc:mediatek:fix SDIO irq issue", I only consider
-> fixing the issue on mt8173 SoC.But for the whole MTK upstream SoC,
-> mt8183, mt2712, mt6779 and mt8192 does not need this mechanism,
-> but the other upstream Soc such as mt8135, mt8173, mt2701, mt7622,
-> mt8516 and mt7620 need this recheck mechanism. And all future SoC of our
-> company does not need this mechanism.
-> If it's convenient for you, please help me to revise it.
-> Or I will submit a new patch to correct the value of setting.
-> Thanks.
-
-Please submit a new patch to enable the "recheck_sdio_irq" flag for
-those variants that need it.
-
-I would also add a fixes+stable tag and add reported-by tags from
-Fabien and Mattijs.
-
-Kind regards
-Uffe
-
-> > >
-> > >> ---
-> > >>  drivers/mmc/host/mtk-sd.c | 2 +-
-> > >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >>
-> > >> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-> > >> index a704745e5882..3dc102eefe49 100644
-> > >> --- a/drivers/mmc/host/mtk-sd.c
-> > >> +++ b/drivers/mmc/host/mtk-sd.c
-> > >> @@ -524,7 +524,7 @@ static const struct mtk_mmc_compatible mt7622_compat = {
-> > >>
-> > >>  static const struct mtk_mmc_compatible mt8516_compat = {
-> > >>         .clk_div_bits = 12,
-> > >> -       .recheck_sdio_irq = false,
-> > >> +       .recheck_sdio_irq = true,
-> > >>         .hs400_tune = false,
-> > >>         .pad_tune_reg = MSDC_PAD_TUNE0,
-> > >>         .async_fifo = true,
-> > >> --
-> > >> 2.28.0
-> > >>
-> > >
-> > > _______________________________________________
-> > > Linux-mediatek mailing list
-> > > Linux-mediatek@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-mediatek
->
+> Yes, that technique should help to implement the feature in a very concise
+> way. Thanks for the suggestion.
