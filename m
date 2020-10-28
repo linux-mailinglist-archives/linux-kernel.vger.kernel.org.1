@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D87629D67F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E09CA29D652
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731327AbgJ1WPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:15:20 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51986 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731268AbgJ1WPG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:15:06 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id A654929A58;
-        Tue, 27 Oct 2020 23:26:19 -0400 (EDT)
-Date:   Wed, 28 Oct 2020 14:26:12 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Tom Rix <trix@redhat.com>
-cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org,
-        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-Subject: Re: [RFC] clang tooling cleanups
-In-Reply-To: <20201027164255.1573301-1-trix@redhat.com>
-Message-ID: <alpine.LNX.2.23.453.2010281344120.31@nippy.intranet>
-References: <20201027164255.1573301-1-trix@redhat.com>
+        id S1731150AbgJ1WNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:13:55 -0400
+Received: from ozlabs.org ([203.11.71.1]:53829 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731102AbgJ1WNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:13:50 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CLYtf3DXRz9sVm;
+        Wed, 28 Oct 2020 14:28:10 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1603855690;
+        bh=x8iEWXpX3VRcXzbHeP1/0YLkUBA0/p+ybf5B8oj75dg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=j9aBfHGJfd40R9ZZU8fv1cW1wH6aNuBKxttOq5WB7T+g+frMSpb3zoHU7q5dSynsb
+         twuUc9Tw5jab1Nq0I09PJQLLq7olzGWguBuJzUoCu21t18klNhBUN/Oehwopef4Nt0
+         sGCP5lPgMkc2IDjLO9+YARhUPITiQZbA2f7L5dWeyaRo4OR/awv9McrWCxEhAeF/JF
+         GUVicvL1+e186JY1xRrIF+s7iTezVoEqRZpQ8vv89B5PiMIkPNz+C6D/IKFZ4roFru
+         TXUKG6L3P3+hntOMF3nWu9BYbsRiZwbYBy8idBHk/wLsAO2ErIExwkmHKircmqPa/F
+         PEZqO81GH65GA==
+Date:   Wed, 28 Oct 2020 14:28:09 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Micah Morton <mortonm@chromium.org>
+Cc:     Thomas Cedeno <thomascedeno@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning in Linus' tree
+Message-ID: <20201028142809.09f7f4b4@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; boundary="Sig_/qCP4iW3wX/8x6tq_IXpp.0w";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/qCP4iW3wX/8x6tq_IXpp.0w
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 27 Oct 2020, trix@redhat.com wrote:
+Hi all,
 
-> This rfc will describe
-> An upcoming treewide cleanup.
-> How clang tooling was used to programatically do the clean up.
-> Solicit opinions on how to generally use clang tooling.
-> 
+In Linus' tree, today's linux-next build (htmldocs) produced
+this warning:
 
-This tooling is very impressive. It makes possible an idea that I had a 
-while ago, to help make code review more efficient. It works like this. 
+Documentation/admin-guide/LSM/SafeSetID.rst:110: WARNING: Title underline t=
+oo short.
 
-Suppose a patch, p, is the difference between the new tree, n, and the old 
-tree, o. That is, p = n - o.
+Introduced by commit
 
-Now let clang-tidy be the transformation 't'. This gets you a much more 
-readable patch submission, P = t(n) - t(o).
+  5294bac97e12 ("LSM: SafeSetID: Add GID security policy handling")
 
-The only difficulty is that, if I submit P intead of p then 'git am' will 
-probably reject it. This is solved by a little tooling around git, such 
-that, should a patch P fail to apply, the relevant files are automatically 
-reformatted with the officially endorsed transformation t, to generate a 
-minimal cleanup patch, such that P can be automatically applied on top.
+--=20
+Cheers,
+Stephen Rothwell
 
-If the patch submission process required* that every patch submission was 
-generated like P and not like p, it would immediately eliminate all 
-clean-up patches from the workload of all reviewers, and also make the 
-reviewers' job easier because all submissions are now formatted correctly, 
-and also avoid time lost to round-trips, such as, "you can have a 
-reviewed-by if you respin to fix some minor style issues".
+--Sig_/qCP4iW3wX/8x6tq_IXpp.0w
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-* Enforcing this, e.g. with checkpatch, is slightly more complicated, but 
-it works the same way: generate a minimal cleanup patch for the relevant 
-files, apply the patch-to-be-submitted, and finally confirm that the 
-modified files are unchanged under t.
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Y5UkACgkQAVBC80lX
+0Gxlrwf/Zdp5m6WnKB7xlIfXbB0VShqy4VmTvCJzCeuCkxBIgk1spfSW6vbkEbma
+OCqlutwnghdH/dsFpPWMOU4Ep17jFqguQiwcw22bn7xN6WNHn+5leG8GTUUD8H76
+bCzdR9iQGLV7mspLAhOU7dTyVHssVlqO99vfPexdFMKTWYy8UpNLZb+IGO3KjFcs
+NVGSjLjfZ4HzOkuDl6doel60f0aUb6ZYzhEXhRifHZ1rMKAlvZ2QmE8ESkNG/xFO
+PJMdW+9PZyl+rzj/R6Hk3kweDUYsr7n8SN9AZ8e6wnbk25pc8E3mJ5VvDWteoj53
+i+EDILhLNdbJ0KgA0SwQlviWc0Knpg==
+=2z7s
+-----END PGP SIGNATURE-----
+
+--Sig_/qCP4iW3wX/8x6tq_IXpp.0w--
