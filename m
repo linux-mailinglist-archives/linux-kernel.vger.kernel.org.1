@@ -2,177 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B873029DC61
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAB629DBAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388547AbgJ2A34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:29:56 -0400
-Received: from mout.gmx.net ([212.227.17.22]:42395 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730278AbgJ2A3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 20:29:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603931354;
-        bh=1x1pkj+ajXmsfrHufbFh9PGoA8v8ZYMZRPHOv6rHqKo=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Sq3ghWn4LN0u/zAfvaprxjY97tlK2UqpCsHTtyjVC9oe65QwUkBPFQT2GhCJMUyh0
-         x3Hlu462wFRhboMViEm/+0NefEjannONEUy7RuCoKw+qqZ2TEXccuEWI6GcnH1iQh8
-         kj33/UsXCTo/IvaYSB+DP7xMjV9DOFPJriNj0u8w=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.58] ([92.116.189.175]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MWRVb-1krzLr0wEl-00XwjY; Wed, 28
- Oct 2020 15:54:36 +0100
-Subject: Re: [PATCH] USB: serial: ftdi_sio: Fix serial port stall after resume
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200929193327.GA13987@ls3530.fritz.box>
- <20201008152103.GK26280@localhost>
- <1aefc37b-8976-efda-f397-2d9492b1260a@gmx.de>
- <20201027090043.GG4085@localhost>
-From:   Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
- c2TFWAS8k6RLkk41ZUU8ENX8+qZx/Q==
-Message-ID: <a2b84135-761b-6e9c-59d5-857bfa6d0281@gmx.de>
-Date:   Wed, 28 Oct 2020 15:54:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S2390695AbgJ2ALZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388084AbgJ1Wqm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:46:42 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE32C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:46:42 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id m14so699975qtc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:46:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GanWMiuxZPYvGPHR2li91MTgl4P8vcFj2Phf0FW5Mj4=;
+        b=SxM+eYCwn8+suL2h7+sMK6pO5A5Harodv9fbiJpKKotjGZiYKD4wGWh2NwKlU8jLqo
+         Ryq2hLs/vdskRrummj/eqGLonIJZBR4inz/hsTzPOZjBq4L3uAblh7KgfzXSMypbLIbv
+         hP5x7EJ7bn7cTGzJwZ0sUhZrPSxlOKnPs6cBk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GanWMiuxZPYvGPHR2li91MTgl4P8vcFj2Phf0FW5Mj4=;
+        b=W5XF21KGdQIR2iliLetbs5wFJuTM+PvaH7rx/Z12aMk3ieARc0rgvFKXJmB4vShRzM
+         GIRve3LWrfxuX4D2KgXOPNz6XpBU6V6aNmt/X10tM3NLE7sTAprvbfnxR9ejB3gqGOgX
+         15Me6FDRtaJgqBl8AV9hbBfV3YTmZDmz2q6ix8rdcPLV+m+azqaoIfTkqTHI+NejQaes
+         VfSS2DUI60kzlvF+4PDTbcXDbk4/5I9PSGxGFt0tixGd3wCs2XWqnSCHlJ5hKFJ7EX+M
+         /NAwOMZcDiJU7qnSYfwI1ruq/ttSkQIarkQ8LVxMw1cnzWX1VQSdsjIIiIBZlNTuSHtK
+         pbDg==
+X-Gm-Message-State: AOAM531ZefZvAI5PCubLZR8ZmTlP0QshwZvbyCbkWOMxXJ1ILYbwA04q
+        1Lap80WCXXwFJ6f3RKHwxd1RVO0zbercWg==
+X-Google-Smtp-Source: ABdhPJyCqFp2ON3dKU13F7HBYcWDnmsj8mTpE+75wjnGuFk7JVYaHt6TQLDCn7F28/sfKVziWoSoWQ==
+X-Received: by 2002:ac8:6f6f:: with SMTP id u15mr7573293qtv.115.1603898954642;
+        Wed, 28 Oct 2020 08:29:14 -0700 (PDT)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id i20sm3153311qtw.66.2020.10.28.08.29.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 08:29:12 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 11:29:11 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH v8 -tip 08/26] sched/fair: Snapshot the min_vruntime of
+ CPUs on force idle
+Message-ID: <20201028152911.GB929302@google.com>
+References: <20201020014336.2076526-1-joel@joelfernandes.org>
+ <20201020014336.2076526-9-joel@joelfernandes.org>
+ <20201026124724.GT2611@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20201027090043.GG4085@localhost>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:G1UVVWCLE9kHZPkoEqVOqg+lkFWn4s8mCRYk3zd1H0DfGQuGTb2
- qsnnbZ9gGKqfcYrQzPRP3tHOeqkLEiF0HGvb2Y06GyVx1vrgZ4nDsyrhQpbdp58EQ4SzSH1
- yO2ZFNyczR4xn22I4wO5yABRfF/bvkzruJrtDQNy25sygll3N/LNkOPDPCm23H4R7BD6Elb
- 1Jbwr/wHghgiKi/SYaNAw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bgc06VPmeEc=:YsVGB4qGyFx7QY7Jzd0Alr
- KNZhQtLkgyyztzkK467Bmh7M+CO8rK2h9MHCmM3+vEgmbqVI4fnK/XIJexLZmlQWkcuu4AfG6
- l4UVbxHKiebgZJ75I8TlCOtjPqSlYlZ2ij80QnFJSkFIjee6j4OZwkb2o3F8tm4c28JMHR4GG
- pyvObOEmd1i9gm/fDFOi/CSNTvtLb3Iic9yxiRbK+rdkgYStJcmFnvsM49V0gIDrRMxLUTFRk
- 1LhC1WUp34xCuxMYJwIqO3i/04eR8vuYlbZlJjY5MDU1SWkjsFz+LCxGo5nhXj9hqPAIZ/8Ah
- 6pcUJ65rr50zszzKqrD5cPG9RLXmeNa57tw1qZw61V/RLnrUxo9zpOMEzZ+3zatz2LQZlY/kA
- DPEd2bNv3uTBhbId29f6mluKTQ+oLAOkrz5Z/xIM+nndNiZydUSYExNYmzZCVPRMMgQeDfIqH
- bCFGdPm7jchQb6LhoHxLgCdZ7PMYW5Z++tzLXHqrg40zLOBqtfqITFdhzqbwUCwmR7XQzF6ZZ
- KR0iBpUDhqqJ86GsCKE7SFjPRgdEpApYJBq1rct96LPP8qrWG1JdDK1/GYOEQNHjI8DE1TSwG
- ndTEiXoQAW1jRt1zuKUCgUdSz/B8EXgfxw+A+0DM9PGP+gOJiahXU0xhfN5m85SCeh8ZBS1yp
- hArP9hxSXnxKBHQc7uvfFYw/6SUurixYH0yK215gbNIA2pSXYXvMJcd6w5emZ8DtLkc68wwaW
- Vln6XkxyK6/bKNb1wXviIlkYjxgucEyngag+EKhOAcl8ruzv6+6MAJpxco/NE+vy/VMuDmq/t
- cCbtvCKcSrAXZjr4AbUXbaRUVfL3z+uouWde5h7ClFAIRMaH8sZozqr48hjcMpewIpMQnBfdv
- Sk/qqQFsZG+wkWRF8CXg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026124724.GT2611@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/20 10:00 AM, Johan Hovold wrote:
-> On Thu, Oct 08, 2020 at 08:16:02PM +0200, Helge Deller wrote:
->> On 10/8/20 5:21 PM, Johan Hovold wrote:
->>> On Tue, Sep 29, 2020 at 09:33:27PM +0200, Helge Deller wrote:
->>>> With a 4-port serial USB HUB with FT232BM chips the serial ports stop
->>>> working after a software suspend/resume cycle.
->>>> Rewriting the latency timer during the resume phase fixes it.
->
->>>> +static int ftdi_reset_resume(struct usb_serial *serial)
->>>> +{
->>>> +	struct usb_serial_port *port =3D serial->port[0];
->>>> +
->>>> +	if (tty_port_initialized(&port->port))
->>>> +		write_latency_timer(port);
->>>
->>> Why are you only doing this for open ports?
->>
->> I more or less copied it from another driver....
->>
->>>> +
->>>> +	return usb_serial_generic_resume(serial);
->>>> +}
->>>
->>> And if the device has been reset there may need to reconfigured the
->>> termios settings for open ports.
->>>
->>> Could you expand a bit on what the problem is here?
->>
->> My testcase is pretty simple:
->> 1. I use e.g. "minicom -D /dev/ttyUSB2". Serial connection works.
->> 2. I exit minicom.
->> 3. I suspend the workstation: "systemctl suspend"
->> 4. I wake up the machine and wait a few seconds.
->> 5. I start "minicom -D /dev/ttyUSB2" again. No transfers on the serial =
-port.
->>
->> With my patch the minicom serial communications does work.
->> Another way to wake up the connection is to rmmod the driver and
->> insmod it again.
->
-> Weird indeed. If you exit minicom before suspend and no other process is
-> keeping the port open, then that write_latency_timer() above would never
-> be executed.
->
-> Could you enable some debugging and provide a dmesg log from a test
-> cycle (open/close minicom, suspend/resume, open minicom)?
->
-> 	echo file usb-serial.c +p > /sys/kernel/debug/dynamic_debug/control
+Hi Peter,
 
-I enabled the debugging and tried a few times, but somehow I can not
-reproduce the issue any longer.
+I am still working on understanding your approach and will reply soon, but I
+just wanted to clarify the question on my approach:
 
-So, please drop my patch for now.
+On Mon, Oct 26, 2020 at 01:47:24PM +0100, Peter Zijlstra wrote:
+> On Mon, Oct 19, 2020 at 09:43:18PM -0400, Joel Fernandes (Google) wrote:
+> 
+> > @@ -4723,6 +4714,14 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+> >  			update_rq_clock(rq_i);
+> >  	}
+> >  
+> > +	/* Reset the snapshot if core is no longer in force-idle. */
+> > +	if (!fi_before) {
+> > +		for_each_cpu(i, smt_mask) {
+> > +			struct rq *rq_i = cpu_rq(i);
+> > +			rq_i->cfs.min_vruntime_fi = rq_i->cfs.min_vruntime;
+> > +		}
+> > +	}
+> 
+> So this is the thing that drags vruntime_fi along when (both?) siblings
+> are active, right? But should we not do that after pick? Consider 2
+> tasks a weight 1 and a weight 10 task, one for each sibling. By syncing
+> the vruntime before picking, the cfs_prio_less() loop will not be able
+> to distinguish between these two, since they'll both have effectively
+> the same lag.
 
-Thanks!
-Helge
+Actually the snapshot I take is local to the rq's business, it is not
+core-wide. So there's no core-wide sync in the patch.
+
+So for each rq, I'm assigning the rq's ->min_vruntime_fi to its own
+->min_vruntime.
+
+And then later in cfs_prio_less(), I'm normalizing task's ->vruntime with
+respect to the ->min_vruntime_fi and using that delta for comparison. So each
+->rq is really dealing with its own lag, its not sync'ed.
+
+About why it is to be done before, if we are not in force-idle any more, then
+every time we pick, then rq's min_vruntime_fi will be assigned its
+->min_vruntime which will be used later, as baseline for that particular rq,
+during the cfs_prio_less(). So it has to be done before at least in my
+approach. This is no different from not having this patch.
+
+However, if we are in force-idle, then the min_vruntime_fi stays put on all
+siblings so that the delta continues to grow on all cpus *since* the force
+idle started.
+
+The reason I also do it after is, if the core just entered force idle but
+wasn't previously in it, then we take a snapshot at that point and continue
+to use that snapshot in future selections as long as the core is in force
+idle.
+
+This approach may have some drawbacks but it reduces the task latencies quite
+a bit in my testing.
+
+Thoughts?
+
+thanks,
+
+ - Joel
+
+
+> If however, you syn after pick, then the weight 1 task will have accreud
+> far more runtime than the weight 10 task, and consequently the weight 10
+> task will have preference when a decision will have to be made.
+> 
+> (also, if this were the right place, the whole thing should've been part
+> of the for_each_cpu() loop right before this)
+
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 56bea0decda1..9cae08c3fca1 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -10686,6 +10686,46 @@ static inline void task_tick_core(struct rq *rq, struct task_struct *curr)
+> >  	    __entity_slice_used(&curr->se, MIN_NR_TASKS_DURING_FORCEIDLE))
+> >  		resched_curr(rq);
+> >  }
+> > +
+> > +bool cfs_prio_less(struct task_struct *a, struct task_struct *b)
+> > +{
+> > +	bool samecpu = task_cpu(a) == task_cpu(b);
+> > +	struct sched_entity *sea = &a->se;
+> > +	struct sched_entity *seb = &b->se;
+> > +	struct cfs_rq *cfs_rqa;
+> > +	struct cfs_rq *cfs_rqb;
+> > +	s64 delta;
+> > +
+> > +	if (samecpu) {
+> > +		/* vruntime is per cfs_rq */
+> > +		while (!is_same_group(sea, seb)) {
+> > +			int sea_depth = sea->depth;
+> > +			int seb_depth = seb->depth;
+> > +			if (sea_depth >= seb_depth)
+> > +				sea = parent_entity(sea);
+> > +			if (sea_depth <= seb_depth)
+> > +				seb = parent_entity(seb);
+> > +		}
+> > +
+> > +		delta = (s64)(sea->vruntime - seb->vruntime);
+> > +		goto out;
+> > +	}
+> > +
+> > +	/* crosscpu: compare root level se's vruntime to decide priority */
+> > +	while (sea->parent)
+> > +		sea = sea->parent;
+> > +	while (seb->parent)
+> > +		seb = seb->parent;
+> 
+> This seems unfortunate, I think we can do better.
+> 
+> > +
+> > +	cfs_rqa = sea->cfs_rq;
+> > +	cfs_rqb = seb->cfs_rq;
+> > +
+> > +	/* normalize vruntime WRT their rq's base */
+> > +	delta = (s64)(sea->vruntime - seb->vruntime) +
+> > +		(s64)(cfs_rqb->min_vruntime_fi - cfs_rqa->min_vruntime_fi);
+> > +out:
+> > +	return delta > 0;
+> > +}
+> 
+> 
+> How's something like this?
+> 
+>  - after each pick, such that the pick itself sees the divergence (see
+>    above); either:
+> 
+>     - pull the vruntime_fi forward, when !fi
+>     - freeze the vruntime_fi, when newly fi    (A)
+> 
+>  - either way, update vruntime_fi for each cfs_rq in the active
+>    hierachy.
+> 
+>  - when comparing, and fi, update the vruntime_fi hierachy until we
+>    encounter a mark from (A), per doing it during the pick, but before
+>    runtime, this guaranteees it hasn't moved since (A).
+> 
+> XXX, still buggered on SMT>2, imagine having {ta, tb, fi, i} on an SMT4,
+> then when comparing any two tasks that do not involve the fi, we should
+> (probably) have pulled them fwd -- but we can't actually pull them,
+> because then the fi thing would break, mooo.
+> 
+> 
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -115,19 +115,8 @@ static inline bool prio_less(struct task
+>  	if (pa == -1) /* dl_prio() doesn't work because of stop_class above */
+>  		return !dl_time_before(a->dl.deadline, b->dl.deadline);
+>  
+> -	if (pa == MAX_RT_PRIO + MAX_NICE)  { /* fair */
+> -		u64 vruntime = b->se.vruntime;
+> -
+> -		/*
+> -		 * Normalize the vruntime if tasks are in different cpus.
+> -		 */
+> -		if (task_cpu(a) != task_cpu(b)) {
+> -			vruntime -= task_cfs_rq(b)->min_vruntime;
+> -			vruntime += task_cfs_rq(a)->min_vruntime;
+> -		}
+> -
+> -		return !((s64)(a->se.vruntime - vruntime) <= 0);
+> -	}
+> +	if (pa == MAX_RT_PRIO + MAX_NICE)	/* fair */
+> +		return cfs_prio_less(a, b);
+>  
+>  	return false;
+>  }
+> @@ -4642,12 +4631,15 @@ pick_task(struct rq *rq, const struct sc
+>  	return cookie_pick;
+>  }
+>  
+> +extern void task_vruntime_update(struct rq *rq, struct task_struct *p);
+> +
+>  static struct task_struct *
+>  pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>  {
+>  	struct task_struct *next, *max = NULL;
+>  	const struct sched_class *class;
+>  	const struct cpumask *smt_mask;
+> +	bool fi_before = false;
+>  	bool need_sync;
+>  	int i, j, cpu;
+>  
+> @@ -4707,6 +4699,7 @@ pick_next_task(struct rq *rq, struct tas
+>  	need_sync = !!rq->core->core_cookie;
+>  	if (rq->core->core_forceidle) {
+>  		need_sync = true;
+> +		fi_before = true;
+>  		rq->core->core_forceidle = false;
+>  	}
+>  
+> @@ -4757,6 +4750,11 @@ pick_next_task(struct rq *rq, struct tas
+>  				continue;
+>  
+>  			rq_i->core_pick = p;
+> +			if (rq_i->idle == p && rq_i->nr_running) {
+> +				rq->core->core_forceidle = true;
+> +				if (!fi_before)
+> +					rq->core->core_forceidle_seq++;
+> +			}
+>  
+>  			/*
+>  			 * If this new candidate is of higher priority than the
+> @@ -4775,6 +4773,7 @@ pick_next_task(struct rq *rq, struct tas
+>  				max = p;
+>  
+>  				if (old_max) {
+> +					rq->core->core_forceidle = false;
+>  					for_each_cpu(j, smt_mask) {
+>  						if (j == i)
+>  							continue;
+> @@ -4823,10 +4822,8 @@ pick_next_task(struct rq *rq, struct tas
+>  		if (!rq_i->core_pick)
+>  			continue;
+>  
+> -		if (is_task_rq_idle(rq_i->core_pick) && rq_i->nr_running &&
+> -		    !rq_i->core->core_forceidle) {
+> -			rq_i->core->core_forceidle = true;
+> -		}
+> +		if (!(fi_before && rq->core->core_forceidle))
+> +			task_vruntime_update(rq_i, rq_i->core_pick);
+>  
+>  		if (i == cpu) {
+>  			rq_i->core_pick = NULL;
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10686,6 +10686,67 @@ static inline void task_tick_core(struct
+>  	    __entity_slice_used(&curr->se, MIN_NR_TASKS_DURING_FORCEIDLE))
+>  		resched_curr(rq);
+>  }
+> +
+> +static void se_fi_update(struct sched_entity *se, unsigned int fi_seq, bool forceidle)
+> +{
+> +	for_each_sched_entity(se) {
+> +		struct cfs_rq *cfs_rq = cfs_rq_of(se);
+> +
+> +		if (forceidle) {
+> +			if (cfs_rq->forceidle_seq == fi_seq)
+> +				break;
+> +			cfs_rq->forceidle_seq = fi_seq;
+> +		}
+> +
+> +		cfs_rq->min_vruntime_fi = cfs_rq->min_vruntime;
+> +	}
+> +}
+> +
+> +void task_vruntime_update(struct rq *rq, struct task_struct *p)
+> +{
+> +	struct sched_entity *se = &p->se;
+> +
+> +	if (p->sched_class != &fair_sched_class)
+> +		return;
+> +
+> +	se_fi_update(se, rq->core->core_forceidle_seq, rq->core->core_forceidle);
+> +}
+> +
+> +bool cfs_prio_less(struct task_struct *a, struct task_struct *b)
+> +{
+> +	struct rq *rq = task_rq(a);
+> +	struct sched_entity *sea = &a->se;
+> +	struct sched_entity *seb = &b->se;
+> +	struct cfs_rq *cfs_rqa;
+> +	struct cfs_rq *cfs_rqb;
+> +	s64 delta;
+> +
+> +	SCHED_WARN_ON(task_rq(b)->core != rq->core);
+> +
+> +	while (sea->cfs_rq->tg != seb->cfs_rq->tg) {
+> +		int sea_depth = sea->depth;
+> +		int seb_depth = seb->depth;
+> +
+> +		if (sea_depth >= seb_depth)
+> +			sea = parent_entity(sea);
+> +		if (sea_depth <= seb_depth)
+> +			seb = parent_entity(seb);
+> +	}
+> +
+> +	if (rq->core->core_forceidle) {
+> +		se_fi_update(sea, rq->core->core_forceidle_seq, true);
+> +		se_fi_update(seb, rq->core->core_forceidle_seq, true);
+> +	}
+> +
+> +	cfs_rqa = sea->cfs_rq;
+> +	cfs_rqb = seb->cfs_rq;
+> +
+> +	/* normalize vruntime WRT their rq's base */
+> +	delta = (s64)(sea->vruntime - seb->vruntime) +
+> +		(s64)(cfs_rqb->min_vruntime_fi - cfs_rqa->min_vruntime_fi);
+> +
+> +	return delta > 0;
+> +}
+>  #else
+>  static inline void task_tick_core(struct rq *rq, struct task_struct *curr) {}
+>  #endif
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -522,6 +522,11 @@ struct cfs_rq {
+>  	unsigned int		h_nr_running;      /* SCHED_{NORMAL,BATCH,IDLE} */
+>  	unsigned int		idle_h_nr_running; /* SCHED_IDLE */
+>  
+> +#ifdef CONFIG_SCHED_CORE
+> +	unsigned int		forceidle_seq;
+> +	u64			min_vruntime_fi;
+> +#endif
+> +
+>  	u64			exec_clock;
+>  	u64			min_vruntime;
+>  #ifndef CONFIG_64BIT
+> @@ -1061,7 +1066,8 @@ struct rq {
+>  	unsigned int		core_task_seq;
+>  	unsigned int		core_pick_seq;
+>  	unsigned long		core_cookie;
+> -	unsigned char		core_forceidle;
+> +	unsigned int		core_forceidle;
+> +	unsigned int		core_forceidle_seq;
+>  #endif
+>  };
+>  
+> @@ -1106,6 +1112,8 @@ static inline raw_spinlock_t *rq_lockp(s
+>  	return &rq->__lock;
+>  }
+>  
+> +bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
+> +
+>  #else /* !CONFIG_SCHED_CORE */
+>  
+>  static inline bool sched_core_enabled(struct rq *rq)
