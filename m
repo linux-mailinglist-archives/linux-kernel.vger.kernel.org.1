@@ -2,192 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A780329D916
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2075E29D945
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389505AbgJ1Wn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:43:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
+        id S2389605AbgJ1Wuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389494AbgJ1Wny (ORCPT
+        with ESMTP id S2389556AbgJ1Wua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:43:54 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0682C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:43:53 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id z6so571810qkz.4
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:43:53 -0700 (PDT)
+        Wed, 28 Oct 2020 18:50:30 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6AAC0613CF;
+        Wed, 28 Oct 2020 15:50:30 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id h22so788283wmb.0;
+        Wed, 28 Oct 2020 15:50:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5Xc9c29FA+GYfQKQjFulHFDr1xP7AG55TTtOHUWqRAY=;
-        b=E6BSgQbSGDlSTN7HPIHDJ/BdEgY80jDDm8vopkX+hEVwsGV3h2/mbYrYGqdylcyxdA
-         5+tNaqX6KrlOEq55j6lEqPli9lKhuXjb0z+XRBMrr011C6Irw7dy3nKagZIFCzd+jikP
-         aEUkI3xU4D2N5VIjVxfUmWDiBt2hbIuJIGDYr8jc9LDxNaU8pxygPZjqjrzuIfAgwkV6
-         ger3g6fw395Uf8aHjfbXf7TBi4WbAh2xI7NfS86JzAq2cARkaiW6RxjV6MD+2yz6DsN1
-         C/yVBhRhE3aws8UaT+aeuCSEFuCGy7vasZ6dt1HczXEpyQRRZ0IHtZYv2CehjEo4RSvv
-         JYZg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1CEqaQjMv77SiJCZ+Ml1JB/3M4/OfgLP7wUO6uiGBUs=;
+        b=bR1CCcPMmvIaitAJ/L84I7wG4ssUkX6QgTxmEp/5I9tT9LEQJAPNiwovP4N9tQTfh2
+         Wr8TKpV/V8w+yJzzl2HmH5UmTZpbyF/nkkFvM7fDV5Ir1FKuR+biYo81+yI9z36wzJzy
+         jH2b7uUSYFiQwgrxSq77T/GGugeBJjB03YXIH4tOf/lhiEW1M2rjuHsmE9QA9yUyzCIP
+         5o+h00bEHO5+1ILSbxExqsnbv8HlTFJZnwfuOW9vG422xU3XpjGKA8uebqR6h6ysTGgL
+         6dvfdF5qWz26EzBDfpaxavnTYl13oe4zKP7KFSGv/kH/Y7I2TrgF3SuzxKS/hUIbnIfR
+         ITlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5Xc9c29FA+GYfQKQjFulHFDr1xP7AG55TTtOHUWqRAY=;
-        b=KQEiPpzJIgQ4qriGQaWBJjVzX6F8XCHdeocvQgcPafAiWbythN4gjK+uUnBiu2Oxdw
-         /C56gwlGTjWxoZGmGLUARPzW7GxmdyjPl7d1KpVBAgIh15iJ3ZEc6twGddEdvDhoPUYm
-         78qnGq9I2DxlHqJ8WDF5GUiizDxS+s4P6pw/vgLvRzvomEM3QVKc9j7/FN4y9ElBhfWe
-         M1U5ffzUbs8KLCm6eo2sUfHsYntPxMxPEzPSdAJioTEKnWE7jWLuZhjkSPE0351WqQzO
-         9XrbRQ2OdaMCadsEYfTIwt2dw+H30R/a9GjckEU9AgPH+UJz7oPJxUNNkAWXyvPuOoe1
-         iWWQ==
-X-Gm-Message-State: AOAM532o7xoY3WOUuCbfsaOgaLHhC5N8NfTBrhsIlY6/fUDamiD7RFDz
-        0XP+Lx+kG2Sr5mSfPC+ZvvBOJ4ngD0odjDINGsxPDVRQ4lGcSA==
-X-Google-Smtp-Source: ABdhPJwqOIb+3XgNehLv0cxHQ2ZjoGlJK+b6tjZ4gdRgnShqGfKBRmmQ5ljY9OpQAZG7k35gaoiZa/jbhr/jRgYQYxQ=
-X-Received: by 2002:a05:620a:1188:: with SMTP id b8mr8384202qkk.265.1603904295369;
- Wed, 28 Oct 2020 09:58:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1CEqaQjMv77SiJCZ+Ml1JB/3M4/OfgLP7wUO6uiGBUs=;
+        b=T7ZMnw65WO8+vKrv2XlcnlwOH9v5J049l+mNorO8f5BoFd7hfsPo1ZDQDxq9gS7Hi4
+         x60TdE+wmzjbHxY3le6qbUdurm00zpbhG718sbXMz/N9AyuBxmrgU9jgvBItHyoE4EVR
+         Rx4q3z1o68Bo/LtPXMwRXbKhCDBayEduaud71il/7GeuWvwNEDAYnFB8z12VijjyLmY/
+         1eRX1L65S2OAxUB7vmQui1Zqrn7sJ6GhkkVi29AQz7yYGuSPaTIpmM704GY/MHz1BwAd
+         0eYiVDKn7NVjXAxCp4I27Nd8nwWHWIJSuVZY+wPTsKoaZDOAms8D/LCYRizIlJnp8yQu
+         OENQ==
+X-Gm-Message-State: AOAM5323xd3v9hddGDpf5y0hEukWxY/1sCjeIjX0LvH7Nbl/x2OdPngX
+        IvwEiItnOWANOMbz7oeGpRNMxwZS3LWlPQ==
+X-Google-Smtp-Source: ABdhPJwgSnehTc5xNqyLCaar1RruRoIGZbX080UjPug3t5nj2z72U/3mB1I9KQxqePWsIqRhpk1atA==
+X-Received: by 2002:a7b:c081:: with SMTP id r1mr425801wmh.158.1603904857092;
+        Wed, 28 Oct 2020 10:07:37 -0700 (PDT)
+Received: from nogikh.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
+        by smtp.gmail.com with ESMTPSA id v6sm211757wrp.69.2020.10.28.10.07.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 10:07:36 -0700 (PDT)
+From:   Aleksandr Nogikh <aleksandrnogikh@gmail.com>
+To:     stephen@networkplumber.org, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     andreyknvl@google.com, dvyukov@google.com, elver@google.com,
+        rdunlap@infradead.org, dave.taht@gmail.com, edumazet@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Aleksandr Nogikh <nogikh@google.com>,
+        syzbot+ec762a6342ad0d3c0d8f@syzkaller.appspotmail.com
+Subject: [PATCH v2] netem: fix zero division in tabledist
+Date:   Wed, 28 Oct 2020 17:07:31 +0000
+Message-Id: <20201028170731.1383332-1-aleksandrnogikh@gmail.com>
+X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
 MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com> <5a6f32308101c49da5eef652437bd3da9234c0da.1603372719.git.andreyknvl@google.com>
-In-Reply-To: <5a6f32308101c49da5eef652437bd3da9234c0da.1603372719.git.andreyknvl@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 28 Oct 2020 17:58:03 +0100
-Message-ID: <CACT4Y+Z88xqdz4vbPeLzPwxX77FJUxbz+bqiSs1aMDVSGxcpUg@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 18/21] kasan: rename kasan_poison_kfree
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 3:20 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> Rename kasan_poison_kfree() into kasan_slab_free_mempool() as it better
-> reflects what this annotation does.
->
-> No functional changes.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/I5026f87364e556b506ef1baee725144bb04b8810
+From: Aleksandr Nogikh <nogikh@google.com>
 
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Currently it is possible to craft a special netlink RTM_NEWQDISC
+command that can result in jitter being equal to 0x80000000. It is
+enough to set the 32 bit jitter to 0x02000000 (it will later be
+multiplied by 2^6) or just set the 64 bit jitter via
+TCA_NETEM_JITTER64. This causes an overflow during the generation of
+uniformly distributed numbers in tabledist(), which in turn leads to
+division by zero (sigma != 0, but sigma * 2 is 0).
 
-> ---
->  include/linux/kasan.h | 16 ++++++++--------
->  mm/kasan/common.c     | 16 ++++++++--------
->  mm/mempool.c          |  2 +-
->  3 files changed, 17 insertions(+), 17 deletions(-)
->
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 8654275aa62e..2ae92f295f76 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -162,6 +162,13 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object, unsigned
->         return false;
->  }
->
-> +void __kasan_slab_free_mempool(void *ptr, unsigned long ip);
-> +static inline void kasan_slab_free_mempool(void *ptr, unsigned long ip)
-> +{
-> +       if (static_branch_likely(&kasan_enabled))
-> +               __kasan_slab_free_mempool(ptr, ip);
-> +}
-> +
->  void * __must_check __kasan_slab_alloc(struct kmem_cache *s,
->                                        void *object, gfp_t flags);
->  static inline void * __must_check kasan_slab_alloc(struct kmem_cache *s,
-> @@ -202,13 +209,6 @@ static inline void * __must_check kasan_krealloc(const void *object,
->         return (void *)object;
->  }
->
-> -void __kasan_poison_kfree(void *ptr, unsigned long ip);
-> -static inline void kasan_poison_kfree(void *ptr, unsigned long ip)
-> -{
-> -       if (static_branch_likely(&kasan_enabled))
-> -               __kasan_poison_kfree(ptr, ip);
-> -}
-> -
->  void __kasan_kfree_large(void *ptr, unsigned long ip);
->  static inline void kasan_kfree_large(void *ptr, unsigned long ip)
->  {
-> @@ -244,6 +244,7 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
->  {
->         return false;
->  }
-> +static inline void kasan_slab_free_mempool(void *ptr, unsigned long ip) {}
->  static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
->                                    gfp_t flags)
->  {
-> @@ -264,7 +265,6 @@ static inline void *kasan_krealloc(const void *object, size_t new_size,
->  {
->         return (void *)object;
->  }
-> -static inline void kasan_poison_kfree(void *ptr, unsigned long ip) {}
->  static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
->
->  #endif /* CONFIG_KASAN */
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index b82dbae0c5d6..5622b0ec0907 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -334,6 +334,14 @@ bool __kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
->         return ____kasan_slab_free(cache, object, ip, true);
->  }
->
-> +void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
-> +{
-> +       struct page *page;
-> +
-> +       page = virt_to_head_page(ptr);
-> +       ____kasan_slab_free(page->slab_cache, ptr, ip, false);
-> +}
-> +
->  static void set_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
->  {
->         kasan_set_track(&kasan_get_alloc_meta(cache, object)->alloc_track, flags);
-> @@ -436,14 +444,6 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
->                                                 flags, true);
->  }
->
-> -void __kasan_poison_kfree(void *ptr, unsigned long ip)
-> -{
-> -       struct page *page;
-> -
-> -       page = virt_to_head_page(ptr);
-> -       ____kasan_slab_free(page->slab_cache, ptr, ip, false);
-> -}
-> -
->  void __kasan_kfree_large(void *ptr, unsigned long ip)
->  {
->         if (ptr != page_address(virt_to_head_page(ptr)))
-> diff --git a/mm/mempool.c b/mm/mempool.c
-> index 79bff63ecf27..0e8d877fbbc6 100644
-> --- a/mm/mempool.c
-> +++ b/mm/mempool.c
-> @@ -106,7 +106,7 @@ static inline void poison_element(mempool_t *pool, void *element)
->  static __always_inline void kasan_poison_element(mempool_t *pool, void *element)
->  {
->         if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
-> -               kasan_poison_kfree(element, _RET_IP_);
-> +               kasan_slab_free_mempool(element, _RET_IP_);
->         if (pool->alloc == mempool_alloc_pages)
->                 kasan_free_pages(element, (unsigned long)pool->pool_data);
->  }
-> --
-> 2.29.0.rc1.297.gfa9743e501-goog
->
+The related fragment of code needs 32-bit division - see commit
+9b0ed89 ("netem: remove unnecessary 64 bit modulus"), so switching to
+64 bit is not an option.
+
+Fix the issue by keeping the value of jitter within the range that can
+be adequately handled by tabledist() - [0;INT_MAX]. As negative std
+deviation makes no sense, take the absolute value of the passed value
+and cap it at INT_MAX. Inside tabledist(), switch to unsigned 32 bit
+arithmetic in order to prevent overflows.
+
+Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+Reported-by: syzbot+ec762a6342ad0d3c0d8f@syzkaller.appspotmail.com
+
+---
+v2:
+* Capping the value when receiving it from the userspace instead of
+  checking it each time when a new skb is enqueued.
+v1:
+http://lkml.kernel.org/r/20201016121007.2378114-1-a.nogikh@yandex.ru
+---
+ net/sched/sch_netem.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/net/sched/sch_netem.c b/net/sched/sch_netem.c
+index 84f82771cdf5..0c345e43a09a 100644
+--- a/net/sched/sch_netem.c
++++ b/net/sched/sch_netem.c
+@@ -330,7 +330,7 @@ static s64 tabledist(s64 mu, s32 sigma,
+ 
+ 	/* default uniform distribution */
+ 	if (dist == NULL)
+-		return ((rnd % (2 * sigma)) + mu) - sigma;
++		return ((rnd % (2 * (u32)sigma)) + mu) - sigma;
+ 
+ 	t = dist->table[rnd % dist->size];
+ 	x = (sigma % NETEM_DIST_SCALE) * t;
+@@ -812,6 +812,10 @@ static void get_slot(struct netem_sched_data *q, const struct nlattr *attr)
+ 		q->slot_config.max_packets = INT_MAX;
+ 	if (q->slot_config.max_bytes == 0)
+ 		q->slot_config.max_bytes = INT_MAX;
++
++	/* capping dist_jitter to the range acceptable by tabledist() */
++	q->slot_config.dist_jitter = min_t(__s64, INT_MAX, abs(q->slot_config.dist_jitter));
++
+ 	q->slot.packets_left = q->slot_config.max_packets;
+ 	q->slot.bytes_left = q->slot_config.max_bytes;
+ 	if (q->slot_config.min_delay | q->slot_config.max_delay |
+@@ -1037,6 +1041,9 @@ static int netem_change(struct Qdisc *sch, struct nlattr *opt,
+ 	if (tb[TCA_NETEM_SLOT])
+ 		get_slot(q, tb[TCA_NETEM_SLOT]);
+ 
++	/* capping jitter to the range acceptable by tabledist() */
++	q->jitter = min_t(s64, abs(q->jitter), INT_MAX);
++
+ 	return ret;
+ 
+ get_table_failure:
+
+base-commit: 1c86f90a16d413621918ae1403842b43632f0b3d
+-- 
+2.29.0.rc2.309.g374f81d7ae-goog
+
