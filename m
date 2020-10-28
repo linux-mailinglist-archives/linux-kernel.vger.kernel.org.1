@@ -2,176 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B42E29DAA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC0229DAA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390431AbgJ1X02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36610 "EHLO
+        id S2390422AbgJ1X0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:26:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390350AbgJ1XYl (ORCPT
+        with ESMTP id S2390330AbgJ1XYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:24:41 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C067C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:24:40 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id c16so828534wmd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:24:40 -0700 (PDT)
+        Wed, 28 Oct 2020 19:24:24 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93CD1C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:24:24 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id k65so1359040oih.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:24:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WVHMlW22zmaanqCjAj9gyZ0CY+vafwHwsjZbqglXk8k=;
-        b=veFAPiZyFsSmJXmi9irDlTKHloisSwa7nr74nI3pF16WZtERGK+wWWsdI7u0BJsyXG
-         wUOO9LJuBTKZVBYdZzhsrcojGMaXo5HTNVZBhQsc7o3qKXmJdK+Rh2ckoIrAjlysz8Co
-         wgqmU18bR7AkKkt+hSBFArJq7PhcX/yJryJhN33JFo2iU/7Noz/USuwmkidqDWqxwb/z
-         lrPnnHPES12W9CiSIw/KCxcRrCwjLN/j8bf3VqNZPrtn+eN5v3PeaGv9F7fKXvGzm86L
-         WyM6Uq5zLG/m+imwGYKh5+8jQe/Kc/MA2M6psKtrPMzFh+8xs2mBBgsNS40Tcs9jyXKC
-         YPjg==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=haZrmfpmntdtUu2HCrdM+P5anuz4VVrL1riml318t4Y=;
+        b=Wzk2Avtec2wOG385ie+/41UyVjBLOdjL67AfpTMKR1mWo6L8Zr7gbQPfRXt0daWbLj
+         9eIB3qmpCLwzx260I5fxzOXhphezCgWwHOKXei6mqi7QJCLgPp1CjDceRVH/VQ+T04tP
+         Zp86Sl6fFQHrllc1YWvLf5gS7HNMYxqKEt2BklLyD5IESzi12hAxi4Mx5L6ZjoARRl5z
+         sPqXr9IRoISiz3eC5SCMsbpQn7okBqOVhaov6DVO+UGsl3Q+x8qCxRofoIlNWcwpekWD
+         /4ri1aA6jajwfQ1lbm6ANjSbkWqAQC6vPpi5cTlU0sW9mFfnbh9Fj6+s+Gm3xin24haD
+         uMYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WVHMlW22zmaanqCjAj9gyZ0CY+vafwHwsjZbqglXk8k=;
-        b=sKPV7f/N7RoRUiyYL9b8JEmF0ykVQmrB0hz7vfdaBG/CPhqi6MPztaq12VS2hbKdbO
-         FTuW/G6AIESuuBxzQBHuW7jeOg5PLEifFpmS/jp9Q2jX964Eso+N5+2X97S9yoH6cqnh
-         R50JudxWJyfVkvd3+qjhcImDe3oTeownWUMZsCpVWZCen8qu4cdJbQYBS7Wx0Ec5YJuz
-         13mpb7Lo5eiksR3kNVBVNRiFvA2uNISXNGKJG31LqyWZQCjdtzr5DtewEDawW2ddGLUz
-         zQNmLvB5M9pZEgpUSh8oC6ILmKk+/7UrPFP4aTNsG2nJFrcbU/tfE5pkMmCxM3csvNsJ
-         PfWQ==
-X-Gm-Message-State: AOAM530/8jXkrd94Iq29XYJNp8qUno1KOuAN/qNP87aAU/Gh4WSFNOAg
-        DMc8leEpBhCrQ6JrsxbhVvScUhGwUsYsyXek
-X-Google-Smtp-Source: ABdhPJyKz5guLKOqCVYJSQrDJXqIRFVuywXz7JzPFuyH4l9n5f6+308R+xigyx6rhdERKFPKBz98Og==
-X-Received: by 2002:a1c:1b53:: with SMTP id b80mr5643874wmb.16.1603851556467;
-        Tue, 27 Oct 2020 19:19:16 -0700 (PDT)
-Received: from localhost.localdomain ([109.175.166.67])
-        by smtp.googlemail.com with ESMTPSA id o3sm4540177wru.15.2020.10.27.19.19.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 19:19:15 -0700 (PDT)
-From:   Manuel Palenzuela <manuelpalenzuelamerino@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Manuel Palenzuela <manuelpalenzuelamerino@gmail.com>
-Subject: [PATCH] Staging: rtl8723bs: core: rtw_cmd: Fixed multiple brace coding style issues
-Date:   Wed, 28 Oct 2020 02:17:16 +0000
-Message-Id: <20201028021716.622-1-manuelpalenzuelamerino@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=haZrmfpmntdtUu2HCrdM+P5anuz4VVrL1riml318t4Y=;
+        b=KMw8zax442eNHabj8lTLXvQpN/uRy3Dcy6gYhPOp4v/DtqVecjHshdY775zERVPlS3
+         liGkYsuOV+68ZvGL+OTEzix+IbYZo277NAqbr6bvpxXTqj1naJEcxKj3ZU/mcV3zx9Uw
+         +Him+k00C+kf63IkNQ04GPraroDFbPDWzoJKjcmT2dXjrZiWrBdhJeNAXDDwsnFDxyLe
+         G7r2A73sJUpam+a2Rq0Aa8846HVLE2csOol9iCIGfIHBdibEP3HA4jMX18l6frB4cyJA
+         dzr2t0diaTxnSZf0uZmvv6hJea/1AQCqG0LXP/nr+bvyBj6CAdrTT5KELtu/PqDFb12J
+         eQ5g==
+X-Gm-Message-State: AOAM530qhJcOyMLRFuK9FWrdVzM+GeDp8iAuVIyRHDL0pFyFgFXNp5dn
+        swoUn+kjnOW97e3eg+5joYljGGvftRY9Uz9LzIWW5zjyT34SN1a5
+X-Google-Smtp-Source: ABdhPJxJ9lMlqruIazh/zmZBtfs/xi9mwEd63/HHgyDcIyU0v+lL5EPTcLvnSae+vVd+E1dNAvJuDTLaKiW21MT/xdI=
+X-Received: by 2002:a17:90a:890f:: with SMTP id u15mr4764490pjn.147.1603853816824;
+ Tue, 27 Oct 2020 19:56:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201027080256.76497-1-songmuchun@bytedance.com>
+ <20201027080256.76497-5-songmuchun@bytedance.com> <20201027184835.GB827280@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20201027184835.GB827280@carbon.dhcp.thefacebook.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 28 Oct 2020 10:56:20 +0800
+Message-ID: <CAMZfGtU1aViokYk1hkHbYEiqW5QNi49UTd-QTrkycLqj6Q+-8g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 4/5] mm: memcg/slab: Fix root memcg vmstats
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, laoar.shao@gmail.com,
+        Chris Down <chris@chrisdown.name>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
+        Marco Elver <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed multiple brace coding style issues in rtw_cmd.c
+On Wed, Oct 28, 2020 at 2:48 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Tue, Oct 27, 2020 at 04:02:55PM +0800, Muchun Song wrote:
+> > If we reparent the slab objects to the root memcg, when we free
+> > the slab object, we need to update the per-memcg vmstats to keep
+> > it correct for the root memcg. Now this at least affects the vmstat
+> > of NR_KERNEL_STACK_KB for !CONFIG_VMAP_STACK when the thread stack
+> > size is smaller than the PAGE_SIZE.
+> >
+> > Fixes: ec9f02384f60 ("mm: workingset: fix vmstat counters for shadow nodes")
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Can you, please, drop this patch for now?
+>
+> I'm working on a bigger cleanup related to the handling of the root memory
+> cgroup (I sent a link earlier in this thread), which already does a similar change.
+> There are several issues like this one, so it will be nice to fix them all at once.
 
-Signed-off-by: Manuel Palenzuela <manuelpalenzuelamerino@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_cmd.c | 27 ++++++++----------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
+I have read the patch of https://lkml.org/lkml/2020/10/14/869. You
+mean this patch
+fixes this issue? It chooses to uncharge the root memcg. But here we may need to
+uncharge the root memcg to keep root vmstats correct. If we do not do
+this, we can
+see the wrong vmstats via root memory.stat(e.g. NR_KERNEL_STACK_KB).
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-index 3ac286bbfc4e..4cf09d947d32 100644
---- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-@@ -229,9 +229,8 @@ void _rtw_free_evt_priv(struct	evt_priv *pevtpriv)
- 
- 	while (!rtw_cbuf_empty(pevtpriv->c2h_queue)) {
- 		void *c2h = rtw_cbuf_pop(pevtpriv->c2h_queue);
--		if (c2h && c2h != (void *)pevtpriv) {
-+		if (c2h && c2h != (void *)pevtpriv)
- 			kfree(c2h);
--		}
- 	}
- 	kfree(pevtpriv->c2h_queue);
- 
-@@ -339,9 +338,8 @@ int rtw_enqueue_cmd(struct cmd_priv *pcmdpriv, struct cmd_obj *cmd_obj)
- 	int res = _FAIL;
- 	struct adapter *padapter = pcmdpriv->padapter;
- 
--	if (cmd_obj == NULL) {
-+	if (cmd_obj == NULL)
- 		goto exit;
--	}
- 
- 	cmd_obj->padapter = padapter;
- 
-@@ -543,9 +541,8 @@ int rtw_cmd_thread(void *context)
- 
- 		if (pcmd->cmdcode == GEN_CMD_CODE(_Set_Drv_Extra)) {
- 			extra_parm = (struct drvextra_cmd_parm *)pcmd->parmbuf;
--			if (extra_parm->pbuf && extra_parm->size > 0) {
-+			if (extra_parm->pbuf && extra_parm->size > 0)
- 				kfree(extra_parm->pbuf);
--			}
- 		}
- 
- 		rtw_free_cmd_obj(pcmd);
-@@ -571,9 +568,8 @@ u8 rtw_sitesurvey_cmd(struct adapter  *padapter, struct ndis_802_11_ssid *ssid,
- 	struct cmd_priv 	*pcmdpriv = &padapter->cmdpriv;
- 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 
--	if (check_fwstate(pmlmepriv, _FW_LINKED) == true) {
-+	if (check_fwstate(pmlmepriv, _FW_LINKED) == true)
- 		rtw_lps_ctrl_wk_cmd(padapter, LPS_CTRL_SCAN, 1);
--	}
- 
- 	ph2c = rtw_zmalloc(sizeof(struct cmd_obj));
- 	if (ph2c == NULL)
-@@ -826,9 +822,8 @@ u8 rtw_joinbss_cmd(struct adapter  *padapter, struct wlan_network *pnetwork)
- 	/*  If not,  we have to copy the connecting AP's MAC address to it so that */
- 	/*  the driver just has the bssid information for PMKIDList searching. */
- 
--	if (pmlmepriv->assoc_by_bssid == false) {
-+	if (pmlmepriv->assoc_by_bssid == false)
- 		memcpy(&pmlmepriv->assoc_bssid[0], &pnetwork->network.MacAddress[0], ETH_ALEN);
--	}
- 
- 	psecnetwork->IELength = rtw_restruct_sec_ie(padapter, &pnetwork->network.IEs[0], &psecnetwork->IEs[0], pnetwork->network.IELength);
- 
-@@ -1349,9 +1344,8 @@ u8 traffic_status_watchdog(struct adapter *padapter, u8 from_timer)
- 
- 				/* DBG_871X("Set TrafficTransitionCount to %d\n", pmlmepriv->LinkDetectInfo.TrafficTransitionCount); */
- 
--				if (pmlmepriv->LinkDetectInfo.TrafficTransitionCount > 30/*TrafficTransitionLevel*/) {
-+				if (pmlmepriv->LinkDetectInfo.TrafficTransitionCount > 30/*TrafficTransitionLevel*/)
- 					pmlmepriv->LinkDetectInfo.TrafficTransitionCount = 30;
--				}
- 			}
- 		} else {
- 			/* DBG_871X("(+)Tx = %d, Rx = %d\n", pmlmepriv->LinkDetectInfo.NumTxOkInPeriod, pmlmepriv->LinkDetectInfo.NumRxUnicastOkInPeriod); */
-@@ -1405,9 +1399,8 @@ static void dynamic_chk_wk_hdl(struct adapter *padapter)
- 	struct mlme_priv *pmlmepriv;
- 	pmlmepriv = &(padapter->mlmepriv);
- 
--	if (check_fwstate(pmlmepriv, WIFI_AP_STATE) == true) {
-+	if (check_fwstate(pmlmepriv, WIFI_AP_STATE) == true)
- 		expire_timeout_chk(padapter);
--	}
- 
- 	/* for debug purpose */
- 	_linked_info_dump(padapter);
-@@ -1606,9 +1599,8 @@ static void rtw_lps_change_dtim_hdl(struct adapter *padapter, u8 dtim)
- 
- static void rtw_dm_ra_mask_hdl(struct adapter *padapter, struct sta_info *psta)
- {
--	if (psta) {
-+	if (psta)
- 		set_sta_rate(padapter, psta);
--	}
- }
- 
- u8 rtw_dm_ra_mask_wk_cmd(struct adapter *padapter, u8 *psta)
-@@ -1977,9 +1969,8 @@ u8 rtw_drvextra_cmd_hdl(struct adapter *padapter, unsigned char *pbuf)
- 		break;
- 	}
- 
--	if (pdrvextra_cmd->pbuf && pdrvextra_cmd->size > 0) {
-+	if (pdrvextra_cmd->pbuf && pdrvextra_cmd->size > 0)
- 		kfree(pdrvextra_cmd->pbuf);
--	}
- 
- 	return H2C_SUCCESS;
- }
+Thanks.
+
+>
+> Thank you!
+>
+> > ---
+> >  mm/memcontrol.c | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 22b4fb941b54..70345b15b150 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -875,8 +875,13 @@ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
+> >       rcu_read_lock();
+> >       memcg = mem_cgroup_from_obj(p);
+> >
+> > -     /* Untracked pages have no memcg, no lruvec. Update only the node */
+> > -     if (!memcg || memcg == root_mem_cgroup) {
+> > +     /*
+> > +      * Untracked pages have no memcg, no lruvec. Update only the
+> > +      * node. If we reparent the slab objects to the root memcg,
+> > +      * when we free the slab object, we need to update the per-memcg
+> > +      * vmstats to keep it correct for the root memcg.
+> > +      */
+> > +     if (!memcg) {
+> >               __mod_node_page_state(pgdat, idx, val);
+> >       } else {
+> >               lruvec = mem_cgroup_lruvec(memcg, pgdat);
+> > --
+> > 2.20.1
+> >
+
+
+
 -- 
-2.26.2
-
+Yours,
+Muchun
