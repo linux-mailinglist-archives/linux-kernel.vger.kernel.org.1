@@ -2,118 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F5429DB53
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48D429DC12
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389294AbgJ1XwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
+        id S2390657AbgJ2AVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389261AbgJ1Xv5 (ORCPT
+        with ESMTP id S1727315AbgJ2AUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:51:57 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C6CC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:51:57 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id x5so753866qkn.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:51:57 -0700 (PDT)
+        Wed, 28 Oct 2020 20:20:55 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D39DC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:20:55 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id t14so907183pgg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:20:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=wXk0jpGRoVSSSZTLRss3R/eA/tOkUu7upyzqvXkflS4=;
-        b=u9LxDok+CVXn0ZgT+2fs12BARxd8pdCOn5GwNfRhkY94MpxBomWoHrWqqA3Qzh3rrS
-         +yCaYxLKFw/WeSefLtRmBgOZf7hgcUk0itOeJz6CPXUvRdnWLPRCiWBqaR7idPhcnsta
-         ZMrAItVZjvnH5Zi0M3QPYfiw4Se5jSIa3XYiSVzUudP88PgHynz9numfYC/ViD47Livz
-         WMPG0T6Rse1u47mo3toUJCFHDc44CHBndz49u+2lL1vl3wdCWM1r2r3a7hA0LEansCIL
-         a5lQSO6Va3kMRsq8nJE4fQR1i3rZdkUPPBFYBhORk34BVmYPNsxRj6sce7fs67rQ2ngO
-         wleA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lIDedNlfgZ1oog3IrHLVaiNsZPdquv/snadYKp5vh58=;
+        b=AQPWAMS61o9C2pgZgGy869tf3lXXylVcqXe+ikHWir/EyId4ku2Uf4dVFHo75eRxM0
+         pU70ulSbdeyn4CjKwEO9adG6Mnz4iOyxseQEmvlzHIkrnGErHk3m3EshZMBhm59jPQHD
+         VI7t12b5AQU91NcmIRc6DBggtiuW4Fb+Gu1Ag=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=wXk0jpGRoVSSSZTLRss3R/eA/tOkUu7upyzqvXkflS4=;
-        b=HroUB5HqAgJ55BYT5Lza8PxZ1rL8yT+DMOocJU/DbA68ctlL3Y7kbuD92kmLxERBRl
-         CSOACGL5IfQFzd7Cf9DAHTaPvi3sPLWoO0feivuzSwa/YXuHD1bHgejIizLgtcOG8f70
-         9/1tCRMfyQwf6d3rDFEnHXpFt5a6azC5nftj2PT3aFkvhWxRyqLkusTuu5wlKEnJq3lQ
-         UUQrX4cb5Q1k3hrrBd1TYm2Jn9PpTQac4o7CB9/gqobnAoGSYbM2p7kHCm9e5scokp8I
-         T4wjrel0FwXTN8vOda8p7op+j5jfY9Yswpf2jrH/R5hpipYnHcGbI8dc+NgA1asp+8TY
-         G1fw==
-X-Gm-Message-State: AOAM532DU+hnHD+Aqbiq4fk11UI/3gCHJ6KQ0EfVqSvDRDFtWepNeeWu
-        P4ekicpMVJ8RJAbskSaqMTfJrESz
-X-Google-Smtp-Source: ABdhPJwgxHLn3zsHr4PuRlcUngvm6mTPD+5R1Ciyamf7me/AFwLwmVvclxUJw9GBpgrZDclFSn1IMDg5
-Sender: "lzye via sendgmr" <lzye@chrisye.mtv.corp.google.com>
-X-Received: from chrisye.mtv.corp.google.com ([2620:15c:211:2:f693:9fff:fef4:4323])
- (user=lzye job=sendgmr) by 2002:a0c:a5a2:: with SMTP id z31mr2003459qvz.15.1603929116278;
- Wed, 28 Oct 2020 16:51:56 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 16:51:50 -0700
-Message-Id: <20201028235150.662864-1-lzye@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH] ANDROID: Fix the HID usage of DPAD input event generation.
-From:   FirstName LastName <lzye@google.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linzhao.ye@gmail.com, linux-kernel@vger.kernel.org,
-        trivial@kernel.org, stable@vger.kernel.org,
-        Chris Ye <lzye@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lIDedNlfgZ1oog3IrHLVaiNsZPdquv/snadYKp5vh58=;
+        b=Ue/QwJB0bZLxeZpj2toZ351vpfhZtKemTvdERBWZV0fP5g0ElibXo7hZAypjTcdL2v
+         wdcNYVEbygUcF5irDiFssD8Q/6uEOlkDYGqgVCy7nbPyu352u+Q9IVVGObqOcrtFOLkF
+         p3L5oHIazLXSbe1BvGketUbxQlz+W0bTjwolrf9KrdRhidXFxyf+gf0ngQuHF+swGr2n
+         Yedf9aIi81qMs49gL7hqm7mD0QTwAWLi0kynkahRTUyxWRy/mwp2880baD6CHk9hagfb
+         XUM924MTH6ZcN+/3VlPvVT+ZJI8OGDk6I5jjnNQNPUIBpfU+aRbj2ClpzFwgBckQj/Xp
+         XxnQ==
+X-Gm-Message-State: AOAM5331KalEiKfssDaE5qJyd9UWKHMwdQBsJ0hW7gOkpCEZw96mfFR8
+        HV3x9QbGdRq4EY/ceZGicd1I9dP6TwOY9w==
+X-Google-Smtp-Source: ABdhPJyC5mG5Vd1iSzO7J5KCCw8uK60zFkD3M2QaSd8ZJFFK04kgCWtjeWEJlAdQcSZ2tE/Xgk1QMQ==
+X-Received: by 2002:a63:2021:: with SMTP id g33mr4048563pgg.5.1603844405194;
+        Tue, 27 Oct 2020 17:20:05 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b4sm3590451pfi.208.2020.10.27.17.20.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 17:20:04 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <yifeifz2@illinois.edu>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] arm: Enable seccomp architecture tracking
+Date:   Tue, 27 Oct 2020 17:20:00 -0700
+Message-Id: <20201028002000.2666043-3-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201028002000.2666043-1-keescook@chromium.org>
+References: <20201028002000.2666043-1-keescook@chromium.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Ye <lzye@google.com>
+To enable seccomp constant action bitmaps, we need to have a static
+mapping to the audit architecture and system call table size. Add these
+for arm.
 
-Generic Desktop DPAD usage is mapped by hid-input, that only the first
-DPAD usage maps to usage type EV_ABS and code of an axis. If HID
-descriptor has DPAD UP/DOWN/LEFT/RIGHT HID usages and each of usage size
-is 1 bit, then only the first one will generate input event, the rest of
-the HID usages will be assigned to hat direction only.
-The hid input event should check the HID report value and generate
-HID event for its hat direction.
-
-Test: Connect HID device with Generic Desktop DPAD usage and press the
-DPAD to generate input events.
-
-Signed-off-by: Chris Ye <lzye@google.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/hid/hid-input.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ arch/arm/include/asm/Kbuild    |  1 -
+ arch/arm/include/asm/seccomp.h | 11 +++++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/include/asm/seccomp.h
 
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index 9770db624bfa..6c1007de3409 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -1269,7 +1269,7 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
- 	struct input_dev *input;
- 	unsigned *quirks = &hid->quirks;
+diff --git a/arch/arm/include/asm/Kbuild b/arch/arm/include/asm/Kbuild
+index 383635b68763..4a0848aef207 100644
+--- a/arch/arm/include/asm/Kbuild
++++ b/arch/arm/include/asm/Kbuild
+@@ -4,7 +4,6 @@ generic-y += extable.h
+ generic-y += flat.h
+ generic-y += local64.h
+ generic-y += parport.h
+-generic-y += seccomp.h
  
--	if (!usage->type)
-+	if (!usage->type && !field->dpad)
- 		return;
- 
- 	if (usage->type == EV_PWR) {
-@@ -1286,9 +1286,17 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
- 		int hat_dir = usage->hat_dir;
- 		if (!hat_dir)
- 			hat_dir = (value - usage->hat_min) * 8 / (usage->hat_max - usage->hat_min + 1) + 1;
--		if (hat_dir < 0 || hat_dir > 8) hat_dir = 0;
--		input_event(input, usage->type, usage->code    , hid_hat_to_axis[hat_dir].x);
--		input_event(input, usage->type, usage->code + 1, hid_hat_to_axis[hat_dir].y);
-+		if (hat_dir < 0 || hat_dir > 8 || value == 0)
-+			hat_dir = 0;
-+		if (field->dpad) {
-+			input_event(input, EV_ABS, field->dpad, hid_hat_to_axis[hat_dir].x);
-+			input_event(input, EV_ABS, field->dpad + 1, hid_hat_to_axis[hat_dir].y);
-+		} else {
-+			input_event(input, usage->type, usage->code,
-+				hid_hat_to_axis[hat_dir].x);
-+			input_event(input, usage->type, usage->code + 1,
-+				hid_hat_to_axis[hat_dir].y);
-+		}
- 		return;
- 	}
- 
+ generated-y += mach-types.h
+ generated-y += unistd-nr.h
+diff --git a/arch/arm/include/asm/seccomp.h b/arch/arm/include/asm/seccomp.h
+new file mode 100644
+index 000000000000..e9ad0f37d2ba
+--- /dev/null
++++ b/arch/arm/include/asm/seccomp.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef _ASM_SECCOMP_H
++#define _ASM_SECCOMP_H
++
++#include <asm-generic/seccomp.h>
++
++#define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_ARM
++#define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
++#define SECCOMP_ARCH_NATIVE_NAME	"arm"
++
++#endif /* _ASM_SECCOMP_H */
 -- 
-2.29.1.341.ge80a0c044ae-goog
+2.25.1
 
