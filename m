@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D02429E1F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A33B29E1E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729446AbgJ2CEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:04:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50142 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727123AbgJ1VjU (ORCPT
+        id S1727275AbgJ2CES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:04:18 -0400
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:35304 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727261AbgJ1Vkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:39:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603921159;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zz/rYHzbdwS5oO9mTj6GBWZMaU6ccgIUfTjgF1V630k=;
-        b=QNaFISWZCUU6gvSgFLIWBNY3TFv4rnJ88hUys6wK1v+TqGgcXTu88Me0TcSmG4iIhFusGu
-        JnrFDoFRxC/jLKt9c39gCcvovvOZXR1bEIcYfg6IRZykOqpcobNjhDzwbGPTK7VitSoXZI
-        FfpFhx62XoWnN1EAJ4xm8mguyRDLMFQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-136-qr1HlNFmMMaZY2jM8T8Rxw-1; Wed, 28 Oct 2020 10:37:55 -0400
-X-MC-Unique: qr1HlNFmMMaZY2jM8T8Rxw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0538B1009E35;
-        Wed, 28 Oct 2020 14:37:50 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (ovpn-112-47.phx2.redhat.com [10.3.112.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0A2A560BF1;
-        Wed, 28 Oct 2020 14:37:43 +0000 (UTC)
-Date:   Wed, 28 Oct 2020 10:37:42 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     "John B. Wyatt IV" <jbwyatt4@gmail.com>
-Cc:     "' Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen ' <tim.c.chen@intel.com>
-Subject: Re: [PATCH 0/8] Style and small fixes for core-scheduling
-Message-ID: <20201028143742.GB121779@lorien.usersys.redhat.com>
-References: <20201028121917.635203-1-jbwyatt4@gmail.com>
+        Wed, 28 Oct 2020 17:40:51 -0400
+Received: by mail-ej1-f68.google.com with SMTP id p5so1025855ejj.2;
+        Wed, 28 Oct 2020 14:40:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V9wAxbakPGDl8B/UAvN8WqdKbhC7FBGBLyMgvNzfzck=;
+        b=IAFInqvHOk+gNfVIkwPSSdUOAdHENE37ifV1/ByqaHudHVV4RDlRxf67UwSKRSyeXW
+         LAabi3PfNPkkq2c0NMS5/lTfybXNuFTIuI6rIjuZrxv3jKSOYllsBgbuarsYM28zCHZ/
+         JoOLQDPB04ynXBrGfbcOJUiTjg4kzcdRmNCU3IKV/oD0gG+aY8LZuc6GupBzF1m416ki
+         IKdKU6nq+ba4K7QaUSW+DogM1GNP5FLuySTBM9vXaOMZOEPdFWVBdiwn7x1W95RPCHxR
+         BZRSi6YOBKNBGdjDlZRI3vQXkJSyNqfDu6dKa9TnyPx3zg6KYI9IJF+X02XH/6NkrYcl
+         bcMg==
+X-Gm-Message-State: AOAM532y2qyLA6yQHt5mtIdIMo0RqdDjzP248LDffba4YWjHFNqYxMV+
+        J/nqZf4cAoRI2mjhpPEagnKetQuub4dbTQ==
+X-Google-Smtp-Source: ABdhPJwc4yhmCVmHTTvbxjysd68szL7JtYIFqrQFSTV3F7c0shiKYPHnPjVuElX6eGi6KNeYsEu9fA==
+X-Received: by 2002:a19:8353:: with SMTP id f80mr2615326lfd.348.1603897267964;
+        Wed, 28 Oct 2020 08:01:07 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id x19sm551571lff.189.2020.10.28.08.01.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 08:01:05 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kXmwj-0005BK-Ma; Wed, 28 Oct 2020 16:01:06 +0100
+Date:   Wed, 28 Oct 2020 16:01:05 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Helge Deller <deller@gmx.de>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: serial: ftdi_sio: Fix serial port stall after resume
+Message-ID: <20201028150105.GJ4085@localhost>
+References: <20200929193327.GA13987@ls3530.fritz.box>
+ <20201008152103.GK26280@localhost>
+ <1aefc37b-8976-efda-f397-2d9492b1260a@gmx.de>
+ <20201027090043.GG4085@localhost>
+ <a2b84135-761b-6e9c-59d5-857bfa6d0281@gmx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201028121917.635203-1-jbwyatt4@gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <a2b84135-761b-6e9c-59d5-857bfa6d0281@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+On Wed, Oct 28, 2020 at 03:54:35PM +0100, Helge Deller wrote:
+> On 10/27/20 10:00 AM, Johan Hovold wrote:
+> > On Thu, Oct 08, 2020 at 08:16:02PM +0200, Helge Deller wrote:
 
-On Wed, Oct 28, 2020 at 05:19:09AM -0700 John B. Wyatt IV wrote:
-> Patchset of style and small fixes for the 8th iteration of the
-> Core-Scheduling feature.
+> >> My testcase is pretty simple:
+> >> 1. I use e.g. "minicom -D /dev/ttyUSB2". Serial connection works.
+> >> 2. I exit minicom.
+> >> 3. I suspend the workstation: "systemctl suspend"
+> >> 4. I wake up the machine and wait a few seconds.
+> >> 5. I start "minicom -D /dev/ttyUSB2" again. No transfers on the serial port.
+> >>
+> >> With my patch the minicom serial communications does work.
+> >> Another way to wake up the connection is to rmmod the driver and
+> >> insmod it again.
+> >
+> > Weird indeed. If you exit minicom before suspend and no other process is
+> > keeping the port open, then that write_latency_timer() above would never
+> > be executed.
+> >
+> > Could you enable some debugging and provide a dmesg log from a test
+> > cycle (open/close minicom, suspend/resume, open minicom)?
+> >
+> > 	echo file usb-serial.c +p > /sys/kernel/debug/dynamic_debug/control
 > 
-> Style fixes include changing spaces to tabs, inserting new lines before
-> declarations, removing unused braces, and spelling.
-> 
-> Two small fixes involving changing a main() to main(void) and removing an
-> unused 'else'.
-> 
-> All issues were reported by checkpatch.
-> 
-> I am a new Linux kernel developer interning with the Outreachy project.
+> I enabled the debugging and tried a few times, but somehow I can not
+> reproduce the issue any longer.
 >
+> So, please drop my patch for now.
 
-Welcome!
+Good to hear the problem's gone. :) Let us know if you run into it
+again.
 
-> Please feel free to advise on any corrections or improvements that can be
-> made.
-
-Thanks for these. I wonder, though, if it would not make more sense
-to post these changes as comments on the original as-yet-unmerged
-patches that you are fixing up? 
-
-
-Cheers,
-Phil
-
-> 
-> John B. Wyatt IV (8):
->   sched: Correct misspellings in core-scheduling.rst
->   sched: Fix bad function definition
->   sched: Fix some style issues in test_coresched.c
->   sched: Remove unused else
->   sched: Add newline after declaration
->   sched: Remove unneeded braces
->   sched: Replace spaces with tabs
->   sched: Add newlines after declarations
-> 
->  Documentation/admin-guide/hw-vuln/core-scheduling.rst | 8 ++++----
->  arch/x86/include/asm/thread_info.h                    | 4 ++--
->  kernel/sched/core.c                                   | 6 ++++--
->  kernel/sched/coretag.c                                | 3 ++-
->  tools/testing/selftests/sched/test_coresched.c        | 8 ++++----
->  5 files changed, 16 insertions(+), 13 deletions(-)
-> 
-> -- 
-> 2.28.0
-> 
-
--- 
-
+Johan
