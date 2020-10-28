@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C815829D8FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B632629D8CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388173AbgJ1Wld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:41:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57646 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733291AbgJ1Wj0 (ORCPT
+        id S2388438AbgJ1Wgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388416AbgJ1Wg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:39:26 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603873812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VCmEsSIGXzvsi9jAbfyuG98+Fx4+fgb6AA6gSwGEIa4=;
-        b=LP13nQGV0S1l2VQjphFpxdo4d2AqSpdD39POMDckcJH5iqRRnqbEh8VDQZ51APLoOjADEo
-        m4l3NOSqV+QlAYPBlVKGa3HZkKXgUzWCbkW8y04Heu7YF9ZEmfqrFGnlKDFxk1m8rryzJ4
-        7Ji0itY8bqGMBDuDsq4XvVmf3j1FoZv0/1EF8KewH95rdMncTToeFzWld8DLeX9tHchKLh
-        EvU/5XO3kL4qALJhVqk6lpk6Y1FddLz7J2bP/jrYziwW+gZoftiU/0DiBa0BHGiap/bKUL
-        DyQ6nd0QOe3CHchmpH+QIOWkoezI3PDq4SSSfxjjhgQUHKTVtG3arbxvL7Eg2Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603873812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VCmEsSIGXzvsi9jAbfyuG98+Fx4+fgb6AA6gSwGEIa4=;
-        b=cNQ8tTA1FEzeSetii7henu2O3D+SumSLHI5KCVyxFBTXTb5iTCIVJLycHLMh5z72lYf+MQ
-        wGkC67n9xiQCO8Aw==
-To:     qiang.zhang@windriver.com, pmladek@suse.com, tj@kernel.org
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        Wed, 28 Oct 2020 18:36:26 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39560C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:36:26 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 01FC73D9; Wed, 28 Oct 2020 09:31:05 +0100 (CET)
+Date:   Wed, 28 Oct 2020 09:31:04 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] kthread_worker: re-set CPU affinities if CPU come online
-In-Reply-To: <20201028073031.4536-1-qiang.zhang@windriver.com>
-References: <20201028073031.4536-1-qiang.zhang@windriver.com>
-Date:   Wed, 28 Oct 2020 09:30:12 +0100
-Message-ID: <874kme21nv.fsf@nanos.tec.linutronix.de>
+Subject: Re: [PATCH v3 2/5] x86/boot/compressed/64: Add CPUID sanity check to
+ early #VC handler
+Message-ID: <20201028083104.GB18723@8bytes.org>
+References: <20201021123938.3696-1-joro@8bytes.org>
+ <20201021123938.3696-3-joro@8bytes.org>
+ <20201027103846.GB15580@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027103846.GB15580@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28 2020 at 15:30, qiang zhang wrote:
-> From: Zqiang <qiang.zhang@windriver.com>
->
-> When someone CPU offlined, the 'kthread_worker' which bind this CPU,
-> will run anywhere, if this CPU online, recovery of 'kthread_worker'
-> affinity by cpuhp notifiers.
->
-> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-> ---
->  v1->v2:
->  rename variable kworker_online to kthread_worker_online.
->  add 'cpuhp_node' and 'bind_cpu' init in KTHREAD_WORKER_INIT.
->  add a comment explaining for WARN_ON_ONCE.
+On Tue, Oct 27, 2020 at 11:38:46AM +0100, Borislav Petkov wrote:
+> So why are we doing those checks here at all then? I mean, the HV
+> can tell us whatever it wants, i.e., make sure those checks pass but
+> still report the C-bit at the wrong position. Which means that those
+> checks are simply meh. So why are we doing them at all? To catch stupid
+> hypervisors who can't even lie properly to the guest? :-)
 
-How is that addressing any of the comments I made on V1 of this?
-
-Thanks,
-
-        tglx
+To avoid that the HV tricks the kernel into the no_sev boot path, where
+it would map memory unencrypted and possibly leak sensitive data. The HV
+can do so by pretending SEV is disabled at all and by reporting the
+wrond C-bit position. Both cases need to be checked.
 
 
+Regards,
+
+	Joerg
