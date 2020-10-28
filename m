@@ -2,134 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E27929D670
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:15:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E43D29D71B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731264AbgJ1WPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731169AbgJ1WO6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:14:58 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16679C0613CF;
-        Wed, 28 Oct 2020 15:14:58 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id f7so1216033oib.4;
-        Wed, 28 Oct 2020 15:14:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xlNmuHQ+BurcadNmXEhYfuLEuxMLXCWKJpkTUb50b+g=;
-        b=OMer9PgudM2qrnbUBtpwUrHKq3k0ysrbxREBqVzxytSi+h1XUebQZKhGd8T1a21x/7
-         KLLr8uJLR3LWoZqz0ohhgd6mE/aFUso3eocvUB3kuRCwnTRz8vlfgjMY0U2Pv0pCLSHw
-         oZ2As9OT8T3o0ewzcovm0oY5SQCzimZyfF4pmrDKazKL2OCDGZ6Tpd8daQqs/8uCPxgn
-         fSoRDIoG2v9hH0xw1lqJkPazOjaPUz/YFDUPKyGwnLXkZbfB2n8ZAc0f4MMBXGAjlLuC
-         r0lq/VjBn2+ys+/oJ7lP6oeYcq+GdZqQxGQ8fdoDR9scy6AugICXe3a1r4r0Szfz6ZbP
-         LIzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xlNmuHQ+BurcadNmXEhYfuLEuxMLXCWKJpkTUb50b+g=;
-        b=pAaZoG49tZNQgHobAbtXbS1EITe2yegMMncS/fZ8zSMD/1Aa6pMhFA4XezScUKPQlc
-         T3P045Ndmfi8RUhcyzeyzxrAsrcYprWItQ98bP4bpSih30xN89mloN/Bay9o1K5AyfOB
-         NADMnM/YaQYY0RAaE4vUMHwfuW1Fz7+wRhvrsMw/FJN/AD61wlhMRabdapz/OxRapek7
-         Kh5ggqxAklg1e8Ybv8cRh8cEK3uy/HcLyd4vmGKITwqKZqmsxCD5zugTOGIMGqFWkRo3
-         WYYB4oYBUvO/NbXZl76jgMucV/x3RG8vHkKGPej9X9KWrrrJV5bQ2rrUiF3zCP0XUd5u
-         PfAw==
-X-Gm-Message-State: AOAM532lTD1nl46diOGX/1kjfYA5gj/OMzyhml6Uav9s9JlbenqPqclx
-        M+fgHpHA9Lh9v8qkDSoPTktPLAbDpZU=
-X-Google-Smtp-Source: ABdhPJzcQJwRp+BDmVFqn5LbXNMh8FhmEkJagKVbZ7eeJAu5pfxzsGivllrVnXFTHF0W6gLfgteIow==
-X-Received: by 2002:a17:90a:ba8d:: with SMTP id t13mr6655997pjr.38.1603891181528;
-        Wed, 28 Oct 2020 06:19:41 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:6d80:dec8:7340:3009])
-        by smtp.gmail.com with ESMTPSA id r8sm7058032pgn.30.2020.10.28.06.19.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 06:19:40 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next v2 1/4] net: hdlc_fr: Simpify fr_rx by using "goto rx_drop" to drop frames
-Date:   Wed, 28 Oct 2020 06:18:04 -0700
-Message-Id: <20201028131807.3371-2-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201028131807.3371-1-xie.he.0141@gmail.com>
-References: <20201028131807.3371-1-xie.he.0141@gmail.com>
+        id S1732473AbgJ1WU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:20:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731661AbgJ1WRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:40 -0400
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03F3B24746;
+        Wed, 28 Oct 2020 13:20:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603891239;
+        bh=+zcA/6pTJEiqhEIB6b9u13iGz/vyrIiNkbw5+OfR3RU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=G8BbRQyz/59LYY1N42cxCAJhwL18YtebLWmX5CIxnlOO5I2ajUNwDm2lyKa9cslSa
+         vQY7OdvwsOhagPj5BoHEV4HJ3tuxYWcLqCNhIwoKiuqVpk4NL3i1jX9p2cUUbEdOPy
+         KA+YZ6F+a9vywgLP/ys9YSb7KiyrzgLubZq7l5gU=
+Received: by mail-lj1-f169.google.com with SMTP id y16so6313501ljk.1;
+        Wed, 28 Oct 2020 06:20:38 -0700 (PDT)
+X-Gm-Message-State: AOAM531qtEGQyjQZNPEI+7miht5Sk4MoSM67qEH1C1l57DZrXm/xXlS7
+        oOomT8wRdnYUKjE+uVX/fyMQpQB09iU1+rS5Wkg=
+X-Google-Smtp-Source: ABdhPJwPj+jJVO+NGNXNwzAOQ7QC4CMa7GE7JJfMww785BE/4plVH+2GBu818TRJNl+lheV7rkZknd5yyXXDquGphqE=
+X-Received: by 2002:a2e:b8c8:: with SMTP id s8mr3141184ljp.189.1603891237138;
+ Wed, 28 Oct 2020 06:20:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201027212448.454129-1-arnd@kernel.org> <20201028103456.GB1042@kadam>
+In-Reply-To: <20201028103456.GB1042@kadam>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 28 Oct 2020 14:20:20 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a03Oi-hKh9Db95K_ou_Lk5svWAo5HV8ZgxuktJi2RWS2A@mail.gmail.com>
+Message-ID: <CAK8P3a03Oi-hKh9Db95K_ou_Lk5svWAo5HV8ZgxuktJi2RWS2A@mail.gmail.com>
+Subject: Re: [RFC] wimax: move out to staging
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the fr_rx function drops a received frame (because the protocol type
-is not supported, or because the PVC virtual device that corresponds to
-the DLCI number and the protocol type doesn't exist), the function frees
-the skb and returns.
+On Wed, Oct 28, 2020 at 11:34 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> On Tue, Oct 27, 2020 at 10:20:13PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > There are no known users of this driver as of October 2020, and it will
+> > be removed unless someone turns out to still need it in future releases.
+> >
+> > According to https://en.wikipedia.org/wiki/List_of_WiMAX_networks, there
+> > have been many public wimax networks, but it appears that these entries
+> > are all stale, after everyone has migrated to LTE or discontinued their
+> > service altogether.
+>
+> Wimax is still pretty common in Africa.  But you have to buy an outdoor
+> antenae with all the software on it and an ethernet cable into your
+> house.
 
-The code for freeing the skb and returning is repeated several times, this
-patch uses "goto rx_drop" to replace them so that the code looks cleaner.
+Ah, good to know, thanks for the information. I'll include that when
+I resend the patch, which I have to do anyway to avoid a small
+regression. I did a look at a couple of African ISPs that seemed to
+all have discontinued service, but I suppose I should have looked
+more carefully.
 
-Also add code to increase the stats.rx_dropped count whenever we drop a
-frame.
+>  I don't know what software the antennaes are using.  Probably
+> Linux but with an out of tree kernel module is my guess.
 
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- drivers/net/wan/hdlc_fr.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+Right, it seems very unlikely that they would be using the old
+Intel drivers, and it's also unlikely that they are updating those
+boxes to new kernels. I found a firmware image for Huawei
+BM623m, which runs a proprietary kernel module for the wimax
+stack on an MT7108 (arm926) phone chip running a
+linux-2.6.26.8-rt16 kernel.
 
-diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-index 409e5a7ad8e2..c774eff44534 100644
---- a/drivers/net/wan/hdlc_fr.c
-+++ b/drivers/net/wan/hdlc_fr.c
-@@ -904,8 +904,7 @@ static int fr_rx(struct sk_buff *skb)
- 		netdev_info(frad, "No PVC for received frame's DLCI %d\n",
- 			    dlci);
- #endif
--		dev_kfree_skb_any(skb);
--		return NET_RX_DROP;
-+		goto rx_drop;
- 	}
- 
- 	if (pvc->state.fecn != fh->fecn) {
-@@ -963,14 +962,12 @@ static int fr_rx(struct sk_buff *skb)
- 		default:
- 			netdev_info(frad, "Unsupported protocol, OUI=%x PID=%x\n",
- 				    oui, pid);
--			dev_kfree_skb_any(skb);
--			return NET_RX_DROP;
-+			goto rx_drop;
- 		}
- 	} else {
- 		netdev_info(frad, "Unsupported protocol, NLPID=%x length=%i\n",
- 			    data[3], skb->len);
--		dev_kfree_skb_any(skb);
--		return NET_RX_DROP;
-+		goto rx_drop;
- 	}
- 
- 	if (dev) {
-@@ -982,12 +979,13 @@ static int fr_rx(struct sk_buff *skb)
- 		netif_rx(skb);
- 		return NET_RX_SUCCESS;
- 	} else {
--		dev_kfree_skb_any(skb);
--		return NET_RX_DROP;
-+		goto rx_drop;
- 	}
- 
-- rx_error:
-+rx_error:
- 	frad->stats.rx_errors++; /* Mark error */
-+rx_drop:
-+	frad->stats.rx_dropped++;
- 	dev_kfree_skb_any(skb);
- 	return NET_RX_DROP;
- }
--- 
-2.25.1
-
+       Arnd
