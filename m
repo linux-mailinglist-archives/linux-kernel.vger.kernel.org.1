@@ -2,85 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8410029E2FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215F629E2EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgJ1Vd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:33:59 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:58847 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726220AbgJ1Vdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:33:50 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CM1s44ftyz9sWB;
-        Thu, 29 Oct 2020 08:28:24 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603920505;
-        bh=snKZekqSj5X0SEu2SYP0oRU9s8xOWUfYN4qbn5e4ONk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HtQUq2NVp0YdsmMpBKOQ4c9UaNRuIVbEcQNlwgc0Agzg4CbHttZ+XCvQUPlWtixeO
-         7kKAYVuqy/g8okOvLRVdhqhtYjPv7DZX2xxh02TI9Oi3SD5JPC+HHFSe1JaHNA2cmM
-         zBKje4XFcH4FuDBxjv3jsnulJnbMqVw9p2Q6pVnNyDlUmNtbvmDg6re5UpHNfqsh/3
-         7qfUVaRmP2I1zAwAc3e3mOR01HPzra/YJrOJ7cIru+Zu1CtBkZxsCpqLYHeDa9FPoP
-         nn8DwQUVBjOstToerkza9OHy+pM40n99L+GiAxlGF4tAhBAH4FLHFnpmFudZbsNizg
-         dzPHeKbZLFbNw==
-Date:   Thu, 29 Oct 2020 08:28:23 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the drm-intel-fixes
- tree
-Message-ID: <20201029082823.5607849a@canb.auug.org.au>
+        id S1726125AbgJ1Vdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:33:32 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:38763 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725961AbgJ1VdO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:33:14 -0400
+Received: by mail-pl1-f195.google.com with SMTP id f21so271695plr.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:33:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wBk3aGK1MABPvM7QHjJc+uErcHqe5igSri6GZrWcMQU=;
+        b=A2fFMsn8uMnGgF0VqHWhHX2iQyxXdXkuE0+J+9qitLy09GIb4eJx+sh9wgbSK+Tm86
+         2on3NRckMJ7EP1k/F6J7dL7dmds+CmGd+8SaAw76aCG5o9+n+cmoiHbRchz8zj7DTslW
+         Fl5HzSj/y93h2plspJBsvAARPYEJ9fHCunAWdAhAS9yLwOEKsxvsUPM6essbv1PyXxGf
+         F0sswVEYqiN2QKbbdFebMxQUxS5pRwWe0ujRKiJbvKqtw7+aCNfb+BqSl7LdLORjXpC7
+         ASqQjnDVui2hGWhiWkGfVUhz6OXiip1e+rtS/HSqbxBAx3cqA3/6YK2F4nKZBVpxZVMQ
+         T/fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wBk3aGK1MABPvM7QHjJc+uErcHqe5igSri6GZrWcMQU=;
+        b=nHKVNqhiLuLUF7QLiK0BhnNqe/QAoscxLw0ET+orTnjIH4qjj1Ndr7JwweeRCW0tc3
+         ik+4HNok86ExNiHhYKXU8d1iQb07z/FaOcR4UKu2iJQW6BYBjieW0b30+TacYjVaTYKO
+         os8oK99QPTd4iOZL4GSjzLKBPEu9pXsuZna/vFYX3L5KeNRpSyEde4VImg6JEDdsowck
+         O3m8qQTwIx2yOkZ/Xupq94S1PzDWT/YrGJejsFedd8URWivUWTSSExxmhNIa4ygXnuGk
+         Mbs1Y7IIUX7XHA85BTm+1ngR0Tkc1J9rmY68kK7RJct7ay6M5e68QiipXKH93r5cHgen
+         C7tw==
+X-Gm-Message-State: AOAM533rqRiJOTtXLAe/aLS2TwbHfrRDNho1vgz18XPIBLHWW2bky4Bp
+        QHYt+BeIzkJB1g/RGz4H1ljPL2FeYs3Rmw==
+X-Google-Smtp-Source: ABdhPJz5rKeaSKqJ0VLZxFpfpj4qoX68nNcYPeuuKSv6/M/rH3qjmPmYnohWODoXtWJKXw/t/PxLSA==
+X-Received: by 2002:a17:902:690b:b029:d6:41d8:bdc7 with SMTP id j11-20020a170902690bb02900d641d8bdc7mr933796plk.7.1603920793260;
+        Wed, 28 Oct 2020 14:33:13 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::4:1c8])
+        by smtp.gmail.com with ESMTPSA id w23sm515810pfn.142.2020.10.28.14.33.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 14:33:12 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 14:33:03 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC][PATCH 0/2] ftrace: Add access to function arguments for
+ all callbacks
+Message-ID: <20201028213303.shosfclmhxkai2ir@ast-mbp.dhcp.thefacebook.com>
+References: <20201028131542.963014814@goodmis.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dQULV+0/80.FBln91SwcyY/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028131542.963014814@goodmis.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dQULV+0/80.FBln91SwcyY/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 28, 2020 at 09:15:42AM -0400, Steven Rostedt wrote:
+> 
+> This is something I wanted to implement a long time ago, but held off until
+> there was a good reason to do so. Now it appears that having access to the
+> arguments of the function by default is very useful. As a bonus, because
+> arguments must be saved regardless before calling a callback, because they
+> need to be restored before returning back to the start of the traced
+> function, there's not much work to do to have them always be there for
+> normal function callbacks.
+> 
+> The basic idea is that if CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS is set, then
+> all callbacks registered to ftrace can use the regs parameter for the stack
+> and arguments (kernel_stack_pointer(regs), regs_get_kernel_argument(regs, n)),
+> without the need to set REGS that causes overhead by saving all registers as
+> REGS simulates a breakpoint.
 
-Hi all,
-
-Commit
-
-  d13208a88f41 ("lockdep: Fix nr_unused_locks")
-
-is missing a Signed-off-by from its author.
-
-Also, the author's email name is missing the leading 'P'.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/dQULV+0/80.FBln91SwcyY/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Z4ncACgkQAVBC80lX
-0Gx3sQf/cVHu8vXAlBPXHnSwfP91xfnhnUdRHNe4kt7TccXf05LmknL83lcVrbnM
-RhUlK8M4sZzS1k1HVHtT/Uozj6BqavmFzqjprijnJ3zj3r3CWJ+D6D8Z49THWC+s
-MAUDhY7mn0xh/52wN9PaUTM9+QjSQ6gJvJfWqMUZ4OniM/GCYxM4Vw+LZER0yXl3
-UJ82jE8sAwtxMN/pFYa3ugNnCfr2YIy+WUjU+CERPCHx+N5LvqQLXocXnSmc99zk
-SIg2LBfP7ZYY+blju85IYJUM12JfWCzQN1urqguL4Uf+mA0R2IMqQ6H6d9Q0t/N7
-zDg3Ui/I1rfjDWk9j+d5sX6AK94MuQ==
-=nvFU
------END PGP SIGNATURE-----
-
---Sig_/dQULV+0/80.FBln91SwcyY/--
+I don't have strong opinion on this feature, but if you want to have it
+please add a giant disclaimer that this is going to be x86-64 and, may be arm64,
+feature _forever_. On x86-32 and other architectures there is no way
+to provide sane regs_get_kernel_argument(regs, n) semantics by blindly
+saving registers. The kernel needs to know types and calling convention
+of the architecture. That's the reason bpf side has btf_func_model concept.
+To make sure that bpf trampoline can support all architectures in the future.
