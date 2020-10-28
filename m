@@ -2,83 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EC929D433
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EDB29D2ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgJ1VuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728000AbgJ1VuT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:50:19 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428D9C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:50:19 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id v6so660001lfa.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:50:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9BkbuooCI0n768ThkitRHsqLUEbJ24gP+vaNxySeBwg=;
-        b=TwZ57T8uWrT4ee/xv/UgV3k0J2vKc/wFx+wAMvRH+1BeKLWw9B+aAvD6EoOb2d09M3
-         HLpfUTNR0cl8bGSQqazyzH+h7wm/zmxdppXHPBlWoUyE++5DRLXId4KfPkc2edeAiGnw
-         tE5ZN1XAk8u8luHR/85HHYLPttm5czRmV1mLTNr8V9LZIXo4QACn+wAzfNEX8RVeZ6MM
-         9wosN8Gp1xgvn0k3XSP271BTNPZ0Q22yYhPoes8+L2RGZh/qPQWqN+tg8UPEGJPoCfQG
-         hctS2jJjaaOo5TsSOl7RO99cfz+aBBxX911cwhmNon48DatwDTkBFqAvB1BrCTprdMlN
-         jRKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9BkbuooCI0n768ThkitRHsqLUEbJ24gP+vaNxySeBwg=;
-        b=lK02wp1GBDP5vVjXJMIbj2YtnfyM7ISgvWoUhdvkoHP48Fi6gmIdwshx/5ewpmnqo0
-         erTR0PhjNClWuNlXR2K7mqfnfux33wxTKnprrcUbTEX3OfczNGYhH42Ewpu4HnB97deY
-         zmGUpgeIj7WbCa6IWiJJEy8AwKfSC+8CGrWHV+eAdQhuxkW73vdHlG/qXG19yWFxcySB
-         kNIlLi8wRxA1OaNsQMTDcL889dzIruyHd4TE5qV/UHDmF7z/lgkE4fF/iRAejZKvOXtm
-         BDBQ5BFKUdRKXsI7jDL5KjF7RO+XmGQdsc8Fbu1DZ2ufC7vPZOOpQ6KRnGHKnYhV8E7l
-         ppVg==
-X-Gm-Message-State: AOAM531DjBHRdPJGYwyItQrmw1ZbhfXh1b85QXWhiAVcA2NF8NTheQWS
-        YVXsR5s6DsSmc2X71qPGP6OwYkxQQeMnUtKZI1vdOywRZM0FNQ==
-X-Google-Smtp-Source: ABdhPJz+I7dct3hsj2r3Rcpd2lCTcuG+4DjTAN0aWpDxsVhUB5wrskoZwb4MAaRrE7QQ17++h/GygH0kCBzUOuFkYcE=
-X-Received: by 2002:ac2:50c1:: with SMTP id h1mr2824880lfm.333.1603900571005;
- Wed, 28 Oct 2020 08:56:11 -0700 (PDT)
+        id S1727054AbgJ1ViB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:38:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726935AbgJ1VhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:37:23 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7301F247D2;
+        Wed, 28 Oct 2020 15:59:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603900760;
+        bh=OE9B93Si8p6/W+xc0eorfXOV0Lb9RB8Kq4ShAassmtQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nr1CvdOzeT5TtRP18a29BpxOw87yG6CxtBgIGUHzp4hls/TbD5eLbhkCmvLslPUTs
+         PTNX95CoOk1b6jawjnHuYeVtEbzVlv3WxLtlmds9siAXv4tFHQ4OMrtu3iGH5sKoZH
+         XCz2WmghEKAzdfJ1ht+OQb9qUBcQTyBqO0yz0giE=
+Date:   Wed, 28 Oct 2020 17:00:11 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: problems with splice from /proc (was Linux 5.10-rc1)
+Message-ID: <20201028160011.GA2784447@kroah.com>
+References: <CAHk-=whcRFYSm0jj3Xh3xCyBaxCHA1ZMNO0h_gZso_WZFDUtiQ@mail.gmail.com>
+ <20201027064832.GA209538@kroah.com>
+ <20201027074911.GB29565@infradead.org>
+ <20201027075541.GA24429@kroah.com>
+ <20201027080745.GA31045@infradead.org>
+ <20201027081420.GA30177@kroah.com>
+ <20201027091725.GA42707@kroah.com>
+ <20201027163213.GA25390@infradead.org>
 MIME-Version: 1.0
-References: <20201013063731.3618-1-jay.xu@rock-chips.com> <34840448.7XeAIBGaoL@diego>
- <CACRpkdY8kRVJptQxCQNzbumjj-H+t-atJdguF39stukmiTfYyA@mail.gmail.com>
-In-Reply-To: <CACRpkdY8kRVJptQxCQNzbumjj-H+t-atJdguF39stukmiTfYyA@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 28 Oct 2020 16:56:00 +0100
-Message-ID: <CACRpkdZuptedcF5c7fDY8VQBx5ubr9ROrbuRiCtj9eim0AKVMg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] rockchip-pinctrl fixes
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Jianqun Xu <jay.xu@rock-chips.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027163213.GA25390@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 4:55 PM Linus Walleij <linus.walleij@linaro.org> wr=
-ote:
-> On Tue, Oct 13, 2020 at 10:22 AM Heiko St=C3=BCbner <heiko@sntech.de> wro=
-te:
->
-> > > Jianqun Xu (3):
-> > >   pinctrl: rockchip: make driver be tristate module
-> > >   pinctrl: rockchip: enable gpio pclk for rockchip_gpio_to_irq
-> > >   pinctrl: rockchip: create irq mapping in gpio_to_irq
-> >
-> > looks good to go as fixes.
->
-> I record that as Acked-by :)
+On Tue, Oct 27, 2020 at 04:32:13PM +0000, Christoph Hellwig wrote:
+> On Tue, Oct 27, 2020 at 10:17:25AM +0100, Greg KH wrote:
+> > Ok, I couldn't get a clean merge of that old branch on top of your
+> > 5.10-rc1 tree, so I can't give it a run-through.  If you have an updated
+> > series you want me to test, I'll be glad to do so.
+> 
+> Can you give this branch a spin?
+> 
+> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/set_fs-proc
 
-Aha they are already reviewed-by in the patches. OK then,
-sorry for the confusion.
+Sorry for the delay, took a while to get results due to other testing
+errors...
 
-Yours,
-Linus Walleij
+Anyway, yes, this worked!
+
+So feel free to add:
+
+	Tested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+If you send those out.
+
+Now I ran into a fnctl test that is failing when reading trying to run
+splice on /proc/version (crazy tests), let me go see if I can do the
+same thing you did for cpuinfo for all proc "single data" files...
+
+thanks,
+
+greg k-h
