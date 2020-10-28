@@ -2,149 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F1529D643
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C52629D686
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731047AbgJ1WNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731022AbgJ1WNM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:13:12 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9AEC0613D3;
-        Wed, 28 Oct 2020 15:13:11 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id t3so696048wmi.3;
-        Wed, 28 Oct 2020 15:13:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UQeIb9S6fRyX5SRt2bDKlf1jyr9GKEnfhYagOSnTM3M=;
-        b=DlatPnFtHJrfJ07LWvkl9+nsvhNwx+orArQF7h6O2RJSm7XI44ONw8VlqpEbhEMT0M
-         6Wq+lpKTWAVNnf7Bj6QMm1J/33sTXoUaLeLhmbMqoNRmXrXlGS8iS62Zhr8V0yGDz2lQ
-         w5VsN4sMlVmScHmpj1XKy7YYFiOT3e34th+9xIPx6uCF0PnG8p1xHTmebu8w7m/KJ4CV
-         2O9N57kTqJSw4K8GnZWP9cl42YR+TfjNF9TBsKK/FUdBMcRZr6dm4yKRE+kDUTnTryHI
-         9odrtv/iBcPWIsh3jxWrbNifLAJaS7QnsvFjNkQ1bC2vGLjTbmyiWlQCBlG30xLIe/Ym
-         Ti6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UQeIb9S6fRyX5SRt2bDKlf1jyr9GKEnfhYagOSnTM3M=;
-        b=F6pmHbrM6IpkHC2rMjuecC+Iw8R1+s/Eg/y74iNIhgYxM6PADIvrus+ABecjiQxUvo
-         RrtfmhoMCuAJ+dbemEgf3DiSl4wc9+QqZF4vRoP1i+PGtjv5y+OTnS4M/rx6ppnRppje
-         J0Ei+DA0ZGl2/zigQ9PiPuR1JPymQ3pY/KKm+bLtjPYw+FF4B0zRNb2A2coQxU3wqPON
-         1Nj0H/KvqA5trTk4i3qzIa6lS5LfVoNLot3kJ9HTVDJEQW0w+p4lc7VlTQENw9n/1UiH
-         YoDnb8Fe3PAFWqj7P3tO4QAAXNPpuV2g+9/hF2iqzW/7VnqQvXOqqVuohtoyOe1Y0nQQ
-         DpVQ==
-X-Gm-Message-State: AOAM533Y1WwtY+VENDz66MrlvUt5uxQ4QG5piKvtnI6nrap7OCKfRVWA
-        KKlzgTC8OW0eSDtwyt1R2Pqt3HzM63OiR6s/
-X-Google-Smtp-Source: ABdhPJxdhm6P6d9+9M90lpfBiEoEfY8zosAdgCLm46HLBQ5WD9A+r5LCSE+7/tfvSXPlOzLo2ml11g==
-X-Received: by 2002:a1c:740e:: with SMTP id p14mr1044002wmc.34.1603923190036;
-        Wed, 28 Oct 2020 15:13:10 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
-        by smtp.gmail.com with ESMTPSA id x1sm1318928wrl.41.2020.10.28.15.13.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 15:13:09 -0700 (PDT)
-From:   kholk11@gmail.com
-To:     dmitry.torokhov@gmail.com
-Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org, krzk@kernel.org,
-        andy.shevchenko@gmail.com, Rob Herring <robh@kernel.org>
-Subject: [PATCH v9 3/3] dt-bindings: touchscreen: Add binding for Novatek NT36xxx series driver
-Date:   Wed, 28 Oct 2020 23:13:02 +0100
-Message-Id: <20201028221302.66583-4-kholk11@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201028221302.66583-1-kholk11@gmail.com>
-References: <20201028221302.66583-1-kholk11@gmail.com>
+        id S1731364AbgJ1WPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:15:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731289AbgJ1WPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:15:17 -0400
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B52E2473C;
+        Wed, 28 Oct 2020 22:15:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603923316;
+        bh=vvm+dDR1TBLimZsVuME5YCze/EoMOBpVD9l1Wkt4Ktg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ignJE81aH1LW8cteo0/3vLElB+WT1ecGITOWDy8huwVa8co4XSC8g5DTdJ/i09Mkk
+         qsd30lbvvs2WEmnQj2ek/wy6PAdMed7LzTkMI576vUTDyaE3u6cMTbRqijI5krztfg
+         Hw7Rfd2DSIEFz2COdGJlDGTGlZ0mpOeksxyJQ+vg=
+Received: by mail-oi1-f181.google.com with SMTP id f7so1216819oib.4;
+        Wed, 28 Oct 2020 15:15:16 -0700 (PDT)
+X-Gm-Message-State: AOAM530+NUu7TO9DDzQm31DIZVTKKDhZMsFtwXl49+UWneqyNWM0qijX
+        rCYAaeAEJdOJcsQ+64n3pGf/R/jbp83AwrFePRs=
+X-Google-Smtp-Source: ABdhPJwp/eocLDe/IVsGjl8wIP+xANWWIacnhJnnO2+RP/wb0BMBYD3r+o5Hzof6CK43TUVUe9ysmxHybgIpuRxOldg=
+X-Received: by 2002:aca:5c82:: with SMTP id q124mr832187oib.33.1603923315629;
+ Wed, 28 Oct 2020 15:15:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201028171506.15682-1-ardb@kernel.org> <20201028171506.15682-2-ardb@kernel.org>
+ <20201028213903.fvdjydadqt6tx765@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20201028213903.fvdjydadqt6tx765@ast-mbp.dhcp.thefacebook.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 28 Oct 2020 23:15:04 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFHcM-Jb+MwsLtB4NMUmMyAGGLeNGNLC9vTATot3NJLrA@mail.gmail.com>
+Message-ID: <CAMj1kXFHcM-Jb+MwsLtB4NMUmMyAGGLeNGNLC9vTATot3NJLrA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] bpf: don't rely on GCC __attribute__((optimize))
+ to disable GCSE
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+On Wed, 28 Oct 2020 at 22:39, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Oct 28, 2020 at 06:15:05PM +0100, Ard Biesheuvel wrote:
+> > Commit 3193c0836 ("bpf: Disable GCC -fgcse optimization for
+> > ___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
+> > function scope __attribute__((optimize("-fno-gcse"))), to disable a
+> > GCC specific optimization that was causing trouble on x86 builds, and
+> > was not expected to have any positive effect in the first place.
+> >
+> > However, as the GCC manual documents, __attribute__((optimize))
+> > is not for production use, and results in all other optimization
+> > options to be forgotten for the function in question. This can
+> > cause all kinds of trouble, but in one particular reported case,
+> > it causes -fno-asynchronous-unwind-tables to be disregarded,
+> > resulting in .eh_frame info to be emitted for the function.
+> >
+> > This reverts commit 3193c0836, and instead, it disables the -fgcse
+> > optimization for the entire source file, but only when building for
+> > X86 using GCC with CONFIG_BPF_JIT_ALWAYS_ON disabled. Note that the
+> > original commit states that CONFIG_RETPOLINE=n triggers the issue,
+> > whereas CONFIG_RETPOLINE=y performs better without the optimization,
+> > so it is kept disabled in both cases.
+> >
+> > Fixes: 3193c0836 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
+> > Link: https://lore.kernel.org/lkml/CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com/
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  include/linux/compiler-gcc.h   | 2 --
+> >  include/linux/compiler_types.h | 4 ----
+> >  kernel/bpf/Makefile            | 6 +++++-
+> >  kernel/bpf/core.c              | 2 +-
+> >  4 files changed, 6 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+> > index d1e3c6896b71..5deb37024574 100644
+> > --- a/include/linux/compiler-gcc.h
+> > +++ b/include/linux/compiler-gcc.h
+> > @@ -175,5 +175,3 @@
+> >  #else
+> >  #define __diag_GCC_8(s)
+> >  #endif
+> > -
+> > -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
+>
+> See my reply in the other thread.
+> I prefer
+> -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
+> +#define __no_fgcse __attribute__((optimize("-fno-gcse,-fno-omit-frame-pointer")))
+>
+> Potentially with -fno-asynchronous-unwind-tables.
+>
 
-Add binding for the Novatek NT36xxx series touchscreen driver.
+So how would that work? arm64 has the following:
 
-Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../bindings/input/touchscreen/nt36xxx.yaml   | 59 +++++++++++++++++++
- 1 file changed, 59 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
+KBUILD_CFLAGS += -fno-asynchronous-unwind-tables -fno-unwind-tables
 
-diff --git a/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
-new file mode 100644
-index 000000000000..a360a9f5d43b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/input/touchscreen/nt36xxx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Novatek NT36xxx series touchscreen controller Bindings
-+
-+maintainers:
-+  - AngeloGioacchino Del Regno <kholk11@gmail.com>
-+
-+allOf:
-+  - $ref: touchscreen.yaml#
-+
-+properties:
-+  compatible:
-+    const: novatek,nt36525
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reset-gpios:
-+    maxItems: 1
-+
-+  vdd-supply:
-+    description: Power supply regulator for VDD pin
-+
-+  vio-supply:
-+    description: Power supply regulator on VDD-IO pin
-+
-+unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      touchscreen@62 {
-+        compatible = "novatek,nt36525";
-+        reg = <0x62>;
-+        interrupt-parent = <&tlmm>;
-+        interrupts = <45 IRQ_TYPE_EDGE_RISING>;
-+        reset-gpios = <&tlmm 102 GPIO_ACTIVE_HIGH>;
-+      };
-+    };
-+
-+...
--- 
-2.28.0
+ifeq ($(CONFIG_SHADOW_CALL_STACK), y)
+KBUILD_CFLAGS += -ffixed-x18
+endif
 
+and it adds -fpatchable-function-entry=2 for compilers that support
+it, but only when CONFIG_FTRACE is enabled.
+
+Also, as Nick pointed out, -fno-gcse does not work on Clang.
+
+Every architecture will have a different set of requirements here. And
+there is no way of knowing which -f options are disregarded when you
+use the function attribute.
+
+So how on earth are you going to #define __no-fgcse correctly for
+every configuration imaginable?
+
+> __attribute__((optimize("")) is not as broken as you're claiming to be.
+> It has quirky gcc internal logic, but it's still widely used
+> in many software projects.
+
+So it's fine because it is only a little bit broken? I'm sorry, but
+that makes no sense whatsoever.
+
+If you insist on sticking with this broken construct, can you please
+make it GCC/x86-only at least?
