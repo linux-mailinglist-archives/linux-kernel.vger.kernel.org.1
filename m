@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E523229DF45
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E5929DED2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729578AbgJ2BAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:00:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60508 "EHLO mail.kernel.org"
+        id S1731858AbgJ2A4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:56:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731540AbgJ1WR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:28 -0400
-Received: from saruman (88-113-213-94.elisa-laajakaista.fi [88.113.213.94])
+        id S1731624AbgJ1WRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:36 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20CD124686;
-        Wed, 28 Oct 2020 09:13:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FA4F24690;
+        Wed, 28 Oct 2020 09:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603876426;
-        bh=UqKkjkU3C8hjvC1W+LqFgUbMLuvOs2IpZy0kfqzvfg8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=SiqDCILD6wNTBvBAUFBGvQkVhqRg0wHVOhKgBhkS60qwShkLk8DFMALEblRSpnbIB
-         EIMNR2fIr0KDGQMRSDqL0H0lp93uxTLXT6T06snFWHAO6V3vHmPO7jE1ac9Bn0pNZG
-         FGjdn/lQj0YHUHSMEnp1oumNbtzNms+iXXqFlUqQ=
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v3 31/56] usb: dwc3: fix kernel-doc markups
-In-Reply-To: <20201028090813.GB1947336@kroah.com>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
- <0b964be3884def04fcd20ea5c12cb90d0014871c.1603469755.git.mchehab+huawei@kernel.org>
- <87ft60dujc.fsf@kernel.org> <20201028090813.GB1947336@kroah.com>
-Date:   Wed, 28 Oct 2020 11:13:34 +0200
-Message-ID: <874kmen269.fsf@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+        s=default; t=1603876832;
+        bh=PtxDrfqt+WMwYqudTh7lCnycOZs+RJntD2Bu0nbEDcI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AFHBTDvjUn1/Ldgo8ZNM2CEBAOgbASwEWSF5fibbKtSMf/8hcEUXcVkLI7P07/T9K
+         R+Qj6sgIgjhGoCVYFfnEP0XDsOmFDwuxoaK2MXvqbiRF7e+JwQ0zaRBIV/EZb7sGOU
+         ftlp7Vs8vf8xQXy4abSmWZk00m4X9xyE7LlTj4x0=
+Date:   Wed, 28 Oct 2020 18:20:25 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, luto@kernel.org, me@kylehuey.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, rocallahan@gmail.com,
+        alexandre.chartre@oracle.com, paulmck@kernel.org,
+        frederic@kernel.org, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, mhiramat@kernel.org,
+        pmladek@suse.com, joel@joelfernandes.org, rostedt@goodmis.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com, brgerst@gmail.com,
+        jpoimboe@redhat.com, daniel.thompson@linaro.org,
+        julliard@winehq.org, pgofman@codeweavers.com
+Subject: Re: [PATCH 1/3] x86/debug: Fix BTF handling
+Message-Id: <20201028182025.4bb6d633719d7ce76300aafa@kernel.org>
+In-Reply-To: <20201027194126.GR2628@hirez.programming.kicks-ass.net>
+References: <20201027091504.712183781@infradead.org>
+        <20201027093607.956147736@infradead.org>
+        <20201027194126.GR2628@hirez.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Tue, 27 Oct 2020 20:41:26 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+> On Tue, Oct 27, 2020 at 10:15:05AM +0100, Peter Zijlstra wrote:
+> 
+> > @@ -873,6 +866,20 @@ static __always_inline void exc_debug_ke
+> >  	 */
+> >  	WARN_ON_ONCE(user_mode(regs));
+> >  
+> > +	if (test_thread_flag(TIF_BLOCKSTEP)) {
+> > +		/*
+> > +		 * The SDM says "The processor clears the BTF flag when it
+> > +		 * generates a debug exception." but PTRACE_BLOCKSTEP requested
+> > +		 * it for userspace, but we just took a kernel #DB, so re-set
+> > +		 * BTF.
+> > +		 */
+> > +		unsigned long debugctl;
+> > +
+> > +		rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
+> > +		debugctl |= DEBUGCTLMSR_BTF;
+> > +		wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
+> > +	}
+> > +
+> >  	/*
+> >  	 * Catch SYSENTER with TF set and clear DR_STEP. If this hit a
+> >  	 * watchpoint at the same time then that will still be handled.
+> 
+> Masami, how does BTF interact with !optimized kprobes that single-step?
 
-> On Tue, Oct 27, 2020 at 08:58:47AM +0200, Felipe Balbi wrote:
->>=20
->> Hi Mauro,
->>=20
->> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
->> > There is a common comment marked, instead, with kernel-doc
->> > notation.
->> >
->> > Also, some identifiers have different names between their
->> > prototypes and the kernel-doc markup.
->> >
->> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->> > ---
->> >  drivers/usb/dwc3/core.c        | 2 +-
->> >  drivers/usb/dwc3/core.h        | 2 +-
->> >  drivers/usb/gadget/composite.c | 2 +-
->> >  drivers/usb/typec/mux.c        | 2 +-
->> >  include/linux/usb/composite.h  | 2 +-
->>=20
->> mind breaking this into 4 commits? One for dwc3, one for
->> gadget/composite, one for type/mux, and a final for composite.h.
->
-> I'll just take these all at once, it's easy enough :)
+Good question, BTF is cleared right before single-stepping and restored
+after single-stepping. It will be done accoding to TIF_BLOCKSTEP bit as below.
 
-Sure thing, in that case:
+(in arch/x86/kernel/kprobes/core.c)
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+static nokprobe_inline void clear_btf(void)
+{
+        if (test_thread_flag(TIF_BLOCKSTEP)) {
+                unsigned long debugctl = get_debugctlmsr();
 
-=2D-=20
-balbi
+                debugctl &= ~DEBUGCTLMSR_BTF;
+                update_debugctlmsr(debugctl);
+        }
+}
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+static nokprobe_inline void restore_btf(void)
+{
+        if (test_thread_flag(TIF_BLOCKSTEP)) {
+                unsigned long debugctl = get_debugctlmsr();
 
------BEGIN PGP SIGNATURE-----
+                debugctl |= DEBUGCTLMSR_BTF;
+                update_debugctlmsr(debugctl);
+        }
+}
 
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl+ZNj4RHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQagOA//eyKwQho8ZS03MJ9gkVjfW8k7drtTAvLv
-tlCrKvWoTAD5NkAiTlbrtzZTxY8SHgYMiBItwXv9kKPpC5cLjoH7MbjDzWzQToSp
-YkqvksbI5s4RO/+Twl0qly1Nlp2l2pwMh/6iO3sh4rdonqCEg4ByRL2K4D1ALvG4
-i06dddOYUym21CX9d8FV6yebrKibdHfr8SAX51NhdyvVaGY2BzUF6qisRygtMzkf
-Ry4xkZRYsSBh6L/uGsLYQxtrvoKx5fsLKZHR6Zj8XsGYHA/gAMQ/SNOnl67klBLe
-ZriMVILmxRu4kOR8i9TOi7xLrDOkLBczrNCl3ZNaSHpmB86yFprOQVs7USjHjnjl
-0rCJYgmgK0zywCZC3FHH7tUL5WcWMR15hp40p56IkjalFd+cleXV1xjIu4kEuorX
-vj994var0ZVUariLvM6KuLn7T7pnFAEkhFhcoFDsdOkNHzI6wpBcijFLeKubthlv
-8dW3GQquRrOK6/ESE1CQAA6dAIls+QJmaWsMpWlf0Mos+6wZFZwbUjtLA9nFFY7Q
-1T0mYQVEgDZEvJIc8muWb8LS10nkQIiiVdRu+GfAqC+Efz+ysDhsqMtkelNHklx+
-NfnPcRbJfCngrrvHocL/4xteaDFPRaR2KegjmmIwaaEB4gl/72ZOCwD7A8habtN5
-TNXX4XBAyE8=
-=x6JJ
------END PGP SIGNATURE-----
---=-=-=--
+Hrm, so it seems that we do same ... maybe we don't need clear_btf() too?
+
+> 
+> The best answer I can come up with is 'poorly' :/
+
+Is this what you expected? :)
+
+Thank you,
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
