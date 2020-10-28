@@ -2,121 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0C629E1DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5330829E18E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729752AbgJ2CEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:04:14 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:37841 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727200AbgJ1Vkx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:40:53 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 83137391;
-        Wed, 28 Oct 2020 16:21:04 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 28 Oct 2020 16:21:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=tvzO3u8ximtfLtetGoZ5bDtCG8K
-        Ex2uEX5PE3riL5Qk=; b=WkQAm15t2lksX7079w98tgwTTHYXSK8s5zvDlxnWeNA
-        NZQFKvfLYHtnqKLNlxS5Dt4VxIP6SOeFchT/4lhUOFzGtX8x3YSzLZH/6lgichWb
-        xunO8bmyDP+JspqMUFpOgNUVw+tfn7Uwh//37qQu2zobVANVlY455T4+xbSQ4nz8
-        Pi+VUhVLXxhUyCzdCvfs4k+rcoXxyUEWLuSmD1J6yNKBQ21KOh0DA4NvwG/4eyej
-        gE3WGfte1f3yCUs4OjpNspOiCS0Hy8PRKJLRPhfPBABekx8KyFxOkD7mPXpt/UX5
-        gcFXBBe2uPvoQ/WU4asEBz3zZDCji6iGVU0RYeKNOtw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=tvzO3u
-        8ximtfLtetGoZ5bDtCG8KEx2uEX5PE3riL5Qk=; b=TjLzXiLb7C1bP3dFxc/hKW
-        h2PFDvJmKJYBkKhtoz+/KDkpleQKtEzRQty8zi6yfU+uqSmBthb4smnyVuMyW8oK
-        00AH3F7peSOm1vAWymoWUHnSpYS8XgrCU/h5PO+OxyEyEwUNkVHbo6eTPS53dLgq
-        dr9gw/zQCrf4TN7hDPYLa6pl8VKsvGjnYKBURx4p+Hz0ftygSRLpN5+iqsrKlMZK
-        9FttsRgoP52hTfmbUjwFhhSuBfobsLyF6zSDRgCYh7A6k8hCsOV/O5WRGtG5hDgd
-        C/MEcdaePSmpwAXibGgyiaXERxza8SEO8+QR5oMvDBOVTUiMIOWmqOgNUivKnOew
-        ==
-X-ME-Sender: <xms:r9KZX73JeYVFZ87lpHjwYA4xFkrkXjgP7RV73X4xpy2zKvPh_LNOyw>
-    <xme:r9KZX6HPTGir2nxcIHbIeUfjZYCsMaDFOIQoKrmyqSgN-4P-f1i3rYfJ4mGLt1KqH
-    1xCXxxzsZrqNzj3aw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrledvgddtudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughrvghs
-    ucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrfgrth
-    htvghrnhepgfffveetveffudeluefhleegudektdevtedthedtgeevudffveegieejfeff
-    feeunecuffhomhgrihhnpegrtghkrdhpihhnghenucfkphepieejrdduiedtrddvudejrd
-    dvhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    rghnughrvghssegrnhgrrhgriigvlhdruggv
-X-ME-Proxy: <xmx:r9KZX75lC2kG_Xjifgy_0QyjmGCIX-pD5_N9bJp3BPZHDMY3s02eiQ>
-    <xmx:r9KZXw1yTsu0i1lcW6upjw6yENe-jBC3Zeo1CUsvZ9c2dxyeZ-YDxg>
-    <xmx:r9KZX-EBHrFqjn05BnXCcD9plHeMeDFYCSnKbBgqRRtS7koUxGkQGA>
-    <xmx:sNKZXzQKWTmxqDtIOVKsD-0UBDMuS2UMhLlcmjIDge97OwnCqcoKyA>
-Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
-        by mail.messagingengine.com (Postfix) with ESMTPA id DD76B3064686;
-        Wed, 28 Oct 2020 16:21:02 -0400 (EDT)
-Date:   Wed, 28 Oct 2020 13:21:01 -0700
-From:   Andres Freund <andres@anarazel.de>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Tushar Dave <tushar.n.dave@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] thermal: intel_pch_thermal: Add PCI ids for Lewisburg
- PCH.
-Message-ID: <20201028202101.2m2jp3tfa6mh3brz@alap3.anarazel.de>
-References: <20200115184415.1726953-1-andres@anarazel.de>
- <2a5e9df32e2df27297149a577512f6b1557de241.camel@linux.intel.com>
- <20200116184250.qlvc3ilx2b42czqk@alap3.anarazel.de>
- <2de70e961f24592d2d157b8586526df2eaf0ae6e.camel@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2de70e961f24592d2d157b8586526df2eaf0ae6e.camel@linux.intel.com>
+        id S1727753AbgJ1VtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:49:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:38338 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727659AbgJ1VrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:47:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 118E71BF7;
+        Wed, 28 Oct 2020 13:29:59 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D0013F66E;
+        Wed, 28 Oct 2020 13:29:57 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, cristian.marussi@arm.com
+Subject: [PATCH v2 8/8] firmware: arm_scmi: add protocol modularization support
+Date:   Wed, 28 Oct 2020 20:29:14 +0000
+Message-Id: <20201028202914.43662-9-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201028202914.43662-1-cristian.marussi@arm.com>
+References: <20201028202914.43662-1-cristian.marussi@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Extend SCMI protocols accounting to address possible module usage and add
+the support to possibly define new protocols as loadable modules.
+Keep Standard protocols built into the SCMI core.
 
-On 2020-01-16 11:41:34 -0800, Srinivas Pandruvada wrote:
-> On Thu, 2020-01-16 at 10:42 -0800, Andres Freund wrote:
-> > Hi,
-> > 
-> > On 2020-01-16 05:53:13 -0800, Srinivas Pandruvada wrote:
-> > > On Wed, 2020-01-15 at 10:44 -0800, Andres Freund wrote:
-> > > > I noticed that I couldn't read the PCH temperature on my
-> > > > workstation
-> > > > (C620 series chipset, w/ 2x Xeon Gold 5215 CPUs) directly, but
-> > > > had to
-> > > > go
-> > > > through IPMI. Looking at the data sheet, it looks to me like the
-> > > > existing intel PCH thermal driver should work without changes for
-> > > > Lewisburg.
-> > > Does the temperature reading match with what you read via IPMI?
-> > 
-> > It does:
-> > 
-> > root@awork3:~# ipmitool sdr|grep ^PCH
-> > PCH Temp         | 58 degrees C      | ok
-> > 
-> > andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/type
-> > pch_lewisburg
-> > andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/temp
-> > 58000
-> > 
-> > And if I generate some load, it rises for both:
-> > root@awork3:~# ipmitool sdr|grep ^PCH
-> > PCH Temp         | 60 degrees C      | ok
-> > andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/temp
-> > 60000
-> > 
-> Thanks for the test.
-> 
-> Rui can add his ACK.
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+ drivers/firmware/arm_scmi/base.c    |  2 ++
+ drivers/firmware/arm_scmi/bus.c     | 11 ++++++++++-
+ drivers/firmware/arm_scmi/clock.c   |  2 ++
+ drivers/firmware/arm_scmi/common.h  |  4 ++++
+ drivers/firmware/arm_scmi/driver.c  |  5 ++++-
+ drivers/firmware/arm_scmi/perf.c    |  2 ++
+ drivers/firmware/arm_scmi/power.c   |  2 ++
+ drivers/firmware/arm_scmi/reset.c   |  2 ++
+ drivers/firmware/arm_scmi/sensors.c |  2 ++
+ drivers/firmware/arm_scmi/system.c  |  2 ++
+ include/linux/scmi_protocol.h       | 12 ++++++++++++
+ 11 files changed, 44 insertions(+), 2 deletions(-)
 
-Ping? Looks like this got lost somewhere?
+diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
+index 745e475e6cc4..e66e23d07d82 100644
+--- a/drivers/firmware/arm_scmi/base.c
++++ b/drivers/firmware/arm_scmi/base.c
+@@ -7,6 +7,7 @@
+ 
+ #define pr_fmt(fmt) "SCMI Notifications BASE - " fmt
+ 
++#include <linux/module.h>
+ #include <linux/scmi_protocol.h>
+ 
+ #include "common.h"
+@@ -373,6 +374,7 @@ static int scmi_base_protocol_init(const struct scmi_protocol_handle *ph)
+ 
+ static const struct scmi_protocol scmi_base = {
+ 	.id = SCMI_PROTOCOL_BASE,
++	.owner = NULL,
+ 	.init = &scmi_base_protocol_init,
+ 	.ops = NULL,
+ 	.events = &base_protocol_events,
+diff --git a/drivers/firmware/arm_scmi/bus.c b/drivers/firmware/arm_scmi/bus.c
+index 25b191cfefc1..b152860f6c99 100644
+--- a/drivers/firmware/arm_scmi/bus.c
++++ b/drivers/firmware/arm_scmi/bus.c
+@@ -56,7 +56,7 @@ const struct scmi_protocol *scmi_get_protocol(int protocol_id)
+ 	const struct scmi_protocol *proto;
+ 
+ 	proto = idr_find(&scmi_available_protocols, protocol_id);
+-	if (!proto) {
++	if (!proto || !try_module_get(proto->owner)) {
+ 		pr_warn("SCMI Protocol 0x%x not found!\n", protocol_id);
+ 		return NULL;
+ 	}
+@@ -66,6 +66,15 @@ const struct scmi_protocol *scmi_get_protocol(int protocol_id)
+ 	return proto;
+ }
+ 
++void scmi_put_protocol(int protocol_id)
++{
++	const struct scmi_protocol *proto;
++
++	proto = idr_find(&scmi_available_protocols, protocol_id);
++	if (proto)
++		module_put(proto->owner);
++}
++
+ static int scmi_dev_probe(struct device *dev)
+ {
+ 	struct scmi_driver *scmi_drv = to_scmi_driver(dev->driver);
+diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
+index 00041dcb4d06..06ed45c0002a 100644
+--- a/drivers/firmware/arm_scmi/clock.c
++++ b/drivers/firmware/arm_scmi/clock.c
+@@ -5,6 +5,7 @@
+  * Copyright (C) 2018-2020 ARM Ltd.
+  */
+ 
++#include <linux/module.h>
+ #include <linux/sort.h>
+ 
+ #include "common.h"
+@@ -367,6 +368,7 @@ static int scmi_clock_protocol_init(const struct scmi_protocol_handle *ph)
+ 
+ static const struct scmi_protocol scmi_clock = {
+ 	.id = SCMI_PROTOCOL_CLOCK,
++	.owner = THIS_MODULE,
+ 	.init = &scmi_clock_protocol_init,
+ 	.ops = &clk_ops,
+ };
+diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+index 9ae0e4133f31..d3f62f85ea18 100644
+--- a/drivers/firmware/arm_scmi/common.h
++++ b/drivers/firmware/arm_scmi/common.h
+@@ -14,6 +14,7 @@
+ #include <linux/device.h>
+ #include <linux/errno.h>
+ #include <linux/kernel.h>
++#include <linux/module.h>
+ #include <linux/scmi_protocol.h>
+ #include <linux/types.h>
+ 
+@@ -216,6 +217,7 @@ typedef int (*scmi_prot_init_fn_t)(const struct scmi_protocol_handle *);
+ /**
+  * struct scmi_protocol  - Protocol descriptor
+  * @id: Protocol ID.
++ * @owner: Module reference if any.
+  * @init: Mandatory protocol initialization function.
+  * @deinit: Optional protocol de-initialization function.
+  * @ops: Optional reference to the operations provided by the protocol and
+@@ -224,6 +226,7 @@ typedef int (*scmi_prot_init_fn_t)(const struct scmi_protocol_handle *);
+  */
+ struct scmi_protocol {
+ 	const u8				id;
++	struct module				*owner;
+ 	const scmi_prot_init_fn_t		init;
+ 	const scmi_prot_init_fn_t		deinit;
+ 	const void				*ops;
+@@ -256,6 +259,7 @@ void __exit scmi_##name##_unregister(void) \
+ }
+ 
+ const struct scmi_protocol *scmi_get_protocol(int protocol_id);
++void scmi_put_protocol(int protocol_id);
+ 
+ int scmi_acquire_protocol(const struct scmi_handle *handle, u8 protocol_id);
+ void scmi_release_protocol(const struct scmi_handle *handle, u8 protocol_id);
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index d6a975992136..077152fd5fc3 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -677,7 +677,7 @@ scmi_get_protocol_instance(const struct scmi_handle *handle, u8 protocol_id)
+ 		/* Fail if protocol not registered on bus */
+ 		proto = scmi_get_protocol(protocol_id);
+ 		if (!proto) {
+-			ret = -ENODEV;
++			ret = -EPROBE_DEFER;
+ 			goto out;
+ 		}
+ 
+@@ -722,6 +722,7 @@ scmi_get_protocol_instance(const struct scmi_handle *handle, u8 protocol_id)
+ 	return pi;
+ 
+ clean:
++	scmi_put_protocol(protocol_id);
+ 	devres_release_group(handle->dev, gid);
+ out:
+ 	mutex_unlock(&info->protocols_mtx);
+@@ -772,6 +773,8 @@ void scmi_release_protocol(const struct scmi_handle *handle, u8 protocol_id)
+ 
+ 		idr_remove(&info->protocols, protocol_id);
+ 
++		scmi_put_protocol(protocol_id);
++
+ 		devres_release_group(handle->dev, gid);
+ 		dev_dbg(handle->dev, "De-Initialized protocol: 0x%X\n",
+ 			protocol_id);
+diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+index c1d0664aaf4a..66e0d2364ea6 100644
+--- a/drivers/firmware/arm_scmi/perf.c
++++ b/drivers/firmware/arm_scmi/perf.c
+@@ -11,6 +11,7 @@
+ #include <linux/of.h>
+ #include <linux/io.h>
+ #include <linux/io-64-nonatomic-hi-lo.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_opp.h>
+ #include <linux/scmi_protocol.h>
+@@ -900,6 +901,7 @@ static int scmi_perf_protocol_init(const struct scmi_protocol_handle *ph)
+ 
+ static const struct scmi_protocol scmi_perf = {
+ 	.id = SCMI_PROTOCOL_PERF,
++	.owner = THIS_MODULE,
+ 	.init = &scmi_perf_protocol_init,
+ 	.ops = &perf_ops,
+ 	.events = &perf_protocol_events,
+diff --git a/drivers/firmware/arm_scmi/power.c b/drivers/firmware/arm_scmi/power.c
+index d9ce794d0299..819d948eb034 100644
+--- a/drivers/firmware/arm_scmi/power.c
++++ b/drivers/firmware/arm_scmi/power.c
+@@ -7,6 +7,7 @@
+ 
+ #define pr_fmt(fmt) "SCMI Notifications POWER - " fmt
+ 
++#include <linux/module.h>
+ #include <linux/scmi_protocol.h>
+ 
+ #include "common.h"
+@@ -310,6 +311,7 @@ static int scmi_power_protocol_init(const struct scmi_protocol_handle *ph)
+ 
+ static const struct scmi_protocol scmi_power = {
+ 	.id = SCMI_PROTOCOL_POWER,
++	.owner = THIS_MODULE,
+ 	.init = &scmi_power_protocol_init,
+ 	.ops = &power_ops,
+ 	.events = &power_protocol_events,
+diff --git a/drivers/firmware/arm_scmi/reset.c b/drivers/firmware/arm_scmi/reset.c
+index a183518baf18..9f408070b70d 100644
+--- a/drivers/firmware/arm_scmi/reset.c
++++ b/drivers/firmware/arm_scmi/reset.c
+@@ -7,6 +7,7 @@
+ 
+ #define pr_fmt(fmt) "SCMI Notifications RESET - " fmt
+ 
++#include <linux/module.h>
+ #include <linux/scmi_protocol.h>
+ 
+ #include "common.h"
+@@ -324,6 +325,7 @@ static int scmi_reset_protocol_init(const struct scmi_protocol_handle *ph)
+ 
+ static const struct scmi_protocol scmi_reset = {
+ 	.id = SCMI_PROTOCOL_RESET,
++	.owner = THIS_MODULE,
+ 	.init = &scmi_reset_protocol_init,
+ 	.ops = &reset_ops,
+ 	.events = &reset_protocol_events,
+diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
+index a74a7938cd78..170d97f09d91 100644
+--- a/drivers/firmware/arm_scmi/sensors.c
++++ b/drivers/firmware/arm_scmi/sensors.c
+@@ -7,6 +7,7 @@
+ 
+ #define pr_fmt(fmt) "SCMI Notifications SENSOR - " fmt
+ 
++#include <linux/module.h>
+ #include <linux/scmi_protocol.h>
+ 
+ #include "common.h"
+@@ -375,6 +376,7 @@ static int scmi_sensors_protocol_init(const struct scmi_protocol_handle *ph)
+ 
+ static const struct scmi_protocol scmi_sensors = {
+ 	.id = SCMI_PROTOCOL_SENSOR,
++	.owner = THIS_MODULE,
+ 	.init = &scmi_sensors_protocol_init,
+ 	.ops = &sensor_ops,
+ 	.events = &sensor_protocol_events,
+diff --git a/drivers/firmware/arm_scmi/system.c b/drivers/firmware/arm_scmi/system.c
+index 23365ef334bf..13bd223feb84 100644
+--- a/drivers/firmware/arm_scmi/system.c
++++ b/drivers/firmware/arm_scmi/system.c
+@@ -7,6 +7,7 @@
+ 
+ #define pr_fmt(fmt) "SCMI Notifications SYSTEM - " fmt
+ 
++#include <linux/module.h>
+ #include <linux/scmi_protocol.h>
+ 
+ #include "common.h"
+@@ -129,6 +130,7 @@ static int scmi_system_protocol_init(const struct scmi_protocol_handle *ph)
+ 
+ static const struct scmi_protocol scmi_system = {
+ 	.id = SCMI_PROTOCOL_SYSTEM,
++	.owner = THIS_MODULE,
+ 	.init = &scmi_system_protocol_init,
+ 	.ops = NULL,
+ 	.events = &system_protocol_events,
+diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+index 66625aedd3a7..7d6a12baa254 100644
+--- a/include/linux/scmi_protocol.h
++++ b/include/linux/scmi_protocol.h
+@@ -378,6 +378,18 @@ static inline void scmi_driver_unregister(struct scmi_driver *driver) {}
+ #define module_scmi_driver(__scmi_driver)	\
+ 	module_driver(__scmi_driver, scmi_register, scmi_unregister)
+ 
++/**
++ * module_scmi_protocol() - Helper macro for registering a scmi protocol
++ * @__scmi_protocol: scmi_protocol structure
++ *
++ * Helper macro for scmi drivers to set up proper module init / exit
++ * functions.  Replaces module_init() and module_exit() and keeps people from
++ * printing pointless things to the kernel log when their driver is loaded.
++ */
++#define module_scmi_protocol(__scmi_protocol)	\
++	module_driver(__scmi_protocol,		\
++		      scmi_protocol_register, scmi_protocol_unregister)
++
+ struct scmi_protocol;
+ int scmi_protocol_register(const struct scmi_protocol *proto);
+ void scmi_protocol_unregister(const struct scmi_protocol *proto);
+-- 
+2.17.1
 
-Greetings,
-
-Andres Freund
