@@ -2,224 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A152D29E115
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EED5929E0CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728723AbgJ2BxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:53:06 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:46990 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728701AbgJ1V5n (ORCPT
+        id S1729897AbgJ1WDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:03:03 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43560 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728536AbgJ1WBx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:57:43 -0400
-Received: from relay4-d.mail.gandi.net (unknown [217.70.183.196])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id E55933A5707;
-        Wed, 28 Oct 2020 13:45:40 +0000 (UTC)
-X-Originating-IP: 82.255.60.242
-Received: from [192.168.0.28] (lns-bzn-39-82-255-60-242.adsl.proxad.net [82.255.60.242])
-        (Authenticated sender: hadess@hadess.net)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id EA179E0004;
-        Wed, 28 Oct 2020 13:45:15 +0000 (UTC)
-Message-ID: <5ca1ae238b23a611b8a490c244fd93cdcc36ef79.camel@hadess.net>
-Subject: Re: [PATCH] Documentation: Add documentation for new
- platform_profile sysfs attribute
-From:   Bastien Nocera <hadess@hadess.net>
-To:     Mark Pearson <markpearson@lenovo.com>
-Cc:     dvhart@infradead.org, mgross@linux.intel.com,
-        mario.limonciello@dell.com, eliadevito@gmail.com, bberg@redhat.com,
-        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>
-Date:   Wed, 28 Oct 2020 14:45:15 +0100
-In-Reply-To: <20201027164219.868839-1-markpearson@lenovo.com>
-References: <markpearson@lenovo.com>
-         <20201027164219.868839-1-markpearson@lenovo.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        Wed, 28 Oct 2020 18:01:53 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09SDX0xu033497;
+        Wed, 28 Oct 2020 09:57:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=DuUHDmIQBQHFYQcsIOQy8hgmczkJjqX68MusA5Tt3lY=;
+ b=sO8dFZaGWgUf+0V8V2n6qxUvwMypWdTNa1jnZdvaCVRjGG5rs14u5J7RkOkKkQy7UHQ+
+ rGzOGNtPio3s4qO0qV5xlj0cRyzigPX+T4caRQYor1d2NdqBbykyG7kj87QRbQaVjeTG
+ o/v3hwuqxQS1RK5zLnFYcWijb758PnFVc53Ef1XEzLfYBAHE/WsNxVUGMOfojdsYYS2i
+ 6NrQ9TE0AYUv/bkEK2F+RnpTbKXmjiIANXrJL/dy0CeA1eKjLzymckbBrVTnb4QOwbqT
+ LHWiPfN9+Cuxj0lyaKVXHbahgQ6ZL8rtj18wFGO/FcV/czt6FKUYLJ/q8usxJYCjazgw eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34eqnp8ac1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 09:57:33 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09SDXBvw034917;
+        Wed, 28 Oct 2020 09:57:32 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34eqnp8ab2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 09:57:32 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09SDmFWN023072;
+        Wed, 28 Oct 2020 13:57:30 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 34esn30e6x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 13:57:30 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09SDvSbr33227234
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Oct 2020 13:57:28 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D5ED4A405F;
+        Wed, 28 Oct 2020 13:57:27 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1D3EAA4053;
+        Wed, 28 Oct 2020 13:57:27 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.145.18.81])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Oct 2020 13:57:27 +0000 (GMT)
+Date:   Wed, 28 Oct 2020 14:57:25 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v11 08/14] s390/vfio-ap: hot plug/unplug queues on
+ bind/unbind of queue device
+Message-ID: <20201028145725.1a81c5cf.pasic@linux.ibm.com>
+In-Reply-To: <20201022171209.19494-9-akrowiak@linux.ibm.com>
+References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
+ <20201022171209.19494-9-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-28_06:2020-10-26,2020-10-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ suspectscore=0 mlxscore=0 phishscore=0 impostorscore=0 adultscore=0
+ malwarescore=0 priorityscore=1501 spamscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010280088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Hans, Mark,
+On Thu, 22 Oct 2020 13:12:03 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-On Tue, 2020-10-27 at 12:42 -0400, Mark Pearson wrote:
-> From: Hans de Goede <hdegoede@redhat.com>
+> In response to the probe or remove of a queue device, if a KVM guest is
+> using the matrix mdev to which the APQN of the queue device is assigned,
+> the vfio_ap device driver must respond accordingly. In an ideal world, the
+> queue device being probed would be hot plugged into the guest. Likewise,
+> the queue corresponding to the queue device being removed would
+> be hot unplugged from the guest. Unfortunately, the AP architecture
+> precludes plugging or unplugging individual queues. We must also
+> consider the fact that the linux device model precludes us from passing a
+> queue device through to a KVM guest that is not bound to the driver
+> facilitating the pass-through. Consequently, we are left with the choice of
+> plugging/unplugging the adapter or the domain. In the latter case, this
+> would result in taking access to the domain away for each adapter the
+> guest is using. In either case, the operation will alter a KVM guest's
+> access to one or more queues, so let's plug/unplug the adapter on
+> bind/unbind of the queue device since this corresponds to the hardware
+> entity that may be physically plugged/unplugged - i.e., a domain is not
+> a piece of hardware.
 > 
-> On modern systems the platform performance, temperature, fan and
-> other
-> hardware related characteristics are often dynamically configurable.
-> The
-> profile is often automatically adjusted to the load by somei
-> automatic-mechanism (which may very well live outside the kernel).
+> Example:
+> =======
+> Queue devices bound to vfio_ap device driver:
+>    04.0004
+>    04.0047
+>    04.0054
 > 
-> These auto platform-adjustment mechanisms often can be configured
-> with
-> one of several 'platform-profiles', with either a bias towards low-
-> power
-
-Can you please make sure to quote 'platform-profile' and 'profile-name'
-this way all through the document? They're not existing words, and
-quoting them shows that they're attribute names, rather than English.
-
-> consumption or towards performance (and higher power consumption and
-> thermals).
-
-s/thermal/temperature/
-
-"A thermal" is something else (it's seasonal underwear for me ;)
-
-> Introduce a new platform_profile sysfs API which offers a generic API
-> for
-> selecting the performance-profile of these automatic-mechanisms.
+>    05.0005
+>    05.0047
 > 
-> Co-developed-by: Mark Pearson <markpearson@lenovo.com>
-> Signed-off-by: Mark Pearson <markpearson@lenovo.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> Adapters and domains assigned to matrix mdev:
+>    Adapters  Domains  -> Queues
+>    04        0004        04.0004
+>    05        0047        04.0047
+>              0054        04.0054
+>                          05.0004
+>                          05.0047
+>                          05.0054
+> 
+> KVM guest matrix at is startup:
+>    Adapters  Domains  -> Queues
+>    04        0004        04.0004
+>              0047        04.0047
+>              0054        04.0054
+> 
+>    Adapter 05 is filtered because queue 05.0054 is not bound.
+> 
+> KVM guest matrix after queue 05.0054 is bound to the vfio_ap driver:
+>    Adapters  Domains  -> Queues
+>    04        0004        04.0004
+>    05        0047        04.0047
+>              0054        04.0054
+>                          05.0004
+>                          05.0047
+>                          05.0054
+> 
+>    All queues assigned to the matrix mdev are now bound.
+> 
+> KVM guest matrix after queue 04.0004 is unbound:
+> 
+>    Adapters  Domains  -> Queues
+>    05        0004        05.0004
+>              0047        05.0047
+>              0054        05.0054
+> 
+>    Adapter 04 is filtered because 04.0004 is no longer bound.
+> 
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
 > ---
-> Changes in V1:
->  - Moved from RFC to proposed patch
->  - Added cool profile as requested
->  - removed extra-profiles as no longer relevant
+>  drivers/s390/crypto/vfio_ap_ops.c | 158 +++++++++++++++++++++++++++++-
+>  1 file changed, 155 insertions(+), 3 deletions(-)
 > 
->  .../ABI/testing/sysfs-platform_profile        | 66
-> +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-platform_profile
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-platform_profile
-> b/Documentation/ABI/testing/sysfs-platform_profile
-> new file mode 100644
-> index 000000000000..240bd3d7532b
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-platform_profile
-> @@ -0,0 +1,66 @@
-> +Platform-profile selection (e.g.
-> /sys/firmware/acpi/platform_profile)
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index 7bad70d7bcef..5b34bc8fca31 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -312,6 +312,13 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
+>  	return 0;
+>  }
+>  
+> +static void vfio_ap_matrix_clear_masks(struct ap_matrix *matrix)
+> +{
+> +	bitmap_clear(matrix->apm, 0, AP_DEVICES);
+> +	bitmap_clear(matrix->aqm, 0, AP_DOMAINS);
+> +	bitmap_clear(matrix->adm, 0, AP_DOMAINS);
+> +}
 > +
-> +On modern systems the platform performance, temperature, fan and
-> other
-> +hardware related characteristics are often dynamically configurable.
-> The
-> +profile is often automatically adjusted to the load by some
-> +automatic-mechanism (which may very well live outside the kernel).
+>  static void vfio_ap_matrix_init(struct ap_config_info *info,
+>  				struct ap_matrix *matrix)
+>  {
+> @@ -601,6 +608,104 @@ static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev,
+>  	return 0;
+>  }
+>  
+> +static bool vfio_ap_mdev_matrixes_equal(struct ap_matrix *matrix1,
+> +					struct ap_matrix *matrix2)
+> +{
+> +	return (bitmap_equal(matrix1->apm, matrix2->apm, AP_DEVICES) &&
+> +		bitmap_equal(matrix1->aqm, matrix2->aqm, AP_DOMAINS) &&
+> +		bitmap_equal(matrix1->adm, matrix2->adm, AP_DOMAINS));
+> +}
 > +
-> +These auto platform-adjustment mechanisms often can be configured
-> with
-> +one of several 'platform-profiles', with either a bias towards low-
-> power
-> +consumption or towards performance (and higher power consumption and
-> +thermals).
+> +/**
+> + * vfio_ap_mdev_filter_matrix
+> + *
+> + * Filters the matrix of adapters, domains, and control domains assigned to
+> + * a matrix mdev's AP configuration and stores the result in the shadow copy of
+> + * the APCB used to supply a KVM guest's AP configuration.
+> + *
+> + * @matrix_mdev:  the matrix mdev whose AP configuration is to be filtered
+> + *
+> + * Returns true if filtering has changed the shadow copy of the APCB used
+> + * to supply a KVM guest's AP configuration; otherwise, returns false.
+> + */
+> +static int vfio_ap_mdev_filter_guest_matrix(struct ap_matrix_mdev *matrix_mdev)
+> +{
+> +	struct ap_matrix shadow_apcb;
+> +	unsigned long apid, apqi, apqn;
 > +
-> +The purpose of the platform_profile attribute is to offer a generic
-> sysfs
-> +API for selecting the platform-profile of these automatic-
-> mechanisms.
+> +	memcpy(&shadow_apcb, &matrix_mdev->matrix, sizeof(struct ap_matrix));
 > +
-> +Note that this API is only for selecting the platform-profile, it is
-> +NOT a goal of this API to allow monitoring the resulting performance
-> +characteristics. Monitoring performance is best done with
-> device/vendor
-> +specific tools such as e.g. turbostat.
+> +	for_each_set_bit_inv(apid, matrix_mdev->matrix.apm, AP_DEVICES) {
+> +		/*
+> +		 * If the APID is not assigned to the host AP configuration,
+> +		 * we can not assign it to the guest's AP configuration
+> +		 */
+> +		if (!test_bit_inv(apid,
+> +				  (unsigned long *)matrix_dev->info.apm)) {
+> +			clear_bit_inv(apid, shadow_apcb.apm);
+> +			continue;
+> +		}
 > +
-> +Specifically when selecting a high-performance profile the actual
-> achieved
-> +performance may be limited by various factors such as: the heat
-> generated
-> +by other components, room temperature, free air flow at the bottom
-> of a
-> +laptop, etc. It is explicitly NOT a goal of this API to let
-> userspace know
-> +about any sub-optimal conditions which are impeding reaching the
-> requested
-> +performance level.
+> +		for_each_set_bit_inv(apqi, matrix_mdev->matrix.aqm,
+> +				     AP_DOMAINS) {
+> +			/*
+> +			 * If the APQI is not assigned to the host AP
+> +			 * configuration, then it can not be assigned to the
+> +			 * guest's AP configuration
+> +			 */
+> +			if (!test_bit_inv(apqi, (unsigned long *)
+> +					  matrix_dev->info.aqm)) {
+> +				clear_bit_inv(apqi, shadow_apcb.aqm);
+> +				continue;
+> +			}
 > +
-> +Since numbers are a rather meaningless way to describe platform-
-> profiles
-
-It's not meaningless, but rather ambiguous. For a range of 1 to 5, is 1
-high performance, and 5 low power, or vice-versa?
-
-> +this API uses strings to describe the various profiles. To make sure
-> that
-> +userspace gets a consistent experience when using this API this API
-
-you can remove "when using this API".
-
-> +document defines a fixed set of profile-names. Drivers *must* map
-> their
-> +internal profile representation/names onto this fixed set.
+> +			/*
+> +			 * If the APQN is not bound to the vfio_ap device
+> +			 * driver, then we can't assign it to the guest's
+> +			 * AP configuration. The AP architecture won't
+> +			 * allow filtering of a single APQN, so let's filter
+> +			 * the APID.
+> +			 */
+> +			apqn = AP_MKQID(apid, apqi);
+> +			if (!vfio_ap_mdev_get_queue(matrix_mdev, apqn)) {
+> +				clear_bit_inv(apid, shadow_apcb.apm);
+> +				break;
+> +			}
+> +		}
 > +
-> +If for some reason there is no good match when mapping then a new
-> profile-name
-> +may be added.
+> +		/*
+> +		 * If all APIDs have been cleared, then clear the APQIs from the
+> +		 * shadow APCB and quit filtering.
+> +		 */
+> +		if (bitmap_empty(shadow_apcb.apm, AP_DEVICES)) {
+> +			if (!bitmap_empty(shadow_apcb.aqm, AP_DOMAINS))
+> +				bitmap_clear(shadow_apcb.aqm, 0, AP_DOMAINS);
+> +
+> +			break;
+> +		}
+> +
+> +		/*
+> +		 * If all APQIs have been cleared, then clear the APIDs from the
+> +		 * shadow APCB and quit filtering.
+> +		 */
+> +		if (bitmap_empty(shadow_apcb.aqm, AP_DOMAINS)) {
+> +			if (!bitmap_empty(shadow_apcb.apm, AP_DEVICES))
+> +				bitmap_clear(shadow_apcb.apm, 0, AP_DEVICES);
+> +
+> +			break;
+> +		}
 
-"for some reason" can be removed.
+We do this to show the no queues but bits set output in show? We could
+get rid of some code if we were to not z
 
->  Drivers which wish to introduce new profile-names must:
-> +1. Have very good reasons to do so.
+> +	}
+> +
+> +	if (vfio_ap_mdev_matrixes_equal(&matrix_mdev->shadow_apcb,
+> +					&shadow_apcb))
+> +		return false;
+> +
+> +	memcpy(&matrix_mdev->shadow_apcb, &shadow_apcb,
+> +	       sizeof(struct ap_matrix));
+> +
+> +	return true;
+> +}
+> +
+>  enum qlink_type {
+>  	LINK_APID,
+>  	LINK_APQI,
+> @@ -1256,9 +1361,8 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
+>  	if (!vfio_ap_mdev_has_crycb(matrix_mdev))
+>  		return NOTIFY_DONE;
+>  
+> -	memcpy(&matrix_mdev->shadow_apcb, &matrix_mdev->matrix,
+> -	       sizeof(matrix_mdev->shadow_apcb));
+> -	vfio_ap_mdev_commit_shadow_apcb(matrix_mdev);
+> +	if (vfio_ap_mdev_filter_guest_matrix(matrix_mdev))
+> +		vfio_ap_mdev_commit_shadow_apcb(matrix_mdev);
+>  
+>  	return NOTIFY_OK;
+>  }
+> @@ -1369,6 +1473,18 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
+>  		matrix_mdev->kvm = NULL;
+>  	}
+>  
+> +	/*
+> +	 * The shadow_apcb must be cleared.
+> +	 *
+> +	 * The shadow_apcb is committed to the guest only if the masks resulting
+> +	 * from filtering the matrix_mdev->matrix differs from the masks in the
+> +	 * shadow_apcb. Consequently, if we don't clear the masks here and a
+> +	 * guest is subsequently started, the filtering may not result in a
+> +	 * change to the shadow_apcb which will not get committed to the guest;
+> +	 * in that case, the guest will be left without any queues.
+> +	 */
+> +	vfio_ap_matrix_clear_masks(&matrix_mdev->shadow_apcb);
+> +
+>  	mutex_unlock(&matrix_dev->lock);
+>  
+>  	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
+> @@ -1466,6 +1582,16 @@ static void vfio_ap_queue_link_mdev(struct vfio_ap_queue *q)
+>  	}
+>  }
+>  
+> +static void vfio_ap_mdev_hot_plug_queue(struct vfio_ap_queue *q)
+> +{
+> +
+> +	if ((q->matrix_mdev == NULL) || !vfio_ap_mdev_has_crycb(q->matrix_mdev))
+> +		return;
+> +
+> +	if (vfio_ap_mdev_filter_guest_matrix(q->matrix_mdev))
+> +		vfio_ap_mdev_commit_shadow_apcb(q->matrix_mdev);
 
-"1. Explain why the existing 'profile-names' cannot be used"
+Here we do more work than necessary. At this point we now, that
+we either put the APID of the queue in the shadow_apcb or do nothing. To
+decide if we have to put the APID in the shadow apcb we need to
+check for the cartesian product of shadow_apcb.aqm with the APID, if the
+queues identified by those APQNs are bound to the vfio_ap driver. The 
+vfio_ap_mdev_filter_guest_matrix() is going to do a lookup for each
+assigned APQN.
 
-> +2. Add the new profile-name to this document, so that future drivers
-> which also
-> +   have a similar problem can use the same name.
+> +}
+> +
+>  int vfio_ap_mdev_probe_queue(struct ap_device *apdev)
+>  {
+>  	struct vfio_ap_queue *q;
+> @@ -1482,11 +1608,36 @@ int vfio_ap_mdev_probe_queue(struct ap_device *apdev)
+>  	q->apqn = queue->qid;
+>  	q->saved_isc = VFIO_AP_ISC_INVALID;
+>  	vfio_ap_queue_link_mdev(q);
+> +	vfio_ap_mdev_hot_plug_queue(q);
+>  	mutex_unlock(&matrix_dev->lock);
+>  
+>  	return 0;
+>  }
+>  
+> +void vfio_ap_mdev_hot_unplug_queue(struct vfio_ap_queue *q)
+> +{
+> +	unsigned long apid = AP_QID_CARD(q->apqn);
+> +
+> +	if ((q->matrix_mdev == NULL) || !vfio_ap_mdev_has_crycb(q->matrix_mdev))
+> +		return;
+> +
+> +	/*
+> +	 * If the APID is assigned to the guest, then let's
+> +	 * go ahead and unplug the adapter since the
+> +	 * architecture does not provide a means to unplug
+> +	 * an individual queue.
+> +	 */
+> +	if (test_bit_inv(apid, q->matrix_mdev->shadow_apcb.apm)) {
+> +		clear_bit_inv(apid, q->matrix_mdev->shadow_apcb.apm);
 
-"2. Add the new 'profile-name' to the documentation so that other
-drivers can use it, as well as user-space knowing clearly what
-behaviour the 'profile-name' corresponds to"
+Shouldn't we check aqm as well? I mean it may be clear at this point
+bacause of info->aqm. If the bit is clear, we don't have to remove
+the apm bit.
 
 > +
-> +What:          /sys/firmware/acpi/platform_profile_choices
-> +Date:          October 2020
-> +Contact:       Hans de Goede <hdegoede@redhat.com>
-> +Description:
-> +               Reading this file gives a space separated list of
-> profiles
-> +               supported for this device.
-
-"This file contains a space-separated list of profiles..."
-
+> +		if (bitmap_empty(q->matrix_mdev->shadow_apcb.apm, AP_DEVICES))
+> +			bitmap_clear(q->matrix_mdev->shadow_apcb.aqm, 0,
+> +				     AP_DOMAINS);
 > +
-> +               Drivers must use the following standard profile-
-> names:
+> +		vfio_ap_mdev_commit_shadow_apcb(q->matrix_mdev);
+> +	}
+> +}
 > +
-> +               low-power:              Emphasises low power
-> consumption
-> +               cool:                   Emphasises cooler operation
-> +               quiet:                  Emphasises quieter operation
-> +               balanced:               Balance between low power
-> consumption
-> +                                       and performance
-> +               performance:            Emphasises performance (and
-> may lead to
-> +                                       higher temperatures and fan
-> speeds)
+>  void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
+>  {
+>  	struct vfio_ap_queue *q;
+> @@ -1497,6 +1648,7 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
+>  
+>  	mutex_lock(&matrix_dev->lock);
+>  	q = dev_get_drvdata(&queue->ap_dev.device);
+> +	vfio_ap_mdev_hot_unplug_queue(q);
 
-I'd replace "Emphasises" with either "Focus on" or the US English
-spelling of "Emphasizes".
+Puh this is ugly. In an ideal world the guest would be guaranteed to not
+get any writes to the notifier byte after it has seen that the queue is
+gone (or the interrupts were disabled).
 
-> +               Userspace may expect drivers to offer at least
-> several of these
-> +               standard profile-names.
+The reset below might too late as the vcpus may go back immediately.
 
-Replce "at least several" with "more than one".
+I don't have a good solution for this with the tools currently at
+our disposal. We could simulate an external reset for the queue before
+the update do the APCB, or just disable the interrupts. These are ugly
+in their own way. 
 
-> +
-> +What:          /sys/firmware/acpi/platform_profile
-> +Date:          October 2020
-> +Contact:       Hans de Goede <hdegoede@redhat.com>
-> +Description:
-> +               Reading this file gives the current selected profile
-> for this
-> +               device. Writing this file with one of the strings
-> from
-> +               available_profiles changes the profile to the new
-> value.
+Switching to emulation mode might be something for the future, but right
+now it is also ugly.
 
-Is there another file which explains whether those sysfs value will
-contain a trailing linefeed?
+Any thoughts? Am I just dreaming up a problem here?
 
-Cheers
+Regards,
+Halil
+
+
+>  	dev_set_drvdata(&queue->ap_dev.device, NULL);
+>  	apid = AP_QID_CARD(q->apqn);
+>  	apqi = AP_QID_QUEUE(q->apqn);
 
