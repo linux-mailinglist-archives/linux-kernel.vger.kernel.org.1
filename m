@@ -2,107 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576F929DAFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91BC329DB16
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:43:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgJ1XmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
+        id S2388224AbgJ1XnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbgJ1XmR (ORCPT
+        with ESMTP id S2389653AbgJ1Wvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:42:17 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D654BC0613CF;
-        Wed, 28 Oct 2020 16:42:16 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id t20so637838qvv.8;
-        Wed, 28 Oct 2020 16:42:16 -0700 (PDT)
+        Wed, 28 Oct 2020 18:51:52 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1FEC0613CF;
+        Wed, 28 Oct 2020 15:51:51 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 184so880967lfd.6;
+        Wed, 28 Oct 2020 15:51:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q2w0GJP+O24zlClsx6Zd9yJQfOlv+kG1yF/TN+Wun14=;
-        b=n5x+LUX2iOSa9A1Ozlkg4pr/k5hWJnKWLWekiVdEHyz16IbWcYLK5XhIxltZ7k4Wp3
-         vJ6VwZsa2HTmIvjsJbsOaDp8NwxAvELwDzeav6QYQqDfAy7YbNqfa3GrdkRWSfitq1bQ
-         JKnm1rC6ubNYvLGylAs8E9v3WRC8dQfrQcUBDi9+m5W2wNEc5WBTFBbZAw1SrNAyQiR0
-         985XTzcK7/EGV279NJLpxcy5w2l1x+MFZCueGBlsGvcDAZ3Q/of1Qk2NYPRKkEGnS7CG
-         EuOurqQcrXotkY7o+MOGAYUOJtgDlvHXMyCzwZbnwjp6S7+3kQYi7xhqWAynaSWXp0no
-         l2sg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=a42ZTHpfclzQndPssC2x9RBSnJnu5sEHiL3sczOvFqA=;
+        b=nSAhtm47X+auPNjUm0Gl04eSiakBsPenJVVSoyFzU/pprU0XGr5DEMq6OgTxpjZ3Ih
+         jDgFuT/bFvUfv/l/vwh6+JUo0MCPFT1Af5T2UYRwpPeqUCzIFv6IrfmrePzRNrKuH8Y4
+         iyh6Nw6+eOT7PmlnYh78R1ZV2+nmph/lraPLKOZIOrMo+7VSCarC4ysZkfcIv3GHSQNe
+         t/ICb5hIzvQcDGo7ZUtiYWJaaWHqlOdlMSZ/kGRCYUct7YHIXSSlQIbaFF2cwHEXxNbC
+         OUwfggreYv+T5rsWA3WxHrR2D2LrMqyOtXbXD5QYzTZ3pAkZa9eP0VBgxoi9kTTiJzOw
+         Enkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q2w0GJP+O24zlClsx6Zd9yJQfOlv+kG1yF/TN+Wun14=;
-        b=ogftfustdUPHXLYZxJZdyViHiGa5uLoB7xGA9iYaXVmDA++Vtl3jkPHT7m3r8F/4rp
-         Gu5gKJio7nhmLxvb3ukVnjvKeZctFzkQ0Sr25IIRH4pVi2jCjkgMOTyfNLX66lPyBIQz
-         p+YNI2vh7iz8E2VC71kBQj2XXBAUzozSoh+bDEAo9ecEuoOIPCeXs8dyCUV+0DoTx6Q3
-         I3FziC6Ji9gKyOZz4w+ah4LX3a0aGWgCFRhBdRBOpHnbcC/3Eh8cybEXpwwcs5s2oHnv
-         3NuQ8qCCKPCz9k3t5/maL8cNJdQYA3zEYf6hwfF7ozy7S6GP1xo5KWrWnRLyWP9Cv8ko
-         L7Mw==
-X-Gm-Message-State: AOAM5325d3V1Ornz5cVyQs01M+u+zdgi0S+jy9utwYhCO050thf2q0/b
-        9BMn/KG+W9IuK0tXHUnnMymUSWTw8EPa
-X-Google-Smtp-Source: ABdhPJyKmvi+wrim6ggQx3fuKG0hwNY5mHGUXX+rZcx02E6mWjNckXz9MyfFa4GcSkcckzQuBqpKtw==
-X-Received: by 2002:a62:b515:0:b029:155:95e8:fbed with SMTP id y21-20020a62b5150000b029015595e8fbedmr6479066pfe.49.1603881064332;
-        Wed, 28 Oct 2020 03:31:04 -0700 (PDT)
-Received: from PWN (n11212042025.netvigator.com. [112.120.42.25])
-        by smtp.gmail.com with ESMTPSA id il17sm4149183pjb.39.2020.10.28.03.31.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 03:31:03 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 06:30:50 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] Fonts: Make font size unsigned in font_desc
-Message-ID: <20201028103050.GA1209391@PWN>
-References: <cover.1603788511.git.yepeilin.cs@gmail.com>
- <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
- <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com>
- <20201027185058.GM401619@phenom.ffwll.local>
- <20201028054307.GA1205568@PWN>
- <20201028081844.GS401619@phenom.ffwll.local>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=a42ZTHpfclzQndPssC2x9RBSnJnu5sEHiL3sczOvFqA=;
+        b=jmRxWBSMXtMhxgp8wfIRX28g3XmbsIgjSEINrJY1Hiz0t+GltIpMKHx9Yx9YIZTlMV
+         RC50/8MX0LfcCHlXVZ+ZZZkhdYrbkBKrmDtUSPMWEprwt8ch69O5ZJTGWVEgoVJ5QjPK
+         Pr1dH6E6eyIGBtbWaMD1UJPtIdESHTZ816Y1pkm/j8XvhNJKQNpkUewFl2NS51lHk+Bs
+         9ugOzj3nDqqAue8PxlzbLklnrw8QjE3B7pJueq4U7DWNn98Ad8ncfumrQl3nvpn4kH5H
+         IVz1t5EIUpmlu83mt92hciZOrnD5HjoqVdm40DuXoL1SxRqimwsyR0Ol6y/oOv9DfVaK
+         uQow==
+X-Gm-Message-State: AOAM533DQmZgSiQATBjSVwYZULM1/2vL3eyJ0kVgSFpZi+TU/4Ul4ZEB
+        H08cG60NhTPXnoc3GFrg7YrnJfxVa2E=
+X-Google-Smtp-Source: ABdhPJxvjU/xZUgOs4eh3F51nFtkUBZ6AEgyIFVgPqBSDyfZZVgMO38UPP7i42q2dbewbtNJ96R4Sg==
+X-Received: by 2002:a17:906:77d9:: with SMTP id m25mr3816259ejn.190.1603883227986;
+        Wed, 28 Oct 2020 04:07:07 -0700 (PDT)
+Received: from ?IPv6:2a01:110f:b59:fd00:588e:5ef8:851e:45b6? ([2a01:110f:b59:fd00:588e:5ef8:851e:45b6])
+        by smtp.gmail.com with ESMTPSA id r24sm2664105edm.95.2020.10.28.04.07.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 04:07:07 -0700 (PDT)
+Subject: Re: [PATCH v1 1/2] leds: rt4505: Add support for Richtek RT4505 flash
+ led controller
+To:     ChiYuan Huang <u0084500@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, dmurphy@ti.com, robh+dt@kernel.org,
+        linux-leds@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        cy_huang <cy_huang@richtek.com>, devicetree@vger.kernel.org
+References: <1603784069-24114-1-git-send-email-u0084500@gmail.com>
+ <20201027082900.GA21354@amd> <b0f5b3c8-bebd-eeb6-20b2-15529816720c@gmail.com>
+ <CADiBU3_x=9wvPv4_YxWx4H_ecV7Kbt5ur91SDv+unH4z2hzS_Q@mail.gmail.com>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <e49d4119-48da-9dba-bbbe-b688cf28bfb8@gmail.com>
+Date:   Wed, 28 Oct 2020 12:07:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028081844.GS401619@phenom.ffwll.local>
+In-Reply-To: <CADiBU3_x=9wvPv4_YxWx4H_ecV7Kbt5ur91SDv+unH4z2hzS_Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 09:18:44AM +0100, Daniel Vetter wrote:
-> On Wed, Oct 28, 2020 at 01:43:07AM -0400, Peilin Ye wrote:
-> > On Tue, Oct 27, 2020 at 07:50:58PM +0100, Daniel Vetter wrote:
-> > > On Tue, Oct 27, 2020 at 12:33:05PM -0400, Peilin Ye wrote:
-> > > > It is improper to define `width` and `height` as signed in `struct
-> > > > font_desc`. Make them unsigned. Also, change the corresponding printk()
-> > > > format identifiers from `%d` to `%u`, in sti_select_fbfont().
-> > > > 
-> > > > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > > 
-> > > I'm not entirely sure of the motivation here ... height/width should never
-> > > ever be even close to the limit here. Or have you seen integer math that
-> > > could potentially go wrong if we go with unsigned instead of int?
-> > 
-> > Oh... No, I have not. I just thought we shouldn't represent a length
-> > using a signed value. Also, width and height in console_font are
-> > unsigned int - that shouldn't matter that much though.
+On 10/28/20 5:57 AM, ChiYuan Huang wrote:
+> Hi,
 > 
-> Oh this is actually a good reason, since that's the uapi structure. And so
-> using the exact same signedness should help a bit with accidental casting
-> bugs.
-> 
-> If you mention this in the commit message I think this is good to go.
+> Jacek Anaszewski <jacek.anaszewski@gmail.com> 於 2020年10月28日 週三 上午12:40寫道：
+>>
+>> Hi Pavel, ChiYuan,
+>>
+>> On 10/27/20 9:29 AM, Pavel Machek wrote:
+>>> Hi!
+>>>
+>>>> From: ChiYuan Huang <cy_huang@richtek.com>
+>>>>
+>>>> Add support for RT4505 flash led controller. It can support up to 1.5A
+>>>> flash current with hardware timeout and low input voltage
+>>>> protection.
+>>>
+>>> Please use upper-case "LED" everywhere.
+>>>
+>>> This should be 2nd in the series, after DT changes.
+>>>
+>>>> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+>>>> ---
+>>>>    drivers/leds/Kconfig       |  11 ++
+>>>>    drivers/leds/Makefile      |   1 +
+>>>>    drivers/leds/leds-rt4505.c | 397 +++++++++++++++++++++++++++++++++++++++++++++
+>>>>    3 files changed, 409 insertions(+)
+>>>>    create mode 100644 drivers/leds/leds-rt4505.c
+>> [...]
+>>>> +static int rt4505_torch_brightness_set(struct led_classdev *lcdev, enum led_brightness level)
+>>>> +{
+>>>
+>>> 80 columns, where easy.
+>>>
+>>>> +    struct rt4505_priv *priv = container_of(lcdev, struct rt4505_priv, flash.led_cdev);
+>>>> +    u32 val = 0;
+>>>> +    int ret;
+>>>> +
+>>>> +    mutex_lock(&priv->lock);
+>>>> +
+>>>> +    if (level != LED_OFF) {
+>>>> +            ret = regmap_update_bits(priv->regmap, RT4505_REG_ILED, RT4505_ITORCH_MASK,
+>>>> +                                     (level - 1) << RT4505_ITORCH_SHIFT);
+>>>> +            if (ret)
+>>>> +                    goto unlock;
+>>>> +
+>>>> +            val = RT4505_TORCH_SET;
+>>>> +    }
+>>>> +
+>>>> +    ret = regmap_update_bits(priv->regmap, RT4505_REG_ENABLE, RT4505_ENABLE_MASK, val);
+>>>> +
+>>>> +unlock:
+>>>> +    mutex_unlock(&priv->lock);
+>>>> +    return ret;
+>>>> +}
+>>>
+>>> Why is the locking needed? What will the /sys/class/leds interface
+>>> look like on system with your flash?
+>>
+>> The locking is needed since this can be called via led_set_brightness()
+>> from any place in the kernel, and especially from triggers.
+>>From this case, It means only led classdev
+> brihtness_get/brightness_set need to be protected.
+> I search led_flash_classdev, it only can be controlled via sysfs or V4l2.
+> Like as described in last mail, flash related operation is protected
+> by led access_lock and v4l2 framework.
+> I'll keep the locking only in led classdev brightness_get/brightness_set API.
+> If I misunderstand something, please help to point out.
 
-Ah, I see, v2 on the way. Please ignore [v2 3/5], that doesn't hunk with
-this patch in effect...
+Locking have to be used consistently for each access to the resource
+being protected with the lock. Otherwise you can end up in a situation
+when rt4505_torch_brightness_set and rt4505_flash_brightness_set will
+try concurrently alter hardware state. Regardless of how harmful could
+it be in case of this particular device it is certainly against
+programming rules.
 
-One newbie question, should I mention in the commit message, if a patch
-depends on another patch in the series in order to hunk properly?
-
-Peilin
-
+-- 
+Best regards,
+Jacek Anaszewski
