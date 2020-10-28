@@ -2,110 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB2F29D2E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC6C29D34E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726991AbgJ1Vh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:37:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35474 "EHLO mail.kernel.org"
+        id S1726152AbgJ1Vm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:42:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726952AbgJ1VhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:37:25 -0400
+        id S1725849AbgJ1VmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:42:24 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89E2324724;
-        Wed, 28 Oct 2020 21:01:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19729246CD;
+        Wed, 28 Oct 2020 21:02:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603918867;
-        bh=cQJGuWfvLs1OyxCH5Hveq93nka68GE77I3EkBKGcDVw=;
+        s=default; t=1603918949;
+        bh=+Cj4JDv/9Kdz/kOl1C3lm3VVi/UOikFi55ZuJNA/YoI=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nztoUpclkAs/vX/8RPAPt/UxcB8PP7Z2qKHsBlFmgVbhuaYpGSwRaeBIB5B0rYuXw
-         7PuhsqozVQB7s5CUrz7qoOSNnCr5jZ/LkkoYmyD0XQP3aLWVXb1Nxzo6d+KgYzA0HI
-         bzFS0F55hqurCUFlacConpqlCkv6QAixyO3CqF/c=
+        b=us4bztrI2KapLmU1CUulDdhGbWUnIfT0eq/O/r7fhD/uj1XbHv/m0fp59fI6Q6/ru
+         b9toWkeNm6ZmXCQHNgJQkal5IBZV89lV/0ZK5Xdn6K8bdbVp8uLd5lEhjPX7erC+Ub
+         AZ3EziopAvHlTGvy2wkA7iesN2CZyU4nwB2Kke6Q=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 2F8D735229CE; Wed, 28 Oct 2020 14:01:07 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 14:01:07 -0700
+        id B408435229CE; Wed, 28 Oct 2020 14:02:28 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 14:02:28 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Qian Cai <cai@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] s390/smp: Move rcu_cpu_starting() earlier
-Message-ID: <20201028210107.GH3249@paulmck-ThinkPad-P72>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
+Message-ID: <20201028210228.GI3249@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20201028182742.13773-1-cai@redhat.com>
+References: <160223032121.7002.1269740091547117869.tip-bot2@tip-bot2>
+ <e438b231c5e1478527af6c3e69bf0b37df650110.camel@redhat.com>
+ <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+ <1db80eb9676124836809421e85e1aa782c269a80.camel@redhat.com>
+ <20201028030130.GB3249@paulmck-ThinkPad-P72>
+ <8194dca3b2e871f04c7f6e49672837f8df22546f.camel@redhat.com>
+ <20201028155328.GC3249@paulmck-ThinkPad-P72>
+ <7cd579ccdacb4f672cf2dc3a0d4553d1845e7ebf.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201028182742.13773-1-cai@redhat.com>
+In-Reply-To: <7cd579ccdacb4f672cf2dc3a0d4553d1845e7ebf.camel@redhat.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 02:27:42PM -0400, Qian Cai wrote:
-> The call to rcu_cpu_starting() in smp_init_secondary() is not early
-> enough in the CPU-hotplug onlining process, which results in lockdep
-> splats as follows:
+On Wed, Oct 28, 2020 at 04:08:59PM -0400, Qian Cai wrote:
+> On Wed, 2020-10-28 at 08:53 -0700, Paul E. McKenney wrote:
+> > On Wed, Oct 28, 2020 at 10:39:47AM -0400, Qian Cai wrote:
+> > > On Tue, 2020-10-27 at 20:01 -0700, Paul E. McKenney wrote:
+> > > > If I have the right email thread associated with the right fixes, these
+> > > > commits in -rcu should be what you are looking for:
+> > > > 
+> > > > 73b658b6b7d5 ("rcu: Prevent lockdep-RCU splats on lock
+> > > > acquisition/release")
+> > > > 626b79aa935a ("x86/smpboot:  Move rcu_cpu_starting() earlier")
+> > > > 
+> > > > And maybe this one as well:
+> > > > 
+> > > > 3a6f638cb95b ("rcu,ftrace: Fix ftrace recursion")
+> > > > 
+> > > > Please let me know if these commits do not fix things.
+> > > While those patches silence the warnings for x86. Other arches are still
+> > > suffering. It is only after applying the patch from Boqun below fixed
+> > > everything.
+> > 
+> > Fair point!
+> > 
+> > > Is it a good idea for Boqun to write a formal patch or we should fix all
+> > > arches
+> > > individually like "x86/smpboot: Move rcu_cpu_starting() earlier"?
+> > 
+> > By Boqun's patch, you mean the change to debug_lockdep_rcu_enabled()
+> > shown below?  Peter Zijlstra showed that real failures can happen, so we
 > 
->  WARNING: suspicious RCU usage
->  -----------------------------
->  kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
+> Yes.
 > 
->  other info that might help us debug this:
+> > do not want to cover them up.  So we are firmly in "fix all architectures"
+> > space here, sorry!
+> > 
+> > I am happy to accumulate those patches, but cannot commit to creating
+> > or testing them.
 > 
->  RCU used illegally from offline CPU!
->  rcu_scheduler_active = 1, debug_locks = 1
->  no locks held by swapper/1/0.
-> 
->  Call Trace:
->  show_stack+0x158/0x1f0
->  dump_stack+0x1f2/0x238
->  __lock_acquire+0x2640/0x4dd0
->  lock_acquire+0x3a8/0xd08
->  _raw_spin_lock_irqsave+0xc0/0xf0
->  clockevents_register_device+0xa8/0x528
->  init_cpu_timer+0x33e/0x468
->  smp_init_secondary+0x11a/0x328
->  smp_start_secondary+0x82/0x88
-> 
-> This is avoided by moving the call to rcu_cpu_starting up near the
-> beginning of the smp_init_secondary() function. Note that the
-> raw_smp_processor_id() is required in order to avoid calling into
-> lockdep before RCU has declared the CPU to be watched for readers.
-> 
-> Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
-> Signed-off-by: Qian Cai <cai@redhat.com>
+> Okay, I posted 3 patches for each arch and CC'ed you.
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Very good!  I have acked them.
 
-> ---
->  arch/s390/kernel/smp.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>                                                       BTW, it looks like
+> something is wrong on @vger.kernel.org today where I received many of those,
 > 
-> diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
-> index ebfe86d097f0..390d97daa2b3 100644
-> --- a/arch/s390/kernel/smp.c
-> +++ b/arch/s390/kernel/smp.c
-> @@ -855,13 +855,14 @@ void __init smp_detect_cpus(void)
->  
->  static void smp_init_secondary(void)
->  {
-> -	int cpu = smp_processor_id();
-> +	int cpu = raw_smp_processor_id();
->  
->  	S390_lowcore.last_update_clock = get_tod_clock();
->  	restore_access_regs(S390_lowcore.access_regs_save_area);
->  	set_cpu_flag(CIF_ASCE_PRIMARY);
->  	set_cpu_flag(CIF_ASCE_SECONDARY);
->  	cpu_init();
-> +	rcu_cpu_starting(cpu);
->  	preempt_disable();
->  	init_cpu_timer();
->  	vtime_init();
-> -- 
-> 2.28.0
+> 4.7.1 Hello [216.205.24.124], for recipient address <linux-kernel@vger.kernel.org> the policy analysis reported: zpostgrey: connect: Connection refused
 > 
+> and I can see your previous mails did not even reach there either.
+> 
+> https://lore.kernel.org/lkml/
+
+It does seem to be having some difficulty, and some people are looking
+into it.  Hopefully soon someone who can actually make the needed
+changes.  ;-)
+
+							Thanx, Paul
