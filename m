@@ -2,108 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968A329DC22
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828C229DBB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388946AbgJ2AV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:21:59 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:37030 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388934AbgJ1WiH (ORCPT
+        id S2389236AbgJ1Wq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731875AbgJ1WqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:38:07 -0400
-Received: by mail-pl1-f196.google.com with SMTP id b12so350388plr.4;
-        Wed, 28 Oct 2020 15:38:06 -0700 (PDT)
+        Wed, 28 Oct 2020 18:46:09 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC18C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:46:08 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id l16so1204054eds.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:46:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sargun.me; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1KKfnGnBEdd12X89nwYRLUfbpvsSCoekdcU0DHREQhE=;
+        b=tF7de7mbM6VeEXWhVjMrNC5cvKMpl0WDoIIp7fDbiFMyA9PP4g3gTmf4LaBzwarT14
+         4HlQUlmQiDgdPcyNEbZCIirlXnui4R0jL648Tx95iRiVKLtDrIrgQ3s56LWy8BP1Jh4m
+         e5D2GJEtVeWX660AowCOJZdoycU2F+72CGe2Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CRi9FZ9Z+UnIZ2SkQnApmkHlHaSq8BXaJGt7reiNtuM=;
-        b=TG5yT+WNmWJEvrBaME0cAali7Hku7kGOgrlVD2UIV4eHHSl2OSao+adLYXf8POrxux
-         25vPZ6PW4+9fvxE5FAn3SHB7UzBEdf+scVooLnRl6aAqh4bJDjn7ZtEDxWERYzeBm9cX
-         dYb1vApYuPz8GaEjacJYwhOZd9kuUG6Juhx39r0r4CgDA7kP5AgXNCNRSk2ne21TPI+m
-         zUaq3kAEUVFBPGRY8ymqxKVgZma5LpE7cipy5qyTrUujzIM+E74otDIGIUWd4EBFz14L
-         k0C9r1TKFWb5ltZNMx0d7yhRo4gqN2i9B6VQbzYkGEcC9ZB8GeFM7e8W4diGlZurdvCP
-         ZWwQ==
-X-Gm-Message-State: AOAM533EusHMWbuvjyIdJ7TR5vSkACAZrJ9V+EC918EUkZv5Uq6eOYdZ
-        RRKBNQLHmbBUXnVokGR12elUrWOYp5s=
-X-Google-Smtp-Source: ABdhPJybJf5w2rTgj/vTCQIw0+jC/10ExJGouMFxqaRROOWNhnuuESZf1ZzFqZMOxvBnAnCm+RtQSg==
-X-Received: by 2002:a62:a10a:0:b029:154:fd62:ba90 with SMTP id b10-20020a62a10a0000b0290154fd62ba90mr22740pff.62.1603905696356;
-        Wed, 28 Oct 2020 10:21:36 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id b6sm4775pjq.42.2020.10.28.10.21.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 10:21:35 -0700 (PDT)
-From:   Moritz Fischer <mdf@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lucyyan@google.com,
-        moritzf@google.com, James.Bottomley@hansenpartnership.com,
-        kuba@kernel.org, Moritz Fischer <mdf@kernel.org>
-Subject: [PATCH net-next v4] net: dec: tulip: de2104x: Add shutdown handler to stop NIC
-Date:   Wed, 28 Oct 2020 10:21:25 -0700
-Message-Id: <20201028172125.496942-1-mdf@kernel.org>
-X-Mailer: git-send-email 2.29.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1KKfnGnBEdd12X89nwYRLUfbpvsSCoekdcU0DHREQhE=;
+        b=LzwlP0+gecVO/YoOSp3yGLyNd46tFu7k4J1xDCx+WLB6+b+0lQmx/+NTZ8MdKCXzQY
+         idHVJpgQTQOVy+lx/L7t1yjq7Cj5jXe47a0pxpB/9C3jhjg3VTy/FFHA7BmcKTK0STjO
+         lTCBOEYT0ewwkcNr2b7drqptKHmeOAHghpMzRNshjakiehmO091G05UzoEXONe0ve43Y
+         E6H32pc7zAorbYcya4gzXgsqE1lZBsn+exEkBYZtrLua1Z5KbhduUAcG6sv2Yvg+2c5f
+         N2c8l3yARPdF9q00yNTrNglzFSLLfTjof+PQZEsYmGvtozc7R4h+4OsGaJ3S5SilBxo1
+         WshQ==
+X-Gm-Message-State: AOAM531W1R1Keh3/7/gq5Zt9W+c4X/oj9YGI5ZwdWbDbgJ9yxgXlbEA+
+        qpnA7St8+K5qG0oc6PFbxOyej0e9JR74TnBneAQAAf1laIbApvYQ
+X-Google-Smtp-Source: ABdhPJxusKQfLH7ldNK0ZejYey8JceBXqtdks06+e2oAEK1AFi5yniwjLl5sysSu+nsrzKiTHTK4yg881qNZWDn/8tc=
+X-Received: by 2002:a17:906:bc42:: with SMTP id s2mr173094ejv.251.1603907070187;
+ Wed, 28 Oct 2020 10:44:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+ <20200930230327.GA1260245@cisco> <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
+ <20200930232456.GB1260245@cisco> <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
+ <CAG48ez3kpEDO1x_HfvOM2R9M78Ach9O_4+Pjs-vLLfqvZL+13A@mail.gmail.com>
+ <656a37b5-75e3-0ded-6ba8-3bb57b537b24@gmail.com> <CAG48ez2Uy8=Tz9k1hcr0suLPHjbJi1qUviSGzDQ-XWEGsdNU+A@mail.gmail.com>
+ <e2643168-b5d5-4d8c-947a-7895bcabc268@gmail.com> <CAG48ez2Nb95ae+XwZPYRju1KO-Ps_4R6QxN6ioUhOy2Uok=uAg@mail.gmail.com>
+ <CAMp4zn_Qt2MYuoLojn5ikRkr-J5yGimirjevoAvorK5wfzrBHg@mail.gmail.com> <CAG48ez1drOxgcpuKHiJc+khwmLvqoXfK4yBt9_KHPGQipDf6NQ@mail.gmail.com>
+In-Reply-To: <CAG48ez1drOxgcpuKHiJc+khwmLvqoXfK4yBt9_KHPGQipDf6NQ@mail.gmail.com>
+From:   Sargun Dhillon <sargun@sargun.me>
+Date:   Wed, 28 Oct 2020 10:43:54 -0700
+Message-ID: <CAMp4zn9O-a3_wzO1RLr8uujdS+fGYTC0+b=MRQK9TihLToU--w@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+To:     Jann Horn <jannh@google.com>
+Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver does not implement a shutdown handler which leads to issues
-when using kexec in certain scenarios. The NIC keeps on fetching
-descriptors which gets flagged by the IOMMU with errors like this:
+On Wed, Oct 28, 2020 at 2:43 AM Jann Horn <jannh@google.com> wrote:
+>
+> On Wed, Oct 28, 2020 at 7:32 AM Sargun Dhillon <sargun@sargun.me> wrote:
+> > On Tue, Oct 27, 2020 at 3:28 AM Jann Horn <jannh@google.com> wrote:
+> > > On Tue, Oct 27, 2020 at 7:14 AM Michael Kerrisk (man-pages)
+> > > <mtk.manpages@gmail.com> wrote:
+> > > > On 10/26/20 4:54 PM, Jann Horn wrote:
+> > > > > I'm a bit on the fence now on whether non-blocking mode should use
+> > > > > ENOTCONN or not... I guess if we returned ENOENT even when there are
+> > > > > no more listeners, you'd have to disambiguate through the poll()
+> > > > > revents, which would be kinda ugly?
+> > > >
+> > > > I must confess, I'm not quite clear on which two cases you
+> > > > are trying to distinguish. Can you elaborate?
+> > >
+> > > Let's say someone writes a program whose responsibilities are just to
+> > > handle seccomp events and to listen on some other fd for commands. And
+> > > this is implemented with an event loop. Then once all the target
+> > > processes are gone (including zombie reaping), we'll start getting
+> > > EPOLLERR.
+> > >
+> > > If NOTIF_RECV starts returning -ENOTCONN at this point, the event loop
+> > > can just call into the seccomp logic without any arguments; it can
+> > > just call NOTIF_RECV one more time, see the -ENOTCONN, and terminate.
+> > > The downside is that there's one more error code userspace has to
+> > > special-case.
+> > > This would be more consistent with what we'd be doing in the blocking case.
+> > >
+> > > If NOTIF_RECV keeps returning -ENOENT, the event loop has to also tell
+> > > the seccomp logic what the revents are.
+> > >
+> > > I guess it probably doesn't really matter much.
+> >
+> > So, in practice, if you're emulating a blocking syscall (such as open,
+> > perf_event_open, or any of a number of other syscalls), you probably
+> > have to do it on a separate thread in the supervisor because you want
+> > to continue to be able to receive new notifications if any other process
+> > generates a seccomp notification event that you need to handle.
+> >
+> > In addition to that, some of these syscalls are preemptible, so you need
+> > to poll SECCOMP_IOCTL_NOTIF_ID_VALID to make sure that the program
+> > under supervision hasn't left the syscall.
+> >
+> > If we're to implement a mechanism that makes the seccomp ioctl receive
+> > non-blocking, it would be valuable to address this problem as well (getting
+> > a notification when the supervisor is processing a syscall and needs to
+> > preempt it). In the best case, this can be a minor inconvenience, and
+> > in the worst case this can result in weird errors where you're keeping
+> > resources open that the container expects to be closed.
+>
+> Does "a notification" mean signals? Or would you want to have a second
+> thread in userspace that poll()s for cancellation events on the
+> seccomp fd and then somehow takes care of interrupting the first
+> thread, or something like that?
 
-DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
+I would be reluctant to be prescriptive in that it be a signal. Right
+now, it's implemented
+as a second thread in userspace that does a ioctl(...) and checks if
+the notification
+is valid / alive, and does what's required if the notification has
+died (interrupting
+the first thread).
 
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
+>
+> Either way, I think your proposal goes beyond the scope of patching
+> the existing weirdness, and should be a separate patch.
+
+I agree it should be a separate patch, but I think that it'd be nice if there
+was a way to do something like:
+* opt-in to getting another message after receiving the notification
+  that indicates the program has left the syscall
+* when you do the RECV, you can specify a flag or some such asking
+  that you get signaled / notified about the program leaving the syscall
+* a multiplexed receive that can say if an existing notification in progress
+  has left the valid state.
+
 ---
+The reason I bring this up as part of this current thread / discussion is that
+I think that they may be related in terms of how we want the behaviour to act.
 
-Changes from v3:
-- Added rtnl_lock()/unlock() as suggested by Jakub and use dev_close()
-
-Changes from v2:
-- Changed to net-next
-- Removed extra whitespace
-
-Changes from v1:
-- Replace call to de_remove_one with de_shutdown() function
-  as suggested by James.
-
----
- drivers/net/ethernet/dec/tulip/de2104x.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
-index d9f6c19940ef..c3cbe55205a7 100644
---- a/drivers/net/ethernet/dec/tulip/de2104x.c
-+++ b/drivers/net/ethernet/dec/tulip/de2104x.c
-@@ -2175,11 +2175,21 @@ static int __maybe_unused de_resume(struct device *dev_d)
- 
- static SIMPLE_DEV_PM_OPS(de_pm_ops, de_suspend, de_resume);
- 
-+static void de_shutdown(struct pci_dev *pdev)
-+{
-+	struct net_device *dev = pci_get_drvdata(pdev);
-+
-+	rtnl_lock();
-+	dev_close(dev);
-+	rtnl_unlock();
-+}
-+
- static struct pci_driver de_driver = {
- 	.name		= DRV_NAME,
- 	.id_table	= de_pci_tbl,
- 	.probe		= de_init_one,
- 	.remove		= de_remove_one,
-+	.shutdown	= de_shutdown,
- 	.driver.pm	= &de_pm_ops,
- };
- 
--- 
-2.29.1
-
+I would love to hear how people think this should work, or better suggestions
+than the second thread approach above, or the alternative approach of
+polling all the notifications in progress on some interval [and relying on
+epoll timeout to trigger that interval].
