@@ -2,117 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6172F29D959
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A5A29D85C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389682AbgJ1Www (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389661AbgJ1WwT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:52:19 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CDAC0613CF;
-        Wed, 28 Oct 2020 15:52:18 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id b3so704591pfo.2;
-        Wed, 28 Oct 2020 15:52:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9z7nf3iE3DVZP0WPzpkB3Zwoy/sQUmA3X8ME/pi67sI=;
-        b=ppteg6JKr0pjKgONQssRt0HAQWyJw2bu7oSNHpWMOkZsh7dEmlcSlq19UAnf/sq7N+
-         coLyCYQVlq4MVyevXYh1VeiOGTphkrORLJJLCBiUOQ7ph0L9wfZ7B+l+89XFA/P2ZfZ5
-         huvtLBO7e6JjrfZIJwcd3hxaGDAz5Y3f6NTiql0JGAkLpwlVPDA6dPJPcwXSrxPK6C/h
-         urg3GXTkvUiPRO03ZlQnLFzciQONMjZ+wFbn2izXzP2X3Wp4CKBztotkScO9L5iIR6vm
-         lEAXaMAyhSSgqeeQHg2sSjX8BAXA3ugqUTLl4HjAtngdUDktCeHXSNWiKoEjVlZ+lLAA
-         /IbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9z7nf3iE3DVZP0WPzpkB3Zwoy/sQUmA3X8ME/pi67sI=;
-        b=IUsyP5d21rpPv2Dilw3YMrIulQ01RvAw7VYhwslqDbattOpv3VLlEKgui3/5yqV0aS
-         WvJ4h9eKx8DK24sNXs7fh1eXcNSjlOs1dkl3dNfg2SqY+TctJT5fIpKQInLokPy2/U5y
-         tQJOc09idQwP17Y28cbzod7XShJxPrJhwKDHrV5CR3hA3mCNLn6Abh6Ox80soejWHZPW
-         +gPiqQFKUzzghmwaQ5EnC38psBvIcec/DUU/Z5mGgZKqNvOV2QSutuU35GJE63dBSjM+
-         ZciK7aGsmfrNlaLyOT52ZzEznK5DGZ1+92MZD7j+iNKk66Ti4f+UXfsOY08jNIzIFekb
-         JjjA==
-X-Gm-Message-State: AOAM533YS2aKCBdyG+SO68huYmvcgAI7+LxyQfImffbRQSyBJyNtC5mW
-        kfnPdezsOOxGVKyXmw/64d5z+gveCMVme/iZ
-X-Google-Smtp-Source: ABdhPJwJjxAgXIoa0STM/ctwl7XKN2S3gD84U7QhhkcFnwc7CDFwCV4T2G8m0Y5UdmU11KUiKrLc0w==
-X-Received: by 2002:a63:6647:: with SMTP id a68mr6577284pgc.7.1603895298860;
-        Wed, 28 Oct 2020 07:28:18 -0700 (PDT)
-Received: from k5-sbwpb.flets-east.jp (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
-        by smtp.gmail.com with ESMTPSA id g67sm6581754pfb.9.2020.10.28.07.28.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 07:28:18 -0700 (PDT)
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl,
-        Tsuchiya Yuto <kitakar@gmail.com>
-Subject: [RFC PATCH 0/3] mwifiex: add fw reset quirks for Microsoft Surface
-Date:   Wed, 28 Oct 2020 23:27:50 +0900
-Message-Id: <20201028142753.18855-1-kitakar@gmail.com>
-X-Mailer: git-send-email 2.29.1
+        id S2387928AbgJ1Wbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:31:36 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:25284 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387900AbgJ1Wb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:31:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603924288; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=Uun2BBWyN9O6gGUON67BLRc5oqgnJ4TIcEJ9tL9SWV0=; b=TT6mUTgTmMM58vVGkFiXC8TfoIySxWLa1qjHUFKnicmB7073ddl7Tq2ckdazVJXIMz5lPYSw
+ H8eW6iX9pCzuzfFPV4Q10lyyJI8faeU9EDehsHOkt3Kvw8Bnl7V1YCpKolG2hz69YxPFbZ9B
+ zxiCEkyOunw2pTNYrccKwlLhVBo=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f9981ab4e4fe7071da1fdaf (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Oct 2020 14:35:23
+ GMT
+Sender: ilina=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D8CCEC433F0; Wed, 28 Oct 2020 14:35:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from localhost (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: ilina)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 26B23C433CB;
+        Wed, 28 Oct 2020 14:35:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 26B23C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=ilina@codeaurora.org
+Date:   Wed, 28 Oct 2020 08:35:21 -0600
+From:   Lina Iyer <ilina@codeaurora.org>
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     agross@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mkshah@codeaurora.org
+Subject: Re: [PATCH] soc: qcom: QCOM_RPMH fix build with modular QCOM_RPMH
+Message-ID: <20201028143521.GD19979@codeaurora.org>
+References: <20201027111422.4008114-1-anders.roxell@linaro.org>
+ <20201027211536.GB19979@codeaurora.org>
+ <CADYN=9LP1p9Kg0BJRHs5JMgfWKB-vHxVkr=DdFt3Uyb5Ka0=UQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CADYN=9LP1p9Kg0BJRHs5JMgfWKB-vHxVkr=DdFt3Uyb5Ka0=UQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all,
+On Wed, Oct 28 2020 at 03:43 -0600, Anders Roxell wrote:
+>On Tue, 27 Oct 2020 at 22:15, Lina Iyer <ilina@codeaurora.org> wrote:
+>>
+>> Hi Anders,
+>>
+>> On Tue, Oct 27 2020 at 05:14 -0600, Anders Roxell wrote:
+>> >When building allmodconfig leading to the following link error with
+>> >CONFIG_QCOM_RPMH=y and CONFIG_QCOM_COMMAND_DB=m:
+>> >
+>> >aarch64-linux-gnu-ld: drivers/clk/qcom/clk-rpmh.o: in function `clk_rpmh_probe':
+>> >  drivers/clk/qcom/clk-rpmh.c:474: undefined reference to `cmd_db_read_addr'
+>> >  drivers/clk/qcom/clk-rpmh.c:474:(.text+0x254): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `cmd_db_read_addr'
+>> >
+>> >Fix this by adding a Kconfig depenency and forcing QCOM_RPMH to be a
+>> >module when QCOM_COMMAND_DB is a module. Also removing the dependency on
+>> >'ARCH_QCOM || COMPILE_TEST' since that is already a dependency for
+>> >QCOM_COMMAND_DB.
+>> >
+>> >Fixes: 778279f4f5e4 ("soc: qcom: cmd-db: allow loading as a module")
+>> >Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+>> >---
+>> > drivers/soc/qcom/Kconfig | 2 +-
+>> > 1 file changed, 1 insertion(+), 1 deletion(-)
+>> >
+>> >diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+>> >index 9b4ae9c16ba7..3bdd1604f78f 100644
+>> >--- a/drivers/soc/qcom/Kconfig
+>> >+++ b/drivers/soc/qcom/Kconfig
+>> >@@ -109,7 +109,7 @@ config QCOM_RMTFS_MEM
+>> >
+>> > config QCOM_RPMH
+>> >       tristate "Qualcomm RPM-Hardened (RPMH) Communication"
+>> >-      depends on ARCH_QCOM || COMPILE_TEST
+>> >+      depends on QCOM_COMMAND_DB
+>> A solution was posted in the mailing list alredy -
+>> https://lore.kernel.org/linux-arm-msm/20201008040907.7036-1-ilina@codeaurora.org/
+>
+>I missed that one, thanks.
+>
+>>
+>> If you get a chance, please give that a shot to see if that works for
+>> you.
+>
+>That will work too, but the "depends on ARCH_QCOM || COMPILE_TEST"
+>isn't needed since that is already the dependency for QCOM_COMMAND_DB.
+>So that should be met here too or am I missing something?
+>
+Sure, if you want to post an update to the patch, that would be fine
+too.
+Bjorn: Have you picked up this patch yet? If he hasn't please feel free
+to update the patch. Or, I can do that as well.
 
-This series adds firmware reset quirks for Microsoft Surface devices
-(PCIe-88W8897). Surface devices somehow requires quirks to reset the
-firmware. Otherwise, current mwifiex driver can reset only software level.
-This is not enough to recover from a bad state.
+--Lina
 
-To do so, in the first patch, I added a DMI-based quirk implementation
-for Surface devices that use mwifiex chip.
-
-The required quirk is different by generation. Surface gen3 devices
-(Surface 3 and Surface Pro 3) require a quirk that calls _DSM method
-(the third patch).
-Note that Surface Pro 3 is not yet supported because of the difference
-between Surface 3. On Surface 3, the wifi card will be immediately
-removed/reprobed after the _DSM call. On the other hand, Surface Pro 3
-doesn't. Need to remove/reprobe wifi card ourselves. This behavior makes
-the support difficult.
-
-Surface gen4+ devices (Surface Pro 4 and later) require a quirk that
-puts wifi into D3cold before FLR.
-
-While here, created new files for quirks (mwifiex/pcie_quirks.c and
-mwifiex/pcie_quirks.h) because the changes are a little bit too big to
-add into pcie.c.
-
-Thanks,
-Tsuchiya Yuto
-
-Tsuchiya Yuto (3):
-  mwifiex: pcie: add DMI-based quirk impl for Surface devices
-  mwifiex: pcie: add reset_d3cold quirk for Surface gen4+ devices
-  mwifiex: pcie: add reset_wsid quirk for Surface 3
-
- drivers/net/wireless/marvell/mwifiex/Makefile |   1 +
- drivers/net/wireless/marvell/mwifiex/pcie.c   |  21 ++
- drivers/net/wireless/marvell/mwifiex/pcie.h   |   2 +
- .../wireless/marvell/mwifiex/pcie_quirks.c    | 246 ++++++++++++++++++
- .../wireless/marvell/mwifiex/pcie_quirks.h    |  17 ++
- 5 files changed, 287 insertions(+)
- create mode 100644 drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
- create mode 100644 drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
-
--- 
-2.29.1
-
+>Cheers,
+>Anders
+>
+>>
+>> Thanks,
+>> Lina
+>>
+>> >       help
+>> >         Support for communication with the hardened-RPM blocks in
+>> >         Qualcomm Technologies Inc (QTI) SoCs. RPMH communication uses an
+>> >--
+>> >2.28.0
+>> >
