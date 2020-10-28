@@ -2,311 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63DA29D682
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD6129D7BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731349AbgJ1WPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53180 "EHLO
+        id S1732827AbgJ1W00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731344AbgJ1WPf (ORCPT
+        with ESMTP id S1732288AbgJ1W0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:15:35 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195F8C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:15:35 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k21so6498wmi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:15:35 -0700 (PDT)
+        Wed, 28 Oct 2020 18:26:24 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F448C0613CF;
+        Wed, 28 Oct 2020 15:26:23 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id t20so1102441edr.11;
+        Wed, 28 Oct 2020 15:26:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WWU1/XSxFhXiLqRvqrs/YoEaZri0rD3iuPB1YtRZ+X8=;
-        b=h1skedaF18ojhV+Le1rhp6mCSmmK5EYRAgLnTP2tcTXFhxyAcBjBjbZWYGzck+F9B3
-         sM6aEZZ4fBdSsdE3foshqRj56FWvq9MAiaNa0fmLzsOSyGC0CZr8TlvSpaKEuFr7/XEl
-         MqPZZ52nTkBaSgjJSMxx94410pbEUO6PNPFYI4ASig6/ESLIPI9vMepxp+mg0bei6+dr
-         koWFKRCVWAxXCLzmZ06yFrxoWdT1Moo4mc/558zWtWC1tEp+6Z0FD6qfz6oYLLrhTWl7
-         jM32/qGuHGG4iFWRW1ExVsX6x1m8VdVDqTyQQZ1//Yd6YHpLB46mQx1ljgB4B9cnUjey
-         JOMg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=DFt3OsdRuEz3CXOLtAVxHXrZK5+IKIOLidQMqe1NacM=;
+        b=JsDlWTxfzAuIg2nrxgAAaqdUyd+UeKHpmbYpAf5+6Cag2nEZBupfl0u8jvleNBW6xJ
+         oVgeyeyCboCMPA0sVMsp6RUPF0xBCZOFF9cnWhOxYh0Lwo+19y8y/eSOoa4dfTA83iuE
+         rOUduuUgo6IjDQNE+RttmeyNhPejU4hzaVSkMpHbMaaKgIv/K8ECX3G1mmHxJ0gmhk5M
+         u/JQQDeIot++TKYYpbMJbywgT552zizhjWbfCDoKk7oet4sNb4iJxlM1iI3xr4O0wCiL
+         VZYfhcsx6bBrDK4Lx3J4j5h+HetgwTSee1MYEZLmIoLikoykr0WtsJqHWzZ2Hkfg0gfm
+         10GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WWU1/XSxFhXiLqRvqrs/YoEaZri0rD3iuPB1YtRZ+X8=;
-        b=cEMTAieRcfVdGwwKZ1ywFhLpsIFiROEffY6WFgHxonfsd/WkksnGpwKwf/k341vOb8
-         p088QBoDDuEUzu1ctc0k+IYATVg5CX10JZijUxwtxtRoYeuuGbLLvGHM3Het47is/30B
-         JWgcZr/QCBzuOFwd6/WvDqRjbrq0plFvqpT51bEvzkMgGLuzqvOE1cKiJ0ckxzw8Ftku
-         sB15Mwg4AbXVKORb/eYI3QYEVorp2PyCE2wRV0u7LyIP1zIC3whEooNlPaDhQjJifJzN
-         X4tR3HBirAXXlX4E+I6/eQWucZS2x5ondi8PW6L4xzIt8j39wEK7g677akkeyGGwM2sG
-         n12A==
-X-Gm-Message-State: AOAM533mqQAZlL52V4DwR56seOqQNSEaV8/kCfqj0j/uQwCohA3+/EMB
-        S2klw9Fst6le5oV9iZU89PDlksfYA9W3cHjdh2Z8/jRI0tc=
-X-Google-Smtp-Source: ABdhPJxqZu7iRwXpQKGFhXCX8IConzfxYE2Rl0Z7MXo07eaLVmfZ27D/Wu12UTPwpNuwjO4xLC4DCzJWH/BNe7gtMAg=
-X-Received: by 2002:a7b:cf25:: with SMTP id m5mr284928wmg.124.1603903072281;
- Wed, 28 Oct 2020 09:37:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DFt3OsdRuEz3CXOLtAVxHXrZK5+IKIOLidQMqe1NacM=;
+        b=ZRdSZPwefNyY/46zBZdD4KFY+p+Tg7YsfilP+tNGAzJLDRHRoKRhTjGwxEqXtuZsPX
+         Uzm2DMqtAWwLYwdyHYp1b6TOdGDtmIXH+3xA3Eq7r5uufOAWBGz7306mfWdSqOM/yTBA
+         REbPs1eS/bIvQIXfvxerd8Posz4mtrlPSnGWKF8vJtTrGPuOsgOC/aceb/xCaLSAofyR
+         GRNFa20abh0kQYA/Agj8QU2bHeXW5etKmh11VCqHKfrtNgryGfiWM2Z5lIRg/nN9fBVo
+         N6g+6lGpLtCjXD+ALF7yWxeaTLaVew5WRKAtATXhg3FBJOzXHrktYE3EwwD2g6szxOQG
+         fiSg==
+X-Gm-Message-State: AOAM532v+VZTRjz30RmIWB5Nv/yV1JxbpOqOoCGZd+/aCCGDy7ziuBEW
+        jzReGT2ye29QoGfYtsMhOAou1mxNL/w=
+X-Google-Smtp-Source: ABdhPJzLDPFfkFNWRJSCu21o/qzBa6227icsqhYSbn8/HpDZ+nrlhJvtmoj9iehd/PZp9PNOe1wCZg==
+X-Received: by 2002:a50:ef12:: with SMTP id m18mr8774172eds.313.1603903534856;
+        Wed, 28 Oct 2020 09:45:34 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id w22sm104171edu.15.2020.10.28.09.45.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 09:45:33 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 17:45:31 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        JC Kuo <jckuo@nvidia.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH] phy: tegra: xusb: Fix dangling pointer on probe failure
+Message-ID: <20201028164531.GA252854@ulmo>
+References: <20201013095820.311376-1-maz@kernel.org>
 MIME-Version: 1.0
-References: <20201028085632.825804-1-namhyung@kernel.org>
-In-Reply-To: <20201028085632.825804-1-namhyung@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 28 Oct 2020 09:37:39 -0700
-Message-ID: <CAP-5=fWxPdE_UVRewNUGDrTi9A8j+OYsjsHQLJsVDkMV2tRMBA@mail.gmail.com>
-Subject: Re: [PATCH] perf data: Allow to use stdio functions for pipe mode
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ReaqsoxgOBHFXBhH"
+Content-Disposition: inline
+In-Reply-To: <20201013095820.311376-1-maz@kernel.org>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 1:56 AM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> When perf data is in a pipe, it reads each event separately using
-> read(2) syscall.  This is a huge performance bottleneck when
-> processing large data like in perf inject.  Also perf inject needs to
-> use write(2) syscall for the output.
->
-> So convert it to use buffer I/O functions in stdio library for pipe
-> data.  This makes inject-build-id bench time drops from 20ms to 8ms.
 
-This is great! Reading the numbers below the times are reduced to
-67.9% of their previous, this is a little less than 20ms to 8ms so
-perhaps check that number.
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->   $ perf bench internals inject-build-id
->   # Running 'internals/inject-build-id' benchmark:
->     Average build-id injection took: 8.074 msec (+- 0.013 msec)
->     Average time per event: 0.792 usec (+- 0.001 usec)
->     Average memory usage: 8328 KB (+- 0 KB)
->     Average build-id-all injection took: 5.490 msec (+- 0.008 msec)
->     Average time per event: 0.538 usec (+- 0.001 usec)
->     Average memory usage: 7563 KB (+- 0 KB)
->
-> This patch enables it just for perf inject when used with pipe (it's a
-> default behavior).  Maybe we could do it for perf record and/or report
-> later..
-
-For perf record there is also the async IO used for writing. I like
-that this patch is adding the reading to perf_data. Should the async
-IO code live in perf_data rather than record? Should async IO be used
-for reading in that case? What would be the policy of using stdio,
-not-stdio and async IO?
-
-Thanks,
-Ian
-
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+On Tue, Oct 13, 2020 at 10:58:20AM +0100, Marc Zyngier wrote:
+> If, for some reason, the xusb PHY fails to probe, it leaves
+> a dangling pointer attached to the platform device structure.
+>=20
+> This would normally be harmless, but the Tegra XHCI driver then
+> goes and extract that pointer from the PHY device. Things go
+> downhill from there:
+>=20
+>     8.752082] [004d554e5145533c] address between user and kernel address =
+ranges
+> [    8.752085] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> [    8.752088] Modules linked in: max77620_regulator(E+) xhci_tegra(E+) s=
+dhci_tegra(E+) xhci_hcd(E) sdhci_pltfm(E) cqhci(E) fixed(E) usbcore(E) scsi=
+_mod(E) sdhci(E) host1x(E+)
+> [    8.752103] CPU: 4 PID: 158 Comm: systemd-udevd Tainted: G S      W   =
+E     5.9.0-rc7-00298-gf6337624c4fe #1980
+> [    8.752105] Hardware name: NVIDIA Jetson TX2 Developer Kit (DT)
+> [    8.752108] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=3D--)
+> [    8.752115] pc : kobject_put+0x1c/0x21c
+> [    8.752120] lr : put_device+0x20/0x30
+> [    8.752121] sp : ffffffc012eb3840
+> [    8.752122] x29: ffffffc012eb3840 x28: ffffffc010e82638
+> [    8.752125] x27: ffffffc008d56440 x26: 0000000000000000
+> [    8.752128] x25: ffffff81eb508200 x24: 0000000000000000
+> [    8.752130] x23: ffffff81eb538800 x22: 0000000000000000
+> [    8.752132] x21: 00000000fffffdfb x20: ffffff81eb538810
+> [    8.752134] x19: 3d4d554e51455300 x18: 0000000000000020
+> [    8.752136] x17: ffffffc008d00270 x16: ffffffc008d00c94
+> [    8.752138] x15: 0000000000000004 x14: ffffff81ebd4ae90
+> [    8.752140] x13: 0000000000000000 x12: ffffff81eb86a4e8
+> [    8.752142] x11: ffffff81eb86a480 x10: ffffff81eb862fea
+> [    8.752144] x9 : ffffffc01055fb28 x8 : ffffff81eb86a4a8
+> [    8.752146] x7 : 0000000000000001 x6 : 0000000000000001
+> [    8.752148] x5 : ffffff81dff8bc38 x4 : 0000000000000000
+> [    8.752150] x3 : 0000000000000001 x2 : 0000000000000001
+> [    8.752152] x1 : 0000000000000002 x0 : 3d4d554e51455300
+> [    8.752155] Call trace:
+> [    8.752157]  kobject_put+0x1c/0x21c
+> [    8.752160]  put_device+0x20/0x30
+> [    8.752164]  tegra_xusb_padctl_put+0x24/0x3c
+> [    8.752170]  tegra_xusb_probe+0x8b0/0xd10 [xhci_tegra]
+> [    8.752174]  platform_drv_probe+0x60/0xb4
+> [    8.752176]  really_probe+0xf0/0x504
+> [    8.752179]  driver_probe_device+0x100/0x170
+> [    8.752181]  device_driver_attach+0xcc/0xd4
+> [    8.752183]  __driver_attach+0xb0/0x17c
+> [    8.752185]  bus_for_each_dev+0x7c/0xd4
+> [    8.752187]  driver_attach+0x30/0x3c
+> [    8.752189]  bus_add_driver+0x154/0x250
+> [    8.752191]  driver_register+0x84/0x140
+> [    8.752193]  __platform_driver_register+0x54/0x60
+> [    8.752197]  tegra_xusb_init+0x40/0x1000 [xhci_tegra]
+> [    8.752201]  do_one_initcall+0x54/0x2d0
+> [    8.752205]  do_init_module+0x68/0x29c
+> [    8.752207]  load_module+0x2178/0x26c0
+> [    8.752209]  __do_sys_finit_module+0xb0/0x120
+> [    8.752211]  __arm64_sys_finit_module+0x2c/0x40
+> [    8.752215]  el0_svc_common.constprop.0+0x80/0x240
+> [    8.752218]  do_el0_svc+0x30/0xa0
+> [    8.752220]  el0_svc+0x18/0x50
+> [    8.752223]  el0_sync_handler+0x90/0x318
+> [    8.752225]  el0_sync+0x158/0x180
+> [    8.752230] Code: a9bd7bfd 910003fd a90153f3 aa0003f3 (3940f000)
+> [    8.752232] ---[ end trace 90f6c89d62d85ff5 ]---
+>=20
+> Reset the pointer on probe failure fixes the issue.
+>=20
+> Fixes: 53d2a715c2403 ("phy: Add Tegra XUSB pad controller support")
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 > ---
->  tools/perf/builtin-inject.c |  2 ++
->  tools/perf/util/data.c      | 36 +++++++++++++++++++++++++++++++++---
->  tools/perf/util/data.h      | 11 ++++++++++-
->  tools/perf/util/header.c    |  8 ++++----
->  tools/perf/util/session.c   |  7 ++++---
->  5 files changed, 53 insertions(+), 11 deletions(-)
->
-> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> index 452a75fe68e5..14d6c88fed76 100644
-> --- a/tools/perf/builtin-inject.c
-> +++ b/tools/perf/builtin-inject.c
-> @@ -853,10 +853,12 @@ int cmd_inject(int argc, const char **argv)
->                 .output = {
->                         .path = "-",
->                         .mode = PERF_DATA_MODE_WRITE,
-> +                       .use_stdio = true,
->                 },
->         };
->         struct perf_data data = {
->                 .mode = PERF_DATA_MODE_READ,
-> +               .use_stdio = true,
->         };
->         int ret;
->
-> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
-> index c47aa34fdc0a..47b5a4b50ca5 100644
-> --- a/tools/perf/util/data.c
-> +++ b/tools/perf/util/data.c
-> @@ -174,8 +174,16 @@ static bool check_pipe(struct perf_data *data)
->                         is_pipe = true;
->         }
->
-> -       if (is_pipe)
-> -               data->file.fd = fd;
-> +       if (is_pipe) {
-> +               if (data->use_stdio) {
-> +                       const char *mode;
-> +
-> +                       mode = perf_data__is_read(data) ? "r" : "w";
-> +                       data->file.fptr = fdopen(fd, mode);
-> +               } else {
-> +                       data->file.fd = fd;
-> +               }
-> +       }
->
->         return data->is_pipe = is_pipe;
+>  drivers/phy/tegra/xusb.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
+> index de4a46fe1763..ad88d74c1884 100644
+> --- a/drivers/phy/tegra/xusb.c
+> +++ b/drivers/phy/tegra/xusb.c
+> @@ -1242,6 +1242,7 @@ static int tegra_xusb_padctl_probe(struct platform_=
+device *pdev)
+>  reset:
+>  	reset_control_assert(padctl->rst);
+>  remove:
+> +	platform_set_drvdata(pdev, NULL);
+>  	soc->ops->remove(padctl);
+>  	return err;
 >  }
-> @@ -334,6 +342,9 @@ int perf_data__open(struct perf_data *data)
->         if (check_pipe(data))
->                 return 0;
->
-> +       /* currently it allows stdio for pipe only */
-> +       data->use_stdio = false;
-> +
->         if (!data->path)
->                 data->path = "perf.data";
->
-> @@ -353,7 +364,21 @@ void perf_data__close(struct perf_data *data)
->                 perf_data__close_dir(data);
->
->         zfree(&data->file.path);
-> -       close(data->file.fd);
-> +
-> +       if (data->use_stdio)
-> +               fclose(data->file.fptr);
-> +       else
-> +               close(data->file.fd);
-> +}
-> +
-> +ssize_t perf_data__read(struct perf_data *data, void *buf, size_t size)
-> +{
-> +       if (data->use_stdio) {
-> +               if (fread(buf, size, 1, data->file.fptr) == 1)
-> +                       return size;
-> +               return feof(data->file.fptr) ? 0 : -1;
-> +       }
-> +       return readn(data->file.fd, buf, size);
->  }
->
->  ssize_t perf_data_file__write(struct perf_data_file *file,
-> @@ -365,6 +390,11 @@ ssize_t perf_data_file__write(struct perf_data_file *file,
->  ssize_t perf_data__write(struct perf_data *data,
->                               void *buf, size_t size)
->  {
-> +       if (data->use_stdio) {
-> +               if (fwrite(buf, size, 1, data->file.fptr) == 1)
-> +                       return size;
-> +               return -1;
-> +       }
->         return perf_data_file__write(&data->file, buf, size);
->  }
->
-> diff --git a/tools/perf/util/data.h b/tools/perf/util/data.h
-> index 75947ef6bc17..c563fcbb0288 100644
-> --- a/tools/perf/util/data.h
-> +++ b/tools/perf/util/data.h
-> @@ -2,6 +2,7 @@
->  #ifndef __PERF_DATA_H
->  #define __PERF_DATA_H
->
-> +#include <stdio.h>
->  #include <stdbool.h>
->
->  enum perf_data_mode {
-> @@ -16,7 +17,10 @@ enum perf_dir_version {
->
->  struct perf_data_file {
->         char            *path;
-> -       int              fd;
-> +       union {
-> +               int      fd;
-> +               FILE    *fptr;
-> +       };
->         unsigned long    size;
->  };
->
-> @@ -26,6 +30,7 @@ struct perf_data {
->         bool                     is_pipe;
->         bool                     is_dir;
->         bool                     force;
-> +       bool                     use_stdio;
->         enum perf_data_mode      mode;
->
->         struct {
-> @@ -62,11 +67,15 @@ static inline bool perf_data__is_single_file(struct perf_data *data)
->
->  static inline int perf_data__fd(struct perf_data *data)
->  {
-> +       if (data->use_stdio)
-> +               return fileno(data->file.fptr);
-> +
->         return data->file.fd;
->  }
->
->  int perf_data__open(struct perf_data *data);
->  void perf_data__close(struct perf_data *data);
-> +ssize_t perf_data__read(struct perf_data *data, void *buf, size_t size);
->  ssize_t perf_data__write(struct perf_data *data,
->                               void *buf, size_t size);
->  ssize_t perf_data_file__write(struct perf_data_file *file,
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index be850e9f8852..d9a70154426b 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -3652,7 +3652,8 @@ static int perf_file_section__process(struct perf_file_section *section,
->  }
->
->  static int perf_file_header__read_pipe(struct perf_pipe_file_header *header,
-> -                                      struct perf_header *ph, int fd,
-> +                                      struct perf_header *ph,
-> +                                      struct perf_data* data,
->                                        bool repipe)
->  {
->         struct feat_fd ff = {
-> @@ -3661,7 +3662,7 @@ static int perf_file_header__read_pipe(struct perf_pipe_file_header *header,
->         };
->         ssize_t ret;
->
-> -       ret = readn(fd, header, sizeof(*header));
-> +       ret = perf_data__read(data, header, sizeof(*header));
->         if (ret <= 0)
->                 return -1;
->
-> @@ -3684,8 +3685,7 @@ static int perf_header__read_pipe(struct perf_session *session)
->         struct perf_header *header = &session->header;
->         struct perf_pipe_file_header f_header;
->
-> -       if (perf_file_header__read_pipe(&f_header, header,
-> -                                       perf_data__fd(session->data),
-> +       if (perf_file_header__read_pipe(&f_header, header, session->data,
->                                         session->repipe) < 0) {
->                 pr_debug("incompatible file format\n");
->                 return -EINVAL;
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 7a5f03764702..f901a09a58e4 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -1923,7 +1923,6 @@ static int __perf_session__process_pipe_events(struct perf_session *session)
->  {
->         struct ordered_events *oe = &session->ordered_events;
->         struct perf_tool *tool = session->tool;
-> -       int fd = perf_data__fd(session->data);
->         union perf_event *event;
->         uint32_t size, cur_size = 0;
->         void *buf = NULL;
-> @@ -1943,7 +1942,8 @@ static int __perf_session__process_pipe_events(struct perf_session *session)
->         ordered_events__set_copy_on_queue(oe, true);
->  more:
->         event = buf;
-> -       err = readn(fd, event, sizeof(struct perf_event_header));
-> +       err = perf_data__read(session->data, event,
-> +                             sizeof(struct perf_event_header));
->         if (err <= 0) {
->                 if (err == 0)
->                         goto done;
-> @@ -1975,7 +1975,8 @@ static int __perf_session__process_pipe_events(struct perf_session *session)
->         p += sizeof(struct perf_event_header);
->
->         if (size - sizeof(struct perf_event_header)) {
-> -               err = readn(fd, p, size - sizeof(struct perf_event_header));
-> +               err = perf_data__read(session->data, p,
-> +                                     size - sizeof(struct perf_event_header));
->                 if (err <= 0) {
->                         if (err == 0) {
->                                 pr_err("unexpected end of event stream\n");
-> --
-> 2.29.0.rc2.309.g374f81d7ae-goog
->
+
+Sorry, I had missed this before. Why is this necessary? The driver core
+already does dev_set_drvdata(dev, NULL) on failure, which is the same as
+your platform_set_drvdata() here.
+
+I suppose one possible explanation would be if for some reason we end up
+here in the error cleanup path but with err =3D=3D 0.
+
+Do you have more information on when this happens so that I can repro
+and investigate? Alternatively, if you've still got this set up, can you
+do a quick test to see if "err" is indeed a negative error code when we
+get here?
+
+Thierry
+
+--ReaqsoxgOBHFXBhH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+ZoCcACgkQ3SOs138+
+s6FewhAAjHyWUxUTrWwxoY+I9rdfNymvaMtSJt34EoRsABbllyMzBbUoG2v9Kxbc
+qjZJoCb8ZfENweLAQ+O1DidDXEeu2/dpMh1stNkfhAIW0pY7g2kcsQXP8lqLK8fR
+u9gp2lgWZ8nzTV9rW0FEvNMZgZZGVQUJ27BEoI2JsG1+u4OZZ1RQO5JUfX9xcefa
+KWL+NFW+Pg8hWV8McfZXy9yfJ+Lo65IQS4q4I9zjjicUjS+pRy6RCfS6uFW8moeG
+wVr0Fuj5Ixy9//wYqmbvi9tRGLdc3FFk7ZB26Cauya4povqbMp8n0zBBaJsdosru
+wEL3c4gy8Gjagch2ntOYCF+ib2ySlUKZjWwXWsdlZo48fHi+fw7ujfnqUxJupZ4s
+LwI+uyPhoxzw70qd31IV3btRYYWf/bCsVvvoA8o5yLWBCDCmBnUKYuOe62/jWDb2
+8EUcmxmWPVhF+3ZyQLxFiGjIveKqscBnd/uR7p/Rbmf+SDFUpovGWfZdnaxOKijq
+Wfdse8clRBF/55ESyELXwFfy2MQJqcENdjMOGIyURCL1S0AF9l86tbYJ7JmI+Mk7
+mEi0gnwAUQYvaf5wgBxVoF0a/AIzfNQ4YtsNPK5Y40uDMRR6+W7mMFbnvEjYMcRw
+2JkqTgK5lQpfTbiBE+WWikubNwnLbDOU+glMXtfEvh++8wU6RDk=
+=1snv
+-----END PGP SIGNATURE-----
+
+--ReaqsoxgOBHFXBhH--
