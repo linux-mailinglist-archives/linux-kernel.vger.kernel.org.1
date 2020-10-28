@@ -2,121 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D07E29DAF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A819F29DADD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgJ1XmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
+        id S2389102AbgJ1Xgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726094AbgJ1XmI (ORCPT
+        with ESMTP id S2388349AbgJ1XgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:42:08 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80296C0613CF;
-        Wed, 28 Oct 2020 16:42:08 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id h12so791397qtc.9;
-        Wed, 28 Oct 2020 16:42:08 -0700 (PDT)
+        Wed, 28 Oct 2020 19:36:21 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB43C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:36:21 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id x1so1353090oic.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:36:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=04ThpYsSViFhWqOQvQSGIlYZRGcXGFtIhUlX8pfHTD8=;
-        b=OC6Zm4U5t2xQjcut4yBwkeEk5KarEkjfCrPdUlu381Nv4vJI895Svp7x8sDb3IBxS3
-         fPfhT1B7HGC5UpOKgQPbPKJ8OQ+Wh5ei1AjIXfyGnvpaGsc8RYdCba4m2e8dSOSNKG0r
-         6IaEkkFLl4zzAivCnLsMl8DdDeZ7xDzu5G81g=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Yce2yiNewFI2iY/zOa+oQW9hS6ij7XHoRO2uiMEqpAc=;
+        b=lMeN0+pZvj3P8r89g9GaQz5eQqKRRMGBpiztTu2ol7AgmAGqZ34/tBQ8enrP+4MZU9
+         at8+QY3FIoq5xrMj4cpnWnQ+f8DM0aAxPOt3qkNAJr/5z6QivWpy+HWZT/U804aYa3Oc
+         uaav2pE8L/m2ZR83px1u+m5EbphHspztdlVmDACWMnorkdChDcwgpTRDVqT84xWOFuQU
+         VJEAE7b0YxxsoSw7qD7Avfx6/8BTgSi9LIp9iujJjbYnsVC/eI5FSI4BkypvUV4Zio+t
+         YCtp3p/4GqZWeVeAq5h5Vx3a7sMJOhXcH1zr6M2VALCLd29VNmtMt+gSJwP1VP9vcrpC
+         Ossg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=04ThpYsSViFhWqOQvQSGIlYZRGcXGFtIhUlX8pfHTD8=;
-        b=DLMle3rBT5FB64Jk9Cu8f3eYwMY/3daZc7z+O2hNNbwt5pFquzv7nLowGJY4uNv0mj
-         uKcBG+PN5LFZZs7P+mUs34LQg5zJWR/oLVa9t2vrARLE2fjdrzL3Ij8qUs3dhSU0QO6y
-         +4w0I6BQOW7CInLVoEzrzDyL3oC4xg++q/Hg6QWSU5LYfQLRCIGNX6gAYmuIY2JeHpOh
-         hbi1xa1vMnyNz6L5bCUzZ3k1+tz/QQOXXZGGsaym8W56q7asN+U8fjaU9T3OiC238qr5
-         B+P/3RgZAVkkfiwH9M2aLqz8O/+3nScpD31x78+BKGDUOi9BddixEVME8i1VrIOBFgYl
-         nJtQ==
-X-Gm-Message-State: AOAM5300wHRy/OUwaVJZqGthLvjrALd7PddJlhopgrvW/ozb65VqlMum
-        I6R+hxE++nacojzzX1wzL4GZ5uBfyI2GR19WswbUdjtlX2xVCg==
-X-Google-Smtp-Source: ABdhPJyi2tYbl11+8oD/pTg7MqvJo0FJxH9J/m9YOi24yaf3RoUaPY8LWOMrUDpfxRRNH1Z9ZM9QvQ/K9quBWlRWBR8=
-X-Received: by 2002:a05:620a:1303:: with SMTP id o3mr5853719qkj.66.1603861861220;
- Tue, 27 Oct 2020 22:11:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201012033150.21056-1-billy_tsai@aspeedtech.com>
- <20201012033150.21056-3-billy_tsai@aspeedtech.com> <CACPK8XdYvSmwdAkBzAO3kC8_PYa3CtPkNb0VxcOhmb2UYz5zDA@mail.gmail.com>
- <E0B8BD13-86F6-486E-95DF-1038D7F59A8B@aspeedtech.com>
-In-Reply-To: <E0B8BD13-86F6-486E-95DF-1038D7F59A8B@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 28 Oct 2020 05:10:49 +0000
-Message-ID: <CACPK8Xeg_LRGv1EEm7cdDWK2xST0mBP=iG7=43UE5qmEMMDsHQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] Arm: dts: aspeed-g6: Add sgpio node
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Yce2yiNewFI2iY/zOa+oQW9hS6ij7XHoRO2uiMEqpAc=;
+        b=Zfzb9VnLnhscONRS1Mbb0g3LT7YCK+pZdHxIRPGQ1sqpSwYjjheW09mmpk/7dh4Hv7
+         vThrtW/0H1by/bzMuGd5xn5bs+2C1zeXmoKYWiNCl00RCreTW0vUUEOdo+gvXdXFyNU8
+         FMzz5gax3fZEtlMCDgPItxAto2uPlgEaOakRe7gtCWZBOf9IGgLAsvHXQGNspgVYKezO
+         6Dlm/MNZKiWkylxGpcqgM5NkJb3N7z6wBdjum70vNsG9cyAAYPXc84gKmm+1ORpb59FH
+         wj/fHg/EVFuCp+NYl2X4tTxbdZr6rMvF2/XfnY8XK2IafYiJcxARmS0Y6voWzwgJiL3s
+         GJtA==
+X-Gm-Message-State: AOAM531sainR6Me5c/Bgu9vjfH0HG50dyK67Tbgvmpx26Cx5Jzrz2c8v
+        cJvHlx+fEkjAp66ejqWdX/WzCWnhFyaTMQ==
+X-Google-Smtp-Source: ABdhPJxpAd7uGcnRHNvggQC5XPdIIhFQntCLzZWllZAO7S6C3Rdb/go+r17medLMX9XsBOyG36hKmw==
+X-Received: by 2002:a17:90b:111:: with SMTP id p17mr5475326pjz.159.1603864112455;
+        Tue, 27 Oct 2020 22:48:32 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id z16sm4439446pfq.33.2020.10.27.22.48.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Oct 2020 22:48:31 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 11:18:29 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Stephan Gerhold <stephan@gerhold.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        nks@flawful.org, Georgi Djakov <georgi.djakov@linaro.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wolfram Sang <wsa@the-dreams.de>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH V2 2/2] cpufreq: dt: Refactor initialization to handle
+ probe deferral properly
+Message-ID: <20201028054829.42zckdtwvj67tcfl@vireshk-i7>
+References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
+ <f75c61f193f396608d592ae2a9938264d582c038.1598260050.git.viresh.kumar@linaro.org>
+ <CAMuHMdXLQKN5n58NvOp43vhc3ryLXWurBSsmcW9Q=oW502PYOQ@mail.gmail.com>
+ <20201013095613.mbgmjwzojg5wxmau@vireshk-i7>
+ <CAMuHMdVAJdHVMtK3Sc4sJiJGAwz1J4dKODBFcNzgstaktyKkOw@mail.gmail.com>
+ <20201016050347.ers54itzmxgijzsy@vireshk-i7>
+ <CAMuHMdUUzoFxbJts3gVC7i5A5daa_TYzKdrGEHho=3a1eeC_ww@mail.gmail.com>
+ <20201016080730.h7u3jmlyjbyhqn3t@vireshk-i7>
+ <CAMuHMdV1pnE===53_8r596G=9ktw-UMqD3N=T_F34Yk9aw9wWA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdV1pnE===53_8r596G=9ktw-UMqD3N=T_F34Yk9aw9wWA@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 at 04:56, Billy Tsai <billy_tsai@aspeedtech.com> wrote:
->
-> Hi Joel,
->
-> Thanks for the review.
->
-> On 2020/10/12, 12:35 PM, Joel Stanley wrote:
->
->     > On Mon, 12 Oct 2020 at 03:32, Billy Tsai <billy_tsai@aspeedtech.com> wrote:
->     > >
->     > > This patch is used to add sgpiom and sgpios nodes and add compatible
->     > > string for sgpiom.
->     >
->     > You also need to add sgpios documentation to the bindings docs.
->     >
->     > Whenever you add new device tree bindings to the kernel tree you
->     > should add documentation for them.
->     >
->     > When preparing patches for submission, use scripts/checkpatch.pl to
->     > check for common issues. It will warn you if you are adding strings
->     > that are not documented.
->     >
->     > Cheers,
->     >
->     > Joel
->     >
->    Because the driver of sgpios doesn't be implemented, so I don't know how to describe it at sgpio-aspeed.txt.
->    Can I just add  compatible string " aspeed,ast2600-sgpios " to the document for bypassing the warning of checkpatch?
+On 27-10-20, 17:29, Geert Uytterhoeven wrote:
+> On plain v5.9, with #define DEBUG and a few extra debug prints
+> added, I get:
+> 
+>     cpufreq_dt: cpufreq_init:164: policy->cpu = 0
+>     cpufreq_dt: cpufreq_init:165: policy->cpus = 0
+>     cpufreq_dt: cpufreq_init:166: policy->related_cpus =
+>     cpufreq_dt: cpufreq_init:167: policy->real_cpus =
+>     cpu cpu0: dev_pm_opp_of_get_sharing_cpus: Couldn't find opp node.
+>     of: dev_pm_opp_of_cpumask_add_table:1049
+>     of: dev_pm_opp_of_cpumask_add_table:1054: cpu 0
+>     cpu cpu0: dev_pm_opp_of_add_table:954
+>     cpu cpu0: dev_pm_opp_of_add_table:956:
+> dev_pm_opp_get_opp_table_indexed() returned (ptrval)
+>     cpu cpu0: _of_add_opp_table_v1:891
+>     cpu cpu0: _of_add_opp_table_v1:893: _find_opp_table() returned (ptrval)
+>     cpu cpu0: _of_add_opp_table_v1:909: 6 entries
+>     cpu cpu0: dev_pm_opp_get_opp_count:331
+>     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned (ptrval)
+>     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 6
+>     cpu cpu0: dev_pm_opp_get_opp_count:331
+>     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned (ptrval)
+>     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 6
+>     cpu cpu0: dev_pm_opp_get_opp_count:331
+>     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned (ptrval)
+>     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 6
+>     cpu cpu0: Couldn't find proper 'dynamic-power-coefficient' in DT
+>     cpu cpu0: Couldn't register Energy Model -22
+> 
+> This happens quite late in the boot sequence, long after cpu1 has been
+> brought online.
+> So it finds the v1 opp table for cpu0, which has 6 entries.
+> The last two messages should be harmless, right?
 
-Ignore the sgpios issue for now; we don't have a driver for it so
-there's no need to add strings. Drop that part from your dts patch.
+Yes.
 
->     > >
->     > >  - compatible : Should be one of
->     > > -  "aspeed,ast2400-sgpio", "aspeed,ast2500-sgpio"
->     > > +  "aspeed,ast2400-sgpio", "aspeed,ast2500-sgpio", "aspeed,ast2600-sgpiom"
->     >
->     > I think we should add sgpiom strings for the ast2500 (and ast2400?)
->     > too, as this is how they should have been named in the first place:
->     >
->    If I change the document whether I also need to send the patch for sgpio driver and g5/g4.dtsi?
+> So you say cpufreq is not working? How can I verify that?
 
-For the sgpiom? We already have a driver for that.
+I said it because your earlier logs showed that we defered probed
+again or the count was 0 and we failed. Something like that.
 
-As I said above, make this about fixing the sgpio master and put aside
-the sgpio slave issue for now.
+Give output of this to verify if cpufreq is working or not:
 
-Cheers,
+grep . /sys/devices/system/cpu/cpufreq/policy*/*
 
-Joel
+This will be empty if there is no cpufreq.
 
->     > >  - compatible : Should be one of
->     > >    "aspeed,ast2400-sgpio", "aspeed,ast2500-sgpio"
->     > >   "aspeed,ast2400-sgpiom", "aspeed,ast2500-sgpiom", "aspeed,ast2600-sgpiom"
+> Note that it never tries to do anything for cpu1.
+
+Yes, because we set policy->cpus to both CPU0 and CPU1.
+
+> Note that during s2ram, nothing related is printed.
+> 
+> On v5.10, with similar debug code, things are different. During boot:
+> 
+>     cpu cpu0: dev_pm_opp_of_get_sharing_cpus: Couldn't find opp node.
+>     cpufreq_dt: cpufreq_init:112: policy->cpu = 0
+>     cpufreq_dt: cpufreq_init:113: policy->cpus = 0
+>     cpufreq_dt: cpufreq_init:114: policy->related_cpus =
+>     cpufreq_dt: cpufreq_init:115: policy->real_cpus =
+>     of: dev_pm_opp_of_cpumask_add_table:1075
+>     of: dev_pm_opp_of_cpumask_add_table:1080: cpu 0
+>     cpu cpu0: dev_pm_opp_of_add_table:980
+>     cpu cpu0: dev_pm_opp_of_add_table:982:
+> dev_pm_opp_get_opp_table_indexed() returned (ptrval)
+>     cpu cpu0: _of_add_opp_table_v1:914
+>     cpu cpu0: _of_add_opp_table_v1:916: _find_opp_table() returned (ptrval)
+>     cpu cpu0: _of_add_opp_table_v1:937: 6 entries
+> 
+> Good, found the table with 6 entries.
+
+Good.
+
+>     of: dev_pm_opp_of_cpumask_add_table:1080: cpu 1
+>     cpu cpu1: dev_pm_opp_of_add_table:980
+>     cpu cpu1: dev_pm_opp_of_add_table:982:
+> dev_pm_opp_get_opp_table_indexed() returned (ptrval)
+>     cpu cpu1: _of_add_opp_table_v1:914
+>     cpu cpu1: _of_add_opp_table_v1:916: _find_opp_table() returned (ptrval)
+>     cpu cpu1: _of_add_opp_table_v1:937: 6 entries
+> 
+> Oh, this time it checked cpu1, too (why?), and found 6 entries, good.
+
+Yeah, because of some changes in cpufreq-dt.c, it shouldn't cause any
+issues though.
+
+>     cpu cpu0: dev_pm_opp_get_opp_count:331
+>     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned (ptrval)
+>     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 0
+>     cpu cpu0: OPP table can't be empty
+> 
+> Wait, _get_opp_count() returns 0?
+
+Does this fix it for you as well ?
+
+https://lore.kernel.org/lkml/2c73ab54717ef358b118ea0cfb727b1427e7730a.1602648719.git.viresh.kumar@linaro.org/
+
+I didn't point you to this earlier as your logs said something else.
+
+This is already there in linux-next now.
+
+>     cpufreq_dt: cpufreq_init:112: policy->cpu = 1
+>     cpufreq_dt: cpufreq_init:113: policy->cpus = 1
+>     cpufreq_dt: cpufreq_init:114: policy->related_cpus =
+>     cpufreq_dt: cpufreq_init:115: policy->real_cpus =
+> 
+> Oh, this time cpufreq_init() is called for cpu1, too.
+
+Because we failed for CPU0.
+
+> During s2ram, v5.10-rc1, it redoes most of the above, incl. touching the
+> PMIC, which it shouldn't due in this phase of system resume:
+> 
+>     Disabling non-boot CPUs ...
+>     Enabling non-boot CPUs ...
+>     cpufreq_dt: cpufreq_init:112: policy->cpu = 1
+>     cpufreq_dt: cpufreq_init:113: policy->cpus = 1
+>     cpufreq_dt: cpufreq_init:114: policy->related_cpus =
+>     cpufreq_dt: cpufreq_init:115: policy->real_cpus =
+>     of: dev_pm_opp_of_cpumask_add_table:1075
+>     of: dev_pm_opp_of_cpumask_add_table:1080: cpu 0
+>     cpu cpu0: dev_pm_opp_of_add_table:980
+>     cpu cpu0: dev_pm_opp_of_add_table:982:
+> dev_pm_opp_get_opp_table_indexed() returned f680980b
+>     cpu cpu0: _of_add_opp_table_v1:914
+>     cpu cpu0: _of_add_opp_table_v1:916: _find_opp_table() returned a4afd426
+>     cpu cpu0: _of_add_opp_table_v1:937: 6 entries
+>     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> 
+> The i2c controller is suspended, this could go boom...
+> 
+>     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+>     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+>     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+>     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+>     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+>     of: dev_pm_opp_of_cpumask_add_table:1080: cpu 1
+>     cpu cpu1: dev_pm_opp_of_add_table:980
+>     cpu cpu1: dev_pm_opp_of_add_table:982:
+> dev_pm_opp_get_opp_table_indexed() returned f680980b
+>     cpu cpu1: _of_add_opp_table_v1:914
+>     cpu cpu1: _of_add_opp_table_v1:916: _find_opp_table() returned 9087c76d
+>     cpu cpu1: _of_add_opp_table_v1:937: 6 entries
+>     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+>     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+>     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+>     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+>     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+>     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+>     cpu cpu0: dev_pm_opp_get_opp_count:331
+>     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned f680980b
+>     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 0
+>     cpu cpu0: OPP table can't be empty
+>     CPU1 is up
+
+Lets make the normal boot work first and see about this later.
+
+Also for your next version of debug prints, use %px while printing
+addresses, that way the kernel doesn't hide them anymore and we can
+see which OPP table pointer is getting used at different places. That
+also means that you need to print the opp table's address at different
+places.
+
+-- 
+viresh
