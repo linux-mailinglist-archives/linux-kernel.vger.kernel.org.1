@@ -2,95 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBA829D943
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B77329D97C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389596AbgJ1WuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59114 "EHLO
+        id S2389799AbgJ1Wza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733102AbgJ1WuU (ORCPT
+        with ESMTP id S2389628AbgJ1Wxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:50:20 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D147C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:50:20 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id f4so473895vsk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:50:20 -0700 (PDT)
+        Wed, 28 Oct 2020 18:53:52 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037C2C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:53:52 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id e15so689122pfh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:53:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JyFZVHFIwsjOtixIaapn2aRITWuLE/SXcWB3HZmeB+0=;
-        b=dNUbNC/LibEu/12wPT3wLQU4l253e8d+dRSGFzAgepLVz/D5GuI1DSvndlT3yHGkh/
-         n9+ZaU9FWtxAMEovNiQyvNjOw2fQnsU3Tp+b7GBMRih5wh7uwhZSyUe3wriz6tyb7Gik
-         FiDUGYvYX2rQgZWfceLTcwf5KMTwqo9Fjmw+RShuPnR1bEjmqI1peMLZzz4437Fv22Hi
-         cf/UhI0D6/58RNrUmbJEIfmda/rzatEu/CqjGkFOGakPmmh3NCA36I2t1vb4cRXus6X1
-         jUW8fgoCzhN6wQsbXVe8BTc3sabKsphjtqoaKDcmH4MrSlwHFhe0xZz0IyeHZrNvGbqd
-         R9Gw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=054hj5bRhsBBpQGqDGnOENO4BZVXs3o+bMg+VpLA5ao=;
+        b=DJv9keGHpXKt0BGay4aRS3RrETxtnpW8y9bzWUbJME9+QhC64U7xCZM+HfBN/+xrCL
+         jQqfXy4wGKh1lEHs9451SSLulazmsZLHBXhPzI+rFGigabYCY9Yps5e13cJVIZ/oX3sD
+         OQucSdMXRmcamtkcmtEmcJvp7kCHMR76ETcx8sPMS6ZCd9jbxDeO4ogJ6XMkAMI+JCkQ
+         QqwGksvfE3J9xcQ/0PAZquLkiGx7DXtbjmv6EosGmYDpPiQhlvYqB2Yj58UPkqwo7HGP
+         ej0Rif+cIa/PT6neQXM6kgfZtaxlXkctJrFI95WUA+5Uar1LZ5Yr6l0PG8M+8ddBCRHO
+         kkpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JyFZVHFIwsjOtixIaapn2aRITWuLE/SXcWB3HZmeB+0=;
-        b=Y3BQYZGTiZeDUIdiN68eS8GNnj4DlW6h4HQzk49DRisvrFm/ypaTFDlJX4sAGOsQRj
-         CW4CgVYjW+feL3ol7iHcuRmBHgvnwUqARhhoR+eXdspkO2RBSAEadXyAgVA2zkVrbSYT
-         LtJfGSJWliZAOKqrMWk15dhKicHQjfK3xkpyj5YnaTr1PmGxoZlqhkcJZbNgpOsd5CwZ
-         aI65dRj1FScmxyrV6ArH4uRzysGFMDyHtX376ATL/ctxeM+TMI4J8a8pkVLcFAUGScMu
-         Ux3iV8py7DnrqWTF2MxmrSUYdNnLBCgAjePwMnW/b9OEj/+/O0Q1itFE1m61EDdcCVpx
-         y4PQ==
-X-Gm-Message-State: AOAM533ydwwDiIc5+872gf5XXzS1Sm44v2zs8UUePQJxLO+cBBS10vL+
-        jmSV7JB4IxAJhj1b+xW4ixOA8rkBmKnKug==
-X-Google-Smtp-Source: ABdhPJw9o+T8NOHuEU0meW9VqJXv9khxbpcKHSACWUuhDGD0CmCqrdlnFV6/Aj92ZaPA5qk1PTbUnA==
-X-Received: by 2002:a17:902:864b:b029:d3:ce46:2829 with SMTP id y11-20020a170902864bb02900d3ce462829mr6558463plt.16.1603867574125;
-        Tue, 27 Oct 2020 23:46:14 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id lk13sm3526294pjb.43.2020.10.27.23.46.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Oct 2020 23:46:13 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V1 resend] qcom-geni-se: remove has_opp_table
-Date:   Wed, 28 Oct 2020 12:16:10 +0530
-Message-Id: <08ec1ee1d4252a266956abb5f1e0e0026d753564.1603867487.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=054hj5bRhsBBpQGqDGnOENO4BZVXs3o+bMg+VpLA5ao=;
+        b=IHp1cXebgOsoYoy8ke/QEzRayqtFrHOaAzQnR2KTtH2zQ1HRAbPOjgS0LazYlBG6sp
+         gIU/0MoTv5OopgKrT7XeRn1XXfVBJ4vGexwQyAxe3/QcUq/yvi/bSavviFJfLDNvIJ45
+         a59oRvx8JTWBQMH6nGK5ho4MPtXmuX4LlynTzfIlCDB3No2K5w4SNSpEe8WI7AFr0sEF
+         Z4pBsbGxtTrp09/Im1fM9XUGVPtRG/1Uixkks/TJenP2k83DbaerWDmwuxaDvCLihNdV
+         1mb2c6lpvyj4D7/hdyEVjdLAY59rjLlpRM8+datExICeWOT2XUEhxM6AJRuqNw9jpnh3
+         +eqQ==
+X-Gm-Message-State: AOAM5311jcy3vNBJePddue1+EZGYHtgudp2aU4NS6AVDUhdyTLA8BUfP
+        2gJtvQnh1GAiNsMV7jUM9mYR3jyY7U3EHEmdsVEK/3mYS9AhHijd
+X-Google-Smtp-Source: ABdhPJzt4+vQA+6BHCM6hpKI3F3ZiG2sXnhZTlRpfzdTm2LhlwuR0v0JM0bLECmDTrISM1aR7D8OeiFhrH6ZscLKsNU=
+X-Received: by 2002:a05:6e02:106c:: with SMTP id q12mr4563792ilj.81.1603867998466;
+ Tue, 27 Oct 2020 23:53:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 28 Oct 2020 12:23:07 +0530
+Message-ID: <CA+G9fYu04UQYmcmthXhHEcFMk=jOZY5HUj-VRRep19F7tYPXEg@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/408] 5.4.73-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-has_opp_table isn't used anymore, remove it.
+On Tue, 27 Oct 2020 at 20:01, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.73 release.
+> There are 408 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 29 Oct 2020 13:53:50 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.73-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
----
- include/linux/qcom-geni-se.h | 2 --
- 1 file changed, 2 deletions(-)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
-index f7bbea3f09ca..ec2ad4b0fe14 100644
---- a/include/linux/qcom-geni-se.h
-+++ b/include/linux/qcom-geni-se.h
-@@ -48,7 +48,6 @@ struct geni_icc_path {
-  * @clk_perf_tbl:	Table of clock frequency input to serial engine clock
-  * @icc_paths:		Array of ICC paths for SE
-  * @opp_table:		Pointer to the OPP table
-- * @has_opp_table:	Specifies if the SE has an OPP table
-  */
- struct geni_se {
- 	void __iomem *base;
-@@ -59,7 +58,6 @@ struct geni_se {
- 	unsigned long *clk_perf_tbl;
- 	struct geni_icc_path icc_paths[3];
- 	struct opp_table *opp_table;
--	bool has_opp_table;
- };
- 
- /* Common SE registers */
--- 
-2.25.0.rc1.19.g042ed3e048af
+Summary
+------------------------------------------------------------------------
 
+kernel: 5.4.73-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: ab6643bad070b82c2f3cf336bc18c87eaa5c92d0
+git describe: v5.4.72-409-gab6643bad070
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.72-409-gab6643bad070
+
+No regressions (compared to build v5.4.72)
+
+No fixes (compared to build v5.4.72)
+
+Ran 30609 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* v4l2-compliance
+* ltp-commands-tests
+* ltp-math-tests
+* network-basic-tests
+* perf
+* kselftest
+* ltp-syscalls-tests
+* ltp-open-posix-tests
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
