@@ -2,131 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEB629D88F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC52829D909
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388383AbgJ1WdY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Oct 2020 18:33:24 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:39519 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388260AbgJ1WdT (ORCPT
+        id S2389148AbgJ1Wl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:41:59 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:57404 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728005AbgJ1Wlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:33:19 -0400
-Received: by mail-wr1-f67.google.com with SMTP id y12so734421wrp.6;
-        Wed, 28 Oct 2020 15:33:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9qMkACaxgBFGgp14/y74BYPbOoZe+yAscejmhiaaiHI=;
-        b=ToJRGbqWsOr5Tp0L0JDERd4/O/4KaV7gpvowMalTqutn+Bl3QeJ+jhBEUCj+LLX4mr
-         o+9MsOQjVNEg8bjb3mjmtVi8oNoODDyWg1j9QrlRJ/wlYdJpLzm/6h6Ki0R8XkqaIEK5
-         POxWy7Alag9mk20LJQRniaaJMfEWf2PwxaOEY/mdxe4COvcR0cYfRnp8MQRlQ4+3uBCZ
-         LfIcLmFUmIkhX6k9v7GHsdNn6wrPnskjbaabj1Ag0iJhLq7UB588yhqqWiSDBflG+46g
-         KWygY9/3GJwrxQMuFPFq+BrFgWSCFHCLqzZIfe3Y6Dya6M1AnOwMbM7PQpY9koYA0JOz
-         K4Iw==
-X-Gm-Message-State: AOAM531s2Bx6kOk3O7V0ebu9O1rxbrtdhouUSSYezSUQvzs5KNCwMIMy
-        4QPlg2QV2jHE/FZMijIzJhgPQTBjpimaSg==
-X-Google-Smtp-Source: ABdhPJzFsqaQeMhmEXSs9UrGO3Kmxrx9OhwqKP85Emfcv2bhHljDeQGLFfXI3feKDEwi+e1eh+cN1w==
-X-Received: by 2002:a50:d987:: with SMTP id w7mr441293edj.113.1603913252990;
-        Wed, 28 Oct 2020 12:27:32 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id y14sm205006edo.69.2020.10.28.12.27.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 12:27:31 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 20:27:29 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 13/52] dt-bindings: memory: tegra124: emc: Document
- new interconnect property
-Message-ID: <20201028192729.GA170285@kozik-lap>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-14-digetx@gmail.com>
- <20201027102506.GB17089@kozik-lap>
- <f38984b6-d53f-a43d-0387-e787b3c1924d@gmail.com>
- <20201027194833.GE140636@kozik-lap>
- <0a7aeebf-c5ab-13ea-3927-fa39512afd87@gmail.com>
+        Wed, 28 Oct 2020 18:41:55 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id E5F711C0BB6; Wed, 28 Oct 2020 21:12:34 +0100 (CET)
+Date:   Wed, 28 Oct 2020 21:12:34 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 111/264] nvmem: core: fix possibly memleak when use
+ nvmem_cell_info_to_nvmem_cell()
+Message-ID: <20201028201234.GA11038@duo.ucw.cz>
+References: <20201027135430.632029009@linuxfoundation.org>
+ <20201027135435.887735842@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <0a7aeebf-c5ab-13ea-3927-fa39512afd87@gmail.com>
+In-Reply-To: <20201027135435.887735842@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 11:16:29PM +0300, Dmitry Osipenko wrote:
-> 27.10.2020 22:48, Krzysztof Kozlowski пишет:
-> > On Tue, Oct 27, 2020 at 10:19:28PM +0300, Dmitry Osipenko wrote:
-> >> 27.10.2020 13:25, Krzysztof Kozlowski пишет:
-> >>> On Mon, Oct 26, 2020 at 01:16:56AM +0300, Dmitry Osipenko wrote:
-> >>>> External memory controller is interconnected with memory controller and
-> >>>> with external memory. Document new interconnect property which turns
-> >>>> External Memory Controller into interconnect provider.
-> >>>>
-> >>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >>>> ---
-> >>>>  .../bindings/memory-controllers/nvidia,tegra124-emc.yaml   | 7 +++++++
-> >>>>  1 file changed, 7 insertions(+)
-> >>>>
-> >>>> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
-> >>>> index 278549f9e051..ac00832ceac1 100644
-> >>>> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
-> >>>> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
-> >>>> @@ -29,6 +29,9 @@ properties:
-> >>>>      items:
-> >>>>        - const: emc
-> >>>>  
-> >>>> +  "#interconnect-cells":
-> >>>> +    const: 0
-> >>>> +
-> >>>>    nvidia,memory-controller:
-> >>>>      $ref: /schemas/types.yaml#/definitions/phandle
-> >>>>      description:
-> >>>> @@ -327,6 +330,7 @@ required:
-> >>>>    - clocks
-> >>>>    - clock-names
-> >>>>    - nvidia,memory-controller
-> >>>> +  - "#interconnect-cells"
-> >>>
-> >>> Another required property, what about all existing users of this binding?
-> >>
-> >> EMC/devfreq drivers check presence of the new properties and ask users
-> >> to upgrade the DT. The kernel will continue to work fine using older
-> >> DTBs, but devfreq driver won't load.
-> > 
-> > If the devfreq was working fine before (with these older DTBs and older
-> > kernel) then you break the feature.
-> > 
-> > If devfreq was not working or was not stable enough, then nothing is
-> > broken so such change is accepted.
-> > 
-> > Which one is then?
-> 
-> Definitely the latter. The current devfreq works okay'ish, but we rely
-> on hardware to recover from temporal FIFO underflows and it's a
-> user-visible problem which this series addresses.
 
-I understand. Fine with me, thanks for explanation.
+--AqsLC8rIMeq19msA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> From: Vadym Kochan <vadym.kochan@plvision.eu>
+>=20
+> [ Upstream commit fc9eec4d643597cf4cb2fef17d48110e677610da ]
+>=20
+> Fix missing 'kfree_const(cell->name)' when call to
+> nvmem_cell_info_to_nvmem_cell() in several places:
+>=20
+>      * after nvmem_cell_info_to_nvmem_cell() failed during
+>        nvmem_add_cells()
+>=20
+>      * during nvmem_device_cell_{read,write} when cell->name is
+>        kstrdup'ed() without calling kfree_const() at the end, but
+>        really there is no reason to do that 'dup, because the cell
+>        instance is allocated on the stack for some short period to be
+>        read/write without exposing it to the caller.
+>=20
+> So the new nvmem_cell_info_to_nvmem_cell_nodup() helper is introduced
+> which is used to convert cell_info -> cell without name duplication as
+> a lighweight version of nvmem_cell_info_to_nvmem_cell().
+>=20
+> Fixes: e2a5402ec7c6 ("nvmem: Add nvmem_device based consumer apis.")
+
+There's something very wrong here.
+
+> index 30c040786fde2..54204d550fc22 100644
+> --- a/drivers/nvmem/core.c
+> +++ b/drivers/nvmem/core.c
+> @@ -326,9 +326,9 @@ static void nvmem_cell_add(struct nvmem_cell *cell)
+>  	mutex_unlock(&nvmem_cells_mutex);
+>  }
+> =20
+> -static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
+> -				   const struct nvmem_cell_info *info,
+> -				   struct nvmem_cell *cell)
+> +static int nvmem_cell_info_to_nvmem_cell_nodup(struct nvmem_device *nvme=
+m,
+> +					const struct nvmem_cell_info *info,
+> +					struct nvmem_cell *cell)
+>  {
+>  	cell->nvmem =3D nvmem;
+>  	cell->offset =3D info->offset;
+> @@ -345,13 +345,30 @@ static int nvmem_cell_info_to_nvmem_cell(struct nvm=
+em_device *nvmem,
+>  	if (!IS_ALIGNED(cell->offset, nvmem->stride)) {
+>  		dev_err(&nvmem->dev,
+>  			"cell %s unaligned to nvmem stride %d\n",
+> -			cell->name, nvmem->stride);
+> +			cell->name ?: "<unknown>", nvmem->stride);
+>  		return -EINVAL;
+>  	}
+> =20
+>  	return 0;
+>  }
+
+We rename call from .._cell to .._cell_nodup, but it did not have the
+kstrdup_const() in the first place!
+
+> +static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
+> +				const struct nvmem_cell_info *info,
+> +				struct nvmem_cell *cell)
+> +{
+> +	int err;
+> +
+> +	err =3D nvmem_cell_info_to_nvmem_cell_nodup(nvmem, info, cell);
+> +	if (err)
+> +		return err;
+> +
+> +	cell->name =3D kstrdup_const(info->name, GFP_KERNEL);
+> +	if (!cell->name)
+> +		return -ENOMEM;
+> +
+> +	return 0;
+> +}
+
+So now we introduce an allocation, but we don't have a place to free
+it. In mainline, it is freed in nvmem_cell_drop(), but 4.19 does not
+have a free there.
 
 Best regards,
-Krzysztof
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
+--AqsLC8rIMeq19msA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5nQsgAKCRAw5/Bqldv6
+8ihBAJ0dzQuBqm8Owd8kn4PWA8aEWAyTtwCgs0Ffgl8YI4NWlTA13oW6fwieVU8=
+=0+Y+
+-----END PGP SIGNATURE-----
+
+--AqsLC8rIMeq19msA--
