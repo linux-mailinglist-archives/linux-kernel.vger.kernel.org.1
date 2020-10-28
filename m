@@ -2,218 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A411F29E410
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8207529E415
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728566AbgJ2HaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:30:24 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7093 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgJ2H3Z (ORCPT
+        id S1728246AbgJ2HeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:34:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728241AbgJ2HY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:29:25 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CMHBX5jqSzLr0g;
-        Thu, 29 Oct 2020 15:29:24 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 29 Oct
- 2020 15:29:17 +0800
-Subject: Re: [f2fs-dev] [PATCH v5 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
- ioctl
-To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-CC:     Daeho Jeong <daehojeong@google.com>
-References: <20201029041538.4165209-1-daeho43@gmail.com>
- <20201029041538.4165209-2-daeho43@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <92f4da8e-27a1-7577-84f9-39038eaa88cb@huawei.com>
-Date:   Thu, 29 Oct 2020 15:29:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Thu, 29 Oct 2020 03:24:59 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B478DC0613D5;
+        Wed, 28 Oct 2020 19:47:39 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXcY1-00AMVG-SL; Wed, 28 Oct 2020 03:54:53 +0000
+Date:   Wed, 28 Oct 2020 03:54:53 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        cai@redhat.com
+Subject: Re: [PATCH] pipe: fix potential inode leak in create_pipe_files()
+Message-ID: <20201028035453.GI3576660@ZenIV.linux.org.uk>
+References: <779f767d-c08b-0c03-198e-06270100d529@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20201029041538.4165209-2-daeho43@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <779f767d-c08b-0c03-198e-06270100d529@huawei.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/29 12:15, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
+On Wed, Oct 28, 2020 at 11:03:52AM +0800, Zhiqiang Liu wrote:
 > 
-> Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
-> compression option of a file.
-> 
-> struct f2fs_comp_option {
->      u8 algorithm;         => compression algorithm
->                            => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
->      u8 log_cluster_size;  => log scale cluster size
->                            => 2 ~ 8
-> };
-> 
-> struct f2fs_comp_option option;
-> 
-> option.algorithm = 1;
-> option.log_cluster_size = 7;
-> 
-> ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> In create_pipe_files(), if alloc_file_clone() fails, we will call
+> put_pipe_info to release pipe, and call fput() to release f.
+> However, we donot call iput() to free inode.
+
+Huh?  Have you actually tried to trigger that failure exit?
+
+> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+> Signed-off-by: Feilong Lin <linfeilong@huawei.com>
 > ---
+>  fs/pipe.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> v5: allowed to set algorithm which is not currently enabled by kernel
-> v4: changed commit message.
-> v3: changed the error number more specific.
->      folded in fix for build breakage reported by kernel test robot
->      <lkp@intel.com> and Dan Carpenter <dan.carpenter@oracle.com>.
-> v2: added ioctl description.
-> ---
->   fs/f2fs/compress.c |  5 +++++
->   fs/f2fs/f2fs.h     |  7 ++++++
->   fs/f2fs/file.c     | 54 ++++++++++++++++++++++++++++++++++++++++++++++
->   3 files changed, 66 insertions(+)
-> 
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index 7895186cc765..816d7adc914c 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -514,6 +514,11 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
->   	return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
->   }
->   
-> +bool f2fs_is_compress_algorithm_ready(unsigned char algorithm)
-> +{
-> +	return algorithm < COMPRESS_MAX && f2fs_cops[algorithm] != NULL;
-> +}
-> +
->   static mempool_t *compress_page_pool;
->   static int num_compress_pages = 512;
->   module_param(num_compress_pages, uint, 0444);
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index a33c90cf979b..cc38afde6c04 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -435,6 +435,8 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
->   						struct f2fs_sectrim_range)
->   #define F2FS_IOC_GET_COMPRESS_OPTION	_IOR(F2FS_IOCTL_MAGIC, 21,	\
->   						struct f2fs_comp_option)
-> +#define F2FS_IOC_SET_COMPRESS_OPTION	_IOW(F2FS_IOCTL_MAGIC, 22,	\
-> +						struct f2fs_comp_option)
->   
->   /*
->    * should be same as XFS_IOC_GOINGDOWN.
-> @@ -3915,6 +3917,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
->   int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
->   void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
->   bool f2fs_is_compress_backend_ready(struct inode *inode);
-> +bool f2fs_is_compress_algorithm_ready(unsigned char algorithm);
->   int f2fs_init_compress_mempool(void);
->   void f2fs_destroy_compress_mempool(void);
->   void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
-> @@ -3945,6 +3948,10 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
->   	/* not support compression */
->   	return false;
->   }
-> +static inline bool f2fs_is_compress_algorithm_ready(unsigned char algorithm)
-> +{
-> +	return false;
-> +}
->   static inline struct page *f2fs_compress_control_page(struct page *page)
->   {
->   	WARN_ON_ONCE(1);
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 8922ab191a9d..a0f31d8ebcfd 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -3963,6 +3963,57 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
->   	return 0;
->   }
->   
-> +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
-> +{
-> +	struct inode *inode = file_inode(filp);
-> +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> +	struct f2fs_comp_option option;
-> +	int ret = 0;
-> +
-> +	if (!f2fs_sb_has_compression(sbi))
-> +		return -EOPNOTSUPP;
-> +
-> +	if (!(filp->f_mode & FMODE_WRITE))
-> +		return -EBADF;
-> +
-> +	if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg,
-> +				sizeof(option)))
-> +		return -EFAULT;
-> +
-> +	if (!f2fs_compressed_file(inode) ||
-> +			option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
-> +			option.log_cluster_size > MAX_COMPRESS_LOG_SIZE ||
-> +			option.algorithm >= COMPRESS_MAX)
-> +		return -EINVAL;
-> +
-> +	file_start_write(filp);
-> +	inode_lock(inode);
-> +
-> +	if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
-> +		ret = -EBUSY;
-> +		goto out;
-> +	}
-> +
-> +	if (inode->i_size != 0) {
-> +		ret = -EFBIG;
-> +		goto out;
-> +	}
+> diff --git a/fs/pipe.c b/fs/pipe.c
+> index 0ac197658a2d..8856607fde65 100644
+> --- a/fs/pipe.c
+> +++ b/fs/pipe.c
+> @@ -924,6 +924,7 @@ int create_pipe_files(struct file **res, int flags)
+>  	if (IS_ERR(res[0])) {
+>  		put_pipe_info(inode, inode->i_pipe);
+>  		fput(f);
+> +		iput(inode);
+>  		return PTR_ERR(res[0]);
 
-Hmm...
+No.  That inode is created with refcount 1.  If alloc_file_pseudo()
+succeeds, the reference we'd been holding has been transferred into
+dentry allocated by alloc_file_pseudo() (and attached to f).
+From that point on we do *NOT* own a reference to inode and no
+subsequent failure exits have any business releasing it.
 
-Shouldn't it be:
+In particular, alloc_file_clone() DOES NOT create extra references
+to inode, whether it succeeds or fails.  Dropping the reference
+to f will take care of everything.
 
-if (algorithm >= COMPRESS_MAX) {
-	ret = -ENOPKG;
-	goto out;
-}
+If you tried to trigger that failure exit with your patch applied,
+you would've seen double iput(), as soon as you return from sys_pipe()
+to userland and task_work is processed (which is where the real
+destructor of struct file will happen).
 
-if (!f2fs_cops[algorithm])
-	f2fs_warn(...);
-
-> +
-> +	F2FS_I(inode)->i_compress_algorithm = option.algorithm;
-> +	F2FS_I(inode)->i_log_cluster_size = option.log_cluster_size;
-> +	F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
-> +	f2fs_mark_inode_dirty_sync(inode, true);
-> +
-> +	if (!f2fs_is_compress_algorithm_ready(option.algorithm))
-> +		f2fs_warn(sbi, "compression algorithm is successfully set, "
-> +			"but current kernel doesn't support this algorithm.");
-> +out:
-> +	inode_unlock(inode);
-> +	file_end_write(filp);
-> +
-> +	return ret;
-> +}
-> +
->   long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->   {
->   	if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
-> @@ -4053,6 +4104,8 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->   		return f2fs_sec_trim_file(filp, arg);
->   	case F2FS_IOC_GET_COMPRESS_OPTION:
->   		return f2fs_ioc_get_compress_option(filp, arg);
-> +	case F2FS_IOC_SET_COMPRESS_OPTION:
-> +		return f2fs_ioc_set_compress_option(filp, arg);
->   	default:
->   		return -ENOTTY;
->   	}
-> @@ -4224,6 +4277,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->   	case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
->   	case F2FS_IOC_SEC_TRIM_FILE:
->   	case F2FS_IOC_GET_COMPRESS_OPTION:
-> +	case F2FS_IOC_SET_COMPRESS_OPTION:
->   		break;
->   	default:
->   		return -ENOIOCTLCMD;
-> 
+NAK.
