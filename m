@@ -2,81 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C6029D7B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EED829D604
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733044AbgJ1W0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:26:03 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:58432 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732966AbgJ1WZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:25:44 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B92F920160E;
-        Wed, 28 Oct 2020 13:59:38 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AC273201601;
-        Wed, 28 Oct 2020 13:59:38 +0100 (CET)
-Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 064A52030E;
-        Wed, 28 Oct 2020 13:59:37 +0100 (CET)
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        Abel Vesa <abel.vesa@nxp.com>
-Subject: [PATCH v2 5/5] clk: imx: gate2: Add locking in is_enabled op
-Date:   Wed, 28 Oct 2020 14:59:02 +0200
-Message-Id: <1603889942-27026-6-git-send-email-abel.vesa@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1603889942-27026-1-git-send-email-abel.vesa@nxp.com>
-References: <1603889942-27026-1-git-send-email-abel.vesa@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1730592AbgJ1WKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730543AbgJ1WKx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:10:53 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F16C0613CF;
+        Wed, 28 Oct 2020 15:10:53 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id n18so442905vsl.2;
+        Wed, 28 Oct 2020 15:10:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l34RAsDjkIoT455sRFUF1n5o2XK5yDgCNNHzh1eN1TA=;
+        b=T+3BG2A2ew3FRWpEF56WtR4KR177iEHzLj00/N1K0A1o/3zE3JgTHxmPdfeHqMp3zc
+         zLHomMT9E/YeWDeKGm8uj38YUZ9R4KHdD2lJnfLOyg5SoIPZFGK/REbPLOQX1fKGZIqR
+         H/YIRbo81Ki3hRxEYwtcx/YcplWwXA7JZYOd9LBhnNNBRvrq4yp2P0ztOvLOv/tvYmIj
+         J0PgSh9lD4lYiV3tU3Jp1nJo8Isw3dPl92PeVPD+CRaL152FK09iOL40wK7Y7M57xaTH
+         5ukzYkXOJtmppaIYmKbkfdr5vvGGAMgXKjaKAVwcSh9DtLPFJ36xml1qtNuzngiDZQyw
+         3lSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l34RAsDjkIoT455sRFUF1n5o2XK5yDgCNNHzh1eN1TA=;
+        b=t2giFVlrA/xY2546dCRyG6QoqgVQB21QtopYMRY0mDmq/k3ta07VMJJDHIiaP3lFEC
+         Has8ToG2Cz3krQ/jHQcD9i0Acoic2PSWsj4eh6z5NzIjTQeGedomWD7DQTZZAPCdP1hB
+         5gGxijqTd73sjBu2nn6clV8CluJKiNDDOsaINaKwwFVWKglmKG37WYj9xya7fsdpC0k5
+         CpMCkT1A4Kl7g5Kh5ys0fOwZlSvWyxqdvO8hDHbZ3L7PL6Hjr6p+O8S7vMJhc2I9KdgR
+         7YPU12U8XcF82Rn6HOg0Jz18XHNXjpA/f99Hr6apR4/J6lqWW2v9XsBLtRq1h0mr+9Su
+         eQ0g==
+X-Gm-Message-State: AOAM531tHqIeCwUUp5C+8I9SJJvIEnBIPGWuz66zsumhifSyE3p0BtRw
+        aReZa27/CSOcbkTXtLeVwaOUNKe/nzXfzA==
+X-Google-Smtp-Source: ABdhPJwfDUzLT99ajTLpya5Tg8j7YcHdWCsZAdNlP3l2PUOY+r9MvJhUJmgNHkYj2UptdPqUACjj6w==
+X-Received: by 2002:a17:902:a609:b029:d5:dde6:f135 with SMTP id u9-20020a170902a609b02900d5dde6f135mr7729608plq.75.1603890926726;
+        Wed, 28 Oct 2020 06:15:26 -0700 (PDT)
+Received: from bj616583pcu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id mp13sm5252705pjb.36.2020.10.28.06.15.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 06:15:26 -0700 (PDT)
+From:   gengcixi@gmail.com
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        oberpar@linux.ibm.com, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        Cixi Geng <cixi.geng1@unisoc.com>
+Subject: [PATCH V8] GCOV: Add config to check the preqequisites situation
+Date:   Wed, 28 Oct 2020 21:15:05 +0800
+Message-Id: <20201028131505.482037-1-gengcixi@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Protect against enabling/disabling the gate while we're
-checking if it is enabled.
+From: Cixi Geng <cixi.geng1@unisoc.com>
 
-Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+Introduce new configuration option GCOV_PROFILE_PREREQS that can be
+used to check whether the prerequisites for enabling gcov profiling
+for specific files and directories are met.
+
+Only add SERIAL_GCOV for an example.
+
+Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
 ---
- drivers/clk/imx/clk-gate2.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/tty/serial/Kconfig  | 7 +++++++
+ drivers/tty/serial/Makefile | 1 +
+ kernel/gcov/Kconfig         | 9 +++++++++
+ 3 files changed, 17 insertions(+)
 
-diff --git a/drivers/clk/imx/clk-gate2.c b/drivers/clk/imx/clk-gate2.c
-index 7e4b5e8..480a184 100644
---- a/drivers/clk/imx/clk-gate2.c
-+++ b/drivers/clk/imx/clk-gate2.c
-@@ -101,9 +101,17 @@ static int clk_gate2_reg_is_enabled(void __iomem *reg, u8 bit_idx,
- static int clk_gate2_is_enabled(struct clk_hw *hw)
- {
- 	struct clk_gate2 *gate = to_clk_gate2(hw);
-+	unsigned long flags;
-+	int ret = 0;
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index 1044fc387691..fa33710c8435 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -1586,3 +1586,10 @@ endmenu
  
--	return clk_gate2_reg_is_enabled(gate->reg, gate->bit_idx,
-+	spin_lock_irqsave(gate->lock, flags);
+ config SERIAL_MCTRL_GPIO
+ 	tristate
 +
-+	ret = clk_gate2_reg_is_enabled(gate->reg, gate->bit_idx,
- 					gate->cgr_val, gate->cgr_mask);
-+
-+	spin_unlock_irqrestore(gate->lock, flags);
-+
-+	return ret;
- }
++config SERIAL_GCOV
++	bool "Enable profile gcov for serial directory"
++	depends on GCOV_PROFILE_PREREQS
++	help
++	  The SERIAL_GCOV will add Gcov profiling flags when kernel compiles.
++	  Say 'Y' here if you want the gcov data for the serial directory,
+diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
+index caf167f0c10a..4a4934622c3f 100644
+--- a/drivers/tty/serial/Makefile
++++ b/drivers/tty/serial/Makefile
+@@ -3,6 +3,7 @@
+ # Makefile for the kernel serial device drivers.
+ #
  
- static void clk_gate2_disable_unused(struct clk_hw *hw)
++GCOV_PROFILE := $(CONFIG_SERIAL_GCOV)
+ obj-$(CONFIG_SERIAL_CORE) += serial_core.o
+ 
+ obj-$(CONFIG_SERIAL_EARLYCON) += earlycon.o
+diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+index 3110c77230c7..ce9b8ce4e63b 100644
+--- a/kernel/gcov/Kconfig
++++ b/kernel/gcov/Kconfig
+@@ -51,4 +51,13 @@ config GCOV_PROFILE_ALL
+ 	larger and run slower. Also be sure to exclude files from profiling
+ 	which are not linked to the kernel image to prevent linker errors.
+ 
++config GCOV_PROFILE_PREREQS
++	bool "Profile Kernel for prereqs"
++	def_bool y if GCOV_KERNEL && !COMPILE_TEST
++	help
++	  This options activates profiling for the specified kernel modules.
++	  When some modules need Gcov data, enable this config, then configure
++	  with gcov on the corresponding modules,The directories or files of
++	  these modules will be added profiling flags after kernel compile.
++
+ endmenu
 -- 
-2.7.4
+2.25.1
 
