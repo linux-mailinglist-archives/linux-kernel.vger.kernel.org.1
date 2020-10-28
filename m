@@ -2,108 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69DD29D99A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B952B29D9B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389892AbgJ1W6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:58:08 -0400
-Received: from ozlabs.org ([203.11.71.1]:56585 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389712AbgJ1W4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:56:40 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CM3pr470Gz9sPB;
-        Thu, 29 Oct 2020 09:56:36 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603925798;
-        bh=U7zRT4tgTv+o0KJnAOrrNaeHKJdfAIbgnQrSPG9X1JQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Q3baMf2ZiOMF06wTH2gfWFTazBRfijWDGQpM5bPlX+GoCUyymmUbbljxb2N9ZTnIG
-         kZgzTOHZa5txc2vRbjV3nt8L0ZimviHF+mZI0Iv6IWq7xbBDhhTsBUjXZbSSzSE4ic
-         4vhOz2frhRoWbrz3RAXfg0rSZ2XLs+y3KAm5HD+8MANcW+VhOUNLPlN6Y4QFPOF0DR
-         FT93rwWzsc916cgoR2uOByrWbZqJAreDAt5iHnFJBi4S1YeiZK9D8qOOD2toKqTWr6
-         aPlUPARIBQv3kBDOfB7GhNVZs6olouH5Zaj+mc9rzg6dLBdusCB4JCtF5f5fi8nr7X
-         IPKyDMomf7n0w==
-Date:   Thu, 29 Oct 2020 09:56:35 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the samsung-krzk-fixes tree with the
- arm-soc-fixes tree
-Message-ID: <20201029095635.3c3996a3@canb.auug.org.au>
+        id S2389969AbgJ1XAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389863AbgJ1W62 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:58:28 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EEFFC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:58:28 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id c20so688649pfr.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6JrNRWkX7EOt8SVl4zWRV9sKmFHfyMIG2OqzNYF3b1M=;
+        b=FlAUuLWzuw4wyGQlXQPvLmW7TDzRwrWOn7nj+yU138n3wf1/Ss6yWLBsI6l320puRM
+         OJuS3tXIeV/UtDOjqvL57DPMv9d5VUunc2MFA5W06K3LywQLLFi++HLcqV4vuqth/vSq
+         Qrv+z+ZN2iEFcAPNb1UdB9E9REkSFVTiD9hN0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6JrNRWkX7EOt8SVl4zWRV9sKmFHfyMIG2OqzNYF3b1M=;
+        b=RfD4Snem18kMg0QCGR+QNyI+S0vu6YqJ4EnbP8Ab/fqn+0SOHPTJzVsK0BnqAwxxUj
+         01rVosEpia8WeEefb1cPHMQWAI6GltOP5bN5KGzr0b4hDS3EO0ZF1PxTEilFd5ORr5im
+         CCx8TWsKfqMDQ+7S7hyAEvz2mK3fuEDEvYzD6gN3XhCJ7GjKiqUk0PIt8lqAqPNd1hwy
+         8uFOKCF/6sugVE3p6j3TEhbyPvdBiPg5TT0RIKDRPvW1KuZ3SAkfIF9ZC4o8SVwgsWHK
+         UIp6mXktZHveelNi0/6UvyhsYx5GtSdkajfyCJJjWgj7V28MNQXtrYkgbdSItuxbsVxP
+         JZUg==
+X-Gm-Message-State: AOAM5306KF+ze4DyPwet+Ujx514ZfjeuAqnLLG0/8dPR07x6XEiDSTS0
+        /Gd9f8IAYGOT2KoyMkDJM/qtiw==
+X-Google-Smtp-Source: ABdhPJxe0Y9rORN07q3KsR3t9GhM59XksWeUXABlljFXed/iVl2hw85V8N4/e6n2yfJnZenjSqNdfw==
+X-Received: by 2002:a17:90a:a4c9:: with SMTP id l9mr1060040pjw.203.1603925907664;
+        Wed, 28 Oct 2020 15:58:27 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id b185sm394364pgc.68.2020.10.28.15.58.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 15:58:26 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>,
+        robdclark@chromium.org, dri-devel@lists.freedesktop.org,
+        David Airlie <airlied@linux.ie>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] drm: panel: simple: Allow timing constraints, not fixed delays
+Date:   Wed, 28 Oct 2020 15:58:01 -0700
+Message-Id: <20201028155617.v2.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/na9cRuTQKJHtlLNtLtJU.PA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/na9cRuTQKJHtlLNtLtJU.PA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The simple panel code currently allows panels to define fixed delays
+at certain stages of initialization.  These work OK, but they don't
+really map all that clearly to the requirements presented in many
+panel datasheets.  Instead of defining a fixed delay, those datasheets
+provide a timing diagram and specify a minimum amount of time that
+needs to pass from event A to event B.
 
-Hi all,
+Because of the way things are currently defined, most panels end up
+over-delaying.  One prime example here is that a number of panels I've
+looked at define the amount of time that must pass between turning a
+panel off and turning it back on again.  Since there is no way to
+specify this, many developers have listed this as the "unprepare"
+delay.  However, if nobody ever tried to turn the panel on again in
+the next 500 ms (or whatever the delay was) then this delay was
+pointless.  It's better to do the delay only in the case that someone
+tried to turn the panel on too quickly.
 
-Today's linux-next merge of the samsung-krzk-fixes tree got a conflict in:
+Let's support specifying delays as constraints.  We'll start with the
+one above and also a second one: the minimum time between prepare
+being done and doing the enable.  On the panel I'm looking at, there's
+an 80 ms minimum time between HPD being asserted by the panel and
+setting the backlight enable GPIO.  By specifying as a constraint we
+can enforce this without over-delaying.  Specifically the link
+training is allowed to happen in parallel with this delay so adding a
+fixed 80 ms delay isn't ideal.
 
-  MAINTAINERS
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-between commit:
+Changes in v2:
+- Inline the kernel doc for the two new members.
+- Beefed up kernel doc saying exactly when the delay happens.
+- Removed "_ms" from the end of members to shorten them.
+- Renamed "timing_constraints" to "min_times" to shorten it.
+- Renamed "enforce_constraint()" to "wait_min_time()" to shorten it.
+- Check "prepared_time" against 0 to see if we've been prepared.
 
-  421f2597bf42 ("MAINTAINERS: Move Kukjin Kim to credits")
+ drivers/gpu/drm/panel/panel-simple.c | 99 ++++++++++++++++++++++++++--
+ 1 file changed, 92 insertions(+), 7 deletions(-)
 
-from the arm-soc-fixes tree and commit:
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 2be358fb46f7..2613b9434548 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -92,6 +92,68 @@ struct panel_desc {
+ 		unsigned int unprepare;
+ 	} delay;
+ 
++	struct {
++		/**
++		 * @prepare_to_enable: Time between prepare and enable.
++		 *
++		 * The minimum time, in milliseconds, that needs to have passed
++		 * between when prepare finished and enable may begin. If at
++		 * enable time less time has passed since prepare finished,
++		 * the driver waits for the remaining time.
++		 *
++		 * If a fixed enable delay is also specified, we'll start
++		 * counting before delaying for the fixed delay.
++		 *
++		 * If a fixed prepare delay is also specified, we won't start
++		 * counting until after the fixed delay. We can't overlap this
++		 * fixed delay with the min time because the fixed delay
++		 * doesn't happen at the end of the function if a HPD GPIO was
++		 * specified.
++		 *
++		 * In other words:
++		 *   prepare()
++		 *     ...
++		 *     // do fixed prepare delay
++		 *     // wait for HPD GPIO if applicable
++		 *     // start counting for prepare_to_enable
++		 *
++		 *   enable()
++		 *     // do fixed enable delay
++		 *     // enforce prepare_to_enable min time
++		 */
++		unsigned int prepare_to_enable;
++
++		/**
++		 * @unprepare_to_prepare: Time between unprepare and prepare.
++		 *
++		 * The minimum time, in milliseconds, that needs to have passed
++		 * between when unprepare finished and prepare may begin. If at
++		 * prepare time less time has passed since unprepare finished,
++		 * the driver waits for the remaining time.
++		 *
++		 * If a fixed unprepare delay is also specified, we'll start
++		 * counting before delaying for the fixed delay.
++		 *
++		 * If a fixed prepare delay is also specified, it will happen
++		 * separately and after we've enforced this minimum. We can't
++		 * overlap this fixed delay with the min time because the
++		 * fixed delay doesn't happen at the start of the function
++		 * if a regulator or enable GPIO was specified.
++		 *
++		 * In other words:
++		 *   unprepare():
++		 *     ...
++		 *     // start counting for unprepare_to_prepare
++		 *     // do fixed unprepare delay
++		 *
++		 *   prepare():
++		 *     // enforce unprepare_to_prepare min time
++		 *     // turn on regulator / set enable GPIO if applicable
++		 *     // do fixed prepare delay
++		 */
++		unsigned int unprepare_to_prepare;
++	} min_times;
++
+ 	u32 bus_format;
+ 	u32 bus_flags;
+ 	int connector_type;
+@@ -99,10 +161,12 @@ struct panel_desc {
+ 
+ struct panel_simple {
+ 	struct drm_panel base;
+-	bool prepared;
+ 	bool enabled;
+ 	bool no_hpd;
+ 
++	ktime_t prepared_time;
++	ktime_t unprepared_time;
++
+ 	const struct panel_desc *desc;
+ 
+ 	struct regulator *supply;
+@@ -230,6 +294,20 @@ static int panel_simple_get_non_edid_modes(struct panel_simple *panel,
+ 	return num;
+ }
+ 
++static void panel_simple_wait_min_time(ktime_t start_ktime, unsigned int min_ms)
++{
++	ktime_t now_ktime, min_ktime;
++
++	if (!min_ms)
++		return;
++
++	min_ktime = ktime_add(start_ktime, ms_to_ktime(min_ms));
++	now_ktime = ktime_get();
++
++	if (ktime_before(now_ktime, min_ktime))
++		msleep(ktime_to_ms(ktime_sub(min_ktime, now_ktime)) + 1);
++}
++
+ static int panel_simple_disable(struct drm_panel *panel)
+ {
+ 	struct panel_simple *p = to_panel_simple(panel);
+@@ -249,18 +327,19 @@ static int panel_simple_unprepare(struct drm_panel *panel)
+ {
+ 	struct panel_simple *p = to_panel_simple(panel);
+ 
+-	if (!p->prepared)
++	if (p->prepared_time != 0)
+ 		return 0;
+ 
+ 	gpiod_set_value_cansleep(p->enable_gpio, 0);
+ 
+ 	regulator_disable(p->supply);
+ 
++	p->prepared_time = 0;
++	p->unprepared_time = ktime_get();
++
+ 	if (p->desc->delay.unprepare)
+ 		msleep(p->desc->delay.unprepare);
+ 
+-	p->prepared = false;
+-
+ 	return 0;
+ }
+ 
+@@ -296,9 +375,12 @@ static int panel_simple_prepare(struct drm_panel *panel)
+ 	int err;
+ 	int hpd_asserted;
+ 
+-	if (p->prepared)
++	if (p->prepared_time == 0)
+ 		return 0;
+ 
++	panel_simple_wait_min_time(p->unprepared_time,
++				   p->desc->min_times.unprepare_to_prepare);
++
+ 	err = regulator_enable(p->supply);
+ 	if (err < 0) {
+ 		dev_err(panel->dev, "failed to enable supply: %d\n", err);
+@@ -333,7 +415,7 @@ static int panel_simple_prepare(struct drm_panel *panel)
+ 		}
+ 	}
+ 
+-	p->prepared = true;
++	p->prepared_time = ktime_get();
+ 
+ 	return 0;
+ }
+@@ -348,6 +430,9 @@ static int panel_simple_enable(struct drm_panel *panel)
+ 	if (p->desc->delay.enable)
+ 		msleep(p->desc->delay.enable);
+ 
++	panel_simple_wait_min_time(p->prepared_time,
++				   p->desc->min_times.prepare_to_enable);
++
+ 	p->enabled = true;
+ 
+ 	return 0;
+@@ -514,7 +599,7 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+ 		return -ENOMEM;
+ 
+ 	panel->enabled = false;
+-	panel->prepared = false;
++	panel->prepared_time = 0;
+ 	panel->desc = desc;
+ 
+ 	panel->no_hpd = of_property_read_bool(dev->of_node, "no-hpd");
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
-  215f06d7efc2 ("MAINTAINERS: move Kyungmin Park to credits")
-
-from the samsung-krzk-fixes tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc MAINTAINERS
-index 9bff94560b42,40b4a582b4cc..000000000000
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@@ -2374,7 -2374,8 +2374,7 @@@ F:	drivers/i2c/busses/i2c-rk3x.
-  F:	sound/soc/rockchip/
-  N:	rockchip
- =20
-- ARM/SAMSUNG EXYNOS ARM ARCHITECTURES
-+ ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES
- -M:	Kukjin Kim <kgene@kernel.org>
-  M:	Krzysztof Kozlowski <krzk@kernel.org>
-  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-  L:	linux-samsung-soc@vger.kernel.org
-
---Sig_/na9cRuTQKJHtlLNtLtJU.PA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Z9yMACgkQAVBC80lX
-0GzYWgf/VfHkAXBwa0wdo2/ometxew1bu3V65UyDqgpkEQUGcSHZfKxdYkNiGezb
-iat9HAWPaAykx5GC2ParPFTpzJ9iCcfReKxAl+NRtPNRPxbk9gCmQnpbkWZPbBtQ
-RkGonxF5okE6x22fFteYZN3LuFAK+tWXSok3qO8HUq/Ome+I2h2cHVamvy/EGQje
-ny6O3qOhWXgWyFQtIPp93snZMrDaxyqDfmb+Nxz6lemcE69NFbDUV+SmU+bWRL6n
-MUhwfMR6Y2kSrVHBCFY4RnOs4vZO6pomH7g+p8Gjr/AX5X1LtBrJLYWC2kexgs9P
-Kw9W50GGeDSCkgL+jhO9NqCdVrJCZA==
-=nNNA
------END PGP SIGNATURE-----
-
---Sig_/na9cRuTQKJHtlLNtLtJU.PA--
