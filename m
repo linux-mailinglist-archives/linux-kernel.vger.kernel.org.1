@@ -2,83 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420B329D510
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4B229D409
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729181AbgJ1V6b convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Oct 2020 17:58:31 -0400
-Received: from mail.fireflyinternet.com ([77.68.26.236]:55860 "EHLO
-        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728786AbgJ1V62 (ORCPT
+        id S1727852AbgJ1Vsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725775AbgJ1Vsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:58:28 -0400
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
-Received: from localhost (unverified [78.156.65.138]) 
-        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 22827296-1500050 
-        for multiple; Wed, 28 Oct 2020 17:40:51 +0000
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <160381649396.10461.15013696719989662769@build.alporthouse.com>
-References: <20200930094937.GE2651@hirez.programming.kicks-ass.net> <160208761332.7002.17400661713288945222.tip-bot2@tip-bot2> <160379817513.29534.880306651053124370@build.alporthouse.com> <20201027115955.GA2611@hirez.programming.kicks-ass.net> <20201027123056.GE2651@hirez.programming.kicks-ass.net> <160380535006.10461.1259632375207276085@build.alporthouse.com> <20201027154533.GB2611@hirez.programming.kicks-ass.net> <160381649396.10461.15013696719989662769@build.alporthouse.com>
-Subject: Re: [tip: locking/core] lockdep: Fix usage_traceoverflow
-From:   Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        tip-bot2 for Peter Zijlstra <tip-bot2@linutronix.de>,
-        Qian Cai <cai@redhat.com>, x86 <x86@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Date:   Wed, 28 Oct 2020 17:40:48 +0000
-Message-ID: <160390684819.31966.12048967113267928793@build.alporthouse.com>
-User-Agent: alot/0.9
+        Wed, 28 Oct 2020 17:48:36 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0297C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:48:35 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id t3so652278wmi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:48:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=qzgYKCsiMnXsmskR2AeWiZoW4TSnZRw9RpEp8cpRUVw=;
+        b=zxa2ZHORY/A1Hr3hXOTaXqDjjIcP/pSLHPanPTJq+q08uv+4c7dgB5z5XrtECu4TQH
+         egJMTGCQpVLL/2QX/6D5LL7cH/1v6elTs5fiOkKOWqWqaFgEvxB/xaSkkTXmpS61TieF
+         r/zyhYeIEmYCZaUJPsGj7p2w7+c/lPcj1esiLkyrV6pWuYfzGIP4dt73r14bT2/NiATM
+         +1eJ/Ho4IKlSCSAQ3EjGhc4OrYh0vMEv1PG7O6nrmydP15LWHLEYPRR5WcPnpzT/jdAo
+         OGmda/NjACcen/ScNKdvYz8Y8DigfN3LzSZ6evYtbeCTmzVPy5TmkpQLxrYKI7jbOrbJ
+         kZ+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=qzgYKCsiMnXsmskR2AeWiZoW4TSnZRw9RpEp8cpRUVw=;
+        b=NmAjiZ/GACrz5JB+ct/Q7VnHMSSVn16NZiqZbGX+VC5TnCMnOZcXOwenBQqP61r8rZ
+         ztpyJjp5zzFczttrwaNNwA+80DaJwBNYIXzcI65qJzm2d3da8nlMDW/iapuTNdxSpmKq
+         G+kk8SvxJFsTxBtGDBZ73OBJcalqYFaWV8tOBsebflC/YpIs2fpa4zCbuIScHMvgBuUY
+         EUgQAGROoCRyyIAbOL7rlWzc/z/Fe7PtTmvVT0+T/IKdbNvo8FxMtvW4DgzUr591LQ5Y
+         CA3AG1uMkhtaQb5mVR+9ja5vu/o0PHb9iPiOANrQY3YW0Zh18qxMlBpW+ZeXA9Vg1xJQ
+         rKSw==
+X-Gm-Message-State: AOAM532L0zEGoDhwf93rLxrrB2lwEgzaVWa05QUjDLRSAb6mwW1gIRVP
+        JMQtJofkAAW/Q8zrLoAMAwGpa/qAYLjYWQ==
+X-Google-Smtp-Source: ABdhPJyJ7qJQ1CG2LCPBx9KM44hsM8+B9d4qehnbpLRnkp+zVDEweTVPGs84koksBhyMdRzWQnlwWQ==
+X-Received: by 2002:a7b:c453:: with SMTP id l19mr618021wmi.50.1603906984838;
+        Wed, 28 Oct 2020 10:43:04 -0700 (PDT)
+Received: from linaro.org ([2a00:23c5:6801:1801:1071:bc1a:781b:f835])
+        by smtp.gmail.com with ESMTPSA id o4sm405104wrv.8.2020.10.28.10.43.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 10:43:04 -0700 (PDT)
+From:   Mike Leach <mike.leach@linaro.org>
+To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        mathieu.poirier@linaro.org, linux-kernel@vger.kernel.org
+Cc:     suzuki.poulose@arm.com, alexander.shishkin@linux.intel.com,
+        lcherian@marvell.com, Mike Leach <mike.leach@linaro.org>
+Subject: [PATCH] coresight: Fix uninitialised pointer bug in etm_setup_aux()
+Date:   Wed, 28 Oct 2020 17:43:01 +0000
+Message-Id: <20201028174301.15033-1-mike.leach@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Chris Wilson (2020-10-27 16:34:53)
-> Quoting Peter Zijlstra (2020-10-27 15:45:33)
-> > On Tue, Oct 27, 2020 at 01:29:10PM +0000, Chris Wilson wrote:
-> > 
-> > > <4> [304.908891] hm#2, depth: 6 [6], 3425cfea6ff31f7f != 547d92e9ec2ab9af
-> > > <4> [304.908897] WARNING: CPU: 0 PID: 5658 at kernel/locking/lockdep.c:3679 check_chain_key+0x1a4/0x1f0
-> > 
-> > Urgh, I don't think I've _ever_ seen that warning trigger.
-> > 
-> > The comments that go with it suggest memory corruption is the most
-> > likely trigger of it. Is it easy to trigger?
-> 
-> For the automated CI, yes, the few machines that run that particular HW
-> test seem to hit it regularly. I have not yet reproduced it for myself.
-> I thought it looked like something kasan would provide some insight for
-> and we should get a kasan run through CI over the w/e. I suspect we've
-> feed in some garbage and called it a lock.
+Commit [bb1860efc817] changed the sink handling code introducing an
+uninitialised pointer bug. This results in the default sink selection
+failing.
 
-I tracked it down to a second invocation of lock_acquire_shared_recursive()
-intermingled with some other regular mutexes (in this case ww_mutex).
+Prior to commit:
 
-We hit this path in validate_chain():
-	/*
-	 * Mark recursive read, as we jump over it when
-	 * building dependencies (just like we jump over
-	 * trylock entries):
-	 */
-	if (ret == 2)
-		hlock->read = 2;
+static void etm_setup_aux(...)
 
-and that is modifying hlock_id() and so the chain-key, after it has
-already been computed.
+<snip>
+        struct coresight_device *sink;
+<snip>
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 035f81b1cc87..f193f756e1e3 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -4831,7 +4831,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-        if (!validate_chain(curr, hlock, chain_head, chain_key))
-                return 0;
+        /* First get the selected sink from user space. */
+        if (event->attr.config2) {
+                id = (u32)event->attr.config2;
+                sink = coresight_get_sink_by_id(id);
+        } else {
+                sink = coresight_get_enabled_sink(true);
+        }
+<ctd>
 
--       curr->curr_chain_key = chain_key;
-+       curr->curr_chain_key = iterate_chain_key(chain_key, hlock_id(hlock));
-        curr->lockdep_depth++;
-        check_chain_key(curr);
+*sink always initialised - possibly to NULL which triggers the
+automatic sink selection.
 
-works as a heavy hammer.
--Chris
+After commit:
+
+static void etm_setup_aux(...)
+
+<snip>
+        struct coresight_device *sink;
+<snip>
+
+        /* First get the selected sink from user space. */
+        if (event->attr.config2) {
+                id = (u32)event->attr.config2;
+                sink = coresight_get_sink_by_id(id);
+        }
+<ctd>
+
+*sink pointer uninitialised when not providing a sink on the perf command
+line. This breaks later checks to enable automatic sink selection.
+
+Fixes [bb1860efc817] ("coresight: etm: perf: Sink selection using sysfs is deprecated")
+Signed-off-by: Mike Leach <mike.leach@linaro.org>
+---
+ drivers/hwtracing/coresight/coresight-etm-perf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+index c2c9b127d074..bdc34ca449f7 100644
+--- a/drivers/hwtracing/coresight/coresight-etm-perf.c
++++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+@@ -210,7 +210,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+ 	u32 id;
+ 	int cpu = event->cpu;
+ 	cpumask_t *mask;
+-	struct coresight_device *sink;
++	struct coresight_device *sink = NULL;
+ 	struct etm_event_data *event_data = NULL;
+ 
+ 	event_data = alloc_event_data(cpu);
+-- 
+2.17.1
+
