@@ -2,138 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4BA29E238
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BA129E23A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgJ2CLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726830AbgJ1Vgo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:36:44 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B03C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:36:44 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id b3so383111vsc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:36:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xbnd0NoFYoB7PfypZO6wzt43HHnGRWSv9fNX9Bj+o+o=;
-        b=e1rhlCuidEDRA6xsenaviIPZgQzmsCnwlrTnpqgID06fQ3I9pXukFQQdtyW3D92Td7
-         aLWXCR0OQ50cedoKVFpP8HqMJ7kzrkE3oAHEZxn8/mPnLwoGXJJK13ROnz9ttvBXXeXU
-         m1zZtWbMEE6FIvMKN+AZ7D3P9fjHILILej/BOL+DAMc7+BzEyUW4t/z35KZLZeXT0+QW
-         Ki1MmuJo1PYZBBzdXsvPNXIIWUUiDnQx1l/La8fWos24XJnV5ncCy0ge0DTbozAgyiWy
-         27nLvRP+O6uOP7ZuSq51MlpO+14WeC73J0mU6HLOBM5FJ5SJbAp46XixTfteTqPo7neE
-         veiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xbnd0NoFYoB7PfypZO6wzt43HHnGRWSv9fNX9Bj+o+o=;
-        b=No7XX19rY0THXWNw7SOzTldlbcMZGja1X/4FP3yZyMXvU73a5G1HmbVPwSbT6Y+coW
-         Yn/oXc5UD4Te2RfOeQdLz0qV/uR1QFeWXvle0nErStXtrv7g4vHH8KCG+0iVVfAqCWbo
-         ScpTXB3rbeWjXmZ6Lk4G326Hm+IKYK2nCvm2RmPXvCEarCsOXJC+w7C1zSDgb9/bG46F
-         xuMY0r8NkG5GE9ZuSxGbCzqwkB9ULYiJngmfkuWMrEs87YZFIMb5gdqXNBY1xyokaPym
-         CMtwmjRUkxfAVi8zjptq7bDUEKV8oMTmqrBgnDFJaMAsK0QV3WD2fkkljcaYs5nFnRc/
-         CIww==
-X-Gm-Message-State: AOAM530Ase4YHCKLgrGPG+rh2AAYYOVcXFDbwQ+QQFoZjETM97GZkw/Q
-        bouWhLcfc6P3QK2V8eaxtcHDzI1WlAhHs8lG
-X-Google-Smtp-Source: ABdhPJxIIAWNccilmnOg3jeLcpktP0phggzqkcg+C6gGrrev83l5rtt27FjHbuliuVU+nwTHvb/IXg==
-X-Received: by 2002:aa7:95bb:0:b029:152:b32d:6935 with SMTP id a27-20020aa795bb0000b0290152b32d6935mr7446338pfk.54.1603887643018;
-        Wed, 28 Oct 2020 05:20:43 -0700 (PDT)
-Received: from Monkey.fios-router.home ([47.144.162.13])
-        by smtp.gmail.com with ESMTPSA id a143sm6329137pfd.138.2020.10.28.05.20.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 05:20:42 -0700 (PDT)
-From:   "John B. Wyatt IV" <jbwyatt4@gmail.com>
-To:     "' Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen ' <tim.c.chen@intel.com>
-Cc:     "John B. Wyatt IV" <jbwyatt4@gmail.com>
-Subject: [PATCH 3/8] sched: Fix some style issues in test_coresched.c
-Date:   Wed, 28 Oct 2020 05:19:12 -0700
-Message-Id: <20201028121917.635203-4-jbwyatt4@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201028121917.635203-1-jbwyatt4@gmail.com>
-References: <20201028121917.635203-1-jbwyatt4@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S2387524AbgJ2CLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:11:52 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:41137 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726824AbgJ1Vgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:36:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603920998; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=sBoFYXBRNRnfc1p/HZHYw4mb1ypcZrZ4ev80XM6oef4=; b=aQiuMAp+nlTKsOZizPT8RBJnHOxlmpWM9kQqSGB9Rx4/O4qMJ8RfxwiWIMBgFRqligEEKYgd
+ fucnfTFw3f6/VJcXVxENHYjN7qWBJmuTEFEY8oryvPAoe5W/wdmFiDJl/5hQdksejCEv+VdU
+ HCTGjM4cN/RYL9n7W83IqDx0pVM=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f9974b61fc42e8c0303eb95 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Oct 2020 13:40:06
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 13E84C43395; Wed, 28 Oct 2020 13:40:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1BA3CC433F0;
+        Wed, 28 Oct 2020 13:40:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1BA3CC433F0
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     robh@kernel.org, dri-devel@freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jcrouse@codeaurora.org, mka@chromium.org, robdclark@gmail.com,
+        dianders@chromium.org
+Subject: [PATCH v3 1/3] drm/msm: Add support for GPU cooling
+Date:   Wed, 28 Oct 2020 19:09:52 +0530
+Message-Id: <1603892395-3570-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Line 825: open brace '{' following function definitions go
-on the next line.
-Line 459: that open brace { should be on the previous line
-Line 459: space required before the open parenthesis '('
+Register GPU as a devfreq cooling device so that it can be passively
+cooled by the thermal framework.
 
-Issues reported by checkpatch.
-
-There are other issues including over a hundred instances of using spaces
-instead of tabs in this file.
-I am currently fixing these specific issues in this patch.
-
-Signed-off-by: John B. Wyatt IV <jbwyatt4@gmail.com>
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
 ---
- tools/testing/selftests/sched/test_coresched.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Changes in v3:
+	1. Minor fix in binding documentation (RobH)
+Changes in v2:
+	1. Update the dt bindings documentation
+ drivers/gpu/drm/msm/msm_gpu.c | 12 ++++++++++++
+ drivers/gpu/drm/msm/msm_gpu.h |  2 ++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/tools/testing/selftests/sched/test_coresched.c b/tools/testing/selftests/sched/test_coresched.c
-index 91cfb00f15b5..f11ed8370c07 100644
---- a/tools/testing/selftests/sched/test_coresched.c
-+++ b/tools/testing/selftests/sched/test_coresched.c
-@@ -459,9 +459,8 @@ char *get_task_core_cookie(char *pid)
-     sprintf(proc_path, "/proc/%s/sched", pid);
+diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+index 55d1648..9f9db46 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.c
++++ b/drivers/gpu/drm/msm/msm_gpu.c
+@@ -14,6 +14,7 @@
+ #include <generated/utsrelease.h>
+ #include <linux/string_helpers.h>
+ #include <linux/devfreq.h>
++#include <linux/devfreq_cooling.h>
+ #include <linux/devcoredump.h>
+ #include <linux/sched/task.h>
  
-     fp = fopen(proc_path, "r");
--    while ((fgets(line, 1024, fp)) != NULL)
--    {
--        if(!strstr(line, "core_cookie"))
-+    while ((fgets(line, 1024, fp)) != NULL) {
-+        if (!strstr(line, "core_cookie"))
-             continue;
+@@ -107,9 +108,18 @@ static void msm_devfreq_init(struct msm_gpu *gpu)
+ 	if (IS_ERR(gpu->devfreq.devfreq)) {
+ 		DRM_DEV_ERROR(&gpu->pdev->dev, "Couldn't initialize GPU devfreq\n");
+ 		gpu->devfreq.devfreq = NULL;
++		return;
+ 	}
  
-         for (j = 0, i = 0; i < 1024 && line[i] != '\0'; i++)
-@@ -826,7 +825,8 @@ static void test_prctl_in_group(char *root)
-     print_pass();
+ 	devfreq_suspend_device(gpu->devfreq.devfreq);
++
++	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node,
++			gpu->devfreq.devfreq);
++	if (IS_ERR(gpu->cooling)) {
++		DRM_DEV_ERROR(&gpu->pdev->dev,
++				"Couldn't register GPU cooling device\n");
++		gpu->cooling = NULL;
++	}
  }
  
--int main(void) {
-+int main(void)
-+{
-     char *root = make_group(NULL, NULL);
+ static int enable_pwrrail(struct msm_gpu *gpu)
+@@ -1005,4 +1015,6 @@ void msm_gpu_cleanup(struct msm_gpu *gpu)
+ 		gpu->aspace->mmu->funcs->detach(gpu->aspace->mmu);
+ 		msm_gem_address_space_put(gpu->aspace);
+ 	}
++
++	devfreq_cooling_unregister(gpu->cooling);
+ }
+diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+index 6c9e1fd..9a8f20d 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.h
++++ b/drivers/gpu/drm/msm/msm_gpu.h
+@@ -147,6 +147,8 @@ struct msm_gpu {
+ 	struct msm_gpu_state *crashstate;
+ 	/* True if the hardware supports expanded apriv (a650 and newer) */
+ 	bool hw_apriv;
++
++	struct thermal_cooling_device *cooling;
+ };
  
-     test_cgroup_parent_tag_child_inherit(root);
+ static inline struct msm_gpu *dev_to_gpu(struct device *dev)
 -- 
-2.28.0
+2.7.4
 
