@@ -2,87 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3DC29D36F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1076229D4E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgJ1Vn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726423AbgJ1Vnv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:43:51 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49688C0613CF;
-        Wed, 28 Oct 2020 14:43:51 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1728445AbgJ1VzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:55:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728317AbgJ1VwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:52:25 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CM1Ng6dFNz9sSn;
-        Thu, 29 Oct 2020 08:07:15 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603919236;
-        bh=W2n5VWwBllSsH7rdOKp+MwgYDXy0yFzINN07H5vOOXc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gUSY4fEamKL/MhS6u92pulR8ZY/JEEugzlCP1p0u/Uyb1a2Ov0Ga8wE8LnkkD7Suo
-         dR60NscI7MQ6HThH2NpEkHwfkuXxb4fict/NYpGchLtUkUKuXCGjHrZTMs5k16ySWu
-         kTjvFhiEtr7krpYZ1eDmQ2j35LqBgDBM8DeeoF3JwKv8XTIopKwT7EzdqfIJeRAwgl
-         s49g3kbY5BxPC48VD9ftn/nI0HRadhE3yPfHDh3JnX05qlOPl0nfD0mXi8jGEfOGiA
-         V8QYvxB5fyGSJpwGhGjVJSevOZ3OrlMKQPNTjSS+rCNfY26LKTnUPCayaR+/nF1cBZ
-         yzNNrHJYxeHuA==
-Date:   Thu, 29 Oct 2020 08:07:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Micah Morton <mortonm@chromium.org>
-Cc:     Thomas Cedeno <thomascedeno@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning in Linus' tree
-Message-ID: <20201029080713.64c5f78c@canb.auug.org.au>
-In-Reply-To: <CAJ-EccOQCADagAb8YqRHL6aUVCrMuGOO=tA-TBorjO_AiXT7Gw@mail.gmail.com>
-References: <20201028142809.09f7f4b4@canb.auug.org.au>
-        <CAJ-EccOQCADagAb8YqRHL6aUVCrMuGOO=tA-TBorjO_AiXT7Gw@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 454E624834;
+        Wed, 28 Oct 2020 21:14:46 +0000 (UTC)
+Date:   Wed, 28 Oct 2020 17:14:44 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [RFC][PATCH 1/2 v2] ftrace/x86: Allow for arguments to be
+ passed in to REGS by default
+Message-ID: <20201028171444.7c74c9d0@oasis.local.home>
+In-Reply-To: <20201028163626.20e651b1@oasis.local.home>
+References: <20201028131542.963014814@goodmis.org>
+        <20201028131909.738751907@goodmis.org>
+        <20201028102502.28095c95@oasis.local.home>
+        <20201028112916.50bcbc69@oasis.local.home>
+        <20201028163626.20e651b1@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/JT9K7rs4nx=+x9oFqfn_JtY";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/JT9K7rs4nx=+x9oFqfn_JtY
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 28 Oct 2020 16:36:26 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Hi Micah,
+> Here's a proof of concept patch. It passes all the kprobe self tests in
+> the ftracetest suite. This is just a proof of concept, and I already
+> know of a couple of subtle bugs that are easy to fix. But this shows
+> the general idea.
 
-On Wed, 28 Oct 2020 08:56:00 -0700 Micah Morton <mortonm@chromium.org> wrot=
-e:
->
-> Thanks for the heads up. I think someone sent a patch to fix this
-> yesterday: https://marc.info/?l=3Dlinux-doc&m=3D160379233902729&w=3D2
->=20
-> Do I need to do anything else or should that cover it?
+And this works for live patching as well (the below patch passed the
+live patching test).
 
-That should be fine, thanks.
+To make sure this really worked, I made the regular trampoline put RIP
+into the R15 location, and live patching used that.
 
---=20
-Cheers,
-Stephen Rothwell
+I'm going to start working on getting rid of FL_SAVE_REGS, by first
+changing the regs parameter to struct ftrace_regs * type, and having
+all regs users use ftrace_regs_get_regs(), that will return NULL if
+it's not full regs (at least for x86), this way we can keep the current
+regs (if kprobes *really* needs it). But then having other accesses for
+this. And this way, live patching will no longer need a full regs to
+work.
 
---Sig_/JT9K7rs4nx=+x9oFqfn_JtY
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Then by default we can have all callbacks have access to the stack and
+arguments!
 
------BEGIN PGP SIGNATURE-----
+-- Steve
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Z3YEACgkQAVBC80lX
-0Gy9ZggAldySAgJfmE/sEXrBEoBEo6trpm1XBwz3QaNHmEp3uV5BjyBUKCxPveor
-cncCNyI2vK0QB5qnLUHcga5At+YuipUEbWt5Cmis73gM1rqjddfZPLgYDcikz981
-RQvz5lQWN4GWUG420Ksn7clLI7qMErS9r2zgbyxp2x+ktN9xz+eijlTCImEd2f+Q
-w0n9aMojT5tbetczeV6oZNhV8cFsLsrEcQKzcBTvIbV7H1PMUYwg8L/4sAUog+ES
-UmP7VoC7VQTW35vAV4riGmkYCNpzhUnmQlJKZodONR9Tk/yqoeVoJWAy3PzM/2bv
-0cOUY9i2pWveQElT0NgAqrgrvz/OtA==
-=EhPZ
------END PGP SIGNATURE-----
-
---Sig_/JT9K7rs4nx=+x9oFqfn_JtY--
+diff --git a/arch/x86/include/asm/livepatch.h b/arch/x86/include/asm/livepatch.h
+index 1fde1ab6559e..de3bf7ce1c5d 100644
+--- a/arch/x86/include/asm/livepatch.h
++++ b/arch/x86/include/asm/livepatch.h
+@@ -14,7 +14,7 @@
+ 
+ static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
+ {
+-	regs->ip = ip;
++	regs->r15 = ip;
+ }
+ 
+ #endif /* _ASM_X86_LIVEPATCH_H */
+diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
+index f8833fe0ff44..aad647500818 100644
+--- a/arch/x86/kernel/ftrace_64.S
++++ b/arch/x86/kernel/ftrace_64.S
+@@ -148,6 +148,11 @@ SYM_INNER_LABEL(ftrace_caller_op_ptr, SYM_L_GLOBAL)
+ 	/* Load the ftrace_ops into the 3rd parameter */
+ 	movq function_trace_op(%rip), %rdx
+ 
++	/* put RIP into R15 to test this */
++	movq RIP(%rsp), %rcx
++	movq %rcx, R15(%rsp)
++	movq $0, RIP(%rsp)
++
+ 	/* regs go into 4th parameter */
+ 	leaq (%rsp), %rcx
+ 
+@@ -158,7 +163,7 @@ SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
+ 	call ftrace_stub
+ 
+ 	/* Handlers can change the RIP */
+-	movq RIP(%rsp), %rax
++	movq R15(%rsp), %rax
+ 	movq %rax, MCOUNT_REG_SIZE(%rsp)
+ 
+ 	restore_mcount_regs
+diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+index c3a5b2675397..3374d53a747a 100644
+--- a/arch/x86/kernel/kprobes/ftrace.c
++++ b/arch/x86/kernel/kprobes/ftrace.c
+@@ -22,6 +22,7 @@ static void arch_ftrace_fill_regs(struct pt_regs *regs,
+ 				  struct pt_regs *ftrace_regs)
+ {
+ 	*regs = *ftrace_regs;
++	regs->ip = regs->r15;
+ 	local_save_flags(regs->flags);
+ 	regs->cs = __KERNEL_CS;
+ }
+@@ -30,6 +31,7 @@ static void arch_regs_fill_ftrace(struct pt_regs *ftrace_regs,
+ 				  struct pt_regs *regs)
+ {
+ 	*ftrace_regs = *regs;
++	ftrace_regs->r15 = regs->ip;
+ }
+ 
+ /* Ftrace callback handler for kprobes -- called under preepmt disabed */
+diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
+index 6c0164d24bbd..87ecdf486ca3 100644
+--- a/kernel/livepatch/patch.c
++++ b/kernel/livepatch/patch.c
+@@ -199,8 +199,10 @@ static int klp_patch_func(struct klp_func *func)
+ 			return -ENOMEM;
+ 
+ 		ops->fops.func = klp_ftrace_handler;
+-		ops->fops.flags = FTRACE_OPS_FL_SAVE_REGS |
+-				  FTRACE_OPS_FL_DYNAMIC |
++		ops->fops.flags = FTRACE_OPS_FL_DYNAMIC |
++#ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
++				  FTRACE_OPS_FL_SAVE_REGS |
++#endif
+ 				  FTRACE_OPS_FL_IPMODIFY |
+ 				  FTRACE_OPS_FL_PERMANENT;
+ 
