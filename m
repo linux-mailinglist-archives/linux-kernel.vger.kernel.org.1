@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E83E29D38F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A354F29D339
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgJ1VpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47806 "EHLO
+        id S1726048AbgJ1Vl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725931AbgJ1VpA (ORCPT
+        with ESMTP id S1725779AbgJ1Vlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:45:00 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BB5C0613CF;
-        Wed, 28 Oct 2020 14:45:00 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id d19so377085vso.10;
-        Wed, 28 Oct 2020 14:45:00 -0700 (PDT)
+        Wed, 28 Oct 2020 17:41:53 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1837C0613D1;
+        Wed, 28 Oct 2020 14:41:52 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id u62so1064165iod.8;
+        Wed, 28 Oct 2020 14:41:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NiuLglo/RooNrUdsk62yJO/eKT8250r1cbAiCmJYYP4=;
-        b=FSQtUdM1SZB5DSgqJi9I/A4oUEsT8il9S6lD++yoK3rwBrCJaJyuXiYEf81lk65OJK
-         uEY/yzCXna56iQn4yBF+3/ZcLtudz+wIQjkpIeQvvbOn7+R3euHQc7IB13ilB7It7YFK
-         LSC6kH5oyL4k6YEokuVUKs09EG40s5Hupp9xs=
+        bh=1KYUIsk757yjfOxOTjonub4YNOxpUYnyLgvt2WlwCKA=;
+        b=CAj6eWB0sS+KsIEA8xhTCYPe5pKspk9Ybsrx10g+8JQkR4ESP2zrbUkymyWAqsq/xs
+         yp0cbkj/HY3yu/hbdX4Sbi7hBUS3W+lUF2jmV7VixEZ4x8skpPJoCA3dbKLvdbUHvdM7
+         GZiHCfEh+1ocFVmHvVqBqL37mcGEqztbBVIG0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NiuLglo/RooNrUdsk62yJO/eKT8250r1cbAiCmJYYP4=;
-        b=LnFSv5T4KLRJ8za3ANqqwqilPS2DXO8v/XO7RuJjj00ODFDn0Cx7q7kN4tbeMMwUrl
-         9ELQBPuhvE5ZwqY1OaVUMy2FbZb2P8zjmIIuPLPgGvXWkigpBn7QdV5oHbL4l0uQFTs0
-         yS7WwJySpTR8bF6BVEHWB3Zs7v08Ih0MwplN8h71g6hSNxW9ZPM8x0DK8d/UTleYCYgY
-         DSKjC0ikhnJHV73wuNOmenPLSFutwy5nFjySJ+OWIcb/Gk70uoguLNnRUXY3vw2+Xjr2
-         rydNCa5cqPa2qAZKphKkhf9lXQe0Xav7m8RpheHY98bQseY9zeW1lAdAYH68yxB++CDQ
-         OHAw==
-X-Gm-Message-State: AOAM530GPKNvvnA2dlEAIfsYUWclsgocVbgHm44vKHN4h1+p2Ndbp+7P
-        q2WaTOrplvkkIsH54TSrPcf9OIhmcdDO60yTpFJnnDmvRFYKSMFE
-X-Google-Smtp-Source: ABdhPJxs1lICeCbecmA7Kb6hunQLw5cZyDwwkGGe2Xl6vC36f+QScSgTyLD5IxOjvCFLsKmFQ9uRNniWvFV1WVzsS10=
-X-Received: by 2002:ad4:54e9:: with SMTP id k9mr6099105qvx.18.1603862769484;
- Tue, 27 Oct 2020 22:26:09 -0700 (PDT)
+        bh=1KYUIsk757yjfOxOTjonub4YNOxpUYnyLgvt2WlwCKA=;
+        b=MXTICkLPfqFjkb8yuGoQGug3wVNzBnA39BfluSHDMGKB7r48MEW5fHKK0q1O/xrtHS
+         LuZj82Ph61QmZkYHQamobpztEGNNnEHb+FmXeZuboEd4BI+CTos2gekZpViNygBsx1Yn
+         NyM1OW7p9K44j5/lXG5WFdYtwifXFn7b6IwmgIEGjWnUpp6pXcEhnJH6YjQzWG8Y2PDU
+         xWxC+msRwSrct8fyCmj+AOIklZP+XwGSzwsZz0uBaq1gLMlCEpDQv/3qu0u5JH57XLv/
+         IFTTNqRkpaQCTeNcR7iefaZvXxp89TSZQZCrnM0bprgpZxDjenA1lhV35X8SNDnMNmYa
+         sskA==
+X-Gm-Message-State: AOAM533Hy2AeOeSV8L8hwcnITlagSfs/Fl8Kuh1EHsC6+r2jUprdfKdX
+        TseDO6I7vCmAk7ggr+4UbDXKxsM8aB0zZwZkiuCxVcm5H/abrw==
+X-Google-Smtp-Source: ABdhPJxjYiVx/jlqIHQCiS7hEo1CokIeLOSw3uzWA56UCJv3gAepbfgYpwPTPl37ADtRKOhjzlpQ7YzLLsQdjIMDdXw=
+X-Received: by 2002:a05:622a:d5:: with SMTP id p21mr67362qtw.363.1603862906529;
+ Tue, 27 Oct 2020 22:28:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201027123722.2935-1-aladyshev22@gmail.com>
-In-Reply-To: <20201027123722.2935-1-aladyshev22@gmail.com>
+References: <20201027123722.2935-1-aladyshev22@gmail.com> <20201027123722.2935-2-aladyshev22@gmail.com>
+In-Reply-To: <20201027123722.2935-2-aladyshev22@gmail.com>
 From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 28 Oct 2020 05:25:54 +0000
-Message-ID: <CACPK8XcgKTEEfPL54Spd_AQTdJVm=xt+rqbteaYygLQw-GKRcQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ARM: dts: aspeed: amd-ethanolx: Update KCS nodes to
- use v2 binding
+Date:   Wed, 28 Oct 2020 05:28:13 +0000
+Message-ID: <CACPK8XeaWbrWBKonxqW0Gu2AnB3mXBNXsEDmsEP_hzT1e8gX1w@mail.gmail.com>
+Subject: Re: [PATCH 2/3] ARM: dts: aspeed: amd-ethanolx: Enable KCS channel 3
 To:     Konstantin Aladyshev <aladyshev22@gmail.com>
 Cc:     Supreeth Venkatesh <supreeth.venkatesh@amd.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -62,49 +61,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 at 12:38, Konstantin Aladyshev
+On Tue, 27 Oct 2020 at 12:41, Konstantin Aladyshev
 <aladyshev22@gmail.com> wrote:
 >
-> KCS nodes compatible property in the 'aspeed-g5.dtsi' file was
-> changed to use v2 binding in the commit fa4c8ec6feaa
-> ("ARM: dts: aspeed: Change KCS nodes to v2 binding").
-> For the proper initialization of /dev/ipmi-kcs* devices
-> KCS node variables also need to be changed to use v2 binding.
+> The KCS interface on the LPC channel 3 in the controller
+> is used for the in-band BMC<->BIOS IPMI communication.
+> 0xCA2 is a default host CPU LPC IO address for this
+> interface.
 >
 > Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
 
-Fixes: 09f5f680707e ("ipmi: kcs: aspeed: Implement v2 bindings")
+I don't have any docs on the platform so I'll wait for a review from
+Supreeth before applying this one.
+
+It's a correct use of the bindings:
+
 Reviewed-by: Joel Stanley <joel@jms.id.au>
 
 > ---
->  arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts | 5 +++++
+>  1 file changed, 5 insertions(+)
 >
 > diff --git a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-> index 60ba86f3e5bc..89ddc3847222 100644
+> index 89ddc3847222..2a86bda8afd8 100644
 > --- a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
 > +++ b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-> @@ -139,17 +139,17 @@
->
->  &kcs1 {
->         status = "okay";
-> -       kcs_addr = <0x60>;
-> +       aspeed,lpc-io-reg = <0x60>;
+> @@ -147,6 +147,11 @@
+>         aspeed,lpc-io-reg = <0x62>;
 >  };
 >
->  &kcs2 {
->         status = "okay";
-> -       kcs_addr = <0x62>;
-> +       aspeed,lpc-io-reg = <0x62>;
->  };
->
+> +&kcs3 {
+> +       status = "okay";
+> +       aspeed,lpc-io-reg = <0xCA2>;
+> +};
+> +
 >  &kcs4 {
 >         status = "okay";
-> -       kcs_addr = <0x97DE>;
-> +       aspeed,lpc-io-reg = <0x97DE>;
->  };
->
->  &lpc_snoop {
+>         aspeed,lpc-io-reg = <0x97DE>;
 > --
 > 2.17.1
 >
