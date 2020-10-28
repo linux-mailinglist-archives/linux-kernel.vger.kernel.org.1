@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329D829DFAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 926B529DFA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731227AbgJ2BDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:03:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:39076 "EHLO foss.arm.com"
+        id S1730491AbgJ1WKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:10:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:39094 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730466AbgJ1WKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:10:11 -0400
+        id S1730462AbgJ1WKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:10:10 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6A3B176B;
-        Wed, 28 Oct 2020 15:10:07 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5FA51763;
+        Wed, 28 Oct 2020 15:10:09 -0700 (PDT)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C63BD3F68F;
-        Wed, 28 Oct 2020 15:10:06 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 049BA3F68F;
+        Wed, 28 Oct 2020 15:10:08 -0700 (PDT)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
         coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
         Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH v3 06/26] coresight: etm4x: Handle access to TRCSSPCICRn
-Date:   Wed, 28 Oct 2020 22:09:25 +0000
-Message-Id: <20201028220945.3826358-8-suzuki.poulose@arm.com>
+Subject: [PATCH v3 08/26] coresight: tpiu: Prepare for using coresight device access abstraction
+Date:   Wed, 28 Oct 2020 22:09:27 +0000
+Message-Id: <20201028220945.3826358-10-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20201028220945.3826358-1-suzuki.poulose@arm.com>
 References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
@@ -34,54 +34,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TRCSSPCICR<n> is present only if all of the following are true:
-	TRCIDR4.NUMSSCC > n.
-	TRCIDR4.NUMPC > 0b0000 .
-	TRCSSCSR<n>.PC == 0b1
+Prepare the TPIU driver to make use of the CoreSight device access
+abstraction layer. The driver touches the device even before the
+coresight device is registered. Thus we could be accessing the
+devices without a csdev. As we are about to use the abstraction
+layer for accessing the device, pass in the access directly
+to avoid having to deal with the un-initialised csdev.
 
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Mike Leach <mike.leach@linaro.org>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/hwtracing/coresight/coresight-tpiu.c | 30 +++++++++-----------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index d78a37b6592c..0310eac9dc16 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -175,8 +175,9 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
- 			       drvdata->base + TRCSSCCRn(i));
- 		writel_relaxed(config->ss_status[i],
- 			       drvdata->base + TRCSSCSRn(i));
--		writel_relaxed(config->ss_pe_cmp[i],
--			       drvdata->base + TRCSSPCICRn(i));
-+		if (drvdata->nr_pe)
-+			writel_relaxed(config->ss_pe_cmp[i],
-+				       drvdata->base + TRCSSPCICRn(i));
- 	}
- 	for (i = 0; i < drvdata->nr_addr_cmp; i++) {
- 		writeq_relaxed(config->addr_val[i],
-@@ -1228,7 +1229,8 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
- 	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
- 		state->trcssccr[i] = readl(drvdata->base + TRCSSCCRn(i));
- 		state->trcsscsr[i] = readl(drvdata->base + TRCSSCSRn(i));
--		state->trcsspcicr[i] = readl(drvdata->base + TRCSSPCICRn(i));
-+		if (drvdata->nr_pe)
-+			state->trcsspcicr[i] = readl(drvdata->base + TRCSSPCICRn(i));
- 	}
+diff --git a/drivers/hwtracing/coresight/coresight-tpiu.c b/drivers/hwtracing/coresight/coresight-tpiu.c
+index dfa3b91d0281..98c4a029854c 100644
+--- a/drivers/hwtracing/coresight/coresight-tpiu.c
++++ b/drivers/hwtracing/coresight/coresight-tpiu.c
+@@ -60,49 +60,45 @@ struct tpiu_drvdata {
+ 	struct coresight_device	*csdev;
+ };
  
- 	for (i = 0; i < drvdata->nr_addr_cmp * 2; i++) {
-@@ -1344,8 +1346,9 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
- 			       drvdata->base + TRCSSCCRn(i));
- 		writel_relaxed(state->trcsscsr[i],
- 			       drvdata->base + TRCSSCSRn(i));
--		writel_relaxed(state->trcsspcicr[i],
--			       drvdata->base + TRCSSPCICRn(i));
-+		if (drvdata->nr_pe)
-+			writel_relaxed(state->trcsspcicr[i],
-+				       drvdata->base + TRCSSPCICRn(i));
- 	}
+-static void tpiu_enable_hw(struct tpiu_drvdata *drvdata)
++static void tpiu_enable_hw(struct csdev_access *csa)
+ {
+-	CS_UNLOCK(drvdata->base);
++	CS_UNLOCK(csa->base);
  
- 	for (i = 0; i < drvdata->nr_addr_cmp * 2; i++) {
+ 	/* TODO: fill this up */
+ 
+-	CS_LOCK(drvdata->base);
++	CS_LOCK(csa->base);
+ }
+ 
+ static int tpiu_enable(struct coresight_device *csdev, u32 mode, void *__unused)
+ {
+-	struct tpiu_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+-
+-	tpiu_enable_hw(drvdata);
++	tpiu_enable_hw(&csdev->access);
+ 	atomic_inc(csdev->refcnt);
+ 	dev_dbg(&csdev->dev, "TPIU enabled\n");
+ 	return 0;
+ }
+ 
+-static void tpiu_disable_hw(struct tpiu_drvdata *drvdata)
++static void tpiu_disable_hw(struct csdev_access *csa)
+ {
+-	CS_UNLOCK(drvdata->base);
++	CS_UNLOCK(csa->base);
+ 
+ 	/* Clear formatter and stop on flush */
+-	writel_relaxed(FFCR_STOP_FI, drvdata->base + TPIU_FFCR);
++	csdev_access_relaxed_write32(csa, FFCR_STOP_FI, TPIU_FFCR);
+ 	/* Generate manual flush */
+-	writel_relaxed(FFCR_STOP_FI | FFCR_FON_MAN, drvdata->base + TPIU_FFCR);
++	csdev_access_relaxed_write32(csa, FFCR_STOP_FI | FFCR_FON_MAN, TPIU_FFCR);
+ 	/* Wait for flush to complete */
+-	coresight_timeout(drvdata->base, TPIU_FFCR, FFCR_FON_MAN_BIT, 0);
++	coresight_timeout(csa->base, TPIU_FFCR, FFCR_FON_MAN_BIT, 0);
+ 	/* Wait for formatter to stop */
+-	coresight_timeout(drvdata->base, TPIU_FFSR, FFSR_FT_STOPPED_BIT, 1);
++	coresight_timeout(csa->base, TPIU_FFSR, FFSR_FT_STOPPED_BIT, 1);
+ 
+-	CS_LOCK(drvdata->base);
++	CS_LOCK(csa->base);
+ }
+ 
+ static int tpiu_disable(struct coresight_device *csdev)
+ {
+-	struct tpiu_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+-
+ 	if (atomic_dec_return(csdev->refcnt))
+ 		return -EBUSY;
+ 
+-	tpiu_disable_hw(drvdata);
++	tpiu_disable_hw(&csdev->access);
+ 
+ 	dev_dbg(&csdev->dev, "TPIU disabled\n");
+ 	return 0;
+@@ -152,7 +148,7 @@ static int tpiu_probe(struct amba_device *adev, const struct amba_id *id)
+ 	desc.access = CSDEV_ACCESS_IOMEM(base);
+ 
+ 	/* Disable tpiu to support older devices */
+-	tpiu_disable_hw(drvdata);
++	tpiu_disable_hw(&desc.access);
+ 
+ 	pdata = coresight_get_platform_data(dev);
+ 	if (IS_ERR(pdata))
 -- 
 2.24.1
 
