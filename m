@@ -2,89 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C686929E23F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AE429E227
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387597AbgJ2CL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:11:59 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:60972 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726823AbgJ1Vgc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:36:32 -0400
-X-UUID: 8a47760e811a42968c2e7d60a0a6ab76-20201029
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=RYETYlae4iO6GU8GFOfcOxXXaKOlfrIac/CifbWh6Vw=;
-        b=BjHkX+IvZPgDq+7JzGY+nHP0lymaLmxvm7712hpivokjnbcG9pXavwuBJY2EHf4kRStgk6gt9oYkIkvOrwlB2Ov3avlTvb605Pgcn4pq9oJIUSaWRNXF0rJ3DMvfeRyTM4L6FN+TcB3LBa91I1V3baaZgCNVr6Fzy0veKzoIiB8=;
-X-UUID: 8a47760e811a42968c2e7d60a0a6ab76-20201029
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 496800390; Thu, 29 Oct 2020 01:55:36 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 29 Oct 2020 01:55:27 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 29 Oct 2020 01:55:27 +0800
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-To:     <macpaul@gmail.com>, <chunfeng.yun@mediatek.com>,
-        <eddie.hung@mediatek.com>
-CC:     Ainge Hsu <ainge.hsu@mediatek.com>,
-        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Macpaul Lin <macpaul.lin@gmail.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-usb@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <stable@vger.kernel.org>
-Subject: [PATCH v2] usb: gadget: configfs: Fix use-after-free issue with udc_name
-Date:   Thu, 29 Oct 2020 01:55:23 +0800
-Message-ID: <1603907723-19499-1-git-send-email-macpaul.lin@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
+        id S1730104AbgJ2CL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:11:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726931AbgJ1VhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:37:23 -0400
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E4F9247FA;
+        Wed, 28 Oct 2020 18:01:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603908114;
+        bh=kiVbbIoq2NdlzdJ/a20eGyFOEh2S7Tm7JiSgSH7L1gs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=l7oGWJwqBvK8Rg4cu7Y18e3LMzQH14enibKpL4bF5FU9phHHNDzO6IqifKx9gDuyU
+         +QOI9cMNrtaIEKc0iVIXsznlb2ho17nUvDhSpciib7ryuCq0uApBJ/tFW2HRlDamgb
+         yOlAmE1Dv53mFSCQu/wGHaE8mkik3eSKxCsefF8c=
+Received: by mail-qk1-f174.google.com with SMTP id x20so5406931qkn.1;
+        Wed, 28 Oct 2020 11:01:54 -0700 (PDT)
+X-Gm-Message-State: AOAM532PCEE/M94xfOgBWSINTmaMTcwMQyvtcNxwEPQCri1OGxUe4Lir
+        mIX7uQjWkgIKcDaYypOxkxn0kot10uRwbJ7SnNA=
+X-Google-Smtp-Source: ABdhPJymgITjNtW7EeX+umApAD4Vf02rqbitm4Ker4JECaOsBTLrlUusKrdjstVTwMYn8ocHZ9ykxsfWXhzFPmaBCLw=
+X-Received: by 2002:a05:620a:b13:: with SMTP id t19mr35387qkg.3.1603908113213;
+ Wed, 28 Oct 2020 11:01:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 8BA88157233FE31D320A44BF339572E794FB14D30A408FA9247CAD67040C28E02000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <51a9a594a38ae6e0982e78976cf046fb55b63a8e.1603191669.git.viresh.kumar@linaro.org>
+ <20201027085152.GB10053@infradead.org> <CAHk-=whw9t3ZtV8iA2SJWYQS1VOJuS14P_qhj3v5-9PCBmGQww@mail.gmail.com>
+ <b3a8e2e8-350f-65af-9707-a6d847352f8e@redhat.com>
+In-Reply-To: <b3a8e2e8-350f-65af-9707-a6d847352f8e@redhat.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 28 Oct 2020 19:01:37 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0C5qUguxg446iuvaHm0D+E1tSowxht7g9OJp90GDsAAQ@mail.gmail.com>
+Message-ID: <CAK8P3a0C5qUguxg446iuvaHm0D+E1tSowxht7g9OJp90GDsAAQ@mail.gmail.com>
+Subject: Re: [PATCH] dcookies: Make dcookies depend on CONFIG_OPROFILE
+To:     William Cohen <wcohen@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRWRkaWUgSHVuZyA8ZWRkaWUuaHVuZ0BtZWRpYXRlay5jb20+DQoNClRoZXJlIGlzIGEg
-dXNlLWFmdGVyLWZyZWUgaXNzdWUsIGlmIGFjY2VzcyB1ZGNfbmFtZQ0KaW4gZnVuY3Rpb24gZ2Fk
-Z2V0X2Rldl9kZXNjX1VEQ19zdG9yZSBhZnRlciBhbm90aGVyIGNvbnRleHQNCmZyZWUgdWRjX25h
-bWUgaW4gZnVuY3Rpb24gdW5yZWdpc3Rlcl9nYWRnZXQuDQoNCkNvbnRleHQgMToNCmdhZGdldF9k
-ZXZfZGVzY19VRENfc3RvcmUoKS0+dW5yZWdpc3Rlcl9nYWRnZXQoKS0+DQpmcmVlIHVkY19uYW1l
-LT5zZXQgdWRjX25hbWUgdG8gTlVMTA0KDQpDb250ZXh0IDI6DQpnYWRnZXRfZGV2X2Rlc2NfVURD
-X3Nob3coKS0+IGFjY2VzcyB1ZGNfbmFtZQ0KDQpDYWxsIHRyYWNlOg0KZHVtcF9iYWNrdHJhY2Ur
-MHgwLzB4MzQwDQpzaG93X3N0YWNrKzB4MTQvMHgxYw0KZHVtcF9zdGFjaysweGU0LzB4MTM0DQpw
-cmludF9hZGRyZXNzX2Rlc2NyaXB0aW9uKzB4NzgvMHg0NzgNCl9fa2FzYW5fcmVwb3J0KzB4Mjcw
-LzB4MmVjDQprYXNhbl9yZXBvcnQrMHgxMC8weDE4DQpfX2FzYW5fcmVwb3J0X2xvYWQxX25vYWJv
-cnQrMHgxOC8weDIwDQpzdHJpbmcrMHhmNC8weDEzOA0KdnNucHJpbnRmKzB4NDI4LzB4MTRkMA0K
-c3ByaW50ZisweGU0LzB4MTJjDQpnYWRnZXRfZGV2X2Rlc2NfVURDX3Nob3crMHg1NC8weDY0DQpj
-b25maWdmc19yZWFkX2ZpbGUrMHgyMTAvMHgzYTANCl9fdmZzX3JlYWQrMHhmMC8weDQ5Yw0KdmZz
-X3JlYWQrMHgxMzAvMHgyYjQNClN5U19yZWFkKzB4MTE0LzB4MjA4DQplbDBfc3ZjX25ha2VkKzB4
-MzQvMHgzOA0KDQpBZGQgbXV0ZXhfbG9jayB0byBwcm90ZWN0IHRoaXMga2luZCBvZiBzY2VuYXJp
-by4NCg0KU2lnbmVkLW9mZi1ieTogRWRkaWUgSHVuZyA8ZWRkaWUuaHVuZ0BtZWRpYXRlay5jb20+
-DQpTaWduZWQtb2ZmLWJ5OiBNYWNwYXVsIExpbiA8bWFjcGF1bC5saW5AbWVkaWF0ZWsuY29tPg0K
-UmV2aWV3ZWQtYnk6IFBldGVyIENoZW4gPHBldGVyLmNoZW5AbnhwLmNvbT4NCkNjOiBzdGFibGVA
-dmdlci5rZXJuZWwub3JnDQotLS0NCkNoYW5nZXMgZm9yIHYyOg0KICAtIEZpeCB0eXBvICVzL2Nv
-bnRleC9jb250ZXh0LCBUaGFua3MgUGV0ZXIuDQoNCiBkcml2ZXJzL3VzYi9nYWRnZXQvY29uZmln
-ZnMuYyB8ICAgMTEgKysrKysrKysrLS0NCiAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCsp
-LCAyIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2FkZ2V0L2NvbmZp
-Z2ZzLmMgYi9kcml2ZXJzL3VzYi9nYWRnZXQvY29uZmlnZnMuYw0KaW5kZXggNTYwNTFiYi4uZDk3
-NDNmNCAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvdXNiL2dhZGdldC9jb25maWdmcy5jDQorKysgYi9k
-cml2ZXJzL3VzYi9nYWRnZXQvY29uZmlnZnMuYw0KQEAgLTIyMSw5ICsyMjEsMTYgQEAgc3RhdGlj
-IHNzaXplX3QgZ2FkZ2V0X2Rldl9kZXNjX2JjZFVTQl9zdG9yZShzdHJ1Y3QgY29uZmlnX2l0ZW0g
-Kml0ZW0sDQogDQogc3RhdGljIHNzaXplX3QgZ2FkZ2V0X2Rldl9kZXNjX1VEQ19zaG93KHN0cnVj
-dCBjb25maWdfaXRlbSAqaXRlbSwgY2hhciAqcGFnZSkNCiB7DQotCWNoYXIgKnVkY19uYW1lID0g
-dG9fZ2FkZ2V0X2luZm8oaXRlbSktPmNvbXBvc2l0ZS5nYWRnZXRfZHJpdmVyLnVkY19uYW1lOw0K
-KwlzdHJ1Y3QgZ2FkZ2V0X2luZm8gKmdpID0gdG9fZ2FkZ2V0X2luZm8oaXRlbSk7DQorCWNoYXIg
-KnVkY19uYW1lOw0KKwlpbnQgcmV0Ow0KKw0KKwltdXRleF9sb2NrKCZnaS0+bG9jayk7DQorCXVk
-Y19uYW1lID0gZ2ktPmNvbXBvc2l0ZS5nYWRnZXRfZHJpdmVyLnVkY19uYW1lOw0KKwlyZXQgPSBz
-cHJpbnRmKHBhZ2UsICIlc1xuIiwgdWRjX25hbWUgPzogIiIpOw0KKwltdXRleF91bmxvY2soJmdp
-LT5sb2NrKTsNCiANCi0JcmV0dXJuIHNwcmludGYocGFnZSwgIiVzXG4iLCB1ZGNfbmFtZSA/OiAi
-Iik7DQorCXJldHVybiByZXQ7DQogfQ0KIA0KIHN0YXRpYyBpbnQgdW5yZWdpc3Rlcl9nYWRnZXQo
-c3RydWN0IGdhZGdldF9pbmZvICpnaSkNCi0tIA0KMS43LjkuNQ0K
+On Wed, Oct 28, 2020 at 5:34 PM William Cohen <wcohen@redhat.com> wrote:
+>
+> On 10/27/20 12:54 PM, Linus Torvalds wrote:
+> > On Tue, Oct 27, 2020 at 1:52 AM Christoph Hellwig <hch@infradead.org> wrote:
+> >>
+> >> Is it time to deprecate and eventually remove oprofile while we're at
+> >> it?
+> >
+> > I think it's well past time.
+> >
+> > I think the user-space "oprofile" program doesn't actually use the
+> > legacy kernel code any more, and hasn't for a long time.
+> >
+> > But I might be wrong. Adding William Cohen to the cc, since he seems
+> > to still maintain it to make sure it builds etc.
+>
+> Yes, current OProfile code uses the existing linux perf infrastructure and
+> doesn't use the old oprofile kernel code.  I have thought about removing
+> that old oprofile driver code from kernel, but have not submitted patches
+> for it. I would be fine with eliminating that code from the kernel.
 
+I notice that arch/ia64/ supports oprofile but not perf. I suppose this just
+means that ia64 people no longer care enough about profiling to
+add perf support, but it wouldn't stop us from dropping it, right?
+
+There is also a stub implementation of oprofile for microblaze
+and no perf code, not sure if it would make any difference for them.
+
+Everything else that has oprofile kernel code also supports perf.
+
+       Arnd
