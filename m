@@ -2,165 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C9929D7B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C972329D656
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732896AbgJ1W0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55020 "EHLO
+        id S1731178AbgJ1WOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732948AbgJ1W0L (ORCPT
+        with ESMTP id S1731167AbgJ1WOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:26:11 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AB0C0613CF;
-        Wed, 28 Oct 2020 15:26:10 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id y186so1247048oia.3;
-        Wed, 28 Oct 2020 15:26:10 -0700 (PDT)
+        Wed, 28 Oct 2020 18:14:00 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1063C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:14:00 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id b34so162120uab.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:14:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=s9cgYbyfQqq5UrYB+51r7q1mjBjejxSSOe4Pf+0dXSc=;
-        b=rXNAYzp0HeMoYo9Rs2j7a7wVExN8Iyb5gKJa3ilnzOfGHJwcd+RFugTbbv4YUD3Mnj
-         2VUO9dlRzbWeNmhZQWRmIldeVTDDuir4KELQdTV8pKPdUaKgxaJ0IfJxBnM0G7vRBCYg
-         wiT8wBbr85sNx5oNi5w1j5zdrDvcm3y/EvCc8kg4eRMh6e4OhiTUEBlFVB0b+ClJRPsJ
-         TUQPC9Lpnd7T4yc2WOtO43nneYC6WKlAT53mGvvaNge6Yx9M/aeXZ+pqCJrHxuwPUVlT
-         Z3sxPuGh8uWER8Un/fum42c093n9HO5gFE6T+nYBivL+DRtjuefzSY2LaKQepJTmgDcw
-         UYFA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dp0UWTgUnOTXltTsDwB/n1hr3PG+m86O0km4OU6Mz58=;
+        b=KkBE6NzBPX0WHXN81QI7hJmcF4lHAFotR1xempY3RoM8dvxb6wF7JIcysgDax4S0XE
+         l+2Ufz4AAdxFbxcN3y5YxlGxKIcItRQtRf9+AVmgA5LsEcpfj4OFizaVPggxY1g37Nm7
+         QBLGpfuSm/hu6Ues+5LMRNdi82NMJnTJfIUh9DDrVSVjBiwSxTSrAICUl2JtXMhzqPeH
+         N31/LsB1YeLm0uVo5LzGYrQm1Pkx/BtxV0wgPsPAS3D1/LH/PyKfU3VLraaNoi6nOmNa
+         YIRxDtCr94e80Y4VuFPd2XKSWT0j3svOukxEZFj4CtsOIwx769EqRrU0I2RJwxgMJ+p4
+         /PSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=s9cgYbyfQqq5UrYB+51r7q1mjBjejxSSOe4Pf+0dXSc=;
-        b=uN/mP0tUlWurG3Gdw3cZBQcgxc7YWvs/03LTDg72jKxT8k/J8lpYBgfjHSKMnkWjXT
-         a4T18xEnehlAK+qWWdXj0aUS1JkX5OMeT440pzo0trxU5FWp9KVRJemW063Ow+MVFtOU
-         vcKzYIzv8x9RRNl/JdDkPyy5vTKgvQA8TDHovaj+FnmwK6e9msAOQaBVwVwM4ihNxJqb
-         po3xrCLmCc1m5zAbJz0v8nFTIkb4ajsA+Pd6rfZH+ga9H25cv3yxGOqqpTdPJr9Efys1
-         lPbOquO330J2BhN3V5EtdIuwnOsSSLdqqvAy6ANNgkZJHnV9jM5z/xVldqnmdT/PlB4O
-         KPFw==
-X-Gm-Message-State: AOAM531sgsd7dD0lVgqQfpGEoAnzlmkHgAAkX6eiSl3x95UbwolhUzBS
-        kg4IzazG4GX9xIPTKdkUBK3XtyklJZvNRg==
-X-Google-Smtp-Source: ABdhPJxTVCFgGb7WglQERoAc+UBIhCpYSdy5fzH3i6p6S1gDc3JwHMqoX8TTAJWZ5WiJDakcD5Jdcg==
-X-Received: by 2002:a17:90b:4a83:: with SMTP id lp3mr209008pjb.138.1603908889414;
-        Wed, 28 Oct 2020 11:14:49 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:70b5:cf21:2a3a:f170? ([2001:df0:0:200c:70b5:cf21:2a3a:f170])
-        by smtp.gmail.com with ESMTPSA id i21sm60510pgh.2.2020.10.28.11.14.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Oct 2020 11:14:48 -0700 (PDT)
-Subject: Re: [PATCH 11/13] m68k/mm: make node data and node setup depend on
- CONFIG_DISCONTIGMEM
-To:     Mike Rapoport <rppt@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux MM <linux-mm@kvack.org>,
-        arcml <linux-snps-arc@lists.infradead.org>
-References: <20201027112955.14157-1-rppt@kernel.org>
- <20201027112955.14157-12-rppt@kernel.org>
- <CAMuHMdU4r4CJ1kBu7gx1jkputjDn2S8Lqkj7RPfa3XUnM1QOFg@mail.gmail.com>
- <20201028111631.GF1428094@kernel.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <fd55643a-a17b-5a23-4c77-9e832c1e5128@gmail.com>
-Date:   Thu, 29 Oct 2020 07:14:38 +1300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dp0UWTgUnOTXltTsDwB/n1hr3PG+m86O0km4OU6Mz58=;
+        b=LTF7Vhn6SxuY9Yqxsn+TVCQ9Hbrff1jeN9tTedvHGsQalrZmyKdK4i9byRX6qIBb4E
+         Du/uMBEd977quk/nDKb2KdwBjUzwJQZbsU1VLmE8MS9kaH7l9EL4T+aB+xkvdZCbxht1
+         4pG8PKA16yqCrT+ERjdmt7aYiUM2gbdA/TjcnhMcvWUq/HfiZKBpTvmwdkbcOLZGcpFe
+         nMrhZ8Um5+sAl0/H/a2VtzBZPlFHO8tERlXb5AAyiFtkmUCIk7QKgfpeliK+Ir+XVmAK
+         JxiBrljIyJyP/u804RJzciDNr5JlbAOliq1vXQbxw/NSh/c8vnpgMl2QdnUs3k7zSWaS
+         UNZA==
+X-Gm-Message-State: AOAM533gtLGMKtmu4GsGmtBKY38SLBs4YxQRE9vSdO3xDizYbFp/+Dl8
+        BspCF9leUVNOfB10IRx7A8pKrsOhs1hot2Oc4coJ6nheCXE=
+X-Google-Smtp-Source: ABdhPJzVZLH9e5tW48GWH5ZrKyVlQpNAyXUK+ITzBEjl6vFw9ossQtQTqbICHeDQF9P9dMM1M1CN9jq5h2DrnFrfsEo=
+X-Received: by 2002:ab0:335a:: with SMTP id h26mr747527uap.62.1603909138975;
+ Wed, 28 Oct 2020 11:18:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201028111631.GF1428094@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20201022012106.1875129-1-ndesaulniers@google.com>
+In-Reply-To: <20201022012106.1875129-1-ndesaulniers@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 28 Oct 2020 11:18:47 -0700
+Message-ID: <CAKwvOdnudUv0Z4ai-6==M5fKjWEFQUb9_CEcRfQJeX4ZS5XFjw@mail.gmail.com>
+Subject: Re: [PATCH] Kbuild: implement support for DWARF5
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-toolchains@vger.kernel.org, Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+Hi Masahiro,
+I plan to incorporate Fangrui's recommendation into a v2.  Do you have
+additional thoughts on changes I should make in v2? Have you had the
+chance to test the patch? Should I split it into a series?  What do
+you think about the Kconfig `choice` changes?
 
-On 29/10/20 12:16 AM, Mike Rapoport wrote:
-> Hi Geert,
+On Wed, Oct 21, 2020 at 6:21 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
-> On Wed, Oct 28, 2020 at 10:25:49AM +0100, Geert Uytterhoeven wrote:
->> Hi Mike,
->>
->> On Tue, Oct 27, 2020 at 12:31 PM Mike Rapoport <rppt@kernel.org> wrote:
->>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>
->>> The pg_data_t node structures and their initialization currently depends on
->>> !CONFIG_SINGLE_MEMORY_CHUNK. Since they are required only for DISCONTIGMEM
->>> make this dependency explicit and replace usage of
->>> CONFIG_SINGLE_MEMORY_CHUNK with CONFIG_DISCONTIGMEM where appropriate.
->>>
->>> The CONFIG_SINGLE_MEMORY_CHUNK was implicitly disabled on the ColdFire MMU
->>> variant, although it always presumed a single memory bank. As there is no
->>> actual need for DISCONTIGMEM in this case, make sure that ColdFire MMU
->>> systems set CONFIG_SINGLE_MEMORY_CHUNK to 'y'.
->>>
->>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->> Thanks for your patch!
->>
->>> ---
->>>   arch/m68k/Kconfig.cpu           | 6 +++---
->>>   arch/m68k/include/asm/page_mm.h | 2 +-
->>>   arch/m68k/mm/init.c             | 4 ++--
->>>   3 files changed, 6 insertions(+), 6 deletions(-)
->> Is there any specific reason you didn't convert the checks for
->> CONFIG_SINGLE_MEMORY_CHUNK in arch/m68k/kernel/setup_mm.c
-> In arch/m68k/kernel/setup_mm.c the CONFIG_SINGLE_MEMORY_CHUNK is needed
-> for the case when a system has two banks, the kernel is loaded into the
-> second bank and so the first bank cannot be used as normal memory. It
-> does not matter what memory model will be used in this case.
-
-
-That case used to be detected just fine at run time (by dint of the 
-second memory chunk having an address below the first; the chunk the 
-kernel resides in is always listed first), even without using 
-CONFIG_SINGLE_MEMORY_CHUNK.
-
-Unless you changed that behaviour (and I see nothing in your patch that 
-would indicate that), this is still true.
-
-Converting the check as Geert suggested, without also adding a test for 
-out-of-order memory bank addresses, would implicitly treat DISCONTIGMEM 
-as  SINGLE_MEMORY_CHUNK, regardless of bank ordering. I don't think that 
-is what we really want?
-
-Cheers,
-
-     Michael
-
-
+> DWARF5 is the latest standard of the DWARF debug info format.
 >
->> and arch/m68k/include/asm/virtconvert.h?
->   
-> I remember I had build errors and troubles with include file
-> dependencies if I changed it there, but I might be mistaken. I'll
-> recheck again.
+> Feature detection of DWARF5 is onerous, especially given that we've
+> removed $(AS), so we must query $(CC) for DWARF5 assembler directive
+> support. Further -gdwarf-X where X is an unsupported value doesn't
+> produce an error in $(CC). GNU `as` only recently gained support for
+> specifying -gdwarf-5.
 >
->> Gr{oetje,eeting}s,
->>
->>                          Geert
->>
->> -- 
->> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->>
->> In personal conversations with technical people, I call myself a hacker. But
->> when I'm talking to journalists I just say "programmer" or something like that.
->>                                  -- Linus Torvalds
+> The DWARF version of a binary can be validated with:
+> $ llvm-dwarfdump vmlinux | head -n 5 | grep version
+> or
+> $ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
+>
+> DWARF5 wins significantly in terms of size when mixed with compression
+> (CONFIG_DEBUG_INFO_COMPRESSED).
+>
+> 363M    vmlinux.clang12.dwarf5.compressed
+> 434M    vmlinux.clang12.dwarf4.compressed
+> 439M    vmlinux.clang12.dwarf2.compressed
+> 457M    vmlinux.clang12.dwarf5
+> 536M    vmlinux.clang12.dwarf4
+> 548M    vmlinux.clang12.dwarf2
+>
+> Make CONFIG_DEBUG_INFO_DWARF4 part of a Kconfig choice to preserve
+> forward compatibility.
+>
+> Link: http://www.dwarfstd.org/doc/DWARF5.pdf
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+> RFC because this patch is super half baked, but I'm looking for
+> feedback.
+>
+> I would logically split this into a series of patches;
+> 1. disable -Wa,gdwarf-2 for LLVM_IAS=1, see also
+>   https://github.com/ClangBuiltLinux/linux/issues/716
+>   https://github.com/ClangBuiltLinux/continuous-integration/blob/master/patches/llvm-all/linux-next/arm64/silence-dwarf2-warnings.patch
+>   that way we can backport for improved LLVM_IAS support.
+> 2. move CONFIG_DEBUG_INFO_DWARF4 to choice.
+> 3. implement the rest on top.
+>
+> I'm pretty sure GNU `as` only recently gained the ability to specify
+> -gdwarf-4 without erroring in binutils 2.35, so that part likely needs
+> to be fixed.
+>
+>  Makefile                          | 19 ++++++++++++++++---
+>  include/asm-generic/vmlinux.lds.h |  6 +++++-
+>  lib/Kconfig.debug                 | 29 +++++++++++++++++++++++++----
+>  scripts/test_dwarf5_support.sh    |  4 ++++
+>  4 files changed, 50 insertions(+), 8 deletions(-)
+>  create mode 100755 scripts/test_dwarf5_support.sh
+>
+> diff --git a/Makefile b/Makefile
+> index e71979882e4f..0862df5b1a24 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -828,10 +828,23 @@ else
+>  DEBUG_CFLAGS   += -g
+>  endif
+>
+> -KBUILD_AFLAGS  += -Wa,-gdwarf-2
+> -
+> +DWARF_VERSION=2
+>  ifdef CONFIG_DEBUG_INFO_DWARF4
+> -DEBUG_CFLAGS   += -gdwarf-4
+> +DWARF_VERSION=4
+> +endif
+> +ifdef CONFIG_DEBUG_INFO_DWARF5
+> +DWARF_VERSION=5
+> +endif
+> +DEBUG_CFLAGS   += -gdwarf-$(DWARF_VERSION)
+> +
+> +ifneq ($(DWARF_VERSION)$(LLVM_IAS),21)
+> +KBUILD_AFLAGS  += -Wa,-gdwarf-$(DWARF_VERSION)
+> +endif
+> +
+> +ifdef CONFIG_CC_IS_CLANG
+> +ifneq ($(LLVM_IAS),1)
+> +KBUILD_CFLAGS  += -Wa,-gdwarf-$(DWARF_VERSION)
+> +endif
+>  endif
+>
+>  ifdef CONFIG_DEBUG_INFO_REDUCED
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index cd14444bf600..0382808ef9fe 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -828,7 +828,11 @@
+>                 .debug_types    0 : { *(.debug_types) }                 \
+>                 /* DWARF 5 */                                           \
+>                 .debug_macro    0 : { *(.debug_macro) }                 \
+> -               .debug_addr     0 : { *(.debug_addr) }
+> +               .debug_addr     0 : { *(.debug_addr) }                  \
+> +               .debug_line_str 0 : { *(.debug_line_str) }              \
+> +               .debug_loclists 0 : { *(.debug_loclists) }              \
+> +               .debug_rnglists 0 : { *(.debug_rnglists) }              \
+> +               .debug_str_offsets 0 : { *(.debug_str_offsets) }
+>
+>  /* Stabs debugging sections. */
+>  #define STABS_DEBUG                                                    \
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 537cf3c2937d..6b01f0e2dad8 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -256,14 +256,35 @@ config DEBUG_INFO_SPLIT
+>           to know about the .dwo files and include them.
+>           Incompatible with older versions of ccache.
+>
+> +choice
+> +prompt "DWARF version"
+> +       depends on DEBUG_INFO
+> +       default DEBUG_INFO_DWARF2
+> +       help
+> +         Which version of DWARF debug info to emit.
+> +
+> +config DEBUG_INFO_DWARF2
+> +       bool "Generate dwarf2 debuginfo"
+> +       help
+> +         Generate dwarf2 debug info.
+> +
+>  config DEBUG_INFO_DWARF4
+>         bool "Generate dwarf4 debuginfo"
+>         depends on $(cc-option,-gdwarf-4)
+>         help
+> -         Generate dwarf4 debug info. This requires recent versions
+> -         of gcc and gdb. It makes the debug information larger.
+> -         But it significantly improves the success of resolving
+> -         variables in gdb on optimized code.
+> +         Generate dwarf4 debug info. This requires gcc 4.5+ and gdb 7.0+.
+> +         It makes the debug information larger, but it significantly
+> +         improves the success of resolving variables in gdb on optimized code.
+> +
+> +config DEBUG_INFO_DWARF5
+> +       bool "Generate dwarf5 debuginfo"
+> +       depends on DEBUG_INFO
+> +       depends on $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
+> +       help
+> +         Genereate dwarf5 debug info. Requires binutils 2.35+, gcc 5.1+, and
+> +         gdb 8.0+.
+> +
+> +endchoice # "DWARF version"
+>
+>  config DEBUG_INFO_BTF
+>         bool "Generate BTF typeinfo"
+> diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
+> new file mode 100755
+> index 000000000000..82c0eea45845
+> --- /dev/null
+> +++ b/scripts/test_dwarf5_support.sh
+> @@ -0,0 +1,4 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +set -eu
+> +echo ".file 0 \"asdf\"" | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
