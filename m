@@ -2,276 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E4229D787
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:25:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D379429D58F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732845AbgJ1WZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:25:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37474 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732807AbgJ1WZG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:25:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603923903;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sq1B8u8NLUEB8OJpFZ9ZPM/0L4/ZYp1FVYQZCWkCea0=;
-        b=QJMfoN4oYHNnQCMpewagHKJbpwrphefKQ/4+CPvqMsnYceFMPgxNivIkuhjt1p1AYxLyfz
-        y5Az/LxE7nNQIBdyvip6zZlyeKvxatq+Hf5B3uS2Hn35/ha8L+C2SSy3mMhH1SrrOC+6Tn
-        F1BmyrQAoY2w332xVa7ix5BnRZDVSfU=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-297-9CJbCyPEPz-cpOpqL47xFw-1; Wed, 28 Oct 2020 13:23:16 -0400
-X-MC-Unique: 9CJbCyPEPz-cpOpqL47xFw-1
-Received: by mail-ej1-f69.google.com with SMTP id pk23so117019ejb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 10:23:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sq1B8u8NLUEB8OJpFZ9ZPM/0L4/ZYp1FVYQZCWkCea0=;
-        b=q2006qbj2TPZKleXwH96sH5jurgg1EEumCET4rtMxYvcd9RlmNMmyRgJesD1KVCzJ7
-         p62BJ/A4zxo/fZEaMzv2hPW+A+IBtZIzMWureqQqN158BK6HjGcgP10O6uGNMeMjSVDn
-         HTGZNaQEwWbJmbhAFoGizOjDvEOOjiZOd0Rj4C7ifIQa5k2z3QoJpMVAMMvhZRKfDMUT
-         rTDvqN8RcyX6es5vQc5eoTZIVVCDroq6gQgv1vX1wva3q5teIvmfmxHnMcqUBedfQ4aq
-         m7JyOIqbMIGS7h7jFgCma2nubU9oDkJCE/i2JLVQcK6JilMnL1SivM7OXrJt6sQ5Zi43
-         n8AA==
-X-Gm-Message-State: AOAM533wfevqe4iGCG7CFcm1q2Vn8VnaC+rpGSLX/0/s1clgI5I1LbnD
-        SFin0Jc9VN2vw77ur89fiu+sGuHVHbdKhXu1v4uOcWCHyIj6zf7JgMXa64GVSZsUSgvHwyP8UPB
-        rzqh/mhO48J2UVd5ToZfTeO0H
-X-Received: by 2002:a17:906:6453:: with SMTP id l19mr125879ejn.366.1603905794991;
-        Wed, 28 Oct 2020 10:23:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzREE5X9JMuMW0uT+945/sNIo/Jw2GIPaYjye6jFS3w2G6zpJDNsvl2GTmVFhYI71fL0HiW4A==
-X-Received: by 2002:a17:906:6453:: with SMTP id l19mr125853ejn.366.1603905794640;
-        Wed, 28 Oct 2020 10:23:14 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id l17sm112230eji.14.2020.10.28.10.23.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 10:23:13 -0700 (PDT)
-Subject: Re: [PATCH] Documentation: Add documentation for new platform_profile
- sysfs attribute
-To:     Bastien Nocera <hadess@hadess.net>,
-        Mark Pearson <markpearson@lenovo.com>
-Cc:     dvhart@infradead.org, mgross@linux.intel.com,
-        mario.limonciello@dell.com, eliadevito@gmail.com, bberg@redhat.com,
-        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <markpearson@lenovo.com>
- <20201027164219.868839-1-markpearson@lenovo.com>
- <5ca1ae238b23a611b8a490c244fd93cdcc36ef79.camel@hadess.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <d5f0bcba-5366-87da-d199-a85d59ba6c1c@redhat.com>
-Date:   Wed, 28 Oct 2020 18:23:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <5ca1ae238b23a611b8a490c244fd93cdcc36ef79.camel@hadess.net>
+        id S1729850AbgJ1WFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:05:09 -0400
+Received: from mail-eopbgr750081.outbound.protection.outlook.com ([40.107.75.81]:52716
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729683AbgJ1WCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:02:54 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GnIkYqmbtKPi5IVcWwEoxGnaFG304ycaeMlWmasxluQq34N3YNQncvsAt0yuboWuqfK7m4Gk6oPTOn2cq5O2j5grabH3evGbltc5/lQBIOFaHAA8/r7FpDLmwCKTFRjr4vJ2U0/LFAgQsDyRRPO08uczihJhCCU4TG63xgGyeMCGxji5JvcpUX2S9IRTX9E+aWyOpzfUxdwSOTvEnFX518vztPO1CcXw/EIDGmjmeD/gctoamyXFUMRcOOwx7kkd9CTcGRaJkgE4IfYXi+yGjb1Lkaic80HGgwq/CeaXTNxhOA/1pssk3BbVyKFIxye92k67Pbz0j1A7S1nJ6JJWiw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2IhiQKZGARypJboN/IcXQimHTwCc6ZzuAAgOhsX0Puc=;
+ b=h2dEXFF1EYX3tMsW4tm/3p0YWRRgbwT0F9EPYAyz/6dC8amROOjbcjTgSlXhw63DviyC+gO+2jFjeh2S77GaJcR2if/WnILaeZCBAKVQwZA+qh1adk+/y41hSA02SPL4KScALk/ixo+VreM4g1yanYoP8hj5wdKbq6M/jBhV79ath/2d3QVFjyxudJVByfwji74yj56C4+GTbHXwxsaMOk/VvjYXWLu1ElWvA0GFArKI6KH6vNUdINlh1/z0sc5OW4J5s0v8mHKtqlrGQRy78y1vv2N3lNAmXnvjMrx0cS8HSNchM3Q6SanIzGaO1s697/Zin0u6ihe7B5MGE8nJqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2IhiQKZGARypJboN/IcXQimHTwCc6ZzuAAgOhsX0Puc=;
+ b=A3uIS9kwx4DYSl5uf9BE5uLq4DaL/zfkysa5wrh0KMFzFQI62z303h7k0sqOsGpZCt2IQLSdmpRQ8QqUak4IR8Xjl+WSZX/3IT2w5RQCroydx2800ZqjXDbLTC86S+9qotsJUSJu/gYUv/ABLn4P/VvWUxHMuCd9oJlbpOQj6Ls=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB2826.namprd12.prod.outlook.com (2603:10b6:5:76::33) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3499.18; Wed, 28 Oct 2020 17:31:49 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::e442:c052:8a2c:5fba]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::e442:c052:8a2c:5fba%6]) with mapi id 15.20.3499.027; Wed, 28 Oct 2020
+ 17:31:49 +0000
+Subject: Re: [PATCH v4 5/5] x86/sev-es: Do not support MMIO to/from encrypted
+ memory
+To:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org
+Cc:     Joerg Roedel <jroedel@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org
+References: <20201028164659.27002-1-joro@8bytes.org>
+ <20201028164659.27002-6-joro@8bytes.org>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <a3be983c-a612-51c4-2711-de55c7c68c46@amd.com>
+Date:   Wed, 28 Oct 2020 12:31:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201028164659.27002-6-joro@8bytes.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: DM5PR04CA0032.namprd04.prod.outlook.com
+ (2603:10b6:3:12b::18) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.118] (165.204.77.1) by DM5PR04CA0032.namprd04.prod.outlook.com (2603:10b6:3:12b::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 17:31:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 4f1b50ea-26e6-4dce-4f17-08d87b6759ea
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2826:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB28265B6438A254FDDBAC24B5EC170@DM6PR12MB2826.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xMBLPPEItyqirvRCLysiXETfzEVYHzjxXCYzkaotBJ8aoIyPKanSJRhQnscsu5QbNKuo3YafmljWMz4N6W6jHRcpTnZOhY8e9GUnHqqvP6ZuU9QIXygWTRpb56oKwWptn4KQOo99ehbAKTlYSHIBmOQ1JQmrS4sls/IthkhHchWB0l7FvV0qyJ0Ducvx6frqlGFcdKGvbaJiLQ189moMyM3k0DmUsAFXLWJWNyu8SQqXvk4vHxAdZqy5hf++FqSXopOseMu5ORQZ1/qYgoI7xgWxP/smwC2fZmW7n2VVo0j6ZQ46uCLp5JQy/kbcYpqSzLl3vfq5A7r59gEff2SRP0sGaFd+zXXBGOIsHWRc5UU4VMabHQl9SyB/U51rfXGm
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(136003)(346002)(396003)(52116002)(54906003)(8936002)(86362001)(478600001)(2906002)(8676002)(36756003)(7416002)(5660300002)(31696002)(66946007)(66476007)(66556008)(956004)(26005)(2616005)(6486002)(83380400001)(16526019)(186003)(31686004)(16576012)(316002)(4326008)(53546011)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: TNtEn91hOrSPFeOupDSdkMECrYteFZoSM+gp6CwWOKxeiWjZBuEd2E9c73wqnRGBbp4Intr/NU0MPO9OhgmjuKIxlXDgZf3lsTI8ew+Hrk9TLg+YU4GSkmPHAc0YH/zchXVs9XIcv1FNHPkwhpZvWPsh9uUuwMdJihrsi/LfC9HYF+zIe67KlrDrd7OW3+VFQPOcxPLi5GGIS6UsytFoFyyvrUFngfUFAdN+mtI/5POmZMe974NGFAJjoi9zkGLqWw+adkSnB81c8HGiouNm4wEidQqTDSq7ArckJ9O2ylb7weNVrxtIdw3eyZ64jDP+UY5O/i6U80A4+LXM1QJiHaIz/wKaHRuCx5kYSJ1Lt04XGTgHwZ1lAfOnRhuwMSdVC3aXbSPUrHXS0VStyL36c5StWzvXiJLJ9K6p+1k7IL26glF9RTWf75VD3izyRpSdpO4ifX/jR352sKhULoJPUopBObQkG2+IOFp43e2Bwd6c1bxoflTBxGrbpPTBjbHwRBDqgtHxCtmq6AHnNS9x5ZGID24BpczL8beORJCl0GtsiOb1lxcsitu25KY8SuSf6lj7xpOqXz21SHQlJNnI7/fCF8FTUa206peJ44fzveOfM3cHXIZsF0PecDeXAcQREI16Oa8E310NEyonMRzNpw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f1b50ea-26e6-4dce-4f17-08d87b6759ea
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2020 17:31:49.5050
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kzp6mcs9UXMi+kQVupsT26d304Ua063L1Y4ZVfs8G+AMN+khOZ5+Ghojnd/wnm7W+VLknPN/ilB0xGFj2QU3cw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2826
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 10/28/20 11:46 AM, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> MMIO memory is usually not mapped encrypted, so there is no reason to
+> support emulated MMIO when it is mapped encrypted.
+> 
+> Prevent a possible hypervisor attack where a RAM page is mapped as
+> an MMIO page in the nested page-table, so that any guest access to it
+> will trigger a #VC exception and leak the data on that page to the
+> hypervisor via the GHCB (like with valid MMIO). On the read side this
+> attack would allow the HV to inject data into the guest.
+> 
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
 
-On 10/28/20 2:45 PM, Bastien Nocera wrote:
-> Hey Hans, Mark,
-> 
-> On Tue, 2020-10-27 at 12:42 -0400, Mark Pearson wrote:
->> From: Hans de Goede <hdegoede@redhat.com>
->>
->> On modern systems the platform performance, temperature, fan and
->> other
->> hardware related characteristics are often dynamically configurable.
->> The
->> profile is often automatically adjusted to the load by somei
->> automatic-mechanism (which may very well live outside the kernel).
->>
->> These auto platform-adjustment mechanisms often can be configured
->> with
->> one of several 'platform-profiles', with either a bias towards low-
->> power
-> 
-> Can you please make sure to quote 'platform-profile' and 'profile-name'
-> this way all through the document? They're not existing words, and
-> quoting them shows that they're attribute names, rather than English.
-> 
->> consumption or towards performance (and higher power consumption and
->> thermals).
-> 
-> s/thermal/temperature/
-> 
-> "A thermal" is something else (it's seasonal underwear for me ;)
-> 
->> Introduce a new platform_profile sysfs API which offers a generic API
->> for
->> selecting the performance-profile of these automatic-mechanisms.
->>
->> Co-developed-by: Mark Pearson <markpearson@lenovo.com>
->> Signed-off-by: Mark Pearson <markpearson@lenovo.com>
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> ---
->> Changes in V1:
->>  - Moved from RFC to proposed patch
->>  - Added cool profile as requested
->>  - removed extra-profiles as no longer relevant
->>
->>  .../ABI/testing/sysfs-platform_profile        | 66
->> +++++++++++++++++++
->>  1 file changed, 66 insertions(+)
->>  create mode 100644 Documentation/ABI/testing/sysfs-platform_profile
->>
->> diff --git a/Documentation/ABI/testing/sysfs-platform_profile
->> b/Documentation/ABI/testing/sysfs-platform_profile
->> new file mode 100644
->> index 000000000000..240bd3d7532b
->> --- /dev/null
->> +++ b/Documentation/ABI/testing/sysfs-platform_profile
->> @@ -0,0 +1,66 @@
->> +Platform-profile selection (e.g.
->> /sys/firmware/acpi/platform_profile)
->> +
->> +On modern systems the platform performance, temperature, fan and
->> other
->> +hardware related characteristics are often dynamically configurable.
->> The
->> +profile is often automatically adjusted to the load by some
->> +automatic-mechanism (which may very well live outside the kernel).
->> +
->> +These auto platform-adjustment mechanisms often can be configured
->> with
->> +one of several 'platform-profiles', with either a bias towards low-
->> power
->> +consumption or towards performance (and higher power consumption and
->> +thermals).
->> +
->> +The purpose of the platform_profile attribute is to offer a generic
->> sysfs
->> +API for selecting the platform-profile of these automatic-
->> mechanisms.
->> +
->> +Note that this API is only for selecting the platform-profile, it is
->> +NOT a goal of this API to allow monitoring the resulting performance
->> +characteristics. Monitoring performance is best done with
->> device/vendor
->> +specific tools such as e.g. turbostat.
->> +
->> +Specifically when selecting a high-performance profile the actual
->> achieved
->> +performance may be limited by various factors such as: the heat
->> generated
->> +by other components, room temperature, free air flow at the bottom
->> of a
->> +laptop, etc. It is explicitly NOT a goal of this API to let
->> userspace know
->> +about any sub-optimal conditions which are impeding reaching the
->> requested
->> +performance level.
->> +
->> +Since numbers are a rather meaningless way to describe platform-
->> profiles
-> 
-> It's not meaningless, but rather ambiguous. For a range of 1 to 5, is 1
-> high performance, and 5 low power, or vice-versa?
+Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
 
-It is meaningless because the space we are trying to describe with the
-profile-names is not 1 dimensional. E.g. as discussed before cool and
-low-power are not necessarily the same thing. If you have a better way
-to word this I'm definitely in favor of improving the text here.
-
+> ---
+>  arch/x86/kernel/sev-es.c | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
 > 
->> +this API uses strings to describe the various profiles. To make sure
->> that
->> +userspace gets a consistent experience when using this API this API
+> diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+> index 4a96726fbaf8..0bd1a0fc587e 100644
+> --- a/arch/x86/kernel/sev-es.c
+> +++ b/arch/x86/kernel/sev-es.c
+> @@ -374,8 +374,8 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
+>  	return ES_EXCEPTION;
+>  }
+>  
+> -static bool vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+> -				 unsigned long vaddr, phys_addr_t *paddr)
+> +static enum es_result vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+> +					   unsigned long vaddr, phys_addr_t *paddr)
+>  {
+>  	unsigned long va = (unsigned long)vaddr;
+>  	unsigned int level;
+> @@ -394,15 +394,19 @@ static bool vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+>  		if (user_mode(ctxt->regs))
+>  			ctxt->fi.error_code |= X86_PF_USER;
+>  
+> -		return false;
+> +		return ES_EXCEPTION;
+>  	}
+>  
+> +	if (WARN_ON_ONCE(pte_val(*pte) & _PAGE_ENC))
+> +		/* Emulated MMIO to/from encrypted memory not supported */
+> +		return ES_UNSUPPORTED;
+> +
+>  	pa = (phys_addr_t)pte_pfn(*pte) << PAGE_SHIFT;
+>  	pa |= va & ~page_level_mask(level);
+>  
+>  	*paddr = pa;
+>  
+> -	return true;
+> +	return ES_OK;
+>  }
+>  
+>  /* Include code shared with pre-decompression boot stage */
+> @@ -731,6 +735,7 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+>  {
+>  	u64 exit_code, exit_info_1, exit_info_2;
+>  	unsigned long ghcb_pa = __pa(ghcb);
+> +	enum es_result res;
+>  	phys_addr_t paddr;
+>  	void __user *ref;
+>  
+> @@ -740,11 +745,12 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+>  
+>  	exit_code = read ? SVM_VMGEXIT_MMIO_READ : SVM_VMGEXIT_MMIO_WRITE;
+>  
+> -	if (!vc_slow_virt_to_phys(ghcb, ctxt, (unsigned long)ref, &paddr)) {
+> -		if (!read)
+> +	res = vc_slow_virt_to_phys(ghcb, ctxt, (unsigned long)ref, &paddr);
+> +	if (res != ES_OK) {
+> +		if (res == ES_EXCEPTION && !read)
+>  			ctxt->fi.error_code |= X86_PF_WRITE;
+>  
+> -		return ES_EXCEPTION;
+> +		return res;
+>  	}
+>  
+>  	exit_info_1 = paddr;
 > 
-> you can remove "when using this API".
-> 
->> +document defines a fixed set of profile-names. Drivers *must* map
->> their
->> +internal profile representation/names onto this fixed set.
->> +
->> +If for some reason there is no good match when mapping then a new
->> profile-name
->> +may be added.
-> 
-> "for some reason" can be removed.
-> 
->>  Drivers which wish to introduce new profile-names must:
->> +1. Have very good reasons to do so.
-> 
-> "1. Explain why the existing 'profile-names' cannot be used"
-> 
->> +2. Add the new profile-name to this document, so that future drivers
->> which also
->> +   have a similar problem can use the same name.
-> 
-> "2. Add the new 'profile-name' to the documentation so that other
-> drivers can use it, as well as user-space knowing clearly what
-> behaviour the 'profile-name' corresponds to"
-> 
->> +
->> +What:          /sys/firmware/acpi/platform_profile_choices
->> +Date:          October 2020
->> +Contact:       Hans de Goede <hdegoede@redhat.com>
->> +Description:
->> +               Reading this file gives a space separated list of
->> profiles
->> +               supported for this device.
-> 
-> "This file contains a space-separated list of profiles..."
-> 
->> +
->> +               Drivers must use the following standard profile-
->> names:
->> +
->> +               low-power:              Emphasises low power
->> consumption
->> +               cool:                   Emphasises cooler operation
->> +               quiet:                  Emphasises quieter operation
->> +               balanced:               Balance between low power
->> consumption
->> +                                       and performance
->> +               performance:            Emphasises performance (and
->> may lead to
->> +                                       higher temperatures and fan
->> speeds)
-> 
-> I'd replace "Emphasises" with either "Focus on" or the US English
-> spelling of "Emphasizes".
-> 
->> +               Userspace may expect drivers to offer at least
->> several of these
->> +               standard profile-names.
-> 
-> Replce "at least several" with "more than one".
-> 
->> +
->> +What:          /sys/firmware/acpi/platform_profile
->> +Date:          October 2020
->> +Contact:       Hans de Goede <hdegoede@redhat.com>
->> +Description:
->> +               Reading this file gives the current selected profile
->> for this
->> +               device. Writing this file with one of the strings
->> from
->> +               available_profiles changes the profile to the new
->> value.
-> 
-> Is there another file which explains whether those sysfs value will
-> contain a trailing linefeed?
-
-sysfs APIs are typically created so that they can be used from the shell,
-so on read a newline will be added. On write a newline at the end
-typically is allowed, but ignored. There are even special helper functions
-to deal with properly ignoring the newline on write.
-
-Regards,
-
-Hans
-
-
