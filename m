@@ -2,197 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E90929DA3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 720BE29DA8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730499AbgJ1XRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:17:22 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:46883 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728511AbgJ1XRV (ORCPT
+        id S2389101AbgJ1XKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726216AbgJ1XJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:17:21 -0400
-Received: by mail-wr1-f67.google.com with SMTP id n6so775616wrm.13;
-        Wed, 28 Oct 2020 16:17:19 -0700 (PDT)
+        Wed, 28 Oct 2020 19:09:22 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56357C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:09:22 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id b1so887845lfp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:09:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3x1J6W9vn4AlBy0J+3iWpQphgvbJmpzzrQwvBAhJ5JY=;
+        b=H5YOV56mWdrmRcNSYhYkyVGRVelyp884El1qTLvbyotZOVYWlE0S2TqMhOhjL6n2ch
+         hYepJsMW6DoUzb8YXpj1/53uYmuxIxjFeb9UIPO7H847cY/zUd+B95xRYC8abTwVg5jm
+         x2OvzSeLhg0cwBybfAOGOQkV9XsVK/EyXyPMIBLzpa7CriuNb4y/5MSTqXycJNEwyf7U
+         SbmKYNolTVUxKScdyvBcdVUUEuvv0vjyYC0CvDhhixiiQpYS72LFuyPeH/5dmcXEJ31S
+         EpjATCAZzGC6XhqWkunhwtYbRrPhe9P3g6+a2MtKcXcm0oRdVJAKptHqdy1+wmSA7WzC
+         cmGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0DnG4LJjdv6mAxFeMJR8DGf+NctXJFLBf9GwLy+AxJQ=;
-        b=o8dt85FiopWcGhXhpt25kIrlJBkT7xuHrqLVBo2fDOCuGnm7LJbaKxbp04x0/TQKC4
-         8JWvvjn3IUu4FSy/iWT85nQz4dMXhSOPL8187t64GzS9u0HARKocB4kGRZg5iokCfPPn
-         XQCCYmL0jZDdTNlWO23UEQM6ORn2hvyP66lc68+t5S9djlRhfphA2VHhCvDmCXvzoOmC
-         ZYMcNDVw0ZJw5A9B874xObT0KoE1tmf/YRaXl/6jRJrPMxcCaiPKaQzAyg4LJNOi6lNB
-         5ObO+rPjJqsZzC1BfcgXNsszs9e/w1f3lpepPjpmLbt6CjfEOC01A+JvQEredxLI3EHl
-         ctGw==
-X-Gm-Message-State: AOAM533RFgqbzdCd0F79yN4y6YolCk/UKzf8IDS2E9Mn/ntUkax3KcOe
-        43033a5xQlyAeF2N/IWaair532W+wEtnzWWE
-X-Google-Smtp-Source: ABdhPJzfpLMuUvtJrSFwIFWjAp/ycvj6HKNRVF8qRIcs0RQFe6tX1Ju0ziEFEpJPgFr+LJbS453aoA==
-X-Received: by 2002:a17:907:204c:: with SMTP id pg12mr6158094ejb.464.1603874307610;
-        Wed, 28 Oct 2020 01:38:27 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id v6sm2525073ejj.112.2020.10.28.01.38.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 01:38:26 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 09:38:24 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v5 1/4] dt-bindings: media: imx258: add bindings for
- IMX258 sensor
-Message-ID: <20201028083824.GA32155@kozik-lap>
-References: <20201019170247.92002-1-krzk@kernel.org>
- <20201020103833.GT13341@paasikivi.fi.intel.com>
- <CAJKOXPdKHCQikYDLKDS2Y3NVyCjMYYH1pcxgaMoYgOK19vQCrQ@mail.gmail.com>
- <20201020120058.GU13341@paasikivi.fi.intel.com>
- <20201020122621.GA126891@kozik-lap>
- <20201020124654.GX13341@paasikivi.fi.intel.com>
- <20201020125852.GA128323@kozik-lap>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3x1J6W9vn4AlBy0J+3iWpQphgvbJmpzzrQwvBAhJ5JY=;
+        b=qmWaVgd/a75C34cF3RDlAF6eHDImG6DY2Vvxx4KUlHLMd/YZovc9VeF51cybO0Dl+q
+         dUnjByYpxIomUp+szgQ4LyR9H6CwyzxoFEZi1TOs6Kpc/mVgVl4KZW9n/LQn2l0gr1Y8
+         JhCqP3Czf8ShPwChjIqUa+G/pEf+lYG24e7wNwpqyh3iRr5rrpBLdu4DtBvwuf+jN5j1
+         u58tyCt8GMBrMgi4yC6AVxTBPlsKdrtg0vTFQ30FKsVQlZOyoNJdhIMoB7+93nBaMXU6
+         mry4+yCBf87Jqpt1Ek1r0N/uoVMRr1lzwmHYQ9nmM4KuoDkIhzFtfmnfCwjLPn/fnRf3
+         tQdA==
+X-Gm-Message-State: AOAM532F0RboyPeM4jQKWSrvX2ZlpEPhD0r8v22pnozqLcF4w56uYgte
+        CX8qQZh1b67wnBqcKrH/px1Istl2CxK8rUMi4z8F9li3hAY=
+X-Google-Smtp-Source: ABdhPJzXyWf93KJh7MTLqIEgWm5WWtY3xIdQEISBeUAts5iSL2Ft2btJ2NGIV9KN2npe84xs50rLGPRWAR7QOM6SYJk=
+X-Received: by 2002:a2e:9a17:: with SMTP id o23mr3146050lji.242.1603877726248;
+ Wed, 28 Oct 2020 02:35:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201020125852.GA128323@kozik-lap>
+References: <cover.1600951211.git.yifeifz2@illinois.edu> <9ede6ef35c847e58d61e476c6a39540520066613.1600951211.git.yifeifz2@illinois.edu>
+ <CAMuHMdXTLKr6pvoE+JAdn_P5kVxL6gx8PJ8mqfXcS+SF+pRbkQ@mail.gmail.com>
+ <202010271653.B6D7D6B@keescook> <CAMuHMdX-y+ButCt=CH+Ao=RtO_eGz0DaTJupwuHNa7=Xi_AGoQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdX-y+ButCt=CH+Ao=RtO_eGz0DaTJupwuHNa7=Xi_AGoQ@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 28 Oct 2020 10:34:59 +0100
+Message-ID: <CAG48ez0+yqVg9mUu_ZnouxsdEHgKeMELyeHn2hbYHUNA=29O5A@mail.gmail.com>
+Subject: Re: [PATCH v2 seccomp 1/6] seccomp: Move config option SECCOMP to arch/Kconfig
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 02:58:52PM +0200, Krzysztof Kozlowski wrote:
-> On Tue, Oct 20, 2020 at 03:46:54PM +0300, Sakari Ailus wrote:
-> > On Tue, Oct 20, 2020 at 02:26:21PM +0200, Krzysztof Kozlowski wrote:
-> > > On Tue, Oct 20, 2020 at 03:00:58PM +0300, Sakari Ailus wrote:
-> > > > Hi Krzysztof,
-> > > > 
-> > > > On Tue, Oct 20, 2020 at 12:54:09PM +0200, Krzysztof Kozlowski wrote:
-> > > > > On Tue, 20 Oct 2020 at 12:38, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
-> > > > > >
-> > > > > > Hi Krzysztof,
-> > > > > >
-> > > > > > On Mon, Oct 19, 2020 at 07:02:44PM +0200, Krzysztof Kozlowski wrote:
-> > > > > > > Add bindings for the IMX258 camera sensor.  The bindings, just like the
-> > > > > > > driver, are quite limited, e.g. do not support regulator supplies.
-> > > > > > >
-> > > > > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > > > > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > > > > >
-> > > > > > > ---
-> > > > > > >
-> > > > > > > Changes since v4:
-> > > > > > > 1. Add clock-lanes,
-> > > > > > > 2. Add Rob's review,
-> > > > > > > 3. Add one more example and extend existing one,
-> > > > > > > 4. Add common clock properties (assigned-*).
-> > > > > >
-> > > > > > Using the assigned-* clock properties may be workable for this driver at
-> > > > > > the moment. But using these properties does not guarantee the external
-> > > > > > clock frequency intended to be used on the hardware.
-> > > > > 
-> > > > > It guarantees it. The clock frequency will be as expected (except if
-> > > > > someone misconfigures the DTS).
-> > > > 
-> > > > Is that guaranteed?
-> > > > 
-> > > > I'm not saying no to the approach, but if we change how camera sensor DT
-> > > > bindings are defined, I'd prefer an informed decision is made on the
-> > > > matter.
-> > > > 
-> > > > > 
-> > > > > > Using other
-> > > > > > frequencies *is not* expected to work. That applies to this driver as well.
-> > > > > 
-> > > > > This is the binding which is HW description. According to HW datasheet
-> > > > > other frequencies from described range are accepted and expected to
-> > > > > work.
-> > > > 
-> > > > As per datasheet, yes, different external clock frequencies can be used.
-> > > > But the link frequency is still not independent of the external clock
-> > > > frequency.
-> > > > 
-> > > > The properties of the sensor's PLL tree determines what can be achieved
-> > > > given a certain external clock frequency. So picking a wrong external clock
-> > > > frequency quite possibly means that none of the designated link frequencies
-> > > > are available, rendering the sensor inoperable.
-> > > 
-> > > The driver then controls the HW and knows exactly what is needed. If
-> > > link frequency (which has its own DT property) requires some clock
-> > > frequency, the driver will configure the clock to that value. The same
-> > 
-> > Well it doesn't if it doesn't get that information from DT.
-> 
-> It will get it - via clk_get_rate(). You do not need DT for this.
-> 
-> > The frequency is usually a range, and looking at these bindings, it's from
-> > 6 MHz to 27 MHz. That'd be a lot of frequencies for a driver to try.
-> 
-> It does not have to try all of them. Assuming link frequency is fixed,
-> just use any matching (or hard-coded) input clock frequency. Since the
-> input clock frequency most likely will be set with assigned-clock-rates,
-> there will be no job to do for the driver at all. Unless the driver
-> wants to do something more, of course.
-> 
-> > 
-> > > going other direction. Driver has the knowledge about both its input
-> > > clock and link frequency, therefore it can make the best decision.
-> > 
-> > Again you're assuming a particular driver implementation.
-> 
-> Actually not, I am talking about bindings as far away from the driver
-> implementation as possible.  This is why some specific frequency *is
-> not* part of the bindings.
-> 
-> > 
-> > Typically only a few frequencies are really available on platforms, so a in
-> > practice a driver would not be able to get any requested frequency. I
-> > wouldn't start hard-coding every possible frequency to camera sensor
-> > drivers
-> 
-> If the driver cannot get requested frequency which it apparently
-> requires, there is nothing more to do. It's broken HW implementation.
-> The input clock must be matching requirements, regardless of what
-> property you put in DT.  You can add "clock-frequency" property, you can
-> even add "really-i-require-clock-frequency" but if the real HW input
-> clock does not have, it won't work.
-> 
-> IOW, adding "clock-frequency" property does not change the reality - the
-> board (HW) must provide given frequency so the entire system works.
-> 
-> > 
-> > > > > > This, instead of the clock-frequency property, effectively removes the
-> > > > > > ability to set the correct frequency from the driver, at least with current
-> > > > > > set of the used APIs.
-> > > > > 
-> > > > > It seems you confuse DT bindings with some specific driver
-> > > > > implementation. Bindings do not describe the driver behavior but the
-> > > > > HW. The ability to set the correct frequency from the driver is not
-> > > > > removed. It was never part of the bindings and never should. It is
-> > > > > part of the driver.
-> > > > > 
-> > > > > >
-> > > > > > I suppose you could add a function to set the assigned clock frequency and
-> > > > > > keep it, just as clk_set_rate_exclusive does?
-> > > 
-> > > I did not reply to this comment, so let me know. Of course, one could
-> > > add such functions. It's not a job for DT bindings, though.
-> > 
-> > I'm not suggesting to add it to DT binding patch. What I'm saying that with
-> > this approach is looks like it may well be needed.
-> 
-> New properties can always be added to DT. However existing properties
-> cannot be removed. Their meaning or values cannot be changed.
+On Wed, Oct 28, 2020 at 9:19 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Wed, Oct 28, 2020 at 1:06 AM Kees Cook <keescook@chromium.org> wrote:
+> > On Tue, Oct 27, 2020 at 10:52:39AM +0100, Geert Uytterhoeven wrote:
+> > > On Thu, Sep 24, 2020 at 2:48 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> > > > From: YiFei Zhu <yifeifz2@illinois.edu>
+> > > >
+> > > > In order to make adding configurable features into seccomp
+> > > > easier, it's better to have the options at one single location,
+> > > > considering easpecially that the bulk of seccomp code is
+> > > > arch-independent. An quick look also show that many SECCOMP
+> > > > descriptions are outdated; they talk about /proc rather than
+> > > > prctl.
+> > > >
+> > > > As a result of moving the config option and keeping it default
+> > > > on, architectures arm, arm64, csky, riscv, sh, and xtensa
+> > > > did not have SECCOMP on by default prior to this and SECCOMP will
+> > > > be default in this change.
+> > > >
+> > > > Architectures microblaze, mips, powerpc, s390, sh, and sparc
+> > > > have an outdated depend on PROC_FS and this dependency is removed
+> > > > in this change.
+> > > >
+> > > > Suggested-by: Jann Horn <jannh@google.com>
+> > > > Link: https://lore.kernel.org/lkml/CAG48ez1YWz9cnp08UZgeieYRhHdqh-ch7aNwc4JRBnGyrmgfMg@mail.gmail.com/
+> > > > Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+> > >
+> > > Thanks for your patch. which is now commit 282a181b1a0d66de ("seccomp:
+> > > Move config option SECCOMP to arch/Kconfig") in v5.10-rc1.
+> > >
+> > > > --- a/arch/Kconfig
+> > > > +++ b/arch/Kconfig
+> > > > @@ -458,6 +462,23 @@ config HAVE_ARCH_SECCOMP_FILTER
+> > > >             results in the system call being skipped immediately.
+> > > >           - seccomp syscall wired up
+> > > >
+> > > > +config SECCOMP
+> > > > +       def_bool y
+> > > > +       depends on HAVE_ARCH_SECCOMP
+> > > > +       prompt "Enable seccomp to safely compute untrusted bytecode"
+> > > > +       help
+> > > > +         This kernel feature is useful for number crunching applications
+> > > > +         that may need to compute untrusted bytecode during their
+> > > > +         execution. By using pipes or other transports made available to
+> > > > +         the process as file descriptors supporting the read/write
+> > > > +         syscalls, it's possible to isolate those applications in
+> > > > +         their own address space using seccomp. Once seccomp is
+> > > > +         enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
+> > > > +         and the task is only allowed to execute a few safe syscalls
+> > > > +         defined by each seccomp mode.
+> > > > +
+> > > > +         If unsure, say Y. Only embedded should say N here.
+> > > > +
+> > >
+> > > Please tell me why SECCOMP is special, and deserves to default to be
+> > > enabled.  Is it really that critical, given only 13.5 (half of sparc
+> > > ;-) out of 24
+> > > architectures implement support for it?
+> >
+> > That's an excellent point; I missed this in my review as I saw several
+> > Kconfig already marked "def_bool y" but failed to note it wasn't _all_
+> > of them. Okay, checking before this patch, these had them effectively
+> > enabled:
+> >
+> > via Kconfig:
+> >
+> > parisc
+> > s390
+> > um
+> > x86
+>
+> Mostly "server" and "desktop" platforms.
+>
+> > via defconfig, roughly speaking:
+> >
+> > arm
+> > arm64
+> > sh
+>
+> Note that these defconfigs are example configs, not meant for production.
+> E.g. arm/multi_v7_defconfig and arm64/defconfig enable about everything
+> for compile coverage.
+>
+> > How about making the default depend on HAVE_ARCH_SECCOMP_FILTER?
+> >
+> > These have SECCOMP_FILTER support:
+> >
+> > arch/arm/Kconfig:       select HAVE_ARCH_SECCOMP_FILTER if AEABI && !OABI_COMPAT
+> > arch/arm64/Kconfig:     select HAVE_ARCH_SECCOMP_FILTER
+> > arch/csky/Kconfig:      select HAVE_ARCH_SECCOMP_FILTER
+> > arch/mips/Kconfig:      select HAVE_ARCH_SECCOMP_FILTER
+> > arch/parisc/Kconfig:    select HAVE_ARCH_SECCOMP_FILTER
+> > arch/powerpc/Kconfig:   select HAVE_ARCH_SECCOMP_FILTER
+> > arch/riscv/Kconfig:     select HAVE_ARCH_SECCOMP_FILTER
+> > arch/s390/Kconfig:      select HAVE_ARCH_SECCOMP_FILTER
+> > arch/sh/Kconfig:        select HAVE_ARCH_SECCOMP_FILTER
+> > arch/um/Kconfig:        select HAVE_ARCH_SECCOMP_FILTER
+> > arch/x86/Kconfig:       select HAVE_ARCH_SECCOMP_FILTER
+> > arch/xtensa/Kconfig:    select HAVE_ARCH_SECCOMP_FILTER
+> >
+> > So the "new" promotions would be:
+> >
+> > csky
+> > mips
+> > powerpc
+> > riscv
+> > xtensa
+> >
+> > Which would leave only these two:
+> >
+> > arch/microblaze/Kconfig:        select HAVE_ARCH_SECCOMP
+> > arch/sparc/Kconfig:     select HAVE_ARCH_SECCOMP if SPARC64
+> >
+> > At this point, given the ubiquity of seccomp usage (e.g. systemd), I
+> > guess it's not unreasonable to make it def_bool y?
+>
+> Having support does not necessarily imply you want it enabled.
+> If systemd needs it (does it? I have Debian nfsroots with systemd,
+> without SECCOMP), you can enable it in the defconfig.
+> "Default y" is for things you cannot do without, unless you know
+> better.
+>
+> Bloat-o-meter says enabling SECCOMP consumes only ca. 8 KiB
+> (on arm32), so perhaps "default y if !EXPERT"?
 
-Any more comments on the bindings or the patchset?
+Gating a *default* on EXPERT seems weird to me. Isn't EXPERT normally
+used to gate whether things are configurable at all (using "if
+EXPERT")?
 
-Best regards,
-Krzysztof
+I think that at least on systems with MMU, SECCOMP should default to
+y, independent of what EXPERT is set to. When SECCOMP is disabled,
+various pieces of software will have to (potentially invisibly to the
+user) degrade their belts-and-suspenders security measures. For
+example, as far as I understand, systemd has support for using seccomp
+to restrict what services can do (and uses that for some of its
+built-in services), but skips those steps with a log message if you
+don't have SECCOMP. Perhaps more importantly, the same thing happens
+in OpenSSH's ssh_sandbox_child() function - it generates a debug
+message, then continues on.
 
+If someone does manage to find an OpenSSH pre-auth remote code
+execution bug in a few years, I think we very much wouldn't want to be
+in a situation where that can be used to compromise a bunch of routers
+just because SECCOMP wasn't in the default config, or because it was
+invisibly disabled when the router vendor enabled EXPERT so that they
+can get rid of io_uring support.
