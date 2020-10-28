@@ -2,149 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C2F29DCE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF4129DCDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731827AbgJ1WVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        id S1733171AbgJ1WXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732298AbgJ1WTI (ORCPT
+        with ESMTP id S1732707AbgJ1WWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:19:08 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428B0C0613CF;
-        Wed, 28 Oct 2020 15:19:08 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id 9so1220518oir.5;
-        Wed, 28 Oct 2020 15:19:08 -0700 (PDT)
+        Wed, 28 Oct 2020 18:22:45 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E02C0613D1;
+        Wed, 28 Oct 2020 15:22:45 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id v6so752666lfa.13;
+        Wed, 28 Oct 2020 15:22:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding:content-language:thread-index;
-        bh=8gD3IH+hSkcxH7JoFBlZOoX1Uk//wUlm/rCuVf3b+ZY=;
-        b=t4eDpGE8fOJ2x7pHsHI1Lwb6CoP15JbT4+6J9JLPYBHT213DQLdXwfJJAByDnWHKmU
-         eLz8ofY8VjbD8KOhkA6shUlJRwUTEildECKqGZqfUrYNNwH6tvPLiWfnlEFSfEseHLnQ
-         XqFVpxVY7iZiSWH6hipf0DGfUVRZHPuyVvgn0u42Lv2PqJoqU6oBzNA+whfYCIQib2jR
-         La+kAPRKwReRWRLU7z76U/DSjBj6orjRCVCInYOWMw8gnUYlrSHpO99qrCqWE8K+/hcN
-         fAqoHaHugjPZKUHoAVOh3rEpNNZ+PtqHq0l+zn1bgfcHNvU9FxJVXlPI/icLqgqvCWWy
-         yIgw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Y4rpBP1ZPK1NF+eOD5UawQX3qZnudBwJVDTqXuwDYuI=;
+        b=Lk09YH0K7QSeRT59OEL7O/tpVQW9qQIQA6PqEjePyJ8pyIlRrn0VTpvwd/2xBMu4+i
+         KLXGBA1bFJ5PG3PpkvvikY4209uKnSw4gtDWZqWjE7QLYtq1zChbdcKAFCw5sLjESct3
+         //q5NKoK11rdVejEdDqHRJpp/t04rLTbYPpOwtBShE+A+uwW5/9rTKLAE/wlTpCRW51m
+         xa/8rvrPAYccTBIF9uijdOQD5EcpdUW0ahGX2HQSeama5fbFV29x/qmiPX7GdX8jRZdw
+         J3VMjqkz+lI3iYJZkqwEjqeE1ggFw19sh7CYbrqh3y3DNXu7RuE5PrCor2cUnZbZZPOs
+         5GXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding:content-language:thread-index;
-        bh=8gD3IH+hSkcxH7JoFBlZOoX1Uk//wUlm/rCuVf3b+ZY=;
-        b=EGG1FMkV6s4sKBp0vrFJkBge8Z8X2QoINpkCdiFQX4wPP55kn0NQoJaeSwLbxYGdi1
-         KutCOxuIvNdHEtVflgQmHlg9rxqCqqjl4Px913/g//zphmvVvAs0DjUJr4Vww8Ddg1ye
-         XMM7YPS3XT1Gshwh4Zv5TE+j9a+CCcacMQKzPuRx1XdRLJyJ5d2mnTENtiKrNLvuFYRU
-         NJxjLRHJcbAnI8gZlcphq6UfvGH1E/wxFXyr/beMl/jkC6Vs9tM1qJmPsvNTeXmXQvqd
-         wnIPgGMxkEPzJaRZZ2bT7d/6PWHQ+yjTeUIE3MYDZIi84UXaSCrHOVlEa3hz8qPvJCLO
-         /s5g==
-X-Gm-Message-State: AOAM5311/2iQ9J4OHxx7N+GtuatPBOcmYN908ecxpoUvnnO/zrK3oqV+
-        MKiSWyGotiy5JeYvStibpXyKembiVZrwzA==
-X-Google-Smtp-Source: ABdhPJyfaUZjoPdWS2g6YX+5xrIC6bs+XolLYXJRtUogH9yuc6bDOJdNQogE6nBk+8p835EwKdP8bA==
-X-Received: by 2002:a17:90b:58e:: with SMTP id t14mr6400791pjz.53.1603883017573;
-        Wed, 28 Oct 2020 04:03:37 -0700 (PDT)
-Received: from DESKTOPIUKEMQD ([209.9.72.215])
-        by smtp.gmail.com with ESMTPSA id h10sm5011813pgj.69.2020.10.28.04.03.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Oct 2020 04:03:36 -0700 (PDT)
-From:   "zhuguangqing83" <zhuguangqing83@gmail.com>
-To:     "'Viresh Kumar'" <viresh.kumar@linaro.org>
-Cc:     <rjw@rjwysocki.net>, <mingo@redhat.com>, <peterz@infradead.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "'zhuguangqing'" <zhuguangqing@xiaomi.com>
-Subject: Re: [PATCH] cpufreq: schedutil: set sg_policy->next_freq to the final cpufreq
-Date:   Wed, 28 Oct 2020 19:03:31 +0800
-Message-ID: <083a01d6ad19$fbdfbca0$f39f35e0$@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Y4rpBP1ZPK1NF+eOD5UawQX3qZnudBwJVDTqXuwDYuI=;
+        b=J/e6ZCyfXPnU9eYuMWYCL7H7HSZWQeCaHAjzeEEkFChp9pXRzlTvj7RrM7tcfSH1ZM
+         5wtnb9ULhFejY7SW6WGxedrZH3wdPyk2RcMM5H8ucPvW/gsBX3o+k47Me+0ZSUoTz9VD
+         oUV9Csk2hz7G+Ncm/R4h+6/TVoVIP4SyArWeE4+Wzis/qYib7tMV6Qo+qrn9ccmDH1Tf
+         9HZH5Q42plUBQxReY129236i2GUweJopkpVPMmBtBiIj/WHfEqXfL/6bCCihkW3zOzHA
+         G814hdz8wmkKV2lekXJEn+kUDmQJd5di8rIgg/RrjAlnwGXuK3+7LxuQ3pmCOwT2Y6NJ
+         IqVw==
+X-Gm-Message-State: AOAM530YYrETouGYKbX7NCVIoC7h5qm2ZsF990Y7/YeEiMb2fmH3zUDG
+        bVmlpq77wfbH6ia767IbLF8t+rkvs8MOAgotQ4iLtywGvsMZAA==
+X-Google-Smtp-Source: ABdhPJwdFGTiXplqLoOuussnpBWtDMVIJVe3olbx+/4H+yRTt7pXt4u0mQjspK/IrGb3onaZ1pgCSji5V9oXxGITpOM=
+X-Received: by 2002:a2e:b0e4:: with SMTP id h4mr2809532ljl.119.1603883687259;
+ Wed, 28 Oct 2020 04:14:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: zh-cn
-Thread-Index: AdatGYlWbcNW7k9ySme9xhkhSbUCiw==
+References: <1603784069-24114-1-git-send-email-u0084500@gmail.com>
+ <20201027082900.GA21354@amd> <b0f5b3c8-bebd-eeb6-20b2-15529816720c@gmail.com>
+ <CADiBU3_x=9wvPv4_YxWx4H_ecV7Kbt5ur91SDv+unH4z2hzS_Q@mail.gmail.com> <e49d4119-48da-9dba-bbbe-b688cf28bfb8@gmail.com>
+In-Reply-To: <e49d4119-48da-9dba-bbbe-b688cf28bfb8@gmail.com>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Wed, 28 Oct 2020 19:14:35 +0800
+Message-ID: <CADiBU3-y4PMtedP7fe22LW_x6bnsbyUYUHb+tNTZctJ=1wTYbA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] leds: rt4505: Add support for Richtek RT4505 flash
+ led controller
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, dmurphy@ti.com, robh+dt@kernel.org,
+        linux-leds@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        cy_huang <cy_huang@richtek.com>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- 
-> On 27-10-20, 19:54, zhuguangqing83@gmail.com wrote:
-> > From: zhuguangqing <zhuguangqing@xiaomi.com>
+Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B410=E6=
+=9C=8828=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=887:07=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+>
+> On 10/28/20 5:57 AM, ChiYuan Huang wrote:
+> > Hi,
 > >
-> > In the following code path, next_freq is clamped between policy->min
-> > and policy->max twice in functions cpufreq_driver_resolve_freq() and
-> > cpufreq_driver_fast_switch(). For there is no update_lock in the code
-> > path, policy->min and policy->max may be modified (one or more times),
-> > so sg_policy->next_freq updated in function sugov_update_next_freq()
-> > may be not the final cpufreq.
-> 
-> Understood until here, but not sure I followed everything after that.
-> 
-> > Next time when we use
-> > "if (sg_policy->next_freq == next_freq)" to judge whether to update
-> > next_freq, we may get a wrong result.
-> >
-> > -> sugov_update_single()
-> >   -> get_next_freq()
-> >     -> cpufreq_driver_resolve_freq()
-> >   -> sugov_fast_switch()
-> >     -> sugov_update_next_freq()
-> >     -> cpufreq_driver_fast_switch()
-> >
-> > For example, at first sg_policy->next_freq is 1 GHz, but the final
-> > cpufreq is 1.2 GHz because policy->min is modified to 1.2 GHz when
-> > we reached cpufreq_driver_fast_switch(). Then next time, policy->min
-> > is changed before we reached cpufreq_driver_resolve_freq() and (assume)
-> > next_freq is 1 GHz, we find "if (sg_policy->next_freq == next_freq)" is
-> > satisfied so we don't change the cpufreq. Actually we should change
-> > the cpufreq to 1.0 GHz this time.
-> 
-> FWIW, whenever policy->min/max gets changed, sg_policy->limits_changed
-> gets set to true by sugov_limits() and the next time schedutil
-> callback gets called from the scheduler, we will fix the frequency.
-> 
-> And so there shouldn't be any issue here, unless I am missing
-> something.
-
-Thanks for your comments. Maybe my description was not clear before.
-
-If I understand correctly, when policy->min/max get changed in the time
-Window between get_next_freq() and sugov_fast_switch(), to be more
-precise between cpufreq_driver_resolve_freq() and
-cpufreq_driver_fast_switch(), the issue may happen.
-
-For example, the first time schedutil callback gets called from the
-scheduler, we reached get_next_freq() and calculate the next_freq,
-suppose next_freq is 1.0 GHz, then sg_policy->next_freq is updated
-to 1.0 GHz in sugov_update_next_freq(). If policy->min/max get
-change right now, suppose policy->min is changed to 1.2 GHz, 
-then the final next_freq is 1.2 GHz for there is another clamp
-between policy->min and policy->max in cpufreq_driver_fast_switch().
-Then sg_policy->next_freq(1.0 GHz) is not the final next_freq(1.2 GHz).
-
-The second time schedutil callback gets called from the scheduler, there
-are two issues:
-(1) Suppose policy->min is still 1.2 GHz, we reached get_next_freq() and
-calculate the next_freq, because sg_policy->limits_changed gets set to
-true by sugov_limits() and there is a clamp between policy->min and
-policy->max, so this time next_freq will be greater than or equal to 1.2
-GHz, suppose next_freq is also 1.2 GHz. Now next_freq is 1.2 GHz and
-sg_policy->next_freq is 1.0 GHz,  then we find
-"if (sg_policy->next_freq == next_freq)" is not satisfied and we call
-cpufreq driver to change the cpufreq to 1.2 GHz. Actually it's already
-1.2 GHz, it's not necessary to change this time.
-
-(2) Suppose policy->min was changed again to 1.0 GHz before, we reached
-get_next_freq() and calculate the next_freq, suppose next_freq is also
-1.0 GHz. Now next_freq is 1.0 GHz and sg_policy->next_freq is also 1.0 GHz,
-then we find "if (sg_policy->next_freq == next_freq)" is satisfied and we
-don't change the cpufreq. Actually we should change the cpufreq to 1.0 GHz
-this time.
-
-> 
+> > Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B410=
+=E6=9C=8828=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=8812:40=E5=AF=AB=E9=
+=81=93=EF=BC=9A
+> >>
+> >> Hi Pavel, ChiYuan,
+> >>
+> >> On 10/27/20 9:29 AM, Pavel Machek wrote:
+> >>> Hi!
+> >>>
+> >>>> From: ChiYuan Huang <cy_huang@richtek.com>
+> >>>>
+> >>>> Add support for RT4505 flash led controller. It can support up to 1.=
+5A
+> >>>> flash current with hardware timeout and low input voltage
+> >>>> protection.
+> >>>
+> >>> Please use upper-case "LED" everywhere.
+> >>>
+> >>> This should be 2nd in the series, after DT changes.
+> >>>
+> >>>> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> >>>> ---
+> >>>>    drivers/leds/Kconfig       |  11 ++
+> >>>>    drivers/leds/Makefile      |   1 +
+> >>>>    drivers/leds/leds-rt4505.c | 397 ++++++++++++++++++++++++++++++++=
++++++++++++++
+> >>>>    3 files changed, 409 insertions(+)
+> >>>>    create mode 100644 drivers/leds/leds-rt4505.c
+> >> [...]
+> >>>> +static int rt4505_torch_brightness_set(struct led_classdev *lcdev, =
+enum led_brightness level)
+> >>>> +{
+> >>>
+> >>> 80 columns, where easy.
+> >>>
+> >>>> +    struct rt4505_priv *priv =3D container_of(lcdev, struct rt4505_=
+priv, flash.led_cdev);
+> >>>> +    u32 val =3D 0;
+> >>>> +    int ret;
+> >>>> +
+> >>>> +    mutex_lock(&priv->lock);
+> >>>> +
+> >>>> +    if (level !=3D LED_OFF) {
+> >>>> +            ret =3D regmap_update_bits(priv->regmap, RT4505_REG_ILE=
+D, RT4505_ITORCH_MASK,
+> >>>> +                                     (level - 1) << RT4505_ITORCH_S=
+HIFT);
+> >>>> +            if (ret)
+> >>>> +                    goto unlock;
+> >>>> +
+> >>>> +            val =3D RT4505_TORCH_SET;
+> >>>> +    }
+> >>>> +
+> >>>> +    ret =3D regmap_update_bits(priv->regmap, RT4505_REG_ENABLE, RT4=
+505_ENABLE_MASK, val);
+> >>>> +
+> >>>> +unlock:
+> >>>> +    mutex_unlock(&priv->lock);
+> >>>> +    return ret;
+> >>>> +}
+> >>>
+> >>> Why is the locking needed? What will the /sys/class/leds interface
+> >>> look like on system with your flash?
+> >>
+> >> The locking is needed since this can be called via led_set_brightness(=
+)
+> >> from any place in the kernel, and especially from triggers.
+> >>From this case, It means only led classdev
+> > brihtness_get/brightness_set need to be protected.
+> > I search led_flash_classdev, it only can be controlled via sysfs or V4l=
+2.
+> > Like as described in last mail, flash related operation is protected
+> > by led access_lock and v4l2 framework.
+> > I'll keep the locking only in led classdev brightness_get/brightness_se=
+t API.
+> > If I misunderstand something, please help to point out.
+>
+> Locking have to be used consistently for each access to the resource
+> being protected with the lock. Otherwise you can end up in a situation
+> when rt4505_torch_brightness_set and rt4505_flash_brightness_set will
+> try concurrently alter hardware state. Regardless of how harmful could
+> it be in case of this particular device it is certainly against
+> programming rules.
+>
+Sure, any resource access must be protected.
+I'll keep the locking like as the original patch.
+Thx.
 > --
-> viresh
-
+> Best regards,
+> Jacek Anaszewski
