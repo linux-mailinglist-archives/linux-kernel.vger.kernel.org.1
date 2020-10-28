@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5421B29D7C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5217B29D655
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733127AbgJ1W0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:26:53 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54176 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733111AbgJ1W0t (ORCPT
+        id S1731170AbgJ1WOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729951AbgJ1WN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:26:49 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id CD3D020B9C34;
-        Wed, 28 Oct 2020 10:40:07 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CD3D020B9C34
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1603906808;
-        bh=9V/wA3eXya9REkla/z2rwncx5LLcdFmF/Ap1Ekj0sjU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NflQEIxO3XBHmrmUqH90zd3OayoD/Scy0UPhkh0+nac9jaT38VztFcWZ5eqfaOa95
-         EaZtVM4a2uGCtavOI2YM1PfSZZEnYBWY0HmRbmIQ0sUHefFo2WPrgG23zxrgZj7Gbq
-         oLyXB3CYM3c91nbIPdZuoeXvoR5vpxAb2JvbtRp4=
-Date:   Wed, 28 Oct 2020 12:39:58 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "Kenneth R . Crudup" <kenny@panix.com>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org,
-        =?iso-8859-1?Q?Thi=E9baud?= Weksteen <tweek@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH] tpm: efi: Don't create binary_bios_measurements file for
- an empty log
-Message-ID: <20201028173958.GA4624@sequoia>
-References: <E1FDCCCB-CA51-4AEE-AC83-9CDE995EAE52@canonical.com>
- <20201028154102.9595-1-tyhicks@linux.microsoft.com>
- <20201028163002.GA5150@sequoia>
+        Wed, 28 Oct 2020 18:13:58 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B9A5C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:13:58 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id w65so627480pfd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:13:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=googlenew;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Gwnayf2MecvT+5s8JJfNOkhG8pZYF6/aAm6DfyGpa0A=;
+        b=WRdCdJCaebH5bgPaIQhOnD53UOJdg70cdtkXZGfIXymymGkUFWXOhcyMvlrv8gk3QH
+         XJPrkmgU2fG6GpqJb3EL9lEvK3pJl/M7BaZQspMZ5DvCKKT1FEpn0ypiz4vfCIWHlrMc
+         4qXIchkWd86YiODOrIRH4OuRDyb2ZVF3rqW18Gnmishi4EBEHKGqhIVozpl7EUuEGrey
+         DPlRlB9bPRlulrnKtTJbb4qTQ9aj9pU1KFYVlYpSuQSjA20bk8jmI6tVCiRIn1hg5ohm
+         kIsQmUsQ5lLucng7Hw46mPqaYkDLpMUnX7+rDp4DLgFySQI8sJUHXO8lvMumk0DGCp7G
+         c4yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Gwnayf2MecvT+5s8JJfNOkhG8pZYF6/aAm6DfyGpa0A=;
+        b=uSEB+Afk10LfqMJ7WS/uTeGZqq1h9PvshEc2U0Yybyz/AhJ5G8dAGHtAYkWhV8hjkW
+         UrKN8Ej1bASKRtB6AdXofVna1J7pWKTCXJ4kOsAcv3Td/v1xHPOR2/waxEZ+cQmsHPtw
+         lkXKuZP8f/T5k6IBnLWhfVXvO02GWcA49kHj0gKQQwA8X51ocueOJAU73Pcod4GEQEP9
+         1S4gfkDp7tUuDJU4FJuCXr+Wbol1dNuwEcu5X4R6oYQZYfEgHhhxMj9h1/z7RNNPDH7d
+         e62pwDogFLJpwIyUdONebEnUqnhikiWlLa8EaCI7B6KVNQgUOEsLnQAgubHucyjTGz5k
+         95/g==
+X-Gm-Message-State: AOAM533WYosWoP5JpJDZMYXlLVU14sZd1mVaeQktYft4hMs2Ors9scdJ
+        pycpfQFGwTrJxO+/uM97xWS3uXBjy2y61Tca
+X-Google-Smtp-Source: ABdhPJx7+AEZUMe/EsIWyfYB5EYL402/n/2TUFC/pw6DyMAI8l7Fu1l1s7kGjxT1nPAj+GaH11JRIg==
+X-Received: by 2002:a63:7408:: with SMTP id p8mr414749pgc.273.1603906958000;
+        Wed, 28 Oct 2020 10:42:38 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id ng7sm47242pjb.14.2020.10.28.10.42.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 10:42:37 -0700 (PDT)
+Subject: Re: WARNING in xfrm_alloc_compat
+To:     Steffen Klassert <steffen.klassert@secunet.com>,
+        syzbot <syzbot+a7e701c8385bd8543074@syzkaller.appspotmail.com>
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <00000000000021315205b29353aa@google.com>
+ <20201028104509.GB8805@gauss3.secunet.de>
+From:   Dmitry Safonov <dima@arista.com>
+Message-ID: <86a1f30b-388f-6760-b59b-349d2d8b0d8c@arista.com>
+Date:   Wed, 28 Oct 2020 17:42:31 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028163002.GA5150@sequoia>
+In-Reply-To: <20201028104509.GB8805@gauss3.secunet.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-28 11:30:11, Tyler Hicks wrote:
-> So, we need help from Kai, Kenneth, or Mimi to verify my assumption that
-> their firmware is providing an empty main event log and a populated
-> final event log.
+On 10/28/20 10:45 AM, Steffen Klassert wrote:
+> Same here, Dmitry please look into it.
 
-Hi Kai, Kenneth, and Mimi - could one or two of you please follow these
-steps:
+Looking on both, thanks!
 
-1) Apply the proposed patch in the grandparent of this email so that
-   your kernel doesn't crash
-2) Revert commit 7f3d176f5f7e ("tpm: Require that all digests are
-   present in TCG_PCR_EVENT2 structures") so that
-   __calc_tpm2_event_size() goes back to being less picky and may treat
-   a final log event as a valid event log header
-3) Add some debugging warnings in efi_tpm_eventlog_init() to check for
-   an empty main event log and a populated final event log, as shown
-   below
-4) Boot the resulting kernel build, look for the warnings, and report
-   back
-
-diff --git a/drivers/firmware/efi/tpm.c b/drivers/firmware/efi/tpm.c
-index c1955d320fec..c4d2dbd5ed42 100644
---- a/drivers/firmware/efi/tpm.c
-+++ b/drivers/firmware/efi/tpm.c
-@@ -78,6 +78,9 @@ int __init efi_tpm_eventlog_init(void)
- 		goto out;
- 	}
- 
-+	WARN(!log_tbl->size && final_tbl->nr_events,
-+	     "nr_events = %llu\n", final_tbl->nr_events);
-+
- 	tbl_size = 0;
- 	if (final_tbl->nr_events != 0) {
- 		void *events = (void *)efi.tpm_final_log
-@@ -95,6 +98,8 @@ int __init efi_tpm_eventlog_init(void)
- 		goto out_calc;
- 	}
- 
-+	WARN(!log_tbl->size && tbl_size, "tbl_size = %d\n", tbl_size);
-+
- 	memblock_reserve((unsigned long)final_tbl,
- 			 tbl_size + sizeof(*final_tbl));
- 	efi_tpm_final_log_size = tbl_size;
-
-For your convenience, I've created a branch with these changes on top of
-v5.9:
-
- https://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/linux.git/log/?h=tpm/bin-bios-measurements-debug
-
-Thank you!
-
-Tyler
+> I guess we can just remove the WARN_ON() that
+> triggeres here.
+Thanks,
+          Dmitry
