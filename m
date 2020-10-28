@@ -2,139 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A553229D9EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 212E729D9FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390021AbgJ1XGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
+        id S2389703AbgJ1WxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389878AbgJ1XGP (ORCPT
+        with ESMTP id S1733228AbgJ1WxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:06:15 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0EAC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:06:14 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id a23so556492qkg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:06:14 -0700 (PDT)
+        Wed, 28 Oct 2020 18:53:07 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2829EC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:53:07 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id e7so664917pfn.12
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:53:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k0QqM9Gt2pl6jLDvRzSessXwooNr3cWtYYZ1FieYU24=;
-        b=IC28rilzqqsrEp1766X9/HXON3cweBNlB89913+HjG9ZI1Id6nQ7uhycq425wCCdlg
-         ysIXl7n9+f4UqjZF5znoYD9XGgLQYr433ZC/zeTp7BXIuT0jMfaUeuc/1IVcaxpNFjSU
-         yySCTVnWzHAXGR4crpxrWQ8Q/FgbsoKip1A5N7QhQ4nOPSk6CbbmVfDh0iI968pnpWkl
-         efA4Rsf5fHfcTWKUCJzLKNK4G2GFARZ5nTxMw7JwNEXrJUTJsMArGQ3krDp1KDNuHuGF
-         xdt/2VWtxETmcaOSjRWLZeQboSx/s6yvFs/5IXFL1mO9gvfDvXgwxmhl9rn6LO2oCcDq
-         2dLQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0Xy/2zadYFsZw40LFEtdOiEBtCWDHEhIZKqPxiXGDgo=;
+        b=bBaojgDCytTeCZe09Aniv5ZCo9/1FqsTT/3OVeHNHiQoo0VRsUJwEEF+dAKR8keSyL
+         yRWbSBM9isY011JSCr6qCTcRwh2CYocjn/3k5iQI8Ss/5A/CGKTOriZdbyXDN2ys6BHT
+         tIbkFOOYefNeoQ0CJz/hUYR7ERPfwa7Bx6B6I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k0QqM9Gt2pl6jLDvRzSessXwooNr3cWtYYZ1FieYU24=;
-        b=dxeDdGk+lBcM663MYit+YBHC3uW6Bl7qPgWyarn/AV5EyUlhAF5z0qKwqZCkOBA0tW
-         SCW0h2fGYGHjdO9QcAL6LnRaSJwvMKf2jhVAauLM35VozqXVaZVbYWfMNLpMeHqUn86H
-         Y4+ywX/3B/JFJGACBFnvBSvTDXS9UnhkY+hThvDqlJmzjJRE7JmY8POV1PY1ECuYSREb
-         FYKPumIJ4IzDTaL+3P4Y8ORyd4GamccdA2g7eQ69pQFiKWa7yD7UqdaLGishL0c+qbb5
-         c20sd9PRFquKQOjm1fWY/CUaRNEBi44gwSK2PjgYY26mOYu8YPT5Kj04MebJ2iac7SDZ
-         Q04g==
-X-Gm-Message-State: AOAM533foG2fWRNQkz7ZkJZvZYGzfBay+llAvXjuIXqwRPgMMEhwIwtb
-        EH22/0M+sg2kiynsj60jbNq87KIg83PknCk981GVQBvV1CJdGQ==
-X-Google-Smtp-Source: ABdhPJwW3VpC/kud5eUeUVpQz0YtVDpP6Sm44lKpXCyhNU7lezh+1Hk8awqCP/oXPLSEogdEFn3mYe6sB/MLIR84L6g=
-X-Received: by 2002:ac8:46d5:: with SMTP id h21mr2208954qto.290.1603904520912;
- Wed, 28 Oct 2020 10:02:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0Xy/2zadYFsZw40LFEtdOiEBtCWDHEhIZKqPxiXGDgo=;
+        b=kxb8wLbjsXKlYWQds7wAie7epWqlcR7QDVZKGk1LYTaC5zxleVHBwgZ3+XZtTGkjYf
+         RgCN+FMqfx5rWVNPRI+5pygHWqRJhuu2gLdQLKHYogQB/Hh31aPNaLbP1nqt2nLWA/fv
+         rEyhGJ2Me7+eC1I2LGk476kjmVqFIGBGRZHpoy2p9QQWT/o3qZSKHq6C5E/W8yo2o3s1
+         CkMhrJjJcRQjrFwZsJhGmiV8DXLZXCCZEp8R1AvKEpYkVyfHp9IoB14VOx8lAXMNGOuW
+         gFhf6Ws4Fcqa2TAlvPrK3tqX8864QaP5InVJ8jMbU9zSs7W/Rrknfsf5eK/WzYpKMrwy
+         hdEQ==
+X-Gm-Message-State: AOAM533sB/yXELr9aWjykxhaDtv03eHfHSKS7cafArNtLYJpw1sqnVnH
+        FuUB2i0zOMBzETYeNasmaC2JQA==
+X-Google-Smtp-Source: ABdhPJzNUPngBSBllGfVxFqpThpHmKtVDwZBWHpI1tUv5u0YsP97zuSXYttLoLqCl2FU2MQmSaZy8A==
+X-Received: by 2002:a17:90b:90d:: with SMTP id bo13mr1086316pjb.111.1603925586677;
+        Wed, 28 Oct 2020 15:53:06 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id l7sm465074pja.11.2020.10.28.15.53.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 15:53:05 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 15:53:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+Message-ID: <202010281548.CCA92731F@keescook>
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <20200930150330.GC284424@cisco>
+ <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+ <20200930230327.GA1260245@cisco>
+ <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
+ <20200930232456.GB1260245@cisco>
+ <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
+ <202010251725.2BD96926E3@keescook>
+ <CAG48ez2b-fnsp8YAR=H5uRMT4bBTid_hyU4m6KavHxDko1Efog@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com> <f48f800933dacfc554d9094d864a01688abcbffd.1603372719.git.andreyknvl@google.com>
-In-Reply-To: <f48f800933dacfc554d9094d864a01688abcbffd.1603372719.git.andreyknvl@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 28 Oct 2020 18:01:49 +0100
-Message-ID: <CACT4Y+bx=3JCqR3GPrEUjbRFdOTQCCBofx0jd_g2Ldi+L7-iKg@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 19/21] kasan: don't round_up too much
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez2b-fnsp8YAR=H5uRMT4bBTid_hyU4m6KavHxDko1Efog@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 3:20 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> For tag-based mode kasan_poison_memory() already rounds up the size. Do
-> the same for software modes and remove round_up() from common code.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/Ib397128fac6eba874008662b4964d65352db4aa4
+On Mon, Oct 26, 2020 at 10:51:02AM +0100, Jann Horn wrote:
+> The problem is the scenario where a process is interrupted while it's
+> waiting for the supervisor to reply.
+> 
+> Consider the following scenario (with supervisor "S" and target "T"; S
+> wants to wait for events on two file descriptors seccomp_fd and
+> other_fd):
+> 
+> S: starts poll() to wait for events on seccomp_fd and other_fd
+> T: performs a syscall that's filtered with RET_USER_NOTIF
+> S: poll() returns and signals readiness of seccomp_fd
+> T: receives signal SIGUSR1
+> T: syscall aborts, enters signal handler
+> T: signal handler blocks on unfiltered syscall (e.g. write())
+> S: starts SECCOMP_IOCTL_NOTIF_RECV
+> S: blocks because no syscalls are pending
 
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Oooh, yes, ew. Thanks for the illustration.
 
-> ---
->  mm/kasan/common.c | 8 ++------
->  mm/kasan/shadow.c | 1 +
->  2 files changed, 3 insertions(+), 6 deletions(-)
->
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 5622b0ec0907..983383ebe32a 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -215,9 +215,7 @@ void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
->
->  void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
->  {
-> -       kasan_poison_memory(object,
-> -                       round_up(cache->object_size, KASAN_GRANULE_SIZE),
-> -                       KASAN_KMALLOC_REDZONE);
-> +       kasan_poison_memory(object, cache->object_size, KASAN_KMALLOC_REDZONE);
->  }
->
->  /*
-> @@ -290,7 +288,6 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
->  {
->         u8 tag;
->         void *tagged_object;
-> -       unsigned long rounded_up_size;
->
->         tag = get_tag(object);
->         tagged_object = object;
-> @@ -311,8 +308,7 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
->                 return true;
->         }
->
-> -       rounded_up_size = round_up(cache->object_size, KASAN_GRANULE_SIZE);
-> -       kasan_poison_memory(object, rounded_up_size, KASAN_KMALLOC_FREE);
-> +       kasan_poison_memory(object, cache->object_size, KASAN_KMALLOC_FREE);
->
->         if (static_branch_unlikely(&kasan_stack)) {
->                 if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine) ||
-> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-> index 616ac64c4a21..ab1d39c566b9 100644
-> --- a/mm/kasan/shadow.c
-> +++ b/mm/kasan/shadow.c
-> @@ -82,6 +82,7 @@ void kasan_poison_memory(const void *address, size_t size, u8 value)
->          * addresses to this function.
->          */
->         address = reset_tag(address);
-> +       size = round_up(size, KASAN_GRANULE_SIZE);
->
->         shadow_start = kasan_mem_to_shadow(address);
->         shadow_end = kasan_mem_to_shadow(address + size);
-> --
-> 2.29.0.rc1.297.gfa9743e501-goog
->
+Thinking about this from userspace's least-surprise view, I would expect
+the "recv" to stay "queued", in the sense we'd see this:
+
+S: starts poll() to wait for events on seccomp_fd and other_fd
+T: performs a syscall that's filtered with RET_USER_NOTIF
+S: poll() returns and signals readiness of seccomp_fd
+T: receives signal SIGUSR1
+T: syscall aborts, enters signal handler
+T: signal handler blocks on unfiltered syscall (e.g. write())
+S: starts SECCOMP_IOCTL_NOTIF_RECV
+S: gets (stale) seccomp_notif from seccomp_fd
+S: sends seccomp_notif_resp, receives ENOENT (or some better errno?)
+
+This is not at all how things are designed internally right now, but
+that behavior would work, yes?
+
+-- 
+Kees Cook
