@@ -2,99 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E5729DC43
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAE329DC1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388535AbgJ2AXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:23:23 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55198 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388505AbgJ1Who (ORCPT
+        id S2388951AbgJ1Wim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731038AbgJ1WiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:37:44 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09SJWSrQ001891;
-        Wed, 28 Oct 2020 14:32:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603913548;
-        bh=dql6zUttDWwckfnGqpXVkB3hy8f3bWyvhuFEqK3X54c=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=kUJ/t3DXu6WJKkicGCA80pUu2p0wncptqP0LDy+Vgw9YqOwV1XZtJ645m3dRacGPa
-         7LR40XusRRPDoh/53uB6ickFwYQ7Wlz+RgnUmZbxHhHXblBnzk3EbbXmqS+orc1lDP
-         gz0xFPX6qmfsmFBzlP80gdCsbDeHB343VvLi5214=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09SJWSVf040598
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 28 Oct 2020 14:32:28 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 28
- Oct 2020 14:32:28 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 28 Oct 2020 14:32:28 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09SJWOuT056574;
-        Wed, 28 Oct 2020 14:32:25 -0500
-Subject: Re: [PATCH] RFC: net: phy: of phys probe/reset issue
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>
-CC:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Roger Quadros <rogerq@ti.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20201023174750.21356-1-grygorii.strashko@ti.com>
- <450d262e-242c-77f1-9f06-e25943cc595c@gmail.com>
- <20201023201046.GB752111@lunn.ch>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <87f264f7-da24-61db-2339-59a88d88e533@ti.com>
-Date:   Wed, 28 Oct 2020 21:32:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 28 Oct 2020 18:38:25 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FDAC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:38:23 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id c5so735947qtw.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nP3MQU8G+NZhAzitdmwy6AlCbQvBr5GUXkIbmBlAkpw=;
+        b=sZI9EN1o4DdLSN0nkdlMc0F05VxohxEjHcdqbRDc8xUh73UKjUwd+xiZu6dTFBCVhF
+         YlpT0NN4s0boGSj9Wonvwk5teEYQk9svAgU6xXIpfjq43GLV5bcuJRtSW8SEG0lRwAfS
+         3EfR4NqI81KRV8/ctmHrKu/smncjn2131FU2Mgp6DZPoRxK//WTpn8DAl4+0p7BQP8lH
+         RznzugM8jWV4ZVAkK8dK1H1cJNCgkR2Kp/3W9E4R0iBYNwcTFiwKIQwJwQqdffub0SX3
+         bOcOIudsYbozLBJaSr8+9UtELeJ1sYtamAuxy95n1FMLJl9qwNxIJbx7AeJBEQMcFVV0
+         Bi4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nP3MQU8G+NZhAzitdmwy6AlCbQvBr5GUXkIbmBlAkpw=;
+        b=qtnD+5sQydJSsN0wTRhnUECbV0zLdK1+iRrPwEtMfzuFjNjLChnCvozSC409BLJWFL
+         UrpGnmAVCDQctczs1mStVUAZlaYeIDXEEi08F26Qg/i0Ovbl9THn4+WYGfhhnd/ioVsZ
+         YhZAxytDm+bjPTcZcReMyETmw+GzHsZ2M55s2rWWgnDytfjEHjHv1t99XbO7M2zwLH4N
+         e51V/1QN/ftToqQAJCHgHuRnWrVVefp+SIEfCzqzIq8v8zAWkSFaUoxYD6R0GaSz97VL
+         hmu2yEAOBkc+eIGz4r8Gfzfv1Nr3v0vzwv+1jEdFMafcAyc0GzT8nucjgG+G5Zth3gB0
+         46wg==
+X-Gm-Message-State: AOAM531SF8xmPf4BuOx6z4mPalgpVDVHKhcLEp4qvEGlsVXMpWf6V9pq
+        fKFrHZ+vmw3GstSfbLv+PrBkJJbYQ7b4Jemf
+X-Google-Smtp-Source: ABdhPJxWkVqYKo0f/78uYBARYXx/X8aXb6FzydzdsvrrY9i1JSW/wuO7rV4BwSp9AtLC8R/RuTWqmA==
+X-Received: by 2002:a05:6638:2208:: with SMTP id l8mr740026jas.22.1603914120719;
+        Wed, 28 Oct 2020 12:42:00 -0700 (PDT)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id m66sm359828ill.69.2020.10.28.12.41.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 12:42:00 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        sujitka@chromium.org, willemdebruijn.kernel@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 net 5/5] net: ipa: avoid going past end of resource group array
+Date:   Wed, 28 Oct 2020 14:41:48 -0500
+Message-Id: <20201028194148.6659-6-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201028194148.6659-1-elder@linaro.org>
+References: <20201028194148.6659-1-elder@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20201023201046.GB752111@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi Andrew,
+The minimum and maximum limits for resources assigned to a given
+resource group are programmed in pairs, with the limits for two
+groups set in a single register.
 
-On 23/10/2020 23:10, Andrew Lunn wrote:
->> Yes there is: have your Ethernet PHY compatible string be of the form
->> "ethernetAAAA.BBBB" and then there is no need for such hacking.
->> of_get_phy_id() will parse that compatible and that will trigger
->> of_mdiobus_register_phy() to take the phy_device_create() path.
-> 
-> Yep. That does seem like the cleanest way to do this. Let the PHY
-> driver deal with the resources it needs.
+If the number of supported resource groups is odd, only half of the
+register that defines these limits is valid for the last group; that
+group has no second group in the pair.
 
-Thanks you for your comments.
+Currently we ignore this constraint, and it turns out to be harmless,
+but it is not guaranteed to be.  This patch addresses that, and adds
+support for programming the 5th resource group's limits.
 
-huh. I gave it try and some thinking. it works as W/A, but what does it mean in the long term?
+Rework how the resource group limit registers are programmed by
+having a single function program all group pairs rather than having
+one function program each pair.  Add the programming of the 4-5
+resource group pair limits to this function.  If a resource group is
+not supported, pass a null pointer to ipa_resource_config_common()
+for that group and have that function write zeroes in that case.
 
-Neither Linux documentation, neither DT bindings suggest such solution in any way
-(and there is *Zero* users of ""ethernet-phy-id%4x.%4x" in the current LKML).
-And the main reason for this RFC is really bad customer experience while migrating to the new kernels, as
-mdio reset does not support multi-phys and phy resets are not working.
+Fixes: cdf2e9419dd91 ("soc: qcom: ipa: main code")
+Tested-by: Sujit Kautkar <sujitka@chromium.org>
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+v2: Fixed comparison error identified by Willem de Bruijn.
 
-Following your comments, my understanding for the long term (to avoid user's confusions) is:
-"for OF case the usage of 'ethernet-phy-id%4x.%4x' compatibly is became mandatory for PHYs
-to avoid PHY resets dependencies from board design and bootloader".
+ drivers/net/ipa/ipa_main.c | 89 +++++++++++++++++++++++---------------
+ 1 file changed, 53 insertions(+), 36 deletions(-)
 
-Which in turn means - update all reference boards by adding ""ethernet-phy-id%4x.%4x" and add
-new DT board files for boards which are differ by only PHY version.
-
-:(
-
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index 74b1e15ebd6b2..f4dd14d9550fe 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -370,8 +370,11 @@ static bool ipa_resource_limits_valid(struct ipa *ipa,
+ 	u32 i;
+ 	u32 j;
+ 
++	/* We program at most 6 source or destination resource group limits */
++	BUILD_BUG_ON(IPA_RESOURCE_GROUP_SRC_MAX > 6);
++
+ 	group_count = ipa_resource_group_src_count(ipa->version);
+-	if (!group_count)
++	if (!group_count || group_count > IPA_RESOURCE_GROUP_SRC_MAX)
+ 		return false;
+ 
+ 	/* Return an error if a non-zero resource limit is specified
+@@ -387,7 +390,7 @@ static bool ipa_resource_limits_valid(struct ipa *ipa,
+ 	}
+ 
+ 	group_count = ipa_resource_group_dst_count(ipa->version);
+-	if (!group_count)
++	if (!group_count || group_count > IPA_RESOURCE_GROUP_DST_MAX)
+ 		return false;
+ 
+ 	for (i = 0; i < data->resource_dst_count; i++) {
+@@ -421,46 +424,64 @@ ipa_resource_config_common(struct ipa *ipa, u32 offset,
+ 
+ 	val = u32_encode_bits(xlimits->min, X_MIN_LIM_FMASK);
+ 	val |= u32_encode_bits(xlimits->max, X_MAX_LIM_FMASK);
+-	val |= u32_encode_bits(ylimits->min, Y_MIN_LIM_FMASK);
+-	val |= u32_encode_bits(ylimits->max, Y_MAX_LIM_FMASK);
++	if (ylimits) {
++		val |= u32_encode_bits(ylimits->min, Y_MIN_LIM_FMASK);
++		val |= u32_encode_bits(ylimits->max, Y_MAX_LIM_FMASK);
++	}
+ 
+ 	iowrite32(val, ipa->reg_virt + offset);
+ }
+ 
+-static void ipa_resource_config_src_01(struct ipa *ipa,
+-				       const struct ipa_resource_src *resource)
++static void ipa_resource_config_src(struct ipa *ipa,
++				    const struct ipa_resource_src *resource)
+ {
+-	u32 offset = IPA_REG_SRC_RSRC_GRP_01_RSRC_TYPE_N_OFFSET(resource->type);
++	u32 group_count = ipa_resource_group_src_count(ipa->version);
++	const struct ipa_resource_limits *ylimits;
++	u32 offset;
+ 
+-	ipa_resource_config_common(ipa, offset,
+-				   &resource->limits[0], &resource->limits[1]);
+-}
++	offset = IPA_REG_SRC_RSRC_GRP_01_RSRC_TYPE_N_OFFSET(resource->type);
++	ylimits = group_count == 1 ? NULL : &resource->limits[1];
++	ipa_resource_config_common(ipa, offset, &resource->limits[0], ylimits);
+ 
+-static void ipa_resource_config_src_23(struct ipa *ipa,
+-				       const struct ipa_resource_src *resource)
+-{
+-	u32 offset = IPA_REG_SRC_RSRC_GRP_23_RSRC_TYPE_N_OFFSET(resource->type);
++	if (group_count < 2)
++		return;
+ 
+-	ipa_resource_config_common(ipa, offset,
+-				   &resource->limits[2], &resource->limits[3]);
+-}
++	offset = IPA_REG_SRC_RSRC_GRP_23_RSRC_TYPE_N_OFFSET(resource->type);
++	ylimits = group_count == 3 ? NULL : &resource->limits[3];
++	ipa_resource_config_common(ipa, offset, &resource->limits[2], ylimits);
+ 
+-static void ipa_resource_config_dst_01(struct ipa *ipa,
+-				       const struct ipa_resource_dst *resource)
+-{
+-	u32 offset = IPA_REG_DST_RSRC_GRP_01_RSRC_TYPE_N_OFFSET(resource->type);
++	if (group_count < 4)
++		return;
+ 
+-	ipa_resource_config_common(ipa, offset,
+-				   &resource->limits[0], &resource->limits[1]);
++	offset = IPA_REG_SRC_RSRC_GRP_45_RSRC_TYPE_N_OFFSET(resource->type);
++	ylimits = group_count == 5 ? NULL : &resource->limits[5];
++	ipa_resource_config_common(ipa, offset, &resource->limits[4], ylimits);
+ }
+ 
+-static void ipa_resource_config_dst_23(struct ipa *ipa,
+-				       const struct ipa_resource_dst *resource)
++static void ipa_resource_config_dst(struct ipa *ipa,
++				    const struct ipa_resource_dst *resource)
+ {
+-	u32 offset = IPA_REG_DST_RSRC_GRP_23_RSRC_TYPE_N_OFFSET(resource->type);
++	u32 group_count = ipa_resource_group_dst_count(ipa->version);
++	const struct ipa_resource_limits *ylimits;
++	u32 offset;
++
++	offset = IPA_REG_DST_RSRC_GRP_01_RSRC_TYPE_N_OFFSET(resource->type);
++	ylimits = group_count == 1 ? NULL : &resource->limits[1];
++	ipa_resource_config_common(ipa, offset, &resource->limits[0], ylimits);
++
++	if (group_count < 2)
++		return;
++
++	offset = IPA_REG_DST_RSRC_GRP_23_RSRC_TYPE_N_OFFSET(resource->type);
++	ylimits = group_count == 3 ? NULL : &resource->limits[3];
++	ipa_resource_config_common(ipa, offset, &resource->limits[2], ylimits);
++
++	if (group_count < 4)
++		return;
+ 
+-	ipa_resource_config_common(ipa, offset,
+-				   &resource->limits[2], &resource->limits[3]);
++	offset = IPA_REG_DST_RSRC_GRP_45_RSRC_TYPE_N_OFFSET(resource->type);
++	ylimits = group_count == 5 ? NULL : &resource->limits[5];
++	ipa_resource_config_common(ipa, offset, &resource->limits[4], ylimits);
+ }
+ 
+ static int
+@@ -471,15 +492,11 @@ ipa_resource_config(struct ipa *ipa, const struct ipa_resource_data *data)
+ 	if (!ipa_resource_limits_valid(ipa, data))
+ 		return -EINVAL;
+ 
+-	for (i = 0; i < data->resource_src_count; i++) {
+-		ipa_resource_config_src_01(ipa, &data->resource_src[i]);
+-		ipa_resource_config_src_23(ipa, &data->resource_src[i]);
+-	}
++	for (i = 0; i < data->resource_src_count; i++)
++		ipa_resource_config_src(ipa, data->resource_src);
+ 
+-	for (i = 0; i < data->resource_dst_count; i++) {
+-		ipa_resource_config_dst_01(ipa, &data->resource_dst[i]);
+-		ipa_resource_config_dst_23(ipa, &data->resource_dst[i]);
+-	}
++	for (i = 0; i < data->resource_dst_count; i++)
++		ipa_resource_config_dst(ipa, data->resource_dst);
+ 
+ 	return 0;
+ }
 -- 
-Best regards,
-grygorii
+2.20.1
+
