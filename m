@@ -2,192 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50BD29DECB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E6329DE97
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727320AbgJ2A4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:56:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60508 "EHLO mail.kernel.org"
+        id S1731845AbgJ2AzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:55:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731622AbgJ1WRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:36 -0400
-Received: from kernel.org (unknown [87.70.96.83])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1731655AbgJ1WRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:40 -0400
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A1702470A;
-        Wed, 28 Oct 2020 12:22:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B96424721
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 12:27:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603887744;
-        bh=Lr1BM+VW6ajXZ7BXxVkd5/Y50jW7UBQ7IyfJE4pxvbc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1im01t3jg6XLnQ4t88jFGyjzvs+ZIk4/rFUDH74Y7mcgp2hP2qxTFC8UySBuUYtE9
-         u6gUgHROWu15mNV2JA7LSO7BQZVSuhi5Y33PU4pj91Fm+m4ekLRfSEgCkjbLtBEgrv
-         IAOdJsmH151mptkBB/WbzhQhvbykxlMVYr1bucrs=
-Date:   Wed, 28 Oct 2020 14:22:09 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "cl@linux.com" <cl@linux.com>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "bp@alien8.de" <bp@alien8.de>, "pavel@ucw.cz" <pavel@ucw.cz>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
-Subject: Re: [PATCH 0/4] arch, mm: improve robustness of direct map
- manipulation
-Message-ID: <20201028122209.GH1428094@kernel.org>
-References: <20201025101555.3057-1-rppt@kernel.org>
- <ae82f905a0092adb7e0f0ac206335c1883b3170f.camel@intel.com>
- <20201026090526.GA1154158@kernel.org>
- <a0212b073b3b2f62c3dbf1bf398f03fa402997be.camel@intel.com>
- <20201027083816.GG1154158@kernel.org>
- <e5fc62b6-f644-4ed5-de5b-ffd8337861e4@redhat.com>
- <20201028110945.GE1428094@kernel.org>
- <5805fdd9-14e5-141c-773b-c46d2da57258@redhat.com>
+        s=default; t=1603888033;
+        bh=ow+2EHFtK/p8/2W58GArBKyS/O1NzOYpDuoTW0Tdt6s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qxa5lrdUOppbdyVpud3zBqbCTFL3z4n0T3Lj7O0u2dq4ZCCDzFilre7944CEMOHfN
+         L5cnY1k2zXzicidcBERIxSoFHfBb6PSvNf1CLrGQ6M2cSHsj+tkEmlbEzgPBRjXga0
+         lfzGdUM7ASBx637WeLOJJIagW7SZfOhFpJOd60Ew=
+Received: by mail-ot1-f47.google.com with SMTP id o14so4038963otj.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 05:27:13 -0700 (PDT)
+X-Gm-Message-State: AOAM531z9/r+aCPerFAIJ8ffmKnqRyNO0wphqqP8+u1Ao0y/QQxb71od
+        E8pvRPTF4BEIt6GhYCsBPd+G324blwZ7RaV9NNc=
+X-Google-Smtp-Source: ABdhPJwErNyJP9X/fK99DuJHyrzuz1n8wp9dxcZbrW6Ulkl1shOWT8XEQVgF6ZH/+XiyV3nHzSO8CefiGPb3yBIFXyE=
+X-Received: by 2002:a05:6830:4028:: with SMTP id i8mr4776348ots.90.1603888032129;
+ Wed, 28 Oct 2020 05:27:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5805fdd9-14e5-141c-773b-c46d2da57258@redhat.com>
+References: <20201027151132.14066-1-ardb@kernel.org> <20201028100049.GA27873@willie-the-truck>
+In-Reply-To: <20201028100049.GA27873@willie-the-truck>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 28 Oct 2020 13:27:01 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHFwmjz9CJGrBJ_E4nau=0gqSnR6B6wv6wVq5QHd0tYJg@mail.gmail.com>
+Message-ID: <CAMj1kXHFwmjz9CJGrBJ_E4nau=0gqSnR6B6wv6wVq5QHd0tYJg@mail.gmail.com>
+Subject: Re: [PATCH] module: use hidden visibility for weak symbol references
+To:     Will Deacon <will@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 12:17:35PM +0100, David Hildenbrand wrote:
-> On 28.10.20 12:09, Mike Rapoport wrote:
-> > On Tue, Oct 27, 2020 at 09:46:35AM +0100, David Hildenbrand wrote:
-> > > On 27.10.20 09:38, Mike Rapoport wrote:
-> > > > On Mon, Oct 26, 2020 at 06:05:30PM +0000, Edgecombe, Rick P wrote:
-> > > > 
-> > > > > Beyond whatever you are seeing, for the latter case of new things
-> > > > > getting introduced to an interface with hidden dependencies... Another
-> > > > > edge case could be a new caller to set_memory_np() could result in
-> > > > > large NP pages. None of the callers today should cause this AFAICT, but
-> > > > > it's not great to rely on the callers to know these details.
-> > 
-> > > > A caller of set_memory_*() or set_direct_map_*() should expect a failure
-> > > > and be ready for that. So adding a WARN to safe_copy_page() is the first
-> > > > step in that direction :)
-> > > > 
-> > > 
-> > > I am probably missing something important, but why are we saving/restoring
-> > > the content of pages that were explicitly removed from the identity mapping
-> > > such that nobody will access them?
-> > 
-> > Actually, we should not be saving/restoring free pages during
-> > hibernation as there are several calls to mark_free_pages() that should
-> > exclude the free pages from the snapshot. I've tried to find why the fix
-> > that maps/unmaps a page to save it was required at the first place, but
-> > I could not find bug reports.
-> > 
-> > The closest I've got is an email from Rafael that asked to update
-> > "hibernate: handle DEBUG_PAGEALLOC" patch:
-> > 
-> > https://lore.kernel.org/linux-pm/200802200133.44098.rjw@sisk.pl/
-> > 
-> > Could it be that safe_copy_page() tries to workaround a non-existent
-> > problem?
-> > 
-> 
-> Clould be! Also see
-> 
-> https://lkml.kernel.org/r/38de5bb0-5559-d069-0ce0-daec66ef2746@suse.cz
-> 
-> which restores free page content based on more kernel parameters, not based
-> on the original content.
+On Wed, 28 Oct 2020 at 11:00, Will Deacon <will@kernel.org> wrote:
+>
+> Hi Ard,
+>
+> On Tue, Oct 27, 2020 at 04:11:32PM +0100, Ard Biesheuvel wrote:
+> > Geert reports that commit be2881824ae9eb92 ("arm64/build: Assert for
+> > unwanted sections") results in build errors on arm64 for configurations
+> > that have CONFIG_MODULES disabled.
+> >
+> > The commit in question added ASSERT()s to the arm64 linker script to
+> > ensure that linker generated sections such as .got, .plt etc are empty,
+> > but as it turns out, there are corner cases where the linker does emit
+> > content into those sections. More specifically, weak references to
+> > function symbols (which can remain unsatisfied, and can therefore not
+> > be emitted as relative references) will be emitted as GOT and PLT
+> > entries when linking the kernel in PIE mode (which is the case when
+> > CONFIG_RELOCATABLE is enabled, which is on by default).
+> >
+> > What happens is that code such as
+> >
+> >       struct device *(*fn)(struct device *dev);
+> >       struct device *iommu_device;
+> >
+> >       fn = symbol_get(mdev_get_iommu_device);
+> >       if (fn) {
+> >               iommu_device = fn(dev);
+> >
+> > essentially gets converted into the following when CONFIG_MODULES is off:
+> >
+> >       struct device *iommu_device;
+> >
+> >       if (&mdev_get_iommu_device) {
+> >               iommu_device = mdev_get_iommu_device(dev);
+> >
+> > where mdev_get_iommu_device is emitted as a weak symbol reference into
+> > the object file. The first reference is decorated with an ordinary
+> > ABS64 data relocation (which yields 0x0 if the reference remains
+> > unsatisfied). However, the indirect call is turned into a direct call
+> > covered by a R_AARCH64_CALL26 relocation, which is converted into a
+> > call via a PLT entry taking the target address from the associated
+> > GOT entry.
+> >
+> > Given that such GOT and PLT entries are unnecessary for fully linked
+> > binaries such as the kernel, let's give these weak symbol references
+> > hidden visibility, so that the linker knows that the weak reference
+> > via R_AARCH64_CALL26 can simply remain unsatisfied.
+> >
+> > Cc: Jessica Yu <jeyu@kernel.org>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Cc: Nick Desaulniers <ndesaulniers@google.com>
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  include/linux/module.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Cheers. I gave this a spin, but I unfortunately still see the following
+> linker warning with allnoconfig:
+>
+>   aarch64-linux-gnu-ld: warning: orphan section `.igot.plt' from `arch/arm64/kernel/head.o' being placed in section `.igot.plt'
+>
+> which looks unrelated to symbol_get(), but maybe it's worth knocking these
+> things on the head (no pun intended) at the same time?
+>
 
-Ah, after looking at it now I've run kernel with DEBUG_PAGEALLOC=y and
-CONFIG_INIT_ON_FREE_DEFAULT_ON=y and restore crahsed nicely.
+Yeah, that is just one of those spurious sections that turns up empty
+anyway. The head.o is a red herring, it is simply the first file
+appearing in the link.
 
-[   27.210093] PM: Image successfully loaded
-[   27.226709] Disabling non-boot CPUs ...                                      
-[   27.231208] smpboot: CPU 1 is now offline                                    
-[   27.363926] kvm-clock: cpu 0, msr 5c889001, primary cpu clock, resume        
-[   27.363995] BUG: unable to handle page fault for address: ffff9f7a40108000   
-[   27.367996] #PF: supervisor write access in kernel mode                      
-[   27.369558] #PF: error_code(0x0002) - not-present page                       
-[   27.371098] PGD 5ca01067 P4D 5ca01067 PUD 5ca02067 PMD 5ca03067 PTE 800ffffff
-fef7060                                                                         
-[   27.373421] Oops: 0002 [#1] SMP DEBUG_PAGEALLOC PTI                          
-[   27.374905] CPU: 0 PID: 1200 Comm: bash Not tainted 5.10.0-rc1 #5            
-[   27.376700] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14
-.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014                                 
-[   27.379879] RIP: 0010:clear_page_rep+0x7/0x10          
-[   27.381218] Code: e8 be 88 75 00 44 89 e2 48 89 ee 48 89 df e8 60 ff ff ff c6
- 03 00 5b 5d 41 5c c3 cc cc cc cc cc cc cc cc b9 00 02 00 00 31 c0 <f3> 48 ab c3
- 0f 1f 44 00 00 31 c0 b9 40 00 00 00 66 0f 1f 84 00 00                          
-[   27.386457] RSP: 0018:ffffb6838046be08 EFLAGS: 00010046                      
-[   27.388011] RAX: 0000000000000000 RBX: ffff9f7a487c0ec0 RCX: 0000000000000200
-[   27.390082] RDX: ffff9f7a4c788000 RSI: 0000000000000000 RDI: ffff9f7a40108000
-[   27.392138] RBP: ffffffff8629c860 R08: 0000000000000000 R09: 0000000000000007
-[   27.394205] R10: 0000000000000004 R11: ffffb6838046bbf8 R12: 0000000000000000
-[   27.396271] R13: ffff9f7a419a62a0 R14: 0000000000000005 R15: ffff9f7a484f4da0
-[   27.398334] FS:  00007fe0c3f6a700(0000) GS:ffff9f7abf800000(0000) knlGS:0000000000000000                                                                     
-[   27.400717] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033                
-[   27.402432] CR2: ffff9f7a40108000 CR3: 000000000859a001 CR4: 0000000000060ef0
-[   27.404485] Call Trace:                                                      
-[   27.405326]  clear_free_pages+0xf5/0x150                                     
-[   27.406568]  hibernation_snapshot+0x390/0x3d0                                
-[   27.407908]  hibernate+0xdb/0x240                                            
-[   27.408978]  state_store+0xd7/0xe0                                           
-[   27.410078]  kernfs_fop_write+0x10e/0x1a0                                    
-[   27.411333]  vfs_write+0xbb/0x210                                            
-[   27.412423]  ksys_write+0x9c/0xd0                      
-[   27.413488]  do_syscall_64+0x33/0x40                                         
-[   27.414636]  entry_SYSCALL_64_after_hwframe+0x44/0xa9                        
-[   27.416150] RIP: 0033:0x7fe0c364e380                                         
- 66 0f 1f 44 00 00 83 3d c9 23 2d 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0
- ff ff 73 31 c3 48 83 ec 08 e8 fe dd 01 00 48 89 04 24
-[   27.422500] RSP: 002b:00007ffeb64bd0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000
-00001
-[   27.424724] RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007fe0c364e380
-[   27.426761] RDX: 0000000000000005 RSI: 0000000001eb6408 RDI: 0000000000000001
-[   27.428791] RBP: 0000000001eb6408 R08: 00007fe0c391d780 R09: 00007fe0c3f6a700
-[   27.430863] R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000000005
-[   27.432920] R13: 0000000000000001 R14: 00007fe0c391c620 R15: 0000000000000000
-[   27.434989] Modules linked in:
-[   27.436004] CR2: ffff9f7a40108000
-[   27.437075] ---[ end trace 424c466bcd2bfcad ]---
+This should fix it
 
-
-
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-> 
-
--- 
-Sincerely yours,
-Mike.
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index 6567d80dd15f..48b222f1c700 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -278,7 +278,7 @@ SECTIONS
+         * explicitly check instead of blindly discarding.
+         */
+        .plt : {
+-               *(.plt) *(.plt.*) *(.iplt) *(.igot)
++               *(.plt) *(.plt.*) *(.iplt) *(.igot .igot.plt)
+        }
+        ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure
+linkages detected!")
