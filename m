@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6924629DB87
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1632C29DB9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389387AbgJ2AAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:00:10 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59842 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389366AbgJ2AAG (ORCPT
+        id S2390294AbgJ2AHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731614AbgJ2AHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 20:00:06 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kXkMS-0005Pl-G9; Wed, 28 Oct 2020 12:15:28 +0000
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Patrick Lai <plai@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        alsa-devel@alsa-project.org
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: ASoC: qcom: sm8250: add sound card qrb5165-rb5 support
-Message-ID: <f441bb6c-12eb-a565-c34d-950da2b045d7@canonical.com>
-Date:   Wed, 28 Oct 2020 12:15:28 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Wed, 28 Oct 2020 20:07:21 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF90C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:07:20 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id v18so1354874ilg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:07:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=k2CwR8ggCRj6gUkZT+xqJS/dAer7jwXLMOKWPbtQ2WM=;
+        b=SsYKHEbGb1isOsxn5Kyw/oAnoU7YkkwpphGqld5TodbUsr9Sdg/BMQOPQtnavpxViz
+         zEokObyVY8zXwcqkzpqKuc5KNukjZk1vxC1n0RN5jmKdvGVbs9MvIb5rEmKEwbU2CZNJ
+         o4u6lp/Jk7bdPGJu/TxyiS3JTjYcYDDMkN0CrKxCNhPeFPSKS8CFrmwVNTD5GiidEhH5
+         5MZDiOla5lhLp4y/zw/EnbKBV9NlmQorTWUQRPBvdwnkrUMJeHC/RBmsqYgqHFj1zNJe
+         SY/Exp1aLfgCE7K7ZOfPLoFQnIezdUCS2trqqd8pMYaWWN8dk253JIu5DxbRTWr4+rRU
+         MyeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=k2CwR8ggCRj6gUkZT+xqJS/dAer7jwXLMOKWPbtQ2WM=;
+        b=HDX4QrARiF7pRpMdIrBc196t6m4UtFOXe+lWWKB7dfUE2+UKGJzqzr/p3HZPdfG/29
+         6UupBIuGadRo1CDWVZxYlT0OtisacNki/depfY6w8NRFN0qWrbW7R4F4E+Dgc5QBA9st
+         j3495xbnYD7TuarCeeCIGJJEw2U3kluWyaRpgc/i+TyxAyKmRrB2pjs82OS5BKQfZiI/
+         mieg9IcUNGWclEQD8os2kqZWxLyq2rGYxkC2S9s0O/Z6Qdqx/DitWHiAzgAzfi8FojXP
+         BfZUlQj6gxJmrlHsTxiy6XVgL7wK0tC4B8EjEqHG2ba/CrLVdsQNcCFlsPkMLElVLYLy
+         OhQQ==
+X-Gm-Message-State: AOAM5309rsdYviiLqPCwGV51v+4he4lqvQWmTeBnyMqDpURTF9HpZ0SA
+        6fTaOsmGxyA5x3ah7mLcqB9dtTgRiSGokK+A
+X-Google-Smtp-Source: ABdhPJyD8NFKCUgIZUuGUARXr+28hW419Ha6dTnrL3zjRQv0Xcb+wIxwMJFLS0wUFDuWBp350AX7gg==
+X-Received: by 2002:a63:af4c:: with SMTP id s12mr6001553pgo.395.1603887645761;
+        Wed, 28 Oct 2020 05:20:45 -0700 (PDT)
+Received: from Monkey.fios-router.home ([47.144.162.13])
+        by smtp.gmail.com with ESMTPSA id a143sm6329137pfd.138.2020.10.28.05.20.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 05:20:45 -0700 (PDT)
+From:   "John B. Wyatt IV" <jbwyatt4@gmail.com>
+To:     "' Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen ' <tim.c.chen@intel.com>
+Cc:     "John B. Wyatt IV" <jbwyatt4@gmail.com>
+Subject: [PATCH 4/8] sched: Remove unused else
+Date:   Wed, 28 Oct 2020 05:19:13 -0700
+Message-Id: <20201028121917.635203-5-jbwyatt4@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201028121917.635203-1-jbwyatt4@gmail.com>
+References: <20201028121917.635203-1-jbwyatt4@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Silences suspect code warning.
 
-Static analysis on linux-next with Coverity had detected a potential
-array out-of-bounds write issue in the following commit:
+Issue reported by checkpatch.
 
-commit aa2e2785545aab21b6cb2e23f111ae0751cbcca7
-Author: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date:   Mon Oct 26 17:09:47 2020 +0000
+Signed-off-by: John B. Wyatt IV <jbwyatt4@gmail.com>
+---
+ kernel/sched/coretag.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-    ASoC: qcom: sm8250: add sound card qrb5165-rb5 support
+diff --git a/kernel/sched/coretag.c b/kernel/sched/coretag.c
+index 3333c9b0afc5..11139dbed648 100644
+--- a/kernel/sched/coretag.c
++++ b/kernel/sched/coretag.c
+@@ -146,7 +146,7 @@ int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
+ 		}
+ 		wr.tasks[0] = t1;
+ 		wr.cookies[0] = cookie;
+-	} else
++	}
+ 	/*
+ 	 * 		t1		joining		t2
+ 	 * CASE 1:
+-- 
+2.28.0
 
-The analysis is as follows:
-
-139 static int sm8250_snd_hw_free(struct snd_pcm_substream *substream)
-140 {
-141        struct snd_soc_pcm_runtime *rtd = substream->private_data;
-142        struct sm8250_snd_data *data =
-snd_soc_card_get_drvdata(rtd->card);
-143        struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-144        struct sdw_stream_runtime *sruntime =
-data->sruntime[cpu_dai->id];
-145
-
-   1. Switch case value 105.
-
-146        switch (cpu_dai->id) {
-
-   2. equality_cond: Jumping to case 105.
-
-147        case WSA_CODEC_DMA_RX_0:
-148        case WSA_CODEC_DMA_RX_1:
-
-   Out-of-bounds write (OVERRUN)
-   3. Condition sruntime, taking true branch.
-   4. Condition data->stream_prepared[cpu_dai->id], taking true branch.
-
-149                if (sruntime && data->stream_prepared[cpu_dai->id]) {
-150                        sdw_disable_stream(sruntime);
-151                        sdw_deprepare_stream(sruntime);
-
-   Out-of-bounds write (OVERRUN)
-   5. overrun-local: Overrunning array data->stream_prepared of 16 bytes
-at byte offset 105 using index cpu_dai->id (which evaluates to 105).
-
-152                        data->stream_prepared[cpu_dai->id] = false;
-153                }
-154                break;
-155        default:
-156                break;
-157        }
-158
-159        return 0;
-160 }
-
-So cpu_dia->id is 105 in this case statement, and yet
-data->steam_prepared is an array of 16 elements, so this looks suspect.
-
-Colin
