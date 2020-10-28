@@ -2,68 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC45029D61B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9C729D561
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730739AbgJ1WLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730725AbgJ1WLq (ORCPT
+        id S1729451AbgJ1WAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:00:30 -0400
+Received: from newton.telenet-ops.be ([195.130.132.45]:40810 "EHLO
+        newton.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729427AbgJ1WAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:11:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8465C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pbW1tCuoCb5OoMHKLe/zo1YdTNTlOPVa8AEEc+GMK0Y=; b=hmnOVDO2mdOUeHyF8dFmOqABl7
-        IXFwxMOZo6teAYlA1iNNnFgmC0MWOlUVzDGhdcFFMBqwluvZzjo+88drh7c/WUtjjzOtgaS615aOR
-        /BHOoqPXDwWPBkaFkPHuTDUwzExGsptpZiDp2vRREC2z8P7c3zBDl0Fw7h1VpmdhdycUk0NMmEqe3
-        0nff9M143urlCeeFNHU2ERF5NazR6z2vFFYcSpsxCCi4lhwJkZWNema1wQAEJsA+83rNH1a/1KSZI
-        LXl3MSdcHO4dW0kMOAvYlgjSQ7kcW9ghP0tE7MmnY0EDcJ7fEyaYRzHaKYaTQhw5q0hJj51EKgd1P
-        fVD2YZrg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXmh3-0004yC-Ds; Wed, 28 Oct 2020 14:44:53 +0000
-Date:   Wed, 28 Oct 2020 14:44:53 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: Re: [PATCH 3/3] blk-mq: Use llist_head for blk_cpu_done
-Message-ID: <20201028144453.GA18610@infradead.org>
-References: <20201028065616.GA24449@infradead.org>
- <20201028141251.3608598-1-bigeasy@linutronix.de>
- <20201028141251.3608598-3-bigeasy@linutronix.de>
+        Wed, 28 Oct 2020 18:00:24 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by newton.telenet-ops.be (Postfix) with ESMTPS id 4CLs2z06j2zMtwJP
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:51:23 +0100 (CET)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by baptiste.telenet-ops.be with bizsmtp
+        id lSrN2300Q4C55Sk01SrNpH; Wed, 28 Oct 2020 15:51:22 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kXmnK-000oxl-8Y; Wed, 28 Oct 2020 15:51:22 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kXmnJ-007GYF-Je; Wed, 28 Oct 2020 15:51:21 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>, linux-gpio@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] pinctrl: Remove hole in pinctrl_gpio_range
+Date:   Wed, 28 Oct 2020 15:51:17 +0100
+Message-Id: <20201028145117.1731876-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028141251.3608598-3-bigeasy@linutronix.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 03:12:51PM +0100, Sebastian Andrzej Siewior wrote:
->  static int blk_softirq_cpu_dead(unsigned int cpu)
->  {
-> -	/*
-> -	 * If a CPU goes away, splice its entries to the current CPU
-> -	 * and trigger a run of the softirq
-> -	 */
-> -	local_irq_disable();
-> -	list_splice_init(&per_cpu(blk_cpu_done, cpu),
-> -			 this_cpu_ptr(&blk_cpu_done));
-> -	raise_softirq_irqoff(BLOCK_SOFTIRQ);
-> -	local_irq_enable();
-> -
-> +	blk_complete_reqs(&per_cpu(blk_cpu_done, cpu));
->  	return 0;
+On 64-bit platforms, pointer size and alignment are 64-bit, hence two
+4-byte holes are present before the pins and gc members of the
+pinctrl_gpio_range structure.  Get rid of these holes by moving the
+pins pointer.
 
-How can this be preempted?  Can't we keep using this_cpu_ptr here?
+This reduces kernel size of an arm64 Rockchip kernel by ca. 512 bytes.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Compile-tested only (arm/multi_v7_defconfig and arm64/defconfig).
+---
+ include/linux/pinctrl/pinctrl.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/pinctrl/pinctrl.h b/include/linux/pinctrl/pinctrl.h
+index 2aef59df93d70550..70b45d28e7a9293b 100644
+--- a/include/linux/pinctrl/pinctrl.h
++++ b/include/linux/pinctrl/pinctrl.h
+@@ -51,8 +51,8 @@ struct pinctrl_pin_desc {
+  * @id: an ID number for the chip in this range
+  * @base: base offset of the GPIO range
+  * @pin_base: base pin number of the GPIO range if pins == NULL
+- * @pins: enumeration of pins in GPIO range or NULL
+  * @npins: number of pins in the GPIO range, including the base number
++ * @pins: enumeration of pins in GPIO range or NULL
+  * @gc: an optional pointer to a gpio_chip
+  */
+ struct pinctrl_gpio_range {
+@@ -61,8 +61,8 @@ struct pinctrl_gpio_range {
+ 	unsigned int id;
+ 	unsigned int base;
+ 	unsigned int pin_base;
+-	unsigned const *pins;
+ 	unsigned int npins;
++	unsigned const *pins;
+ 	struct gpio_chip *gc;
+ };
+ 
+-- 
+2.25.1
+
