@@ -2,108 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127E029D861
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A3729D898
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387960AbgJ1Wbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
+        id S2388168AbgJ1Wer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387927AbgJ1Wbf (ORCPT
+        with ESMTP id S2388428AbgJ1Wc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:31:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFBCC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=TYXwyDweTdlROEn0LKotPPCUWy/YdCFJnxIV8tWbKOY=; b=fyot2M6wdT1GjHX/vIjWe7CRgG
-        n+NLQZc8OREKTSLmSisX4TYSLXTFjZ2polVVRdNnyTWHXhbIwrdL1r2rRrWp30y0mApO5UKkRmqPq
-        W3PsVn77EJXak6Wmh4jfgTg5bdGxmzwzD0Xn8Fj8GLkACz9Us6l2FY7xAd17BPF46GysGRLvyCfYi
-        vOXt9zNX+yWy+AFbI6SepEUiro0ZOqUeQ+5bP+/B202KhmGVw+SsjWUc4sLu3DCQST1w6rHOCCN6n
-        dtBWOJF8h9fu8/CKM6/4ow1W0j3imQ+GUC3EY+XL6U+yuNIRLUkFcfSGpB044Xp0IYKYBwobJXYNt
-        DSOvT0Fg==;
-Received: from [2601:1c0:6280:3f0::507c] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXpTn-0007Sv-E4; Wed, 28 Oct 2020 17:43:24 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        David Gow <davidgow@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>
-Subject: [PATCH] KUnit: Docs: usage: wording fixes
-Date:   Wed, 28 Oct 2020 10:43:19 -0700
-Message-Id: <20201028174319.11817-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Wed, 28 Oct 2020 18:32:57 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24860C0613CF;
+        Wed, 28 Oct 2020 15:32:57 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 96A0CEC2;
+        Wed, 28 Oct 2020 17:46:25 +0000 (UTC)
+Date:   Wed, 28 Oct 2020 11:46:24 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        "Theodore Ts'o" <tytso@mit.edu>, Andrew Lunn <andrew@lunn.ch>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Chen-Yu Tsai <wens@csie.org>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, Jan Kara <jack@suse.com>,
+        Jean Delvare <jdelvare@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v3 00/32] Documentation build fixes against v5.10-rc1
+Message-ID: <20201028114624.4a65f35e@lwn.net>
+In-Reply-To: <cover.1603791716.git.mchehab+huawei@kernel.org>
+References: <cover.1603791716.git.mchehab+huawei@kernel.org>
+Organization: LWN.net
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix minor grammar and punctutation glitches.
-Hyphenate "architecture-specific" instances.
+On Tue, 27 Oct 2020 10:51:04 +0100
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: David Gow <davidgow@google.com>
-Cc: linux-kselftest@vger.kernel.org
-Cc: kunit-dev@googlegroups.com
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Brendan Higgins <brendanhiggins@google.com>
----
- Documentation/dev-tools/kunit/usage.rst |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+> This series contain the patches from a previous series I sent:
+> 
+> 	[PATCH v2 00/24] Documentation build fixes against next-20201013
+> 
+> Plus other patches I sent later, against other versions of linux-next between
+> 20201013 and v5.10-rc1.
+> 
+> It fixes most of the remaining documentation build warnings.
+> 
+> There were some changes from v2, as I changed some patches due to the
+> feedback received, and added reviewed-by/acked-by to several of them.
+> 
+> After this series, there will be just 3 warnings at include/kunit/test.h, whose
+> fixes were already applied by Shuah via her tree at linux-next. Hopefully, she
+> will be sending it upstream anytime toon. So, I dropped the fix from my trees.
+> 
+> The vast majority of patches here are also on my linux-next tree, as my
+> original plan were to send them upstream by the end of the merge window.
+> I'll drop from it once they get merged.
+> 
+> As those patches are fixes, I guess it should be ok to get them merged for 
+> -rc2 or -rc3.
 
---- linux-next-20201027.orig/Documentation/dev-tools/kunit/usage.rst
-+++ linux-next-20201027/Documentation/dev-tools/kunit/usage.rst
-@@ -92,7 +92,7 @@ behavior of a function called ``add``; t
- the second parameter, in this case, is what the value is expected to be; the
- last value is what the value actually is. If ``add`` passes all of these
- expectations, the test case, ``add_test_basic`` will pass; if any one of these
--expectations fail, the test case will fail.
-+expectations fails, the test case will fail.
- 
- It is important to understand that a test case *fails* when any expectation is
- violated; however, the test will continue running, potentially trying other
-@@ -202,7 +202,7 @@ Example:
- 	kunit_test_suite(example_test_suite);
- 
- In the above example the test suite, ``example_test_suite``, would run the test
--cases ``example_test_foo``, ``example_test_bar``, and ``example_test_baz``,
-+cases ``example_test_foo``, ``example_test_bar``, and ``example_test_baz``;
- each would have ``example_test_init`` called immediately before it and would
- have ``example_test_exit`` called immediately after it.
- ``kunit_test_suite(example_test_suite)`` registers the test suite with the
-@@ -229,7 +229,7 @@ through some sort of indirection where a
- such that the definition of that function can be changed without affecting the
- rest of the code base. In the kernel this primarily comes from two constructs,
- classes, structs that contain function pointers that are provided by the
--implementer, and architecture specific functions which have definitions selected
-+implementer, and architecture-specific functions which have definitions selected
- at compile time.
- 
- Classes
-@@ -459,7 +459,7 @@ KUnit on non-UML architectures
- By default KUnit uses UML as a way to provide dependencies for code under test.
- Under most circumstances KUnit's usage of UML should be treated as an
- implementation detail of how KUnit works under the hood. Nevertheless, there
--are instances where being able to run architecture specific code or test
-+are instances where being able to run architecture-specific code or test
- against real hardware is desirable. For these reasons KUnit supports running on
- other architectures.
- 
-@@ -599,7 +599,7 @@ writing normal KUnit tests. One special
- hardware state in between test cases; if this is not possible, you may only be
- able to run one test case per invocation.
- 
--.. TODO(brendanhiggins@google.com): Add an actual example of an architecture
-+.. TODO(brendanhiggins@google.com): Add an actual example of an architecture-
-    dependent KUnit test.
- 
- KUnit debugfs representation
+I have tentatively applied these, minus the DRM/JBD patches that have been
+picked up elsewhere.  If all looks good, I'll push them up in the
+not-too-distant future.
+
+Thanks,
+
+jon
