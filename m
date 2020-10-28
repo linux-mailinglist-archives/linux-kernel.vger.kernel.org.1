@@ -2,116 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54BB29D90B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B9529D967
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388975AbgJ1Wio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388950AbgJ1WiW (ORCPT
+        id S2389752AbgJ1Wyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:54:53 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16469 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389709AbgJ1Wyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:38:22 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1022C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:38:21 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id s9so732255wro.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:38:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QS4EnFX6AmlcEUTn4kjwTeWHhMAjTaD3XA3AGB+7TY0=;
-        b=KZ3UwAfj5i+27klN0a4tHXuGvuCSU0mg8fvYSBx4qvDhaq/mwBMAWFYqRVtNV+ESBQ
-         +9O9IfocZjEAQPwma+h6htQNL+WIcAGDhMvJvO4FMvd61nvKItJvYP9x6XJLuLMonnQt
-         galgbj3msWdda+NdxziyuM1YkzYG4mxjWMpvAz5Nl8ZgpkGDyYUplIfCfNSk1BwSB3jI
-         +MIjJchtbYHFovczUlnObt3lkaqAR3xoLfxl7RZoK/RsXTMISUmd4ICm4KU8pNjBqg8n
-         YD7F3VrRPi5T+IDEh6iOqu9J5weC6Cuh7MrmEPwZB/yMAqC9rIIeZbX3gSRRV4zB4Gp8
-         Ap8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QS4EnFX6AmlcEUTn4kjwTeWHhMAjTaD3XA3AGB+7TY0=;
-        b=GswvPkpLfPAVhvWEKKzjafEOtpzlJ/U5hIVYow0R6XEeEd2Q87yARMknGeRJQpo5x6
-         ELY91SoSkycfMEd+r2TQXxoM3vzCH1M07DrET+vv9hXkP0Zj0QdBWKDQKQhoZUfEG34I
-         lR2DCUXzkd136HP3ggVBWD/H53QC06873ijXDH9kn28YdzaEtHx1SFNvGU19jJvQuUsa
-         oKrwKVLvIpgwcUXOL/6/y71ugNL7kqN8hk/7HZ79LF8JYDH0/d7UqyruxwAW+QHnIXOC
-         EEEvM3MoylNeeprQTwbVRoHW+XklP3G1Et9LeFnENTeUZvCSEiAqyH0D/YpH8hLGqnuX
-         ACYw==
-X-Gm-Message-State: AOAM531IutS7jmMeHkakxAlfM1LSSx1yhnQo6YwvdPeK9n+NVujKPmO2
-        ml7JDNMU9XWDwFRCGjOhytkNbx3fvaRmZBiMzOgbhvO+vuLCLA==
-X-Google-Smtp-Source: ABdhPJxHeQx42vWevxKl0pyFupw1sDxgg0bsKu6fbUvbZv9x+8XzfjcO/vcFqEOvd8dYTQpPYAE2MDDCFnBN+ztrQ9I=
-X-Received: by 2002:a19:c357:: with SMTP id t84mr154089lff.34.1603909572173;
- Wed, 28 Oct 2020 11:26:12 -0700 (PDT)
+        Wed, 28 Oct 2020 18:54:46 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f99b80d0000>; Wed, 28 Oct 2020 11:27:25 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
+ 2020 18:27:22 +0000
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.41) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 28 Oct 2020 18:27:22 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UDCt4gUnfcQeWpSX1yljF9tWqxMPYXosm3RAvoP2gTazlsogCVFaYAagfY57FZSc6afU932rzl0rXPbirdDdoMVFk6WprgwieDHyiermzrgv4mhF524Sz8Hzi8ef+iU6/5yTLgCb/NemQ3l0HSIuBit47lAzy6Ld2HjDzf9WT3FT5FocCdfn27Htz7BOjpE/P1S8n9BvZjSj9SxiIyIDLH7mkzibBLmZ/Y6202wdDsXmWMJFsO+wuDWcZI07O/GxaQwc/8Fbmiit+wSP/pzuF25CvXFIimtKY+Sypyxg7Y2cgvAZyXZ8EqjzpimKHsjvji5SAXrotu30QHPUCCdtlg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FBMPHJuyCV1qEvghOQ9mNJcFcIJpFIEfKh71YUrL6qI=;
+ b=GG/N4B8f30I0h9lIxoKp1GoLA2HqAp1t1PVKoO1xQXFeweeG+TcyaCoY+LH/nBFT1m/9qqf7fLJrgUGxuaxnToLBwR3rCYTtqnQ+cbXAGuXCHTr9K0kWeituRcfsEjokgn5S6N+v2JdE9Nmj8Gfq4fcvjCN43+1RTDEuRulhzga7yCFjbE1qBYvNOKghVCmBjfSgy1pz5R6TCYJ+dqcnbPNxqNsE8kPjF87EUDDZ/XAGFLgUjUhqtO5yCTFLgqnEmu2y7J+yeI9fZAYZCKp76uZ3ZMj3hlJNsU7vFNmbC+mi0oSgI1qeqY53W7wS+dP+dk6xtlBvUk1aHGSuHtVSEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3018.namprd12.prod.outlook.com (2603:10b6:5:118::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.24; Wed, 28 Oct
+ 2020 18:27:21 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Wed, 28 Oct 2020
+ 18:27:21 +0000
+Date:   Wed, 28 Oct 2020 15:27:19 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Joe Perches <joe@perches.com>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <target-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH-next 0/4] RDMA: sprintf to sysfs_emit conversions
+Message-ID: <20201028182719.GA2481497@nvidia.com>
+References: <cover.1602122879.git.joe@perches.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <cover.1602122879.git.joe@perches.com>
+X-ClientProxiedBy: MN2PR17CA0033.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::46) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <CAAnLoWnS74dK9Wq4EQ-uzQ0qCRfSK-dLqh+HCais-5qwDjrVzg@mail.gmail.com>
- <CAG48ez3ZXmJ1ndEmZtoieOAm05p+5X7+HXo61LwpuiWFWGWK4w@mail.gmail.com>
- <20201028164936.GC534@brightrain.aerifal.cx> <CAG48ez2rC1OKYMM6eG4Fyq2xvTit6t3PUY0VE8A56EAqNmEVzg@mail.gmail.com>
- <20201028175241.GD534@brightrain.aerifal.cx>
-In-Reply-To: <20201028175241.GD534@brightrain.aerifal.cx>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 28 Oct 2020 19:25:45 +0100
-Message-ID: <CAG48ez3aSn2HSWuO0bhrRSFr_EPqkqshspsqiDZX+aYSpHnjOA@mail.gmail.com>
-Subject: Re: [seccomp] Request for a "enable on execve" mode for Seccomp filters
-To:     Rich Felker <dalias@libc.org>
-Cc:     Camille Mougey <commial@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Denis Efremov <efremov@linux.com>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR17CA0033.namprd17.prod.outlook.com (2603:10b6:208:15e::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 18:27:21 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXqAJ-00APZ2-O2; Wed, 28 Oct 2020 15:27:19 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603909645; bh=FBMPHJuyCV1qEvghOQ9mNJcFcIJpFIEfKh71YUrL6qI=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=npFNQ9zQ2IjKyvaHIWaAEuzLE1Qc3GYbL3qo7p1f/EdYYRO93gJmzM6NTFjSRtFc1
+         1LzOVz0GKXWToKtIcdBjjNiiAZ52pZ8+KrzBctjlUq/qEd+LhW1uy0HFhS8QIPR3PY
+         6yNt/H/b5MPBqsIYftK7ysfNHjDOzC4yCfCKDzTYBUBBsdArMLPyoFsr/0rNwpUNMd
+         BMlW4FeCA85K93z4nRcEgugDcxofFJfIAy+WjeDoRYErK8rAlupWonAGDddAPccY64
+         J1jPnyXOeVGQ+/fpWDAUG0J9c3hr++gH9bGhF9JJn5LOsOzqqBxI702hN6MrZCfOAS
+         bQCjPbRQ6/KjQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 6:52 PM Rich Felker <dalias@libc.org> wrote:
-> On Wed, Oct 28, 2020 at 06:34:56PM +0100, Jann Horn wrote:
-> > On Wed, Oct 28, 2020 at 5:49 PM Rich Felker <dalias@libc.org> wrote:
-> > > On Wed, Oct 28, 2020 at 01:42:13PM +0100, Jann Horn wrote:
-> > > > On Wed, Oct 28, 2020 at 12:18 PM Camille Mougey <commial@gmail.com> wrote:
-> > > > You're just focusing on execve() - I think it's important to keep in
-> > > > mind what happens after execve() for normal, dynamically-linked
-> > > > binaries: The next step is that the dynamic linker runs, and it will
-> > > > poke around in the file system with access() and openat() and fstat(),
-> > > > it will mmap() executable libraries into memory, it will mprotect()
-> > > > some memory regions, it will set up thread-local storage (e.g. using
-> > > > arch_prctl(); even if the process is single-threaded), and so on.
-> > > >
-> > > > The earlier you install the seccomp filter, the more of these steps
-> > > > you have to permit in the filter. And if you want the filter to take
-> > > > effect directly after execve(), the syscalls you'll be forced to
-> > > > permit are sufficient to cobble something together in userspace that
-> > > > effectively does almost the same thing as execve().
-> > >
-> > > I would assume you use SECCOMP_RET_USER_NOTIF to implement policy for
-> > > controlling these operations and allowing only the ones that are valid
-> > > during dynamic linking. This also allows you to defer application of
-> > > the filter until after execve. So unless I'm missing some reason why
-> > > this doesn't work, I think the requested functionality is already
-> > > available.
-> >
-> > Ah, yeah, good point.
-> >
-> > > If you really just want the "activate at exec" behavior, it might be
-> > > possible (depending on how SECCOMP_RET_USER_NOTIF behaves when there's
-> > > no notify fd open; I forget)
-> >
-> > syscall returns -ENOSYS. Yeah, that'd probably do the job. (Even
-> > though it might be a bit nicer if userspace had control over the errno
-> > there, such that it could be EPERM instead... oh well.)
->
-> EPERM is a major bug in current sandbox implementations, so ENOSYS is
-> at least mildly better, but indeed it should be controllable, probably
-> by allowing a code path for the BPF to continue with a jump to a
-> different logic path if the notify listener is missing.
+On Wed, Oct 07, 2020 at 07:36:23PM -0700, Joe Perches wrote:
+> Joe Perches (4):
+>   RDMA: manual changes for sysfs_emit and neatening
+>   RDMA: Convert various random sprintf sysfs _show uses to sysfs_emit
 
-I guess we might be able to expose the listener status through a bit /
-a field in the struct seccomp_data, and then filters could branch on
-that. (And the kernel would run the filter twice if we raced with
-filter detachment.) I don't know whether it would look pretty, but I
-think it should be doable...
+Applied to rdma for-next, thanks
+
+Jason
