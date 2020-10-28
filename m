@@ -2,133 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C78E729DF8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1395329DFC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730976AbgJ1WMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730836AbgJ1WMa (ORCPT
+        id S2404174AbgJ2BEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:04:32 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:40036 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729465AbgJ1WGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:12:30 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187D5C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:12:30 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id h6so799039lfj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l4u4x3wqcamFjVhNhf6xSDsxJDF4ia7ZULeYQGII8mw=;
-        b=ILXuE1FuPImvS0DqL5IMRBIlL6RZds+hGRxbUKX2fa3Jb+p0i0FfZNnJbTmkYt64BZ
-         IkBsZrgp2cHPDVPsSjnIKqN1/P4dJLa0IwrECAb23FygPzfJRHZ/TqvwLlSC+OYLopST
-         mfZn/1onAzkuNMiuX+7fJo9bwL6hP0R8JObt3U6IID7loQ4hX1w7QFMw3tUm6koym7hw
-         EwdWEE7k8ny3zQeSSZLwuWBrKgTCDDAVsOg+Sjxd2sy3jS9T6gTXbCA2TZLmddXiOWUa
-         PG9DUcWHtS11SC1hHzAy/UElkE9HmhHcxPVrEM9fBOj4yvK6Fill0qfq3iJIcENygqOT
-         lu/w==
+        Wed, 28 Oct 2020 18:06:16 -0400
+Received: by mail-oi1-f196.google.com with SMTP id m128so1173923oig.7;
+        Wed, 28 Oct 2020 15:06:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=l4u4x3wqcamFjVhNhf6xSDsxJDF4ia7ZULeYQGII8mw=;
-        b=tHNwVOJYjNew3ciG4GOJW8aOF3D7ZwWXN4kXt4rczTW1OC/k9D7suwJu7P8KV5QjLh
-         Lr2I9gFKEzDRG2ubyBNSV89n/AkUV3fDME6lNA4PoU/be7asgIFIGR3bu3qB0WAPb4HV
-         usaJHJhNCEaIBJiawVyy+GWaojmU2s1grXy9KDE7LAPuupC8LSP+dHQm2yJCgtMJ0Hdx
-         W3yJCqMGXUvvBj0iaR0pFFvlo7CWdNKT+FZdVwVt6smtdOEfFwZpLov8D6Lnx3e6br4n
-         MNGdKW789nFCbV6usCvTZ02PXRnqFDhC37iABRiOmbEZvwtXwtFw0a3ZammnFWTiTK3y
-         3Z2w==
-X-Gm-Message-State: AOAM532w/sAojXgIFLeC/Fs5LRYw3zTIifr+DpjjhnQDqUB7519gkKSM
-        c7AtSkYZgq0Y07rvOTeY5XQLrgYzqZlWxQ==
-X-Google-Smtp-Source: ABdhPJwyi+wHXJ2cOvhZn68n5CD1XcT8uEuh3II80NOAVMoEVT9S3UDw7HAkoUOuK4zYQVybjj4JCA==
-X-Received: by 2002:adf:80c8:: with SMTP id 66mr9768069wrl.415.1603897934446;
-        Wed, 28 Oct 2020 08:12:14 -0700 (PDT)
-Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id u5sm8619996wru.63.2020.10.28.08.12.12
+        bh=C6fODSQ4vr9/XMdY27bSNaiMwe4c2CZ3zY9crW4kgXQ=;
+        b=giofxv4nCdl9rEPf+VGNNkX/x9gpPIykurn5Pf4IcN2WjrYVxfn1KX65CLar3kDq+l
+         JVFeh1R9YyeWGlOLnqrB3FvqSytHgt4Hy5QWPVg7Y0lOSOD7xpyTo3818mnuwV+aqExj
+         CStrD/ZQGl6A/ZIhJKEmkKEfVfFSc/ahn5CXXgGGoBwgYIaxYMWYD4XxUH/K7D0sxPcF
+         tfUNMRc+xYB04T7Te2JnbDxCLmMM1aqEsruUTWvHe3Yn2GW9Vbf+25FAIZmmwlBFISdj
+         sHOgAnLHK2DUT9T0Z+VUjFim/5G+HHGGU4V6pvqoUJFQ+NuELBJGnpC00JfxqGk2jf2T
+         LyXQ==
+X-Gm-Message-State: AOAM530DQLZc5aVEDcKQhDgmX6hqUlTxwtxQuH2EKEROsAxjOOwU/BFK
+        fTSaXS9+Q75pOYRLB6EofCstx1bRqQ==
+X-Google-Smtp-Source: ABdhPJzrQ/sPPiQh1XWKgR+EAUUZ9HS2ocEuKqdVfGw3aS3RICzkEg8FJnv6OaOSMDEQcXRlXFSJlA==
+X-Received: by 2002:a05:6808:198:: with SMTP id w24mr5539933oic.69.1603898917913;
+        Wed, 28 Oct 2020 08:28:37 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s20sm307873oof.39.2020.10.28.08.28.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 08:12:13 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 15:12:10 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Alexandru Stan <amstan@chromium.org>
-Cc:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] backlight: pwm_bl: Fix interpolation
-Message-ID: <20201028151210.7e765hbq2k7i3url@holly.lan>
-References: <20201022050445.930403-1-amstan@chromium.org>
- <20201021220404.v3.3.I4dcea1c90e9da3902d466033aa73351e19e49c49@changeid>
+        Wed, 28 Oct 2020 08:28:37 -0700 (PDT)
+Received: (nullmailer pid 4057539 invoked by uid 1000);
+        Wed, 28 Oct 2020 15:28:35 -0000
+Date:   Wed, 28 Oct 2020 10:28:35 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 08/52] dt-bindings: memory: tegra20: emc: Document
+ mfd-simple compatible and statistics sub-device
+Message-ID: <20201028152835.GB4051913@bogus>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-9-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201021220404.v3.3.I4dcea1c90e9da3902d466033aa73351e19e49c49@changeid>
+In-Reply-To: <20201025221735.3062-9-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 10:04:45PM -0700, Alexandru Stan wrote:
-> The previous behavior was a little unexpected, its properties/problems:
-> 1. It was designed to generate strictly increasing values (no repeats)
-> 2. It had quantization errors when calculating step size. Resulting in
-> unexpected jumps near the end of some segments.
+On Mon, Oct 26, 2020 at 01:16:51AM +0300, Dmitry Osipenko wrote:
+> External Memory Controller can gather various hardware statistics that
+> are intended to be used for debugging purposes and for dynamic frequency
+> scaling of memory bus.
 > 
-> Example settings:
-> 	brightness-levels = <0 1 2 4 8 16 32 64 128 256>;
-> 	num-interpolated-steps = <16>;
+> Document the new mfd-simple compatible and EMC statistics sub-device.
+
+It's simple-mfd.
+
+That should only be used if the child has no dependencies on the parent 
+node (and driver).
+
+> The subdev contains EMC DFS OPP table and interconnect paths to be used
+> for dynamic scaling of system's memory bandwidth based on EMC utilization
+> statistics.
 > 
-> Whenever num-interpolated-steps was larger than the distance
-> between 2 consecutive brightness levels the table would get really
-> discontinuous. The slope of the interpolation would stick with
-> integers only and if it was 0 the whole line segment would get skipped.
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../memory-controllers/nvidia,tegra20-emc.txt | 43 +++++++++++++++++--
+>  1 file changed, 40 insertions(+), 3 deletions(-)
 > 
-> The distances between 1 2 4 and 8 would be 1 (property #1 fighting us),
-> and only starting with 16 it would start to interpolate properly.
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+> index 8d09b228ac42..382aabcd6952 100644
+> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+> @@ -4,7 +4,7 @@ Properties:
+>  - name : Should be emc
+>  - #address-cells : Should be 1
+>  - #size-cells : Should be 0
+> -- compatible : Should contain "nvidia,tegra20-emc".
+> +- compatible : Should contain "nvidia,tegra20-emc" and "simple-mfd".
+>  - reg : Offset and length of the register set for the device
+>  - nvidia,use-ram-code : If present, the sub-nodes will be addressed
+>    and chosen using the ramcode board selector. If omitted, only one
+> @@ -17,7 +17,8 @@ Properties:
+>  - core-supply: Phandle of voltage regulator of the SoC "core" power domain.
+>  - operating-points-v2: See ../bindings/opp/opp.txt for details.
+>  
+> -Child device nodes describe the memory settings for different configurations and clock rates.
+> +Child device nodes describe the memory settings for different configurations and clock rates,
+> +as well as EMC activity statistics collection sub-device.
+>  
+>  Example:
+>  
+> @@ -31,17 +32,34 @@ Example:
+>  		...
+>  	};
+>  
+> +	emc_bw_dfs_opp_table: emc_opp_table1 {
+> +		compatible = "operating-points-v2";
+> +
+> +		opp@36000000 {
+> +			opp-hz = /bits/ 64 <36000000>;
+> +			opp-peak-kBps = <144000>;
+> +		};
+> +		...
+> +	};
+> +
+>  	memory-controller@7000f400 {
+>  		#address-cells = < 1 >;
+>  		#size-cells = < 0 >;
+>  		#interconnect-cells = < 0 >;
+> -		compatible = "nvidia,tegra20-emc";
+> +		compatible = "nvidia,tegra20-emc", "simple-mfd";
+>  		reg = <0x7000f400 0x400>;
+>  		interrupts = <0 78 0x04>;
+>  		clocks = <&tegra_car TEGRA20_CLK_EMC>;
+>  		nvidia,memory-controller = <&mc>;
+>  		core-supply = <&core_vdd_reg>;
+>  		operating-points-v2 = <&emc_icc_dvfs_opp_table>;
+> +
+> +		emc-stats {
+> +			compatible = "nvidia,tegra20-emc-statistics";
+> +			operating-points-v2 = <&emc_bw_dfs_opp_table>;
+> +			interconnects = <&mc TEGRA20_MC_MPCORER &emc>;
+> +			interconnect-names = "cpu";
+> +		};
+>  	}
+>  
+>  
+> @@ -120,3 +138,22 @@ Properties:
+>  						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+>  						 0 0 0 0 >;
+>  		};
+> +
+> +
+> +
+> +Embedded Memory Controller statistics gathering sub-device
+> +
+> +EMC statistics subdev gathers information about hardware utilization
+> +which is intended to be used for debugging purposes and for dynamic
+> +frequency scaling based on the collected stats.
+> +
+> +Properties:
+> +- name : Should be emc-stats.
+> +- compatible : Should contain "nvidia,tegra20-emc-statistics".
+> +- operating-points-v2: See ../bindings/opp/opp.txt for details.
+> +- interconnects: Should contain entries for memory clients sitting on
+> +                 MC->EMC memory interconnect path.
+> +- interconnect-names: Should include name of the interconnect path for each
+> +                      interconnect entry. Consult TRM documentation for
+> +                      information about available memory clients, see MEMORY
+> +                      CONTROLLER section.
+> -- 
+> 2.27.0
 > 
-> Property #1 is not enough. The goal here is more than just monotonically
-> increasing. We should still care about the shape of the curve. Repeated
-> points might be desired if we're in the part of the curve where we want
-> to go slow (aka slope near 0).
-> 
-> Problem #2 is plainly a bug. Imagine if the 64 entry was 63 instead,
-> the calculated slope on the 32-63 segment will be almost half as it
-> should be.
-> 
-> The most expected and simplest algorithm for interpolation is linear
-> interpolation, which would handle both problems.
-> Let's just implement that!
-> 
-> Take pairs of points from the brightness-levels array and linearly
-> interpolate between them. On the X axis (what userspace sees) we'll
-> now have equally sized intervals (num-interpolated-steps sized,
-> as opposed to before where we were at the mercy of quantization).
-> 
-> END
-
-INTERESTING.
-
-I guess this a copy 'n paste error from some internal log book?
-Better removed... but I won't lose sleep over it.
-
-
-> Signed-off-by: Alexandru Stan <amstan@chromium.org>
-
-I've waited a bit to see how strong the feelings were w.r.t. getting rid
-of the division from the table initialization. It was something I was
-aware of during an earlier review but it was below my personal nitpicking
-threshold (which could be badly calibrated... hence waiting). However
-it's all been quiet so:
-
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-
-
-Daniel.
