@@ -2,110 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E084C29E226
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:11:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A628F29E25B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729686AbgJ2CLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:11:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726934AbgJ1VhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:37:23 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F04F624827;
-        Wed, 28 Oct 2020 20:59:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603918763;
-        bh=uhOhRHxQVfGw7MyAyAJTdGF3H9kCy/1BltY5AjTtSN0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=loooxR5XyCI1oAjmIJHBwJpYv3LJvTxBzAr3RNF9wwefMD6/PYs7CotHJqnLyHWfP
-         iJWhdiBHD8kIx56QNV6L8kXzavPKJe0TMhRs3XZhpvdyH+xqG7bUw64lnu5IOM7ejT
-         MMYu3qltUG0hDSkGZwhklk03zwVcULaE3bL3uyxI=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id A1C2935229CE; Wed, 28 Oct 2020 13:59:22 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 13:59:22 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qian Cai <cai@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/smp: Move rcu_cpu_starting() earlier
-Message-ID: <20201028205922.GF3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201028182334.13466-1-cai@redhat.com>
+        id S1728140AbgJ2CN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726794AbgJ1VgL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:36:11 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E884C0613D1;
+        Wed, 28 Oct 2020 14:36:11 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id bn26so978011ejb.6;
+        Wed, 28 Oct 2020 14:36:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dOPkG51cqcEG4Loikdan84KA22neIPGBmd1iXgPOKvU=;
+        b=iDIv2msWfduRF2KUPmTlwpSPN7p2DRaRX3aZ5hTffZ/cqBxD9HXlc+D7ru4zK7oEdE
+         GK/1YB95Caxv7AYmph3nuO8X/nCYcRIVwU5YLPwJLsFr5LlcCwNHpD8TuuBGCiDBokPa
+         6gsvmVLuYS4RxWuUUatoEfqi3145ApZYC4n0n8l2WQfkbS/Sqz/dJtLsk0zvxOzEWo/O
+         Jq00xGMnE/sI/maF54/cVDUZdzJDSJEMP8kKq9bdMCljNkTDA8FJVa1VvGxvhOXVcmrS
+         icg8DaoKJzfTtIfUHRGnLRSJPmFA3k2Yx+PTmsfgHtxAnAX0xlZFs8Fp23GLWlQYNWUF
+         EJVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dOPkG51cqcEG4Loikdan84KA22neIPGBmd1iXgPOKvU=;
+        b=fIY7SJptVH+0TpRdqadIiWaYY3taw30RUFmsSkUia7fDLMBRuBlFvjVvmh4SzowCN4
+         BKq4SiGbpc1uCMf4K43c0m6AuOxXeUA0UfHOqb0oJvktJNoKtyhL4t1ooJjGrudL8n30
+         ta9yys7ycANaOk8Bt+cIQW21A6FdXGAskQmO0B4go1gucfjk2SwCAh1MKxESO8j2w8M1
+         hNa0Zx8caEgxIFDQtua69IZgfjppHKc98tbswNuiwTU9YVgWyLnHnxILJe8GDW1dpia3
+         sUrh6L12R6PxX+vzGm1D3TQjs2Q6A1EoobI1Agxb3yfRpVYNKhp7qmJeVi5Uc6GEKcM1
+         4ciw==
+X-Gm-Message-State: AOAM5323HKhgBEBfXWdHvpGUv+1HWy8i//g7HnuBOSnjCPTWgjwniPAF
+        /bbNsXfuYZmcWtl+6q3JF2nNei2LBR0=
+X-Google-Smtp-Source: ABdhPJz8U5e7kOuZlcVkoCb+Fk2dIbgZSZkC0ZmwrNSPTAHUTS1jsLlYq8a778c/jEL/XkeyVB5Umw==
+X-Received: by 2002:a05:6512:3fa:: with SMTP id n26mr319207lfq.199.1603919313380;
+        Wed, 28 Oct 2020 14:08:33 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:a315:5445:5300:a6d2:8b6b:ef28:12ae])
+        by smtp.googlemail.com with ESMTPSA id x6sm67712lfn.185.2020.10.28.14.08.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 14:08:32 -0700 (PDT)
+From:   =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
+To:     kgene@kernel.org, krzk@kernel.org, alim.akhtar@samsung.com
+Cc:     robh+dt@kernel.org, a.kesavan@samsung.com,
+        naveenkrishna.ch@gmail.com, thomas.ab@samsung.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
+Subject: [PATCH] arm64: dts: exynos: Fix reboot/poweroff issues on Exynos7
+Date:   Wed, 28 Oct 2020 22:08:13 +0100
+Message-Id: <20201028210813.49874-1-pawel.mikolaj.chmiel@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028182334.13466-1-cai@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 02:23:34PM -0400, Qian Cai wrote:
-> The call to rcu_cpu_starting() in start_secondary() is not early enough
-> in the CPU-hotplug onlining process, which results in lockdep splats as
-> follows:
-> 
->  WARNING: suspicious RCU usage
->  -----------------------------
->  kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
-> 
->  other info that might help us debug this:
-> 
->  RCU used illegally from offline CPU!
->  rcu_scheduler_active = 1, debug_locks = 1
->  no locks held by swapper/1/0.
-> 
->  Call Trace:
->  dump_stack+0xec/0x144 (unreliable)
->  lockdep_rcu_suspicious+0x128/0x14c
->  __lock_acquire+0x1060/0x1c60
->  lock_acquire+0x140/0x5f0
->  _raw_spin_lock_irqsave+0x64/0xb0
->  clockevents_register_device+0x74/0x270
->  register_decrementer_clockevent+0x94/0x110
->  start_secondary+0x134/0x800
->  start_secondary_prolog+0x10/0x14
-> 
-> This is avoided by moving the call to rcu_cpu_starting up near the
-> beginning of the start_secondary() function. Note that the
-> raw_smp_processor_id() is required in order to avoid calling into
-> lockdep before RCU has declared the CPU to be watched for readers.
-> 
-> Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
-> Signed-off-by: Qian Cai <cai@redhat.com>
+In vendor sources for Exynos 7420, psci is not used to reboot or
+poweroff device. Instead we should use syscon reboot/poweroff.
+Previously it was not possible to poweroff (no syscon poweroff node) or
+reboot (because it was handled by psci and this way is not working for
+Exynos).
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Fixes: fb026cb65247 ("arm64: dts: Add reboot node for exynos7")
+Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
+Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
+---
+ arch/arm64/boot/dts/exynos/exynos7.dtsi | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-> ---
->  arch/powerpc/kernel/smp.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> index 3c6b9822f978..8c2857cbd960 100644
-> --- a/arch/powerpc/kernel/smp.c
-> +++ b/arch/powerpc/kernel/smp.c
-> @@ -1393,13 +1393,14 @@ static void add_cpu_to_masks(int cpu)
->  /* Activate a secondary processor. */
->  void start_secondary(void *unused)
->  {
-> -	unsigned int cpu = smp_processor_id();
-> +	unsigned int cpu = raw_smp_processor_id();
->  
->  	mmgrab(&init_mm);
->  	current->active_mm = &init_mm;
->  
->  	smp_store_cpu_info(cpu);
->  	set_dec(tb_ticks_per_jiffy);
-> +	rcu_cpu_starting(cpu);
->  	preempt_disable();
->  	cpu_callin_map[cpu] = 1;
->  
-> -- 
-> 2.28.0
-> 
+diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+index 959918f4ca45..47d54c369d03 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+@@ -117,8 +117,10 @@ cpu_atlas3: cpu@3 {
+ 	};
+ 
+ 	psci {
+-		compatible = "arm,psci-0.2";
++		compatible = "arm,psci";
+ 		method = "smc";
++		cpu_off = <0x84000002>;
++		cpu_on = <0xC4000003>;
+ 	};
+ 
+ 	soc: soc@0 {
+@@ -552,6 +554,13 @@ pmu_system_controller: system-controller@105c0000 {
+ 			compatible = "samsung,exynos7-pmu", "syscon";
+ 			reg = <0x105c0000 0x5000>;
+ 
++			poweroff: syscon-poweroff {
++				compatible = "syscon-poweroff";
++				regmap = <&pmu_system_controller>;
++				offset = <0x330C>; /* PS_HOLD_CONTROL */
++				mask = <0x5200>; /* reset value */
++			};
++
+ 			reboot: syscon-reboot {
+ 				compatible = "syscon-reboot";
+ 				regmap = <&pmu_system_controller>;
+-- 
+2.27.0
+
