@@ -2,312 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D5129D2DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE94029D4DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgJ1VhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:37:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47823 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726852AbgJ1VhD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:37:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603921021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3PN8li90MQEODpG7uKAlxNFFjh3wZGx6qB1VA0YAdTY=;
-        b=STLAEU3XcaJALN5ShQPxpH6YHzJS44qfrjxl+4nEqf4KfTjKak7XAzSwRYuwM1v3B3PS8W
-        C+ULVCK2eJkh1CA1G92v5v1urHJZ0KNs0WmaLHwpEm96JmyNXFGtg/dKfAdgOv4cT45RDR
-        XHsDdq76tMtocVM2z9m4SISQZRaYeFA=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-ljAf1TDSMFSGLPWBF0yvxg-1; Wed, 28 Oct 2020 16:35:13 -0400
-X-MC-Unique: ljAf1TDSMFSGLPWBF0yvxg-1
-Received: by mail-ej1-f71.google.com with SMTP id x12so283189eju.22
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 13:35:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3PN8li90MQEODpG7uKAlxNFFjh3wZGx6qB1VA0YAdTY=;
-        b=DaoJGVrRdCzzPq23Nr6a5VtYLZjVzqEma/z0qbxp7wEG1xgBlR5P1PuzPX+1KLbAfJ
-         qjObnLM1uwSrm3NY7q/oz/3bzTx/S6DxqPuWOZMOAURL4ZVXXg4v2g9V3vixEneIGbDG
-         SPFzCmTVcAud93Da3g+usaIZWQTATHbUS8z4S23K7H2AlChijdDdaHeTxl7TYzEmIZAg
-         0KMyXs9cqJ4Nivb7UtksnJdJdhsupweWL+XTKj5AfVwIQmkDcGUfozszSdtaf0ySWI8W
-         y2RzCLe0kGXecpaHy9Fhbx918Q4ec9hakK8XzT6eh/LawFjeB2LH4RYpc5laZrADC7+E
-         Aouw==
-X-Gm-Message-State: AOAM530oJAsswzJgQV5kWwFSNoRXtn77a3JNUbt2HYTqlnTqhDo/47uq
-        0wwFScoJNQz5thevVU8T+2+fSSOyjlHgqHrgQwa7Df5GJ5imRyZgUm5yyxEm+0011kPViOZ8hYn
-        SWCpxTH0QnkG6sdSaYO1ehZyT
-X-Received: by 2002:a50:fd17:: with SMTP id i23mr727358eds.50.1603917312284;
-        Wed, 28 Oct 2020 13:35:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxQpVmMC85/uYP4ywhmAg3+8R38d2cO03kqeV9fRLbZDvJODVlNFcG/q/XwN/ngYqbeqRwSnQ==
-X-Received: by 2002:a50:fd17:: with SMTP id i23mr727328eds.50.1603917311967;
-        Wed, 28 Oct 2020 13:35:11 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id a1sm421062edk.52.2020.10.28.13.35.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 13:35:11 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] Input: i8042 - Prevent intermixing i8042 commands
-To:     Raul E Rangel <rrangel@chromium.org>, linux-input@vger.kernel.org
-Cc:     dmitry.torokhov@gmail.com, Shirish.S@amd.com,
-        Andy Shevchenko <andy@infradead.org>,
-        Dan Murphy <dmurphy@ti.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        "Lee, Chun-Yi" <jlee@suse.com>, Pavel Machek <pavel@ucw.cz>,
-        Rajat Jain <rajatja@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-References: <20200827144112.v2.1.I6981f9a9f0c12e60f8038f3b574184f8ffc1b9b5@changeid>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <00524d2b-b734-ffd4-0d99-e8cbda8510b3@redhat.com>
-Date:   Wed, 28 Oct 2020 21:35:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1728452AbgJ1VzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:55:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728282AbgJ1VwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:52:25 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61A2A24801;
+        Wed, 28 Oct 2020 20:36:28 +0000 (UTC)
+Date:   Wed, 28 Oct 2020 16:36:26 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [RFC][PATCH 1/2 v2] ftrace/x86: Allow for arguments to be
+ passed in to REGS by default
+Message-ID: <20201028163626.20e651b1@oasis.local.home>
+In-Reply-To: <20201028112916.50bcbc69@oasis.local.home>
+References: <20201028131542.963014814@goodmis.org>
+        <20201028131909.738751907@goodmis.org>
+        <20201028102502.28095c95@oasis.local.home>
+        <20201028112916.50bcbc69@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200827144112.v2.1.I6981f9a9f0c12e60f8038f3b574184f8ffc1b9b5@changeid>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 28 Oct 2020 11:29:16 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Quick self intro: I have take over drivers/platform/x86
-maintainership from Andy; and I'm working my way through
-the backlog of old patches in patchwork:
-https://patchwork.kernel.org/project/platform-driver-x86/list/
+> Then kprobes could just create its own pt_regs, fill in all the data
+> from ftrace_regs and then fill the rest with zeros or possibly whatever
+> the values currently are (does it really matter what those registers
+> are?), including flags.
 
-On 8/27/20 10:41 PM, Raul E Rangel wrote:
-> The i8042_mutex must be held by writers of the AUX and KBD ports, as
-> well as users of i8042_command. There were a lot of users of
-> i8042_command that were not calling i8042_lock_chip/i8042_unlock_chip.
-> This resulted in i8042_commands being issues in between PS/2
-> transactions.
-> 
-> This change moves the mutex lock into i8042_command and removes the
-> burden of locking the mutex from the callers.
-> 
-> It is expected that the i8042_mutex is locked before calling
-> i8042_aux_write or i8042_kbd_write. This is currently done by the PS/2
-> layer via ps2_begin_command and ps2_end_command. Other modules
-> (serio_raw) do not currently lock the mutex, so there is still a
-> possibility for intermixed commands.
-> 
-> Link: https://lore.kernel.org/linux-input/CAHQZ30ANTeM-pgdYZ4AbgxsnevBJnJgKZ1Kg+Uy8oSXZUvz=og@mail.gmail.com
-> Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+Here's a proof of concept patch. It passes all the kprobe self tests in
+the ftracetest suite. This is just a proof of concept, and I already
+know of a couple of subtle bugs that are easy to fix. But this shows
+the general idea.
 
-Patch looks good to me, you can add my:
+(this is based on my ftrace/core branch)
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+-- Steve
 
-(for both the drivers/platform/x86 bits and in general).
-
-Dmitry, feel free to merge this through the input tree, I don't
-expect the touched pdx86 parts to see any changes this cycle.
-
-Regards,
-
-Hans
-
-
-
-
-
-> ---
-> Tested this on a device with only a PS/2 keyboard. I was able to do
-> 1200+ suspend/resume cycles.
-> 
-> Also tested this on a device with a PS/2 keyboard and a PS/2 mouse.
-> I was able to do 250+ iterations with out problems.
-> 
-> Changes in v2:
-> - Fixed bad indent
-> - Added Link: tag
-> - Removed left over rc variable
-> 
->  drivers/input/serio/i8042.c         | 29 ++++++++++++++---------------
->  drivers/leds/leds-clevo-mail.c      |  9 ---------
->  drivers/platform/x86/acer-wmi.c     |  2 --
->  drivers/platform/x86/amilo-rfkill.c |  6 +-----
->  include/linux/i8042.h               | 10 ----------
->  5 files changed, 15 insertions(+), 41 deletions(-)
-> 
-> diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
-> index 0dddf273afd94..65ca6b47f41e8 100644
-> --- a/drivers/input/serio/i8042.c
-> +++ b/drivers/input/serio/i8042.c
-> @@ -137,8 +137,7 @@ static DEFINE_SPINLOCK(i8042_lock);
->  
->  /*
->   * Writers to AUX and KBD ports as well as users issuing i8042_command
-> - * directly should acquire i8042_mutex (by means of calling
-> - * i8042_lock_chip() and i8042_unlock_ship() helpers) to ensure that
-> + * directly should acquire i8042_mutex to ensure that
->   * they do not disturb each other (unfortunately in many i8042
->   * implementations write to one of the ports will immediately abort
->   * command that is being processed by another port).
-> @@ -173,18 +172,6 @@ static irqreturn_t i8042_interrupt(int irq, void *dev_id);
->  static bool (*i8042_platform_filter)(unsigned char data, unsigned char str,
->  				     struct serio *serio);
->  
-> -void i8042_lock_chip(void)
-> -{
-> -	mutex_lock(&i8042_mutex);
-> -}
-> -EXPORT_SYMBOL(i8042_lock_chip);
-> -
-> -void i8042_unlock_chip(void)
-> -{
-> -	mutex_unlock(&i8042_mutex);
-> -}
-> -EXPORT_SYMBOL(i8042_unlock_chip);
-> -
->  int i8042_install_filter(bool (*filter)(unsigned char data, unsigned char str,
->  					struct serio *serio))
->  {
-> @@ -343,10 +330,14 @@ int i8042_command(unsigned char *param, int command)
->  	unsigned long flags;
->  	int retval;
->  
-> +	mutex_lock(&i8042_mutex);
-> +
->  	spin_lock_irqsave(&i8042_lock, flags);
->  	retval = __i8042_command(param, command);
->  	spin_unlock_irqrestore(&i8042_lock, flags);
->  
-> +	mutex_unlock(&i8042_mutex);
-> +
->  	return retval;
->  }
->  EXPORT_SYMBOL(i8042_command);
-> @@ -379,10 +370,18 @@ static int i8042_kbd_write(struct serio *port, unsigned char c)
->  static int i8042_aux_write(struct serio *serio, unsigned char c)
->  {
->  	struct i8042_port *port = serio->port_data;
-> +	unsigned long flags;
-> +	int retval = 0;
-> +
-> +	spin_lock_irqsave(&i8042_lock, flags);
->  
-> -	return i8042_command(&c, port->mux == -1 ?
-> +	retval = __i8042_command(&c, port->mux == -1 ?
->  					I8042_CMD_AUX_SEND :
->  					I8042_CMD_MUX_SEND + port->mux);
-> +
-> +	spin_unlock_irqrestore(&i8042_lock, flags);
-> +
-> +	return retval;
->  }
->  
->  
-> diff --git a/drivers/leds/leds-clevo-mail.c b/drivers/leds/leds-clevo-mail.c
-> index f512e99b976b1..6c3d7e54f95cf 100644
-> --- a/drivers/leds/leds-clevo-mail.c
-> +++ b/drivers/leds/leds-clevo-mail.c
-> @@ -95,17 +95,12 @@ MODULE_DEVICE_TABLE(dmi, clevo_mail_led_dmi_table);
->  static void clevo_mail_led_set(struct led_classdev *led_cdev,
->  				enum led_brightness value)
->  {
-> -	i8042_lock_chip();
-> -
->  	if (value == LED_OFF)
->  		i8042_command(NULL, CLEVO_MAIL_LED_OFF);
->  	else if (value <= LED_HALF)
->  		i8042_command(NULL, CLEVO_MAIL_LED_BLINK_0_5HZ);
->  	else
->  		i8042_command(NULL, CLEVO_MAIL_LED_BLINK_1HZ);
-> -
-> -	i8042_unlock_chip();
-> -
->  }
->  
->  static int clevo_mail_led_blink(struct led_classdev *led_cdev,
-> @@ -114,8 +109,6 @@ static int clevo_mail_led_blink(struct led_classdev *led_cdev,
->  {
->  	int status = -EINVAL;
->  
-> -	i8042_lock_chip();
-> -
->  	if (*delay_on == 0 /* ms */ && *delay_off == 0 /* ms */) {
->  		/* Special case: the leds subsystem requested us to
->  		 * chose one user friendly blinking of the LED, and
-> @@ -142,8 +135,6 @@ static int clevo_mail_led_blink(struct led_classdev *led_cdev,
->  		       *delay_on, *delay_off);
->  	}
->  
-> -	i8042_unlock_chip();
-> -
->  	return status;
->  }
->  
-> diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-> index 60c18f21588dd..6cb6f800503b2 100644
-> --- a/drivers/platform/x86/acer-wmi.c
-> +++ b/drivers/platform/x86/acer-wmi.c
-> @@ -1044,9 +1044,7 @@ static acpi_status WMID_set_u32(u32 value, u32 cap)
->  			return AE_BAD_PARAMETER;
->  		if (quirks->mailled == 1) {
->  			param = value ? 0x92 : 0x93;
-> -			i8042_lock_chip();
->  			i8042_command(&param, 0x1059);
-> -			i8042_unlock_chip();
->  			return 0;
->  		}
->  		break;
-> diff --git a/drivers/platform/x86/amilo-rfkill.c b/drivers/platform/x86/amilo-rfkill.c
-> index 493e169c8f615..c981c6e07ff94 100644
-> --- a/drivers/platform/x86/amilo-rfkill.c
-> +++ b/drivers/platform/x86/amilo-rfkill.c
-> @@ -28,12 +28,8 @@
->  static int amilo_a1655_rfkill_set_block(void *data, bool blocked)
->  {
->  	u8 param = blocked ? A1655_WIFI_OFF : A1655_WIFI_ON;
-> -	int rc;
->  
-> -	i8042_lock_chip();
-> -	rc = i8042_command(&param, A1655_WIFI_COMMAND);
-> -	i8042_unlock_chip();
-> -	return rc;
-> +	return i8042_command(&param, A1655_WIFI_COMMAND);
->  }
->  
->  static const struct rfkill_ops amilo_a1655_rfkill_ops = {
-> diff --git a/include/linux/i8042.h b/include/linux/i8042.h
-> index 0261e2fb36364..1c081081c161d 100644
-> --- a/include/linux/i8042.h
-> +++ b/include/linux/i8042.h
-> @@ -55,8 +55,6 @@ struct serio;
->  
->  #if defined(CONFIG_SERIO_I8042) || defined(CONFIG_SERIO_I8042_MODULE)
->  
-> -void i8042_lock_chip(void);
-> -void i8042_unlock_chip(void);
->  int i8042_command(unsigned char *param, int command);
->  int i8042_install_filter(bool (*filter)(unsigned char data, unsigned char str,
->  					struct serio *serio));
-> @@ -65,14 +63,6 @@ int i8042_remove_filter(bool (*filter)(unsigned char data, unsigned char str,
->  
->  #else
->  
-> -static inline void i8042_lock_chip(void)
-> -{
-> -}
-> -
-> -static inline void i8042_unlock_chip(void)
-> -{
-> -}
-> -
->  static inline int i8042_command(unsigned char *param, int command)
->  {
->  	return -ENODEV;
-> 
-
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 7101ac64bb20..b4d2b1fcfd09 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -167,6 +167,7 @@ config X86
+ 	select HAVE_DMA_CONTIGUOUS
+ 	select HAVE_DYNAMIC_FTRACE
+ 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
++	select HAVE_DYNAMIC_FTRACE_WITH_ARGS	if X86_64
+ 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ 	select HAVE_EBPF_JIT
+ 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
+index 84b9449be080..0b751f94c7ec 100644
+--- a/arch/x86/include/asm/ftrace.h
++++ b/arch/x86/include/asm/ftrace.h
+@@ -49,6 +49,10 @@ struct dyn_arch_ftrace {
+ 
+ #define FTRACE_GRAPH_TRAMP_ADDR FTRACE_GRAPH_ADDR
+ 
++#ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
++#define ftrace_valid_regs(regs) (((struct pt_regs *)(regs))->cs != 0)
++#endif
++
+ #endif /*  CONFIG_DYNAMIC_FTRACE */
+ #endif /* __ASSEMBLY__ */
+ #endif /* CONFIG_FUNCTION_TRACER */
+diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
+index ac3d5f22fe64..f8833fe0ff44 100644
+--- a/arch/x86/kernel/ftrace_64.S
++++ b/arch/x86/kernel/ftrace_64.S
+@@ -140,16 +140,27 @@ SYM_FUNC_START(ftrace_caller)
+ 	/* save_mcount_regs fills in first two parameters */
+ 	save_mcount_regs
+ 
++	/* Stack - skipping return address and flags */
++	leaq MCOUNT_REG_SIZE+8(%rsp), %rcx
++	movq %rcx, RSP(%rsp)
++
+ SYM_INNER_LABEL(ftrace_caller_op_ptr, SYM_L_GLOBAL)
+ 	/* Load the ftrace_ops into the 3rd parameter */
+ 	movq function_trace_op(%rip), %rdx
+ 
+-	/* regs go into 4th parameter (but make it NULL) */
+-	movq $0, %rcx
++	/* regs go into 4th parameter */
++	leaq (%rsp), %rcx
++
++	/* Only ops with REGS flag set should have CS set */
++	movq $0, CS(%rsp)
+ 
+ SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
+ 	call ftrace_stub
+ 
++	/* Handlers can change the RIP */
++	movq RIP(%rsp), %rax
++	movq %rax, MCOUNT_REG_SIZE(%rsp)
++
+ 	restore_mcount_regs
+ 
+ 	/*
+diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+index a40a6cdfcca3..c3a5b2675397 100644
+--- a/arch/x86/kernel/kprobes/ftrace.c
++++ b/arch/x86/kernel/kprobes/ftrace.c
+@@ -12,18 +12,42 @@
+ 
+ #include "common.h"
+ 
++/*
++ * Note, this is just a proof of concept, ftrace_regs will
++ * be of its own type (struct ftrace_regs) and this function
++ * will be architecture dependent, to fill pt_regs from
++ * the ftrace_regs structure. But for now, we simply just copy it.
++ */
++static void arch_ftrace_fill_regs(struct pt_regs *regs,
++				  struct pt_regs *ftrace_regs)
++{
++	*regs = *ftrace_regs;
++	local_save_flags(regs->flags);
++	regs->cs = __KERNEL_CS;
++}
++
++static void arch_regs_fill_ftrace(struct pt_regs *ftrace_regs,
++				  struct pt_regs *regs)
++{
++	*ftrace_regs = *regs;
++}
++
+ /* Ftrace callback handler for kprobes -- called under preepmt disabed */
+ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+-			   struct ftrace_ops *ops, struct pt_regs *regs)
++			   struct ftrace_ops *ops,
++			   struct pt_regs *ftrace_regs)
+ {
+ 	struct kprobe *p;
+ 	struct kprobe_ctlblk *kcb;
++	struct pt_regs regs;
+ 	int bit;
+ 
+ 	bit = ftrace_test_recursion_trylock();
+ 	if (bit < 0)
+ 		return;
+ 
++	arch_ftrace_fill_regs(&regs, ftrace_regs);
++
+ 	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+@@ -33,23 +57,23 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	if (kprobe_running()) {
+ 		kprobes_inc_nmissed_count(p);
+ 	} else {
+-		unsigned long orig_ip = regs->ip;
+-		/* Kprobe handler expects regs->ip = ip + 1 as breakpoint hit */
+-		regs->ip = ip + sizeof(kprobe_opcode_t);
++		unsigned long orig_ip = regs.ip;
++		/* Kprobe handler expects regs.ip = ip + 1 as breakpoint hit */
++		regs.ip = ip + sizeof(kprobe_opcode_t);
+ 
+ 		__this_cpu_write(current_kprobe, p);
+ 		kcb->kprobe_status = KPROBE_HIT_ACTIVE;
+-		if (!p->pre_handler || !p->pre_handler(p, regs)) {
++		if (!p->pre_handler || !p->pre_handler(p, &regs)) {
+ 			/*
+-			 * Emulate singlestep (and also recover regs->ip)
++			 * Emulate singlestep (and also recover regs.ip)
+ 			 * as if there is a 5byte nop
+ 			 */
+-			regs->ip = (unsigned long)p->addr + MCOUNT_INSN_SIZE;
++			regs.ip = (unsigned long)p->addr + MCOUNT_INSN_SIZE;
+ 			if (unlikely(p->post_handler)) {
+ 				kcb->kprobe_status = KPROBE_HIT_SSDONE;
+-				p->post_handler(p, regs, 0);
++				p->post_handler(p, &regs, 0);
+ 			}
+-			regs->ip = orig_ip;
++			regs.ip = orig_ip;
+ 		}
+ 		/*
+ 		 * If pre_handler returns !0, it changes regs->ip. We have to
+@@ -57,6 +81,7 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		 */
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
++	arch_regs_fill_ftrace(ftrace_regs, &regs);
+ out:
+ 	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 8dde9c17aaa5..fbc095393f9b 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -90,6 +90,10 @@ ftrace_enable_sysctl(struct ctl_table *table, int write,
+ 
+ struct ftrace_ops;
+ 
++#ifndef ftrace_valid_regs
++#define ftrace_valid_regs(regs) ((regs) != NULL)
++#endif
++
+ typedef void (*ftrace_func_t)(unsigned long ip, unsigned long parent_ip,
+ 			      struct ftrace_ops *op, struct pt_regs *regs);
+ 
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 9303881aac84..9b552529c6a0 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1020,12 +1020,18 @@ static struct kprobe *alloc_aggr_kprobe(struct kprobe *p)
+ #ifdef CONFIG_KPROBES_ON_FTRACE
+ static struct ftrace_ops kprobe_ftrace_ops __read_mostly = {
+ 	.func = kprobe_ftrace_handler,
++#ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
+ 	.flags = FTRACE_OPS_FL_SAVE_REGS,
++#endif
+ };
+ 
+ static struct ftrace_ops kprobe_ipmodify_ops __read_mostly = {
+ 	.func = kprobe_ftrace_handler,
++#ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
++	.flags = FTRACE_OPS_FL_IPMODIFY,
++#else
+ 	.flags = FTRACE_OPS_FL_SAVE_REGS | FTRACE_OPS_FL_IPMODIFY,
++#endif
+ };
+ 
+ static int kprobe_ipmodify_enabled;
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index a4020c0b4508..6a5b7a818d7d 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -31,6 +31,15 @@ config HAVE_DYNAMIC_FTRACE_WITH_REGS
+ config HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ 	bool
+ 
++config HAVE_DYNAMIC_FTRACE_WITH_ARGS
++	bool
++	help
++	 If this is set, then arguments and stack can be found from
++	 the pt_regs passed into the function callback regs parameter
++	 by default, even without setting the REGS flag in the ftrace_ops.
++	 This allows for use of regs_get_kernel_argument() and
++	 kernel_stack_pointer().
++
+ config HAVE_FTRACE_MCOUNT_RECORD
+ 	bool
+ 	help
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 2dcae8251104..d7875cbc17cd 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -1484,7 +1484,8 @@ ftrace_ops_test(struct ftrace_ops *ops, unsigned long ip, void *regs)
+ 	 * that wants regs, may be called without them. We can not
+ 	 * allow that handler to be called if regs is NULL.
+ 	 */
+-	if (regs == NULL && (ops->flags & FTRACE_OPS_FL_SAVE_REGS))
++	if ((ops->flags & FTRACE_OPS_FL_SAVE_REGS) &&
++	    (!regs || !ftrace_valid_regs(regs)))
+ 		return 0;
+ #endif
+ 
