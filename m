@@ -2,152 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC80529D7F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CDC29D772
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387447AbgJ1W2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55436 "EHLO
+        id S1732938AbgJ1WYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731994AbgJ1W21 (ORCPT
+        with ESMTP id S1732909AbgJ1WYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:28:27 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3010BC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:28:27 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id y10so280574vkl.5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:28:27 -0700 (PDT)
+        Wed, 28 Oct 2020 18:24:19 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0876C0613CF;
+        Wed, 28 Oct 2020 15:24:18 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id x1so1169995eds.1;
+        Wed, 28 Oct 2020 15:24:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yam/p71AJ8As7tsiU5BDigXfn1EtsRyjjS0tu9YDXrE=;
-        b=zI0AZyeopougGJaeeJKxiy2HLVVsv26SHyuC9lZGn3mHVPG4adTo3D+aO+j0XR44ci
-         FfTwaVnJRPi9zVvA6hpf1ZaFfoCoURpS9XHlqQg+ZrxnBO+E8rPyP0tqmQnY3nnjeq9r
-         5VGafNNKYn89gOl63qP9XNkAmVpb19eKTiDG3hK4i8x4UAVa72s7TO+CBx0vfglLdF1+
-         APNMSS+vFOYw1EXZr6atQtq2nZsb9X0cMA/NSVed5Q/XK5jmkE6PRoRpodiGA9qxLOTT
-         qkdrX0ZygO5jnlaXcOL8hyXIPHhNTjGGK/dgRNviCW59mfPLSiuYuaCRwSiCT2KtnBYY
-         zj2w==
+        bh=TsmTh3EY4PlXa0ncerE94aAQcFnKZIBIojGnStqQXyU=;
+        b=QHjnktl8YmRQstpwq4nVhZJ5MIynb9jtS0Lt70XNKDx041dxoG+Zp8hcZ8q1iUi9Kl
+         LvSTjuci6R+A8eyB6u6RgiFlV7TNsdtXskzJHg+Zw+3YI3cRBvyehWFPrpTmlhARWa17
+         mtcF3We28lh3Oe7zVeTlOMO6K9oljAR3JSDCh75C3eN9u7tluabznRsKUGppkci5GmgT
+         QkPt+VELV3DiNm0fs6O4wZmqFuRrY1IOTERz+y619MagoZFqTGdgnSkiD6saSkM9Szn7
+         2L7BhV5vVu7v12na9QzkWO9byC1vpAx4+USDzZa2WBrvbkTdVykblB+1Xv134VfvGZaj
+         Gjcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yam/p71AJ8As7tsiU5BDigXfn1EtsRyjjS0tu9YDXrE=;
-        b=ZhFLoZC2EV6c67Z7c07FVJyyncY1kQH3L4TMYK06FcQxbmbWhOneFTuiVZbipn3dJ5
-         i+laRWVAQG2dfWDwQgOHR3Wl90TYNi0AevL9RSnPw7pwz2kNCsqWX4X+WV7JSiYsHHGI
-         u/rkBcDDkpTOczWPG3oOSQ6QFuUYJjNk+O2ySE3OMbEexeQB38eMHLRugLGaZOq5KlKk
-         GhloupZNhTWMfShwlu7PoVtarVf21doqlq73T1FVkQlr6dH+bx6TlrZ/Ac1nEhw2Xl3p
-         s+dD/lbqPCLPUm6Ap+qFWmgcid29PANqXAXcfQ7EbHNCzphcX6G7I+7z6TwrXLDyfGm5
-         gC7g==
-X-Gm-Message-State: AOAM5307ix08m12+ym/V8oLh+aFuPxG99uboVWCImfnVVayCva0tbLh1
-        JMs/mM6ingX5sZKypYi+vVJSHkXpZ7jSTH1pyHSaG25o9WxGd877
-X-Google-Smtp-Source: ABdhPJzcyOPjVfOlUg3PViyAu/gl+jzGPcviCKBDSBikqH/3CYMmhNba4abq3ls5eRn44xWfRFIFC7RRs9VhhTS4d7U=
-X-Received: by 2002:a17:902:6803:b029:d2:42a6:312 with SMTP id
- h3-20020a1709026803b02900d242a60312mr5401682plk.24.1603856909433; Tue, 27 Oct
- 2020 20:48:29 -0700 (PDT)
+        bh=TsmTh3EY4PlXa0ncerE94aAQcFnKZIBIojGnStqQXyU=;
+        b=bxZpsuX8SXpd1uV1APiRVJGXDtFufjFMSAE9OIwD9K9BpPGXoQZPZ7Pr9a8cwIbhqF
+         /6NLeFxrk0r57kjCLwzjoljERvogalhNmozsd35/r1PV9uffOc6tbk/a/yi7dmgJwkLq
+         L4BPWgOTbS9D8vicceLe/O3l8/5B9EWcTEiDRDq9S7qzc6PiF+we8ATQfUnckDrVK5rs
+         G6R+KvE9Fkc12D1QV2WBJnbQG5GyxvRJ7X9gjwqQz8U27/2G5wj8JYblbzlXOC/PZsjy
+         R8l0jecpSlgU5GDrjzfPhcZ8cZo59NQFfQJ5hu0haxcfVWVq9SweMIpBzkwVohGTaH1T
+         DGzA==
+X-Gm-Message-State: AOAM531IAoOtAfwLpYFcMSgTZ3/8H+HFvgjgZkLfS8dYh3CuotqYq0Ws
+        lk4Zt1814pkQCT61OET6uyeuiUODFqDZa9ksV3VNd9+gxSz3yg==
+X-Google-Smtp-Source: ABdhPJzUCOEMW6hJ2BHhA6WBRm/TWu/t+HxGpNCZ71HTo6aPJUmWKvuHmkUhbJiOi5UKR+I/w3WwDylDM/FOMuLt0bk=
+X-Received: by 2002:a50:9ec6:: with SMTP id a64mr5478708edf.382.1603856918746;
+ Tue, 27 Oct 2020 20:48:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201027080256.76497-1-songmuchun@bytedance.com>
- <20201027080256.76497-5-songmuchun@bytedance.com> <20201027184835.GB827280@carbon.dhcp.thefacebook.com>
- <CAMZfGtU1aViokYk1hkHbYEiqW5QNi49UTd-QTrkycLqj6Q+-8g@mail.gmail.com>
-In-Reply-To: <CAMZfGtU1aViokYk1hkHbYEiqW5QNi49UTd-QTrkycLqj6Q+-8g@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 28 Oct 2020 11:47:52 +0800
-Message-ID: <CAMZfGtWP9k8kCY0QxRdoLn1MQ8aiP_R_bRqLYiuGdznRdgFk6g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 4/5] mm: memcg/slab: Fix root memcg vmstats
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, laoar.shao@gmail.com,
-        Chris Down <chris@chrisdown.name>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
+References: <20201024140115.GA35973@xps-13-7390> <CAD+ocby3hA0GCm5Rf6T3UF+2UWgWoUjrz7=VzbeUMjX6Qx8D5g@mail.gmail.com>
+ <da6697a0-4a23-ee68-fa2e-121b3d23c972@linux.ibm.com>
+In-Reply-To: <da6697a0-4a23-ee68-fa2e-121b3d23c972@linux.ibm.com>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Tue, 27 Oct 2020 20:48:27 -0700
+Message-ID: <CAD+ocbz0NpXYK9fCxpEYGz6fvWJ_SLw+rYQ2yo3UbKJbbEX8hg@mail.gmail.com>
+Subject: Re: [PATCH] ext4: properly check for dirty state in ext4_inode_datasync_dirty()
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     Andrea Righi <andrea.righi@canonical.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:56 AM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> On Wed, Oct 28, 2020 at 2:48 AM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > On Tue, Oct 27, 2020 at 04:02:55PM +0800, Muchun Song wrote:
-> > > If we reparent the slab objects to the root memcg, when we free
-> > > the slab object, we need to update the per-memcg vmstats to keep
-> > > it correct for the root memcg. Now this at least affects the vmstat
-> > > of NR_KERNEL_STACK_KB for !CONFIG_VMAP_STACK when the thread stack
-> > > size is smaller than the PAGE_SIZE.
-> > >
-> > > Fixes: ec9f02384f60 ("mm: workingset: fix vmstat counters for shadow nodes")
-> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> >
-> > Can you, please, drop this patch for now?
-> >
-> > I'm working on a bigger cleanup related to the handling of the root memory
-> > cgroup (I sent a link earlier in this thread), which already does a similar change.
-> > There are several issues like this one, so it will be nice to fix them all at once.
->
-> I have read the patch of https://lkml.org/lkml/2020/10/14/869. You
-> mean this patch
-> fixes this issue? It chooses to uncharge the root memcg. But here we may need to
+Actually the simpler fix for this in case of fast commits is to check
+if the inode is on the fast commit list or not. Since we clear the
+fast commit list after every fast and / or full commit, it's always
+true that if the inode is not on the list, that means it isn't dirty.
+This will simplify the logic here and then we can probably get rid of
+i_fc_committed_subtid field altogether. I'll test this and send out a
+patch.
 
-Here I mean "It chooses to not uncharge the root memcg", sorry.
+Thanks,
+Harshad
 
-> uncharge the root memcg to keep root vmstats correct. If we do not do
-> this, we can
-> see the wrong vmstats via root memory.stat(e.g. NR_KERNEL_STACK_KB).
+On Tue, Oct 27, 2020 at 8:27 PM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
 >
-> Thanks.
+>
+>
+> On 10/27/20 3:58 AM, harshad shirwadkar wrote:
+> > Thanks Andrea for catching and sending out a fix for this.
+> >
+> > On Sat, Oct 24, 2020 at 7:01 AM Andrea Righi <andrea.righi@canonical.com> wrote:
+> >>
+> >> ext4_inode_datasync_dirty() needs to return 'true' if the inode is
+> >> dirty, 'false' otherwise, but the logic seems to be incorrectly changed
+> >> by commit aa75f4d3daae ("ext4: main fast-commit commit path").
+> >>
+> >> This introduces a problem with swap files that are always failing to be
+> >> activated, showing this error in dmesg:
+> >>
+> >>   [   34.406479] swapon: file is not committed
+> >>
+>
+> Well, I too noticed this yesterday while I was testing xfstests -g swap.
+> Those tests were returning _notrun, hence that could be the reason why
+> it didn't get notice in XFSTESTing from Ted.
+>
+> - I did notice that this code was introduced in v10 only.
+> This wasn't there in v9 though.
+>
+>
+> >> Simple test case to reproduce the problem:
+> >>
+> >>    # fallocate -l 8G swapfile
+> >>    # chmod 0600 swapfile
+> >>    # mkswap swapfile
+> >>    # swapon swapfile
+> >>
+> >> Fix the logic to return the proper state of the inode.
+> >>
+> >> Link: https://lore.kernel.org/lkml/20201024131333.GA32124@xps-13-7390
+> >> Fixes: aa75f4d3daae ("ext4: main fast-commit commit path")
+> >> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> >> ---
+> >>   fs/ext4/inode.c | 4 ++--
+> >>   1 file changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> >> index 03c2253005f0..a890a17ab7e1 100644
+> >> --- a/fs/ext4/inode.c
+> >> +++ b/fs/ext4/inode.c
+> >> @@ -3308,8 +3308,8 @@ static bool ext4_inode_datasync_dirty(struct inode *inode)
+> >>          if (journal) {
+> >>                  if (jbd2_transaction_committed(journal,
+> >>                                          EXT4_I(inode)->i_datasync_tid))
+> >> -                       return true;
+> >> -               return atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid) >=
+> >> +                       return false;
+> >> +               return atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid) <
+> >>                          EXT4_I(inode)->i_fc_committed_subtid;
+> > In addition, the above condition should only be checked if fast
+> > commits are enabled. So, in effect this overall condition will look
+> > like this:
+> >
+> > if (journal) {
+> >      if (jbd2_transaction_committed(journal, EXT4_I(inode)->i_datasync_tid))
+> >          return false;
+> >      if (test_opt2(sb, JOURNAL_FAST_COMMIT))
+> >          return atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid) <
+> > EXT4_I(inode)->i_fc_committed_subtid;
+> >      return true;
+> > }
+>
+> Yup - I too had made a similar patch. But then I also noticed that below
+> condition will always remain false. Since we never update
+> "i_fc_committed_subtid" other than at these 2 places
+> (one during init where we set it to 0 and other during ext4_fc_commit()
+> where we set it to sbi->s_fc_subtid).
+>
+> <condition>
+> atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid <
+> EXT4_I(inode)->i_fc_committed_subtid
+>
+>
+> Maybe I need more reading around this.
+>
+> -ritesh
+>
+>
+>
+>
 >
 > >
-> > Thank you!
+> > Thanks,
+> > Harshad
 > >
-> > > ---
-> > >  mm/memcontrol.c | 9 +++++++--
-> > >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index 22b4fb941b54..70345b15b150 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -875,8 +875,13 @@ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
-> > >       rcu_read_lock();
-> > >       memcg = mem_cgroup_from_obj(p);
-> > >
-> > > -     /* Untracked pages have no memcg, no lruvec. Update only the node */
-> > > -     if (!memcg || memcg == root_mem_cgroup) {
-> > > +     /*
-> > > +      * Untracked pages have no memcg, no lruvec. Update only the
-> > > +      * node. If we reparent the slab objects to the root memcg,
-> > > +      * when we free the slab object, we need to update the per-memcg
-> > > +      * vmstats to keep it correct for the root memcg.
-> > > +      */
-> > > +     if (!memcg) {
-> > >               __mod_node_page_state(pgdat, idx, val);
-> > >       } else {
-> > >               lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> > > --
-> > > 2.20.1
-> > >
->
->
->
-> --
-> Yours,
-> Muchun
-
-
-
--- 
-Yours,
-Muchun
+> >>          }
+> >>
+> >> --
+> >> 2.27.0
+> >>
