@@ -2,172 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CDC29D772
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5E629D786
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732938AbgJ1WYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54710 "EHLO
+        id S1732837AbgJ1WZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732909AbgJ1WYT (ORCPT
+        with ESMTP id S1732785AbgJ1WY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:24:19 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0876C0613CF;
-        Wed, 28 Oct 2020 15:24:18 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id x1so1169995eds.1;
-        Wed, 28 Oct 2020 15:24:18 -0700 (PDT)
+        Wed, 28 Oct 2020 18:24:59 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBDB2C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:24:59 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x13so625538pfa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:24:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TsmTh3EY4PlXa0ncerE94aAQcFnKZIBIojGnStqQXyU=;
-        b=QHjnktl8YmRQstpwq4nVhZJ5MIynb9jtS0Lt70XNKDx041dxoG+Zp8hcZ8q1iUi9Kl
-         LvSTjuci6R+A8eyB6u6RgiFlV7TNsdtXskzJHg+Zw+3YI3cRBvyehWFPrpTmlhARWa17
-         mtcF3We28lh3Oe7zVeTlOMO6K9oljAR3JSDCh75C3eN9u7tluabznRsKUGppkci5GmgT
-         QkPt+VELV3DiNm0fs6O4wZmqFuRrY1IOTERz+y619MagoZFqTGdgnSkiD6saSkM9Szn7
-         2L7BhV5vVu7v12na9QzkWO9byC1vpAx4+USDzZa2WBrvbkTdVykblB+1Xv134VfvGZaj
-         Gjcg==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gP9leRSqd8Nt5uw/ZcHLxalg6StnlmANhYwqDz5BamY=;
+        b=GnFZV28/BNLRDucvzLESFv3OK7W6Iffx80nxt4gJX1KhQieE7APUfRH855/sp8RpMp
+         cgkPejLvI+G6njV9mAmeo8VpZR4SfRadMjAssX2yRNc0iM3vyKnAhArixSQD58RO3L72
+         Z0dOyUvEwxRX46FND2HUmFnhDDWdGNDCh5D+vNMyuk0wOXQ0ey1QMESV6UzxiDxR0yMU
+         I/NSyZH3V7OUkd/ZNH6L5ToixcPb8J95qJPY7X1JOPEGvzroGJRZk1n/vBLocJO8sU4I
+         fcnSEqdRLC/8x96lYmo1J1CBnTvGU14rV/VVdMwwMHdnccSu1XPj2SlK3p3yIP7wc1RY
+         4KLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TsmTh3EY4PlXa0ncerE94aAQcFnKZIBIojGnStqQXyU=;
-        b=bxZpsuX8SXpd1uV1APiRVJGXDtFufjFMSAE9OIwD9K9BpPGXoQZPZ7Pr9a8cwIbhqF
-         /6NLeFxrk0r57kjCLwzjoljERvogalhNmozsd35/r1PV9uffOc6tbk/a/yi7dmgJwkLq
-         L4BPWgOTbS9D8vicceLe/O3l8/5B9EWcTEiDRDq9S7qzc6PiF+we8ATQfUnckDrVK5rs
-         G6R+KvE9Fkc12D1QV2WBJnbQG5GyxvRJ7X9gjwqQz8U27/2G5wj8JYblbzlXOC/PZsjy
-         R8l0jecpSlgU5GDrjzfPhcZ8cZo59NQFfQJ5hu0haxcfVWVq9SweMIpBzkwVohGTaH1T
-         DGzA==
-X-Gm-Message-State: AOAM531IAoOtAfwLpYFcMSgTZ3/8H+HFvgjgZkLfS8dYh3CuotqYq0Ws
-        lk4Zt1814pkQCT61OET6uyeuiUODFqDZa9ksV3VNd9+gxSz3yg==
-X-Google-Smtp-Source: ABdhPJzUCOEMW6hJ2BHhA6WBRm/TWu/t+HxGpNCZ71HTo6aPJUmWKvuHmkUhbJiOi5UKR+I/w3WwDylDM/FOMuLt0bk=
-X-Received: by 2002:a50:9ec6:: with SMTP id a64mr5478708edf.382.1603856918746;
- Tue, 27 Oct 2020 20:48:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gP9leRSqd8Nt5uw/ZcHLxalg6StnlmANhYwqDz5BamY=;
+        b=lULs5rqNqXeZQUpQUcee+KRRqBuL8V7umNlGZ4eeonUfJGS4m092VmPtLLSgYhW+xx
+         RuW48AccsYNy4bou3775hR1ZQAPFgQMryvY4R+hFqiEjFUfEXCeAZR8krE2ejRTMGxYo
+         kQ+UVLkquyjgcRyr13X4k/mB5/5pHTm32DzxVvtrVNOl7HsnVNdk9xYmBsrYnMcCdJiO
+         MHNEvFDEEKWR/os2RzR0LKFacPETZ8++Ub75yXlig7Yop+Gw3puAnxz35NQfM9JiW08e
+         qcCtsIiuN1qhJY5ZYI++Dz7SEMILuvO9r8TXyqnVwo02581C0AzLqLHFe9v2hcaWa0bc
+         4aLQ==
+X-Gm-Message-State: AOAM532KhowI+V2uvNXtkOwTfwH617P50pyfi7BmiILxj5fYN0Hvr0oX
+        zhV1lSeY/VzRjnRQLfVuWjlBDKUghenzGHK9
+X-Google-Smtp-Source: ABdhPJzaRhN3aDdXWQ0D5XcrckptuF92X7FGcRacXma9zoZkUg7BhB9XvJmIZJEeUtmL/cOvXiejSQ==
+X-Received: by 2002:a63:4c19:: with SMTP id z25mr4603006pga.58.1603857050037;
+        Tue, 27 Oct 2020 20:50:50 -0700 (PDT)
+Received: from Smcdef-MBP.local.net ([103.136.220.89])
+        by smtp.gmail.com with ESMTPSA id s8sm3412273pjn.46.2020.10.27.20.50.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Oct 2020 20:50:49 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
+        iamjoonsoo.kim@lge.com, laoar.shao@gmail.com, chris@chrisdown.name,
+        christian.brauner@ubuntu.com, peterz@infradead.org,
+        mingo@kernel.org, keescook@chromium.org, tglx@linutronix.de,
+        esyr@redhat.com, surenb@google.com, areber@redhat.com,
+        elver@google.com
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v2] mm: memcg/slab: Fix return child memcg objcg for root memcg
+Date:   Wed, 28 Oct 2020 11:50:10 +0800
+Message-Id: <20201028035013.99711-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-References: <20201024140115.GA35973@xps-13-7390> <CAD+ocby3hA0GCm5Rf6T3UF+2UWgWoUjrz7=VzbeUMjX6Qx8D5g@mail.gmail.com>
- <da6697a0-4a23-ee68-fa2e-121b3d23c972@linux.ibm.com>
-In-Reply-To: <da6697a0-4a23-ee68-fa2e-121b3d23c972@linux.ibm.com>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Tue, 27 Oct 2020 20:48:27 -0700
-Message-ID: <CAD+ocbz0NpXYK9fCxpEYGz6fvWJ_SLw+rYQ2yo3UbKJbbEX8hg@mail.gmail.com>
-Subject: Re: [PATCH] ext4: properly check for dirty state in ext4_inode_datasync_dirty()
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Actually the simpler fix for this in case of fast commits is to check
-if the inode is on the fast commit list or not. Since we clear the
-fast commit list after every fast and / or full commit, it's always
-true that if the inode is not on the list, that means it isn't dirty.
-This will simplify the logic here and then we can probably get rid of
-i_fc_committed_subtid field altogether. I'll test this and send out a
-patch.
+Consider the following memcg hierarchy.
 
-Thanks,
-Harshad
+                    root
+                   /    \
+                  A      B
 
-On Tue, Oct 27, 2020 at 8:27 PM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
->
->
->
-> On 10/27/20 3:58 AM, harshad shirwadkar wrote:
-> > Thanks Andrea for catching and sending out a fix for this.
-> >
-> > On Sat, Oct 24, 2020 at 7:01 AM Andrea Righi <andrea.righi@canonical.com> wrote:
-> >>
-> >> ext4_inode_datasync_dirty() needs to return 'true' if the inode is
-> >> dirty, 'false' otherwise, but the logic seems to be incorrectly changed
-> >> by commit aa75f4d3daae ("ext4: main fast-commit commit path").
-> >>
-> >> This introduces a problem with swap files that are always failing to be
-> >> activated, showing this error in dmesg:
-> >>
-> >>   [   34.406479] swapon: file is not committed
-> >>
->
-> Well, I too noticed this yesterday while I was testing xfstests -g swap.
-> Those tests were returning _notrun, hence that could be the reason why
-> it didn't get notice in XFSTESTing from Ted.
->
-> - I did notice that this code was introduced in v10 only.
-> This wasn't there in v9 though.
->
->
-> >> Simple test case to reproduce the problem:
-> >>
-> >>    # fallocate -l 8G swapfile
-> >>    # chmod 0600 swapfile
-> >>    # mkswap swapfile
-> >>    # swapon swapfile
-> >>
-> >> Fix the logic to return the proper state of the inode.
-> >>
-> >> Link: https://lore.kernel.org/lkml/20201024131333.GA32124@xps-13-7390
-> >> Fixes: aa75f4d3daae ("ext4: main fast-commit commit path")
-> >> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> >> ---
-> >>   fs/ext4/inode.c | 4 ++--
-> >>   1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> >> index 03c2253005f0..a890a17ab7e1 100644
-> >> --- a/fs/ext4/inode.c
-> >> +++ b/fs/ext4/inode.c
-> >> @@ -3308,8 +3308,8 @@ static bool ext4_inode_datasync_dirty(struct inode *inode)
-> >>          if (journal) {
-> >>                  if (jbd2_transaction_committed(journal,
-> >>                                          EXT4_I(inode)->i_datasync_tid))
-> >> -                       return true;
-> >> -               return atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid) >=
-> >> +                       return false;
-> >> +               return atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid) <
-> >>                          EXT4_I(inode)->i_fc_committed_subtid;
-> > In addition, the above condition should only be checked if fast
-> > commits are enabled. So, in effect this overall condition will look
-> > like this:
-> >
-> > if (journal) {
-> >      if (jbd2_transaction_committed(journal, EXT4_I(inode)->i_datasync_tid))
-> >          return false;
-> >      if (test_opt2(sb, JOURNAL_FAST_COMMIT))
-> >          return atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid) <
-> > EXT4_I(inode)->i_fc_committed_subtid;
-> >      return true;
-> > }
->
-> Yup - I too had made a similar patch. But then I also noticed that below
-> condition will always remain false. Since we never update
-> "i_fc_committed_subtid" other than at these 2 places
-> (one during init where we set it to 0 and other during ext4_fc_commit()
-> where we set it to sbi->s_fc_subtid).
->
-> <condition>
-> atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid <
-> EXT4_I(inode)->i_fc_committed_subtid
->
->
-> Maybe I need more reading around this.
->
-> -ritesh
->
->
->
->
->
-> >
-> > Thanks,
-> > Harshad
-> >
-> >>          }
-> >>
-> >> --
-> >> 2.27.0
-> >>
+If we get the objcg of memcg A failed, the get_obj_cgroup_from_current
+can return the wrong objcg for the root memcg.
+
+Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ changelog in v2:
+ 1. Do not use a comparison with the root_mem_cgroup
+
+ mm/memcontrol.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 1337775b04f3..8c8b4c3ed5a0 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2961,6 +2961,7 @@ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+ 		objcg = rcu_dereference(memcg->objcg);
+ 		if (objcg && obj_cgroup_tryget(objcg))
+ 			break;
++		objcg = NULL;
+ 	}
+ 	rcu_read_unlock();
+ 
+-- 
+2.20.1
+
