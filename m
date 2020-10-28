@@ -2,58 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623C129DD0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E68729DEE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732019AbgJ1WT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:19:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60534 "EHLO mail.kernel.org"
+        id S2403802AbgJ2A5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:57:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731761AbgJ1WRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:44 -0400
-Received: from localhost (i15-lef02-th2-89-83-213-3.ft.lns.abo.bbox.fr [89.83.213.3])
+        id S1731610AbgJ1WRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:35 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4916B2417F;
-        Wed, 28 Oct 2020 13:01:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603890084;
-        bh=BaPFvorGv6k2JcdmJyhCKrgzQGDb9SDddIIaGqpkDA8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R1WHlICxfragRtb2Ebwt6oZtLLHLgcI0mQFxLIT8wTj+6BAMBjN1VZVr+q4wZpLjm
-         DTN4O2KVKxmOtO4I2KGAZC1WS0Fuc7DVLL5VYR4N80sxSdPhFNixLei65MdD5AJZ5O
-         SF5YJSI6oRYZe9NVCeKtlzm34ZQgWZe0B0O5AkYk=
-Date:   Wed, 28 Oct 2020 14:01:21 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        paulmck@kernel.org, hch@lst.de, axboe@kernel.dk,
-        chris@chris-wilson.co.uk, davem@davemloft.net, kuba@kernel.org,
-        fweisbec@gmail.com, oleg@redhat.com, vincent.guittot@linaro.org
-Subject: Re: [PATCH v3 1/6] irq_work: Cleanup
-Message-ID: <20201028130121.GB229044@lothringen>
-References: <20201028110707.971887448@infradead.org>
- <20201028111221.284588085@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028111221.284588085@infradead.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 7060224742;
+        Wed, 28 Oct 2020 13:19:11 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1kXlM5-005a6P-Mv; Wed, 28 Oct 2020 09:19:09 -0400
+Message-ID: <20201028131542.963014814@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Wed, 28 Oct 2020 09:15:42 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: [RFC][PATCH 0/2] ftrace: Add access to function arguments for all callbacks
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 12:07:08PM +0100, Peter Zijlstra wrote:
-> +#define __IRQ_WORK_INIT(_func, _flags) (struct irq_work){	\
-> +	.node = { .u_flags = (_flags), },			\
 
-I guess, just for the sake of being conservative:
+This is something I wanted to implement a long time ago, but held off until
+there was a good reason to do so. Now it appears that having access to the
+arguments of the function by default is very useful. As a bonus, because
+arguments must be saved regardless before calling a callback, because they
+need to be restored before returning back to the start of the traced
+function, there's not much work to do to have them always be there for
+normal function callbacks.
 
- +	.node = { .a_flags = ATOMIC_INIT(_flags), },
+The basic idea is that if CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS is set, then
+all callbacks registered to ftrace can use the regs parameter for the stack
+and arguments (kernel_stack_pointer(regs), regs_get_kernel_argument(regs, n)),
+without the need to set REGS that causes overhead by saving all registers as
+REGS simulates a breakpoint.
 
+Only the first patch is to be applied. The second patch is just to show how
+this could work.
 
-> +	.func = (_func),					\
-> +}
+Steven Rostedt (VMware) (2):
+      ftrace/x86: Allow for arguments to be passed in to REGS by default
+      ftrace: Test arguments by adding trace_printk in function tracer
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-
-Thanks.
+----
+ arch/x86/Kconfig               |  1 +
+ arch/x86/kernel/ftrace_64.S    | 12 +++++++-----
+ kernel/trace/Kconfig           |  9 +++++++++
+ kernel/trace/trace_functions.c | 13 ++++++++++++-
+ 4 files changed, 29 insertions(+), 6 deletions(-)
