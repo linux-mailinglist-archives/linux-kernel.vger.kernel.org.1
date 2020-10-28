@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B8B29DA06
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB3029DA5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733193AbgJ1XKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgJ1XJl (ORCPT
+        id S2390154AbgJ1XVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:21:09 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1454 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390127AbgJ1XVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:09:41 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF2FC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:09:41 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id y16so1093714ljk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hatfo1xwFEDynogYQDEhCt1lpMjNGoJQpQEAAPUn4fY=;
-        b=o7y3xKxud6jpWJiD7Y/D54i7FmuhCdJjwT+WBVsmaMPt3nLT6r/eT2RK7+eSFFJh+N
-         C/QVs+MZ4Lm7rwEX2dqJ0I3QCAT+OdhVTJmk2WhagbTrBfLj3o895BBWKbRm1hIYCEMM
-         6/lB/QNEWcsELphJiVQmi94u/Boca3tez7YBz6e3p5yZjHRCFWwAGovezFOFSGFbS7kh
-         exEW3HvfxSOBS3fQp94B1TXeSks+8Zd21nrupBBq3K77pKSG5UOGVltHfNGOQVgDurTz
-         8e6vs6QD0PHSN243mURr9pUb6EWOPRR/E/U35y7EpmhJIQtMpHOxDXd/9HLLUOPrI7KR
-         pjsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hatfo1xwFEDynogYQDEhCt1lpMjNGoJQpQEAAPUn4fY=;
-        b=p9RDIVYIqG974uYjDMrRtNxh/ooNlLdgNAyfpGpg79+w2qcR3xYSAX7AZZGHOX6qTW
-         o9fGC76hjPCqE1zOIGVQUPlg+W6bsbxBJo1qdinFldjd+TaVg1WE3eMaKJmtz+gui14W
-         6O1t98Rq5FTnb/SZhRf/Z7MzW2HtJRDe8SPCMz4reR+yFetUiVjeWwsqFVV0oGtGaf9w
-         TZnCqvSsN3tBRF+8b4/eerfCCx4dnhUD+RrDcDfAuoJW2cetElaUnCrn1bChtSFj6T1M
-         UfLRElvcNnKg2pdk6c5yLZgFqQJMz8lMsLvVpJYiFPEIvxz0Bdt5LkSEsOGNf9lPxlfT
-         5aCQ==
-X-Gm-Message-State: AOAM533nivYt2zI7/59QCeMtoP/dcrv5i3qFT+jgjp5QQgVb1FSgEsGg
-        NJsJonXo+zkSusSLXX26nPv1Qa8cXva8Mc2P2gIDh1aBZ5fLFA==
-X-Google-Smtp-Source: ABdhPJw+Y+AFcpZE5IrWDaF75uBlkljVPeaRqxNXP6B8aDvxXTWl++DYovIgyPQUxwMCkmQBdRS/3260GiTYigirY18=
-X-Received: by 2002:a2e:86d4:: with SMTP id n20mr3755779ljj.293.1603900056645;
- Wed, 28 Oct 2020 08:47:36 -0700 (PDT)
+        Wed, 28 Oct 2020 19:21:04 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f99a3120002>; Wed, 28 Oct 2020 09:57:54 -0700
+Received: from [172.27.0.18] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
+ 2020 16:58:11 +0000
+Subject: Re: [PATCH v3] nvme-rdma: handle nvme completion data length
+To:     zhenwei pi <pizhenwei@bytedance.com>, <kbusch@kernel.org>,
+        <axboe@fb.com>, <hch@lst.de>, <sagi@grimberg.me>
+CC:     <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
+        <lengchao@huawei.com>
+References: <20201025115124.1430678-1-pizhenwei@bytedance.com>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <86fa6106-b969-4bb9-95ee-c1101a61ff03@nvidia.com>
+Date:   Wed, 28 Oct 2020 18:58:08 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <20201007160611.942754-1-junak.pub@gmail.com>
-In-Reply-To: <20201007160611.942754-1-junak.pub@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 28 Oct 2020 16:47:25 +0100
-Message-ID: <CACRpkdb=0iEqT0+6UnB2y09_XdQWwf5za43Sn-g7vA_dEkgSuw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] pinctrl: qcom: add pinctrl driver for msm8953
-To:     Vladimir Lypak <junak.pub@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201025115124.1430678-1-pizhenwei@bytedance.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603904274; bh=cR2ZEkkVb/BlRCyOFgIUSEJCwL4kH+CyituXrsasLIE=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=nWFx2UzNPDiROjdiBCoKaqsoXBmlMDFGaKIaTCPEvZLLmwBjn6a5pVAnzknVcWEBL
+         Zp9/RSvDbckthXtzooyEMojhijAhKPEOtke6799ARYxLPNoBTJuyal0yJyMd3gb5rh
+         dirt/6rnxeYZb1/wxBYsxH8MD/O/5f1ANoLm3NqDLrtaoOy8AlqSUa3/p0i8SSqd5S
+         D+BsZTStZC7a1WXAMtLgF0VAILvWTxNSpNguPgDY0qrnjaKUPbxOnyRNYxKtjO8mqq
+         PXrV0ShzH5EMS4x8hrVwa4ValWS2DFZhNql8gaq4CVNXEnbyfPPUkK1gu7aOPCA4Zh
+         mynLNW5LnWEMw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 6:26 PM Vladimir Lypak <junak.pub@gmail.com> wrote:
 
-> Add inititial pinctrl driver for MSM8953 platform. Compatible SoCs are:
-> MSM8953, APQ8053, SDM(SDA)450, SDM(SDA)632.
-> Based off CAF implementation.
+On 10/25/2020 1:51 PM, zhenwei pi wrote:
+> Hit a kernel warning:
+> refcount_t: underflow; use-after-free.
+> WARNING: CPU: 0 PID: 0 at lib/refcount.c:28
 >
-> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
-> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
+> RIP: 0010:refcount_warn_saturate+0xd9/0xe0
+> Call Trace:
+>   <IRQ>
+>   nvme_rdma_recv_done+0xf3/0x280 [nvme_rdma]
+>   __ib_process_cq+0x76/0x150 [ib_core]
+>   ...
+>
+> The reason is that a zero bytes message received from target, and the
+> host side continues to process without length checking, then the
+> previous CQE is processed twice.
+>
+> Do sanity check on received data length, try to recovery for corrupted
+> CQE case.
+>
+> Because zero bytes message in not defined in spec, using zero bytes
+> message to detect dead connections on transport layer is not
+> standard, currently still treat it as illegal.
+>
+> Thanks to Chao Leng & Sagi for suggestions.
+>
+> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
 > ---
-> Changes in V2:
-> - sorted SDC_QDSD_PINGROUP entries in msm8953_groups array.
+>   drivers/nvme/host/rdma.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+>
+Seems strange that the targets sends zero byte packets.
 
-Bjorn can you look at this?
+Can you specify which target is this and the scenario ?
 
-I was submitted right before the merge window so I guess it got
-lost in the storm.
-
-Yours,
-Linus Walleij
