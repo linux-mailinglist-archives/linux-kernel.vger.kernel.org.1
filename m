@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6159F29D4C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 971A329D4AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728805AbgJ1Vyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:54:41 -0400
-Received: from s3.sipsolutions.net ([144.76.43.62]:59072 "EHLO
-        sipsolutions.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728776AbgJ1Vyi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:54:38 -0400
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kXr41-00EKXJ-FE; Wed, 28 Oct 2020 20:24:53 +0100
-Message-ID: <5d1e166e32cd8263787764b7c7fe64b24cacb2a6.camel@sipsolutions.net>
-Subject: Re: [PATCH v4 3/3] mac80211: add KCOV remote annotations to
- incoming frame processing
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com,
-        Aleksandr Nogikh <nogikh@google.com>
-Date:   Wed, 28 Oct 2020 20:24:36 +0100
-In-Reply-To: <20201028182018.1780842-4-aleksandrnogikh@gmail.com> (sfid-20201028_192108_906083_C36F9C75)
-References: <20201028182018.1780842-1-aleksandrnogikh@gmail.com>
-         <20201028182018.1780842-4-aleksandrnogikh@gmail.com>
-         (sfid-20201028_192108_906083_C36F9C75)
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1728573AbgJ1Vxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:53:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43402 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728524AbgJ1Vxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:53:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 67912AEC4;
+        Wed, 28 Oct 2020 19:25:56 +0000 (UTC)
+Subject: Re: [PATCH 1/5] fbdev/atafb: Remove unused extern variables
+To:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-fbdev@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>
+References: <cover.1603788511.git.yepeilin.cs@gmail.com>
+ <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <4c15a505-9704-9639-aeaa-e865d264c120@suse.de>
+Date:   Wed, 28 Oct 2020 20:25:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-28 at 18:20 +0000, Aleksandr Nogikh wrote:
-> From: Aleksandr Nogikh <nogikh@google.com>
+
+
+Am 27.10.20 um 17:31 schrieb Peilin Ye:
+> Remove 6 unused extern variables to reduce confusion. It is worth
+> mentioning that lib/fonts/font_8x8.c and lib/fonts/font_8x16.c also
+> declare `fontdata_8x8` and `fontdata_8x16` respectively, and this file
+> has nothing to do with them.
 > 
-> Add KCOV remote annotations to ieee80211_iface_work and
-> ieee80211_rx. This will enable coverage-guided fuzzing of
-> mac80211 code that processes incoming 802.11 frames.
-> 
-> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
 > ---
-> v1 -> v2:
-> * The commit now affects ieee80211_rx instead of
->   ieee80211_tasklet_handler.
-> ---
->  include/net/mac80211.h | 2 ++
->  net/mac80211/iface.c   | 2 ++
->  2 files changed, 4 insertions(+)
+> $ # Build-tested (Ubuntu 20.04)
+> $ sudo apt install gcc-m68k-linux-gnu
+> $ cp arch/m68k/configs/atari_defconfig .config
+> $ make ARCH=m68k menuconfig
+> $ make ARCH=m68k CROSS_COMPILE=m68k-linux-gnu- -j`nproc` all
 > 
-> diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-> index e8e295dae744..f4c37a1b381e 100644
-> --- a/include/net/mac80211.h
-> +++ b/include/net/mac80211.h
-> @@ -4499,7 +4499,9 @@ void ieee80211_rx_napi(struct ieee80211_hw *hw, struct ieee80211_sta *sta,
->   */
->  static inline void ieee80211_rx(struct ieee80211_hw *hw, struct sk_buff *skb)
->  {
-> +	kcov_remote_start_common(skb_get_kcov_handle(skb));
->  	ieee80211_rx_napi(hw, NULL, skb, NULL);
-> +	kcov_remote_stop();
->  }
+>  drivers/video/fbdev/atafb.c | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
+> index f253daa05d9d..e3812a8ff55a 100644
+> --- a/drivers/video/fbdev/atafb.c
+> +++ b/drivers/video/fbdev/atafb.c
+> @@ -240,14 +240,6 @@ static int *MV300_reg = MV300_reg_8bit;
+>  
+>  static int inverse;
+>  
+> -extern int fontheight_8x8;
+> -extern int fontwidth_8x8;
+> -extern unsigned char fontdata_8x8[];
+> -
+> -extern int fontheight_8x16;
+> -extern int fontwidth_8x16;
+> -extern unsigned char fontdata_8x16[];
+> -
+>  /*
+>   * struct fb_ops {
+>   *	* open/release and usage marking
+> 
 
-Wouldn't it make more sense to push that a layer down
-into ieee80211_rx_napi(), or actually now perhaps even
-better ieee80211_rx_list(), so we get it even if the driver called that
-API in the first place?
-
-You might only care about hwsim at this point, but perhaps hwsim would
-get optimised ..
-
-
-johannes
-
+-- 
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
