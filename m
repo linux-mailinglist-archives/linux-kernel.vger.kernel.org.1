@@ -2,166 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE9829D66B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:15:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 731E929D651
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731055AbgJ1WOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53018 "EHLO
+        id S1731142AbgJ1WNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731016AbgJ1WOp (ORCPT
+        with ESMTP id S1731112AbgJ1WNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:14:45 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69600C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:14:45 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id z17so1148751iog.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:14:45 -0700 (PDT)
+        Wed, 28 Oct 2020 18:13:45 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B273C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:13:45 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id n16so638525pgv.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:13:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YToQUTVQ09XcyKdWO31z31+xALqkDuhVF6HNw4N4sDc=;
-        b=WHIlujXaZ5uwvtLU02qMIjRljahrjt3c1E5QjcRO5tRcMVM2UwMQ4krT6t4VLYkhXS
-         n7ElE64JRea4S0a/FHAyWFpCN6K5AAHFt8sJcDBsvNOUXYplpk11J/hABPspxYQzNb35
-         a+UtGlleUOGa89M5x7kNe7yXJBFpuzhbz+xOPENPat57vE1pVkLf+3sjCJx4uatVN/4x
-         TFtMGFxXJ+FJ18O35XGKXHpl8v9LWfNpYdrYtIP7YFKUyZHrJlOCWEqJxuJie8D/UG2E
-         BNc9lFZavj7q+jDrGAslWpfaH71IVvgzvJ7zjDRX6FFbtB+PgS+pQRU9Q5h68hSHfCpw
-         WRNA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Hap+Ub5ET72I9+yJ9o5LmuUNjxopHfjlnKViAW1U6ds=;
+        b=E8UMKKnNfVfoVPWRxRIZe2XGK8Wd0g8Codg/3oRZgRD8PBpi07Bm2zfrdCw7rD3iAj
+         7QYDllm35Oh5wFsMdy0li2VogCRHZnnoKPWvZjCHlWBNP8QoPRgKQpTxAyd3JpfL80wT
+         aXlHCYIRDVxJikExiCN0dLG11bHWr01JGw0fCnAp98jgpibwVzNRTXJU0VBtM9/aJ2lg
+         VQsvPGWq+f75kqb1M0Ra8ODkSoIfng2sQqknCP6pVB3fQbivxNjQ+HuWDOx06L60AiR5
+         WuzGCQz6gsL9VKj9L15wkzTk/EYqRvbRIeL0znA+nsbjSEpgzm8uidthjfBG2hji1ouL
+         ARag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YToQUTVQ09XcyKdWO31z31+xALqkDuhVF6HNw4N4sDc=;
-        b=tUKkK6dSDeRPRhrfJecwQDNKUzCEjcH7FTDQXCFNYY2kbmGxq0H2iEmhb9m4spQPkD
-         GhIOQhQ9AJUiEVrsRCfFQYZFz8nBZ45mQQV+pMW62vWlxHnuceNNxYp4vMuvYZ61HI63
-         in8mfIYsaD4wNWwIb64i7zmzaQLwC4zc4XO053/q6pGI4fqWQRTJG7ZpTSAyC84XCum7
-         AcArEHcwulpGZePGy28sGDkqJBfkmgW7h0joMLWljGd4QDzNtyLF3h/cnX+jxQYa6mJf
-         1P3JEkcieLPyL4gPC7vXR0+5HAfvqn6ISdfoBCOqqmLBxF9usWzw2xRcRuaHA0Uqmb3P
-         6hvQ==
-X-Gm-Message-State: AOAM533sxCMw6MfH1nTmlzAGRHKNJJnViO7cNZBMGzyeVS1/4bJEThcU
-        R269cmhcDMSW0OjDV7/02DYo20UI4vDRk4K1Mx+1Wr7uTRbZYgYC
-X-Google-Smtp-Source: ABdhPJxNVMC1idrRiP5e0TM7gAYtaD07NbFp/0bCqRmYUYKUx2sOy7Nr8+NWoSBBTpDAYec+rGetFcfm0vocgrI2LWg=
-X-Received: by 2002:a5d:815a:: with SMTP id f26mr5973419ioo.111.1603889022673;
- Wed, 28 Oct 2020 05:43:42 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Hap+Ub5ET72I9+yJ9o5LmuUNjxopHfjlnKViAW1U6ds=;
+        b=Yll63rFuoSHs8o0dog8EXQWpSQml080tCKbkYi2YhybmnyKtIY2Vx3HbSaOa5dWw/R
+         m5FJ8hqyH87YTKmHcj8d37zSfiJRc4XieljiGTk0y2Eb2ytpCJSP+gwrVOcaCeR6nX4D
+         jnKjp6vusU9e5BedAu+0FlXv+Mam1gxAI0dPjDPsv1MPnq6VzfwRw72PRvrkWK2JJNRJ
+         EEoxlC9FchfI4COLf8lBDuKRReoZw0/t2iq2JIml7Wu9RegZ9M3DBWo0PH9RJmbiiVJI
+         QONtY1UbDxPSodwUf/a255ggTIljqXhkKCy+PACqkrYeeOYrGtJakiVTfC8hqBvO1Vkx
+         cUuQ==
+X-Gm-Message-State: AOAM531SLpUdnHfkE6BFGkqQfYL51AJRk5VBEUVpoaDVDWeSZgxZWwU0
+        AMZA8BomWNXXmcs0h3PpDiyDG5xM8Plg4LCz
+X-Google-Smtp-Source: ABdhPJy6tDn0bCbSbxNaCae/QqJmGCBHTiTy6idjHS0NT4WAZ8VfHjIxrrcVxhVG7OazqkIZOsGExw==
+X-Received: by 2002:a92:d2ca:: with SMTP id w10mr984987ilg.140.1603889131208;
+        Wed, 28 Oct 2020 05:45:31 -0700 (PDT)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id r4sm2632814ilj.43.2020.10.28.05.45.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 05:45:30 -0700 (PDT)
+Subject: Re: [PATCH net 5/5] net: ipa: avoid going past end of resource group
+ array
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, evgreen@chromium.org,
+        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201027161120.5575-1-elder@linaro.org>
+ <20201027161120.5575-6-elder@linaro.org>
+ <CA+FuTSdGCBG0tZXfPTJqTnV7zRNv2VmuThOydwj080NWw4PU9Q@mail.gmail.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <95d20d91-d187-2638-6978-8c0ff752b49f@linaro.org>
+Date:   Wed, 28 Oct 2020 07:45:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201027134909.701581493@linuxfoundation.org>
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 28 Oct 2020 18:13:31 +0530
-Message-ID: <CA+G9fYs2s0JjpXsn+SLxKZsdiRc3hrjT8DoXQeeHo4ezkVcvZA@mail.gmail.com>
-Subject: Re: [PATCH 4.14 000/191] 4.14.203-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CA+FuTSdGCBG0tZXfPTJqTnV7zRNv2VmuThOydwj080NWw4PU9Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 at 19:40, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.203 release.
-> There are 191 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 29 Oct 2020 13:48:36 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.203-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 10/27/20 7:14 PM, Willem de Bruijn wrote:
+> On Tue, Oct 27, 2020 at 12:38 PM Alex Elder <elder@linaro.org> wrote:
+>>
+>> The minimum and maximum limits for resources assigned to a given
+>> resource group are programmed in pairs, with the limits for two
+>> groups set in a single register.
+>>
+>> If the number of supported resource groups is odd, only half of the
+>> register that defines these limits is valid for the last group; that
+>> group has no second group in the pair.
+>>
+>> Currently we ignore this constraint, and it turns out to be harmless,
+> 
+> If nothing currently calls it with an odd number of registers, is this
+> a bugfix or a new feature (anticipating future expansion, I guess)?
+> 
+>> but it is not guaranteed to be.  This patch addresses that, and adds
+>> support for programming the 5th resource group's limits.
+>>
+>> Rework how the resource group limit registers are programmed by
+>> having a single function program all group pairs rather than having
+>> one function program each pair.  Add the programming of the 4-5
+>> resource group pair limits to this function.  If a resource group is
+>> not supported, pass a null pointer to ipa_resource_config_common()
+>> for that group and have that function write zeroes in that case.
+>>
+>> Fixes: cdf2e9419dd91 ("soc: qcom: ipa: main code")
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> ---
+>>  drivers/net/ipa/ipa_main.c | 89 +++++++++++++++++++++++---------------
+>>  1 file changed, 53 insertions(+), 36 deletions(-)
+>>
+>> diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+>> index 74b1e15ebd6b2..09c8a16d216df 100644
+>> --- a/drivers/net/ipa/ipa_main.c
+>> +++ b/drivers/net/ipa/ipa_main.c
+>> @@ -370,8 +370,11 @@ static bool ipa_resource_limits_valid(struct ipa *ipa,
+>>         u32 i;
+>>         u32 j;
+>>
+>> +       /* We program at most 6 source or destination resource group limits */
+>> +       BUILD_BUG_ON(IPA_RESOURCE_GROUP_SRC_MAX > 6);
+>> +
+>>         group_count = ipa_resource_group_src_count(ipa->version);
+>> -       if (!group_count)
+>> +       if (!group_count || group_count >= IPA_RESOURCE_GROUP_SRC_MAX)
+>>                 return false;
+> 
+> Perhaps more a comment to the previous patch, but _MAX usually denotes
+> the end of an inclusive range, here 5. The previous name COUNT better
+> reflects the number of elements in range [0, 5], which is 6.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+I agree with your point, but the max here represents something different
+from what you're expecting.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+For a given resource type (source or destination) there is some fixed
+number (count) of resources available based on the version of SoC.
+The *driver* can handle any number of them up to the maximum number
+(max) for any SoC it supports.  In that respect, it *does* represent
+the largest value in an inclusive range.
 
-Summary
-------------------------------------------------------------------------
+I could change the suffix to something like SRC_COUNT_MAX, but in
+general the symbol names are longer than I like in this driver and
+I'm trying to shorten them where possible.
 
-kernel: 4.14.203-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: a42f5f48c6ae133fc827daac1a64c70c300e32bb
-git describe: v4.14.202-192-ga42f5f48c6ae
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.202-192-ga42f5f48c6ae
+If you still want me to change this, please say so and tell me what
+you suggest I use instead.
 
+Your observation below about using ">" rather than ">=" is correct,
+and applies here as well.  That error might have led you to make
+your comment about "max" representing an inclusive maximum.
 
-No regressions (compared to build v4.14.202)
+I will send out a new version of the series to fix that.  I'll
+wait until later today to give some time for more feedback before
+I prepare them.
 
-No fixes (compared to build v4.14.202)
+Thanks a lot for reviewing this.
 
+					-Alex
 
-Ran 21826 total tests in the following environments and test suites.
+>>         /* Return an error if a non-zero resource limit is specified
+>> @@ -387,7 +390,7 @@ static bool ipa_resource_limits_valid(struct ipa *ipa,
+>>         }
+>>
+>>         group_count = ipa_resource_group_dst_count(ipa->version);
+>> -       if (!group_count)
+>> +       if (!group_count || group_count >= IPA_RESOURCE_GROUP_DST_MAX)
+>>                 return false;
+>>
+>>         for (i = 0; i < data->resource_dst_count; i++) {
+>> @@ -421,46 +424,64 @@ ipa_resource_config_common(struct ipa *ipa, u32 offset,
+>>
+>>         val = u32_encode_bits(xlimits->min, X_MIN_LIM_FMASK);
+>>         val |= u32_encode_bits(xlimits->max, X_MAX_LIM_FMASK);
+>> -       val |= u32_encode_bits(ylimits->min, Y_MIN_LIM_FMASK);
+>> -       val |= u32_encode_bits(ylimits->max, Y_MAX_LIM_FMASK);
+>> +       if (ylimits) {
+>> +               val |= u32_encode_bits(ylimits->min, Y_MIN_LIM_FMASK);
+>> +               val |= u32_encode_bits(ylimits->max, Y_MAX_LIM_FMASK);
+>> +       }
+>>
+>>         iowrite32(val, ipa->reg_virt + offset);
+>>  }
+>>
+>> -static void ipa_resource_config_src_01(struct ipa *ipa,
+>> -                                      const struct ipa_resource_src *resource)
+>> +static void ipa_resource_config_src(struct ipa *ipa,
+>> +                                   const struct ipa_resource_src *resource)
+>>  {
+>> -       u32 offset = IPA_REG_SRC_RSRC_GRP_01_RSRC_TYPE_N_OFFSET(resource->type);
+>> +       u32 group_count = ipa_resource_group_src_count(ipa->version);
+>> +       const struct ipa_resource_limits *ylimits;
+>> +       u32 offset;
+>>
+>> -       ipa_resource_config_common(ipa, offset,
+>> -                                  &resource->limits[0], &resource->limits[1]);
+>> -}
+>> +       offset = IPA_REG_SRC_RSRC_GRP_01_RSRC_TYPE_N_OFFSET(resource->type);
+>> +       ylimits = group_count == 1 ? NULL : &resource->limits[1];
+>> +       ipa_resource_config_common(ipa, offset, &resource->limits[0], ylimits);
+>>
+>> -static void ipa_resource_config_src_23(struct ipa *ipa,
+>> -                                      const struct ipa_resource_src *resource)
+>> -{
+>> -       u32 offset = IPA_REG_SRC_RSRC_GRP_23_RSRC_TYPE_N_OFFSET(resource->type);
+>> +       if (group_count < 2)
+>> +               return;
+>>
+>> -       ipa_resource_config_common(ipa, offset,
+>> -                                  &resource->limits[2], &resource->limits[3]);
+>> -}
+>> +       offset = IPA_REG_SRC_RSRC_GRP_23_RSRC_TYPE_N_OFFSET(resource->type);
+>> +       ylimits = group_count == 3 ? NULL : &resource->limits[3];
+>> +       ipa_resource_config_common(ipa, offset, &resource->limits[2], ylimits);
+>>
+>> -static void ipa_resource_config_dst_01(struct ipa *ipa,
+>> -                                      const struct ipa_resource_dst *resource)
+>> -{
+>> -       u32 offset = IPA_REG_DST_RSRC_GRP_01_RSRC_TYPE_N_OFFSET(resource->type);
+>> +       if (group_count < 4)
+>> +               return;
+>>
+>> -       ipa_resource_config_common(ipa, offset,
+>> -                                  &resource->limits[0], &resource->limits[1]);
+>> +       offset = IPA_REG_SRC_RSRC_GRP_45_RSRC_TYPE_N_OFFSET(resource->type);
+>> +       ylimits = group_count == 5 ? NULL : &resource->limits[5];
+> 
+> Due to the check
+> 
+>> +       if (!group_count || group_count >= IPA_RESOURCE_GROUP_DST_MAX)
+>>                 return false;
+> 
+> above, group_count can never be greater than 5. Should be greater than?
+> 
 
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* perf
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* v4l2-compliance
-* libhugetlbfs
-* ltp-containers-tests
-* ltp-fs-tests
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
