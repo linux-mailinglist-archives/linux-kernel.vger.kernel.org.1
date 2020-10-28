@@ -2,125 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C8729D69A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B55B029D65F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731434AbgJ1WQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:16:41 -0400
-Received: from mail-pf1-f197.google.com ([209.85.210.197]:44933 "EHLO
-        mail-pf1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730066AbgJ1WQi (ORCPT
+        id S1731211AbgJ1WO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731196AbgJ1WOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:16:38 -0400
-Received: by mail-pf1-f197.google.com with SMTP id s12so526581pfu.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:16:37 -0700 (PDT)
+        Wed, 28 Oct 2020 18:14:20 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4A9C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:14:19 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id w27so1126925ejb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:14:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pg1Awte/AcCE0VTpWWjF/X+y57TY14JHAwwH73vbeZk=;
+        b=N+BWrrYZvcw1eAZEn4Rkvla5ZhdaCVyBOuc8pxi/ev9ojf4qiOCEoNyr4LednIWYHi
+         MlXTPk/ebU2w9VwNP9NDCEXpqBs9v3FJgjkxG5NkxgbF4ypLsbxhhNuRAamoeBEYIvDZ
+         4WwqwTLFO8/Lg/hMFBrzaUDOLEPyp9MUoNlhitc45ZZUizXRNqtkXgZ86NHnq9Ox7wUs
+         dkNnJgm9/GOpasXFOpdXPHuXt6fXcFMpOXN8xuP9tq7xeZg+bMd15zN4cJV9n+e/3v4Z
+         3vN4N0knYEjOqDqfAjOkS4tpkW+PpRu1mF7YEtuGLqGpOxgwXsifpbnuGEGmswuatJBI
+         LW2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=XCSAEIF7yxudBBUUr3qUjTib7D5OltngZoG8wvpMOQI=;
-        b=SPi2mixsKGtAjQDU9PjoYYj5HxZ8+mWHNHJBedtCrqbi1Ac4J2WosEVl6cyBwaMbKA
-         nExy5M6isOG3W+gDTk/Yo6L8nDQCuh8v9z/b9fP6xS1CLdF5iXzovUNfKV2+TO77eRE6
-         lDiv40sMmZgzvNcdo+XwqYW2s/Ya3shMlqR4YCal7aIfakaMPrAyz5/uWRidL5GQSaqq
-         t/yPzb4oSWeW4Kru2WP0xoF2g8n7b0VoFrDgotoFolkevz/JWOIrk2pdKH8plY+8FXJI
-         9xwm25h9k+YdU1efVFSnPuk2i0fnBAfJNm41R6XqeI7xPHAtINIb3p+Gr05P6JajO/Ap
-         PLWw==
-X-Gm-Message-State: AOAM530XMgjCge0xCkTUvAIlgKNaZ2lTsfYTTto1YBsD/0LU+sbV06lA
-        XlXOVVKMvaaDS5O8n2b6PYKMMiv0Zu6n5EM9liRCffHZq2Vv
-X-Google-Smtp-Source: ABdhPJzl37aBwYIDKept4UZfHp9QtamUc+1RORwkGP8e3BHgiENeCyDaGrdCvVxp9qvnK94gNCfZZZnYqc+M4UYPzQ7LeWwLnF2x
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pg1Awte/AcCE0VTpWWjF/X+y57TY14JHAwwH73vbeZk=;
+        b=nxXGVoCIejLulduFZMcJdjyd0xRBjTovESLwOKpHb/31R6SfKP5XRnzSfJU62e9Lmb
+         MY3r6mT28W1L1SaKqb3W3S7/yLsJsaYS2o55ySZCWVKjT9PcEhU/LCRg4o8coOmrf8+N
+         JfX62iQ6QYPvYaoBmkVrr5WQZxz5et6BwNXOMSDWnccKQJC5NRBPGY64jKALwCiGFRB3
+         ykFN4x2L6BrA0ChjamWU3DS4digstPRkAS+eov5zj4Xs19IC5iSHevM/w4NU+UNf06Qx
+         3WPfIh3NWWYT3edgF50oHgQSt1ovbH8uDmfF5c7bNTch7fI8/WwHrNKUdtH/AhxDN3+C
+         4EOg==
+X-Gm-Message-State: AOAM533j+8oKhYf/ILlZoIg07WEfiuj7ctdOWF+Kr0oLvDikeLC4wsV3
+        ckmK7TQbZK2OxDDsISnMTVhO+hs1Jr1BAnYxTczQNdeDYDo=
+X-Google-Smtp-Source: ABdhPJx66MvROMytz8Io7gwu5YHeqpdaA/k/cNh1NDS0LzJp5+8ZB4Dy8g7ogYGcrYnupMYog5+IQGiY3y/cw5WxoM0=
+X-Received: by 2002:a17:906:3146:: with SMTP id e6mr7958530eje.363.1603903015706;
+ Wed, 28 Oct 2020 09:36:55 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:98c5:: with SMTP id a66mr6545587ill.50.1603902742690;
- Wed, 28 Oct 2020 09:32:22 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 09:32:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003b856d05b2bdb5f7@google.com>
-Subject: general protection fault in wext_handle_ioctl
-From:   syzbot <syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20201028085748.17388-1-vincent.whitchurch@axis.com>
+In-Reply-To: <20201028085748.17388-1-vincent.whitchurch@axis.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 28 Oct 2020 17:36:44 +0100
+Message-ID: <CAMpxmJV5sorE8xPAynmc8mtw8aNP_3wm8DNSgx-Wc_fV61jCaQ@mail.gmail.com>
+Subject: Re: [PATCH v3] gpio: mockup: Allow probing from device tree
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>, kernel@axis.com,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Oct 28, 2020 at 9:57 AM Vincent Whitchurch
+<vincent.whitchurch@axis.com> wrote:
+>
+> Allow the mockup driver to be probed via the device tree without any
+> module parameters, allowing it to be used to configure and test higher
+> level drivers like the leds-gpio driver and corresponding userspace
+> before actual hardware is available.
+>
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> ---
+>
 
-syzbot found the following issue on:
+Applied, thanks!
 
-HEAD commit:    8c2ab803 Merge tag 'orphan-handling-v5.10-rc2' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12e57870500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3140f5be49a06bf9
-dashboard link: https://syzkaller.appspot.com/bug?extid=8b2a88a09653d4084179
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 10716 Comm: syz-executor.0 Not tainted 5.10.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:call_commit_handler net/wireless/wext-core.c:900 [inline]
-RIP: 0010:ioctl_standard_call net/wireless/wext-core.c:1029 [inline]
-RIP: 0010:wireless_process_ioctl net/wireless/wext-core.c:954 [inline]
-RIP: 0010:wext_ioctl_dispatch net/wireless/wext-core.c:987 [inline]
-RIP: 0010:wext_handle_ioctl+0x974/0xb20 net/wireless/wext-core.c:1048
-Code: e8 a1 87 a3 f8 eb 6c 48 8b 44 24 18 42 80 3c 20 00 48 8b 5c 24 20 74 08 48 89 df e8 d6 78 e5 f8 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 bd 78 e5 f8 48 8b 1b 48 89 d8 48
-RSP: 0018:ffffc900018afe00 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff88d17b88
-RDX: ffff88801a3ccec0 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffff88802b398000 R08: ffffffff88d17baf R09: ffffed1005673009
-R10: ffffed1005673009 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000008b04
-FS:  00007f0710ce1700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2ce26000 CR3: 000000001efa8000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- sock_ioctl+0xdc/0x690 net/socket.c:1119
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45de49
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f0710ce0c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000013440 RCX: 000000000045de49
-RDX: 00000000200000c0 RSI: 0000000000008b04 RDI: 0000000000000003
-RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007fff190b875f R14: 00007f0710ce19c0 R15: 000000000118bf2c
-Modules linked in:
----[ end trace 82d7ada5671b3a90 ]---
-RIP: 0010:call_commit_handler net/wireless/wext-core.c:900 [inline]
-RIP: 0010:ioctl_standard_call net/wireless/wext-core.c:1029 [inline]
-RIP: 0010:wireless_process_ioctl net/wireless/wext-core.c:954 [inline]
-RIP: 0010:wext_ioctl_dispatch net/wireless/wext-core.c:987 [inline]
-RIP: 0010:wext_handle_ioctl+0x974/0xb20 net/wireless/wext-core.c:1048
-Code: e8 a1 87 a3 f8 eb 6c 48 8b 44 24 18 42 80 3c 20 00 48 8b 5c 24 20 74 08 48 89 df e8 d6 78 e5 f8 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 bd 78 e5 f8 48 8b 1b 48 89 d8 48
-RSP: 0018:ffffc900018afe00 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff88d17b88
-RDX: ffff88801a3ccec0 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffff88802b398000 R08: ffffffff88d17baf R09: ffffed1005673009
-R10: ffffed1005673009 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000008b04
-FS:  00007f0710ce1700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f04025f6000 CR3: 000000001efa8000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Bartosz
