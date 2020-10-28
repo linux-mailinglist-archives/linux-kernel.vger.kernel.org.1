@@ -2,159 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D2429D4EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:55:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F2129D538
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:59:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728458AbgJ1Vzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
+        id S1729285AbgJ1V7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728462AbgJ1Vys (ORCPT
+        with ESMTP id S1728439AbgJ1V56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:54:48 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D24C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:54:46 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id g7so987433ilr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:54:46 -0700 (PDT)
+        Wed, 28 Oct 2020 17:57:58 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DF9C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:57:58 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id t9so632075wrq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:57:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=d+bPcjkE2LVvE1S9DHK/44sPSiMl3Agmljqghbm1BJA=;
-        b=XvOPCvBe+/l29dhLk+GdU320nX+TYX8gpkBGik4OML59fTK5mRJTXm3dUbJTGTata/
-         y1RXyi4oApdYxQV0Em/q2E/juCAYj1yAhkRaM0OOfw3SR5ZgDmrRm2kZknUiu4pp/t3R
-         O0envp0rG4Yg8yyejP2Kv7k79egzL/KRgXWnk=
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uP/JEghnSGmj7e6AesSlvrZCV6WUBdPW7UyUOd9YPjI=;
+        b=xGxWf1sYuQimA8Pb3JOW0Wj0BHMIJCwn1gMWtOQy75nP6RaEoOq5C/GkmXVi7pHKQj
+         JQ7bvUzAW0JZrXHMEn6KLifhrkFXf/U+agkeQOIAgrfBy0MRN1A7wsUEVG/59kaV8fJG
+         BuzwSFP8yoA5JQmdAV/2ctelQ4BILa1EQC4ju8/13mBjAWU+WvL2gkKqqiBJHgwYWfLt
+         JdZRj5Gs/OERhjmHPr+eDxQN87UPieTnau6amvhohFijsraX4+FiMqA24NPddFbiG83O
+         DEN322EhEyA2xNoTK71H29NH8ZgHWk8I0D6k3VymVMJP3jgQ2rL9e825nsEH+EaHXORU
+         oI3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=d+bPcjkE2LVvE1S9DHK/44sPSiMl3Agmljqghbm1BJA=;
-        b=fNwCDqBWjql9KTXllfWBzJ4TLBm8ye7/eq5msXnRlDjWALPTGDVJtIyFKw0DdMko3q
-         409oc7hWlBe+5UimbrRLCzvbxfQgMEoGY+ZdesNpvNHA3x0JDpPl5XHX1ZyBc4b/kkfc
-         V+w3wuJvv9EspAMjM4DWCsz2OOL3WeRxyiwSAHxFlEJykaSWc7tojddMIv2aTcY5vad+
-         MdnMnlc9O/XtvlMzLStgLCBfDMdghxu65Qod7kXXNeEPKP8/U2Ve8V61QrO8hYaSMuNh
-         0x+LjQIVAWv0zJ5B2cwAUp9WmeFdQPcoW/e2dH/fYhfqJfeUrkyNpXB2TdYZ46GZuOuW
-         TowA==
-X-Gm-Message-State: AOAM5325idnI/eBRauMzt7o8xHUBnRFd2ZHb+WOHwwiW7an+S40vxHK+
-        xna/Ui4/fVcKrWcqx7sIyars1yo6OniV5w==
-X-Google-Smtp-Source: ABdhPJyikOuQn42ZMGpH1yzv4D5VzSSVW1A/W0mHa8GOSOvs0WhOgM7RqHqpN9/07/EP1hAgbMqZlQ==
-X-Received: by 2002:a92:ad0f:: with SMTP id w15mr3521796ilh.97.1603845989333;
-        Tue, 27 Oct 2020 17:46:29 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id e4sm1796075ill.70.2020.10.27.17.46.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 17:46:28 -0700 (PDT)
-Subject: Re: [PATCH v3 00/21] Miscellaneous fixes for resctrl selftests
-To:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Cc:     linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201020235126.1871815-1-fenghua.yu@intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <c4fe6c5a-e5c4-0653-9e35-ab03f5494744@linuxfoundation.org>
-Date:   Tue, 27 Oct 2020 18:46:27 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uP/JEghnSGmj7e6AesSlvrZCV6WUBdPW7UyUOd9YPjI=;
+        b=t6srV07nV5eRYkMUb2b+ihPuZAM7hp1g7CiZN+DbxePkvij5Bd2ej/hTDwyh3esz0z
+         9xdp+LtGGy0Xrh3IcyvnmI8Aa6+164RKtnIkyV9tN/S8pqcOH/BB1SHnWVcVCCxQT1Kp
+         cN6PYH0LTM6OL4IhcqE/OF3yLeN9U3X4IJYAMb6JxFtNi+kZTaOycQ7pM6T5zBF30aY5
+         lSRGCVC43LR4WPp4Aj1FIhpJC5UpLImvBm7qZHNXkT9DifVzjWxt9waPFZZtZK4nG9Z0
+         Hqhe+AK3GFqP9WCQWopkqT+75FR5pk5rneLGzXAO5gxO9GK9FD4ohQiZJO5+I4HE3SoG
+         ACqA==
+X-Gm-Message-State: AOAM530BokDkhEqwR273EILeL+9r4aR2PgD4EaM3LoTh3aegR9PJTkWJ
+        Nd2H913qN2S6fgsDJ53N5vZS2hMiPcX2C7rL0rImi2wPaw==
+X-Google-Smtp-Source: ABdhPJxy3tTKM5QLQXt5ygim35ZXlLtmSNyEsb2Vs87VSTGD8dpJf1fiQCjE/MH+lUa0LAsHp33dW1sarczD6VGn2D8=
+X-Received: by 2002:a17:906:25cc:: with SMTP id n12mr4949548ejb.488.1603846795601;
+ Tue, 27 Oct 2020 17:59:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201020235126.1871815-1-fenghua.yu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+ <8c04d5c5d0144019c2c38d7c3f31061d6b35d360.1603469755.git.mchehab+huawei@kernel.org>
+ <CAHC9VhQ88cuU-0QdpYJyJZE3FU-3graP=N9n9eiG4Kj2tDbiBQ@mail.gmail.com> <20201025233820.7f946e1c@coco.lan>
+In-Reply-To: <20201025233820.7f946e1c@coco.lan>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 27 Oct 2020 20:59:44 -0400
+Message-ID: <CAHC9VhTZtTXO8Woo_cCdBbg9Nq5A-vBdoOJo7gNUk+RRNBbeaw@mail.gmail.com>
+Subject: Re: [PATCH v3 51/56] audit: fix a kernel-doc markup
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/20 5:51 PM, Fenghua Yu wrote:
-> This patch set has several miscellaneous fixes to resctrl selftest tool
-> that are easily visible to user. V1 had fixes to CAT test and CMT test
-> but they were dropped in V2 because having them here made the patchset
-> humongous. So, changes to CAT test and CMT test will be posted in another
-> patchset.
-> 
+On Sun, Oct 25, 2020 at 6:38 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+> Em Sun, 25 Oct 2020 18:10:44 -0400
+> Paul Moore <paul@paul-moore.com> escreveu:
+>
+> > On Fri, Oct 23, 2020 at 12:33 PM Mauro Carvalho Chehab
+> > <mchehab+huawei@kernel.org> wrote:
+> > >
+> > > typo:
+> > >         kauditd_print_skb -> kauditd_printk_skb
+> > >
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > ---
+> > >  kernel/audit.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > Looks good to me, nice catch.  Would you like me to pull this into the
+> > audit tree or are you intending this to get pulled in as part of the
+> > larger patchset somewhere else?
+>
+> Feel free to apply it directly via audit tree.
 
-This is still a very long patch series. Several of the patches can be
-combined and can be rearranged. 21 patches don't seem to any specific
-order.
+I just merged it into audit/next, you should see it shortly.  Thanks!
 
-> Change Log:
-> v3:
-> Address various comments (commit messages, return value on test failure,
-> print failure info on test failure etc) from Reinette and Tony.
-> [v2: https://lore.kernel.org/linux-kselftest/cover.1589835155.git.sai.praneeth.prakhya@intel.com/]
-> 
-> v2:
-> 1. Dropped changes to CAT test and CMT test as they will be posted in a later
->     series.
-> 2. Added several other fixes
-> [v1: https://lore.kernel.org/linux-kselftest/cover.1583657204.git.sai.praneeth.prakhya@intel.com/]
-> 
-> Fenghua Yu (18):
->    selftests/resctrl: Rename CQM test as CMT test
->    selftests/resctrl: Declare global variables as extern
->    selftests/resctrl: Return if resctrl file system is not supported
->    selftests/resctrl: Check for resctrl mount point only if resctrl FS is
->      supported
->    selftests/resctrl: Use resctrl/info for feature detection
->    selftests/resctrl: Fix missing options "-n" and "-p"
->    selftests/resctrl: Fix MBA/MBM results reporting format
->    selftests/resctrl: Abort running tests if not root user
->    selftests/resctrl: Enable gcc checks to detect buffer overflows
->    selftests/resctrl: Don't hard code value of "no_of_bits" variable
-
->    selftests/resctrl: Modularize resctrl test suite main() function
-
-Yes. This is a needed change. I didn't make it to this patch yet.
-
->    selftests/resctrl: Skip the test if requested resctrl feature is not
->      supported
-
-Commented on this patch already. Look into using config file like other
-tests.
-
->    selftests/resctrl: Umount resctrl FS only if mounted
->    selftests/resctrl: Unmount resctrl FS after running all tests
->    selftests/resctrl: Fix incorrect parsing of iMC counters
->    selftests/resctrl: Fix checking for < 0 for unsigned values
->    selftests/resctrl: Fix unnecessary usage of global variables
->    selftests/resctrl: Don't use global variable for capacity bitmask
->      (CBM)
-> 
-> Reinette Chatre (3):
->    selftests/resctrl: Fix typo
->    selftests/resctrl: Fix typo in help text
-
-Why not combine the above two patches. The commit summary doesn't
-make sense.
-
->    selftests/resctrl: Ensure sibling CPU is not same as original CPU
-> 
->   tools/testing/selftests/resctrl/Makefile      |   2 +-
->   tools/testing/selftests/resctrl/README        |   4 +-
->   tools/testing/selftests/resctrl/cache.c       |   4 +-
->   tools/testing/selftests/resctrl/cat_test.c    |  20 +--
->   .../resctrl/{cqm_test.c => cmt_test.c}        |  34 ++--
->   tools/testing/selftests/resctrl/mba_test.c    |  23 ++-
->   tools/testing/selftests/resctrl/mbm_test.c    |  16 +-
->   tools/testing/selftests/resctrl/resctrl.h     |  20 ++-
->   .../testing/selftests/resctrl/resctrl_tests.c | 156 ++++++++++++------
->   tools/testing/selftests/resctrl/resctrl_val.c |  75 ++++++---
->   tools/testing/selftests/resctrl/resctrlfs.c   |  79 ++++++---
->   11 files changed, 272 insertions(+), 161 deletions(-)
->   rename tools/testing/selftests/resctrl/{cqm_test.c => cmt_test.c} (85%)
-> 
-
-I will review rest of the patches. Try to combine a few patches and
-collapse fixes. I would like to see all the fixes first and then
-renaming from CQM to CMT.
-
-thanks,
--- Shuah
+-- 
+paul moore
+www.paul-moore.com
