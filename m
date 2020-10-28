@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2422329DE8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B1C29DC96
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390936AbgJ2AzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:55:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731652AbgJ1WRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:40 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09DD3247C1;
-        Wed, 28 Oct 2020 15:12:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603897975;
-        bh=HZmLg7SlaBNEBZr6yuif6M5CcMd4/KqwKEaK+Y+Ve60=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nxi08IAw2J/t9u9TcUgPVUOWxwfHzYekp3jddaAxsa/f/o0Gk/JAdg8xMgODOCs5L
-         xE6ELEDB2wxonO+xpRJlR4iC9QUQEELPiOYPrQDFIsTMlvBw5ehoqZTilf/YjuLHnB
-         ftRYAkGGU6eaS7YX/Ayl42bJyMbVa3MuTLNoiX2E=
-From:   Will Deacon <will@kernel.org>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Gabor Kertesz <gabor.kertesz@arm.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>
-Subject: Re: [PATCH 0/6] kselftest/arm64: MTE fixes
-Date:   Wed, 28 Oct 2020 15:12:37 +0000
-Message-Id: <160389254446.1108215.12233305220868499790.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201026121248.2340-1-vincenzo.frascino@arm.com>
-References: <20201026121248.2340-1-vincenzo.frascino@arm.com>
+        id S2388637AbgJ2AbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:31:17 -0400
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:39222 "EHLO
+        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387979AbgJ1Wbx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:31:53 -0400
+Received: by mail-yb1-f193.google.com with SMTP id 67so523104ybt.6;
+        Wed, 28 Oct 2020 15:31:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tEpfJA/Z9AKrEVaajdL+QptYcnQ05daCxtJhgSiGjgE=;
+        b=l9XoN6LYNC3x9xUohLGeJpFhQMXfNr78IAG9g/xgCeXfXelGdJ1YuxaU+fF8PVQ7O0
+         YY15sOOW8xDPUeszMqr/18+OmcNwNsfBqCMDcBH6MyOaKV1jhk/bh3uCDjX3Ir/kmoDv
+         w5BhDeeVLJ/i9awUuvu2PwIeiTda9+PJJWqpWwSFk2hjhgmfYlyXJW1Tr9FkR+iIWdQV
+         3pol5fOp+/YCp3mhpoHBDnICoAxtvGFhwGGFRSzKrIRoKpAILEjL4wEi85xKBDJntFwB
+         ONi8GjKqLScCDzE2ixcngT8kdm7laU9gDLvGS76lLXFoVG+blFnOCQ314Wnp1+FGr2jP
+         IjUQ==
+X-Gm-Message-State: AOAM53370wLcSDgRvL9MqFLCkOR+guyhgtjlXUcPXnqTIEvEW5oxcmjr
+        ijVE78JFnQvjqA7kSjQLNnuDLfieCg==
+X-Google-Smtp-Source: ABdhPJzMI0qpyEpldPp5Skmtq0XN2ZPZ/0VkR6YRCtR8HrbN2dO6boMbO257rWxdkY/LpYL4aX72Pg==
+X-Received: by 2002:a05:6830:1c62:: with SMTP id s2mr5192386otg.177.1603898192374;
+        Wed, 28 Oct 2020 08:16:32 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h135sm2598822oib.23.2020.10.28.08.16.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 08:16:30 -0700 (PDT)
+Received: (nullmailer pid 4041362 invoked by uid 1000);
+        Wed, 28 Oct 2020 15:16:29 -0000
+Date:   Wed, 28 Oct 2020 10:16:29 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v6 03/52] dt-bindings: memory: tegra20: emc: Correct
+ registers range in example
+Message-ID: <20201028151629.GA4041307@bogus>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-4-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201025221735.3062-4-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 12:12:42 +0000, Vincenzo Frascino wrote:
-> This series contains a set of fixes for the arm64 MTE kselftests [1].
+On Mon, 26 Oct 2020 01:16:46 +0300, Dmitry Osipenko wrote:
+> There is superfluous zero in the registers base address and registers
+> size should be twice bigger.
 > 
-> A version of the fixes rebased on 5.10-rc1 can be found at [2].
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../bindings/memory-controllers/nvidia,tegra20-emc.txt          | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> To verify the fixes it is possible to use the command below:
-> 
-> make -C tools/testing/selftests/ ARCH=arm64 TARGETS=arm64 ARM64_SUBTARGETS=mte \
->         CC=<gcc compiler with MTE support>
-> 
-> [...]
 
-Applied to arm64 (for-next/fixes), thanks!
-
-[1/6] kselftest/arm64: Fix check_buffer_fill test
-      https://git.kernel.org/arm64/c/5bc7c1156f3f
-[2/6] kselftest/arm64: Fix check_tags_inclusion test
-      https://git.kernel.org/arm64/c/041fa41f5422
-[3/6] kselftest/arm64: Fix check_child_memory test
-      https://git.kernel.org/arm64/c/386cf789fa6d
-[4/6] kselftest/arm64: Fix check_mmap_options test
-      https://git.kernel.org/arm64/c/7419390a466e
-[5/6] kselftest/arm64: Fix check_ksm_options test
-      https://git.kernel.org/arm64/c/cbb268af05de
-[6/6] kselftest/arm64: Fix check_user_mem test
-      https://git.kernel.org/arm64/c/493b35db0548
-
-Cheers,
--- 
-Will
-
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+Acked-by: Rob Herring <robh@kernel.org>
