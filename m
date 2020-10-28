@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361F829DF50
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8193A29DF08
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403888AbgJ2BAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:00:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60512 "EHLO mail.kernel.org"
+        id S2403807AbgJ2A6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:58:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731542AbgJ1WR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:28 -0400
-Received: from pali.im (pali.im [31.31.79.79])
+        id S1731590AbgJ1WRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:33 -0400
+Received: from saruman (88-113-213-94.elisa-laajakaista.fi [88.113.213.94])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0CFC24728;
-        Wed, 28 Oct 2020 13:55:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D75982474E;
+        Wed, 28 Oct 2020 13:57:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603893316;
-        bh=BxlMyj/ERhPQpajoGhj5wK+DMWvDJ3D2iMgwQXUd4fA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OFGDIVecxXHb7KAfE/gTEJw/IdQ5B4BhfoMt17zAWKNQHQchkXqQvDtrFLTW5/0UC
-         lPio3FnnBEHCUW/utdXc/Nb26Y6bwaxOGTVG+eGSkpQg9pQrGOlLaSHJOQIx4myUL+
-         feIqJHwJ6vsAx1FpoPFF4s2gUO5vB14sYwQu/UNM=
-Received: by pali.im (Postfix)
-        id 51D1ACB4; Wed, 28 Oct 2020 14:55:14 +0100 (CET)
-Date:   Wed, 28 Oct 2020 14:55:14 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Sascha Hauer <s.hauer@pengutronix.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: Re: [PATCH v2] libata: Fix retrieving of active qcs
-Message-ID: <20201028135514.r2m3kxchbg6nljht@pali>
-References: <20191213080408.27032-1-s.hauer@pengutronix.de>
- <20191225181840.ooo6mw5rffghbmu2@pali>
- <20200106081605.ffjz7xy6e24rfcgx@pengutronix.de>
- <20200127111630.bqqzhj57tzt7geds@pali>
- <20200127112428.sdfxvlqdox5efzcb@pengutronix.de>
- <20200503214627.gerb3ipcwek2h3h7@pali>
- <20200508054644.GJ5877@pengutronix.de>
+        s=default; t=1603893431;
+        bh=ou8YkSujVcJoedLOVi8IVrmAZ5xwL3bKWujQtDKeyiM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=dd1rBAslmKgbRiMx/reW2ex4P2fRiyTOVjYGfjceUBLuVa0ONJmlCkjmqOJkDppJ/
+         K7ph6zBAc7Ln+K+u4/ZmSGYYwqRWsC4UK1iLz6neiKjuIHad8L0sSlVY/EtX5g6yn8
+         NllpkpKsWOdGfAxalsey1FD/la5y0YVEzVhhow+Q=
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Subject: Re: [PATCH v3] usb: dwc3: core: fix a issue about clear connect state
+In-Reply-To: <20201028125812.GA59692@nuc8i5>
+References: <20201020135806.30268-1-zhengdejin5@gmail.com>
+ <875z6wdq62.fsf@kernel.org> <20201028125812.GA59692@nuc8i5>
+Date:   Wed, 28 Oct 2020 15:57:03 +0200
+Message-ID: <87y2jqlahc.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200508054644.GJ5877@pengutronix.de>
-User-Agent: NeoMutt/20180716
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 08 May 2020 07:46:44 Sascha Hauer wrote:
-> From fcdcfa9e7a4ee4faf411de1df4f3c4e12c78545c Mon Sep 17 00:00:00 2001
-> From: Sascha Hauer <s.hauer@pengutronix.de>
-> Date: Fri, 8 May 2020 07:28:19 +0200
-> Subject: [PATCH] ata: sata_nv: Fix retrieving of active qcs
-> 
-> ata_qc_complete_multiple() has to be called with the tags physically
-> active, that is the hw tag is at bit 0. ap->qc_active has the same tag
-> at bit ATA_TAG_INTERNAL instead, so call ata_qc_get_active() to fix that
-> up. This is done in the vein of 8385d756e114 ("libata: Fix retrieving of
-> active qcs").
-> 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I tested this second change on nforce4 box with sata_nv controllers:
 
-  00:07.0 IDE interface [0101]: NVIDIA Corporation CK804 Serial ATA Controller [10de:0054] (rev f3)
-  00:08.0 IDE interface [0101]: NVIDIA Corporation CK804 Serial ATA Controller [10de:0055] (rev f3)
+Hi,
 
-Both disks are working fine, I do not see any regression or change, so
-you can add my:
+Dejin Zheng <zhengdejin5@gmail.com> writes:
+>> Dejin Zheng <zhengdejin5@gmail.com> writes:
+>> > According to Synopsys Programming Guide chapter 2.2 Register Resets,
+>> > it cannot reset the DCTL register by setting DCTL.CSFTRST for core soft
+>> > reset, if DWC3 controller as a slave device and stay connected with a =
+usb
+>> > host, then, while rebooting linux, it will fail to reinitialize dwc3 a=
+s a
+>> > slave device when the DWC3 controller did not power off. because the
+>> > connection status is incorrect, so we also need to clear DCTL.RUN_STOP
+>> > bit for disabling connect when doing core soft reset. There will still
+>> > be other stale configuration in DCTL, so reset the other fields of DCTL
+>> > to the default value 0.
+>>=20
+>> This commit log is a bit hard to understand. When does this problem
+>> actually happen? It seems like it's in the case of, perhaps, kexecing
+>> into a new kernel, is that right?
+>>=20
+> It happens when entering the kernel for the second time after the reboot
+> command.
+>
+>> At the time dwc3_core_soft_reset() is called, the assumption is that
+>> we're starting with a clean core, from power up. If we have stale
+>> configuration from a previous run, we should fix this on the exit
+>> path. Note that if we're reaching probe with pull up connected, we
+>> already have issues elsewhere.
+>>=20
+>> I think this is not the right fix for the problem.
+>>
+> I think you are right, Thinh also suggested me fix it on the exit path
+> in the previous patch v2. Do you think I can do these cleanups in the
+> shutdown hook of this driver? Balbi, is there a more suitable place to
+> do this by your rich experience? Thanks!
 
-Tested-by: Pali Rohár <pali@kernel.org>
+I don't think shutdown is called during removal, I'm not sure. I think
+we had some fixes done in shutdown time, though. Test it out, but make
+sure there are no issues with a regular modprobe cycle.
 
-Ideally add also Fixes line:
+=2D-=20
+balbi
 
-Fixes: 28361c403683 ("libata: add extra internal command")
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Jens, do you need something more from me? Some special tests, etc?
+-----BEGIN PGP SIGNATURE-----
 
-> ---
->  drivers/ata/sata_nv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/ata/sata_nv.c b/drivers/ata/sata_nv.c
-> index eb9dc14e5147..20190f66ced9 100644
-> --- a/drivers/ata/sata_nv.c
-> +++ b/drivers/ata/sata_nv.c
-> @@ -2100,7 +2100,7 @@ static int nv_swncq_sdbfis(struct ata_port *ap)
->  	pp->dhfis_bits &= ~done_mask;
->  	pp->dmafis_bits &= ~done_mask;
->  	pp->sdbfis_bits |= done_mask;
-> -	ata_qc_complete_multiple(ap, ap->qc_active ^ done_mask);
-> +	ata_qc_complete_multiple(ap, ata_qc_get_active(ap) ^ done_mask);
->  
->  	if (!ap->qc_active) {
->  		DPRINTK("over\n");
-> -- 
-> 2.26.2
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl+ZeK8RHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQaO9g/+O6gSiZU19vBa6Mw0v0MrGc7xMoZ0HAXa
+DLrp0A/GeQSgDyDu7v7gFpFMlnZBI4e4kPxXMqo7fazBXfKQ77jvqZA7Wg+NFPFQ
+uFnY1sjcRsCdkpe7O5gzTINqlfpYdmRtRdHlJb4+c4MP0p+jwS+8AyLhe6fQJRcs
+fS6+uZucHbWhzz/UmSjtZEbNLdkQYcgXkmzsdiq0Wge0oOoaTTTRcLz+CbhmjnqH
+8dKc5I7EohpbbcwaDu7Jeyhz2qZAVM/0z/1geKcQRAw9044RFr8U44yQAVkp+lnm
+zhsysWF3bkLKkeZpG2jT90SjOPTCH6Mf7YkVNqiiFW3FoVqx9Ri2EgxvXMmOtwE6
+S9IvNvY+LmLlPVOkqfIb0Xva4WQLXZo9vNKzg+njCbAxvzYCNi2Xho7pY42jlaCZ
+ZrZLZLYP9mjrUHn4pyAcVe+2KwCc3W+cJVoNgdWzgxXyBAI9WoUk1F2npLU3u9bH
+teAhZGWtBaDcQMC6NAeaCmAEDLtVaLp4MgF8JMN5LFs0E/2XtgJ411DpYKs5K1Xc
+ng7vvrQe3rRj94rFeyoRniJBeGQ9HqW6b47d9tAHAbAqXJKcTbxHfwUCOPCJrIoq
+nCVL7CxzJ9cHRUHJz6fWoMSaBa7i/CqqZ64ENwXaTIo7iUQnQFUFDjkaJR/A6PIz
+h+hIwvCwSCo=
+=8K1m
+-----END PGP SIGNATURE-----
+--=-=-=--
