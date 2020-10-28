@@ -2,197 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D344929CD20
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 02:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD6D29D481
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgJ1BkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 21:40:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1833090AbgJ1ARd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 20:17:33 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3ED820754;
-        Wed, 28 Oct 2020 00:17:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603844253;
-        bh=64WD8N3Jdh0k9s8/dbTgUj57aRyxZOU1EhEW52HUC0U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lanomw3ylBChPo8GRHJEQOBALRuohS/PfE/Pii/cS0XBnUJQpo+QL2wI2WfB9scJq
-         Z0QO0W4t97hRqY8bYCAhxoeBOO5FdYmgQ+DuprVmvAeZ9keW8iRD9MMBD7VCsMQAVN
-         +qMIEtMM+eS6Pzd033RJLAOdMO/VWE/140DqRWjo=
-Date:   Tue, 27 Oct 2020 17:17:31 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: Re: [PATCH v2 3/4] dm: add support for passing through inline crypto
- support
-Message-ID: <20201028001731.GA2578048@gmail.com>
-References: <20201015214632.41951-1-satyat@google.com>
- <20201015214632.41951-4-satyat@google.com>
- <20201027213151.GC2416412@gmail.com>
- <20201027235847.GA913775@google.com>
+        id S1728363AbgJ1Vwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728320AbgJ1VwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:52:25 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC95C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:52:25 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id o9so278474plx.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:52:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zePcVpRarotahzKaCqRZdaRiSEtxo4yNeBKHniB4eyw=;
+        b=Ip+vX9JL9N8kIaUG315SCQn7OHiL1Siu3qJGMMfD1qIc2wMLjGAf76ochUWLBx4b4c
+         UH7oRFW+f9qhKEw8TsPIPiUmeVnU6cZryiX6HhRh9z+iuZrUzyHP1rDAoY9bS8xeTtGh
+         wScjE5D6hmrl10gcmIv03ScLnPyG4hoTfiMOU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zePcVpRarotahzKaCqRZdaRiSEtxo4yNeBKHniB4eyw=;
+        b=BBm+WcDjNVPGUM4lZjtX84gP3RnZyBIQIzlsISxJDSichHtDioP2MeQPMXkkUtO3r7
+         dQTNf915wTnu7F+WA/NS8mKvEMxez0nbsmPpTot5rSA0Xz1irqgIPeIbXWzNa3MTgOoU
+         lobc93nucApd96n1akqCJjANgK8ymtJkMhcx66PhYSV8i5JCues+cvseqiBsNa3DJsXd
+         PehxrN2wqPGqgsZfbnrCyX3MeAGGcLcutvH4+MowlYVD5xZHTJocOa9N1SzOz9AfT5/u
+         TnrVyGlWBvjnBAUcq4uPnr5fSZk/7oZbym/ztGFnEMcyHNks74tMDGRYDrd9yXBhWl10
+         JIsA==
+X-Gm-Message-State: AOAM531LKzD+09IOr4hqOa2A/JLuNuj+k2AVxL2fQkGo8oPNe50iBr/W
+        qrVcaEwH2Gt2wItZoyxUEtx8pLRSFeo4fg==
+X-Google-Smtp-Source: ABdhPJyI+1hrqGTtsa7QmeTYy6tIsfzCNRfbTeJmr5zZ9RgR4ofeC4umHMgn4fZDY3IOEG5FjQWg7g==
+X-Received: by 2002:a17:902:8f96:b029:d6:293f:ed44 with SMTP id z22-20020a1709028f96b02900d6293fed44mr4985406plo.72.1603844406434;
+        Tue, 27 Oct 2020 17:20:06 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d145sm3776584pfd.136.2020.10.27.17.20.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 17:20:04 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <yifeifz2@illinois.edu>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] arm64: Enable seccomp architecture tracking
+Date:   Tue, 27 Oct 2020 17:19:59 -0700
+Message-Id: <20201028002000.2666043-2-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201028002000.2666043-1-keescook@chromium.org>
+References: <20201028002000.2666043-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027235847.GA913775@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 11:58:47PM +0000, Satya Tangirala wrote:
-> > > +/**
-> > > + * blk_ksm_update_capabilities() - Update the restrictions of a KSM to those of
-> > > + *				   another KSM
-> > > + * @target_ksm: The KSM whose restrictions to update.
-> > > + * @reference_ksm: The KSM to whose restrictions this function will update
-> > > + *		   @target_ksm's restrictions to,
-> > > + */
-> > > +void blk_ksm_update_capabilities(struct blk_keyslot_manager *target_ksm,
-> > > +				 struct blk_keyslot_manager *reference_ksm)
-> > > +{
-> > > +	memcpy(target_ksm->crypto_modes_supported,
-> > > +	       reference_ksm->crypto_modes_supported,
-> > > +	       sizeof(target_ksm->crypto_modes_supported));
-> > > +
-> > > +	target_ksm->max_dun_bytes_supported =
-> > > +				reference_ksm->max_dun_bytes_supported;
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(blk_ksm_update_capabilities);
-> > 
-> > Wouldn't it be easier to replace the original blk_keyslot_manager, rather than
-> > modify it?  Then blk_ksm_update_capabilities() wouldn't be needed.
-> > 
-> I didn't want to replace the original blk_keyslot_manager because it's
-> possible that e.g. fscrypt is checking for crypto capabilities support
-> via blk_ksm_crypto_cfg_supported() when DM wants to replace the
-> blk_keyslot_manager. DM would have to free the memory used by the
-> blk_keyslot_manager, but blk_ksm_crypto_cfg_supported() might still
-> be trying to access that memory. I did it this way to avoid having to
-> add refcounts or something else to the blk_keyslot_manager...(And I
-> didn't bother adding any synchronization code since the capabilities
-> only ever expand, and never contract).
+To enable seccomp constant action bitmaps, we need to have a static
+mapping to the audit architecture and system call table size. Add these
+for arm64.
 
-Are you sure that's possible?  That would imply that there is no synchronization
-between limits/capabilities in the request_queue being changed and the
-request_queue being used.  That's already buggy.  Maybe it's the sort of thing
-that is gotten away with in practice, in which case avoiding a free() would
-indeed be a good idea, but it's worth explicitly clarifying whether all this
-code is indeed racy by design...
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ arch/arm64/include/asm/seccomp.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-> > > diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
-> > > index cd0478d44058..2b3efa9f9fae 100644
-> > > --- a/drivers/md/dm-ioctl.c
-> > > +++ b/drivers/md/dm-ioctl.c
-> > > @@ -1358,6 +1358,10 @@ static int table_load(struct file *filp, struct dm_ioctl *param, size_t param_si
-> > >  		goto err_unlock_md_type;
-> > >  	}
-> > >  
-> > > +	r = dm_verify_inline_encryption(md, t);
-> > > +	if (r)
-> > > +		goto err_unlock_md_type;
-> > > +
-> > >  	if (dm_get_md_type(md) == DM_TYPE_NONE) {
-> > >  		/* Initial table load: acquire type of table. */
-> > >  		dm_set_md_type(md, dm_table_get_type(t));
-> > > @@ -2114,6 +2118,10 @@ int __init dm_early_create(struct dm_ioctl *dmi,
-> > >  	if (r)
-> > >  		goto err_destroy_table;
-> > >  
-> > > +	r = dm_verify_inline_encryption(md, t);
-> > > +	if (r)
-> > > +		goto err_destroy_table;
-> > > +
-> > >  	md->type = dm_table_get_type(t);
-> > >  	/* setup md->queue to reflect md's type (may block) */
-> > >  	r = dm_setup_md_queue(md, t);
-> > 
-> > Both table_load() and dm_early_create() call dm_setup_md_queue().  Wouldn't it
-> > be simpler to handle inline encryption in dm_setup_md_queue(), instead of doing
-> > it in both table_load() and dm_early_create()?
-> > 
-> table_load() only calls dm_setup_md_queue() on initial table load (when
-> the md_type is DM_TYPE_NONE), so I can't call
-> dm_verify_inline_encryption() in only dm_setup_md_queue(), because
-> dm_verify_inline_encryption() needs to run on every table load.
+diff --git a/arch/arm64/include/asm/seccomp.h b/arch/arm64/include/asm/seccomp.h
+index c36387170936..40f325e7a404 100644
+--- a/arch/arm64/include/asm/seccomp.h
++++ b/arch/arm64/include/asm/seccomp.h
+@@ -19,4 +19,19 @@
+ 
+ #include <asm-generic/seccomp.h>
+ 
++#ifdef CONFIG_ARM64
++# define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_AARCH64
++# define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
++# define SECCOMP_ARCH_NATIVE_NAME	"arm64"
++# ifdef CONFIG_COMPAT
++#  define SECCOMP_ARCH_COMPAT		AUDIT_ARCH_ARM
++#  define SECCOMP_ARCH_COMPAT_NR	__NR_compat_syscalls
++#  define SECCOMP_ARCH_COMPAT_NAME	"arm"
++# endif
++#else /* !CONFIG_ARM64 */
++# define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_ARM
++# define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
++# define SECCOMP_ARCH_NATIVE_NAME	"arm"
++#endif
++
+ #endif /* _ASM_SECCOMP_H */
+-- 
+2.25.1
 
-Where do all the other limitations and capabilities of the request_queue get
-updated on non-initial table loads, then?
-
-> > > +/**
-> > > + * dm_verify_inline_encryption() - Verifies that the current keyslot manager of
-> > > + *				   the mapped_device can be replaced by the
-> > > + *				   keyslot manager of a given dm_table.
-> > > + * @md: The mapped_device
-> > > + * @t: The dm_table
-> > > + *
-> > > + * In particular, this function checks that the keyslot manager that will be
-> > > + * constructed for the dm_table will support a superset of the capabilities that
-> > > + * the current keyslot manager of the mapped_device supports.
-> > > + *
-> > > + * Return: 0 if the table's keyslot_manager can replace the current keyslot
-> > > + *	   manager of the mapped_device. Negative value otherwise.
-> > > + */
-> > > +int dm_verify_inline_encryption(struct mapped_device *md, struct dm_table *t)
-> > > +{
-> > > +	struct blk_keyslot_manager *ksm = dm_init_inline_encryption(md, t);
-> > > +
-> > > +	if (IS_ERR(ksm))
-> > > +		return PTR_ERR(ksm);
-> > > +	blk_ksm_destroy(ksm);
-> > > +
-> > > +	return 0;
-> > > +}
-> > 
-> > This function seems redundant with dm_init_inline_encryption().  Wouldn't it be
-> > simpler to do:
-> > 
-> > - dm_setup_md_queue() and dm_swap_table() call dm_init_inline_encryption() after
-> >   dm_calculate_queue_limits().
-> > 
-> > - ksm gets passed to dm_table_set_restrictions(), which calls
-> >   dm_update_keyslot_manager() (maybe rename to dm_update_inline_encryption()?)
-> >   to actually set q->ksm.
-> > 
-> > That way, the crypto capabilities would be handled similarly to how the
-> > queue_limits are already handled.
-> > 
-> If we call it from dm_swap_table(), we could have it pass the returned
-> ksm to __bind(), either as a new argument, or by adding the ksm to the
-> queue_limits (I'll have to check if that's ok/a good idea in the first
-> place), and __bind() could send the argument to
-> dm_table_set_restrictions()
-> 
-> But the real issue is, I think we should check whether a new table is
-> valid (from the ksm capabilities support perspective) at the time that
-> table is loaded (as opposed to only checking it when DM attempts to swap
-> it in, which might be a lot later, when the user resumes the device) - so
-> I can't only call it from dm_setup_md_queue(), and I'd have to call it
-> from table_load() anyway. And the returned ksm that table_load() obtains
-> from dm_init_inline_encryption() can't really be used - because
-> 1) the ksm constructed at dm_swap_table() might actually support more
-> capabilities than the ksm constructed in table_load(), because
-> underlying devices might get resumed, and have new tables swapped in,
-> and might support more capabilities than before
-> 2) a subsequent dm_swap_table() call could fail for whatever reason, and
-> we'll need to revert to the current ksm.
-> 
-> What I'm doing right now is simply freeing the ksm returned by
-> dm_init_inline_encryption() whenever it's called from table_load()
-> (and I'm trying to make that process a little nicer by wrapping it in a
-> function called dm_verify_inline_encryption()) - so if we're going to
-> have to call dm_init_inline_encryption() and then freeing the returned
-> ksm in table_load(), I think it might be better to continue to have
-> dm_verify_inline_encryption(), unless you'd prefer just open coding the
-> function directly.
-
-I don't understand why this needs to be so complicated.  Doesn't the dm layer
-have the same problem for all the other queue limits and capabilities?  What
-makes inline encryption different?
-
-- Eric
