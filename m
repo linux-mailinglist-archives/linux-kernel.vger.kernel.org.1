@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1B629D5E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAE129D658
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730362AbgJ1WJe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Oct 2020 18:09:34 -0400
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:32804 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728604AbgJ1WJ3 (ORCPT
+        id S1731185AbgJ1WOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731174AbgJ1WOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:09:29 -0400
-Received: by mail-lf1-f50.google.com with SMTP id l2so814986lfk.0;
-        Wed, 28 Oct 2020 15:09:27 -0700 (PDT)
+        Wed, 28 Oct 2020 18:14:03 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B335C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:14:03 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id y14so594184pfp.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:14:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=s43f85+WbHjGIt0fEgoku0r8l29LSpKBU8YM5eW/h3c=;
+        b=aXL55zqiNE0mMnQt+yR2/P2FG1Gg0c33k6O5L/MPe6rK/dYDoSPeB9CRfPYVPtocEP
+         Ir7yE9gozl5H6q2FsBs6TPu1gIcXByKSIAIo46fcK8rNUnfrAgYKkP7BevUqZaAbFueR
+         j/YGSZq99VWicSeBrDovoycoDIOngbnqGBXrBA/8FQaIBu6rdrc7WtsC+OyYwcMS6tBi
+         Zug3bRiTpPCj8nXR9QaaWMBtCStvwIR2xLI7cGqrL8aAMqOHDXs88KAImgD9N3+Gx04A
+         4hFwv/Nu3gqQFZ48nPZHGqkyYsDI4NWTQR9R6R7FkC2gLUBR1QQ0vkjlWWd1YF+h++Gd
+         tNbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=vP95c5G5AiWt8jFAMoFHGwxXSql0kCQrJ9xpkPgq6gg=;
-        b=HUEdEcL9oWOFN5GZBxdIaZuS75HZc1SpYh+XPYjnnLFtT7U0bcCPzpa2vlhwDxDdgk
-         yvYmhzdZIGzCPDQKugnJKn3R6erxAIXZYB6L5asjmhG+CNN3o8TOjW+DK110SCBYvO94
-         Thd+bpYWL74XjThcUosC0busfnRzkPQC+MmY97PSEALfA758uf2gLrKzegXjCSZbvZKL
-         NI2/QBv5TVO2dB3fn0j8dZuoTkBLj5rE1VI1e3Kf6UDmj3dBUyhbM8JfOl3jY7YWVotv
-         SI9tuug6nOZPt+NM8OhLG6cVNwMHV452ldJaNOcksWdHTvSwVTS1VZInkVyrTQI8AkIy
-         P2Gg==
-X-Gm-Message-State: AOAM5334bepW508TC6pThlk8737l4d4hm0IKTe5aplq3YlflMwF8IDXg
-        FOMUWXzU1pDtlsM3JnuAXfN8th22ngJeOQ==
-X-Google-Smtp-Source: ABdhPJyHdwuuiwRcW53qYzu6ELBzFaASak8bZZ7cUJm7qaJ+2lCiPhJEUbxJ3cDKZqX83Q9tfRG3aQ==
-X-Received: by 2002:a05:6402:134c:: with SMTP id y12mr460552edw.344.1603913305471;
-        Wed, 28 Oct 2020 12:28:25 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id p1sm261722ejd.33.2020.10.28.12.28.22
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=s43f85+WbHjGIt0fEgoku0r8l29LSpKBU8YM5eW/h3c=;
+        b=CTU5KCEP/2sc0qpPW9sw61aqFAs0Bo6ybgilaednPy/GiSL4dw00i7A6jwNvd6gXwW
+         XHwJwtnzfR1fHShC1OeydaJ3ecTUTd8xbirZpWOV4o/84jBWrnhwacAzd0jM/Cn0z8UC
+         KURnyPIAkOu0jZUUfihqm+XXQYzSJZsnDIieADyKh/v169obT4pBq1ncQoIpsfpKrK/z
+         iK6u6dxM0msDQLnrlokx8o/gjIQkhRYpBvQiQVkpyDgQdu8dccWXBdskfT3DWqSZ2TPl
+         8TaDOHJqwJd7YR5VosR+HvbSchI4A9TyAP/4oy3FRI9PCVJt3Svt7vlEAJPoD5o9PZ5w
+         7g1A==
+X-Gm-Message-State: AOAM5325ES/2dpaDiN5FGcJ0NBPx2tBXu6omYZyeVEaiyw63iaks/dsM
+        GhqQ8n+Jq/EpV/DPngu0dk3t9hIlRzOmPyJo
+X-Google-Smtp-Source: ABdhPJz67PzC+3Wvsw8DNWphJhyUwxKjOFsLopMwrao+z3oypgBaWbA3EQIOQs6lqOs79QVntzAvyA==
+X-Received: by 2002:a6b:3c14:: with SMTP id k20mr849364iob.12.1603914114829;
+        Wed, 28 Oct 2020 12:41:54 -0700 (PDT)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id m66sm359828ill.69.2020.10.28.12.41.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 12:28:23 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 20:28:21 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 41/52] memory: tegra124-emc: Use
- devm_platform_ioremap_resource()
-Message-ID: <20201028192821.GB170285@kozik-lap>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-42-digetx@gmail.com>
- <20201027102707.GC17089@kozik-lap>
- <d79e4972-acf9-f889-50b8-f0829a0e8e08@gmail.com>
+        Wed, 28 Oct 2020 12:41:54 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        sujitka@chromium.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 net 1/5] net: ipa: assign proper packet context base
+Date:   Wed, 28 Oct 2020 14:41:44 -0500
+Message-Id: <20201028194148.6659-2-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201028194148.6659-1-elder@linaro.org>
+References: <20201028194148.6659-1-elder@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <d79e4972-acf9-f889-50b8-f0829a0e8e08@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 11:30:31PM +0300, Dmitry Osipenko wrote:
-> 27.10.2020 13:27, Krzysztof Kozlowski пишет:
-> > On Mon, Oct 26, 2020 at 01:17:24AM +0300, Dmitry Osipenko wrote:
-> >> Use devm_platform_ioremap_resource() helper which makes code a bit
-> >> cleaner.
-> > 
-> > Such cleanups (and few other in this patchset) should be at beginning of
-> > patchset or even as part of a separate one.  I think there is not much
-> > stopping anyone from applying these... except that you put them in the
-> > middle of big dependency.
-> 
-> Some of these cleanup patches can't be applied separately without a need
-> to make a rebase. I think it should be more preferred to have all the
-> patches within a single series.
-> 
-> I'll try to reorder the patches in v7 if this will ease the review, thanks.
+At the end of ipa_mem_setup() we write the local packet processing
+context base register to tell it where the processing context memory
+is.  But we are writing the wrong value.
 
-If feasible, that would be good. Thanks.
+The value written turns out to be the offset of the modem header
+memory region (assigned earlier in the function).  Fix this bug.
 
-Best regards,
-Krzysztof
+Fixes: ba764c4dad7bd ("soc: qcom: ipa: clocking, interrupts, and memory")
+Tested-by: Sujit Kautkar <sujitka@chromium.org>
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/ipa_mem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ipa/ipa_mem.c b/drivers/net/ipa/ipa_mem.c
+index 2d45c444a67fa..ecfd1f91fce3b 100644
+--- a/drivers/net/ipa/ipa_mem.c
++++ b/drivers/net/ipa/ipa_mem.c
+@@ -89,7 +89,7 @@ int ipa_mem_setup(struct ipa *ipa)
+ 	gsi_trans_commit_wait(trans);
+ 
+ 	/* Tell the hardware where the processing context area is located */
+-	iowrite32(ipa->mem_offset + offset,
++	iowrite32(ipa->mem_offset + ipa->mem[IPA_MEM_MODEM_PROC_CTX].offset,
+ 		  ipa->reg_virt + IPA_REG_LOCAL_PKT_PROC_CNTXT_BASE_OFFSET);
+ 
+ 	return 0;
+-- 
+2.20.1
 
