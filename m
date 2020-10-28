@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21CA29D88C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9B729D85D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388255AbgJ1WdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56216 "EHLO
+        id S2387939AbgJ1Wbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:31:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388348AbgJ1Wcx (ORCPT
+        with ESMTP id S2387904AbgJ1Wba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:32:53 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37B7C0613CF;
-        Wed, 28 Oct 2020 15:32:53 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id g21so480750vsp.0;
-        Wed, 28 Oct 2020 15:32:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dzmFu1wXCXtNHysWLv1cdt1YiWFdK19uGwaHHiwDGp0=;
-        b=DYTyzKHbzP1xLIGuWeU4m+XJ/NzTPV4+oICdd9uy3aRlbUYbZ4WUFa3Vlvxum8TUMp
-         /SvJJORfHgcdgvcIQsbtCxPzDVoqgiQnTrA6IjLjMn44yjTz8MuJFzKZLP2cqiEgcI/7
-         Mi6fXEVjFo3TFXOB9McRdx/yHy8T/zdRtlZgAas1VVk6nwBWQTkWdGYo43Mb1J1VGjnH
-         NV6O9j/ZSEc18fNcF9jxnqYoZaer4B21Al6f4gKe/7L+KHZp9nmTM9G4EHsCjxgmVU3M
-         zFkLuKy6zQQERyHVVRfuaVk7IMv3AM2tv3nMiPbF5QGeXqCV+F8hMDE7C2fSatI5CpRq
-         808Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dzmFu1wXCXtNHysWLv1cdt1YiWFdK19uGwaHHiwDGp0=;
-        b=kdSz9dEbLSnlB/eQRry2RCCZCExFNNOrK0tPu1/mzaXGjqO+DvLVm8AwF3BsaTIbMM
-         qAkZ0NAvNNPpALk7OYoefoi7kYj/V4Y9uYLoiegzMaL2bskvi8bo3uNRg0iPO/pVAJRh
-         ALO7z1yNizdMIkKD/qlZRDmeyKQ9egKiT8IXFaNg1iAvFAYr+aOHB1PYOGLnyRfGIIJP
-         x/K6xpEGyauqx7MbH+RXu9SFEWltQ3qE3+/5g//gOYW48LCXYOye1mJns8tZrYNaKAJC
-         H+81PCIl0mMwJVERBgzIcchxcwDcn5F2JQGqSfQ7B5cKJLI/ihbhW5zNF4tc95fN0xgN
-         O+JQ==
-X-Gm-Message-State: AOAM533Grw7iPvXRGecgtNvt3fdcl+/jxY2x6b1HrSJvQ63nFWJZwkSR
-        BBuKltfUQ7n3c77P2z1lR8pFR3gLlMc=
-X-Google-Smtp-Source: ABdhPJw6j6kXCP8WeJLDd7HQFOexljFPUo9l/qsONHi+x2NLKNm10tCzjcEHMj25FV1wPvf32gKcUw==
-X-Received: by 2002:a17:902:ab89:b029:d5:b297:2cc1 with SMTP id f9-20020a170902ab89b02900d5b2972cc1mr648759plr.7.1603910598149;
-        Wed, 28 Oct 2020 11:43:18 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:6d80:dec8:7340:3009])
-        by smtp.gmail.com with ESMTPSA id y27sm309785pfr.122.2020.10.28.11.43.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 11:43:17 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next v3 0/4] net: hdlc_fr: Add support for any Ethertype
-Date:   Wed, 28 Oct 2020 11:43:06 -0700
-Message-Id: <20201028184310.7017-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 28 Oct 2020 18:31:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EA8C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=J0xULd9Gnp2Y1H3NgBBIqBBMdY9D5TWHhLQFKvUwk0Q=; b=ByipIkb76f0WMClntW0L48i16z
+        wNIvst9S9R3DehaeQ5XNPuLWqRk9k9e7I8x8Lj5t/QO+KwSkqGvKqaLp7e3kpeDuNYubn5nGszw7o
+        ci0xsJC7WWm3mwOQwAlRI3vx4iLg02mgodTX4idgtKMZ67iNjAW+dVfbIO8JWqbxnbg68I28j22Fo
+        qcWH5fwLm98K+zJcpCSo4+o5TQw5QP9RHi4VtQ0Ujbhgch0UixBR9mRITVFYa3C20ACMkfgz5p1YR
+        dp8yiZaJxzxNkEZ0z1PbSn0nT8gxl35IHRFk8FAs/CANU2zC8+I2n355q5tZ3xPZeyKlYXctBZGWy
+        4Bb1nyPQ==;
+Received: from [2601:1c0:6280:3f0::507c] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXqut-0004iN-U3; Wed, 28 Oct 2020 19:15:28 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] procfs: delete duplicated words + other fixes
+Date:   Wed, 28 Oct 2020 12:15:25 -0700
+Message-Id: <20201028191525.13413-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The main purpose of this series is the last patch. The previous 3 patches
-are just code clean-ups so that the last patch will not make the code too
-messy. The patches must be applied in sequence.
+Delete repeated words in fs/proc/.
+{the, which}
+where "which which" was changed to "with which".
 
-The receiving code of this driver doesn't support arbitrary Ethertype
-values. It only recognizes a few known Ethertypes when receiving and drops
-skbs with other Ethertypes.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+To: linux-fsdevel@vger.kernel.org
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+This is a resend because Alexey requested that I send this thru Andrew.
 
-However, the standard document RFC 2427 allows Frame Relay to support any
-Ethertype values. This series adds support for this.
+ fs/proc/base.c     |    2 +-
+ fs/proc/proc_net.c |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Change from v2:
-Small fix to the commit message of the 2nd and 3rd patch
-
-Change from v1:
-Small fix to the commit message of the 2nd patch
-
-Xie He (4):
-  net: hdlc_fr: Simpify fr_rx by using "goto rx_drop" to drop frames
-  net: hdlc_fr: Change the use of "dev" in fr_rx to make the code
-    cleaner
-  net: hdlc_fr: Improve the initial checks when we receive an skb
-  net: hdlc_fr: Add support for any Ethertype
-
- drivers/net/wan/hdlc_fr.c | 119 +++++++++++++++++++++++---------------
- 1 file changed, 73 insertions(+), 46 deletions(-)
-
--- 
-2.25.1
-
+--- linux-next-20200804.orig/fs/proc/base.c
++++ linux-next-20200804/fs/proc/base.c
+@@ -2016,7 +2016,7 @@ const struct dentry_operations pid_dentr
+  * file type from dcache entry.
+  *
+  * Since all of the proc inode numbers are dynamically generated, the inode
+- * numbers do not exist until the inode is cache.  This means creating the
++ * numbers do not exist until the inode is cache.  This means creating
+  * the dcache entry in readdir is necessary to keep the inode numbers
+  * reported by readdir in sync with the inode numbers reported
+  * by stat.
+--- linux-next-20200804.orig/fs/proc/proc_net.c
++++ linux-next-20200804/fs/proc/proc_net.c
+@@ -140,7 +140,7 @@ EXPORT_SYMBOL_GPL(proc_create_net_data);
+  * @mode: The file's access mode.
+  * @parent: The parent directory in which to create.
+  * @ops: The seq_file ops with which to read the file.
+- * @write: The write method which which to 'modify' the file.
++ * @write: The write method with which to 'modify' the file.
+  * @data: Data for retrieval by PDE_DATA().
+  *
+  * Create a network namespaced proc file in the @parent directory with the
+@@ -232,7 +232,7 @@ EXPORT_SYMBOL_GPL(proc_create_net_single
+  * @mode: The file's access mode.
+  * @parent: The parent directory in which to create.
+  * @show: The seqfile show method with which to read the file.
+- * @write: The write method which which to 'modify' the file.
++ * @write: The write method with which to 'modify' the file.
+  * @data: Data for retrieval by PDE_DATA().
+  *
+  * Create a network-namespaced proc file in the @parent directory with the
