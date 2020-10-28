@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FEE829D2DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3DC29D36F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgJ1VhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:37:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29209 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726874AbgJ1VhJ (ORCPT
+        id S1726509AbgJ1Vn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726423AbgJ1Vnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:37:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603921027;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uR9Z8bMBXR69RPlglBm0bN7dgJ7Q6KSE6tN4OWKsw1w=;
-        b=V3Vnqo3W69x91ljxkR0jPyDbQTKf77z01Rjeo722S5rybm68BbXSjRt4hLtkqk0R5CjeqX
-        Wf9drefsglZ9TJk+CM7PIYTtI7T+LFyp0xIu4XDgC4yEjzLNkNgzcdSyMCMt2rxlCoEyxZ
-        7mDZuYjdaOTUyC58AArIf31DyQr+GdY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-146-89meDqHMPlOcnmzl5Dv72Q-1; Wed, 28 Oct 2020 17:05:39 -0400
-X-MC-Unique: 89meDqHMPlOcnmzl5Dv72Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 28 Oct 2020 17:43:51 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49688C0613CF;
+        Wed, 28 Oct 2020 14:43:51 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 835BE64152;
-        Wed, 28 Oct 2020 21:05:38 +0000 (UTC)
-Received: from [10.10.112.242] (ovpn-112-242.rdu2.redhat.com [10.10.112.242])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EEFA25C1D0;
-        Wed, 28 Oct 2020 21:05:37 +0000 (UTC)
-Reply-To: tasleson@redhat.com
-Subject: Re: [PATCH] buffer_io_error: Use dev_err_ratelimited
-From:   Tony Asleson <tasleson@redhat.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201026155730.542020-1-tasleson@redhat.com>
- <CAHp75Vfno9LULSfvwYA+4bEz4kW1Z7c=65HTy-O0fgLrzVA24g@mail.gmail.com>
- <71148b03-d880-8113-bd91-25dadef777c7@redhat.com>
-Organization: Red Hat
-Message-ID: <ec93ba9e-ead9-f49a-d569-abf4c06a60eb@redhat.com>
-Date:   Wed, 28 Oct 2020 16:05:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CM1Ng6dFNz9sSn;
+        Thu, 29 Oct 2020 08:07:15 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1603919236;
+        bh=W2n5VWwBllSsH7rdOKp+MwgYDXy0yFzINN07H5vOOXc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gUSY4fEamKL/MhS6u92pulR8ZY/JEEugzlCP1p0u/Uyb1a2Ov0Ga8wE8LnkkD7Suo
+         dR60NscI7MQ6HThH2NpEkHwfkuXxb4fict/NYpGchLtUkUKuXCGjHrZTMs5k16ySWu
+         kTjvFhiEtr7krpYZ1eDmQ2j35LqBgDBM8DeeoF3JwKv8XTIopKwT7EzdqfIJeRAwgl
+         s49g3kbY5BxPC48VD9ftn/nI0HRadhE3yPfHDh3JnX05qlOPl0nfD0mXi8jGEfOGiA
+         V8QYvxB5fyGSJpwGhGjVJSevOZ3OrlMKQPNTjSS+rCNfY26LKTnUPCayaR+/nF1cBZ
+         yzNNrHJYxeHuA==
+Date:   Thu, 29 Oct 2020 08:07:13 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Micah Morton <mortonm@chromium.org>
+Cc:     Thomas Cedeno <thomascedeno@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning in Linus' tree
+Message-ID: <20201029080713.64c5f78c@canb.auug.org.au>
+In-Reply-To: <CAJ-EccOQCADagAb8YqRHL6aUVCrMuGOO=tA-TBorjO_AiXT7Gw@mail.gmail.com>
+References: <20201028142809.09f7f4b4@canb.auug.org.au>
+        <CAJ-EccOQCADagAb8YqRHL6aUVCrMuGOO=tA-TBorjO_AiXT7Gw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <71148b03-d880-8113-bd91-25dadef777c7@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: multipart/signed; boundary="Sig_/JT9K7rs4nx=+x9oFqfn_JtY";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/20 3:45 PM, Tony Asleson wrote:
-> On 10/26/20 5:07 PM, Andy Shevchenko wrote:
+--Sig_/JT9K7rs4nx=+x9oFqfn_JtY
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
->>> +       dev_err_ratelimited(gendev,
->>> +               "Buffer I/O error, logical block %llu%s\n",
->>
->>> +               (unsigned long long)bh->b_blocknr, msg);
->>
->> It's a u64 always (via sector_t), do we really need a casting?
-> 
-> That's a good question, grepping around shows *many* instances of this
-> being done.  I do agree that this doesn't seem to be needed, but maybe
-> there is a reason why it's done?
+Hi Micah,
 
-According to this:
+On Wed, 28 Oct 2020 08:56:00 -0700 Micah Morton <mortonm@chromium.org> wrot=
+e:
+>
+> Thanks for the heads up. I think someone sent a patch to fix this
+> yesterday: https://marc.info/?l=3Dlinux-doc&m=3D160379233902729&w=3D2
+>=20
+> Do I need to do anything else or should that cover it?
 
-https://www.kernel.org/doc/html/v5.9/core-api/printk-formats.html
+That should be fine, thanks.
 
-This should be left as it is, because 'sector_t' is dependent on a
-config option.
+--=20
+Cheers,
+Stephen Rothwell
 
--Tony
+--Sig_/JT9K7rs4nx=+x9oFqfn_JtY
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Z3YEACgkQAVBC80lX
+0Gy9ZggAldySAgJfmE/sEXrBEoBEo6trpm1XBwz3QaNHmEp3uV5BjyBUKCxPveor
+cncCNyI2vK0QB5qnLUHcga5At+YuipUEbWt5Cmis73gM1rqjddfZPLgYDcikz981
+RQvz5lQWN4GWUG420Ksn7clLI7qMErS9r2zgbyxp2x+ktN9xz+eijlTCImEd2f+Q
+w0n9aMojT5tbetczeV6oZNhV8cFsLsrEcQKzcBTvIbV7H1PMUYwg8L/4sAUog+ES
+UmP7VoC7VQTW35vAV4riGmkYCNpzhUnmQlJKZodONR9Tk/yqoeVoJWAy3PzM/2bv
+0cOUY9i2pWveQElT0NgAqrgrvz/OtA==
+=EhPZ
+-----END PGP SIGNATURE-----
+
+--Sig_/JT9K7rs4nx=+x9oFqfn_JtY--
