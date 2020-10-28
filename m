@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CAC29D596
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 272B329D5AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729997AbgJ1WFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:05:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729969AbgJ1WFN (ORCPT
+        id S1730152AbgJ1WHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:07:43 -0400
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:41339 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730129AbgJ1WHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:05:13 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E448C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:05:12 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id d25so870912ljc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6RgMxKcrxfWcCrPGpUNDV3hziCJkG59Qu7/5cCUuIBQ=;
-        b=IyTD+Hke82m6aRlezzLOka0h4MepZinimVyEYyRZqSWlegMfn0lYc8H/2OUV8yMtSq
-         tMzhUkYkKnHUX8dcuDZIbjXEUAObRpf/BEeMw+pgRYZiIMJ96queOmywsDyVJ5OxWOxr
-         HEl8PS8ayrpRyfa9dqdJZlbekwaI2p8yDlWxM=
+        Wed, 28 Oct 2020 18:07:39 -0400
+Received: by mail-ej1-f68.google.com with SMTP id s15so1057498ejf.8;
+        Wed, 28 Oct 2020 15:07:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6RgMxKcrxfWcCrPGpUNDV3hziCJkG59Qu7/5cCUuIBQ=;
-        b=CetSrZVk1MoawFiu8/Apolv/zoEOPobUAgK2y4JZS2UHsdGkfHPfaBtdvYv6yt3X1x
-         VuSFMG1ZUzSrdCePWU/g3dPHTDEhMCPVvZCJOe9lm2KYvu6TLxAZzv6sIzWgzeLg0OZU
-         j0s2lCFCOtZKk6r89Z2EKqVfcn0q9Ufd3i6V8+QB9nmZNV+fNkQuylp4Os2MU8bi+Mvp
-         9aUF5iIFUw14Bu4wlZ9+oYwe0yH8Quv0Yp2RQj38BRKnmPP7Q4LU8vqOf/pDwV5LiU+n
-         UmATFlwg0+/Ec/7L6F38tYUreWS3KC2yJ0FWSbgKiChI37tbiu6DAclvmUdww0/aTycj
-         IasA==
-X-Gm-Message-State: AOAM530xjOsIyk7AiOTBDQBnSzHGXXinZAlbHxndMwpIfcA/AlW+c3F0
-        kEW+7+swbZToh2GmMsjshVhZdEZi/cXD7g==
-X-Google-Smtp-Source: ABdhPJy3ms7ueMYmVIgk1i5+gsODtxvLuXXtkffnmXgFWmMJ3ZQgwaG8l5sNXwqyYOiDimTi3UkpTw==
-X-Received: by 2002:a2e:9c3:: with SMTP id 186mr545562ljj.134.1603922710748;
-        Wed, 28 Oct 2020 15:05:10 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id d13sm78647lfb.281.2020.10.28.15.05.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 15:05:07 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id j30so767586lfp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:05:07 -0700 (PDT)
-X-Received: by 2002:ac2:4d03:: with SMTP id r3mr450997lfi.89.1603922707215;
- Wed, 28 Oct 2020 15:05:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bZlCZTDwAJNro79TS3InJDAfis8jNWbj3KB0SY/Cc4k=;
+        b=cpb8k+jncLXekyiif8q3wVI91bcSdDNfjBbxQtBtIsJEyFimlF1mVlhiV1emxLSwdW
+         emfwinnNJSA75gq92W4BxeqnhBLankw1r6T5t6rODpctsb8xU04Hl4MRc5WfbaTBP/t8
+         PqxLZGeI62aB5PUIwgV/fIq2KJdT99IFnS9E4L6nIqL5BYlbf878AUFTqXXEeLpLt9/J
+         f/NSSzha/fY60Bg7Tc/pnxyqlTTU+KhxbaWk+6HUCm3pKjAYIwJZktAIisE+gx3rGx6t
+         JsOFTn99f18TKAQdyZ4yFiLhqTXlzsJi1GvtGNHan7qirzOWym8teA7JCdW97KaO9qSD
+         0Uuw==
+X-Gm-Message-State: AOAM531wym3N+w9rPF0H9cNQIP3VcQ+VCcX76Gnz6DEJjz+yi/y0S55J
+        dtH5fPgrLSASfcifCP2Xx1w=
+X-Google-Smtp-Source: ABdhPJyRmpfag6RIm2++FBM/0keuZbgnjwCIrwJuWHSQK3lNqf0rJbKI08iYVMOyjfncGqQDAZyWLA==
+X-Received: by 2002:a17:906:bc91:: with SMTP id lv17mr1181717ejb.249.1603922856842;
+        Wed, 28 Oct 2020 15:07:36 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id i14sm435620ejp.2.2020.10.28.15.07.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 15:07:35 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 23:07:33 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH 2/2] clk: samsung: exynos-clkout: convert to module driver
+Message-ID: <20201028220733.GB271157@kozik-lap>
+References: <20201001165646.32279-1-krzk@kernel.org>
+ <20201001165646.32279-3-krzk@kernel.org>
 MIME-Version: 1.0
-References: <20201028142433.18501-1-kitakar@gmail.com> <20201028142433.18501-3-kitakar@gmail.com>
-In-Reply-To: <20201028142433.18501-3-kitakar@gmail.com>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Wed, 28 Oct 2020 15:04:55 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXMXoyOr9oHBjtXZ1w9XxDggv+=XS4nwn0qKWCHQ3kybdw@mail.gmail.com>
-Message-ID: <CA+ASDXMXoyOr9oHBjtXZ1w9XxDggv+=XS4nwn0qKWCHQ3kybdw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mwifiex: add allow_ps_mode module parameter
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201001165646.32279-3-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 2:56 PM Tsuchiya Yuto <kitakar@gmail.com> wrote:
->
-> To make the ps_mode (power_save) control easier, this commit adds a new
-> module parameter allow_ps_mode and set it false (disallowed) by default.
+On Thu, Oct 01, 2020 at 06:56:46PM +0200, Krzysztof Kozlowski wrote:
+> The Exynos clkout driver depends on board input clock (typically XXTI or
+> XUSBXTI), however on Exynos4 boards these clocks were modeled as part of
+> SoC clocks (Exynos4 clocks driver).  Obviously this is not proper, but
+> correcting it would break DT backward compatibility.
+> 
+> Both drivers - clkout and Exynos4 clocks - register the clock providers
+> with CLK_OF_DECLARE/OF_DECLARE_1 so their order is fragile (in the
+> Makefile clkout is behind Exynos4 clock).  It will work only if the
+> Exynos4 clock driver comes up before clkout.
+> 
+> A change in DTS adding input clock reference to Exynos4 clocks input
+> PLL, see reverted commit eaf2d2f6895d ("ARM: dts: exynos: add input
+> clock to CMU in Exynos4412 Odroid"), caused probe reorder: the clkout
+> appeared before Exynos4 clock provider.  Since clkout depends on Exynos4
+> clocks and does not support deferred probe, this did not work and caused
+> later failure of usb3503 USB hub probe which needs clkout:
+> 
+>     [    5.007442] usb3503 0-0008: unable to request refclk (-517)
+> 
+> The Exynos clkout driver is not a critical/core clock so there is
+> actually no problem in instantiating it later, as a regular module.
+> This removes specific probe ordering and adds support for probe
+> deferral.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/clk/samsung/clk-exynos-clkout.c | 198 +++++++++++++++++-------
+>  1 file changed, 141 insertions(+), 57 deletions(-)
 
-This sounds like a bad idea, as it breaks all the existing users who
-expect this feature to be allowed. Seems like you should flip the
-defaults. Without some better justification, NACK.
+Applied (with fixes pointed out by Sylwester).
 
-Also, I can't find the other 2 patches in this alleged series. Maybe
-they're still making it through the mailing lists and archives.
+Best regards,
+Krzysztof
 
-Brian
-
-> When this parameter is set to false, changing the power_save mode will
-> be disallowed like the following:
->
->     $ sudo iw dev mlan0 set power_save on
->     command failed: Operation not permitted (-1)
->
-> Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
