@@ -2,94 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E73929E1F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D78C29E1F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729056AbgJ2CEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727118AbgJ1VjI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:39:08 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDB7C0613CF;
-        Wed, 28 Oct 2020 14:39:08 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id x1so1067490oic.13;
-        Wed, 28 Oct 2020 14:39:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ilRPL3DQy2H6Zk6HIeE59f6ZVzkXagVII22DPJDLAag=;
-        b=oMgPjhgxZddy2MlRFdbHYzpkCf87TsiBUTX9Ks/FpT3aQndQx4GqWe2bP+n/EbYvLK
-         G1tltXAUtW51uKPeWm+onBtFrW91UIbBqzugq8Yge5v2RSaqWZBehWsQj8RJtV73/pFL
-         d6gkE0MOVrqCTFZ9MOCF8Vuw/OHrI8fmqJO0nwMxLplEKOEqIP6uE2tJ5wp6HfoZEmdd
-         Cq8O68SQLUe86Aj1FuZB3sd2PzhWfvWAOn86z0G60wA3vX6KoB97+w3XzD08OI/asmn8
-         jxuPOWBYul5ybPvb8jmYyUZiDSC5cNjKx0wg2DN1ileDgwWqwlqxtlcoUC4KMxA82yyA
-         TMBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ilRPL3DQy2H6Zk6HIeE59f6ZVzkXagVII22DPJDLAag=;
-        b=rUJZkvZ5Quz3XndDL/i801SxBLOkEmkcD+D1UUwzrTX4HGxHFWwSXEw8H6kXyfRSqd
-         uvqyJXuv1eInY9pn5lgbKC2sdZDRuO+oASLHh4U9IE88A2tkR0HAGYr9JSIO96OppIL4
-         3hkHafiTDKt1WzIOd50ks5bsZ5HnaDtGoKq8laiu41gw5qfPeGGuGDIzLq3bNQWhrxmj
-         v+sbTrQQTWBHkXvCUx8OfUNYV/mTxBC/jZkSNSSwD0sAA8yxmgRzjrAWDtCi0g5ZlNcH
-         YaHfNOaTkwkYW3bsve7o6ghbhW0EwrxknSSu21+dK0ZCVjJkVQYU2lNihpjCYmKgFD/C
-         nmVQ==
-X-Gm-Message-State: AOAM5316AIGgUg+H8TC30K4UK/4nwUV2WfBzVGkIUKB2u8CJsKPSb8vx
-        xBjB3ybtSIwk8ux6/8LbcNwiR1zITlMi
-X-Google-Smtp-Source: ABdhPJyLn0I7cW6/sgcaJEeTzSzspFyQyOpnfBVX38qqSHlqULuJKLLKtI8EzomBKUQCoIRROFr/3w==
-X-Received: by 2002:a17:90a:14a4:: with SMTP id k33mr5177792pja.236.1603863795449;
-        Tue, 27 Oct 2020 22:43:15 -0700 (PDT)
-Received: from PWN (n11212042025.netvigator.com. [112.120.42.25])
-        by smtp.gmail.com with ESMTPSA id 10sm4008324pjt.50.2020.10.27.22.43.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 22:43:14 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 01:43:07 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] Fonts: Make font size unsigned in font_desc
-Message-ID: <20201028054307.GA1205568@PWN>
-References: <cover.1603788511.git.yepeilin.cs@gmail.com>
- <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
- <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com>
- <20201027185058.GM401619@phenom.ffwll.local>
+        id S1728064AbgJ2CEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:04:49 -0400
+Received: from mail-eopbgr70047.outbound.protection.outlook.com ([40.107.7.47]:53806
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727122AbgJ1VjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:39:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MAdrpXFDrigqo834Y5AOs2DS5Tg+kYn+jYI2FanJAgKoNovzt9Akdx8O0EWQ0uXWbI7FEie6NsQYmlqEN91LN4kdF7UcGKx9XpQ0GPO+0wNlyIspaA4lp5KhGmcgWjtXoI/CetM/BHI61MBtX3MyIpdxEuPUzw+Kj1t+Q1IWug3wZJwuY/gErTzkkpEqv225itI3f3i7urX7VomUYrwJInDSefUPc7bSEQU7wqrqZxU/oHTpM1osy8+SxLeeFhAmq390wWOtXQ+gRuAssZjd8CoEquKiZC1Ilg2KtYAhyCnh14tW1hGdeFb6vhzAja9b80siVHlMrRGexlanUgQEBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AM28SGWvT0R7/4p29UhuNgrX3RybQcI24etQ5jSDfV4=;
+ b=Mxbxqh8XVQoV29AFtCKtGZiwJEnKdxeiCBM4SJjEIWkd0saBQaZq5dUZRhtK9rKF58/6egZFDm9wKdaMgAIIAOHpicr3vNLrej0g6ISu/aIrPMDwWHYOIIfQitN3ahZlUlmTad1qxXuXgumrAV3IibaorjYPV9armHOYj0UmG7ViptK4jJpY+ig3LG1zvWZCefmyaGVXoutIil7NSDMD395lIVWcZR33mQKT36Zztabx/hXF+nbbrSJqD6feDhQoNnUrZTJA2KnP55j0GITptFnPhO4a7C2rKEeGyiMHjAoMkoKcLu8y2UEUjFCSBVWowm1xvGGJljwSapyScT3V2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AM28SGWvT0R7/4p29UhuNgrX3RybQcI24etQ5jSDfV4=;
+ b=g+Hu04zpjhOuNLBCQVk9E5EAslswMJI6gyws20mAfDtldJb9j9da+XCKGgEzO/BcTCuoyhH9Gg09aogXv82XKNP3VGj9gTc8Q69cSbwclkb2N38P7Lcgax0uuPBCJvIFmRzyf4HgM5120xqQl2wXujDqRs7KDZ9hWkh8eLclHAA=
+Received: from AM0PR04MB4947.eurprd04.prod.outlook.com (2603:10a6:208:c8::16)
+ by AM0PR04MB5907.eurprd04.prod.outlook.com (2603:10a6:208:12f::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Wed, 28 Oct
+ 2020 06:05:28 +0000
+Received: from AM0PR04MB4947.eurprd04.prod.outlook.com
+ ([fe80::2a:11b5:6807:7518]) by AM0PR04MB4947.eurprd04.prod.outlook.com
+ ([fe80::2a:11b5:6807:7518%5]) with mapi id 15.20.3477.028; Wed, 28 Oct 2020
+ 06:05:28 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "hch@infradead.org" <hch@infradead.org>,
+        "vincent.whitchurch@axis.com" <vincent.whitchurch@axis.com>,
+        "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
+        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, "kishon@ti.com" <kishon@ti.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>, Andy Duan <fugang.duan@nxp.com>
+Subject: RE: [PATCH V5 0/2] Change vring space from nomal memory to dma
+ coherent memory
+Thread-Topic: [PATCH V5 0/2] Change vring space from nomal memory to dma
+ coherent memory
+Thread-Index: AQHWrM6hrUxx3H5v+0a5i9aKIfcorqmshSIAgAABZvA=
+Date:   Wed, 28 Oct 2020 06:05:28 +0000
+Message-ID: <AM0PR04MB4947032368486CC9874C812692170@AM0PR04MB4947.eurprd04.prod.outlook.com>
+References: <20201028020305.10593-1-sherry.sun@nxp.com>
+ <20201028055836.GA244690@kroah.com>
+In-Reply-To: <20201028055836.GA244690@kroah.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 4f74875b-f687-4b86-5c13-08d87b07780d
+x-ms-traffictypediagnostic: AM0PR04MB5907:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR04MB5907C1A30587F1926E91373A92170@AM0PR04MB5907.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: deW9XBB+yUJimmJMe4HYIB943FoLrgpCsp1WR7Q3MQYVv3Qh29Hbc10lA49WX3Dfld6Ff9JWDH9zM9HO8ZhCeZ54I7qwBuC3SNUl+Ax1CCafVzRoS4IJkZ8gbvEskuCavqvnwLZovZxgxxRskDS9z4Y9Q9hzY0onv0QHhE0aXd6EsdUqZxEaD0+9wa+hk3X3KwXznrIaH/6ryOXt1d/25zyZjIott+4pslvhAgdGUS9R85GqzuBsFXuBEVqQFN4I4aMraNArRmcam0eLzBHa61hga1vLFxjmP6ZZAGOmVw6344m4FKYN7d1VoghfBqb6UPISXlrqpoT5SvpovR6H2Qud8lG0jWU7Yx9gO4p5vUfkyckzByn/cgdvMrQT+q6agNatjEmVsZCoGw5ysGiFUQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4947.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(136003)(346002)(39860400002)(8676002)(6506007)(7416002)(186003)(83380400001)(6916009)(76116006)(66476007)(5660300002)(64756008)(66556008)(66446008)(52536014)(71200400001)(4326008)(86362001)(316002)(7696005)(2906002)(66946007)(33656002)(966005)(8936002)(54906003)(55016002)(9686003)(26005)(478600001)(44832011)(45080400002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: ZrLf33yo3vRTVWnpUt3KZZ7m4DN3LKglOuXVzhfkcyh49N3ti2WkYLuGQ6AIRgyPPw3LrKZYMfqAU+CGYuWNmfvnEnJ3F51JNEheaUKQ9WZLmWu0mpuGmkNMX6yetk2pQw4BH+nredhgvhfDZvXnORVsN5L3klGXbSMlDvyNOOtXpUsel/AxWKEN2sYepEnLyRGnQQyEPhPJKTtK5+I23/T2R/WAxwy9Aom2hDYrBbn9ShcGOvvapv9DKCc6UYmp3k6gvfSDFInF5nLhZzoTSyRcZ4Sjh8C1Z/8Yzb2PMmWlcTiyjgQzS3MwTi215M/QzchoBTCAe8Ys1/yVFgbxr99XbhTUH7ql8K/RAWA3sOyQNIVY3ATtJKETDlNIdfG9/8Dje1WSMUndORkmczXuubD+mBOVEseTQgndLRPJTJRDZ9oXv8NxvLUO6ps1Pp7PLid07cUD8hvacbCtD5WFcQQAN4qGirv+35CtCOXbE2NahmwvoOC6k7f1w1Zty2yW5SoHZoNOiO27C/fZoinTKsIQhXoh4l+LyMu1W23nDMGuAj/vR+Wc+GIZgs9bs1AyBzaY0IeQo6S87Mg1JWsNE4qA2hKYh7SoacTR2VdDxxlhib3+cVPfPK091iiXwQonP3cR0UjBNPwWCROhJizK1w==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027185058.GM401619@phenom.ffwll.local>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB4947.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f74875b-f687-4b86-5c13-08d87b07780d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2020 06:05:28.1204
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1Jgt98CL0m3DvIcMk+TwSz3ckvWu3Wk2jE0zE+00/OAZdcGBr6t9rHlk5JNX3AVcbhJweYqUHqY5VXbWWuIeQw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5907
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 07:50:58PM +0100, Daniel Vetter wrote:
-> On Tue, Oct 27, 2020 at 12:33:05PM -0400, Peilin Ye wrote:
-> > It is improper to define `width` and `height` as signed in `struct
-> > font_desc`. Make them unsigned. Also, change the corresponding printk()
-> > format identifiers from `%d` to `%u`, in sti_select_fbfont().
-> > 
-> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> 
-> I'm not entirely sure of the motivation here ... height/width should never
-> ever be even close to the limit here. Or have you seen integer math that
-> could potentially go wrong if we go with unsigned instead of int?
+Hi Greg,
 
-Oh... No, I have not. I just thought we shouldn't represent a length
-using a signed value. Also, width and height in console_font are
-unsigned int - that shouldn't matter that much though.
+> Subject: Re: [PATCH V5 0/2] Change vring space from nomal memory to dma
+> coherent memory
+>=20
+> On Wed, Oct 28, 2020 at 10:03:03AM +0800, Sherry Sun wrote:
+> > Changes in V5:
+> > 1. Reorganize the vop_mmap function code in patch 1, which is done by
+> Christoph.
+> > 2. Completely remove the unnecessary code related to reassign the used
+> > ring for card in patch 2.
+> >
+> > The original vop driver only supports dma coherent device, as it
+> > allocates and maps vring by _get_free_pages and dma_map_single, but
+> > not use dma_sync_single_for_cpu/device to sync the updates of
+> > device_page/vring between EP and RC, which will cause memory
+> > synchronization problem for device don't support hardware dma coherent.
+> >
+> > And allocate vrings use dma_alloc_coherent is a common way in kernel,
+> > as the memory interacted between two systems should use consistent
+> > memory to avoid caching effects. So here add noncoherent platform
+> support for vop driver.
+> > Also add some related dma changes to make sure noncoherent platform
+> > works well.
+> >
+> > Sherry Sun (2):
+> >   misc: vop: change the way of allocating vrings and device page
+> >   misc: vop: do not allocate and reassign the used ring
+> >
+> >  drivers/misc/mic/bus/vop_bus.h     |   2 +
+> >  drivers/misc/mic/host/mic_boot.c   |   9 ++
+> >  drivers/misc/mic/host/mic_main.c   |  43 ++------
+> >  drivers/misc/mic/vop/vop_debugfs.c |   4 -
+> >  drivers/misc/mic/vop/vop_main.c    |  70 +-----------
+> >  drivers/misc/mic/vop/vop_vringh.c  | 166 ++++++++++-------------------
+> >  include/uapi/linux/mic_common.h    |   9 +-
+> >  7 files changed, 85 insertions(+), 218 deletions(-)
+>=20
+> Have you all seen:
+> 	https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%
+> 2Flore.kernel.org%2Fr%2F8c1443136563de34699d2c084df478181c205db4.16
+> 03854416.git.sudeep.dutt%40intel.com&amp;data=3D04%7C01%7Csherry.sun%
+> 40nxp.com%7Cc19c987667434969847e08d87b0685e8%7C686ea1d3bc2b4c6f
+> a92cd99c5c301635%7C0%7C0%7C637394615238940323%7CUnknown%7CTW
+> FpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJX
+> VCI6Mn0%3D%7C1000&amp;sdata=3DZq%2FtHWTq%2BuIVBYXFGoeBmq0JJzYd
+> 9zDyv4NVN4TpC%2FU%3D&amp;reserved=3D0
+>=20
+> Looks like this code is asking to just be deleted, is that ok with you?
 
-[3/5] doesn't hunk properly without this patch, I'll send a v2 for [3/5]
-soon.
+Yes, I saw that patch. I'm ok with it.
 
-Peilin
+Best regards
+Sherry
 
+>=20
+> thanks,
+>=20
+> greg k-h
