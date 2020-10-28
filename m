@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D9029D834
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:30:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC95029D839
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387702AbgJ1Wa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:30:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43538 "EHLO mail.kernel.org"
+        id S2387751AbgJ1Waj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:30:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387665AbgJ1WaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:30:24 -0400
+        id S1732937AbgJ1Wae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:30:34 -0400
 Received: from kozik-lap.proceq-device.com (unknown [194.230.155.184])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC70720720;
-        Wed, 28 Oct 2020 22:30:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 187AF20714;
+        Wed, 28 Oct 2020 22:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603924223;
-        bh=GBQ0jA1UbDnOOxIlEwQgVuqIYDKm0O9dv+Q1uOL6pdA=;
+        s=default; t=1603924233;
+        bh=0ZjT6w62frwssv+4Ks9l2/OnlDfcFnkYb7WrZ7cRmdw=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=tIn300E8Rzj6BZFs3bCXHp75IHLpBjGoOYIqtoovMUMHGn0FHLBGyVHUD48m7tUDX
-         /Za588QEIRJrpHNilXkNTADwp8hua11g9jS+fzjo9eQnezVpQrclTURxm+3+eL2hL1
-         5nG6mYSYxD3yprPQXPjmtMWOFeYbRLZIfCcgC/pY=
+        b=gdXf2TRB2cFgLK3RjJRUXTsicinW2NjNQp8VYMED099C67W/RHpcOER7hNp/CKizU
+         C5qhDjS5W8MPibbk14g+qhxWMDKRSjtEKSuA6Ut9c6h8RRHouhmDCyM831A+UXCKGJ
+         zpTBYP/asH7yg3E01pl3AOfLF/ckUAJS4noL6KzA=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Lee Jones <lee.jones@linaro.org>,
         Nicolas Ferre <nicolas.ferre@microchip.com>,
@@ -44,9 +44,9 @@ To:     Lee Jones <lee.jones@linaro.org>,
         linux-arm-kernel@lists.infradead.org,
         linux-rpi-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: [RESEND PATCH 02/42] mfd: as3711: use PLATFORM_DEVID_NONE
-Date:   Wed, 28 Oct 2020 23:29:29 +0100
-Message-Id: <20201028223009.369824-2-krzk@kernel.org>
+Subject: [RESEND PATCH 04/42] mfd: atmel-hlcdc: use PLATFORM_DEVID_NONE
+Date:   Wed, 28 Oct 2020 23:29:31 +0100
+Message-Id: <20201028223009.369824-4-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201028223009.369824-1-krzk@kernel.org>
 References: <20201028223009.369824-1-krzk@kernel.org>
@@ -61,26 +61,24 @@ Use PLATFORM_DEVID_NONE define instead of "-1" value because:
  - it might point attention why auto device ID was not used.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- drivers/mfd/as3711.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/mfd/atmel-hlcdc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/as3711.c b/drivers/mfd/as3711.c
-index 3adaec6c37df..5933f322ad52 100644
---- a/drivers/mfd/as3711.c
-+++ b/drivers/mfd/as3711.c
-@@ -184,8 +184,9 @@ static int as3711_i2c_probe(struct i2c_client *client,
- 		as3711_subdevs[AS3711_BACKLIGHT].pdata_size = 0;
- 	}
+diff --git a/drivers/mfd/atmel-hlcdc.c b/drivers/mfd/atmel-hlcdc.c
+index 3c2414ba4b01..8ba13bc6fcf8 100644
+--- a/drivers/mfd/atmel-hlcdc.c
++++ b/drivers/mfd/atmel-hlcdc.c
+@@ -129,7 +129,7 @@ static int atmel_hlcdc_probe(struct platform_device *pdev)
  
--	ret = devm_mfd_add_devices(as3711->dev, -1, as3711_subdevs,
--				   ARRAY_SIZE(as3711_subdevs), NULL, 0, NULL);
-+	ret = devm_mfd_add_devices(as3711->dev, PLATFORM_DEVID_NONE,
-+				   as3711_subdevs, ARRAY_SIZE(as3711_subdevs),
-+				   NULL, 0, NULL);
- 	if (ret < 0)
- 		dev_err(&client->dev, "add mfd devices failed: %d\n", ret);
+ 	dev_set_drvdata(dev, hlcdc);
  
+-	return devm_mfd_add_devices(dev, -1, atmel_hlcdc_cells,
++	return devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE, atmel_hlcdc_cells,
+ 				    ARRAY_SIZE(atmel_hlcdc_cells),
+ 				    NULL, 0, NULL);
+ }
 -- 
 2.25.1
 
