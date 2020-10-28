@@ -2,417 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EED5929E0CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C19B329E0C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729897AbgJ1WDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:03:03 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43560 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728536AbgJ1WBx (ORCPT
+        id S1729723AbgJ2BgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:36:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44139 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729724AbgJ1WDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:01:53 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09SDX0xu033497;
-        Wed, 28 Oct 2020 09:57:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=DuUHDmIQBQHFYQcsIOQy8hgmczkJjqX68MusA5Tt3lY=;
- b=sO8dFZaGWgUf+0V8V2n6qxUvwMypWdTNa1jnZdvaCVRjGG5rs14u5J7RkOkKkQy7UHQ+
- rGzOGNtPio3s4qO0qV5xlj0cRyzigPX+T4caRQYor1d2NdqBbykyG7kj87QRbQaVjeTG
- o/v3hwuqxQS1RK5zLnFYcWijb758PnFVc53Ef1XEzLfYBAHE/WsNxVUGMOfojdsYYS2i
- 6NrQ9TE0AYUv/bkEK2F+RnpTbKXmjiIANXrJL/dy0CeA1eKjLzymckbBrVTnb4QOwbqT
- LHWiPfN9+Cuxj0lyaKVXHbahgQ6ZL8rtj18wFGO/FcV/czt6FKUYLJ/q8usxJYCjazgw eg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34eqnp8ac1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 09:57:33 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09SDXBvw034917;
-        Wed, 28 Oct 2020 09:57:32 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34eqnp8ab2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 09:57:32 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09SDmFWN023072;
-        Wed, 28 Oct 2020 13:57:30 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 34esn30e6x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 13:57:30 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09SDvSbr33227234
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Oct 2020 13:57:28 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D5ED4A405F;
-        Wed, 28 Oct 2020 13:57:27 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1D3EAA4053;
-        Wed, 28 Oct 2020 13:57:27 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.145.18.81])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Oct 2020 13:57:27 +0000 (GMT)
-Date:   Wed, 28 Oct 2020 14:57:25 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v11 08/14] s390/vfio-ap: hot plug/unplug queues on
- bind/unbind of queue device
-Message-ID: <20201028145725.1a81c5cf.pasic@linux.ibm.com>
-In-Reply-To: <20201022171209.19494-9-akrowiak@linux.ibm.com>
-References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
- <20201022171209.19494-9-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Wed, 28 Oct 2020 18:03:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603922617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pA/ijsR6wL+A44Ymsd37c8yCOb9K4D0s+LLkBgVrjUk=;
+        b=ANs8mntHQp2+JP+RmwHHM1tT+CRoON7IlCBcLckdb0yc0U1jYmBXUgwCwqn1ARSlh4kHXT
+        kU+M6GBM6tU82geuV1avZhDFdf/3dSQmSVmEPWS4L1wm56E+JqQlusAp/WXaDznCtb5/zk
+        BIvabZbuMNlJNAomM4FnePF3pXElJCU=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-186-1ugKgKmUP12ao3WPIg5uWw-1; Wed, 28 Oct 2020 10:02:40 -0400
+X-MC-Unique: 1ugKgKmUP12ao3WPIg5uWw-1
+Received: by mail-oi1-f198.google.com with SMTP id n62so2262617oig.9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 07:02:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=pA/ijsR6wL+A44Ymsd37c8yCOb9K4D0s+LLkBgVrjUk=;
+        b=gY1SUZdAohM17lX9D/AC2BUAEanok7V5vtOdpMG7d4tXSVwN34Usv7oRtwn1g5ofPr
+         vaD1PAXTl+6DPkZgVx1pK6GklHn/RD8A2aMtr3BpadmhYBQ1JomnmclRaFTXLk5hEPIW
+         kiSafs2dFMRLrvYIPkvx+NVCut9ayX2Vz9Jln22uXXLqqAf4k8I1AfwqnTadTnSbWd93
+         vDGxnSBqlpZEkgHXPIg3Hj7wzHJPQF6pF3MwBHuHXvMqmeDT+W5L6Ye2XVjfizN9HHrM
+         QdLL4hVmJm6EtelEIyUovLbORDCp5RTAljg5YU5HMQeNm1prb4srOlr9JUVaZpnjWkjK
+         n6Cg==
+X-Gm-Message-State: AOAM531nlYLjWL2HwgpwTNT58yfdsJX1XU0cPioiJ520r8yLDWz+1R2H
+        EW2eTVbIBQE4+fHVH6cbI6RMuJFLbUfAFeOOJBXLj0QBlettPy3pwmma/h7TqMzf9NElcl1wG2v
+        lQm03siMJElAxMasOo0YlL6JA
+X-Received: by 2002:aca:bc89:: with SMTP id m131mr5038503oif.48.1603893758574;
+        Wed, 28 Oct 2020 07:02:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxK8HVad9mubt69p9XV0Zovu/5ZN2GiKzorEFq6aLJFRbquF2hpuRfMn0Pgaxfxph4ok5FPqw==
+X-Received: by 2002:aca:bc89:: with SMTP id m131mr5038471oif.48.1603893758162;
+        Wed, 28 Oct 2020 07:02:38 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b125sm2656559oii.19.2020.10.28.07.02.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 07:02:37 -0700 (PDT)
+Subject: Re: [PATCH] agp: amd64: remove unneeded initialization
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        David Airlie <airlied@linux.ie>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
+References: <20201028133106.5420-1-lukas.bulwahn@gmail.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <37c4192a-2757-574c-85e1-1df05c6a7a31@redhat.com>
+Date:   Wed, 28 Oct 2020 07:02:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-28_06:2020-10-26,2020-10-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- suspectscore=0 mlxscore=0 phishscore=0 impostorscore=0 adultscore=0
- malwarescore=0 priorityscore=1501 spamscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010280088
+In-Reply-To: <20201028133106.5420-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Oct 2020 13:12:03 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-> In response to the probe or remove of a queue device, if a KVM guest is
-> using the matrix mdev to which the APQN of the queue device is assigned,
-> the vfio_ap device driver must respond accordingly. In an ideal world, the
-> queue device being probed would be hot plugged into the guest. Likewise,
-> the queue corresponding to the queue device being removed would
-> be hot unplugged from the guest. Unfortunately, the AP architecture
-> precludes plugging or unplugging individual queues. We must also
-> consider the fact that the linux device model precludes us from passing a
-> queue device through to a KVM guest that is not bound to the driver
-> facilitating the pass-through. Consequently, we are left with the choice of
-> plugging/unplugging the adapter or the domain. In the latter case, this
-> would result in taking access to the domain away for each adapter the
-> guest is using. In either case, the operation will alter a KVM guest's
-> access to one or more queues, so let's plug/unplug the adapter on
-> bind/unbind of the queue device since this corresponds to the hardware
-> entity that may be physically plugged/unplugged - i.e., a domain is not
-> a piece of hardware.
-> 
-> Example:
-> =======
-> Queue devices bound to vfio_ap device driver:
->    04.0004
->    04.0047
->    04.0054
-> 
->    05.0005
->    05.0047
-> 
-> Adapters and domains assigned to matrix mdev:
->    Adapters  Domains  -> Queues
->    04        0004        04.0004
->    05        0047        04.0047
->              0054        04.0054
->                          05.0004
->                          05.0047
->                          05.0054
-> 
-> KVM guest matrix at is startup:
->    Adapters  Domains  -> Queues
->    04        0004        04.0004
->              0047        04.0047
->              0054        04.0054
-> 
->    Adapter 05 is filtered because queue 05.0054 is not bound.
-> 
-> KVM guest matrix after queue 05.0054 is bound to the vfio_ap driver:
->    Adapters  Domains  -> Queues
->    04        0004        04.0004
->    05        0047        04.0047
->              0054        04.0054
->                          05.0004
->                          05.0047
->                          05.0054
-> 
->    All queues assigned to the matrix mdev are now bound.
-> 
-> KVM guest matrix after queue 04.0004 is unbound:
-> 
->    Adapters  Domains  -> Queues
->    05        0004        05.0004
->              0047        05.0047
->              0054        05.0054
-> 
->    Adapter 04 is filtered because 04.0004 is no longer bound.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+On 10/28/20 6:31 AM, Lukas Bulwahn wrote:
+> make clang-analyzer on x86_64 defconfig caught my attention with:
+>
+>   drivers/char/agp/amd64-agp.c:336:2: warning: \
+>   Value stored to 'i' is never read [clang-analyzer-deadcode.DeadStores]
+>           i = 0;
+>           ^
+>
+> Remove this unneeded initialization to make clang-analyzer happy.
+>
+> Commit a32073bffc65 ("x86_64: Clean and enhance up K8 northbridge access
+> code") refactored cache_nbs() and introduced this unneeded dead-store
+> initialization.
+>
+> As compilers will detect this unneeded assignment and optimize this anyway,
+> the resulting binary is identical before and after this change.
+>
+> No functional change. No change in binary code.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 > ---
->  drivers/s390/crypto/vfio_ap_ops.c | 158 +++++++++++++++++++++++++++++-
->  1 file changed, 155 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 7bad70d7bcef..5b34bc8fca31 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -312,6 +312,13 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
->  	return 0;
->  }
+> applies cleanly on current master and next-20201028
+>
+> David, please pick this minor non-urgent clean-up patch.
+>
+>  drivers/char/agp/amd64-agp.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/char/agp/amd64-agp.c b/drivers/char/agp/amd64-agp.c
+> index b40edae32817..0413b3136541 100644
+> --- a/drivers/char/agp/amd64-agp.c
+> +++ b/drivers/char/agp/amd64-agp.c
+> @@ -333,7 +333,6 @@ static int cache_nbs(struct pci_dev *pdev, u32 cap_ptr)
+>  	if (!amd_nb_has_feature(AMD_NB_GART))
+>  		return -ENODEV;
 >  
-> +static void vfio_ap_matrix_clear_masks(struct ap_matrix *matrix)
-> +{
-> +	bitmap_clear(matrix->apm, 0, AP_DEVICES);
-> +	bitmap_clear(matrix->aqm, 0, AP_DOMAINS);
-> +	bitmap_clear(matrix->adm, 0, AP_DOMAINS);
-> +}
-> +
->  static void vfio_ap_matrix_init(struct ap_config_info *info,
->  				struct ap_matrix *matrix)
->  {
-> @@ -601,6 +608,104 @@ static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev,
->  	return 0;
->  }
->  
-> +static bool vfio_ap_mdev_matrixes_equal(struct ap_matrix *matrix1,
-> +					struct ap_matrix *matrix2)
-> +{
-> +	return (bitmap_equal(matrix1->apm, matrix2->apm, AP_DEVICES) &&
-> +		bitmap_equal(matrix1->aqm, matrix2->aqm, AP_DOMAINS) &&
-> +		bitmap_equal(matrix1->adm, matrix2->adm, AP_DOMAINS));
-> +}
-> +
-> +/**
-> + * vfio_ap_mdev_filter_matrix
-> + *
-> + * Filters the matrix of adapters, domains, and control domains assigned to
-> + * a matrix mdev's AP configuration and stores the result in the shadow copy of
-> + * the APCB used to supply a KVM guest's AP configuration.
-> + *
-> + * @matrix_mdev:  the matrix mdev whose AP configuration is to be filtered
-> + *
-> + * Returns true if filtering has changed the shadow copy of the APCB used
-> + * to supply a KVM guest's AP configuration; otherwise, returns false.
-> + */
-> +static int vfio_ap_mdev_filter_guest_matrix(struct ap_matrix_mdev *matrix_mdev)
-> +{
-> +	struct ap_matrix shadow_apcb;
-> +	unsigned long apid, apqi, apqn;
-> +
-> +	memcpy(&shadow_apcb, &matrix_mdev->matrix, sizeof(struct ap_matrix));
-> +
-> +	for_each_set_bit_inv(apid, matrix_mdev->matrix.apm, AP_DEVICES) {
-> +		/*
-> +		 * If the APID is not assigned to the host AP configuration,
-> +		 * we can not assign it to the guest's AP configuration
-> +		 */
-> +		if (!test_bit_inv(apid,
-> +				  (unsigned long *)matrix_dev->info.apm)) {
-> +			clear_bit_inv(apid, shadow_apcb.apm);
-> +			continue;
-> +		}
-> +
-> +		for_each_set_bit_inv(apqi, matrix_mdev->matrix.aqm,
-> +				     AP_DOMAINS) {
-> +			/*
-> +			 * If the APQI is not assigned to the host AP
-> +			 * configuration, then it can not be assigned to the
-> +			 * guest's AP configuration
-> +			 */
-> +			if (!test_bit_inv(apqi, (unsigned long *)
-> +					  matrix_dev->info.aqm)) {
-> +				clear_bit_inv(apqi, shadow_apcb.aqm);
-> +				continue;
-> +			}
-> +
-> +			/*
-> +			 * If the APQN is not bound to the vfio_ap device
-> +			 * driver, then we can't assign it to the guest's
-> +			 * AP configuration. The AP architecture won't
-> +			 * allow filtering of a single APQN, so let's filter
-> +			 * the APID.
-> +			 */
-> +			apqn = AP_MKQID(apid, apqi);
-> +			if (!vfio_ap_mdev_get_queue(matrix_mdev, apqn)) {
-> +				clear_bit_inv(apid, shadow_apcb.apm);
-> +				break;
-> +			}
-> +		}
-> +
-> +		/*
-> +		 * If all APIDs have been cleared, then clear the APQIs from the
-> +		 * shadow APCB and quit filtering.
-> +		 */
-> +		if (bitmap_empty(shadow_apcb.apm, AP_DEVICES)) {
-> +			if (!bitmap_empty(shadow_apcb.aqm, AP_DOMAINS))
-> +				bitmap_clear(shadow_apcb.aqm, 0, AP_DOMAINS);
-> +
-> +			break;
-> +		}
-> +
-> +		/*
-> +		 * If all APQIs have been cleared, then clear the APIDs from the
-> +		 * shadow APCB and quit filtering.
-> +		 */
-> +		if (bitmap_empty(shadow_apcb.aqm, AP_DOMAINS)) {
-> +			if (!bitmap_empty(shadow_apcb.apm, AP_DEVICES))
-> +				bitmap_clear(shadow_apcb.apm, 0, AP_DEVICES);
-> +
-> +			break;
-> +		}
+> -	i = 0;
+>  	for (i = 0; i < amd_nb_num(); i++) {
+>  		struct pci_dev *dev = node_to_amd_nb(i)->misc;
+>  		if (fix_northbridge(dev, pdev, cap_ptr) < 0) {
 
-We do this to show the no queues but bits set output in show? We could
-get rid of some code if we were to not z
+Looks ok to me.
 
-> +	}
-> +
-> +	if (vfio_ap_mdev_matrixes_equal(&matrix_mdev->shadow_apcb,
-> +					&shadow_apcb))
-> +		return false;
-> +
-> +	memcpy(&matrix_mdev->shadow_apcb, &shadow_apcb,
-> +	       sizeof(struct ap_matrix));
-> +
-> +	return true;
-> +}
-> +
->  enum qlink_type {
->  	LINK_APID,
->  	LINK_APQI,
-> @@ -1256,9 +1361,8 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->  	if (!vfio_ap_mdev_has_crycb(matrix_mdev))
->  		return NOTIFY_DONE;
->  
-> -	memcpy(&matrix_mdev->shadow_apcb, &matrix_mdev->matrix,
-> -	       sizeof(matrix_mdev->shadow_apcb));
-> -	vfio_ap_mdev_commit_shadow_apcb(matrix_mdev);
-> +	if (vfio_ap_mdev_filter_guest_matrix(matrix_mdev))
-> +		vfio_ap_mdev_commit_shadow_apcb(matrix_mdev);
->  
->  	return NOTIFY_OK;
->  }
-> @@ -1369,6 +1473,18 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
->  		matrix_mdev->kvm = NULL;
->  	}
->  
-> +	/*
-> +	 * The shadow_apcb must be cleared.
-> +	 *
-> +	 * The shadow_apcb is committed to the guest only if the masks resulting
-> +	 * from filtering the matrix_mdev->matrix differs from the masks in the
-> +	 * shadow_apcb. Consequently, if we don't clear the masks here and a
-> +	 * guest is subsequently started, the filtering may not result in a
-> +	 * change to the shadow_apcb which will not get committed to the guest;
-> +	 * in that case, the guest will be left without any queues.
-> +	 */
-> +	vfio_ap_matrix_clear_masks(&matrix_mdev->shadow_apcb);
-> +
->  	mutex_unlock(&matrix_dev->lock);
->  
->  	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
-> @@ -1466,6 +1582,16 @@ static void vfio_ap_queue_link_mdev(struct vfio_ap_queue *q)
->  	}
->  }
->  
-> +static void vfio_ap_mdev_hot_plug_queue(struct vfio_ap_queue *q)
-> +{
-> +
-> +	if ((q->matrix_mdev == NULL) || !vfio_ap_mdev_has_crycb(q->matrix_mdev))
-> +		return;
-> +
-> +	if (vfio_ap_mdev_filter_guest_matrix(q->matrix_mdev))
-> +		vfio_ap_mdev_commit_shadow_apcb(q->matrix_mdev);
-
-Here we do more work than necessary. At this point we now, that
-we either put the APID of the queue in the shadow_apcb or do nothing. To
-decide if we have to put the APID in the shadow apcb we need to
-check for the cartesian product of shadow_apcb.aqm with the APID, if the
-queues identified by those APQNs are bound to the vfio_ap driver. The 
-vfio_ap_mdev_filter_guest_matrix() is going to do a lookup for each
-assigned APQN.
-
-> +}
-> +
->  int vfio_ap_mdev_probe_queue(struct ap_device *apdev)
->  {
->  	struct vfio_ap_queue *q;
-> @@ -1482,11 +1608,36 @@ int vfio_ap_mdev_probe_queue(struct ap_device *apdev)
->  	q->apqn = queue->qid;
->  	q->saved_isc = VFIO_AP_ISC_INVALID;
->  	vfio_ap_queue_link_mdev(q);
-> +	vfio_ap_mdev_hot_plug_queue(q);
->  	mutex_unlock(&matrix_dev->lock);
->  
->  	return 0;
->  }
->  
-> +void vfio_ap_mdev_hot_unplug_queue(struct vfio_ap_queue *q)
-> +{
-> +	unsigned long apid = AP_QID_CARD(q->apqn);
-> +
-> +	if ((q->matrix_mdev == NULL) || !vfio_ap_mdev_has_crycb(q->matrix_mdev))
-> +		return;
-> +
-> +	/*
-> +	 * If the APID is assigned to the guest, then let's
-> +	 * go ahead and unplug the adapter since the
-> +	 * architecture does not provide a means to unplug
-> +	 * an individual queue.
-> +	 */
-> +	if (test_bit_inv(apid, q->matrix_mdev->shadow_apcb.apm)) {
-> +		clear_bit_inv(apid, q->matrix_mdev->shadow_apcb.apm);
-
-Shouldn't we check aqm as well? I mean it may be clear at this point
-bacause of info->aqm. If the bit is clear, we don't have to remove
-the apm bit.
-
-> +
-> +		if (bitmap_empty(q->matrix_mdev->shadow_apcb.apm, AP_DEVICES))
-> +			bitmap_clear(q->matrix_mdev->shadow_apcb.aqm, 0,
-> +				     AP_DOMAINS);
-> +
-> +		vfio_ap_mdev_commit_shadow_apcb(q->matrix_mdev);
-> +	}
-> +}
-> +
->  void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
->  {
->  	struct vfio_ap_queue *q;
-> @@ -1497,6 +1648,7 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
->  
->  	mutex_lock(&matrix_dev->lock);
->  	q = dev_get_drvdata(&queue->ap_dev.device);
-> +	vfio_ap_mdev_hot_unplug_queue(q);
-
-Puh this is ugly. In an ideal world the guest would be guaranteed to not
-get any writes to the notifier byte after it has seen that the queue is
-gone (or the interrupts were disabled).
-
-The reset below might too late as the vcpus may go back immediately.
-
-I don't have a good solution for this with the tools currently at
-our disposal. We could simulate an external reset for the queue before
-the update do the APCB, or just disable the interrupts. These are ugly
-in their own way. 
-
-Switching to emulation mode might be something for the future, but right
-now it is also ugly.
-
-Any thoughts? Am I just dreaming up a problem here?
-
-Regards,
-Halil
-
-
->  	dev_set_drvdata(&queue->ap_dev.device, NULL);
->  	apid = AP_QID_CARD(q->apqn);
->  	apqi = AP_QID_QUEUE(q->apqn);
+Reviewed-by: Tom Rix <trix@redhat.com>
 
