@@ -2,139 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC52829D909
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:42:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3812E29D924
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:44:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389148AbgJ1Wl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:41:59 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:57404 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728005AbgJ1Wlz (ORCPT
+        id S2389209AbgJ1Woq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:44:46 -0400
+Received: from hosting.gsystem.sk ([212.5.213.30]:50340 "EHLO
+        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730295AbgJ1WmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:41:55 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id E5F711C0BB6; Wed, 28 Oct 2020 21:12:34 +0100 (CET)
-Date:   Wed, 28 Oct 2020 21:12:34 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 111/264] nvmem: core: fix possibly memleak when use
- nvmem_cell_info_to_nvmem_cell()
-Message-ID: <20201028201234.GA11038@duo.ucw.cz>
-References: <20201027135430.632029009@linuxfoundation.org>
- <20201027135435.887735842@linuxfoundation.org>
+        Wed, 28 Oct 2020 18:42:23 -0400
+Received: from [192.168.0.2] (188-167-68-178.dynamic.chello.sk [188.167.68.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id 502DD7A00EE;
+        Wed, 28 Oct 2020 21:15:37 +0100 (CET)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Karol Herbst <kherbst@redhat.com>
+Subject: Re: [Nouveau] nouveau broken on Riva TNT2 in 5.9.0-rc8: GPU not supported on big-endian
+Date:   Wed, 28 Oct 2020 21:15:32 +0100
+User-Agent: KMail/1.9.10
+Cc:     Ilia Mirkin <imirkin@alum.mit.edu>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        "dri-devel" <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <202010092326.20482.linux@zary.sk> <CAKb7UvggVn2c=jUNSfjf6r529n89xfNgVBpn3jnXznVh8Gs4+w@mail.gmail.com> <CACO55tuAxbcXbC9zrT5rs34s=5uBugkbcikORU5868ka9bHdkw@mail.gmail.com>
+In-Reply-To: <CACO55tuAxbcXbC9zrT5rs34s=5uBugkbcikORU5868ka9bHdkw@mail.gmail.com>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20201027135435.887735842@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-Id: <202010282115.32811.linux@zary.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Saturday 10 October 2020 02:02:42 Karol Herbst wrote:
+> On Sat, Oct 10, 2020 at 12:23 AM Ilia Mirkin <imirkin@alum.mit.edu> wrote:
+> >
+> > On Fri, Oct 9, 2020 at 5:54 PM Karol Herbst <kherbst@redhat.com> wrote:
+> > >
+> > > On Fri, Oct 9, 2020 at 11:35 PM Ondrej Zary <linux@zary.sk> wrote:
+> > > >
+> > > > Hello,
+> > > > I'm testing 5.9.0-rc8 and found that Riva TNT2 stopped working:
+> > > > [    0.000000] Linux version 5.9.0-rc8+ (zary@gsql) (gcc (Debian 8.3.0-6) 8.3.0, GNU ld (GNU Binutils for Debian) 2.31.1) #326 SMP Fri Oct 9 22:31:40 CEST 2020
+> > > > ...
+> > > > [   14.771464] nouveau 0000:01:00.0: GPU not supported on big-endian
+> > > > [   14.771782] nouveau: probe of 0000:01:00.0 failed with error -38
+> > > >
+> > > > big-endian? WTF? The machine is x86.
+> > > >
+> > >
+> > > mhh, we reworked the endianess checks a bit and apparently that broke
+> > > something... I will give it some thoughts, but could you be so kind
+> > > and create an mmiotrace under 5.9 with nouveau? You won't need to
+> > > start X or anything while doing it. Just enable the trace and modprobe
+> > > nouveau and collect the trace.
+> >
+> > Looks like nvkm_device_endianness unconditionally reads out 0x4. I
+> > don't think that reg is there pre-NV11. At least NV4, NV5, NV10 and
+> > maybe NV15 (which is logically pre-NV11) don't support big-endian
+> > mode. Not sure about NV1A, which was the IGP of the series and IIRC
+> > logically pre-NV11 as well (but clearly could only be used with x86
+> > chips, since it was part of the motherboard).
+> >
+> > Aha, it's documented in rnndb:
+> >
+> > https://github.com/envytools/envytools/blob/master/rnndb/bus/pmc.xml
+> > <reg32 offset="0x004" name="ENDIAN" variants="NV1A-"/>
+> >
+> 
+> ohh, I should have checked there.. yeah, will write a fix for it then.
+> Before my patch we just always tried to switch it, but never threw an
+> error.
 
---AqsLC8rIMeq19msA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Any progress with the patch?
 
-Hi!
-
-> From: Vadym Kochan <vadym.kochan@plvision.eu>
->=20
-> [ Upstream commit fc9eec4d643597cf4cb2fef17d48110e677610da ]
->=20
-> Fix missing 'kfree_const(cell->name)' when call to
-> nvmem_cell_info_to_nvmem_cell() in several places:
->=20
->      * after nvmem_cell_info_to_nvmem_cell() failed during
->        nvmem_add_cells()
->=20
->      * during nvmem_device_cell_{read,write} when cell->name is
->        kstrdup'ed() without calling kfree_const() at the end, but
->        really there is no reason to do that 'dup, because the cell
->        instance is allocated on the stack for some short period to be
->        read/write without exposing it to the caller.
->=20
-> So the new nvmem_cell_info_to_nvmem_cell_nodup() helper is introduced
-> which is used to convert cell_info -> cell without name duplication as
-> a lighweight version of nvmem_cell_info_to_nvmem_cell().
->=20
-> Fixes: e2a5402ec7c6 ("nvmem: Add nvmem_device based consumer apis.")
-
-There's something very wrong here.
-
-> index 30c040786fde2..54204d550fc22 100644
-> --- a/drivers/nvmem/core.c
-> +++ b/drivers/nvmem/core.c
-> @@ -326,9 +326,9 @@ static void nvmem_cell_add(struct nvmem_cell *cell)
->  	mutex_unlock(&nvmem_cells_mutex);
->  }
-> =20
-> -static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
-> -				   const struct nvmem_cell_info *info,
-> -				   struct nvmem_cell *cell)
-> +static int nvmem_cell_info_to_nvmem_cell_nodup(struct nvmem_device *nvme=
-m,
-> +					const struct nvmem_cell_info *info,
-> +					struct nvmem_cell *cell)
->  {
->  	cell->nvmem =3D nvmem;
->  	cell->offset =3D info->offset;
-> @@ -345,13 +345,30 @@ static int nvmem_cell_info_to_nvmem_cell(struct nvm=
-em_device *nvmem,
->  	if (!IS_ALIGNED(cell->offset, nvmem->stride)) {
->  		dev_err(&nvmem->dev,
->  			"cell %s unaligned to nvmem stride %d\n",
-> -			cell->name, nvmem->stride);
-> +			cell->name ?: "<unknown>", nvmem->stride);
->  		return -EINVAL;
->  	}
-> =20
->  	return 0;
->  }
-
-We rename call from .._cell to .._cell_nodup, but it did not have the
-kstrdup_const() in the first place!
-
-> +static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
-> +				const struct nvmem_cell_info *info,
-> +				struct nvmem_cell *cell)
-> +{
-> +	int err;
-> +
-> +	err =3D nvmem_cell_info_to_nvmem_cell_nodup(nvmem, info, cell);
-> +	if (err)
-> +		return err;
-> +
-> +	cell->name =3D kstrdup_const(info->name, GFP_KERNEL);
-> +	if (!cell->name)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-
-So now we introduce an allocation, but we don't have a place to free
-it. In mainline, it is freed in nvmem_cell_drop(), but 4.19 does not
-have a free there.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---AqsLC8rIMeq19msA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5nQsgAKCRAw5/Bqldv6
-8ihBAJ0dzQuBqm8Owd8kn4PWA8aEWAyTtwCgs0Ffgl8YI4NWlTA13oW6fwieVU8=
-=0+Y+
------END PGP SIGNATURE-----
-
---AqsLC8rIMeq19msA--
+-- 
+Ondrej Zary
