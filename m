@@ -2,115 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8D829D580
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 045FA29D5A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:07:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729748AbgJ1WD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:03:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31191 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729723AbgJ1WDS (ORCPT
+        id S1728649AbgJ1WHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:07:34 -0400
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:35093 "EHLO
+        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730110AbgJ1WH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:03:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603922597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ridPRJ1LvRFxYHi2gAnRyeYeQZqM7yJdqJ8GPHQDCTI=;
-        b=CN7sfmCYMnxtavRid1H7OcIWmtEpf807DvlopzL0LL8smmVKlDbpzvEYtzeIAP7cA6HSSW
-        dCgFGrNF6Hw6CDkxvBFfjqZ7IQpYdFWT1cs4BUQiqcuVGLURCV0exh25r4U60ovTGEq8NX
-        BDJLUwGGCWSpVbm4hsig9v2Y/rilYuk=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-UJG8NoKSN-SQl-FSU3-bdA-1; Wed, 28 Oct 2020 11:01:18 -0400
-X-MC-Unique: UJG8NoKSN-SQl-FSU3-bdA-1
-Received: by mail-wr1-f69.google.com with SMTP id t17so2215901wrm.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 08:01:18 -0700 (PDT)
+        Wed, 28 Oct 2020 18:07:28 -0400
+Received: by mail-yb1-f193.google.com with SMTP id m188so495173ybf.2;
+        Wed, 28 Oct 2020 15:07:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ridPRJ1LvRFxYHi2gAnRyeYeQZqM7yJdqJ8GPHQDCTI=;
-        b=N0E8lyrE8aWvFrVM/WmkAcWaEf0URRgqCmtp4IRsEjRF9DRR4BcqGq5IALJWGWTZ9q
-         XJ/ZHlvSbFnX2/5XfJuWKgcKf28Q2hu3Vu+o8XLd6XVT3wytD15Vdb/GqR8NQ0Gk6RSN
-         adEi9RkxSrPfeNwmcPCvmjmB+uibZdoaTt3HSsxT71sEh+3FDtO/9LZYa6ufdmDc3jxD
-         dQhqZoF+r2jkVkqe9Mie4oEwagqamf6F/9ouiOZh5gRQhp6nozaxu3LxH5uD/iPFsYPM
-         5x6IK/WeoTw9Z8eK6ZG/l5mzDv1qultc3dyq58NxyYLcTA75Y5mjkHjztuOcaCdQf6at
-         hdXA==
-X-Gm-Message-State: AOAM531chb2wP5kYC1HaU+FchO8+PTVqBZjpgpCqjn3bRWhHgLUUQG55
-        EXvaBtDhSNS1fmBUY02qXTwyrxl6p4I5nNq3UAkNqEync6wsXQ+CdFmldava6H+CSfUvkFXqvZo
-        Wk67itmborZb2ZYsWPgDb/64F
-X-Received: by 2002:a5d:424a:: with SMTP id s10mr3437956wrr.130.1603897277106;
-        Wed, 28 Oct 2020 08:01:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzK/CHIYjwACBHBt8dKepNyg7eUiEF/T5Ab2GPWm3ISZvo7NlhetD8d0Q6ozwqy2ck3A63AzQ==
-X-Received: by 2002:a5d:424a:: with SMTP id s10mr3437925wrr.130.1603897276850;
-        Wed, 28 Oct 2020 08:01:16 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id 30sm7374221wrs.84.2020.10.28.08.01.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 08:01:16 -0700 (PDT)
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-References: <20201027214300.1342-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 0/3] KVM: x86/mmu: Add macro for hugepage GFN mask
-Message-ID: <80038ae1-d603-dc22-1997-1ad7da0a936d@redhat.com>
-Date:   Wed, 28 Oct 2020 16:01:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U9i72jITznoyLWceCi4kjFUr4fNuDlp2txdWJ3Q79bE=;
+        b=JvAitL9dJsvtpMeWcXUMRz59fkrK+t5aPGQHX+TavYnsnoaG0Ujh3N/hItJvcMzpq5
+         +vaqJ6oczXVJSyDKRQEDQxd1aEoLcA0MDTaEk6dzOXaDzVuCc+4SDmgOexwfxNJpZf0k
+         37kPoaa4RMI+S+gBGK4Q32wJq95ELTLvva2rYH2pdM6ms+PDiDDvP28KOplFBRzMFaGj
+         +j3l31LH2zDfczlEjqXW8QAA6bpoMUND1ByKrnaA8l1BfwbydA5Hgl/QcWfrHVqf9UVd
+         jSfzxidU3glXvkNRVJbhcXG5QsVbkBHgYvHJn/mbTWMv2nG01bquMBvo0D67L43WLYBX
+         UF1Q==
+X-Gm-Message-State: AOAM532yh/hXtmozSHSGYRSZzi6LnJ/VSGGyozTa8mSA6Xazpb5XIYDx
+        TVaC98mbnWxaH0H1z9IX6FvilVlIZQ==
+X-Google-Smtp-Source: ABdhPJxVfBAexzDeSfthE/C5FdehItFG5LcxBVZpHOboZx3jsIuqwOA58jPu7ZgCp/788T3Wo1UzIg==
+X-Received: by 2002:a9d:7390:: with SMTP id j16mr5739710otk.144.1603897740272;
+        Wed, 28 Oct 2020 08:09:00 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x13sm2134399otq.75.2020.10.28.08.08.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 08:08:59 -0700 (PDT)
+Received: (nullmailer pid 4031254 invoked by uid 1000);
+        Wed, 28 Oct 2020 15:08:58 -0000
+Date:   Wed, 28 Oct 2020 10:08:58 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Hector Yuan <hector.yuan@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wsd_upstream@mediatek.com
+Subject: Re: [PATCH v8 2/3] dt-bindings: arm: cpus: Document
+ 'mediatek,freq-domain' property
+Message-ID: <20201028150858.GA4029348@bogus>
+References: <1603700349-5922-1-git-send-email-hector.yuan@mediatek.com>
+ <1603700349-5922-3-git-send-email-hector.yuan@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20201027214300.1342-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603700349-5922-3-git-send-email-hector.yuan@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/20 22:42, Sean Christopherson wrote:
-> Add a macro, which is probably long overdue, to replace open coded
-> variants of "~(KVM_PAGES_PER_HPAGE(level) - 1)".  The straw that broke the
-> camel's back is the TDP MMU's round_gfn_for_level(), which goes straight
-> for the optimized approach of using NEG instead of SUB+NOT (gcc uses NEG
-> for both).  The use of '-(...)' made me do a double take (more like a
-> quadrupal take) when reading the TDP MMU code as my eyes/brain have been
-> heavily trained to look for the more common '~(... - 1)'.
+On Mon, Oct 26, 2020 at 04:19:08PM +0800, Hector Yuan wrote:
+> From: "Hector.Yuan" <hector.yuan@mediatek.com>
+> 
+> Add devicetree documentation for 'mediatek,freq-domain' property specific
+> to Mediatek CPUs. This property is used to reference the CPUFREQ node
+> along with the domain id.
+> 
+> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/arm/cpus.yaml |    6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
+> index 1222bf1..e995b26 100644
+> --- a/Documentation/devicetree/bindings/arm/cpus.yaml
+> +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
+> @@ -255,6 +255,12 @@ properties:
+>  
+>        where voltage is in V, frequency is in MHz.
+>  
+> +  mediatek,freq-domain:
+> +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
+> +    description:
+> +      CPUs supporting freq-domain must set their "mediatek,freq-domain" property
+> +      with phandle to a cpufreq_hw node followed by the domain id.
 
-The upside is that a "how many" macro such as KVM_PAGES_PER_HPAGE will
-have only one definition that makes sense.  With a "mask" macro you
-never know if the 1s are to the left or to the right.  That is, does
-"gfn & KVM_HPAGE_GFN_MASK(x)" return the first gfn within the huge page
-or the index of the page within the huge page?
+This needs to be a common binding shared with SCMI domains.
 
-This is actually a problem with this series; see this line in patch 3:
-
--	mask = KVM_PAGES_PER_HPAGE(level) - 1;
-+	mask = ~KVM_HPAGE_GFN_MASK(level);
-        ^^^^                  ^^^^
-
-So it's a mask, but not _that_ mask, _another_ mask. :)  That's why I
-don't really like "mask" macros, now the other question is how to
-express bit masking with "how many" macros.
-
-First of all, I think we all agree that when reading "x & how_many()" we
-assume (or we check first thing of all) that the right side is a power
-of two.  I like "x & -y" because---even if your eyes have trouble
-distinguishing "-" from "~"---it's clearly not "x & (y-1)" and therefore
-the only sensible operation that the AND can do "clear everything to the
-right".
-
-Now I realize that maybe my obsession for bit twiddling tricks is not
-shared with everyone, and of course if you're debugging it you have to
-look closer and check if it's really "x & -y" or "x & ~y", but at least
-in normal cursory code reading that's how it works for me.
-
-
-Paolo
-
+> +
+>    power-domains:
+>      $ref: '/schemas/types.yaml#/definitions/phandle-array'
+>      description:
+> -- 
+> 1.7.9.5
