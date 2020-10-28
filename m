@@ -2,217 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0981229D2C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C944629D3DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgJ1Ven (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:34:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:47179 "EHLO mga14.intel.com"
+        id S1727702AbgJ1Vr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:47:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:38346 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726599AbgJ1Veb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:34:31 -0400
-IronPort-SDR: /PYJwUFVFrhPDnjlQUS8E/tKJMpeLwm6WNtnjGRu+EsGi9+lkpUBjLu9KdhupYxkl1wOv8xnOy
- L+W5racWyfnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="167551731"
-X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
-   d="scan'208";a="167551731"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 13:28:16 -0700
-IronPort-SDR: 94M7dbv2vTz2yls3kCwH4nUo8b+dTLdeBQ74OT/NUrCqLUBXirX+YzJzZ767gNOKLgYYGaWNz/
- xQ2KTVW68zxA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
-   d="scan'208";a="526467874"
-Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
-  by fmsmga005.fm.intel.com with ESMTP; 28 Oct 2020 13:28:15 -0700
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Borislav Petkov" <bp@alien8.de>, "Ingo Molnar" <mingo@redhat.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Tony Luck" <tony.luck@intel.com>,
-        "Christopherson Sean J" <sean.j.christopherson@intel.com>,
-        "Ashok Raj" <ashok.raj@intel.com>,
-        "Ravi V Shankar" <ravi.v.shankar@intel.com>
-Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "x86" <x86@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH RFC v2 3/4] x86/bus_lock: Set rate limit for bus lock
-Date:   Wed, 28 Oct 2020 20:28:03 +0000
-Message-Id: <20201028202804.3562179-4-fenghua.yu@intel.com>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201028202804.3562179-1-fenghua.yu@intel.com>
-References: <20201028202804.3562179-1-fenghua.yu@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727667AbgJ1VrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:47:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 741DB1A9A;
+        Wed, 28 Oct 2020 13:29:43 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8C663F66E;
+        Wed, 28 Oct 2020 13:29:41 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, cristian.marussi@arm.com
+Subject: [PATCH v2 0/8] SCMI vendor protocols and modularization
+Date:   Wed, 28 Oct 2020 20:29:06 +0000
+Message-Id: <20201028202914.43662-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To enforce user application throttling or mitigations, extend the
-existing split lock detect kernel parameter:
-	split_lock_detect=ratelimit:N
+Hi all,
 
-It limits bus lock rate to N per second for non root users.
+The current SCMI implementation does not provide an interface to easily
+develop and include a custom vendor protocol implementation as prescribed
+by the SCMI standard, also because, there is not currently any custom
+protocol in the upstream to justify the development of a custom interface
+and its maintenance.
 
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
+Moreover the current interface exposes protocol operations to the SCMI
+driver users attaching per-protocol operations directly to the handle
+structure, which, in this way, tends to grow indefinitely for each new
+protocol addition.
+
+Beside this, protocols private data are also exposed via handle *_priv
+pointers, making such private data accessible also to the SCMI drivers
+even if neither really needed nor advisable.
+
+This series tris to address this simplifying the SCMI protocols interface
+and reducing it, roughly, to these common generic operations:
+
+handle->get_ops() / handle->put_ops() / handle->notify_ops()
+
+and a few related devres managed flavours.
+
+All protocols' private data pointers are removed from handle too and made
+accessible only to the protocols code through dedicated internal helpers.
+
+The concept of protocol handle is introduced in the SCMI protocol code
+to represent a protocol instance initialized against a specific SCMI
+instance(handle): so that all the new protocol code uses such protocol
+handles wherever previously SCMI handle was used: this enable tighter
+control of what is exposed to the protocol code vs the SCMI drivers.
+
+Moreover protocol initialization is moved away from device probe and now
+happens on demand when the first user shows up (first .get_ops), while
+de-initialization is performed once the last user of the protocol (even in
+terms of notifications) is gone, with the SCMI core taking care to perform
+all the needed underlying resource accounting.
+
+This way any new future standard or custom protocol implementation will
+expose a common unified interface which does not need to be extended
+endlessly: no need to maintain a custom interface only for vendor protos.
+SCMI drivers written on top of standard or custom protocols will use this
+same common interface to access any protocol operations.
+All existent upstream SCMI drivers are converted to this new interface.
+
+Leveraging this new centralized and common initialization flow, patches 5,7
+take care also to refactor and simplify protocol-events registration and
+remove *notify_priv from the handle interface making it accessible only to
+the notification core.
+
+Finally, patch 8 builds on top of this new interface and introduces a
+mechanism to define an SCMI protocol as a full blown module (possibly
+loadable) while leaving the core dealing with proper resource accounting.
+
+Standard protocols are still kept as builtins, though.
+
+The whole SCMI stack can be built alternatively as a module (incudling all
+the standard protocols).
+
+On top of this series an example SCMI Custom protocol 0x99 and related
+SCMI Custom Dummy driver has been built and it is available at [2] as a
+series of DEBUG patches on top this same series.
+
+The current revision of this series still does not address the possibility
+of creating dynamically the SCMI devices: any new protocols must be added
+to the SCMI embedded module device table as of now, while it could be
+desirable to have such devices created dynamically whenever a new protocol
+is added and loaded into the system.
+
+The series is currently based on for-next/scmi [1] on top of:
+
+commit b9ceca6be432 ("firmware: arm_scmi: Fix duplicate workqueue name")
+
+Any feedback welcome.
+
+Thanks,
+
+Cristian
+
 ---
- arch/x86/kernel/cpu/intel.c | 37 ++++++++++++++++++++++++++++++++-----
- include/linux/sched/user.h  |  4 +++-
- kernel/user.c               |  7 +++++++
- 3 files changed, 42 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 3aa57199484b..6dcc7e404f8b 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -10,6 +10,9 @@
- #include <linux/thread_info.h>
- #include <linux/init.h>
- #include <linux/uaccess.h>
-+#include <linux/cred.h>
-+#include <linux/delay.h>
-+#include <linux/sched/user.h>
- 
- #include <asm/cpufeature.h>
- #include <asm/msr.h>
-@@ -40,6 +43,7 @@ enum split_lock_detect_state {
- 	sld_off = 0,
- 	sld_warn,
- 	sld_fatal,
-+	sld_ratelimit,
- };
- 
- /*
-@@ -998,13 +1002,25 @@ static const struct {
- 	{ "off",	sld_off   },
- 	{ "warn",	sld_warn  },
- 	{ "fatal",	sld_fatal },
-+	{ "ratelimit:", sld_ratelimit },
- };
- 
- static inline bool match_option(const char *arg, int arglen, const char *opt)
- {
--	int len = strlen(opt);
- 
--	return len == arglen && !strncmp(arg, opt, len);
-+	int len = strlen(opt), ratelimit;
-+
-+	if (strncmp(arg, opt, len))
-+		return false;
-+
-+	if (sscanf(arg, "ratelimit:%d", &ratelimit) == 1 && ratelimit > 0 &&
-+	    ratelimit_bl <= HZ / 2) {
-+		ratelimit_bl = ratelimit;
-+
-+		return true;
-+	}
-+
-+	return len == arglen;
- }
- 
- static bool split_lock_verify_msr(bool on)
-@@ -1084,8 +1100,8 @@ static void sld_update_msr(bool on)
- 
- static void split_lock_init(void)
- {
--	/* If supported, #DB for bus lock will handle warn. */
--	if (bld && sld_state == sld_warn)
-+	/* If supported, #DB for bus lock will handle warn and ratelimit. */
-+	if (bld && (sld_state == sld_warn || sld_state == sld_ratelimit))
- 		return;
- 
- 	if (cpu_model_supports_sld)
-@@ -1142,7 +1158,8 @@ static void bus_lock_init(void)
- 
- bool handle_user_split_lock(struct pt_regs *regs, long error_code)
- {
--	if ((regs->flags & X86_EFLAGS_AC) || !sld || sld_state == sld_fatal)
-+	if ((regs->flags & X86_EFLAGS_AC) || !sld || sld_state == sld_fatal ||
-+	    sld_state == sld_ratelimit)
- 		return false;
- 	split_lock_warn(regs->ip);
- 	return true;
-@@ -1156,6 +1173,11 @@ bool handle_bus_lock(struct pt_regs *regs)
- 	pr_warn_ratelimited("#DB: %s/%d took a bus_lock trap at address: 0x%lx\n",
- 			    current->comm, current->pid, regs->ip);
- 
-+	if (sld_state == sld_ratelimit) {
-+		while (!__ratelimit(&get_current_user()->ratelimit_bl))
-+			msleep(1000 / ratelimit_bl);
-+	}
-+
- 	return true;
- }
- 
-@@ -1251,6 +1273,11 @@ static void sld_state_show(void)
- 		else
- 			pr_info("#DB: sending SIGBUS on user-space bus_locks\n");
- 		break;
-+
-+	case sld_ratelimit:
-+		if (bld)
-+			pr_info("#DB: setting rate limit to %d/sec per user on non root user-space bus_locks\n", ratelimit_bl);
-+		break;
- 	}
- }
- 
-diff --git a/include/linux/sched/user.h b/include/linux/sched/user.h
-index a8ec3b6093fc..79f95002a123 100644
---- a/include/linux/sched/user.h
-+++ b/include/linux/sched/user.h
-@@ -40,8 +40,9 @@ struct user_struct {
- 	atomic_t nr_watches;	/* The number of watches this user currently has */
- #endif
- 
--	/* Miscellaneous per-user rate limit */
-+	/* Miscellaneous per-user rate limits */
- 	struct ratelimit_state ratelimit;
-+	struct ratelimit_state ratelimit_bl;
- };
- 
- extern int uids_sysfs_init(void);
-@@ -51,6 +52,7 @@ extern struct user_struct *find_user(kuid_t);
- extern struct user_struct root_user;
- #define INIT_USER (&root_user)
- 
-+extern int ratelimit_bl;
- 
- /* per-UID process charging. */
- extern struct user_struct * alloc_uid(kuid_t);
-diff --git a/kernel/user.c b/kernel/user.c
-index b1635d94a1f2..023dad617625 100644
---- a/kernel/user.c
-+++ b/kernel/user.c
-@@ -103,6 +103,7 @@ struct user_struct root_user = {
- 	.locked_shm     = 0,
- 	.uid		= GLOBAL_ROOT_UID,
- 	.ratelimit	= RATELIMIT_STATE_INIT(root_user.ratelimit, 0, 0),
-+	.ratelimit_bl	= RATELIMIT_STATE_INIT(root_user.ratelimit_bl, 0, 0),
- };
- 
- /*
-@@ -172,6 +173,9 @@ void free_uid(struct user_struct *up)
- 		free_user(up, flags);
- }
- 
-+/* Architectures (e.g. X86) may set this for rate limited bus locks. */
-+int ratelimit_bl;
-+
- struct user_struct *alloc_uid(kuid_t uid)
- {
- 	struct hlist_head *hashent = uidhashentry(uid);
-@@ -190,6 +194,9 @@ struct user_struct *alloc_uid(kuid_t uid)
- 		refcount_set(&new->__count, 1);
- 		ratelimit_state_init(&new->ratelimit, HZ, 100);
- 		ratelimit_set_flags(&new->ratelimit, RATELIMIT_MSG_ON_RELEASE);
-+		ratelimit_state_init(&new->ratelimit_bl, HZ, ratelimit_bl);
-+		ratelimit_set_flags(&new->ratelimit_bl,
-+				    RATELIMIT_MSG_ON_RELEASE);
- 
- 		/*
- 		 * Before adding this, check whether we raced
+v1 --> v2
+- rebased on for-next/scmi v5.10-rc1
+- introduced protocol handles
+- added devres managed devm_ variant for protocols operations
+- made all scmi_protocol refs const
+- introduced IDR to handle protocols instead of static array
+- refactored code around fast path
+
+[1]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
+[2]:https://gitlab.arm.com/linux-arm/linux-cm/-/commits/scmi_modules_ext_V2/
+
+Cristian Marussi (8):
+  firmware: arm_scmi: review protocol registration interface
+  firmware: arm_scmi: introduce protocol handles
+  firmware: arm_scmi: introduce new protocol operations support
+  firmware: arm_scmi: make notifications aware of protocol usage
+  firmware: arm_scmi: refactor events registration
+  firmware: arm_scmi: port all protocols and drivers to the new API
+  firmware: arm_scmi: make notify_priv really private
+  firmware: arm_scmi: add protocol modularization support
+
+ drivers/clk/clk-scmi.c                     |  27 +-
+ drivers/cpufreq/scmi-cpufreq.c             |  38 +-
+ drivers/firmware/arm_scmi/base.c           | 140 +++---
+ drivers/firmware/arm_scmi/bus.c            |  70 +--
+ drivers/firmware/arm_scmi/clock.c          | 127 +++---
+ drivers/firmware/arm_scmi/common.h         | 114 ++++-
+ drivers/firmware/arm_scmi/driver.c         | 474 +++++++++++++++++++--
+ drivers/firmware/arm_scmi/notify.c         | 303 ++++++++++---
+ drivers/firmware/arm_scmi/notify.h         |  38 +-
+ drivers/firmware/arm_scmi/perf.c           | 257 +++++------
+ drivers/firmware/arm_scmi/power.c          | 132 +++---
+ drivers/firmware/arm_scmi/reset.c          | 144 ++++---
+ drivers/firmware/arm_scmi/scmi_pm_domain.c |  26 +-
+ drivers/firmware/arm_scmi/sensors.c        | 135 +++---
+ drivers/firmware/arm_scmi/system.c         |  60 +--
+ drivers/hwmon/scmi-hwmon.c                 |  24 +-
+ drivers/reset/reset-scmi.c                 |  33 +-
+ include/linux/scmi_protocol.h              | 142 +++---
+ 18 files changed, 1569 insertions(+), 715 deletions(-)
+
 -- 
-2.29.0
+2.17.1
 
