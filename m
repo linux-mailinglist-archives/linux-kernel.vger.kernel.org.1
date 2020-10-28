@@ -2,111 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755E729D348
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4273D29D4A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbgJ1Vmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
+        id S1728548AbgJ1Vxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbgJ1Vm1 (ORCPT
+        with ESMTP id S1727426AbgJ1Vxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:42:27 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7E1C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:42:26 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id z2so947918ilh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:42:26 -0700 (PDT)
+        Wed, 28 Oct 2020 17:53:43 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD10BC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:53:43 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id x1so1105423oic.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:53:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oUQGYHl6fL0itz3RWijtbqZBDnCCvlTy72hHOJX7pSU=;
-        b=wnl6oBn/Zw2KFaEIcPW+DYoJ9y6mSCx1bVJxZNJVS8dmkAv8U2yzrNU2SFR+/J5ZoI
-         qLH21UEmwAqmSsLU6Fq4UKGDLHhOWBgDt36ptPjUbm6quVeflh/e5YH8n3MCqDw72/3f
-         ZZh6gCQmzLpXxhm6Hku3R0CXNSBwi2nb81p8pauc7WFhrkAuoaAz2IjXVgOY+aKYfbQn
-         m4Acp4WRhR8UFnibB71sCTgW/sgIHJZRXMrSRDZSdpxPL3I9/RH/AmBs5XM3HK7YY1oR
-         XrGindx3PneZp60ijEP/JNl1BIrI04ZTN/nVFq1hqvrd5q+QN6SsA8AFH45BdXre49SJ
-         4Ymw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oi3DVB8F/e6EwkVxfJQHDyhN7VFOzS0P58Y6d1svvv8=;
+        b=jXVmiXZu8yXdx16UWUKRRcQW3d958GquYkHbBD+UBM1BPN+6qvYgJfy3VeQGJ24Er9
+         Zyy9kg0kOBFCkTfmlt7AEiymxOS24MvSVlxaGJlT6LDTdTo3HkObCm3o5CAvLdeKuEd1
+         1MwK/jhtdR6eAYlD5msixjWuvxQ51caQvrx8vzMywcPUfkh8s7wGVU8/y0uZQxmO/dSK
+         rmwJebMNGW26sQmiMxBvnwuNwp15brRu5elZDrXOKsuAB9tEMmk9UYuC0pciTb+7Cu89
+         UkP+tgbtvoWYq7vgxJZkAf1eJgARDuCB6qEs7dSVONNSpoDituc/ejF+0MtQZoDaGf07
+         PDWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oUQGYHl6fL0itz3RWijtbqZBDnCCvlTy72hHOJX7pSU=;
-        b=mPaYC72Y4rk+FE8UjSF9qQq9awqhrcith2TCsJQ/cndTVQ0LZsV/QtqxacaE0F84/R
-         2ViRlI2ycDVnx0XfcvuQrsSj16rr+B1367hup1XIFAq+lsgbno2+2KDz3FUBXgrt8epp
-         tQUdZ8x6b6Hi0/HlU8eTHgQTx4ZpjphJBFXdJbIypzZQ/1YXYvvXTpCTKKBYT66vjwm7
-         3gMm1en0tf9VevMENLgQkKEWCje9m1Bij/0VfBTbRvCqaq0cBeS8172iCSws1dD5AhKJ
-         zo1ekBcucIJ517xA/Ql2xpw7O6M5q1htz6grSCPEcZuOpVRtTRJmCSl3BkvF5B7Rhyfo
-         Ic+A==
-X-Gm-Message-State: AOAM532I2mJXpBur4VzQHG/DxMvJi9IDAJvannfewGtkwl4I5wPOZj7l
-        CmCJouzNXMyXPdzxzdn5Is9cP9NxdOBhIQ==
-X-Google-Smtp-Source: ABdhPJzhs5ftHX5k7BVSVR6ZAGDS0bIZvFqJD54c6guw3/I+nlMW2C5NSqlFji45AE+WjYTD8+7SXw==
-X-Received: by 2002:a63:4d0b:: with SMTP id a11mr5168634pgb.296.1603873311277;
-        Wed, 28 Oct 2020 01:21:51 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id k1sm1225956pgn.66.2020.10.28.01.21.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Oct 2020 01:21:50 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 13:51:48 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     zhuguangqing83@gmail.com
-Cc:     rjw@rjwysocki.net, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        zhuguangqing <zhuguangqing@xiaomi.com>
-Subject: Re: [PATCH] cpufreq: schedutil: set sg_policy->next_freq to the
- final cpufreq
-Message-ID: <20201028082148.zkvcqau4p6xcihoq@vireshk-i7>
-References: <20201027115459.19318-1-zhuguangqing83@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oi3DVB8F/e6EwkVxfJQHDyhN7VFOzS0P58Y6d1svvv8=;
+        b=VfrnHcUp0DkCvMs8YpavIWrSAsvxezrHaZYgqCzyGzAQ35Br/FfJzq8zQXxwrsi0nd
+         AFOQToYv+eaVjTHyVx1Vlh3xs6l2lcAlYmTU7WHyj9QdYeqIyaT0cja+KQjmW6b0ea8F
+         dlmNEWN6Rkz0oIS3upM0XuNe9mN7C3rNjHemdCCw/Ov6ooyagurcsh59xvtbd+rmxoBW
+         ZzvfSDz3ci2VizDGeiJZCnDSu0kU0keMVmxzLKHSaX5TTRGu8Mef0Df8l9W42Z35/es5
+         6khIf6ae/a/kwf9xj1t+JGB2B5NtqEh2WRpMzqshzZB0xpncRwfgbktrrIiv2YWVCGzH
+         CkWQ==
+X-Gm-Message-State: AOAM533Epz/w80K4x9u182t58wrnOXpWrr8J8kyLe0f8p22I+qf3hteG
+        I2MpYu936+fxlYSiUrlchQ5Rp0Im/zES97hTC9i9OXuPl0c=
+X-Google-Smtp-Source: ABdhPJxj/onBTr0+oaQG6L0+1VCfWvQlbvRrZgPHmV1pKzB6lkeZtNDMJpWQCfeN82ldP6Q5gdmTTr3To2SpR/zHFMs=
+X-Received: by 2002:a54:4812:: with SMTP id j18mr4608973oij.70.1603873837192;
+ Wed, 28 Oct 2020 01:30:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027115459.19318-1-zhuguangqing83@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20201027174726.85284-1-98.arpi@gmail.com> <202010280748.WUyq8OoJ-lkp@intel.com>
+In-Reply-To: <202010280748.WUyq8OoJ-lkp@intel.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 28 Oct 2020 09:30:25 +0100
+Message-ID: <CANpmjNON4e6Gh7-NQw4CT4e--vOrH_rFyGi9U9TiUNS_zn+_vw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] fs: ext4: Modify inode-test.c to use KUnit
+ parameterized testing feature
+To:     kernel test robot <lkp@intel.com>
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        kbuild-all@lists.01.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-10-20, 19:54, zhuguangqing83@gmail.com wrote:
-> From: zhuguangqing <zhuguangqing@xiaomi.com>
-> 
-> In the following code path, next_freq is clamped between policy->min
-> and policy->max twice in functions cpufreq_driver_resolve_freq() and
-> cpufreq_driver_fast_switch(). For there is no update_lock in the code
-> path, policy->min and policy->max may be modified (one or more times),
-> so sg_policy->next_freq updated in function sugov_update_next_freq()
-> may be not the final cpufreq.
+On Wed, 28 Oct 2020 at 00:50, kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Arpitha,
+>
+> Thank you for the patch! Perhaps something to improve:
+>
+> [auto build test WARNING on ext4/dev]
+> [also build test WARNING on linus/master v5.10-rc1 next-20201027]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Arpitha-Raghunandan/kunit-Support-for-Parameterized-Testing/20201028-015018
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+> config: mips-randconfig-r016-20201027 (attached as .config)
+> compiler: mipsel-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/2de1e52708cd83d1dc4c718876683f6809045a98
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Arpitha-Raghunandan/kunit-Support-for-Parameterized-Testing/20201028-015018
+>         git checkout 2de1e52708cd83d1dc4c718876683f6809045a98
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+>    In file included from fs/ext4/inode-test.c:7:
+>    fs/ext4/inode-test.c: In function 'ext4_inode_gen_params':
+> >> include/kunit/test.h:1735:58: warning: return discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>     1735 |   return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;   \
+>    fs/ext4/inode-test.c:214:1: note: in expansion of macro 'KUNIT_ARRAY_PARAM'
+>      214 | KUNIT_ARRAY_PARAM(ext4_inode, test_data);
+>          | ^~~~~~~~~~~~~~~~~
 
-Understood until here, but not sure I followed everything after that.
+So this means we probably want to make the param_value, and the return
+and prev types of the generator "const void*".
 
-> Next time when we use
-> "if (sg_policy->next_freq == next_freq)" to judge whether to update
-> next_freq, we may get a wrong result.
-> 
-> -> sugov_update_single()
->   -> get_next_freq()
->     -> cpufreq_driver_resolve_freq()
->   -> sugov_fast_switch()
->     -> sugov_update_next_freq()
->     -> cpufreq_driver_fast_switch()
-> 
-> For example, at first sg_policy->next_freq is 1 GHz, but the final
-> cpufreq is 1.2 GHz because policy->min is modified to 1.2 GHz when
-> we reached cpufreq_driver_fast_switch(). Then next time, policy->min
-> is changed before we reached cpufreq_driver_resolve_freq() and (assume)
-> next_freq is 1 GHz, we find "if (sg_policy->next_freq == next_freq)" is
-> satisfied so we don't change the cpufreq. Actually we should change
-> the cpufreq to 1.0 GHz this time.
-
-FWIW, whenever policy->min/max gets changed, sg_policy->limits_changed
-gets set to true by sugov_limits() and the next time schedutil
-callback gets called from the scheduler, we will fix the frequency.
-
-And so there shouldn't be any issue here, unless I am missing
-something.
-
--- 
-viresh
+Thanks,
+-- Marco
