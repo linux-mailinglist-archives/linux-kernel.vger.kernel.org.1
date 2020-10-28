@@ -2,187 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4835229E057
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F6E29DF7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729760AbgJ1WFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:05:02 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7077 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729496AbgJ1WCN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:02:13 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CLX4R4ZNszLqVp;
-        Wed, 28 Oct 2020 10:06:31 +0800 (CST)
-Received: from mdc.huawei.com (10.175.112.208) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 28 Oct 2020 10:06:17 +0800
-From:   Chen Jun <chenjun102@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>
-CC:     <casey@schaufler-ca.com>, <stephen.smalley.work@gmail.com>,
-        <eparis@parisplace.org>, <rui.xiang@huawei.com>,
-        <guohanjun@huawei.com>, <houtao1@huawei.com>
-Subject: [RFC PATCH v2] selinux: Fix kmemleak after disabling selinux runtime
-Date:   Wed, 28 Oct 2020 02:06:15 +0000
-Message-ID: <20201028020615.8789-1-chenjun102@huawei.com>
-X-Mailer: git-send-email 2.25.0
+        id S2404092AbgJ2BBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:01:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731506AbgJ1WRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:24 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 943282244C;
+        Wed, 28 Oct 2020 03:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603854090;
+        bh=CYqqIQeLVQ2GDg8Qk4O7/yPF87bpo8HOJdgeKmVSG7M=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=J34e3ugmDw0+RgNgHi7V7cZnahdwYN5VL3pKtKMK88THY++wGQRPmSL5RXWpre6+W
+         dWeTJBj1I+WlGeDc66wKb3HdjZ9gD2JJuoYHopHiwAwVcrUqKcuCX5kGYHh509xQ1f
+         fKaxChn52bKktbUlgXICpAo1sIW2WgfYZSTyDnaU=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4F3683521849; Tue, 27 Oct 2020 20:01:30 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 20:01:30 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Qian Cai <cai@redhat.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
+Message-ID: <20201028030130.GB3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <160223032121.7002.1269740091547117869.tip-bot2@tip-bot2>
+ <e438b231c5e1478527af6c3e69bf0b37df650110.camel@redhat.com>
+ <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+ <1db80eb9676124836809421e85e1aa782c269a80.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.112.208]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1db80eb9676124836809421e85e1aa782c269a80.camel@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Jun <c00424029@huawei.com>
+On Tue, Oct 27, 2020 at 03:31:41PM -0400, Qian Cai wrote:
+> On Mon, 2020-10-12 at 11:11 +0800, Boqun Feng wrote:
+> > Hi,
+> > 
+> > On Fri, Oct 09, 2020 at 09:41:24AM -0400, Qian Cai wrote:
+> > > On Fri, 2020-10-09 at 07:58 +0000, tip-bot2 for Peter Zijlstra wrote:
+> > > > The following commit has been merged into the locking/core branch of tip:
+> > > > 
+> > > > Commit-ID:     4d004099a668c41522242aa146a38cc4eb59cb1e
+> > > > Gitweb:        
+> > > > https://git.kernel.org/tip/4d004099a668c41522242aa146a38cc4eb59cb1e
+> > > > Author:        Peter Zijlstra <peterz@infradead.org>
+> > > > AuthorDate:    Fri, 02 Oct 2020 11:04:21 +02:00
+> > > > Committer:     Ingo Molnar <mingo@kernel.org>
+> > > > CommitterDate: Fri, 09 Oct 2020 08:53:30 +02:00
+> > > > 
+> > > > lockdep: Fix lockdep recursion
+> > > > 
+> > > > Steve reported that lockdep_assert*irq*(), when nested inside lockdep
+> > > > itself, will trigger a false-positive.
+> > > > 
+> > > > One example is the stack-trace code, as called from inside lockdep,
+> > > > triggering tracing, which in turn calls RCU, which then uses
+> > > > lockdep_assert_irqs_disabled().
+> > > > 
+> > > > Fixes: a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context} to per-
+> > > > cpu
+> > > > variables")
+> > > > Reported-by: Steven Rostedt <rostedt@goodmis.org>
+> > > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > > Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> > > 
+> > > Reverting this linux-next commit fixed booting RCU-list warnings everywhere.
+> > > 
+> > 
+> > I think this happened because in this commit debug_lockdep_rcu_enabled()
+> > didn't adopt to the change that made lockdep_recursion a percpu
+> > variable?
+> > 
+> > Qian, mind to try the following?
+> 
+> Boqun, Paul, may I ask what's the latest with the fixes? I must admit that I got
+> lost in this thread, but I remember that the patch from Boqun below at least
+> silence quite some of those warnings if not all. The problem is that some of
+> those warnings would trigger a lockdep circular locks warning due to printk()
+> with some locks held which in turn disabling the lockdep, makes our test runs
+> inefficient.
 
-Kmemleak will report a problem after using
-"echo 1 > /sys/fs/selinux/disable" to disable selinux on runtime.
+If I have the right email thread associated with the right fixes, these
+commits in -rcu should be what you are looking for:
 
-kmemleak report：
-unreferenced object 0xffff901281c208a0 (size 96):
-  comm "swapper/0", pid 1, jiffies 4294668265 (age 692.799s)
-  hex dump (first 32 bytes):
-    00 40 c8 81 12 90 ff ff 03 00 00 00 05 00 00 00  .@..............
-    03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000014622ef8>] selinux_sb_alloc_security+0x1b/0xa0
-    [<00000000044914e1>] security_sb_alloc+0x1d/0x30
-    [<000000009f9d5ffd>] alloc_super+0xa7/0x310
-    [<000000003c5f0b5b>] sget_fc+0xca/0x230
-    [<00000000367a9996>] vfs_get_super+0x37/0x110
-    [<000000001c47e818>] vfs_get_tree+0x20/0xc0
-    [<00000000d239b404>] fc_mount+0x9/0x30
-    [<00000000708a102f>] vfs_kern_mount.part.36+0x6a/0x80
-    [<000000005db542fe>] kern_mount+0x1b/0x30
-    [<0000000051919f9f>] init_sel_fs+0x8b/0x119
-    [<000000000f328fe0>] do_one_initcall+0x3f/0x1d0
-    [<000000008a6ceb81>] kernel_init_freeable+0x1b4/0x1f2
-    [<000000003a425dcd>] kernel_init+0x5/0x110
-    [<000000004e8d6c9d>] ret_from_fork+0x22/0x30
+73b658b6b7d5 ("rcu: Prevent lockdep-RCU splats on lock acquisition/release")
+626b79aa935a ("x86/smpboot:  Move rcu_cpu_starting() earlier")
 
-"echo 1 > /sys/fs/selinux/disable" will delete the hooks.
-Any memory alloced by calling HOOKFUNCTION (like call_int_hook(sb_alloc_security, 0, sb))
-has no chance to be freed after deleting hooks.
+And maybe this one as well:
 
-Add a flag to mark a hook not be delete when deleting hooks.
+3a6f638cb95b ("rcu,ftrace: Fix ftrace recursion")
 
-Signed-off-by: Chen Jun <chenjun102@huawei.com>
----
- include/linux/lsm_hooks.h |  6 +++++-
- security/selinux/hooks.c  | 20 ++++++++++----------
- 2 files changed, 15 insertions(+), 11 deletions(-)
+Please let me know if these commits do not fix things.
 
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index c503f7ab8afb..85de731b0c74 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -1554,6 +1554,7 @@ struct security_hook_list {
- 	struct hlist_head		*head;
- 	union security_list_options	hook;
- 	char				*lsm;
-+	bool				no_del;
- } __randomize_layout;
- 
- /*
-@@ -1582,6 +1583,8 @@ struct lsm_blob_sizes {
-  */
- #define LSM_HOOK_INIT(HEAD, HOOK) \
- 	{ .head = &security_hook_heads.HEAD, .hook = { .HEAD = HOOK } }
-+#define LSM_HOOK_INIT_NO_DEL(HEAD, HOOK) \
-+	{ .head = &security_hook_heads.HEAD, .hook = { .HEAD = HOOK }, .no_del = 1 }
- 
- extern struct security_hook_heads security_hook_heads;
- extern char *lsm_names;
-@@ -1638,7 +1641,8 @@ static inline void security_delete_hooks(struct security_hook_list *hooks,
- 	int i;
- 
- 	for (i = 0; i < count; i++)
--		hlist_del_rcu(&hooks[i].list);
-+		if (!hooks[i].no_del)
-+			hlist_del_rcu(&hooks[i].list);
- }
- #endif /* CONFIG_SECURITY_SELINUX_DISABLE */
- 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 6b1826fc3658..daff084fd1c7 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -6974,8 +6974,8 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
- 	LSM_HOOK_INIT(bprm_committing_creds, selinux_bprm_committing_creds),
- 	LSM_HOOK_INIT(bprm_committed_creds, selinux_bprm_committed_creds),
- 
--	LSM_HOOK_INIT(sb_free_security, selinux_sb_free_security),
--	LSM_HOOK_INIT(sb_free_mnt_opts, selinux_free_mnt_opts),
-+	LSM_HOOK_INIT_NO_DEL(sb_free_security, selinux_sb_free_security),
-+	LSM_HOOK_INIT_NO_DEL(sb_free_mnt_opts, selinux_free_mnt_opts),
- 	LSM_HOOK_INIT(sb_remount, selinux_sb_remount),
- 	LSM_HOOK_INIT(sb_kern_mount, selinux_sb_kern_mount),
- 	LSM_HOOK_INIT(sb_show_options, selinux_sb_show_options),
-@@ -7081,7 +7081,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
- 
- 	LSM_HOOK_INIT(ismaclabel, selinux_ismaclabel),
- 	LSM_HOOK_INIT(secctx_to_secid, selinux_secctx_to_secid),
--	LSM_HOOK_INIT(release_secctx, selinux_release_secctx),
-+	LSM_HOOK_INIT_NO_DEL(release_secctx, selinux_release_secctx),
- 	LSM_HOOK_INIT(inode_invalidate_secctx, selinux_inode_invalidate_secctx),
- 	LSM_HOOK_INIT(inode_notifysecctx, selinux_inode_notifysecctx),
- 	LSM_HOOK_INIT(inode_setsecctx, selinux_inode_setsecctx),
-@@ -7107,7 +7107,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
- 	LSM_HOOK_INIT(socket_getpeersec_stream,
- 			selinux_socket_getpeersec_stream),
- 	LSM_HOOK_INIT(socket_getpeersec_dgram, selinux_socket_getpeersec_dgram),
--	LSM_HOOK_INIT(sk_free_security, selinux_sk_free_security),
-+	LSM_HOOK_INIT_NO_DEL(sk_free_security, selinux_sk_free_security),
- 	LSM_HOOK_INIT(sk_clone_security, selinux_sk_clone_security),
- 	LSM_HOOK_INIT(sk_getsecid, selinux_sk_getsecid),
- 	LSM_HOOK_INIT(sock_graft, selinux_sock_graft),
-@@ -7121,7 +7121,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
- 	LSM_HOOK_INIT(secmark_refcount_inc, selinux_secmark_refcount_inc),
- 	LSM_HOOK_INIT(secmark_refcount_dec, selinux_secmark_refcount_dec),
- 	LSM_HOOK_INIT(req_classify_flow, selinux_req_classify_flow),
--	LSM_HOOK_INIT(tun_dev_free_security, selinux_tun_dev_free_security),
-+	LSM_HOOK_INIT_NO_DEL(tun_dev_free_security, selinux_tun_dev_free_security),
- 	LSM_HOOK_INIT(tun_dev_create, selinux_tun_dev_create),
- 	LSM_HOOK_INIT(tun_dev_attach_queue, selinux_tun_dev_attach_queue),
- 	LSM_HOOK_INIT(tun_dev_attach, selinux_tun_dev_attach),
-@@ -7130,7 +7130,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
- 	LSM_HOOK_INIT(ib_pkey_access, selinux_ib_pkey_access),
- 	LSM_HOOK_INIT(ib_endport_manage_subnet,
- 		      selinux_ib_endport_manage_subnet),
--	LSM_HOOK_INIT(ib_free_security, selinux_ib_free_security),
-+	LSM_HOOK_INIT_NO_DEL(ib_free_security, selinux_ib_free_security),
- #endif
- #ifdef CONFIG_SECURITY_NETWORK_XFRM
- 	LSM_HOOK_INIT(xfrm_policy_free_security, selinux_xfrm_policy_free),
-@@ -7144,7 +7144,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
- #endif
- 
- #ifdef CONFIG_KEYS
--	LSM_HOOK_INIT(key_free, selinux_key_free),
-+	LSM_HOOK_INIT_NO_DEL(key_free, selinux_key_free),
- 	LSM_HOOK_INIT(key_permission, selinux_key_permission),
- 	LSM_HOOK_INIT(key_getsecurity, selinux_key_getsecurity),
- #ifdef CONFIG_KEY_NOTIFICATIONS
-@@ -7162,13 +7162,13 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
- 	LSM_HOOK_INIT(bpf, selinux_bpf),
- 	LSM_HOOK_INIT(bpf_map, selinux_bpf_map),
- 	LSM_HOOK_INIT(bpf_prog, selinux_bpf_prog),
--	LSM_HOOK_INIT(bpf_map_free_security, selinux_bpf_map_free),
--	LSM_HOOK_INIT(bpf_prog_free_security, selinux_bpf_prog_free),
-+	LSM_HOOK_INIT_NO_DEL(bpf_map_free_security, selinux_bpf_map_free),
-+	LSM_HOOK_INIT_NO_DEL(bpf_prog_free_security, selinux_bpf_prog_free),
- #endif
- 
- #ifdef CONFIG_PERF_EVENTS
- 	LSM_HOOK_INIT(perf_event_open, selinux_perf_event_open),
--	LSM_HOOK_INIT(perf_event_free, selinux_perf_event_free),
-+	LSM_HOOK_INIT_NO_DEL(perf_event_free, selinux_perf_event_free),
- 	LSM_HOOK_INIT(perf_event_read, selinux_perf_event_read),
- 	LSM_HOOK_INIT(perf_event_write, selinux_perf_event_write),
- #endif
--- 
-2.25.0
+							Thanx, Paul
 
+> > Although, arguably the problem still exists, i.e. we still have an RCU
+> > read-side critical section inside lock_acquire(), which may be called on
+> > a yet-to-online CPU, which RCU doesn't watch. I think this used to be OK
+> > because we don't "free" anything from lockdep, IOW, there is no
+> > synchronize_rcu() or call_rcu() that _needs_ to wait for the RCU
+> > read-side critical sections inside lockdep. But now we lock class
+> > recycling, so it might be a problem.
+> > 
+> > That said, currently validate_chain() and lock class recycling are
+> > mutually excluded via graph_lock, so we are safe for this one ;-)
+> > 
+> > ----------->8
+> > diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> > index 39334d2d2b37..35d9bab65b75 100644
+> > --- a/kernel/rcu/update.c
+> > +++ b/kernel/rcu/update.c
+> > @@ -275,8 +275,8 @@ EXPORT_SYMBOL_GPL(rcu_callback_map);
+> >  
+> >  noinstr int notrace debug_lockdep_rcu_enabled(void)
+> >  {
+> > -	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
+> > -	       current->lockdep_recursion == 0;
+> > +	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE &&
+> > +	       __lockdep_enabled;
+> >  }
+> >  EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
+> 
+> 
