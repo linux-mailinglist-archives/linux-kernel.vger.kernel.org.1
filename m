@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A84929DA73
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D08129DA6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390292AbgJ1XX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+        id S2390306AbgJ1XX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390215AbgJ1XW0 (ORCPT
+        with ESMTP id S2390203AbgJ1XWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:22:26 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AB9C0613CF;
-        Wed, 28 Oct 2020 16:22:26 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id a200so731707pfa.10;
-        Wed, 28 Oct 2020 16:22:26 -0700 (PDT)
+        Wed, 28 Oct 2020 19:22:17 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97571C0613D2;
+        Wed, 28 Oct 2020 16:22:17 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id o129so762946pfb.1;
+        Wed, 28 Oct 2020 16:22:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QGhTX+QoKKIYbk2DtoD0kZCPq/4dwaRTmF09BFXOKRg=;
-        b=UwpwHOAIrOUZ3VsldkGy9LlB9HRl97EOhvjHuUua4zqFTAEsyBHubxirHKz9lUNJ1i
-         PlWRBdnv849Mr2rG9Qk53+ooQ0m5c9A7PAbFZxhe88L3RQYklHtFgdCT56LyWnh36qBS
-         K5r1ctyINrpp5brPvXhavtQnG7ndISohEcFftKy6rDiyZwFtMzqN5EkSEBz4ey+JBXW+
-         /nBRfheIakDqZIlQjPdbAFYdAwFTB4wV4v+jA8yBEXjI9eaSjXPRK18cLZ2XsDWhTGin
-         b3T97jXkz+jdwzn/2/wQj/9UOv8O0qZAarEZdDeLeAWeGv5jet8rCPTFFJQ26T/e7m7D
-         VZNw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z+hUYyDlaEK4lCFCCWRp2JTvLMWl+QVZfGI9YkRMX4U=;
+        b=ArN/lxLfAZjVgWV9asnrwIh3k9U916Fctx3VFWPYecAv6IjyEkF9qFbbMEL8QbiqhP
+         W/WWcCSSxsmjqSfxPkNuJyvxbVF54HRhRrTWWZU7cs9+SVvOLoyNlX6oExP6KpJFX+N+
+         DQ5KXjS8Nrx6Ms03yEo9sSsR/E6z7vbqgMBDv8TNsnKayPNc7qJfOZo2oWyhv9/sxYKc
+         kd3wrKYUt2Kq2FYLtZLMLPhVsQSzQYIGKeUM2bbU4YNIq06spM94N9VZnNUjWSOljPry
+         TsX1/uhALeG1GuBeVJI/lu9MVMrqkPzYLzOMq23iv6PIeUO/DnQUDg9kr5ydTL/QRe9o
+         nHMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QGhTX+QoKKIYbk2DtoD0kZCPq/4dwaRTmF09BFXOKRg=;
-        b=XmLrpUe5hD2QTu/8yVluXRnX94kDwvKrZsMp/yvTAsh2aLwTAeoZvYeth26tySibLQ
-         FDr73jlNbHU7nJK1UElTqxrvs7hl/RXtelKgra7DaCW9riMnh/eKNSzCJJ5ijyK76Kzj
-         iBvAYNDCszJXbuzqcWBd4GirQtKzCLg1V+i/Iuos7s7Wuwa7/b3g0VyBnRpUNBFn6Jtl
-         oUgVfNZ1i7SNbVn7XAynKEJMp8tWPJo+uZqVjya5ZhBMNMEoNzOZh86Jvt1D1FWn7b+m
-         zgF0e/kgnZO027PP0/mufEQgPgQHVLBGvDq4+8AYMVCJpnlf5a2ddv9AeZW75B/HA4y8
-         +MKQ==
-X-Gm-Message-State: AOAM530nuSP/ptOP/QtNQFUJ+7P2wYa69Mppi/DkjSVfr6/dd//k7oxa
-        adIpNiThBJtst9SrHYGn+AhJXss+u9w96IQX5RleDAXs7ink0A==
-X-Google-Smtp-Source: ABdhPJzlFcb2JynAI0WXnNEGu7JRacOWUNzqnje/fCwil96Oqvd9bDTj47PizXdk6M4wAbt43M3EvnLeJ7HNwHBG+8E=
-X-Received: by 2002:a17:90a:fb92:: with SMTP id cp18mr1252324pjb.228.1603927345933;
- Wed, 28 Oct 2020 16:22:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z+hUYyDlaEK4lCFCCWRp2JTvLMWl+QVZfGI9YkRMX4U=;
+        b=osYyD3lZqZ30QRYgRR7bEYplnW8VOME7bsiwvjL0N1jPtcEfUSkL7DBSmtpcBdnkB9
+         n17MkXLp1dt1SkutRo2fPlb/Kyd0t+MADHMwR4jXGJSo+JWLBWUO/IP4nr2Rhnoc0uBc
+         fnibLxTrNJl3u7T2UIZk1lATq1ebS/awwzIlu0X5vuLtSmJ/sitPb9GI2jhh8R20k5DH
+         0WujDk0NR+EIiwq+ejdaTg/1Z0X17AG80oO0aAD/lfZBNJSFA0DrwNW3qauoOgWCEhE0
+         YjkRYZ6pq3M12J2LmT9QK5uwwCmdOr1fmdqdviis+856DAQMmaKgYehhqqLU9NgFQaQC
+         EO9g==
+X-Gm-Message-State: AOAM530ViReM9k1dXSDDXt0YQx4RcykydgWLbvz0qF+SUJq3WzSf5SfP
+        rgnLDIWIcgQtMyHMkz1jyoRfv7rIAyPLCw==
+X-Google-Smtp-Source: ABdhPJzJR/CrflVVwZohuLxz8b71t2b4N1qNYlGl/mluP5YARvLTLBec++coW0wanH5vMaK238BYug==
+X-Received: by 2002:a17:90a:9f8a:: with SMTP id o10mr1205982pjp.160.1603927337156;
+        Wed, 28 Oct 2020 16:22:17 -0700 (PDT)
+Received: from sol (106-69-179-84.dyn.iinet.net.au. [106.69.179.84])
+        by smtp.gmail.com with ESMTPSA id q35sm472345pja.28.2020.10.28.16.22.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 16:22:16 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 07:22:11 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 0/3] gpiolib: cdev: allow edge event timestamps to be
+ configured as REALTIME
+Message-ID: <20201028232211.GB4384@sol>
+References: <20201014231158.34117-1-warthog618@gmail.com>
+ <CACRpkdbTsN6p4n3f9SJrgAjdkzDu2S67rU3tLWwX0X50ekjctQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201026155730.542020-1-tasleson@redhat.com> <CAHp75Vfno9LULSfvwYA+4bEz4kW1Z7c=65HTy-O0fgLrzVA24g@mail.gmail.com>
- <71148b03-d880-8113-bd91-25dadef777c7@redhat.com> <ec93ba9e-ead9-f49a-d569-abf4c06a60eb@redhat.com>
-In-Reply-To: <ec93ba9e-ead9-f49a-d569-abf4c06a60eb@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 29 Oct 2020 01:22:09 +0200
-Message-ID: <CAHp75VfngLah7nkARydc-BAivtyCQbHhcEGFLHLRHpXFSE_PwQ@mail.gmail.com>
-Subject: Re: [PATCH] buffer_io_error: Use dev_err_ratelimited
-To:     Tony Asleson <tasleson@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdbTsN6p4n3f9SJrgAjdkzDu2S67rU3tLWwX0X50ekjctQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 11:05 PM Tony Asleson <tasleson@redhat.com> wrote:
-> On 10/28/20 3:45 PM, Tony Asleson wrote:
-> > On 10/26/20 5:07 PM, Andy Shevchenko wrote:
->
-> >>> +       dev_err_ratelimited(gendev,
-> >>> +               "Buffer I/O error, logical block %llu%s\n",
-> >>
-> >>> +               (unsigned long long)bh->b_blocknr, msg);
-> >>
-> >> It's a u64 always (via sector_t), do we really need a casting?
+On Wed, Oct 28, 2020 at 05:01:49PM +0100, Linus Walleij wrote:
+> On Thu, Oct 15, 2020 at 1:12 AM Kent Gibson <warthog618@gmail.com> wrote:
+> 
+> > This patch set adds the option to select CLOCK_REALTIME as the source
+> > clock for line events.
 > >
-> > That's a good question, grepping around shows *many* instances of this
-> > being done.  I do agree that this doesn't seem to be needed, but maybe
-> > there is a reason why it's done?
->
-> According to this:
->
-> https://www.kernel.org/doc/html/v5.9/core-api/printk-formats.html
->
-> This should be left as it is, because 'sector_t' is dependent on a
-> config option.
+> > The first patch is the core of the change, while the remaining two update
+> > the GPIO tools to make use of the new option.
+> >
+> > Changes for v2:
+> >  - change line_event_timestamp() return to u64 to avoid clipping to 32bits
+> >    on 32bit platforms.
+> >  - fix the line spacing after line_event_timestamp()
+> 
+> Where are we standing with this patch set? Good to go so
+> I should just try to merge it?
+> 
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/include/linux/types.h?id=72deb455b5ec619ff043c30bc90025aa3de3cdda
+I'm fine with it, especially now that I've tested it on 32bit platforms
+as well as 64bit.
 
-Staled documentation. You may send a patch to fix it (I Cc'ed
-Christoph and Jonathan).
-It means that it doesn't go under this category and the example should
-be changed to something else.
+Bart was ok with v1, and I doubt the changes for v2 would negatively
+impact that, though I did overlook adding his review tag.
 
+Cheers,
+Kent.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> Yours,
+> Linus Walleij
