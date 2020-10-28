@@ -2,128 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CEE29D38C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C476229D4C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726243AbgJ1Vo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:44:58 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:60020 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgJ1VoS (ORCPT
+        id S1728787AbgJ1Vyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:54:36 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:41555 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728764AbgJ1VyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:44:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xY3C1MfwWaVkJFZQ4gUxChwkBICC+P3nwJwtX8Z5mVY=; b=NuI0lJ3CvGoEGadyjRzNV1yd1R
-        cadYSZ14mGo40AKLivhm4qUibkgYyx9YgiUjp0zCaMGjmbvvhAD2k6i2OpJLFoKp8nwMYTGtoMGEV
-        I9TLnG89dYKOdA+y/aUU3+gT8wKA79figZGE9OqA19Aj5r7Yu7GB/84rEcGcIWfoZ2cgv3jXRsEPx
-        yp8Xn74LBQ93K7TbT41EOJjz/LcDevQciU1LsRJRYO2ddyvTdkiH/netarZ+jaW/iKRtZRA9lE8gQ
-        84UhMKnoPZQFjkpjHtKzEbIPIf5Yt8dTlrLe4RLKyK5SSWLvt6szswrA9JGVELkry+Vu25K6VXTC3
-        pw08WOvA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXiEl-0001QZ-2d; Wed, 28 Oct 2020 09:59:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EE5A830018A;
-        Wed, 28 Oct 2020 10:59:19 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CF6872C0B525A; Wed, 28 Oct 2020 10:59:19 +0100 (CET)
-Date:   Wed, 28 Oct 2020 10:59:19 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     tglx@linutronix.de, luto@kernel.org, me@kylehuey.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, rocallahan@gmail.com,
-        alexandre.chartre@oracle.com, paulmck@kernel.org,
-        frederic@kernel.org, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, pmladek@suse.com,
-        joel@joelfernandes.org, rostedt@goodmis.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com, brgerst@gmail.com,
-        jpoimboe@redhat.com, daniel.thompson@linaro.org,
-        julliard@winehq.org, pgofman@codeweavers.com
-Subject: Re: [PATCH 1/3] x86/debug: Fix BTF handling
-Message-ID: <20201028095919.GX2628@hirez.programming.kicks-ass.net>
-References: <20201027091504.712183781@infradead.org>
- <20201027093607.956147736@infradead.org>
- <20201027194126.GR2628@hirez.programming.kicks-ass.net>
- <20201028182025.4bb6d633719d7ce76300aafa@kernel.org>
+        Wed, 28 Oct 2020 17:54:25 -0400
+Received: by mail-oi1-f196.google.com with SMTP id k65so1137934oih.8;
+        Wed, 28 Oct 2020 14:54:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JaUb44Rael9RollufcGjxryeAFDxCaJy8yyWeBf3MYE=;
+        b=Ke0ylEFry4wyB8ur4pyJbFpduGcFUyRQNzyq09O1XvIvjrfovi0/T6TpH+7bmyfFei
+         UfK20LYKoRIuOGX5z5D+Xu2mEv1YjmrQ5jnna3BdJisSFje7Gzgw62htOEh9SmWlJXiC
+         M51skvLyC2l3SE0rYGmf8G4oYJt+JfYbZcpHp+JgC2OiTB1xCELl88docT8JIf+YQxLz
+         hFVeoppYLroBE3NSpElVnLa3l6a7V8IU//m+wKc3CVdFAglYBF9n/FthoV9NoI76I6yq
+         ArDd3mPeqjHFVRAl6eWZsSdNdJfdS+A+BRun4EHTD7vrpsBXLu8OZjn+m2HdbAnNRd3O
+         eaUg==
+X-Gm-Message-State: AOAM530DgM05Vsn8KOQtA3nTBI2r93raD/9ohvV+pecXtM9g7VBIxodt
+        6qPOi8iqUoOSuIyN34TYjSxkWOwoMq6/JFJwh0zkSETTR6M=
+X-Google-Smtp-Source: ABdhPJzePWTrTQrFoo0k2/Wped76/eKJoLwdjYRZVWJjY0cwBi5OOjzzJxM0qO7UsqY6ipkAu536zeF2iEbbw19JnUI=
+X-Received: by 2002:aca:f40c:: with SMTP id s12mr4365389oih.153.1603879193186;
+ Wed, 28 Oct 2020 02:59:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028182025.4bb6d633719d7ce76300aafa@kernel.org>
+References: <cover.1603788511.git.yepeilin.cs@gmail.com> <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
+In-Reply-To: <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 28 Oct 2020 10:59:42 +0100
+Message-ID: <CAMuHMdXJef0O9YTh9+kaOuanGJ9WiCXKQs1CUd6DhyWVjfi7MA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] fbdev/atafb: Remove unused extern variables
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 06:20:25PM +0900, Masami Hiramatsu wrote:
-> On Tue, 27 Oct 2020 20:41:26 +0100
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > On Tue, Oct 27, 2020 at 10:15:05AM +0100, Peter Zijlstra wrote:
-> > 
-> > > @@ -873,6 +866,20 @@ static __always_inline void exc_debug_ke
-> > >  	 */
-> > >  	WARN_ON_ONCE(user_mode(regs));
-> > >  
-> > > +	if (test_thread_flag(TIF_BLOCKSTEP)) {
-> > > +		/*
-> > > +		 * The SDM says "The processor clears the BTF flag when it
-> > > +		 * generates a debug exception." but PTRACE_BLOCKSTEP requested
-> > > +		 * it for userspace, but we just took a kernel #DB, so re-set
-> > > +		 * BTF.
-> > > +		 */
-> > > +		unsigned long debugctl;
-> > > +
-> > > +		rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
-> > > +		debugctl |= DEBUGCTLMSR_BTF;
-> > > +		wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
-> > > +	}
-> > > +
-> > >  	/*
-> > >  	 * Catch SYSENTER with TF set and clear DR_STEP. If this hit a
-> > >  	 * watchpoint at the same time then that will still be handled.
-> > 
-> > Masami, how does BTF interact with !optimized kprobes that single-step?
-> 
-> Good question, BTF is cleared right before single-stepping and restored
-> after single-stepping. It will be done accoding to TIF_BLOCKSTEP bit as below.
-> 
-> (in arch/x86/kernel/kprobes/core.c)
-> 
-> static nokprobe_inline void clear_btf(void)
-> {
->         if (test_thread_flag(TIF_BLOCKSTEP)) {
->                 unsigned long debugctl = get_debugctlmsr();
-> 
->                 debugctl &= ~DEBUGCTLMSR_BTF;
->                 update_debugctlmsr(debugctl);
->         }
-> }
-> 
-> static nokprobe_inline void restore_btf(void)
-> {
->         if (test_thread_flag(TIF_BLOCKSTEP)) {
->                 unsigned long debugctl = get_debugctlmsr();
-> 
->                 debugctl |= DEBUGCTLMSR_BTF;
->                 update_debugctlmsr(debugctl);
->         }
-> }
-> 
-> Hrm, so it seems that we do same ... maybe we don't need clear_btf() too?
+On Tue, Oct 27, 2020 at 6:12 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+> Remove 6 unused extern variables to reduce confusion. It is worth
+> mentioning that lib/fonts/font_8x8.c and lib/fonts/font_8x16.c also
+> declare `fontdata_8x8` and `fontdata_8x16` respectively, and this file
+> has nothing to do with them.
+>
+> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
 
-No, I think you do very much need clear_btf(). But with my patch perhaps
-restore_btf() is no longer needed. Is there only a single single-step
-between setup_singlestep() and resume_execution() ? (I think so).
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Also, I note that we should employ get_debugctlmsr() more consistently.
+Gr{oetje,eeting}s,
 
-> > The best answer I can come up with is 'poorly' :/
-> 
-> Is this what you expected? :)
+                        Geert
 
-Nah, I missed the above, you seems to do the right thing.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
