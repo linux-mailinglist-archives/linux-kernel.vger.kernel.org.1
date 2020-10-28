@@ -2,87 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB3029DA5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A553229D9EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390154AbgJ1XVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:21:09 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1454 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390127AbgJ1XVE (ORCPT
+        id S2390021AbgJ1XGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389878AbgJ1XGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:21:04 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f99a3120002>; Wed, 28 Oct 2020 09:57:54 -0700
-Received: from [172.27.0.18] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
- 2020 16:58:11 +0000
-Subject: Re: [PATCH v3] nvme-rdma: handle nvme completion data length
-To:     zhenwei pi <pizhenwei@bytedance.com>, <kbusch@kernel.org>,
-        <axboe@fb.com>, <hch@lst.de>, <sagi@grimberg.me>
-CC:     <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
-        <lengchao@huawei.com>
-References: <20201025115124.1430678-1-pizhenwei@bytedance.com>
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-ID: <86fa6106-b969-4bb9-95ee-c1101a61ff03@nvidia.com>
-Date:   Wed, 28 Oct 2020 18:58:08 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Wed, 28 Oct 2020 19:06:15 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0EAC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:06:14 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id a23so556492qkg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:06:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k0QqM9Gt2pl6jLDvRzSessXwooNr3cWtYYZ1FieYU24=;
+        b=IC28rilzqqsrEp1766X9/HXON3cweBNlB89913+HjG9ZI1Id6nQ7uhycq425wCCdlg
+         ysIXl7n9+f4UqjZF5znoYD9XGgLQYr433ZC/zeTp7BXIuT0jMfaUeuc/1IVcaxpNFjSU
+         yySCTVnWzHAXGR4crpxrWQ8Q/FgbsoKip1A5N7QhQ4nOPSk6CbbmVfDh0iI968pnpWkl
+         efA4Rsf5fHfcTWKUCJzLKNK4G2GFARZ5nTxMw7JwNEXrJUTJsMArGQ3krDp1KDNuHuGF
+         xdt/2VWtxETmcaOSjRWLZeQboSx/s6yvFs/5IXFL1mO9gvfDvXgwxmhl9rn6LO2oCcDq
+         2dLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k0QqM9Gt2pl6jLDvRzSessXwooNr3cWtYYZ1FieYU24=;
+        b=dxeDdGk+lBcM663MYit+YBHC3uW6Bl7qPgWyarn/AV5EyUlhAF5z0qKwqZCkOBA0tW
+         SCW0h2fGYGHjdO9QcAL6LnRaSJwvMKf2jhVAauLM35VozqXVaZVbYWfMNLpMeHqUn86H
+         Y4+ywX/3B/JFJGACBFnvBSvTDXS9UnhkY+hThvDqlJmzjJRE7JmY8POV1PY1ECuYSREb
+         FYKPumIJ4IzDTaL+3P4Y8ORyd4GamccdA2g7eQ69pQFiKWa7yD7UqdaLGishL0c+qbb5
+         c20sd9PRFquKQOjm1fWY/CUaRNEBi44gwSK2PjgYY26mOYu8YPT5Kj04MebJ2iac7SDZ
+         Q04g==
+X-Gm-Message-State: AOAM533foG2fWRNQkz7ZkJZvZYGzfBay+llAvXjuIXqwRPgMMEhwIwtb
+        EH22/0M+sg2kiynsj60jbNq87KIg83PknCk981GVQBvV1CJdGQ==
+X-Google-Smtp-Source: ABdhPJwW3VpC/kud5eUeUVpQz0YtVDpP6Sm44lKpXCyhNU7lezh+1Hk8awqCP/oXPLSEogdEFn3mYe6sB/MLIR84L6g=
+X-Received: by 2002:ac8:46d5:: with SMTP id h21mr2208954qto.290.1603904520912;
+ Wed, 28 Oct 2020 10:02:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201025115124.1430678-1-pizhenwei@bytedance.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603904274; bh=cR2ZEkkVb/BlRCyOFgIUSEJCwL4kH+CyituXrsasLIE=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=nWFx2UzNPDiROjdiBCoKaqsoXBmlMDFGaKIaTCPEvZLLmwBjn6a5pVAnzknVcWEBL
-         Zp9/RSvDbckthXtzooyEMojhijAhKPEOtke6799ARYxLPNoBTJuyal0yJyMd3gb5rh
-         dirt/6rnxeYZb1/wxBYsxH8MD/O/5f1ANoLm3NqDLrtaoOy8AlqSUa3/p0i8SSqd5S
-         D+BsZTStZC7a1WXAMtLgF0VAILvWTxNSpNguPgDY0qrnjaKUPbxOnyRNYxKtjO8mqq
-         PXrV0ShzH5EMS4x8hrVwa4ValWS2DFZhNql8gaq4CVNXEnbyfPPUkK1gu7aOPCA4Zh
-         mynLNW5LnWEMw==
+References: <cover.1603372719.git.andreyknvl@google.com> <f48f800933dacfc554d9094d864a01688abcbffd.1603372719.git.andreyknvl@google.com>
+In-Reply-To: <f48f800933dacfc554d9094d864a01688abcbffd.1603372719.git.andreyknvl@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 28 Oct 2020 18:01:49 +0100
+Message-ID: <CACT4Y+bx=3JCqR3GPrEUjbRFdOTQCCBofx0jd_g2Ldi+L7-iKg@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 19/21] kasan: don't round_up too much
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 22, 2020 at 3:20 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> For tag-based mode kasan_poison_memory() already rounds up the size. Do
+> the same for software modes and remove round_up() from common code.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/Ib397128fac6eba874008662b4964d65352db4aa4
 
-On 10/25/2020 1:51 PM, zhenwei pi wrote:
-> Hit a kernel warning:
-> refcount_t: underflow; use-after-free.
-> WARNING: CPU: 0 PID: 0 at lib/refcount.c:28
->
-> RIP: 0010:refcount_warn_saturate+0xd9/0xe0
-> Call Trace:
->   <IRQ>
->   nvme_rdma_recv_done+0xf3/0x280 [nvme_rdma]
->   __ib_process_cq+0x76/0x150 [ib_core]
->   ...
->
-> The reason is that a zero bytes message received from target, and the
-> host side continues to process without length checking, then the
-> previous CQE is processed twice.
->
-> Do sanity check on received data length, try to recovery for corrupted
-> CQE case.
->
-> Because zero bytes message in not defined in spec, using zero bytes
-> message to detect dead connections on transport layer is not
-> standard, currently still treat it as illegal.
->
-> Thanks to Chao Leng & Sagi for suggestions.
->
-> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+
 > ---
->   drivers/nvme/host/rdma.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
+>  mm/kasan/common.c | 8 ++------
+>  mm/kasan/shadow.c | 1 +
+>  2 files changed, 3 insertions(+), 6 deletions(-)
 >
-Seems strange that the targets sends zero byte packets.
-
-Can you specify which target is this and the scenario ?
-
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 5622b0ec0907..983383ebe32a 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -215,9 +215,7 @@ void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
+>
+>  void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
+>  {
+> -       kasan_poison_memory(object,
+> -                       round_up(cache->object_size, KASAN_GRANULE_SIZE),
+> -                       KASAN_KMALLOC_REDZONE);
+> +       kasan_poison_memory(object, cache->object_size, KASAN_KMALLOC_REDZONE);
+>  }
+>
+>  /*
+> @@ -290,7 +288,6 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
+>  {
+>         u8 tag;
+>         void *tagged_object;
+> -       unsigned long rounded_up_size;
+>
+>         tag = get_tag(object);
+>         tagged_object = object;
+> @@ -311,8 +308,7 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
+>                 return true;
+>         }
+>
+> -       rounded_up_size = round_up(cache->object_size, KASAN_GRANULE_SIZE);
+> -       kasan_poison_memory(object, rounded_up_size, KASAN_KMALLOC_FREE);
+> +       kasan_poison_memory(object, cache->object_size, KASAN_KMALLOC_FREE);
+>
+>         if (static_branch_unlikely(&kasan_stack)) {
+>                 if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine) ||
+> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+> index 616ac64c4a21..ab1d39c566b9 100644
+> --- a/mm/kasan/shadow.c
+> +++ b/mm/kasan/shadow.c
+> @@ -82,6 +82,7 @@ void kasan_poison_memory(const void *address, size_t size, u8 value)
+>          * addresses to this function.
+>          */
+>         address = reset_tag(address);
+> +       size = round_up(size, KASAN_GRANULE_SIZE);
+>
+>         shadow_start = kasan_mem_to_shadow(address);
+>         shadow_end = kasan_mem_to_shadow(address + size);
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
