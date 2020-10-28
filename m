@@ -2,310 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4719329E15D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C1C29E13C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728990AbgJ2CAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:00:47 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:48369 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728006AbgJ1Vvf (ORCPT
+        id S1728907AbgJ2Byc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728652AbgJ1V4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:51:35 -0400
-Received: from methusalix.internal.home.lespocky.de ([92.117.45.118]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1MT7ip-1kxPjS40Ip-00UcI8; Wed, 28 Oct 2020 21:40:02 +0100
-Received: from falbala.internal.home.lespocky.de ([192.168.243.94])
-        by methusalix.internal.home.lespocky.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <post@lespocky.de>)
-        id 1kXsEd-0002jR-O2; Wed, 28 Oct 2020 21:39:57 +0100
-Date:   Wed, 28 Oct 2020 21:39:54 +0100
-From:   Alexander Dahl <post@lespocky.de>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Alexander Dahl <ada@thorsis.com>,
-        Alexander Dahl <post@lespocky.de>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v7 02/12] dt-bindings: leds: Convert pwm to yaml
-Message-ID: <20201028203953.eafmzeqba76qjlf2@falbala.internal.home.lespocky.de>
-Mail-Followup-To: Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexander Dahl <ada@thorsis.com>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-References: <20201005203451.9985-1-post@lespocky.de>
- <20201005203451.9985-3-post@lespocky.de>
+        Wed, 28 Oct 2020 17:56:48 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBF7C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:56:48 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id i26so625001pgl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nKOyADoqO6XIKYtGo2tqwiIgySeXkjkWzT3F1YeXlI4=;
+        b=vDZBjydJkf4Rf8qIX6yKI8rB5ujqYRh+pfZySOBSTFI4IFr9te3yOYB5YQDJvdvoBM
+         I52fqrZbRgVhscQ9pi18seqxn+486OkVYAk179gK3aweg8oDKMuS9UU+vZ646u2xqBiu
+         yPo+c6RuW0wZrOU4+n1LwLtxXFGOKXlUEAsT+spqt7uO5gILkD+I345rNGiUg1HXJfdH
+         FynRciGqWJCOqEngoci+UK+0Pb5GPqhLuz6VxpwGtT2L3qFV4mJtg1f3waxRHuLibq+9
+         UtQNj7zUWdYNemGo534SV4Eh/fufHbboaI57NWD4josoQWfQIlvPeW8KEtg0UoParREL
+         UOpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=nKOyADoqO6XIKYtGo2tqwiIgySeXkjkWzT3F1YeXlI4=;
+        b=nr8eeg2dxHh5kRznVDA/w15xQht9gg4stDeyYa4Kjg962YYB6LmxclPZCohdJNy2cN
+         xYtAYJ1YMl0lUlMsyN4goAX97HNX9BX7kNnx0ElPBY1f5TezAYkLKGl380Wb7Svh8RGp
+         YD57JIKNqj6++vhB9QgdPk7YtHbzLKdicntsoJCmfVBnF9KQZcvsQRXkc540Pgn2n6t0
+         IFYXPvzJLqXiilJjiMugOQ3IG3Zm95lvNom97oaNQ7pp7B7a8yTVplcX2xzBdJV+iQ1D
+         1ITRpWOYNtSYQy/BjUVHu99xgOobndPVDDts2zw+H7XQscDlI7riqtIDS4mQkSZfiFQB
+         if3A==
+X-Gm-Message-State: AOAM532tkmrdh6oyYlMHtE+kE8OW/DvUvmXpM9oGEOnQX9DmheAoYK7a
+        S8zjJ6dSfcTfcFiqYtu+xmureN+u6wLGyw==
+X-Google-Smtp-Source: ABdhPJxhz6ed3Lwt0YgD7jgiTgZE2GoBtk2tym3ijKfh50K2zs0+xfRt9wDgu0KuJHirur3TudIFGw==
+X-Received: by 2002:a92:c7c7:: with SMTP id g7mr668651ilk.303.1603917951821;
+        Wed, 28 Oct 2020 13:45:51 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id p66sm491399ilb.48.2020.10.28.13.45.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 13:45:51 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Wed, 28 Oct 2020 16:45:49 -0400
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/build: Fix vmlinux size check on 64-bit
+Message-ID: <20201028204549.GA2231038@rani.riverdale.lan>
+References: <20201005151539.2214095-1-nivedita@alum.mit.edu>
+ <20201027200803.GL15580@zn.tnic>
+ <20201027211422.GC1833548@rani.riverdale.lan>
+ <20201028133909.GA27112@zn.tnic>
+ <20201028164551.GA1989568@rani.riverdale.lan>
+ <20201028194355.GB27112@zn.tnic>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="nwkumzirho5iba4d"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201005203451.9985-3-post@lespocky.de>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Scan-Signature: e8e5211badca7b3e4c3721992337a85e
-X-Spam-Score: -2.9 (--)
-X-Provags-ID: V03:K1:dFwaWUg7Hs1+6BjOpddvhs45I+5MLeawNEbLKR27jHnbgCj5ifc
- gYT8HigTxAZrbMDX6/JPdfbDaFolzE8kEuGksu+jJMbNPJOki4vC4J8UisS9GY0wG28NRRz
- NcInnsvPQVTBr/DWp2r63TtWmZWlMAONcdpEQLgqv5Ki0n2Oa80UXdCA4ZDNLFt5URfJug4
- cxtSV54v9p6WgHStsK5mQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gzz3n95gjfs=:hHvez/4McHVrzL3OX0D32f
- /mYm8rTxXToff+h1rKtHcZmgoklySxxk+XBCOUTtiY6mf9KZs6CPkdPtjCzBTHXEACewZfU8t
- ZX92A/cg34hfSH/qLP6uHmyl3sm8rZgjhfmODNhtVRqSL1yBUt7VoFp4O+xMEAK5mz+yCu2Rm
- iGklg0sn8jVVieyJf4ohBj0jpC00XckF2oSRO4FK0fFLDDT6iG356sR5IHySLVV8isMSMswNs
- 7/QhXZyqSx8aKiVqtFSET6XbhPL/qNwVQ4M6SnKNnCOYcjQwin2ARag9znS70Gxf1KUX8wCoT
- 3D22ySm/UzuqNW93z4dQGoKUTbs56eQ0t6QwGbzfLbL34QjGeMWvlLDxO4CsLndZij4zIiENB
- BfPV7R5t+K4iT+G1wnWExjfTh3WI8pemTfpcwHbrxpE71hZybyIbsYFhIysPL
+In-Reply-To: <20201028194355.GB27112@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 28, 2020 at 08:43:55PM +0100, Borislav Petkov wrote:
+> On Wed, Oct 28, 2020 at 12:45:51PM -0400, Arvind Sankar wrote:
+> > You don't want to try to run the kernel from physical address 0 in any
+> > case. The default is set to 16MiB to avoid low memory, historically to
+> > avoid the 24-bit ISA DMA range.
+> 
+> Sure, that's why I wrote:
+> 
+> "... so I guess this should be a range > 0 specification but I guess not
+> important."
+> 
+> So how about a sentence or two alluding to that fact in the help text of
+> that option?
 
---nwkumzirho5iba4d
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's mentioned in the commit message for ceefccc93932, but yeah, it
+would be useful to have in the help text I guess. But that's not really
+related to this patch.
 
-Hello,
+> 
+> > This doesn't matter for the 64-bit kernel, which can be run from any
+> > physical address independent of the RELOCATABLE/PHYSICAL_START settings.
+> > It only matters on 32-bit, where VA and PA are tied together by
+> > 	VA == __PAGE_OFFSET + PA
+> 
+> You mean the kernel text mapping I assume because we do
+> 
+> #define __va(x)                 ((void *)((unsigned long)(x)+PAGE_OFFSET))
+> 
+> on 64-bit too but that's the direct mapping of all physical memory.
 
-Peter, Russel, could you please give your Acked-by or Signed-off-by on
-this patch?  Your ack is needed, because the license is now explicitly
-set (it was not explicit before), and you were the contributors to
-this binding before the conversion to yaml.
+Yes, I meant the virtual addresses of the kernel symbols: the 32-bit
+kernel needs relocation processing to be loaded at a different physical
+address, but the 64-bit kernel doesn't unless the virtual address is
+also being changed.
 
-Thanks and Greets
-Alex
+> 
+> > KERNEL_IMAGE_SIZE is _not_ the size of the kernel image, the name is
+> > misleading.
+> 
+> So that needs fixing too, I guess.
 
-On Mon, Oct 05, 2020 at 10:34:41PM +0200, Alexander Dahl wrote:
-> The example was adapted in the following ways:
->=20
-> - make use of the now supported 'function' and 'color' properties
-> - remove pwm nodes, those are documented elsewhere
-> - align node names to new dt schema rules and dt recommendations
->=20
-> License was not explicitly set before.  The license set now is
-> recommended by DT project.
->=20
-> Suggested-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> Signed-off-by: Alexander Dahl <post@lespocky.de>
-> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: Russell King <linux@armlinux.org.uk>
-> ---
->=20
-> Notes:
->     NOTE: Due to license set/change this needs Acked-by or Signed-off-by =
-=66rom:
->       * Peter Ujfalusi
->       * Russell King
->    =20
->     That was discussed already with Peter (original author), still waiting
->     for Acked-by though =E2=80=A6
->    =20
->     Changelog
->     ---------
->     v6 -> v7:
->       * added Reviewed-by (Krzysztof Kozlowski)
->       * reworded commit message (suggested by Krzysztof)
->       * added Reviewed-by (Rob Herring)
->    =20
->     v5 -> v6:
->       * removed pwm nodes from example (Rob)
->       * renamed led-controller node in example (Rob)
->    =20
->     v4 -> v5:
->       * updated based on feedback by Rob Herring
->       * removed Acked-by
->    =20
->     v3 -> v4:
->       * added Cc to original author of the binding
->    =20
->     v2 -> v3:
->       * changed license identifier to recommended one
->       * added Acked-by
->    =20
->     v2:
->       * added this patch to series (Suggested-by: Jacek Anaszewski)
->=20
->  .../devicetree/bindings/leds/leds-pwm.txt     | 50 -------------
->  .../devicetree/bindings/leds/leds-pwm.yaml    | 70 +++++++++++++++++++
->  2 files changed, 70 insertions(+), 50 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.txt
->  create mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.txt b/Docume=
-ntation/devicetree/bindings/leds/leds-pwm.txt
-> deleted file mode 100644
-> index 6c6583c35f2f..000000000000
-> --- a/Documentation/devicetree/bindings/leds/leds-pwm.txt
-> +++ /dev/null
-> @@ -1,50 +0,0 @@
-> -LED connected to PWM
-> -
-> -Required properties:
-> -- compatible : should be "pwm-leds".
-> -
-> -Each LED is represented as a sub-node of the pwm-leds device.  Each
-> -node's name represents the name of the corresponding LED.
-> -
-> -LED sub-node properties:
-> -- pwms : PWM property to point to the PWM device (phandle)/port (id) and=
- to
-> -  specify the period time to be used: <&phandle id period_ns>;
-> -- pwm-names : (optional) Name to be used by the PWM subsystem for the PW=
-M device
-> -  For the pwms and pwm-names property please refer to:
-> -  Documentation/devicetree/bindings/pwm/pwm.txt
-> -- max-brightness : Maximum brightness possible for the LED
-> -- active-low : (optional) For PWMs where the LED is wired to supply
-> -  rather than ground.
-> -- label :  (optional)
-> -  see Documentation/devicetree/bindings/leds/common.txt
-> -- linux,default-trigger :  (optional)
-> -  see Documentation/devicetree/bindings/leds/common.txt
-> -
-> -Example:
-> -
-> -twl_pwm: pwm {
-> -	/* provides two PWMs (id 0, 1 for PWM1 and PWM2) */
-> -	compatible =3D "ti,twl6030-pwm";
-> -	#pwm-cells =3D <2>;
-> -};
-> -
-> -twl_pwmled: pwmled {
-> -	/* provides one PWM (id 0 for Charing indicator LED) */
-> -	compatible =3D "ti,twl6030-pwmled";
-> -	#pwm-cells =3D <2>;
-> -};
-> -
-> -pwmleds {
-> -	compatible =3D "pwm-leds";
-> -	kpad {
-> -		label =3D "omap4::keypad";
-> -		pwms =3D <&twl_pwm 0 7812500>;
-> -		max-brightness =3D <127>;
-> -	};
-> -
-> -	charging {
-> -		label =3D "omap4:green:chrg";
-> -		pwms =3D <&twl_pwmled 0 7812500>;
-> -		max-brightness =3D <255>;
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.yaml b/Docum=
-entation/devicetree/bindings/leds/leds-pwm.yaml
-> new file mode 100644
-> index 000000000000..fe4d5fd25913
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
-> @@ -0,0 +1,70 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/leds-pwm.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: LEDs connected to PWM
-> +
-> +maintainers:
-> +  - Pavel Machek <pavel@ucw.cz>
-> +
-> +description:
-> +  Each LED is represented as a sub-node of the pwm-leds device.  Each
-> +  node's name represents the name of the corresponding LED.
-> +
-> +properties:
-> +  compatible:
-> +    const: pwm-leds
-> +
-> +patternProperties:
-> +  "^led(-[0-9a-f]+)?$":
-> +    type: object
-> +
-> +    $ref: common.yaml#
-> +
-> +    properties:
-> +      pwms:
-> +        maxItems: 1
-> +
-> +      pwm-names: true
-> +
-> +      max-brightness:
-> +        description:
-> +          Maximum brightness possible for the LED
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +      active-low:
-> +        description:
-> +          For PWMs where the LED is wired to supply rather than ground.
-> +        type: boolean
-> +
-> +    required:
-> +      - pwms
-> +      - max-brightness
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +
-> +    #include <dt-bindings/leds/common.h>
-> +
-> +    led-controller {
-> +        compatible =3D "pwm-leds";
-> +
-> +        led-1 {
-> +            label =3D "omap4::keypad";
-> +            pwms =3D <&twl_pwm 0 7812500>;
-> +            max-brightness =3D <127>;
-> +        };
-> +
-> +        led-2 {
-> +            color =3D <LED_COLOR_ID_GREEN>;
-> +            function =3D LED_FUNCTION_CHARGING;
-> +            pwms =3D <&twl_pwmled 0 7812500>;
-> +            max-brightness =3D <255>;
-> +        };
-> +    };
-> +
-> +...
-> --=20
-> 2.20.1
+It's become ABI I think: looks like it's included by that name in
+vmcoreinfo for kexec crash dumps.
 
---=20
-/"\ ASCII RIBBON | =C2=BBWith the first link, the chain is forged. The first
-\ / CAMPAIGN     | speech censured, the first thought forbidden, the
- X  AGAINST      | first freedom denied, chains us all irrevocably.=C2=AB
-/ \ HTML MAIL    | (Jean-Luc Picard, quoting Judge Aaron Satie)
+> 
+> > It is the maximum VA that the kernel can occupy, it is used
+> > to prepopulate the PMD-level pagetable for initial boot (level2_kernel_pgt)
+> > and is also used to define MODULES_VADDR, so it _is_ talking about
+> > mappings. If you have a 30MiB kernel that is placed at a starting VA of
+> > 510MiB when KERNEL_IMAGE_SIZE is 512MiB, it won't boot.
+> 
+> ... because not the whole kernel will be mapped, sure. There's a comment
+> above KERNEL_IMAGE_SIZE which could use some of that explanation.
 
---nwkumzirho5iba4d
-Content-Type: application/pgp-signature; name="signature.asc"
+Hm, it also looks like KERNEL_IMAGE_SIZE is entirely unused on 32-bit
+except for this linker script check and for KASLR. I'll do a v2 cleaning
+up those comments.
 
------BEGIN PGP SIGNATURE-----
+> 
+> > Increasing vmlinux size can trigger the problem by pushing _end
+> > beyond KERNEL_IMAGE_SIZE, but the problem occurs once _end -
+> > __START_KERNEL_map exceeds KERNEL_IMAGE_SIZE, not when _end - _text
+> > exceeds it, hence this patch.
+> 
+> Understood - in both cases, once _end goes beyond the 512MiB end of the
+> PMD mapping, we've lost. Please add that part to the commit message too
+> because we will forget.
+> 
 
-iQIzBAABCAAdFiEEwo7muQJjlc+Prwj6NK3NAHIhXMYFAl+Z1xYACgkQNK3NAHIh
-XMa4dRAAwz5aGmTaCMVYq3Auo34qtLb+NsNbE0uPtTAJKafHT/YnSzgNgbf5urRz
-zKAeeoaiKjVICVDWeDrLdN607wylNBGn024FRat0tjDkZIOu08iMuyBvR9dOA8zd
-bp3xsK0f44DnZl+g0E/gIuuWe31PK/nY8h+etVAzcTqBsWVVDsT1zGBpXdYLpl6S
-DDjTaO+zUyK7gRBQt/qDUbmQAO1IIttfSy6qHUxxPgZliWI+/DpQgsFRdoZPV+QH
-bamaugY6vEaIkB5kr5O2QzHNmciUt/Jn7122YMMmVl7AE7ZPbGyVGtd/MXzQLXpQ
-IHz0CJKdh0SraLoDeeIOgWRdDD4qUgy4WuaxxIQB2VjnICRE3FHHZHM6BIOrNUjF
-sg+wsPXMnqRzAIa/ExjQCZBuhMrMLMNKRHLDwLTVgDz+qXb673vpHc0RyxrWC7YZ
-hhQpQkgaeSmCs23IgsI2jm0cKXMMq9yoDLGfVX+naP413sx/RiQPyKZNQnkXHOV/
-O48sd7eTz0BH6ZEBY6fSShd6SzQVUlYQGr2Ol4TXP1/Xa4LGlRzAvGvZOTiPukuX
-2kxyUpBKNHjR7+z9jJ0kAO6mIPiLgI0Ac698iEDWsLkKekuFyd1pYwAZLeMoFR8l
-J+PJ8ZiMqFxRQGr9QSHNwENi+KBFE4PweWPJ92XczoNxLhWyvBc=
-=tXqH
------END PGP SIGNATURE-----
-
---nwkumzirho5iba4d--
+That's what this bit in the commit message was trying to explain:
+  The check uses (_end - _text), but this is not enough. The initial PMD
+  used in startup_64() (level2_kernel_pgt) can only map upto
+  KERNEL_IMAGE_SIZE from __START_KERNEL_map, not from _text.
