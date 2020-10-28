@@ -2,177 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FAC29DB0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:42:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9885229DB51
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728317AbgJ1Xmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
+        id S2389238AbgJ1Xsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:48:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390516AbgJ1XeO (ORCPT
+        with ESMTP id S1733137AbgJ1WrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:34:14 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D64C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:34:14 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id x23so405845plr.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:34:14 -0700 (PDT)
+        Wed, 28 Oct 2020 18:47:17 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8198BC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:47:16 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id j24so1158252ejc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:47:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lutL77mM1puGVoqt7Nw9AlgWOlFK54HVQ3QwD1U+gIM=;
-        b=O/Ivy3Ru9S8NFuMxeUTduXhnV/j5fokiemcD7qvMICg4A0mITpt7rJmU1k54rj5Enz
-         S4KqZc1VRb3Tta1I6shweaTe605FT0mqwJ2X0W0GLhoUNQeQQ22EMr1YDqpuuyTQzqaz
-         HDQkYqtRiXpKAULNF1TMAUuS3O19+WzB2DBZQ=
+        bh=NzBAGEHqa0V5kiMIPWULZP2eBI9SZCrw5ZlgIsLXotw=;
+        b=bsbjt67010k0XV38slZpOKb0W5naEggG0JziCyKBnMSfNQHn7W1gkena4bquwSwuWA
+         9IdYEnJAiQ+3lr7rdXdJOfU+IsVFayD9Yq0hWwlGw2BNr+NU0vlY7yEfQhz3MUGLacFr
+         ZEqqB8YJGzcRyxTSRukfp90YbpFu2x7qY77T0iK3ISScucQN/JvUIwfU2bFIgGhW4fZX
+         lhLMH1oDcPfF8VgLX83/CGLKENpkN8Vd0kMb58R3Avy8p6adS+JiK8oIYoKVxV/qmFXX
+         uXndNgQWaCvnvM8qob+E7JpHaX3h7UTZg0dtWVr12RfbVZpyuGYKy7eCFTOEgY5ETwg9
+         0yag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lutL77mM1puGVoqt7Nw9AlgWOlFK54HVQ3QwD1U+gIM=;
-        b=r2MYMRMhDOakDFQTL2SjPJ9zLPuerLzO1buTLf/3dq72guysSFKyJpqRu0vDFFs50d
-         o5BVoMA/ZGTW5vLejhQ67iE1qcpplL4+wuhPo43A4QP9v3A87hmHjrSeIvACq5L9sSm/
-         jazrZk1Z32mFaMZJfBqmpp2INw1cSNxIXjI+PZSpu3ZyiW7MerSXxeasJhEXLr9RHrOP
-         Rh7OiD519v/Dv47MCMbrfdS1fyTZx6qoR9HSf1GjDYZCZpeHBUFUvOSccBgzdHyxdCg2
-         zlmPktR4uHVuISIcNm9wnPXpIFBT7ZYBhjKwIxgcEG0wfH03/tyvj1YPhqXM1VEzR96H
-         aIFA==
-X-Gm-Message-State: AOAM532D17dTHlYCQro+Q1ZgFLfoIYvlxeQtIdU/5/JMuJKRDBmNbH9f
-        /rgV71jyHXbYTqaZ1rAEaLkRM9vVurXJbg==
-X-Google-Smtp-Source: ABdhPJwFnWal4xvuigM9HzPJaGw+AlMfxvzHNaNiNLLZ4jpIHilVZCVNHJwbCfwH+dT5t3kakQxBvQ==
-X-Received: by 2002:a1f:a94c:: with SMTP id s73mr52459vke.19.1603900972298;
-        Wed, 28 Oct 2020 09:02:52 -0700 (PDT)
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
-        by smtp.gmail.com with ESMTPSA id x81sm574000vsx.19.2020.10.28.09.02.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 09:02:51 -0700 (PDT)
-Received: by mail-vs1-f48.google.com with SMTP id d19so3129126vso.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 09:02:51 -0700 (PDT)
-X-Received: by 2002:a67:b405:: with SMTP id x5mr5981883vsl.4.1603900970936;
- Wed, 28 Oct 2020 09:02:50 -0700 (PDT)
+        bh=NzBAGEHqa0V5kiMIPWULZP2eBI9SZCrw5ZlgIsLXotw=;
+        b=WlqEpr7pGycUWm9gFHAB4W+w4UV2kZ8JKxlm3HsDvDcYFbgWu3tTCF8LLBE9gApkF1
+         J3wJQFfGuJ4WAwIVnBL0zAexzMrRcB/TISoDxExJi2W7yZScJehuVhYWNX7VpSCIewm5
+         DHAj7JNj0EBahSCCxCHJANnPvYFFOq5kgQDhm6HO8VKxlE6LHAss8MXHIfMyR7eA9v1/
+         eh1SyTLhXUGmmN+PIlHroJWbrCr1JCCJq4tucCQZOofxGmZ4DeGYDdoA9KvruIHjnxww
+         jz817+r1XXF5Bv1cHSOuxNkFWIbXAwOgLe38VPq4nvA2k17JQP69WUaWhxgkt3K70BtA
+         t7oA==
+X-Gm-Message-State: AOAM530QAXuTFH3/wF6D9FffMdeH+QkKZCAuvkxm+2mCoccVnBczVGWs
+        ODeCdPwRSLGnBvTQugOvT3h3PNHo3DX2tGH8rwC8jJaIFd8=
+X-Google-Smtp-Source: ABdhPJybhF4PjEmbIa2ZuM1LKe/+a7sGwFXVflJA1QF59xm0AJj0AUxss9TjY6m6zdAi07tsKtT/VVkXpEVSw+HmKp4=
+X-Received: by 2002:a19:e308:: with SMTP id a8mr152828lfh.573.1603910407565;
+ Wed, 28 Oct 2020 11:40:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <1603811067-23058-1-git-send-email-pillair@codeaurora.org>
- <CAD=FV=XRyeXcE93nZgOy+x5eWcHcKKwbJccuWFkx+cA8tEXwZQ@mail.gmail.com> <003801d6ad41$a1bb8970$e5329c50$@codeaurora.org>
-In-Reply-To: <003801d6ad41$a1bb8970$e5329c50$@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 28 Oct 2020 09:02:39 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=U_Dwb=YRMKcKME9vdxbSgSn-08dznoVXY6VzCaHL8OnQ@mail.gmail.com>
-Message-ID: <CAD=FV=U_Dwb=YRMKcKME9vdxbSgSn-08dznoVXY6VzCaHL8OnQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Fix the parsing error in service available event
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     ath10k <ath10k@lists.infradead.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Abhishek Kumar <kuabhs@chromium.org>,
-        Brian Norris <briannorris@chromium.org>
+References: <CAAnLoWnS74dK9Wq4EQ-uzQ0qCRfSK-dLqh+HCais-5qwDjrVzg@mail.gmail.com>
+ <CAG48ez3ZXmJ1ndEmZtoieOAm05p+5X7+HXo61LwpuiWFWGWK4w@mail.gmail.com>
+ <20201028164936.GC534@brightrain.aerifal.cx> <CAG48ez2rC1OKYMM6eG4Fyq2xvTit6t3PUY0VE8A56EAqNmEVzg@mail.gmail.com>
+ <20201028175241.GD534@brightrain.aerifal.cx> <CAG48ez3aSn2HSWuO0bhrRSFr_EPqkqshspsqiDZX+aYSpHnjOA@mail.gmail.com>
+ <20201028183511.GE534@brightrain.aerifal.cx>
+In-Reply-To: <20201028183511.GE534@brightrain.aerifal.cx>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 28 Oct 2020 19:39:41 +0100
+Message-ID: <CAG48ez0EQjngqowakx_RCUWasXqOwLPbQhGR05x+nQOCWMhyYQ@mail.gmail.com>
+Subject: Re: [seccomp] Request for a "enable on execve" mode for Seccomp filters
+To:     Rich Felker <dalias@libc.org>
+Cc:     Camille Mougey <commial@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Denis Efremov <efremov@linux.com>,
+        Andy Lutomirski <luto@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Oct 28, 2020 at 8:47 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
+On Wed, Oct 28, 2020 at 7:35 PM Rich Felker <dalias@libc.org> wrote:
+> On Wed, Oct 28, 2020 at 07:25:45PM +0100, Jann Horn wrote:
+> > On Wed, Oct 28, 2020 at 6:52 PM Rich Felker <dalias@libc.org> wrote:
+> > > On Wed, Oct 28, 2020 at 06:34:56PM +0100, Jann Horn wrote:
+> > > > On Wed, Oct 28, 2020 at 5:49 PM Rich Felker <dalias@libc.org> wrote:
+> > > > > On Wed, Oct 28, 2020 at 01:42:13PM +0100, Jann Horn wrote:
+> > > > > > On Wed, Oct 28, 2020 at 12:18 PM Camille Mougey <commial@gmail.com> wrote:
+> > > > > > You're just focusing on execve() - I think it's important to keep in
+> > > > > > mind what happens after execve() for normal, dynamically-linked
+> > > > > > binaries: The next step is that the dynamic linker runs, and it will
+> > > > > > poke around in the file system with access() and openat() and fstat(),
+> > > > > > it will mmap() executable libraries into memory, it will mprotect()
+> > > > > > some memory regions, it will set up thread-local storage (e.g. using
+> > > > > > arch_prctl(); even if the process is single-threaded), and so on.
+> > > > > >
+> > > > > > The earlier you install the seccomp filter, the more of these steps
+> > > > > > you have to permit in the filter. And if you want the filter to take
+> > > > > > effect directly after execve(), the syscalls you'll be forced to
+> > > > > > permit are sufficient to cobble something together in userspace that
+> > > > > > effectively does almost the same thing as execve().
+> > > > >
+> > > > > I would assume you use SECCOMP_RET_USER_NOTIF to implement policy for
+> > > > > controlling these operations and allowing only the ones that are valid
+> > > > > during dynamic linking. This also allows you to defer application of
+> > > > > the filter until after execve. So unless I'm missing some reason why
+> > > > > this doesn't work, I think the requested functionality is already
+> > > > > available.
+> > > >
+> > > > Ah, yeah, good point.
+> > > >
+> > > > > If you really just want the "activate at exec" behavior, it might be
+> > > > > possible (depending on how SECCOMP_RET_USER_NOTIF behaves when there's
+> > > > > no notify fd open; I forget)
+> > > >
+> > > > syscall returns -ENOSYS. Yeah, that'd probably do the job. (Even
+> > > > though it might be a bit nicer if userspace had control over the errno
+> > > > there, such that it could be EPERM instead... oh well.)
+> > >
+> > > EPERM is a major bug in current sandbox implementations, so ENOSYS is
+> > > at least mildly better, but indeed it should be controllable, probably
+> > > by allowing a code path for the BPF to continue with a jump to a
+> > > different logic path if the notify listener is missing.
+> >
+> > I guess we might be able to expose the listener status through a bit /
+> > a field in the struct seccomp_data, and then filters could branch on
+> > that. (And the kernel would run the filter twice if we raced with
+> > filter detachment.) I don't know whether it would look pretty, but I
+> > think it should be doable...
 >
-> > -----Original Message-----
-> > From: Doug Anderson <dianders@chromium.org>
-> > Sent: Wednesday, October 28, 2020 8:07 PM
-> > To: Rakesh Pillai <pillair@codeaurora.org>
-> > Cc: ath10k <ath10k@lists.infradead.org>; linux-wireless <linux-
-> > wireless@vger.kernel.org>; LKML <linux-kernel@vger.kernel.org>; Abhishek
-> > Kumar <kuabhs@chromium.org>; Brian Norris <briannorris@chromium.org>
-> > Subject: Re: [PATCH] ath10k: Fix the parsing error in service available event
-> >
-> > Hi,
-> >
-> > On Tue, Oct 27, 2020 at 8:20 AM Rakesh Pillai <pillair@codeaurora.org>
-> > wrote:
-> > >
-> > > The wmi service available event has been
-> > > extended to contain extra 128 bit for new services
-> > > to be indicated by firmware.
-> > >
-> > > Currently the presence of any optional TLVs in
-> > > the wmi service available event leads to a parsing
-> > > error with the below error message:
-> > > ath10k_snoc 18800000.wifi: failed to parse svc_avail tlv: -71
-> > >
-> > > The wmi service available event parsing should
-> > > not return error for the newly added optional TLV.
-> > > Fix this parsing for service available event message.
-> > >
-> > > Tested-on: WCN3990 hw1.0 SNOC
-> > >
-> > > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> > > ---
-> > >  drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> > b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> > > index 932266d..3b49e29 100644
-> > > --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> > > +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> > > @@ -1404,9 +1404,12 @@ static int ath10k_wmi_tlv_svc_avail_parse(struct
-> > ath10k *ar, u16 tag, u16 len,
-> > >                 arg->service_map_ext_len = *(__le32 *)ptr;
-> > >                 arg->service_map_ext = ptr + sizeof(__le32);
-> > >                 return 0;
-> > > +       case WMI_TLV_TAG_FIRST_ARRAY_ENUM:
-> > > +               return 0;
-> >
-> > This is at least slightly worrying to me.  If I were calling this
-> > function, I'd expect that if I didn't get back an error that at least
-> > "arg->service_map_ext_len" was filled in.  Seems like you should do:
-> >
-> > case WMI_TLV_TAG_FIRST_ARRAY_ENUM:
-> >   arg->service_map_ext_len = 0;
-> >   arg->service_map_ext = NULL;
-> >   return 0;
-> >
-> > ...and maybe add a comment about why you're doing that?
-> >
-> > At the moment things are working OK because
-> > ath10k_wmi_event_service_available() happens to init the structure to
-> > 0 before calling with:
-> >
-> >   struct wmi_svc_avail_ev_arg arg = {};
-> >
-> > ....but it doesn't seem like a great idea to rely on that.
-> >
-> > That all being said, I'm just a drive-by reviewer and if everyone else
-> > likes it the way it is, feel free to ignore my comments.
+> I was thinking the race wouldn't be salvagable, but indeed since the
+> filter is side-effect-free you can just re-run it if the status
+> changes between start of filter processing and the attempt at
+> notification. This sounds like it should work.
 >
->
-> Hi Doug,
->
-> The TLV TAG " WMI_TLV_TAG_STRUCT_SERVICE_AVAILABLE_EVENT" is the first and a mandatory TLV in the service available event.
-> The subsequent TLVs are optional ones and may or may not be present (based on FW versions).
-> This patch just fixes the bug, where the presence of any other TLVs are leading to a failure in parsing the service available msg.
-> If, in future, we plan to use any other services from firmware, which is exposed in the extended TLVs, we will need to add a new variable (and not service_map_ext) to set the service.
+> I guess it's not possible to chain two BPF filters to do this, because
+> that only works when the first one allows? Or am I misunderstanding
+> the multiple-filters case entirely? (I've never gotten that far with
+> programming it.)
 
-I'm not sure I totally understood your response, but look at it from
-the perspective of the function ath10k_wmi_event_service_available().
-
-That function calls:
-
-  ret = ath10k_wmi_pull_svc_avail(ar, skb, &arg);
-
-...if it gets back a non-zero error code, it assumes that the
-"arg.service_map_ext" and "arg.service_map_ext_len" values are now
-valid and it can use them.
-
-Before your patch, ath10k_wmi_pull_svc_avail() was returning an error
-code.  That let ath10k_wmi_event_service_available() know that it
-shouldn't look at "arg.service_map_ext" and "arg.service_map_ext_len".
-After your patch, you're not returning an error code but those fields
-aren't being filled in.
-
-Said another way, if you remove the initialization of "arg" in
-ath10k_wmi_event_service_available() then everything is broken.  While
-things work because you _do_ have an initialization of "arg" in
-ath10k_wmi_event_service_available(), it feels fragile to me to rely
-on that.
-
-
--Doug
+I'm not sure if I'm understanding the question correctly...
+At the moment you basically can't have multiple filters with notifiers.
+The rule with multiple filters is always that all the filters get run,
+and the actual action taken is the most restrictive result of all of
+them.
