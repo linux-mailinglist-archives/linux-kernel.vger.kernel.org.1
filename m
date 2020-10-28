@@ -2,97 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D08129DA6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:23:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC27329DA77
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390306AbgJ1XX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36200 "EHLO
+        id S2390315AbgJ1XXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390203AbgJ1XWR (ORCPT
+        with ESMTP id S2390158AbgJ1XWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:22:17 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97571C0613D2;
-        Wed, 28 Oct 2020 16:22:17 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id o129so762946pfb.1;
-        Wed, 28 Oct 2020 16:22:17 -0700 (PDT)
+        Wed, 28 Oct 2020 19:22:15 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32ACC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:22:15 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g12so781747pgm.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:22:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Z+hUYyDlaEK4lCFCCWRp2JTvLMWl+QVZfGI9YkRMX4U=;
-        b=ArN/lxLfAZjVgWV9asnrwIh3k9U916Fctx3VFWPYecAv6IjyEkF9qFbbMEL8QbiqhP
-         W/WWcCSSxsmjqSfxPkNuJyvxbVF54HRhRrTWWZU7cs9+SVvOLoyNlX6oExP6KpJFX+N+
-         DQ5KXjS8Nrx6Ms03yEo9sSsR/E6z7vbqgMBDv8TNsnKayPNc7qJfOZo2oWyhv9/sxYKc
-         kd3wrKYUt2Kq2FYLtZLMLPhVsQSzQYIGKeUM2bbU4YNIq06spM94N9VZnNUjWSOljPry
-         TsX1/uhALeG1GuBeVJI/lu9MVMrqkPzYLzOMq23iv6PIeUO/DnQUDg9kr5ydTL/QRe9o
-         nHMg==
+        bh=XZwWBaJ1YP4eUG0jbcZ/VfZJQEUP/FvDuE+Dcr6WVrA=;
+        b=gkFHJe+kUFXAxf/8vOsy2x4sDIItYYYD9odc8xSFN7m2g8lYwKR38kgfTf8zfvYvs7
+         yBKIMBqXPuX18tqVHBX3qCSclcuf06y4SGir3XllY4gvU+rJ7oabXjMnWHBu3qRHCt+g
+         XDQ0BDU+YDLpbohWX+lRIQe1zsidFRDvJAehw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Z+hUYyDlaEK4lCFCCWRp2JTvLMWl+QVZfGI9YkRMX4U=;
-        b=osYyD3lZqZ30QRYgRR7bEYplnW8VOME7bsiwvjL0N1jPtcEfUSkL7DBSmtpcBdnkB9
-         n17MkXLp1dt1SkutRo2fPlb/Kyd0t+MADHMwR4jXGJSo+JWLBWUO/IP4nr2Rhnoc0uBc
-         fnibLxTrNJl3u7T2UIZk1lATq1ebS/awwzIlu0X5vuLtSmJ/sitPb9GI2jhh8R20k5DH
-         0WujDk0NR+EIiwq+ejdaTg/1Z0X17AG80oO0aAD/lfZBNJSFA0DrwNW3qauoOgWCEhE0
-         YjkRYZ6pq3M12J2LmT9QK5uwwCmdOr1fmdqdviis+856DAQMmaKgYehhqqLU9NgFQaQC
-         EO9g==
-X-Gm-Message-State: AOAM530ViReM9k1dXSDDXt0YQx4RcykydgWLbvz0qF+SUJq3WzSf5SfP
-        rgnLDIWIcgQtMyHMkz1jyoRfv7rIAyPLCw==
-X-Google-Smtp-Source: ABdhPJzJR/CrflVVwZohuLxz8b71t2b4N1qNYlGl/mluP5YARvLTLBec++coW0wanH5vMaK238BYug==
-X-Received: by 2002:a17:90a:9f8a:: with SMTP id o10mr1205982pjp.160.1603927337156;
-        Wed, 28 Oct 2020 16:22:17 -0700 (PDT)
-Received: from sol (106-69-179-84.dyn.iinet.net.au. [106.69.179.84])
-        by smtp.gmail.com with ESMTPSA id q35sm472345pja.28.2020.10.28.16.22.13
+        bh=XZwWBaJ1YP4eUG0jbcZ/VfZJQEUP/FvDuE+Dcr6WVrA=;
+        b=UW7EuvXu+FeY49gMjiR/6/Dx5RmUZ4cgUBk8pxz1JNYDthD9F615fVvgNuYuC0OHwm
+         AI7Cy0OZrpIyiU+Nl22E+dujWeqGNus02tOg9OXWmsF9vLqP3b0aN3PlsNkRZMiSghXD
+         v6B9hsChgC/RA5KedjyxBD4NODKbizpb+pVy6bSZBuh+sj9mZ05V4ViZAn3lDjsieXUJ
+         gPI3g+0StNgjkpthyb422Nad+5Ic57F1eE1hY5ibtJMc0FwhTgaimZMc5+MioA2fjB8v
+         Dbr/Nqr4DUCjWb4VUMcRoKRHHmmFa5Afswt2Uj91uCZUlhTuwp4Om+I06wkYaWs/nBAJ
+         PcOQ==
+X-Gm-Message-State: AOAM533JPWELtn5tHnQ0uMEJrmLzfPX/v3Area4ergrhwxush0ywD5lZ
+        YrqjW29/QWdUvTPs7D/1kwCM4g==
+X-Google-Smtp-Source: ABdhPJzIxT8kqv3hOAn/eutFdfJq4DAebLsNkfJ0qK4xV8rTZ+MoJFaBn7qxZgXgYmjQNvnQLalLqg==
+X-Received: by 2002:a62:e104:0:b029:152:4f37:99da with SMTP id q4-20020a62e1040000b02901524f3799damr1294359pfh.17.1603927335230;
+        Wed, 28 Oct 2020 16:22:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 16sm457419pjf.36.2020.10.28.16.22.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 16:22:16 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 07:22:11 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 0/3] gpiolib: cdev: allow edge event timestamps to be
- configured as REALTIME
-Message-ID: <20201028232211.GB4384@sol>
-References: <20201014231158.34117-1-warthog618@gmail.com>
- <CACRpkdbTsN6p4n3f9SJrgAjdkzDu2S67rU3tLWwX0X50ekjctQ@mail.gmail.com>
+        Wed, 28 Oct 2020 16:22:14 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 16:22:13 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     David Woodhouse <dwmw2@infradead.org>, x86@kernel.org,
+        kvm <kvm@vger.kernel.org>, iommu@lists.linux-foundation.org,
+        joro@8bytes.org, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-hyperv@vger.kernel.org, maz@misterjones.org,
+        Dexuan Cui <decui@microsoft.com>
+Subject: Re: [PATCH v3 15/35] PCI: vmd: Use msi_msg shadow structs
+Message-ID: <202010281622.40CB2D87@keescook>
+References: <e6601ff691afb3266e365a91e8b221179daf22c2.camel@infradead.org>
+ <20201024213535.443185-1-dwmw2@infradead.org>
+ <20201024213535.443185-16-dwmw2@infradead.org>
+ <202010281347.2943F5B7@keescook>
+ <87blgmf3zj.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdbTsN6p4n3f9SJrgAjdkzDu2S67rU3tLWwX0X50ekjctQ@mail.gmail.com>
+In-Reply-To: <87blgmf3zj.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 05:01:49PM +0100, Linus Walleij wrote:
-> On Thu, Oct 15, 2020 at 1:12 AM Kent Gibson <warthog618@gmail.com> wrote:
-> 
-> > This patch set adds the option to select CLOCK_REALTIME as the source
-> > clock for line events.
+On Wed, Oct 28, 2020 at 10:13:52PM +0100, Thomas Gleixner wrote:
+> On Wed, Oct 28 2020 at 13:49, Kees Cook wrote:
+> > On Sat, Oct 24, 2020 at 10:35:15PM +0100, David Woodhouse wrote:
+> >> +	memset(&msg, 0, sizeof(*msg);
 > >
-> > The first patch is the core of the change, while the remaining two update
-> > the GPIO tools to make use of the new option.
+> > This should be:
 > >
-> > Changes for v2:
-> >  - change line_event_timestamp() return to u64 to avoid clipping to 32bits
-> >    on 32bit platforms.
-> >  - fix the line spacing after line_event_timestamp()
+> > +	memset(msg, 0, sizeof(*msg);
 > 
-> Where are we standing with this patch set? Good to go so
-> I should just try to merge it?
+>         memset(msg, 0, sizeof(*msg));
 > 
+> Then it compiles _and_ is correct :)
 
-I'm fine with it, especially now that I've tested it on 32bit platforms
-as well as 64bit.
+\o/ ;)
 
-Bart was ok with v1, and I doubt the changes for v2 would negatively
-impact that, though I did overlook adding his review tag.
-
-Cheers,
-Kent.
-
-> Yours,
-> Linus Walleij
+-- 
+Kees Cook
