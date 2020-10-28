@@ -2,107 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FA429D4BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:54:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE82729D499
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728716AbgJ1VyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728662AbgJ1VyK (ORCPT
+        id S1727136AbgJ1Vx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:53:28 -0400
+Received: from mail-out.m-online.net ([212.18.0.9]:36732 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgJ1VxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:54:10 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28074C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:54:10 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id p5so1065363ejj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:54:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LloxvOwyNKym1ieXScf+I+cvC1STnkds6NcjDMINRkA=;
-        b=AsSOWKx5oqHeIImaBlpxEsS55aSsDNwIts7m7bjyh2pvTvaf1EuvkXvmBsNy5g9n7m
-         wtl9HsE0IGW+iDuZtr/w+N2Qx1JbmfbR7GzxSPiRWpZcETyC5K81qQ60bV/A7Kd1ili+
-         HJdVxdqrnBn98Q7NOvso1kRT0qbK6D5/kqG/4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LloxvOwyNKym1ieXScf+I+cvC1STnkds6NcjDMINRkA=;
-        b=PVZY46Psgymivb5PJO9myGAatIEACJPtizpadlmYzo0pzTjdnBgybV6jP43GMQdJbj
-         Y0L+T6cf/aCjzGTKRmEFYw/3XgW3lU3pxTi29pJeNQoQfVBovhm2FYpOiJ8RjpAoVVF1
-         LNvDvxwZoylvdJPGLMiCIy/Z4bXp+8vW24BCGJBufGNCxEJhaWVR08ZN7ebVZQHpFADw
-         hg1RVHcOE7T4GJB/WY2eaptVB1dav62JG7MDO8EVQLDsB3pz+//qfZkvT0ot1bsKIVyU
-         nRG58O2mqZUb1hSmWTFXuoT705LULqfHFIEfcDrufxotBCyskBaPA/N1anJ+R99WMXnN
-         wVkQ==
-X-Gm-Message-State: AOAM5324tsdn8uYvl0w/Bj1iKt9ZNpAD4Ka/h7TJhqO8MjXQPkt3Pg4l
-        yApzhmzd8U+kL97xVmE5k3F9YlOgedCH+pJKfKU=
-X-Google-Smtp-Source: ABdhPJzESoRUe8lBXUj4TQJfv28e2BxHqS4A3MbYNj+NqUpJ32CubPAm2Xf0G9Vzb+LEkKOa6i5mBQ==
-X-Received: by 2002:a2e:b60e:: with SMTP id r14mr2763100ljn.77.1603871491229;
-        Wed, 28 Oct 2020 00:51:31 -0700 (PDT)
-Received: from [172.16.11.132] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id 1sm438447lft.126.2020.10.28.00.51.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 00:51:30 -0700 (PDT)
-Subject: Re: [PATCH] seqlock: avoid -Wshadow warnings
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Marco Elver <elver@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201026165044.3722931-1-arnd@kernel.org>
- <20201026165805.GS2594@hirez.programming.kicks-ass.net>
- <CAK8P3a3wDEKSn307UXbc33+Uqu-NDV2V=0dDKbYJpAtgZjDNkQ@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <af5b457c-6615-0b4c-0add-529a28454459@rasmusvillemoes.dk>
-Date:   Wed, 28 Oct 2020 08:51:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 28 Oct 2020 17:53:23 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4CLgvx6Dwnz1qs0h;
+        Wed, 28 Oct 2020 08:59:41 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4CLgvx4VDmz1qy5f;
+        Wed, 28 Oct 2020 08:59:41 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id F6Ke24xfduVy; Wed, 28 Oct 2020 08:59:40 +0100 (CET)
+X-Auth-Info: g6YLjoFgv0DoaMRKZby0YxkPV7g+CL2IBGQ4YndSz+j/jsZQYZy8k8hrvsK+kosi
+Received: from igel.home (ppp-46-244-182-148.dynamic.mnet-online.de [46.244.182.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Wed, 28 Oct 2020 08:59:40 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+        id 65E8C2C082A; Wed, 28 Oct 2020 08:59:40 +0100 (CET)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] powerpc/uaccess: Switch __put_user_size_allowed()
+ to __put_user_asm_goto()
+References: <94ba5a5138f99522e1562dbcdb38d31aa790dc89.1599216721.git.christophe.leroy__44535.5968013004$1599217383$gmane$org@csgroup.eu>
+        <87mu079ron.fsf@igel.home> <87imav9r64.fsf@igel.home>
+        <87pn53vsep.fsf@mpe.ellerman.id.au>
+X-Yow:  YOW!!  I'm in a very clever and adorable INSANE ASYLUM!!
+Date:   Wed, 28 Oct 2020 08:59:40 +0100
+In-Reply-To: <87pn53vsep.fsf@mpe.ellerman.id.au> (Michael Ellerman's message
+        of "Wed, 28 Oct 2020 16:19:42 +1100")
+Message-ID: <87blgm3hn7.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3wDEKSn307UXbc33+Uqu-NDV2V=0dDKbYJpAtgZjDNkQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2020 00.34, Arnd Bergmann wrote:
-> On Mon, Oct 26, 2020 at 5:58 PM Peter Zijlstra <peterz@infradead.org> wrote:
->>
->> On Mon, Oct 26, 2020 at 05:50:38PM +0100, Arnd Bergmann wrote:
->>
->>> -     unsigned seq;                                                   \
->>> +     unsigned __seq;                                                 \
->>
->>> -     unsigned seq = __read_seqcount_begin(s);                        \
->>> +     unsigned _seq = __read_seqcount_begin(s);                       \
->>
->>> -     unsigned seq = __seqcount_sequence(s);                          \
->>> +     unsigned __seq = __seqcount_sequence(s);                        \
->>
->> Can we have a consistent number of leading '_' ?
-> 
-> Not really ;-)
-> 
-> The warning comes from raw_read_seqcount_begin() calling
-> __read_seqcount_begin() and both using the same variable
-> name. I could rename one of them  and use double-underscores
-> for both, but I haven't come up with a good alternative name
-> that wouldn't make it less consistent in the process.
+On Okt 28 2020, Michael Ellerman wrote:
 
-At least x86's put_user and get_user use _pu/_gu suffixes on their local
-variables, so perhaps that could be made a weak default convention?
+> What config and compiler are you using?
 
-__seq_rsb
-__seq_rrsb
-__seq_rrs
+gcc 4.9.
 
-Hm, or perhaps not. But it's still better than triplicating each macro
-to do a UNIQUE_ID dance.
+Andreas.
 
-Rasmus
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
