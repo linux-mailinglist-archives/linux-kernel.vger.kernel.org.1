@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B948D29DF35
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43BE529DCC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403980AbgJ2A7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:59:55 -0400
-Received: from mga18.intel.com ([134.134.136.126]:16196 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731561AbgJ1WR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:29 -0400
-IronPort-SDR: rdRA8M3bw7vFFH0a0PPCvONQSS/tI7Hu3uQIYjIlW9MsONDqMebVodfb7sIT+n+syxla+bsQ/M
- yGWVWtVRd3IA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="156072242"
-X-IronPort-AV: E=Sophos;i="5.77,427,1596524400"; 
-   d="scan'208";a="156072242"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 10:14:11 -0700
-IronPort-SDR: 4YVU2uW+/l5QXaisbX2aM9ahPxQ6TtDiYZso8e6kxGgGUplah6Dy87BbJ8sy/cRhYrV2nm3ItO
- vZH5r+w+PlgA==
-X-IronPort-AV: E=Sophos;i="5.77,427,1596524400"; 
-   d="scan'208";a="536311450"
-Received: from rramir3-mobl.amr.corp.intel.com (HELO [10.254.71.48]) ([10.254.71.48])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 10:14:11 -0700
-Subject: Re: [PATCH v11 1/5] PCI: Conditionally initialize host bridge
- native_* members
-To:     Ethan Zhao <xerces.zhao@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>, knsathya@kernel.org
-References: <cover.1603766889.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <fcbe8a624166a1101a755edfef44a185d32ff493.1603766889.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAKF3qh1j1GAOxK8QAwAgPpn3wxtvZgp8QJQ2zjcv5B=jEVG_eg@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <aed26290-632e-fe65-327c-95a68538c58b@linux.intel.com>
-Date:   Wed, 28 Oct 2020 10:14:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729272AbgJ2Ac0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:32:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58275 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387544AbgJ1W3R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:29:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603924156;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2SCyw0MgDOHFJTfd5PusUshasNlUpVC0PdQO3C9hYF4=;
+        b=dCnwaS0uFF3PTFI5FSSj0XclZ2CTn7ExGOY2InFDq8NWA0BeCONHayMtXnuXK3fIHrwA4y
+        QovhWwFwN3Fm9ywPf+UEliLRBirPnsejsF6pxExYR6y1XRKrK/IKplPUjDqNomK/CW/GQx
+        Ip9UbEjaL/NiusIRkOTq1MKohPzh7Jg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-111-8iaP2f06P9aMvLjwi3vFEA-1; Wed, 28 Oct 2020 13:27:55 -0400
+X-MC-Unique: 8iaP2f06P9aMvLjwi3vFEA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 72A76188C122;
+        Wed, 28 Oct 2020 17:27:54 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 65BA15C1D0;
+        Wed, 28 Oct 2020 17:27:53 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20201028171159.GB20115@casper.infradead.org>
+References: <20201028171159.GB20115@casper.infradead.org> <20201028143442.GA20115@casper.infradead.org> <160389418807.300137.8222864749005731859.stgit@warthog.procyon.org.uk> <160389426655.300137.17487677797144804730.stgit@warthog.procyon.org.uk> <548209.1603904708@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        kernel test robot <lkp@intel.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/11] afs: Fix dirty-region encoding on ppc32 with 64K pages
 MIME-Version: 1.0
-In-Reply-To: <CAKF3qh1j1GAOxK8QAwAgPpn3wxtvZgp8QJQ2zjcv5B=jEVG_eg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <550614.1603906072.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 28 Oct 2020 17:27:52 +0000
+Message-ID: <550615.1603906072@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Matthew Wilcox <willy@infradead.org> wrote:
 
+> > > > +{
+> > > > +	if (PAGE_SIZE - 1 <=3D __AFS_PAGE_PRIV_MASK)
+> > > > +		return 1;
+> > > > +	else
+> > > > +		return PAGE_SIZE / (__AFS_PAGE_PRIV_MASK + 1);
+> > > =
 
-On 10/27/20 11:09 PM, Ethan Zhao wrote:
-> On Tue, Oct 27, 2020 at 10:00 PM Kuppuswamy Sathyanarayanan
-> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->>
->> If CONFIG_PCIEPORTBUS is not enabled in kernel then initialing
->> struct pci_host_bridge PCIe specific native_* members to "1" is
->> incorrect. So protect the PCIe specific member initialization
->> with CONFIG_PCIEPORTBUS.
->>
->> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->> ---
->>   drivers/pci/probe.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
->> index 4289030b0fff..756fa60ca708 100644
->> --- a/drivers/pci/probe.c
->> +++ b/drivers/pci/probe.c
->> @@ -588,12 +588,14 @@ static void pci_init_host_bridge(struct pci_host_bridge *bridge)
->>           * may implement its own AER handling and use _OSC to prevent the
->>           * OS from interfering.
->>           */
->> +#ifdef CONFIG_PCIEPORTBUS
->>          bridge->native_aer = 1;
->>          bridge->native_pcie_hotplug = 1;
->> -       bridge->native_shpc_hotplug = 1;
->>          bridge->native_pme = 1;
->> -       bridge->native_ltr = 1;
->>          bridge->native_dpc = 1;
->> +#endif
->    If CONFIG_PCIEPORTBUS wasn't defined, leave them to "unknown" value ?
-By default all of them are 0.
-> 
->> +       bridge->native_ltr = 1;
->> +       bridge->native_shpc_hotplug = 1;
->>
->>          device_initialize(&bridge->dev);
->>   }
->> --
->> 2.17.1
->>
+> > > Could this be DIV_ROUND_UP(PAGE_SIZE, __AFS_PAGE_PRIV_MASK + 1); avo=
+iding
+> > > a conditional?  I appreciate it's calculated at compile time today, =
+but
+> > > it'll be dynamic with THP.
+> > =
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+> > Hmmm - actually, I want a shift size, not a number of bytes as I divid=
+e by it
+> > twice in afs_page_dirty().
+> =
+
+> __AFS_PAGE_PRIV_MASK is a constant though.  If your compiler can't
+> optimise a divide-by-a-constant-power-of-two into a shift-by-a-constant =
+(*),
+> it's time to get yourself a new compiler.
+> =
+
+> (*) assuming that's faster on the CPU it's targetting.
+
+I'm dividing by the resolution, which is calculated from the page size - w=
+hich
+in a THP world is variable:
+
+	static inline unsigned long afs_page_dirty(size_t from, size_t to)
+	{
+		size_t res =3D afs_page_dirty_resolution();
+		from /=3D res; /* Round down */
+		to =3D (to - 1) / res; /* Round up */
+		return ((unsigned long)to << __AFS_PAGE_PRIV_SHIFT) | from;
+	}
+
+David
+
