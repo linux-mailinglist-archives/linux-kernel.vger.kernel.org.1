@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB5D29D4D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDFB29D2FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728429AbgJ1Vy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:54:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728316AbgJ1VwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:52:25 -0400
-Received: from coco.lan (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0CD7221F9;
-        Wed, 28 Oct 2020 17:02:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603904574;
-        bh=QFs2Jd82B/duDQUbnrOcXLl4AkfxXTk1Jk6X3stA6do=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DDcyzrtNeRJq/mgcxRz/Qmm1osfamHDMFcWkQzvkzAQ/KMh0jLtZ9L2Zkun233Cl3
-         KICdkhYyJCk/vV6k1Z5ZvM0yzJk8FmUzVg9VOZCCNUeFu5nvsGTGo74vsWVUMndbtO
-         DaHHU/7+KyxGUXl4M0OIM3wUEuJGBQ++WQ3Uywp8=
-Date:   Wed, 28 Oct 2020 18:02:47 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/33] docs: kernel_abi.py: add a script to parse ABI
- documentation
-Message-ID: <20201028180247.14350c88@coco.lan>
-In-Reply-To: <20201028102103.35884c91@lwn.net>
-References: <cover.1603893146.git.mchehab+huawei@kernel.org>
-        <fbc723a2c49bd928f7845cba08e4996b9eb73142.1603893146.git.mchehab+huawei@kernel.org>
-        <20201028102103.35884c91@lwn.net>
+        id S1725945AbgJ1VkL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Oct 2020 17:40:11 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:44330 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727197AbgJ1VkC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:40:02 -0400
+Received: from relay7-d.mail.gandi.net (unknown [217.70.183.200])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 9CA283B2661;
+        Wed, 28 Oct 2020 17:07:15 +0000 (UTC)
+X-Originating-IP: 83.193.246.53
+Received: from windsurf.home (lfbn-bay-1-165-53.w83-193.abo.wanadoo.fr [83.193.246.53])
+        (Authenticated sender: thomas.petazzoni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 1EC8C20009;
+        Wed, 28 Oct 2020 17:06:51 +0000 (UTC)
+Date:   Wed, 28 Oct 2020 18:06:51 +0100
+From:   Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+To:     Jan =?UTF-8?B?S3VuZHLDoXQ=?= <jan.kundrat@cesnet.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH v2] serial: max310x: rework RX interrupt handling
+Message-ID: <20201028180651.50ca85d3@windsurf.home>
+In-Reply-To: <3841e43b-5f16-4b5c-9b43-4d3a90e57723@cesnet.cz>
+References: <20201001074415.349739-1-thomas.petazzoni@bootlin.com>
+        <3841e43b-5f16-4b5c-9b43-4d3a90e57723@cesnet.cz>
+Organization: Bootlin
 X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 28 Oct 2020 10:21:03 -0600
-Jonathan Corbet <corbet@lwn.net> escreveu:
+Hello,
 
-> So this is separate from the patch series itself in a way, but it brings a
-> question to mind:
+On Wed, 28 Oct 2020 17:20:24 +0100
+Jan Kundrát <jan.kundrat@cesnet.cz> wrote:
+
+> Thanks for taking the time to write this patch. We're using MAX14830 on a 
+> Clearfog Base board via a 26 MHz SPI bus. Our code polls a custom 
+> peripheral over UART at 115200 baud ten times a second; the messages are 
+> typically shorter than 50 chars. Before this patch, `perf top --sort 
+> comm,dso` showed about 28% CPU load for the corresponding SPI kthread, 
+> after applying this patch it's between 3 and 5%. That's cool :).
 > 
-> On Wed, 28 Oct 2020 15:23:10 +0100
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+> Tested-by: Jan Kundrát <jan.kundrat@cesnet.cz>
+> Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
 > 
-> > +# We can't assume that six is installed
-> > +PY3 = sys.version_info[0] == 3
-> > +PY2 = sys.version_info[0] == 2
-> > +if PY3:
-> > +    # pylint: disable=C0103, W0622
-> > +    unicode     = str
-> > +    basestring  = str  
+> (but see below, please)
+
+Thanks for your review and testing, and glad to hear that it also
+improves the CPU load on your use-case.
+
+> > +	/* Enable LSR, RX FIFO trigger, CTS change interrupts */
+> > +	val = MAX310X_IRQ_LSR_BIT  | MAX310X_IRQ_RXFIFO_BIT | 
+> > MAX310X_IRQ_TXEMPTY_BIT;
+> >  	max310x_port_write(port, MAX310X_IRQEN_REG, val | MAX310X_IRQ_CTS_BIT);  
 > 
-> I wonder how much longer we really need to support any of:
+> This comment doesn't fully match that code, and also the effective value 
+> that is written to the register is split into two statements. What about 
+> just:
 > 
->  - Python < 3.n (where n=5 or 6 maybe)
->  - Sphinx < 1.7 or even some 2.x
-> 
-> We're carrying a certain and growing amount of cruft to handle these
-> cases.  I might start putting together a series to clean this up for 5.11
-> or so.
+> +	/* Enable LSR, RX FIFO trigger, TX FIFO empty, CTS change interrupts */
+> + 	max310x_port_write(port, MAX310X_IRQEN_REG, MAX310X_IRQ_LSR_BIT | 
+> MAX310X_IRQ_RXFIFO_BIT | MAX310X_IRQ_TXEMPTY_BIT | MAX310X_IRQ_CTS_BIT);
 
-Good point!
+Indeed, the comment should be updated, I'll fix that. Regarding the
+effective value computed in two steps, it was already the case in the
+current code:
 
-Yeah, 5.11 seems to be OK to drop support for legacy versions. In the case
-of Sphinx, Imagining that 5.11 would be released in about 4/5 months
-from now[1], I would move to 2.4.4 as the minimal recommended version.
+	/* Enable RX, TX, CTS change interrupts */
+	val = MAX310X_IRQ_RXEMPTY_BIT | MAX310X_IRQ_TXEMPTY_BIT;
+        max310x_port_write(port, MAX310X_IRQEN_REG, val | MAX310X_IRQ_CTS_BIT);
 
+but granted, that's not an excuse not to fix it.
 
+On my way to send a v3 :-)
 
-Yet, due to LTS distros, maybe it could make sense to support 1.7 versions
-for a longer time.
+Thanks again,
 
-That's said, hopefully, Sphinx 3.3 would also be there about the same
-time, which should fix the remaining warnings with Sphinx 3.x.
-
-So, maybe for 5.11 or 5.12 we can drop the warning about Sphinx 3.x
-builds being experimental.
-
-Btw, we should probably also update this file:
-
-	Documentation/process/changes.rst
-
-It still mentions Sphinx 1.3 as the minimal one, and doesn't even
-mention the minimal Python version.
-
-[1] It was released in March, 2020. So, it will have one about year old
-    by the time 5.11 will be launched.
-
-Thanks,
-Mauro
+Thomas
+-- 
+Thomas Petazzoni, CTO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
