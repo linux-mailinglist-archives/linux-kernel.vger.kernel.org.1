@@ -2,146 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47F229DA41
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBCEA29D9FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390185AbgJ1XS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
+        id S1732818AbgJ1XIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390175AbgJ1XSY (ORCPT
+        with ESMTP id S1727224AbgJ1XHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:18:24 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7789BC0613CF;
-        Wed, 28 Oct 2020 16:18:22 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id c18so800413wme.2;
-        Wed, 28 Oct 2020 16:18:22 -0700 (PDT)
+        Wed, 28 Oct 2020 19:07:44 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF24C0613CF;
+        Wed, 28 Oct 2020 16:07:44 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id z5so1362612iob.1;
+        Wed, 28 Oct 2020 16:07:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=vjJC6dKOMFG4vb3AckKIuCP1t5bMO9lbc9KLXiwHlCo=;
-        b=iA5zf/FlqjobUMNllNoEUYcZhA0WkST3Kufe8sISdot6joDpSTMZ6yeIW2JNyD98IM
-         6+aHJMEE+sEmNs7Y1VGX1gB5+Eq03HvCPcgWkIMf3jsfpp/Aa2O3bZ6U9kDNoqB8sWX3
-         Cruq46ytfedaQZUEALfYwCRQJJZbD/6UZq/yyNK03QgVttWCnd4sXrMMYQO6Yp9CB+za
-         C/4yq1jf+tuP6ed0/5qTxiHW+HYjGsbPRGWR39qwTEDmX6QTzmPJgUVUCOyke9ZqhLmE
-         HT4YL9z7YgKQdLEK0zsx6u/wq44s7nZ6RMYrp3o60UK1gbH2C1g0xpPJPU+wklgzl4dd
-         WWDg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M3EY2gk1/SDN2YzEyGXKM1C+DGZj50Xy872wMeO8RSQ=;
+        b=rOBCu0Kw6G9sh4eQn+4UFakYd7cJAiOxKbXk969CTsxPvlBvfUiwLLMVkD9+eI/b9K
+         oivm/90w/v3wcDrmD+CfkKZN5RZmez3YvldlszYIMq8/PSCmN0XbZEub0QR9ojOqMccB
+         zHHDpBq9TxtmrXtqAPZToPduOb5tSdDy47ubXEY3tvtsy6ChKStO0Nvc00DmoH46xgJE
+         mhveLTrf74iLkro7amr6qF8POZenzvGV4qG3Xq1OMGFClpt+n8GXbPHN87nQlCoJ1PP2
+         /HIZAIKpsYd1Jj26hgdNgSf562SCITnKnp5Xk7WAp1HoBnbWI9dVIU7xtxaAASTDt6Pp
+         YHew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=vjJC6dKOMFG4vb3AckKIuCP1t5bMO9lbc9KLXiwHlCo=;
-        b=hbEcBfEVuaFB+6dLfWyOJSpvvNVvUbpQZaoRukBvi/BF89Py5y3hBaO16SI3zfBvvG
-         09vfWm9wV8246e7s4zYPysDQf6DC9Jwe6vhbjDXfyg0r7niu4n0Qq9GB1xEwL9RSmkFh
-         lkiE0VPqETL+7sd66+5OnDeG6ocb/F/a9ERMQqZYDpy7r5LuBmDFnRSZfSbdWwk94lZ2
-         fTEE6iemiwr7LxBWbvMvRsSIIom2K9eDF9z4F34Gt7YGWxb07zZCZoQbI/kVPkT+StHs
-         nR0U+a9pAETUPI/nho7CkFNYgUAq+MfaJpy/F+h7wU0PL12ls7RwsEV13RqO8+/XZkDZ
-         zjZQ==
-X-Gm-Message-State: AOAM531+bA50w3nYza/F+zhtuQGWKyHbSsO3FUgpw6Pt4XyvbcST1Sk1
-        CKahNE1NiWfzXUMnc8TdgWOPU4hcLqzlu0Wd
-X-Google-Smtp-Source: ABdhPJzWzEGUl4KjLGJ2WRgqfIWkz3spMlmRWhF49/keLE8mg7+Jda9ImH3eqzpeVCsqwUWpshUujw==
-X-Received: by 2002:a1c:f604:: with SMTP id w4mr7798630wmc.87.1603884943015;
-        Wed, 28 Oct 2020 04:35:43 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2d7a:200:a915:6596:e9b0:4f60])
-        by smtp.gmail.com with ESMTPSA id s11sm6579979wrm.56.2020.10.28.04.35.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M3EY2gk1/SDN2YzEyGXKM1C+DGZj50Xy872wMeO8RSQ=;
+        b=BTDEEV3J683s4ZoGBBPq22hD6j23eqsOf510favTHKY+wqV1NhDUCWVekxrKvgFd1Z
+         /Ig9491uRqwR3eUKakHkBqxeOwdc2+4bXAY+S4+uXyD5Dn8URoA8//spNRVCLOu18pqo
+         MIRsQwyTRfybghuQ4FpLR0jYDdXJ8CeHIia/8Di/gzojczh3YfqOg5mEZ9TjiYWmWpt8
+         XzT6Hdw4MZdS4Go62UJt67Vj1ObcXw3fP/eKPlon20Uc8n983ampd0mMGVCarcfkXzJ3
+         SUWgG3TBrKSCmklEMmUws1HuhWQmyqZGdXfTE8ytsGIB74BMXa3bx3Noc6/2oVTtNZU9
+         KlMQ==
+X-Gm-Message-State: AOAM533m5CQE1YJ+P1RUk9rYWhwEa07FC6GR9b+afqDYPWPJt4h/uzHE
+        W/P2kaClYOJYe2xlD8qizFDB5kFkBJzoIXc=
+X-Google-Smtp-Source: ABdhPJz9mqf2yZ3wTbc/fTPaFQRcOHMg1DLzs9y+RJ2RMaAFXLGB5vqGyLmWfeyzYuTBAiCkF0Mf5g==
+X-Received: by 2002:ac8:7b2c:: with SMTP id l12mr6484103qtu.309.1603886374646;
+        Wed, 28 Oct 2020 04:59:34 -0700 (PDT)
+Received: from presler.lan (a95-94-69-32.cpe.netcabo.pt. [95.94.69.32])
+        by smtp.gmail.com with ESMTPSA id e19sm2717697qkl.94.2020.10.28.04.59.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 04:35:42 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-safety@lists.elisa.tech,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] net: cls_api: remove unneeded local variable in tc_dump_chain()
-Date:   Wed, 28 Oct 2020 12:35:33 +0100
-Message-Id: <20201028113533.26160-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 28 Oct 2020 04:59:34 -0700 (PDT)
+From:   Rui Salvaterra <rsalvaterra@gmail.com>
+To:     minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rui Salvaterra <rsalvaterra@gmail.com>
+Subject: [PATCH v4] zram: break the strict dependency from lzo
+Date:   Wed, 28 Oct 2020 11:59:21 +0000
+Message-Id: <20201028115921.848-1-rsalvaterra@gmail.com>
+X-Mailer: git-send-email 2.29.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-make clang-analyzer on x86_64 defconfig caught my attention with:
+There's nothing special about zram and lzo. It works just fine without it, so
+as long as at least one of the other supported compression algorithms is
+selected.
 
-net/sched/cls_api.c:2964:3: warning: Value stored to 'parent' is never read
-  [clang-analyzer-deadcode.DeadStores]
-                parent = 0;
-                ^
-
-net/sched/cls_api.c:2977:4: warning: Value stored to 'parent' is never read
-  [clang-analyzer-deadcode.DeadStores]
-                        parent = q->handle;
-                        ^
-
-Commit 32a4f5ecd738 ("net: sched: introduce chain object to uapi")
-introduced tc_dump_chain() and this initial implementation already
-contained these unneeded dead stores.
-
-Simplify the code to make clang-analyzer happy.
-
-As compilers will detect these unneeded assignments and optimize this
-anyway, the resulting binary is identical before and after this change.
-
-No functional change. No change in object code.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Suggested-by: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
 ---
-applies cleanly on current master and next-20201028
+v4: incorporate Sergey's feedback and fix a small typo.
+v3: fix the default selection when lzo isn't present. Rebase against 5.10-rc1.
+v2: fix the dependency on CRYPTO.
 
-Jamal, Cong, Jiri, please ack.
-David, Jakub, please pick this minor non-urgent clean-up patch.
+ drivers/block/zram/Kconfig    |  6 +++++-
+ drivers/block/zram/zcomp.c    | 17 +++++++++++++++++
+ drivers/block/zram/zcomp.h    |  1 +
+ drivers/block/zram/zram_drv.c |  5 +++--
+ 4 files changed, 26 insertions(+), 3 deletions(-)
 
- net/sched/cls_api.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
-
-diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-index faeabff283a2..8ce830ca5f92 100644
---- a/net/sched/cls_api.c
-+++ b/net/sched/cls_api.c
-@@ -2940,7 +2940,6 @@ static int tc_dump_chain(struct sk_buff *skb, struct netlink_callback *cb)
- 	struct tcf_chain *chain;
- 	long index_start;
- 	long index;
--	u32 parent;
- 	int err;
+diff --git a/drivers/block/zram/Kconfig b/drivers/block/zram/Kconfig
+index fe7a4b7d30cf..141ce0ebad06 100644
+--- a/drivers/block/zram/Kconfig
++++ b/drivers/block/zram/Kconfig
+@@ -2,7 +2,6 @@
+ config ZRAM
+ 	tristate "Compressed RAM block device support"
+ 	depends on BLOCK && SYSFS && ZSMALLOC && CRYPTO
+-	select CRYPTO_LZO
+ 	help
+ 	  Creates virtual block devices called /dev/zramX (X = 0, 1, ...).
+ 	  Pages written to these disks are compressed and stored in memory
+@@ -14,6 +13,11 @@ config ZRAM
  
- 	if (nlmsg_len(cb->nlh) < sizeof(*tcm))
-@@ -2955,13 +2954,6 @@ static int tc_dump_chain(struct sk_buff *skb, struct netlink_callback *cb)
- 		block = tcf_block_refcnt_get(net, tcm->tcm_block_index);
- 		if (!block)
- 			goto out;
--		/* If we work with block index, q is NULL and parent value
--		 * will never be used in the following code. The check
--		 * in tcf_fill_node prevents it. However, compiler does not
--		 * see that far, so set parent to zero to silence the warning
--		 * about parent being uninitialized.
--		 */
--		parent = 0;
- 	} else {
- 		const struct Qdisc_class_ops *cops;
- 		struct net_device *dev;
-@@ -2971,13 +2963,11 @@ static int tc_dump_chain(struct sk_buff *skb, struct netlink_callback *cb)
- 		if (!dev)
- 			return skb->len;
+ 	  See Documentation/admin-guide/blockdev/zram.rst for more information.
  
--		parent = tcm->tcm_parent;
--		if (!parent) {
-+		if (!tcm->tcm_parent)
- 			q = dev->qdisc;
--			parent = q->handle;
--		} else {
-+		else
- 			q = qdisc_lookup(dev, TC_H_MAJ(tcm->tcm_parent));
--		}
++config ZRAM_AUTOSEL_ALGO
++	def_bool y
++	depends on ZRAM && !(CRYPTO_LZ4 || CRYPTO_LZ4HC || CRYPTO_842 || CRYPTO_ZSTD)
++	select CRYPTO_LZO
 +
- 		if (!q)
- 			goto out;
- 		cops = q->ops->cl_ops;
+ config ZRAM_WRITEBACK
+        bool "Write back incompressible or idle page to backing device"
+        depends on ZRAM
+diff --git a/drivers/block/zram/zcomp.c b/drivers/block/zram/zcomp.c
+index 33e3b76c4fa9..4fad177c78c4 100644
+--- a/drivers/block/zram/zcomp.c
++++ b/drivers/block/zram/zcomp.c
+@@ -15,8 +15,10 @@
+ #include "zcomp.h"
+ 
+ static const char * const backends[] = {
++#if IS_ENABLED(CONFIG_CRYPTO_LZO)
+ 	"lzo",
+ 	"lzo-rle",
++#endif
+ #if IS_ENABLED(CONFIG_CRYPTO_LZ4)
+ 	"lz4",
+ #endif
+@@ -202,6 +204,21 @@ void zcomp_destroy(struct zcomp *comp)
+ 	kfree(comp);
+ }
+ 
++const char *default_compressor(void)
++{
++	/*
++	 * Pick the first available one (there should be at least one).
++	 *
++	 * In theory, we can drop all the ifdefs from backends[] and
++	 * just iterate backends array doing crypto_has_comp(comp, 0, 0)
++	 * for each entry and return the first one which is recognized by
++	 * crypto. But crypto_has_comp() modprobes compression drivers,
++	 * so we may end up with extra loaded drivers, when the 'default'
++	 * compressor is not what zram is configured to use.
++	 */
++	return backends[0];
++}
++
+ /*
+  * search available compressors for requested algorithm.
+  * allocate new zcomp and initialize it. return compressing
+diff --git a/drivers/block/zram/zcomp.h b/drivers/block/zram/zcomp.h
+index 40f6420f4b2e..f104be9eae9c 100644
+--- a/drivers/block/zram/zcomp.h
++++ b/drivers/block/zram/zcomp.h
+@@ -27,6 +27,7 @@ int zcomp_cpu_dead(unsigned int cpu, struct hlist_node *node);
+ ssize_t zcomp_available_show(const char *comp, char *buf);
+ bool zcomp_available_algorithm(const char *comp);
+ 
++const char *default_compressor(void);
+ struct zcomp *zcomp_create(const char *comp);
+ void zcomp_destroy(struct zcomp *comp);
+ 
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index 1b697208d661..f02ee050c7bf 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -42,7 +42,6 @@ static DEFINE_IDR(zram_index_idr);
+ static DEFINE_MUTEX(zram_index_mutex);
+ 
+ static int zram_major;
+-static const char *default_compressor = "lzo-rle";
+ 
+ /* Module params (documentation at end) */
+ static unsigned int num_devices = 1;
+@@ -1960,7 +1959,9 @@ static int zram_add(void)
+ 	blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, zram->disk->queue);
+ 	device_add_disk(NULL, zram->disk, zram_disk_attr_groups);
+ 
+-	strlcpy(zram->compressor, default_compressor, sizeof(zram->compressor));
++	strlcpy(zram->compressor,
++		default_compressor(),
++		sizeof(zram->compressor));
+ 
+ 	zram_debugfs_register(zram);
+ 	pr_info("Added device: %s\n", zram->disk->disk_name);
 -- 
-2.17.1
+2.29.1
 
