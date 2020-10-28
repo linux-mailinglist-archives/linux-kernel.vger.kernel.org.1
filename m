@@ -2,90 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6134B29D2AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C27DB29D2E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbgJ1VeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:34:00 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:53549 "EHLO ozlabs.org"
+        id S1727032AbgJ1Vhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:37:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726309AbgJ1Vdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:33:50 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726950AbgJ1VhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:37:25 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CM1ZX30Xwz9sWH;
-        Thu, 29 Oct 2020 08:15:47 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603919748;
-        bh=Odl+EFcAVABTumfQ8BQaRzjpGoHN+rUsQKG+dis+0Bs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HcuodH5cWtZtR1RWWV5U1uoljh7tQsT7VzoVhKGT9PQQHaoeqFKa/+bnbRnXu73Ws
-         YRpiwbHsDmgnpzkwFjy+sEQVy7HL6Ye3d6Z9I5nO6h9WRJJh4sJukK5ZUUV/fvgq2Q
-         teaLEK29z/xXVMZd9/5bTTRVZqMAR9wXss81u9N/BCSYdulPmFKNUgh5Wf3ZDWHUex
-         bFZjYlr2gaHk1kUs9hyxSxXj0hbhqzlqte4i9060ur8MV8cMZWsfgJISmKu+GiM32+
-         O3izm8vdCHZ34EUhpMivc30bRFj2gqz7dYacCC12DeDJ3Jx5fIb8LgUsMjb8rzrjQ9
-         Z+BUbmjnA8RnA==
-Date:   Thu, 29 Oct 2020 08:15:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: Makefile: honor V=0 for docs building
-Message-ID: <20201029081546.508a6922@canb.auug.org.au>
-In-Reply-To: <20201028111142.7cc8833a@lwn.net>
-References: <20201016165504.3cc33889@canb.auug.org.au>
-        <478c114a2399b68a18de94ee5f98649304f3903b.1603796153.git.mchehab+huawei@kernel.org>
-        <20201028111142.7cc8833a@lwn.net>
+        by mail.kernel.org (Postfix) with ESMTPSA id 87D5E2483A;
+        Wed, 28 Oct 2020 21:22:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603920136;
+        bh=EJQkK2roS7SBBH2NKUDZvqNoOZjq9icIXI82V7St+Ek=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=hAIIgT2Wg3fIK/UjRyToe65sfkAbD3F8y8ciTb/Jbf1g+pEowfs9DNO9/NdmvyM3J
+         498HO574eeR1JUDsfJlS+kqvp+UxUhdUQ3ZT5200M64xSSQpU9z9wyqqZo19krc087
+         nSz91PVOCuz/EbTEgvhbPSLNxI2PX7/Tq7vHSook=
+Date:   Wed, 28 Oct 2020 21:22:10 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com
+In-Reply-To: <20201028142001.22431-1-srinivas.kandagatla@linaro.org>
+References: <20201028142001.22431-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: qcom: sm8250: Fix array out of bounds access
+Message-Id: <160392012411.40829.8539672124304600568.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xlMsaUz+iRSh5XzFR3ydpDN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xlMsaUz+iRSh5XzFR3ydpDN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 28 Oct 2020 14:20:01 +0000, Srinivas Kandagatla wrote:
+> Static analysis Coverity had detected a potential array out-of-bounds
+> write issue due to the fact that MAX AFE port Id was set to 16 instead
+> of using AFE_PORT_MAX macro.
+> 
+> Fix this by properly using AFE_PORT_MAX macro.
 
-Hi Jon,
+Applied to
 
-On Wed, 28 Oct 2020 11:11:42 -0600 Jonathan Corbet <corbet@lwn.net> wrote:
->
-> Applied, thanks.  ...ahhh the silence....:)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks, indeed.
+Thanks!
 
-For Aussies, though, the quote is "how's the serenity?"
+[1/1] ASoC: qcom: sm8250: Fix array out of bounds access
+      commit: 7c91d02068c342918003606bf378b259f37b31ba
 
-https://www.screenaustralia.gov.au/sa/screen-news/2015/10-11-the-castle-top=
--10-quotes
-(quote number 3)
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-https://www.youtube.com/watch?v=3DC8WLuQOLq5Q
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-:-)
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---=20
-Cheers,
-Stephen Rothwell
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---Sig_/xlMsaUz+iRSh5XzFR3ydpDN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Z34IACgkQAVBC80lX
-0GxwoAgAlKVLI+xHdxpl7PuAL4AgOWlmvr9E/hQ48Uk3AhdtOJlb3KEMKbZ0yNti
-8mqmIWNLmZGWqJvFWpjLeYb36foLf09fzgMQkIxN4B0FhDpIil+ekY6UZ7dRBlWQ
-f+0m78jTuoYObEUynDsBRT/YghlOQ75pswGuqGa3M/2RyBwsCsq7BBRNZ+xOcMW4
-7Y00kxGMBO0zC4JuUOLdUu7uYmoO0i5Kv9hNOYY02oKjcImmv05dq9OO+BLa1mVq
-xmRKXZ8yijvxhpx1CmcKXYcMbjKOCnnrWt4YLuyTVzbsIzPEpXfvSinNSdVlg5yF
-mepuR+gNzoJ9CrK0sx2vVn3+jNLKcA==
-=B00H
------END PGP SIGNATURE-----
-
---Sig_/xlMsaUz+iRSh5XzFR3ydpDN--
+Thanks,
+Mark
