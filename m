@@ -2,447 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27FF29D54D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5C829D385
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729377AbgJ1V76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:59:58 -0400
-Received: from mail-vi1eur05on2083.outbound.protection.outlook.com ([40.107.21.83]:20064
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        id S1727125AbgJ1Vol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:44:41 -0400
+Received: from mail-eopbgr1320080.outbound.protection.outlook.com ([40.107.132.80]:10400
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729294AbgJ1V73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:59:29 -0400
-Received: from VI1PR04MB3229.eurprd04.prod.outlook.com (2603:10a6:802:e::30)
- by VI1PR04MB6928.eurprd04.prod.outlook.com (2603:10a6:803:12e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Wed, 28 Oct
- 2020 17:27:03 +0000
+        id S1726026AbgJ1Vog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:44:36 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h5aE+JMLuTunxmestHONNGm8xGdmAke40m9Y4IcUA8661kXhX2evqm82/VeV743OuhUljJKqfFkx5NOhECGaMk+PN/w4XDyDupL0G9FcrJM14GfIhMKqAh5jgEhp+dsX2l4TFN+qBTHH+SvaiaFGdMoRjZbQ05EUJ+/wlvC8TMqnzvpdsFI0wGwfemlsqHdwd9YCqyqkNthrRfVKGdszvH7U1qKwYnB7QAUrUv1DkrXDuR7N5NuiEi0MCfP0/MoEnVatG87FjrLRh+9egk68cC7+H4XHN6KFzThC5ydorouvTHY+grPwbLQKj6WTHIfhdXG68gVbGORzoU+bbXYpqQ==
+ b=SNKv/JGvjzukOL1SiASZJyv/4r9rBbVt/vgKKaqGzEPVoRjvgWTsmEqQ6r86r1F4A0wwjfBlqFePkHOesHdQcxU1zUsHug8SVitx1VEqowDsyjfBd+Bp4l9pdSaO3pxPb7+VWyfMwuPbEJIUZwtQMwd1Cw/xkEITAGgPDjTG7LuAgUbS77h+nMYKUh9+VwOmYSBuURL/hJxIEGH591GL+ICs74IYSfUz9azpJwTfJiUgmAX02bIaL+gwj08ZQkpHQK60DHEUSex+tC0ZQf8Rq15oB1ls/scH+ZAyXP7NyK+lGeJsCgRbdqsOhBHtS8zFu4Ymp7Mxwlhg7rXT9nlMTA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YTTojEIJ3RKW8tiGv/lzoo48v5+aFDdUT++5n7QzBOM=;
- b=RnZhGXhy+M1G5ebf72ZRV02A9Fw8kEnnwRMwqBNyVDrR6+cPIS/NkT1XMdRyr6/PK2zu9KVMGJ+6hkZSIDrcQVcaSbK9LwANSR19YtjI/d6WZ6vhKbybb0ti1jtya0lwMIHIx+NxlqNjrfa8ilJY438+0pmURxQF6j7Bi2ofuOhGn/+ZFYDwNE420xQHOX70SxBCgxYPY83u7DV/MCiHnobzdAfdK5znZl26+IWlGe/KkMbOxJbQVxvpX8WkowfESTtIrIfX9cR94eXge/ZCAUXBTyXpgxBVio1tRTOE6IQhtE58YiaRhGaTzjSE3aPXM9u5idtN3Au/btH7zap4tA==
+ bh=MuXAES6Sq3zpWBUUFq/5BoxwqacUq1Ib/cfG87+unIw=;
+ b=kjKHbXpb/TWiyGqPjDuNnYDnk8sLlDLt00TR8ftYXEsGcB+/JxXkuUASOEIdMwxmc7PmPfig09Y5mvTcCMHdwJAc7mbDkZe4j91ZiLRpt1d4s53XnA7KG/4m6ceAZPD7ZBV7D3ygTKlr49SW1s+CL1LP1VmCPZtcNbJ3nyL9jJ/ImOGOWiF5TQ29ssYxQXdmWXNNZffrZnoIQyGRUhqnYKsZhXn1Pk8r9JRe2jPVtKX4YHDUyOUfwUYu4KdQnwZPtdahZpSerCZLvwj59NTISzAKFXkgNuFkcWDC6BrEORe2b8d08gI4qLhv8MCB3St1MwP8uP6zM+P567B/Xa4Osg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=quectel.com; dmarc=pass action=none header.from=quectel.com;
+ dkim=pass header.d=quectel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quectel.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YTTojEIJ3RKW8tiGv/lzoo48v5+aFDdUT++5n7QzBOM=;
- b=Ob2nzo14bzdeylbh0JIHWJk7OsHZ5TiE5uRnZN3RqwyVelLkLXoS5lFkjSr5X87mP/1czEHwVoeXsdlhzCduZ1TUEYVb3G4oV8MdQEvJ0hwxk/YQI+oP8XAjNuTGOetfmK8JxIS7P/BsmHEnaSztvrTcmpBAX9DFmpQruhCPDbs=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
- by VI1PR04MB3229.eurprd04.prod.outlook.com (2603:10a6:802:e::30) with
+ bh=MuXAES6Sq3zpWBUUFq/5BoxwqacUq1Ib/cfG87+unIw=;
+ b=W0o99FrLHxwdD3OCtts5SgzhJI9sp8Qj7ZpeARVchsteQW6WiT9eP2aHJUUBU5zcY40wuAI8xjTmcaafieqHqHq+coGVPeYR4d5+cpHMYcbKjvHet3ECYk5p2SS5i8sNyTmCZJXT73SRBOI046nbvmK0az941MIXYUGyjmba4q0=
+Received: from HK2PR06MB3507.apcprd06.prod.outlook.com (2603:1096:202:3e::14)
+ by HK2PR0601MB1875.apcprd06.prod.outlook.com (2603:1096:202:9::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.28; Wed, 28 Oct
- 2020 02:04:18 +0000
-Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
- ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
- ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3477.028; Wed, 28 Oct 2020
- 02:04:18 +0000
-From:   Sherry Sun <sherry.sun@nxp.com>
-To:     hch@infradead.org, gregkh@linuxfoundation.org,
-        vincent.whitchurch@axis.com, sudeep.dutt@intel.com,
-        ashutosh.dixit@intel.com, arnd@arndb.de, kishon@ti.com,
-        lorenzo.pieralisi@arm.com
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-imx@nxp.com, fugang.duan@nxp.com
-Subject: [PATCH V5 1/2] misc: vop: change the way of allocating vrings and device page
-Date:   Wed, 28 Oct 2020 10:03:04 +0800
-Message-Id: <20201028020305.10593-2-sherry.sun@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201028020305.10593-1-sherry.sun@nxp.com>
-References: <20201028020305.10593-1-sherry.sun@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: AM0PR03CA0088.eurprd03.prod.outlook.com
- (2603:10a6:208:69::29) To VI1PR04MB4960.eurprd04.prod.outlook.com
- (2603:10a6:803:57::21)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Wed, 28 Oct
+ 2020 02:03:48 +0000
+Received: from HK2PR06MB3507.apcprd06.prod.outlook.com
+ ([fe80::94f:c55a:f9c8:22f4]) by HK2PR06MB3507.apcprd06.prod.outlook.com
+ ([fe80::94f:c55a:f9c8:22f4%5]) with mapi id 15.20.3477.028; Wed, 28 Oct 2020
+ 02:03:48 +0000
+From:   =?gb2312?B?Q2FybCBZaW4o0vPVxbPJKQ==?= <carl.yin@quectel.com>
+To:     "bbhatt@codeaurora.org" <bbhatt@codeaurora.org>
+CC:     "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
+        "hemantk@codeaurora.org" <hemantk@codeaurora.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Naveen Kumar" <naveen.kumar@quectel.com>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIXSBidXM6IG1oaTogY29yZTogRml4IG51bGwgcG9pbnRl?=
+ =?gb2312?Q?r_access?=
+Thread-Topic: [PATCH] bus: mhi: core: Fix null pointer access
+Thread-Index: AQHWrCKyt8Jj5Txhr0KdL/hEL5jjUqmsM7YAgAAPx0A=
+Date:   Wed, 28 Oct 2020 02:03:48 +0000
+Message-ID: <HK2PR06MB3507360AE3E2D14FA9DE90C286170@HK2PR06MB3507.apcprd06.prod.outlook.com>
+References: <41058752035efde392e1c55d0fd5b58c@sslemail.net>
+ <b3bf32de1f3580210ebad6c4b2c7a802@codeaurora.org>
+In-Reply-To: <b3bf32de1f3580210ebad6c4b2c7a802@codeaurora.org>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: codeaurora.org; dkim=none (message not signed)
+ header.d=none;codeaurora.org; dmarc=none action=none header.from=quectel.com;
+x-originating-ip: [203.93.254.85]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c89fce90-0e7c-4977-52fa-08d87ae5b56c
+x-ms-traffictypediagnostic: HK2PR0601MB1875:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK2PR0601MB1875871FBF7417C1B007748B86170@HK2PR0601MB1875.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:546;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: rqtxl8If+YxiWNTh7U5/mIZlttFHgYGDgTAPMTjCERpgrywnaUe42fYPXiZWKLPsZ9of9ZTpXaPCA5Ez8s8YWjXIIxYpFZKAc7v6KBvrwAXYDdSFG048SVmeMLweNQZhhLY/W675lKuhpnkdcZPueENsl9y/NsAfE5jyfUct5J4RYsDc455qOMcz9MjDPto7jXFNTWvRzL5LyzDzxxLj2fqZMv9yYooJ5KF30UahXHanVhOCrwxIpALcAc0SwET6Ou6kTUaHDzNuMdN41VXUQo0K4hUITJUxO4oiS5MCdP43yTO2hKFqyAZX1HP1OSYgNX2vz4mFGPDZMluU4qXYqg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR06MB3507.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(136003)(39850400004)(366004)(76116006)(26005)(5660300002)(66946007)(71200400001)(55016002)(66556008)(4326008)(66476007)(86362001)(9686003)(224303003)(186003)(316002)(33656002)(8936002)(478600001)(52536014)(2906002)(6916009)(85182001)(6506007)(53546011)(4001150100001)(107886003)(83380400001)(66446008)(64756008)(7696005)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: lO/kdepE3bPDCcvyKzAeklUH4mQ2p7JkV3Z29X1qBsy0Tmnxi/fNQ7q3is34ctAVBGt3cyTySYg/EtzmjgqnkBQtzf+iT4uixuLGPAxHgL2gRGTRmLdGkpfqCsddnVSY3FxiEgaAQqUMXgTvSL3KKsjQ71D3duJ1Fw9RamHLkNogroUsRGJpWobeka9UmLo+2ZHGbozSlYesxSLDbn3RY5xaUZhzzaaRZQN93gXi71/9Ah+sFQ/WXY8yXPkLYbqhCrqrTEcofZvPNKpXihC0JS/tD+4HUOOGcni44qwGUeN1pISGzZJ9+8AbjY/heru1yKfXKaPIFXmMc1ti/E/K08fHkmSeuy1u4BsCIShb88HGVCH8nYa2mnAi+R+GTCoiPd7gKOjPpkAIcxFGBfMTd9YjhgZY8jZfzcbgza+kwXPUDdsTDiycbh338sPtzXnuTlciywgkzFRPZHjZloORAzjS/Glf4cID5lLXyQnyO923epTq1BVKY5q++DDyk2/BLlvestygXM3jtQO6p/6CoTtE+VafxHL2A3A0qifMStRJA8qY52w4L8J0v0b9DL8BfSy8CC5plqY+w9v0aFYDDy5dkGjo+OqlqyrjnMiyib9X3FuUXQ4vE6MTdvzASI+6hztuyLkzC3woDBTPOdkcZA==
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from nxp.ap.freescale.net (119.31.174.71) by AM0PR03CA0088.eurprd03.prod.outlook.com (2603:10a6:208:69::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 02:04:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 944d90e6-522b-4735-ab00-08d87ae5c737
-X-MS-TrafficTypeDiagnostic: VI1PR04MB3229:|VI1PR04MB6928:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB3229F7A7207A71F7EFA1641A92170@VI1PR04MB3229.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:549;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6F9TIUtHpFUTOgJ+NmzyMtK9omOOkW2NEJx3/AZxqXJwngqdCblhuGW3twfS7b9PidLYIT17dqsx8J6IsGG+h3OqbBr0s1Rd3/tivnu9NTp21GyL+L8ReRExy0fGLBLnYDQPmAyoLhh5h8P45ruRf2doF+cSuGmNl3eLNbCJfr4tpa0nuBHB0y5WsGsSODOPr7DoM4Uyx8xaVgZVSG19Bf+tqrP0sgUV4/n1ytuU8B6iCM+Zxbgy/98UQ8o7DEYX4Eu5qIMDMTyGkhUjMwAwqXKX+U33XwwFEd+wPeODGQhaVbKzY7um1bGkRhWDNwdC2aY/YnlsLWingU6gejbuJQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(376002)(136003)(346002)(36756003)(2616005)(1076003)(44832011)(52116002)(2906002)(26005)(6506007)(30864003)(478600001)(956004)(8936002)(83380400001)(16526019)(86362001)(8676002)(4326008)(316002)(5660300002)(186003)(7416002)(6512007)(66476007)(6666004)(66556008)(6486002)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: RmaLK1bnmONfjTC6uPK5on/CWdgRn9Y8uCgqygxrrCZsEWHhzkX2qDDK57a24PugGlfHqFNoHBXLxU8hSo8JhrxCcv0k+sLjkXwXthiBHK1wTlAfx+csI4VvT31eALOaF06+zZKAFRo7xDq/93x72r2ymYW4/9HSB29eiT84ba4/F2bVGQp4DecbBXUfvSrh7cGrOawieXxXpaLPuk3hxafSc/m85KgWRki7360yOu5jNwoumSGJZ8TWXAkSEILOPVaXD1sVsWM8lwEurykoTQHIpJ2Q3LOgQ4mM9wERojT3V4mIjBquKp0imeoU+L1oi8LZ/myz+NnZSPTYmOS4zNc+uwgHp9XKqm3+ocU7essuwXjjEf8t4XB8esmIeVDClGkrITQduovmMHn+Zv1ITijx3Xz9LchVCsB1igB2bL7h0GGR3iA1xlHoCdTaFQziRqF6YEEZ3AkN8fTC9rAXNMtacXPwrS+nDBgJReOWACmwyXEhH/LBEUraZZCLMaQFeC5NeEHHVoehc2vK3BiNgsZwE5DIjY0h8IDutdACq8M2aw8BWw4Sa2bbV0wMWwmaObpr4iDdHyUpWSzqmOLiQcq3K6iHlrftmhV7vXSbWzJKITb3zPBp4KHL7xpe1s0De1O9nafnO7LyI9Jn/Wg2sg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 944d90e6-522b-4735-ab00-08d87ae5c737
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2020 02:04:18.7425
+X-MS-Exchange-CrossTenant-AuthSource: HK2PR06MB3507.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c89fce90-0e7c-4977-52fa-08d87ae5b56c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2020 02:03:48.2300
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DNoM1sUdemNGj+U1eYCgYim22LcEd+X6jDaRlb/7HDcbpNikhizEgbAWIR+BH0ZVIjeo8IbsejjmJHMpeMJRVQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3229
-X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 7730d043-e129-480c-b1ba-e5b6a9f476aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +22PTIFN9pIhL4sM4+LwYAFlCLRf/maZUc6uPDazO4usp3buozRT6T8fwf2vp+vTYuT167JKw4DxKHUhbg130w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR0601MB1875
+X-OriginatorOrg: quectel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocate vrings use dma_alloc_coherent is a common way in kernel. As the
-memory interacted between two systems should use consistent memory to
-avoid caching effects, same as device page memory.
-
-The orginal way use __get_free_pages and dma_map_single to allocate and
-map vring, but not use dma_sync_single_for_cpu/device api to sync the
-changes of vring between EP and RC, which will cause memory
-synchronization problem for those devices which don't support hardware
-dma coherent.
-
-Also change to use dma_mmap_coherent for mmap callback to map the device
-page and vring memory to userspace.
-
-Signed-off-by: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- drivers/misc/mic/bus/vop_bus.h    |   2 +
- drivers/misc/mic/host/mic_boot.c  |   9 ++
- drivers/misc/mic/host/mic_main.c  |  43 +++-------
- drivers/misc/mic/vop/vop_vringh.c | 135 ++++++++++++------------------
- 4 files changed, 77 insertions(+), 112 deletions(-)
-
-diff --git a/drivers/misc/mic/bus/vop_bus.h b/drivers/misc/mic/bus/vop_bus.h
-index 4fa02808c1e2..e21c06aeda7a 100644
---- a/drivers/misc/mic/bus/vop_bus.h
-+++ b/drivers/misc/mic/bus/vop_bus.h
-@@ -75,6 +75,7 @@ struct vop_driver {
-  *                 node to add/remove/configure virtio devices.
-  * @get_dp: Get access to the virtio device page used by the self
-  *          node to add/remove/configure virtio devices.
-+ * @dp_mmap: Map the virtio device page to userspace.
-  * @send_intr: Send an interrupt to the peer node on a specified doorbell.
-  * @remap: Map a buffer with the specified DMA address and length.
-  * @unmap: Unmap a buffer previously mapped.
-@@ -92,6 +93,7 @@ struct vop_hw_ops {
- 	void (*ack_interrupt)(struct vop_device *vpdev, int num);
- 	void __iomem * (*get_remote_dp)(struct vop_device *vpdev);
- 	void * (*get_dp)(struct vop_device *vpdev);
-+	int (*dp_mmap)(struct vop_device *vpdev, struct vm_area_struct *vma);
- 	void (*send_intr)(struct vop_device *vpdev, int db);
- 	void __iomem * (*remap)(struct vop_device *vpdev,
- 				  dma_addr_t pa, size_t len);
-diff --git a/drivers/misc/mic/host/mic_boot.c b/drivers/misc/mic/host/mic_boot.c
-index 8cb85b8b3e19..44ed918b49b4 100644
---- a/drivers/misc/mic/host/mic_boot.c
-+++ b/drivers/misc/mic/host/mic_boot.c
-@@ -89,6 +89,14 @@ static void *__mic_get_dp(struct vop_device *vpdev)
- 	return mdev->dp;
- }
- 
-+static int __mic_dp_mmap(struct vop_device *vpdev, struct vm_area_struct *vma)
-+{
-+	struct mic_device *mdev = vpdev_to_mdev(&vpdev->dev);
-+
-+	return dma_mmap_coherent(&mdev->pdev->dev, vma, mdev->dp,
-+				 mdev->dp_dma_addr, MIC_DP_SIZE);
-+}
-+
- static void __iomem *__mic_get_remote_dp(struct vop_device *vpdev)
- {
- 	return NULL;
-@@ -120,6 +128,7 @@ static struct vop_hw_ops vop_hw_ops = {
- 	.ack_interrupt = __mic_ack_interrupt,
- 	.next_db = __mic_next_db,
- 	.get_dp = __mic_get_dp,
-+	.dp_mmap = __mic_dp_mmap,
- 	.get_remote_dp = __mic_get_remote_dp,
- 	.send_intr = __mic_send_intr,
- 	.remap = __mic_ioremap,
-diff --git a/drivers/misc/mic/host/mic_main.c b/drivers/misc/mic/host/mic_main.c
-index ea4608527ea0..fab87a72a9a4 100644
---- a/drivers/misc/mic/host/mic_main.c
-+++ b/drivers/misc/mic/host/mic_main.c
-@@ -10,6 +10,7 @@
- #include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/poll.h>
-+#include <linux/dma-mapping.h>
- 
- #include <linux/mic_common.h>
- #include "../common/mic_dev.h"
-@@ -45,33 +46,6 @@ MODULE_DEVICE_TABLE(pci, mic_pci_tbl);
- /* ID allocator for MIC devices */
- static struct ida g_mic_ida;
- 
--/* Initialize the device page */
--static int mic_dp_init(struct mic_device *mdev)
--{
--	mdev->dp = kzalloc(MIC_DP_SIZE, GFP_KERNEL);
--	if (!mdev->dp)
--		return -ENOMEM;
--
--	mdev->dp_dma_addr = mic_map_single(mdev,
--		mdev->dp, MIC_DP_SIZE);
--	if (mic_map_error(mdev->dp_dma_addr)) {
--		kfree(mdev->dp);
--		dev_err(&mdev->pdev->dev, "%s %d err %d\n",
--			__func__, __LINE__, -ENOMEM);
--		return -ENOMEM;
--	}
--	mdev->ops->write_spad(mdev, MIC_DPLO_SPAD, mdev->dp_dma_addr);
--	mdev->ops->write_spad(mdev, MIC_DPHI_SPAD, mdev->dp_dma_addr >> 32);
--	return 0;
--}
--
--/* Uninitialize the device page */
--static void mic_dp_uninit(struct mic_device *mdev)
--{
--	mic_unmap_single(mdev, mdev->dp_dma_addr, MIC_DP_SIZE);
--	kfree(mdev->dp);
--}
--
- /**
-  * mic_ops_init: Initialize HW specific operation tables.
-  *
-@@ -227,11 +201,16 @@ static int mic_probe(struct pci_dev *pdev,
- 
- 	pci_set_drvdata(pdev, mdev);
- 
--	rc = mic_dp_init(mdev);
--	if (rc) {
--		dev_err(&pdev->dev, "mic_dp_init failed rc %d\n", rc);
-+	mdev->dp = dma_alloc_coherent(&pdev->dev, MIC_DP_SIZE,
-+				      &mdev->dp_dma_addr, GFP_KERNEL);
-+	if (!mdev->dp) {
-+		dev_err(&pdev->dev, "failed to allocate device page\n");
- 		goto smpt_uninit;
- 	}
-+
-+	mdev->ops->write_spad(mdev, MIC_DPLO_SPAD, mdev->dp_dma_addr);
-+	mdev->ops->write_spad(mdev, MIC_DPHI_SPAD, mdev->dp_dma_addr >> 32);
-+
- 	mic_bootparam_init(mdev);
- 	mic_create_debug_dir(mdev);
- 
-@@ -244,7 +223,7 @@ static int mic_probe(struct pci_dev *pdev,
- 	return 0;
- cleanup_debug_dir:
- 	mic_delete_debug_dir(mdev);
--	mic_dp_uninit(mdev);
-+	dma_free_coherent(&pdev->dev, MIC_DP_SIZE, mdev->dp, mdev->dp_dma_addr);
- smpt_uninit:
- 	mic_smpt_uninit(mdev);
- free_interrupts:
-@@ -283,7 +262,7 @@ static void mic_remove(struct pci_dev *pdev)
- 
- 	cosm_unregister_device(mdev->cosm_dev);
- 	mic_delete_debug_dir(mdev);
--	mic_dp_uninit(mdev);
-+	dma_free_coherent(&pdev->dev, MIC_DP_SIZE, mdev->dp, mdev->dp_dma_addr);
- 	mic_smpt_uninit(mdev);
- 	mic_free_interrupts(mdev, pdev);
- 	iounmap(mdev->aper.va);
-diff --git a/drivers/misc/mic/vop/vop_vringh.c b/drivers/misc/mic/vop/vop_vringh.c
-index 7014ffe88632..39d34b164ede 100644
---- a/drivers/misc/mic/vop/vop_vringh.c
-+++ b/drivers/misc/mic/vop/vop_vringh.c
-@@ -298,9 +298,8 @@ static int vop_virtio_add_device(struct vop_vdev *vdev,
- 		mutex_init(&vvr->vr_mutex);
- 		vr_size = PAGE_ALIGN(round_up(vring_size(num, MIC_VIRTIO_RING_ALIGN), 4) +
- 			sizeof(struct _mic_vring_info));
--		vr->va = (void *)
--			__get_free_pages(GFP_KERNEL | __GFP_ZERO,
--					 get_order(vr_size));
-+		vr->va = dma_alloc_coherent(vop_dev(vdev), vr_size, &vr_addr,
-+					    GFP_KERNEL);
- 		if (!vr->va) {
- 			ret = -ENOMEM;
- 			dev_err(vop_dev(vdev), "%s %d err %d\n",
-@@ -310,15 +309,6 @@ static int vop_virtio_add_device(struct vop_vdev *vdev,
- 		vr->len = vr_size;
- 		vr->info = vr->va + round_up(vring_size(num, MIC_VIRTIO_RING_ALIGN), 4);
- 		vr->info->magic = cpu_to_le32(MIC_MAGIC + vdev->virtio_id + i);
--		vr_addr = dma_map_single(&vpdev->dev, vr->va, vr_size,
--					 DMA_BIDIRECTIONAL);
--		if (dma_mapping_error(&vpdev->dev, vr_addr)) {
--			free_pages((unsigned long)vr->va, get_order(vr_size));
--			ret = -ENOMEM;
--			dev_err(vop_dev(vdev), "%s %d err %d\n",
--				__func__, __LINE__, ret);
--			goto err;
--		}
- 		vqconfig[i].address = cpu_to_le64(vr_addr);
- 
- 		vring_init(&vr->vr, num, vr->va, MIC_VIRTIO_RING_ALIGN);
-@@ -339,11 +329,9 @@ static int vop_virtio_add_device(struct vop_vdev *vdev,
- 		dev_dbg(&vpdev->dev,
- 			"%s %d index %d va %p info %p vr_size 0x%x\n",
- 			__func__, __LINE__, i, vr->va, vr->info, vr_size);
--		vvr->buf = (void *)__get_free_pages(GFP_KERNEL,
--					get_order(VOP_INT_DMA_BUF_SIZE));
--		vvr->buf_da = dma_map_single(&vpdev->dev,
--					  vvr->buf, VOP_INT_DMA_BUF_SIZE,
--					  DMA_BIDIRECTIONAL);
-+		vvr->buf = dma_alloc_coherent(vop_dev(vdev),
-+					      VOP_INT_DMA_BUF_SIZE,
-+					      &vvr->buf_da, GFP_KERNEL);
- 	}
- 
- 	snprintf(irqname, sizeof(irqname), "vop%dvirtio%d", vpdev->index,
-@@ -382,10 +370,8 @@ static int vop_virtio_add_device(struct vop_vdev *vdev,
- 	for (j = 0; j < i; j++) {
- 		struct vop_vringh *vvr = &vdev->vvr[j];
- 
--		dma_unmap_single(&vpdev->dev, le64_to_cpu(vqconfig[j].address),
--				 vvr->vring.len, DMA_BIDIRECTIONAL);
--		free_pages((unsigned long)vvr->vring.va,
--			   get_order(vvr->vring.len));
-+		dma_free_coherent(vop_dev(vdev), vvr->vring.len, vvr->vring.va,
-+				  le64_to_cpu(vqconfig[j].address));
- 	}
- 	return ret;
- }
-@@ -433,17 +419,12 @@ static void vop_virtio_del_device(struct vop_vdev *vdev)
- 	for (i = 0; i < vdev->dd->num_vq; i++) {
- 		struct vop_vringh *vvr = &vdev->vvr[i];
- 
--		dma_unmap_single(&vpdev->dev,
--				 vvr->buf_da, VOP_INT_DMA_BUF_SIZE,
--				 DMA_BIDIRECTIONAL);
--		free_pages((unsigned long)vvr->buf,
--			   get_order(VOP_INT_DMA_BUF_SIZE));
-+		dma_free_coherent(vop_dev(vdev), VOP_INT_DMA_BUF_SIZE,
-+				  vvr->buf, vvr->buf_da);
- 		vringh_kiov_cleanup(&vvr->riov);
- 		vringh_kiov_cleanup(&vvr->wiov);
--		dma_unmap_single(&vpdev->dev, le64_to_cpu(vqconfig[i].address),
--				 vvr->vring.len, DMA_BIDIRECTIONAL);
--		free_pages((unsigned long)vvr->vring.va,
--			   get_order(vvr->vring.len));
-+		dma_free_coherent(vop_dev(vdev), vvr->vring.len, vvr->vring.va,
-+				  le64_to_cpu(vqconfig[i].address));
- 	}
- 	/*
- 	 * Order the type update with previous stores. This write barrier
-@@ -1042,13 +1023,27 @@ static __poll_t vop_poll(struct file *f, poll_table *wait)
- 	return mask;
- }
- 
--static inline int
--vop_query_offset(struct vop_vdev *vdev, unsigned long offset,
--		 unsigned long *size, unsigned long *pa)
-+/*
-+ * Maps the device page and virtio rings to user space for readonly access.
-+ */
-+static int vop_mmap(struct file *f, struct vm_area_struct *vma)
- {
--	struct vop_device *vpdev = vdev->vpdev;
--	unsigned long start = MIC_DP_SIZE;
--	int i;
-+	struct vop_vdev *vdev = f->private_data;
-+	struct mic_vqconfig *vqconfig = mic_vq_config(vdev->dd);
-+	unsigned long orig_start = vma->vm_start;
-+	unsigned long orig_end = vma->vm_end;
-+	int err, i;
-+
-+	if (!vdev->vpdev->hw_ops->dp_mmap)
-+		return -EINVAL;
-+	if (vma->vm_pgoff)
-+		return -EINVAL;
-+	if (vma->vm_flags & VM_WRITE)
-+		return -EACCES;
-+
-+	err = vop_vdev_inited(vdev);
-+	if (err)
-+		return err;
- 
- 	/*
- 	 * MMAP interface is as follows:
-@@ -1057,58 +1052,38 @@ vop_query_offset(struct vop_vdev *vdev, unsigned long offset,
- 	 * 0x1000				first vring
- 	 * 0x1000 + size of 1st vring		second vring
- 	 * ....
-+	 *
-+	 * We manipulate vm_start/vm_end to trick dma_mmap_coherent into
-+	 * performing partial mappings, which is a bit of a hack, but safe
-+	 * while we are under mmap_lock().  Eventually this needs to be
-+	 * replaced by a proper DMA layer API.
- 	 */
--	if (!offset) {
--		*pa = virt_to_phys(vpdev->hw_ops->get_dp(vpdev));
--		*size = MIC_DP_SIZE;
--		return 0;
--	}
-+	vma->vm_end = vma->vm_start + MIC_DP_SIZE;
-+	err = vdev->vpdev->hw_ops->dp_mmap(vdev->vpdev, vma);
-+	if (err)
-+		goto out;
- 
- 	for (i = 0; i < vdev->dd->num_vq; i++) {
- 		struct vop_vringh *vvr = &vdev->vvr[i];
- 
--		if (offset == start) {
--			*pa = virt_to_phys(vvr->vring.va);
--			*size = vvr->vring.len;
--			return 0;
--		}
--		start += vvr->vring.len;
--	}
--	return -1;
--}
-+		vma->vm_start = vma->vm_end;
-+		vma->vm_end += vvr->vring.len;
- 
--/*
-- * Maps the device page and virtio rings to user space for readonly access.
-- */
--static int vop_mmap(struct file *f, struct vm_area_struct *vma)
--{
--	struct vop_vdev *vdev = f->private_data;
--	unsigned long offset = vma->vm_pgoff << PAGE_SHIFT;
--	unsigned long pa, size = vma->vm_end - vma->vm_start, size_rem = size;
--	int i, err;
--
--	err = vop_vdev_inited(vdev);
--	if (err)
--		goto ret;
--	if (vma->vm_flags & VM_WRITE) {
--		err = -EACCES;
--		goto ret;
--	}
--	while (size_rem) {
--		i = vop_query_offset(vdev, offset, &size, &pa);
--		if (i < 0) {
--			err = -EINVAL;
--			goto ret;
--		}
--		err = remap_pfn_range(vma, vma->vm_start + offset,
--				      pa >> PAGE_SHIFT, size,
--				      vma->vm_page_prot);
-+		err = -EINVAL;
-+		if (vma->vm_end > orig_end)
-+			goto out;
-+		err = dma_mmap_coherent(vop_dev(vdev), vma, vvr->vring.va,
-+					le64_to_cpu(vqconfig[i].address),
-+					vvr->vring.len);
- 		if (err)
--			goto ret;
--		size_rem -= size;
--		offset += size;
-+			goto out;
- 	}
--ret:
-+out:
-+	/*
-+	 * Restore the original vma parameters.
-+	 */
-+	vma->vm_start = orig_start;
-+	vma->vm_end = orig_end;
- 	return err;
- }
- 
--- 
-2.17.1
-
+SGkgYmJoYXR0Og0KDQpPbiBXZWRuZXNkYXksIE9jdG9iZXIgMjgsIDIwMjAgOTowMiBBTSwgYmJo
+YXR0IHdyb3RlOg0KDQo+IEhpIENhcmwsDQo+IA0KPiBZZXMgdGhpcyBjaGFuZ2UgaXMgbmVlZGVk
+LiBHb29kIGNhdGNoLiBJIHJhbiBpbiB0byB0aGlzIGlzc3VlIGFzIHdlbGwgd2hlbiBhDQo+IGRl
+dl9lcnIoKSBjYWxsIHdhcyBtYWRlIHdpdGggYSBiYWQgTUhJIGNvbmZpZ3VyYXRpb24uDQpbY2Fy
+bC55aW5dIHllcywgSSBhbHNvIG1lZXQgdGhpcyBlcnJvciB3aXRoIGEgYmFkIE1ISSBjb25maWd1
+cmF0aW9uLg0KPiANCj4gTWF5YmUgeW91IGNhbiBleHBsYWluIGEgbGl0dGxlIG1vcmUgaW4gdGhl
+IGNvbW1pdCB0ZXh0IHN1YmplY3Q/DQo+IA0KPiBZb3UgY291bGQgc2F5LCAiRml4IG51bGwgcG9p
+bnRlciBhY2Nlc3Mgd2hlbiBwYXJzaW5nIE1ISSBjb25maWd1cmF0aW9uIj8NCj4gDQo+IE9uIDIw
+MjAtMTAtMjYgMjI6MzMsIGNhcmwueWluQHF1ZWN0ZWwuY29tIHdyb3RlOg0KPiA+IEZyb206IGNh
+cmwgPGNhcmwueWluQHF1ZWN0ZWwuY29tPg0KPiA+DQo+ID4gZnVuY3Rpb24gcGFyc2VfZXZfY2Zn
+IGFuZCBwYXJzZV9jaF9jZmcgYWNjZXNzIG1oaV9jbnRybC0+bWhpX2Rldg0KPiBGdW5jdGlvbnMg
+cGFyc2VfZXZfY2ZnKCkgYW5kIHBhcnNlX2NoX2NmZygpDQo+ID4gYmVmb3JlIGl0IGlzIHNldCBp
+biBmdW5jdGlvbiBtaGlfcmVnaXN0ZXJfY29udHJvbGxlciwNCj4gbWhpX3JlZ2lzdGVyX2NvbnRy
+b2xsZXIoKQ0KPiA+IHVzZSBjbnRybF9kZXYgdG8gaW5zdGVhZCBtaGlfZGV2Lg0KPiB1c2UgY250
+cmxfZGV2IGluc3RlYWQgb2YgbWhpX2Rldi4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IGNhcmwg
+PGNhcmwueWluQHF1ZWN0ZWwuY29tPg0KPiBXaXRoIHRoZXNlIGNvbW1pdCB0ZXh0IHVwZGF0ZXMs
+DQpbY2FybC55aW5dIHRoYW5rIGZvciB3b3JkcyBjb3JyZWN0aW9uLCBmb3IgbXkgbW90aGVyIGxh
+bmd1YWdlIGlzIG5vdCBFbmdsaXNoLCANCnRoZXJlIGFyZSBsb3RzIG9mIHdvcmRzIHdyb25nIGlu
+IHRoZSBjb21taXQuDQo+IA0KPiBSZXZpZXdlZC1ieTogQmhhdW1payBCaGF0dCA8YmJoYXR0QGNv
+ZGVhdXJvcmEub3JnPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL2J1cy9taGkvY29yZS9pbml0LmMg
+fCA0ICsrLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlv
+bnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2J1cy9taGkvY29yZS9pbml0LmMg
+Yi9kcml2ZXJzL2J1cy9taGkvY29yZS9pbml0LmMNCj4gPiBpbmRleCAwZmZkZWJkZTguLmM2YjQz
+ZTkwYiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2J1cy9taGkvY29yZS9pbml0LmMNCj4gPiAr
+KysgYi9kcml2ZXJzL2J1cy9taGkvY29yZS9pbml0LmMNCj4gPiBAQCAtNjEwLDcgKzYxMCw3IEBA
+IHN0YXRpYyBpbnQgcGFyc2VfZXZfY2ZnKHN0cnVjdCBtaGlfY29udHJvbGxlcg0KPiA+ICptaGlf
+Y250cmwsICB7DQo+ID4gIAlzdHJ1Y3QgbWhpX2V2ZW50ICptaGlfZXZlbnQ7DQo+ID4gIAljb25z
+dCBzdHJ1Y3QgbWhpX2V2ZW50X2NvbmZpZyAqZXZlbnRfY2ZnOw0KPiA+IC0Jc3RydWN0IGRldmlj
+ZSAqZGV2ID0gJm1oaV9jbnRybC0+bWhpX2Rldi0+ZGV2Ow0KPiA+ICsJc3RydWN0IGRldmljZSAq
+ZGV2ID0gbWhpX2NudHJsLT5jbnRybF9kZXY7DQo+ID4gIAlpbnQgaSwgbnVtOw0KPiA+DQo+ID4g
+IAludW0gPSBjb25maWctPm51bV9ldmVudHM7DQo+ID4gQEAgLTY5Miw3ICs2OTIsNyBAQCBzdGF0
+aWMgaW50IHBhcnNlX2NoX2NmZyhzdHJ1Y3QgbWhpX2NvbnRyb2xsZXINCj4gPiAqbWhpX2NudHJs
+LA0KPiA+ICAJCQljb25zdCBzdHJ1Y3QgbWhpX2NvbnRyb2xsZXJfY29uZmlnICpjb25maWcpICB7
+DQo+ID4gIAljb25zdCBzdHJ1Y3QgbWhpX2NoYW5uZWxfY29uZmlnICpjaF9jZmc7DQo+ID4gLQlz
+dHJ1Y3QgZGV2aWNlICpkZXYgPSAmbWhpX2NudHJsLT5taGlfZGV2LT5kZXY7DQo+ID4gKwlzdHJ1
+Y3QgZGV2aWNlICpkZXYgPSBtaGlfY250cmwtPmNudHJsX2RldjsNCj4gPiAgCWludCBpOw0KPiA+
+ICAJdTMyIGNoYW47DQo+IA0KPiAtLQ0KPiBUaGUgUXVhbGNvbW0gSW5ub3ZhdGlvbiBDZW50ZXIs
+IEluYy4gaXMgYSBtZW1iZXIgb2YgdGhlIENvZGUgQXVyb3JhIEZvcnVtLCBhDQo+IExpbnV4IEZv
+dW5kYXRpb24gQ29sbGFib3JhdGl2ZSBQcm9qZWN0DQo=
