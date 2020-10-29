@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F35E29E451
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E32E29E49F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbgJ2HYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
+        id S1730299AbgJ2HkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726906AbgJ2HYg (ORCPT
+        with ESMTP id S1727566AbgJ2HYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:36 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A45C05BD35
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:32:05 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id z31so1361006pgk.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:32:05 -0700 (PDT)
+        Thu, 29 Oct 2020 03:24:51 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD098C08E81A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:51:54 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id b25so1750626ybj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:51:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=IoB5J93gR+QUze+mf8kh5Lkrb9ZTRoUgNDrcGrdGKf0=;
-        b=Bjc7EFVW6XPepdSF7ku0VsGSN6t7tPM1ahLGmVXmJVJT45tQlAHhg8333I+uUQpCx3
-         /OkWRMBtly2rxTmJGaAPu8VKSG1R0+CNUrOxQ2pfQNh988x1rB2z/FW0MGz9HpTMRqxE
-         3uU/7EqqOfiGwr7tvP9fg+xOi//0THL48cuZPYYcYpJ8cE6ePgn5hFtScifeNWbRDpxW
-         EwxnVWbj/BaZYXQ/usgr2b1iEcU4T5uDdFSB+dAaV8ZQFEPGRlnbxQYfJSqLbd5zUmgJ
-         DMpI0+zPmsnCMNsqL9yJPjeNojVxZwA/NhSJTiacjsvpI3+Ol/I85nabFzNFNmPVPV2B
-         TNMQ==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=D0RG6XCsiYk3Hov12UB1Ls79tsmNIPNALmBWI6I8Qe0=;
+        b=qh8nc7inquFnCZ1Gl+JJNsIMjS5CH78e+QQXwZNY+cPKUHEiXtycFZ0CFtimd8zYCG
+         Amr92TjpnzexbaTLGJft6X2m4Nuwr+fWmwBS0URNtMy6WUz0iS6epHvM/4LP1fLoRRAH
+         33kdoDqgQQneOIDrhKCztqDz0revwKmhBAm37QdYLaClLZhrD/9Qxi1YSWS7U85J/kbJ
+         V6duXsFjEeTyc36s+8tRF00xM/Y3/M9XkTGr9BPhdw0WFZdWUsGZyI2diFfRel48fLPE
+         0U0JHOnqT+XNWleskOVhe299dCMDba1YWTiuuiSRYE4AVqipNk/OFSKpMH6f5BVkzrZw
+         QR3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=IoB5J93gR+QUze+mf8kh5Lkrb9ZTRoUgNDrcGrdGKf0=;
-        b=Y89blsAeSZC56aLkDGk2Jl5bNHcELbMiHAkUmubSva9/SEXX/VL4Mf89F2owWuHjNe
-         C7/HXk8yxupUQRd7zN5Jot3PlD3JFNLbuO/7vPWsGVOeGRdHvT41b2AECJiCV6peXVZ4
-         jzaL4HwBnr6/VTJ7umJfFuZKOc+8fBsu6ANZUAGzoNG0m0zdlVGGnv0FfHpEWOXp+vNp
-         63DNb3ClEaXQcQgeDuzQM362uAJLtgPJYCvOJOdCDnQByA/INsYSbAdfML/nYGnC+PUm
-         qmAsEJrGa3ZBdOuek0aiyB0grVGt+ZaXPaAJcHVIURMnLI9qh/4eVxdq6FHvqYzKaMqd
-         /oiA==
-X-Gm-Message-State: AOAM532kSJIiXl1Ule/lzIKrLL3xL8/HlyMwzOKCYcsqVN0HF8RoLQ2+
-        VTQwC/bTEdh8IE1/wjI2mVog2Cplvlk=
-X-Google-Smtp-Source: ABdhPJzk09EJJdAKs9QaD6gdc9DEDB0lt0+OJt3h7YXZUQ0mQGXkJoMjlfxQmpHos1KMQ4s5ZEG6YB0tO3Y=
-Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:a65:55ce:: with SMTP id k14mr2735983pgs.65.1603953124910;
- Wed, 28 Oct 2020 23:32:04 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 23:31:38 -0700
-In-Reply-To: <20201029063138.1429760-1-badhri@google.com>
-Message-Id: <20201029063138.1429760-11-badhri@google.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=D0RG6XCsiYk3Hov12UB1Ls79tsmNIPNALmBWI6I8Qe0=;
+        b=VnTT79QruQ1MQIIsktryutdKrZ8FUnvF/0VXLOtW0Mo+Go7UsifbsQgjhWGnCAh6Qq
+         1yv/obsFiGaiDaFJI3wI6wxt/N4m+AN5ifIrY5RPX4Z8q2suUcqJV4bB+Ay29cmFZrfR
+         dSRi72RsIzolPfnWe1+868xCcpHcotey95ZPzyXX1JymwbiDGwtBggRL4uc8zE0F2WPi
+         C5dSzjQQAAmQzjNzug9b0WVyxhsLr2fY5WbDc/Z9bGXdkIV2b0DEzvxLehEQ3UW7ab0q
+         GepqUVQ4564qBIwrRO+FbGZTlLKFCsZXQpC6OUOpDrBydCJ1Yz0g+SvBHWpHFxa3YeW5
+         dIjw==
+X-Gm-Message-State: AOAM530MtdJeLxQbM12LWDwozqa86mkJXqrE1J2QuPL2i0B8MeD1G/EU
+        FVpitP6fIdQ8SZPqVROkOQzeGyizRzhZ
+X-Google-Smtp-Source: ABdhPJxzuEjf17OjMyjcerT0OVNp3Fze7scKYjqqY3Xi0KJmZn6k1DUOW2Ko52bR0DHoDFZKL8BVXe92Bmei
+Sender: "amistry via sendgmr" <amistry@nandos.syd.corp.google.com>
+X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:725a:fff:fe46:72ab])
+ (user=amistry job=sendgmr) by 2002:a5b:e89:: with SMTP id z9mr3926538ybr.44.1603954313929;
+ Wed, 28 Oct 2020 23:51:53 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 17:51:32 +1100
+Message-Id: <20201029065133.3027749-1-amistry@google.com>
 Mime-Version: 1.0
-References: <20201029063138.1429760-1-badhri@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v12 10/10] usb: typec: tcpci_maxim: Fix uninitialized return variable
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH 0/1] x86/speculation: Allow IBPB to be conditionally enabled
+ on CPUs with always-on STIBP
+From:   Anand K Mistry <amistry@google.com>
+To:     x86@kernel.org, linux-kernel@kernel.org
+Cc:     Thomas.Lendacky@amd.com, joelaf@google.com,
+        asteinhauser@google.com, tglx@linutronix.de,
+        Anand K Mistry <amistry@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New smatch warnings:
-drivers/usb/typec/tcpm/tcpci_maxim.c:324 max_tcpci_irq() error: uninitialized symbol 'irq_return'.
-drivers/usb/typec/tcpm/tcpci_maxim.c:407 max_tcpci_probe() warn: passing zero to 'PTR_ERR'
+When attempting to do some performance testing of IBPB on and AMD
+platform, I noticed the IBPB instruction was never being issued, even
+though it was conditionally on and various seccomp protected processes
+were force enabling it. Turns out, on those AMD CPUs, STIBP is set to
+always-on and this was causing an early-out on the prctl() which turns
+off IB speculation. Here is my attempt to fix it.
 
-The change fixes the above warnings by initializing irq_return
-and replacing IS_ERR_OR_NULL with IS_ERR.
+I'm hoping someone that understands this better than me can explain why
+I'm wrong.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
-v12 is the first version of the patch in this series.
----
- drivers/usb/typec/tcpm/tcpci_maxim.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-index 536df4a7901a..c1797239bf08 100644
---- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-+++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-@@ -343,7 +343,7 @@ static irqreturn_t max_tcpci_irq(int irq, void *dev_id)
- {
- 	struct max_tcpci_chip *chip = dev_id;
- 	u16 status;
--	irqreturn_t irq_return;
-+	irqreturn_t irq_return = IRQ_HANDLED;
- 	int ret;
- 
- 	if (!chip->port)
-@@ -445,7 +445,7 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
- 
- 	max_tcpci_init_regs(chip);
- 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
--	if (IS_ERR_OR_NULL(chip->tcpci)) {
-+	if (IS_ERR(chip->tcpci)) {
- 		dev_err(&client->dev, "TCPCI port registration failed");
- 		ret = PTR_ERR(chip->tcpci);
- 		return PTR_ERR(chip->tcpci);
+Anand K Mistry (1):
+  x86/speculation: Allow IBPB to be conditionally enabled on CPUs with
+    always-on STIBP
+
+ arch/x86/kernel/cpu/bugs.c | 41 +++++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 18 deletions(-)
+
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
