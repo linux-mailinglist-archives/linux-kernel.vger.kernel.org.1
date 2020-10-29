@@ -2,183 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DCB29F589
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:47:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF3D29F58A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgJ2Tr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:47:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725857AbgJ2TrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:47:25 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C31B206E9;
-        Thu, 29 Oct 2020 19:47:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604000844;
-        bh=V+V07lhCpUF+HCTBfLkbtZeP+0HuQ4h1rnvCaQcraac=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=U6VjP+Xo1MSj+0E80L039VzWiUeNXGCantpn6Sh5nexsYBqSV/FNZQ6lSOO1nh89y
-         ZvUOKZrLN7W+f7B+WEBe+AnP1G1Qa5OVww873jyQRLnwdTyGB2YxE0x8Sw5bVHFloG
-         JGrnauY3MC9itKkNdLzjWx0vAepjciDMog7ZIJJY=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 1793935225E2; Thu, 29 Oct 2020 12:47:24 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 12:47:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 16/16] rcu/tree: Use delayed work instead of hrtimer to
- refill the cache
-Message-ID: <20201029194724.GN3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201029165019.14218-1-urezki@gmail.com>
- <20201029165019.14218-16-urezki@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201029165019.14218-16-urezki@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726200AbgJ2Trg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgJ2Trg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 15:47:36 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A59C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:47:36 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id h64so3848882ybc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=OuJr16cGdSeTRRY2e3lrFCZY64j7gnlLJ3xITCQ65aI=;
+        b=mRBiru9bKQ8H7OIKP2wk7/7jYdaUvQCKVnAZG3PEe9QwZte2v00DMCh90xfZYmOCGS
+         6cxCgcKBu5N7/FfyT87zTGt3ar3qItyRGaNn1N8wOthCUiAuppfC6gIs0KZmaIpA5yFq
+         Ik0LSzUi6uEPEfREI6pbK4SsHeqmlspqX9aO+efxDsmThbRpQMLOMnz0Jin+xiEOUtUv
+         QS5sVIeqxc9luhCUN5+ppW4gUIXs/DHa6Kmm2clhmnGjjhk8GGmkGQ/l9Ina8gB7uKKF
+         edX7J0JeVgN27rDNeLm77M09wFRCParf9w2p0alrAL3XoQ2GIaHqkVC1sDYLBUNhA/6z
+         fLxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=OuJr16cGdSeTRRY2e3lrFCZY64j7gnlLJ3xITCQ65aI=;
+        b=gzqn2Cl0ChQJyxJW0XPMXNvw1ipQKdoOQmB2h8LkmYHoMyhYTTpnJrYMAuk7Vc9x3T
+         p+wgjh/qHdXQg4YYSYkvRGY8bpmOkbduFkozLv9OLPaZHdu4VqZaIsfvLbS7YmkiA+GN
+         4jqtlIKLd6KwjaLOMgMET+Bistxx4JdW4ifUDee7TZ+t5Rr6KK9CtNuHnAndmoAjnpX0
+         Yy45eENy4AxTLw6mFYVA8A/sNT2r4Z0j5nuoX3hdb65x64XgJ8lr6O9VgdcArQW4oBfy
+         TgPya5CfBpbVSiUpc7i/46Z5KR9epN5Yjl+PtMbN52V7QGvri8IOYaPBCFaFQkhz4Tko
+         FZWw==
+X-Gm-Message-State: AOAM533LTuEzXJSflEFMXq4LgcazZ1yGCDoEVNV8lm44Pk880+r5A614
+        umrrbHAIrEgSS7a9OiXp/P5TTrOK
+X-Google-Smtp-Source: ABdhPJyibp/8MRZ03uFNH2K7UJYyrLBfJXZ6SPg+5oSGvhikGPO6Q3wrWr7cwnzCiBqm+Rk0wPGtAqFu
+Sender: "lzye via sendgmr" <lzye@chrisye.mtv.corp.google.com>
+X-Received: from chrisye.mtv.corp.google.com ([2620:15c:211:2:f693:9fff:fef4:4323])
+ (user=lzye job=sendgmr) by 2002:a25:3bd0:: with SMTP id i199mr8949465yba.70.1604000855284;
+ Thu, 29 Oct 2020 12:47:35 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 12:47:30 -0700
+Message-Id: <20201029194730.1615465-1-lzye@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH] ANDROID: Fix the HID usage of DPAD input event generation.
+From:   Chris Ye <lzye@google.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org,
+        linux-input@vger.kernel.org, linzhao.ye@gmail.com,
+        Chris Ye <lzye@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 05:50:19PM +0100, Uladzislau Rezki (Sony) wrote:
-> A CONFIG_PREEMPT_COUNT is unconditionally enabled, thus a page
-> can be obtained directly from a kvfree_rcu() path. To distinguish
-> that and take a decision the preemptable() macro is used when it
-> is save to enter allocator.
-> 
-> It means that refilling a cache is not important from timing point
-> of view. Switch to a delayed work, so the actual work is queued from
-> the timer interrupt with 1 jiffy delay. An immediate placing a task
-> on a current CPU can lead to rq->lock double lock. That is why a
-> delayed method is in place.
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Generic Desktop DPAD usage is mapped by hid-input, that only the first
+DPAD usage maps to usage type EV_ABS and code of an axis. If HID
+descriptor has DPAD UP/DOWN/LEFT/RIGHT HID usages and each of usage size
+is 1 bit, then only the first one will generate input event, the rest of
+the HID usages will be assigned to hat direction only.
+The hid input event should check the HID report value and generate
+HID event for its hat direction.
 
-Thank you, Uladzislau!
+Test: Connect HID device with Generic Desktop DPAD usage and press the
+DPAD to generate input events.
 
-I applied this on top of v5.10-rc1 and got the following from the
-single-CPU builds:
+Signed-off-by: Chris Ye <lzye@google.com>
+---
+ drivers/hid/hid-input.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-  SYNC    include/config/auto.conf.cmd
-  DESCEND  objtool
-  CC      kernel/bounds.s
-  CALL    scripts/atomic/check-atomics.sh
-  UPD     include/generated/bounds.h
-  CC      arch/x86/kernel/asm-offsets.s
-In file included from ./include/asm-generic/atomic-instrumented.h:20:0,
-                 from ./include/linux/atomic.h:82,
-                 from ./include/linux/crypto.h:15,
-                 from arch/x86/kernel/asm-offsets.c:9:
-./include/linux/pagemap.h: In function ‘__page_cache_add_speculative’:
-./include/linux/build_bug.h:30:34: error: called object is not a function or function pointer
- #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
-                                 ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./include/linux/mmdebug.h:45:25: note: in expansion of macro ‘BUILD_BUG_ON_INVALID’
- #define VM_BUG_ON(cond) BUILD_BUG_ON_INVALID(cond)
-                         ^~~~~~~~~~~~~~~~~~~~
-./include/linux/pagemap.h:207:2: note: in expansion of macro ‘VM_BUG_ON’
-  VM_BUG_ON(preemptible())
-  ^~~~~~~~~
-scripts/Makefile.build:117: recipe for target 'arch/x86/kernel/asm-offsets.s' failed
-make[1]: *** [arch/x86/kernel/asm-offsets.s] Error 1
-Makefile:1199: recipe for target 'prepare0' failed
-make: *** [prepare0] Error 2
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index 9770db624bfa..6c1007de3409 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -1269,7 +1269,7 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
+ 	struct input_dev *input;
+ 	unsigned *quirks = &hid->quirks;
+ 
+-	if (!usage->type)
++	if (!usage->type && !field->dpad)
+ 		return;
+ 
+ 	if (usage->type == EV_PWR) {
+@@ -1286,9 +1286,17 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
+ 		int hat_dir = usage->hat_dir;
+ 		if (!hat_dir)
+ 			hat_dir = (value - usage->hat_min) * 8 / (usage->hat_max - usage->hat_min + 1) + 1;
+-		if (hat_dir < 0 || hat_dir > 8) hat_dir = 0;
+-		input_event(input, usage->type, usage->code    , hid_hat_to_axis[hat_dir].x);
+-		input_event(input, usage->type, usage->code + 1, hid_hat_to_axis[hat_dir].y);
++		if (hat_dir < 0 || hat_dir > 8 || value == 0)
++			hat_dir = 0;
++		if (field->dpad) {
++			input_event(input, EV_ABS, field->dpad, hid_hat_to_axis[hat_dir].x);
++			input_event(input, EV_ABS, field->dpad + 1, hid_hat_to_axis[hat_dir].y);
++		} else {
++			input_event(input, usage->type, usage->code,
++				hid_hat_to_axis[hat_dir].x);
++			input_event(input, usage->type, usage->code + 1,
++				hid_hat_to_axis[hat_dir].y);
++		}
+ 		return;
+ 	}
+ 
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
-I vaguely recall something like this showing up in the previous series
-and that we did something or another to address it.  Could you please
-check against the old series at -rcu branch dev.2020.10.22a?  (I verified
-that the old series does run correctly in the single-CPU scenarios.)
-
-							Thanx, Paul
-
-> ---
->  kernel/rcu/tree.c | 26 +++++---------------------
->  1 file changed, 5 insertions(+), 21 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 3f9b016a44dc..9ea55f800b4b 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3086,7 +3086,6 @@ struct kfree_rcu_cpu_work {
->   *	per-cpu lock.
->   * @page_cache_work: A work to refill the cache when it is empty
->   * @work_in_progress: Indicates that page_cache_work is running
-> - * @hrtimer: A hrtimer for scheduling a page_cache_work
->   * @nr_bkv_objs: number of allocated objects at @bkvcache.
->   *
->   * This is a per-CPU structure.  The reason that it is not included in
-> @@ -3104,9 +3103,8 @@ struct kfree_rcu_cpu {
->  	bool initialized;
->  	int count;
->  
-> -	struct work_struct page_cache_work;
-> +	struct delayed_work page_cache_work;
->  	atomic_t work_in_progress;
-> -	struct hrtimer hrtimer;
->  
->  	struct llist_head bkvcache;
->  	int nr_bkv_objs;
-> @@ -3355,22 +3353,12 @@ static void kfree_rcu_monitor(struct work_struct *work)
->  		raw_spin_unlock_irqrestore(&krcp->lock, flags);
->  }
->  
-> -static enum hrtimer_restart
-> -schedule_page_work_fn(struct hrtimer *t)
-> -{
-> -	struct kfree_rcu_cpu *krcp =
-> -		container_of(t, struct kfree_rcu_cpu, hrtimer);
-> -
-> -	queue_work(system_highpri_wq, &krcp->page_cache_work);
-> -	return HRTIMER_NORESTART;
-> -}
-> -
->  static void fill_page_cache_func(struct work_struct *work)
->  {
->  	struct kvfree_rcu_bulk_data *bnode;
->  	struct kfree_rcu_cpu *krcp =
->  		container_of(work, struct kfree_rcu_cpu,
-> -			page_cache_work);
-> +			page_cache_work.work);
->  	unsigned long flags;
->  	bool pushed;
->  	int i;
-> @@ -3398,12 +3386,8 @@ static void
->  run_page_cache_worker(struct kfree_rcu_cpu *krcp)
->  {
->  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
-> -			!atomic_xchg(&krcp->work_in_progress, 1)) {
-> -		hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
-> -			HRTIMER_MODE_REL);
-> -		krcp->hrtimer.function = schedule_page_work_fn;
-> -		hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
-> -	}
-> +			!atomic_xchg(&krcp->work_in_progress, 1))
-> +		schedule_delayed_work(&krcp->page_cache_work, 1);
->  }
->  
->  // Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
-> @@ -4503,7 +4487,7 @@ static void __init kfree_rcu_batch_init(void)
->  		}
->  
->  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
-> -		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
-> +		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
->  		krcp->initialized = true;
->  	}
->  	if (register_shrinker(&kfree_rcu_shrinker))
-> -- 
-> 2.20.1
-> 
