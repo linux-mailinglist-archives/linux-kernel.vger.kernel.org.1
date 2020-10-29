@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8C429F0BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F7529F0CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725910AbgJ2QGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:06:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725764AbgJ2QGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:06:34 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF91C2076D;
-        Thu, 29 Oct 2020 16:06:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603987594;
-        bh=G3NhcyrxuUbde1V+HPUpiLH1/czAYGGB1IdZo3AQtk4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Y54h0hVXTxq07bQlXLVpWGGmxy8p6pWIsIU7d2fFyceCI7TvmlKb+qezokurTXzFW
-         juLMTP/S8oVCGaidmAADmMj3vmYjBGNOs+mmBNAE8ERVEAus9IMQ9BUCp6RbBL/GYN
-         AW7o5M0Kkq/aowRchGvs9hXbUxhWQM4LWxItBy1U=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 85EE03522778; Thu, 29 Oct 2020 09:06:33 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 09:06:33 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
-        davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
-        oleg@redhat.com, vincent.guittot@linaro.org
-Subject: Re: [RFC][PATCH v3 6/6] rcu/tree: Use irq_work_queue_remote()
-Message-ID: <20201029160633.GM3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201028110707.971887448@infradead.org>
- <20201028111221.584884062@infradead.org>
- <20201028145428.GE2628@hirez.programming.kicks-ass.net>
- <20201028200243.GJ2651@hirez.programming.kicks-ass.net>
- <20201028201554.GE3249@paulmck-ThinkPad-P72>
- <20201029091534.GH2628@hirez.programming.kicks-ass.net>
+        id S1726050AbgJ2QJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:09:18 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:58814 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725804AbgJ2QJS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:09:18 -0400
+X-UUID: 3e2fd9ffc93d4943bed5940f6515cf56-20201030
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=QAQNmhHtOheMU/ZFT0+MHH+Q18R1hfTiNfYbqOhng1M=;
+        b=lTkT5sdcHubwnFcmh+Fct/4PN6oA8lWe/XTchWwIKNxELWGD4WZ3L09UaM9i/DHauwGa+3vniXqaIZmcap1au4a6dyddL8y5hF5wVfUsbm9N42c2hKA9Cta2e7XZJ2n5Nrg6rS+IQheqzOtb/DMQ+mlkhT6r2ia07r9OmxXVjto=;
+X-UUID: 3e2fd9ffc93d4943bed5940f6515cf56-20201030
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <frankie.chang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1254586372; Fri, 30 Oct 2020 00:09:13 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 30 Oct 2020 00:09:08 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 30 Oct 2020 00:09:08 +0800
+From:   Frankie Chang <Frankie.Chang@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Todd Kjos <tkjos@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
+Subject: binder: add transaction latency tracer
+Date:   Fri, 30 Oct 2020 00:08:54 +0800
+Message-ID: <1603987737-2763-1-git-send-email-Frankie.Chang@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <1602781377-4278-1-git-send-email-Frankie.Chang@mediatek.com>
+References: <1602781377-4278-1-git-send-email-Frankie.Chang@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029091534.GH2628@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 10:15:34AM +0100, Peter Zijlstra wrote:
-> On Wed, Oct 28, 2020 at 01:15:54PM -0700, Paul E. McKenney wrote:
-> > On Wed, Oct 28, 2020 at 09:02:43PM +0100, Peter Zijlstra wrote:
-> > > -#ifdef CONFIG_IRQ_WORK
-> > > +		raw_spin_lock_rcu_node(rnp);
-> > 
-> > The caller of rcu_implicit_dynticks_qs() already holds this lock.
-> > Please see the force_qs_rnp() function and its second call site,
-> > to which rcu_implicit_dynticks_qs() is passed as an argument.
-> 
-> Like this then.
+Q2hhbmdlIGZyb20gdjExOg0KICAtIHJlYmFzZS4NCg0KQ2hhbmdlIGZyb20gdjEwOg0KICAtIHJl
+cGxhY2UgdGltZXNwZWM2NCB3aXRoIGt0aW1lX3QuDQogIC0gZml4IGJ1aWxkIHdhcm5pbmcuDQoN
+CkNoYW5nZSBmcm9tIHY5Og0KICAtIHJlbmFtZSB0aW1lc3RhbXAgdG8gdHMgaW4gYmluZGVyX2lu
+dGVybmFsLmggZm9yIGNvbmNpc2VuZXNzLg0KICAtIGNoYW5nZSB0aW1ldmFsIHRvIHRpbWVzcGVj
+NjQgaW4gYmluZGVyX2ludGVybmFsLmgNCg0KQ2hhbmdlIGZyb20gdjg6DQogIC0gY2hhbmdlIHJ0
+Y190aW1lX3RvX3RtIHRvIHJ0Y190aW1lNjRfdG9fdG0uDQogIC0gY2hhbmdlIHRpbWV2YWwgdG8g
+X19rZXJuZWxfb2xkX3RpbWV2YWwgZHVlIHRvIA0KICAgIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcv
+cHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC9jb21taXQvP2lkPWM3
+NjZkMTQ3MmM3MGQyNWFkNDc1Y2Y1NjA0MmFmMTY1MmU3OTJiMjMNCiAgLSBleHBvcnQgdHJhY2Vw
+b2ludCBzeW1ib2wgZm9yIGJpbmRlcl90eG5fbGF0ZW5jeV8qIHdoaWNoIGJpbmRlcl90cmFuc2Fj
+dGlvbl9sYXRlbmN5X3RyYWNlciB0byBiZSBrbyBuZWVkZWQuDQoNCkNoYW5nZSBmcm9tIHY3Og0K
+ICAtIFVzZSB0aGUgcGFzc2VkLWluIHZhbHVlcyBpbnN0ZWFkIG9mIGFjY2Vzc2luZyB2aWEgdC0+
+ZnJvbS90b19wcm9jL3RvX3RocmVhZA0KICAgIGZvciB0cmFjZV9iaW5kZXJfdHhuX2xhdGVuY3lf
+ZnJlZSwgd2hlbiB0cmFjZV9iaW5kZXJfdHhuX2xhdGVuY3lfZnJlZV9lbmFibGUoKSByZXR1cm4g
+dHJ1ZS4NCiAgLSBtYWtlIGEgaGVscGVyIGZ1bmN0aW9uIHRvIGRvIHRoZSBhYm92ZS4NCg0KQ2hh
+bmdlIGZyb20gdjY6DQogIC0gY2hhbmdlIENPTkZJR19CSU5ERVJfVFJBTlNBQ1RJT05fTEFURU5D
+WV9UUkFDS0lORyB0eXBlIGZyb20gYm9vbCB0byB0cmlzdGF0ZQ0KICAtIGFkZCBjb21tZW50cyB0
+byBAdGltZXN0YW1wIGFuZCBAdHYgdW5kZXIgc3RydWN0IGJpbmRlcl90cmFuc2FjdGlvbg0KICAt
+IG1ha2UgYmluZGVyX3R4bl9sYXRlbmN5IHRocmVzaG9sZCBjb25maWd1cmFibGUNCiAgLSBlbmhh
+bmNlIGxvY2sgcHJvdGVjdGlvbg0KDQpDaGFuZ2UgZnJvbSB2NToNCiAgLSBjaGFuZ2UgY29uZmln
+IG5hbWUgdG8gdGhlIHByb3BlciBvbmUsIENPTkZJR19CSU5ERVJfVFJBTlNBQ1RJT05fTEFURU5D
+WV9UUkFDS0lORy4NCiAgLSBjaGFuZ2UgdHJhY2Vwb2ludCBuYW1lIHRvIG1vcmUgZGVzY3JpcHRp
+dmUgb25lLCB0cmFjZV9iaW5kZXJfdHhuX2xhdGVuY3lfKGFsbG9jfGluZm98ZnJlZSkNCiAgLSBl
+bmhhbmNlIHNvbWUgbG9jayBwcm90ZWN0aW9uLg0KDQpDaGFuZ2UgZnJvbSB2NDoNCiAgLSBzcGxp
+dCB1cCBpbnRvIHBhdGNoIHNlcmllcy4NCg0KQ2hhbmdlIGZyb20gdjM6DQogIC0gdXNlIHRyYWNl
+cG9pbnRzIGZvciBiaW5kZXJfdXBkYXRlX2luZm8gYW5kIHByaW50X2JpbmRlcl90cmFuc2FjdGlv
+bl9leHQsDQogICAgaW5zdGVhZCBvZiBjdXN0b20gcmVnaXN0cmF0aW9uIGZ1bmN0aW9ucy4NCg0K
+Q2hhbmdlIGZyb20gdjI6DQogIC0gY3JlYXRlIHRyYW5zYWN0aW9uIGxhdGVuY3kgbW9kdWxlIHRv
+IG1vbml0b3Igc2xvdyB0cmFuc2FjdGlvbi4NCg0KQ2hhbmdlIGZyb20gdjE6DQogIC0gZmlyc3Qg
+cGF0Y2hzZXQuDQoNCg0KRnJhbmtpZS5DaGFuZyAoMyk6DQogIGJpbmRlcjogbW92ZSBzdHJ1Y3Rz
+IGZyb20gY29yZSBmaWxlIHRvIGhlYWRlciBmaWxlDQogIGJpbmRlcjogYWRkIHRyYWNlIGF0IGZy
+ZWUgdHJhbnNhY3Rpb24uDQogIGJpbmRlcjogYWRkIHRyYW5zYWN0aW9uIGxhdGVuY3kgdHJhY2Vy
+DQoNCiBkcml2ZXJzL2FuZHJvaWQvS2NvbmZpZyAgICAgICAgICAgICAgICAgfCAgIDggKw0KIGRy
+aXZlcnMvYW5kcm9pZC9NYWtlZmlsZSAgICAgICAgICAgICAgICB8ICAgMSArDQogZHJpdmVycy9h
+bmRyb2lkL2JpbmRlci5jICAgICAgICAgICAgICAgIHwgNDMwICsrLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQ0KIGRyaXZlcnMvYW5kcm9pZC9iaW5kZXJfaW50ZXJuYWwuaCAgICAgICB8IDQxOSArKysr
+KysrKysrKysrKysrKysrKysrKw0KIGRyaXZlcnMvYW5kcm9pZC9iaW5kZXJfbGF0ZW5jeV90cmFj
+ZXIuYyB8IDEwNyArKysrKysNCiBkcml2ZXJzL2FuZHJvaWQvYmluZGVyX3RyYWNlLmggICAgICAg
+ICAgfCAgNDkgKysrDQogNiBmaWxlcyBjaGFuZ2VkLCA2MDggaW5zZXJ0aW9ucygrKSwgNDA2IGRl
+bGV0aW9ucygtKQ0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2FuZHJvaWQvYmluZGVyX2xh
+dGVuY3lfdHJhY2VyLmM=
 
-This does look plausible!  But I am sure that rcutorture will also
-have an opinion.  ;-)
-
-							Thanx, Paul
-
-> ---
-> Subject: rcu/tree: Use irq_work_queue_remote()
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Wed Oct 28 11:53:40 CET 2020
-> 
-> The effect of an self-IPI here would be setting rcu_iw_gp_seq to the
-> value we just set it to (pointless) and clearing rcu_iw_pending, which
-> we just set, so don't set it.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  kernel/rcu/tree.c |   10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1204,6 +1204,8 @@ static int rcu_implicit_dynticks_qs(stru
->  	bool *ruqp;
->  	struct rcu_node *rnp = rdp->mynode;
->  
-> +	raw_lockdep_assert_held_rcu_node(rnp);
-> +
->  	/*
->  	 * If the CPU passed through or entered a dynticks idle phase with
->  	 * no active irq/NMI handlers, then we can safely pretend that the CPU
-> @@ -1308,14 +1310,14 @@ static int rcu_implicit_dynticks_qs(stru
->  			resched_cpu(rdp->cpu);
->  			WRITE_ONCE(rdp->last_fqs_resched, jiffies);
->  		}
-> -#ifdef CONFIG_IRQ_WORK
->  		if (!rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
->  		    (rnp->ffmask & rdp->grpmask)) {
-> -			rdp->rcu_iw_pending = true;
->  			rdp->rcu_iw_gp_seq = rnp->gp_seq;
-> -			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
-> +			if (likely(rdp->cpu != smp_processor_id())) {
-> +				rdp->rcu_iw_pending = true;
-> +				irq_work_queue_remote(rdp->cpu, &rdp->rcu_iw);
-> +			}
->  		}
-> -#endif
->  	}
->  
->  	return 0;
