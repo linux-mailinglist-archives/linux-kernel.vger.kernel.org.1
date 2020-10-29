@@ -2,295 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34C029E971
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:48:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB42729E97C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgJ2Krr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:47:47 -0400
-Received: from smtp-190d.mail.infomaniak.ch ([185.125.25.13]:58703 "EHLO
-        smtp-190d.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726025AbgJ2Krq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:47:46 -0400
-X-Greylist: delayed 139417 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Oct 2020 06:47:44 EDT
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CMMbM18Dqzlhss3;
-        Thu, 29 Oct 2020 11:47:43 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4CMMbK0FgSzlh8TT;
-        Thu, 29 Oct 2020 11:47:41 +0100 (CET)
-Subject: Re: [PATCH v22 07/12] landlock: Support filesystem access-control
-To:     Jann Horn <jannh@google.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20201027200358.557003-1-mic@digikod.net>
- <20201027200358.557003-8-mic@digikod.net>
- <CAG48ez1xMfxkwhXK4b1BB4GrTVauNzfwPoCutn9axKt_PFRSVQ@mail.gmail.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <341f2e5d-1d7f-e1d7-b982-0135dfc276e3@digikod.net>
-Date:   Thu, 29 Oct 2020 11:47:40 +0100
-User-Agent: 
-MIME-Version: 1.0
-In-Reply-To: <CAG48ez1xMfxkwhXK4b1BB4GrTVauNzfwPoCutn9axKt_PFRSVQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+        id S1726220AbgJ2Kuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:50:39 -0400
+Received: from mail-am6eur05on2077.outbound.protection.outlook.com ([40.107.22.77]:19630
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725774AbgJ2Kui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 06:50:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M/aLlaAaWYbH9lHA70/BCfaFze/OvLPh1VBazy1FBE1F84seQ+ILSqDrBA7VVtXMvQzNQaS4xmitDFXQAUMyojmSvOSN7zmxfW8gxXe+RyTdWXk8yi/JBnz/leY92Xcq3Tlmvc1+ZvXSnw+vIBXe1HygEd6loqX+nMwBIfG/G3snQOiREvVmZdX/hW3pnX9y0O4jzcjz1KOEuAvL9dCJq7nADgVedr6oAaQ/c7JUmDgxBb/yhz5cefoXe0gs/bNQzK/za2hA77aiXiP9x8XhN0r8FdTU/mA/8310e9dUNc9XCJB7etpI2cEqf7b8uxrQv6OZMl/BnZudxV0VZkzZkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W5k577hyCvEzLfhKaSfulAryoBU4dcEdhD6Nt1r84Kw=;
+ b=FMechsBQWXX7CAirN3eyLaGIkfRKZWt9BSL2fag9ecOEcUC7bNPbaZ+5fD7rXsBamg9O9pLYu2q12dBY1846E4+61C3z+JVgBb3ngx6hPiNy9ZbQUiW4KKwiGMsAL00SR7/kyYqp+mr4KGPkoq0RyvslQhgLoNtX8y/2AB1G9OP2Glcx1PhZcOEpu7ko0nKqqyNOGTfv1TTZq/B/FAFBTaaTxM0rbv8RDAqtCTWkYH16FN9mfWezFhM9ceYdNPxrk9CaiTv1zc/Ucj4Fun5FFOGaMzejItTjxOSXBIEzq+PcY8cNvxcf8sgIQvWIF5Vie65C28p3A334YJnv6hSBHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W5k577hyCvEzLfhKaSfulAryoBU4dcEdhD6Nt1r84Kw=;
+ b=VBbueE3HDShwMokAl2AlRLUuR3prxF28P10KIKsjhwIGEZpWd8DAGu9ddbtwtpjP1jTn+NWu25+xf2GxbIMhU4WdOvbf/g1H/1GU6MDBQIszm0ROUvPSLkjsvgEdwndtDGcSCYjYJbGsiZjx/gkJAtlk7Y4hW5pkZXGqBW9GfNY=
+Received: from AM8PR04MB7300.eurprd04.prod.outlook.com (2603:10a6:20b:1c7::12)
+ by AM0PR04MB6849.eurprd04.prod.outlook.com (2603:10a6:208:181::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Thu, 29 Oct
+ 2020 10:50:34 +0000
+Received: from AM8PR04MB7300.eurprd04.prod.outlook.com
+ ([fe80::b902:6be0:622b:26c2]) by AM8PR04MB7300.eurprd04.prod.outlook.com
+ ([fe80::b902:6be0:622b:26c2%4]) with mapi id 15.20.3499.027; Thu, 29 Oct 2020
+ 10:50:34 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "bcm-kernel-feedback-list@broadcom.com" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Ondrej Jirman <megous@megous.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Yue Wang <yue.wang@amlogic.com>,
+        Hanjie Lin <hanjie.lin@amlogic.com>,
+        Joe Perches <joe@perches.com>,
+        Bharat Gooty <bharat.gooty@broadcom.com>,
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
+        Roger Quadros <rogerq@ti.com>, Jyri Sarha <jsarha@ti.com>,
+        Sanket Parmar <sparmar@cadence.com>,
+        Anil Varughese <aniljoy@cadence.com>, Jun Li <jun.li@nxp.com>,
+        Ma Feng <mafeng.ma@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-amlogic@lists.infradead.org" 
+        <linux-amlogic@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH 04/17] phy: cadence: convert to
+ devm_platform_ioremap_resource
+Thread-Topic: [PATCH 04/17] phy: cadence: convert to
+ devm_platform_ioremap_resource
+Thread-Index: AQHWrZ79HoPsXManfEu7l56QIQ802qmuZ0eA
+Date:   Thu, 29 Oct 2020 10:50:34 +0000
+Message-ID: <20201029105004.GC30677@b29397-desktop>
+References: <1603940079-8131-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1603940079-8131-4-git-send-email-chunfeng.yun@mediatek.com>
+In-Reply-To: <1603940079-8131-4-git-send-email-chunfeng.yun@mediatek.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: mediatek.com; dkim=none (message not signed)
+ header.d=none;mediatek.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b65114c3-b56e-44b3-4bfb-08d87bf8768d
+x-ms-traffictypediagnostic: AM0PR04MB6849:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR04MB68495ABED848D2DB8EE102D98B140@AM0PR04MB6849.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1186;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vU5QJuFqZ1G+bNV/r86J3XMMK1VO5rn2Aklcq4JMIn7PASHwD1j+udCUvA7jDH6rL2agNO7+Zg0EeBHEvLYK/vyhZxzSBHnS1/tVd24zdryF1Ge6T1gqU9+BqDUs/XIei5Ih670qebx1gkndUo3Si89dLubI/ju5OS0W29VU5rcJkcGOt5ziQapNhZvvpX/rzmE6LqN5LnVVD6uGzK0tH9e1qbuglmYEy2b36QUTJXqFBalTyYkGShkJ9YFk/M2ZPMr8iQWxrzv9hQBHILI+fcVtV9JNYZRKzdriRkhbNXpwtal93v2XlXy0Lls7kwKUcpFwTKOK+MrKQzwSkiNO4Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR04MB7300.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(346002)(396003)(376002)(136003)(39860400002)(366004)(66556008)(66476007)(1076003)(6486002)(316002)(64756008)(6512007)(83380400001)(4326008)(71200400001)(8936002)(9686003)(6916009)(76116006)(44832011)(91956017)(66946007)(66446008)(8676002)(5660300002)(7416002)(7406005)(2906002)(186003)(478600001)(6506007)(26005)(54906003)(33656002)(33716001)(86362001)(53546011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: hTML+6E4FqEJLmz6tVZXlmZ4Gk/E4xerwj/YNQV/9LfqUspBpCk6KIWdBPE5JNuJuX00if48KGr5imLt/AZ51MwdbpyPCPjo9/HAaX1ppnQNpqH2mGGLn3Z21S/uEF5lDfiZCteXndZo06hvMlIe5UUQ6L1NtSBhtIp01d81ObDSf3eIV+KBSwMHMIDceOFJD8DfEUKY8anYhVAyv+Y0oCwXq+8JZEj96uD7+/QqFP9YRWkZAGMJe/tQaH0vBWYBjvuIEyrh4+wrtNG0nlZL3tu5q5qjc07R4EE2+TOxD9P8vjE0RL26I2NRHqbwG0Xu7BdIqNPnc7Msdqij7Xw0R4/MlgP6MOiZ+8tMV0FOwyppUGF4GCrcVJRVk9OY+8W10MBDeGVZ1ydC8gQPLQDy0nxx5L2a4aj/lpZTCG+YlAeiTtBd5ebguJhJ6HLwNHn/H8m3MaGYHNl2/U1t3rdGO372j3buYjY/V/xRx6u2VpQK+ZIftzkwdWui2QaWM1rY/tBwoVAcdTkOfkiM3wCnUlnDDdYsuApL9kZWq2BL6Mkn0Hb8py4c41rosnSjZD7oU+ekMznQbxUsPyODnRFGhfS7m72jMZebTebNKujTBmjdMkLjIoKlCUT1dzp/ANOpbET/6Y2jNZIzqM2NhMpVCA==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <E666853BC4238D4784104C8256E2F1AD@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM8PR04MB7300.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b65114c3-b56e-44b3-4bfb-08d87bf8768d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Oct 2020 10:50:34.3106
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Sej4EAnnGQLGZz+lWNl/3ubyGNRigeJ6d0R23DGvU5q3iUV5Jy1P8hNEWrGh9midwRSg2VnJ6s5qoqzoV4Ekhg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6849
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 20-10-29 10:54:26, Chunfeng Yun wrote:
+> Use devm_platform_ioremap_resource to simplify code
+>=20
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  drivers/phy/cadence/cdns-dphy.c          | 4 +---
+>  drivers/phy/cadence/phy-cadence-salvo.c  | 4 +---
+>  drivers/phy/cadence/phy-cadence-sierra.c | 4 +---
+>  3 files changed, 3 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/drivers/phy/cadence/cdns-dphy.c b/drivers/phy/cadence/cdns-d=
+phy.c
+> index 90c4e9b5aac8..ba042e39cfaf 100644
+> --- a/drivers/phy/cadence/cdns-dphy.c
+> +++ b/drivers/phy/cadence/cdns-dphy.c
+> @@ -314,7 +314,6 @@ static int cdns_dphy_probe(struct platform_device *pd=
+ev)
+>  {
+>  	struct phy_provider *phy_provider;
+>  	struct cdns_dphy *dphy;
+> -	struct resource *res;
+>  	int ret;
+> =20
+>  	dphy =3D devm_kzalloc(&pdev->dev, sizeof(*dphy), GFP_KERNEL);
+> @@ -326,8 +325,7 @@ static int cdns_dphy_probe(struct platform_device *pd=
+ev)
+>  	if (!dphy->ops)
+>  		return -EINVAL;
+> =20
+> -	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	dphy->regs =3D devm_ioremap_resource(&pdev->dev, res);
+> +	dphy->regs =3D devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(dphy->regs))
+>  		return PTR_ERR(dphy->regs);
+> =20
+> diff --git a/drivers/phy/cadence/phy-cadence-salvo.c b/drivers/phy/cadenc=
+e/phy-cadence-salvo.c
+> index 88e239adc3b8..51c0b98f5fd7 100644
+> --- a/drivers/phy/cadence/phy-cadence-salvo.c
+> +++ b/drivers/phy/cadence/phy-cadence-salvo.c
+> @@ -263,7 +263,6 @@ static int cdns_salvo_phy_probe(struct platform_devic=
+e *pdev)
+>  	struct phy_provider *phy_provider;
+>  	struct device *dev =3D &pdev->dev;
+>  	struct cdns_salvo_phy *salvo_phy;
+> -	struct resource *res;
+>  	const struct of_device_id *match;
+>  	struct cdns_salvo_data *data;
+> =20
+> @@ -281,8 +280,7 @@ static int cdns_salvo_phy_probe(struct platform_devic=
+e *pdev)
+>  	if (IS_ERR(salvo_phy->clk))
+>  		return PTR_ERR(salvo_phy->clk);
+> =20
+> -	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	salvo_phy->base =3D devm_ioremap_resource(dev, res);
+> +	salvo_phy->base =3D devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(salvo_phy->base))
+>  		return PTR_ERR(salvo_phy->base);
+> =20
+> diff --git a/drivers/phy/cadence/phy-cadence-sierra.c b/drivers/phy/caden=
+ce/phy-cadence-sierra.c
+> index 453ef26fa1c7..26a0badabe38 100644
+> --- a/drivers/phy/cadence/phy-cadence-sierra.c
+> +++ b/drivers/phy/cadence/phy-cadence-sierra.c
+> @@ -479,7 +479,6 @@ static int cdns_sierra_phy_probe(struct platform_devi=
+ce *pdev)
+>  	const struct of_device_id *match;
+>  	struct cdns_sierra_data *data;
+>  	unsigned int id_value;
+> -	struct resource *res;
+>  	int i, ret, node =3D 0;
+>  	void __iomem *base;
+>  	struct clk *clk;
+> @@ -502,8 +501,7 @@ static int cdns_sierra_phy_probe(struct platform_devi=
+ce *pdev)
+>  	sp->dev =3D dev;
+>  	sp->init_data =3D data;
+> =20
+> -	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	base =3D devm_ioremap_resource(dev, res);
+> +	base =3D devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(base)) {
+>  		dev_err(dev, "missing \"reg\"\n");
+>  		return PTR_ERR(base);
+> --=20
+> 2.18.0
 
-On 29/10/2020 02:06, Jann Horn wrote:
-> (On Tue, Oct 27, 2020 at 9:04 PM Mickaël Salaün <mic@digikod.net> wrote:
->> Thanks to the Landlock objects and ruleset, it is possible to identify
->> inodes according to a process's domain.  To enable an unprivileged
->> process to express a file hierarchy, it first needs to open a directory
->> (or a file) and pass this file descriptor to the kernel through
->> landlock_add_rule(2).  When checking if a file access request is
->> allowed, we walk from the requested dentry to the real root, following
->> the different mount layers.  The access to each "tagged" inodes are
->> collected according to their rule layer level, and ANDed to create
->> access to the requested file hierarchy.  This makes possible to identify
->> a lot of files without tagging every inodes nor modifying the
->> filesystem, while still following the view and understanding the user
->> has from the filesystem.
->>
->> Add a new ARCH_EPHEMERAL_INODES for UML because it currently does not
->> keep the same struct inodes for the same inodes whereas these inodes are
->> in use.
->>
->> This commit adds a minimal set of supported filesystem access-control
->> which doesn't enable to restrict all file-related actions.  This is the
->> result of multiple discussions to minimize the code of Landlock to ease
->> review.  Thanks to the Landlock design, extending this access-control
->> without breaking user space will not be a problem.  Moreover, seccomp
->> filters can be used to restrict the use of syscall families which may
->> not be currently handled by Landlock.
-> [...]
->> diff --git a/include/uapi/linux/landlock.h b/include/uapi/linux/landlock.h
-> [...]
->> +/**
->> + * DOC: fs_access
->> + *
->> + * A set of actions on kernel objects may be defined by an attribute (e.g.
->> + * &struct landlock_path_beneath_attr) including a bitmask of access.
->> + *
->> + * Filesystem flags
->> + * ~~~~~~~~~~~~~~~~
->> + *
->> + * These flags enable to restrict a sandbox process to a set of actions on
-> 
-> s/sandbox/sandboxed/
+Acked-by: Peter Chen <peter.chen@nxp.com> for phy-cadence-salvo.c.
 
-OK
+--=20
 
-> 
-> [...]
->> diff --git a/security/landlock/fs.c b/security/landlock/fs.c
-> [...]
->> +static const struct landlock_object_underops landlock_fs_underops = {
->> +       .release = release_inode
->> +};
-> [...]
->> +/* Access-control management */
->> +
->> +static bool check_access_path_continue(
->> +               const struct landlock_ruleset *const domain,
->> +               const struct path *const path, const u32 access_request,
->> +               bool *const allow, u64 *const layer_mask)
->> +{
->> +       const struct landlock_rule *rule;
->> +       const struct inode *inode;
->> +       bool next = true;
->> +
->> +       prefetch(path->dentry->d_parent);
-> 
-> IIRC software prefetch() turned out to only rarely actually have a
-> performance benefit, and they often actually make things worse; see
-> e.g. <https://lwn.net/Articles/444336/>. Unless you have strong
-> evidence that this actually brings a performance benefit, I'd probably
-> get rid of this.
-
-I took inspiration from the fs/d_path.c:prepend_path() but I agree. I'll
-remove prefetch() calls in the next series. I'll add them later if a
-benchmark shows an interesting performance impact.
-
-> 
->> +       if (d_is_negative(path->dentry))
->> +               /* Continues to walk while there is no mapped inode. */
->> +               return true;
->> +       inode = d_backing_inode(path->dentry);
->> +       rcu_read_lock();
->> +       rule = landlock_find_rule(domain,
->> +                       rcu_dereference(landlock_inode(inode)->object));
->> +       rcu_read_unlock();
->> +
->> +       /* Checks for matching layers. */
->> +       if (rule && (rule->layers | *layer_mask)) {
->> +               *allow = (rule->access & access_request) == access_request;
->> +               if (*allow) {
->> +                       *layer_mask &= ~rule->layers;
->> +                       /* Stops when a rule from each layer granted access. */
->> +                       next = !!*layer_mask;
->> +               } else {
->> +                       next = false;
->> +               }
->> +       }
->> +       return next;
->> +}
->> +
->> +static int check_access_path(const struct landlock_ruleset *const domain,
->> +               const struct path *const path, u32 access_request)
->> +{
->> +       bool allow = false;
->> +       struct path walker_path;
->> +       u64 layer_mask;
->> +
->> +       if (WARN_ON_ONCE(!domain || !path))
->> +               return 0;
->> +       /*
->> +        * Allows access to pseudo filesystems that will never be mountable
->> +        * (e.g. sockfs, pipefs), but can still be reachable through
->> +        * /proc/self/fd .
->> +        */
->> +       if ((path->dentry->d_sb->s_flags & SB_NOUSER) ||
->> +                       (d_is_positive(path->dentry) &&
->> +                        unlikely(IS_PRIVATE(d_backing_inode(path->dentry)))))
->> +               return 0;
->> +       if (WARN_ON_ONCE(domain->nb_layers < 1))
->> +               return -EACCES;
->> +
->> +       layer_mask = GENMASK_ULL(domain->nb_layers - 1, 0);
->> +       /*
->> +        * An access request which is not handled by the domain should be
->> +        * allowed.
->> +        */
->> +       access_request &= domain->fs_access_mask;
->> +       if (access_request == 0)
->> +               return 0;
->> +       walker_path = *path;
->> +       path_get(&walker_path);
->> +       /*
->> +        * We need to walk through all the hierarchy to not miss any relevant
->> +        * restriction.
->> +        */
->> +       while (check_access_path_continue(domain, &walker_path, access_request,
->> +                               &allow, &layer_mask)) {
-> 
-> The logic in this code might be clearer if
-> check_access_path_continue() just returns whether the rule permitted
-> the access. Then it'd look like:
-> 
-> bool allow = false;
-> [...]
-> while (check_access_path_continue(domain, &walker_path,
-> access_request, &layer_mask)) {
->   if (layer_mask == 0) {
->     allow = true;
->     break;
->   }
->   [...]
-> }
-> 
-> I think that would make it clearer under which conditions we can end
-> up returning "true" from check_access_path().
-> 
-> (The current code also looks correct to me, I just think it'd be
-> clearer this way. If you disagree, you can keep it as-is.)
-
-I agree, applied and tested.
-
-> 
-> 
->> +               struct dentry *parent_dentry;
->> +
->> +jump_up:
->> +               /*
->> +                * Does not work with orphaned/private mounts like overlayfs
->> +                * layers for now (cf. ovl_path_real() and ovl_path_open()).
->> +                */
->> +               if (walker_path.dentry == walker_path.mnt->mnt_root) {
->> +                       if (follow_up(&walker_path)) {
->> +                               /* Ignores hidden mount points. */
->> +                               goto jump_up;
->> +                       } else {
->> +                               /*
->> +                                * Stops at the real root.  Denies access
->> +                                * because not all layers have granted access.
->> +                                */
->> +                               allow = false;
->> +                               break;
->> +                       }
->> +               }
->> +               if (unlikely(IS_ROOT(walker_path.dentry))) {
->> +                       /*
->> +                        * Stops at disconnected root directories.  Only allows
->> +                        * access to internal filesystems (e.g. nsfs which is
->> +                        * reachable through /proc/self/ns).
->> +                        */
->> +                       allow = !!(walker_path.mnt->mnt_flags & MNT_INTERNAL);
->> +                       break;
->> +               }
->> +               parent_dentry = dget_parent(walker_path.dentry);
->> +               dput(walker_path.dentry);
->> +               walker_path.dentry = parent_dentry;
->> +       }
->> +       path_put(&walker_path);
->> +       return allow ? 0 : -EACCES;
->> +}
-> [...]
->> +static inline u32 get_file_access(const struct file *const file)
->> +{
->> +       u32 access = 0;
->> +
->> +       if (file->f_mode & FMODE_READ) {
->> +               /* A directory can only be opened in read mode. */
->> +               if (S_ISDIR(file_inode(file)->i_mode))
->> +                       return LANDLOCK_ACCESS_FS_READ_DIR;
->> +               access = LANDLOCK_ACCESS_FS_READ_FILE;
->> +       }
->> +       /*
->> +        * A LANDLOCK_ACCESS_FS_APPEND could be added but we also need to check
->> +        * fcntl(2).
->> +        */
-> 
-> Once https://lore.kernel.org/linux-api/20200831153207.GO3265@brightrain.aerifal.cx/
-> lands, pwritev2() with RWF_NOAPPEND will also be problematic for
-> classifying "write" vs "append"; you may want to include that in the
-> comment. (Or delete the comment.)
-
-Right, I'll include it in the comment.
-
-> 
->> +       if (file->f_mode & FMODE_WRITE)
->> +               access |= LANDLOCK_ACCESS_FS_WRITE_FILE;
->> +       /* __FMODE_EXEC is indeed part of f_flags, not f_mode. */
->> +       if (file->f_flags & __FMODE_EXEC)
->> +               access |= LANDLOCK_ACCESS_FS_EXECUTE;
->> +       return access;
->> +}
-> [...]
-> 
+Thanks,
+Peter Chen=
