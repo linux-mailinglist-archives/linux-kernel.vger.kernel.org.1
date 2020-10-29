@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9E129ED09
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 009E929ED0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727243AbgJ2NgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:36:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54768 "EHLO mail.kernel.org"
+        id S1727253AbgJ2NhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:37:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725787AbgJ2NgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:36:11 -0400
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725710AbgJ2NhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 09:37:15 -0400
+Received: from gaia (unknown [95.145.162.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 602062087E
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:36:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603978570;
-        bh=IhR3DmS+TZFpEiDkNsRmgsp+IEHMhN3+bzXx9omzx9w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YMyXrxe1WtVV8tjgeLyeSLPArUsrTL2qopihARvFEIkv3UZVOsSpLREKASe4Wdd9X
-         Ovu4KQosYZGDbOOLQ0zfb/0UeVm++ypZ/pqGBxQkAIrJXpR/N3mfyuLur37CGdCYju
-         b8ri02vas+QKo45iDQ5hlV3csuc13qHjpghCECGQ=
-Received: by mail-qt1-f170.google.com with SMTP id m14so1772920qtc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:36:10 -0700 (PDT)
-X-Gm-Message-State: AOAM532sLot88WESlz3VQv39v/uD5zkLpzWK8bc++xat33dUSmRscf/x
-        in0aUjapMQJs2ujtBWBxCbesXNaW95x8dd3QfYo=
-X-Google-Smtp-Source: ABdhPJyllJWRoRHUbmSi+EHUwklSFogJ3xnSp99foXZgNRCVuhlkRPXhAHN029mfek4WeiyfTUzhe2lY91yrRuN2OWc=
-X-Received: by 2002:ac8:7955:: with SMTP id r21mr3553963qtt.204.1603978569360;
- Thu, 29 Oct 2020 06:36:09 -0700 (PDT)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B9E12076E;
+        Thu, 29 Oct 2020 13:37:12 +0000 (UTC)
+Date:   Thu, 29 Oct 2020 13:37:10 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-kernel@vger.kernel.org, patches@amperecomputing.com,
+        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH] arm64: NUMA: Kconfig: Increase max number of nodes
+Message-ID: <20201029133709.GE10776@gaia>
+References: <20201020173409.1266576-1-vanshikonda@os.amperecomputing.com>
+ <jhj7drkrcpr.mognet@arm.com>
+ <9e14c0d3-9204-fb32-31db-5b3f98639cba@arm.com>
+ <20201021110201.00002092@Huawei.com>
+ <jhj5z73qkkq.mognet@arm.com>
 MIME-Version: 1.0
-References: <20201026160342.3705327-1-arnd@kernel.org> <20201026160342.3705327-2-arnd@kernel.org>
- <20201026165543.GA42952@C02TD0UTHF1T.local>
-In-Reply-To: <20201026165543.GA42952@C02TD0UTHF1T.local>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 29 Oct 2020 14:35:53 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2W-BcRyxx7+JXr+MCBLSuLzLdEDzM8LMk5y1rjaEuXbw@mail.gmail.com>
-Message-ID: <CAK8P3a2W-BcRyxx7+JXr+MCBLSuLzLdEDzM8LMk5y1rjaEuXbw@mail.gmail.com>
-Subject: Re: [PATCH 2/4] arm64: hide more compat_vdso code
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Dmitry Safonov <dima@arista.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jhj5z73qkkq.mognet@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 5:55 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> On Mon, Oct 26, 2020 at 05:03:29PM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Oct 21, 2020 at 11:29:41PM +0100, Valentin Schneider wrote:
+> On 21/10/20 12:02, Jonathan Cameron wrote:
+> > On Wed, 21 Oct 2020 09:43:21 +0530
+> > Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+> >> Agreed. Do we really need to match X86 right now ? Do we really have
+> >> systems that has 64 nodes ? We should not increase the default node
+> >> value and then try to solve some new problems, when there might not
+> >> be any system which could even use that. I would suggest increase
+> >> NODES_SHIFT value upto as required by a real and available system.
 > >
-> > When CONFIG_COMPAT_VDSO is disabled, we get a warning
-> > about a potential out-of-bounds access:
+> > I'm not going to give precise numbers on near future systems but it is public
+> > that we ship 8 NUMA node ARM64 systems today.  Things will get more
+> > interesting as CXL and CCIX enter the market on ARM systems,
+> > given chances are every CXL device will look like another NUMA
+> > node (CXL spec says they should be presented as such) and you
+> > may be able to rack up lots of them.
 > >
-> > arch/arm64/kernel/vdso.c: In function 'aarch32_vdso_mremap':
-> > arch/arm64/kernel/vdso.c:86:37: warning: array subscript 1 is above array bounds of 'struct vdso_abi_info[1]' [-Warray-bounds]
-> >    86 |  unsigned long vdso_size = vdso_info[abi].vdso_code_end -
-> >       |                            ~~~~~~~~~^~~~~
-> >
-> > This is all in dead code however that the compiler is unable to
-> > eliminate by itself.
-> >
-> > Change the array to individual local variables that can be
-> > dropped in dead code elimination to let the compiler understand
-> > this better.
-> >
-> > Fixes: 0cbc2659123e ("arm64: vdso32: Remove a bunch of #ifdef CONFIG_COMPAT_VDSO guards")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> This looks like a nice cleanup to me! I agree we don't need the array
-> here.
->
-> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+> > So I'd argue minimum that makes sense today is 16 nodes, but looking forward
+> > even a little and 64 is not a great stretch.
+> > I'd make the jump to 64 so we can forget about this again for a year or two.
+> > People will want to run today's distros on these new machines and we'd
+> > rather not have to go around all the distros asking them to carry a patch
+> > increasing this count (I assume they are already carrying such a patch
+> > due to those 8 node systems)
+> 
+> I agree that 4 nodes is somewhat anemic; I've had to bump that just to
+> run some scheduler tests under QEMU. However I still believe we should
+> exercise caution before cranking it too high, especially when seeing things
+> like:
+> 
+>   ee38d94a0ad8 ("page flags: prioritize kasan bits over last-cpuid")
+> 
+> To give some numbers, a defconfig build gives me:
+> 
+>   SECTIONS_WIDTH=0 ZONES_WIDTH=2 NODES_SHIFT=2 LAST_CPUPID_SHIFT=(8+8) KASAN_TAG_WIDTH=0
+>   BITS_PER_LONG=64 NR_PAGEFLAGS=24
+> 
+> IOW, we need 18 + NODES_SHIFT <= 40 -> NODES_SHIFT <= 22. That looks to be
+> plenty, however this can get cramped fairly easily with any combination of:
+> 
+>   CONFIG_SPARSEMEM_VMEMMAP=n (-18)
+>   CONFIG_IDLE_PAGE_TRACKING=y (-2)
+>   CONFIG_KASAN=y + CONFIG_KASAN_SW_TAGS (-8)
+> 
+> Taking Arnd's above example, a randconfig build picking !VMEMMAP already
+> limits the NODES_SHIFT to 4 *if* we want to keep the CPUPID thing within
+> the flags (it gets a dedicated field at the tail of struct page
+> otherwise). If that is something we don't care too much about, then
+> consider my concerns taken care of.
 
-Thanks!
+I don't think there's any value in allowing SPARSEMEM_VMEMMAP to be
+disabled but the option is in the core mm/Kconfig file. We could make
+NODES_SHIFT depend on SPARSEMEM_VMEMMAP (there's DISCONTIGMEM as well
+but hopefully that's going away soon).
 
-I see the patch now conflicts with "mm: forbid splitting special mappings"
-in -mm, by Dmitry Safonov. I have rebased my patch on top, should
-I send it to Andrew for inclusion in -mm then?
+> One more thing though: NR_CPUS can be cranked up to 4096 but we've only set
+> it to 256 IIRC to support the TX2. From that PoV, I'm agreeing with
+> Anshuman in that we should set it to match the max encountered on platforms
+> that are in use right now.
 
-      Arnd
+I agree. Let's bump NODES_SHIFT to 4 now to cover existing platforms. If
+distros have a 10-year view, they can always ship a kernel configured to
+64 nodes, no need to change Kconfig (distros never ship with defconfig).
+
+It may have an impact on more memory constrained platforms but that's
+not what defconfig is about. It should allow existing hardware to run
+Linux but not necessarily run it in the most efficient way possible.
+
+-- 
+Catalin
