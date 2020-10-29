@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0978F29F51D
+	by mail.lfdr.de (Postfix) with ESMTP id E332629F51F
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgJ2T1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
+        id S1726722AbgJ2T1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726615AbgJ2T13 (ORCPT
+        with ESMTP id S1726638AbgJ2T1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:27:29 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019C8C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:27:29 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id o15so2530282qtp.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:27:28 -0700 (PDT)
+        Thu, 29 Oct 2020 15:27:32 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6FFC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:27:31 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id t13so2387033qvm.14
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:27:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=NNmCWg3uUJkm97N9bODpJVOfWoCAwpfkACCfjKkMoC0=;
-        b=uX8trozfZ5T/PGKXw+5x9UYvkHItGS8lAIvxwjEC1OzF0iJZxYGFlTJkftTEGo39Jr
-         bX8rwz1SCcCkMeOcwT9ZrfQjWHfjewz8bPk+if6Zb1lbLZjvRP/biDCGqGOgJssqFG8l
-         mNUUJEJbTijY6g9aAOf6Q8LWD9eZQfcfsbI9c1QRSvFf8QB1c2AfbZHWDw6LzLggUuFu
-         NU8tEbKnJZdRX9Fh8Fzh8eSct3kGrMR78tZqyQh1jpkwDWijw+7TLtIhyPmoeYbM54pc
-         w4vWUGoYY9771MF8570mZTCUieeGJRLcmcaS4Rc07WvlPFoognulhQRLYd11YI8Za7aC
-         GGsQ==
+        bh=gjfBuMYF3R5rRZdLHF/eEEXrUZ6msA7utGpDOYPXVzw=;
+        b=CvCmWldpeRVxtgEaaEBjMCoF64N9jFMp4Us+OSXde4Tmon4pbLaQRMKwIOUICAnj41
+         0FypabvniTT/JgtuF0HMFAXjaZpjRLX4yuLbCrwSL75X7mf5KyRrzTaxqedkoKN3wq5c
+         1+Wmun51rkKWR+NJ5696grPgEhUUW1c0V1vTVl6j8b1rPkNAAIWADdlSkh61KSZSSDYt
+         LMqO8q0GZs5dCzPsOR67m6eo4YjljCmzIRrKCHsktdfzHhQZYXvgIa1IcTFOD9TB0rFn
+         7WFdMcoIxLRbMqa1VHgUPCtfTcjLA8QZ8PhvrOxL48+Yc6TafvdX8KfwLpzPB7x+XDSQ
+         uOPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=NNmCWg3uUJkm97N9bODpJVOfWoCAwpfkACCfjKkMoC0=;
-        b=VlWSTniymFsYWs4tNsvkRQVo1pT9QoSYr4gc8GF++O8ZTPCvtdtzk3cnDAVhrsdkde
-         dnGNHtdobkLyr1AogfVXWWkxLKPmpc4je8JewO0RWAEh7OHm8jLbNjHmpykgty+tLb8p
-         n3NAWdfRmVR4dQjeGODvX55ELOaGMi7q2moHh2YZ42NF2oyiy1kTxpkr5QYCRmpGCfGl
-         lZIZ4e3pOVt8z2xI3Cm6tb1Yq8MgBsiuKWQTxC5w8m0CUorp6j+YS1nm1MzVhmfeWM4y
-         iKdnsxbx9RdI+fZu8HZK/yhU7Bmb0FC9umo1TkwpVel0U3WQqrVQkGyb5ebzpRKnQv3p
-         Re+Q==
-X-Gm-Message-State: AOAM531K577BrVZmaGQOflE5wGQpfp/10o/JKV/aqhrZ2lrJ9GUTLzrb
-        z8r3QB0+Ip0YBTMb17s9ENczLjS1M3F2901U
-X-Google-Smtp-Source: ABdhPJztzgvJEe8ecNJNOfrwAfwDcd7c90KXuyblNpcKlM6b4rjPG+XlMfOAQ2Bom0xxwAtTzK4au4p0jllT6/w1
+        bh=gjfBuMYF3R5rRZdLHF/eEEXrUZ6msA7utGpDOYPXVzw=;
+        b=OPfhDHfH2TMxnboW1VUT6JdLI1PeXpcOA/jEs5vrEEJPNsv3cO3d3djU1EXO2Pcc47
+         8ncBrtPBKZaYacFMY/SO8EG/gi47m4/HXJ3WEv/cksisZ09E8l41zrhaXu0rSmEx35JH
+         FLrdpk3ptRUk78mcoJYJu08L8ABdLqgWO0npcoaN/LdH0ynP93baSLHe6xYR3at4Fnsp
+         PLxK3GkY+BRpBZEK6SZCEBd7bWj8C7CjBLxxTiEbeNQ4HcKKpEucqav1t/lqsdpgTcvC
+         d7UCcwcdpUWCa5PxhV1GmHx4BSohQNvWYkmcwrRR3rTNMMcLGst1BywuTpkL1T57gamg
+         caoA==
+X-Gm-Message-State: AOAM530T/fD30uu61sjXjYD27V/ONp15Vab69lDnZh0qOiGPLhBjTrX5
+        0u8rK0qaBIGxKl1qfSSUbaTV+UNag3aZrZxy
+X-Google-Smtp-Source: ABdhPJyNgsq1CP00/zlka2usHTyeKBJa1Cg6LExD8RACJ5cDpE5u50dgE/l+u36yJlnjnEcfWflRrVxVOTTCGIE/
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a05:6214:1192:: with SMTP id
- t18mr5862530qvv.49.1603999648113; Thu, 29 Oct 2020 12:27:28 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 20:25:54 +0100
+ (user=andreyknvl job=sendgmr) by 2002:ad4:59cf:: with SMTP id
+ el15mr6150849qvb.17.1603999650465; Thu, 29 Oct 2020 12:27:30 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 20:25:55 +0100
 In-Reply-To: <cover.1603999489.git.andreyknvl@google.com>
-Message-Id: <f8006477b50e3d77005046a83a067a295c680327.1603999489.git.andreyknvl@google.com>
+Message-Id: <5e8c8e6b6be30db1641239e9fd5858a87eee9a16.1603999489.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1603999489.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v6 33/40] kasan, x86, s390: update undef CONFIG_KASAN
+Subject: [PATCH v6 34/40] kasan, arm64: expand CONFIG_KASAN checks
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>
@@ -74,55 +74,342 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the intoduction of hardware tag-based KASAN some kernel checks of
-this kind:
-
-  ifdef CONFIG_KASAN
-
-will be updated to:
-
-  if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
-
-x86 and s390 use a trick to #undef CONFIG_KASAN for some of the code
-that isn't linked with KASAN runtime and shouldn't have any KASAN
-annotations.
-
-Also #undef CONFIG_KASAN_GENERIC with CONFIG_KASAN.
+Some #ifdef CONFIG_KASAN checks are only relevant for software KASAN
+modes (either related to shadow memory or compiler instrumentation).
+Expand those into CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Reviewed-by: Marco Elver <elver@google.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 ---
-Change-Id: I2a622db0cb86a8feb60c30d8cb09190075be2a90
+Change-Id: I91e661e2c1627783cb845d877c6371dfc8779505
 ---
- arch/s390/boot/string.c         | 1 +
- arch/x86/boot/compressed/misc.h | 1 +
- 2 files changed, 2 insertions(+)
+ arch/arm64/Kconfig                 |  2 +-
+ arch/arm64/Makefile                |  2 +-
+ arch/arm64/include/asm/assembler.h |  2 +-
+ arch/arm64/include/asm/memory.h    |  2 +-
+ arch/arm64/include/asm/string.h    |  5 +++--
+ arch/arm64/kernel/head.S           |  2 +-
+ arch/arm64/kernel/image-vars.h     |  2 +-
+ arch/arm64/kernel/kaslr.c          |  3 ++-
+ arch/arm64/kernel/module.c         |  6 ++++--
+ arch/arm64/mm/ptdump.c             |  6 +++---
+ include/linux/kasan-checks.h       |  2 +-
+ include/linux/kasan.h              |  7 ++++---
+ include/linux/moduleloader.h       |  3 ++-
+ include/linux/string.h             |  2 +-
+ mm/ptdump.c                        | 13 ++++++++-----
+ scripts/Makefile.lib               |  2 ++
+ 16 files changed, 36 insertions(+), 25 deletions(-)
 
-diff --git a/arch/s390/boot/string.c b/arch/s390/boot/string.c
-index b11e8108773a..faccb33b462c 100644
---- a/arch/s390/boot/string.c
-+++ b/arch/s390/boot/string.c
-@@ -3,6 +3,7 @@
- #include <linux/kernel.h>
- #include <linux/errno.h>
- #undef CONFIG_KASAN
-+#undef CONFIG_KASAN_GENERIC
- #include "../lib/string.c"
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 9e5049ffa160..11dbd880e6c0 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -330,7 +330,7 @@ config BROKEN_GAS_INST
  
- int strncmp(const char *cs, const char *ct, size_t count)
-diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-index 6d31f1b4c4d1..652decd6c4fc 100644
---- a/arch/x86/boot/compressed/misc.h
-+++ b/arch/x86/boot/compressed/misc.h
-@@ -12,6 +12,7 @@
- #undef CONFIG_PARAVIRT_XXL
- #undef CONFIG_PARAVIRT_SPINLOCKS
- #undef CONFIG_KASAN
-+#undef CONFIG_KASAN_GENERIC
+ config KASAN_SHADOW_OFFSET
+ 	hex
+-	depends on KASAN
++	depends on KASAN_GENERIC || KASAN_SW_TAGS
+ 	default 0xdfffa00000000000 if (ARM64_VA_BITS_48 || ARM64_VA_BITS_52) && !KASAN_SW_TAGS
+ 	default 0xdfffd00000000000 if ARM64_VA_BITS_47 && !KASAN_SW_TAGS
+ 	default 0xdffffe8000000000 if ARM64_VA_BITS_42 && !KASAN_SW_TAGS
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 50ad9cbccb51..0b31a3f06f15 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -141,7 +141,7 @@ head-y		:= arch/arm64/kernel/head.o
  
- /* cpu_feature_enabled() cannot be used this early */
- #define USE_EARLY_PGTABLE_L5
+ ifeq ($(CONFIG_KASAN_SW_TAGS), y)
+ KASAN_SHADOW_SCALE_SHIFT := 4
+-else
++else ifeq ($(CONFIG_KASAN_GENERIC), y)
+ KASAN_SHADOW_SCALE_SHIFT := 3
+ endif
+ 
+diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+index ddbe6bf00e33..bf125c591116 100644
+--- a/arch/arm64/include/asm/assembler.h
++++ b/arch/arm64/include/asm/assembler.h
+@@ -473,7 +473,7 @@ USER(\label, ic	ivau, \tmp2)			// invalidate I line PoU
+ #define NOKPROBE(x)
+ #endif
+ 
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ #define EXPORT_SYMBOL_NOKASAN(name)
+ #else
+ #define EXPORT_SYMBOL_NOKASAN(name)	EXPORT_SYMBOL(name)
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index 580d6ef17079..507012ed24f4 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -72,7 +72,7 @@
+  * address space for the shadow region respectively. They can bloat the stack
+  * significantly, so double the (minimum) stack size when they are in use.
+  */
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ #define KASAN_SHADOW_OFFSET	_AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
+ #define KASAN_SHADOW_END	((UL(1) << (64 - KASAN_SHADOW_SCALE_SHIFT)) \
+ 					+ KASAN_SHADOW_OFFSET)
+diff --git a/arch/arm64/include/asm/string.h b/arch/arm64/include/asm/string.h
+index b31e8e87a0db..3a3264ff47b9 100644
+--- a/arch/arm64/include/asm/string.h
++++ b/arch/arm64/include/asm/string.h
+@@ -5,7 +5,7 @@
+ #ifndef __ASM_STRING_H
+ #define __ASM_STRING_H
+ 
+-#ifndef CONFIG_KASAN
++#if !(defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS))
+ #define __HAVE_ARCH_STRRCHR
+ extern char *strrchr(const char *, int c);
+ 
+@@ -48,7 +48,8 @@ extern void *__memset(void *, int, __kernel_size_t);
+ void memcpy_flushcache(void *dst, const void *src, size_t cnt);
+ #endif
+ 
+-#if defined(CONFIG_KASAN) && !defined(__SANITIZE_ADDRESS__)
++#if (defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)) && \
++	!defined(__SANITIZE_ADDRESS__)
+ 
+ /*
+  * For files that are not instrumented (e.g. mm/slub.c) we
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index d8d9caf02834..fdcb99d7ba23 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -448,7 +448,7 @@ SYM_FUNC_START_LOCAL(__primary_switched)
+ 	bl	__pi_memset
+ 	dsb	ishst				// Make zero page visible to PTW
+ 
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ 	bl	kasan_early_init
+ #endif
+ #ifdef CONFIG_RANDOMIZE_BASE
+diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
+index 61684a500914..f1f2833e06d8 100644
+--- a/arch/arm64/kernel/image-vars.h
++++ b/arch/arm64/kernel/image-vars.h
+@@ -37,7 +37,7 @@ __efistub_strncmp		= __pi_strncmp;
+ __efistub_strrchr		= __pi_strrchr;
+ __efistub___clean_dcache_area_poc = __pi___clean_dcache_area_poc;
+ 
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ __efistub___memcpy		= __pi_memcpy;
+ __efistub___memmove		= __pi_memmove;
+ __efistub___memset		= __pi_memset;
+diff --git a/arch/arm64/kernel/kaslr.c b/arch/arm64/kernel/kaslr.c
+index b181e0544b79..e8e17e91aa02 100644
+--- a/arch/arm64/kernel/kaslr.c
++++ b/arch/arm64/kernel/kaslr.c
+@@ -151,7 +151,8 @@ u64 __init kaslr_early_init(u64 dt_phys)
+ 	/* use the top 16 bits to randomize the linear region */
+ 	memstart_offset_seed = seed >> 48;
+ 
+-	if (IS_ENABLED(CONFIG_KASAN))
++	if (IS_ENABLED(CONFIG_KASAN_GENERIC) ||
++	    IS_ENABLED(CONFIG_KASAN_SW_TAGS))
+ 		/*
+ 		 * KASAN does not expect the module region to intersect the
+ 		 * vmalloc region, since shadow memory is allocated for each
+diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+index 2a1ad95d9b2c..fe21e0f06492 100644
+--- a/arch/arm64/kernel/module.c
++++ b/arch/arm64/kernel/module.c
+@@ -30,7 +30,8 @@ void *module_alloc(unsigned long size)
+ 	if (IS_ENABLED(CONFIG_ARM64_MODULE_PLTS))
+ 		gfp_mask |= __GFP_NOWARN;
+ 
+-	if (IS_ENABLED(CONFIG_KASAN))
++	if (IS_ENABLED(CONFIG_KASAN_GENERIC) ||
++	    IS_ENABLED(CONFIG_KASAN_SW_TAGS))
+ 		/* don't exceed the static module region - see below */
+ 		module_alloc_end = MODULES_END;
+ 
+@@ -39,7 +40,8 @@ void *module_alloc(unsigned long size)
+ 				NUMA_NO_NODE, __builtin_return_address(0));
+ 
+ 	if (!p && IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
+-	    !IS_ENABLED(CONFIG_KASAN))
++	    !IS_ENABLED(CONFIG_KASAN_GENERIC) &&
++	    !IS_ENABLED(CONFIG_KASAN_SW_TAGS))
+ 		/*
+ 		 * KASAN can only deal with module allocations being served
+ 		 * from the reserved module region, since the remainder of
+diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
+index 807dc634bbd2..04137a8f3d2d 100644
+--- a/arch/arm64/mm/ptdump.c
++++ b/arch/arm64/mm/ptdump.c
+@@ -29,7 +29,7 @@
+ enum address_markers_idx {
+ 	PAGE_OFFSET_NR = 0,
+ 	PAGE_END_NR,
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ 	KASAN_START_NR,
+ #endif
+ };
+@@ -37,7 +37,7 @@ enum address_markers_idx {
+ static struct addr_marker address_markers[] = {
+ 	{ PAGE_OFFSET,			"Linear Mapping start" },
+ 	{ 0 /* PAGE_END */,		"Linear Mapping end" },
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ 	{ 0 /* KASAN_SHADOW_START */,	"Kasan shadow start" },
+ 	{ KASAN_SHADOW_END,		"Kasan shadow end" },
+ #endif
+@@ -383,7 +383,7 @@ void ptdump_check_wx(void)
+ static int ptdump_init(void)
+ {
+ 	address_markers[PAGE_END_NR].start_address = PAGE_END;
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ 	address_markers[KASAN_START_NR].start_address = KASAN_SHADOW_START;
+ #endif
+ 	ptdump_initialize();
+diff --git a/include/linux/kasan-checks.h b/include/linux/kasan-checks.h
+index ac6aba632f2d..ca5e89fb10d3 100644
+--- a/include/linux/kasan-checks.h
++++ b/include/linux/kasan-checks.h
+@@ -9,7 +9,7 @@
+  * even in compilation units that selectively disable KASAN, but must use KASAN
+  * to validate access to an address.   Never use these in header files!
+  */
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ bool __kasan_check_read(const volatile void *p, unsigned int size);
+ bool __kasan_check_write(const volatile void *p, unsigned int size);
+ #else
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 8d3d3c21340d..0661f5be5706 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -235,7 +235,8 @@ static inline void kasan_release_vmalloc(unsigned long start,
+ 
+ #endif /* CONFIG_KASAN_VMALLOC */
+ 
+-#if defined(CONFIG_KASAN) && !defined(CONFIG_KASAN_VMALLOC)
++#if (defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)) && \
++		!defined(CONFIG_KASAN_VMALLOC)
+ 
+ /*
+  * These functions provide a special case to support backing module
+@@ -245,12 +246,12 @@ static inline void kasan_release_vmalloc(unsigned long start,
+ int kasan_module_alloc(void *addr, size_t size);
+ void kasan_free_shadow(const struct vm_struct *vm);
+ 
+-#else /* CONFIG_KASAN && !CONFIG_KASAN_VMALLOC */
++#else /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASAN_VMALLOC */
+ 
+ static inline int kasan_module_alloc(void *addr, size_t size) { return 0; }
+ static inline void kasan_free_shadow(const struct vm_struct *vm) {}
+ 
+-#endif /* CONFIG_KASAN && !CONFIG_KASAN_VMALLOC */
++#endif /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASAN_VMALLOC */
+ 
+ #ifdef CONFIG_KASAN_INLINE
+ void kasan_non_canonical_hook(unsigned long addr);
+diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+index 4fa67a8b2265..9e09d11ffe5b 100644
+--- a/include/linux/moduleloader.h
++++ b/include/linux/moduleloader.h
+@@ -96,7 +96,8 @@ void module_arch_cleanup(struct module *mod);
+ /* Any cleanup before freeing mod->module_init */
+ void module_arch_freeing_init(struct module *mod);
+ 
+-#if defined(CONFIG_KASAN) && !defined(CONFIG_KASAN_VMALLOC)
++#if (defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)) && \
++		!defined(CONFIG_KASAN_VMALLOC)
+ #include <linux/kasan.h>
+ #define MODULE_ALIGN (PAGE_SIZE << KASAN_SHADOW_SCALE_SHIFT)
+ #else
+diff --git a/include/linux/string.h b/include/linux/string.h
+index b1f3894a0a3e..016a157e2251 100644
+--- a/include/linux/string.h
++++ b/include/linux/string.h
+@@ -266,7 +266,7 @@ void __write_overflow(void) __compiletime_error("detected write beyond size of o
+ 
+ #if !defined(__NO_FORTIFY) && defined(__OPTIMIZE__) && defined(CONFIG_FORTIFY_SOURCE)
+ 
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ extern void *__underlying_memchr(const void *p, int c, __kernel_size_t size) __RENAME(memchr);
+ extern int __underlying_memcmp(const void *p, const void *q, __kernel_size_t size) __RENAME(memcmp);
+ extern void *__underlying_memcpy(void *p, const void *q, __kernel_size_t size) __RENAME(memcpy);
+diff --git a/mm/ptdump.c b/mm/ptdump.c
+index ba88ec43ff21..4354c1422d57 100644
+--- a/mm/ptdump.c
++++ b/mm/ptdump.c
+@@ -4,7 +4,7 @@
+ #include <linux/ptdump.h>
+ #include <linux/kasan.h>
+ 
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ /*
+  * This is an optimization for KASAN=y case. Since all kasan page tables
+  * eventually point to the kasan_early_shadow_page we could call note_page()
+@@ -31,7 +31,8 @@ static int ptdump_pgd_entry(pgd_t *pgd, unsigned long addr,
+ 	struct ptdump_state *st = walk->private;
+ 	pgd_t val = READ_ONCE(*pgd);
+ 
+-#if CONFIG_PGTABLE_LEVELS > 4 && defined(CONFIG_KASAN)
++#if CONFIG_PGTABLE_LEVELS > 4 && \
++		(defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS))
+ 	if (pgd_page(val) == virt_to_page(lm_alias(kasan_early_shadow_p4d)))
+ 		return note_kasan_page_table(walk, addr);
+ #endif
+@@ -51,7 +52,8 @@ static int ptdump_p4d_entry(p4d_t *p4d, unsigned long addr,
+ 	struct ptdump_state *st = walk->private;
+ 	p4d_t val = READ_ONCE(*p4d);
+ 
+-#if CONFIG_PGTABLE_LEVELS > 3 && defined(CONFIG_KASAN)
++#if CONFIG_PGTABLE_LEVELS > 3 && \
++		(defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS))
+ 	if (p4d_page(val) == virt_to_page(lm_alias(kasan_early_shadow_pud)))
+ 		return note_kasan_page_table(walk, addr);
+ #endif
+@@ -71,7 +73,8 @@ static int ptdump_pud_entry(pud_t *pud, unsigned long addr,
+ 	struct ptdump_state *st = walk->private;
+ 	pud_t val = READ_ONCE(*pud);
+ 
+-#if CONFIG_PGTABLE_LEVELS > 2 && defined(CONFIG_KASAN)
++#if CONFIG_PGTABLE_LEVELS > 2 && \
++		(defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS))
+ 	if (pud_page(val) == virt_to_page(lm_alias(kasan_early_shadow_pmd)))
+ 		return note_kasan_page_table(walk, addr);
+ #endif
+@@ -91,7 +94,7 @@ static int ptdump_pmd_entry(pmd_t *pmd, unsigned long addr,
+ 	struct ptdump_state *st = walk->private;
+ 	pmd_t val = READ_ONCE(*pmd);
+ 
+-#if defined(CONFIG_KASAN)
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ 	if (pmd_page(val) == virt_to_page(lm_alias(kasan_early_shadow_pte)))
+ 		return note_kasan_page_table(walk, addr);
+ #endif
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 94133708889d..213677a5ed33 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -148,10 +148,12 @@ endif
+ # we don't want to check (depends on variables KASAN_SANITIZE_obj.o, KASAN_SANITIZE)
+ #
+ ifeq ($(CONFIG_KASAN),y)
++ifneq ($(CONFIG_KASAN_HW_TAGS),y)
+ _c_flags += $(if $(patsubst n%,, \
+ 		$(KASAN_SANITIZE_$(basetarget).o)$(KASAN_SANITIZE)y), \
+ 		$(CFLAGS_KASAN), $(CFLAGS_KASAN_NOSANITIZE))
+ endif
++endif
+ 
+ ifeq ($(CONFIG_UBSAN),y)
+ _c_flags += $(if $(patsubst n%,, \
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
