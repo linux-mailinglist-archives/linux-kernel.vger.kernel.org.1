@@ -2,232 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53CD29E493
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AD529E580
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730151AbgJ2HkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727352AbgJ2HYs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:48 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC8AC0613D7;
-        Wed, 28 Oct 2020 19:57:49 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id c11so1645042iln.9;
-        Wed, 28 Oct 2020 19:57:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=slws6IUnykeo5dzFI2HPlheVetOq9cA0vaAi9KjrkUI=;
-        b=Mu5vhbtlFpbW5Y8LJZc6OKIAVlXQARmB0hp3syWmazS9tlto3H/hnqH2TZExf5XBAB
-         ThOlf1yzXNwEpyEUXTZv1VhWm+UwxM5a5kElDqm16npCwf5m2RfyPXWsu+5IgUFc65qA
-         ujPZ/zd2uVLbfhJiG65fxzMtR4tVuyl9ELc+9vjyaLwonaarx8VCYxJ8XI25+mPpbNcW
-         xBmCOgjS9EASPhnt90qTNY1WB1fQRsJupEBOgJ7bmg6tNwd10Uu2AgfFJ2LyrSdNPPxl
-         3DkzabSj1DjuLQHUGnesXknZPCQJZuj+464PGRRn1/kcofgiDbe+AjTHDNCtacxv4kQH
-         NR6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=slws6IUnykeo5dzFI2HPlheVetOq9cA0vaAi9KjrkUI=;
-        b=OHwfTwIthwBsHJDpN6Qe13QCsgrqF68isbDFyZk9ebopYI9ubbiSvaanCIxpx0NFVT
-         dWhgKfq8mamv50WbRrSQIK33qHJEmo3Vev1y4RnyJ7TzoWuE8tjbI+pPlQe3XFLPPSpU
-         oESpkzVJ2M16NXkoBnEYEuaUS4bmrQ1Do22uc0rgH3TVbRbCwY8Ia/DDBNHZUJpjvpB9
-         8kam1AaPHORhDUjAnoJ1EqjWsLVl8lFUBHqRwEKHeBqjhR8lR6FOymRhAnLYZ9XIk498
-         j2dndTqfJBf42B7NKbR5GvrYsVGuBemcEyebQWnZ4ZbE/HtauXIx7PY20/w2A8fjX4FB
-         H8rg==
-X-Gm-Message-State: AOAM530IHKwNjK8MhrBLYClQ/pgZHch+v5qDOOKRuH6LkKqZbkxhCd64
-        jClj6ExXHzaw2ddff0GW2ck=
-X-Google-Smtp-Source: ABdhPJytng/BzQy75F2R7eaH5UanFPzuQhH3sCMGCDmeifgnFr71eKoroyYAiUSIiQO9sgOrvmz3yw==
-X-Received: by 2002:a05:6e02:ea5:: with SMTP id u5mr1554301ilj.18.1603940268837;
-        Wed, 28 Oct 2020 19:57:48 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id u8sm1158006ilm.36.2020.10.28.19.57.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 19:57:47 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Wed, 28 Oct 2020 22:57:45 -0400
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        id S1732587AbgJ2H5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:57:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728264AbgJ2H5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 03:57:23 -0400
+Received: from localhost (unknown [122.171.163.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F17C920780;
+        Thu, 29 Oct 2020 03:08:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603940909;
+        bh=OcoVnUg27s7RybaaylSXl4zThcBO61r0ewug7GA2D98=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SdufBAN/sF9gGK8YLBBjC+apUg9LdYBaT9DBZ94ZQNfKx/EhGGqIao4bweEYNk7fD
+         9Z1tIQCvJ8Fb54C7MDcrTkzQzGZwIIznHYJsklVZkg4al2Dsz8ZwPznmeYnsOrzbsG
+         +bwEaCdrTXkDVArdQ4U1j2WnPmpRPwg2c6Ggy0mA=
+Date:   Thu, 29 Oct 2020 08:38:24 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] bpf: don't rely on GCC __attribute__((optimize))
- to disable GCSE
-Message-ID: <20201029025745.GA2386070@rani.riverdale.lan>
-References: <20201028171506.15682-1-ardb@kernel.org>
- <20201028171506.15682-2-ardb@kernel.org>
- <20201028213903.fvdjydadqt6tx765@ast-mbp.dhcp.thefacebook.com>
- <CAMj1kXFHcM-Jb+MwsLtB4NMUmMyAGGLeNGNLC9vTATot3NJLrA@mail.gmail.com>
- <20201028225919.6ydy3m2u4p7x3to7@ast-mbp.dhcp.thefacebook.com>
- <CAMj1kXG8PmvO6bLhGXPWtzKMnAsip2WDa-qdrd+kFfr30sd8-A@mail.gmail.com>
- <20201028232001.pp7erdwft7oyt2xm@ast-mbp.dhcp.thefacebook.com>
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Robert Marko <robert.marko@sartura.hr>
+Subject: Re: linux-next: manual merge of the phy-next tree with the
+ regulator-fixes tree
+Message-ID: <20201029030824.GY3550@vkoul-mobl>
+References: <20201029132052.1ac29c18@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201028232001.pp7erdwft7oyt2xm@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20201029132052.1ac29c18@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 04:20:01PM -0700, Alexei Starovoitov wrote:
-> On Thu, Oct 29, 2020 at 12:10:52AM +0100, Ard Biesheuvel wrote:
-> > On Wed, 28 Oct 2020 at 23:59, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Wed, Oct 28, 2020 at 11:15:04PM +0100, Ard Biesheuvel wrote:
-> > > > On Wed, 28 Oct 2020 at 22:39, Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Wed, Oct 28, 2020 at 06:15:05PM +0100, Ard Biesheuvel wrote:
-> > > > > > Commit 3193c0836 ("bpf: Disable GCC -fgcse optimization for
-> > > > > > ___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
-> > > > > > function scope __attribute__((optimize("-fno-gcse"))), to disable a
-> > > > > > GCC specific optimization that was causing trouble on x86 builds, and
-> > > > > > was not expected to have any positive effect in the first place.
-> > > > > >
-> > > > > > However, as the GCC manual documents, __attribute__((optimize))
-> > > > > > is not for production use, and results in all other optimization
-> > > > > > options to be forgotten for the function in question. This can
-> > > > > > cause all kinds of trouble, but in one particular reported case,
-> > > > > > it causes -fno-asynchronous-unwind-tables to be disregarded,
-> > > > > > resulting in .eh_frame info to be emitted for the function.
-> > > > > >
-> > > > > > This reverts commit 3193c0836, and instead, it disables the -fgcse
-> > > > > > optimization for the entire source file, but only when building for
-> > > > > > X86 using GCC with CONFIG_BPF_JIT_ALWAYS_ON disabled. Note that the
-> > > > > > original commit states that CONFIG_RETPOLINE=n triggers the issue,
-> > > > > > whereas CONFIG_RETPOLINE=y performs better without the optimization,
-> > > > > > so it is kept disabled in both cases.
-> > > > > >
-> > > > > > Fixes: 3193c0836 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> > > > > > Link: https://lore.kernel.org/lkml/CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com/
-> > > > > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > > > > > ---
-> > > > > >  include/linux/compiler-gcc.h   | 2 --
-> > > > > >  include/linux/compiler_types.h | 4 ----
-> > > > > >  kernel/bpf/Makefile            | 6 +++++-
-> > > > > >  kernel/bpf/core.c              | 2 +-
-> > > > > >  4 files changed, 6 insertions(+), 8 deletions(-)
-> > > > > >
-> > > > > > diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-> > > > > > index d1e3c6896b71..5deb37024574 100644
-> > > > > > --- a/include/linux/compiler-gcc.h
-> > > > > > +++ b/include/linux/compiler-gcc.h
-> > > > > > @@ -175,5 +175,3 @@
-> > > > > >  #else
-> > > > > >  #define __diag_GCC_8(s)
-> > > > > >  #endif
-> > > > > > -
-> > > > > > -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
-> > > > >
-> > > > > See my reply in the other thread.
-> > > > > I prefer
-> > > > > -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
-> > > > > +#define __no_fgcse __attribute__((optimize("-fno-gcse,-fno-omit-frame-pointer")))
-> > > > >
-> > > > > Potentially with -fno-asynchronous-unwind-tables.
-> > > > >
-> > > >
-> > > > So how would that work? arm64 has the following:
-> > > >
-> > > > KBUILD_CFLAGS += -fno-asynchronous-unwind-tables -fno-unwind-tables
-> > > >
-> > > > ifeq ($(CONFIG_SHADOW_CALL_STACK), y)
-> > > > KBUILD_CFLAGS += -ffixed-x18
-> > > > endif
-> > > >
-> > > > and it adds -fpatchable-function-entry=2 for compilers that support
-> > > > it, but only when CONFIG_FTRACE is enabled.
-> > >
-> > > I think you're assuming that GCC drops all flags when it sees __attribute__((optimize)).
-> > > That's not the case.
-> > >
-> > 
-> > So which flags does it drop, and which doesn't it drop? Is that
-> > documented somewhere? Is that the same for all versions of GCC?
-> > 
-> > > > Also, as Nick pointed out, -fno-gcse does not work on Clang.
-> > >
-> > > yes and what's the point?
-> > > #define __no_fgcse is GCC only. clang doesn't need this workaround.
-> > >
-> > 
-> > Ah ok, that's at least something.
-> > 
-> > > > Every architecture will have a different set of requirements here. And
-> > > > there is no way of knowing which -f options are disregarded when you
-> > > > use the function attribute.
-> > > >
-> > > > So how on earth are you going to #define __no-fgcse correctly for
-> > > > every configuration imaginable?
-> > > >
-> > > > > __attribute__((optimize("")) is not as broken as you're claiming to be.
-> > > > > It has quirky gcc internal logic, but it's still widely used
-> > > > > in many software projects.
-> > > >
-> > > > So it's fine because it is only a little bit broken? I'm sorry, but
-> > > > that makes no sense whatsoever.
-> > > >
-> > > > If you insist on sticking with this broken construct, can you please
-> > > > make it GCC/x86-only at least?
-> > >
-> > > I'm totally fine with making
-> > > #define __no_fgcse __attribute__((optimize("-fno-gcse,-fno-omit-frame-pointer")))
-> > > to be gcc+x86 only.
-> > > I'd like to get rid of it, but objtool is not smart enough to understand
-> > > generated asm without it.
-> > 
-> > I'll defer to the x86 folks to make the final call here, but I would
-> > be perfectly happy doing
-> > 
-> > index d1e3c6896b71..68ddb91fbcc6 100644
-> > --- a/include/linux/compiler-gcc.h
-> > +++ b/include/linux/compiler-gcc.h
-> > @@ -176,4 +176,6 @@
-> >  #define __diag_GCC_8(s)
-> >  #endif
-> > 
-> > +#ifdef CONFIG_X86
-> >  #define __no_fgcse __attribute__((optimize("-fno-gcse")))
-> > +#endif
+On 29-10-20, 13:20, Stephen Rothwell wrote:
+> Hi all,
 > 
-> If you're going to submit this patch could you please add
-> ,-fno-omit-frame-pointer
-> to the above as well?
+> Today's linux-next merge of the phy-next tree got a conflict in:
 > 
-> > and end the conversation here, because I honestly cannot wrap my head
-> > around the fact that you are willing to work around an x86 specific
-> > objtool shortcoming by arbitrarily disabling some GCC optimization for
-> > all architectures, using a construct that may or may not affect other
-> > compiler settings in unpredictable ways, where the compiler is being
-> > used to compile a BPF language runtime for executing BPF programs
-> > inside the kernel.
-> > 
-> > What on earth could go wrong?
+>   MAINTAINERS
 > 
-> Frankly I'm move worried that -Os will generate incorrect code.
-> All compilers have bugs. Kernel has bugs. What can go wrong?
+> between commit:
+> 
+>   43c3e148830a ("MAINTAINERS: Add entry for Qualcomm IPQ4019 VQMMC regulator")
+> 
+> from the regulator-fixes tree and commit:
+> 
+>   c36f74566cef ("MAINTAINERS: Add entry for Qualcomm IPQ4019 USB PHY")
+> 
+> from the phy-next tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-+linux-toolchains. GCC updated the documentation in 7.x to discourage
-people from using the optimize attribute.
+lgtm, thanks Stephen
 
-https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=893100c3fa9b3049ce84dcc0c1a839ddc7a21387
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc MAINTAINERS
+> index 0e8f57817184,f01ce8f451c8..000000000000
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@@ -14552,14 -14547,14 +14552,22 @@@ F:	Documentation/devicetree/bindings/ma
+>   F:	drivers/mailbox/qcom-ipcc.c
+>   F:	include/dt-bindings/mailbox/qcom-ipcc.h
+>   
+> + QUALCOMM IPQ4019 USB PHY DRIVER
+> + M:	Robert Marko <robert.marko@sartura.hr>
+> + M:	Luka Perkov <luka.perkov@sartura.hr>
+> + L:	linux-arm-msm@vger.kernel.org
+> + S:	Maintained
+> + F:	Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml
+> + F:	drivers/phy/qualcomm/phy-qcom-ipq4019-usb.c
+> + 
+>  +QUALCOMM IPQ4019 VQMMC REGULATOR DRIVER
+>  +M:	Robert Marko <robert.marko@sartura.hr>
+>  +M:	Luka Perkov <luka.perkov@sartura.hr>
+>  +L:	linux-arm-msm@vger.kernel.org
+>  +S:	Maintained
+>  +F:	Documentation/devicetree/bindings/regulator/vqmmc-ipq4019-regulator.yaml
+>  +F:	drivers/regulator/vqmmc-ipq4019-regulator.c
+>  +
+>   QUALCOMM RMNET DRIVER
+>   M:	Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+>   M:	Sean Tranchetti <stranche@codeaurora.org>
+
+
+
+-- 
+~Vinod
