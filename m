@@ -2,356 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B88CC29E823
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC44329E831
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgJ2KBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725796AbgJ2KA7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:00:59 -0400
-Received: from smtp2-2.goneo.de (smtp2.goneo.de [IPv6:2001:1640:5::8:33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6416C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:51:07 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp2.goneo.de (Postfix) with ESMTP id 8C7EE241CA4;
-        Thu, 29 Oct 2020 10:51:06 +0100 (CET)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.972
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.972 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.072, BAYES_00=-1.9] autolearn=ham
-Received: from smtp2.goneo.de ([127.0.0.1])
-        by localhost (smtp2.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id AH73M0Mu2r0M; Thu, 29 Oct 2020 10:51:04 +0100 (CET)
-Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
-        by smtp2.goneo.de (Postfix) with ESMTPA id AFDE423F5D9;
-        Thu, 29 Oct 2020 10:51:04 +0100 (CET)
-From:   poeschel@lemonage.de
-To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
-        Willy Tarreau <willy@haproxy.com>,
-        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>
-Subject: [PATCH 02/25] auxdisplay: Introduce hd44780_common.[ch]
-Date:   Thu, 29 Oct 2020 10:50:09 +0100
-Message-Id: <20201029095033.310788-3-poeschel@lemonage.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201029095033.310788-1-poeschel@lemonage.de>
-References: <20201029095033.310788-1-poeschel@lemonage.de>
+        id S1725956AbgJ2KCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:02:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725890AbgJ2KCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 06:02:23 -0400
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DB54215A4;
+        Thu, 29 Oct 2020 09:51:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603965098;
+        bh=9kcfotFFJ47rYdLC6ZxzdCDBa1k7PeFD878Gh2iRMYw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vMd1WTw46NmbdjDfGERZXE49CkIxTu62Lo98SE3sftOXo2ak1wjE9ZykA5QSCJ4f6
+         RDyWIZLY0FUMnquHbcpT2wuFgnwMWGJcElPYN/dCVDOBDKjwtw6POjOBjpvi7Bxxzs
+         IPD7rWkW0qA5Zp3lwpn5CoP9SOsl9SQ1SBIW0R2s=
+Received: by mail-qv1-f54.google.com with SMTP id b11so1072516qvr.9;
+        Thu, 29 Oct 2020 02:51:38 -0700 (PDT)
+X-Gm-Message-State: AOAM531iPFjBDH77Fzh6gQbCnPxvw2RSjiH09W81ktIs33bDifYtZd2Z
+        iZ9fVclvnvl4DqzGCkdGa0d2BHxI6WBsCG1nBpw=
+X-Google-Smtp-Source: ABdhPJxaZEntygitIVQOXS85Gb8nGw1osAMMJulsU6ZeD1uTGkc5sotJk4c97dNCIKL6ORL8v2BjlIfOh3rRL6d2/zw=
+X-Received: by 2002:ad4:4203:: with SMTP id k3mr2986180qvp.8.1603965097361;
+ Thu, 29 Oct 2020 02:51:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201028212417.3715575-1-arnd@kernel.org> <ea34f1d3-ed54-a2de-79d9-5cc8decc0ab3@redhat.com>
+In-Reply-To: <ea34f1d3-ed54-a2de-79d9-5cc8decc0ab3@redhat.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 29 Oct 2020 10:51:21 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0e0YAkh_9S1ZG5FW3QozZnp1CwXUfWx9VHWkY=h+FVxw@mail.gmail.com>
+Message-ID: <CAK8P3a0e0YAkh_9S1ZG5FW3QozZnp1CwXUfWx9VHWkY=h+FVxw@mail.gmail.com>
+Subject: Re: [PATCH] [v2] x86: apic: avoid -Wshadow warning in header
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-hyperv@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        xen-devel <xen-devel@lists.xenproject.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars Poeschel <poeschel@lemonage.de>
+On Thu, Oct 29, 2020 at 8:04 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 28/10/20 22:20, Arnd Bergmann wrote:
+> > Avoid this by renaming the global 'apic' variable to the more descriptive
+> > 'x86_system_apic'. It was originally called 'genapic', but both that
+> > and the current 'apic' seem to be a little overly generic for a global
+> > variable.
+>
+> The 'apic' affects only the current CPU, so one of 'x86_local_apic',
+> 'x86_lapic' or 'x86_apic' is probably preferrable.
 
-There is some hd44780 specific code in charlcd and this code is used by
-multiple drivers. To make charlcd independent from this device specific
-code this has to be moved to a place where the multiple drivers can
-share their common code. This common place is now introduced as
-hd44780_common.
+Ok, I'll change it to x86_local_apic then, unless someone else has
+a preference between them.
 
-Reviewed-by: Willy Tarreau <w@1wt.eu>
-Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
----
-Changes in v5:
-- Remove some unnecessary newlines
+> I don't have huge objections to renaming 'apic' variables and arguments
+> in KVM to 'lapic'.  I do agree with Sean however that it's going to
+> break again very soon.
 
-Changes in v3:
-- Fix some typos
----
- drivers/auxdisplay/Kconfig          | 20 ++++++++++++++
- drivers/auxdisplay/Makefile         |  1 +
- drivers/auxdisplay/hd44780.c        | 43 +++++++++++++++++++----------
- drivers/auxdisplay/hd44780_common.c | 19 +++++++++++++
- drivers/auxdisplay/hd44780_common.h |  7 +++++
- drivers/auxdisplay/panel.c          | 18 ++++++++++--
- 6 files changed, 91 insertions(+), 17 deletions(-)
- create mode 100644 drivers/auxdisplay/hd44780_common.c
- create mode 100644 drivers/auxdisplay/hd44780_common.h
+I think ideally there would be no global variable, withall accesses
+encapsulated in function calls, possibly using static_call() optimizations
+if any of them are performance critical.
 
-diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
-index 81757eeded68..a56171d1a1ba 100644
---- a/drivers/auxdisplay/Kconfig
-+++ b/drivers/auxdisplay/Kconfig
-@@ -14,12 +14,31 @@ menuconfig AUXDISPLAY
- 
- 	  If you say N, all options in this submenu will be skipped and disabled.
- 
-+config CHARLCD
-+	tristate "Character LCD core support" if COMPILE_TEST
-+	help
-+	  This is the base system for character-based LCD displays.
-+	  It makes no sense to have this alone, you select your display driver
-+	  and if it needs the charlcd core, it will select it automatically.
-+	  This is some character LCD core interface that multiple drivers can
-+	  use.
-+
-+config HD44780_COMMON
-+	tristate "Common functions for HD44780 (and compatibles) LCD displays" if COMPILE_TEST
-+	help
-+	  This is a module with the common symbols for HD44780 (and compatibles)
-+	  displays. This is the code that multiple other modules use. It is not
-+	  useful alone. If you have some sort of HD44780 compatible display,
-+	  you very likely use this. It is selected automatically by selecting
-+	  your concrete display.
-+
- if AUXDISPLAY
- 
- config HD44780
- 	tristate "HD44780 Character LCD support"
- 	depends on GPIOLIB || COMPILE_TEST
- 	select CHARLCD
-+	select HD44780_COMMON
- 	help
- 	  Enable support for Character LCDs using a HD44780 controller.
- 	  The LCD is accessible through the /dev/lcd char device (10, 156).
-@@ -168,6 +187,7 @@ menuconfig PARPORT_PANEL
- 	tristate "Parallel port LCD/Keypad Panel support"
- 	depends on PARPORT
- 	select CHARLCD
-+	select HD44780_COMMON
- 	help
- 	  Say Y here if you have an HD44780 or KS-0074 LCD connected to your
- 	  parallel port. This driver also features 4 and 6-key keypads. The LCD
-diff --git a/drivers/auxdisplay/Makefile b/drivers/auxdisplay/Makefile
-index cf54b5efb07e..7e8a8c3eb3c3 100644
---- a/drivers/auxdisplay/Makefile
-+++ b/drivers/auxdisplay/Makefile
-@@ -4,6 +4,7 @@
- #
- 
- obj-$(CONFIG_CHARLCD)		+= charlcd.o
-+obj-$(CONFIG_HD44780_COMMON)	+= hd44780_common.o
- obj-$(CONFIG_ARM_CHARLCD)	+= arm-charlcd.o
- obj-$(CONFIG_KS0108)		+= ks0108.o
- obj-$(CONFIG_CFAG12864B)	+= cfag12864b.o cfag12864bfb.o
-diff --git a/drivers/auxdisplay/hd44780.c b/drivers/auxdisplay/hd44780.c
-index 5982158557bb..271dba9cd108 100644
---- a/drivers/auxdisplay/hd44780.c
-+++ b/drivers/auxdisplay/hd44780.c
-@@ -15,6 +15,7 @@
- #include <linux/slab.h>
- 
- #include "charlcd.h"
-+#include "hd44780_common.h"
- 
- enum hd44780_pin {
- 	/* Order does matter due to writing to GPIO array subsets! */
-@@ -179,8 +180,9 @@ static int hd44780_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	unsigned int i, base;
- 	struct charlcd *lcd;
-+	struct hd44780_common *hdc;
- 	struct hd44780 *hd;
--	int ifwidth, ret;
-+	int ifwidth, ret = -ENOMEM;
- 
- 	/* Required pins */
- 	ifwidth = gpiod_count(dev, "data");
-@@ -198,31 +200,39 @@ static int hd44780_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 
-+	hdc = hd44780_common_alloc();
-+	if (!hdc)
-+		return -ENOMEM;
-+
- 	lcd = charlcd_alloc(sizeof(struct hd44780));
- 	if (!lcd)
--		return -ENOMEM;
-+		goto fail1;
- 
--	hd = lcd->drvdata;
-+	hd = kzalloc(sizeof(struct hd44780), GFP_KERNEL);
-+	if (!hd)
-+		goto fail2;
- 
-+	hdc->hd44780 = hd;
-+	lcd->drvdata = hdc;
- 	for (i = 0; i < ifwidth; i++) {
- 		hd->pins[base + i] = devm_gpiod_get_index(dev, "data", i,
- 							  GPIOD_OUT_LOW);
- 		if (IS_ERR(hd->pins[base + i])) {
- 			ret = PTR_ERR(hd->pins[base + i]);
--			goto fail;
-+			goto fail3;
- 		}
- 	}
- 
- 	hd->pins[PIN_CTRL_E] = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
- 	if (IS_ERR(hd->pins[PIN_CTRL_E])) {
- 		ret = PTR_ERR(hd->pins[PIN_CTRL_E]);
--		goto fail;
-+		goto fail3;
- 	}
- 
- 	hd->pins[PIN_CTRL_RS] = devm_gpiod_get(dev, "rs", GPIOD_OUT_HIGH);
- 	if (IS_ERR(hd->pins[PIN_CTRL_RS])) {
- 		ret = PTR_ERR(hd->pins[PIN_CTRL_RS]);
--		goto fail;
-+		goto fail3;
- 	}
- 
- 	/* Optional pins */
-@@ -230,24 +240,24 @@ static int hd44780_probe(struct platform_device *pdev)
- 							GPIOD_OUT_LOW);
- 	if (IS_ERR(hd->pins[PIN_CTRL_RW])) {
- 		ret = PTR_ERR(hd->pins[PIN_CTRL_RW]);
--		goto fail;
-+		goto fail3;
- 	}
- 
- 	hd->pins[PIN_CTRL_BL] = devm_gpiod_get_optional(dev, "backlight",
- 							GPIOD_OUT_LOW);
- 	if (IS_ERR(hd->pins[PIN_CTRL_BL])) {
- 		ret = PTR_ERR(hd->pins[PIN_CTRL_BL]);
--		goto fail;
-+		goto fail3;
- 	}
- 
- 	/* Required properties */
- 	ret = device_property_read_u32(dev, "display-height-chars",
- 				       &lcd->height);
- 	if (ret)
--		goto fail;
-+		goto fail3;
- 	ret = device_property_read_u32(dev, "display-width-chars", &lcd->width);
- 	if (ret)
--		goto fail;
-+		goto fail3;
- 
- 	/*
- 	 * On displays with more than two rows, the internal buffer width is
-@@ -264,13 +274,17 @@ static int hd44780_probe(struct platform_device *pdev)
- 
- 	ret = charlcd_register(lcd);
- 	if (ret)
--		goto fail;
-+		goto fail3;
- 
- 	platform_set_drvdata(pdev, lcd);
- 	return 0;
- 
--fail:
--	charlcd_free(lcd);
-+fail3:
-+	kfree(hd);
-+fail2:
-+	kfree(lcd);
-+fail1:
-+	kfree(hdc);
- 	return ret;
- }
- 
-@@ -278,9 +292,10 @@ static int hd44780_remove(struct platform_device *pdev)
- {
- 	struct charlcd *lcd = platform_get_drvdata(pdev);
- 
-+	kfree(lcd->drvdata);
- 	charlcd_unregister(lcd);
- 
--	charlcd_free(lcd);
-+	kfree(lcd);
- 	return 0;
- }
- 
-diff --git a/drivers/auxdisplay/hd44780_common.c b/drivers/auxdisplay/hd44780_common.c
-new file mode 100644
-index 000000000000..2fdea29d6a8f
---- /dev/null
-+++ b/drivers/auxdisplay/hd44780_common.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+
-+#include "hd44780_common.h"
-+
-+struct hd44780_common *hd44780_common_alloc(void)
-+{
-+	struct hd44780_common *hd;
-+
-+	hd = kzalloc(sizeof(*hd), GFP_KERNEL);
-+	if (!hd)
-+		return NULL;
-+
-+	return hd;
-+}
-+EXPORT_SYMBOL_GPL(hd44780_common_alloc);
-+
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/auxdisplay/hd44780_common.h b/drivers/auxdisplay/hd44780_common.h
-new file mode 100644
-index 000000000000..974868f7529c
---- /dev/null
-+++ b/drivers/auxdisplay/hd44780_common.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+
-+struct hd44780_common {
-+	void *hd44780;
-+};
-+
-+struct hd44780_common *hd44780_common_alloc(void);
-diff --git a/drivers/auxdisplay/panel.c b/drivers/auxdisplay/panel.c
-index de623ae219f1..c3a60e190a7a 100644
---- a/drivers/auxdisplay/panel.c
-+++ b/drivers/auxdisplay/panel.c
-@@ -56,6 +56,7 @@
- #include <linux/uaccess.h>
- 
- #include "charlcd.h"
-+#include "hd44780_common.h"
- 
- #define LCD_MAXBYTES		256	/* max burst write */
- 
-@@ -895,10 +896,20 @@ static const struct charlcd_ops charlcd_tilcd_ops = {
- static void lcd_init(void)
- {
- 	struct charlcd *charlcd;
-+	struct hd44780_common *hdc;
-+
-+	hdc = hd44780_common_alloc();
-+	if (!hdc)
-+		return;
- 
- 	charlcd = charlcd_alloc(0);
--	if (!charlcd)
-+	if (!charlcd) {
-+		kfree(hdc);
- 		return;
-+	}
-+
-+	hdc->hd44780 = &lcd;
-+	charlcd->drvdata = hdc;
- 
- 	/*
- 	 * Init lcd struct with load-time values to preserve exact
-@@ -1620,7 +1631,7 @@ static void panel_attach(struct parport *port)
- 	if (lcd.enabled)
- 		charlcd_unregister(lcd.charlcd);
- err_unreg_device:
--	charlcd_free(lcd.charlcd);
-+	kfree(lcd.charlcd);
- 	lcd.charlcd = NULL;
- 	parport_unregister_device(pprt);
- 	pprt = NULL;
-@@ -1647,7 +1658,8 @@ static void panel_detach(struct parport *port)
- 	if (lcd.enabled) {
- 		charlcd_unregister(lcd.charlcd);
- 		lcd.initialized = false;
--		charlcd_free(lcd.charlcd);
-+		kfree(lcd.charlcd->drvdata);
-+		kfree(lcd.charlcd);
- 		lcd.charlcd = NULL;
- 	}
- 
--- 
-2.28.0
+It doesn't seem hard to do, but I'd rather leave that change to
+an x86 person ;-)
 
+      Arnd
