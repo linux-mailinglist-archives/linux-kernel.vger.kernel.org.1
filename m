@@ -2,237 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D1D29E7ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 253B729E7F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgJ2J4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:56:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725779AbgJ2J4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:56:35 -0400
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E79E2076D
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:56:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603965394;
-        bh=UIUUMTuyyFka0yoGb4mpTbAWzZnbo3bGVVQRoUp8wo4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OtLUM0aPNA3YlDXPv4hEUQBPXiNMyw1JGQfALl024K4Hs0bBx0IuTDJcZ9A2ambLe
-         N7z2km37pTevSz/a8IL4IfDL5VCv+ffNw5csk0c3TUy6QGXO/iBoFFyjcx+HOpw0NM
-         vPFqJh4/P742+7N7imEO9tZyMRbouaFK3ZCaisTU=
-Received: by mail-ot1-f42.google.com with SMTP id f97so1738918otb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:56:34 -0700 (PDT)
-X-Gm-Message-State: AOAM5307dS8k68bJEOBfczeXNQ80ZBH2ZZg1muwGMxfTRjO+1B3W0oTV
-        iyl8h2OOrxaLVjp2ggDhJX/RduGweDuuIcPI79M=
-X-Google-Smtp-Source: ABdhPJxRkfkZrvAxRvFjp6Zlen190OAfO9c/QC6uwVt1GmRyExyB2hyYDvcla47YZFawIBcnYzCkwwLd72cFcPTHs3A=
-X-Received: by 2002:a9d:2daa:: with SMTP id g39mr2734821otb.77.1603965393472;
- Thu, 29 Oct 2020 02:56:33 -0700 (PDT)
+        id S1726788AbgJ2J5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgJ2J5w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 05:57:52 -0400
+Received: from smtp3-1.goneo.de (smtp3.goneo.de [IPv6:2001:1640:5::8:37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDC4C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:57:51 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp3.goneo.de (Postfix) with ESMTP id 3FEB723F739;
+        Thu, 29 Oct 2020 10:57:50 +0100 (CET)
+X-Virus-Scanned: by goneo
+X-Spam-Flag: NO
+X-Spam-Score: -2.95
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.95 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.050, BAYES_00=-1.9] autolearn=ham
+Received: from smtp3.goneo.de ([127.0.0.1])
+        by localhost (smtp3.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id BQLCpY_PzS9G; Thu, 29 Oct 2020 10:57:48 +0100 (CET)
+Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
+        by smtp3.goneo.de (Postfix) with ESMTPA id 101E023F8AF;
+        Thu, 29 Oct 2020 10:57:48 +0100 (CET)
+From:   poeschel@lemonage.de
+To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
+        Willy Tarreau <willy@haproxy.com>,
+        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>
+Subject: [PATCH v5 02/25] auxdisplay: Introduce hd44780_common.[ch]
+Date:   Thu, 29 Oct 2020 10:57:06 +0100
+Message-Id: <20201029095731.311528-1-poeschel@lemonage.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201029095231.311083-1-poeschel@lemonage.de>
+References: <20201029095231.311083-1-poeschel@lemonage.de>
 MIME-Version: 1.0
-References: <202010211637.7CFD8435@keescook> <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com>
- <202010212028.32E8A5EF9B@keescook> <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com>
- <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com> <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
- <20201022161118.GP1551@shell.armlinux.org.uk> <CAMj1kXGExnUrTuosMpX2NN3=j0HF-8_s1SzLaTyBvq4_LQNT-w@mail.gmail.com>
- <20201022162334.GQ1551@shell.armlinux.org.uk> <CAMj1kXF+2kJrUaDyA-Xw4rz2bsuEipX3P4JyPrY1bim76LQvoA@mail.gmail.com>
- <20201022174826.GS1551@shell.armlinux.org.uk> <CAMj1kXHpPbwS8zjsr8S65EMj9XOwPxWiQ5WN_ok8ZAFZg9kSAg@mail.gmail.com>
- <CAMj1kXGok50R+2FZ=LqRAx5N3otC3AvC26=+NUqNC6kSvY2-Lg@mail.gmail.com>
-In-Reply-To: <CAMj1kXGok50R+2FZ=LqRAx5N3otC3AvC26=+NUqNC6kSvY2-Lg@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 29 Oct 2020 10:56:22 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXF6EdrJWASQQp57L=3gni6R_pLvZfCaFxCoH=rMRzK_6A@mail.gmail.com>
-Message-ID: <CAMj1kXF6EdrJWASQQp57L=3gni6R_pLvZfCaFxCoH=rMRzK_6A@mail.gmail.com>
-Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
- compilation error
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 at 09:58, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Thu, 22 Oct 2020 at 19:59, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Thu, 22 Oct 2020 at 19:48, Russell King - ARM Linux admin
-> > <linux@armlinux.org.uk> wrote:
-> > >
-> > > On Thu, Oct 22, 2020 at 06:33:17PM +0200, Ard Biesheuvel wrote:
-> > > > On Thu, 22 Oct 2020 at 18:23, Russell King - ARM Linux admin
-> > > > <linux@armlinux.org.uk> wrote:
-> > > > >
-> > > > > On Thu, Oct 22, 2020 at 06:20:40PM +0200, Ard Biesheuvel wrote:
-> > > > > > On Thu, 22 Oct 2020 at 18:11, Russell King - ARM Linux admin
-> > > > > > <linux@armlinux.org.uk> wrote:
-> > > > > > >
-> > > > > > > On Thu, Oct 22, 2020 at 06:06:32PM +0200, Ard Biesheuvel wrot=
-e:
-> > > > > > > > On Thu, 22 Oct 2020 at 17:57, Dmitry Osipenko <digetx@gmail=
-.com> wrote:
-> > > > > > > > >
-> > > > > > > > > 22.10.2020 10:06, Ard Biesheuvel =D0=BF=D0=B8=D1=88=D0=B5=
-=D1=82:
-> > > > > > > > > > On Thu, 22 Oct 2020 at 05:30, Kees Cook <keescook@chrom=
-ium.org> wrote:
-> > > > > > > > > >>
-> > > > > > > > > >> On Thu, Oct 22, 2020 at 03:00:06AM +0300, Dmitry Osipe=
-nko wrote:
-> > > > > > > > > >>> 22.10.2020 02:40, Kees Cook =D0=BF=D0=B8=D1=88=D0=B5=
-=D1=82:
-> > > > > > > > > >>>> On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry Osi=
-penko wrote:
-> > > > > > > > > >>>>> The vfp_kmode_exception() function now is unreachab=
-le using relative
-> > > > > > > > > >>>>> branching in THUMB2 kernel configuration, resulting=
- in a "relocation
-> > > > > > > > > >>>>> truncated to fit: R_ARM_THM_JUMP19 against symbol `=
-vfp_kmode_exception'"
-> > > > > > > > > >>>>> linker error. Let's use long jump in order to fix t=
-he issue.
-> > > > > > > > > >>>>
-> > > > > > > > > >>>> Eek. Is this with gcc or clang?
-> > > > > > > > > >>>
-> > > > > > > > > >>> GCC 9.3.0
-> > > > > > > > > >>>
-> > > > > > > > > >>>>> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and Au=
-toFDO input sections")
-> > > > > > > > > >>>>
-> > > > > > > > > >>>> Are you sure it wasn't 512dd2eebe55 ("arm/build: Add=
- missing sections") ?
-> > > > > > > > > >>>> That commit may have implicitly moved the location o=
-f .vfp11_veneer,
-> > > > > > > > > >>>> though I thought I had chosen the correct position.
-> > > > > > > > > >>>
-> > > > > > > > > >>> I re-checked that the fixes tag is correct.
-> > > > > > > > > >>>
-> > > > > > > > > >>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > > > > > > > > >>>>> ---
-> > > > > > > > > >>>>>  arch/arm/vfp/vfphw.S | 3 ++-
-> > > > > > > > > >>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > > > > > > > >>>>>
-> > > > > > > > > >>>>> diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vf=
-phw.S
-> > > > > > > > > >>>>> index 4fcff9f59947..6e2b29f0c48d 100644
-> > > > > > > > > >>>>> --- a/arch/arm/vfp/vfphw.S
-> > > > > > > > > >>>>> +++ b/arch/arm/vfp/vfphw.S
-> > > > > > > > > >>>>> @@ -82,7 +82,8 @@ ENTRY(vfp_support_entry)
-> > > > > > > > > >>>>>    ldr     r3, [sp, #S_PSR]        @ Neither lazy r=
-estore nor FP exceptions
-> > > > > > > > > >>>>>    and     r3, r3, #MODE_MASK      @ are supported =
-in kernel mode
-> > > > > > > > > >>>>>    teq     r3, #USR_MODE
-> > > > > > > > > >>>>> -  bne     vfp_kmode_exception     @ Returns throug=
-h lr
-> > > > > > > > > >>>>> +  ldr     r1, =3Dvfp_kmode_exception
-> > > > > > > > > >>>>> +  bxne    r1                      @ Returns throug=
-h lr
-> > > > > > > > > >>>>>
-> > > > > > > > > >>>>>    VFPFMRX r1, FPEXC               @ Is the VFP ena=
-bled?
-> > > > > > > > > >>>>>    DBGSTR1 "fpexc %08x", r1
-> > > > > > > > > >>>>
-> > > > > > > > > >>>> This seems like a workaround though? I suspect the v=
-fp11_veneer needs
-> > > > > > > > > >>>> moving?
-> > > > > > > > > >>>>
-> > > > > > > > > >>>
-> > > > > > > > > >>> I don't know where it needs to be moved. Please feel =
-free to make a
-> > > > > > > > > >>> patch if you have a better idea, I'll be glad to test=
- it.
-> > > > > > > > > >>
-> > > > > > > > > >> I might have just been distracted by the common "vfp" =
-prefix. It's
-> > > > > > > > > >> possible that the text section shuffling just ended up=
- being very large,
-> > > > > > > > > >> so probably this patch is right then!
-> > > > > > > > > >>
-> > > > > > > > > >
-> > > > > > > > > > I already sent a fix for this issue:
-> > > > > > > > > >
-> > > > > > > > > > https://www.armlinux.org.uk/developer/patches/viewpatch=
-.php?id=3D9018/1
-> > > > > > > > > >
-> > > > > > > > >
-> > > > > > > > > The offending commit contains stable tag, so I assume tha=
-t fixes tag is
-> > > > > > > > > mandatory. Yours patch misses the fixes tag.
-> > > > > > > >
-> > > > > > > > Russell, mind adding that? Or would you like me to update t=
-he patch in
-> > > > > > > > the patch system?
-> > > > > > >
-> > > > > > > Rather than adding the IT, I'm suggesting that we solve it a =
-different
-> > > > > > > way - ensuring that the two bits of code are co-located. Ther=
-e's no
-> > > > > > > reason for them to be separated, and the assembly code entry =
-point is
-> > > > > > > already called indirectly.
-> > > > > > >
-> > > > > > > The problem is the assembly ends up in the .text section whic=
-h ends up
-> > > > > > > at the start of the binary, but depending on the compiler, fu=
-nctions
-> > > > > > > in .c files end up in their own sections. It would be good if=
-, as
-> > > > > > > Dmitry has shown that it is indeed possible, to have them co-=
-located.
-> > > > > >
-> > > > > > Why is that better? I provided a minimal fix which has zero imp=
-act on
-> > > > > > ARM builds, and minimal impact on Thumb2 builds, given that it =
-retains
-> > > > > > the exact same semantics as before, but using a different opcod=
-e.
-> > > > >
-> > > > > I think you just described the reason there. Why should we force
-> > > > > everything to use a different opcode when a short jump _should_
-> > > > > suffice?
-> > > > >
-> > > >
-> > > > Why should a short jump suffice? The call is to vfp_kmode_exception=
-(),
-> > > > which we only call in exceptional cases. Why would we want to keep
-> > > > that in close proximity?
-> > >
-> > > You're thinking about it in terms of what happens when the branch is
-> > > taken, rather than also considering that this code path is also
-> > > traversed for _every_ single time that we enter the support code
-> > > not just for kernel mode.
-> > >
-> >
-> > True. If 2 bytes of additional opcode are the concern here, we can
-> > change the current sequence
-> >
-> >    6:   f093 0f10       teq     r3, #16
-> >    a:   f47f affe       bne.w   0 <vfp_kmode_exception>
-> >
-> > to
-> >
-> >    6:   2b10            cmp     r3, #16
-> >    8:   bf18            it      ne
-> >    a:   f7ff bffe       bne.w   0 <vfp_kmode_exception>
-> >
-> > which takes up the exact same space.
->
-> BTW this code path looks slightly broken for Thumb-2 in any case: if a
-> FP exception is taken in kernel mode on a Thumb2 kernel, we enter the
-> emulation sequence via call_fpe, which will use the wrong set of
-> value/mask pairs to match the opcode. The minimal fix is to move the
-> call_fpe label to the right place, but I think it might be better to
-> move the check for a FP exception in kernel mode to the handling of
-> __und_svc.
+From: Lars Poeschel <poeschel@lemonage.de>
 
-Do we have a resolution here? This is causing breakage in kernelci
+There is some hd44780 specific code in charlcd and this code is used by
+multiple drivers. To make charlcd independent from this device specific
+code this has to be moved to a place where the multiple drivers can
+share their common code. This common place is now introduced as
+hd44780_common.
 
-https://kernelci.org/build/id/5f9a834c5ed3c05dd538101b/
+Reviewed-by: Willy Tarreau <w@1wt.eu>
+Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
+---
+Changes in v5:
+- Remove some unnecessary newlines
+
+Changes in v3:
+- Fix some typos
+---
+ drivers/auxdisplay/Kconfig          | 20 ++++++++++++++
+ drivers/auxdisplay/Makefile         |  1 +
+ drivers/auxdisplay/hd44780.c        | 43 +++++++++++++++++++----------
+ drivers/auxdisplay/hd44780_common.c | 19 +++++++++++++
+ drivers/auxdisplay/hd44780_common.h |  7 +++++
+ drivers/auxdisplay/panel.c          | 18 ++++++++++--
+ 6 files changed, 91 insertions(+), 17 deletions(-)
+ create mode 100644 drivers/auxdisplay/hd44780_common.c
+ create mode 100644 drivers/auxdisplay/hd44780_common.h
+
+diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
+index 81757eeded68..a56171d1a1ba 100644
+--- a/drivers/auxdisplay/Kconfig
++++ b/drivers/auxdisplay/Kconfig
+@@ -14,12 +14,31 @@ menuconfig AUXDISPLAY
+ 
+ 	  If you say N, all options in this submenu will be skipped and disabled.
+ 
++config CHARLCD
++	tristate "Character LCD core support" if COMPILE_TEST
++	help
++	  This is the base system for character-based LCD displays.
++	  It makes no sense to have this alone, you select your display driver
++	  and if it needs the charlcd core, it will select it automatically.
++	  This is some character LCD core interface that multiple drivers can
++	  use.
++
++config HD44780_COMMON
++	tristate "Common functions for HD44780 (and compatibles) LCD displays" if COMPILE_TEST
++	help
++	  This is a module with the common symbols for HD44780 (and compatibles)
++	  displays. This is the code that multiple other modules use. It is not
++	  useful alone. If you have some sort of HD44780 compatible display,
++	  you very likely use this. It is selected automatically by selecting
++	  your concrete display.
++
+ if AUXDISPLAY
+ 
+ config HD44780
+ 	tristate "HD44780 Character LCD support"
+ 	depends on GPIOLIB || COMPILE_TEST
+ 	select CHARLCD
++	select HD44780_COMMON
+ 	help
+ 	  Enable support for Character LCDs using a HD44780 controller.
+ 	  The LCD is accessible through the /dev/lcd char device (10, 156).
+@@ -168,6 +187,7 @@ menuconfig PARPORT_PANEL
+ 	tristate "Parallel port LCD/Keypad Panel support"
+ 	depends on PARPORT
+ 	select CHARLCD
++	select HD44780_COMMON
+ 	help
+ 	  Say Y here if you have an HD44780 or KS-0074 LCD connected to your
+ 	  parallel port. This driver also features 4 and 6-key keypads. The LCD
+diff --git a/drivers/auxdisplay/Makefile b/drivers/auxdisplay/Makefile
+index cf54b5efb07e..7e8a8c3eb3c3 100644
+--- a/drivers/auxdisplay/Makefile
++++ b/drivers/auxdisplay/Makefile
+@@ -4,6 +4,7 @@
+ #
+ 
+ obj-$(CONFIG_CHARLCD)		+= charlcd.o
++obj-$(CONFIG_HD44780_COMMON)	+= hd44780_common.o
+ obj-$(CONFIG_ARM_CHARLCD)	+= arm-charlcd.o
+ obj-$(CONFIG_KS0108)		+= ks0108.o
+ obj-$(CONFIG_CFAG12864B)	+= cfag12864b.o cfag12864bfb.o
+diff --git a/drivers/auxdisplay/hd44780.c b/drivers/auxdisplay/hd44780.c
+index 5982158557bb..271dba9cd108 100644
+--- a/drivers/auxdisplay/hd44780.c
++++ b/drivers/auxdisplay/hd44780.c
+@@ -15,6 +15,7 @@
+ #include <linux/slab.h>
+ 
+ #include "charlcd.h"
++#include "hd44780_common.h"
+ 
+ enum hd44780_pin {
+ 	/* Order does matter due to writing to GPIO array subsets! */
+@@ -179,8 +180,9 @@ static int hd44780_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	unsigned int i, base;
+ 	struct charlcd *lcd;
++	struct hd44780_common *hdc;
+ 	struct hd44780 *hd;
+-	int ifwidth, ret;
++	int ifwidth, ret = -ENOMEM;
+ 
+ 	/* Required pins */
+ 	ifwidth = gpiod_count(dev, "data");
+@@ -198,31 +200,39 @@ static int hd44780_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 
++	hdc = hd44780_common_alloc();
++	if (!hdc)
++		return -ENOMEM;
++
+ 	lcd = charlcd_alloc(sizeof(struct hd44780));
+ 	if (!lcd)
+-		return -ENOMEM;
++		goto fail1;
+ 
+-	hd = lcd->drvdata;
++	hd = kzalloc(sizeof(struct hd44780), GFP_KERNEL);
++	if (!hd)
++		goto fail2;
+ 
++	hdc->hd44780 = hd;
++	lcd->drvdata = hdc;
+ 	for (i = 0; i < ifwidth; i++) {
+ 		hd->pins[base + i] = devm_gpiod_get_index(dev, "data", i,
+ 							  GPIOD_OUT_LOW);
+ 		if (IS_ERR(hd->pins[base + i])) {
+ 			ret = PTR_ERR(hd->pins[base + i]);
+-			goto fail;
++			goto fail3;
+ 		}
+ 	}
+ 
+ 	hd->pins[PIN_CTRL_E] = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
+ 	if (IS_ERR(hd->pins[PIN_CTRL_E])) {
+ 		ret = PTR_ERR(hd->pins[PIN_CTRL_E]);
+-		goto fail;
++		goto fail3;
+ 	}
+ 
+ 	hd->pins[PIN_CTRL_RS] = devm_gpiod_get(dev, "rs", GPIOD_OUT_HIGH);
+ 	if (IS_ERR(hd->pins[PIN_CTRL_RS])) {
+ 		ret = PTR_ERR(hd->pins[PIN_CTRL_RS]);
+-		goto fail;
++		goto fail3;
+ 	}
+ 
+ 	/* Optional pins */
+@@ -230,24 +240,24 @@ static int hd44780_probe(struct platform_device *pdev)
+ 							GPIOD_OUT_LOW);
+ 	if (IS_ERR(hd->pins[PIN_CTRL_RW])) {
+ 		ret = PTR_ERR(hd->pins[PIN_CTRL_RW]);
+-		goto fail;
++		goto fail3;
+ 	}
+ 
+ 	hd->pins[PIN_CTRL_BL] = devm_gpiod_get_optional(dev, "backlight",
+ 							GPIOD_OUT_LOW);
+ 	if (IS_ERR(hd->pins[PIN_CTRL_BL])) {
+ 		ret = PTR_ERR(hd->pins[PIN_CTRL_BL]);
+-		goto fail;
++		goto fail3;
+ 	}
+ 
+ 	/* Required properties */
+ 	ret = device_property_read_u32(dev, "display-height-chars",
+ 				       &lcd->height);
+ 	if (ret)
+-		goto fail;
++		goto fail3;
+ 	ret = device_property_read_u32(dev, "display-width-chars", &lcd->width);
+ 	if (ret)
+-		goto fail;
++		goto fail3;
+ 
+ 	/*
+ 	 * On displays with more than two rows, the internal buffer width is
+@@ -264,13 +274,17 @@ static int hd44780_probe(struct platform_device *pdev)
+ 
+ 	ret = charlcd_register(lcd);
+ 	if (ret)
+-		goto fail;
++		goto fail3;
+ 
+ 	platform_set_drvdata(pdev, lcd);
+ 	return 0;
+ 
+-fail:
+-	charlcd_free(lcd);
++fail3:
++	kfree(hd);
++fail2:
++	kfree(lcd);
++fail1:
++	kfree(hdc);
+ 	return ret;
+ }
+ 
+@@ -278,9 +292,10 @@ static int hd44780_remove(struct platform_device *pdev)
+ {
+ 	struct charlcd *lcd = platform_get_drvdata(pdev);
+ 
++	kfree(lcd->drvdata);
+ 	charlcd_unregister(lcd);
+ 
+-	charlcd_free(lcd);
++	kfree(lcd);
+ 	return 0;
+ }
+ 
+diff --git a/drivers/auxdisplay/hd44780_common.c b/drivers/auxdisplay/hd44780_common.c
+new file mode 100644
+index 000000000000..2fdea29d6a8f
+--- /dev/null
++++ b/drivers/auxdisplay/hd44780_common.c
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++#include <linux/module.h>
++#include <linux/slab.h>
++
++#include "hd44780_common.h"
++
++struct hd44780_common *hd44780_common_alloc(void)
++{
++	struct hd44780_common *hd;
++
++	hd = kzalloc(sizeof(*hd), GFP_KERNEL);
++	if (!hd)
++		return NULL;
++
++	return hd;
++}
++EXPORT_SYMBOL_GPL(hd44780_common_alloc);
++
++MODULE_LICENSE("GPL");
+diff --git a/drivers/auxdisplay/hd44780_common.h b/drivers/auxdisplay/hd44780_common.h
+new file mode 100644
+index 000000000000..974868f7529c
+--- /dev/null
++++ b/drivers/auxdisplay/hd44780_common.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++
++struct hd44780_common {
++	void *hd44780;
++};
++
++struct hd44780_common *hd44780_common_alloc(void);
+diff --git a/drivers/auxdisplay/panel.c b/drivers/auxdisplay/panel.c
+index de623ae219f1..c3a60e190a7a 100644
+--- a/drivers/auxdisplay/panel.c
++++ b/drivers/auxdisplay/panel.c
+@@ -56,6 +56,7 @@
+ #include <linux/uaccess.h>
+ 
+ #include "charlcd.h"
++#include "hd44780_common.h"
+ 
+ #define LCD_MAXBYTES		256	/* max burst write */
+ 
+@@ -895,10 +896,20 @@ static const struct charlcd_ops charlcd_tilcd_ops = {
+ static void lcd_init(void)
+ {
+ 	struct charlcd *charlcd;
++	struct hd44780_common *hdc;
++
++	hdc = hd44780_common_alloc();
++	if (!hdc)
++		return;
+ 
+ 	charlcd = charlcd_alloc(0);
+-	if (!charlcd)
++	if (!charlcd) {
++		kfree(hdc);
+ 		return;
++	}
++
++	hdc->hd44780 = &lcd;
++	charlcd->drvdata = hdc;
+ 
+ 	/*
+ 	 * Init lcd struct with load-time values to preserve exact
+@@ -1620,7 +1631,7 @@ static void panel_attach(struct parport *port)
+ 	if (lcd.enabled)
+ 		charlcd_unregister(lcd.charlcd);
+ err_unreg_device:
+-	charlcd_free(lcd.charlcd);
++	kfree(lcd.charlcd);
+ 	lcd.charlcd = NULL;
+ 	parport_unregister_device(pprt);
+ 	pprt = NULL;
+@@ -1647,7 +1658,8 @@ static void panel_detach(struct parport *port)
+ 	if (lcd.enabled) {
+ 		charlcd_unregister(lcd.charlcd);
+ 		lcd.initialized = false;
+-		charlcd_free(lcd.charlcd);
++		kfree(lcd.charlcd->drvdata);
++		kfree(lcd.charlcd);
+ 		lcd.charlcd = NULL;
+ 	}
+ 
+-- 
+2.28.0
+
