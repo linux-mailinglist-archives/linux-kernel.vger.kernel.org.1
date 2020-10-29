@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BCF29EE23
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB32A29EE26
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727409AbgJ2OZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:25:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35413 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725300AbgJ2OZW (ORCPT
+        id S1727514AbgJ2O1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727217AbgJ2O0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:25:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603981520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A22khVtnKHqmoKyRs3jDxVOuQ05VtVhowd5o0DD3mL4=;
-        b=e/uDJYBS9PL8i6ch5VHIXzOEzW9ZWJGZEHDKzWPJ1zGqTzpurtn9Njvl0iq56MELw6u0DD
-        lz6xsRmjjcY0uZnaj5hmSPyC5CtLCCXYkkT7bOTtaH6iczELIrGYsNNhLU9HYkQ66NAjHg
-        pdOZvnwBylrbN4eFyjQTi21saIIJeKI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-227-uboe4UJLMa-Y0qxMm_OClQ-1; Thu, 29 Oct 2020 10:25:16 -0400
-X-MC-Unique: uboe4UJLMa-Y0qxMm_OClQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87BC3108E1B2;
-        Thu, 29 Oct 2020 14:25:15 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-116-17.rdu2.redhat.com [10.10.116.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F241F1002C05;
-        Thu, 29 Oct 2020 14:25:10 +0000 (UTC)
-Subject: Re: [PATCH] inotify: Increase default inotify.max_user_watches limit
- to 1048576
-To:     Jan Kara <jack@suse.cz>
-Cc:     Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luca BRUNO <lucab@redhat.com>
-References: <20201026204418.23197-1-longman@redhat.com>
- <20201027160012.GE16090@quack2.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <627e1342-a691-e8bc-0e09-f0ffd295f570@redhat.com>
-Date:   Thu, 29 Oct 2020 10:25:10 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Thu, 29 Oct 2020 10:26:11 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98665C0613D2;
+        Thu, 29 Oct 2020 07:26:11 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1kY8s6-00EpZx-Ey; Thu, 29 Oct 2020 15:25:46 +0100
+Message-ID: <bff39a3d645afc424478981cd7d9ad69c2b9b346.camel@sipsolutions.net>
+Subject: Re: [PATCH, net -> staging, v2] wimax: move out to staging
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org
+Date:   Thu, 29 Oct 2020 15:25:30 +0100
+In-Reply-To: <20201029134722.3965095-1-arnd@kernel.org>
+References: <20201029134722.3965095-1-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20201027160012.GE16090@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/20 12:00 PM, Jan Kara wrote:
-> On Mon 26-10-20 16:44:18, Waiman Long wrote:
->> The default value of inotify.max_user_watches sysctl parameter was set
->> to 8192 since the introduction of the inotify feature in 2005 by
->> commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
->> small for many modern usage. As a result, users have to explicitly set
->> it to a larger value to make it work.
->>
->> After some searching around the web, these are the
->> inotify.max_user_watches values used by some projects:
->>   - vscode:  524288
->>   - dropbox support: 100000
->>   - users on stackexchange: 12228
->>   - lsyncd user: 2000000
->>   - code42 support: 1048576
->>   - monodevelop: 16384
->>   - tectonic: 524288
->>   - openshift origin: 65536
->>
->> Each watch point adds an inotify_inode_mark structure to an inode to be
->> watched. Modeled after the epoll.max_user_watches behavior to adjust the
->> default value according to the amount of addressable memory available,
->> make inotify.max_user_watches behave in a similar way to make it use
->> no more than 1% of addressable memory within the range [8192, 1048576].
->>
->> For 64-bit archs, inotify_inode_mark should have a size of 80 bytes. That
->> means a system with 8GB or more memory will have the maximum value of
->> 1048576 for inotify.max_user_watches. This default should be big enough
->> for most of the use cases.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
-> So I agree that 8192 watches seem to be a bit low today but what you
-> propose seems to be way too much to me. OTOH I agree that having to tune
-> this manually kind of sucks so I'm for auto-tuning of the default. If the
-> computation takes into account the fact that a watch pins an inode as Amir
-> properly notes (that's the main reason why the number of watches is
-> limited), I think limiting to 1% of pinned memory should be bearable. The
-> amount of space pinned by an inode is impossible to estimate exactly
-> (differs for different filesystems) but about 1k for one inode is a sound
-> estimate IMO.
->
-> 								Honza
+On Thu, 2020-10-29 at 14:43 +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> There are no known users of this driver as of October 2020, and it will
+> be removed unless someone turns out to still need it in future releases.
+> 
+> According to https://en.wikipedia.org/wiki/List_of_WiMAX_networks, there
+> have been many public wimax networks, but it appears that many of these
+> have migrated to LTE or discontinued their service altogether.
+> As most PCs and phones lack WiMAX hardware support, the remaining
+> networks tend to use standalone routers. These almost certainly
+> run Linux, but not a modern kernel or the mainline wimax driver stack.
+> 
+> NetworkManager appears to have dropped userspace support in 2015
+> https://bugzilla.gnome.org/show_bug.cgi?id=747846, the
+> www.linuxwimax.org
+> site had already shut down earlier.
+> 
+> WiMax is apparently still being deployed on airport campus networks
+> ("AeroMACS"), but in a frequency band that was not supported by the old
+> Intel 2400m (used in Sandy Bridge laptops and earlier), which is the
+> only driver using the kernel's wimax stack.
+> 
+> Move all files into drivers/staging/wimax, including the uapi header
+> files and documentation, to make it easier to remove it when it gets
+> to that. Only minimal changes are made to the source files, in order
+> to make it possible to port patches across the move.
+> 
+> Also remove the MAINTAINERS entry that refers to a broken mailing
+> list and website.
+> 
+> Suggested-by: Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> changes in v2:
+> - fix a build regression
+> - add more information about remaining networks (Dan Carpenter)_
+> 
+> For v1, Greg said he'd appply the patch when he gets an Ack
+> from the maintainers.
+> 
+> Inaky, Johannes, Jakub: are you happy with this version?
 
-I will certainly do that. Will send out a v2 soon.
+Sure, looks fine to me.
 
-Cheers,
-Longman
+Acked-by: Johannes Berg <johannes@sipsolutions.net>
+
+Not that I have much relation to this code other than having fixed up
+genetlink stuff over the years :)
+
+johannes
 
