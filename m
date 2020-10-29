@@ -2,72 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E0D29DC63
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0CA29DC65
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388501AbgJ2A34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
+        id S2388555AbgJ2AaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728106AbgJ2A3p (ORCPT
+        with ESMTP id S1728804AbgJ2A34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 20:29:45 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6821FC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:29:45 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id r127so1064868lff.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:29:45 -0700 (PDT)
+        Wed, 28 Oct 2020 20:29:56 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B112C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:29:55 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id r127so1065238lff.12
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:29:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7jNAEm6Hi0csIlAhJak64h6CkXzGG/PjJ55O7rc69w0=;
-        b=dVbiFvDr5hJzG53SMPD8precPJBr4LhbfNdzfOWJKKosCPkE3U8Ech812UHrucQHfv
-         E6ottCjFlpuwTsu3cvPVUcLBNhLxknUL9qAC1EQEH5lFYv0YOqmeBBkai/fZm68Y1uGJ
-         OHmPM76qoxHM+OiAeFY4lENZ6ebZWLhWm47PA=
+        bh=z+29/TcPNhKLrZc8ORdUxnAs3h3uQuZ7mIPDZVUJNhE=;
+        b=mjZCnUlfK6dWPsPKI+FtqgKir5ir77qbH5PPTjHsAstFcaQBght75bUbcM8QL4XMgZ
+         uXGUZLDLijtdRpp0uijwwlaoXM7c/E+PwGTf76bdDNknKzfF1bXdU2DMmKx5naSxdH2F
+         gg5p07x6UbPa3aetX0I177kiA2ZTibPAxs3ts=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7jNAEm6Hi0csIlAhJak64h6CkXzGG/PjJ55O7rc69w0=;
-        b=ueRXNG1NcgCetwu6jOstSlIf2VIPjAHDd7KAwTkQ7O2+JH/O5qt/4e0VJWGq4PCsHQ
-         TRwh2qqK3MmKQpEXpa0lFQMFh/oWWUw8EXY4ic6sOnztn8aPHew9YTzxFqwNRxpW5pXu
-         gJq/lPVQ6FK9PDk9rlXy06+JAEEmPhJcbcw5peI/esh1SMCQ3OJOCE5xPxMUyA3XoILS
-         SUjcmAjScmQT41VZq/ttB8xSvDeX1gb59BaTxGhtGzoXNMHC2O/mmVGFaw+oGptBmUqi
-         2ANseQFY/LaKf/NQB9XEYcaAxE4bYDfg37axMrFLOLuBkeyr9nqRtGdy1jcycfWAIy4X
-         BvDA==
-X-Gm-Message-State: AOAM530ye5nuRO0ydz6n4co81sa0bMhVMkkN4EQOI08SfUMMaLdaoJqB
-        D1FFyFysPmW9YBc4Fesm2BvB80KHOnV1DQ==
-X-Google-Smtp-Source: ABdhPJwej/LcmCdCKWiEqFJ1F4ZhABLVyvjNxjpObmt6SbE4cs55MQVGp3ATxbmdNaLmTJKC1ezOjg==
-X-Received: by 2002:ac2:4244:: with SMTP id m4mr539980lfl.562.1603931383703;
-        Wed, 28 Oct 2020 17:29:43 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id m13sm105466lfl.269.2020.10.28.17.29.42
+        bh=z+29/TcPNhKLrZc8ORdUxnAs3h3uQuZ7mIPDZVUJNhE=;
+        b=gu1BssWhcW9bOGbGtt60yVsxmGLr1qzN8q60bTTaKhlOolpfAlYUaJ5d0Pjy57H3Dl
+         81bxkMxJiZqcraRmUqMZ//+yLDIK020x1pTi/FGLqua0502viBuqpsfkzWHSBBu6isY7
+         +i+QO7z8J44gIhEIxS+aXRYeMDiS445xcOUiZvvs2hdftoINFkXiAzUBEbBcia14WTOy
+         i2bI/TeIh9MTd8nAI11J4l+LMuD2GDrumtexWcQ+hRCvfCoJYFeSylFnPVWqrDs0Bhck
+         shMOOi/TtvH1ddEOjH+/TZzIdds8GA5406bTXxZGRYKcztKx5/7h8wUq2yNBQp07WTqX
+         +Ylw==
+X-Gm-Message-State: AOAM5335jgRuWbsmcgOvgdLdlnAU3C1l/pbSFD2yBBuw6DyVO7t52CO2
+        Yyra8nJl5ODdGkLcHL6aH+y17ejGMNRl0Q==
+X-Google-Smtp-Source: ABdhPJzdTfeidWknJUVcIysDuT4BgT+tqW8SuEm2NW40N160p9MKvM4ZDHvuuUbVX47Qqp07iGVhNA==
+X-Received: by 2002:ac2:43af:: with SMTP id t15mr532101lfl.42.1603931393656;
+        Wed, 28 Oct 2020 17:29:53 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id l14sm128397lji.123.2020.10.28.17.29.52
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 17:29:43 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id v6so1056302lfa.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:29:42 -0700 (PDT)
-X-Received: by 2002:a19:6b0d:: with SMTP id d13mr519613lfa.485.1603931382411;
- Wed, 28 Oct 2020 17:29:42 -0700 (PDT)
+        Wed, 28 Oct 2020 17:29:53 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id x16so1240502ljh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:29:52 -0700 (PDT)
+X-Received: by 2002:a2e:8e6c:: with SMTP id t12mr644560ljk.432.1603931392354;
+ Wed, 28 Oct 2020 17:29:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201016192654.32610-1-evgreen@chromium.org> <20201016122559.v2.1.I8b447ca96abfbef5f298d77350e6c9d1d18d00f6@changeid>
- <CAD=FV=VyBxXFLGsPZFpX29xFL5p8ZZPQ0uJEku3Wo04VFOEZOg@mail.gmail.com>
-In-Reply-To: <CAD=FV=VyBxXFLGsPZFpX29xFL5p8ZZPQ0uJEku3Wo04VFOEZOg@mail.gmail.com>
+References: <20201016192654.32610-1-evgreen@chromium.org> <20201016122559.v2.3.Ibb3eedcd634298b039e3af2ec43c7860ae947916@changeid>
+ <CAD=FV=WjMi6BdoEjDoM=U=ZHDMsFdLQSU5q20HGjc+DyfnrJEg@mail.gmail.com>
+In-Reply-To: <CAD=FV=WjMi6BdoEjDoM=U=ZHDMsFdLQSU5q20HGjc+DyfnrJEg@mail.gmail.com>
 From:   Evan Green <evgreen@chromium.org>
-Date:   Wed, 28 Oct 2020 17:29:05 -0700
-X-Gmail-Original-Message-ID: <CAE=gft5H5oq7pBg7JqRmrLybqmqOnk3T42orFNyY_vGEbXHTTg@mail.gmail.com>
-Message-ID: <CAE=gft5H5oq7pBg7JqRmrLybqmqOnk3T42orFNyY_vGEbXHTTg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: nvmem: Add soc qfprom compatible strings
+Date:   Wed, 28 Oct 2020 17:29:15 -0700
+X-Gmail-Original-Message-ID: <CAE=gft7SWv-QxddmobADpyUWLnrh=qsG=O7LkS+vMFZvP8JG2w@mail.gmail.com>
+Message-ID: <CAE=gft7SWv-QxddmobADpyUWLnrh=qsG=O7LkS+vMFZvP8JG2w@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] nvmem: core: Add support for keepout regions
 To:     Doug Anderson <dianders@chromium.org>
 Cc:     Rob Herring <robh+dt@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
@@ -80,49 +76,98 @@ On Wed, Oct 21, 2020 at 2:41 PM Doug Anderson <dianders@chromium.org> wrote:
 >
 > On Fri, Oct 16, 2020 at 12:27 PM Evan Green <evgreen@chromium.org> wrote:
 > >
-> > Add SoC-specific compatible strings so that data can be attached
-> > to it in the driver.
+> > Introduce support into the nvmem core for arrays of register ranges
+> > that should not result in actual device access. For these regions a
+> > constant byte (repeated) is returned instead on read, and writes are
+> > quietly ignored and returned as successful.
+> >
+> > This is useful for instance if certain efuse regions are protected
+> > from access by Linux because they contain secret info to another part
+> > of the system (like an integrated modem).
 > >
 > > Signed-off-by: Evan Green <evgreen@chromium.org>
 > > ---
 > >
 > > Changes in v2:
-> >  - Add other soc compatible strings (Doug)
-> >  - Fix compatible string definition (Doug)
+> >  - Introduced keepout regions into the core (Srini)
 > >
-> >  .../devicetree/bindings/nvmem/qcom,qfprom.yaml      | 13 ++++++++++++-
-> >  1 file changed, 12 insertions(+), 1 deletion(-)
+> >  drivers/nvmem/core.c           | 95 ++++++++++++++++++++++++++++++++--
+> >  include/linux/nvmem-provider.h | 17 ++++++
+> >  2 files changed, 108 insertions(+), 4 deletions(-)
 > >
-> > diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> > index 1a18b6bab35e7..eb1440045aff1 100644
-> > --- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> > +++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> > @@ -14,7 +14,18 @@ allOf:
+> > diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> > index a09ff8409f600..f7819c57f8828 100644
+> > --- a/drivers/nvmem/core.c
+> > +++ b/drivers/nvmem/core.c
+> > @@ -19,6 +19,9 @@
+> >  #include <linux/of.h>
+> >  #include <linux/slab.h>
 > >
-> >  properties:
-> >    compatible:
-> > -    const: qcom,qfprom
-> > +    items:
-> > +      - enum:
-> > +          - qcom,apq8064-qfprom
-> > +          - qcom,apq8084-qfprom
-> > +          - qcom,msm8974-qfprom
-> > +          - qcom,msm8916-qfprom
-> > +          - qcom,msm8996-qfprom
-> > +          - qcom,msm8998-qfprom
-> > +          - qcom,qcs404-qfprom
-> > +          - qcom,sc7180-qfprom
-> > +          - qcom,sdm845-qfprom
-> > +      - const: qcom,qfprom
-> >
-> >    reg:
-> >      # If the QFPROM is read-only OS image then only the corrected region
+> > +#define MAX(a, b) ((a) > (b) ? (a) : (b))
+> > +#define MIN(a, b) ((a) < (b) ? (a) : (b))
 >
-> As Rob's bot found, your example no longer matches your requirements.
-> It needs an SoC-specific string plus the "qcom,qfprom".  It's always
-> good to try running "make dt_binding_check" to catch these sorts of
-> things.
+> Why not use min() / max() macros from include/linux/kernel.h?
+>
 
-Thanks Doug, will do for the next spin!
+Done
 
--Evan
+>
+> > +static int nvmem_access_with_keepouts(struct nvmem_device *nvmem,
+> > +                                     unsigned int offset, void *val,
+> > +                                     size_t bytes, int write)
+> > +{
+> > +
+> > +       unsigned int end = offset + bytes;
+> > +       unsigned int kend, ksize;
+> > +       const struct nvmem_keepout *keepout = nvmem->keepout;
+> > +       const struct nvmem_keepout *keepoutend = keepout + nvmem->nkeepout;
+> > +       int rc;
+> > +
+> > +       /* Skip everything before the range being accessed */
+>
+> nit: "Skip everything" => "Skip all keepouts"
+>
+> ...might not hurt to remind here that keepouts are sorted?
+
+Done
+
+>
+>
+> > +       while ((keepout < keepoutend) && (keepout->end <= offset))
+> > +               keepout++;
+> > +
+> > +       while ((offset < end) && (keepout < keepoutend)) {
+> > +
+>
+> nit: remove blank line?
+
+Done
+
+>
+>
+> > @@ -647,6 +732,8 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
+> >         nvmem->type = config->type;
+> >         nvmem->reg_read = config->reg_read;
+> >         nvmem->reg_write = config->reg_write;
+> > +       nvmem->keepout = config->keepout;
+> > +       nvmem->nkeepout = config->nkeepout;
+>
+> It seems like it might be worth adding something to validate that the
+> ranges are sorted and return an error if they're not.
+>
+> Maybe worth validating (and documenting) that the keepouts won't cause
+> us to violate "stride" and/or "word_size" ?
+
+Done
+
+>
+>
+> Everything above is just nits and other than them this looks like a
+> nice change.  BTW: this is the kind of thing that screams for unit
+> testing, though that might be a bit too much of a yak to shave here?
+
+It would be cool, but I'll leave that for another time. Thanks for the
+review, Doug!
+
+>
+> -Doug
