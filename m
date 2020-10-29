@@ -2,85 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70CD729F15A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A8029F15F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgJ2Q0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:26:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45312 "EHLO mail.kernel.org"
+        id S1726618AbgJ2Q06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:26:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725764AbgJ2Q02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:26:28 -0400
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726177AbgJ2Q06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:26:58 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A74321481;
-        Thu, 29 Oct 2020 16:26:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 611922076E;
+        Thu, 29 Oct 2020 16:26:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603988787;
-        bh=AGbrClZ+VS8MDj4+qu/P79fbZI0a9Y/wZY03UqXvbIQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=1J75wL+fenl4QtKgToscDvcdRQgeJ9ckPQzCnFCgel1JGTOeHbz6thszvlkzq7Yc0
-         afy5SOlJVefndRFGV2SkdGCmJhln4lVP1Vq8/bs74oxMQ9ihBEJRfif0zHcMKHy4By
-         5P4ZjX7werGj7uRVG5cn2B9QiF1paJuVsL9yFAfs=
-Received: by mail-qk1-f177.google.com with SMTP id x20so2457693qkn.1;
-        Thu, 29 Oct 2020 09:26:27 -0700 (PDT)
-X-Gm-Message-State: AOAM532oZamSEpPYosHYFHQHUkwyYgYUxY5Lm21ImTSJdy9BaEYArJ5h
-        HE0ZknshwMjCJBJGMId7nHUPIVJKUR68E6tnii4=
-X-Google-Smtp-Source: ABdhPJyKhwYeabEUTLeiqjDrdTiy26Ddcp+Fv2Yu27W3qNBlCpIN9wtSAH4ct8Pp5ZNA5hi9rwB4IlEYlt8RC94tdJo=
-X-Received: by 2002:a05:620a:b13:: with SMTP id t19mr4215522qkg.3.1603988786437;
- Thu, 29 Oct 2020 09:26:26 -0700 (PDT)
+        s=default; t=1603988817;
+        bh=t+PBJ0NHId5QAZDzuBrDGNlV6g1PCH9iZXJKI+sMxMw=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=AVQf49UmZSCKirXj8VEFT7AM5GxmOOW2d1zUOMzZL+fF9cKQfQPy+RA/vxrnvAdIl
+         YNViTwonflNW7tToWEuTx/vKAURkz4BULmyNJGUGG++LI65Lizy/glAXE1wFc93ssu
+         8XBUL51CsE7vfoA3hxd4g6Tgv/G9qmhgdf5E2m4I=
+Date:   Thu, 29 Oct 2020 16:26:50 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        lgirdwood@gmail.com, Rob Herring <robh@kernel.org>
+In-Reply-To: <20201029101550.31695-1-srinivas.kandagatla@linaro.org>
+References: <20201029101550.31695-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 1/2] ASoC: qcom: dt-bindings: sm8250: update compatibles
+Message-Id: <160398881039.39922.12061096532284319098.b4-ty@kernel.org>
 MIME-Version: 1.0
-References: <20201027212448.454129-1-arnd@kernel.org> <20201028055628.GB244117@kroah.com>
- <20201029085627.698080a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201029085627.698080a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 29 Oct 2020 17:26:09 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0+C450705M2-mHtvoS1Ogb4YiBCq830d1KAgodKpWK4A@mail.gmail.com>
-Message-ID: <CAK8P3a0+C450705M2-mHtvoS1Ogb4YiBCq830d1KAgodKpWK4A@mail.gmail.com>
-Subject: Re: [RFC] wimax: move out to staging
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-n Thu, Oct 29, 2020 at 4:56 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> On Wed, 28 Oct 2020 06:56:28 +0100 Greg Kroah-Hartman wrote:
-> > On Tue, Oct 27, 2020 at 10:20:13PM +0100, Arnd Bergmann wrote:
-> >
-> > Is this ok for me to take through the staging tree?  If so, I need an
-> > ack from the networking maintainers.
-> >
-> > If not, feel free to send it through the networking tree and add:
-> >
-> > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> Thinking about it now - we want this applied to -next, correct?
-> In that case it may be better if we take it. The code is pretty dead
-> but syzbot and the trivial fix crowd don't know it, so I may slip,
-> apply something and we'll have a conflict.
+On Thu, 29 Oct 2020 10:15:49 +0000, Srinivas Kandagatla wrote:
+> Update compatible string as board compatible and device compatible
+> should not be same!. New compatible is now suffixed with -sndcard
+> to be inline with other Qualcomm Sound cards.
+> 
+> This also fixes the warnings/error reported by dt_binding_check.
 
-I think git will deal with a merge between branches containing
-the move vs fix, so it should work either way.
+Applied to
 
-A downside of having the move in net-next would be that
-you'd get trivial fixes send to Greg, but him being unable to
-apply them to his tree because the code is elsewhere.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-If you think it helps, I could prepare a pull request with this one
-patch (and probably the bugfix I sent first that triggered it), and
-then you can both merge the branch into net-next as well
-as staging-next.
+Thanks!
 
-      Arnd
+[1/2] ASoC: qcom: dt-bindings: sm8250: update compatibles
+      commit: a889583a19206636082c44625141b26392e46a62
+[2/2] ASoC: qcom: sm8250: update compatible with new bindings
+      commit: bbc4e1bb5fd6577ed668e7c2ba0705dff1783bce
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
