@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C6F29F095
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCED929F097
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728563AbgJ2PxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728172AbgJ2PxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:53:07 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38707C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:53:07 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id 2so3582843ljj.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MUp5qMqJOVbZKYoMqJH3XNqp7xnfXB9wzQttcgJOSd8=;
-        b=cbK+yBgzyQXmtq+AD9wEnzaVNXe3mfmDrMTEqViTBtdbqHEURNS9luA0TyLL4nib30
-         3Boxh9kOZuUY6VQJFAygdY2G/XhItlHRWqpCzGXy0TGt+a6ZGpmx0H5vJyv1/oxNH5Lx
-         i/xJv2TVagtyrnp857y3WB+q1jPwQbfDjDVUHXiJlBCpCalLGRWzFFGhmXzUUxQ1HOz1
-         PT5Jy/Z6QCT1J2noMaD3WXT+b9QyC3cSxQCoFRfderFo1vjlHqQKFlQZkosRXhQiHzC2
-         qzuInwS3JX8FWL4UhHPNiE9oPFFNBjTTBGffzvpUFhyhtsXoDQ3oxDrAUgIf2njzqj5P
-         Gp8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MUp5qMqJOVbZKYoMqJH3XNqp7xnfXB9wzQttcgJOSd8=;
-        b=Teq+WPI8RTCC4YxDr4QZIt13GQau+SqUQ9oQDuUXdPm6bB6vZQrGDu6c2E/UrlZEnW
-         vj2EhmlsktPCWVuihCHnfInXXGb1Nzjo1KU8d0U9BI4NDIjtO/ojpSx9zkgvHgIE3z3Q
-         SgL7gSGmuFla5/qPY5+eCKTduhEPCOwdXSJf6Jn7fwVW6cqeghQ4DZNOAhiIoM4AxEEN
-         Aq1eurzF8vSUvrMIRkVf8RTRwKM2jtMuxQSQvrYWHYZVIVsBXGKJKSiNVlVWT7FFLLGc
-         Fgbmi6F4osDtpKwnGob2iOretqDIVF2brtByq4e8HcuQDHLqdEt8OaytSVYs4yDl0wQm
-         53zg==
-X-Gm-Message-State: AOAM5304LlWU8m2tVdFZraCSMu+Jj/9HFCPjOEKH/ISZlyV+wfFfNrSE
-        /YN00o5iYtKUE5dPPTwuyIyTLBi/4VoHIWZWwY+VBQ==
-X-Google-Smtp-Source: ABdhPJye3zEoAgWwSugrZfe85uL6Pkay9ZQKPWHjAkEPbGsa7tncJVrylxDIVaK+KmISLE0L4reaqNhl84MD847oGco=
-X-Received: by 2002:a2e:9f05:: with SMTP id u5mr1988377ljk.192.1603986785403;
- Thu, 29 Oct 2020 08:53:05 -0700 (PDT)
+        id S1728352AbgJ2Py4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:54:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727966AbgJ2Pyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:54:55 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A8C0206B2;
+        Thu, 29 Oct 2020 15:54:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603986895;
+        bh=87aI4/JSMDDksYiET/w/mskCfHBQKdtbdR1IFIz2HlE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UBHEU8f0aEe2A/0HMk7c+LCoGolhLfFyok4S0WPt/8F4nJvewDoafydRcDs9V+Tbn
+         0G8iqUnYBYI9na/qMiiHNaV8IBESTZ1sVK3+tw8Q455FAx+c7PRi1qORc3/mHApK5X
+         mRZDf2MVLaM6nVZkpr88N7YI+4sSDCs968KKURAY=
+Date:   Thu, 29 Oct 2020 08:54:53 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [f2fs-dev] [PATCH v5 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
+ ioctl
+Message-ID: <20201029155453.GB849@sol.localdomain>
+References: <20201029041538.4165209-1-daeho43@gmail.com>
+ <20201029041538.4165209-2-daeho43@gmail.com>
+ <92f4da8e-27a1-7577-84f9-39038eaa88cb@huawei.com>
 MIME-Version: 1.0
-References: <20201028035013.99711-1-songmuchun@bytedance.com> <20201028035013.99711-3-songmuchun@bytedance.com>
-In-Reply-To: <20201028035013.99711-3-songmuchun@bytedance.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 29 Oct 2020 08:52:54 -0700
-Message-ID: <CALvZod5PcvSOszj7L-qbh_mOmKRwsrH+4Er_vQAiRqRf9GhcnA@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: memcg/slab: Rename *_lruvec_slab_state to *_lruvec_kmem_state
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Chris Down <chris@chrisdown.name>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92f4da8e-27a1-7577-84f9-39038eaa88cb@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 8:51 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> The *_lruvec_slab_state is also suitable for pages allocated from buddy,
-> not just for the slab objects. But the function name seems to tell us that
-> only slab object is applicable. So we can rename the keyword of slab to
-> kmem.
->
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Roman Gushchin <guro@fb.com>
+On Thu, Oct 29, 2020 at 03:29:17PM +0800, Chao Yu wrote:
+> > +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+> > +{
+> > +	struct inode *inode = file_inode(filp);
+> > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+> > +	struct f2fs_comp_option option;
+> > +	int ret = 0;
+> > +
+> > +	if (!f2fs_sb_has_compression(sbi))
+> > +		return -EOPNOTSUPP;
+> > +
+> > +	if (!(filp->f_mode & FMODE_WRITE))
+> > +		return -EBADF;
+> > +
+> > +	if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg,
+> > +				sizeof(option)))
+> > +		return -EFAULT;
+> > +
+> > +	if (!f2fs_compressed_file(inode) ||
+> > +			option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
+> > +			option.log_cluster_size > MAX_COMPRESS_LOG_SIZE ||
+> > +			option.algorithm >= COMPRESS_MAX)
+> > +		return -EINVAL;
+> > +
+> > +	file_start_write(filp);
+> > +	inode_lock(inode);
+> > +
+> > +	if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
+> > +		ret = -EBUSY;
+> > +		goto out;
+> > +	}
+> > +
+> > +	if (inode->i_size != 0) {
+> > +		ret = -EFBIG;
+> > +		goto out;
+> > +	}
+> 
+> Hmm...
+> 
+> Shouldn't it be:
+> 
+> if (algorithm >= COMPRESS_MAX) {
+> 	ret = -ENOPKG;
+> 	goto out;
+> }
+> 
+> if (!f2fs_cops[algorithm])
+> 	f2fs_warn(...);
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Note that my intent with recommending ENOPKG was for it to be returned in the
+!f2fs_cops[algorithm] case, similar to how opening an encrypted file when the
+encryption algorithm is recognized but not supported by the kernel returns
+ENOPKG.  For a truly unrecognized algorithm (algorithm >= COMPRESS_MAX), EINVAL
+would probably be more appropriate.  So if !f2fs_cops[algorithm] is now allowed,
+then ENOPKG should no longer be among the error codes this ioctl returns.
+
+- Eric
