@@ -2,124 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB5829ED41
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFA429ED45
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:43:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725994AbgJ2Nmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727480AbgJ2Nmc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:42:32 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5B0C0613D8;
-        Thu, 29 Oct 2020 06:42:26 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id i1so2858588wro.1;
-        Thu, 29 Oct 2020 06:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1m9RdrkV/XMaXPplxU/cDwehV/41DxDWVqQGV0at6mc=;
-        b=IQaEcXc4Z7jh1k0Y1HjORcbSsyYxotFgW/2kxDTYxtODINK5l5dLS2J5UOLbUbqaaa
-         YJYRct1xyq6yyGpJRc2Y4InVPjrGX349rtH+JsTIzplvHzL4LbdqQPXxfVlj6CxYqGEF
-         g+5qyg7XyhcjZwlTPRikuOcQ5pgFss4LMXXgR9aoPfbvcsbahxA0e/uoGGQJw8gwSy+A
-         UnNyxF3j0WIHYtE9GWq1ZkWzl7P4eOpNIT0IQLX9JJUQtKOyrUrKkS18K0Shqw14RY1H
-         Ns0uGok62zEj/7/EpPfWnE0tC5tOY7fZLSAr79tmw4xS0sWWV/JVy9Ri6wt7ItdCRXI+
-         Y4hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1m9RdrkV/XMaXPplxU/cDwehV/41DxDWVqQGV0at6mc=;
-        b=t7IuoF8zH/MZcT+1KATTLrAUgEmr6Fn0v7WLwHudLnkvltZjI2zohNb6AajMLrK3Ab
-         Ea/jZvC7lOPUTciilW41mHe/d1YcphK/E1Bpx1WgT6iPXkveAHqJnxCrGYcvhTCE42bD
-         d2VeScDIiQe2wTAfqdT0usaNVIsBv9ckeZQfYChjgg0PUXe0iP2duGgIg1p9CpOS+Q/4
-         ZVpSGYVulP9HqaUcL44klP5mHYGlejA9t8mcLhvau9QyHGdx/AzcKKeclkJzemsXJ6Lo
-         nQx8cl8XlGKYH76Rluj58IzR9mdxOJQgYI864P/xLjasCt82PVQrYskIOquMX32+m9h8
-         pmjg==
-X-Gm-Message-State: AOAM531TsVDdPZmDu7t943k7rU3XXod27rVs398bSKD7kUgSV2Yb3Cyd
-        qbrVY6+NMwsjVXi4hsTadrM=
-X-Google-Smtp-Source: ABdhPJxukwTn1a0aCVQhArgKwMSZ/Ly647l/BY4IhoGYXWvH2sk7r221/e104o3eQ5O13uvHFD7g9g==
-X-Received: by 2002:a5d:4d0c:: with SMTP id z12mr6273888wrt.60.1603978945397;
-        Thu, 29 Oct 2020 06:42:25 -0700 (PDT)
-Received: from localhost.localdomain ([170.253.60.68])
-        by smtp.googlemail.com with ESMTPSA id j13sm5360115wru.86.2020.10.29.06.42.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 06:42:24 -0700 (PDT)
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-To:     mtk.manpages@gmail.com
-Cc:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
-        linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
-        libc-alpha@sourceware.org
-Subject: [PATCH v2] getdents.2: Use appropriate types
-Date:   Thu, 29 Oct 2020 14:42:11 +0100
-Message-Id: <20201029134210.191970-1-colomar.6.4.3@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <1195fda6-4de3-09fc-8653-42655d7e2b76@gmail.com>
-References: <1195fda6-4de3-09fc-8653-42655d7e2b76@gmail.com>
+        id S1727666AbgJ2Nmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:42:53 -0400
+Received: from mga17.intel.com ([192.55.52.151]:45898 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727632AbgJ2Nms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 09:42:48 -0400
+IronPort-SDR: 4/j4CAIlHyBFeSDmpy5TjqNbU9FUnmKh3b0M50btN858QUDdkEvzVGJmmyxm/9qbXdWgydi0qL
+ vkekxDXokVdA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="148288369"
+X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; 
+   d="scan'208";a="148288369"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 06:42:46 -0700
+IronPort-SDR: +kfBAlnMbNtOqXGBQYL4Z4MEgSxYb5zB9LDEeMrva0cb8J3CmjDCCki0RfRlaMA4E8Khg+LLdx
+ xUeIhstq4W9A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; 
+   d="scan'208";a="323707903"
+Received: from lkp-server01.sh.intel.com (HELO c01187be935a) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 29 Oct 2020 06:42:45 -0700
+Received: from kbuild by c01187be935a with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kY8CS-00006e-JO; Thu, 29 Oct 2020 13:42:44 +0000
+Date:   Thu, 29 Oct 2020 21:42:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/uapi/fam1/ipv4_6] BUILD SUCCESS
+ a841122b213f5a2106a9321e905da233c8a86390
+Message-ID: <5f9ac6cf.aWpjHOXOIbcQf8Xa%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-getdents():
-This function has no glibc wrapper.
-As such, we should use the same types the Linux kernel uses:
-Use 'long' as the return type.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/uapi/fam1/ipv4_6
+branch HEAD: a841122b213f5a2106a9321e905da233c8a86390  net/ipv4/ipv6: Replace one-element array with flexible-array member
 
-getdents64():
-The glibc wrapper uses ssize_t for the return type,
-and 'size_t' for the count argument.
+elapsed time: 724m
 
-Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+configs tested: 115
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+m68k                        m5307c3_defconfig
+c6x                                 defconfig
+arm                          prima2_defconfig
+ia64                          tiger_defconfig
+openrisc                         alldefconfig
+powerpc                 mpc8272_ads_defconfig
+mips                        maltaup_defconfig
+sh                           se7721_defconfig
+arc                          axs103_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                       aspeed_g5_defconfig
+sh                            shmin_defconfig
+c6x                              alldefconfig
+arm                      integrator_defconfig
+arm                         shannon_defconfig
+sh                            titan_defconfig
+sh                        sh7785lcr_defconfig
+mips                 decstation_r4k_defconfig
+arm                      jornada720_defconfig
+arc                                 defconfig
+nios2                            allyesconfig
+powerpc                      katmai_defconfig
+mips                          rb532_defconfig
+arm                         s5pv210_defconfig
+arm                          tango4_defconfig
+arm                          badge4_defconfig
+powerpc                     tqm8540_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arc                     haps_hs_smp_defconfig
+arm                  colibri_pxa270_defconfig
+sh                           sh2007_defconfig
+sh                          rsk7201_defconfig
+mips                malta_qemu_32r6_defconfig
+sh                             espt_defconfig
+arm                          ixp4xx_defconfig
+um                            kunit_defconfig
+m68k                          multi_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20201029
+i386                 randconfig-a005-20201029
+i386                 randconfig-a003-20201029
+i386                 randconfig-a001-20201029
+i386                 randconfig-a004-20201029
+i386                 randconfig-a006-20201029
+x86_64               randconfig-a011-20201028
+x86_64               randconfig-a013-20201028
+x86_64               randconfig-a016-20201028
+x86_64               randconfig-a015-20201028
+x86_64               randconfig-a012-20201028
+x86_64               randconfig-a014-20201028
+i386                 randconfig-a016-20201029
+i386                 randconfig-a014-20201029
+i386                 randconfig-a015-20201029
+i386                 randconfig-a013-20201029
+i386                 randconfig-a012-20201029
+i386                 randconfig-a011-20201029
+i386                 randconfig-a016-20201028
+i386                 randconfig-a014-20201028
+i386                 randconfig-a015-20201028
+i386                 randconfig-a013-20201028
+i386                 randconfig-a012-20201028
+i386                 randconfig-a011-20201028
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a001-20201028
+x86_64               randconfig-a002-20201028
+x86_64               randconfig-a003-20201028
+x86_64               randconfig-a006-20201028
+x86_64               randconfig-a005-20201028
+x86_64               randconfig-a004-20201028
+
 ---
- man2/getdents.2 | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/man2/getdents.2 b/man2/getdents.2
-index a187fbcef..e14627e6e 100644
---- a/man2/getdents.2
-+++ b/man2/getdents.2
-@@ -33,14 +33,14 @@
- getdents, getdents64 \- get directory entries
- .SH SYNOPSIS
- .nf
--.BI "int getdents(unsigned int " fd ", struct linux_dirent *" dirp ,
-+.BI "long getdents(unsigned int " fd ", struct linux_dirent *" dirp ,
- .BI "             unsigned int " count );
- .PP
- .BR "#define _GNU_SOURCE" "        /* See feature_test_macros(7) */"
- .B #include <dirent.h>
- .PP
--.BI "int getdents64(unsigned int " fd ", struct linux_dirent64 *" dirp ,
--.BI "             unsigned int " count );
-+.BI "ssize_t getdents64(unsigned int " fd ", struct linux_dirent64 *" dirp ,
-+.BI "             size_t " count );
- .fi
- .PP
- .IR Note :
-@@ -282,7 +282,8 @@ struct linux_dirent {
- int
- main(int argc, char *argv[])
- {
--    int fd, nread;
-+    int fd;
-+    long nread;
-     char buf[BUF_SIZE];
-     struct linux_dirent *d;
-     char d_type;
-@@ -301,7 +302,7 @@ main(int argc, char *argv[])
- 
-         printf("\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- nread=%d \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\en", nread);
-         printf("inode#    file type  d_reclen  d_off   d_name\en");
--        for (int bpos = 0; bpos < nread;) {
-+        for (long bpos = 0; bpos < nread;) {
-             d = (struct linux_dirent *) (buf + bpos);
-             printf("%8ld  ", d\->d_ino);
-             d_type = *(buf + bpos + d\->d_reclen \- 1);
--- 
-2.28.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
