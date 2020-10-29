@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79AFE29F941
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 00:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6B529F944
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 00:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgJ2Xtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 19:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39734 "EHLO
+        id S1725952AbgJ2XxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 19:53:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgJ2Xtl (ORCPT
+        with ESMTP id S1725372AbgJ2XxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 19:49:41 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA64C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 16:49:41 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id x1so4855074eds.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 16:49:40 -0700 (PDT)
+        Thu, 29 Oct 2020 19:53:15 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00880C0613CF;
+        Thu, 29 Oct 2020 16:53:13 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id r10so3648793pgb.10;
+        Thu, 29 Oct 2020 16:53:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lYbBo34otKohd0s7kTm1XugNJiCX5mPJkPuJ3gJnJIM=;
-        b=rvks6cEna40F2UhnrFGRWKupODeV/ihrOcGqTOFYnt7HHXV95LQD+TigT1UNqohSHj
-         8ONmFiGA6W7PLWvhl4PRM1lwNjWlIxkVyQ9h6AnIlPQ3RHP1j5T0RDZ5KL0jvawxnCxw
-         A95d5LVttZeRDzZzlqmwmX1T1BwSneOedsT7+JoU7QpX3F+Z1Ku83e1lk4O2pHezjUvg
-         oTLdm82in+NwI3wgrjaUJIeUHDPHS936uxYyTmYbcLvPFJJSk8pw3yDNQOXwdU4AmJS1
-         rLdHOQSF3NMTHeNzc11d0zdaKi+RCGAu94Zn/i0yRK9gXuWDYZ3d76iUZvlnRHZfCHFU
-         RnEA==
+        bh=iajN6+Bdu9Z9/QCDKIFZkvulhDtiIEMGuk/fU8yMhhw=;
+        b=syb75leUvcZrKb4pYQqARaf+cCz5vU4rIAhGUkYoFGZ3mYSh3rpps0kcDiRmuAxxNQ
+         pwWuSCrKTupelZ7LJLE+zFJuOhImGjRDwu3oSlYSN+ZzDMnZj9HLYVAscfgfIyk70Dcl
+         0rMzSPq/IGgqaRZc6OgE3j5S1h29vDVTPx9UXgtFz2fxXvh8KL0cI6km8dO4yArQEcIE
+         KRqDImZ0tMpXYFLvZVxhWbhU0m8v+19aEdBpDnWQpJ6gLNz5QYygkJdMWykUHFcyC3Bz
+         wtW29OLb/MJfADzI0v+pKH5brNach5tIMMVq1H3EVMjWkUMJyVxEi9G1j1p0sYJFpMKl
+         FtcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lYbBo34otKohd0s7kTm1XugNJiCX5mPJkPuJ3gJnJIM=;
-        b=ZRHdOgwQXLoiDAjjj4pb9Z/Vnjcy0E0FaAzYVqH/B2RPVYnFkaYo4WfXPzuZV/1gNh
-         p7u+j7JUTICab5ae5EsugmExbLxeV/4gg/nJs/20oUCJD2HO9BRfwwPFMQ/4bJavz4k/
-         t9dXILuZ8+saDF7rb+VcDS1xs/BYdmi9nQlFy68WU2jvaAA6gPOE9mxDOrk5h7fol8ay
-         +PnSEQ1CSsXQ8jXGUdb1xT2M3mSqbUi/GsvQ0kmYHVFLRZ/PC8N6LH/FVwPcQBeCdPsC
-         wyT4KZ9em6o67bWpX4oi/yvO+56Nm5Jk5ePOUnwNnfsOuwPa35fHYi9P0+gELYyvMzmU
-         XQUA==
-X-Gm-Message-State: AOAM531G0kVdhsBIcEsJXf/fVZhNuldoa2Kkb1Iza6ZP6BZ0Z9x92fWq
-        w5FBxh3eirlEzJX3UNby9FB2P2lZDS+Td/gcQ5t/ew==
-X-Google-Smtp-Source: ABdhPJy7mdATEbwlejokklHReFhi0lUGuX9LnD3I5X1m+d1wj3h3Saea3LsTHoX+TA722sj5Kz2+SOM2mb8RVPSIsF4=
-X-Received: by 2002:a05:6402:1201:: with SMTP id c1mr6805498edw.210.1604015378972;
- Thu, 29 Oct 2020 16:49:38 -0700 (PDT)
+        bh=iajN6+Bdu9Z9/QCDKIFZkvulhDtiIEMGuk/fU8yMhhw=;
+        b=lrxQOLdAaxOqFSduHxS6Zgz/mTyHJBndCGj5O1laBmXgf2qRuCXyrsdGUzuBuSoCiV
+         1DIyOev0aSUyCX+Tqfv5RqAIuP6tw4OX7F3XmN91uVRdBtzeKBWjs11THHQeqWc/DtNJ
+         fRyHyPNAtfBv/PzEIVRcEIrT4S4tFxgjz58WdccPeI8BtSs3J3nR6RR43fJwoYz19fy4
+         ax/PkxyUFhHX6umKZK63cQHEd55cjYRMvJT2rnjcZHvvDYl6ajp0bTaIDPm5k+nv9vF2
+         IYlbLMMY+Jplh5Q6SUHPKmyINOMyOSwhqWl849k4dtMCq5bzlB5zmnsK174QOLTmVK+E
+         YZIQ==
+X-Gm-Message-State: AOAM531K8miTF27bGlNcRsFKyLhsXzc3KfFLyVt3ng86sFqYLhOFCG/W
+        UnjICjrR/EfNGxTRZ9EbwIsb33toRq5XVJvb9lk=
+X-Google-Smtp-Source: ABdhPJzEuZehZt2BgAN6UUK1QkfgpHOZrvzWbnofNfU1fdvyPejsjAsBJse4XDrSnk5dErN++f/Mr9qV533qEt581rI=
+X-Received: by 2002:a65:52cb:: with SMTP id z11mr5929253pgp.368.1604015593456;
+ Thu, 29 Oct 2020 16:53:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <87sg9wodp1.fsf@nanos.tec.linutronix.de> <CAPcyv4hBSwdDocpgFh2=qbVQN=Mc+15cW4cV5m_S-SxVCYY=mA@mail.gmail.com>
- <20201029230920.GA32559@intel.com> <d066788b-0f69-37e5-fd5c-12755f498677@infradead.org>
- <8613f74e-b774-a544-60df-b8012cc4ee14@infradead.org>
-In-Reply-To: <8613f74e-b774-a544-60df-b8012cc4ee14@infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 29 Oct 2020 16:49:23 -0700
-Message-ID: <CAPcyv4g1XNrpTHmEAuXetg4uU=E4fRZ7MwqdfbUBJwkCEP+Vqw@mail.gmail.com>
-Subject: Re: [Build fail] i386 & nvdimm is unhappy
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Philip Li <philip.li@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kbuild test robot <lkp@intel.com>
+References: <20201028131807.3371-1-xie.he.0141@gmail.com> <20201028131807.3371-5-xie.he.0141@gmail.com>
+ <CA+FuTSeBZWsy4w4gdPU2sb2-njuEiqbXMgfnA5AdsXkNr__xRA@mail.gmail.com>
+In-Reply-To: <CA+FuTSeBZWsy4w4gdPU2sb2-njuEiqbXMgfnA5AdsXkNr__xRA@mail.gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Thu, 29 Oct 2020 16:53:02 -0700
+Message-ID: <CAJht_EMOxSn-hraig1jnF_KwNsYaCYnwaZvVH7rutdS0Lj0sGA@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 4/4] net: hdlc_fr: Add support for any Ethertype
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 4:29 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+On Thu, Oct 29, 2020 at 10:24 AM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
 >
-> On 10/29/20 4:13 PM, Randy Dunlap wrote:
-> > On 10/29/20 4:09 PM, Philip Li wrote:
-> >> On Thu, Oct 29, 2020 at 03:52:42PM -0700, Dan Williams wrote:
-> >>> On Thu, Oct 29, 2020 at 3:44 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >>>>
-> >>>> Dan,
-> >>>>
-> >>>> x86 32bit build fails with the config below with this:
-> >>>>
-> >>>>   ERROR: modpost: "phys_to_target_node" [drivers/nvdimm/nd_e820.ko]
-> >>>>   undefined!
-> >>>
-> >>> Acknowledged, I'm on it.
-> >>>
-> >>> Wonder how 0-day missed this or I missed the 0-day report?
-> >> Sorry about this Dan. Can you share some info like which kconfig and bad commit?
-> >> We will investigate this to provide update in earliest time.
-> >>
-> >> Thanks
-> >>
-> >>>
-> >
-> > I posted earlier today about the same failure on x86_64 & linux-next:
-> >
-> > https://lore.kernel.org/linux-next/0faac4da-a7bc-3fc7-e278-ad4f72499224@infradead.org/T/#u
-> >
-> >
-> > Thomas and I both included kernel config files.
-> >
+> > Also add skb_reset_mac_header before we pass an skb (received on normal
+> > PVC devices) to upper layers. Because we don't use header_ops for normal
+> > PVC devices, we should hide the header from upper layer code in this case.
 >
-> Here is a patch that Dan was cc-ed on.
->
-> https://lore.kernel.org/linux-mm/aaae71a7-4846-f5cc-5acf-cf05fdb1f2dc@oracle.com/
+> This should probably be a separate commit
 
-Thanks for that archaeology Randy. That was when I was out on leave
-and I apologize for missing it. I'll get that merged up.
+OK. I'll make it a separate commit in the next version of the series. Thanks!
+
+> Does it make sense to define a struct snap_hdr instead of manually
+> casting all these bytes?
+
+> And macros or constant integers to self document these kinds of fields.
+
+Yes, we can define a struct snap_hdr, like this:
+
+struct snap_hdr {
+        u8 oui[3];
+        __be16 pid;
+} __packed;
+
+And then the fr_snap_parse function could be like this:
+
+static int fr_snap_parse(struct sk_buff *skb, struct pvc_device *pvc)
+{
+       struct snap_hdr *hdr = (struct snap_hdr *)skb->data;
+
+       if (hdr->oui[0] == OUI_ETHERTYPE_1 &&
+           hdr->oui[1] == OUI_ETHERTYPE_2 &&
+           hdr->oui[2] == OUI_ETHERTYPE_3) {
+               if (!pvc->main)
+                       return -1;
+               skb->dev = pvc->main;
+               skb->protocol = hdr->pid; /* Ethertype */
+               skb_pull(skb, 5);
+               skb_reset_mac_header(skb);
+               return 0;
+
+       } else if (hdr->oui[0] == OUI_802_1_1 &&
+                  hdr->oui[1] == OUI_802_1_2 &&
+                  hdr->oui[2] == OUI_802_1_3) {
+               if (hdr->pid == htons(PID_ETHER_WO_FCS)) {
+
+Would this look cleaner?
