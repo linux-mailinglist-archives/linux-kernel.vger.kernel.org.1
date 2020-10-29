@@ -2,107 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165EA29ED02
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D074C29ED05
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgJ2NfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgJ2NfD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:35:03 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4146C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:35:01 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id n15so2822629wrq.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:35:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KpTzlVayUqmIgARPOMPHIPf+pVQBXZ57u27MnCRyRl4=;
-        b=bHBQYcj8neeWwxu6NrAHcOkwrOtEZGmaAjWKrh8jI1JhyZORzyCnXt3On6YqLd0N6p
-         tErqMaeHRpKVhnOsWX3ipgXBeAanJDaLg2D8M4OQev81G0DQIHUklusbFlwpETgl05pA
-         9uzcGGNCaO4+1Zg9YIBIK8jKoXD+ErnUL7DN3jIGsEqoYlvUdmyR609Qw/hR5IczuWjV
-         VOAARd7lzT6kY3GvtELMpY3LsYW8LByBImUhKXyPeXliSUfxfhqOAPaLA5/E3P/6e0Cw
-         EAEc+4wV66ab4E6oPsOs9CQKokMSZ7Skmwwz6q3RzYKcpQ3sF5XwenicLyIEirLdcuLc
-         LAJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KpTzlVayUqmIgARPOMPHIPf+pVQBXZ57u27MnCRyRl4=;
-        b=O2mXsjOZ1EpovZRgyvwAusZsi31anqziDu7O5Ds5GXs8bPjdd9SGBiPkWKP0QluXjF
-         8F77gg2G5cB+3n+RSta5rDPNWaqDjEf4fhjE9Y/zoLmUd86n2LEPR3BnTSEk3zV4Blmr
-         9sejLitJmQqXCsN3HkgSDrX4Rv9D4dNJLyKb4LLcSjUN588JSI0vRRx75Cr3/UalLIWc
-         pqVKSE3w3IxPDGxyhGTuQ104UT6Ii5FXN9qi6ejWF8IIfgI81o2giWI/ZXIfAoRiUoij
-         hQvSo91Bl/+pCVb5An8ToN+a1PCZ8s9VRyz9kbRQ9yYucyROz4gO8hiq3iLzPWqIeMtv
-         DgRA==
-X-Gm-Message-State: AOAM531Qp0B0v8QOJnIORJoRAFIdBkpzGYOjk8Jl2YLU7a8GFsOsxMA+
-        lAqMIzvwWB73wE6QCmK9ObdJO8X8HYD3b/otayn6Iw==
-X-Google-Smtp-Source: ABdhPJzoa2kj33P5RHtMoZgDs5yNcjZnapoviF7YdfZYL3bAMykZSBtyBQnjKWARVTGdeTQXxtRcORTM2XC5tC0dDY8=
-X-Received: by 2002:a5d:69d1:: with SMTP id s17mr5830591wrw.398.1603978500435;
- Thu, 29 Oct 2020 06:35:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201026145114.59424-1-songmuchun@bytedance.com>
- <20201026145114.59424-4-songmuchun@bytedance.com> <20201029102913.GA31881@linux>
-In-Reply-To: <20201029102913.GA31881@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 29 Oct 2020 21:34:22 +0800
-Message-ID: <CAMZfGtVrKrvn0J7jVYjppRv_mF3y-e8RnL7aQRsqPLjfXH8T5Q@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 03/19] mm/hugetlb: Introduce a new
- config HUGETLB_PAGE_FREE_VMEMMAP
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727189AbgJ2NfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:35:18 -0400
+Received: from mga12.intel.com ([192.55.52.136]:20010 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726482AbgJ2NfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 09:35:18 -0400
+IronPort-SDR: bpmpPhVGBayGAeS3y0iKZ5Ftri9VWXF1RBT3l6oGB/RDjSnbC167Qmh2c3g7jwLC0JffAsXnDl
+ 9n8el13XQHrA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="147712752"
+X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; 
+   d="scan'208";a="147712752"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 06:35:12 -0700
+IronPort-SDR: 6KqWRgHxOkP1pXZ8FWz1pviQebG2iDeb3+NBxWwkrq352GAjT320g+H7E/Kq0ks+cXaHLmGx2k
+ WqQy163E1vkA==
+X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; 
+   d="scan'208";a="351449000"
+Received: from adixit-mobl1.amr.corp.intel.com (HELO adixit-arch.intel.com) ([10.212.42.193])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 06:35:12 -0700
+Date:   Thu, 29 Oct 2020 06:35:11 -0700
+Message-ID: <87mu05f94g.wl-ashutosh.dixit@intel.com>
+From:   "Dixit, Ashutosh" <ashutosh.dixit@intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Sherry Sun <sherry.sun@nxp.com>,
+        "Dutt, Sudeep" <sudeep.dutt@intel.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "kishon@ti.com" <kishon@ti.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 2/4] misc: vop: do not allocate and reassign the used ring
+In-Reply-To: <CAK8P3a3T2Riy-vfd8RcdWeeER4usc2m78rkmx4Q_8N3zGA6r_A@mail.gmail.com>
+References: <20201023092650.GB29066@infradead.org>
+        <VI1PR04MB4960E9ECD7310B8CA1E053DC92190@VI1PR04MB4960.eurprd04.prod.outlook.com>
+        <20201027062802.GC207971@kroah.com>
+        <VI1PR04MB4960C0E76374B2775D99A82192160@VI1PR04MB4960.eurprd04.prod.outlook.com>
+        <20201027151106.e4skr6dsbwvo4al6@axis.com>
+        <VI1PR04MB49603783EF3FD3F3635FCDAF92170@VI1PR04MB4960.eurprd04.prod.outlook.com>
+        <93bd1c60ea4d910489a7592200856eaf8022ced0.camel@intel.com>
+        <AM0PR04MB4947F01860DE953B8496FA8892170@AM0PR04MB4947.eurprd04.prod.outlook.com>
+        <CAK8P3a1JRx32VfFcwFpK0i6F5MQMCK-yCKw8=d_R08Y3iQ7wLQ@mail.gmail.com>
+        <CAK8P3a3u06ZHdAb_n3byTqfxAvy_wi48X1g0N4ODuH2uEM0xLA@mail.gmail.com>
+        <20201029100727.trbppgbusd5vogpz@axis.com>
+        <CAK8P3a3T2Riy-vfd8RcdWeeER4usc2m78rkmx4Q_8N3zGA6r_A@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?ISO-8859-4?Q?Goj=F2?=) APEL-LB/10.8 EasyPG/1.0.0
+ Emacs/27.1 (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 6:29 PM Oscar Salvador <osalvador@suse.de> wrote:
+On Thu, 29 Oct 2020 04:53:09 -0700, Arnd Bergmann wrote:
 >
-> On Mon, Oct 26, 2020 at 10:50:58PM +0800, Muchun Song wrote:
-> > The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
-> > whether to enable the feature of freeing unused vmemmap associated
-> > with HugeTLB pages. Now only support x86.
+> On Thu, Oct 29, 2020 at 11:07 AM Vincent Whitchurch
+> <vincent.whitchurch@axis.com> wrote:
+> >
+> > On Wed, Oct 28, 2020 at 04:50:36PM +0100, Arnd Bergmann wrote:
+> > > I think we should try to do something on top of the PCIe endpoint subsystem
+> > > to make it work across arbitrary combinations of host and device
+> > > implementations,
+> > > and provide a superset of what the MIC driver, (out-of-tree) Bluefield endpoint
+> > > driver, and the NTB subsystem as well as a couple of others used to do,
+> > > each of them tunneling block/network/serial/... over a PCIe link of some
+> > > sort, usually with virtio.
+> >
+> > VOP is not PCIe-specific (as demonstrated by the vop-loopback patches I
+> > posted a while ago [1]), and it would be a shame for a replacement to be
+> > tied to the PCIe endpoint subsystem.  There are many SOCs out there
+> > which have multiple Linux-capable processors without cache-coherency
+> > between them.  VOP is (or should I say was since I guess it's being
+> > deleted) the closest we have in mainline to easily get generic virtio
+> > (and not just rpmsg) running between these kind of Linux instances.  If
+> > a new replacement framework were to be PCIe-exclusive then we'd have to
+> > invent one more framework for non-PCIe links to do pretty much the same
+> > thing.
+> >
+> > [1] https://lore.kernel.org/lkml/20190403104746.16063-1-vincent.whitchurch@axis.com/
 >
-> Why this needs to be a config thing?
-> If this space-memory-optimization does not come with a trade-off,
-> why does the user have to set this instead of coming by default?
-
-Now we only support x86_64. If we want to support other archs. We
-need some arch special code to support this feature. In the future,
-if this patch series is merged to mainline, I will implement this
-optimization for other archs. At that time we can remove the
-HUGETLB_PAGE_FREE_VMEMMAP.
-
-Thanks.
-
+> Right, sorry I forgot about that. I think this means we should keep having
+> an abstraction between VOP (under whichever name) and the lower levels,
+> and be aware that it might run on any number of these:
 >
->
-> --
-> Oscar Salvador
-> SUSE L3
+> - PCIe endpoint, with the endpoint controlling the virtio configuration
+> - PCIe endpoint, with the host (the side that has the pci_driver) controlling
+>   the virtio configuration
+> - NTB connections
+> - your  loopback mode
+> - Virtio tunnels between VM guests (see https://www.linaro.org/projects/#STR)
+> - Intel MIC (to be removed, but it would be wrong to make assumptions that
+>   cannot be made on that type of hardware)
 
-
-
--- 
-Yours,
-Muchun
+A virtio interface being one between host and guest is inherently
+asymmetric. The whole innovation of the VOP design was to treat Linux on a
+PCIe device as a guest, there was even talk at some point of the "guest"
+being managed via libvirt. So here host and guest retain their specific
+role/personality. The host "inserts" devices which appear in the guest
+e.g. So I am not sure how this asymmetry plays in the scenarios mentioned
+above.
