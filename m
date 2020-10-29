@@ -2,137 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE31B29F035
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA1929F036
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728216AbgJ2Pip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:38:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727290AbgJ2Pio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:38:44 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3AFCC2076E;
-        Thu, 29 Oct 2020 15:38:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603985923;
-        bh=Y2j8bDq8gMUZy8zARJTkEfGUrc17A2GF2McIejrCvnE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eVaXIUx8A/CDynW1RHxXxSbPP4KcQYMa9FdVzvFN9SMyMuzX2xNEeTYxrPsd7rhqu
-         nApNa0Veb+0QDZAl2TfI7We4Lz33f3MRqfGjgm1pDUmz85t8lLLHeETr8CiJKGPsEk
-         +pxaHqHmeK/TY9aMcfjBX4js2q8dxGRtOBQGrmdY=
-Date:   Thu, 29 Oct 2020 15:38:38 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH 3/5] iio: adc: xilinx: use a devres action to disable
- and unprepare the clock
-Message-ID: <20201029153838.069b46f5@archlinux>
-In-Reply-To: <20201026133609.24262-4-brgl@bgdev.pl>
-References: <20201026133609.24262-1-brgl@bgdev.pl>
-        <20201026133609.24262-4-brgl@bgdev.pl>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728333AbgJ2PjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:39:02 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33837 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727290AbgJ2PjC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:39:02 -0400
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kYA0y-0001lI-6a; Thu, 29 Oct 2020 15:39:00 +0000
+Date:   Thu, 29 Oct 2020 16:38:59 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Giuseppe Scrivano <gscrivan@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        containers@lists.linux-foundation.org
+Subject: Re: [PATCH v2 0/2] fs, close_range: add flag CLOSE_RANGE_CLOEXEC
+Message-ID: <20201029153859.numo2fc42vgf3ppk@wittgenstein>
+References: <20201019102654.16642-1-gscrivan@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201019102654.16642-1-gscrivan@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 14:36:07 +0100
-Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Mon, Oct 19, 2020 at 12:26:52PM +0200, Giuseppe Scrivano wrote:
+> When the new flag is used, close_range will set the close-on-exec bit
+> for the file descriptors instead of close()-ing them.
 > 
-> In order to simplify resource management and error paths in probe(), add
-> a devm action that calls clk_disable_unprepare() at driver detach.
+> It is useful for e.g. container runtimes that want to minimize the
+> number of syscalls used after a seccomp profile is installed but want
+> to keep some fds open until the container process is executed.
 > 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
->  drivers/iio/adc/xilinx-xadc-core.c | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/xilinx-xadc-core.c b/drivers/iio/adc/xilinx-xadc-core.c
-> index b516280ccbd4..e0da6258092c 100644
-> --- a/drivers/iio/adc/xilinx-xadc-core.c
-> +++ b/drivers/iio/adc/xilinx-xadc-core.c
-> @@ -1185,6 +1185,13 @@ static int xadc_parse_dt(struct iio_dev *indio_dev, struct device_node *np,
->  	return 0;
->  }
->  
-> +static void xadc_clk_disable_unprepare(void *data)
-> +{
-> +	struct clk *clk = data;
-> +
-> +	clk_disable_unprepare(clk);
-> +}
-> +
->  static int xadc_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
-> @@ -1262,6 +1269,11 @@ static int xadc_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto err_free_samplerate_trigger;
->  
+> v1->v2:
+> * move close_range(..., CLOSE_RANGE_CLOEXEC) implementation to a separate function.
+> * use bitmap_set() to set the close-on-exec bits in the bitmap.
+> * add test with rlimit(RLIMIT_NOFILE) in place.
+> * use "cur_max" that is already used by close_range(..., 0).
 
-Hi Bartosz,
-
-> +	ret = devm_add_action_or_reset(dev,
-> +				       xadc_clk_disable_unprepare, xadc->clk);
-
-Take advantage of flexibility in line length limit and put that on line line.
-
-The moment I see a devm call with a goto in the error path I get suspicious about
-ordering.  
-
-So why do we have actions in the error paths of probe that don't turn up
-in the remove function?  Fix that before you do this change.
-
-There are some cases in here already that push the limits on this
-such as clock allocation but they are easily argued as safe.  This is getting
-less obvious.
-
-
-Jonathan
-
-
-> +	if (ret)
-> +		goto err_free_samplerate_trigger;
-> +
->  	/*
->  	 * Make sure not to exceed the maximum samplerate since otherwise the
->  	 * resulting interrupt storm will soft-lock the system.
-> @@ -1280,7 +1292,7 @@ static int xadc_probe(struct platform_device *pdev)
->  	ret = request_irq(xadc->irq, xadc->ops->interrupt_handler, 0,
->  			  dev_name(dev), indio_dev);
->  	if (ret)
-> -		goto err_clk_disable_unprepare;
-> +		goto err_free_samplerate_trigger;
->  
->  	ret = xadc->ops->setup(pdev, indio_dev, xadc->irq);
->  	if (ret)
-> @@ -1344,8 +1356,6 @@ static int xadc_probe(struct platform_device *pdev)
->  err_free_irq:
->  	free_irq(xadc->irq, indio_dev);
->  	cancel_delayed_work_sync(&xadc->zynq_unmask_work);
-> -err_clk_disable_unprepare:
-> -	clk_disable_unprepare(xadc->clk);
->  err_free_samplerate_trigger:
->  	if (xadc->ops->flags & XADC_FLAGS_BUFFERED)
->  		iio_trigger_free(xadc->samplerate_trigger);
-> @@ -1372,7 +1382,6 @@ static int xadc_remove(struct platform_device *pdev)
->  	}
->  	free_irq(xadc->irq, indio_dev);
->  	cancel_delayed_work_sync(&xadc->zynq_unmask_work);
-> -	clk_disable_unprepare(xadc->clk);
->  
->  	return 0;
->  }
-
+I'm picking this up for some testing, thanks
+Christian
+ 
