@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F0329ECD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DFF829ECDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725976AbgJ2N0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:26:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49534 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725300AbgJ2N0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:26:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B47C4AC77;
-        Thu, 29 Oct 2020 13:26:30 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 14:26:27 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 04/19] mm/hugetlb: Introduce nr_free_vmemmap_pages in
- the struct hstate
-Message-ID: <20201029132621.GA2842@linux>
-References: <20201026145114.59424-1-songmuchun@bytedance.com>
- <20201026145114.59424-5-songmuchun@bytedance.com>
+        id S1726829AbgJ2N0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:26:43 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33442 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgJ2N0m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 09:26:42 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09TDQdlp073095;
+        Thu, 29 Oct 2020 08:26:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603978000;
+        bh=GkhCoHJ1/XnzOLNyI1cMIoAAwgZQEjOKh0XhF9teF0Q=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=ufT+6Q2yK3VlnvW+xry6bxZ6U7/tk3uOAZgCyr1ONBLOXnSVJMcOEtm7FujWvT3rb
+         I7sxRCvQ/xZq4SN62zIP3vOOa20qawq2AId7ZEuFWPVgVcNyNT1xmu3cdTBvIx10/c
+         JeKhOs2c229U5TcplzT6Kj8fUpVX7XZIX7pMD75U=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09TDQdrq119625
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 29 Oct 2020 08:26:39 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 29
+ Oct 2020 08:26:39 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 29 Oct 2020 08:26:39 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09TDQdxL109917;
+        Thu, 29 Oct 2020 08:26:39 -0500
+Date:   Thu, 29 Oct 2020 08:26:39 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-serial@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <nsekhar@ti.com>
+Subject: Re: [PATCH] dt-bindings: serial: 8250_omap: Add compatible for UART
+ controller on AM64 SoC
+Message-ID: <20201029132639.xx7eoy4zrj2echi3@uphold>
+References: <20201029065318.2437-1-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201026145114.59424-5-songmuchun@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201029065318.2437-1-vigneshr@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 10:50:59PM +0800, Muchun Song wrote:
-> If the size of hugetlb page is 2MB, we need 512 struct page structures
-> (8 pages) to be associated with it. As far as I know, we only use the
-> first 4 struct page structures.
+On 12:23-20201029, Vignesh Raghavendra wrote:
+> AM64 uses a UART controller that is compatible with AM654 UART.
+> Introduce a specific compatible to help handle the differences if
+> necessary.
+> 
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> ---
+>  Documentation/devicetree/bindings/serial/omap_serial.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/omap_serial.txt b/Documentation/devicetree/bindings/serial/omap_serial.txt
+> index dcba86b0a0d0..c2db8cabf2ab 100644
+> --- a/Documentation/devicetree/bindings/serial/omap_serial.txt
+> +++ b/Documentation/devicetree/bindings/serial/omap_serial.txt
+> @@ -1,6 +1,7 @@
+>  OMAP UART controller
+>  
+>  Required properties:
+> +- compatible : should be "ti,am64-uart", "ti,am654-uart" for AM64 controllers
+>  - compatible : should be "ti,j721e-uart", "ti,am654-uart" for J721E controllers
+>  - compatible : should be "ti,am654-uart" for AM654 controllers
+>  - compatible : should be "ti,omap2-uart" for OMAP2 controllers
+> -- 
+> 2.29.0
+> 
 
-As Mike pointed out, better describe what those "4" mean.
- 
-> For tail pages, the value of compound_dtor is the same. So we can reuse
+Thanks.
 
-I might be missing something, but HUGETLB_PAGE_DTOR is only set on the
-first tail, right?
-
-> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> +#define RESERVE_VMEMMAP_NR	2U
-
-Although you can get that from the changelog, maybe a brief comment explaining
-why RESERVE_VMEMMAP_NR == 2.
-> +
-> +static inline unsigned int nr_free_vmemmap(struct hstate *h)
-> +{
-> +	return h->nr_free_vmemmap_pages;
-> +}
-
-Better add this in the patch that is used?
-
-> +	if (vmemmap_pages > RESERVE_VMEMMAP_NR)
-> +		h->nr_free_vmemmap_pages = vmemmap_pages - RESERVE_VMEMMAP_NR;
-> +	else
-> +		h->nr_free_vmemmap_pages = 0;
-
-Can we really have an scenario where we end up with vmemmap_pages < RESERVE_VMEMMAP_NR?
-
-> +
-> +	pr_info("HugeTLB: can free %d vmemmap pages for %s\n",
-> +		h->nr_free_vmemmap_pages, h->name);
-
-I do not think this is useful unless debugging situations, so I would either
-scratch that or make it pr_debug.
-
-
+Reviewed-by: Nishanth Menon <nm@ti.com>
 -- 
-Oscar Salvador
-SUSE L3
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
