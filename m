@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F8529F50B
+	by mail.lfdr.de (Postfix) with ESMTP id F1F2929F50C
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:27:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgJ2T1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
+        id S1726342AbgJ2T1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726508AbgJ2T1J (ORCPT
+        with ESMTP id S1725966AbgJ2T1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:27:09 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371FFC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:27:09 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id k12so2417308qkj.18
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:27:09 -0700 (PDT)
+        Thu, 29 Oct 2020 15:27:12 -0400
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4820DC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:27:12 -0700 (PDT)
+Received: by mail-wr1-x44a.google.com with SMTP id t11so1685376wrv.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:27:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=MeYcqtBqx2zX9SLBJun3MMNhtoyJ+Q7swKHdtnpeAZI=;
-        b=EdQyVtnk5oIdkHXSrYNqXluy+vnS9IpQY3kz74ohd3i/ZHBNLb+B7EssrfgXp+/o61
-         ps7KHvD1JWOR3oq4+3O6yw8MF7jwL9MtjwphBS1VkS3Q1qymHbVki0HR5ILCHdBIEoF4
-         hvL90JkEXHrWHBHSqNqYdE3Z9841+clUpWYK78N8V9aBJffHzMKVixcu/rqFed8HmRnU
-         10LjLEnXCj4yvnzh31J2o6KIQ8p9S21+VfIXC7ClRQuBqdVqMEkZInOYizHPXp1qrZyo
-         Qa1MU0C6dgFuXjPsUQQmNeLXnzZtSDD3h0e0qFNMoPACgdyK3k8qehPg/lAGcuhKOx+4
-         7nZg==
+        bh=96T+1f9i/jCV3zB6gHtRoH9MAYIWASsGc4o7euuXITQ=;
+        b=tJOGLhLJo/NqHD/71ViDLNriFuBgqAfaBX50uN+gDPVLY9EhR9jFkCdXVZLGpLa89D
+         pCxjumJU1b+1KZ4w/LYX820n8cwzToqtUuRYOKOnOX1pso5M2u/DtJ6Q0grxhdwERIhp
+         EVnO0TcUAmRO78BnOw14ehkgbVQOBz5DXzJioKgglSmR4XAwKzu190Rfbw8qnQ73PRAZ
+         6o/kI/8vCXZzyIe3m7KSHonC5mwKXef19iRjb5qhwlzYt3GIA9l8BzxmFmc0okU0zbxV
+         zqRZwI+5c7eKuclhHNcCeqVDR5naj6ERrUQkZ0w1ZSHtlmTYenidY6vh4buMhRERB8pR
+         fqWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=MeYcqtBqx2zX9SLBJun3MMNhtoyJ+Q7swKHdtnpeAZI=;
-        b=J+xgSX+3fCp7tUBIW0X1xValJpuVPfsdJ1IPrW6Cz4XCOZ3Y52nBL3Jl/BV37aYL7j
-         bYI9ACwwrV5CppPc+lp7J3mxGFv9kMSYgs/1fiYZBaicpUVOh+wClWf9rioix0VZinvF
-         OpgdWS169EXjvVrKnQ1fUnCNby4eLopD5oQ9ve/pYi5KDPxLIExsNG7/7GA5BnZuWtGO
-         rt+Z0PDh50XaJCQq3jf8m8PeS7y4FlBN/eSnS+mhkj2W8+IKQnWjP8DPiDnR3ZDCET29
-         /PY5rSUG5ccwk/TFMt+QlDaBSlTxCwmz3ccc5L3Nf+Lto/Z7EG5cqFIMz6UMpDx77RVK
-         CCfA==
-X-Gm-Message-State: AOAM533+HvawkfGLeT6gixMmDjlTbqb5WzC4WX3Oe1NC/CZzQbve4gN0
-        uya3iBYuLjCVKzVt2GbLILO4l/oadkR6xGrF
-X-Google-Smtp-Source: ABdhPJyvnzlbDy1/Se0dIgeRIc1atmx2qGfrYuygjD9RIqBwuN5omzxBpg8Ug1XNxDBrisw2tMuwbimwrH6il5JB
+        bh=96T+1f9i/jCV3zB6gHtRoH9MAYIWASsGc4o7euuXITQ=;
+        b=V0nuHQsI1plMWVVlMe188sKC/XqIcO/UZjLH1OyshFD17fHb3mvxc1rF2AbcunboiH
+         0oJVUEheIRJjfPeGNLIuSigg+nSc9D/LJhSjSKBeHYAVUj9HMSA1EDDjBUVhgwuiMoaA
+         IdzMF5VK2qc5EiARzUXNBaBtg90e97RRKj7HHTdm2vY7vCf25shY9yYMVTVEobn8zZ/k
+         XXjIQ6DwPjbIASvD+lPyml646MuEcKI9OLIdp8peCzLr+hnTIJRaeljMvqBHGV2BVEKR
+         wC5yz+N0SFZWIl6KzY3f3nk8BfPiwj/8P1KLd05I37uxhEwkDeK1C74Yb1+EJpvzeirv
+         8e9g==
+X-Gm-Message-State: AOAM533q4fPfsc//Aj2nWev7kyN3PD7BhNw6609YsAlxHHgI4s9J/LDK
+        JC665ZK7H6FL/zoW7V2WDiAkGzS7tGGazhC2
+X-Google-Smtp-Source: ABdhPJz4LeK6qoiHBAtJpFwXYYAFbEQhLpwU5GRYe7Th77YTJijuksDPP3x85BEGMq5HFnuUBGmKT7FJdVHArboS
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a0c:ffb2:: with SMTP id
- d18mr5644573qvv.44.1603999628350; Thu, 29 Oct 2020 12:27:08 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 20:25:46 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a05:600c:2246:: with SMTP id
+ a6mr723387wmm.135.1603999630912; Thu, 29 Oct 2020 12:27:10 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 20:25:47 +0100
 In-Reply-To: <cover.1603999489.git.andreyknvl@google.com>
-Message-Id: <b40c5b1c9faa43e7647682a3b41107e8d7fb516c.1603999489.git.andreyknvl@google.com>
+Message-Id: <29aedfa17e38384b43560d89742b1c9f61b3d0ca.1603999489.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1603999489.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v6 25/40] kasan: rename addr_has_shadow to addr_has_metadata
+Subject: [PATCH v6 26/40] kasan: rename print_shadow_for_address to print_memory_metadata
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>
@@ -86,66 +86,42 @@ Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Reviewed-by: Marco Elver <elver@google.com>
 ---
-Change-Id: I03706fe34b38da7860c39aa0968e00001a7d1873
+Change-Id: I18397dddbed6bc6d365ddcaf063a83948e1150a5
 ---
- mm/kasan/kasan.h          | 2 +-
- mm/kasan/report.c         | 6 +++---
- mm/kasan/report_generic.c | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ mm/kasan/report.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 2b8ca8f2aed3..139fc52a62ff 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -146,7 +146,7 @@ static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
- 		<< KASAN_SHADOW_SCALE_SHIFT);
- }
- 
--static inline bool addr_has_shadow(const void *addr)
-+static inline bool addr_has_metadata(const void *addr)
- {
- 	return (addr >= kasan_shadow_to_mem((void *)KASAN_SHADOW_START));
- }
 diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index af9138ea54ad..2990ca34abaf 100644
+index 2990ca34abaf..5d5733831ad7 100644
 --- a/mm/kasan/report.c
 +++ b/mm/kasan/report.c
-@@ -361,7 +361,7 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
- 	untagged_addr = reset_tag(tagged_addr);
+@@ -252,7 +252,7 @@ static int shadow_pointer_offset(const void *row, const void *shadow)
+ 		(shadow - row) / SHADOW_BYTES_PER_BLOCK + 1;
+ }
  
- 	info.access_addr = tagged_addr;
--	if (addr_has_shadow(untagged_addr))
-+	if (addr_has_metadata(untagged_addr))
- 		info.first_bad_addr = find_first_bad_addr(tagged_addr, size);
- 	else
- 		info.first_bad_addr = untagged_addr;
-@@ -372,11 +372,11 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
- 	start_report(&flags);
- 
- 	print_error_description(&info);
--	if (addr_has_shadow(untagged_addr))
-+	if (addr_has_metadata(untagged_addr))
- 		print_tags(get_tag(tagged_addr), info.first_bad_addr);
+-static void print_shadow_for_address(const void *addr)
++static void print_memory_metadata(const void *addr)
+ {
+ 	int i;
+ 	const void *shadow = kasan_mem_to_shadow(addr);
+@@ -338,7 +338,7 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
  	pr_err("\n");
+ 	print_address_description(object, tag);
+ 	pr_err("\n");
+-	print_shadow_for_address(object);
++	print_memory_metadata(object);
+ 	end_report(&flags);
+ }
  
--	if (addr_has_shadow(untagged_addr)) {
-+	if (addr_has_metadata(untagged_addr)) {
+@@ -379,7 +379,7 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+ 	if (addr_has_metadata(untagged_addr)) {
  		print_address_description(untagged_addr, get_tag(tagged_addr));
  		pr_err("\n");
- 		print_shadow_for_address(info.first_bad_addr);
-diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
-index 589b1875f5e7..363afde3c409 100644
---- a/mm/kasan/report_generic.c
-+++ b/mm/kasan/report_generic.c
-@@ -117,7 +117,7 @@ const char *get_bug_type(struct kasan_access_info *info)
- 	if (info->access_addr + info->access_size < info->access_addr)
- 		return "out-of-bounds";
- 
--	if (addr_has_shadow(info->access_addr))
-+	if (addr_has_metadata(info->access_addr))
- 		return get_shadow_bug_type(info);
- 	return get_wild_bug_type(info);
- }
+-		print_shadow_for_address(info.first_bad_addr);
++		print_memory_metadata(info.first_bad_addr);
+ 	} else {
+ 		dump_stack();
+ 	}
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
