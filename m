@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CBA29E843
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A3529E846
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726103AbgJ2KEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:04:48 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:50847 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgJ2KEq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:04:46 -0400
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 7CB7EE0003;
-        Thu, 29 Oct 2020 10:04:42 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 11:04:42 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Matteo Scordino <matteo.scordino@gmail.com>
-Cc:     mripard@kernel.org, wens@csie.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] ARM: dts: sun8i: V3/S3: Add UART1 pin definitions to
- the V3/S3 dtsi
-Message-ID: <20201029100442.GA460689@aptenodytes>
-References: <20201029022000.601913-1-matteo.scordino@gmail.com>
- <20201029022000.601913-3-matteo.scordino@gmail.com>
+        id S1726186AbgJ2KEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:04:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59074 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726110AbgJ2KEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 06:04:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9B12EAB0E;
+        Thu, 29 Oct 2020 10:04:48 +0000 (UTC)
+Date:   Thu, 29 Oct 2020 11:04:48 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Mark Rutland <mark.rutland@arm.com>
+cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH] Documentation: livepatch: document reliable stacktrace
+In-Reply-To: <20201023153527.36346-1-mark.rutland@arm.com>
+Message-ID: <alpine.LSU.2.21.2010291104330.1688@pobox.suse.cz>
+References: <20201023153527.36346-1-mark.rutland@arm.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qMm9M+Fa2AknHoGS"
-Content-Disposition: inline
-In-Reply-To: <20201029022000.601913-3-matteo.scordino@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---qMm9M+Fa2AknHoGS
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
 Hi,
 
-On Thu 29 Oct 20, 02:19, Matteo Scordino wrote:
-> The Allwinner V3 and S3 can use PG6/7 as RX/TX for UART1. Since no other
-> functions are assigned to those pins, they are a convenient choice for
-> a debugging or application UART.
-> This is specific to V3/S3 as the V3s's non-BGA package did not have
-> those pins.
+On Fri, 23 Oct 2020, Mark Rutland wrote:
 
-Looks good to me, I've had to make the same change when bringing up both
-another S3 and another V3 board.
+> Add documentation for reliable stacktrace. This is intended to describe
+> the semantics and to be an aid for implementing architecture support for
+> HAVE_RELIABLE_STACKTRACE.
 
-Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+thanks a lot for doing the work!
 
-Cheers,
+> Unwinding is a subtle area, and architectures vary greatly in both
+> implementation and the set of concerns that affect them, so I've tried
+> to avoid making this too specific to any given architecture. I've used
+> examples from both x86_64 and arm64 to explain corner cases in more
+> detail, but I've tried to keep the descriptions sufficient for those who
+> are unfamiliar with the particular architecture.
 
-Paul
+Yes, I think it is a good approach. We can always add more details later, 
+but it would probably cause more confusion for those unfamiliar.
 
-> Signed-off-by: Matteo Scordino <matteo.scordino@gmail.com>
-> ---
->  arch/arm/boot/dts/sun8i-v3.dtsi | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/arch/arm/boot/dts/sun8i-v3.dtsi b/arch/arm/boot/dts/sun8i-v3=
-=2Edtsi
-> index ca4672ed2e02..c279e13583ba 100644
-> --- a/arch/arm/boot/dts/sun8i-v3.dtsi
-> +++ b/arch/arm/boot/dts/sun8i-v3.dtsi
-> @@ -24,4 +24,9 @@
-> =20
->  &pio {
->  	compatible =3D "allwinner,sun8i-v3-pinctrl";
-> +
-> +	uart1_pg_pins: uart1-pg-pins {
-> +		pins =3D "PG6", "PG7";
-> +		function =3D "uart1";
-> +	};
->  };
-> --=20
-> 2.20.1
->=20
->=20
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> I've tried to give rationale for all the recommendations/requirements,
+> since that makes it easier to spot nearby issues, or when a check
+> happens to catch a few things at once. I believe what I have written is
+> sound, but as some of this was reverse-engineered I may have missed
+> things worth noting.
+> 
+> I've made a few assumptions about preferred behaviour, notably:
+> 
+> * If you can reliably unwind through exceptions, you should (as x86_64
+>   does).
 
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Yes, it does. I think (and Josh will correct me if I am wrong here), that 
+even at the beginning the intention was to improve the reliability of 
+unwinding in general. Both x86_64 and s390x are the case. _reliable() 
+interface only takes an advantage of that. As you pointed out in the 
+document, unwinding through exceptions is not necessary. It can be 
+reported as unreliable and we can deal with that later. But it is always 
+better to do it if possible.
 
---qMm9M+Fa2AknHoGS
-Content-Type: application/pgp-signature; name="signature.asc"
+powerpc is an exception to the approach, because it implements its 
+_reliable() API from the scratch.
 
------BEGIN PGP SIGNATURE-----
+> * It's fine to omit ftrace_return_to_handler and other return
+>   trampolines so long as these are not subject to patching and the
+>   original return address is reported. Most architectures do this for
+>   ftrace_return_handler, but not other return trampolines.
 
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+ak7kACgkQ3cLmz3+f
-v9EJmgf/a3UChSVK1qcvdGoWUcjwH6BucjdO9UG6lF3xejjxubCwuSK/4QiuXPQ8
-dz1s0NlP/ZqfMkZ7YlQp9fiEzBBWlldZD4aRR0f8/huMLQljbxnAMHxhvXiD2a+4
-cM4nLujTGXVIG3dEUSlgiw/pZkj/xf+shfajjebCh+1DPVTweKioHpBSM5ilDqGF
-FrxnHdI6B9Gqyn/+VttrgvE07y+FIKmBztoLD7YryCv4vPt7BOHnX2yxcfMzYxSR
-rAWzMh7gaWXmPNsmcXC2EpqaGml2kSyrGrvlXwzeH8l/xjlC8aJLe2dlk6/GBGlv
-j0lpDI2ZQMr6Oj47D04owZ2Pgwthkw==
-=WI93
------END PGP SIGNATURE-----
+Yes. Patching a trampoline is not something I can imagine, so that should 
+not be a problem. But one never knows and we may run into a problem here 
+easily. I don't remember if we even audited all the trampolines. And new 
+ones are introduced all the time.
 
---qMm9M+Fa2AknHoGS--
+> * For cases where link register unreliability could result in duplicate
+>   entries in the trace or an inverted trace, I've assumed this should be
+>   treated as unreliable. This specific case shouldn't matter to
+>   livepatching, but I assume that that we want a reliable trace to have
+>   the correct order.
+
+Agreed.
+
+Thanks
+Miroslav
