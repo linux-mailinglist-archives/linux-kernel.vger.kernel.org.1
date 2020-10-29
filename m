@@ -2,112 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E06B29EFCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CD629EFD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbgJ2P2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728162AbgJ2P2S (ORCPT
+        id S1728319AbgJ2P2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:28:36 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:37354 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728281AbgJ2P22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:28:18 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A2BC0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:28:18 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id t14so2638418pgg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:28:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=apFGQpJNldG2edOQE4EMnGm/BVDPDRnfEMKqur5QD6U=;
-        b=e2b8xCUIBxmMJWZFFdxKTaDEZEhukBhkuQSQMNDi6PdGOWHOuN19BWvM2HH9I65EFP
-         t/aGj0+vE7J7fb3BlbQVFVpc67wqo39xxlB8Fqiz0/XyGjF8jbexNAJAWNmhzlJjyYrH
-         9sJ1x10AfWGNbZTnJeSQXdhZN4+iEcAyTUQGXae0ZCCwQhVz1G0alZfgRHsYyCjd4MoZ
-         E4b0/whUWA3weFohEH5D4BevvOrulcdh5h1tnhPmOfKePeD0KdpSi0/0InmXOGWbKqNz
-         GRGGQhG5+qptwEw1W9e242HIcLvs2PIvgCOxZppG32w1NBYa5BXmAJjQngyyDZCRJAUo
-         j4tA==
+        Thu, 29 Oct 2020 11:28:28 -0400
+Received: by mail-oi1-f193.google.com with SMTP id f7so3588572oib.4;
+        Thu, 29 Oct 2020 08:28:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=apFGQpJNldG2edOQE4EMnGm/BVDPDRnfEMKqur5QD6U=;
-        b=foTWQfccOF4vKecoKsnmWkuHXmPj2DJYb1rSJEg0t/hSlQ7te1my/LQLci0wYtHWVY
-         ZYUJv9atCTKT8K+lEd/F2BHHoASFh9OfMN+ccoonQMRDWUSMu/RcVwc36EzXIphS5GTS
-         VfFMdHh+VtlEwBIsgFuBsZ5SMrYtxFJpz11WLEkugEIWuiIxGaNzeMMQfWgImzb3SgOG
-         PkO8Sa2zoFeXw0wUFfpWGUpTFtubaC9+FW3Z2LxuPlrufmuiis43IrJZnBYM3k2H0M6G
-         7UuD06+pjeYRemWrciexuH49MQoP21XT2MFUyrMUU6bC44LUZX5eovpvneoInCFR8kTA
-         MqRg==
-X-Gm-Message-State: AOAM531bBAK8L1yy3I2dPv2q2k1ZD8yKZx7UqbWqEGN+6/alAiorVGth
-        E+rJmGt5Fm+UrSEW9eHswYgoOdKax7PDCPvtdt+/Ug==
-X-Google-Smtp-Source: ABdhPJxiUY+zihYcZmcL0D9S99Sn+1JQYm46vWHTVY6QEqCusY9gO2m/NgjOAZph+pk5bmnvwF3j7Mn+jXRZ+oK2SYQ=
-X-Received: by 2002:a17:90b:807:: with SMTP id bk7mr324734pjb.166.1603985297541;
- Thu, 29 Oct 2020 08:28:17 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=EpRKWgX1tPOOvzmn3qMlRpzmaxwhzdwSpqqJXsX7saU=;
+        b=gvOiDzL9AfOG6VcKyx7xIZRMlccaUDxNYveTVQIMaktHYdPzTfaIP530GdklMnUYNb
+         /BpMc7Cdgv4DdO+6HFRJZy0CeDluJTdGDukFbvQeYeqzyqRp1fMl87B4q4nVGCVh/Rdj
+         HOMUjm6XWLg8EcTrYGwJOAzYrQ6cpKOQwNBxpDjeTLznRnMKwtNqOJV0rsqpklgoKV2X
+         CB4WVQhGQHRFQVRL0LMRu733tDdnzeQ1/IseFeVLr6CpL+X74W1hMFdHgiCnVcYyGkH7
+         s1UO4V4nQ7QiW9fd6XMouJfaaXq0NCCfEAB1QhLFTRIRkb3Xc9pGHKY9z8eZePyQtFKg
+         KgYA==
+X-Gm-Message-State: AOAM533hkyCdEBtkd69ia7VvcAWjjvqN7crrWocRWtDP7OFrBwsoF2kv
+        dyUdDoyqV8ii9gZwLUm/JQ==
+X-Google-Smtp-Source: ABdhPJyk1aNQXOVSM1uS2UpdouLov1vtwAA30qKLYcMgCoUsjd3aWByTnY0EbbvtHB5FB5sPRZ/Hrg==
+X-Received: by 2002:aca:39d6:: with SMTP id g205mr199978oia.14.1603985307084;
+        Thu, 29 Oct 2020 08:28:27 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v19sm637184ota.61.2020.10.29.08.28.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 08:28:26 -0700 (PDT)
+Received: (nullmailer pid 1904453 invoked by uid 1000);
+        Thu, 29 Oct 2020 15:28:25 -0000
+Date:   Thu, 29 Oct 2020 10:28:25 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        linux-samsung-soc@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, jim.cromie@gmail.com,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>, Andrew Lunn <andrew@lunn.ch>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v4 2/5] dt-bindings: net: Add bindings for AX88796C SPI
+ Ethernet Adapter
+Message-ID: <20201029152825.GA1904089@bogus>
+References: <20201028214012.9712-1-l.stelmach@samsung.com>
+ <CGME20201028214017eucas1p251d5bd9f5f9db68da4ccefe8ee5e7c13@eucas1p2.samsung.com>
+ <20201028214012.9712-3-l.stelmach@samsung.com>
 MIME-Version: 1.0
-References: <202010260230.VivTG0Gb-lkp@intel.com> <20201025121708.04d4070a44e28146baf9a6a7@linux-foundation.org>
-In-Reply-To: <20201025121708.04d4070a44e28146baf9a6a7@linux-foundation.org>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 29 Oct 2020 16:28:06 +0100
-Message-ID: <CAAeHK+wdv=X-iD208M2m3Xte9F+g2kYRDqQr4A+GP7Z1tY85BA@mail.gmail.com>
-Subject: Re: drivers/video/backlight/ltv350qv.c:192:12: warning: stack frame
- size of 13472 bytes in function 'ltv350qv_power'
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201028214012.9712-3-l.stelmach@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 25, 2020 at 8:17 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Mon, 26 Oct 2020 02:15:37 +0800 kernel test robot <lkp@intel.com> wrote:
->
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   d76913908102044f14381df865bb74df17a538cb
-> > commit: cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4 kasan: allow enabling stack tagging for tag-based mode
-> > date:   3 months ago
-> > config: arm64-randconfig-r005-20201026 (attached as .config)
-> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 1c8371692dfe8245bc6690ff1262dcced4649d21)
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # install arm64 cross compiling tool for clang build
-> >         # apt-get install binutils-aarch64-linux-gnu
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4
-> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >         git fetch --no-tags linus master
-> >         git checkout cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All warnings (new ones prefixed by >>):
-> >
-> > >> drivers/video/backlight/ltv350qv.c:192:12: warning: stack frame size of 13472 bytes in function 'ltv350qv_power' [-Wframe-larger-than=]
->
-> That's a lot of stack.
->
-> >    static int ltv350qv_power(struct ltv350qv *lcd, int power)
-> >               ^
-> >    1 warning generated.
-> >
-> > vim +/ltv350qv_power +192 drivers/video/backlight/ltv350qv.c
->
-> Odd - the code looks pretty normal.  It is possible that your compiler
-> is (crazily) inlining ltv350qv_write_reg()?
+On Wed, 28 Oct 2020 22:40:09 +0100, Łukasz Stelmach wrote:
+> Add bindings for AX88796C SPI Ethernet Adapter.
+> 
+> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+> ---
+>  .../bindings/net/asix,ax88796c.yaml           | 69 +++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c.yaml
+> 
 
-This is the same issue in LLVM that was reported by Arnd for generic
-KASAN (also see KASAN_STACK_ENABLE option description). By default
-KASAN shouldn't have stack instrumentation enabled unless
-KASAN_STACK_ENABLE is specified. Perhaps it makes sense to disable it
-for KASAN_SW_TAGS config on the kernel test robot.
 
-[1] https://bugs.llvm.org/show_bug.cgi?id=38809
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/net/asix,ax88796c.example.dts:23.13-25: Warning (reg_format): /example-0/ethernet@0:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
+Documentation/devicetree/bindings/net/asix,ax88796c.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/net/asix,ax88796c.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/net/asix,ax88796c.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/net/asix,ax88796c.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/net/asix,ax88796c.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/asix,ax88796c.example.dt.yaml: example-0: ethernet@0:reg:0: [0] is too short
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/asix,ax88796c.example.dt.yaml: ethernet@0: 'interrupt-parrent' is a required property
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/asix,ax88796c.yaml
+
+
+See https://patchwork.ozlabs.org/patch/1389785
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
