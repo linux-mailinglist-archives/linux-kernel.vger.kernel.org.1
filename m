@@ -2,92 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0418629F7DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3801629F7E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbgJ2WZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 18:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54856 "EHLO
+        id S1726001AbgJ2WZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 18:25:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgJ2WZD (ORCPT
+        with ESMTP id S1725782AbgJ2WZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 18:25:03 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530F3C0613CF;
-        Thu, 29 Oct 2020 15:25:02 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id b138so3497266yba.5;
-        Thu, 29 Oct 2020 15:25:02 -0700 (PDT)
+        Thu, 29 Oct 2020 18:25:48 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDD0C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 15:25:48 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id o9so3900713ejg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 15:25:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Uj2l+dvKbdMwpYX4cQk7PUdaO5o8LISaAemCD5aYDG0=;
-        b=vT0MhveRj9Tkq/mDcJDowdsvH7avpHwh8ZMEgVeybkMT092bZmYC2iwZRk63HkK5EY
-         2dk78LiD9V6xm5Cesc8PMAYf+dOlhh4Ze7tl9zAXdHKKzWwoTBriOAJhIQs8x0o6a/mM
-         ZaAIhgrnythaEa1ee34rB56Lz5tX2DLTUdkdsq+iztMPHVFX95+t+Io0IhaQNqSUnUmS
-         NPsHntF7VyshbMW28egSaURO2pIRd6kw/MVG0zbuo/a5QdXI7HEHv6gUqQ5tFxAwZ84M
-         cMCgx522u3ZiEKCCpYmRqb5ZWEifC3m513GAScFjDuPBDcHhZCdeVgqgfuK1KBRAo2Wd
-         UX5A==
+        bh=tPkhgoZCoNKuZkNqzsqClmWwArbIz2ujzRy7ZbDQUHM=;
+        b=hCJto95vVJWBZh6PlFrZzA02+c8UlOoFn/0AczIF0zP9yfPZP3G1LakX1j0CF3mxKj
+         APXUHMnjYX40Bv6/v3kc4+cOJUA619HdD2VbnT3hK4BM5aqbW1FuRNaaeiqSeIS06iE5
+         NrQ5mxfboRZ9lsaJzw+G4+EKb2ma3fVKQBRqC9f9G7W//MlW8crN9VvY0hRN2kcNGjD0
+         gt93WrVJVi9R7Kgdy7gQzii+3PMIRne36GjNWE48yy4cAaSVXYl7j3FiGJ9fxwv4k+Ht
+         ga+vpsaYHR7uEPakK0+G7lCKowjVPBMehB8t72acXip2vRALqaaf5vIegdc+a9Oy5OVb
+         PAvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Uj2l+dvKbdMwpYX4cQk7PUdaO5o8LISaAemCD5aYDG0=;
-        b=RaXzIUYYVDDh1M5fauOk0gMxMezwyn/x7NIxLXpOvFeDeWdqww9jj0LsE8yCjusxtY
-         z+d6ffa9KTgUTWmDhZiuB/zE43g3SKbZeRNK+oD7Alfy5Josx1fGqmTuBgyR/tfYoQsy
-         Ky4SZ907H8rss/XigJq8voVe0nUD50ilSqmDmt9N/7mi3KV88phfgrlK1Xir0h/pfAWo
-         aVwNJy28ChsUBdIpnAFV9rDOXJZi1qWaTUdDFuTC+m+2CZliOHC5uj4BKm6gsAn8+BFt
-         9+RU92K1tgoxU4f0a15FvqywOG7XPhVV00lO0R3hWf9nl6fJDic3afKNa3cf68lzBBfW
-         IhTg==
-X-Gm-Message-State: AOAM530vUmwfUzxP1MaR0JNOpQW6MBAuMFKIrecDOpdidX76hWvWLOP1
-        Miur4pHtQkCIRV57WVSXsln7ufQmyrYUSjNdzy0=
-X-Google-Smtp-Source: ABdhPJwecE56Lli3ZfpQZNfHAVVekkfObaWGruxtsKcfg067aF2G4yUaiE+cidRARDox/ovjv9wyLMj+u6ubgfdAsCM=
-X-Received: by 2002:a25:c7c6:: with SMTP id w189mr9434780ybe.403.1604010301511;
- Thu, 29 Oct 2020 15:25:01 -0700 (PDT)
+        bh=tPkhgoZCoNKuZkNqzsqClmWwArbIz2ujzRy7ZbDQUHM=;
+        b=TKSwdMDx4DVz7qymgEbd3yo/YBWYCEDHXGbdoGn9abjc5oks/urrzacRGotucy6WIx
+         ZyC5BgkKvffLORx7Tbcb104y+8SstfCdNHDJrPLqQDno5B6UzOeiefaQqcPfgmzNIl7D
+         5oML0yo8/GgKqRwHuX63yhRYvSOMbHCge/46Qzj6g0NYqmXXHWp+kRfHeSFD9O7u61to
+         FhwhacbiPVOUpcPzg8V4B3IepaZ524qq2EwWhnrBJc358HwFKdp8TIov9AQ1ciEwb4WK
+         /2tUKrDs+evSmUCB2JFGttQxrEYAOmCG7y+uvy1OOvzdgJCN92OGV85dhSM+ts1SElN9
+         PD1Q==
+X-Gm-Message-State: AOAM5337KrwIcI3KTZUvfitzSXyowZBPH+xsvQzj6MwCTaAxxF4IjMeo
+        QCHdeQGLjXABAy7izwqbHehNHHr6LS+LaNvCiSaPeg==
+X-Google-Smtp-Source: ABdhPJxEm6s6k6aY+2eV8lHzRVSz1PBzcREy/9GRw7FLKBKZfcrVByKidut7Z6qAQev0K1F+JQaZMKcnrU3aqNEXSuY=
+X-Received: by 2002:a17:906:4351:: with SMTP id z17mr6185859ejm.110.1604010346851;
+ Thu, 29 Oct 2020 15:25:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201029220919.481279-1-irogers@google.com>
-In-Reply-To: <20201029220919.481279-1-irogers@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 29 Oct 2020 15:24:50 -0700
-Message-ID: <CAEf4BzaRZ60zajtDDkKA+0UwXCsT4HZpJ=f12_GzrEa+rkPfcQ@mail.gmail.com>
-Subject: Re: [PATCH] libbpf hashmap: Avoid undefined behavior in hash_bits
-To:     Ian Rogers <irogers@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20201001230403.2445035-1-danielwinkler@google.com>
+ <CAP2xMbtC0invbRT2q6LuamfEbE9ppMkRUO+jOisgtBG17JkrwA@mail.gmail.com> <CABBYNZJ65vXxeyJmZ_L_D+9pm7uDHo0+_ioHzMyh0q8sVmREsQ@mail.gmail.com>
+In-Reply-To: <CABBYNZJ65vXxeyJmZ_L_D+9pm7uDHo0+_ioHzMyh0q8sVmREsQ@mail.gmail.com>
+From:   Daniel Winkler <danielwinkler@google.com>
+Date:   Thu, 29 Oct 2020 15:25:35 -0700
+Message-ID: <CAP2xMbs4sUyap_-YAFA6=52Qj+_uxGww7LwmbWACVC0j0LvbLQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] Bluetooth: Add new MGMT interface for advertising add
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        BlueZ <linux-bluetooth@vger.kernel.org>,
+        chromeos-bluetooth-upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 3:10 PM Ian Rogers <irogers@google.com> wrote:
->
-> If bits is 0, the case when the map is empty, then the >> is the size of
-> the register which is undefined behavior - on x86 it is the same as a
-> shift by 0.
-> Avoid calling hash_bits with bits == 0 by adding additional empty
-> hashmap tests.
->
-> Suggested-by: Andrii Nakryiko <andriin@fb.com>,
-> Suggested-by: Song Liu <songliubraving@fb.com>
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
+Hi Luiz,
 
-I didn't realize you'd need to add three extra checks. If that's the
-case, let's just add `if (!bits) return 0;` to hash_bits() and be done
-with it. Please keep
-hashmap__for_each_key_entry_safe/hashmap__for_each_key_entry changes,
-they are ok regardless.
+Thank you for the feedback regarding mgmt-tester. I intended to use
+the tool, but found that it had a very high rate of test failure even
+before I started adding new tests. If you have a strong preference for
+its use, I can look into it again but it may take some time. These
+changes were tested with manual and automated functional testing on
+our end.
 
->  tools/lib/bpf/hashmap.c | 12 ++++++++++--
->  tools/lib/bpf/hashmap.h | 12 ++++++------
->  2 files changed, 16 insertions(+), 8 deletions(-)
+Please let me know your thoughts.
+
+Thanks,
+Daniel
+
+On Thu, Oct 29, 2020 at 2:45 PM Luiz Augusto von Dentz
+<luiz.dentz@gmail.com> wrote:
 >
-
-[...]
+> Hi Daniel,
+>
+> On Thu, Oct 29, 2020 at 2:35 PM Daniel Winkler <danielwinkler@google.com> wrote:
+> >
+> > Hello Maintainers,
+> >
+> > Just a friendly reminder to review this kernel patch series. I may
+> > have accidentally named this series the same as the userspace series,
+> > so I apologize if it has caused the set to be hidden in anybody's
+> > inbox. I'll be sure not to do this in the future.
+>
+> I will review them coming next, one of the things that seems to be
+> missing these days is to update mgmt-tester when a new command is
+> introduced, this should actually be added along side the kernel
+> changes since we do plan to have the CI verify the kernel patches as
+> well, also there is a way to test the kernel changes directly in the
+> host with use of tools/test-runner you just need insure the options
+> mentioned in doc/test-runner are set so you can run the kernel with
+> the changes directly.
+>
+> > Thanks in advance for your time!
+> >
+> > Best regards,
+> > Daniel Winkler
+> >
+> > On Thu, Oct 1, 2020 at 4:04 PM Daniel Winkler <danielwinkler@google.com> wrote:
+> > >
+> > > Hi Maintainers,
+> > >
+> > > This patch series defines the new two-call MGMT interface for adding
+> > > new advertising instances. Similarly to the hci advertising commands, a
+> > > mgmt call to set parameters is expected to be first, followed by a mgmt
+> > > call to set advertising data/scan response. The members of the
+> > > parameters request are optional; the caller defines a "params" bitfield
+> > > in the structure that indicates which parameters were intentionally set,
+> > > and others are set to defaults.
+> > >
+> > > The main feature here is the introduction of min/max parameters and tx
+> > > power that can be requested by the client. Min/max parameters will be
+> > > used both with and without extended advertising support, and tx power
+> > > will be used with extended advertising support. After a call for hci
+> > > advertising parameters, a new TX_POWER_SELECTED event will be emitted to
+> > > alert userspace to the actual chosen tx power.
+> > >
+> > > Additionally, to inform userspace of the controller LE Tx power
+> > > capabilities for the client's benefit, this series also changes the
+> > > security info MGMT command to more flexibly contain other capabilities,
+> > > such as LE min and max tx power.
+> > >
+> > > All changes have been tested on hatch (extended advertising) and kukui
+> > > (no extended advertising) chromebooks with manual testing verifying
+> > > correctness of parameters/data in btmon traces, and our automated test
+> > > suite of 25 single- and multi-advertising usage scenarios.
+> > >
+> > > A separate patch series will add support in bluetoothd. Thanks in
+> > > advance for your feedback!
+> > >
+> > > Daniel Winkler
+> > >
+> > >
+> > > Changes in v4:
+> > > - Add remaining data and scan response length to MGMT params response
+> > > - Moving optional params into 'flags' field of MGMT command
+> > > - Combine LE tx range into a single EIR field for MGMT capabilities cmd
+> > >
+> > > Changes in v3:
+> > > - Adding selected tx power to adv params mgmt response, removing event
+> > > - Re-using security info MGMT command to carry controller capabilities
+> > >
+> > > Changes in v2:
+> > > - Fixed sparse error in Capabilities MGMT command
+> > >
+> > > Daniel Winkler (5):
+> > >   Bluetooth: Add helper to set adv data
+> > >   Bluetooth: Break add adv into two mgmt commands
+> > >   Bluetooth: Use intervals and tx power from mgmt cmds
+> > >   Bluetooth: Query LE tx power on startup
+> > >   Bluetooth: Change MGMT security info CMD to be more generic
+> > >
+> > >  include/net/bluetooth/hci.h      |   7 +
+> > >  include/net/bluetooth/hci_core.h |  12 +-
+> > >  include/net/bluetooth/mgmt.h     |  49 +++-
+> > >  net/bluetooth/hci_core.c         |  47 +++-
+> > >  net/bluetooth/hci_event.c        |  19 ++
+> > >  net/bluetooth/hci_request.c      |  29 ++-
+> > >  net/bluetooth/mgmt.c             | 424 +++++++++++++++++++++++++++++--
+> > >  7 files changed, 542 insertions(+), 45 deletions(-)
+> > >
+> > > --
+> > > 2.28.0.709.gb0816b6eb0-goog
+> > >
+>
+>
+>
+> --
+> Luiz Augusto von Dentz
