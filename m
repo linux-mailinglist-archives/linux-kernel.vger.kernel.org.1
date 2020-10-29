@@ -2,109 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2947A29F5BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CE929F5C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgJ2UA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 16:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60652 "EHLO
+        id S1725797AbgJ2UCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgJ2UAu (ORCPT
+        with ESMTP id S1726246AbgJ2UCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:00:50 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE5DC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:00:50 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id c20so3253053pfr.8
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:00:50 -0700 (PDT)
+        Thu, 29 Oct 2020 16:02:31 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858B7C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:02:31 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id g21so2245442vsp.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:02:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lCP1WO1+VHzaoW6B3s0gmUP2QnpBjOsDZXHhfza/ed8=;
-        b=iMDTwDLekHKm2kQfUw61OXhU4hv2TL3TfsFBwe0mJNO4y8ryLBGRm4NP8gPS1ptNNi
-         2UBqD0A+kYcmo2GaqCAIUiRBemjZqKbLb4zYxzsqBTZ3R1q5kKSUJTBkbgRL5wXuGy16
-         Nw5lkLNmpAY1+ijcd4JMdBxZKVDKHagbuTI/qV4tWM4wgZMjCkqOd6DmZ/yIgA0sV8EA
-         2HKhL0PXWZzMDvCJjYpJCJNCA0LoOilEU84xno560sBrevL2uDsZtdwD3VOnVgRlYw4f
-         Jqv4RDQ0zswFqUpFu1xhtwI2Fq8M0okebXZNgYib+IM8ZMiBdpM0sXVJkFAcl6dDbAa3
-         IMYQ==
+        bh=NHWeGLndJ6xxN0MAwysL/++BG9BlJzB6qOfq725eGSk=;
+        b=nGhX7HR2IWiCY4pI4GXVjaNF4rXrEKJCkKSUb640yjof+beWnJaznvUSHH9V8ia1bI
+         PUgBHGcU1NNEQDDd7ltP8i5PkwDS2ZjZwWvNWKy9PFwRhRS/6YepzOfsG1J53Nq29N3O
+         +Q44RLheaWRDj7oEk1ys03ZJFAtjnciCfbjsx+oacjjY1q+GHTGGITRJGOTW7jdpI9Bh
+         J+KczpneR/M0MjR2dQ3UM9+HV97LEUhYR5dSP4Ekya48vBN3NiQrsrcUgoq1imWOmC/V
+         8lppAylhcn0CAatmgnkieBYZm/ugbSlsXHD/vRngF0Z17GO2S7gYTMloZaKCm38Ef9AW
+         re+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lCP1WO1+VHzaoW6B3s0gmUP2QnpBjOsDZXHhfza/ed8=;
-        b=WJhOI/ZnbCEZCR2GhInfW3FBIl+K5DqXHYBjykha9iutgI+57Ibie+wxBhx9M+pYOS
-         9kx5VsczQ49Usk2MFnScfli4ciCGEqLFNRifDfUx4ttTpQgLuUQdIFmYyF+MEI6M0squ
-         ne5ScCowjNQjXpmHSAKBJtKatr/odbHRXkikwI4f3uiBKQLtTUdnkLkmfvCSQD1mJgAg
-         mn8gAiUOGZtLd30MwoHzX97YGvIIVdkh0ZRwFnZObLEgrFxNBOXBht+UOCM9rT9bG5G+
-         BM/Fhgv0uUoYmIO49XECGOzMI4dkKoSUhvR3xdx6R4pr101mb9MGPx0yLw1UbhDAUfSM
-         8PMw==
-X-Gm-Message-State: AOAM531mqU3v090KmysKoXAiUnUXKIJ8htsBUOCJtJ8tiwj0pz3S46d9
-        p5ErlwfkfJ6/q6tqJ3frdLpW/9RqK8TX0/h7F6pg1A==
-X-Google-Smtp-Source: ABdhPJzbQAUJk0kVFK3CtTs1GowkCphU5iW79ZzmaFBk380eaBTxf6iWXo14Dh/UKx+4MymCnOiVLxpRA+Ly/HIOhCU=
-X-Received: by 2002:a17:90b:807:: with SMTP id bk7mr1438790pjb.166.1604001649764;
- Thu, 29 Oct 2020 13:00:49 -0700 (PDT)
+        bh=NHWeGLndJ6xxN0MAwysL/++BG9BlJzB6qOfq725eGSk=;
+        b=GRQc6OjLpYFdpOoLtNEn4T3Em0uSG3wrh8u4UqQf1XW84hZSGQm4PgeN/ZLwJ+vRo9
+         L4T1QObgXrINw42OLRKAlhPzx55A/0If2grDiPaqjDYdPulxIm/cf8Shg+U3E2gQJRHd
+         Ox10uewkHf/No7WO5hxF/6L3WR4AnzYx2KmZdkZ4F6jOWWphho2HplTFpa8mc+9C7+Vk
+         cSOCMGrZLvj942maoGrDUIqg11f7c55jOpxQKrR9NagC8byQ7dtTE95QYnov6RMrefFk
+         HRAVgbEU9mP2TSToFV0ti0ZRntkiiMOznFhdoVcAr6TINxxJzNAkTFCtuH1T/ERI4D51
+         8eEQ==
+X-Gm-Message-State: AOAM532m8VlPKNggP3Kkw34FV5NHSOUc35HfC1bVZ4UNYa8cX4hxoU6e
+        npAczYwKyCY7PEk6uzubHGe4RjjRI8Yl+kKoL5BcYA==
+X-Google-Smtp-Source: ABdhPJx3ipOjqxWLspHm1PdFbyoLH1B9iR40Eah0PBO3efo+jMYR6ljyioVHJKH0Jp0GWSsPFuvei8Y1EzODH7lPOBw=
+X-Received: by 2002:a67:fc4d:: with SMTP id p13mr4795515vsq.60.1604001750400;
+ Thu, 29 Oct 2020 13:02:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com> <1049f02fb4132390a6a314eb21dccfe5500e69d6.1603372719.git.andreyknvl@google.com>
- <CACT4Y+a8e3c54Bzf5r2zhoC-cPziaVR=r89ONxrp9gx9arhrnw@mail.gmail.com>
-In-Reply-To: <CACT4Y+a8e3c54Bzf5r2zhoC-cPziaVR=r89ONxrp9gx9arhrnw@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 29 Oct 2020 21:00:38 +0100
-Message-ID: <CAAeHK+wKWrhBC0V8Y=FEj8Cz+DuLdpEMy3KXeF96dyNc+L7qSg@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 05/21] kasan: allow VMAP_STACK for HW_TAGS mode
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20201029063138.1429760-1-badhri@google.com> <20201029063138.1429760-2-badhri@google.com>
+ <20201029153351.GA1911637@bogus>
+In-Reply-To: <20201029153351.GA1911637@bogus>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Thu, 29 Oct 2020 13:01:52 -0700
+Message-ID: <CAPTae5L8bnv1S6dK0XkPiF7aha88ed5vfaiw5HAdtvu7TQMD5g@mail.gmail.com>
+Subject: Re: [PATCH v12 01/10] dt-bindings: usb: Maxim type-c controller
+ device tree binding document
+To:     Rob Herring <robh@kernel.org>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Prashant Malani <pmalani@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        USB <linux-usb@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 1:49 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
-> >
-> > Even though hardware tag-based mode currently doesn't support checking
-> > vmalloc allocations, it doesn't use shadow memory and works with
-> > VMAP_STACK as is.
-> >
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > Link: https://linux-review.googlesource.com/id/I3552cbc12321dec82cd7372676e9372a2eb452ac
-> > ---
-> >  arch/Kconfig | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index af14a567b493..3caf7bcdcf93 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -868,7 +868,7 @@ config VMAP_STACK
-> >         default y
-> >         bool "Use a virtually-mapped stack"
-> >         depends on HAVE_ARCH_VMAP_STACK
-> > -       depends on !KASAN || KASAN_VMALLOC
-> > +       depends on !(KASAN_GENERIC || KASAN_SW_TAGS) || KASAN_VMALLOC
->
-> I find it a bit simpler to interpret:
->
->     depends on !KASAN || KASAN_HW_TAGS || KASAN_VMALLOC
->
-> due to simpler structure. But maybe it's just me.
+Hi Rob,
 
-This looks better, will fix in the next version, thanks!
+The error seems to be because the following patch
+5ed132db5ad4 dt-bindings: connector: Add property to set initial
+current cap for FRS
+is in usb-next but not in the rc1 branch yet. To make the bot
+recognize that this is a
+dependency, Is it suffice to mention the following in the commit description?
+This patch depends on patch "dt-bindings: connector: Add property to
+set initial current cap for FRS".
+Or is there something else that I should do ?
+
+Thanks,
+Badhri
+
+
+On Thu, Oct 29, 2020 at 8:33 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, 28 Oct 2020 23:31:29 -0700, Badhri Jagan Sridharan wrote:
+> > Add device tree binding document for Maxim 33359 Type-C chip driver
+> >
+> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > ---
+> > Changes since v1:
+> > - Changing patch version to v6 to fix version number confusion.
+> >
+> > Changes since v6:
+> > - Migrated to yaml format.
+> >
+> > Changes since v7:
+> > - Rebase on usb-next
+> >
+> > Changes since v8:
+> > - Fix errors from make dt_binding_check as suggested by
+> >   Rob Herring.
+> >
+> > Changes since v9:
+> > - additionalProperties: false as suggested by Rob Herring.
+> >
+> > Changes since v10:
+> > - Added the chip number to the binding as suggested by Rob Herring.
+> > - Renamed the filename as well.
+> >
+> > Changes since v11:
+> > Addressed comments from Rob Herring to rename from maxim,33359
+> > to maxim,max33359
+> > ---
+> >  .../bindings/usb/maxim,max33359.yaml          | 75 +++++++++++++++++++
+> >  1 file changed, 75 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/usb/maxim,max33359.yaml
+> >
+>
+>
+> My bot found errors running 'make dt_binding_check' on your patch:
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> Error: Documentation/devicetree/bindings/usb/maxim,max33359.example.dts:39.53-54 syntax error
+> FATAL ERROR: Unable to parse input tree
+> make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/usb/maxim,max33359.example.dt.yaml] Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1364: dt_binding_check] Error 2
+>
+>
+> See https://patchwork.ozlabs.org/patch/1389879
+>
+> The base for the patch is generally the last rc1. Any dependencies
+> should be noted.
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+>
+> Please check and re-submit.
+>
