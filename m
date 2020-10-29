@@ -2,245 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D7729F693
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 22:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C27C229F691
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 22:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbgJ2VDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 17:03:38 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:41931 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726090AbgJ2VDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 17:03:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604005416; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=wrMdI+4RaPfZPeWzQXW90cx5Z685EYq4/9tTEJkTtvc=;
- b=BV/v+ieETU2Vzk06dQb/3sEQ7d0pb7V1KkfPiQArBoSpE5JpJVhfs3vZZkMwmrQPUncmf6v2
- d3NIlooPMuBb5AzY+Q7WCWf1/Daa+BcXrqBXWRgIoBu/apkZs6kQ6t5UvtGmu9PohiAu9G+i
- 8wl8jJvssUg8KAByPpZv5osAe/s=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f9b2dd3dec7e4448e2748fc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Oct 2020 21:02:11
- GMT
-Sender: sudaraja=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0A3D4C43382; Thu, 29 Oct 2020 21:02:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sudaraja)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9A0C5C433CB;
-        Thu, 29 Oct 2020 21:02:09 +0000 (UTC)
+        id S1726581AbgJ2VCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 17:02:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgJ2VCP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 17:02:15 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA76C0613CF;
+        Thu, 29 Oct 2020 14:02:14 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 21:02:11 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604005333;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tL8bniZ04qgr2+EFSyLjgTh3uZrTgGBOuVW8tbZgez8=;
+        b=iKUghlnwQrxUrRfn5QsK9EyduGtrpojr+TJguC4L/6WRqG3VtgK+lNAoatuI85F4i7rpOQ
+        0RpGNU9LzUF49bkA87ecMEtrw6K1L9oP/y/2pG157KBYwxM8x+24vdJVN5AAokzuBzsgm7
+        ejqt7YtzC53mTieeIdkPmbUyAHXTZOF4hV2w9mg4YCoseJGImF0pqWRq+2uqLHCTn5ggOz
+        JyOWt+yzxvUuvo/ryx6dizpNGfRdJuY7v3cKJFfO95d9R9Z5ijoukfoq41NoEdGOHkrn8f
+        ab5eCpQchMYLYlGG7QWHo/Gpr/axbSnfoXdM6fuWUkjLOcDSpEoaY28t9kE8jw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604005333;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tL8bniZ04qgr2+EFSyLjgTh3uZrTgGBOuVW8tbZgez8=;
+        b=TrP3VwjbRN15dQL/3n2irnVfPkE/PRJol0emRjRxF7TXaapn8QVS8dZRRN5sLMMgFny4go
+        QoIlnhswptopUTBA==
+From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/build] x86/build: Fix vmlinux size check on 64-bit
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201029161903.2553528-1-nivedita@alum.mit.edu>
+References: <20201029161903.2553528-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 29 Oct 2020 14:02:09 -0700
-From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Suren Baghdasaryan <surenb@google.com>, pratikp@codeaurora.org,
-        Gavin Shan <gshan@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>
-Subject: Re: arm64: dropping prevent_bootmem_remove_notifier
-In-Reply-To: <f125083d-4885-d174-f732-9cd96c45ddb4@arm.com>
-References: <de8388df2fbc5a6a33aab95831ba7db4@codeaurora.org>
- <f125083d-4885-d174-f732-9cd96c45ddb4@arm.com>
-Message-ID: <57952529a81c6d5ba2521c203dfc54b5@codeaurora.org>
-X-Sender: sudaraja@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Message-ID: <160400533170.397.11715757902925239172.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/build branch of tip:
 
+Commit-ID:     ea3186b9572a1b0299448697cfc44920061872cf
+Gitweb:        https://git.kernel.org/tip/ea3186b9572a1b0299448697cfc44920061872cf
+Author:        Arvind Sankar <nivedita@alum.mit.edu>
+AuthorDate:    Thu, 29 Oct 2020 12:19:03 -04:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 29 Oct 2020 21:54:35 +01:00
 
-Hi Anshuman, David,
+x86/build: Fix vmlinux size check on 64-bit
 
-Thanks for all the detailed explanations for the reasoning to have 
-bootmem protected from being removed. Also, I do agree drivers being 
-able to mark memory sections isn't the right thing to do.
+Commit
 
-We went ahead with the approach of using "mem=" as you suggested to 
-limit the bootmem and add remaining blocks using 
-add_memory_driver_managed() so that driver has ownership of these 
-blocks.
+  b4e0409a36f4 ("x86: check vmlinux limits, 64-bit")
 
-We do have some follow-up questions regarding this - will initiate a 
-discussion soon.
+added a check that the size of the 64-bit kernel is less than
+KERNEL_IMAGE_SIZE.
 
+The check uses (_end - _text), but this is not enough. The initial
+PMD used in startup_64() (level2_kernel_pgt) can only map upto
+KERNEL_IMAGE_SIZE from __START_KERNEL_map, not from _text, and the
+modules area (MODULES_VADDR) starts at KERNEL_IMAGE_SIZE.
 
-On 2020-10-18 22:37, Anshuman Khandual wrote:
-> Hello Sudarshan,
-> 
-> On 10/17/2020 04:41 AM, Sudarshan Rajagopalan wrote:
->> 
->> Hello Anshuman,
->> 
->> In the patch that enables memory hot-remove (commit bbd6ec605c0f 
->> ("arm64/mm: Enable memory hot remove")) for arm64, there’s a notifier 
->> put in place that prevents boot memory from being offlined and 
->> removed. Also commit text mentions that boot memory on arm64 cannot be 
->> removed. We wanted to understand more about the reasoning for this. 
->> X86 and other archs doesn’t seem to do this prevention. There’s also 
->> comment in the code that this notifier could be dropped in future if 
->> and when boot memory can be removed.
-> 
-> Right and till then the notifier cannot be dropped. There was a lot of
-> discussions
-> around this topic during multiple iterations of memory hot remove
-> series. Hence, I
-> would just request you to please go through them first. This list here
-> is from one
-> such series (https://lwn.net/Articles/809179/) but might not be 
-> exhaustive.
-> 
-> -----------------
-> On arm64 platform, it is essential to ensure that the boot time 
-> discovered
-> memory couldn't be hot-removed so that,
-> 
-> 1. FW data structures used across kexec are idempotent
->    e.g. the EFI memory map.
-> 
-> 2. linear map or vmemmap would not have to be dynamically split, and 
-> can
->    map boot memory at a large granularity
-> 
-> 3. Avoid penalizing paths that have to walk page tables, where we can 
-> be
->    certain that the memory is not hot-removable
-> -----------------
-> 
-> The primary reason being kexec which would need substantial rework 
-> otherwise.
-> 
->> 
->> The current logic is that only “new” memory blocks which are hot-added 
->> can later be offlined and removed. The memory that system booted up 
->> with cannot be offlined and removed. But there could be many usercases 
->> such as inter-VM memory sharing where a primary VM could offline and 
->> hot-remove a block/section of memory and lend it to secondary VM where 
->> it could hot-add it. And after usecase is done, the reverse happens 
->> where secondary VM hot-removes and gives it back to primary which can 
->> hot-add it back. In such cases, the present logic for arm64 doesn’t 
->> allow this hot-remove in primary to happen.
-> 
-> That is not true. Each VM could just boot with a minimum boot memory 
-> which can
-> not be offlined or removed but then a possible larger portion of memory 
-> can be
-> hot added during the boot process itself, making them available for any 
-> future
-> inter VM sharing purpose. Hence this problem could easily be solved in 
-> the user
-> space itself.
-> 
->> 
->> Also, on systems with movable zone that sort of guarantees pages to be 
->> migrated and isolated so that blocks can be offlined, this logic also 
->> defeats the purpose of having a movable zone which system can rely on 
->> memory hot-plugging, which say virt-io mem also relies on for fully 
->> plugged memory blocks.
-> ZONE_MOVABLE does not really guarantee migration, isolation and 
-> removal. There
-> are reasons an offline request might just fail. I agree that those 
-> reasons are
-> normally not platform related but core memory gives platform an 
-> opportunity to
-> decline an offlining request via a notifier. Hence ZONE_MOVABLE offline 
-> can be
-> denied. Semantics wise we are still okay.
-> 
-> This might look bit inconsistent that 
-> movablecore/kernelcore/movable_node with
-> firmware sending in 'hot pluggable' memory (IIRC arm64 does not really 
-> support
-> this yet), the system might end up with ZONE_MOVABLE marked boot memory 
-> which
-> cannot be offlined or removed. But an offline notifier action is 
-> orthogonal.
-> Hence did not block those kernel command line paths that creates 
-> ZONE_MOVABLE
-> during boot to preserve existing behavior.
-> 
->> 
->> I understand that some region of boot RAM shouldn’t be allowed to be 
->> removed, but such regions won’t be allowed to be offlined in first 
->> place since pages cannot be migrated and isolated, example reserved 
->> pages.
->> 
->> So we’re trying to understand the reasoning for such a prevention put 
->> in place for arm64 arch alone.
-> 
-> Primary reason being kexec. During kexec on arm64, next kernel's memory 
-> map is
-> derived from firmware and not from current running kernel. So the next 
-> kernel
-> will crash if it would access memory that might have been removed in 
-> running
-> kernel. Until kexec on arm64 changes substantially and takes into 
-> account the
-> real available memory on the current kernel, boot memory cannot be 
-> removed.
-> 
->> 
->> One possible way to solve this is by marking the required sections as 
->> “non-early” by removing the SECTION_IS_EARLY bit in its 
->> section_mem_map.
-> 
-> That is too intrusive from core memory perspective.
-> 
->  This puts these sections in the context of “memory hotpluggable”
-> which can be offlined-removed and added-onlined which are part of boot
-> RAM itself and doesn’t need any extra blocks to be hot added. This way
-> of marking certain sections as “non-early” could be exported so that
-> module drivers can set the required number of sections as “memory
-> hotpluggable”. This could have certain checks put in place to see
-> which sections are allowed, example only movable zone sections can be
-> marked as “non-early”.
-> 
-> Giving modules the right to mark memory hotpluggable ? That is too 
-> intrusive
-> and would still not solve the problem with kexec.
-> 
->> 
->> Your thoughts on this? We are also looking for different ways to solve 
->> the problem without having to completely dropping this notifier, but 
->> just putting out the concern here about the notifier logic that is 
->> breaking our usecase which is a generic memory sharing usecase using 
->> memory hotplug feature.
-> 
-> Completely preventing boot memory offline and removal is essential for 
-> kexec
-> to work as expected afterwards. As suggested previously, splitting the 
-> VM
-> memory into boot and non boot chunks during init can help work around 
-> this
-> restriction effectively in userspace itself and would not require any 
-> kernel
-> changes.
-> 
-> - Anshuman
+The correct check is what is currently done for 32-bit, since
+LOAD_OFFSET is defined appropriately for the two architectures. Just
+check (_end - LOAD_OFFSET) against KERNEL_IMAGE_SIZE unconditionally.
 
+Note that on 32-bit, the limit is not strict: KERNEL_IMAGE_SIZE is not
+really used by the main kernel. The higher the kernel is located, the
+less the space available for the vmalloc area. However, it is used by
+KASLR in the compressed stub to limit the maximum address of the kernel
+to a safe value.
 
-Sudarshan
+Clean up various comments to clarify that despite the name,
+KERNEL_IMAGE_SIZE is not a limit on the size of the kernel image, but a
+limit on the maximum virtual address that the image can occupy.
 
---
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
-Linux Foundation Collaborative Project
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201029161903.2553528-1-nivedita@alum.mit.edu
+---
+ arch/x86/include/asm/page_32_types.h |  8 +++++++-
+ arch/x86/include/asm/page_64_types.h |  6 ++++--
+ arch/x86/include/asm/pgtable_32.h    | 18 ++++++------------
+ arch/x86/kernel/head_64.S            | 20 +++++++++-----------
+ arch/x86/kernel/vmlinux.lds.S        | 12 +++---------
+ 5 files changed, 29 insertions(+), 35 deletions(-)
+
+diff --git a/arch/x86/include/asm/page_32_types.h b/arch/x86/include/asm/page_32_types.h
+index f462895..faf9cc1 100644
+--- a/arch/x86/include/asm/page_32_types.h
++++ b/arch/x86/include/asm/page_32_types.h
+@@ -53,7 +53,13 @@
+ #define STACK_TOP_MAX		STACK_TOP
+ 
+ /*
+- * Kernel image size is limited to 512 MB (see in arch/x86/kernel/head_32.S)
++ * In spite of the name, KERNEL_IMAGE_SIZE is a limit on the maximum virtual
++ * address for the kernel image, rather than the limit on the size itself. On
++ * 32-bit, this is not a strict limit, but this value is used to limit the
++ * link-time virtual address range of the kernel, and by KASLR to limit the
++ * randomized address from which the kernel is executed. A relocatable kernel
++ * can be loaded somewhat higher than KERNEL_IMAGE_SIZE as long as enough space
++ * remains for the vmalloc area.
+  */
+ #define KERNEL_IMAGE_SIZE	(512 * 1024 * 1024)
+ 
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index 3f49dac..645bd1d 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -98,8 +98,10 @@
+ #define STACK_TOP_MAX		TASK_SIZE_MAX
+ 
+ /*
+- * Maximum kernel image size is limited to 1 GiB, due to the fixmap living
+- * in the next 1 GiB (see level2_kernel_pgt in arch/x86/kernel/head_64.S).
++ * In spite of the name, KERNEL_IMAGE_SIZE is a limit on the maximum virtual
++ * address for the kernel image, rather than the limit on the size itself.
++ * This can be at most 1 GiB, due to the fixmap living in the next 1 GiB (see
++ * level2_kernel_pgt in arch/x86/kernel/head_64.S).
+  *
+  * On KASLR use 1 GiB by default, leaving 1 GiB for modules once the
+  * page tables are fully set up.
+diff --git a/arch/x86/include/asm/pgtable_32.h b/arch/x86/include/asm/pgtable_32.h
+index d7acae4..7c9c968 100644
+--- a/arch/x86/include/asm/pgtable_32.h
++++ b/arch/x86/include/asm/pgtable_32.h
+@@ -57,19 +57,13 @@ do {						\
+ #endif
+ 
+ /*
+- * This is how much memory in addition to the memory covered up to
+- * and including _end we need mapped initially.
+- * We need:
+- *     (KERNEL_IMAGE_SIZE/4096) / 1024 pages (worst case, non PAE)
+- *     (KERNEL_IMAGE_SIZE/4096) / 512 + 4 pages (worst case for PAE)
++ * This is used to calculate the .brk reservation for initial pagetables.
++ * Enough space is reserved to allocate pagetables sufficient to cover all
++ * of LOWMEM_PAGES, which is an upper bound on the size of the direct map of
++ * lowmem.
+  *
+- * Modulo rounding, each megabyte assigned here requires a kilobyte of
+- * memory, which is currently unreclaimed.
+- *
+- * This should be a multiple of a page.
+- *
+- * KERNEL_IMAGE_SIZE should be greater than pa(_end)
+- * and small than max_low_pfn, otherwise will waste some page table entries
++ * With PAE paging (PTRS_PER_PMD > 1), we allocate PTRS_PER_PGD == 4 pages for
++ * the PMD's in addition to the pages required for the last level pagetables.
+  */
+ #if PTRS_PER_PMD > 1
+ #define PAGE_TABLE_SIZE(pages) (((pages) / PTRS_PER_PMD) + PTRS_PER_PGD)
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index 7eb2a1c..d41fa5b 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -524,21 +524,19 @@ SYM_DATA_END(level3_kernel_pgt)
+ 
+ SYM_DATA_START_PAGE_ALIGNED(level2_kernel_pgt)
+ 	/*
+-	 * 512 MB kernel mapping. We spend a full page on this pagetable
+-	 * anyway.
++	 * Kernel high mapping.
+ 	 *
+-	 * The kernel code+data+bss must not be bigger than that.
++	 * The kernel code+data+bss must be located below KERNEL_IMAGE_SIZE in
++	 * virtual address space, which is 1 GiB if RANDOMIZE_BASE is enabled,
++	 * 512 MiB otherwise.
+ 	 *
+-	 * (NOTE: at +512MB starts the module area, see MODULES_VADDR.
+-	 *  If you want to increase this then increase MODULES_VADDR
+-	 *  too.)
++	 * (NOTE: after that starts the module area, see MODULES_VADDR.)
+ 	 *
+-	 *  This table is eventually used by the kernel during normal
+-	 *  runtime.  Care must be taken to clear out undesired bits
+-	 *  later, like _PAGE_RW or _PAGE_GLOBAL in some cases.
++	 * This table is eventually used by the kernel during normal runtime.
++	 * Care must be taken to clear out undesired bits later, like _PAGE_RW
++	 * or _PAGE_GLOBAL in some cases.
+ 	 */
+-	PMDS(0, __PAGE_KERNEL_LARGE_EXEC,
+-		KERNEL_IMAGE_SIZE/PMD_SIZE)
++	PMDS(0, __PAGE_KERNEL_LARGE_EXEC, KERNEL_IMAGE_SIZE/PMD_SIZE)
+ SYM_DATA_END(level2_kernel_pgt)
+ 
+ SYM_DATA_START_PAGE_ALIGNED(level2_fixmap_pgt)
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index bf9e0ad..efd9e9e 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -454,13 +454,13 @@ SECTIONS
+ 	ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations (.rela) detected!")
+ }
+ 
+-#ifdef CONFIG_X86_32
+ /*
+  * The ASSERT() sink to . is intentional, for binutils 2.14 compatibility:
+  */
+ . = ASSERT((_end - LOAD_OFFSET <= KERNEL_IMAGE_SIZE),
+ 	   "kernel image bigger than KERNEL_IMAGE_SIZE");
+-#else
++
++#ifdef CONFIG_X86_64
+ /*
+  * Per-cpu symbols which need to be offset from __per_cpu_load
+  * for the boot processor.
+@@ -470,18 +470,12 @@ INIT_PER_CPU(gdt_page);
+ INIT_PER_CPU(fixed_percpu_data);
+ INIT_PER_CPU(irq_stack_backing_store);
+ 
+-/*
+- * Build-time check on the image size:
+- */
+-. = ASSERT((_end - _text <= KERNEL_IMAGE_SIZE),
+-	   "kernel image bigger than KERNEL_IMAGE_SIZE");
+-
+ #ifdef CONFIG_SMP
+ . = ASSERT((fixed_percpu_data == 0),
+            "fixed_percpu_data is not at start of per-cpu area");
+ #endif
+ 
+-#endif /* CONFIG_X86_32 */
++#endif /* CONFIG_X86_64 */
+ 
+ #ifdef CONFIG_KEXEC_CORE
+ #include <asm/kexec.h>
