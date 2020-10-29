@@ -2,292 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116ED29E553
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F1029E54C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730864AbgJ2H4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729428AbgJ2HyJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:54:09 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F171DC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:54:08 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id a12so1395352ybg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:54:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VFXHHhFAI7F0boyMMl9VuURltwpwedI93M6v4kx2qIw=;
-        b=zRJqdA3rovxvN6CyF/Mhd9hNsAlylTjNBzzA2Kg6THqRr+rPWNXjw00Mw9fqvzHJz+
-         t3ID7YJDs8BE7c3MMjjpt51Y8WPpnzDqUcTjNpYdshlHoGxpS+SA7H9JVOPkY2R1EnzS
-         ZFiwPnqXXrHxBBe6C4hNReSpNMXV0dODV1EtjRmlrnYzJSx/xub34kjdmY6OEAHbcQX7
-         eLWIuO9WBkRgD9DZ1Bgj4fYPyNolp/odX3wtXw8eW8VfyB1wyBni+lxpK9WZJ+TvAK3W
-         CfPT6U4PLZz13dz7D9z7fkKDHV18edYktimZaZs+UGk7B3vIkruW1guLjGa5ykCnYxc6
-         aH0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VFXHHhFAI7F0boyMMl9VuURltwpwedI93M6v4kx2qIw=;
-        b=GmyXzcuk0jIfT5souWlApoppK9DpFim5rqxZc2y2Kjq+/z58aCtf/R4B1adbuP6gyl
-         yg4sPFCbpCOsq4rs6GFq/bM2p0g51IHHAb2KYQHEtQN5eikCC775A5qbNAfO1r6dmyy4
-         NGr6bfzKPSB9ApODhbLiHlwcgenVjXI1jhDpWBz+c7PBx3iR/zcQi8Eh6y4DAawjeInz
-         hsOqutSHXxuy6NuMY++2BE+UIVq/87OJy0MfiC31nRHU2pfEK5rBEA2D/bxg6RfuBmS9
-         sNYMtXC4lSrQd0G5QpBWAlz1KjOnbVIskeS3h7koz1Gz6A/m5jk7KUQku4bVym8lu+H+
-         X9mw==
-X-Gm-Message-State: AOAM532eFleyvfi386nQ1cPnsCpUoqSppKdh3nZILStRDSM+JU4kbbb5
-        WwLYnLgP9Tw/5bq1q0aK6ng2OW3z/1Z5uKXdDjBzuA==
-X-Google-Smtp-Source: ABdhPJwcIKpvFt/o64DVjKP74EsOKgo/fki63/eC47bd3J3h7T+4YmJbDxOFgCsyl8N6+77Foh9g3yN0LIFgNFNipuY=
-X-Received: by 2002:a25:d616:: with SMTP id n22mr4693171ybg.106.1603958048125;
- Thu, 29 Oct 2020 00:54:08 -0700 (PDT)
+        id S1731697AbgJ2H4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:56:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731531AbgJ2Hyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 03:54:31 -0400
+Received: from kernel.org (unknown [87.70.96.83])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3F1620EDD;
+        Thu, 29 Oct 2020 07:54:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603958070;
+        bh=5V9raRTAO8xn/TWxASurP3gs711BOhAaxxP12fBIpug=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=smkJOo6ejvJldTmaaqqEFjGX6LWRb76WicHCvCBcrN9qOMMNByoTCZCyPYd8JouA6
+         FsHRDDeFim9xIzvbeq0FyT0w7eXPAkBTo6qZkKSqULTgH8mtDPy6sKAI1NlM6RXbk0
+         gkAxCVUoVSgKd/P/vRphpHr37cKvq2I6Usohfbtc=
+Date:   Thu, 29 Oct 2020 09:54:16 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "david@redhat.com" <david@redhat.com>,
+        "cl@linux.com" <cl@linux.com>,
+        "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "kirill@shutemov.name" <kirill@shutemov.name>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "hca@linux.ibm.com" <hca@linux.ibm.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>, "bp@alien8.de" <bp@alien8.de>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "Brown, Len" <len.brown@intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
+Subject: Re: [PATCH 2/4] PM: hibernate: improve robustness of mapping pages
+ in the direct map
+Message-ID: <20201029075416.GJ1428094@kernel.org>
+References: <20201025101555.3057-1-rppt@kernel.org>
+ <20201025101555.3057-3-rppt@kernel.org>
+ <3b4b2b3559bd3dc68adcddf99415bae57152cb6b.camel@intel.com>
 MIME-Version: 1.0
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
-In-Reply-To: <20201028220945.3826358-1-suzuki.poulose@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Thu, 29 Oct 2020 07:53:57 +0000
-Message-ID: <CAJ9a7Vh5ODr=atPLffG0ud2XZjwav5ysiR9J2rQQxWfmL6ypQA@mail.gmail.com>
-Subject: Re: [PATCH v3 00/26] coresight: Support for ETM system instructions
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3b4b2b3559bd3dc68adcddf99415bae57152cb6b.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+On Wed, Oct 28, 2020 at 09:15:38PM +0000, Edgecombe, Rick P wrote:
+> On Sun, 2020-10-25 at 12:15 +0200, Mike Rapoport wrote:
+> > +       if (IS_ENABLED(CONFIG_ARCH_HAS_SET_DIRECT_MAP)) {
+> > +               unsigned long addr = (unsigned
+> > long)page_address(page);
+> > +               int ret;
+> > +
+> > +               if (enable)
+> > +                       ret = set_direct_map_default_noflush(page);
+> > +               else
+> > +                       ret = set_direct_map_invalid_noflush(page);
+> > +
+> > +               if (WARN_ON(ret))
+> > +                       return;
+> > +
+> > +               flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+> > +       } else {
+> > +               debug_pagealloc_map_pages(page, 1, enable);
+> > +       }
+> 
+> Looking at the arm side again, I think this might actually introduce a
+> regression for the arm/hibernate/DEBUG_PAGEALLOC combo.
+> 
+> Unlike __kernel_map_pages(), it looks like arm's cpa will always bail
+> in the set_direct_map_() functions if rodata_full is false.
+>
+> So if rodata_full was disabled but debug page alloc is on, then this
+> would now skip remapping the pages. I guess the significance depends
+> on whether hibernate could actually try to save any DEBUG_PAGEALLOC
+> unmapped pages. Looks like it to me though.
+ 
+__kernel_map_pages() on arm64 will also bail out if rodata_full is
+false:
 
-On Wed, 28 Oct 2020 at 22:10, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->
-> CoreSight ETMv4.4 obsoletes memory mapped access to ETM and
-> mandates the system instructions for registers.
-> This also implies that they may not be on the amba bus.
-> Right now all the CoreSight components are accessed via memory
-> map. Also, we have some common routines in coresight generic
-> code driver (e.g, CS_LOCK, claim/disclaim), which assume the
-> mmio. In order to preserve the generic algorithms at a single
-> place and to allow dynamic switch for ETMs, this series introduces
-> an abstraction layer for accessing a coresight device. It is
-> designed such that the mmio access are fast tracked (i.e, without
-> an indirect function call).
->
-> This will also help us to get rid of the driver+attribute specific
-> sysfs show/store routines and replace them with a single routine
-> to access a given register offset (which can be embedded in the
-> dev_ext_attribute). This is not currently implemented in the series,
-> but can be achieved.
->
-> Further we switch the generic routines to work with the abstraction.
-> With this in place, we refactor the etm4x code a bit to allow for
-> supporting the system instructions with very little new code. The
-> changes also switch to using the system instructions by default
-> even when we may have an MMIO.
->
-> We use TRCDEVARCH for the detection of the ETM component, which
-> is a standard register as per CoreSight architecture, rather than
-> the etm specific id register TRCIDR1. This is for making sure
-> that we are able to detect the ETM via system instructions accurately,
-> when the the trace unit could be anything (etm or a custom trace unit).
-> To keep the backward compatibility for any existing broken impelementation
-> which may not implement TRCDEVARCH, we fall back to TRCIDR1. Also
-> this covers us for the changes in the future architecture [0].
->
-> The series has been mildly tested on a model for system instructions.
-> I would really appreciate any testing on real hardware.
->
-> Applies on coresight/next.
->
-> [0] https://developer.arm.com/docs/ddi0601/g/aarch64-system-registers/trcidr1
->
-> Known issues:
->   Checkpatch failure for "coresight: etm4x: Add sysreg access helpers" :
->
->   ERROR: Macros with complex values should be enclosed in parentheses
->   #121: FILE: drivers/hwtracing/coresight/coresight-etm4x.h:153:
->   +#define CASE_READ(res, x)                                      \
->   +       case (x): { (res) = read_etm4x_sysreg_const_offset((x)); break; }
->
->
-> I don't know how to fix that without breaking the build ! Suggestions
-> welcome.
->
+void __kernel_map_pages(struct page *page, int numpages, int enable)
+{
+	if (!debug_pagealloc_enabled() && !rodata_full)
+		return;
 
-I hit exactly the same issue with my recent v2 set. The checker really
-hates case statements in macros. In my case I shut it up for v3 by
-changing:-
+	set_memory_valid((unsigned long)page_address(page), numpages, enable);
+}
 
-    #define MAPREG(cval, elem) \
-        case cval: \
-            reg->drv_store = &drvcfg->elem; \
-            break;
-
-
-    if (((offset >= TRCEVENTCTL0R) && (offset <= TRCVIPCSSCTLR)) ||
-        ((offset >= TRCSEQRSTEVR) && (offset <= TRCEXTINSELR)) ||
-        ((offset >= TRCCIDCCTLR0) && (offset <= TRCVMIDCCTLR1))) {
-        switch (offset) {
-            /* 32 bit single control and filter registers */
-            MAPREG(TRCEVENTCTL0R, eventctrl0);
-            MAPREG(TRCEVENTCTL1R, eventctrl1);
-            MAPREG(TRCSTALLCTLR, stall_ctrl);
-            MAPREG(TRCTSCTLR, ts_ctrl);
-            MAPREG(TRCSYNCPR, syncfreq);
-            MAPREG(TRCCCCTLR, ccctlr);
-            MAPREG(TRCBBCTLR, bb_ctrl);
-            MAPREG(TRCVICTLR, vinst_ctrl);
-            MAPREG(TRCVIIECTLR, viiectlr);
-            MAPREG(TRCVISSCTLR, vissctlr);
-            MAPREG(TRCVIPCSSCTLR, vipcssctlr);
-            MAPREG(TRCSEQRSTEVR, seq_rst);
-            MAPREG(TRCSEQSTR, seq_state);
-            MAPREG(TRCEXTINSELR, ext_inp);
-            MAPREG(TRCCIDCCTLR0, ctxid_mask0);
-            MAPREG(TRCCIDCCTLR1, ctxid_mask1);
-            MAPREG(TRCVMIDCCTLR0, vmid_mask0);
-            MAPREG(TRCVMIDCCTLR1, vmid_mask1);
-        default:
-            err = -EINVAL;
-            break;
-        }
-
-
-to
-
-err = -EINVAL;
-
-#define CHECKREG(cval, elem) \
-    { \
-        if (offset == cval) { \
-            reg->drv_store = &drvcfg->elem; \
-            err = 0; \
-            break; \
-        } \
-    }
-
-    if (((offset >= TRCEVENTCTL0R) && (offset <= TRCVIPCSSCTLR)) ||
-        ((offset >= TRCSEQRSTEVR) && (offset <= TRCEXTINSELR)) ||
-        ((offset >= TRCCIDCCTLR0) && (offset <= TRCVMIDCCTLR1))) {
-        do {
-            CHECKREG(TRCEVENTCTL0R, eventctrl0);
-            CHECKREG(TRCEVENTCTL1R, eventctrl1);
-            CHECKREG(TRCSTALLCTLR, stall_ctrl);
-            CHECKREG(TRCTSCTLR, ts_ctrl);
-            CHECKREG(TRCSYNCPR, syncfreq);
-            CHECKREG(TRCCCCTLR, ccctlr);
-            CHECKREG(TRCBBCTLR, bb_ctrl);
-            CHECKREG(TRCVICTLR, vinst_ctrl);
-            CHECKREG(TRCVIIECTLR, viiectlr);
-            CHECKREG(TRCVISSCTLR, vissctlr);
-            CHECKREG(TRCVIPCSSCTLR, vipcssctlr);
-            CHECKREG(TRCSEQRSTEVR, seq_rst);
-            CHECKREG(TRCSEQSTR, seq_state);
-            CHECKREG(TRCEXTINSELR, ext_inp);
-            CHECKREG(TRCCIDCCTLR0, ctxid_mask0);
-            CHECKREG(TRCCIDCCTLR1, ctxid_mask1);
-            CHECKREG(TRCVMIDCCTLR0, vmid_mask0);
-            CHECKREG(TRCVMIDCCTLR1, vmid_mask1);
-        } while (0);
-
-
-A bit contrived but functionally the same - and doesn't annoy the
-checker, No idea if the code is more or less efficient after
-compilation than a standard switch / case combo, but not on a critical
-path for me so wasn't bothered.
-As I look again I could have actually put the err = -EINVAL; line just
-before the while(0) statement - making it more like a case default -
-but my current set is too close to release to change that now.
-
-Cheers
-
-Mike
-
-
->
-> Changes since V2:
->   - Several fixes to the ETM register accesses. Access a register
->     when it is present.
->   - Add support for TRCIDR3.NUMPROCS for v4.2+
->   - Drop OS lock detection. Use software lock only in case of mmio.
->   - Fix issues with the Exception level masks (Mike Leach)
->   - Fall back to using TRCIDR1 when TRCDEVARCH is not "present"
->   - Use a generic notion of ETM architecture (rather than using
->     the encoding as in registers)
->   - Fixed some checkpatch issues.
->   - Add support for Self Hosted tracing Arm v8.4 extensions. (Mike
->     Leach)
->     Originally written by Jonathan, refactored and cleaned up.
->   - Changed the dts compatible string to "arm,coresight-etm-sysreg"
->     (Mike Leach)
->
-> Changes since V1:
->   - Flip the switch for iomem from no_iomem to io_mem in csdev_access.
->   - Split patches for claim/disclaim and CS_LOCK/UNLOCK conversions.
->   - Move device access initialisation for etm4x to the target CPU
->   - Cleanup secure exception level mask handling.
->   - Switch to use TRCDEVARCH for ETM component discovery. This
->     is for making
->   - Check the availability of OS/Software Locks before using them.
->
->
-> Suzuki K Poulose (26):
->   coresight: etm4x: Fix accesses to TRCVMIDCTLR1
->   coresight: etm4x: Fix accesses to TRCCIDCTLR1
->   coresight: etm4x: Update TRCIDR3.NUMPROCS handling to match v4.2
->   coresight: etm4x: Fix accesses to TRCPROCSELR
->   coresight: etm4x: Handle TRCVIPCSSCTLR accesses
->   coresight: etm4x: Handle access to TRCSSPCICRn
->   coresight: Introduce device access abstraction
->   coresight: tpiu: Prepare for using coresight device access abstraction
->   coresight: Convert coresight_timeout to use access abstraction
->   coresight: Convert claim/disclaim operations to use access wrappers
->   coresight: etm4x: Always read the registers on the host CPU
->   coresight: etm4x: Convert all register accesses
->   coresight: etm4x: Add commentary on the registers
->   coresight: etm4x: Add sysreg access helpers
->   coresight: etm4x: Define DEVARCH register fields
->   coresight: etm4x: Check for Software Lock
->   coresight: etm4x: Cleanup secure exception level masks
->   coresight: etm4x: Clean up exception level masks
->   coresight: etm4x: Detect access early on the target CPU
->   coresight: etm4x: Handle ETM architecture version
->   coresight: etm4x: Use TRCDEVARCH for component discovery
->   coresight: etm4x: Add necessary synchronization for sysreg access
->   coresight: etm4x: Detect system instructions support
->   coresight: etm4x: Refactor probing routine
->   coresight: etm4x: Add support for sysreg only devices
->   dts: bindings: coresight: ETM system register access only units
->
->  .../devicetree/bindings/arm/coresight.txt     |   5 +-
->  drivers/hwtracing/coresight/coresight-catu.c  |  12 +-
->  drivers/hwtracing/coresight/coresight-core.c  | 130 ++-
->  .../hwtracing/coresight/coresight-cti-core.c  |  18 +-
->  drivers/hwtracing/coresight/coresight-etb10.c |  10 +-
->  .../coresight/coresight-etm3x-core.c          |   9 +-
->  .../coresight/coresight-etm4x-core.c          | 758 +++++++++++-------
->  .../coresight/coresight-etm4x-sysfs.c         |  44 +-
->  drivers/hwtracing/coresight/coresight-etm4x.h | 501 +++++++++++-
->  .../hwtracing/coresight/coresight-funnel.c    |   7 +-
->  .../coresight/coresight-replicator.c          |  17 +-
->  drivers/hwtracing/coresight/coresight-stm.c   |   4 +-
->  .../hwtracing/coresight/coresight-tmc-core.c  |  16 +-
->  .../hwtracing/coresight/coresight-tmc-etf.c   |  10 +-
->  .../hwtracing/coresight/coresight-tmc-etr.c   |   4 +-
->  drivers/hwtracing/coresight/coresight-tpiu.c  |  31 +-
->  include/linux/coresight.h                     | 230 +++++-
->  17 files changed, 1376 insertions(+), 430 deletions(-)
->
-> --
-> 2.24.1
->
-
+So using set_direct_map() to map back pages removed from the direct map
+with __kernel_map_pages() seems safe to me.
 
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+Sincerely yours,
+Mike.
