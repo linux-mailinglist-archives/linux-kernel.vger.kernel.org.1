@@ -2,102 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E174729E5DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E81E29E5D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgJ2IH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 04:07:58 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:10004 "EHLO m42-4.mailgun.net"
+        id S1726852AbgJ2IHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 04:07:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726663AbgJ2IHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:07:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603958858; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=H308bgHtNMckRynOpOEBssH/vo6aQHBFl+tdwdPWVmU=; b=HJYhj5ZOdLLbcA2jCnx2x1ooTLYegzVDyKfNgTU9D1KBMSq9NM6fKEzn15Ps9/5wznw20KYE
- BocAQnCwoIxlTHMC54sn4THw3Hc1Blx2AEtAILq85QJ2rSgw9P/UgZ+VIrjIS7PFtWuXaQKB
- Y6dOx5TCtgjEhtOnyp9VRjF3Sq4=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f9a784a44ab0dcc45674b5b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Oct 2020 08:07:38
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1761EC43387; Thu, 29 Oct 2020 08:07:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1726714AbgJ2IHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:07:40 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6D05DC433C9;
-        Thu, 29 Oct 2020 08:07:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6D05DC433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-To:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     robh@kernel.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jcrouse@codeaurora.org, mka@chromium.org, robdclark@gmail.com,
-        dianders@chromium.org
-Subject: [PATCH v4 3/3] dt-bindings: drm/msm/gpu: Add cooling device support
-Date:   Thu, 29 Oct 2020 13:37:21 +0530
-Message-Id: <1603958841-20233-3-git-send-email-akhilpo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1603958841-20233-1-git-send-email-akhilpo@codeaurora.org>
-References: <1603958841-20233-1-git-send-email-akhilpo@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AC522071A;
+        Thu, 29 Oct 2020 08:07:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603958860;
+        bh=kpWNJPWGD4JFwLM+mHUyzzxC6LBl3TEm0/BDqlS76+w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=p5j/vgBuQezI6kR9EU1fwI5RM0bNnX6e2eSjaPejpXXKukozYtdR1oYABLFUxNbtI
+         CZnvYEO7FvMZi0KhP7nnKClDG+0QQ5CqIC90UWrM7jnRJVgtMBVNz77OV3proh2Kwo
+         5y/F5YAlACNAemiizQ//E4r1aRGnkNYM2XQLFMhE=
+Date:   Thu, 29 Oct 2020 17:07:36 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [RFC][PATCH 1/2 v2] ftrace/x86: Allow for arguments to be
+ passed in to REGS by default
+Message-Id: <20201029170736.938ded569b436c858ebc2555@kernel.org>
+In-Reply-To: <20201028112916.50bcbc69@oasis.local.home>
+References: <20201028131542.963014814@goodmis.org>
+        <20201028131909.738751907@goodmis.org>
+        <20201028102502.28095c95@oasis.local.home>
+        <20201028112916.50bcbc69@oasis.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add cooling device support to gpu. A cooling device is bound to a
-thermal zone to allow thermal mitigation.
+On Wed, 28 Oct 2020 11:29:16 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
----
- Documentation/devicetree/bindings/display/msm/gpu.txt | 7 +++++++
- 1 file changed, 7 insertions(+)
+> Hi Masami,
+> 
+> Talking with Peter and Thomas on IRC, where they really don't like
+> passing a partial pt_regs around, got me thinking of redoing the REGS
+> parameter of ftrace. Kprobes is the only user that requires the full
+> registers being saved, and that's only because some kprobe user might
+> want them.
 
-diff --git a/Documentation/devicetree/bindings/display/msm/gpu.txt b/Documentation/devicetree/bindings/display/msm/gpu.txt
-index 1af0ff1..090dcb3 100644
---- a/Documentation/devicetree/bindings/display/msm/gpu.txt
-+++ b/Documentation/devicetree/bindings/display/msm/gpu.txt
-@@ -39,6 +39,10 @@ Required properties:
-         a4xx Snapdragon SoCs. See
-         Documentation/devicetree/bindings/sram/qcom,ocmem.yaml.
- 
-+Optional properties:
-+- #cooling-cells: The value must be 2. For details, please refer
-+	Documentation/devicetree/bindings/thermal/thermal-cooling-devices.yaml.
-+
- Example 3xx/4xx:
- 
- / {
-@@ -61,6 +65,7 @@ Example 3xx/4xx:
- 		power-domains = <&mmcc OXILICX_GDSC>;
- 		operating-points-v2 = <&gpu_opp_table>;
- 		iommus = <&gpu_iommu 0>;
-+		#cooling-cells = <2>;
- 	};
- 
- 	gpu_sram: ocmem@fdd00000 {
-@@ -98,6 +103,8 @@ Example a6xx (with GMU):
- 		reg = <0x5000000 0x40000>, <0x509e000 0x10>;
- 		reg-names = "kgsl_3d0_reg_memory", "cx_mem";
- 
-+		#cooling-cells = <2>;
-+
- 		/*
- 		 * Look ma, no clocks! The GPU clocks and power are
- 		 * controlled entirely by the GMU
+Yes, kprobes can be used for debugging use case. I think we can skip
+coller-saved registers (because ftrace is embedded by compiler and it
+may save such registers correctly), but we still need a pt_regs on memory
+to access it.
+
+> 
+> On Wed, 28 Oct 2020 10:25:02 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> >  typedef void (*ftrace_func_t)(unsigned long ip, unsigned long parent_ip,
+> >  			      struct ftrace_ops *op, struct pt_regs *regs);
+> >  
+> 
+> 
+> Most registers of pt_regs at a start of a function is rather useless.
+> What if we got rid of FL_SAVE_REGS all together and had a "ftrace_regs"
+> structure passed in that would have only access to all the argument
+> registers, the stack pointer and the instruction pointer?
+
+Yeah, that's OK to me. If someone wants to investigate suspicious compiler
+bug, they should not put a kprobe on the fentry call site. (in most cases
+symbol+5 will put a breakpoint right after fentry nop)
+
+> Then kprobes could just create its own pt_regs, fill in all the data
+> from ftrace_regs and then fill the rest with zeros or possibly whatever
+> the values currently are (does it really matter what those registers
+> are?), including flags.
+
+That sounds good to me.
+
+> 
+> Not only would this simplify the code, it would probably allow moving
+> more of the kprobe code from the arch specific to the generic code, and
+> remove a lot of duplication.
+
+Ah, right.
+
+> 
+> This would also help speed up the processing of live kernel patching.
+> 
+> And best of all, it would give everything access to the arguments of a
+> function and a stack pointer with out (ab)using pt_regs.
+> 
+> Do you think this would be feasible?
+
+Yes, I agreed.
+
+Thank you,
+
+> 
+> -- Steve
+
+
 -- 
-2.7.4
-
+Masami Hiramatsu <mhiramat@kernel.org>
