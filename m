@@ -2,93 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F7529F0CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C506F29F0CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgJ2QJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:09:18 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:58814 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725804AbgJ2QJS (ORCPT
+        id S1726112AbgJ2QJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725824AbgJ2QJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:09:18 -0400
-X-UUID: 3e2fd9ffc93d4943bed5940f6515cf56-20201030
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=QAQNmhHtOheMU/ZFT0+MHH+Q18R1hfTiNfYbqOhng1M=;
-        b=lTkT5sdcHubwnFcmh+Fct/4PN6oA8lWe/XTchWwIKNxELWGD4WZ3L09UaM9i/DHauwGa+3vniXqaIZmcap1au4a6dyddL8y5hF5wVfUsbm9N42c2hKA9Cta2e7XZJ2n5Nrg6rS+IQheqzOtb/DMQ+mlkhT6r2ia07r9OmxXVjto=;
-X-UUID: 3e2fd9ffc93d4943bed5940f6515cf56-20201030
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <frankie.chang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1254586372; Fri, 30 Oct 2020 00:09:13 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 30 Oct 2020 00:09:08 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 30 Oct 2020 00:09:08 +0800
-From:   Frankie Chang <Frankie.Chang@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Todd Kjos <tkjos@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Martijn Coenen <maco@android.com>,
-        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Christian Brauner <christian@brauner.io>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
-Subject: binder: add transaction latency tracer
-Date:   Fri, 30 Oct 2020 00:08:54 +0800
-Message-ID: <1603987737-2763-1-git-send-email-Frankie.Chang@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1602781377-4278-1-git-send-email-Frankie.Chang@mediatek.com>
-References: <1602781377-4278-1-git-send-email-Frankie.Chang@mediatek.com>
+        Thu, 29 Oct 2020 12:09:36 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B54BC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:09:36 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id w21so2721671pfc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+mBWfRe+OIpv7WsNMP7DYo0jsOnffJofR1p3pyhBTUE=;
+        b=aAk00euheapwS9xRA1bncmzHvN9I+6nyRyTCd3xMc2dkkXTXJBxXHQPbZj5LEfqx2a
+         5P+ylRRBoUhWmx7cNyr2tT/0FsGSiu3nvxnCMR60vF9ivHhn7fN6PfuI7sSI1nTmTQmo
+         Cpv5WwRe5QSPQqqek07hNLOVeAKodbAY9krPKSDnktsyWuvqYizgHIugu8JcKb31NMV+
+         OkdSCjhNrEIJar/D7QI6ipEpTto94dnCyjP78etZHXvq5x1mi0cYudGrBkKUQoTv7PFr
+         aKrrRWp/VwMw6wgCLeR+efWZkXG26cYmtDRxlzGMJkKASKCh05U6EQc7wd9f0/9YGzS6
+         Wz7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+mBWfRe+OIpv7WsNMP7DYo0jsOnffJofR1p3pyhBTUE=;
+        b=ikiZTOuh4eG8W1HOFoRmJXUfGQdUAdwsgCio1gkOeZwxuFw1jIj5vC9CyhSGg2mEPp
+         9wIYzbEVTvc6exc3Udip5tr1tWDFSzKtyJp2NwUR/DRp16fZmUOqF3XWEzivuSYJlWSD
+         PLo3t37b6zNWAW9DxmWJQKYm7wo30E3uQDTzGOomM8nmkmNVx+uybl27Qm1v9+EJv+Fl
+         Hg06+TnkNf9pcv1U3DnypYAUQw8GDkve6AVdi01908CA0n+lHfi5u6Rb/zCtz22C5cet
+         vQSpH7Jh0wqvR3oWzxfFDS8BPBbtwLpBSwcMa7fpI1TxpzF8DqvSU2eLJFGttR3Yqra2
+         kNsg==
+X-Gm-Message-State: AOAM533aSWTIeMN5e3drsVVNdcrG4RZJo5o9gi/P6Dsuu4t4i3VYciq0
+        fnswK3f4FufWj9jDCYce9NbUFBZlH+qGlOliDU8Txw==
+X-Google-Smtp-Source: ABdhPJyjZSv9zU0BpVf3RV54xkfmJECDMC0KfJwx2jtsWDnpqEhS8GqFik3yU3J6Jq1TgwaIlpsiZUFmG06Lkbixnj4=
+X-Received: by 2002:a17:90a:890f:: with SMTP id u15mr44881pjn.147.1603987776051;
+ Thu, 29 Oct 2020 09:09:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20201028035013.99711-1-songmuchun@bytedance.com> <CALvZod6p_y2fTEK5fzAL=JfPsguqYbttgWC4_GPc=rF1PsN6TQ@mail.gmail.com>
+In-Reply-To: <CALvZod6p_y2fTEK5fzAL=JfPsguqYbttgWC4_GPc=rF1PsN6TQ@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 30 Oct 2020 00:08:58 +0800
+Message-ID: <CAMZfGtW38sFcdpnx3Xx+RgRL37WzpQsq8qvfdnmhbh4H9Ex0cg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] mm: memcg/slab: Fix return child memcg
+ objcg for root memcg
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Chris Down <chris@chrisdown.name>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
+        Marco Elver <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q2hhbmdlIGZyb20gdjExOg0KICAtIHJlYmFzZS4NCg0KQ2hhbmdlIGZyb20gdjEwOg0KICAtIHJl
-cGxhY2UgdGltZXNwZWM2NCB3aXRoIGt0aW1lX3QuDQogIC0gZml4IGJ1aWxkIHdhcm5pbmcuDQoN
-CkNoYW5nZSBmcm9tIHY5Og0KICAtIHJlbmFtZSB0aW1lc3RhbXAgdG8gdHMgaW4gYmluZGVyX2lu
-dGVybmFsLmggZm9yIGNvbmNpc2VuZXNzLg0KICAtIGNoYW5nZSB0aW1ldmFsIHRvIHRpbWVzcGVj
-NjQgaW4gYmluZGVyX2ludGVybmFsLmgNCg0KQ2hhbmdlIGZyb20gdjg6DQogIC0gY2hhbmdlIHJ0
-Y190aW1lX3RvX3RtIHRvIHJ0Y190aW1lNjRfdG9fdG0uDQogIC0gY2hhbmdlIHRpbWV2YWwgdG8g
-X19rZXJuZWxfb2xkX3RpbWV2YWwgZHVlIHRvIA0KICAgIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcv
-cHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC9jb21taXQvP2lkPWM3
-NjZkMTQ3MmM3MGQyNWFkNDc1Y2Y1NjA0MmFmMTY1MmU3OTJiMjMNCiAgLSBleHBvcnQgdHJhY2Vw
-b2ludCBzeW1ib2wgZm9yIGJpbmRlcl90eG5fbGF0ZW5jeV8qIHdoaWNoIGJpbmRlcl90cmFuc2Fj
-dGlvbl9sYXRlbmN5X3RyYWNlciB0byBiZSBrbyBuZWVkZWQuDQoNCkNoYW5nZSBmcm9tIHY3Og0K
-ICAtIFVzZSB0aGUgcGFzc2VkLWluIHZhbHVlcyBpbnN0ZWFkIG9mIGFjY2Vzc2luZyB2aWEgdC0+
-ZnJvbS90b19wcm9jL3RvX3RocmVhZA0KICAgIGZvciB0cmFjZV9iaW5kZXJfdHhuX2xhdGVuY3lf
-ZnJlZSwgd2hlbiB0cmFjZV9iaW5kZXJfdHhuX2xhdGVuY3lfZnJlZV9lbmFibGUoKSByZXR1cm4g
-dHJ1ZS4NCiAgLSBtYWtlIGEgaGVscGVyIGZ1bmN0aW9uIHRvIGRvIHRoZSBhYm92ZS4NCg0KQ2hh
-bmdlIGZyb20gdjY6DQogIC0gY2hhbmdlIENPTkZJR19CSU5ERVJfVFJBTlNBQ1RJT05fTEFURU5D
-WV9UUkFDS0lORyB0eXBlIGZyb20gYm9vbCB0byB0cmlzdGF0ZQ0KICAtIGFkZCBjb21tZW50cyB0
-byBAdGltZXN0YW1wIGFuZCBAdHYgdW5kZXIgc3RydWN0IGJpbmRlcl90cmFuc2FjdGlvbg0KICAt
-IG1ha2UgYmluZGVyX3R4bl9sYXRlbmN5IHRocmVzaG9sZCBjb25maWd1cmFibGUNCiAgLSBlbmhh
-bmNlIGxvY2sgcHJvdGVjdGlvbg0KDQpDaGFuZ2UgZnJvbSB2NToNCiAgLSBjaGFuZ2UgY29uZmln
-IG5hbWUgdG8gdGhlIHByb3BlciBvbmUsIENPTkZJR19CSU5ERVJfVFJBTlNBQ1RJT05fTEFURU5D
-WV9UUkFDS0lORy4NCiAgLSBjaGFuZ2UgdHJhY2Vwb2ludCBuYW1lIHRvIG1vcmUgZGVzY3JpcHRp
-dmUgb25lLCB0cmFjZV9iaW5kZXJfdHhuX2xhdGVuY3lfKGFsbG9jfGluZm98ZnJlZSkNCiAgLSBl
-bmhhbmNlIHNvbWUgbG9jayBwcm90ZWN0aW9uLg0KDQpDaGFuZ2UgZnJvbSB2NDoNCiAgLSBzcGxp
-dCB1cCBpbnRvIHBhdGNoIHNlcmllcy4NCg0KQ2hhbmdlIGZyb20gdjM6DQogIC0gdXNlIHRyYWNl
-cG9pbnRzIGZvciBiaW5kZXJfdXBkYXRlX2luZm8gYW5kIHByaW50X2JpbmRlcl90cmFuc2FjdGlv
-bl9leHQsDQogICAgaW5zdGVhZCBvZiBjdXN0b20gcmVnaXN0cmF0aW9uIGZ1bmN0aW9ucy4NCg0K
-Q2hhbmdlIGZyb20gdjI6DQogIC0gY3JlYXRlIHRyYW5zYWN0aW9uIGxhdGVuY3kgbW9kdWxlIHRv
-IG1vbml0b3Igc2xvdyB0cmFuc2FjdGlvbi4NCg0KQ2hhbmdlIGZyb20gdjE6DQogIC0gZmlyc3Qg
-cGF0Y2hzZXQuDQoNCg0KRnJhbmtpZS5DaGFuZyAoMyk6DQogIGJpbmRlcjogbW92ZSBzdHJ1Y3Rz
-IGZyb20gY29yZSBmaWxlIHRvIGhlYWRlciBmaWxlDQogIGJpbmRlcjogYWRkIHRyYWNlIGF0IGZy
-ZWUgdHJhbnNhY3Rpb24uDQogIGJpbmRlcjogYWRkIHRyYW5zYWN0aW9uIGxhdGVuY3kgdHJhY2Vy
-DQoNCiBkcml2ZXJzL2FuZHJvaWQvS2NvbmZpZyAgICAgICAgICAgICAgICAgfCAgIDggKw0KIGRy
-aXZlcnMvYW5kcm9pZC9NYWtlZmlsZSAgICAgICAgICAgICAgICB8ICAgMSArDQogZHJpdmVycy9h
-bmRyb2lkL2JpbmRlci5jICAgICAgICAgICAgICAgIHwgNDMwICsrLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQ0KIGRyaXZlcnMvYW5kcm9pZC9iaW5kZXJfaW50ZXJuYWwuaCAgICAgICB8IDQxOSArKysr
-KysrKysrKysrKysrKysrKysrKw0KIGRyaXZlcnMvYW5kcm9pZC9iaW5kZXJfbGF0ZW5jeV90cmFj
-ZXIuYyB8IDEwNyArKysrKysNCiBkcml2ZXJzL2FuZHJvaWQvYmluZGVyX3RyYWNlLmggICAgICAg
-ICAgfCAgNDkgKysrDQogNiBmaWxlcyBjaGFuZ2VkLCA2MDggaW5zZXJ0aW9ucygrKSwgNDA2IGRl
-bGV0aW9ucygtKQ0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2FuZHJvaWQvYmluZGVyX2xh
-dGVuY3lfdHJhY2VyLmM=
+On Thu, Oct 29, 2020 at 11:48 PM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Tue, Oct 27, 2020 at 8:50 PM Muchun Song <songmuchun@bytedance.com> wrote:
+> >
+> > Consider the following memcg hierarchy.
+> >
+> >                     root
+> >                    /    \
+> >                   A      B
+> >
+> > If we get the objcg of memcg A failed,
+>
+> Please fix the above statement.
 
+Sorry, could you be more specific, I don't quite understand.
+Thanks.
+
+
+>
+> > the get_obj_cgroup_from_current
+> > can return the wrong objcg for the root memcg.
+> >
+> > Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  changelog in v2:
+> >  1. Do not use a comparison with the root_mem_cgroup
+> >
+> >  mm/memcontrol.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 1337775b04f3..8c8b4c3ed5a0 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -2961,6 +2961,7 @@ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+> >                 objcg = rcu_dereference(memcg->objcg);
+> >                 if (objcg && obj_cgroup_tryget(objcg))
+> >                         break;
+> > +               objcg = NULL;
+>
+> Roman, in your cleanup, are you planning to have objcg for root memcg as well?
+>
+> >         }
+> >         rcu_read_unlock();
+> >
+> > --
+> > 2.20.1
+> >
+
+
+
+--
+Yours,
+Muchun
