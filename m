@@ -2,156 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E7429E8E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E16FA29E8EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbgJ2KY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:24:59 -0400
-Received: from relay5.mymailcheap.com ([159.100.248.207]:37593 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726145AbgJ2KY7 (ORCPT
+        id S1726537AbgJ2KZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:25:12 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:6926 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725773AbgJ2KZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:24:59 -0400
-Received: from relay2.mymailcheap.com (relay2.mymailcheap.com [151.80.165.199])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 78A6B260EB
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:24:56 +0000 (UTC)
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id 186903ECDA;
-        Thu, 29 Oct 2020 11:24:54 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 570452A0F9;
-        Thu, 29 Oct 2020 06:24:53 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1603967093;
-        bh=4swhytK2zsubih5GZHoRetLtnB5qvjMkgDk1gv1OedQ=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=F8uPFAWMCQh3vgTbD0UmiYLgDfzXwAknKrxShCCkfsdHFSQav5B1AZJCDeila32BT
-         vT5oExYFHmddeBLLZxt0k5jdZ0Xe62zNvGQFwzIc0h5Sx4O/USh/C6gjF7qdTkisS0
-         0vtScpdhkH/4ByLEdz4/X+sLNtKRAAJsgjqZRmug=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id iiyFK8Joi_7B; Thu, 29 Oct 2020 06:24:52 -0400 (EDT)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Thu, 29 Oct 2020 06:24:52 -0400 (EDT)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 1C4B640B5A;
-        Thu, 29 Oct 2020 10:24:51 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="civFcXEp";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [172.19.0.1] (unknown [64.225.114.122])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id D731940B4D;
-        Thu, 29 Oct 2020 10:24:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1603967082; bh=4swhytK2zsubih5GZHoRetLtnB5qvjMkgDk1gv1OedQ=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=civFcXEpvuF+IJPSRAkyisaBLrx0SMEMb9huNRDka7dahtOVEcmYUpZGWhqYVmySR
-         9thlYkTqzUEAVBHEwjJeks/MiYpXXA26EwrcetKCIH49j33V1aSxZKRfw+KwKXs9cv
-         K5FURPKfzvcNhA5jxBpc/7BSfkBagDhk+s8fUrzk=
-Date:   Thu, 29 Oct 2020 18:24:34 +0800
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20201029101304.yja4m747pc62re34@gilmour.lan>
-References: <20201029022000.601913-1-matteo.scordino@gmail.com> <20201029022000.601913-5-matteo.scordino@gmail.com> <20201029101304.yja4m747pc62re34@gilmour.lan>
+        Thu, 29 Oct 2020 06:25:12 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CMM5J2hT5z6y6h;
+        Thu, 29 Oct 2020 18:25:08 +0800 (CST)
+Received: from [10.74.191.121] (10.74.191.121) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 29 Oct 2020 18:24:57 +0800
+Subject: Re: [PATCH v2 net] net: sch_generic: aviod concurrent reset and
+ enqueue op for lockless qdisc
+To:     Vishwanath Pai <vpai@akamai.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+CC:     "Hunt, Joshua" <johunt@akamai.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        David Miller <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+References: <1599562954-87257-1-git-send-email-linyunsheng@huawei.com>
+ <CAM_iQpX0_mz+McZdzZ7HFTjBihOKz5E6i4qJQSoFbZ=SZkVh=Q@mail.gmail.com>
+ <830f85b5-ef29-c68e-c982-de20ac880bd9@huawei.com>
+ <CAM_iQpU_tbRNO=Lznz_d6YjXmenYhowEfBoOiJgEmo9x8bEevw@mail.gmail.com>
+ <CAP12E-+3DY-dgzVercKc-NYGPExWO1NjTOr1Gf3tPLKvp6O6+g@mail.gmail.com>
+ <AE096F70-4419-4A67-937A-7741FBDA6668@akamai.com>
+ <CAM_iQpX0XzNDCzc2U5=g6aU-HGYs3oryHx=rmM3ue9sH=Jd4Gw@mail.gmail.com>
+ <19f888c2-8bc1-ea56-6e19-4cb4841c4da0@akamai.com>
+ <93ab7f0f-7b5a-74c3-398d-a572274a4790@huawei.com>
+ <248e5a32-a102-0ced-1462-aa2bc5244252@akamai.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <de690c67-6e9f-8885-10c1-f47313de7b62@huawei.com>
+Date:   Thu, 29 Oct 2020 18:24:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 4/5] dt-bindings: arm: sunxi: add Elimo bindings
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Matteo Scordino <matteo.scordino@gmail.com>
-CC:     wens@csie.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-From:   Icenowy Zheng <icenowy@aosc.io>
-Message-ID: <92612D42-FF4C-450C-ADB1-A220B94838CB@aosc.io>
-X-Rspamd-Queue-Id: 1C4B640B5A
-X-Spamd-Result: default: False [1.40 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[dt];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         FREEMAIL_TO(0.00)[cerno.tech,gmail.com];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+In-Reply-To: <248e5a32-a102-0ced-1462-aa2bc5244252@akamai.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.191.121]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020/10/29 12:50, Vishwanath Pai wrote:
+> On 10/28/20 10:37 PM, Yunsheng Lin wrote:
+>> On 2020/10/29 4:04, Vishwanath Pai wrote:
+>>> On 10/28/20 1:47 PM, Cong Wang wrote:
+>>>> On Wed, Oct 28, 2020 at 8:37 AM Pai, Vishwanath <vpai@akamai.com> wrote:
+>>>>> Hi,
+>>>>>
+>>>>> We noticed some problems when testing the latest 5.4 LTS kernel and traced it
+>>>>> back to this commit using git bisect. When running our tests the machine stops
+>>>>> responding to all traffic and the only way to recover is a reboot. I do not see
+>>>>> a stack trace on the console.
+>>>>
+>>>> Do you mean the machine is still running fine just the network is down?
+>>>>
+>>>> If so, can you dump your tc config with stats when the problem is happening?
+>>>> (You can use `tc -s -d qd show ...`.)
+>>>>
+>>>>>
+>>>>> This can be reproduced using the packetdrill test below, it should be run a
+>>>>> few times or in a loop. You should hit this issue within a few tries but
+>>>>> sometimes might take up to 15-20 tries.
+>>>> ...
+>>>>> I can reproduce the issue easily on v5.4.68, and after reverting this commit it
+>>>>> does not happen anymore.
+>>>>
+>>>> This is odd. The patch in this thread touches netdev reset path, if packetdrill
+>>>> is the only thing you use to trigger the bug (that is netdev is always active),
+>>>> I can not connect them.
+>>>>
+>>>> Thanks.
+>>>
+>>> Hi Cong,
+>>>
+>>>> Do you mean the machine is still running fine just the network is down?
+>>>
+>>> I was able to access the machine via serial console, it looks like it is
+>>> up and running, just that networking is down.
+>>>
+>>>> If so, can you dump your tc config with stats when the problem is happening?
+>>>> (You can use `tc -s -d qd show ...`.)
+>>>
+>>> If I try running tc when the machine is in this state the command never
+>>> returns. It doesn't print anything but doesn't exit either.
+>>>
+>>>> This is odd. The patch in this thread touches netdev reset path, if packetdrill
+>>>> is the only thing you use to trigger the bug (that is netdev is always active),
+>>>> I can not connect them.
+>>>
+>>> I think packetdrill creates a tun0 interface when it starts the
+>>> test and tears it down at the end, so it might be hitting this code path
+>>> during teardown.
+>>
+>> Hi, Is there any preparation setup before running the above packetdrill test
+>> case, I run the above test case in 5.9-rc4 with this patch applied without any
+>> preparation setup, did not reproduce it.
+>>
+>> By the way, I am newbie to packetdrill:), it would be good to provide the
+>> detail setup to reproduce it,thanks.
+>>
+>>>
+>>> P.S: My mail server is having connectivity issues with vger.kernel.org
+>>> so messages aren't getting delivered to netdev. It'll hopefully get
+>>> resolved soon.
+>>>
+>>> Thanks,
+>>> Vishwanath
+>>>
+>>>
+>>> .
+>>>
+> 
+> I can't reproduce it on v5.9-rc4 either, it is probably an issue only on
+> 5.4 then (and maybe older LTS versions). Can you give it a try on
+> 5.4.68?
+> 
+> For running packetdrill, download the latest version from their github
+> repo, then run it in a loop without any special arguments. This is what
+> I do to reproduce it:
+> 
+> while true; do ./packetdrill <test-file>; done
+> 
+> I don't think any other setup is necessary.
+
+Hi, run the above test for above an hour using 5.4.68, still did not
+reproduce it, as below:
 
 
-=E4=BA=8E 2020=E5=B9=B410=E6=9C=8829=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=88=
-6:13:04, Maxime Ripard <maxime@cerno=2Etech> =E5=86=99=E5=88=B0:
->Hi,
->
->On Thu, Oct 29, 2020 at 02:19:59AM +0000, Matteo Scordino wrote:
->> Document board compatible names for Elimo Engineering Impetus and
->Initium
->>=20
->> Signed-off-by: Matteo Scordino <matteo=2Escordino@gmail=2Ecom>
->> ---
->>  Documentation/devicetree/bindings/arm/sunxi=2Eyaml | 10 ++++++++++
->>  1 file changed, 10 insertions(+)
->>=20
->> diff --git a/Documentation/devicetree/bindings/arm/sunxi=2Eyaml
->b/Documentation/devicetree/bindings/arm/sunxi=2Eyaml
->> index 0f23133672a3=2E=2E55405809ec91 100644
->> --- a/Documentation/devicetree/bindings/arm/sunxi=2Eyaml
->> +++ b/Documentation/devicetree/bindings/arm/sunxi=2Eyaml
->> @@ -898,3 +898,13 @@ properties:
->>          items:
->>            - const: xunlong,orangepi-zero-plus2-h3
->>            - const: allwinner,sun8i-h3
->> +
->> +      - description: Elimo Engineering Impetus SoM
->> +        items:
->> +          - const: elimo,impetus
->> +          - const: allwinner,sun8i-s3
->> +
->> +      - description: Elimo Engineering Initium
->> +        items:
->> +          - const: elimo,initium
->> +          - const: allwinner,sun8i-s3
->
->This should be ordered alphabetically, and most importantly, must match
->the ones you have in the DT=2E
->
->Here, we have kind of a mess already: the Lichee Zero+ uses
->,sipeed,lichee-zero-plus, sochip,s3, allwinner,sun8i-v3, while the
->pinecube uses pine64,pinecube, allwinner,sun8i-s3
->
->IIRC the S3 and V3 are pretty much the same SoCs, so the first one
->seems
->to make more sense to me, but then we should fix the pinecube=2E
+root@(none)$ cd /home/root/
+root@(none)$ ls
+creat_vlan.sh  packetdrill    test.pd
+root@(none)$ cat test.pd
+0 `echo 4 > /proc/sys/net/ipv4/tcp_min_tso_segs`
 
-I agree with this=2E
+0.400 socket(..., SOCK_STREAM, IPPROTO_TCP) = 3
+0.400 setsockopt(3, SOL_SOCKET, SO_REUSEADDR, [1], 4) = 0
 
-PineCube is originally designed for S3L (which is branded under Allwinner)
-but switch to S3 finally, so I may made error when adapting=2E
+// set maxseg to 1000 to work with both ipv4 and ipv6
+0.500 setsockopt(3, SOL_TCP, TCP_MAXSEG, [1000], 4) = 0
+0.500 bind(3, ..., ...) = 0
+0.500 listen(3, 1) = 0
 
->
->Maxime
+// Establish connection
+0.600 < S 0:0(0) win 32792 <mss 1000,sackOK,nop,nop,nop,wscale 5>
+0.600 > S. 0:0(0) ack 1 <...>
+
+0.800 < . 1:1(0) ack 1 win 320
+0.800 accept(3, ..., ...) = 4
+
+// Send 4 data segments.
++0 write(4, ..., 4000) = 4000
++0 > P. 1:4001(4000) ack 1
+
+// Receive a SACK
++.1 < . 1:1(0) ack 1 win 320 <sack 1001:2001,nop,nop>
+
++.3 %{ print "TCP CA state: ",tcpi_ca_state  }%
+root@(none)$ cat creat_vlan.sh
+#!/bin/sh
+
+for((i=0; i<10000; i++))
+do
+	./packetdrill test.pd
+done
+root@(none)$ ./creat_vlan.sh
+TCP CA state:  3
+^C
+root@(none)$ ifconfig
+eth0      Link encap:Ethernet  HWaddr 5c:e8:83:0d:f7:ed
+          inet addr:192.168.1.93  Bcast:192.168.1.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:3570 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:3190 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:1076349 (1.0 MiB)  TX bytes:414874 (405.1 KiB)
+
+eth2      Link encap:Ethernet  HWaddr 5c:e8:83:0d:f7:ec
+          inet addr:192.168.100.1  Bcast:192.168.100.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:81848576 errors:0 dropped:0 overruns:0 frame:78
+          TX packets:72497816 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:2044282289568 (1.8 TiB)  TX bytes:2457441698852 (2.2 TiB)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:1 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:1 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:68 (68.0 B)  TX bytes:68 (68.0 B)
+
+root@(none)$ ./creat_vlan.sh
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+TCP CA state:  3
+^C
+root@(none)$ cat /proc/cmdline
+BOOT_IMAGE=/linyunsheng/Image.5.0 rdinit=/init console=ttyAMA0,115200 earlycon=pl011,mmio32,0x94080000 iommu.strict=1
+root@(none)$ cat /proc/version
+Linux version 5.4.68 (linyunsheng@ubuntu) (gcc version 5.4.0 20160609 (Ubuntu/Linaro 5.4.0-6ubuntu1~16.04.12)) #1 SMP PREEMPT Thu Oct 29 16:59:37 CST 2020
+root@(none)$
+
+
+
+> 
+> -Vishwanath
+> 
+> .
+> 
