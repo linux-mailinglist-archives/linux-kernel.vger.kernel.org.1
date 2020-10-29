@@ -2,148 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FBD29F14D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:23:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CD729F15A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbgJ2QXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbgJ2QXJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:23:09 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D3DC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:23:09 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id z10so837530vkn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TyGKT1Ssh4EGtVJkUsdYOSjFOp44Ii97uktL7500tnU=;
-        b=EU4Fj/uDwgPJsmMvCgG3jCvCR3wXy0zZ48+qsRQWLekp4/DTtv/OJfsPylzaeEcSjO
-         TlmSRLJqFyniC8qHahEAdQVlKABPDCZW8B/oEQABP3UT5uPSuET1QUAVi/OwVdAOkjsb
-         DPkoL+2mCtkiN100JyynufBZ3yTxp5g8NIupA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TyGKT1Ssh4EGtVJkUsdYOSjFOp44Ii97uktL7500tnU=;
-        b=TQYXY6wh05Z1uC6kdmENYgiYff6cfeb0RDik0KDK3oayapDN7xFt+R5lSEN9muEcAH
-         SYkXO+kcqgl4U6Nd7omT5lprmzz9p/+K7QPR8HGY5Nzpg9BkVX6q1GSqX4QxkmqLZ+Sn
-         CcYj4IDuJjO7tV37K6Me1va62TKqgzelhWF5q/cEJflmTgbHHfX0vEmg1sx16pyRG0xG
-         CRnRocgt8lEc+9KSmFitaHUf3dC7LLdDXdX1Wc9Rhvijh+/LHwFJ3tuGa8Duytiv1V1A
-         byY0anEaYd7wyjQJiPvb+S8VHfbp0cKo2NYU9mWvFSnLjZoOBnVZxBAlPOU+r0cKKyhv
-         URqA==
-X-Gm-Message-State: AOAM533qxkEyiGEN9Fg0AawkKR6DfsEgif5nT9OTGL53RgAPirktePio
-        Ii7qTNqhaLDAyi4Y841iJtJs6ggFQl2epQ==
-X-Google-Smtp-Source: ABdhPJyy9zQ9YWwT+YUuXT+WDnA8vJ8VD0V4IN6cSXwe8KIoPAxKKo9KxjV8Dv8Fu7hayCHmJvIbiA==
-X-Received: by 2002:ac5:c885:: with SMTP id n5mr3862908vkl.21.1603988588393;
-        Thu, 29 Oct 2020 09:23:08 -0700 (PDT)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id b62sm397509vsb.7.2020.10.29.09.23.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 09:23:07 -0700 (PDT)
-Received: by mail-ua1-f47.google.com with SMTP id x26so875158uau.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:23:07 -0700 (PDT)
-X-Received: by 2002:ab0:6cb0:: with SMTP id j16mr3481621uaa.64.1603988587026;
- Thu, 29 Oct 2020 09:23:07 -0700 (PDT)
+        id S1726333AbgJ2Q0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:26:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725764AbgJ2Q02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:26:28 -0400
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A74321481;
+        Thu, 29 Oct 2020 16:26:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603988787;
+        bh=AGbrClZ+VS8MDj4+qu/P79fbZI0a9Y/wZY03UqXvbIQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=1J75wL+fenl4QtKgToscDvcdRQgeJ9ckPQzCnFCgel1JGTOeHbz6thszvlkzq7Yc0
+         afy5SOlJVefndRFGV2SkdGCmJhln4lVP1Vq8/bs74oxMQ9ihBEJRfif0zHcMKHy4By
+         5P4ZjX7werGj7uRVG5cn2B9QiF1paJuVsL9yFAfs=
+Received: by mail-qk1-f177.google.com with SMTP id x20so2457693qkn.1;
+        Thu, 29 Oct 2020 09:26:27 -0700 (PDT)
+X-Gm-Message-State: AOAM532oZamSEpPYosHYFHQHUkwyYgYUxY5Lm21ImTSJdy9BaEYArJ5h
+        HE0ZknshwMjCJBJGMId7nHUPIVJKUR68E6tnii4=
+X-Google-Smtp-Source: ABdhPJyKhwYeabEUTLeiqjDrdTiy26Ddcp+Fv2Yu27W3qNBlCpIN9wtSAH4ct8Pp5ZNA5hi9rwB4IlEYlt8RC94tdJo=
+X-Received: by 2002:a05:620a:b13:: with SMTP id t19mr4215522qkg.3.1603988786437;
+ Thu, 29 Oct 2020 09:26:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201029011154.1515687-1-swboyd@chromium.org> <20201029011154.1515687-5-swboyd@chromium.org>
-In-Reply-To: <20201029011154.1515687-5-swboyd@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 29 Oct 2020 09:22:55 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=U93bfZv_uLG0XFXtBBMrD7gg=L3ijnpPnOCgeeo=CqAg@mail.gmail.com>
-Message-ID: <CAD=FV=U93bfZv_uLG0XFXtBBMrD7gg=L3ijnpPnOCgeeo=CqAg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] drm/bridge: ti-sn65dsi86: Update reply on aux failures
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sean Paul <seanpaul@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>
+References: <20201027212448.454129-1-arnd@kernel.org> <20201028055628.GB244117@kroah.com>
+ <20201029085627.698080a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201029085627.698080a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 29 Oct 2020 17:26:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0+C450705M2-mHtvoS1Ogb4YiBCq830d1KAgodKpWK4A@mail.gmail.com>
+Message-ID: <CAK8P3a0+C450705M2-mHtvoS1Ogb4YiBCq830d1KAgodKpWK4A@mail.gmail.com>
+Subject: Re: [RFC] wimax: move out to staging
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Oct 28, 2020 at 6:12 PM Stephen Boyd <swboyd@chromium.org> wrote:
+n Thu, Oct 29, 2020 at 4:56 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> On Wed, 28 Oct 2020 06:56:28 +0100 Greg Kroah-Hartman wrote:
+> > On Tue, Oct 27, 2020 at 10:20:13PM +0100, Arnd Bergmann wrote:
+> >
+> > Is this ok for me to take through the staging tree?  If so, I need an
+> > ack from the networking maintainers.
+> >
+> > If not, feel free to send it through the networking tree and add:
+> >
+> > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 >
-> We should be setting the drm_dp_aux_msg::reply field if a NACK or a
-> SHORT reply happens.
+> Thinking about it now - we want this applied to -next, correct?
+> In that case it may be better if we take it. The code is pretty dead
+> but syzbot and the trivial fix crowd don't know it, so I may slip,
+> apply something and we'll have a conflict.
 
-I don't think you update the "reply" field for SHORT, right?  You just
-return a different size?
+I think git will deal with a merge between branches containing
+the move vs fix, so it should work either way.
 
+A downside of having the move in net-next would be that
+you'd get trivial fixes send to Greg, but him being unable to
+apply them to his tree because the code is elsewhere.
 
-> Update the error bit handling logic in
-> ti_sn_aux_transfer() to handle these cases and notify upper layers that
-> such errors have happened. This helps the retry logic understand that a
-> timeout has happened, or to shorten the read length if the panel isn't
-> able to handle the longest read possible.
->
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> Cc: Jonas Karlman <jonas@kwiboo.se>
-> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-> Cc: Sean Paul <seanpaul@chromium.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 31 +++++++++++++++++++++++----
->  1 file changed, 27 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 6b6e98ca2881..19737bc01b8f 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -878,6 +878,7 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
->         case DP_AUX_NATIVE_READ:
->         case DP_AUX_I2C_READ:
->                 regmap_write(pdata->regmap, SN_AUX_CMD_REG, request_val);
-> +               msg->reply = 0; /* Assume it's good */
->                 break;
->         default:
->                 return -EINVAL;
-> @@ -909,10 +910,32 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
->         ret = regmap_read(pdata->regmap, SN_AUX_CMD_STATUS_REG, &val);
->         if (ret)
->                 return ret;
-> -       else if ((val & AUX_IRQ_STATUS_NAT_I2C_FAIL)
-> -                || (val & AUX_IRQ_STATUS_AUX_RPLY_TOUT)
-> -                || (val & AUX_IRQ_STATUS_AUX_SHORT))
-> -               return -ENXIO;
-> +
-> +       if (val & AUX_IRQ_STATUS_AUX_RPLY_TOUT) {
-> +               /*
-> +                * The hardware tried the message seven times per the DP spec
-> +                * but it hit a timeout. We ignore defers here because they're
-> +                * handled in hardware.
-> +                */
-> +               return -ETIMEDOUT;
-> +       }
-> +       if (val & AUX_IRQ_STATUS_AUX_SHORT) {
-> +               ret = regmap_read(pdata->regmap, SN_AUX_LENGTH_REG, &len);
-> +               if (ret)
-> +                       return ret;
+If you think it helps, I could prepare a pull request with this one
+patch (and probably the bugfix I sent first that triggered it), and
+then you can both merge the branch into net-next as well
+as staging-next.
 
-IIUC, your digging through the code showed that in order to fully
-handle the "SHORT" case you also needed to add support for
-"DP_AUX_I2C_WRITE_STATUS_UPDATE", right?
-
-Even without handling "DP_AUX_I2C_WRITE_STATUS_UPDATE" though, this
-patch seems to be an improvement and I'd support landing it.
-
-Oh, I guess one other thing: I think this is all from code inspection,
-right?  You didn't manage to reproduce anything that would tickle one
-of these code paths?  Might be worth mentioning, even if "after the
-cut"?
-
--Doug
+      Arnd
