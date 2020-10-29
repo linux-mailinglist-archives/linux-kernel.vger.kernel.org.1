@@ -2,81 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A73B29EF92
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C19E729EF96
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728153AbgJ2PS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:18:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727972AbgJ2PSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:18:54 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5527620719;
-        Thu, 29 Oct 2020 15:18:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603984733;
-        bh=z1AwC15Mf354okdz08ulp+IEkHhyaUMTMrlzzjYtWEQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AyAmasQVhUOtumuVJuJrx5U+6G7BKmameHT7zYJDqVJ3wwsGF6VTWQfgrHdf3G4l/
-         GGsk1DsQmXvuGVQcbWmiVXubGDx3/GZk2OYbsFDwLtVs7HS65GTra/gtr6jNqWVajp
-         9ODTO8ns9nuuLJ5aB4c03zau6KIuotzxJ2+fknkY=
-Date:   Thu, 29 Oct 2020 15:18:47 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH] regmap: provide regmap_assign_bits()
-Message-ID: <20201029151847.GB5042@sirena.org.uk>
-References: <20201026151015.15527-1-brgl@bgdev.pl>
+        id S1728157AbgJ2PUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728023AbgJ2PUY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:20:24 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0713C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:20:23 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id dk16so3750414ejb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:20:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=7lZuOiS2573E9zkuh9reAzyg21knB7StcArg0uf2+A0=;
+        b=QKdZbUy5AimkmuWTEr/pvjlE9mh8//NeOfyNHNulncQ553K0AhUcvKxF8iY8M6iP0h
+         sbWZQ8faTJ9XPncgkQEl8vc0j5GHfQo72UwU5+9/sidcuwTxhzMORBBVOdBeWhxs5Q4L
+         G1yDMn2iWWCIsP1Esa5N8wj/z8m/pwD7vORLttQqvu1Zw9KaUNFbefPxykmFFxl09e/T
+         gm5Hg0LydyRSAVp90tVq+c6B7FLIw0gHfDfLS/ZRLWRGJNXfL+07EK/hoB8XnTHVOUrj
+         HVYqudASBvwD7/niXFBFWSAzXPV2284a52eYeQbAm897PQ5WK0IyGsatm4USSQbIdHvb
+         wiJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=7lZuOiS2573E9zkuh9reAzyg21knB7StcArg0uf2+A0=;
+        b=eJ1Z0asyc4jXjHGkRVs6Huk53kAIaJig9o5f+epXR5tvRKldiUuY1Ls6NhEfoHOCsf
+         cpZ5l6HJBZ1oUdff/mLuF2fLs0CXId9Vc+sh8BbiD76n5cD2mrCtgZUNfFSmxfgGVowY
+         3yxHMQxZJi+j7XwiNl9vqGZxEGQI5UdNgZBty42jUZeKS47NCUyU7KYrf9rWxWpqBKno
+         km6/fuXHLTmoaCjHEq8dzGgAp1Z9fFKGlrldRNvcWXz9GYa3vw/JFbDflWCQK6jCh2t5
+         b2LA+GiTxVOyFjnK2eIwPiNxRZYTweAdLas2yUAWW8+JGNiZG1lUku7ib2k+8dMe7irY
+         guHA==
+X-Gm-Message-State: AOAM5330s+FYsHNVF91m4KGLXpffqc7pAsCT1GeLyhpGNcVCO/ccYMxu
+        iJ5MgZzJsXlQfn7wNbBTGYOZ80gbdvuQdiiTQ94=
+X-Google-Smtp-Source: ABdhPJwfs5RuBmwfiwg4ji+lLGAE4l6buC3aClh4Wik56iqsSBd/m48MgEHZpQuZk4yTxcS7192vmux4GgOabsRLjL8=
+X-Received: by 2002:a17:906:cb03:: with SMTP id lk3mr4411391ejb.491.1603984822510;
+ Thu, 29 Oct 2020 08:20:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rS8CxjVDS/+yyDmU"
-Content-Disposition: inline
-In-Reply-To: <20201026151015.15527-1-brgl@bgdev.pl>
-X-Cookie: Monotheism is a gift from the gods.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a17:906:1dd3:0:0:0:0 with HTTP; Thu, 29 Oct 2020 08:20:21
+ -0700 (PDT)
+Reply-To: mrs.sophia202@list.ru
+From:   "Mrs. Sophia Robin" <froshwood@gmail.com>
+Date:   Thu, 29 Oct 2020 15:20:21 +0000
+Message-ID: <CALLU5d3X1x2a+SctZexmTj9k5dy1Ceg0jd6a=2+TJUYE5YZjOA@mail.gmail.com>
+Subject: Hello My Dearest
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello My Dearest
 
---rS8CxjVDS/+yyDmU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please I appeal to you to exercise a little patience and read through
+my mail carefully, I am contacting you personally for investment
+assistance and a long term business relationship in your Country.
 
-On Mon, Oct 26, 2020 at 04:10:15PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->=20
-> Add another bits helper to regmap API: this one sets given bits if value
-> is true and clears them if it's false.
+I am Mrs. Sophia Robin a citizen of the united state of America; I
+work in HSBC Bank in Milan Italy as a Telex Manager charge of wire
+transfer and online banking department.
 
-What's the use case?
+I am contacting you for an important and  urgent business transaction,
+I  want the bank to transfer the money left by Dr. Cheng Chao,  A
+Chinese  Politicians who  died, March 17th 2020 without any trace of
+his family member,  he used our bank to launder money overseas through
+the help of their Political advisers. And most of the funds which him
+transferred out of the shores of China were gold and oil money that
+was supposed to have been used to develop the continent.
 
-> +static inline int regmap_assign_bits(struct regmap *map, unsigned int re=
-g,
-> +				     unsigned int bits, bool value)
+Can you invest this money and also help the orphanage, less privileges
+and widows in your country? The amount value at ($15.5million
+Dollars), left in his account still unclaimed, if you know that you
+are capable to invest this fund into any  profitable business in your
+country kindly send me your details information as listed below to
+enable me draft you an application form of claim which you are going
+to fill with your bank account detail necessary and contact the HSBC
+Bank in Italy  for immediate transfer of the Amounted sum into your
+bank account direct  Or open an online banking for you.
 
-I don't have a great suggestion but this naming feels prone to confusion
-with _update_bits(). =20
+Percentage share will be 50%, for me/ 40%, for you, while 10$ is for
+the orphanage, less privileges and widows in your country.
 
---rS8CxjVDS/+yyDmU
-Content-Type: application/pgp-signature; name="signature.asc"
+(1) Your full name..................................................
+(2) Your address....................................................
+(3) Your Nationality.................................................
+(4) Your Age / Sex.....................................................
+(5) Your Occupation............................................
+(6) Your marital status......................................
+(7) Your direct telephone number..................
+(8) your ID Card.......................................
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+a3VYACgkQJNaLcl1U
-h9B6xAf8DDMFo0lHS3pNCplZ7ZWsD+c+W8C/MHr37yNTGyq25T59sgl1/iVdXmZW
-mYyerCqrVCwQZLPMerhIwuhaprTRHjBHTb6rQQTCn9YAWLaimEkrZsIH87Jgu5QZ
-e/IAx3K9GGAJNV2NMBw5kGg83tmLWf7w43XMrbt3xr1BnIO7qblPNC4SYu/WG22/
-94+8oozjIvbjJjZrOxTcCK2CzwvHqbBf9m7ppNIEUccBvd8LHLoZPPA/w1x3T+T5
-0o39NkPyK2dCgAU8wWanmVzQeEWjwqHSnJRS95ZFVl6chCtXm77ZoLcrbqTLayDa
-GHqZ5TmEGutHs19h7z7wWv0pefc4Ag==
-=YOvd
------END PGP SIGNATURE-----
-
---rS8CxjVDS/+yyDmU--
+Thanks with my best regards.
+Mrs. Sophia Robin
+Telex / Online Banking Manager
+Milan Italy  (H.S.B.C)
