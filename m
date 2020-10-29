@@ -2,91 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C070A29F4B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C75629F4CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:19:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725910AbgJ2TQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:16:39 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59536 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgJ2TPa (ORCPT
+        id S1726194AbgJ2TSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:18:54 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:44318 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725963AbgJ2TQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:15:30 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09TJFElL088264;
-        Thu, 29 Oct 2020 14:15:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603998914;
-        bh=psiVt0E0BhC31HGGgKWZZk8gPO9MIzP9aruuOcAe1zM=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=h/W8bHFYdAnE8BjCM/yy9n2G4A7iGS90bsiadpPbBmckF//PW6b098mqZUhTzIGmp
-         PE2i0loABKbhIesnpzy/TSa8pj7OygUzn49vfzmUy3CogSBVIeNau1tUYaGALLS4Ms
-         1V/2qRmkL8dsDXq0JnfLN5+A46STs7QD1TVaXdpI=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09TJFElK127848
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 29 Oct 2020 14:15:14 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 29
- Oct 2020 14:15:14 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 29 Oct 2020 14:15:14 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09TJFBVf032852;
-        Thu, 29 Oct 2020 14:15:12 -0500
-Subject: Re: [PATCH] ARM: multi_v7_defconfig: ti: Enable networking options
- for nfs boot
-To:     Nishanth Menon <nm@ti.com>, Tony Lindgren <tony@atomide.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-CC:     <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Sekhar Nori <nsekhar@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Russell King <linux@armlinux.org.uk>
-References: <20201001202725.16034-1-grygorii.strashko@ti.com>
- <20201002125000.5b5kho4e5de7jjrj@akan>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <bb6e0bd9-a8fe-f63b-14fd-92a1f8cea0bb@ti.com>
-Date:   Thu, 29 Oct 2020 21:15:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 29 Oct 2020 15:16:50 -0400
+Received: by mail-ed1-f68.google.com with SMTP id w1so3062930edv.11;
+        Thu, 29 Oct 2020 12:16:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mmqY+Yeiy9nDKcqsSPAuyb++V3pyCtvEqsSBbBln3ps=;
+        b=DRsnSExldqmnDsfmH1uuKr6KDOgzs1m1Uf68hbqQB3LRsrix4FVUmCUAdgV1+/D9G+
+         VnSbzaFyc/xzUgfZn3lM4uYnyuQM7JUAizLpzUMqEjDjT2BJlX2oZSkL4QkjPFxror6+
+         w/4vS6hr3zm+Ax47Cm0mGlRmwDTRZAEPr0Z8TzJJNVhGToUr1wmkK6kYDxZFJNYymVCC
+         XhUR81TLljNno0FoQwZObWLMJdHVbo5F3FgCSt12twAM8UEWerJEPELkvj/2hb4NtoEo
+         oKvC83bNsp98KAR7ccA4Mela3eoaT6cOHlMOxhvd0RPxqQmoFyPep1Cmu9RGG4fFt+A+
+         0eJg==
+X-Gm-Message-State: AOAM531YWdlZ3d5Loj93G/1q95V+wiQsvTdCW6Ffke3v9OKcDGfomUXt
+        cEBsz/ExDyT9nZC81+Vb3uU=
+X-Google-Smtp-Source: ABdhPJwrfkpQ2JuPFKdrfXz62k6W9divKfUT133kCeLPI66bfIuJh41eOM+GKvaMJw7/hRbB+e24/Q==
+X-Received: by 2002:aa7:c98f:: with SMTP id c15mr5804762edt.200.1603999007865;
+        Thu, 29 Oct 2020 12:16:47 -0700 (PDT)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id n3sm2033380edq.24.2020.10.29.12.16.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 12:16:46 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 20:16:45 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/2] arm64: dts: imx8mq-evk: Add spdif sound card support
+Message-ID: <20201029191645.GA308501@kozik-lap>
+References: <1603964844-832-1-git-send-email-shengjiu.wang@nxp.com>
+ <1603964844-832-2-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20201002125000.5b5kho4e5de7jjrj@akan>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1603964844-832-2-git-send-email-shengjiu.wang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
-
-On 02/10/2020 15:50, Nishanth Menon wrote:
-> On 23:27-20201001, Grygorii Strashko wrote:
->> Enable networking options required for NFS boot on TI platforms, which is
->> widely for automated test systems.
->> - enable new TI CPSW switch driver and related NET_SWITCHDEV config
->> - enable TI DP83867 phy
->> - explicitly enable PTP clock support to ensure dependent networking
->> drivers will stay built-in
->>
->> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
->> ---
->>   arch/arm/configs/multi_v7_defconfig | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
+On Thu, Oct 29, 2020 at 05:47:24PM +0800, Shengjiu Wang wrote:
+> There are two spdif IP on imx8mq, spdif1 is for normal
+> spdif device, spdif2 is for HDMI ARC interface.
 > 
-> [...]
+> Enable these spdif sound card in this patch.
 > 
-> Reviewed-by: Nishanth Menon <nm@ti.com>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mq-evk.dts | 38 ++++++++++++++++
+>  arch/arm64/boot/dts/freescale/imx8mq.dtsi    | 48 ++++++++++++++++++++
+>  2 files changed, 86 insertions(+)
 > 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
+> index 2418cca00bc5..e4250812586b 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
+> @@ -87,6 +87,21 @@ link_codec: simple-audio-card,codec {
+>  			clocks = <&clk IMX8MQ_CLK_SAI2_ROOT>;
+>  		};
+>  	};
+> +
+> +	sound-spdif {
+> +		compatible = "fsl,imx-audio-spdif";
+> +		model = "imx-spdif";
+> +		spdif-controller = <&spdif1>;
+> +		spdif-out;
+> +		spdif-in;
+> +	};
+> +
+> +	sound-hdmi-arc {
+> +		compatible = "fsl,imx-audio-spdif";
+> +		model = "imx-hdmi-arc";
+> +		spdif-controller = <&spdif2>;
+> +		spdif-in;
+> +	};
+>  };
+>  
+>  &A53_0 {
+> @@ -336,6 +351,22 @@ &snvs_pwrkey {
+>  	status = "okay";
+>  };
+>  
+> +&spdif1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_spdif1>;
+> +	assigned-clocks = <&clk IMX8MQ_CLK_SPDIF1>;
+> +	assigned-clock-parents = <&clk IMX8MQ_AUDIO_PLL1_OUT>;
+> +	assigned-clock-rates = <24576000>;
+> +	status = "okay";
+> +};
+> +
+> +&spdif2 {
+> +	assigned-clocks = <&clk IMX8MQ_CLK_SPDIF2>;
+> +	assigned-clock-parents = <&clk IMX8MQ_AUDIO_PLL1_OUT>;
+> +	assigned-clock-rates = <24576000>;
+> +	status = "okay";
+> +};
+> +
+>  &uart1 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_uart1>;
+> @@ -467,6 +498,13 @@ MX8MQ_IOMUXC_GPIO1_IO08_GPIO1_IO8       0xd6
+>  		>;
+>  	};
+>  
+> +	pinctrl_spdif1: spdif1grp {
+> +		fsl,pins = <
+> +			MX8MQ_IOMUXC_SPDIF_TX_SPDIF1_OUT	0xd6
+> +			MX8MQ_IOMUXC_SPDIF_RX_SPDIF1_IN		0xd6
+> +		>;
+> +	};
+> +
+>  	pinctrl_uart1: uart1grp {
+>  		fsl,pins = <
+>  			MX8MQ_IOMUXC_UART1_RXD_UART1_DCE_RX		0x49
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> index 49cc79246288..c94b2f80880f 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> @@ -793,6 +793,30 @@ bus@30800000 { /* AIPS3 */
+>  			ranges = <0x30800000 0x30800000 0x400000>,
+>  				 <0x08000000 0x08000000 0x10000000>;
+>  
+> +			spdif1: spdif@30810000 {
+> +				compatible = "fsl,imx8mq-spdif", "fsl,imx35-spdif";
 
-Are there any actions need to be done to have this patch merged?
+This is an undocumented compatible. Checkpatch should point this out.
 
--- 
+If this patchset depends on others, please describe it in cover letter or
+after '---' separator.
+
 Best regards,
-grygorii
+Krzysztof
