@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA2529DBA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C8F29DBB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390366AbgJ2AJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:09:27 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:58261 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389114AbgJ2AJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 20:09:17 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CM5Qb3mqVz9sSP;
-        Thu, 29 Oct 2020 11:09:11 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1603930155;
-        bh=+IS+oS9wdMYaY7BSv2eRj1FRyLpkX+Kkw+ofCEwFGdM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=W64neonPs5X8EQtVcfwGj7Ov10Oyqi5FxJ9MxFxGHUq5rL/qlyW2uCDK+XbIp9Ece
-         UszKhFGAXmtuZCVHUkQ7TKyddpVcKP6Bjtk3EjsWcofBx/GJ2JSFIakN10XChtL5Zk
-         k3ytx6LIrwXN8RZow6WNQiOq5E1E2/bdqcGCFsSSXvDF2WjIxBSqkvTyMIzlBHGKXT
-         OE6IItGAB0gGTD5jk0oS0UAdq8zgBhNbIcDnUVuEdizVNin4tIrAdFEcxwXhkmqpf6
-         yypk4g3by3TQX85yG12+a4MJ+LrvI6bCpysEcvpJ4sLOrCtGtl06FiXewq9yDXeObW
-         Sz8kZ7/cJMBog==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Qian Cai <cai@redhat.com>, "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Qian Cai <cai@redhat.com>
-Subject: Re: [PATCH] powerpc/smp: Move rcu_cpu_starting() earlier
-In-Reply-To: <20201028182334.13466-1-cai@redhat.com>
-References: <20201028182334.13466-1-cai@redhat.com>
-Date:   Thu, 29 Oct 2020 11:09:07 +1100
-Message-ID: <87lffpx598.fsf@mpe.ellerman.id.au>
+        id S2390766AbgJ2ANL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390748AbgJ2ANK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 20:13:10 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721F6C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:13:08 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id k25so1163380lji.9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:13:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tjZ0C47sBFE4E/dMNMwf9DAUHIodX8mtYvgDRoLI4EA=;
+        b=YRSR+UuG72ciMnSbkIKW71fwluhc008uXS+zCtS9AHDFnFwQEIMMgP/YxKO2Dy1307
+         WP7/iso+nlAS+anmA1lgk8lE/LiU6ECV1Z6zNFlM6NINwI35F0XF+CWuJQeINp59prgV
+         jihocwVqHZpzzVYcqIAvrcvpd/gtQFCguDskE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tjZ0C47sBFE4E/dMNMwf9DAUHIodX8mtYvgDRoLI4EA=;
+        b=BBKXg7DpNbaEbd/PwaNg3DVuO0Kne/9s2GtXe16Yu4lwL7Ek2zYwmiCtdJKJR76U5q
+         co+DgG3F+/pRS4m8ZkVZI7C/Z5s5OpDu1YywPd6sgOGxfZAlq9jsuaFc9N/ar9Larj+O
+         dCS517Zsz2gMzTWLq4VrsHihRepb06VmV4ggg61x6JtjKoXec1dEFCE6Vk3ZYFCt9LYC
+         Leklv3HmERC/J3UJ3pJA/aZYYqw+zKg/yGb9Phax+yKadWnlzerQ8N3F/ARJmnkgOQH8
+         vj2bnfswLgYr/yp9EmO5F5TnTgFhzYGdXV2WcKYblSBiCqP957vbjkRFPFLH882BVLRN
+         UgMg==
+X-Gm-Message-State: AOAM532c4QN0/K0IdA53O/DQ+xlZsfUb6/UihYERwVknIvUddcAUpOOQ
+        7dow4AzFv9KkSKgOFcN2HdnXl4Bysbdx2w==
+X-Google-Smtp-Source: ABdhPJzQ9mD3I5idZSzbnacA5s+XRr4GLTRmMmS/Y7Fdrz4KyraBXjLkT8kW8W+vAm/P7aDii5HCGg==
+X-Received: by 2002:a2e:7216:: with SMTP id n22mr708111ljc.187.1603930385827;
+        Wed, 28 Oct 2020 17:13:05 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id y14sm104594lfl.136.2020.10.28.17.13.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 17:13:03 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id 184so1073484lfd.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:13:03 -0700 (PDT)
+X-Received: by 2002:a19:c703:: with SMTP id x3mr502126lff.105.1603930383060;
+ Wed, 28 Oct 2020 17:13:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201028142625.18642-1-kitakar@gmail.com>
+In-Reply-To: <20201028142625.18642-1-kitakar@gmail.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Wed, 28 Oct 2020 17:12:51 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXPX+fadTKLnxNVZQ0CehsHNwvWHXEdLqZVDoQ6hf6Wp8Q@mail.gmail.com>
+Message-ID: <CA+ASDXPX+fadTKLnxNVZQ0CehsHNwvWHXEdLqZVDoQ6hf6Wp8Q@mail.gmail.com>
+Subject: Re: [PATCH] mwifiex: pcie: add enable_device_dump module parameter
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qian Cai <cai@redhat.com> writes:
-> The call to rcu_cpu_starting() in start_secondary() is not early enough
-> in the CPU-hotplug onlining process, which results in lockdep splats as
-> follows:
+On Wed, Oct 28, 2020 at 3:58 PM Tsuchiya Yuto <kitakar@gmail.com> wrote:
+>
+> The devicve_dump may take a little bit long time and users may want to
+> disable the dump for daily usage.
+>
+> This commit adds a new module parameter enable_device_dump and disables
+> the device_dump by default.
 
-Since when?
-What kernel version?
+As with one of your other patches, please don't change the defaults
+and hide them under a module parameter. If you're adding a module
+parameter, leave the default behavior alone.
 
-I haven't seen this running CPU hotplug tests with PROVE_LOCKING=y on
-v5.10-rc1. Am I missing a CONFIG?
+This also seems like something that might be nicer as a user-space
+knob in generic form (similar to "/sys/class/devcoredump/disabled",
+except on a per-device basis, and fed back to the driver so it doesn't
+waste time generating such dumps), but I suppose I can see why a
+module parameter (so you can just stick your configuration in
+/etc/modprobe.d/) might be easier to deal with in some cases.
 
-cheers
-
-
->  WARNING: suspicious RCU usage
->  -----------------------------
->  kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
->
->  other info that might help us debug this:
->
->  RCU used illegally from offline CPU!
->  rcu_scheduler_active = 1, debug_locks = 1
->  no locks held by swapper/1/0.
->
->  Call Trace:
->  dump_stack+0xec/0x144 (unreliable)
->  lockdep_rcu_suspicious+0x128/0x14c
->  __lock_acquire+0x1060/0x1c60
->  lock_acquire+0x140/0x5f0
->  _raw_spin_lock_irqsave+0x64/0xb0
->  clockevents_register_device+0x74/0x270
->  register_decrementer_clockevent+0x94/0x110
->  start_secondary+0x134/0x800
->  start_secondary_prolog+0x10/0x14
->
-> This is avoided by moving the call to rcu_cpu_starting up near the
-> beginning of the start_secondary() function. Note that the
-> raw_smp_processor_id() is required in order to avoid calling into
-> lockdep before RCU has declared the CPU to be watched for readers.
->
-> Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
-> Signed-off-by: Qian Cai <cai@redhat.com>
-> ---
->  arch/powerpc/kernel/smp.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> index 3c6b9822f978..8c2857cbd960 100644
-> --- a/arch/powerpc/kernel/smp.c
-> +++ b/arch/powerpc/kernel/smp.c
-> @@ -1393,13 +1393,14 @@ static void add_cpu_to_masks(int cpu)
->  /* Activate a secondary processor. */
->  void start_secondary(void *unused)
->  {
-> -	unsigned int cpu = smp_processor_id();
-> +	unsigned int cpu = raw_smp_processor_id();
->  
->  	mmgrab(&init_mm);
->  	current->active_mm = &init_mm;
->  
->  	smp_store_cpu_info(cpu);
->  	set_dec(tb_ticks_per_jiffy);
-> +	rcu_cpu_starting(cpu);
->  	preempt_disable();
->  	cpu_callin_map[cpu] = 1;
->  
-> -- 
-> 2.28.0
+Brian
