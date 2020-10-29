@@ -2,178 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7387429F7C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3882029F7CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725861AbgJ2WVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 18:21:20 -0400
-Received: from mga07.intel.com ([134.134.136.100]:57461 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725372AbgJ2WVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 18:21:19 -0400
-IronPort-SDR: NfQkLAtSRGS/gWPoFhYjxkiWPCczqtYV5h8svMaBRW9ePxg8XKV+q1EcZ6WOuwdrYd4IL7xl3r
- G8zkLkv65PbA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="232702151"
-X-IronPort-AV: E=Sophos;i="5.77,431,1596524400"; 
-   d="scan'208";a="232702151"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 15:21:18 -0700
-IronPort-SDR: CJS0rcGYr2PIy4FIbEiF05kBNSocd9wkSBPaZBQtxh7G0RWwyA0N9ef2U+BPzFH+ARO745nYJd
- ChYv8xYkoekw==
-X-IronPort-AV: E=Sophos;i="5.77,431,1596524400"; 
-   d="scan'208";a="361650059"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 15:21:13 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1kYGJD-001Yoh-5S; Fri, 30 Oct 2020 00:22:15 +0200
-Date:   Fri, 30 Oct 2020 00:22:15 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Dan Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Rob Herring <robh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>
-Subject: Re: [RFC PATCH v3 9/9] ipu3-cio2: Add functionality allowing
- software_node connections to sensors on platforms designed for Windows
-Message-ID: <20201029222215.GI4077@smile.fi.intel.com>
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-10-djrscally@gmail.com>
- <20201024012411.GT5979@pendragon.ideasonboard.com>
- <d188f8b5-ed3b-f91b-171a-26afeb7d213e@gmail.com>
- <20201024093702.GA3939@pendragon.ideasonboard.com>
- <20201026161050.GQ4077@smile.fi.intel.com>
- <20201029201918.GD15024@pendragon.ideasonboard.com>
- <CAHp75Vc9uYVvhBe3OyCJzCsU0EY9yi62hsxt3pAwppSfjB+jDg@mail.gmail.com>
- <20201029212930.GE15024@pendragon.ideasonboard.com>
+        id S1725853AbgJ2WYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 18:24:16 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43943 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgJ2WYO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 18:24:14 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kYGL1-0004wp-S8; Thu, 29 Oct 2020 22:24:07 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tova Mussai <tova.mussai@intel.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] nl80211/cfg80211: fix potential infinite loop
+Date:   Thu, 29 Oct 2020 22:24:07 +0000
+Message-Id: <20201029222407.390218-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029212930.GE15024@pendragon.ideasonboard.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 11:29:30PM +0200, Laurent Pinchart wrote:
-> On Thu, Oct 29, 2020 at 10:26:56PM +0200, Andy Shevchenko wrote:
-> > On Thu, Oct 29, 2020 at 10:21 PM Laurent Pinchart wrote:
-> > > On Mon, Oct 26, 2020 at 06:10:50PM +0200, Andy Shevchenko wrote:
-> > > > On Sat, Oct 24, 2020 at 12:37:02PM +0300, Laurent Pinchart wrote:
-> > > > > On Sat, Oct 24, 2020 at 09:50:07AM +0100, Dan Scally wrote:
-> > > > > > On 24/10/2020 02:24, Laurent Pinchart wrote:
-> > > > > > > On Mon, Oct 19, 2020 at 11:59:03PM +0100, Daniel Scally wrote:
-> > > >
-> > > > > > >> +              adev = acpi_dev_get_first_match_dev(supported_devices[i], NULL, -1);
-> > > > > > >
-> > > > > > > What if there are multiple sensor of the same model ?
-> > > > > >
-> > > > > > Hmm, yeah, that would be a bit of a pickle. I guess the newer
-> > > > > > smartphones have multiple sensors on the back, which I presume are the
-> > > > > > same model. So that will probably crop up at some point. How about
-> > > > > > instead I use bus_for_each_dev() and in the applied function check if
-> > > > > > the _HID is in the supported list?
-> > > > >
-> > > > > Sounds good to me.
-> > > > >
-> > > > > > >> +              if (!adev)
-> > > > > > >> +                      continue;
-> > > >
-> > > > Please, don't.
-> > > >
-> > > > If we have so weird ACPI tables it must be w/a differently. The all, even badly
-> > > > formed, ACPI tables I have seen so far are using _UID to distinguish instance
-> > > > of the device (see second parameter to the above function).
-> > > >
-> > > > If we meet the very broken table I would like rather to know about, then
-> > > > silently think ahead what could be best.
-> > > >
-> > > > I.o.w. don't change this until we will have a real example of the problematic
-> > > > firmware.
-> > >
-> > > I'm not sure to follow you. Daniel's current code loops over all the
-> > > supported HID (as stored in the supported_devices table), and then gets
-> > > the first ACPI device for each of them. If multiple ACPI devices exist
-> > > with the same HID, we need to handle them all, so enumerating all ACPI
-> > > devices and checking whether their HID is one we handle seems to be the
-> > > right option to me.
-> > 
-> > Devices with the same HID should be still different by another
-> > parameter in ACPI. The above mentioned call just uses the rough
-> > estimation for relaxed conditions. If you expect more than one device
-> > with the same HID how do you expect to distinguish them? The correct
-> > way is to use _UID. It may be absent, or set to a value. And this
-> > value should be unique (as per U letter in UID abbreviation). That
-> > said, the above is good enough till we find the firmware with the
-> > above true (several devices with the same HID). Until then the code is
-> > fine.
-> 
-> I expect those devices with the same _HID to have different _UID values,
-> yes. On the systems I've seen so far, that assumption is not violated,
-> and I don't think we need to already plan how we will support systems
-> where multiple devices would have the same _HID and _UID (within the
-> same scope). There's no disagreement there.
-> 
-> My point is that supported_devices stores HID values, and doesn't care
-> about UID. The code loops over supported_devices, and for each entry,
-> calls acpi_dev_get_first_match_dev() and process the ACPI devices
-> returned by that call. We thus process at most one ACPI device per HID,
-> which isn't right.
+From: Colin Ian King <colin.king@canonical.com>
 
-In this case we probably need something like
+The for-loop iterates with a u8 loop counter and compares this
+with the loop upper limit of request->n_ssids which is an int type.
+There is a potential infinite loop if n_ssids is larger than the
+u8 loop counter, so fix this by making the loop counter an int.
 
-struct acpi_device *
-acpi_dev_get_next_match_dev(struct acpi_device *adev,
-			    const char *hid, const char *uid, s64 hrv)
-{
-	struct device *start = adev ? &adev->dev : NULL;
-	...
-	dev = bus_find_device(&acpi_bus_type, start, &match, acpi_dev_match_cb);
-	...
-}
+Addresses-Coverity: ("Infinite loop")
+Fixes: c8cb5b854b40 ("nl80211/cfg80211: support 6 GHz scanning")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ net/wireless/scan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-in drivers/acpi/utils.c and
-
-static inline struct acpi_device *
-acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv)
-{
-	return acpi_dev_get_next_match_dev(NULL, hid, uid, hrv);
-}
-
-in include/linux/acpi.h.
-
-Then we may add
-
-#define for_each_acpi_dev_match(adev, hid, uid, hrv)			\
-	for (adev = acpi_dev_get_first_match_dev(hid, uid, hrv);	\
-	     adev;							\
-	     adev = acpi_dev_get_next_match_dev(adev, hid, uid, hrv))
-
-
+diff --git a/net/wireless/scan.c b/net/wireless/scan.c
+index 8d0e49c46db3..3409f37d838b 100644
+--- a/net/wireless/scan.c
++++ b/net/wireless/scan.c
+@@ -694,7 +694,7 @@ static  void cfg80211_scan_req_add_chan(struct cfg80211_scan_request *request,
+ static bool cfg80211_find_ssid_match(struct cfg80211_colocated_ap *ap,
+ 				     struct cfg80211_scan_request *request)
+ {
+-	u8 i;
++	int i;
+ 	u32 s_ssid;
+ 
+ 	for (i = 0; i < request->n_ssids; i++) {
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.27.0
 
