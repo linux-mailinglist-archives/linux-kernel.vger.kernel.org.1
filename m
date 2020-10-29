@@ -2,194 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B49529EB52
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5C229EB47
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgJ2MJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
+        id S1725895AbgJ2MIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbgJ2MJO (ORCPT
+        with ESMTP id S1725385AbgJ2MIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:09:14 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FEAC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 05:09:14 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id z10so648399vkn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 05:09:14 -0700 (PDT)
+        Thu, 29 Oct 2020 08:08:42 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D48C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 05:08:42 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id t9so2452865wrq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 05:08:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eS2BXPw70XBEKBJsqiRVwwS6rphRSjKG0ma3prq9/98=;
-        b=IxIEECwgfbstf5hiHMhHUDhjaZkjDj2ur60IeX43QSF+C250daWwy2uOzvmhvf+9yH
-         LVq1gAq7GwsvQjOpjC7Ha+nmU4NyTuokmDg10GcR4F2V1/to4QTqyEJ+vBT2HiYxcY+8
-         9w0mJ5MmQpDLxniBRN9nGSAzbzJzsJS5WCLddf1H6n9cTlmnFVwtr1ZlQ8uis/v/guGu
-         Wm9hD64KmyTQVEUQpcI/4lBJbopHG1mvArH9Wb4mW8H/jy2guJzmHL+p2rhe/S0nP+RV
-         Jq/7lXYrkk1VdYflSQevLzsNmL6AO6GS0n+5Kds4U8yrIy/cJjW4rrC7KuFZCICLxqtT
-         saAg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nUIB6xZbdC+X2BzItFkytedV7dKtPaiafogFyZyseZE=;
+        b=PHuJ+bnVXtr8bCch947yAWTwMo9qMXm58rkBr82hg3AZZ8S7xMUrQHCZdeEUO1bekc
+         EA7NgL/AwvVaKX+AxXIyDJPGoEmqn0199oWTb3/4tfqHolNBsPVNAEerd6xoch/qwKyy
+         JImhzlrXjdg9WDXLXyfJoM1c3cUZWHoGUuLhAU/pqaA2x6KBEtZ46/aA/931NsqalJps
+         C8FuDbByFHVjEawboOUXsfke+Ri1pd3gTKVniscBchF84lEMSWf0IPhuDLZSe68IZmNM
+         rWhlfXaYha94dIYQQGOOxhJGDTiYqEn2rUxzg0zMZgc08BQ0Xe0B2JHCKVyFfV33KHYA
+         c+eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eS2BXPw70XBEKBJsqiRVwwS6rphRSjKG0ma3prq9/98=;
-        b=kCKErBSaDHeJ/UlNGaHVuUVntt9VBoZbgGmbbnzPzUn7cxdT3OvjR4zdxXX9Vcn0z1
-         n0LZ45ZzNm8qEjIdgr7hrLsUEAAEPqcSKC823kQ4sWzSmKFuDR2+6LhIx9wtn7aMHNas
-         vEr8q//O6ZFUfH481pJCb1tsB64NsnXOJGpopujGWrNcVIIxP5HUbesOg+8Ef+ZS7p/B
-         YT7bvSBPSXF69kXPCFCSghmcSorKuCgiGfikKOfIvkFh9gFnkIGdsjBJtDfrjv3Umd25
-         5iTjSVCUSl1tBKwt1vIFudaSjn3aqPkPuJ/fOZsluJpxvumaelPYsQzTJ0y0+uRruxFf
-         a3Jw==
-X-Gm-Message-State: AOAM533BHGSnPJsCiKwo3nbT602XYiYHt0DVR8Z56PpGqekeUuTLSi4A
-        iHd/ta6d6iXptBnfaNLlDzF3TfovLmrw/TjSAoRiwDY7jhy2TA==
-X-Google-Smtp-Source: ABdhPJwaet/7qh7P3/cOGkOSBU0hIIXn8bMXPi20tUK8LqcqnM9j7G+8VUNmDwoMOxA7S2FGsv5OFuXxIrc0KkKNK70=
-X-Received: by 2002:ac5:c1ca:: with SMTP id g10mr2796449vkk.6.1603973353739;
- Thu, 29 Oct 2020 05:09:13 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nUIB6xZbdC+X2BzItFkytedV7dKtPaiafogFyZyseZE=;
+        b=TW6i7M12LAP3Nl8RI2rp/VGvCRht5psAsmqLdX4zI2cNvQT6wXHXFoq0tCdgu7Q/qO
+         07+QsbunuChslwlHRHoMMBHDytPDGu8TO2ZdeRbEZbmrxVUuolEGkZQMh/oKaub5xGWc
+         5kN0OOppda42aPc37rZr8FybDXMa3g1h9FUgn5tDyPq7u2r9yTn2aJC42DADQkl7k/Uj
+         Ctk+0lpe/R8AttO4++dNH5s57tHetZYHeEcnuS4jLGphgC/4zGATNLseXrYgfy8qRtYV
+         +CHWgAYf6aV1aEeXwwcLVMpMtsdpzvh5pHJ3X/CEDwV5c8qA1Lp+/4xkxABu7xGnQVs/
+         yCiw==
+X-Gm-Message-State: AOAM530GHzR0sSdtXD6+tO1bMFVTplr5n1shdcrmfpsbDfmTo+Q6B1xi
+        BKRgTMrP/8LSIansdzOMbHhtWJutfRJ62g==
+X-Google-Smtp-Source: ABdhPJyY3ZC5LP6m4CqlYSywFoLp6+tH70dEFSQSOe7l4cXpzKhBa7FXu4KGeIR3M6icu/3d7A0uhA==
+X-Received: by 2002:a5d:694b:: with SMTP id r11mr5352158wrw.104.1603973320640;
+        Thu, 29 Oct 2020 05:08:40 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id k16sm4182967wmi.5.2020.10.29.05.08.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Oct 2020 05:08:39 -0700 (PDT)
+Subject: Re: [PATCH v3 3/4] nvmem: core: Add support for keepout regions
+To:     Evan Green <evgreen@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org
+References: <20201029002827.1729915-1-evgreen@chromium.org>
+ <20201028172737.v3.3.Ibb3eedcd634298b039e3af2ec43c7860ae947916@changeid>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <c244ed8a-ccd4-6e7d-501c-e3d7f2da3916@linaro.org>
+Date:   Thu, 29 Oct 2020 12:08:38 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <1603936703-3403-1-git-send-email-rui_feng@realsil.com.cn>
-In-Reply-To: <1603936703-3403-1-git-send-email-rui_feng@realsil.com.cn>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 29 Oct 2020 13:08:36 +0100
-Message-ID: <CAPDyKFpRE8MgvffgVSKWnDMvT8k92Qxq28r8_BmryS9=J=vq=g@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] mmc: rtsx: Add SD Express mode support for RTS5261
-To:     Rui Feng <rui_feng@realsil.com.cn>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201028172737.v3.3.Ibb3eedcd634298b039e3af2ec43c7860ae947916@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 at 02:58, <rui_feng@realsil.com.cn> wrote:
->
-> From: Rui Feng <rui_feng@realsil.com.cn>
->
-> RTS5261 support SD mode and PCIe/NVMe mode. The workflow is as follows.
-> 1.RTS5261 work in SD mode and set MMC_CAPS2_SD_EXP flag.
-> 2.If card is plugged in, Host send CMD8 to ask card's PCIe availability.
-> 3.If the card has PCIe availability and WP is not set, init_sd_express() will be invoked,
-> RTS5261 switch to PCIe/NVMe mode.
-> 4.Mmc driver handover it to NVMe driver.
-> 5.If card is unplugged, RTS5261 will switch to SD mode.
->
-> Signed-off-by: Rui Feng <rui_feng@realsil.com.cn>
+Thanks Evan for doing this,
 
-I have applied the series for next, thanks!
+On 29/10/2020 00:28, Evan Green wrote:
+> Introduce support into the nvmem core for arrays of register ranges
+> that should not result in actual device access. For these regions a
+> constant byte (repeated) is returned instead on read, and writes are
+> quietly ignored and returned as successful.
+> 
+> This is useful for instance if certain efuse regions are protected
+> from access by Linux because they contain secret info to another part
+> of the system (like an integrated modem).
+> 
+> Signed-off-by: Evan Green <evgreen@chromium.org>
 
-Kind regards
-Uffe
+Overall the patch looks good for me.
+I have applied just this patch for more testing in next!
 
+I can pick up 1/4 and 4/4 once Rob's Ack/Reviews the patch!
 
+thanks,
+srini
 > ---
-> v2:
-> 1.re-enable mmc caps in sd_power_on()
-> 2.don't check write protect bit in init_sd_express()
-> v3:
-> 1.add comment write protect switch is needed
-> 2.add host->eject = true in the end of init_sd_express()
-> ---
->  drivers/mmc/host/rtsx_pci_sdmmc.c | 58 +++++++++++++++++++++++++++++++
->  1 file changed, 58 insertions(+)
->
-> diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
-> index 2763a376b054..3b6474cce703 100644
-> --- a/drivers/mmc/host/rtsx_pci_sdmmc.c
-> +++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
-> @@ -895,7 +895,9 @@ static int sd_set_bus_width(struct realtek_pci_sdmmc *host,
->  static int sd_power_on(struct realtek_pci_sdmmc *host)
->  {
->         struct rtsx_pcr *pcr = host->pcr;
-> +       struct mmc_host *mmc = host->mmc;
->         int err;
-> +       u32 val;
->
->         if (host->power_state == SDMMC_POWER_ON)
->                 return 0;
-> @@ -922,6 +924,21 @@ static int sd_power_on(struct realtek_pci_sdmmc *host)
->         if (err < 0)
->                 return err;
->
-> +       if (PCI_PID(pcr) == PID_5261) {
-> +               if (pcr->extra_caps & EXTRA_CAPS_SD_EXPRESS)
-> +                       mmc->caps2 |= MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V;
-> +               /*
-> +                * HW read wp status when resuming from S3/S4,
-> +                * and then picks SD legacy interface if it's set
-> +                * in read-only mode.
-> +                */
-> +               val = rtsx_pci_readl(pcr, RTSX_BIPR);
-> +               if (val & SD_WRITE_PROTECT) {
-> +                       pcr->extra_caps &= ~EXTRA_CAPS_SD_EXPRESS;
-> +                       mmc->caps2 &= ~(MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V);
-> +               }
-> +       }
-> +
->         host->power_state = SDMMC_POWER_ON;
->         return 0;
->  }
-> @@ -1308,6 +1325,44 @@ static int sdmmc_execute_tuning(struct mmc_host *mmc, u32 opcode)
->         return err;
->  }
->
-> +static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
+> 
+> Changes in v3:
+>   - Use min()/max() macros instead of defining my own (Doug)
+>   - Comment changes to indicate sorting (Doug)
+>   - Add function to validate keepouts are proper (Doug)
+> 
+> Changes in v2:
+>   - Introduced keepout regions into the core (Srini)
+> 
+>   drivers/nvmem/core.c           | 153 ++++++++++++++++++++++++++++++++-
+>   include/linux/nvmem-provider.h |  17 ++++
+>   2 files changed, 166 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> index a09ff8409f600..177f5bf27c6d5 100644
+> --- a/drivers/nvmem/core.c
+> +++ b/drivers/nvmem/core.c
+> @@ -34,6 +34,8 @@ struct nvmem_device {
+>   	struct bin_attribute	eeprom;
+>   	struct device		*base_dev;
+>   	struct list_head	cells;
+> +	const struct nvmem_keepout *keepout;
+> +	unsigned int		nkeepout;
+>   	nvmem_reg_read_t	reg_read;
+>   	nvmem_reg_write_t	reg_write;
+>   	struct gpio_desc	*wp_gpio;
+> @@ -66,8 +68,8 @@ static LIST_HEAD(nvmem_lookup_list);
+>   
+>   static BLOCKING_NOTIFIER_HEAD(nvmem_notifier);
+>   
+> -static int nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
+> -			  void *val, size_t bytes)
+> +static int __nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
+> +			    void *val, size_t bytes)
+>   {
+>   	if (nvmem->reg_read)
+>   		return nvmem->reg_read(nvmem->priv, offset, val, bytes);
+> @@ -75,8 +77,8 @@ static int nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
+>   	return -EINVAL;
+>   }
+>   
+> -static int nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
+> -			   void *val, size_t bytes)
+> +static int __nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
+> +			     void *val, size_t bytes)
+>   {
+>   	int ret;
+>   
+> @@ -90,6 +92,88 @@ static int nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
+>   	return -EINVAL;
+>   }
+>   
+> +static int nvmem_access_with_keepouts(struct nvmem_device *nvmem,
+> +				      unsigned int offset, void *val,
+> +				      size_t bytes, int write)
 > +{
-> +       u32 relink_time;
-> +       struct realtek_pci_sdmmc *host = mmc_priv(mmc);
-> +       struct rtsx_pcr *pcr = host->pcr;
 > +
-> +       /* Set relink_time for changing to PCIe card */
-> +       relink_time = 0x8FFF;
+> +	unsigned int end = offset + bytes;
+> +	unsigned int kend, ksize;
+> +	const struct nvmem_keepout *keepout = nvmem->keepout;
+> +	const struct nvmem_keepout *keepoutend = keepout + nvmem->nkeepout;
+> +	int rc;
 > +
-> +       rtsx_pci_write_register(pcr, 0xFF01, 0xFF, relink_time);
-> +       rtsx_pci_write_register(pcr, 0xFF02, 0xFF, relink_time >> 8);
-> +       rtsx_pci_write_register(pcr, 0xFF03, 0x01, relink_time >> 16);
+> +	/*
+> +	 * Skip all keepouts before the range being accessed.
+> +	 * Keepouts are sorted.
+> +	 */
+> +	while ((keepout < keepoutend) && (keepout->end <= offset))
+> +		keepout++;
 > +
-> +       rtsx_pci_write_register(pcr, PETXCFG, 0x80, 0x80);
-> +       rtsx_pci_write_register(pcr, LDO_VCC_CFG0,
-> +               RTS5261_LDO1_OCP_THD_MASK,
-> +               pcr->option.sd_800mA_ocp_thd);
+> +	while ((offset < end) && (keepout < keepoutend)) {
+> +		/* Access the valid portion before the keepout. */
+> +		if (offset < keepout->start) {
+> +			kend = min(end, keepout->start);
+> +			ksize = kend - offset;
+> +			if (write)
+> +				rc = __nvmem_reg_write(nvmem, offset, val, ksize);
+> +			else
+> +				rc = __nvmem_reg_read(nvmem, offset, val, ksize);
 > +
-> +       if (pcr->ops->disable_auto_blink)
-> +               pcr->ops->disable_auto_blink(pcr);
+> +			if (rc)
+> +				return rc;
 > +
-> +       /* For PCIe/NVMe mode can't enter delink issue */
-> +       pcr->hw_param.interrupt_en &= ~(SD_INT_EN);
-> +       rtsx_pci_writel(pcr, RTSX_BIER, pcr->hw_param.interrupt_en);
+> +			offset += ksize;
+> +			val += ksize;
+> +		}
 > +
-> +       rtsx_pci_write_register(pcr, RTS5260_AUTOLOAD_CFG4,
-> +               RTS5261_AUX_CLK_16M_EN, RTS5261_AUX_CLK_16M_EN);
-> +       rtsx_pci_write_register(pcr, RTS5261_FW_CFG0,
-> +               RTS5261_FW_ENTER_EXPRESS, RTS5261_FW_ENTER_EXPRESS);
-> +       rtsx_pci_write_register(pcr, RTS5261_FW_CFG1,
-> +               RTS5261_MCU_BUS_SEL_MASK | RTS5261_MCU_CLOCK_SEL_MASK
-> +               | RTS5261_MCU_CLOCK_GATING | RTS5261_DRIVER_ENABLE_FW,
-> +               RTS5261_MCU_CLOCK_SEL_16M | RTS5261_MCU_CLOCK_GATING
-> +               | RTS5261_DRIVER_ENABLE_FW);
-> +       host->eject = true;
-> +       return 0;
+> +		/*
+> +		 * Now we're aligned to the start of this keepout zone. Go
+> +		 * through it.
+> +		 */
+> +		kend = min(end, keepout->end);
+> +		ksize = kend - offset;
+> +		if (!write)
+> +			memset(val, keepout->value, ksize);
+> +
+> +		val += ksize;
+> +		offset += ksize;
+> +		keepout++;
+> +	}
+> +
+> +	/*
+> +	 * If we ran out of keepouts but there's still stuff to do, send it
+> +	 * down directly
+> +	 */
+> +	if (offset < end) {
+> +		ksize = end - offset;
+> +		if (write)
+> +			return __nvmem_reg_write(nvmem, offset, val, ksize);
+> +		else
+> +			return __nvmem_reg_read(nvmem, offset, val, ksize);
+> +	}
+> +
+> +	return 0;
 > +}
 > +
->  static const struct mmc_host_ops realtek_pci_sdmmc_ops = {
->         .pre_req = sdmmc_pre_req,
->         .post_req = sdmmc_post_req,
-> @@ -1317,6 +1372,7 @@ static const struct mmc_host_ops realtek_pci_sdmmc_ops = {
->         .get_cd = sdmmc_get_cd,
->         .start_signal_voltage_switch = sdmmc_switch_voltage,
->         .execute_tuning = sdmmc_execute_tuning,
-> +       .init_sd_express = sdmmc_init_sd_express,
->  };
->
->  static void init_extra_caps(struct realtek_pci_sdmmc *host)
-> @@ -1338,6 +1394,8 @@ static void init_extra_caps(struct realtek_pci_sdmmc *host)
->                 mmc->caps |= MMC_CAP_8_BIT_DATA;
->         if (pcr->extra_caps & EXTRA_CAPS_NO_MMC)
->                 mmc->caps2 |= MMC_CAP2_NO_MMC;
-> +       if (pcr->extra_caps & EXTRA_CAPS_SD_EXPRESS)
-> +               mmc->caps2 |= MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V;
->  }
->
->  static void realtek_init_host(struct realtek_pci_sdmmc *host)
-> --
-> 2.17.1
->
+> +static int nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
+> +			  void *val, size_t bytes)
+> +{
+> +	if (!nvmem->nkeepout)
+> +		return __nvmem_reg_read(nvmem, offset, val, bytes);
+> +
+> +	return nvmem_access_with_keepouts(nvmem, offset, val, bytes, false);
+> +}
+> +
+> +static int nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
+> +			   void *val, size_t bytes)
+> +{
+> +	if (!nvmem->nkeepout)
+> +		return __nvmem_reg_write(nvmem, offset, val, bytes);
+> +
+> +	return nvmem_access_with_keepouts(nvmem, offset, val, bytes, true);
+> +}
+> +
+>   #ifdef CONFIG_NVMEM_SYSFS
+>   static const char * const nvmem_type_str[] = {
+>   	[NVMEM_TYPE_UNKNOWN] = "Unknown",
+> @@ -533,6 +617,59 @@ nvmem_find_cell_by_name(struct nvmem_device *nvmem, const char *cell_id)
+>   	return cell;
+>   }
+>   
+> +static int nvmem_validate_keepouts(struct nvmem_device *nvmem)
+> +{
+> +	unsigned int cur = 0;
+> +	const struct nvmem_keepout *keepout = nvmem->keepout;
+> +	const struct nvmem_keepout *keepoutend = keepout + nvmem->nkeepout;
+> +
+> +	while (keepout < keepoutend) {
+> +		/* Ensure keepouts are sorted and don't overlap. */
+> +		if (keepout->start < cur) {
+> +			dev_err(&nvmem->dev,
+> +				"Keepout regions aren't sorted or overlap.\n");
+> +
+> +			return -ERANGE;
+> +		}
+> +
+> +		if (keepout->end < keepout->start) {
+> +			dev_err(&nvmem->dev,
+> +				"Invalid keepout region.\n");
+> +
+> +			return -EINVAL;
+> +		}
+> +
+> +		/*
+> +		 * Validate keepouts (and holes between) don't violate
+> +		 * word_size constraints.
+> +		 */
+> +		if ((keepout->end - keepout->start < nvmem->word_size) ||
+> +		    ((keepout->start != cur) &&
+> +		     (keepout->start - cur < nvmem->word_size))) {
+> +
+> +			dev_err(&nvmem->dev,
+> +				"Keepout regions violate word_size constraints.\n");
+> +
+> +			return -ERANGE;
+> +		}
+> +
+> +		/* Validate keepouts don't violate stride (alignment). */
+> +		if (!IS_ALIGNED(keepout->start, nvmem->stride) ||
+> +		    !IS_ALIGNED(keepout->end, nvmem->stride)) {
+> +
+> +			dev_err(&nvmem->dev,
+> +				"Keepout regions violate stride.\n");
+> +
+> +			return -EINVAL;
+> +		}
+> +
+> +		cur = keepout->end;
+> +		keepout++;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
+>   {
+>   	struct device_node *parent, *child;
+> @@ -647,6 +784,8 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
+>   	nvmem->type = config->type;
+>   	nvmem->reg_read = config->reg_read;
+>   	nvmem->reg_write = config->reg_write;
+> +	nvmem->keepout = config->keepout;
+> +	nvmem->nkeepout = config->nkeepout;
+>   	if (!config->no_of_node)
+>   		nvmem->dev.of_node = config->dev->of_node;
+>   
+> @@ -671,6 +810,12 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
+>   	nvmem->dev.groups = nvmem_dev_groups;
+>   #endif
+>   
+> +	if (nvmem->nkeepout) {
+> +		rval = nvmem_validate_keepouts(nvmem);
+> +		if (rval)
+> +			goto err_put_device;
+> +	}
+> +
+>   	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->name);
+>   
+>   	rval = device_register(&nvmem->dev);
+> diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
+> index 06409a6c40bcb..e162b757b6d54 100644
+> --- a/include/linux/nvmem-provider.h
+> +++ b/include/linux/nvmem-provider.h
+> @@ -30,6 +30,19 @@ enum nvmem_type {
+>   #define NVMEM_DEVID_NONE	(-1)
+>   #define NVMEM_DEVID_AUTO	(-2)
+>   
+> +/**
+> + * struct nvmem_keepout - NVMEM register keepout range.
+> + *
+> + * @start:	The first byte offset to avoid.
+> + * @end:	One beyond the last byte offset to avoid.
+> + * @value:	The byte to fill reads with for this region.
+> + */
+> +struct nvmem_keepout {
+> +	unsigned int start;
+> +	unsigned int end;
+> +	unsigned char value;
+> +};
+> +
+>   /**
+>    * struct nvmem_config - NVMEM device configuration
+>    *
+> @@ -39,6 +52,8 @@ enum nvmem_type {
+>    * @owner:	Pointer to exporter module. Used for refcounting.
+>    * @cells:	Optional array of pre-defined NVMEM cells.
+>    * @ncells:	Number of elements in cells.
+> + * @keepout:	Optional array of keepout ranges (sorted ascending by start).
+> + * @nkeepout:	Number of elements in the keepout array.
+>    * @type:	Type of the nvmem storage
+>    * @read_only:	Device is read-only.
+>    * @root_only:	Device is accessibly to root only.
+> @@ -66,6 +81,8 @@ struct nvmem_config {
+>   	struct gpio_desc	*wp_gpio;
+>   	const struct nvmem_cell_info	*cells;
+>   	int			ncells;
+> +	const struct nvmem_keepout *keepout;
+> +	unsigned int		nkeepout;
+>   	enum nvmem_type		type;
+>   	bool			read_only;
+>   	bool			root_only;
+> 
