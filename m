@@ -2,191 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7EC29E3DA
+	by mail.lfdr.de (Postfix) with ESMTP id 10D6029E3D9
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgJ2HWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbgJ2HVZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:21:25 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3EBC0604C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:21:23 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x13so1591776pfa.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:21:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=79MY1JSusPKl0vTlmTQFq3tCRLcr9Um1mANzV0pthDw=;
-        b=bjbF343P/mhWg7WavdO/YpWozOqLSZ+HnsnrDs/xUSvgQD0woFqbE/0iu9R8f+hJGm
-         zT2ZgXR5HFSU9i0IiaxrqUOjtYoke1Y0jgGc6VEW2ayem0sH9/nrpY+No53+q4+u6xpu
-         BGtJxaOL3MwsINLJCE/Y6frsWELHPyUh1DhFlmESQbUc4HznwGlDefiLmd6BEs0jDbvb
-         /yrkFOn3JcjYguGLNIX0JTJm6Xj35IUVy6XT5Een7m2u/ruD1KrP857pQjYZPKhHFwTZ
-         aCz7SXRCDJAP3aheC+yq4OdnLgsi7Gko66nhbnj+Qnw6wzoVqNpKq/riilia3T7zJL65
-         t8tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=79MY1JSusPKl0vTlmTQFq3tCRLcr9Um1mANzV0pthDw=;
-        b=IM0UbOI/wfotRxlLr1VMGy3WKrEStfjcR//38Li6faGPMZ+8xfuXkArxk+//fBLpdX
-         iZbkICuaFhRz4Hm0b+F9+o4K+ZqwsTRwTXJoGxLp6j6vyTme8UN++UsicGsg51fPn72j
-         fEF+BlMAVkGpBEzp7QguDB6PYAgrDSJa1XPCWOfbttR/cJJv7Q5wihytLOc+STW+Vjr1
-         BxfpqyRIL9UKC0iaI0Da6bVwlZchWgoC2WRKq4UBu5OcxlwdbTE9Yvx9gErDyYICHm6z
-         +JtoZDyWxD1xBsuwiyBzj5j6Rx68AtF+UMtyWx+E+hTtsfZBh6lDLy6ABcwmvgkg7cAy
-         jIIA==
-X-Gm-Message-State: AOAM530OFRqVL/c0L17htPhgkdJbR4S7mfe8JQRS50O7jRqAj19x0Cv0
-        AjU6aeZnwg4UZwUnkro8xBGTQw==
-X-Google-Smtp-Source: ABdhPJwUdf7/x0+kPVQiRXj+lOjfE5giyie0ExkMVsADA5vnfoPx6J9fUHmaCfEYeLkkrFFrcLs+Ww==
-X-Received: by 2002:a65:684d:: with SMTP id q13mr2928931pgt.372.1603956082936;
-        Thu, 29 Oct 2020 00:21:22 -0700 (PDT)
-Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id o22sm1475243pgb.83.2020.10.29.00.21.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 29 Oct 2020 00:21:22 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
+        id S1726627AbgJ2HW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:22:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726151AbgJ2HV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 03:21:26 -0400
+Received: from coco.lan (ip5f5ad5de.dynamic.kabel-deutschland.de [95.90.213.222])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D568206A1;
+        Thu, 29 Oct 2020 07:21:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603956079;
+        bh=ydKKLjnIGAQnlNnBFT/eI5WDiCpUdvgjw4RkqNPBoTs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AXef/AhAlPh1hi9YsdIj4o1ixVYaGEAZM4H9T1mWHDD5hcqq9AHBGqQYLJm4zvkzm
+         vDRNtmfz4vMaZ1nCDFiLdWyz0Wl7IBqlNL9mj+lYOyRgbN8ZBRkoI4V/HMDyMBFkDS
+         A+Vrm0psmwUp0NppXp1qjXj8jB9uy8mTt+24KpoY=
+Date:   Thu, 29 Oct 2020 08:21:00 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Javier =?UTF-8?B?R29uesOhbGV6?= <javier@javigon.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v5 21/21] perf arm-spe: Add support for ARMv8.3-SPE
-Date:   Thu, 29 Oct 2020 15:19:27 +0800
-Message-Id: <20201029071927.9308-22-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201029071927.9308-1-leo.yan@linaro.org>
-References: <20201029071927.9308-1-leo.yan@linaro.org>
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Bruno Meneguele <bmeneg@redhat.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Kranthi Kuntala <kranthi.kuntala@intel.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Len Brown <lenb@kernel.org>,
+        Leonid Maksymchuk <leonmaxx@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Oleh Kravchenko <oleg@kaa.org.ua>,
+        Orson Zhai <orsonzhai@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Peter Rosin <peda@axentia.se>, Petr Mladek <pmladek@suse.com>,
+        Philippe Bergheaud <felix@linux.ibm.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org, xen-devel@lists.xenproject.org
+Subject: Re: [PATCH 20/33] docs: ABI: testing: make the files compatible
+ with ReST output
+Message-ID: <20201029082100.4820072c@coco.lan>
+In-Reply-To: <20201028174427.GE9364@hoboy.vegasvil.org>
+References: <cover.1603893146.git.mchehab+huawei@kernel.org>
+        <4ebaaa0320101479e392ce2db4b62e24fdf15ef1.1603893146.git.mchehab+huawei@kernel.org>
+        <20201028174427.GE9364@hoboy.vegasvil.org>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Li <liwei391@huawei.com>
+Hi Richard,
 
-This patch is to support Armv8.3 extension for SPE, it adds alignment
-field in the Events packet and it supports the Scalable Vector Extension
-(SVE) for Operation packet and Events packet with two additions:
+Em Wed, 28 Oct 2020 10:44:27 -0700
+Richard Cochran <richardcochran@gmail.com> escreveu:
 
-  - The vector length for SVE operations in the Operation Type packet;
-  - The incomplete predicate and empty predicate fields in the Events
-    packet.
+> On Wed, Oct 28, 2020 at 03:23:18PM +0100, Mauro Carvalho Chehab wrote:
+> 
+> > diff --git a/Documentation/ABI/testing/sysfs-uevent b/Documentation/ABI/testing/sysfs-uevent
+> > index aa39f8d7bcdf..d0893dad3f38 100644
+> > --- a/Documentation/ABI/testing/sysfs-uevent
+> > +++ b/Documentation/ABI/testing/sysfs-uevent
+> > @@ -19,7 +19,8 @@ Description:
+> >                  a transaction identifier so it's possible to use the same UUID
+> >                  value for one or more synthetic uevents in which case we
+> >                  logically group these uevents together for any userspace
+> > -                listeners. The UUID value appears in uevent as
+> > +                listeners. The UUID value appears in uevent as:  
+> 
+> I know almost nothing about Sphinx, but why have one colon here ^^^ and ...
 
-Signed-off-by: Wei Li <liwei391@huawei.com>
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
----
- .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 39 ++++++++++++++++++-
- .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 16 ++++++++
- 2 files changed, 53 insertions(+), 2 deletions(-)
+Good point. After re-reading the text, this ":" doesn't belong here.
 
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 97a47ac3aa28..6c1d872caa81 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -300,6 +300,12 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
- 		arm_spe_pkt_snprintf(&err, &buf, &blen, " LLC-REFILL");
- 	if (payload & BIT(EV_REMOTE_ACCESS))
- 		arm_spe_pkt_snprintf(&err, &buf, &blen, " REMOTE-ACCESS");
-+	if (payload & BIT(EV_ALIGNMENT))
-+		arm_spe_pkt_snprintf(&err, &buf, &blen, " ALIGNMENT");
-+	if (payload & BIT(EV_PARTIAL_PREDICATE))
-+		arm_spe_pkt_snprintf(&err, &buf, &blen, " SVE-PARTIAL-PRED");
-+	if (payload & BIT(EV_EMPTY_PREDICATE))
-+		arm_spe_pkt_snprintf(&err, &buf, &blen, " SVE-EMPTY-PRED");
- 
- 	return err ?: (int)(buf_len - blen);
- }
-@@ -313,8 +319,26 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
- 
- 	switch (packet->index) {
- 	case SPE_OP_PKT_HDR_CLASS_OTHER:
--		return arm_spe_pkt_snprintf(&err, &buf, &blen,
--			payload & SPE_OP_PKT_COND ? "COND-SELECT" : "INSN-OTHER");
-+		if (SPE_OP_PKT_IS_OTHER_SVE_OP(payload)) {
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, "SVE-OTHER");
-+
-+			/* SVE effective vector length */
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " EVLEN %d",
-+					     SPE_OP_PKG_SVE_EVL(payload));
-+
-+			if (payload & SPE_OP_PKT_SVE_FP)
-+				arm_spe_pkt_snprintf(&err, &buf, &blen, " FP");
-+			if (payload & SPE_OP_PKT_SVE_PRED)
-+				arm_spe_pkt_snprintf(&err, &buf, &blen, " PRED");
-+		} else {
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, "OTHER");
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " %s",
-+					     payload & SPE_OP_PKT_COND ?
-+					     "COND-SELECT" : "INSN-OTHER");
-+		}
-+
-+		return err ?: (int)(buf_len - blen);
-+
- 	case SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC:
- 		arm_spe_pkt_snprintf(&err, &buf, &blen,
- 				     payload & 0x1 ? "ST" : "LD");
-@@ -345,6 +369,17 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
- 			break;
- 		}
- 
-+		if (SPE_OP_PKT_IS_LDST_SVE(payload)) {
-+			/* SVE effective vector length */
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " EVLEN %d",
-+					     SPE_OP_PKG_SVE_EVL(payload));
-+
-+			if (payload & SPE_OP_PKT_SVE_PRED)
-+				arm_spe_pkt_snprintf(&err, &buf, &blen, " PRED");
-+			if (payload & SPE_OP_PKT_SVE_SG)
-+				arm_spe_pkt_snprintf(&err, &buf, &blen, " SG");
-+		}
-+
- 		return err ?: (int)(buf_len - blen);
- 
- 	case SPE_OP_PKT_HDR_CLASS_BR_ERET:
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-index 1ad14885c2a1..9b970e7bf1e2 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-@@ -113,6 +113,8 @@ enum arm_spe_events {
- #define SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC	0x1
- #define SPE_OP_PKT_HDR_CLASS_BR_ERET		0x2
- 
-+#define SPE_OP_PKT_IS_OTHER_SVE_OP(v)		(((v) & (BIT(7) | BIT(3) | BIT(0))) == 0x8)
-+
- #define SPE_OP_PKT_COND				BIT(0)
- 
- #define SPE_OP_PKT_LDST_SUBCLASS_GET(v)		((v) & GENMASK_ULL(7, 1))
-@@ -128,6 +130,20 @@ enum arm_spe_events {
- #define SPE_OP_PKT_AT				BIT(2)
- #define SPE_OP_PKT_ST				BIT(0)
- 
-+#define SPE_OP_PKT_IS_LDST_SVE(v)		(((v) & (BIT(3) | BIT(1))) == 0x8)
-+
-+#define SPE_OP_PKT_SVE_SG			BIT(7)
-+/*
-+ * SVE effective vector length (EVL) is stored in byte 0 bits [6:4];
-+ * the length is rounded up to a power of two and use 32 as one step,
-+ * so EVL calculation is:
-+ *
-+ *   32 * (2 ^ bits [6:4]) = 32 << (bits [6:4])
-+ */
-+#define SPE_OP_PKG_SVE_EVL(v)			(32 << (((v) & GENMASK_ULL(6, 4)) >> 4))
-+#define SPE_OP_PKT_SVE_PRED			BIT(2)
-+#define SPE_OP_PKT_SVE_FP			BIT(1)
-+
- #define SPE_OP_PKT_IS_INDIRECT_BRANCH(v)	(((v) & GENMASK_ULL(7, 1)) == 0x2)
- 
- const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
--- 
-2.17.1
+> 
+> > +
+> >                  "SYNTH_UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" environment
+> >                  variable.
+> >  
+> > @@ -30,18 +31,19 @@ Description:
+> >                  It's possible to define zero or more pairs - each pair is then
+> >                  delimited by a space character ' '. Each pair appears in
+> >                  synthetic uevent as "SYNTH_ARG_KEY=VALUE". That means the KEY
+> > -                name gains "SYNTH_ARG_" prefix to avoid possible collisions
+> > +                name gains `SYNTH_ARG_` prefix to avoid possible collisions
+> >                  with existing variables.
+> >  
+> > -                Example of valid sequence written to the uevent file:
+> > +                Example of valid sequence written to the uevent file::  
+> 
+> ... two here?
 
+The main issue that this patch wants to solve is here:
+
+                This generates synthetic uevent including these variables::
+
+                    ACTION=add
+                    SYNTH_ARG_A=1
+                    SYNTH_ARG_B=abc
+                    SYNTH_UUID=fe4d7c9d-b8c6-4a70-9ef1-3d8a58d18eed
+
+On Sphinx, consecutive lines with the same indent belongs to the same
+paragraph. So, without "::", the above will be displayed on a single line,
+which is undesired.
+
+using "::" tells Sphinx to display as-is. It will also place it into a a 
+box (colored for html output) and using a monospaced font.
+
+The change at the "uevent file:" line was done just for coherency
+purposes.
+
+Yet, after re-reading the text, there are other things that are not
+coherent. So, I guess the enclosed patch will work better for sys-uevent.
+
+Thanks,
+Mauro
+
+docs: ABI: sysfs-uevent: make it compatible with ReST output
+
+- Replace " by ``, in order to use monospaced fonts;
+- mark literal blocks as such.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+diff --git a/Documentation/ABI/testing/sysfs-uevent b/Documentation/ABI/testing/sysfs-uevent
+index aa39f8d7bcdf..0b6227706b35 100644
+--- a/Documentation/ABI/testing/sysfs-uevent
++++ b/Documentation/ABI/testing/sysfs-uevent
+@@ -6,42 +6,46 @@ Description:
+                 Enable passing additional variables for synthetic uevents that
+                 are generated by writing /sys/.../uevent file.
+ 
+-                Recognized extended format is ACTION [UUID [KEY=VALUE ...].
++                Recognized extended format is::
+ 
+-                The ACTION is compulsory - it is the name of the uevent action
+-                ("add", "change", "remove"). There is no change compared to
+-                previous functionality here. The rest of the extended format
+-                is optional.
++			ACTION [UUID [KEY=VALUE ...]
++
++                The ACTION is compulsory - it is the name of the uevent
++                action (``add``, ``change``, ``remove``). There is no change
++                compared to previous functionality here. The rest of the
++                extended format is optional.
+ 
+                 You need to pass UUID first before any KEY=VALUE pairs.
+-                The UUID must be in "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
++                The UUID must be in ``xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx``
+                 format where 'x' is a hex digit. The UUID is considered to be
+                 a transaction identifier so it's possible to use the same UUID
+                 value for one or more synthetic uevents in which case we
+                 logically group these uevents together for any userspace
+                 listeners. The UUID value appears in uevent as
+-                "SYNTH_UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" environment
++                ``SYNTH_UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`` environment
+                 variable.
+ 
+                 If UUID is not passed in, the generated synthetic uevent gains
+-                "SYNTH_UUID=0" environment variable automatically.
++                ``SYNTH_UUID=0`` environment variable automatically.
+ 
+                 The KEY=VALUE pairs can contain alphanumeric characters only.
++
+                 It's possible to define zero or more pairs - each pair is then
+                 delimited by a space character ' '. Each pair appears in
+-                synthetic uevent as "SYNTH_ARG_KEY=VALUE". That means the KEY
+-                name gains "SYNTH_ARG_" prefix to avoid possible collisions
++                synthetic uevent as ``SYNTH_ARG_KEY=VALUE``. That means the KEY
++                name gains ``SYNTH_ARG_`` prefix to avoid possible collisions
+                 with existing variables.
+ 
+-                Example of valid sequence written to the uevent file:
++                Example of valid sequence written to the uevent file::
+ 
+                     add fe4d7c9d-b8c6-4a70-9ef1-3d8a58d18eed A=1 B=abc
+ 
+-                This generates synthetic uevent including these variables:
++                This generates synthetic uevent including these variables::
+ 
+                     ACTION=add
+                     SYNTH_ARG_A=1
+                     SYNTH_ARG_B=abc
+                     SYNTH_UUID=fe4d7c9d-b8c6-4a70-9ef1-3d8a58d18eed
++
+ Users:
+                 udev, userspace tools generating synthetic uevents
