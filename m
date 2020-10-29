@@ -2,280 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F03C29EBF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FB729EBF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725834AbgJ2MhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:37:21 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:50475 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ2MhV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:37:21 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 09TCas8Z3024159, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb04.realtek.com.tw[172.21.6.97])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 09TCas8Z3024159
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 29 Oct 2020 20:36:54 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.34) by
- RTEXMB04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Thu, 29 Oct 2020 20:36:54 +0800
-Received: from localhost.localdomain (172.21.132.186) by
- RTEXMBS03.realtek.com.tw (172.21.6.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 29 Oct 2020 20:36:53 +0800
-From:   <max.chou@realtek.com>
-To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
-        <matthias.bgg@gmail.com>
-CC:     <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <kidman@realtek.com>,
-        <hildawu@realtek.com>, <alex_lu@realsil.com.cn>,
-        <abhishekpandit@chromium.org>, <max.chou@realtek.com>
-Subject: [PATCH v2] Bluetooth: btusb: Add more IDs to usb_device_id table for Realtek RTL8822CE
-Date:   Thu, 29 Oct 2020 20:36:49 +0800
-Message-ID: <20201029123649.1220-1-max.chou@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726132AbgJ2Mhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:37:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:35430 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgJ2Mht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 08:37:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C00913A1;
+        Thu, 29 Oct 2020 05:37:48 -0700 (PDT)
+Received: from [10.57.13.20] (unknown [10.57.13.20])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D3633F719;
+        Thu, 29 Oct 2020 05:37:44 -0700 (PDT)
+Subject: Re: [PATCH v3 0/4] Clarify abstract scale usage for power values in
+ Energy Model, EAS and IPA
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
+        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>
+References: <20201019140601.3047-1-lukasz.luba@arm.com>
+ <CAD=FV=UYeo_rWBDRu-53Aw2OeY1NCgCuUJkocRM8xL+OCbJDug@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <62430cb9-eaab-b215-0eec-d35d3c625406@arm.com>
+Date:   Thu, 29 Oct 2020 12:37:42 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.21.132.186]
-X-ClientProxiedBy: RTEXMB03.realtek.com.tw (172.21.6.96) To
- RTEXMBS03.realtek.com.tw (172.21.6.34)
+In-Reply-To: <CAD=FV=UYeo_rWBDRu-53Aw2OeY1NCgCuUJkocRM8xL+OCbJDug@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Chou <max.chou@realtek.com>
 
-Add more IDs to usb_device_id table for Realtek
-RTL8822CE and also support the wideband speech capability for all
-RTL8822CE devices.
 
--Device(04c5:161f) from /sys/kernel/debug/usb/devices
-T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=12   MxCh= 0
-D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=04c5 ProdID=161f Rev= 0.00
-S:  Manufacturer=Realtek
-S:  Product=Bluetooth Radio
-S:  SerialNumber=00e04c000001
-C:* #Ifs= 2 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+On 10/20/20 1:15 AM, Doug Anderson wrote:
+> Hi,
+> 
+> On Mon, Oct 19, 2020 at 7:06 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> Hi all,
+>>
+>> The Energy Model supports power values expressed in an abstract scale.
+>> This has an impact on Intelligent Power Allocation (IPA) and should be
+>> documented properly. Kernel sub-systems like EAS, IPA and DTPM
+>> (new comming PowerCap framework) would use the new flag to capture
+>> potential miss-configuration where the devices have registered different
+>> power scales, thus cannot operate together.
+>>
+>> There was a discussion below v2 of this patch series, which might help
+>> you to get context of these changes [2].
+>>
+>> The agreed approach is to have the DT as a source of power values expressed
+>> always in milli-Watts and the only way to submit with abstract scale values
+>> is via the em_dev_register_perf_domain() API.
+>>
+>> Changes:
+>> v3:
+>> - added boolean flag to struct em_perf_domain and registration function
+>>    indicating if EM holds real power values in milli-Watts (suggested by
+>>    Daniel and aggreed with Quentin)
+>> - updated documentation regarding this new flag
+>> - dropped DT binding change for 'sustainable-power'
+>> - added more maintainers on CC (due to patch 1/4 touching different things)
+>> v2 [2]:
+>> - updated sustainable power section in IPA documentation
+>> - updated DT binding for the 'sustainable-power'
+>> v1 [1]:
+>> - simple documenation update with new 'abstract scale' in EAS, EM, IPA
+>>
+>> Regards,
+>> Lukasz Luba
+>>
+>> [1] https://lore.kernel.org/linux-doc/20200929121610.16060-1-lukasz.luba@arm.com/
+>> [2] https://lore.kernel.org/lkml/20201002114426.31277-1-lukasz.luba@arm.com/
+>>
+>> Lukasz Luba (4):
+>>    PM / EM: Add a flag indicating units of power values in Energy Model
+>>    docs: Clarify abstract scale usage for power values in Energy Model
+>>    PM / EM: update the comments related to power scale
+>>    docs: power: Update Energy Model with new flag indicating power scale
+>>
+>>   .../driver-api/thermal/power_allocator.rst    | 13 +++++++-
+>>   Documentation/power/energy-model.rst          | 30 +++++++++++++++----
+>>   Documentation/scheduler/sched-energy.rst      |  5 ++++
+>>   drivers/cpufreq/scmi-cpufreq.c                |  3 +-
+>>   drivers/opp/of.c                              |  2 +-
+>>   include/linux/energy_model.h                  | 20 ++++++++-----
+>>   kernel/power/energy_model.c                   | 26 ++++++++++++++--
+>>   7 files changed, 81 insertions(+), 18 deletions(-)
+> 
+> While I don't feel like I have enough skin in the game to make any
+> demands, I'm definitely not a huge fan of this series still.  I am a
+> fan of documenting reality, but (to me) trying to mix stuff like this
+> is just going to be adding needless complexity.  From where I'm
+> standing, it's a lot more of a pain to specify these types of numbers
+> in the firmware than it is to specify them in the device tree.  They
 
--Device(0b05:18ef) from /sys/kernel/debug/usb/devices
-T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  4 Spd=12   MxCh= 0
-D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=0b05 ProdID=18ef Rev= 0.00
-S:  Manufacturer=Realtek
-S:  Product=Bluetooth Radio
-S:  SerialNumber=00e04c000001
-C:* #Ifs= 2 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+When you have SCMI, you receive power values from FW directly, not using
+DT.
 
--Device(13d3:3549) from /sys/kernel/debug/usb/devices
-T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=12   MxCh= 0
-D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=13d3 ProdID=3549 Rev= 0.00
-S:  Manufacturer=Realtek
-S:  Product=Bluetooth Radio
-S:  SerialNumber=00e04c000001
-C:* #Ifs= 2 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> are harder to customize per board, harder to spin, and harder to
+> specify constraints for everything in the system (all heat generators,
+> all cooling devices, etc).  ...and since we already have a way to
+> specify this type of thing in the device tree and that's super easy
+> for people to do, we're going to end up with weird mixes / matches of
+> numbers coming from different locations and now we've got to figure
+> out which numbers we can use when and which to ignore.  Ick.
 
--Device(13d3:3553) from /sys/kernel/debug/usb/devices
-T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=12   MxCh= 0
-D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=13d3 ProdID=3553 Rev= 0.00
-S:  Manufacturer=Realtek
-S:  Product=Bluetooth Radio
-S:  SerialNumber=00e04c000001
-C:* #Ifs= 2 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+This is not that bad as you described. When you have SCMI and FW
+all your perf domains should be aligned to the same scale.
+In example, you have 4 little CPU, 3 big CPUs, 1 super big CPU,
+1 GPU, 1 DSP. For all of them the SCMI get_power callback should return
+consistent values. You don't have to specify anything else or rev-eng.
+Then a client like EAS would use those values from CPUs to estimate
+energy and this works fine. Another client: IPA, which would use
+all of them and also works fine.
 
--Device(13d3:3555) from /sys/kernel/debug/usb/devices
-T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=12   MxCh= 0
-D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=13d3 ProdID=3555 Rev= 0.00
-S:  Manufacturer=Realtek
-S:  Product=Bluetooth Radio
-S:  SerialNumber=00e04c000001
-C:* #Ifs= 2 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> 
+> In my opinion the only way to allow for mixing and matching the
+> bogoWatts and real Watts would be to actually have units and the
+> ability to provide a conversion factor somewhere.  Presumably that
+> might give you a chance of mixing and matching if someone wants to
+> provide some stuff in device tree and get other stuff from the
+> firmware.  Heck, I guess you could even magically figure out a
+> conversion factor if someone provides device tree numbers for
+> something that was already registered in SCMI, assuming all the SCMI
+> numbers are consistent with each other...
 
--Device(2ff8:3051) from /sys/kernel/debug/usb/devices
-T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=12   MxCh= 0
-D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=2ff8 ProdID=3051 Rev= 0.00
-S:  Manufacturer=Realtek
-S:  Product=Bluetooth Radio
-S:  SerialNumber=00e04c000001
-C:* #Ifs= 2 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+What you demand here is another code path, just to support revers
+engineered power values for SCMI devices, which are stored in DT.
+Then the SCMI protocol code and drivers should take them into account
+and abandon standard implementation and use these values to provide
+'hacked' power numbers to EM. Am I right?
+It is not going to happen.
 
-Signed-off-by: Max Chou <max.chou@realtek.com>
----
-Changes in v2:
-- dump "/sys/kernel/debug/usb/devices" for the additional devices
----
- drivers/bluetooth/btusb.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+Regards,
+Lukasz
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 1005b6e8ff74..4a1f877616d6 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -425,8 +425,22 @@ static const struct usb_device_id blacklist_table[] = {
- 	{ USB_DEVICE(0x0b05, 0x185c), .driver_info = BTUSB_REALTEK },
- 
- 	/* Additional Realtek 8822CE Bluetooth devices */
--	{ USB_DEVICE(0x04ca, 0x4005), .driver_info = BTUSB_REALTEK },
--	{ USB_DEVICE(0x13d3, 0x3548), .driver_info = BTUSB_REALTEK },
-+	{ USB_DEVICE(0x04ca, 0x4005), .driver_info = BTUSB_REALTEK |
-+						     BTUSB_WIDEBAND_SPEECH },
-+	{ USB_DEVICE(0x04c5, 0x161f), .driver_info = BTUSB_REALTEK |
-+						     BTUSB_WIDEBAND_SPEECH },
-+	{ USB_DEVICE(0x0b05, 0x18ef), .driver_info = BTUSB_REALTEK |
-+						     BTUSB_WIDEBAND_SPEECH },
-+	{ USB_DEVICE(0x13d3, 0x3548), .driver_info = BTUSB_REALTEK |
-+						     BTUSB_WIDEBAND_SPEECH },
-+	{ USB_DEVICE(0x13d3, 0x3549), .driver_info = BTUSB_REALTEK |
-+						     BTUSB_WIDEBAND_SPEECH },
-+	{ USB_DEVICE(0x13d3, 0x3553), .driver_info = BTUSB_REALTEK |
-+						     BTUSB_WIDEBAND_SPEECH },
-+	{ USB_DEVICE(0x13d3, 0x3555), .driver_info = BTUSB_REALTEK |
-+						     BTUSB_WIDEBAND_SPEECH },
-+	{ USB_DEVICE(0x2ff8, 0x3051), .driver_info = BTUSB_REALTEK |
-+						     BTUSB_WIDEBAND_SPEECH },
- 
- 	/* Silicon Wave based devices */
- 	{ USB_DEVICE(0x0c10, 0x0000), .driver_info = BTUSB_SWAVE },
--- 
-2.17.1
 
+> 
+> -Doug
+> 
+> 
+> 
+> -Doug
+> 
