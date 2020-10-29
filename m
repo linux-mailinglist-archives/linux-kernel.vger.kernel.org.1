@@ -2,93 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C48F29EE67
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74FB29EE6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbgJ2OhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:37:02 -0400
-Received: from mail-03.mail-europe.com ([91.134.188.129]:39866 "EHLO
-        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbgJ2OhB (ORCPT
+        id S1727767AbgJ2OiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbgJ2OiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:37:01 -0400
-Date:   Thu, 29 Oct 2020 14:36:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1603982218;
-        bh=kXRaeNvaCmQH2VeUBzDabkr/fRY1SIHCsnhlrezOIP4=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=xMcf3HkfGEjU8Xvf7JJCjEXO0w1zUcqbBYZRaJVfJn6oMKF4vUSUc6ldi50W4twFA
-         cjjIHv0FZApDZ2G/XZi2+/qfp3pESK89HwC6U13UwL3qTOCWy/FXk1QaqMSpfk8SXf
-         jBUk3injLDg4q0qLeoYQqucX8YkSKzUhDL/1xLyg=
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     "hj2.im@samsung.com" <hj2.im@samsung.com>,
-        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "rydberg@bitmath.org" <rydberg@bitmath.org>,
-        Jungrae Kim <jryu.kim@samsung.com>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH v2] input: add 2 kind of switch
-Message-ID: <Y8lswhvitTRIuUmvccVHbI2zTCGbh44XnkszUcl2qG2mT93vWVcnovbN8UsBOnXkE-gnRB6jLLnOaNWLgf8B9Pn6R2uGgv7pV-vqj4RdiUk=@protonmail.com>
-In-Reply-To: <20201029135415.GA3470996@kroah.com>
-References: <CGME20201029132747epcms1p8fae559dff47bf0eebdcc9f94efd9a1bf@epcms1p8> <20201029132747epcms1p8fae559dff47bf0eebdcc9f94efd9a1bf@epcms1p8> <j4-zngLfuvM3x15SD8ezJ__FTdOdLCudaTGBvuotwzYwnYFusBe655vH3UahNgtBzB8n6VpfoV7iS1tPXvv-0R8T7-RsvMDxnTZ-Zo-xs4o=@protonmail.com> <20201029135415.GA3470996@kroah.com>
+        Thu, 29 Oct 2020 10:38:00 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494EAC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:38:00 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id i7so568146pgh.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:38:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0Vvgyk1ppIl/T/Eqmf3bzsBqm8UMHTtFA399dLy7jnw=;
+        b=tLPZY9nwXhcpd/xxtFYpqk6+OT07X0f6Mzrac2gOvCqy5sy+oS5cWATMj8lsHkzwmf
+         YjfcQuuJusTCFNrj9jBIZQWiaZdehlPuE+hW5xLqx+mh1zXzZUGRCMr2NXfeYPdtWgva
+         Rt2Vou75O1jTuhNn6ecWzShtlapwrNobwXIwuSpKO7cMyq0GHug2DcMAHkYa5pRpwitK
+         Ti6pfoZOw8oJnrC0cLip+eisDkW9lX+sUcsYwn3SO0Q3CPqm8AHXS89+qhnc/m8e71Ce
+         Y5ogELfnBPTtAogFMGWVWtpj0BD+1lCAfYadugTEK3GpGG1iuE13GuXBZRThShsLCeOB
+         PJHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0Vvgyk1ppIl/T/Eqmf3bzsBqm8UMHTtFA399dLy7jnw=;
+        b=pqPguTQxq071u21sCfThT8691iqRZiDtkoahSAvaBTp5f4f31enLMjVPEKFHyEuCzr
+         AqbxigfqrttLdDbgLF1vm9aVfXlDQMa2cEB60Hu86M4rgiurUiRhhMInM+AQ0Ql66nYt
+         epT9xT/KH5v0GgzjfVmDjyd7l8Z4IE+dA8+lvGb69ffW9lsiqz7ZaucEY0WgcxS8BqLo
+         LmgrRshC16EOdXkY9dzF/AffPlvxf5R6dazDgjskBdHipqL/AyWPKbKuYj76PN2i8rs6
+         v/RfZ+Ltmu2Ov4s8WakQ45o3ixp15q13xLRpFXsf6t1ocYNCld0KMZ8AWaxsfysFEEYd
+         bZCQ==
+X-Gm-Message-State: AOAM532QemwNgPF3CmfQTTusSypDLBm719iYgQb2zCDiQSqzwzCFcOpr
+        XTe2yhHmnoTsKa0XKb3jwVU=
+X-Google-Smtp-Source: ABdhPJzGPd8hJFVyCMC6l8+84XZ7S8EheBEuBNB6VAubzL2xAL75DMWRxdy5cR93MwHqyfMe4MzdfA==
+X-Received: by 2002:a62:5213:0:b029:164:97aa:b672 with SMTP id g19-20020a6252130000b029016497aab672mr4448913pfb.15.1603982279695;
+        Thu, 29 Oct 2020 07:37:59 -0700 (PDT)
+Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
+        by smtp.gmail.com with ESMTPSA id k9sm3160208pfi.188.2020.10.29.07.37.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 07:37:59 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Thu, 29 Oct 2020 22:37:33 +0800
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/25] ALSA: core: pcm: remove unnecessary CONFIG_PM_SLEEP
+Message-ID: <20201029143733.d53pu2ri5ykqlff2@Rk>
+References: <20201029074301.226644-1-coiby.xu@gmail.com>
+ <s5hpn51wjyw.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <s5hpn51wjyw.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-> [...]
-> > > diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devi=
-cetable.h
-> > > index 5b08a473cdba..897f5a3e7721 100644
-> > > --- a/include/linux/mod_devicetable.h
-> > > +++ b/include/linux/mod_devicetable.h
-> > > @@ -320,7 +320,7 @@ struct pcmcia_device_id {
-> > >  #define INPUT_DEVICE_ID_LED_MAX=09=090x0f
-> > >  #define INPUT_DEVICE_ID_SND_MAX=09=090x07
-> > >  #define INPUT_DEVICE_ID_FF_MAX=09=090x7f
-> > > -#define INPUT_DEVICE_ID_SW_MAX=09=090x10
-> > > +#define INPUT_DEVICE_ID_SW_MAX=09=090x12
-> > >  #define INPUT_DEVICE_ID_PROP_MAX=090x1f
-> > >
-> > >  #define INPUT_DEVICE_ID_MATCH_BUS=091
-> > > diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/li=
-nux/input-event-codes.h
-> > > index 0c2e27d28e0a..8ca2acee1f92 100644
-> > > --- a/include/uapi/linux/input-event-codes.h
-> > > +++ b/include/uapi/linux/input-event-codes.h
-> > > @@ -889,7 +889,9 @@
-> > >  #define SW_MUTE_DEVICE=09=090x0e  /* set =3D device disabled */
-> > >  #define SW_PEN_INSERTED=09=090x0f  /* set =3D pen inserted */
-> > >  #define SW_MACHINE_COVER=090x10  /* set =3D cover closed */
-> > > -#define SW_MAX=09=09=090x10
-> > > +#define SW_COVER_ATTACHED=090x11  /* set =3D cover attached */
-> > > +#define SW_EXT_PEN_ATTACHED=090x12  /* set =3D external pen attached=
- */
-> > > +#define SW_MAX=09=09=090x12
-> > >  #define SW_CNT=09=09=09(SW_MAX+1)
-> > > [...]
-> >
-> > This part of the patch conflicts with another one:
-> > https://lore.kernel.org/linux-input/20201026144512.621479-1-markpearson=
-@lenovo.com/
+On Thu, Oct 29, 2020 at 08:48:55AM +0100, Takashi Iwai wrote:
+>On Thu, 29 Oct 2020 08:42:37 +0100,
+>Coiby Xu wrote:
+>>
+>> SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+>>
+>> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 >
-> Is that merged?  If not, it's fine as-is until then, and someone has to
-> pick to go first :)
+>It caused compile warnings.  Was it already addressed in general?
+>
+It hasn't been addressed in general. Thank you for the reminding!
 
-It is not, to my knowledge. Nonetheless I figured the information may be re=
-levant.
+>Or we may use __maybe_unused attribute instead, but it's just a matter
+>of taste.
+>
+I'll add __maybe_unused in v2 since __maybe_unused should be preferred over
+CONFIG_PM_SLEEP according to Arnd Bergmann [1],
 
+> > By and large, drivers handle this by using a CONFIG_PM_SLEEP ifdef.
+> >
+> > Unless you can make an extremely convincing argument why not to do
+> > so here, I'd like you to handle it that way instead.
+>
+> [adding linux-pm to Cc]
+>
+> The main reason is that everyone gets the #ifdef wrong, I run into
+> half a dozen new build regressions with linux-next every week on
+> average, the typical problems being:
+>
+> - testing CONFIG_PM_SLEEP instead of CONFIG_PM, leading to an unused
+>   function warning
+> - testing CONFIG_PM instead of CONFIG_PM_SLEEP, leading to a build
+>   failure
+> - calling a function outside of the #ifdef only from inside an
+>   otherwise correct #ifdef, again leading to an unused function
+>   warning
+> - causing a warning inside of the #ifdef but only testing if that
+>   is disabled, leading to a problem if the macro is set (this is
+>   rare these days for CONFIG_PM as that is normally enabled)
+>
+> Using __maybe_unused avoids all of the above.
 
-Regards,
-Barnab=C3=A1s P=C5=91cze
+[1] https://lore.kernel.org/patchwork/comment/919944/
+>
+>thanks,
+>
+>Takashi
+>
+>> ---
+>>  sound/core/pcm.c | 2 --
+>>  1 file changed, 2 deletions(-)
+>>
+>> diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+>> index be5714f1bb58..5a281ac92958 100644
+>> --- a/sound/core/pcm.c
+>> +++ b/sound/core/pcm.c
+>> @@ -599,7 +599,6 @@ static const struct attribute_group *pcm_dev_attr_groups[];
+>>   * PM callbacks: we need to deal only with suspend here, as the resume is
+>>   * triggered either from user-space or the driver's resume callback
+>>   */
+>> -#ifdef CONFIG_PM_SLEEP
+>>  static int do_pcm_suspend(struct device *dev)
+>>  {
+>>  	struct snd_pcm_str *pstr = container_of(dev, struct snd_pcm_str, dev);
+>> @@ -608,7 +607,6 @@ static int do_pcm_suspend(struct device *dev)
+>>  		snd_pcm_suspend_all(pstr->pcm);
+>>  	return 0;
+>>  }
+>> -#endif
+>>
+>>  static const struct dev_pm_ops pcm_dev_pm_ops = {
+>>  	SET_SYSTEM_SLEEP_PM_OPS(do_pcm_suspend, NULL)
+>> --
+>> 2.28.0
+>>
+
+--
+Best regards,
+Coiby
