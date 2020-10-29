@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D782B29F284
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B2529F27F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgJ2RFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33252 "EHLO
+        id S1726384AbgJ2RFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 13:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726790AbgJ2RFQ (ORCPT
+        with ESMTP id S1725792AbgJ2RFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:05:16 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048E8C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:05:16 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id w25so1905001vsk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:05:15 -0700 (PDT)
+        Thu, 29 Oct 2020 13:05:02 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42510C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:05:01 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g12so2854284pgm.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:05:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WPCxo8dZVoPntUDqM2K1mljtNcAGM6ErEoqv5xxnH0E=;
-        b=GgNxjbKiB0mMhC0k0NjJxuIk4xp6/uBwunh+BV5axtlic73wSrFYm6DTwllRXhN2fB
-         qp0kLs07xY68okdCMuHAU02Y2Dozue63p6bEo93wqPSHnr+abrKlwbmVKHDGK2jAekkZ
-         DaZ+Jwt/y7jWMNa9bFN1iYTPZzPJv3ELgoMUB7EccDCVV7Ftp3KLpBxxZoG8a2VR8/Rd
-         r0U9EyBT1WZzrLj3Y0VvngbS6rmE7dWLcTDn0PPtLELLWPVhx36XxSj0zxs7LudSm2+l
-         VbmU0/lmAPTj++H/QJdPcP7RjiEG8qXsd+/AngGr/yXddjYIkSC6f7q5NK1cxbEa1IEH
-         R+JA==
+        bh=Uh/de65EzS7o32eKzyxijzJut257PQrXipgp+9EhbPc=;
+        b=OzqupX9v8mSg3E42wKpXhrJrFQNkvdggypyI4Y9Z/OCTCwGBaWn4Eb74pVX/cybGNe
+         FUXbeXY45gHU0PWCVCMgcvtWM21EW4hLacateikEp6Bt6hzgfShzm63wXTSwL1/QGPAl
+         0mhIKOqI1K6SiZjmwbf9jjYBdwDcXrW78OgrVgxdqyFZrnrr6X1UwOOQELbBEzIxtgXN
+         WzFgrAbFByJRMoWczs7eX4y8qe4ExtUWkUFWrn4keiJ63LVBZp74BzcneYBLXZfAF2Gv
+         rmHKeA47UCPFsZ14VTqPfgWKFSdmcWGfPebs85VOGDnLZr09LevtQONnZe5iUpZ7ANDJ
+         BJoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WPCxo8dZVoPntUDqM2K1mljtNcAGM6ErEoqv5xxnH0E=;
-        b=ZBI8WFi0qPugoGCSaEoMDJXWcha3/uBqnxti2oetXJoGoL9SpvUSN5TDd21XOwLCWm
-         ACCxefPKYZZ6nx9rjC36GFdvVS6YkZxezlnWTykBWIBUvy53FvQrGXgHQRA9GkqANqXY
-         QhqdDSYzzrJnXeSTq7q4/xQmElwnz4FY4aeGr4FtosbaHL14AkpsGkrgUOyjKpGeJsfS
-         HutZxzncMmNb21Cc/OMOLVNjsZaOLSjdkwCU4GolEc5FR79W2A+acValUh/YmGJ50PXc
-         9D+x896TKhMpt+Gu7iq1XoOqJCtAa7h2lrOdviCFVVb6Py1qZF83h7uWXxPYj8NmMop6
-         qDDQ==
-X-Gm-Message-State: AOAM531Xv8UxYjtJ2LMg/bSnx/w2oaUXjvVUPb8c8cCZUX9YfgM6ynLD
-        DvS7ETuKHpl1upLpREqdsw37y0mRhJw=
-X-Google-Smtp-Source: ABdhPJwV5lk5JwZQMSeLBxc/kRXolkWAVucKl0hiPuqNQDb6IbJQBQ1l30eAUqQlliJePfWnE3VSuQ==
-X-Received: by 2002:a67:ec56:: with SMTP id z22mr2281874vso.6.1603991113976;
-        Thu, 29 Oct 2020 10:05:13 -0700 (PDT)
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
-        by smtp.gmail.com with ESMTPSA id v18sm381116uat.5.2020.10.29.10.05.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 10:05:12 -0700 (PDT)
-Received: by mail-vs1-f44.google.com with SMTP id b129so1936255vsb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:05:12 -0700 (PDT)
-X-Received: by 2002:a67:f88e:: with SMTP id h14mr3250923vso.22.1603991111738;
- Thu, 29 Oct 2020 10:05:11 -0700 (PDT)
+        bh=Uh/de65EzS7o32eKzyxijzJut257PQrXipgp+9EhbPc=;
+        b=RYA69+J5rX0/WLUy+T0s4NSnHNvvYkN0tJCR/HSqXKK96vsZZQiWLun6KGinWf0LpQ
+         7GSJLDBrGZXi2z4K4jARoS4FbLTTvmS1wINUJv8h1QXOkJrfndNp2VgoERq/yN9HF9eX
+         IH2jZrZQ0tLez/eBUaxWU3JvFVUjWw7uVvVjsT3aFRjkuAhP3n2XZJWydsqvylmPx7PB
+         Pc5gm+7sStJsS62BTL3h3jzxP2yJhB7QpCNZ1tRDEw4bxcL/lyBfVNEzYgHRygEkY3yV
+         p7c23WevrVjYnUbS6lkLx0zG+XrcBXpqwpB4MMJXSpgatR/Iz26MUUU+2I3zLgxScxSC
+         9iUA==
+X-Gm-Message-State: AOAM532kMAZ8kCvJ2GBz3JLEuWdXCrz++AGf2QcNnhGttxdxKr9eZpe1
+        MgcQR+Vhy6r8BNFV28R1njt1YhJppYdtsH4Aaeg=
+X-Google-Smtp-Source: ABdhPJwHGL9fz2dOaR7k6Rw4wVzY8TT0eFChuBS+mXJ9guh5YXyN6CUYRHONFz/2SI5YQQFYcwGhsvMYHolBx+bBh5s=
+X-Received: by 2002:a65:47c2:: with SMTP id f2mr4869716pgs.4.1603991100865;
+ Thu, 29 Oct 2020 10:05:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201028142433.18501-1-kitakar@gmail.com> <20201028142433.18501-3-kitakar@gmail.com>
- <CA+ASDXMXoyOr9oHBjtXZ1w9XxDggv+=XS4nwn0qKWCHQ3kybdw@mail.gmail.com>
-In-Reply-To: <CA+ASDXMXoyOr9oHBjtXZ1w9XxDggv+=XS4nwn0qKWCHQ3kybdw@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 29 Oct 2020 13:04:34 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSdayk_YwH2F_k4HYsYPCn_u-k_qdowHpMJUHvLXrvdZ7g@mail.gmail.com>
-Message-ID: <CA+FuTSdayk_YwH2F_k4HYsYPCn_u-k_qdowHpMJUHvLXrvdZ7g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mwifiex: add allow_ps_mode module parameter
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
+References: <20201029100647.233361-1-coiby.xu@gmail.com> <20201029100647.233361-3-coiby.xu@gmail.com>
+ <20201029110029.GF4077@smile.fi.intel.com> <20201029142911.p54mbwbfaeymrqy5@Rk>
+ <20201029152719.GC4127@dell>
+In-Reply-To: <20201029152719.GC4127@dell>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 29 Oct 2020 19:04:44 +0200
+Message-ID: <CAHp75Vd6dV18x9BLOSSEqL-nVSRhAEc9zQCyOJF7P7tur86BDA@mail.gmail.com>
+Subject: Re: [PATCH 3/9] mfd: intel_soc_pmic: remove unnecessary CONFIG_PM_SLEEP
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Coiby Xu <coiby.xu@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 9:13 PM Brian Norris <briannorris@chromium.org> wrote:
->
-> On Wed, Oct 28, 2020 at 2:56 PM Tsuchiya Yuto <kitakar@gmail.com> wrote:
+On Thu, Oct 29, 2020 at 5:27 PM Lee Jones <lee.jones@linaro.org> wrote:
+> On Thu, 29 Oct 2020, Coiby Xu wrote:
+> > On Thu, Oct 29, 2020 at 01:00:29PM +0200, Andy Shevchenko wrote:
+> > > On Thu, Oct 29, 2020 at 06:06:41PM +0800, Coiby Xu wrote:
+> > > > SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+> > >
+> > > Have you compiled this with
+> > >     % make W=1 ...
+> > > ?
+> > >
 > >
-> > To make the ps_mode (power_save) control easier, this commit adds a new
-> > module parameter allow_ps_mode and set it false (disallowed) by default.
+> > Sorry my bad. I thought I had run "make modules" with CONFIG_PM_SLEEP
+> > disabled. I'll run "make W=1 M=..." for each driver after adding
+> > __maybe_unused in v2.
+>
+> No, thank you.  Just keep it as it is.
+>
+> The current code is space saving.
 
-This sounds like some form of access control, not something that makes
-power control "easier"? What exactly is the use case.
+Perhaps you need to go thru __maybe_unused handling.
+There are pros and cons of each approach, but not above.
 
-Also, module params in networking devices are discouraged.
+-- 
+With Best Regards,
+Andy Shevchenko
