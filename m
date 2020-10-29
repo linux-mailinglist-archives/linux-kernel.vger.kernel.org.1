@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3A929EC85
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF59E29EC66
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:03:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgJ2NLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:11:12 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:58140 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgJ2NLL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:11:11 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09SCnNwE082440;
-        Wed, 28 Oct 2020 07:49:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603889363;
-        bh=cVYMUJFuKCZV0NDQtaS9JCEpzTQEwMkt4PYY9fuDFRo=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=fWtuOUuqdOANXVb4TvpriU3jMR8ufU8Ym/e54voTOee91+91+pBzuMV6AykJI1xLA
-         iMu+bg46UVxaYzP5QHlTp0430fm+KWEg5Kc2ZaPA9KJgHGNBhZjXc3RhrAzZ6Hlmdl
-         ajwCoYqSkTLRFBNWFit4RiDiu3nnUHOoeM010mGY=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09SCnNx4064380
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 28 Oct 2020 07:49:23 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 28
- Oct 2020 07:49:23 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 28 Oct 2020 07:49:23 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09SCnMpu034022;
-        Wed, 28 Oct 2020 07:49:23 -0500
-Date:   Wed, 28 Oct 2020 18:19:22 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <Tudor.Ambarus@microchip.com>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v16 00/15] mtd: spi-nor: add xSPI Octal DTR support
-Message-ID: <20201028124920.pot77v4phkqiswhr@ti.com>
-References: <20201005153138.6437-1-p.yadav@ti.com>
- <d0d702c1-761b-1480-c74d-135193b33c26@microchip.com>
+        id S1726524AbgJ2NDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:03:13 -0400
+Received: from mga18.intel.com ([134.134.136.126]:14589 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725747AbgJ2NDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 09:03:13 -0400
+IronPort-SDR: TkP6MwqawPcDnjHFMMmoLIhkNfj7Cc9P4/5W839ZUi/OJCD1sRTOyF6MyRR8YgWRQZUYuudbpo
+ p0MFzarfXkew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="156198413"
+X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; 
+   d="scan'208";a="156198413"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 06:01:09 -0700
+IronPort-SDR: 3qgQPkOoGiuutHD8VQ1/Hu9BIIB3Y9S/rb3NSoV/a2yephauLRYags68xLj91KBtA06KyyQn7X
+ q5xTzf5YHR2w==
+X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; 
+   d="scan'208";a="525500863"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 06:01:07 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id E955220736; Thu, 29 Oct 2020 15:01:05 +0200 (EET)
+Date:   Thu, 29 Oct 2020 15:01:05 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Felipe Balbi <balbi@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCHv2 1/3] software node: Power management operations for
+ software nodes
+Message-ID: <20201029130105.GM26150@paasikivi.fi.intel.com>
+References: <20201029105941.63410-1-heikki.krogerus@linux.intel.com>
+ <20201029105941.63410-2-heikki.krogerus@linux.intel.com>
+ <20201029111303.GL26150@paasikivi.fi.intel.com>
+ <20201029115113.GA2288851@kuha.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d0d702c1-761b-1480-c74d-135193b33c26@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20201029115113.GA2288851@kuha.fi.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tudor,
-
-On 28/10/20 07:53AM, Tudor.Ambarus@microchip.com wrote:
-> Hi, Pratyush,
+On Thu, Oct 29, 2020 at 01:51:13PM +0200, Heikki Krogerus wrote:
+> On Thu, Oct 29, 2020 at 01:13:03PM +0200, Sakari Ailus wrote:
+> > These functions are doing pretty much the same thing but with different
+> > parameters. How about implementing a macro or a few, which would take all
+> > the parameters as arguments and return the function to call? A few variants
+> > may be needed. Individual functions performing different tasks would become
+> > very simple.
 > 
-> On 10/5/20 6:31 PM, Pratyush Yadav wrote:
-> > Tested on Micron MT35X and S28HS flashes for Octal DTR. 
-> 
-> Do these flashes define the "Command Sequences to Change to
-> Octal DDR (8D-8D-8D) mode" table? Can't we use that table
-> instead of defining our own octal dtr enable functions?
+> I would prefer to do that as the second step, if you guys don't mind.
+> I think this was already talked about, but maybe only internally.
+> Those macros should then be used also in other places where the same
+> steps are being executed, for example in drivers/base/power/domain.c.
 
-The Micron flash does not have this table. The Cypress flash does. The 
-problem is that one of the samples of the Cypress flash I tested on had 
-incorrect data in that table which meant the sequence would fail. The 
-newer samples of the flash have the correct data.
+Works for me.
 
-I don't know how many of those faulty flashes are out there in the wild. 
-IMO, to be on the safe side spi_nor_cypress_octal_dtr_enable() needs to 
-be implemented. So from the point of view of this series there is no 
-need to parse the Octal DDR enable table.
- 
-> I see that Mason used this table for a macronix flash:
-> https://patchwork.ozlabs.org/project/linux-mtd/patch/1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw/
-> https://patchwork.ozlabs.org/project/linux-mtd/patch/1590737775-4798-8-git-send-email-masonccyang@mxic.com.tw/
-> 
-> Cheers,
-> ta
+For the set:
+
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+Sakari Ailus
