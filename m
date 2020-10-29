@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1FF229E803
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5A729E7E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727229AbgJ2J61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727160AbgJ2J6S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:58:18 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2D9C0613D5;
-        Thu, 29 Oct 2020 02:58:18 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id z24so1918669pgk.3;
-        Thu, 29 Oct 2020 02:58:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eOpZkXoCG56ttvootXx2Du0q4G+Dw2s2HQILRuJryPQ=;
-        b=W0XdM6abeQJafX3wPoDnTOdAI6IxN7rbSdEi3J6/0KaDeFR4yzh0gYk/aM7idgbPSS
-         lqbhE+8meKUg5DHatEjcfmhJaUUos5gQ3usVnfEP6ZhzDSRSgl3JQmIFdQ7InS6CUpFQ
-         3TSC08m4lNjgZIbMJP6Z1NKnfOl+GOSWUV8BXvHsKR4sf8njJPzC3DYtkuyTHF9kGxCt
-         N28DaPJVlmM+em42eqbIV7Nhq9jBa7sYtrNZI8avfHn243QYOsKJbg64PSTY/zB/IOIm
-         pQmuPwZSaXtUQHP5YFUF2HcPA032JsF/C9KYiFGAYyeqgs1HHTYhGUR8glCbwlib5VUL
-         96DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eOpZkXoCG56ttvootXx2Du0q4G+Dw2s2HQILRuJryPQ=;
-        b=V/vX6KvAywBZoEEplua1smu4iHcYGMCqtNKElndyWlt20o3CDYhQDZSnY3pcePmWaN
-         eFY/uDItqopqPc4pXgAOzbfKc1aH74TQTlurIs0F/K0A+yXREpqn6xxHK/ElRbAidNuP
-         ReLkSbU0sUqpjqdNOvoVbZe6z7w7NkUAIC6b+90O8o3HydX0tYG4g9oYWPgJL6JDOt0X
-         fQRLBW+ykABrQkm8yjSBw8kCJwcXYsy/Wq7WdIKwg2DYS6XPbE2k0qoFbibKH+7lrU4d
-         mS8c+AA5xfycuEPSOUixPte3kU8QHl0Tt05Zr2G3YFvHXhWF7AEEIcvFu7HK8/npavNN
-         uBBA==
-X-Gm-Message-State: AOAM530rtPQK42+mKDXXYuy3UAWYj7nRUX1YRxbKlIrpUXCSWgyvLEYa
-        uxvjj0l8DKaYJWCVmm0At1c=
-X-Google-Smtp-Source: ABdhPJyvUiKjZgDWos0por6Ddaq749z3S6hP6PYbxZ5HRECZ3DmpzOnJvGQlqEWVsGG1kOQsvqQJ3Q==
-X-Received: by 2002:a05:6a00:7cb:b029:152:94b3:b2ee with SMTP id n11-20020a056a0007cbb029015294b3b2eemr3599158pfu.58.1603965498257;
-        Thu, 29 Oct 2020 02:58:18 -0700 (PDT)
-Received: from localhost.localdomain (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
-        by smtp.gmail.com with ESMTPSA id t20sm2394747pfe.123.2020.10.29.02.58.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 02:58:17 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     andrew@lunn.ch, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hkallweit1@gmail.com
-Cc:     gregkh@linuxfoundation.org,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: net: phy: Fix spelling in comment defalut to default
-Date:   Thu, 29 Oct 2020 15:25:25 +0530
-Message-Id: <20201029095525.20200-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726683AbgJ2Jzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:55:37 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:34805 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726389AbgJ2Jzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 05:55:37 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CMLRB4Xjhz9sRR;
+        Thu, 29 Oct 2020 20:55:33 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1603965334;
+        bh=pPb0aB9btC0IoWiJ/n8aYnf7SCRhymJbOyiHpUiPwqI=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=YohtxlNkEk3R8Lh0G91PkqvSgHhGhAmSb2IpNRUYxsa1EJedF6Jc794Dbuol7jcnw
+         L5pam1X/riHVUCBb2mcUYJIHOGNy0aq+YpvpJBLXcLXqY64913dhFFIHycPT+yeczd
+         HCOY9BfnkFeNgWtHuwR8MyvM4htdMMX3Roc0ffmKFD+pibw9wIUukXNUWQBYZ7D6tN
+         5tV97PCBHYT5ivAx22/S5pY6tkXAsktrd+yz734fsBvNCYCMjc54WodP3NdcFAStV0
+         4GFL8QQhancEk6AtpQxBTe1at6ZWT3EeX7VcZz8iUdC9cFsLppuwBhsi/sSPhNbLqa
+         Kndi83BW+6AbA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>, linuxppc-dev@lists.ozlabs.org
+Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH kernel v3 2/2] powerpc/dma: Fallback to dma_ops when persistent memory present
+In-Reply-To: <2f285412-9e19-7888-1102-f50658c43b9d@ozlabs.ru>
+References: <20201028070030.60643-1-aik@ozlabs.ru> <20201028070030.60643-3-aik@ozlabs.ru> <87eelhx3t6.fsf@mpe.ellerman.id.au> <2f285412-9e19-7888-1102-f50658c43b9d@ozlabs.ru>
+Date:   Thu, 29 Oct 2020 20:55:33 +1100
+Message-ID: <87blglwe3u.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed spelling in comment like below:
+Alexey Kardashevskiy <aik@ozlabs.ru> writes:
+> On 29/10/2020 11:40, Michael Ellerman wrote:
+>> Alexey Kardashevskiy <aik@ozlabs.ru> writes:
+>>> @@ -1126,7 +1129,7 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>>>   
+>>>   	mutex_lock(&direct_window_init_mutex);
+>>>   
+>>> -	dma_addr = find_existing_ddw(pdn);
+>>> +	dma_addr = find_existing_ddw(pdn, &len);
+>> 
+>> I don't see len used anywhere?
+>> 
+>>>   	if (dma_addr != 0)
+>>>   		goto out_unlock;
+>>>   
+>>> @@ -1212,14 +1215,26 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>>>   	}
+>>>   	/* verify the window * number of ptes will map the partition */
+>>>   	/* check largest block * page size > max memory hotplug addr */
+>>> -	max_addr = ddw_memory_hotplug_max();
+>>> -	if (query.largest_available_block < (max_addr >> page_shift)) {
+>>> -		dev_dbg(&dev->dev, "can't map partition max 0x%llx with %llu "
+>>> -			  "%llu-sized pages\n", max_addr,  query.largest_available_block,
+>>> -			  1ULL << page_shift);
+>>> +	/*
+>>> +	 * The "ibm,pmemory" can appear anywhere in the address space.
+>>> +	 * Assuming it is still backed by page structs, try MAX_PHYSMEM_BITS
+>>> +	 * for the upper limit and fallback to max RAM otherwise but this
+>>> +	 * disables device::dma_ops_bypass.
+>>> +	 */
+>>> +	len = max_ram_len;
+>> 
+>> Here you override whatever find_existing_ddw() wrote to len?
+>
+> Not always, there is a bunch of gotos before this line to the end of the 
+> function and one (which returns the existing window) is legit. Thanks,
 
-s/defalut/default/p
+Ah yep I see it.
 
-This is in linux-next.
+Gotos considered confusing ;)
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/net/phy/marvell.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
-index 5aec673a0120..77540f5d2622 100644
---- a/drivers/net/phy/marvell.c
-+++ b/drivers/net/phy/marvell.c
-@@ -696,7 +696,7 @@ static void marvell_config_led(struct phy_device *phydev)
-
- static int marvell_config_init(struct phy_device *phydev)
- {
--	/* Set defalut LED */
-+	/* Set default LED */
- 	marvell_config_led(phydev);
-
- 	/* Set registers from marvell,reg-init DT property */
---
-2.26.2
-
+cheers
