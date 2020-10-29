@@ -2,113 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B7929E691
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 144E129E678
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729398AbgJ2Ijg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 04:39:36 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:11552 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727747AbgJ2IjH (ORCPT
+        id S1728571AbgJ2Iey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 04:34:54 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:34352 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728285AbgJ2Iev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:39:07 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9a55af0000>; Wed, 28 Oct 2020 22:39:59 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 29 Oct
- 2020 05:40:16 +0000
-Received: from vidyas-desktop.nvidia.com (172.20.13.39) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 29 Oct 2020 05:40:12 +0000
-From:   Vidya Sagar <vidyas@nvidia.com>
-To:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
-        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
-        <amurray@thegoodpenguin.co.uk>, <robh@kernel.org>,
-        <treding@nvidia.com>, <jonathanh@nvidia.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>,
-        <sagar.tv@gmail.com>
-Subject: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
-Date:   Thu, 29 Oct 2020 11:09:59 +0530
-Message-ID: <20201029053959.31361-3-vidyas@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201029053959.31361-1-vidyas@nvidia.com>
-References: <20201029053959.31361-1-vidyas@nvidia.com>
-X-NVConfidentiality: public
+        Thu, 29 Oct 2020 04:34:51 -0400
+Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id A67C03AE2CE
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:18:29 +0000 (UTC)
+X-Originating-IP: 82.66.179.123
+Received: from localhost (unknown [82.66.179.123])
+        (Authenticated sender: repk@triplefau.lt)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 3D55FFF817;
+        Thu, 29 Oct 2020 08:17:56 +0000 (UTC)
+Date:   Thu, 29 Oct 2020 09:24:15 +0100
+From:   Remi Pommarel <repk@triplefau.lt>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Ondrej Jirman <megous@megous.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Yue Wang <yue.wang@amlogic.com>,
+        Hanjie Lin <hanjie.lin@amlogic.com>,
+        Joe Perches <joe@perches.com>,
+        Bharat Gooty <bharat.gooty@broadcom.com>,
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
+        Peter Chen <peter.chen@nxp.com>, Roger Quadros <rogerq@ti.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        Sanket Parmar <sparmar@cadence.com>,
+        Anil Varughese <aniljoy@cadence.com>, Li Jun <jun.li@nxp.com>,
+        Ma Feng <mafeng.ma@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 02/17] phy: amlogic: convert to
+ devm_platform_ioremap_resource
+Message-ID: <20201029082415.GB15700@pilgrim>
+References: <1603940079-8131-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1603940079-8131-2-git-send-email-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603949999; bh=OzLT6vpwwjR959ff9oUCGEtnW0TMQ/fO6AW9AajK7ew=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:X-NVConfidentiality:MIME-Version:Content-Type;
-        b=k/GTzF7bCXSeSArYLqgI7gzP4JB/MwmBxL1s31un3sJMwKd7xigDBbyswS4x8lH67
-         Q/BOBmA7yABnimvlSQREqoXGHNB7Bl9vCw9lOYmPPZ51y2v/BxBjVgrfF2+Tli07sh
-         lioFD93X0CYd3dnn261E4VDPs1XnQMWsdMWf+39v8ZqdIAFfLhm4cXj2OUlYiQ/UHZ
-         GcZcpR/29CB7jZQYKvsIrwJs8Er+vl/gYwQOHsIt9N8jvEGz4OFazYTNQyfSOADeUl
-         XapNj/zx9EIQL4GViGTpzr/D8rn11mbljBsfpIJUzSc9YrnZiuwb9y+mbLRF/OSzqQ
-         p3+6/JOsxTBGw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603940079-8131-2-git-send-email-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DesignWare core has a TLP digest (TD) override bit in one of the control
-registers of ATU. This bit also needs to be programmed for proper ECRC
-functionality. This is currently identified as an issue with DesignWare
-IP version 4.90a. This patch does the required programming in ATU upon
-querying the system policy for ECRC.
+Hi,
 
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-Reviewed-by: Jingoo Han <jingoohan1@gmail.com>
----
-V3:
-* Added 'Reviewed-by: Jingoo Han <jingoohan1@gmail.com>'
+On Thu, Oct 29, 2020 at 10:54:24AM +0800, Chunfeng Yun wrote:
+> Use devm_platform_ioremap_resource to simplify code
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c | 4 +---
+>  drivers/phy/amlogic/phy-meson-axg-pcie.c             | 4 +---
+>  drivers/phy/amlogic/phy-meson-g12a-usb2.c            | 4 +---
+>  drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c       | 4 +---
+>  drivers/phy/amlogic/phy-meson-gxl-usb2.c             | 4 +---
+>  5 files changed, 5 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c b/drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c
+> index 1431cbf885e1..7d06cda329fb 100644
+> --- a/drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c
+> +++ b/drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c
+> @@ -126,7 +126,6 @@ static int phy_axg_mipi_pcie_analog_probe(struct platform_device *pdev)
+>  	struct phy_axg_mipi_pcie_analog_priv *priv;
+>  	struct device_node *np = dev->of_node;
+>  	struct regmap *map;
+> -	struct resource *res;
+>  	void __iomem *base;
+>  	int ret;
+>  
+> @@ -134,8 +133,7 @@ static int phy_axg_mipi_pcie_analog_probe(struct platform_device *pdev)
+>  	if (!priv)
+>  		return -ENOMEM;
+>  
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	base = devm_ioremap_resource(dev, res);
+> +	base = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(base)) {
+>  		dev_err(dev, "failed to get regmap base\n");
+>  		return PTR_ERR(base);
 
-V2:
-* Addressed Jingoo's review comment
-* Removed saving 'td' bit information in 'dw_pcie' structure
+This patch will conflict with [0] that uses syscon to map those shared
+resources instead and that is hopefully going to be merged soon.
 
- drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
- drivers/pci/controller/dwc/pcie-designware.h | 1 +
- 2 files changed, 7 insertions(+), 2 deletions(-)
+So I think you can skip this file.
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-index b5e438b70cd5..cbd651b219d2 100644
---- a/drivers/pci/controller/dwc/pcie-designware.c
-+++ b/drivers/pci/controller/dwc/pcie-designware.c
-@@ -246,6 +246,8 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
- 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
- 				 upper_32_bits(pci_addr));
- 	val = type | PCIE_ATU_FUNC_NUM(func_no);
-+	if (pci->version == 0x490A)
-+		val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
- 	val = upper_32_bits(size - 1) ?
- 		val | PCIE_ATU_INCREASE_REGION_SIZE : val;
- 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
-@@ -294,8 +296,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
- 			   lower_32_bits(pci_addr));
- 	dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
- 			   upper_32_bits(pci_addr));
--	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
--			   PCIE_ATU_FUNC_NUM(func_no));
-+	val = type | PCIE_ATU_FUNC_NUM(func_no);
-+	if (pci->version == 0x490A)
-+		val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
-+	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
- 	dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
- 
- 	/*
-diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index e7f441441db2..b01ef407fd52 100644
---- a/drivers/pci/controller/dwc/pcie-designware.h
-+++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -89,6 +89,7 @@
- #define PCIE_ATU_TYPE_IO		0x2
- #define PCIE_ATU_TYPE_CFG0		0x4
- #define PCIE_ATU_TYPE_CFG1		0x5
-+#define PCIE_ATU_TD_SHIFT		8
- #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
- #define PCIE_ATU_CR2			0x908
- #define PCIE_ATU_ENABLE			BIT(31)
+> diff --git a/drivers/phy/amlogic/phy-meson-axg-pcie.c b/drivers/phy/amlogic/phy-meson-axg-pcie.c
+> index 377ed0dcd0d9..58a7507a8422 100644
+> --- a/drivers/phy/amlogic/phy-meson-axg-pcie.c
+> +++ b/drivers/phy/amlogic/phy-meson-axg-pcie.c
+> @@ -129,7 +129,6 @@ static int phy_axg_pcie_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	struct phy_axg_pcie_priv *priv;
+>  	struct device_node *np = dev->of_node;
+> -	struct resource *res;
+>  	void __iomem *base;
+>  	int ret;
+>  
+> @@ -145,8 +144,7 @@ static int phy_axg_pcie_probe(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	base = devm_ioremap_resource(dev, res);
+> +	base = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(base))
+>  		return PTR_ERR(base);
+>  
+> diff --git a/drivers/phy/amlogic/phy-meson-g12a-usb2.c b/drivers/phy/amlogic/phy-meson-g12a-usb2.c
+> index b26e30e1afaf..9d1efa0d9394 100644
+> --- a/drivers/phy/amlogic/phy-meson-g12a-usb2.c
+> +++ b/drivers/phy/amlogic/phy-meson-g12a-usb2.c
+> @@ -292,7 +292,6 @@ static int phy_meson_g12a_usb2_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+>  	struct phy_provider *phy_provider;
+> -	struct resource *res;
+>  	struct phy_meson_g12a_usb2_priv *priv;
+>  	struct phy *phy;
+>  	void __iomem *base;
+> @@ -305,8 +304,7 @@ static int phy_meson_g12a_usb2_probe(struct platform_device *pdev)
+>  	priv->dev = dev;
+>  	platform_set_drvdata(pdev, priv);
+>  
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	base = devm_ioremap_resource(dev, res);
+> +	base = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(base))
+>  		return PTR_ERR(base);
+>  
+> diff --git a/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c b/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
+> index 08e322789e59..ebe3d0ddd304 100644
+> --- a/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
+> +++ b/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
+> @@ -386,7 +386,6 @@ static int phy_g12a_usb3_pcie_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	struct device_node *np = dev->of_node;
+>  	struct phy_g12a_usb3_pcie_priv *priv;
+> -	struct resource *res;
+>  	struct phy_provider *phy_provider;
+>  	void __iomem *base;
+>  	int ret;
+> @@ -395,8 +394,7 @@ static int phy_g12a_usb3_pcie_probe(struct platform_device *pdev)
+>  	if (!priv)
+>  		return -ENOMEM;
+>  
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	base = devm_ioremap_resource(dev, res);
+> +	base = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(base))
+>  		return PTR_ERR(base);
+>  
+> diff --git a/drivers/phy/amlogic/phy-meson-gxl-usb2.c b/drivers/phy/amlogic/phy-meson-gxl-usb2.c
+> index 43ec9bf24abf..875afb2672c7 100644
+> --- a/drivers/phy/amlogic/phy-meson-gxl-usb2.c
+> +++ b/drivers/phy/amlogic/phy-meson-gxl-usb2.c
+> @@ -230,7 +230,6 @@ static int phy_meson_gxl_usb2_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+>  	struct phy_provider *phy_provider;
+> -	struct resource *res;
+>  	struct phy_meson_gxl_usb2_priv *priv;
+>  	struct phy *phy;
+>  	void __iomem *base;
+> @@ -242,8 +241,7 @@ static int phy_meson_gxl_usb2_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, priv);
+>  
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	base = devm_ioremap_resource(dev, res);
+> +	base = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(base))
+>  		return PTR_ERR(base);
+>  
+
+So without the modification on phy-meson-axg-mipi-pcie-analog.c and
+FWIW,
+
+Reviewed-by: Remi Pommarel <repk@triplefau.lt>
+
+Thanks,
+
+[0] https://patchwork.kernel.org/project/linux-amlogic/patch/20200915130339.11079-4-narmstrong@baylibre.com/
+
 -- 
-2.17.1
-
+Remi
