@@ -2,76 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED3F29F69F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 22:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F2D29F6A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 22:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgJ2VHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 17:07:46 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:39349 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgJ2VHp (ORCPT
+        id S1726654AbgJ2VIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 17:08:07 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:37341 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgJ2VIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 17:07:45 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4CMdLl6MhFz1qs3l;
-        Thu, 29 Oct 2020 22:07:43 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4CMdLl5TXRz1qrDX;
-        Thu, 29 Oct 2020 22:07:43 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id k699Cd7e8b5J; Thu, 29 Oct 2020 22:07:42 +0100 (CET)
-X-Auth-Info: NJWoqHmsJh1N4XDFuSowjw7hTV+tPs+CbVlv+oxQcW2k8guG3gADYzfsi21Nimha
-Received: from igel.home (ppp-46-244-169-42.dynamic.mnet-online.de [46.244.169.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 29 Oct 2020 22:07:42 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-        id E3DE12C0B1B; Thu, 29 Oct 2020 22:07:41 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/32s: Setup the early hash table at all time.
-References: <b8f8101c368b8a6451844a58d7bd7d83c14cf2aa.1601566529.git.christophe.leroy@csgroup.eu>
-X-Yow:  Are we THERE yet?!
-Date:   Thu, 29 Oct 2020 22:07:41 +0100
-In-Reply-To: <b8f8101c368b8a6451844a58d7bd7d83c14cf2aa.1601566529.git.christophe.leroy@csgroup.eu>
-        (Christophe Leroy's message of "Thu, 1 Oct 2020 15:35:38 +0000 (UTC)")
-Message-ID: <87wnz8vizm.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Thu, 29 Oct 2020 17:08:07 -0400
+Received: by mail-wr1-f68.google.com with SMTP id w1so4292621wrm.4;
+        Thu, 29 Oct 2020 14:08:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vRtRiwlU8ma+WachtYWH3lvFwCoEOB/5npCtcFH4arM=;
+        b=Qqo9u+8y6RgAucV9/rj+vJLU7UgQBfB9zeYcYMEnwoFjjhLHfOJuq9qrvAz8wniUhc
+         8A8LVsycX+qcJChN/1P6LTm2oFvx+eOxn1898M3EbQ1dEVMS5CfFpTeib/u9Qe444LRf
+         pPSHOUXRpHLRfZJcOd5UGDLs1IUYyu4Scr4ueG2wzc2AE2HKI9ijLF29mYBTwHHkQL9T
+         sGml3oc5x68Bjf/pXafaCaZt7Tq5vT3Uzg8e+mx8zIegoWsEjlNPHTFjr7gQpU8n1Wwd
+         IszOa6O3NxE2Da9Ce2r7zit01A777nPsf/43m8oBXJJmqtU6PizkLLo2uw27OWoeXILi
+         ymCw==
+X-Gm-Message-State: AOAM533Yd5g08N8v9y/gkeG+U2eDC7N2omuf5qBbdOCYSQEXiAJwJ1wi
+        dKdfMaLdOctNUe/7weqPznMuxcSJ2ds=
+X-Google-Smtp-Source: ABdhPJwlEUnf5ZZxL8cZAYnaiF+ZohwTaYPGQE5w+F7efNltZt9KtENx2daUBCQnA2YFQkCJAxREQg==
+X-Received: by 2002:adf:c3cd:: with SMTP id d13mr7926005wrg.15.1604005684961;
+        Thu, 29 Oct 2020 14:08:04 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:d32:e3ef:ad74:6ea9? ([2601:647:4802:9070:d32:e3ef:ad74:6ea9])
+        by smtp.gmail.com with ESMTPSA id c129sm1806971wmd.7.2020.10.29.14.08.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 14:08:04 -0700 (PDT)
+Subject: Re: [PATCH 3/3] blk-mq: Use llist_head for blk_cpu_done
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Wagner <dwagner@suse.de>, Mike Galbraith <efault@gmx.de>
+References: <20201028065616.GA24449@infradead.org>
+ <20201028141251.3608598-1-bigeasy@linutronix.de>
+ <20201028141251.3608598-3-bigeasy@linutronix.de>
+ <20201029131212.dsulzvsb6pahahbs@linutronix.de>
+ <20201029140536.GA6376@infradead.org>
+ <20201029145623.3zry7o6nh6ks5tjj@linutronix.de>
+ <20201029145743.GA19379@infradead.org>
+ <d2c15411-5b21-535b-6e07-331ebe22f8c8@grimberg.me>
+ <20201029210103.ocufuvj6i4idf5hj@linutronix.de>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <deb40e55-d228-06c8-8719-fc8657a0a19b@grimberg.me>
+Date:   Thu, 29 Oct 2020 14:07:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201029210103.ocufuvj6i4idf5hj@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Okt 01 2020, Christophe Leroy wrote:
 
-> At the time being, an early hash table is set up when
-> CONFIG_KASAN is selected.
->
-> There is nothing wrong with setting such an early hash table
-> all the time, even if it is not used. This is a statically
-> allocated 256 kB table which lies in the init data section.
->
-> This makes the code simpler and may in the future allow to
-> setup early IO mappings with fixmap instead of hard coding BATs.
->
-> Put create_hpte() and flush_hash_pages() in the .ref.text section
-> in order to avoid warning for the reference to early_hash[]. This
-> reference is removed by MMU_init_hw_patch() before init memory is
-> freed.
+>>>>> Well, usb-storage obviously seems to do it, and the block layer
+>>>>> does not prohibit it.
+>>>>
+>>>> Also loop, nvme-tcp and then I stopped looking.
+>>>> Any objections about adding local_bh_disable() around it?
+>>>
+>>> To me it seems like the whole IPI plus potentially softirq dance is
+>>> a little pointless when completing from process context.
+>>
+>> I agree.
+>>
+>>> Sagi, any opinion on that from the nvme-tcp POV?
+>>
+>> nvme-tcp should (almost) always complete from the context that matches
+>> the rq->mq_ctx->cpu as the thread that processes incoming
+>> completions (per hctx) should be affinitized to match it (unless cpus
+>> come and go).
+> 
+> in which context?
 
-This breaks booting on the iBook G4.
+Not sure what is the question.
 
-Andreas.
+> But this is probably nr_hw_queues > 1?
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Yes.
+
+>> So for nvme-tcp I don't expect blk_mq_complete_need_ipi to return true
+>> in normal operation. That leaves the teardowns+aborts, which aren't very
+>> interesting here.
+> 
+> The process context invocation is nvme_tcp_complete_timed_out().
+
+Yes.
+
+>> I would note that nvme-tcp does not go to sleep after completing every
+>> I/O like how sebastian indicated usb does.
+>>
+>> Having said that, today the network stack is calling nvme_tcp_data_ready
+>> in napi context (softirq) which in turn triggers the queue thread to
+>> handle network rx (and complete the I/O). It's been measured recently
+>> that running the rx context directly in softirq will save some
+>> latency (possible because nvme-tcp rx context is non-blocking).
+>>
+>> So I'd think that patch #2 is unnecessary and just add overhead for
+>> nvme-tcp.. do note that the napi softirq cpu mapping depends on the RSS
+>> steering, which is unlikely to match rq->mq_ctx->cpu, hence if completed
+>> from napi context, nvme-tcp will probably always go to the IPI path.
+> 
+> but running it in softirq on the remote CPU would still allow of other
+> packets to come on the remote CPU (which would block BLOCK sofirq if
+> NET_RX is already running).
+
+Not sure I understand your comment, if napi triggers on core X and we
+complete from that, it will trigger IPI to core Y, and there with patch 
+#2 is will trigger softirq instead of calling ->complete directly no?
