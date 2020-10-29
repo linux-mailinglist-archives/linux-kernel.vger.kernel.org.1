@@ -2,128 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F1029E54C
+	by mail.lfdr.de (Postfix) with ESMTP id CA2DA29E54D
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731697AbgJ2H4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:56:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56062 "EHLO mail.kernel.org"
+        id S1727337AbgJ2H4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:56:06 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:5043 "EHLO smtp2.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731531AbgJ2Hyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:54:31 -0400
-Received: from kernel.org (unknown [87.70.96.83])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3F1620EDD;
-        Thu, 29 Oct 2020 07:54:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603958070;
-        bh=5V9raRTAO8xn/TWxASurP3gs711BOhAaxxP12fBIpug=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=smkJOo6ejvJldTmaaqqEFjGX6LWRb76WicHCvCBcrN9qOMMNByoTCZCyPYd8JouA6
-         FsHRDDeFim9xIzvbeq0FyT0w7eXPAkBTo6qZkKSqULTgH8mtDPy6sKAI1NlM6RXbk0
-         gkAxCVUoVSgKd/P/vRphpHr37cKvq2I6Usohfbtc=
-Date:   Thu, 29 Oct 2020 09:54:16 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "cl@linux.com" <cl@linux.com>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>, "bp@alien8.de" <bp@alien8.de>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
-Subject: Re: [PATCH 2/4] PM: hibernate: improve robustness of mapping pages
- in the direct map
-Message-ID: <20201029075416.GJ1428094@kernel.org>
-References: <20201025101555.3057-1-rppt@kernel.org>
- <20201025101555.3057-3-rppt@kernel.org>
- <3b4b2b3559bd3dc68adcddf99415bae57152cb6b.camel@intel.com>
+        id S1731519AbgJ2Hya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 03:54:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=1006; q=dns/txt; s=axis-central1;
+  t=1603958069; x=1635494069;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4gY4yVVX7l5rZ98kdmgu7rP8LiUim8X0dxJoLhLo+dQ=;
+  b=VKj5agu5NnUax4Ao6XLq1JLDlcM6lDQnIPxknMSn3XQ2sxeyPHIKVtjg
+   RLccP0+ev5U7k8psRCYy8XhhCrSDWU5ZqeGTqj+sL2Z3BFrgkIC7mYXu/
+   n8WRxNpIhBlCn58gWYisUOPKDSDoxHyLz1kpB/Le+xYd+6/i6+FhouGjn
+   NOQDdNrw/qLF8wUcVO2/hHGVXXlN4X+fBKdpIYEfuCbvp0+u+urMoIEcd
+   x9JnmTYIhKYkijS9p2giFfhOYI3Bb3MPtHkdEtC7gNG7ErrZNdkZkEwQO
+   2m5oSfdxj+2NlyeDavuaLeulvyA2FDEY+pxfNSZCnKeu66TFO9POMIcS2
+   g==;
+IronPort-SDR: QxxgPU9Y+ajVDspzc57wCdOnqfNlxgO+zd0K3eVDtsqNmqK5phMdo9VLBiOcjDMQkRjTVCUTPn
+ X6YC6Ks5hQZB0BByA9XnhH9Ahi5M0TTMo2Q1yCvAkWElOEjBWL1b3AmBi40hxHphgVg2LAlEeK
+ fPZdCG2L7c6/Uc1dnq4KIiPawFZxfIaKh1aUqusTwDbxTwjPJx7rscGK/ZGFqHhaMJ00LHxciI
+ iqxSw5vii94y/SAgpV/qLpbDLyYdHiVMlSVeyTLAqXjQGBAyVUVC52cdNGg4ioE6ocM5kf2KrA
+ HnA=
+X-IronPort-AV: E=Sophos;i="5.77,429,1596492000"; 
+   d="scan'208";a="14030929"
+Date:   Thu, 29 Oct 2020 08:54:28 +0100
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        kernel <kernel@axis.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] gpio: mockup: Allow probing from device tree
+Message-ID: <20201029075427.t2hwvusjqx27pf6l@axis.com>
+References: <20201027135325.22235-1-vincent.whitchurch@axis.com>
+ <CAMRc=Mdjm8tgxF_76T3f6r3TwghLKtrFtUv7ywtX3-nEQzVGtA@mail.gmail.com>
+ <CAHp75Vff1AyKDb=JiocsAefnft+tcm+BnuWDrxViQqZAQZjuVg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <3b4b2b3559bd3dc68adcddf99415bae57152cb6b.camel@intel.com>
+In-Reply-To: <CAHp75Vff1AyKDb=JiocsAefnft+tcm+BnuWDrxViQqZAQZjuVg@mail.gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 09:15:38PM +0000, Edgecombe, Rick P wrote:
-> On Sun, 2020-10-25 at 12:15 +0200, Mike Rapoport wrote:
-> > +       if (IS_ENABLED(CONFIG_ARCH_HAS_SET_DIRECT_MAP)) {
-> > +               unsigned long addr = (unsigned
-> > long)page_address(page);
-> > +               int ret;
-> > +
-> > +               if (enable)
-> > +                       ret = set_direct_map_default_noflush(page);
-> > +               else
-> > +                       ret = set_direct_map_invalid_noflush(page);
-> > +
-> > +               if (WARN_ON(ret))
-> > +                       return;
-> > +
-> > +               flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-> > +       } else {
-> > +               debug_pagealloc_map_pages(page, 1, enable);
-> > +       }
+On Wed, Oct 28, 2020 at 09:25:32PM +0100, Andy Shevchenko wrote:
+> On Wed, Oct 28, 2020 at 8:41 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> > On Tue, Oct 27, 2020 at 2:54 PM Vincent Whitchurch
+> > > +#ifdef CONFIG_OF
+> > > +static const struct of_device_id gpio_mockup_of_match[] = {
+> > > +       { .compatible = "gpio-mockup", },
+> > > +       {},
+> > > +};
+> > > +MODULE_DEVICE_TABLE(of, gpio_mockup_of_match);
+> > > +#endif
+> >
+> > You don't need this ifdef - of_match_ptr() will evaluate to NULL if
+> > CONFIG_OF is disabled and the compiler will optimize this struct out.
 > 
-> Looking at the arm side again, I think this might actually introduce a
-> regression for the arm/hibernate/DEBUG_PAGEALLOC combo.
-> 
-> Unlike __kernel_map_pages(), it looks like arm's cpa will always bail
-> in the set_direct_map_() functions if rodata_full is false.
->
-> So if rodata_full was disabled but debug page alloc is on, then this
-> would now skip remapping the pages. I guess the significance depends
-> on whether hibernate could actually try to save any DEBUG_PAGEALLOC
-> unmapped pages. Looks like it to me though.
- 
-__kernel_map_pages() on arm64 will also bail out if rodata_full is
-false:
+> It's not so. If you drop ugly ifdeffery (and I vote for that, see also
+> above) the of_match_ptr() must be dropped as well.  Otherwise the
+> compiler will issue the warning. So it is either all or none.
 
-void __kernel_map_pages(struct page *page, int numpages, int enable)
-{
-	if (!debug_pagealloc_enabled() && !rodata_full)
-		return;
-
-	set_memory_valid((unsigned long)page_address(page), numpages, enable);
-}
-
-So using set_direct_map() to map back pages removed from the direct map
-with __kernel_map_pages() seems safe to me.
-
--- 
-Sincerely yours,
-Mike.
+Yes, you're right.  I actually tested a !OF build before but it turns
+out that the warning is disabled by default and only enabled with W=1.
+I'll fix this and change the header in the next version.  Thank you.
