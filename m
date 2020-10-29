@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA54C29E4BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4435D29E4BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733302AbgJ2HqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
+        id S2387417AbgJ2Hq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733303AbgJ2HqS (ORCPT
+        with ESMTP id S1733303AbgJ2HqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:46:18 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734E0C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:46:18 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id 1so910131ple.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:46:18 -0700 (PDT)
+        Thu, 29 Oct 2020 03:46:24 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF1AC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:46:23 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id a200so1637254pfa.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:46:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DqWaovVCPL/Bqrn37hn7W1rsqDZ6SlCUd1zEodOEgN8=;
-        b=MnncO8tPOgIhA9PC4r2IzlM9lcXfkaicR8JQE4AgbFDrgX9Pu5cBANM6HRnFoLMn0c
-         rSCotDOjsH0zi6C/Hnvdy/Cv6zcU5KLe2NP5Y85IHMM44pj1Dgqj77aNn4QD+3UjuQUb
-         pgmk2DmksmAuOeOi8yWK9HnhjMwEkuI6AoAd9cPAtmecKboFqtUzeZCjU+t6eWTojnhr
-         QgCgLo/11V8nr1KO+WiTSMA4eVzucOFdXZpi9lg8V4c/tYw7GhaT8QUNUerXvgv2Qk4r
-         xAc3x5+KWJ6J3oyNyiwQHcNAm5KWCfcTersQXPCm4M7elwAViUne+RPUkLhZX54ZaZ/i
-         g5cw==
+        bh=mKrg1J0hIePVXQXkTT7U+Izo63Hxn8pT7uIj0drTK1U=;
+        b=s9AEqi+RnJT45EUtJzN3jm/eOmIcV0IVBleAkDOoNYGsnCjnnW6YdPdIVO0Scxv5y0
+         MBpwekR0XZgzAV+7dajkVS2yqEVs0WkSJpJYPH7/5nZ0yRFuAGk9qR2zRpDRkhFHFxle
+         yLICcQSvl13x1F90Zftr5ixFbkkrGG7PC7TIXSE9Obordf7JcB1AZf7wNqeHN4EFuiK6
+         4IE9TN4CZ/5yWuhwft5yZdUn13Louv40BsJGLpsG6u20fU9lwU3ImMvXxdGwCenX6Cmf
+         ab/k1JF7mMfAmNPRO60LVSEgxVq3EaVgRG56+oN4H8kbAMILYDE9u9z1M/G5cD1cpCNM
+         PXVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DqWaovVCPL/Bqrn37hn7W1rsqDZ6SlCUd1zEodOEgN8=;
-        b=IYjCOO4W90n2uXUa7w+m+HdH1aAlyBzz2XQ+v6Nm5ZsMXKXW6xVa0kkLwCuFoCF+re
-         QHt5KaIXOmIl1xICziZuCTKDaHptCXkzXd5KZ5A+k6AY97mKXk3Le0dQUJny26fEXUFH
-         EOzyNbrjQZ6OGf+xM3nWT4oqaVC37PwqZXyS9imS8ts11gh3wwcyPLpO1vnugaerV7sj
-         ENpajc/ktGkFcmtPRw8F6DQynzIOc3seZX18LIBC3Lvk7RdnRuPucs1M9nuAnNlv7jLx
-         Qi0UMyOb5EP93ydvO4wZMC3M8+SOanubRBoSjv8l/R4NEDrVeXoOgewT/HNtIYB4L/Vr
-         JHVw==
-X-Gm-Message-State: AOAM5336+Cp2QNJ8i4BfWLasbxDYVYFZsDz5fjiKvQZAxf8Ck2aWXTCs
-        t5zzvGOImPr1yyGz8jMygYU=
-X-Google-Smtp-Source: ABdhPJy+M1UIinoo2AEmLXQsGG3cg9gop3Jegb7FgZ80OjLmb5b3L8AQ0Sdx44L9Pm8IEoN6rwHMWw==
-X-Received: by 2002:a17:902:740b:b029:d5:cbb0:fbe7 with SMTP id g11-20020a170902740bb02900d5cbb0fbe7mr2792992pll.27.1603957578094;
-        Thu, 29 Oct 2020 00:46:18 -0700 (PDT)
+        bh=mKrg1J0hIePVXQXkTT7U+Izo63Hxn8pT7uIj0drTK1U=;
+        b=QJqL+3WlRuCrEgCxIlFZCUhMAmDAWI1PSPMBYxhxqSKAIRxNsNz4AdhDnopys2gD0T
+         Z+xQwCBn34Q7Hiy/eEz4gTqKsitFIuqo6V4l6pqpfArDluNogpNkC60rfBpuat2Y7lW5
+         T3YQk7OUKNKN8ra6rNJx/2QvpovU8KZjSRDk3pSXhZFcXoIjyvSA7zZ3NL0oe3zeNPsM
+         cksscRgRcYEtb1X7zD55cdGmOoGUA8QJifwrk8J7OZf6eSKuT4TcFzRD7MQLQMVKUAB8
+         loFDQfkXAhK0p9qMUwEuaNYB6t/RAO9HCYrrOe2KD93/20Ku0eP2mp71loXs35KnG1cP
+         rB5g==
+X-Gm-Message-State: AOAM532ntJirr6mQ3ajMJ9UmHD5tsFeNN6butuRDNDuZEdlvgJtuRSWF
+        /90Vs7d0f5biAqpxIRRNkGQ=
+X-Google-Smtp-Source: ABdhPJzh4iM4udtBfzaWyKyEdasZLfhkR4CpL3B+tUcGzTZNh1FCHDe9m6Nv+/LvQXQ5eDp9Y8FAKg==
+X-Received: by 2002:aa7:9f90:0:b029:164:bcf:de16 with SMTP id z16-20020aa79f900000b02901640bcfde16mr3303380pfr.3.1603957583129;
+        Thu, 29 Oct 2020 00:46:23 -0700 (PDT)
 Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
-        by smtp.gmail.com with ESMTPSA id ev5sm2462381pjb.2.2020.10.29.00.46.16
+        by smtp.gmail.com with ESMTPSA id j23sm1549643pgm.76.2020.10.29.00.46.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 00:46:17 -0700 (PDT)
+        Thu, 29 Oct 2020 00:46:22 -0700 (PDT)
 From:   Coiby Xu <coiby.xu@gmail.com>
 To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 Cc:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         alsa-devel@alsa-project.org (moderated list:SOUND - SOC LAYER / DYNAMIC
         AUDIO POWER MANAGEM...), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 22/25] ASoC: max98927: remove unnecessary CONFIG_PM_SLEEP
-Date:   Thu, 29 Oct 2020 15:42:58 +0800
-Message-Id: <20201029074301.226644-22-coiby.xu@gmail.com>
+Subject: [PATCH 23/25] ASoC: ts3a227e: remove unnecessary CONFIG_PM_SLEEP
+Date:   Thu, 29 Oct 2020 15:42:59 +0800
+Message-Id: <20201029074301.226644-23-coiby.xu@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201029074301.226644-1-coiby.xu@gmail.com>
 References: <20201029074301.226644-1-coiby.xu@gmail.com>
@@ -70,29 +70,29 @@ SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
 
 Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 ---
- sound/soc/codecs/max98927.c | 2 --
+ sound/soc/codecs/ts3a227e.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index 8b206ee77709..48c6aa78a410 100644
---- a/sound/soc/codecs/max98927.c
-+++ b/sound/soc/codecs/max98927.c
-@@ -794,7 +794,6 @@ static int max98927_probe(struct snd_soc_component *component)
+diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
+index 3ed3b45fa7ba..95d17cf7695a 100644
+--- a/sound/soc/codecs/ts3a227e.c
++++ b/sound/soc/codecs/ts3a227e.c
+@@ -334,7 +334,6 @@ static int ts3a227e_i2c_probe(struct i2c_client *i2c,
  	return 0;
  }
  
 -#ifdef CONFIG_PM_SLEEP
- static int max98927_suspend(struct device *dev)
+ static int ts3a227e_suspend(struct device *dev)
  {
- 	struct max98927_priv *max98927 = dev_get_drvdata(dev);
-@@ -813,7 +812,6 @@ static int max98927_resume(struct device *dev)
- 	regcache_sync(max98927->regmap);
+ 	struct ts3a227e *ts3a227e = dev_get_drvdata(dev);
+@@ -354,7 +353,6 @@ static int ts3a227e_resume(struct device *dev)
+ 
  	return 0;
  }
 -#endif
  
- static const struct dev_pm_ops max98927_pm = {
- 	SET_SYSTEM_SLEEP_PM_OPS(max98927_suspend, max98927_resume)
+ static const struct dev_pm_ops ts3a227e_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(ts3a227e_suspend, ts3a227e_resume)
 -- 
 2.28.0
 
