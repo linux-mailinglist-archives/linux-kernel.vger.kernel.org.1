@@ -2,123 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A7029E62A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 505C929E63A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgJ2IQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 04:16:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22417 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728550AbgJ2IQJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:16:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603959367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2gRwEwp+09CxPY3cDDGs5AqZnz2L4R+qK1xrKBZP/ZQ=;
-        b=ay06rFUMq495NziQvvXEmjfl27QqLzDhX+fa4jGpMV7iYUr5G+e63O1tBDFA9Ul5oLop5C
-        a8/TWffcMSMt6xjNKzy/qVY40B4oOUr4YUDs597pgypjwNsoZinHd7ELIVZ9qacTMV1TPn
-        dllYntmtt8eAzvq8drrXaCf8X0MpNOc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-521-GwWoSv2-OMqDqihE-45P3g-1; Thu, 29 Oct 2020 04:16:02 -0400
-X-MC-Unique: GwWoSv2-OMqDqihE-45P3g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5ED20809DC9;
-        Thu, 29 Oct 2020 08:15:57 +0000 (UTC)
-Received: from [10.36.112.181] (ovpn-112-181.ams2.redhat.com [10.36.112.181])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3EBE05D9CC;
-        Thu, 29 Oct 2020 08:15:48 +0000 (UTC)
-Subject: Re: [PATCH 0/4] arch, mm: improve robustness of direct map
- manipulation
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Len Brown <len.brown@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org
-References: <20201025101555.3057-1-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <30075bb8-caed-c4de-c09e-e0f6fb964a8d@redhat.com>
-Date:   Thu, 29 Oct 2020 09:15:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726869AbgJ2IRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 04:17:44 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:11815 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726231AbgJ2IRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:17:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=3148; q=dns/txt; s=axis-central1;
+  t=1603959450; x=1635495450;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ZzrBKQ+s9dk85lZZfiJG0UtohbsCcBMHvXllHKW91mw=;
+  b=EV2mBWtKGeNDKZjkkpjEiqyd9f/U6ahEiOZRwo2Hjzlz+CjVjO0iWMEE
+   n42U0GYiAs4XguhUR3vwKfQ9y2wt/IWy7rvAnp/Eq7ZyiR7iDqTcVNF7n
+   RbOn6xCl4TP18d8czdMe8xVfO7KyEIIvvjwxuGaj2b+vLX1S7oCwkoGol
+   AeTQ4441GEpa5T4mhMSFdGb6RE1csZhVQo3Z66qe64EmEroSPvXTqVawi
+   4VMZJFbrBONkqMh2BiDxNnMIdScOEJWiedH2AqDs1d4RnBBYGmAx/o4Xk
+   /rzm5o/JP4RijyHg5NuAmJSAYH4wQYxaNwa1xZbR1qeMHjtxQb3Txi9HX
+   Q==;
+IronPort-SDR: k/BMqfxgNlRV9WmHIiQcDyvvKgrh4iESeehFl82DmRXwOq7zRPLaqqlPIyLd0/yyf8kF9SfJwr
+ 6IIeHaj9TbqJ+/BPrxCaZaFh7hO7KELxmpPg+ZDk0cYMu/42AVQlPH/57OmGds2oMFd341mw+o
+ koWF31u9kNUwVZbyJ10T7HkZ3q6GDPlPX6k6nLD/1CZb4fCTuuz9OMQbDiIdCbOyZ1lqQhwKER
+ isZBQykQYJnD2jzeJs0WoOkvzlsWkCDkHOU2ARrb7kqsQeMxrel9xep4UL1zEA94RkVqIeA7vV
+ BXw=
+X-IronPort-AV: E=Sophos;i="5.77,429,1596492000"; 
+   d="scan'208";a="14031930"
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+CC:     <kernel@axis.com>, <devicetree@vger.kernel.org>,
+        <andy.shevchenko@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4] gpio: mockup: Allow probing from device tree
+Date:   Thu, 29 Oct 2020 09:17:20 +0100
+Message-ID: <20201029081721.9593-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201025101555.3057-1-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.10.20 11:15, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Hi,
-> 
-> During recent discussion about KVM protected memory, David raised a concern
-> about usage of __kernel_map_pages() outside of DEBUG_PAGEALLOC scope [1].
-> 
-> Indeed, for architectures that define CONFIG_ARCH_HAS_SET_DIRECT_MAP it is
-> possible that __kernel_map_pages() would fail, but since this function is
-> void, the failure will go unnoticed.
-> 
-> Moreover, there's lack of consistency of __kernel_map_pages() semantics
-> across architectures as some guard this function with
-> #ifdef DEBUG_PAGEALLOC, some refuse to update the direct map if page
-> allocation debugging is disabled at run time and some allow modifying the
-> direct map regardless of DEBUG_PAGEALLOC settings.
-> 
-> This set straightens this out by restoring dependency of
-> __kernel_map_pages() on DEBUG_PAGEALLOC and updating the call sites
-> accordingly.
-> 
+Allow the mockup driver to be probed via the device tree without any
+module parameters, allowing it to be used to configure and test higher
+level drivers like the leds-gpio driver and corresponding userspace
+before actual hardware is available.
 
-So, I was primarily wondering if we really have to touch direct mappings 
-in hibernation code, or if we can avoid doing that. I was wondering if 
-we cannot simply do something like kmap() when trying to access a 
-!mapped page. Similar to reading old-os memory after kexec when in 
-kdump. Just a thought.
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
 
+Notes:
+    v4:
+    - Remove of_match_ptr() to fix unused variable warning with W=1
+    - Include linux/mod_devicetable.h instead of linux/of.h
+    
+    v3:
+    - Keep includes sorted alphabetically
+    - Drop CONFIG_OF ifdefs
+    
+    v2:
+    - Remove most of the added code, since the latest driver doesn't need it.
+    - Drop DT binding document, since Rob Herring was OK with not documenting this:
+      https://lore.kernel.org/linux-devicetree/5baa1ae6.1c69fb81.847f2.3ab1@mx.google.com/
+
+Range-diff against v3:
+1:  1e9b8f36676d ! 1:  4e8fdcfe1a47 gpio: mockup: Allow probing from device tree
+    @@ Commit message
+     
+     
+      ## Notes ##
+    +    v4:
+    +    - Remove of_match_ptr() to fix unused variable warning with W=1
+    +    - Include linux/mod_devicetable.h instead of linux/of.h
+    +
+         v3:
+         - Keep includes sorted alphabetically
+         - Drop CONFIG_OF ifdefs
+    @@ Notes
+     
+      ## drivers/gpio/gpio-mockup.c ##
+     @@
+    + #include <linux/irq.h>
+      #include <linux/irq_sim.h>
+      #include <linux/irqdomain.h>
+    ++#include <linux/mod_devicetable.h>
+      #include <linux/module.h>
+    -+#include <linux/of.h>
+      #include <linux/platform_device.h>
+      #include <linux/property.h>
+    - #include <linux/slab.h>
+     @@ drivers/gpio/gpio-mockup.c: static int gpio_mockup_probe(struct platform_device *pdev)
+      	return 0;
+      }
+    @@ drivers/gpio/gpio-mockup.c: static int gpio_mockup_probe(struct platform_device
+      static struct platform_driver gpio_mockup_driver = {
+      	.driver = {
+      		.name = "gpio-mockup",
+    -+		.of_match_table = of_match_ptr(gpio_mockup_of_match),
+    ++		.of_match_table = gpio_mockup_of_match,
+      	},
+      	.probe = gpio_mockup_probe,
+      };
+
+ drivers/gpio/gpio-mockup.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+index 67ed4f238d43..28b757d34046 100644
+--- a/drivers/gpio/gpio-mockup.c
++++ b/drivers/gpio/gpio-mockup.c
+@@ -15,6 +15,7 @@
+ #include <linux/irq.h>
+ #include <linux/irq_sim.h>
+ #include <linux/irqdomain.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/property.h>
+@@ -460,9 +461,16 @@ static int gpio_mockup_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static const struct of_device_id gpio_mockup_of_match[] = {
++	{ .compatible = "gpio-mockup", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, gpio_mockup_of_match);
++
+ static struct platform_driver gpio_mockup_driver = {
+ 	.driver = {
+ 		.name = "gpio-mockup",
++		.of_match_table = gpio_mockup_of_match,
+ 	},
+ 	.probe = gpio_mockup_probe,
+ };
+@@ -556,8 +564,7 @@ static int __init gpio_mockup_init(void)
+ {
+ 	int i, num_chips, err;
+ 
+-	if ((gpio_mockup_num_ranges < 2) ||
+-	    (gpio_mockup_num_ranges % 2) ||
++	if ((gpio_mockup_num_ranges % 2) ||
+ 	    (gpio_mockup_num_ranges > GPIO_MOCKUP_MAX_RANGES))
+ 		return -EINVAL;
+ 
 -- 
-Thanks,
-
-David / dhildenb
+2.28.0
 
