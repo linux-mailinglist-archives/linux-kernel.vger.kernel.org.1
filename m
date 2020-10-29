@@ -2,65 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C1729E709
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6132A29E722
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgJ2JO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:14:57 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:58738 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726113AbgJ2JOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:14:55 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kXz12-0007pU-3R; Thu, 29 Oct 2020 14:54:21 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 29 Oct 2020 14:54:20 +1100
-Date:   Thu, 29 Oct 2020 14:54:20 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Milan Broz <gmazyland@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        Song Liu <song@kernel.org>, Ofir Drang <ofir.drang@arm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        linux-raid@vger.kernel.org
-Subject: Re: [PATCH 3/4] dm crypt: switch to EBOIV crypto API template
-Message-ID: <20201029035419.GA19506@gondor.apana.org.au>
-References: <20201026130450.6947-1-gilad@benyossef.com>
- <20201026130450.6947-4-gilad@benyossef.com>
- <20201026175231.GG858@sol.localdomain>
- <d07b062c-1405-4d72-b907-1c4dfa97aecb@gmail.com>
- <20201026183936.GJ858@sol.localdomain>
- <20201026184155.GA6863@gondor.apana.org.au>
- <20201026184402.GA6908@gondor.apana.org.au>
- <CAOtvUMf-xv5cHTjExW2Ffx6soLavFztow6DwE6Qo5pffF0N5uw@mail.gmail.com>
+        id S1726366AbgJ2JVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:21:24 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:38353 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725803AbgJ2JVX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 05:21:23 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 3E7805C00E3;
+        Thu, 29 Oct 2020 01:22:29 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 29 Oct 2020 01:22:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=O/vbVAWU5hJ9PibzVsJDqDex3sz
+        6mycigPeBpUsyuNE=; b=cbBmqTB+zycWnQwyOILmwrPiJuaSSPn/R2Edtrjjn3x
+        i0hJqUoebuMazeK+LhHxaEP1UJvH3R3RfcZk1nW3aN7QXzNBBEj6nZbODyUBJm6N
+        9wMXsR06+ajgmgHp2EZLemdOKvJiATpWLTz5WZ2vr4TDILZRZ77cLDeHdyejOGVK
+        RmnUAsNaTbXGzHiOI0Ic6OshreRTURf2h2SYnpmsIwc5wjke2YKUsaXutUDfjPgF
+        cWZcXZxQJVP9/IhrtOoMgdFufTPx0xDG2LxZQBDhxrw5FpXpA115oh50V1la/NW4
+        ZFX6A6bZOQYzAGIzUzPWg/cQUmNFzXblllAiMze1tZQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=O/vbVA
+        WU5hJ9PibzVsJDqDex3sz6mycigPeBpUsyuNE=; b=pLAzjbPEx4EwfWGuFKdD6P
+        f/cw0/N7yazEhEIZ1FbjvSkPYVg8I4W0vJenJoH2t6X3lffM9WJ+xRyCT0nFFVRT
+        08XB2KSgB9sPxHHj+7qJLfoHJD+NKcPsOcq9xUyewr2WsKSlE9HZT/H9zgnvTvdH
+        Uj3wRGC9YnuwJJ5ztMrJphWmEY9w4tr+BpKYq1i3cra+gl5z8vmccXRLEdpqoZpX
+        jQUPYQfe6QZvbxovMuhvU5IBORoCC27wziwjdQ6034zOshOp4crCmGjxXtYgRyeN
+        v7j5Ilp8BBuu6giFoGjRWSUL9GO/Ocqckm5golIdosGQFOazozr4Fd1ln8V9Dgmg
+        ==
+X-ME-Sender: <xms:lFGaX5hfKZeEc7aT0YUzyK536lu9fGaU0vuwdlM1pHjXID781vrxOw>
+    <xme:lFGaX-BflsCJwX9QDuXalcIJ8cEsZ0n2udMBCFiTkgLmWgi9DihSRuV2LwRXa5YrN
+    llFEi-rdrOBDw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrledvgddutdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:lFGaX5FqCrQWnCfbGGmti9yCgq9Sw7DjQEb8b9pV7X07VoADrjoJEg>
+    <xmx:lFGaX-QRvUSRddVlNKgLvjmBMolHc5vge88sFXo0_mpMCkp5lQTxUg>
+    <xmx:lFGaX2w6B5UTxZRQGoV-DPJgKSH0icORNtw99kK0r1Nn3FsjrU9Rgg>
+    <xmx:lVGaXx-pnvWS-rPVrqyxADgEZ8jKqMUsGmTQQJSpe-4plEVazq0CCw>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7DC6A328005A;
+        Thu, 29 Oct 2020 01:22:28 -0400 (EDT)
+Date:   Thu, 29 Oct 2020 06:22:25 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>
+Subject: Re: linux-next: manual merge of the staging tree with the
+ kselftest-fixes tree
+Message-ID: <20201029052225.GC282324@kroah.com>
+References: <20201029132713.3a41c80b@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOtvUMf-xv5cHTjExW2Ffx6soLavFztow6DwE6Qo5pffF0N5uw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201029132713.3a41c80b@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 01:41:28PM +0200, Gilad Ben-Yossef wrote:
->
-> Sorry if I'm being daft, but what did you refer to be "an existing
-> option"? there was no CONFIG_EBOIV before my patchset, it was simply
-> built as part of dm-crypt so it seems that setting CONFIG_EBOIV
-> default to dm-crypto Kconfig option value does solves the problem, or
-> have I missed something?
+On Thu, Oct 29, 2020 at 01:27:13PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the staging tree got conflicts in:
+> 
+>   tools/testing/selftests/android/ion/ipcsocket.c
+>   tools/testing/selftests/android/ion/ipcsocket.h
+> 
+> between commit:
+> 
+>   08c5d41130e5 ("selftests: android: fix multiple definition of sock_name")
+> 
+> from the kselftest-fixes tree and commit:
+> 
+>   e722a295cf49 ("staging: ion: remove from the tree")
+> 
+> from the staging tree.
+> 
+> I fixed it up (I just removed the files) and can carry the fix as
+> necessary. This is now fixed as far as linux-next is concerned, but any
+> non trivial conflicts should be mentioned to your upstream maintainer
+> when your tree is submitted for merging.  You may also want to consider
+> cooperating with the maintainer of the conflicting tree to minimise any
+> particularly complex conflicts.
 
-Oh I'm mistaken then.  I thought it was an existing option.  If
-it's a new option then a default depending on dm-crypt should be
-sufficient.
+Easy fix, thanks!
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+greg k-h
