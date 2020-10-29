@@ -2,173 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5F529F3EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B779729F3EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgJ2SOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 14:14:02 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:36326 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgJ2SOB (ORCPT
+        id S1726010AbgJ2SOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 14:14:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgJ2SOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 14:14:01 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D080F1C0B7A; Thu, 29 Oct 2020 19:13:57 +0100 (CET)
-Date:   Thu, 29 Oct 2020 19:13:57 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Martin Botka <martin.botka1@gmail.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v6 2/4] leds: Add driver for Qualcomm LPG
-Message-ID: <20201029181357.GE26053@duo.ucw.cz>
-References: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
- <20201021201224.3430546-3-bjorn.andersson@linaro.org>
+        Thu, 29 Oct 2020 14:14:50 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DD9C0613CF;
+        Thu, 29 Oct 2020 11:14:50 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id w11so1684143pll.8;
+        Thu, 29 Oct 2020 11:14:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ANCKdgekhIPAJOL8kzjr3o6uzoOb1aXwKr4bEAlxk60=;
+        b=BvzbnQPTHAsx1r6hFlBLJdnypyWfHQuZ0wy6IPljOefZg+JenOd1YwvV0h6gy7P6XN
+         wb0jvJH77SIhf9hyteBYlsRVRy0Suo8hsEbRukvOJoq6AtlFYwn0NrI1euLdkKM8NL8C
+         gsQo5Yqzy+hhQhlgNQcriEtHbwGtH0aFE2/JF4hCWwcYom3rs1EkVV8EbL739tqVapP+
+         +zc7tDF6kRWbj9yvsbWRNGjLYAGqLqGVe8WMROOqEG+Nup8ItmfpduN8/TDm/7CQx3/z
+         ZoS+Q3bZ6mC9z/pbQdr7D8P5sxUaLPnzr4axLvATM2ZuBzx4mbwqqwF1vZTuQ0e8mQnQ
+         8cMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ANCKdgekhIPAJOL8kzjr3o6uzoOb1aXwKr4bEAlxk60=;
+        b=kUdFaxjGhrxXr+kY4fJ6GjttitNPUHQnOL76lan9NXNe1RMK7Ls3N90kcZC183FL3D
+         tZfin+y2AVRG0L44MJO7XCP2kstKk7+KJVid7Kf6ae7IfCXzMG8CcKIhucK6mwRt/8fT
+         wFysDBLVBrCUVaIS3PNPdQktF96BE4OZeZ2/oT1PmbWhHziW/t038PmpTsJur7eqKYaz
+         SwOIyYIRQ/X+i6ZrC39ojnXjdE7WdPW9lSVoUjiO8nhksGRDVJ1ADl1K3ttNmu0plf9z
+         6OVrAouiyTF6cM6G8ZVQuyK0Hoc+2CbOm3JOAHxJn7kDXnZs2DmWEr5fIK50YffeFYYZ
+         UJZA==
+X-Gm-Message-State: AOAM531GdmRQxz/haeBTJeglhePlaX+0T/0nteq9jRTn6JgzmlBRMz43
+        AP2xRDkkSOj7vVJiqW0bsEiL1/6+9zxZHts1anQ=
+X-Google-Smtp-Source: ABdhPJwg0ga2rNMg8a+xHiMph4SxKef/CBp4rV7HNLt58LKTFO3nvO4iDv3KhJc3pYyYxhh8RuoMF2kY9/URgKzG5h4=
+X-Received: by 2002:a17:902:aa8a:b029:d3:c9dd:77d1 with SMTP id
+ d10-20020a170902aa8ab02900d3c9dd77d1mr5253126plr.0.1603995290269; Thu, 29 Oct
+ 2020 11:14:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="TD8GDToEDw0WLGOL"
-Content-Disposition: inline
-In-Reply-To: <20201021201224.3430546-3-bjorn.andersson@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201028171757.765866-1-ribalda@chromium.org> <20201028182744.GZ4077@smile.fi.intel.com>
+ <CANiDSCvy2dPyY8O5DVgTBwNNLmfA=kJ5HUKJqcFLnqQ8CWsJgA@mail.gmail.com>
+ <CAHp75Vc6LhqKvuAeOkVtTAniHGRMGV=7Pa71CNT7por=PRk9eQ@mail.gmail.com> <CANiDSCsrtL1h+z_f7jQicgwz5nTc33wJGGCjZyeF9aGQJwED7A@mail.gmail.com>
+In-Reply-To: <CANiDSCsrtL1h+z_f7jQicgwz5nTc33wJGGCjZyeF9aGQJwED7A@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 29 Oct 2020 20:14:33 +0200
+Message-ID: <CAHp75Vd7D7gArrgAWJ-e=u-KeGiQ5Ouj94YGfRmLPb62JOF-2w@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: acpi: Support GpioInt with active_low polarity
+To:     Ricardo Ribalda <ribalda@google.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tomasz Figa <tfiga@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 29, 2020 at 8:09 PM Ricardo Ribalda <ribalda@google.com> wrote:
+> Adding Tomasz in CC in case he wants to share more info about the device.
 
---TD8GDToEDw0WLGOL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+OK, but let's discuss in another thread.
 
-Hi!
-
-> The Light Pulse Generator (LPG) is a PWM-block found in a wide range of
-> PMICs from Qualcomm. It can operate on fixed parameters or based on a
-> lookup-table, altering the duty cycle over time - which provides the
-> means for e.g. hardware assisted transitions of LED brightness.
->=20
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->=20
-> Changes since v5:
-> - Make sure to not used the state of the last channel in a group to deter=
-mine
->   if the current sink should be active for all channels in the group.
-> - Replacement of unsigned -1 with UINT_MAX
-> - Work around potential overflow by using larger data types, instead of s=
-eparate code paths
-> - Use cpu_to_l16() rather than hand rolling them
-> - Minor style cleanups
->=20
->  drivers/leds/Kconfig         |    9 +
->  drivers/leds/Makefile        |    1 +
->  drivers/leds/leds-qcom-lpg.c | 1190 ++++++++++++++++++++++++++++++++++
->  3 files changed, 1200 insertions(+)
->  create mode 100644 drivers/leds/leds-qcom-lpg.c
-
-Let's put this into drivers/leds/rgb/. You may need to create it.
-
-
-> +static int lpg_lut_store(struct lpg *lpg, struct led_pattern *pattern,
-> +			 size_t len, unsigned int *lo_idx, unsigned int *hi_idx)
-> +{
-> +	unsigned int idx;
-> +	__le16 val;
-
-No need for __XX variants outside of headers meant for userspace.
-
-> +#define LPG_ENABLE_GLITCH_REMOVAL	BIT(5)
-> +
-> +static void lpg_enable_glitch(struct lpg_channel *chan)
-> +{
-> +	struct lpg *lpg =3D chan->lpg;
-> +
-> +	regmap_update_bits(lpg->map, chan->base + PWM_TYPE_CONFIG_REG,
-> +			   LPG_ENABLE_GLITCH_REMOVAL, 0);
-> +}
-> +
-> +static void lpg_disable_glitch(struct lpg_channel *chan)
-> +{
-> +	struct lpg *lpg =3D chan->lpg;
-> +
-> +	regmap_update_bits(lpg->map, chan->base + PWM_TYPE_CONFIG_REG,
-> +			   LPG_ENABLE_GLITCH_REMOVAL,
-> +			   LPG_ENABLE_GLITCH_REMOVAL);
-> +}
-
-Helper functions for single register write is kind of overkill...
-
-> +static int lpg_blink_set(struct lpg_led *led,
-> +			 unsigned long delay_on, unsigned long delay_off)
-> +{
-> +	struct lpg_channel *chan;
-> +	unsigned int period_us;
-> +	unsigned int duty_us;
-> +	int i;
-> +
-> +	if (!delay_on && !delay_off) {
-> +		delay_on =3D 500;
-> +		delay_off =3D 500;
-> +	}
-
-Aren't you supposed to modify the values passed to you, so that
-userspace knows what the default rate is?
-
-
-> +	ret =3D lpg_lut_store(lpg, pattern, len, &lo_idx, &hi_idx);
-> +	if (ret < 0)
-> +		goto out;
-
-Just do direct return.
-
-> +out:
-> +	return ret;
-> +}
-
-> +static const struct pwm_ops lpg_pwm_ops =3D {
-> +	.request =3D lpg_pwm_request,
-> +	.apply =3D lpg_pwm_apply,
-> +	.owner =3D THIS_MODULE,
-> +};
-> +
-> +static int lpg_add_pwm(struct lpg *lpg)
-> +{
-> +	int ret;
-> +
-> +	lpg->pwm.base =3D -1;
-> +	lpg->pwm.dev =3D lpg->dev;
-> +	lpg->pwm.npwm =3D lpg->num_channels;
-> +	lpg->pwm.ops =3D &lpg_pwm_ops;
-> +
-> +	ret =3D pwmchip_add(&lpg->pwm);
-> +	if (ret)
-> +		dev_err(lpg->dev, "failed to add PWM chip: ret %d\n", ret);
-> +
-> +	return ret;
-> +}
-
-Do we need to do this? I'd rather have LED driver, than LED+PWM
-driver...
-
-Best regards,
-							Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---TD8GDToEDw0WLGOL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5sGZQAKCRAw5/Bqldv6
-8jjrAJ4guFpAcsPC95xJrR4r3t4uMKbBGACgpj6Cfs0rkR02mKrJQpcllvY1vwU=
-=QegQ
------END PGP SIGNATURE-----
-
---TD8GDToEDw0WLGOL--
+-- 
+With Best Regards,
+Andy Shevchenko
