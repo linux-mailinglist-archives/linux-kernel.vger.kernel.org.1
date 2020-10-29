@@ -2,102 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9663429F09A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBDF29F099
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:55:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728487AbgJ2Pz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:55:57 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:42932 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727966AbgJ2Pzz (ORCPT
+        id S1728426AbgJ2Pzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727966AbgJ2Pzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:55:55 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09TFkceL016093;
-        Thu, 29 Oct 2020 10:55:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=MZg49iuuuHeBKD5UTNZqq0HBwG/btR4Qu3Pi0xslXDk=;
- b=ezu8S5a02NS0Bmhv/lvOjQfnL6567/5Lh4vCGliWdf2Kwyse9tJB2cAVhRH4TjaegckA
- YuO0ZPPpvUfhY3Wq7ubENgJ0W42XAfFdJmVnVqVBNP+i1hpgYXcw6QEMp2ivsv0ozuAO
- Hb+nehNJviKlk0s2UfAL2NRm2Du3uFc6P49e+rwOf98Kf8xpM/jFs0WvcFES2ZK5d8oN
- MayeRFj7kfxyuj6Xlr9enjHf4o8/H8TuzFh//1NXNlLjTvy7J8QWPcoi2Tai+rJyQ8FY
- 6PmhajES4kaTXFAIBVEfnAdK7jd+dJ44CzBvp9J6voMtV/tEEOL4AaMiSkCQyqTTLBlr GQ== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 34chp1r5we-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 29 Oct 2020 10:55:06 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 29 Oct
- 2020 15:55:03 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 29 Oct 2020 15:55:03 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BBB432C1;
-        Thu, 29 Oct 2020 15:55:03 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 15:55:03 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Coiby Xu <coiby.xu@gmail.com>
-CC:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "open list:WOLFSON MICROELECTRONICS DRIVERS" 
-        <patches@opensource.cirrus.com>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 24/25] ASoC: wm8994: remove unnecessary CONFIG_PM_SLEEP
-Message-ID: <20201029155503.GD10899@ediswmail.ad.cirrus.com>
-References: <20201029074301.226644-1-coiby.xu@gmail.com>
- <20201029074301.226644-24-coiby.xu@gmail.com>
+        Thu, 29 Oct 2020 11:55:53 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49800C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:55:53 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id s7so3982765iol.12
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:55:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BGtliy7VbPDqvRf66jgO8aJRTxLDK5wgVtmzIOeAeWQ=;
+        b=gq40u1rBao/eHnvvfgDJG47u3PWI9Hz8wnm4PQZZBz+Jh+lo1gq5gRmcA513QQbBev
+         sDWtPHIlKfbp7WT+tzt958R4dGa8o6DeuYTnx1WrMLba59CPCwLuTQfReh9juu1A3NOj
+         CR0UZWMGZ8vXU3PfcHX2xsy6slrlAn59O7XCD3zXJPefxfWARG6r2T+caPznDPq/QWV0
+         ZLgVezM0JwiKgcIRDIpTX4gRsvJN2OQ3/WYu3yOnAZFf4AdPP28/dLkgFFi++hDdZFTj
+         MZ0GFTtbxyBYRbbwK5oSzWJnMagwqD9l399xN0pnIXu+i6UZy5fbLB3JNVZYfpGb7HZl
+         CZDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=BGtliy7VbPDqvRf66jgO8aJRTxLDK5wgVtmzIOeAeWQ=;
+        b=C8uvdqjfm7yXNi4uvZ/nC+Xh5H/6FmbPZZ8SYza8+4wDNJV1VWJ/gTzPYwc2tqeL3T
+         kkuTI17+z8rmEFU3WZJhfdoS+pgb9GDF3CN/XCh3qw9mV9OR9OCne6dRYR4p8hWSkymr
+         7wJ5asilDpwTVL4OEJ9WLCeSvozYfcQLGdAeM4Rl3GZD2cqP10tU8KGjzs5Nmd7v9IsP
+         lFckXvemniBjUGt+GzNkMHIl72I8iHC3GzmOmpK7hEcmMUuIN+cuOUToElZX0vGIbfxL
+         L7qsaDOntx/sHIwObRM5GPljsl+ayETMeLeb6md4co63C7e3Bn3nPd0Eh66+pD3mDCcJ
+         AVFQ==
+X-Gm-Message-State: AOAM531t7pJaS6udFSk/1NeGtyWduyt+1vwn+wjmDbgN8ritMA5Cteno
+        8E3w3wFLpPfY2o6LHBc0DU4=
+X-Google-Smtp-Source: ABdhPJzYY8pa27RFtec4/dspQPw/u3GsTwCfoWzltwxNc7C70k+CqXNF4hRyZ/2usQvSex9X1Oklvw==
+X-Received: by 2002:a02:a10f:: with SMTP id f15mr4073738jag.62.1603986952450;
+        Thu, 29 Oct 2020 08:55:52 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id j85sm2996422ilg.82.2020.10.29.08.55.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 08:55:51 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Thu, 29 Oct 2020 11:55:49 -0400
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] x86/entry/64: Use TEST %reg,%reg instead of CMP $0,%reg
+Message-ID: <20201029155549.GA2503344@rani.riverdale.lan>
+References: <20201029142915.131752-1-ubizjak@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201029074301.226644-24-coiby.xu@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 bulkscore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 mlxlogscore=999
- mlxscore=0 spamscore=0 clxscore=1011 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010290112
+In-Reply-To: <20201029142915.131752-1-ubizjak@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 03:43:00PM +0800, Coiby Xu wrote:
-> SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+On Thu, Oct 29, 2020 at 03:29:15PM +0100, Uros Bizjak wrote:
+> Use TEST %reg,%reg which sets the zero flag in the same way
+> as CMP $0,%reg, but the encoding uses one byte less.
 > 
-> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+
+Please use x86/boot/64 or x86/boot/compressed/64 for the commit subject.
+x86/entry is used for syscall/exception handler entries in the main
+kernel.
+
 > ---
->  sound/soc/codecs/wm8994.c | 2 --
->  1 file changed, 2 deletions(-)
+>  arch/x86/boot/compressed/head_64.S | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-> index fc9ea198ac79..9294ad06f76d 100644
-> --- a/sound/soc/codecs/wm8994.c
-> +++ b/sound/soc/codecs/wm8994.c
-> @@ -4656,7 +4656,6 @@ static int wm8994_remove(struct platform_device *pdev)
->  	return 0;
->  }
+> diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+> index 017de6cc87dc..e94874f4bbc1 100644
+> --- a/arch/x86/boot/compressed/head_64.S
+> +++ b/arch/x86/boot/compressed/head_64.S
+> @@ -241,12 +241,12 @@ SYM_FUNC_START(startup_32)
+>  	leal	rva(startup_64)(%ebp), %eax
+>  #ifdef CONFIG_EFI_MIXED
+>  	movl	rva(efi32_boot_args)(%ebp), %edi
+> -	cmp	$0, %edi
+> +	testl	%edi, %edi
+>  	jz	1f
+>  	leal	rva(efi64_stub_entry)(%ebp), %eax
+>  	movl	rva(efi32_boot_args+4)(%ebp), %esi
+>  	movl	rva(efi32_boot_args+8)(%ebp), %edx	// saved bootparams pointer
+> -	cmpl	$0, %edx
+> +	testl	%edx, %edx
+>  	jnz	1f
+>  	/*
+>  	 * efi_pe_entry uses MS calling convention, which requires 32 bytes of
+> @@ -592,7 +592,7 @@ SYM_CODE_START(trampoline_32bit_src)
+>  	movl	%eax, %cr0
 >  
-> -#ifdef CONFIG_PM_SLEEP
->  static int wm8994_suspend(struct device *dev)
->  {
->  	struct wm8994_priv *wm8994 = dev_get_drvdata(dev);
-> @@ -4681,7 +4680,6 @@ static int wm8994_resume(struct device *dev)
+>  	/* Check what paging mode we want to be in after the trampoline */
+> -	cmpl	$0, %edx
+> +	testl	%edx, %edx
+>  	jz	1f
 >  
->  	return 0;
->  }
-> -#endif
+>  	/* We want 5-level paging: don't touch CR3 if it already points to 5-level page tables */
+> @@ -622,7 +622,7 @@ SYM_CODE_START(trampoline_32bit_src)
 >  
->  static const struct dev_pm_ops wm8994_pm_ops = {
->  	SET_SYSTEM_SLEEP_PM_OPS(wm8994_suspend, wm8994_resume)
-
-Not sure this really makes sense, what is going to stop the
-unused function warning if PM isn't configured?
-
-Thanks,
-Charles
+>  	/* Enable PAE and LA57 (if required) paging modes */
+>  	movl	$X86_CR4_PAE, %eax
+> -	cmpl	$0, %edx
+> +	testl	%edx, %edx
+>  	jz	1f
+>  	orl	$X86_CR4_LA57, %eax
+>  1:
+> -- 
+> 2.26.2
+> 
