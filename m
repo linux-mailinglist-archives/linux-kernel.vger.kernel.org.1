@@ -2,92 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E6D29ED9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E82529ED9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727639AbgJ2NvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:51:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42434 "EHLO mx2.suse.de"
+        id S1727694AbgJ2Nv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:51:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:37804 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726729AbgJ2NvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:51:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 08F11B921;
-        Thu, 29 Oct 2020 13:51:12 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 14:51:06 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Steven Rostedt <rostedt@goodmis.org>
-cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH 6/9] livepatch/ftrace: Add recursion protection to the
- ftrace callback
-In-Reply-To: <20201028115613.291169246@goodmis.org>
-Message-ID: <alpine.LSU.2.21.2010291443310.1688@pobox.suse.cz>
-References: <20201028115244.995788961@goodmis.org> <20201028115613.291169246@goodmis.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1726729AbgJ2Nv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 09:51:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED001139F;
+        Thu, 29 Oct 2020 06:51:25 -0700 (PDT)
+Received: from [10.57.54.223] (unknown [10.57.54.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9BDDC3F719;
+        Thu, 29 Oct 2020 06:51:24 -0700 (PDT)
+Subject: Re: [PATCH] iommu/rockchip: check return value of
+ of_find_device_by_node() in rk_iommu_of_xlate()
+To:     "yukuai (C)" <yukuai3@huawei.com>, joro@8bytes.org,
+        heiko@sntech.de, jeffy.chen@rock-chips.com
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+References: <20201029092202.900218-1-yukuai3@huawei.com>
+ <98dec09e-08a1-6550-fa4e-85a8104b90e1@arm.com>
+ <35ff5111-1270-fc88-788c-4fb9e38faa85@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <d5442e6b-2a6b-a8f9-2056-2c0c81e88a01@arm.com>
+Date:   Thu, 29 Oct 2020 13:51:23 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <35ff5111-1270-fc88-788c-4fb9e38faa85@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020, Steven Rostedt wrote:
-
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On 2020-10-29 13:19, yukuai (C) wrote:
 > 
-> If a ftrace callback does not supply its own recursion protection and
-> does not set the RECURSION_SAFE flag in its ftrace_ops, then ftrace will
-> make a helper trampoline to do so before calling the callback instead of
-> just calling the callback directly.
+> On 2020/10/29 18:08, Robin Murphy wrote:
+>> On 2020-10-29 09:22, Yu Kuai wrote:
+>>> If of_find_device_by_node() failed in rk_iommu_of_xlate(), null pointer
+>>> dereference will be triggered. Thus return error code if
+>>> of_find_device_by_node() failed.
+>>
+>> How can that happen? (Given that ".suppress_bind_attrs = true")
+>>
+>> Robin.
 > 
-> The default for ftrace_ops is going to assume recursion protection unless
-> otherwise specified.
-
-Hm, I've always thought that we did not need any kind of recursion 
-protection for our callback. It is marked as notrace and it does not call 
-anything traceable. In fact, it does not call anything. I even have a note 
-in my todo list to mark the callback as RECURSION_SAFE :)
-
-At the same time, it probably does not hurt and the patch is still better 
-than what we have now without RECURSION_SAFE if I understand the patch set 
-correctly.
- 
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: Miroslav Benes <mbenes@suse.cz>
-> Cc: Petr Mladek <pmladek@suse.com>
-> Cc: Joe Lawrence <joe.lawrence@redhat.com>
-> Cc: live-patching@vger.kernel.org
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/livepatch/patch.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> I'm not sure if that could happen...
 > 
-> diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
-> index b552cf2d85f8..6c0164d24bbd 100644
-> --- a/kernel/livepatch/patch.c
-> +++ b/kernel/livepatch/patch.c
-> @@ -45,9 +45,13 @@ static void notrace klp_ftrace_handler(unsigned long ip,
->  	struct klp_ops *ops;
->  	struct klp_func *func;
->  	int patch_state;
-> +	int bit;
->  
->  	ops = container_of(fops, struct klp_ops, fops);
->  
-> +	bit = ftrace_test_recursion_trylock();
-> +	if (bit < 0)
-> +		return;
+> My thought is that it's better to do such checking to aviod any possible
+> problem.
 
-This means that the original function will be called in case of recursion. 
-That's probably fair, but I'm wondering if we should at least WARN about 
-it.
+->of_xlate() is only invoked on the specific set of ops returned by 
+iommu_ops_from_fwnode(). In turn, iommu_ops_from_fwnode() will only 
+return those ops if the driver has successfully probed and called 
+iommu_register_device() with the relevant DT node. For the driver to 
+have been able to probe at all, a platform device associated with that 
+DT node must have been created, and therefore of_find_device_by_node() 
+cannot fail.
 
-Thanks
-Miroslav
+If there ever were some problem serious enough to break that fundamental 
+assumption, then I *want* these drivers to crash right here, with a nice 
+clear stack trace to start debugging from. So no, I firmly disagree that 
+adding redundant code, which will never do anything except attempt to 
+paper over catastrophic memory corruption, is "better". Sorry :)
+
+Robin.
