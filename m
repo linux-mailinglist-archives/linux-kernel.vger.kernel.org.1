@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4347B29F6AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 22:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C83729F6AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 22:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgJ2VJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 17:09:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726342AbgJ2VJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 17:09:29 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726755AbgJ2VKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 17:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726433AbgJ2VKX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 17:10:23 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A384C0613D2;
+        Thu, 29 Oct 2020 14:10:23 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E50020790;
-        Thu, 29 Oct 2020 21:09:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604005768;
-        bh=eJNmaxxN3bpRjg/8DkkzFyp4/7A6NSEBbr9xR4ejjE8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IsYLpf76qsMNEqFoOKshdSo4uaeuSbwQmfqFl9ir6v9gNLijgXteca4AX2b/Knh8c
-         n8bTR+8mtT/1eIEtYD5yYp/LNS2bUoWcBPYzf0TiJTK0yJ5+LEFDUlXw3Fri5/Lqmd
-         Njr0fvtOotvzhVPV9WeCEpAAmVsL7YyE+B1gjqEs=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kYFAk-005YNy-Az; Thu, 29 Oct 2020 21:09:26 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     kvmarm@lists.cs.columbia.edu, Gavin Shan <gshan@redhat.com>,
-        Will Deacon <will@kernel.org>
-Cc:     shan.gavin@gmail.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH] KVM: arm64: Fix masks in stage2_pte_cacheable()
-Date:   Thu, 29 Oct 2020 21:09:18 +0000
-Message-Id: <160400571841.9348.3202358449739872177.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201029144716.30476-1-will@kernel.org>
-References: <20201029144716.30476-1-will@kernel.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CMdPl2snfz9sRK;
+        Fri, 30 Oct 2020 08:10:19 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604005819;
+        bh=/8mwEBtt+7y5jWDrI+GQS5GZEJxTWO0JoWvTqNd6xAY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HHZjIXLX2WSLiQeuFivkKB4kEowrb7UKCwObxCrN2x2HZn5tiMaLX414uuNywXLQe
+         O5kmuDK1mGMjMcBT+wlJqPIXiTPZyX8LBrR/lyE4SiYJaWlaFrBycRbzg8flp/+PPz
+         /oo8PeIw70ItADenwWdCs/7zQBEVu/JzdInsQXYcVmtPa/3IOWSUcthKgTGlO2lJoQ
+         6FCWy6QAq+W1jILi6lnWsqahpzdX5sRkhdKbX7k3G/a6/ScFWwtvCjHvT0XEMyw8up
+         hbR9jWglL4Zm7zQVpPN6YYdpB1IDzBN1X+GJI8IdSTxg2HYqpbRrUltFbBuN/qzcyl
+         ImQxPNffnDoVg==
+Date:   Fri, 30 Oct 2020 08:10:18 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: failure while fetching the pinctrl-samsung-fixes tree
+Message-ID: <20201030081018.11279822@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: kvmarm@lists.cs.columbia.edu, gshan@redhat.com, will@kernel.org, shan.gavin@gmail.com, linux-kernel@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: multipart/signed; boundary="Sig_/2zDp6ViemrIqRdZjGDxb1uc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 14:47:16 +0000, Will Deacon wrote:
-> stage2_pte_cacheable() tries to figure out whether the mapping installed
-> in its 'pte' parameter is cacheable or not. Unfortunately, it fails
-> miserably because it extracts the memory attributes from the entry using
-> FIELD_GET(), which returns the attributes shifted down to bit 0, but then
-> compares this with the unshifted value generated by the PAGE_S2_MEMATTR()
-> macro.
-> 
-> [...]
+--Sig_/2zDp6ViemrIqRdZjGDxb1uc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied to next, thanks!
+Hi all,
 
-[1/1] KVM: arm64: Fix masks in stage2_pte_cacheable()
-      commit: e2fc6a9f686d037cbd9b08b9fb657685b4a722d3
+Fetching the pinctrl-samsung-fixes tree produces this error:
 
+fatal: couldn't find remote ref refs/heads/pinctrl-fixes
+
+--=20
 Cheers,
+Stephen Rothwell
 
-	M.
--- 
-Without deviation from the norm, progress is not possible.
+--Sig_/2zDp6ViemrIqRdZjGDxb1uc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+bL7oACgkQAVBC80lX
+0GyvdggAhz32KrMpqfLdTHq1iZyFBOmuUYmO0x70ZbT7Pm1PvpJn7aNBpi4S/idE
+zuELLalUUaO3nQ5j+nu+alNNjAjF5uhF4l7kX5bx9E1hNOKu9l12vFBK3rhsTqou
+Hbbj146Z9cqdorJuUtV4XgasT7aT1Z5cv/LAfjwNbS6lIOsZgoz4OcJcGp9KuKtz
+WTkK9N+f2TDouzgAj9+N+yLnHmMJU2KN6yI4gYHJrP+UuNkg9yvfQSSc7Gmd2MNG
+v0xRTAaawNCtPnZCQBegEVPyeH3VGeiPpY3z202yjfxMBO0M3GgkkdlOMkB9LRUu
+EqvSpeWtWtg2J3u5OX8FoudwfK84ZQ==
+=zPmP
+-----END PGP SIGNATURE-----
+
+--Sig_/2zDp6ViemrIqRdZjGDxb1uc--
