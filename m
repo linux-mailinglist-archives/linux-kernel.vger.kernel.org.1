@@ -2,75 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E82529ED9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F22D829EDA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727694AbgJ2Nv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:51:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:37804 "EHLO foss.arm.com"
+        id S1726521AbgJ2Nx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:53:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726729AbgJ2Nv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:51:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED001139F;
-        Thu, 29 Oct 2020 06:51:25 -0700 (PDT)
-Received: from [10.57.54.223] (unknown [10.57.54.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9BDDC3F719;
-        Thu, 29 Oct 2020 06:51:24 -0700 (PDT)
-Subject: Re: [PATCH] iommu/rockchip: check return value of
- of_find_device_by_node() in rk_iommu_of_xlate()
-To:     "yukuai (C)" <yukuai3@huawei.com>, joro@8bytes.org,
-        heiko@sntech.de, jeffy.chen@rock-chips.com
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-References: <20201029092202.900218-1-yukuai3@huawei.com>
- <98dec09e-08a1-6550-fa4e-85a8104b90e1@arm.com>
- <35ff5111-1270-fc88-788c-4fb9e38faa85@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <d5442e6b-2a6b-a8f9-2056-2c0c81e88a01@arm.com>
-Date:   Thu, 29 Oct 2020 13:51:23 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1725300AbgJ2Nx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 09:53:28 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C5D92076A;
+        Thu, 29 Oct 2020 13:53:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603979605;
+        bh=I1TLmixXOBKPdf1EpArD7mgfV14HIqnNUN5GULknKVs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g4eoIJwrM+gIrcTvb/nG1LtR+vN0fqgQsXKQvorEwPzj8XH2J6kFh9ismrGYZMr9n
+         xnXBhgNfmlQnZ+mR7L6Z61Mw12YII4AK5b/ijcJLfl7F9ATxAfq3xi7NCI21Cl/6Q9
+         h5seO/Duunl9SwhYxbWmEoP27f5NH4iK9dHwwpmA=
+Date:   Thu, 29 Oct 2020 14:54:15 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     "hj2.im@samsung.com" <hj2.im@samsung.com>,
+        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "rydberg@bitmath.org" <rydberg@bitmath.org>,
+        Jungrae Kim <jryu.kim@samsung.com>
+Subject: Re: [PATCH v2] input: add 2 kind of switch
+Message-ID: <20201029135415.GA3470996@kroah.com>
+References: <CGME20201029132747epcms1p8fae559dff47bf0eebdcc9f94efd9a1bf@epcms1p8>
+ <20201029132747epcms1p8fae559dff47bf0eebdcc9f94efd9a1bf@epcms1p8>
+ <j4-zngLfuvM3x15SD8ezJ__FTdOdLCudaTGBvuotwzYwnYFusBe655vH3UahNgtBzB8n6VpfoV7iS1tPXvv-0R8T7-RsvMDxnTZ-Zo-xs4o=@protonmail.com>
 MIME-Version: 1.0
-In-Reply-To: <35ff5111-1270-fc88-788c-4fb9e38faa85@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <j4-zngLfuvM3x15SD8ezJ__FTdOdLCudaTGBvuotwzYwnYFusBe655vH3UahNgtBzB8n6VpfoV7iS1tPXvv-0R8T7-RsvMDxnTZ-Zo-xs4o=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-29 13:19, yukuai (C) wrote:
+On Thu, Oct 29, 2020 at 01:41:57PM +0000, Barnabás Pőcze wrote:
+> Hi
 > 
-> On 2020/10/29 18:08, Robin Murphy wrote:
->> On 2020-10-29 09:22, Yu Kuai wrote:
->>> If of_find_device_by_node() failed in rk_iommu_of_xlate(), null pointer
->>> dereference will be triggered. Thus return error code if
->>> of_find_device_by_node() failed.
->>
->> How can that happen? (Given that ".suppress_bind_attrs = true")
->>
->> Robin.
+> > [...]
+> > diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+> > index 5b08a473cdba..897f5a3e7721 100644
+> > --- a/include/linux/mod_devicetable.h
+> > +++ b/include/linux/mod_devicetable.h
+> > @@ -320,7 +320,7 @@ struct pcmcia_device_id {
+> >  #define INPUT_DEVICE_ID_LED_MAX		0x0f
+> >  #define INPUT_DEVICE_ID_SND_MAX		0x07
+> >  #define INPUT_DEVICE_ID_FF_MAX		0x7f
+> > -#define INPUT_DEVICE_ID_SW_MAX		0x10
+> > +#define INPUT_DEVICE_ID_SW_MAX		0x12
+> >  #define INPUT_DEVICE_ID_PROP_MAX	0x1f
+> >
+> >  #define INPUT_DEVICE_ID_MATCH_BUS	1
+> > diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
+> > index 0c2e27d28e0a..8ca2acee1f92 100644
+> > --- a/include/uapi/linux/input-event-codes.h
+> > +++ b/include/uapi/linux/input-event-codes.h
+> > @@ -889,7 +889,9 @@
+> >  #define SW_MUTE_DEVICE		0x0e  /* set = device disabled */
+> >  #define SW_PEN_INSERTED		0x0f  /* set = pen inserted */
+> >  #define SW_MACHINE_COVER	0x10  /* set = cover closed */
+> > -#define SW_MAX			0x10
+> > +#define SW_COVER_ATTACHED	0x11  /* set = cover attached */
+> > +#define SW_EXT_PEN_ATTACHED	0x12  /* set = external pen attached */
+> > +#define SW_MAX			0x12
+> >  #define SW_CNT			(SW_MAX+1)
+> > [...]
 > 
-> I'm not sure if that could happen...
-> 
-> My thought is that it's better to do such checking to aviod any possible
-> problem.
+> This part of the patch conflicts with another one:
+> https://lore.kernel.org/linux-input/20201026144512.621479-1-markpearson@lenovo.com/
 
-->of_xlate() is only invoked on the specific set of ops returned by 
-iommu_ops_from_fwnode(). In turn, iommu_ops_from_fwnode() will only 
-return those ops if the driver has successfully probed and called 
-iommu_register_device() with the relevant DT node. For the driver to 
-have been able to probe at all, a platform device associated with that 
-DT node must have been created, and therefore of_find_device_by_node() 
-cannot fail.
+Is that merged?  If not, it's fine as-is until then, and someone has to
+pick to go first :)
 
-If there ever were some problem serious enough to break that fundamental 
-assumption, then I *want* these drivers to crash right here, with a nice 
-clear stack trace to start debugging from. So no, I firmly disagree that 
-adding redundant code, which will never do anything except attempt to 
-paper over catastrophic memory corruption, is "better". Sorry :)
+But, most importantly, the questions asked last time about this patch
+have not been addressed at all :(
 
-Robin.
+thanks,
+
+greg k-h
