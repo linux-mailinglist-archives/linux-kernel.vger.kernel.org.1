@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB3E29EBA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6F129EBA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727150AbgJ2MRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:17:18 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33282 "EHLO
+        id S1727098AbgJ2MRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:17:14 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33248 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgJ2MPl (ORCPT
+        with ESMTP id S1725848AbgJ2MPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:15:41 -0400
-Date:   Thu, 29 Oct 2020 12:15:38 -0000
+        Thu, 29 Oct 2020 08:15:42 -0400
+Date:   Thu, 29 Oct 2020 12:15:39 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603973739;
+        s=2020; t=1603973740;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Hc40ispx/wst4VTMuXZa/8Owd/IfnjskH5xNMVoRWRk=;
-        b=UBbN08KOKwG5qGtC7V/ZkPAZHbzNhLM7lh8CVa/T82Nre57rp0QocM0NL8rvm1Yz9SyIxi
-        llMh0gRo3GhOvSa6r1pTkg6rI340hsZKjwMScQ5pIXNKbFRyIBzxe1KLs0NhRhl1k3r8bA
-        FEell1bA61AhE4fkfDWpyHMfAHAY/I42OqVd6W++X7qzPwshCfhV9y6349e+V6jaiMVTuR
-        lvaLOCdJWoChZg0zRj2298gUhoXdu+N+jR3GI0jb0uwRGkq4DJy6SVILZX1t3z66M0nGvR
-        //Zu9ZQE2h6sq0Wx4y7s/csL+3ia2qpUcMVYp4q7GLpzmvD/3z3qLcW5NOK61g==
+        bh=l0qP5vXEd/x+ZH3db7znfgpF1tmFYviY7OGd/4Bl2Tw=;
+        b=il8Cn7DavJKi97Zb+OsbefLy0W2nVyy+FyxQYG11gtxvlgn/1IizUWeZ5ccmqgUzaVqvLR
+        MVD01y+JtzOmeHWI2NVA4NBMoE350NJ3CbApk7ij605tdWtp2xZN9InrvEyabuJ01MeUmF
+        h17ot2OfNzP97ZpPVdZC3JkA/4Sfp3Z7HmV5Q0gsA61pmfafg53+WP/d/fkLJbhAaTWn9G
+        tKrZKSVNvscRO8R9O/Jfv4xnAYAXpq6edWkmfNsrPNS7RnUEIUhjspT1OIKLYZHZyDGsN+
+        HKRkrVS6o4O+3FD7+WhRDCPs1bOelH15x4QH3nziH6MIHPur0L16VoOeWvVBqw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603973739;
+        s=2020e; t=1603973740;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Hc40ispx/wst4VTMuXZa/8Owd/IfnjskH5xNMVoRWRk=;
-        b=qUAbEMsR2xjrpEbhDQVVpXNIQ67ZcYJY8cZKpIN4mdl2bs8bYT3QYzQnnbR/rbxvEiL/dZ
-        FkxHWMs4FqldRGAw==
+        bh=l0qP5vXEd/x+ZH3db7znfgpF1tmFYviY7OGd/4Bl2Tw=;
+        b=FAHjYLh1Ac2ETCvakVojuI/Tcomjs5kSkQYpRLeH/kQk1RD7rzvxL+MpXdtHIJbD9C80zv
+        Lpn4YZZIIeDLxbCQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/msi: Remove msidef.h
+Subject: [tip: x86/apic] x86/pci/xen: Use msi_msg shadow structs
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         David Woodhouse <dwmw@amazon.co.uk>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201024213535.443185-19-dwmw2@infradead.org>
-References: <20201024213535.443185-19-dwmw2@infradead.org>
+In-Reply-To: <20201024213535.443185-18-dwmw2@infradead.org>
+References: <20201024213535.443185-18-dwmw2@infradead.org>
 MIME-Version: 1.0
-Message-ID: <160397373876.397.9177258571780664807.tip-bot2@tip-bot2>
+Message-ID: <160397373934.397.197324234855870461.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,87 +58,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     0c1883c1eb9dfa3c72af6e00425eeb1eb171a03e
-Gitweb:        https://git.kernel.org/tip/0c1883c1eb9dfa3c72af6e00425eeb1eb171a03e
+Commit-ID:     41bb2115beec5e318095a89f5ad4a9c343cb21ad
+Gitweb:        https://git.kernel.org/tip/41bb2115beec5e318095a89f5ad4a9c343cb21ad
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sat, 24 Oct 2020 22:35:18 +01:00
+AuthorDate:    Sat, 24 Oct 2020 22:35:17 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Wed, 28 Oct 2020 20:26:26 +01:00
 
-x86/msi: Remove msidef.h
+x86/pci/xen: Use msi_msg shadow structs
 
-Nothing uses the macro maze anymore.
+Use the msi_msg shadow structs and compose the message with named bitfields
+instead of the unreadable macro maze.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201024213535.443185-19-dwmw2@infradead.org
+Link: https://lore.kernel.org/r/20201024213535.443185-18-dwmw2@infradead.org
 
 ---
- arch/x86/include/asm/msidef.h | 57 +----------------------------------
- 1 file changed, 57 deletions(-)
- delete mode 100644 arch/x86/include/asm/msidef.h
+ arch/x86/pci/xen.c | 26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
-diff --git a/arch/x86/include/asm/msidef.h b/arch/x86/include/asm/msidef.h
-deleted file mode 100644
-index ee2f8cc..0000000
---- a/arch/x86/include/asm/msidef.h
-+++ /dev/null
-@@ -1,57 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_X86_MSIDEF_H
--#define _ASM_X86_MSIDEF_H
+diff --git a/arch/x86/pci/xen.c b/arch/x86/pci/xen.c
+index c552cd2..3d41a09 100644
+--- a/arch/x86/pci/xen.c
++++ b/arch/x86/pci/xen.c
+@@ -152,7 +152,6 @@ static int acpi_register_gsi_xen(struct device *dev, u32 gsi,
+ 
+ #if defined(CONFIG_PCI_MSI)
+ #include <linux/msi.h>
+-#include <asm/msidef.h>
+ 
+ struct xen_pci_frontend_ops *xen_pci_frontend;
+ EXPORT_SYMBOL_GPL(xen_pci_frontend);
+@@ -210,23 +209,20 @@ free:
+ 	return ret;
+ }
+ 
+-#define XEN_PIRQ_MSI_DATA  (MSI_DATA_TRIGGER_EDGE | \
+-		MSI_DATA_LEVEL_ASSERT | (3 << 8) | MSI_DATA_VECTOR(0))
 -
--/*
-- * Constants for Intel APIC based MSI messages.
-- */
+ static void xen_msi_compose_msg(struct pci_dev *pdev, unsigned int pirq,
+ 		struct msi_msg *msg)
+ {
+-	/* We set vector == 0 to tell the hypervisor we don't care about it,
+-	 * but we want a pirq setup instead.
+-	 * We use the dest_id field to pass the pirq that we want. */
+-	msg->address_hi = MSI_ADDR_BASE_HI | MSI_ADDR_EXT_DEST_ID(pirq);
+-	msg->address_lo =
+-		MSI_ADDR_BASE_LO |
+-		MSI_ADDR_DEST_MODE_PHYSICAL |
+-		MSI_ADDR_REDIRECTION_CPU |
+-		MSI_ADDR_DEST_ID(pirq);
 -
--/*
-- * Shifts for MSI data
-- */
--
--#define MSI_DATA_VECTOR_SHIFT		0
--#define  MSI_DATA_VECTOR_MASK		0x000000ff
--#define	 MSI_DATA_VECTOR(v)		(((v) << MSI_DATA_VECTOR_SHIFT) & \
--					 MSI_DATA_VECTOR_MASK)
--
--#define MSI_DATA_DELIVERY_MODE_SHIFT	8
--#define  MSI_DATA_DELIVERY_FIXED	(0 << MSI_DATA_DELIVERY_MODE_SHIFT)
--#define  MSI_DATA_DELIVERY_LOWPRI	(1 << MSI_DATA_DELIVERY_MODE_SHIFT)
--
--#define MSI_DATA_LEVEL_SHIFT		14
--#define	 MSI_DATA_LEVEL_DEASSERT	(0 << MSI_DATA_LEVEL_SHIFT)
--#define	 MSI_DATA_LEVEL_ASSERT		(1 << MSI_DATA_LEVEL_SHIFT)
--
--#define MSI_DATA_TRIGGER_SHIFT		15
--#define  MSI_DATA_TRIGGER_EDGE		(0 << MSI_DATA_TRIGGER_SHIFT)
--#define  MSI_DATA_TRIGGER_LEVEL		(1 << MSI_DATA_TRIGGER_SHIFT)
--
--/*
-- * Shift/mask fields for msi address
-- */
--
--#define MSI_ADDR_BASE_HI		0
--#define MSI_ADDR_BASE_LO		0xfee00000
--
--#define MSI_ADDR_DEST_MODE_SHIFT	2
--#define  MSI_ADDR_DEST_MODE_PHYSICAL	(0 << MSI_ADDR_DEST_MODE_SHIFT)
--#define	 MSI_ADDR_DEST_MODE_LOGICAL	(1 << MSI_ADDR_DEST_MODE_SHIFT)
--
--#define MSI_ADDR_REDIRECTION_SHIFT	3
--#define  MSI_ADDR_REDIRECTION_CPU	(0 << MSI_ADDR_REDIRECTION_SHIFT)
--					/* dedicated cpu */
--#define  MSI_ADDR_REDIRECTION_LOWPRI	(1 << MSI_ADDR_REDIRECTION_SHIFT)
--					/* lowest priority */
--
--#define MSI_ADDR_DEST_ID_SHIFT		12
--#define	 MSI_ADDR_DEST_ID_MASK		0x00ffff0
--#define  MSI_ADDR_DEST_ID(dest)		(((dest) << MSI_ADDR_DEST_ID_SHIFT) & \
--					 MSI_ADDR_DEST_ID_MASK)
--#define MSI_ADDR_EXT_DEST_ID(dest)	((dest) & 0xffffff00)
--
--#define MSI_ADDR_IR_EXT_INT		(1 << 4)
--#define MSI_ADDR_IR_SHV			(1 << 3)
--#define MSI_ADDR_IR_INDEX1(index)	((index & 0x8000) >> 13)
--#define MSI_ADDR_IR_INDEX2(index)	((index & 0x7fff) << 5)
--#endif /* _ASM_X86_MSIDEF_H */
+-	msg->data = XEN_PIRQ_MSI_DATA;
++	/*
++	 * We set vector == 0 to tell the hypervisor we don't care about
++	 * it, but we want a pirq setup instead.  We use the dest_id fields
++	 * to pass the pirq that we want.
++	 */
++	memset(msg, 0, sizeof(*msg));
++	msg->address_hi = X86_MSI_BASE_ADDRESS_HIGH;
++	msg->arch_addr_hi.destid_8_31 = pirq >> 8;
++	msg->arch_addr_lo.destid_0_7 = pirq & 0xFF;
++	msg->arch_addr_lo.base_address = X86_MSI_BASE_ADDRESS_LOW;
++	msg->arch_data.delivery_mode = APIC_DELIVERY_MODE_EXTINT;
+ }
+ 
+ static int xen_hvm_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
