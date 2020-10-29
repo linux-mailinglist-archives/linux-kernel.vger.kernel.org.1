@@ -2,76 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C3829EE21
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:25:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BCF29EE23
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgJ2OZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:25:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727194AbgJ2OXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:23:44 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727409AbgJ2OZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:25:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35413 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725300AbgJ2OZW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 10:25:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603981520;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A22khVtnKHqmoKyRs3jDxVOuQ05VtVhowd5o0DD3mL4=;
+        b=e/uDJYBS9PL8i6ch5VHIXzOEzW9ZWJGZEHDKzWPJ1zGqTzpurtn9Njvl0iq56MELw6u0DD
+        lz6xsRmjjcY0uZnaj5hmSPyC5CtLCCXYkkT7bOTtaH6iczELIrGYsNNhLU9HYkQ66NAjHg
+        pdOZvnwBylrbN4eFyjQTi21saIIJeKI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-227-uboe4UJLMa-Y0qxMm_OClQ-1; Thu, 29 Oct 2020 10:25:16 -0400
+X-MC-Unique: uboe4UJLMa-Y0qxMm_OClQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE3CC20780;
-        Thu, 29 Oct 2020 14:23:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603981423;
-        bh=n7Vzz7DHGJA92jHFCsr1m3bLut8N3L+AitzjBOxMqUQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dcHcQdsE/HW73c5doL7xKii042thmFwirZKPhg7ruozNUR9DzhDJqVui+DREIg0M3
-         Ec4f2TxvVN/pGViyORKdUUCfuYwDaBVY6fyT7GJd6feG3zohrmUFM6xAUjf/y+MANf
-         9dULdsmCVCBXh6RMwb+Vvz5xSBOEk8w2/IeLE+M0=
-Date:   Thu, 29 Oct 2020 22:23:38 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: fsl: add Protonic WD3 board
-Message-ID: <20201029142337.GN28755@dragon>
-References: <20200924045706.23496-1-o.rempel@pengutronix.de>
- <20200924045706.23496-2-o.rempel@pengutronix.de>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87BC3108E1B2;
+        Thu, 29 Oct 2020 14:25:15 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-116-17.rdu2.redhat.com [10.10.116.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F241F1002C05;
+        Thu, 29 Oct 2020 14:25:10 +0000 (UTC)
+Subject: Re: [PATCH] inotify: Increase default inotify.max_user_watches limit
+ to 1048576
+To:     Jan Kara <jack@suse.cz>
+Cc:     Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Luca BRUNO <lucab@redhat.com>
+References: <20201026204418.23197-1-longman@redhat.com>
+ <20201027160012.GE16090@quack2.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <627e1342-a691-e8bc-0e09-f0ffd295f570@redhat.com>
+Date:   Thu, 29 Oct 2020 10:25:10 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924045706.23496-2-o.rempel@pengutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201027160012.GE16090@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 06:57:05AM +0200, Oleksij Rempel wrote:
-> Add Protonic Holland WD3 iMX6qp based board
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+On 10/27/20 12:00 PM, Jan Kara wrote:
+> On Mon 26-10-20 16:44:18, Waiman Long wrote:
+>> The default value of inotify.max_user_watches sysctl parameter was set
+>> to 8192 since the introduction of the inotify feature in 2005 by
+>> commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
+>> small for many modern usage. As a result, users have to explicitly set
+>> it to a larger value to make it work.
+>>
+>> After some searching around the web, these are the
+>> inotify.max_user_watches values used by some projects:
+>>   - vscode:  524288
+>>   - dropbox support: 100000
+>>   - users on stackexchange: 12228
+>>   - lsyncd user: 2000000
+>>   - code42 support: 1048576
+>>   - monodevelop: 16384
+>>   - tectonic: 524288
+>>   - openshift origin: 65536
+>>
+>> Each watch point adds an inotify_inode_mark structure to an inode to be
+>> watched. Modeled after the epoll.max_user_watches behavior to adjust the
+>> default value according to the amount of addressable memory available,
+>> make inotify.max_user_watches behave in a similar way to make it use
+>> no more than 1% of addressable memory within the range [8192, 1048576].
+>>
+>> For 64-bit archs, inotify_inode_mark should have a size of 80 bytes. That
+>> means a system with 8GB or more memory will have the maximum value of
+>> 1048576 for inotify.max_user_watches. This default should be big enough
+>> for most of the use cases.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> So I agree that 8192 watches seem to be a bit low today but what you
+> propose seems to be way too much to me. OTOH I agree that having to tune
+> this manually kind of sucks so I'm for auto-tuning of the default. If the
+> computation takes into account the fact that a watch pins an inode as Amir
+> properly notes (that's the main reason why the number of watches is
+> limited), I think limiting to 1% of pinned memory should be bearable. The
+> amount of space pinned by an inode is impossible to estimate exactly
+> (differs for different filesystems) but about 1k for one inode is a sound
+> estimate IMO.
+>
+> 								Honza
 
-It doesn't seem to apply to v5.10-rc1.
+I will certainly do that. Will send out a v2 soon.
 
-Shawn
+Cheers,
+Longman
 
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index e94a455eeab9..57dcd061d4c9 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -161,6 +161,7 @@ properties:
->            - enum:
->                - fsl,imx6qp-sabreauto      # i.MX6 Quad Plus SABRE Automotive Board
->                - fsl,imx6qp-sabresd        # i.MX6 Quad Plus SABRE Smart Device Board
-> +              - prt,prtwd3                # Protonic WD3 board
->            - const: fsl,imx6qp
->  
->        - description: i.MX6DL based Boards
-> -- 
-> 2.28.0
-> 
