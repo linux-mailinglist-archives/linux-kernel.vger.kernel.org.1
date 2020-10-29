@@ -2,85 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11ABA29E0FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 239B129E103
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733066AbgJ2BrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731398AbgJ2BrL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 21:47:11 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E911C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:47:11 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id l28so1251756lfp.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:47:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PVBXOPloV3MHyOZJNF7ZS6bMYegt4BS5YsZsFXz0L7o=;
-        b=fZFWZa57uJkj88i0gMBcrwcPQbIDa05ne59E5oeTlZ0Fatsxx6VTjO6FBmGEStfHoG
-         CzBcwnj3hmzMpC/y6jQeaKzy5uOjci7CnqFDbHHaJYe6FWdcpQ8ilctvIZ7E/BhQQySM
-         +fB16HB8EPjqHjcMS6hh9cvoL87JZUHR7zZCDrtH0B+BrPwDveoFpyYtbP4/y132rtFj
-         B8W647wCwWOOlKjNKDnL66w+xtlzgf9EI8Mz1l9kasvXW/EANkMeUQclBkee9aOUZY6M
-         66X3K+Y1QBMlK4WlKZk3JQ55Au+YYwQpOeQPJ5mSAP5KORcbvsEQFr6ABa6ZW1D29Gg0
-         XT9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PVBXOPloV3MHyOZJNF7ZS6bMYegt4BS5YsZsFXz0L7o=;
-        b=Jx0+nqb9ztevxKFZwevg/RXl3bBu8o01RoYaUlM1QeivkROxKxwVJUHWkY/vjxNdSF
-         K3w8pxVxnxvxaQNZ7u8vE9N+GD3qecG8Myh1rQtOVq2aeP2rsKqsDEHI4AXrPThwfRi2
-         2F46RS5xW4QP1FvJ9L4fE0VUliSFj0vsWO9fkikulFzKHvi6En/kJWmeSDWubASoYVu0
-         F1LBWSMG2D/lHKlRHhUqVWViI+eNF0xXWu7TQWEnux0LqnTtzW6L7LWkOuE9/Ml5jSGU
-         zHsXF+trr313hxRJdEOidcLBPWEh5aBqsRTa1Ea8x+IK++keSU+aMp+/w69t3MezZORQ
-         rDmA==
-X-Gm-Message-State: AOAM5335EmgzpPSZk2rkTJlpvMH+fFCIn2qsp+4KaYc05Mwp3JiKOpEn
-        Cpuji+LBVtpdFhG7PBpByy/naTnmPzWyKxI6IosSJC0syoaQFA==
-X-Google-Smtp-Source: ABdhPJyOm9LOgfKhOx0dfZcPKFbvflj3nvUGX+9YGJhueQKiIToPbzjO53CHytPzuJjOQkv9L8QNx9yAxt63pLS+UWw=
-X-Received: by 2002:a19:ae04:: with SMTP id f4mr711096lfc.436.1603936029275;
- Wed, 28 Oct 2020 18:47:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201028174319.11817-1-rdunlap@infradead.org>
-In-Reply-To: <20201028174319.11817-1-rdunlap@infradead.org>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 29 Oct 2020 09:46:58 +0800
-Message-ID: <CABVgOSn6o0r71PPa69kGvBUU9iQojQaQo+vHv96J-iN6Qjrcow@mail.gmail.com>
-Subject: Re: [PATCH] KUnit: Docs: usage: wording fixes
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>
+        id S1733072AbgJ2BvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:51:01 -0400
+Received: from mga17.intel.com ([192.55.52.151]:29254 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729139AbgJ2BuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 21:50:16 -0400
+IronPort-SDR: NLXl/uXU5rXfatNKBQZ+IkJVFGAhFrb90s2PEsn0baIqkp6nqcDsyPaiIyQLMdh6dktnsPszeu
+ P25Pe8J16n+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="148223352"
+X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
+   d="scan'208";a="148223352"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 18:50:16 -0700
+IronPort-SDR: a/1YpQpkjMfBOpev4qFBdcqtkHKgowerUWj6XMMgryi8Z36+NdWLLaUlJPP+eTLsvl+HIaKXp6
+ mHYRP20rMCbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
+   d="scan'208";a="334942495"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP; 28 Oct 2020 18:50:16 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
+        by linux.intel.com (Postfix) with ESMTP id 37581580718;
+        Wed, 28 Oct 2020 18:50:16 -0700 (PDT)
+Message-ID: <bc5f059c5bae957daebde699945c80808286bf45.camel@linux.intel.com>
+Subject: Re: [PATCH V8 0/5] Intel Platform Monitoring Technology
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Hans de Goede <hdegoede@redhat.com>, lee.jones@linaro.org,
+        dvhart@infradead.org, andy@infradead.org, bhelgaas@google.com,
+        alexey.budankov@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Date:   Wed, 28 Oct 2020 18:50:16 -0700
+In-Reply-To: <2f17db4b-2988-7f0d-fd0e-9e5b621d24ec@redhat.com>
+References: <20201003013123.20269-1-david.e.box@linux.intel.com>
+         <2f17db4b-2988-7f0d-fd0e-9e5b621d24ec@redhat.com>
+Organization: David E. Box
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 1:43 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Fix minor grammar and punctutation glitches.
-> Hyphenate "architecture-specific" instances.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: David Gow <davidgow@google.com>
-> Cc: linux-kselftest@vger.kernel.org
-> Cc: kunit-dev@googlegroups.com
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Shuah Khan <skhan@linuxfoundation.org>
-> Cc: Brendan Higgins <brendanhiggins@google.com>
-> ---
+On Tue, 2020-10-27 at 12:28 +0100, Hans de Goede wrote:
+> Hi,
+> 
+> On 10/3/20 3:31 AM, David E. Box wrote:
+> > Intel Platform Monitoring Technology (PMT) is an architecture for
+> > enumerating and accessing hardware monitoring capabilities on a
+> > device.
+> > With customers increasingly asking for hardware telemetry,
+> > engineers not
+> > only have to figure out how to measure and collect data, but also
+> > how to
+> > deliver it and make it discoverable. The latter may be through some
+> > device
+> > specific method requiring device specific tools to collect the
+> > data. This
+> > in turn requires customers to manage a suite of different tools in
+> > order to
+> > collect the differing assortment of monitoring data on their
+> > systems.  Even
+> > when such information can be provided in kernel drivers, they may
+> > require
+> > constant maintenance to update register mappings as they change
+> > with
+> > firmware updates and new versions of hardware. PMT provides a
+> > solution for
+> > discovering and reading telemetry from a device through a hardware
+> > agnostic
+> > framework that allows for updates to systems without requiring
+> > patches to
+> > the kernel or software tools.
+> > 
+> > PMT defines several capabilities to support collecting monitoring
+> > data from
+> > hardware. All are discoverable as separate instances of the PCIE
+> > Designated
+> > Vendor extended capability (DVSEC) with the Intel vendor code. The
+> > DVSEC ID
+> > field uniquely identifies the capability. Each DVSEC also provides
+> > a BAR
+> > offset to a header that defines capability-specific attributes,
+> > including
+> > GUID, feature type, offset and length, as well as configuration
+> > settings
+> > where applicable. The GUID uniquely identifies the register space
+> > of any
+> > monitor data exposed by the capability. The GUID is associated with
+> > an XML
+> > file from the vendor that describes the mapping of the register
+> > space along
+> > with properties of the monitor data. This allows vendors to perform
+> > firmware updates that can change the mapping (e.g. add new metrics)
+> > without
+> > requiring any changes to drivers or software tools. The new mapping
+> > is
+> > confirmed by an updated GUID, read from the hardware, which
+> > software uses
+> > with a new XML.
+> > 
+> > The current capabilities defined by PMT are Telemetry, Watcher, and
+> > Crashlog.  The Telemetry capability provides access to a continuous
+> > block
+> > of read only data. The Watcher capability provides access to
+> > hardware
+> > sampling and tracing features. Crashlog provides access to device
+> > crash
+> > dumps.  While there is some relationship between capabilities
+> > (Watcher can
+> > be configured to sample from the Telemetry data set) each exists as
+> > stand
+> > alone features with no dependency on any other. The design
+> > therefore splits
+> > them into individual, capability specific drivers. MFD is used to
+> > create
+> > platform devices for each capability so that they may be managed by
+> > their
+> > own driver. The PMT architecture is (for the most part) agnostic to
+> > the
+> > type of device it can collect from. Software can determine which
+> > devices
+> > support a PMT feature by searching through each device node entry
+> > in the
+> > sysfs class folder. It can additionally determine if a particular
+> > device
+> > supports a PMT feature by checking for a PMT class folder in the
+> > device
+> > folder.
+> > 
+> > This patch set provides support for the PMT framework, along with
+> > support
+> > for Telemetry on Tiger Lake.
+> 
+> The entire series looks good to me, so you may add my:
+> 
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-These all look sensible: thanks for catching them!
+Thanks. I did send out a V9 after rebasing and noticing that I
+accidentally dropped a change in the MFD driver between V7 and V8. This
+was added back. I also took the opportunity to get rid of a nuisance
+dev_warn.
 
-Reviewed-by: David Gow <davidgow@google.com>
+David
 
-Cheers,
--- David
