@@ -2,737 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C0729ED3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F6129ED1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbgJ2Nmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:42:38 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:38062 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727415AbgJ2Nmf (ORCPT
+        id S1725601AbgJ2NkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725787AbgJ2NkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:42:35 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201029134041euoutp028f019cf70fabbbb11755de0db3cd39cc~CekIjXD_z1443114431euoutp02q
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:40:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201029134041euoutp028f019cf70fabbbb11755de0db3cd39cc~CekIjXD_z1443114431euoutp02q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603978841;
-        bh=CNTHkwajG9tUONk4++qqbfFq0cWC0WZHBSFPLCraK6Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UTsRILJdtJsxdeSmMzb00HDJhuanuUaLDb2os+fglgFW3L+w+R7k3EBJt8kOIijce
-         1InDihrKkXeGaj5DWbYQgQhyCC+lTpsRRwNKN2YXZ5UngxpVBLX+YjoQ/Ah7GIX1Yl
-         YbCiiJQrDgujAtDhqrSSPv6dKbumDABGp/LHAWAI=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201029134040eucas1p1fec0354778553156df5bddccadf157e1~CekHSPPAE0596605966eucas1p1K;
-        Thu, 29 Oct 2020 13:40:40 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 61.E1.06456.856CA9F5; Thu, 29
-        Oct 2020 13:40:40 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201029134040eucas1p1d9ab30c75ac9243346b4786e7048d6be~CekG-p8_C2532125321eucas1p1l;
-        Thu, 29 Oct 2020 13:40:40 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201029134040eusmtrp1bc29493c8667d66b74752074f70b5085~CekG-AZnx1072610726eusmtrp1J;
-        Thu, 29 Oct 2020 13:40:40 +0000 (GMT)
-X-AuditID: cbfec7f2-809ff70000001938-33-5f9ac6582524
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 3D.90.06314.756CA9F5; Thu, 29
-        Oct 2020 13:40:40 +0000 (GMT)
-Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201029134039eusmtip16f1936357e004f88dca6932117c03e6a~CekGYKSNO1565515655eusmtip1v;
-        Thu, 29 Oct 2020 13:40:39 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 5/6] pci: dwc: pci-exynos: rework the driver to support
- Exynos5433 variant
-Date:   Thu, 29 Oct 2020 14:40:16 +0100
-Message-Id: <20201029134017.27400-6-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201029134017.27400-1-m.szyprowski@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEKsWRmVeSWpSXmKPExsWy7djP87oRx2bFG1ybKWKxpCnDYv6Rc6wW
-        N361sVqs+DKT3eLC0x42i/PnN7BbXN41h83i7LzjbBYzzu9jsnjz+wW7xdojd9kt/u/ZwW6x
-        884JZgdejzXz1jB67Jx1l91jwaZSj02rOtk8+rasYvQ4fmM7k8fnTXIB7FFcNimpOZllqUX6
-        dglcGetePGErmDOXseL6tB1MDYzfmxm7GDk5JARMJJ5O38naxcjFISSwglFi7cINLBDOF0aJ
-        X19PsIFUCQl8ZpSYepEVpuPMlpXsEEXLGSXat11hhus43jifBaSKTcBQouttF1A3B4eIgIPE
-        j68WIDXMAvOZJSbeu80EUiMsEC9x7fFNsA0sAqoS019uYgKp5xWwlbh2xB9imbzE6g0HmEHC
-        nAJ2EsealEDGSAisY5eY8BTiOAkBF4nmbWegbGGJV8e3sEPYMhKnJ/ewQDQ0M0o8PLeWHcLp
-        YZS43DQDGgDWEnfO/QI7lFlAU2L9Ln2IsKPEoYuPWUDCEgJ8EjfeCoKEmYHMSdumM0OEeSU6
-        2oQgqtUkZh1fB7f24IVLzBC2h8S6pj9MkOCZyCjRdbeXeQKj/CyEZQsYGVcxiqeWFuempxYb
-        5qWW6xUn5haX5qXrJefnbmIEppzT/45/2sH49VLSIUYBDkYlHt4Lt2fGC7EmlhVX5h5ilOBg
-        VhLhdTp7Ok6INyWxsiq1KD++qDQntfgQozQHi5I4r/Gil7FCAumJJanZqakFqUUwWSYOTqkG
-        RqMfvG9Y24Qy9Bt/NXsGNT5V/J5/6+0CLaN1CuJVLn7PP7k1mYRHpO3yy9B40qjZ9jbozaSA
-        lKelXUydupM+n55b9FXFPtlgYktp1ro3YsEfpjgffJH2epun4Wvr/PMGR0McdCq8H3X8aOt7
-        HXVW1rfUVJHZ/MR9B/9DSdl+TlLmpR9XCrcpsRRnJBpqMRcVJwIAkLjWFjUDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmkeLIzCtJLcpLzFFi42I5/e/4Xd2IY7PiDf4cZ7RY0pRhMf/IOVaL
-        G7/aWC1WfJnJbnHhaQ+bxfnzG9gtLu+aw2Zxdt5xNosZ5/cxWbz5/YLdYu2Ru+wW//fsYLfY
-        eecEswOvx5p5axg9ds66y+6xYFOpx6ZVnWwefVtWMXocv7GdyePzJrkA9ig9m6L80pJUhYz8
-        4hJbpWhDCyM9Q0sLPSMTSz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jHUvnrAVzJnLWHF92g6m
-        BsbvzYxdjJwcEgImEme2rGTvYuTiEBJYyijxYek/VoiEjMTJaQ1QtrDEn2tdbBBFnxgl/ryZ
-        CJZgEzCU6HoLkuDkEBFwkng/+SIziM0ssJJZ4uC2PBBbWCBWonXvNbAaFgFViekvNzF1MXJw
-        8ArYSlw74g8xX15i9YYDzCBhTgE7iWNNSiBhIaCKfadeMU9g5FvAyLCKUSS1tDg3PbfYUK84
-        Mbe4NC9dLzk/dxMjMAK2Hfu5eQfjpY3BhxgFOBiVeHgv3J4ZL8SaWFZcmXuIUYKDWUmE1+ns
-        6Tgh3pTEyqrUovz4otKc1OJDjKZAJ01klhJNzgdGZ15JvKGpobmFpaG5sbmxmYWSOG+HwMEY
-        IYH0xJLU7NTUgtQimD4mDk6pBsZmv0Lun+c/ax8+L9Fb5+raJ2WisrvkV1rAM8UlgrPqP2tV
-        n7v6MeQ9Y9zhI6cKDn/65h94xaUsztd+rq9vW1LmdrbOlk8fqo2yLs96Nrl7Q8h1pXef7/Xs
-        4tFRWn1UatrljxHyt9ov9Zzi5XWdkiQQv8l/zZd3dYnMnNyMb97Pd/P0EA5uzlViKc5INNRi
-        LipOBABjtqPulgIAAA==
-X-CMS-MailID: 20201029134040eucas1p1d9ab30c75ac9243346b4786e7048d6be
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201029134040eucas1p1d9ab30c75ac9243346b4786e7048d6be
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201029134040eucas1p1d9ab30c75ac9243346b4786e7048d6be
-References: <20201029134017.27400-1-m.szyprowski@samsung.com>
-        <CGME20201029134040eucas1p1d9ab30c75ac9243346b4786e7048d6be@eucas1p1.samsung.com>
+        Thu, 29 Oct 2020 09:40:22 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E0BC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:40:21 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id 9so3204759oir.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eYqdLtfS+KCW7y8GcdPSOq70vc91X3xtwLRcejbVT/A=;
+        b=AZ+eNPwQ3yqgRBOPyOZZXnsc3kwP5mkW9+oTFT7nKBNIHQQ6elUQNp/Ux+IG5ZGpua
+         ACJWDtQNpbEaeKJWEKlcdk0U2xW3Bs3tyPGmvLfM/FZyhrz1x8GKG+M/SAij/1TSiwSX
+         0iLPegzeZ7RebPnIvpFynA4Mogpe6d0gjMyDN3WfKyJt+0uI0NlTY0hK2NvyNPpnFXSL
+         JR8INEu2YywDRvUDF5Ix6qBTgg3G8lTYfhdoZkqiPDbNDLTuE+oTQTyc00Hd5YiQYOA8
+         kIWPiVceeg2dN1dObRaEyFyieGDCYJTFRPv7q0wufWNXZhp5wMptNvu/tmmdn2Fy85rF
+         6FMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eYqdLtfS+KCW7y8GcdPSOq70vc91X3xtwLRcejbVT/A=;
+        b=jy1kQ62THgTxhqBzHuW+1rN46sUnMsGE5lW1v49MzTKAB0r2m68CP5FtS1MIDu9qWU
+         87HyoUfhCsO5ZF5xZcpG2xYyJWmXY9siNEEX6JafvAeksvR7JiX1B/glEiDXiK49drBv
+         2vIbVia1bFDy5RTSmherzdLrnCLlAwb5w0UIwIeaOklo1N5IYqNLzVY++tpTCwZEKY23
+         8Q3jJ7e0XZbrNrIZmXkDC9263LxR7uMHPv4sa83xYlLVh/l0qZzYyRH9mQoMdQXX32y1
+         vqHB/2kdhkFbjS+gY/rvzAb+Mq9pE9rH4SeLBGAG2MroNOHTsCishXymvBCKXtRQouZT
+         Yf4A==
+X-Gm-Message-State: AOAM531mvRCZ3qPXGr5WourEot49B3OuXNjt5ZLX1eKLO/PJBnkhoCvy
+        9X/yOy1SfPu+2TWknPQut8sO1w==
+X-Google-Smtp-Source: ABdhPJyad9qvBRhmR6ZGz1FrYyJxJFCnctUcizozb/fVUxBWO1/eSZM2+nxszq5TEb9kaDCIzM/pqg==
+X-Received: by 2002:a05:6808:254:: with SMTP id m20mr3043991oie.139.1603978820880;
+        Thu, 29 Oct 2020 06:40:20 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 33sm590834otr.25.2020.10.29.06.40.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 06:40:20 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 08:40:17 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Amit Pundir <amit.pundir@linaro.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        ath10k@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ath10k: Introduce a devicetree quirk to skip host cap
+ QMI requests
+Message-ID: <20201029134017.GA807@yoga>
+References: <1601058581-19461-1-git-send-email-amit.pundir@linaro.org>
+ <20200929190817.GA968845@bogus>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929190817.GA968845@bogus>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaehoon Chung <jh80.chung@samsung.com>
+On Tue 29 Sep 14:08 CDT 2020, Rob Herring wrote:
 
-Exynos5440 SoC support has been dropped since commit 8c83315da1cf ("ARM:
-dts: exynos: Remove Exynos5440"). Rework this driver to support DWC PCIe
-variant found in the Exynos5433 SoCs.
+> On Fri, Sep 25, 2020 at 11:59:41PM +0530, Amit Pundir wrote:
+> > There are firmware versions which do not support host capability
+> > QMI request. We suspect either the host cap is not implemented or
+> > there may be firmware specific issues, but apparently there seem
+> > to be a generation of firmware that has this particular behavior.
+> > 
+> > For example, firmware build on Xiaomi Poco F1 (sdm845) phone:
+> > "QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1"
+> > 
+> > If we do not skip the host cap QMI request on Poco F1, then we
+> > get a QMI_ERR_MALFORMED_MSG_V01 error message in the
+> > ath10k_qmi_host_cap_send_sync(). But this error message is not
+> > fatal to the firmware nor to the ath10k driver and we can still
+> > bring up the WiFi services successfully if we just ignore it.
+> > 
+> > Hence introducing this DeviceTree quirk to skip host capability
+> > QMI request for the firmware versions which do not support this
+> > feature.
+> 
+> So if you change the WiFi firmware, you may force a DT change too. Those 
+> are pretty independent things otherwise.
+> 
 
-The main difference in Exynos5433 variant is lack of the MSI support
-(the MSI interrupt is not even routed to the CPU).
+Yes and that's not good. But I looked at somehow derive this from
+firmware version numbers etc and it's not working out, so I'm out of
+ideas for alternatives.
 
-Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
-[mszyprow: reworked the driver to support only Exynos5433 variant,
-	   simplified code, rebased onto current kernel code, added
-	   regulator support, converted to the regular platform driver,
-	   removed MSI related code, rewrote commit message, added help]
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/pci/controller/dwc/Kconfig      |  10 +-
- drivers/pci/controller/dwc/pci-exynos.c | 353 ++++++++++--------------
- drivers/pci/quirks.c                    |   1 +
- 3 files changed, 147 insertions(+), 217 deletions(-)
+> Why can't you just always ignore this error? If you can't deal with this 
+> entirely in the driver, then it should be part of the WiFi firmware so 
+> it's always in sync.
+> 
 
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index bc049865f8e0..b0d41a80edfc 100644
---- a/drivers/pci/controller/dwc/Kconfig
-+++ b/drivers/pci/controller/dwc/Kconfig
-@@ -83,10 +83,14 @@ config PCIE_DW_PLAT_EP
- 	  selected.
- 
- config PCI_EXYNOS
--	bool "Samsung Exynos PCIe controller"
--	depends on SOC_EXYNOS5440 || COMPILE_TEST
--	depends on PCI_MSI_IRQ_DOMAIN
-+	tristate "Samsung Exynos PCIe controller"
-+	depends on ARCH_EXYNOS || COMPILE_TEST
- 	select PCIE_DW_HOST
-+	help
-+	  Enables support for the PCIe controller in the Samsung Exynos SoCs
-+	  to work in host mode. The PCI controller is based on the DesignWare
-+	  hardware and therefore the driver re-uses the DesignWare core
-+	  functions to implement the driver.
- 
- config PCI_IMX6
- 	bool "Freescale i.MX6/7/8 PCIe controller"
-diff --git a/drivers/pci/controller/dwc/pci-exynos.c b/drivers/pci/controller/dwc/pci-exynos.c
-index 5c10a5432896..c24dab383654 100644
---- a/drivers/pci/controller/dwc/pci-exynos.c
-+++ b/drivers/pci/controller/dwc/pci-exynos.c
-@@ -2,26 +2,23 @@
- /*
-  * PCIe host controller driver for Samsung Exynos SoCs
-  *
-- * Copyright (C) 2013 Samsung Electronics Co., Ltd.
-+ * Copyright (C) 2013-2020 Samsung Electronics Co., Ltd.
-  *		https://www.samsung.com
-  *
-  * Author: Jingoo Han <jg1.han@samsung.com>
-+ *	   Jaehoon Chung <jh80.chung@samsung.com>
-  */
- 
- #include <linux/clk.h>
- #include <linux/delay.h>
--#include <linux/gpio.h>
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/of_device.h>
--#include <linux/of_gpio.h>
- #include <linux/pci.h>
- #include <linux/platform_device.h>
- #include <linux/phy/phy.h>
--#include <linux/resource.h>
--#include <linux/signal.h>
--#include <linux/types.h>
-+#include <linux/regulator/consumer.h>
- 
- #include "pcie-designware.h"
- 
-@@ -37,102 +34,43 @@
- #define PCIE_IRQ_SPECIAL		0x008
- #define PCIE_IRQ_EN_PULSE		0x00c
- #define PCIE_IRQ_EN_LEVEL		0x010
--#define IRQ_MSI_ENABLE			BIT(2)
- #define PCIE_IRQ_EN_SPECIAL		0x014
--#define PCIE_PWR_RESET			0x018
-+#define PCIE_SW_WAKE			0x018
-+#define PCIE_BUS_EN			BIT(1)
- #define PCIE_CORE_RESET			0x01c
- #define PCIE_CORE_RESET_ENABLE		BIT(0)
- #define PCIE_STICKY_RESET		0x020
- #define PCIE_NONSTICKY_RESET		0x024
- #define PCIE_APP_INIT_RESET		0x028
- #define PCIE_APP_LTSSM_ENABLE		0x02c
--#define PCIE_ELBI_RDLH_LINKUP		0x064
-+#define PCIE_ELBI_RDLH_LINKUP		0x074
-+#define PCIE_ELBI_XMLH_LINKUP		BIT(4)
- #define PCIE_ELBI_LTSSM_ENABLE		0x1
- #define PCIE_ELBI_SLV_AWMISC		0x11c
- #define PCIE_ELBI_SLV_ARMISC		0x120
- #define PCIE_ELBI_SLV_DBI_ENABLE	BIT(21)
- 
--struct exynos_pcie_mem_res {
--	void __iomem *elbi_base;   /* DT 0th resource: PCIe CTRL */
--};
--
--struct exynos_pcie_clk_res {
--	struct clk *clk;
--	struct clk *bus_clk;
--};
--
- struct exynos_pcie {
--	struct dw_pcie			*pci;
--	struct exynos_pcie_mem_res	*mem_res;
--	struct exynos_pcie_clk_res	*clk_res;
--	const struct exynos_pcie_ops	*ops;
--	int				reset_gpio;
--
-+	struct dw_pcie			pci;
-+	void __iomem			*elbi_base;
-+	struct clk			*clk;
-+	struct clk			*bus_clk;
- 	struct phy			*phy;
-+	struct regulator_bulk_data	supplies[2];
- };
- 
--struct exynos_pcie_ops {
--	int (*get_mem_resources)(struct platform_device *pdev,
--			struct exynos_pcie *ep);
--	int (*get_clk_resources)(struct exynos_pcie *ep);
--	int (*init_clk_resources)(struct exynos_pcie *ep);
--	void (*deinit_clk_resources)(struct exynos_pcie *ep);
--};
--
--static int exynos5440_pcie_get_mem_resources(struct platform_device *pdev,
--					     struct exynos_pcie *ep)
--{
--	struct dw_pcie *pci = ep->pci;
--	struct device *dev = pci->dev;
--
--	ep->mem_res = devm_kzalloc(dev, sizeof(*ep->mem_res), GFP_KERNEL);
--	if (!ep->mem_res)
--		return -ENOMEM;
--
--	ep->mem_res->elbi_base = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(ep->mem_res->elbi_base))
--		return PTR_ERR(ep->mem_res->elbi_base);
--
--	return 0;
--}
--
--static int exynos5440_pcie_get_clk_resources(struct exynos_pcie *ep)
-+static int exynos_pcie_init_clk_resources(struct exynos_pcie *ep)
- {
--	struct dw_pcie *pci = ep->pci;
--	struct device *dev = pci->dev;
--
--	ep->clk_res = devm_kzalloc(dev, sizeof(*ep->clk_res), GFP_KERNEL);
--	if (!ep->clk_res)
--		return -ENOMEM;
--
--	ep->clk_res->clk = devm_clk_get(dev, "pcie");
--	if (IS_ERR(ep->clk_res->clk)) {
--		dev_err(dev, "Failed to get pcie rc clock\n");
--		return PTR_ERR(ep->clk_res->clk);
--	}
--
--	ep->clk_res->bus_clk = devm_clk_get(dev, "pcie_bus");
--	if (IS_ERR(ep->clk_res->bus_clk)) {
--		dev_err(dev, "Failed to get pcie bus clock\n");
--		return PTR_ERR(ep->clk_res->bus_clk);
--	}
--
--	return 0;
--}
--
--static int exynos5440_pcie_init_clk_resources(struct exynos_pcie *ep)
--{
--	struct dw_pcie *pci = ep->pci;
--	struct device *dev = pci->dev;
-+	struct device *dev = ep->pci.dev;
- 	int ret;
- 
--	ret = clk_prepare_enable(ep->clk_res->clk);
-+	ret = clk_prepare_enable(ep->clk);
- 	if (ret) {
- 		dev_err(dev, "cannot enable pcie rc clock");
- 		return ret;
- 	}
- 
--	ret = clk_prepare_enable(ep->clk_res->bus_clk);
-+	ret = clk_prepare_enable(ep->bus_clk);
- 	if (ret) {
- 		dev_err(dev, "cannot enable pcie bus clock");
- 		goto err_bus_clk;
-@@ -141,24 +79,17 @@ static int exynos5440_pcie_init_clk_resources(struct exynos_pcie *ep)
- 	return 0;
- 
- err_bus_clk:
--	clk_disable_unprepare(ep->clk_res->clk);
-+	clk_disable_unprepare(ep->clk);
- 
- 	return ret;
- }
- 
--static void exynos5440_pcie_deinit_clk_resources(struct exynos_pcie *ep)
-+static void exynos_pcie_deinit_clk_resources(struct exynos_pcie *ep)
- {
--	clk_disable_unprepare(ep->clk_res->bus_clk);
--	clk_disable_unprepare(ep->clk_res->clk);
-+	clk_disable_unprepare(ep->bus_clk);
-+	clk_disable_unprepare(ep->clk);
- }
- 
--static const struct exynos_pcie_ops exynos5440_pcie_ops = {
--	.get_mem_resources	= exynos5440_pcie_get_mem_resources,
--	.get_clk_resources	= exynos5440_pcie_get_clk_resources,
--	.init_clk_resources	= exynos5440_pcie_init_clk_resources,
--	.deinit_clk_resources	= exynos5440_pcie_deinit_clk_resources,
--};
--
- static void exynos_pcie_writel(void __iomem *base, u32 val, u32 reg)
- {
- 	writel(val, base + reg);
-@@ -173,94 +104,71 @@ static void exynos_pcie_sideband_dbi_w_mode(struct exynos_pcie *ep, bool on)
- {
- 	u32 val;
- 
--	val = exynos_pcie_readl(ep->mem_res->elbi_base, PCIE_ELBI_SLV_AWMISC);
-+	val = exynos_pcie_readl(ep->elbi_base, PCIE_ELBI_SLV_AWMISC);
- 	if (on)
- 		val |= PCIE_ELBI_SLV_DBI_ENABLE;
- 	else
- 		val &= ~PCIE_ELBI_SLV_DBI_ENABLE;
--	exynos_pcie_writel(ep->mem_res->elbi_base, val, PCIE_ELBI_SLV_AWMISC);
-+	exynos_pcie_writel(ep->elbi_base, val, PCIE_ELBI_SLV_AWMISC);
- }
- 
- static void exynos_pcie_sideband_dbi_r_mode(struct exynos_pcie *ep, bool on)
- {
- 	u32 val;
- 
--	val = exynos_pcie_readl(ep->mem_res->elbi_base, PCIE_ELBI_SLV_ARMISC);
-+	val = exynos_pcie_readl(ep->elbi_base, PCIE_ELBI_SLV_ARMISC);
- 	if (on)
- 		val |= PCIE_ELBI_SLV_DBI_ENABLE;
- 	else
- 		val &= ~PCIE_ELBI_SLV_DBI_ENABLE;
--	exynos_pcie_writel(ep->mem_res->elbi_base, val, PCIE_ELBI_SLV_ARMISC);
-+	exynos_pcie_writel(ep->elbi_base, val, PCIE_ELBI_SLV_ARMISC);
- }
- 
- static void exynos_pcie_assert_core_reset(struct exynos_pcie *ep)
- {
- 	u32 val;
- 
--	val = exynos_pcie_readl(ep->mem_res->elbi_base, PCIE_CORE_RESET);
-+	val = exynos_pcie_readl(ep->elbi_base, PCIE_CORE_RESET);
- 	val &= ~PCIE_CORE_RESET_ENABLE;
--	exynos_pcie_writel(ep->mem_res->elbi_base, val, PCIE_CORE_RESET);
--	exynos_pcie_writel(ep->mem_res->elbi_base, 0, PCIE_PWR_RESET);
--	exynos_pcie_writel(ep->mem_res->elbi_base, 0, PCIE_STICKY_RESET);
--	exynos_pcie_writel(ep->mem_res->elbi_base, 0, PCIE_NONSTICKY_RESET);
-+	exynos_pcie_writel(ep->elbi_base, val, PCIE_CORE_RESET);
-+	exynos_pcie_writel(ep->elbi_base, 0, PCIE_STICKY_RESET);
-+	exynos_pcie_writel(ep->elbi_base, 0, PCIE_NONSTICKY_RESET);
- }
- 
- static void exynos_pcie_deassert_core_reset(struct exynos_pcie *ep)
- {
- 	u32 val;
- 
--	val = exynos_pcie_readl(ep->mem_res->elbi_base, PCIE_CORE_RESET);
-+	val = exynos_pcie_readl(ep->elbi_base, PCIE_CORE_RESET);
- 	val |= PCIE_CORE_RESET_ENABLE;
- 
--	exynos_pcie_writel(ep->mem_res->elbi_base, val, PCIE_CORE_RESET);
--	exynos_pcie_writel(ep->mem_res->elbi_base, 1, PCIE_STICKY_RESET);
--	exynos_pcie_writel(ep->mem_res->elbi_base, 1, PCIE_NONSTICKY_RESET);
--	exynos_pcie_writel(ep->mem_res->elbi_base, 1, PCIE_APP_INIT_RESET);
--	exynos_pcie_writel(ep->mem_res->elbi_base, 0, PCIE_APP_INIT_RESET);
--}
--
--static void exynos_pcie_assert_reset(struct exynos_pcie *ep)
--{
--	struct dw_pcie *pci = ep->pci;
--	struct device *dev = pci->dev;
--
--	if (ep->reset_gpio >= 0)
--		devm_gpio_request_one(dev, ep->reset_gpio,
--				GPIOF_OUT_INIT_HIGH, "RESET");
-+	exynos_pcie_writel(ep->elbi_base, val, PCIE_CORE_RESET);
-+	exynos_pcie_writel(ep->elbi_base, 1, PCIE_STICKY_RESET);
-+	exynos_pcie_writel(ep->elbi_base, 1, PCIE_NONSTICKY_RESET);
-+	exynos_pcie_writel(ep->elbi_base, 1, PCIE_APP_INIT_RESET);
-+	exynos_pcie_writel(ep->elbi_base, 0, PCIE_APP_INIT_RESET);
- }
- 
- static int exynos_pcie_start_link(struct dw_pcie *pci)
- {
- 	struct exynos_pcie *ep = to_exynos_pcie(pci);
-+	u32 val;
-+
-+	val = exynos_pcie_readl(ep->elbi_base, PCIE_SW_WAKE);
-+	val &= ~PCIE_BUS_EN;
-+	exynos_pcie_writel(ep->elbi_base, val, PCIE_SW_WAKE);
- 
- 	/* assert LTSSM enable */
--	exynos_pcie_writel(ep->mem_res->elbi_base, PCIE_ELBI_LTSSM_ENABLE,
-+	exynos_pcie_writel(ep->elbi_base, PCIE_ELBI_LTSSM_ENABLE,
- 			  PCIE_APP_LTSSM_ENABLE);
--
--	/* check if the link is up or not */
--	if (!dw_pcie_wait_for_link(pci))
--		return 0;
--
--	phy_power_off(ep->phy);
--	return -ETIMEDOUT;
-+	return 0;
- }
- 
- static void exynos_pcie_clear_irq_pulse(struct exynos_pcie *ep)
- {
--	u32 val;
--
--	val = exynos_pcie_readl(ep->mem_res->elbi_base, PCIE_IRQ_PULSE);
--	exynos_pcie_writel(ep->mem_res->elbi_base, val, PCIE_IRQ_PULSE);
--}
--
--static void exynos_pcie_enable_irq_pulse(struct exynos_pcie *ep)
--{
--	u32 val;
-+	u32 val = exynos_pcie_readl(ep->elbi_base, PCIE_IRQ_PULSE);
- 
--	/* enable INTX interrupt */
--	val = IRQ_INTA_ASSERT | IRQ_INTB_ASSERT |
--		IRQ_INTC_ASSERT | IRQ_INTD_ASSERT;
--	exynos_pcie_writel(ep->mem_res->elbi_base, val, PCIE_IRQ_EN_PULSE);
-+	exynos_pcie_writel(ep->elbi_base, val, PCIE_IRQ_PULSE);
- }
- 
- static irqreturn_t exynos_pcie_irq_handler(int irq, void *arg)
-@@ -271,22 +179,14 @@ static irqreturn_t exynos_pcie_irq_handler(int irq, void *arg)
- 	return IRQ_HANDLED;
- }
- 
--static void exynos_pcie_msi_init(struct exynos_pcie *ep)
--{
--	u32 val;
--
--	/* enable MSI interrupt */
--	val = exynos_pcie_readl(ep->mem_res->elbi_base, PCIE_IRQ_EN_LEVEL);
--	val |= IRQ_MSI_ENABLE;
--	exynos_pcie_writel(ep->mem_res->elbi_base, val, PCIE_IRQ_EN_LEVEL);
--}
--
--static void exynos_pcie_enable_interrupts(struct exynos_pcie *ep)
-+static void exynos_pcie_enable_irq_pulse(struct exynos_pcie *ep)
- {
--	exynos_pcie_enable_irq_pulse(ep);
-+	u32 val = IRQ_INTA_ASSERT | IRQ_INTB_ASSERT |
-+		  IRQ_INTC_ASSERT | IRQ_INTD_ASSERT;
- 
--	if (IS_ENABLED(CONFIG_PCI_MSI))
--		exynos_pcie_msi_init(ep);
-+	exynos_pcie_writel(ep->elbi_base, val, PCIE_IRQ_EN_PULSE);
-+	exynos_pcie_writel(ep->elbi_base, 0, PCIE_IRQ_EN_LEVEL);
-+	exynos_pcie_writel(ep->elbi_base, 0, PCIE_IRQ_EN_SPECIAL);
- }
- 
- static u32 exynos_pcie_read_dbi(struct dw_pcie *pci, void __iomem *base,
-@@ -345,13 +245,9 @@ static struct pci_ops exynos_pci_ops = {
- static int exynos_pcie_link_up(struct dw_pcie *pci)
- {
- 	struct exynos_pcie *ep = to_exynos_pcie(pci);
--	u32 val;
-+	u32 val = exynos_pcie_readl(ep->elbi_base, PCIE_ELBI_RDLH_LINKUP);
- 
--	val = exynos_pcie_readl(ep->mem_res->elbi_base, PCIE_ELBI_RDLH_LINKUP);
--	if (val == PCIE_ELBI_LTSSM_ENABLE)
--		return 1;
--
--	return 0;
-+	return (val & PCIE_ELBI_XMLH_LINKUP);
- }
- 
- static int exynos_pcie_host_init(struct pcie_port *pp)
-@@ -364,17 +260,11 @@ static int exynos_pcie_host_init(struct pcie_port *pp)
- 	exynos_pcie_assert_core_reset(ep);
- 
- 	phy_reset(ep->phy);
--
--	exynos_pcie_writel(ep->mem_res->elbi_base, 1,
--			PCIE_PWR_RESET);
--
- 	phy_power_on(ep->phy);
- 	phy_init(ep->phy);
- 
- 	exynos_pcie_deassert_core_reset(ep);
--	exynos_pcie_assert_reset(ep);
--
--	exynos_pcie_enable_interrupts(ep);
-+	exynos_pcie_enable_irq_pulse(ep);
- 
- 	return 0;
- }
-@@ -383,26 +273,27 @@ static const struct dw_pcie_host_ops exynos_pcie_host_ops = {
- 	.host_init = exynos_pcie_host_init,
- };
- 
--static int __init exynos_add_pcie_port(struct exynos_pcie *ep,
-+static int exynos_add_pcie_port(struct exynos_pcie *ep,
- 				       struct platform_device *pdev)
- {
--	struct dw_pcie *pci = ep->pci;
-+	struct dw_pcie *pci = &ep->pci;
- 	struct pcie_port *pp = &pci->pp;
- 	struct device *dev = &pdev->dev;
- 	int ret;
- 
--	pp->irq = platform_get_irq(pdev, 1);
-+	pp->irq = platform_get_irq(pdev, 0);
- 	if (pp->irq < 0)
- 		return pp->irq;
- 
- 	ret = devm_request_irq(dev, pp->irq, exynos_pcie_irq_handler,
--				IRQF_SHARED, "exynos-pcie", ep);
-+			       IRQF_SHARED, "exynos-pcie", ep);
- 	if (ret) {
- 		dev_err(dev, "failed to request irq\n");
- 		return ret;
- 	}
- 
- 	pp->ops = &exynos_pcie_host_ops;
-+	pp->msi_irq = -ENODEV;
- 
- 	ret = dw_pcie_host_init(pp);
- 	if (ret) {
-@@ -420,10 +311,9 @@ static const struct dw_pcie_ops dw_pcie_ops = {
- 	.start_link = exynos_pcie_start_link,
- };
- 
--static int __init exynos_pcie_probe(struct platform_device *pdev)
-+static int exynos_pcie_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct dw_pcie *pci;
- 	struct exynos_pcie *ep;
- 	struct device_node *np = dev->of_node;
- 	int ret;
-@@ -432,43 +322,45 @@ static int __init exynos_pcie_probe(struct platform_device *pdev)
- 	if (!ep)
- 		return -ENOMEM;
- 
--	pci = devm_kzalloc(dev, sizeof(*pci), GFP_KERNEL);
--	if (!pci)
--		return -ENOMEM;
--
--	pci->dev = dev;
--	pci->ops = &dw_pcie_ops;
--
--	ep->pci = pci;
--	ep->ops = (const struct exynos_pcie_ops *)
--		of_device_get_match_data(dev);
--
--	ep->reset_gpio = of_get_named_gpio(np, "reset-gpio", 0);
-+	ep->pci.dev = dev;
-+	ep->pci.ops = &dw_pcie_ops;
- 
- 	ep->phy = devm_of_phy_get(dev, np, NULL);
--	if (IS_ERR(ep->phy)) {
--		if (PTR_ERR(ep->phy) != -ENODEV)
--			return PTR_ERR(ep->phy);
-+	if (IS_ERR(ep->phy))
-+		return PTR_ERR(ep->phy);
- 
--		ep->phy = NULL;
--	}
-+	/* External Local Bus interface (ELBI) registers */
-+	ep->elbi_base = devm_platform_ioremap_resource_byname(pdev, "elbi");
-+	if (IS_ERR(ep->elbi_base))
-+		return PTR_ERR(ep->elbi_base);
- 
--	if (ep->ops && ep->ops->get_mem_resources) {
--		ret = ep->ops->get_mem_resources(pdev, ep);
--		if (ret)
--			return ret;
-+	ep->clk = devm_clk_get(dev, "pcie");
-+	if (IS_ERR(ep->clk)) {
-+		dev_err(dev, "Failed to get pcie rc clock\n");
-+		return PTR_ERR(ep->clk);
- 	}
- 
--	if (ep->ops && ep->ops->get_clk_resources &&
--			ep->ops->init_clk_resources) {
--		ret = ep->ops->get_clk_resources(ep);
--		if (ret)
--			return ret;
--		ret = ep->ops->init_clk_resources(ep);
--		if (ret)
--			return ret;
-+	ep->bus_clk = devm_clk_get(dev, "pcie_bus");
-+	if (IS_ERR(ep->bus_clk)) {
-+		dev_err(dev, "Failed to get pcie bus clock\n");
-+		return PTR_ERR(ep->bus_clk);
- 	}
- 
-+	ep->supplies[0].supply = "vdd18";
-+	ep->supplies[1].supply = "vdd10";
-+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(ep->supplies),
-+				      ep->supplies);
-+	if (ret)
-+		return ret;
-+
-+	ret = exynos_pcie_init_clk_resources(ep);
-+	if (ret)
-+		return ret;
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(ep->supplies), ep->supplies);
-+	if (ret)
-+		return ret;
-+
- 	platform_set_drvdata(pdev, ep);
- 
- 	ret = exynos_add_pcie_port(ep, pdev);
-@@ -479,9 +371,9 @@ static int __init exynos_pcie_probe(struct platform_device *pdev)
- 
- fail_probe:
- 	phy_exit(ep->phy);
-+	exynos_pcie_deinit_clk_resources(ep);
-+	regulator_bulk_disable(ARRAY_SIZE(ep->supplies), ep->supplies);
- 
--	if (ep->ops && ep->ops->deinit_clk_resources)
--		ep->ops->deinit_clk_resources(ep);
- 	return ret;
- }
- 
-@@ -489,32 +381,65 @@ static int __exit exynos_pcie_remove(struct platform_device *pdev)
- {
- 	struct exynos_pcie *ep = platform_get_drvdata(pdev);
- 
--	if (ep->ops && ep->ops->deinit_clk_resources)
--		ep->ops->deinit_clk_resources(ep);
-+	dw_pcie_host_deinit(&ep->pci.pp);
-+	exynos_pcie_assert_core_reset(ep);
-+	phy_power_off(ep->phy);
-+	phy_exit(ep->phy);
-+	exynos_pcie_deinit_clk_resources(ep);
-+	regulator_bulk_disable(ARRAY_SIZE(ep->supplies), ep->supplies);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused exynos_pcie_suspend_noirq(struct device *dev)
-+{
-+	struct exynos_pcie *ep = dev_get_drvdata(dev);
-+
-+	exynos_pcie_assert_core_reset(ep);
-+	phy_power_off(ep->phy);
-+	phy_exit(ep->phy);
-+	regulator_bulk_disable(ARRAY_SIZE(ep->supplies), ep->supplies);
- 
- 	return 0;
- }
- 
-+static int __maybe_unused exynos_pcie_resume_noirq(struct device *dev)
-+{
-+	struct exynos_pcie *ep = dev_get_drvdata(dev);
-+	struct dw_pcie *pci = &ep->pci;
-+	struct pcie_port *pp = &pci->pp;
-+	int ret;
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(ep->supplies), ep->supplies);
-+	if (ret)
-+		return ret;
-+
-+	/* exynos_pcie_host_init controls ep->phy */
-+	exynos_pcie_host_init(pp);
-+	dw_pcie_setup_rc(pp);
-+	exynos_pcie_start_link(pci);
-+	return dw_pcie_wait_for_link(pci);
-+}
-+
-+static const struct dev_pm_ops exynos_pcie_pm_ops = {
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(exynos_pcie_suspend_noirq,
-+				      exynos_pcie_resume_noirq)
-+};
-+
- static const struct of_device_id exynos_pcie_of_match[] = {
--	{
--		.compatible = "samsung,exynos5440-pcie",
--		.data = &exynos5440_pcie_ops
--	},
--	{},
-+	{ .compatible = "samsung,exynos5433-pcie", },
-+	{ },
- };
- 
- static struct platform_driver exynos_pcie_driver = {
-+	.probe		= exynos_pcie_probe,
- 	.remove		= __exit_p(exynos_pcie_remove),
- 	.driver = {
- 		.name	= "exynos-pcie",
- 		.of_match_table = exynos_pcie_of_match,
-+		.pm		= &exynos_pcie_pm_ops,
- 	},
- };
--
--/* Exynos PCIe driver does not allow module unload */
--
--static int __init exynos_pcie_init(void)
--{
--	return platform_driver_probe(&exynos_pcie_driver, exynos_pcie_probe);
--}
--subsys_initcall(exynos_pcie_init);
-+module_platform_driver(exynos_pcie_driver);
-+MODULE_LICENSE("GPL v2");
-+MODULE_DEVICE_TABLE(of, exynos_pcie_of_match);
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index f70692ac79c5..8b93f0bba1f2 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -2522,6 +2522,7 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VT3351, quirk_disab
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VT3364, quirk_disable_all_msi);
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_8380_0, quirk_disable_all_msi);
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_SI, 0x0761, quirk_disable_all_msi);
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_SAMSUNG, 0xa5e3, quirk_disable_all_msi);
- 
- /* Disable MSI on chipsets that are known to not support it */
- static void quirk_disable_msi(struct pci_dev *dev)
--- 
-2.17.1
+Unfortunately the firmware versions I've hit this problem on has gone
+belly up when receiving this request, that's why I asked Amit to add a
+flag to skip it.
 
+That said, in the devices I've hit this I've managed to get newer
+firmware working, which doesn't have either problem.
+
+Regards,
+Bjorn
