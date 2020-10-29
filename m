@@ -2,64 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EC629E9E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 879C829E9F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727253AbgJ2LCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:02:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgJ2LCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:02:37 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00E2A2072D;
-        Thu, 29 Oct 2020 11:02:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603969356;
-        bh=HkZvAn5MjVZOthJYyfmXpbjUnjLgxWPIT1sDs9FNYU0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RoxVHBr5/s0q8Ly0B0NSmsykQw88I3WBCRzmng+S2FJgp6T/ET8/DF/+i7OxNsVE2
-         Y1MafCmeaHTwcImhbeEzzjMY7nmTSmd29izdq9kWZ45Lt0Wmw3snYgz9hSlPXndgWM
-         rROr5/yoKDUFWWoX71syakVRiqSghZj2/7ahci/w=
-Date:   Thu, 29 Oct 2020 12:03:26 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Cc:     stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        b.zolnierkie@samsung.com, jani.nikula@intel.com,
-        daniel.vetter@ffwll.ch, gustavoars@kernel.org,
-        dri-devel@lists.freedesktop.org, akpm@linux-foundation.org,
-        rppt@kernel.org
-Subject: Re: [PATCH 1/1] video: fbdev: fix divide error in fbcon_switch
-Message-ID: <20201029110326.GC3840801@kroah.com>
-References: <20201021235758.59993-1-saeed.mirzamohammadi@oracle.com>
- <ad87c5c1-061d-8a81-7b2c-43a8687a464f@suse.de>
- <3294C797-1BBB-4410-812B-4A4BB813F002@oracle.com>
- <20201027062217.GE206502@kroah.com>
- <2DA9AE6D-93D6-4142-9FC4-EEACB92B7203@oracle.com>
+        id S1727356AbgJ2LER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726071AbgJ2LEQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 07:04:16 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9BFC0613CF;
+        Thu, 29 Oct 2020 04:04:16 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 13so1955100wmf.0;
+        Thu, 29 Oct 2020 04:04:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:references:cc:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zcPYz8S2wXEmW4dS41Qn2A338/K8CGnPDRkKEY4clDQ=;
+        b=d65dGmhZDEcE3Mesu4orSPWJobICIQDaoPNQvxtUoqopsrkhJ2PR0/BumksGcgfEZW
+         RiTqznlgwnYxBrakQQJr4RV8Mm+J+X1sWhLpTBVrMczQfC5mahOfYTA+2eYqt97sVuKM
+         g+ghZK420PwYHtXEJEnh2AJu+aWrbaWW/Ia3muFAdtmxPnQloZiwTmVFMFS/dgEoRjUj
+         eCKOgAYt+7lGNqohKgoWu/dtjzZ/jsFaKPJbP5IMWyk/IX/YNX0O6kiIsooo18hudpk7
+         juLPJjTQ3b/Op6JjVlElvswMDoBok7BW+wVimVC3SEf2PofUUofhsQnUu8BP9i8ugYmd
+         sqww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:references:cc:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zcPYz8S2wXEmW4dS41Qn2A338/K8CGnPDRkKEY4clDQ=;
+        b=LsVR4+DfY6zUpuyKIdyCM6B1KdIMFy7Kq4Gmzf18P/kh+fC0FQst9I14+RuEgMlsrl
+         Djnsx+agnrUns18I1d0J/+I4CslEo1f+H5m/8M0aYySbzg6D9dxGynL/6MSvMqDx5iCq
+         IWOqn/c8QX7qb04HZpOSspQ/vSBSbiMrHGypIPzz+1YB13PcC0+4FLKf0KMU4fuGc3Pt
+         6lSmqjvcAnbgSE9svyHwzf2qFfutu8fCwxhlrqx5nqju7PBYD3bliMEwfNdQGBIzwivf
+         u/RF+SOKzKElAS/TBeZumtWYdN1E7225dbWjZOW8oZbSqjflSB9dvrHDKa2e+WqId/I3
+         EbRg==
+X-Gm-Message-State: AOAM533kcWPKNlFXnDtjYLeR/vQYvZ8xwLwV1l/eZC8Dgy/MZ9OJNNe0
+        P5ZvbGUBTtpGRxT3u5CKsSM=
+X-Google-Smtp-Source: ABdhPJyYJNttqjwzD4T5vJ3/Y0blARIcaT4t1esjg+fT6Gfym4cbM+jsgXNMVKURDaywJYuwRkthGQ==
+X-Received: by 2002:a1c:2d8f:: with SMTP id t137mr3713521wmt.26.1603969455284;
+        Thu, 29 Oct 2020 04:04:15 -0700 (PDT)
+Received: from [192.168.1.143] ([170.253.60.68])
+        by smtp.gmail.com with ESMTPSA id l16sm4460532wrx.5.2020.10.29.04.04.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 04:04:14 -0700 (PDT)
+Subject: Re: Possible bug in getdents64()?
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+To:     libc-help@sourceware.org
+References: <829387c9-50d7-3d29-83bf-c4fec17cf9dd@gmail.com>
+Cc:     linux-man <linux-man@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <01065580-8602-52e6-0cca-22d1aa20a540@gmail.com>
+Date:   Thu, 29 Oct 2020 12:04:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <829387c9-50d7-3d29-83bf-c4fec17cf9dd@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2DA9AE6D-93D6-4142-9FC4-EEACB92B7203@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 10:12:49AM -0700, Saeed Mirzamohammadi wrote:
-> Hi Greg,
+[[ CC += linux-man, linux-kernel, libc-alpha, mtk ]]
+
+On 2020-10-28 20:26, Alejandro Colomar wrote:
+> The manual page for getdents64() says the prototype should be the 
+> following:
 > 
-> Sorry for the confusion. I’m requesting stable maintainers to cherry-pick this patch into stable 5.4 and 5.8.
-> commit cc07057c7c88fb8eff3b1991131ded0f0bcfa7e3
-> Author: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-> Date:   Wed Oct 21 16:57:58 2020 -0700
+>         int getdents64(unsigned int fd, struct linux_dirent64 *dirp,
+>                      unsigned int count);
 > 
->     video: fbdev: fix divide error in fbcon_switch
-
-I do not see that commit in Linus's tree, do you?
-
-confused,
-
-greg k-h
+> 
+> Note the type of 'count': 'unsigned int'
+> (usually a 32-bit unsigned integer).
+> And the Linux kernel seems to use those types (fs/readdir.c:351):
+> 
+> SYSCALL_DEFINE3(getdents64, unsigned int, fd,
+>          struct linux_dirent64 __user *, dirent,
+>          unsigned int, count)
+> {
+> ...
+> }
+> 
+> But glibc uses 'size_t' (usually a 64-bit unsigned integer)
+> for the parameter 'count' (sysdeps/unix/linux/getdents64.c:25):
+> 
+> 
+> /* The kernel struct linux_dirent64 matches the 'struct dirent64' type.  */
+> ssize_t
+> __getdents64 (int fd, void *buf, size_t nbytes)
+> {
+>    /* The system call takes an unsigned int argument, and some length
+>       checks in the kernel use an int type.  */
+>    if (nbytes > INT_MAX)
+>      nbytes = INT_MAX;
+>    return INLINE_SYSCALL_CALL (getdents64, fd, buf, nbytes);
+> }
+> libc_hidden_def (__getdents64)
+> weak_alias (__getdents64, getdents64)
+> 
+> 
+> 
+> Isn't it undefined behavior to pass a variable of a different (larger) 
+> type to a variadic function than what it expects?
+> 
+> Is that behavior defined in this implementation?
+> 
+> Wouldn't a cast to 'unsigned int' be needed?
+> 
+> 
+> Thanks,
+> 
+> Alex
