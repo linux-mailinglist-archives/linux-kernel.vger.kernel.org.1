@@ -2,254 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196C029EC64
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDABB29EC69
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgJ2NCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:02:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51692 "EHLO
+        id S1726712AbgJ2NDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:03:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgJ2NCw (ORCPT
+        with ESMTP id S1726667AbgJ2NDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:02:52 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F8AC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:02:52 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id e15so2283219pfh.6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:02:52 -0700 (PDT)
+        Thu, 29 Oct 2020 09:03:51 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3EAC0613CF;
+        Thu, 29 Oct 2020 06:03:51 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id 9so3087038oir.5;
+        Thu, 29 Oct 2020 06:03:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sz7n398cwBKh7JjqOtf7ES2DXfMLFKKgqnEGds9IebI=;
-        b=EeLgfN65lnNMZmXJAKojPCDSL0HfEy/1atH5jyC4MELn7XRCglx9dQ83CM7HnuI2Nf
-         90N1GolfK6OW+KnsXnafIc1RrRwhx+BGAkwpMHVAaQ93r/IIm9tWKJ/FTDtgZW6Lc/uD
-         a0HhEp5cvpaCVxckkxmMyNrCizMNaG++9JlvvVCo6i1MlnncD0wH/w/VzMHP2/JJxMBc
-         0yXWYrkyvapbPHnHwOf6tflZED988lbmjusvqf5Dorz43ilW2R3q7KiG7Lr4TYL/5EZV
-         cgqRnEPzKV5B4XrBpjnr8KQEVeS29fzDmVaNAPjxcPsM8PzFLWxYsx6i4HWWBT2pvbP6
-         /aTQ==
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Td0XnDB5MGUyyHW6+aBIO4HGx6/p3E+sTiAeOAor+5o=;
+        b=q9+cCJ40rDzNAzVlRCYa3Inxo9dV/7bx1eH5RmRluPmy1Sy3gIHMf7xDWfk4hL3VDH
+         1Pl0PBwyyj7q4NqxYZ/o3cgiPEbd7Ln2rt6oa02JI/IMrnVMDQxzPqfuZwiJ7raLgnYG
+         L5PDpHIV/DZyG/b6m0M/sgt5+SxdlpbhSdjZmmlXN1YfQft483ibryAqGYxWARg3t7Oz
+         f22fgwWm1zS12gyoFWdVc1IOoUhS3Ex3VGPMe135KP8LfuLbeAvFLtF8dgC8mtKyTX1L
+         p7o+oEJi5DW06vBsfoi/OOeBCEajuRLEFztNLXnBRzCgxZJXj9HNHEsjycMeui6+0XZf
+         R0hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sz7n398cwBKh7JjqOtf7ES2DXfMLFKKgqnEGds9IebI=;
-        b=jrrrunxGH+VszvxW/GGnFHLfMPXRAWH3FfCGzpXdqMUxzmW6x1AtMCn3wjK4c0qWhG
-         ffVshYoblNlgagwwjFqTgiq+CEgoDbiN3ZRUGG/kewvkJD8wMvD2SInyAZjVMZN7Xgu0
-         S521UqJYgCuMRNOVdKnq28/P5/OYjd3XtzuLW7RQPFQsYwzyMPQnDVjf5cZOEeD0Zk6i
-         hdOWLEiAi1ff6Vk6mXH85FgPjwCiYeh1cZAjQ9TpCNkaYT9q/JwWlhjhCumAbkwMA3D4
-         nYQh1UGQ8pnjTYBUn3esUDhueXN4bukZkUKb6ZCOgDvH3PIfv96zt0WKNjbFRGgH6L1b
-         /r4Q==
-X-Gm-Message-State: AOAM531PwMQJtu0eFjs3dMdzA5rkfAjxRHsfO2qU4Pug/IaXRcaPdjMh
-        EykZ8rRxp6eRjm8Ho1OGr7E=
-X-Google-Smtp-Source: ABdhPJxOYNs/gax03hNkvflsN1Qy3TB7AlwFP/YxeyWaP/GS1n9tXoNbY3o6ipiqG+ThWaco8wY1Xg==
-X-Received: by 2002:a63:165d:: with SMTP id 29mr3993326pgw.391.1603976570986;
-        Thu, 29 Oct 2020 06:02:50 -0700 (PDT)
-Received: from ubuntu (1-171-243-36.dynamic-ip.hinet.net. [1.171.243.36])
-        by smtp.gmail.com with ESMTPSA id bo16sm3184480pjb.41.2020.10.29.06.02.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 06:02:50 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 21:02:43 +0800
-From:   Yun Hsiang <hsiang023167@gmail.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     dietmar.eggemann@arm.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, patrick.bellasi@matbug.net
-Subject: Re: [PATCH v3 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-Message-ID: <20201029130243.GA897607@ubuntu>
-References: <20201025073632.720393-1-hsiang023167@gmail.com>
- <20201029110818.alrviwwljxnegmip@e107158-lin>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Td0XnDB5MGUyyHW6+aBIO4HGx6/p3E+sTiAeOAor+5o=;
+        b=QcPGyJCO/aG32vDL0Ri+NPktH4NCu2Yc8oq3Tt3r8LHHyVpt7M+ZrnQs0dsY8pNhC1
+         rjAdUTscr9s7jQ4rOUkLxsKXQfDiZ/5aRjz8z17SMn8n+7R4xTrNySdLZujhTw7PabhW
+         GVlhQFdJX6clbL9oxCZGJCsSvlAdwLzpOH6R5gaY0+ONhTd1NghHpTAl3qDi5kcvrZRP
+         pQPMrS8aXGYcqqcJe3cAnYq4meUCzDPCXdqu+0+QBpvD2gwdbQTn5Cui1RnDrfYet8hm
+         TNg38nqbswhfUs21s5RIb+ilF4w0EY8/QrwlZAtjQJtLpgMgQEuNQ4g1GBsMQScd1RPA
+         PL3w==
+X-Gm-Message-State: AOAM533B/a4G+acoD/VjOyqthYxoRcd5BqFX0weuK4r9CbN6RxxMhxyg
+        B4iVwGTy70LPYPM4g/cHXgByf3H+Klw=
+X-Google-Smtp-Source: ABdhPJzJaUgOYCgDc3UZJ+kAGYtZ8FJqTN2DlM6hS/gKPAhFprkLRrY3yOnDVaoAXBmy80LwMuJ+/g==
+X-Received: by 2002:aca:31ce:: with SMTP id x197mr1925560oix.90.1603976630390;
+        Thu, 29 Oct 2020 06:03:50 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t75sm104063oif.25.2020.10.29.06.03.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 06:03:49 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 2/3] watchdog: st_lpc_wdt: remove unnecessary
+ CONFIG_PM_SLEEP
+To:     Coiby Xu <coiby.xu@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     Patrice Chotard <patrice.chotard@st.com>,
+        "moderated list:ARM/STI ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201029075327.228570-1-coiby.xu@gmail.com>
+ <20201029075327.228570-2-coiby.xu@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <b943769d-cfbe-4761-8aa3-1d1c8b3b0d7e@roeck-us.net>
+Date:   Thu, 29 Oct 2020 06:03:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029110818.alrviwwljxnegmip@e107158-lin>
+In-Reply-To: <20201029075327.228570-2-coiby.xu@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qais,
-
-On Thu, Oct 29, 2020 at 11:08:18AM +0000, Qais Yousef wrote:
-> Hi Yun
-> 
-> Sorry for chipping in late.
-> 
-> On 10/25/20 15:36, Yun Hsiang wrote:
-> > If the user wants to stop controlling uclamp and let the task inherit
-> > the value from the group, we need a method to reset.
-> > 
-> > Add SCHED_FLAG_UTIL_CLAMP_RESET flag to allow the user to reset uclamp via
-> > sched_setattr syscall.
-> > 
-> > The policy is
-> > _CLAMP_RESET                           => reset both min and max
-> > _CLAMP_RESET | _CLAMP_MIN              => reset min value
-> > _CLAMP_RESET | _CLAMP_MAX              => reset max value
-> > _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
-> > 
-> > Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
-> > ---
-> >  include/uapi/linux/sched.h |  7 +++++--
-> >  kernel/sched/core.c        | 41 +++++++++++++++++++++++++++++++-------
-> >  2 files changed, 39 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
-> > index 3bac0a8ceab2..6c823ddb1a1e 100644
-> > --- a/include/uapi/linux/sched.h
-> > +++ b/include/uapi/linux/sched.h
-> > @@ -132,17 +132,20 @@ struct clone_args {
-> >  #define SCHED_FLAG_KEEP_PARAMS		0x10
-> >  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
-> >  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
-> > +#define SCHED_FLAG_UTIL_CLAMP_RESET	0x80
-> >  
-> >  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
-> >  				 SCHED_FLAG_KEEP_PARAMS)
-> >  
-> >  #define SCHED_FLAG_UTIL_CLAMP	(SCHED_FLAG_UTIL_CLAMP_MIN | \
-> > -				 SCHED_FLAG_UTIL_CLAMP_MAX)
-> > +				 SCHED_FLAG_UTIL_CLAMP_MAX | \
-> > +				 SCHED_FLAG_UTIL_CLAMP_RESET)
-> 
-> Is it safe to change this define in a uapi header without a potential
-> consequence?
-> 
-> FWIW I still have concerns about this approach. We're doing a reset to control
-> cgroup behavior, I don't see any correlation between the two. Besides the
-> difference between RESET and setting uclamp_min=0 without RESET is not obvious
-> nor intuitive for someone who didn't look at the code.
-> 
-> I propose something like the below which is more explicit about what is being
-> requested and delivered here. And if we decide to deprecate this behavior,
-> it'd be much easier to just ignore this flag.
-> 
-> You must set this flag with your uclamp request to retain the cgroup
-> inheritance behavior. If the flag is not set, we automatically clear it.
-
-I think this behavior may not meet android requirement. Becasue in
-android there is group like top-app. And we want to boost the
-group by setting group uclamp_min. If group inheritance is explicit, we
-need to set this flag for all the tasks in top-app. This might be
-costly.
-
-> 
-> Only compile tested.
-> 
-> Thanks
-> 
-> --
-> Qais Yousef
-> 
-> 
-> --------->8-----------
-> 
-> From fe48fde7dea582b3b075e80e6936e1199f24363d Mon Sep 17 00:00:00 2001
-> From: Qais Yousef <qais.yousef@arm.com>
-> Date: Wed, 28 Oct 2020 22:36:26 +0000
-> Subject: [PATCH] sched/uclamp: Add new flag to control cgroup behavior
-> 
-> Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+On 10/29/20 12:53 AM, Coiby Xu wrote:
+> SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+> > Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 > ---
->  include/linux/sched.h      |  1 +
->  include/uapi/linux/sched.h |  6 ++++++
->  kernel/sched/core.c        | 25 ++++++++++++++++---------
->  3 files changed, 23 insertions(+), 9 deletions(-)
+>  drivers/watchdog/st_lpc_wdt.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index afe01e232935..6eb35dfaa893 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -604,6 +604,7 @@ struct uclamp_se {
->  	unsigned int bucket_id		: bits_per(UCLAMP_BUCKETS);
->  	unsigned int active		: 1;
->  	unsigned int user_defined	: 1;
-> +	unsigned int follow_cgroup	: 1;
->  };
->  #endif /* CONFIG_UCLAMP_TASK */
+> diff --git a/drivers/watchdog/st_lpc_wdt.c b/drivers/watchdog/st_lpc_wdt.c
+> index 14ab6559c748..c1428d63dc9e 100644
+> --- a/drivers/watchdog/st_lpc_wdt.c
+> +++ b/drivers/watchdog/st_lpc_wdt.c
+> @@ -248,7 +248,6 @@ static int st_wdog_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
 >  
-> diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
-> index 3bac0a8ceab2..33ff716a7574 100644
-> --- a/include/uapi/linux/sched.h
-> +++ b/include/uapi/linux/sched.h
-> @@ -132,6 +132,12 @@ struct clone_args {
->  #define SCHED_FLAG_KEEP_PARAMS		0x10
->  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
->  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
-> +/*
-> + * Control whether a task follows/inherits the cgroup uclamp.min/max or not.
-> + * By default this flag is set for all tasks. Any explicit modification to a
-> + * task's UCLAMP_MIN/MAX must set this flag to retain the bahavior.
-> + */
-> +#define SCHED_FLAG_UTIL_FOLLOW_CGROUP	0x80
->  
->  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
->  				 SCHED_FLAG_KEEP_PARAMS)
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 2d95dc3f4644..1c77d6b8bd96 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1083,7 +1083,7 @@ uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
->  		return uc_req;
->  
->  	uc_max = task_group(p)->uclamp[clamp_id];
-> -	if (uc_req.value > uc_max.value || !uc_req.user_defined)
-> +	if (uc_req.value > uc_max.value || uc_req.follow_cgroup)
->  		return uc_max;
->  #endif
->  
-> @@ -1446,6 +1446,7 @@ static void __setscheduler_uclamp(struct task_struct *p,
->  				  const struct sched_attr *attr)
+> -#ifdef CONFIG_PM_SLEEP
+>  static int st_wdog_suspend(struct device *dev)
+
+Again, this requires __maybe_unused.
+
 >  {
->  	enum uclamp_id clamp_id;
-> +	bool follow_cgroup;
+>  	struct st_wdog *st_wdog = watchdog_get_drvdata(&st_wdog_dev);
+> @@ -285,7 +284,6 @@ static int st_wdog_resume(struct device *dev)
 >  
->  	/*
->  	 * On scheduling class change, reset to default clamps for tasks
-> @@ -1472,14 +1473,18 @@ static void __setscheduler_uclamp(struct task_struct *p,
->  	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
->  		return;
->  
-> +	follow_cgroup = attr->sched_flags & SCHED_FLAG_UTIL_FOLLOW_CGROUP;
-> +
->  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-> -		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
-> -			      attr->sched_util_min, true);
-> +		struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MIN];
-> +		uc_se->follow_cgroup = follow_cgroup;
-> +		uclamp_se_set(uc_se, attr->sched_util_min, true);
->  	}
->  
->  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
-> -		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
-> -			      attr->sched_util_max, true);
-> +		struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MAX];
-> +		uc_se->follow_cgroup = follow_cgroup;
-> +		uclamp_se_set(uc_se, attr->sched_util_max, true);
->  	}
+>  	return 0;
 >  }
+> -#endif
 >  
-> @@ -1498,8 +1503,9 @@ static void uclamp_fork(struct task_struct *p)
->  		return;
->  
->  	for_each_clamp_id(clamp_id) {
-> -		uclamp_se_set(&p->uclamp_req[clamp_id],
-> -			      uclamp_none(clamp_id), false);
-> +		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
-> +		uc_se->follow_cgroup = true;
-> +		uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
->  	}
->  }
->  
-> @@ -1532,8 +1538,9 @@ static void __init init_uclamp(void)
->  		init_uclamp_rq(cpu_rq(cpu));
->  
->  	for_each_clamp_id(clamp_id) {
-> -		uclamp_se_set(&init_task.uclamp_req[clamp_id],
-> -			      uclamp_none(clamp_id), false);
-> +		struct uclamp_se *uc_se = &init_task.uclamp_req[clamp_id];
-> +		uc_se->follow_cgroup = true;
-> +		uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
->  	}
->  
->  	/* System defaults allow max clamp values for both indexes */
-> -- 
-> 2.25.1
+>  static SIMPLE_DEV_PM_OPS(st_wdog_pm_ops,
+>  			 st_wdog_suspend,
+> 
+
