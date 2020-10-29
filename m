@@ -2,60 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC7329E501
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE8C29E4F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730800AbgJ2Hul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58408 "EHLO
+        id S1731377AbgJ2HuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727474AbgJ2HnW (ORCPT
+        with ESMTP id S1731374AbgJ2Hnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:43:22 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59094C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:43:22 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id s22so1639055pga.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:43:22 -0700 (PDT)
+        Thu, 29 Oct 2020 03:43:33 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE4BC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:43:33 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 13so1650257pfy.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:43:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ByQRRqSOS0s9pNTpOtt//gM7iDqhPG0HzrMizgfaGV0=;
-        b=R6KbsFBJ7AGf6UFZEd4Vf7yH5UZW8brSqoW1Xe9CLwUdFHKUtWJjt6NIgy3eCUmeOG
-         QtRfCio4ewGz+maSTsyOVbge3tdNBLrvpAggSW3CfBow/g0deLUu2vM89stbtfPSHIq9
-         mXfUNwhYDV9lRsqNqW/MfQlVff57B/xlD456fkNR8qUz8K58XsUMehnKLBtpvTwax9xP
-         q359Uacwp5fwdN0AUQCuypMoNlt5yshUotW3KYlqjZbTuWCV6n8uwQeRt1fPs1W5kvWS
-         XeKh+h5vPaxqEBiP3FPm8USLMG6P4tDiykdk1HUiLuMWm6d8BV5kiVP9AwOA7A/WlWLx
-         8ZXA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=tubacnQpwB3/W2PhhRu24urvA3DZqPuQW1vT0viMV9c=;
+        b=qelMKJ2WSeEmQYBOX1ZKDe81Ga6Ri3W0Vyv+XB3IPPvJcxS32qo9MAPakdGNGTBBbq
+         zrqOzulmZraX3Q7qsRKvDDYFQk7udvuSECmgQJGPxjaJ6Dr+7I+ILcb+r8U1KjI8UTmf
+         qxc5S4bAEM1nkq0i7esFIzTiCzQOfn0OVOaxCogYvzwU4DGlF/Z9ok/mfJXLwovnkcZ0
+         3C4yEoqwfNwBYF6tlPYKL63YLgSKl5BnMVy/m82jOBhOcCQ1eL7fINId/h/LLGtWaYUW
+         LErPqdvsFq6LiV/7vIWgSrlgaxcgFLkvhhD1mZlYPmchGJHRK7ThN521grVT1fGzcAz4
+         kvtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ByQRRqSOS0s9pNTpOtt//gM7iDqhPG0HzrMizgfaGV0=;
-        b=o+SEIm69PKP0qlIa7acosYzbqBI4xJWDZKZ9k944Crfi6zRN5Uq8CS8glKCUM+djc4
-         lQjSZ33MRWu8E87LAqnabJpdstmprnl2jH9lfEms17oEjZW6ad7lBEHAloVM/l77Tjev
-         SFIYrkStMVXw3tCB2LwYPTHpK2BlCFGl+KFPnms2OQJvdOEgpGtwys9cUSYAnZDads+4
-         7wjw203y3MC6Nr6zMP4HjfhUhAxwTInJEbduGP9jj8TFVYbY7ojLuoWoDwm5i0Z6THoj
-         +QlNVfFzGWkFopjL98BRZcl1toQcYhqYwrZ4qXFYl5ncoZeKYzMw9tiRqKPClVOfq/EO
-         i52Q==
-X-Gm-Message-State: AOAM531r3mr39xhW82wZ3YSJrIQG/tS1ZURdx7aEC7C1Qhy1YjoRpauO
-        TV3h17Bl/ff5Dg38NBDrOKY=
-X-Google-Smtp-Source: ABdhPJzqW9+vkDhQYC2zinHRRJ2vcxLo2Fsw8j+CEUVBMEU9yIiZZoEMGG/itZzsejxJ4or4GBJz0Q==
-X-Received: by 2002:a63:7e4f:: with SMTP id o15mr2971078pgn.428.1603957401923;
-        Thu, 29 Oct 2020 00:43:21 -0700 (PDT)
-Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
-        by smtp.gmail.com with ESMTPSA id g7sm1707066pjl.11.2020.10.29.00.43.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=tubacnQpwB3/W2PhhRu24urvA3DZqPuQW1vT0viMV9c=;
+        b=TYzhOpUhr4ugcYCpFysCiiDnCftyAKIQij4Yy9BlxAJaomfxEHO0zJSSlAHdAlUZsc
+         R/dILHvy4uv6goRbQfMYhvNjAD1az301XiqQ+ReBboA48GCZvftc52QxElaabSAw5Kdk
+         drCfUPE4V+BXaD0VNFdxsYcXdO8HivjYye01VKhuBET1oQP7YvMvybXKan8NFXhixe7z
+         RpCp22a6Pn+M13tZ46Gxlb2JAf999fGd4L1si8ZBziY0X5sOJaxVvhOXDMiE5oEupt4m
+         3lGamlELJnsO4lpppas47i9rdmMDfXRo++eVOF1pTPlCP/PoTLydjV8LwGa74CX+Q95g
+         9+Gg==
+X-Gm-Message-State: AOAM530WLGeQVQiNZRopV4CWzx0hIXhm08hY3xqkgth7Z+2Pl9lqLmJz
+        6cTrofkS5Uw/ypiNQvqg24k=
+X-Google-Smtp-Source: ABdhPJwfCpKPCpSPUWy+Lzj+iwnX+ql0BPKlVGcGxkFcgc7JIGCDlh6SjXrSCFSf54pnToB9lwi7Hg==
+X-Received: by 2002:a63:7e4f:: with SMTP id o15mr2971579pgn.428.1603957412989;
+        Thu, 29 Oct 2020 00:43:32 -0700 (PDT)
+Received: from localhost ([160.16.113.140])
+        by smtp.gmail.com with ESMTPSA id v4sm951756pfm.57.2020.10.29.00.43.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 00:43:21 -0700 (PDT)
+        Thu, 29 Oct 2020 00:43:32 -0700 (PDT)
 From:   Coiby Xu <coiby.xu@gmail.com>
 To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org (moderated list:SOUND),
+Cc:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        alsa-devel@alsa-project.org (moderated list:FREESCALE SOC SOUND DRIVERS),
+        linuxppc-dev@lists.ozlabs.org (open list:FREESCALE SOC SOUND DRIVERS),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 01/25] ALSA: core: pcm: remove unnecessary CONFIG_PM_SLEEP
-Date:   Thu, 29 Oct 2020 15:42:37 +0800
-Message-Id: <20201029074301.226644-1-coiby.xu@gmail.com>
+Subject: [PATCH 02/25] ASoC: fsl: fsl_ssi: remove unnecessary CONFIG_PM_SLEEP
+Date:   Thu, 29 Oct 2020 15:42:38 +0800
+Message-Id: <20201029074301.226644-2-coiby.xu@gmail.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201029074301.226644-1-coiby.xu@gmail.com>
+References: <20201029074301.226644-1-coiby.xu@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -66,29 +76,29 @@ SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
 
 Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 ---
- sound/core/pcm.c | 2 --
+ sound/soc/fsl/fsl_ssi.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index be5714f1bb58..5a281ac92958 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -599,7 +599,6 @@ static const struct attribute_group *pcm_dev_attr_groups[];
-  * PM callbacks: we need to deal only with suspend here, as the resume is
-  * triggered either from user-space or the driver's resume callback
-  */
--#ifdef CONFIG_PM_SLEEP
- static int do_pcm_suspend(struct device *dev)
- {
- 	struct snd_pcm_str *pstr = container_of(dev, struct snd_pcm_str, dev);
-@@ -608,7 +607,6 @@ static int do_pcm_suspend(struct device *dev)
- 		snd_pcm_suspend_all(pstr->pcm);
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 404be27c15fe..065500a4cbc1 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1669,7 +1669,6 @@ static int fsl_ssi_remove(struct platform_device *pdev)
  	return 0;
  }
--#endif
  
- static const struct dev_pm_ops pcm_dev_pm_ops = {
- 	SET_SYSTEM_SLEEP_PM_OPS(do_pcm_suspend, NULL)
+-#ifdef CONFIG_PM_SLEEP
+ static int fsl_ssi_suspend(struct device *dev)
+ {
+ 	struct fsl_ssi *ssi = dev_get_drvdata(dev);
+@@ -1699,7 +1698,6 @@ static int fsl_ssi_resume(struct device *dev)
+ 
+ 	return regcache_sync(regs);
+ }
+-#endif /* CONFIG_PM_SLEEP */
+ 
+ static const struct dev_pm_ops fsl_ssi_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(fsl_ssi_suspend, fsl_ssi_resume)
 -- 
 2.28.0
 
