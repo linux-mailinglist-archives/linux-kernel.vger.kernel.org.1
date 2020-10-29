@@ -2,108 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55D829F78B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FCE29F78D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725884AbgJ2WNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 18:13:07 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:37691 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725372AbgJ2WNE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 18:13:04 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-27-qEwyl-1dPLWnmCDyyUncBw-1; Thu, 29 Oct 2020 22:13:00 +0000
-X-MC-Unique: qEwyl-1dPLWnmCDyyUncBw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 29 Oct 2020 22:12:59 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 29 Oct 2020 22:12:59 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arvind Sankar' <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        'Arnd Bergmann' <arnd@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "x86@kernel.org" <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-Subject: RE: [PATCH] [v2] x86: apic: avoid -Wshadow warning in header
-Thread-Topic: [PATCH] [v2] x86: apic: avoid -Wshadow warning in header
-Thread-Index: AQHWrZenJpzBwTRfbE+Uihb7XQWTqKmurjkggABtZPaAAAkikA==
-Date:   Thu, 29 Oct 2020 22:12:59 +0000
-Message-ID: <ad73f56e79d249b1b3614bccc85e2ca5@AcuMS.aculab.com>
-References: <20201028212417.3715575-1-arnd@kernel.org>
- <38b11ed3fec64ebd82d6a92834a4bebe@AcuMS.aculab.com>
- <20201029165611.GA2557691@rani.riverdale.lan>
- <93180c2d-268c-3c33-7c54-4221dfe0d7ad@redhat.com>
- <87v9esojdi.fsf@nanos.tec.linutronix.de>
- <20201029213512.GA34524@rani.riverdale.lan>
-In-Reply-To: <20201029213512.GA34524@rani.riverdale.lan>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1725913AbgJ2WNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 18:13:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725822AbgJ2WNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 18:13:17 -0400
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CFC521534;
+        Thu, 29 Oct 2020 22:13:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604009596;
+        bh=6G0KYvEIe0We8NX5HSEENfq+P+g0aXPqwOaw5vT8pHU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=t9s2F4T1BSutTSAYQzkKV9Vwzcfoj1IZCcvn6qLY+IE0toQSmiRzknnoOoZJq6OAX
+         O6GW5hYvnaJUWLZeshE3vvF5kX80yJDcPHTp3QBZ2QK6IPjBDWoTR8Hw+gn1mhS4K0
+         0aLWnqu+HPTdsm3sh/b27IUFocXEI8+jrdfoKUMU=
+Received: by mail-oi1-f173.google.com with SMTP id f7so4684919oib.4;
+        Thu, 29 Oct 2020 15:13:16 -0700 (PDT)
+X-Gm-Message-State: AOAM531h1wDfksxWMhD1RgyEOOc3toMDldpAAGH2j60G8DBC1nfnFHMM
+        3KG+GWrDrhQNgRIePGJB72jzGa8xpEucHMybW6c=
+X-Google-Smtp-Source: ABdhPJyCaru79zu3HxLlCyL7++Unf5ik6G+WcAV4bSZkMJOFXhdSAOc40vpKleOl7hnH1hBldv/dlbFhkw/866xLEgY=
+X-Received: by 2002:aca:2310:: with SMTP id e16mr940329oie.47.1604009595232;
+ Thu, 29 Oct 2020 15:13:15 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20201028171506.15682-1-ardb@kernel.org> <20201028171506.15682-2-ardb@kernel.org>
+ <20201028213903.fvdjydadqt6tx765@ast-mbp.dhcp.thefacebook.com>
+ <CAMj1kXFHcM-Jb+MwsLtB4NMUmMyAGGLeNGNLC9vTATot3NJLrA@mail.gmail.com>
+ <20201028225919.6ydy3m2u4p7x3to7@ast-mbp.dhcp.thefacebook.com>
+ <CAMj1kXG8PmvO6bLhGXPWtzKMnAsip2WDa-qdrd+kFfr30sd8-A@mail.gmail.com>
+ <20201028232001.pp7erdwft7oyt2xm@ast-mbp.dhcp.thefacebook.com>
+ <20201029025745.GA2386070@rani.riverdale.lan> <20201029203113.GJ2672@gate.crashing.org>
+In-Reply-To: <20201029203113.GJ2672@gate.crashing.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 29 Oct 2020 23:13:04 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHxX+u5-cN0v3SLdqZTSiKsWsFOvc2SC5=-ScaUZOu8Ng@mail.gmail.com>
+Message-ID: <CAMj1kXHxX+u5-cN0v3SLdqZTSiKsWsFOvc2SC5=-ScaUZOu8Ng@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] bpf: don't rely on GCC __attribute__((optimize))
+ to disable GCSE
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJ2aW5kIFNhbmthcg0KPiBTZW50OiAyOSBPY3RvYmVyIDIwMjAgMjE6MzUNCj4gDQo+
-IE9uIFRodSwgT2N0IDI5LCAyMDIwIGF0IDA5OjQxOjEzUE0gKzAxMDAsIFRob21hcyBHbGVpeG5l
-ciB3cm90ZToNCj4gPiBPbiBUaHUsIE9jdCAyOSAyMDIwIGF0IDE3OjU5LCBQYW9sbyBCb256aW5p
-IHdyb3RlOg0KPiA+ID4gT24gMjkvMTAvMjAgMTc6NTYsIEFydmluZCBTYW5rYXIgd3JvdGU6DQo+
-ID4gPj4+IEZvciB0aG9zZSB0d28ganVzdCBhZGQ6DQo+ID4gPj4+IAlzdHJ1Y3QgYXBpYyAqYXBp
-YyA9IHg4Nl9zeXN0ZW1fYXBpYzsNCj4gPiA+Pj4gYmVmb3JlIGFsbCB0aGUgYXNzaWdubWVudHMu
-DQo+ID4gPj4+IExlc3MgY2h1cm4gYW5kIG11Y2ggYmV0dGVyIGNvZGUuDQo+ID4gPj4+DQo+ID4g
-Pj4gV2h5IHdvdWxkIGl0IGJlIGJldHRlciBjb2RlPw0KPiA+ID4+DQo+ID4gPg0KPiA+ID4gSSB0
-aGluayBoZSBtZWFucyB0aGUgY29tcGlsZXIgcHJvZHVjZXMgYmV0dGVyIGNvZGUsIGJlY2F1c2Ug
-aXQgd29uJ3QNCj4gPiA+IHJlYWQgdGhlIGdsb2JhbCB2YXJpYWJsZSByZXBlYXRlZGx5LiAgTm90
-IHN1cmUgaWYgdGhhdCdzIHRydWUsKCopIGJ1dCBJDQo+ID4gPiB0aGluayBJIGRvIHByZWZlciB0
-aGF0IHZlcnNpb24gaWYgQXJuZCB3YW50cyB0byBkbyB0aGF0IHR3ZWFrLg0KPiA+DQo+ID4gSXQn
-cyBub3QgdHJ1ZS4NCj4gPg0KPiA+ICAgICAgZm9vICpwID0gYmFyOw0KPiA+DQo+ID4gICAgICBw
-LT5hID0gMTsNCj4gPiAgICAgIHAtPmIgPSAyOw0KPiA+DQo+ID4gVGhlIGNvbXBpbGVyIGlzIGZy
-ZWUgdG8gcmVsb2FkIGJhciBhZnRlciBhY2Nlc3NpbmcgcC0+YSBhbmQgd2l0aA0KPiA+DQo+ID4g
-ICAgIGJhci0+YSA9IDE7DQo+ID4gICAgIGJhci0+YiA9IDE7DQo+ID4NCj4gPiBpdCBjYW4gZWl0
-aGVyIGNhY2hlIGJhciBpbiBhIHJlZ2lzdGVyIG9yIHJlcmVhZCBpdCBhZnRlciBiYXItPmENCj4g
-Pg0KPiA+IFRoZSBnZW5lcmF0ZWQgY29kZSBpcyB0aGUgc2FtZSBhcyBsb25nIGFzIHRoZXJlIGlz
-IG5vIHJlYXNvbiB0byByZWxvYWQsDQo+ID4gZS5nLiByZWdpc3RlciBwcmVzc3VyZS4NCj4gPg0K
-PiA+IFRoYW5rcywNCj4gPg0KPiA+ICAgICAgICAgdGdseA0KPiANCj4gSXQncyBub3QgcXVpdGUg
-dGhlIHNhbWUuDQo+IA0KPiBodHRwczovL2dvZGJvbHQub3JnL3ovNGR6UGJNDQo+IA0KPiBXaXRo
-IC1mbm8tc3RyaWN0LWFsaWFzaW5nLCB0aGUgY29tcGlsZXIgcmVsb2FkcyB0aGUgcG9pbnRlciBp
-ZiB5b3Ugd3JpdGUNCj4gdG8gdGhlIHN0YXJ0IG9mIHdoYXQgaXQgcG9pbnRzIHRvLCBidXQgbm90
-IGlmIHlvdSB3cml0ZSB0byBsYXRlcg0KPiBlbGVtZW50cy4NCg0KSSBndWVzcyBpdCBhc3N1bWVz
-IHRoYXQgZ2xvYmFsIGRhdGEgZG9lc24ndCBvdmVybGFwLg0KDQpCdXQgaW4gZ2VuZXJhbCB0aGV5
-IGFyZSBzb3J0IG9mIG9wcG9zaXRlczoNCg0KV2l0aCB0aGUgbG9jYWwgdmFyaWFibGUgaXQgY2Fu
-IHJlbG9hZCBpZiBpdCBrbm93cyB0aGUgd3JpdGUNCmNhbm5vdCBoYXZlIGFmZmVjdGVkIHRoZSBn
-bG9iYWwgLSBidXQgaXMgdW5saWtlbHkgdG8gZG8gc28uDQoNClVzaW5nIHRoZSBnbG9iYWwgaXQg
-bXVzdCByZWxvYWQgaWYgaXQgaXMgcG9zc2libGUgdGhlIHdyaXRlDQptaWdodCBoYXZlIGFmZmVj
-dGVkIHRoZSBnbG9iYWwuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNp
-ZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsN
-ClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Thu, 29 Oct 2020 at 21:35, Segher Boessenkool
+<segher@kernel.crashing.org> wrote:
+>
+> On Wed, Oct 28, 2020 at 10:57:45PM -0400, Arvind Sankar wrote:
+> > On Wed, Oct 28, 2020 at 04:20:01PM -0700, Alexei Starovoitov wrote:
+> > > All compilers have bugs. Kernel has bugs. What can go wrong?
+>
+> Heh.
+>
+> > +linux-toolchains. GCC updated the documentation in 7.x to discourage
+> > people from using the optimize attribute.
+> >
+> > https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=893100c3fa9b3049ce84dcc0c1a839ddc7a21387
+>
+> https://patchwork.ozlabs.org/project/gcc/patch/20151213081911.GA320@x4/
+> has all the discussion around that GCC patch.
+>
 
+For everyone's convenience, let me reproduce here how the GCC
+developers describe this attribute on their wiki [0]:
+
+"""
+Currently (2015), this attribute is known to have several critical
+bugs (PR37565, PR63401, PR60580, PR50782). Using it may produce not
+effect at all or lead to wrong-code.
+
+Quoting one GCC maintainer: "I consider the optimize attribute code
+seriously broken and unmaintained (but sometimes useful for debugging
+- and only that)." source
+
+Unfortunately, the people who added it are either not working on GCC
+anymore or not interested in fixing it. Do not try to guess how it is
+supposed to work by trial-and-error. There is not a list of options
+that are safe to use or known to be broken. Bug reports about the
+optimize attribute being broken will probably be closed as WONTFIX
+(PR59262), thus it is not worth to open new ones. If it works for you
+for a given version of GCC, it doesn't mean it will work on a
+different machine or a different version.
+
+The only realistic choices are to not use it, to use it and accept its
+brokenness (current or future one, since it is unmaintained), or join
+GCC and fix it (perhaps motivating other people along the way to join
+your effort).
+"""
+
+[0] https://gcc.gnu.org/wiki/FAQ#optimize_attribute_broken
