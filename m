@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC39529DFEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A96229DFE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404190AbgJ2BHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
+        id S2404163AbgJ2BHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404160AbgJ2BGg (ORCPT
+        with ESMTP id S2404165AbgJ2BGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 21:06:36 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B89C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:06:35 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id h6so1215264lfj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:06:35 -0700 (PDT)
+        Wed, 28 Oct 2020 21:06:51 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBEEC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:06:49 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id l2so1237663lfk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:06:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=pn1ECaKgjWXcAj9IGY9xa/P/urhrG9XYha2Ze81haPI=;
-        b=CQS/TTCSV/PXnE8RKTiVdoB9MOH5R7RwtttysBDMDTrgm/gdARB43BDZ0IDwXRbttP
-         ztHZD+0ZqXCLCfwhTBFjTJ/tiDFdE5MfzqiqiGCR+7qo4iT6gbpszW4gnmqQCqcjiJpS
-         2TE6AWWOiPiIHtCacy+jotlH1GyWUK1IMX8yXc8Mz7No8vs/C8JnIaRhweaK8oe5/GL8
-         Jfgwtgs4gp/wo+Iw7O3nmUyVGt/oQ9DoZH/ghQZ47kjp3G1BZkOXJfz4E7+ioxLBPKqf
-         wNABOnStf+0wcuigg1mHsL0KxMLpB2iVoTZoknuLmehB39wLMOwYtSz1o0w4ntAQ9dSd
-         hmXQ==
+        bh=bPMDf0qf5u7i+D1hct4Y8ywTPSNEiqZnANVXp2csHmo=;
+        b=UDRPLu9msJZF3jU3f0cfRMmMUjv4al6mEdH+doXP3CJs1E+meQHwswUn6FfxeU4M7Y
+         mdjF6dlxs/r9X+nsG+jvBBpuJoeemwz7oZzHEH8cu2FuE4WoJMkmPz/Ji0yhM4+WiFtB
+         rhpBehRSmY/cTeZk76/aJgyzXOLL3NJE1/q4NlCTkpqRI97pcMZ+gNtjS3uoF4nuh7W1
+         yw24PiXpzrFEiT3OI82ePRsw7PnnCJjT7Cw+g66nh4wZX1yx+HybJu5UCEhtHD658mi+
+         886WmiZsQzGj6z4/CpD39D+FU4YLDTEf8HsVVyfPaptpyJrsYS5a5QKE4zded/CZpn7z
+         MwYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pn1ECaKgjWXcAj9IGY9xa/P/urhrG9XYha2Ze81haPI=;
-        b=DN5qAR1IUAs2OkhYU7h7zTt3lKPtzMpHR2Uk8TSzpLUK6LtDwC/EdqRU/3zX9t9Ijr
-         kpmftFIp/yLdMMvlVrVURswe3vBLEihGYH7+bW1yhWJoZF1l4SyilJpXclLv89YbB6IF
-         lw8Pbea9zrn0XvHlCx181WL3LtxjfebRMvrkMi0Uzw+Urijlxza3gssTJSxy0pfVkb+M
-         mpyZBpkW9Zg+cQqsYNmmuCAJF0oCPcDB3raZrV7IYsRw+TRyQteP2J7JI7UOfbFF3iTq
-         Pkt97wry0RX5X7sfRFNB17eCu64r82K82gaAJU5M1ayAOnxU/Ma2H5gwAiFbs4amKij1
-         1u7A==
-X-Gm-Message-State: AOAM533DPWf880Y0hngvrFCOOqWiFVqY9/1qlLnT5crIO3DDWO3Mu7sf
-        FC+f4N8vh1jp6XkQFhhBPkOPcXU9rpeGw/r5L5M47g==
-X-Google-Smtp-Source: ABdhPJxixA+XOTBfZ3BYWY3Zb24muHdDJFJXA6IB2XijLR/mZHkSGkBIOx58SM+pLP1LMZ2g2O7vRP785516kejacuI=
-X-Received: by 2002:a19:e308:: with SMTP id a8mr562788lfh.573.1603933593718;
- Wed, 28 Oct 2020 18:06:33 -0700 (PDT)
+        bh=bPMDf0qf5u7i+D1hct4Y8ywTPSNEiqZnANVXp2csHmo=;
+        b=YOJXyH22+PrGtlW0NVRnwCF3nN8GUYicXV8tx6qR3bGxsBap9OcuRK6BZMb31/taro
+         wfEvQFyZNjSP3yhy92byX2T3fWuDuywtD6vVdGoKAwNhVylsF7aBPOlMIqH+w9l8fPHW
+         FSiMfLRUxWjORHPzRlU/JT224LPH2ChwXquEXQGEJli3foGq2lfZlGxbBVMmKDojLUfz
+         2Pxmcl+vlz1Hhjeuk6/lEo42wzFdSrLK4HLdfhLCbNz0KhISIrdV8LJHUrHrbaFd4Kbc
+         yiGbQCzDTjC3VGVQYUHxuxcB5H6Q81j988F4N8Cf43vS3uA4elX4InKVQaWKYmN/K5aE
+         LL8Q==
+X-Gm-Message-State: AOAM532OkDyXZUgcSnV0a5HIdCInttvttHII892LO8suVXMU4K93MfOI
+        Ils582CxgjmtFi18yzfegLFto1IvU587uJiXcZi3GQ==
+X-Google-Smtp-Source: ABdhPJzDdFVnRlhR1ZLyXcR/6gy+QFM2Be7EL54Ws7cTI4I+QtUU5EktO2FmKhpKLEYWon1ieCyZ/uOiqgKG+1NYZAk=
+X-Received: by 2002:a05:6512:1182:: with SMTP id g2mr584148lfr.198.1603933608096;
+ Wed, 28 Oct 2020 18:06:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201027200358.557003-1-mic@digikod.net> <20201027200358.557003-5-mic@digikod.net>
-In-Reply-To: <20201027200358.557003-5-mic@digikod.net>
+References: <20201027200358.557003-1-mic@digikod.net> <20201027200358.557003-7-mic@digikod.net>
+In-Reply-To: <20201027200358.557003-7-mic@digikod.net>
 From:   Jann Horn <jannh@google.com>
-Date:   Thu, 29 Oct 2020 02:06:06 +0100
-Message-ID: <CAG48ez1W2sHBeL4pV4QqUonUJc-snNnxE_jh8FVP=pyhhm0fdg@mail.gmail.com>
-Subject: Re: [PATCH v22 04/12] landlock: Add ptrace restrictions
+Date:   Thu, 29 Oct 2020 02:06:21 +0100
+Message-ID: <CAG48ez0venF9OnBG82yc8U+px1LUfUU498f1kJxYMu0hcU0+-A@mail.gmail.com>
+Subject: Re: [PATCH v22 06/12] fs,security: Add sb_delete hook
 To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
 Cc:     James Morris <jmorris@namei.org>,
         "Serge E . Hallyn" <serge@hallyn.com>,
@@ -85,18 +85,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, Oct 27, 2020 at 9:04 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> =
 wrote:
-> Using ptrace(2) and related debug features on a target process can lead
-> to a privilege escalation.  Indeed, ptrace(2) can be used by an attacker
-> to impersonate another task and to remain undetected while performing
-> malicious activities.  Thanks to  ptrace_may_access(), various part of
-> the kernel can check if a tracer is more privileged than a tracee.
+> The sb_delete security hook is called when shutting down a superblock,
+> which may be useful to release kernel objects tied to the superblock's
+> lifetime (e.g. inodes).
 >
-> A landlocked process has fewer privileges than a non-landlocked process
-> and must then be subject to additional restrictions when manipulating
-> processes. To be allowed to use ptrace(2) and related syscalls on a
-> target process, a landlocked process must have a subset of the target
-> process's rules (i.e. the tracee must be in a sub-domain of the tracer).
+> This new hook is needed by Landlock to release (ephemerally) tagged
+> struct inodes.  This comes from the unprivileged nature of Landlock
+> described in the next commit.
 >
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
 > Cc: James Morris <jmorris@namei.org>
 > Cc: Jann Horn <jannh@google.com>
 > Cc: Kees Cook <keescook@chromium.org>
