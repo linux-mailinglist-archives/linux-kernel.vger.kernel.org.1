@@ -2,192 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF2E29F36C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 522B429F36F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728384AbgJ2RhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
+        id S1726973AbgJ2Riu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 13:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgJ2RhT (ORCPT
+        with ESMTP id S1725971AbgJ2Rit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:37:19 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12100C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:37:19 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a72so604873wme.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:37:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yxVOjFjkk/aWg0934gm436IS5GNuiS+Phez+14sm9BM=;
-        b=jZbxbIOd5GYVOZ17H4fWhjGODzjcbbv+MXolrFxm7Kq7w4cj18tJJEb0lA5g5sO9zF
-         mwhV8oTNQDbbgvFFURrJQEztox44iD9lqGRYk5LjIv3/foRjQmiyRVaIJjMPbsSbadto
-         r292mYEUZNtSTQA9BlqbEOP28g0ASvJY8KQODdl3JxpewlWkFBly474S+Oyzx59Nhsuc
-         ld6dB9JbpXlCKfpJBTivonxXJYG3Gm57Wo+wDPdgn3L7XeOMWwiUnr0OnWidobpM0Gi1
-         7aN319CH2AQ4xblTfuhmiO7Xz0MzTNS6I7DbEvLrd3Ysx/bEf54IwxiP76QFm9GLlHde
-         m3OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yxVOjFjkk/aWg0934gm436IS5GNuiS+Phez+14sm9BM=;
-        b=Uf9QOIRh5c8N7V2r6WWHE9HffLZphEeonkYksK1BJh17eZ5FGPXLFnfY68+n15RXHN
-         LDGkKy8ED8qunFbWRyDS+FsM7NhDYt/HJ5tZNoI8KV/jCeux159VcE9XhKOoZff3soIs
-         SqWujvHtoJud/qb1R6s3aSdO5LZHvIJ7BJU5hmF4BSGtd4++JRQQTrqpiZgL+KLFQ2Er
-         8hT/DqqCjEAVtqvhg8XOcr9ms6A5DFy75xvZsUqqLpNPaBlNJCl6ajzzcRiBmo2xvN4Q
-         nn/hwWOQMNxs0DucPUclb/ACH6T2oSFGQoiKUamnI0hpPKU07XHZBiWWpr77zpq39Acw
-         eiVQ==
-X-Gm-Message-State: AOAM530b+bk6DzVcsT0VCya26DR+LzKhWisIWQvEB6Gh9csSDQ5iEgtm
-        ahJxZsHPXvEa1yx8t8DbnS89S1HMnWUfd2XvTIGx7g==
-X-Google-Smtp-Source: ABdhPJz/ws+tQdTlD2sro4O3KJY0G2O9Z2dFSKkGdI9/xqHwUEDbMwkiwcMYMZHYYK/aGD6hzY3rio10qCe6eKIGuDc=
-X-Received: by 2002:a1c:980a:: with SMTP id a10mr216873wme.103.1603993037592;
- Thu, 29 Oct 2020 10:37:17 -0700 (PDT)
+        Thu, 29 Oct 2020 13:38:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF66C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:38:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AzibmD5dY6ZURAduUrkITiJkxpnpdJiU2llTZ8l++is=; b=SUA4XGVJI2Kkq6MNymzNarznE0
+        ittvatb0mv8U3z20MjuuHI/VHbetAeBq9X/iI+O8YEjXk1NnAOV/tu6z8xQtRSVq1/YIM7XW9h/vt
+        DOIkzR/02KAlDVIoZu10hR/5kKJZcbA0QrkU3Nn4P+5Ar+hJiF+zy86jKseSKSvCRfyNYGMqMnlRH
+        Klq4ItI2BcDUusmClwdFkZCsCtEvti8GYM0R7XrjFKnFLowxErarpjcD2Fu85P3Z23aXAEEu8kiBR
+        8MvOLP5Ttr6qErfdezqhUsbcvyesuqNQV5pBj9RBM9jckWN5wF04Kqy/LR2ap7I3m2fCNN2wmnYky
+        wR3CnQyQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kYBsf-0000N5-Ae; Thu, 29 Oct 2020 17:38:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A4A8E300455;
+        Thu, 29 Oct 2020 18:38:32 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 90FBA20315047; Thu, 29 Oct 2020 18:38:32 +0100 (CET)
+Date:   Thu, 29 Oct 2020 18:38:32 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org, ouwen210@hotmail.com
+Subject: Re: [PATCH v4 14/19] sched, lockdep: Annotate ->pi_lock recursion
+Message-ID: <20201029173832.GU2628@hirez.programming.kicks-ass.net>
+References: <20201023101158.088940906@infradead.org>
+ <20201023102347.406912197@infradead.org>
+ <jhjblglov4r.mognet@arm.com>
 MIME-Version: 1.0
-References: <20201026173358.14704-1-vbabka@suse.cz> <20201026173358.14704-4-vbabka@suse.cz>
- <93ab79df-cf8c-294b-3ed1-8a563e4a452b@redhat.com> <1fc7ec3a-367c-eb9f-1cb4-b9e015fea87c@suse.cz>
- <81faf3d6-9536-ff00-447d-e964a010492d@suse.cz>
-In-Reply-To: <81faf3d6-9536-ff00-447d-e964a010492d@suse.cz>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 29 Oct 2020 18:37:04 +0100
-Message-ID: <CAG_fn=VGOVGn3Vx177ACDqg8BaTS96B6Kx01_pxXG5R1D-cWRw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm, page_alloc: reduce static keys in prep_new_page()
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mateusz Nosek <mateusznosek0@gmail.com>,
-        Laura Abbott <labbott@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jhjblglov4r.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 2:32 PM Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 10/27/20 12:05 PM, Vlastimil Babka wrote:
-> > On 10/27/20 10:10 AM, David Hildenbrand wrote:
-> >> On 26.10.20 18:33, Vlastimil Babka wrote:
-> >>> prep_new_page() will always zero a new page (regardless of __GFP_ZERO=
-) when
-> >>> init_on_alloc is enabled, but will also always skip zeroing if the pa=
-ge was
-> >>> already zeroed on free by init_on_free or page poisoning.
-> >>>
-> >>> The latter check implemented by free_pages_prezeroed() can involve tw=
-o
-> >>> different static keys. As prep_new_page() is really a hot path, let's=
- introduce
-> >>> a single static key free_pages_not_prezeroed for this purpose and ini=
-tialize it
-> >>> in init_mem_debugging().
-> >>
-> >> Is this actually observable in practice? This smells like
-> >> micro-optimization to me.
-> >>
-> >> Also, I thought the whole reason for static keys is to have basically =
-no
-> >> overhead at runtime, so I wonder if replacing two static key checks by=
- a
-> >> single one actually makes *some* difference.
+On Thu, Oct 29, 2020 at 04:27:16PM +0000, Valentin Schneider wrote:
+> 
+> On 23/10/20 11:12, Peter Zijlstra wrote:
+> > @@ -2617,6 +2618,20 @@ void sched_set_stop_task(int cpu, struct
+> >               sched_setscheduler_nocheck(stop, SCHED_FIFO, &param);
 > >
-> > You're right, the difference seems to be just a single NOP. The static =
-key
-> > infrastructure seems to be working really well.
-> > (At least the asm inspection made me realize that kernel_poison_pages()=
- is
-> > called unconditionally and the static key is checked inside, not inline=
- so I'll
-> > be amending patch 2...)
+> >               stop->sched_class = &stop_sched_class;
+> > +
+> > +		/*
+> > +		 * The PI code calls rt_mutex_setprio() with ->pi_lock held to
+> > +		 * adjust the effective priority of a task. As a result,
+> > +		 * rt_mutex_setprio() can trigger (RT) balancing operations,
+> > +		 * which can then trigger wakeups of the stop thread to push
+> > +		 * around the current task.
+> > +		 *
+> > +		 * The stop task itself will never be part of the PI-chain, it
+> > +		 * never blocks, therefore that ->pi_lock recursion is safe.
+> 
+> Isn't it that the stopper task can only run when preemption is re-enabled,
+> and the ->pi_lock is dropped before then?
+> 
+> If we were to have an SCA-like function that would kick the stopper but
+> "forget" to release the pi_lock, then we would very much like lockdep to
+> complain, right? Or is that something else entirely?
+
+You've forgotten the other, and original, purpose of ->pi_lock, guarding
+the actual PI chain. Please have a look at rt_mutex_adjust_prio_chain()
+and its comment.
+
+But no, this isn't about running, this is about doing an actual wakeup
+(of the stopper task) while holding an ->pi_lock instance (guaranteed
+not the stopper task's). And since wakeup will take ->pi_lock, lockdep
+will get all whiny about ->pi_lock self recursion.
+
+> > +		 * Tell lockdep about this by placing the stop->pi_lock in its
+> > +		 * own class.
+> > +		 */
+> > +		lockdep_set_class(&stop->pi_lock, &stop_pi_lock);
+> >       }
 > >
-> > Initially I thought I would be reducing 3 keys to 1 in this patch, but =
-I got the
-> > code wrong. So unless others think it's a readability improvements, we =
-can drop
-> > this patch.
-
-I agree with David that replacing two static keys with one is probably
-a micro-optimization.
-Also, if someone is enabling both init_on_alloc and init_on_free, they
-are already paying so much that no one is going to notice an extra
-static key.
-
-> > Or we can also reconsider this whole optimization. If the point is to b=
-e
-> > paranoid and enable both init_on_free and init_on_alloc, should we trus=
-t that
-> > nobody wrote something after the clearing on free via use-after-free? :=
-) Kees/Alex?
-
-I think we must trust the kernel to not overwrite zeroed pages.
-After all, this could theoretically happen at any time, not only while
-the memory chunk is freed.
-
-> More thoughts...
->
-> PAGE_POISONING_NO_SANITY skips the check on "unpoisoning" whether poison =
-was
-> corrupted
-> PAGE_POISONING_ZERO uses zero instead of 0xAA as poison pattern
->
-> the point of enabling both of these seems to be moot now that init_on_fre=
-e
-> exists, as that zeroes pages that are being freed, without checking on al=
-loc
-> that they are still zeroed.
->
-> What if only one is enabled?
-> - PAGE_POISONING_NO_SANITY without PAGE_POISONING_ZERO - we poison with t=
-he 0xAA
-> pattern but nobody checks it, so does it give us anything over init_on_fr=
-ee
-> writing zeroes? I don't think so?
->
-> - PAGE_POISONING_ZERO without PAGE_POISONING_NO_SANITY - we use zeroes (l=
-ike
-> init_on_free) but also check that it wasn't corrupted. We save some time =
-on
-> writing zeroes again on alloc, but the check is still expensive. And writ=
-ing
-> 0xAA would possibly detect more corruptions than writing zero (a stray wr=
-ite of
-> NULL is more likely to happen than of 0xAA?).
->
-> So my conclusion:
-> - We can remove PAGE_POISONING_NO_SANITY because it only makes sense with
-> PAGE_POISONING_ZERO, and we can use init_on_free instead
-
-Agreed.
-
-> - We can also probably remove PAGE_POISONING_ZERO, because if we want to =
-do the
-> unpoisoning sanity check, then we also most likely want the 0xAA pattern =
-and not
-> zero.
-
-Agreed.
-It might also make sense to somehow merge page poisoning and
-init_on_free together and have one config dimension instead of two
-(providing something similar to the
-INIT_STACK_NONE/INIT_STACK_ALL_ZERO/INIT_STACK_ALL_PATTERN configs)
-
-> Thoughts?
->
-
-
---=20
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+> >       cpu_rq(cpu)->stop = stop;
