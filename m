@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE5629F0A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 252ED29F0A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728482AbgJ2P5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50644 "EHLO
+        id S1728552AbgJ2P5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727966AbgJ2P5b (ORCPT
+        with ESMTP id S1728525AbgJ2P5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:57:31 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128A2C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:57:31 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id z24so2703944pgk.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:57:31 -0700 (PDT)
+        Thu, 29 Oct 2020 11:57:46 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043E9C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:57:46 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id p93so3557101edd.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:57:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=lTUHb90aDzUDND2rdKN/gp3QHYuHZ8nhx0Wf1vd5LKk=;
-        b=SDwP3bmCckPi50TqdnAe0CylVXD+7kN3COsGzSsGefI8VFYkD7B3Ho/P8O8ynYZhCk
-         LPG0V8C30rS+4DVC+7fLC0YlLyXQeKQuZgXXEPSM7P02ULNgtffyE6T4FN72Os+znoCT
-         WnQpUcGYwect55FclV7ILmJNzmvf0ozzWSwgo0Vim71OZ4NNqwAihzOPHxEP4+BKkFaH
-         Kpm5Wy8i6n3sxgFHOe1WXFNWOEcwB42oCsdq90WkqvGSu6NoXs4WTb6kRMnKaKXNmjOM
-         2V4yweaQFPXWzJ1B1p8JJ6ktFfCfDk1cGq6c3SYzXkgxfgKipSvnwZjBOkwXIrTvHByT
-         L5oA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JPnk/G7BX8SIzBEguNflOMTQJEcMKd2LhAeOHUohXx0=;
+        b=rpMrco7c8TIn+xeDLi4hUw/J2nDZC1S/yseVOZolm5cwBmWMXh9/I84w1CHoq+iLOy
+         QY3YBcqavaSD/pX6kNIGp5Oq1fTAubJXFM3yaXkrYJ3lcYyR/gW87npmYbnu30kXbyCi
+         kRgUU9BVdp8yAPaYnp3oSmW2poLHKvpLtLlLxY2vtYJS7P9VLZ3W1ovDJuQvJRxd/JE3
+         c5RZQmScQcvTt3NZbrrHwYFGdOxYKot2payT1OwVdJU0+DeqV6ZNvDufPVPQfrD5Br3U
+         7ZT4bJd28mJ22FB4N9UiZeEc48BxxTS17rlfGXaRxt8uhL0+kHx9KQZsgbY6wVOSFMEN
+         s0iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lTUHb90aDzUDND2rdKN/gp3QHYuHZ8nhx0Wf1vd5LKk=;
-        b=KfioNyzQ43mwyPsjZHsW9BY4rt08m6rGosfSZL4Y1svWcL012RCRMI2ND3qwuVkoMm
-         P2r7BHJDUkvnZrBVYSrfIU2Mb1zIEgR5nyyYwTTUBbuUNR4DfzzlWj6l9XpFJmkza5An
-         9IwxAWsoFcV8W9mUGKVJ4JXIhqTiFcYe9qsIzGV4kwbnwv/0xsgXTUPp0bpwUyosWS1a
-         uZJ7MOix6UPA5AKsvB8WTRyBbn6dscLKfrS/nkcy4Cc6+Q0TjXH8/MrHpGXqlzRiCDe6
-         cPOGeQItwKj0dWTu7wKb9ZuAsRU2+np6bCfQ978jvRaClUPnBTmYLmYJE6Qm5gznVWXo
-         jqyA==
-X-Gm-Message-State: AOAM530K9xODalt2A6oHio067Ug91ICxvzvc5ApQvmyFy3QP3T9rNRbW
-        6v6SO0K7y76sCrUDrrOdW+Cl1Engva8=
-X-Google-Smtp-Source: ABdhPJxAu1s9liEFd0hMoyqKpHvMlfa8tbf7TMNPDGJQI94lKcxpaJvjw5F+/MHuBTIu8YmXYd9L0Q==
-X-Received: by 2002:a62:a10a:0:b029:154:fd62:ba90 with SMTP id b10-20020a62a10a0000b0290154fd62ba90mr4946523pff.62.1603987050708;
-        Thu, 29 Oct 2020 08:57:30 -0700 (PDT)
-Received: from localhost (42-3-19-186.static.netvigator.com. [42.3.19.186])
-        by smtp.gmail.com with ESMTPSA id s11sm263481pjm.4.2020.10.29.08.57.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 29 Oct 2020 08:57:30 -0700 (PDT)
-From:   Qiujun Huang <hqjagain@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
-Cc:     Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH v3] tracing: Fix out of bounds write in get_trace_buf
-Date:   Thu, 29 Oct 2020 23:57:14 +0800
-Message-Id: <20201029155714.3935-1-hqjagain@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JPnk/G7BX8SIzBEguNflOMTQJEcMKd2LhAeOHUohXx0=;
+        b=muIENp3OxjJ1mqgKclcL04PcE0fkfVJbs1DB1GX3Re0hY9TXJHvZFVJl82fBuutnHD
+         doBiRNXlhTr5TvaNvzXsktlxVFz0gQ16mmyjL2GiCo/lp22VCkPFKJgz+1JfHYajEtzQ
+         kKGG0nVj6OwCRHmqrG42LgwvrNnzFAQ1otF8EEY6A/pLcOhRmnPiLzNbqbgX7bcEfAiY
+         +hRb55PheRYQMdKwMRAuHrnCE9g592N88GmNhJblc4EcQNuFMpP8D2H7vCwNMaMF+Czk
+         ANgX5U7sRKuFzns8jcEGw1yBG2KiHDLhWBnjkaGA3YPqIPjRVKufQYjBrykDsfAHf7wL
+         VMrw==
+X-Gm-Message-State: AOAM532mFmj3pldmyebjoAHiPUTrh5Ukpc+0TP/xHjmr7AKn2uiTPJTv
+        fuXcLDBUv5ZXMvUnQU5eLpyouFlEAdYgBHLJmEA=
+X-Google-Smtp-Source: ABdhPJzJt8zjHrjYi/9z5vlQquco3PAqMPP/29FKyDPYEzhWuf/iF4bwR5KUYd7dXJw1vuR4gDnv62+UgHjbfiq5HMQ=
+X-Received: by 2002:a05:6402:6d8:: with SMTP id n24mr4776181edy.168.1603987064744;
+ Thu, 29 Oct 2020 08:57:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201007161736.ACC6E387@viggo.jf.intel.com> <20201007161749.4C56D1F1@viggo.jf.intel.com>
+ <20201029081454.GA30442@linux> <99dff0cd-2b1a-2c41-2596-eda7ecc7c160@intel.com>
+In-Reply-To: <99dff0cd-2b1a-2c41-2596-eda7ecc7c160@intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 29 Oct 2020 08:57:32 -0700
+Message-ID: <CAHbLzkpfwsR663Kv_16kW81aZ7sLMPQp6WYbqwBBpofq3x0HNg@mail.gmail.com>
+Subject: Re: [RFC][PATCH 7/9] mm/vmscan: Consider anonymous pages without swap
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, kbusch@kernel.org,
+        "Verma, Vishal L" <vishal.l.verma@intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The subscript should be nesting - 1, as nesting had self-added.
+On Thu, Oct 29, 2020 at 7:33 AM Dave Hansen <dave.hansen@intel.com> wrote:
+>
+> On 10/29/20 1:14 AM, Oscar Salvador wrote:
+> > With this patch, we will use always the atomic version
+> > get_nr_swap_pages from now on. Is that ok? I guess so, but it might
+> > warrant a mention in the changelog?
+>
+> I _think_ it's OK.  But, you're right that it's a potential behavior
+> change that's not mentioned in the changelog.
+>
+> I'll mention it in the changelog and see if I can dream up any other
+> practical implications from this change.
 
-Fixes: e2ace001176dc ("tracing: Choose static tp_printk buffer by explicit nesting count")
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
----
-v3:
-Modify the way of array reference instead.
-v2:
-Fix a typo in the title.
----
- kernel/trace/trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+IMHO, we don't have to modify those two places at all. They are used
+to rebalance the anon lru active/inactive ratio even if we did not try
+to evict anon pages at all, so "total_swap_pages" is used instead of
+checking swappiness and available swap space.
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 528971714fc6..daa96215e294 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3132,7 +3132,7 @@ static char *get_trace_buf(void)
- 
- 	/* Interrupts must see nesting incremented before we use the buffer */
- 	barrier();
--	return &buffer->buffer[buffer->nesting][0];
-+	return &buffer->buffer[buffer->nesting - 1][0];
- }
- 
- static void put_trace_buf(void)
--- 
-2.17.1
+The changes may result in imbalanced anon lru.
 
+>
+> Thanks for taking a look!
+>
