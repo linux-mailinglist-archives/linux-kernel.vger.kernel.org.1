@@ -2,127 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C1529F934
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 00:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE3D29F93F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 00:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725908AbgJ2Xmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 19:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgJ2Xmf (ORCPT
+        id S1725897AbgJ2XtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 19:49:08 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:55922 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgJ2XtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 19:42:35 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D4AC0613CF;
-        Thu, 29 Oct 2020 16:41:42 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604014900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dWuiBG8a+NnkPGmw23LTYR8bRuWLPOcTs2J9m+57N30=;
-        b=SXAxpB4OrSZM8KanRhq0SHKbbqNdcUZGBDuuY0dpE3HzYsV6X3WGBvormMPwGgBe13WqGS
-        zl+c6uDF44lRL3XYTntNDOXhWi1enb8HJyzyEjQMqxw3GSIbeAvode6e1x0/HUh1LOV13D
-        iGoRdWEQcslmNVQBlZot50CD5jCjvafIrM9wdZgJj+TIzPSwNqWmbdAFeVqjadC2jU11Tb
-        rGfBMY/MMEh+koaNaMVZhxHbfDry4hkHFhwfoBCQ7ddPNZj4c2CDLBpYqBLzdFm2N74+mY
-        zh6t2OfFuG8Sz0WmlH9mRTGpAIOiGIUlj2fJM+MCYBQBz4iunYGWpWFAsyGP3w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604014900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dWuiBG8a+NnkPGmw23LTYR8bRuWLPOcTs2J9m+57N30=;
-        b=bPrOV2Mu8WrqdxWFrt3BZte7XxWkrcHXKqjiK4x7RufHzyISYL2psldkYUi2DujbGIhU51
-        +7ZFtIMezAsqNiCA==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Christoph Hellwig <hch@lst.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list\:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org
-Subject: Re: [patch V2 00/18] mm/highmem: Preemptible variant of kmap_atomic & friends
-In-Reply-To: <CAHk-=wiFxxGapdOyZHE-7LbFPk+jdfoqdeeJg0zWNQ86WvJGXg@mail.gmail.com>
-References: <20201029221806.189523375@linutronix.de> <CAHk-=wiFxxGapdOyZHE-7LbFPk+jdfoqdeeJg0zWNQ86WvJGXg@mail.gmail.com>
-Date:   Fri, 30 Oct 2020 00:41:39 +0100
-Message-ID: <87pn50ob0s.fsf@nanos.tec.linutronix.de>
+        Thu, 29 Oct 2020 19:49:06 -0400
+Received: by mail-io1-f70.google.com with SMTP id t187so3070144iof.22
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 16:49:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=7hk9TAk77DHYI/kt84nHphsd4t0j8ackh+hIcD9azRA=;
+        b=H4oaTAvIy3HnvvGcWQ0fS9P4N+apfhNR6kKrEInBrB6rTPFukjzUe3kAxviaqaDAfj
+         NHqu0shE9YFWn8O89WEruQHVjFvO15rnIqXiRFL9AD8Jh40UcZSsBsU53HdvQO9DolIb
+         J4KbaSKcXxkR5FaQwFGAOtCMoJ/yqRanXre4TEPH8A+f9e79o1DRRKYIIheg/aZ8owUr
+         I3eF29PzMHSGOhEsHGR60L7fXA2mXhx+k5O4+Zfb4Gae7egez1E3YbkuUlSWo2zdkgTP
+         nyB6+6xya3DnjoRG0PTMJDIsVGUy1spLef8VquWZr83QKkPscVOVfUqpXCHTTNdq4EP0
+         Sqmw==
+X-Gm-Message-State: AOAM530U25l6cycz5/Gp5SAW9kSbDgYjH2afIrtLEAIeXVDpH+CKy8rD
+        bb0AoOfMDzXfwAiusJtAegvjy4m6z6/dALqx8zZvztVRueBR
+X-Google-Smtp-Source: ABdhPJz6K8mon/7XpZee7kuOHWkBYo0uS+iOWapJ5rphJshKApo1O0v13M/qqv/Tjl2G6Owe5vvRA42KTOQIJB6nBYdm8sB9h+VV
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6638:3f1:: with SMTP id s17mr5648658jaq.102.1604015345410;
+ Thu, 29 Oct 2020 16:49:05 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 16:49:05 -0700
+In-Reply-To: <000000000000bd1edd05b087535a@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e0a53705b2d7ec44@google.com>
+Subject: Re: INFO: rcu detected stall in security_file_open (3)
+From:   syzbot <syzbot+d2b6e8cc299748fecf25@syzkaller.appspotmail.com>
+To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
+        davem@davemloft.net, dhowells@redhat.com, fweisbec@gmail.com,
+        ktkhai@virtuozzo.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mareklindner@neomailbox.ch, miklos@szeredi.hu, mingo@kernel.org,
+        mszeredi@redhat.com, netdev@vger.kernel.org, sw@simonwunderlich.de,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29 2020 at 16:11, Linus Torvalds wrote:
-> On Thu, Oct 29, 2020 at 3:32 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->>
->> Though I wanted to share the current state of affairs before investigating
->> that further. If there is consensus in going forward with this, I'll have a
->> deeper look into this issue.
->
-> Me likee. I think this looks like the right thing to do.
->
-> I didn't actually apply the patches, but just from reading them it
-> _looks_ to me like you do the migrate_disable() unconditionally, even
-> if it's not a highmem page..
->
-> That sounds like it might be a good thing for debugging, but not
-> necessarily great in general.
->
-> Or am I misreading things?
+syzbot suspects this issue was fixed by commit:
 
-No, you're not misreading it, but doing it conditionally would be a
-complete semantical disaster. kmap_atomic*() also disables preemption
-and pagefaults unconditionaly.  If that wouldn't be the case then every
-caller would have to have conditionals like 'if (CONFIG_HIGHMEM)' or
-worse 'if (PageHighMem(page)'.
+commit 1d0e850a49a5b56f8f3cb51e74a11e2fedb96be6
+Author: David Howells <dhowells@redhat.com>
+Date:   Fri Oct 16 12:21:14 2020 +0000
 
-Let's not go there.
+    afs: Fix cell removal
 
-Migrate disable is a less horrible plague than preempt and pagefault
-disable even if the scheduler people disagree due to the lack of theory
-backing that up :)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14bc220a500000
+start commit:   fb0155a0 Merge tag 'nfs-for-5.9-3' of git://git.linux-nfs...
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=41b736b7ce1b3ea4
+dashboard link: https://syzkaller.appspot.com/bug?extid=d2b6e8cc299748fecf25
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1249c717900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1048d9e3900000
 
-The charm of the new interface is that users still can rely on per
-cpuness independent of being on a highmem plagued system. For non
-highmem systems the extra migrate disable/enable is really a minor
-nuissance.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Thanks,
+#syz fix: afs: Fix cell removal
 
-        tglx
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
