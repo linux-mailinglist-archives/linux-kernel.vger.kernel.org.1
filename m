@@ -2,153 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA6A29E5B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F38B629E5D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727683AbgJ2IEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 04:04:55 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:58488 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726657AbgJ2IDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:03:41 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9JJd5pfmHcCAA--.10240S8;
-        Thu, 29 Oct 2020 16:03:37 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH 6/6] MIPS: Loongson64: Move decode_cpucfg() to loongson_regs.h
-Date:   Thu, 29 Oct 2020 16:03:01 +0800
-Message-Id: <1603958581-4723-7-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx_9JJd5pfmHcCAA--.10240S8
-X-Coremail-Antispam: 1UD129KBjvJXoWxGrWfKF4fWryxurykZw18Krg_yoW5ZrWxpr
-        n7Zay3Kr4IkFyI934DJr4qgr4rAr9xCrs3ZFWfXw45ZasxJ3W5Xr97urykAr12yryIqa4x
-        uFZakrWayFsruw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
-        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
-        x0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8
-        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r43Mx
-        AIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_
-        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwI
-        xGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWx
-        JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcV
-        C2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjHmh7UUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726730AbgJ2IHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 04:07:40 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:10004 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726652AbgJ2IHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:07:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603958851; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=FmPsHd/lPgc/LuSq+bEof6wEgVqlgEzCxRqYEcQH2Ps=; b=JnLf3FOHXCOZX6R7dafGPx5JSe8+ms0x9497SoD4AM8YLbWWYzlSxZ6wbtDPaB+650c4npgS
+ prttRpv+jf5o+bGhZRFY0TCqiBN+lD2pKbW+oApQZWy+PfjO5vXw67FYdeV1OQAE5BKJTTYH
+ uZ8cxMz28v20lXB0OVvyNFn81fw=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f9a784395539f1aec03b531 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Oct 2020 08:07:31
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 28FEDC43385; Thu, 29 Oct 2020 08:07:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 531A0C433F0;
+        Thu, 29 Oct 2020 08:07:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 531A0C433F0
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     robh@kernel.org, dri-devel@freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jcrouse@codeaurora.org, mka@chromium.org, robdclark@gmail.com,
+        dianders@chromium.org
+Subject: [PATCH v4 1/3] drm/msm: Add support for GPU cooling
+Date:   Thu, 29 Oct 2020 13:37:19 +0530
+Message-Id: <1603958841-20233-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since decode_cpucfg() is only used for Loongson64, just move
-it to loongson_regs.h to avoid the pollution of common code
-with #ifdef CONFIG_CPU_LOONGSON64.
+Register GPU as a devfreq cooling device so that it can be passively
+cooled by the thermal framework.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
 ---
- .../include/asm/mach-loongson64/loongson_regs.h    | 24 +++++++++++++++++
- arch/mips/kernel/cpu-probe.c                       | 31 +---------------------
- 2 files changed, 25 insertions(+), 30 deletions(-)
+Changes in v4:
+	1. Fix gpu cooling map.
+	2. Add mka's Reviewed-by tag.
+Changes in v3:
+	1. Minor fix in binding documentation (RobH)
+Changes in v2:
+	1. Update the dt bindings documentation
 
-diff --git a/arch/mips/include/asm/mach-loongson64/loongson_regs.h b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
-index 1659935..2d469d6 100644
---- a/arch/mips/include/asm/mach-loongson64/loongson_regs.h
-+++ b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
-@@ -129,6 +129,30 @@ static inline u32 read_cpucfg(u32 reg)
- #define LOONGSON_CFG7_GCCAEQRP	BIT(0)
- #define LOONGSON_CFG7_UCAWINP	BIT(1)
+ drivers/gpu/drm/msm/msm_gpu.c | 12 ++++++++++++
+ drivers/gpu/drm/msm/msm_gpu.h |  2 ++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+index 55d1648..9f9db46 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.c
++++ b/drivers/gpu/drm/msm/msm_gpu.c
+@@ -14,6 +14,7 @@
+ #include <generated/utsrelease.h>
+ #include <linux/string_helpers.h>
+ #include <linux/devfreq.h>
++#include <linux/devfreq_cooling.h>
+ #include <linux/devcoredump.h>
+ #include <linux/sched/task.h>
  
-+static inline void decode_cpucfg(struct cpuinfo_mips *c)
-+{
-+	u32 cfg1 = read_cpucfg(LOONGSON_CFG1);
-+	u32 cfg2 = read_cpucfg(LOONGSON_CFG2);
-+	u32 cfg3 = read_cpucfg(LOONGSON_CFG3);
+@@ -107,9 +108,18 @@ static void msm_devfreq_init(struct msm_gpu *gpu)
+ 	if (IS_ERR(gpu->devfreq.devfreq)) {
+ 		DRM_DEV_ERROR(&gpu->pdev->dev, "Couldn't initialize GPU devfreq\n");
+ 		gpu->devfreq.devfreq = NULL;
++		return;
+ 	}
+ 
+ 	devfreq_suspend_device(gpu->devfreq.devfreq);
 +
-+	if (cfg1 & LOONGSON_CFG1_MMI)
-+		c->ases |= MIPS_ASE_LOONGSON_MMI;
-+
-+	if (cfg2 & LOONGSON_CFG2_LEXT1)
-+		c->ases |= MIPS_ASE_LOONGSON_EXT;
-+
-+	if (cfg2 & LOONGSON_CFG2_LEXT2)
-+		c->ases |= MIPS_ASE_LOONGSON_EXT2;
-+
-+	if (cfg2 & LOONGSON_CFG2_LSPW) {
-+		c->options |= MIPS_CPU_LDPTE;
-+		c->guest.options |= MIPS_CPU_LDPTE;
++	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node,
++			gpu->devfreq.devfreq);
++	if (IS_ERR(gpu->cooling)) {
++		DRM_DEV_ERROR(&gpu->pdev->dev,
++				"Couldn't register GPU cooling device\n");
++		gpu->cooling = NULL;
 +	}
-+
-+	if (cfg3 & LOONGSON_CFG3_LCAMP)
-+		c->ases |= MIPS_ASE_LOONGSON_CAM;
-+}
-+
- static inline bool cpu_has_csr(void)
- {
- 	if (cpu_has_cfg())
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index e685369..1fa2c8b 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -31,6 +31,7 @@
- #include "fpu-probe.h"
- 
- #include <asm/mach-loongson64/cpucfg-emul.h>
-+#include <asm/mach-loongson64/loongson_regs.h>
- 
- /* Hardware capabilities */
- unsigned int elf_hwcap __read_mostly;
-@@ -1692,33 +1693,6 @@ static inline void cpu_probe_cavium(struct cpuinfo_mips *c, unsigned int cpu)
- 	}
  }
  
--#ifdef CONFIG_CPU_LOONGSON64
--#include <loongson_regs.h>
--
--static inline void decode_cpucfg(struct cpuinfo_mips *c)
--{
--	u32 cfg1 = read_cpucfg(LOONGSON_CFG1);
--	u32 cfg2 = read_cpucfg(LOONGSON_CFG2);
--	u32 cfg3 = read_cpucfg(LOONGSON_CFG3);
--
--	if (cfg1 & LOONGSON_CFG1_MMI)
--		c->ases |= MIPS_ASE_LOONGSON_MMI;
--
--	if (cfg2 & LOONGSON_CFG2_LEXT1)
--		c->ases |= MIPS_ASE_LOONGSON_EXT;
--
--	if (cfg2 & LOONGSON_CFG2_LEXT2)
--		c->ases |= MIPS_ASE_LOONGSON_EXT2;
--
--	if (cfg2 & LOONGSON_CFG2_LSPW) {
--		c->options |= MIPS_CPU_LDPTE;
--		c->guest.options |= MIPS_CPU_LDPTE;
--	}
--
--	if (cfg3 & LOONGSON_CFG3_LCAMP)
--		c->ases |= MIPS_ASE_LOONGSON_CAM;
--}
--
- static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
- {
- 	decode_configs(c);
-@@ -1787,9 +1761,6 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
- 		break;
+ static int enable_pwrrail(struct msm_gpu *gpu)
+@@ -1005,4 +1015,6 @@ void msm_gpu_cleanup(struct msm_gpu *gpu)
+ 		gpu->aspace->mmu->funcs->detach(gpu->aspace->mmu);
+ 		msm_gem_address_space_put(gpu->aspace);
  	}
++
++	devfreq_cooling_unregister(gpu->cooling);
  }
--#else
--static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu) { }
--#endif
+diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+index 6c9e1fd..9a8f20d 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.h
++++ b/drivers/gpu/drm/msm/msm_gpu.h
+@@ -147,6 +147,8 @@ struct msm_gpu {
+ 	struct msm_gpu_state *crashstate;
+ 	/* True if the hardware supports expanded apriv (a650 and newer) */
+ 	bool hw_apriv;
++
++	struct thermal_cooling_device *cooling;
+ };
  
- static inline void cpu_probe_ingenic(struct cpuinfo_mips *c, unsigned int cpu)
- {
+ static inline struct msm_gpu *dev_to_gpu(struct device *dev)
 -- 
-2.1.0
+2.7.4
 
