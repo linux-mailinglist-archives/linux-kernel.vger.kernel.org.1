@@ -2,70 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1E129EDED
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 462D929EDF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgJ2OKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:10:11 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:57190 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgJ2OKL (ORCPT
+        id S1726375AbgJ2OND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgJ2ONC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:10:11 -0400
-Received: by mail-il1-f198.google.com with SMTP id y15so2028537ilq.23
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:10:09 -0700 (PDT)
+        Thu, 29 Oct 2020 10:13:02 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F59C0613CF;
+        Thu, 29 Oct 2020 07:13:01 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id k125so544660wmf.0;
+        Thu, 29 Oct 2020 07:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wp449LD1V//0Su1aAAh4SFHAWUtfUlnD32tPLIfCQy0=;
+        b=QtANNntoFUAeLYwV8SbCOOb2qBfGraTJtFHEQrfLxYTyo90QlRQXTYH08pmU4ErqMz
+         GNv/Q/fNihER/c18jQIQ8h33tOS7WvwmToANMXuEBEZjdmjFRvIC1mAjnmdAVPGvb0HW
+         X3oXnDSet5Li6TGG2C9H97g31rRHel0rOvod4Z+0DMNEgYUS6zylgLwrIJdfS2sTlSnN
+         llkDJptL5eOMOVa2D2QB7YJdkVHApJMwMMtt52PGR3q1q9bNnQ74G5jCWjFSqlJeGGc6
+         DBf/anaOi108r27+maPh5yXa2+NkMxRDXdPlWGw6D/13mw6yBkQd1lIKtios2ZRb6qqg
+         tYOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=/Lhss/Vh0kVkE5y7FS4pI9/ATyOMwIe6l8v1CVu9F2s=;
-        b=qpeHTqxEhkxAbjVRw3mx4YRDG+K3dFzb651PpXAY0qAqHpn1RIXOpV1ziTT+f4cRRe
-         9LPMIqw5CL0SOKsy9LH57XlrAuiEJ+aCLu2ytYIWHM4COXkQ8Dg0A2HFWE2x8zoYRolC
-         +t8yXTF4i66u+40msnoj2SFgeP2vFgJGjc6T5yA3y7HUWxokzsc//4LCRXDI/zUo+/74
-         GwaZC233pXtiEL5WCo6KJWJzKJpSDOyT/vyAYvT98fK/3p8hPQbZGFiUGdHeijM9bks/
-         7a8EJg0PnGIdjPNGCr6mbTgqw0C+YQopEA4Ebu2KM/QcsbtkW2jEJa6bO6SKAEdsNTdD
-         NE8w==
-X-Gm-Message-State: AOAM533H2PKrRwTfMeGZmW5fHk4evz/K41xTKL9OtgJjctgrpdL6HAPn
-        OkCklEKM+LXjUJ+Hh3i87DmChKfmqzU60+rXUe6iODBASSLK
-X-Google-Smtp-Source: ABdhPJzabo1orFnRTGkB9TdGZI3LZZm/Y+0CJcYx63o3mlm+JAQvAjhhnluZZ+iNQ7CzBZxZ0jVD2ar5nWwcwYHPLfunUIm4Q9s+
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wp449LD1V//0Su1aAAh4SFHAWUtfUlnD32tPLIfCQy0=;
+        b=jkdKbuv2hHWgSiNPHOAsDXYZZXo0H7F60zzm0k1QPSdUfGe4Ps5z+JAn/EzrFuDR46
+         aC/mNx1QgndXpy+3OWIKXp+Rphlz7bN64b62Wk37vLPZmxihtuhtusUkCwv5lAXpuPok
+         1qBcRQmN8zyAPKQgi1DIN0clmJKL/boMiobu8PBt1MWmXSTFsNggQ28D+wJcsifWhGPW
+         cDbj9ipx2cyvJZ5dmdg9crMILeczIM2QTN52xCiapBm5W+/H6vbKQZvje0nmfdJ99Roq
+         xcEjKq5y3pubNvA/udkUmFvPGR8vsl82zLhcKmqYcSxyyjtKZUQOJy96HBXXLjbQm4w0
+         5ZAA==
+X-Gm-Message-State: AOAM5318uBbUYTs+p0qFtIfE595DZPw+WK43PXiagxop0fWrqjWpd+yP
+        RBGHRZJ8RbCNUpjQwuDOtNS3DP3unBw=
+X-Google-Smtp-Source: ABdhPJysdWFxBoJYeaLxWjlPbEL/JwlCCmi5zijYUgQizDJk2HleJl5s93xTeMQpG/OhDnrStoTeRw==
+X-Received: by 2002:a1c:bdc4:: with SMTP id n187mr4831727wmf.185.1603980780446;
+        Thu, 29 Oct 2020 07:13:00 -0700 (PDT)
+Received: from localhost.localdomain ([170.253.60.68])
+        by smtp.googlemail.com with ESMTPSA id m12sm4518670wmi.33.2020.10.29.07.12.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 07:12:59 -0700 (PDT)
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+To:     mtk.manpages@gmail.com
+Cc:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
+        linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
+        libc-alpha@sourceware.org
+Subject: [PATCH v3] getdents.2: Use appropriate types
+Date:   Thu, 29 Oct 2020 15:10:54 +0100
+Message-Id: <20201029141053.195998-1-colomar.6.4.3@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <CAKgNAkgi7MAW9PxKNBFQ07r7p2PFRR3xU2BJBTqk8oiXDJ4NXA@mail.gmail.com>
+References: <CAKgNAkgi7MAW9PxKNBFQ07r7p2PFRR3xU2BJBTqk8oiXDJ4NXA@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:28d:: with SMTP id 135mr3487539ilc.238.1603980608707;
- Thu, 29 Oct 2020 07:10:08 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 07:10:08 -0700
-In-Reply-To: <000000000000a4b3c205b0c24743@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000068a67705b2cfd6e9@google.com>
-Subject: Re: KASAN: out-of-bounds Read in __switch_to (2)
-From:   syzbot <syzbot+2667188e965125ab6e7a@syzkaller.appspotmail.com>
-To:     0x7f454c46@gmail.com, anant.thazhemadam@gmail.com,
-        b.zolnierkie@samsung.com, bp@alien8.de, chang.seok.bae@intel.com,
-        dan.carpenter@oracle.com, george.kennedy@oracle.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        sashal@kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+getdents():
+This function has no glibc wrapper.
+As such, we should use the same types the Linux kernel uses:
+Use 'long' as the return type.
 
-commit a49145acfb975d921464b84fe00279f99827d816
-Author: George Kennedy <george.kennedy@oracle.com>
-Date:   Tue Jul 7 19:26:03 2020 +0000
+getdents64():
+The glibc wrapper uses:
+ssize_t getdents64(int, void *, size_t);
 
-    fbmem: add margin check to fb_check_caps()
+Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+---
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=174684b8500000
-start commit:   fb0155a0 Merge tag 'nfs-for-5.9-3' of git://git.linux-nfs...
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=41b736b7ce1b3ea4
-dashboard link: https://syzkaller.appspot.com/bug?extid=2667188e965125ab6e7a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11743a37900000
+Hi Michael,
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Sorry, I'm being a bit distracted these days :)
+It should be good enough now, I think.
 
-#syz fix: fbmem: add margin check to fb_check_caps()
+Cheers,
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Alex
+
+ man2/getdents.2 | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/man2/getdents.2 b/man2/getdents.2
+index a187fbcef..ed3bb40b1 100644
+--- a/man2/getdents.2
++++ b/man2/getdents.2
+@@ -33,14 +33,13 @@
+ getdents, getdents64 \- get directory entries
+ .SH SYNOPSIS
+ .nf
+-.BI "int getdents(unsigned int " fd ", struct linux_dirent *" dirp ,
++.BI "long getdents(unsigned int " fd ", struct linux_dirent *" dirp ,
+ .BI "             unsigned int " count );
+ .PP
+ .BR "#define _GNU_SOURCE" "        /* See feature_test_macros(7) */"
+ .B #include <dirent.h>
+ .PP
+-.BI "int getdents64(unsigned int " fd ", struct linux_dirent64 *" dirp ,
+-.BI "             unsigned int " count );
++.BI "ssize_t getdents64(int " fd ", void *" dirp ", size_t " count );
+ .fi
+ .PP
+ .IR Note :
+@@ -282,7 +281,8 @@ struct linux_dirent {
+ int
+ main(int argc, char *argv[])
+ {
+-    int fd, nread;
++    int fd;
++    long nread;
+     char buf[BUF_SIZE];
+     struct linux_dirent *d;
+     char d_type;
+@@ -301,7 +301,7 @@ main(int argc, char *argv[])
+ 
+         printf("\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- nread=%d \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\en", nread);
+         printf("inode#    file type  d_reclen  d_off   d_name\en");
+-        for (int bpos = 0; bpos < nread;) {
++        for (long bpos = 0; bpos < nread;) {
+             d = (struct linux_dirent *) (buf + bpos);
+             printf("%8ld  ", d\->d_ino);
+             d_type = *(buf + bpos + d\->d_reclen \- 1);
+-- 
+2.28.0
+
