@@ -2,327 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD8529F64E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFA729F64C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgJ2Uh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 16:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726342AbgJ2Uh0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:37:26 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADCCC0613D4;
-        Thu, 29 Oct 2020 13:37:25 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id h22so1078365wmb.0;
-        Thu, 29 Oct 2020 13:37:25 -0700 (PDT)
+        id S1726708AbgJ2UjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:39:10 -0400
+Received: from mail-dm6nam11hn2205.outbound.protection.outlook.com ([52.100.172.205]:57889
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725780AbgJ2UiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 16:38:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nM9jNYzIkzXzOQBlV2dXrOF8wHwGNma76lmMpl8T+4ABQ0n1B96tMDvV+U9kWwmykHyGwp9B3tohCZQI9jUOeP8Z9nGUbWRPP5Z216Yek5qg8qwjwQwcXmycPeWjHwD3sj2qNzzx0fJeSPOvc9rERiblAIHgm6pEPvoTGExPnRdJrn/NxG06teDlT2SNESkGn+EchUAMZJ078FqViYWEhQzERs0EejxiwtZSnGgtnbK0KqzBi+HrQMyrqFCrgoUwpITO/2Mtf+K9aT6UUHUmFDTF8s/SSNWgbabAuWcxm3/xDYt0GxiBNoedb9U8LNmWfLMmIcwpj/tLYBmjR5E4xQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fzLoeNu8C2fNqoQ/+4dYl0sl8zNyL2SuNKtyxIN8BTU=;
+ b=hjTaGlXhmVGBgRmm36flhZqlkgn4fpBYakvspE1JjgFs+3ENrDw9mmOQLckZrRWnJqMjvAe2GiJuUd9HCwgdr2f+WyN2fj12yqyODkN+25PZxAHnbG3EUQVH4fWff3vS3jPQ1V17xvq7F4hle5NtuDy4iHfs8J37xJVsoyCoYfTENkKuDjLiNltb1eJSraXprq9qV0oWlUMGpd0ElOFTXGdVHbrfwMCXJGrGfnngbvfrMqA5K1fCpaY+FGj6huASR1nXyzIpQ5hDniZ2FMn9N5PwJMakfN6UjsAqhl2Q7eRth2osg8JMTIlbggmQ0X6S8kQr/Q7u3a9sQDZGUXT1RA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=d7GQge44w5h4XXb7qRwm1NVPkzAdaD5C5i1fj7qBdE8=;
-        b=J/R9a33P0vuHfg56Rkk0ZrX7aq4o08eDGojAe2dv9LLmSW878/OC19+tGonzbF0iHW
-         hSwVy/4eXR9+CpJwuQyZhHpLFBhWi2MTPklB4kUrRPU7h+o+DG6HO+ctMKgdz3PtaZMs
-         DZ/KJkesedySSI+1yI5xyIe4gaJKQuJdfJiYTgmteCl2sLwDkqnExSVo9rBjdysD2gmc
-         XtctHkJuijF18BMWULdKagIQxFWSRnUSZ9VwC5bXCybQoYtDxxp34LLPNt0eSOyhvH6Q
-         Qhn6Angh9vpT0syqIuj0CcCd9Rz5JWDweQ5etMF9FQuexG3Pf1AssDLl92d2XABqJbVs
-         T2YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=d7GQge44w5h4XXb7qRwm1NVPkzAdaD5C5i1fj7qBdE8=;
-        b=c5aR7yM76LuGFpAGHs8UR/r4WFejlyzSkwkH4ujrv0rYNS8CZwV7Cofwv69Ydolb50
-         qUWwB22sz4Xq/UMeS+tLvmQjQExNctAvssT2IHkBSRPRLhg/WW1z5zE7Ue21UefCn57+
-         MCjNCq0s7nA9PH6SgXiRS4Vy6LhAaAV0+FhYGyF0AcvaTa8C6wyIETwYJJpec5eOnhWf
-         cj5JlW97CrkcePS6uT2Rdwi9ews1Ytlq4u3JeNxiVjFCzx4+Y/XyLvKNTzrrjKnC/R60
-         v25mLcDj+AfIGL8tlveB/MHEuk3SLlhYpsp1ZeRuCQG6JS42imC4o/Ar1j9oKoeIey8F
-         0Xhg==
-X-Gm-Message-State: AOAM533H5H9CVYjDVs9Ce5t+NKf//Ie81ULhs3RkaWjUUGdVxN4syst/
-        FtpjiykYpRma1gzVr6wiF28=
-X-Google-Smtp-Source: ABdhPJxsEeVN1upx8rKdfaaG+9tnR49dnO+gOJhycXPvWFASGaFk2NDYY/HpoVfSRwyy12PzOTHE1Q==
-X-Received: by 2002:a1c:ed06:: with SMTP id l6mr702506wmh.67.1604003844285;
-        Thu, 29 Oct 2020 13:37:24 -0700 (PDT)
-Received: from ?IPv6:2001:a61:245a:d801:2e74:88ad:ef9:5218? ([2001:a61:245a:d801:2e74:88ad:ef9:5218])
-        by smtp.gmail.com with ESMTPSA id e7sm7247334wrm.6.2020.10.29.13.37.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 13:37:23 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, Tycho Andersen <tycho@tycho.pizza>,
-        Christian Brauner <christian@brauner.io>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Robert Sesek <rsesek@google.com>,
-        Containers <containers@lists.linux-foundation.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
-Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
-To:     Sargun Dhillon <sargun@sargun.me>
-References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
- <20201029085312.GC29881@ircssh-2.c.rugged-nimbus-611.internal>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <48e5937b-80f5-c48b-1c67-e8c9db263ca5@gmail.com>
-Date:   Thu, 29 Oct 2020 21:37:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <20201029085312.GC29881@ircssh-2.c.rugged-nimbus-611.internal>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fzLoeNu8C2fNqoQ/+4dYl0sl8zNyL2SuNKtyxIN8BTU=;
+ b=GBupWsD96itR9CdIK2lWeTvlGYU83AQfUEoJhNiOH61krY5T984+QnT018bD4+eY/iY0pH3MLDbTKyZIehlOXxNKWP3044JRzh5/lVUjyYrs/ILW7t4z2EWcfMzdlTJC8WVMvDOH36IPx6zanourHSUUHXoKFND2JKzST16p4jY=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from BN6PR01MB2468.prod.exchangelabs.com (2603:10b6:404:53::8) by
+ BN3PR01MB2148.prod.exchangelabs.com (2a01:111:e400:7bb4::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3477.27; Thu, 29 Oct 2020 20:37:56 +0000
+Received: from BN6PR01MB2468.prod.exchangelabs.com
+ ([fe80::4946:4492:370a:a3f3]) by BN6PR01MB2468.prod.exchangelabs.com
+ ([fe80::4946:4492:370a:a3f3%9]) with mapi id 15.20.3477.028; Thu, 29 Oct 2020
+ 20:37:56 +0000
+From:   Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     patches@amperecomputing.com, linux-kernel@vger.kernel.org,
+        Anshuman.Khandual@arm.com, Valentin.Schneider@arm.com,
+        catalin.marinas@arm.com,
+        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+Subject: [PATCH v2] arm64: NUMA: Kconfig: Increase NODES_SHIFT to 4
+Date:   Thu, 29 Oct 2020 13:37:52 -0700
+Message-Id: <20201029203752.1114948-1-vanshikonda@os.amperecomputing.com>
+X-Mailer: git-send-email 2.28.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [4.28.12.214]
+X-ClientProxiedBy: CY4PR21CA0008.namprd21.prod.outlook.com
+ (2603:10b6:903:dd::18) To BN6PR01MB2468.prod.exchangelabs.com
+ (2603:10b6:404:53::8)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (4.28.12.214) by CY4PR21CA0008.namprd21.prod.outlook.com (2603:10b6:903:dd::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.5 via Frontend Transport; Thu, 29 Oct 2020 20:37:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5ea13c18-aa2f-4717-b159-08d87c4a8441
+X-MS-TrafficTypeDiagnostic: BN3PR01MB2148:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN3PR01MB2148D188008CC774E1D3F2F29D140@BN3PR01MB2148.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: guvClOSrchX9JcyNZFCee6WyvhA42Yl61t7+FTd2GfvFkJgCnxow6DZqN0JWHeg3+l/ISYdv9hnvvvpa6v4pr7cqKb9egplKOGv4T4o8nNVJvU3HzEUWm21Ux+aMRjVkyRW/Nd0gJVNhgT6vWxLDpP5u7YHg0JAJVWHnRLES+QoOLO4NvSIdKJUFMAD5GgnQcYQpEvAr8sMdn4wYZRIO96OzM1+aoT98wA+NaLnyb8T5JX+JwuC2HUbKq/sEmTUCw03I63JVtGGXWEqIriQHpwCTc076uUAqFLSAtfgRVk2gzsIOUIY+W3KLQOoivfzgc9VVQd/ZL+cGkVitgEph76gb0zOIAbSrU+N3gw+9/XgZI2or3NL/+BA0zqpPaThXTuy2uuxEyUOs3VON0Bv7Q9CbsQ+S+b+kD7n+IGTViwWttVMpqgCtIubi7/8KwSDKpzcEV4Dy30k7Zl0UT6gNyel0l0C/hx68qtj8IevBC3mNoFDWvQ7mkNZWLNr8/RoO4bE0OxQOKSCXJcnwRkSWXkOsfeP3mLPGYCRJ+A6YXbtN3ZJjRh4NTOnR4G9aN5DdxIFujR/68/qwI4gJ9XmcFSvQdXDgChXLDfT7l7MP4lZoMiGpF9104e2p4sIJZyhS8OsSAuUV+RwmRGUbdirS1iygqbQhNTM0shyId0mTmTwUJrad+oFJqrhiz7KYvBYJUvmxzwAqbS4MStI3+Ddtmrim4qMaqNW6bQj3555jNCrNpLrfRZkQo8dFZkmITKk32A/Jusyu9M+aRKILpwNMSA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:BN6PR01MB2468.prod.exchangelabs.com;PTR:;CAT:OSPM;SFS:(4636009)(396003)(346002)(366004)(39840400004)(376002)(136003)(2906002)(8936002)(107886003)(83380400001)(66476007)(66946007)(6666004)(478600001)(6486002)(1076003)(316002)(966005)(5660300002)(956004)(4744005)(86362001)(66556008)(26005)(52116002)(16526019)(6496006)(4326008)(6916009)(8676002)(186003)(2616005)(23200700001);DIR:OUT;SFP:1501;
+X-MS-Exchange-AntiSpam-MessageData: GNAfxLgZDxPqSGOMB0sRTTBgj14Gh+OG8rT2QBZAWS2RnutvcKWXqp0yni8pZ2sm/0lpnPqZ1gFtToGLx1Ykm/Zcb6BnNqyx7yIeSda0stqaxsA5pdpXDtx5QCtUZuwCjDMbxyGAJXYj/dKKXrdl4RMLJ4iGAh4GKovo/avnE78psKnM/coa1O8H/AoQjsqvtlWXSmPFAJCE5jKGmA7Y12Lqz1JGIVKooS3Z8FehFXyqSGTLWUkUumGIOwMTeJa4k821pw2aHPYVfaV3yv2k69YClf1VGRAkPEcDd+0QM5pTYs4SJ0jYAlx5w4vSD8wpMHMIUM9tlvARBXrVeQIrzdA/DIQto5cr9TuvdzBFiDJibsfidv6QNdqlPYSxOcnQ6+81qu0r1bwvrxtHdkNI2c9dixOxBCdC3xfLs8LmgRRTjAczX5NxRQamMLo2oajaVn4OLb1r8ipLGfjpwNJLy/CfIfEc5fp3C+J4sdWa+XFTsSOL63mChzAMlpeh39sNuhF2NUd501eMqNIFpP2SsO/fI8QemZHztd+xNiUCCFNnHivI5jFwj5mhS8aN8Q1uFGgHzu3hYz5GoOGEq6Wi9cFymqX4opoMvNui1KoPXrFbvPGM7lVSxM1i+LZx5o/Dph21Crqz3jqrAaGtv2bbYQ==
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ea13c18-aa2f-4717-b159-08d87c4a8441
+X-MS-Exchange-CrossTenant-AuthSource: BN6PR01MB2468.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2020 20:37:56.4625
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YlKQUEV22jcNaRogPyM975OcoWz9Kzu+UYu1VlJC6GBmCiDXPU7gX+EUf26WsulyTPC8wfYHyO8UrX/DmC9blpLfdPtvFX2Ng5rWVv/1MhnVsmRLOKOq1dwOTEwWDxXb
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN3PR01MB2148
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sargun,,
+The current arm64 default config limits max NUMA nodes available on
+system to 4 (NODES_SHIFT = 2). Today's arm64 systems can reach or
+exceed 16 NUMA nodes. To accomodate current hardware and to fit
+NODES_SHIFT within page flags on arm64, increase NODES_SHIFT to 4.
 
-On 10/29/20 9:53 AM, Sargun Dhillon wrote:
-> On Mon, Oct 26, 2020 at 10:55:04AM +0100, Michael Kerrisk (man-pages) wrote:
+Discussion on v1 of the patch:
+https://lkml.org/lkml/2020/10/20/767
 
-[...]
+Signed-off-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+---
+ arch/arm64/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->>    ioctl(2) operations
->>        The following ioctl(2) operations are provided to support seccomp
->>        user-space notification.  For each of these operations, the first
->>        (file descriptor) argument of ioctl(2) is the listening file
->>        descriptor returned by a call to seccomp(2) with the
->>        SECCOMP_FILTER_FLAG_NEW_LISTENER flag.
->>
->>        SECCOMP_IOCTL_NOTIF_RECV
->>               This operation is used to obtain a user-space notification
->>               event.  If no such event is currently pending, the
->>               operation blocks until an event occurs.  The third
->>               ioctl(2) argument is a pointer to a structure of the
->>               following form which contains information about the event.
->>               This structure must be zeroed out before the call.
->>
->>                   struct seccomp_notif {
->>                       __u64  id;              /* Cookie */
->>                       __u32  pid;             /* TID of target thread */
->>                       __u32  flags;           /* Currently unused (0) */
->>                       struct seccomp_data data;   /* See seccomp(2) */
->>                   };
->>
->>               The fields in this structure are as follows:
->>
->>               id     This is a cookie for the notification.  Each such
->>                      cookie is guaranteed to be unique for the
->>                      corresponding seccomp filter.
->>
->>                      · It can be used with the
->>                        SECCOMP_IOCTL_NOTIF_ID_VALID ioctl(2) operation
->>                        to verify that the target is still alive.
->>
->>                      · When returning a notification response to the
->>                        kernel, the supervisor must include the cookie
->>                        value in the seccomp_notif_resp structure that is
->>                        specified as the argument of the
->>                        SECCOMP_IOCTL_NOTIF_SEND operation.
->>
->>               pid    This is the thread ID of the target thread that
->>                      triggered the notification event.
->>
->>               flags  This is a bit mask of flags providing further
->>                      information on the event.  In the current
->>                      implementation, this field is always zero.
->>
->>               data   This is a seccomp_data structure containing
->>                      information about the system call that triggered
->>                      the notification.  This is the same structure that
->>                      is passed to the seccomp filter.  See seccomp(2)
->>                      for details of this structure.
->>
->>               On success, this operation returns 0; on failure, -1 is
->>               returned, and errno is set to indicate the cause of the
->>               error.  This operation can fail with the following errors:
->>
->>               EINVAL (since Linux 5.5)
->>                      The seccomp_notif structure that was passed to the
->>                      call contained nonzero fields.
->>
->>               ENOENT The target thread was killed by a signal as the
->>                      notification information was being generated, or
->>                      the target's (blocked) system call was interrupted
->>                      by a signal handler.
->>
->>        ┌─────────────────────────────────────────────────────┐
->>        │FIXME                                                │
->>        ├─────────────────────────────────────────────────────┤
->>        │From my experiments, it appears that if a            │
->>        │SECCOMP_IOCTL_NOTIF_RECV is done after the target    │
->>        │thread terminates, then the ioctl() simply blocks    │
->>        │(rather than returning an error to indicate that the │
->>        │target no longer exists).                            │
->>        │                                                     │
->>        │I found that surprising, and it required some        │
->>        │contortions in the example program.  It was not      │
->>        │possible to code my SIGCHLD handler (which reaps the │
->>        │zombie when the worker/target terminates) to simply  │
->>        │set a flag checked in the main handleNotifications() │
->>        │loop, since this created an unavoidable race where   │
->>        │the child might terminate just after I had checked   │
->>        │the flag, but before I blocked (forever!) in the     │
->>        │SECCOMP_IOCTL_NOTIF_RECV operation. Instead, I had   │
->>        │to code the signal handler to simply call _exit(2)   │
->>        │in order to terminate the parent process (the        │
->>        │supervisor).                                         │
->>        │                                                     │
->>        │Is this expected behavior? It seems to me rather     │
->>        │desirable that SECCOMP_IOCTL_NOTIF_RECV should give  │
->>        │an error if the target has terminated.               │
->>        │                                                     │
->>        │Jann posted a patch to rectify this, but there was   │
->>        │no response (Lore link: https://bit.ly/3jvUBxk) to   │
->>        │his question about fixing this issue. (I've tried    │
->>        │building with the patch, but encountered an issue    │
->>        │with the target process entering D state after a     │
->>        │signal.)                                             │
->>        │                                                     │
->>        │For now, this behavior is documented in BUGS.        │
->>        │                                                     │
->>        │Kees Cook commented: Let's change [this] ASAP!       │
->>        └─────────────────────────────────────────────────────┘
->>
-> 
-> I think I commented in another thread somewhere that the supervisor is not 
-> notified if the syscall is preempted. Therefore if it is performing a 
-> preemptible, long-running syscall, you need to poll
-> SECCOMP_IOCTL_NOTIF_ID_VALID in the background, otherwise you can
-> end up in a bad situation -- like leaking resources, or holding on to
-> file descriptors after the program under supervision has intended to
-> release them.
-
-It's been a long day, and I'm not sure I reallu understand this.
-Could you outline the scnario in more detail?
-
-> A very specific example is if you're performing an accept on behalf
-> of the program generating the notification, and the program intends
-> to reuse the port. You can get into all sorts of awkward situations
-> there.
-
-[...]
-
-> 	SECCOMP_IOCTL_NOTIF_ADDFD (Since Linux v5.9)
-> 		This operations is used by the supervisor to add a file
-> 		descriptor to the process that generated the notification.
-> 		This can be used by the supervisor to enable "emulation"
-> 		[Probably a better word] of syscalls which return file
-> 		descriptors, such as socket(2), or open(2).
-> 
-> 		When the file descriptor is received by the process that
-> 		is associated with the notification / cookie, it follows
-> 		SCM_RIGHTS like semantics, and is evaluated by MAC.
-
-I'm not sure what you mean by SCM_RIGHTS like semantics. Do you mean,
-the file descriptor refers to the same open file description
-('struct file')?
-
-"is evaluated by MAC"... Do you mean something like: the FD is 
-subject  to LSM checks?
-
-> 		In addition, if it is a socket, it inherits the cgroup
-> 		v1 classid and netprioidx of the receiving process.
-> 
-> 		The argument of this is as follows:
-> 
-> 			struct seccomp_notif_addfd {
-> 				__u64 id;
-> 				__u32 flags;
-> 				__u32 srcfd;
-> 				__u32 newfd;
-> 				__u32 newfd_flags;
-> 			};
-> 
-> 		id
-> 			This is the cookie value that was obtained using
-> 			SECCOMP_IOCTL_NOTIF_RECV.
-> 
-> 		flags
-> 			A bitmask that includes zero or more of the
-> 			SECCOMP_ADDFD_FLAG_* bits set
-> 
-> 			SECCOMP_ADDFD_FLAG_SETFD - Use dup2 (or dup3?)
-> 				like semantics when copying the file
-> 				descriptor.
-> 
-> 		srcfd
-> 			The file descriptor number to copy in the
-> 			supervisor process.
-> 
-> 		newfd
-> 			If the SECCOMP_ADDFD_FLAG_SETFD flag is specified
-> 			this will be the file descriptor that is used
-> 			in the dup2 semantics. If this file descriptor
-> 			exists in the receiving process, it is closed
-> 			and replaced by this file descriptor in an
-> 			atomic fashion. If the copy process fails
-> 			due to a MAC failure, or if srcfd is invalid,
-> 			the newfd will not be closed in the receiving
-> 			process.
-
-Great description!
-
-> 			If SECCOMP_ADDFD_FLAG_SETFD it not set, then
-> 			this value must be 0.
-> 
-> 		newfd_flags
-> 			The file descriptor flags to set on
-> 			the file descriptor after it has been received
-> 			by the process. The only flag that can currently
-> 			be specified is O_CLOEXEC.
-> 
-> 		On success, this operation returns the file descriptor
-> 		number in the receiving process. On failure, -1 is returned.
-> 
-> 		It can fail with the following error codes:
-> 
-> 		EINPROGRESS
-> 			The cookie number specified hasn't been received
-> 			by the listener
-
-I don't understand this. Can you say more about the scenario?
-
-> 		ENOENT
-> 			The cookie number is not valid. This can happen
-> 			if a response has already been sent, or if the
-> 			syscall was interrupted
-> 
-> 		EBADF
-> 			If the file descriptor specified in srcfd is
-> 			invalid, or if the fd is out of range of the
-> 			destination program.
-
-The piece "or if the fd is out of range of the destination
-program" is not clear to me. Can you say some more please.
-
-> 		EINVAL
-> 			If flags or new_flags were unrecognized, or
-> 			if newfd is non-zero, and SECCOMP_ADDFD_FLAG_SETFD
-> 			has not been set.
-> 
-> 		EMFILE
-> 			Too many files are open by the destination process.
-> 
-> 		[there's other error codes possible, like from the LSMs
-> 		 or if memory can't be read / written or ebusy]
-> 		 
-> Does this help?
-
-It's a good start!
-
-Thanks,
-
-Michael
-
-
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index f858c352f72a..cffcc677011f 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -982,7 +982,7 @@ config NUMA
+ config NODES_SHIFT
+ 	int "Maximum NUMA Nodes (as a power of 2)"
+ 	range 1 10
+-	default "2"
++	default "4"
+ 	depends on NEED_MULTIPLE_NODES
+ 	help
+ 	  Specify the maximum number of NUMA Nodes available on the target
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+2.28.0
+
