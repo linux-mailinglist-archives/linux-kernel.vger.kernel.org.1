@@ -2,105 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B45729E9EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EC629E9E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727324AbgJ2LDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgJ2LDW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:03:22 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD9FC0613CF;
-        Thu, 29 Oct 2020 04:03:22 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id l16so2621445eds.3;
-        Thu, 29 Oct 2020 04:03:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WcrfQOvnwm3hHmWx9HizpVkHE+JWK+geEu+dtXdE4Xw=;
-        b=UtuwjBvLlNUpsD3se90ifCs08CqSEeeLYrFoK36ssWdIonbCLnCLJiChXViRIXcauT
-         iJb2+MqLHaapRTqa6CcLjcMHGxyWKwUVRc+Sbx9/zXjL/IuBgWukYJtHzV53UwWykM1C
-         t6CRBG5gFEGDQy3rjmIqb+wzsLi/ITdV+cz60Ona84fzn5sTG+UfNk3RHd8KIgm9hHNT
-         LbQWWL6npYnPI/9CBTnjlYP7yuaPXBYFL/1N02ikVfAqnrJWm0HnkvAeph4yKj9ycUNP
-         kjoFTHtrMUw1OPTlrYOswaY26mwp05ao/oXyn0nKgN+5IsH3GCqpgQUKrQM2c7lgxqyn
-         HISg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WcrfQOvnwm3hHmWx9HizpVkHE+JWK+geEu+dtXdE4Xw=;
-        b=KrNNmGXOFiZUZFIiGS7OemgKZ/9z042VEgzLBmOY0j+jibuxmb0QeTekjBgmtdygcO
-         V1YWvqjvrvkYOzH5q+7B6628a9aLajK+gz4/zgr/82WHXTBeht3lfdWoQ3suLpxfK4Uk
-         szclxCYyCTVv8KIkHe8s8zwrbtSri4v35IxsGgGV0gDV+vb1KBrKfgqfR0bFx17WZKpB
-         C5m6jjIj0i+lS+Q+LpaK5n3wusy9pVOB82kIbr1Uk81O5m1UDQU0CLTNUuXlecgNDMFs
-         mhCP3Sceb9GFeLBJMbmnKsZII1dbm7+ZbP2wXDNwi+gtzIrB/7gBNOku149qvI3ng9o4
-         SdIA==
-X-Gm-Message-State: AOAM531FmdvV4P6UF7iDiOkWYu6KyPUtOywtUDAGHJ6UOKlB6gmd2Pqv
-        SdL3gVaTxZMl3hL4p8Ut5Qs=
-X-Google-Smtp-Source: ABdhPJxw5MmrQlt2KQcf9SNjOfKm7P0V8PmqYEBnUitxArOMp5TxPjlJZBSdKqVDaYZaqlFHO5Inlg==
-X-Received: by 2002:aa7:cf95:: with SMTP id z21mr3282370edx.346.1603969400999;
-        Thu, 29 Oct 2020 04:03:20 -0700 (PDT)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id 11sm1292385ejy.19.2020.10.29.04.03.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 04:03:20 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 13:03:19 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Qiang Zhao <qiang.zhao@nxp.com>
-Cc:     broonie@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
-Message-ID: <20201029110319.iyvfmrlq6uz2pl2e@skbuf>
-References: <20201029084035.19604-1-qiang.zhao@nxp.com>
+        id S1727253AbgJ2LCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:02:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726025AbgJ2LCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 07:02:37 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00E2A2072D;
+        Thu, 29 Oct 2020 11:02:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603969356;
+        bh=HkZvAn5MjVZOthJYyfmXpbjUnjLgxWPIT1sDs9FNYU0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RoxVHBr5/s0q8Ly0B0NSmsykQw88I3WBCRzmng+S2FJgp6T/ET8/DF/+i7OxNsVE2
+         Y1MafCmeaHTwcImhbeEzzjMY7nmTSmd29izdq9kWZ45Lt0Wmw3snYgz9hSlPXndgWM
+         rROr5/yoKDUFWWoX71syakVRiqSghZj2/7ahci/w=
+Date:   Thu, 29 Oct 2020 12:03:26 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+Cc:     stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        b.zolnierkie@samsung.com, jani.nikula@intel.com,
+        daniel.vetter@ffwll.ch, gustavoars@kernel.org,
+        dri-devel@lists.freedesktop.org, akpm@linux-foundation.org,
+        rppt@kernel.org
+Subject: Re: [PATCH 1/1] video: fbdev: fix divide error in fbcon_switch
+Message-ID: <20201029110326.GC3840801@kroah.com>
+References: <20201021235758.59993-1-saeed.mirzamohammadi@oracle.com>
+ <ad87c5c1-061d-8a81-7b2c-43a8687a464f@suse.de>
+ <3294C797-1BBB-4410-812B-4A4BB813F002@oracle.com>
+ <20201027062217.GE206502@kroah.com>
+ <2DA9AE6D-93D6-4142-9FC4-EEACB92B7203@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201029084035.19604-1-qiang.zhao@nxp.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2DA9AE6D-93D6-4142-9FC4-EEACB92B7203@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 04:40:35PM +0800, Qiang Zhao wrote:
-> From: Zhao Qiang <qiang.zhao@nxp.com>
+On Tue, Oct 27, 2020 at 10:12:49AM -0700, Saeed Mirzamohammadi wrote:
+> Hi Greg,
 > 
-> Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in
-> remove path"), this driver causes a kernel oops:
+> Sorry for the confusion. I’m requesting stable maintainers to cherry-pick this patch into stable 5.4 and 5.8.
+> commit cc07057c7c88fb8eff3b1991131ded0f0bcfa7e3
+> Author: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+> Date:   Wed Oct 21 16:57:58 2020 -0700
 > 
-> [   64.587431] Unable to handle kernel NULL pointer dereference at
-> virtual address 0000000000000020
-> [..]
-> [   64.756080] Call trace:
-> [   64.758526]  dspi_suspend+0x30/0x78
-> [   64.762012]  platform_pm_suspend+0x28/0x70
-> [   64.766107]  dpm_run_callback.isra.19+0x24/0x70
-> [   64.770635]  __device_suspend+0xf4/0x2f0
-> [   64.774553]  dpm_suspend+0xec/0x1e0
-> [   64.778036]  dpm_suspend_start+0x80/0xa0
-> [   64.781957]  suspend_devices_and_enter+0x118/0x4f0
-> [   64.786743]  pm_suspend+0x1e0/0x260
-> [   64.790227]  state_store+0x8c/0x118
-> [   64.793712]  kobj_attr_store+0x18/0x30
-> [   64.797459]  sysfs_kf_write+0x40/0x58
-> [   64.801118]  kernfs_fop_write+0x148/0x240
-> [   64.805126]  vfs_write+0xc0/0x230
-> [   64.808436]  ksys_write+0x6c/0x100
-> [   64.811833]  __arm64_sys_write+0x1c/0x28
-> [   64.815753]  el0_svc_common.constprop.3+0x68/0x170
-> [   64.820541]  do_el0_svc+0x24/0x90
-> [   64.823853]  el0_sync_handler+0x118/0x168
-> [   64.827858]  el0_sync+0x158/0x180
-> 
-> This is because since this commit, the drivers private data point to
-> "dspi" instead of "ctlr", the codes in suspend and resume func were
-> not modified correspondly.
-> 
-> Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
-> Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
-> ---
+>     video: fbdev: fix divide error in fbcon_switch
 
-Please update your tree.
-https://github.com/torvalds/linux/commit/6e3837668e00fb914ac2b43158ef51b027ec385c
+I do not see that commit in Linus's tree, do you?
+
+confused,
+
+greg k-h
