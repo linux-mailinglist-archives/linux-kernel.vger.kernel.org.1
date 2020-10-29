@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E200229E9FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C606329EA27
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727244AbgJ2LFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:05:30 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52892 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726815AbgJ2LFa (ORCPT
+        id S1727645AbgJ2LKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:10:10 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:52666 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727373AbgJ2LJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:05:30 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09SFS63u018155;
-        Wed, 28 Oct 2020 10:28:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603898886;
-        bh=7Y8IMlS8Rjtuh3Bt1F7fB0E0fJme1LZMMGNHEg4TuLg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=DVdwOLiQSHX8V2LbMdZpX1FpOyCsAW5KZ3ASa9hYMNNop9pOupI2YuvIMR/56/qqX
-         E/ur3zV5VA5hCtC7sTzPB5F5nxCZTC5ZwuDJn3Tr8bfQvFESJgsjsaEE+F/NKteV2F
-         dQ8hCFXxrMxuqYxkyTiPKMZ852rn/jEosvs7tzZI=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09SFS6qn039511
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 28 Oct 2020 10:28:06 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 28
- Oct 2020 10:28:06 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 28 Oct 2020 10:28:06 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09SFS47m046337;
-        Wed, 28 Oct 2020 10:28:04 -0500
-Subject: Re: [PATCH] opp: fix bad error check logic in the opp helper register
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <vireshk@kernel.org>, <nm@ti.com>, <sboyd@kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201028141357.10345-1-t-kristo@ti.com>
- <20201028145405.ucfepzt6xoxro6fi@vireshk-i7>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <febd30f4-62b4-ad9c-9cd9-09841af140bf@ti.com>
-Date:   Wed, 28 Oct 2020 17:28:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 29 Oct 2020 07:09:36 -0400
+Received: by mail-wm1-f67.google.com with SMTP id c18so1961185wme.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 04:09:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E147n9198UMr0pGyJ/l6H9LfIY39W0QHpKT+riAQINo=;
+        b=gewZdn5uGKtDgCeCZPLZIB9SS12pFJKHvb9ljlu4oDyDI91XVPUkT/s6Meb0vx2GNK
+         TtgDnqPRxNFhTM6vJOQPgUHXLVpz0pjbuGD82bwccvp/WiLMG1U9nOoy/8MCIkrbBszm
+         T52+ZUkEwwWl2bI4Xss48/d/bwixGtmutgEcvnMkxkvFo3hr0k0hINTEhpX6bn0vqYAR
+         Q1IcX+fg/7gX0KRLN2rrp2wknl4mrC1PILNP4OFyayyIcGqYfx8lxgkBbQ6y5i060t91
+         7s8dYZEH1++8difOZfsPqJ5A4Jy926uWPvVIKbaF3h3pjbb7ffDQmUKpSgpBO5rSBVua
+         xZrQ==
+X-Gm-Message-State: AOAM530EVteHLLdJ/tz+ojATCVDqA+XwHgmtSG8MLF2ZTkLvkd1VSVlk
+        xKzz9pX4kUPngDtWdO7VHdVDhNrDQ9HwVkFRRCnfD47zHaM=
+X-Google-Smtp-Source: ABdhPJy8fZOVZ18ouJzDZ1y+uMcUgtZXK8GJmINucB9B8q4iIbiX+8mk8c9Yuku8RMIfc1L4EG+F5yKXlGDJaOijEGE=
+X-Received: by 2002:a1c:7c09:: with SMTP id x9mr3804363wmc.181.1603969265636;
+ Thu, 29 Oct 2020 04:01:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201028145405.ucfepzt6xoxro6fi@vireshk-i7>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <d28243e3-3178-d7cd-7b96-7ed63fd83493@linux.intel.com> <20201024154349.GC2589351@krava>
+ <43d5e54f-b56e-729f-d08e-2c6b6799c797@linux.intel.com> <20201027122154.GF2900849@krava>
+ <872f5052-788b-fe6d-d0ac-82e9639910d2@linux.intel.com> <CAM9d7cifhL--aYn05dYABmqoxGXX6xRC9W+Q+cWSnKqGUPPvzA@mail.gmail.com>
+ <20201028153959.GN2900849@krava>
+In-Reply-To: <20201028153959.GN2900849@krava>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 29 Oct 2020 20:00:54 +0900
+Message-ID: <CAM9d7ciP48Z5-cAoANXFviykTO8agKbVJCpQYxj60_ARWFB4cQ@mail.gmail.com>
+Subject: Re: [PATCH v2 06/15] perf session: load data directory into tool
+ process memory
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2020 16:54, Viresh Kumar wrote:
-> On 28-10-20, 16:13, Tero Kristo wrote:
->> The error check is incorrectly negated causing the helper to never
->> register anything. This causes platforms that depend on this
->> functionality to fail always with any cpufreq transition, and at least
->> TI DRA7 based platforms fail to boot completely due to warning message
->> flood from _generic_set_opp_regulator complaining about multiple
->> regulators not being supported.
->>
->> Fixes: dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return -EPROBE_DEFER")
->> Signed-off-by: Tero Kristo <t-kristo@ti.com>
->> ---
->>   drivers/opp/core.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
->> index 2483e765318a..4ac4e7ce6b8b 100644
->> --- a/drivers/opp/core.c
->> +++ b/drivers/opp/core.c
->> @@ -1930,7 +1930,7 @@ struct opp_table *dev_pm_opp_register_set_opp_helper(struct device *dev,
->>   		return ERR_PTR(-EINVAL);
->>   
->>   	opp_table = dev_pm_opp_get_opp_table(dev);
->> -	if (!IS_ERR(opp_table))
->> +	if (IS_ERR(opp_table))
->>   		return opp_table;
->>   
->>   	/* This should be called before OPPs are initialized */
-> 
-> A similar fix is already pushed in linux-next for this.
+Hi Jiri,
 
-Ah ok, good to hear. Just checked linux-next and I see the fix also, 
-sorry for the noise.
+On Thu, Oct 29, 2020 at 12:40 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Wed, Oct 28, 2020 at 04:22:49PM +0900, Namhyung Kim wrote:
+> > On Tue, Oct 27, 2020 at 11:43 PM Alexey Budankov
+> > <alexey.budankov@linux.intel.com> wrote:
+> > >
+> > >
+> > > On 27.10.2020 15:21, Jiri Olsa wrote:
+> > > > On Tue, Oct 27, 2020 at 10:37:58AM +0300, Alexey Budankov wrote:
+> > > >> I agree perf report OOM issue can exist on really-big servers but data
+> > > >> directories support for report mode for not-so-big servers and desktops
+> > > >> is already enabled with this smaller change. Also really-big-servers
+> > > >> come with really-big amount of memory and collection could possibly be
+> > > >> limited to only interesting phases of execution so the issue could likely
+> > > >> be avoided. At the same time threaded trace streaming could clarify on
+> > > >> real use cases that are blocked by perf report OOM issue and that would
+> > > >> clarify on exact required solution. So perf report OOM issue shouldn't
+> > > >> be the showstopper for upstream of threaded trace streaming.
+> > > >
+> > > > so the short answer is no, right? ;-)
+> > >
+> > > Answer to what question? Resolve OOM in perf report for data directories?
+> > > I don't see a simple solution for that. The next issue after OOM is resolved
+> > > is a very long processing of data directories. And again there is no simple
+> > > solution for that as well. But it still need progress in order to be resolved
+> > > eventually.
+> >
+> > I think we should find a better way than just adding all events to the
+> > ordered events queue in memory then processing them one by one.
+> >
+> > Separating tracking events (FORK/MMAP/...) might be the first step.
+>
+> I recall seeing this change before for threaded perf report,
+> maybe even from you, right? ;-)
 
--Tero
+Yes, I did it a couple of years ago.  The last version is here:
 
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+https://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git/log/?h=perf/threaded-v5
+
+Thanks
+Namhyung
