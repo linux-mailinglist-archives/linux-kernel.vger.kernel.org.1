@@ -2,60 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C0429EA8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAE229EA64
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbgJ2Laj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:30:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726793AbgJ2Lai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:30:38 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 300112076E;
-        Thu, 29 Oct 2020 11:30:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603971037;
-        bh=CrB69QBgt2+YqGF73196C3vUUw+lxRnYk6sYJrxjLJk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MQsdSRMnn4X7uFC+C8QtLwJt9E+dXcbdunFaa6JKZc9v4Zr04IdaKkcSmOdItvKuP
-         boqbuYvDcukFuSvg40BIHNwBI3i2bL1vbZ/E7JaVKPUnFliRjwLEhMFuLPiemq6Tq6
-         nW+yrvOsxpN8uA3eyrEYrFJnYEBRWu/6wLlIrUf8=
-Date:   Thu, 29 Oct 2020 12:31:27 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: staging: rtl8188eu: Fix spelling in two
- comments i.e defalut to default
-Message-ID: <20201029113127.GB3850079@kroah.com>
-References: <20201029110600.3091-1-unixbhaskar@gmail.com>
+        id S1727466AbgJ2LWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:22:34 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7098 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726803AbgJ2LWc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 07:22:32 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CMNMG226MzLn2f;
+        Thu, 29 Oct 2020 19:22:18 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 29 Oct 2020 19:22:10 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <hdegoede@redhat.com>, <mgross@linux.intel.com>
+CC:     <platform-driver-x86@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, "Zou Wei" <zou_wei@huawei.com>
+Subject: [PATCH -next] platform/x86/dell-wmi-sysman: Make some symbols static
+Date:   Thu, 29 Oct 2020 19:34:09 +0800
+Message-ID: <1603971249-64044-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029110600.3091-1-unixbhaskar@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 04:36:00PM +0530, Bhaskar Chowdhury wrote:
-> Fixed two spelling in two different comments.
-> 
-> s/defalut/default/p
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  Greg, I have included the driver name as you suggested.
+Fix the following sparse warnings:
 
-Suggested when, is this a v2 patch?
+drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:38:23:
+warning: symbol 'po_is_pass_set' was not declared. Should it be static?
+drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:70:23: warning: 
+symbol 'po_current_password' was not declared. Should it be static?
+drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:99:23:
+warning: symbol 'po_new_password' was not declared. Should it be static?
+drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:103:23:
+warning: symbol 'po_min_pass_length' was not declared. Should it be static?
+drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:107:23:
+warning: symbol 'po_max_pass_length' was not declared. Should it be static?
+drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:116:23:
+warning: symbol 'po_mechanism' was not declared. Should it be static?
+drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:129:23:
+warning: symbol 'po_role' was not declared. Should it be static?
 
-Remember, kernel maintainers have the short-term memory of a squirrel...
+po_is_pass_set, po_current_password, po_new_password, 
+po_min_pass_length, po_max_pass_length, po_mechanism and po_role
+have only call within passobj-attributes.c
+They should be static
 
-Please resend and properly version your patch as the Documentation asks
-you to.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-thanks,
+diff --git a/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c b/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
+index e6199fb..81562b1 100644
+--- a/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
++++ b/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
+@@ -35,7 +35,7 @@ static ssize_t is_enabled_show(struct kobject *kobj, struct kobj_attribute *attr
+ 	return ret;
+ }
+ 
+-struct kobj_attribute po_is_pass_set =
++static struct kobj_attribute po_is_pass_set =
+ 		__ATTR_RO(is_enabled);
+ 
+ static ssize_t current_password_store(struct kobject *kobj,
+@@ -67,7 +67,7 @@ static ssize_t current_password_store(struct kobject *kobj,
+ 	return count;
+ }
+ 
+-struct kobj_attribute po_current_password =
++static struct kobj_attribute po_current_password =
+ 		__ATTR_WO(current_password);
+ 
+ static ssize_t new_password_store(struct kobject *kobj,
+@@ -96,15 +96,15 @@ static ssize_t new_password_store(struct kobject *kobj,
+ 	return ret ? ret : count;
+ }
+ 
+-struct kobj_attribute po_new_password =
++static struct kobj_attribute po_new_password =
+ 		__ATTR_WO(new_password);
+ 
+ attribute_n_property_show(min_password_length, po);
+-struct kobj_attribute po_min_pass_length =
++static struct kobj_attribute po_min_pass_length =
+ 		__ATTR_RO(min_password_length);
+ 
+ attribute_n_property_show(max_password_length, po);
+-struct kobj_attribute po_max_pass_length =
++static struct kobj_attribute po_max_pass_length =
+ 		__ATTR_RO(max_password_length);
+ 
+ static ssize_t mechanism_show(struct kobject *kobj, struct kobj_attribute *attr,
+@@ -113,7 +113,7 @@ static ssize_t mechanism_show(struct kobject *kobj, struct kobj_attribute *attr,
+ 	return sprintf(buf, "password\n");
+ }
+ 
+-struct kobj_attribute po_mechanism =
++static struct kobj_attribute po_mechanism =
+ 	__ATTR_RO(mechanism);
+ 
+ static ssize_t role_show(struct kobject *kobj, struct kobj_attribute *attr,
+@@ -126,7 +126,7 @@ static ssize_t role_show(struct kobject *kobj, struct kobj_attribute *attr,
+ 	return -EIO;
+ }
+ 
+-struct kobj_attribute po_role =
++static struct kobj_attribute po_role =
+ 	__ATTR_RO(role);
+ 
+ static struct attribute *po_attrs[] = {
+-- 
+2.6.2
 
-greg k-h
