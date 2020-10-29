@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A320029F469
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F2629F46E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725966AbgJ2TCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51620 "EHLO
+        id S1726053AbgJ2TDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:03:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgJ2TCs (ORCPT
+        with ESMTP id S1725779AbgJ2TDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:02:48 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF90C0613CF;
-        Thu, 29 Oct 2020 12:02:48 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id o129so3149291pfb.1;
-        Thu, 29 Oct 2020 12:02:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=azmT/G24N8TE/tNqTJcXP4u4R0G+FAx2JFXhfXQuMug=;
-        b=MFzmyii/YJeRHKCIqFT/YTLhoiu2BinAEhntzjpS0mqt8LswpzA/CFS2KeuOEv0HGK
-         j2kWo8RJcKrKSy9nuG9J3NMPHBqdopefT/QJVs5GD1Kv/0lBbUXzLNxmXAy4zVkD1MIN
-         C7eRRuc5W5q+khDk26AsTcgo6t81c/3Bga+gwjYlIJF+qXbzuQmp7zKmJiuwmISf1/sz
-         vufi+QuFE79Mi9ObCs67utwW3qT3kmJjiUiGkaflT9N+c7AXQydioHOMQdPBQPdtGNQG
-         SSxWYFcXMcRJs+Y2j1QSkzGMl/OwBF3VlfvhPIJvhSGaO7mO84hQQWSxxf8BQLM5WAkk
-         bNnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=azmT/G24N8TE/tNqTJcXP4u4R0G+FAx2JFXhfXQuMug=;
-        b=aWJFAeo0PWEOT2E3koJFgPFmfbx2+/OyDM/7DjwuvYgSd8OTK3uPuq3LKTPb54govP
-         EXBCwOTqQ/QggN1sxKm4BxwdTft+yZrR8weLuqg+7+24IOUbloeI97ghiewRxv+jRMry
-         UcUhh5S7NLNZgDc5GutZzx5aavf/nCZcNsuCn9SriCn9fryyaC6+h5srODtNKxlJVIcy
-         aZUJMlRF7gA2kSiymB8+K6vrPfMSjjH3gRdLVpORQOSTePfNPW4AWMPGgGhIy9aUHezU
-         qJzP9cHJkHr6OLOwDGLJGs1Afb7ySgNnf3TTR3C8d4KeLkgZWrKcPyZA+4rCJu/LiGGE
-         OWnw==
-X-Gm-Message-State: AOAM533cC+N+suDVqgL1LLnVlGX34O+4S6iZ47pG/iD9LDBuJo22VIK1
-        px0xJz90otprYB0i39t21qc=
-X-Google-Smtp-Source: ABdhPJw5Eyg9jWRWL/0l6YSrt+Zz4nxhuw1qb7xVLw0srA+3h1RQYmrtFAIogzRd9bv84oV1HqsgPA==
-X-Received: by 2002:a62:6496:0:b029:155:b152:f0cf with SMTP id y144-20020a6264960000b0290155b152f0cfmr5910952pfb.75.1603998168350;
-        Thu, 29 Oct 2020 12:02:48 -0700 (PDT)
-Received: from my--box ([103.98.79.70])
-        by smtp.gmail.com with ESMTPSA id i123sm3680527pfc.13.2020.10.29.12.02.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 12:02:47 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 00:32:41 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Cc:     mh12gx2825@gmail.com
-Subject: [PATCH 1/2] drm: msm: adreno: use DEFINE_DEBUGFS_ATTRIBUTE with
- debugfs_create_file_unsafe()
-Message-ID: <9ca2c2e4cbd9ebb282b90f742305fd9b481aacc2.1603998014.git.mh12gx2825@gmail.com>
+        Thu, 29 Oct 2020 15:03:12 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CF1C0613CF;
+        Thu, 29 Oct 2020 12:03:11 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ce9003d743c4902fedd6b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:e900:3d74:3c49:2fe:dd6b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9264A1EC04CB;
+        Thu, 29 Oct 2020 20:03:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603998189;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=5g6+L4dmcjH0AZJZPbI+QWg3eUgbDM06/9Jfcu8DQ28=;
+        b=ho+Au2HMYcADRJAr1mGTsWhNAGn+r0OL7URMHYVD45z49M51RYnJbMvs5GerfJ9ZwznJ3Z
+        sx+zWL+Nma2gP4IMsCYrEX7u7cAIhZ8F5sc5+oOhtUN6rgERXgmBYfZQswKnmUA6nAmTST
+        ABo6YFJDzAGgTqCTvw/aA2yJPaMGqcI=
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     Thomas Renninger <trenn@suse.com>, Shuah Khan <shuah@kernel.org>,
+        Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 0/4] x86: Remove direct use of MSR_IA32_ENERGY_PERF_BIAS
+Date:   Thu, 29 Oct 2020 20:02:55 +0100
+Message-Id: <20201029190259.3476-1-bp@alien8.de>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using DEFINE_DEBUGFS_ATTRIBUTE macro with debugfs_create_file_unsafe()
-function in place of the debugfs_create_file() function will make the
-file operation struct "reset" aware of the file's lifetime. Additional
-details here: https://lists.archive.carbon60.com/linux/kernel/2369498
+From: Borislav Petkov <bp@suse.de>
 
-Issue reported by Coccinelle script:
-scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
+Hi,
 
-Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+here's v2 with some of Shuah's comments integrated.
+
+If no one has anything against it, I'll route them all through tip.
+
+Thx.
+
 ---
-Please Note: This is project task specific patch.
+Changelog:
 
- drivers/gpu/drm/msm/adreno/a5xx_debugfs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+v0:
+--
 
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c b/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
-index fc2c905b6c9e..ffe1fb9be155 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
-@@ -138,7 +138,7 @@ reset_set(void *data, u64 val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(reset_fops, NULL, reset_set, "%llx\n");
-+DEFINE_DEBUGFS_ATTRIBUTE(reset_fops, NULL, reset_set, "%llx\n");
- 
- 
- void a5xx_debugfs_init(struct msm_gpu *gpu, struct drm_minor *minor)
-@@ -154,6 +154,6 @@ void a5xx_debugfs_init(struct msm_gpu *gpu, struct drm_minor *minor)
- 				 ARRAY_SIZE(a5xx_debugfs_list),
- 				 minor->debugfs_root, minor);
- 
--	debugfs_create_file("reset", S_IWUGO, minor->debugfs_root, dev,
--			    &reset_fops);
-+	debugfs_create_file_unsafe("reset", S_IWUGO, minor->debugfs_root, dev,
-+				&reset_fops);
- }
+here's something from my todo list: remove all in-kernel tools use of
+that MSR and lastly drop it from the allowed-MSRs-list in the filtering.
+
+Out-of-tree tools should do a similar, trivial conversion.
+
+Constructive comments are, as always, appreciated.
+
+Borislav Petkov (4):
+  tools/power/cpupower: Read energy_perf_bias from sysfs
+  tools/power/turbostat: Read energy_perf_bias from sysfs
+  tools/power/x86_energy_perf_policy: Read energy_perf_bias from sysfs
+  x86/msr: Do not allow writes to MSR_IA32_ENERGY_PERF_BIAS
+
+ arch/x86/kernel/msr.c                         |   3 -
+ tools/power/cpupower/lib/cpupower.c           |  23 +++-
+ tools/power/cpupower/lib/cpupower_intern.h    |   5 +
+ tools/power/cpupower/utils/cpupower-info.c    |   2 +-
+ tools/power/cpupower/utils/cpupower-set.c     |   2 +-
+ tools/power/cpupower/utils/helpers/helpers.h  |   8 +-
+ tools/power/cpupower/utils/helpers/misc.c     |  48 ++++++++
+ tools/power/cpupower/utils/helpers/msr.c      |  28 -----
+ tools/power/x86/turbostat/turbostat.c         |  29 ++++-
+ .../x86_energy_perf_policy.c                  | 109 ++++++++++++++++--
+ 10 files changed, 204 insertions(+), 53 deletions(-)
+
 -- 
-2.25.1
+2.21.0
 
