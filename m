@@ -2,264 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8FE29E485
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 561E729E49D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730653AbgJ2Hku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55364 "EHLO
+        id S1730241AbgJ2HkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727847AbgJ2HYy (ORCPT
+        with ESMTP id S1727520AbgJ2HYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:54 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3613DC05BD09
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:14:14 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o7so1492818pgv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:14:14 -0700 (PDT)
+        Thu, 29 Oct 2020 03:24:50 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAEFC05BD0B
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:16:19 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id e15so1482413pfh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:16:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3VtAN6G22pJOh6fcjwqaPieJIRASqqNS7bQLlv3fatE=;
-        b=Mo3bTUZT4n1TxUsRmamPvW/bRHY3F8JOUuPfToXe1PjgrhXDMzJPLZtchyHCADEh1X
-         ikB2FzbirVTnhNxtInNO+UexRZKi2oh9K3cxQpYUHhr7DTtwUyUNJT8dqQomEDt+2yUv
-         H5jfIHOY+WFFlH/uHJoCss+ozuxv5O3pZ8ElaCCEqgZDqSEihGLR9jtghXJ/yON/Ibsp
-         r2eah1oE3HUeyd/h5tYUReK7MAYCPCYTsGzX8LFmhTtrD5gWLMA7dvbNZZdaYloe51AL
-         RGGPF5++MEahejDHAJcDpWm/+UD024PFb1JSLfIae5W1pyK9K7jmyHNcShTDqNOEAWuO
-         wzRg==
+        bh=n7NRtz56PDrI9TlnLNjgdlxbuOLi2alt2q22qA5ZMDM=;
+        b=jQ2Vn+hlZsZS9o3ITt59L/OK0Z6t3j2+1+WF33ekNAIhXNb3Pu44yIxwScTO18PQTZ
+         EYIkIi/RZVDGQZSc16nb7gnKbf8Xh0MEFCILhPzbYX2xZln+4wzKEfRtQVqiAtcH2697
+         LVLQcf7/Kwy7MgKBYXCW7Xx/4OnuqeZTrGumdH0W/R3oKdB9powFDeomnAWQYWgrFda+
+         I7CFDxh910gYVWYr5s/MJvpZs+/Bd1/UTbZIqYqC7sRuRDRY1FeWOaWNdnXJMxVVRNqa
+         QduYL17Ccef4j2aAPbpwov6T3yydVsku7bFJMZ5h6U8wzCB3QWq8SCQPcfV+dTucgKjk
+         QvkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3VtAN6G22pJOh6fcjwqaPieJIRASqqNS7bQLlv3fatE=;
-        b=pzdMj1E2f8Jc8yo83lc13GRnh9jnwQLmzmgirjXe1dGzbKXRr15GPpXjOdSkg8YOet
-         72oJc+HWoXi2swDzgtu/IOcqpC04WGqayNcIjM/L37tK5FCCIvTHffVN4vicOoMV5jSv
-         ZWS5OK8UR4AlGEPbTnyJUuFbWcjgcczxGtSA40BGoPYjxbuprdPXP7Dj5P63bOwNnvSJ
-         JmNYzaz/HOR+xK48y74+T0BytwWcqZUw731zrytWiJXIFeRL9BatnnHrfo0EIOp/hPlj
-         eA7gCZaicuqopHsUzr8bNUw4I3QEO1qmmrmImQdTXAcqQAkWrWmRC/XmHD91wcbxRGDI
-         mibg==
-X-Gm-Message-State: AOAM530W0+oLXo5qJ4egwujBzMOEnj0Nm/oBqFa7fmtJBWf0zLKCyALn
-        0cK3bkENpI0gCOH0AjhBJJ/K8VVPKJCcFwbK0VgRsQ==
-X-Google-Smtp-Source: ABdhPJymW0ni/MD9aGSwED4oKtgCt2QhumQXM0N101k9iTMY9fZPgtViehJ3XByHjnsp5g4EcZhrjzKGnDJ9S8M9pYg=
-X-Received: by 2002:a63:7408:: with SMTP id p8mr2604482pgc.273.1603952053682;
- Wed, 28 Oct 2020 23:14:13 -0700 (PDT)
+        bh=n7NRtz56PDrI9TlnLNjgdlxbuOLi2alt2q22qA5ZMDM=;
+        b=dKQ9ZKyloXns1j0QpkCmFvaDGntO8c5cuBHMjd+eYTi8rL3iW3u9iQXWKxUZ4+XIuV
+         VsULtG4u3dEk8v/NRynrH4fzqB0OWrszaIkYaHY6I21SvgYe8eHkDyxsWnShQlEXPp9R
+         JRtMmJBJx5b0i4/Eo5cQxR8IsvwD+LTaUafDuoLN1kVHEZJsNloYkYnPsW0MV4ynKb3t
+         FF7kRTzQQzt5mtaX0yFSmrmgNJlDp7NfZ3dt7MmaUq3pcJIjhvO/BSbY6dqvqFAzzV2B
+         U2CVWpTyB463zP/7Xt9BHpTskd1YLsHff9/V7SZH3aRXsSO3aJdqbByUm9QXQPKFk5jJ
+         gTiA==
+X-Gm-Message-State: AOAM530RO435j4C+JU7EReYpPM5f96JNZ5izHZoMss2EFx573MIgnTYO
+        IiMbzPo1NeLqQiw++z4mskXTLl3RRwQ8mmSPkt7uyQ==
+X-Google-Smtp-Source: ABdhPJw4NQpqsTHHLGdK75LoiiTryFYJh3x82DLJSORkilAWhto57nEDjgwGuJu8Veb+OBxuu8+VsxK1p2PUyNwomc0=
+X-Received: by 2002:a63:5804:: with SMTP id m4mr864296pgb.31.1603952179186;
+ Wed, 28 Oct 2020 23:16:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201026145114.59424-1-songmuchun@bytedance.com>
- <20201026145114.59424-8-songmuchun@bytedance.com> <8658f431-56c4-9774-861a-9c3b54d1910a@oracle.com>
-In-Reply-To: <8658f431-56c4-9774-861a-9c3b54d1910a@oracle.com>
+References: <20201027080256.76497-1-songmuchun@bytedance.com>
+ <20201027080256.76497-5-songmuchun@bytedance.com> <20201027184835.GB827280@carbon.dhcp.thefacebook.com>
+ <CAMZfGtU1aViokYk1hkHbYEiqW5QNi49UTd-QTrkycLqj6Q+-8g@mail.gmail.com> <20201029001408.GF827280@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20201029001408.GF827280@carbon.dhcp.thefacebook.com>
 From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 29 Oct 2020 14:13:36 +0800
-Message-ID: <CAMZfGtUUkkkeENXOOLPacverqyudxntTenMKrtpfHnLOBJaX5Q@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 07/19] mm/hugetlb: Free the vmemmap
- pages associated with each hugetlb page
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Date:   Thu, 29 Oct 2020 14:15:43 +0800
+Message-ID: <CAMZfGtW9wa=S7+OQw_R+4LU5VzcN0H0OUPw-2XfTAJFniQN3TA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 4/5] mm: memcg/slab: Fix root memcg vmstats
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, laoar.shao@gmail.com,
+        Chris Down <chris@chrisdown.name>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
+        Marco Elver <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 7:42 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+On Thu, Oct 29, 2020 at 8:14 AM Roman Gushchin <guro@fb.com> wrote:
 >
-> On 10/26/20 7:51 AM, Muchun Song wrote:
-> > When we allocate a hugetlb page from the buddy, we should free the
-> > unused vmemmap pages associated with it. We can do that in the
-> > prep_new_huge_page().
+> On Wed, Oct 28, 2020 at 10:56:20AM +0800, Muchun Song wrote:
+> > On Wed, Oct 28, 2020 at 2:48 AM Roman Gushchin <guro@fb.com> wrote:
+> > >
+> > > On Tue, Oct 27, 2020 at 04:02:55PM +0800, Muchun Song wrote:
+> > > > If we reparent the slab objects to the root memcg, when we free
+> > > > the slab object, we need to update the per-memcg vmstats to keep
+> > > > it correct for the root memcg. Now this at least affects the vmstat
+> > > > of NR_KERNEL_STACK_KB for !CONFIG_VMAP_STACK when the thread stack
+> > > > size is smaller than the PAGE_SIZE.
+> > > >
+> > > > Fixes: ec9f02384f60 ("mm: workingset: fix vmstat counters for shadow nodes")
+> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > >
+> > > Can you, please, drop this patch for now?
+> > >
+> > > I'm working on a bigger cleanup related to the handling of the root memory
+> > > cgroup (I sent a link earlier in this thread), which already does a similar change.
+> > > There are several issues like this one, so it will be nice to fix them all at once.
 > >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  arch/x86/include/asm/hugetlb.h          |   7 +
-> >  arch/x86/include/asm/pgtable_64_types.h |   8 +
-> >  include/linux/hugetlb.h                 |   7 +
-> >  mm/hugetlb.c                            | 190 ++++++++++++++++++++++++
-> >  4 files changed, 212 insertions(+)
-> >
-> > diff --git a/arch/x86/include/asm/hugetlb.h b/arch/x86/include/asm/hugetlb.h
-> > index f5e882f999cd..7c3eb60c2198 100644
-> > --- a/arch/x86/include/asm/hugetlb.h
-> > +++ b/arch/x86/include/asm/hugetlb.h
-> > @@ -4,10 +4,17 @@
-> >
-> >  #include <asm/page.h>
-> >  #include <asm-generic/hugetlb.h>
-> > +#include <asm/pgtable.h>
-> >
-> >  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> >  #define VMEMMAP_HPAGE_SHIFT                  PMD_SHIFT
-> >  #define arch_vmemmap_support_huge_mapping()  boot_cpu_has(X86_FEATURE_PSE)
-> > +
-> > +#define vmemmap_pmd_huge vmemmap_pmd_huge
-> > +static inline bool vmemmap_pmd_huge(pmd_t *pmd)
-> > +{
-> > +     return pmd_large(*pmd);
-> > +}
-> >  #endif
-> >
-> >  #define hugepages_supported() boot_cpu_has(X86_FEATURE_PSE)
-> > diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include/asm/pgtable_64_types.h
-> > index 52e5f5f2240d..bedbd2e7d06c 100644
-> > --- a/arch/x86/include/asm/pgtable_64_types.h
-> > +++ b/arch/x86/include/asm/pgtable_64_types.h
-> > @@ -139,6 +139,14 @@ extern unsigned int ptrs_per_p4d;
-> >  # define VMEMMAP_START               __VMEMMAP_BASE_L4
-> >  #endif /* CONFIG_DYNAMIC_MEMORY_LAYOUT */
-> >
-> > +/*
-> > + * VMEMMAP_SIZE - allows the whole linear region to be covered by
-> > + *                a struct page array.
-> > + */
-> > +#define VMEMMAP_SIZE         (1UL << (__VIRTUAL_MASK_SHIFT - PAGE_SHIFT - \
-> > +                                      1 + ilog2(sizeof(struct page))))
-> > +#define VMEMMAP_END          (VMEMMAP_START + VMEMMAP_SIZE)
-> > +
-> >  #define VMALLOC_END          (VMALLOC_START + (VMALLOC_SIZE_TB << 40) - 1)
-> >
-> >  #define MODULES_VADDR                (__START_KERNEL_map + KERNEL_IMAGE_SIZE)
-> > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> > index ace304a6196c..919f47d77117 100644
-> > --- a/include/linux/hugetlb.h
-> > +++ b/include/linux/hugetlb.h
-> > @@ -601,6 +601,13 @@ static inline bool arch_vmemmap_support_huge_mapping(void)
-> >  }
-> >  #endif
-> >
-> > +#ifndef vmemmap_pmd_huge
+> > I have read the patch of https://lkml.org/lkml/2020/10/14/869. You
+> > mean this patch
+> > fixes this issue? It chooses to uncharge the root memcg. But here we may need to
+> > uncharge the root memcg to keep root vmstats correct. If we do not do
+> > this, we can
+> > see the wrong vmstats via root memory.stat(e.g. NR_KERNEL_STACK_KB).
 >
-> Let's add
-> #define vmemmap_pmd_huge vmemmap_pmd_huge
-> just in case code gets moved around in header file.
+> I pointed at a different patch in the same thread (it looks like you read the first one):
+> https://lkml.org/lkml/2020/10/21/612
 
-OK, will do.
+Got it. Thanks. That is fine to me.
 
 >
-> > +static inline bool vmemmap_pmd_huge(pmd_t *pmd)
-> > +{
-> > +     return pmd_huge(*pmd);
-> > +}
-> > +#endif
-> > +
-> >  #ifndef VMEMMAP_HPAGE_SHIFT
-> >  #define VMEMMAP_HPAGE_SHIFT          PMD_SHIFT
-> >  #endif
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index d6ae9b6876be..aa012d603e06 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -1293,10 +1293,20 @@ static inline void destroy_compound_gigantic_page(struct page *page,
-> >  #endif
-> >
-> >  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > +#include <linux/bootmem_info.h>
-> > +
-> >  #define RESERVE_VMEMMAP_NR   2U
-> > +#define RESERVE_VMEMMAP_SIZE (RESERVE_VMEMMAP_NR << PAGE_SHIFT)
+> It contained the following part:
 >
-> Since RESERVE_VMEMMAP_SIZE is not used here, perhaps it should be added
-> in the patch where it is first used.
-
-Will do.
-
+> @@ -868,7 +860,7 @@ void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val)
+>         memcg = mem_cgroup_from_obj(p);
 >
-> >
-> >  #define page_huge_pte(page)  ((page)->pmd_huge_pte)
-> >
-> > +#define vmemmap_hpage_addr_end(addr, end)                            \
-> > +({                                                                   \
-> > +     unsigned long __boundary;                                       \
-> > +     __boundary = ((addr) + VMEMMAP_HPAGE_SIZE) & VMEMMAP_HPAGE_MASK;\
-> > +     (__boundary - 1 < (end) - 1) ? __boundary : (end);              \
-> > +})
-> > +
-> >  static inline unsigned int nr_free_vmemmap(struct hstate *h)
-> >  {
-> >       return h->nr_free_vmemmap_pages;
-> > @@ -1416,6 +1426,181 @@ static void __init hugetlb_vmemmap_init(struct hstate *h)
-> >       pr_info("HugeTLB: can free %d vmemmap pages for %s\n",
-> >               h->nr_free_vmemmap_pages, h->name);
-> >  }
-> > +
-> > +static inline spinlock_t *vmemmap_pmd_lockptr(pmd_t *pmd)
-> > +{
-> > +     static DEFINE_SPINLOCK(pgtable_lock);
-> > +
-> > +     return &pgtable_lock;
-> > +}
+>         /* Untracked pages have no memcg, no lruvec. Update only the node */
+> -       if (!memcg || memcg == root_mem_cgroup) {
+> +       if (!memcg) {
+>                 __mod_node_page_state(pgdat, idx, val);
+>         } else {
+>                 lruvec = mem_cgroup_lruvec(memcg, pgdat);
 >
-> This is just a global lock.  Correct?  And hugetlb specific?
-
-Yes, it is a global lock. Originally, I wanted to use the pmd lock(e.g.
-pmd_lockptr()). But we need to allocate memory for the spinlock and
-initialize it when ALLOC_SPLIT_PTLOCKS. It may increase the
-complexity.
-
-And I think that here alloc/free hugetlb pages is not a frequent operation.
-So I finally use a global lock. Maybe it is enough.
-
+> So it's exactly what your patch does.
 >
-> It should be OK as the page table entries for huegtlb pages will not
-> overlap with other entries.
-
-Does "hugetlb specific" mean the pmd lock? or per hugetlb lock?
-If it is pmd lock, this is fine to me. If not, it may not be enough.
-Because the lock also guards the splitting of pmd pgtable.
-
-Thanks.
->
-> > +
-> > +/*
-> > + * Walk a vmemmap address to the pmd it maps.
-> > + */
-> > +static pmd_t *vmemmap_to_pmd(const void *page)
-> > +{
-> > +     unsigned long addr = (unsigned long)page;
-> > +     pgd_t *pgd;
-> > +     p4d_t *p4d;
-> > +     pud_t *pud;
-> > +     pmd_t *pmd;
-> > +
-> > +     if (addr < VMEMMAP_START || addr >= VMEMMAP_END)
-> > +             return NULL;
-> > +
-> > +     pgd = pgd_offset_k(addr);
-> > +     if (pgd_none(*pgd))
-> > +             return NULL;
-> > +     p4d = p4d_offset(pgd, addr);
-> > +     if (p4d_none(*p4d))
-> > +             return NULL;
-> > +     pud = pud_offset(p4d, addr);
-> > +
-> > +     WARN_ON_ONCE(pud_bad(*pud));
-> > +     if (pud_none(*pud) || pud_bad(*pud))
-> > +             return NULL;
-> > +     pmd = pmd_offset(pud, addr);
-> > +
-> > +     return pmd;
-> > +}
->
-> That routine is not really hugetlb specific.  Perhaps we could move it
-> to sparse-vmemmap.c?  Or elsewhere?
-
-Yeah, we can move it to sparse-vmemmap.c, maybe better.
-
->
-> --
-> Mike Kravetz
+> Thanks!
 
 
 
