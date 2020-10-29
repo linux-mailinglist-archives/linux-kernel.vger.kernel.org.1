@@ -2,92 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0512229F914
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 00:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD31229F917
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 00:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725828AbgJ2X2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 19:28:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59462 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725372AbgJ2X2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 19:28:12 -0400
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 305BD20BED;
-        Thu, 29 Oct 2020 23:28:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604014091;
-        bh=ZGC+Xp6nyJqG7qQE4W73onxUN0sycaXuLyBzJX/PmHo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pmYHMztfmCpO3ah+/yJRu1db0AsnD1WO6AhahE2I+BumtOhoxSIWNRpafkV5Q8Wx8
-         c0q6g91/SD15ADY4HFR4BVXhRkBe4OVfD5qeMy1YHcRPed7jkkCilp9KScJgsRE8L6
-         28L6TeGAbrBndY4vIgvJ4GwUY1UTHmC2dDsXVO40=
-Received: by mail-lj1-f181.google.com with SMTP id 2so4908116ljj.13;
-        Thu, 29 Oct 2020 16:28:11 -0700 (PDT)
-X-Gm-Message-State: AOAM532Hc6D/GfpSkhM+j8m/uEDTGOBUqEF3PCsLZIsbvLYe0oUpy0yr
-        C1ycP9whcniltiaOOOflFx0azLjsz4ElZ/p8/8A=
-X-Google-Smtp-Source: ABdhPJxOGJLwtLYEFStmDIc3k+4w9x2xuYQZn/5sV0IRSs+f/rMDH16JY+DKvKX8LGuv7SN5GGwZXcQy+nh4+JDz1BE=
-X-Received: by 2002:a2e:a0d4:: with SMTP id f20mr1241951ljm.350.1604014089320;
- Thu, 29 Oct 2020 16:28:09 -0700 (PDT)
+        id S1725897AbgJ2X3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 19:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgJ2X3E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 19:29:04 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0E4C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 16:29:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=XCYbtpSLlHZgR44uwQBH0C/NshtPrxHNB4Q4tPgyX/c=; b=kHSurv0NEi3qeoRT38E9TompLQ
+        ViQMnQBzZ1BSg25wtATytDsDsZnycZcpQM/MsFgM57d7pKljW4FeuLy0tgdHddlgZVV06SF3uaN6+
+        aesfc81VNOlgvyFqO06Ip11mYdbyQSQ2PBcb59wyVeEHn0kdrkqvIEGz41Li5SkQX52uRkEw6ioTn
+        XA/poKyFsyNXHSfSWOyiVUc54w7qpExA08gOTr2LGTaZqXCcJ0KNzBvOo6Lkmd9hpsMbneOSwOtbw
+        Y8MuuHYBwTvggL17yqGFOfTSuZVpZN5CQBOhyEg916ChbNf+KHMu5zVjXJ5/1DdnnhKEHkCbQJyNH
+        tG0YfXpQ==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kYHLn-00070n-S0; Thu, 29 Oct 2020 23:29:00 +0000
+Subject: Re: [Build fail] i386 & nvdimm is unhappy
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Philip Li <philip.li@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kbuild test robot <lkp@intel.com>
+References: <87sg9wodp1.fsf@nanos.tec.linutronix.de>
+ <CAPcyv4hBSwdDocpgFh2=qbVQN=Mc+15cW4cV5m_S-SxVCYY=mA@mail.gmail.com>
+ <20201029230920.GA32559@intel.com>
+ <d066788b-0f69-37e5-fd5c-12755f498677@infradead.org>
+Message-ID: <8613f74e-b774-a544-60df-b8012cc4ee14@infradead.org>
+Date:   Thu, 29 Oct 2020 16:28:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201027170317.2011119-1-kpsingh@chromium.org> <20201027170317.2011119-2-kpsingh@chromium.org>
-In-Reply-To: <20201027170317.2011119-2-kpsingh@chromium.org>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 29 Oct 2020 16:27:58 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6yFbWLGZwpCE4whUm_ncJG4Fr7kf75XeqYLRWG8PvnWQ@mail.gmail.com>
-Message-ID: <CAPhsuW6yFbWLGZwpCE4whUm_ncJG4Fr7kf75XeqYLRWG8PvnWQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] bpf: Implement task local storage
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d066788b-0f69-37e5-fd5c-12755f498677@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 9:17 AM KP Singh <kpsingh@chromium.org> wrote:
->
-> From: KP Singh <kpsingh@google.com>
->
-> Similar to bpf_local_storage for sockets and inodes add local storage
-> for task_struct.
->
-> The life-cycle of storage is managed with the life-cycle of the
-> task_struct.  i.e. the storage is destroyed along with the owning task
-> with a callback to the bpf_task_storage_free from the task_free LSM
-> hook.
+On 10/29/20 4:13 PM, Randy Dunlap wrote:
+> On 10/29/20 4:09 PM, Philip Li wrote:
+>> On Thu, Oct 29, 2020 at 03:52:42PM -0700, Dan Williams wrote:
+>>> On Thu, Oct 29, 2020 at 3:44 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>>>>
+>>>> Dan,
+>>>>
+>>>> x86 32bit build fails with the config below with this:
+>>>>
+>>>>   ERROR: modpost: "phys_to_target_node" [drivers/nvdimm/nd_e820.ko]
+>>>>   undefined!
+>>>
+>>> Acknowledged, I'm on it.
+>>>
+>>> Wonder how 0-day missed this or I missed the 0-day report?
+>> Sorry about this Dan. Can you share some info like which kconfig and bad commit?
+>> We will investigate this to provide update in earliest time.
+>>
+>> Thanks
+>>
+>>>
+> 
+> I posted earlier today about the same failure on x86_64 & linux-next:
+> 
+> https://lore.kernel.org/linux-next/0faac4da-a7bc-3fc7-e278-ad4f72499224@infradead.org/T/#u
+> 
+> 
+> Thomas and I both included kernel config files.
+> 
 
-It looks like task local storage is tightly coupled to LSM. As we discussed,
-it will be great to use task local storage in tracing programs. Would you
-like to enable it from the beginning? Alternatively, I guess we can also do
-follow-up patches.
+Here is a patch that Dan was cc-ed on.
 
->
-> The BPF LSM allocates an __rcu pointer to the bpf_local_storage in
-> the security blob which are now stackable and can co-exist with other
-> LSMs.
->
-> The userspace map operations can be done by using a pid fd as a key
-> passed to the lookup, update and delete operations.
+https://lore.kernel.org/linux-mm/aaae71a7-4846-f5cc-5acf-cf05fdb1f2dc@oracle.com/
 
-While testing task local storage, I noticed a limitation of pid fd:
 
-/* Currently, the process identified by
- * @pid must be a thread-group leader. This restriction currently exists
- * for all aspects of pidfds including pidfd creation (CLONE_PIDFD cannot
- * be used with CLONE_THREAD) and pidfd polling (only supports thread group
- * leaders).
- */
+-- 
+~Randy
 
-This could be a problem for some use cases. How about we try to remove
-this restriction (maybe with a new flag to pidfd_open) as part of this set?
-
-Thanks,
-Song
-
-[...]
