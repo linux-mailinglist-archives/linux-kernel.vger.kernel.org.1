@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E4729F1B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DF629F1B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgJ2Qiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:38:54 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:43100 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726031AbgJ2Qiy (ORCPT
+        id S1726618AbgJ2Qia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:38:30 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:52781 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726031AbgJ2Qi3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:38:54 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09TGb2Kh031416;
-        Thu, 29 Oct 2020 17:38:32 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=e0SSTSVY93gKKrdfyw2yURbWg7WpcuYct8NzXQrNQUE=;
- b=l0b7x730D0ZnX9RjlR/W0MDpvhh/BwJL40PH562kx2ZYV3t168kEuV0uMbhcKZYqZgSk
- 5GCZgOqIfIFN5oWMiX1LCRtce+Ll/Xidn3c0ih3WoA018VA+7prmIPb9i9D2BcgUNibF
- e8g5faxpxlWgwcShYJXEp9z+pfh69woPf4ukWLNqH8rq40aZRTpMHkCrP09z8Ohl8kXx
- MES3pUEcfirU2j4i8AeGb1IqIBfKlkqkAQsC5JneejfyxR167x0VYwwvVIz+wZVbVdEp
- K32tEujJyJduHf/ouXHsL5+4biOiBr+qWEmLpPhfpjBKsq5/ic/+eIjlsPTpSNoixsMY 2g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34ccfftfxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Oct 2020 17:38:32 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E3389100034;
-        Thu, 29 Oct 2020 17:38:31 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CB6F522EE8B;
-        Thu, 29 Oct 2020 17:38:31 +0100 (CET)
-Received: from localhost (10.75.127.44) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 29 Oct 2020 17:38:31
- +0100
-From:   Christophe Kerello <christophe.kerello@st.com>
-To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Christophe Kerello <christophe.kerello@st.com>
-Subject: [PATCH] mtd: rawnand: stm32_fmc2: fix broken ECC
-Date:   Thu, 29 Oct 2020 17:38:12 +0100
-Message-ID: <1603989492-6670-1-git-send-email-christophe.kerello@st.com>
-X-Mailer: git-send-email 1.9.1
+        Thu, 29 Oct 2020 12:38:29 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 855285C01B4;
+        Thu, 29 Oct 2020 12:38:28 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 29 Oct 2020 12:38:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
+         h=date:from:to:cc:subject:message-id:reply-to:references
+        :mime-version:content-type:in-reply-to; s=fm3; bh=WeFBWp8TJ6gRua
+        VlONA6iPNjZugA10MJaziAYROlApQ=; b=V31mvf0kGO4lzD99bNgTNFN6EM7BI/
+        0CbcDwpDtpSjCWL2hT7thdF7U6sn+zbaLcD5ZI1/YKXTYp7rdXC3656cbKy0+Y4y
+        WrOl125Ynx+ErQuy9ZP/rKbzKryTBqETw5OphiNfm/aMIHqaF+j1QMZ7N4uMjikO
+        zEs/riNyfKrnRmKrEbItfwa5dTrL6Moqf/2nUbh8CvshgfD+xsgICsQ3K43AZe9D
+        PUzL+JZBIEdBvBTkiyPFSHWV/c2i5AKOzfwJGzMSKBeCCbLZLV3DgO5+k+g+ZmZM
+        v5mbhM6ebI4aNCN1CjQChmSLEzNYwcqmT66GvHJGwGAhSAC0pnnlYgeQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:reply-to:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=WeFBWp8TJ6gRuaVlONA6iPNjZugA10MJaziAYROlApQ=; b=UPkjabfU
+        /K3bSVYkFMIjzUzpBDIHlvoHQINkbjvmT8fI6CpzbZjhY9ZZjywpbavO7DYcPuj8
+        kGpfKIs7USOl3RwNkmHEUy+6j/u5Y7wqflIEln8QOLKSqSwIaO5zz+lFCnUUSDzZ
+        LWiPV0wpRE5SdEl5oyzQOT3csGYrxJmNdNb5NwpUixYnYpBbLIeyn9eBQs02IIEc
+        Lu0NJb8zFc6NCebYLL1CFtbG8darTUwIMFZHDdM7IuWMGOkPeppwDO0nNdGpQt3n
+        tq9//0Tvcp57UQDY+xZDu+Xat+8kpOXdw9BeK8zd8RpyDgCh9LAQGrHwxDIbnpQ+
+        UuGZMJdZtNEsEQ==
+X-ME-Sender: <xms:A_CaXzESGj6ViI1DGcDP-KzoQULy9YLP_tqvNGi_q9W9qzm-r7cShw>
+    <xme:A_CaXwXhk2jjG8eBcw04LVU_3tBWLCvifql5BO2kxI-2nWysdB5DVJLfjpnzy8XIE
+    dTT8JrOOFO164WB71U>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleefgdeltdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkrhhfgggtuggjfgesthdtredttderjeenucfhrhhomhepuegvnhcu
+    uehovggtkhgvlhcuoehmvgessggvnhgsohgvtghkvghlrdhnvghtqeenucggtffrrghtth
+    gvrhhnpeejtddvffehtefgkedtheevgfeileegfeehjedvhedtudeiteegtdeftdelvedv
+    ffenucfkphepvdegrdduieelrddvtddrvdehheenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmvgessggvnhgsohgvtghkvghlrdhnvght
+X-ME-Proxy: <xmx:A_CaX1KlHSEbqFlfn80IhSTetlv8ukaVh5G9AQnk-3c6iV6kAsIg6g>
+    <xmx:A_CaXxF8ooQIrXeH1INYMDlopJISWq-FROf7NU03dFOpg4M5lfNCfQ>
+    <xmx:A_CaX5Xdlc4jiDlS7XDPzy7NOOWwxIYaS3_vTF8pVt_Xbtr47BTnsA>
+    <xmx:BPCaX3cANz3I74hxM85d_IUGP3Ef6grgm53WAwvoOYMIuShL-FeRRQ>
+Received: from localhost (unknown [24.169.20.255])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 6C4BF306468C;
+        Thu, 29 Oct 2020 12:38:27 -0400 (EDT)
+Date:   Thu, 29 Oct 2020 12:38:26 -0400
+From:   Ben Boeckel <me@benboeckel.net>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [RESEND PATCH] KEYS: asymmetric: Fix kerneldoc
+Message-ID: <20201029163826.GA379425@erythro.dev.benboeckel.internal>
+Reply-To: me@benboeckel.net
+References: <20201029154830.26997-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-29_10:2020-10-29,2020-10-29 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201029154830.26997-1-krzk@kernel.org>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user
-input parsing bits"), ECC are broken in FMC2 driver in case of
-nand-ecc-step-size and nand-ecc-strength are not set in the device tree.
-The default user configuration set in FMC2 driver is lost when
-rawnand_dt_init function is called. To avoid to lose the default user
-configuration, it is needed to move it in the new user_conf structure.
+On Thu, Oct 29, 2020 at 16:48:30 +0100, Krzysztof Kozlowski wrote:
+> Fix W=1 compile warnings (invalid kerneldoc):
+> 
+>     crypto/asymmetric_keys/asymmetric_type.c:160: warning: Function parameter or member 'kid1' not described in 'asymmetric_key_id_same'
+>     crypto/asymmetric_keys/asymmetric_type.c:160: warning: Function parameter or member 'kid2' not described in 'asymmetric_key_id_same'
+>     crypto/asymmetric_keys/asymmetric_type.c:160: warning: Excess function parameter 'kid_1' description in 'asymmetric_key_id_same'
+>     crypto/asymmetric_keys/asymmetric_type.c:160: warning: Excess function parameter 'kid_2' description in 'asymmetric_key_id_same'
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
----
- drivers/mtd/nand/raw/stm32_fmc2_nand.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Reviewed-by: Ben Boeckel <mathstuf@gmail.com>
 
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index b31a581..dc86ac9 100644
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -1846,6 +1846,7 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	struct mtd_info *mtd;
- 	struct nand_chip *chip;
-+	struct nand_device *nanddev;
- 	struct resource cres;
- 	int chip_cs, mem_region, ret, irq;
- 	int start_region = 0;
-@@ -1952,10 +1953,11 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
- 	chip->options |= NAND_BUSWIDTH_AUTO | NAND_NO_SUBPAGE_WRITE |
- 			 NAND_USES_DMA;
- 
--	/* Default ECC settings */
-+	/* Default ECC user settings */
- 	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
--	chip->ecc.size = FMC2_ECC_STEP_SIZE;
--	chip->ecc.strength = FMC2_ECC_BCH8;
-+	nanddev = mtd_to_nanddev(mtd);
-+	nanddev->ecc.user_conf.step_size = FMC2_ECC_STEP_SIZE;
-+	nanddev->ecc.user_conf.strength = FMC2_ECC_BCH8;
- 
- 	/* Scan to find existence of the device */
- 	ret = nand_scan(chip, nand->ncs);
--- 
-1.9.1
-
+--Ben
