@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BBC29ED5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9654D29ED58
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727391AbgJ2Npc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727250AbgJ2Npb (ORCPT
+        id S1727312AbgJ2No5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:44:57 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:46030 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgJ2No4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:45:31 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04939C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:45:31 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id r9so3422180ioo.7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:45:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lMVsDoZ2rvYhRouYTnsQqKObuVh6EX/L2Iet4zmcg+0=;
-        b=BqZ2R2ieXOiIyfj4R06JqpmwkZDKmSom+oB6s4vJ3gT+gZ0OND8K/gSscTX2Ax4YSL
-         th+NpS/aAW9WU9gUbnUk6J2t8Tp6ot3gvUb+/Wqxbmh9oVvb4neSwLThNjXM4j2yFQUg
-         Zt/qaKVHiCUkE6S2dy0ZLkpZ7hAoJZTPQ9hb2rwV67DMknJ8A1iSh8jHBADKov09dNWG
-         wUL46gT3QRe9y0P/5t0OhMkwqxX8F/m+Py4topxcn5Ws8DywxAPZ/2FzlE6cx4EpvU/8
-         XPEiPhhjlKLee4syFyTA3ZhySwdIZlKRhkhJCAVIDBlBVvgErA68e84xR75aHFHvDqiv
-         lo/Q==
+        Thu, 29 Oct 2020 09:44:56 -0400
+Received: by mail-oi1-f196.google.com with SMTP id j7so3185891oie.12;
+        Thu, 29 Oct 2020 06:44:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lMVsDoZ2rvYhRouYTnsQqKObuVh6EX/L2Iet4zmcg+0=;
-        b=HhFrDacQ/Dh09PDPVLMl7Qtbvi4vZNQUtoTKhZP6Ug9VPncHBw0S+N2GAwuFDqj4gv
-         sY5Tb8gjbE9lO6uCbtNe0PlSAJDS3zSh8O8KoWXfejnpkukvwgb4ID4UMkfEu1txjUZC
-         lFpXWUh0fUgcfaXdR/K3xYDTxgBcfzOo1MD0IaCInDkUNKvr140TQ3wJfbDMvD2Ffjpo
-         baJ13YsE4r+oJlSkYTCL5CTRkgDuzhJCnOoBFrib/Vvn0xTsbahQk40vEfRb25SEdJBR
-         KICeRfoMDbY/imWrQ8rNgo14MLXhOzQWKylHcYu1CujaFbf8nlXalnWtjFxtapL+HIKm
-         pdsg==
-X-Gm-Message-State: AOAM531nfq5T4bu8qm08q5KhW77BIH5EYrzSTfLXllu5ZIFCEb+vm3Ox
-        yCoOW4Ompi7wiAyGBtSaRomW6A==
-X-Google-Smtp-Source: ABdhPJw/UxKZenF/5zce1bBQYI8Jab+fyaFmZKutTSonAjsrtKq4WJ82S4BHxXpvNmFvbfxO1fy6zA==
-X-Received: by 2002:a5d:8987:: with SMTP id m7mr3494563iol.20.1603979130469;
-        Thu, 29 Oct 2020 06:45:30 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:536c])
-        by smtp.gmail.com with ESMTPSA id c13sm2352228ild.68.2020.10.29.06.45.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 06:45:29 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 09:43:46 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH v20 01/20] mm/memcg: warning on !memcg after readahead
- page charged
-Message-ID: <20201029134346.GB599825@cmpxchg.org>
-References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
- <1603968305-8026-2-git-send-email-alex.shi@linux.alibaba.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ReSkPF12MyEhlqUjtGao8LIpR44K1Tw5NKELj61FW4g=;
+        b=L+v2t62rtUsGg2PqPq3b3d6Pqw5iyCM6+aEb3TPN+k4TZGWQ7pBgFDSafCnpWl4tZq
+         1twinkfugbamTjiEBjlliDiltfaYS9wm+oXrif5mix0AhFK+cilBMI6IwAb4Z2T3ldDO
+         Vk8oPpdwJ+aOxW2JdsmtMz2ZF6XV8WdvlkH9F7QQ3A9OSJoCqoGEc+LXJY4xeHWdd9sP
+         ZTQVMMKdO8bfZIfw29+PIP4qKhjKb9v+vtAwNGI9dEe9F7LMNivYrUgp7c62L+sFwq+P
+         FQI73T1ETnxFP+fy8c90IiX8yAR7w+tkOXJUQLdsSlx179uKl5nnAGms/sHYadZjZ9Rr
+         ECbg==
+X-Gm-Message-State: AOAM531gbWZbprQo5Uu0ktt66x9zigycT7uproljIGA9iASEQc26/flF
+        1GcI+hr7J/lGfSce609VFyoQYVSu5JEOx59FFcQ=
+X-Google-Smtp-Source: ABdhPJyqpn0W41sFWDO/6gczEdbFkpPfGH+buoe9CDdgEG/SHB8wG3k1heG4RwDDWgf7mp2xjGEovvehfcbVQ7iWTYI=
+X-Received: by 2002:aca:c490:: with SMTP id u138mr3077334oif.54.1603979095586;
+ Thu, 29 Oct 2020 06:44:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603968305-8026-2-git-send-email-alex.shi@linux.alibaba.com>
+References: <20201023162008.967-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20201023162008.967-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 29 Oct 2020 14:44:44 +0100
+Message-ID: <CAMuHMdUL+f_6Fzcgjkx+9BJfjTGyCGfPmawwt06hihNZgypP+g@mail.gmail.com>
+Subject: Re: [PATCH] PCI: pcie-rcar-host: Drop unused members from struct rcar_pcie_host
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 06:44:46PM +0800, Alex Shi wrote:
-> Add VM_WARN_ON_ONCE_PAGE() macro.
-> 
-> Since readahead page is charged on memcg too, in theory we don't have to
-> check this exception now. Before safely remove them all, add a warning
-> for the unexpected !memcg.
-> 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: cgroups@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
+On Fri, Oct 23, 2020 at 6:36 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Drop unused members dev and base from struct rcar_pcie_host.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
