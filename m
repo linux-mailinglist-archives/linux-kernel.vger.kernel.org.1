@@ -2,238 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA8329E590
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A3229E592
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732864AbgJ2H6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:58:12 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:6987 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726913AbgJ2H6G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:58:06 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CMHqc17HSzhcfq;
-        Thu, 29 Oct 2020 15:58:04 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 29 Oct
- 2020 15:57:58 +0800
-Subject: Re: [f2fs-dev] [PATCH v5 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
- ioctl
-To:     Daeho Jeong <daeho43@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <kernel-team@android.com>, Daeho Jeong <daehojeong@google.com>
-References: <20201029041538.4165209-1-daeho43@gmail.com>
- <20201029041538.4165209-2-daeho43@gmail.com>
- <92f4da8e-27a1-7577-84f9-39038eaa88cb@huawei.com>
- <CACOAw_xz=n21-Pmot2aMCCwPWzMpTUHM_rshYBgVsuGM+S_uuw@mail.gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <bed90f7e-d4ff-ebfc-97fb-32aea1f5a4ab@huawei.com>
-Date:   Thu, 29 Oct 2020 15:57:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <CACOAw_xz=n21-Pmot2aMCCwPWzMpTUHM_rshYBgVsuGM+S_uuw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+        id S1733190AbgJ2H6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:58:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58754 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726987AbgJ2H6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 03:58:10 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48A4220724;
+        Thu, 29 Oct 2020 07:58:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603958289;
+        bh=ZcYvWQr2VWQJtO2BXb6i/VkN/X0mqZM5yiREyaXyl50=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=duIABjJkNNi8c+SdlJLhGYLKvsMmP3ziC5m5+qOVz+2xsjzrBsyeeD6fnYweqCjzK
+         vinRLQ6rgBdJamFfYVDOweLdMWIvCQGWGFPexG/BBW42C3b5wWUxTF2et8MNALOdrG
+         1fKICN4OGuubvxElYZ3VOGjVNLPF7NiEGA1RCMUU=
+Date:   Thu, 29 Oct 2020 16:58:03 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guo Ren <guoren@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-csky@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH 5/9] kprobes/ftrace: Add recursion protection to the
+ ftrace callback
+Message-Id: <20201029165803.5f6b401e5bccca4e57c70181@kernel.org>
+In-Reply-To: <20201028115613.140212174@goodmis.org>
+References: <20201028115244.995788961@goodmis.org>
+        <20201028115613.140212174@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/29 15:39, Daeho Jeong wrote:
-> f2fs_cops is a static variable. Do you wanna change this to global
-> variable (extern)?
+Hi Steve,
 
-Oh, no, how about updating f2fs_is_compress_algorithm_ready() as below?
-and use this function in f2fs_ioc_set_compress_option().
+On Wed, 28 Oct 2020 07:52:49 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> If a ftrace callback does not supply its own recursion protection and
+> does not set the RECURSION_SAFE flag in its ftrace_ops, then ftrace will
+> make a helper trampoline to do so before calling the callback instead of
+> just calling the callback directly.
+
+So in that case the handlers will be called without preempt disabled?
+
+
+> The default for ftrace_ops is going to assume recursion protection unless
+> otherwise specified.
+
+This seems to skip entier handler if ftrace finds recursion.
+I would like to increment the missed counter even in that case.
+
+[...]
+e.g.
+
+> diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+> index 5264763d05be..5eb2604fdf71 100644
+> --- a/arch/csky/kernel/probes/ftrace.c
+> +++ b/arch/csky/kernel/probes/ftrace.c
+> @@ -13,16 +13,21 @@ int arch_check_ftrace_location(struct kprobe *p)
+>  void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  			   struct ftrace_ops *ops, struct pt_regs *regs)
+>  {
+> +	int bit;
+>  	bool lr_saver = false;
+>  	struct kprobe *p;
+>  	struct kprobe_ctlblk *kcb;
+>  
+> -	/* Preempt is disabled by ftrace */
+> +	bit = ftrace_test_recursion_trylock();
+
+> +
+> +	preempt_disable_notrace();
+>  	p = get_kprobe((kprobe_opcode_t *)ip);
+>  	if (!p) {
+>  		p = get_kprobe((kprobe_opcode_t *)(ip - MCOUNT_INSN_SIZE));
+>  		if (unlikely(!p) || kprobe_disabled(p))
+> -			return;
+> +			goto out;
+>  		lr_saver = true;
+>  	}
+
+	if (bit < 0) {
+		kprobes_inc_nmissed_count(p);
+		goto out;
+	}
+
+>  
+> @@ -56,6 +61,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  		 */
+>  		__this_cpu_write(current_kprobe, NULL);
+>  	}
+> +out:
+> +	preempt_enable_notrace();
+
+	if (bit >= 0)
+		ftrace_test_recursion_unlock(bit);
+
+>  }
+>  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+>  
+
+Or, we can also introduce a support function,
+
+static inline void kprobes_inc_nmissed_ip(unsigned long ip)
 {
-	return f2fs_cops[algorithm];
+	struct kprobe *p;
+
+	preempt_disable_notrace();
+	p = get_kprobe((kprobe_opcode_t *)ip);
+	if (p)
+		kprobes_inc_nmissed_count(p);
+	preempt_enable_notrace();
 }
 
+> diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+> index 4bab21c71055..5f7742b225a5 100644
+> --- a/arch/parisc/kernel/ftrace.c
+> +++ b/arch/parisc/kernel/ftrace.c
+> @@ -208,13 +208,19 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  {
+>  	struct kprobe_ctlblk *kcb;
+>  	struct kprobe *p = get_kprobe((kprobe_opcode_t *)ip);
+
+(BTW, here is a bug... get_kprobe() must be called with preempt disabled.)
+
+> +	int bit;
+>  
+> -	if (unlikely(!p) || kprobe_disabled(p))
+> +	bit = ftrace_test_recursion_trylock();
+
+	if (bit < 0) {
+		kprobes_inc_nmissed_ip(ip);
+>  		return;
+	}
+
+This may easier for you ?
+
+Thank you,
+
+>  
+> +	preempt_disable_notrace();
+> +	if (unlikely(!p) || kprobe_disabled(p))
+> +		goto out;
+> +
+>  	if (kprobe_running()) {
+>  		kprobes_inc_nmissed_count(p);
+> -		return;
+> +		goto out;
+>  	}
+>  
+>  	__this_cpu_write(current_kprobe, p);
+> @@ -235,6 +241,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  		}
+>  	}
+>  	__this_cpu_write(current_kprobe, NULL);
+> +out:
+> +	preempt_enable_notrace();
+> +	ftrace_test_recursion_unlock(bit);
+>  }
+>  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+>  
+> diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
+> index 972cb28174b2..5df8d50c65ae 100644
+> --- a/arch/powerpc/kernel/kprobes-ftrace.c
+> +++ b/arch/powerpc/kernel/kprobes-ftrace.c
+> @@ -18,10 +18,16 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+>  {
+>  	struct kprobe *p;
+>  	struct kprobe_ctlblk *kcb;
+> +	int bit;
+>  
+> +	bit = ftrace_test_recursion_trylock();
+> +	if (bit < 0)
+> +		return;
+> +
+> +	preempt_disable_notrace();
+>  	p = get_kprobe((kprobe_opcode_t *)nip);
+>  	if (unlikely(!p) || kprobe_disabled(p))
+> -		return;
+> +		goto out;
+>  
+>  	kcb = get_kprobe_ctlblk();
+>  	if (kprobe_running()) {
+> @@ -52,6 +58,9 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+>  		 */
+>  		__this_cpu_write(current_kprobe, NULL);
+>  	}
+> +out:
+> +	preempt_enable_notrace();
+> +	ftrace_test_recursion_unlock(bit);
+>  }
+>  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+>  
+> diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+> index b388e87a08bf..88466d7fb6b2 100644
+> --- a/arch/s390/kernel/ftrace.c
+> +++ b/arch/s390/kernel/ftrace.c
+> @@ -202,13 +202,19 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  {
+>  	struct kprobe_ctlblk *kcb;
+>  	struct kprobe *p = get_kprobe((kprobe_opcode_t *)ip);
+> +	int bit;
+>  
+> -	if (unlikely(!p) || kprobe_disabled(p))
+> +	bit = ftrace_test_recursion_trylock();
+> +	if (bit < 0)
+>  		return;
+>  
+> +	preempt_disable_notrace();
+> +	if (unlikely(!p) || kprobe_disabled(p))
+> +		goto out;
+> +
+>  	if (kprobe_running()) {
+>  		kprobes_inc_nmissed_count(p);
+> -		return;
+> +		goto out;
+>  	}
+>  
+>  	__this_cpu_write(current_kprobe, p);
+> @@ -228,6 +234,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  		}
+>  	}
+>  	__this_cpu_write(current_kprobe, NULL);
+> +out:
+> +	preempt_enable_notrace();
+> +	ftrace_test_recursion_unlock(bit);
+>  }
+>  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+>  
+> diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+> index 681a4b36e9bb..a40a6cdfcca3 100644
+> --- a/arch/x86/kernel/kprobes/ftrace.c
+> +++ b/arch/x86/kernel/kprobes/ftrace.c
+> @@ -18,11 +18,16 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  {
+>  	struct kprobe *p;
+>  	struct kprobe_ctlblk *kcb;
+> +	int bit;
+>  
+> -	/* Preempt is disabled by ftrace */
+> +	bit = ftrace_test_recursion_trylock();
+> +	if (bit < 0)
+> +		return;
+> +
+> +	preempt_disable_notrace();
+>  	p = get_kprobe((kprobe_opcode_t *)ip);
+>  	if (unlikely(!p) || kprobe_disabled(p))
+> -		return;
+> +		goto out;
+>  
+>  	kcb = get_kprobe_ctlblk();
+>  	if (kprobe_running()) {
+> @@ -52,6 +57,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  		 */
+>  		__this_cpu_write(current_kprobe, NULL);
+>  	}
+> +out:
+> +	preempt_enable_notrace();
+> +	ftrace_test_recursion_unlock(bit);
+>  }
+>  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+>  
+> -- 
+> 2.28.0
 > 
-> 2020년 10월 29일 (목) 오후 4:29, Chao Yu <yuchao0@huawei.com>님이 작성:
->>
->> On 2020/10/29 12:15, Daeho Jeong wrote:
->>> From: Daeho Jeong <daehojeong@google.com>
->>>
->>> Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
->>> compression option of a file.
->>>
->>> struct f2fs_comp_option {
->>>       u8 algorithm;         => compression algorithm
->>>                             => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
->>>       u8 log_cluster_size;  => log scale cluster size
->>>                             => 2 ~ 8
->>> };
->>>
->>> struct f2fs_comp_option option;
->>>
->>> option.algorithm = 1;
->>> option.log_cluster_size = 7;
->>>
->>> ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
->>>
->>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
->>> ---
->>>
->>> v5: allowed to set algorithm which is not currently enabled by kernel
->>> v4: changed commit message.
->>> v3: changed the error number more specific.
->>>       folded in fix for build breakage reported by kernel test robot
->>>       <lkp@intel.com> and Dan Carpenter <dan.carpenter@oracle.com>.
->>> v2: added ioctl description.
->>> ---
->>>    fs/f2fs/compress.c |  5 +++++
->>>    fs/f2fs/f2fs.h     |  7 ++++++
->>>    fs/f2fs/file.c     | 54 ++++++++++++++++++++++++++++++++++++++++++++++
->>>    3 files changed, 66 insertions(+)
->>>
->>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->>> index 7895186cc765..816d7adc914c 100644
->>> --- a/fs/f2fs/compress.c
->>> +++ b/fs/f2fs/compress.c
->>> @@ -514,6 +514,11 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
->>>        return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
->>>    }
->>>
->>> +bool f2fs_is_compress_algorithm_ready(unsigned char algorithm)
->>> +{
->>> +     return algorithm < COMPRESS_MAX && f2fs_cops[algorithm] != NULL;
->>> +}
->>> +
->>>    static mempool_t *compress_page_pool;
->>>    static int num_compress_pages = 512;
->>>    module_param(num_compress_pages, uint, 0444);
->>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>> index a33c90cf979b..cc38afde6c04 100644
->>> --- a/fs/f2fs/f2fs.h
->>> +++ b/fs/f2fs/f2fs.h
->>> @@ -435,6 +435,8 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
->>>                                                struct f2fs_sectrim_range)
->>>    #define F2FS_IOC_GET_COMPRESS_OPTION        _IOR(F2FS_IOCTL_MAGIC, 21,      \
->>>                                                struct f2fs_comp_option)
->>> +#define F2FS_IOC_SET_COMPRESS_OPTION _IOW(F2FS_IOCTL_MAGIC, 22,      \
->>> +                                             struct f2fs_comp_option)
->>>
->>>    /*
->>>     * should be same as XFS_IOC_GOINGDOWN.
->>> @@ -3915,6 +3917,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
->>>    int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
->>>    void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
->>>    bool f2fs_is_compress_backend_ready(struct inode *inode);
->>> +bool f2fs_is_compress_algorithm_ready(unsigned char algorithm);
->>>    int f2fs_init_compress_mempool(void);
->>>    void f2fs_destroy_compress_mempool(void);
->>>    void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
->>> @@ -3945,6 +3948,10 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
->>>        /* not support compression */
->>>        return false;
->>>    }
->>> +static inline bool f2fs_is_compress_algorithm_ready(unsigned char algorithm)
->>> +{
->>> +     return false;
->>> +}
->>>    static inline struct page *f2fs_compress_control_page(struct page *page)
->>>    {
->>>        WARN_ON_ONCE(1);
->>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>> index 8922ab191a9d..a0f31d8ebcfd 100644
->>> --- a/fs/f2fs/file.c
->>> +++ b/fs/f2fs/file.c
->>> @@ -3963,6 +3963,57 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
->>>        return 0;
->>>    }
->>>
->>> +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
->>> +{
->>> +     struct inode *inode = file_inode(filp);
->>> +     struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->>> +     struct f2fs_comp_option option;
->>> +     int ret = 0;
->>> +
->>> +     if (!f2fs_sb_has_compression(sbi))
->>> +             return -EOPNOTSUPP;
->>> +
->>> +     if (!(filp->f_mode & FMODE_WRITE))
->>> +             return -EBADF;
->>> +
->>> +     if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg,
->>> +                             sizeof(option)))
->>> +             return -EFAULT;
->>> +
->>> +     if (!f2fs_compressed_file(inode) ||
->>> +                     option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
->>> +                     option.log_cluster_size > MAX_COMPRESS_LOG_SIZE ||
->>> +                     option.algorithm >= COMPRESS_MAX)
->>> +             return -EINVAL;
->>> +
->>> +     file_start_write(filp);
->>> +     inode_lock(inode);
->>> +
->>> +     if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
->>> +             ret = -EBUSY;
->>> +             goto out;
->>> +     }
->>> +
->>> +     if (inode->i_size != 0) {
->>> +             ret = -EFBIG;
->>> +             goto out;
->>> +     }
->>
->> Hmm...
->>
->> Shouldn't it be:
->>
->> if (algorithm >= COMPRESS_MAX) {
->>          ret = -ENOPKG;
->>          goto out;
->> }
->>
->> if (!f2fs_cops[algorithm])
->>          f2fs_warn(...);
->>
->>> +
->>> +     F2FS_I(inode)->i_compress_algorithm = option.algorithm;
->>> +     F2FS_I(inode)->i_log_cluster_size = option.log_cluster_size;
->>> +     F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
->>> +     f2fs_mark_inode_dirty_sync(inode, true);
->>> +
->>> +     if (!f2fs_is_compress_algorithm_ready(option.algorithm))
->>> +             f2fs_warn(sbi, "compression algorithm is successfully set, "
->>> +                     "but current kernel doesn't support this algorithm.");
->>> +out:
->>> +     inode_unlock(inode);
->>> +     file_end_write(filp);
->>> +
->>> +     return ret;
->>> +}
->>> +
->>>    long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->>>    {
->>>        if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
->>> @@ -4053,6 +4104,8 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->>>                return f2fs_sec_trim_file(filp, arg);
->>>        case F2FS_IOC_GET_COMPRESS_OPTION:
->>>                return f2fs_ioc_get_compress_option(filp, arg);
->>> +     case F2FS_IOC_SET_COMPRESS_OPTION:
->>> +             return f2fs_ioc_set_compress_option(filp, arg);
->>>        default:
->>>                return -ENOTTY;
->>>        }
->>> @@ -4224,6 +4277,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->>>        case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
->>>        case F2FS_IOC_SEC_TRIM_FILE:
->>>        case F2FS_IOC_GET_COMPRESS_OPTION:
->>> +     case F2FS_IOC_SET_COMPRESS_OPTION:
->>>                break;
->>>        default:
->>>                return -ENOIOCTLCMD;
->>>
-> .
 > 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
