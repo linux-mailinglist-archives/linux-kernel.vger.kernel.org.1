@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1F829E4B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1520D29E4B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733042AbgJ2HpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58706 "EHLO
+        id S1730569AbgJ2Hph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733028AbgJ2HpE (ORCPT
+        with ESMTP id S1727352AbgJ2Hp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:45:04 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7E6C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:45:04 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id b3so1665621pfo.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:45:04 -0700 (PDT)
+        Thu, 29 Oct 2020 03:45:27 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75A2C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:45:27 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x23so906299plr.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:45:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yud4LFo3ZtN8YB5h2zgMiUFZ5gtVLkjhEUnn5lF5Ujo=;
-        b=oisQJdTzCQ1BpXv3Ln1D5dP8ROZCbsZGjFZ6m944zrR8HRDDm2St51OhpWpuOqy8S5
-         ClpBqdSH7BlOncB5aYQqBsdxdQAUBKmOMcfIn1+R5TjfHRpBZdkhJi1eTzgjaAHMFOCw
-         fc0AvqTxuk8rvCHhoCzKNbu6WgCVSizKQCTETCND3zYc8/x2L3KdIXweJBNS3gdQ4DI7
-         bdzNWvJjr5uvqfTfLe7V3StvR5rmPFHi3kAXDl1Bo0PzBWAc0RfWTzI+uqyY1kXdZuZM
-         ORxrkpYRK6SfLT3xEEled1rVjzESfhmwa/ctxRqBZfrutBdYATAtNGj57xQpN2aN97sD
-         6hZw==
+        bh=Rg5J52NuyGCmmE1mtIcXPCwKs4Dspg6yOxJ+mqzq0jI=;
+        b=GcBbyaVpviEKwJ5P+78y2ZosN9hkzhWGP4CYU5Eqo4qFc1b8GP0n1pmTj9W600GgYd
+         +lp3Ubkqsyd7xVHssjHeZSkLaI/ap1lvsq6kOvDp5HchCO6sn1WsiXjqvwXEgpCySx7u
+         AiT9YMXUmTzjGKZ1udDSXYBtk0lVmSH3/96Kx4fhDb737u+lduYuqqmDUZ/q40lvbrxZ
+         vuKBGhRM3OhoB8+V3WF7+Jbh3BGT/dnx4H6LaJOPMNcWi9agRtfU4Hj9fLhiCI7u1Xiw
+         cvQV4awVQzrUTcQ2HpV5calW5w0js2lzWvwwLjFAQCHLEA6RRfAmGNqLmWUYZWiETZms
+         Umig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yud4LFo3ZtN8YB5h2zgMiUFZ5gtVLkjhEUnn5lF5Ujo=;
-        b=ZHMVjcEA1xdqHtyIN6Qc+nIhEMJW1bTonB7+6UiIGmGR+2j2zyBpbK0AKdQsVNU1W4
-         6u80FBF0bzyt26KYkO2lUmWOS/0YYZ/aLuL7m74lSXUd5qt36Pp9wM5gTsWqPaaReX+g
-         NCH3yePY/CLsLarjlFox67BVVs7gWBLvoX2Iuo0TUtbBKNrRt9liSRu3j1etW13C5v6C
-         7+hasfhP/6u+CZJODJoJdHHHLEbjwzd+p+80ShnLmnaLtlQGiuHRjyZgRp5dWgZYN+J4
-         xZK0laD3Xo+moS2k5WuD48AwyHSx75txYGp+qz5HAc2bGLo27Nat7283MnYAXolwCyfi
-         8FcQ==
-X-Gm-Message-State: AOAM533gltIaqkkfoLEaqy7YLLQwfkC0NM4p1lOvafSSKJVvC+VFWfUM
-        pLHb2s8Nyacsl0RU0n7+SXc=
-X-Google-Smtp-Source: ABdhPJzYOaREJky9YPVbrpsi34cw/1JYIXt6d1J7PjFokyFWL3AZPbsBHCjkKDcJlm3lKgjwNeJwCg==
-X-Received: by 2002:a17:90a:10c1:: with SMTP id b1mr3057967pje.58.1603957503735;
-        Thu, 29 Oct 2020 00:45:03 -0700 (PDT)
+        bh=Rg5J52NuyGCmmE1mtIcXPCwKs4Dspg6yOxJ+mqzq0jI=;
+        b=QwRQUUYXQJogqNHlVLXY0/UaXKkD/v2MYM52XBDHTczBejhoKU+QlQJPkAeRDE1Wb7
+         H5ownJb41Wa0CQ2gy2q+lMUlRkDINYriB5qy3O/9sRFUGdDmya+zQ3GM8QBAEVhbARLp
+         y5c0Gn169JXTPhbe/FOe5048IyZqDje0zL+nr3Giuq54Wz29GxWEDbi3c82+XhZHAvPY
+         m403rfNTaEdG8ndX8IpHmD3AEZKMzBXn9JRhRgJ6M0ume2EW4rPi6E9nE1inSp43xcU1
+         IaQMXylVj1XpJfOQUkDemA75SUeu2yK3dAUaaA3V+QruHSQtt9MNs3efYZbnmL6f603a
+         FVHw==
+X-Gm-Message-State: AOAM530/Ilw0EPKGOBIhaS1gOAEO4/o0gvFGdbLBu/bXaEypPt9xX5TY
+        sA2zlHdWkjam74lJAwswW9c=
+X-Google-Smtp-Source: ABdhPJxyHGcIIytk0HselO54m4ginY9+7Q4ekyHRdxzBx8YVFup8tCHFE3TtzL04LqRyU9DN8M3ICA==
+X-Received: by 2002:a17:902:7882:b029:d6:38a2:8dee with SMTP id q2-20020a1709027882b02900d638a28deemr2791341pll.58.1603957527452;
+        Thu, 29 Oct 2020 00:45:27 -0700 (PDT)
 Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
-        by smtp.gmail.com with ESMTPSA id j6sm1650239pgt.77.2020.10.29.00.45.00
+        by smtp.gmail.com with ESMTPSA id v3sm1709965pju.38.2020.10.29.00.45.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 00:45:03 -0700 (PDT)
+        Thu, 29 Oct 2020 00:45:27 -0700 (PDT)
 From:   Coiby Xu <coiby.xu@gmail.com>
 To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 Cc:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
-        Barry Song <baohua@kernel.org>,
         alsa-devel@alsa-project.org (moderated list:SOUND - SOC LAYER / DYNAMIC
-        AUDIO POWER MANAGEM...),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/CSR SIRFPRIMA2
-        MACHINE SUPPORT), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 16/25] ASoC: sirf: remove unnecessary CONFIG_PM_SLEEP
-Date:   Thu, 29 Oct 2020 15:42:52 +0800
-Message-Id: <20201029074301.226644-16-coiby.xu@gmail.com>
+        AUDIO POWER MANAGEM...), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 17/25] ASoC: hdac_hdmi: remove unnecessary CONFIG_PM_SLEEP
+Date:   Thu, 29 Oct 2020 15:42:53 +0800
+Message-Id: <20201029074301.226644-17-coiby.xu@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201029074301.226644-1-coiby.xu@gmail.com>
 References: <20201029074301.226644-1-coiby.xu@gmail.com>
@@ -73,29 +70,31 @@ SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
 
 Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 ---
- sound/soc/sirf/sirf-usp.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/sound/soc/sirf/sirf-usp.c b/sound/soc/sirf/sirf-usp.c
-index 2af0c6f14ee6..ae2890827414 100644
---- a/sound/soc/sirf/sirf-usp.c
-+++ b/sound/soc/sirf/sirf-usp.c
-@@ -313,7 +313,6 @@ static int sirf_usp_pcm_runtime_resume(struct device *dev)
- 	return 0;
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 2c1305bf0572..92111561a041 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -2026,7 +2026,6 @@ static void hdmi_codec_remove(struct snd_soc_component *component)
+ 	pm_runtime_disable(&hdev->dev);
  }
  
 -#ifdef CONFIG_PM_SLEEP
- static int sirf_usp_pcm_suspend(struct device *dev)
+ static int hdmi_codec_resume(struct device *dev)
  {
- 	struct sirf_usp *usp = dev_get_drvdata(dev);
-@@ -340,7 +339,6 @@ static int sirf_usp_pcm_resume(struct device *dev)
- 	}
+ 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
+@@ -2049,9 +2048,6 @@ static int hdmi_codec_resume(struct device *dev)
+ 	hdac_hdmi_present_sense_all_pins(hdev, hdmi, false);
  	return 0;
  }
+-#else
+-#define hdmi_codec_resume NULL
 -#endif
  
- static const struct snd_soc_component_driver sirf_usp_component = {
- 	.name		= "sirf-usp",
+ static const struct snd_soc_component_driver hdmi_hda_codec = {
+ 	.probe			= hdmi_codec_probe,
 -- 
 2.28.0
 
