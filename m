@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0847D29F1FE
+	by mail.lfdr.de (Postfix) with ESMTP id E173F29F200
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbgJ2Qoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:44:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727966AbgJ2Qod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:44:33 -0400
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC60421548;
-        Thu, 29 Oct 2020 16:44:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603989872;
-        bh=TjWTEHAKNXgYSoWlJazs0qqZ+iSuookZr6vyZ0KE8/c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IL0HwMAquJCtdqq90LzjQXrojZJ9rje6lRt0XQf9g1/HWJ8OF0wfZ9M9FFTn3MjxA
-         6D3zgq7E+X4j2whUpHsTpyyZBXhNkd8FxD4MPr2jmQbC0cyM3MsOZXKhvemM+fGReo
-         WYJ59WImmMdGmGL1vIbm5uKxVY/TbhHxFP5E3/34=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Ricardo Ribalda <ribalda@kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        Wenyou Yang <wenyou.yang@microchip.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [RESEND PATCH 25/25] media: i2c: tvp5150: simplify getting state container
-Date:   Thu, 29 Oct 2020 17:42:39 +0100
-Message-Id: <20201029164239.84240-25-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201029164239.84240-1-krzk@kernel.org>
-References: <20201029164239.84240-1-krzk@kernel.org>
+        id S1727776AbgJ2Qot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727468AbgJ2Qos (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:44:48 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD833C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:44:47 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id b19so1579876pld.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:44:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WMTjr2+W+gNVsgeHGd8A7YK4eqPL28HpThgEaSeH9eU=;
+        b=hfspaErkNEk3rAQDqD3A0QgoFYIiQkGUXf8U4LtwDIZRnTaq5uY+72sOy4F8Tecu7/
+         S10JQrb+7JGVOXgAIaOvAXO67dScyeX13atrBB4zM+n0Vnq+wRAjitHeNE4ZuCqVjq/T
+         y1K07iO66M5EAMlOc0n1HSwbJUn8tCD1O10RG0i3r2KoxYlwfxpn3eJjkJamTOQhXQdz
+         WRu4N0U20Nh5rSCsry63lSKA1ytldBRzUIhbDSqHt73GjcTEdUL5KABUa1mss8WbXjsR
+         IAJ/w6jdyyyMBerGnkWLXBgWJR/Zw+o2nEuA5MEUGTCnJccPYfUJRhZrugg2P3djBpW3
+         d5QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WMTjr2+W+gNVsgeHGd8A7YK4eqPL28HpThgEaSeH9eU=;
+        b=tXbWxvnKIe0O36ioW+JyDBLoTdk3XCRtr0xVEpvFAKOyvtSbBeyRlNaIZ1BNgdGh3Q
+         s81uEKsGPIB13kXkFaeRP4Wed2uAwAFev9O3+p9Qxt1+47RESlLE7FmgyBi1+DRnjGGE
+         +qEr0OY6govYFCB7GARmAa5OMIuZB/zVd6DhBgZr7avTBKz3FCMSjdfgQHqfl+aMClZw
+         c38h3LlQ1Gao9+NPPbvhKg/9fYGO66p7ctVjwUZuqoOG4yPg2rEpr5sSnDwYYE952yu0
+         lWmY2qY9TYJ2LRMdU26+f2foHCYxOgczretLASee7CmMrOq2iSEo7WJ5wmr5ZyPtw8LL
+         Xwow==
+X-Gm-Message-State: AOAM531Ze0GTMAZLlG6ryMrDd7Jr88QUOPmkPYbd6ED/S77TCBtyhGKh
+        WodBlQSfNHuIJ+BrgpFAGZmBvQ==
+X-Google-Smtp-Source: ABdhPJwQrJmv/aoXAfRDFvHvxaf+pIXE+6B7vM/dhQRAubpFI5YbGj/chIP9FmZN25gkwUQQYOHgsQ==
+X-Received: by 2002:a17:902:b497:b029:d5:c01a:f06b with SMTP id y23-20020a170902b497b02900d5c01af06bmr5152085plr.13.1603989887265;
+        Thu, 29 Oct 2020 09:44:47 -0700 (PDT)
+Received: from localhost.localdomain ([103.136.220.95])
+        by smtp.gmail.com with ESMTPSA id 197sm3429491pfa.170.2020.10.29.09.44.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Oct 2020 09:44:46 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
+        iamjoonsoo.kim@lge.com, laoar.shao@gmail.com, chris@chrisdown.name,
+        christian.brauner@ubuntu.com, peterz@infradead.org,
+        mingo@kernel.org, keescook@chromium.org, tglx@linutronix.de,
+        esyr@redhat.com, surenb@google.com, areber@redhat.com,
+        elver@google.com
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v3] mm: memcg/slab: Fix return child memcg objcg for root memcg
+Date:   Fri, 30 Oct 2020 00:44:29 +0800
+Message-Id: <20201029164429.58703-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pointer to 'struct v4l2_subdev' is stored in drvdata via
-v4l2_i2c_subdev_init() so there is no point of a dance like:
+Consider the following memcg hierarchy.
 
-    struct i2c_client *client = to_i2c_client(struct device *dev)
-    struct v4l2_subdev *sd = i2c_get_clientdata(client);
+                    root
+                   /    \
+                  A      B
 
-This allows to remove local variable 'client' and few pointer
-dereferences.
+If we failed to get the reference on objcg of memcg A, the
+get_obj_cgroup_from_current can return the wrong objcg for
+the root memcg.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Roman Gushchin <guro@fb.com>
 ---
- drivers/media/i2c/tvp5150.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ changelog in v3:
+ 1. Fix commit grammar, thanks to Shakeel.
 
-diff --git a/drivers/media/i2c/tvp5150.c b/drivers/media/i2c/tvp5150.c
-index 7d9401219a3a..29f65bb6103d 100644
---- a/drivers/media/i2c/tvp5150.c
-+++ b/drivers/media/i2c/tvp5150.c
-@@ -1413,8 +1413,7 @@ static const struct media_entity_operations tvp5150_sd_media_ops = {
-  ****************************************************************************/
- static int __maybe_unused tvp5150_runtime_suspend(struct device *dev)
- {
--	struct i2c_client *client = to_i2c_client(dev);
--	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
- 	struct tvp5150 *decoder = to_tvp5150(sd);
+ changelog in v2:
+ 1. Do not use a comparison with the root_mem_cgroup
+
+ mm/memcontrol.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 1337775b04f3..8c8b4c3ed5a0 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2961,6 +2961,7 @@ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+ 		objcg = rcu_dereference(memcg->objcg);
+ 		if (objcg && obj_cgroup_tryget(objcg))
+ 			break;
++		objcg = NULL;
+ 	}
+ 	rcu_read_unlock();
  
- 	if (decoder->irq)
-@@ -1427,8 +1426,7 @@ static int __maybe_unused tvp5150_runtime_suspend(struct device *dev)
- 
- static int __maybe_unused tvp5150_runtime_resume(struct device *dev)
- {
--	struct i2c_client *client = to_i2c_client(dev);
--	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
- 	struct tvp5150 *decoder = to_tvp5150(sd);
- 
- 	if (decoder->irq)
 -- 
-2.25.1
+2.20.1
 
