@@ -2,78 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00ED29EB00
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE6429EB05
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725876AbgJ2LwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbgJ2LwE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:52:04 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61728C0613CF;
-        Thu, 29 Oct 2020 04:52:04 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id e15so2134805pfh.6;
-        Thu, 29 Oct 2020 04:52:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U3m1CrvhBF5ZSjmNj0DT84Tf4MllZuPLAp7rAxUIIvk=;
-        b=QbTdGARbBTH/u8+FxoM+algkxX8+k9z37QEV7DSMGJfl/VPaZif1EZtmt1UPut11q3
-         EVWLS4R53NN8MF8GXNC9B53c/zMgekULAhUJDxQcaP9OhOl6hs07H/rolO1r1S8LTb6L
-         U9F+u8KsQORfQ8vk5gBSX+VyhXQR+aPOP8Xfe7sqlaL/YGd74cGwFuMp5mLQI9iNPUDK
-         fl8rz6zWLVtrUO2NvrehBMxmypFHFhpbeTUuExptjP2+7zm69V3jh6vgxL3cp6x3rzMq
-         OhlaBmJaLka7PZD6znS+RFKyKdCHMJvxhywJci0czrWINe3bKzaJi11Gfi/QnluAy5Jj
-         Qalg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U3m1CrvhBF5ZSjmNj0DT84Tf4MllZuPLAp7rAxUIIvk=;
-        b=nRNcpD2v/4L06ATsBDxBpBx8dbS/0nR85LXyqy49s6cw5BRipnuatxIJxmSaRwHyB5
-         +C/6QmuXkx3hqtg1fxCgAoxucyzPx0U8bYgm9IKbmJFDwTgCy4xaVSaJTRPYyXXaO2sh
-         fBJAjYJmF2ZKNlmQY3ft9eIgBYZXNbKAMksDiUmO0gPuWmanfjAr1uqXshnwltPuU8Gd
-         Hhrxvk18ShkE78TWHBOQ6Nqg8Q/tCfE/ikGManS+Xhzi7Crh182o5U4nJEFNKqNiLNpF
-         b/NYo68vhIW6vH3kq5CttdSmbaf9kijJqTIncXVeBSBxAA0p7XgXDkBnNA8gHpn3NZYR
-         ck6w==
-X-Gm-Message-State: AOAM532btieDmoDCzyCzFpKH7f9jPzCjxY8yS17VYx2VpRihxgAyrLi3
-        8EJ8+BgNaEOCf1s6aQWKPXBV01422sD1NTx2PNg=
-X-Google-Smtp-Source: ABdhPJyaBf39lMSO0TPYNh2S8KAa85eKhsXcVTmuCiVl5I8J3IMkHJ2lCrVhNke2Ju0R+sUHXoOSMyJmKC8jFQRHUBM=
-X-Received: by 2002:a17:90a:be11:: with SMTP id a17mr3907925pjs.181.1603972323962;
- Thu, 29 Oct 2020 04:52:03 -0700 (PDT)
+        id S1725834AbgJ2Lx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:53:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725730AbgJ2Lx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 07:53:28 -0400
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 820CB20838
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 11:53:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603972407;
+        bh=MjO/w8dLadPJO8+mgZEz2PmE6+PcETiEPBl3XbddTNU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dRAdWSNxaeoTpEj8ap8c12XBqypxZXbdObNzss4wOkm8t6QBuRKJgeidTG8xQ2vOD
+         0rFK1+mcQOGPjE18kCeiqqCeUcXdrp+9GRx44+dYOAH28SKOSjcCfUbXZOE7SDlQlj
+         xsjFiLVPhLqC0r0Bn7X+zKqnUKdesTgvSbYTTw8A=
+Received: by mail-qk1-f178.google.com with SMTP id r7so1727072qkf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 04:53:27 -0700 (PDT)
+X-Gm-Message-State: AOAM530lnw8MsePk1DA1IZRfWAvgMXA9zrf97h7Vqd+UWNV78LJq0NDZ
+        JrSJeXo3+I1qzrRQkce1xhW98yKflwQuWC2pSzA=
+X-Google-Smtp-Source: ABdhPJyrF9HRuhB8NCT6MXOZyMdOFceqoDOKhNXS4DhX309opkS8RN3D5h4K35F8wuUOnFDT3t9hGAmZ47pPyWVOXkU=
+X-Received: by 2002:a05:620a:22c9:: with SMTP id o9mr3287427qki.286.1603972405589;
+ Thu, 29 Oct 2020 04:53:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <1603972048-64271-1-git-send-email-zou_wei@huawei.com>
-In-Reply-To: <1603972048-64271-1-git-send-email-zou_wei@huawei.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 29 Oct 2020 13:52:53 +0200
-Message-ID: <CAHp75Ve64EvD7_H8h2MW39dpimWbPcANZC3-zgF__yA6C7BGQA@mail.gmail.com>
-Subject: Re: [PATCH -next] platform/surface: remove status assignment without reading
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201023092650.GB29066@infradead.org> <VI1PR04MB4960E9ECD7310B8CA1E053DC92190@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <20201027062802.GC207971@kroah.com> <VI1PR04MB4960C0E76374B2775D99A82192160@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <20201027151106.e4skr6dsbwvo4al6@axis.com> <VI1PR04MB49603783EF3FD3F3635FCDAF92170@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <93bd1c60ea4d910489a7592200856eaf8022ced0.camel@intel.com>
+ <AM0PR04MB4947F01860DE953B8496FA8892170@AM0PR04MB4947.eurprd04.prod.outlook.com>
+ <CAK8P3a1JRx32VfFcwFpK0i6F5MQMCK-yCKw8=d_R08Y3iQ7wLQ@mail.gmail.com>
+ <CAK8P3a3u06ZHdAb_n3byTqfxAvy_wi48X1g0N4ODuH2uEM0xLA@mail.gmail.com> <20201029100727.trbppgbusd5vogpz@axis.com>
+In-Reply-To: <20201029100727.trbppgbusd5vogpz@axis.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 29 Oct 2020 12:53:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3T2Riy-vfd8RcdWeeER4usc2m78rkmx4Q_8N3zGA6r_A@mail.gmail.com>
+Message-ID: <CAK8P3a3T2Riy-vfd8RcdWeeER4usc2m78rkmx4Q_8N3zGA6r_A@mail.gmail.com>
+Subject: Re: [PATCH V3 2/4] misc: vop: do not allocate and reassign the used ring
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Sherry Sun <sherry.sun@nxp.com>,
+        "Dutt, Sudeep" <sudeep.dutt@intel.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "kishon@ti.com" <kishon@ti.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Dixit, Ashutosh" <ashutosh.dixit@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 1:36 PM Zou Wei <zou_wei@huawei.com> wrote:
+On Thu, Oct 29, 2020 at 11:07 AM Vincent Whitchurch
+<vincent.whitchurch@axis.com> wrote:
 >
-> The status local variable is assigned but never read:
+> On Wed, Oct 28, 2020 at 04:50:36PM +0100, Arnd Bergmann wrote:
+> > I think we should try to do something on top of the PCIe endpoint subsystem
+> > to make it work across arbitrary combinations of host and device
+> > implementations,
+> > and provide a superset of what the MIC driver, (out-of-tree) Bluefield endpoint
+> > driver, and the NTB subsystem as well as a couple of others used to do,
+> > each of them tunneling block/network/serial/... over a PCIe link of some
+> > sort, usually with virtio.
+>
+> VOP is not PCIe-specific (as demonstrated by the vop-loopback patches I
+> posted a while ago [1]), and it would be a shame for a replacement to be
+> tied to the PCIe endpoint subsystem.  There are many SOCs out there
+> which have multiple Linux-capable processors without cache-coherency
+> between them.  VOP is (or should I say was since I guess it's being
+> deleted) the closest we have in mainline to easily get generic virtio
+> (and not just rpmsg) running between these kind of Linux instances.  If
+> a new replacement framework were to be PCIe-exclusive then we'd have to
+> invent one more framework for non-PCIe links to do pretty much the same
+> thing.
+>
+> [1] https://lore.kernel.org/lkml/20190403104746.16063-1-vincent.whitchurch@axis.com/
 
-...
+Right, sorry I forgot about that. I think this means we should keep having
+an abstraction between VOP (under whichever name) and the lower levels,
+and be aware that it might run on any number of these:
 
->         mutex_lock(&s3_wmi_lock);
-> -       status = wmi_query_block(guid, instance, &output);
+- PCIe endpoint, with the endpoint controlling the virtio configuration
+- PCIe endpoint, with the host (the side that has the pci_driver) controlling
+  the virtio configuration
+- NTB connections
+- your  loopback mode
+- Virtio tunnels between VM guests (see https://www.linaro.org/projects/#STR)
+- Intel MIC (to be removed, but it would be wrong to make assumptions that
+  cannot be made on that type of hardware)
+- ...
 
-What are you doing?!
+The existing VOP codebase does look like a reasonable start, though
+I think we need to discuss whether the ioctl interface should be
+replaced with a configfs interface, and what other changes would
+be needed to make it support the generalized hardware case.
 
-
--- 
-With Best Regards,
-Andy Shevchenko
+       Arnd
