@@ -2,81 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328C829F0EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5504B29F101
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbgJ2QOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbgJ2QOr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:14:47 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3350C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:14:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LhuofQkAKGd/YF/+qRDWxyj17oCuNKJrfx9ycxD07Lk=; b=AyWh4JweZ+X78boxL+Gz3V2hhf
-        5NkWEVf85MVmpe4TVtaHVW2zsciTXnaTLIuxbepQrxTrLrP6LIje7GRtPp3XWEe8ZRW8KP0ijTMSn
-        xJu3BSHgPt8F3QTowwKFayvT4lrlF/cT1PfF1NqqKrV7e4vXjSH8iRMHK+D/0VC7SfNRiZZuUKreg
-        EJZBLthsmLTlaaW2UtHZNb/pjT//thfXMQ4dbCg79ZffWZp1+eWusqDtyIyg2QvcZXYXAToRbbwOm
-        rpZeXy8f9xC3P6cIHW0KuBjYvPs3VEuCRSBy4lGWKCBOJ1dRr6ogr8bOFvtuTPcUMqRl/reNO8cMM
-        yLoMuFGw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYAZN-0001Ig-TT; Thu, 29 Oct 2020 16:14:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E6EB5300446;
-        Thu, 29 Oct 2020 17:14:31 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9C30320409A7D; Thu, 29 Oct 2020 17:14:31 +0100 (CET)
-Date:   Thu, 29 Oct 2020 17:14:31 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
-        davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
-        oleg@redhat.com, vincent.guittot@linaro.org
-Subject: Re: [RFC][PATCH v3 6/6] rcu/tree: Use irq_work_queue_remote()
-Message-ID: <20201029161431.GR2628@hirez.programming.kicks-ass.net>
-References: <20201028110707.971887448@infradead.org>
- <20201028111221.584884062@infradead.org>
- <20201028145428.GE2628@hirez.programming.kicks-ass.net>
- <20201028200243.GJ2651@hirez.programming.kicks-ass.net>
- <20201028201554.GE3249@paulmck-ThinkPad-P72>
- <20201029091053.GG2628@hirez.programming.kicks-ass.net>
- <20201029160448.GL3249@paulmck-ThinkPad-P72>
+        id S1726263AbgJ2QQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:16:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:40076 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725859AbgJ2QQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:16:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90AA6139F;
+        Thu, 29 Oct 2020 09:16:00 -0700 (PDT)
+Received: from [10.57.13.20] (unknown [10.57.13.20])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 490853F66E;
+        Thu, 29 Oct 2020 09:15:56 -0700 (PDT)
+Subject: Re: [PATCH v3 0/4] Clarify abstract scale usage for power values in
+ Energy Model, EAS and IPA
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
+        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>
+References: <20201019140601.3047-1-lukasz.luba@arm.com>
+ <CAD=FV=UYeo_rWBDRu-53Aw2OeY1NCgCuUJkocRM8xL+OCbJDug@mail.gmail.com>
+ <62430cb9-eaab-b215-0eec-d35d3c625406@arm.com>
+ <CAD=FV=VA=tYzvb2-WQOJz7UGq-459R4+6xfuPQ-h-iMCKPP9vQ@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <3ba6ff0a-b4b0-159d-4d38-296652a80b08@arm.com>
+Date:   Thu, 29 Oct 2020 16:15:54 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029160448.GL3249@paulmck-ThinkPad-P72>
+In-Reply-To: <CAD=FV=VA=tYzvb2-WQOJz7UGq-459R4+6xfuPQ-h-iMCKPP9vQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 09:04:48AM -0700, Paul E. McKenney wrote:
-> On Thu, Oct 29, 2020 at 10:10:53AM +0100, Peter Zijlstra wrote:
 
-> > Dang, clearly TREE01 didn't actually hit any of this code :/ Is there
-> > another test I should be running?
+
+On 10/29/20 3:39 PM, Doug Anderson wrote:
+> Hi,
 > 
-> TREE01 is fine, but you have to tell rcutorture to actually generate an
-> RCU CPU stall warning.  Like this for a 25-second stall with interrupts
-> disabled:
+> On Thu, Oct 29, 2020 at 5:37 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> On 10/20/20 1:15 AM, Doug Anderson wrote:
+>>> Hi,
+>>>
+>>> On Mon, Oct 19, 2020 at 7:06 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>
+>>>> Hi all,
+>>>>
+>>>> The Energy Model supports power values expressed in an abstract scale.
+>>>> This has an impact on Intelligent Power Allocation (IPA) and should be
+>>>> documented properly. Kernel sub-systems like EAS, IPA and DTPM
+>>>> (new comming PowerCap framework) would use the new flag to capture
+>>>> potential miss-configuration where the devices have registered different
+>>>> power scales, thus cannot operate together.
+>>>>
+>>>> There was a discussion below v2 of this patch series, which might help
+>>>> you to get context of these changes [2].
+>>>>
+>>>> The agreed approach is to have the DT as a source of power values expressed
+>>>> always in milli-Watts and the only way to submit with abstract scale values
+>>>> is via the em_dev_register_perf_domain() API.
+>>>>
+>>>> Changes:
+>>>> v3:
+>>>> - added boolean flag to struct em_perf_domain and registration function
+>>>>     indicating if EM holds real power values in milli-Watts (suggested by
+>>>>     Daniel and aggreed with Quentin)
+>>>> - updated documentation regarding this new flag
+>>>> - dropped DT binding change for 'sustainable-power'
+>>>> - added more maintainers on CC (due to patch 1/4 touching different things)
+>>>> v2 [2]:
+>>>> - updated sustainable power section in IPA documentation
+>>>> - updated DT binding for the 'sustainable-power'
+>>>> v1 [1]:
+>>>> - simple documenation update with new 'abstract scale' in EAS, EM, IPA
+>>>>
+>>>> Regards,
+>>>> Lukasz Luba
+>>>>
+>>>> [1] https://lore.kernel.org/linux-doc/20200929121610.16060-1-lukasz.luba@arm.com/
+>>>> [2] https://lore.kernel.org/lkml/20201002114426.31277-1-lukasz.luba@arm.com/
+>>>>
+>>>> Lukasz Luba (4):
+>>>>     PM / EM: Add a flag indicating units of power values in Energy Model
+>>>>     docs: Clarify abstract scale usage for power values in Energy Model
+>>>>     PM / EM: update the comments related to power scale
+>>>>     docs: power: Update Energy Model with new flag indicating power scale
+>>>>
+>>>>    .../driver-api/thermal/power_allocator.rst    | 13 +++++++-
+>>>>    Documentation/power/energy-model.rst          | 30 +++++++++++++++----
+>>>>    Documentation/scheduler/sched-energy.rst      |  5 ++++
+>>>>    drivers/cpufreq/scmi-cpufreq.c                |  3 +-
+>>>>    drivers/opp/of.c                              |  2 +-
+>>>>    include/linux/energy_model.h                  | 20 ++++++++-----
+>>>>    kernel/power/energy_model.c                   | 26 ++++++++++++++--
+>>>>    7 files changed, 81 insertions(+), 18 deletions(-)
+>>>
+>>> While I don't feel like I have enough skin in the game to make any
+>>> demands, I'm definitely not a huge fan of this series still.  I am a
+>>> fan of documenting reality, but (to me) trying to mix stuff like this
+>>> is just going to be adding needless complexity.  From where I'm
+>>> standing, it's a lot more of a pain to specify these types of numbers
+>>> in the firmware than it is to specify them in the device tree.  They
+>>
+>> When you have SCMI, you receive power values from FW directly, not using
+>> DT.
+>>
+>>> are harder to customize per board, harder to spin, and harder to
+>>> specify constraints for everything in the system (all heat generators,
+>>> all cooling devices, etc).  ...and since we already have a way to
+>>> specify this type of thing in the device tree and that's super easy
+>>> for people to do, we're going to end up with weird mixes / matches of
+>>> numbers coming from different locations and now we've got to figure
+>>> out which numbers we can use when and which to ignore.  Ick.
+>>
+>> This is not that bad as you described. When you have SCMI and FW
+>> all your perf domains should be aligned to the same scale.
+>> In example, you have 4 little CPU, 3 big CPUs, 1 super big CPU,
+>> 1 GPU, 1 DSP. For all of them the SCMI get_power callback should return
+>> consistent values. You don't have to specify anything else or rev-eng.
+>> Then a client like EAS would use those values from CPUs to estimate
+>> energy and this works fine. Another client: IPA, which would use
+>> all of them and also works fine.
 > 
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --configs "10*TREE04" --bootargs "rcutorture.stall_cpu=25 rcutorture.stall_cpu_irqsoff=1" --trust-make
+> I guess I'm confused.  When using SCMI and FW, are there already code
+> paths to get the board-specific "sustainable-power" from SCMI and FW?
+> 
+> I know that "sustainable-power" is not truly necessary.  IIRC some of
+> the code assumes that the lowest power state of all components must be
+> sustainable and uses that.  However, though this makes the code work,
+> it's far from ideal.  I don't want to accept a mediocre solution here.
 
-> Of course, to test your change, you also need the grace-period kthread to
-> migrate to the stalled CPU just after interrupts are enabled.  For this,
-> you need something like an 11-second stall plus something to move the
-> grace-period kthread at the right (wrong?) time.  Or just run the above
-> commands in a loop on a system with ample storage over night or some such.
-> I see about 70MB of storage per run, so disk size shouldn't be too much
-> of a problem.
+As you said, sustainable power would be estimated when it is not coming
+from DT. Currently it would be done based on lowest allowed OPPs. I am
+trying to address this by marking OPP as sustainable [1]. The estimation 
+would be more accurate (and also the derived coefficients).
 
-Thanks!, I'll make the above run over night in a loop.
+> 
+> In any case, I'm saying that even if "sustainable-power" can come from
+> firmware, it's not as ideal of a place for it to live.  Maybe my
+> experience on Chromebooks is different from the rest of upstream, but
+> it's generally quite easy to adjust the device tree for a board and
+> much harder to convince firmware folks to put a board-specific table
+> of values.
+
+The sysfs (which is there) is even easier for this adjustment than DT.
+
+> 
+> 
+>>> In my opinion the only way to allow for mixing and matching the
+>>> bogoWatts and real Watts would be to actually have units and the
+>>> ability to provide a conversion factor somewhere.  Presumably that
+>>> might give you a chance of mixing and matching if someone wants to
+>>> provide some stuff in device tree and get other stuff from the
+>>> firmware.  Heck, I guess you could even magically figure out a
+>>> conversion factor if someone provides device tree numbers for
+>>> something that was already registered in SCMI, assuming all the SCMI
+>>> numbers are consistent with each other...
+>>
+>> What you demand here is another code path, just to support revers
+>> engineered power values for SCMI devices, which are stored in DT.
+>> Then the SCMI protocol code and drivers should take them into account
+>> and abandon standard implementation and use these values to provide
+>> 'hacked' power numbers to EM. Am I right?
+>> It is not going to happen.
+> 
+> Quite honestly, all I want to be able to do is to provide a
+> board-specific "sustainable-power" and have it match with the
+> power-coefficients.  Thus:
+> 
+> * If device tree accepted abstract scale, we'd be done and I'd shut
+> up.  ...but Rob has made it quite clear that this is a no-go.
+> 
+> * If it was super easy to add all these values into firmware for a
+> board and we could totally remove these from the device tree, I'd
+> grumble a bit about firmware being a terrible place for this but at
+> least we'd have a solution and we'd be done and I'd shut up.  NOTE: I
+> don't know ATF terribly well, but I'd guess that this needs to go
+> there?  Presumably part of this is convincing firmware folks to add
+> this board-specific value there...
+
+The SCMI spec that we are talking supports 'sustained performance'
+level for each performance domain. You can check doc [2] table 11
+for the definition. In SCMI there is no concept of 'sustainable-power'
+which would substitute the missing DT value. But we can estimate it
+more accurately based on sustainable OPP.
+You can check how I am going to feed that FW value into the OPP in patch
+4/4 of [3]. I am also working on improved estimation patch set v4 for
+IPA (some description of an issue in v2 [4], latest v3 is here [5]),
+which is using the proposed sustainable OPP concept (Viresh mentioned
+he would like to see the user of that).
+
+As you can see, I am not going to leave you with this issue ;)
+
+Regards,
+Lukasz
+
+
+[1] 
+https://lore.kernel.org/linux-pm/20201028140847.1018-1-lukasz.luba@arm.com/
+[2] https://developer.arm.com/documentation/den0056/b
+[3] 
+https://lore.kernel.org/linux-pm/20201028140847.1018-5-lukasz.luba@arm.com/
+[4] 
+https://lore.kernel.org/linux-pm/5f682bbb-b250-49e6-dbb7-aea522a58595@arm.com/
+[5] https://lore.kernel.org/lkml/20201009135850.14727-1-lukasz.luba@arm.com/
+
+> 
+> -Doug
+> 
