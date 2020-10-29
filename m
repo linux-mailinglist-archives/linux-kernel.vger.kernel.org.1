@@ -2,122 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879C829E9F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA6829EA20
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727356AbgJ2LER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
+        id S1727632AbgJ2LJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726071AbgJ2LEQ (ORCPT
+        with ESMTP id S1726809AbgJ2LJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:04:16 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9BFC0613CF;
-        Thu, 29 Oct 2020 04:04:16 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 13so1955100wmf.0;
-        Thu, 29 Oct 2020 04:04:16 -0700 (PDT)
+        Thu, 29 Oct 2020 07:09:25 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D72C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 04:09:24 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id w21so2044218pfc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 04:09:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:references:cc:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zcPYz8S2wXEmW4dS41Qn2A338/K8CGnPDRkKEY4clDQ=;
-        b=d65dGmhZDEcE3Mesu4orSPWJobICIQDaoPNQvxtUoqopsrkhJ2PR0/BumksGcgfEZW
-         RiTqznlgwnYxBrakQQJr4RV8Mm+J+X1sWhLpTBVrMczQfC5mahOfYTA+2eYqt97sVuKM
-         g+ghZK420PwYHtXEJEnh2AJu+aWrbaWW/Ia3muFAdtmxPnQloZiwTmVFMFS/dgEoRjUj
-         eCKOgAYt+7lGNqohKgoWu/dtjzZ/jsFaKPJbP5IMWyk/IX/YNX0O6kiIsooo18hudpk7
-         juLPJjTQ3b/Op6JjVlElvswMDoBok7BW+wVimVC3SEf2PofUUofhsQnUu8BP9i8ugYmd
-         sqww==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TqDb9D/f2X2CP3Fkvj1zCMZxt9qstXFPqe7a7lWneE8=;
+        b=Grnvl7CuBCAfvlzWxd3nbOUHfAwhikzkCx+olXgx09UATM/lpavPXOFURMYdII+Ni8
+         tTg/3gWdwS96cnUsRcgJK93WEVVTIhY1POEo+rkE1oQd+L3u5lT/B4VqJzFpUB2Q7Esa
+         Qs8l9rBv6JeHKkO583uLHywraQXmMpEaIl8MLX35eSm5DMIPP3RoiU2IvCKAGHzlXppa
+         ZXfN1UhY+3fRNdtCPXpqAT9Vbwc+13M2dBUUujp8EHeUF6eogNyeXw+iC5P5QUrSXG7k
+         WF9m0cecYHoqkSs/o4qIRYkaOzQvu3oKKc0FxFanrj/zcNKFO9EtLBWLH07wLKlExmjB
+         840g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:cc:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zcPYz8S2wXEmW4dS41Qn2A338/K8CGnPDRkKEY4clDQ=;
-        b=LsVR4+DfY6zUpuyKIdyCM6B1KdIMFy7Kq4Gmzf18P/kh+fC0FQst9I14+RuEgMlsrl
-         Djnsx+agnrUns18I1d0J/+I4CslEo1f+H5m/8M0aYySbzg6D9dxGynL/6MSvMqDx5iCq
-         IWOqn/c8QX7qb04HZpOSspQ/vSBSbiMrHGypIPzz+1YB13PcC0+4FLKf0KMU4fuGc3Pt
-         6lSmqjvcAnbgSE9svyHwzf2qFfutu8fCwxhlrqx5nqju7PBYD3bliMEwfNdQGBIzwivf
-         u/RF+SOKzKElAS/TBeZumtWYdN1E7225dbWjZOW8oZbSqjflSB9dvrHDKa2e+WqId/I3
-         EbRg==
-X-Gm-Message-State: AOAM533kcWPKNlFXnDtjYLeR/vQYvZ8xwLwV1l/eZC8Dgy/MZ9OJNNe0
-        P5ZvbGUBTtpGRxT3u5CKsSM=
-X-Google-Smtp-Source: ABdhPJyYJNttqjwzD4T5vJ3/Y0blARIcaT4t1esjg+fT6Gfym4cbM+jsgXNMVKURDaywJYuwRkthGQ==
-X-Received: by 2002:a1c:2d8f:: with SMTP id t137mr3713521wmt.26.1603969455284;
-        Thu, 29 Oct 2020 04:04:15 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.60.68])
-        by smtp.gmail.com with ESMTPSA id l16sm4460532wrx.5.2020.10.29.04.04.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 04:04:14 -0700 (PDT)
-Subject: Re: Possible bug in getdents64()?
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-To:     libc-help@sourceware.org
-References: <829387c9-50d7-3d29-83bf-c4fec17cf9dd@gmail.com>
-Cc:     linux-man <linux-man@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <01065580-8602-52e6-0cca-22d1aa20a540@gmail.com>
-Date:   Thu, 29 Oct 2020 12:04:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        bh=TqDb9D/f2X2CP3Fkvj1zCMZxt9qstXFPqe7a7lWneE8=;
+        b=WuknaaLnWcR2SvFuhW9RZEDjGG01H6ge0b+W7tPbW0QnAoDMeC5L109cHptDvQ/Pue
+         lD2U1/fBqoqUfE1VJWb/u8aj98eK5LSCMwVVLwSWKpnRE+P55EoN1arEUd6GPSedLbNT
+         WsVG4IWRFxzFa+20WtWT++OD0AnowcMmxCogkiyBjrfFoyRS5QI/8cmBPD3PFD6SJRtH
+         LEbUXuihemqBLgpeQGQSsR/3cW/1j8cuBGKC+sknwOu0ZxI1d5ZIFWkUrfo9cuye14wb
+         /8yPkMDgVbLIIrStrWxFnuwvGMn0sJ9iUeFcx/xiylHuLKa8qSwVyzI8aYbig2N8I3QE
+         8lVQ==
+X-Gm-Message-State: AOAM5310EiD8MNpq7RNzGcCdUp/reSXHpTH9p1rlu9tvNHzWWoPS0f+1
+        5ZtjvGXKqGW3JqD94632ZkE=
+X-Google-Smtp-Source: ABdhPJymO3U8DMeuTV/Y/5ltTePE+K+hLbGfL/aHp/YOMaxhbrrFDMPELIQGjjuCvFUevmwZ01jXcw==
+X-Received: by 2002:a17:90a:34cd:: with SMTP id m13mr3930815pjf.201.1603969764443;
+        Thu, 29 Oct 2020 04:09:24 -0700 (PDT)
+Received: from localhost.localdomain (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
+        by smtp.gmail.com with ESMTPSA id e5sm3021697pjd.0.2020.10.29.04.09.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 04:09:23 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
+        straube.linux@gmail.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] drivers: staging: rtl8188eu: Fix spelling in two comments i.e defalut to default
+Date:   Thu, 29 Oct 2020 16:36:00 +0530
+Message-Id: <20201029110600.3091-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <829387c9-50d7-3d29-83bf-c4fec17cf9dd@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[[ CC += linux-man, linux-kernel, libc-alpha, mtk ]]
+Fixed two spelling in two different comments.
 
-On 2020-10-28 20:26, Alejandro Colomar wrote:
-> The manual page for getdents64() says the prototype should be the 
-> following:
-> 
->         int getdents64(unsigned int fd, struct linux_dirent64 *dirp,
->                      unsigned int count);
-> 
-> 
-> Note the type of 'count': 'unsigned int'
-> (usually a 32-bit unsigned integer).
-> And the Linux kernel seems to use those types (fs/readdir.c:351):
-> 
-> SYSCALL_DEFINE3(getdents64, unsigned int, fd,
->          struct linux_dirent64 __user *, dirent,
->          unsigned int, count)
-> {
-> ...
-> }
-> 
-> But glibc uses 'size_t' (usually a 64-bit unsigned integer)
-> for the parameter 'count' (sysdeps/unix/linux/getdents64.c:25):
-> 
-> 
-> /* The kernel struct linux_dirent64 matches the 'struct dirent64' type.  */
-> ssize_t
-> __getdents64 (int fd, void *buf, size_t nbytes)
-> {
->    /* The system call takes an unsigned int argument, and some length
->       checks in the kernel use an int type.  */
->    if (nbytes > INT_MAX)
->      nbytes = INT_MAX;
->    return INLINE_SYSCALL_CALL (getdents64, fd, buf, nbytes);
-> }
-> libc_hidden_def (__getdents64)
-> weak_alias (__getdents64, getdents64)
-> 
-> 
-> 
-> Isn't it undefined behavior to pass a variable of a different (larger) 
-> type to a variadic function than what it expects?
-> 
-> Is that behavior defined in this implementation?
-> 
-> Wouldn't a cast to 'unsigned int' be needed?
-> 
-> 
-> Thanks,
-> 
-> Alex
+s/defalut/default/p
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Greg, I have included the driver name as you suggested.
+
+ drivers/staging/rtl8188eu/hal/rtl8188e_dm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c b/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
+index 1af919ff6d93..391c59490718 100644
+--- a/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
++++ b/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
+@@ -52,7 +52,7 @@ static void Init_ODM_ComInfo_88E(struct adapter *Adapter)
+ 	 * The base index =
+ 	 * 12. +((12-n)/2)dB 13~?? = decrease tx pwr by -((n-12)/2)dB
+ 	 */
+-	dm_odm->BbSwingIdxOfdm = 12; /*  Set defalut value as index 12. */
++	dm_odm->BbSwingIdxOfdm = 12; /*  Set default value as index 12. */
+ 	dm_odm->BbSwingIdxOfdmCurrent = 12;
+ 	dm_odm->BbSwingFlagOfdm = false;
+
+@@ -109,7 +109,7 @@ static void Update_ODM_ComInfo_88E(struct adapter *Adapter)
+ 	 * The base index =
+ 	 * 12. +((12-n)/2)dB 13~?? = decrease tx pwr by -((n-12)/2)dB
+ 	 */
+-	dm_odm->BbSwingIdxOfdm = 12; /*  Set defalut value as index 12. */
++	dm_odm->BbSwingIdxOfdm = 12; /*  Set default value as index 12. */
+ 	dm_odm->BbSwingIdxOfdmCurrent = 12;
+ 	dm_odm->BbSwingFlagOfdm = false;
+
+--
+2.26.2
+
