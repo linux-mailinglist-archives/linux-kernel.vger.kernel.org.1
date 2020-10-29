@@ -2,144 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E68429EA7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9151C29EA8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727129AbgJ2L3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:29:46 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:34488 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgJ2L3p (ORCPT
+        id S1727301AbgJ2LaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726793AbgJ2LaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:29:45 -0400
-Received: by mail-oi1-f196.google.com with SMTP id z23so2856462oic.1;
-        Thu, 29 Oct 2020 04:29:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fTmhVEmhArZSkMnL1kXTKJ5s2WgAdfUfIbxPkbMwj40=;
-        b=BkxZG2DEeiYlhPc6UNRIFukZciMfRVwZYJT+SQwRlkjR3jCOd0O4yMZO5xOuajkc8X
-         F4CnIx+MCPG527UxCG7Z1cOj52MwtEyFE9N77vYV2uTKtmPrdPkIsg/5AtR+DOngDhoX
-         9guONs90W3Dxtde3eNHwnpypGscK+O7waa3CljA7SrH3JBPikok1hL8tFNDfyFcGmf9R
-         4bO/yEEZRJKWCmWqR8jPraVw4Pjj1nNmblt+AybqcnYX3Ip+p2alVvFa+u39K2peT+IQ
-         NYOHOlKkydcScEb1C6KCys93Rl8c3c3pPuDRnpfdNV3HhP8torhHRrysyIXmAemdDc5q
-         +Srg==
-X-Gm-Message-State: AOAM530m1/aqIF7vOQ3CZcBMU36zUuNrmuS10/08r8vK0+cZhq/Z47Nc
-        4hcaUZHIIyDjIPyQJNODa0KxKRZaz8zEQrfZ550=
-X-Google-Smtp-Source: ABdhPJy+1OwSqcYeXkvDwxUT547LCUyzFYtqQkoEYfYyGGN4u+tNaNTyKk4PF1/+5OBfIUmrBYcAluv2y0O48mgahkc=
-X-Received: by 2002:aca:724a:: with SMTP id p71mr2500125oic.157.1603970984766;
- Thu, 29 Oct 2020 04:29:44 -0700 (PDT)
+        Thu, 29 Oct 2020 07:30:20 -0400
+Received: from smtp-8fa8.mail.infomaniak.ch (smtp-8fa8.mail.infomaniak.ch [IPv6:2001:1600:4:17::8fa8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A27FC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 04:30:18 -0700 (PDT)
+Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CMNXQ2xhPzlkXck;
+        Thu, 29 Oct 2020 12:30:14 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4CMNXN3zl3zlh8TL;
+        Thu, 29 Oct 2020 12:30:12 +0100 (CET)
+Subject: Re: [PATCH v22 08/12] landlock: Add syscall implementations
+To:     Jann Horn <jannh@google.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20201027200358.557003-1-mic@digikod.net>
+ <20201027200358.557003-9-mic@digikod.net>
+ <CAG48ez1San538w=+He309vHg4pBSCvAf7e5xeHdqeOHA6qwitw@mail.gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <de287149-ff42-40ca-5bd1-f48969880a06@digikod.net>
+Date:   Thu, 29 Oct 2020 12:30:12 +0100
+User-Agent: 
 MIME-Version: 1.0
-References: <2183878.gTFULuzKx9@kreacher> <1905098.zDJocX6404@kreacher>
- <4720046.CcxZZ2xs9j@kreacher> <20201029112347.prt7ni6jqu2w23g3@vireshk-i7>
-In-Reply-To: <20201029112347.prt7ni6jqu2w23g3@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 29 Oct 2020 12:29:33 +0100
-Message-ID: <CAJZ5v0gSkV3VRf2jgc5oOuoZMf8=NohEYSenDwFq4sNeDViz0Q@mail.gmail.com>
-Subject: Re: [PATCH v2.2 4/4] cpufreq: schedutil: Always call driver if
- CPUFREQ_NEED_UPDATE_LIMITS is set
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAG48ez1San538w=+He309vHg4pBSCvAf7e5xeHdqeOHA6qwitw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 12:23 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 29-10-20, 12:12, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Because sugov_update_next_freq() may skip a frequency update even if
-> > the need_freq_update flag has been set for the policy at hand, policy
-> > limits updates may not take effect as expected.
-> >
-> > For example, if the intel_pstate driver operates in the passive mode
-> > with HWP enabled, it needs to update the HWP min and max limits when
-> > the policy min and max limits change, respectively, but that may not
-> > happen if the target frequency does not change along with the limit
-> > at hand.  In particular, if the policy min is changed first, causing
-> > the target frequency to be adjusted to it, and the policy max limit
-> > is changed later to the same value, the HWP max limit will not be
-> > updated to follow it as expected, because the target frequency is
-> > still equal to the policy min limit and it will not change until
-> > that limit is updated.
-> >
-> > To address this issue, modify get_next_freq() to let the driver
-> > callback run if the CPUFREQ_NEED_UPDATE_LIMITS cpufreq driver flag
-> > is set regardless of whether or not the new frequency to set is
-> > equal to the previous one.
-> >
-> > Fixes: f6ebbcf08f37 ("cpufreq: intel_pstate: Implement passive mode with HWP enabled")
-> > Reported-by: Zhang Rui <rui.zhang@intel.com>
-> > Tested-by: Zhang Rui <rui.zhang@intel.com>
-> > Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >
-> > v2.1 -> v2.2:
-> >    * Instead of updating need_freq_update if CPUFREQ_NEED_UPDATE_LIMITS is set
-> >      in get_next_freq() and checking it again in sugov_update_next_freq(),
-> >      check CPUFREQ_NEED_UPDATE_LIMITS directly in sugov_update_next_freq().
-> >    * Update the subject.
-> >
-> > v2 -> v2.1:
-> >    * Fix typo in the subject.
-> >    * Make get_next_freq() and sugov_update_next_freq() ignore the
-> >      sg_policy->next_freq == next_freq case when CPUFREQ_NEED_UPDATE_LIMITS
-> >      is set for the driver.
-> >    * Add Tested-by from Rui (this version lets the driver callback run more
-> >      often than the v2, so the behavior in the Rui's case doesn't change).
-> >
-> > ---
-> >  kernel/sched/cpufreq_schedutil.c |    6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > Index: linux-pm/kernel/sched/cpufreq_schedutil.c
-> > ===================================================================
-> > --- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
-> > +++ linux-pm/kernel/sched/cpufreq_schedutil.c
-> > @@ -102,7 +102,8 @@ static bool sugov_should_update_freq(str
-> >  static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
-> >                                  unsigned int next_freq)
-> >  {
-> > -     if (sg_policy->next_freq == next_freq)
-> > +     if (sg_policy->next_freq == next_freq &&
-> > +         !cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
-> >               return false;
->
-> Since sg_policy->next_freq is used elsewhere as well, this is the best
-> we can do here.
->
-> >       sg_policy->next_freq = next_freq;
-> > @@ -161,7 +162,8 @@ static unsigned int get_next_freq(struct
-> >
-> >       freq = map_util_freq(util, freq, max);
-> >
-> > -     if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
-> > +     if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update &&
-> > +         !cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
-> >               return sg_policy->next_freq;
-> >
-> >       sg_policy->need_freq_update = false;
->
-> But I was wondering if instead of this we just do this here:
->
->         if (!cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
->                 sg_policy->cached_raw_freq = freq;
->
-> And so the above check will always fail.
 
-I wrote it this way, because I want to avoid looking at the driver
-flags at all unless the update is going to be skipped.  Otherwise we
-may end up fetching a new cache line here every time even if that is
-not needed.
+On 29/10/2020 02:06, Jann Horn wrote:
+> On Tue, Oct 27, 2020 at 9:04 PM Mickaël Salaün <mic@digikod.net> wrote:
+>> These 3 system calls are designed to be used by unprivileged processes
+>> to sandbox themselves:
+>> * landlock_create_ruleset(2): Creates a ruleset and returns its file
+>>   descriptor.
+>> * landlock_add_rule(2): Adds a rule (e.g. file hierarchy access) to a
+>>   ruleset, identified by the dedicated file descriptor.
+>> * landlock_enforce_ruleset_current(2): Enforces a ruleset on the current
+>>   thread and its future children (similar to seccomp).  This syscall has
+>>   the same usage restrictions as seccomp(2): the caller must have the
+>>   no_new_privs attribute set or have CAP_SYS_ADMIN in the current user
+>>   namespace.
+> [...]
+>> Cc: Arnd Bergmann <arnd@arndb.de>
+>> Cc: James Morris <jmorris@namei.org>
+>> Cc: Jann Horn <jannh@google.com>
+>> Cc: Kees Cook <keescook@chromium.org>
+>> Cc: Serge E. Hallyn <serge@hallyn.com>
+>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> [...]
+>> diff --git a/include/uapi/linux/landlock.h b/include/uapi/linux/landlock.h
+> [...]
+>> +/**
+>> + * struct landlock_path_beneath_attr - Path hierarchy definition
+>> + *
+>> + * Argument of sys_landlock_add_rule().
+>> + */
+>> +struct landlock_path_beneath_attr {
+>> +       /**
+>> +        * @allowed_access: Bitmask of allowed actions for this file hierarchy
+>> +        * (cf. `Filesystem flags`_).
+>> +        */
+>> +       __u64 allowed_access;
+>> +       /**
+>> +        * @parent_fd: File descriptor, open with ``O_PATH``, which identify
+> 
+> nit: "identifies"
 
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+OK
 
-Thanks!
+> 
+>> +        * the parent directory of a file hierarchy, or just a file.
+>> +        */
+>> +       __s32 parent_fd;
+>> +       /*
+>> +        * This struct is packed to avoid trailing reserved members.
+>> +        * Cf. security/landlock/syscall.c:build_check_abi()
+>> +        */
+>> +} __attribute__((packed));
+> [...]
+>> diff --git a/security/landlock/syscall.c b/security/landlock/syscall.c
+> [...]
+>> +static int copy_min_struct_from_user(void *const dst, const size_t ksize,
+>> +               const size_t ksize_min, const void __user *const src,
+>> +               const size_t usize)
+>> +{
+>> +       /* Checks buffer inconsistencies. */
+>> +       BUILD_BUG_ON(!dst);
+>> +       if (!src)
+>> +               return -EFAULT;
+>> +
+>> +       /* Checks size ranges. */
+>> +       BUILD_BUG_ON(ksize <= 0);
+>> +       BUILD_BUG_ON(ksize < ksize_min);
+> 
+> To make these checks work reliably, you should add __always_inline to
+> the function.
+
+Done.
+
+> 
+>> +       if (usize < ksize_min)
+>> +               return -EINVAL;
+>> +       if (usize > PAGE_SIZE)
+>> +               return -E2BIG;
+>> +
+>> +       /* Copies user buffer and fills with zeros. */
+>> +       return copy_struct_from_user(dst, ksize, src, usize);
+>> +}
+> [...]
+>> +static int get_path_from_fd(const s32 fd, struct path *const path)
+>> +{
+>> +       struct fd f;
+>> +       int err = 0;
+>> +
+>> +       BUILD_BUG_ON(!__same_type(fd,
+>> +               ((struct landlock_path_beneath_attr *)NULL)->parent_fd));
+>> +
+>> +       /* Handles O_PATH. */
+>> +       f = fdget_raw(fd);
+>> +       if (!f.file)
+>> +               return -EBADF;
+>> +       /*
+>> +        * Only allows O_PATH file descriptor: enables to restrict ambient
+>> +        * filesystem access without requiring to open and risk leaking or
+>> +        * misusing a file descriptor.  Forbid internal filesystems (e.g.
+>> +        * nsfs), including pseudo filesystems that will never be mountable
+>> +        * (e.g. sockfs, pipefs).
+>> +        */
+>> +       if (!(f.file->f_mode & FMODE_PATH) ||
+>> +                       (f.file->f_path.mnt->mnt_flags & MNT_INTERNAL) ||
+>> +                       (f.file->f_path.dentry->d_sb->s_flags & SB_NOUSER) ||
+>> +                       d_is_negative(f.file->f_path.dentry) ||
+>> +                       IS_PRIVATE(d_backing_inode(f.file->f_path.dentry))) {
+>> +               err = -EBADFD;
+>> +               goto out_fdput;
+>> +       }
+>> +       path->mnt = f.file->f_path.mnt;
+>> +       path->dentry = f.file->f_path.dentry;
+> 
+> those two lines can be replaced with "*path = f.file->f_path"
+
+Done.
+
+> 
+>> +       path_get(path);
+>> +
+>> +out_fdput:
+>> +       fdput(f);
+>> +       return err;
+>> +}
+> [...]
+>> +/**
+>> + * sys_landlock_enforce_ruleset_current - Enforce a ruleset on the current task
+>> + *
+>> + * @ruleset_fd: File descriptor tied to the ruleset to merge with the target.
+>> + * @flags: Must be 0.
+>> + *
+>> + * This system call enables to enforce a Landlock ruleset on the current
+>> + * thread.  Enforcing a ruleset requires that the task has CAP_SYS_ADMIN in its
+>> + * namespace or be running with no_new_privs.  This avoids scenarios where
+> 
+> s/be/is/
+
+OK.
+
+> 
+>> + * unprivileged tasks can affect the behavior of privileged children.
+>> + *
+>> + * Possible returned errors are:
+>> + *
+>> + * - EOPNOTSUPP: Landlock is supported by the kernel but disabled at boot time;
+>> + * - EINVAL: @flags is not 0.
+>> + * - EBADF: @ruleset_fd is not a file descriptor for the current thread;
+>> + * - EBADFD: @ruleset_fd is not a ruleset file descriptor;
+>> + * - EPERM: @ruleset_fd has no read access to the underlying ruleset, or the
+>> + *   current thread is not running with no_new_privs (or doesn't have
+>> + *   CAP_SYS_ADMIN in its namespace).
+>> + */
+>> +SYSCALL_DEFINE2(landlock_enforce_ruleset_current,
+>> +               const int, ruleset_fd, const __u32, flags)
+>> +{
+>> +       struct landlock_ruleset *new_dom, *ruleset;
+>> +       struct cred *new_cred;
+>> +       struct landlock_cred_security *new_llcred;
+>> +       int err;
+>> +
+>> +       if (!landlock_initialized)
+>> +               return -EOPNOTSUPP;
+>> +
+>> +       /* No flag for now. */
+>> +       if (flags)
+>> +               return -EINVAL;
+>> +
+>> +       /*
+>> +        * Similar checks as for seccomp(2), except that an -EPERM may be
+>> +        * returned.
+>> +        */
+>> +       if (!task_no_new_privs(current)) {
+>> +               err = security_capable(current_cred(), current_user_ns(),
+>> +                               CAP_SYS_ADMIN, CAP_OPT_NOAUDIT);
+> 
+> I think this should be ns_capable_noaudit(current_user_ns(), CAP_SYS_ADMIN)?
+
+Right. The main difference is that ns_capable*() set PF_SUPERPRIV in
+current->flags. I guess seccomp should use ns_capable_noaudit() as well?
+
+> 
+>> +               if (err)
+>> +                       return err;
+>> +       }
+>> +
+>> +       /* Gets and checks the ruleset. */
+>> +       ruleset = get_ruleset_from_fd(ruleset_fd, FMODE_CAN_READ);
+>> +       if (IS_ERR(ruleset))
+>> +               return PTR_ERR(ruleset);
+>> +
+>> +       /* Prepares new credentials. */
+>> +       new_cred = prepare_creds();
+>> +       if (!new_cred) {
+>> +               err = -ENOMEM;
+>> +               goto out_put_ruleset;
+>> +       }
+>> +       new_llcred = landlock_cred(new_cred);
+>> +
+>> +       /*
+>> +        * There is no possible race condition while copying and manipulating
+>> +        * the current credentials because they are dedicated per thread.
+>> +        */
+>> +       new_dom = landlock_merge_ruleset(new_llcred->domain, ruleset);
+>> +       if (IS_ERR(new_dom)) {
+>> +               err = PTR_ERR(new_dom);
+>> +               goto out_put_creds;
+>> +       }
+>> +
+>> +       /* Replaces the old (prepared) domain. */
+>> +       landlock_put_ruleset(new_llcred->domain);
+>> +       new_llcred->domain = new_dom;
+>> +
+>> +       landlock_put_ruleset(ruleset);
+>> +       return commit_creds(new_cred);
+>> +
+>> +out_put_creds:
+>> +       abort_creds(new_cred);
+>> +       return err;
+> 
+> I think this "return err" is wrong - don't we still have to put "ruleset" here?
+
+Oh yes, good catch!
+
+> 
+> 
+>> +out_put_ruleset:
+>> +       landlock_put_ruleset(ruleset);
+>> +       return err;
+>> +}
+>> --
+>> 2.28.0
+>>
