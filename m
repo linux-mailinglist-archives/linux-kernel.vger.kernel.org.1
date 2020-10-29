@@ -2,72 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1220229E66A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D5D29E695
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728494AbgJ2IaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 04:30:04 -0400
-Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:33239 "EHLO
-        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725898AbgJ2IaD (ORCPT
+        id S1727354AbgJ2IkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 04:40:06 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18654 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729258AbgJ2Iiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:30:03 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id Y3JmkJXmXAVOrY3JpkF0ZX; Thu, 29 Oct 2020 09:30:01 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1603960201; bh=v8+4i8qQiK6QiD3BA5ye2evdMqTvYzplo5aHG26jLxE=;
-        h=Subject:From:To:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=UAO87skK2RbsTIdLpdiRE7nNs0cABVeyyXuI1/baxLxaQMUvqD96Lff2DV7BS1nGO
-         7GhJuhK2fh1Mzd82O0SmwcVT0TOnNZDaYfZp9fL6Z17I3ko2S+7GESB+nXNLNzgPaD
-         FvQ+l3/bUA/GHjVnvMz9jALSFm1nHFUfkUNj9YT5bcWpMZr2C0cTTMwfhLfqFskZEa
-         lBMeArr2CT/FMrE8YiweLujs3QR5bdFrCBOPC8dPvqQk0yjMNk5zVLknxmaIg14eJM
-         /o4F2cDx7E++rb5H63UIUuqbq9bDwS1g5O9XiyZpNUZ0sloADEONYNsjtdSXXlTKjl
-         yg3JYaFBQ/uqQ==
-Subject: Re: [PATCH 0/8] media: v4l2: simplify compat ioctl handling
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200917152823.1241599-1-arnd@arndb.de>
- <cbbed130-3329-85a5-f360-3537391c1569@xs4all.nl>
- <CAK8P3a3KCxSJyfoBe40_=Qjsmc_e-yJFVE9jzaTGBz7t76GBHQ@mail.gmail.com>
- <04808d02-e919-b804-14bf-79e529cf997a@xs4all.nl>
-Message-ID: <28442e5c-0146-94b2-414a-f64b5cf63423@xs4all.nl>
-Date:   Thu, 29 Oct 2020 09:29:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 29 Oct 2020 04:38:54 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9a50c00000>; Wed, 28 Oct 2020 22:18:56 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 29 Oct
+ 2020 05:18:52 +0000
+Received: from vidyas-desktop.nvidia.com (172.20.13.39) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Thu, 29 Oct 2020 05:18:48 +0000
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     <lorenzo.pieralisi@arm.com>, <robh+dt@kernel.org>,
+        <bhelgaas@google.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <amanharitsh123@gmail.com>,
+        <dinghao.liu@zju.edu.cn>, <kw@linux.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
+        <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
+Subject: [PATCH V2 1/4] PCI: tegra: Fix ASPM-L1SS advertisement disable code
+Date:   Thu, 29 Oct 2020 10:48:36 +0530
+Message-ID: <20201029051839.11245-2-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201029051839.11245-1-vidyas@nvidia.com>
+References: <20201029051839.11245-1-vidyas@nvidia.com>
+X-NVConfidentiality: public
 MIME-Version: 1.0
-In-Reply-To: <04808d02-e919-b804-14bf-79e529cf997a@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfLLRHvzjBIdoR6DGO6D1idzEg2AjnoUDl9thWpg2llbW/JWltWxaZDqsKaaD4F6sbPE2FHXeR2JgY6VYMBxDBT+EDDW5Jq1yGwGdruTFZsL0oSguyuV1
- nISUV+xYES8fN9hqYno38Eu64aU48ClkDysxMD9TJbqIWWdVGvcpmzNhouLnjz3VHYzIYshi0BcfZQ6bcnMSad74P3sTa4HILpHUSVQFTOn9voHD0/kTQ992
- ly+z1u1Q4ZGzG0MqQDqS3g5HEqtwuu8v7ESI86L0ODPCfrcrvFesjeWqyAPIi4Pej89dthgJ0rZUPofV9PDkjw==
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603948736; bh=u7cA/MfQqfQQ5BTRPJ65zvlJ3WLKc3dByk1zTUQnz+4=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+         References:X-NVConfidentiality:MIME-Version:Content-Type;
+        b=V+XmfIxFFMsLu58xOYbj/GwsDc2aN9ykBp5XEAMX77Oe4jAfscmM1gO17Z24l5+TU
+         f5MsiY53H7LT9mQl8sL9qfboUSzd3V8qZxBS5hj3Brk4XpQgOsACv1dsxw2Xb7hwqN
+         k9HM5bZAOgeZkFTgWxz6JP65Xr7lBgGDTC/DyjLM4GPR1bvxNoJln1ML6PoSAMpADc
+         ehM9zLTa8c5aTlE+WVlEkxpzcAWl96yPBm1+nsBZdPOvSqJ+55KmPSYzlKa0W4dS+N
+         DOzdUIQze27m/wuuydNk1EVNz6mzkVOee6YDQdycNwFwCqT/CLGjq9T/rT1tXxpYlE
+         f1OU8BjCoRa9g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+If the absence of CLKREQ# signal is indicated by the absence of
+"supports-clkreq" in the device-tree node, current driver is disabling
+the advertisement of ASPM-L1 Sub-States *before* the ASPM-L1 Sub-States
+offset is correctly initialized. Since default value of the ASPM-L1SS
+offset is zero, this is causing the Vendor-ID wrongly programmed to 0x10d2
+instead of Nvidia's 0x10de thereby the quirks applicable for Tegra194 are
+not being applied. This patch fixes this issue by refactoring the
+code that disables the ASPM-L1SS advertisement.
 
-On 06/10/2020 17:28, Hans Verkuil wrote:
-> Hi Arnd,
-> 
-> On 06/10/2020 17:14, Arnd Bergmann wrote:
->>
->> As you suggested earlier, I will resend the fixed series after -rc1
->> is out.
-> 
-> Looking forward to that.
+Fixes: 56e15a238d92 ("PCI: tegra: Add Tegra194 PCIe support")
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+---
+V2:
+* None
 
-FYI: v5.10-rc1 was just merged into the media_tree master branch.
+ drivers/pci/controller/dwc/pcie-tegra194.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Once I have the v2 of this series I'll test it and if it is OK make a PR.
+diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+index aa511ec0d800..b172b1d49713 100644
+--- a/drivers/pci/controller/dwc/pcie-tegra194.c
++++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+@@ -896,6 +896,12 @@ static void tegra_pcie_prepare_host(struct pcie_port *pp)
+ 
+ 	init_host_aspm(pcie);
+ 
++	/* Disable ASPM-L1SS advertisement if there is no CLKREQ routing */
++	if (!pcie->supports_clkreq) {
++		disable_aspm_l11(pcie);
++		disable_aspm_l12(pcie);
++	}
++
+ 	val = dw_pcie_readl_dbi(pci, GEN3_RELATED_OFF);
+ 	val &= ~GEN3_RELATED_OFF_GEN3_ZRXDC_NONCOMPL;
+ 	dw_pcie_writel_dbi(pci, GEN3_RELATED_OFF, val);
+@@ -1400,12 +1406,6 @@ static int tegra_pcie_config_controller(struct tegra_pcie_dw *pcie,
+ 	pcie->pcie_cap_base = dw_pcie_find_capability(&pcie->pci,
+ 						      PCI_CAP_ID_EXP);
+ 
+-	/* Disable ASPM-L1SS advertisement as there is no CLKREQ routing */
+-	if (!pcie->supports_clkreq) {
+-		disable_aspm_l11(pcie);
+-		disable_aspm_l12(pcie);
+-	}
+-
+ 	return ret;
+ 
+ fail_phy:
+-- 
+2.17.1
 
-Thanks!
-
-	Hans
