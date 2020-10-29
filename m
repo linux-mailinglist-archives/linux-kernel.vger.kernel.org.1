@@ -2,109 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBD929F618
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAC429F61A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgJ2UVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 16:21:55 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57902 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbgJ2UVz (ORCPT
+        id S1726481AbgJ2UWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgJ2UWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:21:55 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TKEdMv080452;
-        Thu, 29 Oct 2020 20:21:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=JjDgkWBfLLog9pvza+5imZ+B0T6evJSkm3QpERsp9Cw=;
- b=C2GQgUIoO1E1XGvPnG3V4DwWg9BXUGB/xD1/p07856lKByC1cXU3RHGGympE4/16b11n
- nIRmcqbHGYwu6cDFTH8W3Z0fgNVuClbWONhpuffGutMCWNe3LgHvB605Lyfpyz0zzaNH
- H5SE/ZDTA+qhsB3U3lg9beA4SG9fzYVrDc5JA86lukoLKdkVogIg25zfFqNFJujUtvdl
- XTZFx3hQBJUa89+pAphW9LYyiBtsyOe26+8+pJlkMHk1fhEQT7RvSLGU3UT+CxfBfU46
- zwTYQ97tazMxnIRThNd4P8bREVQ+mvUqfMZi9O8aNgOVIXshJP6ncTVdtjAdaUQlVJBo Hw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 34dgm4cfhd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 29 Oct 2020 20:21:38 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TKKBAh110105;
-        Thu, 29 Oct 2020 20:21:37 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 34cx60x19v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Oct 2020 20:21:37 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09TKLXpP004572;
-        Thu, 29 Oct 2020 20:21:33 GMT
-Received: from [192.168.86.24] (/69.181.241.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Oct 2020 13:21:33 -0700
-Subject: Re: [RESEND PATCH] soc: ti: ti_sci_pm_domains: check for proper args
- count in xlate
-To:     soc@kernel.org
-Cc:     Tero Kristo <t-kristo@ti.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, ssantosh@kernel.org,
-        nm@ti.com, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
-References: <20201029093337.21170-1-t-kristo@ti.com>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <5d3bb050-98db-5ec1-9f52-ad98b303749a@oracle.com>
-Date:   Thu, 29 Oct 2020 13:21:32 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        Thu, 29 Oct 2020 16:22:47 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B323EC0613CF;
+        Thu, 29 Oct 2020 13:22:46 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id v6so4918581lfa.13;
+        Thu, 29 Oct 2020 13:22:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=IqZXy1LcXgWbbvhZoOkD3b84Ffkh3H2x4oWXbuB71Ys=;
+        b=Y4YyB0XTQPIexYky2CrlCtxu1Mxc/FU7CnDvI/Y0SLVqnU+sLzuy8Hx62EUjOegGfN
+         iYXBG/yZH+hO4AM1VUxJkGbWUQ/z6Rz0EjEYzZq/n02fGyuSHuVsy8eWcOF32FG1kwKq
+         8nCg29ymBHcw5Hl5CIXqqZLcesrQh9HGPkveRWEJfNkfN4Qlx6jxd0147pOqyKs3Lwai
+         MZik+mbKllj+fiqzzO5SuMf41viRxX8GkF3CMUWCy2LtXgcwXhBeM9dB1dRCT+GwNYAf
+         d6AFPH7YopXAdDl9dRv/k5F0rShR4TcRHkT0lePony9R7a1jvpAOFELTRxpFEbD0vKLc
+         g9XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=IqZXy1LcXgWbbvhZoOkD3b84Ffkh3H2x4oWXbuB71Ys=;
+        b=oxfac1U5eH/WRRevhAYLj5TG+zaBvVty00KbK/lfov9t0EfbnymsWLcfbmegHmQP+Z
+         GrYICFRJHHgLg+faXgvSs6mbGiZcX0mJTbzel+mrR7dDxRNuUEYZ9CYb9uG/RtuK8jMq
+         67VjbbAH32AD0tiQ2pPjpXNwknjbR4c/RU5m3VNPZHPvrBO1xakLATRwuz3BThrRyOuo
+         /M87pxmzFpHVhK8dJk2g4+CkZXTb1kS/cbmX/TjVjfAs/YEYpQYG5bBjrhn4Fi2D41+1
+         PmCsHGcsTgyXDbtyZPQgWJ+YKiPz6ay1fS4DhMveh/B8zx2Vhjm+saChqgqRM/9tvk9e
+         GD5g==
+X-Gm-Message-State: AOAM5338Y5MeWHb6FMdeQ9ElfQ/A6W6dtqOMI+6mivEYWPSe+jRz7JQz
+        0EgVKhcHQg7Hgqrq3SF2dHE=
+X-Google-Smtp-Source: ABdhPJxoyBlk5A2cJwWN7HRPvv5MSudbaqfvI7ByBQWCNIm9eKw0gbxPWd+eYKnWYHrLFRVH4OMH8Q==
+X-Received: by 2002:ac2:43c7:: with SMTP id u7mr2449815lfl.154.1604002965207;
+        Thu, 29 Oct 2020 13:22:45 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id j18sm385033lfh.283.2020.10.29.13.22.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 13:22:43 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 29 Oct 2020 21:22:41 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        urezki@gmail.com
+Subject: Re: [PATCH 16/16] rcu/tree: Use delayed work instead of hrtimer to
+ refill the cache
+Message-ID: <20201029202241.GA24399@pc636>
+References: <20201029165019.14218-1-urezki@gmail.com>
+ <20201029165019.14218-16-urezki@gmail.com>
+ <20201029194724.GN3249@paulmck-ThinkPad-P72>
+ <20201029201342.GA24122@pc636>
 MIME-Version: 1.0
-In-Reply-To: <20201029093337.21170-1-t-kristo@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
- suspectscore=13 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010290141
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- adultscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999
- suspectscore=13 clxscore=1011 mlxscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010290140
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201029201342.GA24122@pc636>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd, olof,
+On Thu, Oct 29, 2020 at 09:13:42PM +0100, Uladzislau Rezki wrote:
+> On Thu, Oct 29, 2020 at 12:47:24PM -0700, Paul E. McKenney wrote:
+> > On Thu, Oct 29, 2020 at 05:50:19PM +0100, Uladzislau Rezki (Sony) wrote:
+> > > A CONFIG_PREEMPT_COUNT is unconditionally enabled, thus a page
+> > > can be obtained directly from a kvfree_rcu() path. To distinguish
+> > > that and take a decision the preemptable() macro is used when it
+> > > is save to enter allocator.
+> > > 
+> > > It means that refilling a cache is not important from timing point
+> > > of view. Switch to a delayed work, so the actual work is queued from
+> > > the timer interrupt with 1 jiffy delay. An immediate placing a task
+> > > on a current CPU can lead to rq->lock double lock. That is why a
+> > > delayed method is in place.
+> > > 
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > 
+> > Thank you, Uladzislau!
+> > 
+> > I applied this on top of v5.10-rc1 and got the following from the
+> > single-CPU builds:
+> > 
+> >   SYNC    include/config/auto.conf.cmd
+> >   DESCEND  objtool
+> >   CC      kernel/bounds.s
+> >   CALL    scripts/atomic/check-atomics.sh
+> >   UPD     include/generated/bounds.h
+> >   CC      arch/x86/kernel/asm-offsets.s
+> > In file included from ./include/asm-generic/atomic-instrumented.h:20:0,
+> >                  from ./include/linux/atomic.h:82,
+> >                  from ./include/linux/crypto.h:15,
+> >                  from arch/x86/kernel/asm-offsets.c:9:
+> > ./include/linux/pagemap.h: In function ‘__page_cache_add_speculative’:
+> > ./include/linux/build_bug.h:30:34: error: called object is not a function or function pointer
+> >  #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
+> >                                  ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > ./include/linux/mmdebug.h:45:25: note: in expansion of macro ‘BUILD_BUG_ON_INVALID’
+> >  #define VM_BUG_ON(cond) BUILD_BUG_ON_INVALID(cond)
+> >                          ^~~~~~~~~~~~~~~~~~~~
+> > ./include/linux/pagemap.h:207:2: note: in expansion of macro ‘VM_BUG_ON’
+> >   VM_BUG_ON(preemptible())
+> >   ^~~~~~~~~
+> > scripts/Makefile.build:117: recipe for target 'arch/x86/kernel/asm-offsets.s' failed
+> > make[1]: *** [arch/x86/kernel/asm-offsets.s] Error 1
+> > Makefile:1199: recipe for target 'prepare0' failed
+> > make: *** [prepare0] Error 2
+> > 
+> > I vaguely recall something like this showing up in the previous series
+> > and that we did something or another to address it.  Could you please
+> > check against the old series at -rcu branch dev.2020.10.22a?  (I verified
+> > that the old series does run correctly in the single-CPU scenarios.)
+> > 
+> I see the same build error. Will double check if we have similar in the
+> previous series also. It looks like the error is caused by the Thomas series.
+> 
+> Will check!
+> 
+OK. Found it:
 
-On 10/29/20 2:33 AM, Tero Kristo wrote:
-> K2G devices still only use single parameter for power-domains property,
-> so check for this properly in the driver. Without this, every peripheral
-> fails to probe resulting in boot failure.
-> 
-> Fixes: efa5c01cd7ee ("soc: ti: ti_sci_pm_domains: switch to use multiple genpds instead of one")
-> Reported-by: Nishanth Menon <nm@ti.com>
-> Signed-off-by: Tero Kristo <t-kristo@ti.com>
-> Acked-by: Nishanth Menon <nm@ti.com>
-> Acked-by: Santosh Shilimkar <ssantosh@kernel.org>
-> ---
-Can you please add this to your fixes queue ?
-This fixes boot failures on K2Gdevices ?
+urezki@pc638:~/data/coding/linux.git$ git diff
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index cbfbe2bcca75..7dd3523093db 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -204,7 +204,7 @@ void release_pages(struct page **pages, int nr);
+ static inline int __page_cache_add_speculative(struct page *page, int count)
+ {
+ #ifdef CONFIG_TINY_RCU
+-       VM_BUG_ON(preemptible())
++       VM_BUG_ON(preemptible());
+        /*
+         * Preempt must be disabled here - we rely on rcu_read_lock doing
+         * this for us.
+urezki@pc638:~/data/coding/linux.git$
 
->   drivers/soc/ti/ti_sci_pm_domains.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soc/ti/ti_sci_pm_domains.c b/drivers/soc/ti/ti_sci_pm_domains.c
-> index af2126d2b2ff..8afb3f45d263 100644
-> --- a/drivers/soc/ti/ti_sci_pm_domains.c
-> +++ b/drivers/soc/ti/ti_sci_pm_domains.c
-> @@ -91,7 +91,7 @@ static struct generic_pm_domain *ti_sci_pd_xlate(
->   	struct genpd_onecell_data *genpd_data = data;
->   	unsigned int idx = genpdspec->args[0];
->   
-> -	if (genpdspec->args_count < 2)
-> +	if (genpdspec->args_count != 1 && genpdspec->args_count != 2)
->   		return ERR_PTR(-EINVAL);
->   
->   	if (idx >= genpd_data->num_domains) {
-> 
+I guess we had some extra patch that fixes a kernel compilation for !SMP
+case. Will check dev.2020.10.22a.
+
+--
+Vlad Rezki
