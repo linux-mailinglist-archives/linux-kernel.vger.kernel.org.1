@@ -2,168 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB6C29E753
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 107DE29E74E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgJ2JaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726701AbgJ2JaK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:30:10 -0400
-Received: from smtp-42ad.mail.infomaniak.ch (smtp-42ad.mail.infomaniak.ch [IPv6:2001:1600:3:17::42ad])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5BAC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:30:10 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CMKsq0bfrzljf95;
-        Thu, 29 Oct 2020 10:30:07 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4CMKsn1t98zlh8Tj;
-        Thu, 29 Oct 2020 10:30:05 +0100 (CET)
-Subject: Re: [PATCH v22 01/12] landlock: Add object management
-To:     Jann Horn <jannh@google.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20201027200358.557003-1-mic@digikod.net>
- <20201027200358.557003-2-mic@digikod.net>
- <CAG48ez3CKa12SFHjVUPnYzJm2E7OBWnuh3JzVMrsvqdcMS1A8A@mail.gmail.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <afa8e978-d22c-f06a-d57b-e0d1a9918062@digikod.net>
-Date:   Thu, 29 Oct 2020 10:30:04 +0100
-User-Agent: 
-MIME-Version: 1.0
-In-Reply-To: <CAG48ez3CKa12SFHjVUPnYzJm2E7OBWnuh3JzVMrsvqdcMS1A8A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726427AbgJ2JaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:30:05 -0400
+Received: from mga12.intel.com ([192.55.52.136]:64315 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725801AbgJ2JaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 05:30:02 -0400
+IronPort-SDR: j3Ndt9KB/yDQyh9z3sdeGyLTz3YAvpsZwYqhTnpW9ArY7oaHFZrqR+4B7t2Oe3XWqWbg832OaQ
+ B0WQyKOmOWZg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="147685399"
+X-IronPort-AV: E=Sophos;i="5.77,429,1596524400"; 
+   d="scan'208";a="147685399"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 02:30:02 -0700
+IronPort-SDR: 9oMmPxJXPcUFT7rZNSb9AZfddF6HpV8s3RhFRzTKzoNHY2ikDC5AYif1R0PrcA7xx3FCUthsSV
+ Ude9/FVyp/bg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,429,1596524400"; 
+   d="scan'208";a="424996821"
+Received: from glass.png.intel.com ([172.30.181.98])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Oct 2020 02:29:59 -0700
+From:   Wong Vee Khee <vee.khee.wong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: [PATCH net 1/1] stmmac: intel: Fix kernel panic on pci probe
+Date:   Thu, 29 Oct 2020 17:32:28 +0800
+Message-Id: <20201029093228.1741-1-vee.khee.wong@intel.com>
+X-Mailer: git-send-email 2.17.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The commit "stmmac: intel: Adding ref clock 1us tic for LPI cntr"
+introduced a regression which leads to the kernel panic duing loading
+of the dwmac_intel module.
 
-On 29/10/2020 02:05, Jann Horn wrote:
-> On Tue, Oct 27, 2020 at 9:04 PM Mickaël Salaün <mic@digikod.net> wrote:
->> A Landlock object enables to identify a kernel object (e.g. an inode).
->> A Landlock rule is a set of access rights allowed on an object.  Rules
->> are grouped in rulesets that may be tied to a set of processes (i.e.
->> subjects) to enforce a scoped access-control (i.e. a domain).
->>
->> Because Landlock's goal is to empower any process (especially
->> unprivileged ones) to sandbox themselves, we cannot rely on a
->> system-wide object identification such as file extended attributes.
->> Indeed, we need innocuous, composable and modular access-controls.
->>
->> The main challenge with these constraints is to identify kernel objects
->> while this identification is useful (i.e. when a security policy makes
->> use of this object).  But this identification data should be freed once
->> no policy is using it.  This ephemeral tagging should not and may not be
->> written in the filesystem.  We then need to manage the lifetime of a
->> rule according to the lifetime of its objects.  To avoid a global lock,
->> this implementation make use of RCU and counters to safely reference
->> objects.
->>
->> A following commit uses this generic object management for inodes.
->>
->> Cc: James Morris <jmorris@namei.org>
->> Cc: Jann Horn <jannh@google.com>
->> Cc: Kees Cook <keescook@chromium.org>
->> Cc: Serge E. Hallyn <serge@hallyn.com>
->> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-> 
-> Reviewed-by: Jann Horn <jannh@google.com>
+Move the code block after pci resources is obtained.
 
-Thanks for the review.
+Fixes: b4c5f83ae3f3 ("stmmac: intel: Adding ref clock 1us tic for LPI cntr")
+Cc: Voon Weifeng <weifeng.voon@intel.com>
+Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-> 
-> except for some minor nits:
-> 
-> [...]
->> diff --git a/security/landlock/object.c b/security/landlock/object.c
-> [...]
->> +void landlock_put_object(struct landlock_object *const object)
->> +{
->> +       /*
->> +        * The call to @object->underops->release(object) might sleep e.g.,
-> 
-> s/ e.g.,/, e.g./
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+index b6e5e3e36b63..81ee0a071b4e 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -625,13 +625,6 @@ static int intel_eth_pci_probe(struct pci_dev *pdev,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (plat->eee_usecs_rate > 0) {
+-		u32 tx_lpi_usec;
+-
+-		tx_lpi_usec = (plat->eee_usecs_rate / 1000000) - 1;
+-		writel(tx_lpi_usec, res.addr + GMAC_1US_TIC_COUNTER);
+-	}
+-
+ 	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
+ 	if (ret < 0)
+ 		return ret;
+@@ -641,6 +634,13 @@ static int intel_eth_pci_probe(struct pci_dev *pdev,
+ 	res.wol_irq = pci_irq_vector(pdev, 0);
+ 	res.irq = pci_irq_vector(pdev, 0);
+ 
++	if (plat->eee_usecs_rate > 0) {
++		u32 tx_lpi_usec;
++
++		tx_lpi_usec = (plat->eee_usecs_rate / 1000000) - 1;
++		writel(tx_lpi_usec, res.addr + GMAC_1US_TIC_COUNTER);
++	}
++
+ 	ret = stmmac_dvr_probe(&pdev->dev, plat, &res);
+ 	if (ret) {
+ 		pci_free_irq_vectors(pdev);
+-- 
+2.17.0
 
-I indeed prefer the comma preceding the "e.g.", but it seems that there
-is a difference between UK english and US english:
-https://english.stackexchange.com/questions/16172/should-i-always-use-a-comma-after-e-g-or-i-e
-Looking at the kernel documentation makes it clear:
-$ git grep -F 'e.g. ' | wc -l
-1179
-$ git grep -F 'e.g., ' | wc -l
-160
-
-I'll apply your fix in the whole patch series.
-
-> 
->> +        * because of iput().
->> +        */
->> +       might_sleep();
->> +       if (!object)
->> +               return;
-> [...]
->> +}
->> diff --git a/security/landlock/object.h b/security/landlock/object.h
-> [...]
->> +struct landlock_object {
->> +       /**
->> +        * @usage: This counter is used to tie an object to the rules matching
->> +        * it or to keep it alive while adding a new rule.  If this counter
->> +        * reaches zero, this struct must not be modified, but this counter can
->> +        * still be read from within an RCU read-side critical section.  When
->> +        * adding a new rule to an object with a usage counter of zero, we must
->> +        * wait until the pointer to this object is set to NULL (or recycled).
->> +        */
->> +       refcount_t usage;
->> +       /**
->> +        * @lock: Guards against concurrent modifications.  This lock must be
-> 
-> s/must be/must be held/ ?
-
-Right.
-
-> 
->> +        * from the time @usage drops to zero until any weak references from
->> +        * @underobj to this object have been cleaned up.
->> +        *
->> +        * Lock ordering: inode->i_lock nests inside this.
->> +        */
->> +       spinlock_t lock;
-> [...]
->> +};
->> +
->> +struct landlock_object *landlock_create_object(
->> +               const struct landlock_object_underops *const underops,
->> +               void *const underojb);
-> 
-> nit: "underobj"
-> 
-
-Good catch!
