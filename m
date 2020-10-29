@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD28229F306
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 480CE29F30E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727344AbgJ2RY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbgJ2RY2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:24:28 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB058C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:24:26 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id h5so1967221vsp.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:24:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=do61rsM4GwzXoI90CK0QdYPHtZr409f2iOnTWSbjtRE=;
-        b=BE19bXcnjjj/ywvtsgpJ98BIPYD0s0YhZ4DS8LEgTe9iBAX5+MgyMc8NNIlfgjtN1n
-         Qp2w+ZyUgqC9q7dnCtnG1wWvb8mLvtkZUY4LtesfY9uXkL5iSIVY9IclzMJ1QIAq0tTq
-         zrTEE3ikmR9Wk9tASsejJMJWWIkw+KIpOnS0NB/atujWHtrulYNt0xwBHTTO8wAQ53Lv
-         WbV2J3aEzkKLgQlGgbdb0sUarJpXHCj0bc14HVORs9NkHec+GMbkfthrVMcjb9AVF9h5
-         p6Z4LUf3RSOfLQiI3JDMHXpgDxGqtoYZioYBjvydrw1kHL9agyPERmlWtDz5xZOW4NO/
-         01Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=do61rsM4GwzXoI90CK0QdYPHtZr409f2iOnTWSbjtRE=;
-        b=WsEq0bmXTz4OIASLb1sZEzaMb95EfcdgsO3HTpw9oEzN/gx0rqqqC1ihAsjMInqA1k
-         EgMwdwz1Ssj+vy9jHNhTEYT7TbDYDAqDiiVwJAAU5H/IAZJ2pwpJsUoveKsNfNkGKKVt
-         anLkUKkDLWcHh/IEEMi7il/RnDw24CUH275UVejs230xsCQFQCpTNLjh9pwcIfZDN7rx
-         v02NFsGTfh8whWyIMRcU+tR9Kl6BtHHy5AFZyOVo+ONsms2KFkNVV/Frvx/2LGdwdSiF
-         NeBAjZyTUYk06KEP4OGXsJ+CJAe/Id2ULQAgCs5ndVX2GbRJu7emFk4A0wN3ckCKlxCl
-         1IdQ==
-X-Gm-Message-State: AOAM533dN0s9di853w02cvNM/c/gQe1smnnhgl10jdmmaTXu5Vkn93f+
-        fBA0Co4UA4qs9sHzYisj4aC6wLgQBO4=
-X-Google-Smtp-Source: ABdhPJxjFno/LLoM1Vi7Sn34TfArdkVrzDwW84dNxAwJDfFDtm7FpmCwJVR7pI3txrDUk/IKrYY4gA==
-X-Received: by 2002:a05:6102:4b7:: with SMTP id r23mr4323281vsa.39.1603992264971;
-        Thu, 29 Oct 2020 10:24:24 -0700 (PDT)
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
-        by smtp.gmail.com with ESMTPSA id g14sm422888vkf.18.2020.10.29.10.24.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 10:24:24 -0700 (PDT)
-Received: by mail-vs1-f43.google.com with SMTP id f4so1953010vsk.7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:24:23 -0700 (PDT)
-X-Received: by 2002:a67:c981:: with SMTP id y1mr4130116vsk.14.1603992263354;
- Thu, 29 Oct 2020 10:24:23 -0700 (PDT)
+        id S1727373AbgJ2RZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 13:25:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55930 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726037AbgJ2RZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 13:25:57 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2788DAC9A;
+        Thu, 29 Oct 2020 17:25:56 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     robh+dt@kernel.org, catalin.marinas@arm.com, hch@lst.de,
+        ardb@kernel.org, linux-kernel@vger.kernel.org
+Cc:     robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
+        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        will@kernel.org, lorenzo.pieralisi@arm.com, guohanjun@huawei.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-acpi@vger.kernel.org, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH v5 0/7] arm64: Default to 32-bit wide ZONE_DMA
+Date:   Thu, 29 Oct 2020 18:25:43 +0100
+Message-Id: <20201029172550.3523-1-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20201028131807.3371-1-xie.he.0141@gmail.com> <20201028131807.3371-5-xie.he.0141@gmail.com>
-In-Reply-To: <20201028131807.3371-5-xie.he.0141@gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 29 Oct 2020 13:23:46 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSeBZWsy4w4gdPU2sb2-njuEiqbXMgfnA5AdsXkNr__xRA@mail.gmail.com>
-Message-ID: <CA+FuTSeBZWsy4w4gdPU2sb2-njuEiqbXMgfnA5AdsXkNr__xRA@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 4/4] net: hdlc_fr: Add support for any Ethertype
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 6:58 PM Xie He <xie.he.0141@gmail.com> wrote:
->
-> Change the fr_rx function to make this driver support any Ethertype
-> when receiving skbs on normal (non-Ethernet-emulating) PVC devices.
-> (This driver is already able to handle any Ethertype when sending.)
->
-> Originally in the fr_rx function, the code that parses the long (10-byte)
-> header only recognizes a few Ethertype values and drops frames with other
-> Ethertype values. This patch replaces this code to make fr_rx support
-> any Ethertype. This patch also creates a new function fr_snap_parse as
-> part of the new code.
->
-> Also add skb_reset_mac_header before we pass an skb (received on normal
-> PVC devices) to upper layers. Because we don't use header_ops for normal
-> PVC devices, we should hide the header from upper layer code in this case.
+Using two distinct DMA zones turned out to be problematic. Here's an
+attempt go back to a saner default.
 
-This should probably be a separate commit
+I tested this on both a RPi4 and QEMU.
 
-> Cc: Krzysztof Halasa <khc@pm.waw.pl>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
-> ---
->  drivers/net/wan/hdlc_fr.c | 76 ++++++++++++++++++++++++++-------------
->  1 file changed, 51 insertions(+), 25 deletions(-)
->
-> diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-> index 3639c2bfb141..e95efc14bc97 100644
-> --- a/drivers/net/wan/hdlc_fr.c
-> +++ b/drivers/net/wan/hdlc_fr.c
-> @@ -871,6 +871,45 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
->         return 0;
->  }
->
-> +static int fr_snap_parse(struct sk_buff *skb, struct pvc_device *pvc)
-> +{
-> +       /* OUI 00-00-00 indicates an Ethertype follows */
-> +       if (skb->data[0] == 0x00 &&
-> +           skb->data[1] == 0x00 &&
-> +           skb->data[2] == 0x00) {
-> +               if (!pvc->main)
-> +                       return -1;
-> +               skb->dev = pvc->main;
-> +               skb->protocol = *(__be16 *)(skb->data + 3); /* Ethertype */
+---
 
-Does it make sense to define a struct snap_hdr instead of manually
-casting all these bytes?
+Changes since v4:
+ - Fix of_dma_get_max_cpu_address() so it returns the last addressable
+   addres, not the limit
 
-> +               skb_pull(skb, 5);
-> +               skb_reset_mac_header(skb);
-> +               return 0;
-> +
-> +       /* OUI 00-80-C2 stands for the 802.1 organization */
-> +       } else if (skb->data[0] == 0x00 &&
-> +                  skb->data[1] == 0x80 &&
-> +                  skb->data[2] == 0xC2) {
-> +               /* PID 00-07 stands for Ethernet frames without FCS */
-> +               if (skb->data[3] == 0x00 &&
-> +                   skb->data[4] == 0x07) {
+Changes since v3:
+ - Drop patch adding define in dma-mapping
+ - Address small review changes
+ - Update Ard's patch
+ - Add new patch removing examples from mmzone.h
 
+Changes since v2:
+ - Introduce Ard's patch
+ - Improve OF dma-ranges parsing function
+ - Add unit test for OF function
+ - Address small changes
+ - Move crashkernel reservation later in boot process
 
-And macros or constant integers to self document these kinds of fields.
+Changes since v1:
+ - Parse dma-ranges instead of using machine compatible string
+
+Ard Biesheuvel (1):
+  arm64: mm: Set ZONE_DMA size based on early IORT scan
+
+Nicolas Saenz Julienne (6):
+  arm64: mm: Move reserve_crashkernel() into mem_init()
+  arm64: mm: Move zone_dma_bits initialization into zone_sizes_init()
+  of/address: Introduce of_dma_get_max_cpu_address()
+  of: unittest: Add test for of_dma_get_max_cpu_address()
+  arm64: mm: Set ZONE_DMA size based on devicetree's dma-ranges
+  mm: Remove examples from enum zone_type comment
+
+ arch/arm64/mm/init.c      | 16 ++++++------
+ drivers/acpi/arm64/iort.c | 52 +++++++++++++++++++++++++++++++++++++++
+ drivers/of/address.c      | 42 +++++++++++++++++++++++++++++++
+ drivers/of/unittest.c     | 18 ++++++++++++++
+ include/linux/acpi_iort.h |  4 +++
+ include/linux/mmzone.h    | 20 ---------------
+ include/linux/of.h        |  7 ++++++
+ 7 files changed, 130 insertions(+), 29 deletions(-)
+
+-- 
+2.29.0
+
