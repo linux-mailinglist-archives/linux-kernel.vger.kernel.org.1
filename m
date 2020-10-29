@@ -2,192 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E237129F039
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C8229F03C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728337AbgJ2PjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727290AbgJ2PjU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:39:20 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BE9C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:39:20 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id i21so1551422qka.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:39:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=eclypsium.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YpMSMpdWnDI27qe4/zeIevbA7qnkbhvCd6XQnOrBtHo=;
-        b=MvRibrIYNg0MeSZyYa9mK5H+6bXdx7o39FoBXfKv+n6NGem2zAA0tqMOm8vfI0leJw
-         JWUs+IYXRbzpZG/oSIkGnv3ljCxoH8nNAmgGvssJ3ksWnMzN3H4TNwpgxITeXMig0MtN
-         4QXYfhEN73/wbEvIUXrddTw6VFRtlhh83ch7JtCfG9cwA26Sr4WcUXShte+yisZaJxo6
-         uUPkWv0YbHYf8wqbK1Kpw9dc9uuTSBKA0e+ROsPul5RDQCZINks6lQK7FgrD7VOnor2H
-         CawPfyaw26oqXCdBXFBVMVYMYrzoevbsBdn0HyA0wYwYFE9emYIWAwnLVkQRFS+WmqVR
-         U1jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YpMSMpdWnDI27qe4/zeIevbA7qnkbhvCd6XQnOrBtHo=;
-        b=d1U0VcQmw61lbLMtU04nNU8JagbZ/xutJmlk7bT8G0X8GXwzD+4kFqY/tL2bO8RW5g
-         /HcbKMNYWYLZ8ZZ4972rhZISII6/i0CER3l0oxVrEiu35APEIfJS4kRPMhuM4BaqubdB
-         CiG+eiP2UHmvMd21HzPyugYc0YiuLhSmUprfCMdmATYB+eZwzgwetM9ZCpqavJq2+U2M
-         M2n2gC7Xc0/kiSj9mQXrik6XznakDbLy2j4Mi1ZlunKq99tuNWd8mJtAe5Ygou5Wvq9V
-         1qJJDgcpR8VviDlFfov65olBP4bU1xa8sCWpi06xWH+BKDRIgdLvbCQvNde0O11Y0iq+
-         hSpw==
-X-Gm-Message-State: AOAM530nMipNT0sCzxUzNO9fQCi6ycFiGvE/YV3/3t5z9ac5QIITBlMR
-        aaZXd7/G5XEN6o/fpZnzL3U+GkQthrM+iLHC7IRnMQ==
-X-Google-Smtp-Source: ABdhPJxpVMOLJjj0KrRm94hDKYZszMjxYwzxQp5Z8jS/NgD+6SKT0KDkCCiO2OEDnCgVxhaQMDvEsxTan1bMOUlIxJY=
-X-Received: by 2002:a05:620a:21d1:: with SMTP id h17mr4460360qka.368.1603985959134;
- Thu, 29 Oct 2020 08:39:19 -0700 (PDT)
+        id S1728434AbgJ2Pj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:39:26 -0400
+Received: from mout.gmx.net ([212.227.17.20]:34851 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728406AbgJ2PjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:39:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1603985958;
+        bh=IqRRbFAtuzx0pHC/Xb8X8hKIIllWrocj/1hYqFfiHyw=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=TJQ0F+QUiznsd4vYyBdt18HGLJ7+zCY9j4QxaxFNlGbXXaw/DXuPAntZ94PYlc6K3
+         dUfXl9bV9v6+ZF/F7Wcoo8bnwcOZ/XUVflRG3+gQKY22a+Nzrh0ZLzIcanEHwDTfL+
+         zdKP9TNJBIzRcFt94vh/UNZsZ7Gfa/faieMHGMOY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.223.32.86]) by mail.gmx.com
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1MHoRK-1kd5xj3lIs-00ErzB; Thu, 29 Oct 2020 16:39:17 +0100
+Received: by localhost.localdomain (Postfix, from userid 1000)
+        id DD9D0800D9; Thu, 29 Oct 2020 16:39:16 +0100 (CET)
+From:   Sven Joachim <svenjoac@gmx.de>
+To:     linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     linux-kernel@vger.kernel.org, Sven Joachim <svenjoac@gmx.de>
+Subject: [PATCH] builddeb: Consolidate consecutive chmod calls into one
+Date:   Thu, 29 Oct 2020 16:39:10 +0100
+Message-Id: <20201029153910.7502-1-svenjoac@gmx.de>
+X-Mailer: git-send-email 2.29.1
+In-Reply-To: <CAK7LNARFVy_2y883jig2_QrwTyGe=Xmu91z8LWuZuCeruWXa6A@mail.gmail.com>
+References: <CAK7LNARFVy_2y883jig2_QrwTyGe=Xmu91z8LWuZuCeruWXa6A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201028214359.384918-1-daniel.gutson@eclypsium.com> <20201029054110.GA3039992@kroah.com>
-In-Reply-To: <20201029054110.GA3039992@kroah.com>
-From:   Daniel Gutson <daniel@eclypsium.com>
-Date:   Thu, 29 Oct 2020 12:39:08 -0300
-Message-ID: <CAFmMkTHBXjNc0DeL0bOZfdJkZjPAHnRU1THHdk0tZcBr1yykTQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Split intel-spi reading from writing
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:UViFwwQbDt/WxE81UR0PAiGjGM6GCNiipg4SYKykS+mC7Fd94Fe
+ b1h3rdbwWEX/b3PmjdnutqhPEZv2oAsUMcdBVWeTrQXwWO0v4X/ZqF6s/B9u2BKcpMirDZu
+ 0XjV2bNI1vg4X+Foz82ycoSlXmcAg2oxKSvx6iRr4Mg6oYzXik35Lmvjj5FxMUcnCbMteGL
+ aCfVAfpYl4EoimiUJoE7A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oEoDpcT7UPY=:fxzAbu2ZosdbA7e52qkQwX
+ QsDkacDmhfmlKraUSUrwU5wGfD4ErqFRhczVdmJME5YYLtPCAZe/Wo2JG98XbyHrddyitloZl
+ YlNJqu4qnkz3uZ/Jst3qUZ+igdQ/gxIvvTqzRTMqtOlXDVnTFwEk/jHx6XEpuxNZgFJgfe6Og
+ P6NbVTAhWU2mYgkS8hPlMpYpYX5US7AtqY5uPzfkdOswG/D03F0VRNzHwqHkZVRKIK3LPilY9
+ WYjkgF6ivX3I1XDAH424WckXW0fm3xrrgtW6ld7jOQpc2bOtw8JOYTafslKubukOfmC3/QNcp
+ +S+W6ZHL2cy5ElF8R4Pj4ZWnr1IWI5Kha7iM6gJTJ6PgJftmtE+dlTT0zGvu9ykHFIVA2q8kG
+ elzTScHP1NNS2Jzj3TMlImfn4bIz8Rj9QMOJV914EVSal2DEBWmB0Ck0iEMl414E9RaaOb5q6
+ sXJ2P7E05oAfRXRjUb58EZd9FIrBq3jfO2qEWWM9zw9V0Z9j363DzrhRw9K7oN5ZtY6bShky5
+ 1BnZpK/1LAAVLRjk0S3UjTJV/NxBoPoNtJg6JFzuRV/Ghsf27liCDXIn85eJd+jW0pjvYVv6C
+ dzdq/Uazu9sLJb5HXxmvTqCnxN37IH7kjT1RA88cvmcAsuS72r646nulj1S+JOledcQGbTZ/Z
+ pULWhiwpKA+Iy4T0HHcaZGnXrK29c7LV+Wo+Vglp7u46pbvgVurqNV0ZyxRWU3fF+K2RU6PA+
+ 916CxrSC0FIrJZiXFZ8D2kaJ0xPw/W8yjUtq//j5C+r5ZccmezMGxLOFM+JXWJ9GKO0Ge2V/h
+ gPxIClw/P5skaFIfPVn5lUT0q4QfiwX6Tn5rC4rgLDHqZ2MtxGr1gpyutB0AzTAsM2VdoPBoV
+ Cw6fMtu63lA/VH1pgwbw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 2:40 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Oct 28, 2020 at 06:43:59PM -0300, Daniel Gutson wrote:
-> > This patch separates the writing part of the intel-spi drivers
-> > so the 'dangerous' part can be set/unset independently.
-> > This way, the kernel can be configured to include the reading
-> > parts of the driver which can be used without
-> > the dangerous write operations that can turn the system
-> > unbootable.
-> >
-> > Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
-> > ---
-> >  drivers/mtd/spi-nor/controllers/Kconfig     | 39 ++++++++++++---------
-> >  drivers/mtd/spi-nor/controllers/intel-spi.c | 12 +++++--
-> >  2 files changed, 33 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
-> > index 5c0e0ec2e6d1..491c755fea49 100644
-> > --- a/drivers/mtd/spi-nor/controllers/Kconfig
-> > +++ b/drivers/mtd/spi-nor/controllers/Kconfig
-> > @@ -31,34 +31,41 @@ config SPI_INTEL_SPI
-> >       tristate
-> >
-> >  config SPI_INTEL_SPI_PCI
-> > -     tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
-> > +     tristate "Intel PCH/PCU SPI flash PCI driver"
-> >       depends on X86 && PCI
-> >       select SPI_INTEL_SPI
-> >       help
-> > -       This enables PCI support for the Intel PCH/PCU SPI controller in
-> > -       master mode. This controller is present in modern Intel hardware
-> > -       and is used to hold BIOS and other persistent settings. Using
-> > -       this driver it is possible to upgrade BIOS directly from Linux.
-> > -
-> > -       Say N here unless you know what you are doing. Overwriting the
-> > -       SPI flash may render the system unbootable.
-> > +       This enables read only PCI support for the Intel PCH/PCU SPI
-> > +       controller in master mode. This controller is present in modern
-> > +       Intel hardware and is used to hold BIOS and other persistent settings.
-> > +       Using this driver it is possible to read the SPI chip directly
-> > +       from Linux.
-> >
-> >         To compile this driver as a module, choose M here: the module
-> >         will be called intel-spi-pci.
-> >
-> >  config SPI_INTEL_SPI_PLATFORM
-> > -     tristate "Intel PCH/PCU SPI flash platform driver (DANGEROUS)"
-> > +     tristate "Intel PCH/PCU SPI flash platform driver"
-> >       depends on X86
-> >       select SPI_INTEL_SPI
-> >       help
-> > -       This enables platform support for the Intel PCH/PCU SPI
-> > +       This enables read only platform support for the Intel PCH/PCU SPI
-> >         controller in master mode. This controller is present in modern
-> > -       Intel hardware and is used to hold BIOS and other persistent
-> > -       settings. Using this driver it is possible to upgrade BIOS
-> > -       directly from Linux.
-> > +       Intel hardware and is used to hold BIOS and other persistent settings.
-> > +       Using this driver it is possible to read the SPI chip directly
-> > +       from Linux.
-> > +
-> > +       To compile this driver as a module, choose M here: the module
-> > +       will be called intel-spi-pci.
-> > +
-> > +config SPI_INTEL_SPI_WRITE
-> > +     bool "Intel PCH/PCU SPI flash drivers write operations (DANGEROUS)"
-> > +     depends on SPI_INTEL_SPI_PCI || SPI_INTEL_SPI_PLATFORM
-> > +     help
-> > +       This enables full read/write support for the Intel PCH/PCU SPI
-> > +       controller.
-> > +       Using this option it may be possible to upgrade BIOS directly
-> > +       from Linux.
-> >
-> >         Say N here unless you know what you are doing. Overwriting the
-> >         SPI flash may render the system unbootable.
-> > -
-> > -       To compile this driver as a module, choose M here: the module
-> > -       will be called intel-spi-platform.
-> > diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-> > index b54a56a68100..8d8053395c3d 100644
-> > --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-> > +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-> > @@ -266,6 +266,7 @@ static int intel_spi_read_block(struct intel_spi *ispi, void *buf, size_t size)
-> >       return 0;
-> >  }
-> >
-> > +#ifdef CONFIG_SPI_INTEL_SPI_WRITE
->
-> <snip>
->
-> Please do not add #ifdef to .c files, that's not the proper kernel
-> coding style at all, and just makes maintaining this file much much
-> harder over time.
->
-> Split things out into two different files if you really need to do this.
+No need to call chmod three times when it can do everything at once.
 
-What about the static functions that I'll need to turn non-static and
-in a header file?
-I mean, the functions that the functions in the new file will have to call.
-Should I do that, turn static functions into non-static and declared
-in a header file?
+Signed-off-by: Sven Joachim <svenjoac@gmx.de>
+=2D--
+ scripts/package/builddeb | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
+diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+index 91a502bb97e8..6a100c449579 100755
+=2D-- a/scripts/package/builddeb
++++ b/scripts/package/builddeb
+@@ -42,11 +42,9 @@ create_package() {
+ 	else
+ 		chown -R root:root "$pdir"
+ 	fi
+-	chmod -R go-w "$pdir"
+-	# in case we are in a restrictive umask environment like 0077
+-	chmod -R a+rX "$pdir"
+-	# in case we build in a setuid/setgid directory
+-	chmod -R ug-s "$pdir"
++	# a+rX in case we are in a restrictive umask environment like 0077
++	# ug-s in case we build in a setuid/setgid directory
++	chmod -R go-w,a+rX,ug-s "$pdir"
 
->
-> thanks,
->
-> greg k-h
+ 	# Create the package
+ 	dpkg-gencontrol -p$pname -P"$pdir"
+=2D-
+2.29.1
 
-
-
--- 
-
-
-Daniel Gutson
-Engineering Director
-Eclypsium, Inc.
-
-
-Below The Surface: Get the latest threat research and insights on
-firmware and supply chain threats from the research team at Eclypsium.
-https://eclypsium.com/research/#threatreport
