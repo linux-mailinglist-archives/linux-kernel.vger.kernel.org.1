@@ -2,153 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CE929F5C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A92F529F5C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725797AbgJ2UCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 16:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726246AbgJ2UCb (ORCPT
+        id S1726203AbgJ2UDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:03:35 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:43752 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgJ2UDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:02:31 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858B7C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:02:31 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id g21so2245442vsp.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NHWeGLndJ6xxN0MAwysL/++BG9BlJzB6qOfq725eGSk=;
-        b=nGhX7HR2IWiCY4pI4GXVjaNF4rXrEKJCkKSUb640yjof+beWnJaznvUSHH9V8ia1bI
-         PUgBHGcU1NNEQDDd7ltP8i5PkwDS2ZjZwWvNWKy9PFwRhRS/6YepzOfsG1J53Nq29N3O
-         +Q44RLheaWRDj7oEk1ys03ZJFAtjnciCfbjsx+oacjjY1q+GHTGGITRJGOTW7jdpI9Bh
-         J+KczpneR/M0MjR2dQ3UM9+HV97LEUhYR5dSP4Ekya48vBN3NiQrsrcUgoq1imWOmC/V
-         8lppAylhcn0CAatmgnkieBYZm/ugbSlsXHD/vRngF0Z17GO2S7gYTMloZaKCm38Ef9AW
-         re+w==
+        Thu, 29 Oct 2020 16:03:34 -0400
+Received: by mail-wr1-f66.google.com with SMTP id g12so4091782wrp.10;
+        Thu, 29 Oct 2020 13:03:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NHWeGLndJ6xxN0MAwysL/++BG9BlJzB6qOfq725eGSk=;
-        b=GRQc6OjLpYFdpOoLtNEn4T3Em0uSG3wrh8u4UqQf1XW84hZSGQm4PgeN/ZLwJ+vRo9
-         L4T1QObgXrINw42OLRKAlhPzx55A/0If2grDiPaqjDYdPulxIm/cf8Shg+U3E2gQJRHd
-         Ox10uewkHf/No7WO5hxF/6L3WR4AnzYx2KmZdkZ4F6jOWWphho2HplTFpa8mc+9C7+Vk
-         cSOCMGrZLvj942maoGrDUIqg11f7c55jOpxQKrR9NagC8byQ7dtTE95QYnov6RMrefFk
-         HRAVgbEU9mP2TSToFV0ti0ZRntkiiMOznFhdoVcAr6TINxxJzNAkTFCtuH1T/ERI4D51
-         8eEQ==
-X-Gm-Message-State: AOAM532m8VlPKNggP3Kkw34FV5NHSOUc35HfC1bVZ4UNYa8cX4hxoU6e
-        npAczYwKyCY7PEk6uzubHGe4RjjRI8Yl+kKoL5BcYA==
-X-Google-Smtp-Source: ABdhPJx3ipOjqxWLspHm1PdFbyoLH1B9iR40Eah0PBO3efo+jMYR6ljyioVHJKH0Jp0GWSsPFuvei8Y1EzODH7lPOBw=
-X-Received: by 2002:a67:fc4d:: with SMTP id p13mr4795515vsq.60.1604001750400;
- Thu, 29 Oct 2020 13:02:30 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L2/NcJj+iHYkGDNkmgcYCv1Kv0O8+QeL39KIf4j5s4g=;
+        b=hKGxXo1BI5C8fKuk0N6xNS+pDYiIw9dbPdhtQMfjMGCUkYdSKE2sQPpn8R8IyuvUsa
+         hqchIgDyp5Bixq0kNdG55IdCgCWJTE62ogSJKoOp7PPyMxKUB+55t5ak7yPLm+WGvIlA
+         uOi4yJxb92l6v04dYp3QduMz3yRRyn4p5qm0ZmuBqk32SRHc6SCY1IzDSOGZEbsEVjUi
+         ejj3Y6GW9lRtU6Pr8FG0rboSUvQlzFZ91cIUT716iTDOXbvDcNjMv1QsL9nDoyQYlnCO
+         RThdknu9ukJ6vQQKGEuwJIVAvXYaVIB08ryqAB2rbHtckYBGkmdb0/ZUN89Vsn9F7A5O
+         KRmA==
+X-Gm-Message-State: AOAM530zXL8w3fJcy+uBDmVV+QhgFUxJRh/0nkVTDSBGj+pHg1syp4lk
+        FJH/buf19XY8XVdBh5MRIn0kdwCxizo=
+X-Google-Smtp-Source: ABdhPJyl2gtV0/dunbmSNCoHhsW2+X6ivjkDdN7o58QU9x31MfatD3jnuHMyJzQ3n/yQ9xXV/ajtvA==
+X-Received: by 2002:a5d:660a:: with SMTP id n10mr4364043wru.59.1604001812246;
+        Thu, 29 Oct 2020 13:03:32 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:d32:e3ef:ad74:6ea9? ([2601:647:4802:9070:d32:e3ef:ad74:6ea9])
+        by smtp.gmail.com with ESMTPSA id r18sm7687328wrj.50.2020.10.29.13.03.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 13:03:31 -0700 (PDT)
+Subject: Re: [PATCH 3/3] blk-mq: Use llist_head for blk_cpu_done
+To:     Christoph Hellwig <hch@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-block@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Wagner <dwagner@suse.de>, Mike Galbraith <efault@gmx.de>
+References: <20201028065616.GA24449@infradead.org>
+ <20201028141251.3608598-1-bigeasy@linutronix.de>
+ <20201028141251.3608598-3-bigeasy@linutronix.de>
+ <20201029131212.dsulzvsb6pahahbs@linutronix.de>
+ <20201029140536.GA6376@infradead.org>
+ <20201029145623.3zry7o6nh6ks5tjj@linutronix.de>
+ <20201029145743.GA19379@infradead.org>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <d2c15411-5b21-535b-6e07-331ebe22f8c8@grimberg.me>
+Date:   Thu, 29 Oct 2020 13:03:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201029063138.1429760-1-badhri@google.com> <20201029063138.1429760-2-badhri@google.com>
- <20201029153351.GA1911637@bogus>
-In-Reply-To: <20201029153351.GA1911637@bogus>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Thu, 29 Oct 2020 13:01:52 -0700
-Message-ID: <CAPTae5L8bnv1S6dK0XkPiF7aha88ed5vfaiw5HAdtvu7TQMD5g@mail.gmail.com>
-Subject: Re: [PATCH v12 01/10] dt-bindings: usb: Maxim type-c controller
- device tree binding document
-To:     Rob Herring <robh@kernel.org>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        USB <linux-usb@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201029145743.GA19379@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-The error seems to be because the following patch
-5ed132db5ad4 dt-bindings: connector: Add property to set initial
-current cap for FRS
-is in usb-next but not in the rc1 branch yet. To make the bot
-recognize that this is a
-dependency, Is it suffice to mention the following in the commit description?
-This patch depends on patch "dt-bindings: connector: Add property to
-set initial current cap for FRS".
-Or is there something else that I should do ?
+>>> Well, usb-storage obviously seems to do it, and the block layer
+>>> does not prohibit it.
+>>
+>> Also loop, nvme-tcp and then I stopped looking.
+>> Any objections about adding local_bh_disable() around it?
+> 
+> To me it seems like the whole IPI plus potentially softirq dance is
+> a little pointless when completing from process context.
 
-Thanks,
-Badhri
+I agree.
 
+> Sagi, any opinion on that from the nvme-tcp POV?
 
-On Thu, Oct 29, 2020 at 8:33 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, 28 Oct 2020 23:31:29 -0700, Badhri Jagan Sridharan wrote:
-> > Add device tree binding document for Maxim 33359 Type-C chip driver
-> >
-> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > ---
-> > Changes since v1:
-> > - Changing patch version to v6 to fix version number confusion.
-> >
-> > Changes since v6:
-> > - Migrated to yaml format.
-> >
-> > Changes since v7:
-> > - Rebase on usb-next
-> >
-> > Changes since v8:
-> > - Fix errors from make dt_binding_check as suggested by
-> >   Rob Herring.
-> >
-> > Changes since v9:
-> > - additionalProperties: false as suggested by Rob Herring.
-> >
-> > Changes since v10:
-> > - Added the chip number to the binding as suggested by Rob Herring.
-> > - Renamed the filename as well.
-> >
-> > Changes since v11:
-> > Addressed comments from Rob Herring to rename from maxim,33359
-> > to maxim,max33359
-> > ---
-> >  .../bindings/usb/maxim,max33359.yaml          | 75 +++++++++++++++++++
-> >  1 file changed, 75 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/usb/maxim,max33359.yaml
-> >
->
->
-> My bot found errors running 'make dt_binding_check' on your patch:
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> Error: Documentation/devicetree/bindings/usb/maxim,max33359.example.dts:39.53-54 syntax error
-> FATAL ERROR: Unable to parse input tree
-> make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/usb/maxim,max33359.example.dt.yaml] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1364: dt_binding_check] Error 2
->
->
-> See https://patchwork.ozlabs.org/patch/1389879
->
-> The base for the patch is generally the last rc1. Any dependencies
-> should be noted.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit.
->
+nvme-tcp should (almost) always complete from the context that matches
+the rq->mq_ctx->cpu as the thread that processes incoming
+completions (per hctx) should be affinitized to match it (unless cpus
+come and go).
+
+So for nvme-tcp I don't expect blk_mq_complete_need_ipi to return true
+in normal operation. That leaves the teardowns+aborts, which aren't very
+interesting here.
+
+I would note that nvme-tcp does not go to sleep after completing every
+I/O like how sebastian indicated usb does.
+
+Having said that, today the network stack is calling nvme_tcp_data_ready
+in napi context (softirq) which in turn triggers the queue thread to
+handle network rx (and complete the I/O). It's been measured recently
+that running the rx context directly in softirq will save some
+latency (possible because nvme-tcp rx context is non-blocking).
+
+So I'd think that patch #2 is unnecessary and just add overhead for
+nvme-tcp.. do note that the napi softirq cpu mapping depends on the RSS
+steering, which is unlikely to match rq->mq_ctx->cpu, hence if completed
+from napi context, nvme-tcp will probably always go to the IPI path.
+
