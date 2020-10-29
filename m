@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3124329E527
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:54:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B906C29E4E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731216AbgJ2Hwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731164AbgJ2Hwj (ORCPT
+        id S1731821AbgJ2HtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:49:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55088 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731776AbgJ2HtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:52:39 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D862C0613DC;
-        Thu, 29 Oct 2020 00:52:01 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id y14so1639924pfp.13;
-        Thu, 29 Oct 2020 00:52:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6QKT0uDPiR12AaND+XZJ9++tzKNk6nVLA6Y08gKrKNM=;
-        b=X2eKfrxr1XpevgR1taGe1YeeLQW1y6aWkGVCUfn81sB5nS3ZSszSQ/Vlcrkyyimuit
-         l88GKRHFsLq1hruSdmhoCU9MWBOtfD89wpUgfdTKfucCfS5H13XUCyV2b7YxG9NYKZrY
-         PCfgxW49RzmhNA8yhZcIYbgDQuxasyX6pAUxibtKmk1SVJQN0Wd5yD4Y5hL+MKiyVErd
-         ULyEaBCSAOgwNU2t8uMBgcXfO8faDtat1zVlH/bO//nxC3OhHyunejghPzyeB7Tp6hOz
-         lywAZ4kHiCfe0Qb4EQCQgxgGTgu1vuVJZK8fKjG3bNmuHKlY9g7G7mcJ8azbIxDHLV/l
-         K59Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6QKT0uDPiR12AaND+XZJ9++tzKNk6nVLA6Y08gKrKNM=;
-        b=aftjprGfhUIibbu581knBQY6F9Cc69hBErIrpFY5tuUfNfh+viwLIZ+5Ngg0BHI7ao
-         +9BFoM7rEjSOifoFoqgxRbKmraWPxO3EMsy1Z0FfQz3VQwnk6VFS8rTkndNXqzVLOBkD
-         3gwd66sF6zTiDWBo9db+snNeBfDh4NETdV/EifmDnm5zK5PPxu9eBcMM/fpa+cql+HY8
-         /QxHE+b2WXGL5mXx1fbB6fSrg9jAMgraWLyz8nhCeFuaEWgQ6kqE6GKIPSTGmx/4pL/q
-         64FskAP/V8NJFd96D+EyfFPrZE6FtBVy7ybuQeEQtBUoC8trrpBICrPtlmaV99X41JAA
-         8TCw==
-X-Gm-Message-State: AOAM530SX3pUOPv71/r+30WgNX22jfdsdO6cGVRBB5wfQ8WnTJS2jH0l
-        nVnYW3s9xH9XWrQGzzLJIno=
-X-Google-Smtp-Source: ABdhPJyR/vVNVZkgwQb9fbxcU230r0R0irNG6iyIzQ+N0rIkhxaZbxQjtX8zGTsnIhEKtqcKVP6jEA==
-X-Received: by 2002:a65:5ace:: with SMTP id d14mr2946530pgt.323.1603957920912;
-        Thu, 29 Oct 2020 00:52:00 -0700 (PDT)
-Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
-        by smtp.gmail.com with ESMTPSA id j20sm2042396pfd.40.2020.10.29.00.51.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 00:52:00 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-To:     Lars-Peter Clausen <lars@metafoo.de>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org (open list:IIO SUBSYSTEM AND DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 14/15] iio: light: remove unnecessary CONFIG_PM_SLEEP
-Date:   Thu, 29 Oct 2020 15:49:09 +0800
-Message-Id: <20201029074910.227859-14-coiby.xu@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201029074910.227859-1-coiby.xu@gmail.com>
-References: <20201029074910.227859-1-coiby.xu@gmail.com>
+        Thu, 29 Oct 2020 03:49:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603957756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YLhofHK1Sb/YOJxGC+CQPMO1TDqN1agIRTokGdH7Zn4=;
+        b=VjV4I+bu76VmeNEyWXiI5ir1SKtpqMaZ3Rydq1wei2uzWmi0kX5rfEtgJi0k+HHWBbJak5
+        JrmoyDhAfGKANxjD50Z7ufZ56F9PoCC4bRKKxjt1uiTtZeluPjAbJrFrz1HN2nVXU/UqZ/
+        VL9PIZswkIBqlQRqUJxoKkdLvVqVaZA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-BvaEgVzcP1aW1CB9H7UtOw-1; Thu, 29 Oct 2020 03:49:14 -0400
+X-MC-Unique: BvaEgVzcP1aW1CB9H7UtOw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1639D803F51;
+        Thu, 29 Oct 2020 07:49:13 +0000 (UTC)
+Received: from [10.36.112.181] (ovpn-112-181.ams2.redhat.com [10.36.112.181])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7132362A0B;
+        Thu, 29 Oct 2020 07:49:11 +0000 (UTC)
+Subject: Re: [RFC PATCH 0/3] Allocate memmap from hotadded memory (per device)
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>
+Cc:     mhocko@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, vbabka@suse.cz, pasha.tatashin@soleen.com
+References: <20201022125835.26396-1-osalvador@suse.de>
+ <3c18e078-25df-3fd4-9988-1b7677d8e05f@redhat.com>
+ <20201027154031.GA11489@linux>
+ <daedbc08-7275-40ad-0d07-007ef89ca25f@redhat.com>
+ <20201027155851.GA11785@linux>
+ <259889fb-f01b-9537-7948-f1a75a372617@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <cce0ad6f-8078-b486-62ad-b75269fd734e@redhat.com>
+Date:   Thu, 29 Oct 2020 08:49:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <259889fb-f01b-9537-7948-f1a75a372617@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+On 28.10.20 19:47, Mike Kravetz wrote:
+> On 10/27/20 8:58 AM, Oscar Salvador wrote:
+>> On Tue, Oct 27, 2020 at 04:44:33PM +0100, David Hildenbrand wrote:
+>>> I'm planning on looking into patch #2/3 later this or next week (this week
+>>> is open source summit / KVM Forum).
+>>
+>> Sure, aprecciated the time ;-)
+>>
+>>>
+>>> One thing to look into right now is how to make this fly this with vmemmap
+>>> optimizations for hugetlb pages.
+>>>
+>>> https://lkml.kernel.org/r/20201026145114.59424-1-songmuchun@bytedance.com
+>>
+>> I was about to have a look at that series eitherway, but good you mentioned.
+>>
+> 
+> More eyes on that series would be appreciated.
+> 
+> That series will dynamically free and allocate memmap pages as hugetlb
+> pages are allocated or freed.  I haven't looked through this series, but
+> my first thought is that we would need to ensure those allocs/frees are
+> directed to the device.  Not sure if there are interfaces for that.
 
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
----
- drivers/iio/light/pa12203001.c | 2 --
- 1 file changed, 2 deletions(-)
+Directing to the device might be part of the solution, but does not have 
+to be. You really want to free the pages to the OS in the end, otherwise 
+you lose the whole benefit of the vmemmap optimization.
 
-diff --git a/drivers/iio/light/pa12203001.c b/drivers/iio/light/pa12203001.c
-index bfade6577a38..7737d2c8f0d5 100644
---- a/drivers/iio/light/pa12203001.c
-+++ b/drivers/iio/light/pa12203001.c
-@@ -417,14 +417,12 @@ static int pa12203001_suspend(struct device *dev)
- }
- #endif
- 
--#ifdef CONFIG_PM_SLEEP
- static int pa12203001_resume(struct device *dev)
- {
- 	struct iio_dev *indio_dev = i2c_get_clientdata(to_i2c_client(dev));
- 
- 	return pa12203001_power_chip(indio_dev, PA12203001_CHIP_ENABLE);
- }
--#endif
- 
- #ifdef CONFIG_PM
- static int pa12203001_runtime_resume(struct device *dev)
+You would want to actually free the pages (making sure whatever 
+generic_online_page() does was done to these special vmemmap pages). But 
+then, you cannot simply skip all X first pages of a memory block when 
+offlining, you can only skip the once that are still vmemmap pages 
+(e.g., marked via page type), and have to isolate/migrate off the 
+no-longer vmemmap pages.
+
 -- 
-2.28.0
+Thanks,
+
+David / dhildenb
 
