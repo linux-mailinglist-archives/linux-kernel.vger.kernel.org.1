@@ -2,102 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E5A29EFAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E03129EFB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbgJ2PZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:25:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44306 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728007AbgJ2PZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:25:47 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 595B32076E;
-        Thu, 29 Oct 2020 15:25:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603985146;
-        bh=GR36ZrUzjpmFD6uIuhJkcH+5OSGt9TAiu3iuLPy0ltE=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=uLI3sLE9qtpnG4cux2EQDbHtu33t/7qrj/IglIjQBQhNyXVnYKXJet+m8u675hTwb
-         OQK8rq4BGXF+SpiA7zKbL7Q4k2IGIJJNwKYOCS68vzBkPBwtNJ02yFeYBRmLNmYTYT
-         EUy9mn9d5K6L15AMlJBpwvGdJxhX1ZyP6nvOMGLY=
-Date:   Thu, 29 Oct 2020 16:25:43 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Pascal Giard <pascal.giard@etsmtl.ca>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sanjay Govind <sanjay.govind9@gmail.com>
-Subject: Re: [PATCH] HID: ghlive: support for ghlive ps3/wii u dongles
-In-Reply-To: <20201009022722.123943-1-pascal.giard@etsmtl.ca>
-Message-ID: <nycvar.YFH.7.76.2010291622380.18859@cbobk.fhfr.pm>
-References: <20201009022722.123943-1-pascal.giard@etsmtl.ca>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1728207AbgJ2P0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgJ2PZ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:25:59 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E761C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:25:59 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id p16so775544vkf.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:25:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TKA8BKb8i1utD9tGg1rDX3comc5+Hr03WuwdtvMqQLA=;
+        b=Kp/b/eAolt5iKyiqV0LryXlku0eukwKvS7YYnx0Vu5M0emCJ0KYgTEIo704jzP4yyt
+         OdLEOBhAqDfj091ssnVd8CGhjHebyVzGGApz5dLvDrsAooZmE/+AZKpFslKMMpUMMWac
+         rsUGUV69EQoGuBDnMQVQktMf5j5std+OnmQ+Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TKA8BKb8i1utD9tGg1rDX3comc5+Hr03WuwdtvMqQLA=;
+        b=iiA9BeXDKxZKd0Jca7u1YB22TRw4luVebgSg60hfz2yDx89nEQWZj+XFnLBnm7hY+i
+         i9ROXexuFes4cYsH94nMuCKHgQJG9KiIR8Kh4Ih1AgKFMDPIizdDC5rhTXA6UZNfTKjZ
+         7MvBz9lxfAdKGNzLtrVIGTmw3oCwU3hxWvZbgddyknHeiCo/NOOtuWLnfyfhtUh7qM+4
+         a9NvlsdyY6uivnYLhio8DaaE8dETXB7ZiBAcCfL4eDrzosLH4ILxxQ4jpMNJ9TY9CSam
+         ctssIVMWSJreMhux2lQLWvfPgq6YLDqEd/L6RwWFOJ6xf9zQx/79uGszXw0h9jxoVSYj
+         VnPw==
+X-Gm-Message-State: AOAM531ZuX0pIHHK02WNymsaxRSCgDAnefAQS4xsIHcm+iTOSvkXPNVS
+        9XwhwbNcl1wThdbYLuB8QZhqStLsPvZFZWAtTGwL1g==
+X-Google-Smtp-Source: ABdhPJyTqDIYeWl5UkkdMDkJjpCaNs+GL2C8l11+oxl+W7oJCToCDgBfPA9iGP0UmOptGW9XZi2xsMw0u5z9inQT/xM=
+X-Received: by 2002:a1f:23d0:: with SMTP id j199mr3615428vkj.11.1603985158633;
+ Thu, 29 Oct 2020 08:25:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <5e1bf70a-0c6b-89b6-dc9f-474ccfcfe597@huawei.com>
+In-Reply-To: <5e1bf70a-0c6b-89b6-dc9f-474ccfcfe597@huawei.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 29 Oct 2020 16:25:47 +0100
+Message-ID: <CAJfpegtcU_=hhmq9C-n1dkCBOcTX7VzkdXDpOZZNh1iZ73-t0w@mail.gmail.com>
+Subject: Re: [PATCH] fuse: fix potential accessing NULL pointer problem in fuse_send_init()
+To:     Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linfeilong <linfeilong@huawei.com>,
+        linux-fsdevel@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        lihaotian <lihaotian9@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Oct 2020, Pascal Giard wrote:
+On Thu, Oct 22, 2020 at 4:52 PM Zhiqiang Liu <liuzhiqiang26@huawei.com> wrote:
+>
+>
+> In fuse_send_init func, ia is allocated by calling kzalloc func, and
+> we donot check whether ia is NULL before using it. Thus, if allocating
+> ia fails, accessing NULL pointer problem will occur.
 
-> This commit introduces the Guitar Hero Live driver which adds support
-> for the PS3 and Wii U dongles.
-
-Pascal,
-
-thanks for the patch.
-
-[ ... snip ... ]
-
-> ---
->  drivers/hid/Kconfig      |   6 ++
->  drivers/hid/Makefile     |   1 +
->  drivers/hid/hid-ghlive.c | 220 +++++++++++++++++++++++++++++++++++++++
-
-Would it make more sense (with respect to how we are structuring/naming 
-the hid drivers) to incorporate this into hid-sony (irrespective of 
-currently ongoing discussions about actually splitting that driver :) )?
-
-> +static void ghl_magic_poke(struct timer_list *t)
-> +{
-> +	struct ghlive_sc *sc = from_timer(sc, t, poke_timer);
-> +
-> +	int ret;
-> +	unsigned int pipe;
-> +	struct urb *urb;
-> +	struct usb_ctrlrequest *cr;
-> +	const u16 poke_size =
-> +		ARRAY_SIZE(ghl_ps3wiiu_magic_data);
-> +	u8 *databuf;
-> +
-> +	pipe = usb_sndctrlpipe(sc->usbdev, 0);
-> +
-> +	cr = kzalloc(sizeof(*cr), GFP_ATOMIC);
-> +	if (!cr)
-> +		goto resched;
-> +
-> +	databuf = kzalloc(poke_size, GFP_ATOMIC);
-> +	if (!databuf) {
-> +		kfree(cr);
-> +		goto resched;
-> +	}
-> +
-> +	urb = usb_alloc_urb(0, GFP_ATOMIC);
-> +	if (!urb) {
-> +		kfree(databuf);
-> +		kfree(cr);
-> +		goto resched;
-
-
-So if one of the allocations above succeeds and a subsequent one fails, 
-you're going to try re-allocate all of them next time again, leaking the 
-ones that previously succeeded, right?
+Note the __GFP_NOFAIL flag for kzalloc(), which ensures that it will not fail.
 
 Thanks,
-
--- 
-Jiri Kosina
-SUSE Labs
-
+Miklos
