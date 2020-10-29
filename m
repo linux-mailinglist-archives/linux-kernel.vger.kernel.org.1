@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5656E29E9B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B16A729E98D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727391AbgJ2Kwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726943AbgJ2Kvr (ORCPT
+        id S1727164AbgJ2Kvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:51:55 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60798 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726934AbgJ2Kvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:51:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AC0C0613CF;
-        Thu, 29 Oct 2020 03:51:47 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 10:51:44 -0000
+        Thu, 29 Oct 2020 06:51:48 -0400
+Date:   Thu, 29 Oct 2020 10:51:45 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603968705;
+        s=2020; t=1603968706;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=4nuQ3rHyItpKz3DNsOe0exUKjdmQl/AWYBEs8xStZng=;
-        b=fh7ILeiXZ78ba6mKuTJXNoRRd8zHHNd8bSYkTatXE4uV9C/R7LXhTLGa3hhZ860ksB0q8q
-        tGr9vKgX3xDwY1xC64+10YaUK5aYuvl835UKIx7qeWi1+NUVn6dordvtNIMWPGa5knLhhc
-        Tqd7zIMOehZ7/+50RXrJ+glDf3INHdrF02eSrWqtQk9HmLyCnTg9LpleaYku99Ebq56nUA
-        e/BscG6VYdFzYppwAmK6bOJKL7Iz7pHF5eYr2CuF4wnTZE3ok+o5++M9YUFKy+Sl6SXVSB
-        8HigzbJIxhgJm9q24n8rksjoFoLEKBT84fibMb83vQNIemQKv783vaEzynmJFA==
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LnAx6hs49oZk5Hoy0RzC8oqhKzyeWv2amQouykxFI44=;
+        b=zdyyxhXKFkw2XrRB/mp88p9tskjXVRW2TRAMmNIBe5d+RM+3Mbc4mG2XljWopCAO7Lwl8A
+        /HGT2DpxjjuM0f46PpQ9R0U/vBHuMeLWQ4x7G5sHybckSoZ7AdHzhuhOFZ1lJ7P9OS7wFt
+        cq/3XRqvoP2fbi8xt11qGulUD39u0abXYToAvOEpQHMu7frcR2t4rW7PnpkKs9NskBTNvS
+        AHDRN3qXO1jeNQQcqfVZEw33zNvy7Pu/oDkzvNM6/MqnZprTl4lHhytd/zsv07t3uMIvT3
+        nODsdDXzvkuWK39T1szyIv0FeIT5j/mGP6lYRN+gyLDLWxPmRNZlWYxKeoy2mw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603968705;
+        s=2020e; t=1603968706;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=4nuQ3rHyItpKz3DNsOe0exUKjdmQl/AWYBEs8xStZng=;
-        b=q9AvugvGS+6rsSF3+v2Uk2IGM6dWki3k2jvGyrXt3eWDmCnXRg9AW0WCb7DvhS44UsdGuF
-        FAEhr/bJRl6PNmBg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LnAx6hs49oZk5Hoy0RzC8oqhKzyeWv2amQouykxFI44=;
+        b=DIB0Qalj1vaBQUsJLAqABwC4I/xbto9sVIV3SRapYgJIgpqQ0stg0t5KIQ4CJp8LMYMbzL
+        toafk0xiQtg6/sCA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Remove relyance on STRUCT_ALIGNMENT
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Jelinek <jakub@redhat.com>,
+Subject: [tip: sched/core] sched: Reenable interrupts in do_sched_yield()
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <87r1pt7y5c.fsf@nanos.tec.linutronix.de>
+References: <87r1pt7y5c.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160396870486.397.377616182428528939.tip-bot2@tip-bot2>
+Message-ID: <160396870555.397.15054957150434769625.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,153 +58,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     43c31ac0e665d942fcaba83a725a8b1aeeb7adf0
-Gitweb:        https://git.kernel.org/tip/43c31ac0e665d942fcaba83a725a8b1aeeb7adf0
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 21 Oct 2020 15:45:33 +02:00
+Commit-ID:     345a957fcc95630bf5535d7668a59ed983eb49a7
+Gitweb:        https://git.kernel.org/tip/345a957fcc95630bf5535d7668a59ed983eb49a7
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 20 Oct 2020 16:46:55 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 29 Oct 2020 11:00:32 +01:00
+CommitterDate: Thu, 29 Oct 2020 11:00:31 +01:00
 
-sched: Remove relyance on STRUCT_ALIGNMENT
+sched: Reenable interrupts in do_sched_yield()
 
-Florian reported that all of kernel/sched/ is rebuild when
-CONFIG_BLK_DEV_INITRD is changed, which, while not a bug is
-unexpected. This is due to us including vmlinux.lds.h.
+do_sched_yield() invokes schedule() with interrupts disabled which is
+not allowed. This goes back to the pre git era to commit a6efb709806c
+("[PATCH] irqlock patch 2.5.27-H6") in the history tree.
 
-Jakub explained that the problem is that we put the alignment
-requirement on the type instead of on a variable. Type alignment is a
-minimum, the compiler is free to pick any larger alignment for a
-specific instance of the type (eg. the variable).
+Reenable interrupts and remove the misleading comment which "explains" it.
 
-So force the type alignment on all individual variable definitions and
-remove the undesired dependency on vmlinux.lds.h.
-
-Fixes: 85c2ce9104eb ("sched, vmlinux.lds: Increase STRUCT_ALIGNMENT to 64 bytes for GCC-4.9")
-Reported-by: Florian Fainelli <f.fainelli@gmail.com>
-Suggested-by: Jakub Jelinek <jakub@redhat.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/87r1pt7y5c.fsf@nanos.tec.linutronix.de
 ---
- kernel/sched/deadline.c  |  4 ++--
- kernel/sched/fair.c      |  4 ++--
- kernel/sched/idle.c      |  4 ++--
- kernel/sched/rt.c        |  4 ++--
- kernel/sched/sched.h     | 17 +++++++++++++++--
- kernel/sched/stop_task.c |  3 +--
- 6 files changed, 24 insertions(+), 12 deletions(-)
+ kernel/sched/core.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 0b45dd1..c6ce90f 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -2522,8 +2522,8 @@ static void prio_changed_dl(struct rq *rq, struct task_struct *p,
- 	}
- }
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index d2003a7..6f533bb 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6094,12 +6094,8 @@ static void do_sched_yield(void)
+ 	schedstat_inc(rq->yld_count);
+ 	current->sched_class->yield_task(rq);
  
--const struct sched_class dl_sched_class
--	__section("__dl_sched_class") = {
-+DEFINE_SCHED_CLASS(dl) = {
-+
- 	.enqueue_task		= enqueue_task_dl,
- 	.dequeue_task		= dequeue_task_dl,
- 	.yield_task		= yield_task_dl,
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index cd9a37c..f30d35a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -11171,8 +11171,8 @@ static unsigned int get_rr_interval_fair(struct rq *rq, struct task_struct *task
- /*
-  * All the scheduling class methods:
-  */
--const struct sched_class fair_sched_class
--	__section("__fair_sched_class") = {
-+DEFINE_SCHED_CLASS(fair) = {
-+
- 	.enqueue_task		= enqueue_task_fair,
- 	.dequeue_task		= dequeue_task_fair,
- 	.yield_task		= yield_task_fair,
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 846743e..9da69c4 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -458,8 +458,8 @@ static void update_curr_idle(struct rq *rq)
- /*
-  * Simple, special scheduling class for the per-CPU idle tasks:
-  */
--const struct sched_class idle_sched_class
--	__section("__idle_sched_class") = {
-+DEFINE_SCHED_CLASS(idle) = {
-+
- 	/* no enqueue/yield_task for idle tasks */
+-	/*
+-	 * Since we are going to call schedule() anyway, there's
+-	 * no need to preempt or enable interrupts:
+-	 */
+ 	preempt_disable();
+-	rq_unlock(rq, &rf);
++	rq_unlock_irq(rq, &rf);
+ 	sched_preempt_enable_no_resched();
  
- 	/* dequeue is not valid, we print a debug message there: */
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 8a3b1ba..9b27352 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -2431,8 +2431,8 @@ static unsigned int get_rr_interval_rt(struct rq *rq, struct task_struct *task)
- 		return 0;
- }
- 
--const struct sched_class rt_sched_class
--	__section("__rt_sched_class") = {
-+DEFINE_SCHED_CLASS(rt) = {
-+
- 	.enqueue_task		= enqueue_task_rt,
- 	.dequeue_task		= dequeue_task_rt,
- 	.yield_task		= yield_task_rt,
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 965b296..3e45055 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -67,7 +67,6 @@
- #include <linux/tsacct_kern.h>
- 
- #include <asm/tlb.h>
--#include <asm-generic/vmlinux.lds.h>
- 
- #ifdef CONFIG_PARAVIRT
- # include <asm/paravirt.h>
-@@ -1836,7 +1835,7 @@ struct sched_class {
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 	void (*task_change_group)(struct task_struct *p, int type);
- #endif
--} __aligned(STRUCT_ALIGNMENT); /* STRUCT_ALIGN(), vmlinux.lds.h */
-+};
- 
- static inline void put_prev_task(struct rq *rq, struct task_struct *prev)
- {
-@@ -1850,6 +1849,20 @@ static inline void set_next_task(struct rq *rq, struct task_struct *next)
- 	next->sched_class->set_next_task(rq, next, false);
- }
- 
-+
-+/*
-+ * Helper to define a sched_class instance; each one is placed in a separate
-+ * section which is ordered by the linker script:
-+ *
-+ *   include/asm-generic/vmlinux.lds.h
-+ *
-+ * Also enforce alignment on the instance, not the type, to guarantee layout.
-+ */
-+#define DEFINE_SCHED_CLASS(name) \
-+const struct sched_class name##_sched_class \
-+	__aligned(__alignof__(struct sched_class)) \
-+	__section("__" #name "_sched_class")
-+
- /* Defined in include/asm-generic/vmlinux.lds.h */
- extern struct sched_class __begin_sched_classes[];
- extern struct sched_class __end_sched_classes[];
-diff --git a/kernel/sched/stop_task.c b/kernel/sched/stop_task.c
-index ceb5b6b..91bb10c 100644
---- a/kernel/sched/stop_task.c
-+++ b/kernel/sched/stop_task.c
-@@ -109,8 +109,7 @@ static void update_curr_stop(struct rq *rq)
- /*
-  * Simple, special scheduling class for the per-CPU stop tasks:
-  */
--const struct sched_class stop_sched_class
--	__section("__stop_sched_class") = {
-+DEFINE_SCHED_CLASS(stop) = {
- 
- 	.enqueue_task		= enqueue_task_stop,
- 	.dequeue_task		= dequeue_task_stop,
+ 	schedule();
