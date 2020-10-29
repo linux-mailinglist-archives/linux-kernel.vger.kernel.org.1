@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8689D29EAA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A43D29EAAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727265AbgJ2LdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:33:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57126 "EHLO mx2.suse.de"
+        id S1727283AbgJ2LdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:33:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57252 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727524AbgJ2Lc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727593AbgJ2Lc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Oct 2020 07:32:28 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C24D7B224;
-        Thu, 29 Oct 2020 11:32:25 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 0942CB225;
+        Thu, 29 Oct 2020 11:32:26 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 13/17] vt: keyboard, remove unneeded func_* declarations
-Date:   Thu, 29 Oct 2020 12:32:18 +0100
-Message-Id: <20201029113222.32640-13-jslaby@suse.cz>
+Subject: [PATCH 14/17] vt: keyboard, union perm checks in vt_do_kdgkb_ioctl
+Date:   Thu, 29 Oct 2020 12:32:19 +0100
+Message-Id: <20201029113222.32640-14-jslaby@suse.cz>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201029113222.32640-1-jslaby@suse.cz>
 References: <20201029113222.32640-1-jslaby@suse.cz>
@@ -31,30 +31,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we removed the ugly handling of func_buf, remove unneeded
-declarations of func_* variables. The definitions are in the generated
-defkeymap.c_shipped, so we cannot really remove them (but we would love
-to).
+Do the permission check on a single place. That is where perm is
+really checked.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- include/linux/kbd_kern.h | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/tty/vt/keyboard.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/include/linux/kbd_kern.h b/include/linux/kbd_kern.h
-index bb2246c8ec13..82f29aa35062 100644
---- a/include/linux/kbd_kern.h
-+++ b/include/linux/kbd_kern.h
-@@ -9,9 +9,6 @@
- extern struct tasklet_struct keyboard_tasklet;
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index 648bdfb05e25..1de0d5217aed 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -2040,9 +2040,6 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+ 	char *kbs;
+ 	int ret;
  
- extern char *func_table[MAX_NR_FUNC];
--extern char func_buf[];
--extern char *funcbufptr;
--extern int funcbufsize, funcbufleft;
+-	if (!capable(CAP_SYS_TTY_CONFIG))
+-		perm = 0;
+-
+ 	if (get_user(kb_func, &user_kdgkb->kb_func))
+ 		return -EFAULT;
  
- /*
-  * kbd->xxx contains the VC-local things (flag settings etc..)
+@@ -2067,7 +2064,7 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+ 		break;
+ 	}
+ 	case KDSKBSENT:
+-		if (!perm)
++		if (!perm || !capable(CAP_SYS_TTY_CONFIG))
+ 			return -EPERM;
+ 
+ 		kbs = strndup_user(user_kdgkb->kb_string,
 -- 
 2.29.1
 
