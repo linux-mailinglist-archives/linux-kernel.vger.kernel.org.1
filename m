@@ -2,161 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE7129EBF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E35429EBF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726212AbgJ2MiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:38:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:35460 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbgJ2MiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:38:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB5F413A1;
-        Thu, 29 Oct 2020 05:38:04 -0700 (PDT)
-Received: from [192.168.178.2] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C33E33F719;
-        Thu, 29 Oct 2020 05:38:03 -0700 (PDT)
-Subject: Re: [PATCH v3 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET flag
- to reset uclamp
-To:     Yun Hsiang <hsiang023167@gmail.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        qais.yousef@arm.com
-References: <20201025073632.720393-1-hsiang023167@gmail.com>
- <08b7cdda-291c-bdf1-b72d-0a3ef411fcf3@arm.com>
- <20201026154538.GA807103@ubuntu>
- <605c21f7-3c4d-5c24-6d23-9f2604e6757b@arm.com>
- <20201027155813.GA818508@ubuntu> <87v9eumzic.derkling@matbug.net>
- <20201028184143.GA886080@ubuntu>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <c59f7c85-59a2-488b-ce51-b3abee506dac@arm.com>
-Date:   Thu, 29 Oct 2020 13:37:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726309AbgJ2MjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:39:09 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45506 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgJ2MjJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 08:39:09 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 35C7D1F459F9
+Message-ID: <abc0321a81a3ada8eb66d227b56249024e549021.camel@collabora.com>
+Subject: Re: [PATCH 00/18] Add Hantro regmap and VC8000 h264 decode support
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Jonas Karlman <jonas@kwiboo.se>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Kever Yang <kever.yang@rock-chips.com>,
+        Mark Brown <broonie@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Fruehberger Peter <Peter.Fruehberger@de.bosch.com>,
+        kuhanh.murugasen.krishnan@intel.com,
+        Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 29 Oct 2020 09:38:56 -0300
+In-Reply-To: <97e84bb5-972a-091d-a159-6ab1151f17ab@kwiboo.se>
+References: <20201012205957.889185-1-adrian.ratiu@collabora.com>
+         <97e84bb5-972a-091d-a159-6ab1151f17ab@kwiboo.se>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
 MIME-Version: 1.0
-In-Reply-To: <20201028184143.GA886080@ubuntu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2020 19:41, Yun Hsiang wrote:
-> Hi Patrick,
+On Mon, 2020-10-12 at 23:39 +0000, Jonas Karlman wrote:
+> Hi,
 > 
-> On Wed, Oct 28, 2020 at 11:11:07AM +0100, Patrick Bellasi wrote:
-
-[...]
-
->> On Tue, Oct 27, 2020 at 16:58:13 +0100, Yun Hsiang <hsiang023167@gmail.com> wrote...
->>
->>> Hi Diet mar,
->>> On Mon, Oct 26, 2020 at 08:00:48PM +0100, Dietmar Eggemann wrote:
->>>> On 26/10/2020 16:45, Yun Hsiang wrote:
-
-[...]
-
->>>> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-
-[...]
-
->>>> +static bool uclamp_reset(enum uclamp_id clamp_id, unsigned long flags)
->>>> +{
->>
->> Maybe we can add in some comments?
->>
-> I'll add these comment.
-
-Yeah, why not.
-
->>         /* No _UCLAMP_RESET flag set: do not reset */
->>>> +	if (!(flags & SCHED_FLAG_UTIL_CLAMP_RESET))
->>>> +		return false;
->>>> +
->>
->>         /* Only _UCLAMP_RESET flag set: reset both clamps */
->>>> +	if (!(flags & (SCHED_FLAG_UTIL_CLAMP_MIN | SCHED_FLAG_UTIL_CLAMP_MAX)))
->>>> +		return true;
->>>> +
->>         /* Both _UCLAMP_RESET and _UCLAMP_MIN flags are set: reset only min */
->>>> +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MIN) && clamp_id == UCLAMP_MIN)
->>>> +		return true;
->>>> +
->>
->>         /* Both _UCLAMP_RESET and _UCLAMP_MAX flags are set: reset only max */
->>>> +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MAX) && clamp_id == UCLAMP_MAX)
->>>> +		return true;
->>
->> Since the evaluation ordering is important, do we have to better
->> _always_ use a READ_ONCE() for all flags accesses above, to ensure it is
->> preserved?
->>
+> On 2020-10-12 22:59, Adrian Ratiu wrote:
+> > Dear all,
+> > 
+> > This series introduces a regmap infrastructure for the Hantro driver
+> > which is used to compensate for different HW-revision register layouts.
+> > To justify it h264 decoding capability is added for newer VC8000 chips.
+> > 
+> > This is a gradual conversion to the new infra - a complete conversion
+> > would have been very big and I do not have all the HW yet to test (I'm
+> > expecting a RK3399 shipment next week though ;). I think converting the
+> > h264 decoder provides a nice blueprint for how the other codecs can be
+> > converted and enabled for different HW revisions.
+> > 
+> > The end goal of this is to make the driver more generic and eliminate
+> > entirely custom boilerplate like `struct hantro_reg` or headers with
+> > core-specific bit manipulations like `hantro_g1_regs.h` and instead rely
+> > on the well-tested albeit more verbose regmap subsytem.
+> > 
+> > To give just two examples of bugs which are easily discovered by using
+> > more verbose regmap fields (very easy to compare with the datasheets)
+> > instead of relying on bit-magic tricks: G1_REG_DEC_CTRL3_INIT_QP(x) was
+> > off-by-1 and the wrong .clk_gate bit was set in hantro_postproc.c.
+> > 
+> > Anyway, this series also extends the MMIO regmap API to allow relaxed
+> > writes for the theoretical reason that avoiding unnecessary membarriers
+> > leads to less CPU usage and small improvements to battery life. However,
+> > in practice I could not measure differences between relaxed/non-relaxed
+> > IO, so I'm on the fence whether to keep or remove the relaxed calls.
+> > 
+> > What I could masure is the performance impact of adding more sub-reg
+> > field acesses: a constant ~ 20 microsecond bump per G1 h264 frame. This
+> > is acceptable considering the total time to decode a frame takes three
+> > orders of magnitude longer, i.e. miliseconds ranges, depending on the
+> > frame size and bitstream params, so it is an acceptable trade-off to
+> > have a more generic driver.
 > 
-> Is this mean that we want to use READ_ONCE to avoid compiler reordering these
-> conditions?
-
-Why would you need a READ_ONCE() on flags here?
-
-[...]
-
->>>>  		/* Keep using defined clamps across class changes */
->>>> -		if (uc_se->user_defined)
->>>> +		if (!uclamp_reset(clamp_id, attr->sched_flags) &&
->>>> +		    uc_se->user_defined) {
->>>>  			continue;
->>>> +		}
->>
->> I think we miss to reset the user_defined flag here.
->>
->> What about replacing the above chunk with:
->>
->>                 if (uclamp_reset(clamp_id, attr->sched_flags))
->>                         uc_se->user_defined = false;
->>                 if (uc-se->user_defined)
->>                         continue;
->>
->> ?
+> In the RK3399 variant all fields use completely different positions so
+> in order to make the driver fully generic all around 145 sub-reg fields
+> used for h264 needs to be converted, see [1] for a quick generation of
+> field mappings used for h264 decoding.
 > 
-> user_defined flag will be reset later by uclamp_se_set(uc_se, value,
-> false). But I agree to split it to two condition because it seems
-> clearer.
 
-IMHO it's more elegant to use uclamp_reset() in the condition next to
-uc-se->user_defined and let uclamp_se_set() set uc-se->user_defined to
-false later.
+Currently, we've only decided to support H.264 decoding via he RKVDEC
+core on RK3399.
 
->>>>  		/*
->>>>  		 * RT by default have a 100% boost value that could be modified
->>>>  		 * at runtime.
->>>>  		 */
->>>>  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
->>>> -			__uclamp_update_util_min_rt_default(p);
->>>> +			value = sysctl_sched_uclamp_util_min_rt_default;
->>
->> By removing this usage of __uclamp_updadate_util_min_rt_default(p),
->> the only other usage remaining is the call from:
->>    uclamp_udpate_util_min_rt_default().
->>
->> What about an additional cleanup by in-lining the only surviving usage?
+What your thoughts here Jonas, have you tested H.264 on RK3399 with
+the G1 core? If it works, what benefits do we get from enabling both
+cores?
 
-Don't see why not.
+Thanks!
+Ezequiel
 
->>>>  		else
->>>> -			uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
->>>> +			value = uclamp_none(clamp_id);
->>>>  
->>>> +		uclamp_se_set(uc_se, value, false);
->>>>  	}
->>>>  
->>>> -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
->>>> +	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) ||
->>>> +	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET) {
->>
->> The likely() above should not wrap both conditions to be effective?
+> Any indication on how the performance will be impacted with 145 fields
+> compared to around 20 fields used in this series?
 > 
-> Got it.
+> Another issue with RK3399 variant is that some fields use different
+> position depending on the codec used, e.g. two dec_ref_frames in [2].
+> Should we use codec specific field maps? or any other suggestion on
+> how we can handle such case?
+> 
+> [1] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/8b88d94d2ed966c7d88d9a735c0c97368eb6c92d
+> [2] https://github.com/Kwiboo/rockchip-vpu-regtool/blob/master/rk3399_dec_regs.c#L1065
+> [3] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/9498326296445a9ce153b585cc48e0cea05d3c93
+> 
+> Best regards,
+> Jonas
+> 
+> > This has been tested on next-20201009 with imx8mq for G1 and an SoC with
+> > VC8000 which has not yet been added (hopefuly support lands soon).
+> > 
+> > Kind regards,
+> > Adrian
+> > 
+> > Adrian Ratiu (18):
+> >   media: hantro: document all int reg bits up to vc8000
+> >   media: hantro: make consistent use of decimal register notation
+> >   media: hantro: make G1_REG_SOFT_RESET Rockchip specific
+> >   media: hantro: add reset controller support
+> >   media: hantro: prepare clocks before variant inits are run
+> >   media: hantro: imx8mq: simplify ctrlblk reset logic
+> >   regmap: mmio: add config option to allow relaxed MMIO accesses
+> >   media: hantro: add initial MMIO regmap infrastructure
+> >   media: hantro: default regmap to relaxed MMIO
+> >   media: hantro: convert G1 h264 decoder to regmap fields
+> >   media: hantro: convert G1 postproc to regmap
+> >   media: hantro: add VC8000D h264 decoding
+> >   media: hantro: add VC8000D postproc support
+> >   media: hantro: make PP enablement logic a bit smarter
+> >   media: hantro: add user-selectable, platform-selectable H264 High10
+> >   media: hantro: rename h264_dec as it's not G1 specific anymore
+> >   media: hantro: add dump registers debug option before decode start
+> >   media: hantro: document encoder reg fields
+> > 
+> >  drivers/base/regmap/regmap-mmio.c             |   34 +-
+> >  drivers/staging/media/hantro/Makefile         |    3 +-
+> >  drivers/staging/media/hantro/hantro.h         |   79 +-
+> >  drivers/staging/media/hantro/hantro_drv.c     |   41 +-
+> >  drivers/staging/media/hantro/hantro_g1_regs.h |   92 +-
+> >  ...hantro_g1_h264_dec.c => hantro_h264_dec.c} |  237 +++-
+> >  drivers/staging/media/hantro/hantro_hw.h      |   23 +-
+> >  .../staging/media/hantro/hantro_postproc.c    |  144 ++-
+> >  drivers/staging/media/hantro/hantro_regmap.c  | 1015 +++++++++++++++++
+> >  drivers/staging/media/hantro/hantro_regmap.h  |  295 +++++
+> >  drivers/staging/media/hantro/hantro_v4l2.c    |    3 +-
+> >  drivers/staging/media/hantro/imx8m_vpu_hw.c   |   75 +-
+> >  drivers/staging/media/hantro/rk3288_vpu_hw.c  |    5 +-
+> >  include/linux/regmap.h                        |    5 +
+> >  14 files changed, 1795 insertions(+), 256 deletions(-)
+> >  rename drivers/staging/media/hantro/{hantro_g1_h264_dec.c => hantro_h264_dec.c} (58%)
+> >  create mode 100644 drivers/staging/media/hantro/hantro_regmap.c
+> >  create mode 100644 drivers/staging/media/hantro/hantro_regmap.h
+> > 
 
-I thought the likely is for no uclamp activities, i.e. policy change.
-And a uclamp reset is different to a policy change. But is this likely too?
+
