@@ -2,97 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEA529F498
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E05629F49D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725822AbgJ2TNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:13:16 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59186 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgJ2TNO (ORCPT
+        id S1725870AbgJ2TNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:13:54 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:53226 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725768AbgJ2TNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:13:14 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09TJDCOS087800;
-        Thu, 29 Oct 2020 14:13:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603998792;
-        bh=MWulX96LyQ3KCdWVQA6h3pHivPETvUS2jduTwMTqUl4=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=I4BSt1ws65f9cqgBory4LbajENQx0JvcedX5ZQq6AxRi2m7yKiTYcGeKyF3TPiu4i
-         jK+K2rNcyYAzJMcC78/hLCgaYoyE0JorAfMrr7Z8FM2PTJt4FPIKXN0/bqpy5X18q3
-         DIM8VttqicaJ5OdxOVWwtPrYFkNel0K904Uk4IW0=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09TJDCpa007516
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 29 Oct 2020 14:13:12 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 29
- Oct 2020 14:13:12 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 29 Oct 2020 14:13:12 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09TJDB1q091616;
-        Thu, 29 Oct 2020 14:13:11 -0500
-Subject: Re: [PATCH] ARM: dts: am437x-l4: fix compatible for cpsw switch dt
- node
-To:     Tony Lindgren <tony@atomide.com>
-CC:     <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201001192023.6606-1-grygorii.strashko@ti.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <d6dea06f-76f5-a29e-d4e3-eb0e65f29e9d@ti.com>
-Date:   Thu, 29 Oct 2020 21:13:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201001192023.6606-1-grygorii.strashko@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Thu, 29 Oct 2020 15:13:53 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 9AD204016B;
+        Thu, 29 Oct 2020 19:13:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1603998833; bh=adaWdd4918dH5QofOud6/FpszAlAtDiMVKXnRU9LOhw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ixjPq/dpAmc1IpSWCjBNWMBk9MoDtLGf+3UQUH+DP66mfmMrPY/TVwtA4KJPnWfyg
+         S9fL8wD09toS/ZxfCFXO7hGhNVYeS5zdHDALVQtueVg/33WDC5TVNtzQbG6CMD5f/T
+         /xaBd1+isr3xl40aS1T7QwvmFbaIYsnL4bmELs5zrVxNoE8AAu9ww2M4ZAogxiskml
+         CEL+nNogfp5pHcYmf/37Jkr19Btq8BvWWmHy2wK+yz6AkxrZZGNuaNkdaHiXOSyLBS
+         Sp4Wp/EO1rcwoII89TrcL8Z7bG5G4xrDMlffIdJYk27kAyDufAgVHuFbzzPUgEiWFc
+         hGyXrQh6jn7OQ==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 0D767A01F0;
+        Thu, 29 Oct 2020 19:13:50 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     Joao Pinto <Joao.Pinto@synopsys.com>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-pci@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] misc: Add Add Synopsys DesignWare xData IP driver 
+Date:   Thu, 29 Oct 2020 20:13:35 +0100
+Message-Id: <cover.1603998630.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+This patch series adds a new driver called xData-pcie for the Synopsys
+DesignWare PCIe prototype.
 
-On 01/10/2020 22:20, Grygorii Strashko wrote:
-> Fix compatible the new CPSW switchdev DT node to avoid probing of legacy
-> CPSW driver which fails:
-> [    2.781009] cpsw 4a100000.switch: invalid resource
-> 
-> Fixes: 7bf8f37aea82 ("ARM: dts: am437x-l4: add dt node for new cpsw switchdev driver")
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> ---
-> Hi Tony,
-> 
-> This is follow up patch for series [1], not critical.
-> [1] https://lore.kernel.org/patchwork/cover/1304085/
+The driver configures and enables the Synopsys DesignWare PCIe traffic
+generator IP inside of prototype Endpoint which will generate upstream
+and downstream PCIe traffic. This allows to quickly test the PCIe link
+throughput speed and check is the prototype solution has some limitation
+or not.
 
-Could this be merged?
+Cc: Derek Kiernan <derek.kiernan@xilinx.com>
+Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-pci@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-> 
->   arch/arm/boot/dts/am437x-l4.dtsi | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/am437x-l4.dtsi b/arch/arm/boot/dts/am437x-l4.dtsi
-> index d82a6eeaf1b3..3643e505e582 100644
-> --- a/arch/arm/boot/dts/am437x-l4.dtsi
-> +++ b/arch/arm/boot/dts/am437x-l4.dtsi
-> @@ -522,7 +522,7 @@
->   			ranges = <0x0 0x100000 0x8000>;
->   
->   			mac_sw: switch@0 {
-> -				compatible = "ti,am4372-cpsw","ti,cpsw-switch";
-> +				compatible = "ti,am4372-cpsw-switch", "ti,cpsw-switch";
->   				reg = <0x0 0x4000>;
->   				ranges = <0 0 0x4000>;
->   				clocks = <&cpsw_125mhz_gclk>, <&dpll_clksel_mac_clk>;
-> 
+Gustavo Pimentel (5):
+  misc: Add Synopsys DesignWare xData IP driver
+  misc: Add Synopsys DesignWare xData IP driver to Makefile
+  misc: Add Synopsys DesignWare xData IP driver to Kconfig
+  Documentation: misc-devices: Add Documentation for dw-xdata-pcie
+    driver
+  MAINTAINERS: Add Synopsys xData IP driver maintainer
+
+ Documentation/misc-devices/dw-xdata-pcie.rst |  43 +++
+ MAINTAINERS                                  |   7 +
+ drivers/misc/Kconfig                         |  10 +
+ drivers/misc/Makefile                        |   1 +
+ drivers/misc/dw-xdata-pcie.c                 | 395 +++++++++++++++++++++++++++
+ 5 files changed, 456 insertions(+)
+ create mode 100644 Documentation/misc-devices/dw-xdata-pcie.rst
+ create mode 100644 drivers/misc/dw-xdata-pcie.c
 
 -- 
-Best regards,
-grygorii
+2.7.4
+
