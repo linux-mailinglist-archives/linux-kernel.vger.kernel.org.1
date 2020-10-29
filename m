@@ -2,145 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AA729F367
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF2E29F36C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:37:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbgJ2RhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        id S1728384AbgJ2RhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 13:37:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728239AbgJ2RhB (ORCPT
+        with ESMTP id S1726019AbgJ2RhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:37:01 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2614DC0613D2;
-        Thu, 29 Oct 2020 10:37:01 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id t9so3657085wrq.11;
-        Thu, 29 Oct 2020 10:37:01 -0700 (PDT)
+        Thu, 29 Oct 2020 13:37:19 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12100C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:37:19 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id a72so604873wme.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZN9q/Y6OeE8OvjE9ndjDIiPBe9AYlM9WA2uqyySHQFo=;
-        b=X062sv2F77/9qubOAoCI37thsjJ50BF1Y3PUc5MmOFVeG//ofi/GyN9EpSosRdn/9x
-         L/qmahRaLZ2GxTlkdsTB4WnoX258mxaPo9ekM3tSu1na0P+P5EYvDoZ3iV6L539Ul++E
-         x9lGSjXobUakyEbw/qg9t56iFNUN5H+vDJLZikBZPpUF+cM+g1KcpYvOeAX5TsSQc+vg
-         /TjNLd+ZhKsRE4EDqT4dQONBV9mRnEUT4Y6PiHZYn5+9o1htNSeqyXynP3/60J23D3gF
-         bnz878mPB6uHTqIHlj38UVz4vRNiibp0sbo/5q/Ohp7H7UFxdE0zz+SsYV+mwlnLDA4D
-         ltQg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yxVOjFjkk/aWg0934gm436IS5GNuiS+Phez+14sm9BM=;
+        b=jZbxbIOd5GYVOZ17H4fWhjGODzjcbbv+MXolrFxm7Kq7w4cj18tJJEb0lA5g5sO9zF
+         mwhV8oTNQDbbgvFFURrJQEztox44iD9lqGRYk5LjIv3/foRjQmiyRVaIJjMPbsSbadto
+         r292mYEUZNtSTQA9BlqbEOP28g0ASvJY8KQODdl3JxpewlWkFBly474S+Oyzx59Nhsuc
+         ld6dB9JbpXlCKfpJBTivonxXJYG3Gm57Wo+wDPdgn3L7XeOMWwiUnr0OnWidobpM0Gi1
+         7aN319CH2AQ4xblTfuhmiO7Xz0MzTNS6I7DbEvLrd3Ysx/bEf54IwxiP76QFm9GLlHde
+         m3OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZN9q/Y6OeE8OvjE9ndjDIiPBe9AYlM9WA2uqyySHQFo=;
-        b=nwbJAmbNY1XxQ/I7FBmvv3jL6Gi1lwv4S1JReZkAmV2dh+lqn+vTgSGm+xXN4IM2Qz
-         eHCZ3tLQ5ja1ok0O23fsYHCSQI0nQ1s/5BNCsuBVlikKFotMODnOjpJRnCCOnDsbq5/g
-         7kkqLxeNKizzD2kUPJ1ijMTkBxtjPk73z6+GMknDfHEXS5HqCABoO+kLpsmLxxJiS+vV
-         LgvFoaECLPao8ZcaBcw0eP2VJMTAmJTnj1eg6ex2C3Yg42zZYjlexurmcCn1VivDLLqL
-         qKmsYxmN1IwKZ7RXEW2PhMysX0kDtOAytdK7I3NpXOT9qQwmV/4RWqnSKXdSpD19mNJG
-         v3Vg==
-X-Gm-Message-State: AOAM531cfF2iwn5/uIcnBziQvfoMO1ZThZblVA4TBXZI/WKtaABWJ/ik
-        BtKYIqOKz3ny0fnhpluUbyY=
-X-Google-Smtp-Source: ABdhPJwyxEmFJ7sOA+MoFS7OiaPnIPW2KZ/huG4RZHcCpk/PAiKDqSKBDL0uaj3t+pA1T+dPjWav6Q==
-X-Received: by 2002:adf:f212:: with SMTP id p18mr7221470wro.386.1603993019951;
-        Thu, 29 Oct 2020 10:36:59 -0700 (PDT)
-Received: from nogikh.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id t4sm852122wmb.20.2020.10.29.10.36.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 10:36:59 -0700 (PDT)
-From:   Aleksandr Nogikh <aleksandrnogikh@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, johannes@sipsolutions.net
-Cc:     edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com,
-        Aleksandr Nogikh <nogikh@google.com>
-Subject: [PATCH v5 3/3] mac80211: add KCOV remote annotations to incoming frame processing
-Date:   Thu, 29 Oct 2020 17:36:20 +0000
-Message-Id: <20201029173620.2121359-4-aleksandrnogikh@gmail.com>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-In-Reply-To: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
-References: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yxVOjFjkk/aWg0934gm436IS5GNuiS+Phez+14sm9BM=;
+        b=Uf9QOIRh5c8N7V2r6WWHE9HffLZphEeonkYksK1BJh17eZ5FGPXLFnfY68+n15RXHN
+         LDGkKy8ED8qunFbWRyDS+FsM7NhDYt/HJ5tZNoI8KV/jCeux159VcE9XhKOoZff3soIs
+         SqWujvHtoJud/qb1R6s3aSdO5LZHvIJ7BJU5hmF4BSGtd4++JRQQTrqpiZgL+KLFQ2Er
+         8hT/DqqCjEAVtqvhg8XOcr9ms6A5DFy75xvZsUqqLpNPaBlNJCl6ajzzcRiBmo2xvN4Q
+         nn/hwWOQMNxs0DucPUclb/ACH6T2oSFGQoiKUamnI0hpPKU07XHZBiWWpr77zpq39Acw
+         eiVQ==
+X-Gm-Message-State: AOAM530b+bk6DzVcsT0VCya26DR+LzKhWisIWQvEB6Gh9csSDQ5iEgtm
+        ahJxZsHPXvEa1yx8t8DbnS89S1HMnWUfd2XvTIGx7g==
+X-Google-Smtp-Source: ABdhPJz/ws+tQdTlD2sro4O3KJY0G2O9Z2dFSKkGdI9/xqHwUEDbMwkiwcMYMZHYYK/aGD6hzY3rio10qCe6eKIGuDc=
+X-Received: by 2002:a1c:980a:: with SMTP id a10mr216873wme.103.1603993037592;
+ Thu, 29 Oct 2020 10:37:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201026173358.14704-1-vbabka@suse.cz> <20201026173358.14704-4-vbabka@suse.cz>
+ <93ab79df-cf8c-294b-3ed1-8a563e4a452b@redhat.com> <1fc7ec3a-367c-eb9f-1cb4-b9e015fea87c@suse.cz>
+ <81faf3d6-9536-ff00-447d-e964a010492d@suse.cz>
+In-Reply-To: <81faf3d6-9536-ff00-447d-e964a010492d@suse.cz>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 29 Oct 2020 18:37:04 +0100
+Message-ID: <CAG_fn=VGOVGn3Vx177ACDqg8BaTS96B6Kx01_pxXG5R1D-cWRw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm, page_alloc: reduce static keys in prep_new_page()
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mateusz Nosek <mateusznosek0@gmail.com>,
+        Laura Abbott <labbott@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksandr Nogikh <nogikh@google.com>
+On Tue, Oct 27, 2020 at 2:32 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 10/27/20 12:05 PM, Vlastimil Babka wrote:
+> > On 10/27/20 10:10 AM, David Hildenbrand wrote:
+> >> On 26.10.20 18:33, Vlastimil Babka wrote:
+> >>> prep_new_page() will always zero a new page (regardless of __GFP_ZERO=
+) when
+> >>> init_on_alloc is enabled, but will also always skip zeroing if the pa=
+ge was
+> >>> already zeroed on free by init_on_free or page poisoning.
+> >>>
+> >>> The latter check implemented by free_pages_prezeroed() can involve tw=
+o
+> >>> different static keys. As prep_new_page() is really a hot path, let's=
+ introduce
+> >>> a single static key free_pages_not_prezeroed for this purpose and ini=
+tialize it
+> >>> in init_mem_debugging().
+> >>
+> >> Is this actually observable in practice? This smells like
+> >> micro-optimization to me.
+> >>
+> >> Also, I thought the whole reason for static keys is to have basically =
+no
+> >> overhead at runtime, so I wonder if replacing two static key checks by=
+ a
+> >> single one actually makes *some* difference.
+> >
+> > You're right, the difference seems to be just a single NOP. The static =
+key
+> > infrastructure seems to be working really well.
+> > (At least the asm inspection made me realize that kernel_poison_pages()=
+ is
+> > called unconditionally and the static key is checked inside, not inline=
+ so I'll
+> > be amending patch 2...)
+> >
+> > Initially I thought I would be reducing 3 keys to 1 in this patch, but =
+I got the
+> > code wrong. So unless others think it's a readability improvements, we =
+can drop
+> > this patch.
 
-Add KCOV remote annotations to ieee80211_iface_work() and
-ieee80211_rx_list(). This will enable coverage-guided fuzzing of
-mac80211 code that processes incoming 802.11 frames.
+I agree with David that replacing two static keys with one is probably
+a micro-optimization.
+Also, if someone is enabling both init_on_alloc and init_on_free, they
+are already paying so much that no one is going to notice an extra
+static key.
 
-Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
----
-v4 -> v5:
-* Using ieee80211_rx_list() instead of ieee80211_rx().
-v1 -> v2:
-* The commit now affects ieee80211_rx() instead of
-  ieee80211_tasklet_handler().
----
- net/mac80211/iface.c |  2 ++
- net/mac80211/rx.c    | 16 +++++++++-------
- 2 files changed, 11 insertions(+), 7 deletions(-)
+> > Or we can also reconsider this whole optimization. If the point is to b=
+e
+> > paranoid and enable both init_on_free and init_on_alloc, should we trus=
+t that
+> > nobody wrote something after the clearing on free via use-after-free? :=
+) Kees/Alex?
 
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index 1be775979132..56a1bcea2c1c 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -1356,6 +1356,7 @@ static void ieee80211_iface_work(struct work_struct *work)
- 	while ((skb = skb_dequeue(&sdata->skb_queue))) {
- 		struct ieee80211_mgmt *mgmt = (void *)skb->data;
- 
-+		kcov_remote_start_common(skb_get_kcov_handle(skb));
- 		if (ieee80211_is_action(mgmt->frame_control) &&
- 		    mgmt->u.action.category == WLAN_CATEGORY_BACK) {
- 			int len = skb->len;
-@@ -1465,6 +1466,7 @@ static void ieee80211_iface_work(struct work_struct *work)
- 		}
- 
- 		kfree_skb(skb);
-+		kcov_remote_stop();
- 	}
- 
- 	/* then other type-dependent work */
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index 1e2e5a406d58..09d1c9fb8872 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -4742,6 +4742,8 @@ void ieee80211_rx_list(struct ieee80211_hw *hw, struct ieee80211_sta *pubsta,
- 
- 	status->rx_flags = 0;
- 
-+	kcov_remote_start_common(skb_get_kcov_handle(skb));
-+
- 	/*
- 	 * Frames with failed FCS/PLCP checksum are not returned,
- 	 * all other frames are returned without radiotap header
-@@ -4749,15 +4751,15 @@ void ieee80211_rx_list(struct ieee80211_hw *hw, struct ieee80211_sta *pubsta,
- 	 * Also, frames with less than 16 bytes are dropped.
- 	 */
- 	skb = ieee80211_rx_monitor(local, skb, rate);
--	if (!skb)
--		return;
--
--	ieee80211_tpt_led_trig_rx(local,
--			((struct ieee80211_hdr *)skb->data)->frame_control,
--			skb->len);
-+	if (skb) {
-+		ieee80211_tpt_led_trig_rx(local,
-+					  ((struct ieee80211_hdr *)skb->data)->frame_control,
-+					  skb->len);
- 
--	__ieee80211_rx_handle_packet(hw, pubsta, skb, list);
-+		__ieee80211_rx_handle_packet(hw, pubsta, skb, list);
-+	}
- 
-+	kcov_remote_stop();
- 	return;
-  drop:
- 	kfree_skb(skb);
--- 
-2.29.1.341.ge80a0c044ae-goog
+I think we must trust the kernel to not overwrite zeroed pages.
+After all, this could theoretically happen at any time, not only while
+the memory chunk is freed.
 
+> More thoughts...
+>
+> PAGE_POISONING_NO_SANITY skips the check on "unpoisoning" whether poison =
+was
+> corrupted
+> PAGE_POISONING_ZERO uses zero instead of 0xAA as poison pattern
+>
+> the point of enabling both of these seems to be moot now that init_on_fre=
+e
+> exists, as that zeroes pages that are being freed, without checking on al=
+loc
+> that they are still zeroed.
+>
+> What if only one is enabled?
+> - PAGE_POISONING_NO_SANITY without PAGE_POISONING_ZERO - we poison with t=
+he 0xAA
+> pattern but nobody checks it, so does it give us anything over init_on_fr=
+ee
+> writing zeroes? I don't think so?
+>
+> - PAGE_POISONING_ZERO without PAGE_POISONING_NO_SANITY - we use zeroes (l=
+ike
+> init_on_free) but also check that it wasn't corrupted. We save some time =
+on
+> writing zeroes again on alloc, but the check is still expensive. And writ=
+ing
+> 0xAA would possibly detect more corruptions than writing zero (a stray wr=
+ite of
+> NULL is more likely to happen than of 0xAA?).
+>
+> So my conclusion:
+> - We can remove PAGE_POISONING_NO_SANITY because it only makes sense with
+> PAGE_POISONING_ZERO, and we can use init_on_free instead
+
+Agreed.
+
+> - We can also probably remove PAGE_POISONING_ZERO, because if we want to =
+do the
+> unpoisoning sanity check, then we also most likely want the 0xAA pattern =
+and not
+> zero.
+
+Agreed.
+It might also make sense to somehow merge page poisoning and
+init_on_free together and have one config dimension instead of two
+(providing something similar to the
+INIT_STACK_NONE/INIT_STACK_ALL_ZERO/INIT_STACK_ALL_PATTERN configs)
+
+> Thoughts?
+>
+
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
