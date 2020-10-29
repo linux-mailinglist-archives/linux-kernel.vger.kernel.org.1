@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6E629EABB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B0529EAF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725951AbgJ2Lfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:35:41 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7099 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgJ2Lfl (ORCPT
+        id S1725791AbgJ2Lsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:48:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46175 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725771AbgJ2Lsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:35:41 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CMNfh24BfzLr7F;
-        Thu, 29 Oct 2020 19:35:40 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 29 Oct 2020 19:35:29 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <hdegoede@redhat.com>, <mgross@linux.intel.com>,
-        <luzmaximilian@gmail.com>
-CC:     <platform-driver-x86@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, "Zou Wei" <zou_wei@huawei.com>
-Subject: [PATCH -next] platform/surface: remove status assignment without reading
-Date:   Thu, 29 Oct 2020 19:47:28 +0800
-Message-ID: <1603972048-64271-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Thu, 29 Oct 2020 07:48:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603972125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e3eO78q+9r1W8jjiRsy6XEsZ6AJ4ydkuDrUHxryN5JM=;
+        b=OoxjTbpo6Q8D5KGvRSmvhpPDLh5HXr0cvhI3wyOJcDYNQHykdHGPGc/stNlxm/QkKpElff
+        WasCzqMrtHybEUbb7lYYhu9kg/+gPvUT/cptshpMvdxTwxR8xjybVinXvej/MBUgaiwJ2f
+        V4+txNi2cKDL4/zF2rwSxqs08WHVV5Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-457-j-klzaLdOVu3MhWyzwxHbg-1; Thu, 29 Oct 2020 07:48:41 -0400
+X-MC-Unique: j-klzaLdOVu3MhWyzwxHbg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AD818015FD;
+        Thu, 29 Oct 2020 11:48:40 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E82085C1D0;
+        Thu, 29 Oct 2020 11:48:38 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <160392383297.592578.14698271215668067643.stgit@warthog.procyon.org.uk>
+References: <160392383297.592578.14698271215668067643.stgit@warthog.procyon.org.uk> <160392375589.592578.13383738325695138512.stgit@warthog.procyon.org.uk>
+To:     linux-afs@lists.infradead.org
+Cc:     dhowells@redhat.com, kernel test robot <lkp@intel.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/11] afs: Fix dirty-region encoding on ppc32 with 64K pages
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <957372.1603972118.1@warthog.procyon.org.uk>
+Date:   Thu, 29 Oct 2020 11:48:38 +0000
+Message-ID: <957373.1603972118@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The status local variable is assigned but never read:
+David Howells <dhowells@redhat.com> wrote:
 
-drivers/platform/surface/surface3-wmi.c:60:14: warning:
-variable ‘status’ set but not used [-Wunused-but-set-variable]
-  acpi_status status;
-              ^~~~~~
+> +static inline unsigned int afs_page_dirty_resolution(void)
+> +{
+> +	long shift = PAGE_SHIFT - (__AFS_PAGE_PRIV_SHIFT - 1);
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/platform/surface/surface3-wmi.c | 2 --
- 1 file changed, 2 deletions(-)
+This should be int, not long, in case we get an explicitly unsigned int number
+included in the mix (say from thp_order() with THP support).
 
-diff --git a/drivers/platform/surface/surface3-wmi.c b/drivers/platform/surface/surface3-wmi.c
-index 130b6f5..ae1416c 100644
---- a/drivers/platform/surface/surface3-wmi.c
-+++ b/drivers/platform/surface/surface3-wmi.c
-@@ -57,12 +57,10 @@ static DEFINE_MUTEX(s3_wmi_lock);
- static int s3_wmi_query_block(const char *guid, int instance, int *ret)
- {
- 	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
--	acpi_status status;
- 	union acpi_object *obj;
- 	int error = 0;
- 
- 	mutex_lock(&s3_wmi_lock);
--	status = wmi_query_block(guid, instance, &output);
- 
- 	obj = output.pointer;
- 
--- 
-2.6.2
+David
 
