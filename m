@@ -2,109 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E239529F611
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 866B629F5EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgJ2UTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 16:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
+        id S1726447AbgJ2UOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgJ2UT3 (ORCPT
+        with ESMTP id S1725764AbgJ2UOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:19:29 -0400
-Received: from mail-pf1-x463.google.com (mail-pf1-x463.google.com [IPv6:2607:f8b0:4864:20::463])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BA2C0613D7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:19:28 -0700 (PDT)
-Received: by mail-pf1-x463.google.com with SMTP id 13so3310784pfy.4
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:19:28 -0700 (PDT)
+        Thu, 29 Oct 2020 16:14:24 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A073C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:14:24 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id c20so3284329pfr.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:14:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=drivescale-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=VJdXq2M79h/WbCSw8Kou/qBfOIz84DHnhWmYbvogvdM=;
-        b=pye3+GePMyRSq/GyUePGCiFyMmpbiLgDuVp6hQVKueQ6Xa72Bp2dO591qrS/4ygUrX
-         /KPZkeZwU0LBlZKypDotufilYR3gFoXxVxUdI0Tk+b7U47Tj95gL6pqB0Enp+sVIg5Do
-         Uvfad+EDmd1DWyDy/Nn9Kw46J9MkKcyeYOa710sL9t//RIDTjbM+r//qc0427c0aQ+r0
-         mSRjDqVuk4TLIRlRNnq9raYJPrI8WJ79rnCwdkCMkntBb/L0c2+iaSJlExRv7wkzc2xz
-         +/shyJNJOQksoeKwx7WZXhhFiTShgp9XS6eKHZWQFCI6m0x4tY4XU+AIVsUrSDAelCCf
-         w88A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l77n7oC/IyxQLfCBGbQpiCRFFdLcSomb1vOdKMROYRs=;
+        b=ds1NXPTLGAXIZvjdJi8ugrSM70FcHWuCIwYhaH9mhI0HA2QijV79tt6Un83nE1oEtt
+         r7Y+dzoiRxdMlrHyTfcqQgImddaXj3XlqhWWqsGwcu2xttvbypodQ1yJ26YGBEA+aWJP
+         mQVxPDIZ7xqLXmW0cU4LeyBmE5rqJ3Qsjglgq/rJdcwLdvHOMRLoRB9p7k0aJqp8svWb
+         OngF2h0IigTb1bVv+YWfkgUqjB+yFO3CJ20NB1RewecioLbCJiogpIK/WlBmbXLKzkS/
+         dtLY/IYCtE5jowS4o6YN5IOIJWOUNzK8/oVJfM8zhr8DkB6vxsF6wOITqqPRSAUzKKT3
+         3hsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=VJdXq2M79h/WbCSw8Kou/qBfOIz84DHnhWmYbvogvdM=;
-        b=PwTfGIGfmetilKZBqexDxEfNvhjrqU4Q54lo/Kx1vi/2izMbz95d1ylwo74TPaxxi6
-         +xBL+JFcyy2HKz4ndzt7Y0fdUHYLQSnvw4Ft0s3M8zNG/SA79m2oWS42fKln9+iySU5o
-         hI8fue89lu22yfst6kRFh7B/iYJe3HDYQuou1oXiuGaZJPGpunylnDK9vzIQ4Kx6ji+9
-         J9/6u82i5p8KMaT6xpDmQY/ntIyWbQgsHXxsYLoBNLnlsurr/9QjBO/so8gN6Iegr/1j
-         V7SBWrXIG4XCP6Ed14TUUdrOYaUY6c55/KRMJkDcwVv8Eols9ZcqdYqebiwbNBUHHgji
-         5jlw==
-X-Gm-Message-State: AOAM531ThE9l0jUAxG/pTF9JXjxYoT5fC0L+BjiJuVJ1YiqvI6zlkqSi
-        LtKXtOSVD5Jft5dLO1G5oQT7vYhUbHI8cchvW43j7hkwHrH38w==
-X-Google-Smtp-Source: ABdhPJxsdY3pLwqClkXJF/c9iabcmGoyTA1FOq7Kb9Sn5bflyPjOgCZnGmlYJGtvG2cTnB7zpeh/v4EUIqKV
-X-Received: by 2002:a62:7cd4:0:b029:152:b3e8:c59f with SMTP id x203-20020a627cd40000b0290152b3e8c59fmr5902194pfc.2.1604002767692;
-        Thu, 29 Oct 2020 13:19:27 -0700 (PDT)
-Received: from dcs.hq.drivescale.com ([68.74.115.3])
-        by smtp-relay.gmail.com with ESMTP id ei15sm186210pjb.10.2020.10.29.13.19.27;
-        Thu, 29 Oct 2020 13:19:27 -0700 (PDT)
-X-Relaying-Domain: drivescale.com
-Received: from localhost.localdomain (gw1-dc.hq.drivescale.com [192.168.33.175])
-        by dcs.hq.drivescale.com (Postfix) with ESMTP id 94EFA42129;
-        Thu, 29 Oct 2020 20:19:26 +0000 (UTC)
-From:   Christopher Unkel <cunkel@drivescale.com>
-To:     linux-raid@vger.kernel.org, Song Liu <song@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Christopher Unkel <cunkel@drivescale.com>
-Subject: [PATCH 3/3] md: reuse sb length-checking logic
-Date:   Thu, 29 Oct 2020 13:13:58 -0700
-Message-Id: <20201029201358.29181-4-cunkel@drivescale.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201029201358.29181-1-cunkel@drivescale.com>
-References: <20201029201358.29181-1-cunkel@drivescale.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l77n7oC/IyxQLfCBGbQpiCRFFdLcSomb1vOdKMROYRs=;
+        b=g/rpx1vDBYei3NF1n/3qFVItJgWEx2fzQ7RcNjy3+YqqmfQ/G2dwOIjyDW59WDh8tv
+         HsmRgmFLzjBPfxFvIZoiQKzmqZA8ZowY1gAGcLFRy6IJs7O1QaY2C5twTgfRLku+hSxD
+         Cd95JiQvO3IlbYyGa7FXJDTX85UW1eT+I7Ug8ddSvlNYXbwNDSHWTwQRL6lYWQ5iTkX9
+         G1wxr4Uh0AI8/50SpzOKsKqxvcUyQT+JHe2x7J04FfKkXARJpCpUgcfmsHi3mpg4K5Y8
+         u4o9NQVIhlp996FCIio1bnyjZOOrqM3ByF6839nAWW0I95KW8RNOZTPAHE2rz0IX4ztC
+         i/jw==
+X-Gm-Message-State: AOAM532jan4pyS+C3pL/TY190i5HjJEhNnUkbXBJzaq6H2+lRXf8ELjl
+        Ske5oMTx/FG2uTnhMteKIzwPcLY0XLRrPvjo0oDw6w==
+X-Google-Smtp-Source: ABdhPJx9GJFDbjQtalHbXpz4QpT9HD1QKsnubeBrC4C75nQUTCYmo2axiD2dLWceppBeCeuRufluBFF+z94cSUugzCc=
+X-Received: by 2002:a17:90a:cb92:: with SMTP id a18mr1508972pju.136.1604002463411;
+ Thu, 29 Oct 2020 13:14:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1603372719.git.andreyknvl@google.com> <1d87f0d5a282d9e8d14d408ac6d63462129f524c.1603372719.git.andreyknvl@google.com>
+ <CACT4Y+Y6jbXh28U=9oK_1ihMhePRhZ6WP9vBwr8nVm_aU3BmNQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+Y6jbXh28U=9oK_1ihMhePRhZ6WP9vBwr8nVm_aU3BmNQ@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Thu, 29 Oct 2020 21:14:12 +0100
+Message-ID: <CAAeHK+wqdtPkrhbxPanu79iCJxdYczKQ6k7+8u-hnC5JONEgNQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 07/21] kasan, arm64: move initialization message
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The logic in super_1_load() to check the length of the superblock
-against (new_)data_offset has the same purpose as the newly-created
-super_1_sb_length_ok().  The latter is also more complete in that it
-check for overlap between the superblock write and the bitmap.
+On Wed, Oct 28, 2020 at 11:56 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> >
+> > Tag-based KASAN modes are fully initialized with kasan_init_tags(),
+> > while the generic mode only requireds kasan_init(). Move the
+> > initialization message for tag-based modes into kasan_init_tags().
+> >
+> > Also fix pr_fmt() usage for KASAN code: generic mode doesn't need it,
+>
+> Why doesn't it need it? What's the difference with tag modes?
 
-Signed-off-by: Christopher Unkel <cunkel@drivescale.com>
----
-This series replaces the first patch of the previous series
-(https://lkml.org/lkml/2020/10/22/1058), with the following changes:
+I need to reword the patch descriptions: it's not the mode that
+doesn't need it, it's the generic.c file, as it doesn't use any pr_*()
+functions.
 
-1. Creates a helper function super_1_sb_length_ok().
-2. Fixes operator placement style violation.
-3. Covers case in super_1_sync().
-4. Refactors duplicate logic.
-5. Covers a case in existing code where aligned superblock could
-   run into bitmap.
+>
+> > tag-based modes should use "kasan:" instead of KBUILD_MODNAME.
+>
+> With generic KASAN I currently see:
+>
+> [    0.571473][    T0] kasan: KernelAddressSanitizer initialized
+>
+> So KBUILD_MODNAME somehow works. Is there some difference between files?
 
- drivers/md/md.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+That code is printed from arch/xxx/mm/kasan_init*.c, which has its own
+pr_fmt defined.
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 802a9a256fe5..3b7bf14922ac 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -1768,13 +1768,8 @@ static int super_1_load(struct md_rdev *rdev, struct md_rdev *refdev, int minor_
- 	atomic_set(&rdev->corrected_errors, le32_to_cpu(sb->cnt_corrected_read));
- 
- 	super_1_set_rdev_sb_size(rdev, le32_to_cpu(sb->max_dev), minor_version);
--
--	if (minor_version
--	    && rdev->data_offset < sb_start + (rdev->sb_size/512))
--		return -EINVAL;
--	if (minor_version
--	    && rdev->new_data_offset < sb_start + (rdev->sb_size/512))
--		return -EINVAL;
-+	if (!super_1_sb_length_ok(rdev, minor_version, rdev->sb_size))
-+	    return -EINVAL;
- 
- 	if (sb->level == cpu_to_le32(LEVEL_MULTIPATH))
- 		rdev->desc_nr = -1;
--- 
-2.17.1
+>
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > Link: https://linux-review.googlesource.com/id/Idfd1e50625ffdf42dfc3dbf7455b11bd200a0a49
+> > ---
+> >  arch/arm64/mm/kasan_init.c | 3 +++
+> >  mm/kasan/generic.c         | 2 --
+> >  mm/kasan/hw_tags.c         | 4 ++++
+> >  mm/kasan/sw_tags.c         | 4 +++-
+> >  4 files changed, 10 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+> > index b6b9d55bb72e..8f17fa834b62 100644
+> > --- a/arch/arm64/mm/kasan_init.c
+> > +++ b/arch/arm64/mm/kasan_init.c
+> > @@ -290,5 +290,8 @@ void __init kasan_init(void)
+> >  {
+> >         kasan_init_shadow();
+> >         kasan_init_depth();
+> > +#if defined(CONFIG_KASAN_GENERIC)
+> > +       /* CONFIG_KASAN_SW/HW_TAGS also requires kasan_init_tags(). */
+>
+> A bit cleaner way may be to introduce kasan_init_early() and
+> kasan_init_late(). Late() will do tag init and always print the
+> message.
 
+It appears we'll also need kasan_init_even_later() for some
+MTE-related stuff. I'll try to figure out some sane naming scheme here
+and include it into the next version.
