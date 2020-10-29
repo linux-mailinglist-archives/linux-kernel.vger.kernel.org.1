@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1993829E9AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4DC29E99E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727351AbgJ2Kwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:52:39 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60762 "EHLO
+        id S1727331AbgJ2Kwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:52:33 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60776 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726992AbgJ2Kvt (ORCPT
+        with ESMTP id S1727020AbgJ2Kvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:51:49 -0400
-Date:   Thu, 29 Oct 2020 10:51:46 -0000
+        Thu, 29 Oct 2020 06:51:50 -0400
+Date:   Thu, 29 Oct 2020 10:51:47 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603968707;
+        s=2020; t=1603968708;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=773iFDmIRCiK7AimWc3nu+vIYasWQaqR8+9ya7hBwGE=;
-        b=Ji3v+x2mk3QIIAlLppMDoNk4E+asf+B7jgQLs6VFVn9hm31D4EuvIuLg6FvoI3Fz9aH6bL
-        oG3/dxgzFGmqGymVZBpt/Bwzw2P4N5J2viiXLYrzc4dua6vhMZ4FogaYx8l1kTM89f5OsU
-        YlyFmvU+DWLb2jRQs50pFeq14Letquywg/VZrLVkvY2MDcTMZEJ9GTIrJhceSjvZ4SPfvP
-        3dIrvks6sg99cLClkQqfGZ0g4oSul+R4/Xf4sRs1f77Jt/BhIhx+RVlyiAcjZEJ72QvwDJ
-        jLfYWX80BC7D2BqnQalDXQt1E+dC4vaNYdtQPzGepTNBA29c+xDTUolnS8BycA==
+        bh=GKKfJyCsfdpgMfNm5Cc4Iq9qOqaTJCPnr9cIZVoOgfg=;
+        b=PenbXQBW/H14Dh831KDeqsg5GtfyvCsKeDEuUdDvFCrMAri0ZbuEOPi4lH51B74+8rR71f
+        X6h1LiQr+2mhtXNLSr22miPtMUHfLI5Ly/Jk4xebSht/cvOUD+5+/ykoIQ63RZC+b9oWgA
+        0nVFczlz4kujCCOeB2ZhIkY1HXPp2gDIYQLdK3IhHQ6NZ9/ax+Nj8n0b9csk4RngnbR6wV
+        knPrgd6UXMaT6o1jGIzs/o7oGjOEKbhkvvIkNuzHlYKKyaPTIj1ZODGq0Fd6ZTKET9eT3d
+        02NH49uBaTOfCuirPIxAcjesvjWDrhYhAxn1gWvAJo4WP6iyiN0FJUyT/j8yIA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603968707;
+        s=2020e; t=1603968708;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=773iFDmIRCiK7AimWc3nu+vIYasWQaqR8+9ya7hBwGE=;
-        b=UWNdZhstEn5M89EuLH0+7bsqOHq+MB6mKbSiu3gbbl629dEjmWVin+XTN6aEo3TXaHoSGt
-        ogOK1W5t6jPeMjDA==
+        bh=GKKfJyCsfdpgMfNm5Cc4Iq9qOqaTJCPnr9cIZVoOgfg=;
+        b=/06rTWY1O81lm8iFRdreTlARk5matF3rM3XTHHVVEJU/801CEAjYEuk0kGx31ED7mufhfh
+        IM1MNC2tITNbN3Cw==
 From:   "tip-bot2 for Mathieu Desnoyers" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: membarrier: cover kthread_use_mm (v4)
+Subject: [tip: sched/core] sched: fix exit_mm vs membarrier (v4)
 Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201020134715.13909-3-mathieu.desnoyers@efficios.com>
-References: <20201020134715.13909-3-mathieu.desnoyers@efficios.com>
+In-Reply-To: <20201020134715.13909-2-mathieu.desnoyers@efficios.com>
+References: <20201020134715.13909-2-mathieu.desnoyers@efficios.com>
 MIME-Version: 1.0
-Message-ID: <160396870681.397.6742175131689946098.tip-bot2@tip-bot2>
+Message-ID: <160396870742.397.11884092890027190780.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,118 +58,138 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     618758ed3a4f7d790414d020b362111748ebbf9f
-Gitweb:        https://git.kernel.org/tip/618758ed3a4f7d790414d020b362111748ebbf9f
+Commit-ID:     5bc78502322a5e4eef3f1b2a2813751dc6434143
+Gitweb:        https://git.kernel.org/tip/5bc78502322a5e4eef3f1b2a2813751dc6434143
 Author:        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-AuthorDate:    Tue, 20 Oct 2020 09:47:14 -04:00
+AuthorDate:    Tue, 20 Oct 2020 09:47:13 -04:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 29 Oct 2020 11:00:31 +01:00
+CommitterDate: Thu, 29 Oct 2020 11:00:30 +01:00
 
-sched: membarrier: cover kthread_use_mm (v4)
+sched: fix exit_mm vs membarrier (v4)
 
-Add comments and memory barrier to kthread_use_mm and kthread_unuse_mm
-to allow the effect of membarrier(2) to apply to kthreads accessing
-user-space memory as well.
+exit_mm should issue memory barriers after user-space memory accesses,
+before clearing current->mm, to order user-space memory accesses
+performed prior to exit_mm before clearing tsk->mm, which has the
+effect of skipping the membarrier private expedited IPIs.
 
-Given that no prior kthread use this guarantee and that it only affects
-kthreads, adding this guarantee does not affect user-space ABI.
+exit_mm should also update the runqueue's membarrier_state so
+membarrier global expedited IPIs are not sent when they are not
+needed.
 
-Refine the check in membarrier_global_expedited to exclude runqueues
-running the idle thread rather than all kthreads from the IPI cpumask.
+The membarrier system call can be issued concurrently with do_exit
+if we have thread groups created with CLONE_VM but not CLONE_THREAD.
 
-Now that membarrier_global_expedited can IPI kthreads, the scheduler
-also needs to update the runqueue's membarrier_state when entering lazy
-TLB state.
+Here is the scenario I have in mind:
+
+Two thread groups are created, A and B. Thread group B is created by
+issuing clone from group A with flag CLONE_VM set, but not CLONE_THREAD.
+Let's assume we have a single thread within each thread group (Thread A
+and Thread B).
+
+The AFAIU we can have:
+
+Userspace variables:
+
+int x = 0, y = 0;
+
+CPU 0                   CPU 1
+Thread A                Thread B
+(in thread group A)     (in thread group B)
+
+x = 1
+barrier()
+y = 1
+exit()
+exit_mm()
+current->mm = NULL;
+                        r1 = load y
+                        membarrier()
+                          skips CPU 0 (no IPI) because its current mm is NULL
+                        r2 = load x
+                        BUG_ON(r1 == 1 && r2 == 0)
 
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201020134715.13909-3-mathieu.desnoyers@efficios.com
+Link: https://lkml.kernel.org/r/20201020134715.13909-2-mathieu.desnoyers@efficios.com
 ---
- kernel/kthread.c          | 21 +++++++++++++++++++++
- kernel/sched/idle.c       |  1 +
- kernel/sched/membarrier.c |  7 +++----
- 3 files changed, 25 insertions(+), 4 deletions(-)
+ include/linux/sched/mm.h  |  5 +++++
+ kernel/exit.c             | 16 +++++++++++++++-
+ kernel/sched/membarrier.c | 12 ++++++++++++
+ 3 files changed, 32 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index e29773c..481428f 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -1248,6 +1248,7 @@ void kthread_use_mm(struct mm_struct *mm)
- 		tsk->active_mm = mm;
- 	}
- 	tsk->mm = mm;
-+	membarrier_update_current_mm(mm);
- 	switch_mm_irqs_off(active_mm, mm, tsk);
- 	local_irq_enable();
- 	task_unlock(tsk);
-@@ -1255,8 +1256,19 @@ void kthread_use_mm(struct mm_struct *mm)
- 	finish_arch_post_lock_switch();
+diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+index d5ece7a..a91fb3a 100644
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -347,6 +347,8 @@ static inline void membarrier_mm_sync_core_before_usermode(struct mm_struct *mm)
+ 
+ extern void membarrier_exec_mmap(struct mm_struct *mm);
+ 
++extern void membarrier_update_current_mm(struct mm_struct *next_mm);
++
+ #else
+ #ifdef CONFIG_ARCH_HAS_MEMBARRIER_CALLBACKS
+ static inline void membarrier_arch_switch_mm(struct mm_struct *prev,
+@@ -361,6 +363,9 @@ static inline void membarrier_exec_mmap(struct mm_struct *mm)
+ static inline void membarrier_mm_sync_core_before_usermode(struct mm_struct *mm)
+ {
+ }
++static inline void membarrier_update_current_mm(struct mm_struct *next_mm)
++{
++}
  #endif
  
+ #endif /* _LINUX_SCHED_MM_H */
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 87a2d51..a3dd6b3 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -475,10 +475,24 @@ static void exit_mm(void)
+ 	BUG_ON(mm != current->active_mm);
+ 	/* more a memory barrier than a real lock */
+ 	task_lock(current);
 +	/*
-+	 * When a kthread starts operating on an address space, the loop
-+	 * in membarrier_{private,global}_expedited() may not observe
-+	 * that tsk->mm, and not issue an IPI. Membarrier requires a
-+	 * memory barrier after storing to tsk->mm, before accessing
-+	 * user-space memory. A full memory barrier for membarrier
-+	 * {PRIVATE,GLOBAL}_EXPEDITED is implicitly provided by
-+	 * mmdrop(), or explicitly with smp_mb().
-+	 */
- 	if (active_mm != mm)
- 		mmdrop(active_mm);
-+	else
-+		smp_mb();
- 
- 	to_kthread(tsk)->oldfs = force_uaccess_begin();
- }
-@@ -1276,9 +1288,18 @@ void kthread_unuse_mm(struct mm_struct *mm)
- 	force_uaccess_end(to_kthread(tsk)->oldfs);
- 
- 	task_lock(tsk);
-+	/*
-+	 * When a kthread stops operating on an address space, the loop
-+	 * in membarrier_{private,global}_expedited() may not observe
-+	 * that tsk->mm, and not issue an IPI. Membarrier requires a
-+	 * memory barrier after accessing user-space memory, before
-+	 * clearing tsk->mm.
++	 * When a thread stops operating on an address space, the loop
++	 * in membarrier_private_expedited() may not observe that
++	 * tsk->mm, and the loop in membarrier_global_expedited() may
++	 * not observe a MEMBARRIER_STATE_GLOBAL_EXPEDITED
++	 * rq->membarrier_state, so those would not issue an IPI.
++	 * Membarrier requires a memory barrier after accessing
++	 * user-space memory, before clearing tsk->mm or the
++	 * rq->membarrier_state.
 +	 */
 +	smp_mb__after_spinlock();
- 	sync_mm_rss(mm);
- 	local_irq_disable();
- 	tsk->mm = NULL;
++	local_irq_disable();
+ 	current->mm = NULL;
+-	mmap_read_unlock(mm);
 +	membarrier_update_current_mm(NULL);
- 	/* active_mm is still 'mm' */
- 	enter_lazy_tlb(mm, tsk);
- 	local_irq_enable();
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 24d0ee2..846743e 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -338,6 +338,7 @@ void play_idle_precise(u64 duration_ns, u64 latency_ns)
- 	WARN_ON_ONCE(!(current->flags & PF_KTHREAD));
- 	WARN_ON_ONCE(!(current->flags & PF_NO_SETAFFINITY));
- 	WARN_ON_ONCE(!duration_ns);
-+	WARN_ON_ONCE(current->mm);
- 
- 	rcu_sleep_check();
- 	preempt_disable();
+ 	enter_lazy_tlb(mm, current);
++	local_irq_enable();
+ 	task_unlock(current);
++	mmap_read_unlock(mm);
+ 	mm_update_next_owner(mm);
+ 	mmput(mm);
+ 	if (test_thread_flag(TIF_MEMDIE))
 diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
-index aac3292..f223f35 100644
+index e23e74d..aac3292 100644
 --- a/kernel/sched/membarrier.c
 +++ b/kernel/sched/membarrier.c
-@@ -126,12 +126,11 @@ static int membarrier_global_expedited(void)
- 			continue;
+@@ -76,6 +76,18 @@ void membarrier_exec_mmap(struct mm_struct *mm)
+ 	this_cpu_write(runqueues.membarrier_state, 0);
+ }
  
- 		/*
--		 * Skip the CPU if it runs a kernel thread. The scheduler
--		 * leaves the prior task mm in place as an optimization when
--		 * scheduling a kthread.
-+		 * Skip the CPU if it runs a kernel thread which is not using
-+		 * a task mm.
- 		 */
- 		p = rcu_dereference(cpu_rq(cpu)->curr);
--		if (p->flags & PF_KTHREAD)
-+		if (!p->mm)
- 			continue;
- 
- 		__cpumask_set_cpu(cpu, tmpmask);
++void membarrier_update_current_mm(struct mm_struct *next_mm)
++{
++	struct rq *rq = this_rq();
++	int membarrier_state = 0;
++
++	if (next_mm)
++		membarrier_state = atomic_read(&next_mm->membarrier_state);
++	if (READ_ONCE(rq->membarrier_state) == membarrier_state)
++		return;
++	WRITE_ONCE(rq->membarrier_state, membarrier_state);
++}
++
+ static int membarrier_global_expedited(void)
+ {
+ 	int cpu;
