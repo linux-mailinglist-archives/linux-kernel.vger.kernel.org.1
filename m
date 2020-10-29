@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426F329E3D5
+	by mail.lfdr.de (Postfix) with ESMTP id B2E0529E3D6
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbgJ2HVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54814 "EHLO
+        id S1726558AbgJ2HVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726086AbgJ2HVO (ORCPT
+        with ESMTP id S1726110AbgJ2HVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:21:14 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD92EC0613B1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:21:13 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id f38so1622050pgm.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:21:13 -0700 (PDT)
+        Thu, 29 Oct 2020 03:21:18 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81909C0613B1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:21:18 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o3so1590326pgr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:21:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=gb8W1h7SGvff5jSaYiQH332H5P74pGN/45rkGwlqp7I=;
-        b=hfMsCFwAQdfDuLjo+Ui7dBZqVsbHG/jetagR8wx8OBrlM/1PbHauX12FHXTGU5YiPD
-         kZSr24MVbUxtsThgqe2VlTZzLAAZYS7RqMwLO16bQoZFMRdJbp7gFDko6u/BQk9+VrpF
-         qyjpYS20tFW1dbYd78w4ogTWEdrC7CMx6HqjxaBfPaStaezjdK2xt2m5Az1tS7nGCLUu
-         bdy3MCWEo8xj7utaxhZN6KezNBzdz+8wGk8pxNvw25DUK6MIESNLUo5Q/4ZG6WneswBL
-         CgXxOxNFYAZam6eH/PW4Nwv0FVk4p7T22zLoBsYFI/hlLaa0y0Jg4Jjpt+N5kKGDX+lA
-         LI8w==
+        bh=2RliNxDPfPOaV79QT/JgTj7YDuXmYEtP3uBmw1frPS4=;
+        b=yhWtXAqgvPvUPs16XElSgCgLbIXH5ZKJHktbENLljO6+h1FLbw3BJTMkvffFVJHmxq
+         fdA3VIsP2oVkPUNeh6/ylQwzA/gf5Kq3l5xXFJ5aw2kdeMW1tInqfdJMLRB+Gllj7kz3
+         qYO47dDLJojK/ujfbZwqQT0xNViZmF6eIQsQw57NnVOfWoh/CwMy9k2ks2khtCWxR7RG
+         +bG8MDb/jqpK4c/h1srUdlgvmFdygf6WKGgHmujlL4J1Fc19a9ZAT1QR7//9s7qjT6cX
+         3EeKeQmcjmPercDJRene8q33vUN34O0s572eohG8SfoiIXrpIoOxWT/0+saqLD4T857v
+         6Lhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=gb8W1h7SGvff5jSaYiQH332H5P74pGN/45rkGwlqp7I=;
-        b=Dycaa0P/37iyCfDDUWm2vt0vGd3vKt3cM6kSmrU6/oVWvRDu8ebbl/WDLQpQZ12dpN
-         jvd27evkGpPp5JG+kiimiSN28bKPaYGMGwSeGwHD995QmYSsh0L4egNEavSfhJTivci6
-         1KiMIwzeH3+3dCDDJMBpBsQfy5gADv9bcf5XzCBJMiB1Zuu3fEvrw8HsD/7PrNgor8tO
-         kUSNBmxYn2VNlZoIgvdHfBsk9CCYiYqxwebiJxJ/WLClBfJ9UP0RuuHsCJt2S+RF7FNP
-         p2k9mNZeZgsgIhUcvsiRTp3suaZE966WzKuhnI/ETXhqh7PANpnyrO8fYNtBwhDxZOV1
-         SBDg==
-X-Gm-Message-State: AOAM531hc+ghuy4maGLe4F7nnMKQuReNXVkYvezhNQMukLeRH3Jr7p/I
-        fAIegTwBabPiLbfakV2nWeuJcA==
-X-Google-Smtp-Source: ABdhPJy9IiqQieqB/D06bO7Ti1FeJBIEs1oY69WLBD9Xq3D+lwNRgjv6Td3xc7gyWXRFWlcQ1quPKQ==
-X-Received: by 2002:a17:90a:b30b:: with SMTP id d11mr2826106pjr.163.1603956073275;
-        Thu, 29 Oct 2020 00:21:13 -0700 (PDT)
+        bh=2RliNxDPfPOaV79QT/JgTj7YDuXmYEtP3uBmw1frPS4=;
+        b=KoaAeClDg7sJt+nJmL7WxQHRssgMWVfgvJEhn/e3DesU0rhe3pomB/purtAdobX/m0
+         1X99zWFuKNKTaJyfLn9qE2lAyToA68HnbHNbsxmAO4vwOD5jSAFaG2Z9OwwkkDZ2wx/l
+         RgDvSZnHvY1MNc6YhvYnTm87y/RsjeR2c+s1dbyScfqXtF+jfdzutrl5NdZJGFahJjxB
+         CJc+EcyngZFsPJX1eysP3yvnIuTsHO8TSIQ5TEntOTD5+Y56xbIiRH0xOnz1Wiu3SOiD
+         O6nhesp7VarQe5ygc+7dDl4ZjRHm2kqdk/Kr8SXa4X6zCZHCugtjm9Xlqa5NqbMdk92O
+         krRQ==
+X-Gm-Message-State: AOAM531ms3o1FVZ4LuMYbr750bqia5Vw0YPz/Jy/GyxZiKSjPnj2jQG7
+        e5HPUyy84+UtGyF49XlJ4ga6w+rqPwPh40Mr
+X-Google-Smtp-Source: ABdhPJxtaPX1k7dJoyOOm2xYssfBnXslslUWoU/lUwxvXIrN84NaL0ZrtAzkHTyqT1Bn07k9JF1JPQ==
+X-Received: by 2002:a05:6a00:1:b029:164:1cb9:8afd with SMTP id h1-20020a056a000001b02901641cb98afdmr2853799pfk.13.1603956078093;
+        Thu, 29 Oct 2020 00:21:18 -0700 (PDT)
 Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id 3sm1818418pfv.92.2020.10.29.00.21.12
+        by smtp.gmail.com with ESMTPSA id w6sm1479464pgr.71.2020.10.29.00.21.17
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 29 Oct 2020 00:21:12 -0700 (PDT)
+        Thu, 29 Oct 2020 00:21:17 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -61,9 +61,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v5 19/21] perf arm-spe: Add more sub classes for operation packet
-Date:   Thu, 29 Oct 2020 15:19:25 +0800
-Message-Id: <20201029071927.9308-20-leo.yan@linaro.org>
+Subject: [PATCH v5 20/21] perf arm_spe: Decode memory tagging properties
+Date:   Thu, 29 Oct 2020 15:19:26 +0800
+Message-Id: <20201029071927.9308-21-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201029071927.9308-1-leo.yan@linaro.org>
 References: <20201029071927.9308-1-leo.yan@linaro.org>
@@ -71,59 +71,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the operation type packet payload with load/store class, it misses
-to support these sub classes:
+From: Andre Przywara <andre.przywara@arm.com>
 
-  - A load/store targeting the general-purpose registers;
-  - A load/store targeting unspecified registers;
-  - The ARMv8.4 nested virtualisation extension can redirect system
-    register accesses to a memory page controlled by the hypervisor.
-    The SPE profiling feature in newer implementations can tag those
-    memory accesses accordingly.
+When SPE records a physical address, it can additionally tag the event
+with information from the Memory Tagging architecture extension.
 
-Add the bit pattern describing load/store sub classes, so that the perf
-tool can decode it properly.
+Decode the two additional fields in the SPE event payload.
 
-Inspired by Andre Przywara, refined the commit log and code for more
-clear description.
+[leoy: Refined patch to use predefined macros]
 
-Co-developed-by: Andre Przywara <andre.przywara@arm.com>
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 ---
- .../util/arm-spe-decoder/arm-spe-pkt-decoder.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 6 +++++-
+ tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h | 2 ++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 575635c54e48..70593a4e0aa5 100644
+index 70593a4e0aa5..97a47ac3aa28 100644
 --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
 +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -326,9 +326,23 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
- 				arm_spe_pkt_snprintf(&err, &buf, &blen, " EXCL");
- 			if (payload & SPE_OP_PKT_AR)
- 				arm_spe_pkt_snprintf(&err, &buf, &blen, " AR");
--		} else if (SPE_OP_PKT_LDST_SUBCLASS_GET(payload) ==
--					SPE_OP_PKT_LDST_SUBCLASS_SIMD_FP) {
-+		}
-+
-+		switch (SPE_OP_PKT_LDST_SUBCLASS_GET(payload)) {
-+		case SPE_OP_PKT_LDST_SUBCLASS_SIMD_FP:
- 			arm_spe_pkt_snprintf(&err, &buf, &blen, " SIMD-FP");
-+			break;
-+		case SPE_OP_PKT_LDST_SUBCLASS_GP_REG:
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " GP-REG");
-+			break;
-+		case SPE_OP_PKT_LDST_SUBCLASS_UNSPEC_REG:
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " UNSPEC-REG");
-+			break;
-+		case SPE_OP_PKT_LDST_SUBCLASS_NV_SYSREG:
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " NV-SYSREG");
-+			break;
-+		default:
-+			break;
- 		}
+@@ -367,6 +367,7 @@ static int arm_spe_pkt_desc_addr(const struct arm_spe_pkt *packet,
+ 				 char *buf, size_t buf_len)
+ {
+ 	int ns, el, idx = packet->index;
++	int ch, pat;
+ 	u64 payload = packet->payload;
+ 	int err = 0;
  
- 		return err ?: (int)(buf_len - blen);
+@@ -384,9 +385,12 @@ static int arm_spe_pkt_desc_addr(const struct arm_spe_pkt *packet,
+ 					    "VA 0x%llx", payload);
+ 	case SPE_ADDR_PKT_HDR_INDEX_DATA_PHYS:
+ 		ns = !!SPE_ADDR_PKT_GET_NS(payload);
++		ch = !!SPE_ADDR_PKT_GET_CH(payload);
++		pat = SPE_ADDR_PKT_GET_PAT(payload);
+ 		payload = SPE_ADDR_PKT_ADDR_GET_BYTES_0_6(payload);
+ 		return arm_spe_pkt_snprintf(&err, &buf, &buf_len,
+-					    "PA 0x%llx ns=%d", payload, ns);
++					    "PA 0x%llx ns=%d ch=%d, pat=%x",
++					    payload, ns, ch, pat);
+ 	default:
+ 		return 0;
+ 	}
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+index 7032fc141ad4..1ad14885c2a1 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+@@ -73,6 +73,8 @@ struct arm_spe_pkt {
+ 
+ #define SPE_ADDR_PKT_GET_NS(v)			(((v) & BIT_ULL(63)) >> 63)
+ #define SPE_ADDR_PKT_GET_EL(v)			(((v) & GENMASK_ULL(62, 61)) >> 61)
++#define SPE_ADDR_PKT_GET_CH(v)			(((v) & BIT_ULL(62)) >> 62)
++#define SPE_ADDR_PKT_GET_PAT(v)			(((v) & GENMASK_ULL(59, 56)) >> 56)
+ 
+ #define SPE_ADDR_PKT_EL0			0
+ #define SPE_ADDR_PKT_EL1			1
 -- 
 2.17.1
 
