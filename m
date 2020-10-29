@@ -2,49 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC7329E8F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D354529E903
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgJ2K33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:29:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53016 "EHLO mail.kernel.org"
+        id S1726752AbgJ2KaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:30:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726013AbgJ2K33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:29:29 -0400
+        id S1726710AbgJ2KaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 06:30:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2E6F20782;
-        Thu, 29 Oct 2020 10:29:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEEE320E65;
+        Thu, 29 Oct 2020 10:30:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603967368;
-        bh=eDNouMwfAkiromxxzvTEEY8/dwiXpUUMsSqp2SyTwYg=;
+        s=default; t=1603967418;
+        bh=RSyYaPmphqdJMDw5wjWrws7ErfCDFikjA7tANBK764Y=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cRFnAUykbUa9YQUUF+cV72CvZM04bkeA5y2+5gY+ApFOFbxmgULMnhi46FL2Bhju/
-         0/KTyBigOe8biQUv6iAigLUSdBiTEejzY7HO8O0cV/9D7GxH+jEGrzqzrfoFQhlTY4
-         KKPfCZR7Kqc9Dp3R+E4mXPUbczInzJ0qHmZZwAA0=
-Date:   Thu, 29 Oct 2020 11:30:18 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: staging: Fix spelling in comments
-Message-ID: <20201029103018.GB3763875@kroah.com>
-References: <20201029100759.21668-1-unixbhaskar@gmail.com>
+        b=oy1sKXjRiUj8YTTUkAgCwuuD+iAzTPCje1pvm5D7xos7OQrARyIM7vUb5Mwlvw6PZ
+         4IqHW9cVjp1GllSlU1/zc518BE1kakHMX5NL2MD24f5R4J/KDwNTvRrCFGimXRm3Fp
+         cK+YiDrkk0V3GUwUh0hwZbcosZZsLFRd7DAg0Xss=
+Date:   Thu, 29 Oct 2020 11:31:08 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Rui Feng <rui_feng@realsil.com.cn>
+Subject: Re: [PATCH v3 2/3] misc: rtsx: Add SD Express mode support for
+ RTS5261
+Message-ID: <20201029103108.GA3764182@kroah.com>
+References: <1603936668-3363-1-git-send-email-rui_feng@realsil.com.cn>
+ <CAPDyKFoKhxdx0BqcWgKr36riesEt_7qvNd8up5PrV07K+XD=fg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201029100759.21668-1-unixbhaskar@gmail.com>
+In-Reply-To: <CAPDyKFoKhxdx0BqcWgKr36riesEt_7qvNd8up5PrV07K+XD=fg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 03:37:59PM +0530, Bhaskar Chowdhury wrote:
-> Fixed two spelling in two different comments.
+On Thu, Oct 29, 2020 at 10:52:53AM +0100, Ulf Hansson wrote:
+> On Thu, 29 Oct 2020 at 02:57, <rui_feng@realsil.com.cn> wrote:
+> >
+> > From: Rui Feng <rui_feng@realsil.com.cn>
+> >
+> > RTS5261 support SD mode and PCIe/NVMe mode. The workflow is as follows.
+> > 1.RTS5261 work in SD mode and set MMC_CAPS2_SD_EXP flag.
+> > 2.If card is plugged in, Host send CMD8 to ask card's PCIe availability.
+> > 3.If the card has PCIe availability and WP is not set, init_sd_express() will be invoked,
+> > RTS5261 switch to PCIe/NVMe mode.
+> > 4.Mmc driver handover it to NVMe driver.
+> > 5.If card is unplugged, RTS5261 will switch to SD mode.
+> >
+> > Signed-off-by: Rui Feng <rui_feng@realsil.com.cn>
 > 
-> s/defalut/default/p
-> 
-> This is in linux-next.
+> Greg, Arnd, I think I am ready to queue up this series now, may I have
+> your ack to pick this one via my mmc tree?
 
-No need for this line, it doesn't make any sense here, right?
+Great, thanks for doing that:
 
+	Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
