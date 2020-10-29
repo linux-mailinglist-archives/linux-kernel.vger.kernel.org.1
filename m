@@ -2,105 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C4829F6EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 22:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6524029F6F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 22:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbgJ2Vd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 17:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46910 "EHLO
+        id S1725805AbgJ2VfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 17:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ2Vd6 (ORCPT
+        with ESMTP id S1725379AbgJ2VfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 17:33:58 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454D9C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 14:33:58 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id a20so4565907ilk.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 14:33:58 -0700 (PDT)
+        Thu, 29 Oct 2020 17:35:18 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78F8C0613CF;
+        Thu, 29 Oct 2020 14:35:16 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id u62so5270256iod.8;
+        Thu, 29 Oct 2020 14:35:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HBW/y2hcG3tVUMNsYdQ7G3FZLWAgav2W/hDMrrmqMV4=;
-        b=C9wMCxF/YMjZlGOVB+2eKfXEJR92p9m4yP6IxXhK5vhdsXo+p654QnmvgqtQjmvKIC
-         N/O9P5d7uy+RDFfIQuyEavN4FfcpZrYkVXygitutifdRdCWzu8+3G0FjM1vKtQ7PHYKK
-         9VzbQsSQqpYgOQs1b9DKxZHrBHTy6glApl2AE=
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=o/fZRhurDRoh3x2KXwZGFT2Yi8JsbQLcBDCy2LAivAY=;
+        b=gGuTqV/6UjMeGtDxjXYhwQPHTl/X7tzC8nyDkopIigNmkrO3mCPbuH/1MhlZEXs368
+         ilsmPmjF8/8PcamJS4tzXcIssUUJKuowmvAaZpvnATyfAuLpyzByye2ob5V27GVE8qIT
+         KZP17N/xFAWoIKkVe0RuMkFayeP8BWuJYRQfihoxN9IcITuyVnsNMyFFHot0k3ChkDxn
+         nFZSLwwceJfQxsoqw1O2SZk7WDZNX5WeTFIk5dkyBtO3OtvmEbw8mG/eVrbi8eoLhfOn
+         0GZOx0BOnNgBQieydv87h3zVPKI0C/CSIt6VEOi3C7rjEkzw5bkznPJoY5+aGh/Uu3xA
+         /g8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HBW/y2hcG3tVUMNsYdQ7G3FZLWAgav2W/hDMrrmqMV4=;
-        b=R/03YOG6q9W4bGxGtQAUOHsucN0OHxi7rljwdma+VYAPUjdMWGMR34XzqNfIymKHTp
-         imAqkGXz2xFT9O615q7XC4l4NoeiLQnd6by1eppzelypGXTVqWpEbZu9rBcG+sHhEFaK
-         AHWUa3mycdLsaDeKL77bSS26sRWARnu/BVRX5D0fWoR227G+CdBsmWGRvArvoATCKDqj
-         PDZWBT7KlhIdawfOvOi1vfJJ12d88fBxaIIKLS3QKYoAO+LRKLyidqlGKuLmiUkodaDt
-         EqrvZWnKxsFhSZW6G41Ty1Ce8ifJLK0Dw/jLbV3MuU8aorTHGcMW45FeueOs/fX8F4fl
-         LgIw==
-X-Gm-Message-State: AOAM530//Gs1pg3/gp2S0UQ1XLj6ZKflMwTK+jYdZKnFbAconkLX93hg
-        IR0mRmmWPg3DF4m7XGPhJIL2DA==
-X-Google-Smtp-Source: ABdhPJzjjq7wQ7GrmP2vMxl7uTfJhlv8ruaD8BA9kXgZ+jONnT6TAdwrOl602ZGmTwFaprEnbt3cow==
-X-Received: by 2002:a92:cb4e:: with SMTP id f14mr4494426ilq.122.1604007237554;
-        Thu, 29 Oct 2020 14:33:57 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id n84sm3955870ild.16.2020.10.29.14.33.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 14:33:56 -0700 (PDT)
-Subject: Re: [PATCH v4] cpupower: Provide online and offline CPU information
-To:     Brahadambal Srinivasan <latha@linux.vnet.ibm.com>,
-        shuah@kernel.org, trenn@suse.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Pavithra R . Prakash" <pavrampu@in.ibm.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201023152527.15884-1-latha@linux.vnet.ibm.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <66932174-384a-5da4-4786-955f1e6233f6@linuxfoundation.org>
-Date:   Thu, 29 Oct 2020 15:33:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=o/fZRhurDRoh3x2KXwZGFT2Yi8JsbQLcBDCy2LAivAY=;
+        b=KinZ6hrbkXJ3h3DclDuBAp8Nhpaw739QgjhpYXN2kOq16mF6EKn8Ncz8nxq1cB+RdC
+         loTEqq5lPm4snNchDLwNgIUKdnDY5cHv1ycThuX+/LrmKeNpMBzlZD88dUtS8DRtT0fS
+         O1WK6EcWuJg5q8WjYvucVAqpNoOV23EL3FR22XeNqy3YpSc45KlMYLS6anuZH/AbWyao
+         HIC/o+eJgLkW6NEezx/TYHyDJpi9pUkGguel+AXgTrEL14OcltJbt+1MeSDaBytRBaLM
+         2Og8NWATW8Ty1bf4EMJL9uBGBpDN6puw4xlIk1fX0FCDL3Y3UVJeo0WcBT3Ak+eGyphi
+         48Uw==
+X-Gm-Message-State: AOAM530rBehHEPLKdCyAg69CswAyeQ1Lz1y2STmerKwBdnO3UkUCVFrP
+        9pbUYcrhb5F1jAkIq7T++vY=
+X-Google-Smtp-Source: ABdhPJyTkgnuu9ypsiIO3xCkmwdOh4o3IIPvbsxF62gfZSdk4g2zCe1B1vFwKdXsPs4FzLAVBSR7HA==
+X-Received: by 2002:a05:6602:22cf:: with SMTP id e15mr5087695ioe.1.1604007316212;
+        Thu, 29 Oct 2020 14:35:16 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id r3sm3065346iog.55.2020.10.29.14.35.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 14:35:15 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Thu, 29 Oct 2020 17:35:12 -0400
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        David Laight <David.Laight@ACULAB.COM>,
+        'Arnd Bergmann' <arnd@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+Subject: Re: [PATCH] [v2] x86: apic: avoid -Wshadow warning in header
+Message-ID: <20201029213512.GA34524@rani.riverdale.lan>
+References: <20201028212417.3715575-1-arnd@kernel.org>
+ <38b11ed3fec64ebd82d6a92834a4bebe@AcuMS.aculab.com>
+ <20201029165611.GA2557691@rani.riverdale.lan>
+ <93180c2d-268c-3c33-7c54-4221dfe0d7ad@redhat.com>
+ <87v9esojdi.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201023152527.15884-1-latha@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87v9esojdi.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/20 9:25 AM, Brahadambal Srinivasan wrote:
-> When a user tries to modify cpuidle or cpufreq properties on offline
-> CPUs, the tool returns success (exit status 0) but also does not provide
-> any warning message regarding offline cpus that may have been specified
-> but left unchanged. In case of all or a few CPUs being offline, it can be
-> difficult to keep track of which CPUs didn't get the new frequency or idle
-> state set. Silent failures are difficult to keep track of when there are a
-> huge number of CPUs on which the action is performed.
+On Thu, Oct 29, 2020 at 09:41:13PM +0100, Thomas Gleixner wrote:
+> On Thu, Oct 29 2020 at 17:59, Paolo Bonzini wrote:
+> > On 29/10/20 17:56, Arvind Sankar wrote:
+> >>> For those two just add:
+> >>> 	struct apic *apic = x86_system_apic;
+> >>> before all the assignments.
+> >>> Less churn and much better code.
+> >>>
+> >> Why would it be better code?
+> >> 
+> >
+> > I think he means the compiler produces better code, because it won't
+> > read the global variable repeatedly.  Not sure if that's true,(*) but I
+> > think I do prefer that version if Arnd wants to do that tweak.
 > 
-> This patch adds helper functions to find both online and offline CPUs and
-> print them out accordingly.
+> It's not true.
 > 
-> We use these helper functions in cpuidle-set and cpufreq-set to print an
-> additional message if the user attempts to modify offline cpus.
+>      foo *p = bar;
 > 
-> Reported-by: Pavithra R. Prakash <pavrampu@in.ibm.com>
-> Signed-off-by: Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
-> ---
->   tools/power/cpupower/utils/cpufreq-set.c     |  3 +
->   tools/power/cpupower/utils/cpuidle-set.c     |  4 ++
->   tools/power/cpupower/utils/cpupower.c        |  8 +++
->   tools/power/cpupower/utils/helpers/helpers.h | 12 ++++
->   tools/power/cpupower/utils/helpers/misc.c    | 66 +++++++++++++++++++-
->   5 files changed, 92 insertions(+), 1 deletion(-)
+>      p->a = 1;
+>      p->b = 2;
 > 
-> v1-->v2: Added helper functions to find online and offline CPUs and print them.
-> v2-->v3: Fixed some build issues
-> v3-->v4: Fixed the commit log and moved the version summary to the correct place.
+> The compiler is free to reload bar after accessing p->a and with
 > 
+>     bar->a = 1;
+>     bar->b = 1;
+> 
+> it can either cache bar in a register or reread it after bar->a
+> 
+> The generated code is the same as long as there is no reason to reload,
+> e.g. register pressure.
+> 
+> Thanks,
+> 
+>         tglx
 
-Thank you. Applied to
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux.git/log/?h=cpupower
+It's not quite the same.
 
-Will be included in my next pull request to PM maintainer.
+https://godbolt.org/z/4dzPbM
 
-thanks,
--- Shuah
+With -fno-strict-aliasing, the compiler reloads the pointer if you write
+to the start of what it points to, but not if you write to later
+elements.
