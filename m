@@ -2,115 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D69229E9C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1ED29E9BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbgJ2Kz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:55:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:60384 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgJ2Kz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:55:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 30E0213A1;
-        Thu, 29 Oct 2020 03:55:55 -0700 (PDT)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D6B13F66E;
-        Thu, 29 Oct 2020 03:55:45 -0700 (PDT)
-Subject: Re: [PATCH v5 06/21] perf arm-spe: Refactor printing string to buffer
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201029071927.9308-1-leo.yan@linaro.org>
- <20201029071927.9308-7-leo.yan@linaro.org>
- <cbb23f8e-b534-fffa-4dfe-a496fd3f6bef@arm.com>
- <20201029105159.GG16862@leoy-ThinkPad-X240s>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Organization: ARM Ltd.
-Message-ID: <f6a3df74-edc5-6a0e-dc36-7c1efaf55ffc@arm.com>
-Date:   Thu, 29 Oct 2020 10:54:37 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726528AbgJ2Kyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726078AbgJ2Kyp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 06:54:45 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69008C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 03:54:45 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id i7so91215pgh.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 03:54:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/IA93lh4Lo9Ev83453PFjMJYOWrNuSohoD4R/Qf7h+g=;
+        b=qpZ40ZBNm2WL8PgWyRonOOxc12GbaFU3Ow5DXPA8JGmpuQWACGPoRYA3r/IPm8ZUZ6
+         +Nt9ajxu6hljelx41t/eZ6wROT62k8OknOKEJEgCWv95rG+pwqdQsHAM5Gu0xWsDrLXK
+         UxnkHucGi8eeOC6JpN7CtSju69TtFoNgfAT2KxobKWaux2cuK/awQle/XUvNpuPrth3p
+         QwGrua3WEPKf9txCJm3+b/O3vPhMShWFSJyYSLX+quyEAgqxSE5VUy3GcoFnFyv+QUrs
+         Ld50D4VtProBuNkOChZOZ5rxXQBNsErWQHyk0SBi9Y8PR3vNAh4mcGXZaTOX9MrVHR2L
+         305A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/IA93lh4Lo9Ev83453PFjMJYOWrNuSohoD4R/Qf7h+g=;
+        b=dKwOKnq2DYjNtDRAfe2WLXX+vBt4EKdS9AE9gFTUp1wxQ5ekgjS5GtUkkijrZhL66e
+         1W/s001v5W43zB2MikWs9t1GLgqJ5t+eAaA502j6v+FBQZgkadF1bNk/kpU3cSg4D1Ip
+         gVciepxocJK2Y/aEkkuCH5uT1ssFBw0Njf0vKGyIfZZFmdQqyLQInFt9orsrRR2KUnEL
+         XqDHiPQVxVHxLrdM5RUKjUzx47MO1IWn+UtbmMxsWWkomVCssc+ZYBVL0a1tgsCpwLl9
+         UadISCZncWH5Q6ANlo/JrNFGVEUJumcmGg5LdJvVZtnwtaPuNX8ZsWt3bmysRo6IC5aQ
+         W2Nw==
+X-Gm-Message-State: AOAM530u+L+TWDEFfiOfKYHsiP/sIXKIFeiLvTU5LfiX2pb0YV4pZk/8
+        T8A/Pu8y4rl2CudpUFaiIfqaHQ==
+X-Google-Smtp-Source: ABdhPJxSguzvzWaoco54Zkd8E93SML/FmBfwW9LWBVavhKlWKfAgVE/uENIufgb7AnVyLOYvUXoXtQ==
+X-Received: by 2002:a65:5c02:: with SMTP id u2mr3507681pgr.173.1603968884849;
+        Thu, 29 Oct 2020 03:54:44 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id b4sm2566726pfi.208.2020.10.29.03.54.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Oct 2020 03:54:42 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 16:24:40 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [PATCH v2.1 4/4] cpufreq: schedutil: Always call driver if
+ need_freq_update is set
+Message-ID: <20201029105440.gcaizotprhloxiih@vireshk-i7>
+References: <2183878.gTFULuzKx9@kreacher>
+ <1905098.zDJocX6404@kreacher>
+ <12275472.W5IoEtXICo@kreacher>
+ <20201028035702.75f6rnbkvfaic4si@vireshk-i7>
+ <CAJZ5v0ikw9M4-NOEqtoxqs_948iqaX4P5euiXD+VmpaDHd91vg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201029105159.GG16862@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0ikw9M4-NOEqtoxqs_948iqaX4P5euiXD+VmpaDHd91vg@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/10/2020 10:51, Leo Yan wrote:
-> Hi Andre,
+On 29-10-20, 11:42, Rafael J. Wysocki wrote:
+> On Thu, Oct 29, 2020 at 12:10 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > On 27-10-20, 16:35, Rafael J. Wysocki wrote:
+> > > Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+> > > ===================================================================
+> > > --- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
+> > > +++ linux-pm/kernel/sched/cpufreq_schedutil.c
+> > > @@ -102,11 +102,12 @@ static bool sugov_should_update_freq(str
+> > >  static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
+> > >                                  unsigned int next_freq)
+> > >  {
+> > > -     if (sg_policy->next_freq == next_freq)
+> > > +     if (sg_policy->next_freq == next_freq && !sg_policy->need_freq_update)
+> > >               return false;
+> > >
+> > >       sg_policy->next_freq = next_freq;
+> > >       sg_policy->last_freq_update_time = time;
+> > > +     sg_policy->need_freq_update = false;
+> > >
+> > >       return true;
+> > >  }
+> > > @@ -161,10 +162,12 @@ static unsigned int get_next_freq(struct
+> > >
+> > >       freq = map_util_freq(util, freq, max);
+> > >
+> > > -     if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+> > > +     if (cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
+> > > +             sg_policy->need_freq_update = true;
+> > > +     else if (freq == sg_policy->cached_raw_freq &&
+> > > +              !sg_policy->need_freq_update)
+> > >               return sg_policy->next_freq;
+> > >
+> > > -     sg_policy->need_freq_update = false;
+> > >       sg_policy->cached_raw_freq = freq;
+> > >       return cpufreq_driver_resolve_freq(policy, freq);
+> > >  }
+> >
+> > What about just this instead ?
+> >
+> >   static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
+> >                                    unsigned int next_freq)
+> >   {
+> >  -      if (sg_policy->next_freq == next_freq)
+> >  +      if (sg_policy->next_freq == next_freq &&
+> >  +          !cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
+> >                 return false;
+> >
+> >         sg_policy->next_freq = next_freq;
+> >         sg_policy->last_freq_update_time = time;
+> >
+> >         return true;
+> >   }
+> >
 > 
-> On Thu, Oct 29, 2020 at 10:23:39AM +0000, Andrï¿½ Przywara wrote:
+> Without any changes in get_next_freq() this is not sufficient, because
+> get_next_freq() may skip the update too.
 > 
-> [...]
-> 
->>> +static int arm_spe_pkt_snprintf(int *err, char **buf_p, size_t *blen,
->>> +				const char *fmt, ...)
->>> +{
->>> +	va_list ap;
->>> +	int ret;
->>> +
->>> +	va_start(ap, fmt);
->>> +	ret = vsnprintf(*buf_p, *blen, fmt, ap);
->>> +	va_end(ap);
->>> +
->>> +	if (ret < 0) {
->>> +		if (err && !*err)
->>> +			*err = ret;
->>> +	} else {
->>> +		*buf_p += ret;
->>> +		*blen -= ret;
->>> +	}
->>> +
->>> +	return ret;
->>> +}
->>
->> So this now implements the old behaviour of ignoring previous errors, in
->> all cases, since we don't check for errors and bail out in the callers.
->>
->> If you simply check for validity of err and for it being 0 before
->> proceeding with the va_start() above, this should be fixed.
-> 
-> I think you are suggesting below code, could you take a look for it
-> before I proceed to respin new patch?>
-> static int arm_spe_pkt_snprintf(int *err, char **buf_p, size_t *blen,
-> 				const char *fmt, ...)
-> {
-> 	va_list ap;
-> 	int ret;
-> 
->         /* Bail out if any error occurred */
->         if (err && *err)
->                 return *err;
-> 
-> 	va_start(ap, fmt);
-> 	ret = vsnprintf(*buf_p, *blen, fmt, ap);
-> 	va_end(ap);
-> 
-> 	if (ret < 0) {
-> 		if (err && !*err)
-> 			*err = ret;
-> 	} else {
-> 		*buf_p += ret;
-> 		*blen -= ret;
-> 	}
-> 
-> 	return ret;
-> }
+> If the intention is to always let the driver callback run when
+> CPUFREQ_NEED_UPDATE_LIMITS is set, then both get_next_freq() and
+> sugov_update_next_freq() need to be modified.
 
-Yes, this is what I had in mind.
+Right, my mistake. I was just suggesting that we may not need to touch
+need_freq_update at all but just check the flag.
 
-Cheers,
-Andre
+-- 
+viresh
