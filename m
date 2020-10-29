@@ -2,155 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E27D29E7A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC44D29E7D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgJ2JqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:46:03 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:62026 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726607AbgJ2Jp7 (ORCPT
+        id S1725839AbgJ2Jw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:52:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725385AbgJ2Jw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:45:59 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09T9jXpK005056;
-        Thu, 29 Oct 2020 05:45:46 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34ce462q0f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Oct 2020 05:45:45 -0400
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 09T9ji32023819
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 29 Oct 2020 05:45:44 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Thu, 29 Oct
- 2020 05:45:43 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 29 Oct 2020 05:45:43 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 09T9jcAM008861;
-        Thu, 29 Oct 2020 05:45:42 -0400
-From:   <alexandru.tachici@analog.com>
-To:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>,
-        Alexandru Tachici <alexandru.tachici@analog.com>
-Subject: [PATCH 3/3] dt-binding: hwmon: Add documentation for ltc2992
-Date:   Thu, 29 Oct 2020 11:49:11 +0200
-Message-ID: <20201029094911.79173-4-alexandru.tachici@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201029094911.79173-1-alexandru.tachici@analog.com>
-References: <20201029094911.79173-1-alexandru.tachici@analog.com>
+        Thu, 29 Oct 2020 05:52:56 -0400
+Received: from smtp2-2.goneo.de (smtp2.goneo.de [IPv6:2001:1640:5::8:33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2E4C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:52:56 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp2.goneo.de (Postfix) with ESMTP id 343ED23EF2B;
+        Thu, 29 Oct 2020 10:52:55 +0100 (CET)
+X-Virus-Scanned: by goneo
+X-Spam-Flag: NO
+X-Spam-Score: -2.971
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.971 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.071, BAYES_00=-1.9] autolearn=ham
+Received: from smtp2.goneo.de ([127.0.0.1])
+        by localhost (smtp2.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id c8SwKE0AEP9z; Thu, 29 Oct 2020 10:52:53 +0100 (CET)
+Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
+        by smtp2.goneo.de (Postfix) with ESMTPA id 26D23242AF2;
+        Thu, 29 Oct 2020 10:52:53 +0100 (CET)
+From:   poeschel@lemonage.de
+To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
+        Willy Tarreau <willy@haproxy.com>,
+        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lars Poeschel <poeschel@lemonage.de>
+Subject: [PATCH 00/25] Make charlcd device independent
+Date:   Thu, 29 Oct 2020 10:52:06 +0100
+Message-Id: <20201029095231.311083-1-poeschel@lemonage.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-29_03:2020-10-29,2020-10-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- spamscore=0 malwarescore=0 impostorscore=0 adultscore=0 mlxlogscore=999
- bulkscore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1015 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010290070
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Tachici <alexandru.tachici@analog.com>
+From: Lars Poeschel <poeschel@lemonage.de>
 
-Add documentation for ltc2992.
+This tries to make charlcd device independent. At the moment hd44780
+device specific code is contained deep in charlcd. This moves this out
+into a hd44780_common module, where the two hd44780 drivers we have at
+the moment (hd44780 and panel) can use this from. The goal is that at
+the end other drivers can use the charlcd interface.
+I add one such driver for a modtronix lcd displau  with the last patch.
+I submitted this already some time ago, where the wish was so split
+this into smaller chunks what I try to do with this patchset.
 
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
----
- .../bindings/hwmon/adi,ltc2992.yaml           | 78 +++++++++++++++++++
- 1 file changed, 78 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml
+This is v5 of the patchset. I address a few review comments with this.
+I fixed some typos, but more importantly Miguel spotted that I reverted
+commit 3f03b6498 ("auxdisplay: charlcd: Reuse hex_to_bin() instead of
+custom code") during rebasing. This is corrected now.
 
-diff --git a/Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml b/Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml
-new file mode 100644
-index 000000000000..1b603026ed2d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml
-@@ -0,0 +1,78 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/hwmon/adi,ltc2992.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Linear Technology 2992 Power Monitor
-+
-+maintainers:
-+  - Alexandru Tachici <alexandru.tachici@analog.com>
-+
-+description: |
-+  Linear Technology 2992 Dual Wide Range Power Monitor
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/ltc2992.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,ltc2992
-+
-+  reg:
-+    maxItems: 1
-+
-+  avcc-supply: true
-+
-+patternProperties:
-+  "^channel@([0-1])$":
-+    type: object
-+    description: |
-+      Represents the two supplies to be monitored.
-+
-+    properties:
-+      reg:
-+        description: |
-+          The channel number. LTC2992 can monitor two supplies.
-+        items:
-+         minimum: 0
-+         maximum: 1
-+
-+      shunt-resistor-micro-ohms:
-+        description:
-+          The value of curent sense resistor in microohms.
-+  required:
-+    - reg
-+
-+  additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c1 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        ltc2992@6F {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+
-+                compatible = "adi,ltc2992";
-+                reg = <0x6F>;
-+
-+                channel@0 {
-+                        reg = <0x0>;
-+                        shunt-resistor-micro-ohms = <10000>;
-+                };
-+
-+                channel@1 {
-+                        reg = <0x1>;
-+                        shunt-resistor-micro-ohms = <10000>;
-+                };
-+        };
-+    };
-+...
+As a note to patch 23:
+This might slightly change behaviour.
+On hd44780 displays with one or two lines the previous implementation
+did still write characters to the buffer of the display even if they are
+currently not visible. The shift_display command could be used so set
+the "viewing window" to a new position in the buffer and then you could
+see the characters previously written.
+This described behaviour does not work for hd44780 displays with more
+than two display lines. There simply is not enough buffer.
+So the behaviour was a bit inconsistens across different displays.
+The new behaviour is to stop writing character at the end of a visible
+line, even if there would be room in the buffer. This allows us to have
+an easy implementation, that should behave equal on all supported
+displays. This is not hd44780 hardware dependent anymore.
+
+Link: https://lore.kernel.org/lkml/20191016082430.5955-1-poeschel@lemonage.de/
+Link: https://lore.kernel.org/lkml/CANiq72kS-u_Xd_m+2CQVh-JCncPf1XNXrXAZ=4z+mze8fwv2kw@mail.gmail.com/
+
+Changes in v5:
+- patch 1: Fix a commit message typo: of -> on
+- patch 2: Remove some unnecessary newlines
+- patch 8: Fix some typos
+- patch 14: Fix commit message typo: it's -> its
+- patch 15: this patch is squashed together from the former individual
+  hd44780_common_ function patches
+- patch 16: combined two cleanup patches
+- patch 17: I did previously undo commit 3f03b6498 which was a mistake.
+  This is now corrected.
+- patch 24: Picked up Robs Reviewed-by
+- patch 25: use hex_to_bin like in commit 3f03b6498 but for the lcd2s.c
+  file
+
+Changes in v4:
+- modtronix -> Modtronix in new lcd2s driver
+- Kconfig: remove "default n" in new lcd2s driver
+
+Changes in v3:
+- Fix some typos in Kconfig stuff
+- Fix kernel test robot reported error: Missed EXPORT_SYMBOL_GPL
+- new patch to reduce display timeout
+- better patch description to why not move cursor beyond end of a line
+- Fixed make dt_binding_doc errors
+
+Changes in v2:
+- split whole patch into many smaller chunks
+- device tree doc in yaml
+
+Lars Poeschel (25):
+  auxdisplay: Use an enum for charlcd  backlight on/off ops
+  auxdisplay: Introduce hd44780_common.[ch]
+  auxdisplay: Move hwidth and bwidth to struct hd44780_common
+  auxdisplay: Move ifwidth to struct hd44780_common
+  auxdisplay: Move write_data pointer to hd44780_common
+  auxdisplay: Move write_cmd pointers to hd44780 drivers
+  auxdisplay: Move addr out of charlcd_priv
+  auxdisplay: hd44780_common_print
+  auxdisplay: provide hd44780_common_gotoxy
+  auxdisplay: add home to charlcd_ops
+  auxdisplay: Move clear_display to hd44780_common
+  auxdisplay: make charlcd_backlight visible to hd44780_common
+  auxdisplay: Make use of enum for backlight on / off
+  auxdisplay: Move init_display to hd44780_common
+  auxdisplay: implement various hd44780_common_ functions
+  auxdisplay: cleanup unnecessary hd44780 code in charlcd
+  auxdisplay: Move char redefine code to hd44780_common
+  auxdisplay: Call charlcd_backlight in place
+  auxdisplay: hd44780_common: Reduce clear_display timeout
+  auxdisplay: hd44780: Remove clear_fast
+  auxdisplay: charlcd: replace last device specific stuff
+  auxdisplay: Change gotoxy calling interface
+  auxdisplay: charlcd: Do not print chars at end of line
+  auxdisplay: lcd2s DT binding doc
+  auxdisplay: add a driver for lcd2s character display
+
+ .../bindings/auxdisplay/modtronix,lcd2s.yaml  |  58 +++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ drivers/auxdisplay/Kconfig                    |  30 ++
+ drivers/auxdisplay/Makefile                   |   2 +
+ drivers/auxdisplay/charlcd.c                  | 412 +++++-------------
+ drivers/auxdisplay/charlcd.h                  |  86 +++-
+ drivers/auxdisplay/hd44780.c                  | 120 +++--
+ drivers/auxdisplay/hd44780_common.c           | 361 +++++++++++++++
+ drivers/auxdisplay/hd44780_common.h           |  33 ++
+ drivers/auxdisplay/lcd2s.c                    | 403 +++++++++++++++++
+ drivers/auxdisplay/panel.c                    | 180 ++++----
+ 11 files changed, 1237 insertions(+), 450 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/auxdisplay/modtronix,lcd2s.yaml
+ create mode 100644 drivers/auxdisplay/hd44780_common.c
+ create mode 100644 drivers/auxdisplay/hd44780_common.h
+ create mode 100644 drivers/auxdisplay/lcd2s.c
+
 -- 
-2.20.1
+2.28.0
 
