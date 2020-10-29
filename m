@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943A729F003
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DD129F004
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgJ2PdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728222AbgJ2Pb7 (ORCPT
+        id S1728251AbgJ2PdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:33:21 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33658 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728247AbgJ2PdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:31:59 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5A5C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:31:58 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id x13so2623709pgp.7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=POKnlFfl2V9OZ8B9RgrGBFa9+xh/s0EHhEzNswRMK4M=;
-        b=K3SW5pIn8+AD+g1YUYPABSi42jUMlyuzFTRT/i8n+Ek/EUQB7SJ2J4FvGqydWiksCh
-         fcXA7XFB7oTReWhWTSuk//Kosg0zlPQhNlhwpTWWd72mvhBkRUFNYHmAJOpHpJ7ooz+E
-         FY8S0ArE1emZGYXGciswq4B2nQFs7Wy+hlBgdwbtCX76UK7oQLm2XTfMn/20eRqZIqbW
-         Zk/jCWo4zrrENF2BN4CRy4UxCU6tBfN6HHANo+8+1gapPfFS4ZB9mH2CgKF60wNPnDDJ
-         sOzSOXd6J905skl73ffKv5/lk7X7ngcg4hxGsiXRiRMwc65LYthTFAKSFNZc0tzLOOPT
-         qdrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=POKnlFfl2V9OZ8B9RgrGBFa9+xh/s0EHhEzNswRMK4M=;
-        b=PpfraunMrN+Cq1JCDQFh1S2ouexIj1FWXwj3QdBxF24o1l887OnwpKwEMgSesO2aAU
-         8wdkZCitlCa8P4rckKtCbKGVhuOStwKAil6DhEAcr7IqORNs8GB6LHhu7sJg+w9Exaeg
-         1g2r9n/UO+P09IchDi/JyHjPK8KHqyhB1mF+VDGSvYcCC2tjYRTBDhr13oOr2WeOrxlA
-         WBB8ssXnBdGiV99aJSIim1BPE4XyAQv4Fq4la1/dFvVU/8qMKayDtO0fcDfq+0krvqcn
-         G9KJFJiphxjRum6T/fqYoiOpc6ZloiV2Pj/DhzUQqwyXyQUsGSVyTZY+W8VxUzZdPZ+q
-         vJPg==
-X-Gm-Message-State: AOAM532OWGWNYeEzPv+YyiEbgUSEsHnpkDPkZ+cS0nWcGGS2tmExU+fB
-        suZ1BHsncLsg+kBmovQYz94=
-X-Google-Smtp-Source: ABdhPJyYhoO9QxGQkc2+glDzbmnxc1qp3YlVE1fEs0lilptHSHDQYk6yq9xzZObfxXuO9xYED2Wx4Q==
-X-Received: by 2002:a63:e542:: with SMTP id z2mr4606132pgj.320.1603985518584;
-        Thu, 29 Oct 2020 08:31:58 -0700 (PDT)
-Received: from localhost (42-3-19-186.static.netvigator.com. [42.3.19.186])
-        by smtp.gmail.com with ESMTPSA id a22sm3382229pfk.29.2020.10.29.08.31.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 29 Oct 2020 08:31:58 -0700 (PDT)
-From:   Qiujun Huang <hqjagain@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
-Cc:     Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH v2] tracing: Fix out of bounds write in get_trace_buf
-Date:   Thu, 29 Oct 2020 23:31:40 +0800
-Message-Id: <20201029153140.3643-1-hqjagain@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 29 Oct 2020 11:33:15 -0400
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kY9vC-0001LQ-SV; Thu, 29 Oct 2020 15:33:03 +0000
+Date:   Thu, 29 Oct 2020 16:33:01 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>
+Subject: Re: [PATCH v5 0/3] time namespace aware system boot time
+Message-ID: <20201029153301.aahwxau6ijyol357@wittgenstein>
+References: <20201027204258.7869-1-michael.weiss@aisec.fraunhofer.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201027204258.7869-1-michael.weiss@aisec.fraunhofer.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The boundary condition should be 3 as we access
-buffer[buffer->nesting][0].
+On Tue, Oct 27, 2020 at 09:42:55PM +0100, Michael Weiß wrote:
+> Time namespaces make it possible to virtualize time inside of
+> containers, e.g., it is feasible to reset the uptime of a container
+> to zero by setting the time namespace offset for boottime to the
+> negated current value of the CLOCK_BOOTTIME.
+> 
+> However, the boot time stamp provided by getboottime64() does not
+> take care of time namespaces. The resulting boot time stamp 'btime'
+> provided by /proc/stat does not show a plausible time stamp inside
+> the time namespace of a container.
+> 
+> We address this by shifting the value returned by getboottime64()
+> by subtracting the boottime offset of the time namespace.
+> (A selftest to check the expected /proc/stat 'btime' inside the
+> namespace is provided.)
+> 
+> Further, to avoid to show processes as time travelers inside of the
+> time namespace the boottime offset then needs to be added to the
+> start_boottime provided by the task_struct.
+> 
+> v5 Changes:
+> Added tags, Thanks Andrei and Thomas for reviews and comments.
+> Updated commit message of [2/3] as indicated by Thomas.
+> 
+> v4 Changes:
+> Avoid type conversions back and forth between timespec64 and ktime_t
+> in 'proc/stat.c' as suggested by Andrei.
+> Introduced timens_sub_boottime() in 'time_namespace.h' to provide
+> better coder readability/consistency.
+> 
+> v3 Changes:
+> leave getboottime64() unchanged and shift the boot timestamp in
+> 'fs/proc/stat.c' as result of the discussion with Andrei and Thomas.
+> 
+> v2 Changes:
+> Fixed compile errors with TIME_NS not set in config
 
-Fixes: e2ace001176dc ("tracing: Choose static tp_printk buffer by explicit nesting count")
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
----
-v2:
-Fix a typo in the title.
----
- kernel/trace/trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you Michael,
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 528971714fc6..196a4b7de48a 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3125,7 +3125,7 @@ static char *get_trace_buf(void)
- {
- 	struct trace_buffer_struct *buffer = this_cpu_ptr(trace_percpu_buffer);
- 
--	if (!buffer || buffer->nesting >= 4)
-+	if (!buffer || buffer->nesting >= 3)
- 		return NULL;
- 
- 	buffer->nesting++;
--- 
-2.17.1
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 
+As discussed with Thomas, I'm picking this up now!
+
+Thanks!
+Christian
