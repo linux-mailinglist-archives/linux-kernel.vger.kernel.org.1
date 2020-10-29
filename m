@@ -2,86 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D16A529F475
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:03:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC0929F477
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725870AbgJ2TD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:03:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:42462 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726125AbgJ2TDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:03:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 44CFC139F;
-        Thu, 29 Oct 2020 12:03:22 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 28ABB3F719;
-        Thu, 29 Oct 2020 12:03:20 -0700 (PDT)
-References: <20201023101158.088940906@infradead.org>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
-        tj@kernel.org, ouwen210@hotmail.com
-Subject: Re: [PATCH v4 00/19] sched: Migrate disable support
-In-reply-to: <20201023101158.088940906@infradead.org>
-Date:   Thu, 29 Oct 2020 19:03:17 +0000
-Message-ID: <jhj361wq2h6.mognet@arm.com>
+        id S1726209AbgJ2TEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgJ2TEP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 15:04:15 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C7DC0613CF;
+        Thu, 29 Oct 2020 12:04:14 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id g12so3116262pgm.8;
+        Thu, 29 Oct 2020 12:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=E/YO8QhrBtgOUHxaIDNankNBd/9HmVJuOo7AD36126w=;
+        b=PLfkqocEdos35ZQHCQz/KTCSR/zMAv3dAbZfuP5kApLSMaTsx7PFKmmwIEBMuJFbFC
+         qC9PdeAhCfMDVWkvy7mrzdhGx8oHpIjCVqULqOklNfRAXVfXVA2r8nPjl2mFopa9IxIp
+         bGQIykKdYgDlBFjJHtGKn43D02lpYwtRVslmiIVm4XXBTr+RbE5XUwGb+k3LOCthAz7g
+         cv6P2xhzPjSwC8fWDCToPqu0kJOxC3WT8a/sp7Xb7gq40x9A64votvET4rP2ylYSwn+a
+         CNl1LQvuP93+p+ZbgI0roqCVTxygv6KD7V3x6aedt6LifnYrTC8MXqvj7SIP+7AR51fj
+         OqLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E/YO8QhrBtgOUHxaIDNankNBd/9HmVJuOo7AD36126w=;
+        b=cQfsImgYTb7I2PCjSjsHxsJB+rh0+AUcYTzc87B17iTLaO64AeMkrVRbu4y4lYCJcS
+         zdKPoPrZTC7B4woYNAa88miFBUJuCz9B12SI2146bWZLYIhf44XXH48cE8onB3hVCDF0
+         JJmnaHsV25uUFJREFr/wp8GMcAhAeHb80kn+Q9g4QuHu+YGu/wKgA7zBpkRnTMRtpISm
+         DeQSMWGWxLDyngIb+tkb8zm5oAXKnPXJTQkw1Uj2uqxY5m+m07VdTEpUnSbvZBTmP56a
+         RsQpJ6RbfAZTlrsKir7AvTa3rPP9NH7hDtLUrgzbS/ZtzfJbQ1wuk2eB0IVfJ0i1qyxE
+         mvXQ==
+X-Gm-Message-State: AOAM5312anXHvwM1f6d9tCNdxIQS/PrKTZWwoBrXaUym1gFjIyLZ69+I
+        WXvVy6hnI1OWO5Tz22ysNUY=
+X-Google-Smtp-Source: ABdhPJw9nDFNuKk/faRep1zMYuYjpRmAzLiIeyJ73bCvjZKMjBLsJZ2uz8PYM+c8gd4OhgIEGjyrHA==
+X-Received: by 2002:a62:e113:0:b029:152:69aa:6a08 with SMTP id q19-20020a62e1130000b029015269aa6a08mr5770954pfh.14.1603998254180;
+        Thu, 29 Oct 2020 12:04:14 -0700 (PDT)
+Received: from my--box ([103.98.79.70])
+        by smtp.gmail.com with ESMTPSA id ne17sm547478pjb.44.2020.10.29.12.04.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 12:04:13 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 00:34:08 +0530
+From:   Deepak R Varma <mh12gx2825@gmail.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Cc:     mh12gx2825@gmail.com
+Subject: [PATCH 2/2] drm: msm: adreno: improve code indentation & alignment
+Message-ID: <e196c426de9e12f149492a92c0a8d92b6106f27c.1603998014.git.mh12gx2825@gmail.com>
+References: <9ca2c2e4cbd9ebb282b90f742305fd9b481aacc2.1603998014.git.mh12gx2825@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ca2c2e4cbd9ebb282b90f742305fd9b481aacc2.1603998014.git.mh12gx2825@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Align instructions split across multiple lines as per the coding
+standards. Issue flagged by checkpatch script.
 
-On 23/10/20 11:11, Peter Zijlstra wrote:
-> Hi,
->
-> The fourth version of migrate_disable() for PREEMPT_RT.
->
-> Two changes since last time:
->
->  - fixes !SMP builds (bigeasy)
->  - TLA+ validation of migrate_disable() vs sched_setaffinity() (valsch)
->
-> Esp. that latter resulted in significant changes to patch #10. Huge thanks to
-> Valentin.
->
+Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+---
+Please note: This is a project task specific patch.
 
-I've been poking at that model some more; there's always going to be some
-gap between what is being modelled vs what the code actually does, but
-I'm mostly happy with the state it is in now.
+ drivers/gpu/drm/msm/adreno/a5xx_debugfs.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c b/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
+index ffe1fb9be155..ac9296f314be 100644
+--- a/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
++++ b/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
+@@ -20,7 +20,7 @@ static void pfp_print(struct msm_gpu *gpu, struct drm_printer *p)
+ 	for (i = 0; i < 36; i++) {
+ 		gpu_write(gpu, REG_A5XX_CP_PFP_STAT_ADDR, i);
+ 		drm_printf(p, "  %02x: %08x\n", i,
+-			gpu_read(gpu, REG_A5XX_CP_PFP_STAT_DATA));
++			   gpu_read(gpu, REG_A5XX_CP_PFP_STAT_DATA));
+ 	}
+ }
+ 
+@@ -33,7 +33,7 @@ static void me_print(struct msm_gpu *gpu, struct drm_printer *p)
+ 	for (i = 0; i < 29; i++) {
+ 		gpu_write(gpu, REG_A5XX_CP_ME_STAT_ADDR, i);
+ 		drm_printf(p, "  %02x: %08x\n", i,
+-			gpu_read(gpu, REG_A5XX_CP_ME_STAT_DATA));
++			   gpu_read(gpu, REG_A5XX_CP_ME_STAT_DATA));
+ 	}
+ }
+ 
+@@ -46,7 +46,7 @@ static void meq_print(struct msm_gpu *gpu, struct drm_printer *p)
+ 
+ 	for (i = 0; i < 64; i++) {
+ 		drm_printf(p, "  %02x: %08x\n", i,
+-			gpu_read(gpu, REG_A5XX_CP_MEQ_DBG_DATA));
++			   gpu_read(gpu, REG_A5XX_CP_MEQ_DBG_DATA));
+ 	}
+ }
+ 
+@@ -63,7 +63,7 @@ static void roq_print(struct msm_gpu *gpu, struct drm_printer *p)
+ 		for (j = 0; j < 4; j++)
+ 			val[j] = gpu_read(gpu, REG_A5XX_CP_ROQ_DBG_DATA);
+ 		drm_printf(p, "  %02x: %08x %08x %08x %08x\n", i,
+-			val[0], val[1], val[2], val[3]);
++			   val[0], val[1], val[2], val[3]);
+ 	}
+ }
+ 
+@@ -155,5 +155,5 @@ void a5xx_debugfs_init(struct msm_gpu *gpu, struct drm_minor *minor)
+ 				 minor->debugfs_root, minor);
+ 
+ 	debugfs_create_file_unsafe("reset", S_IWUGO, minor->debugfs_root, dev,
+-				&reset_fops);
++				   &reset_fops);
+ }
+-- 
+2.25.1
 
-So far it's been 1 victim task looping around a Migration-Disabled region
-while some other threads fight over changing its affinity. The victim task
-can also be preempted by some higher-priority task. I didn't make the
-victim task block between Migration-Disabled regions.
-
-Last run was 2 CPUs and 2 affinity-changing threads, I'll try to bump that
-a bit but it is already somewhat lengthy to run (~10h).
-
-In terms of what this has been checking
-- Forward progress (no process forever blocked on some condition / lock)
-- Refcounts always >= 0 (hit a few -1's in earlier versions)
-- Affinity is respected
-  I've "implemented" that as:
-
-    If 'p' is running on a CPU, then that CPU must be in p->cpus_mask when
-      !p->migration_pending && p->pi_lock is not held
-
-
-I don't think I have much else to add, so feel free to add
-
-  Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
-To patches 01-14, 16-17.
-
-The RT side of patch 15 looked fine to me, but I didn't spend much time on
-DL. We might still want to steal those .pick_task() from coresched to
-implement that XXX in push_cpu_stop(), but AIUI this is more of a
-performance thing than a correctness one.
