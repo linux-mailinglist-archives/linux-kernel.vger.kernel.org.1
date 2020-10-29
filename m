@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EEE29EBCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC77E29EBC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgJ2MZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:25:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28851 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725987AbgJ2MXF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:23:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603974184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yhuU63QYYA1pfwdAnRMuQGZDltzslJa5sQvMjC4VHB4=;
-        b=JUVIw66+9W+0eD4BhfXjVhPIYSZc76pbpHKxviq4E1LajVzbrNKNGz6Nyfzojf/lFvKdF6
-        IKSgDYzlByMk2gtoHLj5TFrNS2QkYNgODYpfi+1oufcds0Woeq+4svcg+MKxitSVGtby+h
-        CkruOKM4B6lS8X95HjflhTUG/GC47+s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-lFnQ0bnJOYGjYECIeoQ01w-1; Thu, 29 Oct 2020 08:20:57 -0400
-X-MC-Unique: lFnQ0bnJOYGjYECIeoQ01w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8EB4010199A7;
-        Thu, 29 Oct 2020 12:20:56 +0000 (UTC)
-Received: from thinkpad.redhat.com (ovpn-113-197.ams2.redhat.com [10.36.113.197])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E9DC26266E;
-        Thu, 29 Oct 2020 12:20:54 +0000 (UTC)
-From:   Laurent Vivier <lvivier@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Jason Wang <jasowang@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>
-Subject: [PATCH 2/2] vdpasim: allow to assign a MAC address
-Date:   Thu, 29 Oct 2020 13:20:50 +0100
-Message-Id: <20201029122050.776445-3-lvivier@redhat.com>
-In-Reply-To: <20201029122050.776445-1-lvivier@redhat.com>
-References: <20201029122050.776445-1-lvivier@redhat.com>
+        id S1726276AbgJ2MYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:24:35 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:51958 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgJ2MYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 08:24:35 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kY6ya-0049Sx-4A; Thu, 29 Oct 2020 13:24:20 +0100
+Date:   Thu, 29 Oct 2020 13:24:20 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     rain.1986.08.12@gmail.com, zyjzyj2000@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] net: nvidia: forcedeth: remove useless if/else
+Message-ID: <20201029122420.GG933237@lunn.ch>
+References: <1603938614-53589-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603938614-53589-1-git-send-email-zou_wei@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add macaddr parameter to the module to set the MAC address to use
+On Thu, Oct 29, 2020 at 10:30:14AM +0800, Zou Wei wrote:
+> Fix the following coccinelle report:
+> 
+> ./drivers/net/ethernet/nvidia/forcedeth.c:3479:8-10:
+> WARNING: possible condition with no effect (if == else)
+> 
+> Both branches are the same, so remove the else if/else altogether.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+>  drivers/net/ethernet/nvidia/forcedeth.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/nvidia/forcedeth.c b/drivers/net/ethernet/nvidia/forcedeth.c
+> index 2fc10a3..87ed7e1 100644
+> --- a/drivers/net/ethernet/nvidia/forcedeth.c
+> +++ b/drivers/net/ethernet/nvidia/forcedeth.c
+> @@ -3476,9 +3476,6 @@ static int nv_update_linkspeed(struct net_device *dev)
+>  	} else if (adv_lpa & LPA_10FULL) {
+>  		newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_10;
+>  		newdup = 1;
+> -	} else if (adv_lpa & LPA_10HALF) {
+> -		newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_10;
+> -		newdup = 0;
+>  	} else {
+>  		newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_10;
+>  		newdup = 0;
 
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
----
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+I think the original code is more readable. The idea is, you look at
+what each end of the link can do, and work your way from fastest to
+slowest finding one in common. That is what the four if () do. If
+there is no speed in common, the link is probably not going to work,
+but default to 10Half, because all devices should in theory support
+that. That is the last else. The change makes it a lot less clear
+about this last past.
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index 7f8ebc9924ac..9cf7079ee185 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -38,6 +38,10 @@ static int batch_mapping = 1;
- module_param(batch_mapping, int, 0444);
- MODULE_PARM_DESC(batch_mapping, "Batched mapping 1 -Enable; 0 - Disable");
- 
-+static char *macaddr;
-+module_param(macaddr, charp, 0);
-+MODULE_PARM_DESC(macaddr, "Ethernet MAC address");
-+
- struct vdpasim_virtqueue {
- 	struct vringh vring;
- 	struct vringh_kiov iov;
-@@ -373,7 +377,15 @@ static struct vdpasim *vdpasim_create(void)
- 	if (!vdpasim->buffer)
- 		goto err_iommu;
- 
--	eth_random_addr(vdpasim->config.mac);
-+	if (macaddr) {
-+		mac_pton(macaddr, vdpasim->config.mac);
-+		if (!is_valid_ether_addr(vdpasim->config.mac)) {
-+			ret = -EADDRNOTAVAIL;
-+			goto err_iommu;
-+		}
-+	} else {
-+		eth_random_addr(vdpasim->config.mac);
-+	}
- 
- 	vringh_set_iotlb(&vdpasim->vqs[0].vring, vdpasim->iommu);
- 	vringh_set_iotlb(&vdpasim->vqs[1].vring, vdpasim->iommu);
--- 
-2.26.2
+How about this instead. It keeps the idea of, we have nothing else
+better, do 10Half.
 
+This is not even compile tested.
+
+    Andrew
+
+
+diff --git a/drivers/net/ethernet/nvidia/forcedeth.c b/drivers/net/ethernet/nvidia/forcedeth.c
+index 2fc10a36afa4..f626bd6c0dfc 100644
+--- a/drivers/net/ethernet/nvidia/forcedeth.c
++++ b/drivers/net/ethernet/nvidia/forcedeth.c
+@@ -3467,6 +3467,8 @@ static int nv_update_linkspeed(struct net_device *dev)
+ 
+        /* FIXME: handle parallel detection properly */
+        adv_lpa = lpa & adv;
++       newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_10;
++       newdup = 0;
+        if (adv_lpa & LPA_100FULL) {
+                newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_100;
+                newdup = 1;
+@@ -3479,9 +3481,6 @@ static int nv_update_linkspeed(struct net_device *dev)
+        } else if (adv_lpa & LPA_10HALF) {
+                newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_10;
+                newdup = 0;
+-       } else {
+-               newls = NVREG_LINKSPEED_FORCE|NVREG_LINKSPEED_10;
+-               newdup = 0;
+        }
+ 
+ set_speed:
