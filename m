@@ -2,185 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBE529EFAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E5A29EFAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:25:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbgJ2PZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728023AbgJ2PZr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728150AbgJ2PZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 29 Oct 2020 11:25:47 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7860DC0613D7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:25:45 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id h31so2070851qtd.14
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:25:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=HvgcHzvgNIHPBHqniJljI4Ra8aRcuzZdi/nFEGJJmlk=;
-        b=Um/m2vHRRFZAYWoO06a+XLlpac03GEvrXOXS1V20I2AKQk4w5GkBfkGV/46D8ZpN5S
-         BWxWNch8CArb5m/vTHZUEc4EfIYBgA+rxQqiC+T2dHpCn3nvzQ05mU5/q+kNNCP5ViVw
-         ONGRXSiS594/R1bUFbRO1aGw4Tv9iiF20MUy8dmo0sXdejh5PBrAyNONbIyx3LRdQXi+
-         ut87BXzrd+IhzK3P7N72GV1q5E0T5rZ6Uhw2+wi94u4KLMo5i3+3MH67qqSG3M9NZPt6
-         c1RlmzZytANnC76GOxqvpz1TgczJ+bazkHTJ1b6CtG+nALo7EOjOUE98IZH7TJFubCbt
-         ILAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=HvgcHzvgNIHPBHqniJljI4Ra8aRcuzZdi/nFEGJJmlk=;
-        b=MEAyTNC8sR64G7+4ELxAmd7ppaG4yaulomxheeMa1KSnAUK6o7QB8co0uHWAZj/cL6
-         h/99TaYmO8naTjv5tUZU+ID5nge0nGKrnPjAptNl13ZJJkr1wZiXR+v7NnUfpRX8y2yI
-         fz9cYx+f86MXubq5OC6+qDx7i1xLP202ijtuXaC+lLCQ1teDR7OQvWwdNg+DfLTqF0bL
-         uOletL69R489F04fdXutyzuMW5JG3uRS8LiRkIm79QHCVMyty2gxt2oHnSGYteTaGe0T
-         vbVRJhvTLcKXlPxJUUalXrn+ReXOGnpTpdWmGLjt2pRmI915DbBsxL/Lkl4nzWh5UE2d
-         nOSg==
-X-Gm-Message-State: AOAM530dUe/RbPaM/uL6X48/7CDZN/2oP01I4CGnS6MgqmT7eKhNMKCe
-        ZAVzVkhwbRy7YJ/6iB1vbdgsxoZyiQc=
-X-Google-Smtp-Source: ABdhPJxXWDsknf/Rb1rtb69rxvbDaZbMZ5tivJ14O17u25JSH7WJ9sVZ532+dseKBdIafTNKXVhMMmXELQA=
-Sender: "glider via sendgmr" <glider@glider.muc.corp.google.com>
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:9ff])
- (user=glider job=sendgmr) by 2002:ad4:4770:: with SMTP id d16mr2851186qvx.61.1603985144473;
- Thu, 29 Oct 2020 08:25:44 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 16:25:39 +0100
-Message-Id: <20201029152539.3766146-1-glider@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v5] x86: add failure injection to get/put/clear_user
-From:   Alexander Potapenko <glider@google.com>
-To:     akpm@linux-foundation.org, bp@alien8.de, mingo@redhat.com,
-        corbet@lwn.net, tglx@linutronix.de, arnd@arndb.de
-Cc:     akinobu.mita@gmail.com, hpa@zytor.com, viro@zeniv.linux.org.uk,
-        glider@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        x86@kernel.org, albert.linde@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail.kernel.org ([198.145.29.99]:44306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728007AbgJ2PZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:25:47 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 595B32076E;
+        Thu, 29 Oct 2020 15:25:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603985146;
+        bh=GR36ZrUzjpmFD6uIuhJkcH+5OSGt9TAiu3iuLPy0ltE=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=uLI3sLE9qtpnG4cux2EQDbHtu33t/7qrj/IglIjQBQhNyXVnYKXJet+m8u675hTwb
+         OQK8rq4BGXF+SpiA7zKbL7Q4k2IGIJJNwKYOCS68vzBkPBwtNJ02yFeYBRmLNmYTYT
+         EUy9mn9d5K6L15AMlJBpwvGdJxhX1ZyP6nvOMGLY=
+Date:   Thu, 29 Oct 2020 16:25:43 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Pascal Giard <pascal.giard@etsmtl.ca>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sanjay Govind <sanjay.govind9@gmail.com>
+Subject: Re: [PATCH] HID: ghlive: support for ghlive ps3/wii u dongles
+In-Reply-To: <20201009022722.123943-1-pascal.giard@etsmtl.ca>
+Message-ID: <nycvar.YFH.7.76.2010291622380.18859@cbobk.fhfr.pm>
+References: <20201009022722.123943-1-pascal.giard@etsmtl.ca>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Albert van der Linde <alinde@google.com>
+On Thu, 8 Oct 2020, Pascal Giard wrote:
 
-To test fault-tolerance of user memory acceses in x86, add support for
-fault injection.
+> This commit introduces the Guitar Hero Live driver which adds support
+> for the PS3 and Wii U dongles.
 
-Make both put_user() and get_user() fail with -EFAULT, and clear_user()
-fail by not clearing any bytes.
+Pascal,
 
-Reviewed-by: Akinobu Mita <akinobu.mita@gmail.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
-Signed-off-by: Albert van der Linde <alinde@google.com>
-Signed-off-by: Alexander Potapenko <glider@google.com>
+thanks for the patch.
 
----
-v2:
- - no significant changes
+[ ... snip ... ]
 
-v3:
- - no changes
+> ---
+>  drivers/hid/Kconfig      |   6 ++
+>  drivers/hid/Makefile     |   1 +
+>  drivers/hid/hid-ghlive.c | 220 +++++++++++++++++++++++++++++++++++++++
 
-v4:
- - instrument the new out-of-line implementations of get_user()/put_user()
- - fix a minor checkpatch warning in the inline assembly
+Would it make more sense (with respect to how we are structuring/naming 
+the hid drivers) to incorporate this into hid-sony (irrespective of 
+currently ongoing discussions about actually splitting that driver :) )?
 
-v5:
- - rebase after another change to put_user()
- - fix an issue reported by kernel test robot <lkp@intel.com>
+> +static void ghl_magic_poke(struct timer_list *t)
+> +{
+> +	struct ghlive_sc *sc = from_timer(sc, t, poke_timer);
+> +
+> +	int ret;
+> +	unsigned int pipe;
+> +	struct urb *urb;
+> +	struct usb_ctrlrequest *cr;
+> +	const u16 poke_size =
+> +		ARRAY_SIZE(ghl_ps3wiiu_magic_data);
+> +	u8 *databuf;
+> +
+> +	pipe = usb_sndctrlpipe(sc->usbdev, 0);
+> +
+> +	cr = kzalloc(sizeof(*cr), GFP_ATOMIC);
+> +	if (!cr)
+> +		goto resched;
+> +
+> +	databuf = kzalloc(poke_size, GFP_ATOMIC);
+> +	if (!databuf) {
+> +		kfree(cr);
+> +		goto resched;
+> +	}
+> +
+> +	urb = usb_alloc_urb(0, GFP_ATOMIC);
+> +	if (!urb) {
+> +		kfree(databuf);
+> +		kfree(cr);
+> +		goto resched;
 
----
----
- arch/x86/include/asm/uaccess.h | 38 +++++++++++++++++++++-------------
- arch/x86/lib/usercopy_64.c     |  3 +++
- 2 files changed, 27 insertions(+), 14 deletions(-)
 
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index c9fa7be3df82..036467b850f8 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -5,6 +5,7 @@
-  * User space memory access functions
-  */
- #include <linux/compiler.h>
-+#include <linux/fault-inject-usercopy.h>
- #include <linux/kasan-checks.h>
- #include <linux/string.h>
- #include <asm/asm.h>
-@@ -126,11 +127,16 @@ extern int __get_user_bad(void);
- 	int __ret_gu;							\
- 	register __inttype(*(ptr)) __val_gu asm("%"_ASM_DX);		\
- 	__chk_user_ptr(ptr);						\
--	asm volatile("call __" #fn "_%P4"				\
--		     : "=a" (__ret_gu), "=r" (__val_gu),		\
--			ASM_CALL_CONSTRAINT				\
--		     : "0" (ptr), "i" (sizeof(*(ptr))));		\
--	(x) = (__force __typeof__(*(ptr))) __val_gu;			\
-+	if (should_fail_usercopy()) {					\
-+		(x) = 0;						\
-+		__ret_gu = -EFAULT;					\
-+	} else {							\
-+		asm volatile("call __" #fn "_%P4"			\
-+			     : "=a" (__ret_gu), "=r" (__val_gu),	\
-+				ASM_CALL_CONSTRAINT			\
-+			     : "0" (ptr), "i" (sizeof(*(ptr))));	\
-+		(x) = (__force __typeof__(*(ptr))) __val_gu;		\
-+	}								\
- 	__builtin_expect(__ret_gu, 0);					\
- })
- 
-@@ -220,15 +226,19 @@ extern void __put_user_nocheck_8(void);
- 	void __user *__ptr_pu;						\
- 	register __typeof__(*(ptr)) __val_pu asm("%"_ASM_AX);		\
- 	__chk_user_ptr(ptr);						\
--	__ptr_pu = (ptr);						\
--	__val_pu = (x);							\
--	asm volatile("call __" #fn "_%P[size]"				\
--		     : "=c" (__ret_pu),					\
--			ASM_CALL_CONSTRAINT				\
--		     : "0" (__ptr_pu),					\
--		       "r" (__val_pu),					\
--		       [size] "i" (sizeof(*(ptr)))			\
--		     :"ebx");						\
-+	if (unlikely(should_fail_usercopy())) {				\
-+		__ret_pu = -EFAULT;					\
-+	} else {							\
-+		__ptr_pu = (ptr);					\
-+		__val_pu = (x);						\
-+		asm volatile("call __" #fn "_%P[size]"			\
-+			     : "=c" (__ret_pu),				\
-+				ASM_CALL_CONSTRAINT			\
-+			     : "0" (__ptr_pu),				\
-+			       "r" (__val_pu),				\
-+			       [size] "i" (sizeof(*(ptr)))		\
-+			     : "ebx");					\
-+	}								\
- 	__builtin_expect(__ret_pu, 0);					\
- })
- 
-diff --git a/arch/x86/lib/usercopy_64.c b/arch/x86/lib/usercopy_64.c
-index 508c81e97ab1..5617b3864586 100644
---- a/arch/x86/lib/usercopy_64.c
-+++ b/arch/x86/lib/usercopy_64.c
-@@ -7,6 +7,7 @@
-  * Copyright 2002 Andi Kleen <ak@suse.de>
-  */
- #include <linux/export.h>
-+#include <linux/fault-inject-usercopy.h>
- #include <linux/uaccess.h>
- #include <linux/highmem.h>
- 
-@@ -50,6 +51,8 @@ EXPORT_SYMBOL(__clear_user);
- 
- unsigned long clear_user(void __user *to, unsigned long n)
- {
-+	if (should_fail_usercopy())
-+		return n;
- 	if (access_ok(to, n))
- 		return __clear_user(to, n);
- 	return n;
+So if one of the allocations above succeeds and a subsequent one fails, 
+you're going to try re-allocate all of them next time again, leaking the 
+ones that previously succeeded, right?
+
+Thanks,
+
 -- 
-2.29.1.341.ge80a0c044ae-goog
+Jiri Kosina
+SUSE Labs
 
