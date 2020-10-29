@@ -2,349 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E264E29EFE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CC029EF0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728279AbgJ2Pax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728150AbgJ2Pa0 (ORCPT
+        id S1727910AbgJ2PCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:02:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37714 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727708AbgJ2PCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:30:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7584AC0613D5;
-        Thu, 29 Oct 2020 08:30:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=Yo3ZB9M+nmgNalslzrZu+fIoZz4HDZTJc+r4wSqNG4o=; b=v9sUALIzWxZQwIHOdb4X1J2Nin
-        jM9luF5ZIGUZGnlOd0UHFwStZUcS+R7bEnOEI6cJxkV0GrDD1/TQEZPv5Cagq/87oxvjbAxXB9MoB
-        Ple4pt39L3tInusvum4wqiSqRdULkkcBMg0S6eaSsr+NKabzeHWiXDzDl+atbVUHvU5FPuu7+6ho1
-        zl95NWxLFXDyc581fye5mhazenix6X07mFMtNOXs1n2mRiu7yarB/bhzQuqzSMcTqZrH0mEcRzLO6
-        u9BGmf2OJ5mqcJQ0tAYZehPiJ2mu+53JvD889oRj4KVr0+NOxZqRpWgtd+8zdhtU/tDHsutng+SBx
-        q1bLsrtw==;
-Received: from 089144193201.atnat0002.highway.a1.net ([89.144.193.201] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kY9sP-0007Sd-Gg; Thu, 29 Oct 2020 15:30:18 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 13/18] floppy: use a separate gendisk for each media format
-Date:   Thu, 29 Oct 2020 15:58:36 +0100
-Message-Id: <20201029145841.144173-14-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201029145841.144173-1-hch@lst.de>
-References: <20201029145841.144173-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        Thu, 29 Oct 2020 11:02:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603983722;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/9e6OJ104EyuiP4vqnHLBjXHNefHOCJGK8lzKsbwE9I=;
+        b=DuxplTHqKgvgW/V449Kmi9EZ4ky8HTiX2eVbU/9GKLfNwbJ6mbFfeYYShHNvBUClYbGOca
+        sy4icmw6agTRG8z60m9m6xVT3sukrSCXSmKDwK8V/oou/LJI7LWGYDjZQZNav7e/DO1Baq
+        DcwE4mR1ZrxtJwSSDUMfc/xSWibLfNE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-223-y-vbxRTOMIS5_Yccc_aLYA-1; Thu, 29 Oct 2020 11:01:58 -0400
+X-MC-Unique: y-vbxRTOMIS5_Yccc_aLYA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D685804B60;
+        Thu, 29 Oct 2020 15:01:53 +0000 (UTC)
+Received: from ovpn-66-212.rdu2.redhat.com (ovpn-66-212.rdu2.redhat.com [10.10.66.212])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 48B7670C24;
+        Thu, 29 Oct 2020 15:01:23 +0000 (UTC)
+Message-ID: <89f0dbf6713ebd44ec519425e3a947e71f7aed55.camel@redhat.com>
+Subject: Re: WARN_ON(fuse_insert_writeback(root, wpa)) in tree_insert()
+From:   Qian Cai <cai@redhat.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Vivek Goyal <vgoyal@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com
+Date:   Thu, 29 Oct 2020 11:01:22 -0400
+In-Reply-To: <c4cb4b41655bc890b9dbf40bd2c133cbcbef734d.camel@redhat.com>
+References: <c4cb4b41655bc890b9dbf40bd2c133cbcbef734d.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The floppy driver usually autodetects the media when used with the
-normal /dev/fd? devices, which also are the only nodes created by udev.
-But it also supports various aliases that force a given media format.
-That is currently supported using the blk_register_region framework
-which finds the floppy gendisk even for a 'mismatched' dev_t.  The
-problem with this (besides the code complexity) is that it creates
-multiple struct block_device instances for the whole device of a
-single gendisk, which can lead to interesting issues in code not
-aware of that fact.
+On Wed, 2020-10-07 at 16:08 -0400, Qian Cai wrote:
+> Running some fuzzing by a unprivileged user on virtiofs could trigger the
+> warning below. The warning was introduced not long ago by the commit
+> c146024ec44c ("fuse: fix warning in tree_insert() and clean up writepage
+> insertion").
+> 
+> From the logs, the last piece of the fuzzing code is:
+> 
+> fgetxattr(fd=426, name=0x7f39a69af000, value=0x7f39a8abf000, size=1)
 
-To fix this just create a separate gendisk for each of the aliases
-if they are accessed.
+I can still reproduce it on today's linux-next. Any idea on how to debug it
+further?
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/block/floppy.c | 154 ++++++++++++++++++++++++++---------------
- 1 file changed, 97 insertions(+), 57 deletions(-)
+The last syscall to trigger this time is:
 
-diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
-index 7df79ae6b0a1e1..dfe1dfc901ccc2 100644
---- a/drivers/block/floppy.c
-+++ b/drivers/block/floppy.c
-@@ -402,7 +402,6 @@ static struct floppy_drive_params drive_params[N_DRIVE];
- static struct floppy_drive_struct drive_state[N_DRIVE];
- static struct floppy_write_errors write_errors[N_DRIVE];
- static struct timer_list motor_off_timer[N_DRIVE];
--static struct gendisk *disks[N_DRIVE];
- static struct blk_mq_tag_set tag_sets[N_DRIVE];
- static struct block_device *opened_bdev[N_DRIVE];
- static DEFINE_MUTEX(open_lock);
-@@ -477,6 +476,8 @@ static struct floppy_struct floppy_type[32] = {
- 	{ 3200,20,2,80,0,0x1C,0x00,0xCF,0x2C,"H1600" }, /* 31 1.6MB 3.5"    */
- };
- 
-+static struct gendisk *disks[N_DRIVE][ARRAY_SIZE(floppy_type)];
-+
- #define SECTSIZE (_FD_SECTSIZE(*floppy))
- 
- /* Auto-detection: Disk type used until the next media change occurs. */
-@@ -4111,7 +4112,7 @@ static int floppy_open(struct block_device *bdev, fmode_t mode)
- 
- 	new_dev = MINOR(bdev->bd_dev);
- 	drive_state[drive].fd_device = new_dev;
--	set_capacity(disks[drive], floppy_sizes[new_dev]);
-+	set_capacity(disks[drive][ITYPE(new_dev)], floppy_sizes[new_dev]);
- 	if (old_dev != -1 && old_dev != new_dev) {
- 		if (buffer_drive == drive)
- 			buffer_track = -1;
-@@ -4579,15 +4580,58 @@ static bool floppy_available(int drive)
- 	return true;
- }
- 
--static struct kobject *floppy_find(dev_t dev, int *part, void *data)
-+static int floppy_alloc_disk(unsigned int drive, unsigned int type)
- {
--	int drive = (*part & 3) | ((*part & 0x80) >> 5);
--	if (drive >= N_DRIVE || !floppy_available(drive))
--		return NULL;
--	if (((*part >> 2) & 0x1f) >= ARRAY_SIZE(floppy_type))
--		return NULL;
--	*part = 0;
--	return get_disk_and_module(disks[drive]);
-+	struct gendisk *disk;
-+	int err;
-+
-+	disk = alloc_disk(1);
-+	if (!disk)
-+		return -ENOMEM;
-+
-+	disk->queue = blk_mq_init_queue(&tag_sets[drive]);
-+	if (IS_ERR(disk->queue)) {
-+		err = PTR_ERR(disk->queue);
-+		disk->queue = NULL;
-+		put_disk(disk);
-+		return err;
-+	}
-+
-+	blk_queue_bounce_limit(disk->queue, BLK_BOUNCE_HIGH);
-+	blk_queue_max_hw_sectors(disk->queue, 64);
-+	disk->major = FLOPPY_MAJOR;
-+	disk->first_minor = TOMINOR(drive) | (type << 2);
-+	disk->fops = &floppy_fops;
-+	disk->events = DISK_EVENT_MEDIA_CHANGE;
-+	if (type)
-+		sprintf(disk->disk_name, "fd%d_type%d", drive, type);
-+	else
-+		sprintf(disk->disk_name, "fd%d", drive);
-+	/* to be cleaned up... */
-+	disk->private_data = (void *)(long)drive;
-+	disk->flags |= GENHD_FL_REMOVABLE;
-+
-+	disks[drive][type] = disk;
-+	return 0;
-+}
-+
-+static DEFINE_MUTEX(floppy_probe_lock);
-+
-+static void floppy_probe(dev_t dev)
-+{
-+	unsigned int drive = (MINOR(dev) & 3) | ((MINOR(dev) & 0x80) >> 5);
-+	unsigned int type = (MINOR(dev) >> 2) & 0x1f;
-+
-+	if (drive >= N_DRIVE || !floppy_available(drive) ||
-+	    type >= ARRAY_SIZE(floppy_type))
-+		return;
-+
-+	mutex_lock(&floppy_probe_lock);
-+	if (!disks[drive][type]) {
-+		if (floppy_alloc_disk(drive, type) == 0)
-+			add_disk(disks[drive][type]);
-+	}
-+	mutex_unlock(&floppy_probe_lock);
- }
- 
- static int __init do_floppy_init(void)
-@@ -4609,33 +4653,25 @@ static int __init do_floppy_init(void)
- 		return -ENOMEM;
- 
- 	for (drive = 0; drive < N_DRIVE; drive++) {
--		disks[drive] = alloc_disk(1);
--		if (!disks[drive]) {
--			err = -ENOMEM;
-+		memset(&tag_sets[drive], 0, sizeof(tag_sets[drive]));
-+		tag_sets[drive].ops = &floppy_mq_ops;
-+		tag_sets[drive].nr_hw_queues = 1;
-+		tag_sets[drive].nr_maps = 1;
-+		tag_sets[drive].queue_depth = 2;
-+		tag_sets[drive].numa_node = NUMA_NO_NODE;
-+		tag_sets[drive].flags = BLK_MQ_F_SHOULD_MERGE;
-+		err = blk_mq_alloc_tag_set(&tag_sets[drive]);
-+		if (err)
- 			goto out_put_disk;
--		}
- 
--		disks[drive]->queue = blk_mq_init_sq_queue(&tag_sets[drive],
--							   &floppy_mq_ops, 2,
--							   BLK_MQ_F_SHOULD_MERGE);
--		if (IS_ERR(disks[drive]->queue)) {
--			err = PTR_ERR(disks[drive]->queue);
--			disks[drive]->queue = NULL;
-+		err = floppy_alloc_disk(drive, 0);
-+		if (err)
- 			goto out_put_disk;
--		}
--
--		blk_queue_bounce_limit(disks[drive]->queue, BLK_BOUNCE_HIGH);
--		blk_queue_max_hw_sectors(disks[drive]->queue, 64);
--		disks[drive]->major = FLOPPY_MAJOR;
--		disks[drive]->first_minor = TOMINOR(drive);
--		disks[drive]->fops = &floppy_fops;
--		disks[drive]->events = DISK_EVENT_MEDIA_CHANGE;
--		sprintf(disks[drive]->disk_name, "fd%d", drive);
- 
- 		timer_setup(&motor_off_timer[drive], motor_off_callback, 0);
- 	}
- 
--	err = register_blkdev(FLOPPY_MAJOR, "fd");
-+	err = __register_blkdev(FLOPPY_MAJOR, "fd", floppy_probe);
- 	if (err)
- 		goto out_put_disk;
- 
-@@ -4643,9 +4679,6 @@ static int __init do_floppy_init(void)
- 	if (err)
- 		goto out_unreg_blkdev;
- 
--	blk_register_region(MKDEV(FLOPPY_MAJOR, 0), 256, THIS_MODULE,
--			    floppy_find, NULL, NULL);
--
- 	for (i = 0; i < 256; i++)
- 		if (ITYPE(i))
- 			floppy_sizes[i] = floppy_type[ITYPE(i)].size;
-@@ -4673,7 +4706,7 @@ static int __init do_floppy_init(void)
- 	if (fdc_state[0].address == -1) {
- 		cancel_delayed_work(&fd_timeout);
- 		err = -ENODEV;
--		goto out_unreg_region;
-+		goto out_unreg_driver;
- 	}
- #if N_FDC > 1
- 	fdc_state[1].address = FDC2;
-@@ -4684,7 +4717,7 @@ static int __init do_floppy_init(void)
- 	if (err) {
- 		cancel_delayed_work(&fd_timeout);
- 		err = -EBUSY;
--		goto out_unreg_region;
-+		goto out_unreg_driver;
- 	}
- 
- 	/* initialise drive state */
-@@ -4761,10 +4794,8 @@ static int __init do_floppy_init(void)
- 		if (err)
- 			goto out_remove_drives;
- 
--		/* to be cleaned up... */
--		disks[drive]->private_data = (void *)(long)drive;
--		disks[drive]->flags |= GENHD_FL_REMOVABLE;
--		device_add_disk(&floppy_device[drive].dev, disks[drive], NULL);
-+		device_add_disk(&floppy_device[drive].dev, disks[drive][0],
-+				NULL);
- 	}
- 
- 	return 0;
-@@ -4772,30 +4803,27 @@ static int __init do_floppy_init(void)
- out_remove_drives:
- 	while (drive--) {
- 		if (floppy_available(drive)) {
--			del_gendisk(disks[drive]);
-+			del_gendisk(disks[drive][0]);
- 			platform_device_unregister(&floppy_device[drive]);
- 		}
- 	}
- out_release_dma:
- 	if (atomic_read(&usage_count))
- 		floppy_release_irq_and_dma();
--out_unreg_region:
--	blk_unregister_region(MKDEV(FLOPPY_MAJOR, 0), 256);
-+out_unreg_driver:
- 	platform_driver_unregister(&floppy_driver);
- out_unreg_blkdev:
- 	unregister_blkdev(FLOPPY_MAJOR, "fd");
- out_put_disk:
- 	destroy_workqueue(floppy_wq);
- 	for (drive = 0; drive < N_DRIVE; drive++) {
--		if (!disks[drive])
-+		if (!disks[drive][0])
- 			break;
--		if (disks[drive]->queue) {
--			del_timer_sync(&motor_off_timer[drive]);
--			blk_cleanup_queue(disks[drive]->queue);
--			disks[drive]->queue = NULL;
--			blk_mq_free_tag_set(&tag_sets[drive]);
--		}
--		put_disk(disks[drive]);
-+		del_timer_sync(&motor_off_timer[drive]);
-+		blk_cleanup_queue(disks[drive][0]->queue);
-+		disks[drive][0]->queue = NULL;
-+		blk_mq_free_tag_set(&tag_sets[drive]);
-+		put_disk(disks[drive][0]);
- 	}
- 	return err;
- }
-@@ -5006,9 +5034,8 @@ module_init(floppy_module_init);
- 
- static void __exit floppy_module_exit(void)
- {
--	int drive;
-+	int drive, i;
- 
--	blk_unregister_region(MKDEV(FLOPPY_MAJOR, 0), 256);
- 	unregister_blkdev(FLOPPY_MAJOR, "fd");
- 	platform_driver_unregister(&floppy_driver);
- 
-@@ -5018,10 +5045,16 @@ static void __exit floppy_module_exit(void)
- 		del_timer_sync(&motor_off_timer[drive]);
- 
- 		if (floppy_available(drive)) {
--			del_gendisk(disks[drive]);
-+			for (i = 0; i < ARRAY_SIZE(floppy_type); i++) {
-+				if (disks[drive][i])
-+					del_gendisk(disks[drive][i]);
-+			}
- 			platform_device_unregister(&floppy_device[drive]);
- 		}
--		blk_cleanup_queue(disks[drive]->queue);
-+		for (i = 0; i < ARRAY_SIZE(floppy_type); i++) {
-+			if (disks[drive][i])
-+				blk_cleanup_queue(disks[drive][i]->queue);
-+		}
- 		blk_mq_free_tag_set(&tag_sets[drive]);
- 
- 		/*
-@@ -5029,10 +5062,17 @@ static void __exit floppy_module_exit(void)
- 		 * queue reference in put_disk().
- 		 */
- 		if (!(allowed_drive_mask & (1 << drive)) ||
--		    fdc_state[FDC(drive)].version == FDC_NONE)
--			disks[drive]->queue = NULL;
-+		    fdc_state[FDC(drive)].version == FDC_NONE) {
-+			for (i = 0; i < ARRAY_SIZE(floppy_type); i++) {
-+				if (disks[drive][i])
-+					disks[drive][i]->queue = NULL;
-+			}
-+		}
- 
--		put_disk(disks[drive]);
-+		for (i = 0; i < ARRAY_SIZE(floppy_type); i++) {
-+			if (disks[drive][i])
-+				put_disk(disks[drive][i]);
-+		}
- 	}
- 
- 	cancel_delayed_work_sync(&fd_timeout);
--- 
-2.28.0
+ftruncate(fd=410, length=4)
+
+[main]  testfile fd:410 filename:trinity-testfile1 flags:2 fopened:1 fcntl_flags:42400 global:1
+[main]   start: 0x7fadab1eb000 size:4KB  name: trinity-testfile1 global:1
+
+[ 3353.774694][T124459] WARNING: CPU: 45 PID: 124459 at fs/fuse/file.c:1742 tree_insert.part.39+0x0/0x10 [fuse]
+[ 3353.777295][T124459] Modules linked in: isofs kvm_intel kvm irqbypass nls_ascii nls_cp437 vfat fat ip_tables x_tables virtiofs fuse sr_mod sd_mod cdrom ata_piix virtio_pci virtio_ring e1000 libata virtio dm_d
+[ 3353.783690][T124459] CPU: 45 PID: 124459 Comm: trinity-c45 Not tainted 5.10.0-rc1-next-20201029+ #3
+[ 3353.786200][T124459] Hardware name: Red Hat KVM, BIOS 1.14.0-1.module+el8.3.0+7638+07cf13d2 04/01/2014
+[ 3353.788746][T124459] RIP: 0010:tree_insert.part.39+0x0/0x10 [fuse]
+[ 3353.790847][T124459] Code: fd b7 d7 48 8b 0c 24 e9 ec fb ff ff 0f 1f 40 00 66 2e 0f 1f 84 00 00 00 00 00 0f 0b c3 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 <0f> 0b c3 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 48 b0
+[ 3353.796025][T124459] RSP: 0018:ffffc90008b4f828 EFLAGS: 00010286
+[ 3353.797628][T124459] RAX: ffff88818875cd00 RBX: ffff888261d9a100 RCX: ffff8882051023d0
+[ 3353.799752][T124459] RDX: 0000000000000000 RSI: ffff888261d9a100 RDI: ffff88818875cdb0
+[ 3353.803681][T124459] RBP: ffffea000a835300 R08: ffff888261d9a1f8 R09: fffff52001169ef8
+[ 3353.807019][T124459] R10: 0000000000000003 R11: fffff52001169ef8 R12: ffff888205101f40
+[ 3353.810694][T124459] R13: ffffea0007d812c0 R14: ffff8881b48b1000 R15: ffff888205102470
+[ 3353.813877][T124459] FS:  00007fadae016740(0000) GS:ffff888bcd140000(0000) knlGS:0000000000000000
+[ 3353.817613][T124459] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 3353.819366][T124459] CR2: 00000000000000e6 CR3: 0000000125140004 CR4: 0000000000170ee0
+[ 3353.822295][T124459] Call Trace:
+[ 3353.823242][T124459]  fuse_writepage_locked+0xa43/0xd40 [fuse]
+[ 3353.824930][T124459]  fuse_launder_page+0x5b/0xc0 [fuse]
+[ 3353.826466][T124459]  invalidate_inode_pages2_range+0x709/0xa90
+[ 3353.828231][T124459]  ? unmap_mapping_pages+0x91/0x230
+[ 3353.829703][T124459]  ? truncate_exceptional_pvec_entries.part.18+0x460/0x460
+[ 3353.832203][T124459]  ? unmap_mapping_pages+0xbd/0x230
+[ 3353.833657][T124459]  ? virtio_fs_wake_pending_and_unlock+0x1eb/0x610 [virtiofs]
+[ 3353.835757][T124459]  ? lock_downgrade+0x700/0x700
+[ 3353.837184][T124459]  ? down_write+0xdb/0x150
+[ 3353.838484][T124459]  ? unmap_mapping_pages+0xbd/0x230
+[ 3353.840278][T124459]  ? do_wp_page+0xc50/0xc50
+[ 3353.841603][T124459]  fuse_do_setattr+0xd9c/0x13f0 [fuse]
+[ 3353.843155][T124459]  ? print_usage_bug+0x1a0/0x1a0
+[ 3353.844527][T124459]  ? fuse_flush_times+0x3d0/0x3d0 [fuse]
+[ 3353.846129][T124459]  ? mark_held_locks+0xb0/0x110
+[ 3353.847471][T124459]  fuse_setattr+0x1ff/0x4b0 [fuse]
+[ 3353.848901][T124459]  notify_change+0x6ca/0xc30
+[ 3353.850663][T124459]  ? down_write_killable_nested+0x170/0x170
+[ 3353.852334][T124459]  ? do_truncate+0xdd/0x180
+[ 3353.853651][T124459]  do_truncate+0xdd/0x180
+[ 3353.854912][T124459]  ? do_sys_openat2+0x5b0/0x5b0
+[ 3353.856339][T124459]  ? rcu_read_lock_any_held+0xcd/0xf0
+[ 3353.857898][T124459]  ? __sb_start_write+0x229/0x2d0
+[ 3353.859314][T124459]  do_sys_ftruncate+0x1f5/0x2c0
+[ 3353.861148][T124459]  ? trace_hardirqs_on+0x1c/0x150
+[ 3353.862529][T124459]  do_syscall_64+0x33/0x40
+[ 3353.863801][T124459]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 3353.865413][T124459] RIP: 0033:0x7fadad92978d
+[ 3353.866612][T124459] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d cb 56 2c 00 f7 d8
+[ 3353.872380][T124459] RSP: 002b:00007fffabe83818 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
+[ 3353.874667][T124459] RAX: ffffffffffffffda RBX: 000000000000004d RCX: 00007fadad92978d
+[ 3353.876842][T124459] RDX: fffffffffffffffd RSI: 0000000000000004 RDI: 000000000000019a
+[ 3353.879053][T124459] RBP: 000000000000004d R08: 207124800010c410 R09: 00009a60a1048000
+[ 3353.881679][T124459] R10: 00000000ffff0000 R11: 0000000000000246 R12: 0000000000000002
+[ 3353.883872][T124459] R13: 00007fadaded4058 R14: 00007fadae0166c0 R15: 00007fadaded4000
+[ 3353.886136][T124459] CPU: 45 PID: 124459 Comm: trinity-c45 Not tainted 5.10.0-rc1-next-20201029+ #3
+[ 3353.888602][T124459] Hardware name: Red Hat KVM, BIOS 1.14.0-1.module+el8.3.0+7638+07cf13d2 04/01/2014
+[ 3353.891506][T124459] Call Trace:
+[ 3353.891653][T124459]  dump_stack+0x99/0xcb
+[ 3353.891653][T124459]  __warn.cold.13+0xe/0x55
+[ 3353.891653][T124459]  ? fuse_write_file_get.isra.34.part.35+0x10/0x10 [fuse]
+[ 3353.891653][T124459]  report_bug+0x1af/0x260
+[ 3353.891653][T124459]  handle_bug+0x44/0x80
+[ 3353.891653][T124459]  exc_invalid_op+0x13/0x40
+[ 3353.891653][T124459]  asm_exc_invalid_op+0x12/0x20
+[ 3353.891653][T124459] RIP: 0010:tree_insert.part.39+0x0/0x10 [fuse]
+[ 3353.891653][T124459] Code: fd b7 d7 48 8b 0c 24 e9 ec fb ff ff 0f 1f 40 00 66 2e 0f 1f 84 00 00 00 00 00 0f 0b c3 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 <0f> 0b c3 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 48 b0
+[ 3353.891653][T124459] RSP: 0018:ffffc90008b4f828 EFLAGS: 00010286
+[ 3353.891653][T124459] RAX: ffff88818875cd00 RBX: ffff888261d9a100 RCX: ffff8882051023d0
+[ 3353.891653][T124459] RDX: 0000000000000000 RSI: ffff888261d9a100 RDI: ffff88818875cdb0
+[ 3353.891653][T124459] RBP: ffffea000a835300 R08: ffff888261d9a1f8 R09: fffff52001169ef8
+[ 3353.891653][T124459] R10: 0000000000000003 R11: fffff52001169ef8 R12: ffff888205101f40
+[ 3353.891653][T124459] R13: ffffea0007d812c0 R14: ffff8881b48b1000 R15: ffff888205102470
+[ 3353.891653][T124459]  fuse_writepage_locked+0xa43/0xd40 [fuse]
+[ 3353.891653][T124459]  fuse_launder_page+0x5b/0xc0 [fuse]
+[ 3353.891653][T124459]  invalidate_inode_pages2_range+0x709/0xa90
+[ 3353.891653][T124459]  ? unmap_mapping_pages+0x91/0x230
+[ 3353.891653][T124459]  ? truncate_exceptional_pvec_entries.part.18+0x460/0x460
+[ 3353.891653][T124459]  ? unmap_mapping_pages+0xbd/0x230
+[ 3353.891653][T124459]  ? virtio_fs_wake_pending_and_unlock+0x1eb/0x610 [virtiofs]
+[ 3353.891653][T124459]  ? lock_downgrade+0x700/0x700
+[ 3353.891653][T124459]  ? down_write+0xdb/0x150
+[ 3353.891653][T124459]  ? unmap_mapping_pages+0xbd/0x230
+[ 3353.891653][T124459]  ? do_wp_page+0xc50/0xc50
+[ 3353.891653][T124459]  fuse_do_setattr+0xd9c/0x13f0 [fuse]
+[ 3353.891653][T124459]  ? print_usage_bug+0x1a0/0x1a0
+[ 3353.891653][T124459]  ? fuse_flush_times+0x3d0/0x3d0 [fuse]
+[ 3353.891653][T124459]  ? mark_held_locks+0xb0/0x110
+[ 3353.891653][T124459]  fuse_setattr+0x1ff/0x4b0 [fuse]
+[ 3353.891653][T124459]  notify_change+0x6ca/0xc30
+[ 3353.891653][T124459]  ? down_write_killable_nested+0x170/0x170
+[ 3353.891653][T124459]  ? do_truncate+0xdd/0x180
+[ 3353.891653][T124459]  do_truncate+0xdd/0x180
+[ 3353.891653][T124459]  ? do_sys_openat2+0x5b0/0x5b0
+[ 3353.891653][T124459]  ? rcu_read_lock_any_held+0xcd/0xf0
+[ 3353.891653][T124459]  ? __sb_start_write+0x229/0x2d0
+[ 3353.891653][T124459]  do_sys_ftruncate+0x1f5/0x2c0
+[ 3353.891653][T124459]  ? trace_hardirqs_on+0x1c/0x150
+[ 3353.891653][T124459]  do_syscall_64+0x33/0x40
+[ 3353.891653][T124459]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 3353.891653][T124459] RIP: 0033:0x7fadad92978d
+[ 3353.891653][T124459] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d cb 56 2c 00 f7 d8
+[ 3353.891653][T124459] RSP: 002b:00007fffabe83818 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
+[ 3353.891653][T124459] RAX: ffffffffffffffda RBX: 000000000000004d RCX: 00007fadad92978d
+[ 3353.891653][T124459] RDX: fffffffffffffffd RSI: 0000000000000004 RDI: 000000000000019a
+[ 3353.891653][T124459] RBP: 000000000000004d R08: 207124800010c410 R09: 00009a60a1048000
+[ 3353.891653][T124459] R10: 00000000ffff0000 R11: 0000000000000246 R12: 0000000000000002
+[ 3353.891653][T124459] R13: 00007fadaded4058 R14: 00007fadae0166c0 R15: 00007fadaded4000
+[ 3353.982969][T124459] irq event stamp: 192225
+[ 3353.984184][T124459] hardirqs last  enabled at (192233): [<ffffffff97c2cf2f>] console_unlock+0x81f/0xa20
+[ 3353.986913][T124459] hardirqs last disabled at (192240): [<ffffffff97c2ce3b>] console_unlock+0x72b/0xa20
+[ 3353.989561][T124459] softirqs last  enabled at (191878): [<ffffffff9900061b>] __do_softirq+0x61b/0x95d
+[ 3353.992558][T124459] softirqs last disabled at (191873): [<ffffffff98e00ec2>] asm_call_irq_on_stack+0x12/0x20
+[ 3353.995337][T124459] ---[ end trace c2dc55cf6d30e0a3 ]---
 
