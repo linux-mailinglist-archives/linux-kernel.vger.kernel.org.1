@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C991C29E916
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD9129E930
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgJ2Kfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:35:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60616 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbgJ2Kfv (ORCPT
+        id S1726404AbgJ2KnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:43:17 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:34962 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726134AbgJ2KnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:35:51 -0400
-Date:   Thu, 29 Oct 2020 10:35:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603967749;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+b7IrgS+Jh4kwmAGNtuWQVeZtI5K/CTvSja+jadtGxw=;
-        b=uX5LNukNz6RNYn5XLujtwxQ5bFAqe5Lrm/3O2+eDvOWA9NkwKqKPUvJKz7wLwZrkum5U1N
-        eDW8DUGo5GIo7JD6lQYkAbRAfDqHal5uWRlGBOnScZvZyRntB51gV44qSpQWoMGjj2H+Wf
-        s4T7/3pY1ySbYkK+CHqKWGSTuZMDec7gFi6iL19YP1JjSyvUm4Yu2PXuHHu5OA/NzqNpF4
-        24ySTx9rlBTcJZHsh7+gmzgHp8Q8hj11EGr6+0FO0T40+9KL9IUvYQfzJ7Xm8qqag4RP06
-        Wm/ROenNM8zavG6to6n7UH/skbxxewlM03EXub6tAAuqIlDDY9tDJ5I7Kwvmbg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603967749;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+b7IrgS+Jh4kwmAGNtuWQVeZtI5K/CTvSja+jadtGxw=;
-        b=birQb4B4Mmd72/Vte/SQQ2vj0O5YHpS4rDPVfMbrTDIyZi7y+lhC3H7XM0G+niXGlK855L
-        2VKiaWAafnYIH+DQ==
-From:   "tip-bot2 for Jens Axboe" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86: Wire up TIF_NOTIFY_SIGNAL
-Cc:     Jens Axboe <axboe@kernel.dk>, Thomas Gleixner <tglx@linutronix.de>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201026203230.386348-4-axboe@kernel.dk>
-References: <20201026203230.386348-4-axboe@kernel.dk>
+        Thu, 29 Oct 2020 06:43:10 -0400
+Received: by mail-ot1-f67.google.com with SMTP id n11so1853204ota.2;
+        Thu, 29 Oct 2020 03:43:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iwJ38VzBMmI3Ef757/3PaRmPBncmzMloPmX0ZrpiY2k=;
+        b=Rs+xzNJoZ9XpzmVqQIxJKoPx3B2QmVc6YFlnIeJGMv0lTVedI6hr184xiY3wMZ5FfU
+         vz5pyT9CDexPsFTKAvK0pL71rUCsTYcMt+VHQj9eSjhXV5E2G8kyAmV8ROvdQ0hM0zS5
+         u7tJArOEBcLpNbjIOESb1Lz/l//x+afcQ1FesvmqhPvug2IAHhUzguSAURxbaZNrJWd1
+         13FeozjKkwuFqwmUNKhqkw52GqIq51ANb1yUaBUmpWy2aWUIJ93ql6mPhtFDAE8SJ12T
+         2c2PIw5w48BAfnS+7ZFx+cjLwEO3noCDFrQ/I7eCQYqCedMMTZyzb0Y9CWM2Pvjr1ozh
+         KZFg==
+X-Gm-Message-State: AOAM530Ab7noVjoWLmJtKft3a0DqbvOEZBnZig+bt8pIdklgQYB9PmTX
+        Y4emRHb4xxfVXlOaTk3aO101RIw20qEMA8qG9J0=
+X-Google-Smtp-Source: ABdhPJzGVASLyoTNxz/W4r70+FS+l8cUY6j/29admB6g2x1bV8CsV9aGCfDVmfjdg8DsT+rTv+hQdOBTwRgs9Ufs4R4=
+X-Received: by 2002:a05:6830:18cd:: with SMTP id v13mr2855310ote.206.1603968188569;
+ Thu, 29 Oct 2020 03:43:08 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <160396774828.397.17300041063164056349.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <2183878.gTFULuzKx9@kreacher> <1905098.zDJocX6404@kreacher>
+ <12275472.W5IoEtXICo@kreacher> <20201028035702.75f6rnbkvfaic4si@vireshk-i7>
+In-Reply-To: <20201028035702.75f6rnbkvfaic4si@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 29 Oct 2020 11:42:56 +0100
+Message-ID: <CAJZ5v0ikw9M4-NOEqtoxqs_948iqaX4P5euiXD+VmpaDHd91vg@mail.gmail.com>
+Subject: Re: [PATCH v2.1 4/4] cpufreq: schedutil: Always call driver if
+ need_freq_update is set
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/entry branch of tip:
+On Thu, Oct 29, 2020 at 12:10 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 27-10-20, 16:35, Rafael J. Wysocki wrote:
+> > Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+> > ===================================================================
+> > --- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
+> > +++ linux-pm/kernel/sched/cpufreq_schedutil.c
+> > @@ -102,11 +102,12 @@ static bool sugov_should_update_freq(str
+> >  static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
+> >                                  unsigned int next_freq)
+> >  {
+> > -     if (sg_policy->next_freq == next_freq)
+> > +     if (sg_policy->next_freq == next_freq && !sg_policy->need_freq_update)
+> >               return false;
+> >
+> >       sg_policy->next_freq = next_freq;
+> >       sg_policy->last_freq_update_time = time;
+> > +     sg_policy->need_freq_update = false;
+> >
+> >       return true;
+> >  }
+> > @@ -161,10 +162,12 @@ static unsigned int get_next_freq(struct
+> >
+> >       freq = map_util_freq(util, freq, max);
+> >
+> > -     if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+> > +     if (cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
+> > +             sg_policy->need_freq_update = true;
+> > +     else if (freq == sg_policy->cached_raw_freq &&
+> > +              !sg_policy->need_freq_update)
+> >               return sg_policy->next_freq;
+> >
+> > -     sg_policy->need_freq_update = false;
+> >       sg_policy->cached_raw_freq = freq;
+> >       return cpufreq_driver_resolve_freq(policy, freq);
+> >  }
+>
+> What about just this instead ?
+>
+>   static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
+>                                    unsigned int next_freq)
+>   {
+>  -      if (sg_policy->next_freq == next_freq)
+>  +      if (sg_policy->next_freq == next_freq &&
+>  +          !cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
+>                 return false;
+>
+>         sg_policy->next_freq = next_freq;
+>         sg_policy->last_freq_update_time = time;
+>
+>         return true;
+>   }
+>
 
-Commit-ID:     c8d5ed67936fddbe2ae845fc80397718006322d7
-Gitweb:        https://git.kernel.org/tip/c8d5ed67936fddbe2ae845fc80397718006322d7
-Author:        Jens Axboe <axboe@kernel.dk>
-AuthorDate:    Mon, 26 Oct 2020 14:32:29 -06:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 29 Oct 2020 11:29:51 +01:00
+Without any changes in get_next_freq() this is not sufficient, because
+get_next_freq() may skip the update too.
 
-x86: Wire up TIF_NOTIFY_SIGNAL
-
-The generic entry code has support for TIF_NOTIFY_SIGNAL already. Just
-provide the TIF bit.
-
-[ tglx: Adopted to other TIF changes in x86 ]
-
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201026203230.386348-4-axboe@kernel.dk
-
----
- arch/x86/include/asm/thread_info.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-index a12b964..06a1710 100644
---- a/arch/x86/include/asm/thread_info.h
-+++ b/arch/x86/include/asm/thread_info.h
-@@ -91,6 +91,7 @@ struct thread_info {
- #define TIF_NEED_FPU_LOAD	14	/* load FPU on return to userspace */
- #define TIF_NOCPUID		15	/* CPUID is not accessible in userland */
- #define TIF_NOTSC		16	/* TSC is not accessible in userland */
-+#define TIF_NOTIFY_SIGNAL	17	/* signal notifications exist */
- #define TIF_SLD			18	/* Restore split lock detection on context switch */
- #define TIF_MEMDIE		20	/* is terminating due to OOM killer */
- #define TIF_POLLING_NRFLAG	21	/* idle is polling for TIF_NEED_RESCHED */
-@@ -118,6 +119,7 @@ struct thread_info {
- #define _TIF_NEED_FPU_LOAD	(1 << TIF_NEED_FPU_LOAD)
- #define _TIF_NOCPUID		(1 << TIF_NOCPUID)
- #define _TIF_NOTSC		(1 << TIF_NOTSC)
-+#define _TIF_NOTIFY_SIGNAL	(1 << TIF_NOTIFY_SIGNAL)
- #define _TIF_SLD		(1 << TIF_SLD)
- #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
- #define _TIF_IO_BITMAP		(1 << TIF_IO_BITMAP)
+If the intention is to always let the driver callback run when
+CPUFREQ_NEED_UPDATE_LIMITS is set, then both get_next_freq() and
+sugov_update_next_freq() need to be modified.
