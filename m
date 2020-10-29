@@ -2,218 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B587929F7FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2ED329F7FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbgJ2W3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 18:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55542 "EHLO
+        id S1726036AbgJ2W2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 18:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgJ2W3Q (ORCPT
+        with ESMTP id S1726020AbgJ2W2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 18:29:16 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD8FC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 15:29:15 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id r10so3511935pgb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 15:29:15 -0700 (PDT)
+        Thu, 29 Oct 2020 18:28:48 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB35C0613D2;
+        Thu, 29 Oct 2020 15:28:48 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id l24so4659080edj.8;
+        Thu, 29 Oct 2020 15:28:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wdKDl1LjXQvhQ1AkC6QGURA87mnCJHEgAmHs7Sv9BfA=;
-        b=UANId4OxR4AQ/TXYfq+9qY+N50+uQ610bGa7AfWlJjDjEXhkKG9LLC+SQCR3K0YIEJ
-         crm7Ogzu5RVLQb7uWiP6zkDB6M8+e6w7xhxe2kdLESomKCTr+ixj4bF7pLNSNCDuc1Tw
-         vcOlwjWtxnwvY8JY0l+huoFxnw1OYOk5JAOUc=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RXMc5OSGpgSuMJ24cCnWO2LiNVxOAy2zAp+LUmQlsfc=;
+        b=lj6ynL4ahqFevPNd366kcEIifQfswQRS3HkifRdvYvebwHO07T6Fvzg8KJCyz0hFY5
+         FzskV9YvPFCc4Rzk4Oow+VoWKNIExu5l34uFGh/HQBimJfsADE8H6DAgKnsyM4et+2zF
+         rWDUcxU9W1c0qHMUYouZCXkZEtQHXwO53rGn/P5oIqtoah3F5ItqWfcXf4eKpmlXdowr
+         EU5RW8BrIg6gcYRIX7sN+OQqiNcljGuPGnOc47vk36tzJ1bNs2vJT8K31mDhvJ03dKZB
+         GmRV1fW/ZFBW+P8B0WUmQGa1NrMw4Z5zAtjKKkR5uSoX/t3sBF9w9uCyiRx6fdHPgXKV
+         gRtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wdKDl1LjXQvhQ1AkC6QGURA87mnCJHEgAmHs7Sv9BfA=;
-        b=m7lFF7ID5VBexRHJIdzxkp+/9XpsUW/upMSTdvwL7WAU8S24l7Y0oHQ9724EIrp4CB
-         AxYg86hCpIcHRVEXWgSR94WRA0sRGpzEZ5v4fGJmifToxbtsHnSGZxbvsuifh0izcljP
-         I+MRTcZYwR0TiPUiU5s4Ge6VVU3J6TwZO7b0LhK41j7RHXcQYzJIWW2y7llSnPv7HtSv
-         LrXLOLGsU6GkzHhY3VPx1nxnvGNtXsRyrbdNsVOQvIpcMZNkZOy344w5gKTMvzEUIVop
-         u1slUXXmYXv830XsSgGsnEzznDbGDMP2K5XyREzxW+Use4cfk+aa6mBGKv/RFi2Wf93E
-         hy3Q==
-X-Gm-Message-State: AOAM530o08mF5KQ20fsbW9Ck8R3b+Wpu/4WVD7+PsiU1z5rl6klMGGMe
-        I/+vdMgY/+krMnlbwT3F09obLimKw7Eu/A==
-X-Google-Smtp-Source: ABdhPJxiSqPui1DlZJfaXq8NXex5UTbYXvSPRXJ7OyaX/6yWlKwowqUeR6vlTwW4EexF+2mxr4ikfQ==
-X-Received: by 2002:aa7:9388:0:b029:160:cf7:b2ea with SMTP id t8-20020aa793880000b02901600cf7b2eamr6315653pfe.27.1604010554913;
-        Thu, 29 Oct 2020 15:29:14 -0700 (PDT)
-Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id f5sm3573886pgi.86.2020.10.29.15.29.13
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RXMc5OSGpgSuMJ24cCnWO2LiNVxOAy2zAp+LUmQlsfc=;
+        b=G8QRZkpn3AXqbeh9byhCLzQCR7uVVfakH+OcR0OgT81X2aBiLci1d+au5yzLXKyoEu
+         ZdCUtTo9k8zf5Es+vBJiXtvHWDzrV+kBlo7HeYmF93xhJsYMvpK11moaI2i/Tz+odxXR
+         wiuLCdHUqYi4Dul4GjSWlEJ2UY9Z16fw2WgnbM2X7SoIuCtA/LisnYnQsPDv/uAD9xrp
+         1jk1x3FH5vvQOyKE16byS1pXr8FXHhdBzPT4UuWJxsXuYaZnLMiwrQjUOdYmvCbw3ECh
+         LYD0ilp8cs69ro08MrEf8vazGk8+8KWN8VrgTa/Tw69RBT6Xg+E+pd2Kz3PozymDzIcj
+         E09Q==
+X-Gm-Message-State: AOAM533B7O3vYLnVF4hEJtcplGogs+BSn73SnTzcxWJ8M/ZDnXpnMD9/
+        0y6lpAY8GGe/obCUaXODq8Q=
+X-Google-Smtp-Source: ABdhPJxMla1hQY3H5lpvyzRbQs8GPoKs4WJAe/tRW4FScgMjEHEPi0tXWBQovxfJ0xdUmvgh9DqrMw==
+X-Received: by 2002:aa7:c490:: with SMTP id m16mr6354399edq.298.1604010527112;
+        Thu, 29 Oct 2020 15:28:47 -0700 (PDT)
+Received: from localhost.localdomain ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id v6sm2154708ejj.112.2020.10.29.15.28.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 15:29:14 -0700 (PDT)
-From:   Prashant Malani <pmalani@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com, dzigterman@chromium.org,
-        alevkoy@chromium.org, Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: [PATCH v2 7/7] platform/chrome: cros_ec_typec: Register partner altmodes
-Date:   Thu, 29 Oct 2020 15:27:42 -0700
-Message-Id: <20201029222738.482366-8-pmalani@chromium.org>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-In-Reply-To: <20201029222738.482366-1-pmalani@chromium.org>
-References: <20201029222738.482366-1-pmalani@chromium.org>
+        Thu, 29 Oct 2020 15:28:46 -0700 (PDT)
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     David Ahern <dsahern@gmail.com>, Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Stephen Hemminger <stephen@networkplumber.org>, andrew@lunn.ch,
+        f.fainelli@gmail.com, vivien.didelot@gmail.com, jiri@mellanox.com,
+        idosch@idosch.org
+Subject: [PATCH v2 iproute2-next] bridge: add support for L2 multicast groups
+Date:   Fri, 30 Oct 2020 00:28:28 +0200
+Message-Id: <20201029222828.2149980-1-olteanv@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the discovery data from the Chrome EC to register parter altmodes
-with the Type C Connector Class framework. Also introduce a node
-struct to keep track of the list of registered alt modes.
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
+Extend the 'bridge mdb' command for the following syntax:
+bridge mdb add dev br0 port swp0 grp 01:02:03:04:05:06 permanent
+
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 ---
-
 Changes in v2:
-- Changed list traversal during alt mode unregistering to use
-  list_for_each_entry_safe() base on review comment.
+- Removed the const void casts.
+- Removed MDB_FLAGS_L2 from the UAPI to be in sync with the latest
+  kernel patch:
+  https://patchwork.ozlabs.org/project/netdev/patch/20201028233831.610076-1-vladimir.oltean@nxp.com/
 
- drivers/platform/chrome/cros_ec_typec.c | 77 +++++++++++++++++++++++++
- 1 file changed, 77 insertions(+)
+ bridge/mdb.c                   | 54 ++++++++++++++++++++++++++--------
+ include/uapi/linux/if_bridge.h |  1 +
+ 2 files changed, 42 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-index f14550dac614..ce031a10eb1b 100644
---- a/drivers/platform/chrome/cros_ec_typec.c
-+++ b/drivers/platform/chrome/cros_ec_typec.c
-@@ -7,6 +7,7 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/list.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_data/cros_ec_commands.h>
-@@ -31,6 +32,12 @@ enum {
- 	CROS_EC_ALTMODE_MAX,
- };
- 
-+/* Container for altmode pointer nodes. */
-+struct cros_typec_altmode_node {
-+	struct typec_altmode *amode;
-+	struct list_head list;
-+};
-+
- /* Per port data. */
- struct cros_typec_port {
- 	struct typec_port *port;
-@@ -53,6 +60,7 @@ struct cros_typec_port {
- 	/* Flag indicating that PD discovery data parsing is completed. */
- 	bool disc_done;
- 	struct ec_response_typec_discovery *sop_disc;
-+	struct list_head partner_mode_list;
- };
- 
- /* Platform-specific data for the Chrome OS EC Type C controller. */
-@@ -172,11 +180,25 @@ static int cros_typec_add_partner(struct cros_typec_data *typec, int port_num,
- 	return ret;
- }
- 
-+static void cros_typec_unregister_altmodes(struct cros_typec_data *typec, int port_num)
-+{
-+	struct cros_typec_port *port = typec->ports[port_num];
-+	struct cros_typec_altmode_node *node, *tmp;
-+
-+	list_for_each_entry_safe(node, tmp, &port->partner_mode_list, list) {
-+		list_del(&node->list);
-+		typec_unregister_altmode(node->amode);
-+		devm_kfree(typec->dev, node);
-+	}
-+}
-+
- static void cros_typec_remove_partner(struct cros_typec_data *typec,
- 				     int port_num)
+diff --git a/bridge/mdb.c b/bridge/mdb.c
+index 4cd7ca762b78..f2723ab122d0 100644
+--- a/bridge/mdb.c
++++ b/bridge/mdb.c
+@@ -149,6 +149,7 @@ static void print_mdb_entry(FILE *f, int ifindex, const struct br_mdb_entry *e,
+ 			    struct nlmsghdr *n, struct rtattr **tb)
  {
- 	struct cros_typec_port *port = typec->ports[port_num];
+ 	const void *grp, *src;
++	const char *addr;
+ 	SPRINT_BUF(abuf);
+ 	const char *dev;
+ 	int af;
+@@ -156,9 +157,16 @@ static void print_mdb_entry(FILE *f, int ifindex, const struct br_mdb_entry *e,
+ 	if (filter_vlan && e->vid != filter_vlan)
+ 		return;
  
-+	cros_typec_unregister_altmodes(typec, port_num);
-+
- 	port->state.alt = NULL;
- 	port->state.mode = TYPEC_STATE_USB;
- 	port->state.data = NULL;
-@@ -306,6 +328,8 @@ static int cros_typec_init_ports(struct cros_typec_data *typec)
- 			ret = -ENOMEM;
- 			goto unregister_ports;
- 		}
-+
-+		INIT_LIST_HEAD(&cros_port->partner_mode_list);
- 	}
+-	af = e->addr.proto == htons(ETH_P_IP) ? AF_INET : AF_INET6;
+-	grp = af == AF_INET ? (const void *)&e->addr.u.ip4 :
+-			      (const void *)&e->addr.u.ip6;
++	if (!e->addr.proto) {
++		af = AF_PACKET;
++		grp = &e->addr.u.mac_addr;
++	} else if (e->addr.proto == htons(ETH_P_IP)) {
++		af = AF_INET;
++		grp = &e->addr.u.ip4;
++	} else {
++		af = AF_INET6;
++		grp = &e->addr.u.ip6;
++	}
+ 	dev = ll_index_to_name(ifindex);
  
+ 	open_json_object(NULL);
+@@ -168,9 +176,14 @@ static void print_mdb_entry(FILE *f, int ifindex, const struct br_mdb_entry *e,
+ 	print_string(PRINT_ANY, "port", " port %s",
+ 		     ll_index_to_name(e->ifindex));
+ 
++	if (af == AF_INET || af == AF_INET6)
++		addr = inet_ntop(af, grp, abuf, sizeof(abuf));
++	else
++		addr = ll_addr_n2a(grp, ETH_ALEN, 0, abuf, sizeof(abuf));
++
+ 	print_color_string(PRINT_ANY, ifa_family_color(af),
+-			    "grp", " grp %s",
+-			    inet_ntop(af, grp, abuf, sizeof(abuf)));
++			    "grp", " grp %s", addr);
++
+ 	if (tb && tb[MDBA_MDB_EATTR_SOURCE]) {
+ 		src = (const void *)RTA_DATA(tb[MDBA_MDB_EATTR_SOURCE]);
+ 		print_color_string(PRINT_ANY, ifa_family_color(af),
+@@ -440,6 +453,25 @@ static int mdb_show(int argc, char **argv)
  	return 0;
-@@ -590,6 +614,49 @@ static int cros_typec_get_mux_info(struct cros_typec_data *typec, int port_num,
- 				     sizeof(req), resp, sizeof(*resp));
  }
  
-+static int cros_typec_register_altmodes(struct cros_typec_data *typec, int port_num)
++static int mdb_parse_grp(const char *grp, struct br_mdb_entry *e)
 +{
-+	struct cros_typec_port *port = typec->ports[port_num];
-+	struct ec_response_typec_discovery *sop_disc = port->sop_disc;
-+	struct cros_typec_altmode_node *node;
-+	struct typec_altmode_desc desc;
-+	struct typec_altmode *amode;
-+	int ret = 0;
-+	int i, j;
-+
-+	for (i = 0; i < sop_disc->svid_count; i++) {
-+		for (j = 0; j < sop_disc->svids[i].mode_count; j++) {
-+			memset(&desc, 0, sizeof(desc));
-+			desc.svid = sop_disc->svids[i].svid;
-+			desc.mode = j;
-+			desc.vdo = sop_disc->svids[i].mode_vdo[j];
-+
-+			amode = typec_partner_register_altmode(port->partner, &desc);
-+			if (IS_ERR(amode)) {
-+				ret = PTR_ERR(amode);
-+				goto err_cleanup;
-+			}
-+
-+			/* If no memory is available we should unregister and exit. */
-+			node = devm_kzalloc(typec->dev, sizeof(*node), GFP_KERNEL);
-+			if (!node) {
-+				ret = -ENOMEM;
-+				typec_unregister_altmode(amode);
-+				goto err_cleanup;
-+			}
-+
-+			node->amode = amode;
-+			list_add_tail(&node->list, &port->partner_mode_list);
-+		}
++	if (inet_pton(AF_INET, grp, &e->addr.u.ip4)) {
++		e->addr.proto = htons(ETH_P_IP);
++		return 0;
++	}
++	if (inet_pton(AF_INET6, grp, &e->addr.u.ip6)) {
++		e->addr.proto = htons(ETH_P_IPV6);
++		return 0;
++	}
++	if (ll_addr_a2n((char *)e->addr.u.mac_addr, sizeof(e->addr.u.mac_addr),
++			grp) == ETH_ALEN) {
++		e->addr.proto = 0;
++		return 0;
 +	}
 +
-+	return 0;
-+
-+err_cleanup:
-+	cros_typec_unregister_altmodes(typec, port_num);
-+	return ret;
++	return -1;
 +}
 +
- static int cros_typec_handle_sop_disc(struct cros_typec_data *typec, int port_num)
+ static int mdb_modify(int cmd, int flags, int argc, char **argv)
  {
- 	struct cros_typec_port *port = typec->ports[port_num];
-@@ -630,6 +697,16 @@ static int cros_typec_handle_sop_disc(struct cros_typec_data *typec, int port_nu
- 		port->p_identity.vdo[i - 3] = sop_disc->discovery_vdo[i];
+ 	struct {
+@@ -497,14 +529,10 @@ static int mdb_modify(int cmd, int flags, int argc, char **argv)
+ 	if (!entry.ifindex)
+ 		return nodev(p);
  
- 	ret = typec_partner_set_identity(port->partner);
-+	if (ret < 0) {
-+		dev_err(typec->dev, "Failed to update partner PD identity, port: %d\n", port_num);
-+		goto disc_exit;
-+	}
-+
-+	ret = cros_typec_register_altmodes(typec, port_num);
-+	if (ret < 0) {
-+		dev_err(typec->dev, "Failed to register partner altmodes, port: %d\n", port_num);
-+		goto disc_exit;
+-	if (!inet_pton(AF_INET, grp, &entry.addr.u.ip4)) {
+-		if (!inet_pton(AF_INET6, grp, &entry.addr.u.ip6)) {
+-			fprintf(stderr, "Invalid address \"%s\"\n", grp);
+-			return -1;
+-		} else
+-			entry.addr.proto = htons(ETH_P_IPV6);
+-	} else
+-		entry.addr.proto = htons(ETH_P_IP);
++	if (mdb_parse_grp(grp, &entry)) {
++		fprintf(stderr, "Invalid address \"%s\"\n", grp);
++		return -1;
 +	}
  
- disc_exit:
- 	return ret;
+ 	entry.vid = vid;
+ 	addattr_l(&req.n, sizeof(req), MDBA_SET_ENTRY, &entry, sizeof(entry));
+diff --git a/include/uapi/linux/if_bridge.h b/include/uapi/linux/if_bridge.h
+index 69b99901fc5a..db41a5ff34af 100644
+--- a/include/uapi/linux/if_bridge.h
++++ b/include/uapi/linux/if_bridge.h
+@@ -526,6 +526,7 @@ struct br_mdb_entry {
+ 		union {
+ 			__be32	ip4;
+ 			struct in6_addr ip6;
++			unsigned char mac_addr[ETH_ALEN];
+ 		} u;
+ 		__be16		proto;
+ 	} addr;
 -- 
-2.29.1.341.ge80a0c044ae-goog
+2.25.1
 
