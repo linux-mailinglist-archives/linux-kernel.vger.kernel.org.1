@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838AE29EBE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C853F29EC4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725848AbgJ2Mb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:31:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37876 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725601AbgJ2Mbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:31:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3DE19AD31;
-        Thu, 29 Oct 2020 12:31:54 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 13:31:53 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Jessica Yu <jeyu@kernel.org>
-cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] module: set MODULE_STATE_GOING state when a module fails
- to load
-In-Reply-To: <20201028122106.GA6867@linux-8ccs>
-Message-ID: <alpine.LSU.2.21.2010291310210.1688@pobox.suse.cz>
-References: <20201027140336.15409-1-mbenes@suse.cz> <20201028122106.GA6867@linux-8ccs>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1726384AbgJ2Mus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:50:48 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:55154 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgJ2Mur (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 08:50:47 -0400
+Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id DBA2F3B68CE;
+        Thu, 29 Oct 2020 12:33:55 +0000 (UTC)
+X-Originating-IP: 82.255.60.242
+Received: from [192.168.0.28] (lns-bzn-39-82-255-60-242.adsl.proxad.net [82.255.60.242])
+        (Authenticated sender: hadess@hadess.net)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id B56F5C0010;
+        Thu, 29 Oct 2020 12:33:29 +0000 (UTC)
+Message-ID: <08e3a1d264016aed93aca8632ee42637dc00d238.camel@hadess.net>
+Subject: Re: [PATCH] Documentation: Add documentation for new
+ platform_profile sysfs attribute
+From:   Bastien Nocera <hadess@hadess.net>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Pearson <markpearson@lenovo.com>
+Cc:     dvhart@infradead.org, mgross@linux.intel.com,
+        mario.limonciello@dell.com, eliadevito@gmail.com, bberg@redhat.com,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 29 Oct 2020 13:33:28 +0100
+In-Reply-To: <d5f0bcba-5366-87da-d199-a85d59ba6c1c@redhat.com>
+References: <markpearson@lenovo.com>
+         <20201027164219.868839-1-markpearson@lenovo.com>
+         <5ca1ae238b23a611b8a490c244fd93cdcc36ef79.camel@hadess.net>
+         <d5f0bcba-5366-87da-d199-a85d59ba6c1c@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020, Jessica Yu wrote:
-
-> +++ Miroslav Benes [27/10/20 15:03 +0100]:
-> >If a module fails to load due to an error in prepare_coming_module(),
-> >the following error handling in load_module() runs with
-> >MODULE_STATE_COMING in module's state. Fix it by correctly setting
-> >MODULE_STATE_GOING under "bug_cleanup" label.
-> >
-> >Signed-off-by: Miroslav Benes <mbenes@suse.cz>
-> >---
-> > kernel/module.c | 1 +
-> > 1 file changed, 1 insertion(+)
-> >
-> >diff --git a/kernel/module.c b/kernel/module.c
-> >index a4fa44a652a7..b34235082394 100644
-> >--- a/kernel/module.c
-> >+++ b/kernel/module.c
-> >@@ -3991,6 +3991,7 @@ static int load_module(struct load_info *info, const
-> >char __user *uargs,
-> >  			     MODULE_STATE_GOING, mod);
-> >  	klp_module_going(mod);
-> >  bug_cleanup:
-> >+	mod->state = MODULE_STATE_GOING;
-> >  /* module_bug_cleanup needs module_mutex protection */
-> >  mutex_lock(&module_mutex);
-> >  module_bug_cleanup(mod);
+On Wed, 2020-10-28 at 18:23 +0100, Hans de Goede wrote:
 > 
-> Thanks for the fix! Hmm, I am wondering if we also need to set the
-> module to GOING if it happens to fail while it is still UNFORMED.
+> > It's not meaningless, but rather ambiguous. For a range of 1 to 5,
+> > is 1
+> > high performance, and 5 low power, or vice-versa?
 > 
-> Currently, when a module is UNFORMED and encounters an error during
-> load_module(), it stays UNFORMED until it finally goes away. That
-> sounds fine, but try_module_get() technically permits you to get a
-> module while it's UNFORMED (but not if it's GOING). Theoretically
-> someone could increase the refcount of an unformed module that has
-> encountered an error condition and is in the process of going away.
+> It is meaningless because the space we are trying to describe with
+> the
+> profile-names is not 1 dimensional. E.g. as discussed before cool and
+> low-power are not necessarily the same thing. If you have a better
+> way
+> to word this I'm definitely in favor of improving the text here.
 
-Right.
+What do you think of:
 
-> This shouldn't happen if we properly set the module to GOING whenever
-> it encounters an error during load_module().
+> +Since numbers are a rather meaningless way to describe platform-
+profiles
 
-That's correct.
- 
-> But - I cannot think of a scenario where someone could call
-> try_module_get() on an unformed module, since find_module() etc. do
-> not return unformed modules, so they shouldn't be visible outside of
-> the module loader. So in practice, I think we're probably safe here..
+"Since numbers on their own cannot represent the multiple variables
+that a profile will adjust (power consumption, heat generation, etc.)
+..."
 
-Hopefully yes. I haven't found anything that would contradict it.
-
-I think it is even safer to leave UNFORMED there. free_module() explicitly 
-sets UNFORMED state too while going through the similar process.
-
-ftrace_release_mod() is the only inconsistency there. It is called with 
-UNFORMED in load_module() if going through ddebug_cleanup label 
-directly, and with GOING in both do_init_module() before free_module() is 
-called and delete_module syscall. But it probably does not care.
-
-Miroslav
+> +this API uses strings to describe the various profiles. To make sure that
+> +userspace gets a consistent experience when using this API this API
+> +document defines a fixed set of profile-names. Drivers *must* map their
+> +internal profile representation/names onto this fixed set.
 
