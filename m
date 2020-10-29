@@ -2,138 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3310E29F01B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB65F29F018
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728351AbgJ2PhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:37:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37540 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728395AbgJ2PgE (ORCPT
+        id S1728194AbgJ2PhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:37:02 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:44192 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728396AbgJ2PgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:36:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603985763;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RfT7TevZRXoXBrEtY9OkWsu/sfZhCB94tCFpayBZytE=;
-        b=AsWIqICS1mUOp6kaP4TlXS6RdMSIx3eAmioV/4o1Y+nYjodi6J1S5fnYpbOFeX6pvs8UYG
-        WR3R/my/SZoD5+O800h6fM6X/ZOl+VaP2ZP0uEl4g7pKait59i42giel2okHnQN9N2RDh/
-        y2hCqPkPRbT9GoORN/73E2PbhSdnmDQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-oFRVhYZsPYiI0Joqa_I-WQ-1; Thu, 29 Oct 2020 11:35:59 -0400
-X-MC-Unique: oFRVhYZsPYiI0Joqa_I-WQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 39098760C6;
-        Thu, 29 Oct 2020 15:35:57 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-113-60.ams2.redhat.com [10.36.113.60])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7C2ED60F96;
-        Thu, 29 Oct 2020 15:35:51 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        carlos <carlos@redhat.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: Re: [RFC PATCH 1/2] rseq: Implement KTLS prototype for x86-64
-References: <20200925181518.4141-1-mathieu.desnoyers@efficios.com>
-        <87r1qm2atk.fsf@oldenburg2.str.redhat.com>
-        <905713397.71512.1601314192367.JavaMail.zimbra@efficios.com>
-        <873631yp8t.fsf@oldenburg2.str.redhat.com>
-        <1247061646.32339.1603219677094.JavaMail.zimbra@efficios.com>
-Date:   Thu, 29 Oct 2020 16:35:49 +0100
-In-Reply-To: <1247061646.32339.1603219677094.JavaMail.zimbra@efficios.com>
-        (Mathieu Desnoyers's message of "Tue, 20 Oct 2020 14:47:57 -0400
-        (EDT)")
-Message-ID: <87a6w5rqne.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Thu, 29 Oct 2020 11:36:08 -0400
+Received: by mail-ot1-f65.google.com with SMTP id m26so2587076otk.11;
+        Thu, 29 Oct 2020 08:36:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pYhNMIk7qOW8fzlPIb6mwbR/RjaOX4ALpVWt9vbGPp4=;
+        b=BrVxa5UiOx5kR/0jO5IesBft/NM+eHzZtoV0ibgiqVYlzaaQlX3hOcyXctVyPN7yJ/
+         HUfUfNhhazJNdKG62iahtZWbFgr985EfNHQ5Tvytuivock8U644Q9CapQjS3PlS8OggZ
+         UX71LUeLKUAo1Lt7iNaLnQMbqNJigaL8935nHAVb1lgjP4JpieGEenoQSWIm7cDSJQ47
+         bmfNYD2AMiVXHeyjMFnwgHUEctYX4L7WH51AJLD4BclHgQ+Vshu+MylnyuodPoeWl7A1
+         bseWwF8lpT5hvkUiFDsaha3nEP/Vnqt0RBEnoJYcvChl1FHU2pJCzcLt0sClF9OWGGfF
+         zNxA==
+X-Gm-Message-State: AOAM530QX6SESV0oOtPK6uJH41LkrJfEJfCYt4tVVE9oEQcqXCjljQ6u
+        fs8A4xyH+7xYGbrRKCvZdw==
+X-Google-Smtp-Source: ABdhPJy7+Dy/GtcnO7U2Vrvmm/n1381d2/qROf8vZtBudP2OEw4K3ND9BPfhzrMSTTMrbLJ3cylRlw==
+X-Received: by 2002:a9d:d01:: with SMTP id 1mr3802468oti.16.1603985765503;
+        Thu, 29 Oct 2020 08:36:05 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v185sm680470ooa.31.2020.10.29.08.36.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 08:36:04 -0700 (PDT)
+Received: (nullmailer pid 1914957 invoked by uid 1000);
+        Thu, 29 Oct 2020 15:36:04 -0000
+Date:   Thu, 29 Oct 2020 10:36:04 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     alexandru.tachici@analog.com
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net
+Subject: Re: [PATCH 3/3] dt-binding: hwmon: Add documentation for ltc2992
+Message-ID: <20201029153604.GA1914153@bogus>
+References: <20201029094911.79173-1-alexandru.tachici@analog.com>
+ <20201029094911.79173-4-alexandru.tachici@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029094911.79173-4-alexandru.tachici@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Mathieu Desnoyers:
+On Thu, 29 Oct 2020 11:49:11 +0200, alexandru.tachici@analog.com wrote:
+> From: Alexandru Tachici <alexandru.tachici@analog.com>
+> 
+> Add documentation for ltc2992.
+> 
+> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+> ---
+>  .../bindings/hwmon/adi,ltc2992.yaml           | 78 +++++++++++++++++++
+>  1 file changed, 78 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml
+> 
 
-> ----- On Sep 29, 2020, at 4:13 AM, Florian Weimer fweimer@redhat.com wrote:
->
->> * Mathieu Desnoyers:
->> 
->>>> So we have a bootstrap issue here that needs to be solved, I think.
->>>
->>> The one thing I'm not sure about is whether the vDSO interface is indeed
->>> superior to KTLS, or if it is just the model we are used to.
->>>
->>> AFAIU, the current use-cases for vDSO is that an application calls into
->>> glibc, which then calls the vDSO function exposed by the kernel. I wonder
->>> whether the vDSO indirection is really needed if we typically have a glibc
->>> function used as indirection ? For an end user, what is the benefit of vDSO
->>> over accessing KTLS data directly from glibc ?
->> 
->> I think the kernel can only reasonably maintain a single userspace data
->> structure.  It's not reasonable to update several versions of the data
->> structure in parallel.
->
-> I disagree with your statement. Considering that the kernel needs to
-> keep ABI compatibility for whatever it exposes to user-space, claiming
-> that it should never update several versions of data structures
-> exposed to user-space in parallel means that once a data structure is
-> exposed to user-space as ABI in a certain way, it can never ever
-> change in the future, even if we find a better way to do things.
 
-I think it's possible to put data into userspace without making it ABI.
-Think about the init_module system call.  The module blob comes from
-userspace, but its (deeper) internal structure does not have a stable
-ABI.  Similar for many BPF use cases.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-If the internal KTLS blob structure turns into ABI, including the parts
-that need to be updated on context switch, each versioning change has a
-performance impact.
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml:37:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
 
->> This means that glibc would have to support multiple kernel data
->> structures, and users might lose userspace acceleration after a kernel
->> update, until they update glibc as well.  The glibc update should be
->> ABI-compatible, but someone would still have to backport it, apply it to
->> container images, etc.
->
-> No. If the kernel ever exposes a data structure to user-space as ABI,
-> then it needs to stay there, and not break userspace. Hence the need to
-> duplicate information provided to user-space if need be, so we can move
-> on to better ABIs without breaking the old ones.
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml: patternProperties:required: ['reg'] is not of type 'object', 'boolean'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml: patternProperties: {'enum': ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'deprecated', 'description', 'else', 'enum', 'if', 'items', 'maxItems', 'maximum', 'minItems', 'minimum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'propertyNames', 'required', 'then', 'unevaluatedProperties']} is not allowed for 'required'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml: patternProperties: {'enum': ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'deprecated', 'description', 'else', 'enum', 'if', 'items', 'maxItems', 'maximum', 'minItems', 'minimum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'propertyNames', 'required', 'then', 'unevaluatedProperties']} is not allowed for 'additionalProperties'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml: ignoring, error in schema: patternProperties: required
+warning: no schema found in file: ./Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml
 
-It can expose the data as an opaque blob.
 
-> Or as Andy mentioned, we would simply pass the ktls offset as argument to
-> the vDSO ? It seems simple enough. Would it fit all our use-cases including
-> errno ?
+See https://patchwork.ozlabs.org/patch/1390001
 
-That would work, yes.  It's neat, but it won't give you a way to provide
-traditional syscall wrappers directly from the vDSO.
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
 
->> We'll see what will break once we have the correct TID after vfork. 8->
->> glibc currently supports malloc-after-vfork as an extension, and
->> a lot of software depends on it (OpenJDK, for example).
->
-> I am not sure to see how that is related to ktls ?
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-The mutex implementation could switch to the KTLS TID because it always
-correct.  But then locking in a vfork'ed subprocess would no longer look
-like locking from the parent thread because the TID would be different.
+pip3 install dtschema --upgrade
 
-Thanks,
-Florian
--- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+Please check and re-submit.
 
