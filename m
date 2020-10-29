@@ -2,131 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A69329F209
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C7B29F208
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgJ2Qqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726873AbgJ2QqD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:46:03 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8404C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:46:03 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g12so2810458pgm.8
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:46:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Z7bva0Kz5DObj8A0pJjXfLrYcgFYUG/4s5PLhbnBJJc=;
-        b=Vb8sYjuSR93wpGAF+QW0qHX6s7Ea1wJO2JmanNX1/eJtv5JwhWxpqjP5GWKdH9LKvv
-         BETIVmS99TGyeZ3bRHFC1roW4rSoFaPFVwwZNsEQUsscS/IFkfHqOacJ6t5P1sYIW26k
-         51mlN3bfEou4WLzpIBP+E7kuppgdUvtSGemNTHR1LuvUp57h+uBWwmf8gvKpDEdHO5jh
-         CSpeSegN9Es7d3ndqvSdx3vtPP7gJBZuUBziN35gmeB/Ek9NBIXaQ35Q9YqGrojJHMWR
-         DeLLC78exKMaJLyQMhWSOKEusnnkcixn4G7hCKwEDxWjNPQe7Ugd8PZPJL4bjm0hmOfi
-         ChRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Z7bva0Kz5DObj8A0pJjXfLrYcgFYUG/4s5PLhbnBJJc=;
-        b=n1rQea9ybV+8YkUko0ye7D0PPu0AJQ5gUiJWjDhayWBOJ+0ukm9czerNO2p0Lm2Fga
-         obsuF5JDiYE5ZhdIa4K7lyBue/U4BbmwqMGusEL3sixOPBF6OzZ6ugbJqKf4EmMd8Nrb
-         r5ZamYUW2X2GsZN9Eof8zDqXsAfFhnmu7oocKTrHgWafU0dg2Q4HnMMFikxXAhplVxs7
-         5eYF64IKutZ8dXVZtWSPNup1UNPsLWQao308aAcPgnUkinXZz5W12LhfcJuoPqB7+0di
-         LOTSoAFkF9YCNmrFix/vp8kARGk1ZRA5GYn7wXkliggxT8RiC/5ICo2AZa0HAWprl63I
-         0AbA==
-X-Gm-Message-State: AOAM532u2d/wnNSVl8PNsVm/C2S4/u5GlWZE9ZkLIMmQYpDBRwNenZ7b
-        FA8yOsoMU2dDxTN6hRtHTDggug==
-X-Google-Smtp-Source: ABdhPJwxAWLqmCga1pWNt8vcAjFLdgfeSA5KToKbMHjzF9UQcsIIyVtH/PnM0x6V0yr3EAVOwjnyJg==
-X-Received: by 2002:aa7:8b17:0:b029:15b:c0ba:f2f4 with SMTP id f23-20020aa78b170000b029015bc0baf2f4mr5126512pfd.22.1603989963483;
-        Thu, 29 Oct 2020 09:46:03 -0700 (PDT)
-Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id b7sm3625415pfr.171.2020.10.29.09.46.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 09:46:02 -0700 (PDT)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] coresight: Fix uninitialised pointer bug in etm_setup_aux()
-Date:   Thu, 29 Oct 2020 10:45:59 -0600
-Message-Id: <20201029164559.1268531-3-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201029164559.1268531-1-mathieu.poirier@linaro.org>
-References: <20201029164559.1268531-1-mathieu.poirier@linaro.org>
+        id S1727220AbgJ2Qqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:46:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725805AbgJ2Qql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:46:41 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6492720825;
+        Thu, 29 Oct 2020 16:46:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603990000;
+        bh=wXwQ4RSz0axTZ9t3kOle/82SyMolkuc/gJPJuvJtjGA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=erZwSMCI8vkU/CvBdGXm+H9fHsWe0L+lMvymnoQIArhUHUZZu20oNsa3OZxBitMrN
+         oBDBGpDo9LirCx+qg2cqmszfDUwkoLvei7rSPDh089HPE3tNSY0Zu5DjFZSUW8bYbg
+         oDOASTye/2i7+yNPjhb6MjTUWcgk6ld/yCPOBzBs=
+Date:   Thu, 29 Oct 2020 09:46:39 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Harald Welte <laforge@gnumonks.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andreas Schultz <aschultz@tpip.net>,
+        osmocom-net-gprs@lists.osmocom.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 net] gtp: fix an use-before-init in gtp_newlink()
+Message-ID: <20201029094639.10d74c47@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201027114846.3924-1-fujiwara.masahiro@gmail.com>
+References: <20201026114633.1b2628ae@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20201027114846.3924-1-fujiwara.masahiro@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Leach <mike.leach@linaro.org>
+On Tue, 27 Oct 2020 20:48:46 +0900 Masahiro Fujiwara wrote:
+> *_pdp_find() from gtp_encap_recv() would trigger a crash when a peer
+> sends GTP packets while creating new GTP device.
+> 
+> RIP: 0010:gtp1_pdp_find.isra.0+0x68/0x90 [gtp]
+> <SNIP>
+> Call Trace:
+>  <IRQ>
+>  gtp_encap_recv+0xc2/0x2e0 [gtp]
+>  ? gtp1_pdp_find.isra.0+0x90/0x90 [gtp]
+>  udp_queue_rcv_one_skb+0x1fe/0x530
+>  udp_queue_rcv_skb+0x40/0x1b0
+>  udp_unicast_rcv_skb.isra.0+0x78/0x90
+>  __udp4_lib_rcv+0x5af/0xc70
+>  udp_rcv+0x1a/0x20
+>  ip_protocol_deliver_rcu+0xc5/0x1b0
+>  ip_local_deliver_finish+0x48/0x50
+>  ip_local_deliver+0xe5/0xf0
+>  ? ip_protocol_deliver_rcu+0x1b0/0x1b0
+> 
+> gtp_encap_enable() should be called after gtp_hastable_new() otherwise
+> *_pdp_find() will access the uninitialized hash table.
+> 
+> Fixes: 1e3a3abd8b28 ("gtp: make GTP sockets in gtp_newlink optional")
+> Signed-off-by: Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
 
-Commit [bb1860efc817] changed the sink handling code introducing an
-uninitialised pointer bug. This results in the default sink selection
-failing.
-
-Prior to commit:
-
-static void etm_setup_aux(...)
-
-<snip>
-        struct coresight_device *sink;
-<snip>
-
-        /* First get the selected sink from user space. */
-        if (event->attr.config2) {
-                id = (u32)event->attr.config2;
-                sink = coresight_get_sink_by_id(id);
-        } else {
-                sink = coresight_get_enabled_sink(true);
-        }
-<ctd>
-
-*sink always initialised - possibly to NULL which triggers the
-automatic sink selection.
-
-After commit:
-
-static void etm_setup_aux(...)
-
-<snip>
-        struct coresight_device *sink;
-<snip>
-
-        /* First get the selected sink from user space. */
-        if (event->attr.config2) {
-                id = (u32)event->attr.config2;
-                sink = coresight_get_sink_by_id(id);
-        }
-<ctd>
-
-*sink pointer uninitialised when not providing a sink on the perf command
-line. This breaks later checks to enable automatic sink selection.
-
-Fixes: bb1860efc817 ("coresight: etm: perf: Sink selection using sysfs is deprecated")
-Signed-off-by: Mike Leach <mike.leach@linaro.org>
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
- drivers/hwtracing/coresight/coresight-etm-perf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index c2c9b127d074..bdc34ca449f7 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -210,7 +210,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
- 	u32 id;
- 	int cpu = event->cpu;
- 	cpumask_t *mask;
--	struct coresight_device *sink;
-+	struct coresight_device *sink = NULL;
- 	struct etm_event_data *event_data = NULL;
- 
- 	event_data = alloc_event_data(cpu);
--- 
-2.25.1
-
+Applied, thank you!
