@@ -2,193 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E149129E434
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 067DF29E472
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729391AbgJ2HgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
+        id S1726945AbgJ2HYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:24:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728096AbgJ2HY5 (ORCPT
+        with ESMTP id S1726762AbgJ2HYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:57 -0400
-X-Greylist: delayed 2584 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 28 Oct 2020 22:34:57 PDT
-Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A34C0610D3;
-        Wed, 28 Oct 2020 22:34:57 -0700 (PDT)
-Received: from pps.filterd (m0050093.ppops.net [127.0.0.1])
-        by m0050093.ppops.net-00190b01. (8.16.0.42/8.16.0.42) with SMTP id 09T4hmWN001609;
-        Thu, 29 Oct 2020 04:50:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=jan2016.eng;
- bh=vNOU0G1+nDkC24wwPCUFpoG8J+CFgVtGuanshuUsUsk=;
- b=Caj176iLpfJNs4A7qlOyJTvV5aQLOgImqIxpN1UY4Ag5UH7Irz2CLYZv5v0EZwF7as87
- 4AzpQwQ+K3k0Phqhf/zeiaOf4J0cwqya4bhIOKNR2wpTAcACbl+VmseK7p4vyU7Ms2ra
- fC9wK48wwX03Dx6gOg4Yo8mgbSBv4cmTowfTW6TfUr1p1HEKV6acF3j18t4JRIczf4pb
- VPR77BK+klvaRZVTDoWrHLHmPIWxAhDeIUGx95D2JtsmsgaW0MappnojYBtvfl6yPlZ3
- RiYd2/D+T4XOm7FNR6mAyJilgzqhGt22xfjRcVQ+eCXRsN5fNuIIgfkJWWgNOaG9RG4N QQ== 
-Received: from prod-mail-ppoint3 (a72-247-45-31.deploy.static.akamaitechnologies.com [72.247.45.31] (may be forged))
-        by m0050093.ppops.net-00190b01. with ESMTP id 34cce8c15w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Oct 2020 04:50:38 +0000
-Received: from pps.filterd (prod-mail-ppoint3.akamai.com [127.0.0.1])
-        by prod-mail-ppoint3.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 09T4nOLo029340;
-        Thu, 29 Oct 2020 00:50:37 -0400
-Received: from prod-mail-relay19.dfw02.corp.akamai.com ([172.27.165.173])
-        by prod-mail-ppoint3.akamai.com with ESMTP id 34f29rssdy-1;
-        Thu, 29 Oct 2020 00:50:37 -0400
-Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
-        by prod-mail-relay19.dfw02.corp.akamai.com (Postfix) with ESMTP id 685426055F;
-        Thu, 29 Oct 2020 04:50:36 +0000 (GMT)
-Subject: Re: [PATCH v2 net] net: sch_generic: aviod concurrent reset and
- enqueue op for lockless qdisc
-To:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     "Hunt, Joshua" <johunt@akamai.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linuxarm@huawei.com" <linuxarm@huawei.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-References: <1599562954-87257-1-git-send-email-linyunsheng@huawei.com>
- <CAM_iQpX0_mz+McZdzZ7HFTjBihOKz5E6i4qJQSoFbZ=SZkVh=Q@mail.gmail.com>
- <830f85b5-ef29-c68e-c982-de20ac880bd9@huawei.com>
- <CAM_iQpU_tbRNO=Lznz_d6YjXmenYhowEfBoOiJgEmo9x8bEevw@mail.gmail.com>
- <CAP12E-+3DY-dgzVercKc-NYGPExWO1NjTOr1Gf3tPLKvp6O6+g@mail.gmail.com>
- <AE096F70-4419-4A67-937A-7741FBDA6668@akamai.com>
- <CAM_iQpX0XzNDCzc2U5=g6aU-HGYs3oryHx=rmM3ue9sH=Jd4Gw@mail.gmail.com>
- <19f888c2-8bc1-ea56-6e19-4cb4841c4da0@akamai.com>
- <93ab7f0f-7b5a-74c3-398d-a572274a4790@huawei.com>
-From:   Vishwanath Pai <vpai@akamai.com>
-Message-ID: <248e5a32-a102-0ced-1462-aa2bc5244252@akamai.com>
-Date:   Thu, 29 Oct 2020 00:50:36 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 29 Oct 2020 03:24:35 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83238C0613B3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 22:04:24 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id r10so1359155pgb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 22:04:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eq6HsCeVIcarFT/RVf4Np213+644MAjZp902ffEzs3w=;
+        b=ZmSTC8AmpvEglpUFbt1U8ZdJWK8wFpAOs7QY39Nc5Wxn6AwvGLmUR5ilDJOH0vkaJD
+         jjdTbl5EuQQtAlbzyoA+5MFiT/DAXhhGr2E2RD6msfyEaWGiB9ut30PIBmGWBTbLjgNF
+         /71opIXMCrE2xsbzJbcS3sKbvQY8I2E3IqL9Y9/ilFMIh2pgOi1FQZKlBpQrLCcpfx/G
+         R3KLqO0S6+UKa9kXcj7mzynj7zHAbvzWF+HLcZsaCuZ9nyY674Xz2gXo6xzT7V0IWSZV
+         KFSaULMasERm69sA03LH2zqDO2t1hc1dYGW4mVIwrQ0MzNtSB38Y6K+UAeS/1nRzXi8Y
+         klaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eq6HsCeVIcarFT/RVf4Np213+644MAjZp902ffEzs3w=;
+        b=cF+fLlErT9UiM0lzNgH2fk+se28G405XlLlFeXqoo03yduwUziRXk9hWURwo2x5EPY
+         uAY05/Vo6wPhHpIfeZczdLUxqSIQ6gB9gJpSxD7GQWryjU9Ps0AV3T8UQLWUpYZaTHqM
+         b/x+u5qFAVsFdVV6XfD06wumNtt92+ZJL5pgFBCrSgXxFsfK1ao4jae/48MFFfiINaWf
+         BBmXAfhWsJHbgLrZJx+dibyZzKG3E/y04wcW/NDp3ZP+nPgqAKq9lrBw9VXly2DNmc8V
+         W4fDfOcJK5Ft1PEJRSOfhjO/N9FAB7tuY6XqM0yRAeXRDgQ0tyiXy+NWLGXih1r3zgt3
+         V79Q==
+X-Gm-Message-State: AOAM533mIU6PbhivOgGoUf2CKNrzY9EAdXVsOug/LHS6bjb+IMkoUSq0
+        yKrEUjLyZbecCRe082Jgi2xWxjAvbbCIgw==
+X-Google-Smtp-Source: ABdhPJwTqHvM6v1ZaAiCuRdo73rBKwXlZkkFAKtICsxd7j1jSRDwrx7fwmL4ofYd78K5T3DkgO2+dA==
+X-Received: by 2002:a17:90b:148c:: with SMTP id js12mr2415798pjb.175.1603947863730;
+        Wed, 28 Oct 2020 22:04:23 -0700 (PDT)
+Received: from [192.168.10.88] (124-171-72-187.dyn.iinet.net.au. [124.171.72.187])
+        by smtp.gmail.com with UTF8SMTPSA id z24sm1036190pgi.7.2020.10.28.22.04.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 22:04:22 -0700 (PDT)
+Subject: Re: [RFC PATCH kernel 1/2] irq: Add reference counting to IRQ
+ mappings
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>, Qian Cai <cai@lca.pw>,
+        Rob Herring <robh@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>
+References: <20201027090655.14118-1-aik@ozlabs.ru>
+ <20201027090655.14118-2-aik@ozlabs.ru>
+ <415025f93a2b93e8ae62cba57ca1a8a7@kernel.org>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Message-ID: <cda3c451-54f4-ebea-f58e-bd13b79451ff@ozlabs.ru>
+Date:   Thu, 29 Oct 2020 16:04:16 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:83.0) Gecko/20100101
+ Thunderbird/83.0
 MIME-Version: 1.0
-In-Reply-To: <93ab7f0f-7b5a-74c3-398d-a572274a4790@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <415025f93a2b93e8ae62cba57ca1a8a7@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-29_01:2020-10-28,2020-10-29 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 bulkscore=0
- spamscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010290034
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-29_01:2020-10-28,2020-10-29 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 impostorscore=0 spamscore=0 phishscore=0
- malwarescore=0 bulkscore=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010290034
-X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 72.247.45.31)
- smtp.mailfrom=vpai@akamai.com smtp.helo=prod-mail-ppoint3
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/20 10:37 PM, Yunsheng Lin wrote:
- > On 2020/10/29 4:04, Vishwanath Pai wrote:
- >> On 10/28/20 1:47 PM, Cong Wang wrote:
- >>> On Wed, Oct 28, 2020 at 8:37 AM Pai, Vishwanath <vpai@akamai.com> 
-wrote:
- >>>> Hi,
- >>>>
- >>>> We noticed some problems when testing the latest 5.4 LTS kernel 
-and traced it
- >>>> back to this commit using git bisect. When running our tests the 
-machine stops
- >>>> responding to all traffic and the only way to recover is a reboot. 
-I do not see
- >>>> a stack trace on the console.
- >>>
- >>> Do you mean the machine is still running fine just the network is down?
- >>>
- >>> If so, can you dump your tc config with stats when the problem is 
-happening?
- >>> (You can use `tc -s -d qd show ...`.)
- >>>
- >>>>
- >>>> This can be reproduced using the packetdrill test below, it should 
-be run a
- >>>> few times or in a loop. You should hit this issue within a few 
-tries but
- >>>> sometimes might take up to 15-20 tries.
- >>> ...
- >>>> I can reproduce the issue easily on v5.4.68, and after reverting 
-this commit it
- >>>> does not happen anymore.
- >>>
- >>> This is odd. The patch in this thread touches netdev reset path, if 
-packetdrill
- >>> is the only thing you use to trigger the bug (that is netdev is 
-always active),
- >>> I can not connect them.
- >>>
- >>> Thanks.
- >>
- >> Hi Cong,
- >>
- >>> Do you mean the machine is still running fine just the network is down?
- >>
- >> I was able to access the machine via serial console, it looks like it is
- >> up and running, just that networking is down.
- >>
- >>> If so, can you dump your tc config with stats when the problem is 
-happening?
- >>> (You can use `tc -s -d qd show ...`.)
- >>
- >> If I try running tc when the machine is in this state the command never
- >> returns. It doesn't print anything but doesn't exit either.
- >>
- >>> This is odd. The patch in this thread touches netdev reset path, if 
-packetdrill
- >>> is the only thing you use to trigger the bug (that is netdev is 
-always active),
- >>> I can not connect them.
- >>
- >> I think packetdrill creates a tun0 interface when it starts the
- >> test and tears it down at the end, so it might be hitting this code path
- >> during teardown.
- >
- > Hi, Is there any preparation setup before running the above 
-packetdrill test
- > case, I run the above test case in 5.9-rc4 with this patch applied 
-without any
- > preparation setup, did not reproduce it.
- >
- > By the way, I am newbie to packetdrill:), it would be good to provide the
- > detail setup to reproduce it,thanks.
- >
- >>
- >> P.S: My mail server is having connectivity issues with vger.kernel.org
- >> so messages aren't getting delivered to netdev. It'll hopefully get
- >> resolved soon.
- >>
- >> Thanks,
- >> Vishwanath
- >>
- >>
- >> .
- >>
 
-I can't reproduce it on v5.9-rc4 either, it is probably an issue only on
-5.4 then (and maybe older LTS versions). Can you give it a try on
-5.4.68?
 
-For running packetdrill, download the latest version from their github
-repo, then run it in a loop without any special arguments. This is what
-I do to reproduce it:
+On 28/10/2020 03:09, Marc Zyngier wrote:
+> Hi Alexey,
+> 
+> On 2020-10-27 09:06, Alexey Kardashevskiy wrote:
+>> PCI devices share 4 legacy INTx interrupts from the same PCI host bridge.
+>> Device drivers map/unmap hardware interrupts via irq_create_mapping()/
+>> irq_dispose_mapping(). The problem with that these interrupts are
+>> shared and when performing hot unplug, we need to unmap the interrupt
+>> only when the last device is released.
+>>
+>> This reuses already existing irq_desc::kobj for this purpose.
+>> The refcounter is naturally 1 when the descriptor is allocated already;
+>> this adds kobject_get() in places where already existing mapped virq
+>> is returned.
+> 
+> That's quite interesting, as I was about to revive a patch series that
+> rework the irqdomain subsystem to directly cache irq_desc instead of
+> raw interrupt numbers. And for that, I needed some form of refcounting...
+> 
+>>
+>> This reorganizes irq_dispose_mapping() to release the kobj and let
+>> the release callback do the cleanup.
+>>
+>> If some driver or platform does its own reference counting, this expects
+>> those parties to call irq_find_mapping() and call irq_dispose_mapping()
+>> for every irq_create_fwspec_mapping()/irq_create_mapping().
+>>
+>> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+>> ---
+>>  kernel/irq/irqdesc.c   | 35 +++++++++++++++++++++++------------
+>>  kernel/irq/irqdomain.c | 27 +++++++++++++--------------
+>>  2 files changed, 36 insertions(+), 26 deletions(-)
+>>
+>> diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+>> index 1a7723604399..dae096238500 100644
+>> --- a/kernel/irq/irqdesc.c
+>> +++ b/kernel/irq/irqdesc.c
+>> @@ -419,20 +419,39 @@ static struct irq_desc *alloc_desc(int irq, int
+>> node, unsigned int flags,
+>>      return NULL;
+>>  }
+>>
+>> +static void delayed_free_desc(struct rcu_head *rhp);
+>>  static void irq_kobj_release(struct kobject *kobj)
+>>  {
+>>      struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
+>> +    struct irq_domain *domain;
+>> +    unsigned int virq = desc->irq_data.irq;
+>>
+>> -    free_masks(desc);
+>> -    free_percpu(desc->kstat_irqs);
+>> -    kfree(desc);
+>> +    domain = desc->irq_data.domain;
+>> +    if (domain) {
+>> +        if (irq_domain_is_hierarchy(domain)) {
+>> +            irq_domain_free_irqs(virq, 1);
+> 
+> How does this work with hierarchical domains? Each domain should
+> contribute as a reference on the irq_desc. But if you got here,
+> it means the refcount has already dropped to 0.
+> 
+> So either there is nothing to free here, or you don't track the
+> references implied by the hierarchy. I suspect the latter.
 
-while true; do ./packetdrill <test-file>; done
+This is correct, I did not look at hierarchy yet, looking now...
 
-I don't think any other setup is necessary.
 
--Vishwanath
 
+>> +        } else {
+>> +            irq_domain_disassociate(domain, virq);
+>> +            irq_free_desc(virq);
+>> +        }
+>> +    }
+>> +
+>> +    /*
+>> +     * We free the descriptor, masks and stat fields via RCU. That
+>> +     * allows demultiplex interrupts to do rcu based management of
+>> +     * the child interrupts.
+>> +     * This also allows us to use rcu in kstat_irqs_usr().
+>> +     */
+>> +    call_rcu(&desc->rcu, delayed_free_desc);
+>>  }
+>>
+>>  static void delayed_free_desc(struct rcu_head *rhp)
+>>  {
+>>      struct irq_desc *desc = container_of(rhp, struct irq_desc, rcu);
+>>
+>> -    kobject_put(&desc->kobj);
+>> +    free_masks(desc);
+>> +    free_percpu(desc->kstat_irqs);
+>> +    kfree(desc);
+>>  }
+>>
+>>  static void free_desc(unsigned int irq)
+>> @@ -453,14 +472,6 @@ static void free_desc(unsigned int irq)
+>>       */
+>>      irq_sysfs_del(desc);
+>>      delete_irq_desc(irq);
+>> -
+>> -    /*
+>> -     * We free the descriptor, masks and stat fields via RCU. That
+>> -     * allows demultiplex interrupts to do rcu based management of
+>> -     * the child interrupts.
+>> -     * This also allows us to use rcu in kstat_irqs_usr().
+>> -     */
+>> -    call_rcu(&desc->rcu, delayed_free_desc);
+>>  }
+>>
+>>  static int alloc_descs(unsigned int start, unsigned int cnt, int node,
+>> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+>> index cf8b374b892d..02733ddc321f 100644
+>> --- a/kernel/irq/irqdomain.c
+>> +++ b/kernel/irq/irqdomain.c
+>> @@ -638,6 +638,7 @@ unsigned int irq_create_mapping(struct irq_domain 
+>> *domain,
+>>  {
+>>      struct device_node *of_node;
+>>      int virq;
+>> +    struct irq_desc *desc;
+>>
+>>      pr_debug("irq_create_mapping(0x%p, 0x%lx)\n", domain, hwirq);
+>>
+>> @@ -655,7 +656,9 @@ unsigned int irq_create_mapping(struct irq_domain 
+>> *domain,
+>>      /* Check if mapping already exists */
+>>      virq = irq_find_mapping(domain, hwirq);
+>>      if (virq) {
+>> +        desc = irq_to_desc(virq);
+>>          pr_debug("-> existing mapping on virq %d\n", virq);
+>> +        kobject_get(&desc->kobj);
+> 
+> My worry with this is that there is probably a significant amount of
+> code out there that relies on multiple calls to irq_create_mapping()
+> with the same parameters not to have any side effects. They would
+> expect a subsequent irq_dispose_mapping() to drop the translation
+> altogether, and that's obviously not the case here.
+> 
+> Have you audited the various call sites to see what could break?
+
+
+The vast majority calls one of irq..create_mapping in init/probe and 
+then calls irq_dispose_mapping() right there if probing failed or when 
+the driver is unloaded. I could not spot any reference counting 
+anywhere, everyone seems to call irq_dispose_mapping() per every 
+irq_of_parse_and_map() (or friends).
+
+Then there is a minority (such as the code I am fixing in 
+powerpc/pseries) but it is either broken (such as pseries/pci which does 
+not call irq_dispose_mapping at all)  or  it is 1 disposal per 1 mapping 
+(PPC KVM).
+
+I did not spend awful amount of time though, git grep 
+irq_dispose_mapping gives 200 lines...
+
+
+> 
+>>          return virq;
+>>      }
+>>
+>> @@ -751,6 +754,7 @@ unsigned int irq_create_fwspec_mapping(struct
+>> irq_fwspec *fwspec)
+>>      irq_hw_number_t hwirq;
+>>      unsigned int type = IRQ_TYPE_NONE;
+>>      int virq;
+>> +    struct irq_desc *desc;
+>>
+>>      if (fwspec->fwnode) {
+>>          domain = irq_find_matching_fwspec(fwspec, DOMAIN_BUS_WIRED);
+>> @@ -787,8 +791,11 @@ unsigned int irq_create_fwspec_mapping(struct
+>> irq_fwspec *fwspec)
+>>           * current trigger type then we are done so return the
+>>           * interrupt number.
+>>           */
+>> -        if (type == IRQ_TYPE_NONE || type == irq_get_trigger_type(virq))
+>> +        if (type == IRQ_TYPE_NONE || type == 
+>> irq_get_trigger_type(virq)) {
+>> +            desc = irq_to_desc(virq);
+>> +            kobject_get(&desc->kobj);
+>>              return virq;
+>> +        }
+>>
+>>          /*
+>>           * If the trigger type has not been set yet, then set
+>> @@ -800,6 +807,8 @@ unsigned int irq_create_fwspec_mapping(struct
+>> irq_fwspec *fwspec)
+>>                  return 0;
+>>
+>>              irqd_set_trigger_type(irq_data, type);
+>> +            desc = irq_to_desc(virq);
+>> +            kobject_get(&desc->kobj);
+>>              return virq;
+>>          }
+>>
+>> @@ -852,22 +861,12 @@ EXPORT_SYMBOL_GPL(irq_create_of_mapping);
+>>   */
+>>  void irq_dispose_mapping(unsigned int virq)
+>>  {
+>> -    struct irq_data *irq_data = irq_get_irq_data(virq);
+>> -    struct irq_domain *domain;
+>> +    struct irq_desc *desc = irq_to_desc(virq);
+>>
+>> -    if (!virq || !irq_data)
+>> +    if (!virq || !desc)
+>>          return;
+>>
+>> -    domain = irq_data->domain;
+>> -    if (WARN_ON(domain == NULL))
+>> -        return;
+>> -
+>> -    if (irq_domain_is_hierarchy(domain)) {
+>> -        irq_domain_free_irqs(virq, 1);
+>> -    } else {
+>> -        irq_domain_disassociate(domain, virq);
+>> -        irq_free_desc(virq);
+>> -    }
+>> +    kobject_put(&desc->kobj);
+>>  }
+>>  EXPORT_SYMBOL_GPL(irq_dispose_mapping);
+> 
+> Thanks,
+> 
+>          M.
+
+-- 
+Alexey
