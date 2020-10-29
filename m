@@ -2,128 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC0929F477
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B81BF29F479
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726209AbgJ2TEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725778AbgJ2TEP (ORCPT
+        id S1726220AbgJ2TFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:05:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36909 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725774AbgJ2TFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:04:15 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C7DC0613CF;
-        Thu, 29 Oct 2020 12:04:14 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g12so3116262pgm.8;
-        Thu, 29 Oct 2020 12:04:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=E/YO8QhrBtgOUHxaIDNankNBd/9HmVJuOo7AD36126w=;
-        b=PLfkqocEdos35ZQHCQz/KTCSR/zMAv3dAbZfuP5kApLSMaTsx7PFKmmwIEBMuJFbFC
-         qC9PdeAhCfMDVWkvy7mrzdhGx8oHpIjCVqULqOklNfRAXVfXVA2r8nPjl2mFopa9IxIp
-         bGQIykKdYgDlBFjJHtGKn43D02lpYwtRVslmiIVm4XXBTr+RbE5XUwGb+k3LOCthAz7g
-         cv6P2xhzPjSwC8fWDCToPqu0kJOxC3WT8a/sp7Xb7gq40x9A64votvET4rP2ylYSwn+a
-         CNl1LQvuP93+p+ZbgI0roqCVTxygv6KD7V3x6aedt6LifnYrTC8MXqvj7SIP+7AR51fj
-         OqLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E/YO8QhrBtgOUHxaIDNankNBd/9HmVJuOo7AD36126w=;
-        b=cQfsImgYTb7I2PCjSjsHxsJB+rh0+AUcYTzc87B17iTLaO64AeMkrVRbu4y4lYCJcS
-         zdKPoPrZTC7B4woYNAa88miFBUJuCz9B12SI2146bWZLYIhf44XXH48cE8onB3hVCDF0
-         JJmnaHsV25uUFJREFr/wp8GMcAhAeHb80kn+Q9g4QuHu+YGu/wKgA7zBpkRnTMRtpISm
-         DeQSMWGWxLDyngIb+tkb8zm5oAXKnPXJTQkw1Uj2uqxY5m+m07VdTEpUnSbvZBTmP56a
-         RsQpJ6RbfAZTlrsKir7AvTa3rPP9NH7hDtLUrgzbS/ZtzfJbQ1wuk2eB0IVfJ0i1qyxE
-         mvXQ==
-X-Gm-Message-State: AOAM5312anXHvwM1f6d9tCNdxIQS/PrKTZWwoBrXaUym1gFjIyLZ69+I
-        WXvVy6hnI1OWO5Tz22ysNUY=
-X-Google-Smtp-Source: ABdhPJw9nDFNuKk/faRep1zMYuYjpRmAzLiIeyJ73bCvjZKMjBLsJZ2uz8PYM+c8gd4OhgIEGjyrHA==
-X-Received: by 2002:a62:e113:0:b029:152:69aa:6a08 with SMTP id q19-20020a62e1130000b029015269aa6a08mr5770954pfh.14.1603998254180;
-        Thu, 29 Oct 2020 12:04:14 -0700 (PDT)
-Received: from my--box ([103.98.79.70])
-        by smtp.gmail.com with ESMTPSA id ne17sm547478pjb.44.2020.10.29.12.04.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 12:04:13 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 00:34:08 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Cc:     mh12gx2825@gmail.com
-Subject: [PATCH 2/2] drm: msm: adreno: improve code indentation & alignment
-Message-ID: <e196c426de9e12f149492a92c0a8d92b6106f27c.1603998014.git.mh12gx2825@gmail.com>
-References: <9ca2c2e4cbd9ebb282b90f742305fd9b481aacc2.1603998014.git.mh12gx2825@gmail.com>
+        Thu, 29 Oct 2020 15:05:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603998305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=a0p3CSFWKBf8bTXWU5gbr4v+f3iD+GqD+deWi2r7Opo=;
+        b=Q5y2sd3DD/I9iW3St+mCWTpNx6o9/6C3aVbo4hXJFMn+aFKHHhO7hFh7x/MGwn2l1vDt0E
+        oQDvLvevtIMGYN28zahomxXax5jCGikMCP5MUnO/dCYaJ9Iszz06dRxv/tTUVzb0IXjeLT
+        pL4Zrd4eyskZZFl1gQRuSZJjZNAPGBM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-ZXpHjZW0NkuUgGUJ31IWBw-1; Thu, 29 Oct 2020 15:05:01 -0400
+X-MC-Unique: ZXpHjZW0NkuUgGUJ31IWBw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8EC321009E41;
+        Thu, 29 Oct 2020 19:05:00 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-116-17.rdu2.redhat.com [10.10.116.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DA3836EF68;
+        Thu, 29 Oct 2020 19:04:57 +0000 (UTC)
+Subject: Re: [PATCH v2] inotify: Increase default inotify.max_user_watches
+ limit to 1048576
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Luca BRUNO <lucab@redhat.com>
+References: <20201029154535.2074-1-longman@redhat.com>
+ <CAOQ4uxjT8rWLr1yCBPGkhJ7Rr6n3+FA7a0GmZaMBHMzk9t1Sag@mail.gmail.com>
+ <ccec54cd-cbb5-2808-3800-890cda208967@redhat.com>
+ <CAOQ4uximGK1DnM7fYabChp-8pNqt3cSHeDWZYNKSwr6qSnxpug@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <4695fee5-3446-7f5b-ae89-dc48d431a8fe@redhat.com>
+Date:   Thu, 29 Oct 2020 15:04:56 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ca2c2e4cbd9ebb282b90f742305fd9b481aacc2.1603998014.git.mh12gx2825@gmail.com>
+In-Reply-To: <CAOQ4uximGK1DnM7fYabChp-8pNqt3cSHeDWZYNKSwr6qSnxpug@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Align instructions split across multiple lines as per the coding
-standards. Issue flagged by checkpatch script.
+On 10/29/20 2:46 PM, Amir Goldstein wrote:
+> On Thu, Oct 29, 2020 at 8:05 PM Waiman Long <longman@redhat.com> wrote:
+>> On 10/29/20 1:27 PM, Amir Goldstein wrote:
+>>> On Thu, Oct 29, 2020 at 5:46 PM Waiman Long <longman@redhat.com> wrote:
+>>>> The default value of inotify.max_user_watches sysctl parameter was set
+>>>> to 8192 since the introduction of the inotify feature in 2005 by
+>>>> commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
+>>>> small for many modern usage. As a result, users have to explicitly set
+>>>> it to a larger value to make it work.
+>>>>
+>>>> After some searching around the web, these are the
+>>>> inotify.max_user_watches values used by some projects:
+>>>>    - vscode:  524288
+>>>>    - dropbox support: 100000
+>>>>    - users on stackexchange: 12228
+>>>>    - lsyncd user: 2000000
+>>>>    - code42 support: 1048576
+>>>>    - monodevelop: 16384
+>>>>    - tectonic: 524288
+>>>>    - openshift origin: 65536
+>>>>
+>>>> Each watch point adds an inotify_inode_mark structure to an inode to
+>>>> be watched. It also pins the watched inode as well as an inotify fdinfo
+>>>> procfs file.
+>>>>
+>>>> Modeled after the epoll.max_user_watches behavior to adjust the default
+>>>> value according to the amount of addressable memory available, make
+>>>> inotify.max_user_watches behave in a similar way to make it use no more
+>>>> than 1% of addressable memory within the range [8192, 1048576].
+>>>>
+>>>> For 64-bit archs, inotify_inode_mark plus 2 inode have a size close
+>>>> to 2 kbytes. That means a system with 196GB or more memory should have
+>>>> the maximum value of 1048576 for inotify.max_user_watches. This default
+>>>> should be big enough for most use cases.
+>>>>
+>>>> With my x86-64 config, the size of xfs_inode, proc_inode and
+>>>> inotify_inode_mark is 1680 bytes. The estimated INOTIFY_WATCH_COST is
+>>>> 1760 bytes.
+>>>>
+>>>> [v2: increase inotify watch cost as suggested by Amir and Honza]
+>>>>
+>>>> Signed-off-by: Waiman Long <longman@redhat.com>
+>>>> ---
+>>>>    fs/notify/inotify/inotify_user.c | 24 +++++++++++++++++++++++-
+>>>>    1 file changed, 23 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+>>>> index 186722ba3894..37d9f09c226f 100644
+>>>> --- a/fs/notify/inotify/inotify_user.c
+>>>> +++ b/fs/notify/inotify/inotify_user.c
+>>>> @@ -37,6 +37,16 @@
+>>>>
+>>>>    #include <asm/ioctls.h>
+>>>>
+>>>> +/*
+>>>> + * An inotify watch requires allocating an inotify_inode_mark structure as
+>>>> + * well as pinning the watched inode and adding inotify fdinfo procfs file.
+>>> Maybe you misunderstood me.
+>>> There is no procfs file per watch.
+>>> There is a procfs file per inotify_init() fd.
+>>> The fdinfo of that procfile lists all the watches of that inotify instance.
+>> Thanks for the clarification. Yes, I probably had misunderstood you
+>> because of the 2 * sizeof(inode) figure you provided.
+>>>> + * The increase in size of a filesystem inode versus a VFS inode varies
+>>>> + * depending on the filesystem. An extra 512 bytes is added as rough
+>>>> + * estimate of the additional filesystem inode cost.
+>>>> + */
+>>>> +#define INOTIFY_WATCH_COST     (sizeof(struct inotify_inode_mark) + \
+>>>> +                                2 * sizeof(struct inode) + 512)
+>>>> +
+>>> I would consider going with double the sizeof inode as rough approximation for
+>>> filesystem inode size.
+>>>
+>>> It is a bit less arbitrary than 512 and it has some rationale behind it -
+>>> Some kernel config options will grow struct inode (debug, smp)
+>>> The same config options may also grow the filesystem part of the inode.
+>>>
+>>> And this approximation can be pretty accurate at times.
+>>> For example, on Ubuntu 18.04 kernel 5.4.0:
+>>> inode_cache        608
+>>> nfs_inode_cache      1088
+>>> btrfs_inode            1168
+>>> xfs_inode              1024
+>>> ext4_inode_cache   1096
+>> Just to clarify, is your original 2 * sizeof(struct inode) figure
+>> include the filesystem inode overhead or there is an additional inode
+>> somewhere that I needs to go to 4 * sizeof(struct inode)?
+> No additional inode.
+>
+> #define INOTIFY_WATCH_COST     (sizeof(struct inotify_inode_mark) + \
+>                                                        2 * sizeof(struct inode))
+>
+> Not sure if the inotify_inode_mark part matters, but it doesn't hurt.
+> Do note that Jan had a different proposal for fs inode size estimation (1K).
+> I have no objection to this estimation if Jan insists.
+>
+> Thanks,
+> Amir.
+>
+Thanks for the confirmation. 2*sizeof(struct inode) is more than 1k. 
+Besides with debugging turned on, the size will increase more. So that 
+figure is good enough.
 
-Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
----
-Please note: This is a project task specific patch.
-
- drivers/gpu/drm/msm/adreno/a5xx_debugfs.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c b/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
-index ffe1fb9be155..ac9296f314be 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
-@@ -20,7 +20,7 @@ static void pfp_print(struct msm_gpu *gpu, struct drm_printer *p)
- 	for (i = 0; i < 36; i++) {
- 		gpu_write(gpu, REG_A5XX_CP_PFP_STAT_ADDR, i);
- 		drm_printf(p, "  %02x: %08x\n", i,
--			gpu_read(gpu, REG_A5XX_CP_PFP_STAT_DATA));
-+			   gpu_read(gpu, REG_A5XX_CP_PFP_STAT_DATA));
- 	}
- }
- 
-@@ -33,7 +33,7 @@ static void me_print(struct msm_gpu *gpu, struct drm_printer *p)
- 	for (i = 0; i < 29; i++) {
- 		gpu_write(gpu, REG_A5XX_CP_ME_STAT_ADDR, i);
- 		drm_printf(p, "  %02x: %08x\n", i,
--			gpu_read(gpu, REG_A5XX_CP_ME_STAT_DATA));
-+			   gpu_read(gpu, REG_A5XX_CP_ME_STAT_DATA));
- 	}
- }
- 
-@@ -46,7 +46,7 @@ static void meq_print(struct msm_gpu *gpu, struct drm_printer *p)
- 
- 	for (i = 0; i < 64; i++) {
- 		drm_printf(p, "  %02x: %08x\n", i,
--			gpu_read(gpu, REG_A5XX_CP_MEQ_DBG_DATA));
-+			   gpu_read(gpu, REG_A5XX_CP_MEQ_DBG_DATA));
- 	}
- }
- 
-@@ -63,7 +63,7 @@ static void roq_print(struct msm_gpu *gpu, struct drm_printer *p)
- 		for (j = 0; j < 4; j++)
- 			val[j] = gpu_read(gpu, REG_A5XX_CP_ROQ_DBG_DATA);
- 		drm_printf(p, "  %02x: %08x %08x %08x %08x\n", i,
--			val[0], val[1], val[2], val[3]);
-+			   val[0], val[1], val[2], val[3]);
- 	}
- }
- 
-@@ -155,5 +155,5 @@ void a5xx_debugfs_init(struct msm_gpu *gpu, struct drm_minor *minor)
- 				 minor->debugfs_root, minor);
- 
- 	debugfs_create_file_unsafe("reset", S_IWUGO, minor->debugfs_root, dev,
--				&reset_fops);
-+				   &reset_fops);
- }
--- 
-2.25.1
+Cheers,
+Longman
 
