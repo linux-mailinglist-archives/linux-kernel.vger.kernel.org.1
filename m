@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D89929E5BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 140D029E5AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727270AbgJ2ID0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 04:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725784AbgJ2IA6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:00:58 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8188C0613D4;
-        Thu, 29 Oct 2020 00:51:34 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id s22so1654460pga.9;
-        Thu, 29 Oct 2020 00:51:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=37IRInXQBrHpwWyuXj6qxmh1TahkV1hoRBjQOKGXhq0=;
-        b=YJPMOhTGBwSxNTy9wYJdd3nuCruJq8bno88m+BFzoLTenKC0k4ufnz9BPMa2wMpAKd
-         xFdeVK7cyuNWMbQCk+ylDQr3tLhReVkp8WFPBdyGXunb/azzuheiK2YxQzhxK98EWGDh
-         bCYU8PMRzK03VuOSZJGmmvb/7bq5wm5X1UUEVKF/JowMkbIZkijf9xmeFEZGu2U6msZH
-         C3lzKtWdNykUtHVz0v21eTVcmMRI1K9e9KliAG7Q9QX1fTeysofwJybgncTmHLH6HHI2
-         oMPAM8S3Q4g/jJepDT0ibZAOICyuIDFEHhgriIsOrot8g5R2epM2G9uNd+zb3NVQyl7y
-         q1Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=37IRInXQBrHpwWyuXj6qxmh1TahkV1hoRBjQOKGXhq0=;
-        b=GuLayqN8iRQUceqQiataaAjKbqWCzrvN9W/FHVroifMksZwIcUj5uH/XftydBWKJFq
-         A0JqoqlXieaJ6Qm7FzICwHL/y6jcl7z+310YbX5vmFwQGax1WQti4NEGhfHHcs2W9+20
-         M1Qh8w35XcvxzD6K7qLLB5E/HQlPKpLiQi+obh/dR2hELxy3xHFJRmMYzrF8Bn+fPMUg
-         hmkwCjrzrDV9l250e/FOdku5+Yd5Fxwa7FfySyFgESQc6f3wGcMxKFkNPXmmrofMe27c
-         O+QP7qeeJE0pMxegqE+BLV0myAQOgnsj2IbOVqoo4hBNIgaAQI4GpDoYQpyCrVKNrupd
-         eoxw==
-X-Gm-Message-State: AOAM532WEUzrb4dfs9AX1G/AF4zd71tUTZVHrX4WePNzeoAFeXkehkBP
-        gpiLzsl2bxmq32FnZX0rgFk=
-X-Google-Smtp-Source: ABdhPJz+l0EJjs/nTIIfKLF3+mUQfVEdnj0u0jGOk7RF2NVfyeRZUWwbveWD7w7oXboCYE68pupaTA==
-X-Received: by 2002:a17:90a:1501:: with SMTP id l1mr3163731pja.19.1603957894549;
-        Thu, 29 Oct 2020 00:51:34 -0700 (PDT)
-Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
-        by smtp.gmail.com with ESMTPSA id x2sm1818933pfc.133.2020.10.29.00.51.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 00:51:34 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-To:     Lars-Peter Clausen <lars@metafoo.de>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org (open list:IIO SUBSYSTEM AND DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 12/15] iio: imu: kmx61: remove unnecessary CONFIG_PM_SLEEP
-Date:   Thu, 29 Oct 2020 15:49:07 +0800
-Message-Id: <20201029074910.227859-12-coiby.xu@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201029074910.227859-1-coiby.xu@gmail.com>
-References: <20201029074910.227859-1-coiby.xu@gmail.com>
+        id S1727624AbgJ2IEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 04:04:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47772 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726935AbgJ2IDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:03:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603957875;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BgtRc1tJzjcBk9DP7mLA/DnbL1eDZa5Y6LB/m/lUTuM=;
+        b=R5OvWMfhoqRFhkFNUGx6yE44xwRsHuZDHMlTe6vER++0EGasTAr0YqUe5YQzCGo9R5R25y
+        hvPp7gNUeHG6ow/n4Q9uBAo3tli+g1uaHLPCOoHNj158xwnG5WAN/7xB2OwQU3znt8LVYC
+        r6C75PgN75sh4/fMhmKmbqcTD/sfoIU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 36466B012;
+        Thu, 29 Oct 2020 07:51:15 +0000 (UTC)
+Date:   Thu, 29 Oct 2020 08:51:14 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Hui Su <sh_def@163.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/oom_kill: remove comment and rename
+ is_dump_unreclaim_slabs()
+Message-ID: <20201029075114.GA17500@dhcp22.suse.cz>
+References: <20201027144529.GA3558@rlk>
+ <20201027145814.GY20500@dhcp22.suse.cz>
+ <20201027151156.GA4336@rlk>
+ <20201027192322.GA20500@dhcp22.suse.cz>
+ <20201028153141.GB77196@rlk>
+ <20201028145330.1cf7a32bb109ccb50d2b0dbb@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028145330.1cf7a32bb109ccb50d2b0dbb@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+On Wed 28-10-20 14:53:30, Andrew Morton wrote:
+> On Wed, 28 Oct 2020 23:31:41 +0800 Hui Su <sh_def@163.com> wrote:
+> 
+> > Comment for is_dump_unreclaim_slabs is not really clear whether it is
+> > meant to instruct how to use the function or whether it is an outdated
+> > information of the past implementation of the function. it doesn't realy
+> > help that is_dump_unreclaim_slabs is hard to grasp on its own.
+> > 
+> > Rename the helper to should_dump_unreclaim_slabs which should make it
+> > clear what it is meant to do and drop the comment as the purpose
+> > should be pretty evident now.
+> > 
+> 
+> I think your recent attempt to improve the comment:
+> 
+> /*
+>  * Check whether unreclaimable slabs amount is greater than all user
+>  * memory(LRU pages).
+>  */
+> 
+> was actually somewhat useful, and worth retaining.
+> 
+> It would be better if it explained *why* we're doing this, rather than
+> simply "what we are doing"?
+> 
+> <looks at the code>
+> 
+> It's actually quite unobvious why we're doing this!
 
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
----
- drivers/iio/imu/kmx61.c | 2 --
- 1 file changed, 2 deletions(-)
+It's quite arbitrary criterion to print slab information in the oom
+report. The current logic is to dump if there is more slabs than LRU
+pages which should be pretty obvious from the code. Why this rather than
+e.g. slab * k > lru? Well, no strong reason, AFAIK. We just want to
+catch too much slab memory cases.
 
-diff --git a/drivers/iio/imu/kmx61.c b/drivers/iio/imu/kmx61.c
-index 61885e99d3fc..3b3d44ea8d24 100644
---- a/drivers/iio/imu/kmx61.c
-+++ b/drivers/iio/imu/kmx61.c
-@@ -1448,7 +1448,6 @@ static int kmx61_remove(struct i2c_client *client)
- 	return 0;
- }
- 
--#ifdef CONFIG_PM_SLEEP
- static int kmx61_suspend(struct device *dev)
- {
- 	int ret;
-@@ -1474,7 +1473,6 @@ static int kmx61_resume(struct device *dev)
- 
- 	return kmx61_set_mode(data, stby, KMX61_ACC | KMX61_MAG, true);
- }
--#endif
- 
- #ifdef CONFIG_PM
- static int kmx61_runtime_suspend(struct device *dev)
 -- 
-2.28.0
-
+Michal Hocko
+SUSE Labs
