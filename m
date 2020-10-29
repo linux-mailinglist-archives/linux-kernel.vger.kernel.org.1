@@ -2,115 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7386F29EE4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 196D029EE8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbgJ2Obd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726809AbgJ2Obc (ORCPT
+        id S1727847AbgJ2Omr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:42:47 -0400
+Received: from codesynthesis.com ([142.44.161.217]:46424 "EHLO
+        codesynthesis.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726633AbgJ2Omh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:31:32 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 000DAC0613CF;
-        Thu, 29 Oct 2020 07:31:31 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b3so2497136pfo.2;
-        Thu, 29 Oct 2020 07:31:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zRncE1X7mePBiM0SYCp+vTaN/KpzBsiKiLmub/YURAE=;
-        b=SEf94aX0Mj5GFY5YDSKNwqE/utvYYlY/Lb7HeosZov2jgxv2gQHB3CTbmBjqvDh592
-         TfKaw21L/d/A4cNZgXQjvtwNmYmoklQKHcLt8b1xhhUrKV+oSUInq9YfpNCgm7ltbHRz
-         c87BygMqgwe6068Xf37nzDlWqPRApME11A4xrSLGoyHZOpCmPkOPM5VNtNOKJILCs7m+
-         fWV543LE9gjRQ1eVzJrGtvwkNk2RvTvL7vjHQasLFaRo7MfXvrfMsoPSiXuchWzD3i7z
-         XjSfFWTwgj57agC4nOh+kf2sSKtXFzqBAxJ78VyXs5lMt3sZnPjDyyZX4pVqF3cQBCiX
-         gqqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zRncE1X7mePBiM0SYCp+vTaN/KpzBsiKiLmub/YURAE=;
-        b=typwhz8hXkYe4eU+BBp+ZsS6R0/RHwsOSeW4Rkhx+gciq07FF7IZsz0TqfmASUX+tx
-         u9gC8UrCGiakkvhc6PGvRt/AEG2vdWL0R60HKDk3Gs/NyBqV5T/2quR3+pCCt3l8hQSm
-         EdXOZvm2ywm8OGQE/C46CNIrQ8nvK03NvBEgiZ1np3Chnf6K7Tz9PRcTPA3vuMUnd0fG
-         PeheWe3H7yAuXBhFQnxfpyirN2ur8fEPDoswGs4LzNrW4j2j9GQQqI0NxGeOLG+YWIDr
-         XApfmlApYIdSJbSVv9FS5c1lKahzNrsrttfw/Jc9RxSuEt0AQACZYCvTXodBOLXZI0I4
-         u0Ag==
-X-Gm-Message-State: AOAM5338scLrJW8daoOcb5hQA9voWxasrw5vsS6ocaj21pMADGoIsRzI
-        dmyvs9L5VTvJpMIz2h9vND7AN2wMwjVCt0id
-X-Google-Smtp-Source: ABdhPJwRZiOQswCD21PzvvHuL4m3SzFzRUBfMy3SVA4VkKPRl2cgt7nvK7JiRme9qXLTj03tFUYJPw==
-X-Received: by 2002:a17:90a:d082:: with SMTP id k2mr39078pju.195.1603981891636;
-        Thu, 29 Oct 2020 07:31:31 -0700 (PDT)
-Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
-        by smtp.gmail.com with ESMTPSA id hj11sm13685pjb.55.2020.10.29.07.31.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 07:31:31 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Thu, 29 Oct 2020 22:30:13 +0800
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Barry Song <baohua@kernel.org>,
-        "open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>,
-        "moderated list:ARM/CSR SIRFPRIMA2 MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] watchdog: sirfsoc_wdt: remove unnecessary
- CONFIG_PM_SLEEP
-Message-ID: <20201029143013.4y4am5z7tw65b43y@Rk>
-References: <20201029075327.228570-1-coiby.xu@gmail.com>
- <20201029075327.228570-3-coiby.xu@gmail.com>
- <41e73435-375f-1865-69ce-462395476258@roeck-us.net>
+        Thu, 29 Oct 2020 10:42:37 -0400
+X-Greylist: delayed 621 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Oct 2020 10:42:36 EDT
+Received: from brak.codesynthesis.com (unknown [105.184.207.60])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by codesynthesis.com (Postfix) with ESMTPSA id A7B225F6C2;
+        Thu, 29 Oct 2020 14:32:14 +0000 (UTC)
+Received: by brak.codesynthesis.com (Postfix, from userid 1000)
+        id 952C71A800C4; Thu, 29 Oct 2020 16:32:07 +0200 (SAST)
+Date:   Thu, 29 Oct 2020 16:32:07 +0200
+From:   Boris Kolpackov <boris@codesynthesis.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] kconfig: qconf: convert to Qt5 new signal/slot
+ connection syntax
+Message-ID: <boris.20201029163103@codesynthesis.com>
+References: <20201024123841.1201922-1-masahiroy@kernel.org>
+ <20201024123841.1201922-3-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <41e73435-375f-1865-69ce-462395476258@roeck-us.net>
+In-Reply-To: <20201024123841.1201922-3-masahiroy@kernel.org>
+Organization: Code Synthesis
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 06:05:21AM -0700, Guenter Roeck wrote:
->On 10/29/20 12:53 AM, Coiby Xu wrote:
->> SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
->>
->> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->> ---
->>  drivers/watchdog/sirfsoc_wdt.c | 2 --
->>  1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/watchdog/sirfsoc_wdt.c b/drivers/watchdog/sirfsoc_wdt.c
->> index 734cf2966ecb..dc8341cd7d44 100644
->> --- a/drivers/watchdog/sirfsoc_wdt.c
->> +++ b/drivers/watchdog/sirfsoc_wdt.c
->> @@ -170,7 +170,6 @@ static int sirfsoc_wdt_probe(struct platform_device *pdev)
->>  	return 0;
->>  }
->>
->> -#ifdef	CONFIG_PM_SLEEP
->>  static int sirfsoc_wdt_suspend(struct device *dev)
->
->And again: __maybe_unused
->
->I would suggest to test compile the code with CONFIG_PM_SLEEP disabled.
+Masahiro Yamada <masahiroy@kernel.org> writes:
 
-I will test it before send v2! Thank you for the feedback!
->
->>  {
->>  	return 0;
->> @@ -189,7 +188,6 @@ static int sirfsoc_wdt_resume(struct device *dev)
->>
->>  	return 0;
->>  }
->> -#endif
->>
->>  static SIMPLE_DEV_PM_OPS(sirfsoc_wdt_pm_ops,
->>  		sirfsoc_wdt_suspend, sirfsoc_wdt_resume);
->>
->
+> Now that the Qt4 support was dropped, we can use the new connection
+> syntax supported by Qt5. It provides compile-time checking of the
+> validity of the connection.
+> 
+> Previously, the connection between signals and slots were checked
+> only run-time.
+> 
+> Commit d85de3399f97 ("kconfig: qconf: fix signal connection to invalid
+> slots") fixed wrong slots.
+> 
+> This change makes it possible to catch such mistakes easily.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
---
-Best regards,
-Coiby
+Tested-by: Boris Kolpackov <boris@codesynthesis.com>
