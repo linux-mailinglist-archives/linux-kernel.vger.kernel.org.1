@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC74229EBDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 838AE29EBE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgJ2M1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:27:52 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:6930 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgJ2M1t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:27:49 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CMPpg448vz70Xl;
-        Thu, 29 Oct 2020 20:27:39 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 29 Oct 2020 20:27:30 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 4/4] clocksource/drivers/sp804: Use pr_fmt
-Date:   Thu, 29 Oct 2020 20:33:17 +0800
-Message-ID: <20201029123317.90286-5-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201029123317.90286-1-wangkefeng.wang@huawei.com>
-References: <20201029123317.90286-1-wangkefeng.wang@huawei.com>
+        id S1725848AbgJ2Mb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:31:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37876 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbgJ2Mbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 08:31:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3DE19AD31;
+        Thu, 29 Oct 2020 12:31:54 +0000 (UTC)
+Date:   Thu, 29 Oct 2020 13:31:53 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Jessica Yu <jeyu@kernel.org>
+cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] module: set MODULE_STATE_GOING state when a module fails
+ to load
+In-Reply-To: <20201028122106.GA6867@linux-8ccs>
+Message-ID: <alpine.LSU.2.21.2010291310210.1688@pobox.suse.cz>
+References: <20201027140336.15409-1-mbenes@suse.cz> <20201028122106.GA6867@linux-8ccs>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pr_fmt to prefix pr_<level> output.
+On Wed, 28 Oct 2020, Jessica Yu wrote:
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- drivers/clocksource/timer-sp804.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+> +++ Miroslav Benes [27/10/20 15:03 +0100]:
+> >If a module fails to load due to an error in prepare_coming_module(),
+> >the following error handling in load_module() runs with
+> >MODULE_STATE_COMING in module's state. Fix it by correctly setting
+> >MODULE_STATE_GOING under "bug_cleanup" label.
+> >
+> >Signed-off-by: Miroslav Benes <mbenes@suse.cz>
+> >---
+> > kernel/module.c | 1 +
+> > 1 file changed, 1 insertion(+)
+> >
+> >diff --git a/kernel/module.c b/kernel/module.c
+> >index a4fa44a652a7..b34235082394 100644
+> >--- a/kernel/module.c
+> >+++ b/kernel/module.c
+> >@@ -3991,6 +3991,7 @@ static int load_module(struct load_info *info, const
+> >char __user *uargs,
+> >  			     MODULE_STATE_GOING, mod);
+> >  	klp_module_going(mod);
+> >  bug_cleanup:
+> >+	mod->state = MODULE_STATE_GOING;
+> >  /* module_bug_cleanup needs module_mutex protection */
+> >  mutex_lock(&module_mutex);
+> >  module_bug_cleanup(mod);
+> 
+> Thanks for the fix! Hmm, I am wondering if we also need to set the
+> module to GOING if it happens to fail while it is still UNFORMED.
+> 
+> Currently, when a module is UNFORMED and encounters an error during
+> load_module(), it stays UNFORMED until it finally goes away. That
+> sounds fine, but try_module_get() technically permits you to get a
+> module while it's UNFORMED (but not if it's GOING). Theoretically
+> someone could increase the refcount of an unformed module that has
+> encountered an error condition and is in the process of going away.
 
-diff --git a/drivers/clocksource/timer-sp804.c b/drivers/clocksource/timer-sp804.c
-index e0b48ecf20ab..778ad71a77ac 100644
---- a/drivers/clocksource/timer-sp804.c
-+++ b/drivers/clocksource/timer-sp804.c
-@@ -5,6 +5,9 @@
-  *  Copyright (C) 1999 - 2003 ARM Limited
-  *  Copyright (C) 2000 Deep Blue Solutions Ltd
-  */
-+
-+#define pr_fmt(fmt)    KBUILD_MODNAME ": " fmt
-+
- #include <linux/clk.h>
- #include <linux/clocksource.h>
- #include <linux/clockchips.h>
-@@ -63,13 +66,13 @@ static long __init sp804_get_clock_rate(struct clk *clk, const char *name)
- 	if (!clk)
- 		clk = clk_get_sys("sp804", name);
- 	if (IS_ERR(clk)) {
--		pr_err("sp804: %s clock not found: %ld\n", name, PTR_ERR(clk));
-+		pr_err("%s clock not found: %ld\n", name, PTR_ERR(clk));
- 		return PTR_ERR(clk);
- 	}
+Right.
+
+> This shouldn't happen if we properly set the module to GOING whenever
+> it encounters an error during load_module().
+
+That's correct.
  
- 	err = clk_prepare_enable(clk);
- 	if (err) {
--		pr_err("sp804: clock failed to enable: %d\n", err);
-+		pr_err("clock failed to enable: %d\n", err);
- 		clk_put(clk);
- 		return err;
- 	}
-@@ -218,7 +221,7 @@ static int __init sp804_clockevents_init(void __iomem *base, unsigned int irq,
- 
- 	if (request_irq(irq, sp804_timer_interrupt, IRQF_TIMER | IRQF_IRQPOLL,
- 			"timer", &sp804_clockevent))
--		pr_err("%s: request_irq() failed\n", "timer");
-+		pr_err("request_irq() failed\n");
- 	clockevents_config_and_register(evt, rate, 0xf, 0xffffffff);
- 
- 	return 0;
-@@ -280,7 +283,7 @@ static int __init sp804_of_init(struct device_node *np, struct sp804_timer *time
- 	if (of_clk_get_parent_count(np) == 3) {
- 		clk2 = of_clk_get(np, 1);
- 		if (IS_ERR(clk2)) {
--			pr_err("sp804: %pOFn clock not found: %d\n", np,
-+			pr_err("%pOFn clock not found: %d\n", np,
- 				(int)PTR_ERR(clk2));
- 			clk2 = NULL;
- 		}
--- 
-2.26.2
+> But - I cannot think of a scenario where someone could call
+> try_module_get() on an unformed module, since find_module() etc. do
+> not return unformed modules, so they shouldn't be visible outside of
+> the module loader. So in practice, I think we're probably safe here..
+
+Hopefully yes. I haven't found anything that would contradict it.
+
+I think it is even safer to leave UNFORMED there. free_module() explicitly 
+sets UNFORMED state too while going through the similar process.
+
+ftrace_release_mod() is the only inconsistency there. It is called with 
+UNFORMED in load_module() if going through ddebug_cleanup label 
+directly, and with GOING in both do_init_module() before free_module() is 
+called and delete_module syscall. But it probably does not care.
+
+Miroslav
 
