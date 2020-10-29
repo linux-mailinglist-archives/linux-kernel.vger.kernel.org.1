@@ -2,123 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE3529EDAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BFC29EDAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgJ2Ny2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726184AbgJ2Ny0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:54:26 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE961C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:54:25 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id i1so2902024wro.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=googlenew;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rYnSA5ZoiujykRNozsG5LomUFpo5IhTRaCiGcXzwirA=;
-        b=bCUtkd4ezKe1U4qHyzh5AIdnEv13lbJdYO5x8qLZTolHIsEWg9asPfzA7oqkHPL67f
-         vA0vO949iJAaJB9d+6z4l/5ghNYiuEUZELeDi10eJVYcDMFNFxYwpxWtI4AkL+YrBncE
-         nJHRXabEyMETHE1also5c85D/kFDhN/+j1WWx3KGVVmjvyUk8ToK5ETOEeBiQYb3v2j/
-         4Y66IPwQTWKGUEfF8Hp/u8e6j2JwwSFXx7X2jbQdGgDHgjLOuFFim4JhmwqutMLnIq79
-         dNX9UbgQnWJGD1Rf6goJ72vwY0hWs41c7CN2p4QenczNDA3X14DzeNqIxQLauFAKBcu3
-         BEpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rYnSA5ZoiujykRNozsG5LomUFpo5IhTRaCiGcXzwirA=;
-        b=W3csi9jRGrGb23ULgDx5PeSZYyWRJv0rpyQ2rPhWPwUgofApexoecLThnwfBzv48m4
-         f0s/1IOdi+DUsmok/GHA5UUzsar0NIItphvIGU/q+Uh59+ag22vKBAXHIjKkbU635KBy
-         iLd98snTfOpz+aACPoCTWTFIVkLMXIgBLbzzNQ4dk9gFo/OG7Wf6a9WKYlVVx0qqso3i
-         X2HnRroYvIUxFit7R02bpj1GtTcDVB2c6mlgo4G2tPcg8YZt0zgLUmR71MeyGKgtWy0i
-         aOG+6HvJdVrvG5QDVdio6EnInss8kL4PD2krmshE5XWmnDc/gR54xMLAqXXytdVI8Xxa
-         az5A==
-X-Gm-Message-State: AOAM530rXBp7UKNRg3o29J2zZ3pAw6zxSfrlIiQQmkmZQN+Ep2boac2J
-        HiXJOAh8n+J5y1/G1KqPD7B3kw==
-X-Google-Smtp-Source: ABdhPJyl8m3/11RhymK3V9IrjO73jUl15Nz+RctxKh87V9ezZJnGEDu0EQrvbROcFMnU49M5KbndVw==
-X-Received: by 2002:adf:ecc8:: with SMTP id s8mr5550483wro.328.1603979664621;
-        Thu, 29 Oct 2020 06:54:24 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id z11sm5484304wrr.66.2020.10.29.06.54.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 06:54:23 -0700 (PDT)
-Subject: Re: [PATCH 2/4] arm64: hide more compat_vdso code
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20201026160342.3705327-1-arnd@kernel.org>
- <20201026160342.3705327-2-arnd@kernel.org>
- <20201026165543.GA42952@C02TD0UTHF1T.local>
- <CAK8P3a2W-BcRyxx7+JXr+MCBLSuLzLdEDzM8LMk5y1rjaEuXbw@mail.gmail.com>
-From:   Dmitry Safonov <dima@arista.com>
-Message-ID: <9616a4d4-12d4-f7c2-dd9b-1502a0a7322a@arista.com>
-Date:   Thu, 29 Oct 2020 13:54:22 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727481AbgJ2Ny4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:54:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726184AbgJ2Nyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 09:54:55 -0400
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF0EF20825
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:54:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603979694;
+        bh=1ANRlVoC4oc0lkbRKU8wnq7MF9OsR9WaKuPX3Cj5i9A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lBOtG/P0fnS53uEWstzEOsaf6sF8kkFOIdkSMWEpXf7dEoshMZH7h/iAcSqdr7Me0
+         DYNZf5t9xXr2VpbpotBNn6ftRuPuw4vBU2AMR4D+pt2HRApaMXvoIyW2tSjT2CgwrK
+         oaAX7VUO4Ji3Rc+h5u1OegJVrtsOw8TCeUml6pXI=
+Received: by mail-qv1-f46.google.com with SMTP id w9so1368667qvj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:54:54 -0700 (PDT)
+X-Gm-Message-State: AOAM532nFas/zSQziQ0uu7jM1XqWU/YKDKedt0fQP6eFo1bjR+LrDkjw
+        FLBMplPoK4LK0sYHn2wszfDOVXCC4Rv39uaYqsQ=
+X-Google-Smtp-Source: ABdhPJxn8R/mToGpaGrOgoAMWUjysLAb++20PByhOgLH+QGelMxT49ZVpmYKT1GeLnTuyQB0EX/xv1DJLj/oF2ByiMM=
+X-Received: by 2002:a0c:c187:: with SMTP id n7mr4614787qvh.19.1603979693670;
+ Thu, 29 Oct 2020 06:54:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2W-BcRyxx7+JXr+MCBLSuLzLdEDzM8LMk5y1rjaEuXbw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201023092650.GB29066@infradead.org> <VI1PR04MB4960E9ECD7310B8CA1E053DC92190@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <20201027062802.GC207971@kroah.com> <VI1PR04MB4960C0E76374B2775D99A82192160@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <20201027151106.e4skr6dsbwvo4al6@axis.com> <VI1PR04MB49603783EF3FD3F3635FCDAF92170@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <93bd1c60ea4d910489a7592200856eaf8022ced0.camel@intel.com>
+ <AM0PR04MB4947F01860DE953B8496FA8892170@AM0PR04MB4947.eurprd04.prod.outlook.com>
+ <CAK8P3a1JRx32VfFcwFpK0i6F5MQMCK-yCKw8=d_R08Y3iQ7wLQ@mail.gmail.com>
+ <CAK8P3a3u06ZHdAb_n3byTqfxAvy_wi48X1g0N4ODuH2uEM0xLA@mail.gmail.com>
+ <20201029100727.trbppgbusd5vogpz@axis.com> <CAK8P3a3T2Riy-vfd8RcdWeeER4usc2m78rkmx4Q_8N3zGA6r_A@mail.gmail.com>
+ <87mu05f94g.wl-ashutosh.dixit@intel.com>
+In-Reply-To: <87mu05f94g.wl-ashutosh.dixit@intel.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 29 Oct 2020 14:54:37 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0j8bi64yzPA=p9uP5cU8Z1NAS7Bp5a1BVjFBt-4LLzGQ@mail.gmail.com>
+Message-ID: <CAK8P3a0j8bi64yzPA=p9uP5cU8Z1NAS7Bp5a1BVjFBt-4LLzGQ@mail.gmail.com>
+Subject: Re: [PATCH V3 2/4] misc: vop: do not allocate and reassign the used ring
+To:     "Dixit, Ashutosh" <ashutosh.dixit@intel.com>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Sherry Sun <sherry.sun@nxp.com>,
+        "Dutt, Sudeep" <sudeep.dutt@intel.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "kishon@ti.com" <kishon@ti.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 1:35 PM, Arnd Bergmann wrote:
-> On Mon, Oct 26, 2020 at 5:55 PM Mark Rutland <mark.rutland@arm.com> wrote:
->> On Mon, Oct 26, 2020 at 05:03:29PM +0100, Arnd Bergmann wrote:
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>
->>> When CONFIG_COMPAT_VDSO is disabled, we get a warning
->>> about a potential out-of-bounds access:
->>>
->>> arch/arm64/kernel/vdso.c: In function 'aarch32_vdso_mremap':
->>> arch/arm64/kernel/vdso.c:86:37: warning: array subscript 1 is above array bounds of 'struct vdso_abi_info[1]' [-Warray-bounds]
->>>    86 |  unsigned long vdso_size = vdso_info[abi].vdso_code_end -
->>>       |                            ~~~~~~~~~^~~~~
->>>
->>> This is all in dead code however that the compiler is unable to
->>> eliminate by itself.
->>>
->>> Change the array to individual local variables that can be
->>> dropped in dead code elimination to let the compiler understand
->>> this better.
->>>
->>> Fixes: 0cbc2659123e ("arm64: vdso32: Remove a bunch of #ifdef CONFIG_COMPAT_VDSO guards")
->>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>
->> This looks like a nice cleanup to me! I agree we don't need the array
->> here.
->>
->> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-> 
-> Thanks!
-> 
-> I see the patch now conflicts with "mm: forbid splitting special mappings"
-> in -mm, by Dmitry Safonov. I have rebased my patch on top, should
-> I send it to Andrew for inclusion in -mm then?
+On Thu, Oct 29, 2020 at 2:35 PM Dixit, Ashutosh
+<ashutosh.dixit@intel.com> wrote:
+> On Thu, 29 Oct 2020 04:53:09 -0700, Arnd Bergmann wrote:
+> >
+> > - PCIe endpoint, with the endpoint controlling the virtio configuration
+> > - PCIe endpoint, with the host (the side that has the pci_driver) controlling
+> >   the virtio configuration
+> > - NTB connections
+> > - your  loopback mode
+> > - Virtio tunnels between VM guests (see https://www.linaro.org/projects/#STR)
+> > - Intel MIC (to be removed, but it would be wrong to make assumptions that
+> >   cannot be made on that type of hardware)
+>
+> A virtio interface being one between host and guest is inherently
+> asymmetric. The whole innovation of the VOP design was to treat Linux on a
+> PCIe device as a guest, there was even talk at some point of the "guest"
+> being managed via libvirt. So here host and guest retain their specific
+> role/personality. The host "inserts" devices which appear in the guest
+> e.g. So I am not sure how this asymmetry plays in the scenarios mentioned
+> above.
 
-Makes sense to me.
-I plan to add some more patches on top that will make tracking of user
-landing (on vdso/sigpage/etc) common between architectures in generic code.
-So, I think it's probably good idea to keep it in one place, -mm tree
-seems like a proper place for it.
+This is the reason I listed the PCIe endpoint mode twice. I expect that
+some use cases require the same setup as MIC, with Linux on some
+kind of PCIe add-on card using devices that are implemented on the host.
+In other cases we may need the opposite: you may have a PCIe
+add-on card that provides arbitrary services to the host in the same
+way that most PCIe endpoint devices work. An example might be
+a smart NIC running a standalone Linux, but implementing virtio-net
+to avoid the need for custom drivers on the host.
 
-Thanks,
-          Dmitry
+In the endpoint framework, it is always the endpoint that decides what
+PCI devices it wants to implement, but in case of VOP that device
+could be either the side that configures and implements the virtio
+devices, or the side that probes and uses them.
+
+      Arnd
