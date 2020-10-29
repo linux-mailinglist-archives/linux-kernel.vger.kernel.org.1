@@ -2,114 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 797DC29F5D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7F129F5D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726398AbgJ2UEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 16:04:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbgJ2UE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:04:29 -0400
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63E1520809;
-        Thu, 29 Oct 2020 20:04:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604001868;
-        bh=AOvWudq0ZqsWRnN/qXnDh5LtmEQC83i+z8hhzYFp75c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E9pSr6O/G6YE5XFNmqJqljbHx3wSzq6bVnhYgluqrf/H7wEGt4aAL9MLa6Ef2g5bE
-         4w5Ruk1xZvDR0sd7whf/fLVhUkTVh6Yvbg+wvF3ZK42Y28B6ivLMgvYklEgjEcZcBs
-         SnRh+ePJ2S1j6tL012nn1pFY9GPKgLLRWuNt5q28=
-Received: by mail-oo1-f52.google.com with SMTP id o129so1018129ooo.11;
-        Thu, 29 Oct 2020 13:04:28 -0700 (PDT)
-X-Gm-Message-State: AOAM533ddLpQ0DP4oum4dl1uU0tdMPjrBnHgvTBuW+dfRdx3iGpHsSNY
-        WfFOajgru19sxhicxDtFJFKG2yxOpL2rK7CgeA==
-X-Google-Smtp-Source: ABdhPJzY69332/TXD/GEbGo1Phdkm8uP9368uPwVctCb5SZBvuiMltO4sKY7UEYa7BklecuGbw5fafj/oTXoXLnSFpE=
-X-Received: by 2002:a4a:dcc8:: with SMTP id h8mr4529803oou.81.1604001867553;
- Thu, 29 Oct 2020 13:04:27 -0700 (PDT)
+        id S1726435AbgJ2UEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:04:53 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:38039 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725780AbgJ2UEw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 16:04:52 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6C7485C00E7;
+        Thu, 29 Oct 2020 16:04:51 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 29 Oct 2020 16:04:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
+        :to:cc:subject:date:message-id:reply-to:mime-version
+        :content-transfer-encoding; s=fm1; bh=aZLLXKp5r2DJC4J80zb/c1UjaT
+        SWfTyQJPTu9tTd62M=; b=RZK50DSa4ZBCTbJmBMt2I/nt0teMNqY/9Uka0FOC5f
+        c4RkwYCfi98RLzpLM6B0MvshvTEpPHFiMIvENHVtyx0QlnZvny+nB7gjLZtUhJcP
+        OO+/brab6dUNk8zKJkmZf+mEql+xnEyj1X1izbW5dJu0JUQTobfg93AHSSWBjhhP
+        qmS5wdf/hrMWqUsGqYLe++g0W+05xV7kMsueWY1bT0QpuDCsjt1CC81e9nMohfQF
+        kuPsIcKQjS6S4YCIi4LKJj+rPpLiEUn0a0JQy5zN0FcO1Vxt1TvLdR9jpOnlR3Yo
+        iBemLKMJWtB2Aj8HAHW44yKZQ7e7k8m1t4pbXm6dF9ew==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:reply-to:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=aZLLXK
+        p5r2DJC4J80zb/c1UjaTSWfTyQJPTu9tTd62M=; b=rnxHk3yceoX3jSgD+S4wjJ
+        6lSG/T/sGNbg6cmQBxgGwtrJbnEOH1WHp13HQ+W9Kn1/Meu/kyWXA/aJPw5w8sgz
+        y1cJhXUcErxpTJA+uxEdVJ4E676LPrYhLgfYPG3ksZrD1AiV7X6l02XYrdwtsgzc
+        8qeTP7NAphW11RAp9yX+Xt5eRwp9lEwRQub0cUbVePGs+rygHxNDnu1YVyq0M1X9
+        B/tiz24pTRLbsLPqyU1Zwud92zlBTMW7jtclVUaHPbUq7KSFfYRjg4TEtrp0yYDI
+        CJRI4GYE2LU2D+ujrt53GCp/KdTyQmokKVQ+Xf8kWji2sN18uiEXn7naHbp8Qf4g
+        ==
+X-ME-Sender: <xms:YiCbXzmq6Q8wNIl0wuE8DaF_OVa_0PMz9SxzfdxAfVMmYAzNH6Z3nQ>
+    <xme:YiCbX23M7lfHQeI_hCz-dHBaRxtIPgddEWvmkk_2MbwSpJ_6tXe21Q7v2DO7MwS-A
+    8oaZQ5PW7E3cxM7mw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleefgddufeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkfforhgggfestdhqredtredttdenucfhrhhomhepkghiucgjrghn
+    uceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepleetvddtvd
+    dttdetffdvkeehffdtjefhkedtheffjeehvdejueektedukedufeffnecukfhppeduvddr
+    geeirddutdeirdduieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepiihirdihrghnsehsvghnthdrtghomh
+X-ME-Proxy: <xmx:YiCbX5pQM-6XLZ9LWo2UdGFVuS6w1aFlACUAZFg9l6EPJ_PkaCzH8Q>
+    <xmx:YiCbX7kZH6UeoFl4KgKYXSdIPR4lVx4NQT7DNSPBdSJVoVJ0WAajnw>
+    <xmx:YiCbXx3uKaB5sGLJJow5mtMwZVBqN2qjXfIqsMbm3B7Jo8VzbGWXuQ>
+    <xmx:YyCbX_DBR9rBQEdU9Nh4d0dQU99QP1cTrfGa1RGSx9k4zJis6bWvPg>
+Received: from nvrsysarch6.NVidia.COM (unknown [12.46.106.164])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1BA97328005A;
+        Thu, 29 Oct 2020 16:04:50 -0400 (EDT)
+From:   Zi Yan <zi.yan@sent.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     Rik van Riel <riel@surriel.com>, linux-kernel@vger.kernel.org,
+        Zi Yan <ziy@nvidia.com>
+Subject: [PATCH] mm/compaction: count pages and stop correctly during page isolation.
+Date:   Thu, 29 Oct 2020 16:04:35 -0400
+Message-Id: <20201029200435.3386066-1-zi.yan@sent.com>
+X-Mailer: git-send-email 2.28.0
+Reply-To: Zi Yan <ziy@nvidia.com>
 MIME-Version: 1.0
-References: <20201020193850.1460644-1-helen.koike@collabora.com> <20201020193850.1460644-6-helen.koike@collabora.com>
-In-Reply-To: <20201020193850.1460644-6-helen.koike@collabora.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 29 Oct 2020 15:04:16 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK3xhPHscbB+waDqEjKeRoeZ0MNu88fp70g9CSC02Qopw@mail.gmail.com>
-Message-ID: <CAL_JsqK3xhPHscbB+waDqEjKeRoeZ0MNu88fp70g9CSC02Qopw@mail.gmail.com>
-Subject: Re: [PATCH v6 5/9] media: staging: rkisp1: remove unecessary clocks
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        "heiko@sntech.de" <heiko@sntech.de>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Mark Rutland <mark.rutland@arm.com>, karthik.poduval@gmail.com,
-        Eddie Cai <eddie.cai.linux@gmail.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 2:39 PM Helen Koike <helen.koike@collabora.com> wrote:
->
-> aclk_isp_wrap is a child of aclk_isp, and hclk_isp_wrap is a child of
-> hclk_isp, thus we can remove parents from the list.
->
-> Also, for the isp0, we only need the ISP clock, ACLK and HCLK.
-> In the future we'll need a pixel clock for RK3288 and RK3399, and a JPEG
-> clock for RK3288.
->
-> So with the goal to cleanup the dt-bindings and remove it from staging,
-> simplify clock names to isp, aclk and hclk.
->
-> Assigned clocks are meant to refer to the full path in the clock tree,
-> i.e. the leaf in the tree.
-> For instance, in RK3399, the clock responsible for ACLK (ISP AXI CLOCK)
-> is aclk_isp0_wrapper.
->
-> For reference, this is the isp clock topology on RK3399:
->
->  xin24m
->     pll_npll
->        npll
->           clk_isp1
->           clk_isp0
->     pll_cpll
->        cpll
->           aclk_isp1
->              aclk_isp1_noc
->              hclk_isp1
->                 aclk_isp1_wrapper
->                 hclk_isp1_noc
->           aclk_isp0
->              hclk_isp1_wrapper
->              aclk_isp0_wrapper
->              aclk_isp0_noc
->              hclk_isp0
->                 hclk_isp0_wrapper
->                 hclk_isp0_noc
->  pclkin_isp1_wrapper
->
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> Reviewed-by: Tomasz Figa <tfiga@chromium.org>
->
-> ---
->
-> Changes in V6:
-> - Define clocks in the top level, and use if/else schema to define how
->   many for each compatible as sugested by Rob Herring on
->   https://patchwork.linuxtv.org/project/linux-media/patch/20200722155533.252844-6-helen.koike@collabora.com/#122626
-> ---
->  .../bindings/media/rockchip-isp1.yaml         | 44 +++++++++++++------
->  drivers/staging/media/rkisp1/rkisp1-dev.c     |  8 ++--
->  2 files changed, 33 insertions(+), 19 deletions(-)
+From: Zi Yan <ziy@nvidia.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+In isolate_migratepages_block, when cc->alloc_contig is true, we are
+able to isolate compound pages, nr_migratepages and nr_isolated did not
+count compound pages correctly, causing us to isolate more pages than we
+thought. Use thp_nr_pages to count pages. Otherwise, we might be trapped
+in too_many_isolated while loop, since the actual isolated pages can go
+up to COMPACT_CLUSTER_MAX*512=3D16384, where COMPACT_CLUSTER_MAX is 32,
+since we stop isolation after cc->nr_migratepages reaches to
+COMPACT_CLUSTER_MAX.
+
+In addition, after we fix the issue above, cc->nr_migratepages could
+never be equal to COMPACT_CLUSTER_MAX if compound pages are isolated,
+thus page isolation could not stop as we intended. Change the isolation
+stop condition to >=3D.
+
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+---
+ mm/compaction.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/mm/compaction.c b/mm/compaction.c
+index ee1f8439369e..0683a4999581 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1012,8 +1012,8 @@ isolate_migratepages_block(struct compact_control *cc=
+, unsigned long low_pfn,
+=20
+ isolate_success:
+ 		list_add(&page->lru, &cc->migratepages);
+-		cc->nr_migratepages++;
+-		nr_isolated++;
++		cc->nr_migratepages +=3D thp_nr_pages(page);
++		nr_isolated +=3D thp_nr_pages(page);
+=20
+ 		/*
+ 		 * Avoid isolating too much unless this block is being
+@@ -1021,7 +1021,7 @@ isolate_migratepages_block(struct compact_control *cc=
+, unsigned long low_pfn,
+ 		 * or a lock is contended. For contention, isolate quickly to
+ 		 * potentially remove one source of contention.
+ 		 */
+-		if (cc->nr_migratepages =3D=3D COMPACT_CLUSTER_MAX &&
++		if (cc->nr_migratepages >=3D COMPACT_CLUSTER_MAX &&
+ 		    !cc->rescan && !cc->contended) {
+ 			++low_pfn;
+ 			break;
+@@ -1132,7 +1132,7 @@ isolate_migratepages_range(struct compact_control *cc=
+, unsigned long start_pfn,
+ 		if (!pfn)
+ 			break;
+=20
+-		if (cc->nr_migratepages =3D=3D COMPACT_CLUSTER_MAX)
++		if (cc->nr_migratepages >=3D COMPACT_CLUSTER_MAX)
+ 			break;
+ 	}
+=20
+--=20
+2.28.0
+
