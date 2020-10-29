@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A80729E2C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:38:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F26B29E2A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404416AbgJ2CWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
+        id S2391155AbgJ2CcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgJ2CWc (ORCPT
+        with ESMTP id S1728666AbgJ2Cb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 22:22:32 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDDAC0613D1;
-        Wed, 28 Oct 2020 19:21:59 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CM8LZ2QgGz9sTq;
-        Thu, 29 Oct 2020 13:20:54 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603938054;
-        bh=gQ9SLQL+lswtFGifeaqA4vO1cSaPFX5eqUzRJZmjfcE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RRYocUbUCHj+b8B/qLEF3MqbtLRy/XCtf4JZ2b+CCN0X/eFRkkioNhMPUzfxHW+ok
-         342NSZc8u8pBqlsDx5OvzYDlymHK6jQ36JtjDEfEMk6nslqNcmBFiWBb6l+KNOC1dD
-         paL6aKzEuxaYgJlpHcfq3UPoeaySQPMb1DUIqcoMSRzs4f7AgTWZvGv716/g9Z55Am
-         sDALElvCBHxVT6zdpPQWT2kxKv/TCWGuJymUJDWS3s3hnIp1UdqxixCu7yEW/i4ymJ
-         4m2p11zb5uayXSAIDWGaZ0V1mUEeWEwU2CAiSe41MRdaAtUjPtSP3/fZBBC2d/oA32
-         d4JTBQ8I5uo6Q==
-Date:   Thu, 29 Oct 2020 13:20:52 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>
-Subject: linux-next: manual merge of the phy-next tree with the
- regulator-fixes tree
-Message-ID: <20201029132052.1ac29c18@canb.auug.org.au>
+        Wed, 28 Oct 2020 22:31:56 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2D5C0613CF;
+        Wed, 28 Oct 2020 19:31:55 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id p17so568804pli.13;
+        Wed, 28 Oct 2020 19:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=fT5xz0svll+euXEooxtE7KKo/htChgiOqv59g7RkQ8k=;
+        b=McaNoG7ZvlMcNEutIFENXjexjaCmrLJfcKa3V9w0zHuZG6XNwHWUhqO0bmVLRnhO5u
+         15+OLMYvWfHoBKntiiR5cEFeOqsmRsd7XJrJSJ6ZEvppT3LY9KOtBmQeEHZ/F/Tvk7gm
+         WyQyEspMdvhzaQAgUy4fpK/ge706PFj2xKH46XAvPiN02PumR73RSWRetdWGTOUaMSfO
+         GW/E2njcAlFl59DNyVX6TFHSt2YKDrCxK/y5PMfvU23G7j3oaBglQAzyzJdcRIzSMtHS
+         h3Zjyg3KzthgRzG8w0lSAPCw8CamoyvHncnU0SmHJMPzE1JATlR4jb/H1AOQF/aQ5MgE
+         i5Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fT5xz0svll+euXEooxtE7KKo/htChgiOqv59g7RkQ8k=;
+        b=SuCRQLOxJie8eLwzE9p+MWuzItrRN20atKRRYRK+SsqaV4s9OAkKmpZpxTMz34BIFg
+         qHxfjpPnpkMFDnf9deRMFmISo33LHB7yOik+9iisrfgekCBPAPyyuK/NCg38vTUcyneA
+         MU+63jV75vSwyTXw3iYAsl+j+jUMWUHg3/sVfcZVszo2wK1C1wdNLWa00go1szzINPUo
+         0V6yCYt028YK5vgfnfPEK99xFnClLKwnsiIFRJGUehF/uAuMwTCqNJjUE/XUA9E/ARWY
+         bQLuw3khckN+tZvEjmNCdxX83hsTKE4Jd5rziuNT8sfMk5WRr7+sIW2SABarCDrYya/c
+         dwSg==
+X-Gm-Message-State: AOAM531fI+MI4IkwvmKX10r3SqsXx771kH2rnF5mR97tmm72iiEw1KMf
+        eaKeKQgWhUYCKC6FFtktAKh1mIuxau0=
+X-Google-Smtp-Source: ABdhPJyNNJkmxyVyzrxARxpg+uv/0z7/EE9M6PCXChPjmBeJwZWlK9p7gkTZsooH1ONyLbMrWy485A==
+X-Received: by 2002:a17:902:6b44:b029:d3:e78a:8ab6 with SMTP id g4-20020a1709026b44b02900d3e78a8ab6mr1787167plt.72.1603938714766;
+        Wed, 28 Oct 2020 19:31:54 -0700 (PDT)
+Received: from [10.230.28.251] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id w135sm910739pfc.103.2020.10.28.19.31.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 19:31:54 -0700 (PDT)
+Subject: Re: [PATCH net-next 1/5] net: mscc: ocelot: classify L2 mdb entries
+ as LOCKED
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201029022738.722794-1-vladimir.oltean@nxp.com>
+ <20201029022738.722794-2-vladimir.oltean@nxp.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <7d98669c-adf1-1f62-6f18-d39379eae3d7@gmail.com>
+Date:   Wed, 28 Oct 2020 19:31:52 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GAjBnrG/RkPLr7Y9YtT3KCP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201029022738.722794-2-vladimir.oltean@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GAjBnrG/RkPLr7Y9YtT3KCP
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the phy-next tree got a conflict in:
+On 10/28/2020 7:27 PM, Vladimir Oltean wrote:
+> ocelot.h says:
+> 
+> /* MAC table entry types.
+>  * ENTRYTYPE_NORMAL is subject to aging.
+>  * ENTRYTYPE_LOCKED is not subject to aging.
+>  * ENTRYTYPE_MACv4 is not subject to aging. For IPv4 multicast.
+>  * ENTRYTYPE_MACv6 is not subject to aging. For IPv6 multicast.
+>  */
+> 
+> We don't want the permanent entries added with 'bridge mdb' to be
+> subject to aging.
+> 
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-  MAINTAINERS
-
-between commit:
-
-  43c3e148830a ("MAINTAINERS: Add entry for Qualcomm IPQ4019 VQMMC regulato=
-r")
-
-from the regulator-fixes tree and commit:
-
-  c36f74566cef ("MAINTAINERS: Add entry for Qualcomm IPQ4019 USB PHY")
-
-from the phy-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc MAINTAINERS
-index 0e8f57817184,f01ce8f451c8..000000000000
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@@ -14552,14 -14547,14 +14552,22 @@@ F:	Documentation/devicetree/bindings/=
-ma
-  F:	drivers/mailbox/qcom-ipcc.c
-  F:	include/dt-bindings/mailbox/qcom-ipcc.h
- =20
-+ QUALCOMM IPQ4019 USB PHY DRIVER
-+ M:	Robert Marko <robert.marko@sartura.hr>
-+ M:	Luka Perkov <luka.perkov@sartura.hr>
-+ L:	linux-arm-msm@vger.kernel.org
-+ S:	Maintained
-+ F:	Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml
-+ F:	drivers/phy/qualcomm/phy-qcom-ipq4019-usb.c
-+=20
- +QUALCOMM IPQ4019 VQMMC REGULATOR DRIVER
- +M:	Robert Marko <robert.marko@sartura.hr>
- +M:	Luka Perkov <luka.perkov@sartura.hr>
- +L:	linux-arm-msm@vger.kernel.org
- +S:	Maintained
- +F:	Documentation/devicetree/bindings/regulator/vqmmc-ipq4019-regulator.ya=
-ml
- +F:	drivers/regulator/vqmmc-ipq4019-regulator.c
- +
-  QUALCOMM RMNET DRIVER
-  M:	Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
-  M:	Sean Tranchetti <stranche@codeaurora.org>
-
---Sig_/GAjBnrG/RkPLr7Y9YtT3KCP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+aJwQACgkQAVBC80lX
-0GzXNAf8C5LDkVxr32cYtjwKuVDIndwx+8fJJkDW6gKIJMKut/+fbAYPRBa6UjO8
-YIKPsbV5PumzX3UEzsrk4+VFO95PTu4quUJx6jLztQc6RpgLogD9B30iYyxcOlRe
-ta2Ybdmb60CVMGhWWKD/6CENNfv4Y81pWLkXsjgi4R965oExu6zfvjwd/EXtN0tr
-ZFlMawGcv4MDplFal9AJ63c2LGnm1km71LGRoprjKd7GN6LLz2QI4GGJid+ui7mi
-KpdF8PT2H6IrmZRDu8AK5T+lHwnfKVx3K97ArsCwdprhihcWsc8hEapezR92irto
-fXLBQqGU9z9+3Cz/aC9I1/Qkms+Hng==
-=Pu/L
------END PGP SIGNATURE-----
-
---Sig_/GAjBnrG/RkPLr7Y9YtT3KCP--
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
