@@ -2,386 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4058129F082
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FC329EFEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728532AbgJ2PvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
+        id S1728369AbgJ2PbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728509AbgJ2Pu7 (ORCPT
+        with ESMTP id S1728265AbgJ2Pa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:50:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3B3C0613CF;
-        Thu, 29 Oct 2020 08:41:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=iBrwQ7u9qumc4njkhWiPx+LnMHepKgVCZBO024rsKVU=; b=a8ovsw3qEH9a1JE2dbyz8caYti
-        XhDBkiE63ZuKYUZXZB77wo6BJuHEkndi44+JMWdHQsYop8n/jNE/wsrsTlb3x7e1p2A7qHSj6WUOv
-        cmQSsRgTkw36FvlABOPWp+LZlsDHWmIcbxbmFFVEeGTeg7fhq+Z9WTPIYnaw7HW9GB6lHx45/sHXr
-        HaiSW4mrH0pCqgEAfNRUvQXM8SvqJSvMRLJK4RaoZKpEbpcjHTAQnP0t9j9qDs3f6ecH12mk2TI7C
-        84wp+P+WARddkTA3COwlZ9AszfSNliRI2an3cxPSNvlgA6YQifX4GtjLiyBqniUfq5YnE8t5Kom7V
-        zBOeCiYA==;
-Received: from 089144193201.atnat0002.highway.a1.net ([89.144.193.201] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYA3J-0008Dj-A7; Thu, 29 Oct 2020 15:41:26 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 18/18] block: switch gendisk lookup to a simple xarray
-Date:   Thu, 29 Oct 2020 15:58:41 +0100
-Message-Id: <20201029145841.144173-19-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201029145841.144173-1-hch@lst.de>
-References: <20201029145841.144173-1-hch@lst.de>
+        Thu, 29 Oct 2020 11:30:59 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2ADC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:21:07 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id y78so1720690vsy.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:21:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G2vNhDEm3HbJWwlXQvfrqMnwz+Y6hXypKtoqXX91090=;
+        b=ZeVFlYxbfCuY/CTkTlqJNy9tAAAQX1+083ZdKCIa7x1FWR21+Plm1CPrBsd03fL+a1
+         9kxhuhqHA5xuykUmXmhTjs+dynTESM5EFHJjUSvzEMHqzuKqmcs6r4xBJiNaMTBnPwr9
+         M9dts4aQTunZ21ku0hMwe6NKyEo9QpURz2Z28=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G2vNhDEm3HbJWwlXQvfrqMnwz+Y6hXypKtoqXX91090=;
+        b=gc77qzZmyeTD7W1W1jJeJL36PGLgccT1F+wR2Q5VJTOiCkQrYQfik1b84qBZNgLRtc
+         1wjeDUwAyoLSyWPYWI60DTUT0fYynLiD6nyn+2eN3PAxU6rjnstvhMkidZeLezeHtG4i
+         eJZKtDTiRlu8okKd1mnfh57Ukb/qfm4AvmWnEPLixd/CmgqkNXVYzo3iTZSz9Fyj+F94
+         ynDrTEUesupXqGMVxfNc699al5Z/HgpcAK8PooQ41PZbZexX0yo2GwoowLGKR6P08dQj
+         gctwmAgBZ2IG7iCKPwB0FMHHVJm1ET6Hzc7exxuqTRIjSpLTm5lQDn8XWZcbPzefaYdp
+         OVhQ==
+X-Gm-Message-State: AOAM5316g1WBx+TFq6lwYlCvbP1RmabzqjeK25r9GDf27CNDvMlk4xpI
+        IRFe6vKXvr5vC+T/RQigVMwsajzLaZR9KIa1d0DDNg==
+X-Google-Smtp-Source: ABdhPJyPUNHkn7dNetro3OoklJYl1bWTjUQtaDqS1cgdmcB2snVQpIK+qd+2mZzS1qZQtfW6kHTw+C8nB2PbP9ucmKI=
+X-Received: by 2002:a67:1442:: with SMTP id 63mr3605467vsu.0.1603984866514;
+ Thu, 29 Oct 2020 08:21:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <c4cb4b41655bc890b9dbf40bd2c133cbcbef734d.camel@redhat.com> <89f0dbf6713ebd44ec519425e3a947e71f7aed55.camel@redhat.com>
+In-Reply-To: <89f0dbf6713ebd44ec519425e3a947e71f7aed55.camel@redhat.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 29 Oct 2020 16:20:55 +0100
+Message-ID: <CAJfpegv4jLewQ4G_GdxraTE8fGHy7-d52gPSi4ZAOp0N4aYJnw@mail.gmail.com>
+Subject: Re: WARN_ON(fuse_insert_writeback(root, wpa)) in tree_insert()
+To:     Qian Cai <cai@redhat.com>
+Cc:     Vivek Goyal <vgoyal@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>
+Content-Type: multipart/mixed; boundary="00000000000031f1b005b2d0d437"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that bdev_map is only used for finding gendisks, we can use
-a simple xarray instead of the regions tracking structure for it.
+--00000000000031f1b005b2d0d437
+Content-Type: text/plain; charset="UTF-8"
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- block/genhd.c         | 208 ++++++++----------------------------------
- include/linux/genhd.h |   7 --
- 2 files changed, 37 insertions(+), 178 deletions(-)
+On Thu, Oct 29, 2020 at 4:02 PM Qian Cai <cai@redhat.com> wrote:
+>
+> On Wed, 2020-10-07 at 16:08 -0400, Qian Cai wrote:
+> > Running some fuzzing by a unprivileged user on virtiofs could trigger the
+> > warning below. The warning was introduced not long ago by the commit
+> > c146024ec44c ("fuse: fix warning in tree_insert() and clean up writepage
+> > insertion").
+> >
+> > From the logs, the last piece of the fuzzing code is:
+> >
+> > fgetxattr(fd=426, name=0x7f39a69af000, value=0x7f39a8abf000, size=1)
+>
+> I can still reproduce it on today's linux-next. Any idea on how to debug it
+> further?
 
-diff --git a/block/genhd.c b/block/genhd.c
-index e78c95cf3c00a9..439b444cac2038 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -27,15 +27,7 @@
- 
- static struct kobject *block_depr;
- 
--struct bdev_map {
--	struct bdev_map *next;
--	dev_t dev;
--	unsigned long range;
--	struct module *owner;
--	struct kobject *(*probe)(dev_t, int *, void *);
--	int (*lock)(dev_t, void *);
--	void *data;
--} *bdev_map[255];
-+static DEFINE_XARRAY(bdev_map);
- static DEFINE_MUTEX(bdev_map_lock);
- 
- /* for extended dynamic devt allocation, currently only one major is used */
-@@ -646,85 +638,26 @@ static char *bdevt_str(dev_t devt, char *buf)
- 	return buf;
- }
- 
--/*
-- * Register device numbers dev..(dev+range-1)
-- * range must be nonzero
-- * The hash chain is sorted on range, so that subranges can override.
-- */
--void blk_register_region(dev_t devt, unsigned long range, struct module *module,
--			 struct kobject *(*probe)(dev_t, int *, void *),
--			 int (*lock)(dev_t, void *), void *data)
--{
--	unsigned n = MAJOR(devt + range - 1) - MAJOR(devt) + 1;
--	unsigned index = MAJOR(devt);
--	unsigned i;
--	struct bdev_map *p;
--
--	n = min(n, 255u);
--	p = kmalloc_array(n, sizeof(struct bdev_map), GFP_KERNEL);
--	if (p == NULL)
--		return;
--
--	for (i = 0; i < n; i++, p++) {
--		p->owner = module;
--		p->probe = probe;
--		p->lock = lock;
--		p->dev = devt;
--		p->range = range;
--		p->data = data;
--	}
-+static void blk_register_region(struct gendisk *disk)
-+{
-+	int i;
- 
- 	mutex_lock(&bdev_map_lock);
--	for (i = 0, p -= n; i < n; i++, p++, index++) {
--		struct bdev_map **s = &bdev_map[index % 255];
--		while (*s && (*s)->range < range)
--			s = &(*s)->next;
--		p->next = *s;
--		*s = p;
-+	for (i = 0; i < disk->minors; i++) {
-+		if (xa_insert(&bdev_map, disk_devt(disk) + i, disk, GFP_KERNEL))
-+			WARN_ON_ONCE(1);
- 	}
- 	mutex_unlock(&bdev_map_lock);
- }
--EXPORT_SYMBOL(blk_register_region);
- 
--void blk_unregister_region(dev_t devt, unsigned long range)
-+static void blk_unregister_region(struct gendisk *disk)
- {
--	unsigned n = MAJOR(devt + range - 1) - MAJOR(devt) + 1;
--	unsigned index = MAJOR(devt);
--	unsigned i;
--	struct bdev_map *found = NULL;
-+	int i;
- 
- 	mutex_lock(&bdev_map_lock);
--	for (i = 0; i < min(n, 255u); i++, index++) {
--		struct bdev_map **s;
--		for (s = &bdev_map[index % 255]; *s; s = &(*s)->next) {
--			struct bdev_map *p = *s;
--			if (p->dev == devt && p->range == range) {
--				*s = p->next;
--				if (!found)
--					found = p;
--				break;
--			}
--		}
--	}
-+	for (i = 0; i < disk->minors; i++)
-+		xa_erase(&bdev_map, disk_devt(disk) + i);
- 	mutex_unlock(&bdev_map_lock);
--	kfree(found);
--}
--EXPORT_SYMBOL(blk_unregister_region);
--
--static struct kobject *exact_match(dev_t devt, int *partno, void *data)
--{
--	struct gendisk *p = data;
--
--	return &disk_to_dev(p)->kobj;
--}
--
--static int exact_lock(dev_t devt, void *data)
--{
--	struct gendisk *p = data;
--
--	if (!get_disk_and_module(p))
--		return -1;
--	return 0;
- }
- 
- static void disk_scan_partitions(struct gendisk *disk)
-@@ -870,8 +803,7 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
- 		ret = bdi_register(bdi, "%u:%u", MAJOR(devt), MINOR(devt));
- 		WARN_ON(ret);
- 		bdi_set_owner(bdi, dev);
--		blk_register_region(disk_devt(disk), disk->minors, NULL,
--				    exact_match, exact_lock, disk);
-+		blk_register_region(disk);
- 	}
- 	register_disk(parent, disk, groups);
- 	if (register_queue)
-@@ -984,7 +916,7 @@ void del_gendisk(struct gendisk *disk)
- 	blk_unregister_queue(disk);
- 	
- 	if (!(disk->flags & GENHD_FL_HIDDEN))
--		blk_unregister_region(disk_devt(disk), disk->minors);
-+		blk_unregister_region(disk);
- 	/*
- 	 * Remove gendisk pointer from idr so that it cannot be looked up
- 	 * while RCU period before freeing gendisk is running to prevent
-@@ -1050,54 +982,22 @@ static void request_gendisk_module(dev_t devt)
- 		request_module("block-major-%d", MAJOR(devt));
- }
- 
--static struct gendisk *lookup_gendisk(dev_t dev, int *partno)
-+static bool get_disk_and_module(struct gendisk *disk)
- {
--	struct kobject *kobj;
--	struct bdev_map *p;
--	unsigned long best = ~0UL;
--
--retry:
--	mutex_lock(&bdev_map_lock);
--	for (p = bdev_map[MAJOR(dev) % 255]; p; p = p->next) {
--		struct kobject *(*probe)(dev_t, int *, void *);
--		struct module *owner;
--		void *data;
--
--		if (p->dev > dev || p->dev + p->range - 1 < dev)
--			continue;
--		if (p->range - 1 >= best)
--			break;
--		if (!try_module_get(p->owner))
--			continue;
--		owner = p->owner;
--		data = p->data;
--		probe = p->probe;
--		best = p->range - 1;
--		*partno = dev - p->dev;
--
--		if (!probe) {
--			mutex_unlock(&bdev_map_lock);
--			module_put(owner);
--			request_gendisk_module(dev);
--			goto retry;
--		}
-+	struct module *owner;
- 
--		if (p->lock && p->lock(dev, data) < 0) {
--			module_put(owner);
--			continue;
--		}
--		mutex_unlock(&bdev_map_lock);
--		kobj = probe(dev, partno, data);
--		/* Currently ->owner protects _only_ ->probe() itself. */
-+	if (!disk->fops)
-+		return false;
-+	owner = disk->fops->owner;
-+	if (owner && !try_module_get(owner))
-+		return false;
-+	if (!kobject_get_unless_zero(&disk_to_dev(disk)->kobj)) {
- 		module_put(owner);
--		if (kobj)
--			return dev_to_disk(kobj_to_dev(kobj));
--		goto retry;
-+		return false;
- 	}
--	mutex_unlock(&bdev_map_lock);
--	return NULL;
--}
-+	return true;
- 
-+}
- 
- /**
-  * get_gendisk - get partitioning information for a given device
-@@ -1116,7 +1016,19 @@ struct gendisk *get_gendisk(dev_t devt, int *partno)
- 	might_sleep();
- 
- 	if (MAJOR(devt) != BLOCK_EXT_MAJOR) {
--		disk = lookup_gendisk(devt, partno);
-+		mutex_lock(&bdev_map_lock);
-+		disk = xa_load(&bdev_map, devt);
-+		if (!disk) {
-+			mutex_unlock(&bdev_map_lock);
-+			request_gendisk_module(devt);
-+			mutex_lock(&bdev_map_lock);
-+			disk = xa_load(&bdev_map, devt);
-+		}
-+		if (disk && !get_disk_and_module(disk))
-+			disk = NULL;
-+		if (disk)
-+			*partno = devt - disk_devt(disk);
-+		mutex_unlock(&bdev_map_lock);
- 	} else {
- 		struct hd_struct *part;
- 
-@@ -1320,21 +1232,6 @@ static const struct seq_operations partitions_op = {
- };
- #endif
- 
--static void bdev_map_init(void)
--{
--	struct bdev_map *base;
--	int i;
--
--	base = kzalloc(sizeof(*base), GFP_KERNEL);
--	if (!base)
--		panic("cannot allocate bdev_map");
--
--	base->dev = 1;
--	base->range = ~0 ;
--	for (i = 0; i < 255; i++)
--		bdev_map[i] = base;
--}
--
- static int __init genhd_device_init(void)
- {
- 	int error;
-@@ -1343,7 +1240,6 @@ static int __init genhd_device_init(void)
- 	error = class_register(&block_class);
- 	if (unlikely(error))
- 		return error;
--	bdev_map_init();
- 	blk_dev_init();
- 
- 	register_blkdev(BLOCK_EXT_MAJOR, "blkext");
-@@ -1892,35 +1788,6 @@ struct gendisk *__alloc_disk_node(int minors, int node_id)
- }
- EXPORT_SYMBOL(__alloc_disk_node);
- 
--/**
-- * get_disk_and_module - increments the gendisk and gendisk fops module refcount
-- * @disk: the struct gendisk to increment the refcount for
-- *
-- * This increments the refcount for the struct gendisk, and the gendisk's
-- * fops module owner.
-- *
-- * Context: Any context.
-- */
--struct kobject *get_disk_and_module(struct gendisk *disk)
--{
--	struct module *owner;
--	struct kobject *kobj;
--
--	if (!disk->fops)
--		return NULL;
--	owner = disk->fops->owner;
--	if (owner && !try_module_get(owner))
--		return NULL;
--	kobj = kobject_get_unless_zero(&disk_to_dev(disk)->kobj);
--	if (kobj == NULL) {
--		module_put(owner);
--		return NULL;
--	}
--	return kobj;
--
--}
--EXPORT_SYMBOL(get_disk_and_module);
--
- /**
-  * put_disk - decrements the gendisk refcount
-  * @disk: the struct gendisk to decrement the refcount for
-@@ -1957,7 +1824,6 @@ void put_disk_and_module(struct gendisk *disk)
- 		module_put(owner);
- 	}
- }
--EXPORT_SYMBOL(put_disk_and_module);
- 
- static void set_disk_ro_uevent(struct gendisk *gd, int ro)
- {
-diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-index 14b1bc7dea21d8..77c3489991f42e 100644
---- a/include/linux/genhd.h
-+++ b/include/linux/genhd.h
-@@ -340,15 +340,8 @@ int blk_add_partitions(struct gendisk *disk, struct block_device *bdev);
- int blk_drop_partitions(struct block_device *bdev);
- 
- extern struct gendisk *__alloc_disk_node(int minors, int node_id);
--extern struct kobject *get_disk_and_module(struct gendisk *disk);
- extern void put_disk(struct gendisk *disk);
- extern void put_disk_and_module(struct gendisk *disk);
--extern void blk_register_region(dev_t devt, unsigned long range,
--			struct module *module,
--			struct kobject *(*probe)(dev_t, int *, void *),
--			int (*lock)(dev_t, void *),
--			void *data);
--extern void blk_unregister_region(dev_t devt, unsigned long range);
- 
- #define alloc_disk_node(minors, node_id)				\
- ({									\
--- 
-2.28.0
+Can you please try the attached patch?
 
+Thanks,
+Miklos
+
+--00000000000031f1b005b2d0d437
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="fuse-launder-page-should-wait-for-page-writeback.patch"
+Content-Disposition: attachment; 
+	filename="fuse-launder-page-should-wait-for-page-writeback.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kguz5cjv0>
+X-Attachment-Id: f_kguz5cjv0
+
+ZGlmZiAtLWdpdCBhL2ZzL2Z1c2UvZmlsZS5jIGIvZnMvZnVzZS9maWxlLmMKaW5kZXggYzAzMDM0
+ZThjMTUyLi40MWIxZTE0ZjM4MjAgMTAwNjQ0Ci0tLSBhL2ZzL2Z1c2UvZmlsZS5jCisrKyBiL2Zz
+L2Z1c2UvZmlsZS5jCkBAIC0yMjgxLDYgKzIyODEsOSBAQCBzdGF0aWMgaW50IGZ1c2VfbGF1bmRl
+cl9wYWdlKHN0cnVjdCBwYWdlICpwYWdlKQogCWludCBlcnIgPSAwOwogCWlmIChjbGVhcl9wYWdl
+X2RpcnR5X2Zvcl9pbyhwYWdlKSkgewogCQlzdHJ1Y3QgaW5vZGUgKmlub2RlID0gcGFnZS0+bWFw
+cGluZy0+aG9zdDsKKworCQkvKiBTZXJpYWxpemUgd2l0aCBwZW5kaW5nIHdyaXRlYmFjayBmb3Ig
+dGhlIHNhbWUgcGFnZSAqLworCQlmdXNlX3dhaXRfb25fcGFnZV93cml0ZWJhY2soaW5vZGUsIHBh
+Z2UtPmluZGV4KTsKIAkJZXJyID0gZnVzZV93cml0ZXBhZ2VfbG9ja2VkKHBhZ2UpOwogCQlpZiAo
+IWVycikKIAkJCWZ1c2Vfd2FpdF9vbl9wYWdlX3dyaXRlYmFjayhpbm9kZSwgcGFnZS0+aW5kZXgp
+Owo=
+--00000000000031f1b005b2d0d437--
