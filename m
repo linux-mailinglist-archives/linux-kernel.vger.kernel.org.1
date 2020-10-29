@@ -2,198 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610CC29EF8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A73B29EF92
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728177AbgJ2PRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727917AbgJ2PRF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:17:05 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1F9C0613CF;
-        Thu, 29 Oct 2020 08:17:05 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id n16so2574434pgv.13;
-        Thu, 29 Oct 2020 08:17:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=820MwFgEaA13M8USX5NcXNh7ShnWbqQ8vCMeLhpqcYs=;
-        b=S5RbO63BxB+kSye4StTkySYsW8Zr4FA0vnzixmEkiwTQwE1vI/VjWC2hHXLdQO05Gw
-         a2OenMl3LvspcJH/IRGLgGitvwqaukn7G8DrfU3oHDyTezcCEYj6xklXXFYhOo1NNYKI
-         QVPMrB3mSSSzLggNqwokNIJnKFLIwJlXJ1J1+NwtbTBbaxgqc3WCf4oBbVZlt9iVDuS+
-         wsvt+vLSQKbDFDNJ80WPqsEOFSPCjg/7nS9LmMBSiUnlSpDYC5guEqq8Nqg3DIlF0yRD
-         orGh7uZuojFX9L9p7wSa1qHFVzik6JXcOt89LntoOjmwSP7G1c713NE8tzeAa7uLzt6X
-         EYzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=820MwFgEaA13M8USX5NcXNh7ShnWbqQ8vCMeLhpqcYs=;
-        b=ew/LtF+3Yt8r5aM4n3UxTORozhhLi7Gz4g0zYpGb2E2ROErwHWMF21nYj9qChDhQHs
-         S6U6D5FDwWwhSt5tw/Ge/J1WXAlcbZXMNtm8Nhjplz7JVYO471CyjTegiXdnuG5KfpVs
-         WvmJUYxdo469T2bVH7DRtZa651dmGXh23OWJUpjsrXA9jZXi7dsEMJRyEXzhIykDsyEh
-         lEMPo+KIzvqA2RuITR/xFN0F4JMF3cQtMb5/Am7OlTiFyB01Vcg7L9J2IjVookD8X8hH
-         ayeUggBw5hEepFwAHOjhPOs6mJWf1Bd7WN9Dcg88+CBp1fIaU/p4hYrsj94ry3f+EPcE
-         pgqQ==
-X-Gm-Message-State: AOAM5330P1Pxglso12Z/xpsh2l0sBaJ8fYllQ673oCLSUgCaI+MZsACu
-        NBCwo0ZSu0Jyvl8A3UZCJ9Y=
-X-Google-Smtp-Source: ABdhPJyY7nixg8TY+WgurAXV+U5HGT8ffPpFyIyVTq773koSVeFgvAYxC4fluR9lXWYW2NDB40cO4g==
-X-Received: by 2002:a17:90a:be18:: with SMTP id a24mr231009pjs.215.1603984624439;
-        Thu, 29 Oct 2020 08:17:04 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.222.191])
-        by smtp.gmail.com with ESMTPSA id b3sm3143476pfd.66.2020.10.29.08.17.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 08:17:03 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Subject: Re: [PATCH v2] net: usb: usbnet: update __usbnet_{read|write}_cmd()
- to use new API
-To:     Oliver Neukum <oneukum@suse.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev <netdev@vger.kernel.org>, linux-usb@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20201010065623.10189-1-anant.thazhemadam@gmail.com>
- <20201029132256.11793-1-anant.thazhemadam@gmail.com>
-Message-ID: <d8417f98-0896-25d0-e72d-dcf111011129@gmail.com>
-Date:   Thu, 29 Oct 2020 20:46:59 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728153AbgJ2PS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:18:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727972AbgJ2PSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:18:54 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5527620719;
+        Thu, 29 Oct 2020 15:18:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603984733;
+        bh=z1AwC15Mf354okdz08ulp+IEkHhyaUMTMrlzzjYtWEQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AyAmasQVhUOtumuVJuJrx5U+6G7BKmameHT7zYJDqVJ3wwsGF6VTWQfgrHdf3G4l/
+         GGsk1DsQmXvuGVQcbWmiVXubGDx3/GZk2OYbsFDwLtVs7HS65GTra/gtr6jNqWVajp
+         9ODTO8ns9nuuLJ5aB4c03zau6KIuotzxJ2+fknkY=
+Date:   Thu, 29 Oct 2020 15:18:47 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH] regmap: provide regmap_assign_bits()
+Message-ID: <20201029151847.GB5042@sirena.org.uk>
+References: <20201026151015.15527-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-In-Reply-To: <20201029132256.11793-1-anant.thazhemadam@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rS8CxjVDS/+yyDmU"
+Content-Disposition: inline
+In-Reply-To: <20201026151015.15527-1-brgl@bgdev.pl>
+X-Cookie: Monotheism is a gift from the gods.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 29/10/20 6:52 pm, Anant Thazhemadam wrote:
-> Currently, __usbnet_{read|write}_cmd() use usb_control_msg(),
-> and thus consider potential partial reads/writes being done to 
-> be perfectly valid.
-> Quite a few callers of usbnet_{read|write}_cmd() don't enforce
-> checking for partial reads/writes into account either, automatically
-> assuming that a complete read/write occurs.
->
-> However, the new usb_control_msg_{send|recv}() APIs don't allow partial
-> reads and writes.
-> Using the new APIs also relaxes the return value checking that must
-> be done after usbnet_{read|write}_cmd() is called.
->
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com> <mailto:anant.thazhemadam@gmail.com>
-> ---
-> Changes in v2:
-> 	* Fix build error
->
-> This patch has been compile and build tested with a .config file that
-> was generated using make allyesconfig, and the build error has been 
-> fixed.
-> Unfortunately, I wasn't able to get my hands on a usbnet adapter for testing,
-> and would appreciate it if someone could do that.
->
->  drivers/net/usb/usbnet.c | 52 ++++++++--------------------------------
->  1 file changed, 10 insertions(+), 42 deletions(-)
->
-> diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-> index bf6c58240bd4..2f7c7b7f4047 100644
-> --- a/drivers/net/usb/usbnet.c
-> +++ b/drivers/net/usb/usbnet.c
-> @@ -1982,64 +1982,32 @@ EXPORT_SYMBOL(usbnet_link_change);
->  static int __usbnet_read_cmd(struct usbnet *dev, u8 cmd, u8 reqtype,
->  			     u16 value, u16 index, void *data, u16 size)
->  {
-> -	void *buf = NULL;
-> -	int err = -ENOMEM;
->  
->  	netdev_dbg(dev->net, "usbnet_read_cmd cmd=0x%02x reqtype=%02x"
->  		   " value=0x%04x index=0x%04x size=%d\n",
->  		   cmd, reqtype, value, index, size);
->  
-> -	if (size) {
-> -		buf = kmalloc(size, GFP_KERNEL);
-> -		if (!buf)
-> -			goto out;
-> -	}
-> -
-> -	err = usb_control_msg(dev->udev, usb_rcvctrlpipe(dev->udev, 0),
-> -			      cmd, reqtype, value, index, buf, size,
-> -			      USB_CTRL_GET_TIMEOUT);
-> -	if (err > 0 && err <= size) {
-> -        if (data)
-> -            memcpy(data, buf, err);
-> -        else
-> -            netdev_dbg(dev->net,
-> -                "Huh? Data requested but thrown away.\n");
-> -    }
-> -	kfree(buf);
-> -out:
-> -	return err;
-> +	return usb_control_msg_recv(dev->udev, 0,
-> +			      cmd, reqtype, value, index, data, size,
-> +			      USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
->  }
->  
->  static int __usbnet_write_cmd(struct usbnet *dev, u8 cmd, u8 reqtype,
->  			      u16 value, u16 index, const void *data,
->  			      u16 size)
->  {
-> -	void *buf = NULL;
-> -	int err = -ENOMEM;
-> -
->  	netdev_dbg(dev->net, "usbnet_write_cmd cmd=0x%02x reqtype=%02x"
->  		   " value=0x%04x index=0x%04x size=%d\n",
->  		   cmd, reqtype, value, index, size);
->  
-> -	if (data) {
-> -		buf = kmemdup(data, size, GFP_KERNEL);
-> -		if (!buf)
-> -			goto out;
-> -	} else {
-> -        if (size) {
-> -            WARN_ON_ONCE(1);
-> -            err = -EINVAL;
-> -            goto out;
-> -        }
-> -    }
-> -
-> -	err = usb_control_msg(dev->udev, usb_sndctrlpipe(dev->udev, 0),
-> -			      cmd, reqtype, value, index, buf, size,
-> -			      USB_CTRL_SET_TIMEOUT);
-> -	kfree(buf);
-> +	if (size && !data) {
-> +		WARN_ON_ONCE(1);
-> +		return -EINVAL;
-> +	}
->  
-> -out:
-> -	return err;
-> +	return usb_control_msg_send(dev->udev, 0,
-> +			cmd, reqtype, value, index, data, size,
-> +			USB_CTRL_SET_TIMEOUT, GFP_KERNEL);
->  }
->  
->  /*
+--rS8CxjVDS/+yyDmU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I had a v2 prepared and ready but was told to wait for a week before sending it in,
-since usb_control_msg_{send|recv}() that were being used were not present in the
-networking tree at the time, and all the trees would be converged by then.
-So, just to be on the safer side, I waited for two weeks.
-I checked the net tree, and found the APIs there too (defined in usb.h).
+On Mon, Oct 26, 2020 at 04:10:15PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>=20
+> Add another bits helper to regmap API: this one sets given bits if value
+> is true and clears them if it's false.
 
-However the build seems to fail here,
-    https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/O2BERGN7SYYC6LNOOKNUGPS2IJLDWYT7/
+What's the use case?
 
-I'm not entirely sure at this point why this is happening, and would appreciate it if
-someone could take the time to tell me if and how this might be an issue with my
-patch.
+> +static inline int regmap_assign_bits(struct regmap *map, unsigned int re=
+g,
+> +				     unsigned int bits, bool value)
 
-Thanks,
-Anant
+I don't have a great suggestion but this naming feels prone to confusion
+with _update_bits(). =20
 
+--rS8CxjVDS/+yyDmU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+a3VYACgkQJNaLcl1U
+h9B6xAf8DDMFo0lHS3pNCplZ7ZWsD+c+W8C/MHr37yNTGyq25T59sgl1/iVdXmZW
+mYyerCqrVCwQZLPMerhIwuhaprTRHjBHTb6rQQTCn9YAWLaimEkrZsIH87Jgu5QZ
+e/IAx3K9GGAJNV2NMBw5kGg83tmLWf7w43XMrbt3xr1BnIO7qblPNC4SYu/WG22/
+94+8oozjIvbjJjZrOxTcCK2CzwvHqbBf9m7ppNIEUccBvd8LHLoZPPA/w1x3T+T5
+0o39NkPyK2dCgAU8wWanmVzQeEWjwqHSnJRS95ZFVl6chCtXm77ZoLcrbqTLayDa
+GHqZ5TmEGutHs19h7z7wWv0pefc4Ag==
+=YOvd
+-----END PGP SIGNATURE-----
+
+--rS8CxjVDS/+yyDmU--
