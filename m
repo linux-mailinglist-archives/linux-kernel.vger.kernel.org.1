@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B47F29EAF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0008429EB0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725848AbgJ2LuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:50:05 -0400
+        id S1725923AbgJ2LyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:54:21 -0400
 Received: from fllv0016.ext.ti.com ([198.47.19.142]:37356 "EHLO
         fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725826AbgJ2LuF (ORCPT
+        with ESMTP id S1725710AbgJ2LyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:50:05 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09T59tvE118625;
-        Thu, 29 Oct 2020 00:09:55 -0500
+        Thu, 29 Oct 2020 07:54:21 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09T5JYL3121768;
+        Thu, 29 Oct 2020 00:19:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603948195;
-        bh=OsdwdOWV1uhhgsrwppo6HM3IWl59ZGRmOZFrLL6GY38=;
+        s=ti-com-17Q1; t=1603948774;
+        bh=ZByVPzkHmsKvUvCnhCpfP8mAajrWcyo1gasXudSIqG8=;
         h=From:To:CC:Subject:Date;
-        b=lx3QEvJ8Bmw8PdLOf8k6U3Vl6rh/BFiPmJ+K1Y/DswxuyZ2p7a9rJYgkSq+8Q69in
-         ZNVcbJc9KygrXN6AvRh46TRo6SXqTKCkm5FCdAh3iYiALtvL8qTTOkCTfLg4sTpyAw
-         yfD5aXU5NpOSrVZ7jGJ6Axore3HRcbYR9uoa6Cis=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09T59ttu011465
+        b=MA09L/OqvvTObcLxCACI2zfE1drOrc+z89DDSsLjhCXr0b+SsdzNyAvSXYOEqb9gv
+         K+u1dronAcRc5sjCIhGQomraFvrsuMYxiOkMOSQY1BU69u4L5/LS8p6qlIP/8bENOH
+         tF1+4t4HD9SBRC4xZyNaTSJfaGMKiDD77SiUE9bs=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09T5JYKw015004
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 29 Oct 2020 00:09:55 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 29 Oct 2020 00:19:34 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 29
- Oct 2020 00:09:54 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ Oct 2020 00:19:34 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 29 Oct 2020 00:09:54 -0500
+ Frontend Transport; Thu, 29 Oct 2020 00:19:34 -0500
 Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09T59p93011556;
-        Thu, 29 Oct 2020 00:09:52 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09T5JVOA027985;
+        Thu, 29 Oct 2020 00:19:32 -0500
 From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [RESEND PATCH] arm64: dts: ti: k3-j7200-mcu-wakeup: Enable ADC support
-Date:   Thu, 29 Oct 2020 10:39:50 +0530
-Message-ID: <20201029050950.4500-1-vigneshr@ti.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Jiri Slaby <jirislaby@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] serial: 8250: 8250_omap: Disable RX interrupt after DMA enable
+Date:   Thu, 29 Oct 2020 10:49:30 +0530
+Message-ID: <20201029051930.7097-1-vigneshr@ti.com>
 X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -55,62 +54,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J7200 has a single instance of 8 channel ADC in MCU domain. Add DT node
-for the same.
+UARTs on TI SoCs prior to J7200 don't provide independent control over
+RX FIFO not empty interrupt (RHR_IT) and RX timeout interrupt.
+Starting with J7200 SoC, its possible to disable RHR_IT independent of
+RX timeout interrupt using bit 2 of IER2 register. So disable RHR_IT
+once RX DMA is started so as to avoid spurious interrupt being raised
+when data is in the RX FIFO but is yet to be drained by DMA (a known
+errata in older SoCs).
 
 Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 ---
+ drivers/tty/serial/8250/8250_omap.c | 42 ++++++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
 
-Resending, after rebasing and testing on top of 5.10-rc1. No code
-change.
-v1: https://lore.kernel.org/r/20201013081650.26090-1-vigneshr@ti.com
-
- .../dts/ti/k3-j7200-common-proc-board.dts     |  6 ++++++
- .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 19 +++++++++++++++++++
- 2 files changed, 25 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-index ef03e7636b66..7d2ff1c3b50f 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-@@ -213,3 +213,9 @@ &usb0 {
- 	dr_mode = "otg";
- 	maximum-speed = "high-speed";
- };
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+index 562087df7d33..084e7bc51f0e 100644
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -27,6 +27,7 @@
+ #include <linux/pm_qos.h>
+ #include <linux/pm_wakeirq.h>
+ #include <linux/dma-mapping.h>
++#include <linux/sys_soc.h>
+ 
+ #include "8250.h"
+ 
+@@ -41,6 +42,7 @@
+  */
+ #define UART_ERRATA_CLOCK_DISABLE	(1 << 3)
+ #define	UART_HAS_EFR2			BIT(4)
++#define UART_HAS_RHR_IT_DIS		BIT(5)
+ 
+ #define OMAP_UART_FCR_RX_TRIG		6
+ #define OMAP_UART_FCR_TX_TRIG		4
+@@ -94,6 +96,10 @@
+ #define OMAP_UART_REV_52 0x0502
+ #define OMAP_UART_REV_63 0x0603
+ 
++/* Interrupt Enable Register 2 */
++#define UART_OMAP_IER2			0x1B
++#define UART_OMAP_IER2_RHR_IT_DIS	BIT(2)
 +
-+&tscadc0 {
-+	adc {
-+		ti,adc-channels = <0 1 2 3 4 5 6 7>;
-+	};
+ /* Enhanced features register 2 */
+ #define UART_OMAP_EFR2			0x23
+ #define UART_OMAP_EFR2_TIMEOUT_BEHAVE	BIT(6)
+@@ -761,17 +767,27 @@ static void __dma_rx_do_complete(struct uart_8250_port *p)
+ {
+ 	struct uart_8250_dma    *dma = p->dma;
+ 	struct tty_port         *tty_port = &p->port.state->port;
++	struct omap8250_priv	*priv = p->port.private_data;
+ 	struct dma_chan		*rxchan = dma->rxchan;
+ 	dma_cookie_t		cookie;
+ 	struct dma_tx_state     state;
+ 	int                     count;
+ 	int			ret;
++	u32			reg;
+ 
+ 	if (!dma->rx_running)
+ 		goto out;
+ 
+ 	cookie = dma->rx_cookie;
+ 	dma->rx_running = 0;
++
++	/* Re-enable RX FIFO interrupt now that transfer is complete */
++	if (priv->habit & UART_HAS_RHR_IT_DIS) {
++		reg = serial_in(p, UART_OMAP_IER2);
++		reg &= ~UART_OMAP_IER2_RHR_IT_DIS;
++		serial_out(p, UART_OMAP_IER2, UART_OMAP_IER2_RHR_IT_DIS);
++	}
++
+ 	dmaengine_tx_status(rxchan, cookie, &state);
+ 
+ 	count = dma->rx_size - state.residue + state.in_flight_bytes;
+@@ -867,6 +883,7 @@ static int omap_8250_rx_dma(struct uart_8250_port *p)
+ 	int				err = 0;
+ 	struct dma_async_tx_descriptor  *desc;
+ 	unsigned long			flags;
++	u32				reg;
+ 
+ 	if (priv->rx_dma_broken)
+ 		return -EINVAL;
+@@ -902,6 +919,17 @@ static int omap_8250_rx_dma(struct uart_8250_port *p)
+ 
+ 	dma->rx_cookie = dmaengine_submit(desc);
+ 
++	/*
++	 * Disable RX FIFO interrupt while RX DMA is enabled, else
++	 * spurious interrupt may be raised when data is in the RX FIFO
++	 * but is yet to be drained by DMA.
++	 */
++	if (priv->habit & UART_HAS_RHR_IT_DIS) {
++		reg = serial_in(p, UART_OMAP_IER2);
++		reg |= UART_OMAP_IER2_RHR_IT_DIS;
++		serial_out(p, UART_OMAP_IER2, UART_OMAP_IER2_RHR_IT_DIS);
++	}
++
+ 	dma_async_issue_pending(dma->rxchan);
+ out:
+ 	spin_unlock_irqrestore(&priv->rx_dma_lock, flags);
+@@ -1168,6 +1196,11 @@ static int omap8250_no_handle_irq(struct uart_port *port)
+ 	return 0;
+ }
+ 
++static const struct soc_device_attribute k3_soc_devices[] = {
++	{ .family = "AM65X",  },
++	{ .family = "J721E", .revision = "SR1.0" },
 +};
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-index eb2a78a53512..bb1fe9c12e44 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-@@ -270,4 +270,23 @@ hbmc: hyperbus@47034000 {
- 			mux-controls = <&hbmc_mux 0>;
- 		};
- 	};
 +
-+	tscadc0: tscadc@40200000 {
-+		compatible = "ti,am3359-tscadc";
-+		reg = <0x00 0x40200000 0x00 0x1000>;
-+		interrupts = <GIC_SPI 860 IRQ_TYPE_LEVEL_HIGH>;
-+		power-domains = <&k3_pds 0 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 0 1>;
-+		assigned-clocks = <&k3_clks 0 3>;
-+		assigned-clock-rates = <60000000>;
-+		clock-names = "adc_tsc_fck";
-+		dmas = <&main_udmap 0x7400>,
-+			<&main_udmap 0x7401>;
-+		dma-names = "fifo0", "fifo1";
-+
-+		adc {
-+			#io-channel-cells = <1>;
-+			compatible = "ti,am3359-adc";
-+		};
-+	};
+ static struct omap8250_dma_params am654_dma = {
+ 	.rx_size = SZ_2K,
+ 	.rx_trigger = 1,
+@@ -1182,7 +1215,7 @@ static struct omap8250_dma_params am33xx_dma = {
+ 
+ static struct omap8250_platdata am654_platdata = {
+ 	.dma_params	= &am654_dma,
+-	.habit		= UART_HAS_EFR2,
++	.habit		= UART_HAS_EFR2 | UART_HAS_RHR_IT_DIS,
  };
+ 
+ static struct omap8250_platdata am33xx_platdata = {
+@@ -1372,6 +1405,13 @@ static int omap8250_probe(struct platform_device *pdev)
+ 			up.dma->rxconf.src_maxburst = RX_TRIGGER;
+ 			up.dma->txconf.dst_maxburst = TX_TRIGGER;
+ 		}
++
++		/*
++		 * AM65x SR1.0, AM65x SR2.0 and J721e SR1.0 don't
++		 * don't have RHR_IT_DIS bit in IER2 register
++		 */
++		if (soc_device_match(k3_soc_devices))
++			priv->habit &= ~UART_HAS_RHR_IT_DIS;
+ 	}
+ #endif
+ 	ret = serial8250_register_8250_port(&up);
 -- 
 2.29.0
 
