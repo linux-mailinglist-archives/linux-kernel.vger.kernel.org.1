@@ -2,95 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A6D29F277
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D41929F27B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbgJ2RBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:01:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:40990 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725938AbgJ2RBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:01:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97634139F;
-        Thu, 29 Oct 2020 10:01:08 -0700 (PDT)
-Received: from e112269-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 499E63F66E;
-        Thu, 29 Oct 2020 10:01:07 -0700 (PDT)
-From:   Steven Price <steven.price@arm.com>
-To:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Cc:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Steven Price <steven.price@arm.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: [PATCH] drm/panfrost: Don't corrupt the queue mutex on open/close
-Date:   Thu, 29 Oct 2020 17:00:47 +0000
-Message-Id: <20201029170047.30564-1-steven.price@arm.com>
-X-Mailer: git-send-email 2.20.1
+        id S1725971AbgJ2RDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 13:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgJ2RDC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 13:03:02 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7705C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:03:00 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id 1so1600361ple.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:03:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3n7G+lqhdj2m6ZW7egyophkpDB+wpVSM0ePuVuERRS8=;
+        b=HsRM+g6C9J1QGiGakNuf2gdZqEXHe+jU4JgUW2Wskuf+JUvC3OmpwWJQvuB0XL0QkW
+         lmRd2YHDP8GM7WZ5uIEFSHESefRBSGcp6+UaRPkNUoFEYuyI+L1FC0o74fWnS8Mkx8+r
+         VStvdpe4gr4b8G/OhW7jVQZjWev+xMjbWFMa+YWzd+VlAcJUDeeln2OzH2gbkTyTUNzK
+         O2AGppST0Mow0lzoJMtM605EvRePsMZt6d+TBLQ003Jnt6foX9up5pZ/NPK5Sx/c0kpj
+         5oqm2GpNyv35YM6B8NDP56zncHPwD9wBwr9cPVIw6rw36csVWh+0aqrPtALaF9pVJp/V
+         OwEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3n7G+lqhdj2m6ZW7egyophkpDB+wpVSM0ePuVuERRS8=;
+        b=pboKk016NFy9URpQm2YaZGRmXw5KD1gs0KvzpCsvu7ngDL4ziKkgjpCnNnIbWJgKyW
+         rZLOY5RDq5kZrgHdJ/WeEYDVE4boSEO51NYdlFoV3d9hA8QiPsvpjMSp0E7bsfOmTOfi
+         MCs7wHIQae+ER7vqyt0OusKzarhDQVGiTBdn3/Q0/dHpcltnir1mnPRhtLWPKS58Y6m5
+         TFDtc//vM31bBeYE+8hAeTdQ5EoD9pV0PY3M8aAgmxCdXONsvUVgZt8IjmXJhQSoSwGo
+         QSllzD3mD0YeEAONZx63Epbs/aqyM/PrDduYgomUFWvjZ0zctPbearPCuXmDQRo2JoAV
+         Trzw==
+X-Gm-Message-State: AOAM531VOT8sxAhiCrdWtmxgA4J2klLit2MJ7cQOhC0PusxhPk51/kIJ
+        sBQ8kbITpBf5ccGB1DMJRu+SDpI2I7coSnCphaY=
+X-Google-Smtp-Source: ABdhPJwpSjNKrweL/sApWTmLR9sBDeGzOVec3kiRHRAW+HvLUHOCBC3qqQ1bgPFmz7qOrmhNcFjcE8CnddImrxJELh4=
+X-Received: by 2002:a17:902:6bc8:b029:d6:d9d:f28c with SMTP id
+ m8-20020a1709026bc8b02900d60d9df28cmr4861009plt.17.1603990980254; Thu, 29 Oct
+ 2020 10:03:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1603971787-16784-1-git-send-email-mihai.carabas@oracle.com> <1603971787-16784-2-git-send-email-mihai.carabas@oracle.com>
+In-Reply-To: <1603971787-16784-2-git-send-email-mihai.carabas@oracle.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 29 Oct 2020 19:02:44 +0200
+Message-ID: <CAHp75VcBOt9fVfMd7x_WnMETmr465gA_XFAm=sSy40wexHyRpw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] misc/pvpanic : preparing for pvpanic driver framework
+To:     Mihai Carabas <mihai.carabas@oracle.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peng Hao <peng.hao2@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mutex within the panfrost_queue_state should have the lifetime of
-the queue, however it was erroneously initialised/destroyed during
-panfrost_job_{open,close} which is called every time a client
-opens/closes the drm node.
+On Thu, Oct 29, 2020 at 2:28 PM Mihai Carabas <mihai.carabas@oracle.com> wrote:
+>
+> From: Peng Hao <peng.hao2@zte.com.cn>
+>
+> Preparing for pvpanic driver framework. Create a pvpanic driver
+> directory and move current driver file to new directory.
 
-Move the initialisation/destruction to panfrost_job_{init,fini} where it
-belongs.
+Hmm... It was a bit of a long time...
+Have you seen [1]?
 
-Fixes: 1a11a88cfd9a ("drm/panfrost: Fix job timeout handling")
-Signed-off-by: Steven Price <steven.price@arm.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
----
- drivers/gpu/drm/panfrost/panfrost_job.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+[1]: https://lore.kernel.org/lkml/20201027175806.20305-1-andriy.shevchenko@linux.intel.com/
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
-index cfb431624eea..145ad37eda6a 100644
---- a/drivers/gpu/drm/panfrost/panfrost_job.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-@@ -595,6 +595,8 @@ int panfrost_job_init(struct panfrost_device *pfdev)
- 	}
- 
- 	for (j = 0; j < NUM_JOB_SLOTS; j++) {
-+		mutex_init(&js->queue[j].lock);
-+
- 		js->queue[j].fence_context = dma_fence_context_alloc(1);
- 
- 		ret = drm_sched_init(&js->queue[j].sched,
-@@ -625,8 +627,10 @@ void panfrost_job_fini(struct panfrost_device *pfdev)
- 
- 	job_write(pfdev, JOB_INT_MASK, 0);
- 
--	for (j = 0; j < NUM_JOB_SLOTS; j++)
-+	for (j = 0; j < NUM_JOB_SLOTS; j++) {
- 		drm_sched_fini(&js->queue[j].sched);
-+		mutex_destroy(&js->queue[j].lock);
-+	}
- 
- }
- 
-@@ -638,7 +642,6 @@ int panfrost_job_open(struct panfrost_file_priv *panfrost_priv)
- 	int ret, i;
- 
- 	for (i = 0; i < NUM_JOB_SLOTS; i++) {
--		mutex_init(&js->queue[i].lock);
- 		sched = &js->queue[i].sched;
- 		ret = drm_sched_entity_init(&panfrost_priv->sched_entity[i],
- 					    DRM_SCHED_PRIORITY_NORMAL, &sched,
-@@ -657,7 +660,6 @@ void panfrost_job_close(struct panfrost_file_priv *panfrost_priv)
- 
- 	for (i = 0; i < NUM_JOB_SLOTS; i++) {
- 		drm_sched_entity_destroy(&panfrost_priv->sched_entity[i]);
--		mutex_destroy(&js->queue[i].lock);
- 		/* Ensure any timeouts relating to this client have completed */
- 		flush_delayed_work(&js->queue[i].sched.work_tdr);
- 	}
 -- 
-2.20.1
-
+With Best Regards,
+Andy Shevchenko
