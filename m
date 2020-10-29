@@ -2,150 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FFF829F3D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E2429F3D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725904AbgJ2SGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 14:06:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57890 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725791AbgJ2SFv (ORCPT
+        id S1725940AbgJ2SJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 14:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725807AbgJ2SJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 14:05:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603994748;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GOJQra1Bwh3yvuSJrYqoF2VV9obE3+R7fpVYE5pWGho=;
-        b=btUQSONbnyg0U+x39Jo1TzR3JJRsatoQAzsOf3Ihzgq+MSG4drp3iuosIRC5rzLBDBu3ol
-        I50PKf/3sZZq/zBKIeDaRxEzHcd5YDWk9KZ6SKFeiL7XccLN1m02S/v1E3yhgNeNxEJdtI
-        ZRaiXQmK8hO/yRTrdCWV+CovlwygW7k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-161-d5uvmF6TN9uR5FTwwqKvQw-1; Thu, 29 Oct 2020 14:05:46 -0400
-X-MC-Unique: d5uvmF6TN9uR5FTwwqKvQw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 41BB410E2187;
-        Thu, 29 Oct 2020 18:05:45 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-116-17.rdu2.redhat.com [10.10.116.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 98BB0196FB;
-        Thu, 29 Oct 2020 18:05:41 +0000 (UTC)
-Subject: Re: [PATCH v2] inotify: Increase default inotify.max_user_watches
- limit to 1048576
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Luca BRUNO <lucab@redhat.com>
-References: <20201029154535.2074-1-longman@redhat.com>
- <CAOQ4uxjT8rWLr1yCBPGkhJ7Rr6n3+FA7a0GmZaMBHMzk9t1Sag@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <ccec54cd-cbb5-2808-3800-890cda208967@redhat.com>
-Date:   Thu, 29 Oct 2020 14:05:40 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Thu, 29 Oct 2020 14:09:30 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F423C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 11:09:00 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id x203so3927441oia.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 11:09:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mBUzc9CK7MUBRWLylSHpe2XD8BDUPf6CGZ/koJbns3c=;
+        b=qYyU4vJ7lIMZB7mVlFC8g9vfsaKue73KJZYbT2ipvTyGxqr3B/Pb1WNfZNCWp0Rz2n
+         VySxQ/9rUoMGieDNBPR/H7OukAl2dCnpp+LkP0WmGeVdsA/J/GGB0HBPRbVGd9fr7Rtl
+         CmPB5S/6/sPoolazQBJWrQiD+/paaFMs2uinPNEs3upQeFEnxKygeOe0XcNsN/fseBhK
+         Kg/0gT4sTYKG70U2nwMGDEGWRlslBuLc4g1XUqy4rP/4jo20J0RqifYGfFEpjmVmi79h
+         04yfpBFIJk15QqwCC/63x1BEpKt5Odj82zoSfDUJoXUVt4gKQ6/S5Zzhj6FNTJBvxEzQ
+         mL0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mBUzc9CK7MUBRWLylSHpe2XD8BDUPf6CGZ/koJbns3c=;
+        b=Cbw6FWjZnTHnbsU4HIvZmAmPH4eGDka+qctGRry5r3Li3GZDq/DXSvPWerUeZ6CTZD
+         apfdleDXVp+NMpiUFAijrIHe5CxsLIx5JhZhmLpmtHbA3mGLW3TTI8aYZS6hCw1hj8yV
+         e18tahytRq+yP4mjQQeltKttXyfbbCbHYdYRDdTv0zT7EmUuWj10Zx8m22CeSOzNP0cT
+         SncHbgaX5WJvoFFcr4D6mIhsTAs45pDoqTl72XTIWm34JWRaqT2MPaBR6RMViSSZeGPy
+         UMX1bcUllQQmBepvOuTvCZiTCPLX5qOgFjxDLt0Vw5us5bm8zoL0dZ0afHecmXwVf9kA
+         3zCA==
+X-Gm-Message-State: AOAM533H0oIOGEsnTxY0cAsA6jqQx7Ce7EkECOYrRVUnBqMeKKKVSzLU
+        BGvP+oZLLr9sP9TJFiOKyOlVDa4PcNGFDwG8rTqZHA==
+X-Google-Smtp-Source: ABdhPJxqT2kL0a4tFiy+m/bOuNX6YodgkMrdSY8ftIGXaGCFzPFB4GPgxkbcd9UTdg23gBYzEH+631+hIBSlXikbbHo=
+X-Received: by 2002:aca:3442:: with SMTP id b63mr321446oia.15.1603994940142;
+ Thu, 29 Oct 2020 11:09:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAOQ4uxjT8rWLr1yCBPGkhJ7Rr6n3+FA7a0GmZaMBHMzk9t1Sag@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201028171757.765866-1-ribalda@chromium.org> <20201028182744.GZ4077@smile.fi.intel.com>
+ <CANiDSCvy2dPyY8O5DVgTBwNNLmfA=kJ5HUKJqcFLnqQ8CWsJgA@mail.gmail.com> <CAHp75Vc6LhqKvuAeOkVtTAniHGRMGV=7Pa71CNT7por=PRk9eQ@mail.gmail.com>
+In-Reply-To: <CAHp75Vc6LhqKvuAeOkVtTAniHGRMGV=7Pa71CNT7por=PRk9eQ@mail.gmail.com>
+From:   Ricardo Ribalda <ribalda@google.com>
+Date:   Thu, 29 Oct 2020 19:08:47 +0100
+Message-ID: <CANiDSCsrtL1h+z_f7jQicgwz5nTc33wJGGCjZyeF9aGQJwED7A@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: acpi: Support GpioInt with active_low polarity
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tomasz Figa <tfiga@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 1:27 PM, Amir Goldstein wrote:
-> On Thu, Oct 29, 2020 at 5:46 PM Waiman Long <longman@redhat.com> wrote:
->> The default value of inotify.max_user_watches sysctl parameter was set
->> to 8192 since the introduction of the inotify feature in 2005 by
->> commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
->> small for many modern usage. As a result, users have to explicitly set
->> it to a larger value to make it work.
->>
->> After some searching around the web, these are the
->> inotify.max_user_watches values used by some projects:
->>   - vscode:  524288
->>   - dropbox support: 100000
->>   - users on stackexchange: 12228
->>   - lsyncd user: 2000000
->>   - code42 support: 1048576
->>   - monodevelop: 16384
->>   - tectonic: 524288
->>   - openshift origin: 65536
->>
->> Each watch point adds an inotify_inode_mark structure to an inode to
->> be watched. It also pins the watched inode as well as an inotify fdinfo
->> procfs file.
->>
->> Modeled after the epoll.max_user_watches behavior to adjust the default
->> value according to the amount of addressable memory available, make
->> inotify.max_user_watches behave in a similar way to make it use no more
->> than 1% of addressable memory within the range [8192, 1048576].
->>
->> For 64-bit archs, inotify_inode_mark plus 2 inode have a size close
->> to 2 kbytes. That means a system with 196GB or more memory should have
->> the maximum value of 1048576 for inotify.max_user_watches. This default
->> should be big enough for most use cases.
->>
->> With my x86-64 config, the size of xfs_inode, proc_inode and
->> inotify_inode_mark is 1680 bytes. The estimated INOTIFY_WATCH_COST is
->> 1760 bytes.
->>
->> [v2: increase inotify watch cost as suggested by Amir and Honza]
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   fs/notify/inotify/inotify_user.c | 24 +++++++++++++++++++++++-
->>   1 file changed, 23 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
->> index 186722ba3894..37d9f09c226f 100644
->> --- a/fs/notify/inotify/inotify_user.c
->> +++ b/fs/notify/inotify/inotify_user.c
->> @@ -37,6 +37,16 @@
->>
->>   #include <asm/ioctls.h>
->>
->> +/*
->> + * An inotify watch requires allocating an inotify_inode_mark structure as
->> + * well as pinning the watched inode and adding inotify fdinfo procfs file.
-> Maybe you misunderstood me.
-> There is no procfs file per watch.
-> There is a procfs file per inotify_init() fd.
-> The fdinfo of that procfile lists all the watches of that inotify instance.
-Thanks for the clarification. Yes, I probably had misunderstood you 
-because of the 2 * sizeof(inode) figure you provided.
->> + * The increase in size of a filesystem inode versus a VFS inode varies
->> + * depending on the filesystem. An extra 512 bytes is added as rough
->> + * estimate of the additional filesystem inode cost.
->> + */
->> +#define INOTIFY_WATCH_COST     (sizeof(struct inotify_inode_mark) + \
->> +                                2 * sizeof(struct inode) + 512)
->> +
-> I would consider going with double the sizeof inode as rough approximation for
-> filesystem inode size.
+Adding Tomasz in CC in case he wants to share more info about the device.
+
+On Thu, Oct 29, 2020 at 6:31 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
-> It is a bit less arbitrary than 512 and it has some rationale behind it -
-> Some kernel config options will grow struct inode (debug, smp)
-> The same config options may also grow the filesystem part of the inode.
+> On Thu, Oct 29, 2020 at 5:37 PM Ricardo Ribalda <ribalda@google.com> wrote:
+> > On Thu, Oct 29, 2020 at 3:38 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > On Wed, Oct 28, 2020 at 06:17:57PM +0100, Ricardo Ribalda wrote:
+> > > > On the current implementation we only support active_high polarity for
+> > > > GpioInt.
+> > > >
+> > > > There can be cases where a GPIO has active_low polarity and it is also a
+> > > > IRQ source.
+> > > >
+> > > > De-couple the irq_polarity and active_low fields instead of re-use it.
+> > > >
+> > > > With this patch we support ACPI devices such as:
+> > >
+> > > Is it real device on the market?!
+> >
+> > Yes, it is a chromebook.
 >
-> And this approximation can be pretty accurate at times.
-> For example, on Ubuntu 18.04 kernel 5.4.0:
-> inode_cache        608
-> nfs_inode_cache      1088
-> btrfs_inode            1168
-> xfs_inode              1024
-> ext4_inode_cache   1096
+> You mean it's already on sale with this broken table?!
 
-Just to clarify, is your original 2 * sizeof(struct inode) figure 
-include the filesystem inode overhead or there is an additional inode 
-somewhere that I needs to go to 4 * sizeof(struct inode)?
+I do not agree that it is broken.  It follows the current standard ;)
 
-Cheers,
-Longman
+>
+> > > This table is broken. _DSD GPIO active_low is only for GpioIo().
+> >
+> > AFAIK the format of the _DSD is not in the ACPI standard. We have
+> > decided its fields. (please correct me if I am wrong here)
+>
+> _DSD is a concept that is part of the spec, but each UUID and its
+> application is out of scope indeed.
+>
+> GPIO application to _DSD is described in the in-kernel documentation.
+> Thanks for pointing out the issues it has.
+>
+> > On the other mail I have described why we need to make use of the
+> > active_low on a GpioInt()
+> >
+> > If there is another way of describing ActiveBoth + inverted polarity
+> > please let me know and I will go that way.
+>
+> I answered it there, please, continue this topic there.
+> NAK to the proposed change.
+>
+> > > If it is a ChromeBook, please fix the firmware.
 
+Lets agree what is the best way to describe in acpi my usecase and I
+will implement it.
+
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+
+
+
+-- 
+Ricardo Ribalda
