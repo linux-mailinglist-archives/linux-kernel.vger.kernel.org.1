@@ -2,128 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CF529E727
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DED2C29E72C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgJ2JXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:23:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgJ2JXW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:23:22 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77897C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:23:20 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id z23so2554139oic.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:23:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HErX54nBW85Mz/DisB4HfNyGdAeDZ0yXv+UudeIIMTI=;
-        b=CBZ8FpLcj2jbgAT+Vmv1XK/GbFU0hZrgfjfdtoEzh/dEuH+e0mn43Y+dqqjduTTKhF
-         J7T958sHQ5/KYkABUDOFL7LBDzCndG/FofSZCVsgEfa1haI/dp0rDYf3SCs2rGay/PWL
-         uDxd+MKtvtWQZGFZGQv1Mt5IJ+VVaOuC4yqDA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HErX54nBW85Mz/DisB4HfNyGdAeDZ0yXv+UudeIIMTI=;
-        b=Ec57sICx5KuBBJrOpjW8KPtLWi2JZvC9pi985Ylvzw2ceFSBgRREbwuPDC28Cz6Pzf
-         E4SpT/BjkP9lyoLX5Mn8IMvI1bEqPiyBPAoQy/edOCDTZX9OPikJvWxR2/Lcyu0EPcOx
-         sqJyQOdno1yQOTXLFlFFdGMVvYVY1qf9RJPMMA1NM0RLezv2w6PfHOFSnb9NRRMCfz11
-         PV4D7eW5i/xUb9LUaRx6JinZXtwW0R2T6Sio18HUqdFnfHhtOrkONHoIagKDSCgodTlI
-         5Hjip/jdYfgz+HoOaZM0VRpONoTcKiApU0VAPn0/FpmYtvvCHWKVcRluzk1XNja8wRr6
-         3x6g==
-X-Gm-Message-State: AOAM532Ldzy2Gw9MUNfRHQV2N4Di0X34Aa8bcrtWqtSdTPimJkBoPerl
-        Gt7glhd68wAbTiny698VlXsx4O107WK1O+fng9oo3w==
-X-Google-Smtp-Source: ABdhPJwaJb96lRFRXk+hd1pHWMNo5GqlP779ZIojTGckKr1ysWVQINo4W6Rzy8Z9dUSTdKF2aKSvZQbQvjmujgECT7Y=
-X-Received: by 2002:aca:cc01:: with SMTP id c1mr2268480oig.128.1603963399942;
- Thu, 29 Oct 2020 02:23:19 -0700 (PDT)
+        id S1726263AbgJ2JYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:24:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:57062 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725803AbgJ2JYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 05:24:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7349D139F;
+        Thu, 29 Oct 2020 02:24:05 -0700 (PDT)
+Received: from [10.57.13.20] (unknown [10.57.13.20])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03BAD3F719;
+        Thu, 29 Oct 2020 02:24:03 -0700 (PDT)
+Subject: Re: [PATCH v3 2/2] thermal: power allocator: change how estimation
+ code is called
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     amitk@kernel.org, Dietmar.Eggemann@arm.com, ionela.voinescu@arm.com
+References: <20201009135850.14727-1-lukasz.luba@arm.com>
+ <20201009135850.14727-3-lukasz.luba@arm.com>
+ <371617d1-fb1c-8e7b-0a50-e3ea07a1f825@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <38aa72f6-25fd-b7a5-07c0-9db7f0233479@arm.com>
+Date:   Thu, 29 Oct 2020 09:24:01 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20201026105818.2585306-1-daniel.vetter@ffwll.ch>
- <20201026105818.2585306-9-daniel.vetter@ffwll.ch> <20201029085644.GA25658@infradead.org>
-In-Reply-To: <20201029085644.GA25658@infradead.org>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Thu, 29 Oct 2020 10:23:09 +0100
-Message-ID: <CAKMK7uGVUf9RfTHKa8fpTUgGQ5iy+5toK+tQYp0TokKU=iM8pQ@mail.gmail.com>
-Subject: Re: [PATCH v4 08/15] mm: Add unsafe_follow_pfn
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "J??r??me Glisse" <jglisse@redhat.com>, Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <371617d1-fb1c-8e7b-0a50-e3ea07a1f825@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 9:56 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> > +int unsafe_follow_pfn(struct vm_area_struct *vma, unsigned long address,
-> > +     unsigned long *pfn)
->
-> The one tab indent here looks weird, normally tis would be two tabs
-> or aligned aftetthe opening brace.
->
-> > +{
-> > +#ifdef CONFIG_STRICT_FOLLOW_PFN
-> > +     pr_info("unsafe follow_pfn usage rejected, see CONFIG_STRICT_FOLLOW_PFN\n");
-> > +     return -EINVAL;
-> > +#else
-> > +     WARN_ONCE(1, "unsafe follow_pfn usage\n");
-> > +     add_taint(TAINT_USER, LOCKDEP_STILL_OK);
-> > +
-> > +     return follow_pfn(vma, address, pfn);
-> > +#endif
->
-> Woudn't this be a pretty good use case of "if (IS_ENABLED(...)))"?
->
-> Also I'd expect the inverse polarity of the config option, that is
-> a USAFE_FOLLOW_PFN option to enable to unsafe behavior.
+Hi Daniel,
 
-Was just about to send out v5, will apply your suggestions for that
-using IS_ENABLED.
+On 10/13/20 5:41 PM, Daniel Lezcano wrote:
+> On 09/10/2020 15:58, Lukasz Luba wrote:
+>> The sustainable power value might come from the Device Tree or can be
+>> estimated in run time. There is no need to estimate every time when the
+>> governor is called and temperature is high. Instead, store the estimated
+>> value and make it available via standard sysfs interface so it can be
+>> checked from the user-space. Re-invoke the estimation only in case the
+>> sustainable power was set to 0. Apart from that the PID coefficients
+>> are not going to be force updated thus can better handle sysfs settings.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+> 
+> [ ... ]
+> 
+>> -static void estimate_pid_constants(struct thermal_zone_device *tz,
+>> -				   u32 sustainable_power, int trip_switch_on,
+>> -				   int control_temp, bool force)
+>> +static void estimate_tzp_constants(struct thermal_zone_device *tz,
+>> +				   int trip_switch_on, int control_temp)
+>>   {
+>> -	int ret;
+>> -	int switch_on_temp;
+>>   	u32 temperature_threshold;
+>> +	int switch_on_temp;
+>> +	bool force = false;
+>> +	int ret;
+>>   	s32 k_i;
+>>   
+>> +	if (!tz->tzp->sustainable_power) {
+>> +		tz->tzp->sustainable_power = estimate_sustainable_power(tz);
+>> +		force = true;
+>> +		dev_info(&tz->device, "power_allocator: estimating sust. power and PID constants\n");
+>> +	}
+>> +
+>>   	ret = tz->ops->get_trip_temp(tz, trip_switch_on, &switch_on_temp);
+>>   	if (ret)
+>>   		switch_on_temp = 0;
+>>   
+>>   	temperature_threshold = control_temp - switch_on_temp;
+>>   	/*
+>> -	 * estimate_pid_constants() tries to find appropriate default
+>> +	 * estimate_tzp_constants() tries to find appropriate default
+>>   	 * values for thermal zones that don't provide them. If a
+>>   	 * system integrator has configured a thermal zone with two
+>>   	 * passive trip points at the same temperature, that person
+>> @@ -151,11 +151,11 @@ static void estimate_pid_constants(struct thermal_zone_device *tz,
+>>   		return;
+>>   
+>>   	if (!tz->tzp->k_po || force)
+>> -		tz->tzp->k_po = int_to_frac(sustainable_power) /
+>> +		tz->tzp->k_po = int_to_frac(tz->tzp->sustainable_power) /
+>>   			temperature_threshold;
+>>   
+>>   	if (!tz->tzp->k_pu || force)
+>> -		tz->tzp->k_pu = int_to_frac(2 * sustainable_power) /
+>> +		tz->tzp->k_pu = int_to_frac(2 * tz->tzp->sustainable_power) /
+>>   			temperature_threshold;
+>>   
+>>   	if (!tz->tzp->k_i || force) {
+>> @@ -193,19 +193,13 @@ static u32 pid_controller(struct thermal_zone_device *tz,
+>>   {
+>>   	s64 p, i, d, power_range;
+>>   	s32 err, max_power_frac;
+>> -	u32 sustainable_power;
+>>   	struct power_allocator_params *params = tz->governor_data;
+>>   
+>>   	max_power_frac = int_to_frac(max_allocatable_power);
+>>   
+>> -	if (tz->tzp->sustainable_power) {
+>> -		sustainable_power = tz->tzp->sustainable_power;
+>> -	} else {
+>> -		sustainable_power = estimate_sustainable_power(tz);
+>> -		estimate_pid_constants(tz, sustainable_power,
+>> -				       params->trip_switch_on, control_temp,
+>> -				       true);
+>> -	}
+>> +	if (!tz->tzp->sustainable_power)
+>> +		estimate_tzp_constants(tz, params->trip_switch_on,
+>> +				       control_temp);
+> 
+> The changes in this patch are appropriate and make sense but they are
+> not done at the right place.
+> 
+> estimate_tzp_constants() must be called when sustainable_power is
+> updated via DT/init or sysfs.
+> 
+> Keeping a function to estimate the sustainable power and another one to
+> estimate the k_* separated would be more clear.
+> 
+> Actually the confusion is coming from when the pid constants are
+> computed, I suggest moving the initialization of k_* out of this
+> function and killing the 'force' test.
+> 
+> 
+> [ ... ]
+> 
+> 
 
-Wrt negative or positive Kconfig, I was following STRICT_DEVMEM symbol
-as precedence. But easy to invert if there's strong feeling the other
-way round, I'm not attached to either.
+Thank you for the review. I will re-write the patch
+and address your suggestion.
 
-> > +/**
-> > + * unsafe_follow_pfn - look up PFN at a user virtual address
-> > + * @vma: memory mapping
-> > + * @address: user virtual address
-> > + * @pfn: location to store found PFN
-> > + *
-> > + * Only IO mappings and raw PFN mappings are allowed.
-> > + *
-> > + * Returns zero and the pfn at @pfn on success, -ve otherwise.
-> > + */
-> > +int unsafe_follow_pfn(struct vm_area_struct *vma, unsigned long address,
-> > +     unsigned long *pfn)
-> > +{
-> > +     return follow_pfn(vma, address, pfn);
-> > +}
-> > +EXPORT_SYMBOL(unsafe_follow_pfn);
->
-> Any reason this doesn't use the warn and disable logic?
-
-I figured without an mmu there's not much guarantees anyway. But I
-guess I can put it in here too for consistency.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Regards,
+Lukasz
