@@ -2,147 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C75629F4CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:19:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D78D29F4C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726194AbgJ2TSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:18:54 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:44318 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725963AbgJ2TQu (ORCPT
+        id S1726028AbgJ2TSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725928AbgJ2TRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:16:50 -0400
-Received: by mail-ed1-f68.google.com with SMTP id w1so3062930edv.11;
-        Thu, 29 Oct 2020 12:16:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mmqY+Yeiy9nDKcqsSPAuyb++V3pyCtvEqsSBbBln3ps=;
-        b=DRsnSExldqmnDsfmH1uuKr6KDOgzs1m1Uf68hbqQB3LRsrix4FVUmCUAdgV1+/D9G+
-         VnSbzaFyc/xzUgfZn3lM4uYnyuQM7JUAizLpzUMqEjDjT2BJlX2oZSkL4QkjPFxror6+
-         w/4vS6hr3zm+Ax47Cm0mGlRmwDTRZAEPr0Z8TzJJNVhGToUr1wmkK6kYDxZFJNYymVCC
-         XhUR81TLljNno0FoQwZObWLMJdHVbo5F3FgCSt12twAM8UEWerJEPELkvj/2hb4NtoEo
-         oKvC83bNsp98KAR7ccA4Mela3eoaT6cOHlMOxhvd0RPxqQmoFyPep1Cmu9RGG4fFt+A+
-         0eJg==
-X-Gm-Message-State: AOAM531YWdlZ3d5Loj93G/1q95V+wiQsvTdCW6Ffke3v9OKcDGfomUXt
-        cEBsz/ExDyT9nZC81+Vb3uU=
-X-Google-Smtp-Source: ABdhPJwrfkpQ2JuPFKdrfXz62k6W9divKfUT133kCeLPI66bfIuJh41eOM+GKvaMJw7/hRbB+e24/Q==
-X-Received: by 2002:aa7:c98f:: with SMTP id c15mr5804762edt.200.1603999007865;
-        Thu, 29 Oct 2020 12:16:47 -0700 (PDT)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id n3sm2033380edq.24.2020.10.29.12.16.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 12:16:46 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 20:16:45 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] arm64: dts: imx8mq-evk: Add spdif sound card support
-Message-ID: <20201029191645.GA308501@kozik-lap>
-References: <1603964844-832-1-git-send-email-shengjiu.wang@nxp.com>
- <1603964844-832-2-git-send-email-shengjiu.wang@nxp.com>
+        Thu, 29 Oct 2020 15:17:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF70C0613CF;
+        Thu, 29 Oct 2020 12:17:43 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 19:17:39 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603999061;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KdbniP1Q2qqRccf48jNi/8ViUe2Tif2mifUmZBuyWYk=;
+        b=2X6EUmUIfspSbxjc7cRPjpf7159TpZ/tGQDtSRyClecBDRYknHgHdPsRoabQUXokab59xn
+        4CjN5S5vRG432tjwpqBSSeCQzxMSJ0N354L91OvpzRHJmANZ05qy8IJsGf39icQzJdkFFh
+        tBwl7ctrIByJt0JWt4TGeZeaV+kob2Hjk23Fsq/9pRp/vnvYViNqAvxcwKKEnikb2PyxdW
+        SBnGg1xUMCv/TLD9h+voM3Wgu5CsZ0iD9i7LGci9qponLf5i2Td4wSi6EqkjSrReNnNeSX
+        GfVKHmqHka9uBoHdUEibL58aL2aJAHM5eUbjTUHOXR+eOkOTOWWuYzfqc//tYw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603999061;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KdbniP1Q2qqRccf48jNi/8ViUe2Tif2mifUmZBuyWYk=;
+        b=LkcBtkMKRMv6m0Z6ADv5Stm3a+WMHnpgWCadVGCnU4Awn4NYwQ9jmAnS1gM6+n2hCqOG8N
+        6KlCjLwooSJRCiDQ==
+From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/seves] x86/sev-es: Do not support MMIO to/from encrypted memory
+Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201028164659.27002-6-joro@8bytes.org>
+References: <20201028164659.27002-6-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1603964844-832-2-git-send-email-shengjiu.wang@nxp.com>
+Message-ID: <160399905983.397.18131875456856361815.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 05:47:24PM +0800, Shengjiu Wang wrote:
-> There are two spdif IP on imx8mq, spdif1 is for normal
-> spdif device, spdif2 is for HDMI ARC interface.
-> 
-> Enable these spdif sound card in this patch.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mq-evk.dts | 38 ++++++++++++++++
->  arch/arm64/boot/dts/freescale/imx8mq.dtsi    | 48 ++++++++++++++++++++
->  2 files changed, 86 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
-> index 2418cca00bc5..e4250812586b 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
-> @@ -87,6 +87,21 @@ link_codec: simple-audio-card,codec {
->  			clocks = <&clk IMX8MQ_CLK_SAI2_ROOT>;
->  		};
->  	};
-> +
-> +	sound-spdif {
-> +		compatible = "fsl,imx-audio-spdif";
-> +		model = "imx-spdif";
-> +		spdif-controller = <&spdif1>;
-> +		spdif-out;
-> +		spdif-in;
-> +	};
-> +
-> +	sound-hdmi-arc {
-> +		compatible = "fsl,imx-audio-spdif";
-> +		model = "imx-hdmi-arc";
-> +		spdif-controller = <&spdif2>;
-> +		spdif-in;
-> +	};
->  };
->  
->  &A53_0 {
-> @@ -336,6 +351,22 @@ &snvs_pwrkey {
->  	status = "okay";
->  };
->  
-> +&spdif1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_spdif1>;
-> +	assigned-clocks = <&clk IMX8MQ_CLK_SPDIF1>;
-> +	assigned-clock-parents = <&clk IMX8MQ_AUDIO_PLL1_OUT>;
-> +	assigned-clock-rates = <24576000>;
-> +	status = "okay";
-> +};
-> +
-> +&spdif2 {
-> +	assigned-clocks = <&clk IMX8MQ_CLK_SPDIF2>;
-> +	assigned-clock-parents = <&clk IMX8MQ_AUDIO_PLL1_OUT>;
-> +	assigned-clock-rates = <24576000>;
-> +	status = "okay";
-> +};
-> +
->  &uart1 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&pinctrl_uart1>;
-> @@ -467,6 +498,13 @@ MX8MQ_IOMUXC_GPIO1_IO08_GPIO1_IO8       0xd6
->  		>;
->  	};
->  
-> +	pinctrl_spdif1: spdif1grp {
-> +		fsl,pins = <
-> +			MX8MQ_IOMUXC_SPDIF_TX_SPDIF1_OUT	0xd6
-> +			MX8MQ_IOMUXC_SPDIF_RX_SPDIF1_IN		0xd6
-> +		>;
-> +	};
-> +
->  	pinctrl_uart1: uart1grp {
->  		fsl,pins = <
->  			MX8MQ_IOMUXC_UART1_RXD_UART1_DCE_RX		0x49
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> index 49cc79246288..c94b2f80880f 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> @@ -793,6 +793,30 @@ bus@30800000 { /* AIPS3 */
->  			ranges = <0x30800000 0x30800000 0x400000>,
->  				 <0x08000000 0x08000000 0x10000000>;
->  
-> +			spdif1: spdif@30810000 {
-> +				compatible = "fsl,imx8mq-spdif", "fsl,imx35-spdif";
+The following commit has been merged into the x86/seves branch of tip:
 
-This is an undocumented compatible. Checkpatch should point this out.
+Commit-ID:     2411cd82112397bfb9d8f0f19cd46c3d71e0ce67
+Gitweb:        https://git.kernel.org/tip/2411cd82112397bfb9d8f0f19cd46c3d71e0ce67
+Author:        Joerg Roedel <jroedel@suse.de>
+AuthorDate:    Wed, 28 Oct 2020 17:46:59 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 29 Oct 2020 19:27:42 +01:00
 
-If this patchset depends on others, please describe it in cover letter or
-after '---' separator.
+x86/sev-es: Do not support MMIO to/from encrypted memory
 
-Best regards,
-Krzysztof
+MMIO memory is usually not mapped encrypted, so there is no reason to
+support emulated MMIO when it is mapped encrypted.
+
+Prevent a possible hypervisor attack where a RAM page is mapped as
+an MMIO page in the nested page-table, so that any guest access to it
+will trigger a #VC exception and leak the data on that page to the
+hypervisor via the GHCB (like with valid MMIO). On the read side this
+attack would allow the HV to inject data into the guest.
+
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+Link: https://lkml.kernel.org/r/20201028164659.27002-6-joro@8bytes.org
+---
+ arch/x86/kernel/sev-es.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 4a96726..0bd1a0f 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -374,8 +374,8 @@ fault:
+ 	return ES_EXCEPTION;
+ }
+ 
+-static bool vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+-				 unsigned long vaddr, phys_addr_t *paddr)
++static enum es_result vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
++					   unsigned long vaddr, phys_addr_t *paddr)
+ {
+ 	unsigned long va = (unsigned long)vaddr;
+ 	unsigned int level;
+@@ -394,15 +394,19 @@ static bool vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+ 		if (user_mode(ctxt->regs))
+ 			ctxt->fi.error_code |= X86_PF_USER;
+ 
+-		return false;
++		return ES_EXCEPTION;
+ 	}
+ 
++	if (WARN_ON_ONCE(pte_val(*pte) & _PAGE_ENC))
++		/* Emulated MMIO to/from encrypted memory not supported */
++		return ES_UNSUPPORTED;
++
+ 	pa = (phys_addr_t)pte_pfn(*pte) << PAGE_SHIFT;
+ 	pa |= va & ~page_level_mask(level);
+ 
+ 	*paddr = pa;
+ 
+-	return true;
++	return ES_OK;
+ }
+ 
+ /* Include code shared with pre-decompression boot stage */
+@@ -731,6 +735,7 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+ {
+ 	u64 exit_code, exit_info_1, exit_info_2;
+ 	unsigned long ghcb_pa = __pa(ghcb);
++	enum es_result res;
+ 	phys_addr_t paddr;
+ 	void __user *ref;
+ 
+@@ -740,11 +745,12 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+ 
+ 	exit_code = read ? SVM_VMGEXIT_MMIO_READ : SVM_VMGEXIT_MMIO_WRITE;
+ 
+-	if (!vc_slow_virt_to_phys(ghcb, ctxt, (unsigned long)ref, &paddr)) {
+-		if (!read)
++	res = vc_slow_virt_to_phys(ghcb, ctxt, (unsigned long)ref, &paddr);
++	if (res != ES_OK) {
++		if (res == ES_EXCEPTION && !read)
+ 			ctxt->fi.error_code |= X86_PF_WRITE;
+ 
+-		return ES_EXCEPTION;
++		return res;
+ 	}
+ 
+ 	exit_info_1 = paddr;
