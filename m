@@ -2,130 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05A429EEEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D5D29EEEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgJ2O5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:57:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45938 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725782AbgJ2O5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:57:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603983429;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lwjs+ocL4Ev242Vvws/Q1Lnz8655ApXTA1gsWoI4YJY=;
-        b=V3xKyyWgg0uKVMNoMnGoHO+FB1D0oVoAOzPEvn9xNzc7sksJnJQ16zE2g7lKf/djmPB/b1
-        phRKkQLz6r2pzOQaNK6dRqEvs7u6GCggNE8FiggTkLfTTj22NrwGPoQ7CtW+hzOBDQA/x6
-        kScYj+i4F/AY62eEVpkNjoDsyDpQ8U8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C12EBB117;
-        Thu, 29 Oct 2020 14:57:09 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 15:57:09 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH 6/9] livepatch/ftrace: Add recursion protection to the
- ftrace callback
-Message-ID: <20201029145709.GD16774@alley>
-References: <20201028115244.995788961@goodmis.org>
- <20201028115613.291169246@goodmis.org>
- <alpine.LSU.2.21.2010291443310.1688@pobox.suse.cz>
+        id S1727941AbgJ2O5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgJ2O5r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 10:57:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565CAC0613CF;
+        Thu, 29 Oct 2020 07:57:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gaixN9Bvdo5h62VzxGq1fbBr5CvrRZrgy2xdLXcGzLE=; b=bTYuNixGSW2EZao7BIhpVMoBkg
+        Fnfsb0miEeUi3RCG985nAhHBTRXcZ5zUyXS69dio+GuELyGkENctUrl4Si3aPWCXxI9R681ZfZjUb
+        FfnzHqlfL6psaiXl1i+23BNkSEYxmg9iFWriVvp4QfG3iorYGmwxddxjuoFqNQg8LkBZ20KWgGzCR
+        3VPByv+8ikppMJVye3Zvksowg+Q87VfPAephQ4TPxKsSRUGsqEvKk1gLB+rt2laTKdVPwKewgXJQQ
+        YCe4CkT2Bs/wAVsrqwBh/Cz6SUFnogZTvBB+LW6NHCdfQhfTtoDN4CdsdkGj82up76AVXl5Jlzpld
+        rE/iUJJg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kY9N2-00056S-3U; Thu, 29 Oct 2020 14:57:44 +0000
+Date:   Thu, 29 Oct 2020 14:57:43 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Wagner <dwagner@suse.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Sagi Grimberg <sagi@grimberg.me>
+Subject: Re: [PATCH 3/3] blk-mq: Use llist_head for blk_cpu_done
+Message-ID: <20201029145743.GA19379@infradead.org>
+References: <20201028065616.GA24449@infradead.org>
+ <20201028141251.3608598-1-bigeasy@linutronix.de>
+ <20201028141251.3608598-3-bigeasy@linutronix.de>
+ <20201029131212.dsulzvsb6pahahbs@linutronix.de>
+ <20201029140536.GA6376@infradead.org>
+ <20201029145623.3zry7o6nh6ks5tjj@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2010291443310.1688@pobox.suse.cz>
+In-Reply-To: <20201029145623.3zry7o6nh6ks5tjj@linutronix.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-10-29 14:51:06, Miroslav Benes wrote:
-> On Wed, 28 Oct 2020, Steven Rostedt wrote:
+On Thu, Oct 29, 2020 at 03:56:23PM +0100, Sebastian Andrzej Siewior wrote:
+> On 2020-10-29 14:05:36 [+0000], Christoph Hellwig wrote:
+> > Well, usb-storage obviously seems to do it, and the block layer
+> > does not prohibit it.
 > 
-> > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> > 
-> > If a ftrace callback does not supply its own recursion protection and
-> > does not set the RECURSION_SAFE flag in its ftrace_ops, then ftrace will
-> > make a helper trampoline to do so before calling the callback instead of
-> > just calling the callback directly.
-> > 
-> > The default for ftrace_ops is going to assume recursion protection unless
-> > otherwise specified.
+> Also loop, nvme-tcp and then I stopped looking.
+> Any objections about adding local_bh_disable() around it?
 
-It might be my lack skills to read English. But the above sentence
-sounds ambiguous to me. It is not clear to me who provides the
-recursion protection by default. Could you please make it more
-explicit, for example by:
+To me it seems like the whole IPI plus potentially softirq dance is
+a little pointless when completing from process context.
 
-"The default for ftrace_ops is going to change. It will expect that
-handlers provide their own recursion protection."
-
-
-> Hm, I've always thought that we did not need any kind of recursion 
-> protection for our callback. It is marked as notrace and it does not call 
-> anything traceable. In fact, it does not call anything. I even have a note 
-> in my todo list to mark the callback as RECURSION_SAFE :)
-
-Well, it calls WARN_ON_ONCE() ;-)
-
-> At the same time, it probably does not hurt and the patch is still better 
-> than what we have now without RECURSION_SAFE if I understand the patch set 
-> correctly.
-
-And better be on the safe side.
-
-
-> > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> > Cc: Jiri Kosina <jikos@kernel.org>
-> > Cc: Miroslav Benes <mbenes@suse.cz>
-> > Cc: Petr Mladek <pmladek@suse.com>
-> > Cc: Joe Lawrence <joe.lawrence@redhat.com>
-> > Cc: live-patching@vger.kernel.org
-> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > ---
-> >  kernel/livepatch/patch.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
-> > index b552cf2d85f8..6c0164d24bbd 100644
-> > --- a/kernel/livepatch/patch.c
-> > +++ b/kernel/livepatch/patch.c
-> > @@ -45,9 +45,13 @@ static void notrace klp_ftrace_handler(unsigned long ip,
-> >  	struct klp_ops *ops;
-> >  	struct klp_func *func;
-> >  	int patch_state;
-> > +	int bit;
-> >  
-> >  	ops = container_of(fops, struct klp_ops, fops);
-> >  
-> > +	bit = ftrace_test_recursion_trylock();
-> > +	if (bit < 0)
-> > +		return;
-> 
-> This means that the original function will be called in case of recursion. 
-> That's probably fair, but I'm wondering if we should at least WARN about 
-> it.
-
-Yeah, the early return might break the consistency model and
-unexpected things might happen. We should be aware of it.
-Please use:
-
-	if (WARN_ON_ONCE(bit < 0))
-		return;
-
-WARN_ON_ONCE() might be part of the recursion. But it should happen
-only once. IMHO, it is worth the risk.
-
-Otherwise it looks good.
-
-Best Regards,
-Petr
+Sagi, any opinion on that from the nvme-tcp POV?
