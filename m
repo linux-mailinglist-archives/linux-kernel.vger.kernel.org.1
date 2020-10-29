@@ -2,285 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564FD29ED65
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C95D29ED7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727487AbgJ2Nqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
+        id S1727710AbgJ2Nsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726354AbgJ2Nqf (ORCPT
+        with ESMTP id S1725300AbgJ2Nsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:46:35 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC599C0613D3;
-        Thu, 29 Oct 2020 06:46:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=cSTsxDYLnXEEi/bDWUeAA20te1rJNVjNLggcXmbtZpQ=; b=XhUb+9X5JMWVorM4JHpoQ7L3c
-        AiUG1AryewCQipJ01tUvPuHknKuaIrwrLP6ZXuZXs/oD8Bh/wZrZovvYrMop17PDqM6/USIW2pUUD
-        umeOebeU4JGnmlVdsho1/rbxzTzmR36nWoPKdVF/cS/Ixz9EubS/wlFCmkLc1s0dwgtIBpNbCTthj
-        OGlL4pHZSq6Z1s4V0D/PZtQWWL1+2i5Ykl0ZKf5OlUxQUmiemIAvBUpvqt1BeXrkDiT25CoH0Xdjt
-        O4P8O/bfqdcv2y8Xb1crnRD6S15I68jz5RalozAoTAaK5LcE0TRm+2WU8TO1uIelV+a0u1QGLSDt8
-        gUmkphwwQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52480)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kY8G7-0004Rb-Ip; Thu, 29 Oct 2020 13:46:31 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kY8G6-0006AN-Hy; Thu, 29 Oct 2020 13:46:30 +0000
-Date:   Thu, 29 Oct 2020 13:46:30 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Alexander Dahl <post@lespocky.de>
-Cc:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Alexander Dahl <ada@thorsis.com>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v7 02/12] dt-bindings: leds: Convert pwm to yaml
-Message-ID: <20201029134630.GE1559@shell.armlinux.org.uk>
-References: <20201005203451.9985-1-post@lespocky.de>
- <20201005203451.9985-3-post@lespocky.de>
- <20201028203953.eafmzeqba76qjlf2@falbala.internal.home.lespocky.de>
+        Thu, 29 Oct 2020 09:48:33 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFD0C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:48:33 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id z2so3013467ilh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WFNPqdB5jHGGBEHL+rnu060Po3aIZBWj8JJqtrtzCqw=;
+        b=DAcGYyY3yy6bEPMCse/zv8kYq0osDw9DEhzder1u5hu4vWU6KLbnIpt/PRWESkZo2b
+         J53ORNNFdkGX7/8iboWcYF+sWf+cx255cx/fSP05y2zVy63YnWv2hSA1/jHEoQCOBoNE
+         QPKu1NYlvinjvr52+/gNpsOwzw/VH1Txhk0S3o5aKBw3hPuciPXVbCgTO8J+22/VuE4P
+         45LTOf0gwaqBCEE5evevAj1luJrtrVTgcUQwNJet5JiLSgb4zzAn2ZLdzn1XThBT/hGe
+         jGKtSMh7Vkti3ff/+Is/kSnttkfyO6KKAjhf2Vg+TGWfCSbHPn3eEq/p1FkcJuqk2HIL
+         QGJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WFNPqdB5jHGGBEHL+rnu060Po3aIZBWj8JJqtrtzCqw=;
+        b=qZcT0JTYKtWGqxUwAuzjOLv9WqdCN49pp16cN22PvJCrbduXSl463Qqh1lJ8qu+Q+w
+         F6BcwlpC7oX/j967MR5EtoXaPbwOT79/wP5aJC28pEv+tWm+VYcF7J2BmjWrWwHJQA7B
+         vgz5Uthh60bmv5R/v4R5rmH6juZeWC4QEQPtV1BP8HSpbsZZZ2qsBFOxpPcnPyB9vrBO
+         L0iVivA1FQzQmzYLSfuHu2J0Br/PyINhfMg92w2NrlsEI6YJ0ckKNPS8UgJQpuhQAwIT
+         LqYKCh3NiXvYiT1Au0793ziUn1acqJvv5zoDy50PKRgYRxD3PZKwxZs/OKGSW96oe3YY
+         AU9Q==
+X-Gm-Message-State: AOAM530XQBgi2bqI72dX3tPSoY1ool8Nxk6Vu/oQgErHpWqDIu7h2b3e
+        +lEhs/PuBAiCsVi330dzkSH7Yg==
+X-Google-Smtp-Source: ABdhPJwyU663WFwny2hER4CbTcvb5I0TjApvdvoCKdiTQm+aeG10b0w5naP9BYmat8SVRnpBsWoCxQ==
+X-Received: by 2002:a92:d3c1:: with SMTP id c1mr3319480ilh.271.1603979312398;
+        Thu, 29 Oct 2020 06:48:32 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:536c])
+        by smtp.gmail.com with ESMTPSA id b1sm2533970iog.14.2020.10.29.06.48.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 06:48:31 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 09:46:48 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH v20 02/20] mm/memcg: bail early from swap accounting if
+ memcg disabled
+Message-ID: <20201029134648.GC599825@cmpxchg.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-3-git-send-email-alex.shi@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201028203953.eafmzeqba76qjlf2@falbala.internal.home.lespocky.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <1603968305-8026-3-git-send-email-alex.shi@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 09:39:54PM +0100, Alexander Dahl wrote:
-> Hello,
+On Thu, Oct 29, 2020 at 06:44:47PM +0800, Alex Shi wrote:
+> If we disabled memcg by cgroup_disable=memory, page->memcg will be NULL
+> and so the charge is skipped and that will trigger a warning like below.
+> Let's return from the funcs earlier.
 > 
-> Peter, Russel, could you please give your Acked-by or Signed-off-by on
-> this patch?  Your ack is needed, because the license is now explicitly
-> set (it was not explicit before), and you were the contributors to
-> this binding before the conversion to yaml.
-
-For the license change only:
-
-Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
-
-(Please drop the Cc attributation in the commit to
-linux@armlinux.org.uk thanks.)
-
+>  anon flags:0x5005b48008000d(locked|uptodate|dirty|swapbacked)
+>  raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
+>  raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
+>  page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
+> ...
+>  RIP: 0010:vprintk_emit+0x1f7/0x260
+>  Code: 00 84 d2 74 72 0f b6 15 27 58 64 01 48 c7 c0 00 d4 72 82 84 d2 74 09 f3 90 0f b6 10 84 d2 75 f7 e8 de 0d 00 00 4c 89 e7 57 9d <0f> 1f 44 00 00 e9 62 ff ff ff 80 3d 88 c9 3a 01 00 0f 85 54 fe ff
+>  RSP: 0018:ffffc9000faab358 EFLAGS: 00000202
+>  RAX: ffffffff8272d400 RBX: 000000000000005e RCX: ffff88afd80d0040
+>  RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000202
+>  RBP: ffffc9000faab3a8 R08: ffffffff8272d440 R09: 0000000000022480
+>  R10: 00120c77be68bfac R11: 0000000000cd7568 R12: 0000000000000202
+>  R13: 0057ffffc0080005 R14: ffffffff820a0130 R15: ffffc9000faab3e8
+>  ? vprintk_emit+0x140/0x260
+>  vprintk_default+0x1a/0x20
+>  vprintk_func+0x4f/0xc4
+>  ? vprintk_func+0x4f/0xc4
+>  printk+0x53/0x6a
+>  ? xas_load+0xc/0x80
+>  __dump_page.cold.6+0xff/0x4ee
+>  ? xas_init_marks+0x23/0x50
+>  ? xas_store+0x30/0x40
+>  ? free_swap_slot+0x43/0xd0
+>  ? put_swap_page+0x119/0x320
+>  ? update_load_avg+0x82/0x580
+>  dump_page+0x9/0xb
+>  mem_cgroup_try_charge_swap+0x16e/0x1d0
+>  get_swap_page+0x130/0x210
+>  add_to_swap+0x41/0xc0
+>  shrink_page_list+0x99e/0xdf0
+>  shrink_inactive_list+0x199/0x360
+>  shrink_lruvec+0x40d/0x650
+>  ? _cond_resched+0x14/0x30
+>  ? _cond_resched+0x14/0x30
+>  shrink_node+0x226/0x6e0
+>  do_try_to_free_pages+0xd0/0x400
+>  try_to_free_pages+0xef/0x130
+>  __alloc_pages_slowpath.constprop.127+0x38d/0xbd0
+>  ? ___slab_alloc+0x31d/0x6f0
+>  __alloc_pages_nodemask+0x27f/0x2c0
+>  alloc_pages_vma+0x75/0x220
+>  shmem_alloc_page+0x46/0x90
+>  ? release_pages+0x1ae/0x410
+>  shmem_alloc_and_acct_page+0x77/0x1c0
+>  shmem_getpage_gfp+0x162/0x910
+>  shmem_fault+0x74/0x210
+>  ? filemap_map_pages+0x29c/0x410
+>  __do_fault+0x37/0x190
+>  handle_mm_fault+0x120a/0x1770
+>  exc_page_fault+0x251/0x450
+>  ? asm_exc_page_fault+0x8/0x30
+>  asm_exc_page_fault+0x1e/0x30
 > 
-> Thanks and Greets
-> Alex
-> 
-> On Mon, Oct 05, 2020 at 10:34:41PM +0200, Alexander Dahl wrote:
-> > The example was adapted in the following ways:
-> > 
-> > - make use of the now supported 'function' and 'color' properties
-> > - remove pwm nodes, those are documented elsewhere
-> > - align node names to new dt schema rules and dt recommendations
-> > 
-> > License was not explicitly set before.  The license set now is
-> > recommended by DT project.
-> > 
-> > Suggested-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> > Signed-off-by: Alexander Dahl <post@lespocky.de>
-> > Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> > Cc: Russell King <linux@armlinux.org.uk>
-> > ---
-> > 
-> > Notes:
-> >     NOTE: Due to license set/change this needs Acked-by or Signed-off-by from:
-> >       * Peter Ujfalusi
-> >       * Russell King
-> >     
-> >     That was discussed already with Peter (original author), still waiting
-> >     for Acked-by though …
-> >     
-> >     Changelog
-> >     ---------
-> >     v6 -> v7:
-> >       * added Reviewed-by (Krzysztof Kozlowski)
-> >       * reworded commit message (suggested by Krzysztof)
-> >       * added Reviewed-by (Rob Herring)
-> >     
-> >     v5 -> v6:
-> >       * removed pwm nodes from example (Rob)
-> >       * renamed led-controller node in example (Rob)
-> >     
-> >     v4 -> v5:
-> >       * updated based on feedback by Rob Herring
-> >       * removed Acked-by
-> >     
-> >     v3 -> v4:
-> >       * added Cc to original author of the binding
-> >     
-> >     v2 -> v3:
-> >       * changed license identifier to recommended one
-> >       * added Acked-by
-> >     
-> >     v2:
-> >       * added this patch to series (Suggested-by: Jacek Anaszewski)
-> > 
-> >  .../devicetree/bindings/leds/leds-pwm.txt     | 50 -------------
-> >  .../devicetree/bindings/leds/leds-pwm.yaml    | 70 +++++++++++++++++++
-> >  2 files changed, 70 insertions(+), 50 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.txt
-> >  create mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.txt b/Documentation/devicetree/bindings/leds/leds-pwm.txt
-> > deleted file mode 100644
-> > index 6c6583c35f2f..000000000000
-> > --- a/Documentation/devicetree/bindings/leds/leds-pwm.txt
-> > +++ /dev/null
-> > @@ -1,50 +0,0 @@
-> > -LED connected to PWM
-> > -
-> > -Required properties:
-> > -- compatible : should be "pwm-leds".
-> > -
-> > -Each LED is represented as a sub-node of the pwm-leds device.  Each
-> > -node's name represents the name of the corresponding LED.
-> > -
-> > -LED sub-node properties:
-> > -- pwms : PWM property to point to the PWM device (phandle)/port (id) and to
-> > -  specify the period time to be used: <&phandle id period_ns>;
-> > -- pwm-names : (optional) Name to be used by the PWM subsystem for the PWM device
-> > -  For the pwms and pwm-names property please refer to:
-> > -  Documentation/devicetree/bindings/pwm/pwm.txt
-> > -- max-brightness : Maximum brightness possible for the LED
-> > -- active-low : (optional) For PWMs where the LED is wired to supply
-> > -  rather than ground.
-> > -- label :  (optional)
-> > -  see Documentation/devicetree/bindings/leds/common.txt
-> > -- linux,default-trigger :  (optional)
-> > -  see Documentation/devicetree/bindings/leds/common.txt
-> > -
-> > -Example:
-> > -
-> > -twl_pwm: pwm {
-> > -	/* provides two PWMs (id 0, 1 for PWM1 and PWM2) */
-> > -	compatible = "ti,twl6030-pwm";
-> > -	#pwm-cells = <2>;
-> > -};
-> > -
-> > -twl_pwmled: pwmled {
-> > -	/* provides one PWM (id 0 for Charing indicator LED) */
-> > -	compatible = "ti,twl6030-pwmled";
-> > -	#pwm-cells = <2>;
-> > -};
-> > -
-> > -pwmleds {
-> > -	compatible = "pwm-leds";
-> > -	kpad {
-> > -		label = "omap4::keypad";
-> > -		pwms = <&twl_pwm 0 7812500>;
-> > -		max-brightness = <127>;
-> > -	};
-> > -
-> > -	charging {
-> > -		label = "omap4:green:chrg";
-> > -		pwms = <&twl_pwmled 0 7812500>;
-> > -		max-brightness = <255>;
-> > -	};
-> > -};
-> > diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.yaml b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
-> > new file mode 100644
-> > index 000000000000..fe4d5fd25913
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
-> > @@ -0,0 +1,70 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/leds/leds-pwm.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: LEDs connected to PWM
-> > +
-> > +maintainers:
-> > +  - Pavel Machek <pavel@ucw.cz>
-> > +
-> > +description:
-> > +  Each LED is represented as a sub-node of the pwm-leds device.  Each
-> > +  node's name represents the name of the corresponding LED.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: pwm-leds
-> > +
-> > +patternProperties:
-> > +  "^led(-[0-9a-f]+)?$":
-> > +    type: object
-> > +
-> > +    $ref: common.yaml#
-> > +
-> > +    properties:
-> > +      pwms:
-> > +        maxItems: 1
-> > +
-> > +      pwm-names: true
-> > +
-> > +      max-brightness:
-> > +        description:
-> > +          Maximum brightness possible for the LED
-> > +        $ref: /schemas/types.yaml#/definitions/uint32
-> > +
-> > +      active-low:
-> > +        description:
-> > +          For PWMs where the LED is wired to supply rather than ground.
-> > +        type: boolean
-> > +
-> > +    required:
-> > +      - pwms
-> > +      - max-brightness
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +
-> > +    #include <dt-bindings/leds/common.h>
-> > +
-> > +    led-controller {
-> > +        compatible = "pwm-leds";
-> > +
-> > +        led-1 {
-> > +            label = "omap4::keypad";
-> > +            pwms = <&twl_pwm 0 7812500>;
-> > +            max-brightness = <127>;
-> > +        };
-> > +
-> > +        led-2 {
-> > +            color = <LED_COLOR_ID_GREEN>;
-> > +            function = LED_FUNCTION_CHARGING;
-> > +            pwms = <&twl_pwmled 0 7812500>;
-> > +            max-brightness = <255>;
-> > +        };
-> > +    };
-> > +
-> > +...
-> > -- 
-> > 2.20.1
-> 
-> -- 
-> /"\ ASCII RIBBON | »With the first link, the chain is forged. The first
-> \ / CAMPAIGN     | speech censured, the first thought forbidden, the
->  X  AGAINST      | first freedom denied, chains us all irrevocably.«
-> / \ HTML MAIL    | (Jean-Luc Picard, quoting Judge Aaron Satie)
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Reviewed-by: Roman Gushchin <guro@fb.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
 
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+This should go in before the previous patch that adds the WARN for it.
