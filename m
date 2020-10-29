@@ -2,46 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B2D29E991
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 765FE29E99B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727186AbgJ2Kv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:51:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60798 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgJ2Kvv (ORCPT
+        id S1727301AbgJ2Kw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727106AbgJ2Kvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:51:51 -0400
-Date:   Thu, 29 Oct 2020 10:51:48 -0000
+        Thu, 29 Oct 2020 06:51:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEEAC0613CF;
+        Thu, 29 Oct 2020 03:51:51 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 10:51:49 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603968709;
+        s=2020; t=1603968710;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=LtGwUNAg9l8QQqymQwk36EBNM7XO/J3NSOQOlG06k8E=;
-        b=cv2l35b9NhjlJ+QtQ6nFzQbjHY6yhseCvsonD9ejfaCyQihgVCZQIIInd89+TV+QX7WGVU
-        v5r8+SFeAuKBH0Bw9AxsEbfT3xU5hDPv6o6W0HjjD2si6qFnylOwb0g030haDHMRt+s6bD
-        50rEsAHOV/V7ZVjoyiBteDyiWk0VgoQTdz1+GNl0/mayNPwhAsVoB246Wi7lZyUbtB+bD3
-        WuZFXoQT7HX9KXAOLEhpiJ4JH2/WjUR8msgFUx/Fn30x0BcmKVrH/ebpOADrPfTrgWRg6L
-        LbCPdb5KpoibnOmTQu/zbj4XUIQn/dijyKQV0X19SHyMji4gHdUdISnR+jXx8g==
+        bh=N07ynMYor+HVatQGnEApC3+wDCUMaU57/h55OSj6oDA=;
+        b=XV2HsGCoMDBz4YNxrV0puKHlJkfKAlDr1WDkUwZxksiz6ViBU3OsihpfMEPwAk3DQtpoHh
+        GnLtMSOhlJ1TNJCPnXkdEDdGtKMrpZw3Wo9UUhl/KGFsZRzYKdg1j2PIAA6aU9j6gIQBUx
+        HilB7yCNV4TyRiJ6AiOOUoFssAeWUblYd+B2Cc676udqWMeS2x0LeebfL6W9gj2CQO/LK6
+        9mXUfi5WVN+hzoy2L5KHrmbc1jQzYKqvVLZPF2G4it2Pe9YPzd4KHSpC/P6/iUSvgxFlAl
+        hukAIjlxnwLdPQ01fnHl3bptISn9mhB2GoVMloi9BqW28W6aADeGFltJyybumw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603968709;
+        s=2020e; t=1603968710;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=LtGwUNAg9l8QQqymQwk36EBNM7XO/J3NSOQOlG06k8E=;
-        b=IXYMzEN6WtSo81z8j8X9ZqnI5ACikweNvAZQX9cr9ltaDZ8Lzf4v505ecm3m8u7UUOfq5K
-        Z0OFYPkbmG/KXIBQ==
+        bh=N07ynMYor+HVatQGnEApC3+wDCUMaU57/h55OSj6oDA=;
+        b=IZrqsNegpLxDLKfY8YIesuqrU6bZT/o59C51LOGTcIOYC5IJX6qwMwSBO1Org++9biWkfW
+        kgeDRwolRNwwz/AA==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/cpupri: Add CPUPRI_HIGHER
+Subject: [tip: sched/core] sched/cpupri: Remap CPUPRI_NORMAL to MAX_RT_PRIO-1
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160396870869.397.14063113316376338375.tip-bot2@tip-bot2>
+Message-ID: <160396870929.397.16424384279683865143.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -52,115 +55,148 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     b13772f8135633f273f0cf742143b19cffbf9e1d
-Gitweb:        https://git.kernel.org/tip/b13772f8135633f273f0cf742143b19cffbf9e1d
+Commit-ID:     934fc3314b39e16a89fc4d5d0d5cbfe71dcbe7b1
+Gitweb:        https://git.kernel.org/tip/934fc3314b39e16a89fc4d5d0d5cbfe71dcbe7b1
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 14 Oct 2020 21:39:04 +02:00
+AuthorDate:    Wed, 14 Oct 2020 21:06:49 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Thu, 29 Oct 2020 11:00:30 +01:00
 
-sched/cpupri: Add CPUPRI_HIGHER
+sched/cpupri: Remap CPUPRI_NORMAL to MAX_RT_PRIO-1
 
-Add CPUPRI_HIGHER above the RT99 priority to denote the CPU is in use
-by higher priority tasks (specifically deadline).
+This makes the mapping continuous and frees up 100 for other usage.
 
-XXX: we should probably drive PUSH-PULL from cpupri, that would
-automagically result in an RT-PUSH when DL sets cpupri to CPUPRI_HIGHER.
+Prev mapping:
+
+p->rt_priority   p->prio   newpri   cpupri
+
+                               -1       -1 (CPUPRI_INVALID)
+
+                              100        0 (CPUPRI_NORMAL)
+
+             1        98       98        1
+           ...
+            49        50       50       49
+            50        49       49       50
+           ...
+            99         0        0       99
+
+New mapping:
+
+p->rt_priority   p->prio   newpri   cpupri
+
+                               -1       -1 (CPUPRI_INVALID)
+
+                               99        0 (CPUPRI_NORMAL)
+
+             1        98       98        1
+           ...
+            49        50       50       49
+            50        49       49       50
+           ...
+            99         0        0       99
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 ---
- kernel/sched/cpupri.c   | 12 +++++++++---
- kernel/sched/cpupri.h   |  3 ++-
- kernel/sched/deadline.c |  3 +++
- 3 files changed, 14 insertions(+), 4 deletions(-)
+ kernel/sched/cpupri.c | 34 +++++++++++++++++++++++++++-------
+ kernel/sched/rt.c     | 16 +++++++++-------
+ 2 files changed, 36 insertions(+), 14 deletions(-)
 
 diff --git a/kernel/sched/cpupri.c b/kernel/sched/cpupri.c
-index e434910..9ca0835 100644
+index 8d9952a..e434910 100644
 --- a/kernel/sched/cpupri.c
 +++ b/kernel/sched/cpupri.c
-@@ -11,7 +11,7 @@
-  *  This code tracks the priority of each CPU so that global migration
-  *  decisions are easy to calculate.  Each CPU can be in a state as follows:
-  *
-- *                 (INVALID), NORMAL, RT1, ... RT99
-+ *                 (INVALID), NORMAL, RT1, ... RT99, HIGHER
-  *
-  *  going from the lowest priority to the highest.  CPUs in the INVALID state
-  *  are not eligible for routing.  The system maintains this state with
-@@ -19,7 +19,7 @@
-  *  in that class).  Therefore a typical application without affinity
-  *  restrictions can find a suitable CPU with O(1) complexity (e.g. two bit
-  *  searches).  For tasks with affinity restrictions, the algorithm has a
-- *  worst case complexity of O(min(100, nr_domcpus)), though the scenario that
-+ *  worst case complexity of O(min(101, nr_domcpus)), though the scenario that
-  *  yields the worst case search is fairly contrived.
+@@ -24,17 +24,37 @@
   */
  #include "sched.h"
-@@ -37,6 +37,8 @@
-  *	       50        49       49       50
-  *	      ...
-  *	       99         0        0       99
+ 
+-/* Convert between a 140 based task->prio, and our 100 based cpupri */
++/*
++ * p->rt_priority   p->prio   newpri   cpupri
 + *
-+ *				 100	  100 (CPUPRI_HIGHER)
-  */
++ *				  -1       -1 (CPUPRI_INVALID)
++ *
++ *				  99        0 (CPUPRI_NORMAL)
++ *
++ *		1        98       98        1
++ *	      ...
++ *	       49        50       50       49
++ *	       50        49       49       50
++ *	      ...
++ *	       99         0        0       99
++ */
  static int convert_prio(int prio)
  {
-@@ -54,6 +56,10 @@ static int convert_prio(int prio)
- 	case MAX_RT_PRIO-1:
- 		cpupri = CPUPRI_NORMAL;		/*  0 */
- 		break;
-+
-+	case MAX_RT_PRIO:
-+		cpupri = CPUPRI_HIGHER;		/* 100 */
+ 	int cpupri;
+ 
+-	if (prio == CPUPRI_INVALID)
+-		cpupri = CPUPRI_INVALID;
+-	else if (prio >= MAX_RT_PRIO)
+-		cpupri = CPUPRI_NORMAL;
+-	else
+-		cpupri = MAX_RT_PRIO - prio - 1;
++	switch (prio) {
++	case CPUPRI_INVALID:
++		cpupri = CPUPRI_INVALID;	/* -1 */
 +		break;
- 	}
++
++	case 0 ... 98:
++		cpupri = MAX_RT_PRIO-1 - prio;	/* 1 ... 99 */
++		break;
++
++	case MAX_RT_PRIO-1:
++		cpupri = CPUPRI_NORMAL;		/*  0 */
++		break;
++	}
  
  	return cpupri;
-@@ -195,7 +201,7 @@ int cpupri_find_fitness(struct cpupri *cp, struct task_struct *p,
-  * cpupri_set - update the CPU priority setting
-  * @cp: The cpupri context
-  * @cpu: The target CPU
-- * @newpri: The priority (INVALID-RT99) to assign to this CPU
-+ * @newpri: The priority (INVALID,NORMAL,RT1-RT99,HIGHER) to assign to this CPU
-  *
-  * Note: Assumes cpu_rq(cpu)->lock is locked
-  *
-diff --git a/kernel/sched/cpupri.h b/kernel/sched/cpupri.h
-index e28e1ed..d6cba00 100644
---- a/kernel/sched/cpupri.h
-+++ b/kernel/sched/cpupri.h
-@@ -1,10 +1,11 @@
- /* SPDX-License-Identifier: GPL-2.0 */
+ }
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 49ec096..8a3b1ba 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -89,8 +89,8 @@ void init_rt_rq(struct rt_rq *rt_rq)
+ 	__set_bit(MAX_RT_PRIO, array->bitmap);
  
--#define CPUPRI_NR_PRIORITIES	MAX_RT_PRIO
-+#define CPUPRI_NR_PRIORITIES	(MAX_RT_PRIO+1)
+ #if defined CONFIG_SMP
+-	rt_rq->highest_prio.curr = MAX_RT_PRIO;
+-	rt_rq->highest_prio.next = MAX_RT_PRIO;
++	rt_rq->highest_prio.curr = MAX_RT_PRIO-1;
++	rt_rq->highest_prio.next = MAX_RT_PRIO-1;
+ 	rt_rq->rt_nr_migratory = 0;
+ 	rt_rq->overloaded = 0;
+ 	plist_head_init(&rt_rq->pushable_tasks);
+@@ -161,7 +161,7 @@ void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
+ {
+ 	struct rq *rq = cpu_rq(cpu);
  
- #define CPUPRI_INVALID		-1
- #define CPUPRI_NORMAL		 0
- /* values 1-99 are for RT1-RT99 priorities */
-+#define CPUPRI_HIGHER		100
+-	rt_rq->highest_prio.curr = MAX_RT_PRIO;
++	rt_rq->highest_prio.curr = MAX_RT_PRIO-1;
+ 	rt_rq->rt_nr_boosted = 0;
+ 	rt_rq->rq = rq;
+ 	rt_rq->tg = tg;
+@@ -393,8 +393,9 @@ static void dequeue_pushable_task(struct rq *rq, struct task_struct *p)
+ 		p = plist_first_entry(&rq->rt.pushable_tasks,
+ 				      struct task_struct, pushable_tasks);
+ 		rq->rt.highest_prio.next = p->prio;
+-	} else
+-		rq->rt.highest_prio.next = MAX_RT_PRIO;
++	} else {
++		rq->rt.highest_prio.next = MAX_RT_PRIO-1;
++	}
+ }
  
- struct cpupri_vec {
- 	atomic_t		count;
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 0f75e95..0b45dd1 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1394,6 +1394,8 @@ static void inc_dl_deadline(struct dl_rq *dl_rq, u64 deadline)
+ #else
+@@ -1147,8 +1148,9 @@ dec_rt_prio(struct rt_rq *rt_rq, int prio)
+ 				sched_find_first_bit(array->bitmap);
+ 		}
  
- 	if (dl_rq->earliest_dl.curr == 0 ||
- 	    dl_time_before(deadline, dl_rq->earliest_dl.curr)) {
-+		if (dl_rq->earliest_dl.curr == 0)
-+			cpupri_set(&rq->rd->cpupri, rq->cpu, CPUPRI_HIGHER);
- 		dl_rq->earliest_dl.curr = deadline;
- 		cpudl_set(&rq->rd->cpudl, rq->cpu, deadline);
- 	}
-@@ -1411,6 +1413,7 @@ static void dec_dl_deadline(struct dl_rq *dl_rq, u64 deadline)
- 		dl_rq->earliest_dl.curr = 0;
- 		dl_rq->earliest_dl.next = 0;
- 		cpudl_clear(&rq->rd->cpudl, rq->cpu);
-+		cpupri_set(&rq->rd->cpupri, rq->cpu, rq->rt.highest_prio.curr);
- 	} else {
- 		struct rb_node *leftmost = dl_rq->root.rb_leftmost;
- 		struct sched_dl_entity *entry;
+-	} else
+-		rt_rq->highest_prio.curr = MAX_RT_PRIO;
++	} else {
++		rt_rq->highest_prio.curr = MAX_RT_PRIO-1;
++	}
+ 
+ 	dec_rt_prio_smp(rt_rq, prio, prev_prio);
+ }
