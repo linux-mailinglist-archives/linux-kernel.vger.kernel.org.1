@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F0C29E865
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464C929E878
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgJ2KHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:07:31 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:63878 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgJ2KHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:07:30 -0400
+        id S1726693AbgJ2KIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726674AbgJ2KIt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 06:08:49 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0FC1C0613CF;
+        Thu, 29 Oct 2020 03:08:48 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id dg9so2390163edb.12;
+        Thu, 29 Oct 2020 03:08:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=1235; q=dns/txt; s=axis-central1;
-  t=1603966049; x=1635502049;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3dDfRpZrXdi2h9cyLECrD8Pi4UfPbqkN/AeqV38WhpY=;
-  b=F6eKyWXOkleM/r0Mfnqe1Aw5wmvWH6QHiRdzY7j6MONzqEuyLuFXU5jw
-   TX/Y793eUC87QxsyJHVOXR4kFobVJaB0Fg2DzU4KT4tdm+TSqCmDs0Xnx
-   rDHr+HbgfmfYuUJdq6GkUm4GQdJR94b1OYB7YM2+1Pcxk47SoZGSjYIgb
-   /NZVmefHwRO20PNqPhOOio66ucTMev313AYOhZJPlzzZ3YHkUFplYTGoQ
-   YNTg8w0ggZGtrEZjjq74r/1C9Y86vYK1vpdKF6e6Be3R8k0GtoO4NQRt8
-   6IAQka70ZMHeBcsK9PnGBgzVObce0zcvKdymFjtoXVIvDfGY0zzDlEInN
-   w==;
-IronPort-SDR: cYyEylfPzxmDd4ZhHRuVfvgvp2Zcdmv3PoASyiieKb4bE8CRzutBYe8oqq+FRwKO3Ew26Z24iA
- vI+jqeGTsC/njYhc7yudJuhSJESfkNevUfqq8wmigJcb0pxCAWVPEkB5LwAOGNYWTliqxaRB2O
- HGFaLFoopbJF3DQEl9HjhHyNLrs9wahjlBIrXBkjJThypoheDAjqgVgWt0B7AKrBBca8ULrI8Q
- eyKe6qnjQvU/NW7gQX9Ejrs2AusAkTchZTY7zMnzJ1Ug954iC0KmSGxDffqLO6wJ7J7kOybGeW
- HqQ=
-X-IronPort-AV: E=Sophos;i="5.77,429,1596492000"; 
-   d="scan'208";a="14036188"
-Date:   Thu, 29 Oct 2020 11:07:27 +0100
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Sherry Sun <sherry.sun@nxp.com>,
-        "Dutt, Sudeep" <sudeep.dutt@intel.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "kishon@ti.com" <kishon@ti.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Dixit, Ashutosh" <ashutosh.dixit@intel.com>
-Subject: Re: [PATCH V3 2/4] misc: vop: do not allocate and reassign the used
- ring
-Message-ID: <20201029100727.trbppgbusd5vogpz@axis.com>
-References: <20201023092650.GB29066@infradead.org>
- <VI1PR04MB4960E9ECD7310B8CA1E053DC92190@VI1PR04MB4960.eurprd04.prod.outlook.com>
- <20201027062802.GC207971@kroah.com>
- <VI1PR04MB4960C0E76374B2775D99A82192160@VI1PR04MB4960.eurprd04.prod.outlook.com>
- <20201027151106.e4skr6dsbwvo4al6@axis.com>
- <VI1PR04MB49603783EF3FD3F3635FCDAF92170@VI1PR04MB4960.eurprd04.prod.outlook.com>
- <93bd1c60ea4d910489a7592200856eaf8022ced0.camel@intel.com>
- <AM0PR04MB4947F01860DE953B8496FA8892170@AM0PR04MB4947.eurprd04.prod.outlook.com>
- <CAK8P3a1JRx32VfFcwFpK0i6F5MQMCK-yCKw8=d_R08Y3iQ7wLQ@mail.gmail.com>
- <CAK8P3a3u06ZHdAb_n3byTqfxAvy_wi48X1g0N4ODuH2uEM0xLA@mail.gmail.com>
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=T5XcUZu+SnqPOg6uGWPm+6vMcKuKj8o1aFhhSPVAROk=;
+        b=DHL0thqjyVIHujJtl3J/xBEVbNKG8JUydovt15m2O359vOAVXR0DEVUmJDjDu8W5uC
+         2t331HmKA0sbees7AhyWmfvDRnLC2cCYR5WJmYG6XjYiw+JP9UnV7wLKlsXcO+EgFfjY
+         QWYaYgd2Xyss9MejyfNPD2BpyQDqSdct6ku3hMTouKpeP4G2Ru+X7Pe5zTzKW+0pa/Db
+         Eo1P2Fv10XakmQhZKgIXjQiTok4QBVMU66ohOFNqkiPZGNMAfQg2M1hrE6nZrzG4PLQG
+         BRUbGRVBDvjOMRfZODwdEv26qrf8E0TMf1deImfMnqqvKPFWATSSTohmNjw4Oxr3zTjh
+         P5Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=T5XcUZu+SnqPOg6uGWPm+6vMcKuKj8o1aFhhSPVAROk=;
+        b=U+TKnRvWo+4Gt0kelmkZq3aJ4c405fxL9zrLfE3RbpnGNACuXamTfoD2ZMLKAWqQ12
+         EmgUyTv2x4WDBOO6AaKMsE/mEh7Qv9u3a1HRN+W0U3FFliMtbq+9IbZzWPhaEiHa816e
+         5Cf5VW1EbUYqKlZ8Ht0Q3flQ1V66qLZ914Udx4yUiyHTCa9+76o2Gpni1enQ+n1HVGBX
+         VNRvSTbPpGu4Ir/zDIsSZilNNGFCZsViMh81663KIZasfH5nkFl98o5C/v22lzsO5f8+
+         iXYGRBm36F4wF0fVoxDAK9dfGdsphhY5+Tb1sMb6H0KDGaB8A5vZxUOjrr6FaEddjNuv
+         I/0A==
+X-Gm-Message-State: AOAM531dWEc5n3Y1rhFkLe2CNYFUCPlmWNFlbJppcemVb0bdJ0NZesRD
+        EJaoUp789RWUO7UPac/HCE68sivkVbz9rhjt
+X-Google-Smtp-Source: ABdhPJwhrco2Ylo0x2zVWpxXNv4Un2peFD+Q2d1sYzlzrWKNB+uM3xIQGncuX2W1UGasjBAmri50jQ==
+X-Received: by 2002:aa7:d54f:: with SMTP id u15mr3155378edr.239.1603966127731;
+        Thu, 29 Oct 2020 03:08:47 -0700 (PDT)
+Received: from yoga-910.localhost ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id m1sm1198650ejj.117.2020.10.29.03.08.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 03:08:47 -0700 (PDT)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>
+Subject: [PATCH net-next 06/19] net: phy: mscc: use phy_trigger_machine() to notify link change
+Date:   Thu, 29 Oct 2020 12:07:28 +0200
+Message-Id: <20201029100741.462818-7-ciorneiioana@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201029100741.462818-1-ciorneiioana@gmail.com>
+References: <20201029100741.462818-1-ciorneiioana@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3u06ZHdAb_n3byTqfxAvy_wi48X1g0N4ODuH2uEM0xLA@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 04:50:36PM +0100, Arnd Bergmann wrote:
-> I think we should try to do something on top of the PCIe endpoint subsystem
-> to make it work across arbitrary combinations of host and device
-> implementations,
-> and provide a superset of what the MIC driver, (out-of-tree) Bluefield endpoint
-> driver, and the NTB subsystem as well as a couple of others used to do,
-> each of them tunneling block/network/serial/... over a PCIe link of some
-> sort, usually with virtio.
+From: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-VOP is not PCIe-specific (as demonstrated by the vop-loopback patches I
-posted a while ago [1]), and it would be a shame for a replacement to be
-tied to the PCIe endpoint subsystem.  There are many SOCs out there
-which have multiple Linux-capable processors without cache-coherency
-between them.  VOP is (or should I say was since I guess it's being
-deleted) the closest we have in mainline to easily get generic virtio
-(and not just rpmsg) running between these kind of Linux instances.  If
-a new replacement framework were to be PCIe-exclusive then we'd have to
-invent one more framework for non-PCIe links to do pretty much the same
-thing.
+According to the comment describing the phy_mac_interrupt() function, it
+it intended to be used by MAC drivers which have noticed a link change
+thus its use in the mscc PHY driver is improper and, most probably, was
+added just because phy_trigger_machine() was not exported.
+Now that we have acces to trigger the link state machine, use directly
+the phy_trigger_machine() function to notify a link change detected by
+the PHY driver.
 
-[1] https://lore.kernel.org/lkml/20190403104746.16063-1-vincent.whitchurch@axis.com/
+Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+---
+ drivers/net/phy/mscc/mscc_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/phy/mscc/mscc_main.c b/drivers/net/phy/mscc/mscc_main.c
+index 6bc7406a1ce7..b705121c9d26 100644
+--- a/drivers/net/phy/mscc/mscc_main.c
++++ b/drivers/net/phy/mscc/mscc_main.c
+@@ -1498,7 +1498,7 @@ static irqreturn_t vsc8584_handle_interrupt(struct phy_device *phydev)
+ 		vsc8584_handle_macsec_interrupt(phydev);
+ 
+ 	if (irq_status & MII_VSC85XX_INT_MASK_LINK_CHG)
+-		phy_mac_interrupt(phydev);
++		phy_trigger_machine(phydev);
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+2.28.0
+
