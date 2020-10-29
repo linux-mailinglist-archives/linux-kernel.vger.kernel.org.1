@@ -2,184 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CEC29EA48
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F7429EA4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727559AbgJ2LN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:13:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgJ2LN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:13:58 -0400
-Received: from localhost (unknown [122.171.163.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3EA620756;
-        Thu, 29 Oct 2020 11:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603970037;
-        bh=+qWXpK2dsv9GO7fCMxNyogZpjHv9DPwiArxIP9i+Dck=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ydqxIRJcvrjsO5N/pHnMAd42SlEweA4dubmtIdHPXEz+c7TTz6a9C89m9+KYpQZ32
-         05h0fIOzXU2hU+Uru8vKqwlCG7c9uZo8ZVEip6vb8n2eIM37UG+U8NaYkI4XDGvI1a
-         8Bh0aA15XZHbsTjQeGEp4OnuX09ZMIIohiO4bT+s=
-Date:   Thu, 29 Oct 2020 16:43:53 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jeevan Shriram <jshriram@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] pinctrl: qcom: Add SDX55 pincontrol driver
-Message-ID: <20201029111353.GA3550@vkoul-mobl>
-References: <20201028083017.611810-1-vkoul@kernel.org>
- <20201028083017.611810-2-vkoul@kernel.org>
- <20201028163556.GD3151@builder.lan>
+        id S1726885AbgJ2LPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:15:33 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:37620 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgJ2LPc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 07:15:32 -0400
+Received: by mail-wr1-f67.google.com with SMTP id w1so2320478wrm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 04:15:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dVqr9lwztpqywOtsey0CBnyoEYWrBx7CqfNTryzKB34=;
+        b=H68ERvq/mdYwFWZz6bB/5Wof9BB/Jk9MFnIj4UgrFNdwYeOKDy37e6OR+Ir2Y07Bor
+         Daw6sJATN7NZr8ZpjXdQ+zEI3bfloLp9lqRgA3dec6mx8CBJf4Ltu9DUasK6lAUDBf4l
+         MPm5LXqeEuq7EoiCVg1U+ZojBvtSRo7VimSPiXu/IghOxGP5W1prdTDO2xqNoJSCPKxR
+         G21H/erXWA/w1Bi6FMzYnkI/RbDFfIy9sBkcra3NyHQQrgpwTvI1MVHpWK/8ctbK2JaY
+         OC6jkhWhVxXrMuw3tUjOiWbD489cBgyJMCmcPl7smSRfsW4KUcOpRaYIsEv+7CtzQfOx
+         m9tQ==
+X-Gm-Message-State: AOAM531MGAee6INFIOWnM0e8Y+MCvT8mh0AxstVzHVmacsmxftVmzc5f
+        U5XDY5DJWcODacCoNMdDIxI2UVbgOGTg+9hn3QY=
+X-Google-Smtp-Source: ABdhPJxZmmczmPXgUn7Yy1P0oWV1cNdgND9P2nSx/BQ5LxJUdQoaoUPzquMVPUp2izjHaFwePuch4eTydWFgapeC9As=
+X-Received: by 2002:adf:bb43:: with SMTP id x3mr4974241wrg.250.1603970130184;
+ Thu, 29 Oct 2020 04:15:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028163556.GD3151@builder.lan>
+References: <20201028085632.825804-1-namhyung@kernel.org> <CAP-5=fWxPdE_UVRewNUGDrTi9A8j+OYsjsHQLJsVDkMV2tRMBA@mail.gmail.com>
+In-Reply-To: <CAP-5=fWxPdE_UVRewNUGDrTi9A8j+OYsjsHQLJsVDkMV2tRMBA@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 29 Oct 2020 20:15:19 +0900
+Message-ID: <CAM9d7cgikTxC9s86OYp_owoJ7JpdoC3PC42iC4oQpaxbMeudaw@mail.gmail.com>
+Subject: Re: [PATCH] perf data: Allow to use stdio functions for pipe mode
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28-10-20, 11:35, Bjorn Andersson wrote:
-> On Wed 28 Oct 03:30 CDT 2020, Vinod Koul wrote:
-> > diff --git a/drivers/pinctrl/qcom/pinctrl-sdx55.c b/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> [..]
-> > +static const struct msm_function sdx55_functions[] = {
-> [..]
-> > +	FUNCTION(qdss_gpio),
-> > +	FUNCTION(qdss_gpio0),
-> > +	FUNCTION(qdss_gpio1),
-> > +	FUNCTION(qdss_gpio2),
-> > +	FUNCTION(qdss_gpio3),
-> > +	FUNCTION(qdss_gpio4),
-> > +	FUNCTION(qdss_gpio5),
-> > +	FUNCTION(qdss_gpio6),
-> > +	FUNCTION(qdss_gpio7),
-> > +	FUNCTION(qdss_gpio8),
-> > +	FUNCTION(qdss_gpio9),
-> > +	FUNCTION(qdss_gpio10),
-> > +	FUNCTION(qdss_gpio11),
-> > +	FUNCTION(qdss_gpio12),
-> > +	FUNCTION(qdss_gpio13),
-> > +	FUNCTION(qdss_gpio14),
-> > +	FUNCTION(qdss_gpio15),
-> 
-> As there are no overlaps within pingroups you can keep qdss_gpio as a
-> single function.
+Hi Ian,
 
-Okay so is the generic guidance to group things into single function
-when they do not overlap?
+On Thu, Oct 29, 2020 at 1:37 AM Ian Rogers <irogers@google.com> wrote:
+>
+> On Wed, Oct 28, 2020 at 1:56 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > When perf data is in a pipe, it reads each event separately using
+> > read(2) syscall.  This is a huge performance bottleneck when
+> > processing large data like in perf inject.  Also perf inject needs to
+> > use write(2) syscall for the output.
+> >
+> > So convert it to use buffer I/O functions in stdio library for pipe
+> > data.  This makes inject-build-id bench time drops from 20ms to 8ms.
+>
+> This is great! Reading the numbers below the times are reduced to
+> 67.9% of their previous, this is a little less than 20ms to 8ms so
+> perhaps check that number.
 
-> 
-> > +	FUNCTION(qdss_stm0),
-> > +	FUNCTION(qdss_stm1),
-> > +	FUNCTION(qdss_stm2),
-> > +	FUNCTION(qdss_stm3),
-> > +	FUNCTION(qdss_stm4),
-> > +	FUNCTION(qdss_stm5),
-> > +	FUNCTION(qdss_stm6),
-> > +	FUNCTION(qdss_stm7),
-> > +	FUNCTION(qdss_stm8),
-> > +	FUNCTION(qdss_stm9),
-> > +	FUNCTION(qdss_stm10),
-> > +	FUNCTION(qdss_stm11),
-> > +	FUNCTION(qdss_stm12),
-> > +	FUNCTION(qdss_stm13),
-> > +	FUNCTION(qdss_stm14),
-> > +	FUNCTION(qdss_stm15),
-> > +	FUNCTION(qdss_stm16),
-> > +	FUNCTION(qdss_stm17),
-> > +	FUNCTION(qdss_stm18),
-> > +	FUNCTION(qdss_stm19),
-> > +	FUNCTION(qdss_stm20),
-> > +	FUNCTION(qdss_stm21),
-> > +	FUNCTION(qdss_stm22),
-> > +	FUNCTION(qdss_stm23),
-> > +	FUNCTION(qdss_stm24),
-> > +	FUNCTION(qdss_stm25),
-> > +	FUNCTION(qdss_stm26),
-> > +	FUNCTION(qdss_stm27),
-> > +	FUNCTION(qdss_stm28),
-> > +	FUNCTION(qdss_stm29),
-> > +	FUNCTION(qdss_stm30),
-> > +	FUNCTION(qdss_stm31),
-> 
-> Ditto.
-> 
-> > +	FUNCTION(qlink0_en),
-> > +	FUNCTION(qlink0_req),
-> > +	FUNCTION(qlink0_wmss),
-> > +	FUNCTION(qlink1_en),
-> > +	FUNCTION(qlink1_req),
-> > +	FUNCTION(qlink1_wmss),
-> > +	FUNCTION(spmi_coex),
-> > +	FUNCTION(sec_mi2s),
-> > +	FUNCTION(spmi_vgi),
-> > +	FUNCTION(tgu_ch0),
-> > +	FUNCTION(uim1_clk),
-> > +	FUNCTION(uim1_data),
-> > +	FUNCTION(uim1_present),
-> > +	FUNCTION(uim1_reset),
-> > +	FUNCTION(uim2_clk),
-> > +	FUNCTION(uim2_data),
-> > +	FUNCTION(uim2_present),
-> > +	FUNCTION(uim2_reset),
-> > +	FUNCTION(usb2phy_ac),
-> > +	FUNCTION(vsense_trigger),
-> > +};
-> > +
-> > +/* Every pin is maintained as a single group, and missing or non-existing pin
-> > + * would be maintained as dummy group to synchronize pin group index with
-> > + * pin descriptor registered with pinctrl core.
-> > + * Clients would not be able to request these dummy pin groups.
-> > + */
-> > +static const struct msm_pingroup sdx55_groups[] = {
-> > +	[0] = PINGROUP(0, uim2_data, blsp_uart1, qdss_stm31, ebi0_wrcdc, _,
-> > +		       _, _, _, _),
-> 
-> Please break the 80 character suggestion and leave these unwrapped.
+The numbers before this patch:
 
-120 now ;-)
+$ ./perf bench internals inject-build-id
+# Running 'internals/inject-build-id' benchmark:
+  Average build-id injection took: 20.594 msec (+- 0.034 msec)
+  Average time per event: 2.019 usec (+- 0.003 usec)
+  Average memory usage: 8319 KB (+- 0 KB)
+  Average build-id-all injection took: 19.443 msec (+- 0.177 msec)
+  Average time per event: 1.906 usec (+- 0.017 usec)
+  Average memory usage: 7490 KB (+- 0 KB)
 
-> 
-> [..]
-> > +	[108] = UFS_RESET(ufs_reset, 0x0),
-> 
-> SDX55 doesn't have UFS support and I'm not able to find any UFS_RESET
-> register in the TLMM block. So I suspect this is a copy paste issue
-> somewhere.
-> 
-> PS. Don't forget to drop the macro, if we don't need it.
+>
+> >   $ perf bench internals inject-build-id
+> >   # Running 'internals/inject-build-id' benchmark:
+> >     Average build-id injection took: 8.074 msec (+- 0.013 msec)
+> >     Average time per event: 0.792 usec (+- 0.001 usec)
+> >     Average memory usage: 8328 KB (+- 0 KB)
+> >     Average build-id-all injection took: 5.490 msec (+- 0.008 msec)
+> >     Average time per event: 0.538 usec (+- 0.001 usec)
+> >     Average memory usage: 7563 KB (+- 0 KB)
+> >
+> > This patch enables it just for perf inject when used with pipe (it's a
+> > default behavior).  Maybe we could do it for perf record and/or report
+> > later..
+>
+> For perf record there is also the async IO used for writing. I like
+> that this patch is adding the reading to perf_data. Should the async
+> IO code live in perf_data rather than record? Should async IO be used
+> for reading in that case? What would be the policy of using stdio,
+> not-stdio and async IO?
 
-I will check though I have not seen UFS block. But yes this did exist in
-downstream!
+I'm not sure but using async IO for read is meaningless since we cannot
+do anything without the data.  The reason I added this was that the pipe
+mode does so many small I/O with syscalls.  But perf record will mostly
+do large I/O so I don't expect big speedup for that.
 
-> 
-> > +	[109] = SDC_PINGROUP(sdc1_rclk, 0x9a000, 15, 0),
-> > +	[110] = SDC_PINGROUP(sdc1_clk, 0x9a000, 13, 6),
-> > +	[111] = SDC_PINGROUP(sdc1_cmd, 0x9a000, 11, 3),
-> > +	[112] = SDC_PINGROUP(sdc1_data, 0x9a000, 9, 0),
-> > +};
-> > +
-> > +static const struct msm_pinctrl_soc_data sdx55_pinctrl = {
-> > +	.pins = sdx55_pins,
-> > +	.npins = ARRAY_SIZE(sdx55_pins),
-> > +	.functions = sdx55_functions,
-> > +	.nfunctions = ARRAY_SIZE(sdx55_functions),
-> > +	.groups = sdx55_groups,
-> > +	.ngroups = ARRAY_SIZE(sdx55_groups),
-> > +	.ngpios = 108,
-> 
-> If we had UFS_RESET, this should include it; i.e. be 109.
-
-Okay will check and update
-
-Thanks for quick review
-
--- 
-~Vinod
+Thanks
+Namhyung
