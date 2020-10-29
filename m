@@ -2,234 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A6329E0E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A96229E102
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729721AbgJ2BmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:42:14 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6572 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgJ2Bll (ORCPT
+        id S1732560AbgJ2Bpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729098AbgJ2Bn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 21:41:41 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CM7TH4QRszhc67;
-        Thu, 29 Oct 2020 09:41:39 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 29 Oct
- 2020 09:41:33 +0800
-Subject: Re: [f2fs-dev] [PATCH v4 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
- ioctl
-To:     Daeho Jeong <daeho43@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <kernel-team@android.com>, Daeho Jeong <daehojeong@google.com>
-References: <20201027053818.3291747-1-daeho43@gmail.com>
- <20201027053818.3291747-2-daeho43@gmail.com>
- <290cd375-704e-9315-a035-ab4c1ce1f6f2@huawei.com>
- <CACOAw_ycvV9_O_tb=axgT2Pu9ySvdKfVjBv+Fe90+XObKGjjTg@mail.gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <f81da3dc-aa9d-a186-f078-512bbf4ce8d4@huawei.com>
-Date:   Thu, 29 Oct 2020 09:41:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Wed, 28 Oct 2020 21:43:27 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87F1C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:43:26 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id t13so1309322ljk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:43:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=geZ/oO3CDuXNyCg7XC5g4ztQiJhRJ6O3ZCqLsRDfncw=;
+        b=sLyaw6q6IpMdxy0i+OrwQjeQfMFuDOZH3wZnxjQU/9rDKBm6tuuxuSZwVs5vSb5WCr
+         dhr5wJNw0eYDPLOVlnAfChnG0rwQ3X3IxyOhhms90HJjdyXu5TJC0nW/joAq2f2CND/0
+         CfiNH8M48AdnqYWCsLEkk41NY0rIcwZgm0kQcdKN0ApOcudxbm6lIQIC9aN3G5/6sTDd
+         E0nFCedw0IDNiUhrY+kLYDTgjCvAEsr7GQTQqiccy0MVtif7ayBSqtuFcqw/pBfWXhhK
+         7t/SE3CAxJQ50Fz1/BKEQTbMkwVW/T9PhUh0MdDok3/8p8gBv5Oh9gBVe4i4ApP4av2Y
+         EmxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=geZ/oO3CDuXNyCg7XC5g4ztQiJhRJ6O3ZCqLsRDfncw=;
+        b=Z5SpfbhGXY2gPNGsw1L5dpsZnHtEEXZkvHylmGJ5pyRgErTn/Ioe/19Oi1R2Mb4np6
+         +9ZYtVeFqBcoUiq5IhuGspr8GmHx9iVaqPALdPIDU0timn66HB9P9lht8wMflrqV7YfX
+         12gb0Izp8pBsurH9wUEwn4cA1QXWhKLWNH2hmdiTnm78Ca8p6TJMLgWOCCic9HLjum5H
+         XatVPHCcEj/Cqs9k77wTRjteteTBX+enBF61hJPd0Pz5iNpSg5J+ZJDSyWVgCe3WZpA7
+         1xJOn3HUjQ4oyRarI2yWmC28REg3zT8ezFlrFrTZswkH4TR8jxENixImH9EO+iBxEH/J
+         faHg==
+X-Gm-Message-State: AOAM533JhTX32DyJVCo3i4EojixoX4bCCjakAVCL9J2MQwZIQ1t4jPzC
+        jkjAb0oH+hsKq7A4bSRhgddI8j2/SdYyj200TZGTnQ==
+X-Google-Smtp-Source: ABdhPJz6TDKuIczDEuNWhwAZLwIsi7p/r5pwANkEoLv02bXcTUl1ox9pp4nTanH9lSHFwu+RpElyT1qPIgjQUosCQDo=
+X-Received: by 2002:a2e:b6cf:: with SMTP id m15mr744683ljo.74.1603935804881;
+ Wed, 28 Oct 2020 18:43:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACOAw_ycvV9_O_tb=axgT2Pu9ySvdKfVjBv+Fe90+XObKGjjTg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+In-Reply-To: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 29 Oct 2020 02:42:58 +0100
+Message-ID: <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daeho,
+On Mon, Oct 26, 2020 at 10:55 AM Michael Kerrisk (man-pages)
+<mtk.manpages@gmail.com> wrote:
+>        static bool
+>        getTargetPathname(struct seccomp_notif *req, int notifyFd,
+>                          char *path, size_t len)
+>        {
+>            char procMemPath[PATH_MAX];
+>
+>            snprintf(procMemPath, sizeof(procMemPath), "/proc/%d/mem", req->pid);
+>
+>            int procMemFd = open(procMemPath, O_RDONLY);
+>            if (procMemFd == -1)
+>                errExit("\tS: open");
+>
+>            /* Check that the process whose info we are accessing is still alive.
+>               If the SECCOMP_IOCTL_NOTIF_ID_VALID operation (performed
+>               in checkNotificationIdIsValid()) succeeds, we know that the
+>               /proc/PID/mem file descriptor that we opened corresponds to the
+>               process for which we received a notification. If that process
+>               subsequently terminates, then read() on that file descriptor
+>               will return 0 (EOF). */
+>
+>            checkNotificationIdIsValid(notifyFd, req->id);
+>
+>            /* Read bytes at the location containing the pathname argument
+>               (i.e., the first argument) of the mkdir(2) call */
+>
+>            ssize_t nread = pread(procMemFd, path, len, req->data.args[0]);
+>            if (nread == -1)
+>                errExit("pread");
 
-On 2020/10/29 9:21, Daeho Jeong wrote:
-> Chao,
-> 
-> Do you want to print out a kernel warning message in this case? like
-> "XX compression algorithm is set for this inode, but current mount
-> option doesn't support this algorithm."?
+As discussed at
+<https://lore.kernel.org/r/CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>,
+we need to re-check checkNotificationIdIsValid() after reading remote
+memory but before using the read value in any way. Otherwise, the
+syscall could in the meantime get interrupted by a signal handler, the
+signal handler could return, and then the function that performed the
+syscall could free() allocations or return (thereby freeing buffers on
+the stack).
 
-Yup, something like that,
+In essence, this pread() is (unavoidably) a potential use-after-free
+read; and to make that not have any security impact, we need to check
+whether UAF read occurred before using the read value. This should
+probably be called out elsewhere in the manpage, too...
 
-Change 'current mount option' to 'current kernel' or 'current f2fs module' would be
-better?
+Now, of course, **reading** is the easy case. The difficult case is if
+we have to **write** to the remote process... because then we can't
+play games like that. If we write data to a freed pointer, we're
+screwed, that's it. (And for somewhat unrelated bonus fun, consider
+that /proc/$pid/mem is originally intended for process debugging,
+including installing breakpoints, and will therefore happily write
+over "readonly" private mappings, such as typical mappings of
+executable code.)
 
-> 
-> 2020년 10월 28일 (수) 오후 3:47, Chao Yu <yuchao0@huawei.com>님이 작성:
->>
->> On 2020/10/27 13:38, Daeho Jeong wrote:
->>> From: Daeho Jeong <daehojeong@google.com>
->>>
->>> Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
->>> compression option of a file.
->>>
->>> struct f2fs_comp_option {
->>>       u8 algorithm;         => compression algorithm
->>>                             => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
->>>       u8 log_cluster_size;  => log scale cluster size
->>>                             => 2 ~ 8
->>> };
->>>
->>> struct f2fs_comp_option option;
->>>
->>> option.algorithm = 1;
->>> option.log_cluster_size = 7;
->>>
->>> ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
->>>
->>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
->>> ---
->>>
->>> v4: changed commit message.
->>> v3: changed the error number more specific.
->>>       folded in fix for build breakage reported by kernel test robot
->>>       <lkp@intel.com> and Dan Carpenter <dan.carpenter@oracle.com>.
->>> v2: added ioctl description.
->>> ---
->>>    fs/f2fs/compress.c |  5 +++++
->>>    fs/f2fs/f2fs.h     |  7 +++++++
->>>    fs/f2fs/file.c     | 52 ++++++++++++++++++++++++++++++++++++++++++++++
->>>    3 files changed, 64 insertions(+)
->>>
->>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->>> index 7895186cc765..816d7adc914c 100644
->>> --- a/fs/f2fs/compress.c
->>> +++ b/fs/f2fs/compress.c
->>> @@ -514,6 +514,11 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
->>>        return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
->>>    }
->>>
->>> +bool f2fs_is_compress_algorithm_ready(unsigned char algorithm)
->>> +{
->>> +     return algorithm < COMPRESS_MAX && f2fs_cops[algorithm] != NULL;
->>> +}
->>> +
->>>    static mempool_t *compress_page_pool;
->>>    static int num_compress_pages = 512;
->>>    module_param(num_compress_pages, uint, 0444);
->>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>> index a33c90cf979b..cc38afde6c04 100644
->>> --- a/fs/f2fs/f2fs.h
->>> +++ b/fs/f2fs/f2fs.h
->>> @@ -435,6 +435,8 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
->>>                                                struct f2fs_sectrim_range)
->>>    #define F2FS_IOC_GET_COMPRESS_OPTION        _IOR(F2FS_IOCTL_MAGIC, 21,      \
->>>                                                struct f2fs_comp_option)
->>> +#define F2FS_IOC_SET_COMPRESS_OPTION _IOW(F2FS_IOCTL_MAGIC, 22,      \
->>> +                                             struct f2fs_comp_option)
->>>
->>>    /*
->>>     * should be same as XFS_IOC_GOINGDOWN.
->>> @@ -3915,6 +3917,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
->>>    int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
->>>    void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
->>>    bool f2fs_is_compress_backend_ready(struct inode *inode);
->>> +bool f2fs_is_compress_algorithm_ready(unsigned char algorithm);
->>>    int f2fs_init_compress_mempool(void);
->>>    void f2fs_destroy_compress_mempool(void);
->>>    void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
->>> @@ -3945,6 +3948,10 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
->>>        /* not support compression */
->>>        return false;
->>>    }
->>> +static inline bool f2fs_is_compress_algorithm_ready(unsigned char algorithm)
->>> +{
->>> +     return false;
->>> +}
->>>    static inline struct page *f2fs_compress_control_page(struct page *page)
->>>    {
->>>        WARN_ON_ONCE(1);
->>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>> index 8922ab191a9d..8048b150e43b 100644
->>> --- a/fs/f2fs/file.c
->>> +++ b/fs/f2fs/file.c
->>> @@ -3963,6 +3963,55 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
->>>        return 0;
->>>    }
->>>
->>> +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
->>> +{
->>> +     struct inode *inode = file_inode(filp);
->>> +     struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->>> +     struct f2fs_comp_option option;
->>> +     int ret = 0;
->>> +
->>> +     if (!f2fs_sb_has_compression(sbi))
->>> +             return -EOPNOTSUPP;
->>> +
->>> +     if (!(filp->f_mode & FMODE_WRITE))
->>> +             return -EBADF;
->>> +
->>> +     if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg,
->>> +                             sizeof(option)))
->>> +             return -EFAULT;
->>> +
->>> +     if (!f2fs_compressed_file(inode) ||
->>> +                     option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
->>> +                     option.log_cluster_size > MAX_COMPRESS_LOG_SIZE)
->>> +             return -EINVAL;
->>> +
->>> +     if (!f2fs_is_compress_algorithm_ready(option.algorithm))
->>> +             return -ENOPKG;
->>
->> As we allow to mount image with different kernel which supports different compress
->> algorithms, so I guess we can support to change algorithm to one other which current
->> kernel doesn't support, since we have add f2fs_is_compress_backend_ready() in all
->> foreground operations to disallow user to operate such inode's data.
->>
->> IMO, just add to print one warnning message is fine.
->>
->> Thanks,
->>
->>> +
->>> +     file_start_write(filp);
->>> +     inode_lock(inode);
->>> +
->>> +     if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
->>> +             ret = -EBUSY;
->>> +             goto out;
->>> +     }
->>> +
->>> +     if (inode->i_size != 0) {
->>> +             ret = -EFBIG;
->>> +             goto out;
->>> +     }
->>> +
->>> +     F2FS_I(inode)->i_compress_algorithm = option.algorithm;
->>> +     F2FS_I(inode)->i_log_cluster_size = option.log_cluster_size;
->>> +     F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
->>> +     f2fs_mark_inode_dirty_sync(inode, true);
->>> +out:
->>> +     inode_unlock(inode);
->>> +     file_end_write(filp);
->>> +
->>> +     return ret;
->>> +}
->>> +
->>>    long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->>>    {
->>>        if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
->>> @@ -4053,6 +4102,8 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->>>                return f2fs_sec_trim_file(filp, arg);
->>>        case F2FS_IOC_GET_COMPRESS_OPTION:
->>>                return f2fs_ioc_get_compress_option(filp, arg);
->>> +     case F2FS_IOC_SET_COMPRESS_OPTION:
->>> +             return f2fs_ioc_set_compress_option(filp, arg);
->>>        default:
->>>                return -ENOTTY;
->>>        }
->>> @@ -4224,6 +4275,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->>>        case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
->>>        case F2FS_IOC_SEC_TRIM_FILE:
->>>        case F2FS_IOC_GET_COMPRESS_OPTION:
->>> +     case F2FS_IOC_SET_COMPRESS_OPTION:
->>>                break;
->>>        default:
->>>                return -ENOIOCTLCMD;
->>>
-> .
-> 
+So, uuuuh... I guess if anyone wants to actually write memory back to
+the target process, we'd better come up with some dedicated API for
+that, using an ioctl on the seccomp fd that magically freezes the
+target process inside the syscall while writing to its memory, or
+something like that? And until then, the manpage should have a big fat
+warning that writing to the target's memory is simply not possible
+(safely).
+
+>            if (nread == 0) {
+>                fprintf(stderr, "\tS: pread() of /proc/PID/mem "
+>                        "returned 0 (EOF)\n");
+>                exit(EXIT_FAILURE);
+>            }
