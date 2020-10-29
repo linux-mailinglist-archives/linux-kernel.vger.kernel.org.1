@@ -2,95 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A999229F2FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD28229F306
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727324AbgJ2RWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
+        id S1727344AbgJ2RY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 13:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgJ2RWt (ORCPT
+        with ESMTP id S1726709AbgJ2RY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:22:49 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8EDC0613CF;
-        Thu, 29 Oct 2020 10:22:49 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a9so3614766wrg.12;
-        Thu, 29 Oct 2020 10:22:49 -0700 (PDT)
+        Thu, 29 Oct 2020 13:24:28 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB058C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:24:26 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id h5so1967221vsp.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:24:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FgiZbK6pWCFNNx9QFeZngzu7fh5OqvaG7wkwgkOFjSU=;
-        b=cpKWHh/noLvJenv/13DypTzJLrHma44Acp5C9pOHg6D3H7IFNvJnp0zTiuqvH9C2QF
-         mz8XA29iaaASTJ2RMZR7Uy8GZ+Za9cW65iG7rVFQOl4n+jJ5oZTIyhCvYjttlx4YdtNF
-         mbVNpDTFS7Qy9/JQM2MaY5Mx1Cai/NXG2z1Ssg1kITEdnHUIYuN/9UXZa9rJHRwNKQpo
-         L7aIVN0lBeXhSaAww99pKrbIsEZxwmNT8+wUZ4mGiVj/7lXzKBv41/XMvRStA1Ts4IOT
-         1R59FKz1O9s+lrPtw3Od2T1sBWxxN5RVQAdsSpsOuABB+3M0+lkV6zekSTUkzp0/FsHM
-         JAAg==
+        bh=do61rsM4GwzXoI90CK0QdYPHtZr409f2iOnTWSbjtRE=;
+        b=BE19bXcnjjj/ywvtsgpJ98BIPYD0s0YhZ4DS8LEgTe9iBAX5+MgyMc8NNIlfgjtN1n
+         Qp2w+ZyUgqC9q7dnCtnG1wWvb8mLvtkZUY4LtesfY9uXkL5iSIVY9IclzMJ1QIAq0tTq
+         zrTEE3ikmR9Wk9tASsejJMJWWIkw+KIpOnS0NB/atujWHtrulYNt0xwBHTTO8wAQ53Lv
+         WbV2J3aEzkKLgQlGgbdb0sUarJpXHCj0bc14HVORs9NkHec+GMbkfthrVMcjb9AVF9h5
+         p6Z4LUf3RSOfLQiI3JDMHXpgDxGqtoYZioYBjvydrw1kHL9agyPERmlWtDz5xZOW4NO/
+         01Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FgiZbK6pWCFNNx9QFeZngzu7fh5OqvaG7wkwgkOFjSU=;
-        b=gwTzWkPNh9+XxEmNyrK3/eMkE+weUQZYI4cWM1XOlarSPNvEFST2G3lERcV/qlAtQ5
-         Wbf5Yjz3QzHO9G58LTxDv45XbPYECtqOvpx7o6fHSdNQ2WXT9x+g0XW57wfu/pKQLqJh
-         dyn0lNk2jmQ1mBu6LjrUFMussk+/5U15oXKDSS7//t6y030bdbYIeAcFBdMGrKS53zcZ
-         62WmO22ze1RV6av4udJ5QM84H4Sxoq/TM1nODdGfL6fmOyAJChkV5+l1TkvFNWqSCF8E
-         zj7cuMqs3n1y928pmhp4giQgskkf6xDHwynbMTTqU5WeKfwi6I/yCAtwBXQ4xPYb5WvT
-         qNfA==
-X-Gm-Message-State: AOAM532mIiMIAoA+dDvDcVgtlX5iieeqsSI0ulk0Ea1F6zsmZnBVgJsh
-        K8QaLWanjcHcI4a4YXZDb4MLZK5N5MEqkScy1Mfeoo7Rq6gqlg==
-X-Google-Smtp-Source: ABdhPJzQqF47WuTZrrAWUm6UKRHFxSNxk2UxPVzZmh961NjEWLxLE1pT8IuMdscuOyDzwnx3gGWJapGFwC0H5g6Eni8=
-X-Received: by 2002:adf:81e5:: with SMTP id 92mr6842917wra.411.1603992168004;
- Thu, 29 Oct 2020 10:22:48 -0700 (PDT)
+        bh=do61rsM4GwzXoI90CK0QdYPHtZr409f2iOnTWSbjtRE=;
+        b=WsEq0bmXTz4OIASLb1sZEzaMb95EfcdgsO3HTpw9oEzN/gx0rqqqC1ihAsjMInqA1k
+         EgMwdwz1Ssj+vy9jHNhTEYT7TbDYDAqDiiVwJAAU5H/IAZJ2pwpJsUoveKsNfNkGKKVt
+         anLkUKkDLWcHh/IEEMi7il/RnDw24CUH275UVejs230xsCQFQCpTNLjh9pwcIfZDN7rx
+         v02NFsGTfh8whWyIMRcU+tR9Kl6BtHHy5AFZyOVo+ONsms2KFkNVV/Frvx/2LGdwdSiF
+         NeBAjZyTUYk06KEP4OGXsJ+CJAe/Id2ULQAgCs5ndVX2GbRJu7emFk4A0wN3ckCKlxCl
+         1IdQ==
+X-Gm-Message-State: AOAM533dN0s9di853w02cvNM/c/gQe1smnnhgl10jdmmaTXu5Vkn93f+
+        fBA0Co4UA4qs9sHzYisj4aC6wLgQBO4=
+X-Google-Smtp-Source: ABdhPJxjFno/LLoM1Vi7Sn34TfArdkVrzDwW84dNxAwJDfFDtm7FpmCwJVR7pI3txrDUk/IKrYY4gA==
+X-Received: by 2002:a05:6102:4b7:: with SMTP id r23mr4323281vsa.39.1603992264971;
+        Thu, 29 Oct 2020 10:24:24 -0700 (PDT)
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
+        by smtp.gmail.com with ESMTPSA id g14sm422888vkf.18.2020.10.29.10.24.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 10:24:24 -0700 (PDT)
+Received: by mail-vs1-f43.google.com with SMTP id f4so1953010vsk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:24:23 -0700 (PDT)
+X-Received: by 2002:a67:c981:: with SMTP id y1mr4130116vsk.14.1603992263354;
+ Thu, 29 Oct 2020 10:24:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201028221302.66583-1-kholk11@gmail.com> <20201028221302.66583-2-kholk11@gmail.com>
- <20201029155053.GA1936493@bogus>
-In-Reply-To: <20201029155053.GA1936493@bogus>
-From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
-Date:   Thu, 29 Oct 2020 18:22:36 +0100
-Message-ID: <CAK7fi1aRTKkA2ouidjB4tyPoCyfTa2-POhUM_9Y2DNphL7=W2A@mail.gmail.com>
-Subject: Re: [PATCH v9 1/3] dt-bindings: Add vendor prefix for Novatek
- Microelectronics Corp.
-To:     Rob Herring <robh@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, konradybcio@gmail.com,
+References: <20201028131807.3371-1-xie.he.0141@gmail.com> <20201028131807.3371-5-xie.he.0141@gmail.com>
+In-Reply-To: <20201028131807.3371-5-xie.he.0141@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 29 Oct 2020 13:23:46 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSeBZWsy4w4gdPU2sb2-njuEiqbXMgfnA5AdsXkNr__xRA@mail.gmail.com>
+Message-ID: <CA+FuTSeBZWsy4w4gdPU2sb2-njuEiqbXMgfnA5AdsXkNr__xRA@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 4/4] net: hdlc_fr: Add support for any Ethertype
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        dmitry.torokhov@gmail.com, priv.luk@gmail.com, marijns95@gmail.com,
-        phone-devel@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, andy.shevchenko@gmail.com,
-        rydberg@bitmath.org, martin.botka1@gmail.com,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-input@vger.kernel.org
+        Krzysztof Halasa <khc@pm.waw.pl>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno gio 29 ott 2020 alle ore 16:50 Rob Herring <robh@kernel.org>
-ha scritto:
+On Wed, Oct 28, 2020 at 6:58 PM Xie He <xie.he.0141@gmail.com> wrote:
 >
-> On Wed, 28 Oct 2020 23:13:00 +0100, kholk11@gmail.com wrote:
-> > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> >
-> > Add prefix for Novatek Microelectronics Corp.
-> >
-> > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
+> Change the fr_rx function to make this driver support any Ethertype
+> when receiving skbs on normal (non-Ethernet-emulating) PVC devices.
+> (This driver is already able to handle any Ethertype when sending.)
 >
+> Originally in the fr_rx function, the code that parses the long (10-byte)
+> header only recognizes a few Ethertype values and drops frames with other
+> Ethertype values. This patch replaces this code to make fr_rx support
+> any Ethertype. This patch also creates a new function fr_snap_parse as
+> part of the new code.
 >
-> Please add Acked-by/Reviewed-by tags when posting new versions. However,
-> there's no need to repost patches *only* to add the tags. The upstream
-> maintainer will do that for acks received on the version they apply.
->
-> If a tag was not added on purpose, please state why and what changed.
->
-The intention was to add the tag and I even recall adding it... probably
-my finger slipped and the changes didn't get saved, my bad disattention.
-I should probably stop developing when I'm overtired.
+> Also add skb_reset_mac_header before we pass an skb (received on normal
+> PVC devices) to upper layers. Because we don't use header_ops for normal
+> PVC devices, we should hide the header from upper layer code in this case.
 
-I'm sorry for that.
+This should probably be a separate commit
+
+> Cc: Krzysztof Halasa <khc@pm.waw.pl>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+> ---
+>  drivers/net/wan/hdlc_fr.c | 76 ++++++++++++++++++++++++++-------------
+>  1 file changed, 51 insertions(+), 25 deletions(-)
+>
+> diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
+> index 3639c2bfb141..e95efc14bc97 100644
+> --- a/drivers/net/wan/hdlc_fr.c
+> +++ b/drivers/net/wan/hdlc_fr.c
+> @@ -871,6 +871,45 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
+>         return 0;
+>  }
+>
+> +static int fr_snap_parse(struct sk_buff *skb, struct pvc_device *pvc)
+> +{
+> +       /* OUI 00-00-00 indicates an Ethertype follows */
+> +       if (skb->data[0] == 0x00 &&
+> +           skb->data[1] == 0x00 &&
+> +           skb->data[2] == 0x00) {
+> +               if (!pvc->main)
+> +                       return -1;
+> +               skb->dev = pvc->main;
+> +               skb->protocol = *(__be16 *)(skb->data + 3); /* Ethertype */
+
+Does it make sense to define a struct snap_hdr instead of manually
+casting all these bytes?
+
+> +               skb_pull(skb, 5);
+> +               skb_reset_mac_header(skb);
+> +               return 0;
+> +
+> +       /* OUI 00-80-C2 stands for the 802.1 organization */
+> +       } else if (skb->data[0] == 0x00 &&
+> +                  skb->data[1] == 0x80 &&
+> +                  skb->data[2] == 0xC2) {
+> +               /* PID 00-07 stands for Ethernet frames without FCS */
+> +               if (skb->data[3] == 0x00 &&
+> +                   skb->data[4] == 0x07) {
+
+
+And macros or constant integers to self document these kinds of fields.
