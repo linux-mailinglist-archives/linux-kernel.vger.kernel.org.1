@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A0129E98F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCAC829E9AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727129AbgJ2Kvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:51:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60776 "EHLO
+        id S1727380AbgJ2Kws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:52:48 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60782 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726884AbgJ2Kvr (ORCPT
+        with ESMTP id S1726915AbgJ2Kvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Oct 2020 06:51:47 -0400
-Date:   Thu, 29 Oct 2020 10:51:43 -0000
+Date:   Thu, 29 Oct 2020 10:51:44 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603968704;
+        s=2020; t=1603968705;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vTEnZO6SDswi6pmH+1ANehUPs5wxcFKMBoRodJuebn8=;
-        b=g4JQHWqu4iA/A9gYXgS9SxuEY2ZqJiJ1nlm8N55bJFv0z6lYy2835NEwhqtFU2vIwV72kB
-        GYi6q30TxFqoghmbRPzcb2vkULPZPZNnNTlRKAfEC3ztNpt6l+iPYVGg1YYpa0D4ZuIlOa
-        ICs9+iqePkzSYJdJSmwfbMHR3O8dpq7P/gt5NDeiFaWUptejNyFH+AgT9t+T3G99B1eQF6
-        4MwN8zW9ci6MaQb7kkug3SngnnWnwwz58OI5FJwx9JeUPiLinJS0dNPAp6IH9DT6wmlehb
-        PkLqspoINTXfwKh097VOjjZhwd6Np3RETL94QnlCoAurB1U3B9jBFoEyOYUa1w==
+        bh=I75GHmUsJUewwUxYjXpsYZvU4vW3pEjD7wcg6kHgA6g=;
+        b=J1lXyrFmRvdYGL0OG70/EofQx2Fmvae7/g7HaWKQVt6TulHxcxepUgizVZmw7XEwfGwwz4
+        I4nd3qAduwyJzzZumtQNa/yY1aLj3cdiPCVoTNYTdXe/ulhRZzVn0LCO4MR6+XPmUug5Vr
+        cL+aT95tfW7eiuA2GdzbULi73pHLTS1vwWnA1oTE+bfnat6qiITXIt6yQgF9BK31u6ERPE
+        kGYhyUZbmTt2u+r9GeKLy3K2UhgDaQTLPJFgMCTC2u1mfW9tAL/uWIhQ2/sdxP4oXmEN9S
+        qpXAKZTr1JwueTpZSH0JLZD7f7faldcmXSyw4twuI9boejSJ8MjYC5d6603YqA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603968704;
+        s=2020e; t=1603968705;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vTEnZO6SDswi6pmH+1ANehUPs5wxcFKMBoRodJuebn8=;
-        b=+WnAjqJdJ1lEa52hhRbnU5CvlK4A+1mJW+gWgH7hYSlqrm6P99ZU9ZAiIevvUufjNiez4/
-        oN67kBcbwO7yATDw==
-From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
+        bh=I75GHmUsJUewwUxYjXpsYZvU4vW3pEjD7wcg6kHgA6g=;
+        b=t0bnrOk4qBOL6GKtb1uHmTKxVUQcRhP5t50Pcrke/fC2Bd0x23pr4VAfVboQerOuPc7t6r
+        H8qKRLM0sUPDTrAQ==
+From:   "tip-bot2 for Julia Lawall" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>, x86 <x86@kernel.org>,
+Subject: [tip: sched/core] sched/fair: Check for idle core in wake_affine
+Cc:     Julia Lawall <Julia.Lawall@inria.fr>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201001135749.2804-2-kan.liang@linux.intel.com>
-References: <20201001135749.2804-2-kan.liang@linux.intel.com>
+In-Reply-To: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr>
+References: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr>
 MIME-Version: 1.0
-Message-ID: <160396870321.397.16750532993540063574.tip-bot2@tip-bot2>
+Message-ID: <160396870425.397.4958439509234228998.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,252 +57,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     8d97e71811aaafe4abf611dc24822fd6e73df1a1
-Gitweb:        https://git.kernel.org/tip/8d97e71811aaafe4abf611dc24822fd6e73df1a1
-Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Thu, 01 Oct 2020 06:57:46 -07:00
+Commit-ID:     d8fcb81f1acf651a0e50eacecca43d0524984f87
+Gitweb:        https://git.kernel.org/tip/d8fcb81f1acf651a0e50eacecca43d0524984f87
+Author:        Julia Lawall <Julia.Lawall@inria.fr>
+AuthorDate:    Thu, 22 Oct 2020 15:15:50 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 29 Oct 2020 11:00:38 +01:00
+CommitterDate: Thu, 29 Oct 2020 11:00:32 +01:00
 
-perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+sched/fair: Check for idle core in wake_affine
 
-Current perf can report both virtual addresses and physical addresses,
-but not the MMU page size. Without the MMU page size information of the
-utilized page, users cannot decide whether to promote/demote large pages
-to optimize memory usage.
+In the case of a thread wakeup, wake_affine determines whether a core
+will be chosen for the thread on the socket where the thread ran
+previously or on the socket of the waker.  This is done primarily by
+comparing the load of the core where th thread ran previously (prev)
+and the load of the waker (this).
 
-Add a new sample type for the data MMU page size.
+commit 11f10e5420f6 ("sched/fair: Use load instead of runnable load
+in wakeup path") changed the load computation from the runnable load
+to the load average, where the latter includes the load of threads
+that have already blocked on the core.
 
-Current perf already has a facility to collect data virtual addresses.
-A page walker is required to walk the pages tables and calculate the
-MMU page size from a given virtual address.
+When a short-running daemon processes happens to run on prev, this
+change raised the situation that prev could appear to have a greater
+load than this, even when prev is actually idle.  When prev and this
+are on the same socket, the idle prev is detected later, in
+select_idle_sibling.  But if that does not hold, prev is completely
+ignored, causing the waking thread to move to the socket of the waker.
+In the case of N mostly active threads on N cores, this triggers other
+migrations and hurts performance.
 
-On some platforms, e.g., X86, the page walker is invoked in an NMI
-handler. So the page walker must be NMI-safe and low overhead. Besides,
-the page walker should work for both user and kernel virtual address.
-The existing generic page walker, e.g., walk_page_range_novma(), is a
-little bit complex and doesn't guarantee the NMI-safe. The follow_page()
-is only for user-virtual address.
+In contrast, before commit 11f10e5420f6, the load on an idle core
+was 0, and in the case of a non-idle waker core, the effect of
+wake_affine was to select prev as the target for searching for a core
+for the waking thread.
 
-Add a new function perf_get_page_size() to walk the page tables and
-calculate the MMU page size. In the function:
-- Interrupts have to be disabled to prevent any teardown of the page
-  tables.
-- For user space threads, the current->mm is used for the page walker.
-  For kernel threads and the like, the current->mm is NULL. The init_mm
-  is used for the page walker. The active_mm is not used here, because
-  it can be NULL.
-  Quote from Peter Zijlstra,
-  "context_switch() can set prev->active_mm to NULL when it transfers it
-   to @next. It does this before @current is updated. So an NMI that
-   comes in between this active_mm swizzling and updating @current will
-   see !active_mm."
-- The MMU page size is calculated from the page table level.
+To avoid unnecessary migrations, extend wake_affine_idle to check
+whether the core where the thread previously ran is currently idle,
+and if so simply return that core as the target.
 
-The method should work for all architectures, but it has only been
-verified on X86. Should there be some architectures, which support perf,
-where the method doesn't work, it can be fixed later separately.
-Reporting the wrong page size would not be fatal for the architecture.
+[1] commit 11f10e5420f6ce ("sched/fair: Use load instead of runnable
+load in wakeup path")
 
-Some under discussion features may impact the method in the future.
-Quote from Dave Hansen,
-  "There are lots of weird things folks are trying to do with the page
-   tables, like Address Space Isolation.  For instance, if you get a
-   perf NMI when running userspace, current->mm->pgd is *different* than
-   the PGD that was in use when userspace was running. It's close enough
-   today, but it might not stay that way."
-If the case happens later, lots of consecutive page walk errors will
-happen. The worst case is that lots of page-size '0' are returned, which
-would not be fatal.
-In the perf tool, a check is implemented to detect this case. Once it
-happens, a kernel patch could be implemented accordingly then.
+This particularly has an impact when using the ondemand power manager,
+where kworkers run every 0.004 seconds on all cores, increasing the
+likelihood that an idle core will be considered to have a load.
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+The following numbers were obtained with the benchmarking tool
+hyperfine (https://github.com/sharkdp/hyperfine) on the NAS parallel
+benchmarks (https://www.nas.nasa.gov/publications/npb.html).  The
+tests were run on an 80-core Intel(R) Xeon(R) CPU E7-8870 v4 @
+2.10GHz.  Active (intel_pstate) and passive (intel_cpufreq) power
+management were used.  Times are in seconds.  All experiments use all
+160 hardware threads.
+
+	v5.9/intel-pstate	v5.9+patch/intel-pstate
+bt.C.c	24.725724+-0.962340	23.349608+-1.607214
+lu.C.x	29.105952+-4.804203	25.249052+-5.561617
+sp.C.x	31.220696+-1.831335	30.227760+-2.429792
+ua.C.x	26.606118+-1.767384	25.778367+-1.263850
+
+	v5.9/ondemand		v5.9+patch/ondemand
+bt.C.c	25.330360+-1.028316	23.544036+-1.020189
+lu.C.x	35.872659+-4.872090	23.719295+-3.883848
+sp.C.x	32.141310+-2.289541	29.125363+-0.872300
+ua.C.x	29.024597+-1.667049	25.728888+-1.539772
+
+On the smaller data sets (A and B) and on the other NAS benchmarks
+there is no impact on performance.
+
+This also has a major impact on the splash2x.volrend benchmark of the
+parsec benchmark suite that goes from 1m25 without this patch to 0m45,
+in active (intel_pstate) mode.
+
+Fixes: 11f10e5420f6 ("sched/fair: Use load instead of runnable load in wakeup path")
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201001135749.2804-2-kan.liang@linux.intel.com
+Reviewed-by Vincent Guittot <vincent.guittot@linaro.org>
+Acked-by: Mel Gorman <mgorman@suse.de>
+Link: https://lkml.kernel.org/r/1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr
 ---
- include/linux/perf_event.h      |   1 +-
- include/uapi/linux/perf_event.h |   4 +-
- kernel/events/core.c            | 103 +++++++++++++++++++++++++++++++-
- 3 files changed, 107 insertions(+), 1 deletion(-)
+ kernel/sched/fair.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 0c19d27..7e3785d 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1034,6 +1034,7 @@ struct perf_sample_data {
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index f30d35a..52cacfc 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5813,6 +5813,9 @@ wake_affine_idle(int this_cpu, int prev_cpu, int sync)
+ 	if (sync && cpu_rq(this_cpu)->nr_running == 1)
+ 		return this_cpu;
  
- 	u64				phys_addr;
- 	u64				cgroup;
-+	u64				data_page_size;
- } ____cacheline_aligned;
- 
- /* default value for data source */
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index 077e7ee..cc6ea34 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -143,8 +143,9 @@ enum perf_event_sample_format {
- 	PERF_SAMPLE_PHYS_ADDR			= 1U << 19,
- 	PERF_SAMPLE_AUX				= 1U << 20,
- 	PERF_SAMPLE_CGROUP			= 1U << 21,
-+	PERF_SAMPLE_DATA_PAGE_SIZE		= 1U << 22,
- 
--	PERF_SAMPLE_MAX = 1U << 22,		/* non-ABI */
-+	PERF_SAMPLE_MAX = 1U << 23,		/* non-ABI */
- 
- 	__PERF_SAMPLE_CALLCHAIN_EARLY		= 1ULL << 63, /* non-ABI; internal use */
- };
-@@ -896,6 +897,7 @@ enum perf_event_type {
- 	 *	{ u64			phys_addr;} && PERF_SAMPLE_PHYS_ADDR
- 	 *	{ u64			size;
- 	 *	  char			data[size]; } && PERF_SAMPLE_AUX
-+	 *	{ u64			data_page_size;} && PERF_SAMPLE_DATA_PAGE_SIZE
- 	 * };
- 	 */
- 	PERF_RECORD_SAMPLE			= 9,
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index fb662eb..a796db2 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -51,6 +51,7 @@
- #include <linux/proc_ns.h>
- #include <linux/mount.h>
- #include <linux/min_heap.h>
-+#include <linux/highmem.h>
- 
- #include "internal.h"
- 
-@@ -1894,6 +1895,9 @@ static void __perf_event_header_size(struct perf_event *event, u64 sample_type)
- 	if (sample_type & PERF_SAMPLE_CGROUP)
- 		size += sizeof(data->cgroup);
- 
-+	if (sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)
-+		size += sizeof(data->data_page_size);
++	if (available_idle_cpu(prev_cpu))
++		return prev_cpu;
 +
- 	event->header_size = size;
+ 	return nr_cpumask_bits;
  }
- 
-@@ -6938,6 +6942,9 @@ void perf_output_sample(struct perf_output_handle *handle,
- 	if (sample_type & PERF_SAMPLE_CGROUP)
- 		perf_output_put(handle, data->cgroup);
- 
-+	if (sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)
-+		perf_output_put(handle, data->data_page_size);
-+
- 	if (sample_type & PERF_SAMPLE_AUX) {
- 		perf_output_put(handle, data->aux_size);
- 
-@@ -6995,6 +7002,94 @@ static u64 perf_virt_to_phys(u64 virt)
- 	return phys_addr;
- }
- 
-+#ifdef CONFIG_MMU
-+
-+/*
-+ * Return the MMU page size of a given virtual address
-+ */
-+static u64 __perf_get_page_size(struct mm_struct *mm, unsigned long addr)
-+{
-+	pgd_t *pgd;
-+	p4d_t *p4d;
-+	pud_t *pud;
-+	pmd_t *pmd;
-+	pte_t *pte;
-+
-+	pgd = pgd_offset(mm, addr);
-+	if (pgd_none(*pgd))
-+		return 0;
-+
-+	p4d = p4d_offset(pgd, addr);
-+	if (!p4d_present(*p4d))
-+		return 0;
-+
-+	if (p4d_leaf(*p4d))
-+		return 1ULL << P4D_SHIFT;
-+
-+	pud = pud_offset(p4d, addr);
-+	if (!pud_present(*pud))
-+		return 0;
-+
-+	if (pud_leaf(*pud))
-+		return 1ULL << PUD_SHIFT;
-+
-+	pmd = pmd_offset(pud, addr);
-+	if (!pmd_present(*pmd))
-+		return 0;
-+
-+	if (pmd_leaf(*pmd))
-+		return 1ULL << PMD_SHIFT;
-+
-+	pte = pte_offset_map(pmd, addr);
-+	if (!pte_present(*pte)) {
-+		pte_unmap(pte);
-+		return 0;
-+	}
-+
-+	pte_unmap(pte);
-+	return PAGE_SIZE;
-+}
-+
-+#else
-+
-+static u64 __perf_get_page_size(struct mm_struct *mm, unsigned long addr)
-+{
-+	return 0;
-+}
-+
-+#endif
-+
-+static u64 perf_get_page_size(unsigned long addr)
-+{
-+	struct mm_struct *mm;
-+	unsigned long flags;
-+	u64 size;
-+
-+	if (!addr)
-+		return 0;
-+
-+	/*
-+	 * Software page-table walkers must disable IRQs,
-+	 * which prevents any tear down of the page tables.
-+	 */
-+	local_irq_save(flags);
-+
-+	mm = current->mm;
-+	if (!mm) {
-+		/*
-+		 * For kernel threads and the like, use init_mm so that
-+		 * we can find kernel memory.
-+		 */
-+		mm = &init_mm;
-+	}
-+
-+	size = __perf_get_page_size(mm, addr);
-+
-+	local_irq_restore(flags);
-+
-+	return size;
-+}
-+
- static struct perf_callchain_entry __empty_callchain = { .nr = 0, };
- 
- struct perf_callchain_entry *
-@@ -7150,6 +7245,14 @@ void perf_prepare_sample(struct perf_event_header *header,
- 	}
- #endif
- 
-+	/*
-+	 * PERF_DATA_PAGE_SIZE requires PERF_SAMPLE_ADDR. If the user doesn't
-+	 * require PERF_SAMPLE_ADDR, kernel implicitly retrieve the data->addr,
-+	 * but the value will not dump to the userspace.
-+	 */
-+	if (sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)
-+		data->data_page_size = perf_get_page_size(data->addr);
-+
- 	if (sample_type & PERF_SAMPLE_AUX) {
- 		u64 size;
  
