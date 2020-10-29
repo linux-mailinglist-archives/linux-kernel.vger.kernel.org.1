@@ -2,104 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE28629F544
+	by mail.lfdr.de (Postfix) with ESMTP id 6775529F543
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgJ2TbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgJ2TbF (ORCPT
+        id S1726496AbgJ2Ta5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:30:57 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:34619 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgJ2Ta5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:31:05 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7CDC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:31:04 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id k9so4250637edo.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:31:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HyJygmAvNgYlCXg5FRM2hRgcjUEjJ9Xaju1Fs9LLpuU=;
-        b=glBEJM+fqw6vvS11sAi4ED/GhnYv6vtIMwfqmGflxe+RAcGJCMyOC1To9OOgz3UJQQ
-         vUYC+iaxxWuX5oE3VGCXqfcWsvCoUNdYl+m8Djyovzn0oJJhfgrjlUxAhMThkJuqYPBn
-         phz910BKRi74+YHn+2giV/C552vY9iNPMAnAvTkDabcmsIdyIQ/VHB8TXAvLvSOmU4xP
-         zHorz1AFdc2ngNlieyqSx90h+n72eSKgC8pTwMOzn2iVeexPoJBEYuyrx4Aua6BfjoHV
-         w4/2z45Qi+bGy7rA1s/3NUJNnbo1NMi9j0uYa+UrmK83n8Qpn5YZMlS58Ynld5HhQgF8
-         EDzw==
+        Thu, 29 Oct 2020 15:30:57 -0400
+Received: by mail-ej1-f66.google.com with SMTP id o9so3324263ejg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:30:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HyJygmAvNgYlCXg5FRM2hRgcjUEjJ9Xaju1Fs9LLpuU=;
-        b=oM5mYlZF8XCiSgudrG1mrNJG3kGX7dKsdVCpNeoUJYq62yQ1FdEDkdb4qgyzLFGnJd
-         cE6ef3AxguUtDmmtE0cqYlbar+4vO33Rksyc688tdanxGtOH8USVpcbg6ZU71mjaSZwW
-         zAOiRzzaAeK+SzG7er8a4Op/xYd5O0JuBCv0gbWDeIHCT8znniEh/zoQ81w1qAyHImjg
-         y67s2JcKp/TBvsl2umD634bUGR93A2Lln2nyBRGcOw2KXKzOMNJwtadNSxRAQWA9FsvC
-         ZDNG1JH3FUk08ENKX0nXSREznte3HvwvMEusyFHTmmc1d/6ZdA7fFbRKUYh1uz6K50YB
-         4Hgg==
-X-Gm-Message-State: AOAM532LAFXnyVBXBvIUf5sVPymzbasTwmAKBtJMfDgfFg5IRtTjm3h4
-        MqwWjJvz6PZggnt5G5xBb2sOLRJrPiiYUvLKxKc=
-X-Google-Smtp-Source: ABdhPJwXoFbywY8gxuGz4icKbLF1mbamWY0Fv4e+d+QSffi2fe03Epf8ca0A1gr4qjWb7HTpHAE7jAHpsVr54zWvlRE=
-X-Received: by 2002:aa7:cd42:: with SMTP id v2mr5598142edw.151.1603999863626;
- Thu, 29 Oct 2020 12:31:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e7iXBkBeWuYCmAyEZmBvatrszkr45mNBgjzcYPbsRFI=;
+        b=kVxbhH0R0MSo5NCqLNf1/ljyWlrNISNykvRpSheBz8P0Mp+hHNpy23NSD23J24w4Nm
+         2nYJrQYq5G4SjctIjFZ1quINHLJtiySAm4QnxPtpJbMArKcjf5gzaf0VliOiIPBPaiAN
+         uFHUIvC7ykKek3yitkJG//jmVX0Er9r45AZtu7F59NBMvmcyL2LpIH5vS3BeapjhsA25
+         z8WzEq3NaczJYJqzQ7+9lPafgcFa+ntoPXhgwESk3+zIWoOQPop1qmzeIV6Zl5fpxYys
+         hybVXgbhUao37pkZ/KDFUzV9wvFYkh2TN3mkeEM6YWf52bANQvOsnwvG93gjCIcM9T9W
+         fvqg==
+X-Gm-Message-State: AOAM531qY9Y8HuU5iZL/BRCheYPlGiOViSvbnTkOYOGit77C/qbt1uNT
+        I095jByqacc0DkECEIuH2LQ=
+X-Google-Smtp-Source: ABdhPJyRpa0Bn7Pvd1j7m9/omT5s0fhqt1ECraJVfgKOmiJcIGS+gsLfqvxLQLhUrs97i9uVfelWgw==
+X-Received: by 2002:a17:906:f185:: with SMTP id gs5mr5533989ejb.107.1603999855456;
+        Thu, 29 Oct 2020 12:30:55 -0700 (PDT)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id b13sm2049393edk.22.2020.10.29.12.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 12:30:54 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 20:30:52 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: ld.lld: error: undefined symbol: amba_driver_register
+Message-ID: <20201029193052.GA389163@kozik-lap>
+References: <202010291249.MFjbb8tv-lkp@intel.com>
+ <CAKwvOdk82WZnCh9G8CidN9tJ6qiMaHYdN-e+Ad5kRa6C87Vfxg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201007161736.ACC6E387@viggo.jf.intel.com> <20201007161749.4C56D1F1@viggo.jf.intel.com>
- <20201029081454.GA30442@linux> <99dff0cd-2b1a-2c41-2596-eda7ecc7c160@intel.com>
- <CAHbLzkpfwsR663Kv_16kW81aZ7sLMPQp6WYbqwBBpofq3x0HNg@mail.gmail.com> <20201029190804.GA4205@localhost.localdomain>
-In-Reply-To: <20201029190804.GA4205@localhost.localdomain>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 29 Oct 2020 12:30:51 -0700
-Message-ID: <CAHbLzkowJQjkqweVg=g_HTS25Nx4U=boeD3bTtVJ1JBdHsBOtQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH 7/9] mm/vmscan: Consider anonymous pages without swap
-To:     osalvador <osalvador@suse.de>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, kbusch@kernel.org,
-        "Verma, Vishal L" <vishal.l.verma@intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdk82WZnCh9G8CidN9tJ6qiMaHYdN-e+Ad5kRa6C87Vfxg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 12:08 PM osalvador <osalvador@suse.de> wrote:
->
-> On Thu, Oct 29, 2020 at 08:57:32AM -0700, Yang Shi wrote:
-> > IMHO, we don't have to modify those two places at all. They are used
-> > to rebalance the anon lru active/inactive ratio even if we did not try
-> > to evict anon pages at all, so "total_swap_pages" is used instead of
-> > checking swappiness and available swap space.
+On Thu, Oct 29, 2020 at 12:28:54PM -0700, Nick Desaulniers wrote:
+> On Wed, Oct 28, 2020 at 9:57 PM kernel test robot <lkp@intel.com> wrote:
 > >
-> > The changes may result in imbalanced anon lru.
->
-> I might be missing something, so bear with me.
->
-> It is true that since we are only rebalancing the lists, we do not need to
-> check for swap space yet, but here we are also adding a new end-point where we
-> can migrate to in case of memory pressure.
->
-> So in case we can demote pages, it makes sense to proceed with the aging
-> and rebalancing regardless of whether we have swap in place, right?
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   23859ae44402f4d935b9ee548135dd1e65e2cbf4
+> > commit: ea0c0ad6b6eb36726088991d97a55b99cae456d0 memory: Enable compile testing for most of the drivers
+> > date:   2 months ago
+> > config: arm-randconfig-r024-20201028 (attached as .config)
+> 
+> ^ Note, this was a randconfig, so the preprocessor guards on CONFIGs
+> might be wrong.
 
-Yes, makes sense. I missed that point.
+The report looks correct. It's possible to craft ARM config without
+ARM_AMBA which would cause this issue. I have a fix ready.
 
->
-> But maybe the right procedure would be to perform some sort of the
-> following check in those two places:
->
->         if (total_swap_pages || can_migrate_to_demote_node)
->                 - proceed_with_rebalancing_or_aging
-
-Looks sane to me.
-
->
-> --
-> Oscar Salvador
-> SUSE L3
+Best regards,
+Krzysztof
