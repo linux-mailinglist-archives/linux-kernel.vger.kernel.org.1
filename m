@@ -2,85 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E913129F3D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5F529F3EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725980AbgJ2SKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 14:10:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:42026 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725807AbgJ2SJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 14:09:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17352139F;
-        Thu, 29 Oct 2020 11:09:59 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ED5733F66E;
-        Thu, 29 Oct 2020 11:09:56 -0700 (PDT)
-References: <20201023101158.088940906@infradead.org> <20201023102347.406912197@infradead.org> <jhjblglov4r.mognet@arm.com> <20201029173832.GU2628@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
-        tj@kernel.org, ouwen210@hotmail.com
-Subject: Re: [PATCH v4 14/19] sched, lockdep: Annotate ->pi_lock recursion
-In-reply-to: <20201029173832.GU2628@hirez.programming.kicks-ass.net>
-Date:   Thu, 29 Oct 2020 18:09:54 +0000
-Message-ID: <jhj4kmcq4y5.mognet@arm.com>
+        id S1725995AbgJ2SOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 14:14:02 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:36326 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbgJ2SOB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 14:14:01 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id D080F1C0B7A; Thu, 29 Oct 2020 19:13:57 +0100 (CET)
+Date:   Thu, 29 Oct 2020 19:13:57 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Martin Botka <martin.botka1@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v6 2/4] leds: Add driver for Qualcomm LPG
+Message-ID: <20201029181357.GE26053@duo.ucw.cz>
+References: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
+ <20201021201224.3430546-3-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="TD8GDToEDw0WLGOL"
+Content-Disposition: inline
+In-Reply-To: <20201021201224.3430546-3-bjorn.andersson@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 29/10/20 17:38, Peter Zijlstra wrote:
-> On Thu, Oct 29, 2020 at 04:27:16PM +0000, Valentin Schneider wrote:
->> 
->> On 23/10/20 11:12, Peter Zijlstra wrote:
->> > @@ -2617,6 +2618,20 @@ void sched_set_stop_task(int cpu, struct
->> >               sched_setscheduler_nocheck(stop, SCHED_FIFO, &param);
->> >
->> >               stop->sched_class = &stop_sched_class;
->> > +
->> > +		/*
->> > +		 * The PI code calls rt_mutex_setprio() with ->pi_lock held to
->> > +		 * adjust the effective priority of a task. As a result,
->> > +		 * rt_mutex_setprio() can trigger (RT) balancing operations,
->> > +		 * which can then trigger wakeups of the stop thread to push
->> > +		 * around the current task.
->> > +		 *
->> > +		 * The stop task itself will never be part of the PI-chain, it
->> > +		 * never blocks, therefore that ->pi_lock recursion is safe.
->> 
->> Isn't it that the stopper task can only run when preemption is re-enabled,
->> and the ->pi_lock is dropped before then?
->> 
->> If we were to have an SCA-like function that would kick the stopper but
->> "forget" to release the pi_lock, then we would very much like lockdep to
->> complain, right? Or is that something else entirely?
->
-> You've forgotten the other, and original, purpose of ->pi_lock, guarding
-> the actual PI chain. Please have a look at rt_mutex_adjust_prio_chain()
-> and its comment.
->
-> But no, this isn't about running, this is about doing an actual wakeup
-> (of the stopper task) while holding an ->pi_lock instance (guaranteed
-> not the stopper task's). And since wakeup will take ->pi_lock, lockdep
-> will get all whiny about ->pi_lock self recursion.
->
+--TD8GDToEDw0WLGOL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Gotcha. Thanks, and apologies for the noise.
+Hi!
 
->> > +		 * Tell lockdep about this by placing the stop->pi_lock in its
->> > +		 * own class.
->> > +		 */
->> > +		lockdep_set_class(&stop->pi_lock, &stop_pi_lock);
->> >       }
->> >
->> >       cpu_rq(cpu)->stop = stop;
+> The Light Pulse Generator (LPG) is a PWM-block found in a wide range of
+> PMICs from Qualcomm. It can operate on fixed parameters or based on a
+> lookup-table, altering the duty cycle over time - which provides the
+> means for e.g. hardware assisted transitions of LED brightness.
+>=20
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>=20
+> Changes since v5:
+> - Make sure to not used the state of the last channel in a group to deter=
+mine
+>   if the current sink should be active for all channels in the group.
+> - Replacement of unsigned -1 with UINT_MAX
+> - Work around potential overflow by using larger data types, instead of s=
+eparate code paths
+> - Use cpu_to_l16() rather than hand rolling them
+> - Minor style cleanups
+>=20
+>  drivers/leds/Kconfig         |    9 +
+>  drivers/leds/Makefile        |    1 +
+>  drivers/leds/leds-qcom-lpg.c | 1190 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 1200 insertions(+)
+>  create mode 100644 drivers/leds/leds-qcom-lpg.c
 
+Let's put this into drivers/leds/rgb/. You may need to create it.
+
+
+> +static int lpg_lut_store(struct lpg *lpg, struct led_pattern *pattern,
+> +			 size_t len, unsigned int *lo_idx, unsigned int *hi_idx)
+> +{
+> +	unsigned int idx;
+> +	__le16 val;
+
+No need for __XX variants outside of headers meant for userspace.
+
+> +#define LPG_ENABLE_GLITCH_REMOVAL	BIT(5)
+> +
+> +static void lpg_enable_glitch(struct lpg_channel *chan)
+> +{
+> +	struct lpg *lpg =3D chan->lpg;
+> +
+> +	regmap_update_bits(lpg->map, chan->base + PWM_TYPE_CONFIG_REG,
+> +			   LPG_ENABLE_GLITCH_REMOVAL, 0);
+> +}
+> +
+> +static void lpg_disable_glitch(struct lpg_channel *chan)
+> +{
+> +	struct lpg *lpg =3D chan->lpg;
+> +
+> +	regmap_update_bits(lpg->map, chan->base + PWM_TYPE_CONFIG_REG,
+> +			   LPG_ENABLE_GLITCH_REMOVAL,
+> +			   LPG_ENABLE_GLITCH_REMOVAL);
+> +}
+
+Helper functions for single register write is kind of overkill...
+
+> +static int lpg_blink_set(struct lpg_led *led,
+> +			 unsigned long delay_on, unsigned long delay_off)
+> +{
+> +	struct lpg_channel *chan;
+> +	unsigned int period_us;
+> +	unsigned int duty_us;
+> +	int i;
+> +
+> +	if (!delay_on && !delay_off) {
+> +		delay_on =3D 500;
+> +		delay_off =3D 500;
+> +	}
+
+Aren't you supposed to modify the values passed to you, so that
+userspace knows what the default rate is?
+
+
+> +	ret =3D lpg_lut_store(lpg, pattern, len, &lo_idx, &hi_idx);
+> +	if (ret < 0)
+> +		goto out;
+
+Just do direct return.
+
+> +out:
+> +	return ret;
+> +}
+
+> +static const struct pwm_ops lpg_pwm_ops =3D {
+> +	.request =3D lpg_pwm_request,
+> +	.apply =3D lpg_pwm_apply,
+> +	.owner =3D THIS_MODULE,
+> +};
+> +
+> +static int lpg_add_pwm(struct lpg *lpg)
+> +{
+> +	int ret;
+> +
+> +	lpg->pwm.base =3D -1;
+> +	lpg->pwm.dev =3D lpg->dev;
+> +	lpg->pwm.npwm =3D lpg->num_channels;
+> +	lpg->pwm.ops =3D &lpg_pwm_ops;
+> +
+> +	ret =3D pwmchip_add(&lpg->pwm);
+> +	if (ret)
+> +		dev_err(lpg->dev, "failed to add PWM chip: ret %d\n", ret);
+> +
+> +	return ret;
+> +}
+
+Do we need to do this? I'd rather have LED driver, than LED+PWM
+driver...
+
+Best regards,
+							Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--TD8GDToEDw0WLGOL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5sGZQAKCRAw5/Bqldv6
+8jjrAJ4guFpAcsPC95xJrR4r3t4uMKbBGACgpj6Cfs0rkR02mKrJQpcllvY1vwU=
+=QegQ
+-----END PGP SIGNATURE-----
+
+--TD8GDToEDw0WLGOL--
