@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DDF29F09B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:56:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE5629F0A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728521AbgJ2P4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:56:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728450AbgJ2P4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:56:30 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CDFD206B2;
-        Thu, 29 Oct 2020 15:56:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603986989;
-        bh=UIYyaC9mWXzASi/e/U7uoy/4dyXW1LiDvKm13VKMy4s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PEI41i3ZoJhIeG7S0wdP61pqF6ebSRk+K7bVoA6WcmUVOTRSP7TeVEngKZIxFm9IC
-         2/I5TlPAOE902RPm+CL85tl7glSA+edgRpHtIKvbE1fbSh4qpma6ZuyY5n37A+3biq
-         QpqmaTuKGayA9PYTEjoam2qco5dRtw+uf4nTXBeA=
-Date:   Thu, 29 Oct 2020 08:56:27 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        devel@driverdev.osuosl.org, Arnd Bergmann <arnd@arndb.de>,
-        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [RFC] wimax: move out to staging
-Message-ID: <20201029085627.698080a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201028055628.GB244117@kroah.com>
-References: <20201027212448.454129-1-arnd@kernel.org>
-        <20201028055628.GB244117@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728482AbgJ2P5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727966AbgJ2P5b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:57:31 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128A2C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:57:31 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id z24so2703944pgk.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:57:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=lTUHb90aDzUDND2rdKN/gp3QHYuHZ8nhx0Wf1vd5LKk=;
+        b=SDwP3bmCckPi50TqdnAe0CylVXD+7kN3COsGzSsGefI8VFYkD7B3Ho/P8O8ynYZhCk
+         LPG0V8C30rS+4DVC+7fLC0YlLyXQeKQuZgXXEPSM7P02ULNgtffyE6T4FN72Os+znoCT
+         WnQpUcGYwect55FclV7ILmJNzmvf0ozzWSwgo0Vim71OZ4NNqwAihzOPHxEP4+BKkFaH
+         Kpm5Wy8i6n3sxgFHOe1WXFNWOEcwB42oCsdq90WkqvGSu6NoXs4WTb6kRMnKaKXNmjOM
+         2V4yweaQFPXWzJ1B1p8JJ6ktFfCfDk1cGq6c3SYzXkgxfgKipSvnwZjBOkwXIrTvHByT
+         L5oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lTUHb90aDzUDND2rdKN/gp3QHYuHZ8nhx0Wf1vd5LKk=;
+        b=KfioNyzQ43mwyPsjZHsW9BY4rt08m6rGosfSZL4Y1svWcL012RCRMI2ND3qwuVkoMm
+         P2r7BHJDUkvnZrBVYSrfIU2Mb1zIEgR5nyyYwTTUBbuUNR4DfzzlWj6l9XpFJmkza5An
+         9IwxAWsoFcV8W9mUGKVJ4JXIhqTiFcYe9qsIzGV4kwbnwv/0xsgXTUPp0bpwUyosWS1a
+         uZJ7MOix6UPA5AKsvB8WTRyBbn6dscLKfrS/nkcy4Cc6+Q0TjXH8/MrHpGXqlzRiCDe6
+         cPOGeQItwKj0dWTu7wKb9ZuAsRU2+np6bCfQ978jvRaClUPnBTmYLmYJE6Qm5gznVWXo
+         jqyA==
+X-Gm-Message-State: AOAM530K9xODalt2A6oHio067Ug91ICxvzvc5ApQvmyFy3QP3T9rNRbW
+        6v6SO0K7y76sCrUDrrOdW+Cl1Engva8=
+X-Google-Smtp-Source: ABdhPJxAu1s9liEFd0hMoyqKpHvMlfa8tbf7TMNPDGJQI94lKcxpaJvjw5F+/MHuBTIu8YmXYd9L0Q==
+X-Received: by 2002:a62:a10a:0:b029:154:fd62:ba90 with SMTP id b10-20020a62a10a0000b0290154fd62ba90mr4946523pff.62.1603987050708;
+        Thu, 29 Oct 2020 08:57:30 -0700 (PDT)
+Received: from localhost (42-3-19-186.static.netvigator.com. [42.3.19.186])
+        by smtp.gmail.com with ESMTPSA id s11sm263481pjm.4.2020.10.29.08.57.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 29 Oct 2020 08:57:30 -0700 (PDT)
+From:   Qiujun Huang <hqjagain@gmail.com>
+To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
+Cc:     Qiujun Huang <hqjagain@gmail.com>
+Subject: [PATCH v3] tracing: Fix out of bounds write in get_trace_buf
+Date:   Thu, 29 Oct 2020 23:57:14 +0800
+Message-Id: <20201029155714.3935-1-hqjagain@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 06:56:28 +0100 Greg Kroah-Hartman wrote:
-> On Tue, Oct 27, 2020 at 10:20:13PM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > There are no known users of this driver as of October 2020, and it will
-> > be removed unless someone turns out to still need it in future releases.
-> > 
-> > According to https://en.wikipedia.org/wiki/List_of_WiMAX_networks, there
-> > have been many public wimax networks, but it appears that these entries
-> > are all stale, after everyone has migrated to LTE or discontinued their
-> > service altogether.
-> > 
-> > NetworkManager appears to have dropped userspace support in 2015
-> > https://bugzilla.gnome.org/show_bug.cgi?id=747846, the
-> > www.linuxwimax.org
-> > site had already shut down earlier.
-> > 
-> > WiMax is apparently still being deployed on airport campus networks
-> > ("AeroMACS"), but in a frequency band that was not supported by the old
-> > Intel 2400m (used in Sandy Bridge laptops and earlier), which is the
-> > only driver using the kernel's wimax stack.
-> > 
-> > Move all files into drivers/staging/wimax, including the uapi header
-> > files and documentation, to make it easier to remove it when it gets
-> > to that. Only minimal changes are made to the source files, in order
-> > to make it possible to port patches across the move.
-> > 
-> > Also remove the MAINTAINERS entry that refers to a broken mailing
-> > list and website.
-> > 
-> > Suggested-by: Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
-> 
-> Is this ok for me to take through the staging tree?  If so, I need an
-> ack from the networking maintainers.
-> 
-> If not, feel free to send it through the networking tree and add:
-> 
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The subscript should be nesting - 1, as nesting had self-added.
 
-Thinking about it now - we want this applied to -next, correct? 
-In that case it may be better if we take it. The code is pretty dead
-but syzbot and the trivial fix crowd don't know it, so I may slip,
-apply something and we'll have a conflict.
+Fixes: e2ace001176dc ("tracing: Choose static tp_printk buffer by explicit nesting count")
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+---
+v3:
+Modify the way of array reference instead.
+v2:
+Fix a typo in the title.
+---
+ kernel/trace/trace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 528971714fc6..daa96215e294 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3132,7 +3132,7 @@ static char *get_trace_buf(void)
+ 
+ 	/* Interrupts must see nesting incremented before we use the buffer */
+ 	barrier();
+-	return &buffer->buffer[buffer->nesting][0];
++	return &buffer->buffer[buffer->nesting - 1][0];
+ }
+ 
+ static void put_trace_buf(void)
+-- 
+2.17.1
+
