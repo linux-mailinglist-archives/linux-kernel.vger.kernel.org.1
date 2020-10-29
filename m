@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1D829ECF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7D829ECF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726669AbgJ2NcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:32:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56942 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725787AbgJ2NcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:32:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 63FCDAF2C;
-        Thu, 29 Oct 2020 13:32:06 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 14:32:05 +0100
-From:   Jean Delvare <jdelvare@suse.de>
-To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: False positive from checkscript: git git://...
-Message-ID: <20201029143205.197ff58f@endymion>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        id S1726948AbgJ2NdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:33:08 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:41701 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbgJ2NdH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 09:33:07 -0400
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 3B3DB20008;
+        Thu, 29 Oct 2020 13:33:05 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        ludovic.desroches@microchip.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] ARM: configs: at91_dt: resync with media changes
+Date:   Thu, 29 Oct 2020 14:33:05 +0100
+Message-Id: <160397837814.704148.10188497580014584547.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201029121223.871531-1-eugen.hristev@microchip.com>
+References: <20201029121223.871531-1-eugen.hristev@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy, Joe,
+On Thu, 29 Oct 2020 14:12:23 +0200, Eugen Hristev wrote:
+> The media tree Kconfig has changed recently, and a lot of modules were
+> built unintentionally, like the dvb frontends and encoders.
+> Resync the defconfig to build the ISI drivers and tested sensors.
 
-I have hit this false positive from checkscript:
+Applied, thanks!
 
-WARNING: Possible repeated word: 'git'
-#20: FILE: MAINTAINERS:5289:
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging.git dmi-for-next
+[1/1] ARM: configs: at91_dt: resync with media changes
+      commit: 036f224ef8f447928bfd3085220c28e158a4e4d6
 
-Obviously that's going to happen a lot as this is actually the proper
-way to list a git tree in that file. Could you please add an exception
-for that case?
-
-Thanks,
+Best regards,
 -- 
-Jean Delvare
-SUSE L3 Support
+Alexandre Belloni <alexandre.belloni@bootlin.com>
