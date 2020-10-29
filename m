@@ -2,206 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC61C29F488
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6893729F48B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgJ2TJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:09:44 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:58706 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgJ2TJk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:09:40 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09TJ9ZB9086779;
-        Thu, 29 Oct 2020 14:09:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603998575;
-        bh=NOSjNuGami/oNoiyTzxoJCS2MLOOHYQqfkMj2PBSpAY=;
-        h=From:To:CC:Subject:Date;
-        b=NYtE7QATyaZlTmQRJbL3JZNw0HOPY5j5ma7dTIRKbBYQXAuHHYisFtOMa7hION8Uy
-         kuoQr2MKgG2dLJL1bWeKpNHJ+5oJm5lt4myjIcElvwGR7Ih0oviuQsvYcn9AwaPE20
-         M1DGRi9uP+jcLPqUHeFf47ZMFuK5URZIMrIC4Lac=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09TJ9Zto118571
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 29 Oct 2020 14:09:35 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 29
- Oct 2020 14:09:35 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 29 Oct 2020 14:09:35 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09TJ9YiD118117;
-        Thu, 29 Oct 2020 14:09:34 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>
-CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH net-next] selftests/net: timestamping: add ptp v2 support
-Date:   Thu, 29 Oct 2020 21:09:31 +0200
-Message-ID: <20201029190931.30883-1-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726096AbgJ2TJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:09:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725791AbgJ2TJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 15:09:35 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B730020756;
+        Thu, 29 Oct 2020 19:09:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603998563;
+        bh=Pt6WFzMLYTX0xhEREmX9YvFBIhL4r4F+3MKqRLIaqbQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Uk6TyvBZKB9y7WjP0zclRkEjbT/gg4W0oGC0Me1DwJERMBFa8/UaqvyCm0d2R8LLY
+         7+NxOIT4l25TEkcWGM9v581sCaVX2tcENARVb3QwLW8ot3qEOfUhC1A1dkY5zjc4UQ
+         26j1wSDsT5SkfWUi9XlrSzudIcC8wrbRh+EGtj6Q=
+Date:   Thu, 29 Oct 2020 20:10:11 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] coresight: cti: Initialize dynamic sysfs attributes
+Message-ID: <20201029191011.GA826513@kroah.com>
+References: <20201029164559.1268531-1-mathieu.poirier@linaro.org>
+ <20201029164559.1268531-2-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029164559.1268531-2-mathieu.poirier@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The timestamping tool is supporting now only PTPv1 (IEEE-1588 2002) while
-modern HW often supports also/only PTPv2.
+On Thu, Oct 29, 2020 at 10:45:58AM -0600, Mathieu Poirier wrote:
+> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+> 
+> With LOCKDEP enabled, CTI driver triggers the following splat due
+> to uninitialized lock class for dynamically allocated attribute
+> objects.
+> 
+> [    5.372901] coresight etm0: CPU0: ETM v4.0 initialized
+> [    5.376694] coresight etm1: CPU1: ETM v4.0 initialized
+> [    5.380785] coresight etm2: CPU2: ETM v4.0 initialized
+> [    5.385851] coresight etm3: CPU3: ETM v4.0 initialized
+> [    5.389808] BUG: key ffff00000564a798 has not been registered!
+> [    5.392456] ------------[ cut here ]------------
+> [    5.398195] DEBUG_LOCKS_WARN_ON(1)
+> [    5.398233] WARNING: CPU: 1 PID: 32 at kernel/locking/lockdep.c:4623 lockdep_init_map_waits+0x14c/0x260
+> [    5.406149] Modules linked in:
+> [    5.415411] CPU: 1 PID: 32 Comm: kworker/1:1 Not tainted 5.9.0-12034-gbbe85027ce80 #51
+> [    5.418553] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+> [    5.426453] Workqueue: events amba_deferred_retry_func
+> [    5.433299] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+> [    5.438252] pc : lockdep_init_map_waits+0x14c/0x260
+> [    5.444410] lr : lockdep_init_map_waits+0x14c/0x260
+> [    5.449007] sp : ffff800012bbb720
+> ...
+> 
+> [    5.531561] Call trace:
+> [    5.536847]  lockdep_init_map_waits+0x14c/0x260
+> [    5.539027]  __kernfs_create_file+0xa8/0x1c8
+> [    5.543539]  sysfs_add_file_mode_ns+0xd0/0x208
+> [    5.548054]  internal_create_group+0x118/0x3c8
+> [    5.552307]  internal_create_groups+0x58/0xb8
+> [    5.556733]  sysfs_create_groups+0x2c/0x38
+> [    5.561160]  device_add+0x2d8/0x768
+> [    5.565148]  device_register+0x28/0x38
+> [    5.568537]  coresight_register+0xf8/0x320
+> [    5.572358]  cti_probe+0x1b0/0x3f0
+> 
+> ...
+> 
+> Fix this by initializing the attributes when they are allocated.
+> 
+> Fixes: 3c5597e39812 ("coresight: cti: Add connection information to sysfs")
+> Reported-by: Leo Yan <leo.yan@linaro.org>
+> Tested-by: Leo Yan <leo.yan@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/hwtracing/coresight/coresight-cti-sysfs.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-cti-sysfs.c b/drivers/hwtracing/coresight/coresight-cti-sysfs.c
+> index 392757f3a019..7ff7e7780bbf 100644
+> --- a/drivers/hwtracing/coresight/coresight-cti-sysfs.c
+> +++ b/drivers/hwtracing/coresight/coresight-cti-sysfs.c
+> @@ -1065,6 +1065,13 @@ static int cti_create_con_sysfs_attr(struct device *dev,
+>  	}
+>  	eattr->var = con;
+>  	con->con_attrs[attr_idx] = &eattr->attr.attr;
+> +	/*
+> +	 * Initialize the dynamically allocated attribute
+> +	 * to avoid LOCKDEP splat. See include/linux/sysfs.h
+> +	 * for more details.
+> +	 */
+> +	sysfs_attr_init(con->con_attrs[attr_idx]);
+> +
+>  	return 0;
+>  }
 
-Hence timestamping tool is still useful for sanity testing of PTP drivers
-HW timestamping capabilities it's reasonable to upstate it to support
-PTPv2. This patch adds corresponding support which can be enabled by using
-new parameter "PTPV2".
+Should go to stable kernels too, as the patch this fixes is in 5.7.
+I'll add the stable tag here, but feel free to do it yourself next time
+:)
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- tools/testing/selftests/net/timestamping.c | 47 ++++++++++++++++------
- 1 file changed, 34 insertions(+), 13 deletions(-)
+thanks,
 
-diff --git a/tools/testing/selftests/net/timestamping.c b/tools/testing/selftests/net/timestamping.c
-index f4bb4fef0f39..21091be70688 100644
---- a/tools/testing/selftests/net/timestamping.c
-+++ b/tools/testing/selftests/net/timestamping.c
-@@ -59,7 +59,8 @@ static void usage(const char *error)
- 	       "  SOF_TIMESTAMPING_SOFTWARE - request reporting of software time stamps\n"
- 	       "  SOF_TIMESTAMPING_RAW_HARDWARE - request reporting of raw HW time stamps\n"
- 	       "  SIOCGSTAMP - check last socket time stamp\n"
--	       "  SIOCGSTAMPNS - more accurate socket time stamp\n");
-+	       "  SIOCGSTAMPNS - more accurate socket time stamp\n"
-+	       "  PTPV2 - use PTPv2 messages\n");
- 	exit(1);
- }
- 
-@@ -115,13 +116,28 @@ static const unsigned char sync[] = {
- 	0x00, 0x00, 0x00, 0x00
- };
- 
--static void sendpacket(int sock, struct sockaddr *addr, socklen_t addr_len)
-+static const unsigned char sync_v2[] = {
-+	0x00, 0x02, 0x00, 0x2C,
-+	0x00, 0x00, 0x02, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0xFF,
-+	0xFE, 0x00, 0x00, 0x00,
-+	0x00, 0x01, 0x00, 0x01,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+};
-+
-+static void sendpacket(int sock, struct sockaddr *addr, socklen_t addr_len, int ptpv2)
- {
-+	size_t sync_len = ptpv2 ? sizeof(sync_v2) : sizeof(sync);
-+	const void *sync_p = ptpv2 ? sync_v2 : sync;
- 	struct timeval now;
- 	int res;
- 
--	res = sendto(sock, sync, sizeof(sync), 0,
--		addr, addr_len);
-+	res = sendto(sock, sync_p, sync_len, 0, addr, addr_len);
- 	gettimeofday(&now, 0);
- 	if (res < 0)
- 		printf("%s: %s\n", "send", strerror(errno));
-@@ -134,9 +150,11 @@ static void sendpacket(int sock, struct sockaddr *addr, socklen_t addr_len)
- static void printpacket(struct msghdr *msg, int res,
- 			char *data,
- 			int sock, int recvmsg_flags,
--			int siocgstamp, int siocgstampns)
-+			int siocgstamp, int siocgstampns, int ptpv2)
- {
- 	struct sockaddr_in *from_addr = (struct sockaddr_in *)msg->msg_name;
-+	size_t sync_len = ptpv2 ? sizeof(sync_v2) : sizeof(sync);
-+	const void *sync_p = ptpv2 ? sync_v2 : sync;
- 	struct cmsghdr *cmsg;
- 	struct timeval tv;
- 	struct timespec ts;
-@@ -210,10 +228,9 @@ static void printpacket(struct msghdr *msg, int res,
- 					"probably SO_EE_ORIGIN_TIMESTAMPING"
- #endif
- 					);
--				if (res < sizeof(sync))
-+				if (res < sync_len)
- 					printf(" => truncated data?!");
--				else if (!memcmp(sync, data + res - sizeof(sync),
--							sizeof(sync)))
-+				else if (!memcmp(sync_p, data + res - sync_len, sync_len))
- 					printf(" => GOT OUR DATA BACK (HURRAY!)");
- 				break;
- 			}
-@@ -257,7 +274,7 @@ static void printpacket(struct msghdr *msg, int res,
- }
- 
- static void recvpacket(int sock, int recvmsg_flags,
--		       int siocgstamp, int siocgstampns)
-+		       int siocgstamp, int siocgstampns, int ptpv2)
- {
- 	char data[256];
- 	struct msghdr msg;
-@@ -288,7 +305,7 @@ static void recvpacket(int sock, int recvmsg_flags,
- 	} else {
- 		printpacket(&msg, res, data,
- 			    sock, recvmsg_flags,
--			    siocgstamp, siocgstampns);
-+			    siocgstamp, siocgstampns, ptpv2);
- 	}
- }
- 
-@@ -300,6 +317,7 @@ int main(int argc, char **argv)
- 	int siocgstamp = 0;
- 	int siocgstampns = 0;
- 	int ip_multicast_loop = 0;
-+	int ptpv2 = 0;
- 	char *interface;
- 	int i;
- 	int enabled = 1;
-@@ -335,6 +353,8 @@ int main(int argc, char **argv)
- 			siocgstampns = 1;
- 		else if (!strcasecmp(argv[i], "IP_MULTICAST_LOOP"))
- 			ip_multicast_loop = 1;
-+		else if (!strcasecmp(argv[i], "PTPV2"))
-+			ptpv2 = 1;
- 		else if (!strcasecmp(argv[i], "SOF_TIMESTAMPING_TX_HARDWARE"))
- 			so_timestamping_flags |= SOF_TIMESTAMPING_TX_HARDWARE;
- 		else if (!strcasecmp(argv[i], "SOF_TIMESTAMPING_TX_SOFTWARE"))
-@@ -369,6 +389,7 @@ int main(int argc, char **argv)
- 		HWTSTAMP_TX_ON : HWTSTAMP_TX_OFF;
- 	hwconfig.rx_filter =
- 		(so_timestamping_flags & SOF_TIMESTAMPING_RX_HARDWARE) ?
-+		ptpv2 ? HWTSTAMP_FILTER_PTP_V2_L4_SYNC :
- 		HWTSTAMP_FILTER_PTP_V1_L4_SYNC : HWTSTAMP_FILTER_NONE;
- 	hwconfig_requested = hwconfig;
- 	if (ioctl(sock, SIOCSHWTSTAMP, &hwtstamp) < 0) {
-@@ -496,16 +517,16 @@ int main(int argc, char **argv)
- 					printf("has error\n");
- 				recvpacket(sock, 0,
- 					   siocgstamp,
--					   siocgstampns);
-+					   siocgstampns, ptpv2);
- 				recvpacket(sock, MSG_ERRQUEUE,
- 					   siocgstamp,
--					   siocgstampns);
-+					   siocgstampns, ptpv2);
- 			}
- 		} else {
- 			/* write one packet */
- 			sendpacket(sock,
- 				   (struct sockaddr *)&addr,
--				   sizeof(addr));
-+				   sizeof(addr), ptpv2);
- 			next.tv_sec += 5;
- 			continue;
- 		}
--- 
-2.17.1
-
+greg k-h
