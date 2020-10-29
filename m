@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB5429E4D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2BD829E4E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387844AbgJ2Hry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387809AbgJ2Hrp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:47:45 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A764C0613CF;
-        Thu, 29 Oct 2020 00:47:45 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id r186so1679758pgr.0;
-        Thu, 29 Oct 2020 00:47:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uv2FWQlSBJFmE706ogx6rH+lBxHwtXvvktU8G7mdeHE=;
-        b=UkuEIBksTIBEx0rU9xx8YSrprU5SuhUkN7XbFd8Ss4WqdzUiRKgQToHyt959jtOKzE
-         descPPhCAOW0XNzIJF1XRtujK2NMKSeIKOais3aepphrSUfUB3jAs7x01P+pOrYsaygI
-         tksDMUUbjLTMKxTbn4Cb5pdlHLDgNO0QF4+tJM9jsZ6ThxQ7y5mXMg7ujImMn+wzmyRR
-         8i0IxBH/r//xZ1LE6r79PribG82uJ0XwUtm05Dd+IXedix0wIz0c9GdQkKf0oNQ3vD5Y
-         elnrMVaYVrgf9Fb4wuKD93ftXMWvP7e9uCX8HlzzQ/4hXezZp/iJaHbuaZ1IQDyaoEUH
-         xBEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uv2FWQlSBJFmE706ogx6rH+lBxHwtXvvktU8G7mdeHE=;
-        b=DAH6224FMVUeZ9gxFYFIeYVx1SF7cJjungQyeufiTrHW2wZZJdi8wtLVcck6WjYSrt
-         AuR10kweLVeEoV5pXVaQVsBlMtf9oIA2/L46dq32jSREe1VhIyXE+mX5xEVTCyskQptS
-         9qCagr3zRd3Kd/nwl0ts8neEVfO4VHR/HC8KvmHT76FBmKSzT7Hr23e/rDb8AGYCyIqW
-         MwZG/NrMfR6hx8iEG8tXvWgOhaSA0/4LPw8GjqnMumtB7+0FQ2sN4zDsgJqtpfjVTMtn
-         d9WVgTp2zlRr6lW6TtGXxPsukZRMjyUZkxCvfpbI+GKRQO8XuHmGf3R/c9DpKkHaCZgd
-         evwg==
-X-Gm-Message-State: AOAM532SPF2vcYbmkfyir63ozfpWrmMubI5dYDdvzfrLzDmCV6K5oNeO
-        J3B1+srwDUawV8IUitH7EbrzU5FeqC79L0tr
-X-Google-Smtp-Source: ABdhPJxKwsyEZXm+NRlnPeeDS94chF16rqocvuwXKW/X+8833uLeRKJCpBpQq0NAIMLEiiDLcXXemA==
-X-Received: by 2002:a17:90b:17c3:: with SMTP id me3mr2716736pjb.56.1603957664762;
-        Thu, 29 Oct 2020 00:47:44 -0700 (PDT)
-Received: from localhost ([160.16.113.140])
-        by smtp.gmail.com with ESMTPSA id z5sm1834680pfn.20.2020.10.29.00.47.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 00:47:44 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-To:     linux-i2c@vger.kernel.org
-Cc:     Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-stm32@st-md-mailman.stormreply.com (moderated list:ARM/STM32
-        ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/STM32
-        ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 5/5] i2c: stm32: remove unnecessary CONFIG_PM_SLEEP
-Date:   Thu, 29 Oct 2020 15:46:54 +0800
-Message-Id: <20201029074654.227263-5-coiby.xu@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201029074654.227263-1-coiby.xu@gmail.com>
-References: <20201029074654.227263-1-coiby.xu@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1731973AbgJ2HtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:49:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60082 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731839AbgJ2Hs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 03:48:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9900FB02D;
+        Thu, 29 Oct 2020 07:48:55 +0000 (UTC)
+Date:   Thu, 29 Oct 2020 08:48:55 +0100
+Message-ID: <s5hpn51wjyw.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH 01/25] ALSA: core: pcm: remove unnecessary CONFIG_PM_SLEEP
+In-Reply-To: <20201029074301.226644-1-coiby.xu@gmail.com>
+References: <20201029074301.226644-1-coiby.xu@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+On Thu, 29 Oct 2020 08:42:37 +0100,
+Coiby Xu wrote:
+> 
+> SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+> 
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
----
- drivers/i2c/busses/i2c-stm32f7.c | 2 --
- 1 file changed, 2 deletions(-)
+It caused compile warnings.  Was it already addressed in general?
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index f41f51a176a1..95ac9dfdf458 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -2262,7 +2262,6 @@ static int __maybe_unused stm32f7_i2c_runtime_resume(struct device *dev)
- 	return 0;
- }
- 
--#ifdef CONFIG_PM_SLEEP
- static int stm32f7_i2c_regs_backup(struct stm32f7_i2c_dev *i2c_dev)
- {
- 	int ret;
-@@ -2356,7 +2355,6 @@ static int stm32f7_i2c_resume(struct device *dev)
- 
- 	return 0;
- }
--#endif
- 
- static const struct dev_pm_ops stm32f7_i2c_pm_ops = {
- 	SET_RUNTIME_PM_OPS(stm32f7_i2c_runtime_suspend,
--- 
-2.28.0
+Or we may use __maybe_unused attribute instead, but it's just a matter
+of taste.
 
+
+thanks,
+
+Takashi
+
+> ---
+>  sound/core/pcm.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+> index be5714f1bb58..5a281ac92958 100644
+> --- a/sound/core/pcm.c
+> +++ b/sound/core/pcm.c
+> @@ -599,7 +599,6 @@ static const struct attribute_group *pcm_dev_attr_groups[];
+>   * PM callbacks: we need to deal only with suspend here, as the resume is
+>   * triggered either from user-space or the driver's resume callback
+>   */
+> -#ifdef CONFIG_PM_SLEEP
+>  static int do_pcm_suspend(struct device *dev)
+>  {
+>  	struct snd_pcm_str *pstr = container_of(dev, struct snd_pcm_str, dev);
+> @@ -608,7 +607,6 @@ static int do_pcm_suspend(struct device *dev)
+>  		snd_pcm_suspend_all(pstr->pcm);
+>  	return 0;
+>  }
+> -#endif
+>  
+>  static const struct dev_pm_ops pcm_dev_pm_ops = {
+>  	SET_SYSTEM_SLEEP_PM_OPS(do_pcm_suspend, NULL)
+> -- 
+> 2.28.0
+> 
