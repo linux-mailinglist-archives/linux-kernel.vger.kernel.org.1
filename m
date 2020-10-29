@@ -2,153 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D46429F2CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C1129F2DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727288AbgJ2RRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:17:42 -0400
-Received: from foss.arm.com ([217.140.110.172]:41192 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725805AbgJ2RRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:17:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 019A8139F;
-        Thu, 29 Oct 2020 10:17:41 -0700 (PDT)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 362453F66E;
-        Thu, 29 Oct 2020 10:17:40 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 17:17:37 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Yun Hsiang <hsiang023167@gmail.com>, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, patrick.bellasi@matbug.net
-Subject: Re: [PATCH v3 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-Message-ID: <20201029171737.aoums2h2mpst3hp3@e107158-lin>
-References: <20201025073632.720393-1-hsiang023167@gmail.com>
- <20201029110818.alrviwwljxnegmip@e107158-lin>
- <20201029130243.GA897607@ubuntu>
- <20201029130649.h4wm2ak5j7zkgb3s@e107158-lin>
- <f17f145a-7247-e4f2-635c-22951678f00c@arm.com>
+        id S1726858AbgJ2RU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 13:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgJ2RUZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 13:20:25 -0400
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [IPv6:2620:100:9005:57f::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7460AC0613CF;
+        Thu, 29 Oct 2020 10:20:25 -0700 (PDT)
+Received: from pps.filterd (m0050102.ppops.net [127.0.0.1])
+        by m0050102.ppops.net-00190b01. (8.16.0.42/8.16.0.42) with SMTP id 09THBuEp032732;
+        Thu, 29 Oct 2020 17:20:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=w92e1OL9NQo6mI7XkyziJJNuhr7HPfoNzDYhE1PKTS0=;
+ b=ZQN7nDW/8XdW/8bfM3gzHZn7xH0Pzlcj19o52ZZjpQUVes+m5flhfsddUWGqTkSN0nXp
+ nYP96VSFrotKFnUEdhDo9rjAJSHccY0Q29+6w1sVxAxay3RuPOhiuPUHCdL6PEG430Sf
+ 57Khs9gjwEbzoESKh3lCPKSIFOUVpu5Q9MJt3kqUgO+E++BiL/1HNFfHzDt2wuL7NwvM
+ lBsebcJJpTVectb0UFwPOBXjOyczdCLE1f1c4i21ujFQ0CBBKeQV5agMUZmsaotqhRhp
+ dJb81LNPD4GIfPLCecSS8cHiGrqMTqrIyWn4Eopdtk9oU55RWXLWBHDmUWPTtlu/eNfg ag== 
+Received: from prod-mail-ppoint7 (a72-247-45-33.deploy.static.akamaitechnologies.com [72.247.45.33] (may be forged))
+        by m0050102.ppops.net-00190b01. with ESMTP id 34cceyj1c0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Oct 2020 17:20:03 +0000
+Received: from pps.filterd (prod-mail-ppoint7.akamai.com [127.0.0.1])
+        by prod-mail-ppoint7.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 09THJxv6022856;
+        Thu, 29 Oct 2020 13:20:02 -0400
+Received: from prod-mail-relay19.dfw02.corp.akamai.com ([172.27.165.173])
+        by prod-mail-ppoint7.akamai.com with ESMTP id 34f1qg7jwj-1;
+        Thu, 29 Oct 2020 13:20:01 -0400
+Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
+        by prod-mail-relay19.dfw02.corp.akamai.com (Postfix) with ESMTP id 257DD604B8;
+        Thu, 29 Oct 2020 17:20:01 +0000 (GMT)
+Subject: Re: [PATCH v2 net] net: sch_generic: aviod concurrent reset and
+ enqueue op for lockless qdisc
+To:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     "Hunt, Joshua" <johunt@akamai.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+References: <1599562954-87257-1-git-send-email-linyunsheng@huawei.com>
+ <CAM_iQpX0_mz+McZdzZ7HFTjBihOKz5E6i4qJQSoFbZ=SZkVh=Q@mail.gmail.com>
+ <830f85b5-ef29-c68e-c982-de20ac880bd9@huawei.com>
+ <CAM_iQpU_tbRNO=Lznz_d6YjXmenYhowEfBoOiJgEmo9x8bEevw@mail.gmail.com>
+ <CAP12E-+3DY-dgzVercKc-NYGPExWO1NjTOr1Gf3tPLKvp6O6+g@mail.gmail.com>
+ <AE096F70-4419-4A67-937A-7741FBDA6668@akamai.com>
+ <CAM_iQpX0XzNDCzc2U5=g6aU-HGYs3oryHx=rmM3ue9sH=Jd4Gw@mail.gmail.com>
+ <19f888c2-8bc1-ea56-6e19-4cb4841c4da0@akamai.com>
+ <93ab7f0f-7b5a-74c3-398d-a572274a4790@huawei.com>
+ <248e5a32-a102-0ced-1462-aa2bc5244252@akamai.com>
+ <de690c67-6e9f-8885-10c1-f47313de7b62@huawei.com>
+From:   Vishwanath Pai <vpai@akamai.com>
+Message-ID: <cd4b2482-c3dc-fba6-6287-1218dc4bed6e@akamai.com>
+Date:   Thu, 29 Oct 2020 13:20:00 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f17f145a-7247-e4f2-635c-22951678f00c@arm.com>
+In-Reply-To: <de690c67-6e9f-8885-10c1-f47313de7b62@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-29_08:2020-10-29,2020-10-29 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 suspectscore=0 spamscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010290120
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-29_11:2020-10-29,2020-10-29 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1015 adultscore=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 impostorscore=0 suspectscore=0 priorityscore=1501
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010290119
+X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 72.247.45.33)
+ smtp.mailfrom=vpai@akamai.com smtp.helo=prod-mail-ppoint7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 16:50, Dietmar Eggemann wrote:
-> On 29/10/2020 14:06, Qais Yousef wrote:
-> > On 10/29/20 21:02, Yun Hsiang wrote:
-> >> Hi Qais,
-> >>
-> >> On Thu, Oct 29, 2020 at 11:08:18AM +0000, Qais Yousef wrote:
-> >>> Hi Yun
-> >>>
-> >>> Sorry for chipping in late.
-> >>>
-> >>> On 10/25/20 15:36, Yun Hsiang wrote:
-> 
-> [...]
-> 
-> >>>>  #define SCHED_FLAG_UTIL_CLAMP	(SCHED_FLAG_UTIL_CLAMP_MIN | \
-> >>>> -				 SCHED_FLAG_UTIL_CLAMP_MAX)
-> >>>> +				 SCHED_FLAG_UTIL_CLAMP_MAX | \
-> >>>> +				 SCHED_FLAG_UTIL_CLAMP_RESET)
-> >>>
-> >>> Is it safe to change this define in a uapi header without a potential
-> >>> consequence?
-> 
-> AFAICS, there're 3 occurrences, besides the one in
-> __setscheduler_uclamp(), in which we use SCHED_FLAG_UTIL_CLAMP.
-> 
-> 1) call uclamp_validate() in __sched_setscheduler()
-> 
-> 2) jump to 'change' label in __sched_setscheduler()
-> 
-> 3) check that the uattr->size is SCHED_ATTR_SIZE_VER1 in
->    sched_copy_attr()
-> 
-> 2) and 3) require SCHED_FLAG_UTIL_CLAMP_RESET to be part of
-> SCHED_FLAG_UTIL_CLAMP but IMHO 1) needs this change:
-> 
-> @@ -1413,8 +1413,14 @@ int sysctl_sched_uclamp_handler(struct ctl_table
-> *table, int write,
->  static int uclamp_validate(struct task_struct *p,
->                            const struct sched_attr *attr)
->  {
-> -       unsigned int lower_bound = p->uclamp_req[UCLAMP_MIN].value;
-> -       unsigned int upper_bound = p->uclamp_req[UCLAMP_MAX].value;
-> +       unsigned int lower_bound, upper_bound;
-> +
-> +       /* Do not check uclamp attributes values in reset case. */
-> +       if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET)
-> +               return 0;
-> +
-> +       lower_bound = p->uclamp_req[UCLAMP_MIN].value;
-> +       upper_bound = p->uclamp_req[UCLAMP_MAX].value;
-> 
->         if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN)
->                 lower_bound = attr->sched_util_min;
-> 
-> Otherwise a bogus sa.sched_util_min or sa.sched_util_max with
-> SCHED_FLAG_UTIL_CLAMP_RESET could return -EINVAL.
+On 10/29/20 6:24 AM, Yunsheng Lin wrote:
+ > On 2020/10/29 12:50, Vishwanath Pai wrote:
+ >> On 10/28/20 10:37 PM, Yunsheng Lin wrote:
+ >>> On 2020/10/29 4:04, Vishwanath Pai wrote:
+ >>>> On 10/28/20 1:47 PM, Cong Wang wrote:
+ >>>>> On Wed, Oct 28, 2020 at 8:37 AM Pai, Vishwanath <vpai@akamai.com> 
+wrote:
+ >>>>>> Hi,
+ >>>>>>
+ >>>>>> We noticed some problems when testing the latest 5.4 LTS kernel 
+and traced it
+ >>>>>> back to this commit using git bisect. When running our tests the 
+machine stops
+ >>>>>> responding to all traffic and the only way to recover is a 
+reboot. I do not see
+ >>>>>> a stack trace on the console.
+ >>>>>
+ >>>>> Do you mean the machine is still running fine just the network is 
+down?
+ >>>>>
+ >>>>> If so, can you dump your tc config with stats when the problem is 
+happening?
+ >>>>> (You can use `tc -s -d qd show ...`.)
+ >>>>>
+ >>>>>>
+ >>>>>> This can be reproduced using the packetdrill test below, it 
+should be run a
+ >>>>>> few times or in a loop. You should hit this issue within a few 
+tries but
+ >>>>>> sometimes might take up to 15-20 tries.
+ >>>>> ...
+ >>>>>> I can reproduce the issue easily on v5.4.68, and after reverting 
+this commit it
+ >>>>>> does not happen anymore.
+ >>>>>
+ >>>>> This is odd. The patch in this thread touches netdev reset path, 
+if packetdrill
+ >>>>> is the only thing you use to trigger the bug (that is netdev is 
+always active),
+ >>>>> I can not connect them.
+ >>>>>
+ >>>>> Thanks.
+ >>>>
+ >>>> Hi Cong,
+ >>>>
+ >>>>> Do you mean the machine is still running fine just the network is 
+down?
+ >>>>
+ >>>> I was able to access the machine via serial console, it looks like 
+it is
+ >>>> up and running, just that networking is down.
+ >>>>
+ >>>>> If so, can you dump your tc config with stats when the problem is 
+happening?
+ >>>>> (You can use `tc -s -d qd show ...`.)
+ >>>>
+ >>>> If I try running tc when the machine is in this state the command 
+never
+ >>>> returns. It doesn't print anything but doesn't exit either.
+ >>>>
+ >>>>> This is odd. The patch in this thread touches netdev reset path, 
+if packetdrill
+ >>>>> is the only thing you use to trigger the bug (that is netdev is 
+always active),
+ >>>>> I can not connect them.
+ >>>>
+ >>>> I think packetdrill creates a tun0 interface when it starts the
+ >>>> test and tears it down at the end, so it might be hitting this 
+code path
+ >>>> during teardown.
+ >>>
+ >>> Hi, Is there any preparation setup before running the above 
+packetdrill test
+ >>> case, I run the above test case in 5.9-rc4 with this patch applied 
+without any
+ >>> preparation setup, did not reproduce it.
+ >>>
+ >>> By the way, I am newbie to packetdrill:), it would be good to 
+provide the
+ >>> detail setup to reproduce it,thanks.
+ >>>
+ >>>>
+ >>>> P.S: My mail server is having connectivity issues with vger.kernel.org
+ >>>> so messages aren't getting delivered to netdev. It'll hopefully get
+ >>>> resolved soon.
+ >>>>
+ >>>> Thanks,
+ >>>> Vishwanath
+ >>>>
+ >>>>
+ >>>> .
+ >>>>
+ >>
+ >> I can't reproduce it on v5.9-rc4 either, it is probably an issue only on
+ >> 5.4 then (and maybe older LTS versions). Can you give it a try on
+ >> 5.4.68?
+ >>
+ >> For running packetdrill, download the latest version from their github
+ >> repo, then run it in a loop without any special arguments. This is what
+ >> I do to reproduce it:
+ >>
+ >> while true; do ./packetdrill <test-file>; done
+ >>
+ >> I don't think any other setup is necessary.
+ >
+ > Hi, run the above test for above an hour using 5.4.68, still did not
+ > reproduce it, as below:
+ >
+ >
+ > root@(none)$ cd /home/root/
+ > root@(none)$ ls
+ > creat_vlan.sh  packetdrill    test.pd
+ > root@(none)$ cat test.pd
+ > 0 `echo 4 > /proc/sys/net/ipv4/tcp_min_tso_segs`
+ >
+ > 0.400 socket(..., SOCK_STREAM, IPPROTO_TCP) = 3
+ > 0.400 setsockopt(3, SOL_SOCKET, SO_REUSEADDR, [1], 4) = 0
+ >
+ > // set maxseg to 1000 to work with both ipv4 and ipv6
+ > 0.500 setsockopt(3, SOL_TCP, TCP_MAXSEG, [1000], 4) = 0
+ > 0.500 bind(3, ..., ...) = 0
+ > 0.500 listen(3, 1) = 0
+ >
+ > // Establish connection
+ > 0.600 < S 0:0(0) win 32792 <mss 1000,sackOK,nop,nop,nop,wscale 5>
+ > 0.600 > S. 0:0(0) ack 1 <...>
+ >
+ > 0.800 < . 1:1(0) ack 1 win 320
+ > 0.800 accept(3, ..., ...) = 4
+ >
+ > // Send 4 data segments.
+ > +0 write(4, ..., 4000) = 4000
+ > +0 > P. 1:4001(4000) ack 1
+ >
+ > // Receive a SACK
+ > +.1 < . 1:1(0) ack 1 win 320 <sack 1001:2001,nop,nop>
+ >
+ > +.3 %{ print "TCP CA state: ",tcpi_ca_state  }%
+ > root@(none)$ cat creat_vlan.sh
+ > #!/bin/sh
+ >
+ > for((i=0; i<10000; i++))
+ > do
+ >     ./packetdrill test.pd
+ > done
+ > root@(none)$ ./creat_vlan.sh
+ > TCP CA state:  3
+ > ^C
+ > root@(none)$ ifconfig
+ > eth0      Link encap:Ethernet  HWaddr 5c:e8:83:0d:f7:ed
+ >           inet addr:192.168.1.93  Bcast:192.168.1.255 Mask:255.255.255.0
+ >           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+ >           RX packets:3570 errors:0 dropped:0 overruns:0 frame:0
+ >           TX packets:3190 errors:0 dropped:0 overruns:0 carrier:0
+ >           collisions:0 txqueuelen:1000
+ >           RX bytes:1076349 (1.0 MiB)  TX bytes:414874 (405.1 KiB)
+ >
+ > eth2      Link encap:Ethernet  HWaddr 5c:e8:83:0d:f7:ec
+ >           inet addr:192.168.100.1  Bcast:192.168.100.255 
+Mask:255.255.255.0
+ >           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+ >           RX packets:81848576 errors:0 dropped:0 overruns:0 frame:78
+ >           TX packets:72497816 errors:0 dropped:0 overruns:0 carrier:0
+ >           collisions:0 txqueuelen:1000
+ >           RX bytes:2044282289568 (1.8 TiB)  TX bytes:2457441698852 
+(2.2 TiB)
+ >
+ > lo        Link encap:Local Loopback
+ >           inet addr:127.0.0.1  Mask:255.0.0.0
+ >           UP LOOPBACK RUNNING  MTU:65536  Metric:1
+ >           RX packets:1 errors:0 dropped:0 overruns:0 frame:0
+ >           TX packets:1 errors:0 dropped:0 overruns:0 carrier:0
+ >           collisions:0 txqueuelen:1000
+ >           RX bytes:68 (68.0 B)  TX bytes:68 (68.0 B)
+ >
+ > root@(none)$ ./creat_vlan.sh
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > TCP CA state:  3
+ > ^C
+ > root@(none)$ cat /proc/cmdline
+ > BOOT_IMAGE=/linyunsheng/Image.5.0 rdinit=/init console=ttyAMA0,115200 
+earlycon=pl011,mmio32,0x94080000 iommu.strict=1
+ > root@(none)$ cat /proc/version
+ > Linux version 5.4.68 (linyunsheng@ubuntu) (gcc version 5.4.0 20160609 
+(Ubuntu/Linaro 5.4.0-6ubuntu1~16.04.12)) #1 SMP PREEMPT Thu Oct 29 
+16:59:37 CST 2020
+ > root@(none)$
+ >
+ >
+ >
+ >>
+ >> -Vishwanath
+ >>
+ >> .
+ >>
+I couldn't get it to reproduce on a ubuntu VM, maybe something is
+different with the way we setup our machines. We do have some scripts in
+/etc/network/{if-up.d,if-post-down.d} etc, or probably something else.
+I'll let you know when I can reliably reproduce it on the VM.
 
-I haven't checked the details of this implementation but I interpret that you
-agree it's better to leave the define in the uapi header intact.
-
-> >>> FWIW I still have concerns about this approach. We're doing a reset to control
-> >>> cgroup behavior, I don't see any correlation between the two. Besides the
-> >>> difference between RESET and setting uclamp_min=0 without RESET is not obvious
-> >>> nor intuitive for someone who didn't look at the code.
-> >>>
-> >>> I propose something like the below which is more explicit about what is being
-> >>> requested and delivered here. And if we decide to deprecate this behavior,
-> >>> it'd be much easier to just ignore this flag.
-> >>>
-> >>> You must set this flag with your uclamp request to retain the cgroup
-> >>> inheritance behavior. If the flag is not set, we automatically clear it.
-> >>
-> >> I think this behavior may not meet android requirement. Becasue in
-> >> android there is group like top-app. And we want to boost the
-> >> group by setting group uclamp_min. If group inheritance is explicit, we
-> >> need to set this flag for all the tasks in top-app. This might be
-> >> costly.
-> > 
-> > You will not have to set it for every task. It's on by default like it works
-> > now. This behavior doesn't change.
-> > 
-> > But if you change the uclamp value of a task but still want it to continue to
-> > inherit the cgroup values if it's attached to one, you must set this flag when
-> > changing the uclamp value.
-> 
-> I'm not really fond of this idea because:
-> 
-> (1) explicit cgroup(-behavior) related settings through a per-task user
->     interface.
-
-But this is what we're doing whether it's called RESET or something else here.
-Ie: cgroup behavior is the purpose of this change.
-
-> (2) uclamp reset makes already sense in the !CONFIG_UCLAMP_TASK_GROUP
->     case. A task can reset its uclamp values here as well, and then
->     'inheriting' the system defaults again. Already mentioned in
->     https://lkml.kernel.org/r/87362ihxvw.derkling@matbug.net
-
-Yes and no. Generic RESET yes makes sense in general. But not for the intended
-use case here which depends on CONFIG_UCLAMP_TASK_GROUP. And not in practice
-since only RT tasks have a difference default value that this RESET makes sense
-to implement for. But there's no real requirement for that yet. The requirement
-is to control cgroup. We're inventing the RESET flag to handle the cgroup case.
-So it not making sense for !CONFIG_UCLAMP_TASK_GROUP is the correct outcome.
-
-In my view, I see a contradiction between what we're implementing and what's
-required. This subtlety is confusing. It could be just me maybe..
-
-Anyway I won't argue further if you really prefer the RESET way :-)
-
-Thanks
-
---
-Qais Yousef
