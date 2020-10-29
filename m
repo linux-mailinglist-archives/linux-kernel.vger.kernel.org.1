@@ -2,115 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD80329F77B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4CD729F77C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725836AbgJ2WMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 18:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
+        id S1725800AbgJ2WMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 18:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgJ2WMe (ORCPT
+        with ESMTP id S1725562AbgJ2WMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Oct 2020 18:12:34 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181E2C0613D2;
-        Thu, 29 Oct 2020 15:12:00 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id t25so5873823ejd.13;
-        Thu, 29 Oct 2020 15:12:00 -0700 (PDT)
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF9FC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 15:11:57 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id r3so1985728plo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 15:11:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kL0Yi6GqHZd0HFiCnH2b3WCCTf5AQEQ2NzzoThy/rtE=;
-        b=fzOwRKHY/12iFmIoU80+6gMBemG8HPQ+jsLdIeT115e2c19w8gSdjfTT79hvaL+Iup
-         YekYWWhuhjaa4RG3NzExAjNYT5xiAB6DqrE9nfcCDbRg/IR3+6L3TuRhMhiRrjiVCINF
-         XaJIHxpVDC1xodQqJB6/4Hc+dsh95tPyQn0dWI7lBihg9B4F+YzoG2hTVXvcyubEkrfE
-         VicbtpESfCHiJOKf+dnrvVILEJVabbbDLy6KPWUDuanEasNUfzqka0dc5Li3FGxzWJnb
-         u7SnhCjYIp/OLFOtTxndNCVAGV0Te7z/KvzI7yeX58BIUhR74bQjek+MO30jH9CwR4Nk
-         416Q==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MvPDhdjyj/x0sOXIvdPEH0n3TSY+pHI4jeWBqxXcZzE=;
+        b=MuONn1wr3kaGJN/Ss95U6DztgcRN47yRwujxzR0jjYPqP+M66XVZgRrQcMNyNasWLe
+         OvHVWG8ZZe+2qx2/cMnAl47uHydrQc1IVMZ0IN92vG42k4yc5GArqoQkT4pkFwTgj34C
+         lNyjvrE/Rx6mQ/gDYIvmgnNXk9hC6yq+RV9/M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kL0Yi6GqHZd0HFiCnH2b3WCCTf5AQEQ2NzzoThy/rtE=;
-        b=SG3nWm7nyneqxOb5CJhmmzXvY7gyPiPLm4PD0qxW+A536e4a/cZ+/xlrJi2P07ys9m
-         vTweXw3J0UmIQOJwVpOSOX2pcUzaCcUW4CJU9Rz+048L8RRaB5/ADNrml1sgQFl3FYhd
-         xXFXl9rnW5FgJnXqLyS54ckLWY7S2LxNvfosH80D9RtS7lvbDwhkoMh4nAAAOIfx8Pfa
-         h9hENobnTDYbm+N3JEpLfq7UPQznRYyFfPRKEJx5y5/VSZD7eoLaFUkQ/ZRw3PmKaz5M
-         jEP3t9dYRzRY5P8MMNsiU/6qhdu/VlACxsXHV7uyryxixmkYibfaGRH566cEk9Rchy5k
-         iybw==
-X-Gm-Message-State: AOAM53378sMs3vpv1YFd8lFXtifmXvBtu2qXzhIownUqkbDEg+AHGq4Y
-        7OX4WGPCAdJDviwBA4i70DPln+1i80o=
-X-Google-Smtp-Source: ABdhPJxSiAqkMUh9hKBJQrc4HLomMJONGvB4r3lqUPx+fdOrNK5fZTFCsiQgF0vq9gQ5rYuLknFgGA==
-X-Received: by 2002:a17:906:4e19:: with SMTP id z25mr6503286eju.44.1604009518582;
-        Thu, 29 Oct 2020 15:11:58 -0700 (PDT)
-Received: from ?IPv6:2a01:110f:b59:fd00:5806:1c4:f304:93f0? ([2a01:110f:b59:fd00:5806:1c4:f304:93f0])
-        by smtp.gmail.com with ESMTPSA id o15sm2114369ejm.38.2020.10.29.15.11.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 15:11:57 -0700 (PDT)
-Subject: Re: [PATCH 33/33] docs: ABI: unify
- /sys/class/leds/<led>/max_brightness documentation
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Dan Murphy <dmurphy@ti.com>,
-        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org
-References: <cover.1603893146.git.mchehab+huawei@kernel.org>
- <2c95a4d8d1b4be2f839464ebc63bfcee6b70276a.1603893146.git.mchehab+huawei@kernel.org>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <514e13de-b6f6-1df1-ddfe-5a1a2ca8fb87@gmail.com>
-Date:   Thu, 29 Oct 2020 23:11:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MvPDhdjyj/x0sOXIvdPEH0n3TSY+pHI4jeWBqxXcZzE=;
+        b=cJDlNpgAq2w83VOpzhILTLAfis+m1sfmRGYiSc+laJATvzZ/em6beltlCFNZP7/yF1
+         62Qx7q2vwbaIIM0Zc+WNFm2G5KQB4gW0Mar7Onsl7kClwwwAgrMqAMOAnowpul6HF7Qk
+         Xdvqibal+bmIpN5MUwhbu5ankRH14wRJzxUc/xDuSQLHbxoKt1dm7gdhAvojb0Pzfgn0
+         VlrzCqS0/PIvKBYRonMATmuNKz0tcWjEtkG7hgqQxlQHY0pg/xwS89ahbzm60wPy63cg
+         O5QYX/mZluVpDp2G6R+SjV4suk+7I5iDuaOV+XakfOB8MXrSMKOd3Jq0ZJk04/WCFfDB
+         11Yg==
+X-Gm-Message-State: AOAM532UXg/ZD2bfpVC7Wb0S5UoHaj6Mj6ECEc/r8GAqaMDqadu8NT7f
+        F/kFXGzMG8wiIf/uYxJBc6UG8MBN+VioMw==
+X-Google-Smtp-Source: ABdhPJxmAaOqHCs3NjBmKvTRKFdRuH3GRJfBqJleErDn0J4XYBD5ky3dd5B8xUuWkYGPCX0NiqILKQ==
+X-Received: by 2002:a17:902:ee0b:b029:d3:c8dc:6db8 with SMTP id z11-20020a170902ee0bb02900d3c8dc6db8mr6403488plb.55.1604009516632;
+        Thu, 29 Oct 2020 15:11:56 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
+        by smtp.gmail.com with ESMTPSA id q123sm3950366pfq.56.2020.10.29.15.11.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 15:11:55 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 15:11:54 -0700
+From:   Prashant Malani <pmalani@chromium.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: Re: [PATCH 7/7] platform/chrome: cros_ec_typec: Register partner
+ altmodes
+Message-ID: <20201029221154.GB3913249@google.com>
+References: <20201021205317.708008-1-pmalani@chromium.org>
+ <20201021205317.708008-8-pmalani@chromium.org>
+ <20201028131732.GB2026875@kuha.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <2c95a4d8d1b4be2f839464ebc63bfcee6b70276a.1603893146.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028131732.GB2026875@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+Hi Heikki,
 
-Patch title needs fixing:
+Thank you for reviewing the patch!
 
-s/max_brightness/brightness/
-
-On 10/28/20 3:23 PM, Mauro Carvalho Chehab wrote:
-> This ABI is defined twice, one for normal leds and another
-> one for multicolor ones.
+On Wed, Oct 28, 2020 at 03:17:32PM +0200, Heikki Krogerus wrote:
+> Hi,
 > 
-> Ensure that just one definition is there at ABI.
+> On Wed, Oct 21, 2020 at 01:53:16PM -0700, Prashant Malani wrote:
+> > +static void cros_typec_unregister_altmodes(struct cros_typec_data *typec, int port_num)
+> > +{
+> > +	struct cros_typec_port *port = typec->ports[port_num];
+> > +	struct cros_typec_altmode_node *node;
+> > +
+> > +	while (!list_empty(&port->partner_mode_list)) {
+> > +		node = list_first_entry(&port->partner_mode_list, struct cros_typec_altmode_node,
+> > +					list);
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->   Documentation/ABI/testing/sysfs-class-led     | 25 ++++++++++++++++---
->   .../ABI/testing/sysfs-class-led-multicolor    | 23 +++++------------
->   2 files changed, 28 insertions(+), 20 deletions(-)
+>         ...
+>         struct cros_typec_altmode_node *node, *tmp;
 > 
-[...]
-> +
->   What:		/sys/class/leds/<led>/max_brightness
->   Date:		March 2006
->   KernelVersion:	2.6.17
-> diff --git a/Documentation/ABI/testing/sysfs-class-led-multicolor b/Documentation/ABI/testing/sysfs-class-led-multicolor
-> index eeeddcbdbbe3..16fc827b10cb 100644
-> --- a/Documentation/ABI/testing/sysfs-class-led-multicolor
-> +++ b/Documentation/ABI/testing/sysfs-class-led-multicolor
-> @@ -1,20 +1,3 @@
-> -What:		/sys/class/leds/<led>/brightness
-> -Date:		March 2020
-> -KernelVersion:	5.9
-> -Contact:	Dan Murphy <dmurphy@ti.com>
-> -Description:	read/write
-> -		Writing to this file will update all LEDs within the group to a
-> -		calculated percentage of what each color LED intensity is set
-> -		to. The percentage is calculated for each grouped LED via the
-> -		equation below:
+>         list_for_each_entry_safe(node, tmp, &port->partner_mode_list, list) {
+> 
 
+Nice; I will make this update in v2. Thanks!
 
--- 
 Best regards,
-Jacek Anaszewski
+
+-Prashant
