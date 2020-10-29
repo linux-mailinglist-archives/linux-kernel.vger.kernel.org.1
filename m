@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA74629F167
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1394B29F168
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbgJ2Q1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:27:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31414 "EHLO
+        id S1726790AbgJ2Q1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:27:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26533 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726858AbgJ2Q1i (ORCPT
+        by vger.kernel.org with ESMTP id S1726878AbgJ2Q1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:27:38 -0400
+        Thu, 29 Oct 2020 12:27:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603988857;
+        s=mimecast20190719; t=1603988859;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xc1/qwnZYFc07AtJAeib7bnspOE5uXnC7WNCrfY99LY=;
-        b=ISgyEjFa9WUoBu7zoRS7W4/MXGj4+zalz2xeJAvpN3qI7zKy3kydd4vT+EErK5al7cCVXA
-        lJ0InSaL2YbOWzMaIjPFMOsB7Tk+DmAVCKvBUl3ROgGzLP3FcbQ4si0dxG2IyidF/NsYcX
-        ZhQ/oAAaIYaXpeDVYhCgS8Lq4QZyNYE=
+        bh=w7siXqe9xLyC5jnHaj5YIsmBgb0Hn9zRskk7tPjv5dw=;
+        b=fNJhb3Q0xJWKgoQrcxQOwyc6uEOMgPm/nH1HT6wUKPZwMN0lMrlI07v1U9Vt0J2VPuTGMB
+        U4uMPXBzQ4g3oszWegfW8Hp0TUPCNRKpzz2FOxzcJuQThrOhz8Eaw74I2/yCn4JsnKIvT+
+        ka9x21ovdie8ZRhMqCGa/XG18F+7sBE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-503-wblWE3JeMACbyaMHkHBMJA-1; Thu, 29 Oct 2020 12:27:33 -0400
-X-MC-Unique: wblWE3JeMACbyaMHkHBMJA-1
+ us-mta-388-xWjC179tNFKDqVFXM7kCyQ-1; Thu, 29 Oct 2020 12:27:35 -0400
+X-MC-Unique: xWjC179tNFKDqVFXM7kCyQ-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D46661099F68;
-        Thu, 29 Oct 2020 16:27:30 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B2D6980B714;
+        Thu, 29 Oct 2020 16:27:33 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-112-181.ams2.redhat.com [10.36.112.181])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 484A75C1C4;
-        Thu, 29 Oct 2020 16:27:26 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 334855C1C4;
+        Thu, 29 Oct 2020 16:27:31 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
@@ -47,9 +47,9 @@ Cc:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
         Michal Hocko <mhocko@suse.com>,
         Oscar Salvador <osalvador@suse.de>,
         Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH v1 1/4] powerpc/mm: factor out creating/removing linear mapping
-Date:   Thu, 29 Oct 2020 17:27:15 +0100
-Message-Id: <20201029162718.29910-2-david@redhat.com>
+Subject: [PATCH v1 2/4] powerpc/mm: print warning in arch_remove_linear_mapping()
+Date:   Thu, 29 Oct 2020 17:27:16 +0100
+Message-Id: <20201029162718.29910-3-david@redhat.com>
 In-Reply-To: <20201029162718.29910-1-david@redhat.com>
 References: <20201029162718.29910-1-david@redhat.com>
 MIME-Version: 1.0
@@ -59,14 +59,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We want to stop abusing memory hotplug infrastructure in memtrace code
-to perform allocations and remove the linear mapping. Instead we will use
-alloc_contig_pages() and remove the identity mapping manually.
-
-Let's factor out creating/removing the linear mapping into
-arch_create_linear_mapping() / arch_remove_linear_mapping() - so in the
-future, we might be able to have whole arch_add_memory() /
-arch_remove_memory() be implemented in common code.
+Let's print a warning similar to in arch_add_linear_mapping() instead of
+WARN_ON_ONCE() and eventually crashing the kernel.
 
 Cc: Michael Ellerman <mpe@ellerman.id.au>
 Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
@@ -79,98 +73,24 @@ Cc: Oscar Salvador <osalvador@suse.de>
 Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- arch/powerpc/mm/mem.c          | 41 +++++++++++++++++++++++-----------
- include/linux/memory_hotplug.h |  3 +++
- 2 files changed, 31 insertions(+), 13 deletions(-)
+ arch/powerpc/mm/mem.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index 01ec2a252f09..8a86d81f8df0 100644
+index 8a86d81f8df0..685028451dd2 100644
 --- a/arch/powerpc/mm/mem.c
 +++ b/arch/powerpc/mm/mem.c
-@@ -120,34 +120,26 @@ static void flush_dcache_range_chunked(unsigned long start, unsigned long stop,
- 	}
- }
- 
--int __ref arch_add_memory(int nid, u64 start, u64 size,
--			  struct mhp_params *params)
-+int __ref arch_create_linear_mapping(int nid, u64 start, u64 size,
-+				     struct mhp_params *params)
- {
--	unsigned long start_pfn = start >> PAGE_SHIFT;
--	unsigned long nr_pages = size >> PAGE_SHIFT;
- 	int rc;
- 
- 	start = (unsigned long)__va(start);
- 	rc = create_section_mapping(start, start + size, nid,
- 				    params->pgprot);
- 	if (rc) {
--		pr_warn("Unable to create mapping for hot added memory 0x%llx..0x%llx: %d\n",
-+		pr_warn("Unable to create linear mapping for 0x%llx..0x%llx: %d\n",
- 			start, start + size, rc);
- 		return -EFAULT;
- 	}
--
--	return __add_pages(nid, start_pfn, nr_pages, params);
-+	return 0;
- }
- 
--void __ref arch_remove_memory(int nid, u64 start, u64 size,
--			     struct vmem_altmap *altmap)
-+void __ref arch_remove_linear_mapping(u64 start, u64 size)
- {
--	unsigned long start_pfn = start >> PAGE_SHIFT;
--	unsigned long nr_pages = size >> PAGE_SHIFT;
- 	int ret;
- 
--	__remove_pages(start_pfn, nr_pages, altmap);
--
- 	/* Remove htab bolted mappings for this section of memory */
- 	start = (unsigned long)__va(start);
+@@ -145,7 +145,9 @@ void __ref arch_remove_linear_mapping(u64 start, u64 size)
  	flush_dcache_range_chunked(start, start + size, FLUSH_CHUNK_SIZE);
-@@ -160,6 +152,29 @@ void __ref arch_remove_memory(int nid, u64 start, u64 size,
- 	 */
- 	vm_unmap_aliases();
- }
-+
-+int __ref arch_add_memory(int nid, u64 start, u64 size,
-+			  struct mhp_params *params)
-+{
-+	unsigned long start_pfn = start >> PAGE_SHIFT;
-+	unsigned long nr_pages = size >> PAGE_SHIFT;
-+	int rc;
-+
-+	rc = arch_create_linear_mapping(nid, start, size, params);
-+	if (rc)
-+		return rc;
-+	return __add_pages(nid, start_pfn, nr_pages, params);
-+}
-+
-+void __ref arch_remove_memory(int nid, u64 start, u64 size,
-+			      struct vmem_altmap *altmap)
-+{
-+	unsigned long start_pfn = start >> PAGE_SHIFT;
-+	unsigned long nr_pages = size >> PAGE_SHIFT;
-+
-+	__remove_pages(start_pfn, nr_pages, altmap);
-+	arch_remove_linear_mapping(start, size);
-+}
- #endif
  
- #ifndef CONFIG_NEED_MULTIPLE_NODES
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index d65c6fdc5cfc..00b9e9bd3850 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -375,6 +375,9 @@ extern struct page *sparse_decode_mem_map(unsigned long coded_mem_map,
- 					  unsigned long pnum);
- extern struct zone *zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
- 		unsigned long nr_pages);
-+extern int arch_create_linear_mapping(int nid, u64 start, u64 size,
-+				      struct mhp_params *params);
-+void arch_remove_linear_mapping(u64 start, u64 size);
- #endif /* CONFIG_MEMORY_HOTPLUG */
+ 	ret = remove_section_mapping(start, start + size);
+-	WARN_ON_ONCE(ret);
++	if (ret)
++		pr_warn("Unable to remove linear mapping for 0x%llx..0x%llx: %d\n",
++			start, start + size, ret);
  
- #endif /* __LINUX_MEMORY_HOTPLUG_H */
+ 	/* Ensure all vmalloc mappings are flushed in case they also
+ 	 * hit that section of memory
 -- 
 2.26.2
 
