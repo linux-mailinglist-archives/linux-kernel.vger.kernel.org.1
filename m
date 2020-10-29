@@ -2,150 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC8129F32F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3D229F337
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:29:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727697AbgJ2R1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
+        id S1726960AbgJ2R3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 13:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgJ2R1U (ORCPT
+        with ESMTP id S1725730AbgJ2R3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:27:20 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBAF9C0613CF;
-        Thu, 29 Oct 2020 10:27:19 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id k6so3869070ilq.2;
-        Thu, 29 Oct 2020 10:27:19 -0700 (PDT)
+        Thu, 29 Oct 2020 13:29:52 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB40C0613D5;
+        Thu, 29 Oct 2020 10:29:51 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id k21so1688149wmi.1;
+        Thu, 29 Oct 2020 10:29:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YCM9eeSlF+1Jtw1IHwwjrNN64amsn3vj+QDkHX36dEI=;
-        b=NKnKC6h3xdQl4ty4cdzyup15DmnF4kjXRf65f+lR5OgAs6Rnj4FSMujiHj79L2ZYk/
-         /Ugu6Z9fpMUZ7rP01gENB9gylCNxt55+q/fKHjtPYi/Rrho73Eq3+N2HitM+8ZnjwTwk
-         wSwt+NdoYPo5SxnFrJyuWomFuaDflM+KhAhxGNBw1vzstrUYInah3B2+UpE7rckUc16G
-         TnTSXaASg9yYKvbqW9B5qiFTHRH82qomXzfSPUTNDkZAWkM5grPSlEYpfa64pQpvn46I
-         eQ+/Gf5P0Rmq45X6ZfNKFvAU+rRlnO4CQguB2xauBltiop4GwozvrpkGc5BZnvV1tK+x
-         EQ+A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tsIIeip0c9OlJdC8NFlOSS5E1Z7oDwE4UBzxXI1dq7s=;
+        b=GbM6ENuT0F23wMLW0DhxPoEL5YTO4sypFhgCg/Cya8YiHIqmjhEvz9a4gyqPbNG4oi
+         9WNEcxOzrjcxV8esnGytuW8318rfFhDdd/8Tc8hpsPepdJ1FH/x8CQfMHQFQDJdPqKMX
+         +hgfeNncnMqxW6CamPNF3/2yW9YoEKbF8rEw/kzyIPQOCNa3Mp9kdePAqHTFLHsoueAa
+         MSq+0DLegSEY3DT1mBOoDew7YFd8NlO3sbToMv3hu92SovAX4MniCJZkVIlWb/DqsnCO
+         CIrjteUgpmRxKphROrGURmyfzoPI09qWT7Ve8tcpGJoSpupgDW2UyvyNshfJ1zhho36C
+         Ms2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YCM9eeSlF+1Jtw1IHwwjrNN64amsn3vj+QDkHX36dEI=;
-        b=Haoi6dbnfe11u5dGfK4Xr7kwiXhCjJhh0GSJ3lM6W9/eaB6KRKBaG4RREZa4pPRMT0
-         dYbRQTHldBANH9B+8IajATIVVPy6NiAoNIeasACXHuuvQVGgf1jr0FkMi4vVgDdPd43z
-         LTUx/2wQOJx4Dm/F4dczbViB8NjyXaUi6QzALecfKlbjdwvexIti4BoX/djgpYMs129Y
-         q+vTg8U8vjDByXzFw/FwZBop7SntE/Jh+EYsvh+HG4z4l3ivIJmse/SYBy6OPbLBQACW
-         ZikGbjct3Wa2GBQxaoQWWHs923PAxL/+jBjyxLjQLV7KRSHGunBUJyKyE6610V3hxvxK
-         o/VA==
-X-Gm-Message-State: AOAM531Zpx3r7swfuf2tf//CbacPT0317hV18CqEoq7ewBwd6tNGH4zj
-        TF9ehoa9TOuaXTI6k6+Q+Y3rkbdiQhFejGPXtj4=
-X-Google-Smtp-Source: ABdhPJzNTUamixF2CmgQL9tEZ4fdoI7rQxxPeiDRJxUtqBgVORiVSgkouUORSbqbtRtuMxRxd+9eCopOAk5qHwZSNAM=
-X-Received: by 2002:a92:d30f:: with SMTP id x15mr2359202ila.9.1603992439274;
- Thu, 29 Oct 2020 10:27:19 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tsIIeip0c9OlJdC8NFlOSS5E1Z7oDwE4UBzxXI1dq7s=;
+        b=Tml08oooq6VBELs5oOR5r25dfd5NRI/atnPjYd4A7wHtVTMGJsdodjcsFDdtTJpZoy
+         7fGEI93raZUlmkklahI4SjIoPfIgnGYudlB2juh9IZXt3abGqtQ6RJH6g/qcl3mO4xDK
+         vWI6Fn+vUTsvsyqoSyetJIrAaQh8I+n3Ju0AIynHqP/CtVIbeSkqjmeSU/0d7kgP8C0v
+         t0Ugjpk9KtzTfvCpnsapBkDNaqTL58pBTmme1zGqongpYMZNKJ9lAra5tufUbhST8L+A
+         njsJM0Hg0eQwhxNDFbr+NKK+SZ+V38/QjZC7zdjyAMv0xK6uPT88n8tZRfbHiJTqDhJV
+         fyBw==
+X-Gm-Message-State: AOAM5331H5ZTDXS4MT1ogaz+izI8J7ZcnDujQAyzpeD8Ug2IaT0H6bJt
+        NZaIgGKFBeq0BFhWkmn4S4YdNIR6HtP7vE8I
+X-Google-Smtp-Source: ABdhPJzBKlcpXFAQxlmhKefQ9tQW3qGj5R/Jh5QlUeUBoCbKG1Yj4j7c02bQAjc54td9cBzFIPtWWQ==
+X-Received: by 2002:a1c:ddc4:: with SMTP id u187mr961117wmg.156.1603992590441;
+        Thu, 29 Oct 2020 10:29:50 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
+        by smtp.gmail.com with ESMTPSA id e11sm5866054wrj.75.2020.10.29.10.29.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 10:29:49 -0700 (PDT)
+From:   kholk11@gmail.com
+To:     mchehab@kernel.org
+Cc:     robh+dt@kernel.org, marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, devicetree@vger.kernel.org,
+        linux-media@vger.kernel.org, phone-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>
+Subject: [PATCH v2 0/2] Add support for the Sony Exmor-RS IMX300 camera sensor
+Date:   Thu, 29 Oct 2020 18:29:45 +0100
+Message-Id: <20201029172947.34315-1-kholk11@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201029154535.2074-1-longman@redhat.com>
-In-Reply-To: <20201029154535.2074-1-longman@redhat.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 29 Oct 2020 19:27:08 +0200
-Message-ID: <CAOQ4uxjT8rWLr1yCBPGkhJ7Rr6n3+FA7a0GmZaMBHMzk9t1Sag@mail.gmail.com>
-Subject: Re: [PATCH v2] inotify: Increase default inotify.max_user_watches
- limit to 1048576
-To:     Waiman Long <longman@redhat.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Luca BRUNO <lucab@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 5:46 PM Waiman Long <longman@redhat.com> wrote:
->
-> The default value of inotify.max_user_watches sysctl parameter was set
-> to 8192 since the introduction of the inotify feature in 2005 by
-> commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
-> small for many modern usage. As a result, users have to explicitly set
-> it to a larger value to make it work.
->
-> After some searching around the web, these are the
-> inotify.max_user_watches values used by some projects:
->  - vscode:  524288
->  - dropbox support: 100000
->  - users on stackexchange: 12228
->  - lsyncd user: 2000000
->  - code42 support: 1048576
->  - monodevelop: 16384
->  - tectonic: 524288
->  - openshift origin: 65536
->
-> Each watch point adds an inotify_inode_mark structure to an inode to
-> be watched. It also pins the watched inode as well as an inotify fdinfo
-> procfs file.
->
-> Modeled after the epoll.max_user_watches behavior to adjust the default
-> value according to the amount of addressable memory available, make
-> inotify.max_user_watches behave in a similar way to make it use no more
-> than 1% of addressable memory within the range [8192, 1048576].
->
-> For 64-bit archs, inotify_inode_mark plus 2 inode have a size close
-> to 2 kbytes. That means a system with 196GB or more memory should have
-> the maximum value of 1048576 for inotify.max_user_watches. This default
-> should be big enough for most use cases.
->
-> With my x86-64 config, the size of xfs_inode, proc_inode and
-> inotify_inode_mark is 1680 bytes. The estimated INOTIFY_WATCH_COST is
-> 1760 bytes.
->
-> [v2: increase inotify watch cost as suggested by Amir and Honza]
->
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  fs/notify/inotify/inotify_user.c | 24 +++++++++++++++++++++++-
->  1 file changed, 23 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-> index 186722ba3894..37d9f09c226f 100644
-> --- a/fs/notify/inotify/inotify_user.c
-> +++ b/fs/notify/inotify/inotify_user.c
-> @@ -37,6 +37,16 @@
->
->  #include <asm/ioctls.h>
->
-> +/*
-> + * An inotify watch requires allocating an inotify_inode_mark structure as
-> + * well as pinning the watched inode and adding inotify fdinfo procfs file.
+From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-Maybe you misunderstood me.
-There is no procfs file per watch.
-There is a procfs file per inotify_init() fd.
-The fdinfo of that procfile lists all the watches of that inotify instance.
+This patch series adds support for the IMX300 camera sensor, (one of the)
+first Exmor-RS Stacked CMOS sensor(s), with support for both of the
+supported aspect ratios (4:3 and 16:9).
+This driver came out from reverse engineering of so called "userspace
+drivers" from Sony Xperia smartphones.
 
-> + * The increase in size of a filesystem inode versus a VFS inode varies
-> + * depending on the filesystem. An extra 512 bytes is added as rough
-> + * estimate of the additional filesystem inode cost.
-> + */
-> +#define INOTIFY_WATCH_COST     (sizeof(struct inotify_inode_mark) + \
-> +                                2 * sizeof(struct inode) + 512)
-> +
+I tried to document all of my findings and giving a sense to the registers
+as much as possible, but that was only partially possible and resembles
+some names from the IMX219 public datasheet, even though the addresses are
+basically completely different.
 
-I would consider going with double the sizeof inode as rough approximation for
-filesystem inode size.
+This camera sensor driver was tested with all the resolutions declared in
+it on two phones: Sony Xperia XA2 and XA2 Ultra, on a SDM630 SoC (camss
+patches for this SoC will come in a later series) and is working great.
 
-It is a bit less arbitrary than 512 and it has some rationale behind it -
-Some kernel config options will grow struct inode (debug, smp)
-The same config options may also grow the filesystem part of the inode.
+- Changes in v2:
+  - Changed dt-binding name and fixed a misconception about lane
+    operation (sensor supports 2/4-Lane, driver supports 4-Lane only)
+  - Now using lowercase names for regulator supplies
+  - Fixed redefinition of clock-noncontinuous property
+  - Added informations about constraints on data bus frequencies
+  - Fixed MAINTAINERS: removed git tree
 
-And this approximation can be pretty accurate at times.
-For example, on Ubuntu 18.04 kernel 5.4.0:
-inode_cache        608
-nfs_inode_cache      1088
-btrfs_inode            1168
-xfs_inode              1024
-ext4_inode_cache   1096
+AngeloGioacchino Del Regno (2):
+  media: i2c: Add driver for the Sony Exmor-RS IMX300 camera sensor
+  media: dt-bindings: media: i2c: Add IMX300 CMOS sensor binding
 
+ .../bindings/media/i2c/sony,imx300.yaml       |  112 +
+ MAINTAINERS                                   |    7 +
+ drivers/media/i2c/Kconfig                     |   13 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/imx300.c                    | 3089 +++++++++++++++++
+ 5 files changed, 3222 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+ create mode 100644 drivers/media/i2c/imx300.c
 
-Thanks,
-Amir.
+-- 
+2.28.0
+
