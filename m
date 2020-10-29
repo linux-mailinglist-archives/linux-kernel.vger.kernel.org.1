@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF1629F0DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:13:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E627C29F0E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgJ2QNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:13:15 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:46617 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbgJ2QNO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:13:14 -0400
-Received: by mail-ed1-f67.google.com with SMTP id t11so3560040edj.13;
-        Thu, 29 Oct 2020 09:13:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0x91uo33SqahreEp/vgik9wVXC+fxrX3zZ93nXMNWTo=;
-        b=fGGpMP7ZgOZkfsFXorx9qAmbH2eQ2sHd0QAHb6ppv8sIdsgmKMvKou14E9yLfUfIdb
-         rfvGSBU4otsPqlPFuinP+zAwPmGesMm8JW5+l/J97K+vlJNfUGN1ESDm3ajB9KU3ud3p
-         ifPxcCm/utp06ec1Pc/mdzRmb3vz3DYb4yg7h+L6uNUq/p5apcn9NnnzOqt/+oaugtvD
-         TrJ76SyL+4azRWubGmWQ0Bk6mwWq1dVgCEfEVc5x9bAaE2WpZvXB5kcTI+4GqVxuRQVY
-         qQA0Qybq/Jqgps68r7fExTegiOrxoYIhtTMF9I5UWzQyYalzNhSGTn8Tx3Zpje6n6Q0d
-         XvRg==
-X-Gm-Message-State: AOAM533vJIigDIeqL78fTEz8XF0xIwEGJqiaL5kY+Hr3AcY/2PL2LwTY
-        KnSpgys56rwDZIFshpSILjo=
-X-Google-Smtp-Source: ABdhPJzTCkYDJ61zzUWY9XYIIhmRRVLqhB4Jr35RnAsc3sY5Vra5anYkbwcdHcZ7qaK91xGLDx4Mkg==
-X-Received: by 2002:a50:da8d:: with SMTP id q13mr4912922edj.370.1603987993239;
-        Thu, 29 Oct 2020 09:13:13 -0700 (PDT)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id ce13sm1836318edb.32.2020.10.29.09.13.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 09:13:11 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 17:13:10 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: watchdog: fsl-imx: document i.MX
- compatibles
-Message-ID: <20201029161310.GA29346@kozik-lap>
-References: <20200926162302.32525-1-krzk@kernel.org>
- <20201029143508.GO28755@dragon>
+        id S1726194AbgJ2QNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:13:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34896 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725847AbgJ2QNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:13:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603988018;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nxefRSiqTvIh1X46sbXjSTVE8f5f0KcaWYrFYUA7Jvk=;
+        b=meEFnLQtGDhNNwqDYFrHnB4+mqNmRj2I7FO4urV6zIV7LYoCbnCHFJ76yXFcBa9g2LWkNA
+        EflhUj/SfziFb7HAMiGgGDdPY0faX/PtGSXJgLDIM2HCXOQqHDqIXh0NMPDIqga+yNG8f6
+        znuNzjtPxaHM3+YbSVwN0rQLszgJtqs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3EE88ACA0;
+        Thu, 29 Oct 2020 16:13:38 +0000 (UTC)
+Date:   Thu, 29 Oct 2020 17:13:36 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Chris Down <chris@chrisdown.name>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
+        Marco Elver <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH v2] mm: memcontrol: Simplify the mem_cgroup_page_lruvec
+Message-ID: <20201029161336.GH17500@dhcp22.suse.cz>
+References: <20201028035013.99711-1-songmuchun@bytedance.com>
+ <20201028035013.99711-4-songmuchun@bytedance.com>
+ <20201029090806.GD17500@dhcp22.suse.cz>
+ <CALvZod68-f-_1pevYbegzXk_b0L=XbCJkM5KqcRF9TuLiz3_ww@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201029143508.GO28755@dragon>
+In-Reply-To: <CALvZod68-f-_1pevYbegzXk_b0L=XbCJkM5KqcRF9TuLiz3_ww@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 10:35:09PM +0800, Shawn Guo wrote:
-> On Sat, Sep 26, 2020 at 06:23:00PM +0200, Krzysztof Kozlowski wrote:
-> > Document all ARMv5, ARMv6 and ARMv7 i.MX compatibles used in DTSes (even
-> > though driver binds only to fsl,imx21-wdt) to fix dtbs_check warnings
-> > like:
-> > 
-> >   arch/arm/boot/dts/imx53-qsb.dt.yaml: gpio@53fe0000: compatible:
-> >     ['fsl,imx53-gpio', 'fsl,imx35-gpio'] is not valid under any of the given schemas
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > ---
-> >  .../devicetree/bindings/watchdog/fsl-imx-wdt.yaml  | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
-> > index 991b4e33486e..a06e70f44fd0 100644
-> > --- a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
-> > +++ b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
-> > @@ -18,10 +18,24 @@ properties:
-> >        - const: fsl,imx21-wdt
-> >        - items:
-> >            - enum:
-> > +              - fsl,imx25-wdt
-> > +              - fsl,imx27-wdt
-> > +              - fsl,imx31-wdt
-> > +              - fsl,imx35-wdt
-> > +              - fsl,imx50-wdt
-> > +              - fsl,imx51-wdt
-> > +              - fsl,imx53-wdt
-> > +              - fsl,imx6q-wdt
-> > +              - fsl,imx6sl-wdt
-> > +              - fsl,imx6sll-wdt
-> > +              - fsl,imx6sx-wdt
-> > +              - fsl,imx6ul-wdt
-> > +              - fsl,imx7d-wdt
-> >                - fsl,imx8mm-wdt
-> >                - fsl,imx8mn-wdt
-> >                - fsl,imx8mp-wdt
-> >                - fsl,imx8mq-wdt
+On Thu 29-10-20 09:01:37, Shakeel Butt wrote:
+> On Thu, Oct 29, 2020 at 2:08 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Wed 28-10-20 11:50:13, Muchun Song wrote:
+> > [...]
+> > > -struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
+> > > +static struct lruvec *
+> > > +__mem_cgroup_node_lruvec(struct mem_cgroup *memcg, struct pglist_data *pgdat,
+> > > +                      int nid)
+> >
+> > I thought I have made it clear that this is not a good approach. Please
+> > do not repost new version without that being addressed. If there are any
+> > questions then feel free to ask for details.
 > 
-> Could you add the following two as well?
-> 
->     - fsl,ls1012a-wdt
->     - fsl,ls1043a-wdt
+> You can get nid from pgdat (pgdat->node_id) and also pgdat from nid
+> (NODE_DATA(nid)), so, __mem_cgroup_node_lruvec() only need one of them
+> as parameter.
 
-I focused in these patches on i.MX but I can fix the Layerscape as well.
+Exactly what I've said in the previous version review. I suspect that
+the issue is that mem_cgroup_page_nodeinfo (based on page's node_id)
+and the given pgdat can mismatch in the existing code but that shouldn't
+be a real problem because the mismatch can only happen for lruvec->pgdat
+== NULL unless I am missing something.
 
-Best regards,
-Krzysztof
-
+-- 
+Michal Hocko
+SUSE Labs
