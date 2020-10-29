@@ -2,172 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B4D29F435
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC04329F43C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725824AbgJ2Sl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 14:41:27 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17387 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgJ2Sl0 (ORCPT
+        id S1725862AbgJ2Sqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 14:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgJ2Sqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 14:41:26 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9b0cdb0000>; Thu, 29 Oct 2020 11:41:31 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 29 Oct
- 2020 18:41:25 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.172)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 29 Oct 2020 18:41:25 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Oz/CYlqqOdCw7/IGSCeq4abXRVkcnJOJsS7z8Ig24DjW1Pht5BZtgW/rmKC8vWuT5ReaKduDFcezdT8KyxI6LT8ttRlhUh8Er8kDdbj0lJaEEUQPxuhuomgRSnKr9/XD7vcwD/eTUGKEix4BOQHJhRjJ4Jh+sXqsnVK692RgmbFRQ2Pu7qBjfNYlULPGeYoGgqka3D1RtMFxH9/ntm5/Y8XDwwFvnw0LTTkPkRmt6KdIVYJP+pvCi5TyjbOwp+86+hKTqkCl/kN5gmnO6Rbk7oNs6du4eoXC+Sx/HCw3sTkTFF7/65SLXx9WeIX+pJNoY7ffOrXlJIZ1w3KkmVfBvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1Glls7vTISXRSD6YqHxBre4V7aeE/LuZZQTL9e47XHg=;
- b=kd8qY4AejJBqfrNnOe0HFQOCCw3sbfUqhSdFWXYjXC7mXqfU+/OPV0nQBA98kWhELjdbHLb2nbbMEr0mutkt6nkjK0vVDUAP7dC+G2g3Qe6EcroNZWkBSo+qe/JjNkIWOIxy3LDBZJTxvYGUyL6wpIzH5zkPNcrrbrOBvINnBWNHXlj8o5W+aXLu4SdqX76YAinPYIBcymNkS+IjXUTMYfjvVGjC6HcTGD+20ku64pIwT5938w2wF+PeIwQpzowQO6LP1WvEhmdSZyYwE1ukPZIIDgI6AqozEdzrp3Hq8jquOQ3xNyW66XLpYekjKdoHmKBtnOcGAQUKW9efWFrGeA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0203.namprd12.prod.outlook.com (2603:10b6:4:56::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.28; Thu, 29 Oct
- 2020 18:41:24 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Thu, 29 Oct 2020
- 18:41:24 +0000
-Date:   Thu, 29 Oct 2020 15:41:23 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] Please pull RDMA subsystem changes
-Message-ID: <20201029184123.GA2920455@nvidia.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
-X-ClientProxiedBy: MN2PR06CA0022.namprd06.prod.outlook.com
- (2603:10b6:208:23d::27) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Thu, 29 Oct 2020 14:46:35 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D089C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 11:46:35 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id z17so4629686iog.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 11:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U3lvFqJw5Gl1w3mVBojj+eMcPKfIZdfZjXNEKfcZQy0=;
+        b=oINUIi0kX6GD6uoLczupjd4Cj1AKiW3OpszCvioHKPQ1p3C2VSWHtt+O2SH1fA3xLf
+         uUobUIq+AtC0kMLyP9zcA1wr9r41nQbNr5XGh1AARsJKHrs3rq4KQv230Yob2aUrwKAF
+         1JbAx6TMPUFnzfhXtQuLov5fSazUt/FyJTKSQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U3lvFqJw5Gl1w3mVBojj+eMcPKfIZdfZjXNEKfcZQy0=;
+        b=dYithTANbjbkVh4Ya2UgkB6iWqdjpmzmOem4/7gEWjUiCeeQ0HGT6P4xUG3r1zYLmU
+         3SivD6Wf+QPDPfiZK2Y53RsIy7yweFcDUgIx0OKcnLBFQK18ahG9EY8r2xHeqR3nh5Wr
+         sEc4ye0hEY7LSPcYtH+X9kPQye5R2oXSxIUtkiaTv6rJDUSVCY8Wa+9h3DT48W7+i2yK
+         I6u5bWnDVe8i45KVgMropxItFDSJE8HWQKbwt7lteoef4tkazwdaUOSl7LIAHlr5656D
+         zvlTPKwavctOyzCwbmEU8CfKrMYNPELwRaM6LCEm5C0LGLNtkXUOoLNXOAhOrxZc7pLp
+         HPgQ==
+X-Gm-Message-State: AOAM531ShE1vwC9aeYi8yu50gBpQ47FuXTHm9gcAwDw63NnUQB2Qb8NN
+        fjPMe+YA3bKmcszfS3YZVVHs5+CmLJEJNRv4NCyB
+X-Google-Smtp-Source: ABdhPJyPAbUPdyhuLMdDF7C6jXA2HqNwlTEpS2y1bLIXo17932v5jwkvfyFvGDGcFZdFLU/ztkw/KY/DEy4VgiOvqsw=
+X-Received: by 2002:a05:6602:14c9:: with SMTP id b9mr4625687iow.0.1603997194509;
+ Thu, 29 Oct 2020 11:46:34 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR06CA0022.namprd06.prod.outlook.com (2603:10b6:208:23d::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Thu, 29 Oct 2020 18:41:24 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kYCrT-00CFnA-38; Thu, 29 Oct 2020 15:41:23 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603996891; bh=1Glls7vTISXRSD6YqHxBre4V7aeE/LuZZQTL9e47XHg=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:Content-Type:Content-Disposition:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=UCgBT1GTvHBt4h6mwQ4C1p6dcZCBf4PSpLpkKX9+/2W1jnED9tsQuyVSR6ifrSFbh
-         r3NIBwqsNgv9+YZru0YGo4dRBkRrrOwu58wueqIM432ma53zx3n+oj7qgW0zdps344
-         VB3dOI5NYj4QhDzztJpB55LZVvmjSixBuaiuChyjnPp3CbWdyRNLaqRC115Ks+I/Iw
-         hg1rX25ma8P6n+8uRhcfWTBkglOb8ir1M1FQMpn/UaYKsKk+nFxNxT64eGB2uAZ7nc
-         /xxnfaNJn+ObvuIfiHlBcV/qv0u4I4EzdAc82ADRyO7yTbdjL9MKncFhdwj7PKI+8N
-         0fnoidllf2CCA==
+References: <20201021073839.43935-1-zong.li@sifive.com> <CAJF2gTTnGSYAc3AZKCPvhNJsPm_TchPjPrtqc_WzaK7K5eNt+w@mail.gmail.com>
+ <CAOnJCULN8h0Jk3H-vskgbaXhgBTgTTAT5Dji0qHi6yHoXGePvg@mail.gmail.com>
+ <CANXhq0q_fOg7vsniVMtNd8VezW1yymf55FYRc61WMkXMOtZpgA@mail.gmail.com> <CAJF2gTR-_=_vDLsST9BVxRFC0OTR4_TYV-2=nH_Gux_zWDOk3Q@mail.gmail.com>
+In-Reply-To: <CAJF2gTR-_=_vDLsST9BVxRFC0OTR4_TYV-2=nH_Gux_zWDOk3Q@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Thu, 29 Oct 2020 11:46:23 -0700
+Message-ID: <CAOnJCU+d5YQzKW2qs0NURJt1_5zrM6YXrkP4FzB_=zgbb-5DuA@mail.gmail.com>
+Subject: Re: [PATCH] stop_machine: Mark functions as notrace
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Zong Li <zong.li@sifive.com>, Paul McKenney <paulmck@kernel.org>,
+        josh@joshtriplett.org, Steven Rostedt <rostedt@goodmis.org>,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, vincent.whitchurch@axis.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Thu, Oct 29, 2020 at 9:06 AM Guo Ren <guoren@kernel.org> wrote:
+>
+> On Thu, Oct 29, 2020 at 10:34 AM Zong Li <zong.li@sifive.com> wrote:
+> >
+> > On Thu, Oct 29, 2020 at 8:23 AM Atish Patra <atishp@atishpatra.org> wrote:
+> > >
+> > > On Wed, Oct 28, 2020 at 8:44 AM Guo Ren <guoren@kernel.org> wrote:
+> > > >
+> > > > Hi Zong & Atish,
+> > > >
+> > > > In our 2 harts c910 chip, we found:
+> > > >
+> > > > echo function > /sys/kernel/debug/tracing/current_tracer
+> > > > echo function_graph > /sys/kernel/debug/tracing/current_tracer
+> > > > echo function > /sys/kernel/debug/tracing/current_tracer
+> > > > echo function_graph > /sys/kernel/debug/tracing/current_tracer
+> > > >
+> > > > Then one core halted at stop_machine_yield:
+> > > > arch_cpu_idle () at arch/riscv/kernel/process.c:39
+> > > > 39              local_irq_enable();
+> > > > (gdb) i th
+> > > >   Id   Target Id         Frame
+> > > > * 1    Thread 1 (CPU#0)  arch_cpu_idle () at arch/riscv/kernel/process.c:39
+> > > >   2    Thread 2 (CPU#1)  stop_machine_yield
+> > > > (cpumask=0xffffffe001371fa8 <__cpu_online_mask>) at
+> > > > ./arch/riscv/include/asm/vdso/processor.h:12
+> > > > (gdb) thread 2
+> > > > [Switching to thread 2 (Thread 2)]
+> > > > #0  stop_machine_yield (cpumask=0xffffffe001371fa8
+> > > > <__cpu_online_mask>) at ./arch/riscv/include/asm/vdso/processor.h:12
+> > > > 12              __asm__ __volatile__ ("div %0, %0, zero" : "=r" (dummy));
+> > > >
+> > > > With your patch, it's solved. For this patch, I'll give:
+> > > > Tested by: Guo Ren <guoren@kernel.org>
+> > > >
+> > > > But that's not enough, we still need:
+> > > >
+> > > > diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+> > > > index 226ccce..12b8808 100644
+> > > > --- a/arch/riscv/kernel/sbi.c
+> > > > +++ b/arch/riscv/kernel/sbi.c
+> > > > @@ -376,7 +376,7 @@ EXPORT_SYMBOL(sbi_send_ipi);
+> > > >   *
+> > > >   * Return: None
+> > > >   */
+> > > > -void sbi_remote_fence_i(const unsigned long *hart_mask)
+> > > > +void notrace sbi_remote_fence_i(const unsigned long *hart_mask)
+> > > >  {
+> > > >         __sbi_rfence(SBI_EXT_RFENCE_REMOTE_FENCE_I,
+> > > >                      hart_mask, 0, 0, 0, 0);
+> > > > diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
+> > > > index 400b945d..9467d987 100644
+> > > > --- a/arch/riscv/mm/cacheflush.c
+> > > > +++ b/arch/riscv/mm/cacheflush.c
+> > > > @@ -9,12 +9,12 @@
+> > > >
+> > > >  #include <asm/sbi.h>
+> > > >
+> > > > -static void ipi_remote_fence_i(void *info)
+> > > > +static void notrace ipi_remote_fence_i(void *info)
+> > > >  {
+> > > >         return local_flush_icache_all();
+> > > >  }
+> > > >
+> > > > -void flush_icache_all(void)
+> > > > +void notrace flush_icache_all(void)
+> > > >  {
+> > > >         if (IS_ENABLED(CONFIG_RISCV_SBI))
+> > > >                 sbi_remote_fence_i(NULL);
+> > > >
+> > >
+> > > Did you see any issue if these functions are not marked as notrace ?
+> > >
+> > > As per Zong's explanation, the issue was that the other harts already
+> > > fetched the next 2 nops and
+> > > executed 1 while kernel patching replaced other with one of the auipc
+> > > + jalr pair.
+> > >
+> > > @Zong can correct me if I am wrong.
+> > >
+> > > These functions are too far ahead. Can it cause such issues ? If yes,
+> > > then we need to mark each and every function
+> > > that can be invoked from patch_text_nosync and are not inlined.
+> > >
+> > > That includes copy_to_kernel_nofault, __sbi_rfence_v02,
+> > > __sbi_rfence_v02_call, sbi_ecall.
+> > >
+> > > Few of these functions may be inlined by compiler. Can we depend on that ?
+> > >
+> > > > Because:
+> > > > (gdb) bt
+> > > > #0  flush_icache_all () at arch/riscv/mm/cacheflush.c:20
+> > > > #1  0xffffffe00020473a in patch_text_nosync (addr=<optimized out>, insns=
+> > > >     <optimized out>, len=<optimized out>) at arch/riscv/kernel/patch.c:96
+> > > > #2  0xffffffe000206792 in ftrace_make_call (rec=<optimized out>,
+> > > > addr=<optimized out>) at arch/riscv/kernel/ftrace.c:109
+> > > > #3  0xffffffe0002c9be4 in __ftrace_replace_code (rec=0xffffffe01ae40020, e
+> > > >     nable=true) at kernel/trace/ftrace.c:2503
+> > > > #4  0xffffffe0002ca092 in ftrace_replace_code (mod_flags=<optimized
+> > > >     out>) at kernel/trace/ftrace.c:2530
+> > > > #5  0xffffffe0002ca24a in ftrace_modify_all_code (command=9) at kernel
+> > > >    /trace/ftrace.c:2677
+> > > > #6  0xffffffe0002ca2ee in __ftrace_modify_code (data=<optimized out>) at
+> > > >    kernel/trace/ftrace.c:2703
+> > > > #7  0xffffffe0002c1390 in multi_cpu_stop (data=0x0) at kernel/stop_machin
+> > > >    e.c:224
+> > > > #8  0xffffffe0002c0fbe in cpu_stopper_thread (cpu=<optimized out>) at kern
+> > > >    el/stop_machine.c:491
+> > > > #9  0xffffffe0002343be in smpboot_thread_fn (data=0x0) at kernel/smpboot.
+> > > >    c:165
+> > > > #10 0xffffffe00022f894 in kthread (_create=0xffffffe01af13040) at kern
+> > > >    el/kthread.c:292
+> > > > #11 0xffffffe000201fac in handle_exception () at arch/riscv/kernel/entry.S:236
+> > > >
+> >
+> > It seems to me that the problem happens on the waiting threads, it
+> No, that is the call trace to show ftrace_make_call ->
+> flush_icache_all and we should give notrace on the whole path.
+>
 
-Hi Linus,
+Hmm. I am curious to understand how other architectures avoid this problem.
+Is it a bigger issue in RISC-V because we have to switch privilege
+mode to sync I/D cache ?
 
-First rc pull request
+> > doesn't cause the issue on the patching code thread, so it is OK that
+> > these functions are traceable. I probably don't figure out all
+> > possible situations, do you find any issue and reason to change the
+> > annotation of these functions?
+> >
+> > > > On Wed, Oct 21, 2020 at 3:38 PM Zong Li <zong.li@sifive.com> wrote:
+> > > > >
+> > > > > Like the commit cb9d7fd51d9f ("watchdog: Mark watchdog touch functions
+> > > > > as notrace"), some architectures assume that the stopped CPUs don't make
+> > > > > function calls to traceable functions when they are in the stopped
+> > > > > state. For example, it causes unexpected kernel crashed when switching
+> > > > > tracer on RISC-V.
+> > > > >
+> > > > > The following patches added calls to these two functions, fix it by
+> > > > > adding the notrace annotations.
+> > > > >
+> > > > > Fixes: 4ecf0a43e729 ("processor: get rid of cpu_relax_yield")
+> > > > > Fixes: 366237e7b083 ("stop_machine: Provide RCU quiescent state in
+> > > > > multi_cpu_stop()")
+> > > > >
+> > > > > Signed-off-by: Zong Li <zong.li@sifive.com>
+> > > > > ---
+> > > > >  kernel/rcu/tree.c     | 2 +-
+> > > > >  kernel/stop_machine.c | 2 +-
+> > > > >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > index 06895ef85d69..2a52f42f64b6 100644
+> > > > > --- a/kernel/rcu/tree.c
+> > > > > +++ b/kernel/rcu/tree.c
+> > > > > @@ -409,7 +409,7 @@ bool rcu_eqs_special_set(int cpu)
+> > > > >   *
+> > > > >   * The caller must have disabled interrupts and must not be idle.
+> > > > >   */
+> > > > > -void rcu_momentary_dyntick_idle(void)
+> > > > > +notrace void rcu_momentary_dyntick_idle(void)
+> > > > >  {
+> > > > >         int special;
+> > > > >
+> > > > > diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
+> > > > > index 865bb0228ab6..890b79cf0e7c 100644
+> > > > > --- a/kernel/stop_machine.c
+> > > > > +++ b/kernel/stop_machine.c
+> > > > > @@ -178,7 +178,7 @@ static void ack_state(struct multi_stop_data *msdata)
+> > > > >                 set_state(msdata, msdata->state + 1);
+> > > > >  }
+> > > > >
+> > > > > -void __weak stop_machine_yield(const struct cpumask *cpumask)
+> > > > > +notrace void __weak stop_machine_yield(const struct cpumask *cpumask)
+> > > > >  {
+> > > > >         cpu_relax();
+> > > > >  }
+> > > > > --
+> > > > > 2.28.0
+> > > > >
+> > > >
+> > > >
+> > > > --
+> > > > Best Regards
+> > > >  Guo Ren
+> > > >
+> > > > ML: https://lore.kernel.org/linux-csky/
+> > >
+> > >
+> > >
+> > > --
+> > > Regards,
+> > > Atish
+>
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
 
-The good news is people are testing rc1 in the RDMA world - the bad
-news is testing of the for-next area is not as good as I had hoped, as
-we really should have caught at least the rdma_connect_locked() issue
-before now.
 
-Here are several regression fixes for issues found by people testing
-rc1.
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
-
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-
-for you to fetch changes up to a2267f8a52eea9096861affd463f691be0f0e8c9:
-
-  RDMA/qedr: Fix memory leak in iWARP CM (2020-10-28 09:45:25 -0300)
-
-----------------------------------------------------------------
-RDMA 5.10 first rc pull request
-
-Three notable merge window regressions that didn't get caught/fixed in
-time for rc1:
-
-- Fix in kernel users of rxe, they were broken by the rapid fix to undo
-  the uABI breakage in rxe from another patch
-
-- EFA userspace needs to read the GID table but was broken with the new
-  GID table logic
-
-- Fix user triggerable deadlock in mlx5 using devlink reload
-
-- Fix deadlock in several ULPs using rdma_connect from the CM handler
-  callbacks
-
-- Memory leak in qedr
-
-----------------------------------------------------------------
-Alok Prasad (1):
-      RDMA/qedr: Fix memory leak in iWARP CM
-
-Bob Pearson (1):
-      RDMA/rxe: Fix small problem in network_type patch
-
-Gal Pressman (1):
-      RDMA/uverbs: Fix false error in query gid IOCTL
-
-Jason Gunthorpe (1):
-      RDMA: Add rdma_connect_locked()
-
-Parav Pandit (1):
-      RDMA/mlx5: Fix devlink deadlock on net namespace deletion
-
- drivers/infiniband/core/cma.c                      | 48 +++++++++++++++++-----
- drivers/infiniband/core/uverbs_std_types_device.c  |  3 --
- drivers/infiniband/hw/mlx5/main.c                  |  6 ++-
- drivers/infiniband/hw/qedr/qedr_iw_cm.c            |  1 +
- drivers/infiniband/sw/rxe/rxe_av.c                 | 35 ++++++++++++++--
- drivers/infiniband/sw/rxe/rxe_net.c                |  2 +-
- drivers/infiniband/ulp/iser/iser_verbs.c           |  2 +-
- drivers/infiniband/ulp/rtrs/rtrs-clt.c             |  4 +-
- drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h |  5 ---
- drivers/nvme/host/rdma.c                           |  4 +-
- include/linux/mlx5/driver.h                        | 18 ++++++++
- include/rdma/rdma_cm.h                             | 14 +------
- net/rds/ib_cm.c                                    |  5 ++-
- 13 files changed, 103 insertions(+), 44 deletions(-)
-
---RnlQjJ0d97Da+TV1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEfB7FMLh+8QxL+6i3OG33FX4gmxoFAl+bDNEACgkQOG33FX4g
-mxprvg//WSpcpBqrGpi0zciVV4UcBxPc7jrOEGCNhj8bWT+8wt1L/7GGVq8xviRM
-chAdLzRHCChKPYWLAxOeiaOim5hMl9TR9kPHvbPc8u8HB6aqBJGoBfQzBZJgiPZO
-0SCojhgcBZgERVytKveGfiNLmWAXov1rrtWz6wOmjsdlfgp3W7n6Hlh0liQQBZd4
-uYytwv1IE/eatNTYJ1aMd8/4H6Tm4kmnzn3zonjMNqwkTkrpKWe9qRCTC5qEZPO8
-BxVkj8sdIbkhr9xRAgsoR3pTZUBiVdzYSwPsisjuiHW4p30oAuEN6B8AzQlhkie6
-2kd0RShswJ1wMoB+cYec/mE05063Kyp83/rdMJ/ZtwKENncosVNu6jdioBAderiB
-ZcQalbr+yig2K6qrnnzNsokj8Lfx84X0tKzJty3FnMXv77K/YuxB54mA5BpoIRIU
-LtMQq8eT8z9ELwKiR/CmZX3j9QzXzyU7TS03748XnMhRzqfg3wng09AIOkwW4S9/
-G1Kl0AcwgXzEOzaPndd4Io28UBaG4rClgGMNFEwDAvcztfCfZgvtDTJ43/sO5gBM
-yqJCD6B+tqifmqhW0da4v2aoWmRpXLbnYwbRUozzwW3+MFxR+opBeRdlHT6jgRWC
-0rul/0eBTIjfvFQBAc8twlkVOt9vuljhxlGwe//A98CugXa6OmI=
-=B0IU
------END PGP SIGNATURE-----
-
---RnlQjJ0d97Da+TV1--
+-- 
+Regards,
+Atish
