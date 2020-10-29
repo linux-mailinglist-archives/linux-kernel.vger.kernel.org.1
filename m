@@ -2,245 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3FE29F57F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EABB829F588
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgJ2Tnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:43:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgJ2Tnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:43:39 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D46F20782;
-        Thu, 29 Oct 2020 19:43:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604000617;
-        bh=h3MleAy+1i2eMRVMC5aKx7VQAHzPoDk2AMn0XlSZBZY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=vjfObC9WXk9Tesv8y8OWMIHzvLU10Mbvqe+c+mQtsYn1yQ2tVAm8yQiFTmvDbQFF2
-         uF1QLvpKsrX+KXWZm+qJ6akObbqG2+J6UmkgVI0uSEFEW+r79r8mNjuhkTVA2zIUxk
-         FzCTMrhyTIyJ18jhq9G+2hkhZKkJa12viWmMzQuw=
-Date:   Thu, 29 Oct 2020 12:43:35 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Networking
-Message-ID: <20201029124335.2886a2bf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725948AbgJ2TrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgJ2TrV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 15:47:21 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EFAC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:47:19 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id r4so2567587qta.9
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=DM2UgOFHo//AreOdqVZsv1HPnyLVmD2DIdKtCbtXmYA=;
+        b=cp2RUY7eGgson2wdDBb4suSeLc+awuv4u+/EZAbJNWm0LQ3S2aZwn0c4vvTsqhCWok
+         4Z/l13Fpehow2YX2GXT9NqdWN90xS7oWSOwCCx3xo2ajIJv++AqKXE8HzPJroJY2NuH/
+         b7ANTWDej7SN2Ab+PzJdijDIsWfkWUP443BoCi4sdO+3hO0cMHfnL/9QTa0jx0euLaaT
+         H9w0b1rywB7bKPAq6Fgs6oQTFE/QSAWZhEmHFJZbyzbl853A772wyrYJ7UKhxiXYNIKH
+         l6fwmzKeK9Z0fc7ZaH/sA/0JlzQWQ9HidumlUKyAwCrKuYyOBaJvunsnqBDgw/UmMVa4
+         3axw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=DM2UgOFHo//AreOdqVZsv1HPnyLVmD2DIdKtCbtXmYA=;
+        b=qqDZzvLnVInwWzsHu3L/5whLdjtxlsUFB3pus727/suoCCUa189PVSMhSmXqXgP3mK
+         +YeLSa6fzxylOZme3D5CZCD1FrEbJv2WxRJFZJS8Ud2Ma9h6WUbZ1GOsVYh0gg4pz7rP
+         94qrUTltjLZOIufBqHucRTspmQqOJc66o5m1Pm6Yb0adJ6nk2MEhmqLNltO4vswqCok/
+         JZkKTZ/RIKApCMgQXDuiZxjHyJYhL52ALBnvadujfs9nxNb1Z65yEC5uczZCyo6MB5jF
+         owN4B8zL2kbf4RLUqu7oVb0EmjIrlmuopNsTIdmI1zRWMEU1EM5+DDoddo2Jd8Iu1U6Z
+         ynFg==
+X-Gm-Message-State: AOAM531W+P2ewyI0Rr0XvX/+0RPrEuQMq0jIq0jD+Cos/cjQ/H8nA7N+
+        rbt3ahirdTQdvSHXoczG6fIJAi+Q
+X-Google-Smtp-Source: ABdhPJwO4qZQPgqRybdB4Iubsfb2dfLrQqqqinTbGiPavxL3I8kpgq/xWGyIdFc1CtIvZbgnCgfGFnad
+Sender: "lzye via sendgmr" <lzye@chrisye.mtv.corp.google.com>
+X-Received: from chrisye.mtv.corp.google.com ([2620:15c:211:2:f693:9fff:fef4:4323])
+ (user=lzye job=sendgmr) by 2002:a0c:e054:: with SMTP id y20mr5839816qvk.30.1604000838752;
+ Thu, 29 Oct 2020 12:47:18 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 12:47:14 -0700
+Message-Id: <20201029194714.1613308-1-lzye@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH] Add devices for HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
+From:   Chris Ye <lzye@google.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org,
+        linux-input@vger.kernel.org, linzhao.ye@gmail.com,
+        Chris Ye <lzye@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3cb12d27ff655e57e8efe3486dca2a22f4e30578:
+Kernel 5.4 introduces HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE, devices
+need to be set explicitly with this flag.
 
-  Merge tag 'net-5.10-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2020-10-23 12:05:49 -0700)
+Signed-off-by: Chris Ye <lzye@google.com>
+---
+ drivers/hid/hid-ids.h    | 4 ++++
+ drivers/hid/hid-quirks.c | 4 ++++
+ 2 files changed, 8 insertions(+)
 
-are available in the Git repository at:
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 74be76e848bf..cf55dca494f3 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -449,6 +449,10 @@
+ #define USB_VENDOR_ID_FRUCTEL	0x25B6
+ #define USB_DEVICE_ID_GAMETEL_MT_MODE	0x0002
+ 
++#define USB_VENDOR_ID_GAMEVICE	0x27F8
++#define USB_DEVICE_ID_GAMEVICE_GV186	0x0BBE
++#define USB_DEVICE_ID_GAMEVICE_KISHI	0x0BBF
++
+ #define USB_VENDOR_ID_GAMERON		0x0810
+ #define USB_DEVICE_ID_GAMERON_DUAL_PSX_ADAPTOR	0x0001
+ #define USB_DEVICE_ID_GAMERON_DUAL_PCS_ADAPTOR	0x0002
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index 0440e2f6e8a3..36d94e3485e3 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -84,6 +84,10 @@ static const struct hid_device_id hid_quirks[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_FREESCALE, USB_DEVICE_ID_FREESCALE_MX28), HID_QUIRK_NOGET },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTABA, USB_DEVICE_ID_LED_DISPLAY), HID_QUIRK_NO_INIT_REPORTS },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD), HID_QUIRK_MULTI_INPUT },
++	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_GV186),
++		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_KISHI),
++		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_DRIVING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FLYING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.10-rc2
-
-for you to fetch changes up to 2734a24e6e5d18522fbf599135c59b82ec9b2c9e:
-
-  r8169: fix issue with forced threading in combination with shared interrupts (2020-10-29 11:49:04 -0700)
-
-----------------------------------------------------------------
-Networking fixes for 5.10-rc2.
-
-Current release regressions:
-
- - r8169: fix forced threading conflicting with other shared
-   interrupts; we tried to fix the use of raise_softirq_irqoff
-   from an IRQ handler on RT by forcing hard irqs, but this
-   driver shares legacy PCI IRQs so drop the _irqoff() instead
-
- - tipc: fix memory leak caused by a recent syzbot report fix
-   to tipc_buf_append()
-
-Current release - bugs in new features:
-
- - devlink: Unlock on error in dumpit() and fix some error codes
-
- - net/smc: fix null pointer dereference in smc_listen_decline()
-
-Previous release - regressions:
-
- - tcp: Prevent low rmem stalls with SO_RCVLOWAT.
-
- - net: protect tcf_block_unbind with block lock
-
- - ibmveth: Fix use of ibmveth in a bridge; the self-imposed filtering
-   to only send legal frames to the hypervisor was too strict
-
- - net: hns3: Clear the CMDQ registers before unmapping BAR region;
-   incorrect cleanup order was leading to a crash
-
- - bnxt_en - handful of fixes to fixes:
-    - Send HWRM_FUNC_RESET fw command unconditionally, even
-      if there are PCIe errors being reported
-    - Check abort error state in bnxt_open_nic().
-    - Invoke cancel_delayed_work_sync() for PFs also.
-    - Fix regression in workqueue cleanup logic in bnxt_remove_one().
-
- - mlxsw: Only advertise link modes supported by both driver
-   and device, after removal of 56G support from the driver
-   56G was not cleared from advertised modes
-
- - net/smc: fix suppressed return code
-
-Previous release - always broken:
-
- - netem: fix zero division in tabledist, caused by integer overflow
-
- - bnxt_en: Re-write PCI BARs after PCI fatal error.
-
- - cxgb4: set up filter action after rewrites
-
- - net: ipa: command payloads already mapped
-
-Misc:
-
- - s390/ism: fix incorrect system EID, it's okay to change since
-   it was added in current release
-
- - vsock: use ns_capable_noaudit() on socket create to suppress
-   false positive audit messages
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-----------------------------------------------------------------
-Aleksandr Nogikh (1):
-      netem: fix zero division in tabledist
-
-Alex Elder (1):
-      net: ipa: command payloads already mapped
-
-Amit Cohen (2):
-      mlxsw: Only advertise link modes supported by both driver and device
-      mlxsw: core: Fix use-after-free in mlxsw_emad_trans_finish()
-
-Andrew Gabbasov (1):
-      ravb: Fix bit fields checking in ravb_hwtstamp_get()
-
-Arjun Roy (1):
-      tcp: Prevent low rmem stalls with SO_RCVLOWAT.
-
-Dan Carpenter (3):
-      net: hns3: clean up a return in hclge_tm_bp_setup()
-      devlink: Fix some error codes
-      devlink: Unlock on error in dumpit()
-
-Guillaume Nault (1):
-      net/sched: act_mpls: Add softdep on mpls_gso.ko
-
-Heiner Kallweit (1):
-      r8169: fix issue with forced threading in combination with shared interrupts
-
-Ido Schimmel (1):
-      mlxsw: core: Fix memory leak on module removal
-
-Jakub Kicinski (4):
-      Merge branch 'ionic-memory-usage-fixes'
-      Merge branch 'net-smc-fixes-2020-10-23'
-      Merge branch 'mlxsw-various-fixes'
-      Merge branch 'bnxt_en-bug-fixes'
-
-Jeff Vander Stoep (1):
-      vsock: use ns_capable_noaudit() on socket create
-
-Karsten Graul (3):
-      net/smc: fix null pointer dereference in smc_listen_decline()
-      net/smc: fix suppressed return code
-      s390/ism: fix incorrect system EID
-
-Leon Romanovsky (1):
-      net: protect tcf_block_unbind with block lock
-
-Lijun Pan (1):
-      ibmvnic: fix ibmvnic_set_mac
-
-Masahiro Fujiwara (1):
-      gtp: fix an use-before-init in gtp_newlink()
-
-Michael Chan (1):
-      bnxt_en: Check abort error state in bnxt_open_nic().
-
-Michael Ellerman (1):
-      net: ucc_geth: Drop extraneous parentheses in comparison
-
-Paolo Abeni (1):
-      mptcp: add missing memory scheduling in the rx path
-
-Raju Rangoju (1):
-      cxgb4: set up filter action after rewrites
-
-Shannon Nelson (3):
-      ionic: clean up sparse complaints
-      ionic: no rx flush in deinit
-      ionic: fix mem leak in rx_empty
-
-Thomas Bogendoerfer (1):
-      ibmveth: Fix use of ibmveth in a bridge.
-
-Tung Nguyen (1):
-      tipc: fix memory leak caused by tipc_buf_append()
-
-Vasundhara Volam (4):
-      bnxt_en: Fix regression in workqueue cleanup logic in bnxt_remove_one().
-      bnxt_en: Invoke cancel_delayed_work_sync() for PFs also.
-      bnxt_en: Re-write PCI BARs after PCI fatal error.
-      bnxt_en: Send HWRM_FUNC_RESET fw command unconditionally.
-
-Vinay Kumar Yadav (3):
-      chelsio/chtls: fix tls record info to user
-      chelsio/chtls: fix deadlock issue
-      chelsio/chtls: fix memory leaks in CPL handlers
-
-Zenghui Yu (1):
-      net: hns3: Clear the CMDQ registers before unmapping BAR region
-
- drivers/net/ethernet/broadcom/bnxt/bnxt.c          | 49 ++++++++++++-------
- drivers/net/ethernet/broadcom/bnxt/bnxt.h          |  1 +
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c  | 56 +++++++++++-----------
- drivers/net/ethernet/chelsio/cxgb4/t4_tcb.h        |  4 ++
- .../chelsio/inline_crypto/chtls/chtls_cm.c         | 29 +++++------
- .../chelsio/inline_crypto/chtls/chtls_io.c         |  7 ++-
- drivers/net/ethernet/freescale/ucc_geth.c          |  2 +-
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c  |  2 +-
- .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  |  2 +-
- drivers/net/ethernet/ibm/ibmveth.c                 |  6 ---
- drivers/net/ethernet/ibm/ibmvnic.c                 |  8 +++-
- drivers/net/ethernet/mellanox/mlxsw/core.c         |  5 ++
- drivers/net/ethernet/mellanox/mlxsw/spectrum.c     |  9 +++-
- drivers/net/ethernet/mellanox/mlxsw/spectrum.h     |  1 +
- .../net/ethernet/mellanox/mlxsw/spectrum_ethtool.c | 30 ++++++++++++
- drivers/net/ethernet/pensando/ionic/ionic_dev.c    |  4 +-
- drivers/net/ethernet/pensando/ionic/ionic_dev.h    |  2 +
- drivers/net/ethernet/pensando/ionic/ionic_fw.c     |  6 +--
- drivers/net/ethernet/pensando/ionic/ionic_lif.c    | 29 ++++++-----
- drivers/net/ethernet/pensando/ionic/ionic_main.c   |  4 +-
- drivers/net/ethernet/pensando/ionic/ionic_stats.h  |  2 +-
- drivers/net/ethernet/pensando/ionic/ionic_txrx.c   | 47 +++++++-----------
- drivers/net/ethernet/pensando/ionic/ionic_txrx.h   |  1 -
- drivers/net/ethernet/realtek/r8169_main.c          |  4 +-
- drivers/net/ethernet/renesas/ravb_main.c           | 10 ++--
- drivers/net/gtp.c                                  | 16 +++----
- drivers/net/ipa/gsi_trans.c                        | 21 +++++---
- drivers/s390/net/ism_drv.c                         |  2 +-
- net/core/devlink.c                                 | 30 +++++++-----
- net/ipv4/tcp.c                                     |  2 +
- net/ipv4/tcp_input.c                               |  3 +-
- net/mptcp/protocol.c                               | 10 ++++
- net/sched/act_mpls.c                               |  1 +
- net/sched/cls_api.c                                |  4 +-
- net/sched/sch_netem.c                              |  9 +++-
- net/smc/af_smc.c                                   |  7 +--
- net/smc/smc_core.c                                 |  7 ++-
- net/tipc/msg.c                                     |  5 +-
- net/vmw_vsock/af_vsock.c                           |  2 +-
- 39 files changed, 261 insertions(+), 178 deletions(-)
