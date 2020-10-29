@@ -2,191 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0008429EB0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0133E29EA9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725923AbgJ2LyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:54:21 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37356 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgJ2LyV (ORCPT
+        id S1727703AbgJ2Lcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:32:43 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:44794 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727677AbgJ2Lcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:54:21 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09T5JYL3121768;
-        Thu, 29 Oct 2020 00:19:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603948774;
-        bh=ZByVPzkHmsKvUvCnhCpfP8mAajrWcyo1gasXudSIqG8=;
-        h=From:To:CC:Subject:Date;
-        b=MA09L/OqvvTObcLxCACI2zfE1drOrc+z89DDSsLjhCXr0b+SsdzNyAvSXYOEqb9gv
-         K+u1dronAcRc5sjCIhGQomraFvrsuMYxiOkMOSQY1BU69u4L5/LS8p6qlIP/8bENOH
-         tF1+4t4HD9SBRC4xZyNaTSJfaGMKiDD77SiUE9bs=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09T5JYKw015004
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 29 Oct 2020 00:19:34 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 29
- Oct 2020 00:19:34 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 29 Oct 2020 00:19:34 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09T5JVOA027985;
-        Thu, 29 Oct 2020 00:19:32 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Jiri Slaby <jirislaby@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] serial: 8250: 8250_omap: Disable RX interrupt after DMA enable
-Date:   Thu, 29 Oct 2020 10:49:30 +0530
-Message-ID: <20201029051930.7097-1-vigneshr@ti.com>
-X-Mailer: git-send-email 2.29.0
+        Thu, 29 Oct 2020 07:32:31 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09TBR0AU012814;
+        Thu, 29 Oct 2020 12:32:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=4+1Op2RV/23UrA0vNOm4u+eLDwQyANlhkaHLvGe8m90=;
+ b=H3H1DRysG8v90GAtNTaGhNmqWClcg/HhSZpCi2ghtH2m+RX2aQXCkTmx1lBc0C67oF+f
+ YkGc4Z0cT7Pw4+nvd4TxXsyrWJmNrm3IXGjcpUKsf/gQ4fBG1NoqMscPzK2Vh6hAdylz
+ iBsE04GNKWIJhvJiIClt1opt143h2Frci7Du2DYw9L0ABFvhNG/jINYmiKcldSaTmpDU
+ iGzeVSCW+qh+DjjcZRRrWiahDOd2hpCKdCA2e+/7XsgeZODTH90p+AKyzKWmILYAtCsR
+ swMQThecQBhhU5y2LXbhlUKmDOPfQR92xKFhB/paBvkEDayrxyzZA0Bb5ibfJr6LLYan Zw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34ccffrq0y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Oct 2020 12:32:11 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 39C7C100038;
+        Thu, 29 Oct 2020 12:32:10 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 052082823BD;
+        Thu, 29 Oct 2020 12:32:10 +0100 (CET)
+Received: from [10.48.1.149] (10.75.127.44) by SFHDAG1NODE3.st.com
+ (10.75.127.3) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 29 Oct
+ 2020 12:31:19 +0100
+Subject: Re: [PATCH 10/15] iio: adc: stm32: remove unnecessary CONFIG_PM_SLEEP
+To:     Coiby Xu <coiby.xu@gmail.com>
+CC:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+References: <20201029074910.227859-1-coiby.xu@gmail.com>
+ <20201029074910.227859-10-coiby.xu@gmail.com>
+From:   Fabrice Gasnier <fabrice.gasnier@st.com>
+Message-ID: <0d58cf8c-997c-959f-f952-999b0d3acdb1@st.com>
+Date:   Thu, 29 Oct 2020 12:31:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20201029074910.227859-10-coiby.xu@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG1NODE3.st.com
+ (10.75.127.3)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-29_06:2020-10-29,2020-10-29 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UARTs on TI SoCs prior to J7200 don't provide independent control over
-RX FIFO not empty interrupt (RHR_IT) and RX timeout interrupt.
-Starting with J7200 SoC, its possible to disable RHR_IT independent of
-RX timeout interrupt using bit 2 of IER2 register. So disable RHR_IT
-once RX DMA is started so as to avoid spurious interrupt being raised
-when data is in the RX FIFO but is yet to be drained by DMA (a known
-errata in older SoCs).
+On 10/29/20 8:49 AM, Coiby Xu wrote:
+> SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+> 
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+> ---
+>  drivers/iio/adc/stm32-adc.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> index b3f31f147347..42f9013730f8 100644
+> --- a/drivers/iio/adc/stm32-adc.c
+> +++ b/drivers/iio/adc/stm32-adc.c
+> @@ -1988,7 +1988,6 @@ static int stm32_adc_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -#if defined(CONFIG_PM_SLEEP)
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- drivers/tty/serial/8250/8250_omap.c | 42 ++++++++++++++++++++++++++++-
- 1 file changed, 41 insertions(+), 1 deletion(-)
+Hi Coiby,
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-index 562087df7d33..084e7bc51f0e 100644
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -27,6 +27,7 @@
- #include <linux/pm_qos.h>
- #include <linux/pm_wakeirq.h>
- #include <linux/dma-mapping.h>
-+#include <linux/sys_soc.h>
- 
- #include "8250.h"
- 
-@@ -41,6 +42,7 @@
-  */
- #define UART_ERRATA_CLOCK_DISABLE	(1 << 3)
- #define	UART_HAS_EFR2			BIT(4)
-+#define UART_HAS_RHR_IT_DIS		BIT(5)
- 
- #define OMAP_UART_FCR_RX_TRIG		6
- #define OMAP_UART_FCR_TX_TRIG		4
-@@ -94,6 +96,10 @@
- #define OMAP_UART_REV_52 0x0502
- #define OMAP_UART_REV_63 0x0603
- 
-+/* Interrupt Enable Register 2 */
-+#define UART_OMAP_IER2			0x1B
-+#define UART_OMAP_IER2_RHR_IT_DIS	BIT(2)
-+
- /* Enhanced features register 2 */
- #define UART_OMAP_EFR2			0x23
- #define UART_OMAP_EFR2_TIMEOUT_BEHAVE	BIT(6)
-@@ -761,17 +767,27 @@ static void __dma_rx_do_complete(struct uart_8250_port *p)
- {
- 	struct uart_8250_dma    *dma = p->dma;
- 	struct tty_port         *tty_port = &p->port.state->port;
-+	struct omap8250_priv	*priv = p->port.private_data;
- 	struct dma_chan		*rxchan = dma->rxchan;
- 	dma_cookie_t		cookie;
- 	struct dma_tx_state     state;
- 	int                     count;
- 	int			ret;
-+	u32			reg;
- 
- 	if (!dma->rx_running)
- 		goto out;
- 
- 	cookie = dma->rx_cookie;
- 	dma->rx_running = 0;
-+
-+	/* Re-enable RX FIFO interrupt now that transfer is complete */
-+	if (priv->habit & UART_HAS_RHR_IT_DIS) {
-+		reg = serial_in(p, UART_OMAP_IER2);
-+		reg &= ~UART_OMAP_IER2_RHR_IT_DIS;
-+		serial_out(p, UART_OMAP_IER2, UART_OMAP_IER2_RHR_IT_DIS);
-+	}
-+
- 	dmaengine_tx_status(rxchan, cookie, &state);
- 
- 	count = dma->rx_size - state.residue + state.in_flight_bytes;
-@@ -867,6 +883,7 @@ static int omap_8250_rx_dma(struct uart_8250_port *p)
- 	int				err = 0;
- 	struct dma_async_tx_descriptor  *desc;
- 	unsigned long			flags;
-+	u32				reg;
- 
- 	if (priv->rx_dma_broken)
- 		return -EINVAL;
-@@ -902,6 +919,17 @@ static int omap_8250_rx_dma(struct uart_8250_port *p)
- 
- 	dma->rx_cookie = dmaengine_submit(desc);
- 
-+	/*
-+	 * Disable RX FIFO interrupt while RX DMA is enabled, else
-+	 * spurious interrupt may be raised when data is in the RX FIFO
-+	 * but is yet to be drained by DMA.
-+	 */
-+	if (priv->habit & UART_HAS_RHR_IT_DIS) {
-+		reg = serial_in(p, UART_OMAP_IER2);
-+		reg |= UART_OMAP_IER2_RHR_IT_DIS;
-+		serial_out(p, UART_OMAP_IER2, UART_OMAP_IER2_RHR_IT_DIS);
-+	}
-+
- 	dma_async_issue_pending(dma->rxchan);
- out:
- 	spin_unlock_irqrestore(&priv->rx_dma_lock, flags);
-@@ -1168,6 +1196,11 @@ static int omap8250_no_handle_irq(struct uart_port *port)
- 	return 0;
- }
- 
-+static const struct soc_device_attribute k3_soc_devices[] = {
-+	{ .family = "AM65X",  },
-+	{ .family = "J721E", .revision = "SR1.0" },
-+};
-+
- static struct omap8250_dma_params am654_dma = {
- 	.rx_size = SZ_2K,
- 	.rx_trigger = 1,
-@@ -1182,7 +1215,7 @@ static struct omap8250_dma_params am33xx_dma = {
- 
- static struct omap8250_platdata am654_platdata = {
- 	.dma_params	= &am654_dma,
--	.habit		= UART_HAS_EFR2,
-+	.habit		= UART_HAS_EFR2 | UART_HAS_RHR_IT_DIS,
- };
- 
- static struct omap8250_platdata am33xx_platdata = {
-@@ -1372,6 +1405,13 @@ static int omap8250_probe(struct platform_device *pdev)
- 			up.dma->rxconf.src_maxburst = RX_TRIGGER;
- 			up.dma->txconf.dst_maxburst = TX_TRIGGER;
- 		}
-+
-+		/*
-+		 * AM65x SR1.0, AM65x SR2.0 and J721e SR1.0 don't
-+		 * don't have RHR_IT_DIS bit in IER2 register
-+		 */
-+		if (soc_device_match(k3_soc_devices))
-+			priv->habit &= ~UART_HAS_RHR_IT_DIS;
- 	}
- #endif
- 	ret = serial8250_register_8250_port(&up);
--- 
-2.29.0
+This generates warnings when building with W=1 and CONFIG_PM_SLEEP=n.
+Could you please add also "__maybe_unused" attribute in suspend / resume
+routines below.
 
+>  static int stm32_adc_suspend(struct device *dev)
+             ^
+e.g. like: static int __maybe_unused stm32_adc_...
+
+>  {
+>  	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+> @@ -2018,7 +2017,6 @@ static int stm32_adc_resume(struct device *dev)
+>  
+>  	return stm32_adc_buffer_postenable(indio_dev);
+>  }
+> -#endif
+>  
+>  #if defined(CONFIG_PM)
+
+Same could be done also for runtime PM routines. For my own curiosity,
+do you plan to do this as well ?
+
+Best regards,
+Fabrice
+>  static int stm32_adc_runtime_suspend(struct device *dev)
+> 
