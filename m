@@ -2,155 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F5629EC6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2284D29EC72
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgJ2NFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52084 "EHLO
+        id S1726443AbgJ2NFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgJ2NFY (ORCPT
+        with ESMTP id S1726018AbgJ2NFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:05:24 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3D5C0613CF;
-        Thu, 29 Oct 2020 06:05:23 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id x1so3048523oic.13;
-        Thu, 29 Oct 2020 06:05:23 -0700 (PDT)
+        Thu, 29 Oct 2020 09:05:35 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11A3C0613CF;
+        Thu, 29 Oct 2020 06:05:34 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id 7so3767073ejm.0;
+        Thu, 29 Oct 2020 06:05:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9iXsLjZgUfdA09GLMwB0swDJcMnTzFt7AU3m46lf4t4=;
-        b=myYl8XFK6amQDTqj2VrTBoh+OvJUi+sIIwEKannjHGdG1cU6WtV0YIdTnjQP+mAe3S
-         SBvbI3WwQDA2U50xBHqRfDFs1rXIxKE7ZIVFGJRTy4BDKhMz7YAFsNTIN5tf0RqLyYid
-         ennK8RLLngOf6UHTQ8UuxCLK308pQQMdF2M0fSD0E/wsuqvx4nUHAg3n9KHeZ73ZNaG3
-         PEX7p9r5TmhvUb1GYBLmiTRJC2PI9dS0QN6pZ2s5bEsOGHy1ZozZ3hOHzzAXVg6eslJh
-         IAt/jRZ7ZCva66wiTOzO04g2iCqIpI1ELEzbA1s877sfsiODSmgcJrZUv0jZAcjDVMO6
-         FsiA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jlRvw28Bxq+s0p/obAO5FUK/HKe/tOxPiCwhbWvjxq8=;
+        b=jGDq/k51RPhyM4yyaCIfGC86X13Z30xKHvi77d431dDIN7l+pK3cvKUspmos910vKD
+         7gCiDeHa7IriMOkCIvGjP3WOiyh22Pzl3Ql5Nu/J9+45YXM30riG+IR6nz3BDIiGB1gO
+         H6A5xAhyXWVc035SeaL+pC6jNpRCDnuOz3tjso3qy9TnoYAWFH/GnEiuyM9QutMwo1DL
+         o2Rofn/Ui+Lph30OYHyrRyoOJ/9uI9BJNKYVyvaWuWWVex5xyrp75tze7CMdxNjGKqAZ
+         mrx7Xc/KrsSybF3lpEWfoKR0o10dBcB7D2F208VUdJMKd5/x543Zn6NcRrlBzdP17Gl5
+         xn6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=9iXsLjZgUfdA09GLMwB0swDJcMnTzFt7AU3m46lf4t4=;
-        b=kaivjJIBXZhVs65ZrLhV2ujfSl/BXnTWQ8w7roz21esM72PZqN4PyEZ71stemxcszK
-         0vAIIUanjkG57UmJV1nXz6wkMOmzkupo3KX7PSVqmqgN7t8BCdgg04uDaqChMzKqyBGW
-         q0KuVFDFZkYMhxq++x0gHImsc9kpTvseEw9tvtUO/14bJNhWuEEMEPgt7iIAf8aj85EB
-         gts/5nn1qEWg7jEeMo1WCRGWuH3aW+xyuIyiswAK67C2Ixc2Yos8NK7BfvlWzTLg8vtZ
-         u4HE1rcVdOsXa7FEZ2pZiXhnykQkw5lm444OFSkHxYWdpaCR4NgPJK0y2SVOOmStSscv
-         xhGQ==
-X-Gm-Message-State: AOAM531/joMPoaQ/TUqvnL+YhB/urt8LOYK8z8DG7hRNSqbti5ixlaxH
-        3Xos5DeO6UgEarthnlaVQQhIqYmuJVE=
-X-Google-Smtp-Source: ABdhPJwnDgXS+Qak/0GSaQu2DMn1nzM/MOQzw9czr7h6J4u7Oj84WPksoga2qlRh+6RcmhsF2W8ywg==
-X-Received: by 2002:aca:6501:: with SMTP id m1mr2720909oim.124.1603976723124;
-        Thu, 29 Oct 2020 06:05:23 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u7sm565978otg.60.2020.10.29.06.05.22
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jlRvw28Bxq+s0p/obAO5FUK/HKe/tOxPiCwhbWvjxq8=;
+        b=sXqRP74mji+aywgshNE+i+JKgPRq0NsHD9R+168YNA5qXplWFD/xamjinBxso/hJa7
+         1AJb8FZMwS59fJckIfZBnMad8t/Y2NS99iNgUA+D5vfkp9f8LLWowj+SN5iP7oXfm2uF
+         g8WuNSFxCvc7zOIzaEYW+JOmSfWPO1MIxZXBMS4liN6GBKWlWCJtKrb3t8G/EyesYXYs
+         wRr1gvSKCOoXlQ2SZ3KHqxN7YMLyn2HM0js3PlxkN9VvkiiLfZaT1gmbKYqq30azZxYq
+         rQA9IpNYr+/7XX/al4eAVJBQjvQ/0JYdgmsND25j8kwEdsdHNc/yF9X/MjCPNSvbfIjM
+         f8+g==
+X-Gm-Message-State: AOAM5326H42dfANzVhFOQXp5933y9VePGcMtZhU5a+lTnz7Pcc6RiO6+
+        bm67YPBsb3UNaJbniu7IzLc=
+X-Google-Smtp-Source: ABdhPJxfDycUZglGd8qcujAsdtea0zQRdHkE08qqZmByL9hVYCQ+4ye2U1iBtn/f8I0HUbXfU67UQA==
+X-Received: by 2002:a17:906:1989:: with SMTP id g9mr2324714ejd.62.1603976733687;
+        Thu, 29 Oct 2020 06:05:33 -0700 (PDT)
+Received: from [192.168.2.202] (pd9e5a6e3.dip0.t-ipconnect.de. [217.229.166.227])
+        by smtp.gmail.com with ESMTPSA id q19sm1469241ejx.118.2020.10.29.06.05.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 06:05:22 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 3/3] watchdog: sirfsoc_wdt: remove unnecessary
- CONFIG_PM_SLEEP
-To:     Coiby Xu <coiby.xu@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc:     Barry Song <baohua@kernel.org>,
-        "open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>,
-        "moderated list:ARM/CSR SIRFPRIMA2 MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201029075327.228570-1-coiby.xu@gmail.com>
- <20201029075327.228570-3-coiby.xu@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <41e73435-375f-1865-69ce-462395476258@roeck-us.net>
-Date:   Thu, 29 Oct 2020 06:05:21 -0700
+        Thu, 29 Oct 2020 06:05:32 -0700 (PDT)
+Subject: Re: [PATCH -next] platform/surface: remove status assignment without
+ reading
+To:     Zou Wei <zou_wei@huawei.com>, hdegoede@redhat.com,
+        mgross@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+References: <1603972048-64271-1-git-send-email-zou_wei@huawei.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <25642c19-6598-42c0-36ad-a2b2d507183a@gmail.com>
+Date:   Thu, 29 Oct 2020 14:05:31 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201029075327.228570-3-coiby.xu@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1603972048-64271-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 12:53 AM, Coiby Xu wrote:
-> SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
-> 
-> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
-> ---
->  drivers/watchdog/sirfsoc_wdt.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/watchdog/sirfsoc_wdt.c b/drivers/watchdog/sirfsoc_wdt.c
-> index 734cf2966ecb..dc8341cd7d44 100644
-> --- a/drivers/watchdog/sirfsoc_wdt.c
-> +++ b/drivers/watchdog/sirfsoc_wdt.c
-> @@ -170,7 +170,6 @@ static int sirfsoc_wdt_probe(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -#ifdef	CONFIG_PM_SLEEP
->  static int sirfsoc_wdt_suspend(struct device *dev)
+On 10/29/20 12:47 PM, Zou Wei wrote:
+> The status local variable is assigned but never read:
 
-And again: __maybe_unused
+[...]
 
-I would suggest to test compile the code with CONFIG_PM_SLEEP disabled.
+>   static int s3_wmi_query_block(const char *guid, int instance, int *ret)
+>   {
+>   	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
+> -	acpi_status status;
+>   	union acpi_object *obj;
+>   	int error = 0;
+>   
+>   	mutex_lock(&s3_wmi_lock);
+> -	status = wmi_query_block(guid, instance, &output);
 
->  {
->  	return 0;
-> @@ -189,7 +188,6 @@ static int sirfsoc_wdt_resume(struct device *dev)
->  
->  	return 0;
->  }
-> -#endif
->  
->  static SIMPLE_DEV_PM_OPS(sirfsoc_wdt_pm_ops,
->  		sirfsoc_wdt_suspend, sirfsoc_wdt_resume);
-> 
+I assume you want to remove the "status =" and not the whole line...
 
+Regardless, I personally would prefer explicit error handling (as is
+done in other contexts with wmi_query_block(), see e.g.
+platform/x86/intel-wmi-sbl-fw-update.c. Although, yes, the "if (!obj |
+..." should cover the error case as far as I can tell.
+
+Also there seems to be the same issue in platform/x86/msi-wmi.c.
+
+On a related note:
+
+Does anyone know if the mutex here is really required? If there are any
+problems, I believe it should rather go to s3_wmi_send_lid_state() and
+also wrap the input_report_switch() / input_sync(). Otherwise, if there
+were any race-type situations, not covering that could lead to wrong
+updates:
+
+     Thread 1                            Thread 2
+     
+     s3_query_lid() returns old
+                                         s3_query_lid() returns new
+                                         input_report_switch()
+                                         input_sync()
+     input_report_switch()
+     input_sync()
+
+I don't really expect those situations here as s3_wmi_send_lid_state()
+is only used in probe(), resume(), and notify() (please correct me if
+I'm wrong), so the mutex does seem weird to me here.
+
+Otherwise if it's needed, a comment explaining why wouldn't hurt.
+
+Regards,
+Max
