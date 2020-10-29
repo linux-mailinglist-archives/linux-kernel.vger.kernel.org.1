@@ -2,50 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B63129E6B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C1729E709
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgJ2I6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 04:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbgJ2I5w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:57:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37584C0613D2;
-        Thu, 29 Oct 2020 01:57:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Gfwg35QlbYdT8sMF/4QDRdLm9wKg0f9JXc5PYsSGSGk=; b=VPOBx7RveF4A0G7LwHbYX+lN9B
-        OZIUhbXa6ukgOTpcoRF/twjV7H3ZybiHXckp9BwPDMUCdwIRzdO7vEPLWXsUMWCa4MDwkJsodX2F+
-        j1CyIYN+g0SFhTgPtI4+lx3P6SU4OZZ9qHU9sILCuLYt9QGnlaLKY3ZsKjPHGOtvaMopzvLtVqxpN
-        YOlvTWV9711amkL+LN1wI+D2eJiUi/r8jkl9fqvMNIUdA1fzEpy56LDozGWvwkfM3X9I4g0GeSB/f
-        cFkjTs/uwBl3LEkGG4wP7a2BhhqhRP/GXDn308SKGdrt8x5VG5z8Q5wWsQ0HNhWLHcY8nm7HxUjPH
-        Z0R6mmQw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kY3kj-000702-L3; Thu, 29 Oct 2020 08:57:49 +0000
-Date:   Thu, 29 Oct 2020 08:57:49 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH v4 00/15] follow_pfn and other iomap races
-Message-ID: <20201029085749.GB25658@infradead.org>
-References: <20201026105818.2585306-1-daniel.vetter@ffwll.ch>
+        id S1726182AbgJ2JO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:14:57 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:58738 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726113AbgJ2JOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 05:14:55 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kXz12-0007pU-3R; Thu, 29 Oct 2020 14:54:21 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 29 Oct 2020 14:54:20 +1100
+Date:   Thu, 29 Oct 2020 14:54:20 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Gilad Ben-Yossef <gilad@benyossef.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Milan Broz <gmazyland@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        Song Liu <song@kernel.org>, Ofir Drang <ofir.drang@arm.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        linux-raid@vger.kernel.org
+Subject: Re: [PATCH 3/4] dm crypt: switch to EBOIV crypto API template
+Message-ID: <20201029035419.GA19506@gondor.apana.org.au>
+References: <20201026130450.6947-1-gilad@benyossef.com>
+ <20201026130450.6947-4-gilad@benyossef.com>
+ <20201026175231.GG858@sol.localdomain>
+ <d07b062c-1405-4d72-b907-1c4dfa97aecb@gmail.com>
+ <20201026183936.GJ858@sol.localdomain>
+ <20201026184155.GA6863@gondor.apana.org.au>
+ <20201026184402.GA6908@gondor.apana.org.au>
+ <CAOtvUMf-xv5cHTjExW2Ffx6soLavFztow6DwE6Qo5pffF0N5uw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201026105818.2585306-1-daniel.vetter@ffwll.ch>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAOtvUMf-xv5cHTjExW2Ffx6soLavFztow6DwE6Qo5pffF0N5uw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maybe I'm missing something, but shouldn't follow_pfn be unexported
-at the end of the series?
+On Wed, Oct 28, 2020 at 01:41:28PM +0200, Gilad Ben-Yossef wrote:
+>
+> Sorry if I'm being daft, but what did you refer to be "an existing
+> option"? there was no CONFIG_EBOIV before my patchset, it was simply
+> built as part of dm-crypt so it seems that setting CONFIG_EBOIV
+> default to dm-crypto Kconfig option value does solves the problem, or
+> have I missed something?
+
+Oh I'm mistaken then.  I thought it was an existing option.  If
+it's a new option then a default depending on dm-crypt should be
+sufficient.
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
