@@ -2,157 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505C929E63A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3682E29E657
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgJ2IRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 04:17:44 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:11815 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726231AbgJ2IRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:17:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=3148; q=dns/txt; s=axis-central1;
-  t=1603959450; x=1635495450;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ZzrBKQ+s9dk85lZZfiJG0UtohbsCcBMHvXllHKW91mw=;
-  b=EV2mBWtKGeNDKZjkkpjEiqyd9f/U6ahEiOZRwo2Hjzlz+CjVjO0iWMEE
-   n42U0GYiAs4XguhUR3vwKfQ9y2wt/IWy7rvAnp/Eq7ZyiR7iDqTcVNF7n
-   RbOn6xCl4TP18d8czdMe8xVfO7KyEIIvvjwxuGaj2b+vLX1S7oCwkoGol
-   AeTQ4441GEpa5T4mhMSFdGb6RE1csZhVQo3Z66qe64EmEroSPvXTqVawi
-   4VMZJFbrBONkqMh2BiDxNnMIdScOEJWiedH2AqDs1d4RnBBYGmAx/o4Xk
-   /rzm5o/JP4RijyHg5NuAmJSAYH4wQYxaNwa1xZbR1qeMHjtxQb3Txi9HX
-   Q==;
-IronPort-SDR: k/BMqfxgNlRV9WmHIiQcDyvvKgrh4iESeehFl82DmRXwOq7zRPLaqqlPIyLd0/yyf8kF9SfJwr
- 6IIeHaj9TbqJ+/BPrxCaZaFh7hO7KELxmpPg+ZDk0cYMu/42AVQlPH/57OmGds2oMFd341mw+o
- koWF31u9kNUwVZbyJ10T7HkZ3q6GDPlPX6k6nLD/1CZb4fCTuuz9OMQbDiIdCbOyZ1lqQhwKER
- isZBQykQYJnD2jzeJs0WoOkvzlsWkCDkHOU2ARrb7kqsQeMxrel9xep4UL1zEA94RkVqIeA7vV
- BXw=
-X-IronPort-AV: E=Sophos;i="5.77,429,1596492000"; 
-   d="scan'208";a="14031930"
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-CC:     <kernel@axis.com>, <devicetree@vger.kernel.org>,
-        <andy.shevchenko@gmail.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4] gpio: mockup: Allow probing from device tree
-Date:   Thu, 29 Oct 2020 09:17:20 +0100
-Message-ID: <20201029081721.9593-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        id S1729250AbgJ2IZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 04:25:40 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:42834 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727146AbgJ2IZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:25:40 -0400
+Received: from localhost.localdomain (unknown [124.16.141.242])
+        by APP-05 (Coremail) with SMTP id zQCowABnV1BtfJpfZ51KAA--.28505S2;
+        Thu, 29 Oct 2020 16:25:18 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     peter.ujfalusi@ti.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: ti: davinci-evm: Remove redundant null check before clk_disable_unprepare
+Date:   Thu, 29 Oct 2020 08:25:13 +0000
+Message-Id: <20201029082513.28233-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowABnV1BtfJpfZ51KAA--.28505S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8CFy8Aw45GFW8AFWkJFb_yoW3KFg_Aw
+        1Fg393Wa4UZw1ay34DK3yrAF1ktr4kuan5urnYqr4UtryUWrW5urykta1fur97Ww48J3W3
+        Z34qqF4fXr92vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7AYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFyl42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU00PfPUUUUU==
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAwEA18J9vch6gAAsf
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow the mockup driver to be probed via the device tree without any
-module parameters, allowing it to be used to configure and test higher
-level drivers like the leds-gpio driver and corresponding userspace
-before actual hardware is available.
+Because clk_disable_unprepare() already checked NULL clock parameter,
+so the additional check is unnecessary, just remove it.
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 ---
+ sound/soc/ti/davinci-evm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Notes:
-    v4:
-    - Remove of_match_ptr() to fix unused variable warning with W=1
-    - Include linux/mod_devicetable.h instead of linux/of.h
-    
-    v3:
-    - Keep includes sorted alphabetically
-    - Drop CONFIG_OF ifdefs
-    
-    v2:
-    - Remove most of the added code, since the latest driver doesn't need it.
-    - Drop DT binding document, since Rob Herring was OK with not documenting this:
-      https://lore.kernel.org/linux-devicetree/5baa1ae6.1c69fb81.847f2.3ab1@mx.google.com/
-
-Range-diff against v3:
-1:  1e9b8f36676d ! 1:  4e8fdcfe1a47 gpio: mockup: Allow probing from device tree
-    @@ Commit message
-     
-     
-      ## Notes ##
-    +    v4:
-    +    - Remove of_match_ptr() to fix unused variable warning with W=1
-    +    - Include linux/mod_devicetable.h instead of linux/of.h
-    +
-         v3:
-         - Keep includes sorted alphabetically
-         - Drop CONFIG_OF ifdefs
-    @@ Notes
-     
-      ## drivers/gpio/gpio-mockup.c ##
-     @@
-    + #include <linux/irq.h>
-      #include <linux/irq_sim.h>
-      #include <linux/irqdomain.h>
-    ++#include <linux/mod_devicetable.h>
-      #include <linux/module.h>
-    -+#include <linux/of.h>
-      #include <linux/platform_device.h>
-      #include <linux/property.h>
-    - #include <linux/slab.h>
-     @@ drivers/gpio/gpio-mockup.c: static int gpio_mockup_probe(struct platform_device *pdev)
-      	return 0;
-      }
-    @@ drivers/gpio/gpio-mockup.c: static int gpio_mockup_probe(struct platform_device
-      static struct platform_driver gpio_mockup_driver = {
-      	.driver = {
-      		.name = "gpio-mockup",
-    -+		.of_match_table = of_match_ptr(gpio_mockup_of_match),
-    ++		.of_match_table = gpio_mockup_of_match,
-      	},
-      	.probe = gpio_mockup_probe,
-      };
-
- drivers/gpio/gpio-mockup.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-index 67ed4f238d43..28b757d34046 100644
---- a/drivers/gpio/gpio-mockup.c
-+++ b/drivers/gpio/gpio-mockup.c
-@@ -15,6 +15,7 @@
- #include <linux/irq.h>
- #include <linux/irq_sim.h>
- #include <linux/irqdomain.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
-@@ -460,9 +461,16 @@ static int gpio_mockup_probe(struct platform_device *pdev)
- 	return 0;
+diff --git a/sound/soc/ti/davinci-evm.c b/sound/soc/ti/davinci-evm.c
+index 105e56ab9cdc..b043a0070d20 100644
+--- a/sound/soc/ti/davinci-evm.c
++++ b/sound/soc/ti/davinci-evm.c
+@@ -46,8 +46,7 @@ static void evm_shutdown(struct snd_pcm_substream *substream)
+ 	struct snd_soc_card_drvdata_davinci *drvdata =
+ 		snd_soc_card_get_drvdata(soc_card);
+ 
+-	if (drvdata->mclk)
+-		clk_disable_unprepare(drvdata->mclk);
++	clk_disable_unprepare(drvdata->mclk);
  }
  
-+static const struct of_device_id gpio_mockup_of_match[] = {
-+	{ .compatible = "gpio-mockup", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, gpio_mockup_of_match);
-+
- static struct platform_driver gpio_mockup_driver = {
- 	.driver = {
- 		.name = "gpio-mockup",
-+		.of_match_table = gpio_mockup_of_match,
- 	},
- 	.probe = gpio_mockup_probe,
- };
-@@ -556,8 +564,7 @@ static int __init gpio_mockup_init(void)
- {
- 	int i, num_chips, err;
- 
--	if ((gpio_mockup_num_ranges < 2) ||
--	    (gpio_mockup_num_ranges % 2) ||
-+	if ((gpio_mockup_num_ranges % 2) ||
- 	    (gpio_mockup_num_ranges > GPIO_MOCKUP_MAX_RANGES))
- 		return -EINVAL;
- 
+ static int evm_hw_params(struct snd_pcm_substream *substream,
 -- 
-2.28.0
+2.17.1
 
