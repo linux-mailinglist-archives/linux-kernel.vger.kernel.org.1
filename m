@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4628129F615
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBD929F618
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgJ2UUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 16:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ2UUL (ORCPT
+        id S1726463AbgJ2UVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:21:55 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57902 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgJ2UVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:20:11 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBB7C0613CF;
-        Thu, 29 Oct 2020 13:20:11 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5607C50E;
-        Thu, 29 Oct 2020 21:20:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1604002807;
-        bh=UnhjckKFeRuTtIPfUUDicRD7MhuMU9sCDF/lmZTn8H4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GG9I+74YilJnDHsYvkBlLyd/uMoNuqRTc2Cid3UkxrfANFAlXBrotpdHQb1czjnSH
-         aisCQjtc/GCJmkVSEAr+bfgSnjdfnVjEWO2iZpcjZt5mtCeSs7BU8sf70IFh1XT8Iu
-         4QFCAhncFFHa0r43HYachb741GgJ3WZ/gGDMbV+g=
-Date:   Thu, 29 Oct 2020 22:19:18 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Dan Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linus.walleij@linaro.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        pmladek@suse.com, mchehab@kernel.org, tian.shu.qiu@intel.com,
-        bingbu.cao@intel.com, sakari.ailus@linux.intel.com,
-        yong.zhi@intel.com, rafael@kernel.org, gregkh@linuxfoundation.org,
-        kitakar@gmail.com
-Subject: Re: [RFC PATCH v3 9/9] ipu3-cio2: Add functionality allowing
- software_node connections to sensors on platforms designed for Windows
-Message-ID: <20201029201918.GD15024@pendragon.ideasonboard.com>
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-10-djrscally@gmail.com>
- <20201024012411.GT5979@pendragon.ideasonboard.com>
- <d188f8b5-ed3b-f91b-171a-26afeb7d213e@gmail.com>
- <20201024093702.GA3939@pendragon.ideasonboard.com>
- <20201026161050.GQ4077@smile.fi.intel.com>
+        Thu, 29 Oct 2020 16:21:55 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TKEdMv080452;
+        Thu, 29 Oct 2020 20:21:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=JjDgkWBfLLog9pvza+5imZ+B0T6evJSkm3QpERsp9Cw=;
+ b=C2GQgUIoO1E1XGvPnG3V4DwWg9BXUGB/xD1/p07856lKByC1cXU3RHGGympE4/16b11n
+ nIRmcqbHGYwu6cDFTH8W3Z0fgNVuClbWONhpuffGutMCWNe3LgHvB605Lyfpyz0zzaNH
+ H5SE/ZDTA+qhsB3U3lg9beA4SG9fzYVrDc5JA86lukoLKdkVogIg25zfFqNFJujUtvdl
+ XTZFx3hQBJUa89+pAphW9LYyiBtsyOe26+8+pJlkMHk1fhEQT7RvSLGU3UT+CxfBfU46
+ zwTYQ97tazMxnIRThNd4P8bREVQ+mvUqfMZi9O8aNgOVIXshJP6ncTVdtjAdaUQlVJBo Hw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 34dgm4cfhd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 29 Oct 2020 20:21:38 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TKKBAh110105;
+        Thu, 29 Oct 2020 20:21:37 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 34cx60x19v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Oct 2020 20:21:37 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09TKLXpP004572;
+        Thu, 29 Oct 2020 20:21:33 GMT
+Received: from [192.168.86.24] (/69.181.241.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 29 Oct 2020 13:21:33 -0700
+Subject: Re: [RESEND PATCH] soc: ti: ti_sci_pm_domains: check for proper args
+ count in xlate
+To:     soc@kernel.org
+Cc:     Tero Kristo <t-kristo@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, ssantosh@kernel.org,
+        nm@ti.com, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>
+References: <20201029093337.21170-1-t-kristo@ti.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <5d3bb050-98db-5ec1-9f52-ad98b303749a@oracle.com>
+Date:   Thu, 29 Oct 2020 13:21:32 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201026161050.GQ4077@smile.fi.intel.com>
+In-Reply-To: <20201029093337.21170-1-t-kristo@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=13 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010290141
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=13 clxscore=1011 mlxscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010290140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Hi Arnd, olof,
 
-On Mon, Oct 26, 2020 at 06:10:50PM +0200, Andy Shevchenko wrote:
-> On Sat, Oct 24, 2020 at 12:37:02PM +0300, Laurent Pinchart wrote:
-> > On Sat, Oct 24, 2020 at 09:50:07AM +0100, Dan Scally wrote:
-> > > On 24/10/2020 02:24, Laurent Pinchart wrote:
-> > > > On Mon, Oct 19, 2020 at 11:59:03PM +0100, Daniel Scally wrote:
+On 10/29/20 2:33 AM, Tero Kristo wrote:
+> K2G devices still only use single parameter for power-domains property,
+> so check for this properly in the driver. Without this, every peripheral
+> fails to probe resulting in boot failure.
 > 
-> > > >> +		adev = acpi_dev_get_first_match_dev(supported_devices[i], NULL, -1);
-> > > >
-> > > > What if there are multiple sensor of the same model ?
-> > > 
-> > > Hmm, yeah, that would be a bit of a pickle. I guess the newer
-> > > smartphones have multiple sensors on the back, which I presume are the
-> > > same model. So that will probably crop up at some point. How about
-> > > instead I use bus_for_each_dev() and in the applied function check if
-> > > the _HID is in the supported list?
-> > 
-> > Sounds good to me.
-> > 
-> > > >> +		if (!adev)
-> > > >> +			continue;
-> 
-> Please, don't.
-> 
-> If we have so weird ACPI tables it must be w/a differently. The all, even badly
-> formed, ACPI tables I have seen so far are using _UID to distinguish instance
-> of the device (see second parameter to the above function).
-> 
-> If we meet the very broken table I would like rather to know about, then
-> silently think ahead what could be best.
-> 
-> I.o.w. don't change this until we will have a real example of the problematic
-> firmware.
+> Fixes: efa5c01cd7ee ("soc: ti: ti_sci_pm_domains: switch to use multiple genpds instead of one")
+> Reported-by: Nishanth Menon <nm@ti.com>
+> Signed-off-by: Tero Kristo <t-kristo@ti.com>
+> Acked-by: Nishanth Menon <nm@ti.com>
+> Acked-by: Santosh Shilimkar <ssantosh@kernel.org>
+> ---
+Can you please add this to your fixes queue ?
+This fixes boot failures on K2Gdevices ?
 
-I'm not sure to follow you. Daniel's current code loops over all the
-supported HID (as stored in the supported_devices table), and then gets
-the first ACPI device for each of them. If multiple ACPI devices exist
-with the same HID, we need to handle them all, so enumerating all ACPI
-devices and checking whether their HID is one we handle seems to be the
-right option to me.
-
--- 
-Regards,
-
-Laurent Pinchart
+>   drivers/soc/ti/ti_sci_pm_domains.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/ti/ti_sci_pm_domains.c b/drivers/soc/ti/ti_sci_pm_domains.c
+> index af2126d2b2ff..8afb3f45d263 100644
+> --- a/drivers/soc/ti/ti_sci_pm_domains.c
+> +++ b/drivers/soc/ti/ti_sci_pm_domains.c
+> @@ -91,7 +91,7 @@ static struct generic_pm_domain *ti_sci_pd_xlate(
+>   	struct genpd_onecell_data *genpd_data = data;
+>   	unsigned int idx = genpdspec->args[0];
+>   
+> -	if (genpdspec->args_count < 2)
+> +	if (genpdspec->args_count != 1 && genpdspec->args_count != 2)
+>   		return ERR_PTR(-EINVAL);
+>   
+>   	if (idx >= genpd_data->num_domains) {
+> 
