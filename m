@@ -2,92 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E32E29E49F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D5829E55C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730299AbgJ2HkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727566AbgJ2HYv (ORCPT
+        id S1731461AbgJ2Hxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:53:42 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57428 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731422AbgJ2Hxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:51 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD098C08E81A
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:51:54 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id b25so1750626ybj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:51:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=D0RG6XCsiYk3Hov12UB1Ls79tsmNIPNALmBWI6I8Qe0=;
-        b=qh8nc7inquFnCZ1Gl+JJNsIMjS5CH78e+QQXwZNY+cPKUHEiXtycFZ0CFtimd8zYCG
-         Amr92TjpnzexbaTLGJft6X2m4Nuwr+fWmwBS0URNtMy6WUz0iS6epHvM/4LP1fLoRRAH
-         33kdoDqgQQneOIDrhKCztqDz0revwKmhBAm37QdYLaClLZhrD/9Qxi1YSWS7U85J/kbJ
-         V6duXsFjEeTyc36s+8tRF00xM/Y3/M9XkTGr9BPhdw0WFZdWUsGZyI2diFfRel48fLPE
-         0U0JHOnqT+XNWleskOVhe299dCMDba1YWTiuuiSRYE4AVqipNk/OFSKpMH6f5BVkzrZw
-         QR3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=D0RG6XCsiYk3Hov12UB1Ls79tsmNIPNALmBWI6I8Qe0=;
-        b=VnTT79QruQ1MQIIsktryutdKrZ8FUnvF/0VXLOtW0Mo+Go7UsifbsQgjhWGnCAh6Qq
-         1yv/obsFiGaiDaFJI3wI6wxt/N4m+AN5ifIrY5RPX4Z8q2suUcqJV4bB+Ay29cmFZrfR
-         dSRi72RsIzolPfnWe1+868xCcpHcotey95ZPzyXX1JymwbiDGwtBggRL4uc8zE0F2WPi
-         C5dSzjQQAAmQzjNzug9b0WVyxhsLr2fY5WbDc/Z9bGXdkIV2b0DEzvxLehEQ3UW7ab0q
-         GepqUVQ4564qBIwrRO+FbGZTlLKFCsZXQpC6OUOpDrBydCJ1Yz0g+SvBHWpHFxa3YeW5
-         dIjw==
-X-Gm-Message-State: AOAM530MtdJeLxQbM12LWDwozqa86mkJXqrE1J2QuPL2i0B8MeD1G/EU
-        FVpitP6fIdQ8SZPqVROkOQzeGyizRzhZ
-X-Google-Smtp-Source: ABdhPJxzuEjf17OjMyjcerT0OVNp3Fze7scKYjqqY3Xi0KJmZn6k1DUOW2Ko52bR0DHoDFZKL8BVXe92Bmei
-Sender: "amistry via sendgmr" <amistry@nandos.syd.corp.google.com>
-X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:725a:fff:fe46:72ab])
- (user=amistry job=sendgmr) by 2002:a5b:e89:: with SMTP id z9mr3926538ybr.44.1603954313929;
- Wed, 28 Oct 2020 23:51:53 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 17:51:32 +1100
-Message-Id: <20201029065133.3027749-1-amistry@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH 0/1] x86/speculation: Allow IBPB to be conditionally enabled
- on CPUs with always-on STIBP
-From:   Anand K Mistry <amistry@google.com>
-To:     x86@kernel.org, linux-kernel@kernel.org
-Cc:     Thomas.Lendacky@amd.com, joelaf@google.com,
-        asteinhauser@google.com, tglx@linutronix.de,
-        Anand K Mistry <amistry@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
-        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 29 Oct 2020 03:53:41 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09T714Jr075025;
+        Thu, 29 Oct 2020 03:14:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=/G+h1YtJ3evJ2tYky/3ih8cerioaFKYOhPorLL+k/gs=;
+ b=DoleYZ6cbC7cttEO9tnTjjoAVFhP8fTr1fny6gjSPaUlHeWOwkqq5MUUxVhRzMXOOKTv
+ JVbh9zNWaTpFQ2s3IW3awavNAUCP8mTUTyvLmrqW3BROwwskLUvhx3/szDd0uvFw/N7N
+ 7L7olqpF/ysBBEmuG1ALx3iX+Pb/52oapY3RJ480tqX7vDtVfi/Tsc2uYRmIbVU/MUwm
+ qfy679npJQkBvd4Gmpdvq5zhr7yQ7jOY3r+THIwvP8A7U7LszoTZQON43G1FmsX0+UT5
+ YbKGaovNVxZuE7EgZQWGIPkXb/o7brwwapxZNC7uQnuk/8lMbB8xDXP4+GRupxAcNULZ rQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34f6ug4ntn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Oct 2020 03:14:27 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09T71I09076216;
+        Thu, 29 Oct 2020 03:14:27 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34f6ug4nsy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Oct 2020 03:14:26 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09T7D6PS027597;
+        Thu, 29 Oct 2020 07:14:25 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma05fra.de.ibm.com with ESMTP id 34cbw8aqhc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Oct 2020 07:14:24 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09T7EMbM12911076
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Oct 2020 07:14:22 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B2DEC4C046;
+        Thu, 29 Oct 2020 07:14:22 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ABDE84C04A;
+        Thu, 29 Oct 2020 07:14:20 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 29 Oct 2020 07:14:20 +0000 (GMT)
+Date:   Thu, 29 Oct 2020 12:44:20 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH 0/4] Powerpc: Better preemption for shared processor
+Message-ID: <20201029071420.GA528281@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20201028123512.871051-1-srikar@linux.vnet.ibm.com>
+ <da67d6ce-f120-f61a-19ff-0ae4f1f5dac0@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <da67d6ce-f120-f61a-19ff-0ae4f1f5dac0@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-29_01:2020-10-29,2020-10-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 spamscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015
+ mlxscore=0 malwarescore=0 suspectscore=1 priorityscore=1501 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010290046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When attempting to do some performance testing of IBPB on and AMD
-platform, I noticed the IBPB instruction was never being issued, even
-though it was conditionally on and various seccomp protected processes
-were force enabling it. Turns out, on those AMD CPUs, STIBP is set to
-always-on and this was causing an early-out on the prctl() which turns
-off IB speculation. Here is my attempt to fix it.
+* Waiman Long <longman@redhat.com> [2020-10-28 20:01:30]:
 
-I'm hoping someone that understands this better than me can explain why
-I'm wrong.
+> > Srikar Dronamraju (4):
+> >    powerpc: Refactor is_kvm_guest declaration to new header
+> >    powerpc: Rename is_kvm_guest to check_kvm_guest
+> >    powerpc: Reintroduce is_kvm_guest
+> >    powerpc/paravirt: Use is_kvm_guest in vcpu_is_preempted
+> > 
+> >   arch/powerpc/include/asm/firmware.h  |  6 ------
+> >   arch/powerpc/include/asm/kvm_guest.h | 25 +++++++++++++++++++++++++
+> >   arch/powerpc/include/asm/kvm_para.h  |  2 +-
+> >   arch/powerpc/include/asm/paravirt.h  | 18 ++++++++++++++++++
+> >   arch/powerpc/kernel/firmware.c       |  5 ++++-
+> >   arch/powerpc/platforms/pseries/smp.c |  3 ++-
+> >   6 files changed, 50 insertions(+), 9 deletions(-)
+> >   create mode 100644 arch/powerpc/include/asm/kvm_guest.h
+> > 
+> This patch series looks good to me and the performance is nice too.
+> 
+> Acked-by: Waiman Long <longman@redhat.com>
 
+Thank you.
 
-Anand K Mistry (1):
-  x86/speculation: Allow IBPB to be conditionally enabled on CPUs with
-    always-on STIBP
+> 
+> Just curious, is the performance mainly from the use of static_branch
+> (patches 1 - 3) or from reducing call to yield_count_of().
 
- arch/x86/kernel/cpu/bugs.c | 41 +++++++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 18 deletions(-)
+Because of the reduced call to yield_count
+
+> 
+> Cheers,
+> Longman
+> 
 
 -- 
-2.29.1.341.ge80a0c044ae-goog
-
+Thanks and Regards
+Srikar Dronamraju
