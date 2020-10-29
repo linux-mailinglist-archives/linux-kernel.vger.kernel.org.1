@@ -2,187 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE9C29E0C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A6329E0E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732919AbgJ2BeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:34:15 -0400
-Received: from mail-eopbgr1320082.outbound.protection.outlook.com ([40.107.132.82]:60240
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729602AbgJ2Bd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 21:33:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hs4qNNzi00cqslJ7BdEStgPVE7I0FYgJcN+Zenh8itxPyh8N0vBX5Blm5VfVrNTrMYVbqxgaxinU8EQjPkxKHmfoC7CP+eFZQMI60LcBGSI+qs8LRl6z5t12kXYViUWCaZfHggUlEeG8sDICVYaf1o/cbf8htYP+Qs7Fi7Y8JDF/PFpV6567nwWxV5TeAernnU9kogND8LQa9WSxR+mlft9w4TS/eUMh/LpT/Sh4vLXGu9cjunO7RiQrpsomYMakf9KXCBhY6NZHj7A7lHNeWu1XQRs/NoOL1Yt4FPeQoqLCTV8HCjlUdXIMXH1hCZfKuYok35xQgPqWUVRUxTj8kA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uUHwgn0vmlhXRzgTF0T+uBUj+1xpebh4Xox9Fu0YfZM=;
- b=RbtU2BqlkC8xt0Iz9bxk3b6UCzQlpEvS7O3MSI/m1s5WT9iierAvfrEcYCM0TBAVtqlgiKLKZ1Wmm2AK5AQt9PeVSHtgPmy8i2B4eMAaM0FLBRPot1gIEEqGSmD6wmqsKzlqKVseq7CuphEsGMDQndN62aIbR5cGm/mmYf3ksfDJdtbq1L/iMxglovEiD+pDGg3JRv5CGQmkGeVmw0cH61c/1561LLa6dBQRrgj7cjT6shisULEuajn/WQCBxPA6QdG4Tq+5KxHUjVauU5VYlR1pBpLXNgsEkXcTMeTbTJYt68N3/pPedLRBeho1aHbW4nBWKqNk/cuxC+2PRsQA6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=quectel.com; dmarc=pass action=none header.from=quectel.com;
- dkim=pass header.d=quectel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quectel.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uUHwgn0vmlhXRzgTF0T+uBUj+1xpebh4Xox9Fu0YfZM=;
- b=bscieDTfw/QGKT6r+dgqaQK2p3zvxYySYZZHW/V/TEN/drkRg/EvIwcr8tUuDKDeDAvXMcFV1o6gQCMYgjmuZNi/z4vosRLciLXgyaWfMDN1vFhxmxhy4n+Dd8OT0Oh6sakN35WB5zxu+XWbC6i4cZ9qYCAZLRxS9o3RAF7MzTk=
-Received: from HK2PR06MB3507.apcprd06.prod.outlook.com (2603:1096:202:3e::14)
- by HK0PR06MB2929.apcprd06.prod.outlook.com (2603:1096:203:61::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.27; Thu, 29 Oct
- 2020 01:33:20 +0000
-Received: from HK2PR06MB3507.apcprd06.prod.outlook.com
- ([fe80::94f:c55a:f9c8:22f4]) by HK2PR06MB3507.apcprd06.prod.outlook.com
- ([fe80::94f:c55a:f9c8:22f4%5]) with mapi id 15.20.3477.028; Thu, 29 Oct 2020
- 01:33:20 +0000
-From:   =?utf-8?B?Q2FybCBZaW4o5q635byg5oiQKQ==?= <carl.yin@quectel.com>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>
-CC:     "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Naveen Kumar" <naveen.kumar@quectel.com>
-Subject: =?utf-8?B?562U5aSNOiDnrZTlpI06IFtQQVRDSF0gYnVzOiBtaGk6IGNvcmU6IEludHJv?=
- =?utf-8?Q?duce_sysfs_ul_chan_id_for_mhi_chan_device?=
-Thread-Topic: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIGJ1czogbWhpOiBjb3JlOiBJbnRyb2R1Y2Ugc3lz?=
- =?utf-8?Q?fs_ul_chan_id_for_mhi_chan_device?=
-Thread-Index: AQHWrEWe5sWUVc1dA0qVowrSV1H0aqmrjNUAgAB/3QCAACPhIIAA4QgAgAC7JLA=
-Date:   Thu, 29 Oct 2020 01:33:20 +0000
-Message-ID: <HK2PR06MB35071C83DBB6035E4E183CC286140@HK2PR06MB3507.apcprd06.prod.outlook.com>
-References: <1cdcb3c25ef3781b3baa2d6943cea3ea@sslemail.net>
- <d041b002-7a2c-64be-f5bd-0988c3611503@codeaurora.org>
- <HK2PR06MB3507E92A9F5E24BC6FDA5FB586170@HK2PR06MB3507.apcprd06.prod.outlook.com>
- <ebd89efb-6927-20c6-765e-42a9ca9da211@codeaurora.org>
-In-Reply-To: <ebd89efb-6927-20c6-765e-42a9ca9da211@codeaurora.org>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none header.from=quectel.com;
-x-originating-ip: [203.93.254.85]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c3a1a451-0a54-4b51-af05-08d87baa9e2e
-x-ms-traffictypediagnostic: HK0PR06MB2929:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK0PR06MB292952ED539F67EF62D5937886140@HK0PR06MB2929.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0oZpqDqtN76jvbV+EKDMPIep401HX1DsvC3qelphR0UCCbzSxFyFn/lWX11eOA5XfhNinxUpj+RbJikK1mCDg+aP8F66GYWcvVW7KrzHVSMJtIlUucOxvvxoDToNddaJKut91almgVtOlcXtlQIhQ4Uyt/PGcitI8DZcpdJHLiCc/BELlKcoeq2Kidr8x61lK/Otvm1DkNHDQf4yoRuFQq9THiGZASfQqxgIhJODO574ifTUmzsz6Fxr1LcF60LpVwEONDIir5oUV6/3IyTGm7WMw/xdilAFcmXo2I3nB6ZUW8vjUoRHwC4Ia8BfZbS5
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR06MB3507.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(376002)(396003)(366004)(39850400004)(64756008)(66446008)(6506007)(66476007)(53546011)(66556008)(26005)(7696005)(86362001)(224303003)(107886003)(5660300002)(8936002)(55016002)(52536014)(478600001)(76116006)(71200400001)(9686003)(186003)(316002)(54906003)(2906002)(4326008)(33656002)(110136005)(85182001)(66946007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: +l+24uxXE0zsUOGCx7OQs9dwOlGt9Sr7RzR803l+2YM3YBiRjZ2ppIoL2tspVMtLwckX++crWhOaINuDXAy7wnrLLfIXFcZqBW2im00/lcsw1FldPKnbcYciEyH1gjvrvMSLRADz0TaZaMTz/L5vf0++g2MZVMSRVhiIzVj6AjetsCY5U1hb9DcsoUmNQrY23IBcUMh9oAyS4N0I9f70y4HaU4XXV0+I8wJW809xuCuRW1gEzXRzCA57Cx4tOTC8FkFlPXTC4FHQM1P9jy8L9hVoqDBBguwQU1vxuao3y89nU+WC8lQdwOHs3xJG/rg+8s9LDTqYsTV8GkDE+hSKCE9733qPde/B8GsJ4BV96XwCxJ42LOw+BcHDIk480GzCpEP63xPuBZ0kLCeH6BI+edla0xDHyE1+4eVaNUKBOodty/X9YuReSQubE9051zXN8tbIs2zF7bpI5JMnCt0AmASGTQavNw8eTDYTMdEIKMy6ObLRQv3zVDwzXJO1HmaXCK6HuU8w+Mf1qzvY2zknF/+PcTtEPobglZXHiFDH4n4tv6L3sVRX+/e2lpIp5c8z8pz2nUFToQJKPYAZzG/17G7lTu4rOozYsCGleWdJmD5wMFPRIddSsGDIH4j+5og3Ng6z5n9qU1+yCy+h8gM+5w==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1729721AbgJ2BmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:42:14 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6572 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726214AbgJ2Bll (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 21:41:41 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CM7TH4QRszhc67;
+        Thu, 29 Oct 2020 09:41:39 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 29 Oct
+ 2020 09:41:33 +0800
+Subject: Re: [f2fs-dev] [PATCH v4 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
+ ioctl
+To:     Daeho Jeong <daeho43@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <kernel-team@android.com>, Daeho Jeong <daehojeong@google.com>
+References: <20201027053818.3291747-1-daeho43@gmail.com>
+ <20201027053818.3291747-2-daeho43@gmail.com>
+ <290cd375-704e-9315-a035-ab4c1ce1f6f2@huawei.com>
+ <CACOAw_ycvV9_O_tb=axgT2Pu9ySvdKfVjBv+Fe90+XObKGjjTg@mail.gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <f81da3dc-aa9d-a186-f078-512bbf4ce8d4@huawei.com>
+Date:   Thu, 29 Oct 2020 09:41:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-X-OriginatorOrg: quectel.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK2PR06MB3507.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3a1a451-0a54-4b51-af05-08d87baa9e2e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Oct 2020 01:33:20.0572
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 7730d043-e129-480c-b1ba-e5b6a9f476aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yndCB2Z6lC14aZesTR0cCgQZ/jGRdX9ULvfmoWgON+M7wvjhdtLdG5CRoPRyzJj+s62o9DXsDzpmv5LGO9ahvg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2929
+In-Reply-To: <CACOAw_ycvV9_O_tb=axgT2Pu9ySvdKfVjBv+Fe90+XObKGjjTg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSmVmZnJleToNCg0KT24gT2N0b2JlciAyOCwgMjAyMCAxMDoxOCBQTSwgamh1Z28gd3JvdGU6
-DQo+IE9uIDEwLzI3LzIwMjAgNzoxOCBQTSwgQ2FybCBZaW4o5q635byg5oiQKSB3cm90ZToNCj4g
-PiBIaSBKZWZmZXJ5IGFuZCBIZW1hbnQ6DQo+ID4NCj4gPiBPbiBXZWRuZXNkYXksIE9jdG9iZXIg
-MjgsIDIwMjAgNjo0NCBBTSwgaGVtYW50ayB3cm90ZToNCj4gPj4gT24gMTAvMjcvMjAgODowNiBB
-TSwgSmVmZnJleSBIdWdvIHdyb3RlOg0KPiA+PiBIaSBDYXJsLA0KPiA+Pg0KPiA+PiBPbiAxMC8y
-Ny8yMCA4OjA2IEFNLCBKZWZmcmV5IEh1Z28gd3JvdGU6DQo+ID4+PiBPbiAxMC8yNy8yMDIwIDM6
-NDMgQU0sIGNhcmwueWluQHF1ZWN0ZWwuY29tIHdyb3RlOg0KPiA+Pj4+IEZyb206ICJjYXJsLnlp
-biIgPGNhcmwueWluQHF1ZWN0ZWwuY29tPg0KPiA+Pj4+DQo+ID4+Pj4gVXNlciBzcGFjZSBzb2Z0
-d2FyZSBsaWtlIE1vZGVtTWFuYWdlciBjYW4gaWRlbnRpZnkgdGhlIGZ1bmN0aW9uIG9mDQo+ID4+
-Pj4gdGhlIG1oaSBjaGFuIGRldmljZSBieSB1bF9jaGFuX2lkLg0KPiA+Pj4+DQo+ID4+Pj4gU2ln
-bmVkLW9mZi1ieTogY2FybC55aW4gPGNhcmwueWluQHF1ZWN0ZWwuY29tPg0KPiA+Pj4+IC0tLQ0K
-PiA+Pj4+ICDCoCBEb2N1bWVudGF0aW9uL0FCSS9zdGFibGUvc3lzZnMtYnVzLW1oaSB8IDEwICsr
-KysrKysrKysNCj4gPj4+PiAgwqAgZHJpdmVycy9idXMvbWhpL2NvcmUvaW5pdC5jwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCB8IDE1ICsrKysrKysrKysrKysrKw0KPiA+Pj4+ICDCoCAyIGZpbGVzIGNo
-YW5nZWQsIDI1IGluc2VydGlvbnMoKykNCj4gPj4+Pg0KPiA+Pj4+IGRpZmYgLS1naXQgYS9Eb2N1
-bWVudGF0aW9uL0FCSS9zdGFibGUvc3lzZnMtYnVzLW1oaQ0KPiA+Pj4+IGIvRG9jdW1lbnRhdGlv
-bi9BQkkvc3RhYmxlL3N5c2ZzLWJ1cy1taGkNCj4gPj4+PiBpbmRleCBlY2ZlNzY2Li42ZDUyNzY4
-IDEwMDY0NA0KPiA+Pj4+IC0tLSBhL0RvY3VtZW50YXRpb24vQUJJL3N0YWJsZS9zeXNmcy1idXMt
-bWhpDQo+ID4+Pj4gKysrIGIvRG9jdW1lbnRhdGlvbi9BQkkvc3RhYmxlL3N5c2ZzLWJ1cy1taGkN
-Cj4gPj4+PiBAQCAtMTksMyArMTksMTMgQEAgRGVzY3JpcHRpb246wqDCoMKgIFRoZSBmaWxlIGhv
-bGRzIHRoZSBPRU0gUEsgSGFzaA0KPiA+Pj4+IHZhbHVlIG9mIHRoZSBlbmRwb2ludCBkZXZpY2UN
-Cj4gPj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgIHJlYWQgd2l0aG91dCBoYXZpbmcgdGhlIGRldmlj
-ZSBwb3dlciBvbiBhdCBsZWFzdCBvbmNlLA0KPiA+Pj4+IHRoZSBmaWxlDQo+ID4+Pj4gIMKgwqDC
-oMKgwqDCoMKgwqDCoCB3aWxsIHJlYWQgYWxsIDAncy4NCj4gPj4+PiAgwqAgVXNlcnM6wqDCoMKg
-wqDCoMKgwqAgQW55IHVzZXJzcGFjZSBhcHBsaWNhdGlvbiBvciBjbGllbnRzIGludGVyZXN0ZWQg
-aW4NCj4gPj4+PiBkZXZpY2UgaW5mby4NCj4gPj4+PiArDQo+ID4+Pj4gK1doYXQ6wqDCoMKgwqDC
-oMKgwqAgL3N5cy9idXMvbWhpL2RldmljZXMvLi4uL3VsX2NoYW5faWQNCj4gPj4+PiArRGF0ZTrC
-oMKgwqDCoMKgwqDCoCBOb3ZlbWJlciAyMDIwDQo+ID4+Pj4gK0tlcm5lbFZlcnNpb246wqDCoMKg
-IDUuMTANCj4gPj4+PiArQ29udGFjdDrCoMKgwqAgQ2FybCBZaW4gPGNhcmwueWluQHF1ZWN0ZWwu
-Y29tPg0KPiA+Pj4+ICtEZXNjcmlwdGlvbjrCoMKgwqAgVGhlIGZpbGUgaG9sZHMgdGhlIHVwbGlu
-ayBjaGFuIGlkIG9mIHRoZSBtaGkgY2hhbg0KPiA+Pj4+IGRldmljZS4NCj4gPj4+PiArwqDCoMKg
-wqDCoMKgwqAgVXNlciBzcGFjZSBzb2Z0d2FyZSBsaWtlIE1vZGVtTWFuYWdlciBjYW4gaWRlbnRp
-ZnkgdGhlDQo+ID4+Pj4gZnVuY3Rpb24gb2YNCj4gPj4+PiArwqDCoMKgwqDCoMKgwqAgdGhlIG1o
-aSBjaGFuIGRldmljZS4gSWYgdGhlIG1oaSBkZXZpY2UgaXMgbm90IGEgY2hhbg0KPiA+Pj4+ICtk
-ZXZpY2UsDQo+ID4+Pj4gK8KgwqDCoMKgwqDCoMKgIGVnIG1oaSBjb250cm9sbGVyIGRldmljZSwg
-dGhlIGZpbGUgcmVhZCAtMS4NCj4gPj4+PiArVXNlcnM6wqDCoMKgwqDCoMKgwqAgQW55IHVzZXJz
-cGFjZSBhcHBsaWNhdGlvbiBvciBjbGllbnRzIGludGVyZXN0ZWQgaW4NCj4gPj4+PiBkZXZpY2Ug
-aW5mby4NCj4gPj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9idXMvbWhpL2NvcmUvaW5pdC5jDQo+
-ID4+Pj4gYi9kcml2ZXJzL2J1cy9taGkvY29yZS9pbml0LmMgaW5kZXggYzZiNDNlOS4uYWM0YWE1
-YyAxMDA2NDQNCj4gPj4+PiAtLS0gYS9kcml2ZXJzL2J1cy9taGkvY29yZS9pbml0LmMNCj4gPj4+
-PiArKysgYi9kcml2ZXJzL2J1cy9taGkvY29yZS9pbml0LmMNCj4gPj4+PiBAQCAtMTA1LDkgKzEw
-NSwyNCBAQCBzdGF0aWMgc3NpemVfdCBvZW1fcGtfaGFzaF9zaG93KHN0cnVjdCBkZXZpY2UNCj4g
-Pj4+PiAqZGV2LA0KPiA+Pj4+ICDCoCB9DQo+ID4+Pj4gIMKgIHN0YXRpYyBERVZJQ0VfQVRUUl9S
-TyhvZW1fcGtfaGFzaCk7DQo+ID4+Pj4gK3N0YXRpYyBzc2l6ZV90IHVsX2NoYW5faWRfc2hvdyhz
-dHJ1Y3QgZGV2aWNlICpkZXYsDQo+ID4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBzdHJ1Y3QgZGV2aWNlX2F0dHJpYnV0ZSAqYXR0ciwNCj4gPj4+PiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIGNoYXIgKmJ1ZikNCj4gPj4+PiArew0KPiA+Pj4+ICvCoMKgwqAgc3Ry
-dWN0IG1oaV9kZXZpY2UgKm1oaV9kZXYgPSB0b19taGlfZGV2aWNlKGRldik7DQo+ID4+Pj4gK8Kg
-wqDCoCBpbnQgdWxfY2hhbl9pZCA9IC0xOw0KPiA+Pj4+ICsNCj4gPj4+PiArwqDCoMKgIGlmICht
-aGlfZGV2LT51bF9jaGFuKQ0KPiA+Pj4+ICvCoMKgwqDCoMKgwqDCoCB1bF9jaGFuX2lkID0gbWhp
-X2Rldi0+dWxfY2hhbl9pZDsNCj4gPj4+PiArDQo+ID4+Pj4gK8KgwqDCoCByZXR1cm4gc25wcmlu
-dGYoYnVmLCBQQUdFX1NJWkUsICIlZFxuIiwgdWxfY2hhbl9pZCk7IH0gc3RhdGljDQo+ID4+Pj4g
-K0RFVklDRV9BVFRSX1JPKHVsX2NoYW5faWQpOw0KPiA+Pj4+ICsNCj4gPj4+PiAgwqAgc3RhdGlj
-IHN0cnVjdCBhdHRyaWJ1dGUgKm1oaV9kZXZfYXR0cnNbXSA9IHsNCj4gPj4+PiAgwqDCoMKgwqDC
-oCAmZGV2X2F0dHJfc2VyaWFsX251bWJlci5hdHRyLA0KPiA+Pj4+ICDCoMKgwqDCoMKgICZkZXZf
-YXR0cl9vZW1fcGtfaGFzaC5hdHRyLA0KPiA+Pj4+ICvCoMKgwqAgJmRldl9hdHRyX3VsX2NoYW5f
-aWQuYXR0ciwNCj4gPj4+PiAgwqDCoMKgwqDCoCBOVUxMLA0KPiA+Pj4+ICDCoCB9Ow0KPiA+Pj4+
-ICDCoCBBVFRSSUJVVEVfR1JPVVBTKG1oaV9kZXYpOw0KPiA+Pj4+DQo+ID4+Pg0KPiA+Pj4gTkFD
-Sw0KPiA+Pj4NCj4gPj4+IENoYW5uZWwgSUQgaXMgYSBkZXZpY2Ugc3BlY2lmaWMgZGV0YWlsLsKg
-IFVzZXJzcGFjZSBzaG91bGQgYmUgYmFzaW5nDQo+ID4+PiBkZWNpc2lvbnMgb24gdGhlIGNoYW5u
-ZWwgbmFtZS4NCj4gPj4+DQo+ID4+IEkgYWdyZWUgd2l0aCBKZWZmLCB3aHkgZG8geW91IG5lZWQg
-dG8ga25vdyB0aGUgY2hhbm5lbCBpZCwgaWYgeW91DQo+ID4+IG5lZWQgdG8gcG9sbCBmb3IgYW55
-IGRldmljZSBub2RlIHRvIGdldCBjcmVhdGVkIHlvdSBjYW4gdHJ5IHRvIG9wZW4NCj4gPj4gdGhl
-IGRldmljZSBub2RlIGZyb20gdXNlciBzcGFjZSBhbmQgd2FpdCB1bnRpbCB0aGUgZGV2aWNlIGdl
-dHMgb3BlbmVkLg0KPiA+PiBBcmUgeW91IHRyeWluZyB0byB3YWl0IGZvciBFREwgY2hhbm5lbHMg
-dG8gZ2V0IHN0YXJ0ZWQgdXNpbmcgVUNJID8NCj4gPiBbY2FybC55aW5dIEluIG15IG9waW5pb24s
-IG1oaSBjaGFuIGlkIGlzIHNvbWV0aGluZyBsaWtlICdiSW50ZXJmYWNlTnVtYmVyJyBvZg0KPiBV
-U0IgZGV2aWNlLg0KPiA+IEEgVVNCIGRldmljZSBhbmQgc2V2ZXJhbCBVU0IgaW50ZXJmYWNlcywg
-YW5kIGEgbWhpIGRldmljZXMgaGF2ZSAxMjggbWhpDQo+IGNoYW5zLg0KPiA+IENoYW4gaWQgaXMg
-YSBwaHlzaWNhbCBhdHRyaWJ1dGUgb2Ygb25lIG1oaSBjaGFuLg0KPiA+DQo+ID4gTmV4dCBpcyB0
-aGUgdWRldiBpbmZvIG9mIG9uZSBtaGkgY2hhbjoNCj4gPiAjIHVkZXZhZG0gaW5mbyAtYSAvZGV2
-L21oaV8wMDAwXDowM1w6MDAuMF9FREwNCj4gPiAgICBsb29raW5nIGF0IHBhcmVudCBkZXZpY2UN
-Cj4gJy9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxZC4wLzAwMDA6MDM6MDAuMC8wMDAwOjAz
-OjAwLjBfRURMJzoNCj4gPiAgICAgIEtFUk5FTFM9PSIwMDAwOjAzOjAwLjBfRURMIg0KPiA+ICAg
-ICAgU1VCU1lTVEVNUz09Im1oaSINCj4gPiAgICAgIERSSVZFUlM9PSJtaGlfdWNpIg0KPiA+ICAg
-ICAgQVRUUlN7c2VyaWFsX251bWJlcn09PSJTZXJpYWwgTnVtYmVyOiAyNjQ0NDgxMTgyIg0KPiA+
-ICAgICAgQVRUUlN7dWxfY2hhbl9pZH09PSIzNCINCj4gPg0KPiA+IElmIG5vIHVsX2NoYW5faWQs
-IHRoZSB1ZGV2IHJ1bGVyIHdpbGwgYmUgJyBLRVJORUw9PSIqX0VETCIgJw0KPiANCj4gSSBoYXZl
-IHNldmVyYWwgdXNlY2FzZXMgd2hlcmUgdGhpcyB3b3JrcyBqdXN0IGZpbmUgdG9kYXkuDQo+IA0K
-PiA+IFdpdGggdWxfY2hhbl9pZCwgdGhlIHVkZXYgcnVsZXIgd2lsbCBiZSAnIEFUVFJTe3VsX2No
-YW5faWR9PT0iMzQiJw0KPiANCj4gVGhpcyBicmVha3Mgd2hlbiB0aGVyZSBpcyBzb21lIG5ldyBk
-ZXZpY2UgdGhhdCBoYXMgdGhlIEVETCBjaGFubmVsIG9uIHNvbWUNCj4gZGlmZmVyZW50IGNoYW5f
-aWQsIGxpa2UgNy4gIFRoZSBhYm92ZSBkb2VzIG5vdC4gIEFkZGl0aW9uYWxseSBpZiB0aGVyZSBp
-cyBhDQo+IGRpZmZlcmVudCBkZXZpY2UgdGhhdCBpcyB1c2luZyBjaGFuX2lkIDM0IGZvciBhIGRp
-ZmZlcmVudCBwdXJwb3NlLCBzYXkgRGlhZywgdGhlbg0KPiB5b3VyIHVkZXYgcnVsZSBhbHNvIGJy
-ZWFrcy4NCj4gDQo+IFRoZSBuYW1lIG9mIHRoZSBjaGFubmVsIGlzIHRoZSBpbnRlcmZhY2UgdG8g
-dGhlIGNoYW5uZWwuICBOb3QgdGhlIGNoYW5faWQuICBUaGlzDQo+IGhvbGRzIHRydWUgd2l0aGlu
-IHRoZSBrZXJuZWwsIGFuZCBzaG91bGQgYmUgdGhlIHNhbWUgZm9yIHVzZXJzcGFjZS4gIEkgc3Rp
-bGwNCj4gb3Bwb3NlIHRoaXMgY2hhbmdlLg0KW2NhcmwueWluXSBvaywgSSBhZ3JlZSB0aGF0IGNo
-YW4gaWQgaXMgbm90IGEgZ29vZCBhbmQgbmVjZXNzYXJ5IGNob2ljZS4NCglNb2RlbU1hbmFnZXIg
-YWxzbyB3b3JrIHdlbGwgd2l0aCAnIEtFUk5FTD09Im1oaV8qXzxjaGFuIG5hbWU+IicuDQo+IA0K
-PiAtLQ0KPiBKZWZmcmV5IEh1Z28NCj4gUXVhbGNvbW0gVGVjaG5vbG9naWVzLCBJbmMuIGlzIGEg
-bWVtYmVyIG9mIHRoZSBDb2RlIEF1cm9yYSBGb3J1bSwgYSBMaW51eA0KPiBGb3VuZGF0aW9uIENv
-bGxhYm9yYXRpdmUgUHJvamVjdC4NCg==
+Daeho,
+
+On 2020/10/29 9:21, Daeho Jeong wrote:
+> Chao,
+> 
+> Do you want to print out a kernel warning message in this case? like
+> "XX compression algorithm is set for this inode, but current mount
+> option doesn't support this algorithm."?
+
+Yup, something like that,
+
+Change 'current mount option' to 'current kernel' or 'current f2fs module' would be
+better?
+
+> 
+> 2020년 10월 28일 (수) 오후 3:47, Chao Yu <yuchao0@huawei.com>님이 작성:
+>>
+>> On 2020/10/27 13:38, Daeho Jeong wrote:
+>>> From: Daeho Jeong <daehojeong@google.com>
+>>>
+>>> Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
+>>> compression option of a file.
+>>>
+>>> struct f2fs_comp_option {
+>>>       u8 algorithm;         => compression algorithm
+>>>                             => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
+>>>       u8 log_cluster_size;  => log scale cluster size
+>>>                             => 2 ~ 8
+>>> };
+>>>
+>>> struct f2fs_comp_option option;
+>>>
+>>> option.algorithm = 1;
+>>> option.log_cluster_size = 7;
+>>>
+>>> ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
+>>>
+>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>> ---
+>>>
+>>> v4: changed commit message.
+>>> v3: changed the error number more specific.
+>>>       folded in fix for build breakage reported by kernel test robot
+>>>       <lkp@intel.com> and Dan Carpenter <dan.carpenter@oracle.com>.
+>>> v2: added ioctl description.
+>>> ---
+>>>    fs/f2fs/compress.c |  5 +++++
+>>>    fs/f2fs/f2fs.h     |  7 +++++++
+>>>    fs/f2fs/file.c     | 52 ++++++++++++++++++++++++++++++++++++++++++++++
+>>>    3 files changed, 64 insertions(+)
+>>>
+>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+>>> index 7895186cc765..816d7adc914c 100644
+>>> --- a/fs/f2fs/compress.c
+>>> +++ b/fs/f2fs/compress.c
+>>> @@ -514,6 +514,11 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
+>>>        return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
+>>>    }
+>>>
+>>> +bool f2fs_is_compress_algorithm_ready(unsigned char algorithm)
+>>> +{
+>>> +     return algorithm < COMPRESS_MAX && f2fs_cops[algorithm] != NULL;
+>>> +}
+>>> +
+>>>    static mempool_t *compress_page_pool;
+>>>    static int num_compress_pages = 512;
+>>>    module_param(num_compress_pages, uint, 0444);
+>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>> index a33c90cf979b..cc38afde6c04 100644
+>>> --- a/fs/f2fs/f2fs.h
+>>> +++ b/fs/f2fs/f2fs.h
+>>> @@ -435,6 +435,8 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
+>>>                                                struct f2fs_sectrim_range)
+>>>    #define F2FS_IOC_GET_COMPRESS_OPTION        _IOR(F2FS_IOCTL_MAGIC, 21,      \
+>>>                                                struct f2fs_comp_option)
+>>> +#define F2FS_IOC_SET_COMPRESS_OPTION _IOW(F2FS_IOCTL_MAGIC, 22,      \
+>>> +                                             struct f2fs_comp_option)
+>>>
+>>>    /*
+>>>     * should be same as XFS_IOC_GOINGDOWN.
+>>> @@ -3915,6 +3917,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
+>>>    int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
+>>>    void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
+>>>    bool f2fs_is_compress_backend_ready(struct inode *inode);
+>>> +bool f2fs_is_compress_algorithm_ready(unsigned char algorithm);
+>>>    int f2fs_init_compress_mempool(void);
+>>>    void f2fs_destroy_compress_mempool(void);
+>>>    void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
+>>> @@ -3945,6 +3948,10 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+>>>        /* not support compression */
+>>>        return false;
+>>>    }
+>>> +static inline bool f2fs_is_compress_algorithm_ready(unsigned char algorithm)
+>>> +{
+>>> +     return false;
+>>> +}
+>>>    static inline struct page *f2fs_compress_control_page(struct page *page)
+>>>    {
+>>>        WARN_ON_ONCE(1);
+>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>> index 8922ab191a9d..8048b150e43b 100644
+>>> --- a/fs/f2fs/file.c
+>>> +++ b/fs/f2fs/file.c
+>>> @@ -3963,6 +3963,55 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
+>>>        return 0;
+>>>    }
+>>>
+>>> +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+>>> +{
+>>> +     struct inode *inode = file_inode(filp);
+>>> +     struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>>> +     struct f2fs_comp_option option;
+>>> +     int ret = 0;
+>>> +
+>>> +     if (!f2fs_sb_has_compression(sbi))
+>>> +             return -EOPNOTSUPP;
+>>> +
+>>> +     if (!(filp->f_mode & FMODE_WRITE))
+>>> +             return -EBADF;
+>>> +
+>>> +     if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg,
+>>> +                             sizeof(option)))
+>>> +             return -EFAULT;
+>>> +
+>>> +     if (!f2fs_compressed_file(inode) ||
+>>> +                     option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
+>>> +                     option.log_cluster_size > MAX_COMPRESS_LOG_SIZE)
+>>> +             return -EINVAL;
+>>> +
+>>> +     if (!f2fs_is_compress_algorithm_ready(option.algorithm))
+>>> +             return -ENOPKG;
+>>
+>> As we allow to mount image with different kernel which supports different compress
+>> algorithms, so I guess we can support to change algorithm to one other which current
+>> kernel doesn't support, since we have add f2fs_is_compress_backend_ready() in all
+>> foreground operations to disallow user to operate such inode's data.
+>>
+>> IMO, just add to print one warnning message is fine.
+>>
+>> Thanks,
+>>
+>>> +
+>>> +     file_start_write(filp);
+>>> +     inode_lock(inode);
+>>> +
+>>> +     if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
+>>> +             ret = -EBUSY;
+>>> +             goto out;
+>>> +     }
+>>> +
+>>> +     if (inode->i_size != 0) {
+>>> +             ret = -EFBIG;
+>>> +             goto out;
+>>> +     }
+>>> +
+>>> +     F2FS_I(inode)->i_compress_algorithm = option.algorithm;
+>>> +     F2FS_I(inode)->i_log_cluster_size = option.log_cluster_size;
+>>> +     F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
+>>> +     f2fs_mark_inode_dirty_sync(inode, true);
+>>> +out:
+>>> +     inode_unlock(inode);
+>>> +     file_end_write(filp);
+>>> +
+>>> +     return ret;
+>>> +}
+>>> +
+>>>    long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>>>    {
+>>>        if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
+>>> @@ -4053,6 +4102,8 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>>>                return f2fs_sec_trim_file(filp, arg);
+>>>        case F2FS_IOC_GET_COMPRESS_OPTION:
+>>>                return f2fs_ioc_get_compress_option(filp, arg);
+>>> +     case F2FS_IOC_SET_COMPRESS_OPTION:
+>>> +             return f2fs_ioc_set_compress_option(filp, arg);
+>>>        default:
+>>>                return -ENOTTY;
+>>>        }
+>>> @@ -4224,6 +4275,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>>>        case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
+>>>        case F2FS_IOC_SEC_TRIM_FILE:
+>>>        case F2FS_IOC_GET_COMPRESS_OPTION:
+>>> +     case F2FS_IOC_SET_COMPRESS_OPTION:
+>>>                break;
+>>>        default:
+>>>                return -ENOIOCTLCMD;
+>>>
+> .
+> 
