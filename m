@@ -2,240 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F5429F407
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E107C29F40A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725972AbgJ2SXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 14:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgJ2SXB (ORCPT
+        id S1725844AbgJ2SYH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Oct 2020 14:24:07 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:39798 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgJ2SYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 14:23:01 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D941C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 11:23:00 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id v5so740455wmh.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 11:23:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WptYepIxvUtBGbdfe98byMus1rF84W8IHfRhIetB8kE=;
-        b=RQBKJR+7mIXmVt2BzbUwRmfEBlPWlq+vo62QPLGc5veKhuZtO2NmyOyX6KqEa1cc/V
-         Pz9XOpHJ6eo/sdS5lsc4BUAU+00BrTZ5SZd1Y9nLLzCOZ4x68BFzBDGCOdzdT1K9ldrC
-         yGPHEjqMynYomFJgV0EfMfpmEf+0TFA+yueS8=
+        Thu, 29 Oct 2020 14:24:06 -0400
+Received: by mail-ot1-f68.google.com with SMTP id o14so3207751otj.6;
+        Thu, 29 Oct 2020 11:24:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=WptYepIxvUtBGbdfe98byMus1rF84W8IHfRhIetB8kE=;
-        b=rzb7KKMDt4kutsEUpRiGv420wm266JB/pKQxfHfrKW+gtoxMwNN7FZWBnPGVhBtyFG
-         5xcY086T+Lr3YHQZDRKrtNp1/elIjRFYJr40F1hBTYu2St0PfZPgb0xa92n0paFJrLks
-         fqmAE+HiwbEjzEmnue11kIcam9i/TDAl0WiTLQiGbgbsU4Y9S+I/MFPxngbdeJrBYQPh
-         qYwfkrxjj6RZY9GdxHVb0wDFdF6JPsUdhndcslRsfj4A3iFmza3fAjatRjfJ+4Dm/fg4
-         CjNdW9MmlL2FIH+4qtj/EO6Fm4tkm9T6JEYwW110rcsbKHTj2frae5AWU2es+P4TpAR+
-         rW6A==
-X-Gm-Message-State: AOAM530jHMXT+wJbwIL5zS5xj8nAbB148yAAKpzEbfNEGzZnUH5hoEMF
-        PJiQGQc0XkZt9k+LLzLNsKL1/w==
-X-Google-Smtp-Source: ABdhPJyp95YENdHwZ66lxLNl0XS2/n4giFjn2XgtRCJ954OsgnABOBSWtRN3hojBXjSHm5FxATl9fQ==
-X-Received: by 2002:a1c:7c1a:: with SMTP id x26mr170768wmc.4.1603995779199;
-        Thu, 29 Oct 2020 11:22:59 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id o184sm1025591wmo.37.2020.10.29.11.22.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 11:22:58 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 19:22:56 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Rob Clark <robdclark@chromium.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Sean Paul <sean@poorly.run>
-Subject: Re: [PATCH v4 23/23] drm/msm: Don't implicit-sync if only a single
- ring
-Message-ID: <20201029182256.GD401619@phenom.ffwll.local>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Rob Clark <robdclark@chromium.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Sean Paul <sean@poorly.run>
-References: <20201023165136.561680-1-robdclark@gmail.com>
- <20201023165136.561680-24-robdclark@gmail.com>
- <d0fb714b99f13bea6000ecd17fba324433782ae5.camel@pengutronix.de>
- <CAF6AEGsf=pJ5H4guvL-+AAkK0PwCZ5g9k3K=7UPYzFmr02ReoA@mail.gmail.com>
- <20201026093405.GG401619@phenom.ffwll.local>
- <CAKMK7uHK27hMu+zSR0O35gR-Nq-JDXpXWBFXPBcXUhOi_3AKnw@mail.gmail.com>
- <CAF6AEGsSY2WtQ33mSZFmju7bSkjP3Zsi2vBnGDy35+YFCWu7qw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4IEYVtSqduzhGKS9TyBWfCcxOVUYCwSEwdK+Y1cmD9g=;
+        b=QdMx1xV7BZ61iQAQ0kpE65veH9yeMKRjW1dgKYmc6COpJZq9+8m9llRJeoiVEXgPsm
+         ifOaiuBeXdRNRs25xUTIT8R3zGZUS9JHr+Ab0Yft3Ca8jAnw7EYn3eE9FdUkoCOCJ8W2
+         vGO4Dijsr0bwpDoVGrtmFYXnUiQwSS3J6H9fornWYODFiRwKqhwSzFZEvffRnds4UNSS
+         VkRwETbiKD+w3XJn0YByCN2mpmDTbWkOTPnULZwQXGUjN5xZlSR3CFyX/BjVieBDou9R
+         PMGRsUlROni9MJdQSjjQS0gIXI3L/J54PFFcTeQGgVEZoMg6spgCF6eyLPWmeiegmoqH
+         7suQ==
+X-Gm-Message-State: AOAM532JplyHMm5N2KU+nH89FITNwsDYWFw1R2WDOGt74mWglF1Vrm06
+        3Gmcr732TlA8pt64Jzv2jLtgs60NYg7OfTYSUPA=
+X-Google-Smtp-Source: ABdhPJzdcG3i35C8JpSQjiJAt0AYBSzBfVI22Cmxbvt5f6BbGMnt3YyMb5pTRGJoLY7Dz/YMWPRgYGqb4ryIfkaf0K0=
+X-Received: by 2002:a9d:5e14:: with SMTP id d20mr3962567oti.107.1603995845494;
+ Thu, 29 Oct 2020 11:24:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGsSY2WtQ33mSZFmju7bSkjP3Zsi2vBnGDy35+YFCWu7qw@mail.gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+References: <20201029133741.25721-1-erosca@de.adit-jv.com> <20201029133741.25721-2-erosca@de.adit-jv.com>
+ <CAMuHMdX5pCtR-LMbuSJQvDNyVOwcipt7zZOF3c3J-d-Bq98NQg@mail.gmail.com> <20201029163213.GA12422@lxhi-065.adit-jv.com>
+In-Reply-To: <20201029163213.GA12422@lxhi-065.adit-jv.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 29 Oct 2020 19:23:53 +0100
+Message-ID: <CAMuHMdXbwfPk5_dZEzjLuUZx6ysxdmu6hKbd54Ev6jTQUObTCA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: renesas: r8a77961: ulcb-kf: Initial
+ device tree
+To:     Eugeniu Rosca <erosca@de.adit-jv.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steffen Pengel <spengel@de.adit-jv.com>,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 09:59:09AM -0700, Rob Clark wrote:
-> On Thu, Oct 29, 2020 at 9:14 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Mon, Oct 26, 2020 at 10:34 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >
-> > > On Fri, Oct 23, 2020 at 08:49:14PM -0700, Rob Clark wrote:
-> > > > On Fri, Oct 23, 2020 at 11:20 AM Lucas Stach <l.stach@pengutronix.de> wrote:
-> > > > >
-> > > > > On Fr, 2020-10-23 at 09:51 -0700, Rob Clark wrote:
-> > > > > > From: Rob Clark <robdclark@chromium.org>
-> > > > > >
-> > > > > > If there is only a single ring (no-preemption), everything is FIFO order
-> > > > > > and there is no need to implicit-sync.
-> > > > > >
-> > > > > > Mesa should probably just always use MSM_SUBMIT_NO_IMPLICIT, as behavior
-> > > > > > is undefined when fences are not used to synchronize buffer usage across
-> > > > > > contexts (which is the only case where multiple different priority rings
-> > > > > > could come into play).
-> > > > >
-> > > > > Really, doesn't this break cross-device implicit sync? Okay, you may
-> > > > > not have many peripherals that rely on implicit sync on devices where
-> > > > > Adreno is usually found, but it seems rather heavy-handed.
-> > > > >
-> > > > > Wouldn't it be better to only ignore fences from your own ring context
-> > > > > in the implicit sync, like we do in the common DRM scheduler
-> > > > > (drm_sched_dependency_optimized)?
-> > > >
-> > > > we already do this.. as was discussed on an earlier iteration of this patchset
-> > > >
-> > > > But I'm not aware of any other non-gpu related implicit sync use-case
-> > > > (even on imx devices where display is decoupled from gpu).. I'll
-> > > > revert the patch if someone comes up with one, but otherwise lets let
-> > > > the implicit sync baggage die
-> > >
-> > > The thing is, dma_resv won't die, even if implicit sync is dead. We're
-> > > using internally for activity tracking and memory management. If you don't
-> > > set these, then we can't share generic code with msm, and I think everyone
-> > > inventing their own memory management is a bit a mistake.
-> > >
-> > > Now you only kill the implicit write sync stuff here, but I'm not sure
-> > > that's worth much since you still install all the read fences for
-> > > consistency. And if userspace doesn't want to be synced, they can set the
-> > > flag and do this on their own: I think you should be able to achieve
-> > > exactly the same thing in mesa.
-> > >
-> > > Aside: If you're worried about overhead, you can do O(1) submit if you
-> > > manage your ppgtt like amdgpu does.
-> >
-> > So just remember a use-case which is maybe a bit yucky, but it is
-> > actually possible to implement race-free. If you have implicit sync.
-> >
-> > There's screen-capture tool in mplayer and obs which capture your
-> > compositor by running getfb2 in a loop. It works, and after some
-> > initial screaming I realized it does actually work race-free. If you
-> > have implicit sync.
-> >
-> > I really don't think you can sunset this, as much as you want to. And
-> > sunsetting it inconsistently is probably the worst.
-> 
-> For the case where you only have a single ring, as long as it is
-> importing the fb in to egl to read it (which it would need to do to
-> get a linear view), this would still all work
+Hi Eugeniu,
 
-Hm right we still have the implicit sync of the ringbuffer. At least until
-you add a submit scheduler to msm ...
-
-> (but I may drop this patch because it is just a micro-optimization and
-> seems to cause more confusion)
-
-Yeah I'd say without numbers to justify it it feels a bit on thin ice :-)
--Daniel
-
-> 
-> BR,
-> -R
-> 
-> 
-> > -Daniel
-> >
-> > > -Daniel
+On Thu, Oct 29, 2020 at 5:34 PM Eugeniu Rosca <erosca@de.adit-jv.com> wrote:
+> On Thu, Oct 29, 2020 at 03:09:10PM +0100, Geert Uytterhoeven wrote:
+> > On Thu, Oct 29, 2020 at 2:38 PM Eugeniu Rosca <erosca@de.adit-jv.com> wrote:
+> > > Create a dedicated DTB for M3-ES3.0 + ULCB + Kingfisher combo.
+> > > Inspire from the pre-existing ULCB-KF device trees:
 > > >
-> > > >
-> > > > BR,
-> > > > -R
-> > > >
-> > > >
-> > > >
-> > > > >
-> > > > > Regards,
-> > > > > Lucas
-> > > > >
-> > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > > > > > Reviewed-by: Kristian H. Kristensen <hoegsberg@google.com>
-> > > > > > ---
-> > > > > >  drivers/gpu/drm/msm/msm_gem_submit.c | 7 ++++---
-> > > > > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-> > > > > > index d04c349d8112..b6babc7f9bb8 100644
-> > > > > > --- a/drivers/gpu/drm/msm/msm_gem_submit.c
-> > > > > > +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-> > > > > > @@ -283,7 +283,7 @@ static int submit_lock_objects(struct msm_gem_submit *submit)
-> > > > > >       return ret;
-> > > > > >  }
-> > > > > >
-> > > > > > -static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
-> > > > > > +static int submit_fence_sync(struct msm_gem_submit *submit, bool implicit_sync)
-> > > > > >  {
-> > > > > >       int i, ret = 0;
-> > > > > >
-> > > > > > @@ -303,7 +303,7 @@ static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
-> > > > > >                               return ret;
-> > > > > >               }
-> > > > > >
-> > > > > > -             if (no_implicit)
-> > > > > > +             if (!implicit_sync)
-> > > > > >                       continue;
-> > > > > >
-> > > > > >               ret = msm_gem_sync_object(&msm_obj->base, submit->ring->fctx,
-> > > > > > @@ -774,7 +774,8 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
-> > > > > >       if (ret)
-> > > > > >               goto out;
-> > > > > >
-> > > > > > -     ret = submit_fence_sync(submit, !!(args->flags & MSM_SUBMIT_NO_IMPLICIT));
-> > > > > > +     ret = submit_fence_sync(submit, (gpu->nr_rings > 1) &&
-> > > > > > +                     !(args->flags & MSM_SUBMIT_NO_IMPLICIT));
-> > > > > >       if (ret)
-> > > > > >               goto out;
-> > > > > >
-> > > > >
-> > > > _______________________________________________
-> > > > dri-devel mailing list
-> > > > dri-devel@lists.freedesktop.org
-> > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > > $ ls -1 arch/arm64/boot/dts/renesas/*ulcb-kf.dts
+> > > arch/arm64/boot/dts/renesas/r8a77950-ulcb-kf.dts
+> > > arch/arm64/boot/dts/renesas/r8a77951-ulcb-kf.dts
+> > > arch/arm64/boot/dts/renesas/r8a77960-ulcb-kf.dts
+> > > arch/arm64/boot/dts/renesas/r8a77965-ulcb-kf.dts
 > > >
-> > > --
-> > > Daniel Vetter
-> > > Software Engineer, Intel Corporation
-> > > http://blog.ffwll.ch
+> > > Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
 > >
+> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > i.e. will queue in renesas-devel for v5.11.
+>
+> Thank you for the prompt review!
+>
+> > > +       compatible = "shimafuji,kingfisher", "renesas,m3ulcb",
+> > > +                    "renesas,r8a77961";
 > >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+> > Can you please send a patch to add this combo to
+> > Documentation/devicetree/bindings/arm/renesas.yaml?
+>
+> I would happily do so if you resolve below concerns.
+>
+> Since the inception of the Kingfisher extension board description in
+> v4.15-rc1 commit 5418a900412699 ("arm: shmobile: Document Kingfisher
+> board DT bindings"), nobody attempted describing the SoC+ULCB+KF
+> combinations in spite of four of such DT configurations being actively
+> used and maintained, i.e. r8a779{50,51,60,65}-ulcb-kf.
+
+I'm a bit confused. We do have:
+
+      - description: Kingfisher (SBEV-RCAR-KF-M03)
+        items:
+          - const: shimafuji,kingfisher
+          - enum:
+              - renesas,h3ulcb
+              - renesas,m3ulcb
+              - renesas,m3nulcb
+          - enum:
+              - renesas,r8a7795
+              - renesas,r8a7796
+              - renesas,r8a77965
+
+> So, if we start documenting the r8a77961-ulcb-kf combo as a board, this
+> raises below questions:
+>
+>   => should the missing 4 SoC+ULCB+KF instances be documented as well?
+>   => should a new compatible string be created for each such HW combo,
+>      e.g. "renesas,<soc>-ulcb-kf"?
+>
+> I feel none of the above is really needed, based on the patterns
+> established in Documentation/devicetree/bindings/arm/renesas.yaml,
+> but I might be wrong. Thoughts/suggestions appreciated.
+
+I don't think we want to add new compatible string to describe each
+combo. Just add "renesas,r8a77961" to the last enum?
+
+> IMHO one thing which is certainly worth clarifying and fixing is the
+> KF revision currently documented in renesas.yaml, i.e. M03.
+>
+> Shimafuji released at least M04, M05 and M06 revisions of KF (nicely
+> compared at https://elinux.org/R-Car/Boards/Kingfisher#Change_point).
+>
+> The question is, does the community intend to support M03 through M06
+> (in which case all of them might need an entry in the documentation) or
+> anything which is earlier than M06 has to be considered deprecated (in
+> which case renesas.yaml would need a simple s/M03/M06/ update)?
+
+I'm not that familiar with KingFisher and the various revisions.
+Do these differences have an impact on the software side?
+The diodes and filters probably don't.
+The I2C repeaters are PCA9548ADB on M03, hence they use a Linux
+driver. By what have they been replaced?
+What's the nature of the MOST ↔ GPS Function select register change?
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
