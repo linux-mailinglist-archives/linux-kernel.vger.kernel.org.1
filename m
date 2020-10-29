@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A4829E6A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:49:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1F729E69D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727620AbgJ2Ity (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 04:49:54 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:35214 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725778AbgJ2Ity (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:49:54 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1F53D1A04B3;
-        Thu, 29 Oct 2020 09:49:52 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C72631A05E4;
-        Thu, 29 Oct 2020 09:49:49 +0100 (CET)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8FBA140291;
-        Thu, 29 Oct 2020 09:49:46 +0100 (CET)
-From:   Qiang Zhao <qiang.zhao@nxp.com>
-To:     olteanv@gmail.com, broonie@kernel.org
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhao Qiang <qiang.zhao@nxp.com>
-Subject: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
-Date:   Thu, 29 Oct 2020 16:40:35 +0800
-Message-Id: <20201029084035.19604-1-qiang.zhao@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726687AbgJ2Isy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 04:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgJ2Isy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:48:54 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D348FC0613CF;
+        Thu, 29 Oct 2020 01:48:53 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g12so1767193pgm.8;
+        Thu, 29 Oct 2020 01:48:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3NBBJNOA89yKkpMLN8TDKgLaYij/cQiFP/n4z7T6KxU=;
+        b=JRHjL+rUarLIuDrPA+dHcKat65vHo6sp5Fsw8o2pgW2w/jnUev20V2KSJ+DuDBKVjS
+         D3b/xQV0CQdq571uA/9mt5WREQKkSyWTGvcssTS+LDKt8DCZ/aAC2MePYOx2G6TzDWLx
+         5ZnCqJLGHQ9qF0Q4TvBUaLF9FsdL0d7yQwMINbk+TUe4X3+XSummfm+fzCNJh7s5cYlE
+         fQyG+3/80CW2DofXfdAecb2KBIyPT8QuRACUAPuewNMHmRKkdx1Y9rhm+jo5bZ379VTZ
+         SCJC02VPXeEaBIP20wyk1fIW71IwB0kwSar2iY3epIZlwwqDbgg7rCPXHJdawDvi9Z4Q
+         CwvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3NBBJNOA89yKkpMLN8TDKgLaYij/cQiFP/n4z7T6KxU=;
+        b=c4Nge8N8JlTeGJioa1PBDhSI30m9ArED8rgF/4iFYKjrjglaKeQzmaGTfFULAA808f
+         5uuStnNp+mewKHW2xrmZuh5u327O552riTeZpT/SinECUHMJXxa0dybICu/8hehzcSmG
+         p2TXF827qukmaGqQQzR7M5FfHbTYlYNn0asLFOy/9SgjyCQMorghTm9W7J+ph6d4XK5u
+         S2B4Y59YeUFhC4g0F1PZXG+HsEW6W3HIZSNUdic1nOa3GGZqo5a3ZCLjeCRY01ai4QlO
+         Y4TdP1yYWuXWT9Jp/TdWumvyOjkCha18hhWphFVN1PFPOxJRS3ITllcGncvZ6uj7baQD
+         yCjA==
+X-Gm-Message-State: AOAM531jxj71xoq0crc5n7zVZbpMGDvhenVM1mZ5HovqRszSPDNIBcFv
+        wk24QopYcQY0i8LACGCXH0kDWAXFMzeOBg==
+X-Google-Smtp-Source: ABdhPJx2qB3sBmJ/TI0px1mlKjdPYsF+E39uJFskusqGwMvoSiYndhjJtzTm1/4+d0R8+TxY3d8Xbw==
+X-Received: by 2002:a65:40ca:: with SMTP id u10mr3023098pgp.71.1603961332919;
+        Thu, 29 Oct 2020 01:48:52 -0700 (PDT)
+Received: from sol.lan (106-69-179-84.dyn.iinet.net.au. [106.69.179.84])
+        by smtp.gmail.com with ESMTPSA id z16sm2178493pfq.33.2020.10.29.01.48.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 01:48:52 -0700 (PDT)
+From:   Kent Gibson <warthog618@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH] gpiolib: cdev: add GPIO_V2_LINE_FLAG_EDGE_BOTH and use it in edge_irq_thread()
+Date:   Thu, 29 Oct 2020 16:48:32 +0800
+Message-Id: <20201029084832.13933-1-warthog618@gmail.com>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhao Qiang <qiang.zhao@nxp.com>
+Add GPIO_V2_LINE_FLAG_EDGE_BOTH macro and use it in edge_irq_thread() to
+improve readability of edge handling cases.
 
-Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in
-remove path"), this driver causes a kernel oops:
-
-[   64.587431] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000020
-[..]
-[   64.756080] Call trace:
-[   64.758526]  dspi_suspend+0x30/0x78
-[   64.762012]  platform_pm_suspend+0x28/0x70
-[   64.766107]  dpm_run_callback.isra.19+0x24/0x70
-[   64.770635]  __device_suspend+0xf4/0x2f0
-[   64.774553]  dpm_suspend+0xec/0x1e0
-[   64.778036]  dpm_suspend_start+0x80/0xa0
-[   64.781957]  suspend_devices_and_enter+0x118/0x4f0
-[   64.786743]  pm_suspend+0x1e0/0x260
-[   64.790227]  state_store+0x8c/0x118
-[   64.793712]  kobj_attr_store+0x18/0x30
-[   64.797459]  sysfs_kf_write+0x40/0x58
-[   64.801118]  kernfs_fop_write+0x148/0x240
-[   64.805126]  vfs_write+0xc0/0x230
-[   64.808436]  ksys_write+0x6c/0x100
-[   64.811833]  __arm64_sys_write+0x1c/0x28
-[   64.815753]  el0_svc_common.constprop.3+0x68/0x170
-[   64.820541]  do_el0_svc+0x24/0x90
-[   64.823853]  el0_sync_handler+0x118/0x168
-[   64.827858]  el0_sync+0x158/0x180
-
-This is because since this commit, the drivers private data point to
-"dspi" instead of "ctlr", the codes in suspend and resume func were
-not modified correspondly.
-
-Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
-Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Kent Gibson <warthog618@gmail.com>
 ---
- drivers/spi/spi-fsl-dspi.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/gpio/gpiolib-cdev.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index 3967afa..1a08c1d 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -1080,12 +1080,11 @@ MODULE_DEVICE_TABLE(of, fsl_dspi_dt_ids);
- #ifdef CONFIG_PM_SLEEP
- static int dspi_suspend(struct device *dev)
- {
--	struct spi_controller *ctlr = dev_get_drvdata(dev);
--	struct fsl_dspi *dspi = spi_controller_get_devdata(ctlr);
-+	struct fsl_dspi *dspi = dev_get_drvdata(dev);
+diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+index ea787eb3810d..5eb4435afa64 100644
+--- a/drivers/gpio/gpiolib-cdev.c
++++ b/drivers/gpio/gpiolib-cdev.c
+@@ -510,6 +510,8 @@ struct linereq {
+ 	(GPIO_V2_LINE_FLAG_EDGE_RISING | \
+ 	 GPIO_V2_LINE_FLAG_EDGE_FALLING)
  
- 	if (dspi->irq)
- 		disable_irq(dspi->irq);
--	spi_controller_suspend(ctlr);
-+	spi_controller_suspend(dspi->ctlr);
- 	clk_disable_unprepare(dspi->clk);
++#define GPIO_V2_LINE_FLAG_EDGE_BOTH GPIO_V2_LINE_EDGE_FLAGS
++
+ #define GPIO_V2_LINE_VALID_FLAGS \
+ 	(GPIO_V2_LINE_FLAG_ACTIVE_LOW | \
+ 	 GPIO_V2_LINE_DIRECTION_FLAGS | \
+@@ -569,8 +571,7 @@ static irqreturn_t edge_irq_thread(int irq, void *p)
+ 	line->timestamp_ns = 0;
  
- 	pinctrl_pm_select_sleep_state(dev);
-@@ -1095,8 +1094,7 @@ static int dspi_suspend(struct device *dev)
+ 	eflags = READ_ONCE(line->eflags);
+-	if (eflags == (GPIO_V2_LINE_FLAG_EDGE_RISING |
+-		       GPIO_V2_LINE_FLAG_EDGE_FALLING)) {
++	if (eflags == GPIO_V2_LINE_FLAG_EDGE_BOTH) {
+ 		int level = gpiod_get_value_cansleep(line->desc);
  
- static int dspi_resume(struct device *dev)
- {
--	struct spi_controller *ctlr = dev_get_drvdata(dev);
--	struct fsl_dspi *dspi = spi_controller_get_devdata(ctlr);
-+	struct fsl_dspi *dspi = dev_get_drvdata(dev);
- 	int ret;
- 
- 	pinctrl_pm_select_default_state(dev);
-@@ -1104,7 +1102,7 @@ static int dspi_resume(struct device *dev)
- 	ret = clk_prepare_enable(dspi->clk);
- 	if (ret)
- 		return ret;
--	spi_controller_resume(ctlr);
-+	spi_controller_resume(dspi->ctlr);
- 	if (dspi->irq)
- 		enable_irq(dspi->irq);
- 
+ 		if (level)
 -- 
-2.7.4
+2.29.0
 
