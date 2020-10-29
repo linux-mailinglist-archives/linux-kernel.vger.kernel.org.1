@@ -2,380 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F75629E44B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E149129E434
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729174AbgJ2HhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
+        id S1729391AbgJ2HgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727993AbgJ2HYz (ORCPT
+        with ESMTP id S1728096AbgJ2HY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:55 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E2EC0613AF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 21:44:16 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id a200so1310319pfa.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 21:44:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5PUPJSFf1IHcZvLW1PVN03VSxogpm/JCbVbKtw2WvTQ=;
-        b=NOBv8q0RERosIt5B8DZMAUUMMHTdpyeHgSla/2qHbufBUmr0cCRmMbNDlydzPL4Etc
-         IUSJFxi5X7UZEW0Pfe3E4IwlLmS8N3vUVrTHUW1zHfWSXEYxhUd0N9Xp7NMUFE1TZK3V
-         j8ReBxESMKYKobKAwPc+PkvLnFO8MTCwGb4K2hLe+yl8td85iJqoU85+5OWJ48eMANsL
-         VNFsG3jC9oB+J+7f3bVCQN3azaRyhJhemLgbDSppQTlqzsTiANG6gpwh8I0Wak3AfOdw
-         QoYHp9BJayB1/DhzQwJjzGLkcr3cP+EODWnfx3gFcU/kumQtHZBo3FKCoxNADtT9/TMs
-         gxTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5PUPJSFf1IHcZvLW1PVN03VSxogpm/JCbVbKtw2WvTQ=;
-        b=AjwfpObpVC8b2syAyWWCe+aGAwqa21yTBlr+2xCI2prHD7/pjIJFR0/Dy3j3Gn3Ixu
-         WN1mu6ripSMwVEMa5R2nr4FuveA8/arDYIKA4ZbE/slwAx5KiTC5Z3ytDjgfsUYZvMHG
-         f4kND2/LKNi/QZqfB2hxRHMHwz2AUXjpTJo7rvIZlLJxO8JC51R/Zt6bGiIRJSDmnv/u
-         OCgmLNWqM0brVTe6UOhk8jfDv2CpVAx6xkTxanNWJ5j//nFuNdomOQbrH6FtlMnEOyYd
-         LRd2ZJ5TSHQaCKRXLuCOI94B6VBYQTScR/DqvInAQzKPM0/h6yh0hx9IyK0Z6oEuLx8e
-         ujig==
-X-Gm-Message-State: AOAM533mCq1S6GqvnNJ/EkPSIcvcLz3gHWJ55yAHywMKsH2jqnNrsbvv
-        vvBqNUY3MOt4PHwp2W1ak8vD0A==
-X-Google-Smtp-Source: ABdhPJxP/4Lslk0J56gDWC/rXpJ7gxkisuXPlEZzc78Q1+QkPcuVmuv2E+JEfkdlfp3DBTnt2C6xJA==
-X-Received: by 2002:a63:2051:: with SMTP id r17mr2420937pgm.191.1603946655635;
-        Wed, 28 Oct 2020 21:44:15 -0700 (PDT)
-Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
-        by smtp.gmail.com with ESMTPSA id t13sm1265110pfc.1.2020.10.28.21.44.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 21:44:14 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 04:44:10 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: Re: [PATCH v2 3/4] dm: add support for passing through inline crypto
- support
-Message-ID: <20201029044410.GA1162579@google.com>
-References: <20201015214632.41951-1-satyat@google.com>
- <20201015214632.41951-4-satyat@google.com>
- <20201027213151.GC2416412@gmail.com>
- <20201027235847.GA913775@google.com>
- <20201028001731.GA2578048@gmail.com>
+        Thu, 29 Oct 2020 03:24:57 -0400
+X-Greylist: delayed 2584 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 28 Oct 2020 22:34:57 PDT
+Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A34C0610D3;
+        Wed, 28 Oct 2020 22:34:57 -0700 (PDT)
+Received: from pps.filterd (m0050093.ppops.net [127.0.0.1])
+        by m0050093.ppops.net-00190b01. (8.16.0.42/8.16.0.42) with SMTP id 09T4hmWN001609;
+        Thu, 29 Oct 2020 04:50:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=vNOU0G1+nDkC24wwPCUFpoG8J+CFgVtGuanshuUsUsk=;
+ b=Caj176iLpfJNs4A7qlOyJTvV5aQLOgImqIxpN1UY4Ag5UH7Irz2CLYZv5v0EZwF7as87
+ 4AzpQwQ+K3k0Phqhf/zeiaOf4J0cwqya4bhIOKNR2wpTAcACbl+VmseK7p4vyU7Ms2ra
+ fC9wK48wwX03Dx6gOg4Yo8mgbSBv4cmTowfTW6TfUr1p1HEKV6acF3j18t4JRIczf4pb
+ VPR77BK+klvaRZVTDoWrHLHmPIWxAhDeIUGx95D2JtsmsgaW0MappnojYBtvfl6yPlZ3
+ RiYd2/D+T4XOm7FNR6mAyJilgzqhGt22xfjRcVQ+eCXRsN5fNuIIgfkJWWgNOaG9RG4N QQ== 
+Received: from prod-mail-ppoint3 (a72-247-45-31.deploy.static.akamaitechnologies.com [72.247.45.31] (may be forged))
+        by m0050093.ppops.net-00190b01. with ESMTP id 34cce8c15w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Oct 2020 04:50:38 +0000
+Received: from pps.filterd (prod-mail-ppoint3.akamai.com [127.0.0.1])
+        by prod-mail-ppoint3.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 09T4nOLo029340;
+        Thu, 29 Oct 2020 00:50:37 -0400
+Received: from prod-mail-relay19.dfw02.corp.akamai.com ([172.27.165.173])
+        by prod-mail-ppoint3.akamai.com with ESMTP id 34f29rssdy-1;
+        Thu, 29 Oct 2020 00:50:37 -0400
+Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
+        by prod-mail-relay19.dfw02.corp.akamai.com (Postfix) with ESMTP id 685426055F;
+        Thu, 29 Oct 2020 04:50:36 +0000 (GMT)
+Subject: Re: [PATCH v2 net] net: sch_generic: aviod concurrent reset and
+ enqueue op for lockless qdisc
+To:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     "Hunt, Joshua" <johunt@akamai.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+References: <1599562954-87257-1-git-send-email-linyunsheng@huawei.com>
+ <CAM_iQpX0_mz+McZdzZ7HFTjBihOKz5E6i4qJQSoFbZ=SZkVh=Q@mail.gmail.com>
+ <830f85b5-ef29-c68e-c982-de20ac880bd9@huawei.com>
+ <CAM_iQpU_tbRNO=Lznz_d6YjXmenYhowEfBoOiJgEmo9x8bEevw@mail.gmail.com>
+ <CAP12E-+3DY-dgzVercKc-NYGPExWO1NjTOr1Gf3tPLKvp6O6+g@mail.gmail.com>
+ <AE096F70-4419-4A67-937A-7741FBDA6668@akamai.com>
+ <CAM_iQpX0XzNDCzc2U5=g6aU-HGYs3oryHx=rmM3ue9sH=Jd4Gw@mail.gmail.com>
+ <19f888c2-8bc1-ea56-6e19-4cb4841c4da0@akamai.com>
+ <93ab7f0f-7b5a-74c3-398d-a572274a4790@huawei.com>
+From:   Vishwanath Pai <vpai@akamai.com>
+Message-ID: <248e5a32-a102-0ced-1462-aa2bc5244252@akamai.com>
+Date:   Thu, 29 Oct 2020 00:50:36 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028001731.GA2578048@gmail.com>
+In-Reply-To: <93ab7f0f-7b5a-74c3-398d-a572274a4790@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-29_01:2020-10-28,2020-10-29 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 bulkscore=0
+ spamscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010290034
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-29_01:2020-10-28,2020-10-29 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 impostorscore=0 spamscore=0 phishscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010290034
+X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 72.247.45.31)
+ smtp.mailfrom=vpai@akamai.com smtp.helo=prod-mail-ppoint3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 05:17:31PM -0700, Eric Biggers wrote:
-> On Tue, Oct 27, 2020 at 11:58:47PM +0000, Satya Tangirala wrote:
-> > > > +/**
-> > > > + * blk_ksm_update_capabilities() - Update the restrictions of a KSM to those of
-> > > > + *				   another KSM
-> > > > + * @target_ksm: The KSM whose restrictions to update.
-> > > > + * @reference_ksm: The KSM to whose restrictions this function will update
-> > > > + *		   @target_ksm's restrictions to,
-> > > > + */
-> > > > +void blk_ksm_update_capabilities(struct blk_keyslot_manager *target_ksm,
-> > > > +				 struct blk_keyslot_manager *reference_ksm)
-> > > > +{
-> > > > +	memcpy(target_ksm->crypto_modes_supported,
-> > > > +	       reference_ksm->crypto_modes_supported,
-> > > > +	       sizeof(target_ksm->crypto_modes_supported));
-> > > > +
-> > > > +	target_ksm->max_dun_bytes_supported =
-> > > > +				reference_ksm->max_dun_bytes_supported;
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(blk_ksm_update_capabilities);
-> > > 
-> > > Wouldn't it be easier to replace the original blk_keyslot_manager, rather than
-> > > modify it?  Then blk_ksm_update_capabilities() wouldn't be needed.
-> > > 
-> > I didn't want to replace the original blk_keyslot_manager because it's
-> > possible that e.g. fscrypt is checking for crypto capabilities support
-> > via blk_ksm_crypto_cfg_supported() when DM wants to replace the
-> > blk_keyslot_manager. DM would have to free the memory used by the
-> > blk_keyslot_manager, but blk_ksm_crypto_cfg_supported() might still
-> > be trying to access that memory. I did it this way to avoid having to
-> > add refcounts or something else to the blk_keyslot_manager...(And I
-> > didn't bother adding any synchronization code since the capabilities
-> > only ever expand, and never contract).
-> 
-> Are you sure that's possible?  That would imply that there is no synchronization
-> between limits/capabilities in the request_queue being changed and the
-> request_queue being used.  That's already buggy.  Maybe it's the sort of thing
-> that is gotten away with in practice, in which case avoiding a free() would
-> indeed be a good idea, but it's worth explicitly clarifying whether all this
-> code is indeed racy by design...
-> 
-I tried checking if the two code regions are reachable at the same time
-(by adding some hacky code in the middle of
-blk_ksm_crypto_cfg_supported() to loop indefinitely until a certain flag
-is set at the end of dm_update_keyslot_manager(), which is right after
-where we'd free the old ksm when the table is swapped), and it turns out
-the two regions really *can* run at the same time. Otoh, I'd imagine
-dm_stop_queue() might synchronize the limits in the request_queue(), but
-that's only called on request based DM devices...tl;dr I don't know if
-changing limits in the request_queue is racy, but checking for crypto
-capabilities is.
+On 10/28/20 10:37 PM, Yunsheng Lin wrote:
+ > On 2020/10/29 4:04, Vishwanath Pai wrote:
+ >> On 10/28/20 1:47 PM, Cong Wang wrote:
+ >>> On Wed, Oct 28, 2020 at 8:37 AM Pai, Vishwanath <vpai@akamai.com> 
+wrote:
+ >>>> Hi,
+ >>>>
+ >>>> We noticed some problems when testing the latest 5.4 LTS kernel 
+and traced it
+ >>>> back to this commit using git bisect. When running our tests the 
+machine stops
+ >>>> responding to all traffic and the only way to recover is a reboot. 
+I do not see
+ >>>> a stack trace on the console.
+ >>>
+ >>> Do you mean the machine is still running fine just the network is down?
+ >>>
+ >>> If so, can you dump your tc config with stats when the problem is 
+happening?
+ >>> (You can use `tc -s -d qd show ...`.)
+ >>>
+ >>>>
+ >>>> This can be reproduced using the packetdrill test below, it should 
+be run a
+ >>>> few times or in a loop. You should hit this issue within a few 
+tries but
+ >>>> sometimes might take up to 15-20 tries.
+ >>> ...
+ >>>> I can reproduce the issue easily on v5.4.68, and after reverting 
+this commit it
+ >>>> does not happen anymore.
+ >>>
+ >>> This is odd. The patch in this thread touches netdev reset path, if 
+packetdrill
+ >>> is the only thing you use to trigger the bug (that is netdev is 
+always active),
+ >>> I can not connect them.
+ >>>
+ >>> Thanks.
+ >>
+ >> Hi Cong,
+ >>
+ >>> Do you mean the machine is still running fine just the network is down?
+ >>
+ >> I was able to access the machine via serial console, it looks like it is
+ >> up and running, just that networking is down.
+ >>
+ >>> If so, can you dump your tc config with stats when the problem is 
+happening?
+ >>> (You can use `tc -s -d qd show ...`.)
+ >>
+ >> If I try running tc when the machine is in this state the command never
+ >> returns. It doesn't print anything but doesn't exit either.
+ >>
+ >>> This is odd. The patch in this thread touches netdev reset path, if 
+packetdrill
+ >>> is the only thing you use to trigger the bug (that is netdev is 
+always active),
+ >>> I can not connect them.
+ >>
+ >> I think packetdrill creates a tun0 interface when it starts the
+ >> test and tears it down at the end, so it might be hitting this code path
+ >> during teardown.
+ >
+ > Hi, Is there any preparation setup before running the above 
+packetdrill test
+ > case, I run the above test case in 5.9-rc4 with this patch applied 
+without any
+ > preparation setup, did not reproduce it.
+ >
+ > By the way, I am newbie to packetdrill:), it would be good to provide the
+ > detail setup to reproduce it,thanks.
+ >
+ >>
+ >> P.S: My mail server is having connectivity issues with vger.kernel.org
+ >> so messages aren't getting delivered to netdev. It'll hopefully get
+ >> resolved soon.
+ >>
+ >> Thanks,
+ >> Vishwanath
+ >>
+ >>
+ >> .
+ >>
 
-In case you're interested, here's the hack I used to test that
+I can't reproduce it on v5.9-rc4 either, it is probably an issue only on
+5.4 then (and maybe older LTS versions). Can you give it a try on
+5.4.68?
 
-diff --git a/block/keyslot-manager.c b/block/keyslot-manager.c
-index e16e4a074765..918bdd58e6b2 100644
---- a/block/keyslot-manager.c
-+++ b/block/keyslot-manager.c
-@@ -34,6 +34,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/wait.h>
- #include <linux/blkdev.h>
-+#include <linux/delay.h>
- 
- struct blk_ksm_keyslot {
- 	atomic_t slot_refs;
-@@ -284,6 +285,7 @@ void blk_ksm_put_slot(struct blk_ksm_keyslot *slot)
- 	}
- }
- 
-+volatile int my_inline_var = 0;
- /**
-  * blk_ksm_crypto_cfg_supported() - Find out if a crypto configuration is
-  *				    supported by a ksm.
-@@ -297,8 +299,18 @@ void blk_ksm_put_slot(struct blk_ksm_keyslot *slot)
- bool blk_ksm_crypto_cfg_supported(struct blk_keyslot_manager *ksm,
- 				  const struct blk_crypto_config *cfg)
- {
-+	int mtmp = 0;
-+
- 	if (!ksm)
- 		return false;
-+	if (my_inline_var == 0)
-+		my_inline_var = 1;
-+	while (my_inline_var != 3) {
-+		if (mtmp % 10 == 0)
-+			printk("In blk_ksm_crypto supported! %d", my_inline_var);
-+		mtmp++;
-+		msleep(500);
-+	}
- 	if (!(ksm->crypto_modes_supported[cfg->crypto_mode] &
- 	      cfg->data_unit_size))
- 		return false;
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index cb1191d6e945..c6733de1388c 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -2141,6 +2141,14 @@ static int loop_add(struct loop_device **l, int i)
- 	if (!disk)
- 		goto out_free_queue;
- 
-+#ifdef CONFIG_BLK_INLINE_ENCRYPTION
-+	blk_ksm_init_passthrough(&lo->ksm);
-+	lo->ksm.max_dun_bytes_supported = 16;
-+	lo->ksm.crypto_modes_supported[BLK_ENCRYPTION_MODE_AES_256_XTS] = 0xFFFFFFFF;
-+	lo->ksm.crypto_modes_supported[BLK_ENCRYPTION_MODE_ADIANTUM] = 0xFFFFFFFF;
-+	blk_ksm_register(&lo->ksm, lo->lo_queue);
-+#endif
-+
- 	/*
- 	 * Disable partition scanning by default. The in-kernel partition
- 	 * scanning can be requested individually per-device during its
-diff --git a/drivers/block/loop.h b/drivers/block/loop.h
-index af75a5ee4094..4fc9aa9cab94 100644
---- a/drivers/block/loop.h
-+++ b/drivers/block/loop.h
-@@ -12,6 +12,7 @@
- #include <linux/bio.h>
- #include <linux/blkdev.h>
- #include <linux/blk-mq.h>
-+#include <linux/keyslot-manager.h>
- #include <linux/spinlock.h>
- #include <linux/mutex.h>
- #include <linux/kthread.h>
-@@ -62,6 +63,9 @@ struct loop_device {
- 	struct request_queue	*lo_queue;
- 	struct blk_mq_tag_set	tag_set;
- 	struct gendisk		*lo_disk;
-+#ifdef CONFIG_BLK_INLINE_ENCRYPTION
-+	struct blk_keyslot_manager	ksm;
-+#endif
- };
- 
- struct loop_cmd {
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index 22bb2c90583d..165521d1ade2 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -2087,7 +2087,7 @@ int dm_verify_inline_encryption(struct mapped_device *md, struct dm_table *t)
- 
- 	return 0;
- }
--
-+extern volatile int my_inline_var;
- static void dm_update_keyslot_manager(struct mapped_device *md,
- 				      struct blk_keyslot_manager *ksm)
- {
-@@ -2125,6 +2125,11 @@ static void dm_update_keyslot_manager(struct mapped_device *md,
- 		blk_ksm_update_capabilities(md->queue->ksm, ksm);
- 		blk_ksm_destroy(ksm);
- 	}
-+	printk("update KSM!");
-+	if (my_inline_var == 2) {
-+		printk("Update to 3 in ksm update");
-+		my_inline_var = 3;
-+	}
- }
- 
- static void dm_destroy_inline_encryption(struct mapped_device *md)
-@@ -2213,6 +2218,11 @@ static struct dm_table *__bind(struct mapped_device *md, struct dm_table *t,
- 		goto out;
- 	}
- 
-+	if (my_inline_var == 1) {
-+		printk("Update to 2 in bind");
-+		my_inline_var = 2;
-+	}
-+
- 	dm_update_keyslot_manager(md, ksm);
- 
- 	old_map = rcu_dereference_protected(md->map, lockdep_is_held(&md->suspend_lock));
+For running packetdrill, download the latest version from their github
+repo, then run it in a loop without any special arguments. This is what
+I do to reproduce it:
 
-Using that patch, I
-1) set up a loopback device on a file
-2) set up a dm-linear device (dm-0) on that loopback device
-3) suspended dm-0
-4) loaded a new table to dm-0 (I just used the same table as the existing
-   table)
-5) tried to read an encrypted file from dm-0 in the background (which
-   promptly started printing out "In blk_ksm_crypto supported! 1" every
-   5s)
-6) resumed dm-0, which causes the "new" table to be swapped in, and sets
-   my_inline_var to 3, which eventually results in the read in step 5
-   to run to completion.
+while true; do ./packetdrill <test-file>; done
 
-> > > > diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
-> > > > index cd0478d44058..2b3efa9f9fae 100644
-> > > > --- a/drivers/md/dm-ioctl.c
-> > > > +++ b/drivers/md/dm-ioctl.c
-> > > > @@ -1358,6 +1358,10 @@ static int table_load(struct file *filp, struct dm_ioctl *param, size_t param_si
-> > > >  		goto err_unlock_md_type;
-> > > >  	}
-> > > >  
-> > > > +	r = dm_verify_inline_encryption(md, t);
-> > > > +	if (r)
-> > > > +		goto err_unlock_md_type;
-> > > > +
-> > > >  	if (dm_get_md_type(md) == DM_TYPE_NONE) {
-> > > >  		/* Initial table load: acquire type of table. */
-> > > >  		dm_set_md_type(md, dm_table_get_type(t));
-> > > > @@ -2114,6 +2118,10 @@ int __init dm_early_create(struct dm_ioctl *dmi,
-> > > >  	if (r)
-> > > >  		goto err_destroy_table;
-> > > >  
-> > > > +	r = dm_verify_inline_encryption(md, t);
-> > > > +	if (r)
-> > > > +		goto err_destroy_table;
-> > > > +
-> > > >  	md->type = dm_table_get_type(t);
-> > > >  	/* setup md->queue to reflect md's type (may block) */
-> > > >  	r = dm_setup_md_queue(md, t);
-> > > 
-> > > Both table_load() and dm_early_create() call dm_setup_md_queue().  Wouldn't it
-> > > be simpler to handle inline encryption in dm_setup_md_queue(), instead of doing
-> > > it in both table_load() and dm_early_create()?
-> > > 
-> > table_load() only calls dm_setup_md_queue() on initial table load (when
-> > the md_type is DM_TYPE_NONE), so I can't call
-> > dm_verify_inline_encryption() in only dm_setup_md_queue(), because
-> > dm_verify_inline_encryption() needs to run on every table load.
-> 
-> Where do all the other limitations and capabilities of the request_queue get
-> updated on non-initial table loads, then?
-> 
-I don't think they get updated on non-initial table loads at all - they
-only get updated on table swaps. Integrity is, however, an exception -
-it gets updated on table loads, and verified on table swaps (and if
-verification fails during the swap, it removes the integrity profile
-entirely).
-> > > > +/**
-> > > > + * dm_verify_inline_encryption() - Verifies that the current keyslot manager of
-> > > > + *				   the mapped_device can be replaced by the
-> > > > + *				   keyslot manager of a given dm_table.
-> > > > + * @md: The mapped_device
-> > > > + * @t: The dm_table
-> > > > + *
-> > > > + * In particular, this function checks that the keyslot manager that will be
-> > > > + * constructed for the dm_table will support a superset of the capabilities that
-> > > > + * the current keyslot manager of the mapped_device supports.
-> > > > + *
-> > > > + * Return: 0 if the table's keyslot_manager can replace the current keyslot
-> > > > + *	   manager of the mapped_device. Negative value otherwise.
-> > > > + */
-> > > > +int dm_verify_inline_encryption(struct mapped_device *md, struct dm_table *t)
-> > > > +{
-> > > > +	struct blk_keyslot_manager *ksm = dm_init_inline_encryption(md, t);
-> > > > +
-> > > > +	if (IS_ERR(ksm))
-> > > > +		return PTR_ERR(ksm);
-> > > > +	blk_ksm_destroy(ksm);
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > 
-> > > This function seems redundant with dm_init_inline_encryption().  Wouldn't it be
-> > > simpler to do:
-> > > 
-> > > - dm_setup_md_queue() and dm_swap_table() call dm_init_inline_encryption() after
-> > >   dm_calculate_queue_limits().
-> > > 
-> > > - ksm gets passed to dm_table_set_restrictions(), which calls
-> > >   dm_update_keyslot_manager() (maybe rename to dm_update_inline_encryption()?)
-> > >   to actually set q->ksm.
-> > > 
-> > > That way, the crypto capabilities would be handled similarly to how the
-> > > queue_limits are already handled.
-> > > 
-> > If we call it from dm_swap_table(), we could have it pass the returned
-> > ksm to __bind(), either as a new argument, or by adding the ksm to the
-> > queue_limits (I'll have to check if that's ok/a good idea in the first
-> > place), and __bind() could send the argument to
-> > dm_table_set_restrictions()
-> > 
-> > But the real issue is, I think we should check whether a new table is
-> > valid (from the ksm capabilities support perspective) at the time that
-> > table is loaded (as opposed to only checking it when DM attempts to swap
-> > it in, which might be a lot later, when the user resumes the device) - so
-> > I can't only call it from dm_setup_md_queue(), and I'd have to call it
-> > from table_load() anyway. And the returned ksm that table_load() obtains
-> > from dm_init_inline_encryption() can't really be used - because
-> > 1) the ksm constructed at dm_swap_table() might actually support more
-> > capabilities than the ksm constructed in table_load(), because
-> > underlying devices might get resumed, and have new tables swapped in,
-> > and might support more capabilities than before
-> > 2) a subsequent dm_swap_table() call could fail for whatever reason, and
-> > we'll need to revert to the current ksm.
-> > 
-> > What I'm doing right now is simply freeing the ksm returned by
-> > dm_init_inline_encryption() whenever it's called from table_load()
-> > (and I'm trying to make that process a little nicer by wrapping it in a
-> > function called dm_verify_inline_encryption()) - so if we're going to
-> > have to call dm_init_inline_encryption() and then freeing the returned
-> > ksm in table_load(), I think it might be better to continue to have
-> > dm_verify_inline_encryption(), unless you'd prefer just open coding the
-> > function directly.
-> 
-> I don't understand why this needs to be so complicated.  Doesn't the dm layer
-> have the same problem for all the other queue limits and capabilities?  What
-> makes inline encryption different?
-> 
-It's this complicated only because I wanted to verify whether the inline
-crypto capabilities of the new table are acceptable at table load time,
-rather than throwing an error only at table swap time. If we decide
-it's alright to throw an error only at table swap time, then
-dm_verify_inline_encryption() can go away completely, and we won't need
-the code in table_load() and dm_early_create() that calls that
-function.
-> - Eric
+I don't think any other setup is necessary.
+
+-Vishwanath
+
