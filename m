@@ -2,188 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5E529E3FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFC429E3D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:23:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728341AbgJ2HZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726981AbgJ2HYi (ORCPT
+        id S1726406AbgJ2HVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:21:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49426 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726081AbgJ2HVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:38 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95467C08E88D
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:52:10 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id l1so1233967qvr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:52:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=ycGNe9+r6ZtsYB7fMYl9NQm2H2sRV2pn//velGjkXrw=;
-        b=UcYBwkrfGiUksGFx6YqPe5lAsbqVsJJDCMxpB9iTr12x8RG/i3A0UFNFrSM64saniq
-         lqYyP47C0NJVpHaVeCdHGTyCpgnFt5GXXearFPPOnsJF9EOU44ljR1W3/s1bTQ76VZ/4
-         W5GwGKHRFND7DxNvzXW7DHXbtzidINzQxhr87mBFQnXJGz678M3fedCuzXwPp/E3RosE
-         OOsjEOIfiucJnpjmkotP2IPdhH7M3dYefoNEAFvqB5n0Ph7DzeL1r/w7DXCIi+Kcx7Mw
-         UVZHQl25UbxPdHDNJEHObUR1GnY5I4Sd/WAU/YSbOjwWBEf+VeuGFEaodQsONRN9PpOH
-         Q2Bg==
+        Thu, 29 Oct 2020 03:21:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603956067;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k+MySIa0GO5sAsedbOJklvkP1JxXrpHRlnL4dRpsf/4=;
+        b=G4hu6+LPzLZiY1zNpGWejRN1iRAMp2Q2GNLdqbmT257sRo+Bf1ysqV76lin2NVdC+gC5Sh
+        No6beNH6NsXdi/Tmmh9Ux0nYYZnj2F4Rw8fbM6NpyN+MWhCDkE15FY8CvZIP3Z7h8kTUP9
+        /Nafq0HQkbH7z+N7kfT/JkJvMux6zjQ=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-194-IRYWTd8mNVSj-YtfJTgKsw-1; Thu, 29 Oct 2020 03:04:35 -0400
+X-MC-Unique: IRYWTd8mNVSj-YtfJTgKsw-1
+Received: by mail-wr1-f71.google.com with SMTP id n14so882941wrp.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:04:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ycGNe9+r6ZtsYB7fMYl9NQm2H2sRV2pn//velGjkXrw=;
-        b=oTvvyXJVpcEOQVFCs4jwRXu803Xm0zQCxZU35DGQj4VuTyxlDRPWWFrHCSTj2uFC22
-         RKothdqcuxcru7s0kkJp2Pge8E2l7Qg3iXYKyTosJ8SsnY6xg9PGaSjZ8n+IaxjoKLjS
-         NH4UMZgL2rWw+WqzjJvzPxJZQaNTbEcv0NEq1luKLxqpYk5RAVWsIONUg31d0/LPXiGJ
-         9+s7x8bOVSGvjM66GA5cwQ6Iww+di050Z1QlaZctaDq8ZfM8Z/xDgJPzV7W5Qgfipun7
-         dbH6w6SrKeGbCYvtBCcL9NYPanI3XbfEZhY8C88b9woQqem1x5M6e01+6Jb4XN5QSZXV
-         xiCg==
-X-Gm-Message-State: AOAM530DbcYP6oxj61u1EsmG9ZqSX9u6OvVX+ZtW/qrR89G3N7/i9vEl
-        q0fzzIcp2Y/ZJ9CZeFjW//1r2ZtoAznW
-X-Google-Smtp-Source: ABdhPJzK5gaXnV13yTy5JF/hpV2rHUzTu1Sa8j7G2DA016DdYFQGrUgnA9Tc5GbyzDqvj2+ntcfeMRHyjxuW
-Sender: "amistry via sendgmr" <amistry@nandos.syd.corp.google.com>
-X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:725a:fff:fe46:72ab])
- (user=amistry job=sendgmr) by 2002:a0c:8d05:: with SMTP id
- r5mr2873241qvb.31.1603954329701; Wed, 28 Oct 2020 23:52:09 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 17:51:33 +1100
-In-Reply-To: <20201029065133.3027749-1-amistry@google.com>
-Message-Id: <20201029175120.1.Ifd7243cd3e2c2206a893ad0a5b9a4f19549e22c6@changeid>
-Mime-Version: 1.0
-References: <20201029065133.3027749-1-amistry@google.com>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH 1/1] x86/speculation: Allow IBPB to be conditionally enabled
- on CPUs with always-on STIBP
-From:   Anand K Mistry <amistry@google.com>
-To:     x86@kernel.org, linux-kernel@kernel.org
-Cc:     Thomas.Lendacky@amd.com, joelaf@google.com,
-        asteinhauser@google.com, tglx@linutronix.de,
-        Anand K Mistry <amistry@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
-        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k+MySIa0GO5sAsedbOJklvkP1JxXrpHRlnL4dRpsf/4=;
+        b=XdMs/iP0/OKb39sJOohVlKi4Clnmh6bYupM/Op1NkrhWDoAAmE+IFkB57tCtBrNJ6c
+         MYVDclXmcvYmXHYxG/6HE0d9yJXDw8WX0kVjJX7URyV2HiQFQQNjO5jKfANiSUHejlC9
+         7eEUXuo7R9w7E2XGXTThIiSsR6ZfnehtB6zKHa9AKJECV0soCH2Ws+3o1yuow5I+DNwL
+         1Qqj9nkNnkNByqCPHrgHgmTL4CGSOjZXGfykIwW3mIetTWZlvueYYkF4/uX7F+5ZrSU9
+         LtmXI3vJXvcsUdD6+jh3DdPRW/pj++47jsP9eMb19NCsrU84+Hx+17XNUvYP9Ur4SUS9
+         LD9w==
+X-Gm-Message-State: AOAM532004zQXp1lDbJhJ/T+bCnsoOe6BvL/+FRGM4L9AwQmTmJPROml
+        qWTJsMIgp1c6dP0ONbi1dp6Ba1HDJ4Zbq1Rrwiz0ZQplrwVc8wRjK0l3WZGHTHtViv4oUevjJ6E
+        KMCB8hdEqHzBP6d7S1WAGdPuD
+X-Received: by 2002:adf:e4ca:: with SMTP id v10mr3780260wrm.53.1603955073915;
+        Thu, 29 Oct 2020 00:04:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyjtd7rX2GzPMeGPldc12GMpi5saPCqNeQJ2ZCa70evuRQIB96hYYOHQ+JlKqMs5entrVHldQ==
+X-Received: by 2002:adf:e4ca:: with SMTP id v10mr3780234wrm.53.1603955073729;
+        Thu, 29 Oct 2020 00:04:33 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id 3sm2825527wmd.19.2020.10.29.00.04.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 00:04:33 -0700 (PDT)
+Subject: Re: [PATCH] [v2] x86: apic: avoid -Wshadow warning in header
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org
+References: <20201028212417.3715575-1-arnd@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ea34f1d3-ed54-a2de-79d9-5cc8decc0ab3@redhat.com>
+Date:   Thu, 29 Oct 2020 08:04:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <20201028212417.3715575-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On AMD CPUs which have the feature X86_FEATURE_AMD_STIBP_ALWAYS_ON,
-STIBP is set to on and 'spectre_v2_user_stibp ==
-SPECTRE_V2_USER_STRICT_PREFERRED'. At the same time, IBPB can be set to
-conditional. However, this leads to the case where it's impossible to
-turn on IBPB for a process because in the PR_SPEC_DISABLE case in
-ib_prctl_set, the (spectre_v2_user_stibp ==
-SPECTRE_V2_USER_STRICT_PREFERRED) condition leads to a return before the
-task flag is set. Similarly, ib_prctl_get will return PR_SPEC_DISABLE
-even though IBPB is set to conditional.
+On 28/10/20 22:20, Arnd Bergmann wrote:
+> Avoid this by renaming the global 'apic' variable to the more descriptive
+> 'x86_system_apic'. It was originally called 'genapic', but both that
+> and the current 'apic' seem to be a little overly generic for a global
+> variable.
 
-More generally, the following cases are possible:
-1. STIBP = conditional && IBPB = on for spectre_v2_user=seccomp,ibpb
-2. STIBP = on && IBPB = conditional for AMD CPUs with
-   X86_FEATURE_AMD_STIBP_ALWAYS_ON
+The 'apic' affects only the current CPU, so one of 'x86_local_apic',
+'x86_lapic' or 'x86_apic' is probably preferrable.
 
-The first case functions correctly today, but only because
-spectre_v2_user_ibpb isn't updated to reflect the IBPB mode.
+I don't have huge objections to renaming 'apic' variables and arguments
+in KVM to 'lapic'.  I do agree with Sean however that it's going to
+break again very soon.
 
-At a high level, this change does one thing. If either STIBP is IBPB is
-set to conditional, allow the prctl to change the task flag. Also,
-reflect that capability when querying the state. This isn't perfect
-since it doesn't take into account if only STIBP or IBPB is
-unconditionally on. But it allows the conditional feature to work as
-expected, without affecting the unconditional one.
-
-Signed-off-by: Anand K Mistry <amistry@google.com>
-
----
-
- arch/x86/kernel/cpu/bugs.c | 41 +++++++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 18 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index d3f0db463f96..fb64e02eed6f 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -1254,6 +1254,11 @@ static int ssb_prctl_set(struct task_struct *task, unsigned long ctrl)
- 	return 0;
- }
- 
-+static bool is_spec_ib_user(enum spectre_v2_user_mitigation mode)
-+{
-+	return mode == SPECTRE_V2_USER_PRCTL || mode == SPECTRE_V2_USER_SECCOMP;
-+}
-+
- static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
- {
- 	switch (ctrl) {
-@@ -1262,13 +1267,16 @@ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
- 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
- 			return 0;
- 		/*
--		 * Indirect branch speculation is always disabled in strict
--		 * mode. It can neither be enabled if it was force-disabled
--		 * by a  previous prctl call.
-+		 * With strict mode for both IBPB and STIBP, the instruction
-+		 * code paths avoid checking this task flag and instead,
-+		 * unconditionally run the instruction. However, STIBP and IBPB
-+		 * are independent and either can be set to conditionally
-+		 * enabled regardless of the mode of the other. If either is set
-+		 * to conditional, allow the task flag to be updated, unless it
-+		 * was force-disabled by a previous prctl call.
- 		 */
--		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
--		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
--		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED ||
-+		if ((!is_spec_ib_user(spectre_v2_user_ibpb) &&
-+		     !is_spec_ib_user(spectre_v2_user_stibp)) ||
- 		    task_spec_ib_force_disable(task))
- 			return -EPERM;
- 		task_clear_spec_ib_disable(task);
-@@ -1283,9 +1291,8 @@ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
- 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
- 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
- 			return -EPERM;
--		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
--		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
--		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
-+		if (!is_spec_ib_user(spectre_v2_user_ibpb) &&
-+		    !is_spec_ib_user(spectre_v2_user_stibp))
- 			return 0;
- 		task_set_spec_ib_disable(task);
- 		if (ctrl == PR_SPEC_FORCE_DISABLE)
-@@ -1351,20 +1358,18 @@ static int ib_prctl_get(struct task_struct *task)
- 	if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
- 	    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
- 		return PR_SPEC_ENABLE;
--	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
--	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
--	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
--		return PR_SPEC_DISABLE;
--	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
--	    spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
--	    spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
--	    spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP) {
-+	else if (is_spec_ib_user(spectre_v2_user_ibpb) ||
-+		 is_spec_ib_user(spectre_v2_user_stibp)) {
- 		if (task_spec_ib_force_disable(task))
- 			return PR_SPEC_PRCTL | PR_SPEC_FORCE_DISABLE;
- 		if (task_spec_ib_disable(task))
- 			return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
- 		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
--	} else
-+	} else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
-+	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
-+	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
-+		return PR_SPEC_DISABLE;
-+	else
- 		return PR_SPEC_NOT_AFFECTED;
- }
- 
--- 
-2.29.1.341.ge80a0c044ae-goog
+Paolo
 
