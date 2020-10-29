@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7447329EEF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C772529EEFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727987AbgJ2O6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
+        id S1728014AbgJ2O7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727839AbgJ2O6y (ORCPT
+        with ESMTP id S1728006AbgJ2O7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:58:54 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC078C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:58:54 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id j18so2559638pfa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:58:54 -0700 (PDT)
+        Thu, 29 Oct 2020 10:59:04 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE54C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:59:04 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id 1so1423100ple.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:59:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=63fCD7b9c39BMwHAue5Fl+YEtHFG3eKfVilw8x2/rAA=;
-        b=kj3iNPCNr2+M9wcLse6ZQ21oBMHYl72Qc/zJOgpvoUZZqUK4+1MCHZUsaeGS6ui0Cw
-         NKMYgFNZDZEEj26ihm97tZCqaNTMiwt8L2gI8RVYyN+frDClvcpXVMJFqKb05BxLkC7G
-         pA0NV8O4+fz/AgT5Lsyvp1Hiy6smYo9cDdacpYTYMV336wKhX1U6gCN05GCtvtBbrP3+
-         +32FuTSbVwYNzjs7SVRxQFtex1r2DZw/dc7+kq04dEPh84eVNDJmESv2i2upZTMFosJ/
-         ALonraRZR/qVAXbwtRieM5V+r2Zwg6rgyGAGcYRou7223Z1UXYNR9wAKUSLXL6Mjz2if
-         g6MA==
+        bh=vRwqyoyBEeMity0cyda+uu/rJEIK2HXvyD5N7tr1KQA=;
+        b=VaV6/Go+khoksNqGfCUHDeBSHVzAJEA+svM5XJTrMpaiwQW5OlTmX/9P+0AhI2Wgrc
+         eaYH6kMXDCKlBsBdwgq0a2AvqpQJFku5TSiBp8O9O1W6GvFJvEqB0WWZiW7gaMNQT2PN
+         JjueUsyk1j1ZDQ4eRWBrzvLUpzbK6D7wXp99Ea6n2DFJoqRpGOqqVsM7B4ahs+rEim/x
+         7GCHwMuXp3+jVVF5LWSemEJME2d/XEGagujBza5F+oXi2yDsg2/yn7tJa2lMuruEsQyG
+         zzn4vNRJTm1+P8cplXnjZhqwceqWIQYRcmtckz5f8cQH8CuKEpDZGwf2pC+80kwUCRzu
+         /OlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=63fCD7b9c39BMwHAue5Fl+YEtHFG3eKfVilw8x2/rAA=;
-        b=mtTmSz1Chj102psRM+9qXbiPbpY+wXfexkQfRwwv1pwaIimlbXg+n91I25S1uHTF11
-         +xBFVIC6/EBZm191+BGOEOwaXnaFWWM0RNosYTtZ3HtTp3cKyxmg142Lt1vAx7csS61s
-         0zkVLz2pDrr/XgKcO8FPpoq45aBPNepYY0OnAKwh1Dbb5WGttIE27FLgslERYXwHC3e6
-         l5dUs81QLszuDAqxNgXDjklrVxPsPaQo1EKaODI+enoy71hI8riUqiSK7M65ZeSRrTg3
-         ObCCY/rmjkdqgRsl0cRT6RDn1BklVoKHC1rOHdw8L/Q5ekMia/NyTevkTwiuwwQnBfnX
-         vEWA==
-X-Gm-Message-State: AOAM532U9dt9pF6FZSxwVnQsB9vS/DtgYujQURUXKybx8vMamNtUAYpM
-        tpTvgS1HjZ+BpamyduPm0OlvbQ==
-X-Google-Smtp-Source: ABdhPJw17SGDkWifbE7fvN8UeDKNxr6nOnVarhxUncUj/mUYxJzpJE6WxXsesAZ4m34FfWUD2Yt8kQ==
-X-Received: by 2002:a17:90a:b30b:: with SMTP id d11mr152257pjr.163.1603983534301;
-        Thu, 29 Oct 2020 07:58:54 -0700 (PDT)
+        bh=vRwqyoyBEeMity0cyda+uu/rJEIK2HXvyD5N7tr1KQA=;
+        b=A+ECdSx4yRFBrz7SiVshaU2+RjjwBeZW+vB1QuMh+Jb9WzpiHABomg4B41JQJ5fA1C
+         sfFJWeb5h/6lhhGPkDd3+5EipckoJnB78mcCE7n3EeC7yf+lwhW3xMA0Z6PSTlsCWloL
+         18xXY3GKn3dxbL5oSJ3foVvp1/5YWLC51nWRmds0WZj7QKSXYQq5WVqng2HqXoU2TFkr
+         fyKiVCiZhUpkDfeyB118Oxpzxpd4O7Iz7LSoYPfwFGGbSVf6MSJMDrC6YbKvSur45I1B
+         r4fjs+A6lNOLDa59dRHZ5ktL0SqL4/GCGzSIaICoBsAqAAiR5BYY56gBFNGVDTSJBT5K
+         JgrA==
+X-Gm-Message-State: AOAM5327eyyXoCOUOatxdBxtUnxvp9UZLSeHTmDtRMi0+10rG36hevtV
+        TV8L+1pp17VQzZIa/33jNx13OA==
+X-Google-Smtp-Source: ABdhPJyZHAWcF9UXIuaciASbmUM2nhi5xQ3CWgJ6UeAed6E2uiOLILawF0T8+k3uKF2R+aWSxlR5CA==
+X-Received: by 2002:a17:902:7c86:b029:d5:f680:f756 with SMTP id y6-20020a1709027c86b02900d5f680f756mr4717679pll.39.1603983543591;
+        Thu, 29 Oct 2020 07:59:03 -0700 (PDT)
 Received: from localhost.localdomain ([117.252.71.231])
-        by smtp.gmail.com with ESMTPSA id j11sm3085082pfc.64.2020.10.29.07.58.44
+        by smtp.gmail.com with ESMTPSA id j11sm3085082pfc.64.2020.10.29.07.58.54
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 29 Oct 2020 07:58:53 -0700 (PDT)
+        Thu, 29 Oct 2020 07:59:02 -0700 (PDT)
 From:   Sumit Garg <sumit.garg@linaro.org>
 To:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, tglx@linutronix.de,
@@ -58,9 +58,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, tglx@linutronix.de,
         jason.wessel@windriver.com, msys.mizuma@gmail.com,
         ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
         linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH v6 5/7] arm64: ipi_nmi: Add support for NMI backtrace
-Date:   Thu, 29 Oct 2020 20:26:25 +0530
-Message-Id: <1603983387-8738-6-git-send-email-sumit.garg@linaro.org>
+Subject: [PATCH v6 6/7] kgdb: roundup: Allow runtime arch specific override
+Date:   Thu, 29 Oct 2020 20:26:26 +0530
+Message-Id: <1603983387-8738-7-git-send-email-sumit.garg@linaro.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1603983387-8738-1-git-send-email-sumit.garg@linaro.org>
 References: <1603983387-8738-1-git-send-email-sumit.garg@linaro.org>
@@ -68,72 +68,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable NMI backtrace support on arm64 using IPI turned as an NMI
-leveraging pseudo NMIs support. It is now possible for users to get a
-backtrace of a CPU stuck in hard-lockup using magic SYSRQ.
+Add a new API kgdb_arch_roundup_cpus() for a particular archichecture to
+override default kgdb roundup and if it detects at runtime to not support
+NMI roundup then it can fallback to default implementation using async
+SMP cross-calls.
+
+Currently such an architecture example is arm64 supporting pseudo NMIs
+feature which is only available on platforms which have support for GICv3
+or later version.
 
 Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- arch/arm64/include/asm/irq.h |  6 ++++++
- arch/arm64/kernel/ipi_nmi.c  | 18 ++++++++++++++++--
- 2 files changed, 22 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/kgdb.c |  3 ++-
+ arch/sparc/kernel/smp_64.c |  3 ++-
+ arch/x86/kernel/kgdb.c     |  6 ++++--
+ include/linux/kgdb.h       |  5 +++--
+ kernel/debug/debug_core.c  | 10 +++++++++-
+ 5 files changed, 20 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/include/asm/irq.h b/arch/arm64/include/asm/irq.h
-index b2b0c64..ef018a8 100644
---- a/arch/arm64/include/asm/irq.h
-+++ b/arch/arm64/include/asm/irq.h
-@@ -6,6 +6,12 @@
- 
- #include <asm-generic/irq.h>
- 
-+#ifdef CONFIG_SMP
-+extern bool arch_trigger_cpumask_backtrace(const cpumask_t *mask,
-+					   bool exclude_self);
-+#define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
-+#endif
-+
- struct pt_regs;
- 
- static inline int nr_legacy_irqs(void)
-diff --git a/arch/arm64/kernel/ipi_nmi.c b/arch/arm64/kernel/ipi_nmi.c
-index a945dcf..597dcf7 100644
---- a/arch/arm64/kernel/ipi_nmi.c
-+++ b/arch/arm64/kernel/ipi_nmi.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/interrupt.h>
- #include <linux/irq.h>
-+#include <linux/nmi.h>
- #include <linux/smp.h>
- 
- #include <asm/nmi.h>
-@@ -31,11 +32,24 @@ void arm64_send_nmi(cpumask_t *mask)
- 	__ipi_send_mask(ipi_nmi_desc, mask);
+diff --git a/arch/powerpc/kernel/kgdb.c b/arch/powerpc/kernel/kgdb.c
+index 4090802..126575d 100644
+--- a/arch/powerpc/kernel/kgdb.c
++++ b/arch/powerpc/kernel/kgdb.c
+@@ -125,9 +125,10 @@ static int kgdb_debugger_ipi(struct pt_regs *regs)
  }
  
-+bool arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
-+{
-+	if (!ipi_nmi_desc)
-+		return false;
-+
-+	nmi_trigger_cpumask_backtrace(mask, exclude_self, arm64_send_nmi);
-+
+ #ifdef CONFIG_SMP
+-void kgdb_roundup_cpus(void)
++bool kgdb_arch_roundup_cpus(void)
+ {
+ 	smp_send_debugger_break();
 +	return true;
+ }
+ #endif
+ 
+diff --git a/arch/sparc/kernel/smp_64.c b/arch/sparc/kernel/smp_64.c
+index e38d8bf..c459c83 100644
+--- a/arch/sparc/kernel/smp_64.c
++++ b/arch/sparc/kernel/smp_64.c
+@@ -1014,9 +1014,10 @@ void flush_dcache_page_all(struct mm_struct *mm, struct page *page)
+ }
+ 
+ #ifdef CONFIG_KGDB
+-void kgdb_roundup_cpus(void)
++bool kgdb_arch_roundup_cpus(void)
+ {
+ 	smp_cross_call(&xcall_kgdb_capture, 0, 0, 0);
++	return true;
+ }
+ #endif
+ 
+diff --git a/arch/x86/kernel/kgdb.c b/arch/x86/kernel/kgdb.c
+index ff7878d..1b756d9 100644
+--- a/arch/x86/kernel/kgdb.c
++++ b/arch/x86/kernel/kgdb.c
+@@ -404,7 +404,8 @@ static void kgdb_disable_hw_debug(struct pt_regs *regs)
+ 
+ #ifdef CONFIG_SMP
+ /**
+- *	kgdb_roundup_cpus - Get other CPUs into a holding pattern
++ *	kgdb_arch_roundup_cpus - Get other CPUs into a holding pattern
++ *				 in an architectural specific manner
+  *
+  *	On SMP systems, we need to get the attention of the other CPUs
+  *	and get them be in a known state.  This should do what is needed
+@@ -414,9 +415,10 @@ static void kgdb_disable_hw_debug(struct pt_regs *regs)
+  *
+  *	On non-SMP systems, this is not called.
+  */
+-void kgdb_roundup_cpus(void)
++bool kgdb_arch_roundup_cpus(void)
+ {
+ 	apic_send_IPI_allbutself(NMI_VECTOR);
++	return true;
+ }
+ #endif
+ 
+diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+index 0d6cf64..f9db5b8 100644
+--- a/include/linux/kgdb.h
++++ b/include/linux/kgdb.h
+@@ -200,7 +200,8 @@ kgdb_arch_handle_qxfer_pkt(char *remcom_in_buffer,
+ extern void kgdb_call_nmi_hook(void *ignored);
+ 
+ /**
+- *	kgdb_roundup_cpus - Get other CPUs into a holding pattern
++ *	kgdb_arch_roundup_cpus - Get other CPUs into a holding pattern
++ *				 in an architectural specific manner
+  *
+  *	On SMP systems, we need to get the attention of the other CPUs
+  *	and get them into a known state.  This should do what is needed
+@@ -210,7 +211,7 @@ extern void kgdb_call_nmi_hook(void *ignored);
+  *
+  *	On non-SMP systems, this is not called.
+  */
+-extern void kgdb_roundup_cpus(void);
++extern bool kgdb_arch_roundup_cpus(void);
+ 
+ /**
+  *	kgdb_arch_set_pc - Generic call back to the program counter
+diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+index 1e75a89..27e401c 100644
+--- a/kernel/debug/debug_core.c
++++ b/kernel/debug/debug_core.c
+@@ -241,13 +241,21 @@ void __weak kgdb_call_nmi_hook(void *ignored)
+ }
+ NOKPROBE_SYMBOL(kgdb_call_nmi_hook);
+ 
+-void __weak kgdb_roundup_cpus(void)
++bool __weak kgdb_arch_roundup_cpus(void)
++{
++	return false;
 +}
 +
- static irqreturn_t ipi_nmi_handler(int irq, void *data)
++static void kgdb_roundup_cpus(void)
  {
--	/* nop, NMI handlers for special features can be added here. */
-+	irqreturn_t ret = IRQ_NONE;
+ 	call_single_data_t *csd;
+ 	int this_cpu = raw_smp_processor_id();
+ 	int cpu;
+ 	int ret;
+ 
++	if (kgdb_arch_roundup_cpus())
++		return;
 +
-+	if (nmi_cpu_backtrace(get_irq_regs()))
-+		ret = IRQ_HANDLED;
- 
--	return IRQ_NONE;
-+	return ret;
- }
- 
- void dynamic_ipi_setup(int cpu)
+ 	for_each_online_cpu(cpu) {
+ 		/* No need to roundup ourselves */
+ 		if (cpu == this_cpu)
 -- 
 2.7.4
 
