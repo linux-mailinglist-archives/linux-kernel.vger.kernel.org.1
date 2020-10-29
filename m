@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9883E29E716
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9A129E71A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726046AbgJ2JTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:19:00 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6707 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgJ2JTA (ORCPT
+        id S1726118AbgJ2JT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:19:28 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:6925 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgJ2JT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:19:00 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CMKd00X6WzkYYL;
-        Thu, 29 Oct 2020 17:19:00 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Thu, 29 Oct 2020
- 17:18:47 +0800
+        Thu, 29 Oct 2020 05:19:28 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CMKdP31qKz6yyG;
+        Thu, 29 Oct 2020 17:19:21 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Thu, 29 Oct 2020
+ 17:19:11 +0800
 From:   Yu Kuai <yukuai3@huawei.com>
-To:     <joro@8bytes.org>, <mripard@kernel.org>, <wens@csie.org>
-CC:     <iommu@lists.linux-foundation.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH] iommu/sun50i: check return value of of_find_device_by_node() in sun50i_iommu_of_xlate()
-Date:   Thu, 29 Oct 2020 17:22:44 +0800
-Message-ID: <20201029092244.900564-1-yukuai3@huawei.com>
+To:     <pavel@ucw.cz>, <linus.walleij@linaro.org>,
+        <j.anaszewski@samsung.com>, <simon.guinot@sequanux.org>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH] leds: various: add missing put_device() call in netxbig_leds_get_of_pdata()
+Date:   Thu, 29 Oct 2020 17:23:05 +0800
+Message-ID: <20201029092305.900767-1-yukuai3@huawei.com>
 X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -37,30 +36,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If of_find_device_by_node() failed in sun50i_iommu_of_xlate(), null
-pointer dereference will be triggered. Thus return error code if
-of_find_device_by_node() failed.
+if of_find_device_by_node() succeed, netxbig_leds_get_of_pdata() doesn't
+have a corresponding put_device(). Thus add jump target to fix the
+exception handling for this function implementation.
 
-Fixes: 4100b8c229b3("iommu: Add Allwinner H6 IOMMU driver")
+Fixes: 2976b1798909 ("leds: netxbig: add device tree binding")
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/iommu/sun50i-iommu.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/leds/leds-netxbig.c | 35 ++++++++++++++++++++++++-----------
+ 1 file changed, 24 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/iommu/sun50i-iommu.c b/drivers/iommu/sun50i-iommu.c
-index ea6db1341916..ce94ffa15215 100644
---- a/drivers/iommu/sun50i-iommu.c
-+++ b/drivers/iommu/sun50i-iommu.c
-@@ -764,6 +764,9 @@ static int sun50i_iommu_of_xlate(struct device *dev,
- 	struct platform_device *iommu_pdev = of_find_device_by_node(args->np);
- 	unsigned id = args->args[0];
+diff --git a/drivers/leds/leds-netxbig.c b/drivers/leds/leds-netxbig.c
+index e6fd47365b58..68fbf0b66fad 100644
+--- a/drivers/leds/leds-netxbig.c
++++ b/drivers/leds/leds-netxbig.c
+@@ -448,31 +448,39 @@ static int netxbig_leds_get_of_pdata(struct device *dev,
+ 	gpio_ext = devm_kzalloc(dev, sizeof(*gpio_ext), GFP_KERNEL);
+ 	if (!gpio_ext) {
+ 		of_node_put(gpio_ext_np);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto put_device;
+ 	}
+ 	ret = netxbig_gpio_ext_get(dev, gpio_ext_dev, gpio_ext);
+ 	of_node_put(gpio_ext_np);
+ 	if (ret)
+-		return ret;
++		goto put_device;
+ 	pdata->gpio_ext = gpio_ext;
  
-+	if (!iommu_pdev)
-+		return -ENODEV;
+ 	/* Timers (optional) */
+ 	ret = of_property_count_u32_elems(np, "timers");
+ 	if (ret > 0) {
+-		if (ret % 3)
+-			return -EINVAL;
++		if (ret % 3) {
++			ret = -EINVAL;
++			goto put_device;
++		}
 +
- 	dev_iommu_priv_set(dev, platform_get_drvdata(iommu_pdev));
+ 		num_timers = ret / 3;
+ 		timers = devm_kcalloc(dev, num_timers, sizeof(*timers),
+ 				      GFP_KERNEL);
+-		if (!timers)
+-			return -ENOMEM;
++		if (!timers) {
++			ret = -ENOMEM;
++			goto put_device;
++		}
+ 		for (i = 0; i < num_timers; i++) {
+ 			u32 tmp;
  
- 	return iommu_fwspec_add_ids(dev, &id, 1);
+ 			of_property_read_u32_index(np, "timers", 3 * i,
+ 						   &timers[i].mode);
+-			if (timers[i].mode >= NETXBIG_LED_MODE_NUM)
+-				return -EINVAL;
++			if (timers[i].mode >= NETXBIG_LED_MODE_NUM) {
++				ret = -EINVAL;
++				goto put_device;
++			}
+ 			of_property_read_u32_index(np, "timers",
+ 						   3 * i + 1, &tmp);
+ 			timers[i].delay_on = tmp;
+@@ -488,12 +496,15 @@ static int netxbig_leds_get_of_pdata(struct device *dev,
+ 	num_leds = of_get_available_child_count(np);
+ 	if (!num_leds) {
+ 		dev_err(dev, "No LED subnodes found in DT\n");
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto put_device;
+ 	}
+ 
+ 	leds = devm_kcalloc(dev, num_leds, sizeof(*leds), GFP_KERNEL);
+-	if (!leds)
+-		return -ENOMEM;
++	if (!leds) {
++		ret = -ENOMEM;
++		goto put_device;
++	}
+ 
+ 	led = leds;
+ 	for_each_available_child_of_node(np, child) {
+@@ -574,6 +585,8 @@ static int netxbig_leds_get_of_pdata(struct device *dev,
+ 
+ err_node_put:
+ 	of_node_put(child);
++put_device:
++	put_device(gpio_ext_dev);
+ 	return ret;
+ }
+ 
 -- 
 2.25.4
 
