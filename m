@@ -2,115 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FE629F03E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 410AF29F045
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728441AbgJ2Pj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:39:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35650 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728420AbgJ2Pj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:39:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603985963;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=47PdL2vSj8GaMm5B9GKdrojmHctd//BKwcYIBTeFsLk=;
-        b=YrtUPBFel0gpSL/B9Cq1VE4szKaFL/c7muxY+vXdCyqmnWirrHHFD8voW9YVCFALDh42N7
-        FrsejlmMaWqoKREhTxj3cMwKr8uplenuXhdRmasBJSckkc6v4Mdb2l7iv9TQFfq/LPL7Di
-        elDFxV6HjAYRIpGwvtw64P7iOdsupLQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9FCA0AC6A;
-        Thu, 29 Oct 2020 15:39:23 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 16:39:21 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@fb.com, ltp@lists.linux.it,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] mm: memcg: link page counters to root if
- use_hierarchy is false
-Message-ID: <20201029153921.GC9928@blackbook>
-References: <20201026231326.3212225-1-guro@fb.com>
+        id S1728362AbgJ2PkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728068AbgJ2PkM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:40:12 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722F1C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:40:11 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id m3so786083vki.12
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2PMHyXzjLDVufRa8llaIrw5zRwzBKgxCN4FbP7BnEq4=;
+        b=P/lP5sQLk86gvHr/EOl7JEAHhbrjf9ZAKB+VtrTxgzscmNq+bid4ufB7kd6fMviv/T
+         UvYhLTKMfuIxZhqeFP/RG8xw8oy1+uFSZy6oG4+hhma964i/elIzVv+QKJJjRH9+h0Nf
+         sasD8bU8GhS1TI9LHvOqF5glI/RA+wY8sbkhg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2PMHyXzjLDVufRa8llaIrw5zRwzBKgxCN4FbP7BnEq4=;
+        b=CmiT4jvJ7WbMxHNy2tsn5aevDe2AzAZsDFV6x5WxEhIaQy4NkU/JmkeWDMOljrViza
+         8MAih0ahrHTWGbzbpubLvZ6PrucPa4+Ml+uNGD/E0izNMKx42DXErbgAHN2GJKC7zxuz
+         i9RHQHz4iLeJCxklYWTl/PXoyFAYBrS/XkVwHtNSNfd++J7So7cnfWXyUcsNWNx1LQHR
+         12bOHKdJeAc7DGkaia8Pe2LV/TnNixYz3OcqizU8Sf+yL0NpGKORxAIvvrPqoovcMmbU
+         8ji8BhISj+4BRSUSp+fWufVrudztUJKZkv97wCOnnfz2wP2tiE+YOUyibaEFdv2/2bLG
+         RJKQ==
+X-Gm-Message-State: AOAM533JQD8MDTLLtyzHUl9RcGeFo9ZRb5wfm6A4T+GjbVr3MErj9x78
+        KJfa2/EhRUxmUYl0cVu5qJwWP/05HmQoDQ==
+X-Google-Smtp-Source: ABdhPJwV7GX2FhlA2GbGKy6wU//CTVt8DGdUx3ca8u1s01cKT9eMsjJDeexrNgzCgSM0/o+9RGEKAg==
+X-Received: by 2002:a1f:ad11:: with SMTP id w17mr3825202vke.0.1603986010248;
+        Thu, 29 Oct 2020 08:40:10 -0700 (PDT)
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com. [209.85.217.52])
+        by smtp.gmail.com with ESMTPSA id 190sm379421vsz.13.2020.10.29.08.40.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 08:40:09 -0700 (PDT)
+Received: by mail-vs1-f52.google.com with SMTP id g21so1779434vsp.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:40:08 -0700 (PDT)
+X-Received: by 2002:a67:b405:: with SMTP id x5mr3619420vsl.4.1603986008362;
+ Thu, 29 Oct 2020 08:40:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2/5bycvrmDh4d1IB"
-Content-Disposition: inline
-In-Reply-To: <20201026231326.3212225-1-guro@fb.com>
+References: <20201019140601.3047-1-lukasz.luba@arm.com> <CAD=FV=UYeo_rWBDRu-53Aw2OeY1NCgCuUJkocRM8xL+OCbJDug@mail.gmail.com>
+ <62430cb9-eaab-b215-0eec-d35d3c625406@arm.com>
+In-Reply-To: <62430cb9-eaab-b215-0eec-d35d3c625406@arm.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 29 Oct 2020 08:39:56 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VA=tYzvb2-WQOJz7UGq-459R4+6xfuPQ-h-iMCKPP9vQ@mail.gmail.com>
+Message-ID: <CAD=FV=VA=tYzvb2-WQOJz7UGq-459R4+6xfuPQ-h-iMCKPP9vQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] Clarify abstract scale usage for power values in
+ Energy Model, EAS and IPA
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
+        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---2/5bycvrmDh4d1IB
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Oct 29, 2020 at 5:37 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> On 10/20/20 1:15 AM, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Mon, Oct 19, 2020 at 7:06 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>
+> >> Hi all,
+> >>
+> >> The Energy Model supports power values expressed in an abstract scale.
+> >> This has an impact on Intelligent Power Allocation (IPA) and should be
+> >> documented properly. Kernel sub-systems like EAS, IPA and DTPM
+> >> (new comming PowerCap framework) would use the new flag to capture
+> >> potential miss-configuration where the devices have registered different
+> >> power scales, thus cannot operate together.
+> >>
+> >> There was a discussion below v2 of this patch series, which might help
+> >> you to get context of these changes [2].
+> >>
+> >> The agreed approach is to have the DT as a source of power values expressed
+> >> always in milli-Watts and the only way to submit with abstract scale values
+> >> is via the em_dev_register_perf_domain() API.
+> >>
+> >> Changes:
+> >> v3:
+> >> - added boolean flag to struct em_perf_domain and registration function
+> >>    indicating if EM holds real power values in milli-Watts (suggested by
+> >>    Daniel and aggreed with Quentin)
+> >> - updated documentation regarding this new flag
+> >> - dropped DT binding change for 'sustainable-power'
+> >> - added more maintainers on CC (due to patch 1/4 touching different things)
+> >> v2 [2]:
+> >> - updated sustainable power section in IPA documentation
+> >> - updated DT binding for the 'sustainable-power'
+> >> v1 [1]:
+> >> - simple documenation update with new 'abstract scale' in EAS, EM, IPA
+> >>
+> >> Regards,
+> >> Lukasz Luba
+> >>
+> >> [1] https://lore.kernel.org/linux-doc/20200929121610.16060-1-lukasz.luba@arm.com/
+> >> [2] https://lore.kernel.org/lkml/20201002114426.31277-1-lukasz.luba@arm.com/
+> >>
+> >> Lukasz Luba (4):
+> >>    PM / EM: Add a flag indicating units of power values in Energy Model
+> >>    docs: Clarify abstract scale usage for power values in Energy Model
+> >>    PM / EM: update the comments related to power scale
+> >>    docs: power: Update Energy Model with new flag indicating power scale
+> >>
+> >>   .../driver-api/thermal/power_allocator.rst    | 13 +++++++-
+> >>   Documentation/power/energy-model.rst          | 30 +++++++++++++++----
+> >>   Documentation/scheduler/sched-energy.rst      |  5 ++++
+> >>   drivers/cpufreq/scmi-cpufreq.c                |  3 +-
+> >>   drivers/opp/of.c                              |  2 +-
+> >>   include/linux/energy_model.h                  | 20 ++++++++-----
+> >>   kernel/power/energy_model.c                   | 26 ++++++++++++++--
+> >>   7 files changed, 81 insertions(+), 18 deletions(-)
+> >
+> > While I don't feel like I have enough skin in the game to make any
+> > demands, I'm definitely not a huge fan of this series still.  I am a
+> > fan of documenting reality, but (to me) trying to mix stuff like this
+> > is just going to be adding needless complexity.  From where I'm
+> > standing, it's a lot more of a pain to specify these types of numbers
+> > in the firmware than it is to specify them in the device tree.  They
+>
+> When you have SCMI, you receive power values from FW directly, not using
+> DT.
+>
+> > are harder to customize per board, harder to spin, and harder to
+> > specify constraints for everything in the system (all heat generators,
+> > all cooling devices, etc).  ...and since we already have a way to
+> > specify this type of thing in the device tree and that's super easy
+> > for people to do, we're going to end up with weird mixes / matches of
+> > numbers coming from different locations and now we've got to figure
+> > out which numbers we can use when and which to ignore.  Ick.
+>
+> This is not that bad as you described. When you have SCMI and FW
+> all your perf domains should be aligned to the same scale.
+> In example, you have 4 little CPU, 3 big CPUs, 1 super big CPU,
+> 1 GPU, 1 DSP. For all of them the SCMI get_power callback should return
+> consistent values. You don't have to specify anything else or rev-eng.
+> Then a client like EAS would use those values from CPUs to estimate
+> energy and this works fine. Another client: IPA, which would use
+> all of them and also works fine.
 
-Hi.
+I guess I'm confused.  When using SCMI and FW, are there already code
+paths to get the board-specific "sustainable-power" from SCMI and FW?
 
-On Mon, Oct 26, 2020 at 04:13:26PM -0700, Roman Gushchin <guro@fb.com> wrot=
-e:
-> Please note, that in the non-hierarchical mode all objcgs are always
-> reparented to the root memory cgroup, even if the hierarchy has more
-> than 1 level. This patch doesn't change it.
->=20
-> The patch also doesn't affect how the hierarchical mode is working,
-> which is the only sane and truly supported mode now.
-I agree with the patch and you can add
-Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+I know that "sustainable-power" is not truly necessary.  IIRC some of
+the code assumes that the lowest power state of all components must be
+sustainable and uses that.  However, though this makes the code work,
+it's far from ideal.  I don't want to accept a mediocre solution here.
 
-However, it effectively switches any users of root.use_hierarchy=3D0 (if th=
-ere
-are any, watching the counters of root memcg) into root.use_hierarchy=3D1.
-So I'd show them the warning even with a single level of cgroups, i.e.
-add this hunk
+In any case, I'm saying that even if "sustainable-power" can come from
+firmware, it's not as ideal of a place for it to live.  Maybe my
+experience on Chromebooks is different from the rest of upstream, but
+it's generally quite easy to adjust the device tree for a board and
+much harder to convince firmware folks to put a board-specific table
+of values.
 
-@@ -5356,12 +5356,11 @@
- 		page_counter_init(&memcg->kmem, &root_mem_cgroup->kmem);
- 		page_counter_init(&memcg->tcpmem, &root_mem_cgroup->tcpmem);
- 		/*
--		 * Deeper hierachy with use_hierarchy =3D=3D false doesn't make
-+		 * Hierachy with use_hierarchy =3D=3D false doesn't make
- 		 * much sense so let cgroup subsystem know about this
- 		 * unfortunate state in our controller.
- 		 */
--		if (parent !=3D root_mem_cgroup)
--			memory_cgrp_subsys.broken_hierarchy =3D true;
-+		memory_cgrp_subsys.broken_hierarchy =3D true;
- 	}
-=20
- 	/* The following stuff does not apply to the root */
 
-What do you think?
+> > In my opinion the only way to allow for mixing and matching the
+> > bogoWatts and real Watts would be to actually have units and the
+> > ability to provide a conversion factor somewhere.  Presumably that
+> > might give you a chance of mixing and matching if someone wants to
+> > provide some stuff in device tree and get other stuff from the
+> > firmware.  Heck, I guess you could even magically figure out a
+> > conversion factor if someone provides device tree numbers for
+> > something that was already registered in SCMI, assuming all the SCMI
+> > numbers are consistent with each other...
+>
+> What you demand here is another code path, just to support revers
+> engineered power values for SCMI devices, which are stored in DT.
+> Then the SCMI protocol code and drivers should take them into account
+> and abandon standard implementation and use these values to provide
+> 'hacked' power numbers to EM. Am I right?
+> It is not going to happen.
 
-Michal
+Quite honestly, all I want to be able to do is to provide a
+board-specific "sustainable-power" and have it match with the
+power-coefficients.  Thus:
 
---2/5bycvrmDh4d1IB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+* If device tree accepted abstract scale, we'd be done and I'd shut
+up.  ...but Rob has made it quite clear that this is a no-go.
 
------BEGIN PGP SIGNATURE-----
+* If it was super easy to add all these values into firmware for a
+board and we could totally remove these from the device tree, I'd
+grumble a bit about firmware being a terrible place for this but at
+least we'd have a solution and we'd be done and I'd shut up.  NOTE: I
+don't know ATF terribly well, but I'd guess that this needs to go
+there?  Presumably part of this is convincing firmware folks to add
+this board-specific value there...
 
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl+a4iEACgkQia1+riC5
-qShc2RAAmjtCmuIa3ZwnDGZzw0oV6CtPxW9sj6/KFmioBPpQRrUGlRnoSN5jqyT2
-yEMHbsSKl/TE0f/avpNQNNeEvqkdoUFdl89eSCh2Fwt90S8GgDyJZcOnWxTMc3pg
-unhhXqB1xoD2qPmIRY31jf9j1za/d4OfDdJK0jUrgLhClnos9eF5i0IKwIaAY79f
-VIeyWDuEMe/CE6LVBiomObarQK7PUETE2jfYcXAdBzEKfudbINDE4yeV+DzJ4ZlK
-bv61oAW+0D0oJTP+V9JCXORfgLgnNObNCP1BBcayhl1bfQQ5bGbuipDYJAriL7Ce
-OYjUC8H3VEfBcALEsZjFmxWRNJkYxupjIeX1CjaRncBmXC4uuFrEKdwsdRWeIiW0
-FyvzuDUi0LiTd7lPN9R0yWehwoqGvb1ES0l2X3XGzTzXprZPTOgLNz+MyXfn4x1d
-QqiP27paN+TGgW/Oa1846nwKTgwG35RAvxuheP2ZcyYGbcEJOKx1stld1EuSOGob
-JINTltj2rwk/yHO4XVz5ptyOG/HAfokyPwGTiC+bJrl8ipmueFkq/mEYYsUVrmbD
-TtQXNjSB1EW6cS07aAw9mEj6XnJ7B9NJY2MSKv895wXDNelXmC+dYeTJQED9vVIP
-yPyo/1wcbERct2ojN4BYFNYW/66EfGoFnFowOAsaCMSBjZPh4x4=
-=I9HI
------END PGP SIGNATURE-----
-
---2/5bycvrmDh4d1IB--
+-Doug
