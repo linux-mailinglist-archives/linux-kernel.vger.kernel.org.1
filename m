@@ -2,145 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A659829F577
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 843AC29F582
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:43:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgJ2Thh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgJ2The (ORCPT
+        id S1726253AbgJ2Tnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:43:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36643 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725948AbgJ2Tnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:37:34 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEC4C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:37:33 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id w23so903813wmi.4
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:37:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ycvfKMJ76qGv5R2aegMpcihPW70X6nt59v8Mw9I2ugw=;
-        b=izTyanEop1UPDUUQ5udPdWIFWKImCXKqGh4jRR9NHkUR7PJacQNPUnl107nqevZDDf
-         2ls5/MMnk0Cs59BTsoHhZgvmrt+5lvXOEh+0Z05+kpxfOO2IlaY+ZcjHt0JUr3S7Tb7C
-         ZY/iiHgbbpAHv1LHoDTG1m/cM4A9ebvnpfS9xQ8Mm8NyQqJG9F8u2WZwjpKR5YmzSIz2
-         z0HaHtRxECijdT8h4xCRvj02t+j3uDLKnAp0uORBAw9n96mXNst5yyc+KqNcx1YCPXNc
-         S751K42TeaDjXArM7ON+oRlPltHjzv6KuSJPaaEfpTQ/UomfhENUe5VSR5dgOUJBCOcJ
-         CtIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ycvfKMJ76qGv5R2aegMpcihPW70X6nt59v8Mw9I2ugw=;
-        b=YOpGhPD/VScuFCf8aFvCeq+CgTcX2oZ/ocFxkVK4E0LWITiSViDaOT7ZCtpVo1CLdt
-         TivMF+b2ctaCldgwmGwaUT2H4V/cx24iM8Mg9sYNI5kifdcTEV75wz5RFU6rCyv2NSWP
-         Szgs8VtE55++nDQ13ze25dXh40H5OFmSYugryJhQPwug0bSKtORxt2DQoyvGg+knH1cg
-         EOqpTlDvzkieKjyKEjYKugqD169a7RKhbzK81b3a6gLAR/Y7DFiPRj8StZCmUwhJZbkL
-         udlr7Tm6KSCQFeYAdV+7VftfTAuPTJGYw2dVQAtAWpjlH75hu/IRcI2q4HQi27OjIpsn
-         wxrg==
-X-Gm-Message-State: AOAM531aKkaMw95Idn3mIoBqsauLx+Nv/3SBKywcmlI3lzgrC5ED7eor
-        DB4GTDs7m/H4gkJuS6TbuawpisEfFrujtkJqWvhCoA==
-X-Google-Smtp-Source: ABdhPJyVpzE7KT8MnoBChtMjsxPysFTIYugPdHKYIVgeLeT9jDcYSt4tL4SZalOlRCDg4zanRghQrvAprEqP4asPtzE=
-X-Received: by 2002:a1c:9cd8:: with SMTP id f207mr816563wme.76.1604000252387;
- Thu, 29 Oct 2020 12:37:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201029160938.154084-1-irogers@google.com> <497F86C5-BD00-4C38-BD87-C6EFB92D1088@fb.com>
-In-Reply-To: <497F86C5-BD00-4C38-BD87-C6EFB92D1088@fb.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 29 Oct 2020 12:37:20 -0700
-Message-ID: <CAP-5=fUVSSWEYWWswi19nQHY-b5Vn8-oi7uvtXWnmo1usLOzNw@mail.gmail.com>
-Subject: Re: [PATCH] libbpf hashmap: Fix undefined behavior in hash_bits
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 29 Oct 2020 15:43:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604000619;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=pyqxT5SiUKjV3qyc3OeVP7maNKDjfkVq4JNc/tkubxE=;
+        b=AojnHIPJ7hmW2qW/37iRpv5xYq+acO7SwdT/WlAaLSkgKJX8zxmXmJ1bd2djG87MKqJZBZ
+        xyPja38J3iOAgf8PeIjHdGl7uDL2Xb+XGR8Mo+2oerLnwEkUyo6rmURHQ3bMbiLFVSLYtx
+        nJTwTx9mvNQnBDcMz6rfTqsq049X51k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-335-OZkRN9STNMCdxvIeC0lxog-1; Thu, 29 Oct 2020 15:43:34 -0400
+X-MC-Unique: OZkRN9STNMCdxvIeC0lxog-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 68FCC101F03E;
+        Thu, 29 Oct 2020 19:43:33 +0000 (UTC)
+Received: from llong.com (ovpn-116-17.rdu2.redhat.com [10.10.116.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6384C6FEEB;
+        Thu, 29 Oct 2020 19:43:08 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luca BRUNO <lucab@redhat.com>, Waiman Long <longman@redhat.com>
+Subject: [PATCH v3] inotify: Increase default inotify.max_user_watches limit to 1048576
+Date:   Thu, 29 Oct 2020 15:42:56 -0400
+Message-Id: <20201029194256.7954-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 10:45 AM Song Liu <songliubraving@fb.com> wrote:
->
-> > On Oct 29, 2020, at 9:09 AM, Ian Rogers <irogers@google.com> wrote:
-> >
-> > If bits is 0, the case when the map is empty, then the >> is the size of
-> > the register which is undefined behavior - on x86 it is the same as a
-> > shift by 0. Fix by handling the 0 case explicitly when running with
-> > address sanitizer.
-> >
-> > A variant of this patch was posted previously as:
-> > https://lore.kernel.org/lkml/20200508063954.256593-1-irogers@google.com/
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> > tools/lib/bpf/hashmap.h | 14 ++++++++++++++
-> > 1 file changed, 14 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-> > index d9b385fe808c..27d0556527d3 100644
-> > --- a/tools/lib/bpf/hashmap.h
-> > +++ b/tools/lib/bpf/hashmap.h
-> > @@ -12,9 +12,23 @@
-> > #include <stddef.h>
-> > #include <limits.h>
-> >
-> > +#ifdef __has_feature
-> > +#define HAVE_FEATURE(f) __has_feature(f)
-> > +#else
-> > +#define HAVE_FEATURE(f) 0
-> > +#endif
-> > +
-> > static inline size_t hash_bits(size_t h, int bits)
-> > {
-> >       /* shuffle bits and return requested number of upper bits */
-> > +#if defined(ADDRESS_SANITIZER) || HAVE_FEATURE(address_sanitizer)
->
-> I am not very familiar with these features. Is address sanitizer same
-> as undefined behavior sanitizer (mentioned in previous version)?
+The default value of inotify.max_user_watches sysctl parameter was set
+to 8192 since the introduction of the inotify feature in 2005 by
+commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
+small for many modern usage. As a result, users have to explicitly set
+it to a larger value to make it work.
 
-My preference would be to special case bits == 0 without the feature
-guards as per the original change, this is the most correct. There is
-some feature support for detecting ubsan:
-https://github.com/google/sanitizers/issues/765
-In my case I see this with address sanitizer and older versions of
-clang don't expose ubsan as a feature.
+After some searching around the web, these are the
+inotify.max_user_watches values used by some projects:
+ - vscode:  524288
+ - dropbox support: 100000
+ - users on stackexchange: 12228
+ - lsyncd user: 2000000
+ - code42 support: 1048576
+ - monodevelop: 16384
+ - tectonic: 524288
+ - openshift origin: 65536
 
-> > +     /*
-> > +      * If the requested bits == 0 avoid undefined behavior from a
-> > +      * greater-than bit width shift right (aka invalid-shift-exponent).
-> > +      */
-> > +     if (bits == 0)
-> > +             return -1;
->
-> Shall we return 0 or -1 (0xffffffff) here?
+Each watch point adds an inotify_inode_mark structure to an inode to
+be watched. It also pins the watched inode.
 
-The value isn't used and so doesn't matter. -1 seemed less likely to
-silently succeed.
+Modeled after the epoll.max_user_watches behavior to adjust the default
+value according to the amount of addressable memory available, make
+inotify.max_user_watches behave in a similar way to make it use no more
+than 1% of addressable memory within the range [8192, 1048576].
 
-> Also, we have HASHMAP_MIN_CAP_BITS == 2. Shall we just make sure we
-> never feed bits == 0 into hash_bits()?
+For 64-bit archs, inotify_inode_mark plus 2 vfs inode have a size that
+is a bit over 1 kbytes (1284 bytes with my x86-64 config).  That means
+a system with 128GB or more memory will likely have the maximum value
+of 1048576 for inotify.max_user_watches. This default should be big
+enough for most use cases.
 
-I think that'd be a different change. I'd be happy to see it.
+[v3: increase inotify watch cost as suggested by Amir and Honza]
 
-Thanks,
-Ian
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ fs/notify/inotify/inotify_user.c | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
-> Thanks,
-> Song
->
->
-> > +#endif
-> > #if (__SIZEOF_SIZE_T__ == __SIZEOF_LONG_LONG__)
-> >       /* LP64 case */
-> >       return (h * 11400714819323198485llu) >> (__SIZEOF_LONG_LONG__ * 8 - bits);
-> > --
-> > 2.29.1.341.ge80a0c044ae-goog
-> >
->
+diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+index 186722ba3894..f8065eda3a02 100644
+--- a/fs/notify/inotify/inotify_user.c
++++ b/fs/notify/inotify/inotify_user.c
+@@ -37,6 +37,15 @@
+ 
+ #include <asm/ioctls.h>
+ 
++/*
++ * An inotify watch requires allocating an inotify_inode_mark structure as
++ * well as pinning the watched inode. Doubling the size of a VFS inode
++ * should be more than enough to cover the additional filesystem inode
++ * size increase.
++ */
++#define INOTIFY_WATCH_COST	(sizeof(struct inotify_inode_mark) + \
++				 2 * sizeof(struct inode))
++
+ /* configurable via /proc/sys/fs/inotify/ */
+ static int inotify_max_queued_events __read_mostly;
+ 
+@@ -801,6 +810,18 @@ SYSCALL_DEFINE2(inotify_rm_watch, int, fd, __s32, wd)
+  */
+ static int __init inotify_user_setup(void)
+ {
++	unsigned int watches_max;
++	struct sysinfo si;
++
++	si_meminfo(&si);
++	/*
++	 * Allow up to 1% of addressible memory to be allocated for inotify
++	 * watches (per user) limited to the range [8192, 1048576].
++	 */
++	watches_max = (((si.totalram - si.totalhigh) / 100) << PAGE_SHIFT) /
++			INOTIFY_WATCH_COST;
++	watches_max = min(1048576U, max(watches_max, 8192U));
++
+ 	BUILD_BUG_ON(IN_ACCESS != FS_ACCESS);
+ 	BUILD_BUG_ON(IN_MODIFY != FS_MODIFY);
+ 	BUILD_BUG_ON(IN_ATTRIB != FS_ATTRIB);
+@@ -827,7 +848,7 @@ static int __init inotify_user_setup(void)
+ 
+ 	inotify_max_queued_events = 16384;
+ 	init_user_ns.ucount_max[UCOUNT_INOTIFY_INSTANCES] = 128;
+-	init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = 8192;
++	init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = watches_max;
+ 
+ 	return 0;
+ }
+-- 
+2.18.1
+
