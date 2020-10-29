@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DE829EB9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C0029EB8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726018AbgJ2MQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:16:52 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33230 "EHLO
+        id S1726491AbgJ2MQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:16:40 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33326 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgJ2MPp (ORCPT
+        with ESMTP id S1726477AbgJ2MPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:15:45 -0400
-Date:   Thu, 29 Oct 2020 12:15:43 -0000
+        Thu, 29 Oct 2020 08:15:48 -0400
+Date:   Thu, 29 Oct 2020 12:15:44 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603973744;
+        s=2020; t=1603973745;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=74Yk/jNvuIQVaRPqa3YdP+wqTKCVAuvjmT2rVxu5/YE=;
-        b=AuSZjaPbXBNTrJ57BQuN+9Qe53b4crIxssh78rQLq3D/lV9d68J8zKxtycZdwWiniO0oTx
-        SaNGAyC3kezB/RFVzRnJWAlN3S4uwGwfOMgS0dm/OCINXt2g+qN6f/tIRJ7Up21oWtOk8e
-        ISGXWUJnpdCtO1dDoBVDhFbHwHB7j4Jzw0iOmwmHahLFIK6XvjpbuU5F0PTFZIj8c9udHy
-        0GsxSn4bCUCQvLo1cz541SrjN8TgS/P51pkak8IlAViYwdLWhd4YHCVQPV8qN4iUFJRH8d
-        3BfxTBLSj/b4lES+TOeCRoIhwkT6HYSJ6t3vTc+/EjgyXlFb8CMVcAiz9M/tBg==
+        bh=qk1jMA+1fAP/fopY/57ylRESDGSBxF/BaGfPhlRuM/Y=;
+        b=J5DNTo1+kHxaFGOBIfWNVKLW7fHQ8qhHzJxJZQa4POUMrY0i6usfxnCw6yzHv9P50jdPz6
+        iF0GLOPmusNPUKkjx3RqfkgmEChyuD3AWousldIZAGCK0Or6G1BgLgWJfTOhln3drZMnxU
+        tq4wHPza7BHdKb44iFG6gjiS+ckAThxHUMJaBgTefNjxi2EqLroyvRKlApVJFB+i9zf8f+
+        y9E6xAuisFJOkO5PYnDalX8ahJPUeugsKSqyRmqO9bo7Q1xe/zFVhwT/xWOYpVb12MHZSl
+        JoborSLzpydsfBEHlbcUd4ESL7QozqmBWhn/FmeN9hMzs+yHREAtGew9Y0HI1w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603973744;
+        s=2020e; t=1603973745;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=74Yk/jNvuIQVaRPqa3YdP+wqTKCVAuvjmT2rVxu5/YE=;
-        b=g9UJVPgWBc+Cii0FjBJaK7bj2alqy7nLF9fjljUqo7piML9vuLD7Wpq/Md8TNrxS0PywbR
-        McvtzgaLGaSN06Cw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+        bh=qk1jMA+1fAP/fopY/57ylRESDGSBxF/BaGfPhlRuM/Y=;
+        b=7FgkQsRoPngjdz/k4dbOVJFhcExxf/m7wmxKpIUJx8Xenp0CdzLwjUElN1YRSTOMwuAmwx
+        RVdNbyZBMjM95FAw==
+From:   "tip-bot2 for David Woodhouse" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] genirq/msi: Allow shadow declarations of msi_msg:: $member
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        David Woodhouse <dwmw@amazon.co.uk>, x86 <x86@kernel.org>,
+Subject: [tip: x86/apic] x86/apic: Always provide irq_compose_msi_msg() method
+ for vector domain
+Cc:     David Woodhouse <dwmw@amazon.co.uk>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201024213535.443185-12-dwmw2@infradead.org>
-References: <20201024213535.443185-12-dwmw2@infradead.org>
+In-Reply-To: <20201024213535.443185-10-dwmw2@infradead.org>
+References: <20201024213535.443185-10-dwmw2@infradead.org>
 MIME-Version: 1.0
-Message-ID: <160397374326.397.2480674567407403116.tip-bot2@tip-bot2>
+Message-ID: <160397374456.397.9490642570838940442.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,116 +59,168 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     8073c1ac82c12aaf1b475a3ce5328d43b3eaa4ae
-Gitweb:        https://git.kernel.org/tip/8073c1ac82c12aaf1b475a3ce5328d43b3eaa4ae
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sat, 24 Oct 2020 22:35:11 +01:00
+Commit-ID:     f598181acfb36f67e1de138cbe80a7db497f7d8c
+Gitweb:        https://git.kernel.org/tip/f598181acfb36f67e1de138cbe80a7db497f7d8c
+Author:        David Woodhouse <dwmw@amazon.co.uk>
+AuthorDate:    Sat, 24 Oct 2020 22:35:09 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Wed, 28 Oct 2020 20:26:25 +01:00
 
-genirq/msi: Allow shadow declarations of msi_msg:: $member
+x86/apic: Always provide irq_compose_msi_msg() method for vector domain
 
-Architectures like x86 have their MSI messages in various bits of the data,
-address_lo and address_hi field. Composing or decomposing these messages
-with bitmasks and shifts is possible, but unreadable gunk.
+This shouldn't be dependent on PCI_MSI. HPET and I/O-APIC can deliver
+interrupts through MSI without having any PCI in the system at all.
 
-Allow architectures to provide an architecture specific representation for
-each member of msi_msg. Provide empty defaults for each and stick them into
-an union.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201024213535.443185-12-dwmw2@infradead.org
+Link: https://lore.kernel.org/r/20201024213535.443185-10-dwmw2@infradead.org
 
 ---
- include/asm-generic/msi.h |  4 +++-
- include/linux/msi.h       | 46 ++++++++++++++++++++++++++++++++++----
- 2 files changed, 46 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/apic.h   |  8 ++-----
+ arch/x86/kernel/apic/apic.c   | 32 +++++++++++++++++++++++++++++-
+ arch/x86/kernel/apic/msi.c    | 37 +----------------------------------
+ arch/x86/kernel/apic/vector.c |  6 ++++++-
+ 4 files changed, 41 insertions(+), 42 deletions(-)
 
-diff --git a/include/asm-generic/msi.h b/include/asm-generic/msi.h
-index e6795f0..25344de 100644
---- a/include/asm-generic/msi.h
-+++ b/include/asm-generic/msi.h
-@@ -4,6 +4,8 @@
- 
- #include <linux/types.h>
- 
-+#ifdef CONFIG_GENERIC_MSI_IRQ_DOMAIN
-+
- #ifndef NUM_MSI_ALLOC_SCRATCHPAD_REGS
- # define NUM_MSI_ALLOC_SCRATCHPAD_REGS	2
+diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
+index c1f64c6..34cb3c1 100644
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -520,12 +520,10 @@ static inline void apic_smt_update(void) { }
  #endif
-@@ -30,4 +32,6 @@ typedef struct msi_alloc_info {
  
- #define GENERIC_MSI_DOMAIN_OPS		1
+ struct msi_msg;
++struct irq_cfg;
  
-+#endif /* CONFIG_GENERIC_MSI_IRQ_DOMAIN */
+-#ifdef CONFIG_PCI_MSI
+-void x86_vector_msi_compose_msg(struct irq_data *data, struct msi_msg *msg);
+-#else
+-# define x86_vector_msi_compose_msg NULL
+-#endif
++extern void __irq_msi_compose_msg(struct irq_cfg *cfg, struct msi_msg *msg,
++				  bool dmar);
+ 
+ extern void ioapic_zap_locks(void);
+ 
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index 54f0435..4c15bf2 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -50,6 +50,7 @@
+ #include <asm/io_apic.h>
+ #include <asm/desc.h>
+ #include <asm/hpet.h>
++#include <asm/msidef.h>
+ #include <asm/mtrr.h>
+ #include <asm/time.h>
+ #include <asm/smp.h>
+@@ -2480,6 +2481,37 @@ int hard_smp_processor_id(void)
+ 	return read_apic_id();
+ }
+ 
++void __irq_msi_compose_msg(struct irq_cfg *cfg, struct msi_msg *msg,
++			   bool dmar)
++{
++	msg->address_hi = MSI_ADDR_BASE_HI;
 +
- #endif
-diff --git a/include/linux/msi.h b/include/linux/msi.h
-index 6b584cc..360a0a7 100644
---- a/include/linux/msi.h
-+++ b/include/linux/msi.h
-@@ -4,11 +4,50 @@
- 
- #include <linux/kobject.h>
- #include <linux/list.h>
-+#include <asm/msi.h>
++	msg->address_lo =
++		MSI_ADDR_BASE_LO |
++		(apic->dest_mode_logical ?
++			MSI_ADDR_DEST_MODE_LOGICAL :
++			MSI_ADDR_DEST_MODE_PHYSICAL) |
++		MSI_ADDR_REDIRECTION_CPU |
++		MSI_ADDR_DEST_ID(cfg->dest_apicid);
 +
-+/* Dummy shadow structures if an architecture does not define them */
-+#ifndef arch_msi_msg_addr_lo
-+typedef struct arch_msi_msg_addr_lo {
-+	u32	address_lo;
-+} __attribute__ ((packed)) arch_msi_msg_addr_lo_t;
-+#endif
++	msg->data =
++		MSI_DATA_TRIGGER_EDGE |
++		MSI_DATA_LEVEL_ASSERT |
++		MSI_DATA_DELIVERY_FIXED |
++		MSI_DATA_VECTOR(cfg->vector);
 +
-+#ifndef arch_msi_msg_addr_hi
-+typedef struct arch_msi_msg_addr_hi {
-+	u32	address_hi;
-+} __attribute__ ((packed)) arch_msi_msg_addr_hi_t;
-+#endif
++	/*
++	 * Only the IOMMU itself can use the trick of putting destination
++	 * APIC ID into the high bits of the address. Anything else would
++	 * just be writing to memory if it tried that, and needs IR to
++	 * address higher APIC IDs.
++	 */
++	if (dmar)
++		msg->address_hi |= MSI_ADDR_EXT_DEST_ID(cfg->dest_apicid);
++	else
++		WARN_ON_ONCE(MSI_ADDR_EXT_DEST_ID(cfg->dest_apicid));
++}
 +
-+#ifndef arch_msi_msg_data
-+typedef struct arch_msi_msg_data {
-+	u32	data;
-+} __attribute__ ((packed)) arch_msi_msg_data_t;
-+#endif
+ /*
+  * Override the generic EOI implementation with an optimized version.
+  * Only called during early boot when only one CPU is active and with
+diff --git a/arch/x86/kernel/apic/msi.c b/arch/x86/kernel/apic/msi.c
+index 46ffd41..4eda617 100644
+--- a/arch/x86/kernel/apic/msi.c
++++ b/arch/x86/kernel/apic/msi.c
+@@ -15,7 +15,6 @@
+ #include <linux/hpet.h>
+ #include <linux/msi.h>
+ #include <asm/irqdomain.h>
+-#include <asm/msidef.h>
+ #include <asm/hpet.h>
+ #include <asm/hw_irq.h>
+ #include <asm/apic.h>
+@@ -23,42 +22,6 @@
  
-+/**
-+ * msi_msg - Representation of a MSI message
-+ * @address_lo:		Low 32 bits of msi message address
-+ * @arch_addrlo:	Architecture specific shadow of @address_lo
-+ * @address_hi:		High 32 bits of msi message address
-+ *			(only used when device supports it)
-+ * @arch_addrhi:	Architecture specific shadow of @address_hi
-+ * @data:		MSI message data (usually 16 bits)
-+ * @arch_data:		Architecture specific shadow of @data
-+ */
- struct msi_msg {
--	u32	address_lo;	/* low 32 bits of msi message address */
--	u32	address_hi;	/* high 32 bits of msi message address */
--	u32	data;		/* 16 bits of msi message data */
-+	union {
-+		u32			address_lo;
-+		arch_msi_msg_addr_lo_t	arch_addr_lo;
-+	};
-+	union {
-+		u32			address_hi;
-+		arch_msi_msg_addr_hi_t	arch_addr_hi;
-+	};
-+	union {
-+		u32			data;
-+		arch_msi_msg_data_t	arch_data;
-+	};
- };
+ struct irq_domain *x86_pci_msi_default_domain __ro_after_init;
  
- extern int pci_msi_ignore_mask;
-@@ -243,7 +282,6 @@ struct msi_controller {
- #ifdef CONFIG_GENERIC_MSI_IRQ_DOMAIN
+-static void __irq_msi_compose_msg(struct irq_cfg *cfg, struct msi_msg *msg,
+-				  bool dmar)
+-{
+-	msg->address_hi = MSI_ADDR_BASE_HI;
+-
+-	msg->address_lo =
+-		MSI_ADDR_BASE_LO |
+-		(apic->dest_mode_logical ?
+-			MSI_ADDR_DEST_MODE_LOGICAL :
+-			MSI_ADDR_DEST_MODE_PHYSICAL) |
+-		MSI_ADDR_REDIRECTION_CPU |
+-		MSI_ADDR_DEST_ID(cfg->dest_apicid);
+-
+-	msg->data =
+-		MSI_DATA_TRIGGER_EDGE |
+-		MSI_DATA_LEVEL_ASSERT |
+-		MSI_DATA_DELIVERY_FIXED |
+-		MSI_DATA_VECTOR(cfg->vector);
+-
+-	/*
+-	 * Only the IOMMU itself can use the trick of putting destination
+-	 * APIC ID into the high bits of the address. Anything else would
+-	 * just be writing to memory if it tried that, and needs IR to
+-	 * address higher APIC IDs.
+-	 */
+-	if (dmar)
+-		msg->address_hi |= MSI_ADDR_EXT_DEST_ID(cfg->dest_apicid);
+-	else
+-		WARN_ON_ONCE(MSI_ADDR_EXT_DEST_ID(cfg->dest_apicid));
+-}
+-
+-void x86_vector_msi_compose_msg(struct irq_data *data, struct msi_msg *msg)
+-{
+-	__irq_msi_compose_msg(irqd_cfg(data), msg, false);
+-}
+-
+ static void irq_msi_update_msg(struct irq_data *irqd, struct irq_cfg *cfg)
+ {
+ 	struct msi_msg msg[2] = { [1] = { }, };
+diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
+index 1eac536..bb2e2a2 100644
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -818,6 +818,12 @@ void apic_ack_edge(struct irq_data *irqd)
+ 	apic_ack_irq(irqd);
+ }
  
- #include <linux/irqhandler.h>
--#include <asm/msi.h>
- 
- struct irq_domain;
- struct irq_domain_ops;
++static void x86_vector_msi_compose_msg(struct irq_data *data,
++				       struct msi_msg *msg)
++{
++       __irq_msi_compose_msg(irqd_cfg(data), msg, false);
++}
++
+ static struct irq_chip lapic_controller = {
+ 	.name			= "APIC",
+ 	.irq_ack		= apic_ack_edge,
