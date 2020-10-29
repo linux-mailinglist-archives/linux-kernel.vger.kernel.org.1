@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2B929EB84
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FD829EB7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgJ2MQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:16:29 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33248 "EHLO
+        id S1726712AbgJ2MP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:15:59 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33322 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbgJ2MPt (ORCPT
+        with ESMTP id S1726510AbgJ2MPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:15:49 -0400
-Date:   Thu, 29 Oct 2020 12:15:45 -0000
+        Thu, 29 Oct 2020 08:15:51 -0400
+Date:   Thu, 29 Oct 2020 12:15:46 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603973746;
+        s=2020; t=1603973747;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4GECynj6B1tFP3jOTYTEPs+OLEHJGqBhnl2/IZ65y/4=;
-        b=EOqcAdsPq98tGnvSOlMYldxVVHSfsAbQiaJo/V5swsny63swCYCK10HdKj54eeaFWF+7HK
-        mCZFu8BMdbh5OSv68zPl65XU4B0swYq4fjPAuxA/Yq3EpYfohToa42x9nAlMg3iw6ud6tI
-        alqEi5s5gjS+UYcLfkj4607oeo8SaT60IsrTMf95uQpP9xiME3O/pj3tnCrKAqKe7jsmqu
-        MbQJYIACoYkqdgv2ov77IdTUAcwM3S5xKWHIsTfWG8nd3HIoMvkb6xoULwP2tjc+A613Zy
-        zF/LfDQiktTWCsZlTC23lD2A5TveUCbF6LljfsvwirNPxcvbkVsdO1g8DIlzRw==
+        bh=bIQ7YIFJ37tyIN64IrIhaOrfMuZ7j1rWYi6LvcRqWY8=;
+        b=nvD8CyPgoh1EX4AsurLgxRGO1Nflsv/XWXTkoI+joRmPfzsghMaF1fYI41QOy8092q1dRq
+        FFPOUvLB5TVrhg/7zh2iaHBoz3yqfeeQ6rUunbDdOBJ4OnwUEu27I1KDkX919hPT0SWZ1w
+        xv2UvP41ufFs/POKw5l1emkURLq90G5INPfxsrKBcs+b23qDB3lRAoxt6i72303BGwNg0j
+        gIkqtpHUHTZ7bUL/EuQthF35j1xYqLn78tplDjgZOuFA+cUUzON2/GncynNVRdRdS2zxUA
+        j0QSpdAA0531Gt1VDdpQFXmwEcZelKTsR4i25RXwr/F5M31vcIAyUlW7lVGatA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603973746;
+        s=2020e; t=1603973747;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4GECynj6B1tFP3jOTYTEPs+OLEHJGqBhnl2/IZ65y/4=;
-        b=y8tFeEOsI7DXGwC1jM9w0arxfHteUjO59OtveAS8dpaSmXwxODWGIDgAINGc3WXH0sC57e
-        oMlkigzPWgBXlyDA==
+        bh=bIQ7YIFJ37tyIN64IrIhaOrfMuZ7j1rWYi6LvcRqWY8=;
+        b=+kT6YZurGhtKkE4QJRzQwL2G/EutWwloiSjykd9QPfTcwn1my+39WwLC4Xkt7KvFshhFq9
+        2HG5Nlz5n4cCVyBA==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/apic: Get rid of apic:: Dest_logical
+Subject: [tip: x86/apic] x86/apic: Cleanup delivery mode defines
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         David Woodhouse <dwmw@amazon.co.uk>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201024213535.443185-8-dwmw2@infradead.org>
-References: <20201024213535.443185-8-dwmw2@infradead.org>
+In-Reply-To: <20201024213535.443185-6-dwmw2@infradead.org>
+References: <20201024213535.443185-6-dwmw2@infradead.org>
 MIME-Version: 1.0
-Message-ID: <160397374582.397.3225892306137178066.tip-bot2@tip-bot2>
+Message-ID: <160397374697.397.2430389140744938107.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,282 +58,344 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     e57d04e5fa00f7649d4c00796f8d12054799be4a
-Gitweb:        https://git.kernel.org/tip/e57d04e5fa00f7649d4c00796f8d12054799be4a
+Commit-ID:     721612994f53ed600b39a80d912b10f51960e2e3
+Gitweb:        https://git.kernel.org/tip/721612994f53ed600b39a80d912b10f51960e2e3
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sat, 24 Oct 2020 22:35:07 +01:00
+AuthorDate:    Sat, 24 Oct 2020 22:35:05 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Wed, 28 Oct 2020 20:26:24 +01:00
 
-x86/apic: Get rid of apic:: Dest_logical
+x86/apic: Cleanup delivery mode defines
 
-struct apic has two members which store information about the destination
-mode: dest_logical and irq_dest_mode.
+The enum ioapic_irq_destination_types and the enumerated constants starting
+with 'dest_' are gross misnomers because they describe the delivery mode.
 
-dest_logical contains a mask which was historically used to set the
-destination mode in IPI messages. Over time the usage was reduced and the
-logical/physical functions were seperated.
-
-There are only a few places which still use 'dest_logical' but they can
-use 'irq_dest_mode' instead.
-
-irq_dest_mode is actually a boolean where 0 means physical destination mode
-and 1 means logical destination mode. Of course the name does not reflect
-the functionality. This will be cleaned up in a subsequent change.
-
-Remove apic::dest_logical and fixup the remaining users.
+Rename then enum and the constants so they actually make sense.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201024213535.443185-8-dwmw2@infradead.org
+Link: https://lore.kernel.org/r/20201024213535.443185-6-dwmw2@infradead.org
 
 ---
- arch/x86/include/asm/apic.h           | 2 --
- arch/x86/kernel/apic/apic.c           | 2 +-
- arch/x86/kernel/apic/apic_flat_64.c   | 8 ++------
- arch/x86/kernel/apic/apic_noop.c      | 4 +---
- arch/x86/kernel/apic/apic_numachip.c  | 8 ++------
- arch/x86/kernel/apic/bigsmp_32.c      | 4 +---
- arch/x86/kernel/apic/probe_32.c       | 4 +---
- arch/x86/kernel/apic/x2apic_cluster.c | 4 +---
- arch/x86/kernel/apic/x2apic_phys.c    | 4 +---
- arch/x86/kernel/apic/x2apic_uv_x.c    | 4 +---
- arch/x86/kernel/smpboot.c             | 5 +++--
- arch/x86/xen/apic.c                   | 4 +---
- 12 files changed, 15 insertions(+), 38 deletions(-)
+ arch/x86/include/asm/apic.h           |  3 ++-
+ arch/x86/include/asm/apicdef.h        | 16 +++++++---------
+ arch/x86/kernel/apic/apic_flat_64.c   |  4 ++--
+ arch/x86/kernel/apic/apic_noop.c      |  2 +-
+ arch/x86/kernel/apic/apic_numachip.c  |  4 ++--
+ arch/x86/kernel/apic/bigsmp_32.c      |  2 +-
+ arch/x86/kernel/apic/io_apic.c        | 11 ++++++-----
+ arch/x86/kernel/apic/probe_32.c       |  2 +-
+ arch/x86/kernel/apic/x2apic_cluster.c |  2 +-
+ arch/x86/kernel/apic/x2apic_phys.c    |  2 +-
+ arch/x86/kernel/apic/x2apic_uv_x.c    |  6 +++---
+ arch/x86/platform/uv/uv_irq.c         |  2 +-
+ drivers/iommu/amd/iommu.c             |  4 ++--
+ drivers/iommu/intel/irq_remapping.c   |  2 +-
+ drivers/pci/controller/pci-hyperv.c   |  6 +++---
+ 15 files changed, 34 insertions(+), 34 deletions(-)
 
 diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index 37a08f3..e230ed2 100644
+index 57af25c..37a08f3 100644
 --- a/arch/x86/include/asm/apic.h
 +++ b/arch/x86/include/asm/apic.h
-@@ -306,8 +306,6 @@ struct apic {
- 	void	(*send_IPI_all)(int vector);
- 	void	(*send_IPI_self)(int vector);
- 
--	/* dest_logical is used by the IPI functions */
--	u32	dest_logical;
+@@ -309,7 +309,8 @@ struct apic {
+ 	/* dest_logical is used by the IPI functions */
+ 	u32	dest_logical;
  	u32	disable_esr;
+-	u32	irq_delivery_mode;
++
++	enum apic_delivery_modes delivery_mode;
+ 	u32	irq_dest_mode;
  
- 	enum apic_delivery_modes delivery_mode;
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 113f6ca..29d28b3 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -1591,7 +1591,7 @@ static void setup_local_APIC(void)
- 	apic->init_apic_ldr();
+ 	u32	(*calc_dest_apicid)(unsigned int cpu);
+diff --git a/arch/x86/include/asm/apicdef.h b/arch/x86/include/asm/apicdef.h
+index 05e694e..5716f22 100644
+--- a/arch/x86/include/asm/apicdef.h
++++ b/arch/x86/include/asm/apicdef.h
+@@ -432,15 +432,13 @@ struct local_apic {
+  #define BAD_APICID 0xFFFFu
+ #endif
  
- #ifdef CONFIG_X86_32
--	if (apic->dest_logical) {
-+	if (apic->irq_dest_mode == 1) {
- 		int logical_apicid, ldr_apicid;
+-enum ioapic_irq_destination_types {
+-	dest_Fixed		= 0,
+-	dest_LowestPrio		= 1,
+-	dest_SMI		= 2,
+-	dest__reserved_1	= 3,
+-	dest_NMI		= 4,
+-	dest_INIT		= 5,
+-	dest__reserved_2	= 6,
+-	dest_ExtINT		= 7
++enum apic_delivery_modes {
++	APIC_DELIVERY_MODE_FIXED	= 0,
++	APIC_DELIVERY_MODE_LOWESTPRIO   = 1,
++	APIC_DELIVERY_MODE_SMI		= 2,
++	APIC_DELIVERY_MODE_NMI		= 4,
++	APIC_DELIVERY_MODE_INIT		= 5,
++	APIC_DELIVERY_MODE_EXTINT	= 7,
+ };
  
- 		/*
+ #endif /* _ASM_X86_APICDEF_H */
 diff --git a/arch/x86/kernel/apic/apic_flat_64.c b/arch/x86/kernel/apic/apic_flat_64.c
-index 6df837f..bbb1b89 100644
+index 7862b15..fdd38a1 100644
 --- a/arch/x86/kernel/apic/apic_flat_64.c
 +++ b/arch/x86/kernel/apic/apic_flat_64.c
-@@ -117,11 +117,9 @@ static struct apic apic_flat __ro_after_init = {
+@@ -113,7 +113,7 @@ static struct apic apic_flat __ro_after_init = {
+ 	.apic_id_valid			= default_apic_id_valid,
+ 	.apic_id_registered		= flat_apic_id_registered,
+ 
+-	.irq_delivery_mode		= dest_Fixed,
++	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
  	.irq_dest_mode			= 1, /* logical */
  
  	.disable_esr			= 0,
--	.dest_logical			= APIC_DEST_LOGICAL,
--	.check_apicid_used		= NULL,
+@@ -206,7 +206,7 @@ static struct apic apic_physflat __ro_after_init = {
+ 	.apic_id_valid			= default_apic_id_valid,
+ 	.apic_id_registered		= flat_apic_id_registered,
  
-+	.check_apicid_used		= NULL,
- 	.init_apic_ldr			= flat_init_apic_ldr,
--
- 	.ioapic_phys_id_map		= NULL,
- 	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
-@@ -210,11 +208,9 @@ static struct apic apic_physflat __ro_after_init = {
+-	.irq_delivery_mode		= dest_Fixed,
++	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
  	.irq_dest_mode			= 0, /* physical */
  
  	.disable_esr			= 0,
--	.dest_logical			= 0,
--	.check_apicid_used		= NULL,
- 
-+	.check_apicid_used		= NULL,
- 	.init_apic_ldr			= physflat_init_apic_ldr,
--
- 	.ioapic_phys_id_map		= NULL,
- 	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
 diff --git a/arch/x86/kernel/apic/apic_noop.c b/arch/x86/kernel/apic/apic_noop.c
-index 4fc934b..38f167c 100644
+index 780c702..4fc934b 100644
 --- a/arch/x86/kernel/apic/apic_noop.c
 +++ b/arch/x86/kernel/apic/apic_noop.c
-@@ -100,11 +100,9 @@ struct apic apic_noop __ro_after_init = {
+@@ -95,7 +95,7 @@ struct apic apic_noop __ro_after_init = {
+ 	.apic_id_valid			= default_apic_id_valid,
+ 	.apic_id_registered		= noop_apic_id_registered,
+ 
+-	.irq_delivery_mode		= dest_Fixed,
++	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
+ 	/* logical delivery broadcast to all CPUs: */
  	.irq_dest_mode			= 1,
- 
- 	.disable_esr			= 0,
--	.dest_logical			= APIC_DEST_LOGICAL,
--	.check_apicid_used		= default_check_apicid_used,
- 
-+	.check_apicid_used		= default_check_apicid_used,
- 	.init_apic_ldr			= noop_init_apic_ldr,
--
- 	.ioapic_phys_id_map		= default_ioapic_phys_id_map,
- 	.setup_apic_routing		= NULL,
  
 diff --git a/arch/x86/kernel/apic/apic_numachip.c b/arch/x86/kernel/apic/apic_numachip.c
-index db715d0..4ebf9fe 100644
+index 35edd57..db715d0 100644
 --- a/arch/x86/kernel/apic/apic_numachip.c
 +++ b/arch/x86/kernel/apic/apic_numachip.c
-@@ -250,11 +250,9 @@ static const struct apic apic_numachip1 __refconst = {
+@@ -246,7 +246,7 @@ static const struct apic apic_numachip1 __refconst = {
+ 	.apic_id_valid			= numachip_apic_id_valid,
+ 	.apic_id_registered		= numachip_apic_id_registered,
+ 
+-	.irq_delivery_mode		= dest_Fixed,
++	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
  	.irq_dest_mode			= 0, /* physical */
  
  	.disable_esr			= 0,
--	.dest_logical			= 0,
--	.check_apicid_used		= NULL,
+@@ -295,7 +295,7 @@ static const struct apic apic_numachip2 __refconst = {
+ 	.apic_id_valid			= numachip_apic_id_valid,
+ 	.apic_id_registered		= numachip_apic_id_registered,
  
-+	.check_apicid_used		= NULL,
- 	.init_apic_ldr			= flat_init_apic_ldr,
--
- 	.ioapic_phys_id_map		= NULL,
- 	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
-@@ -299,11 +297,9 @@ static const struct apic apic_numachip2 __refconst = {
+-	.irq_delivery_mode		= dest_Fixed,
++	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
  	.irq_dest_mode			= 0, /* physical */
  
  	.disable_esr			= 0,
--	.dest_logical			= 0,
--	.check_apicid_used		= NULL,
- 
-+	.check_apicid_used		= NULL,
- 	.init_apic_ldr			= flat_init_apic_ldr,
--
- 	.ioapic_phys_id_map		= NULL,
- 	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
 diff --git a/arch/x86/kernel/apic/bigsmp_32.c b/arch/x86/kernel/apic/bigsmp_32.c
-index 7f6461f..64c375b 100644
+index 98d015a..7f6461f 100644
 --- a/arch/x86/kernel/apic/bigsmp_32.c
 +++ b/arch/x86/kernel/apic/bigsmp_32.c
-@@ -132,11 +132,9 @@ static struct apic apic_bigsmp __ro_after_init = {
+@@ -127,7 +127,7 @@ static struct apic apic_bigsmp __ro_after_init = {
+ 	.apic_id_valid			= default_apic_id_valid,
+ 	.apic_id_registered		= bigsmp_apic_id_registered,
+ 
+-	.irq_delivery_mode		= dest_Fixed,
++	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
+ 	/* phys delivery to target CPU: */
  	.irq_dest_mode			= 0,
  
- 	.disable_esr			= 1,
--	.dest_logical			= 0,
--	.check_apicid_used		= bigsmp_check_apicid_used,
+diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
+index 7b3c7e0..cff6cbc 100644
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -535,7 +535,7 @@ static void clear_IO_APIC_pin(unsigned int apic, unsigned int pin)
  
-+	.check_apicid_used		= bigsmp_check_apicid_used,
- 	.init_apic_ldr			= bigsmp_init_apic_ldr,
--
- 	.ioapic_phys_id_map		= bigsmp_ioapic_phys_id_map,
- 	.setup_apic_routing		= bigsmp_setup_apic_routing,
- 	.cpu_present_to_apicid		= bigsmp_cpu_present_to_apicid,
+ 	/* Check delivery_mode to be sure we're not clearing an SMI pin */
+ 	entry = ioapic_read_entry(apic, pin);
+-	if (entry.delivery_mode == dest_SMI)
++	if (entry.delivery_mode == APIC_DELIVERY_MODE_SMI)
+ 		return;
+ 
+ 	/*
+@@ -1368,7 +1368,8 @@ void __init enable_IO_APIC(void)
+ 		/* If the interrupt line is enabled and in ExtInt mode
+ 		 * I have found the pin where the i8259 is connected.
+ 		 */
+-		if ((entry.mask == 0) && (entry.delivery_mode == dest_ExtINT)) {
++		if ((entry.mask == 0) &&
++		    (entry.delivery_mode == APIC_DELIVERY_MODE_EXTINT)) {
+ 			ioapic_i8259.apic = apic;
+ 			ioapic_i8259.pin  = pin;
+ 			goto found_i8259;
+@@ -1416,7 +1417,7 @@ void native_restore_boot_irq_mode(void)
+ 		entry.trigger		= IOAPIC_EDGE;
+ 		entry.polarity		= IOAPIC_POL_HIGH;
+ 		entry.dest_mode		= IOAPIC_DEST_MODE_PHYSICAL;
+-		entry.delivery_mode	= dest_ExtINT;
++		entry.delivery_mode	= APIC_DELIVERY_MODE_EXTINT;
+ 		entry.dest		= read_apic_id();
+ 
+ 		/*
+@@ -2047,7 +2048,7 @@ static inline void __init unlock_ExtINT_logic(void)
+ 	entry1.dest_mode = IOAPIC_DEST_MODE_PHYSICAL;
+ 	entry1.mask = IOAPIC_UNMASKED;
+ 	entry1.dest = hard_smp_processor_id();
+-	entry1.delivery_mode = dest_ExtINT;
++	entry1.delivery_mode = APIC_DELIVERY_MODE_EXTINT;
+ 	entry1.polarity = entry0.polarity;
+ 	entry1.trigger = IOAPIC_EDGE;
+ 	entry1.vector = 0;
+@@ -2948,7 +2949,7 @@ static void mp_setup_entry(struct irq_cfg *cfg, struct mp_chip_data *data,
+ 			   struct IO_APIC_route_entry *entry)
+ {
+ 	memset(entry, 0, sizeof(*entry));
+-	entry->delivery_mode = apic->irq_delivery_mode;
++	entry->delivery_mode = apic->delivery_mode;
+ 	entry->dest_mode     = apic->irq_dest_mode;
+ 	entry->dest	     = cfg->dest_apicid;
+ 	entry->vector	     = cfg->vector;
 diff --git a/arch/x86/kernel/apic/probe_32.c b/arch/x86/kernel/apic/probe_32.c
-index 77c6e2e..97652aa 100644
+index 67b6f7c..77c6e2e 100644
 --- a/arch/x86/kernel/apic/probe_32.c
 +++ b/arch/x86/kernel/apic/probe_32.c
-@@ -74,11 +74,9 @@ static struct apic apic_default __ro_after_init = {
+@@ -69,7 +69,7 @@ static struct apic apic_default __ro_after_init = {
+ 	.apic_id_valid			= default_apic_id_valid,
+ 	.apic_id_registered		= default_apic_id_registered,
+ 
+-	.irq_delivery_mode		= dest_Fixed,
++	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
+ 	/* logical delivery broadcast to all CPUs: */
  	.irq_dest_mode			= 1,
  
- 	.disable_esr			= 0,
--	.dest_logical			= APIC_DEST_LOGICAL,
--	.check_apicid_used		= default_check_apicid_used,
- 
-+	.check_apicid_used		= default_check_apicid_used,
- 	.init_apic_ldr			= default_init_apic_ldr,
--
- 	.ioapic_phys_id_map		= default_ioapic_phys_id_map,
- 	.setup_apic_routing		= setup_apic_flat_routing,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
 diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
-index f77e9fb..53390fc 100644
+index b0889c4..82fb43d 100644
 --- a/arch/x86/kernel/apic/x2apic_cluster.c
 +++ b/arch/x86/kernel/apic/x2apic_cluster.c
-@@ -188,11 +188,9 @@ static struct apic apic_x2apic_cluster __ro_after_init = {
+@@ -184,7 +184,7 @@ static struct apic apic_x2apic_cluster __ro_after_init = {
+ 	.apic_id_valid			= x2apic_apic_id_valid,
+ 	.apic_id_registered		= x2apic_apic_id_registered,
+ 
+-	.irq_delivery_mode		= dest_Fixed,
++	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
  	.irq_dest_mode			= 1, /* logical */
  
  	.disable_esr			= 0,
--	.dest_logical			= APIC_DEST_LOGICAL,
--	.check_apicid_used		= NULL,
- 
-+	.check_apicid_used		= NULL,
- 	.init_apic_ldr			= init_x2apic_ldr,
--
- 	.ioapic_phys_id_map		= NULL,
- 	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
 diff --git a/arch/x86/kernel/apic/x2apic_phys.c b/arch/x86/kernel/apic/x2apic_phys.c
-index 437e843..ee0c4d0 100644
+index e14eae6..437e843 100644
 --- a/arch/x86/kernel/apic/x2apic_phys.c
 +++ b/arch/x86/kernel/apic/x2apic_phys.c
-@@ -161,11 +161,9 @@ static struct apic apic_x2apic_phys __ro_after_init = {
+@@ -157,7 +157,7 @@ static struct apic apic_x2apic_phys __ro_after_init = {
+ 	.apic_id_valid			= x2apic_apic_id_valid,
+ 	.apic_id_registered		= x2apic_apic_id_registered,
+ 
+-	.irq_delivery_mode		= dest_Fixed,
++	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
  	.irq_dest_mode			= 0, /* physical */
  
  	.disable_esr			= 0,
--	.dest_logical			= 0,
--	.check_apicid_used		= NULL,
- 
-+	.check_apicid_used		= NULL,
- 	.init_apic_ldr			= init_x2apic_ldr,
--
- 	.ioapic_phys_id_map		= NULL,
- 	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
 diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index 49deefd..d21a685 100644
+index 9ade9e6..49deefd 100644
 --- a/arch/x86/kernel/apic/x2apic_uv_x.c
 +++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -811,11 +811,9 @@ static struct apic apic_x2apic_uv_x __ro_after_init = {
+@@ -703,9 +703,9 @@ static void uv_send_IPI_one(int cpu, int vector)
+ 	unsigned long dmode, val;
+ 
+ 	if (vector == NMI_VECTOR)
+-		dmode = dest_NMI;
++		dmode = APIC_DELIVERY_MODE_NMI;
+ 	else
+-		dmode = dest_Fixed;
++		dmode = APIC_DELIVERY_MODE_FIXED;
+ 
+ 	val = (1UL << UVH_IPI_INT_SEND_SHFT) |
+ 		(apicid << UVH_IPI_INT_APIC_ID_SHFT) |
+@@ -807,7 +807,7 @@ static struct apic apic_x2apic_uv_x __ro_after_init = {
+ 	.apic_id_valid			= uv_apic_id_valid,
+ 	.apic_id_registered		= uv_apic_id_registered,
+ 
+-	.irq_delivery_mode		= dest_Fixed,
++	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
  	.irq_dest_mode			= 0, /* Physical */
  
  	.disable_esr			= 0,
--	.dest_logical			= APIC_DEST_PHYSICAL,
--	.check_apicid_used		= NULL,
+diff --git a/arch/x86/platform/uv/uv_irq.c b/arch/x86/platform/uv/uv_irq.c
+index 18ca226..e7020d1 100644
+--- a/arch/x86/platform/uv/uv_irq.c
++++ b/arch/x86/platform/uv/uv_irq.c
+@@ -35,7 +35,7 @@ static void uv_program_mmr(struct irq_cfg *cfg, struct uv_irq_2_mmr_pnode *info)
+ 	mmr_value = 0;
+ 	entry = (struct uv_IO_APIC_route_entry *)&mmr_value;
+ 	entry->vector		= cfg->vector;
+-	entry->delivery_mode	= apic->irq_delivery_mode;
++	entry->delivery_mode	= apic->delivery_mode;
+ 	entry->dest_mode	= apic->irq_dest_mode;
+ 	entry->polarity		= 0;
+ 	entry->trigger		= 0;
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index b9cf594..bc81b91 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -3671,7 +3671,7 @@ static void irq_remapping_prepare_irte(struct amd_ir_data *data,
  
-+	.check_apicid_used		= NULL,
- 	.init_apic_ldr			= uv_init_apic_ldr,
--
- 	.ioapic_phys_id_map		= NULL,
- 	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index de776b2..6c14f10 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -747,13 +747,14 @@ static void __init smp_quirk_init_udelay(void)
- int
- wakeup_secondary_cpu_via_nmi(int apicid, unsigned long start_eip)
- {
-+	u32 dm = apic->irq_dest_mode ? APIC_DEST_LOGICAL : APIC_DEST_PHYSICAL;
- 	unsigned long send_status, accept_status = 0;
- 	int maxlvt;
+ 	data->irq_2_irte.devid = devid;
+ 	data->irq_2_irte.index = index + sub_handle;
+-	iommu->irte_ops->prepare(data->entry, apic->irq_delivery_mode,
++	iommu->irte_ops->prepare(data->entry, apic->delivery_mode,
+ 				 apic->irq_dest_mode, irq_cfg->vector,
+ 				 irq_cfg->dest_apicid, devid);
  
- 	/* Target chip */
- 	/* Boot on the stack */
- 	/* Kick the second */
--	apic_icr_write(APIC_DM_NMI | apic->dest_logical, apicid);
-+	apic_icr_write(APIC_DM_NMI | dm, apicid);
+@@ -3944,7 +3944,7 @@ int amd_iommu_deactivate_guest_mode(void *data)
  
- 	pr_debug("Waiting for send to finish...\n");
- 	send_status = safe_apic_wait_icr_idle();
-@@ -980,7 +981,7 @@ wakeup_cpu_via_init_nmi(int cpu, unsigned long start_ip, int apicid,
- 	if (!boot_error) {
- 		enable_start_cpu0 = 1;
- 		*cpu0_nmi_registered = 1;
--		if (apic->dest_logical == APIC_DEST_LOGICAL)
-+		if (apic->irq_dest_mode)
- 			id = cpu0_logical_apicid;
- 		else
- 			id = apicid;
-diff --git a/arch/x86/xen/apic.c b/arch/x86/xen/apic.c
-index e82fd19..c35c24b 100644
---- a/arch/x86/xen/apic.c
-+++ b/arch/x86/xen/apic.c
-@@ -152,11 +152,9 @@ static struct apic xen_pv_apic = {
- 	/* .irq_dest_mode     - used in native_compose_msi_msg only */
+ 	entry->lo.fields_remap.valid       = valid;
+ 	entry->lo.fields_remap.dm          = apic->irq_dest_mode;
+-	entry->lo.fields_remap.int_type    = apic->irq_delivery_mode;
++	entry->lo.fields_remap.int_type    = apic->delivery_mode;
+ 	entry->hi.fields.vector            = cfg->vector;
+ 	entry->lo.fields_remap.destination =
+ 				APICID_TO_IRTE_DEST_LO(cfg->dest_apicid);
+diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
+index 0cfce1d..d44e719 100644
+--- a/drivers/iommu/intel/irq_remapping.c
++++ b/drivers/iommu/intel/irq_remapping.c
+@@ -1122,7 +1122,7 @@ static void prepare_irte(struct irte *irte, int vector, unsigned int dest)
+ 	 * irq migration in the presence of interrupt-remapping.
+ 	*/
+ 	irte->trigger_mode = 0;
+-	irte->dlvry_mode = apic->irq_delivery_mode;
++	irte->dlvry_mode = apic->delivery_mode;
+ 	irte->vector = vector;
+ 	irte->dest_id = IRTE_DEST(dest);
+ 	irte->redir_hint = 1;
+diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+index 03ed5cb..6db8d96 100644
+--- a/drivers/pci/controller/pci-hyperv.c
++++ b/drivers/pci/controller/pci-hyperv.c
+@@ -1226,7 +1226,7 @@ static void hv_irq_unmask(struct irq_data *data)
+ 	params->int_target.vector = cfg->vector;
  
- 	.disable_esr			= 0,
--	/* .dest_logical      -  default_send_IPI_ use it but we use our own. */
--	.check_apicid_used		= default_check_apicid_used, /* Used on 32-bit */
+ 	/*
+-	 * Honoring apic->irq_delivery_mode set to dest_Fixed by
++	 * Honoring apic->delivery_mode set to APIC_DELIVERY_MODE_FIXED by
+ 	 * setting the HV_DEVICE_INTERRUPT_TARGET_MULTICAST flag results in a
+ 	 * spurious interrupt storm. Not doing so does not seem to have a
+ 	 * negative effect (yet?).
+@@ -1324,7 +1324,7 @@ static u32 hv_compose_msi_req_v1(
+ 	int_pkt->wslot.slot = slot;
+ 	int_pkt->int_desc.vector = vector;
+ 	int_pkt->int_desc.vector_count = 1;
+-	int_pkt->int_desc.delivery_mode = dest_Fixed;
++	int_pkt->int_desc.delivery_mode = APIC_DELIVERY_MODE_FIXED;
  
-+	.check_apicid_used		= default_check_apicid_used, /* Used on 32-bit */
- 	.init_apic_ldr			= xen_noop, /* setup_local_APIC calls it */
--
- 	.ioapic_phys_id_map		= default_ioapic_phys_id_map, /* Used on 32-bit */
- 	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= xen_cpu_present_to_apicid,
+ 	/*
+ 	 * Create MSI w/ dummy vCPU set, overwritten by subsequent retarget in
+@@ -1345,7 +1345,7 @@ static u32 hv_compose_msi_req_v2(
+ 	int_pkt->wslot.slot = slot;
+ 	int_pkt->int_desc.vector = vector;
+ 	int_pkt->int_desc.vector_count = 1;
+-	int_pkt->int_desc.delivery_mode = dest_Fixed;
++	int_pkt->int_desc.delivery_mode = APIC_DELIVERY_MODE_FIXED;
+ 
+ 	/*
+ 	 * Create MSI w/ dummy vCPU set targeting just one vCPU, overwritten
