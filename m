@@ -2,315 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5179F29E147
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDD029E143
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:58:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728932AbgJ2B6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:58:15 -0400
-Received: from mga07.intel.com ([134.134.136.100]:24275 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726397AbgJ2B5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 21:57:09 -0400
-IronPort-SDR: 2hyjUgtEvnZeTFafQp/5asqBCxT3uL1h1mb/0S037zXyVittqdJnetweAcDEMvfdhlqvUOsAyL
- Z9F2QlB2diYg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="232547317"
-X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
-   d="scan'208";a="232547317"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 18:57:08 -0700
-IronPort-SDR: BBFOpNs+xm1X41QNT0+QYCdDvFNVvvjlL+BRLT1wHnVfEw5MAZt5QzOXTELkoEpCRno/Mqo3fo
- 22I7fsKwlK/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
-   d="scan'208";a="526554316"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 28 Oct 2020 18:57:08 -0700
-Received: from [10.226.38.22] (vramuthx-MOBL1.gar.corp.intel.com [10.226.38.22])
-        by linux.intel.com (Postfix) with ESMTP id 057F9580713;
-        Wed, 28 Oct 2020 18:57:04 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v4 5/6] dt-bindings: spi: Convert cadence-quadspi.txt to
- cadence-quadspi.yaml
-To:     Rob Herring <robh@kernel.org>
-Cc:     broonie@kernel.org, vigneshr@ti.com, tudor.ambarus@microchip.com,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
-        simon.k.r.goldschmidt@gmail.com, dinguyen@kernel.org,
-        richard@nod.at, cheol.yong.kim@intel.com, qi-ming.wu@intel.com
-References: <20201027082251.30056-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201027082251.30056-6-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201028150707.GA4023049@bogus>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <65f01613-7303-9c93-694b-c276aa179cf6@linux.intel.com>
-Date:   Thu, 29 Oct 2020 09:57:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1728960AbgJ2B6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:58:08 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:34879 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728943AbgJ2B5i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 21:57:38 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 09T1vIE21002563, This message is accepted by code: ctloc85258
+Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 09T1vIE21002563
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 29 Oct 2020 09:57:19 +0800
+Received: from localhost (172.29.40.150) by RSEXMBS01.realsil.com.cn
+ (172.29.17.195) with Microsoft SMTP Server id 15.1.2044.4; Thu, 29 Oct 2020
+ 09:57:18 +0800
+From:   <rui_feng@realsil.com.cn>
+To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <ulf.hansson@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Rui Feng <rui_feng@realsil.com.cn>
+Subject: [PATCH v3 1/3] mmc: core: Initial support for SD express card/host
+Date:   Thu, 29 Oct 2020 09:57:16 +0800
+Message-ID: <1603936636-3126-1-git-send-email-rui_feng@realsil.com.cn>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-In-Reply-To: <20201028150707.GA4023049@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [172.29.40.150]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+From: Ulf Hansson <ulf.hansson@linaro.org>
 
-Thank you for your review comments...
+In the SD specification v7.10 the SD express card has been added. This new
+type of removable SD card, can be managed via a PCIe/NVMe based interface,
+while also allowing backwards compatibility towards the legacy SD
+interface.
 
-On 28/10/2020 11:07 pm, Rob Herring wrote:
-> On Tue, Oct 27, 2020 at 04:22:50PM +0800, Ramuthevar,Vadivel MuruganX wrote:
->> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->>
->> Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
->> remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
->>
->> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> ---
->>   .../devicetree/bindings/spi/cadence-quadspi.txt    |  67 ----------
->>   .../devicetree/bindings/spi/cadence-quadspi.yaml   | 148 +++++++++++++++++++++
->>   2 files changed, 148 insertions(+), 67 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.txt
->>   create mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.txt b/Documentation/devicetree/bindings/spi/cadence-quadspi.txt
->> deleted file mode 100644
->> index 945be7d5b236..000000000000
->> --- a/Documentation/devicetree/bindings/spi/cadence-quadspi.txt
->> +++ /dev/null
->> @@ -1,67 +0,0 @@
->> -* Cadence Quad SPI controller
->> -
->> -Required properties:
->> -- compatible : should be one of the following:
->> -	Generic default - "cdns,qspi-nor".
->> -	For TI 66AK2G SoC - "ti,k2g-qspi", "cdns,qspi-nor".
->> -	For TI AM654 SoC  - "ti,am654-ospi", "cdns,qspi-nor".
->> -- reg : Contains two entries, each of which is a tuple consisting of a
->> -	physical address and length. The first entry is the address and
->> -	length of the controller register set. The second entry is the
->> -	address and length of the QSPI Controller data area.
->> -- interrupts : Unit interrupt specifier for the controller interrupt.
->> -- clocks : phandle to the Quad SPI clock.
->> -- cdns,fifo-depth : Size of the data FIFO in words.
->> -- cdns,fifo-width : Bus width of the data FIFO in bytes.
->> -- cdns,trigger-address : 32-bit indirect AHB trigger address.
->> -
->> -Optional properties:
->> -- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
->> -- cdns,rclk-en : Flag to indicate that QSPI return clock is used to latch
->> -  the read data rather than the QSPI clock. Make sure that QSPI return
->> -  clock is populated on the board before using this property.
->> -
->> -Optional subnodes:
->> -Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
->> -custom properties:
->> -- cdns,read-delay : Delay for read capture logic, in clock cycles
->> -- cdns,tshsl-ns : Delay in nanoseconds for the length that the master
->> -                  mode chip select outputs are de-asserted between
->> -		  transactions.
->> -- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being
->> -                  de-activated and the activation of another.
->> -- cdns,tchsh-ns : Delay in nanoseconds between last bit of current
->> -                  transaction and deasserting the device chip select
->> -		  (qspi_n_ss_out).
->> -- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
->> -                  and first bit transfer.
->> -- resets	: Must contain an entry for each entry in reset-names.
->> -		  See ../reset/reset.txt for details.
->> -- reset-names	: Must include either "qspi" and/or "qspi-ocp".
->> -
->> -Example:
->> -
->> -	qspi: spi@ff705000 {
->> -		compatible = "cdns,qspi-nor";
->> -		#address-cells = <1>;
->> -		#size-cells = <0>;
->> -		reg = <0xff705000 0x1000>,
->> -		      <0xffa00000 0x1000>;
->> -		interrupts = <0 151 4>;
->> -		clocks = <&qspi_clk>;
->> -		cdns,is-decoded-cs;
->> -		cdns,fifo-depth = <128>;
->> -		cdns,fifo-width = <4>;
->> -		cdns,trigger-address = <0x00000000>;
->> -		resets = <&rst QSPI_RESET>, <&rst QSPI_OCP_RESET>;
->> -		reset-names = "qspi", "qspi-ocp";
->> -
->> -		flash0: n25q00@0 {
->> -			...
->> -			cdns,read-delay = <4>;
->> -			cdns,tshsl-ns = <50>;
->> -			cdns,tsd2d-ns = <50>;
->> -			cdns,tchsh-ns = <4>;
->> -			cdns,tslch-ns = <4>;
->> -		};
->> -	};
->> diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
->> new file mode 100644
->> index 000000000000..da11cb3bedeb
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
->> @@ -0,0 +1,148 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/spi/cadence-quadspi.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Cadence Quad SPI controller
->> +
->> +maintainers:
->> +  - Vadivel Murugan <vadivel.muruganx.ramuthevar@intel.com>
->> +
->> +allOf:
->> +  - $ref: "spi-controller.yaml#"
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - items:
->> +         - const: cdns,qspi-nor
->> +         - const: ti,k2g-qspi, cdns,qspi-nor
->> +         - const: ti,am654-ospi, cdns,qspi-nor
-> 
-> This is still not right. 'const' points to a single string which is not
-> what you want.
-oh my bad, you are right, will update,thanks!
+To keep the backwards compatibility, it's required to start the
+initialization through the legacy SD interface. If it turns out that the
+mmc host and the SD card, both supports the PCIe/NVMe interface, then a
+switch should be allowed.
 
-Regards
-Vadivel
-> 
->> +
->> +  reg:
->> +    items:
->> +      - description: the controller register set
->> +      - description: the controller data area
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  cdns,fifo-depth:
->> +    description:
->> +      Size of the data FIFO in words.
->> +    $ref: "/schemas/types.yaml#/definitions/uint32"
->> +    enum: [ 128, 256 ]
->> +    default: 128
->> +
->> +  cdns,fifo-width:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      Bus width of the data FIFO in bytes.
->> +    default: 4
->> +
->> +  cdns,trigger-address:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      32-bit indirect AHB trigger address.
->> +
->> +  cdns,is-decoded-cs:
->> +    type: boolean
->> +    description:
->> +      Flag to indicate whether decoder is used or not.
->> +
->> +  cdns,rclk-en:
->> +    type: boolean
->> +    description:
->> +      Flag to indicate that QSPI return clock is used to latch the read
->> +      data rather than the QSPI clock. Make sure that QSPI return clock
->> +      is populated on the board before using this property.
->> +
->> +  resets:
->> +    maxItems : 2
->> +
->> +  reset-names:
->> +    minItems: 1
->> +    maxItems: 2
->> +    items:
->> +      enum: [ qspi, qspi-ocp ]
->> +
->> +# subnode's properties
->> +patternProperties:
->> +  "@[0-9a-f]+$":
->> +    type: object
->> +    description:
->> +      flash device uses the subnodes below defined properties.
->> +    properties:
->> +      cdns,read-delay:
->> +        $ref: /schemas/types.yaml#/definitions/uint32
->> +        description:
->> +          Delay for read capture logic, in clock cycles.
->> +
->> +      cdns,tshsl-ns:
->> +        description:
->> +          Delay in nanoseconds for the length that the master mode chip select
->> +          outputs are de-asserted between transactions.
->> +
->> +      cdns,tsd2d-ns:
->> +        description:
->> +          Delay in nanoseconds between one chip select being de-activated
->> +          and the activation of another.
->> +
->> +      cdns,tchsh-ns:
->> +        description:
->> +          Delay in nanoseconds between last bit of current transaction and
->> +          deasserting the device chip select (qspi_n_ss_out).
->> +
->> +      cdns,tslch-ns:
->> +        description:
->> +          Delay in nanoseconds between setting qspi_n_ss_out low and
->> +          first bit transfer.
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +  - clocks
->> +  - cdns,fifo-depth
->> +  - cdns,fifo-width
->> +  - cdns,trigger-address
->> +  - cdns,is-decoded-cs
->> +  - cdns,rclk-en
->> +  - resets
->> +  - reset-names
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    qspi: spi@ff705000 {
->> +      compatible = "cadence,qspi","cdns,qpsi-nor";
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
->> +      reg = <0xff705000 0x1000>,
->> +            <0xffa00000 0x1000>;
->> +      interrupts = <0 151 4>;
->> +      clocks = <&qspi_clk>;
->> +      cdns,fifo-depth = <128>;
->> +      cdns,fifo-width = <4>;
->> +      cdns,trigger-address = <0x00000000>;
->> +      resets = <&rst 0x1>, <&rst 0x2>;
->> +      reset-names = "qspi", "qspi-ocp";
->> +
->> +      flash@0 {
->> +              compatible = "jedec,spi-nor";
->> +              reg = <0x0>;
->> +              cdns,read-delay = <4>;
->> +              cdns,tshsl-ns = <50>;
->> +              cdns,tsd2d-ns = <50>;
->> +              cdns,tchsh-ns = <4>;
->> +              cdns,tslch-ns = <4>;
->> +     };
->> +
->> +    };
->> +
->> +...
->> -- 
->> 2.11.0
->>
+Therefore, let's introduce some basic support for this type of SD cards to
+the mmc core. The mmc host, should set MMC_CAP2_SD_EXP if it supports this
+interface and MMC_CAP2_SD_EXP_1_2V, if also 1.2V is supported, as to inform
+the core about it.
+
+To deal with the switch to the PCIe/NVMe interface, the mmc host is
+required to implement a new host ops, ->init_sd_express(). Based on the
+initial communication between the host and the card, host->ios.timing is
+set to either MMC_TIMING_SD_EXP or MMC_TIMING_SD_EXP_1_2V, depending on if
+1.2V is supported or not. In this way, the mmc host can check these values
+in its ->init_sd_express() ops, to know how to proceed with the handover.
+
+Note that, to manage card insert/removal, the mmc core sticks with using
+the ->get_cd() callback, which means it's the host's responsibility to make
+sure it provides valid data, even if the card may be managed by PCIe/NVMe
+at the moment. As long as the card seems to be present, the mmc core keeps
+the card powered on.
+
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Rui Feng <rui_feng@realsil.com.cn>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/mmc/core/core.c   | 15 ++++++++++--
+ drivers/mmc/core/host.h   |  6 +++++
+ drivers/mmc/core/sd_ops.c | 49 +++++++++++++++++++++++++++++++++++++--
+ drivers/mmc/core/sd_ops.h |  1 +
+ include/linux/mmc/host.h  |  7 ++++++
+ 5 files changed, 74 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+index 8ccae6452b9c..6673c0f33cc7 100644
+--- a/drivers/mmc/core/core.c
++++ b/drivers/mmc/core/core.c
+@@ -2137,8 +2137,12 @@ static int mmc_rescan_try_freq(struct mmc_host *host, unsigned freq)
+ 
+ 	mmc_go_idle(host);
+ 
+-	if (!(host->caps2 & MMC_CAP2_NO_SD))
+-		mmc_send_if_cond(host, host->ocr_avail);
++	if (!(host->caps2 & MMC_CAP2_NO_SD)) {
++		if (mmc_send_if_cond_pcie(host, host->ocr_avail))
++			goto out;
++		if (mmc_card_sd_express(host))
++			return 0;
++	}
+ 
+ 	/* Order's important: probe SDIO, then SD, then MMC */
+ 	if (!(host->caps2 & MMC_CAP2_NO_SDIO))
+@@ -2153,6 +2157,7 @@ static int mmc_rescan_try_freq(struct mmc_host *host, unsigned freq)
+ 		if (!mmc_attach_mmc(host))
+ 			return 0;
+ 
++out:
+ 	mmc_power_off(host);
+ 	return -EIO;
+ }
+@@ -2280,6 +2285,12 @@ void mmc_rescan(struct work_struct *work)
+ 		goto out;
+ 	}
+ 
++	/* If an SD express card is present, then leave it as is. */
++	if (mmc_card_sd_express(host)) {
++		mmc_release_host(host);
++		goto out;
++	}
++
+ 	for (i = 0; i < ARRAY_SIZE(freqs); i++) {
+ 		unsigned int freq = freqs[i];
+ 		if (freq > host->f_max) {
+diff --git a/drivers/mmc/core/host.h b/drivers/mmc/core/host.h
+index 5e3b9534ffb2..ba407617ed23 100644
+--- a/drivers/mmc/core/host.h
++++ b/drivers/mmc/core/host.h
+@@ -77,5 +77,11 @@ static inline bool mmc_card_hs400es(struct mmc_card *card)
+ 	return card->host->ios.enhanced_strobe;
+ }
+ 
++static inline bool mmc_card_sd_express(struct mmc_host *host)
++{
++	return host->ios.timing == MMC_TIMING_SD_EXP ||
++		host->ios.timing == MMC_TIMING_SD_EXP_1_2V;
++}
++
+ #endif
+ 
+diff --git a/drivers/mmc/core/sd_ops.c b/drivers/mmc/core/sd_ops.c
+index 22bf528294b9..d61ff811218c 100644
+--- a/drivers/mmc/core/sd_ops.c
++++ b/drivers/mmc/core/sd_ops.c
+@@ -158,7 +158,8 @@ int mmc_send_app_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
+ 	return err;
+ }
+ 
+-int mmc_send_if_cond(struct mmc_host *host, u32 ocr)
++static int __mmc_send_if_cond(struct mmc_host *host, u32 ocr, u8 pcie_bits,
++			      u32 *resp)
+ {
+ 	struct mmc_command cmd = {};
+ 	int err;
+@@ -171,7 +172,7 @@ int mmc_send_if_cond(struct mmc_host *host, u32 ocr)
+ 	 * SD 1.0 cards.
+ 	 */
+ 	cmd.opcode = SD_SEND_IF_COND;
+-	cmd.arg = ((ocr & 0xFF8000) != 0) << 8 | test_pattern;
++	cmd.arg = ((ocr & 0xFF8000) != 0) << 8 | pcie_bits << 8 | test_pattern;
+ 	cmd.flags = MMC_RSP_SPI_R7 | MMC_RSP_R7 | MMC_CMD_BCR;
+ 
+ 	err = mmc_wait_for_cmd(host, &cmd, 0);
+@@ -186,6 +187,50 @@ int mmc_send_if_cond(struct mmc_host *host, u32 ocr)
+ 	if (result_pattern != test_pattern)
+ 		return -EIO;
+ 
++	if (resp)
++		*resp = cmd.resp[0];
++
++	return 0;
++}
++
++int mmc_send_if_cond(struct mmc_host *host, u32 ocr)
++{
++	return __mmc_send_if_cond(host, ocr, 0, NULL);
++}
++
++int mmc_send_if_cond_pcie(struct mmc_host *host, u32 ocr)
++{
++	u32 resp = 0;
++	u8 pcie_bits = 0;
++	int ret;
++
++	if (host->caps2 & MMC_CAP2_SD_EXP) {
++		/* Probe card for SD express support via PCIe. */
++		pcie_bits = 0x10;
++		if (host->caps2 & MMC_CAP2_SD_EXP_1_2V)
++			/* Probe also for 1.2V support. */
++			pcie_bits = 0x30;
++	}
++
++	ret = __mmc_send_if_cond(host, ocr, pcie_bits, &resp);
++	if (ret)
++		return 0;
++
++	/* Continue with the SD express init, if the card supports it. */
++	resp &= 0x3000;
++	if (pcie_bits && resp) {
++		if (resp == 0x3000)
++			host->ios.timing = MMC_TIMING_SD_EXP_1_2V;
++		else
++			host->ios.timing = MMC_TIMING_SD_EXP;
++
++		/*
++		 * According to the spec the clock shall also be gated, but
++		 * let's leave this to the host driver for more flexibility.
++		 */
++		return host->ops->init_sd_express(host, &host->ios);
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/mmc/core/sd_ops.h b/drivers/mmc/core/sd_ops.h
+index 2194cabfcfc5..3ba7b3cf4652 100644
+--- a/drivers/mmc/core/sd_ops.h
++++ b/drivers/mmc/core/sd_ops.h
+@@ -16,6 +16,7 @@ struct mmc_host;
+ int mmc_app_set_bus_width(struct mmc_card *card, int width);
+ int mmc_send_app_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr);
+ int mmc_send_if_cond(struct mmc_host *host, u32 ocr);
++int mmc_send_if_cond_pcie(struct mmc_host *host, u32 ocr);
+ int mmc_send_relative_addr(struct mmc_host *host, unsigned int *rca);
+ int mmc_app_send_scr(struct mmc_card *card);
+ int mmc_sd_switch(struct mmc_card *card, int mode, int group,
+diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+index c5b6e97cb21a..905cddc5e6f3 100644
+--- a/include/linux/mmc/host.h
++++ b/include/linux/mmc/host.h
+@@ -60,6 +60,8 @@ struct mmc_ios {
+ #define MMC_TIMING_MMC_DDR52	8
+ #define MMC_TIMING_MMC_HS200	9
+ #define MMC_TIMING_MMC_HS400	10
++#define MMC_TIMING_SD_EXP	11
++#define MMC_TIMING_SD_EXP_1_2V	12
+ 
+ 	unsigned char	signal_voltage;		/* signalling voltage (1.8V or 3.3V) */
+ 
+@@ -172,6 +174,9 @@ struct mmc_host_ops {
+ 	 */
+ 	int	(*multi_io_quirk)(struct mmc_card *card,
+ 				  unsigned int direction, int blk_size);
++
++	/* Initialize an SD express card, mandatory for MMC_CAP2_SD_EXP. */
++	int	(*init_sd_express)(struct mmc_host *host, struct mmc_ios *ios);
+ };
+ 
+ struct mmc_cqe_ops {
+@@ -357,6 +362,8 @@ struct mmc_host {
+ #define MMC_CAP2_HS200_1_2V_SDR	(1 << 6)        /* can support */
+ #define MMC_CAP2_HS200		(MMC_CAP2_HS200_1_8V_SDR | \
+ 				 MMC_CAP2_HS200_1_2V_SDR)
++#define MMC_CAP2_SD_EXP		(1 << 7)	/* SD express via PCIe */
++#define MMC_CAP2_SD_EXP_1_2V	(1 << 8)	/* SD express 1.2V */
+ #define MMC_CAP2_CD_ACTIVE_HIGH	(1 << 10)	/* Card-detect signal active high */
+ #define MMC_CAP2_RO_ACTIVE_HIGH	(1 << 11)	/* Write-protect signal active high */
+ #define MMC_CAP2_NO_PRESCAN_POWERUP (1 << 14)	/* Don't power up before scan */
+-- 
+2.17.1
+
