@@ -2,105 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EA129F74A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E061529F757
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725853AbgJ2WAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 18:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
+        id S1725780AbgJ2WDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 18:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgJ2WAL (ORCPT
+        with ESMTP id S1725372AbgJ2WDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 18:00:11 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB03C0613CF;
-        Thu, 29 Oct 2020 15:00:11 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id c18so1204066wme.2;
-        Thu, 29 Oct 2020 15:00:11 -0700 (PDT)
+        Thu, 29 Oct 2020 18:03:50 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B650EC0613CF;
+        Thu, 29 Oct 2020 15:03:48 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id r186so3501461pgr.0;
+        Thu, 29 Oct 2020 15:03:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=40e4S00g1+jWvsqSMaAemc/LZ0HJCmIgIw3gyfOIGI4=;
-        b=XTrJbqSgkFmHPKW2edfxxzsOZvUBsU/UirFXADLRS9z0KiFZyIw1i/iFsTqyvrsKhJ
-         HS7ZbK9hQ64GBA40tdtuTcv1pEF/K79UEp55pPN7WQz0Or+UHoBtKHxQ2RwG6dbMx2pW
-         axQlXzZFrBvxyCqYyu+zx68ol7HiNxdNYjNxJTjhr0vb7AtATSLls3qM4tz5nrAV9WnK
-         jaoGQqXKH/vAMnnoI7+Px3lMJa6tOQlb+1GFwRzdyOhJxPmy5krwEvtHFAMlWafXMjGG
-         zQH9hWNflaozahPEhSR+Q+OPZkVZPDvv/xPkyhbUfFm9lJdgl5Gi4OFaG8VOUhvoT507
-         jUYA==
+        h=from:to:cc:subject:thread-topic:thread-index:date:message-id
+         :references:in-reply-to:accept-language:content-language
+         :content-transfer-encoding:mime-version;
+        bh=ZdeDbEelXkHD28pDjWnxpVNwRGKME/CRICSzzS+Jp78=;
+        b=FbjwJ+QbV5iiBNQ7QP2ZQgev2Am0A9rWNQyv5vrXiO6dBHcuDw0SZDQf5GFS9y2mST
+         wos6gxJ9R8X/L04KIt7uIS9O1EcqTV0A25yeCyknkPuC7tZtH0hinTNVgosQHDR1gwZX
+         UNKbPLkzIKoxfbb0r3fsrMNau2MWYakRQ7OQ8YW+Uf4t0WvrUiSfo8GtoxIhtmaZgoiT
+         0L4iYCqXzuTUn+E2BQRoUp6G6O75WAdK0p0JlfaLlYAREIYiT1zdjKuCMj1te1nb7/UB
+         az5pVECaQgOWIhM+fpDD+5XuagjjLZ6kD4Jfv1e768KJzYt/N7zXCvaI7gv5meZYx8WK
+         +HLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=40e4S00g1+jWvsqSMaAemc/LZ0HJCmIgIw3gyfOIGI4=;
-        b=l90lzQXAriTOzAyvEtSnzALEdkaEW7DDQg0QlPc2AsV4lGuKJ3UcnxP6u7QO5dldlM
-         3TiPismz/wtGMO9GApjoAy3VgTC/E28jQHfNqKOkIcDvGa4Y19Mhyadf1+/iGpWFUluB
-         OfDQCFwqIj5JUkAH+Y2Ne0Bu1Ev+R1h77/ob6/C5iixpWafjSBvxA6uHXl8a7znab5Qj
-         48P5naFbytI7eYv5D9ihror+RRDZivv0BIOvqkJneJGfY9cEIu9lCt4IgybbSUAwRby/
-         PZvHJjZe6jfb1PLKg+3CaOLzAU88vlIWvmk+ifK1t/wKqznz0euc99A+c+CLdD4yQ1/m
-         vfPw==
-X-Gm-Message-State: AOAM5310dh+KrKvq+rDmvnWR+WoaapNQup+KOYIFzO5o+1b4z4KO7JcE
-        7PDiSyVRyQ0T/BcsvC4N0e+iiHIq4eGY3D3wOiI=
-X-Google-Smtp-Source: ABdhPJwpYSrUAdeoFRilgwZtoHiIfWS1NIhXwf789NWRPz40ExUzFgYDJVlEmXo1EaJsJMJhoIXHj6NroAtLXRAuhzg=
-X-Received: by 2002:a7b:c157:: with SMTP id z23mr1052308wmi.70.1604008809836;
- Thu, 29 Oct 2020 15:00:09 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:thread-topic:thread-index
+         :date:message-id:references:in-reply-to:accept-language
+         :content-language:content-transfer-encoding:mime-version;
+        bh=ZdeDbEelXkHD28pDjWnxpVNwRGKME/CRICSzzS+Jp78=;
+        b=o3eMWEesLazHWC6C2MpxiVFe1Z1o6tJxmg996rMZsAiYIeImbC00MroWpugp/o4sIr
+         oneko9NOIpe5Zn801q8UJs891ztSd2p6LblISVIDfGLI1hiyINov64UQsqHoEykVASa4
+         zx2O6w62WPRFXds2E4VBYVHlZ91m/gzDCK+cc7+l0Cc9ghjeCw8FPB0sXR6Xwm0/8ySJ
+         sMS88jAmLOA9GVtW2noO33w9cNKSxXkaP+b/UP4re571zOi4jlU7iX4qhcjQHduSC0mM
+         KrnTUh+rG5oSSAT4PXEivVHyOdtKr2yydRw4toy7BUOzfgmfD1SMGD8JVYj8vglx1Ni+
+         V4IQ==
+X-Gm-Message-State: AOAM533wbu9r2uh+l0mFqqdJpswgFofDd9+LNrj7vg8EEFNgiqeguDF2
+        df6hh0nK0NHlsUMhdoQjXlU=
+X-Google-Smtp-Source: ABdhPJy8PGWf7UR7rEkqPe7tAZ+6CAEca+KAriOcAJ0hoYyJgj5Xh0Lnh8k747xMrRF1zFuhfJ6WpA==
+X-Received: by 2002:a17:90a:1690:: with SMTP id o16mr1325029pja.148.1604009028349;
+        Thu, 29 Oct 2020 15:03:48 -0700 (PDT)
+Received: from SL2P216MB0475.KORP216.PROD.OUTLOOK.COM ([2603:1046:100:19::5])
+        by smtp.gmail.com with ESMTPSA id gm14sm846740pjb.2.2020.10.29.15.03.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Oct 2020 15:03:47 -0700 (PDT)
+From:   Jingoo Han <jingoohan1@gmail.com>
+To:     Vidya Sagar <vidyas@nvidia.com>,
+        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "treding@nvidia.com" <treding@nvidia.com>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kthota@nvidia.com" <kthota@nvidia.com>,
+        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
+        "sagar.tv@gmail.com" <sagar.tv@gmail.com>,
+        Han Jingoo <jingoohan1@gmail.com>
+Subject: Re: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
+Thread-Topic: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
+Thread-Index: AQHWrbYA7JmObBkfy0Gh1N3xXvCmtKmvI0h3
+X-MS-Exchange-MessageSentRepresentingType: 1
+Date:   Thu, 29 Oct 2020 22:03:41 +0000
+Message-ID: <SL2P216MB04759A928ACAA6F411718E01AA140@SL2P216MB0475.KORP216.PROD.OUTLOOK.COM>
+References: <20201029053959.31361-1-vidyas@nvidia.com>
+ <20201029053959.31361-3-vidyas@nvidia.com>
+In-Reply-To: <20201029053959.31361-3-vidyas@nvidia.com>
+Accept-Language: ko-KR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-Exchange-Organization-SCL: -1
+X-MS-TNEF-Correlator: 
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20201028124316.109886-1-colin.king@canonical.com>
-In-Reply-To: <20201028124316.109886-1-colin.king@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 29 Oct 2020 17:59:58 -0400
-Message-ID: <CADnq5_N8FkB1bjhrfVi2EvRbKdDSgKOCm37zdmXACnTLSx6krw@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/amd/pm: fix out-of-bound read on pptable->SkuReserved
-To:     Colin King <colin.king@canonical.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On 10/29/20, 1:40 AM, Vidya Sagar wrote:
+>=20
+> DesignWare core has a TLP digest (TD) override bit in one of the control
+> registers of ATU. This bit also needs to be programmed for proper ECRC
+> functionality. This is currently identified as an issue with DesignWare
+> IP version 4.90a. This patch does the required programming in ATU upon
+> querying the system policy for ECRC.
+>
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> Reviewed-by: Jingoo Han <jingoohan1@gmail.com>
 
-On Wed, Oct 28, 2020 at 8:43 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> A recent change added two uint16_t elements to PPTable_t and reduced the
-> uint32_t array down to 8 elements. This results in the dev_info printing
-> of pptable->SkuReserved[8] accessing a value that is out-of-range on
-> array SkuReserved.  The array has been shrunk by 1 element, so remove
-> this extraneous dev_info message.
->
-> Addresses-Coverity: ("Out-of-bounds read")
-> Fixes: 1dc3c5a95b08 ("drm/amd/pm: update driver if file for sienna cichlid")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+No, it should be Acked-by. I gave you Acked-by, not Reviewed-by.
+
+Acked-by: Jingoo Han <jingoohan1@gmail.com>
+
+
+Best regards,
+Jingoo Han
+
 > ---
->  drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c | 1 -
->  1 file changed, 1 deletion(-)
+> V3:
+> * Added 'Reviewed-by: Jingoo Han <jingoohan1@gmail.com>'
 >
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-> index fa3842f460fc..0600befc6e4c 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-> @@ -2279,7 +2279,6 @@ static void sienna_cichlid_dump_pptable(struct smu_context *smu)
->         dev_info(smu->adev->dev, "SkuReserved[5] = 0x%x\n", pptable->SkuReserved[5]);
->         dev_info(smu->adev->dev, "SkuReserved[6] = 0x%x\n", pptable->SkuReserved[6]);
->         dev_info(smu->adev->dev, "SkuReserved[7] = 0x%x\n", pptable->SkuReserved[7]);
-> -       dev_info(smu->adev->dev, "SkuReserved[8] = 0x%x\n", pptable->SkuReserved[8]);
+> V2:
+> * Addressed Jingoo's review comment
+> * Removed saving 'td' bit information in 'dw_pcie' structure
 >
->         dev_info(smu->adev->dev, "GamingClk[0] = 0x%x\n", pptable->GamingClk[0]);
->         dev_info(smu->adev->dev, "GamingClk[1] = 0x%x\n", pptable->GamingClk[1]);
-> --
-> 2.27.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>  drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
+>  drivers/pci/controller/dwc/pcie-designware.h | 1 +
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+
+[...]
