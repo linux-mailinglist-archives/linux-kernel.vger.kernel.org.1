@@ -2,71 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFFD029E61C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A7029E62A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:16:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbgJ2IPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 04:15:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60208 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727124AbgJ2IPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:15:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CC305ABF5;
-        Thu, 29 Oct 2020 08:15:02 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 09:14:59 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kbusch@kernel.org, vishal.l.verma@intel.com,
-        yang.shi@linux.alibaba.com, rientjes@google.com,
-        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com
-Subject: Re: [RFC][PATCH 7/9] mm/vmscan: Consider anonymous pages without swap
-Message-ID: <20201029081454.GA30442@linux>
-References: <20201007161736.ACC6E387@viggo.jf.intel.com>
- <20201007161749.4C56D1F1@viggo.jf.intel.com>
+        id S1726722AbgJ2IQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 04:16:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22417 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728550AbgJ2IQJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:16:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603959367;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2gRwEwp+09CxPY3cDDGs5AqZnz2L4R+qK1xrKBZP/ZQ=;
+        b=ay06rFUMq495NziQvvXEmjfl27QqLzDhX+fa4jGpMV7iYUr5G+e63O1tBDFA9Ul5oLop5C
+        a8/TWffcMSMt6xjNKzy/qVY40B4oOUr4YUDs597pgypjwNsoZinHd7ELIVZ9qacTMV1TPn
+        dllYntmtt8eAzvq8drrXaCf8X0MpNOc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-521-GwWoSv2-OMqDqihE-45P3g-1; Thu, 29 Oct 2020 04:16:02 -0400
+X-MC-Unique: GwWoSv2-OMqDqihE-45P3g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5ED20809DC9;
+        Thu, 29 Oct 2020 08:15:57 +0000 (UTC)
+Received: from [10.36.112.181] (ovpn-112-181.ams2.redhat.com [10.36.112.181])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3EBE05D9CC;
+        Thu, 29 Oct 2020 08:15:48 +0000 (UTC)
+Subject: Re: [PATCH 0/4] arch, mm: improve robustness of direct map
+ manipulation
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Lameter <cl@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <len.brown@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        x86@kernel.org
+References: <20201025101555.3057-1-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <30075bb8-caed-c4de-c09e-e0f6fb964a8d@redhat.com>
+Date:   Thu, 29 Oct 2020 09:15:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007161749.4C56D1F1@viggo.jf.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201025101555.3057-1-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 09:17:49AM -0700, Dave Hansen wrote:
+On 25.10.20 11:15, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> From: Keith Busch <kbusch@kernel.org>
+> Hi,
 > 
-> Age and reclaim anonymous pages if a migration path is available. The
-> node has other recourses for inactive anonymous pages beyond swap,
+> During recent discussion about KVM protected memory, David raised a concern
+> about usage of __kernel_map_pages() outside of DEBUG_PAGEALLOC scope [1].
 > 
-> #Signed-off-by: Keith Busch <keith.busch@intel.com>
-> Cc: Keith Busch <kbusch@kernel.org>
-> [vishal: fixup the migration->demotion rename]
-> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
+> Indeed, for architectures that define CONFIG_ARCH_HAS_SET_DIRECT_MAP it is
+> possible that __kernel_map_pages() would fail, but since this function is
+> void, the failure will go unnoticed.
+> 
+> Moreover, there's lack of consistency of __kernel_map_pages() semantics
+> across architectures as some guard this function with
+> #ifdef DEBUG_PAGEALLOC, some refuse to update the direct map if page
+> allocation debugging is disabled at run time and some allow modifying the
+> direct map regardless of DEBUG_PAGEALLOC settings.
+> 
+> This set straightens this out by restoring dependency of
+> __kernel_map_pages() on DEBUG_PAGEALLOC and updating the call sites
+> accordingly.
+> 
 
-I have a question regarding this one.
-
-It seems that we do have places where we read total_swap_pages directly and other
-places where we use get_nr_swap_pages.
-One seems to give the total number of swap pages, while the other gives 
-the number of free swap pages.
-
-With this patch, we will use always the atomic version get_nr_swap_pages from
-now on.
-Is that ok? I guess so, but it might warrant a mention in the changelog?
-
-E.g: age_active_anon seems to base one of its decisions on whether we have
-swap (it seems it does not care if swap space is available).
+So, I was primarily wondering if we really have to touch direct mappings 
+in hibernation code, or if we can avoid doing that. I was wondering if 
+we cannot simply do something like kmap() when trying to access a 
+!mapped page. Similar to reading old-os memory after kexec when in 
+kdump. Just a thought.
 
 -- 
-Oscar Salvador
-SUSE L3
+Thanks,
+
+David / dhildenb
+
