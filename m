@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3081C29E819
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B284629E7FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727531AbgJ2J7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51222 "EHLO
+        id S1727077AbgJ2J6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726934AbgJ2J6D (ORCPT
+        with ESMTP id S1726961AbgJ2J6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:58:03 -0400
+        Thu, 29 Oct 2020 05:58:04 -0400
 Received: from smtp3-1.goneo.de (smtp3.goneo.de [IPv6:2001:1640:5::8:37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB33CC0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:58:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB096C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:58:03 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by smtp3.goneo.de (Postfix) with ESMTP id 9252523F98A;
-        Thu, 29 Oct 2020 10:58:01 +0100 (CET)
+        by smtp3.goneo.de (Postfix) with ESMTP id A37842402A9;
+        Thu, 29 Oct 2020 10:58:02 +0100 (CET)
 X-Virus-Scanned: by goneo
 X-Spam-Flag: NO
 X-Spam-Score: -2.948
@@ -26,19 +26,19 @@ X-Spam-Status: No, score=-2.948 tagged_above=-999 tests=[ALL_TRUSTED=-1,
         AWL=-0.048, BAYES_00=-1.9] autolearn=ham
 Received: from smtp3.goneo.de ([127.0.0.1])
         by localhost (smtp3.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id X3cHYbaLMp8W; Thu, 29 Oct 2020 10:58:00 +0100 (CET)
+        with ESMTP id Yx4nEJcerdHV; Thu, 29 Oct 2020 10:58:00 +0100 (CET)
 Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
-        by smtp3.goneo.de (Postfix) with ESMTPA id C865D23FA1C;
-        Thu, 29 Oct 2020 10:57:59 +0100 (CET)
+        by smtp3.goneo.de (Postfix) with ESMTPA id B828F23FA5A;
+        Thu, 29 Oct 2020 10:58:00 +0100 (CET)
 From:   poeschel@lemonage.de
 To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
         Willy Tarreau <willy@haproxy.com>,
         Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
         linux-kernel@vger.kernel.org (open list)
 Cc:     Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>
-Subject: [PATCH v5 10/25] auxdisplay: add home to charlcd_ops
-Date:   Thu, 29 Oct 2020 10:57:14 +0100
-Message-Id: <20201029095731.311528-9-poeschel@lemonage.de>
+Subject: [PATCH v5 11/25] auxdisplay: Move clear_display to hd44780_common
+Date:   Thu, 29 Oct 2020 10:57:15 +0100
+Message-Id: <20201029095731.311528-10-poeschel@lemonage.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201029095731.311528-1-poeschel@lemonage.de>
 References: <20201029095231.311083-1-poeschel@lemonage.de>
@@ -51,126 +51,201 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lars Poeschel <poeschel@lemonage.de>
 
-This adds a home function to the charlcd_ops struct and offer an
-implementation for hd44780_common. This implementation is used by our
-two hd44780 drivers. This is to make charlcd device independent.
+This moves the clear_display function from charlcd to hd44780_common.
+This is one more step to make charlcd independent from device specific
+code. The two hd44780 drivers use the new function from hd44780_common
+and charlcd calls this function through its function pointer in its ops
+structure.
 
 Reviewed-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
 ---
- drivers/auxdisplay/charlcd.c        | 2 +-
- drivers/auxdisplay/charlcd.h        | 3 +++
- drivers/auxdisplay/hd44780.c        | 2 ++
- drivers/auxdisplay/hd44780_common.c | 8 ++++++++
- drivers/auxdisplay/hd44780_common.h | 1 +
- drivers/auxdisplay/panel.c          | 3 +++
- 6 files changed, 18 insertions(+), 1 deletion(-)
+ drivers/auxdisplay/charlcd.c        | 22 ++++++----------------
+ drivers/auxdisplay/charlcd.h        |  4 ++++
+ drivers/auxdisplay/hd44780.c        |  2 ++
+ drivers/auxdisplay/hd44780_common.c | 21 +++++++++++++++++++++
+ drivers/auxdisplay/hd44780_common.h |  1 +
+ drivers/auxdisplay/panel.c          |  3 +++
+ 6 files changed, 37 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
-index d6f971eea6ae..44dd6e02eaf9 100644
+index 44dd6e02eaf9..fc0daf4987d5 100644
 --- a/drivers/auxdisplay/charlcd.c
 +++ b/drivers/auxdisplay/charlcd.c
-@@ -144,7 +144,7 @@ static void charlcd_home(struct charlcd *lcd)
- {
- 	lcd->addr.x = 0;
- 	lcd->addr.y = 0;
--	lcd->ops->gotoxy(lcd);
-+	lcd->ops->home(lcd);
+@@ -34,8 +34,6 @@
+ #define LCD_FLAG_L		0x0080	/* Backlight enabled */
+ 
+ /* LCD commands */
+-#define LCD_CMD_DISPLAY_CLEAR	0x01	/* Clear entire display */
+-
+ #define LCD_CMD_ENTRY_MODE	0x04	/* Set entry mode */
+ #define LCD_CMD_CURSOR_INC	0x02	/* Increment cursor */
+ 
+@@ -178,18 +176,6 @@ static void charlcd_clear_fast(struct charlcd *lcd)
+ 	charlcd_home(lcd);
  }
  
- static void charlcd_print(struct charlcd *lcd, char c)
+-/* clears the display and resets X/Y */
+-static void charlcd_clear_display(struct charlcd *lcd)
+-{
+-	struct hd44780_common *hdc = lcd->drvdata;
+-
+-	hdc->write_cmd(hdc, LCD_CMD_DISPLAY_CLEAR);
+-	lcd->addr.x = 0;
+-	lcd->addr.y = 0;
+-	/* we must wait a few milliseconds (15) */
+-	long_sleep(15);
+-}
+-
+ static int charlcd_init_display(struct charlcd *lcd)
+ {
+ 	void (*write_cmd_raw)(struct hd44780_common *hdc, int cmd);
+@@ -254,7 +240,9 @@ static int charlcd_init_display(struct charlcd *lcd)
+ 	/* entry mode set : increment, cursor shifting */
+ 	hdc->write_cmd(hdc, LCD_CMD_ENTRY_MODE | LCD_CMD_CURSOR_INC);
+ 
+-	charlcd_clear_display(lcd);
++	lcd->ops->clear_display(lcd);
++	lcd->addr.x = 0;
++	lcd->addr.y = 0;
+ 	return 0;
+ }
+ 
+@@ -670,8 +658,10 @@ static int charlcd_open(struct inode *inode, struct file *file)
+ 		goto fail;
+ 
+ 	if (priv->must_clear) {
+-		charlcd_clear_display(&priv->lcd);
++		priv->lcd.ops->clear_display(&priv->lcd);
+ 		priv->must_clear = false;
++		priv->lcd.addr.x = 0;
++		priv->lcd.addr.y = 0;
+ 	}
+ 	return nonseekable_open(inode, file);
+ 
 diff --git a/drivers/auxdisplay/charlcd.h b/drivers/auxdisplay/charlcd.h
-index f36cc80ce385..236fd0e9e8ab 100644
+index 236fd0e9e8ab..a6c32c4d1aac 100644
 --- a/drivers/auxdisplay/charlcd.h
 +++ b/drivers/auxdisplay/charlcd.h
-@@ -41,12 +41,15 @@ struct charlcd {
-  * wrap to the next line at the end of a line.
-  * @gotoxy: Set cursor to x, y. The x and y values to set the cursor to are
+@@ -43,6 +43,9 @@ struct charlcd {
   * previously set in addr.x and addr.y by charlcd.
-+ * @home: Set cursor to 0, 0. The values in addr.x and addr.y are set to 0, 0 by
-+ * charlcd prior to calling this function.
+  * @home: Set cursor to 0, 0. The values in addr.x and addr.y are set to 0, 0 by
+  * charlcd prior to calling this function.
++ * @clear_display: Again clear the whole display, set the cursor to 0, 0. The
++ * values in addr.x and addr.y are set to 0, 0 by charlcd prior to calling this
++ * function.
   */
  struct charlcd_ops {
  	void (*clear_fast)(struct charlcd *lcd);
- 	void (*backlight)(struct charlcd *lcd, enum charlcd_onoff on);
+@@ -50,6 +53,7 @@ struct charlcd_ops {
  	int (*print)(struct charlcd *lcd, int c);
  	int (*gotoxy)(struct charlcd *lcd);
-+	int (*home)(struct charlcd *lcd);
+ 	int (*home)(struct charlcd *lcd);
++	int (*clear_display)(struct charlcd *lcd);
  };
  
  struct charlcd *charlcd_alloc(void);
 diff --git a/drivers/auxdisplay/hd44780.c b/drivers/auxdisplay/hd44780.c
-index 4d9478f6e5ff..b0893ea49165 100644
+index b0893ea49165..40ea6d25dbe1 100644
 --- a/drivers/auxdisplay/hd44780.c
 +++ b/drivers/auxdisplay/hd44780.c
-@@ -128,6 +128,7 @@ static const struct charlcd_ops hd44780_ops_gpio8 = {
- 	.backlight	= hd44780_backlight,
+@@ -129,6 +129,7 @@ static const struct charlcd_ops hd44780_ops_gpio8 = {
  	.print		= hd44780_common_print,
  	.gotoxy		= hd44780_common_gotoxy,
-+	.home		= hd44780_common_home,
+ 	.home		= hd44780_common_home,
++	.clear_display	= hd44780_common_clear_display,
  };
  
  /* Send a command to the LCD panel in 4 bit GPIO mode */
-@@ -173,6 +174,7 @@ static const struct charlcd_ops hd44780_ops_gpio4 = {
- 	.backlight	= hd44780_backlight,
+@@ -175,6 +176,7 @@ static const struct charlcd_ops hd44780_ops_gpio4 = {
  	.print		= hd44780_common_print,
  	.gotoxy		= hd44780_common_gotoxy,
-+	.home		= hd44780_common_home,
+ 	.home		= hd44780_common_home,
++	.clear_display	= hd44780_common_clear_display,
  };
  
  static int hd44780_probe(struct platform_device *pdev)
 diff --git a/drivers/auxdisplay/hd44780_common.c b/drivers/auxdisplay/hd44780_common.c
-index f86eb2f27cee..ea62beada9d8 100644
+index ea62beada9d8..2f7d55668eb4 100644
 --- a/drivers/auxdisplay/hd44780_common.c
 +++ b/drivers/auxdisplay/hd44780_common.c
-@@ -41,6 +41,14 @@ int hd44780_common_gotoxy(struct charlcd *lcd)
- }
- EXPORT_SYMBOL_GPL(hd44780_common_gotoxy);
+@@ -1,13 +1,22 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ #include <linux/module.h>
++#include <linux/sched.h>
+ #include <linux/slab.h>
  
-+int hd44780_common_home(struct charlcd *lcd)
+ #include "charlcd.h"
+ #include "hd44780_common.h"
+ 
+ /* LCD commands */
++#define LCD_CMD_DISPLAY_CLEAR	0x01	/* Clear entire display */
++
+ #define LCD_CMD_SET_DDRAM_ADDR	0x80	/* Set display data RAM address */
+ 
++/* sleeps that many milliseconds with a reschedule */
++static void long_sleep(int ms)
 +{
-+	lcd->addr.x = 0;
-+	lcd->addr.y = 0;
-+	return hd44780_common_gotoxy(lcd);
++	schedule_timeout_interruptible(msecs_to_jiffies(ms));
 +}
-+EXPORT_SYMBOL_GPL(hd44780_common_home);
++
+ int hd44780_common_print(struct charlcd *lcd, int c)
+ {
+ 	struct hd44780_common *hdc = lcd->drvdata;
+@@ -49,6 +58,18 @@ int hd44780_common_home(struct charlcd *lcd)
+ }
+ EXPORT_SYMBOL_GPL(hd44780_common_home);
+ 
++/* clears the display and resets X/Y */
++int hd44780_common_clear_display(struct charlcd *lcd)
++{
++	struct hd44780_common *hdc = lcd->drvdata;
++
++	hdc->write_cmd(hdc, LCD_CMD_DISPLAY_CLEAR);
++	/* we must wait a few milliseconds (15) */
++	long_sleep(15);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(hd44780_common_clear_display);
 +
  struct hd44780_common *hd44780_common_alloc(void)
  {
  	struct hd44780_common *hd;
 diff --git a/drivers/auxdisplay/hd44780_common.h b/drivers/auxdisplay/hd44780_common.h
-index d8cbea4a8658..c91070ed931b 100644
+index c91070ed931b..ef11935a3764 100644
 --- a/drivers/auxdisplay/hd44780_common.h
 +++ b/drivers/auxdisplay/hd44780_common.h
-@@ -16,4 +16,5 @@ struct hd44780_common {
- 
+@@ -17,4 +17,5 @@ struct hd44780_common {
  int hd44780_common_print(struct charlcd *lcd, int c);
  int hd44780_common_gotoxy(struct charlcd *lcd);
-+int hd44780_common_home(struct charlcd *lcd);
+ int hd44780_common_home(struct charlcd *lcd);
++int hd44780_common_clear_display(struct charlcd *lcd);
  struct hd44780_common *hd44780_common_alloc(void);
 diff --git a/drivers/auxdisplay/panel.c b/drivers/auxdisplay/panel.c
-index 75894eacd12f..b1e874f07456 100644
+index b1e874f07456..8adf627529f1 100644
 --- a/drivers/auxdisplay/panel.c
 +++ b/drivers/auxdisplay/panel.c
-@@ -876,18 +876,21 @@ static const struct charlcd_ops charlcd_serial_ops = {
- 	.clear_fast	= lcd_clear_fast_s,
+@@ -877,6 +877,7 @@ static const struct charlcd_ops charlcd_serial_ops = {
  	.backlight	= lcd_backlight,
  	.gotoxy		= hd44780_common_gotoxy,
-+	.home		= hd44780_common_home,
+ 	.home		= hd44780_common_home,
++	.clear_display	= hd44780_common_clear_display,
  };
  
  static const struct charlcd_ops charlcd_parallel_ops = {
- 	.clear_fast	= lcd_clear_fast_p8,
+@@ -884,6 +885,7 @@ static const struct charlcd_ops charlcd_parallel_ops = {
  	.backlight	= lcd_backlight,
  	.gotoxy		= hd44780_common_gotoxy,
-+	.home		= hd44780_common_home,
+ 	.home		= hd44780_common_home,
++	.clear_display	= hd44780_common_clear_display,
  };
  
  static const struct charlcd_ops charlcd_tilcd_ops = {
- 	.clear_fast	= lcd_clear_fast_tilcd,
+@@ -891,6 +893,7 @@ static const struct charlcd_ops charlcd_tilcd_ops = {
  	.backlight	= lcd_backlight,
  	.gotoxy		= hd44780_common_gotoxy,
-+	.home		= hd44780_common_home,
+ 	.home		= hd44780_common_home,
++	.clear_display	= hd44780_common_clear_display,
  };
  
  /* initialize the LCD driver */
