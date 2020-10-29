@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5441B29F056
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F0929F058
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgJ2PoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:44:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728415AbgJ2PoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:44:24 -0400
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E09A2087E;
-        Thu, 29 Oct 2020 15:44:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603986263;
-        bh=H+xEBaO0CT0OnM0Gp9IPj8uidP4ntKSlexcFdKnRMpc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SwBAzvRWVNakVgcxniyGTLOA0UGRpjMw/mzul4V25zqRGNU8T0UhPqPJD/ZMhy5iX
-         iJESmRyf61NVs1kAX6D3maKH0QWOGISwqDOOnIntO0/W18vaVOYZ4dglI5dQQi18Nr
-         x4kzlbsb5ZR1gTRz7A3y/un77mNibExtqN7IcNUc=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [RESEND PATCH v2 2/2] MAINTAINERS: Add linux-mips mailing list to JZ47xx entries
-Date:   Thu, 29 Oct 2020 16:44:14 +0100
-Message-Id: <20201029154414.25852-2-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201029154414.25852-1-krzk@kernel.org>
-References: <20201029154414.25852-1-krzk@kernel.org>
+        id S1728461AbgJ2Poa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728436AbgJ2Po3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:44:29 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF79BC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:44:28 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id x7so3505483ili.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:44:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xpb51NZttJBnWnq8Vun1XDmckUzNTkelTT799oXvNiY=;
+        b=dBV8ckq27JKU9AIEHEozvDJhyCFmzOwtV42k2yabh4jx+IF/DuIqKRSeVZm6k+1Vdq
+         kZoiKuDqGmKHtUDfiG05dX9+7W/mnUJ7WLMnMaQ8YvL6VdCM9Rev3bULxnWR/BTyGCAv
+         mFo54ZFJ7pVTncg1dKlQNpmGPMqTvop9Tl118CJ//5qxdpN3K+JrsZ+8jM3MCDQG84UI
+         T3M46+pIpf00s8v6uiEpVA3/kxWHyvvjmZCzaoBi023hcWak/+PxjmeM/o9GlGY44s4+
+         nPupogTV+ctzhu1OIL79IxOh+TrfjOJJ4bMxaWl0TkRCsmJK2mdg8k2c3FY7Zmr7yGIi
+         Mdfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xpb51NZttJBnWnq8Vun1XDmckUzNTkelTT799oXvNiY=;
+        b=LDNSZ8Zkrabi0m1MfdjbPevYbvYXr8qvD+VLdYPgIMCgenKdiA5m4W+Ks+cwtaaaqa
+         NSsehiWiqXQqm1CsHKIgvh3SlYLNp7sDAEWE5miIy9UjmUq2zeUQwKN+l+EPw+Xob0vR
+         NyY30+9kAOmXe73WzRnYK2kARBptOFbTgY5v7He+AN8EqtWTzxm7ES+59bADKzyZgNz7
+         xgm1artpfXDaPKg9hLqaq9CUmJAorj20uD93fDb/PFXzg0nMZxxR/QMUnYawQgf0CvJy
+         bH+fon0cmpLdOdUhydk0M6MbYvRLoxilB1H+MWd65b5UfBQdUkV6efVwDupvfuKq+7nB
+         QvzA==
+X-Gm-Message-State: AOAM533zEcOhNpTz2ompktThpIXadGUj30K4ia0TFYDBwYWtas/lAWGf
+        Mb1S4+7Ke6FsIQwWWLGLpA/RUR9hRf2UiHlzHknYoA==
+X-Google-Smtp-Source: ABdhPJyIx2LsZ7uuYaqDTSJbKc7RHQVW5UitdDD5AvE7zZ4BV6sOQhxg0kz+T4oZrz7Ph/p00Sx/c6iGGR3Iw/DBXi8=
+X-Received: by 2002:a92:c214:: with SMTP id j20mr3565841ilo.189.1603986267423;
+ Thu, 29 Oct 2020 08:44:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201026151015.15527-1-brgl@bgdev.pl> <20201029151847.GB5042@sirena.org.uk>
+In-Reply-To: <20201029151847.GB5042@sirena.org.uk>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 29 Oct 2020 16:44:16 +0100
+Message-ID: <CAMRc=MctRhVzmJwquO5pQDjnNP5HTXrG7qLN7r9Ky+aEuSCBDw@mail.gmail.com>
+Subject: Re: [PATCH] regmap: provide regmap_assign_bits()
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The entries for JZ47xx SoCs and its drivers lacked MIPS mailing list.
-Only MTD NAND driver pointed linux-mtd.  Add linux-mips so the relevant
-patches will get attention of MIPS developers.
+On Thu, Oct 29, 2020 at 4:18 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Mon, Oct 26, 2020 at 04:10:15PM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > Add another bits helper to regmap API: this one sets given bits if value
+> > is true and clears them if it's false.
+>
+> What's the use case?
+>
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+Basically what the function does: set bits if a condition is true,
+clear them if false. I think this is a common enough use-case to
+warrant a helper.
 
----
+> > +static inline int regmap_assign_bits(struct regmap *map, unsigned int reg,
+> > +                                  unsigned int bits, bool value)
+>
+> I don't have a great suggestion but this naming feels prone to confusion
+> with _update_bits().
 
-Changes since v1:
-1. Do not update DMA driver entry
-2. Add ack
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+This is already used in bitops - we have set_bit(), clear_bit() and
+assign_bit(). People are used to it and I thought I'd stay consistent
+with this naming.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index cbab64364ab3..7455ef1f7bb0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8668,11 +8668,13 @@ F:	samples/bpf/ibumad_user.c
- INGENIC JZ4780 NAND DRIVER
- M:	Harvey Hunt <harveyhuntnexus@gmail.com>
- L:	linux-mtd@lists.infradead.org
-+L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	drivers/mtd/nand/raw/ingenic/
- 
- INGENIC JZ47xx SoCs
- M:	Paul Cercueil <paul@crapouillou.net>
-+L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	arch/mips/boot/dts/ingenic/
- F:	arch/mips/generic/board-ingenic.c
--- 
-2.25.1
-
+Bartosz
