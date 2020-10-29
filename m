@@ -2,60 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F158829EDD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EBE29EDDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgJ2OFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:05:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgJ2OFk (ORCPT
+        id S1726297AbgJ2OHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:07:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36878 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725710AbgJ2OHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:05:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1B2C0613D3;
-        Thu, 29 Oct 2020 07:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QFX/rG1nfZIO6l4gly+0bHosD8oEdLcUGfNyFPDeo2s=; b=b35ci6InfXu1GLmFPpVcMezq0t
-        ngEwd6LKqAH04tvmf/uby22B13TxPisuejy+HoRD1GK0154yp/JZnQkum0Qw44N6IapT6WrhngL0E
-        fdOHcJfJpb9ea4uvQg3Aggs8s8+6uYSAhBpmNXF+R6+6TTdb/o6ugVie9c/EmBhdetzSAN4BTt+K/
-        Ck9fPhw1BiqPr54xjrNlR/msky9ij4cjqUH2Q9LJw4yjVA6eeP0JOvjcxBzBDujEldGcYdYFGfetA
-        FafwISEqui2jmvffxC2QshrHbl0fiZkJCzdr0ZekujAxZYQGxXlYBCk1AwL1c931+06NCsxIpS+1H
-        E4l+d6oQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kY8Ya-0001mV-AN; Thu, 29 Oct 2020 14:05:36 +0000
-Date:   Thu, 29 Oct 2020 14:05:36 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <dwagner@suse.de>, Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH 3/3] blk-mq: Use llist_head for blk_cpu_done
-Message-ID: <20201029140536.GA6376@infradead.org>
-References: <20201028065616.GA24449@infradead.org>
- <20201028141251.3608598-1-bigeasy@linutronix.de>
- <20201028141251.3608598-3-bigeasy@linutronix.de>
- <20201029131212.dsulzvsb6pahahbs@linutronix.de>
+        Thu, 29 Oct 2020 10:07:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603980453;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=38p3DYjN7fRQhwjUaQMRHrg7udOdPR5P6db8OyFZbuI=;
+        b=dChbAZFhLt+qVdnzFgEguZQXoDx6deKtk2riWRVfSi407/eAn8ljexhwwIIm9SimQeZZ2b
+        fDM5WE5qHLOy4enNLssAtmrGIGU8NC1kRbtAyo0OnTYb8kB/hWIdA7KzHy7C7TkgVfPisF
+        Sbr8u/GwutIK4eVvjw5LEa2eMtoRoWM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-HuA97b2DNqWJtVO3luztWQ-1; Thu, 29 Oct 2020 10:07:32 -0400
+X-MC-Unique: HuA97b2DNqWJtVO3luztWQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0EB276415A;
+        Thu, 29 Oct 2020 14:07:30 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A9B67610AF;
+        Thu, 29 Oct 2020 14:07:27 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Nick Piggin <npiggin@gmail.com>, dhowells@redhat.com,
+        kernel test robot <lkp@intel.com>,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] afs fixes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029131212.dsulzvsb6pahahbs@linutronix.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1130575.1603980446.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 29 Oct 2020 14:07:26 +0000
+Message-ID: <1130576.1603980446@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 02:12:12PM +0100, Sebastian Andrzej Siewior wrote:
-> Are there many drivers completing the SCSI requests in preemtible
-> context? In this case it would be more efficient to complete the request
-> directly (usb_stor_control_thread() goes to sleep after that anyway and
-> there is only one request at a time).
+Hi Linus,
 
-Well, usb-storage obviously seems to do it, and the block layer
-does not prohibit it.
+Could you pull these afs fixes, please?  They include the following:
+
+ (1) Fix copy_file_range() to an afs file now returning EINVAL if the
+     splice_write file op isn't supplied.
+
+ (2) Fix a deref-before-check in afs_unuse_cell().
+
+ (3) Fix a use-after-free in afs_xattr_get_acl().
+
+ (4) Fix afs to not try to clear PG_writeback when laundering a page.
+
+ (5) Fix afs to take a ref on a page that it sets PG_private on and to dro=
+p
+     that ref when clearing PG_private.  This is done through recently
+     added helpers.
+
+ (6) Fix a page leak if write_begin() fails.
+
+ (7) Fix afs_write_begin() to not alter the dirty region info stored in
+     page->private, but rather do this in afs_write_end() instead when we
+     know what we actually changed.
+
+ (8) Fix afs_invalidatepage() to alter the dirty region info on a page whe=
+n
+     partial page invalidation occurs so that we don't inadvertantly
+     include a span of zeros that will get written back if a page gets
+     laundered due to a remote 3rd-party induced invalidation.
+
+     We mustn't, however, reduce the dirty region if the page has been see=
+n
+     to be mapped (ie. we got called through the page_mkwrite vector) as
+     the page might still be mapped and we might lose data if the file is
+     extended again.
+
+ (9) Fix the dirty region info to have a lower resolution if the size of
+     the page is too large for this to be encoded (e.g. powerpc32 with 64K
+     pages).
+
+     Note that this might not be the ideal way to handle this, since it ma=
+y
+     allow some leakage of undirtied zero bytes to the server's copy in th=
+e
+     case of a 3rd-party conflict.
+
+To aid (8) and (9), two additional patches are included:
+
+ (*) Wrap the manipulations of the dirty region info stored in
+     page->private into helper functions.
+
+ (*) Alter the encoding of the dirty region so that the region bounds can
+     be stored with one fewer bit, making a bit available for the
+     indication of mappedness.
+
+Thanks,
+David
+---
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9e=
+c:
+
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
+/afs-fixes-20201029
+
+for you to fetch changes up to 2d9900f26ad61e63a34f239bc76c80d2f8a6ff41:
+
+  afs: Fix dirty-region encoding on ppc32 with 64K pages (2020-10-29 13:53=
+:04 +0000)
+
+----------------------------------------------------------------
+AFS fixes
+
+----------------------------------------------------------------
+Dan Carpenter (1):
+      afs: Fix a use after free in afs_xattr_get_acl()
+
+David Howells (10):
+      afs: Fix copy_file_range()
+      afs: Fix tracing deref-before-check
+      afs: Fix afs_launder_page to not clear PG_writeback
+      afs: Fix to take ref on page when PG_private is set
+      afs: Fix page leak on afs_write_begin() failure
+      afs: Fix where page->private is set during write
+      afs: Wrap page->private manipulations in inline functions
+      afs: Alter dirty range encoding in page->private
+      afs: Fix afs_invalidatepage to adjust the dirty region
+      afs: Fix dirty-region encoding on ppc32 with 64K pages
+
+ fs/afs/cell.c              |   3 +-
+ fs/afs/dir.c               |  12 ++----
+ fs/afs/dir_edit.c          |   6 +--
+ fs/afs/file.c              |  78 ++++++++++++++++++++++++++-------
+ fs/afs/internal.h          |  57 ++++++++++++++++++++++++
+ fs/afs/write.c             | 105 ++++++++++++++++++++++++----------------=
+-----
+ fs/afs/xattr.c             |   2 +-
+ include/trace/events/afs.h |  20 ++-------
+ 8 files changed, 188 insertions(+), 95 deletions(-)
+
