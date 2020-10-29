@@ -2,111 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFD529E2E0
+	by mail.lfdr.de (Postfix) with ESMTP id CE95529E2E1
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729478AbgJ2CmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
+        id S1727744AbgJ2Cn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:43:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726501AbgJ2Clj (ORCPT
+        with ESMTP id S2391088AbgJ2CmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 22:41:39 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C90C0613CF;
-        Wed, 28 Oct 2020 19:41:39 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b3so1131656pfo.2;
-        Wed, 28 Oct 2020 19:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Dt/2gHftNzc28N9VawEzlwLrUVwY2PPyd9if+CfsT9w=;
-        b=JXqgxHtA5JgMPKkgf3aLIGDJQq4N+lKZDHSwq1uURXPG4BZgAyfbHJ6e+OQwrmRETv
-         8yTihThAGtQUCiMu0Z8cmbIkpDJbd7fzbXH6BaqsJky0gVWSqa/Jq5qDGj8LfMe9wWIS
-         75hS98iqaqHAwTdGnGHeS5lIb8p3u/gsJEJiLguJNz+Xs9rv8/pdRqLrQ3cFtpQMSm1n
-         F04xumvDFUX0cVqOFVKPdLfhyi0LHKd5yR9uX3cu5snfvycnm/jc5iG5n0OSTRJPF+S4
-         ZzcA7a1odNG5bX97Ox8KtX60cEGcVpmKs29w+ZNcIdqC8P737KRtlgI1DD/nbL1AcR3s
-         dm9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Dt/2gHftNzc28N9VawEzlwLrUVwY2PPyd9if+CfsT9w=;
-        b=UXI6z9MT9H5tfLlnCOHE+TskcKPLM+35nnxhcxFviHpsTJarhykQbKJAgmvii2ZHwq
-         YJTU7zi+yBjKo3PymJLKohpvdTxt9HljFnSpVLcomg6Mpf4E1k6D0i0pLtcXzuz245Wa
-         lqvgsY1hpeW6WZOTTJnAwLgu4cyWsyEwCwiCowwgGB3Fcv2zVMS4ADcjaRe+yVg30II/
-         SjdjLzBJL4N8xDLFfoS3rfECyLhc5ZiW7UeCBliG/RgAsh4k5Y9mllEB9DxohbXxQwCn
-         RxteDkBTm970DWdo4Rg8VZdeKJqGZkH3A12+SbPVbzbrb+NC7XVe2JONA2DEzpnhIidc
-         ys5w==
-X-Gm-Message-State: AOAM5329eEuzhm4PpzsE2GoaJM+4V3CI8B7TfrCqmhy0lBTpjNdibb4k
-        L56wzllFsiwcIF4wrvX4hFjqfQ9Cb/A=
-X-Google-Smtp-Source: ABdhPJyOX6JF0FYAmdvj3uFOiDKbQeRijsgX4mZl3dN+nb0e/1ScQcZGk07MJ8K9BGRWSxvVB+Ty+g==
-X-Received: by 2002:aa7:9d03:0:b029:164:2981:2331 with SMTP id k3-20020aa79d030000b029016429812331mr2053619pfp.0.1603939298909;
-        Wed, 28 Oct 2020 19:41:38 -0700 (PDT)
-Received: from [10.230.28.251] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id gm14sm755949pjb.2.2020.10.28.19.41.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 19:41:38 -0700 (PDT)
-Subject: Re: [PATCH net-next 5/5] net: mscc: ocelot: support L2 multicast
- entries
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201029022738.722794-1-vladimir.oltean@nxp.com>
- <20201029022738.722794-6-vladimir.oltean@nxp.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <16a2c3df-5d83-bb08-13a7-921fbd7c051e@gmail.com>
-Date:   Wed, 28 Oct 2020 19:41:36 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.4.0
+        Wed, 28 Oct 2020 22:42:18 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B615C0613CF;
+        Wed, 28 Oct 2020 19:42:18 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXxtG-00B2L9-DW; Thu, 29 Oct 2020 02:42:14 +0000
+Date:   Thu, 29 Oct 2020 02:42:14 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Zou Cao <zoucao@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/2] fs:regfs: add register easy filesystem
+Message-ID: <20201029024214.GN3576660@ZenIV.linux.org.uk>
+References: <1603175408-96164-1-git-send-email-zoucao@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20201029022738.722794-6-vladimir.oltean@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603175408-96164-1-git-send-email-zoucao@linux.alibaba.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 20, 2020 at 02:30:07PM +0800, Zou Cao wrote:
+> +ssize_t regfs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+> +{
+> +	struct file *file = iocb->ki_filp;
+> +	struct inode *inode = file->f_mapping->host;
+> +	ssize_t ret;
+> +
+> +	inode_lock(inode);
+> +	ret = generic_write_checks(iocb, from);
+> +	if (ret > 0)
+> +		ret = __generic_file_write_iter(iocb, from);
+> +	inode_unlock(inode);
+> +
+> +	if (ret > 0)
+> +		ret = generic_write_sync(iocb, ret);
+> +	return ret;
+> +}
 
+Huh?  How is that different from generic_file_write_iter()?  And who's
+using it, anyway?
 
-On 10/28/2020 7:27 PM, Vladimir Oltean wrote:
-> There is one main difference in mscc_ocelot between IP multicast and L2
-> multicast. With IP multicast, destination ports are encoded into the
-> upper bytes of the multicast MAC address. Example: to deliver the
-> address 01:00:5E:11:22:33 to ports 3, 8, and 9, one would need to
-> program the address of 00:03:08:11:22:33 into hardware. Whereas for L2
-> multicast, the MAC table entry points to a Port Group ID (PGID), and
-> that PGID contains the port mask that the packet will be forwarded to.
-> As to why it is this way, no clue. My guess is that not all port
-> combinations can be supported simultaneously with the limited number of
-> PGIDs, and this was somehow an issue for IP multicast but not for L2
-> multicast. Anyway.
-> 
-> Prior to this change, the raw L2 multicast code was bogus, due to the
-> fact that there wasn't really any way to test it using the bridge code.
-> There were 2 issues:
-> - A multicast PGID was allocated for each MDB entry, but it wasn't in
->   fact programmed to hardware. It was dummy.
-> - In fact we don't want to reserve a multicast PGID for every single MDB
->   entry. That would be odd because we can only have ~60 PGIDs, but
->   thousands of MDB entries. So instead, we want to reserve a multicast
->   PGID for every single port combination for multicast traffic. And
->   since we can have 2 (or more) MDB entries delivered to the same port
->   group (and therefore PGID), we need to reference-count the PGIDs.
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> +	struct regfs_inode_info  *info = REGFS_I(mapping->host);
+> +	char str[67];
+> +	unsigned long val = 0;
+> +	loff_t pos = *ppos;
+> +	size_t res;
+> +
+> +	if (pos < 0)
+> +		return -EINVAL;
+> +	if (pos >= len || len > 66)
+> +		return 0;
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+This is completely bogus.  "If current position is greater than the
+length of string we are asking to write, quietly return 0"?
 
-I believe you have the same gfp_t comment applicable here as in patch #4.
--- 
-Florian
+> +	res = copy_from_user(str, buf, len);
+> +	if (res)
+> +		return -EFAULT;
+> +	str[len] = 0;
+> +
+> +	if (kstrtoul(str, 16, &val) < 0)
+> +		return -EINVAL;
+
+Where does 67 come from?  If you are expecting a hexadecimal representation
+of a unsigned long on arm64, you should have at most 16 digits.  67 looks
+rather odd...
+
+> +	writel_relaxed(val, info->base + info->offset);
+
+... and you are promptly discarding the upper 32 bits, since writel_relaxed()
+takes u32:
+	((void)__raw_writel((__force u32)cpu_to_le32(v),(c)))
+is going to truncate to 32bit, no matter what.  Quietly truncate, at that...
+
+> +const struct address_space_operations regfs_aops = {
+> +	.readpage   = simple_readpage,
+> +	.write_begin    = simple_write_begin,
+> +	.write_end  = simple_write_end,
+> +	.set_page_dirty = __set_page_dirty_buffers,
+> +};
+
+Again, huh?  What would use the page cache there, anyway?
+
+> +static LIST_HEAD(regfs_head);
+
+Protected by...?
+
+> +static const struct inode_operations regfs_dir_inode_operations;
+> +int regfs_debug;
+> +module_param(regfs_debug, int, S_IRUGO);
+> +MODULE_PARM_DESC(regfs_debug, "enable regfs debug mode");
+> +
+> +struct inode *regfs_get_inode(struct super_block *sb, const struct inode *dir, umode_t mode, dev_t dev)
+> +{
+> +	struct inode *inode = new_inode(sb);
+> +
+> +	if (inode) {
+> +		inode->i_ino = get_next_ino();
+> +		inode_init_owner(inode, dir, mode);
+> +		inode->i_mapping->a_ops = &regfs_aops;
+> +		//inode->i_mapping->backing_dev_info = &regfs_backing_dev_info;
+> +		mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
+> +		mapping_set_unevictable(inode->i_mapping);
+> +		inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
+> +		switch (mode & S_IFMT) {
+> +		default:
+> +			init_special_inode(inode, mode, dev);
+> +			break;
+> +		case S_IFREG:
+> +			inode->i_op = &regfs_file_inode_operations;
+> +			inode->i_fop = &regfs_file_operations;
+> +			break;
+> +		case S_IFDIR:
+> +			inode->i_op = &regfs_dir_inode_operations;
+> +			inode->i_fop = &simple_dir_operations;
+> +
+> +			/* directory inodes start off with i_nlink == 2 (for "." entry) */
+> +			inc_nlink(inode);
+> +			break;
+> +		case S_IFLNK:
+> +			inode->i_op = &page_symlink_inode_operations;
+> +			break;
+> +		}
+> +	}
+> +
+> +	return inode;
+> +}
+
+Seriously?  Where would symlinks, device nodes, FIFOs and sockets come from?
+And you are open-coding the regular file case in the new_dentry_create() anyway,
+so the only thing this is actually used for is the root directory.
+
+> +static const struct inode_operations regfs_dir_inode_operations = {
+> +	.lookup		= simple_lookup,
+> +};
+
+... and simple_dir_inode_operations is wrong, because...?
+
+> +static struct dentry *new_dentry_create(struct super_block *sb, struct dentry *parent,
+> +		 const char *name, bool is_dir, struct res_data *res)
+> +{
+> +	struct dentry *dentry;
+> +	struct inode *inode;
+> +	struct regfs_inode_info *ei;
+> +	struct regfs_fs_info *fsi = sb->s_fs_info;
+> +
+> +	dentry = d_alloc_name(parent, name);
+> +	if (!dentry)
+> +		return NULL;
+> +
+> +	inode = new_inode(sb);
+> +	if (!inode)
+> +		goto out;
+> +
+> +	ei = REGFS_I(inode);
+> +	inode->i_ino = get_next_ino();;
+> +	inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+> +	inode->i_uid =  GLOBAL_ROOT_UID;
+> +	inode->i_gid =  GLOBAL_ROOT_GID;
+> +	if (is_dir) {
+> +		inode->i_mode = S_IFDIR | S_IRUGO | S_IWUSR;
+> +		inode->i_op = &regfs_dir_inode_operations;
+> +		inode->i_fop = &simple_dir_operations;
+> +		list_add(&ei->list, &fsi->list);
+
+where's the matching removal from the list?
+
+> +	} else {
+> +		inode->i_mode = S_IFREG | S_IRUGO | S_IWUSR;
+> +		inode->i_op = &regfs_file_inode_operations;
+> +		inode->i_fop = &regfs_file_operations;
+> +		inc_nlink(inode);
+> +	}
+> +	ei->base = (void *)res->base;
+> +	ei->offset = res->offset;
+> +	ei->type = res->type;
+> +
+> +	d_add(dentry, inode);
+> +
+> +	loc_debug("new dentry io base:%llx offset:%llx ei:%llx\n", (u64)ei->base, (u64)ei->offset, (u64)ei);
+> +	return dentry;
+> +out:
+> +	dput(dentry);
+> +	return NULL;
+> +}
+> +
+> +static void node_transfer_dentry(struct super_block *sb)
+> +{
+> +	struct regfs_fs_info *fsi = sb->s_fs_info;
+> +	void *blob = fsi->dtb_buf;
+> +	const char *pathp;
+> +	int node_offset, depth = -1;
+> +	struct dentry *parent = NULL;
+> +	u64 parent_base;
+> +
+> +	for (node_offset = fdt_next_node(blob, -1, &depth);
+> +		node_offset >= 0 && depth >= 0;
+> +		node_offset = fdt_next_node(blob, node_offset, &depth)) {
+> +
+> +		const struct fdt_property *prop;
+> +		struct res_data res;
+> +
+> +		pathp = fdt_get_name(blob, node_offset, NULL);
+> +		prop = (void *)fdt_getprop(blob, node_offset, "reg", NULL);
+> +
+> +		if (prop) {
+> +			unsigned long phys;
+> +
+> +			phys = fdt32_to_cpu(((const __be32 *)prop)[1]);
+> +			res.type = RES_TYPE_RANGE;
+> +			res.offset = fdt32_to_cpu(((const __be32 *)prop)[3]);
+> +			res.base = (u64)ioremap(phys, res.offset);
+> +
+> +			if (!res.base) {
+> +				parent = NULL;
+> +				parent_base = 0;
+> +				continue;
+> +			}
+> +
+> +			loc_debug("%s reg:%lx size:%lx map:%llx\n\n", pathp
+> +				 , (unsigned long) fdt32_to_cpu(((const __be32 *)prop)[1])
+> +				 , (unsigned long) fdt32_to_cpu(((const __be32 *)prop)[3])
+> +				 , (u64)res.base);
+> +
+> +			parent = new_dentry_create(sb, sb->s_root, (const char *)pathp, true, &res);
+> +			parent_base = res.base;
+> +
+> +		} else {
+> +			// parent dentry is create failed, igonre all child dentry
+> +			if (!parent)
+> +				continue;
+> +
+> +			prop = (void *)fdt_getprop(blob, node_offset, "offset", NULL);
+> +			if (prop) {
+> +
+> +				res.offset = fdt32_to_cpu(*(const __be32 *)prop);
+> +				res.base = parent_base;
+> +				res.type = RES_TYPE_ITEM;
+> +
+> +				new_dentry_create(sb, parent, (const char *) pathp, false, &res);
+> +				loc_debug("%s offset:%lx\n", pathp, (unsigned long)fdt32_to_cpu(*(const __be32 *)prop));
+> +			}
+> +		}
+> +	}
+> +}
+> +
+> +static int parse_options(char *options, struct super_block *sb)
+> +{
+> +	char *p;
+> +	int ret = -EINVAL;
+> +	struct regfs_fs_info *fsi;
+> +	size_t msize = INT_MAX;
+> +
+> +	fsi = sb->s_fs_info;
+> +
+> +	if (!options)
+> +		return -EINVAL;
+> +
+> +	while ((p = strsep(&options, ",")) != NULL) {
+> +		char *name, *name_val;
+> +
+> +		name = strsep(&p, "=");
+> +		if (name == NULL)
+> +			goto failed;
+> +
+> +		name_val = strsep(&p, "=");
+> +		if (name_val == NULL)
+> +			goto failed;
+> +
+> +		//get resource address
+> +		if (!strcmp(name, "dtb")) {
+> +			ret = kernel_read_file_from_path(name_val, &fsi->dtb_buf, &fsi->dtb_len, msize, READING_UNKNOWN);
+
+Why bother doing that in the kernel?
+
+> +struct dentry *regfs_mount(struct file_system_type *fs_type,
+> +	int flags, const char *dev_name, void *data)
+> +{
+> +	struct dentry *root_dentry;
+> +	struct super_block *sb;
+> +
+> +	root_dentry = mount_nodev(fs_type, flags, data, regfs_fill_super);
+> +
+> +	sb = root_dentry->d_sb;
+> +
+> +	if (sb->s_root) {
+> +		node_transfer_dentry(sb);
+
+Er... Why not do that in regfs_fill_super()?
+
+Al, not going any further for now...
