@@ -2,168 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8331429DD7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AB229DDB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388800AbgJ2Aji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731951AbgJ2Aje (ORCPT
+        id S2388824AbgJ2AkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:40:07 -0400
+Received: from mail-1.ca.inter.net ([208.85.220.69]:50070 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729273AbgJ2AkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 20:39:34 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D094C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:39:34 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id e7so864180pfn.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:39:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZedC2vigvm5YIn/fNFp5FXPUqakrWVfWwG+npbhFrco=;
-        b=a0s8idfnoRHJpK/+DESXypox99Vruk0+O4DxZW30HW8gOKipZ0aPYM4b6SdecDlU5u
-         FVXRZje7gGtILOMRJEDC4r/0++H2soJ7X2pBGgjQBi/Lt/Qx6BoCqLgHwO8ITqSrDgl4
-         YQ5cRpMxtT/xxtSGhwB7gw9nr+A2yLv1+jVLM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZedC2vigvm5YIn/fNFp5FXPUqakrWVfWwG+npbhFrco=;
-        b=G9Vde5LNcBxcwvPJpSrv7VOFI+r5pbKc43vC1Y/VAIKiBySP7DMqd8LIu0wNGeiKwr
-         9jlXqfuL24mHV+53YbBrB8HYLD0hmk2itJzTrZVllr9+Td2L6MePdeqaYr1EdGaQwm9R
-         40LzF50wdh4y+yd2va7gA+KxUOgGyjK2dO2GxhlNzFt0Ipb9jnWeltWHJbfl/Pz6hlLy
-         z8P6Iv4okwuHJgEwaYrPH07eYb/+MH4b6wToJxnRBC23L1Iv5PfNwiqTq1NHd8MHRYhl
-         a8+fgWdU8e3dVNX4eL2+o20GqLfvxAcSej4L/IbgoWN/blD5p0/R1uiwTXUBMzzYxlZC
-         BzZA==
-X-Gm-Message-State: AOAM531ZnK4UvRY7q3VVk5/QLvY0cgDArAtjpdhl1+r2auJS3WmEHf6n
-        EbjgrXFNfhwuccQL0naOswV3zw==
-X-Google-Smtp-Source: ABdhPJzqiMaBmN3vNxFrIabWhxn0PccdODJ8yXJGQuNfW1GBQC4WTzmNeQ9Ufdfb1aV1Bu+P38TCDw==
-X-Received: by 2002:a17:90b:230d:: with SMTP id mt13mr1445385pjb.177.1603931973929;
-        Wed, 28 Oct 2020 17:39:33 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id n64sm754497pfn.134.2020.10.28.17.39.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 17:39:33 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 17:39:31 -0700
-From:   mka@chromium.org
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, dri-devel@freedesktop.org
-Subject: Re: [v3,2/3] arm64: dts: qcom: sc7180: Add gpu cooling support
-Message-ID: <20201029003931.GA1855806@google.com>
-References: <1603892395-3570-2-git-send-email-akhilpo@codeaurora.org>
+        Wed, 28 Oct 2020 20:40:05 -0400
+Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id 760B92EA1CB;
+        Wed, 28 Oct 2020 20:40:03 -0400 (EDT)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
+        with ESMTP id PDst0xYkhw-y; Wed, 28 Oct 2020 20:31:57 -0400 (EDT)
+Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id DC9F32EA00E;
+        Wed, 28 Oct 2020 20:40:02 -0400 (EDT)
+Reply-To: dgilbert@interlog.com
+To:     linux-kernel <linux-kernel@vger.kernel.org>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Subject: tools/perf: noise from check-headers.sh
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
+Message-ID: <849974e5-e8b8-d885-e993-a373d9c675bd@interlog.com>
+Date:   Wed, 28 Oct 2020 20:40:02 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1603892395-3570-2-git-send-email-akhilpo@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Akhil,
+Executing that script in linux-stable [lk 5.10.0-rc1] gives the following
+output:
 
-On Wed, Oct 28, 2020 at 07:09:53PM +0530, Akhil P Oommen wrote:
-> Add cooling-cells property and the cooling maps for the gpu tzones
-> to support GPU cooling.
-> 
-> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7180.dtsi | 30 +++++++++++++++++++++++-------
->  1 file changed, 23 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> index d46b383..a7ea029 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> @@ -2,7 +2,7 @@
->  /*
->   * SC7180 SoC device tree source
->   *
-> - * Copyright (c) 2019, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2019-20, The Linux Foundation. All rights reserved.
->   */
->  
->  #include <dt-bindings/clock/qcom,dispcc-sc7180.h>
-> @@ -1886,6 +1886,8 @@
->  			operating-points-v2 = <&gpu_opp_table>;
->  			qcom,gmu = <&gmu>;
->  
-> +			#cooling-cells = <2>;
-> +
->  			interconnects = <&gem_noc MASTER_GFX3D &mc_virt SLAVE_EBI1>;
->  			interconnect-names = "gfx-mem";
->  
-> @@ -3825,16 +3827,16 @@
->  		};
->  
->  		gpuss0-thermal {
-> -			polling-delay-passive = <0>;
-> +			polling-delay-passive = <100>;
->  			polling-delay = <0>;
->  
->  			thermal-sensors = <&tsens0 13>;
->  
->  			trips {
->  				gpuss0_alert0: trip-point0 {
-> -					temperature = <90000>;
-> +					temperature = <95000>;
->  					hysteresis = <2000>;
-> -					type = "hot";
-> +					type = "passive";
->  				};
->  
->  				gpuss0_crit: gpuss0_crit {
-> @@ -3843,19 +3845,26 @@
->  					type = "critical";
->  				};
->  			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&gpuss0_alert0>;
-> +					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
->  		};
->  
->  		gpuss1-thermal {
-> -			polling-delay-passive = <0>;
-> +			polling-delay-passive = <100>;
->  			polling-delay = <0>;
->  
->  			thermal-sensors = <&tsens0 14>;
->  
->  			trips {
->  				gpuss1_alert0: trip-point0 {
-> -					temperature = <90000>;
-> +					temperature = <95000>;
->  					hysteresis = <2000>;
-> -					type = "hot";
-> +					type = "passive";
->  				};
->  
->  				gpuss1_crit: gpuss1_crit {
-> @@ -3864,6 +3873,13 @@
->  					type = "critical";
->  				};
->  			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&gpuss0_alert0>;
-
-Copy & paste error, this should be 'gpuss1_alert0'.
-
-> +					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
->  		};
->  
->  		aoss1-thermal {
+Warning: Kernel ABI header at 'tools/include/uapi/drm/i915_drm.h' differs from 
+latest version at 'include/uapi/drm/i915_drm.h'
+diff -u tools/include/uapi/drm/i915_drm.h include/uapi/drm/i915_drm.h
+Warning: Kernel ABI header at 'tools/include/uapi/linux/fscrypt.h' differs from 
+latest version at 'include/uapi/linux/fscrypt.h'
+diff -u tools/include/uapi/linux/fscrypt.h include/uapi/linux/fscrypt.h
+Warning: Kernel ABI header at 'tools/include/uapi/linux/kvm.h' differs from 
+latest version at 'include/uapi/linux/kvm.h'
+diff -u tools/include/uapi/linux/kvm.h include/uapi/linux/kvm.h
+Warning: Kernel ABI header at 'tools/include/uapi/linux/mount.h' differs from 
+latest version at 'include/uapi/linux/mount.h'
+diff -u tools/include/uapi/linux/mount.h include/uapi/linux/mount.h
+Warning: Kernel ABI header at 'tools/include/uapi/linux/perf_event.h' differs 
+from latest version at 'include/uapi/linux/perf_event.h'
+diff -u tools/include/uapi/linux/perf_event.h include/uapi/linux/perf_event.h
+Warning: Kernel ABI header at 'tools/include/uapi/linux/prctl.h' differs from 
+latest version at 'include/uapi/linux/prctl.h'
+diff -u tools/include/uapi/linux/prctl.h include/uapi/linux/prctl.h
+Warning: Kernel ABI header at 'tools/arch/x86/include/asm/disabled-features.h' 
+differs from latest version at 'arch/x86/include/asm/disabled-features.h'
+diff -u tools/arch/x86/include/asm/disabled-features.h 
+arch/x86/include/asm/disabled-features.h
+Warning: Kernel ABI header at 'tools/arch/x86/include/asm/required-features.h' 
+differs from latest version at 'arch/x86/include/asm/required-features.h'
+diff -u tools/arch/x86/include/asm/required-features.h 
+arch/x86/include/asm/required-features.h
+Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs 
+from latest version at 'arch/x86/include/asm/cpufeatures.h'
+diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
+Warning: Kernel ABI header at 'tools/arch/x86/include/asm/msr-index.h' differs 
+from latest version at 'arch/x86/include/asm/msr-index.h'
+diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
+Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/kvm.h' differs 
+from latest version at 'arch/x86/include/uapi/asm/kvm.h'
+diff -u tools/arch/x86/include/uapi/asm/kvm.h arch/x86/include/uapi/asm/kvm.h
+Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/svm.h' differs 
+from latest version at 'arch/x86/include/uapi/asm/svm.h'
+diff -u tools/arch/x86/include/uapi/asm/svm.h arch/x86/include/uapi/asm/svm.h
+Warning: Kernel ABI header at 'tools/arch/s390/include/uapi/asm/sie.h' differs 
+from latest version at 'arch/s390/include/uapi/asm/sie.h'
+diff -u tools/arch/s390/include/uapi/asm/sie.h arch/s390/include/uapi/asm/sie.h
+Warning: Kernel ABI header at 'tools/arch/arm64/include/uapi/asm/kvm.h' differs 
+from latest version at 'arch/arm64/include/uapi/asm/kvm.h'
+diff -u tools/arch/arm64/include/uapi/asm/kvm.h arch/arm64/include/uapi/asm/kvm.h
+Warning: Kernel ABI header at 'tools/include/uapi/asm-generic/unistd.h' differs 
+from latest version at 'include/uapi/asm-generic/unistd.h'
+diff -u tools/include/uapi/asm-generic/unistd.h include/uapi/asm-generic/unistd.h
+Warning: Kernel ABI header at 'tools/include/uapi/linux/mman.h' differs from 
+latest version at 'include/uapi/linux/mman.h'
+diff -u tools/include/uapi/linux/mman.h include/uapi/linux/mman.h
+Warning: Kernel ABI header at 
+'tools/perf/arch/x86/entry/syscalls/syscall_64.tbl' differs from latest version 
+at 'arch/x86/entry/syscalls/syscall_64.tbl'
+diff -u tools/perf/arch/x86/entry/syscalls/syscall_64.tbl 
+arch/x86/entry/syscalls/syscall_64.tbl
+Warning: Kernel ABI header at 'tools/perf/util/hashmap.h' differs from latest 
+version at 'tools/lib/bpf/hashmap.h'
+diff -u tools/perf/util/hashmap.h tools/lib/bpf/hashmap.h
+Warning: Kernel ABI header at 'tools/perf/util/hashmap.c' differs from latest 
+version at 'tools/lib/bpf/hashmap.c'
+diff -u tools/perf/util/hashmap.c tools/lib/bpf/hashmap.c
 
 
-Other than the C&P error:
+There was a bit of noise in lk 5.9.0-rc1 but it is considerably worse now.
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Doug Gilbert
