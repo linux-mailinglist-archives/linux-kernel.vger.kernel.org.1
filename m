@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A3529E846
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B22429E847
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726186AbgJ2KEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:04:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59074 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726110AbgJ2KEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:04:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9B12EAB0E;
-        Thu, 29 Oct 2020 10:04:48 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 11:04:48 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Mark Rutland <mark.rutland@arm.com>
-cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH] Documentation: livepatch: document reliable stacktrace
-In-Reply-To: <20201023153527.36346-1-mark.rutland@arm.com>
-Message-ID: <alpine.LSU.2.21.2010291104330.1688@pobox.suse.cz>
-References: <20201023153527.36346-1-mark.rutland@arm.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1726025AbgJ2KFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:05:16 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:46939 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgJ2KFP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 06:05:15 -0400
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id A26C9E0013;
+        Thu, 29 Oct 2020 10:05:13 +0000 (UTC)
+Date:   Thu, 29 Oct 2020 11:05:13 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Matteo Scordino <matteo.scordino@gmail.com>
+Cc:     mripard@kernel.org, wens@csie.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] dt-bindings: vendors: add Elimo Engineering vendor
+ prefix
+Message-ID: <20201029100513.GB460689@aptenodytes>
+References: <20201029022000.601913-1-matteo.scordino@gmail.com>
+ <20201029022000.601913-2-matteo.scordino@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/NkBOFFp2J2Af1nK"
+Content-Disposition: inline
+In-Reply-To: <20201029022000.601913-2-matteo.scordino@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+
+--/NkBOFFp2J2Af1nK
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
 Hi,
 
-On Fri, 23 Oct 2020, Mark Rutland wrote:
+On Thu 29 Oct 20, 02:19, Matteo Scordino wrote:
+> Add elimo as vendor prefix for dt bindings, since we are adding a dtsi
+> for a SoM and a dts for an SBC
 
-> Add documentation for reliable stacktrace. This is intended to describe
-> the semantics and to be an aid for implementing architecture support for
-> HAVE_RELIABLE_STACKTRACE.
+LGTM.
 
-thanks a lot for doing the work!
+Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 
-> Unwinding is a subtle area, and architectures vary greatly in both
-> implementation and the set of concerns that affect them, so I've tried
-> to avoid making this too specific to any given architecture. I've used
-> examples from both x86_64 and arm64 to explain corner cases in more
-> detail, but I've tried to keep the descriptions sufficient for those who
-> are unfamiliar with the particular architecture.
+Cheers,
 
-Yes, I think it is a good approach. We can always add more details later, 
-but it would probably cause more confusion for those unfamiliar.
+Paul
 
-> I've tried to give rationale for all the recommendations/requirements,
-> since that makes it easier to spot nearby issues, or when a check
-> happens to catch a few things at once. I believe what I have written is
-> sound, but as some of this was reverse-engineered I may have missed
-> things worth noting.
-> 
-> I've made a few assumptions about preferred behaviour, notably:
-> 
-> * If you can reliably unwind through exceptions, you should (as x86_64
->   does).
+> Signed-off-by: Matteo Scordino <matteo.scordino@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
+umentation/devicetree/bindings/vendor-prefixes.yaml
+> index 2735be1a8470..b877a3516277 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -319,6 +319,8 @@ patternProperties:
+>      description: Elgin S/A.
+>    "^elida,.*":
+>      description: Shenzhen Elida Technology Co., Ltd.
+> +  "^elimo,.*":
+> +    description: Elimo Engineering Ltd.
+>    "^embest,.*":
+>      description: Shenzhen Embest Technology Co., Ltd.
+>    "^emlid,.*":
+> --=20
+> 2.20.1
+>=20
+>=20
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
-Yes, it does. I think (and Josh will correct me if I am wrong here), that 
-even at the beginning the intention was to improve the reliability of 
-unwinding in general. Both x86_64 and s390x are the case. _reliable() 
-interface only takes an advantage of that. As you pointed out in the 
-document, unwinding through exceptions is not necessary. It can be 
-reported as unreliable and we can deal with that later. But it is always 
-better to do it if possible.
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
-powerpc is an exception to the approach, because it implements its 
-_reliable() API from the scratch.
+--/NkBOFFp2J2Af1nK
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> * It's fine to omit ftrace_return_to_handler and other return
->   trampolines so long as these are not subject to patching and the
->   original return address is reported. Most architectures do this for
->   ftrace_return_handler, but not other return trampolines.
+-----BEGIN PGP SIGNATURE-----
 
-Yes. Patching a trampoline is not something I can imagine, so that should 
-not be a problem. But one never knows and we may run into a problem here 
-easily. I don't remember if we even audited all the trampolines. And new 
-ones are introduced all the time.
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+ak9kACgkQ3cLmz3+f
+v9ETzQgAnVQvHptd0ctN6NgJfYOMSEmpNFC8SMyEoq3iv/tSDn7m/YCYLpewiESK
+2khsTWitdmqf3f/O1w6uAxim1Afiw4HwQwqqwpvx258MadW+1Srj+ErNkmGBuAOE
+nB1bXfa714DGgjRV2H9iekRVKwUNcd2CUKdt4v94n2X8RQVLaSslP3eFdakY7LOU
+gftnGALSYx2pmmQ3P6IHK1P8M83ggomBEVf3A5HviI2bQze3rk7oSRDN1yKWdQN4
+uSmggWLhVcUoNC2Dkn8Dx1rYIEruwIMDtfKSf+OTUnxqh0IGPi3Ki4ptGYez3unv
+GuU46OFTn8TU8HVwMpBxlPYkS0LSLA==
+=38TV
+-----END PGP SIGNATURE-----
 
-> * For cases where link register unreliability could result in duplicate
->   entries in the trace or an inverted trace, I've assumed this should be
->   treated as unreliable. This specific case shouldn't matter to
->   livepatching, but I assume that that we want a reliable trace to have
->   the correct order.
-
-Agreed.
-
-Thanks
-Miroslav
+--/NkBOFFp2J2Af1nK--
