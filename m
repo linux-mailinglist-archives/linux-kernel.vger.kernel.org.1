@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DDE29E7B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7BB29E7D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:53:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgJ2Jqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:46:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59294 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726829AbgJ2Jqo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:46:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603964803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v4juQfAx3LxBzTcqekjK+MOSoDZx1NTXS/wKZYQGOXo=;
-        b=LK9phlxHhIvI3B603Us6mzSVBuplg1RWGtGfKwCvMEtUptCOkedY1hkoGm5yrQRU1KVEP2
-        nK3Hv+AtDfly1She7KLOmtJ1b+TM6XAk5blBfq2BbXaK4YPF0XsGRY/jxZ2W+ee1BFOAeN
-        i0n15t7KH2zucFCYYYDdZMcl//V3q/k=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-MYcVTQkzNZmj-pmHejOSSg-1; Thu, 29 Oct 2020 05:46:41 -0400
-X-MC-Unique: MYcVTQkzNZmj-pmHejOSSg-1
-Received: by mail-ed1-f70.google.com with SMTP id u12so937955edi.17
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:46:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v4juQfAx3LxBzTcqekjK+MOSoDZx1NTXS/wKZYQGOXo=;
-        b=CmzKPDD5SNVePvy+6Y7EE/c6CIGLYqLp8PNz5mnT9RzN0YZU9ykWZ/Zi1RczsBGObU
-         6V+GQR7YBzsFbRp0XspWbYzL5+QX1VVpvbLqCHdselWJstG60dew2ECQJGhthT9IMx3N
-         zVQG3z6tEljVU4NnhLSNF3ALdU42fH8Oz8fAzVhx3PmQQRRy7VVLLCMBxjt60U6D29iY
-         +ADU40AwKZgZoqIqiaNJAmhQ3Q259HslL+f7N1iRG2UVWQ4R9By8vGLCNWR8crt8OQRW
-         WcrBCaSklcKJN26oKfTLSOS4ePWpI2DzcHilDuFAvoPhSxjuXpVSVGFP8Pc6tEUs8Xui
-         f5IQ==
-X-Gm-Message-State: AOAM530TuzR1c9W06uRiiIUeJGm4na6z3j9xTC6gKhSniuzaDKGyRxwB
-        KwWbio96LyHKS93lt5OJbbdsusn5mqsxj85AJrf0dBN+MYnds1rgokw7ZXgtgygsoxfDhQ2B/KU
-        z2+qNtXS5qOIoU1JZikVyby9N
-X-Received: by 2002:a05:6402:1691:: with SMTP id a17mr2984352edv.264.1603964800377;
-        Thu, 29 Oct 2020 02:46:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzKE7w0otUI+gbsHiZO1jXP8ILglLHS0/NREeyAFavkgmdFK4zjz2UD5PtGB/B2pPdy0w21NQ==
-X-Received: by 2002:a05:6402:1691:: with SMTP id a17mr2984338edv.264.1603964800185;
-        Thu, 29 Oct 2020 02:46:40 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id p20sm1140405ejd.78.2020.10.29.02.46.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 02:46:39 -0700 (PDT)
-Subject: Re: [External] Re: [PATCH] Documentation: Add documentation for new
- platform_profile sysfs attribute
-To:     Mark Pearson <markpearson@lenovo.com>,
-        Bastien Nocera <hadess@hadess.net>
-Cc:     dvhart@infradead.org, mgross@linux.intel.com,
-        mario.limonciello@dell.com, eliadevito@gmail.com, bberg@redhat.com,
-        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <markpearson@lenovo.com>
- <20201027164219.868839-1-markpearson@lenovo.com>
- <5ca1ae238b23a611b8a490c244fd93cdcc36ef79.camel@hadess.net>
- <d5f0bcba-5366-87da-d199-a85d59ba6c1c@redhat.com>
- <b3e61ee4-3fca-ce06-2216-977586baae4e@lenovo.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <ebeec472-3310-c560-e8bf-2b33c480333b@redhat.com>
-Date:   Thu, 29 Oct 2020 10:46:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <b3e61ee4-3fca-ce06-2216-977586baae4e@lenovo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726034AbgJ2JxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:53:06 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:54874 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725854AbgJ2JxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 05:53:05 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7AD42200EE3;
+        Thu, 29 Oct 2020 10:53:03 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C4DA6200309;
+        Thu, 29 Oct 2020 10:52:59 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9E68140291;
+        Thu, 29 Oct 2020 10:52:54 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 1/2] arm64: dts: imx8mq: Configure clock rate for audio plls
+Date:   Thu, 29 Oct 2020 17:47:23 +0800
+Message-Id: <1603964844-832-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Configure clock rate for audio plls. audio pll1 is used
+as parent clock for clocks that is multiple of 8kHz.
+audio pll2 is used as parent clock for clocks that is
+multiple of 11kHz.
 
-On 10/29/20 1:55 AM, Mark Pearson wrote:
-> Thanks Hans and Bastien,
-> 
-> On 28/10/2020 13:23, Hans de Goede wrote:
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-<big snip>
-
->>> Is there another file which explains whether those sysfs value will
->>> contain a trailing linefeed?
->>
->> sysfs APIs are typically created so that they can be used from the shell,
->> so on read a newline will be added. On write a newline at the end
->> typically is allowed, but ignored. There are even special helper functions
->> to deal with properly ignoring the newline on write.
->>
->> Regards,
->>
->> Hans
->>
->>
-> OK - does that need to actually be specified here? Or is that just something I keep in mind for the implementation?
-
-IMHO it does not belong in the sysfs API docs for the platform_profile
-stuff. But I guess it would be good to document it somewhere in some
-generic syfs API rules/expectations document (with a note that their
-might be exceptions).
-
-Ideally we would already have such a file somewhere, but I don't know
-if we do (I did not look). So if you feel like it (and such a file does
-not exist yet) then I guess a patch adding such a doc file would be good.
-
-Regards,
-
-Hans
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+index 5e0e7d0f1bc4..49cc79246288 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+@@ -606,11 +606,25 @@ clk: clock-controller@30380000 {
+ 				              "clk_ext3", "clk_ext4";
+ 				assigned-clocks = <&clk IMX8MQ_CLK_A53_SRC>,
+ 						  <&clk IMX8MQ_CLK_A53_CORE>,
+-						  <&clk IMX8MQ_CLK_NOC>;
++						  <&clk IMX8MQ_CLK_NOC>,
++						  <&clk IMX8MQ_CLK_AUDIO_AHB>,
++						  <&clk IMX8MQ_AUDIO_PLL1_BYPASS>,
++						  <&clk IMX8MQ_AUDIO_PLL2_BYPASS>,
++						  <&clk IMX8MQ_AUDIO_PLL1>,
++						  <&clk IMX8MQ_AUDIO_PLL2>;
+ 				assigned-clock-rates = <0>, <0>,
+-						       <800000000>;
++						       <800000000>,
++						       <0>,
++						       <0>,
++						       <0>,
++						       <786432000>,
++						       <722534400>;
+ 				assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_800M>,
+-							 <&clk IMX8MQ_ARM_PLL_OUT>;
++							 <&clk IMX8MQ_ARM_PLL_OUT>,
++							 <0>,
++							 <&clk IMX8MQ_SYS2_PLL_500M>,
++							 <&clk IMX8MQ_AUDIO_PLL1>,
++							 <&clk IMX8MQ_AUDIO_PLL2>;
+ 			};
+ 
+ 			src: reset-controller@30390000 {
+-- 
+2.27.0
 
