@@ -2,79 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CC329E423
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8FE29E485
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbgJ2He5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
+        id S1730653AbgJ2Hku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728223AbgJ2HY6 (ORCPT
+        with ESMTP id S1727847AbgJ2HYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:58 -0400
-Received: from mail.nic.cz (mail.nic.cz [IPv6:2001:1488:800:400::400])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13658C0604DE;
-        Wed, 28 Oct 2020 23:11:25 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id 5CF581409B1;
-        Thu, 29 Oct 2020 07:11:23 +0100 (CET)
-Date:   Thu, 29 Oct 2020 07:11:16 +0100
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Pavana Sharma <pavana.sharma@digi.com>
-Cc:     andrew@lunn.ch, davem@davemloft.net, f.fainelli@gmail.com,
-        gregkh@linuxfoundation.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        vivien.didelot@gmail.com, ashkan.boldaji@digi.com
-Subject: Re: [PATCH v6 2/4] net: phy: Add 5GBASER interface mode
-Message-ID: <20201029071116.42b4bd94@nic.cz>
-In-Reply-To: <9b93cc79d7cc07ee77808150ca76c9d243c8ca60.1603944740.git.pavana.sharma@digi.com>
-References: <cover.1603944740.git.pavana.sharma@digi.com>
-        <9b93cc79d7cc07ee77808150ca76c9d243c8ca60.1603944740.git.pavana.sharma@digi.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 29 Oct 2020 03:24:54 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3613DC05BD09
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:14:14 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o7so1492818pgv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 23:14:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3VtAN6G22pJOh6fcjwqaPieJIRASqqNS7bQLlv3fatE=;
+        b=Mo3bTUZT4n1TxUsRmamPvW/bRHY3F8JOUuPfToXe1PjgrhXDMzJPLZtchyHCADEh1X
+         ikB2FzbirVTnhNxtInNO+UexRZKi2oh9K3cxQpYUHhr7DTtwUyUNJT8dqQomEDt+2yUv
+         H5jfIHOY+WFFlH/uHJoCss+ozuxv5O3pZ8ElaCCEqgZDqSEihGLR9jtghXJ/yON/Ibsp
+         r2eah1oE3HUeyd/h5tYUReK7MAYCPCYTsGzX8LFmhTtrD5gWLMA7dvbNZZdaYloe51AL
+         RGGPF5++MEahejDHAJcDpWm/+UD024PFb1JSLfIae5W1pyK9K7jmyHNcShTDqNOEAWuO
+         wzRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3VtAN6G22pJOh6fcjwqaPieJIRASqqNS7bQLlv3fatE=;
+        b=pzdMj1E2f8Jc8yo83lc13GRnh9jnwQLmzmgirjXe1dGzbKXRr15GPpXjOdSkg8YOet
+         72oJc+HWoXi2swDzgtu/IOcqpC04WGqayNcIjM/L37tK5FCCIvTHffVN4vicOoMV5jSv
+         ZWS5OK8UR4AlGEPbTnyJUuFbWcjgcczxGtSA40BGoPYjxbuprdPXP7Dj5P63bOwNnvSJ
+         JmNYzaz/HOR+xK48y74+T0BytwWcqZUw731zrytWiJXIFeRL9BatnnHrfo0EIOp/hPlj
+         eA7gCZaicuqopHsUzr8bNUw4I3QEO1qmmrmImQdTXAcqQAkWrWmRC/XmHD91wcbxRGDI
+         mibg==
+X-Gm-Message-State: AOAM530W0+oLXo5qJ4egwujBzMOEnj0Nm/oBqFa7fmtJBWf0zLKCyALn
+        0cK3bkENpI0gCOH0AjhBJJ/K8VVPKJCcFwbK0VgRsQ==
+X-Google-Smtp-Source: ABdhPJymW0ni/MD9aGSwED4oKtgCt2QhumQXM0N101k9iTMY9fZPgtViehJ3XByHjnsp5g4EcZhrjzKGnDJ9S8M9pYg=
+X-Received: by 2002:a63:7408:: with SMTP id p8mr2604482pgc.273.1603952053682;
+ Wed, 28 Oct 2020 23:14:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+References: <20201026145114.59424-1-songmuchun@bytedance.com>
+ <20201026145114.59424-8-songmuchun@bytedance.com> <8658f431-56c4-9774-861a-9c3b54d1910a@oracle.com>
+In-Reply-To: <8658f431-56c4-9774-861a-9c3b54d1910a@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 29 Oct 2020 14:13:36 +0800
+Message-ID: <CAMZfGtUUkkkeENXOOLPacverqyudxntTenMKrtpfHnLOBJaX5Q@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 07/19] mm/hugetlb: Free the vmemmap
+ pages associated with each hugetlb page
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 15:42:00 +1000
-Pavana Sharma <pavana.sharma@digi.com> wrote:
+On Thu, Oct 29, 2020 at 7:42 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 10/26/20 7:51 AM, Muchun Song wrote:
+> > When we allocate a hugetlb page from the buddy, we should free the
+> > unused vmemmap pages associated with it. We can do that in the
+> > prep_new_huge_page().
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  arch/x86/include/asm/hugetlb.h          |   7 +
+> >  arch/x86/include/asm/pgtable_64_types.h |   8 +
+> >  include/linux/hugetlb.h                 |   7 +
+> >  mm/hugetlb.c                            | 190 ++++++++++++++++++++++++
+> >  4 files changed, 212 insertions(+)
+> >
+> > diff --git a/arch/x86/include/asm/hugetlb.h b/arch/x86/include/asm/hugetlb.h
+> > index f5e882f999cd..7c3eb60c2198 100644
+> > --- a/arch/x86/include/asm/hugetlb.h
+> > +++ b/arch/x86/include/asm/hugetlb.h
+> > @@ -4,10 +4,17 @@
+> >
+> >  #include <asm/page.h>
+> >  #include <asm-generic/hugetlb.h>
+> > +#include <asm/pgtable.h>
+> >
+> >  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> >  #define VMEMMAP_HPAGE_SHIFT                  PMD_SHIFT
+> >  #define arch_vmemmap_support_huge_mapping()  boot_cpu_has(X86_FEATURE_PSE)
+> > +
+> > +#define vmemmap_pmd_huge vmemmap_pmd_huge
+> > +static inline bool vmemmap_pmd_huge(pmd_t *pmd)
+> > +{
+> > +     return pmd_large(*pmd);
+> > +}
+> >  #endif
+> >
+> >  #define hugepages_supported() boot_cpu_has(X86_FEATURE_PSE)
+> > diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include/asm/pgtable_64_types.h
+> > index 52e5f5f2240d..bedbd2e7d06c 100644
+> > --- a/arch/x86/include/asm/pgtable_64_types.h
+> > +++ b/arch/x86/include/asm/pgtable_64_types.h
+> > @@ -139,6 +139,14 @@ extern unsigned int ptrs_per_p4d;
+> >  # define VMEMMAP_START               __VMEMMAP_BASE_L4
+> >  #endif /* CONFIG_DYNAMIC_MEMORY_LAYOUT */
+> >
+> > +/*
+> > + * VMEMMAP_SIZE - allows the whole linear region to be covered by
+> > + *                a struct page array.
+> > + */
+> > +#define VMEMMAP_SIZE         (1UL << (__VIRTUAL_MASK_SHIFT - PAGE_SHIFT - \
+> > +                                      1 + ilog2(sizeof(struct page))))
+> > +#define VMEMMAP_END          (VMEMMAP_START + VMEMMAP_SIZE)
+> > +
+> >  #define VMALLOC_END          (VMALLOC_START + (VMALLOC_SIZE_TB << 40) - 1)
+> >
+> >  #define MODULES_VADDR                (__START_KERNEL_map + KERNEL_IMAGE_SIZE)
+> > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> > index ace304a6196c..919f47d77117 100644
+> > --- a/include/linux/hugetlb.h
+> > +++ b/include/linux/hugetlb.h
+> > @@ -601,6 +601,13 @@ static inline bool arch_vmemmap_support_huge_mapping(void)
+> >  }
+> >  #endif
+> >
+> > +#ifndef vmemmap_pmd_huge
+>
+> Let's add
+> #define vmemmap_pmd_huge vmemmap_pmd_huge
+> just in case code gets moved around in header file.
 
-> Add new mode supported by MV88E6393 family.
-> 
+OK, will do.
 
-This commit message isn't ideal. It infers that the Amethyst is first
-such device to implement this mode, which is not true. The 5gbase-r mode
-is supported by various other hardware, for example Marvell's 88X3310
-PHY. Just say:
-  Add 5gbase-r PHY interface mode.
+>
+> > +static inline bool vmemmap_pmd_huge(pmd_t *pmd)
+> > +{
+> > +     return pmd_huge(*pmd);
+> > +}
+> > +#endif
+> > +
+> >  #ifndef VMEMMAP_HPAGE_SHIFT
+> >  #define VMEMMAP_HPAGE_SHIFT          PMD_SHIFT
+> >  #endif
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index d6ae9b6876be..aa012d603e06 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -1293,10 +1293,20 @@ static inline void destroy_compound_gigantic_page(struct page *page,
+> >  #endif
+> >
+> >  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > +#include <linux/bootmem_info.h>
+> > +
+> >  #define RESERVE_VMEMMAP_NR   2U
+> > +#define RESERVE_VMEMMAP_SIZE (RESERVE_VMEMMAP_NR << PAGE_SHIFT)
+>
+> Since RESERVE_VMEMMAP_SIZE is not used here, perhaps it should be added
+> in the patch where it is first used.
 
->  	PHY_INTERFACE_MODE_2500BASEX,
->  	PHY_INTERFACE_MODE_RXAUI,
->  	PHY_INTERFACE_MODE_XAUI,
-> +	PHY_INTERFACE_MODE_5GBASER,
->  	/* 10GBASE-R, XFI, SFI - single lane 10G Serdes */
->  	PHY_INTERFACE_MODE_10GBASER,
->  	PHY_INTERFACE_MODE_USXGMII,
+Will do.
 
-The position is IMO out of order. RXAUI and XAUI are both 10G modes, so
-5gbase-r should be between 2500base-x and rxaui.
+>
+> >
+> >  #define page_huge_pte(page)  ((page)->pmd_huge_pte)
+> >
+> > +#define vmemmap_hpage_addr_end(addr, end)                            \
+> > +({                                                                   \
+> > +     unsigned long __boundary;                                       \
+> > +     __boundary = ((addr) + VMEMMAP_HPAGE_SIZE) & VMEMMAP_HPAGE_MASK;\
+> > +     (__boundary - 1 < (end) - 1) ? __boundary : (end);              \
+> > +})
+> > +
+> >  static inline unsigned int nr_free_vmemmap(struct hstate *h)
+> >  {
+> >       return h->nr_free_vmemmap_pages;
+> > @@ -1416,6 +1426,181 @@ static void __init hugetlb_vmemmap_init(struct hstate *h)
+> >       pr_info("HugeTLB: can free %d vmemmap pages for %s\n",
+> >               h->nr_free_vmemmap_pages, h->name);
+> >  }
+> > +
+> > +static inline spinlock_t *vmemmap_pmd_lockptr(pmd_t *pmd)
+> > +{
+> > +     static DEFINE_SPINLOCK(pgtable_lock);
+> > +
+> > +     return &pgtable_lock;
+> > +}
+>
+> This is just a global lock.  Correct?  And hugetlb specific?
 
-> @@ -187,6 +188,8 @@ static inline const char *phy_modes(phy_interface_t interface)
->  		return "rxaui";
->  	case PHY_INTERFACE_MODE_XAUI:
->  		return "xaui";
-> +	case PHY_INTERFACE_MODE_5GBASER:
-> +		return "5gbase-r";
->  	case PHY_INTERFACE_MODE_10GBASER:
->  		return "10gbase-r";
->  	case PHY_INTERFACE_MODE_USXGMII:
+Yes, it is a global lock. Originally, I wanted to use the pmd lock(e.g.
+pmd_lockptr()). But we need to allocate memory for the spinlock and
+initialize it when ALLOC_SPLIT_PTLOCKS. It may increase the
+complexity.
 
-Here as well.
+And I think that here alloc/free hugetlb pages is not a frequent operation.
+So I finally use a global lock. Maybe it is enough.
+
+>
+> It should be OK as the page table entries for huegtlb pages will not
+> overlap with other entries.
+
+Does "hugetlb specific" mean the pmd lock? or per hugetlb lock?
+If it is pmd lock, this is fine to me. If not, it may not be enough.
+Because the lock also guards the splitting of pmd pgtable.
+
+Thanks.
+>
+> > +
+> > +/*
+> > + * Walk a vmemmap address to the pmd it maps.
+> > + */
+> > +static pmd_t *vmemmap_to_pmd(const void *page)
+> > +{
+> > +     unsigned long addr = (unsigned long)page;
+> > +     pgd_t *pgd;
+> > +     p4d_t *p4d;
+> > +     pud_t *pud;
+> > +     pmd_t *pmd;
+> > +
+> > +     if (addr < VMEMMAP_START || addr >= VMEMMAP_END)
+> > +             return NULL;
+> > +
+> > +     pgd = pgd_offset_k(addr);
+> > +     if (pgd_none(*pgd))
+> > +             return NULL;
+> > +     p4d = p4d_offset(pgd, addr);
+> > +     if (p4d_none(*p4d))
+> > +             return NULL;
+> > +     pud = pud_offset(p4d, addr);
+> > +
+> > +     WARN_ON_ONCE(pud_bad(*pud));
+> > +     if (pud_none(*pud) || pud_bad(*pud))
+> > +             return NULL;
+> > +     pmd = pmd_offset(pud, addr);
+> > +
+> > +     return pmd;
+> > +}
+>
+> That routine is not really hugetlb specific.  Perhaps we could move it
+> to sparse-vmemmap.c?  Or elsewhere?
+
+Yeah, we can move it to sparse-vmemmap.c, maybe better.
+
+>
+> --
+> Mike Kravetz
+
+
+
+-- 
+Yours,
+Muchun
