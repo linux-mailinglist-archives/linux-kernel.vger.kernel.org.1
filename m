@@ -2,105 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB08729EE56
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A8929EE5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727536AbgJ2OdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:33:09 -0400
-Received: from mga12.intel.com ([192.55.52.136]:25155 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726471AbgJ2OdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:33:09 -0400
-IronPort-SDR: E/JTz4WKiGcG0wZbisM+4V/+85MSFvwvieornMW/jvV+DNfEFggDkR8p1tTECvoekslBVGy5PD
- i/2V91QRMu+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="147721962"
-X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; 
-   d="scan'208";a="147721962"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 07:33:08 -0700
-IronPort-SDR: 9OJ9OPL9XcyBVAeB0ek+zMfFnqEQNyUs2cqQ8l0O4LRtqNEglj/de23tahBl6Tnwe6UmnaTJ6Y
- +aJNqyZHgIXA==
-X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; 
-   d="scan'208";a="536691088"
-Received: from aagodbol-mobl.amr.corp.intel.com (HELO [10.212.217.203]) ([10.212.217.203])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 07:33:08 -0700
-Subject: Re: [RFC][PATCH 7/9] mm/vmscan: Consider anonymous pages without swap
-To:     Oscar Salvador <osalvador@suse.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kbusch@kernel.org, vishal.l.verma@intel.com,
-        yang.shi@linux.alibaba.com, rientjes@google.com,
-        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com
-References: <20201007161736.ACC6E387@viggo.jf.intel.com>
- <20201007161749.4C56D1F1@viggo.jf.intel.com> <20201029081454.GA30442@linux>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <99dff0cd-2b1a-2c41-2596-eda7ecc7c160@intel.com>
-Date:   Thu, 29 Oct 2020 07:33:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727705AbgJ2OeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726883AbgJ2OeE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 10:34:04 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18689C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:34:04 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 141so3592002lfn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:34:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L6YJS0b+pYP/MsynD9GOvCTaXK0yReM+zNE5V4vS6P4=;
+        b=QJWQaf9SUm0HHznyoQwA232fVY28NjxzrFJ7jgguXgwPQFYIBTvYC6AfXb+5Hjv2DH
+         j3p+SeKY1pkyfbxFoI2f5gR9ynem43x9jgsPsbYgTnqVEQLYDeyWsEIv2LdJf4PBL0vP
+         PHMZstsqbRz6DbQbqWrV0vTIxp4l+P4SYCSMUfaGXKFk/y/WOZngL36yJvs3Qyr3Xg81
+         OXdoT15wGqcqzR85meb3sbzMbFXo1HCbAK2vmv69i9BhNky5KIvCAHbyFs3ixKOtPVrz
+         ebZ5pFCXj7wPZzZ017KUqOGMKWRjS7JmTTiK0ErJ6Ygg9zK25RbEU1iLAYODXBhaXzs/
+         GPzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L6YJS0b+pYP/MsynD9GOvCTaXK0yReM+zNE5V4vS6P4=;
+        b=D8xqeSAKL92OkRC56ijSpcn3qJUhxwZXpGSbXGb24d8WswLAZzWLB8pPQQ3u7ca/EP
+         PzOcqWIopgxMQO/7eNSJugbxEC7A6af9gtmvdYhjekJXvBmRyfVgV5Hm5IQ0x8duFOeQ
+         QPZYUYSwaL9vSWl5M4O9NaQt5YD7henoWU9fe8fS4jCC00e7Axx1u1Sz3hXvG1m1qDRf
+         b4SUMMJXSx5YNvcmoArEhHGgep1W9SCCl4MLYA7pG85IiPPXvZ2BKCB6YfFGKElEdQ7r
+         8TpgkiLUheCQqhXjZ3qlg8hvggmvBfEPDcOdexMd0jodZggPH8nkJkaEBmg/dsfbhww4
+         0uvQ==
+X-Gm-Message-State: AOAM533RNcvUHGAAecL7muxwluXG8lt27YjN40GR4axQGDSH/h4uChHM
+        DpeNwdgVlvFMH7Zccx9PC3SIDlU/6UZMSNTezJqrsw==
+X-Google-Smtp-Source: ABdhPJxDizqKt3I/2bhv+jHrK1Vd+3bWRDMgUkw8weo1WWlXihpsaW0SjegkuhL6itcrZrxKiThlc78pbLwkOJ1iPpE=
+X-Received: by 2002:a19:7018:: with SMTP id h24mr1828833lfc.252.1603982042398;
+ Thu, 29 Oct 2020 07:34:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201029081454.GA30442@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201028174412.680-1-vincent.guittot@linaro.org>
+ <jhjk0v9p9ic.mognet@arm.com> <CAKfTPtC1Y_3-8iRhMDe2eU5MGiHWGV4_Nokiy7LgE2OAnkNE_w@mail.gmail.com>
+ <CAKfTPtA-F9RaYJ=mMS84KZfrXnvNru2j=tki+e2Vs9ndgow4NA@mail.gmail.com>
+In-Reply-To: <CAKfTPtA-F9RaYJ=mMS84KZfrXnvNru2j=tki+e2Vs9ndgow4NA@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 29 Oct 2020 15:33:51 +0100
+Message-ID: <CAKfTPtBXZEGNYs00wA7BORcJQ7ZxX+9Di7m7h7x3ZtbYrX4TMw@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: prefer prev cpu in asymmetric wakeup path
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Tao Zhou <ouwen210@hotmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 1:14 AM, Oscar Salvador wrote:
-> With this patch, we will use always the atomic version
-> get_nr_swap_pages from now on. Is that ok? I guess so, but it might
-> warrant a mention in the changelog?
+On Thu, 29 Oct 2020 at 15:30, Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> On Thu, 29 Oct 2020 at 15:19, Vincent Guittot
+> <vincent.guittot@linaro.org> wrote:
+> >
+> > On Thu, 29 Oct 2020 at 12:16, Valentin Schneider
+> > <valentin.schneider@arm.com> wrote:
+> > >
+> > >
+> > > Hi Vincent,
+> > >
+> > > On 28/10/20 17:44, Vincent Guittot wrote:
+> > > > During fast wakeup path, scheduler always check whether local or prev cpus
+> > > > are good candidates for the task before looking for other cpus in the
+> > > > domain. With
+> > > >   commit b7a331615d25 ("sched/fair: Add asymmetric CPU capacity wakeup scan")
+> > > > the heterogenous system gains a dedicated path but doesn't try to reuse
+> > > > prev cpu whenever possible. If the previous cpu is idle and belong to the
+> > > > LLC domain, we should check it 1st before looking for another cpu because
+> > > > it stays one of the best candidate and this also stabilizes task placement
+> > > > on the system.
+> > > >
+> > > > This change aligns asymmetric path behavior with symmetric one and reduces
+> > > > cases where the task migrates across all cpus of the sd_asym_cpucapacity
+> > > > domains at wakeup.
+> > > >
+> > > > This change does not impact normal EAS mode but only the overloaded case or
+> > > > when EAS is not used.
+> > > >
+> > > > - On hikey960 with performance governor (EAS disable)
+> > > >
+> > > > ./perf bench sched pipe -T -l 50000
+> > > >              mainline           w/ patch
+> > > > # migrations   999364                  0
+> > > > ops/sec        149313(+/-0.28%)   182587(+/- 0.40) +22%
+> > > >
+> > > > - On hikey with performance governor
+> > > >
+> > > > ./perf bench sched pipe -T -l 50000
+> > > >              mainline           w/ patch
+> > > > # migrations        0                  0
+> > > > ops/sec         47721(+/-0.76%)    47899(+/- 0.56) +0.4%
+> > > >
+> > > > According to test on hikey, the patch doesn't impact symmetric system
+> > > > compared to current implementation (only tested on arm64)
+> > > >
+> > > > Also read the uclamped value of task's utilization at most twice instead
+> > > > instead each time we compare task's utilization with cpu's capacity.
+> > > >
+> > > > Fixes: b7a331615d25 ("sched/fair: Add asymmetric CPU capacity wakeup scan")
+> > > > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > >
+> > > Other than the below, I quite like this!
+> > >
+> > > > ---
+> > > > Changes in v2:
+> > > > - merge asymmetric and symmetric path instead of duplicating tests on target,
+> > > >   prev and other special cases.
+> > > >
+> > > > - factorize call to uclamp_task_util(p) and use fits_capacity(). This could
+> > > >   explain part of the additionnal improvement compared to v1 (+22% instead of
+> > > >   +17% on v1).
+> > > >
+> > > > - Keep using LLC instead of asym domain for early check of target, prev and
+> > > >   recent_used_cpu to ensure cache sharing between the task. This doesn't
+> > > >   change anything for dynamiQ but will ensure same cache for legacy big.LITTLE
+> > > >   and also simply the changes.
+> > > >
+> > >
+> > > On legacy big.LITTLE systems, sd_asym_cpucapacity spans all CPUs, so we
+> > > would iterate over those in select_idle_capacity() anyway - the policy
+> > > we've been going for is that capacity fitness trumps cache use.
+> > >
+> > > This does require the system to have a decent interconnect, cache snooping
+> > > & co, but that is IMO a requirement of any sane asymmetric system.
+> > >
+> > > To put words into code, this is the kind of check I would see:
+> > >
+> > >   if (static_branch_unlikely(&sched_asym_cpucapacity))
+> > >         return fits_capacity(task_util, capacity_of(cpu));
+> > >   else
+> >
+> > You can't make the shortcut that prev will always belong to the domain
+> > so you have to check that prev belongs to the sd_asym_cpucapacity.
+> > Even if it's true with current mobile Soc, This code is generic core
+> > code and must handle any kind of funny topology than HW guys could
+> > imagine
+>
+> We would have something like that
+>
+> static inline bool cpus_share_domain(int this_cpu, int that_cpu)
+> {
+>     if (static_branch_unlikely(&sched_asym_cpucapacity))
+>         return per_cpu(sd_asym_cpucapacity, this_cpu) ==
+> per_cpu(sd_asym_cpucapacity, that_cpu);
 
-I _think_ it's OK.  But, you're right that it's a potential behavior
-change that's not mentioned in the changelog.
+hmm this doesn't work
 
-I'll mention it in the changelog and see if I can dream up any other
-practical implications from this change.
-
-Thanks for taking a look!
+>
+>     return cpus_share_cache(this_cpu, that_cpu);
+> }
+>
+> >
+> > >         return cpus_share_cache(cpu, other);
+> > >
+> > > > - don't check capacity for the per-cpu kthread UC because the assumption is
+> > > >   that the wakee queued work for the per-cpu kthread that is now complete and
+> > > >   the task was already on this cpu.
+> > > >
+> > > > - On an asymmetric system where an exclusive cpuset defines a symmetric island,
+> > > >   task's load is synced and tested although it's not needed. But taking care of
+> > > >   this special case by testing if sd_asym_cpucapacity is not null impacts by
+> > > >   more than 4% the performance of default sched_asym_cpucapacity path.
+> > > >
+> > > > - The huge increase of the number of migration for hikey960 mainline comes from
+> > > >   teh fact that the ftrace buffer was overloaded by events in the tests done
+> > > >   with v1.
