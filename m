@@ -2,147 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39AA529E4A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 243AF29E453
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730456AbgJ2Hkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727682AbgJ2HYw (ORCPT
+        id S1729614AbgJ2Hhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:37:32 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11927 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729548AbgJ2Hh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61C9C0613B5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 22:14:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=jsHMSO6I0PKQ5HkHdXagl2pTqyDNokSH65F0LTeWvY4=; b=mXAnRCk2UCBp/9zBc78X08NTnp
-        l8uLH46V+u+f31/yUfUKPmThKD+C5D+fWfxUHIjgmETdscvBzLp6uL440GcLkpJ9VWFA9ws414A8E
-        nEM0ANjz4AYnBpOP1lUTBc7rWdyeOPYnDLdHECD5QXA1ReuBi+ohe30rvf9dg9ks83laWtSX4O3qp
-        cADYRK1kl4ouvYUIcBt8JCMZZ4K+/5ukUlGUMOwiPZxwvKQIPzYUQGcmrMPb1WxwvfWnyLOoHFiPt
-        qpSpDxvwNKLGRNYVoeQhvxl7Yf8Cb3A6PRAAfVoOFsQ8vfnX1M+dgV7GsTWaJwiQ6Kj7NJpGCgXl/
-        G6/WdGLg==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kY0GX-0001aX-V6; Thu, 29 Oct 2020 05:14:27 +0000
-Subject: Re: [PATCH RFC v2 4/4] Documentation: Change doc for
- split_lock_detect parameter
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Christopherson Sean J <sean.j.christopherson@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
-References: <20201028202804.3562179-1-fenghua.yu@intel.com>
- <20201028202804.3562179-5-fenghua.yu@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1bb9d2f7-e20d-a0d9-c94f-328e1dc83323@infradead.org>
-Date:   Wed, 28 Oct 2020 22:14:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 29 Oct 2020 03:37:28 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9a50be0001>; Wed, 28 Oct 2020 22:18:54 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 29 Oct
+ 2020 05:18:46 +0000
+Received: from vidyas-desktop.nvidia.com (172.20.13.39) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Thu, 29 Oct 2020 05:18:42 +0000
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     <lorenzo.pieralisi@arm.com>, <robh+dt@kernel.org>,
+        <bhelgaas@google.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <amanharitsh123@gmail.com>,
+        <dinghao.liu@zju.edu.cn>, <kw@linux.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
+        <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
+Subject: [PATCH V2 0/4] Enhancements to Tegra194 PCIe driver
+Date:   Thu, 29 Oct 2020 10:48:35 +0530
+Message-ID: <20201029051839.11245-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
-In-Reply-To: <20201028202804.3562179-5-fenghua.yu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603948734; bh=RFj9prVj4gRc7xq8//qO2rhJicqL3FLhfGNno+ny5Mk=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=D7EE5FFZmX0LvvaVvOgyBC43rQ0PwyY51ZrazoleH2lkeGPvpexwJQIl3Btm6V++B
+         Y+vM4w6csIXsev1PwLRUx+upe7AX1MRMRzEpURpbvA3HNvmtr92vLsQonEf3aQx2AF
+         /1EI4I7p65+phxjj/VVRlCS+VP3Kq4olhDzNVZa8vmkef+P4aSRR0vllUE9p4iLJqd
+         8BryOfuE1RT7xErISWOiUgKhJfohsw92ZFBbguKiMiDljfSTioPA7SL4ZgktOApGdp
+         Ys+iRivO6L044MYNKQ8skZ8mSXU2acXKY1gZL6lz14tpTBHpRirsHoppWcRu3ERcqy
+         s/Ak+9GT9TDvw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/20 1:28 PM, Fenghua Yu wrote:
-> Since #DB for bus lock detect changes the split_lock_detect parameter,
-> update the documentation for the changes.
-> 
-> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> ---
->  .../admin-guide/kernel-parameters.txt         | 47 +++++++++++++++----
->  1 file changed, 39 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 526d65d8573a..51312484c2b6 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5044,27 +5044,58 @@
->  	spia_peddr=
->  
->  	split_lock_detect=
-> -			[X86] Enable split lock detection
-> +			[X86] Enable split lock detection or bus lock detection
->  
->  			When enabled (and if hardware support is present), atomic
->  			instructions that access data across cache line
-> -			boundaries will result in an alignment check exception.
-> +			boundaries will result in an alignment check exception
-> +			for split lock detection or an debug exception for
-> +			bus lock detection.
->  
->  			off	- not enabled
->  
-> -			warn	- the kernel will emit rate limited warnings
-> -				  about applications triggering the #AC
-> -				  exception. This mode is the default on CPUs
-> -				  that supports split lock detection.
-> +			warn	- Default mode.
->  
-> -			fatal	- the kernel will send SIGBUS to applications
-> -				  that trigger the #AC exception.
-> +				  If split lock detection is enabled in
-> +				  hardware, the kernel will emit rate limited
-> +				  warnings about applications triggering the #AC
-> +				  exception.
-> +
-> +				  If bus lock detection is enabled in hardware,
-> +				  the kernel will emit rate limited warnings
-> +				  about applications triggering the #DB
-> +				  exception.
-> +
-> +				  Default behavior is from bus lock detection
-> +				  if both features are enabled in hardware.
-> +
-> +			fatal	- If split lock detection is enabled in
-> +				  hardware, the kernel will send SIGBUS to
-> +				  applications that trigger the #AC exception.
-> +
-> +				  If bus lock detection is enabled in hardware,
-> +				  the kernel will send SIGBUS to application
-> +				  that trigger the #DB exception.
-> +
-> +				  Default behavior is from split lock detection
-> +				  if both are enabled in hardware.
-> +
+This series of patches do some enhancements and some bug fixes to the
+Tegra194 PCIe platform driver like
+- Fixing Vendor-ID corruption
+- Mapping DBI space correctly
+- Updating DWC IP version
+- Handling error conditions properly
 
-Hi,
-This appears to have quite a bit of duplicated lines....
+V2;
+* Addressed Rob's comments. Changed 'Strongly Ordered' to 'nGnRnE'
 
-> +			ratelimit:N
-> +				  Set rate limit to N bus locks per second
-> +				  for bus lock detection. 0 < N <= HZ/2 and
-> +				  N is approximate. Only applied to non root
-> +				  user.
-> +
-> +				  N/A for split lock detection.
->  
->  			If an #AC exception is hit in the kernel or in
->  			firmware (i.e. not while executing in user mode)
->  			the kernel will oops in either "warn" or "fatal"
->  			mode.
->  
-> +			#DB exception for bus lock is triggered only when
-> +			CPL > 0.
-> +
->  	srbds=		[X86,INTEL]
->  			Control the Special Register Buffer Data Sampling
->  			(SRBDS) mitigation.
-> 
+Vidya Sagar (4):
+  PCI: tegra: Fix ASPM-L1SS advertisement disable code
+  PCI: tegra: Map configuration space as nGnRnE
+  PCI: tegra: Set DesignWare IP version
+  PCI: tegra: Handle error conditions properly
 
+ drivers/pci/controller/dwc/pcie-tegra194.c | 62 +++++++++++-----------
+ 1 file changed, 30 insertions(+), 32 deletions(-)
 
 -- 
-~Randy
+2.17.1
 
