@@ -2,119 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC2329EEA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A52B29EEA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727892AbgJ2OoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727862AbgJ2OoM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:44:12 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5174CC0613D2;
-        Thu, 29 Oct 2020 07:44:12 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id r10so1403193plx.3;
-        Thu, 29 Oct 2020 07:44:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F2veZZJSq3DocBjLKyefRgKHa5wllxVXQll/nwjlSWk=;
-        b=Op8SBRcPqL/SZEVejO88Styz7/vwYq3Y9GrhamWquhddcSmFRkXJGuLx8Jwo3n6Zb8
-         y+JR9bsFe9Pm2pg46VvIjMoZ0wKtc3grHT5QnHNK9lDDzvNQ+0+D2T7uMMMbfZGydqC1
-         f+l7ZyxQCjb8opFWDdln5C0/2SuADifVj9UO+qGkRCkjk94AtkWPF3poI4JmCVVnWVmo
-         uB5ZbdZh4YKRnqwsTiFryhIo8aW4/1TOb4poBEdWR2zO3O+XnnQmbrTQaXOcIivMi1Ii
-         rvc3HJFfritwib9V0MkWWbIx39gB5IWBPN7ccOT/UO8HEZXTsKhNWRoBwdoAHkkeqLiZ
-         lAKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F2veZZJSq3DocBjLKyefRgKHa5wllxVXQll/nwjlSWk=;
-        b=j5tMYd4PE72NDzq+tuKvtTYpMKwwqppzXPtIl9UXC3F+cpSNESFUiN/YHXql6NjE1c
-         3ISI3XHf3KFJag4GG0e4xEVdJrFY4qaeT+oETKEL/IgZKglj1D9eZx1HAZri8xCksL82
-         sFMORP9I1V7tsVDGWLbLPAxnJ+nPHg7OSuXUc77KU9gX7TJ31Degao+3OAM0VCDjKbk4
-         uw24GmFABIu4vop7MiC1GfrnXgkiinDmtVL1mYjk4eaX1YTU6OafWrK6vO9FM7Z9riGv
-         aWKYLamjQt2OGNBSfelJQd4qraeovCbzk3Eg2h07huzVk9+BQcq86KfiD2PtuC17B0BU
-         JLSA==
-X-Gm-Message-State: AOAM530pN+DCP6vIbop/BV+GRHkLtyTWLQsjK8HP6XhAnM4c2/PfqRbH
-        2Ch9cdtgowX/bWtpF0yuuogTreq0XiL5IOpz
-X-Google-Smtp-Source: ABdhPJzzyQZgjI1o7fJu0pVNr/rdDX6EAgryLSwsrYc6sJ/cj+3FM2loyGdr3iPXbeM7Uwwvz2/fzQ==
-X-Received: by 2002:a17:902:968a:b029:d5:a3a0:3c43 with SMTP id n10-20020a170902968ab02900d5a3a03c43mr4384648plp.70.1603982651300;
-        Thu, 29 Oct 2020 07:44:11 -0700 (PDT)
-Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
-        by smtp.gmail.com with ESMTPSA id 194sm3149912pfz.182.2020.10.29.07.44.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 07:44:10 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Thu, 29 Oct 2020 22:43:32 +0800
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/15] iio: accel: remove unnecessary CONFIG_PM_SLEEP
-Message-ID: <20201029144332.bnaoeztlydmob5jt@Rk>
-References: <20201029074910.227859-1-coiby.xu@gmail.com>
- <20201029144007.77d967b0@archlinux>
+        id S1727674AbgJ2Opt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:45:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:38590 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726521AbgJ2Opt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 10:45:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1D84139F;
+        Thu, 29 Oct 2020 07:45:48 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 357D73F66E;
+        Thu, 29 Oct 2020 07:45:47 -0700 (PDT)
+References: <20201028174412.680-1-vincent.guittot@linaro.org> <jhjk0v9p9ic.mognet@arm.com> <CAKfTPtC1Y_3-8iRhMDe2eU5MGiHWGV4_Nokiy7LgE2OAnkNE_w@mail.gmail.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Tao Zhou <ouwen210@hotmail.com>
+Subject: Re: [PATCH v2] sched/fair: prefer prev cpu in asymmetric wakeup path
+In-reply-to: <CAKfTPtC1Y_3-8iRhMDe2eU5MGiHWGV4_Nokiy7LgE2OAnkNE_w@mail.gmail.com>
+Date:   Thu, 29 Oct 2020 14:45:40 +0000
+Message-ID: <jhjh7qdozu3.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201029144007.77d967b0@archlinux>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Jonathan,
 
-On Thu, Oct 29, 2020 at 02:40:07PM +0000, Jonathan Cameron wrote:
->On Thu, 29 Oct 2020 15:48:56 +0800
->Coiby Xu <coiby.xu@gmail.com> wrote:
+On 29/10/20 14:19, Vincent Guittot wrote:
+> On Thu, 29 Oct 2020 at 12:16, Valentin Schneider
+> <valentin.schneider@arm.com> wrote:
+>> On legacy big.LITTLE systems, sd_asym_cpucapacity spans all CPUs, so we
+>> would iterate over those in select_idle_capacity() anyway - the policy
+>> we've been going for is that capacity fitness trumps cache use.
+>>
+>> This does require the system to have a decent interconnect, cache snooping
+>> & co, but that is IMO a requirement of any sane asymmetric system.
+>>
+>> To put words into code, this is the kind of check I would see:
+>>
+>>   if (static_branch_unlikely(&sched_asym_cpucapacity))
+>>         return fits_capacity(task_util, capacity_of(cpu));
+>>   else
 >
->> SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
->>
->> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->Hi Coiby,
->
->Please put a cover letter on your next series explaining the context.
->In this particular case some of the replies you have gotten are
->general at it is a lot easier to find these sorts of things via
->replying to the cover letter.
->
-
-I will do it in v2. Thank you for the suggestion!
-
->Jonathan
->
->> ---
->>  drivers/iio/accel/da311.c | 2 --
->>  1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/iio/accel/da311.c b/drivers/iio/accel/da311.c
->> index 3b3df620ba27..55d4891556ca 100644
->> --- a/drivers/iio/accel/da311.c
->> +++ b/drivers/iio/accel/da311.c
->> @@ -263,7 +263,6 @@ static int da311_remove(struct i2c_client *client)
->>  	return da311_enable(client, false);
->>  }
->>
->> -#ifdef CONFIG_PM_SLEEP
->>  static int da311_suspend(struct device *dev)
->>  {
->>  	return da311_enable(to_i2c_client(dev), false);
->> @@ -273,7 +272,6 @@ static int da311_resume(struct device *dev)
->>  {
->>  	return da311_enable(to_i2c_client(dev), true);
->>  }
->> -#endif
->>
->>  static SIMPLE_DEV_PM_OPS(da311_pm_ops, da311_suspend, da311_resume);
->>
+> You can't make the shortcut that prev will always belong to the domain
+> so you have to check that prev belongs to the sd_asym_cpucapacity.
+> Even if it's true with current mobile Soc, This code is generic core
+> code and must handle any kind of funny topology than HW guys could
+> imagine
 >
 
---
-Best regards,
-Coiby
+Don't give them any funny ideas! :-)
+
+But yes, you're right in that we could have more than one asym domain span,
+although AFAIA that would only be permitted by DynamIQ.
+
+I was about to say that for DynamIQ the shared L3 should make it that the
+asym domain commonly matches MC (thus cpus_share_cache()), but phantom
+domains wreck that :/ Arguably that isn't upstream's problem though.
