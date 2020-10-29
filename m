@@ -2,120 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A000F29DB90
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E4E29DB81
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389380AbgJ2AAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:00:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389368AbgJ2AAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 20:00:06 -0400
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A181E208C7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:00:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603929604;
-        bh=OmN8vgKewQg9DdpzKeNqxxoP39UtEU/hbWDtA/HryW0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cpCHnTr6YQ87BhN5ztDtXudsOlZ7k/obgesU/+f7r1QzKpdZxrvxYeOeJc3/xqF8n
-         aNngE6RhZjWZ7N/vXrN/e09anmuPJf/FG96ikI7D0STmCTUnCSQ94FgDGxuSehA8bG
-         zFY4LtIkClK01umtpgGen7BgWo/sk6MA7ctEF0is=
-Received: by mail-wr1-f47.google.com with SMTP id w14so868819wrs.9
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:00:04 -0700 (PDT)
-X-Gm-Message-State: AOAM531v7c6HPdBikiYtnRQ5NbNKP8qsi5vZ+yVFpgdo8OGmZJhpBkz4
-        E84ffM9rkLs9W4db2QaHh2YmrqP9bYyMt8B7mQPndA==
-X-Google-Smtp-Source: ABdhPJxzZRfR2IbCKTC6XexD852gfBXCoM4aPLjMQ5cACmZbhocSWAOtBNKUGAAuf5xo95vfzTm6RLQFp9HlnRkTYRs=
-X-Received: by 2002:adf:e9c6:: with SMTP id l6mr1973798wrn.257.1603929603069;
- Wed, 28 Oct 2020 17:00:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAAnLoWnS74dK9Wq4EQ-uzQ0qCRfSK-dLqh+HCais-5qwDjrVzg@mail.gmail.com>
- <202010281503.3D1FCFE0@keescook>
-In-Reply-To: <202010281503.3D1FCFE0@keescook>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 28 Oct 2020 16:59:51 -0700
-X-Gmail-Original-Message-ID: <CALCETrUGz0OZqDpex3boMQWQSfh2jEyBLPv-smQA5a0-Rz=tgg@mail.gmail.com>
-Message-ID: <CALCETrUGz0OZqDpex3boMQWQSfh2jEyBLPv-smQA5a0-Rz=tgg@mail.gmail.com>
-Subject: Re: [seccomp] Request for a "enable on execve" mode for Seccomp filters
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Camille Mougey <commial@gmail.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Rich Felker <dalias@libc.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Denis Efremov <efremov@linux.com>,
-        Andy Lutomirski <luto@kernel.org>
+        id S2389856AbgJ2ABw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389393AbgJ2AA0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 20:00:26 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1404CC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:00:26 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id h6so816917ybk.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:00:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=OuJr16cGdSeTRRY2e3lrFCZY64j7gnlLJ3xITCQ65aI=;
+        b=Ox/dDFlhTnltHkm0BiioQTdlQVzqvcpEZIbKwhzZb6htbEszgkFVPcTjzdjzhQig1j
+         XPPsmlFOV99MW/TttdpxSbrL/Ogv+kkTYQJnJAKW+vxRt3DRVYB6pATixQlN7xp1oXA6
+         JEYpFJjExfXKDgjJl3JDErnb82W8dhAsiMUfqCnDFkZsq3nHNjPfi9sIitwxVb10RAir
+         XJ307rKW/ZZcRpxnvDBGun3Zd6dKAZQlHnVEYwo9jENFPBPBifRVBwlwLT8o7VVg2+GU
+         Hy9Ly6YZ+qm5hVSPX++HnsZtlu0jLDpT16Z3d/5jQHa3JQ0Iwg5pcVi6XuxFTGvpY75a
+         fNkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=OuJr16cGdSeTRRY2e3lrFCZY64j7gnlLJ3xITCQ65aI=;
+        b=Sn2ap0BlIaU5w/ORSvHOuVLfLkRxMxp+LSNLzJ54Eh3m25dI1kfyQYN+PyWS7WJ+4h
+         IyL4biZhLK+psoQ5JzFz5N53nFqw15odMQzGA395sRxCBm4/lULp5/qxwsG07o27SPnh
+         UQcrhxl9Euzf7MqBCXmv6N9igYYfYv7wzDyuqvgSugTEq2qxonk9i2/t19Kel/MhDSbL
+         IpHYck0/M5f8ulei3eSJapaWLN40aLJ7esas+zZ+VBK2jSaF3tf4mZYz+f3SAJSF/GhY
+         uqXIeZf13BuKSNbNk24xz2OnPAU7z6Mke13gxkO17Rl50jdbPe82gz9tN2TDrGHpnbgi
+         e5MQ==
+X-Gm-Message-State: AOAM531dekyV3EuDMmWrWPX/H1oQ68TzDOOT+VgbQxgvZvU2rYigrQnI
+        /IvOfpjdz024d6G/muTXU2QE+7EF
+X-Google-Smtp-Source: ABdhPJybm4TBI3oXQKhNOJ3j6Z2Gs5TY7f1A9h6VtC8BA8mOvPp73YripvvkrVa7jwPzdPXuZbJyuP6k
+Sender: "lzye via sendgmr" <lzye@chrisye.mtv.corp.google.com>
+X-Received: from chrisye.mtv.corp.google.com ([2620:15c:211:2:f693:9fff:fef4:4323])
+ (user=lzye job=sendgmr) by 2002:a25:578a:: with SMTP id l132mr2235601ybb.200.1603929625220;
+ Wed, 28 Oct 2020 17:00:25 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 17:00:22 -0700
+Message-Id: <20201029000022.667052-1-lzye@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH] ANDROID: Fix the HID usage of DPAD input event generation.
+From:   Chris Ye <lzye@google.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linzhao.ye@gmail.com, linux-kernel@vger.kernel.org,
+        trivial@kernel.org, stable@vger.kernel.org,
+        Chris Ye <lzye@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 3:47 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Wed, Oct 28, 2020 at 12:18:47PM +0100, Camille Mougey wrote:
-> > (This is my first message to the kernel list, I hope I'm doing it right)
->
-> 1- self-confinement
-> 2- launching external processes
->         a) cooperating
->         b) oblivious
+Generic Desktop DPAD usage is mapped by hid-input, that only the first
+DPAD usage maps to usage type EV_ABS and code of an axis. If HID
+descriptor has DPAD UP/DOWN/LEFT/RIGHT HID usages and each of usage size
+is 1 bit, then only the first one will generate input event, the rest of
+the HID usages will be assigned to hat direction only.
+The hid input event should check the HID report value and generate
+HID event for its hat direction.
 
-I remain quite unconvinced that delayed filters will solve a real
-problem.  As you described, 2a could just confine itself.  There's an
-obvious synchronization point -- sd_notify().  I bet sd_notify() could
-be rigged up to apply externally-supplied filters, or sd_notify()
-could interact with user notifiers to get some assistance.
+Test: Connect HID device with Generic Desktop DPAD usage and press the
+DPAD to generate input events.
 
-2b is nasty.  In an ideal world, we would materialize a fully formed
-process with filters installed.  The problem is that processes don't
-generally come fully formed.  Almost all interesting processes are
-dynamically linked, and they get to specify their own dynamic linkers.
-Even if we limit ourselves to a known dynamic linker, we would want to
-make sure that the dynamic linker is hardened against various escape
-techniques.  For dynamic linking, we would probably want to start out
-with one set of privileges (loading libraries) and then switch.
+Signed-off-by: Chris Ye <lzye@google.com>
+---
+ drivers/hid/hid-input.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-I have an alternative suggestion to try to address some of the above:
-allow a notifier to run in a mode in which it can replace the BPF
-program outright.  This would be something like:
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index 9770db624bfa..6c1007de3409 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -1269,7 +1269,7 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
+ 	struct input_dev *input;
+ 	unsigned *quirks = &hid->quirks;
+ 
+-	if (!usage->type)
++	if (!usage->type && !field->dpad)
+ 		return;
+ 
+ 	if (usage->type == EV_PWR) {
+@@ -1286,9 +1286,17 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
+ 		int hat_dir = usage->hat_dir;
+ 		if (!hat_dir)
+ 			hat_dir = (value - usage->hat_min) * 8 / (usage->hat_max - usage->hat_min + 1) + 1;
+-		if (hat_dir < 0 || hat_dir > 8) hat_dir = 0;
+-		input_event(input, usage->type, usage->code    , hid_hat_to_axis[hat_dir].x);
+-		input_event(input, usage->type, usage->code + 1, hid_hat_to_axis[hat_dir].y);
++		if (hat_dir < 0 || hat_dir > 8 || value == 0)
++			hat_dir = 0;
++		if (field->dpad) {
++			input_event(input, EV_ABS, field->dpad, hid_hat_to_axis[hat_dir].x);
++			input_event(input, EV_ABS, field->dpad + 1, hid_hat_to_axis[hat_dir].y);
++		} else {
++			input_event(input, usage->type, usage->code,
++				hid_hat_to_axis[hat_dir].x);
++			input_event(input, usage->type, usage->code + 1,
++				hid_hat_to_axis[hat_dir].y);
++		}
+ 		return;
+ 	}
+ 
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
-if (fork() != 0)
-  return;  // do parent stuff
-
-// Start up.  Set a BPF program that directs pretty much everything at
-the listener.
-int fd = seccomp(..., SECCOMP_FILTER_FLAG_NEW_LISTENER |
-SECCOMP_FILTER_FLAG_ALLOW_REPLACEMENT, ...);
-
-// Set up other things if needed.
-
-execve();
-
-Now, in the parent, once the child is ready for its final filters:
-
-// Replace the filter on *all* processes using the filter to which
-we're attached.
-// I think the locking for this should be straightforward.
-// Optional flag here to remove the ALLOW_REPLACEMENT flag, but it's
-not really necessary
-// since we're about to close() the listener.
-ioctl(fd, SECCOMP_IOCTL_NOTIF_REPLACE_FILTER, new_filter);
-
-// Call recv in a loop to drain and handle notifications.
-for (...) {
-  ioctl(fd, SECCOMP_IOCTL_NOTIF_RECV, ...);
-  ...
-}
-
-close(fd);
-
-And now we're done.  We can make the synchronization point be anything we like.
-
-
-What do you all think?  For people who really want
-delay-until-execve(), this can emulate it efficiently.
