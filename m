@@ -2,143 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D2229F6EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 22:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C4829F6EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 22:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726827AbgJ2VdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 17:33:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46786 "EHLO
+        id S1726092AbgJ2Vd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 17:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726354AbgJ2VdL (ORCPT
+        with ESMTP id S1725780AbgJ2Vd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 17:33:11 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A281C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 14:33:11 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id h24so5796717ejg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 14:33:11 -0700 (PDT)
+        Thu, 29 Oct 2020 17:33:58 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454D9C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 14:33:58 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id a20so4565907ilk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 14:33:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U+1j9yhCsv5S7W6DriLq4jlIZu6jMQxN+78GLaGNINY=;
-        b=ObwOf4Z+7QNvs8gO2kdUkeNUbXVbUl+Ox4/o49ffRqSzO+QYUS0pIhmO1RrB/D1yAF
-         C6yCm356JTlV5mHsRf3G+RcKYRhKbb0eAo/psddMsacuHoU5dHNeIn4OaTLx5vRCHVqq
-         otFhJR5d+BRHDTMd7/e1C943kvRVk+XIZsGUhDs69N6zq73w6ExLEoGQ/svlwtghQwHu
-         KKbHbopA/PgFTFUOuopDjA43JlB2F3ABFnAXmxyB5zxZVWMAud3c9R5WPrHdpvIZmjgD
-         SZs6SPXweM8G2yJQ0A+PzqOoucj0SN+5AGSzyk0hON4N5fe2icA/Jy49IE7W9PLggQPm
-         rFmw==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HBW/y2hcG3tVUMNsYdQ7G3FZLWAgav2W/hDMrrmqMV4=;
+        b=C9wMCxF/YMjZlGOVB+2eKfXEJR92p9m4yP6IxXhK5vhdsXo+p654QnmvgqtQjmvKIC
+         N/O9P5d7uy+RDFfIQuyEavN4FfcpZrYkVXygitutifdRdCWzu8+3G0FjM1vKtQ7PHYKK
+         9VzbQsSQqpYgOQs1b9DKxZHrBHTy6glApl2AE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U+1j9yhCsv5S7W6DriLq4jlIZu6jMQxN+78GLaGNINY=;
-        b=NtGSlM8xORZftRl+nVNV8R7E7i2cwpuRQSdtVwSp9k8yBdqdPiU/oWagMO1/QqJalV
-         DFvJksBAjQaEpFiKXsn3QWcF48+EhB/Ks9/bf3v72nufEnXfF5Wp/ydc5unYNEq1YZAd
-         5wFoCLgQVi01DAJvGDg/Mqz7W97myiGwTUbLMZVp9+/ShPI63OPs+zm7Dtdvxwnhm7OQ
-         XaJ/7gsigQ1Aq9kpmiYyyeid6BLs9afJA5mgMlF+tPe9Odj/PILKP9vjfxsWd7q2iSxw
-         JnJzQIFEFFGuiQ5IG+4SqaB4t1rS0+r5lP1FNXIIAJq0ocOUn+esfI+pKDkOROWFCgHg
-         eavg==
-X-Gm-Message-State: AOAM5338xoyyUf4EkGc+xvLOhhMBwrvbGeYbqIl/meYtNES2LrB0p3UH
-        lGTwMHamzJspkSfxAUn8jXTlD8bzPOZkqJgW99mQIw==
-X-Google-Smtp-Source: ABdhPJxombUP9s0EeQ/sGwuRNegG5as7v5c4dUH02LUZNI2n09DlPyfVaA9wadMKASx9QXs+NebMeP12kOxoDEPNzpk=
-X-Received: by 2002:a17:906:fa1b:: with SMTP id lo27mr3436193ejb.216.1604007189686;
- Thu, 29 Oct 2020 14:33:09 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HBW/y2hcG3tVUMNsYdQ7G3FZLWAgav2W/hDMrrmqMV4=;
+        b=R/03YOG6q9W4bGxGtQAUOHsucN0OHxi7rljwdma+VYAPUjdMWGMR34XzqNfIymKHTp
+         imAqkGXz2xFT9O615q7XC4l4NoeiLQnd6by1eppzelypGXTVqWpEbZu9rBcG+sHhEFaK
+         AHWUa3mycdLsaDeKL77bSS26sRWARnu/BVRX5D0fWoR227G+CdBsmWGRvArvoATCKDqj
+         PDZWBT7KlhIdawfOvOi1vfJJ12d88fBxaIIKLS3QKYoAO+LRKLyidqlGKuLmiUkodaDt
+         EqrvZWnKxsFhSZW6G41Ty1Ce8ifJLK0Dw/jLbV3MuU8aorTHGcMW45FeueOs/fX8F4fl
+         LgIw==
+X-Gm-Message-State: AOAM530//Gs1pg3/gp2S0UQ1XLj6ZKflMwTK+jYdZKnFbAconkLX93hg
+        IR0mRmmWPg3DF4m7XGPhJIL2DA==
+X-Google-Smtp-Source: ABdhPJzjjq7wQ7GrmP2vMxl7uTfJhlv8ruaD8BA9kXgZ+jONnT6TAdwrOl602ZGmTwFaprEnbt3cow==
+X-Received: by 2002:a92:cb4e:: with SMTP id f14mr4494426ilq.122.1604007237554;
+        Thu, 29 Oct 2020 14:33:57 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id n84sm3955870ild.16.2020.10.29.14.33.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 14:33:56 -0700 (PDT)
+Subject: Re: [PATCH v4] cpupower: Provide online and offline CPU information
+To:     Brahadambal Srinivasan <latha@linux.vnet.ibm.com>,
+        shuah@kernel.org, trenn@suse.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Pavithra R . Prakash" <pavrampu@in.ibm.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201023152527.15884-1-latha@linux.vnet.ibm.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <66932174-384a-5da4-4786-955f1e6233f6@linuxfoundation.org>
+Date:   Thu, 29 Oct 2020 15:33:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201001230403.2445035-1-danielwinkler@google.com>
-In-Reply-To: <20201001230403.2445035-1-danielwinkler@google.com>
-From:   Daniel Winkler <danielwinkler@google.com>
-Date:   Thu, 29 Oct 2020 14:32:58 -0700
-Message-ID: <CAP2xMbtC0invbRT2q6LuamfEbE9ppMkRUO+jOisgtBG17JkrwA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/5] Bluetooth: Add new MGMT interface for advertising add
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     BlueZ <linux-bluetooth@vger.kernel.org>,
-        chromeos-bluetooth-upstreaming 
-        <chromeos-bluetooth-upstreaming@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201023152527.15884-1-latha@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Maintainers,
+On 10/23/20 9:25 AM, Brahadambal Srinivasan wrote:
+> When a user tries to modify cpuidle or cpufreq properties on offline
+> CPUs, the tool returns success (exit status 0) but also does not provide
+> any warning message regarding offline cpus that may have been specified
+> but left unchanged. In case of all or a few CPUs being offline, it can be
+> difficult to keep track of which CPUs didn't get the new frequency or idle
+> state set. Silent failures are difficult to keep track of when there are a
+> huge number of CPUs on which the action is performed.
+> 
+> This patch adds helper functions to find both online and offline CPUs and
+> print them out accordingly.
+> 
+> We use these helper functions in cpuidle-set and cpufreq-set to print an
+> additional message if the user attempts to modify offline cpus.
+> 
+> Reported-by: Pavithra R. Prakash <pavrampu@in.ibm.com>
+> Signed-off-by: Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
+> ---
+>   tools/power/cpupower/utils/cpufreq-set.c     |  3 +
+>   tools/power/cpupower/utils/cpuidle-set.c     |  4 ++
+>   tools/power/cpupower/utils/cpupower.c        |  8 +++
+>   tools/power/cpupower/utils/helpers/helpers.h | 12 ++++
+>   tools/power/cpupower/utils/helpers/misc.c    | 66 +++++++++++++++++++-
+>   5 files changed, 92 insertions(+), 1 deletion(-)
+> 
+> v1-->v2: Added helper functions to find online and offline CPUs and print them.
+> v2-->v3: Fixed some build issues
+> v3-->v4: Fixed the commit log and moved the version summary to the correct place.
+> 
 
-Just a friendly reminder to review this kernel patch series. I may
-have accidentally named this series the same as the userspace series,
-so I apologize if it has caused the set to be hidden in anybody's
-inbox. I'll be sure not to do this in the future.
+Thank you. Applied to
+https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux.git/log/?h=cpupower
 
-Thanks in advance for your time!
+Will be included in my next pull request to PM maintainer.
 
-Best regards,
-Daniel Winkler
-
-On Thu, Oct 1, 2020 at 4:04 PM Daniel Winkler <danielwinkler@google.com> wrote:
->
-> Hi Maintainers,
->
-> This patch series defines the new two-call MGMT interface for adding
-> new advertising instances. Similarly to the hci advertising commands, a
-> mgmt call to set parameters is expected to be first, followed by a mgmt
-> call to set advertising data/scan response. The members of the
-> parameters request are optional; the caller defines a "params" bitfield
-> in the structure that indicates which parameters were intentionally set,
-> and others are set to defaults.
->
-> The main feature here is the introduction of min/max parameters and tx
-> power that can be requested by the client. Min/max parameters will be
-> used both with and without extended advertising support, and tx power
-> will be used with extended advertising support. After a call for hci
-> advertising parameters, a new TX_POWER_SELECTED event will be emitted to
-> alert userspace to the actual chosen tx power.
->
-> Additionally, to inform userspace of the controller LE Tx power
-> capabilities for the client's benefit, this series also changes the
-> security info MGMT command to more flexibly contain other capabilities,
-> such as LE min and max tx power.
->
-> All changes have been tested on hatch (extended advertising) and kukui
-> (no extended advertising) chromebooks with manual testing verifying
-> correctness of parameters/data in btmon traces, and our automated test
-> suite of 25 single- and multi-advertising usage scenarios.
->
-> A separate patch series will add support in bluetoothd. Thanks in
-> advance for your feedback!
->
-> Daniel Winkler
->
->
-> Changes in v4:
-> - Add remaining data and scan response length to MGMT params response
-> - Moving optional params into 'flags' field of MGMT command
-> - Combine LE tx range into a single EIR field for MGMT capabilities cmd
->
-> Changes in v3:
-> - Adding selected tx power to adv params mgmt response, removing event
-> - Re-using security info MGMT command to carry controller capabilities
->
-> Changes in v2:
-> - Fixed sparse error in Capabilities MGMT command
->
-> Daniel Winkler (5):
->   Bluetooth: Add helper to set adv data
->   Bluetooth: Break add adv into two mgmt commands
->   Bluetooth: Use intervals and tx power from mgmt cmds
->   Bluetooth: Query LE tx power on startup
->   Bluetooth: Change MGMT security info CMD to be more generic
->
->  include/net/bluetooth/hci.h      |   7 +
->  include/net/bluetooth/hci_core.h |  12 +-
->  include/net/bluetooth/mgmt.h     |  49 +++-
->  net/bluetooth/hci_core.c         |  47 +++-
->  net/bluetooth/hci_event.c        |  19 ++
->  net/bluetooth/hci_request.c      |  29 ++-
->  net/bluetooth/mgmt.c             | 424 +++++++++++++++++++++++++++++--
->  7 files changed, 542 insertions(+), 45 deletions(-)
->
-> --
-> 2.28.0.709.gb0816b6eb0-goog
->
+thanks,
+-- Shuah
