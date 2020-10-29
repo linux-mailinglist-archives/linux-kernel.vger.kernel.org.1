@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A61029F325
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E66B29F328
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgJ2R0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:26:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56322 "EHLO mx2.suse.de"
+        id S1728120AbgJ2R0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 13:26:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727913AbgJ2R0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:26:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DE553AC9A;
-        Thu, 29 Oct 2020 17:26:06 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     robh+dt@kernel.org, catalin.marinas@arm.com, hch@lst.de,
-        ardb@kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        will@kernel.org, lorenzo.pieralisi@arm.com, guohanjun@huawei.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org
-Subject: [PATCH v5 7/7] mm: Remove examples from enum zone_type comment
-Date:   Thu, 29 Oct 2020 18:25:50 +0100
-Message-Id: <20201029172550.3523-8-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201029172550.3523-1-nsaenzjulienne@suse.de>
-References: <20201029172550.3523-1-nsaenzjulienne@suse.de>
+        id S1727970AbgJ2R0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 13:26:16 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CAFF206CB;
+        Thu, 29 Oct 2020 17:26:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603992375;
+        bh=ydtT245KR4NOVY4gur+adaCMxoV41NBuWwlp88cEl8s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CYT+Aaf4mrNMx1sFQUTd5llJYqfeqgcZLxEcsAuy3xMBgfjPjBCVTpQUYv58eaCk5
+         4NisOpJzE1bJoj3JWcE8rnPiKgsOV9MMkuUIs9m/G221zTHsJb2Uct40FZVjv/puBI
+         QetIP8XCZNX0p/kL0f0uDAC7nRFocK+i4DkNiL7Y=
+Date:   Thu, 29 Oct 2020 17:26:08 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Jordan Crouse <jcrouse@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        devicetree@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v18 0/4] iommu/arm-smmu: Add adreno-smmu implementation
+ and bindings
+Message-ID: <20201029172607.GA30745@willie-the-truck>
+References: <20201027223408.469893-1-jcrouse@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027223408.469893-1-jcrouse@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can't really list every setup in common code. On top of that they are
-unlikely to stay true for long as things change in the arch trees
-independently of this comment.
+On Tue, Oct 27, 2020 at 04:34:04PM -0600, Jordan Crouse wrote:
+> This short series adds support for the adreno-smmu implementation of the
+> arm-smmu driver and the device-tree bindings to turn on the implementation
+> for the sm845 and sc7180 GPUs. These changes are the last ones needed to enable
+> per-instance pagetables in the drm/msm driver.
+> 
+> No deltas in this patchset since the last go-around for 5.10 [1].
+> 
+> [1] https://patchwork.freedesktop.org/series/81393/
+> 
+> Jordan Crouse (3):
+>   iommu/arm-smmu-qcom: Add implementation for the adreno GPU SMMU
+>   dt-bindings: arm-smmu: Add compatible string for Adreno GPU SMMU
+>   arm: dts: qcom: sm845: Set the compatible string for the GPU SMMU
+> 
+> Rob Clark (1):
+>   iommu/arm-smmu: Add a way for implementations to influence SCTLR
 
-Suggested-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/mmzone.h | 20 --------------------
- 1 file changed, 20 deletions(-)
+FYI: this patch (patch 4/4) doesn't seem to have made it anywhere (I don't
+have it, and neither does the archive).
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index fb3bf696c05e..9d0c454d23cd 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -354,26 +354,6 @@ enum zone_type {
- 	 * DMA mask is assumed when ZONE_DMA32 is defined. Some 64-bit
- 	 * platforms may need both zones as they support peripherals with
- 	 * different DMA addressing limitations.
--	 *
--	 * Some examples:
--	 *
--	 *  - i386 and x86_64 have a fixed 16M ZONE_DMA and ZONE_DMA32 for the
--	 *    rest of the lower 4G.
--	 *
--	 *  - arm only uses ZONE_DMA, the size, up to 4G, may vary depending on
--	 *    the specific device.
--	 *
--	 *  - arm64 has a fixed 1G ZONE_DMA and ZONE_DMA32 for the rest of the
--	 *    lower 4G.
--	 *
--	 *  - powerpc only uses ZONE_DMA, the size, up to 2G, may vary
--	 *    depending on the specific device.
--	 *
--	 *  - s390 uses ZONE_DMA fixed to the lower 2G.
--	 *
--	 *  - ia64 and riscv only use ZONE_DMA32.
--	 *
--	 *  - parisc uses neither.
- 	 */
- #ifdef CONFIG_ZONE_DMA
- 	ZONE_DMA,
--- 
-2.29.0
-
+Will
