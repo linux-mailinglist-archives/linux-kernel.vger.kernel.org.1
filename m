@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA3929E483
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 621DC29E458
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730631AbgJ2Hkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
+        id S1729681AbgJ2Hhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727832AbgJ2HYy (ORCPT
+        with ESMTP id S1727969AbgJ2HYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:54 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E70C0613E4;
-        Wed, 28 Oct 2020 21:08:16 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CMBkN2Qbwz9sSf;
-        Thu, 29 Oct 2020 15:08:12 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603944492;
-        bh=ENPHDiNd4tm9gO7FK38d0WVyLNug1Xt5LcWyskZC0HE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=T6jYze6c+Y2wbPiaN/uZr0Bj5vllq3nzWdOFMrfBSLF/49uYdZcrXpIZD7BITEvL2
-         LhmUgMOgvylnBQQKJQ4/LZKp/eCOnlFEfnJ52duldbfosGB8Lg6dNpnFtO6FzrjLT2
-         sGq8TEpwyLdjZ08ptG9aN6i/tIHCgpC3mgC+8Xgtoq9x52oKfQkTZSAOCh8PPKJf9f
-         MPP3m7AmUleA0Sug6rSXQ1B7xo7hAksZSMmxKyUeYV2TeJ3DtN0Q69EpDqfM2eEl/P
-         5SzYej/3Y+LdG5oCHFiqdJBlmPsH+UnBioFJCDGHG5m9exPINdnZC/NynnWvjT2upa
-         JtnfXSvvpBBcA==
-Date:   Thu, 29 Oct 2020 15:08:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20201029150809.13059608@canb.auug.org.au>
+        Thu, 29 Oct 2020 03:24:55 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CDDC0613E6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 21:10:23 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id o9so671415plx.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 21:10:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=VtMYoH7uqw8segSlpcpBhgMzv0tEH1FAyE5x4ELwZvc=;
+        b=IFjlPGcCJsg+rrCXLPGWirDPkMDWOVrFgu1ZQsJ/12/k4uFBGE5W2C1zr4S2lQ8fDZ
+         Js0TgSs1Gi5Qo9Vf7LKcU6AUczD5Ch7bsJU/C5YjJw2Xa1cmUjaEOc9OFYyo/gwDt8Ah
+         5+sWKwXXMA7k1mVzbD2r8h7xyvo0aot2TDQpdpZpPrLNVdUnQcHZqc14BfYrZVbkFWRH
+         hqDx+0K6V9JAaOojJ/Rt/OEg4IDDIB9OCCoSvD+oguFOUS0xa/mivTX00s3NRmpukMYK
+         KfrwDsXRlSNTelbQWzDx/AIKZJlVCBFH2kjApE7+EwU7ABaskutN735ytPRhb+xMAjyh
+         qx6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VtMYoH7uqw8segSlpcpBhgMzv0tEH1FAyE5x4ELwZvc=;
+        b=bL27VfoyPgZXq50D73MnmYwa59bzA4ZfSdzHMH6HvEMxMYLf3gldGw+XSBg3Rts70J
+         IB1nhFsGvK1GQn3SxReWVRSlBrlnvu8RxgtDvDn8O63R8YuLqaZWVvehynb8ToX4vd1X
+         24m5flkves0NZzYcoeKivDCcM1NYSFjyHA/nOQrq7Dr/uMERwg04CoK4ch2BMi+47+x0
+         CKIxS13jmszclf8gqIylwZ+Fs9YdvD0DFghvK5ttxDG+w7KYL0bmbbemBSkh0DvoVIML
+         iTjKbvucliaTu7uIMTlEUXe6ag4WVLlLNTgwXsuvYag6+D13+y3+loEvlfZZgJjtBLZc
+         qdbQ==
+X-Gm-Message-State: AOAM532LHUL+cd1QJf4rlR0YiZp6i6QPx89Aw8mG8pBCNomeorcZkOXI
+        009MOTPNowccF6eNDOWhTy1Duw==
+X-Google-Smtp-Source: ABdhPJwB+wZltGbkPfEulY/us8CH6U0GVvR4+yZJIJGeq/vLXBPgXhWC5ZATCaEuCnT2aQP5lb9Iog==
+X-Received: by 2002:a17:902:c404:b029:d6:30a7:dee8 with SMTP id k4-20020a170902c404b02900d630a7dee8mr2267617plk.78.1603944622778;
+        Wed, 28 Oct 2020 21:10:22 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id 66sm891814pgg.72.2020.10.28.21.10.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Oct 2020 21:10:21 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 09:40:19 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Nishanth Menon <nm@ti.com>, Viresh Kumar <vireshk@kernel.org>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Rob Clark <robdclark@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] opp: Reduce the size of critical section in
+ _opp_table_kref_release()
+Message-ID: <20201029041019.xps4dcavkvk6imp5@vireshk-i7>
+References: <e0df59de670b48a923246fae1f972317b84b2764.1603785323.git.viresh.kumar@linaro.org>
+ <160392797572.884498.11353243518476305974@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/K+FtPlvS6SpRyohqoQh6+u1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160392797572.884498.11353243518476305974@swboyd.mtv.corp.google.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/K+FtPlvS6SpRyohqoQh6+u1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 28-10-20, 16:32, Stephen Boyd wrote:
+> Quoting Viresh Kumar (2020-10-27 00:57:06)
+> > There is a lot of stuff here which can be done outside of the big
+> > opp_table_lock, do that. This helps avoiding few circular dependency
+> > lockdeps around debugfs and interconnects.
+> > 
+> > Reported-by: Rob Clark <robdclark@gmail.com>
+> > Reported-by: Dmitry Osipenko <digetx@gmail.com>
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> 
+> Any Fixes tag?
 
-Hi all,
+The circular dependency lockdep appears with 5.11 stuff and so we
+don't need to fix it in any of the earlier releases. And so I didn't
+wanted to bother with the fixes tag, as the code had been like this
+for ever.
 
-After merging the akpm-current tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 
-lib/math/div64.c: In function 'mul_u64_u64_div_u64':
-lib/math/div64.c:202:6: error: implicit declaration of function 'ilog2' [-W=
-error=3Dimplicit-function-declaration]
-  202 |  if (ilog2(a) + ilog2(b) > 62) {
-      |      ^~~~~
+Thanks a lot. I was a bit worried about the crazy idea I had to solve
+this :)
 
-Caused by commit
-
-  4ec993a18ff6 ("kernel.h: Split out mathematical helpers")
-
-I have applied the following patch for today:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 29 Oct 2020 15:03:58 +1100
-Subject: [PATCH] kernel.h: Split out mathematical helpers fix
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- lib/math/div64.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/lib/math/div64.c b/lib/math/div64.c
-index dcc826c40ca1..064d68a5391a 100644
---- a/lib/math/div64.c
-+++ b/lib/math/div64.c
-@@ -22,6 +22,7 @@
- #include <linux/export.h>
- #include <linux/math.h>
- #include <linux/math64.h>
-+#include <linux/log2.h>
-=20
- /* Not needed on 64bit architectures */
- #if BITS_PER_LONG =3D=3D 32
---=20
-2.28.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/K+FtPlvS6SpRyohqoQh6+u1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+aQCkACgkQAVBC80lX
-0GzhOgf+OgE7kebs333asoZTaLlzGdlowhlIizRWNM/3FjjoRZXnJtT7LTR9FF3O
-95Nn7ZNQzBOE5g1lu7LyrZfY5XigcLgCMyRKUKfWRIUGjhzUwm1yapoc3B8VfWHJ
-nedOZSmpcS2Ii6Z78005lXIhAuL75QHTMz7F69LnJoEjmJcW7fSiUJGWSlCHQpVc
-afjaHn5ii17FbhC8wlxtPRo1psiS8X9kYVJ80dw+019x2CUed7dgr6AKFO4YlQBN
-8H179G8biwFQYRf1ljhzOGYS2LGjyWwa0b+0OH3vVB28jbRZkIuwGa0y1ul1ehra
-6XJqQYRHy3Am7QZihvqX77o7R+TJVg==
-=wxwR
------END PGP SIGNATURE-----
-
---Sig_/K+FtPlvS6SpRyohqoQh6+u1--
+-- 
+viresh
