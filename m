@@ -2,119 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E81E29E5D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FD629E5E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgJ2IHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 04:07:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34852 "EHLO mail.kernel.org"
+        id S1726663AbgJ2IK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 04:10:28 -0400
+Received: from mga14.intel.com ([192.55.52.115]:15298 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726714AbgJ2IHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:07:40 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2AC522071A;
-        Thu, 29 Oct 2020 08:07:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603958860;
-        bh=kpWNJPWGD4JFwLM+mHUyzzxC6LBl3TEm0/BDqlS76+w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p5j/vgBuQezI6kR9EU1fwI5RM0bNnX6e2eSjaPejpXXKukozYtdR1oYABLFUxNbtI
-         CZnvYEO7FvMZi0KhP7nnKClDG+0QQ5CqIC90UWrM7jnRJVgtMBVNz77OV3proh2Kwo
-         5y/F5YAlACNAemiizQ//E4r1aRGnkNYM2XQLFMhE=
-Date:   Thu, 29 Oct 2020 17:07:36 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [RFC][PATCH 1/2 v2] ftrace/x86: Allow for arguments to be
- passed in to REGS by default
-Message-Id: <20201029170736.938ded569b436c858ebc2555@kernel.org>
-In-Reply-To: <20201028112916.50bcbc69@oasis.local.home>
-References: <20201028131542.963014814@goodmis.org>
-        <20201028131909.738751907@goodmis.org>
-        <20201028102502.28095c95@oasis.local.home>
-        <20201028112916.50bcbc69@oasis.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727157AbgJ2IIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:08:11 -0400
+IronPort-SDR: x4KLtTgzdcjIoyJPlb5upHQmYyXCpPv2v26yBgsP1C/fioHqnRnb75xtU4bTyUBx1OzJW0jdNa
+ b8Ar2uZ0vuzg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="167614153"
+X-IronPort-AV: E=Sophos;i="5.77,429,1596524400"; 
+   d="scan'208";a="167614153"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 01:08:11 -0700
+IronPort-SDR: 1ERdDjGrx/J7sOsH3QvG4gMY/zSofpPUx8j92Nia8y6n1gFb3aB4W/qKviNg/UNmNdF0iSZKFC
+ J46fCuGFZ+kw==
+X-IronPort-AV: E=Sophos;i="5.77,429,1596524400"; 
+   d="scan'208";a="536574275"
+Received: from rsexton-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.5.42])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 01:08:07 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Chris Wilson <chris@chris-wilson.co.uk>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the drm-intel-fixes tree
+In-Reply-To: <160392160276.31966.3847690661999837078@build.alporthouse.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20201029082823.5607849a@canb.auug.org.au> <160392160276.31966.3847690661999837078@build.alporthouse.com>
+Date:   Thu, 29 Oct 2020 10:08:05 +0200
+Message-ID: <87ft5xihei.fsf@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 11:29:16 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, 28 Oct 2020, Chris Wilson <chris@chris-wilson.co.uk> wrote:
+> Quoting Stephen Rothwell (2020-10-28 21:28:23)
+>> Hi all,
+>> 
+>> Commit
+>> 
+>>   d13208a88f41 ("lockdep: Fix nr_unused_locks")
+>> 
+>> is missing a Signed-off-by from its author.
+>> 
+>> Also, the author's email name is missing the leading 'P'.
+>
+> And it shouldn't be in the drm-intel-fixes tree.
 
-> Hi Masami,
-> 
-> Talking with Peter and Thomas on IRC, where they really don't like
-> passing a partial pt_regs around, got me thinking of redoing the REGS
-> parameter of ftrace. Kprobes is the only user that requires the full
-> registers being saved, and that's only because some kprobe user might
-> want them.
+It's temporarily on top of the fixes branch to allow our CI to test the
+branch. We weren't getting results on anything -rc1 based because of
+this.
 
-Yes, kprobes can be used for debugging use case. I think we can skip
-coller-saved registers (because ftrace is embedded by compiler and it
-may save such registers correctly), but we still need a pt_regs on memory
-to access it.
-
-> 
-> On Wed, 28 Oct 2020 10:25:02 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> >  typedef void (*ftrace_func_t)(unsigned long ip, unsigned long parent_ip,
-> >  			      struct ftrace_ops *op, struct pt_regs *regs);
-> >  
-> 
-> 
-> Most registers of pt_regs at a start of a function is rather useless.
-> What if we got rid of FL_SAVE_REGS all together and had a "ftrace_regs"
-> structure passed in that would have only access to all the argument
-> registers, the stack pointer and the instruction pointer?
-
-Yeah, that's OK to me. If someone wants to investigate suspicious compiler
-bug, they should not put a kprobe on the fentry call site. (in most cases
-symbol+5 will put a breakpoint right after fentry nop)
-
-> Then kprobes could just create its own pt_regs, fill in all the data
-> from ftrace_regs and then fill the rest with zeros or possibly whatever
-> the values currently are (does it really matter what those registers
-> are?), including flags.
-
-That sounds good to me.
-
-> 
-> Not only would this simplify the code, it would probably allow moving
-> more of the kprobe code from the arch specific to the generic code, and
-> remove a lot of duplication.
-
-Ah, right.
-
-> 
-> This would also help speed up the processing of live kernel patching.
-> 
-> And best of all, it would give everything access to the arguments of a
-> function and a stack pointer with out (ab)using pt_regs.
-> 
-> Do you think this would be feasible?
-
-Yes, I agreed.
-
-Thank you,
-
-> 
-> -- Steve
+BR,
+Jani.
 
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Jani Nikula, Intel Open Source Graphics Center
