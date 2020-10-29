@@ -2,63 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DDD29F3A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C9E29F3AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726999AbgJ2R4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:56:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:41856 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726090AbgJ2R4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:56:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2322C139F;
-        Thu, 29 Oct 2020 10:56:17 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0BC9E3F66E;
-        Thu, 29 Oct 2020 10:56:14 -0700 (PDT)
-References: <20201023101158.088940906@infradead.org> <20201023102347.697960969@infradead.org> <jhja6w5ov4h.mognet@arm.com> <20201029174302.GV2628@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
-        tj@kernel.org, ouwen210@hotmail.com
-Subject: Re: [PATCH v4 17/19] sched: Add migrate_disable() tracepoints
-In-reply-to: <20201029174302.GV2628@hirez.programming.kicks-ass.net>
-Date:   Thu, 29 Oct 2020 17:56:12 +0000
-Message-ID: <jhj5z6sq5kz.mognet@arm.com>
+        id S1727499AbgJ2R60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 13:58:26 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:34492 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgJ2R60 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 13:58:26 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 860BE1C0B7A; Thu, 29 Oct 2020 18:58:23 +0100 (CET)
+Date:   Thu, 29 Oct 2020 18:58:23 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Luka Kovacic <luka.kovacic@sartura.hr>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        lee.jones@linaro.org, dmurphy@ti.com, robh+dt@kernel.org,
+        jdelvare@suse.com, linux@roeck-us.net, marek.behun@nic.cz,
+        luka.perkov@sartura.hr, andy.shevchenko@gmail.com,
+        robert.marko@sartura.hr
+Subject: Re: [PATCH v7 4/6] drivers: leds: Add the IEI WT61P803 PUZZLE LED
+ driver
+Message-ID: <20201029175823.GC26053@duo.ucw.cz>
+References: <20201025005916.64747-1-luka.kovacic@sartura.hr>
+ <20201025005916.64747-5-luka.kovacic@sartura.hr>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="E13BgyNx05feLLmH"
+Content-Disposition: inline
+In-Reply-To: <20201025005916.64747-5-luka.kovacic@sartura.hr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 29/10/20 17:43, Peter Zijlstra wrote:
-> On Thu, Oct 29, 2020 at 04:27:26PM +0000, Valentin Schneider wrote:
->> Don't you want those directly after the ->migration_disabled write?
->> esp. for migrate_enable(), if that preempt_enable() leads to a context
->> switch then the disable->enable deltas won't reflect the kernel view.
->> 
->> That delta may indeed include the time it took to run the stopper and
->> fix the task's affinity on migrate_enable(), but it could include all
->> sorts of other higher-priority tasks.
->
-> I can put them in the preempt_disable() section I suppose, but these
-> tracers should be looking at task_sched_runtime(), not walltime, and
-> then the preemption doesn't matter.
->
+--E13BgyNx05feLLmH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-True. I was thinking of how to process it downstream, and the first thing
-that came to mind was that rd->overutilized flag which we do monitor
-fairly closely; however that is system-wide while migrate_disable() is
-task-specific.
+Hi!
 
-> Also, a distinct lack of actual users atm.. :/
+> Add support for the IEI WT61P803 PUZZLE LED driver.
+> Currently only the front panel power LED is supported,
+> since it is the only LED on this board wired through the
+> MCU.
+>=20
+> The LED is wired directly to the on-board MCU controller
+> and is toggled using an MCU command.
+>=20
+> Support for more LEDs is going to be added in case more
+> boards implement this microcontroller, as LEDs use many
+> different GPIOs.
 
-If you'd rather ditch this one altogether until someone asks for it, that
-also works for me.
+Not too bad.
+
+> This driver depends on the IEI WT61P803 PUZZLE MFD driver.
+>=20
+> Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> Cc: Robert Marko <robert.marko@sartura.hr>
+> ---
+>  drivers/leds/Kconfig                    |   8 ++
+>  drivers/leds/Makefile                   |   1 +
+>  drivers/leds/leds-iei-wt61p803-puzzle.c | 161 ++++++++++++++++++++++++
+>  3 files changed, 170 insertions(+)
+
+Can you put it into drivers/leds/simple? You'll have to create it.
+
+> +++ b/drivers/leds/leds-iei-wt61p803-puzzle.c
+> @@ -0,0 +1,161 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+
+Make sure this is consistent with MODULE_LICENSE("GPL");. GPLv2+ would
+be nicer if you can.
+
+> +	struct mutex lock;
+
+Mutex is _way_ overkill for this. Please check that locking provided
+by LED core is not sufficient. If not, please use atomic_t or
+something.
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--E13BgyNx05feLLmH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5sCvwAKCRAw5/Bqldv6
+8j2+AJ0YFU6C6xHNPs7C8KJPePRrlhWVKACeIeZqPPBPkCkofGyaQ0peDTHv+P8=
+=3yWr
+-----END PGP SIGNATURE-----
+
+--E13BgyNx05feLLmH--
