@@ -2,221 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410AF29F045
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9260A29F048
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728362AbgJ2PkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728068AbgJ2PkM (ORCPT
+        id S1728448AbgJ2PkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:40:19 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:42874 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728275AbgJ2PkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:40:12 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722F1C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:40:11 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id m3so786083vki.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2PMHyXzjLDVufRa8llaIrw5zRwzBKgxCN4FbP7BnEq4=;
-        b=P/lP5sQLk86gvHr/EOl7JEAHhbrjf9ZAKB+VtrTxgzscmNq+bid4ufB7kd6fMviv/T
-         UvYhLTKMfuIxZhqeFP/RG8xw8oy1+uFSZy6oG4+hhma964i/elIzVv+QKJJjRH9+h0Nf
-         sasD8bU8GhS1TI9LHvOqF5glI/RA+wY8sbkhg=
+        Thu, 29 Oct 2020 11:40:19 -0400
+Received: by mail-ot1-f65.google.com with SMTP id h62so2625753oth.9;
+        Thu, 29 Oct 2020 08:40:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2PMHyXzjLDVufRa8llaIrw5zRwzBKgxCN4FbP7BnEq4=;
-        b=CmiT4jvJ7WbMxHNy2tsn5aevDe2AzAZsDFV6x5WxEhIaQy4NkU/JmkeWDMOljrViza
-         8MAih0ahrHTWGbzbpubLvZ6PrucPa4+Ml+uNGD/E0izNMKx42DXErbgAHN2GJKC7zxuz
-         i9RHQHz4iLeJCxklYWTl/PXoyFAYBrS/XkVwHtNSNfd++J7So7cnfWXyUcsNWNx1LQHR
-         12bOHKdJeAc7DGkaia8Pe2LV/TnNixYz3OcqizU8Sf+yL0NpGKORxAIvvrPqoovcMmbU
-         8ji8BhISj+4BRSUSp+fWufVrudztUJKZkv97wCOnnfz2wP2tiE+YOUyibaEFdv2/2bLG
-         RJKQ==
-X-Gm-Message-State: AOAM533JQD8MDTLLtyzHUl9RcGeFo9ZRb5wfm6A4T+GjbVr3MErj9x78
-        KJfa2/EhRUxmUYl0cVu5qJwWP/05HmQoDQ==
-X-Google-Smtp-Source: ABdhPJwV7GX2FhlA2GbGKy6wU//CTVt8DGdUx3ca8u1s01cKT9eMsjJDeexrNgzCgSM0/o+9RGEKAg==
-X-Received: by 2002:a1f:ad11:: with SMTP id w17mr3825202vke.0.1603986010248;
-        Thu, 29 Oct 2020 08:40:10 -0700 (PDT)
-Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com. [209.85.217.52])
-        by smtp.gmail.com with ESMTPSA id 190sm379421vsz.13.2020.10.29.08.40.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 08:40:09 -0700 (PDT)
-Received: by mail-vs1-f52.google.com with SMTP id g21so1779434vsp.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:40:08 -0700 (PDT)
-X-Received: by 2002:a67:b405:: with SMTP id x5mr3619420vsl.4.1603986008362;
- Thu, 29 Oct 2020 08:40:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pFK119oKBHUlA5FZkroLBkkbquLP5uElSERBD9V0akk=;
+        b=C9MR8x/it2pugcUt033mWhbKd3+zMWIEFBxTlEvDYzJiTqRaVG66Kmay9GluAM/vee
+         arO7hFF9i9fdIoU1XsLnobuSzUI7wTwn6knG3AsRPgc01MkE9vlkEO5TG8U2lt+QzBTJ
+         crv8gkm0GJ/dda8+J6YNaBuTcce7xICHs8ylu82O1jFLWI/FlSuWmyTuz67HWjbIsX0S
+         rbChFrlha+31BXo+xUiqpF5QXQK0ahDgcPib2CnkmFVY1LhsY1GQ2jHSyG9u5fCQwODW
+         0iRrLGzmJlhXtlaPph7wOMp3H7ELCpW3nK4iaEVDeQamg7W5Gdj09q6av58Y7LaJBTxH
+         mPKw==
+X-Gm-Message-State: AOAM531QCs3rW3h4Ut9crfn1wuyKiwEuWdRHws1CvFSDFwg2PGt9k4xt
+        ICO5i7gWuICwJ4ob6v1m4Q==
+X-Google-Smtp-Source: ABdhPJz/JkJ8C9MRVeRTN9L11T1V3txCS2mQ0fPKSM+XS8DvNISSelFbI4vfJlW1k1+tqtbj0oK9SA==
+X-Received: by 2002:a05:6830:4033:: with SMTP id i19mr3841436ots.127.1603986017758;
+        Thu, 29 Oct 2020 08:40:17 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 76sm681405oty.15.2020.10.29.08.40.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 08:40:17 -0700 (PDT)
+Received: (nullmailer pid 1920595 invoked by uid 1000);
+        Thu, 29 Oct 2020 15:40:16 -0000
+Date:   Thu, 29 Oct 2020 10:40:16 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Amelie Delaunay <amelie.delaunay@st.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
+Subject: Re: [RESEND PATCH v3 1/4] dt-bindings: connector: add power-opmode
+ optional property to usb-connector
+Message-ID: <20201029154016.GA1917373@bogus>
+References: <20201029095806.10648-1-amelie.delaunay@st.com>
+ <20201029095806.10648-2-amelie.delaunay@st.com>
 MIME-Version: 1.0
-References: <20201019140601.3047-1-lukasz.luba@arm.com> <CAD=FV=UYeo_rWBDRu-53Aw2OeY1NCgCuUJkocRM8xL+OCbJDug@mail.gmail.com>
- <62430cb9-eaab-b215-0eec-d35d3c625406@arm.com>
-In-Reply-To: <62430cb9-eaab-b215-0eec-d35d3c625406@arm.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 29 Oct 2020 08:39:56 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VA=tYzvb2-WQOJz7UGq-459R4+6xfuPQ-h-iMCKPP9vQ@mail.gmail.com>
-Message-ID: <CAD=FV=VA=tYzvb2-WQOJz7UGq-459R4+6xfuPQ-h-iMCKPP9vQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] Clarify abstract scale usage for power values in
- Energy Model, EAS and IPA
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
-        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029095806.10648-2-amelie.delaunay@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Oct 29, 2020 at 10:58:03AM +0100, Amelie Delaunay wrote:
+> Power operation mode may depends on hardware design, so, add the optional
+> property power-opmode for usb-c connector to select the power operation
+> mode capability.
+> 
+> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+> ---
+>  .../bindings/connector/usb-connector.yaml      | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> index 728f82db073d..200d19c60fd5 100644
+> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> @@ -93,6 +93,24 @@ properties:
+>        - device
+>        - dual
+>  
+> +  power-opmode:
 
-On Thu, Oct 29, 2020 at 5:37 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> On 10/20/20 1:15 AM, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Mon, Oct 19, 2020 at 7:06 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
-> >>
-> >> Hi all,
-> >>
-> >> The Energy Model supports power values expressed in an abstract scale.
-> >> This has an impact on Intelligent Power Allocation (IPA) and should be
-> >> documented properly. Kernel sub-systems like EAS, IPA and DTPM
-> >> (new comming PowerCap framework) would use the new flag to capture
-> >> potential miss-configuration where the devices have registered different
-> >> power scales, thus cannot operate together.
-> >>
-> >> There was a discussion below v2 of this patch series, which might help
-> >> you to get context of these changes [2].
-> >>
-> >> The agreed approach is to have the DT as a source of power values expressed
-> >> always in milli-Watts and the only way to submit with abstract scale values
-> >> is via the em_dev_register_perf_domain() API.
-> >>
-> >> Changes:
-> >> v3:
-> >> - added boolean flag to struct em_perf_domain and registration function
-> >>    indicating if EM holds real power values in milli-Watts (suggested by
-> >>    Daniel and aggreed with Quentin)
-> >> - updated documentation regarding this new flag
-> >> - dropped DT binding change for 'sustainable-power'
-> >> - added more maintainers on CC (due to patch 1/4 touching different things)
-> >> v2 [2]:
-> >> - updated sustainable power section in IPA documentation
-> >> - updated DT binding for the 'sustainable-power'
-> >> v1 [1]:
-> >> - simple documenation update with new 'abstract scale' in EAS, EM, IPA
-> >>
-> >> Regards,
-> >> Lukasz Luba
-> >>
-> >> [1] https://lore.kernel.org/linux-doc/20200929121610.16060-1-lukasz.luba@arm.com/
-> >> [2] https://lore.kernel.org/lkml/20201002114426.31277-1-lukasz.luba@arm.com/
-> >>
-> >> Lukasz Luba (4):
-> >>    PM / EM: Add a flag indicating units of power values in Energy Model
-> >>    docs: Clarify abstract scale usage for power values in Energy Model
-> >>    PM / EM: update the comments related to power scale
-> >>    docs: power: Update Energy Model with new flag indicating power scale
-> >>
-> >>   .../driver-api/thermal/power_allocator.rst    | 13 +++++++-
-> >>   Documentation/power/energy-model.rst          | 30 +++++++++++++++----
-> >>   Documentation/scheduler/sched-energy.rst      |  5 ++++
-> >>   drivers/cpufreq/scmi-cpufreq.c                |  3 +-
-> >>   drivers/opp/of.c                              |  2 +-
-> >>   include/linux/energy_model.h                  | 20 ++++++++-----
-> >>   kernel/power/energy_model.c                   | 26 ++++++++++++++--
-> >>   7 files changed, 81 insertions(+), 18 deletions(-)
-> >
-> > While I don't feel like I have enough skin in the game to make any
-> > demands, I'm definitely not a huge fan of this series still.  I am a
-> > fan of documenting reality, but (to me) trying to mix stuff like this
-> > is just going to be adding needless complexity.  From where I'm
-> > standing, it's a lot more of a pain to specify these types of numbers
-> > in the firmware than it is to specify them in the device tree.  They
->
-> When you have SCMI, you receive power values from FW directly, not using
-> DT.
->
-> > are harder to customize per board, harder to spin, and harder to
-> > specify constraints for everything in the system (all heat generators,
-> > all cooling devices, etc).  ...and since we already have a way to
-> > specify this type of thing in the device tree and that's super easy
-> > for people to do, we're going to end up with weird mixes / matches of
-> > numbers coming from different locations and now we've got to figure
-> > out which numbers we can use when and which to ignore.  Ick.
->
-> This is not that bad as you described. When you have SCMI and FW
-> all your perf domains should be aligned to the same scale.
-> In example, you have 4 little CPU, 3 big CPUs, 1 super big CPU,
-> 1 GPU, 1 DSP. For all of them the SCMI get_power callback should return
-> consistent values. You don't have to specify anything else or rev-eng.
-> Then a client like EAS would use those values from CPUs to estimate
-> energy and this works fine. Another client: IPA, which would use
-> all of them and also works fine.
+I've acked this version:
 
-I guess I'm confused.  When using SCMI and FW, are there already code
-paths to get the board-specific "sustainable-power" from SCMI and FW?
+https://lore.kernel.org/r/20201020093627.256885-2-badhri@google.com
 
-I know that "sustainable-power" is not truly necessary.  IIRC some of
-the code assumes that the lowest power state of all components must be
-sustainable and uses that.  However, though this makes the code work,
-it's far from ideal.  I don't want to accept a mediocre solution here.
+Please ack it if you are okay with it.
 
-In any case, I'm saying that even if "sustainable-power" can come from
-firmware, it's not as ideal of a place for it to live.  Maybe my
-experience on Chromebooks is different from the rest of upstream, but
-it's generally quite easy to adjust the device tree for a board and
-much harder to convince firmware folks to put a board-specific table
-of values.
+Rob
 
 
-> > In my opinion the only way to allow for mixing and matching the
-> > bogoWatts and real Watts would be to actually have units and the
-> > ability to provide a conversion factor somewhere.  Presumably that
-> > might give you a chance of mixing and matching if someone wants to
-> > provide some stuff in device tree and get other stuff from the
-> > firmware.  Heck, I guess you could even magically figure out a
-> > conversion factor if someone provides device tree numbers for
-> > something that was already registered in SCMI, assuming all the SCMI
-> > numbers are consistent with each other...
->
-> What you demand here is another code path, just to support revers
-> engineered power values for SCMI devices, which are stored in DT.
-> Then the SCMI protocol code and drivers should take them into account
-> and abandon standard implementation and use these values to provide
-> 'hacked' power numbers to EM. Am I right?
-> It is not going to happen.
-
-Quite honestly, all I want to be able to do is to provide a
-board-specific "sustainable-power" and have it match with the
-power-coefficients.  Thus:
-
-* If device tree accepted abstract scale, we'd be done and I'd shut
-up.  ...but Rob has made it quite clear that this is a no-go.
-
-* If it was super easy to add all these values into firmware for a
-board and we could totally remove these from the device tree, I'd
-grumble a bit about firmware being a terrible place for this but at
-least we'd have a solution and we'd be done and I'd shut up.  NOTE: I
-don't know ATF terribly well, but I'd guess that this needs to go
-there?  Presumably part of this is convincing firmware folks to add
-this board-specific value there...
-
--Doug
+> +    description: Determines the power operation mode that the Type C connector
+> +      will support and will advertise through CC pins when it has no power
+> +      delivery support.
+> +      - "default" corresponds to default USB voltage and current defined by the
+> +        USB 2.0 and USB 3.2 specifications, 5V 500mA for USB 2.0 ports and
+> +        5V 900mA or 1500mA for USB 3.2 ports in single-lane or dual-lane
+> +        operation respectively.
+> +      - "1.5A" and "3.0A", 5V 1.5A and 5V 3.0A respectively, as defined in USB
+> +        Type-C Cable and Connector specification, when Power Delivery is not
+> +        supported.
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#definitions/string
+> +    enum:
+> +      - default
+> +      - 1.5A
+> +      - 3.0A
+> +
+>    # The following are optional properties for "usb-c-connector" with power
+>    # delivery support.
+>    source-pdos:
+> -- 
+> 2.17.1
+> 
