@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060FE29F642
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5E329F645
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:36:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgJ2UfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 16:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
+        id S1726615AbgJ2UgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726342AbgJ2UfL (ORCPT
+        with ESMTP id S1726342AbgJ2UgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:35:11 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BFDC0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:35:10 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 184so5018726lfd.6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:35:10 -0700 (PDT)
+        Thu, 29 Oct 2020 16:36:14 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FB3C0613D4;
+        Thu, 29 Oct 2020 13:36:12 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id w65so3355168pfd.3;
+        Thu, 29 Oct 2020 13:36:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XV2GOJYljlEE+y8Fc2upH2so5LQLqqQFfNl/qA4qXms=;
-        b=ZDafbgdWjCYVWb2fYN22STVuj4OuN68Nk3oJX2aD4PBwf6emSzHP79/hypkJKAypWU
-         39EfEDu9Bc9wTVDFhx+C0to6aZ56jTsTIq3joLV1KilN3iGKc94/TwETmzHNovo7OqpV
-         v5V29xRb3fdut5xJdax8hQGV57s2384VMJeksTLBSUezvvBM+nnTkXacAma1QueQ5zJL
-         VKXkL0TEgTsihNQXg9cOyUB4E1xY2yQY4VdiFnvcMcC08TaWFxXjZEJ2tX/xlZdAT+2J
-         jxoi5Z6RM6TWwOJH3cRUf3YnNkuDLX8v5F+kDq8HSmRip2hmjbQX5s4eu0sywa/qjihw
-         5egw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=I61zSSXnddISlj5dBjtLwYvC1P3deaYqmSH5ozqsYog=;
+        b=LtKG+5PTjdwFBcnbd7HuU/FkzbjKi+WfScvarwjV+M6z1yg2rNwnHDfYY4jgwGaaf/
+         qz+FrIAPxmmYxE4hgzknAvHWV6yNV9+iUaPvVGpyouDWq9enXAI98INKV1olorZIMtdY
+         j0B80rkRT75br2IYrjN325LinEhG3YAUUGgAQqHqCc1LU9d+d/Of4grSPkXxJqoaO21S
+         otzBDMUOXQSmWoam5PtNCbeP54CDvR0AWLxOvyWLxqwuZkoJsyfyPpFqlDFUSddxjwjq
+         4bUhy1nC6O8/G8d+JS8EBwBWZvKK4jkUc37XiX+P0C3fYvNF1BJtMYYg7E9d8OsdVJPN
+         U1ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XV2GOJYljlEE+y8Fc2upH2so5LQLqqQFfNl/qA4qXms=;
-        b=uWQZrO7e5DG+9+dhPWnxH3L5xzsOApATX+su45cWMTRnPvdXxlO1HIgH9mSArMpNsg
-         Nv5gGAA6+HVCHdza2KIOdGtqPS+bbIFdncYpwUiEi7nxG2xu1690YhyhjMThGTMnJdVS
-         Qr4BSmHWyeOg6OSzBzj3kb2dS4eVzcLZsn7D3m/yAIzi7WGId0+sI/FlCC5WzsEV7i/N
-         PcWyT3wEe02S1PYU7A2doGr7891kvdSAoch/devA8MmcrI+Yl7n9nWQFL8eh2X8ChzMd
-         k2l7VK4f/f2T3leO1v+cJC//R3eKFEO8a0umET2hPuSx4nyc0M4fMAIm8/jyFrl2i7N7
-         3ouA==
-X-Gm-Message-State: AOAM531JVIYqX3chHTitQtMlIeXCBP+RVLntBEBfKvwUmKMlLvSKJKIa
-        scZees8PnCYX6oYDhRyqbiqYjGJpUCdswNOoeBeJVg==
-X-Google-Smtp-Source: ABdhPJzToJVR9lbEl9kreiI8zU1CLCJ/Mn6i7FmBBW6CH96l0Neszh4F9GkSq7pRBLOFabPREx6qJEeYRpYZo/lG0pU=
-X-Received: by 2002:a19:85c2:: with SMTP id h185mr2405045lfd.494.1604003708840;
- Thu, 29 Oct 2020 13:35:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I61zSSXnddISlj5dBjtLwYvC1P3deaYqmSH5ozqsYog=;
+        b=YsuPHNTXMEEx3b6ifkrMmb4yJ5lcrobw5V41g9B2ElEfmtb9gcmEl5nJ0KECMB/TXo
+         rJG7FYCJ4XYKfMsEDX8YZqejx/kiKrTfx0mQ1fErN5rclvoG4ByvjgZlMwglGiqk4G1Z
+         6jT9oYaZvEYTRDHJy3lNhY5zK6HO+QNXLvKsgKVzOV5wLYzneHza6WMYoHdp4Le9kmQW
+         yKZvrmlBlzcPuiup0UreSfZPy4jMEM0OSLzjcn5K9wylU+FB3063DpX0kmDv5tRyq+u6
+         WrKiLEvWz06Ov9HDf85vdI5ozYyXIDKSx6q9vH1g0RY36XvzODqkqDVi1eSbbYf3tt4d
+         kpOQ==
+X-Gm-Message-State: AOAM532G2ITSoDPXy2gcuVYZvG2R1PhrFU5sNb+Rwo1cXkVtb8ng3aDg
+        ySgJjpvaVSx3WjoZo46hZTQ=
+X-Google-Smtp-Source: ABdhPJylnY79MpK/rej9wEYYx1yPr2EAFJYxJWw8BVYTx7s67m6CSqSoxqZToU1y3zY6wyGN6y1BZg==
+X-Received: by 2002:a17:90a:f683:: with SMTP id cl3mr1675662pjb.84.1604003771560;
+        Thu, 29 Oct 2020 13:36:11 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id u4sm694739pjy.19.2020.10.29.13.36.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 13:36:10 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 13:36:08 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Andrej Valek <andrej.valek@siemens.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Cc:     nick@shmanahar.org, hadess@hadess.net, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/3] Input: goodix - add option to disable firmware
+ loading
+Message-ID: <20201029203608.GE2547185@dtor-ws>
+References: <20201029170313.25529-1-andrej.valek@siemens.com>
+ <20201029170313.25529-2-andrej.valek@siemens.com>
 MIME-Version: 1.0
-References: <20201028035013.99711-1-songmuchun@bytedance.com>
- <CALvZod6p_y2fTEK5fzAL=JfPsguqYbttgWC4_GPc=rF1PsN6TQ@mail.gmail.com> <20201029170955.GI827280@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20201029170955.GI827280@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 29 Oct 2020 13:34:57 -0700
-Message-ID: <CALvZod65MhzQiwGgLM89_gZzCFDaeSZofn08viPgcvra0JRvSg@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: memcg/slab: Fix return child memcg objcg for root memcg
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Chris Down <chris@chrisdown.name>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029170313.25529-2-andrej.valek@siemens.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 10:10 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Thu, Oct 29, 2020 at 08:48:45AM -0700, Shakeel Butt wrote:
-> > On Tue, Oct 27, 2020 at 8:50 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> > >
-> > > Consider the following memcg hierarchy.
-> > >
-> > >                     root
-> > >                    /    \
-> > >                   A      B
-> > >
-> > > If we get the objcg of memcg A failed,
-> >
-> > Please fix the above statement.
-> >
-> > > the get_obj_cgroup_from_current
-> > > can return the wrong objcg for the root memcg.
-> > >
-> > > Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
-> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > ---
-> > >  changelog in v2:
-> > >  1. Do not use a comparison with the root_mem_cgroup
-> > >
-> > >  mm/memcontrol.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index 1337775b04f3..8c8b4c3ed5a0 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -2961,6 +2961,7 @@ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
-> > >                 objcg = rcu_dereference(memcg->objcg);
-> > >                 if (objcg && obj_cgroup_tryget(objcg))
-> > >                         break;
-> > > +               objcg = NULL;
-> >
-> > Roman, in your cleanup, are you planning to have objcg for root memcg as well?
->
-> Yes. I'll just change the for loop to include the root_mem_cgroup.
->
+Hi Andrej,
 
-Then do we really need this patch since it's not tagged for stable?
+On Thu, Oct 29, 2020 at 06:03:11PM +0100, Andrej Valek wrote:
+> Firmware file loadind for GT911 controller takes too much time (~60s).
+> There is no check that configuration is the same which is already present.
+> This happens always during boot, which makes touchscreen unusable.
+> 
+> Add there an option to prevent firmware file loading, but keep it enabled
+> by default.
+
+I thought that Goodix was losing firmware loading at poweroff. Is this
+not the case with this model?
+
+Adding Hans as he was working with this driver/code.
+
+> 
+> Signed-off-by: Andrej Valek <andrej.valek@siemens.com>
+> ---
+>  drivers/input/touchscreen/goodix.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
+> index 02c75ea385e08..44336ecd2acdf 100644
+> --- a/drivers/input/touchscreen/goodix.c
+> +++ b/drivers/input/touchscreen/goodix.c
+> @@ -941,7 +941,9 @@ static int goodix_get_gpio_config(struct goodix_ts_data *ts)
+>  	default:
+>  		if (ts->gpiod_int && ts->gpiod_rst) {
+>  			ts->reset_controller_at_probe = true;
+> -			ts->load_cfg_from_disk = true;
+> +			/* Prevent cfg loading for each start */
+> +			ts->load_cfg_from_disk = !device_property_read_bool(dev,
+> +						 "touchscreen-do-not-load-fw");
+>  			ts->irq_pin_access_method = IRQ_PIN_ACCESS_GPIO;
+>  		}
+>  	}
+> -- 
+> 2.20.1
+> 
+
+Thanks.
+
+-- 
+Dmitry
