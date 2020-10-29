@@ -2,78 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C83729F6AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 22:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1231329F6AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 22:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgJ2VKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 17:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726433AbgJ2VKX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 17:10:23 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A384C0613D2;
-        Thu, 29 Oct 2020 14:10:23 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CMdPl2snfz9sRK;
-        Fri, 30 Oct 2020 08:10:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604005819;
-        bh=/8mwEBtt+7y5jWDrI+GQS5GZEJxTWO0JoWvTqNd6xAY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HHZjIXLX2WSLiQeuFivkKB4kEowrb7UKCwObxCrN2x2HZn5tiMaLX414uuNywXLQe
-         O5kmuDK1mGMjMcBT+wlJqPIXiTPZyX8LBrR/lyE4SiYJaWlaFrBycRbzg8flp/+PPz
-         /oo8PeIw70ItADenwWdCs/7zQBEVu/JzdInsQXYcVmtPa/3IOWSUcthKgTGlO2lJoQ
-         6FCWy6QAq+W1jILi6lnWsqahpzdX5sRkhdKbX7k3G/a6/ScFWwtvCjHvT0XEMyw8up
-         hbR9jWglL4Zm7zQVpPN6YYdpB1IDzBN1X+GJI8IdSTxg2HYqpbRrUltFbBuN/qzcyl
-         ImQxPNffnDoVg==
-Date:   Fri, 30 Oct 2020 08:10:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: failure while fetching the pinctrl-samsung-fixes tree
-Message-ID: <20201030081018.11279822@canb.auug.org.au>
+        id S1726827AbgJ2VKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 17:10:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726433AbgJ2VKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 17:10:37 -0400
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604005836;
+        bh=B9S0PYHC82HjIc6eRghx3UXS5MiORPfewagDkRGT7Fc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=rPbd4efRdfwMEMhu55BceSkg/Ir8HrkvE2X3mn7k8VdFkuqQVzP/O+NZgt16X46et
+         dEDgBtimaNtHJwYP3OuWobFR8AZSLJZHkepAfIosC5ExP6wJcIYTDBAKlMJAmQ8Aq5
+         oD+mRpXzN0bMHY5qMi7Lfszn3cAEfpVduU1RNj7A=
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2zDp6ViemrIqRdZjGDxb1uc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Subject: Re: [GIT PULL] Networking
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160400583677.23156.17057572329137636713.git-patchwork-notify@kernel.org>
+Date:   Thu, 29 Oct 2020 21:10:36 +0000
+References: <20201029124335.2886a2bf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201029124335.2886a2bf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2zDp6ViemrIqRdZjGDxb1uc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This pull request was applied to netdev/net.git (refs/heads/master):
 
-Fetching the pinctrl-samsung-fixes tree produces this error:
+On Thu, 29 Oct 2020 12:43:35 -0700 you wrote:
+> The following changes since commit 3cb12d27ff655e57e8efe3486dca2a22f4e30578:
+> 
+>   Merge tag 'net-5.10-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2020-10-23 12:05:49 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.10-rc2
+> 
+> [...]
 
-fatal: couldn't find remote ref refs/heads/pinctrl-fixes
+Here is the summary with links:
+  - [GIT,PULL] Networking
+    https://git.kernel.org/netdev/net/c/934291ffb638
 
---=20
-Cheers,
-Stephen Rothwell
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
---Sig_/2zDp6ViemrIqRdZjGDxb1uc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+bL7oACgkQAVBC80lX
-0GyvdggAhz32KrMpqfLdTHq1iZyFBOmuUYmO0x70ZbT7Pm1PvpJn7aNBpi4S/idE
-zuELLalUUaO3nQ5j+nu+alNNjAjF5uhF4l7kX5bx9E1hNOKu9l12vFBK3rhsTqou
-Hbbj146Z9cqdorJuUtV4XgasT7aT1Z5cv/LAfjwNbS6lIOsZgoz4OcJcGp9KuKtz
-WTkK9N+f2TDouzgAj9+N+yLnHmMJU2KN6yI4gYHJrP+UuNkg9yvfQSSc7Gmd2MNG
-v0xRTAaawNCtPnZCQBegEVPyeH3VGeiPpY3z202yjfxMBO0M3GgkkdlOMkB9LRUu
-EqvSpeWtWtg2J3u5OX8FoudwfK84ZQ==
-=zPmP
------END PGP SIGNATURE-----
-
---Sig_/2zDp6ViemrIqRdZjGDxb1uc--
