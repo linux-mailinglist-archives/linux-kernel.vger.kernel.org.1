@@ -2,164 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57BB629EE16
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0FE29EE14
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbgJ2OVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
+        id S1726471AbgJ2OTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgJ2OTz (ORCPT
+        with ESMTP id S1725300AbgJ2OTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:19:55 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 438A8C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:19:53 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id v6so3465282lfa.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:19:53 -0700 (PDT)
+        Thu, 29 Oct 2020 10:19:52 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE529C0613CF;
+        Thu, 29 Oct 2020 07:19:51 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id y12so2967507wrp.6;
+        Thu, 29 Oct 2020 07:19:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0xqLKgQRn4fpYiHgxV46U11c/D01Rgj11cfaVUanRmw=;
-        b=x8cC4cmzeQg08xXTxSBFjzWkzLcXBVdIw9nGwuLC3vpGBVTLevO+J7FiT4jl6TqfeQ
-         uIs4RykVVQGaZ1Icy2q0v4twYtkNXnQH9oMapNgXu9+pypeLoUmYvpKQ6N7xJHIbHoh1
-         EjM+cVwKsdFyWlu+K4IB3TEP2e4auq5ulTeTzw6PmMm5TwJa7K32SIOZPs47P9LX5RfG
-         u0u4CoFKXsEKW9MhaqM7fg1yZFf4XkZzl0QLwh1wsdw98njE+ShGMws2QCMFrDiNCEZD
-         KkzM6KgCDNgu1nRpKx4k5HT07mgl2+8fivFMdup4xwfaADM/C/5qtpVGniDAkT75MhxO
-         f6zQ==
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IG7tsLJmeRfHh6RhAZa+dQgZB0okc8aPFoAcBoJ4Rrg=;
+        b=rpkj0Jc75yJkzo7xNX6lc0EksZSpF9MeOYniMB45rwEzzLCMwxAQPpDmyY7IhCFbxE
+         Zw922+i3sidiSvYnZ8HossRSuxUVSDRMWCCpXsVQHe2OoXQqi4iG3leW8u12iTErdfpO
+         4CLcho2aHQTCi9v2z0Pck4m+ZPvbVWvi84YCi4LecEkcnhssZ5HgYhAi35V+MAFaOFVs
+         T6hYs4h7BEfZojdm6yKECBuWaieovAhiHKT81+AkM3TyazL4WbZgZz6Y/jlprCTo9giw
+         0ZpRCBnS4s6h9Fbxwpr3G4JtQ7C/tlAAHd5PW6x61ySnXZuOsrG01jTjbZf8hhVcFAD1
+         G/SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0xqLKgQRn4fpYiHgxV46U11c/D01Rgj11cfaVUanRmw=;
-        b=Qo9WIZy3lJxa5YWbzhQue+Hk+r0z9vvkhS0Nrum4JOAXvBjvmSnZz46LaWJByjC57Z
-         GX6HJ/8ZCN085fH4qX3xf/g7IyA11TYEdddXFekWp6kt3JMIqSHn2bFGvfD77GVCczLA
-         RAdnyKBYrjJ/Nwb/TX4q86Rih+4gbyOSxee5pixgVTuq5j4PvowjpMFkpZqEsBqYdMiQ
-         3NTy5IB8g41p/FXVPnIB+WQ6QQnOI3uU0NRJNWiwFv0pTfmHWZ1N00kqqzrWHr+LkEs/
-         FViY6Y1F1E0TQRri4BgaYAcRwWEXa0EQujfG8vxCJanNv4CdSKH/ppci825Tl5m/6VSj
-         hBeg==
-X-Gm-Message-State: AOAM532HDLgIXfijwyMnImYVRp3w2WtwCafQyInSBT5TQ6wgsePsjyM0
-        is9JMU8qT6Uxs/AsKFyL/HplhCPGTm00qeWq65dSsQ==
-X-Google-Smtp-Source: ABdhPJy05mIFD2bOeXR512eQPI6zIIpBv0eUC8fW0ZBaANVhJhL3/j+WP52rn+FKg0p15VT3GaFo17fSR0uM0QJxFWQ=
-X-Received: by 2002:a19:7018:: with SMTP id h24mr1806416lfc.252.1603981191660;
- Thu, 29 Oct 2020 07:19:51 -0700 (PDT)
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IG7tsLJmeRfHh6RhAZa+dQgZB0okc8aPFoAcBoJ4Rrg=;
+        b=VXYJqNE56ZWWuWiAsQd6GPyQGOWyCyoopIEvvxDh4RBH2YXAlE3exnxyz+Yee9RDV3
+         8l2SRm2sxNVSie0pbgbASwADB7tif8iGYuKCgj1nV+re6kqmapB071+OZAL7J2o6rp6U
+         78AZAuGg4JnGIVlMj/zdAZuW6XiBKTTgl8zzloANttJ85V/32k60vcYw6Nb42nKUWZwj
+         +UKRE2kaMraV+b8dD3cXf/dPgCHn25/ZxlYs+3AE0NMTRy7NoviXyXwfilQVNcBYHOF1
+         7WEm1p45lPa7a7a3Z6GsU/HFUNzmAiuY1M5kybophD/EWplvoQtedke4lky9DtCt87av
+         m93A==
+X-Gm-Message-State: AOAM533gpEMR0ynf6a/mqQJTdYWGt34mk93EkEn0js2faWaQOR3IPi3b
+        W3YdblGPFBAS5XbZRf2CImc=
+X-Google-Smtp-Source: ABdhPJySnfrnD0+l5dneed6fFIU3+/0xpO41ctDgfWTaEnqrPyFvDhe+3nU9GLoPc83nDDVqmBg11w==
+X-Received: by 2002:a5d:490c:: with SMTP id x12mr5816557wrq.193.1603981190393;
+        Thu, 29 Oct 2020 07:19:50 -0700 (PDT)
+Received: from ?IPv6:2001:a61:245a:d801:2e74:88ad:ef9:5218? ([2001:a61:245a:d801:2e74:88ad:ef9:5218])
+        by smtp.gmail.com with ESMTPSA id x21sm6413570wmi.3.2020.10.29.07.19.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 07:19:49 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+ <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <0de41eb1-e1fd-85da-61b7-fac4e3006726@gmail.com>
+Date:   Thu, 29 Oct 2020 15:19:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20201028174412.680-1-vincent.guittot@linaro.org> <jhjk0v9p9ic.mognet@arm.com>
-In-Reply-To: <jhjk0v9p9ic.mognet@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 29 Oct 2020 15:19:39 +0100
-Message-ID: <CAKfTPtC1Y_3-8iRhMDe2eU5MGiHWGV4_Nokiy7LgE2OAnkNE_w@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: prefer prev cpu in asymmetric wakeup path
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Tao Zhou <ouwen210@hotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 at 12:16, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
->
-> Hi Vincent,
->
-> On 28/10/20 17:44, Vincent Guittot wrote:
-> > During fast wakeup path, scheduler always check whether local or prev cpus
-> > are good candidates for the task before looking for other cpus in the
-> > domain. With
-> >   commit b7a331615d25 ("sched/fair: Add asymmetric CPU capacity wakeup scan")
-> > the heterogenous system gains a dedicated path but doesn't try to reuse
-> > prev cpu whenever possible. If the previous cpu is idle and belong to the
-> > LLC domain, we should check it 1st before looking for another cpu because
-> > it stays one of the best candidate and this also stabilizes task placement
-> > on the system.
-> >
-> > This change aligns asymmetric path behavior with symmetric one and reduces
-> > cases where the task migrates across all cpus of the sd_asym_cpucapacity
-> > domains at wakeup.
-> >
-> > This change does not impact normal EAS mode but only the overloaded case or
-> > when EAS is not used.
-> >
-> > - On hikey960 with performance governor (EAS disable)
-> >
-> > ./perf bench sched pipe -T -l 50000
-> >              mainline           w/ patch
-> > # migrations   999364                  0
-> > ops/sec        149313(+/-0.28%)   182587(+/- 0.40) +22%
-> >
-> > - On hikey with performance governor
-> >
-> > ./perf bench sched pipe -T -l 50000
-> >              mainline           w/ patch
-> > # migrations        0                  0
-> > ops/sec         47721(+/-0.76%)    47899(+/- 0.56) +0.4%
-> >
-> > According to test on hikey, the patch doesn't impact symmetric system
-> > compared to current implementation (only tested on arm64)
-> >
-> > Also read the uclamped value of task's utilization at most twice instead
-> > instead each time we compare task's utilization with cpu's capacity.
-> >
-> > Fixes: b7a331615d25 ("sched/fair: Add asymmetric CPU capacity wakeup scan")
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
->
-> Other than the below, I quite like this!
->
-> > ---
-> > Changes in v2:
-> > - merge asymmetric and symmetric path instead of duplicating tests on target,
-> >   prev and other special cases.
-> >
-> > - factorize call to uclamp_task_util(p) and use fits_capacity(). This could
-> >   explain part of the additionnal improvement compared to v1 (+22% instead of
-> >   +17% on v1).
-> >
-> > - Keep using LLC instead of asym domain for early check of target, prev and
-> >   recent_used_cpu to ensure cache sharing between the task. This doesn't
-> >   change anything for dynamiQ but will ensure same cache for legacy big.LITTLE
-> >   and also simply the changes.
-> >
->
-> On legacy big.LITTLE systems, sd_asym_cpucapacity spans all CPUs, so we
-> would iterate over those in select_idle_capacity() anyway - the policy
-> we've been going for is that capacity fitness trumps cache use.
->
-> This does require the system to have a decent interconnect, cache snooping
-> & co, but that is IMO a requirement of any sane asymmetric system.
->
-> To put words into code, this is the kind of check I would see:
->
->   if (static_branch_unlikely(&sched_asym_cpucapacity))
->         return fits_capacity(task_util, capacity_of(cpu));
->   else
+Hello Jann,
 
-You can't make the shortcut that prev will always belong to the domain
-so you have to check that prev belongs to the sd_asym_cpucapacity.
-Even if it's true with current mobile Soc, This code is generic core
-code and must handle any kind of funny topology than HW guys could
-imagine
+On 10/29/20 2:42 AM, Jann Horn wrote:
+> On Mon, Oct 26, 2020 at 10:55 AM Michael Kerrisk (man-pages)
+> <mtk.manpages@gmail.com> wrote:
+>>        static bool
+>>        getTargetPathname(struct seccomp_notif *req, int notifyFd,
+>>                          char *path, size_t len)
+>>        {
+>>            char procMemPath[PATH_MAX];
+>>
+>>            snprintf(procMemPath, sizeof(procMemPath), "/proc/%d/mem", req->pid);
+>>
+>>            int procMemFd = open(procMemPath, O_RDONLY);
+>>            if (procMemFd == -1)
+>>                errExit("\tS: open");
+>>
+>>            /* Check that the process whose info we are accessing is still alive.
+>>               If the SECCOMP_IOCTL_NOTIF_ID_VALID operation (performed
+>>               in checkNotificationIdIsValid()) succeeds, we know that the
+>>               /proc/PID/mem file descriptor that we opened corresponds to the
+>>               process for which we received a notification. If that process
+>>               subsequently terminates, then read() on that file descriptor
+>>               will return 0 (EOF). */
+>>
+>>            checkNotificationIdIsValid(notifyFd, req->id);
+>>
+>>            /* Read bytes at the location containing the pathname argument
+>>               (i.e., the first argument) of the mkdir(2) call */
+>>
+>>            ssize_t nread = pread(procMemFd, path, len, req->data.args[0]);
+>>            if (nread == -1)
+>>                errExit("pread");
+> 
+> As discussed at
+> <https://lore.kernel.org/r/CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>,
+> we need to re-check checkNotificationIdIsValid() after reading remote
+> memory but before using the read value in any way. Otherwise, the
+> syscall could in the meantime get interrupted by a signal handler, the
+> signal handler could return, and then the function that performed the
+> syscall could free() allocations or return (thereby freeing buffers on
+> the stack).
+> 
+> In essence, this pread() is (unavoidably) a potential use-after-free
+> read; and to make that not have any security impact, we need to check
+> whether UAF read occurred before using the read value. This should
+> probably be called out elsewhere in the manpage, too...
 
->         return cpus_share_cache(cpu, other);
->
-> > - don't check capacity for the per-cpu kthread UC because the assumption is
-> >   that the wakee queued work for the per-cpu kthread that is now complete and
-> >   the task was already on this cpu.
-> >
-> > - On an asymmetric system where an exclusive cpuset defines a symmetric island,
-> >   task's load is synced and tested although it's not needed. But taking care of
-> >   this special case by testing if sd_asym_cpucapacity is not null impacts by
-> >   more than 4% the performance of default sched_asym_cpucapacity path.
-> >
-> > - The huge increase of the number of migration for hikey960 mainline comes from
-> >   teh fact that the ftrace buffer was overloaded by events in the tests done
-> >   with v1.
+Thanks very much for pointing me at this!
+
+So, I want to conform that the fix to the code is as simple as
+adding a check following the pread() call, something like:
+
+[[
+     ssize_t nread = pread(procMemFd, path, len, req->data.args[argNum]);
+     if (nread == -1)
+        errExit("Supervisor: pread");
+ 
+     if (nread == 0) {
+        fprintf(stderr, "\tS: pread() of /proc/PID/mem "
+                "returned 0 (EOF)\n");
+        exit(EXIT_FAILURE);
+     }
+ 
+     if (close(procMemFd) == -1)
+        errExit("Supervisor: close-/proc/PID/mem");
+ 
++    /* Once again check that the notification ID is still valid. The
++       case we are particularly concerned about here is that just
++       before we fetched the pathname, the target's blocked system
++       call was interrupted by a signal handler, and after the handler
++       returned, the target carried on execution (past the interrupted
++       system call). In that case, we have no guarantees about what we
++       are reading, since the target's memory may have been arbitrarily
++       changed by subsequent operations. */
++
++    if (!notificationIdIsValid(notifyFd, req->id, "post-open"))
++        return false;
++
+     /* We have no guarantees about what was in the memory of the target
+        process. We therefore treat the buffer returned by pread() as
+        untrusted input. The buffer should be terminated by a null byte;
+        if not, then we will trigger an error for the target process. */
+ 
+     if (strnlen(path, nread) < nread)
+         return true;
+]]
+
+> Now, of course, **reading** is the easy case. The difficult case is if
+> we have to **write** to the remote process... because then we can't
+> play games like that. If we write data to a freed pointer, we're
+> screwed, that's it. (And for somewhat unrelated bonus fun, consider
+> that /proc/$pid/mem is originally intended for process debugging,
+> including installing breakpoints, and will therefore happily write
+> over "readonly" private mappings, such as typical mappings of
+> executable code.)
+> 
+> So, uuuuh... I guess if anyone wants to actually write memory back to
+> the target process, we'd better come up with some dedicated API for
+> that, using an ioctl on the seccomp fd that magically freezes the
+> target process inside the syscall while writing to its memory, or
+> something like that? And until then, the manpage should have a big fat
+> warning that writing to the target's memory is simply not possible
+> (safely).
+> 
+>>            if (nread == 0) {
+>>                fprintf(stderr, "\tS: pread() of /proc/PID/mem "
+>>                        "returned 0 (EOF)\n");
+>>                exit(EXIT_FAILURE);
+>>            }
+> .
+
+I'll think over some changes to the text of the manual page.
+
+Cheers,
+
+Michael
+
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
