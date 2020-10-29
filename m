@@ -2,720 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CEF29EA19
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8331729EA22
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:10:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727404AbgJ2LJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:09:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727511AbgJ2LIu (ORCPT
+        id S1727612AbgJ2LJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:09:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53283 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727649AbgJ2LJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:08:50 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21717C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 04:08:50 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id y12so2281535wrp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 04:08:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OpXvsi+tYirW35CHW6y/W9jhiZOSEmx5/xqli7LvJSM=;
-        b=OuUfcIEHlj3gSwORG43mXNC82jluUPCzpVpTG1RRk0HDlzoWUiKuD95hIVelbjvhu3
-         hFNqp3z6XDQZ4FVarMWS5Lx0ALv3FkppX3f5ducXHWiwDTDfiJyMHuHJI7hUmfBxdT+I
-         L1zmE/Zdm43bBQLJKyvqZApUVjBJkXgy6fZ6bi34q20WAEnMBxtXZHdEmdZIwcTnS4yY
-         IT9Gf1DyDvnYGPHNL0z6shBw/iI3y9CbtykD5RiWYXTgotOFBIRG38L0ExwxM8fgERBI
-         nwRxF5HCKUiHW3qj4HAD+SfeL2GFjdU7qu8gKqtiwoqm9VjUnMhJjMd3SW3qkf/Lgf9V
-         eoSA==
+        Thu, 29 Oct 2020 07:09:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603969768;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ulPrPIim///GD383DoMCDOW+6QLsQhCgTfUq3eBfgQQ=;
+        b=WCZ1bIbN309DE7mVahBlXKBdvdXgAgilnEDBLazm8JA7NNCEtOSZ31f9cqR1RY73Q6p3RX
+        wy6gYd2XCFwuqnlAdnUbhxRWLZOrrrlwB/JLGG3vXS6mfvWwWcgfdj149J3RkJ4CedItjy
+        4AeS6rll3ICrwC2lAThmIch5KRtjpWU=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-364-Mlw7jyosMWmf_4SXHXggiQ-1; Thu, 29 Oct 2020 07:09:27 -0400
+X-MC-Unique: Mlw7jyosMWmf_4SXHXggiQ-1
+Received: by mail-ed1-f69.google.com with SMTP id ay19so1008022edb.23
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 04:09:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OpXvsi+tYirW35CHW6y/W9jhiZOSEmx5/xqli7LvJSM=;
-        b=a2wF0U6RrxLpjfq+jSij1Kj1adZtsnqM6YY8nZ4JRy6AqayJJqR+IoNiTRpe7xomL4
-         ybYHvOeBlle5QWdHrLwHVI9Gqq1/aSfWYu2oYdMhowBRQneyi040kqxRcRzi2uSQ3TC5
-         YuSegHgasQU5LPDtkiwgh8Wa3kltiDnChemVFYosJnTj4lJ3PpFCzDqLEosso1LTgEGp
-         wGgBm+nSRV0yRu8Y+ga7DEXVsZD7bl3hRVo4kvbWVkoJYMl8wPEz21HhO5xvqWfdsdgr
-         wTuHIINJIQkDoLBD6P0fgDqSO93swcsMW+VkPkx5DhqMtXwK6kWXwJbmnBtqFEbGrLTw
-         0CeA==
-X-Gm-Message-State: AOAM533A79onadBvpwe6eDoEewr2qqJ5Al8Oet258s4LijMSBIeu8rcl
-        0WDqXxsjfBLWZllgQJLEzLK7Ow==
-X-Google-Smtp-Source: ABdhPJyTBRKSddSDkPHX6clI/KpO520AgBwfe9CJPqlrKNvfG8jeIU8Zrn3HUoB+yonVq9vgVpepVg==
-X-Received: by 2002:adf:94e3:: with SMTP id 90mr4532047wrr.380.1603969728783;
-        Thu, 29 Oct 2020 04:08:48 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id n4sm3710830wmi.32.2020.10.29.04.08.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 04:08:47 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 6/6] ASoC: codecs: lpass-va-macro: add dapm widgets and routes
-Date:   Thu, 29 Oct 2020 11:08:29 +0000
-Message-Id: <20201029110829.16425-7-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201029110829.16425-1-srinivas.kandagatla@linaro.org>
-References: <20201029110829.16425-1-srinivas.kandagatla@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ulPrPIim///GD383DoMCDOW+6QLsQhCgTfUq3eBfgQQ=;
+        b=Eo6zy/IeEeAny6E09PGhO/8pWFTeLe5FZ9iMGSpPyMsXmvIoLxiylIJA9Ns0+rveqQ
+         ve/XDaEgjC9o7OYif6MV5dSMN8lbFvP2UVINkyW9PUNb74urbBnGXT3+254g9O4eqUzM
+         wbX63ZyiGIhZ9W5kMHwxOxNzkJqWfahpxK0sZeTA+4F/39yvrJaU5lr4Ymqjtv4WsLas
+         Cid835su53exz/J8enwHwrihzkMHEwj/2vOF5crAgTsFNG8hXzLm+NiJgpLq6fWLmxsm
+         shkoJmKJWuIonycK4odfelttofI2z3NQGr6qT0hN1f/+RqzbtN6rNeQhWawaXscpqzuT
+         3OiA==
+X-Gm-Message-State: AOAM5300IPFvVrHKRur1ACv4MyR+CBU3V3IJfeeXz0csvQrHcv92IbA1
+        KRaDSirl1zHn0oiqY1uytNj45X9lIVzTdmvY4iICZgzSjFvVzAT07dHqJoQs3PtWxB2hN1a748I
+        B5dTqhU1Ht/xOn4+Elppqn/kT
+X-Received: by 2002:aa7:cad6:: with SMTP id l22mr3373639edt.229.1603969765762;
+        Thu, 29 Oct 2020 04:09:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwptOG11t2XxeOqWH7+pGgqpz2Wq37U+PJWlG3uxcg9bfNS61ETmLr1yNHXWpkFr9D1Jo67/w==
+X-Received: by 2002:aa7:cad6:: with SMTP id l22mr3373613edt.229.1603969765485;
+        Thu, 29 Oct 2020 04:09:25 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id oz18sm1303970ejb.55.2020.10.29.04.09.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 04:09:24 -0700 (PDT)
+Subject: Re: [PATCH] power: supply: olpc_battery: remove unnecessary
+ CONFIG_PM_SLEEP
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Darren Hart <dvhart@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Shevchenko <andy@infradead.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:X86 PLATFORM DRIVERS - ARCH" 
+        <platform-driver-x86@vger.kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+References: <20201029074100.225806-1-coiby.xu@gmail.com>
+ <5350ef53-cf70-c4b6-cdf8-5738e9d4b10a@redhat.com>
+ <20201029105941.i2kr2424wnrgtvz5@Rk>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <2c09e34a-3312-628e-c9cd-518e9f58efb4@redhat.com>
+Date:   Thu, 29 Oct 2020 12:09:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
+In-Reply-To: <20201029105941.i2kr2424wnrgtvz5@Rk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dapm widgets and routes for this codec.
+Hi,
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/lpass-va-macro.c | 618 ++++++++++++++++++++++++++++++
- 1 file changed, 618 insertions(+)
+On 10/29/20 11:59 AM, Coiby Xu wrote:
+> Hi Hans,
+> 
+> Thank you for reviewing this patch!
+> 
+> On Thu, Oct 29, 2020 at 11:04:36AM +0100, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 10/29/20 8:41 AM, Coiby Xu wrote:
+>>> SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+>>
+>> No it does not, when CONFIG_PM_SLEEP is not set then the
+>> SET_SYSTEM_SLEEP_PM_OPS macro which SIMPLE_DEV_PM_OPS uses
+>> is a no-op, so nothing will reference xo15_sci_resume leading to
+>> a compiler warning when CONFIG_PM_SLEEP is not set.
+>>
+>> You could drop the ifdef and add __maybe_unused to the definition
+>> of xo15_sci_resume, but that feels like needless churn, best to
+>> just keep this as is IMHO.
+>>
+> 
+> Actually, this is a tree-wide change by some semi-automation scripts.
+> Thank you for pointing out the issue to prevent me from releasing
+> another ~150 emails to flood other mailing lists.
+> 
+> Currently there are 929 drivers has device PM callbacks,
+> 
+> $ grep -rI "\.pm = &" --include=*.c  ./|wc -l
+> 929
+> 
+> I put all files having device PM callbacks into four categories
+> based on weather a file has CONFIG_PM_SLEEP or PM macro like
+> SET_SYSTEM_SLEEP_PM_OPS, here are the statistics,
+>   1. have both CONFIG_PM_SLEEP and PM_OPS macro: 213
+>   2. have CONFIG_PM_SLEEP but no PM_OPS macro: 19
+>   3. have PM macro but not CONFIG_PM_SLEEP: 347
+>   4. no PM macro or CONFIG_PM_SLEEP: 302
+> 
+> Some drivers which have PM macro but not CONFIG_PM_SLEEP like
+> sound/x86/intel_hdmi_audio.c indeed use __maybe_unused to eliminate
+> the compiling warning. In 2011, there's a patch proposing to remove
+> ONFIG_PM altogether but an objection was turning CONFIG_PM on would
+> increase the kernel size [1]. So __maybe_unused also have this issue.
 
-diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
-index 8cb23c32631d..ff86f20c6180 100644
---- a/sound/soc/codecs/lpass-va-macro.c
-+++ b/sound/soc/codecs/lpass-va-macro.c
-@@ -451,6 +451,327 @@ static int va_macro_mclk_enable(struct va_macro *va, bool mclk_enable)
- 	return 0;
- }
- 
-+static int va_macro_mclk_event(struct snd_soc_dapm_widget *w,
-+			       struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
-+	struct va_macro *va = snd_soc_component_get_drvdata(comp);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		return va_macro_mclk_enable(va, true);
-+	case SND_SOC_DAPM_POST_PMD:
-+		return va_macro_mclk_enable(va, false);
-+	}
-+
-+	return 0;
-+}
-+
-+static int va_macro_put_dec_enum(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *widget =
-+		snd_soc_dapm_kcontrol_widget(kcontrol);
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(widget->dapm);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned int val;
-+	u16 mic_sel_reg;
-+
-+	val = ucontrol->value.enumerated.item[0];
-+
-+	switch (e->reg) {
-+	case CDC_VA_INP_MUX_ADC_MUX0_CFG0:
-+		mic_sel_reg = CDC_VA_TX0_TX_PATH_CFG0;
-+		break;
-+	case CDC_VA_INP_MUX_ADC_MUX1_CFG0:
-+		mic_sel_reg = CDC_VA_TX1_TX_PATH_CFG0;
-+		break;
-+	case CDC_VA_INP_MUX_ADC_MUX2_CFG0:
-+		mic_sel_reg = CDC_VA_TX2_TX_PATH_CFG0;
-+		break;
-+	case CDC_VA_INP_MUX_ADC_MUX3_CFG0:
-+		mic_sel_reg = CDC_VA_TX3_TX_PATH_CFG0;
-+		break;
-+	default:
-+		dev_err(component->dev, "%s: e->reg: 0x%x not expected\n",
-+			__func__, e->reg);
-+		return -EINVAL;
-+	}
-+
-+	if (val != 0)
-+		snd_soc_component_update_bits(component, mic_sel_reg,
-+					      CDC_VA_TX_PATH_ADC_DMIC_SEL_MASK,
-+					      CDC_VA_TX_PATH_ADC_DMIC_SEL_DMIC);
-+
-+	return snd_soc_dapm_put_enum_double(kcontrol, ucontrol);
-+}
-+
-+static int va_macro_tx_mixer_get(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *widget =
-+		snd_soc_dapm_kcontrol_widget(kcontrol);
-+	struct snd_soc_component *component =
-+				snd_soc_dapm_to_component(widget->dapm);
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	u32 dai_id = widget->shift;
-+	u32 dec_id = mc->shift;
-+	struct va_macro *va = snd_soc_component_get_drvdata(component);
-+
-+	if (test_bit(dec_id, &va->active_ch_mask[dai_id]))
-+		ucontrol->value.integer.value[0] = 1;
-+	else
-+		ucontrol->value.integer.value[0] = 0;
-+
-+	return 0;
-+}
-+
-+static int va_macro_tx_mixer_put(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *widget =
-+					snd_soc_dapm_kcontrol_widget(kcontrol);
-+	struct snd_soc_component *component =
-+				snd_soc_dapm_to_component(widget->dapm);
-+	struct snd_soc_dapm_update *update = NULL;
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	u32 dai_id = widget->shift;
-+	u32 dec_id = mc->shift;
-+	u32 enable = ucontrol->value.integer.value[0];
-+	struct va_macro *va = snd_soc_component_get_drvdata(component);
-+
-+	if (enable) {
-+		set_bit(dec_id, &va->active_ch_mask[dai_id]);
-+		va->active_ch_cnt[dai_id]++;
-+		va->active_decimator[dai_id] = dec_id;
-+	} else {
-+		clear_bit(dec_id, &va->active_ch_mask[dai_id]);
-+		va->active_ch_cnt[dai_id]--;
-+		va->active_decimator[dai_id] = -1;
-+	}
-+
-+	snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol, enable, update);
-+
-+	return 0;
-+}
-+
-+static int va_dmic_clk_enable(struct snd_soc_component *component,
-+			      u32 dmic, bool enable)
-+{
-+	struct va_macro *va = snd_soc_component_get_drvdata(component);
-+	u8  dmic_clk_en = 0x01;
-+	u16 dmic_clk_reg;
-+	s32 *dmic_clk_cnt;
-+	u8 *dmic_clk_div;
-+	u8 freq_change_mask;
-+	u8 clk_div = 0;
-+
-+	switch (dmic) {
-+	case 0:
-+	case 1:
-+		dmic_clk_cnt = &(va->dmic_0_1_clk_cnt);
-+		dmic_clk_div = &(va->dmic_0_1_clk_div);
-+		dmic_clk_reg = CDC_VA_TOP_CSR_DMIC0_CTL;
-+		freq_change_mask = CDC_VA_DMIC0_FREQ_CHANGE_MASK;
-+		break;
-+	case 2:
-+	case 3:
-+		dmic_clk_cnt = &(va->dmic_2_3_clk_cnt);
-+		dmic_clk_div = &(va->dmic_2_3_clk_div);
-+		dmic_clk_reg = CDC_VA_TOP_CSR_DMIC1_CTL;
-+		freq_change_mask = CDC_VA_DMIC1_FREQ_CHANGE_MASK;
-+		break;
-+	case 4:
-+	case 5:
-+		dmic_clk_cnt = &(va->dmic_4_5_clk_cnt);
-+		dmic_clk_div = &(va->dmic_4_5_clk_div);
-+		dmic_clk_reg = CDC_VA_TOP_CSR_DMIC2_CTL;
-+		freq_change_mask = CDC_VA_DMIC2_FREQ_CHANGE_MASK;
-+		break;
-+	case 6:
-+	case 7:
-+		dmic_clk_cnt = &(va->dmic_6_7_clk_cnt);
-+		dmic_clk_div = &(va->dmic_6_7_clk_div);
-+		dmic_clk_reg = CDC_VA_TOP_CSR_DMIC3_CTL;
-+		freq_change_mask = CDC_VA_DMIC3_FREQ_CHANGE_MASK;
-+		break;
-+	default:
-+		dev_err(component->dev, "%s: Invalid DMIC Selection\n",
-+			__func__);
-+		return -EINVAL;
-+	}
-+
-+	if (enable) {
-+		clk_div = va->dmic_clk_div;
-+		(*dmic_clk_cnt)++;
-+		if (*dmic_clk_cnt == 1) {
-+			snd_soc_component_update_bits(component,
-+					      CDC_VA_TOP_CSR_DMIC_CFG,
-+					      CDC_VA_RESET_ALL_DMICS_MASK,
-+					      CDC_VA_RESET_ALL_DMICS_DISABLE);
-+			snd_soc_component_update_bits(component, dmic_clk_reg,
-+					CDC_VA_DMIC_CLK_SEL_MASK,
-+					clk_div << CDC_VA_DMIC_CLK_SEL_SHFT);
-+			snd_soc_component_update_bits(component, dmic_clk_reg,
-+					dmic_clk_en, dmic_clk_en);
-+		} else {
-+			if (*dmic_clk_div > clk_div) {
-+				snd_soc_component_update_bits(component,
-+						CDC_VA_TOP_CSR_DMIC_CFG,
-+						freq_change_mask,
-+						freq_change_mask);
-+				snd_soc_component_update_bits(component, dmic_clk_reg,
-+						CDC_VA_DMIC_CLK_SEL_MASK,
-+						clk_div << CDC_VA_DMIC_CLK_SEL_SHFT);
-+				snd_soc_component_update_bits(component,
-+					      CDC_VA_TOP_CSR_DMIC_CFG,
-+					      freq_change_mask,
-+					      CDC_VA_DMIC_FREQ_CHANGE_DISABLE);
-+			} else {
-+				clk_div = *dmic_clk_div;
-+			}
-+		}
-+		*dmic_clk_div = clk_div;
-+	} else {
-+		(*dmic_clk_cnt)--;
-+		if (*dmic_clk_cnt  == 0) {
-+			snd_soc_component_update_bits(component, dmic_clk_reg,
-+					dmic_clk_en, 0);
-+			clk_div = 0;
-+			snd_soc_component_update_bits(component, dmic_clk_reg,
-+						CDC_VA_DMIC_CLK_SEL_MASK,
-+						clk_div << CDC_VA_DMIC_CLK_SEL_SHFT);
-+		} else {
-+			clk_div = va->dmic_clk_div;
-+			if (*dmic_clk_div > clk_div) {
-+				clk_div = va->dmic_clk_div;
-+				snd_soc_component_update_bits(component,
-+							CDC_VA_TOP_CSR_DMIC_CFG,
-+							freq_change_mask,
-+							freq_change_mask);
-+				snd_soc_component_update_bits(component, dmic_clk_reg,
-+						CDC_VA_DMIC_CLK_SEL_MASK,
-+						clk_div << CDC_VA_DMIC_CLK_SEL_SHFT);
-+				snd_soc_component_update_bits(component,
-+						      CDC_VA_TOP_CSR_DMIC_CFG,
-+						      freq_change_mask,
-+						      CDC_VA_DMIC_FREQ_CHANGE_DISABLE);
-+			} else {
-+				clk_div = *dmic_clk_div;
-+			}
-+		}
-+		*dmic_clk_div = clk_div;
-+	}
-+
-+	return 0;
-+}
-+
-+static int va_macro_enable_dmic(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
-+	unsigned int dmic = w->shift;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		va_dmic_clk_enable(comp, dmic, true);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		va_dmic_clk_enable(comp, dmic, false);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int va_macro_enable_dec(struct snd_soc_dapm_widget *w,
-+			       struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
-+	unsigned int decimator;
-+	u16 tx_vol_ctl_reg, dec_cfg_reg, hpf_gate_reg;
-+	u16 tx_gain_ctl_reg;
-+	u8 hpf_cut_off_freq;
-+
-+	struct va_macro *va = snd_soc_component_get_drvdata(comp);
-+
-+	decimator = w->shift;
-+
-+	tx_vol_ctl_reg = CDC_VA_TX0_TX_PATH_CTL +
-+				VA_MACRO_TX_PATH_OFFSET * decimator;
-+	hpf_gate_reg = CDC_VA_TX0_TX_PATH_SEC2 +
-+				VA_MACRO_TX_PATH_OFFSET * decimator;
-+	dec_cfg_reg = CDC_VA_TX0_TX_PATH_CFG0 +
-+				VA_MACRO_TX_PATH_OFFSET * decimator;
-+	tx_gain_ctl_reg = CDC_VA_TX0_TX_VOL_CTL +
-+				VA_MACRO_TX_PATH_OFFSET * decimator;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_component_update_bits(comp,
-+			dec_cfg_reg, CDC_VA_ADC_MODE_MASK,
-+			va->dec_mode[decimator] << CDC_VA_ADC_MODE_SHIFT);
-+		/* Enable TX PGA Mute */
-+		break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		/* Enable TX CLK */
-+		snd_soc_component_update_bits(comp, tx_vol_ctl_reg,
-+					      CDC_VA_TX_PATH_CLK_EN_MASK,
-+					      CDC_VA_TX_PATH_CLK_EN);
-+		snd_soc_component_update_bits(comp, hpf_gate_reg,
-+					      CDC_VA_TX_HPF_ZERO_GATE_MASK,
-+					      CDC_VA_TX_HPF_ZERO_GATE);
-+
-+		usleep_range(1000, 1010);
-+		hpf_cut_off_freq = (snd_soc_component_read(comp, dec_cfg_reg) &
-+				    TX_HPF_CUT_OFF_FREQ_MASK) >> 5;
-+
-+		if (hpf_cut_off_freq != CF_MIN_3DB_150HZ) {
-+			snd_soc_component_update_bits(comp, dec_cfg_reg,
-+						      TX_HPF_CUT_OFF_FREQ_MASK,
-+						      CF_MIN_3DB_150HZ << 5);
-+
-+			snd_soc_component_update_bits(comp, hpf_gate_reg,
-+				      CDC_VA_TX_HPF_CUTOFF_FREQ_CHANGE_MASK,
-+				      CDC_VA_TX_HPF_CUTOFF_FREQ_CHANGE_REQ);
-+
-+			/*
-+			 * Minimum 1 clk cycle delay is required as per HW spec
-+			 */
-+			usleep_range(1000, 1010);
-+
-+			snd_soc_component_update_bits(comp,
-+				hpf_gate_reg,
-+				CDC_VA_TX_HPF_CUTOFF_FREQ_CHANGE_MASK,
-+				0x0);
-+		}
-+
-+
-+		usleep_range(1000, 1010);
-+		snd_soc_component_update_bits(comp, hpf_gate_reg,
-+					      CDC_VA_TX_HPF_ZERO_GATE_MASK,
-+					      CDC_VA_TX_HPF_ZERO_NO_GATE);
-+		/*
-+		 * 6ms delay is required as per HW spec
-+		 */
-+		usleep_range(6000, 6010);
-+		/* apply gain after decimator is enabled */
-+		snd_soc_component_write(comp, tx_gain_ctl_reg,
-+			snd_soc_component_read(comp, tx_gain_ctl_reg));
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		/* Disable TX CLK */
-+		snd_soc_component_update_bits(comp, tx_vol_ctl_reg,
-+						CDC_VA_TX_PATH_CLK_EN_MASK,
-+						CDC_VA_TX_PATH_CLK_DISABLE);
-+		break;
-+	}
-+	return 0;
-+}
-+
- static int va_macro_dec_mode_get(struct snd_kcontrol *kcontrol,
- 				 struct snd_ctl_elem_value *ucontrol)
- {
-@@ -630,6 +951,299 @@ static struct snd_soc_dai_driver va_macro_dais[] = {
- 	},
- };
- 
-+static const char * const adc_mux_text[] = {
-+	"VA_DMIC", "SWR_MIC"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(va_dec0_enum, CDC_VA_INP_MUX_ADC_MUX0_CFG1,
-+		   0, adc_mux_text);
-+static SOC_ENUM_SINGLE_DECL(va_dec1_enum, CDC_VA_INP_MUX_ADC_MUX1_CFG1,
-+		   0, adc_mux_text);
-+static SOC_ENUM_SINGLE_DECL(va_dec2_enum, CDC_VA_INP_MUX_ADC_MUX2_CFG1,
-+		   0, adc_mux_text);
-+static SOC_ENUM_SINGLE_DECL(va_dec3_enum, CDC_VA_INP_MUX_ADC_MUX3_CFG1,
-+		   0, adc_mux_text);
-+
-+static const struct snd_kcontrol_new va_dec0_mux = SOC_DAPM_ENUM("va_dec0",
-+								 va_dec0_enum);
-+static const struct snd_kcontrol_new va_dec1_mux = SOC_DAPM_ENUM("va_dec1",
-+								 va_dec1_enum);
-+static const struct snd_kcontrol_new va_dec2_mux = SOC_DAPM_ENUM("va_dec2",
-+								 va_dec2_enum);
-+static const struct snd_kcontrol_new va_dec3_mux = SOC_DAPM_ENUM("va_dec3",
-+								 va_dec3_enum);
-+
-+static const char * const dmic_mux_text[] = {
-+	"ZERO", "DMIC0", "DMIC1", "DMIC2", "DMIC3",
-+	"DMIC4", "DMIC5", "DMIC6", "DMIC7"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(va_dmic0_enum, CDC_VA_INP_MUX_ADC_MUX0_CFG0,
-+			4, dmic_mux_text);
-+
-+static SOC_ENUM_SINGLE_DECL(va_dmic1_enum, CDC_VA_INP_MUX_ADC_MUX1_CFG0,
-+			4, dmic_mux_text);
-+
-+static SOC_ENUM_SINGLE_DECL(va_dmic2_enum, CDC_VA_INP_MUX_ADC_MUX2_CFG0,
-+			4, dmic_mux_text);
-+
-+static SOC_ENUM_SINGLE_DECL(va_dmic3_enum, CDC_VA_INP_MUX_ADC_MUX3_CFG0,
-+			4, dmic_mux_text);
-+
-+static const struct snd_kcontrol_new va_dmic0_mux = SOC_DAPM_ENUM_EXT("va_dmic0",
-+			 va_dmic0_enum, snd_soc_dapm_get_enum_double,
-+			 va_macro_put_dec_enum);
-+
-+static const struct snd_kcontrol_new va_dmic1_mux = SOC_DAPM_ENUM_EXT("va_dmic1",
-+			 va_dmic1_enum, snd_soc_dapm_get_enum_double,
-+			 va_macro_put_dec_enum);
-+
-+static const struct snd_kcontrol_new va_dmic2_mux = SOC_DAPM_ENUM_EXT("va_dmic2",
-+			 va_dmic2_enum, snd_soc_dapm_get_enum_double,
-+			 va_macro_put_dec_enum);
-+
-+static const struct snd_kcontrol_new va_dmic3_mux = SOC_DAPM_ENUM_EXT("va_dmic3",
-+			 va_dmic3_enum, snd_soc_dapm_get_enum_double,
-+			 va_macro_put_dec_enum);
-+
-+static const struct snd_kcontrol_new va_aif1_cap_mixer[] = {
-+	SOC_SINGLE_EXT("DEC0", SND_SOC_NOPM, VA_MACRO_DEC0, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC1", SND_SOC_NOPM, VA_MACRO_DEC1, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC2", SND_SOC_NOPM, VA_MACRO_DEC2, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC3", SND_SOC_NOPM, VA_MACRO_DEC3, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC4", SND_SOC_NOPM, VA_MACRO_DEC4, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC5", SND_SOC_NOPM, VA_MACRO_DEC5, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC6", SND_SOC_NOPM, VA_MACRO_DEC6, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC7", SND_SOC_NOPM, VA_MACRO_DEC7, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+};
-+
-+static const struct snd_kcontrol_new va_aif2_cap_mixer[] = {
-+	SOC_SINGLE_EXT("DEC0", SND_SOC_NOPM, VA_MACRO_DEC0, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC1", SND_SOC_NOPM, VA_MACRO_DEC1, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC2", SND_SOC_NOPM, VA_MACRO_DEC2, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC3", SND_SOC_NOPM, VA_MACRO_DEC3, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC4", SND_SOC_NOPM, VA_MACRO_DEC4, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC5", SND_SOC_NOPM, VA_MACRO_DEC5, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC6", SND_SOC_NOPM, VA_MACRO_DEC6, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC7", SND_SOC_NOPM, VA_MACRO_DEC7, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+};
-+
-+static const struct snd_kcontrol_new va_aif3_cap_mixer[] = {
-+	SOC_SINGLE_EXT("DEC0", SND_SOC_NOPM, VA_MACRO_DEC0, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC1", SND_SOC_NOPM, VA_MACRO_DEC1, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC2", SND_SOC_NOPM, VA_MACRO_DEC2, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC3", SND_SOC_NOPM, VA_MACRO_DEC3, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC4", SND_SOC_NOPM, VA_MACRO_DEC4, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC5", SND_SOC_NOPM, VA_MACRO_DEC5, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC6", SND_SOC_NOPM, VA_MACRO_DEC6, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+	SOC_SINGLE_EXT("DEC7", SND_SOC_NOPM, VA_MACRO_DEC7, 1, 0,
-+			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
-+};
-+
-+static const struct snd_soc_dapm_widget va_macro_dapm_widgets[] = {
-+	SND_SOC_DAPM_AIF_OUT("VA_AIF1 CAP", "VA_AIF1 Capture", 0,
-+		SND_SOC_NOPM, VA_MACRO_AIF1_CAP, 0),
-+
-+	SND_SOC_DAPM_AIF_OUT("VA_AIF2 CAP", "VA_AIF2 Capture", 0,
-+		SND_SOC_NOPM, VA_MACRO_AIF2_CAP, 0),
-+
-+	SND_SOC_DAPM_AIF_OUT("VA_AIF3 CAP", "VA_AIF3 Capture", 0,
-+		SND_SOC_NOPM, VA_MACRO_AIF3_CAP, 0),
-+
-+	SND_SOC_DAPM_MIXER("VA_AIF1_CAP Mixer", SND_SOC_NOPM,
-+		VA_MACRO_AIF1_CAP, 0,
-+		va_aif1_cap_mixer, ARRAY_SIZE(va_aif1_cap_mixer)),
-+
-+	SND_SOC_DAPM_MIXER("VA_AIF2_CAP Mixer", SND_SOC_NOPM,
-+		VA_MACRO_AIF2_CAP, 0,
-+		va_aif2_cap_mixer, ARRAY_SIZE(va_aif2_cap_mixer)),
-+
-+	SND_SOC_DAPM_MIXER("VA_AIF3_CAP Mixer", SND_SOC_NOPM,
-+		VA_MACRO_AIF3_CAP, 0,
-+		va_aif3_cap_mixer, ARRAY_SIZE(va_aif3_cap_mixer)),
-+
-+	SND_SOC_DAPM_MUX("VA DMIC MUX0", SND_SOC_NOPM, 0, 0, &va_dmic0_mux),
-+	SND_SOC_DAPM_MUX("VA DMIC MUX1", SND_SOC_NOPM, 0, 0, &va_dmic1_mux),
-+	SND_SOC_DAPM_MUX("VA DMIC MUX2", SND_SOC_NOPM, 0, 0, &va_dmic2_mux),
-+	SND_SOC_DAPM_MUX("VA DMIC MUX3", SND_SOC_NOPM, 0, 0, &va_dmic3_mux),
-+
-+	SND_SOC_DAPM_REGULATOR_SUPPLY("vdd-micb", 0, 0),
-+	SND_SOC_DAPM_INPUT("DMIC0 Pin"),
-+	SND_SOC_DAPM_INPUT("DMIC1 Pin"),
-+	SND_SOC_DAPM_INPUT("DMIC2 Pin"),
-+	SND_SOC_DAPM_INPUT("DMIC3 Pin"),
-+	SND_SOC_DAPM_INPUT("DMIC4 Pin"),
-+	SND_SOC_DAPM_INPUT("DMIC5 Pin"),
-+	SND_SOC_DAPM_INPUT("DMIC6 Pin"),
-+	SND_SOC_DAPM_INPUT("DMIC7 Pin"),
-+
-+	SND_SOC_DAPM_ADC_E("VA DMIC0", NULL, SND_SOC_NOPM, 0, 0,
-+		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_ADC_E("VA DMIC1", NULL, SND_SOC_NOPM, 1, 0,
-+		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_ADC_E("VA DMIC2", NULL, SND_SOC_NOPM, 2, 0,
-+		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_ADC_E("VA DMIC3", NULL, SND_SOC_NOPM, 3, 0,
-+		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_ADC_E("VA DMIC4", NULL, SND_SOC_NOPM, 4, 0,
-+		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_ADC_E("VA DMIC5", NULL, SND_SOC_NOPM, 5, 0,
-+		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_ADC_E("VA DMIC6", NULL, SND_SOC_NOPM, 6, 0,
-+		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_ADC_E("VA DMIC7", NULL, SND_SOC_NOPM, 7, 0,
-+		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_INPUT("VA SWR_ADC0"),
-+	SND_SOC_DAPM_INPUT("VA SWR_ADC1"),
-+	SND_SOC_DAPM_INPUT("VA SWR_ADC2"),
-+	SND_SOC_DAPM_INPUT("VA SWR_ADC3"),
-+	SND_SOC_DAPM_INPUT("VA SWR_MIC0"),
-+	SND_SOC_DAPM_INPUT("VA SWR_MIC1"),
-+	SND_SOC_DAPM_INPUT("VA SWR_MIC2"),
-+	SND_SOC_DAPM_INPUT("VA SWR_MIC3"),
-+	SND_SOC_DAPM_INPUT("VA SWR_MIC4"),
-+	SND_SOC_DAPM_INPUT("VA SWR_MIC5"),
-+	SND_SOC_DAPM_INPUT("VA SWR_MIC6"),
-+	SND_SOC_DAPM_INPUT("VA SWR_MIC7"),
-+
-+	SND_SOC_DAPM_MUX_E("VA DEC0 MUX", SND_SOC_NOPM, VA_MACRO_DEC0, 0,
-+			   &va_dec0_mux, va_macro_enable_dec,
-+			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_MUX_E("VA DEC1 MUX", SND_SOC_NOPM, VA_MACRO_DEC1, 0,
-+			   &va_dec1_mux, va_macro_enable_dec,
-+			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_MUX_E("VA DEC2 MUX", SND_SOC_NOPM, VA_MACRO_DEC2, 0,
-+			   &va_dec2_mux, va_macro_enable_dec,
-+			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_MUX_E("VA DEC3 MUX", SND_SOC_NOPM, VA_MACRO_DEC3, 0,
-+			   &va_dec3_mux, va_macro_enable_dec,
-+			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_SUPPLY_S("VA_MCLK", -1, SND_SOC_NOPM, 0, 0,
-+			      va_macro_mclk_event,
-+			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+};
-+
-+static const struct snd_soc_dapm_route va_audio_map[] = {
-+	{"VA_AIF1 CAP", NULL, "VA_MCLK"},
-+	{"VA_AIF2 CAP", NULL, "VA_MCLK"},
-+	{"VA_AIF3 CAP", NULL, "VA_MCLK"},
-+
-+	{"VA_AIF1 CAP", NULL, "VA_AIF1_CAP Mixer"},
-+	{"VA_AIF2 CAP", NULL, "VA_AIF2_CAP Mixer"},
-+	{"VA_AIF3 CAP", NULL, "VA_AIF3_CAP Mixer"},
-+
-+	{"VA_AIF1_CAP Mixer", "DEC0", "VA DEC0 MUX"},
-+	{"VA_AIF1_CAP Mixer", "DEC1", "VA DEC1 MUX"},
-+	{"VA_AIF1_CAP Mixer", "DEC2", "VA DEC2 MUX"},
-+	{"VA_AIF1_CAP Mixer", "DEC3", "VA DEC3 MUX"},
-+
-+	{"VA_AIF2_CAP Mixer", "DEC0", "VA DEC0 MUX"},
-+	{"VA_AIF2_CAP Mixer", "DEC1", "VA DEC1 MUX"},
-+	{"VA_AIF2_CAP Mixer", "DEC2", "VA DEC2 MUX"},
-+	{"VA_AIF2_CAP Mixer", "DEC3", "VA DEC3 MUX"},
-+
-+	{"VA_AIF3_CAP Mixer", "DEC0", "VA DEC0 MUX"},
-+	{"VA_AIF3_CAP Mixer", "DEC1", "VA DEC1 MUX"},
-+	{"VA_AIF3_CAP Mixer", "DEC2", "VA DEC2 MUX"},
-+	{"VA_AIF3_CAP Mixer", "DEC3", "VA DEC3 MUX"},
-+
-+	{"VA DEC0 MUX", "VA_DMIC", "VA DMIC MUX0"},
-+	{"VA DMIC MUX0", "DMIC0", "VA DMIC0"},
-+	{"VA DMIC MUX0", "DMIC1", "VA DMIC1"},
-+	{"VA DMIC MUX0", "DMIC2", "VA DMIC2"},
-+	{"VA DMIC MUX0", "DMIC3", "VA DMIC3"},
-+	{"VA DMIC MUX0", "DMIC4", "VA DMIC4"},
-+	{"VA DMIC MUX0", "DMIC5", "VA DMIC5"},
-+	{"VA DMIC MUX0", "DMIC6", "VA DMIC6"},
-+	{"VA DMIC MUX0", "DMIC7", "VA DMIC7"},
-+
-+	{"VA DEC1 MUX", "VA_DMIC", "VA DMIC MUX1"},
-+	{"VA DMIC MUX1", "DMIC0", "VA DMIC0"},
-+	{"VA DMIC MUX1", "DMIC1", "VA DMIC1"},
-+	{"VA DMIC MUX1", "DMIC2", "VA DMIC2"},
-+	{"VA DMIC MUX1", "DMIC3", "VA DMIC3"},
-+	{"VA DMIC MUX1", "DMIC4", "VA DMIC4"},
-+	{"VA DMIC MUX1", "DMIC5", "VA DMIC5"},
-+	{"VA DMIC MUX1", "DMIC6", "VA DMIC6"},
-+	{"VA DMIC MUX1", "DMIC7", "VA DMIC7"},
-+
-+	{"VA DEC2 MUX", "VA_DMIC", "VA DMIC MUX2"},
-+	{"VA DMIC MUX2", "DMIC0", "VA DMIC0"},
-+	{"VA DMIC MUX2", "DMIC1", "VA DMIC1"},
-+	{"VA DMIC MUX2", "DMIC2", "VA DMIC2"},
-+	{"VA DMIC MUX2", "DMIC3", "VA DMIC3"},
-+	{"VA DMIC MUX2", "DMIC4", "VA DMIC4"},
-+	{"VA DMIC MUX2", "DMIC5", "VA DMIC5"},
-+	{"VA DMIC MUX2", "DMIC6", "VA DMIC6"},
-+	{"VA DMIC MUX2", "DMIC7", "VA DMIC7"},
-+
-+	{"VA DEC3 MUX", "VA_DMIC", "VA DMIC MUX3"},
-+	{"VA DMIC MUX3", "DMIC0", "VA DMIC0"},
-+	{"VA DMIC MUX3", "DMIC1", "VA DMIC1"},
-+	{"VA DMIC MUX3", "DMIC2", "VA DMIC2"},
-+	{"VA DMIC MUX3", "DMIC3", "VA DMIC3"},
-+	{"VA DMIC MUX3", "DMIC4", "VA DMIC4"},
-+	{"VA DMIC MUX3", "DMIC5", "VA DMIC5"},
-+	{"VA DMIC MUX3", "DMIC6", "VA DMIC6"},
-+	{"VA DMIC MUX3", "DMIC7", "VA DMIC7"},
-+
-+	{ "VA DMIC0", NULL, "DMIC0 Pin" },
-+	{ "VA DMIC1", NULL, "DMIC1 Pin" },
-+	{ "VA DMIC2", NULL, "DMIC2 Pin" },
-+	{ "VA DMIC3", NULL, "DMIC3 Pin" },
-+	{ "VA DMIC4", NULL, "DMIC4 Pin" },
-+	{ "VA DMIC5", NULL, "DMIC5 Pin" },
-+	{ "VA DMIC6", NULL, "DMIC6 Pin" },
-+	{ "VA DMIC7", NULL, "DMIC7 Pin" },
-+};
-+
- static const char * const dec_mode_mux_text[] = {
- 	"ADC_DEFAULT", "ADC_LOW_PWR", "ADC_HIGH_PERF",
- };
-@@ -679,6 +1293,10 @@ static const struct snd_soc_component_driver va_macro_component_drv = {
- 	.probe = va_macro_component_probe,
- 	.controls = va_macro_snd_controls,
- 	.num_controls = ARRAY_SIZE(va_macro_snd_controls),
-+	.dapm_widgets = va_macro_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(va_macro_dapm_widgets),
-+	.dapm_routes = va_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(va_audio_map),
- };
- 
- static int fsgen_gate_enable(struct clk_hw *hw)
--- 
-2.21.0
+I would expect the compiler to remove the unused function, it knows
+it is unused, that is why __maybe_unused is necessary to suppress
+the warning and compilers are pretty smart and agressive wrt remove
+unnecessary code these days.
+
+Regards,
+
+Hans
+
+
+
+
+>>> ---
+>>>  arch/x86/platform/olpc/olpc-xo15-sci.c | 2 --
+>>>  1 file changed, 2 deletions(-)
+>>>
+>>> diff --git a/arch/x86/platform/olpc/olpc-xo15-sci.c b/arch/x86/platform/olpc/olpc-xo15-sci.c
+>>> index 85f4638764d6..716eefd735a4 100644
+>>> --- a/arch/x86/platform/olpc/olpc-xo15-sci.c
+>>> +++ b/arch/x86/platform/olpc/olpc-xo15-sci.c
+>>> @@ -192,7 +192,6 @@ static int xo15_sci_remove(struct acpi_device *device)
+>>>      return 0;
+>>>  }
+>>>
+>>> -#ifdef CONFIG_PM_SLEEP
+>>>  static int xo15_sci_resume(struct device *dev)
+>>>  {
+>>>      /* Enable all EC events */
+>>> @@ -204,7 +203,6 @@ static int xo15_sci_resume(struct device *dev)
+>>>
+>>>      return 0;
+>>>  }
+>>> -#endif
+>>>
+>>>  static SIMPLE_DEV_PM_OPS(xo15_sci_pm, NULL, xo15_sci_resume);
+>>>
+>>>
+>>
+> 
+> -- 
+> Best regards,
+> Coiby
+> 
 
