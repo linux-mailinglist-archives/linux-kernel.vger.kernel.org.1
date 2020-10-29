@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9458029F195
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E4729F1B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725965AbgJ2QeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727115AbgJ2QdG (ORCPT
+        id S1726811AbgJ2Qiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:38:54 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:43100 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726031AbgJ2Qiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:33:06 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305EDC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:33:04 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id w65so2799048pfd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:33:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CNp60uz7U6o1WyBX9AAMogQVRcPxcfAiqCLR+bSZ8wY=;
-        b=f6D+/uNPO6HW47eS+XdsuzOWR1OMKIbf1tDWGNa/eHlbdNS1fFyq73++vFXANcz6x2
-         ytHLCE17oAxpQhTZeiOQrmqhH4JsQDnMKEzIq5jZmBroArNr7f6GsZp52FWH2KkhY3sM
-         H8KsLn2uIX0lXXKFtXSbrA4roiZkm9N/rx+aLZ7Z/aAg0vhgc/QNYZtvX+naxEa054tr
-         J0G6xItBIlWQ5zhq1bPzfF1wq31Xu/yYiQL3OtYyEzqwyevlKs28VqyQLH4Vw4YcJ7ti
-         8EQJyl5qnkFrglTZQ6jMXOEWKksSQAolyC8ztjX4eIQqPqjYVEB+NEeUU6DztL2Vnx9B
-         0Pjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CNp60uz7U6o1WyBX9AAMogQVRcPxcfAiqCLR+bSZ8wY=;
-        b=Io7qf8i5r9rasO4UlRrOiihMGQu8RImYkCIBVc+ArwecvXmFc1R7atmaYAniISnnO7
-         B5og3mP+N+A0JnBVX5XgkBAM2EPOzuIUWSDdJEvVfTw4kqJ6QyBwQqxOHb/OlUdy1S95
-         kTnNtsYXf0nqvJqNjWOUsOECgigqLJ16cDRGyrp8LFcRCKkRMJ81grqG5Vhr9gwvh9PF
-         IBCvA4ytRock9uPBWxTAv/je4Z858plJgIHY1csO0hNPaSqXBIP7GlhZdyVd/SRCWFqs
-         2jsYbmNrC4XDgZy+W/8ZfX21ZOqmzcn0zwRDRxYsN5vO1G5lLB9ZjlkviKlwsWU0er2D
-         8OJA==
-X-Gm-Message-State: AOAM530ULTYwQQYB7w9Lzsl5oXXOqIHKJZPSwevsAeE/qzaiIddv99eB
-        KvvmomrwSLYhYS+2CvX1yZn26NOOWAMaSupZDGhPiA==
-X-Google-Smtp-Source: ABdhPJy1+WefzaCmcrBy2LFwrFD2Wq5MJeAwQJ74F2m6AHO5xCmR0PebTW6H1Op74Lq4+jARizRrOxwrObc2Oo0XhDY=
-X-Received: by 2002:a17:90b:198d:: with SMTP id mv13mr599421pjb.13.1603989183738;
- Thu, 29 Oct 2020 09:33:03 -0700 (PDT)
+        Thu, 29 Oct 2020 12:38:54 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09TGb2Kh031416;
+        Thu, 29 Oct 2020 17:38:32 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=e0SSTSVY93gKKrdfyw2yURbWg7WpcuYct8NzXQrNQUE=;
+ b=l0b7x730D0ZnX9RjlR/W0MDpvhh/BwJL40PH562kx2ZYV3t168kEuV0uMbhcKZYqZgSk
+ 5GCZgOqIfIFN5oWMiX1LCRtce+Ll/Xidn3c0ih3WoA018VA+7prmIPb9i9D2BcgUNibF
+ e8g5faxpxlWgwcShYJXEp9z+pfh69woPf4ukWLNqH8rq40aZRTpMHkCrP09z8Ohl8kXx
+ MES3pUEcfirU2j4i8AeGb1IqIBfKlkqkAQsC5JneejfyxR167x0VYwwvVIz+wZVbVdEp
+ K32tEujJyJduHf/ouXHsL5+4biOiBr+qWEmLpPhfpjBKsq5/ic/+eIjlsPTpSNoixsMY 2g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34ccfftfxw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Oct 2020 17:38:32 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E3389100034;
+        Thu, 29 Oct 2020 17:38:31 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CB6F522EE8B;
+        Thu, 29 Oct 2020 17:38:31 +0100 (CET)
+Received: from localhost (10.75.127.44) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 29 Oct 2020 17:38:31
+ +0100
+From:   Christophe Kerello <christophe.kerello@st.com>
+To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Christophe Kerello <christophe.kerello@st.com>
+Subject: [PATCH] mtd: rawnand: stm32_fmc2: fix broken ECC
+Date:   Thu, 29 Oct 2020 17:38:12 +0100
+Message-ID: <1603989492-6670-1-git-send-email-christophe.kerello@st.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-References: <20201028035013.99711-1-songmuchun@bytedance.com>
- <CALvZod6p_y2fTEK5fzAL=JfPsguqYbttgWC4_GPc=rF1PsN6TQ@mail.gmail.com>
- <CAMZfGtW38sFcdpnx3Xx+RgRL37WzpQsq8qvfdnmhbh4H9Ex0cg@mail.gmail.com> <CALvZod68HooK_bnaxFLEBL_neVybVRECkHJyb6r8LHWqwTOe5Q@mail.gmail.com>
-In-Reply-To: <CALvZod68HooK_bnaxFLEBL_neVybVRECkHJyb6r8LHWqwTOe5Q@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 30 Oct 2020 00:32:26 +0800
-Message-ID: <CAMZfGtUCXAzvjQ60VUEdOj1OocqUxGNZkikr-Lch2w-dkmQTwg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] mm: memcg/slab: Fix return child memcg
- objcg for root memcg
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Chris Down <chris@chrisdown.name>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-29_10:2020-10-29,2020-10-29 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 12:18 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Thu, Oct 29, 2020 at 9:09 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > On Thu, Oct 29, 2020 at 11:48 PM Shakeel Butt <shakeelb@google.com> wrote:
-> > >
-> > > On Tue, Oct 27, 2020 at 8:50 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> > > >
-> > > > Consider the following memcg hierarchy.
-> > > >
-> > > >                     root
-> > > >                    /    \
-> > > >                   A      B
-> > > >
-> > > > If we get the objcg of memcg A failed,
-> > >
-> > > Please fix the above statement.
-> >
-> > Sorry, could you be more specific, I don't quite understand.
->
-> Fix the grammar. Something like "If we failed to get the reference on
-> objcg of memcg A..."
+Since commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user
+input parsing bits"), ECC are broken in FMC2 driver in case of
+nand-ecc-step-size and nand-ecc-strength are not set in the device tree.
+The default user configuration set in FMC2 driver is lost when
+rawnand_dt_init function is called. To avoid to lose the default user
+configuration, it is needed to move it in the new user_conf structure.
 
-Got it. Sorry for my poor English, Thanks.
+Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
+---
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+index b31a581..dc86ac9 100644
+--- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
++++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+@@ -1846,6 +1846,7 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	struct mtd_info *mtd;
+ 	struct nand_chip *chip;
++	struct nand_device *nanddev;
+ 	struct resource cres;
+ 	int chip_cs, mem_region, ret, irq;
+ 	int start_region = 0;
+@@ -1952,10 +1953,11 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
+ 	chip->options |= NAND_BUSWIDTH_AUTO | NAND_NO_SUBPAGE_WRITE |
+ 			 NAND_USES_DMA;
+ 
+-	/* Default ECC settings */
++	/* Default ECC user settings */
+ 	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+-	chip->ecc.size = FMC2_ECC_STEP_SIZE;
+-	chip->ecc.strength = FMC2_ECC_BCH8;
++	nanddev = mtd_to_nanddev(mtd);
++	nanddev->ecc.user_conf.step_size = FMC2_ECC_STEP_SIZE;
++	nanddev->ecc.user_conf.strength = FMC2_ECC_BCH8;
+ 
+ 	/* Scan to find existence of the device */
+ 	ret = nand_scan(chip, nand->ncs);
 -- 
-Yours,
-Muchun
+1.9.1
+
