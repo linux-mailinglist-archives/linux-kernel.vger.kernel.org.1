@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380B329E71E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 418BA29E701
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726286AbgJ2JU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725803AbgJ2JU7 (ORCPT
+        id S1725894AbgJ2JNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:13:08 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4209 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgJ2JNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:20:59 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A69C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:11:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Lvxi8Vu6wbO/FcwfD8aDY+CFIZB8fqh61j5DOHy9d+E=; b=y2YHUKWuR95P87t0RVQNxm/YJE
-        HVyGDf/h3XgHpM+rCodDY85S0nQaQ305mimze6Kx5M4HJv0hTujoVbpUm3OHYeZYUzdoWRLm+t4nz
-        CwieevADmCUDpBOQ/xT4cxKfIaxAIvnS8A4oSMJy9O2asCxt8KT8VBuGy/+G2EXIwqxQifNP0lfAC
-        /WTJ1ZBuLD3mJGk0uyUU3BHdGhAP13dZ2c7QKAEhcsf1BQDNMcXdNkEf2183DiC2413qfybI2ts0i
-        S2bN+8PV9lpOUhRhDwQOUzLIpxQJziWpD8fZO9JgStYnT23JqogAZyjdrAQfQzbZa75HCRbVrrwoS
-        4+Z2e0Fw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kY3xR-0005Bc-4H; Thu, 29 Oct 2020 09:10:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 421E03012C3;
-        Thu, 29 Oct 2020 10:10:53 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 19D7E20B28594; Thu, 29 Oct 2020 10:10:53 +0100 (CET)
-Date:   Thu, 29 Oct 2020 10:10:53 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
-        davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
-        oleg@redhat.com, vincent.guittot@linaro.org
-Subject: Re: [RFC][PATCH v3 6/6] rcu/tree: Use irq_work_queue_remote()
-Message-ID: <20201029091053.GG2628@hirez.programming.kicks-ass.net>
-References: <20201028110707.971887448@infradead.org>
- <20201028111221.584884062@infradead.org>
- <20201028145428.GE2628@hirez.programming.kicks-ass.net>
- <20201028200243.GJ2651@hirez.programming.kicks-ass.net>
- <20201028201554.GE3249@paulmck-ThinkPad-P72>
+        Thu, 29 Oct 2020 05:13:05 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9a87a40000>; Thu, 29 Oct 2020 02:13:08 -0700
+Received: from [10.26.45.122] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 29 Oct
+ 2020 09:13:03 +0000
+Subject: Re: [PATCH 5.9 000/757] 5.9.2-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <stable@vger.kernel.org>
+References: <20201027135450.497324313@linuxfoundation.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <412e3347-96bc-a0c4-06d2-27735bc5a992@nvidia.com>
+Date:   Thu, 29 Oct 2020 09:13:01 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028201554.GE3249@paulmck-ThinkPad-P72>
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603962788; bh=OY+v61YxfXX+KbtiV6hksobk5HcEPN5SpwUfCMUkOmc=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=oNrhZCKRTS+Yrf+om7N0g5R7kGQHJ9HlwAAaBxnTQgwmVmkILpbECheqFOCg98jeo
+         VAgd8bmSoidfjj+FDXXGMgjOjpo97oDPlDR+yEGsFQ1ainebRIHVowGAlZ3zoA2TGF
+         9fq0yI/BYCDiVuukDz01+haNzC2n++AZ3omX9M0tAM1W4TtbkMgT6WiwYfd6xas9/J
+         lV1V12G8wOk26L0jYx6QAtkBAnC2k4h8UVKtwTK+X/yjMieD/g/CwPyJhmtwR4SvMF
+         lVBeyWxDgkg/dwsU57En9GNGPUw3hkPebf9Lnu7EEnV5XZDMM9y/E4By18dja993V3
+         VTrLQoT38njDw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 01:15:54PM -0700, Paul E. McKenney wrote:
-> On Wed, Oct 28, 2020 at 09:02:43PM +0100, Peter Zijlstra wrote:
 
-> > Subject: rcu/tree: Use irq_work_queue_remote()
-> > From: Peter Zijlstra <peterz@infradead.org>
-> > Date: Wed Oct 28 11:53:40 CET 2020
-> > 
-> > All sites that consume rcu_iw_gp_seq seem to have rcu_node lock held,
-> > so setting it probably should too. Also the effect of self-IPI here
-> > would be setting rcu_iw_gp_seq to the value we just set it to
-> > (pointless) and clearing rcu_iw_pending, which we just set, so don't
-> > set it.
-> > 
-> > Passes TREE01.
-> > 
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> >  kernel/rcu/tree.c |   10 ++++++----
-> >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > 
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -1308,14 +1308,16 @@ static int rcu_implicit_dynticks_qs(stru
-> >  			resched_cpu(rdp->cpu);
-> >  			WRITE_ONCE(rdp->last_fqs_resched, jiffies);
-> >  		}
-> > -#ifdef CONFIG_IRQ_WORK
-> > +		raw_spin_lock_rcu_node(rnp);
+On 27/10/2020 13:44, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.9.2 release.
+> There are 757 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> The caller of rcu_implicit_dynticks_qs() already holds this lock.
-> Please see the force_qs_rnp() function and its second call site,
-> to which rcu_implicit_dynticks_qs() is passed as an argument.
+> Responses should be made by Thu, 29 Oct 2020 13:52:54 +0000.
+> Anything received after that time might be too late.
 > 
-> But other than that, this does look plausible.  And getting rid of
-> that #ifdef is worth something.  ;-)
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.2-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Dang, clearly TREE01 didn't actually hit any of this code :/ Is there
-another test I should be running?
+One known/expected failure, but all other tests passing for Tegra ...
+
+Test results for stable-v5.9:
+    15 builds:	15 pass, 0 fail
+    26 boots:	26 pass, 0 fail
+    61 tests:	60 pass, 1 fail
+
+Linux version:	5.9.2-rc1-ge0fc09529493
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra20-ventana,
+                tegra210-p2371-2180, tegra210-p3450-0000,
+                tegra30-cardhu-a04
+
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+
+The above failure is fixed in the mainline by the following commit ...
+
+commit 97148d0ae5303bcc18fcd1c9b968a9485292f32a
+Author: Viresh Kumar <viresh.kumar@linaro.org>
+Date:   Tue Oct 13 10:42:47 2020 +0530
+
+    cpufreq: Improve code around unlisted freq check
+
+
+Let me know if we can pull into linux-5.9.y.
+
+Cheers!
+Jon
+
+-- 
+nvpublic
