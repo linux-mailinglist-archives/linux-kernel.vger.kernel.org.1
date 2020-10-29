@@ -2,147 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74FB29EE6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E3C29EE6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727767AbgJ2OiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbgJ2OiA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:38:00 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494EAC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:38:00 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id i7so568146pgh.6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:38:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0Vvgyk1ppIl/T/Eqmf3bzsBqm8UMHTtFA399dLy7jnw=;
-        b=tLPZY9nwXhcpd/xxtFYpqk6+OT07X0f6Mzrac2gOvCqy5sy+oS5cWATMj8lsHkzwmf
-         YjfcQuuJusTCFNrj9jBIZQWiaZdehlPuE+hW5xLqx+mh1zXzZUGRCMr2NXfeYPdtWgva
-         Rt2Vou75O1jTuhNn6ecWzShtlapwrNobwXIwuSpKO7cMyq0GHug2DcMAHkYa5pRpwitK
-         Ti6pfoZOw8oJnrC0cLip+eisDkW9lX+sUcsYwn3SO0Q3CPqm8AHXS89+qhnc/m8e71Ce
-         Y5ogELfnBPTtAogFMGWVWtpj0BD+1lCAfYadugTEK3GpGG1iuE13GuXBZRThShsLCeOB
-         PJHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0Vvgyk1ppIl/T/Eqmf3bzsBqm8UMHTtFA399dLy7jnw=;
-        b=pqPguTQxq071u21sCfThT8691iqRZiDtkoahSAvaBTp5f4f31enLMjVPEKFHyEuCzr
-         AqbxigfqrttLdDbgLF1vm9aVfXlDQMa2cEB60Hu86M4rgiurUiRhhMInM+AQ0Ql66nYt
-         epT9xT/KH5v0GgzjfVmDjyd7l8Z4IE+dA8+lvGb69ffW9lsiqz7ZaucEY0WgcxS8BqLo
-         LmgrRshC16EOdXkY9dzF/AffPlvxf5R6dazDgjskBdHipqL/AyWPKbKuYj76PN2i8rs6
-         v/RfZ+Ltmu2Ov4s8WakQ45o3ixp15q13xLRpFXsf6t1ocYNCld0KMZ8AWaxsfysFEEYd
-         bZCQ==
-X-Gm-Message-State: AOAM532QemwNgPF3CmfQTTusSypDLBm719iYgQb2zCDiQSqzwzCFcOpr
-        XTe2yhHmnoTsKa0XKb3jwVU=
-X-Google-Smtp-Source: ABdhPJzGPd8hJFVyCMC6l8+84XZ7S8EheBEuBNB6VAubzL2xAL75DMWRxdy5cR93MwHqyfMe4MzdfA==
-X-Received: by 2002:a62:5213:0:b029:164:97aa:b672 with SMTP id g19-20020a6252130000b029016497aab672mr4448913pfb.15.1603982279695;
-        Thu, 29 Oct 2020 07:37:59 -0700 (PDT)
-Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
-        by smtp.gmail.com with ESMTPSA id k9sm3160208pfi.188.2020.10.29.07.37.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 07:37:59 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Thu, 29 Oct 2020 22:37:33 +0800
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/25] ALSA: core: pcm: remove unnecessary CONFIG_PM_SLEEP
-Message-ID: <20201029143733.d53pu2ri5ykqlff2@Rk>
-References: <20201029074301.226644-1-coiby.xu@gmail.com>
- <s5hpn51wjyw.wl-tiwai@suse.de>
+        id S1727526AbgJ2Ohs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:37:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726676AbgJ2Ohr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 10:37:47 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FEE7204EF;
+        Thu, 29 Oct 2020 14:37:46 +0000 (UTC)
+Date:   Thu, 29 Oct 2020 10:37:44 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH 6/9] livepatch/ftrace: Add recursion protection to the
+ ftrace callback
+Message-ID: <20201029103744.0f7f52dc@gandalf.local.home>
+In-Reply-To: <alpine.LSU.2.21.2010291443310.1688@pobox.suse.cz>
+References: <20201028115244.995788961@goodmis.org>
+        <20201028115613.291169246@goodmis.org>
+        <alpine.LSU.2.21.2010291443310.1688@pobox.suse.cz>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <s5hpn51wjyw.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 08:48:55AM +0100, Takashi Iwai wrote:
->On Thu, 29 Oct 2020 08:42:37 +0100,
->Coiby Xu wrote:
->>
->> SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
->>
->> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->
->It caused compile warnings.  Was it already addressed in general?
->
-It hasn't been addressed in general. Thank you for the reminding!
+On Thu, 29 Oct 2020 14:51:06 +0100 (CET)
+Miroslav Benes <mbenes@suse.cz> wrote:
 
->Or we may use __maybe_unused attribute instead, but it's just a matter
->of taste.
->
-I'll add __maybe_unused in v2 since __maybe_unused should be preferred over
-CONFIG_PM_SLEEP according to Arnd Bergmann [1],
+> > index b552cf2d85f8..6c0164d24bbd 100644
+> > --- a/kernel/livepatch/patch.c
+> > +++ b/kernel/livepatch/patch.c
+> > @@ -45,9 +45,13 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+> >  	struct klp_ops *ops;
+> >  	struct klp_func *func;
+> >  	int patch_state;
+> > +	int bit;
+> >  
+> >  	ops = container_of(fops, struct klp_ops, fops);
+> >  
+> > +	bit = ftrace_test_recursion_trylock();
+> > +	if (bit < 0)
+> > +		return;  
+> 
+> This means that the original function will be called in case of recursion. 
+> That's probably fair, but I'm wondering if we should at least WARN about 
+> it.
 
-> > By and large, drivers handle this by using a CONFIG_PM_SLEEP ifdef.
-> >
-> > Unless you can make an extremely convincing argument why not to do
-> > so here, I'd like you to handle it that way instead.
->
-> [adding linux-pm to Cc]
->
-> The main reason is that everyone gets the #ifdef wrong, I run into
-> half a dozen new build regressions with linux-next every week on
-> average, the typical problems being:
->
-> - testing CONFIG_PM_SLEEP instead of CONFIG_PM, leading to an unused
->   function warning
-> - testing CONFIG_PM instead of CONFIG_PM_SLEEP, leading to a build
->   failure
-> - calling a function outside of the #ifdef only from inside an
->   otherwise correct #ifdef, again leading to an unused function
->   warning
-> - causing a warning inside of the #ifdef but only testing if that
->   is disabled, leading to a problem if the macro is set (this is
->   rare these days for CONFIG_PM as that is normally enabled)
->
-> Using __maybe_unused avoids all of the above.
+It's probably what happens today. But if you add a WARN_ON_ONCE() it may
+not hurt.
 
-[1] https://lore.kernel.org/patchwork/comment/919944/
->
->thanks,
->
->Takashi
->
->> ---
->>  sound/core/pcm.c | 2 --
->>  1 file changed, 2 deletions(-)
->>
->> diff --git a/sound/core/pcm.c b/sound/core/pcm.c
->> index be5714f1bb58..5a281ac92958 100644
->> --- a/sound/core/pcm.c
->> +++ b/sound/core/pcm.c
->> @@ -599,7 +599,6 @@ static const struct attribute_group *pcm_dev_attr_groups[];
->>   * PM callbacks: we need to deal only with suspend here, as the resume is
->>   * triggered either from user-space or the driver's resume callback
->>   */
->> -#ifdef CONFIG_PM_SLEEP
->>  static int do_pcm_suspend(struct device *dev)
->>  {
->>  	struct snd_pcm_str *pstr = container_of(dev, struct snd_pcm_str, dev);
->> @@ -608,7 +607,6 @@ static int do_pcm_suspend(struct device *dev)
->>  		snd_pcm_suspend_all(pstr->pcm);
->>  	return 0;
->>  }
->> -#endif
->>
->>  static const struct dev_pm_ops pcm_dev_pm_ops = {
->>  	SET_SYSTEM_SLEEP_PM_OPS(do_pcm_suspend, NULL)
->> --
->> 2.28.0
->>
+I also plan on adding code that reports when recursion has happened,
+because even if it's not a problem, recursion adds extra overhead.
 
---
-Best regards,
-Coiby
+-- Steve
