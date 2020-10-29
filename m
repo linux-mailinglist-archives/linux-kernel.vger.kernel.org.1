@@ -2,232 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A38529EB46
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3957529EB49
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725854AbgJ2MI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:08:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:34460 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725385AbgJ2MI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:08:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A5A213D5;
-        Thu, 29 Oct 2020 05:08:25 -0700 (PDT)
-Received: from [10.57.13.20] (unknown [10.57.13.20])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D9543F719;
-        Thu, 29 Oct 2020 05:08:21 -0700 (PDT)
-Subject: Re: [PATCH v3 1/4] PM / EM: Add a flag indicating units of power
- values in Energy Model
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
-        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>
-References: <20201019140601.3047-1-lukasz.luba@arm.com>
- <20201019140601.3047-2-lukasz.luba@arm.com>
- <CAD=FV=Up1Qssb=Q2UfXTKmd1oLGrEpTCH50ejgFSPnRQP1d-iQ@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <3be572b1-860a-81f4-d924-66c6d05aa873@arm.com>
-Date:   Thu, 29 Oct 2020 12:08:19 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1725957AbgJ2MJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725928AbgJ2MJH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 08:09:07 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBB9C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 05:09:07 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id f4so1354732vsk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 05:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XOPDCJxGnjWbK/1ZDXPLwtwqPWavp4ha998oEkxsn8Q=;
+        b=flwJaH75+OYPqFvGJJOTCOx1TZi8IkdOeBuVeZ6SvXSpLNyp9g4K0i2zUPy8ZpviIZ
+         FXyorcgcn82PvQNIjdD8/qBH6bdqD7hVT1Yh1PeaKDstjGkUg4413rA6i5+2/J9Hozsj
+         XVZCH+AhVY9J4KolXVf3c9ZHtCXIN8FxYc7c0VrIwzuCJ0Xu8krbL3Bcd8Nk4qGdp/Vu
+         yuCc1wHdv6sPHUDSaO0/XKxsZ7AcOyXZUaFxHg8VF2p0pieU+79NaJ9CtD7ybcNsmchJ
+         jE7NNTaQcZmyho4l9WKNWBAPtIORLfwANGO0BXp5CZXGHA1Gr8qQImK3EbS2Nku/dNGV
+         ZgcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XOPDCJxGnjWbK/1ZDXPLwtwqPWavp4ha998oEkxsn8Q=;
+        b=pTirYLCxwqrvHRGiuO7xUffm08anvDfpevTPOYqDoLcv6ySh3yTjsE/1n9p5FCImAn
+         X/kz/WgE2PJdUlk0hWbMu3jTeFZgakv+fJpHj1P35n/e1KK2pDzJa6wW0CJzWaEFfbIA
+         YCH/KLB++LnEKmZ9mK2KV4iztvo9C2BoIUCVI04rM3ijyjNM4aN/+Judy9+fOARngJ7g
+         qNKa9rLNJs6Is0SD/PafTDoBC8mJBS69zguVGTR+m8vdeqPPjSo84KQYcIxwbhf67GqX
+         0hgCZ94KIT3b5qWAtqh6zNcpVL4BWtUXZCYneYjAJLEHcSzNwfO9uEMrW8pW56Nl6aAy
+         lrYg==
+X-Gm-Message-State: AOAM531QwEKJ82+HRZup/24F8L8oBlCdB2Sa3pHJfM8lFXQRc3VIDAv+
+        78u7EBWs+7ob+woSXqoHVgWdiimNBjmcqhUn2m776Q==
+X-Google-Smtp-Source: ABdhPJx6Q9DF7vcO6aVmXdxaszAIPS70N4/DVXoQj6nfMycE8SxJR1X9NIaonbsZ7yKYflfVuVmupOxqyzRK8kMeNLY=
+X-Received: by 2002:a67:ec9a:: with SMTP id h26mr2466385vsp.34.1603973346162;
+ Thu, 29 Oct 2020 05:09:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=Up1Qssb=Q2UfXTKmd1oLGrEpTCH50ejgFSPnRQP1d-iQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201014030846.12428-1-wenbin.mei@mediatek.com>
+In-Reply-To: <20201014030846.12428-1-wenbin.mei@mediatek.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 29 Oct 2020 13:08:29 +0100
+Message-ID: <CAPDyKFo+sLQEWdDGkgDKp56a0Cua9nSGTqMUvdtEzUQx9RQt6Q@mail.gmail.com>
+Subject: Re: [PATCH v7 0/4] Add mmc support for MT8192 SoC
+To:     Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 14 Oct 2020 at 05:08, Wenbin Mei <wenbin.mei@mediatek.com> wrote:
+>
+> Change in v7:
+> 1)add "unevaluatedProperties" in mtk-sd.yaml
+> 2)add Reviewed-by tag
+>
+> Change in v6:
+> 1)use devm_clk_get function for required clocks
+>
+> Change in v5:
+> 1)remove Reviewed-by tag
+> 2)use devm_clk_bulk_get_optional instead of devm_clk_get_optional
+>   for bulk clks
+>
+> Change in v4:
+> 1)drop "vmmc" and "vqmmc" desciption in mtk-sd.yaml
+> 2)add vmmq/vqmmc supplies and the pinctrls to required properties
+> 3)change dbg level and exit this function
+> 4)use devm_clk_get_optional instead of devm_clk_get function
+> 5)remove else branch for sys_clk_cg
+>
+> Change in v3:
+> 1)change maintainers name in mtk-sd.yaml
+> 2)change "compatible" properties to enum type and sort it
+> 3)drop these properties: "reg" and "interrupts"
+> 4)add "maxItems" constraints on these properties: "vmmc-supply", "vqmmc-supply",
+>   "assigned-clocks", "assigned-clock-parents"
+> 5)add "minimum" and "maximum" constraints on these properties: "mediatek,hs400-cmd-int-delay",
+>   "mediatek,latch-ck", "hs400-ds-delay", "mediatek,hs200-cmd-int-delay"
+>
+> Change in v2:
+> Convert mtk-sd to json-schema
+>
+> Wenbin Mei (4):
+>   dt-bindings: mmc: Convert mtk-sd to json-schema
+>   mmc: dt-bindings: add support for MT8192 SoC
+>   arm64: dts: mt8192: add mmc device node
+>   mmc: mediatek: Add subsys clock control for MT8192 msdc
+> ---
+> This patch depends on
+> [v4,1/3] arm64: dts: Add Mediatek SoC MT8192 and evaluation board dts and Makefile
+> [v3,1/9] dt-bindings: ARM: Mediatek: Document bindings for MT8192 BSP
+> [v3,6/9] clk: mediatek: Add dt-bindings for MT8192 clocks
+> [v3,9/9] clk: mediatek: Add MT8192 clock support
+> [v3,1/3] dt-bindings: pinctrl: mt8192: add pinctrl file
+> [v3,2/3] dt-bindings: pinctrl: mt8192: add binding document
+> [v3,3/3] pinctrl: add pinctrl driver on mt8192
+> [v2,1/4] soc: mediatek: pwrap: use BIT() macro
+> [v2,2/4] soc: mediatek: pwrap: add arbiter capability
+> [v2,3/4] dt-bindings: mediatek: add compatible for MT6873/8192 pwrap
+> [v2,4/4] soc: mediatek: pwrap: add pwrap driver for MT6873/8192 SoCs
+> [2/8] dt-bindings: mfd: Add compatible for the MediaTek MT6359 PMIC
+> [3/8] dt-bindings: regulator: Add document for MT6359 regulator
+> [4/8] mfd: Add support for the MediaTek MT6359 PMIC
+> [5/8] regulator: mt6359: Add support for MT6359 regulator
+> [7/8] regulator: mt6359: Add support for MT6359P regulator
+> [8/8] arm64: dts: mt6359: add PMIC MT6359 related nodes
+>
+> Please also accept this patch together with [1][2][3][4][5]
+> to avoid build and dt binding check error.
+> [1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=332621
+> [2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=342593
+> [3] https://patchwork.kernel.org/project/linux-mediatek/list/?series=330017
+> [4] https://patchwork.kernel.org/project/linux-mediatek/list/?series=322937
+> [5] https://patchwork.kernel.org/project/linux-mediatek/list/?series=323171
+> ---
+>  .../devicetree/bindings/mmc/mtk-sd.txt        |  75 --------
+>  .../devicetree/bindings/mmc/mtk-sd.yaml       | 176 ++++++++++++++++++
+>  arch/arm64/boot/dts/mediatek/mt8192-evb.dts   |  89 +++++++++
+>  arch/arm64/boot/dts/mediatek/mt8192.dtsi      |  34 ++++
+>  drivers/mmc/host/mtk-sd.c                     |  74 ++++++--
+>  5 files changed, 355 insertions(+), 93 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mmc/mtk-sd.txt
+>  create mode 100644 Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+>
+> --
+> 2.18.0
+>
 
+Applied for next, except patch 3 as needs to go via arm-soc, thanks!
 
-On 10/20/20 1:17 AM, Doug Anderson wrote:
-> Hi,
-> 
-> On Mon, Oct 19, 2020 at 7:06 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> There are different platforms and devices which might use different scale
->> for the power values. Kernel sub-systems might need to check if all
->> Energy Model (EM) devices are using the same scale. Address that issue and
->> store the information inside EM for each device. Thanks to that they can
->> be easily compared and proper action triggered.
->>
->> Suggested-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/cpufreq/scmi-cpufreq.c |  3 ++-
->>   drivers/opp/of.c               |  2 +-
->>   include/linux/energy_model.h   |  9 +++++++--
->>   kernel/power/energy_model.c    | 24 +++++++++++++++++++++++-
->>   4 files changed, 33 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
->> index e855e8612a67..3714a4cd07fa 100644
->> --- a/drivers/cpufreq/scmi-cpufreq.c
->> +++ b/drivers/cpufreq/scmi-cpufreq.c
->> @@ -188,7 +188,8 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
->>          policy->fast_switch_possible =
->>                  handle->perf_ops->fast_switch_possible(handle, cpu_dev);
->>
->> -       em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, policy->cpus);
->> +       em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, policy->cpus,
->> +                                   false);
->>
->>          return 0;
->>
->> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
->> index 874b58756220..9e1307061de5 100644
->> --- a/drivers/opp/of.c
->> +++ b/drivers/opp/of.c
->> @@ -1333,7 +1333,7 @@ int dev_pm_opp_of_register_em(struct device *dev, struct cpumask *cpus)
->>                  goto failed;
->>          }
->>
->> -       ret = em_dev_register_perf_domain(dev, nr_opp, &em_cb, cpus);
->> +       ret = em_dev_register_perf_domain(dev, nr_opp, &em_cb, cpus, true);
->>          if (ret)
->>                  goto failed;
->>
->> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
->> index b67a51c574b9..2c31d79bb922 100644
->> --- a/include/linux/energy_model.h
->> +++ b/include/linux/energy_model.h
->> @@ -29,6 +29,8 @@ struct em_perf_state {
->>    * em_perf_domain - Performance domain
->>    * @table:             List of performance states, in ascending order
->>    * @nr_perf_states:    Number of performance states
->> + * @milliwatts:                Flag indicating the power values are in milli-Watts
->> + *                     or some other scale.
->>    * @cpus:              Cpumask covering the CPUs of the domain. It's here
->>    *                     for performance reasons to avoid potential cache
->>    *                     misses during energy calculations in the scheduler
->> @@ -43,6 +45,7 @@ struct em_perf_state {
->>   struct em_perf_domain {
->>          struct em_perf_state *table;
->>          int nr_perf_states;
->> +       bool milliwatts;
->>          unsigned long cpus[];
->>   };
->>
->> @@ -79,7 +82,8 @@ struct em_data_callback {
->>   struct em_perf_domain *em_cpu_get(int cpu);
->>   struct em_perf_domain *em_pd_get(struct device *dev);
->>   int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
->> -                               struct em_data_callback *cb, cpumask_t *span);
->> +                               struct em_data_callback *cb, cpumask_t *spani,
->> +                               bool milliwatts);
->>   void em_dev_unregister_perf_domain(struct device *dev);
->>
->>   /**
->> @@ -186,7 +190,8 @@ struct em_data_callback {};
->>
->>   static inline
->>   int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
->> -                               struct em_data_callback *cb, cpumask_t *span)
->> +                               struct em_data_callback *cb, cpumask_t *span,
->> +                               bool milliwatts)
->>   {
->>          return -EINVAL;
->>   }
->> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
->> index c1ff7fa030ab..efe2a595988e 100644
->> --- a/kernel/power/energy_model.c
->> +++ b/kernel/power/energy_model.c
->> @@ -52,6 +52,17 @@ static int em_debug_cpus_show(struct seq_file *s, void *unused)
->>   }
->>   DEFINE_SHOW_ATTRIBUTE(em_debug_cpus);
->>
->> +static int em_debug_units_show(struct seq_file *s, void *unused)
->> +{
->> +       struct em_perf_domain *pd = s->private;
->> +       char *units = pd->milliwatts ? "milliWatts" : "bogoWatts";
->> +
->> +       seq_printf(s, "%s\n", units);
->> +
->> +       return 0;
->> +}
->> +DEFINE_SHOW_ATTRIBUTE(em_debug_units);
->> +
->>   static void em_debug_create_pd(struct device *dev)
->>   {
->>          struct dentry *d;
->> @@ -64,6 +75,8 @@ static void em_debug_create_pd(struct device *dev)
->>                  debugfs_create_file("cpus", 0444, d, dev->em_pd->cpus,
->>                                      &em_debug_cpus_fops);
->>
->> +       debugfs_create_file("units", 0444, d, dev->em_pd, &em_debug_units_fops);
->> +
->>          /* Create a sub-directory for each performance state */
->>          for (i = 0; i < dev->em_pd->nr_perf_states; i++)
->>                  em_debug_create_ps(&dev->em_pd->table[i], d);
->> @@ -250,17 +263,24 @@ EXPORT_SYMBOL_GPL(em_cpu_get);
->>    * @cpus       : Pointer to cpumask_t, which in case of a CPU device is
->>    *             obligatory. It can be taken from i.e. 'policy->cpus'. For other
->>    *             type of devices this should be set to NULL.
->> + * @milliwatts : Flag indicating that the power values are in milliWatts or
->> + *             in some other scale. It must be set properly.
->>    *
->>    * Create Energy Model tables for a performance domain using the callbacks
->>    * defined in cb.
->>    *
->> + * The @milliwatts is important to set with correct value. Some kernel
->> + * sub-systems might rely on this flag and check if all devices in the EM are
->> + * using the same scale.
->> + *
->>    * If multiple clients register the same performance domain, all but the first
->>    * registration will be ignored.
-> 
-> Should the bullet point above be changed?
-> 
-> I haven't dug through all the code so I may be being naive, but it
-> seems like if someone registers with "milliWatts" set to true then it
-> should ignore the old values where milliWatts were false?  Otherwise,
-> I think, if SCMI registers some numbers first does that mean we can't
-> later register updated numbers in the device tree?  Also, what happens
-> when some devices register with milliWatts, some with bogoWatts, and
-> some with both?  How do we decide what we should be using and what we
-> should be throwing away?
-
-When the SCMI is used, there is no DT involved. The SCMI provides
-get_power() callback and protocol supports this. The values are coming
-from FW. SCMI also requires that the scale is consistent across perf
-domains, so no need to 'align' these devices to the same scale.
-
-You cannot register EM twice for the same device, the existing code
-already does not allow for that.
-The EM internally does not track devices, the device struct has em_pd
-field. It is up the the client framework or governor e.g. IPA to
-check all power actors if some of them use abstract scale and other
-milliWatts.
-
-> 
-> As per my response in the cover letter, I guess one option would be to
-> try to figure out a bogoWatts to milliWatts conversion factor the
-> first time someone tried to register once one way and once the other
-> way?
-
-It is not possible.
-
-Regards,
-Lukasz
-
-> 
-> 
-> -Doug
-> 
+Kind regards
+Uffe
