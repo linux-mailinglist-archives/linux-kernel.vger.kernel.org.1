@@ -2,189 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A889129F05A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9430029F05B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728330AbgJ2PpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:45:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:39656 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727832AbgJ2PpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:45:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C77B331B;
-        Thu, 29 Oct 2020 08:45:16 -0700 (PDT)
-Received: from [10.57.18.142] (unknown [10.57.18.142])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5DEAF3F66E;
-        Thu, 29 Oct 2020 08:45:15 -0700 (PDT)
-Subject: Re: [PATCH v3 00/26] coresight: Support for ETM system instructions
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <CAJ9a7Vh5ODr=atPLffG0ud2XZjwav5ysiR9J2rQQxWfmL6ypQA@mail.gmail.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <2be2385a-cc9d-4585-6c2c-dde833d735fe@arm.com>
-Date:   Thu, 29 Oct 2020 15:45:14 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <CAJ9a7Vh5ODr=atPLffG0ud2XZjwav5ysiR9J2rQQxWfmL6ypQA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S1728361AbgJ2PqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:46:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34888 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727966AbgJ2PqH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:46:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603986365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=aZLvO3nbOlkXX/aM7Y/NB8twNOJTe+bO3XbdsHV0Mgw=;
+        b=ITrSkDhjbye/XRMpZFLEo6+vQ8L/sKlLebZ/vVfZUIP5YvjHeF6fKCNnv82JCBLZ1GUnlY
+        4JDZXR/RlrG1cnqxpYFLzS5rb0pSF8nJw1h4PXncYHiMT1rkC96jNMDXWp/TClyRRgApzK
+        Yl4B1+Znkh78yrBO4ZEgJF9x5IvJrl0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-JWRKCyrPMGiGHv9J8shMMw-1; Thu, 29 Oct 2020 11:46:03 -0400
+X-MC-Unique: JWRKCyrPMGiGHv9J8shMMw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE2EA186DD24;
+        Thu, 29 Oct 2020 15:46:00 +0000 (UTC)
+Received: from llong.com (ovpn-116-17.rdu2.redhat.com [10.10.116.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B9CC25B4B9;
+        Thu, 29 Oct 2020 15:45:53 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luca BRUNO <lucab@redhat.com>, Waiman Long <longman@redhat.com>
+Subject: [PATCH v2] inotify: Increase default inotify.max_user_watches limit to 1048576
+Date:   Thu, 29 Oct 2020 11:45:35 -0400
+Message-Id: <20201029154535.2074-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 7:53 AM, Mike Leach wrote:
-> Hi Suzuki,
-> 
-> On Wed, 28 Oct 2020 at 22:10, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->>
->> CoreSight ETMv4.4 obsoletes memory mapped access to ETM and
->> mandates the system instructions for registers.
->> This also implies that they may not be on the amba bus.
->> Right now all the CoreSight components are accessed via memory
->> map. Also, we have some common routines in coresight generic
->> code driver (e.g, CS_LOCK, claim/disclaim), which assume the
->> mmio. In order to preserve the generic algorithms at a single
->> place and to allow dynamic switch for ETMs, this series introduces
->> an abstraction layer for accessing a coresight device. It is
->> designed such that the mmio access are fast tracked (i.e, without
->> an indirect function call).
->>
->> This will also help us to get rid of the driver+attribute specific
->> sysfs show/store routines and replace them with a single routine
->> to access a given register offset (which can be embedded in the
->> dev_ext_attribute). This is not currently implemented in the series,
->> but can be achieved.
->>
->> Further we switch the generic routines to work with the abstraction.
->> With this in place, we refactor the etm4x code a bit to allow for
->> supporting the system instructions with very little new code. The
->> changes also switch to using the system instructions by default
->> even when we may have an MMIO.
->>
->> We use TRCDEVARCH for the detection of the ETM component, which
->> is a standard register as per CoreSight architecture, rather than
->> the etm specific id register TRCIDR1. This is for making sure
->> that we are able to detect the ETM via system instructions accurately,
->> when the the trace unit could be anything (etm or a custom trace unit).
->> To keep the backward compatibility for any existing broken impelementation
->> which may not implement TRCDEVARCH, we fall back to TRCIDR1. Also
->> this covers us for the changes in the future architecture [0].
->>
->> The series has been mildly tested on a model for system instructions.
->> I would really appreciate any testing on real hardware.
->>
->> Applies on coresight/next.
->>
->> [0] https://developer.arm.com/docs/ddi0601/g/aarch64-system-registers/trcidr1
->>
->> Known issues:
->>    Checkpatch failure for "coresight: etm4x: Add sysreg access helpers" :
->>
->>    ERROR: Macros with complex values should be enclosed in parentheses
->>    #121: FILE: drivers/hwtracing/coresight/coresight-etm4x.h:153:
->>    +#define CASE_READ(res, x)                                      \
->>    +       case (x): { (res) = read_etm4x_sysreg_const_offset((x)); break; }
->>
->>
->> I don't know how to fix that without breaking the build ! Suggestions
->> welcome.
->>
-> 
-> I hit exactly the same issue with my recent v2 set. The checker really
-> hates case statements in macros. In my case I shut it up for v3 by
-> changing:-
-> 
->      #define MAPREG(cval, elem) \
->          case cval: \
->              reg->drv_store = &drvcfg->elem; \
->              break;
-> 
-> 
->      if (((offset >= TRCEVENTCTL0R) && (offset <= TRCVIPCSSCTLR)) ||
->          ((offset >= TRCSEQRSTEVR) && (offset <= TRCEXTINSELR)) ||
->          ((offset >= TRCCIDCCTLR0) && (offset <= TRCVMIDCCTLR1))) {
->          switch (offset) {
->              /* 32 bit single control and filter registers */
->              MAPREG(TRCEVENTCTL0R, eventctrl0);
->              MAPREG(TRCEVENTCTL1R, eventctrl1);
->              MAPREG(TRCSTALLCTLR, stall_ctrl);
->              MAPREG(TRCTSCTLR, ts_ctrl);
->              MAPREG(TRCSYNCPR, syncfreq);
->              MAPREG(TRCCCCTLR, ccctlr);
->              MAPREG(TRCBBCTLR, bb_ctrl);
->              MAPREG(TRCVICTLR, vinst_ctrl);
->              MAPREG(TRCVIIECTLR, viiectlr);
->              MAPREG(TRCVISSCTLR, vissctlr);
->              MAPREG(TRCVIPCSSCTLR, vipcssctlr);
->              MAPREG(TRCSEQRSTEVR, seq_rst);
->              MAPREG(TRCSEQSTR, seq_state);
->              MAPREG(TRCEXTINSELR, ext_inp);
->              MAPREG(TRCCIDCCTLR0, ctxid_mask0);
->              MAPREG(TRCCIDCCTLR1, ctxid_mask1);
->              MAPREG(TRCVMIDCCTLR0, vmid_mask0);
->              MAPREG(TRCVMIDCCTLR1, vmid_mask1);
->          default:
->              err = -EINVAL;
->              break;
->          }
-> 
-> 
-> to
-> 
-> err = -EINVAL;
-> 
-> #define CHECKREG(cval, elem) \
->      { \
->          if (offset == cval) { \
->              reg->drv_store = &drvcfg->elem; \
->              err = 0; \
->              break; \
->          } \
->      }
-> 
->      if (((offset >= TRCEVENTCTL0R) && (offset <= TRCVIPCSSCTLR)) ||
->          ((offset >= TRCSEQRSTEVR) && (offset <= TRCEXTINSELR)) ||
->          ((offset >= TRCCIDCCTLR0) && (offset <= TRCVMIDCCTLR1))) {
->          do {
->              CHECKREG(TRCEVENTCTL0R, eventctrl0);
->              CHECKREG(TRCEVENTCTL1R, eventctrl1);
->              CHECKREG(TRCSTALLCTLR, stall_ctrl);
->              CHECKREG(TRCTSCTLR, ts_ctrl);
->              CHECKREG(TRCSYNCPR, syncfreq);
->              CHECKREG(TRCCCCTLR, ccctlr);
->              CHECKREG(TRCBBCTLR, bb_ctrl);
->              CHECKREG(TRCVICTLR, vinst_ctrl);
->              CHECKREG(TRCVIIECTLR, viiectlr);
->              CHECKREG(TRCVISSCTLR, vissctlr);
->              CHECKREG(TRCVIPCSSCTLR, vipcssctlr);
->              CHECKREG(TRCSEQRSTEVR, seq_rst);
->              CHECKREG(TRCSEQSTR, seq_state);
->              CHECKREG(TRCEXTINSELR, ext_inp);
->              CHECKREG(TRCCIDCCTLR0, ctxid_mask0);
->              CHECKREG(TRCCIDCCTLR1, ctxid_mask1);
->              CHECKREG(TRCVMIDCCTLR0, vmid_mask0);
->              CHECKREG(TRCVMIDCCTLR1, vmid_mask1);
->          } while (0);
-> 
-> 
-> A bit contrived but functionally the same - and doesn't annoy the
-> checker, No idea if the code is more or less efficient after
-> compilation than a standard switch / case combo, but not on a critical
-> path for me so wasn't bothered.
+The default value of inotify.max_user_watches sysctl parameter was set
+to 8192 since the introduction of the inotify feature in 2005 by
+commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
+small for many modern usage. As a result, users have to explicitly set
+it to a larger value to make it work.
 
-Thanks Mike. Functionally it is fine. But I think the Compiler wil be 
-able to optimize it better with switch() for a large list of cases
-with consecutive values.
+After some searching around the web, these are the
+inotify.max_user_watches values used by some projects:
+ - vscode:  524288
+ - dropbox support: 100000
+ - users on stackexchange: 12228
+ - lsyncd user: 2000000
+ - code42 support: 1048576
+ - monodevelop: 16384
+ - tectonic: 524288
+ - openshift origin: 65536
 
-I guess there are more and more places that this is useful.
-I have Cc'ed the checkpatch maintainers in the patch in question.
+Each watch point adds an inotify_inode_mark structure to an inode to
+be watched. It also pins the watched inode as well as an inotify fdinfo
+procfs file.
 
-Cheers
-Suzuki
+Modeled after the epoll.max_user_watches behavior to adjust the default
+value according to the amount of addressable memory available, make
+inotify.max_user_watches behave in a similar way to make it use no more
+than 1% of addressable memory within the range [8192, 1048576].
+
+For 64-bit archs, inotify_inode_mark plus 2 inode have a size close
+to 2 kbytes. That means a system with 196GB or more memory should have
+the maximum value of 1048576 for inotify.max_user_watches. This default
+should be big enough for most use cases.
+
+With my x86-64 config, the size of xfs_inode, proc_inode and
+inotify_inode_mark is 1680 bytes. The estimated INOTIFY_WATCH_COST is
+1760 bytes.
+
+[v2: increase inotify watch cost as suggested by Amir and Honza]
+
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ fs/notify/inotify/inotify_user.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
+
+diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+index 186722ba3894..37d9f09c226f 100644
+--- a/fs/notify/inotify/inotify_user.c
++++ b/fs/notify/inotify/inotify_user.c
+@@ -37,6 +37,16 @@
+ 
+ #include <asm/ioctls.h>
+ 
++/*
++ * An inotify watch requires allocating an inotify_inode_mark structure as
++ * well as pinning the watched inode and adding inotify fdinfo procfs file.
++ * The increase in size of a filesystem inode versus a VFS inode varies
++ * depending on the filesystem. An extra 512 bytes is added as rough
++ * estimate of the additional filesystem inode cost.
++ */
++#define INOTIFY_WATCH_COST	(sizeof(struct inotify_inode_mark) + \
++				 2 * sizeof(struct inode) + 512)
++
+ /* configurable via /proc/sys/fs/inotify/ */
+ static int inotify_max_queued_events __read_mostly;
+ 
+@@ -801,6 +811,18 @@ SYSCALL_DEFINE2(inotify_rm_watch, int, fd, __s32, wd)
+  */
+ static int __init inotify_user_setup(void)
+ {
++	unsigned int watches_max;
++	struct sysinfo si;
++
++	si_meminfo(&si);
++	/*
++	 * Allow up to 1% of addressible memory to be allocated for inotify
++	 * watches (per user) limited to the range [8192, 1048576].
++	 */
++	watches_max = (((si.totalram - si.totalhigh) / 100) << PAGE_SHIFT) /
++			INOTIFY_WATCH_COST;
++	watches_max = min(1048576U, max(watches_max, 8192U));
++
+ 	BUILD_BUG_ON(IN_ACCESS != FS_ACCESS);
+ 	BUILD_BUG_ON(IN_MODIFY != FS_MODIFY);
+ 	BUILD_BUG_ON(IN_ATTRIB != FS_ATTRIB);
+@@ -827,7 +849,7 @@ static int __init inotify_user_setup(void)
+ 
+ 	inotify_max_queued_events = 16384;
+ 	init_user_ns.ucount_max[UCOUNT_INOTIFY_INSTANCES] = 128;
+-	init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = 8192;
++	init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = watches_max;
+ 
+ 	return 0;
+ }
+-- 
+2.18.1
+
