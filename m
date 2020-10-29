@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1207929F4BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C79B29F4C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbgJ2TSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725937AbgJ2TRo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:17:44 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CFFC0613CF;
-        Thu, 29 Oct 2020 12:17:44 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 19:17:42 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603999063;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R7+dGBqc2f5XoJ4SOWY6qsm+q+4HuAyLb5Pp0X1TMoM=;
-        b=IGFvAgHE4DOkxvXmUQz/lSNYe8PAlWmBlWNwYvdrgxZTKxYAlyXV098Df5VSNIOIgXNuwZ
-        hUpO93h3X2lMB0mStHdJJjb4QfJBYy8KAXvt6TqMWox+G8RclNe7aBve/ZXXAd6hSSPUsv
-        UzYHv5WLcWWuq9mFvXzEcTKkVEWuPpXXWz8dxoBEZKaqOIuwUlHDNIpvls+8u2bEDR8PXh
-        wDWHZoexgIi1AMsrpux/B9ugp/WJHcinKj2WKoJ49NvTTmz/+hrum8aNykrcfLv/WxFcFF
-        iZrrk3QEZaUNAnVLPy0TK/GtwyTCOdFaYOKnfSFM6g8kIHlW5AwN2+e2NXJp+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603999063;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R7+dGBqc2f5XoJ4SOWY6qsm+q+4HuAyLb5Pp0X1TMoM=;
-        b=3O//TZeM1OiO4AKIX024mIS03kOlDzBmLxSNU/H5MD4CHWOKs8nCMOdBh+CcTFqgzHy1HC
-        32goRrYs+7QhzVDQ==
-From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/boot/compressed/64: Introduce sev_status
-Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201028164659.27002-2-joro@8bytes.org>
-References: <20201028164659.27002-2-joro@8bytes.org>
+        id S1726182AbgJ2TSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:18:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725824AbgJ2TRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 15:17:01 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C4092076D;
+        Thu, 29 Oct 2020 19:17:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603999021;
+        bh=Z7HglUzBMygilCAvzwCh2Drqd4bWtlEBiAHCSSTrsNo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vBEOejOIJMKSGck1+EjPBZonVZX/K20gvYCRzxcgUFC285EbzLG+PwhOeQSsDP1Nv
+         EvPMEJz6hYP9G2Af7nuVq45e5bjBE7b5Chn7VMm5rSsFPFDgHcbjakC46wWp4ezbqa
+         vNphP34YRzHenmpt1SrBt9Gcn5U5e3vH1WGDCK3c=
+Date:   Thu, 29 Oct 2020 20:17:50 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ronald Warsow <rwarsow@gmx.de>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 5.9 000/757] 5.9.2-rc1 review
+Message-ID: <20201029191750.GA988039@kroah.com>
+References: <d8211fcd-ddb5-34e1-1f9e-aa5b94a03889@gmx.de>
+ <20201029091412.GA3749125@kroah.com>
+ <16326ab5-79f3-2e1b-511f-31f048608e6f@gmx.de>
 MIME-Version: 1.0
-Message-ID: <160399906249.397.15926591077255529069.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16326ab5-79f3-2e1b-511f-31f048608e6f@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/seves branch of tip:
+On Thu, Oct 29, 2020 at 03:42:09PM +0100, Ronald Warsow wrote:
+> On 29.10.20 10:14, Greg KH wrote:
+> > On Tue, Oct 27, 2020 at 07:09:52PM +0100, Ronald Warsow wrote:
+> > > Hallo
+> > > 
+> > > this rc1 runs here (pure Intel-box) without errors.
+> > > Thanks !
+> > > 
+> > > 
+> > > An RPC (I'm thinking about since some month)
+> > > ======
+> > > 
+> > > Wouldn't it be better (and not so much add. work) to sort the
+> > > Pseudo-Shortlog towards subsystem/driver ?
+> > > 
+> > > something like this:
+> > > 
+> > > ...
+> > > usb: gadget: f_ncm: allow using NCM in SuperSpeed Plus gadgets.
+> > > usb: cdns3: gadget: free interrupt after gadget has deleted
+> > > 
+> > >     Lorenzo Colitti <lorenzo@google.com>
+> > >     Peter Chen <peter.chen@nxp.com>
+> > > ...
+> > > 
+> > > 
+> > > Think of searching a bugfix in the shortlog.
+> > > 
+> > > With the current layout I need to read/"visual grep" the whole log.
+> > > 
+> > > With the new layout I'm able to jump to the "buggy" subsystem/driver and
+> > > only need to read that part of the log to get the info if the bug is
+> > > fixed or not yet
+> > 
+> > Do you have an example script that generates such a thing?  If so, I'll
+> > be glad to look into it, but am not going to try to create it on my own,
+> > sorry.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> 
+> first of all: in the above mail it should read "RFC"
+> 
+> 
+> Surely, who get the most benefit of it (the layout) does the most work.
+> Agreed, I will see what I can do -I'm unsure -
+> 
+> Currently, I'm thinking that the data for your shortlog are coming from
+> a sort of an git query or so and it would just be an easy adjustment of
+> the query parameter.
+> 
+> This seems not to be the case ?
+> 
+> To get an idea if my knowledge is sufficing (I'm no developer):
+> 
+> Where do you get the data from to generate your shortlog ?
 
-Commit-ID:     3ad84246a4097010f3ae3d6944120c0be00e9e7a
-Gitweb:        https://git.kernel.org/tip/3ad84246a4097010f3ae3d6944120c0be00e9e7a
-Author:        Joerg Roedel <jroedel@suse.de>
-AuthorDate:    Wed, 28 Oct 2020 17:46:55 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 29 Oct 2020 10:54:36 +01:00
+A "simple" git command:
+	git log --abbrev=12 --format="%aN <%aE>%n    %s%n" ${VERSION}..HEAD > ${TMP_LOG}
 
-x86/boot/compressed/64: Introduce sev_status
+If you can come up with a command that replaces that, I'll be glad to
+try it out.
 
-Introduce sev_status and initialize it together with sme_me_mask to have
-an indicator which SEV features are enabled.
+thanks,
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-Link: https://lkml.kernel.org/r/20201028164659.27002-2-joro@8bytes.org
----
- arch/x86/boot/compressed/mem_encrypt.S | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/boot/compressed/mem_encrypt.S b/arch/x86/boot/compressed/mem_encrypt.S
-index dd07e7b..3092ae1 100644
---- a/arch/x86/boot/compressed/mem_encrypt.S
-+++ b/arch/x86/boot/compressed/mem_encrypt.S
-@@ -81,6 +81,19 @@ SYM_FUNC_START(set_sev_encryption_mask)
- 
- 	bts	%rax, sme_me_mask(%rip)	/* Create the encryption mask */
- 
-+	/*
-+	 * Read MSR_AMD64_SEV again and store it to sev_status. Can't do this in
-+	 * get_sev_encryption_bit() because this function is 32-bit code and
-+	 * shared between 64-bit and 32-bit boot path.
-+	 */
-+	movl	$MSR_AMD64_SEV, %ecx	/* Read the SEV MSR */
-+	rdmsr
-+
-+	/* Store MSR value in sev_status */
-+	shlq	$32, %rdx
-+	orq	%rdx, %rax
-+	movq	%rax, sev_status(%rip)
-+
- .Lno_sev_mask:
- 	movq	%rbp, %rsp		/* Restore original stack pointer */
- 
-@@ -96,5 +109,6 @@ SYM_FUNC_END(set_sev_encryption_mask)
- 
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- 	.balign	8
--SYM_DATA(sme_me_mask, .quad 0)
-+SYM_DATA(sme_me_mask,		.quad 0)
-+SYM_DATA(sev_status,		.quad 0)
- #endif
+greg k-h
