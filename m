@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0970D29E99A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A5229E992
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727282AbgJ2KwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:52:22 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60756 "EHLO
+        id S1727207AbgJ2Kv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:51:58 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60776 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726882AbgJ2Kvw (ORCPT
+        with ESMTP id S1727114AbgJ2Kvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:51:52 -0400
-Date:   Thu, 29 Oct 2020 10:51:50 -0000
+        Thu, 29 Oct 2020 06:51:54 -0400
+Date:   Thu, 29 Oct 2020 10:51:51 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603968711;
+        s=2020; t=1603968712;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fnX4T+Yu+tpptypCpXVJawwc6puGWhEcbA1bI1Ml53s=;
-        b=yh0fwPddMvhUsDxktJVf5MmiwymvuPZ51UJADcLv02urGSjQ1e4lQVMZMeYow9KCKqQwh2
-        yMJJQirSicQ6iVmnB4I79gfoCzt7Ki2Da1/qiMKpnPdiw8nri48Jb6Ot+rSrB2upJNE/4t
-        wtBxOmSkkq5UKiBBTvBtdUnFDR3+noQt3HJW1a0p8qL7loAa6OHeYyjXr472S0+zuwCU9n
-        GujhbZU6JsZPZuyRAL6X02PNsVZcrXg9xz5UJ2vrsN7XMWHS2SeIyaDbeLMQdujt8H6vJ+
-        YQA1vyYgM/vZir0q+fJJTAuOWXN7rC0Guc27TdD+4CZ/97kKSROL5CEQazQaqg==
+        bh=bnz1Smfi8Lt84DmNmzJfVdck9i5ltRDNZOy/7pXfNks=;
+        b=GNTSNH9D+2diaeHnq4VubfLF4fz5qc/Hq7/vAU/vhLyjXgu3MPT6v/qopeejDQCaaiwOg9
+        tC9HIodCDz1qK9im3C1nWou+g2nDYKn+KXKv/QX/6xkF4hzczA8+RS1nJZEMVW6txnpYMj
+        tRqJV5pC/RnVwCx3mQVaRSfS6gt8yIran8NA/ye8hCtMQC0bEfvnfqRJnH/MSELq3tB3CJ
+        +GThqUTOlLh2bXDb6m8LSCbqIopLcQhsgdLXgJMBayklpJeu7bnGFHM0P9TfQ+SFS+v5sy
+        J2rF12QMpTel+yD2Nbuja5+ORJyh9qydGC/3TQ6TsS3Sp/XYtAepOjy8XtYhpw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603968711;
+        s=2020e; t=1603968712;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fnX4T+Yu+tpptypCpXVJawwc6puGWhEcbA1bI1Ml53s=;
-        b=QNEsP7NJGZZy1qYKllPjXyhi6Md8ZaFXIKtHfKdchGxWPZyN0POC9EoO0EYMJyvYJXdZPT
-        4jw9KQ8m2f/9LeDA==
-From:   "tip-bot2 for Dietmar Eggemann" <tip-bot2@linutronix.de>
+        bh=bnz1Smfi8Lt84DmNmzJfVdck9i5ltRDNZOy/7pXfNks=;
+        b=JdF5e5oHNI8smpkO+nfV708Jc5xRsN2QggUfiOsmj0D/D7znFPt8T88lYziLOOL+NLwW58
+        DzJFl0MuYSD+J8Dg==
+From:   "tip-bot2 for Peng Liu" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/cpupri: Remove pri_to_cpu[CPUPRI_IDLE]
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+Subject: [tip: sched/core] sched/deadline: Fix sched_dl_global_validate()
+Cc:     Peng Liu <iwtbavbm@gmail.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200922083934.19275-2-dietmar.eggemann@arm.com>
-References: <20200922083934.19275-2-dietmar.eggemann@arm.com>
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <db6bbda316048cda7a1bbc9571defde193a8d67e.1602171061.git.iwtbavbm@gmail.com>
+References: <db6bbda316048cda7a1bbc9571defde193a8d67e.1602171061.git.iwtbavbm@gmail.com>
 MIME-Version: 1.0
-Message-ID: <160396871056.397.17031098897920284601.tip-bot2@tip-bot2>
+Message-ID: <160396871126.397.6829344906733895755.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,137 +60,142 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     5e054bca44fe92323de5e9b71478d1904b8bb1b7
-Gitweb:        https://git.kernel.org/tip/5e054bca44fe92323de5e9b71478d1904b8bb1b7
-Author:        Dietmar Eggemann <dietmar.eggemann@arm.com>
-AuthorDate:    Tue, 22 Sep 2020 10:39:33 +02:00
+Commit-ID:     a57415f5d1e43c3a5c5d412cd85e2792d7ed9b11
+Gitweb:        https://git.kernel.org/tip/a57415f5d1e43c3a5c5d412cd85e2792d7ed9b11
+Author:        Peng Liu <iwtbavbm@gmail.com>
+AuthorDate:    Thu, 08 Oct 2020 23:49:42 +08:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Thu, 29 Oct 2020 11:00:29 +01:00
 
-sched/cpupri: Remove pri_to_cpu[CPUPRI_IDLE]
+sched/deadline: Fix sched_dl_global_validate()
 
-pri_to_cpu[CPUPRI_IDLE=0] isn't used since cpupri_set(..., newpri) is
-never called with newpri = MAX_PRIO (140).
+When change sched_rt_{runtime, period}_us, we validate that the new
+settings should at least accommodate the currently allocated -dl
+bandwidth:
 
-Current mapping:
+  sched_rt_handler()
+    -->	sched_dl_bandwidth_validate()
+	{
+		new_bw = global_rt_runtime()/global_rt_period();
 
-p->rt_priority   p->prio   newpri   cpupri
+		for_each_possible_cpu(cpu) {
+			dl_b = dl_bw_of(cpu);
+			if (new_bw < dl_b->total_bw)    <-------
+				ret = -EBUSY;
+		}
+	}
 
-                               -1       -1 (CPUPRI_INVALID)
+But under CONFIG_SMP, dl_bw is per root domain , but not per CPU,
+dl_b->total_bw is the allocated bandwidth of the whole root domain.
+Instead, we should compare dl_b->total_bw against "cpus*new_bw",
+where 'cpus' is the number of CPUs of the root domain.
 
-                              140        0 (CPUPRI_IDLE)
+Also, below annotation(in kernel/sched/sched.h) implied implementation
+only appeared in SCHED_DEADLINE v2[1], then deadline scheduler kept
+evolving till got merged(v9), but the annotation remains unchanged,
+meaningless and misleading, update it.
 
-                              100        1 (CPUPRI_NORMAL)
+* With respect to SMP, the bandwidth is given on a per-CPU basis,
+* meaning that:
+*  - dl_bw (< 100%) is the bandwidth of the system (group) on each CPU;
+*  - dl_total_bw array contains, in the i-eth element, the currently
+*    allocated bandwidth on the i-eth CPU.
 
-             1        98       98        3
-           ...
-            49        50       50       51
-            50        49       49       52
-           ...
-            99         0        0      101
+[1]: https://lore.kernel.org/lkml/1267385230.13676.101.camel@Palantir/
 
-Even when cpupri was introduced with commit 6e0534f27819 ("sched: use a
-2-d bitmap for searching lowest-pri CPU") in v2.6.27, only
-
-   (1) CPUPRI_INVALID (-1),
-   (2) MAX_RT_PRIO (100),
-   (3) an RT prio (RT1..RT99)
-
-were used as newprio in cpupri_set(..., newpri) -> convert_prio(newpri).
-
-MAX_RT_PRIO is used only in dec_rt_tasks() -> dec_rt_prio() ->
-dec_rt_prio_smp() -> cpupri_set() in case of !rt_rq->rt_nr_running.
-I.e. it stands for a non-rt task, including the IDLE task.
-
-Commit 57785df5ac53 ("sched: Fix task priority bug") removed code in
-v2.6.33 which did set the priority of the IDLE task to MAX_PRIO.
-Although this happened after the introduction of cpupri, it didn't have
-an effect on the values used for cpupri_set(..., newpri).
-
-Remove CPUPRI_IDLE and adapt the cpupri implementation accordingly.
-This will save a useless for loop with an atomic_read in
-cpupri_find_fitness() calling __cpupri_find().
-
-New mapping:
-
-p->rt_priority   p->prio   newpri   cpupri
-
-                               -1       -1 (CPUPRI_INVALID)
-
-                              100        0 (CPUPRI_NORMAL)
-
-             1        98       98        2
-           ...
-            49        50       50       50
-            50        49       49       51
-           ...
-            99         0        0      100
-
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Fixes: 332ac17ef5bf ("sched/deadline: Add bandwidth management for SCHED_DEADLINE tasks")
+Signed-off-by: Peng Liu <iwtbavbm@gmail.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200922083934.19275-2-dietmar.eggemann@arm.com
+Reviewed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+Acked-by: Juri Lelli <juri.lelli@redhat.com>
+Link: https://lkml.kernel.org/r/db6bbda316048cda7a1bbc9571defde193a8d67e.1602171061.git.iwtbavbm@gmail.com
 ---
- kernel/sched/cpupri.c | 10 ++++------
- kernel/sched/cpupri.h |  7 +++----
- 2 files changed, 7 insertions(+), 10 deletions(-)
+ kernel/sched/deadline.c |  5 +++--
+ kernel/sched/sched.h    | 42 +++++++++++++++++-----------------------
+ 2 files changed, 21 insertions(+), 26 deletions(-)
 
-diff --git a/kernel/sched/cpupri.c b/kernel/sched/cpupri.c
-index 0033731..a5d14ed 100644
---- a/kernel/sched/cpupri.c
-+++ b/kernel/sched/cpupri.c
-@@ -11,7 +11,7 @@
-  *  This code tracks the priority of each CPU so that global migration
-  *  decisions are easy to calculate.  Each CPU can be in a state as follows:
-  *
-- *                 (INVALID), IDLE, NORMAL, RT1, ... RT99
-+ *                 (INVALID), NORMAL, RT1, ... RT99
-  *
-  *  going from the lowest priority to the highest.  CPUs in the INVALID state
-  *  are not eligible for routing.  The system maintains this state with
-@@ -19,24 +19,22 @@
-  *  in that class).  Therefore a typical application without affinity
-  *  restrictions can find a suitable CPU with O(1) complexity (e.g. two bit
-  *  searches).  For tasks with affinity restrictions, the algorithm has a
-- *  worst case complexity of O(min(102, nr_domcpus)), though the scenario that
-+ *  worst case complexity of O(min(101, nr_domcpus)), though the scenario that
-  *  yields the worst case search is fairly contrived.
-  */
- #include "sched.h"
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 98d96d4..0f75e95 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -2561,7 +2561,7 @@ int sched_dl_global_validate(void)
+ 	u64 new_bw = to_ratio(period, runtime);
+ 	u64 gen = ++dl_generation;
+ 	struct dl_bw *dl_b;
+-	int cpu, ret = 0;
++	int cpu, cpus, ret = 0;
+ 	unsigned long flags;
  
--/* Convert between a 140 based task->prio, and our 102 based cpupri */
-+/* Convert between a 140 based task->prio, and our 101 based cpupri */
- static int convert_prio(int prio)
- {
- 	int cpupri;
+ 	/*
+@@ -2576,9 +2576,10 @@ int sched_dl_global_validate(void)
+ 			goto next;
  
- 	if (prio == CPUPRI_INVALID)
- 		cpupri = CPUPRI_INVALID;
--	else if (prio == MAX_PRIO)
--		cpupri = CPUPRI_IDLE;
- 	else if (prio >= MAX_RT_PRIO)
- 		cpupri = CPUPRI_NORMAL;
- 	else
--		cpupri = MAX_RT_PRIO - prio + 1;
-+		cpupri = MAX_RT_PRIO - prio;
+ 		dl_b = dl_bw_of(cpu);
++		cpus = dl_bw_cpus(cpu);
  
- 	return cpupri;
+ 		raw_spin_lock_irqsave(&dl_b->lock, flags);
+-		if (new_bw < dl_b->total_bw)
++		if (new_bw * cpus < dl_b->total_bw)
+ 			ret = -EBUSY;
+ 		raw_spin_unlock_irqrestore(&dl_b->lock, flags);
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 49a2dae..965b296 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -257,30 +257,6 @@ struct rt_bandwidth {
+ 
+ void __dl_clear_params(struct task_struct *p);
+ 
+-/*
+- * To keep the bandwidth of -deadline tasks and groups under control
+- * we need some place where:
+- *  - store the maximum -deadline bandwidth of the system (the group);
+- *  - cache the fraction of that bandwidth that is currently allocated.
+- *
+- * This is all done in the data structure below. It is similar to the
+- * one used for RT-throttling (rt_bandwidth), with the main difference
+- * that, since here we are only interested in admission control, we
+- * do not decrease any runtime while the group "executes", neither we
+- * need a timer to replenish it.
+- *
+- * With respect to SMP, the bandwidth is given on a per-CPU basis,
+- * meaning that:
+- *  - dl_bw (< 100%) is the bandwidth of the system (group) on each CPU;
+- *  - dl_total_bw array contains, in the i-eth element, the currently
+- *    allocated bandwidth on the i-eth CPU.
+- * Moreover, groups consume bandwidth on each CPU, while tasks only
+- * consume bandwidth on the CPU they're running on.
+- * Finally, dl_total_bw_cpu is used to cache the index of dl_total_bw
+- * that will be shown the next time the proc or cgroup controls will
+- * be red. It on its turn can be changed by writing on its own
+- * control.
+- */
+ struct dl_bandwidth {
+ 	raw_spinlock_t		dl_runtime_lock;
+ 	u64			dl_runtime;
+@@ -292,6 +268,24 @@ static inline int dl_bandwidth_enabled(void)
+ 	return sysctl_sched_rt_runtime >= 0;
  }
-diff --git a/kernel/sched/cpupri.h b/kernel/sched/cpupri.h
-index efbb492..1a16236 100644
---- a/kernel/sched/cpupri.h
-+++ b/kernel/sched/cpupri.h
-@@ -1,11 +1,10 @@
- /* SPDX-License-Identifier: GPL-2.0 */
  
--#define CPUPRI_NR_PRIORITIES	(MAX_RT_PRIO + 2)
-+#define CPUPRI_NR_PRIORITIES	(MAX_RT_PRIO + 1)
- 
- #define CPUPRI_INVALID		-1
--#define CPUPRI_IDLE		 0
--#define CPUPRI_NORMAL		 1
--/* values 2-101 are RT priorities 0-99 */
-+#define CPUPRI_NORMAL		 0
-+/* values 2-100 are RT priorities 0-99 */
- 
- struct cpupri_vec {
- 	atomic_t		count;
++/*
++ * To keep the bandwidth of -deadline tasks under control
++ * we need some place where:
++ *  - store the maximum -deadline bandwidth of each cpu;
++ *  - cache the fraction of bandwidth that is currently allocated in
++ *    each root domain;
++ *
++ * This is all done in the data structure below. It is similar to the
++ * one used for RT-throttling (rt_bandwidth), with the main difference
++ * that, since here we are only interested in admission control, we
++ * do not decrease any runtime while the group "executes", neither we
++ * need a timer to replenish it.
++ *
++ * With respect to SMP, bandwidth is given on a per root domain basis,
++ * meaning that:
++ *  - bw (< 100%) is the deadline bandwidth of each CPU;
++ *  - total_bw is the currently allocated bandwidth in each root domain;
++ */
+ struct dl_bw {
+ 	raw_spinlock_t		lock;
+ 	u64			bw;
