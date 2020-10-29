@@ -2,103 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6132A29E722
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0B629E710
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgJ2JVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:21:24 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:38353 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725803AbgJ2JVX (ORCPT
+        id S1726242AbgJ2JPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:15:53 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59436 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbgJ2JPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:21:23 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 3E7805C00E3;
-        Thu, 29 Oct 2020 01:22:29 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 29 Oct 2020 01:22:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=O/vbVAWU5hJ9PibzVsJDqDex3sz
-        6mycigPeBpUsyuNE=; b=cbBmqTB+zycWnQwyOILmwrPiJuaSSPn/R2Edtrjjn3x
-        i0hJqUoebuMazeK+LhHxaEP1UJvH3R3RfcZk1nW3aN7QXzNBBEj6nZbODyUBJm6N
-        9wMXsR06+ajgmgHp2EZLemdOKvJiATpWLTz5WZ2vr4TDILZRZ77cLDeHdyejOGVK
-        RmnUAsNaTbXGzHiOI0Ic6OshreRTURf2h2SYnpmsIwc5wjke2YKUsaXutUDfjPgF
-        cWZcXZxQJVP9/IhrtOoMgdFufTPx0xDG2LxZQBDhxrw5FpXpA115oh50V1la/NW4
-        ZFX6A6bZOQYzAGIzUzPWg/cQUmNFzXblllAiMze1tZQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=O/vbVA
-        WU5hJ9PibzVsJDqDex3sz6mycigPeBpUsyuNE=; b=pLAzjbPEx4EwfWGuFKdD6P
-        f/cw0/N7yazEhEIZ1FbjvSkPYVg8I4W0vJenJoH2t6X3lffM9WJ+xRyCT0nFFVRT
-        08XB2KSgB9sPxHHj+7qJLfoHJD+NKcPsOcq9xUyewr2WsKSlE9HZT/H9zgnvTvdH
-        Uj3wRGC9YnuwJJ5ztMrJphWmEY9w4tr+BpKYq1i3cra+gl5z8vmccXRLEdpqoZpX
-        jQUPYQfe6QZvbxovMuhvU5IBORoCC27wziwjdQ6034zOshOp4crCmGjxXtYgRyeN
-        v7j5Ilp8BBuu6giFoGjRWSUL9GO/Ocqckm5golIdosGQFOazozr4Fd1ln8V9Dgmg
-        ==
-X-ME-Sender: <xms:lFGaX5hfKZeEc7aT0YUzyK536lu9fGaU0vuwdlM1pHjXID781vrxOw>
-    <xme:lFGaX-BflsCJwX9QDuXalcIJ8cEsZ0n2udMBCFiTkgLmWgi9DihSRuV2LwRXa5YrN
-    llFEi-rdrOBDw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrledvgddutdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:lFGaX5FqCrQWnCfbGGmti9yCgq9Sw7DjQEb8b9pV7X07VoADrjoJEg>
-    <xmx:lFGaX-QRvUSRddVlNKgLvjmBMolHc5vge88sFXo0_mpMCkp5lQTxUg>
-    <xmx:lFGaX2w6B5UTxZRQGoV-DPJgKSH0icORNtw99kK0r1Nn3FsjrU9Rgg>
-    <xmx:lVGaXx-pnvWS-rPVrqyxADgEZ8jKqMUsGmTQQJSpe-4plEVazq0CCw>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7DC6A328005A;
-        Thu, 29 Oct 2020 01:22:28 -0400 (EDT)
-Date:   Thu, 29 Oct 2020 06:22:25 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>
-Subject: Re: linux-next: manual merge of the staging tree with the
- kselftest-fixes tree
-Message-ID: <20201029052225.GC282324@kroah.com>
-References: <20201029132713.3a41c80b@canb.auug.org.au>
+        Thu, 29 Oct 2020 05:15:52 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09T6Q5x0017737;
+        Thu, 29 Oct 2020 01:26:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603952765;
+        bh=CdQ+oU4HVKo45/dvLJIgcfgX/8sXcvjXvY6BZKA2ODw=;
+        h=From:Subject:To:CC:References:Date:In-Reply-To;
+        b=aIR24+4m66gqNqdxfq9RpZ7rb+/UfY11nKTnmDb3OKFi9KtKNlLrv0AtKkNlZtmTx
+         fOEloGc3GRmGIQQxHd80drwH+937FEZPpS923DzWGrHa+0VqrjpdixYnyRxgXmP6Ts
+         dHhAbib1Nn8KQ2WozqQUTQRqCCyJVKAweHhdewIw=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09T6Q5so116259
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 29 Oct 2020 01:26:05 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 29
+ Oct 2020 01:26:05 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 29 Oct 2020 01:26:05 -0500
+Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09T6Q2KF067937;
+        Thu, 29 Oct 2020 01:26:02 -0500
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v16 00/15] mtd: spi-nor: add xSPI Octal DTR support
+To:     "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
+        "Yadav, Pratyush" <p.yadav@ti.com>
+CC:     "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+        "richard@nod.at" <richard@nod.at>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Nori, Sekhar" <nsekhar@ti.com>,
+        "boris.brezillon@collabora.com" <boris.brezillon@collabora.com>
+References: <20201005153138.6437-1-p.yadav@ti.com>
+ <d0d702c1-761b-1480-c74d-135193b33c26@microchip.com>
+ <20201028124920.pot77v4phkqiswhr@ti.com>
+ <d9d96eda-4cb6-fe68-7469-e73dc7ba2fda@microchip.com>
+Message-ID: <b7a18f2a-edd6-25e1-2f30-1a4427e67018@ti.com>
+Date:   Thu, 29 Oct 2020 11:56:01 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029132713.3a41c80b@canb.auug.org.au>
+In-Reply-To: <d9d96eda-4cb6-fe68-7469-e73dc7ba2fda@microchip.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 01:27:13PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the staging tree got conflicts in:
-> 
->   tools/testing/selftests/android/ion/ipcsocket.c
->   tools/testing/selftests/android/ion/ipcsocket.h
-> 
-> between commit:
-> 
->   08c5d41130e5 ("selftests: android: fix multiple definition of sock_name")
-> 
-> from the kselftest-fixes tree and commit:
-> 
->   e722a295cf49 ("staging: ion: remove from the tree")
-> 
-> from the staging tree.
-> 
-> I fixed it up (I just removed the files) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
 
-Easy fix, thanks!
 
-greg k-h
+On 10/28/20 8:51 PM, Tudor.Ambarus@microchip.com wrote:
+> On 10/28/20 2:49 PM, Pratyush Yadav wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>
+>> Hi Tudor,
+>>
+>> On 28/10/20 07:53AM, Tudor.Ambarus@microchip.com wrote:
+>>> Hi, Pratyush,
+>>>
+>>> On 10/5/20 6:31 PM, Pratyush Yadav wrote:
+>>>> Tested on Micron MT35X and S28HS flashes for Octal DTR.
+>>>
+>>> Do these flashes define the "Command Sequences to Change to
+>>> Octal DDR (8D-8D-8D) mode" table? Can't we use that table
+>>> instead of defining our own octal dtr enable functions?
+>>
+>> The Micron flash does not have this table. The Cypress flash does. The
+>> problem is that one of the samples of the Cypress flash I tested on had
+>> incorrect data in that table which meant the sequence would fail. The
+>> newer samples of the flash have the correct data.
+> 
+> Can we differentiate the Cypress flashes? Do you remember what
+> was the incorrect data?
+> 
+>>
+>> I don't know how many of those faulty flashes are out there in the wild.
+>> IMO, to be on the safe side spi_nor_cypress_octal_dtr_enable() needs to
+>> be implemented. So from the point of view of this series there is no
+>> need to parse the Octal DDR enable table.
+> 
+> Meh, we cover manufacturer's mistakes. On the long run, our aim should be
+> to follow the SFDP standard and if a flash implements it wrong, to either
+> fix it via a fixup hook (if the fix is minimal), or to skip the faulty
+> table.
+> 
+> Regarding "Command Sequences to Change to Octal DDR (8D-8D-8D) mode"
+> table. Have you looked over
+> https://patchwork.ozlabs.org/project/linux-mtd/patch/1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw/
+> ?
+> Is there a standard way to determine the offsets of opcode, addr and
+> data in the cmd seq?
+> 
+
+There is no standard way of doing this and I recommend against it.
+Each cmd seq has 0 to 7 Bytes. So the sequence maybe:
+1 cmd byte-3 addr bytes- 3 data bytes 
+or 
+1 cmd byte-0 address bytes-6 data bytes 
+
+We could just assume first byte to be command and rest to be data bytes always,
+but one problem maybe that controller may not support data length to be so long
+when address phase is absent. Eg.: Cadence OSPI controller supports only upto 8 bytes
+length transfers in absence of address phase but other controllers may
+limit the length further?
+
+One more drawback of using "Command Sequences to Change to Octal DDR (8D-8D-8D) 
+mode" table is that it not only switches flash to 8D mode 
+but also configures flash to be in:
+
+- 50 ohm I/O driver strength (Driver Type 0, mandatory for xSPI devices) 
+
+- 20 dummy cycles for Read Fast commands
+
+- Operation at 100MHz (or higher, if supported)
+
+Note that 20 dummy cycles may not be enough for flashes to 
+operate at 166/200MHz or higher and thus requiring flash specific fixups.
+
+So, I am beginning to doubt if parsing "Command Sequences to Change to Octal DDR (8D-8D-8D) mode"
+table is worth it. Not to mention we still need flash specific code to "verify" 
+that mode switch is indeed successful.
+
+
+Regards
+Vignesh
