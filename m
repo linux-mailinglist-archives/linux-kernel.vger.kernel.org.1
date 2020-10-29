@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6549D29E9E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B45729E9EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727263AbgJ2LCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
+        id S1727324AbgJ2LDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgJ2LCu (ORCPT
+        with ESMTP id S1726885AbgJ2LDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:02:50 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4241C0613CF;
-        Thu, 29 Oct 2020 04:02:48 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id c16so2002739wmd.2;
-        Thu, 29 Oct 2020 04:02:48 -0700 (PDT)
+        Thu, 29 Oct 2020 07:03:22 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD9FC0613CF;
+        Thu, 29 Oct 2020 04:03:22 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id l16so2621445eds.3;
+        Thu, 29 Oct 2020 04:03:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cIbiV1a/u6vhCm+3+IClWgED9AdaCdhu6mO9dkQqo8w=;
-        b=mblLIw0xc5k0mSEYVz5ULAYcXQ/joXIhjoH2HP41uf3m1lJPFd0r+o5tk4KuYBbNH2
-         zESqedCiFesLrQHuDbEd0Ub9Pfc9aS0l1SJMhRUV/CLkr1jWnpEyorDEC8KW32luz4J7
-         GVh2k4F3yA/W+euW71iMwskoKRniuXhAZ8LlasHgR8OstXELv403LsBS842YuwV/Apjy
-         +9cRtnXpBjrGWyzkzSAxn68pJPBMXuYJUgN3sUT1cT5iEBmGqbAe2a4t3pzlh8vvdQ0r
-         raLYu8V8reMkhWOgoxlsC++gUk7gWs7vGsE6DGWIsjNYzLYWOninkIecTeE1OVLb8U+l
-         l4nA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WcrfQOvnwm3hHmWx9HizpVkHE+JWK+geEu+dtXdE4Xw=;
+        b=UtuwjBvLlNUpsD3se90ifCs08CqSEeeLYrFoK36ssWdIonbCLnCLJiChXViRIXcauT
+         iJb2+MqLHaapRTqa6CcLjcMHGxyWKwUVRc+Sbx9/zXjL/IuBgWukYJtHzV53UwWykM1C
+         t6CRBG5gFEGDQy3rjmIqb+wzsLi/ITdV+cz60Ona84fzn5sTG+UfNk3RHd8KIgm9hHNT
+         LbQWWL6npYnPI/9CBTnjlYP7yuaPXBYFL/1N02ikVfAqnrJWm0HnkvAeph4yKj9ycUNP
+         kjoFTHtrMUw1OPTlrYOswaY26mwp05ao/oXyn0nKgN+5IsH3GCqpgQUKrQM2c7lgxqyn
+         HISg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cIbiV1a/u6vhCm+3+IClWgED9AdaCdhu6mO9dkQqo8w=;
-        b=lC2wxK2zXxLvsyAbP4iM2ScUjzUsmrvP6eNpZuV3iZ4q1bNDlbd64XVJchfBYSITPK
-         qO/CJClohI5AzZimlv/tDVO/EcVIV2rKUmbEbpGF2ybCmQ2nHfzbS5LFKvJK33PTmooh
-         xkOdEr4sdCFMGJbwEvyzOr514c8aaio5FN4znpC6ppCGX1FzobETGulrCQSYrBQ/RPFe
-         xaJOExVKK1/9cvSp0Sk0GuY3mqm2Kht1kgWEWH3wCpLbz7FP58n4fAPfVeKAC/cdXBxu
-         4mNrHd73+sqHOFYKr4S+u93mfOIDYfcw7CUN87Fv+b+1dRhPSZqwx9SBo9EAKOfsylaT
-         LnQQ==
-X-Gm-Message-State: AOAM530zBXCaMZJKOODyjtJZvsp1MSKxe8l1yRYGe1CEK/k3I50VEc/B
-        mXh8Yn9TRe/tH0qF0HNIX88=
-X-Google-Smtp-Source: ABdhPJzhdN6tfHQ0KJ9UTeO+EQC2fgQoXzp+T9zhRrPRKylp13veDw62uUAQT12zNUtt7vAhXQMCFQ==
-X-Received: by 2002:a1c:c912:: with SMTP id f18mr3801505wmb.150.1603969366596;
-        Thu, 29 Oct 2020 04:02:46 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.60.68])
-        by smtp.gmail.com with ESMTPSA id l16sm4451378wrx.5.2020.10.29.04.02.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 04:02:45 -0700 (PDT)
-Subject: Re: [PATCH] getdents.2: Use 'ssize_t' instead of 'int'
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     linux-man@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>
-References: <20201028221118.158108-1-colomar.6.4.3@gmail.com>
- <ed5937c4-a590-1735-b716-0894657ff8fc@gmail.com>
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-Message-ID: <1195fda6-4de3-09fc-8653-42655d7e2b76@gmail.com>
-Date:   Thu, 29 Oct 2020 12:02:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WcrfQOvnwm3hHmWx9HizpVkHE+JWK+geEu+dtXdE4Xw=;
+        b=KrNNmGXOFiZUZFIiGS7OemgKZ/9z042VEgzLBmOY0j+jibuxmb0QeTekjBgmtdygcO
+         V1YWvqjvrvkYOzH5q+7B6628a9aLajK+gz4/zgr/82WHXTBeht3lfdWoQ3suLpxfK4Uk
+         szclxCYyCTVv8KIkHe8s8zwrbtSri4v35IxsGgGV0gDV+vb1KBrKfgqfR0bFx17WZKpB
+         C5m6jjIj0i+lS+Q+LpaK5n3wusy9pVOB82kIbr1Uk81O5m1UDQU0CLTNUuXlecgNDMFs
+         mhCP3Sceb9GFeLBJMbmnKsZII1dbm7+ZbP2wXDNwi+gtzIrB/7gBNOku149qvI3ng9o4
+         SdIA==
+X-Gm-Message-State: AOAM531FmdvV4P6UF7iDiOkWYu6KyPUtOywtUDAGHJ6UOKlB6gmd2Pqv
+        SdL3gVaTxZMl3hL4p8Ut5Qs=
+X-Google-Smtp-Source: ABdhPJxw5MmrQlt2KQcf9SNjOfKm7P0V8PmqYEBnUitxArOMp5TxPjlJZBSdKqVDaYZaqlFHO5Inlg==
+X-Received: by 2002:aa7:cf95:: with SMTP id z21mr3282370edx.346.1603969400999;
+        Thu, 29 Oct 2020 04:03:20 -0700 (PDT)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id 11sm1292385ejy.19.2020.10.29.04.03.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 04:03:20 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 13:03:19 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Qiang Zhao <qiang.zhao@nxp.com>
+Cc:     broonie@kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
+Message-ID: <20201029110319.iyvfmrlq6uz2pl2e@skbuf>
+References: <20201029084035.19604-1-qiang.zhao@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <ed5937c4-a590-1735-b716-0894657ff8fc@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029084035.19604-1-qiang.zhao@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[[ CC += linux-kernel, libc-alpha ]]
+On Thu, Oct 29, 2020 at 04:40:35PM +0800, Qiang Zhao wrote:
+> From: Zhao Qiang <qiang.zhao@nxp.com>
+> 
+> Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in
+> remove path"), this driver causes a kernel oops:
+> 
+> [   64.587431] Unable to handle kernel NULL pointer dereference at
+> virtual address 0000000000000020
+> [..]
+> [   64.756080] Call trace:
+> [   64.758526]  dspi_suspend+0x30/0x78
+> [   64.762012]  platform_pm_suspend+0x28/0x70
+> [   64.766107]  dpm_run_callback.isra.19+0x24/0x70
+> [   64.770635]  __device_suspend+0xf4/0x2f0
+> [   64.774553]  dpm_suspend+0xec/0x1e0
+> [   64.778036]  dpm_suspend_start+0x80/0xa0
+> [   64.781957]  suspend_devices_and_enter+0x118/0x4f0
+> [   64.786743]  pm_suspend+0x1e0/0x260
+> [   64.790227]  state_store+0x8c/0x118
+> [   64.793712]  kobj_attr_store+0x18/0x30
+> [   64.797459]  sysfs_kf_write+0x40/0x58
+> [   64.801118]  kernfs_fop_write+0x148/0x240
+> [   64.805126]  vfs_write+0xc0/0x230
+> [   64.808436]  ksys_write+0x6c/0x100
+> [   64.811833]  __arm64_sys_write+0x1c/0x28
+> [   64.815753]  el0_svc_common.constprop.3+0x68/0x170
+> [   64.820541]  do_el0_svc+0x24/0x90
+> [   64.823853]  el0_sync_handler+0x118/0x168
+> [   64.827858]  el0_sync+0x158/0x180
+> 
+> This is because since this commit, the drivers private data point to
+> "dspi" instead of "ctlr", the codes in suspend and resume func were
+> not modified correspondly.
+> 
+> Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
+> Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
+> ---
 
-Hi Michael,
-
-On 2020-10-29 08:13, Michael Kerrisk (man-pages) wrote:
- > Hi Alex,
- >
- > On 10/28/20 11:11 PM, Alejandro Colomar wrote:
- >> The glibc wrapper for getdents64() uses ssize_t.
- >
- > It also changed the types for the arguments, so those need to be
- > fixed too.
-
-I saw that, but I sent an email to glibc asking if it was a bug.
-I'll hold this patch, and I'll CC this list in that other thread.
-
- >
- >> And let's use it also for getdents().
- >
- > I actually think we should *not* change that. So long as their is
- > no wrapper, we should show pretty much what the ABI exposes. (That
- > makes me think that the return type should really be long; see
- > what you think about DEFINE_SYSCALL3 in the kernel sources.)
-
-Agreed; then getdents() (and all syscalls without a wrapper)
-should use 'long', as you said.
-
-BTW: My mind explodes when I try to read through SYSCALL_DEFINEx :)
-
- >
- > And you added an include for <sys/types.h>. I'm not sure
- > whether that's needed, but it should be explained in the
- > commit message.
-
-Agreed.
-I should be able to check if it's needed, in ssize_t(3) :p
-... Actually it's not needed (<stdio.h> already provides it).
-
-Thanks,
-
-Alex
+Please update your tree.
+https://github.com/torvalds/linux/commit/6e3837668e00fb914ac2b43158ef51b027ec385c
