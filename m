@@ -2,128 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E7B29E9D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BCB29E9D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727175AbgJ2K74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:59:56 -0400
-Received: from mga01.intel.com ([192.55.52.88]:56275 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726996AbgJ2K7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:59:49 -0400
-IronPort-SDR: Kqc8HuaizFturwdDf0d4FFea0Q6k289EtXRgkJVPsYtnWUha/TnyOryqPRd+wiX6lmTp8XXLyo
- 2b6tmimHwNiw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="186197285"
-X-IronPort-AV: E=Sophos;i="5.77,429,1596524400"; 
-   d="scan'208";a="186197285"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 03:59:48 -0700
-IronPort-SDR: +Dsx0wvi00Y54Omx9BJKAZNZ27cnPk7dJLYdJVYaUgoxmUpE3ygnSl/I5o1Vr1Db79PLkHbmul
- WFk1NFyB2W4w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,429,1596524400"; 
-   d="scan'208";a="425017603"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 29 Oct 2020 03:59:47 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: [PATCHv2 2/3] software node: Introduce device_add_software_node()
-Date:   Thu, 29 Oct 2020 13:59:40 +0300
-Message-Id: <20201029105941.63410-3-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201029105941.63410-1-heikki.krogerus@linux.intel.com>
-References: <20201029105941.63410-1-heikki.krogerus@linux.intel.com>
+        id S1727199AbgJ2LAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726829AbgJ2LAF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 07:00:05 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A4FC0613CF;
+        Thu, 29 Oct 2020 04:00:04 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id i7so101769pgh.6;
+        Thu, 29 Oct 2020 04:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Sf7Mt/9aAW63sbYQiNJIywd7guGaxmGyi9OLU5knt9k=;
+        b=HXlMWRjWYrTkYtOlApx6XBBfCdalWH4fyRaWPEMybT2MMUjGKEhrWW7Zwe6xR5VXMF
+         /ciiXhpH43ensX/hmYcUfet+qDQLc7EfAfJe7Jw3VWNH9md1raxiuXjfgyXpbhr653g2
+         HOF5xzOOItQe/yg5Tvjxv96UDJjaEOzhgEZbcZKzHwwGmxjTWIRdXAENwVqK7f+wlrLN
+         UDy6C97Q/p7WQ5nJj3wSHQQ5YzRfKB0BZ7sFgNYxgImNsDMueejpxG48Sp86wdNYCQFl
+         6XI1Y57w9ErAQ4vnmWhhPFldywgfpoEDsBKT+GmCt5T77SX7XeprCmcRVAc5eVtLwZW8
+         e8rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Sf7Mt/9aAW63sbYQiNJIywd7guGaxmGyi9OLU5knt9k=;
+        b=UVFzR5/CI9P3MjaOq89coQXwIiGQ971yAcHtyfkFpyIYtz+ntexPRh5GO3K15zjdpV
+         PFYGf6U+4zfZnprN6MjrJRdRzFJ1SiMCJ1iGX1sMzeYxuD9SejP7YHiTJ5Uoms4ohIz5
+         HyU0+SFRIix9hYViXOgqQEj3Ijm7C+NZ/LBquky/xWcUG+b9sV622lwCC6RFtckuX+/i
+         B6wM10k0l8YveRNQu9xGg+vkNGkVut4o11VZIuqeblo2oW+9uWAGAGNjXe2Xreo+3HHs
+         XFb+zfNd5EUf7PckUwo1MhDMCJ/O8AMD00uP8ZP4TV68SQtjAzQWxrIOdah8R5isEPAn
+         +JhQ==
+X-Gm-Message-State: AOAM5332x9G3cxJ0VQfiuq/QbLgLgxJxtNQVsixD+vKzoBx+524mqKIo
+        EAR5sfUdC0fjnRAtkigFwQQ=
+X-Google-Smtp-Source: ABdhPJy8sQ7kQ0CvEcrxzMNIMcNf+NNwlb3Al8UBVJNb3lDScOUNEAVKImbuclJKKDmwur1oVlzedw==
+X-Received: by 2002:a62:78d5:0:b029:154:ebc0:c92c with SMTP id t204-20020a6278d50000b0290154ebc0c92cmr3762635pfc.24.1603969203964;
+        Thu, 29 Oct 2020 04:00:03 -0700 (PDT)
+Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
+        by smtp.gmail.com with ESMTPSA id z10sm2532488pff.218.2020.10.29.04.00.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 04:00:03 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Thu, 29 Oct 2020 18:59:41 +0800
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Darren Hart <dvhart@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Shevchenko <andy@infradead.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:X86 PLATFORM DRIVERS - ARCH" 
+        <platform-driver-x86@vger.kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] power: supply: olpc_battery: remove unnecessary
+ CONFIG_PM_SLEEP
+Message-ID: <20201029105941.i2kr2424wnrgtvz5@Rk>
+References: <20201029074100.225806-1-coiby.xu@gmail.com>
+ <5350ef53-cf70-c4b6-cdf8-5738e9d4b10a@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <5350ef53-cf70-c4b6-cdf8-5738e9d4b10a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This helper will register a software node and then assign
-it to device at the same time. The function will also make
-sure that the device can't have more than one software node.
+Hi Hans,
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/base/swnode.c    | 45 ++++++++++++++++++++++++++++++++++++++++
- include/linux/property.h |  3 +++
- 2 files changed, 48 insertions(+)
+Thank you for reviewing this patch!
 
-diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-index 595a9c240fede..0001fbea19cff 100644
---- a/drivers/base/swnode.c
-+++ b/drivers/base/swnode.c
-@@ -1525,6 +1525,51 @@ void fwnode_remove_software_node(struct fwnode_handle *fwnode)
- }
- EXPORT_SYMBOL_GPL(fwnode_remove_software_node);
- 
-+/**
-+ * device_add_software_node - Assign software node to a device
-+ * @dev: The device the software node is meant for.
-+ * @swnode: The software node.
-+ *
-+ * This function will register @swnode and make it the secondary firmware node
-+ * pointer of @dev. If @dev has no primary node, then @swnode will become the primary
-+ * node.
-+ */
-+int device_add_software_node(struct device *dev, const struct software_node *swnode)
-+{
-+	int ret;
-+
-+	/* Only one software node per device. */
-+	if (dev_to_swnode(dev))
-+		return -EBUSY;
-+
-+	ret = software_node_register(swnode);
-+	if (ret)
-+		return ret;
-+
-+	set_secondary_fwnode(dev, software_node_fwnode(swnode));
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(device_add_software_node);
-+
-+/**
-+ * device_remove_software_node - Remove device's software node
-+ * @dev: The device with the software node.
-+ *
-+ * This function will unregister the software node of @dev.
-+ */
-+void device_remove_software_node(struct device *dev)
-+{
-+	struct swnode *swnode;
-+
-+	swnode = dev_to_swnode(dev);
-+	if (!swnode)
-+		return;
-+
-+	kobject_put(&swnode->kobj);
-+}
-+EXPORT_SYMBOL_GPL(device_remove_software_node);
-+
- int software_node_notify(struct device *dev, unsigned long action)
- {
- 	struct swnode *swnode;
-diff --git a/include/linux/property.h b/include/linux/property.h
-index 33b25c8bd4052..993638e0a0b6e 100644
---- a/include/linux/property.h
-+++ b/include/linux/property.h
-@@ -495,4 +495,7 @@ fwnode_create_software_node(const struct property_entry *properties,
- 			    const struct fwnode_handle *parent);
- void fwnode_remove_software_node(struct fwnode_handle *fwnode);
- 
-+int device_add_software_node(struct device *dev, const struct software_node *swnode);
-+void device_remove_software_node(struct device *dev);
-+
- #endif /* _LINUX_PROPERTY_H_ */
--- 
-2.28.0
+On Thu, Oct 29, 2020 at 11:04:36AM +0100, Hans de Goede wrote:
+>Hi,
+>
+>On 10/29/20 8:41 AM, Coiby Xu wrote:
+>> SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+>
+>No it does not, when CONFIG_PM_SLEEP is not set then the
+>SET_SYSTEM_SLEEP_PM_OPS macro which SIMPLE_DEV_PM_OPS uses
+>is a no-op, so nothing will reference xo15_sci_resume leading to
+>a compiler warning when CONFIG_PM_SLEEP is not set.
+>
+>You could drop the ifdef and add __maybe_unused to the definition
+>of xo15_sci_resume, but that feels like needless churn, best to
+>just keep this as is IMHO.
+>
 
+Actually, this is a tree-wide change by some semi-automation scripts.
+Thank you for pointing out the issue to prevent me from releasing
+another ~150 emails to flood other mailing lists.
+
+Currently there are 929 drivers has device PM callbacks,
+
+$ grep -rI "\.pm = &" --include=*.c  ./|wc -l
+929
+
+I put all files having device PM callbacks into four categories
+based on weather a file has CONFIG_PM_SLEEP or PM macro like
+SET_SYSTEM_SLEEP_PM_OPS, here are the statistics,
+   1. have both CONFIG_PM_SLEEP and PM_OPS macro: 213
+   2. have CONFIG_PM_SLEEP but no PM_OPS macro: 19
+   3. have PM macro but not CONFIG_PM_SLEEP: 347
+   4. no PM macro or CONFIG_PM_SLEEP: 302
+
+Some drivers which have PM macro but not CONFIG_PM_SLEEP like
+sound/x86/intel_hdmi_audio.c indeed use __maybe_unused to eliminate
+the compiling warning. In 2011, there's a patch proposing to remove
+ONFIG_PM altogether but an objection was turning CONFIG_PM on would
+increase the kernel size [1]. So __maybe_unused also have this issue.
+(I made a mistake when I thought PM macros like SIMPLE_DEV_PM_OPS
+didn't have this issue). What do you think? Btw, It's easy for me to
+add CONFIG_PM_SLEEP for those drivers have PM macro but not
+CONFIG_PM_SLEEP since I have already written the necessary automation
+scripts.
+
+[1] https://lists.linux-foundation.org/pipermail/linux-pm/2011-February/030215.html
+
+>Also s/CONFIG_PM_CONFIG/CONFIG_PM_SLEEP/ in the commit message.
+>
+
+Thank you for pointing out the typo. I've written some scripts to
+automate the whole process from changing code to submitting patches.
+Somehow there is still this issue.
+
+>Regards,
+>
+>Hans
+>
+>
+>>
+>> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+>> ---
+>>  arch/x86/platform/olpc/olpc-xo15-sci.c | 2 --
+>>  1 file changed, 2 deletions(-)
+>>
+>> diff --git a/arch/x86/platform/olpc/olpc-xo15-sci.c b/arch/x86/platform/olpc/olpc-xo15-sci.c
+>> index 85f4638764d6..716eefd735a4 100644
+>> --- a/arch/x86/platform/olpc/olpc-xo15-sci.c
+>> +++ b/arch/x86/platform/olpc/olpc-xo15-sci.c
+>> @@ -192,7 +192,6 @@ static int xo15_sci_remove(struct acpi_device *device)
+>>  	return 0;
+>>  }
+>>
+>> -#ifdef CONFIG_PM_SLEEP
+>>  static int xo15_sci_resume(struct device *dev)
+>>  {
+>>  	/* Enable all EC events */
+>> @@ -204,7 +203,6 @@ static int xo15_sci_resume(struct device *dev)
+>>
+>>  	return 0;
+>>  }
+>> -#endif
+>>
+>>  static SIMPLE_DEV_PM_OPS(xo15_sci_pm, NULL, xo15_sci_resume);
+>>
+>>
+>
+
+--
+Best regards,
+Coiby
