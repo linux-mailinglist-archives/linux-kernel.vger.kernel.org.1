@@ -2,109 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2538729E67F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0CA29E681
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728765AbgJ2IhT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Oct 2020 04:37:19 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:50603 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgJ2IhS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:37:18 -0400
-X-Greylist: delayed 2606 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Oct 2020 04:37:16 EDT
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id E16B8E0014;
-        Thu, 29 Oct 2020 08:37:12 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 09:37:11 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     mdalam@codeaurora.org
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, richard@nod.at,
-        vigneshr@ti.com, robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH 0/5] mtd: rawnand: qcom: Add support for QSPI nand
-Message-ID: <20201029093711.0c7c5903@xps13>
-In-Reply-To: <20201029085344.5b2a4b51@xps13>
-References: <1602307902-16761-1-git-send-email-mdalam@codeaurora.org>
-        <20201028104835.3dc31745@xps13>
-        <10db598eed716d7759bc0125b6977cf1@codeaurora.org>
-        <20201029085344.5b2a4b51@xps13>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S1729253AbgJ2Iha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 04:37:30 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:52036 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729200AbgJ2Ih3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:37:29 -0400
+Received: from localhost.localdomain (unknown [124.16.141.242])
+        by APP-05 (Coremail) with SMTP id zQCowAAH31I_f5pfk+9KAA--.3487S2;
+        Thu, 29 Oct 2020 16:37:19 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     krzk@kernel.org, sbkim73@samsung.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: samsung: i2s: Remove redundant null check before clk_disable_unprepare
+Date:   Thu, 29 Oct 2020 08:37:15 +0000
+Message-Id: <20201029083715.28561-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowAAH31I_f5pfk+9KAA--.3487S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8CFy8Aw45GryUtFy5urg_yoW3ZwbEq3
+        W5Wa1Y9F1UWrZ2y34DCw45Cr4qgF97uFW8Ww1rKr1xKF9rXw43ZrZ7tr13Aa9rJrWkCas5
+        ZrnFvrWfCrsakjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r43MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUxtCzDUUUU
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwYEA1z4jiRs6wAAsD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Because clk_disable_unprepare() already checked NULL clock parameter,
+so the additional check is unnecessary, just remove it.
 
-Miquel Raynal <miquel.raynal@bootlin.com> wrote on Thu, 29 Oct 2020
-08:53:44 +0100:
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ sound/soc/samsung/i2s.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> Hello,
-> 
-> mdalam@codeaurora.org wrote on Wed, 28 Oct 2020 23:54:23 +0530:
-> 
-> > On 2020-10-28 15:18, Miquel Raynal wrote:  
-> > > Hello,
-> > > 
-> > > Md Sadre Alam <mdalam@codeaurora.org> wrote on Sat, 10 Oct 2020
-> > > 11:01:37 +0530:
-> > >     
-> > >> QPIC 2.0 supports Serial NAND support in addition to all features and
-> > >> commands in QPIC 1.0 for parallel NAND. Parallel and Serial NAND >> cannot
-> > >> operate simultaneously. QSPI nand devices will connect to QPIC >> IO_MACRO
-> > >> block of QPIC controller. There is a separate IO_MACRO clock for >> IO_MACRO
-> > >> block. Default IO_MACRO block divide the input clock by 4. so if >> IO_MACRO
-> > >> input clock is 320MHz then on bus it will be 80MHz, so QSPI nand >> device
-> > >> should also support this frequency.    
-> > >> >> QPIC provides 4 data pins to QSPI nand. In standard SPI mode (x1 mode) >> data    
-> > >> transfer will occur on only 2 pins one pin for Serial data in and one >> for
-> > >> serial data out. In QUAD SPI mode (x4 mode) data transfer will occur >> at all
-> > >> the four data lines. QPIC controller supports command for x1 mode and >> x4 mode.    
-> > >> >> Md Sadre Alam (5):    
-> > >>   dt-bindings: qcom_nandc: IPQ5018 QPIC NAND documentation
-> > >>   mtd: rawnand: qcom: Add initial support for qspi nand
-> > >>   mtd: rawnand: qcom: Read QPIC version
-> > >>   mtd: rawnand: qcom: Enable support for erase,read & write for serial
-> > >>     nand.
-> > >>   mtd: rawnand: qcom: Add support for serial training.    
-> > >> >>  .../devicetree/bindings/mtd/qcom_nandc.txt         |   3 +    
-> > >>  drivers/mtd/nand/raw/nand_ids.c                    |  13 +
-> > >>  drivers/mtd/nand/raw/qcom_nandc.c                  | 502 >> ++++++++++++++++++++-
-> > >>  3 files changed, 494 insertions(+), 24 deletions(-)    
-> > >> > > I'm sorry but this series clearly breaks the current layering. I cannot    
-> > > authorize SPI-NAND code to fall into the raw NAND subsystem.
-> > >     
-> > 
-> > I am agree with you, we should not add SPI-NAND changes inside
-> > raw NAND subsystem.
-> >   
-> > > As both typologies cannot be used at the same time, I guess you should
-> > > have another driver handling this feature under the spi/ subsystem +
-> > > a few declarations in the SPI-NAND devices list.
-> > >     
-> > 
-> > Initially I was started writing separate driver under SPI-NAND subsystem then I
-> > realized that more than 85% of raw/qcom_nand.c code getting duplicated.
-> > 
-> > That's why I have added this SPI-NAND change in raw/qcom_nand.c since
-> > more than 85% of code will be reused.
-> > 
-> > If I will add this change inside SPI-NAND subsystem then much of
-> > raw/qcom_nand.c code will get duplicated. Would it be ok ?  
-> 
-> What about moving the generic code to drivers/mtd/nand/common/ and
-> referring to it from drivers/mtd/nand/raw/qcom_nand.c and
-> drivers/spi/spi-qcom.c (or such)?
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index df53d4ea808f..36969f0a3f9a 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1212,8 +1212,7 @@ static int i2s_runtime_suspend(struct device *dev)
+ 	priv->suspend_i2scon = readl(priv->addr + I2SCON);
+ 	priv->suspend_i2spsr = readl(priv->addr + I2SPSR);
+ 
+-	if (priv->op_clk)
+-		clk_disable_unprepare(priv->op_clk);
++	clk_disable_unprepare(priv->op_clk);
+ 	clk_disable_unprepare(priv->clk);
+ 
+ 	return 0;
+-- 
+2.17.1
 
-Actually, perhaps drivers/memory/ is the right location for the generic
-bits.
-
-
-Thanks,
-Miquèl
