@@ -2,303 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC2429F66E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8CB29F678
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgJ2UuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 16:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40128 "EHLO
+        id S1726279AbgJ2UyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgJ2Ut7 (ORCPT
+        with ESMTP id S1725780AbgJ2UyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:49:59 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72608C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:49:59 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id j24so5635917ejc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:49:59 -0700 (PDT)
+        Thu, 29 Oct 2020 16:54:24 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2506DC0613CF;
+        Thu, 29 Oct 2020 13:54:24 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id f16so4524375ilr.0;
+        Thu, 29 Oct 2020 13:54:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AmYR4wyjPRvkiqjftKHBxo3W2jmK6qfcZokZj5LFZOs=;
-        b=QNmP+Uj1oToOlSiK9xX0nmq2mzJsXL6abHZIFTT9AMzKLftSPUTWVc5PoltPmWrs94
-         UhqBBi5hy3D2M9TNk1Gq7W39svpE+9Sikbp300iCKh5pq76A37xpWog4GdkZEGOLERxO
-         zVu6H+u6uqgjbWZDlsO+LtI8c/CJksoL0+pylUCDEA0DTR2iDFRUS8hdwj368PBCukkL
-         4ttBJ86nA+QujVdn62XpwxhrWWzW559RBf9/zcDrFBOjGXqQ+qKClUDyfQHcvzYsNEDd
-         ijYkJ+DqTKFx0ZaoAhLnByRQtZOG+LMl+ZrPB7fexxRJpCRuSDmvRmEPYhThLq+2ErX5
-         Av/g==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JWn7AQ10KBK6fvTH/BDTQtj7AiCq8pG0QDOCUv5Y/H8=;
+        b=YRINJYmst4pVmROk+zxPD2k2zTuzwyK+zOHIV/ecoC7ajFFTiKXXCOsyPpXiPYIa+h
+         oIi+gwHv6zqZW3lc/Exw1578PoV13d38dUAD8epxlh4OJCHioSn0ocNIFMqmNOGL+FO5
+         o0Ton0wPe2gUEOzwB/tqttA5NjyX3lvPCvqQ5f5M+WTCiaqijd7ipHUjtC2xzW69zvYk
+         63cWw8lMWwoRmRm5rOqYWJY6iH/3atXHFu/hn3p81Xmm1BmZL3+xuOwy0fTLcOFzN3uc
+         D6AcM1r4C7l0HskX865L2z0iCa7P4j6vW1BOwydywDiVXSUBqk+UAL/F+h8VGryfdQ8G
+         0TMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AmYR4wyjPRvkiqjftKHBxo3W2jmK6qfcZokZj5LFZOs=;
-        b=P06/iO2GAvDP3bJmTLM4/vXcQlAaXi8/rxnJuIXBeZXUX5ZOikZfEBUVNfbZlvvkQz
-         alMT5m9N3h/Vw9dpPtsaXvsCLcU8nGoc0H8ThyI83QoNbTS8Vh/VF4hsCXObyswMPrx6
-         H8rPCR2FcMgKeO2txLCpgs+ZWhwyBhEh1IwUmzOHWQ+/SGU53pUB0SmpnpujqVp0yf9B
-         rQadzi2IXNmn/PiFEw0kYmBOLNIAnvIjdhFWzONPuyXML6YgHcxD5U+PEqYQykVKrBdA
-         TPlPdmdKu9wECeQliGk1p5ZSrOp3UEwkwZ9ExwA2dBudCfOSY4pBaKYJEbj0TdBAsdPd
-         sY4A==
-X-Gm-Message-State: AOAM531ZsxJq2yVe7La5E21Unsn8CcodFgK37OHLpowHGMSUZMw5m0W0
-        23Q3kr2fwvuLnIIp9SZ9S2sn5Pu3RK7liJzw1v8hZQ==
-X-Google-Smtp-Source: ABdhPJwOfWtdX7EKIL1ZiBAYC92OEj9ZBmxf/x5lQvJXwNDtoims4KFX+JnPyDYL1ZoRO61tpleYVbgR2cTWfbmXzoE=
-X-Received: by 2002:a17:906:4e19:: with SMTP id z25mr6200582eju.44.1604004597824;
- Thu, 29 Oct 2020 13:49:57 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JWn7AQ10KBK6fvTH/BDTQtj7AiCq8pG0QDOCUv5Y/H8=;
+        b=sENLWNYjtRQwi0DKV4BfD9P+zedtHz8EQDf67F12fdZ7s7HfjXtKlgk/peULzsmWSn
+         ryw5C5HNkVRpkMkZAdmxxM+kF3xXOqlJClHeYyz2tq2KoJWBoAmsXi7GmNefDl8ye7/u
+         N7L0tHTiUNLGccGBP4ONzpCt46QvGEVpE30L2WmPELG/5VFHPJiVl6tKLg2KSFm/EaC5
+         VUDi7EAdLMIvUrWDYooQHXcV53nItVOvOevXPMoE7JA3HjuEEsv/jkz+qSG6aLpUczfP
+         UP0RLcABuO6cfm0FhQHkzBJZwulv69O9me/i0zf+Vi3BBsw7HvILTDxM/abJrwNzPevh
+         d9rw==
+X-Gm-Message-State: AOAM532gOzPymgtbPEIcN5UAZSXwmcdyvHPFkK7t/BZEbVJkRJReNhzQ
+        ngs+EhqVC1gtrL7CBbospTo/HJBfBZ8=
+X-Google-Smtp-Source: ABdhPJzzte4HXfhiWVsTwDVoRDjeDsLoNs2Jo9KqjUQ555CJLDthbU8UYObDxzMXyLCMoW3DAqCtcQ==
+X-Received: by 2002:a92:c94c:: with SMTP id i12mr4776976ilq.145.1604004863306;
+        Thu, 29 Oct 2020 13:54:23 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id d26sm3871547ill.83.2020.10.29.13.54.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 13:54:22 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/3] Fix errors on DT overlay removal with devlinks
+To:     Michael Auchter <michael.auchter@ni.com>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+References: <20201014193615.1045792-1-michael.auchter@ni.com>
+ <d5f8a417-8db9-9385-dfea-9512b4680124@gmail.com>
+ <CAGETcx_869kxKbgRO68Wp9Qq8vAp8fqpAe_Lkjx8vZdW9RNTsQ@mail.gmail.com>
+ <20201028162540.GA2310713@xaphan>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <9e8e7f6e-cebc-a99e-b883-b7555dc01ef6@gmail.com>
+Date:   Thu, 29 Oct 2020 15:54:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201029125744.GQ31092@shao2-debian> <CAEf4BzZm=PoaivFjC63di-WtCsJZzNUUY-eoDp+wz=MhsnS8_g@mail.gmail.com>
-In-Reply-To: <CAEf4BzZm=PoaivFjC63di-WtCsJZzNUUY-eoDp+wz=MhsnS8_g@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 29 Oct 2020 13:49:46 -0700
-Message-ID: <CA+khW7i_NSTeXA8tvfuP7uMJNQCebWtHd0xxuHoV_JXek3sx4g@mail.gmail.com>
-Subject: Re: [selftest/bpf] 472547778d: WARNING:at_kernel/bpf/verifier.c:#resolve_pseudo_ldimm64
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201028162540.GA2310713@xaphan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sure, let me take a look at it.
+On 10/28/20 11:25 AM, Michael Auchter wrote:
+> Hey Saravana,
+> 
+> Thanks for taking the time to look into this!
+> 
+> On Mon, Oct 26, 2020 at 12:10:33PM -0700, Saravana Kannan wrote:
+>> On Wed, Oct 21, 2020 at 2:02 PM Frank Rowand <frowand.list@gmail.com> wrote:
+>>>
+>>> Hi Saravana,
+>>>
+>>> Michael found an issue related to the removal of a devicetree node
+>>> which involves devlinks:
+>>>
+>>> On 10/14/20 2:36 PM, Michael Auchter wrote:
+>>>> After updating to v5.9, I've started seeing errors in the kernel log
+>>>> when using device tree overlays. Specifically, the problem seems to
+>>>> happen when removing a device tree overlay that contains two devices
+>>>> with some dependency between them (e.g., a device that provides a clock
+>>>> and a device that consumes that clock). Removing such an overlay results
+>>>> in:
+>>>>
+>>>>   OF: ERROR: memory leak, expected refcount 1 instead of 2, of_node_get()/of_node_put() unbalanced - destroy
+>>>>   OF: ERROR: memory leak, expected refcount 1 instead of 2, of_node_get()/of_node_put() unbalanced - destroy
+>>>>
+>>>> followed by hitting some REFCOUNT_WARNs in refcount.c
+>>>>
+>>>> In the first patch, I've included a unittest that can be used to
+>>>> reproduce this when built with CONFIG_OF_UNITTEST [1].
+>>>>
+>>>> I believe the issue is caused by the cleanup performed when releasing
+>>>> the devlink device that's created to represent the dependency between
+>>>> devices. The devlink device has references to the consumer and supplier
+>>>> devices, which it drops in device_link_free; the devlink device's
+>>>> release callback calls device_link_free via call_srcu.
+>>>>
+>>>> When the overlay is being removed, all devices are removed, and
+>>>> eventually the release callback for the devlink device run, and
+>>>> schedules cleanup using call_srcu. Before device_link_free can and call
+>>>> put_device on the consumer/supplier, the rest of the overlay removal
+>>>> process runs, resulting in the error traces above.
+>>>
+>>> When a devicetree node in an overlay is removed, the remove code expects
+>>> all previous users of the related device to have done the appropriate put
+>>> of the device and to have no later references.
+>>>
+>>> As Michael described above, the devlink release callback defers the
+>>> put_device().  The cleanup via srcu was implemented in commit
+>>> 843e600b8a2b01463c4d873a90b2c2ea8033f1f6 "driver core: Fix sleeping
+>>> in invalid context during device link deletion" to solve yet another
+>>> issue.
+>>>
+>>>
+>>>>
+>>>> Patches 2 and 3 are an attempt at fixing this: call srcu_barrier to wait
+>>>> for any pending device_link_free's to execute before continuing on with
+>>>> the removal process.
+>>>>
+>>>> These patches resolve the issue, but probably not in the best way. In
+>>>> particular, it seems strange to need to leak details of devlinks into
+>>>> the device tree overlay code. So, I'd be curious to get some feedback or
+>>>> hear any other ideas for how to resolve this issue.
+>>>
+>>> I agree with Michael that adding an indirect call of srcu_barrier(&device_links_srcu)
+>>> into the devicetree overlay code is not an appropriate solution.
+>>
+>> I kind of see your point too. I wonder if the srcu_barrier() should
+>> happen inside like so:
+>> device_del() -> device_links_purge()->srcu_barrier()
+>>
+>> I don't know what contention the use of SRCUs in device links was
+>> trying to avoid, but I think the srcu_barrier() call path I suggested
+>> above shouldn't be a problem. If that fixes the issue, the best way to
+>> know if it's an issue is to send out a patch and see if Rafael has any
+>> problem with it :)
+> 
+> I was able to test this by adding the srcu_barrier() at the end of
+> device_links_purge(), and that does seem to have fixed the issue.
+> 
+>>> Is there some other way to fix the problem that 843e600b8a2b solves without
+>>> deferring the put_device() done by the devlink release callback?
+>>
+>> Ok I finally got some time to look into this closely.
+>>
+>> Even if you revert 843e600b8a2b, you'll see that device_link_free()
+>> (which drops the reference to the consumer and supplier devices) was
+>> scheduled to run when the SRCU clean up occurs. So I think this issue
+>> was present even before 843e600b8a2b, but commit 843e600b8a2b just
+>> made it more likely to hit this scenario because it introduces some
+>> delay in dropping the ref count of the supplier and consumer by going
+>> through the device link device's release path. So, I think this issue
+>> isn't related to 843e600b8a2b.
+>>
+>> As to why 843e600b8a2b had to be written to call call_srcu() from the
+>> device link device's release path, it's a mess of dependencies/delays:
+>> 1. The device link device is part of the struct device_link. So we
+>> can't free device_link before the device_link.link_dev refcount goes
+>> to 0.
+>> 2. But I can't assume device_link.link_dev's refcount will go to 0 as
+>> soon as I call put_device() on it because of
+>> CONFIG_DEBUG_KOBJECT_RELEASE which frees up the kobject after a random
+>> delay.
+>> 3. The use of SRCU also means I can't free device_link until the SRCU
+>> is cleaned up.
+>>
+>> Because of (1), (2) and (3), when the device_link_del() (or any of the
+>> other device link deletion APIs are called) I first have to do a
+>> put_device(device_link.link_dev) to make sure the device memory is no
+>> longer referenced, then trigger an SRCU clean up and then in the
+>> scheduled SRCU cleanup I can free struct device_link. And obviously,
+>> until struct device_link is ready to be freed up, I can't drop the
+>> reference to the supplier and consumer devices (as that old copy of
+>> device_link could be used by some code to refer to the supplier and
+>> consumer devices).
+>>
+>> Hope that helps explain the SRCU and device link device release dependencies.
+>>
+>> Also, even if this patch series is applied as is, I wonder if the
+>> current overlay code has a bug related to CONFIG_DEBUG_KOBJECT_RELEASE
+>> delaying the actual freeing of the device. Something to look into?
+> 
+> I also tried enabling CONFIG_DEBUG_KOBJECT_RELEASE... with or without
+> the addition of srcu_barrier() to device_links_purge(), I can't boot
+> successfully when CONFIG_OF_UNITTEST=y &&
+> CONFIG_DEBUG_KOBJECT_RELEASE=y: there are a ton of errors that result
+> from this combo.
 
-On Thu, Oct 29, 2020 at 1:43 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> Hao,
->
-> This seems to be coming from resolve_pseudo_ldimm64(), could you
-> please take a look? Thanks!
->
-> -- Andrii
->
-> On Thu, Oct 29, 2020 at 5:58 AM kernel test robot <lkp@intel.com> wrote:
-> >
-> > Greeting,
-> >
-> > FYI, we noticed the following commit (built with gcc-9):
-> >
-> > commit: 472547778de24e2764ab325268dd5b77e6923939 ("selftest/bpf: Fix pr=
-ofiler test using CO-RE relocation for enums")
-> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-> >
-> >
-> > in testcase: kernel-selftests
-> > version: kernel-selftests-x86_64-b5a583fb-1_20201015
-> > with following parameters:
-> >
-> >         group: kselftests-bpf
-> >         ucode: 0xd6
-> >
-> > test-description: The kernel contains a set of "self tests" under the t=
-ools/testing/selftests/ directory. These are intended to be small unit test=
-s to exercise individual code paths in the kernel.
-> > test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
-> >
-> >
-> > on test machine: 4 threads Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz wit=
-h 32G memory
-> >
-> > caused below changes (please refer to attached dmesg/kmsg for entire lo=
-g/backtrace):
-> >
-> >
-> > +------------------------------------------+------------+------------+
-> > |                                          | 435ccfa894 | 472547778d |
-> > +------------------------------------------+------------+------------+
-> > | boot_successes                           | 10         | 0          |
-> > | boot_failures                            | 0          | 10         |
-> > | BUG:using__this_cpu_read()in_preemptible | 0          | 10         |
-> > +------------------------------------------+------------+------------+
-> >
-> >
-> > If you fix the issue, kindly add following tag
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> >
-> > kern  :warn  : [  325.530080] WARNING: CPU: 3 PID: 20214 at kernel/bpf/=
-verifier.c:9718 resolve_pseudo_ldimm64+0x6b8/0x8e0
-> > kern  :warn  : [  325.530812] Modules linked in: rpcsec_gss_krb5 auth_r=
-pcgss nfsv4 dns_resolver netconsole snd_hda_codec_hdmi snd_hda_codec_realte=
-k snd_hda_codec_generic ledtrig_audio btrfs blake2b_generic xor zstd_compre=
-ss raid6_pq libcrc32c intel_rapl_msr intel_rapl_common sd_mod t10_pi sg i91=
-5 btusb wmi_bmof intel_wmi_thunderbolt x86_pkg_temp_thermal intel_powerclam=
-p snd_soc_skl snd_soc_sst_ipc snd_soc_sst_dsp snd_hda_ext_core snd_soc_acpi=
-_intel_match snd_soc_acpi snd_soc_core snd_compress coretemp crct10dif_pclm=
-ul snd_hda_intel crc32_pclmul btrtl crc32c_intel btbcm ghash_clmulni_intel =
-btintel snd_intel_dspcfg snd_hda_codec snd_hda_core iwlwifi aesni_intel cry=
-pto_simd ahci snd_hwdep bluetooth snd_pcm libahci cryptd cfg80211 snd_timer=
- glue_helper ir_rc6_decoder pcspkr ecdh_generic libata mei_me snd ecc rc_rc=
-6_mce mei soundcore i2c_i801 rfkill i2c_smbus wmi ipmi_devintf ite_cir ipmi=
-_msghandler rc_core acpi_pad video intel_pmc_core ip_tables
-> > user  :notice: [  325.533201] # #3/p valid map access into an array wit=
-h a constant OK
-> > kern  :warn  : [  325.537207] CPU: 3 PID: 20214 Comm: test_verifier Not=
- tainted 5.9.0-13427-g472547778de2 #1
-> >
-> > kern  :warn  : [  325.538572] Hardware name: Intel Corporation NUC7i7BN=
-H/NUC7i7BNB, BIOS BNKBL357.86A.0067.2018.0814.1500 08/14/2018
-> > kern  :warn  : [  325.539414] RIP: 0010:resolve_pseudo_ldimm64+0x6b8/0x=
-8e0
-> > kern  :warn  : [  325.539835] Code: ff ff c7 44 24 28 ea ff ff ff e9 49=
- fc ff ff 48 c7 c7 58 a8 5e 82 89 0c 24 48 89 54 24 08 c6 05 21 71 ff 01 01=
- e8 46 38 aa 00 <0f> 0b 8b 0c 24 48 8b 54 24 08 e9 5d fd ff ff 48 c7 c6 d8 =
-a7 5e 82
-> > kern  :warn  : [  325.541298] RSP: 0018:ffffc90003b0fc50 EFLAGS: 000102=
-82
-> > kern  :warn  : [  325.541732] RAX: 0000000000000000 RBX: 00000000000000=
-04 RCX: 0000000000000000
-> > kern  :warn  : [  325.542274] RDX: 0000000000000001 RSI: ffffffff811d23=
-4f RDI: ffffffff811d234f
-> > kern  :warn  : [  325.542847] RBP: ffffc90003b0fcb8 R08: 00000000000000=
-01 R09: 0000000000000001
-> > kern  :warn  : [  325.543389] R10: 0000000000000001 R11: 00000000000000=
-01 R12: ffff888100c3a000
-> > user  :notice: [  325.543850] # #4/u valid map access into an array wit=
-h a register OK
-> > kern  :warn  : [  325.543996] R13: ffff8882c025dc00 R14: 00000000000000=
-25 R15: ffffc9000108d058
-> >
-> > kern  :warn  : [  325.545045] FS:  00007fd26e745740(0000) GS:ffff88887e=
-d80000(0000) knlGS:0000000000000000
-> > kern  :warn  : [  325.545893] CS:  0010 DS: 0000 ES: 0000 CR0: 00000000=
-80050033
-> > kern  :warn  : [  325.546334] CR2: 000055a9904a3e30 CR3: 00000002c07300=
-02 CR4: 00000000003706e0
-> > kern  :warn  : [  325.546900] Call Trace:
-> > kern  :warn  : [  325.547114]  bpf_check+0x907/0x17c0
-> > kern  :warn  : [  325.547396]  ? find_held_lock+0x2b/0x80
-> > kern  :warn  : [  325.547781]  bpf_prog_load+0x48c/0x8c0
-> > kern  :warn  : [  325.548133]  ? find_held_lock+0x2b/0x80
-> > kern  :warn  : [  325.548450]  __do_sys_bpf+0x93e/0x1a60
-> > kern  :warn  : [  325.548791]  do_syscall_64+0x33/0x40
-> > kern  :warn  : [  325.549076]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > kern  :warn  : [  325.549468] RIP: 0033:0x7fd26e83df59
-> > kern  :warn  : [  325.549771] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00=
- 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b=
- 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 07 6f 0c 00 f7 d8 64 =
-89 01 48
-> > kern  :warn  : [  325.551230] RSP: 002b:00007ffc55a5fc08 EFLAGS: 000002=
-46 ORIG_RAX: 0000000000000141
-> > user  :notice: [  325.551650] # #4/p valid map access into an array wit=
-h a register OK
-> > kern  :warn  : [  325.551853] RAX: ffffffffffffffda RBX: 00000000000000=
-00 RCX: 00007fd26e83df59
-> >
-> > kern  :warn  : [  325.552308] RDX: 0000000000000078 RSI: 00007ffc55a5fc=
-30 RDI: 0000000000000005
-> > kern  :warn  : [  325.552309] RBP: 00007ffc55a5fc30 R08: 00000000000000=
-04 R09: 0000000000000000
-> > kern  :warn  : [  325.552310] R10: 0000000000000025 R11: 00000000000002=
-46 R12: 0000000000000005
-> > kern  :warn  : [  325.552311] R13: 0000000000000000 R14: 00007ffc55a5fd=
-a0 R15: 00007ffc55a5fda0
-> > kern  :warn  : [  325.552325] CPU: 3 PID: 20214 Comm: test_verifier Not=
- tainted 5.9.0-13427-g472547778de2 #1
-> > user  :notice: [  325.554366] # #5/u valid map access into an array wit=
-h a variable OK
-> > kern  :warn  : [  325.554456] Hardware name: Intel Corporation NUC7i7BN=
-H/NUC7i7BNB, BIOS BNKBL357.86A.0067.2018.0814.1500 08/14/2018
-> > kern  :warn  : [  325.554457] Call Trace:
-> > kern  :warn  : [  325.554461]  dump_stack+0x8d/0xb5
-> > kern  :warn  : [  325.554464]  ? resolve_pseudo_ldimm64+0x6b8/0x8e0
-> >
-> > kern  :warn  : [  325.555551]  __warn.cold+0x24/0x4b
-> > kern  :warn  : [  325.555554]  ? resolve_pseudo_ldimm64+0x6b8/0x8e0
-> > kern  :warn  : [  325.555558]  report_bug+0xd1/0x100
-> > user  :notice: [  325.557680] # #5/p valid map access into an array wit=
-h a variable OK
-> > kern  :warn  : [  325.557869]  ? tick_nohz_tick_stopped+0x12/0x40
-> > kern  :warn  : [  325.557873]  handle_bug+0x3a/0xa0
-> > kern  :warn  : [  325.557876]  exc_invalid_op+0x14/0x80
-> >
-> > kern  :warn  : [  325.558465]  asm_exc_invalid_op+0x12/0x20
-> > kern  :warn  : [  325.560172] RIP: 0010:resolve_pseudo_ldimm64+0x6b8/0x=
-8e0
-> > user  :notice: [  325.560516] # #6/u valid map access into an array wit=
-h a signed variable OK
-> > kern  :warn  : [  325.560553] Code: ff ff c7 44 24 28 ea ff ff ff e9 49=
- fc ff ff 48 c7 c7 58 a8 5e 82 89 0c 24 48 89 54 24 08 c6 05 21 71 ff 01 01=
- e8 46 38 aa 00 <0f> 0b 8b 0c 24 48 8b 54 24 08 e9 5d fd ff ff 48 c7 c6 d8 =
-a7 5e 82
-> > kern  :warn  : [  325.560554] RSP: 0018:ffffc90003b0fc50 EFLAGS: 000102=
-82
-> >
-> >
-> > kern  :warn  : [  325.562354] RAX: 0000000000000000 RBX: 00000000000000=
-04 RCX: 0000000000000000
-> > kern  :warn  : [  325.562355] RDX: 0000000000000001 RSI: ffffffff811d23=
-4f RDI: ffffffff811d234f
-> > kern  :warn  : [  325.562356] RBP: ffffc90003b0fcb8 R08: 00000000000000=
-01 R09: 0000000000000001
-> > kern  :warn  : [  325.562357] R10: 0000000000000001 R11: 00000000000000=
-01 R12: ffff888100c3a000
-> > kern  :warn  : [  325.562358] R13: ffff8882c025dc00 R14: 00000000000000=
-25 R15: ffffc9000108d058
-> > kern  :warn  : [  325.562369]  ? wake_up_klogd+0x4f/0x80
-> > kern  :warn  : [  325.562371]  ? wake_up_klogd+0x4f/0x80
-> > kern  :warn  : [  325.562391]  bpf_check+0x907/0x17c0
-> > user  :notice: [  325.564634] # #6/p valid map access into an array wit=
-h a signed variable OK
-> > kern  :warn  : [  325.565045]  ? find_held_lock+0x2b/0x80
-> > kern  :warn  : [  325.565057]  bpf_prog_load+0x48c/0x8c0
-> >
-> > kern  :warn  : [  325.565875]  ? find_held_lock+0x2b/0x80
-> > kern  :warn  : [  325.565889]  __do_sys_bpf+0x93e/0x1a60
-> > kern  :warn  : [  325.565911]  do_syscall_64+0x33/0x40
-> > user  :notice: [  325.567592] # #7/u invalid map access into an array w=
-ith a constant OK
-> > kern  :warn  : [  325.567640]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >
-> > kern  :warn  : [  325.568193] RIP: 0033:0x7fd26e83df59
-> > kern  :warn  : [  325.569659] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00=
- 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b=
- 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 07 6f 0c 00 f7 d8 64 =
-89 01 48
-> > user  :notice: [  325.569825] # #7/p invalid map access into an array w=
-ith a constant OK
-> > kern  :warn  : [  325.570965] RSP: 002b:00007ffc55a5fc08 EFLAGS: 000002=
-46 ORIG_RAX: 0000000000000141
-> > kern  :warn  : [  325.570967] RAX: ffffffffffffffda RBX: 00000000000000=
-00 RCX: 00007fd26e83df59
-> > kern  :warn  : [  325.570968] RDX: 0000000000000078 RSI: 00007ffc55a5fc=
-30 RDI: 0000000000000005
-> > kern  :warn  : [  325.570969] RBP: 00007ffc55a5fc30 R08: 00000000000000=
-04 R09: 0000000000000000
-> > kern  :warn  : [  325.570970] R10: 0000000000000025 R11: 00000000000002=
-46 R12: 0000000000000005
-> > kern  :warn  : [  325.570972] R13: 0000000000000000 R14: 00007ffc55a5fd=
-a0 R15: 00007ffc55a5fda0
-> >
-> > kern  :warn  : [  325.573227] irq event stamp: 93003
-> > kern  :warn  : [  325.575115] hardirqs last  enabled at (93103): [<ffff=
-ffff811d30b3>] console_unlock+0x4d3/0x5c0
-> > user  :notice: [  325.575571] # #8/u invalid map access into an array w=
-ith a register OK
-> >
-> > kern  :warn  : [  325.575873] hardirqs last disabled at (93130): [<ffff=
-ffff81ddfa21>] __schedule+0x6e1/0xaa0
-> > kern  :warn  : [  325.577041] softirqs last  enabled at (93170): [<ffff=
-ffff8200034e>] __do_softirq+0x34e/0x49c
-> > kern  :warn  : [  325.577666] softirqs last disabled at (93187): [<ffff=
-ffff81e010f2>] asm_call_irq_on_stack+0x12/0x20
-> > kern  :warn  : [  325.578385] ---[ end trace 54e7a2ba0948b528 ]---
-> >
-> >
-> > To reproduce:
-> >
-> >         git clone https://github.com/intel/lkp-tests.git
-> >         cd lkp-tests
-> >         bin/lkp install job.yaml  # job file is attached in this email
-> >         bin/lkp run     job.yaml
-> >
-> >
-> >
-> > Thanks,
-> > lkp
-> >
+I'll add looking checking out booting with CONFIG_DEBUG_KOBJECT_RELEASE
+enabled with CONFIG_OF_UNITTEST enabled to my todo list.
+
+> 
+> Disabling the unittests and booting with CONFIG_DEBUG_KOBJECT_RELEASE=y,
+> I _do_ still see the errors mentioned in my original message when
+> removing an overlay. So yeah, it does seem like there are some latent
+
+Just to make sure I understand clearly, you are still seeing the
+messages:
+
+   OF: ERROR: memory leak, expected refcount 1 instead of 2, of_node_get()/of_node_put() unbalanced - destroy
+   OF: ERROR: memory leak, expected refcount 1 instead of 2, of_node_get()/of_node_put() unbalanced - destroy
+
+when the overlay is removed?  And if I apply patch 1/3 (the new unittest)
+and also add srcu_barrier() at the end of device_links_purge()
+then I will see these messages?
+
+Can you add a reply to this email with the patch to add srcu_barrier() at
+the end of device_links_purge() so that I am testing the same thing that
+you are testing?  (If it makes life easier for you, you can just cut
+and paste the patch into the reply, even if it results in a white
+space damaged patch -- I'm assuming a one-line patch.)
+
+-Frank
+
+> issues here...
+> 
+> Cheers,
+>  Michael
+> 
+
