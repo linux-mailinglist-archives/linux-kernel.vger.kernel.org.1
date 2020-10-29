@@ -2,91 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3B429F19E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4840C29F18C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgJ2Qf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbgJ2Q35 (ORCPT
+        id S1727183AbgJ2QcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:32:00 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:40396 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbgJ2QaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:29:57 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D670C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:29:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=e2/3ZAdKT7UTtCZHl8MzCRzww3KY//KKPqZMJkiz9hA=; b=W7+EMBw4AloYyyRf/X2ROzu3PX
-        pQchpVpW4TtWJctBDyVu7k13f5BqiW5v7XbOhxsqI9thDMIe3XXF1HL3jP/DgAI1kmtcNeYLE4ZwF
-        xhaYfptH2d7XJ1Y+czxq0Hwv8pEajZXTLck3i44eV32qr4/aHOapgj8FH62rLgKywz0VaCGb6bSpc
-        +fC7X0zwaR1b5Y5xRH+hScvniBvp6AIBuJxjuZmPT7Il8tU51jx0R030aMPD9NmFw18m+6BZHzISW
-        VLrLDXN/z+DYPk0XeB10gmVKHhMUsF564xZyUQFkojyBwEggS89wqo0jPAt0xBxd4PKl6n7HrWcLZ
-        m48VQN0A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYAo8-00067U-6I; Thu, 29 Oct 2020 16:29:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 053633012C3;
-        Thu, 29 Oct 2020 17:29:47 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id E34EA2107F308; Thu, 29 Oct 2020 17:29:46 +0100 (CET)
-Message-ID: <20201029162901.972161394@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 29 Oct 2020 17:27:21 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@kernel.org, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org
-Cc:     linux-kernel@vger.kernel.org, eranian@google.com,
-        ak@linux.intel.com, peterz@infradead.org
-Subject: [PATCH v2 2/4] perf: Simplify group_sched_in()
-References: <20201029162719.519685265@infradead.org>
+        Thu, 29 Oct 2020 12:30:19 -0400
+Received: by mail-ot1-f65.google.com with SMTP id f97so2874920otb.7;
+        Thu, 29 Oct 2020 09:30:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZB07qrLbOJe5x8k5kgwlwyYgrU0au+3LEdR9BcQ+dAw=;
+        b=TdqNwgwd6SEmWeBIsgrmnnAhJcU1jR6JkgBXiYPNceJPDCmy/xRRyCtChqC9pcSHG+
+         hUy4qHfYMjsSoG3GDSKCNV/BVIKYQVWNkOCV5leODPiWi4k5SPXg/yR5hU8z5iUiQg6w
+         +Q9Pq5tbrMKcaCKHwJjhaU5UmDlZZ/qvXKarY1By/Y1dFpyrVAhefM3pNiRiqTWLesMz
+         BvH2fLJOJ7Tzu69ejkZE4ett12upvcK7nPktjMHkYdGTlui9zw7FngwQoZlpcv2g/XDG
+         muLlmY5TvAxnXX2Mwkq27PaNIMb+1fcBFmPe52w5fWOs9lLSGOmHCKSo8QdzV4JxOfxy
+         Dscw==
+X-Gm-Message-State: AOAM530ebeZR5+DLUOxvAV+RYa330DUZGdnq3RB7IOz6iFpQhv8yINaD
+        rJI64p/v5bRE5oFs0EoJ3cctV/gpObj5LSNn1RM=
+X-Google-Smtp-Source: ABdhPJy2gnJASZanadb1mOz1tbg80ys3NM2aGYdvcYIISMX2t1bfCDW4CoQJSVVkimsx+nxAWLJibjXQBAg79vyeqWE=
+X-Received: by 2002:a9d:734f:: with SMTP id l15mr4119563otk.260.1603989017370;
+ Thu, 29 Oct 2020 09:30:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20201029161902.19272-1-rppt@kernel.org> <20201029161902.19272-3-rppt@kernel.org>
+In-Reply-To: <20201029161902.19272-3-rppt@kernel.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 29 Oct 2020 17:30:06 +0100
+Message-ID: <CAJZ5v0jY2vqZxdD7CaGUsCb2ePodamDnneOLHZcagCODn5kmrQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] PM: hibernate: make direct map manipulations more explicit
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Lameter <cl@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <len.brown@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        sparclinux@vger.kernel.org,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Collate the error paths. Code duplication only leads to divergence and
-extra bugs.
+On Thu, Oct 29, 2020 at 5:19 PM Mike Rapoport <rppt@kernel.org> wrote:
+>
+> From: Mike Rapoport <rppt@linux.ibm.com>
+>
+> When DEBUG_PAGEALLOC or ARCH_HAS_SET_DIRECT_MAP is enabled a page may be
+> not present in the direct map and has to be explicitly mapped before it
+> could be copied.
+>
+> On arm64 it is possible that a page would be removed from the direct map
+> using set_direct_map_invalid_noflush() but __kernel_map_pages() will refuse
+> to map this page back if DEBUG_PAGEALLOC is disabled.
+>
+> Introduce hibernate_map_page() that will explicitly use
+> set_direct_map_{default,invalid}_noflush() for ARCH_HAS_SET_DIRECT_MAP case
+> and debug_pagealloc_map_pages() for DEBUG_PAGEALLOC case.
+>
+> The remapping of the pages in safe_copy_page() presumes that it only
+> changes protection bits in an existing PTE and so it is safe to ignore
+> return value of set_direct_map_{default,invalid}_noflush().
+>
+> Still, add a WARN_ON() so that future changes in set_memory APIs will not
+> silently break hibernation.
+>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/events/core.c |   10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+From the hibernation support perspective:
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -2580,11 +2580,8 @@ group_sched_in(struct perf_event *group_
- 
- 	pmu->start_txn(pmu, PERF_PMU_TXN_ADD);
- 
--	if (event_sched_in(group_event, cpuctx, ctx)) {
--		pmu->cancel_txn(pmu);
--		perf_mux_hrtimer_restart(cpuctx);
--		return -EAGAIN;
--	}
-+	if (event_sched_in(group_event, cpuctx, ctx))
-+		goto error;
- 
- 	/*
- 	 * Schedule in siblings as one group (if any):
-@@ -2613,10 +2610,9 @@ group_sched_in(struct perf_event *group_
- 	}
- 	event_sched_out(group_event, cpuctx, ctx);
- 
-+error:
- 	pmu->cancel_txn(pmu);
--
- 	perf_mux_hrtimer_restart(cpuctx);
--
- 	return -EAGAIN;
- }
- 
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-
+> ---
+>  include/linux/mm.h      | 12 ------------
+>  kernel/power/snapshot.c | 30 ++++++++++++++++++++++++++++--
+>  2 files changed, 28 insertions(+), 14 deletions(-)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 1fc0609056dc..14e397f3752c 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2927,16 +2927,6 @@ static inline bool debug_pagealloc_enabled_static(void)
+>  #if defined(CONFIG_DEBUG_PAGEALLOC) || defined(CONFIG_ARCH_HAS_SET_DIRECT_MAP)
+>  extern void __kernel_map_pages(struct page *page, int numpages, int enable);
+>
+> -/*
+> - * When called in DEBUG_PAGEALLOC context, the call should most likely be
+> - * guarded by debug_pagealloc_enabled() or debug_pagealloc_enabled_static()
+> - */
+> -static inline void
+> -kernel_map_pages(struct page *page, int numpages, int enable)
+> -{
+> -       __kernel_map_pages(page, numpages, enable);
+> -}
+> -
+>  static inline void debug_pagealloc_map_pages(struct page *page,
+>                                              int numpages, int enable)
+>  {
+> @@ -2948,8 +2938,6 @@ static inline void debug_pagealloc_map_pages(struct page *page,
+>  extern bool kernel_page_present(struct page *page);
+>  #endif /* CONFIG_HIBERNATION */
+>  #else  /* CONFIG_DEBUG_PAGEALLOC || CONFIG_ARCH_HAS_SET_DIRECT_MAP */
+> -static inline void
+> -kernel_map_pages(struct page *page, int numpages, int enable) {}
+>  static inline void debug_pagealloc_map_pages(struct page *page,
+>                                              int numpages, int enable) {}
+>  #ifdef CONFIG_HIBERNATION
+> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+> index 46b1804c1ddf..054c8cce4236 100644
+> --- a/kernel/power/snapshot.c
+> +++ b/kernel/power/snapshot.c
+> @@ -76,6 +76,32 @@ static inline void hibernate_restore_protect_page(void *page_address) {}
+>  static inline void hibernate_restore_unprotect_page(void *page_address) {}
+>  #endif /* CONFIG_STRICT_KERNEL_RWX  && CONFIG_ARCH_HAS_SET_MEMORY */
+>
+> +static inline void hibernate_map_page(struct page *page, int enable)
+> +{
+> +       if (IS_ENABLED(CONFIG_ARCH_HAS_SET_DIRECT_MAP)) {
+> +               unsigned long addr = (unsigned long)page_address(page);
+> +               int ret;
+> +
+> +               /*
+> +                * This should not fail because remapping a page here means
+> +                * that we only update protection bits in an existing PTE.
+> +                * It is still worth to have WARN_ON() here if something
+> +                * changes and this will no longer be the case.
+> +                */
+> +               if (enable)
+> +                       ret = set_direct_map_default_noflush(page);
+> +               else
+> +                       ret = set_direct_map_invalid_noflush(page);
+> +
+> +               if (WARN_ON(ret))
+> +                       return;
+> +
+> +               flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+> +       } else {
+> +               debug_pagealloc_map_pages(page, 1, enable);
+> +       }
+> +}
+> +
+>  static int swsusp_page_is_free(struct page *);
+>  static void swsusp_set_page_forbidden(struct page *);
+>  static void swsusp_unset_page_forbidden(struct page *);
+> @@ -1355,9 +1381,9 @@ static void safe_copy_page(void *dst, struct page *s_page)
+>         if (kernel_page_present(s_page)) {
+>                 do_copy_page(dst, page_address(s_page));
+>         } else {
+> -               kernel_map_pages(s_page, 1, 1);
+> +               hibernate_map_page(s_page, 1);
+>                 do_copy_page(dst, page_address(s_page));
+> -               kernel_map_pages(s_page, 1, 0);
+> +               hibernate_map_page(s_page, 0);
+>         }
+>  }
+>
+> --
+> 2.28.0
+>
