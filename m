@@ -2,111 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F7429F0D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481A729F0D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbgJ2QJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52520 "EHLO
+        id S1725889AbgJ2QKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725784AbgJ2QJp (ORCPT
+        with ESMTP id S1725784AbgJ2QKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:09:45 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCD1C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:09:43 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id o11so1025987pgj.21
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:09:43 -0700 (PDT)
+        Thu, 29 Oct 2020 12:10:43 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE7CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:10:42 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id t67so813398vkb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:10:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=M5ZYnY3+Esbb7Wzf3rbFgZzcgHLDPaDcLNV16K0VsQk=;
-        b=TkD7sB+lP2yjvB0Gn0LUz1ZODCeWbb3o5+lnejOZhE+jvkt4r05YDH3rPa98mrHJ2C
-         KXmSJyYJ57SAGMkmu/Z0F7JDtTXTG2GCkITcGFpmImYXiyrwTpSBlN9fNZMYyXRFMeIy
-         AgEzX+9j08TZDbrZs4O0e2qGpPHAhU0mNA9AYKmXoqQg+1/zlQ0h6N0DlJUMXP0yN1cL
-         Hk7ywZGSyVsXhivYWHj4aZ6lE/LguaopaSvmTW1vVdphKsbV9sTvx0HxpMe0n/4BTTKC
-         4dgK1V1IizyRITrQLKfjBsdmQHqr8sBSXvFk/WUmaMzzypabYkwcGX7NktWevFA/hBBs
-         mNsA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TpGj3kui/uWkJ5JQ6tLFNod5bmWWhITkgZJTIzMYPtU=;
+        b=Cp5WodJ1rDzMKOKwvLW9Vt6q87Cyvqypv9McqhqXK6314eO8APXaRoAM0apTMDSZkd
+         NtIqaNOGuuGXSnWejT5xIJm1ctVN+sSadhqardp6jqQ69YdR/bc+8sgfK6KXm80BnZMW
+         aNHfnvzU0Pk5Yb/Y44jkpVJ2sVpqiyOJ2jlH0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=M5ZYnY3+Esbb7Wzf3rbFgZzcgHLDPaDcLNV16K0VsQk=;
-        b=PMsKZTq210PsoppBnjNWc+C5GRvYOpPmiq12P1COfnXgHwMYTQr8uy3ud5K3FJmuNM
-         QVP2V3ds9Ev/xy6/tGR3XWT6P35qF+ZjIAr9AtZvxfzUy3NS6fD31o0lT/7AmthWfkz6
-         wDFby9ACmYzY6czmIkBpR0sKhgP3oFDXUlwUaE26Nv9PKQQ4iYOj+AKEJvR6rpuCHeZZ
-         1EZO1e2tkykEExyWOtDLY1p68f5J4dgHy8PsosulbuNzbrdu2GucXRkSo8QT3styxd0P
-         N40J2VjeryVYyU4tcM3G9rzHwubCCc0T3r0VL+5iHKjmf205FMF0Jh3DkEQqZz1EAVH9
-         r/yg==
-X-Gm-Message-State: AOAM533AIji++yuuc7govjA0cYBPSXTmfc4akdolzCjYxc4+T0dJiiog
-        gDMd13wxYmbSn/9HScSYQXnJ4BK6XJXw
-X-Google-Smtp-Source: ABdhPJxxxja0byw0woovLqKs/U5wkLuHYPqEf0rerA1ne8mXTfKCoHV8TAnXpLkAJj3iQyXXo0gccX84HqgW
-Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a62:3815:0:b029:152:80d4:2a6f with SMTP id
- f21-20020a6238150000b029015280d42a6fmr5004920pfa.72.1603987783316; Thu, 29
- Oct 2020 09:09:43 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 09:09:38 -0700
-Message-Id: <20201029160938.154084-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH] libbpf hashmap: Fix undefined behavior in hash_bits
-From:   Ian Rogers <irogers@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TpGj3kui/uWkJ5JQ6tLFNod5bmWWhITkgZJTIzMYPtU=;
+        b=gq18qiQMPrAsO7dZghrB9HWv8IfWhdZLT+6mwPLfTBzXwxm8wNQDImzvkbyfZn0Goe
+         flHLIvU9hBf8R4p/cuOK3scPtcIw5oPTGp8R3yGeB9J438jAjCoj42FF5b7/rUdtmMZC
+         /Eh4Lu3uom/ztMMzpsNV3hiEVlzlhjY46HOR+l6OkzJhiCbqxaD325mREeHYFPGLf/PT
+         DV+zZVbXCA49XyidWQ8fcaZE2KA1xQ9EEfdu5Fe4EojQbAZZCjD/i8f7V5vJqkyQQVrs
+         okfkwMT4Hd6fx3tWZPEwKC+TzFZVo91j16wn8/B57lzl7Uw5cGPs168lD28tvensllLU
+         Z3uw==
+X-Gm-Message-State: AOAM532N7JRNozGItVBgovcX0x8NJYT9oWKyZqhPyX9EiLu9Rtkndnsk
+        gTNyce6t/ZX7ORk/7e5TYw0V1bqrVCWE6Q==
+X-Google-Smtp-Source: ABdhPJxynWZtxbr+rPk4oCsxG8FcFh2SzVMP6XRj2hbvY0anp2p7QskskLOkwSHXedvc/+966db/+Q==
+X-Received: by 2002:a1f:a94c:: with SMTP id s73mr3699263vke.19.1603987841852;
+        Thu, 29 Oct 2020 09:10:41 -0700 (PDT)
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
+        by smtp.gmail.com with ESMTPSA id m14sm381541vkk.17.2020.10.29.09.10.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 09:10:41 -0700 (PDT)
+Received: by mail-ua1-f45.google.com with SMTP id y1so836996uac.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:10:40 -0700 (PDT)
+X-Received: by 2002:ab0:6034:: with SMTP id n20mr3245765ual.90.1603987840438;
+ Thu, 29 Oct 2020 09:10:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201029011154.1515687-1-swboyd@chromium.org> <20201029011154.1515687-2-swboyd@chromium.org>
+In-Reply-To: <20201029011154.1515687-2-swboyd@chromium.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 29 Oct 2020 09:10:29 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UUdYR-R9r9BoHWSoQEejL3P0r+bG1m787tVkNQHhZDuw@mail.gmail.com>
+Message-ID: <CAD=FV=UUdYR-R9r9BoHWSoQEejL3P0r+bG1m787tVkNQHhZDuw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] drm/bridge: ti-sn65dsi86: Combine register accesses
+ in ti_sn_aux_transfer()
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sean Paul <seanpaul@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If bits is 0, the case when the map is empty, then the >> is the size of
-the register which is undefined behavior - on x86 it is the same as a
-shift by 0. Fix by handling the 0 case explicitly when running with
-address sanitizer.
+Hi,
 
-A variant of this patch was posted previously as:
-https://lore.kernel.org/lkml/20200508063954.256593-1-irogers@google.com/
+On Wed, Oct 28, 2020 at 6:11 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> These register reads and writes are sometimes directly next to each
+> other in the register address space. Let's use regmap bulk read/write
+> APIs to get the data with one transfer instead of multiple i2c
+> transfers. This helps cut down on the number of transfers in the case of
+> something like reading an EDID where we read in blocks of 16 bytes at a
+> time and the last for loop here is sending an i2c transfer for each of
+> those 16 bytes, one at a time. Ouch!
+>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+> Cc: Jonas Karlman <jonas@kwiboo.se>
+> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+> Cc: Sean Paul <seanpaul@chromium.org>
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/lib/bpf/hashmap.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
++Sam Ravnborg has helped land a few changes to this bridge drive in
+the past, so maybe good to CC him if you have future spins?
 
-diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-index d9b385fe808c..27d0556527d3 100644
---- a/tools/lib/bpf/hashmap.h
-+++ b/tools/lib/bpf/hashmap.h
-@@ -12,9 +12,23 @@
- #include <stddef.h>
- #include <limits.h>
- 
-+#ifdef __has_feature
-+#define HAVE_FEATURE(f) __has_feature(f)
-+#else
-+#define HAVE_FEATURE(f) 0
-+#endif
-+
- static inline size_t hash_bits(size_t h, int bits)
- {
- 	/* shuffle bits and return requested number of upper bits */
-+#if defined(ADDRESS_SANITIZER) || HAVE_FEATURE(address_sanitizer)
-+	/*
-+	 * If the requested bits == 0 avoid undefined behavior from a
-+	 * greater-than bit width shift right (aka invalid-shift-exponent).
-+	 */
-+	if (bits == 0)
-+		return -1;
-+#endif
- #if (__SIZEOF_SIZE_T__ == __SIZEOF_LONG_LONG__)
- 	/* LP64 case */
- 	return (h * 11400714819323198485llu) >> (__SIZEOF_LONG_LONG__ * 8 - bits);
--- 
-2.29.1.341.ge80a0c044ae-goog
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 50 ++++++++++++---------------
+>  1 file changed, 22 insertions(+), 28 deletions(-)
 
+Since we already did some early reviews off-list, it's not a surprise
+that I have no comments.  ;-)
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
