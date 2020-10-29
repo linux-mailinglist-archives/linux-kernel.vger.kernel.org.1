@@ -2,190 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF1D29F0EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 328C829F0EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725932AbgJ2QOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
+        id S1726270AbgJ2QOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:14:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbgJ2QOk (ORCPT
+        with ESMTP id S1725764AbgJ2QOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:14:40 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2920BC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:14:40 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id h62so2800292oth.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:14:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i6etDFeKtUj+RtB8Hig0oByEs1X05vnGUjehBWAxKJ0=;
-        b=JM8mmzrw2EIMWTSgXhoxYpNCZD/kbBIkLatmDmz6EvmNi2aHE4F5HWIEBMT2e9rVtj
-         vee/pN885rxskj/y1aYzLuGj96hMCkTeA2H/K/mcI8cd1j3f4cM0kyZJoUbF43HcTN45
-         RnviYKwKrR5iq9ojbuj7d/uUu290M4d1GlwPM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i6etDFeKtUj+RtB8Hig0oByEs1X05vnGUjehBWAxKJ0=;
-        b=kUpTe+x6E6xeGjvgIQyH9uErWpDn4I7g1uPmvQVTA0oe3S7KxuetnttnCx0b3npvyS
-         w0WJHVGFxH153KQyO2Xfv/kwyS3uIVjoFETIl7WaI3hKoMDY+fFoP/BdO3Z/xj2JkjVR
-         bnHnzkhDovVkg0wF1HkWXPwiAi5NcuAfjPDkP7RZoAoUaNvIjPlxYWKlGLf7arZF3yIW
-         0diYIejNnSbo9N4+OWqRIcEqQ5VHnWE8/FTzW3EolPHxKO9P10Svi8R4mF+WLo8ZqK8/
-         ySbwDEddvOcL2Qz46NclAG+TAk6NSGYKxwSLUb4jzceLnQfWMmTyF8ogvxC3E46LCN2/
-         pW8Q==
-X-Gm-Message-State: AOAM532cSbJe+F+gkcDQT39iwFTDBxMYapeLjcqiu9OsK3Ls7Fk5wKLp
-        ukXHHBSX5PCwqs2YlVZrYZTHH1T0F2123xpo8gS04Q==
-X-Google-Smtp-Source: ABdhPJzPHzC8UIBm63CxXaV40WY8W+RrSlKqzKbRX+dYTIIbYWElVjSUdt4KiCZJrMjvPqNqDV5P/bOU4CfJH1rKOi0=
-X-Received: by 2002:a9d:6e81:: with SMTP id a1mr3667472otr.303.1603988079536;
- Thu, 29 Oct 2020 09:14:39 -0700 (PDT)
+        Thu, 29 Oct 2020 12:14:47 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3350C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:14:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LhuofQkAKGd/YF/+qRDWxyj17oCuNKJrfx9ycxD07Lk=; b=AyWh4JweZ+X78boxL+Gz3V2hhf
+        5NkWEVf85MVmpe4TVtaHVW2zsciTXnaTLIuxbepQrxTrLrP6LIje7GRtPp3XWEe8ZRW8KP0ijTMSn
+        xJu3BSHgPt8F3QTowwKFayvT4lrlF/cT1PfF1NqqKrV7e4vXjSH8iRMHK+D/0VC7SfNRiZZuUKreg
+        EJZBLthsmLTlaaW2UtHZNb/pjT//thfXMQ4dbCg79ZffWZp1+eWusqDtyIyg2QvcZXYXAToRbbwOm
+        rpZeXy8f9xC3P6cIHW0KuBjYvPs3VEuCRSBy4lGWKCBOJ1dRr6ogr8bOFvtuTPcUMqRl/reNO8cMM
+        yLoMuFGw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kYAZN-0001Ig-TT; Thu, 29 Oct 2020 16:14:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E6EB5300446;
+        Thu, 29 Oct 2020 17:14:31 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9C30320409A7D; Thu, 29 Oct 2020 17:14:31 +0100 (CET)
+Date:   Thu, 29 Oct 2020 17:14:31 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
+        hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
+        davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
+        oleg@redhat.com, vincent.guittot@linaro.org
+Subject: Re: [RFC][PATCH v3 6/6] rcu/tree: Use irq_work_queue_remote()
+Message-ID: <20201029161431.GR2628@hirez.programming.kicks-ass.net>
+References: <20201028110707.971887448@infradead.org>
+ <20201028111221.584884062@infradead.org>
+ <20201028145428.GE2628@hirez.programming.kicks-ass.net>
+ <20201028200243.GJ2651@hirez.programming.kicks-ass.net>
+ <20201028201554.GE3249@paulmck-ThinkPad-P72>
+ <20201029091053.GG2628@hirez.programming.kicks-ass.net>
+ <20201029160448.GL3249@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20201023165136.561680-1-robdclark@gmail.com> <20201023165136.561680-24-robdclark@gmail.com>
- <d0fb714b99f13bea6000ecd17fba324433782ae5.camel@pengutronix.de>
- <CAF6AEGsf=pJ5H4guvL-+AAkK0PwCZ5g9k3K=7UPYzFmr02ReoA@mail.gmail.com> <20201026093405.GG401619@phenom.ffwll.local>
-In-Reply-To: <20201026093405.GG401619@phenom.ffwll.local>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 29 Oct 2020 17:14:28 +0100
-Message-ID: <CAKMK7uHK27hMu+zSR0O35gR-Nq-JDXpXWBFXPBcXUhOi_3AKnw@mail.gmail.com>
-Subject: Re: [PATCH v4 23/23] drm/msm: Don't implicit-sync if only a single ring
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        Rob Clark <robdclark@chromium.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Sean Paul <sean@poorly.run>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029160448.GL3249@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 10:34 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Fri, Oct 23, 2020 at 08:49:14PM -0700, Rob Clark wrote:
-> > On Fri, Oct 23, 2020 at 11:20 AM Lucas Stach <l.stach@pengutronix.de> wrote:
-> > >
-> > > On Fr, 2020-10-23 at 09:51 -0700, Rob Clark wrote:
-> > > > From: Rob Clark <robdclark@chromium.org>
-> > > >
-> > > > If there is only a single ring (no-preemption), everything is FIFO order
-> > > > and there is no need to implicit-sync.
-> > > >
-> > > > Mesa should probably just always use MSM_SUBMIT_NO_IMPLICIT, as behavior
-> > > > is undefined when fences are not used to synchronize buffer usage across
-> > > > contexts (which is the only case where multiple different priority rings
-> > > > could come into play).
-> > >
-> > > Really, doesn't this break cross-device implicit sync? Okay, you may
-> > > not have many peripherals that rely on implicit sync on devices where
-> > > Adreno is usually found, but it seems rather heavy-handed.
-> > >
-> > > Wouldn't it be better to only ignore fences from your own ring context
-> > > in the implicit sync, like we do in the common DRM scheduler
-> > > (drm_sched_dependency_optimized)?
-> >
-> > we already do this.. as was discussed on an earlier iteration of this patchset
-> >
-> > But I'm not aware of any other non-gpu related implicit sync use-case
-> > (even on imx devices where display is decoupled from gpu).. I'll
-> > revert the patch if someone comes up with one, but otherwise lets let
-> > the implicit sync baggage die
->
-> The thing is, dma_resv won't die, even if implicit sync is dead. We're
-> using internally for activity tracking and memory management. If you don't
-> set these, then we can't share generic code with msm, and I think everyone
-> inventing their own memory management is a bit a mistake.
->
-> Now you only kill the implicit write sync stuff here, but I'm not sure
-> that's worth much since you still install all the read fences for
-> consistency. And if userspace doesn't want to be synced, they can set the
-> flag and do this on their own: I think you should be able to achieve
-> exactly the same thing in mesa.
->
-> Aside: If you're worried about overhead, you can do O(1) submit if you
-> manage your ppgtt like amdgpu does.
+On Thu, Oct 29, 2020 at 09:04:48AM -0700, Paul E. McKenney wrote:
+> On Thu, Oct 29, 2020 at 10:10:53AM +0100, Peter Zijlstra wrote:
 
-So just remember a use-case which is maybe a bit yucky, but it is
-actually possible to implement race-free. If you have implicit sync.
+> > Dang, clearly TREE01 didn't actually hit any of this code :/ Is there
+> > another test I should be running?
+> 
+> TREE01 is fine, but you have to tell rcutorture to actually generate an
+> RCU CPU stall warning.  Like this for a 25-second stall with interrupts
+> disabled:
+> 
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --configs "10*TREE04" --bootargs "rcutorture.stall_cpu=25 rcutorture.stall_cpu_irqsoff=1" --trust-make
 
-There's screen-capture tool in mplayer and obs which capture your
-compositor by running getfb2 in a loop. It works, and after some
-initial screaming I realized it does actually work race-free. If you
-have implicit sync.
+> Of course, to test your change, you also need the grace-period kthread to
+> migrate to the stalled CPU just after interrupts are enabled.  For this,
+> you need something like an 11-second stall plus something to move the
+> grace-period kthread at the right (wrong?) time.  Or just run the above
+> commands in a loop on a system with ample storage over night or some such.
+> I see about 70MB of storage per run, so disk size shouldn't be too much
+> of a problem.
 
-I really don't think you can sunset this, as much as you want to. And
-sunsetting it inconsistently is probably the worst.
--Daniel
-
-> -Daniel
->
-> >
-> > BR,
-> > -R
-> >
-> >
-> >
-> > >
-> > > Regards,
-> > > Lucas
-> > >
-> > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > > > Reviewed-by: Kristian H. Kristensen <hoegsberg@google.com>
-> > > > ---
-> > > >  drivers/gpu/drm/msm/msm_gem_submit.c | 7 ++++---
-> > > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-> > > > index d04c349d8112..b6babc7f9bb8 100644
-> > > > --- a/drivers/gpu/drm/msm/msm_gem_submit.c
-> > > > +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-> > > > @@ -283,7 +283,7 @@ static int submit_lock_objects(struct msm_gem_submit *submit)
-> > > >       return ret;
-> > > >  }
-> > > >
-> > > > -static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
-> > > > +static int submit_fence_sync(struct msm_gem_submit *submit, bool implicit_sync)
-> > > >  {
-> > > >       int i, ret = 0;
-> > > >
-> > > > @@ -303,7 +303,7 @@ static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
-> > > >                               return ret;
-> > > >               }
-> > > >
-> > > > -             if (no_implicit)
-> > > > +             if (!implicit_sync)
-> > > >                       continue;
-> > > >
-> > > >               ret = msm_gem_sync_object(&msm_obj->base, submit->ring->fctx,
-> > > > @@ -774,7 +774,8 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
-> > > >       if (ret)
-> > > >               goto out;
-> > > >
-> > > > -     ret = submit_fence_sync(submit, !!(args->flags & MSM_SUBMIT_NO_IMPLICIT));
-> > > > +     ret = submit_fence_sync(submit, (gpu->nr_rings > 1) &&
-> > > > +                     !(args->flags & MSM_SUBMIT_NO_IMPLICIT));
-> > > >       if (ret)
-> > > >               goto out;
-> > > >
-> > >
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks!, I'll make the above run over night in a loop.
