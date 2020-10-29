@@ -2,104 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D737E29EE61
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:35:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C48F29EE67
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgJ2OfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:35:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726657AbgJ2OfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:35:17 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCDB820825;
-        Thu, 29 Oct 2020 14:35:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603982116;
-        bh=NjCLBLN1s5/OvjkAdf/CApoQzyKpqMjSB64Sql133xw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kuwWNOnkCHWgL51XIbCYqYP8ZzAsgJB42MqL1fjUJ/0QYjMe0A7iDwh/U8KGBk28u
-         qQ5ZY9klAblUFQMqf5PsQDaDLekIxZqi4MYC2tCrOIJB58cJD/5nODKr2INTXFYqrS
-         fQV/FoWRmXg0/wNN2pEUmHekX4hlmUHemYlVpiHc=
-Date:   Thu, 29 Oct 2020 22:35:09 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: watchdog: fsl-imx: document i.MX
- compatibles
-Message-ID: <20201029143508.GO28755@dragon>
-References: <20200926162302.32525-1-krzk@kernel.org>
+        id S1727304AbgJ2OhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:37:02 -0400
+Received: from mail-03.mail-europe.com ([91.134.188.129]:39866 "EHLO
+        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbgJ2OhB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 10:37:01 -0400
+Date:   Thu, 29 Oct 2020 14:36:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1603982218;
+        bh=kXRaeNvaCmQH2VeUBzDabkr/fRY1SIHCsnhlrezOIP4=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=xMcf3HkfGEjU8Xvf7JJCjEXO0w1zUcqbBYZRaJVfJn6oMKF4vUSUc6ldi50W4twFA
+         cjjIHv0FZApDZ2G/XZi2+/qfp3pESK89HwC6U13UwL3qTOCWy/FXk1QaqMSpfk8SXf
+         jBUk3injLDg4q0qLeoYQqucX8YkSKzUhDL/1xLyg=
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     "hj2.im@samsung.com" <hj2.im@samsung.com>,
+        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "rydberg@bitmath.org" <rydberg@bitmath.org>,
+        Jungrae Kim <jryu.kim@samsung.com>
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v2] input: add 2 kind of switch
+Message-ID: <Y8lswhvitTRIuUmvccVHbI2zTCGbh44XnkszUcl2qG2mT93vWVcnovbN8UsBOnXkE-gnRB6jLLnOaNWLgf8B9Pn6R2uGgv7pV-vqj4RdiUk=@protonmail.com>
+In-Reply-To: <20201029135415.GA3470996@kroah.com>
+References: <CGME20201029132747epcms1p8fae559dff47bf0eebdcc9f94efd9a1bf@epcms1p8> <20201029132747epcms1p8fae559dff47bf0eebdcc9f94efd9a1bf@epcms1p8> <j4-zngLfuvM3x15SD8ezJ__FTdOdLCudaTGBvuotwzYwnYFusBe655vH3UahNgtBzB8n6VpfoV7iS1tPXvv-0R8T7-RsvMDxnTZ-Zo-xs4o=@protonmail.com> <20201029135415.GA3470996@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200926162302.32525-1-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 06:23:00PM +0200, Krzysztof Kozlowski wrote:
-> Document all ARMv5, ARMv6 and ARMv7 i.MX compatibles used in DTSes (even
-> though driver binds only to fsl,imx21-wdt) to fix dtbs_check warnings
-> like:
-> 
->   arch/arm/boot/dts/imx53-qsb.dt.yaml: gpio@53fe0000: compatible:
->     ['fsl,imx53-gpio', 'fsl,imx35-gpio'] is not valid under any of the given schemas
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  .../devicetree/bindings/watchdog/fsl-imx-wdt.yaml  | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
-> index 991b4e33486e..a06e70f44fd0 100644
-> --- a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
-> @@ -18,10 +18,24 @@ properties:
->        - const: fsl,imx21-wdt
->        - items:
->            - enum:
-> +              - fsl,imx25-wdt
-> +              - fsl,imx27-wdt
-> +              - fsl,imx31-wdt
-> +              - fsl,imx35-wdt
-> +              - fsl,imx50-wdt
-> +              - fsl,imx51-wdt
-> +              - fsl,imx53-wdt
-> +              - fsl,imx6q-wdt
-> +              - fsl,imx6sl-wdt
-> +              - fsl,imx6sll-wdt
-> +              - fsl,imx6sx-wdt
-> +              - fsl,imx6ul-wdt
-> +              - fsl,imx7d-wdt
->                - fsl,imx8mm-wdt
->                - fsl,imx8mn-wdt
->                - fsl,imx8mp-wdt
->                - fsl,imx8mq-wdt
+Hi
 
-Could you add the following two as well?
+> [...]
+> > > diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devi=
+cetable.h
+> > > index 5b08a473cdba..897f5a3e7721 100644
+> > > --- a/include/linux/mod_devicetable.h
+> > > +++ b/include/linux/mod_devicetable.h
+> > > @@ -320,7 +320,7 @@ struct pcmcia_device_id {
+> > >  #define INPUT_DEVICE_ID_LED_MAX=09=090x0f
+> > >  #define INPUT_DEVICE_ID_SND_MAX=09=090x07
+> > >  #define INPUT_DEVICE_ID_FF_MAX=09=090x7f
+> > > -#define INPUT_DEVICE_ID_SW_MAX=09=090x10
+> > > +#define INPUT_DEVICE_ID_SW_MAX=09=090x12
+> > >  #define INPUT_DEVICE_ID_PROP_MAX=090x1f
+> > >
+> > >  #define INPUT_DEVICE_ID_MATCH_BUS=091
+> > > diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/li=
+nux/input-event-codes.h
+> > > index 0c2e27d28e0a..8ca2acee1f92 100644
+> > > --- a/include/uapi/linux/input-event-codes.h
+> > > +++ b/include/uapi/linux/input-event-codes.h
+> > > @@ -889,7 +889,9 @@
+> > >  #define SW_MUTE_DEVICE=09=090x0e  /* set =3D device disabled */
+> > >  #define SW_PEN_INSERTED=09=090x0f  /* set =3D pen inserted */
+> > >  #define SW_MACHINE_COVER=090x10  /* set =3D cover closed */
+> > > -#define SW_MAX=09=09=090x10
+> > > +#define SW_COVER_ATTACHED=090x11  /* set =3D cover attached */
+> > > +#define SW_EXT_PEN_ATTACHED=090x12  /* set =3D external pen attached=
+ */
+> > > +#define SW_MAX=09=09=090x12
+> > >  #define SW_CNT=09=09=09(SW_MAX+1)
+> > > [...]
+> >
+> > This part of the patch conflicts with another one:
+> > https://lore.kernel.org/linux-input/20201026144512.621479-1-markpearson=
+@lenovo.com/
+>
+> Is that merged?  If not, it's fine as-is until then, and someone has to
+> pick to go first :)
 
-    - fsl,ls1012a-wdt
-    - fsl,ls1043a-wdt
+It is not, to my knowledge. Nonetheless I figured the information may be re=
+levant.
 
-Shawn
 
-> +              - fsl,vf610-wdt
->            - const: fsl,imx21-wdt
->  
->    reg:
-> -- 
-> 2.17.1
-> 
+Regards,
+Barnab=C3=A1s P=C5=91cze
