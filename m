@@ -2,114 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C986129EB2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CCA529EB3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725803AbgJ2MCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:02:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:34246 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbgJ2MCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:02:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2324113A1;
-        Thu, 29 Oct 2020 05:02:20 -0700 (PDT)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 75E463F719;
-        Thu, 29 Oct 2020 05:02:18 -0700 (PDT)
-Subject: Re: [PATCH v5 10/21] perf arm_spe: Fixup top byte for data virtual
- address
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201029071927.9308-1-leo.yan@linaro.org>
- <20201029071927.9308-11-leo.yan@linaro.org>
-From:   Andre Przywara <andre.przywara@foss.arm.com>
-Message-ID: <8db2729f-c59d-2119-cb44-ca916a194624@foss.arm.com>
-Date:   Thu, 29 Oct 2020 12:01:16 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726018AbgJ2MEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgJ2MEY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 08:04:24 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42FFC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 05:04:23 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id c16so2176099wmd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 05:04:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/fBEwjdUnJetUpnGDQAmLObEbyNOiNUb8MREdQ0fM5Y=;
+        b=F0jRz+malxZMdZurANKSbPQLjBRgPIMu32fGJrJT4SMfWEMZqnrsSevt/MVVUntbiu
+         Rg9WVRh0NfdZk/8Zw85JD9SPg7qkz+EYs5k361RT8tPT4O40pvDdURcRu29XWHC4F6lb
+         Ikmm64nW3+IKdpwjRdxuukpKgCEeyrKCe3qrB+qwoeofjCozErXjJYC7/lYggDgxJLl9
+         46KDS0wcjh3fzldPKh2AfakkEWGm7xZdG9O3vB5s9rPNetoSf7la2UaWL0l8/K5DQlTR
+         eInIeTXJVtcu90dQzOIHgb7hVX/edsokD1nbi/qd6iDgMlxgnrZq9reGKWLWF70qJ9Ck
+         ht6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/fBEwjdUnJetUpnGDQAmLObEbyNOiNUb8MREdQ0fM5Y=;
+        b=GOPAFlGrUBGu7MEPmuEojYAqryLOtmvUHGltcSvsUWhZR+wWJt7nPR6j88r3ASAQXu
+         uDc4CukmyjOqYAKJNK9Mv60mr9SZgVzPlAy4kd8FOP8Mkz9rrXrCl6bsQcR8FTWZ6/gs
+         QMzzqXLWfTtPAkrdEcFueAXgesTRnH/l77YgDOMeTYA7AmncwqNjGjdds0AZW4i0VqlU
+         gW67wbyykWz1DxKqZRF29HFcp/8qVx35DwXyEyOmbgT5UZG8mvNFoKewUjyExIq3VqwK
+         mCD5rGbCgxjut4/mGpA1PF43iKwXl48vkGx9qa2vEfbFix96aM7ggBhX7Sf32rLXLIxU
+         MIHw==
+X-Gm-Message-State: AOAM532vY6hEhajaTYWHUmcv4ckehP/12so26W0FAVB7M/kGBe3yFnxx
+        XprdQkmfR90RUsZsI3H3tCk=
+X-Google-Smtp-Source: ABdhPJyUNWoEn05cWcwLgOHPOMr7TIlKg16tY9g6oExp0v6KDfsq/ZM+MpdTp04ObHhlP33k6Z2Fmw==
+X-Received: by 2002:a7b:c00b:: with SMTP id c11mr4012526wmb.96.1603973062311;
+        Thu, 29 Oct 2020 05:04:22 -0700 (PDT)
+Received: from localhost.localdomain ([109.175.166.67])
+        by smtp.googlemail.com with ESMTPSA id i33sm4987218wri.79.2020.10.29.05.04.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 05:04:21 -0700 (PDT)
+From:   Manuel Palenzuela <manuelpalenzuelamerino@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Manuel Palenzuela <manuelpalenzuelamerino@gmail.com>
+Subject: [PATCH] Staging: rtl8723bs: core: rtw_cmd: Fixed four if-statement coding style issues
+Date:   Thu, 29 Oct 2020 12:02:28 +0000
+Message-Id: <20201029120228.7029-1-manuelpalenzuelamerino@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201029071927.9308-11-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/10/2020 07:19, Leo Yan wrote:
-> To establish a valid address from the address packet payload and finally
-> the address value can be used for parsing data symbol in DSO, current
-> code uses 0xff to replace the tag in the top byte of data virtual
-> address.
-> 
-> So far the code only fixups top byte for the memory layouts with 4KB
-> pages, it misses to support memory layouts with 64KB pages.
-> 
-> This patch adds the conditions for checking bits [55:52] are 0xf, if
-> detects the pattern it will fill 0xff into the top byte of the address,
-> also adds comment to explain the fixing up.
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Fixed four cases where the if-statement coding style wasn't following
+the guidelines.
 
-Thanks for the change!
+Signed-off-by: Manuel Palenzuela <manuelpalenzuelamerino@gmail.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_cmd.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-
-Cheers,
-Andre
-
-> ---
->  .../util/arm-spe-decoder/arm-spe-decoder.c    | 20 ++++++++++++++++---
->  1 file changed, 17 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-> index 776b3e6628bb..cac2ef79c025 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-> @@ -24,7 +24,7 @@
->  
->  static u64 arm_spe_calc_ip(int index, u64 payload)
->  {
-> -	u64 ns, el;
-> +	u64 ns, el, val;
->  
->  	/* Instruction virtual address or Branch target address */
->  	if (index == SPE_ADDR_PKT_HDR_INDEX_INS ||
-> @@ -45,8 +45,22 @@ static u64 arm_spe_calc_ip(int index, u64 payload)
->  		/* Clean tags */
->  		payload = SPE_ADDR_PKT_ADDR_GET_BYTES_0_6(payload);
->  
-> -		/* Fill highest byte if bits [48..55] is 0xff */
-> -		if (SPE_ADDR_PKT_ADDR_GET_BYTE_6(payload) == 0xffULL)
-> +		/*
-> +		 * Armv8 ARM (ARM DDI 0487F.c), chapter "D10.2.1 Address packet"
-> +		 * defines the data virtual address payload format, the top byte
-> +		 * (bits [63:56]) is assigned as top-byte tag; so we only can
-> +		 * retrieve address value from bits [55:0].
-> +		 *
-> +		 * According to Documentation/arm64/memory.rst, if detects the
-> +		 * specific pattern in bits [55:52] of payload which falls in
-> +		 * the kernel space, should fixup the top byte and this allows
-> +		 * perf tool to parse DSO symbol for data address correctly.
-> +		 *
-> +		 * For this reason, if detects the bits [55:52] is 0xf, will
-> +		 * fill 0xff into the top byte.
-> +		 */
-> +		val = SPE_ADDR_PKT_ADDR_GET_BYTE_6(payload);
-> +		if ((val & 0xf0ULL) == 0xf0ULL)
->  			payload |= 0xffULL << SPE_ADDR_PKT_ADDR_BYTE7_SHIFT;
->  
->  	/* Data access physical address */
-> 
+diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+index 4cf09d947d32..55142faa2213 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
++++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+@@ -344,7 +344,7 @@ int rtw_enqueue_cmd(struct cmd_priv *pcmdpriv, struct cmd_obj *cmd_obj)
+ 	cmd_obj->padapter = padapter;
+ 
+ 	res = rtw_cmd_filter(pcmdpriv, cmd_obj);
+-	if (_FAIL == res) {
++	if (res == _FAIL) {
+ 		rtw_free_cmd_obj(cmd_obj);
+ 		goto exit;
+ 	}
+@@ -460,7 +460,7 @@ int rtw_cmd_thread(void *context)
+ 
+ 		cmd_start_time = jiffies;
+ 
+-		if (_FAIL == rtw_cmd_filter(pcmdpriv, pcmd)) {
++		if (rtw_cmd_filter(pcmdpriv, pcmd) == _FAIL) {
+ 			pcmd->res = H2C_DROPPED;
+ 			goto post_process;
+ 		}
+@@ -908,7 +908,7 @@ u8 rtw_disassoc_cmd(struct adapter *padapter, u32 deauth_timeout_ms, bool enqueu
+ 		res = rtw_enqueue_cmd(cmdpriv, cmdobj);
+ 	} else {
+ 		/* no need to enqueue, do the cmd hdl directly and free cmd parameter */
+-		if (H2C_SUCCESS != disconnect_hdl(padapter, (u8 *)param))
++		if (disconnect_hdl(padapter, (u8 *)param) != H2C_SUCCESS)
+ 			res = _FAIL;
+ 		kfree(param);
+ 	}
+@@ -1249,7 +1249,7 @@ u8 rtw_set_chplan_cmd(struct adapter *padapter, u8 chplan, u8 enqueue, u8 swconf
+ 		res = rtw_enqueue_cmd(pcmdpriv, pcmdobj);
+ 	} else {
+ 		/* no need to enqueue, do the cmd hdl directly and free cmd parameter */
+-		if (H2C_SUCCESS != set_chplan_hdl(padapter, (unsigned char *)setChannelPlan_param))
++		if (set_chplan_hdl(padapter, (unsigned char *)setChannelPlan_param) != H2C_SUCCESS)
+ 			res = _FAIL;
+ 
+ 		kfree(setChannelPlan_param);
+-- 
+2.26.2
 
