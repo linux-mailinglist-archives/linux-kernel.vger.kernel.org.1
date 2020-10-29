@@ -2,115 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2079B29F1BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F3929F1C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgJ2QkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:40:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50700 "EHLO mail.kernel.org"
+        id S1726031AbgJ2Qmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:42:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725805AbgJ2QkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:40:16 -0400
-Received: from linux-8ccs (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725811AbgJ2Qmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:42:52 -0400
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A39820825;
-        Thu, 29 Oct 2020 16:40:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4DDC7206F4;
+        Thu, 29 Oct 2020 16:42:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603989615;
-        bh=Cmr4c5D2EfH2hAoCtNb8SeEjBOWCAJ3zobSy3aGD0V8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HJu0V9jDLc4gXY65O9EahzpAoWO7rLf31/fcmr7djwPK8CtBV6p0Ik5uI+tJdA2hu
-         1eqVIAmR23hfmkgqCPkIbgk2NQCb1LyY/YThjekvcwVuMjmvkEZ2om5tL71nlBu530
-         2AwEecEsy5LT1J8hWp4kWLZ1HIble3uc9JJorN2s=
-Date:   Thu, 29 Oct 2020 17:40:11 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] module: set MODULE_STATE_GOING state when a module fails
- to load
-Message-ID: <20201029164010.GA5931@linux-8ccs>
-References: <20201027140336.15409-1-mbenes@suse.cz>
- <20201028122106.GA6867@linux-8ccs>
- <alpine.LSU.2.21.2010291310210.1688@pobox.suse.cz>
+        s=default; t=1603989771;
+        bh=rufIZfzUwOusZfJ1S3FbaAtyMqLXFNBtqVRmnNQKp9A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kIpUB8eIpOBHJ3mcZyOKOz9gfjlmEbM7nNA0P7TO76BruUFneh5kRmB55KrisMZha
+         p/6XZa2/8dIf51hsJbyZnd/VdMtE5xwKWdSVj5JeRdhkUbi180AT+27R/IgIEh5hY9
+         zLRoQLiEP7u3oUNEJUhJNsO19gBeiAzip6QZbx/s=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Pavel Machek <pavel@ucw.cz>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Shawn Tu <shawnx.tu@intel.com>,
+        Ricardo Ribalda <ribalda@kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        Wenyou Yang <wenyou.yang@microchip.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [RESEND PATCH 01/25] media: i2c: imx214: simplify getting state container
+Date:   Thu, 29 Oct 2020 17:42:15 +0100
+Message-Id: <20201029164239.84240-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2010291310210.1688@pobox.suse.cz>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Miroslav Benes [29/10/20 13:31 +0100]:
->On Wed, 28 Oct 2020, Jessica Yu wrote:
->
->> +++ Miroslav Benes [27/10/20 15:03 +0100]:
->> >If a module fails to load due to an error in prepare_coming_module(),
->> >the following error handling in load_module() runs with
->> >MODULE_STATE_COMING in module's state. Fix it by correctly setting
->> >MODULE_STATE_GOING under "bug_cleanup" label.
->> >
->> >Signed-off-by: Miroslav Benes <mbenes@suse.cz>
->> >---
->> > kernel/module.c | 1 +
->> > 1 file changed, 1 insertion(+)
->> >
->> >diff --git a/kernel/module.c b/kernel/module.c
->> >index a4fa44a652a7..b34235082394 100644
->> >--- a/kernel/module.c
->> >+++ b/kernel/module.c
->> >@@ -3991,6 +3991,7 @@ static int load_module(struct load_info *info, const
->> >char __user *uargs,
->> >  			     MODULE_STATE_GOING, mod);
->> >  	klp_module_going(mod);
->> >  bug_cleanup:
->> >+	mod->state = MODULE_STATE_GOING;
->> >  /* module_bug_cleanup needs module_mutex protection */
->> >  mutex_lock(&module_mutex);
->> >  module_bug_cleanup(mod);
->>
->> Thanks for the fix! Hmm, I am wondering if we also need to set the
->> module to GOING if it happens to fail while it is still UNFORMED.
->>
->> Currently, when a module is UNFORMED and encounters an error during
->> load_module(), it stays UNFORMED until it finally goes away. That
->> sounds fine, but try_module_get() technically permits you to get a
->> module while it's UNFORMED (but not if it's GOING). Theoretically
->> someone could increase the refcount of an unformed module that has
->> encountered an error condition and is in the process of going away.
->
->Right.
->
->> This shouldn't happen if we properly set the module to GOING whenever
->> it encounters an error during load_module().
->
->That's correct.
->
->> But - I cannot think of a scenario where someone could call
->> try_module_get() on an unformed module, since find_module() etc. do
->> not return unformed modules, so they shouldn't be visible outside of
->> the module loader. So in practice, I think we're probably safe here..
->
->Hopefully yes. I haven't found anything that would contradict it.
->
->I think it is even safer to leave UNFORMED there. free_module() explicitly
->sets UNFORMED state too while going through the similar process.
+The pointer to 'struct v4l2_subdev' is stored in drvdata via
+v4l2_i2c_subdev_init() so there is no point of a dance like:
 
-That's true, and agreed.
+    struct i2c_client *client = to_i2c_client(struct device *dev)
+    struct v4l2_subdev *sd = i2c_get_clientdata(client);
 
->ftrace_release_mod() is the only inconsistency there. It is called with
->UNFORMED in load_module() if going through ddebug_cleanup label
->directly, and with GOING in both do_init_module() before free_module() is
->called and delete_module syscall. But it probably does not care.
+This allows to remove local variable 'client' and few pointer
+dereferences.  White at it, use 'dev' directly instead of 'imx214->dev'.
 
-Yes, I guess that inconsistency with ftrace_release_mod() has been
-there long before this patch :-/ A quick look through ftrace.c doesn't
-suggest to me there are any direct dependencies on module state there
-(other than that comment above ftrace_module_init()). In practice
-there hasn't been any issues..
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/media/i2c/imx214.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-I have applied this to modules-next. Thanks!
+diff --git a/drivers/media/i2c/imx214.c b/drivers/media/i2c/imx214.c
+index 1ef5af9a8c8b..dc27c3678f18 100644
+--- a/drivers/media/i2c/imx214.c
++++ b/drivers/media/i2c/imx214.c
+@@ -431,14 +431,13 @@ static inline struct imx214 *to_imx214(struct v4l2_subdev *sd)
+ 
+ static int __maybe_unused imx214_power_on(struct device *dev)
+ {
+-	struct i2c_client *client = to_i2c_client(dev);
+-	struct v4l2_subdev *sd = i2c_get_clientdata(client);
++	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+ 	struct imx214 *imx214 = to_imx214(sd);
+ 	int ret;
+ 
+ 	ret = regulator_bulk_enable(IMX214_NUM_SUPPLIES, imx214->supplies);
+ 	if (ret < 0) {
+-		dev_err(imx214->dev, "failed to enable regulators: %d\n", ret);
++		dev_err(dev, "failed to enable regulators: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -447,7 +446,7 @@ static int __maybe_unused imx214_power_on(struct device *dev)
+ 	ret = clk_prepare_enable(imx214->xclk);
+ 	if (ret < 0) {
+ 		regulator_bulk_disable(IMX214_NUM_SUPPLIES, imx214->supplies);
+-		dev_err(imx214->dev, "clk prepare enable failed\n");
++		dev_err(dev, "clk prepare enable failed\n");
+ 		return ret;
+ 	}
+ 
+@@ -459,8 +458,7 @@ static int __maybe_unused imx214_power_on(struct device *dev)
+ 
+ static int __maybe_unused imx214_power_off(struct device *dev)
+ {
+-	struct i2c_client *client = to_i2c_client(dev);
+-	struct v4l2_subdev *sd = i2c_get_clientdata(client);
++	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+ 	struct imx214 *imx214 = to_imx214(sd);
+ 
+ 	gpiod_set_value_cansleep(imx214->enable_gpio, 0);
+@@ -910,8 +908,7 @@ static int imx214_parse_fwnode(struct device *dev)
+ 
+ static int __maybe_unused imx214_suspend(struct device *dev)
+ {
+-	struct i2c_client *client = to_i2c_client(dev);
+-	struct v4l2_subdev *sd = i2c_get_clientdata(client);
++	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+ 	struct imx214 *imx214 = to_imx214(sd);
+ 
+ 	if (imx214->streaming)
+@@ -922,8 +919,7 @@ static int __maybe_unused imx214_suspend(struct device *dev)
+ 
+ static int __maybe_unused imx214_resume(struct device *dev)
+ {
+-	struct i2c_client *client = to_i2c_client(dev);
+-	struct v4l2_subdev *sd = i2c_get_clientdata(client);
++	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+ 	struct imx214 *imx214 = to_imx214(sd);
+ 	int ret;
+ 
+-- 
+2.25.1
 
-Jessica
