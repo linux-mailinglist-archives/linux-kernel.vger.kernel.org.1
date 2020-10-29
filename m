@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AE129ED89
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8447F29ED7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgJ2NtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727732AbgJ2NtU (ORCPT
+        id S1727728AbgJ2Nss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:48:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28597 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727692AbgJ2Nsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:49:20 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3FC3C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:49:20 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id v18so3082872ilg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 06:49:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aaIMvQUgy5GfKnfOz1OmQc/tQFUJWmKT+5EU7lJnpIg=;
-        b=Rkh4mNNWCGTBaZ0kV3h45r9aCfQYTEYCWwhRTXhZukO72CfLpaYAPvSKsRefVLAzBS
-         XY2eapgWAFWjyUUoH7y9nXTAJxwWC0HpyKLRREWAnnPufo2nFhCVDJwAxmSRiG1SmYRt
-         6de9omlzVlZi/CoRpBC8oLf0Zij5KZIx0kMdZbchDA9917NbYrk8f8zEeYVWy2US9YjA
-         rcbo+L01DJPTZi0FIodyReVMGdqEpBmGzPA6I4C628VHdPh3HjvJyu+YvqWL6rvh+ovW
-         n34QeAf/1/kiOVFLMOiZqY0/zzh8MIaom8wOQ4Bn/zCvhHIA8fL2jeT3TJy7SmFibzxX
-         yETg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aaIMvQUgy5GfKnfOz1OmQc/tQFUJWmKT+5EU7lJnpIg=;
-        b=lZIX/uGfZM+SCT+WA4UrPPPFSCqnBQK+423AmR3amjrc1i4zsEuMWfvZ2EKQJj0csK
-         4HdBrp3bwnkgU9SvlOOgKqBEjWfsxXtURYVl7AGFjzgIMqdZSBB8Cdc34qyLblGsdyTO
-         yvlvu4UWAh/UsHM5ATBpYfI7aGHiQ5ZykGXt+pBOO3nKa9leenf0UgXfFyTXwgjgJ9Dq
-         oTcvKK6E6Iepx1ApsRnJ9dVNXxzIZgcsEgLUTZEXF9PCRIvDb3ESG4GcpCBSSOXFVLM0
-         qkZRW/eaAsq8UpdbtaTPqj2pdYJo5lW7y3lM8s6d9ocP0WNEs7f/KwYoLdrhTdQSeht1
-         YckA==
-X-Gm-Message-State: AOAM533FMIbjktQnkcrrX+zPMlhMVmTrE59Zf25ke5dXASinUFitOjC5
-        YEhP+eJdr1YWSYkNci4MOOXAJg==
-X-Google-Smtp-Source: ABdhPJx6akD2dWp5vXCJd42qFVzh3uxf4Fx0OHthh0wIVykcUn348X8rO6ye2ci3U/17ms/WaumXwg==
-X-Received: by 2002:a05:6e02:ca9:: with SMTP id 9mr2947150ilg.96.1603979360131;
-        Thu, 29 Oct 2020 06:49:20 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:536c])
-        by smtp.gmail.com with ESMTPSA id n84sm2881225ild.16.2020.10.29.06.49.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 06:49:19 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 09:47:36 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-Subject: Re: [PATCH v20 03/20] mm/thp: move lru_add_page_tail func to
- huge_memory.c
-Message-ID: <20201029134736.GD599825@cmpxchg.org>
-References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
- <1603968305-8026-4-git-send-email-alex.shi@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603968305-8026-4-git-send-email-alex.shi@linux.alibaba.com>
+        Thu, 29 Oct 2020 09:48:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603979326;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o+6ALnmfHcbX2Kh97Sk3d/ZU9yuOlfGICNtafCoGnYo=;
+        b=FwRfxyuqLngzLRAeP8SufhMFnGhhO/SWP2rK/tRciVewtCn5NwZOo2In8VSxkbC1L/gnD7
+        DX+FFOSasaoOUFGVjqB3m0fsClqYBGI5ZEfZIp8Iidv5piLq+nR9tARvHvu9nHKwZSjh6z
+        tSnoSvt5WpUflYbvcFf2+NdVcbpN7Jo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-317-RccU4qHMN-6y7QVzvonbrQ-1; Thu, 29 Oct 2020 09:48:40 -0400
+X-MC-Unique: RccU4qHMN-6y7QVzvonbrQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8E23A1902EA4;
+        Thu, 29 Oct 2020 13:48:38 +0000 (UTC)
+Received: from ovpn-66-212.rdu2.redhat.com (ovpn-66-212.rdu2.redhat.com [10.10.66.212])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1705560C17;
+        Thu, 29 Oct 2020 13:48:37 +0000 (UTC)
+Message-ID: <50aea6567bbdf89e03d50820c19cfb16bb764338.camel@redhat.com>
+Subject: Re: [PATCH] powerpc/smp: Move rcu_cpu_starting() earlier
+From:   Qian Cai <cai@redhat.com>
+To:     paulmck@kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Thu, 29 Oct 2020 09:48:36 -0400
+In-Reply-To: <20201029003127.GJ3249@paulmck-ThinkPad-P72>
+References: <20201028182334.13466-1-cai@redhat.com>
+         <87lffpx598.fsf@mpe.ellerman.id.au>
+         <20201029003127.GJ3249@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 06:44:48PM +0800, Alex Shi wrote:
-> The func is only used in huge_memory.c, defining it in other file with a
-> CONFIG_TRANSPARENT_HUGEPAGE macro restrict just looks weird.
+On Wed, 2020-10-28 at 17:31 -0700, Paul E. McKenney wrote:
+> On Thu, Oct 29, 2020 at 11:09:07AM +1100, Michael Ellerman wrote:
+> > Qian Cai <cai@redhat.com> writes:
+> > > The call to rcu_cpu_starting() in start_secondary() is not early enough
+> > > in the CPU-hotplug onlining process, which results in lockdep splats as
+> > > follows:
+> > 
+> > Since when?
+> > What kernel version?
+> > 
+> > I haven't seen this running CPU hotplug tests with PROVE_LOCKING=y on
+> > v5.10-rc1. Am I missing a CONFIG?
 > 
-> Let's move it THP. And make it static as Hugh Dickin suggested.
-> 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mm@kvack.org
+> My guess would be that adding CONFIG_PROVE_RAW_LOCK_NESTING=y will
+> get you some splats.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Well, I don't have that set, so it should be CONFIG_PROVE_RCU_LIST=y. Anyway,
+this is .config to reproduce on Power9 NV:
+
+https://cailca.coding.net/public/linux/mm/git/files/master/powerpc.config
+
