@@ -2,72 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CF329F8AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A75629F8AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 23:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725926AbgJ2WxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 18:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59198 "EHLO
+        id S1725968AbgJ2WxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 18:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgJ2Ww7 (ORCPT
+        with ESMTP id S1725949AbgJ2WxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 18:52:59 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2DAC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 15:52:59 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id oq3so4178328ejb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 15:52:59 -0700 (PDT)
+        Thu, 29 Oct 2020 18:53:07 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EEDC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 15:53:07 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a200so3605024pfa.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 15:53:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SSvtK1seUiofFljm9M7onzJ+bzt6ciiv9yFFnlQSEE0=;
-        b=s2I8l58MM4nXPF7o62oC8D5eqTQOHVa1hDHK/9kltWY8pT25wy6ZgVT1OveA3jCW70
-         2tLIp+xqA/OENK7Ipj252EOCfWxEDs3hVrbF9Y92NWIp0iygh53lvz4zB4lezJqDog+J
-         9Pct5Sa9ED83XXA6cNUv+JUo4J958lsXzejx0TxWe/RCP1EULbxcOR0LcGxMgI7fSkDX
-         ktFxBwkYMvgRDQSQ8DQqZ6R2HVAnWPNxg6lN3tZ/hmK+7iEuh7HVZnWkOC4d3AlClLgk
-         43OCBnVgLzBAV2IvEyqsduO++O1kZ59xIOeCyhAMP9LussA5gbISPIg8iJVetLton9KK
-         tHLg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zfIHsEDZ+nxAJWIcC74ZwDQW20w/aWLdxlSNkf7s2jE=;
+        b=cagqhdWwP1sef7pP6jxwICaqKNSOJTFqa9K66YttEXaS4lhGvh5cmoF8LhbjIkXHud
+         aB8sFiNwQQ8cUOXc5JqQPnN33zDfe54NrCUoJsnNgJ7tpH+JU8Ln5Uluo5jl4ZibkESz
+         fLjgjnAHmVQaDNpYNCr9w6aAiCMNdcw9UE5FlA6JG8x39FP9PWlAHeam/ro+NSn+nb7R
+         AgfjsHyMWhM03Ru1Pfpgg3g8uIJT3PzsCStUjb7MPV2SzwtDD5IzbDjFm2FptCxR5ixs
+         b66i8pB+Sw4wQhZFbv4qkMoNsq2JbUAvolpu0BvETkPyvzqm3PQkmAlf87/vViVH1OTQ
+         1Fvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SSvtK1seUiofFljm9M7onzJ+bzt6ciiv9yFFnlQSEE0=;
-        b=p3vOu/mwnqZH4lRJ7hlV2tG14eS8YhkcuW845A+gNVyrlYwT/oEOQ+VBDxUtttSTJ5
-         +LS882kRMftafZKqkmP+fsXtTszEc0u40P8eM5WOJ16J3W3Nauu4Fdwqch4Zb5nw/PIM
-         dFHfCY1XzIJuGEjJgRl5m3+NQ/l8MVIgFx8girBq0/Njzo6FwdALNTsmqMzBJmeZeFIw
-         upzt0L9UMJ6Rg+Bc+L41nWHPMRBkMQkG+vN6+9KYIoDwvIp0uWeHGGfYy1o1ZeGPf/K7
-         t8+909QbvAsD5i2Mgo280GKjycIecnaXi+xAZVfs7YdF1ioUKZI3MEFfYnavB+vEqi4E
-         PktA==
-X-Gm-Message-State: AOAM530osFRKihcrsLuRrEH2dFoqTSQdkLKe5uHQXIcWAJCn5SKjm1ed
-        l5apJq0hi38CUZANstGnM3cU5yjUShMyD/OQgHXm0CWM8Rw=
-X-Google-Smtp-Source: ABdhPJzh1EaxywpQ+/weCrp3GQf+7jJvYsDBlJLVC55ylvQjzYrMaePOraUqYSq8btUyo4VO4xJd0eUe9ynUCbjsWbE=
-X-Received: by 2002:a17:906:70cf:: with SMTP id g15mr4506466ejk.323.1604011978492;
- Thu, 29 Oct 2020 15:52:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zfIHsEDZ+nxAJWIcC74ZwDQW20w/aWLdxlSNkf7s2jE=;
+        b=GydQAguSObX4AZtpHW0OtFj31QtFDvNSHh1mepRfYeiO6YS5wRrjI6mE7BLOGML/wO
+         45In1yQjT1nnN08PZc/wgONB2QiAutnpzEQRcWx/XjAIQYzhzc1lMUrm+fdf69fq/Lpo
+         zPEm2iBhgSQGNOd4/GqQEH0oJh3HJ8n0i4bXOLEwQZsSpkllZnktReuER6ZWrItxSHb1
+         cI4kYWk+7H5ZNr+w+yN6gEnTK2LChP/S0WCCN95oBWi6LjGMJCzOCqG/sDmFSwuyA6In
+         ltD8Sot32f0Boo8kWnhp9vTkE61D9O2b6n1+OAgn67VVIEEYx8CHXeO2xFYjQZ/cGq+m
+         ojiQ==
+X-Gm-Message-State: AOAM531jZESsX3elvPzrVSgeDD1QsxxwhUV+C7qIRQ4g6NhfFSAWsQYi
+        vL/0JpbUtVtLsIA7AeTKmKlYTg==
+X-Google-Smtp-Source: ABdhPJyld5yczo2siTwbs74G7xYlQMj/lJnXZHVPI/Nd4ogGdxgYIs/XMXKttvKb1w8MYWSqEcfLKg==
+X-Received: by 2002:a62:8106:0:b029:152:1277:b5b7 with SMTP id t6-20020a6281060000b02901521277b5b7mr6795035pfd.1.1604011986893;
+        Thu, 29 Oct 2020 15:53:06 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id e11sm3913915pfl.58.2020.10.29.15.53.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 15:53:06 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 16:53:04 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Ben Levinsky <ben.levinsky@xilinx.com>
+Cc:     sunnyliangjy@gmail.com, punit1.agrawal@toshiba.co.jp,
+        stefanos@xilinx.com, michals@xilinx.com, michael.auchter@ni.com,
+        devicetree@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v19 4/5] dt-bindings: remoteproc: Add documentation for
+ ZynqMP R5 rproc bindings
+Message-ID: <20201029225304.GB1273972@xps15>
+References: <20201019224007.16846-1-ben.levinsky@xilinx.com>
+ <20201019224007.16846-5-ben.levinsky@xilinx.com>
 MIME-Version: 1.0
-References: <87sg9wodp1.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87sg9wodp1.fsf@nanos.tec.linutronix.de>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 29 Oct 2020 15:52:42 -0700
-Message-ID: <CAPcyv4hBSwdDocpgFh2=qbVQN=Mc+15cW4cV5m_S-SxVCYY=mA@mail.gmail.com>
-Subject: Re: [Build fail] i386 & nvdimm is unhappy
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kbuild test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019224007.16846-5-ben.levinsky@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 3:44 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Dan,
->
-> x86 32bit build fails with the config below with this:
->
->   ERROR: modpost: "phys_to_target_node" [drivers/nvdimm/nd_e820.ko]
->   undefined!
+On Mon, Oct 19, 2020 at 03:40:06PM -0700, Ben Levinsky wrote:
+> Add binding for ZynqMP R5 OpenAMP.
+> 
+> Represent the RPU domain resources in one device node. Each RPU
+> processor is a subnode of the top RPU domain node.
+> 
+> Signed-off-by: Jason Wu <j.wu@xilinx.com>
+> Signed-off-by: Wendy Liang <jliang@xilinx.com>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> Signed-off-by: Ben Levinsky <ben.levinsky@xilinx.com>
+> ---
+> v3:
+> - update zynqmp_r5 yaml parsing to not raise warnings for extra
+>   information in children of R5 node. The warning "node has a unit
+>   name, but no reg or ranges property" will still be raised though 
+>   as this particular node is needed to describe the
+>   '#address-cells' and '#size-cells' information.
+> v4::
+> - remove warning '/example-0/rpu@ff9a0000/r5@0: 
+>   node has a unit name, but no reg or ranges property'
+>   by adding reg to r5 node.
+> v5:
+> - update device tree sample and yaml parsing to not raise any warnings
+> - description for memory-region in yaml parsing
+> - compatible string in yaml parsing for TCM
+> v6:
+> - remove coupling TCM nodes with remoteproc 
+> - remove mailbox as it is optional not needed
+> v7:
+> - change lockstep-mode to xlnx,cluster-mode
+> v9:
+> - show example IPC nodes and tcm bank nodes
+> v11:
+> - add property meta-memory-regions to illustrate link
+>   between r5 and TCM banks
+> - update so no warnings from 'make dt_binding_check'
+> v14:
+> - concerns were raised about the new property meta-memory-regions.
+>   There is no clear direction so for the moment I kept it in the series
+> - place IPC nodes in RAM in the reserved memory section
+> v15:
+> - change lockstep-mode prop as follows: if present, then RPU cluster is in
+>   lockstep mode. if not present, cluster is in split mode.
+> v17:
+> - remove compatible string from tcm bank nodes
+> - fix style for bindings
+> - add boolean type to lockstep mode in binding
+> - add/update descriptions memory-region, meta-memory-regions,
+>   pnode-id, mbox* properties
+> v18: 
+> - update example remoteproc zynqmp r5 compat string, remove version
+>   number
+> - change property from memory-region to memory-regions
+> ---
+>  .../xilinx,zynqmp-r5-remoteproc.yaml          | 142 ++++++++++++++++++
+>  1 file changed, 142 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml b/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+> new file mode 100644
+> index 000000000000..c202dca3b6d0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+> @@ -0,0 +1,142 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Xilinx R5 remote processor controller bindings
+> +
+> +description:
+> +  This document defines the binding for the remoteproc component that loads and
+> +  boots firmwares on the Xilinx Zynqmp and Versal family chipset.
+> +
+> +  Note that the Linux has global addressing view of the R5-related memory (TCM)
+> +  so the absolute address ranges are provided in TCM reg's.
+> +
+> +maintainers:
+> +  - Ed Mooring <ed.mooring@xilinx.com>
+> +  - Ben Levinsky <ben.levinsky@xilinx.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: xlnx,zynqmp-r5-remoteproc
+> +
+> +  lockstep-mode:
+> +    description:
+> +      If this property is present, then the configuration is lock-step.
+> +      Otherwise RPU is split.
+> +    type: boolean
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description:
+> +      Interrupt mapping for remoteproc IPI. It is required if the
+> +      user uses the remoteproc driver with the RPMsg kernel driver.
+> +    maxItems: 6
+> +
+> +  memory-regions:
+> +    description:
+> +      collection of memory carveouts used for elf-loading and inter-processor
 
-Acknowledged, I'm on it.
+For each of the above the first line of the description had a capital letter
+while this one (and the one below) don't.
 
-Wonder how 0-day missed this or I missed the 0-day report?
+> +      communication. each carveout in this case should be in DDR, not
+
+Again this is abnormal - please fix everywhere.
+
+> +      chip-specific memory. In Xilinx case, this is TCM, OCM, BRAM, etc.
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +
+> +  meta-memory-regions:
+> +    description:
+> +      collection of memories that are not present in the top level memory
+> +      nodes' mapping. For example, R5s' TCM banks. These banks are needed
+> +      for R5 firmware meta data such as the R5 firmware's heap and stack.
+> +      To be more precise, this is on-chip reserved SRAM regions, e.g. TCM,
+> +      BRAM, OCM, etc.
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +
+> +  pnode-id:
+> +    maxItems: 1
+> +    description:
+> +      power node id that is used to uniquely identify the node for Xilinx
+> +      Power Management. The value is then passed to Xilinx platform
+> +      manager for power on/off and access.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  mboxes:
+> +    description:
+> +      array of phandles that describe the rx and tx for xilinx zynqmp
+> +      mailbox driver. order of rx and tx is described by the mbox-names
+> +      property. This will be used for communication with remote
+> +      processor.
+> +    maxItems: 2
+> +
+> +  mbox-names:
+> +    description:
+> +      array of strings that denote which item in the mboxes property array
+> +      are the rx and tx for xilinx zynqmp mailbox driver
+> +    maxItems: 2
+> +    $ref: /schemas/types.yaml#/definitions/string-array
+> +
+> +
+> +examples:
+> +  - |
+> +     reserved-memory {
+> +          #address-cells = <1>;
+> +          #size-cells = <1>;
+> +          ranges;
+> +          elf_load: rproc@3ed000000 {
+> +               no-map;
+> +               reg = <0x3ed00000 0x40000>;
+> +          };
+> +
+> +          rpu0vdev0vring0: rpu0vdev0vring0@3ed40000 {
+> +               no-map;
+> +               reg = <0x3ed40000 0x4000>;
+> +          };
+> +          rpu0vdev0vring1: rpu0vdev0vring1@3ed44000 {
+> +               no-map;
+> +               reg = <0x3ed44000 0x4000>;
+> +          };
+> +          rpu0vdev0buffer: rpu0vdev0buffer@3ed48000 {
+> +               no-map;
+> +               reg = <0x3ed48000 0x100000>;
+> +          };
+> +
+> +     };
+> +
+> +     /*
+> +      * Below nodes are required if using TCM to load R5 firmware
+> +      * if not, then either do not provide nodes are label as disabled in
+
+s/are/or
+
+> +      * status property
+> +      */
+> +     tcm0a: tcm_0a@ffe00000 {
+> +         reg = <0xffe00000 0x10000>;
+> +         pnode-id = <0xf>;
+> +         no-map;
+> +         status = "okay";
+> +         phandle = <0x40>;
+> +     };
+> +     tcm0b: tcm_1a@ffe20000 {
+> +         reg = <0xffe20000 0x10000>;
+> +         pnode-id = <0x10>;
+> +         no-map;
+> +         status = "okay";
+> +         phandle = <0x41>;
+> +     };
+> +
+> +     rpu {
+> +          compatible = "xlnx,zynqmp-r5-remoteproc";
+> +          #address-cells = <1>;
+> +          #size-cells = <1>;
+> +          ranges;
+> +          lockstep-mode;
+> +          r5_0 {
+> +               ranges;
+> +               #address-cells = <1>;
+> +               #size-cells = <1>;
+> +               memory-regions = <&elf_load>,
+> +                               <&rpu0vdev0vring0>,
+> +                               <&rpu0vdev0vring1>,
+> +                               <&rpu0vdev0buffer>;
+> +               meta-memory-regions = <&tcm_0a>, <&tcm_0b>;
+> +               pnode-id = <0x7>;
+> +          };
+> +     };
+> +
+> +...
+> -- 
+> 2.17.1
+> 
