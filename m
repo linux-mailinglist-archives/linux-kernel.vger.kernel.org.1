@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE6429EB05
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C00D29EB07
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725834AbgJ2Lx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:53:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbgJ2Lx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:53:28 -0400
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 820CB20838
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 11:53:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603972407;
-        bh=MjO/w8dLadPJO8+mgZEz2PmE6+PcETiEPBl3XbddTNU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dRAdWSNxaeoTpEj8ap8c12XBqypxZXbdObNzss4wOkm8t6QBuRKJgeidTG8xQ2vOD
-         0rFK1+mcQOGPjE18kCeiqqCeUcXdrp+9GRx44+dYOAH28SKOSjcCfUbXZOE7SDlQlj
-         xsjFiLVPhLqC0r0Bn7X+zKqnUKdesTgvSbYTTw8A=
-Received: by mail-qk1-f178.google.com with SMTP id r7so1727072qkf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 04:53:27 -0700 (PDT)
-X-Gm-Message-State: AOAM530lnw8MsePk1DA1IZRfWAvgMXA9zrf97h7Vqd+UWNV78LJq0NDZ
-        JrSJeXo3+I1qzrRQkce1xhW98yKflwQuWC2pSzA=
-X-Google-Smtp-Source: ABdhPJyrF9HRuhB8NCT6MXOZyMdOFceqoDOKhNXS4DhX309opkS8RN3D5h4K35F8wuUOnFDT3t9hGAmZ47pPyWVOXkU=
-X-Received: by 2002:a05:620a:22c9:: with SMTP id o9mr3287427qki.286.1603972405589;
- Thu, 29 Oct 2020 04:53:25 -0700 (PDT)
+        id S1725909AbgJ2Lxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgJ2Lxc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 07:53:32 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CD8C0613CF;
+        Thu, 29 Oct 2020 04:53:30 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id e7so2108241pfn.12;
+        Thu, 29 Oct 2020 04:53:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8Jxchq7sCXMiWwVgsGg6TDfLEzPFFR+3USmaiSFuWJc=;
+        b=R/UxXVqNgzuEvy9FEU7T22/1vP52mU1PCwePPqXXMSTpgN6sG3AOzIS8zMX35CqsD4
+         qjMZFGGRpJgMGj9Ltcy9dk/iQMoTk5CLg0QATjsBUmYp+QgigGv92n/Wdzy2pb/+HIQH
+         qaJSp1hCkwa9hhkENXgpvMDRoEddtf43EMSk5CAFFm+rLXFD2WL7ZssjE857lHW53d/f
+         F3Q6bS3VJmMdAmqhsvp4y+X4koDE46B0w/yb8uFZ1ahK+2g0DJHc0Bqq9hrpTWGKWsuA
+         odKT6M8jmFHxeAYoyb6DNPWKkvoGCcLng3w9i84KeYn5YYL9tJRtUfUqB+k1lUgt+fUY
+         HG+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8Jxchq7sCXMiWwVgsGg6TDfLEzPFFR+3USmaiSFuWJc=;
+        b=SbXjnrrERHTmYTJxOZRr2OgCaKmwfumGLMBQGxz+q1yKkAskPSGZFF8uSCYiz3jSjJ
+         gmZXI3Zd6uSkakwC4KWbNDZbmuC4N8z20QzKfjMaN5YrvMinJvbxqMK5HB+gQx6cnbEy
+         egtPs/o4CfbgO3tpT2TPQj0JV+iFmLWyL3kacayBuhkm1eG0OSIP9uIXx+fmHb16L6eI
+         HY9ZiOwYzEyVzzTwRAdnysDFZE75SXSWIC8S62gBAfHGmAAzUWnf0xQdoN/BFN98W3x8
+         BTAZLgfNY18Vh5ENR1jLLVIq2g+LZx1uDgL7K6ylvgP2upr3d5KNDUAczN7NYGNn1pOz
+         Wyhg==
+X-Gm-Message-State: AOAM530kw9ZH/nBzwSx6LS7KHCg3/EldCgGWWfKWoTQT9aUZx73+xy3p
+        zZjk9ocqa3pf/DE6zLPOHXqakq2evKRVX+JJerI=
+X-Google-Smtp-Source: ABdhPJzOuWEOsKhl3x4cJJOs0Mf2T3Q+nd6qlZRxnXUrgntCEabtk2oR9XYT8Iez7oBb/cXC0wfzVOMMTG+N9FuQHGo=
+X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr4124931pjb.129.1603972410379;
+ Thu, 29 Oct 2020 04:53:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201023092650.GB29066@infradead.org> <VI1PR04MB4960E9ECD7310B8CA1E053DC92190@VI1PR04MB4960.eurprd04.prod.outlook.com>
- <20201027062802.GC207971@kroah.com> <VI1PR04MB4960C0E76374B2775D99A82192160@VI1PR04MB4960.eurprd04.prod.outlook.com>
- <20201027151106.e4skr6dsbwvo4al6@axis.com> <VI1PR04MB49603783EF3FD3F3635FCDAF92170@VI1PR04MB4960.eurprd04.prod.outlook.com>
- <93bd1c60ea4d910489a7592200856eaf8022ced0.camel@intel.com>
- <AM0PR04MB4947F01860DE953B8496FA8892170@AM0PR04MB4947.eurprd04.prod.outlook.com>
- <CAK8P3a1JRx32VfFcwFpK0i6F5MQMCK-yCKw8=d_R08Y3iQ7wLQ@mail.gmail.com>
- <CAK8P3a3u06ZHdAb_n3byTqfxAvy_wi48X1g0N4ODuH2uEM0xLA@mail.gmail.com> <20201029100727.trbppgbusd5vogpz@axis.com>
-In-Reply-To: <20201029100727.trbppgbusd5vogpz@axis.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 29 Oct 2020 12:53:09 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3T2Riy-vfd8RcdWeeER4usc2m78rkmx4Q_8N3zGA6r_A@mail.gmail.com>
-Message-ID: <CAK8P3a3T2Riy-vfd8RcdWeeER4usc2m78rkmx4Q_8N3zGA6r_A@mail.gmail.com>
-Subject: Re: [PATCH V3 2/4] misc: vop: do not allocate and reassign the used ring
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     Sherry Sun <sherry.sun@nxp.com>,
-        "Dutt, Sudeep" <sudeep.dutt@intel.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "kishon@ti.com" <kishon@ti.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Dixit, Ashutosh" <ashutosh.dixit@intel.com>
+References: <1603971249-64044-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1603971249-64044-1-git-send-email-zou_wei@huawei.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 29 Oct 2020 13:54:19 +0200
+Message-ID: <CAHp75VcbXEQ7YVEOMsB2cy50HoBaH9eb6rgN=7ou-UMrH62TRQ@mail.gmail.com>
+Subject: Re: [PATCH -next] platform/x86/dell-wmi-sysman: Make some symbols static
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 11:07 AM Vincent Whitchurch
-<vincent.whitchurch@axis.com> wrote:
+On Thu, Oct 29, 2020 at 1:22 PM Zou Wei <zou_wei@huawei.com> wrote:
 >
-> On Wed, Oct 28, 2020 at 04:50:36PM +0100, Arnd Bergmann wrote:
-> > I think we should try to do something on top of the PCIe endpoint subsystem
-> > to make it work across arbitrary combinations of host and device
-> > implementations,
-> > and provide a superset of what the MIC driver, (out-of-tree) Bluefield endpoint
-> > driver, and the NTB subsystem as well as a couple of others used to do,
-> > each of them tunneling block/network/serial/... over a PCIe link of some
-> > sort, usually with virtio.
+> Fix the following sparse warnings:
 >
-> VOP is not PCIe-specific (as demonstrated by the vop-loopback patches I
-> posted a while ago [1]), and it would be a shame for a replacement to be
-> tied to the PCIe endpoint subsystem.  There are many SOCs out there
-> which have multiple Linux-capable processors without cache-coherency
-> between them.  VOP is (or should I say was since I guess it's being
-> deleted) the closest we have in mainline to easily get generic virtio
-> (and not just rpmsg) running between these kind of Linux instances.  If
-> a new replacement framework were to be PCIe-exclusive then we'd have to
-> invent one more framework for non-PCIe links to do pretty much the same
-> thing.
+> drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:38:23:
+> warning: symbol 'po_is_pass_set' was not declared. Should it be static?
+> drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:70:23: warning:
+> symbol 'po_current_password' was not declared. Should it be static?
+> drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:99:23:
+> warning: symbol 'po_new_password' was not declared. Should it be static?
+> drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:103:23:
+> warning: symbol 'po_min_pass_length' was not declared. Should it be static?
+> drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:107:23:
+> warning: symbol 'po_max_pass_length' was not declared. Should it be static?
+> drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:116:23:
+> warning: symbol 'po_mechanism' was not declared. Should it be static?
+> drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c:129:23:
+> warning: symbol 'po_role' was not declared. Should it be static?
 >
-> [1] https://lore.kernel.org/lkml/20190403104746.16063-1-vincent.whitchurch@axis.com/
+> po_is_pass_set, po_current_password, po_new_password,
+> po_min_pass_length, po_max_pass_length, po_mechanism and po_role
+> have only call within passobj-attributes.c
+> They should be static
 
-Right, sorry I forgot about that. I think this means we should keep having
-an abstraction between VOP (under whichever name) and the lower levels,
-and be aware that it might run on any number of these:
+I think at the same time you may put all of them in a way that each
+occupies only a single line.
 
-- PCIe endpoint, with the endpoint controlling the virtio configuration
-- PCIe endpoint, with the host (the side that has the pci_driver) controlling
-  the virtio configuration
-- NTB connections
-- your  loopback mode
-- Virtio tunnels between VM guests (see https://www.linaro.org/projects/#STR)
-- Intel MIC (to be removed, but it would be wrong to make assumptions that
-  cannot be made on that type of hardware)
-- ...
+...
 
-The existing VOP codebase does look like a reasonable start, though
-I think we need to discuss whether the ioctl interface should be
-replaced with a configfs interface, and what other changes would
-be needed to make it support the generalized hardware case.
+> -struct kobj_attribute po_role =
+> +static struct kobj_attribute po_role =
+>         __ATTR_RO(role);
 
-       Arnd
+
+-- 
+With Best Regards,
+Andy Shevchenko
