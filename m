@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C7B29F208
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:46:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D3B29F215
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727220AbgJ2Qqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:46:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725805AbgJ2Qql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:46:41 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726843AbgJ2Qsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:48:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23931 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727014AbgJ2QsC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:48:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603990081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TwZQ2oN6WxzK0UUncdaVDf1saKXhHV2p2lzyo7kKTGg=;
+        b=D0TFV20SMf+eCOlXjdnnASI0eVTPpeHSXbq/mFjN82ui1HVC3YVsuW8IGzCZqUa+iy/hAp
+        2mXu5q8Ti0QgyHweL40kQU3aiifNBeiMlMLWlE2RLeKi90W88YwjEiTcZHuarUVS5WJnSP
+        UyjXxZK4RsrgB3wJ2Rk7XIBGlhdVAb4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-594-ARyo9KBvOw-DHqiZaF1ENw-1; Thu, 29 Oct 2020 12:47:57 -0400
+X-MC-Unique: ARyo9KBvOw-DHqiZaF1ENw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6492720825;
-        Thu, 29 Oct 2020 16:46:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603990000;
-        bh=wXwQ4RSz0axTZ9t3kOle/82SyMolkuc/gJPJuvJtjGA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=erZwSMCI8vkU/CvBdGXm+H9fHsWe0L+lMvymnoQIArhUHUZZu20oNsa3OZxBitMrN
-         oBDBGpDo9LirCx+qg2cqmszfDUwkoLvei7rSPDh089HPE3tNSY0Zu5DjFZSUW8bYbg
-         oDOASTye/2i7+yNPjhb6MjTUWcgk6ld/yCPOBzBs=
-Date:   Thu, 29 Oct 2020 09:46:39 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Harald Welte <laforge@gnumonks.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andreas Schultz <aschultz@tpip.net>,
-        osmocom-net-gprs@lists.osmocom.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 net] gtp: fix an use-before-init in gtp_newlink()
-Message-ID: <20201029094639.10d74c47@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201027114846.3924-1-fujiwara.masahiro@gmail.com>
-References: <20201026114633.1b2628ae@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <20201027114846.3924-1-fujiwara.masahiro@gmail.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 451A6807321;
+        Thu, 29 Oct 2020 16:47:56 +0000 (UTC)
+Received: from localhost (ovpn-113-77.ams2.redhat.com [10.36.113.77])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B96B56EF68;
+        Thu, 29 Oct 2020 16:47:55 +0000 (UTC)
+From:   Giuseppe Scrivano <gscrivan@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        containers@lists.linux-foundation.org
+Subject: Re: [PATCH v2 0/2] fs, close_range: add flag CLOSE_RANGE_CLOEXEC
+References: <20201019102654.16642-1-gscrivan@redhat.com>
+        <20201029153859.numo2fc42vgf3ppk@wittgenstein>
+Date:   Thu, 29 Oct 2020 17:47:53 +0100
+In-Reply-To: <20201029153859.numo2fc42vgf3ppk@wittgenstein> (Christian
+        Brauner's message of "Thu, 29 Oct 2020 16:38:59 +0100")
+Message-ID: <87mu05vv0m.fsf@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 20:48:46 +0900 Masahiro Fujiwara wrote:
-> *_pdp_find() from gtp_encap_recv() would trigger a crash when a peer
-> sends GTP packets while creating new GTP device.
-> 
-> RIP: 0010:gtp1_pdp_find.isra.0+0x68/0x90 [gtp]
-> <SNIP>
-> Call Trace:
->  <IRQ>
->  gtp_encap_recv+0xc2/0x2e0 [gtp]
->  ? gtp1_pdp_find.isra.0+0x90/0x90 [gtp]
->  udp_queue_rcv_one_skb+0x1fe/0x530
->  udp_queue_rcv_skb+0x40/0x1b0
->  udp_unicast_rcv_skb.isra.0+0x78/0x90
->  __udp4_lib_rcv+0x5af/0xc70
->  udp_rcv+0x1a/0x20
->  ip_protocol_deliver_rcu+0xc5/0x1b0
->  ip_local_deliver_finish+0x48/0x50
->  ip_local_deliver+0xe5/0xf0
->  ? ip_protocol_deliver_rcu+0x1b0/0x1b0
-> 
-> gtp_encap_enable() should be called after gtp_hastable_new() otherwise
-> *_pdp_find() will access the uninitialized hash table.
-> 
-> Fixes: 1e3a3abd8b28 ("gtp: make GTP sockets in gtp_newlink optional")
-> Signed-off-by: Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
+Hi Christian,
 
-Applied, thank you!
+Christian Brauner <christian.brauner@ubuntu.com> writes:
+
+> On Mon, Oct 19, 2020 at 12:26:52PM +0200, Giuseppe Scrivano wrote:
+>> When the new flag is used, close_range will set the close-on-exec bit
+>> for the file descriptors instead of close()-ing them.
+>> 
+>> It is useful for e.g. container runtimes that want to minimize the
+>> number of syscalls used after a seccomp profile is installed but want
+>> to keep some fds open until the container process is executed.
+>> 
+>> v1->v2:
+>> * move close_range(..., CLOSE_RANGE_CLOEXEC) implementation to a separate function.
+>> * use bitmap_set() to set the close-on-exec bits in the bitmap.
+>> * add test with rlimit(RLIMIT_NOFILE) in place.
+>> * use "cur_max" that is already used by close_range(..., 0).
+>
+> I'm picking this up for some testing, thanks
+> Christian
+
+thanks!  I've addressed the comments you had for v2 and pushed them
+here[1] but I've not sent yet v3 as I was waiting for a feedback from Al
+whether using bitmap_set() is fine.
+
+Regards,
+Giuseppe
+
+[1] https://github.com/giuseppe/linux/tree/close-range-cloexec
+
