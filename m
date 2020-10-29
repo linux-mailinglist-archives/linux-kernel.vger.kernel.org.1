@@ -2,194 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFB029F5AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 865BC29F5BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgJ2T7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
+        id S1726385AbgJ2UA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbgJ2T5z (ORCPT
+        with ESMTP id S1725931AbgJ2T7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:57:55 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4853CC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:57:55 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id k9so1539743pgt.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:57:55 -0700 (PDT)
+        Thu, 29 Oct 2020 15:59:24 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3A9C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:59:24 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id i26so3235047pgl.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:59:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hG781gazXbY/D36WgQVMDGpuA2RWLeNpJCXac5ZQkg8=;
-        b=CkPH+9fRzdAH7NaPTpwnMk3m/39TlRMCkf+8/ibXMkhbKksFi+qhvgxmk+P+IAMmZj
-         R74q96IqL5x2Rj8eepDcpzDjBoFirv2AZna3FcHVjbW8zNo5MtPCCSnOQUAVAys08YHI
-         fhdH45DyNsGwdqCm/clZA7cXmj+n9qVvk9nny1hl6MKut1MqfmX1O1JURGT6UyCCJzSr
-         Ktj8mESsPBeCQ1+8Tmd5d8DwgnfY+ljpiMTs2z3ZV7jzCHqdbg6MF0x+jcvhBfYMa2Vl
-         wS3o8q+L6gal7g70hyHLJNQoaxEQ2sU1qpJHhTVF2dM6mvsWHSXOXm63P9KWXbllgHHK
-         ZgKw==
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=rL9uxiAdfucO8UO5FHQujK/Xm1zR5LWMQc64OMNsK4Q=;
+        b=R7mcWd2/M1pindEBIFka/eqKuPGxSCfiSyZLT+Hop4mrgif01boVkOaDZ5K5WZuc4V
+         sNS20oOs2/91ajEU6GL8BiFUVQMDQ4qJUsbp/5mGnfi0x8vtkIH4bxVEjIAv3XDbaP9y
+         GHZbe4XAM9F+/lYqMercXTldY9i4nbqbvpfC0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hG781gazXbY/D36WgQVMDGpuA2RWLeNpJCXac5ZQkg8=;
-        b=W/sVc9qVhNfsBz2Df1sdx2/R6EeNwURRF0fBJb2irO44GDEk1a0Uc4uoCc8lgCghMe
-         /C0wA0NaIaDMK9sGMNR4xt9M0kgz2TWad2+Ep1O6A4uA3P6QcE5+Z9QjYhPQRr+2sw3h
-         HbJqetMZbS9+PR7CNT6hpsRAgYQWT4BK7YU5GIqznJOsMUCmp1ZmuocT4n4qgXpVgi/c
-         FMDrRDq8QC6l1FjAXn/waIQRW27p+TABMEjMVSMV/4l3fgm3dk8N5eHsPeyiervmf4wv
-         H6hA1hfzhLLwD/Lo+G6MvudPXKYabvjiNxtAZeHKXpiQNVbdPHMYshZ3d2444BLbEJFM
-         AyCQ==
-X-Gm-Message-State: AOAM530D3eBVVwBetF8v+/pyRCBLQzstdX/BwAGHcycY0j6WgqyZqyud
-        Kl+/ZglMgq64xLnBHTfOMKUzEd1/BEKwRMzL4TvouQ==
-X-Google-Smtp-Source: ABdhPJwSYqr/F3B+5xf17TLZ8k/LWZ0UMiupxEJpedRZTMTDZZRQpw9wqxYX2ktp1bBLdmPZj7VaypYWfbjHbHyJnTA=
-X-Received: by 2002:a62:7695:0:b029:152:3ddd:24a3 with SMTP id
- r143-20020a6276950000b02901523ddd24a3mr5622801pfc.2.1604001474526; Thu, 29
- Oct 2020 12:57:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com> <ded454eeff88f631dc08eef76f0ad9f2daff0085.1603372719.git.andreyknvl@google.com>
- <CACT4Y+Zys3+VUsO6GDWQEcjCS6Wx16W_+B6aNy-fyhPcir7eeA@mail.gmail.com>
-In-Reply-To: <CACT4Y+Zys3+VUsO6GDWQEcjCS6Wx16W_+B6aNy-fyhPcir7eeA@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 29 Oct 2020 20:57:43 +0100
-Message-ID: <CAAeHK+xvGZNwTtvkzNnU7Hh7iUiPKFNDKDpKT8UPcqQk6Ah3yQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 04/21] kasan: unpoison stack only with CONFIG_KASAN_STACK
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=rL9uxiAdfucO8UO5FHQujK/Xm1zR5LWMQc64OMNsK4Q=;
+        b=pwZy3zEodLZ8peRn7/xmtFZ+z8ydMS/oqiGniakvkk1FdsNcRf/k/hEItcKFfbUa8l
+         8Q8K9XQ8V/Pi4PblEJV4sP+RXmFghOv9RFbaRMrheHDVI7lvoggGeVwN4UITCot1/9Ck
+         ATMbuqPJSDOq+Tpu7/UxX5R1TQY/Mn8wWRkVdA5aaVPNMPjQfdrJi/pmZ6aqEM2LVFYu
+         8OQAgf3yyyhbKYnSVx6r8lkx1/aK7ID5BlSzAvGEIF/2lGPZLMhZie9IBKqhscpvGYzj
+         XrfrZMLxbmyl1PxZk6Dd0xwfsT7c3fIzZAyZCCCr+kWpnqW38sazdgCxiAQ1l1JxVF5X
+         TGLA==
+X-Gm-Message-State: AOAM532zb0D0PRjhXQea1vTKQyh30rol+wPrezwR65cQ7OI4FUDTKFUc
+        z/t/vHAZLrnpP3c3RGEdPMoUxQ==
+X-Google-Smtp-Source: ABdhPJxz2N0u0/tltHLgA1X64eG9KuDR0ZyM23oM1HLPpFPG1XwaXwPsA8QXoEfpETWwVl2lNCWirw==
+X-Received: by 2002:a62:7a8d:0:b029:160:9e0:5ff6 with SMTP id v135-20020a627a8d0000b029016009e05ff6mr6118429pfc.52.1604001563991;
+        Thu, 29 Oct 2020 12:59:23 -0700 (PDT)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id z27sm3682662pfr.206.2020.10.29.12.59.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 12:59:23 -0700 (PDT)
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+To:     sudeep.holla@arm.com, bcm-kernel-feedback-list@broadcom.com,
+        james.quinlan@broadcom.com
+Cc:     devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX
+        ARM ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4 0/2] mailbox: Add Broadcom STB mailbox driver for SCMI
+Date:   Thu, 29 Oct 2020 15:59:05 -0400
+Message-Id: <20201029195913.5927-1-james.quinlan@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000075ad0c05b2d4b7bf"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 1:44 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
-> >
-> > There's a config option CONFIG_KASAN_STACK that has to be enabled for
-> > KASAN to use stack instrumentation and perform validity checks for
-> > stack variables.
-> >
-> > There's no need to unpoison stack when CONFIG_KASAN_STACK is not enabled.
-> > Only call kasan_unpoison_task_stack[_below]() when CONFIG_KASAN_STACK is
-> > enabled.
-> >
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > Link: https://linux-review.googlesource.com/id/If8a891e9fe01ea543e00b576852685afec0887e3
-> > ---
-> >  arch/arm64/kernel/sleep.S        |  2 +-
-> >  arch/x86/kernel/acpi/wakeup_64.S |  2 +-
-> >  include/linux/kasan.h            | 10 ++++++----
-> >  mm/kasan/common.c                |  2 ++
-> >  4 files changed, 10 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
-> > index ba40d57757d6..bdadfa56b40e 100644
-> > --- a/arch/arm64/kernel/sleep.S
-> > +++ b/arch/arm64/kernel/sleep.S
-> > @@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
-> >          */
-> >         bl      cpu_do_resume
-> >
-> > -#ifdef CONFIG_KASAN
-> > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-> >         mov     x0, sp
-> >         bl      kasan_unpoison_task_stack_below
-> >  #endif
-> > diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
-> > index c8daa92f38dc..5d3a0b8fd379 100644
-> > --- a/arch/x86/kernel/acpi/wakeup_64.S
-> > +++ b/arch/x86/kernel/acpi/wakeup_64.S
-> > @@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
-> >         movq    pt_regs_r14(%rax), %r14
-> >         movq    pt_regs_r15(%rax), %r15
-> >
-> > -#ifdef CONFIG_KASAN
-> > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-> >         /*
-> >          * The suspend path may have poisoned some areas deeper in the stack,
-> >          * which we now need to unpoison.
-> > diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> > index 3f3f541e5d5f..7be9fb9146ac 100644
-> > --- a/include/linux/kasan.h
-> > +++ b/include/linux/kasan.h
-> > @@ -68,8 +68,6 @@ static inline void kasan_disable_current(void) {}
-> >
-> >  void kasan_unpoison_memory(const void *address, size_t size);
-> >
-> > -void kasan_unpoison_task_stack(struct task_struct *task);
-> > -
-> >  void kasan_alloc_pages(struct page *page, unsigned int order);
-> >  void kasan_free_pages(struct page *page, unsigned int order);
-> >
-> > @@ -114,8 +112,6 @@ void kasan_restore_multi_shot(bool enabled);
-> >
-> >  static inline void kasan_unpoison_memory(const void *address, size_t size) {}
-> >
-> > -static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
-> > -
-> >  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
-> >  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
-> >
-> > @@ -167,6 +163,12 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
-> >
-> >  #endif /* CONFIG_KASAN */
-> >
-> > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
->
-> && defined(CONFIG_KASAN_STACK) for consistency
+--00000000000075ad0c05b2d4b7bf
 
-CONFIG_KASAN_STACK is different from other KASAN configs. It's always
-defined, and its value is what controls whether stack instrumentation
-is enabled.
+Patchset Summary:
+  Adds a simple mailbox driver for the use of the ARM SCMI drivers.
 
->
-> > +void kasan_unpoison_task_stack(struct task_struct *task);
-> > +#else
-> > +static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
-> > +#endif
-> > +
-> >  #ifdef CONFIG_KASAN_GENERIC
-> >
-> >  void kasan_cache_shrink(struct kmem_cache *cache);
-> > diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> > index a880e5a547ed..a3e67d49b893 100644
-> > --- a/mm/kasan/common.c
-> > +++ b/mm/kasan/common.c
-> > @@ -58,6 +58,7 @@ void kasan_disable_current(void)
-> >  }
-> >  #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
-> >
-> > +#if CONFIG_KASAN_STACK
->
-> #ifdef CONFIG_ is the form used toughout the kernel code
->
-> >  static void __kasan_unpoison_stack(struct task_struct *task, const void *sp)
-> >  {
-> >         void *base = task_stack_page(task);
-> > @@ -84,6 +85,7 @@ asmlinkage void kasan_unpoison_task_stack_below(const void *watermark)
-> >
-> >         kasan_unpoison_memory(base, watermark - base);
-> >  }
-> > +#endif /* CONFIG_KASAN_STACK */
-> >
-> >  void kasan_alloc_pages(struct page *page, unsigned int order)
-> >  {
-> > --
-> > 2.29.0.rc1.297.gfa9743e501-goog
-> >
+v4:
+  Commit "mailbox: Add Broadcom STB mailbox driver"
+  -- Fixed indentation on Kconfig file (again, RandyD).
+  -- Removed superfluous #ifdefs for ARM/ARM64 (RandyD).
+  -- Fixed Copyright year on source file (RandyD).
+
+v3:
+  Commit "mailbox: Add Broadcom STB mailbox driver"
+  -- Fixed indentation on Kconfig file (RandyD).
+
+v2:
+  Commit "mailbox: Add Broadcom STB mailbox driver"
+  -- Remove the Kconfig dependency on SMP (Florian)
+  Commit "mailbox: Add Broadcom STB mailbox driver"
+  -- Drop label,unit address; changed title,description (RobH)
+
+v1:
+  -- Original submission.
+
+Jim Quinlan (2):
+  dt-bindings: Add bindings for BrcmSTB SCMI mailbox driver
+  mailbox: Add Broadcom STB mailbox driver
+
+ .../bindings/mailbox/brcm,brcmstb-mbox.yaml   |  39 ++++
+ drivers/mailbox/Kconfig                       |  12 ++
+ drivers/mailbox/Makefile                      |   2 +
+ drivers/mailbox/brcmstb-mailbox.c             | 167 ++++++++++++++++++
+ 4 files changed, 220 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml
+ create mode 100644 drivers/mailbox/brcmstb-mailbox.c
+
+-- 
+2.17.1
+
+
+--00000000000075ad0c05b2d4b7bf
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
+AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
+hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
+ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
+c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
+aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
+PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
+My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
+KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
+4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
+wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
+VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
+V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
+lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
+5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
+di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJIei25JWQZX
++cJ2QG0waZGrY6v9R+jklcCO+AF9Fp95MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMTAyOTE5NTkyNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCa9Nadp1jfkWw1saIOfVYZyTla7wj7
+fPQ+v3x/bnpRtmenXPMJRUKN/AUyj+M2EgfOKXh95ZRF5j68Q0mBQH5f8wf7NCL+VwYFPw5rSEp7
+m52dr8lruH7qOtUMD7ExAgeGmkZNAgILSV8PLiv+JXY+rys6g3fdUy90BP9p8wyhR6uP6HCMOuJd
+MsjBRF4wUhzUHlHbZuwjTwDXB0uQ6cj2rSKin7oZwDPcVvkhNT8VYHFU7WA4iJpo6Xxjp4t2W4VT
+yCeS5L8ND55V1xEVvNaklqH4tdmw1IWqA3dULCgbF2E8vnGwQDlVvUjbdchZnfxRrZ2uG21yAZ6L
+V5pyFSwq
+--00000000000075ad0c05b2d4b7bf--
