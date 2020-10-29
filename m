@@ -2,278 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AECA129EE30
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F72629EE33
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgJ2O2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:28:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726657AbgJ2O2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:28:53 -0400
-Received: from coco.lan (ip5f5ad5de.dynamic.kabel-deutschland.de [95.90.213.222])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E80142151B;
-        Thu, 29 Oct 2020 14:28:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603981731;
-        bh=8YEKmSQxeMhYw9/AD1252B/ftYY1OGS1AdKbmMqT9DM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=udou9hMftLwhkBHK6y9CFjKIEcFuIHXuf/WZ3IZBwRT3ukB+dv5laha67AssrM10z
-         n0Fr8bIRzXjfGGdK8+gPU3nGtvXJ43s1pCLyM4DaIcEPSOVljWUKu7muW3ZnVfHCdU
-         qs0WYt98b5lb0g28mg7cVGNWAEJtbEVxT0mMqoyM=
-Date:   Thu, 29 Oct 2020 15:28:45 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Akira Shimahara <akira215corp@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Evgeny Boger <boger@wirenboard.com>
-Subject: Re: Adding ABI to htmldocs - Was: Re: [PATCH 2/2] w1: w1_therm: Add
- support for GXCAS GX20MH01 device.
-Message-ID: <20201029152845.6bbb39ce@coco.lan>
-In-Reply-To: <20201021165819.GA1361645@kroah.com>
-References: <20200904160004.87710-1-ivan.zaentsev@wirenboard.ru>
-        <20200904160004.87710-2-ivan.zaentsev@wirenboard.ru>
-        <20201006151915.77d044a4@coco.lan>
-        <1561045277.20201007103227@wirenboard.ru>
-        <20201007105702.67988846@coco.lan>
-        <20201007090619.GA613204@kroah.com>
-        <20201007130549.6ca57af0@coco.lan>
-        <20201007114359.GA2167293@kroah.com>
-        <20201007135934.4b6e598e@coco.lan>
-        <20201021182843.522dd7e7@coco.lan>
-        <20201021165819.GA1361645@kroah.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1727110AbgJ2O3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:29:10 -0400
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:42408 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgJ2O3K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 10:29:10 -0400
+Received: by mail-oo1-f67.google.com with SMTP id l26so735740oop.9;
+        Thu, 29 Oct 2020 07:29:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Om9WUjh4cubJwGaGg9gntuiRkHiaoGi/Sm+rG3LGg3M=;
+        b=iaQ17wd/eK4ed1F4DYkowMz4hlNGw32fjoEznv/SWnEunjqd4oPW304AxxRf3lgQ0C
+         9X4Tw0NRl6Goi4nfPgV4tXxlCPvSv9FFyE+Rkedtz1VlM3YyRYG8J6dkHQB9g5VRCvWk
+         XJbUHDixadAriDuO/Fwezmw9ZkQKLZTReVIg+miztTNFapCxK/3O3PYBAdvo9caFHx+j
+         eOkUtzOgL8G3rrKEABS6RVrye1oxrysT6ODa6+357YkfHfqIjJU54yURrUGgLtCEl/Zl
+         6CAJ7i7V12EIH9ybmh1aI8+ietcLWmpk/mnjyInZBx3NAMlyd2u0S4oSFWDHWBbVnzyp
+         0OjQ==
+X-Gm-Message-State: AOAM532Jc4CVLF7m57HWRKJunRXPZE+YGonC4wrXSc7zw26gaIVumd3J
+        6DFaGLNEuD9QElMnmA3LO20zggjrw8v4WmcjkN8=
+X-Google-Smtp-Source: ABdhPJw7YlP1lEV530rXHjS9xtnhZh1Vq9wCndTfLh4fCs3RdWXOrequIUwIhf9iOd/F4dNMTHRaU553LofDOScJkwc=
+X-Received: by 2002:a4a:8892:: with SMTP id j18mr3445928ooa.40.1603981748538;
+ Thu, 29 Oct 2020 07:29:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201029105515.16309-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20201029105515.16309-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 29 Oct 2020 15:28:57 +0100
+Message-ID: <CAMuHMdVGO+DEgsTr62nA+egU2etZA_vwE9GrOG1JPWBvv90UXg@mail.gmail.com>
+Subject: Re: [PATCH v2] clk: renesas: r8a774c0: Add RPC clocks
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 21 Oct 2020 18:58:19 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+Hi Prabhakar,
 
-> On Wed, Oct 21, 2020 at 06:28:43PM +0200, Mauro Carvalho Chehab wrote:
-> > Hi greg,
-> > 
-> > Em Wed, 7 Oct 2020 13:59:34 +0200
-> > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
-> >   
-> > > Em Wed, 7 Oct 2020 13:43:59 +0200
-> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> > >   
-> > > > On Wed, Oct 07, 2020 at 01:05:49PM +0200, Mauro Carvalho Chehab wrote:    
-> > > > > Em Wed, 7 Oct 2020 11:06:19 +0200
-> > > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> > > > >       
-> > > > > > On Wed, Oct 07, 2020 at 10:57:02AM +0200, Mauro Carvalho Chehab wrote:      
-> > > > > > > Em Wed, 7 Oct 2020 10:32:27 +0300
-> > > > > > > Ivan Zaentsev <ivan.zaentsev@wirenboard.ru> escreveu:
-> > > > > > >         
-> > > > > > > > Tuesday, October 6, 2020, 4:19:15 PM, Mauro Carvalho Chehab wrote:
-> > > > > > > >         
-> > > > > > > > >> diff --git a/Documentation/w1/slaves/w1_therm.rst b/Documentation/w1/slaves/w1_therm.rst
-> > > > > > > > >> index f1148181f53e..00376501a5ef 100644
-> > > > > > > > >> --- a/Documentation/w1/slaves/w1_therm.rst
-> > > > > > > > >> +++ b/Documentation/w1/slaves/w1_therm.rst          
-> > > > > > > >         
-> > > > > > > > >>  
-> > > > > > > > >> @@ -130,4 +131,12 @@ conversion and temperature reads 85.00 (powerup value) or 127.94 (insufficient
-> > > > > > > > >>  power), the driver returns a conversion error. Bit mask ``2`` enables poll for
-> > > > > > > > >>  conversion completion (normal power only) by generating read cycles on the bus
-> > > > > > > > >>  after conversion starts. In parasite power mode this feature is not available.
-> > > > > > > > >> -Feature bit masks may be combined (OR).
-> > > > > > > > >> +Feature bit masks may be combined (OR). See accompanying sysfs documentation:
-> > > > > > > > >> +:ref:`Documentation/w1/slaves/w1_therm.rst <w1_therm>`
-> > > > > > > > >> +          
-> > > > > > > >         
-> > > > > > > > > As warned by Sphinx, this cross-reference is broken:          
-> > > > > > > >         
-> > > > > > > > >         .../Documentation/w1/slaves/w1_therm.rst:125: WARNING:
-> > > > > > > > > undefined label: w1_therm (if the link has no caption the label must precede a section header)          
-> > > > > > > > 
-> > > > > > > > Would this be ok?        
-> > > > > > > 
-> > > > > > > Yeah, sure!
-> > > > > > >         
-> > > > > > > > 
-> > > > > > > > "More details in Documentation/ABI/testing/sysfs-driver-w1_therm"
-> > > > > > > >         
-> > > > > > > > > Not sure what you wanted to point here.          
-> > > > > > > > 
-> > > > > > > > A link to a driver's sysfs interface, but sysfs docs are text
-> > > > > > > > files and seem to not be included in Sphynx Docs.        
-> > > > > > > 
-> > > > > > > I sent upstream sometime ago a patch series adding ABI to Sphinx, but I 
-> > > > > > > was not merged, not sure why:
-> > > > > > > 
-> > > > > > > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v5.6        
-> > > > > > 
-> > > > > > I think the raft of different patches floating around at the time made
-> > > > > > me totally confused as to what was, and was not, the latest versions.      
-> > > > > 
-> > > > > Yeah, there were lots of patches floating around that time.
-> > > > > 
-> > > > > I also recall that someone (Jeni?) asked if the best wouldn't be to
-> > > > > just convert the ABI files to ReST directly.
-> > > > >       
-> > > > > > I'll be glad to look at them again, if you want to rebase after 5.10-rc1
-> > > > > > is out and resend them, as I think this should be showing up in the
-> > > > > > documentation.      
-> > > > > 
-> > > > > Surely. I'll rebase them after 5.10-rc1 and re-submit. 
-> > > > > 
-> > > > > What strategy do you prefer? Keep the files with the same format as
-> > > > > today (allowing them to optionally have ReST markups) or to convert
-> > > > > them to .rst directly?
-> > > > > 
-> > > > > In the latter case, the best would be to apply it as early as possible
-> > > > > after 5.10-rc1, as it may cause conflicts with other patches being
-> > > > > submitted for 5.11.      
-> > > > 
-> > > > The existing format if at all possible, doing wholesale changes is a
-> > > > mess and wouldn't be recommended.    
-> > > 
-> > > Yeah, merging it would indeed be a mess. At long term, though, it could 
-> > > be easier to maintain.
-> > >   
-> > > > I think you already fixed up the entries that had problems being parsed
-> > > > in the past, if not, we can resolve those as well.    
-> > > 
-> > > Yes. The series start with fixes. I suspect several of them
-> > > (if not all) were already merged, but if anything is missing, I can fix 
-> > > at the upcoming rebased series.  
-> > 
-> > Rebasing the patch series was easier than what I expected:
-> > 
-> > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v6
-> > 
-> > Yet, while fixing one build issue, I noticed that there are multiple
-> > files defining the same ABI, with different contents.
-> > 
-> > Right now, scripts/get_abi.pl assumes that "what" is unique. Well, sorts
-> > of. When it finds a duplicated entry, it merges the description, 
-> > preserving the fields from the last parsed entry.
-> > 
-> > I ended adding a patch to detect those ABI duplication:
-> > 
-> > 	https://git.linuxtv.org/mchehab/experimental.git/commit/?h=abi_patches_v6&id=6868914605cb0ebffe3fd07d344c246e1e4cd94e
-> > 
-> > I'm enclosing the results.
-> > 
-> > One such example is this one:
-> > 
-> > 	3 duplicated entries for /sys/class/leds/<led>/hw_pattern: on file(s) sysfs-class-led-trigger-pattern sysfs-class-led-driver-sc27xx sysfs-class-led-driver-el15203000
-> > 
-> > It sounds that different drivers define and use this ABI, but
-> > each one with different meanings. 
-> > 
-> > There are even some cases where the same file define the same ABI twice:
-> > 
-> > 	2 duplicated entries for /sys/class/power_supply/<supply_name>/temp_alert_min: on file(s) sysfs-class-power
-> > 
-> > Not sure what's the best way to document things like that, or if
-> > the fix would be to drop/merge those.
-> > 
-> > Any ideas?  
-> 
-> We should merge them to be the correct representation.  The
-> driver-specific ones for LED should just be dropped to use the
-> class-generic one.
-> 
-> I guess just take them one at a time :)
+On Thu, Oct 29, 2020 at 11:55 AM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Describe the RPCSRC internal clock and the RPC[D2] clocks derived from it,
+> as well as the RPC-IF module clock, in the RZ/G2E (R8A774C0) CPG/MSSR
+> driver.
 
-I'm trying to address each one of the duplicated ones...
-I'm now stuck with this one:
+Thanks for your patch!
 
-At Documentation/ABI/testing/sysfs-driver-w1_therm, it has:
+> Add new clk type CLK_TYPE_GEN3E3_RPCSRC to handle registering rpcsrc
+> clock as the source for RPCSRC can be either PLL0/PLL1 and this depends
+> on MD[1:4] pins where as compared to other R-Car Gen3 SoC's the RPCSRC
+> clock source is always PLL1.
+>
+> MD[4] MD[3] MD[2] MD[1]
+>   0     0     0    1     -> RPCSRC CLK source is PLL1
+>   0     0     1    1     -> RPCSRC CLK source is PLL1
+>   0     1     0    0     -> RPCSRC CLK source is PLL1
+>   1     0     1    1     -> RPCSRC CLK source is PLL1
+>   x     x     x    x     -> For any other values RPCSRC CLK source is PLL0
 
-	What:		/sys/bus/w1/devices/.../eeprom
-	Date:		May 2020
-	Contact:	Akira Shimahara <akira215corp@gmail.com>
-	Description:
-			(WO) writing that file will either trigger a save of the
-			device data to its embedded EEPROM, either restore data
-			embedded in device EEPROM. Be aware that devices support
-			limited EEPROM writing cycles (typical 50k)
-	
-				* 'save': save device RAM to EEPROM
-				* 'restore': restore EEPROM data in device RAM
+AFAIU, the _initial values_ of the RPCCKCR bits depend on the MD pins.
+They can still be changed at run-time, and might have been changed by
+the bootloader before transferring control to Linux.
 
-	Users:		any user space application which wants to communicate with
-			w1_term device
+> R-Car Gen3 manual Rev.2.20 has in-correct information related to
+> determining the clock source for RPCSRC.
 
-Which defines the same ABI as this one:
+Which part of the information is not correct?
+Where can I find corrected information?
+Is my understanding above incorrect, too?
 
-	What:		/sys/bus/w1/devices/.../eeprom
-	Date:		May 2012
-	Contact:	Markus Franke <franm@hrz.tu-chemnitz.de>
-	Description:	read/write the contents of the EEPROM memory of the DS28E04-100
-			see Documentation/w1/slaves/w1_ds28e04.rst for detailed information
-	Users:		any user space application which wants to communicate with DS28E04-100
+> --- a/drivers/clk/renesas/r8a774c0-cpg-mssr.c
+> +++ b/drivers/clk/renesas/r8a774c0-cpg-mssr.c
 
-Which is further described at Documentation/w1/slaves/w1_ds28e04.rst:
+> @@ -73,6 +74,12 @@ static const struct cpg_core_clk r8a774c0_core_clks[] __initconst = {
+>         DEF_FIXED(".s2",       CLK_S2,             CLK_PLL1,       4, 1),
+>         DEF_FIXED(".s3",       CLK_S3,             CLK_PLL1,       6, 1),
+>         DEF_FIXED(".sdsrc",    CLK_SDSRC,          CLK_PLL1,       2, 1),
+> +       DEF_BASE(".rpcsrc",    CLK_RPCSRC, CLK_TYPE_GEN3E3_RPCSRC, (CLK_PLL1 << 16) | CLK_PLL0),
 
-   Memory Access
+You may want to add a new DEF_* helper macro for this.
 
-	A read operation on the "eeprom" file reads the given amount of bytes
-	from the EEPROM of the DS28E04.
+> --- a/drivers/clk/renesas/rcar-gen3-cpg.c
+> +++ b/drivers/clk/renesas/rcar-gen3-cpg.c
+> @@ -441,6 +441,14 @@ static const struct clk_div_table cpg_rpcsrc_div_table[] = {
+>         { 2, 5 }, { 3, 6 }, { 0, 0 },
+>  };
+>
+> +static const struct clk_div_table cpg_rpcsrc_e3_pll0_div_table[] = {
+> +       { 2, 8 }, { 0, 0 },
+> +};
+> +
+> +static const struct clk_div_table cpg_rpcsrc_e3_pll1_div_table[] = {
+> +       { 0, 5 }, { 1, 3 }, { 3, 2 }, { 0, 0 },
+> +};
+> +
+>  static const struct clk_div_table cpg_rpc_div_table[] = {
+>         { 1, 2 }, { 3, 4 }, { 5, 6 }, { 7, 8 }, { 0, 0 },
+>  };
+> @@ -515,6 +523,18 @@ static struct clk * __init cpg_rpcd2_clk_register(const char *name,
+>         return clk;
+>  }
+>
+> +static int __init cpg_rpcsrc_e3_get_parent(u32 mode)
+> +{
+> +       unsigned int e3_rpcsrc = (mode & GENMASK(4, 1)) >> 1;
+> +       unsigned int pll1[] = { 0x1, 0x3, 0x4, 0xb, };
+> +       int i;
+> +
+> +       for (i = 0; i < ARRAY_SIZE(pll1); i++)
+> +               if (e3_rpcsrc == pll1[i])
+> +                       return 1;
+> +
+> +       return 0;
+> +}
+>
+>  static const struct rcar_gen3_cpg_pll_config *cpg_pll_config __initdata;
+>  static unsigned int cpg_clk_extalr __initdata;
+> @@ -552,6 +572,7 @@ struct clk * __init rcar_gen3_cpg_clk_register(struct device *dev,
+>         const struct clk *parent;
+>         unsigned int mult = 1;
+>         unsigned int div = 1;
+> +       int e3_rpcsrc_parent;
+>         u32 value;
+>
+>         parent = clks[core->parent & 0xffff];   /* some types use high bits */
+> @@ -696,6 +717,22 @@ struct clk * __init rcar_gen3_cpg_clk_register(struct device *dev,
+>                                                   cpg_rpcsrc_div_table,
+>                                                   &cpg_lock);
+>
+> +       case CLK_TYPE_GEN3E3_RPCSRC:
+> +               e3_rpcsrc_parent = cpg_rpcsrc_e3_get_parent(cpg_mode);
 
-	A write operation on the "eeprom" file writes the given byte sequence
-	to the EEPROM of the DS28E04. If CRC checking mode is enabled only
-	fully aligned blocks of 32 bytes with valid CRC16 values (in bytes 30
-	and 31) are allowed to be written.
+This is not correct if the boot loader has changed the parent clock.
 
--
+> +               if (e3_rpcsrc_parent) {
+> +                       parent = clks[core->parent >> 16];
+> +                       if (IS_ERR(parent))
+> +                               return ERR_CAST(parent);
+> +               }
+> +
+> +               return clk_register_divider_table(NULL, core->name,
+> +                                                 __clk_get_name(parent), 0,
+> +                                                 base + CPG_RPCCKCR, 3, 2, 0,
+> +                                                 e3_rpcsrc_parent ?
+> +                                                 cpg_rpcsrc_e3_pll1_div_table :
+> +                                                 cpg_rpcsrc_e3_pll0_div_table,
+> +                                                 &cpg_lock);
+> +
 
-This specific duplication seems very evil, as if someone does:
+So you want to keep the parent clock selection fixed, but still allow
+the system to change the divider?
+Why not support changing the parent too, by modeling this as a composite
+clock consisting of a mux and a divider?
 
-	echo restore > /sys/bus/w1/devices/.../eeprom
+Gr{oetje,eeting}s,
 
-and the device is a DS28E04-100, its eeprom will be erased instead
-of being restored!
+                        Geert
 
-Not sure how this could be solved without causing regressions.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-As the new ABI is from May 2020, added on this commit:
-
-  commit 45d457a4cf24455eefd076a01a3d86414fc2ff1e
-  Author: Akira Shimahara <akira215corp@gmail.com>
-  Date:   Mon May 11 22:37:25 2020 +0200
-
-    w1_therm: adding eeprom sysfs entry
-    
-    The driver implement 2 hardware functions to access device RAM:
-     * copy_scratchpad
-     * recall_scratchpad
-    They act according to device specifications.
-    
-    As EEPROM operations are not device dependent (all w1_therm can perform
-    EEPROM read/write operation following the same protocol), it is removed
-    from device families structures.
-    
-    Updating Documentation/ABI/testing/sysfs-driver-w1_therm accordingly.
-    
-    Signed-off-by: Akira Shimahara <akira215corp@gmail.com>
-    Link: https://lore.kernel.org/r/20200511203725.410844-1-akira215corp@gmail.com
-    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-(probably reached Kernel 5.8):
-
-	$ git describe 45d457a4cf244
-	v5.7-rc5-92-g45d457a4cf24
-
-I guess the solution would be to rename the new one.
-
-Comments?
-
-
-Thanks,
-Mauro
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
