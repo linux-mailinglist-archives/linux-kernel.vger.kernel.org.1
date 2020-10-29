@@ -2,124 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563BB29EE8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F328629EE91
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727832AbgJ2Oml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:42:41 -0400
-Received: from mout.gmx.net ([212.227.17.22]:44233 "EHLO mout.gmx.net"
+        id S1727839AbgJ2Omx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:42:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726297AbgJ2Omh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726521AbgJ2Omh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Oct 2020 10:42:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603982530;
-        bh=B5fjuh1PbI2SnXgyH1envbzqQOQcynTKeIgMm8qOVds=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=fedIqrvoG7fKh5h3ebq51ck/RbloJoGFlk24O1iojof/4pW5ZmxAiwmarz70gdQWo
-         sfjIRFwr56eCdxJWV6uqDqDXbrRhYnpKb/XbLS2UjcEB+oOTNPLvBbc1ZxoNOLRq2i
-         InXe8VfPscjBU2TNJERfN0EZftL8VqFXCcyPEcM8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from obelix.fritz.box ([46.142.27.25]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N7iCg-1kKD3Y0wbK-014mRS; Thu, 29
- Oct 2020 15:42:10 +0100
-Subject: Re: [PATCH 5.9 000/757] 5.9.2-rc1 review
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <d8211fcd-ddb5-34e1-1f9e-aa5b94a03889@gmx.de>
- <20201029091412.GA3749125@kroah.com>
-From:   Ronald Warsow <rwarsow@gmx.de>
-Message-ID: <16326ab5-79f3-2e1b-511f-31f048608e6f@gmx.de>
-Date:   Thu, 29 Oct 2020 15:42:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0EBA20838;
+        Thu, 29 Oct 2020 14:42:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603982539;
+        bh=6RBN8Kg5rl5f9b8QXPgb4uFFk5IdGTlv2YKs82xXJB4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gVv6frS6pXab5N6ek2X6ub8Sz5HurZdzN3UxRw4jeMjnUwoDfwpI/RmR6rxSvC9Hj
+         SdJyAb5hIDHAzdvUzKUkOnVbFBlmt/6qpDHQ7mn+SwUyRjlVmFFNUY9P9Qc85BT663
+         meKeKtCX/PCSBFKM04IJgXOD9v6mbSrS03QSyTs0=
+Date:   Thu, 29 Oct 2020 22:42:12 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Robert Jones <rjones@gateworks.com>,
+        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 06/14] dt-bindings: arm: fsl: document i.MX25 and i.MX27
+ boards
+Message-ID: <20201029144211.GR28755@dragon>
+References: <20200926162811.5335-1-krzk@kernel.org>
+ <20200926162811.5335-6-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201029091412.GA3749125@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:77rbd7w+ZbYuLme15IYdzCwxmDvg/Zo/E4sAWQo30Ttu6x/psgU
- IsSLJBuhMGzbKmHDFYF1DZqUmMRZhDCFAKc63mdhPrzcmw/e477cBuJRQIBvTT/An6f9zPM
- tVwpxB/XviFkNVRqJ6slC5zAYEdInIEDnpzU64nnpPO4rLDFCseDOEpvUIcPxdPUYKJj/N4
- opl1NgYw/4RiMFpIdfKSA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hsNCIb0giBw=:pOB+d7racHse+T+1ZSIBat
- S2Uon1vsgAiPG0+s7saMaw1KhAhkLrjIpI5H2pcIGu/h+cQBJXjXFP5bWuOOWcJ6WCw0JSvBn
- cagxDj9NcQnCYXKDIv0yjiRCCkavYw2KP6Av/3C0MJhWRL/zJdo7FYsPFFqSDYGhiEF4ZkSYt
- SSVbwsgvz2fR6opu6QuLqibyb9boI+9olTXLO0hmXE5mbScR5aulOCK0h9OsoNp4tDd85yrGx
- +UKTPXbuohXxi4zSBfYf9l5tT99IU+UTmfYcvi+W3Yt1+asq38BoJJKm+oXqkdadgXgTnL6ye
- iEwlHyJgbVLpbDjND1Akb02K0bc+80ximHlXBhkgIHgGv/eaP53QUhdOT7e+1eVrYVR5D2MIb
- qMxs8gau9h1WY3GLXDG1Jt/gpCb6nqJ0llbKqZ1paCJf3xDUQY/nZKGEIHLNppMCFa6XucpHG
- Rj1PLa7CtTWLXeMngzeCoailPYwvo49aRNUVNNJ/w/T5byyTxWmuZFMn/qGPDtJDQTTUxhVa5
- ZDKDRkhycLLyFR+jqpj07qr1dAtu+iAxgqX3FqBjMJHIUTzXKB6xP8rMPidtDsT5W84ThlSm1
- oTHH+dQTI235UuaXAOLmNwXRWTVqkjw7jQkInK9N8oxyH0jn6QSm+UHudL8Vm35BC8dQfbIsB
- ptSecyQxabZbfdsHas5m8DKQ1jjEXbAKm3mVmlRF9QY3ApsI/FqkUPXqn+KQvMhxu1BpAzLNb
- L/goixo2wkDQQhH4kFGckNQcEjDTzhJezrbZ7DQI2QIi152r6KTgW9rcT5IHp3nc0vgNjxHAT
- ILux69gYkG9SM4nLQck/tubBdFJ/+bdIboizgusfgkJhjfqKf+BmDKboWfI8aWfX4YUxyVelz
- 5ZT1iLvbey0iTtWAfYoA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200926162811.5335-6-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.10.20 10:14, Greg KH wrote:
-> On Tue, Oct 27, 2020 at 07:09:52PM +0100, Ronald Warsow wrote:
->> Hallo
->>
->> this rc1 runs here (pure Intel-box) without errors.
->> Thanks !
->>
->>
->> An RPC (I'm thinking about since some month)
->> =3D=3D=3D=3D=3D=3D
->>
->> Wouldn't it be better (and not so much add. work) to sort the
->> Pseudo-Shortlog towards subsystem/driver ?
->>
->> something like this:
->>
->> ...
->> usb: gadget: f_ncm: allow using NCM in SuperSpeed Plus gadgets.
->> usb: cdns3: gadget: free interrupt after gadget has deleted
->>
->>     Lorenzo Colitti <lorenzo@google.com>
->>     Peter Chen <peter.chen@nxp.com>
->> ...
->>
->>
->> Think of searching a bugfix in the shortlog.
->>
->> With the current layout I need to read/"visual grep" the whole log.
->>
->> With the new layout I'm able to jump to the "buggy" subsystem/driver an=
-d
->> only need to read that part of the log to get the info if the bug is
->> fixed or not yet
->
-> Do you have an example script that generates such a thing?  If so, I'll
-> be glad to look into it, but am not going to try to create it on my own,
-> sorry.
->
-> thanks,
->
-> greg k-h
->
+On Sat, Sep 26, 2020 at 06:28:03PM +0200, Krzysztof Kozlowski wrote:
+> Document and adjust the compatibles for i.MX25 and i.MX27 based boards
+> to fix dtbs_check warnings like:
+> 
+>   arch/arm/boot/dts/imx27-apf27dev.dt.yaml: /: compatible:
+>     ['armadeus,imx27-apf27dev', 'armadeus,imx27-apf27', 'fsl,imx27'] is not valid under any of the given schemas
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-first of all: in the above mail it should read "RFC"
-
-
-Surely, who get the most benefit of it (the layout) does the most work.
-Agreed, I will see what I can do -I'm unsure -
-
-Currently, I'm thinking that the data for your shortlog are coming from
-a sort of an git query or so and it would just be an easy adjustment of
-the query parameter.
-
-This seems not to be the case ?
-
-To get an idea if my knowledge is sufficing (I'm no developer):
-
-Where do you get the data from to generate your shortlog ?
-
-=2D-
-regards
-
-Ronald
+Applied, thanks.
