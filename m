@@ -2,123 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C98529EA53
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC8929EA56
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:17:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727309AbgJ2LQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:16:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:32852 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgJ2LQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:16:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71BFB13A1;
-        Thu, 29 Oct 2020 04:16:50 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 048BE3F66E;
-        Thu, 29 Oct 2020 04:16:48 -0700 (PDT)
-References: <20201028174412.680-1-vincent.guittot@linaro.org>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org,
-        morten.rasmussen@arm.com, ouwen210@hotmail.com
-Subject: Re: [PATCH v2] sched/fair: prefer prev cpu in asymmetric wakeup path
-In-reply-to: <20201028174412.680-1-vincent.guittot@linaro.org>
-Date:   Thu, 29 Oct 2020 11:16:43 +0000
-Message-ID: <jhjk0v9p9ic.mognet@arm.com>
+        id S1727454AbgJ2LRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgJ2LRT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 07:17:19 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69497C0613CF;
+        Thu, 29 Oct 2020 04:17:19 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id o129so2079623pfb.1;
+        Thu, 29 Oct 2020 04:17:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding:content-language:thread-index;
+        bh=bvbU6Ows4Lpdv0MfoVVQxKi2gfZNl+WGx7TLiEmQYfY=;
+        b=AWNMMv8nSzIsssZ7zYWKEvcFPFkFDQ/0gFNfyx7MnSTDQN9Ps3owgS2GhtkxT6rKBl
+         4pNVRKILIbpZazcCJQ3isQpsd/CaBQxSU6/L0dOsPO3OXkWu8usZ5z4PoI835VVo5wYK
+         PPhl1sC2GYjnIyCSfwJNndVoBCr0cVfGZ/a35Dtst6eFq5UCC2A2ngXTgPgs1jctA90e
+         tdVdVbFaX8oNYjw0Y3FVjxc3Us88OvHSvkZsDLCWgmpbk2xDPo+hXC3BS7wYPONpMEXy
+         KRKNnRTjY/+wMzF/6CgjA3e7ydua91vmkWH/vnbBPFi6pIu21PpT73DZkI+EU3KrkoHG
+         uX8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding:content-language:thread-index;
+        bh=bvbU6Ows4Lpdv0MfoVVQxKi2gfZNl+WGx7TLiEmQYfY=;
+        b=MPD0tR1hx9Iw7fGYB47iH4lizod4aR+4WbI3QtbChTnGcyTdvP0dHlDr968anUyIUQ
+         y7Nf7fbdFr/G/679sIOZS5z64tthCprZdDRvxwdGJ+5w+Pdtd5eTZydOYpFQ4zFIss7M
+         uDtZq16C1Rk7MKJ7O4cTmlaDt92Z4Bagim+/zHu/v6gV/UOeEZ1BZchj5e7sfsw1qeDz
+         hovwED0JpTsVUS2jJa6Y1/mi9k0uo+ZTgO5Sag9ioFrFjxp9I6MOSBIcid6wBaMe50US
+         v6lelYgnDkSyKf6YcEr1+huJJvCGJgrAAyRgFxo16kcy8WE8V8myKrU20Xq/jg8fM5Ps
+         nFpQ==
+X-Gm-Message-State: AOAM53387l6IYDGU9esbSxKjSl9NJ1aoDz9qszP8aL+/vICsSlyDKI5W
+        xl13FIsU7lEGn3JtTAMNhr8=
+X-Google-Smtp-Source: ABdhPJxc8ucWCWPZK3BGP3Y51CWN/aiabNVZJxwJZO9EhcFolgYz/3U/OKQBtpy9t1iQPMNxPIbwsw==
+X-Received: by 2002:a17:90a:fe8:: with SMTP id 95mr3714004pjz.73.1603970238965;
+        Thu, 29 Oct 2020 04:17:18 -0700 (PDT)
+Received: from DESKTOPIUKEMQD ([209.9.72.215])
+        by smtp.gmail.com with ESMTPSA id b24sm2192450pge.59.2020.10.29.04.17.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Oct 2020 04:17:18 -0700 (PDT)
+From:   "zhuguangqing83" <zhuguangqing83@gmail.com>
+To:     "'Viresh Kumar'" <viresh.kumar@linaro.org>
+Cc:     <rjw@rjwysocki.net>, <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "'zhuguangqing'" <zhuguangqing@xiaomi.com>
+Subject: Re: [PATCH] cpufreq: schedutil: set sg_policy->next_freq to the final cpufreq
+Date:   Thu, 29 Oct 2020 19:17:11 +0800
+Message-ID: <004001d6ade5$0f8dde00$2ea99a00$@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+        charset="gb2312"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: zh-cn
+Thread-Index: Adat5JyEmiSqpB6FQymtPuWqEtgQKw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/29/2020 15:19=A3=ACViresh Kumar<viresh.kumar@linaro.org> =
+wrote=A3=BA
+> Your mail client is screwing the "In-reply-to" field of the message
+> and that prevents it to appear properly in the thread in mailboxes of
+> other people, please fix that.
+>=20
 
-Hi Vincent,
+I will try to fix that.
 
-On 28/10/20 17:44, Vincent Guittot wrote:
-> During fast wakeup path, scheduler always check whether local or prev cpus
-> are good candidates for the task before looking for other cpus in the
-> domain. With
->   commit b7a331615d25 ("sched/fair: Add asymmetric CPU capacity wakeup scan")
-> the heterogenous system gains a dedicated path but doesn't try to reuse
-> prev cpu whenever possible. If the previous cpu is idle and belong to the
-> LLC domain, we should check it 1st before looking for another cpu because
-> it stays one of the best candidate and this also stabilizes task placement
-> on the system.
->
-> This change aligns asymmetric path behavior with symmetric one and reduces
-> cases where the task migrates across all cpus of the sd_asym_cpucapacity
-> domains at wakeup.
->
-> This change does not impact normal EAS mode but only the overloaded case or
-> when EAS is not used.
->
-> - On hikey960 with performance governor (EAS disable)
->
-> ./perf bench sched pipe -T -l 50000
->              mainline           w/ patch
-> # migrations   999364                  0
-> ops/sec        149313(+/-0.28%)   182587(+/- 0.40) +22%
->
-> - On hikey with performance governor
->
-> ./perf bench sched pipe -T -l 50000
->              mainline           w/ patch
-> # migrations        0                  0
-> ops/sec         47721(+/-0.76%)    47899(+/- 0.56) +0.4%
->
-> According to test on hikey, the patch doesn't impact symmetric system
-> compared to current implementation (only tested on arm64)
->
-> Also read the uclamped value of task's utilization at most twice instead
-> instead each time we compare task's utilization with cpu's capacity.
->
-> Fixes: b7a331615d25 ("sched/fair: Add asymmetric CPU capacity wakeup scan")
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> On 29-10-20, 09:43, zhuguangqing83 wrote:
+> > > diff --git a/kernel/sched/cpufreq_schedutil.c =
+b/kernel/sched/cpufreq_schedutil.c
+> > > index 0c5c61a095f6..bf7800e853d3 100644
+> > > --- a/kernel/sched/cpufreq_schedutil.c
+> > > +++ b/kernel/sched/cpufreq_schedutil.c
+> > > @@ -105,7 +105,6 @@ static bool sugov_update_next_freq(struct =
+sugov_policy *sg_policy, u64 time,
+> > >         if (sg_policy->next_freq =3D=3D next_freq)
+> > >                 return false;
+> > >
+> > > -       sg_policy->next_freq =3D next_freq;
+> > >         sg_policy->last_freq_update_time =3D time;
+> > >
+> > >         return true;
+> >
+> > It's a little strange that sg_policy->next_freq and
+> > sg_policy->last_freq_update_time are not updated at the same time.
+> >
+> > > @@ -115,7 +114,7 @@ static void sugov_fast_switch(struct =
+sugov_policy *sg_policy, u64 time,
+> > >                               unsigned int next_freq)
+> > >  {
+> > >         if (sugov_update_next_freq(sg_policy, time, next_freq))
+> > > -               cpufreq_driver_fast_switch(sg_policy->policy, =
+next_freq);
+> > > +               sg_policy->next_freq =3D =
+cpufreq_driver_fast_switch(sg_policy->policy, next_freq);
+> > >  }
+> > >
+> >
+> > Great, it also takes into account the issue that 0 is returned by =
+the
+> > driver's ->fast_switch() callback to indicate an error condition.
+>=20
+> Yes but even my change wasn't good enough, more on it later.
+>=20
+> > For policy->min/max may be not the real CPU frequency in OPPs, so
+>=20
+> No, that can't happen. If userspace tries to set a value too large or
+> too small, we clamp that too to policy->max/min and so the below
+> problem shall never occur.
+>=20
+> > next_freq got from get_next_freq() which is after clamping between
+> > policy->min and policy->max may be not the real CPU frequency in =
+OPPs.
+> > In that case, if we use a real CPU frequency in OPPs returned from
+> > cpufreq_driver_fast_switch() to compare with next_freq,
+> > "if (sg_policy->next_freq =3D=3D next_freq)" will never be =
+satisfied, so we
+> > change the CPU frequency every time schedutil callback gets called =
+from
+> > the scheduler. I see the current code in get_next_freq() as =
+following,
+> > the issue mentioned above should not happen. Maybe it's just one of =
+my
+> > unnecessary worries.
+>=20
+> Coming back to my patch (and yours too), it only fixes the fast-switch
+> case and not the slow path which can also end up clamping the
+> frequency. And to be honest, even the drivers can have their own
+> clamping code in place, no one is stopping them too.
+>=20
+> And we also need to do something about the cached_raw_freq as well, as
+> it will not be in sync with next_freq anymore.
+>=20
+> Here is another attempt from me tackling this problem. The idea is to
+> check if the previous freq update went as expected or not. And if not,
+> we can't rely on next_freq or cached_raw_freq anymore. For this to
+> work properly, we need to make sure policy->cur isn't getting updated
+> at the same time when get_next_freq() is running. For that I have
+> given a different meaning to work_in_progress flag, which now creates
+> a lockless (kind of) critical section where we won't play with
+> next_freq while the cpufreq core is updating the frequency.
+>=20
 
-Other than the below, I quite like this!
+I think your patch is ok for tackling this problem.
 
-> ---
-> Changes in v2:
-> - merge asymmetric and symmetric path instead of duplicating tests on target,
->   prev and other special cases.
->
-> - factorize call to uclamp_task_util(p) and use fits_capacity(). This could
->   explain part of the additionnal improvement compared to v1 (+22% instead of
->   +17% on v1).
->
-> - Keep using LLC instead of asym domain for early check of target, prev and
->   recent_used_cpu to ensure cache sharing between the task. This doesn't
->   change anything for dynamiQ but will ensure same cache for legacy big.LITTLE
->   and also simply the changes.
->
+> diff --git a/kernel/sched/cpufreq_schedutil.c =
+b/kernel/sched/cpufreq_schedutil.c
+> index 0c5c61a095f6..8991cc31b011 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -121,13 +121,8 @@ static void sugov_fast_switch(struct sugov_policy =
+*sg_policy, u64 time,
+>  static void sugov_deferred_update(struct sugov_policy *sg_policy, u64 =
+time,
+>                                   unsigned int next_freq)
+>  {
+> -       if (!sugov_update_next_freq(sg_policy, time, next_freq))
+> -               return;
+> -
+> -       if (!sg_policy->work_in_progress) {
+> -               sg_policy->work_in_progress =3D true;
+> +       if (sugov_update_next_freq(sg_policy, time, next_freq))
+>                 irq_work_queue(&sg_policy->irq_work);
+> -       }
+>  }
+>=20
+>  /**
+> @@ -159,6 +154,15 @@ static unsigned int get_next_freq(struct =
+sugov_policy *sg_policy,
+>         unsigned int freq =3D arch_scale_freq_invariant() ?
+>                                 policy->cpuinfo.max_freq : =
+policy->cur;
+>=20
+> +       /*
+> +        * The previous frequency update didn't go as we expected it =
+to be. Lets
+> +        * start again to make sure we don't miss any updates.
+> +        */
+> +       if (unlikely(policy->cur !=3D sg_policy->next_freq)) {
+> +               sg_policy->next_freq =3D 0;
+> +               sg_policy->cached_raw_freq =3D 0;
+> +       }
+> +
+>         freq =3D map_util_freq(util, freq, max);
+>=20
+>         if (freq =3D=3D sg_policy->cached_raw_freq && =
+!sg_policy->need_freq_update)
+> @@ -337,8 +341,14 @@ static void sugov_update_single(struct =
+update_util_data *hook, u64 time,
+>=20
+>         ignore_dl_rate_limit(sg_cpu, sg_policy);
+>=20
+> +       if (!sg_policy->policy->fast_switch_enabled) {
+> +               raw_spin_lock(&sg_policy->update_lock);
+> +               if (sg_policy->work_in_progress)
+> +                       goto unlock;
+> +       }
+> +
 
-On legacy big.LITTLE systems, sd_asym_cpucapacity spans all CPUs, so we
-would iterate over those in select_idle_capacity() anyway - the policy
-we've been going for is that capacity fitness trumps cache use.
+Maybe it's better to bring the following code before the code above.
+         if (!sugov_should_update_freq(sg_policy, time))
+               return;
 
-This does require the system to have a decent interconnect, cache snooping
-& co, but that is IMO a requirement of any sane asymmetric system.
+>         if (!sugov_should_update_freq(sg_policy, time))
+> -               return;
+> +               goto unlock;
+>=20
+>         /* Limits may have changed, don't skip frequency update */
+>         busy =3D !sg_policy->need_freq_update && =
+sugov_cpu_is_busy(sg_cpu);
+> @@ -363,13 +373,14 @@ static void sugov_update_single(struct =
+update_util_data *hook, u64 time,
+>          * concurrently on two different CPUs for the same target and =
+it is not
+>          * necessary to acquire the lock in the fast switch case.
+>          */
+> -       if (sg_policy->policy->fast_switch_enabled) {
+> +       if (sg_policy->policy->fast_switch_enabled)
+>                 sugov_fast_switch(sg_policy, time, next_f);
+> -       } else {
+> -               raw_spin_lock(&sg_policy->update_lock);
+> +       else
+>                 sugov_deferred_update(sg_policy, time, next_f);
+> +
+> +unlock:
+> +       if (!sg_policy->policy->fast_switch_enabled)
+>                 raw_spin_unlock(&sg_policy->update_lock);
+> -       }
+>  }
+>=20
+>  static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, =
+u64 time)
+> @@ -405,6 +416,9 @@ sugov_update_shared(struct update_util_data *hook, =
+u64 time, unsigned int flags)
+>=20
+>         raw_spin_lock(&sg_policy->update_lock);
+>=20
+> +       if (sg_policy->work_in_progress)
+> +               goto unlock;
+> +
+>         sugov_iowait_boost(sg_cpu, time, flags);
+>         sg_cpu->last_update =3D time;
+>=20
+> @@ -419,33 +433,30 @@ sugov_update_shared(struct update_util_data =
+*hook, u64 time, unsigned int flags)
+>                         sugov_deferred_update(sg_policy, time, =
+next_f);
+>         }
+>=20
+> +unlock:
+>         raw_spin_unlock(&sg_policy->update_lock);
+>  }
+>=20
+>  static void sugov_work(struct kthread_work *work)
+>  {
+>         struct sugov_policy *sg_policy =3D container_of(work, struct =
+sugov_policy, work);
+> -       unsigned int freq;
+>         unsigned long flags;
+>=20
+>         /*
+> -        * Hold sg_policy->update_lock shortly to handle the case =
+where:
+> -        * incase sg_policy->next_freq is read here, and then updated =
+by
+> -        * sugov_deferred_update() just before work_in_progress is set =
+to false
+> -        * here, we may miss queueing the new update.
+> -        *
+> -        * Note: If a work was queued after the update_lock is =
+released,
+> -        * sugov_work() will just be called again by kthread_work =
+code; and the
+> -        * request will be proceed before the sugov thread sleeps.
+> +        * Prevent the schedutil hook to run in parallel while we are =
+updating
+> +        * the frequency here and accessing next_freq.
+>          */
+>         raw_spin_lock_irqsave(&sg_policy->update_lock, flags);
+> -       freq =3D sg_policy->next_freq;
+> -       sg_policy->work_in_progress =3D false;
+> +       sg_policy->work_in_progress =3D true;
+>         raw_spin_unlock_irqrestore(&sg_policy->update_lock, flags);
+>=20
+>         mutex_lock(&sg_policy->work_lock);
+> -       __cpufreq_driver_target(sg_policy->policy, freq, =
+CPUFREQ_RELATION_L);
+> +       __cpufreq_driver_target(sg_policy->policy, =
+sg_policy->next_freq, CPUFREQ_RELATION_L);
+>         mutex_unlock(&sg_policy->work_lock);
+> +
+> +       raw_spin_lock_irqsave(&sg_policy->update_lock, flags);
+> +       sg_policy->work_in_progress =3D false;
+> +       raw_spin_unlock_irqrestore(&sg_policy->update_lock, flags);
+>  }
+>=20
+>  static void sugov_irq_work(struct irq_work *irq_work)
+>=20
+> --
+> viresh
 
-To put words into code, this is the kind of check I would see:
-
-  if (static_branch_unlikely(&sched_asym_cpucapacity))
-        return fits_capacity(task_util, capacity_of(cpu));
-  else
-        return cpus_share_cache(cpu, other);
-
-> - don't check capacity for the per-cpu kthread UC because the assumption is
->   that the wakee queued work for the per-cpu kthread that is now complete and
->   the task was already on this cpu.
->
-> - On an asymmetric system where an exclusive cpuset defines a symmetric island,
->   task's load is synced and tested although it's not needed. But taking care of
->   this special case by testing if sd_asym_cpucapacity is not null impacts by
->   more than 4% the performance of default sched_asym_cpucapacity path.
->
-> - The huge increase of the number of migration for hikey960 mainline comes from
->   teh fact that the ftrace buffer was overloaded by events in the tests done
->   with v1.
