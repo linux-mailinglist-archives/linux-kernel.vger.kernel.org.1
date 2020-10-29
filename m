@@ -2,70 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB7529F39B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB00E29F39E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726083AbgJ2Rtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:49:55 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33236 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgJ2Rty (ORCPT
+        id S1726770AbgJ2Rux convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Oct 2020 13:50:53 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:45137 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbgJ2Ruv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:49:54 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 0EAF91C0B7A; Thu, 29 Oct 2020 18:49:53 +0100 (CET)
-Date:   Thu, 29 Oct 2020 18:49:52 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     linus.walleij@linaro.org, j.anaszewski@samsung.com,
-        simon.guinot@sequanux.org, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH] leds: various: add missing put_device() call in
- netxbig_leds_get_of_pdata()
-Message-ID: <20201029174952.GB26053@duo.ucw.cz>
-References: <20201029092305.900767-1-yukuai3@huawei.com>
+        Thu, 29 Oct 2020 13:50:51 -0400
+Received: by mail-ej1-f65.google.com with SMTP id dk16so4411346ejb.12;
+        Thu, 29 Oct 2020 10:50:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=JW5uUjpEncojW8FWdx8WUdmW9j1qeTAangqeBjgEKyQ=;
+        b=OQYSgtdOREABaN8zCbg77l5PiMcS0RXXL96/gVeEJV1bfB+QITOqG7xg1hB6MLH1/z
+         oPfNFC3TMS1O82OE8KlpJgAd+WoZJpUrx+Gh2Rb/BpRpZH4f37KpqOLH5QpFKhEXTtW3
+         rzyEnBm+Hz1S/hDmwV8x8QCTd3NGrRfTA8dv4nhxmml6pnkEKO+LfwcFr5bGfZ726LG7
+         aUfqVqq5VH1Y81qRZeixws+/A/WIhthQ/71zKQFLxwPNK6HjDSwso8/TVnIolGB1QfOQ
+         GG9X9wVpytluZCCoWWytgUGxzCkKbMqYDOce8j4Fifc78rWRIdqtFF+QtaeVzm1bAQdc
+         ETlQ==
+X-Gm-Message-State: AOAM530EuIU7s4iorvZmfkIql83XlJ8NsDvG9TqGheTKia3SUSP3q43l
+        sRqiK2FeyTKyAs2/3B8DJx4=
+X-Google-Smtp-Source: ABdhPJyl7xUB/nJc95o/DV+69jqaZrjMS6PW4fVoEdF/462KVKVNy5/ZWfPbKjUtMuzyYBjkZYG4eQ==
+X-Received: by 2002:a17:906:3689:: with SMTP id a9mr5136518ejc.403.1603993847561;
+        Thu, 29 Oct 2020 10:50:47 -0700 (PDT)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id z22sm1856419ejw.107.2020.10.29.10.50.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 10:50:45 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 18:50:43 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>
+Cc:     kgene@kernel.org, alim.akhtar@samsung.com, robh+dt@kernel.org,
+        a.kesavan@samsung.com, naveenkrishna.ch@gmail.com,
+        thomas.ab@samsung.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: exynos: Fix reboot/poweroff issues on Exynos7
+Message-ID: <20201029175043.GA88508@kozik-lap>
+References: <20201028210813.49874-1-pawel.mikolaj.chmiel@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="MW5yreqqjyrRcusr"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201029092305.900767-1-yukuai3@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201028210813.49874-1-pawel.mikolaj.chmiel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 28, 2020 at 10:08:13PM +0100, Paweł Chmiel wrote:
+> In vendor sources for Exynos 7420, psci is not used to reboot or
+> poweroff device. Instead we should use syscon reboot/poweroff.
+> Previously it was not possible to poweroff (no syscon poweroff node) or
+> reboot (because it was handled by psci and this way is not working for
+> Exynos).
 
---MW5yreqqjyrRcusr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Do you want to say that PSCI cannot be used to power off or reboot?
 
-Hi!
+> 
+> Fixes: fb026cb65247 ("arm64: dts: Add reboot node for exynos7")
+> Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
+> Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
+> ---
+>  arch/arm64/boot/dts/exynos/exynos7.dtsi | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> index 959918f4ca45..47d54c369d03 100644
+> --- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> @@ -117,8 +117,10 @@ cpu_atlas3: cpu@3 {
+>  	};
+>  
+>  	psci {
+> -		compatible = "arm,psci-0.2";
+> +		compatible = "arm,psci";
 
-> if of_find_device_by_node() succeed, netxbig_leds_get_of_pdata() doesn't
-> have a corresponding put_device(). Thus add jump target to fix the
-> exception handling for this function implementation.
->=20
-> Fixes: 2976b1798909 ("leds: netxbig: add device tree binding")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Please explain how is it related to this issue? You onle mentioned
+a problem of lacking syscon-reboot node.
 
-Thanks, applied.
+>  		method = "smc";
+> +		cpu_off = <0x84000002>;
+> +		cpu_on = <0xC4000003>;
 
-But it seems to me similar handling is needed in "success" paths, no?
+The same question.
+
+>  	};
+>  
+>  	soc: soc@0 {
+> @@ -552,6 +554,13 @@ pmu_system_controller: system-controller@105c0000 {
+>  			compatible = "samsung,exynos7-pmu", "syscon";
+>  			reg = <0x105c0000 0x5000>;
+>  
+> +			poweroff: syscon-poweroff {
+> +				compatible = "syscon-poweroff";
+> +				regmap = <&pmu_system_controller>;
+> +				offset = <0x330C>; /* PS_HOLD_CONTROL */
+> +				mask = <0x5200>; /* reset value */
+> +			};
+> +
+
+Instead, please include arm/exynos-syscon-restart.dtsi.
 
 Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---MW5yreqqjyrRcusr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5sAwAAKCRAw5/Bqldv6
-8nRfAJ9uiMVB0gb+8m/CP8bgrqR3cf4hLQCfadajXrLWwINndft04WA/RXfZ9ak=
-=uoXS
------END PGP SIGNATURE-----
-
---MW5yreqqjyrRcusr--
+Krzysztof
