@@ -2,105 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCE129E2C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 488CA29E2BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404465AbgJ2CiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38902 "EHLO
+        id S2404456AbgJ2CiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404438AbgJ2ChT (ORCPT
+        with ESMTP id S2404439AbgJ2ChT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Oct 2020 22:37:19 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F1CEC0613CF;
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A6EC0613D1;
         Wed, 28 Oct 2020 19:37:18 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 13so1111009pfy.4;
+Received: by mail-pg1-x543.google.com with SMTP id x13so1118526pgp.7;
         Wed, 28 Oct 2020 19:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=SfPETHJW2bmykg6fooNc2zKiaqTDW1VZc2TFcTnVdDQ=;
-        b=q9NVcsWumb0BvVd7t17D7q3L8lpBvEaRkcqzGGHDO5z+CrqRkZZVXxPFOCIsMa8ZIe
-         Qp8fnOFdoqcPhY5o6kNLTFnAqG3HXy2VlL48fWZunRI3BCDq1U4zNpFYCO58hdnqvF4R
-         YTI/lxVtolU72nq3PJCsRLDTbkK+UilS5uhAM8FNcl1kthZwdJIYf4gHuPxjV2xAXA7u
-         S2BrUs4fCcMT+UFa8nRtP4zIl25GSh/BMw1Uupazf26lM78cM3qF7wgFZFWcnfn7yAWm
-         0xgCZzk23S2WqWEnMXlPoPJfohI25dY09C3J4kq9ZrMCKDB7OSuK/Tt+nwXxzfhNAFgM
-         s05w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6XRUpzLiGuEo7PmpLXwl6+IIfCCFqx3XPv+eOFg52rM=;
+        b=HuHr7lUi/XoZQNR8Nvwne0y+X9Y+XBP606LI3k20mieA7XVQIeIq73NEYxr+bDDgvi
+         fnn1bIS0zlOhEs6bIn7T4dYsGFi/sqbfRnZV4WuK/Az64S7W7wbOrQudn1NM+v9Zn1Ia
+         FP+aBs9Y0mI/T8pw7WVPb6yQz3LPEuVr2H5MoL85yBTNkeB5cPCIl3WC47z+XU8UGagN
+         5hmWpRPCrwtEJSjDnu9J6yJg7gzMZbRRkeu+qL/YONDiVu+OPA2yA7F7/ghWLQBKFpEc
+         cFzUp88lx69s0EosKkBIgMcU/0IvcJuZD/KZ3MiBQZZPbt9QxZINDHHSMxPgSYLW4Dbf
+         pM+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SfPETHJW2bmykg6fooNc2zKiaqTDW1VZc2TFcTnVdDQ=;
-        b=hOPLJ54rTX/4TShVQ8Tfl0zHMLRNjhb5dQalzTbPMfZG/q7D6gIxDt2QftCY8e44z8
-         j7cAVnHAvfj83jefh9btazmxPMrdofHMYf8GDVT5M3SKptpGLdcTI9D6ZXr7PxWXIJR3
-         TJj7O2puI0U9W0Mytpip15QaEPrLNadDjE3SFqLGJZe0LRglaE0RQBAlAPBC9A6R0GRN
-         ez9MDKj0hbZvxyf2QdNI30iMnk2HwH5+NYyeZf/E6b4JngHEEO7M7As3SXnHwGMYqtFC
-         MbTg7AlfvajoxHfYCFT4PA/ja8pPW2iu4qJ5WE/0kYyVM4E5AHZNGu5pAKPDfwO1dHJy
-         DRZQ==
-X-Gm-Message-State: AOAM533WJ9yHj7UonIN2hhpMGli4K2xtYo5B76St9q1Vsyb/18489Np0
-        qpiywS5DHaelU+hhxEAst6fe+KmPvio=
-X-Google-Smtp-Source: ABdhPJyyY/uc2C6iB73OdiRrVISho6mhFUh/DXypEfPwm0mG9dT4pRWYmo/FrMNSpSy690ZCqdYLFQ==
-X-Received: by 2002:a17:90b:204:: with SMTP id fy4mr2054895pjb.156.1603939037529;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6XRUpzLiGuEo7PmpLXwl6+IIfCCFqx3XPv+eOFg52rM=;
+        b=SMdG4Tfk7J2vVWon6T7u9P4zHsDS+it+zJbxKFYgdehWW43NzJeLIRlXA5WPnTFPSk
+         lnwp2+8RDOTOSKDCN6Q4uLxo1i5EuyPagPLbr1owb8qPjaahW1Dod/aKQkTB+XCV/h7B
+         zvaNcBe/+LtO0GzIFJmhfgiiWl8Ik3ZNIKFzOwdk8dFkAoNK6GWUvYsJUFE740El6lzt
+         mPEqLvR5y+NbH0KVrM0gY1YVU/AOjFr0BaALRwdNq64gI/RUVgUf+M2Z6f//K36Jx7rc
+         g4MazTUEIUo6VNqyXgOsuFdDOt/Fz10SVrPRFnbmJa+aDVnXvESJvUi8YF684+hSPhaF
+         1jTQ==
+X-Gm-Message-State: AOAM531y90IbOCnyiZgtlNynS1q1Vk3GLTVs+d5gPZIe7TV0/KYCPrh3
+        BtAHpjRHyWWl8X+M0Y1EAWU=
+X-Google-Smtp-Source: ABdhPJygJB0qYgQJ4lfS6ccFAjSDgo8hbidulS36ztazwLHYfjvZx9a5cEqkQFGvVBt1kWlNdlycTw==
+X-Received: by 2002:a65:689a:: with SMTP id e26mr2046138pgt.136.1603939037979;
         Wed, 28 Oct 2020 19:37:17 -0700 (PDT)
-Received: from [10.230.28.251] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id z3sm906832pfk.159.2020.10.28.19.37.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 19:37:16 -0700 (PDT)
-Subject: Re: [PATCH net-next 4/5] net: mscc: ocelot: make entry_type a member
- of struct ocelot_multicast
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201029022738.722794-1-vladimir.oltean@nxp.com>
- <20201029022738.722794-5-vladimir.oltean@nxp.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <5831e03c-1714-4ac8-3073-d18f807aff26@gmail.com>
-Date:   Wed, 28 Oct 2020 19:37:09 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.4.0
+Received: from Ryzen-9-3900X.localdomain (ip68-98-75-144.ph.ph.cox.net. [68.98.75.144])
+        by smtp.gmail.com with ESMTPSA id f71sm895705pfa.155.2020.10.28.19.37.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 19:37:17 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 19:37:16 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     David Airlie <airlied@linux.ie>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-safety@lists.elisa.tech
+Subject: Re: [PATCH] agp: amd64: remove unneeded initialization
+Message-ID: <20201029023716.GB2316@Ryzen-9-3900X.localdomain>
+References: <20201028133106.5420-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201029022738.722794-5-vladimir.oltean@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028133106.5420-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/28/2020 7:27 PM, Vladimir Oltean wrote:
-> This saves a re-classification of the MDB address on deletion.
+On Wed, Oct 28, 2020 at 02:31:06PM +0100, Lukas Bulwahn wrote:
+> make clang-analyzer on x86_64 defconfig caught my attention with:
 > 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+>   drivers/char/agp/amd64-agp.c:336:2: warning: \
+>   Value stored to 'i' is never read [clang-analyzer-deadcode.DeadStores]
+>           i = 0;
+>           ^
+> 
+> Remove this unneeded initialization to make clang-analyzer happy.
+> 
+> Commit a32073bffc65 ("x86_64: Clean and enhance up K8 northbridge access
+> code") refactored cache_nbs() and introduced this unneeded dead-store
+> initialization.
+> 
+> As compilers will detect this unneeded assignment and optimize this anyway,
+> the resulting binary is identical before and after this change.
+> 
+> No functional change. No change in binary code.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+
+Seems obvious :)
+
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+
 > ---
-
-[snip]
-
->  	mc = ocelot_multicast_get(ocelot, mdb->addr, vid);
->  	if (!mc) {
->  		/* New entry */
-> -		int pgid = ocelot_mdb_get_pgid(ocelot, entry_type);
-> +		int pgid;
-> +
-> +		mc = devm_kzalloc(ocelot->dev, sizeof(*mc), GFP_KERNEL);
-
-If the MDB object is programmed with SWITCHDEV_OBJ_ID_HOST_MDB then you
-would need this gfp_t to be GFP_ATOMIC per
-net/bridge/br_mdb.c::__br_mdb_notify, if this is a regular
-SWITCHDEV_OBJ_ID_MDB then GFP_KERNEL appears to be fine.
-
-Looks like this existed before, so that might have to be fixed separately.
-
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+> applies cleanly on current master and next-20201028
+> 
+> David, please pick this minor non-urgent clean-up patch.
+> 
+>  drivers/char/agp/amd64-agp.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/char/agp/amd64-agp.c b/drivers/char/agp/amd64-agp.c
+> index b40edae32817..0413b3136541 100644
+> --- a/drivers/char/agp/amd64-agp.c
+> +++ b/drivers/char/agp/amd64-agp.c
+> @@ -333,7 +333,6 @@ static int cache_nbs(struct pci_dev *pdev, u32 cap_ptr)
+>  	if (!amd_nb_has_feature(AMD_NB_GART))
+>  		return -ENODEV;
+>  
+> -	i = 0;
+>  	for (i = 0; i < amd_nb_num(); i++) {
+>  		struct pci_dev *dev = node_to_amd_nb(i)->misc;
+>  		if (fix_northbridge(dev, pdev, cap_ptr) < 0) {
+> -- 
+> 2.17.1
+> 
