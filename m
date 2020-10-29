@@ -2,106 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B349329E995
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1524D29E998
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727238AbgJ2KwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
+        id S1727250AbgJ2KwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727163AbgJ2Kvz (ORCPT
+        with ESMTP id S1727226AbgJ2KwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:51:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295F4C0613CF;
-        Thu, 29 Oct 2020 03:51:55 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 10:51:52 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603968713;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1h3/ossinN4rTail/ONAYutor/02AhD9mk6zMnBAxTE=;
-        b=MT0vftZMIM5b0TK2nMWLRZARLcsxOLnfNEA+TEEfu723N1eA0dpxQMzoBH7bQ3MdVu9n2+
-        MPqMzWRVl4JYJnTDEZG7k/wttbn1huYJxN4n8IpGB01HPsFyGS6VGj4Gskb1TiS8C/1Ej8
-        Wt67saNMXxtC++3Ss/RMMCWe+37s2oI9CdS5GMWEeg2Iyzo89056j1jtdh2Exbe5t5jYsT
-        pYYLPPyYIbjUVP5bSnicoQUvAZDaPNqv2K2gqBXt5IbrFCOzItB8lXKGps8piIgKJNM7AW
-        EUl9go1GYhEigmqMPiIMNtNei3l608kkUNoKWUKJ2EpfF89QWI84OPzbRQpepw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603968713;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1h3/ossinN4rTail/ONAYutor/02AhD9mk6zMnBAxTE=;
-        b=MJ8f+y/qK2y+bfb1kmkI00r1f06ookae1KSO4WUPmzYLfoyIpXRdQZIoiWPdsTVMuypXYQ
-        WpDzVAWMdHVKclCg==
-From:   "tip-bot2 for jun qian" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Improve the accuracy of sched_stat_wait
- statistics
-Cc:     jun qian <qianjun.kernel@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Yafang Shao <laoar.shao@gmail.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201015064846.19809-1-qianjun.kernel@gmail.com>
-References: <20201015064846.19809-1-qianjun.kernel@gmail.com>
+        Thu, 29 Oct 2020 06:52:08 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982CCC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 03:52:08 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id r10so2005834pgb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 03:52:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=AVLNMELJuB6RwHIVg0oVGqRV/F9zrDVSxIfMIXKmbRU=;
+        b=S3sxFCLwkFuYWx5YwiM9BxiJ2xTMVR/H1h9yyUfzzLvk2ytUJHB7+Po8aobYWAWEUf
+         jm4Gubf8VImIq5h8jblf1D3Wgj/oGsO215EqwPxUFw2YN7f+uPcNCPiL0DBHXFFr/TLa
+         c8t2G8OROlCeZhDDB7HEYn6nCX3Wvm5GOQo32ENbj/RCgUWb2GTqpP/2q1U+oM4QZT6r
+         PX0GMjtYfyhpehgRh98Q02Lm8Cd05ojL8V1YwHU1QVNzivGd9/yceb5FtXhNUAux99Ff
+         TSCn0fOCVwTFR+C0C4euVL4EBg7AwvJADabcy2qcEs6sn5NZQhiBcX0kJWgyU4Lr+vNS
+         NaCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=AVLNMELJuB6RwHIVg0oVGqRV/F9zrDVSxIfMIXKmbRU=;
+        b=F6srazbVDjLAkXxzhB7wJHgwQiJzn/JFZAxhMVRz87nTzH350+cjva9jHCeAUxne+Q
+         SARsE3DwCzVod3d6JHF2fjt0mLq/15ZcnbPEVMlgRKsvg0vqoEnIT/piAtdKeJNeMHqr
+         M3PWVSgPa5WfTwVfrS6Pk8ADf7vDpG2KPYtJ1wO4x3Q22fTplH+ARIzP186IP6qTzUaY
+         X3rmHJz/j5dUXoTpWnro5CkGsfezZMbb/wXbgUR2W0n727GMTRLrRKxJVosTBP05ZAG2
+         TIWxYj00hpRgWbdneBx6LW5PYunvLds20a8aVwbTzOOrrpvv9ZpA/SSA/OiWKqJDtMjh
+         eJdw==
+X-Gm-Message-State: AOAM533UlOmXR4+jO1mTDrezAhbV6fPrSCxUkx614kv72TTAILVxSsoi
+        CRkDtxyWnB/hRu5sn78Lfl+JsA==
+X-Google-Smtp-Source: ABdhPJxgRY8sgUI0aW+I50/L0IwmmXVUmDhKY9cv7RkPRH+fiid34hdaJCZPVuSM8dFLkvl9z4aFqg==
+X-Received: by 2002:a63:e657:: with SMTP id p23mr3423117pgj.116.1603968728059;
+        Thu, 29 Oct 2020 03:52:08 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([103.141.182.112])
+        by smtp.gmail.com with ESMTPSA id n64sm2516350pfn.134.2020.10.29.03.52.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 29 Oct 2020 03:52:07 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 18:51:59 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Wei Li <liwei391@huawei.com>,
+        James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 06/21] perf arm-spe: Refactor printing string to buffer
+Message-ID: <20201029105159.GG16862@leoy-ThinkPad-X240s>
+References: <20201029071927.9308-1-leo.yan@linaro.org>
+ <20201029071927.9308-7-leo.yan@linaro.org>
+ <cbb23f8e-b534-fffa-4dfe-a496fd3f6bef@arm.com>
 MIME-Version: 1.0
-Message-ID: <160396871261.397.9603442969201125395.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cbb23f8e-b534-fffa-4dfe-a496fd3f6bef@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+Hi Andre,
 
-Commit-ID:     b9c88f752268383beff0d56e50d52b8ae62a02f8
-Gitweb:        https://git.kernel.org/tip/b9c88f752268383beff0d56e50d52b8ae62a02f8
-Author:        jun qian <qianjun.kernel@gmail.com>
-AuthorDate:    Thu, 15 Oct 2020 14:48:46 +08:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 29 Oct 2020 11:00:28 +01:00
+On Thu, Oct 29, 2020 at 10:23:39AM +0000, André Przywara wrote:
 
-sched/fair: Improve the accuracy of sched_stat_wait statistics
+[...]
 
-When the sched_schedstat changes from 0 to 1, some sched se maybe
-already in the runqueue, the se->statistics.wait_start will be 0.
-So it will let the (rq_of(cfs_rq)) - se->statistics.wait_start)
-wrong. We need to avoid this scenario.
+> > +static int arm_spe_pkt_snprintf(int *err, char **buf_p, size_t *blen,
+> > +				const char *fmt, ...)
+> > +{
+> > +	va_list ap;
+> > +	int ret;
+> > +
+> > +	va_start(ap, fmt);
+> > +	ret = vsnprintf(*buf_p, *blen, fmt, ap);
+> > +	va_end(ap);
+> > +
+> > +	if (ret < 0) {
+> > +		if (err && !*err)
+> > +			*err = ret;
+> > +	} else {
+> > +		*buf_p += ret;
+> > +		*blen -= ret;
+> > +	}
+> > +
+> > +	return ret;
+> > +}
+> 
+> So this now implements the old behaviour of ignoring previous errors, in
+> all cases, since we don't check for errors and bail out in the callers.
+> 
+> If you simply check for validity of err and for it being 0 before
+> proceeding with the va_start() above, this should be fixed.
 
-Signed-off-by: jun qian <qianjun.kernel@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Yafang Shao <laoar.shao@gmail.com>
-Link: https://lkml.kernel.org/r/20201015064846.19809-1-qianjun.kernel@gmail.com
----
- kernel/sched/fair.c |  9 +++++++++
- 1 file changed, 9 insertions(+)
+I think you are suggesting below code, could you take a look for it
+before I proceed to respin new patch?
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 290f9e3..b9368d1 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -906,6 +906,15 @@ update_stats_wait_end(struct cfs_rq *cfs_rq, struct sched_entity *se)
- 	if (!schedstat_enabled())
- 		return;
- 
-+	/*
-+	 * When the sched_schedstat changes from 0 to 1, some sched se
-+	 * maybe already in the runqueue, the se->statistics.wait_start
-+	 * will be 0.So it will let the delta wrong. We need to avoid this
-+	 * scenario.
-+	 */
-+	if (unlikely(!schedstat_val(se->statistics.wait_start)))
-+		return;
-+
- 	delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(se->statistics.wait_start);
- 
- 	if (entity_is_task(se)) {
+static int arm_spe_pkt_snprintf(int *err, char **buf_p, size_t *blen,
+				const char *fmt, ...)
+{
+	va_list ap;
+	int ret;
+
+        /* Bail out if any error occurred */
+        if (err && *err)
+                return *err;
+
+	va_start(ap, fmt);
+	ret = vsnprintf(*buf_p, *blen, fmt, ap);
+	va_end(ap);
+
+	if (ret < 0) {
+		if (err && !*err)
+			*err = ret;
+	} else {
+		*buf_p += ret;
+		*blen -= ret;
+	}
+
+	return ret;
+}
+
+Thanks,
+Leo
