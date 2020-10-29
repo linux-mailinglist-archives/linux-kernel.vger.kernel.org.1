@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19E729EF96
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8922829EFA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728157AbgJ2PUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44880 "EHLO
+        id S1728094AbgJ2PYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728023AbgJ2PUY (ORCPT
+        with ESMTP id S1727290AbgJ2PYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:20:24 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0713C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:20:23 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id dk16so3750414ejb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:20:23 -0700 (PDT)
+        Thu, 29 Oct 2020 11:24:24 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F9CC0613D5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:24:23 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 133so2586133pfx.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:24:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=7lZuOiS2573E9zkuh9reAzyg21knB7StcArg0uf2+A0=;
-        b=QKdZbUy5AimkmuWTEr/pvjlE9mh8//NeOfyNHNulncQ553K0AhUcvKxF8iY8M6iP0h
-         sbWZQ8faTJ9XPncgkQEl8vc0j5GHfQo72UwU5+9/sidcuwTxhzMORBBVOdBeWhxs5Q4L
-         G1yDMn2iWWCIsP1Esa5N8wj/z8m/pwD7vORLttQqvu1Zw9KaUNFbefPxykmFFxl09e/T
-         gm5Hg0LydyRSAVp90tVq+c6B7FLIw0gHfDfLS/ZRLWRGJNXfL+07EK/hoB8XnTHVOUrj
-         HVYqudASBvwD7/niXFBFWSAzXPV2284a52eYeQbAm897PQ5WK0IyGsatm4USSQbIdHvb
-         wiJg==
+        h=from:to:cc:subject:date:message-id;
+        bh=zz1neG8HMbgvToMzk6oeXFbZ40cR4GHHMQiU0aR3A0M=;
+        b=M1sgjLk+7cF8upAnv9lvL1TawADDInr7ihJzyQomg1453FnhLNCow9ta2dRDS4TvUi
+         mXPZ7uoBawBDCACv36E4RPhNwaTARPt/XPW1PWW6aj2dCWEbkRJg0tKoO2M9ouKn+R7M
+         my92xK0MK+5dcVkhNvu/cu2KMabnB1vv9npVy+D4837RZKZw2BBVHSblRmU0fsz2Vgo9
+         oPfGbfn7R6e3CSXpVEWFL989yvxjv0NtOsTAldKGP5KdpGVVeuOTdT1mzVbE3afvKiYj
+         mUG8zxfB2LZirUcD3r6tL++0omXNMwS5Oz/m4GWTCWBoEtP8bwLpdNNCi5+1KbHwgb6O
+         pk8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=7lZuOiS2573E9zkuh9reAzyg21knB7StcArg0uf2+A0=;
-        b=eJ1Z0asyc4jXjHGkRVs6Huk53kAIaJig9o5f+epXR5tvRKldiUuY1Ls6NhEfoHOCsf
-         cpZ5l6HJBZ1oUdff/mLuF2fLs0CXId9Vc+sh8BbiD76n5cD2mrCtgZUNfFSmxfgGVowY
-         3yxHMQxZJi+j7XwiNl9vqGZxEGQI5UdNgZBty42jUZeKS47NCUyU7KYrf9rWxWpqBKno
-         km6/fuXHLTmoaCjHEq8dzGgAp1Z9fFKGlrldRNvcWXz9GYa3vw/JFbDflWCQK6jCh2t5
-         b2LA+GiTxVOyFjnK2eIwPiNxRZYTweAdLas2yUAWW8+JGNiZG1lUku7ib2k+8dMe7irY
-         guHA==
-X-Gm-Message-State: AOAM5330s+FYsHNVF91m4KGLXpffqc7pAsCT1GeLyhpGNcVCO/ccYMxu
-        iJ5MgZzJsXlQfn7wNbBTGYOZ80gbdvuQdiiTQ94=
-X-Google-Smtp-Source: ABdhPJwfs5RuBmwfiwg4ji+lLGAE4l6buC3aClh4Wik56iqsSBd/m48MgEHZpQuZk4yTxcS7192vmux4GgOabsRLjL8=
-X-Received: by 2002:a17:906:cb03:: with SMTP id lk3mr4411391ejb.491.1603984822510;
- Thu, 29 Oct 2020 08:20:22 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a17:906:1dd3:0:0:0:0 with HTTP; Thu, 29 Oct 2020 08:20:21
- -0700 (PDT)
-Reply-To: mrs.sophia202@list.ru
-From:   "Mrs. Sophia Robin" <froshwood@gmail.com>
-Date:   Thu, 29 Oct 2020 15:20:21 +0000
-Message-ID: <CALLU5d3X1x2a+SctZexmTj9k5dy1Ceg0jd6a=2+TJUYE5YZjOA@mail.gmail.com>
-Subject: Hello My Dearest
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=zz1neG8HMbgvToMzk6oeXFbZ40cR4GHHMQiU0aR3A0M=;
+        b=XDqQMH44t3Kdt4qaVzwaxX3IQaloD+h+MZUtUNmFrcLsnvJ3hqJLdDfkxBgjXtX3dT
+         IJn4TnvFIkOMTrvQPnnxc6zsUyMiQjLdvLjpbE/Gim8Kup2qGvvZYL+2ocw37WxNEcVu
+         qig/NS0YaG2OZJs1b7wgfdpmrMf1m8JxYwfERImpFJXmGGwhbx3WoKiSuWuBxRoL/6Qs
+         1NuNoizGRK9N/Xc8ng3oyXG1GkgVqUafw9wKzylvNZn5cmD/7R0tObXkkYTIs7XUorco
+         9tfpKh3cs8gBPXpwM7OYXNnhkseIPtRwCeT6xj7vTWdOi51Lk7QLq/JUCIpRshVvhDn0
+         7xCg==
+X-Gm-Message-State: AOAM5324uyysM3lenRYSb5/2Wqpv/zVbWpOtOPC6olnz+crVDL1NKTUZ
+        pvt+wTx9bdwcmnTBnfA9r5Xh9H66z2Y=
+X-Google-Smtp-Source: ABdhPJzm73yplZ1kaQ5ol8UmDkRTXHndDZ1Rdq/JCaQJNfPUJLZZddfB5c8j7qjMQDn1CqhblROczw==
+X-Received: by 2002:a62:1603:0:b029:160:98fc:ad23 with SMTP id 3-20020a6216030000b029016098fcad23mr4984589pfw.47.1603985063589;
+        Thu, 29 Oct 2020 08:24:23 -0700 (PDT)
+Received: from localhost (42-3-19-186.static.netvigator.com. [42.3.19.186])
+        by smtp.gmail.com with ESMTPSA id h10sm2919356pgj.69.2020.10.29.08.24.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 29 Oct 2020 08:24:23 -0700 (PDT)
+From:   Qiujun Huang <hqjagain@gmail.com>
+To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
+Cc:     Qiujun Huang <hqjagain@gmail.com>
+Subject: [PATCH] tracing: Fix in out of bounds write in get_trace_buf
+Date:   Thu, 29 Oct 2020 23:24:04 +0800
+Message-Id: <20201029152404.3534-1-hqjagain@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello My Dearest
+The boundary condition should be 3 as we access
+buffer[buffer->nesting][0].
 
-Please I appeal to you to exercise a little patience and read through
-my mail carefully, I am contacting you personally for investment
-assistance and a long term business relationship in your Country.
+Fixes: e2ace001176dc ("tracing: Choose static tp_printk buffer by explicit nesting count")
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+---
+ kernel/trace/trace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I am Mrs. Sophia Robin a citizen of the united state of America; I
-work in HSBC Bank in Milan Italy as a Telex Manager charge of wire
-transfer and online banking department.
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 528971714fc6..196a4b7de48a 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3125,7 +3125,7 @@ static char *get_trace_buf(void)
+ {
+ 	struct trace_buffer_struct *buffer = this_cpu_ptr(trace_percpu_buffer);
+ 
+-	if (!buffer || buffer->nesting >= 4)
++	if (!buffer || buffer->nesting >= 3)
+ 		return NULL;
+ 
+ 	buffer->nesting++;
+-- 
+2.17.1
 
-I am contacting you for an important and  urgent business transaction,
-I  want the bank to transfer the money left by Dr. Cheng Chao,  A
-Chinese  Politicians who  died, March 17th 2020 without any trace of
-his family member,  he used our bank to launder money overseas through
-the help of their Political advisers. And most of the funds which him
-transferred out of the shores of China were gold and oil money that
-was supposed to have been used to develop the continent.
-
-Can you invest this money and also help the orphanage, less privileges
-and widows in your country? The amount value at ($15.5million
-Dollars), left in his account still unclaimed, if you know that you
-are capable to invest this fund into any  profitable business in your
-country kindly send me your details information as listed below to
-enable me draft you an application form of claim which you are going
-to fill with your bank account detail necessary and contact the HSBC
-Bank in Italy  for immediate transfer of the Amounted sum into your
-bank account direct  Or open an online banking for you.
-
-Percentage share will be 50%, for me/ 40%, for you, while 10$ is for
-the orphanage, less privileges and widows in your country.
-
-(1) Your full name..................................................
-(2) Your address....................................................
-(3) Your Nationality.................................................
-(4) Your Age / Sex.....................................................
-(5) Your Occupation............................................
-(6) Your marital status......................................
-(7) Your direct telephone number..................
-(8) your ID Card.......................................
-
-Thanks with my best regards.
-Mrs. Sophia Robin
-Telex / Online Banking Manager
-Milan Italy  (H.S.B.C)
