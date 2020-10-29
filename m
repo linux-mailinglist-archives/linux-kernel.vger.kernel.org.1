@@ -2,69 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937AF29E7B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DDE29E7B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:46:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgJ2Jqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:46:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34018 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725982AbgJ2Jqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:46:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603964794;
+        id S1726865AbgJ2Jqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:46:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59294 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726829AbgJ2Jqo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 05:46:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603964803;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pbFAaKUl5VVAmcWFZZmKE80nI9sV5y+La5sGN9xUtVc=;
-        b=sutn2z9kOlCvRIu2OixH9GRLYAO/8JtPPlOFqzJOadGqkabIkypNJSZ7go4xoap700td9B
-        LWmESx/EUyokxucQf+KERqd3D+iLWenqRG1uz+PDdwMkkP+if/6xgwPRTBUj/ueKDlWrPy
-        /MCwgMwMV6sTYJooNFz8DXib0KpuYfM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BC367ACA1;
-        Thu, 29 Oct 2020 09:46:34 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 10:46:33 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Huang, Ying" <ying.huang@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Rafael Aquini <aquini@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH] mm: Fix a race during split THP
-Message-ID: <20201029094633.GE17500@dhcp22.suse.cz>
-References: <20201009073647.1531083-1-ying.huang@intel.com>
- <20201027102519.GR20500@dhcp22.suse.cz>
- <20201028154346.d8144f8ad7040e6b17592c58@linux-foundation.org>
+        bh=v4juQfAx3LxBzTcqekjK+MOSoDZx1NTXS/wKZYQGOXo=;
+        b=LK9phlxHhIvI3B603Us6mzSVBuplg1RWGtGfKwCvMEtUptCOkedY1hkoGm5yrQRU1KVEP2
+        nK3Hv+AtDfly1She7KLOmtJ1b+TM6XAk5blBfq2BbXaK4YPF0XsGRY/jxZ2W+ee1BFOAeN
+        i0n15t7KH2zucFCYYYDdZMcl//V3q/k=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-457-MYcVTQkzNZmj-pmHejOSSg-1; Thu, 29 Oct 2020 05:46:41 -0400
+X-MC-Unique: MYcVTQkzNZmj-pmHejOSSg-1
+Received: by mail-ed1-f70.google.com with SMTP id u12so937955edi.17
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:46:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=v4juQfAx3LxBzTcqekjK+MOSoDZx1NTXS/wKZYQGOXo=;
+        b=CmzKPDD5SNVePvy+6Y7EE/c6CIGLYqLp8PNz5mnT9RzN0YZU9ykWZ/Zi1RczsBGObU
+         6V+GQR7YBzsFbRp0XspWbYzL5+QX1VVpvbLqCHdselWJstG60dew2ECQJGhthT9IMx3N
+         zVQG3z6tEljVU4NnhLSNF3ALdU42fH8Oz8fAzVhx3PmQQRRy7VVLLCMBxjt60U6D29iY
+         +ADU40AwKZgZoqIqiaNJAmhQ3Q259HslL+f7N1iRG2UVWQ4R9By8vGLCNWR8crt8OQRW
+         WcrBCaSklcKJN26oKfTLSOS4ePWpI2DzcHilDuFAvoPhSxjuXpVSVGFP8Pc6tEUs8Xui
+         f5IQ==
+X-Gm-Message-State: AOAM530TuzR1c9W06uRiiIUeJGm4na6z3j9xTC6gKhSniuzaDKGyRxwB
+        KwWbio96LyHKS93lt5OJbbdsusn5mqsxj85AJrf0dBN+MYnds1rgokw7ZXgtgygsoxfDhQ2B/KU
+        z2+qNtXS5qOIoU1JZikVyby9N
+X-Received: by 2002:a05:6402:1691:: with SMTP id a17mr2984352edv.264.1603964800377;
+        Thu, 29 Oct 2020 02:46:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzKE7w0otUI+gbsHiZO1jXP8ILglLHS0/NREeyAFavkgmdFK4zjz2UD5PtGB/B2pPdy0w21NQ==
+X-Received: by 2002:a05:6402:1691:: with SMTP id a17mr2984338edv.264.1603964800185;
+        Thu, 29 Oct 2020 02:46:40 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id p20sm1140405ejd.78.2020.10.29.02.46.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 02:46:39 -0700 (PDT)
+Subject: Re: [External] Re: [PATCH] Documentation: Add documentation for new
+ platform_profile sysfs attribute
+To:     Mark Pearson <markpearson@lenovo.com>,
+        Bastien Nocera <hadess@hadess.net>
+Cc:     dvhart@infradead.org, mgross@linux.intel.com,
+        mario.limonciello@dell.com, eliadevito@gmail.com, bberg@redhat.com,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <markpearson@lenovo.com>
+ <20201027164219.868839-1-markpearson@lenovo.com>
+ <5ca1ae238b23a611b8a490c244fd93cdcc36ef79.camel@hadess.net>
+ <d5f0bcba-5366-87da-d199-a85d59ba6c1c@redhat.com>
+ <b3e61ee4-3fca-ce06-2216-977586baae4e@lenovo.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <ebeec472-3310-c560-e8bf-2b33c480333b@redhat.com>
+Date:   Thu, 29 Oct 2020 10:46:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028154346.d8144f8ad7040e6b17592c58@linux-foundation.org>
+In-Reply-To: <b3e61ee4-3fca-ce06-2216-977586baae4e@lenovo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 28-10-20 15:43:46, Andrew Morton wrote:
-> On Tue, 27 Oct 2020 11:25:19 +0100 Michal Hocko <mhocko@suse.com> wrote:
-> 
-> > I have noticed this fix and I do not see it in the mmotm tree.
-> > Is there anything blocking this patch or it simply fall through cracks?
-> 
-> It's merged into mainline.  Perhaps the grammatical fixlet in
-> the title tricked you...
-> 
-> commit c4f9c701f9b44299e6adbc58d1a4bb2c40383494
-> Author:     Huang Ying <ying.huang@intel.com>
-> AuthorDate: Thu Oct 15 20:06:07 2020 -0700
-> Commit:     Linus Torvalds <torvalds@linux-foundation.org>
-> CommitDate: Fri Oct 16 11:11:15 2020 -0700
-> 
->     mm: fix a race during THP splitting
+Hi,
 
-Thanks! I was pretty sure I've checked for the acutal code but myabe I
-was just looking incorrectly. Thanks for the clarification!
--- 
-Michal Hocko
-SUSE Labs
+On 10/29/20 1:55 AM, Mark Pearson wrote:
+> Thanks Hans and Bastien,
+> 
+> On 28/10/2020 13:23, Hans de Goede wrote:
+
+<big snip>
+
+>>> Is there another file which explains whether those sysfs value will
+>>> contain a trailing linefeed?
+>>
+>> sysfs APIs are typically created so that they can be used from the shell,
+>> so on read a newline will be added. On write a newline at the end
+>> typically is allowed, but ignored. There are even special helper functions
+>> to deal with properly ignoring the newline on write.
+>>
+>> Regards,
+>>
+>> Hans
+>>
+>>
+> OK - does that need to actually be specified here? Or is that just something I keep in mind for the implementation?
+
+IMHO it does not belong in the sysfs API docs for the platform_profile
+stuff. But I guess it would be good to document it somewhere in some
+generic syfs API rules/expectations document (with a note that their
+might be exceptions).
+
+Ideally we would already have such a file somewhere, but I don't know
+if we do (I did not look). So if you feel like it (and such a file does
+not exist yet) then I guess a patch adding such a doc file would be good.
+
+Regards,
+
+Hans
+
