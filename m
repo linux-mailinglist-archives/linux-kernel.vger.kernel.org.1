@@ -2,168 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81BF29F479
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C246D29F47D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 20:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726220AbgJ2TFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 15:05:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36909 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725774AbgJ2TFH (ORCPT
+        id S1726244AbgJ2TFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 15:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgJ2TFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 15:05:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603998305;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a0p3CSFWKBf8bTXWU5gbr4v+f3iD+GqD+deWi2r7Opo=;
-        b=Q5y2sd3DD/I9iW3St+mCWTpNx6o9/6C3aVbo4hXJFMn+aFKHHhO7hFh7x/MGwn2l1vDt0E
-        oQDvLvevtIMGYN28zahomxXax5jCGikMCP5MUnO/dCYaJ9Iszz06dRxv/tTUVzb0IXjeLT
-        pL4Zrd4eyskZZFl1gQRuSZJjZNAPGBM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-166-ZXpHjZW0NkuUgGUJ31IWBw-1; Thu, 29 Oct 2020 15:05:01 -0400
-X-MC-Unique: ZXpHjZW0NkuUgGUJ31IWBw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8EC321009E41;
-        Thu, 29 Oct 2020 19:05:00 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-116-17.rdu2.redhat.com [10.10.116.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DA3836EF68;
-        Thu, 29 Oct 2020 19:04:57 +0000 (UTC)
-Subject: Re: [PATCH v2] inotify: Increase default inotify.max_user_watches
- limit to 1048576
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Luca BRUNO <lucab@redhat.com>
-References: <20201029154535.2074-1-longman@redhat.com>
- <CAOQ4uxjT8rWLr1yCBPGkhJ7Rr6n3+FA7a0GmZaMBHMzk9t1Sag@mail.gmail.com>
- <ccec54cd-cbb5-2808-3800-890cda208967@redhat.com>
- <CAOQ4uximGK1DnM7fYabChp-8pNqt3cSHeDWZYNKSwr6qSnxpug@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <4695fee5-3446-7f5b-ae89-dc48d431a8fe@redhat.com>
-Date:   Thu, 29 Oct 2020 15:04:56 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Thu, 29 Oct 2020 15:05:22 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B91C0613CF;
+        Thu, 29 Oct 2020 12:05:21 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id k21so4707329ioa.9;
+        Thu, 29 Oct 2020 12:05:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x/nfCoCP9F3Ki/1h24iD74gnLDTd/sr95ZiJpeJipjQ=;
+        b=vByD0S4shQJ2EaQtKYRzz7+XFAS7Aqc5jt9oNdTGUMKOFZeFxoMIZ64gKMBUjIjRK5
+         xUlbjFDmQzMKjPQG4YGliO8oxtI9caunzKS0Drq+7xckqqtq1BCkc0Pv4SqRLkHZWQnz
+         aaKJRsXY9LLbqqw7Rb3oeclwijkme/g2o5QktHshhjxEp3kG0mUSi3e4PUH2UbdKZ97K
+         N9QdDhfnGT6H7u6x2Aoq3lLP82l4wQWCVfBqQrsntgxBNVTyVyJZABaBBjQoX6lH/pOz
+         eYDJEIYHOWiSjS0UJiPIWZ8U/mSNPFYkdxjBL36O5+ysGaTUMFqv3hlozD30hS/cf08R
+         Cwog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x/nfCoCP9F3Ki/1h24iD74gnLDTd/sr95ZiJpeJipjQ=;
+        b=Rmahflt4JVv7IgcK/c/coDRTv+4bUtdbMaSFxps1jlcAGKVDQNLcw10JVEHmlp4Wny
+         nk193n/c1qRPtOaoSuRAcUrn3+CnMXbGNJ9b8AbmEdXLqqBA5V4VSb4maHYp1xTYzeX1
+         +s09XT2i97bySCOO4cpXqgNP3Xh9+7VqqIyspwvM2tjwKNifaQ7RuOlH5EEWsoWmMZiG
+         zTpx3SNtnYkD4BzscJNowcJWcjF/yMx5+Ilb5Ym2hXkDV5uJF2DpKw/PMVeTRXnwC+M0
+         7YG5gPSWRgaGR+On/2olgXTASX1LILTXd0nsd5cILTNA9yShgzXsgMtvZU+uGGWkDrcc
+         KC3w==
+X-Gm-Message-State: AOAM530FHnntdkr2FBQpKYDOTXZ8ty+1DQlr/UUz72DZgPPRuvwz633N
+        DJDjQJySO7QRL+X1qXud8gfM5djQWA4cc5B/uE5SDrw7feWipg==
+X-Google-Smtp-Source: ABdhPJxUXRt2nYmHv8IhHOYTIbDN1r0icyesFBkhKRtfKbsahEuVW/ZgNZaiKivAF2hhVh6Lcq4V0eKYqDL8ZA8ATVE=
+X-Received: by 2002:a02:b786:: with SMTP id f6mr4952827jam.75.1603998320770;
+ Thu, 29 Oct 2020 12:05:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAOQ4uximGK1DnM7fYabChp-8pNqt3cSHeDWZYNKSwr6qSnxpug@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <1599562954-87257-1-git-send-email-linyunsheng@huawei.com>
+ <CAM_iQpX0_mz+McZdzZ7HFTjBihOKz5E6i4qJQSoFbZ=SZkVh=Q@mail.gmail.com>
+ <830f85b5-ef29-c68e-c982-de20ac880bd9@huawei.com> <CAM_iQpU_tbRNO=Lznz_d6YjXmenYhowEfBoOiJgEmo9x8bEevw@mail.gmail.com>
+ <1f8ebcde-f5ff-43df-960e-3661706e8d04@huawei.com>
+In-Reply-To: <1f8ebcde-f5ff-43df-960e-3661706e8d04@huawei.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 29 Oct 2020 12:05:09 -0700
+Message-ID: <CAM_iQpUm91x8Q0G=CXE7S43DKryABkyMTa4mz_oEfEOTFS7BgQ@mail.gmail.com>
+Subject: Re: [PATCH v2 net] net: sch_generic: aviod concurrent reset and
+ enqueue op for lockless qdisc
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linuxarm@huawei.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 2:46 PM, Amir Goldstein wrote:
-> On Thu, Oct 29, 2020 at 8:05 PM Waiman Long <longman@redhat.com> wrote:
->> On 10/29/20 1:27 PM, Amir Goldstein wrote:
->>> On Thu, Oct 29, 2020 at 5:46 PM Waiman Long <longman@redhat.com> wrote:
->>>> The default value of inotify.max_user_watches sysctl parameter was set
->>>> to 8192 since the introduction of the inotify feature in 2005 by
->>>> commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
->>>> small for many modern usage. As a result, users have to explicitly set
->>>> it to a larger value to make it work.
->>>>
->>>> After some searching around the web, these are the
->>>> inotify.max_user_watches values used by some projects:
->>>>    - vscode:  524288
->>>>    - dropbox support: 100000
->>>>    - users on stackexchange: 12228
->>>>    - lsyncd user: 2000000
->>>>    - code42 support: 1048576
->>>>    - monodevelop: 16384
->>>>    - tectonic: 524288
->>>>    - openshift origin: 65536
->>>>
->>>> Each watch point adds an inotify_inode_mark structure to an inode to
->>>> be watched. It also pins the watched inode as well as an inotify fdinfo
->>>> procfs file.
->>>>
->>>> Modeled after the epoll.max_user_watches behavior to adjust the default
->>>> value according to the amount of addressable memory available, make
->>>> inotify.max_user_watches behave in a similar way to make it use no more
->>>> than 1% of addressable memory within the range [8192, 1048576].
->>>>
->>>> For 64-bit archs, inotify_inode_mark plus 2 inode have a size close
->>>> to 2 kbytes. That means a system with 196GB or more memory should have
->>>> the maximum value of 1048576 for inotify.max_user_watches. This default
->>>> should be big enough for most use cases.
->>>>
->>>> With my x86-64 config, the size of xfs_inode, proc_inode and
->>>> inotify_inode_mark is 1680 bytes. The estimated INOTIFY_WATCH_COST is
->>>> 1760 bytes.
->>>>
->>>> [v2: increase inotify watch cost as suggested by Amir and Honza]
->>>>
->>>> Signed-off-by: Waiman Long <longman@redhat.com>
->>>> ---
->>>>    fs/notify/inotify/inotify_user.c | 24 +++++++++++++++++++++++-
->>>>    1 file changed, 23 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
->>>> index 186722ba3894..37d9f09c226f 100644
->>>> --- a/fs/notify/inotify/inotify_user.c
->>>> +++ b/fs/notify/inotify/inotify_user.c
->>>> @@ -37,6 +37,16 @@
->>>>
->>>>    #include <asm/ioctls.h>
->>>>
->>>> +/*
->>>> + * An inotify watch requires allocating an inotify_inode_mark structure as
->>>> + * well as pinning the watched inode and adding inotify fdinfo procfs file.
->>> Maybe you misunderstood me.
->>> There is no procfs file per watch.
->>> There is a procfs file per inotify_init() fd.
->>> The fdinfo of that procfile lists all the watches of that inotify instance.
->> Thanks for the clarification. Yes, I probably had misunderstood you
->> because of the 2 * sizeof(inode) figure you provided.
->>>> + * The increase in size of a filesystem inode versus a VFS inode varies
->>>> + * depending on the filesystem. An extra 512 bytes is added as rough
->>>> + * estimate of the additional filesystem inode cost.
->>>> + */
->>>> +#define INOTIFY_WATCH_COST     (sizeof(struct inotify_inode_mark) + \
->>>> +                                2 * sizeof(struct inode) + 512)
->>>> +
->>> I would consider going with double the sizeof inode as rough approximation for
->>> filesystem inode size.
->>>
->>> It is a bit less arbitrary than 512 and it has some rationale behind it -
->>> Some kernel config options will grow struct inode (debug, smp)
->>> The same config options may also grow the filesystem part of the inode.
->>>
->>> And this approximation can be pretty accurate at times.
->>> For example, on Ubuntu 18.04 kernel 5.4.0:
->>> inode_cache        608
->>> nfs_inode_cache      1088
->>> btrfs_inode            1168
->>> xfs_inode              1024
->>> ext4_inode_cache   1096
->> Just to clarify, is your original 2 * sizeof(struct inode) figure
->> include the filesystem inode overhead or there is an additional inode
->> somewhere that I needs to go to 4 * sizeof(struct inode)?
-> No additional inode.
+On Wed, Oct 28, 2020 at 7:54 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
 >
-> #define INOTIFY_WATCH_COST     (sizeof(struct inotify_inode_mark) + \
->                                                        2 * sizeof(struct inode))
+> On 2020/9/18 3:26, Cong Wang wrote:
+> > On Fri, Sep 11, 2020 at 1:13 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >>
+> >> On 2020/9/11 4:07, Cong Wang wrote:
+> >>> On Tue, Sep 8, 2020 at 4:06 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >>>>
+> >>>> Currently there is concurrent reset and enqueue operation for the
+> >>>> same lockless qdisc when there is no lock to synchronize the
+> >>>> q->enqueue() in __dev_xmit_skb() with the qdisc reset operation in
+> >>>> qdisc_deactivate() called by dev_deactivate_queue(), which may cause
+> >>>> out-of-bounds access for priv->ring[] in hns3 driver if user has
+> >>>> requested a smaller queue num when __dev_xmit_skb() still enqueue a
+> >>>> skb with a larger queue_mapping after the corresponding qdisc is
+> >>>> reset, and call hns3_nic_net_xmit() with that skb later.
+> >>>>
+> >>>> Reused the existing synchronize_net() in dev_deactivate_many() to
+> >>>> make sure skb with larger queue_mapping enqueued to old qdisc(which
+> >>>> is saved in dev_queue->qdisc_sleeping) will always be reset when
+> >>>> dev_reset_queue() is called.
+> >>>>
+> >>>> Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+> >>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> >>>> ---
+> >>>> ChangeLog V2:
+> >>>>         Reuse existing synchronize_net().
+> >>>> ---
+> >>>>  net/sched/sch_generic.c | 48 +++++++++++++++++++++++++++++++++---------------
+> >>>>  1 file changed, 33 insertions(+), 15 deletions(-)
+> >>>>
+> >>>> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+> >>>> index 265a61d..54c4172 100644
+> >>>> --- a/net/sched/sch_generic.c
+> >>>> +++ b/net/sched/sch_generic.c
+> >>>> @@ -1131,24 +1131,10 @@ EXPORT_SYMBOL(dev_activate);
+> >>>>
+> >>>>  static void qdisc_deactivate(struct Qdisc *qdisc)
+> >>>>  {
+> >>>> -       bool nolock = qdisc->flags & TCQ_F_NOLOCK;
+> >>>> -
+> >>>>         if (qdisc->flags & TCQ_F_BUILTIN)
+> >>>>                 return;
+> >>>> -       if (test_bit(__QDISC_STATE_DEACTIVATED, &qdisc->state))
+> >>>> -               return;
+> >>>> -
+> >>>> -       if (nolock)
+> >>>> -               spin_lock_bh(&qdisc->seqlock);
+> >>>> -       spin_lock_bh(qdisc_lock(qdisc));
+> >>>>
+> >>>>         set_bit(__QDISC_STATE_DEACTIVATED, &qdisc->state);
+> >>>> -
+> >>>> -       qdisc_reset(qdisc);
+> >>>> -
+> >>>> -       spin_unlock_bh(qdisc_lock(qdisc));
+> >>>> -       if (nolock)
+> >>>> -               spin_unlock_bh(&qdisc->seqlock);
+> >>>>  }
+> >>>>
+> >>>>  static void dev_deactivate_queue(struct net_device *dev,
+> >>>> @@ -1165,6 +1151,30 @@ static void dev_deactivate_queue(struct net_device *dev,
+> >>>>         }
+> >>>>  }
+> >>>>
+> >>>> +static void dev_reset_queue(struct net_device *dev,
+> >>>> +                           struct netdev_queue *dev_queue,
+> >>>> +                           void *_unused)
+> >>>> +{
+> >>>> +       struct Qdisc *qdisc;
+> >>>> +       bool nolock;
+> >>>> +
+> >>>> +       qdisc = dev_queue->qdisc_sleeping;
+> >>>> +       if (!qdisc)
+> >>>> +               return;
+> >>>> +
+> >>>> +       nolock = qdisc->flags & TCQ_F_NOLOCK;
+> >>>> +
+> >>>> +       if (nolock)
+> >>>> +               spin_lock_bh(&qdisc->seqlock);
+> >>>> +       spin_lock_bh(qdisc_lock(qdisc));
+> >>>
+> >>>
+> >>> I think you do not need this lock for lockless one.
+> >>
+> >> It seems so.
+> >> Maybe another patch to remove qdisc_lock(qdisc) for lockless
+> >> qdisc?
+> >
+> > Yeah, but not sure if we still want this lockless qdisc any more,
+> > it brings more troubles than gains.
+> >
+> >>
+> >>
+> >>>
+> >>>> +
+> >>>> +       qdisc_reset(qdisc);
+> >>>> +
+> >>>> +       spin_unlock_bh(qdisc_lock(qdisc));
+> >>>> +       if (nolock)
+> >>>> +               spin_unlock_bh(&qdisc->seqlock);
+> >>>> +}
+> >>>> +
+> >>>>  static bool some_qdisc_is_busy(struct net_device *dev)
+> >>>>  {
+> >>>>         unsigned int i;
+> >>>> @@ -1213,12 +1223,20 @@ void dev_deactivate_many(struct list_head *head)
+> >>>>                 dev_watchdog_down(dev);
+> >>>>         }
+> >>>>
+> >>>> -       /* Wait for outstanding qdisc-less dev_queue_xmit calls.
+> >>>> +       /* Wait for outstanding qdisc-less dev_queue_xmit calls or
+> >>>> +        * outstanding qdisc enqueuing calls.
+> >>>>          * This is avoided if all devices are in dismantle phase :
+> >>>>          * Caller will call synchronize_net() for us
+> >>>>          */
+> >>>>         synchronize_net();
+> >>>>
+> >>>> +       list_for_each_entry(dev, head, close_list) {
+> >>>> +               netdev_for_each_tx_queue(dev, dev_reset_queue, NULL);
+> >>>> +
+> >>>> +               if (dev_ingress_queue(dev))
+> >>>> +                       dev_reset_queue(dev, dev_ingress_queue(dev), NULL);
+> >>>> +       }
+> >>>> +
+> >>>>         /* Wait for outstanding qdisc_run calls. */
+> >>>>         list_for_each_entry(dev, head, close_list) {
+> >>>>                 while (some_qdisc_is_busy(dev)) {
+> >>>
+> >>> Do you want to reset before waiting for TX action?
+> >>>
+> >>> I think it is safer to do it after, at least prior to commit 759ae57f1b
+> >>> we did after.
+> >>
+> >> The reference to the txq->qdisc is always protected by RCU, so the synchronize_net()
+> >> should be enought to ensure there is no skb enqueued to the old qdisc that is saved
+> >> in the dev_queue->qdisc_sleeping, because __dev_queue_xmit can only see the new qdisc
+> >> after synchronize_net(), which is noop_qdisc, and noop_qdisc will make sure any skb
+> >> enqueued to it will be dropped and freed, right?
+> >
+> > Hmm? In net_tx_action(), we do not hold RCU read lock, and we do not
+> > reference qdisc via txq->qdisc but via sd->output_queue.
 >
-> Not sure if the inotify_inode_mark part matters, but it doesn't hurt.
-> Do note that Jan had a different proposal for fs inode size estimation (1K).
-> I have no objection to this estimation if Jan insists.
+> Sorry for the delay reply, I seems to miss this.
 >
-> Thanks,
-> Amir.
->
-Thanks for the confirmation. 2*sizeof(struct inode) is more than 1k. 
-Besides with debugging turned on, the size will increase more. So that 
-figure is good enough.
+> I assumed synchronize_net() also wait for outstanding softirq to finish, right?
 
-Cheers,
-Longman
+I do not see how and why it should. synchronize_net() is merely an optimized
+version of synchronize_rcu(), it should wait for RCU readers, softirqs are not
+necessarily RCU readers, net_tx_action() does not take RCU read lock either.
 
+>
+> >
+> >
+> >>
+> >> If we do any additional reset that is not related to qdisc in dev_reset_queue(), we
+> >> can move it after some_qdisc_is_busy() checking.
+> >
+> > I am not suggesting to do an additional reset, I am suggesting to move
+> > your reset after the busy waiting.
+>
+> There maybe a deadlock here if we reset the qdisc after the some_qdisc_is_busy() checking,
+> because some_qdisc_is_busy() may require the qdisc reset to clear the skb, so that
+
+some_qdisc_is_busy() checks the status of qdisc, not the skb queue.
+
+
+> some_qdisc_is_busy() can return false. I am not sure this is really a problem, but
+> sch_direct_xmit() may requeue the skb when dev_hard_start_xmit return TX_BUSY.
+
+Sounds like another reason we should move the reset as late as possible?
+
+Thanks.
