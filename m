@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AB229DDB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191A029DDB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388824AbgJ2AkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:40:07 -0400
-Received: from mail-1.ca.inter.net ([208.85.220.69]:50070 "EHLO
-        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729273AbgJ2AkF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 20:40:05 -0400
-Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
-        by mail-1.ca.inter.net (Postfix) with ESMTP id 760B92EA1CB;
-        Wed, 28 Oct 2020 20:40:03 -0400 (EDT)
-Received: from mail-1.ca.inter.net ([208.85.220.69])
-        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
-        with ESMTP id PDst0xYkhw-y; Wed, 28 Oct 2020 20:31:57 -0400 (EDT)
-Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
-        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        id S2388846AbgJ2AkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:40:24 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33707 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729273AbgJ2AkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 20:40:24 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail-1.ca.inter.net (Postfix) with ESMTPSA id DC9F32EA00E;
-        Wed, 28 Oct 2020 20:40:02 -0400 (EDT)
-Reply-To: dgilbert@interlog.com
-To:     linux-kernel <linux-kernel@vger.kernel.org>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Subject: tools/perf: noise from check-headers.sh
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Message-ID: <849974e5-e8b8-d885-e993-a373d9c675bd@interlog.com>
-Date:   Wed, 28 Oct 2020 20:40:02 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CM66Z1Bl8z9sRK;
+        Thu, 29 Oct 2020 11:40:22 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1603932022;
+        bh=gNUYMrF01adrDgOyn82MgF7OEhnrFjYiVS+QzNHILmY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=AYUqXj27bneMgn85a2lqzmgV3IwgBW13pt5FfGC5d5Vj4abOzMEcnWyiVYc8SwRBF
+         rMdW6yq1MWL024XFWutj8Gn1LTUcVh5PX6Qm8tnjgNiIuSy7mqJFV3zFNUUtmiCwYx
+         +H/JMzkNiGYLMqMklEXjQJmrT1SL2TwmxEfkTkXd/ePCfkpCSkh9gbDLaXP0BQ71W6
+         M6JwPBvRkfONnNX2FACnVqzMg+7c+Io5HwXjZ+Sgd68gxZTfBH6LF6+7dmG7bjjDL+
+         q0HmLqdSxGZUsQMZkN4z/X9Zx/NY50LJDCJh8FABwDC3DpcteqRiebxV0DQmg+SEvf
+         GhI/bDOafIA8A==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>, linuxppc-dev@lists.ozlabs.org
+Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH kernel v3 2/2] powerpc/dma: Fallback to dma_ops when persistent memory present
+In-Reply-To: <20201028070030.60643-3-aik@ozlabs.ru>
+References: <20201028070030.60643-1-aik@ozlabs.ru> <20201028070030.60643-3-aik@ozlabs.ru>
+Date:   Thu, 29 Oct 2020 11:40:21 +1100
+Message-ID: <87eelhx3t6.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Executing that script in linux-stable [lk 5.10.0-rc1] gives the following
-output:
+Alexey Kardashevskiy <aik@ozlabs.ru> writes:
+> diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
+> index e4198700ed1a..91112e748491 100644
+> --- a/arch/powerpc/platforms/pseries/iommu.c
+> +++ b/arch/powerpc/platforms/pseries/iommu.c
+> @@ -1111,11 +1112,13 @@ static void reset_dma_window(struct pci_dev *dev, struct device_node *par_dn)
+>   */
+>  static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>  {
+> -	int len, ret;
+> +	int len = 0, ret;
+> +	bool pmem_present = of_find_node_by_type(NULL, "ibm,pmemory") != NULL;
 
-Warning: Kernel ABI header at 'tools/include/uapi/drm/i915_drm.h' differs from 
-latest version at 'include/uapi/drm/i915_drm.h'
-diff -u tools/include/uapi/drm/i915_drm.h include/uapi/drm/i915_drm.h
-Warning: Kernel ABI header at 'tools/include/uapi/linux/fscrypt.h' differs from 
-latest version at 'include/uapi/linux/fscrypt.h'
-diff -u tools/include/uapi/linux/fscrypt.h include/uapi/linux/fscrypt.h
-Warning: Kernel ABI header at 'tools/include/uapi/linux/kvm.h' differs from 
-latest version at 'include/uapi/linux/kvm.h'
-diff -u tools/include/uapi/linux/kvm.h include/uapi/linux/kvm.h
-Warning: Kernel ABI header at 'tools/include/uapi/linux/mount.h' differs from 
-latest version at 'include/uapi/linux/mount.h'
-diff -u tools/include/uapi/linux/mount.h include/uapi/linux/mount.h
-Warning: Kernel ABI header at 'tools/include/uapi/linux/perf_event.h' differs 
-from latest version at 'include/uapi/linux/perf_event.h'
-diff -u tools/include/uapi/linux/perf_event.h include/uapi/linux/perf_event.h
-Warning: Kernel ABI header at 'tools/include/uapi/linux/prctl.h' differs from 
-latest version at 'include/uapi/linux/prctl.h'
-diff -u tools/include/uapi/linux/prctl.h include/uapi/linux/prctl.h
-Warning: Kernel ABI header at 'tools/arch/x86/include/asm/disabled-features.h' 
-differs from latest version at 'arch/x86/include/asm/disabled-features.h'
-diff -u tools/arch/x86/include/asm/disabled-features.h 
-arch/x86/include/asm/disabled-features.h
-Warning: Kernel ABI header at 'tools/arch/x86/include/asm/required-features.h' 
-differs from latest version at 'arch/x86/include/asm/required-features.h'
-diff -u tools/arch/x86/include/asm/required-features.h 
-arch/x86/include/asm/required-features.h
-Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs 
-from latest version at 'arch/x86/include/asm/cpufeatures.h'
-diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
-Warning: Kernel ABI header at 'tools/arch/x86/include/asm/msr-index.h' differs 
-from latest version at 'arch/x86/include/asm/msr-index.h'
-diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
-Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/kvm.h' differs 
-from latest version at 'arch/x86/include/uapi/asm/kvm.h'
-diff -u tools/arch/x86/include/uapi/asm/kvm.h arch/x86/include/uapi/asm/kvm.h
-Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/svm.h' differs 
-from latest version at 'arch/x86/include/uapi/asm/svm.h'
-diff -u tools/arch/x86/include/uapi/asm/svm.h arch/x86/include/uapi/asm/svm.h
-Warning: Kernel ABI header at 'tools/arch/s390/include/uapi/asm/sie.h' differs 
-from latest version at 'arch/s390/include/uapi/asm/sie.h'
-diff -u tools/arch/s390/include/uapi/asm/sie.h arch/s390/include/uapi/asm/sie.h
-Warning: Kernel ABI header at 'tools/arch/arm64/include/uapi/asm/kvm.h' differs 
-from latest version at 'arch/arm64/include/uapi/asm/kvm.h'
-diff -u tools/arch/arm64/include/uapi/asm/kvm.h arch/arm64/include/uapi/asm/kvm.h
-Warning: Kernel ABI header at 'tools/include/uapi/asm-generic/unistd.h' differs 
-from latest version at 'include/uapi/asm-generic/unistd.h'
-diff -u tools/include/uapi/asm-generic/unistd.h include/uapi/asm-generic/unistd.h
-Warning: Kernel ABI header at 'tools/include/uapi/linux/mman.h' differs from 
-latest version at 'include/uapi/linux/mman.h'
-diff -u tools/include/uapi/linux/mman.h include/uapi/linux/mman.h
-Warning: Kernel ABI header at 
-'tools/perf/arch/x86/entry/syscalls/syscall_64.tbl' differs from latest version 
-at 'arch/x86/entry/syscalls/syscall_64.tbl'
-diff -u tools/perf/arch/x86/entry/syscalls/syscall_64.tbl 
-arch/x86/entry/syscalls/syscall_64.tbl
-Warning: Kernel ABI header at 'tools/perf/util/hashmap.h' differs from latest 
-version at 'tools/lib/bpf/hashmap.h'
-diff -u tools/perf/util/hashmap.h tools/lib/bpf/hashmap.h
-Warning: Kernel ABI header at 'tools/perf/util/hashmap.c' differs from latest 
-version at 'tools/lib/bpf/hashmap.c'
-diff -u tools/perf/util/hashmap.c tools/lib/bpf/hashmap.c
+That leaks a reference on the returned node.
+
+	dn = of_find_node_by_type(NULL, "ibm,pmemory");
+	pmem_present = dn != NULL;
+	of_node_put(dn);
 
 
-There was a bit of noise in lk 5.9.0-rc1 but it is considerably worse now.
+> @@ -1126,7 +1129,7 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>  
+>  	mutex_lock(&direct_window_init_mutex);
+>  
+> -	dma_addr = find_existing_ddw(pdn);
+> +	dma_addr = find_existing_ddw(pdn, &len);
 
-Doug Gilbert
+I don't see len used anywhere?
+
+>  	if (dma_addr != 0)
+>  		goto out_unlock;
+>  
+> @@ -1212,14 +1215,26 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>  	}
+>  	/* verify the window * number of ptes will map the partition */
+>  	/* check largest block * page size > max memory hotplug addr */
+> -	max_addr = ddw_memory_hotplug_max();
+> -	if (query.largest_available_block < (max_addr >> page_shift)) {
+> -		dev_dbg(&dev->dev, "can't map partition max 0x%llx with %llu "
+> -			  "%llu-sized pages\n", max_addr,  query.largest_available_block,
+> -			  1ULL << page_shift);
+> +	/*
+> +	 * The "ibm,pmemory" can appear anywhere in the address space.
+> +	 * Assuming it is still backed by page structs, try MAX_PHYSMEM_BITS
+> +	 * for the upper limit and fallback to max RAM otherwise but this
+> +	 * disables device::dma_ops_bypass.
+> +	 */
+> +	len = max_ram_len;
+
+Here you override whatever find_existing_ddw() wrote to len?
+
+> +	if (pmem_present) {
+> +		if (query.largest_available_block >=
+> +		    (1ULL << (MAX_PHYSMEM_BITS - page_shift)))
+> +			len = MAX_PHYSMEM_BITS - page_shift;
+> +		else
+> +			dev_info(&dev->dev, "Skipping ibm,pmemory");
+> +	}
+> +
+> +	if (query.largest_available_block < (1ULL << (len - page_shift))) {
+> +		dev_dbg(&dev->dev, "can't map partition max 0x%llx with %llu %llu-sized pages\n",
+> +			1ULL << len, query.largest_available_block, 1ULL << page_shift);
+>  		goto out_failed;
+>  	}
+> -	len = order_base_2(max_addr);
+>  	win64 = kzalloc(sizeof(struct property), GFP_KERNEL);
+>  	if (!win64) {
+>  		dev_info(&dev->dev,
+
+
+cheers
