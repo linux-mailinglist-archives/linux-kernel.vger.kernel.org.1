@@ -2,200 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADD429F147
+	by mail.lfdr.de (Postfix) with ESMTP id B53DD29F148
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgJ2QWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:22:40 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:57736 "EHLO
-        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgJ2QWi (ORCPT
+        id S1726635AbgJ2QWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgJ2QWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:22:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
-        h=subject:references:from:mime-version:in-reply-to:to:cc:content-type:
-        content-transfer-encoding;
-        s=001; bh=TpcF+14T/6mqOqwF03OswUlyCDxtQaVGcvs2iBy2hLI=;
-        b=QgRgw6ieifvgHYmnV029yMUV14HLLLPJfRjI9fZOt2l1Ri2YgABPT5wEWYiRNt6ECptN
-        QX7VWP7HjNfnqZ/r37YhuijZhJOj4bRUxJ9cpwQ2GAx5Zwz46tPn7/6ylhErOmYmcmyID8
-        KRpXeF4Nvi8sVOpftCoXQUDHTJTwDq2Tg=
-Received: by filterdrecv-p3iad2-64988c98cc-t8x7c with SMTP id filterdrecv-p3iad2-64988c98cc-t8x7c-19-5F9AEC1B-15
-        2020-10-29 16:21:47.458268234 +0000 UTC m=+502013.655851203
-Received: from [192.168.10.211] (unknown)
-        by ismtpd0007p1lon1.sendgrid.net (SG) with ESMTP
-        id oz7KHslxSFiha_c3gSLayA
-        Thu, 29 Oct 2020 16:21:46.986 +0000 (UTC)
-Subject: Re: [PATCH 00/18] Add Hantro regmap and VC8000 h264 decode support
-References: <20201012205957.889185-1-adrian.ratiu@collabora.com>
- <97e84bb5-972a-091d-a159-6ab1151f17ab@kwiboo.se>
- <abc0321a81a3ada8eb66d227b56249024e549021.camel@collabora.com>
-From:   Jonas Karlman <jonas@kwiboo.se>
-Message-ID: <4943efb9-29c2-6848-9783-514276085f2b@kwiboo.se>
-Date:   Thu, 29 Oct 2020 16:21:47 +0000 (UTC)
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Thu, 29 Oct 2020 12:22:41 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26D5C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:22:39 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id h22so439465wmb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:22:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W/SBTqRwJYQalirxoQ3Q8lAsc2b8iA8Ky9V9/3MAlZY=;
+        b=viAvHpRSyiQfnDRWQeVBwAof3szuxxTKq9hanr3/Az7B4kuyYBr//Jfl0rGgYEE34m
+         7BhIH0UFMiXaj7aMzW1qSH1/ogOpD9k03p8iHC7AaQ3r6Zj2LsuNRQbf5OS+L2MVzacB
+         dv4mGTv4ZNr607P2BpkhNiJRg9x/YBVras6jA3GdOD7b2dbKlXjbXa8tEpskOh7fhPdw
+         B6RV1dKOFfIkn2AafsFU4z+KUstK+3yfOTHPiB/FO07iBlF8B9T+UN46LXZRB/d/Zagt
+         zkVlpDNQH7LGLfuUqvKwM4PU3vreHOEbACALpSvrPTszml+/vaG+lWNdNTPr1hyOVDc3
+         blSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W/SBTqRwJYQalirxoQ3Q8lAsc2b8iA8Ky9V9/3MAlZY=;
+        b=gLVjYBHVAQ0lkrrQoj+cq5XYY6c/KE6P2gKOFgYoApX2kx56fZADocECS9sY1s8xRW
+         bqBRpvS4AtyiZluUU5Q/uhziuQrJ5zpYlFbgc678FWXOQQvcJR4dQOtUtojNWkzynaVA
+         ZL3ZeYvgnKpuLgy5g3LfQYtAUDasXEQ4qoCbBUveegv32xcLsm75fK2z7GKPApVE4Bzu
+         7PYEQGg0Y4mahbjuUC6gUbfk9iPrI5DTBG0+oECC12qPRF8Fas/oKl5ZGfDQUktS5Dsw
+         aa5fswD9zUGyv+LjExBm8xKYp3EVD3+wbdC+LetwW4DfNdLSHWZpLikdM1jKakUH1vzM
+         IGrQ==
+X-Gm-Message-State: AOAM530JRsl0xJ/GLKB1W5FmOqAuZqwC275ji9/snGsz2QYyHw6QB7tB
+        oG2axe5XJ5ZVQ/usEZWdl1ScpQ==
+X-Google-Smtp-Source: ABdhPJykydSKM9y0vPn0gIgGIqGjmoJvrLdI5o4R1KK6OqB7XTi1NaYL5U9GKGAc3t4sZg6ZRpVsEw==
+X-Received: by 2002:a7b:ce91:: with SMTP id q17mr557634wmj.116.1603988558316;
+        Thu, 29 Oct 2020 09:22:38 -0700 (PDT)
+Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id o129sm560563wmb.25.2020.10.29.09.22.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 09:22:37 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 16:22:34 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, tglx@linutronix.de,
+        jason@lakedaemon.net, linux@armlinux.org.uk,
+        tsbogend@alpha.franken.de, mpe@ellerman.id.au, davem@davemloft.net,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        mark.rutland@arm.com, julien.thierry.kdev@gmail.com,
+        dianders@chromium.org, jason.wessel@windriver.com,
+        msys.mizuma@gmail.com, ito-yuichi@fujitsu.com,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 7/7] arm64: kgdb: Roundup cpus using IPI as NMI
+Message-ID: <20201029162234.a5czyjy4eyto6aa4@holly.lan>
+References: <1603983387-8738-1-git-send-email-sumit.garg@linaro.org>
+ <1603983387-8738-8-git-send-email-sumit.garg@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <abc0321a81a3ada8eb66d227b56249024e549021.camel@collabora.com>
-X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h1YAKsV6Db0j8KSuu?=
- =?us-ascii?Q?BeT9Fz3y+MIiVTUtHh2RJ1+Yb99WUU16rzvyEnS?=
- =?us-ascii?Q?6Y1aiH8vVyHfr90NTPtRI4wNcF+byq6EEc3JxnX?=
- =?us-ascii?Q?NpzyrXHNgc3KBiNymVvNWz3c3Z9LoqM16ze6Mko?=
- =?us-ascii?Q?QUUuGkEi0EbzGjVNE3NSnKFYAXP866AW3awqiNA?=
- =?us-ascii?Q?n0wX45epLzmz5Bm+NQQpg=3D=3D?=
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Kever Yang <kever.yang@rock-chips.com>,
-        Mark Brown <broonie@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Fruehberger Peter <Peter.Fruehberger@de.bosch.com>,
-        kuhanh.murugasen.krishnan@intel.com,
-        Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-X-Entity-ID: wSPGWgGSXUap++qShBI+ag==
 Content-Type: text/plain; charset=us-ascii
-Content-Language: sv
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1603983387-8738-8-git-send-email-sumit.garg@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-29 13:38, Ezequiel Garcia wrote:
-> On Mon, 2020-10-12 at 23:39 +0000, Jonas Karlman wrote:
->> Hi,
->>
->> On 2020-10-12 22:59, Adrian Ratiu wrote:
->>> Dear all,
->>>
->>> This series introduces a regmap infrastructure for the Hantro driver
->>> which is used to compensate for different HW-revision register layouts.
->>> To justify it h264 decoding capability is added for newer VC8000 chips.
->>>
->>> This is a gradual conversion to the new infra - a complete conversion
->>> would have been very big and I do not have all the HW yet to test (I'm
->>> expecting a RK3399 shipment next week though ;). I think converting the
->>> h264 decoder provides a nice blueprint for how the other codecs can be
->>> converted and enabled for different HW revisions.
->>>
->>> The end goal of this is to make the driver more generic and eliminate
->>> entirely custom boilerplate like `struct hantro_reg` or headers with
->>> core-specific bit manipulations like `hantro_g1_regs.h` and instead rely
->>> on the well-tested albeit more verbose regmap subsytem.
->>>
->>> To give just two examples of bugs which are easily discovered by using
->>> more verbose regmap fields (very easy to compare with the datasheets)
->>> instead of relying on bit-magic tricks: G1_REG_DEC_CTRL3_INIT_QP(x) was
->>> off-by-1 and the wrong .clk_gate bit was set in hantro_postproc.c.
->>>
->>> Anyway, this series also extends the MMIO regmap API to allow relaxed
->>> writes for the theoretical reason that avoiding unnecessary membarriers
->>> leads to less CPU usage and small improvements to battery life. However,
->>> in practice I could not measure differences between relaxed/non-relaxed
->>> IO, so I'm on the fence whether to keep or remove the relaxed calls.
->>>
->>> What I could masure is the performance impact of adding more sub-reg
->>> field acesses: a constant ~ 20 microsecond bump per G1 h264 frame. This
->>> is acceptable considering the total time to decode a frame takes three
->>> orders of magnitude longer, i.e. miliseconds ranges, depending on the
->>> frame size and bitstream params, so it is an acceptable trade-off to
->>> have a more generic driver.
->>
->> In the RK3399 variant all fields use completely different positions so
->> in order to make the driver fully generic all around 145 sub-reg fields
->> used for h264 needs to be converted, see [1] for a quick generation of
->> field mappings used for h264 decoding.
->>
+On Thu, Oct 29, 2020 at 08:26:27PM +0530, Sumit Garg wrote:
+> arm64 platforms with GICv3 or later supports pseudo NMIs which can be
+> leveraged to roundup CPUs which are stuck in hard lockup state with
+> interrupts disabled that wouldn't be possible with a normal IPI.
 > 
-> Currently, we've only decided to support H.264 decoding via he RKVDEC
-> core on RK3399.
+> So instead switch to roundup CPUs using IPI turned as NMI. And in
+> case a particular arm64 platform doesn't supports pseudo NMIs,
+> it will switch back to default kgdb CPUs roundup mechanism.
 > 
-> What your thoughts here Jonas, have you tested H.264 on RK3399 with
-> the G1 core? If it works, what benefits do we get from enabling both
-> cores?
-
-The G1 core was working back in Dec/Jan/Feb and was used for H.264 decoding in
-LibreELEC nightly images until the rkvdec h264 driver was submitted/merged.
-
-For RK3399 and other SoCs that both contain RKVDEC and VDPU2 IP it may not be
-much of a benefit. Possible for decoding multiple videos in parallel,
-it is unclear to me if both IP can be used at the same time.
-
-There are however SoCs that only have VDPU2 IP (px30/rk3326 and rk1808)
-that could benefit from adding support for the VDPU2 IP, see [1].
-
-Should I submit the rk3399 variant in similar style as the rk3399 mpeg2 decoder?
-Or should I try and adopt it to be based on this series and use regmap?
-
-[1] https://github.com/HermanChen/mpp/blob/develop/osal/mpp_platform.cpp#L80-L82
-
-Best regards,
-Jonas
-
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  arch/arm64/include/asm/kgdb.h |  9 +++++++++
+>  arch/arm64/kernel/ipi_nmi.c   |  5 +++++
+>  arch/arm64/kernel/kgdb.c      | 35 +++++++++++++++++++++++++++++++++++
+>  3 files changed, 49 insertions(+)
 > 
-> Thanks!
-> Ezequiel
-> 
->> Any indication on how the performance will be impacted with 145 fields
->> compared to around 20 fields used in this series?
->>
->> Another issue with RK3399 variant is that some fields use different
->> position depending on the codec used, e.g. two dec_ref_frames in [2].
->> Should we use codec specific field maps? or any other suggestion on
->> how we can handle such case?
->>
->> [1] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/8b88d94d2ed966c7d88d9a735c0c97368eb6c92d
->> [2] https://github.com/Kwiboo/rockchip-vpu-regtool/blob/master/rk3399_dec_regs.c#L1065
->> [3] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/9498326296445a9ce153b585cc48e0cea05d3c93
->>
->> Best regards,
->> Jonas
->>
->>> This has been tested on next-20201009 with imx8mq for G1 and an SoC with
->>> VC8000 which has not yet been added (hopefuly support lands soon).
->>>
->>> Kind regards,
->>> Adrian
->>>
->>> Adrian Ratiu (18):
->>>   media: hantro: document all int reg bits up to vc8000
->>>   media: hantro: make consistent use of decimal register notation
->>>   media: hantro: make G1_REG_SOFT_RESET Rockchip specific
->>>   media: hantro: add reset controller support
->>>   media: hantro: prepare clocks before variant inits are run
->>>   media: hantro: imx8mq: simplify ctrlblk reset logic
->>>   regmap: mmio: add config option to allow relaxed MMIO accesses
->>>   media: hantro: add initial MMIO regmap infrastructure
->>>   media: hantro: default regmap to relaxed MMIO
->>>   media: hantro: convert G1 h264 decoder to regmap fields
->>>   media: hantro: convert G1 postproc to regmap
->>>   media: hantro: add VC8000D h264 decoding
->>>   media: hantro: add VC8000D postproc support
->>>   media: hantro: make PP enablement logic a bit smarter
->>>   media: hantro: add user-selectable, platform-selectable H264 High10
->>>   media: hantro: rename h264_dec as it's not G1 specific anymore
->>>   media: hantro: add dump registers debug option before decode start
->>>   media: hantro: document encoder reg fields
->>>
->>>  drivers/base/regmap/regmap-mmio.c             |   34 +-
->>>  drivers/staging/media/hantro/Makefile         |    3 +-
->>>  drivers/staging/media/hantro/hantro.h         |   79 +-
->>>  drivers/staging/media/hantro/hantro_drv.c     |   41 +-
->>>  drivers/staging/media/hantro/hantro_g1_regs.h |   92 +-
->>>  ...hantro_g1_h264_dec.c => hantro_h264_dec.c} |  237 +++-
->>>  drivers/staging/media/hantro/hantro_hw.h      |   23 +-
->>>  .../staging/media/hantro/hantro_postproc.c    |  144 ++-
->>>  drivers/staging/media/hantro/hantro_regmap.c  | 1015 +++++++++++++++++
->>>  drivers/staging/media/hantro/hantro_regmap.h  |  295 +++++
->>>  drivers/staging/media/hantro/hantro_v4l2.c    |    3 +-
->>>  drivers/staging/media/hantro/imx8m_vpu_hw.c   |   75 +-
->>>  drivers/staging/media/hantro/rk3288_vpu_hw.c  |    5 +-
->>>  include/linux/regmap.h                        |    5 +
->>>  14 files changed, 1795 insertions(+), 256 deletions(-)
->>>  rename drivers/staging/media/hantro/{hantro_g1_h264_dec.c => hantro_h264_dec.c} (58%)
->>>  create mode 100644 drivers/staging/media/hantro/hantro_regmap.c
->>>  create mode 100644 drivers/staging/media/hantro/hantro_regmap.h
->>>
-> 
-> 
+> diff --git a/arch/arm64/include/asm/kgdb.h b/arch/arm64/include/asm/kgdb.h
+> index 21fc85e..c3d2425 100644
+> --- a/arch/arm64/include/asm/kgdb.h
+> +++ b/arch/arm64/include/asm/kgdb.h
+> @@ -24,6 +24,15 @@ static inline void arch_kgdb_breakpoint(void)
+>  extern void kgdb_handle_bus_error(void);
+>  extern int kgdb_fault_expected;
+>  
+> +#ifdef CONFIG_KGDB
+> +extern bool kgdb_ipi_nmicallback(int cpu, void *regs);
+> +#else
+> +static inline bool kgdb_ipi_nmicallback(int cpu, void *regs)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+>  #endif /* !__ASSEMBLY__ */
+>  
+>  /*
+> diff --git a/arch/arm64/kernel/ipi_nmi.c b/arch/arm64/kernel/ipi_nmi.c
+> index 597dcf7..6ace182 100644
+> --- a/arch/arm64/kernel/ipi_nmi.c
+> +++ b/arch/arm64/kernel/ipi_nmi.c
+> @@ -8,6 +8,7 @@
+>  
+>  #include <linux/interrupt.h>
+>  #include <linux/irq.h>
+> +#include <linux/kgdb.h>
+>  #include <linux/nmi.h>
+>  #include <linux/smp.h>
+>  
+> @@ -45,10 +46,14 @@ bool arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
+>  static irqreturn_t ipi_nmi_handler(int irq, void *data)
+>  {
+>  	irqreturn_t ret = IRQ_NONE;
+> +	unsigned int cpu = smp_processor_id();
+>  
+>  	if (nmi_cpu_backtrace(get_irq_regs()))
+>  		ret = IRQ_HANDLED;
+>  
+> +	if (kgdb_ipi_nmicallback(cpu, get_irq_regs()))
+> +		ret = IRQ_HANDLED;
+> +
+>  	return ret;
+
+It would be better to declare existing return value for
+kgdb_nmicallback() to be dangerously stupid and fix it so it returns an
+irqreturn_t (that's easy since most callers do not need to check the
+return value).
+
+Then this code simply becomes:
+
+	return kgdb_nmicallback(cpu, get_irq_regs());
+
+
+>  }
+>  
+> diff --git a/arch/arm64/kernel/kgdb.c b/arch/arm64/kernel/kgdb.c
+> index 1a157ca3..c26e710 100644
+> --- a/arch/arm64/kernel/kgdb.c
+> +++ b/arch/arm64/kernel/kgdb.c
+> @@ -17,6 +17,7 @@
+>  
+>  #include <asm/debug-monitors.h>
+>  #include <asm/insn.h>
+> +#include <asm/nmi.h>
+>  #include <asm/traps.h>
+>  
+>  struct dbg_reg_def_t dbg_reg_def[DBG_MAX_REG_NUM] = {
+> @@ -353,3 +354,37 @@ int kgdb_arch_remove_breakpoint(struct kgdb_bkpt *bpt)
+>  	return aarch64_insn_write((void *)bpt->bpt_addr,
+>  			*(u32 *)bpt->saved_instr);
+>  }
+> +
+> +bool kgdb_ipi_nmicallback(int cpu, void *regs)
+> +{
+> +	if (atomic_read(&kgdb_active) != -1) {
+> +		kgdb_nmicallback(cpu, regs);
+> +		return true;
+> +	}
+> +
+> +	return false;
+> +}
+
+I *really* don't like this function.
+
+If the return code of kgdb_nmicallback() is broken then fix it, don't
+just wrap it and invent a new criteria for the return code.
+
+To be honest I don't actually think the logic in kgdb_nmicallback() is
+broken. As mentioned above the return value has a weird definition (0
+for "handled it OK" and 1 for "nothing for me to do") but the logic to
+calculate the return code looks OK.
+
+
+> +
+> +static void kgdb_smp_callback(void *data)
+> +{
+> +	unsigned int cpu = smp_processor_id();
+> +
+> +	if (atomic_read(&kgdb_active) != -1)
+> +		kgdb_nmicallback(cpu, get_irq_regs());
+> +}
+
+This is Unused. I presume it is litter from a previous revision of the
+code and can be deleted?
+
+
+> +
+> +bool kgdb_arch_roundup_cpus(void)
+> +{
+> +	struct cpumask mask;
+> +
+> +	if (!arm64_supports_nmi())
+> +		return false;
+> +
+> +	cpumask_copy(&mask, cpu_online_mask);
+> +	cpumask_clear_cpu(raw_smp_processor_id(), &mask);
+> +	if (cpumask_empty(&mask))
+> +		return false;
+
+Why do we need to fallback if there is no work to do? There will still
+be no work to do when we call the fallback.
+
+
+Daniel.
