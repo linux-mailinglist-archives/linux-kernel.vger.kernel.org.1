@@ -2,252 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3796E29E2B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2FA29E2C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391307AbgJ2CeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
+        id S2391237AbgJ2CiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391316AbgJ2CeW (ORCPT
+        with ESMTP id S1726045AbgJ2Cge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 22:34:22 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D409C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 19:34:22 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id h62so1051322oth.9
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 19:34:22 -0700 (PDT)
+        Wed, 28 Oct 2020 22:36:34 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562CCC0613CF;
+        Wed, 28 Oct 2020 19:36:33 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id z24so1132834pgk.3;
+        Wed, 28 Oct 2020 19:36:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zfhlQfEFInfQ3atHQjjksOFf+qtDTs9/oV6yszXiSKI=;
-        b=j1izakXZ6e1uwDZkEieNsENHOkPTe0Mkrq4UW9+OkbU55j7m3R+khlE6j+1OkXRgP6
-         xo+GvNuMV8EKtV2FiB0QtquU0ax2fqmQyIliSun6gaHC9AxBzWy7ItX6mJhUl5tyE1ld
-         0zEQm9LryOlZy/uMUGRssS7SZKkgTnjIh/t2psjcqPB+mdYJyNZFopk/No/AeMua+IOq
-         fYRuxgTM0Uzp0ozHAlb4VOsIISTtxUmUTn+S5cB0qNzL8r93taBUAvGqM5vmAYKFW2FK
-         GyD2EcXKlPhP5el0djs6Udnlt4vc+Nw8G//gdlRjwWEFg2wslHimBeXgMdKJ3BpnT50I
-         9CPA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gtLhAt4Mup4k2BLNkJakc4GXEYtihBg9S7sO53gO1+A=;
+        b=qQtaHxwJ2wg3DEJQ25CvkuAtrdeU43ot7Zd+Cas6VQhX3AetkU+wJsS6xokDINFz9y
+         Xz+XVMU5etexOso6voKM+YYLdMcjEvgavYY/tQ9v9x+Ymxi6Bm9XCW6U3onCDzngeCY2
+         B9r2bbQQ1hr+xOlTpB4Ms1YbOp2vLmCP/KDFKjeBblSggGP/8dvj3w4l4HyivCe7sXNp
+         x37q+byBBIth5+MGb2cw2r+/s9jNLtsYKeXrx5/7yJXE1yEB2bZkUvwvAw2jyKCZFFr7
+         lWvBs/U7tPkbzvmoURcXGO5W0XrZ2DJR3zpYBZRYUFpaHhcMmWEdGathfit9na5N/f0w
+         JqvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zfhlQfEFInfQ3atHQjjksOFf+qtDTs9/oV6yszXiSKI=;
-        b=cEQOhloJ/DX4x7K1CX4OMJ+BmOpbvPczM+aPWP8ElBWuHTpiP1v9OeKjZO9unXYd22
-         5Vm8pjyNJmRbSFWV+GtnsU8jlocvR9Og3WzaMkdk4dCx+P3U9Qby2obH9WMKsXUs8hp8
-         dvv99YpByqLNlTwhGrPXIrmPoolU7JAgePwCMe/1Z+MrFzg+iXy4DO2oG4Tm19s+5IQC
-         72HaOKzMyup/fagTp6MfPilaByf4cw6p6xwTIImJnxtyixMehuG6euyCKgUFjmM5Wi5B
-         Pkvis5houkHIm6Y50Dq9m8dFiHpM7277i6tVEaVPZT2R8FycR08ZM8M5T6L9lO9YAwBu
-         07mA==
-X-Gm-Message-State: AOAM5305QEMZ9ZYzI2uOKksMfpFylrLFmPdJP6/cCd2Vd03gVMuYgt9b
-        VFLtMTa+q0m9mMKWQELXj3IPnD7BIc2NitOu5n3iZ6EkS4a98w==
-X-Google-Smtp-Source: ABdhPJzG0USy5ERlP8Kog/M2N4C60AgQhqPla8TS+vyLvPQLkWwgXxqXm1myOHgzFqZ8ZRMpZNM3P/KT8GNo3tNA498=
-X-Received: by 2002:a9d:bb2:: with SMTP id 47mr1698842oth.160.1603938861370;
- Wed, 28 Oct 2020 19:34:21 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gtLhAt4Mup4k2BLNkJakc4GXEYtihBg9S7sO53gO1+A=;
+        b=iSrPNxXt/FRN0L+o0ReYS9XYUCWOQSYBdnw+aA6Pvl2xPAYsxBxKliTaMh9y1iUR67
+         w45ocLdpzEQiM1oR0bP4v29eOw+HkjwE7UeaKUH8PYeoOi7nID9L0+KhilGIV4d8RLRK
+         qq8KzKvI19o5rVG81E/P4d87ykON5mmGIbZuDGmSL1fT+PPFFTSrZp5HyETKikuUdkOc
+         8YA414d9gHwmOvtxqk/ABmE/MdIn867Z0pXSfZW6LSlu2DOUIHQyVfdWBTktdfIFwSMS
+         kzBH3DrdhdsPzRtNyjYwr62T8SsAtKb+MKDVTqtVQj/d0WOEcURWc5esz1D/U00Ekwgk
+         wZEQ==
+X-Gm-Message-State: AOAM533m2kisSvFG5kd/h/VPIB6kz+oED9VawyrCXTXES8lIK9hje2q0
+        etGvNG528jwy6qer21it3YI=
+X-Google-Smtp-Source: ABdhPJwBBhh+QNBvdIWdax4GSBVTo6mKgDh0nMGSbWr8EvCB0z8dTZvaufW3NUylDGOKlUcVVoyWxA==
+X-Received: by 2002:a17:90a:d490:: with SMTP id s16mr342476pju.185.1603938992731;
+        Wed, 28 Oct 2020 19:36:32 -0700 (PDT)
+Received: from Ryzen-9-3900X.localdomain (ip68-98-75-144.ph.ph.cox.net. [68.98.75.144])
+        by smtp.gmail.com with ESMTPSA id b128sm661648pga.80.2020.10.28.19.36.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 19:36:31 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 19:36:30 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
+Subject: Re: [PATCH] x86/unwind: remove unneeded initialization
+Message-ID: <20201029023630.GA2316@Ryzen-9-3900X.localdomain>
+References: <20201028122102.24202-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-References: <20201021073839.43935-1-zong.li@sifive.com> <CAJF2gTTnGSYAc3AZKCPvhNJsPm_TchPjPrtqc_WzaK7K5eNt+w@mail.gmail.com>
- <CAOnJCULN8h0Jk3H-vskgbaXhgBTgTTAT5Dji0qHi6yHoXGePvg@mail.gmail.com>
-In-Reply-To: <CAOnJCULN8h0Jk3H-vskgbaXhgBTgTTAT5Dji0qHi6yHoXGePvg@mail.gmail.com>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Thu, 29 Oct 2020 10:34:10 +0800
-Message-ID: <CANXhq0q_fOg7vsniVMtNd8VezW1yymf55FYRc61WMkXMOtZpgA@mail.gmail.com>
-Subject: Re: [PATCH] stop_machine: Mark functions as notrace
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Guo Ren <guoren@kernel.org>, Paul McKenney <paulmck@kernel.org>,
-        josh@joshtriplett.org, Steven Rostedt <rostedt@goodmis.org>,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, vincent.whitchurch@axis.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028122102.24202-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 8:23 AM Atish Patra <atishp@atishpatra.org> wrote:
->
-> On Wed, Oct 28, 2020 at 8:44 AM Guo Ren <guoren@kernel.org> wrote:
-> >
-> > Hi Zong & Atish,
-> >
-> > In our 2 harts c910 chip, we found:
-> >
-> > echo function > /sys/kernel/debug/tracing/current_tracer
-> > echo function_graph > /sys/kernel/debug/tracing/current_tracer
-> > echo function > /sys/kernel/debug/tracing/current_tracer
-> > echo function_graph > /sys/kernel/debug/tracing/current_tracer
-> >
-> > Then one core halted at stop_machine_yield:
-> > arch_cpu_idle () at arch/riscv/kernel/process.c:39
-> > 39              local_irq_enable();
-> > (gdb) i th
-> >   Id   Target Id         Frame
-> > * 1    Thread 1 (CPU#0)  arch_cpu_idle () at arch/riscv/kernel/process.c:39
-> >   2    Thread 2 (CPU#1)  stop_machine_yield
-> > (cpumask=0xffffffe001371fa8 <__cpu_online_mask>) at
-> > ./arch/riscv/include/asm/vdso/processor.h:12
-> > (gdb) thread 2
-> > [Switching to thread 2 (Thread 2)]
-> > #0  stop_machine_yield (cpumask=0xffffffe001371fa8
-> > <__cpu_online_mask>) at ./arch/riscv/include/asm/vdso/processor.h:12
-> > 12              __asm__ __volatile__ ("div %0, %0, zero" : "=r" (dummy));
-> >
-> > With your patch, it's solved. For this patch, I'll give:
-> > Tested by: Guo Ren <guoren@kernel.org>
-> >
-> > But that's not enough, we still need:
-> >
-> > diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> > index 226ccce..12b8808 100644
-> > --- a/arch/riscv/kernel/sbi.c
-> > +++ b/arch/riscv/kernel/sbi.c
-> > @@ -376,7 +376,7 @@ EXPORT_SYMBOL(sbi_send_ipi);
-> >   *
-> >   * Return: None
-> >   */
-> > -void sbi_remote_fence_i(const unsigned long *hart_mask)
-> > +void notrace sbi_remote_fence_i(const unsigned long *hart_mask)
-> >  {
-> >         __sbi_rfence(SBI_EXT_RFENCE_REMOTE_FENCE_I,
-> >                      hart_mask, 0, 0, 0, 0);
-> > diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-> > index 400b945d..9467d987 100644
-> > --- a/arch/riscv/mm/cacheflush.c
-> > +++ b/arch/riscv/mm/cacheflush.c
-> > @@ -9,12 +9,12 @@
-> >
-> >  #include <asm/sbi.h>
-> >
-> > -static void ipi_remote_fence_i(void *info)
-> > +static void notrace ipi_remote_fence_i(void *info)
-> >  {
-> >         return local_flush_icache_all();
-> >  }
-> >
-> > -void flush_icache_all(void)
-> > +void notrace flush_icache_all(void)
-> >  {
-> >         if (IS_ENABLED(CONFIG_RISCV_SBI))
-> >                 sbi_remote_fence_i(NULL);
-> >
->
-> Did you see any issue if these functions are not marked as notrace ?
->
-> As per Zong's explanation, the issue was that the other harts already
-> fetched the next 2 nops and
-> executed 1 while kernel patching replaced other with one of the auipc
-> + jalr pair.
->
-> @Zong can correct me if I am wrong.
->
-> These functions are too far ahead. Can it cause such issues ? If yes,
-> then we need to mark each and every function
-> that can be invoked from patch_text_nosync and are not inlined.
->
-> That includes copy_to_kernel_nofault, __sbi_rfence_v02,
-> __sbi_rfence_v02_call, sbi_ecall.
->
-> Few of these functions may be inlined by compiler. Can we depend on that ?
->
-> > Because:
-> > (gdb) bt
-> > #0  flush_icache_all () at arch/riscv/mm/cacheflush.c:20
-> > #1  0xffffffe00020473a in patch_text_nosync (addr=<optimized out>, insns=
-> >     <optimized out>, len=<optimized out>) at arch/riscv/kernel/patch.c:96
-> > #2  0xffffffe000206792 in ftrace_make_call (rec=<optimized out>,
-> > addr=<optimized out>) at arch/riscv/kernel/ftrace.c:109
-> > #3  0xffffffe0002c9be4 in __ftrace_replace_code (rec=0xffffffe01ae40020, e
-> >     nable=true) at kernel/trace/ftrace.c:2503
-> > #4  0xffffffe0002ca092 in ftrace_replace_code (mod_flags=<optimized
-> >     out>) at kernel/trace/ftrace.c:2530
-> > #5  0xffffffe0002ca24a in ftrace_modify_all_code (command=9) at kernel
-> >    /trace/ftrace.c:2677
-> > #6  0xffffffe0002ca2ee in __ftrace_modify_code (data=<optimized out>) at
-> >    kernel/trace/ftrace.c:2703
-> > #7  0xffffffe0002c1390 in multi_cpu_stop (data=0x0) at kernel/stop_machin
-> >    e.c:224
-> > #8  0xffffffe0002c0fbe in cpu_stopper_thread (cpu=<optimized out>) at kern
-> >    el/stop_machine.c:491
-> > #9  0xffffffe0002343be in smpboot_thread_fn (data=0x0) at kernel/smpboot.
-> >    c:165
-> > #10 0xffffffe00022f894 in kthread (_create=0xffffffe01af13040) at kern
-> >    el/kthread.c:292
-> > #11 0xffffffe000201fac in handle_exception () at arch/riscv/kernel/entry.S:236
-> >
+On Wed, Oct 28, 2020 at 01:21:02PM +0100, Lukas Bulwahn wrote:
+> make clang-analyzer on x86_64 defconfig caught my attention with:
+> 
+>   arch/x86/kernel/unwind_orc.c:38:7: warning: Value stored to 'mid' during
+>   its initialization is never read [clang-analyzer-deadcode.DeadStores]
+>           int *mid = first, *found = first;
+>                ^
+> 
+> Commit ee9f8fce9964 ("x86/unwind: Add the ORC unwinder") introduced
+> __orc_find() with this unneeded dead-store initialization.
+> 
+> Put the variable in local scope and initialize only once the value is
+> needed to make clang-analyzer happy.
+> 
+> As compilers will detect this unneeded assignment and optimize this
+> anyway, the resulting object code is effectively identical before and
+> after this change.
+> 
+> No functional change. Effectively, no change to object code.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-It seems to me that the problem happens on the waiting threads, it
-doesn't cause the issue on the patching code thread, so it is OK that
-these functions are traceable. I probably don't figure out all
-possible situations, do you find any issue and reason to change the
-annotation of these functions?
+Seems fine to me.
 
-> > On Wed, Oct 21, 2020 at 3:38 PM Zong Li <zong.li@sifive.com> wrote:
-> > >
-> > > Like the commit cb9d7fd51d9f ("watchdog: Mark watchdog touch functions
-> > > as notrace"), some architectures assume that the stopped CPUs don't make
-> > > function calls to traceable functions when they are in the stopped
-> > > state. For example, it causes unexpected kernel crashed when switching
-> > > tracer on RISC-V.
-> > >
-> > > The following patches added calls to these two functions, fix it by
-> > > adding the notrace annotations.
-> > >
-> > > Fixes: 4ecf0a43e729 ("processor: get rid of cpu_relax_yield")
-> > > Fixes: 366237e7b083 ("stop_machine: Provide RCU quiescent state in
-> > > multi_cpu_stop()")
-> > >
-> > > Signed-off-by: Zong Li <zong.li@sifive.com>
-> > > ---
-> > >  kernel/rcu/tree.c     | 2 +-
-> > >  kernel/stop_machine.c | 2 +-
-> > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index 06895ef85d69..2a52f42f64b6 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -409,7 +409,7 @@ bool rcu_eqs_special_set(int cpu)
-> > >   *
-> > >   * The caller must have disabled interrupts and must not be idle.
-> > >   */
-> > > -void rcu_momentary_dyntick_idle(void)
-> > > +notrace void rcu_momentary_dyntick_idle(void)
-> > >  {
-> > >         int special;
-> > >
-> > > diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
-> > > index 865bb0228ab6..890b79cf0e7c 100644
-> > > --- a/kernel/stop_machine.c
-> > > +++ b/kernel/stop_machine.c
-> > > @@ -178,7 +178,7 @@ static void ack_state(struct multi_stop_data *msdata)
-> > >                 set_state(msdata, msdata->state + 1);
-> > >  }
-> > >
-> > > -void __weak stop_machine_yield(const struct cpumask *cpumask)
-> > > +notrace void __weak stop_machine_yield(const struct cpumask *cpumask)
-> > >  {
-> > >         cpu_relax();
-> > >  }
-> > > --
-> > > 2.28.0
-> > >
-> >
-> >
-> > --
-> > Best Regards
-> >  Guo Ren
-> >
-> > ML: https://lore.kernel.org/linux-csky/
->
->
->
-> --
-> Regards,
-> Atish
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+
+> ---
+> applies cleanly on current master and next-20201028
+> 
+> Josh, please ack.
+> Ingo, Borislav, please pick this minor non-urgent clean-up patch.
+> 
+>  arch/x86/kernel/unwind_orc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+> index 6a339ce328e0..5c64eed08257 100644
+> --- a/arch/x86/kernel/unwind_orc.c
+> +++ b/arch/x86/kernel/unwind_orc.c
+> @@ -35,7 +35,7 @@ static struct orc_entry *__orc_find(int *ip_table, struct orc_entry *u_table,
+>  {
+>  	int *first = ip_table;
+>  	int *last = ip_table + num_entries - 1;
+> -	int *mid = first, *found = first;
+> +	int *found = first;
+>  
+>  	if (!num_entries)
+>  		return NULL;
+> @@ -47,7 +47,7 @@ static struct orc_entry *__orc_find(int *ip_table, struct orc_entry *u_table,
+>  	 * ignored when they conflict with a real entry.
+>  	 */
+>  	while (first <= last) {
+> -		mid = first + ((last - first) / 2);
+> +		int *mid = first + ((last - first) / 2);
+>  
+>  		if (orc_ip(mid) <= ip) {
+>  			found = mid;
+> -- 
+> 2.17.1
+> 
