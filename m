@@ -2,130 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96EB929EB13
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6FF29EB15
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725803AbgJ2L5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:57:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56117 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725300AbgJ2L5x (ORCPT
+        id S1725968AbgJ2L6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:58:02 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:57264 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725826AbgJ2L6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:57:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603972672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dMc/1trCtvDJZhClGbDnABHwGU/CZHZ5LiraBXGQZzI=;
-        b=IF2F9wMay7E2/WdY7RDBR7PBoz2fl0vs/qCqkDF+FD4nb9r4tbJG8zX1RzcFLIlpxd5fPM
-        0+pqdZ6ekI6QFxB/thcfaZRb77vAJjS4u/NPStdS6ua8WxIXE1fCumSZH4I5YWeOHbpljG
-        Sh6F95doa6CVivmyvuPeCWzyk41tMqw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-404-G-cIaxb2MZmhusLPnGwJDg-1; Thu, 29 Oct 2020 07:57:48 -0400
-X-MC-Unique: G-cIaxb2MZmhusLPnGwJDg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E66E78049ED;
-        Thu, 29 Oct 2020 11:57:46 +0000 (UTC)
-Received: from krava (unknown [10.40.193.60])
-        by smtp.corp.redhat.com (Postfix) with SMTP id B4AD46EF40;
-        Thu, 29 Oct 2020 11:57:44 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 12:57:43 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH] perf data: Allow to use stdio functions for pipe mode
-Message-ID: <20201029115743.GF3027684@krava>
-References: <20201028085632.825804-1-namhyung@kernel.org>
+        Thu, 29 Oct 2020 07:58:00 -0400
+X-UUID: 559b5187c4174317bf3ac6acd01675e1-20201029
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=TLQL1F5nx2wwKalpLHC2wUfSew2UGwvEZg1kmpw5dJM=;
+        b=VoR6k2bprBy2BJe6DSH62HZqQsfj/Ii20ViSwhqDK4NlWNA3Bx0sogyX7wWBw756r0hCX+W3f639mhmzv1IaRhQW20hzJCgR7Cc27aw5FRgFP2LrXy8pSPtEGUydJp57jpYyQJIMgSMB8Wd1uSgGmBswEVsvrmbaMTzgwn2oiWY=;
+X-UUID: 559b5187c4174317bf3ac6acd01675e1-20201029
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2029360377; Thu, 29 Oct 2020 19:57:53 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 29 Oct 2020 19:57:50 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 29 Oct 2020 19:57:50 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>
+CC:     <matthias.bgg@gmail.com>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v1 0/6] scsi: ufs: Add some proprietary features in MediaTek UFS platforms
+Date:   Thu, 29 Oct 2020 19:57:44 +0800
+Message-ID: <20201029115750.24391-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028085632.825804-1-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 05:56:32PM +0900, Namhyung Kim wrote:
-> When perf data is in a pipe, it reads each event separately using
-> read(2) syscall.  This is a huge performance bottleneck when
-> processing large data like in perf inject.  Also perf inject needs to
-> use write(2) syscall for the output.
-> 
-> So convert it to use buffer I/O functions in stdio library for pipe
-> data.  This makes inject-build-id bench time drops from 20ms to 8ms.
-> 
->   $ perf bench internals inject-build-id
->   # Running 'internals/inject-build-id' benchmark:
->     Average build-id injection took: 8.074 msec (+- 0.013 msec)
->     Average time per event: 0.792 usec (+- 0.001 usec)
->     Average memory usage: 8328 KB (+- 0 KB)
->     Average build-id-all injection took: 5.490 msec (+- 0.008 msec)
->     Average time per event: 0.538 usec (+- 0.001 usec)
->     Average memory usage: 7563 KB (+- 0 KB)
-> 
-> This patch enables it just for perf inject when used with pipe (it's a
-> default behavior).  Maybe we could do it for perf record and/or report
-> later..
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/builtin-inject.c |  2 ++
->  tools/perf/util/data.c      | 36 +++++++++++++++++++++++++++++++++---
->  tools/perf/util/data.h      | 11 ++++++++++-
->  tools/perf/util/header.c    |  8 ++++----
->  tools/perf/util/session.c   |  7 ++++---
->  5 files changed, 53 insertions(+), 11 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> index 452a75fe68e5..14d6c88fed76 100644
-> --- a/tools/perf/builtin-inject.c
-> +++ b/tools/perf/builtin-inject.c
-> @@ -853,10 +853,12 @@ int cmd_inject(int argc, const char **argv)
->  		.output = {
->  			.path = "-",
->  			.mode = PERF_DATA_MODE_WRITE,
-> +			.use_stdio = true,
->  		},
->  	};
->  	struct perf_data data = {
->  		.mode = PERF_DATA_MODE_READ,
-> +		.use_stdio = true,
->  	};
->  	int ret;
->  
-> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
-> index c47aa34fdc0a..47b5a4b50ca5 100644
-> --- a/tools/perf/util/data.c
-> +++ b/tools/perf/util/data.c
-> @@ -174,8 +174,16 @@ static bool check_pipe(struct perf_data *data)
->  			is_pipe = true;
->  	}
->  
-> -	if (is_pipe)
-> -		data->file.fd = fd;
-> +	if (is_pipe) {
-> +		if (data->use_stdio) {
-> +			const char *mode;
-> +
-> +			mode = perf_data__is_read(data) ? "r" : "w";
-> +			data->file.fptr = fdopen(fd, mode);
-
-I guess fdopen should never fail right? but I think we should
-add BUG_ON(data->file.fptr == NULL) or something
-
-other than this the change looks good, I can see the speedup
-in bench as well
-
-jirka
+SGksDQoNClRoaXMgcGF0Y2ggc2VyaWVzIHByb3ZpZGVzIHNvbWUgZmVhdHVyZXMgYW5kIGZpeGVz
+IGluIE1lZGlhVGVrIFVGUyBwbGF0Zm9ybXMsDQoNCjEuIFN1cHBvcnQgVkEwOSByZWd1bGF0b3Ig
+b3BlcmF0aW9ucw0KMi4gU3VwcG9ydCBvcHRpb24gdG8gZGlzYWJsZSBhdXRvLWhpYmVybjgNCjMu
+IFN1cHBvcnQgSFMtRzQNCjQuIERlY291cGxlIGZlYXR1cmVzIGZyb20gcGxhdGZvcm0gYmluZGlu
+Z3MNCjUuIE1pc2MgZml4ZXMNCg0KU3RhbmxleSBDaHUgKDYpOg0KICBzY3NpOiB1ZnMtbWVkaWF0
+ZWs6IEFzc2lnbiBhcmd1bWVudHMgd2l0aCBjb3JyZWN0IHR5cGUNCiAgc2NzaTogdWZzLW1lZGlh
+dGVrOiBTdXBwb3J0IFZBMDkgcmVndWxhdG9yIG9wZXJhdGlvbnMNCiAgc2NzaTogdWZzLW1lZGlh
+dGVrOiBEZWNvdXBsZSBmZWF0dXJlcyBmcm9tIHBsYXRmb3JtIGJpbmRpbmdzDQogIHNjc2k6IHVm
+cy1tZWRpYXRlazogU3VwcG9ydCBvcHRpb24gdG8gZGlzYWJsZSBhdXRvLWhpYmVybjgNCiAgc2Nz
+aTogdWZzOiBBZGQgZW51bXMgZm9yIFVuaVBybyB2ZXJzaW9uIGhpZ2hlciB0aGFuIDEuNg0KICBz
+Y3NpOiB1ZnMtbWVkaWF0ZWs6IEFkZCBIUy1HNCBzdXBwb3J0DQoNCiBkcml2ZXJzL3Njc2kvdWZz
+L3Vmcy1tZWRpYXRlay5jIHwgMjE4ICsrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tDQog
+ZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuaCB8ICAyMiArKy0tDQogZHJpdmVycy9zY3Np
+L3Vmcy91bmlwcm8uaCAgICAgICB8ICAgNiArLQ0KIDMgZmlsZXMgY2hhbmdlZCwgMTc5IGluc2Vy
+dGlvbnMoKyksIDY3IGRlbGV0aW9ucygtKQ0KDQotLSANCjIuMTguMA0K
 
