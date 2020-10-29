@@ -2,94 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E418529E663
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1220229E66A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729694AbgJ2I13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 04:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726942AbgJ2I13 (ORCPT
+        id S1728494AbgJ2IaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 04:30:04 -0400
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:33239 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725898AbgJ2IaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:27:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20EEC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 01:27:28 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603960047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x8LDy5M/rxt2BJdbZmw1nw2xthchI5y7N+A3InWBsU8=;
-        b=uTjd46qB4knJzR85Tja4SEf09vaZDjJCOXHoq0B+4iYqU3wBUagANQLB+5Fyho7e/IN8S4
-        r4nPUExwWcsClZoaN5M6st4U5I+NO/YZmU6O+Orq9guZ5pKvcJdo5RQu7P6rlNmZsWVvMi
-        SOGjsEYxhAXyt2dgFiaL6mIO/S+CM0we9OGEtkYappDngVoCNqKvzPyUn7I20syfeAWBpn
-        9xAh0A2UD+IbrJ9iHcJNGX/o24CVLoxLFnBQe6SSuphgAWYxTY/g/xql9QKjjsW+Nc4oR6
-        WDBqhVLsBprrUNHcR1ozVeUMGpQusrnMmDTRBMvBWm0bdjyfT3inXs7Ny5gYNQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603960047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x8LDy5M/rxt2BJdbZmw1nw2xthchI5y7N+A3InWBsU8=;
-        b=a+0tIpNoHitWMMxktsrXemtOsrof5qg8gzWC2v1U50keS8QZNIBwIeXT1/pld6EpeRibOz
-        XaLDR8xq60lU/vCw==
-To:     "Zhang\, Qiang" <Qiang.Zhang@windriver.com>,
-        "pmladek\@suse.com" <pmladek@suse.com>,
-        "tj\@kernel.org" <tj@kernel.org>
-Cc:     "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm\@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSNOiDlm57lpI06?= [PATCH v2] kthread_worker:
- re-set CPU affinities if CPU come online
-In-Reply-To: <BYAPR11MB2632B18DF7C02B68E758932BFF140@BYAPR11MB2632.namprd11.prod.outlook.com>
-References: <20201028073031.4536-1-qiang.zhang@windriver.com> <874kme21nv.fsf@nanos.tec.linutronix.de> <BYAPR11MB263255ED056CED38285FC95BFF170@BYAPR11MB2632.namprd11.prod.outlook.com> <871rhi1z7j.fsf@nanos.tec.linutronix.de> <BYAPR11MB2632B18DF7C02B68E758932BFF140@BYAPR11MB2632.namprd11.prod.outlook.com>
-Date:   Thu, 29 Oct 2020 09:27:26 +0100
-Message-ID: <874kmdfndd.fsf@nanos.tec.linutronix.de>
+        Thu, 29 Oct 2020 04:30:03 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id Y3JmkJXmXAVOrY3JpkF0ZX; Thu, 29 Oct 2020 09:30:01 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1603960201; bh=v8+4i8qQiK6QiD3BA5ye2evdMqTvYzplo5aHG26jLxE=;
+        h=Subject:From:To:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=UAO87skK2RbsTIdLpdiRE7nNs0cABVeyyXuI1/baxLxaQMUvqD96Lff2DV7BS1nGO
+         7GhJuhK2fh1Mzd82O0SmwcVT0TOnNZDaYfZp9fL6Z17I3ko2S+7GESB+nXNLNzgPaD
+         FvQ+l3/bUA/GHjVnvMz9jALSFm1nHFUfkUNj9YT5bcWpMZr2C0cTTMwfhLfqFskZEa
+         lBMeArr2CT/FMrE8YiweLujs3QR5bdFrCBOPC8dPvqQk0yjMNk5zVLknxmaIg14eJM
+         /o4F2cDx7E++rb5H63UIUuqbq9bDwS1g5O9XiyZpNUZ0sloADEONYNsjtdSXXlTKjl
+         yg3JYaFBQ/uqQ==
+Subject: Re: [PATCH 0/8] media: v4l2: simplify compat ioctl handling
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200917152823.1241599-1-arnd@arndb.de>
+ <cbbed130-3329-85a5-f360-3537391c1569@xs4all.nl>
+ <CAK8P3a3KCxSJyfoBe40_=Qjsmc_e-yJFVE9jzaTGBz7t76GBHQ@mail.gmail.com>
+ <04808d02-e919-b804-14bf-79e529cf997a@xs4all.nl>
+Message-ID: <28442e5c-0146-94b2-414a-f64b5cf63423@xs4all.nl>
+Date:   Thu, 29 Oct 2020 09:29:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <04808d02-e919-b804-14bf-79e529cf997a@xs4all.nl>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfLLRHvzjBIdoR6DGO6D1idzEg2AjnoUDl9thWpg2llbW/JWltWxaZDqsKaaD4F6sbPE2FHXeR2JgY6VYMBxDBT+EDDW5Jq1yGwGdruTFZsL0oSguyuV1
+ nISUV+xYES8fN9hqYno38Eu64aU48ClkDysxMD9TJbqIWWdVGvcpmzNhouLnjz3VHYzIYshi0BcfZQ6bcnMSad74P3sTa4HILpHUSVQFTOn9voHD0/kTQ992
+ ly+z1u1Q4ZGzG0MqQDqS3g5HEqtwuu8v7ESI86L0ODPCfrcrvFesjeWqyAPIi4Pej89dthgJ0rZUPofV9PDkjw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29 2020 at 03:14, Qiang Zhang wrote:
-> Really, this patch is not considered that work may be put into the
-> queue after the bound CPU is offline.  in addition, when the bound CPU
-> goes online again, before restoring the worker's CPU affinity, work
-> may be put into the queue.
+Hi Arnd,
 
-And how is that supposed to be correct?
+On 06/10/2020 17:28, Hans Verkuil wrote:
+> Hi Arnd,
+> 
+> On 06/10/2020 17:14, Arnd Bergmann wrote:
+>>
+>> As you suggested earlier, I will resend the fixed series after -rc1
+>> is out.
+> 
+> Looking forward to that.
 
-> Although int this (powerclamp) way=EF=BC=8Cthat's not a problem, that it =
-is
-> solved by destroying and creating tasks when the CPU hotplug, in
-> addition, when CPU going down , this need call 'cancel_work_sync' func
-> in offline callback, this may be blocked long time. these operation is
-> expensive.
+FYI: v5.10-rc1 was just merged into the media_tree master branch.
 
-It does not matter whether it's expensive or not. It's correct and
-that's what matters most.
+Once I have the v2 of this series I'll test it and if it is OK make a PR.
 
-> this patch only just to recover the worker task's affinity when CPU go
-> to online again that create by "kthread_create_worker_on_cpu" func ,
-> likely per-CPU worker method when CPU hotplug in "workqueue" and
-> "io-wq".
+Thanks!
 
-I know what this patch just does, but that makes it not any more
-correct. It creates a semanticaly ill defined illusion of correctness.
-
-We are not "fixing" a problem by making it work for your particular and
-even not explained use case.
-
-The expected semantics of a cpu bound kthread_worker are completely
-unclear and undocumented. This needs to be fixed first and once this is
-established and agreed on then the gaps in the implementation can be
-closed.
-
-Thanks,
-
-        tglx
+	Hans
