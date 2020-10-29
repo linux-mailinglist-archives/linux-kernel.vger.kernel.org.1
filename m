@@ -2,107 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7401329F3A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6182F29F3A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:55:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727277AbgJ2RxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgJ2RxA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:53:00 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2B8C0613CF;
-        Thu, 29 Oct 2020 10:53:00 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g12so2963501pgm.8;
-        Thu, 29 Oct 2020 10:53:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7zoU5cUE4YpN/HwZnaDsQKl1Im3HzToC2Y9JqAnH86I=;
-        b=eCsRrQC1KdcbB1iea3lgRshQ5gARYCmKP1i9kSZ9wGJZCEat/C2TfKNH5WEFxBZWvc
-         SpxsZxrUkChtqKiARch5VeXw6XCsd7MFztIQI/mjTx3TN0V8/oHMMjtv5VTTWYzcFkJ5
-         JV+K6S3B1QOy5e97XGjB6EMfzkvmUeHzh5/IaS+r/XnHniWFRqQeXWDzIeBlLIF3knZU
-         mGHj9RgmlrS3gjpiacnhR1NrKOEaz1H99ljtpxoeilihJF3udOn/GL50FqDj6yW2iJKN
-         SJHBlMEPau6+WNfyyGmL28T5IjKOyroIHOjLPaIqKDxbz/JYzEoL3rzxtbc0mTJ8Jmyz
-         khoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7zoU5cUE4YpN/HwZnaDsQKl1Im3HzToC2Y9JqAnH86I=;
-        b=Mv34hvxQiDbT5AkBM6vyQvkxDiDCzcx6dKzDfsZymKjqflzhrhommV0m3CchDlq8ap
-         hxqAVYn4MOSURlk3WXWOBEk2wmiZ4c1scR/RxRdFkhbMtqSu4qF/N/uIzD3+qrWOyizm
-         kTDYCqfHQfLjkEp1xNR5cF6vvtwBKgRlwUemxvSEH5xRhrJ1p9FZM+4yJH304acL0ibY
-         N1Suregpb/oapyOZ/crNUAMQ74Ai8gf4TuhHR/utPuMRi8Vco9rW9Ry+GLwF5qB1+IwF
-         pgeb9P4RZKSwgOVXB/1X0fqjaNvl5nvcQM3GFxPWVQrKv1aZlzhR8xavm8UArc7xDG+A
-         Fsww==
-X-Gm-Message-State: AOAM532LIsNDdRbo+KcSpFmaM//DnZVcXOPIiE4jpjmCP8giyKPIYRtL
-        O9F6lFCnIQG3/Aw+CmC9SDo=
-X-Google-Smtp-Source: ABdhPJydK0HnwSa4MJ3KkR6A7sszg89jnvRWzJbNu4AnXv6Wnxu8Bs7nanBBvf8nW9GmEq4npY6dWQ==
-X-Received: by 2002:a65:6808:: with SMTP id l8mr4914707pgt.50.1603993979882;
-        Thu, 29 Oct 2020 10:52:59 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id l82sm3730669pfd.102.2020.10.29.10.52.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 10:52:59 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 10:52:56 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     "open list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)..." 
-        <linux-input@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] Input: pmic8xxx-keypad: remove unnecessary
- CONFIG_PM_SLEEP
-Message-ID: <20201029175256.GD2547185@dtor-ws>
-References: <20201029075236.228335-1-coiby.xu@gmail.com>
+        id S1726439AbgJ2Rzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 13:55:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:41836 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725777AbgJ2Rzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 13:55:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77E96139F;
+        Thu, 29 Oct 2020 10:55:43 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 591DD3F66E;
+        Thu, 29 Oct 2020 10:55:41 -0700 (PDT)
+References: <20201023101158.088940906@infradead.org> <20201023102347.067278757@infradead.org> <jhjd011ov4y.mognet@arm.com> <20201029173409.GT2628@hirez.programming.kicks-ass.net>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org, ouwen210@hotmail.com
+Subject: Re: [PATCH v4 11/19] sched/core: Make migrate disable and CPU hotplug cooperative
+In-reply-to: <20201029173409.GT2628@hirez.programming.kicks-ass.net>
+Date:   Thu, 29 Oct 2020 17:55:34 +0000
+Message-ID: <jhj7dr8q5m1.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029075236.228335-1-coiby.xu@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 03:52:34PM +0800, Coiby Xu wrote:
-> SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
 
-Doesn't it result in "defined but not used" warnings if you compile
-without CONFIG_PM? I believe if you are dropping #ifdef guards you need
-to add __maybe_unused annotations.
+On 29/10/20 17:34, Peter Zijlstra wrote:
+> On Thu, Oct 29, 2020 at 04:27:09PM +0000, Valentin Schneider wrote:
+[...]
+> Can do I suppose, although I'm no sure what, if anything that helps,
+> because then we needs yet another comment explaining things.
+>
+> I ended up with the below. Is that an improvement?
 
-> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+I'm leaning towards "yes", but YMMV.
+
+>
 > ---
->  drivers/input/keyboard/pmic8xxx-keypad.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/input/keyboard/pmic8xxx-keypad.c b/drivers/input/keyboard/pmic8xxx-keypad.c
-> index 91d5811d6f0e..c04ab04331b2 100644
-> --- a/drivers/input/keyboard/pmic8xxx-keypad.c
-> +++ b/drivers/input/keyboard/pmic8xxx-keypad.c
-> @@ -621,7 +621,6 @@ static int pmic8xxx_kp_probe(struct platform_device *pdev)
->  	return 0;
->  }
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 3d7d5b7b9c99..c9c69511ece4 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -7226,11 +7226,19 @@ static void balance_push(struct rq *rq)
+>  	lockdep_assert_held(&rq->lock);
+>  	SCHED_WARN_ON(rq->cpu != smp_processor_id());
 >  
-> -#ifdef CONFIG_PM_SLEEP
->  static int pmic8xxx_kp_suspend(struct device *dev)
->  {
->  	struct platform_device *pdev = to_platform_device(dev);
-> @@ -661,7 +660,6 @@ static int pmic8xxx_kp_resume(struct device *dev)
->  
->  	return 0;
->  }
-> -#endif
->  
->  static SIMPLE_DEV_PM_OPS(pm8xxx_kp_pm_ops,
->  			 pmic8xxx_kp_suspend, pmic8xxx_kp_resume);
-> -- 
-> 2.28.0
-> 
+> +	/*
+> +	 * When migrate_disable(), we'll also have nr_pinned incremented due to
+> +	 * this being the tail end of schedule(). Therefore we do not need to wake
+> +	 * the hotplug_wait and go straight to jail^Wexit.
+> +	 */
+> +	if (is_migration_disabled(push_task))
+> +		return;
+> +
+>  	/*
+>  	 * Both the cpu-hotplug and stop task are in this case and are
+>  	 * required to complete the hotplug process.
+>  	 */
+> -	if (is_per_cpu_kthread(push_task) || is_migration_disabled(push_task)) {
+> +	if (is_per_cpu_kthread(push_task)) {
+>  		/*
+>  		 * If this is the idle task on the outgoing CPU try to wake
+>  		 * up the hotplug control thread which might wait for the
 
-Thanks.
-
--- 
-Dmitry
