@@ -2,121 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB9B29DCA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFC029DCA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387933AbgJ2Abb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:31:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54592 "EHLO mail.kernel.org"
+        id S2388672AbgJ2Abn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:31:43 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50850 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728224AbgJ2Ab2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 20:31:28 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ABF9D2076B;
-        Thu, 29 Oct 2020 00:31:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603931487;
-        bh=0na4mT6eNXzrRMVhpFNG3ZDkoIiM9kYNBq3wAcqLzBE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Cpf/clVVmqzTpV19NiSrbhVA9NtJ+yFm0xgE5+5I/0PwCzJIQyGVV7WTxrMABNmRD
-         F5oUMAvU0rFn217BTUmy7XJwESfPH/27qpIma7yF9yesyyD0XB6Zjn/0TBKqZ7UOd4
-         zsG/0JUoo46rlIocYLs5OYrp24OSsX1ic3B2Rzn4=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3F82135229CE; Wed, 28 Oct 2020 17:31:27 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 17:31:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Qian Cai <cai@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/smp: Move rcu_cpu_starting() earlier
-Message-ID: <20201029003127.GJ3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201028182334.13466-1-cai@redhat.com>
- <87lffpx598.fsf@mpe.ellerman.id.au>
+        id S1728272AbgJ2Abk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 20:31:40 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kXvqm-0043hO-06; Thu, 29 Oct 2020 01:31:32 +0100
+Date:   Thu, 29 Oct 2020 01:31:31 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
+Cc:     jim.cromie@gmail.com, Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v4 3/5] net: ax88796c: ASIX AX88796C SPI Ethernet Adapter
+ Driver
+Message-ID: <20201029003131.GF933237@lunn.ch>
+References: <20201028214012.9712-1-l.stelmach@samsung.com>
+ <CGME20201028214016eucas1p19d2049a4edb4461b2424358e206dc59c@eucas1p1.samsung.com>
+ <20201028214012.9712-4-l.stelmach@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87lffpx598.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201028214012.9712-4-l.stelmach@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 11:09:07AM +1100, Michael Ellerman wrote:
-> Qian Cai <cai@redhat.com> writes:
-> > The call to rcu_cpu_starting() in start_secondary() is not early enough
-> > in the CPU-hotplug onlining process, which results in lockdep splats as
-> > follows:
-> 
-> Since when?
-> What kernel version?
-> 
-> I haven't seen this running CPU hotplug tests with PROVE_LOCKING=y on
-> v5.10-rc1. Am I missing a CONFIG?
+> +static void
+> +ax88796c_get_regs(struct net_device *ndev, struct ethtool_regs *regs, void *_p)
+> +{
+> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
+> +	u16 *p = _p;
+> +	int offset, i;
 
-My guess would be that adding CONFIG_PROVE_RAW_LOCK_NESTING=y will
-get you some splats.
+You missed a reverse christmass tree fix here.
 
-							Thanx, Paul
+> +static int comp;
+> +static int msg_enable = NETIF_MSG_PROBE |
+> +			NETIF_MSG_LINK |
+> +			/* NETIF_MSG_TIMER | */
+> +			/* NETIF_MSG_IFDOWN | */
+> +			/* NETIF_MSG_IFUP | */
+> +			NETIF_MSG_RX_ERR |
+> +			NETIF_MSG_TX_ERR |
+> +			/* NETIF_MSG_TX_QUEUED | */
+> +			/* NETIF_MSG_INTR | */
+> +			/* NETIF_MSG_TX_DONE | */
+> +			/* NETIF_MSG_RX_STATUS | */
+> +			/* NETIF_MSG_PKTDATA | */
+> +			/* NETIF_MSG_HW | */
+> +			/* NETIF_MSG_WOL | */
+> +			0;
 
-> cheers
-> 
-> 
-> >  WARNING: suspicious RCU usage
-> >  -----------------------------
-> >  kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
-> >
-> >  other info that might help us debug this:
-> >
-> >  RCU used illegally from offline CPU!
-> >  rcu_scheduler_active = 1, debug_locks = 1
-> >  no locks held by swapper/1/0.
-> >
-> >  Call Trace:
-> >  dump_stack+0xec/0x144 (unreliable)
-> >  lockdep_rcu_suspicious+0x128/0x14c
-> >  __lock_acquire+0x1060/0x1c60
-> >  lock_acquire+0x140/0x5f0
-> >  _raw_spin_lock_irqsave+0x64/0xb0
-> >  clockevents_register_device+0x74/0x270
-> >  register_decrementer_clockevent+0x94/0x110
-> >  start_secondary+0x134/0x800
-> >  start_secondary_prolog+0x10/0x14
-> >
-> > This is avoided by moving the call to rcu_cpu_starting up near the
-> > beginning of the start_secondary() function. Note that the
-> > raw_smp_processor_id() is required in order to avoid calling into
-> > lockdep before RCU has declared the CPU to be watched for readers.
-> >
-> > Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
-> > Signed-off-by: Qian Cai <cai@redhat.com>
-> > ---
-> >  arch/powerpc/kernel/smp.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> > index 3c6b9822f978..8c2857cbd960 100644
-> > --- a/arch/powerpc/kernel/smp.c
-> > +++ b/arch/powerpc/kernel/smp.c
-> > @@ -1393,13 +1393,14 @@ static void add_cpu_to_masks(int cpu)
-> >  /* Activate a secondary processor. */
-> >  void start_secondary(void *unused)
-> >  {
-> > -	unsigned int cpu = smp_processor_id();
-> > +	unsigned int cpu = raw_smp_processor_id();
-> >  
-> >  	mmgrab(&init_mm);
-> >  	current->active_mm = &init_mm;
-> >  
-> >  	smp_store_cpu_info(cpu);
-> >  	set_dec(tb_ticks_per_jiffy);
-> > +	rcu_cpu_starting(cpu);
-> >  	preempt_disable();
-> >  	cpu_callin_map[cpu] = 1;
-> >  
-> > -- 
-> > 2.28.0
+You should probably delete anything which is commented out.
+
+> +
+> +static char *no_regs_list = "80018001,e1918001,8001a001,fc0d0000";
+> +unsigned long ax88796c_no_regs_mask[AX88796C_REGDUMP_LEN / (sizeof(unsigned long) * 8)];
+> +
+> +module_param(comp, int, 0444);
+> +MODULE_PARM_DESC(comp, "0=Non-Compression Mode, 1=Compression Mode");
+
+I think you need to find a different way to configure this. How much
+does compression bring you anyway?
+
+> +module_param(msg_enable, int, 0444);
+> +MODULE_PARM_DESC(msg_enable, "Message mask (see linux/netdevice.h for bitmap)");
+
+I know a lot of drivers have msg_enable, but DaveM is generally
+against module parameters. So i would remove this.
+
+
+> +static void ax88796c_set_hw_multicast(struct net_device *ndev)
+> +{
+> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
+> +	u16 rx_ctl = RXCR_AB;
+> +	int mc_count = netdev_mc_count(ndev);
+
+reverse christmass tree.
+
+> +static struct sk_buff *
+> +ax88796c_tx_fixup(struct net_device *ndev, struct sk_buff_head *q)
+> +{
+> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
+> +	struct sk_buff *skb, *tx_skb;
+> +	struct tx_pkt_info *info;
+> +	struct skb_data *entry;
+> +	int headroom;
+> +	int tailroom;
+> +	u8 need_pages;
+> +	u16 tol_len, pkt_len;
+> +	u8 padlen, seq_num;
+> +	u8 spi_len = ax_local->ax_spi.comp ? 1 : 4;
+
+reverse christmass tree.
+
+> +static int ax88796c_receive(struct net_device *ndev)
+> +{
+> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
+> +	struct sk_buff *skb;
+> +	struct skb_data *entry;
+> +	u16 w_count, pkt_len;
+> +	u8 pkt_cnt;
+
+Reverse christmass tree
+
+> +
+> +static int ax88796c_process_isr(struct ax88796c_device *ax_local)
+> +{
+> +	u16 isr;
+> +	u8 done = 0;
+> +	struct net_device *ndev = ax_local->ndev;
+
+...
+
+> +static irqreturn_t ax88796c_interrupt(int irq, void *dev_instance)
+> +{
+> +	struct net_device *ndev = dev_instance;
+> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
+
+...
+
+> +static int
+> +ax88796c_open(struct net_device *ndev)
+> +{
+> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
+> +	int ret;
+> +	unsigned long irq_flag = IRQF_SHARED;
+> +	int fc = AX_FC_NONE;
+
+...
+
+
+> +static int ax88796c_probe(struct spi_device *spi)
+> +{
+> +	struct net_device *ndev;
+> +	struct ax88796c_device *ax_local;
+> +	char phy_id[MII_BUS_ID_SIZE + 3];
+> +	int ret;
+> +	u16 temp;
+
+...
+
+The mdio/phy/ethtool code looks O.K. now. I've not really looked at
+any of the frame transfer code, so i cannot comment on that.
+
+    Andrew
