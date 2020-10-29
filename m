@@ -2,127 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AB829F655
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B27329F65D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgJ2Uk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 16:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726433AbgJ2Uj6 (ORCPT
+        id S1726809AbgJ2Um4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:42:56 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36016 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726796AbgJ2UlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:39:58 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701A7C0613D4;
-        Thu, 29 Oct 2020 13:39:58 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id r3so1876506plo.1;
-        Thu, 29 Oct 2020 13:39:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Qza0cPoNkKkGQyNWtuK+CRDxX+8zfCFrUl9etKIHHv4=;
-        b=SJMb3ATUoiI76sq3Zy1US2nzEasMzhlVTPZ9rNONeQEcgcF/6VMzPZDsc6VDzvxmnC
-         6d82XowrSd1Pdj5ElR6bqoUqi1800qw9/TNJXV71ESXzEsXjTrHw6ZELGyYJtMKkczin
-         kfYXa1Tk+5oq2ljLj2WouZPe2f08l7oAIoZxIWj+r0QRfBxaR17YololMzNEbbQmJto9
-         1xLX1AaXdf1wk5ZuhVDTFXa2iNLcfbN2+58V1b2IgbYro6NZBWxZuVwi7zzxWw7Y0yl1
-         PbFywyHEtDjoUXN+ey4NUilweBFbdG9D6JLY6USnDbvrNWmgkYTc4lA5V1jhIsoLvHra
-         1Yig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Qza0cPoNkKkGQyNWtuK+CRDxX+8zfCFrUl9etKIHHv4=;
-        b=q2Z3x5QfjXjKg0PmWHji1HrRav+4N3U7oBFa9F5H6bWO6rBz/Tl+nSDDI0uYvp19/J
-         BgPsunTo5zYcN+JNd/qbXH/xMSv7k9L+82BPfZmtBu9Eq2ZOnQ9835gZZDHWVTj8u7YS
-         ysnemYZ3ITRVyRxsnvHq7SADq28YiC+2Nb9mQLOD2jj6TeSnG/socJEfH3aOXlFxedsb
-         ML4+UiCMThxezJ9LgF/Hl6/FTehg90KV9huHevaG9RJyVWwxvn5Qw3rtSZEVQ1Bibcwx
-         aBKa644wJOzY8JHlnoKhhknaFc1ztQ90bn9UQxigS01PrByPk0o9S3fRI2wVIbx+HlfN
-         qHqw==
-X-Gm-Message-State: AOAM531eLl5Dz2XxPvBuRrXhWxmBHpYN2Sm5cp0+i3GkFd3k+0fl3UQX
-        xsRi8tFxo2y5gcbwBwNzPHev1HCK1Jc=
-X-Google-Smtp-Source: ABdhPJxYIEtXQdGMdYp+f8yo8kRJh7jEYbAdYl+H++5HYN1V6wdkSks41W3ywvsDv2ZjtPQmgwsfQw==
-X-Received: by 2002:a17:902:6bc7:b029:d5:f149:f2e0 with SMTP id m7-20020a1709026bc7b02900d5f149f2e0mr5670400plt.34.1604003997946;
-        Thu, 29 Oct 2020 13:39:57 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id nk13sm686537pjb.1.2020.10.29.13.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 13:39:57 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 13:39:54 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Chris Ye <lzye@google.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        trivial@kernel.org, linux-input@vger.kernel.org,
-        linzhao.ye@gmail.com
-Subject: Re: [PATCH] Add devices for HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
-Message-ID: <20201029203954.GF2547185@dtor-ws>
-References: <20201029194714.1613308-1-lzye@google.com>
+        Thu, 29 Oct 2020 16:41:16 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604004074;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=atBWSsg54EdElpQmxIGprMythfayvCfZuL6C0LobpJM=;
+        b=zq8OmPxEES1sHwpepW8vzEe0jYTTlYtXV12+hxY9jzb3tYWHhm/ZdTBMeg3suW0uXnI22o
+        QRfyl9qohhkGLsu5YphvfKNBGVVDQawQCEUKIkYyS9kHIx+egw2JhKwPfjRd0CQcLbf0Ma
+        0+PC2RmqmSccZCm0+EePmF3HtanM8DIlixTveKLP2V0Ksru8Qhe9ajxfSPkPPl0uWvBwkU
+        CZwbIAvCZIttVS0GI97ynyZTPYQQIOv8hYusYoSjZ4dO50yoSQ3YCiIbnrq6RPIo7I7h9P
+        itJ4XgJrsTvo9TskPmCZoEXzffgEzSJ6VbIxGy8NcIttwKKxU5XG9VypabrK6g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604004074;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=atBWSsg54EdElpQmxIGprMythfayvCfZuL6C0LobpJM=;
+        b=0iX007DAMCgsp9VjWAMG/D89r7Kujao6BFenyKLGjjTNx6nxedksxtcAkjsrsCDNJr2Ram
+        K5nPYTQvIUbyR9CA==
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        David Laight <David.Laight@ACULAB.COM>
+Cc:     'Arnd Bergmann' <arnd@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "x86\@kernel.org" <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "linux-hyperv\@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>,
+        "platform-driver-x86\@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "xen-devel\@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "iommu\@lists.linux-foundation.org" 
+        <iommu@lists.linux-foundation.org>
+Subject: Re: [PATCH] [v2] x86: apic: avoid -Wshadow warning in header
+In-Reply-To: <93180c2d-268c-3c33-7c54-4221dfe0d7ad@redhat.com>
+References: <20201028212417.3715575-1-arnd@kernel.org> <38b11ed3fec64ebd82d6a92834a4bebe@AcuMS.aculab.com> <20201029165611.GA2557691@rani.riverdale.lan> <93180c2d-268c-3c33-7c54-4221dfe0d7ad@redhat.com>
+Date:   Thu, 29 Oct 2020 21:41:13 +0100
+Message-ID: <87v9esojdi.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029194714.1613308-1-lzye@google.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chris,
+On Thu, Oct 29 2020 at 17:59, Paolo Bonzini wrote:
+> On 29/10/20 17:56, Arvind Sankar wrote:
+>>> For those two just add:
+>>> 	struct apic *apic = x86_system_apic;
+>>> before all the assignments.
+>>> Less churn and much better code.
+>>>
+>> Why would it be better code?
+>> 
+>
+> I think he means the compiler produces better code, because it won't
+> read the global variable repeatedly.  Not sure if that's true,(*) but I
+> think I do prefer that version if Arnd wants to do that tweak.
 
-On Thu, Oct 29, 2020 at 12:47:14PM -0700, Chris Ye wrote:
-> Kernel 5.4 introduces HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE, devices
-> need to be set explicitly with this flag.
-> 
-> Signed-off-by: Chris Ye <lzye@google.com>
+It's not true.
 
-The format of the patches looks good now, but you want to make sure you
-send your patches to the right folks:
+     foo *p = bar;
 
-dtor@dtor-ws:~/kernel/work $ ./scripts/get_maintainer.pl drivers/hid/hid-ids.h
-Jiri Kosina <jikos@kernel.org> (maintainer:HID CORE LAYER)
-Benjamin Tissoires <benjamin.tissoires@redhat.com> (maintainer:HID CORE LAYER)
-linux-input@vger.kernel.org (open list:HID CORE LAYER)
-linux-kernel@vger.kernel.org (open list)
+     p->a = 1;
+     p->b = 2;
 
-Thanks.
+The compiler is free to reload bar after accessing p->a and with
 
-> ---
->  drivers/hid/hid-ids.h    | 4 ++++
->  drivers/hid/hid-quirks.c | 4 ++++
->  2 files changed, 8 insertions(+)
-> 
-> diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-> index 74be76e848bf..cf55dca494f3 100644
-> --- a/drivers/hid/hid-ids.h
-> +++ b/drivers/hid/hid-ids.h
-> @@ -449,6 +449,10 @@
->  #define USB_VENDOR_ID_FRUCTEL	0x25B6
->  #define USB_DEVICE_ID_GAMETEL_MT_MODE	0x0002
->  
-> +#define USB_VENDOR_ID_GAMEVICE	0x27F8
-> +#define USB_DEVICE_ID_GAMEVICE_GV186	0x0BBE
-> +#define USB_DEVICE_ID_GAMEVICE_KISHI	0x0BBF
-> +
->  #define USB_VENDOR_ID_GAMERON		0x0810
->  #define USB_DEVICE_ID_GAMERON_DUAL_PSX_ADAPTOR	0x0001
->  #define USB_DEVICE_ID_GAMERON_DUAL_PCS_ADAPTOR	0x0002
-> diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-> index 0440e2f6e8a3..36d94e3485e3 100644
-> --- a/drivers/hid/hid-quirks.c
-> +++ b/drivers/hid/hid-quirks.c
-> @@ -84,6 +84,10 @@ static const struct hid_device_id hid_quirks[] = {
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_FREESCALE, USB_DEVICE_ID_FREESCALE_MX28), HID_QUIRK_NOGET },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTABA, USB_DEVICE_ID_LED_DISPLAY), HID_QUIRK_NO_INIT_REPORTS },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD), HID_QUIRK_MULTI_INPUT },
-> +	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_GV186),
-> +		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
-> +	{ HID_USB_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_KISHI),
-> +		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_DRIVING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FLYING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
-> -- 
-> 2.29.1.341.ge80a0c044ae-goog
-> 
+    bar->a = 1;
+    bar->b = 1;
 
--- 
-Dmitry
+it can either cache bar in a register or reread it after bar->a
+
+The generated code is the same as long as there is no reason to reload,
+e.g. register pressure.
+
+Thanks,
+
+        tglx
