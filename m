@@ -2,183 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8035B29E022
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C8C29E023
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404279AbgJ2BHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404262AbgJ2BHk (ORCPT
+        id S2404276AbgJ2BIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:08:52 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:43361 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S2404369AbgJ2BHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 21:07:40 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E757C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:07:40 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id k25so1267762lji.9
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:07:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JHdZPPn9wLM8C261Oo5ewV1obQFhVZ5ZdtkoajBWV64=;
-        b=MTIV5nTARTLRBj0lxrRgSzGzRPYNAiPZWMkB9ep/3PqQq96Sbvp39GhCCvD9P7C/9G
-         jSa0WHMFFRSKIlGXwo17x9mJaZSXNA2WyNRoeARNazqPz6DjPLBNsihFZKJM4DFVZ/CQ
-         j3PNJYC6TnyMC9tXn4jy59H788ukVUiTCREIlCJtFaO+tL4gtg47eg+1qCzJX2qAaGf0
-         OGl7m75eU0hiHajz8+lj34XqRRj/KyofTQfSSo0wWrl+kguZAe7y41ED4NaXCYy9qrEK
-         VBXAJUcNjw8AKl3YDslsCgKie01Tu2Qs1ciqvcEbb3HuzunIQUzDI9drOA7XrORLRfmD
-         yjSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JHdZPPn9wLM8C261Oo5ewV1obQFhVZ5ZdtkoajBWV64=;
-        b=SYS2PYYcwyrlNsUkl2Hzm3MJ2fYW0qMUoWGE1P5rAXc99/9xaDR8CxmGzX2NPjbEm2
-         gUv9RAjXH7a5JDXJjbwBMhY1/3zhyk00nfH22nMQCjUFx9DqtlQIKS56mMN1DjfgDqFU
-         K5wGrLvidosGwAqzLoHd/bHucR+4E76gGLctNrV2jHZDS15omX5fZWCYr/CGgmQyXkEY
-         51ZCmn/YRc4Ru2PMCmYRJD6xTkEXC+K37oXCfHK1KZ5h9XQxDeUmOERB4nxYsbvH3DnK
-         xayHsTuCHYVXtyOQg1sLxWRdYgp0dLUxpVpvNYpMuOJr/N9p1p6DNK/9gWfb43le/JDE
-         5Wng==
-X-Gm-Message-State: AOAM5315NagKVtUEsXUCHA30YCmWxIbeQeZbtSaCM7UbTvKF85g7Sb+W
-        pZXZo8dCdafxKdraQ9G3gn3oQttmdB3C8PYYBmqmdQ==
-X-Google-Smtp-Source: ABdhPJxZF2osDmUJJYFjNdSuFzFlSzMFSQ07MX9iBFABKWDfUCx38EmD5usneiPJrsJhn41DKD8OlPb4Di5oSfLsrWI=
-X-Received: by 2002:a2e:8816:: with SMTP id x22mr663617ljh.377.1603933658573;
- Wed, 28 Oct 2020 18:07:38 -0700 (PDT)
+        Wed, 28 Oct 2020 21:07:49 -0400
+Received: (qmail 1303612 invoked by uid 1000); 28 Oct 2020 21:07:48 -0400
+Date:   Wed, 28 Oct 2020 21:07:48 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        Thinh.Nguyen@synopsys.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, jackp@codeaurora.org
+Subject: Re: [PATCH 1/2] usb: dwc3: gadget: Allow runtime suspend if UDC
+ unbinded
+Message-ID: <20201029010748.GA1303156@rowland.harvard.edu>
+References: <20201028234311.6464-1-wcheng@codeaurora.org>
+ <20201028234311.6464-2-wcheng@codeaurora.org>
 MIME-Version: 1.0
-References: <20201027200358.557003-1-mic@digikod.net> <20201027200358.557003-13-mic@digikod.net>
-In-Reply-To: <20201027200358.557003-13-mic@digikod.net>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 29 Oct 2020 02:07:11 +0100
-Message-ID: <CAG48ez07p+BtCRo4D75S3xsr76Kj_9Aipv3pBHsc4zyNjEiEmQ@mail.gmail.com>
-Subject: Re: [PATCH v22 12/12] landlock: Add user and kernel documentation
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028234311.6464-2-wcheng@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 9:04 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> =
-wrote:
-> This documentation can be built with the Sphinx framework.
->
-> Cc: James Morris <jmorris@namei.org>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Serge E. Hallyn <serge@hallyn.com>
-> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
-> Reviewed-by: Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>
-[...]
-> diff --git a/Documentation/userspace-api/landlock.rst b/Documentation/use=
-rspace-api/landlock.rst
-[...]
-> +Landlock rules
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+On Wed, Oct 28, 2020 at 04:43:10PM -0700, Wesley Cheng wrote:
+> The DWC3 runtime suspend routine checks for the USB connected parameter to
+> determine if the controller can enter into a low power state.  The
+> connected state is only set to false after receiving a disconnect event.
+> However, in the case of a device initiated disconnect (i.e. UDC unbind),
+> the controller is halted and a disconnect event is never generated.  Set
+> the connected flag to false if issuing a device initiated disconnect to
+> allow the controller to be suspended.
+> 
+> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> ---
+>  drivers/usb/dwc3/gadget.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+> index 5d879b7606d5..6364429b2122 100644
+> --- a/drivers/usb/dwc3/gadget.c
+> +++ b/drivers/usb/dwc3/gadget.c
+> @@ -1995,6 +1995,11 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+>  	unsigned long		flags;
+>  	int			ret;
+>  
+> +	if (pm_runtime_suspended(dwc->dev)) {
+> +		pm_request_resume(dwc->dev);
+> +		return 0;
+> +	}
+
+Isn't this racy?  What happens if the controller was active but a 
+runtime suspend occurs right here?
+
+Alan Stern
+
 > +
-> +A Landlock rule enables to describe an action on an object.  An object i=
-s
-
-s/enables to describe/describes/
-
-> +currently a file hierarchy, and the related filesystem actions are defin=
-ed in
-> +`Access rights`_.  A set of rules is aggregated in a ruleset, which can =
-then
-> +restrict the thread enforcing it, and its future children.
-> +
-> +Defining and enforcing a security policy
-> +----------------------------------------
-> +
-> +We first need to create the ruleset that will contain our rules.  For th=
-is
-> +example, the ruleset will contain rules which only allow read actions, b=
-ut
-> +write actions will be denied.  The ruleset then needs to handle both of =
-these
-> +kind of actions.  To have a backward compatibility, these actions should=
- be
-> +ANDed with the supported ones.
-
-This sounds as if there is a way for userspace to discover which
-actions are supported by the running kernel; but we don't have
-anything like that, right?
-
-If we want to make that possible, we could maybe change
-sys_landlock_create_ruleset() so that if
-ruleset_attr.handled_access_fs contains bits we don't know, we clear
-those bits and then copy the struct back to userspace? And then
-userspace can retry the syscall with the cleared bits? Or something
-along those lines?
-
-[...]
-> +We can now add a new rule to this ruleset thanks to the returned file
-> +descriptor referring to this ruleset.  The rule will only enable to read=
- the
-
-s/enable to read/allow reading/
-
-> +file hierarchy ``/usr``.  Without another rule, write actions would then=
- be
-> +denied by the ruleset.  To add ``/usr`` to the ruleset, we open it with =
-the
-> +``O_PATH`` flag and fill the &struct landlock_path_beneath_attr with thi=
-s file
-> +descriptor.
-[...]
-> +Inheritance
-> +-----------
-> +
-> +Every new thread resulting from a :manpage:`clone(2)` inherits Landlock =
-domain
-> +restrictions from its parent.  This is similar to the seccomp inheritanc=
-e (cf.
-> +:doc:`/userspace-api/seccomp_filter`) or any other LSM dealing with task=
-'s
-> +:manpage:`credentials(7)`.  For instance, one process's thread may apply
-> +Landlock rules to itself, but they will not be automatically applied to =
-other
-> +sibling threads (unlike POSIX thread credential changes, cf.
-> +:manpage:`nptl(7)`).
-> +
-> +When a thread sandbox itself, we have the grantee that the related secur=
-ity
-
-s/sandbox/sandboxes/
-s/grantee/guarantee/
-
-> +policy will stay enforced on all this thread's descendants.  This enable=
-s to
-> +create standalone and modular security policies per application, which w=
-ill
-
-s/enables to create/allows creating/
-
-
-> +automatically be composed between themselves according to their runtime =
-parent
-> +policies.
+>  	is_on = !!is_on;
+>  
+>  	/*
+> @@ -2050,6 +2055,7 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+>  			dwc->ev_buf->lpos = (dwc->ev_buf->lpos + count) %
+>  						dwc->ev_buf->length;
+>  		}
+> +		dwc->connected = false;
+>  	}
+>  
+>  	ret = dwc3_gadget_run_stop(dwc, is_on, false);
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
