@@ -2,87 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BBE29E2AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F393529E2B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391215AbgJ2CcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727436AbgJ2CcS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 22:32:18 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB95FC0613CF;
-        Wed, 28 Oct 2020 19:32:17 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id z24so1125773pgk.3;
-        Wed, 28 Oct 2020 19:32:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=vfXSdidF+OI1hYeq7MULtunlBiX9HjqHRt1cbV+rUcg=;
-        b=vgMaRAlT6b4/7Zl7weNe/3/F1Dx8nREOKKD7a6UMz0MXYtOTAHatJtmLsqSusPKpeJ
-         lPacrrSGad9XG20tmFcDrN6kpADa3m61ZiRuY2GtitJtlcwLfewiVt+Jj30WRrtaVshg
-         TtKwDuaSxZ9skZBllHH/Hub6BK6xblJDDLr2Af2V+jeaFX5r9XxmcBkcVkQqIOrP1neu
-         Ay6DkDRbid+8fKjpV+HMVpwDtx1sI1ivj8dzS4uLd5JccFezGZIaBfP7MfHLdq+Cjw8/
-         mCQRr/uAEHIDDDY21Bl2RPmx8XJgbVsitAhj4CP1DSABwlss0eZ30yr6jXPCDuVuaaCU
-         FohA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vfXSdidF+OI1hYeq7MULtunlBiX9HjqHRt1cbV+rUcg=;
-        b=hrc6Ow/PW4xEKmWJdVKIGjnWEsPs5+EjNG0uSxijsD2Ud6wuY0hmhrQaVcY/IrAwqP
-         qyPBt/iKAUS7WTuG4juhRQRHezXsDC1Du0WSoSBUv6yvsxapDTMCKPdfvLp4jNWk9K/T
-         XZ5jO8srqKn9d32Koq8MPsxw85u/kZV0RNjABGbyBe44YkWO59DeKuZelSMVjt854z1K
-         9pcB9tO5dxcTCgye6A1SZHX70g4NCCQJIEHd8IQQPKzvQP/fiQxW9VOG6FbYwGvhaODz
-         0BLCidq1SNATOhbCALtsinnBQWgCppv+tyraMH2wEM82RkBAQwTdoGovTxNz1Y1tl+yC
-         KuQQ==
-X-Gm-Message-State: AOAM533skPtq0OCq6TJ5mBZHgUvCJdBL5nHXc6r90pcZAUv3A0QjzcvK
-        wyCvF8+O2EBvfgzHoEhyBxplojZJk/U=
-X-Google-Smtp-Source: ABdhPJzx6GlTqvxVchTYbwc4eE2LEOug1MDsz/DX0BOhyVZVYNDqxkQ3hIrKG6w9bmxFDoKCEF3v7A==
-X-Received: by 2002:a17:90b:14ca:: with SMTP id jz10mr1337421pjb.180.1603938737160;
-        Wed, 28 Oct 2020 19:32:17 -0700 (PDT)
-Received: from [10.230.28.251] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x29sm907051pfp.152.2020.10.28.19.32.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 19:32:16 -0700 (PDT)
-Subject: Re: [PATCH net-next 3/5] net: mscc: ocelot: remove the "new" variable
- in ocelot_port_mdb_add
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201029022738.722794-1-vladimir.oltean@nxp.com>
- <20201029022738.722794-4-vladimir.oltean@nxp.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <c956aa9c-87cd-e1f3-5114-116473145556@gmail.com>
-Date:   Wed, 28 Oct 2020 19:32:14 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.4.0
+        id S2391326AbgJ2CeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:34:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729364AbgJ2CdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 22:33:13 -0400
+Received: from redsun51.ssa.fujisawa.hgst.com (unknown [129.253.182.57])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D24C020757;
+        Thu, 29 Oct 2020 02:33:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603938792;
+        bh=9f9PlnuvS1IHJQjG2sFLlwjyU00BqP9FiUVPACo2Dk8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GmzJY7bHlo2JIksPOwEDI5L+MEGfuHaHUfjzIdbi1zBrValR9FlwPEMVs7YpebxEH
+         cUpRX0qXopBZTWKh4XlWBv3W4CqJJ5PgGzzRgXpM9axdbbzpNyHWGjaqhd4C0MzsJD
+         CMvK2ggvjrscaFKgNDtRR2WEM8PRpt4173vKp/NU=
+Date:   Thu, 29 Oct 2020 11:33:06 +0900
+From:   Keith Busch <kbusch@kernel.org>
+To:     Gloria Tsai <Gloria.Tsai@ssstc.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jongpil Jung <jongpuls@gmail.com>,
+        Jens Axboe <axboe@fb.com>, Sagi Grimberg <sagi@grimberg.me>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jongpil19.jung@samsung.com" <jongpil19.jung@samsung.com>,
+        "jongheony.kim@samsung.com" <jongheony.kim@samsung.com>,
+        "dj54.sohn@samsung.com" <dj54.sohn@samsung.com>
+Subject: Re: [PATCH V3 1/1] nvme: Add quirk for LiteON CL1 devices running FW
+ 220TQ,22001
+Message-ID: <20201029023306.GB20928@redsun51.ssa.fujisawa.hgst.com>
+References: <20201028091421.GA667673@image-900X5T-900X5U>
+ <20201028171726.GA9897@lst.de>
+ <HK2PR02MB4004EC30D14A16B59FD22A44EE140@HK2PR02MB4004.apcprd02.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20201029022738.722794-4-vladimir.oltean@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <HK2PR02MB4004EC30D14A16B59FD22A44EE140@HK2PR02MB4004.apcprd02.prod.outlook.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 29, 2020 at 02:20:27AM +0000, Gloria Tsai wrote:
+> Corrected the description of this bug that SSD will not do GC after receiving shutdown cmd.
+> Do GC before shutdown -> delete IO Q -> shutdown from host -> breakup GC -> D3hot -> enter PS4 -> have a chance swap block -> use wrong pointer on device SRAM -> over program
 
-
-On 10/28/2020 7:27 PM, Vladimir Oltean wrote:
-> It is Not Needed, a comment will suffice.
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+What do you mean by "wrong pointer"? At the place in the sequence you're
+referring to, the PCI BME is disabled: you can't access *any* host RAM,
+so there's no "correct" pointer either.
