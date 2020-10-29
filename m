@@ -2,149 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E450829F5E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDE429F5ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgJ2UIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 16:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33624 "EHLO
+        id S1726320AbgJ2UNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726065AbgJ2UIl (ORCPT
+        with ESMTP id S1725764AbgJ2UNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:08:41 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 825FBC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:08:41 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id r10so1840220plx.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 13:08:41 -0700 (PDT)
+        Thu, 29 Oct 2020 16:13:48 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6176BC0613CF;
+        Thu, 29 Oct 2020 13:13:48 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id l28so4916375lfp.10;
+        Thu, 29 Oct 2020 13:13:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dwhYoZVEeWiw6d4kbJoanMt/eIpVSVu/ys3QblYHUt8=;
-        b=XOFsBugQ8NPh9yAw9sVOsm+xOUaQYc4EbGzpW5U9ZMDCjhRJ72jkGNiiacd7NSOWBR
-         vaCtfdNWElnY/TPJh1DrtaK1isT4G6vMsD2BwIJtaLerNi+kELzJEUczN2pW6f4PhgGy
-         jjNWpybzDtKRFL7b2YCUNKkWGUu3DnvSXVeI0UaoD9LZqcSc/WLH1Kxgr41Ll+alX2Uj
-         iV3hAOHdziH1SCJD0DniILjxMkmMPjnDmyhylPwLZ8JfxEj0lRtLcMsjrWYL/hbvl5cA
-         EDHcwbFLStK8qQJ4/8+zmkGgeGdHXxXdCiD/fn2nUKHqOSSmD7jgjq/+HTmvg2Ho6Sed
-         KvuA==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=zjF17W0vOMBHvXRSXvNM6sne+NYRImdcD8ZAV+fudt8=;
+        b=WJenf88GwVujPLIoyqjWOsekMNi7gV/8Y7AkUIT5ybCsV046c2360Z8tOVnB6aqRtr
+         LghMVYaImRBMWmgKSqg8EY5TOw8BgHbzJ1GNrFzXbQjN9Q6zkTZj/eT+3X77aHed/ACr
+         9b+bd/bhvLox7WGsrSt/lTEX+Pt5VtwwPq/5m23slfILU+7NzDmnHX3t51hAbiAcLVtI
+         4V1OMXUuXIzT/FjXzoLus96LhkAL1ubnYfiG5H2Z69a+h1kZAVbO2oP/pPryXcgRT70R
+         EUM5kJ2FZYrNinfGDszqt7U45BY1uthyF9GnAJFUtNmrSWfy4JG8EamEJwSzzLGoJqBa
+         SJkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dwhYoZVEeWiw6d4kbJoanMt/eIpVSVu/ys3QblYHUt8=;
-        b=c0FVOx0iWzi/GNKwJGxkNALpVza02mSQUJX6AqYGMqAa1I9ZPdGIFpGRARXENdH7GD
-         Tj8Q9ubZ/sh7DCjtf47fOpljII+sAb6QKL8Ce+8ms6FLCCnD3+zrYY1UIAQbCt1Pr34z
-         QXc6IfBsDhNbRXK9+C9O2mYcXxHfQnqH2hk4O5OsKjRsTI4eG7APIPtv0z4MO1uQ6J0r
-         oCR40nUnFCh/BCyeAiJsCdvxSalGID/SH3rympddIBlZcL/sRyYM/No0Vb6qbUOu1p+0
-         kyRYuUi+QzbQBZf4hhb0jfJiz/8XN3BQ9cXcqG8LtYAkjaSb5hNq8ebG+oG6fheA5CMl
-         822A==
-X-Gm-Message-State: AOAM533RmHdsKCPtlRWKBkTOuAICczhm6gNjsQcCfwpA479wDSWUGfgb
-        aw/vNHt5QWGBqrgSRXumMqD5KbR4BByj5BA8Wnl2CA==
-X-Google-Smtp-Source: ABdhPJxKX9N71ehxVcqJTRXl8WjS6rZjWopwVk+GFttkHHJ0ggZmkDNHEBiLNEw9Gs9wLJNFfpfy+FpU5U6QHVQrJRE=
-X-Received: by 2002:a17:902:e993:b029:d6:41d8:9ca3 with SMTP id
- f19-20020a170902e993b02900d641d89ca3mr5974561plb.57.1604002120836; Thu, 29
- Oct 2020 13:08:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com> <155123c77b1a068089421022c4c5b1ccb75defd8.1603372719.git.andreyknvl@google.com>
- <CACT4Y+Z9iE2u1g9Yg=y2TPuRaYVq3TQoJ-81cYzODso_3aJcGg@mail.gmail.com>
-In-Reply-To: <CACT4Y+Z9iE2u1g9Yg=y2TPuRaYVq3TQoJ-81cYzODso_3aJcGg@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 29 Oct 2020 21:08:30 +0100
-Message-ID: <CAAeHK+x2URu8hGNyut_TnG-b_N5rt26CwAPHmyTc6OczAnFs4Q@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 06/21] kasan: mark kasan_init_tags as __init
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=zjF17W0vOMBHvXRSXvNM6sne+NYRImdcD8ZAV+fudt8=;
+        b=rpDo/DTuSK3WWuKCTDsaaM9mnETNe/mYAeecO0ijLkzcgSGizlTUeFo27CGLyaF7jY
+         VglANu2hbhHEVtMboRD4/6qoIkxkGjM9gN0f1J9icNl2/RGCqBf4o2IkjSnFownmly5H
+         pCw7MTJkL0jg+NRT8zc0MP9NGPR7YOw0mmSzUEl0qKXGhUPTEOKSA3Aa6eei8WzsoMqm
+         /nQ1pDK8YBxDXQhsB4CuNkuveZwEJHHSzll+fdax7UOC7oUafofmkjyKvl6mt8xcPmwt
+         YZWOZ4lfkTyMiipdWEmqfUXbC+fw4HvYEvYbMAZTWpJ6N09NATD4FcwVi2urGEBgXOzo
+         gk7g==
+X-Gm-Message-State: AOAM532iP0esMbuXa9qIIepg+TqFeSDuMw8L6Oo1djGhBasK4z2Kr+l0
+        NnLNCksl7E/Tc9YDo5rC8OE=
+X-Google-Smtp-Source: ABdhPJwAKZvLKhP/FMM9d4z87z8UU/QtyaaeXEbnaXMrdC6FoloO7nmL1UgDF90To/kdBO7frnhHPw==
+X-Received: by 2002:a05:6512:34d3:: with SMTP id w19mr2108833lfr.180.1604002426679;
+        Thu, 29 Oct 2020 13:13:46 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id v123sm383473lfa.129.2020.10.29.13.13.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 13:13:44 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 29 Oct 2020 21:13:42 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 16/16] rcu/tree: Use delayed work instead of hrtimer to
+ refill the cache
+Message-ID: <20201029201342.GA24122@pc636>
+References: <20201029165019.14218-1-urezki@gmail.com>
+ <20201029165019.14218-16-urezki@gmail.com>
+ <20201029194724.GN3249@paulmck-ThinkPad-P72>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201029194724.GN3249@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 11:08 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Thu, Oct 22, 2020 at 3:19 PM 'Andrey Konovalov' via kasan-dev
-> <kasan-dev@googlegroups.com> wrote:
-> >
-> > Similarly to kasan_init() mark kasan_init_tags() as __init.
-> >
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > Link: https://linux-review.googlesource.com/id/I8792e22f1ca5a703c5e979969147968a99312558
->
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
->
-> init_tags itself is not __init, but that's added in a different patch.
-> I've commented on that patch.
+On Thu, Oct 29, 2020 at 12:47:24PM -0700, Paul E. McKenney wrote:
+> On Thu, Oct 29, 2020 at 05:50:19PM +0100, Uladzislau Rezki (Sony) wrote:
+> > A CONFIG_PREEMPT_COUNT is unconditionally enabled, thus a page
+> > can be obtained directly from a kvfree_rcu() path. To distinguish
+> > that and take a decision the preemptable() macro is used when it
+> > is save to enter allocator.
+> > 
+> > It means that refilling a cache is not important from timing point
+> > of view. Switch to a delayed work, so the actual work is queued from
+> > the timer interrupt with 1 jiffy delay. An immediate placing a task
+> > on a current CPU can lead to rq->lock double lock. That is why a
+> > delayed method is in place.
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> 
+> Thank you, Uladzislau!
+> 
+> I applied this on top of v5.10-rc1 and got the following from the
+> single-CPU builds:
+> 
+>   SYNC    include/config/auto.conf.cmd
+>   DESCEND  objtool
+>   CC      kernel/bounds.s
+>   CALL    scripts/atomic/check-atomics.sh
+>   UPD     include/generated/bounds.h
+>   CC      arch/x86/kernel/asm-offsets.s
+> In file included from ./include/asm-generic/atomic-instrumented.h:20:0,
+>                  from ./include/linux/atomic.h:82,
+>                  from ./include/linux/crypto.h:15,
+>                  from arch/x86/kernel/asm-offsets.c:9:
+> ./include/linux/pagemap.h: In function ‘__page_cache_add_speculative’:
+> ./include/linux/build_bug.h:30:34: error: called object is not a function or function pointer
+>  #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
+>                                  ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> ./include/linux/mmdebug.h:45:25: note: in expansion of macro ‘BUILD_BUG_ON_INVALID’
+>  #define VM_BUG_ON(cond) BUILD_BUG_ON_INVALID(cond)
+>                          ^~~~~~~~~~~~~~~~~~~~
+> ./include/linux/pagemap.h:207:2: note: in expansion of macro ‘VM_BUG_ON’
+>   VM_BUG_ON(preemptible())
+>   ^~~~~~~~~
+> scripts/Makefile.build:117: recipe for target 'arch/x86/kernel/asm-offsets.s' failed
+> make[1]: *** [arch/x86/kernel/asm-offsets.s] Error 1
+> Makefile:1199: recipe for target 'prepare0' failed
+> make: *** [prepare0] Error 2
+> 
+> I vaguely recall something like this showing up in the previous series
+> and that we did something or another to address it.  Could you please
+> check against the old series at -rcu branch dev.2020.10.22a?  (I verified
+> that the old series does run correctly in the single-CPU scenarios.)
+> 
+I see the same build error. Will double check if we have similar in the
+previous series also. It looks like the error is caused by the Thomas series.
 
-Will add that change to this patch, thanks! If we combine the two
-patch series, we can move this into the other one later. Thanks!
+Will check!
 
->
-> > ---
-> >  include/linux/kasan.h | 2 +-
-> >  mm/kasan/hw_tags.c    | 2 +-
-> >  mm/kasan/sw_tags.c    | 2 +-
-> >  3 files changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> > index 7be9fb9146ac..93d9834b7122 100644
-> > --- a/include/linux/kasan.h
-> > +++ b/include/linux/kasan.h
-> > @@ -185,7 +185,7 @@ static inline void kasan_record_aux_stack(void *ptr) {}
-> >
-> >  #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
-> >
-> > -void kasan_init_tags(void);
-> > +void __init kasan_init_tags(void);
-> >
-> >  void *kasan_reset_tag(const void *addr);
-> >
-> > diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-> > index 2a38885014e3..0128062320d5 100644
-> > --- a/mm/kasan/hw_tags.c
-> > +++ b/mm/kasan/hw_tags.c
-> > @@ -15,7 +15,7 @@
-> >
-> >  #include "kasan.h"
-> >
-> > -void kasan_init_tags(void)
-> > +void __init kasan_init_tags(void)
-> >  {
-> >         init_tags(KASAN_TAG_MAX);
-> >  }
-> > diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-> > index c10863a45775..bf1422282bb5 100644
-> > --- a/mm/kasan/sw_tags.c
-> > +++ b/mm/kasan/sw_tags.c
-> > @@ -35,7 +35,7 @@
-> >
-> >  static DEFINE_PER_CPU(u32, prng_state);
-> >
-> > -void kasan_init_tags(void)
-> > +void __init kasan_init_tags(void)
-> >  {
-> >         int cpu;
-> >
-> > --
-> > 2.29.0.rc1.297.gfa9743e501-goog
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/155123c77b1a068089421022c4c5b1ccb75defd8.1603372719.git.andreyknvl%40google.com.
+--
+Vlad Rezki
