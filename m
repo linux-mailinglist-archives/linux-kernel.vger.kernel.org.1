@@ -2,92 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D10429EA04
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 632C129EA0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727422AbgJ2LG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:06:56 -0400
-Received: from correo.us.es ([193.147.175.20]:54976 "EHLO mail.us.es"
+        id S1727314AbgJ2LIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 07:08:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:60810 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727092AbgJ2LGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:06:55 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id A3C3B891994
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:06:53 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 94FC1DA852
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 12:06:53 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 87183DA850; Thu, 29 Oct 2020 12:06:53 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 4F7AFDA78A;
-        Thu, 29 Oct 2020 12:06:51 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 29 Oct 2020 12:06:51 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 236CC42EF4EA;
-        Thu, 29 Oct 2020 12:06:51 +0100 (CET)
-Date:   Thu, 29 Oct 2020 12:06:50 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        kuba@kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org
-Subject: Re: [PATCH linux-5.9 1/1] net: netfilter: fix KASAN:
- slab-out-of-bounds Read in nft_flow_rule_create
-Message-ID: <20201029110650.GA10242@salvia>
-References: <20201019172532.3906-1-saeed.mirzamohammadi@oracle.com>
- <20201020115047.GA15628@salvia>
- <28C74722-8F35-4397-B567-FA5BCF525891@oracle.com>
- <3BE1A64B-7104-4220-BAD1-870338A33B15@oracle.com>
- <566D38F7-7C99-40F4-A948-03F2F0439BBB@oracle.com>
- <20201027062111.GD206502@kroah.com>
- <20201027081922.GA5285@salvia>
- <20201029110241.GB3840801@kroah.com>
+        id S1725774AbgJ2LIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 07:08:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4C7113A1;
+        Thu, 29 Oct 2020 04:08:21 -0700 (PDT)
+Received: from e107158-lin (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 060393F66E;
+        Thu, 29 Oct 2020 04:08:20 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 11:08:18 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Yun Hsiang <hsiang023167@gmail.com>
+Cc:     dietmar.eggemann@arm.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, patrick.bellasi@matbug.net
+Subject: Re: [PATCH v3 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
+ flag to reset uclamp
+Message-ID: <20201029110818.alrviwwljxnegmip@e107158-lin>
+References: <20201025073632.720393-1-hsiang023167@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201029110241.GB3840801@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <20201025073632.720393-1-hsiang023167@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 12:02:41PM +0100, Greg KH wrote:
-> On Tue, Oct 27, 2020 at 09:19:22AM +0100, Pablo Neira Ayuso wrote:
-> > Hi Greg,
-> > 
-> > On Tue, Oct 27, 2020 at 07:21:11AM +0100, Greg KH wrote:
-> > > On Sun, Oct 25, 2020 at 04:31:57PM -0700, Saeed Mirzamohammadi wrote:
-> > > > Adding stable.
-> > > 
-> > > What did that do?
-> > 
-> > Saeed is requesting that stable maintainers cherry-picks this patch:
-> > 
-> > 31cc578ae2de ("netfilter: nftables_offload: KASAN slab-out-of-bounds
-> > Read in nft_flow_rule_create")
-> > 
-> > into stable 5.4 and 5.8.
+Hi Yun
+
+Sorry for chipping in late.
+
+On 10/25/20 15:36, Yun Hsiang wrote:
+> If the user wants to stop controlling uclamp and let the task inherit
+> the value from the group, we need a method to reset.
 > 
-> 5.9 is also a stable kernel :)
+> Add SCHED_FLAG_UTIL_CLAMP_RESET flag to allow the user to reset uclamp via
+> sched_setattr syscall.
+> 
+> The policy is
+> _CLAMP_RESET                           => reset both min and max
+> _CLAMP_RESET | _CLAMP_MIN              => reset min value
+> _CLAMP_RESET | _CLAMP_MAX              => reset max value
+> _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
+> 
+> Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
+> ---
+>  include/uapi/linux/sched.h |  7 +++++--
+>  kernel/sched/core.c        | 41 +++++++++++++++++++++++++++++++-------
+>  2 files changed, 39 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
+> index 3bac0a8ceab2..6c823ddb1a1e 100644
+> --- a/include/uapi/linux/sched.h
+> +++ b/include/uapi/linux/sched.h
+> @@ -132,17 +132,20 @@ struct clone_args {
+>  #define SCHED_FLAG_KEEP_PARAMS		0x10
+>  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
+>  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
+> +#define SCHED_FLAG_UTIL_CLAMP_RESET	0x80
+>  
+>  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
+>  				 SCHED_FLAG_KEEP_PARAMS)
+>  
+>  #define SCHED_FLAG_UTIL_CLAMP	(SCHED_FLAG_UTIL_CLAMP_MIN | \
+> -				 SCHED_FLAG_UTIL_CLAMP_MAX)
+> +				 SCHED_FLAG_UTIL_CLAMP_MAX | \
+> +				 SCHED_FLAG_UTIL_CLAMP_RESET)
 
-Oh, indeed, I forgot this one :)
+Is it safe to change this define in a uapi header without a potential
+consequence?
 
-> Will go queue it up everywhere...
+FWIW I still have concerns about this approach. We're doing a reset to control
+cgroup behavior, I don't see any correlation between the two. Besides the
+difference between RESET and setting uclamp_min=0 without RESET is not obvious
+nor intuitive for someone who didn't look at the code.
 
-Thanks.
+I propose something like the below which is more explicit about what is being
+requested and delivered here. And if we decide to deprecate this behavior,
+it'd be much easier to just ignore this flag.
+
+You must set this flag with your uclamp request to retain the cgroup
+inheritance behavior. If the flag is not set, we automatically clear it.
+
+Only compile tested.
+
+Thanks
+
+--
+Qais Yousef
+
+
+--------->8-----------
+
+From fe48fde7dea582b3b075e80e6936e1199f24363d Mon Sep 17 00:00:00 2001
+From: Qais Yousef <qais.yousef@arm.com>
+Date: Wed, 28 Oct 2020 22:36:26 +0000
+Subject: [PATCH] sched/uclamp: Add new flag to control cgroup behavior
+
+Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+---
+ include/linux/sched.h      |  1 +
+ include/uapi/linux/sched.h |  6 ++++++
+ kernel/sched/core.c        | 25 ++++++++++++++++---------
+ 3 files changed, 23 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index afe01e232935..6eb35dfaa893 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -604,6 +604,7 @@ struct uclamp_se {
+ 	unsigned int bucket_id		: bits_per(UCLAMP_BUCKETS);
+ 	unsigned int active		: 1;
+ 	unsigned int user_defined	: 1;
++	unsigned int follow_cgroup	: 1;
+ };
+ #endif /* CONFIG_UCLAMP_TASK */
+ 
+diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
+index 3bac0a8ceab2..33ff716a7574 100644
+--- a/include/uapi/linux/sched.h
++++ b/include/uapi/linux/sched.h
+@@ -132,6 +132,12 @@ struct clone_args {
+ #define SCHED_FLAG_KEEP_PARAMS		0x10
+ #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
+ #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
++/*
++ * Control whether a task follows/inherits the cgroup uclamp.min/max or not.
++ * By default this flag is set for all tasks. Any explicit modification to a
++ * task's UCLAMP_MIN/MAX must set this flag to retain the bahavior.
++ */
++#define SCHED_FLAG_UTIL_FOLLOW_CGROUP	0x80
+ 
+ #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
+ 				 SCHED_FLAG_KEEP_PARAMS)
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 2d95dc3f4644..1c77d6b8bd96 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1083,7 +1083,7 @@ uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+ 		return uc_req;
+ 
+ 	uc_max = task_group(p)->uclamp[clamp_id];
+-	if (uc_req.value > uc_max.value || !uc_req.user_defined)
++	if (uc_req.value > uc_max.value || uc_req.follow_cgroup)
+ 		return uc_max;
+ #endif
+ 
+@@ -1446,6 +1446,7 @@ static void __setscheduler_uclamp(struct task_struct *p,
+ 				  const struct sched_attr *attr)
+ {
+ 	enum uclamp_id clamp_id;
++	bool follow_cgroup;
+ 
+ 	/*
+ 	 * On scheduling class change, reset to default clamps for tasks
+@@ -1472,14 +1473,18 @@ static void __setscheduler_uclamp(struct task_struct *p,
+ 	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+ 		return;
+ 
++	follow_cgroup = attr->sched_flags & SCHED_FLAG_UTIL_FOLLOW_CGROUP;
++
+ 	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+-		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
+-			      attr->sched_util_min, true);
++		struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MIN];
++		uc_se->follow_cgroup = follow_cgroup;
++		uclamp_se_set(uc_se, attr->sched_util_min, true);
+ 	}
+ 
+ 	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
+-		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
+-			      attr->sched_util_max, true);
++		struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MAX];
++		uc_se->follow_cgroup = follow_cgroup;
++		uclamp_se_set(uc_se, attr->sched_util_max, true);
+ 	}
+ }
+ 
+@@ -1498,8 +1503,9 @@ static void uclamp_fork(struct task_struct *p)
+ 		return;
+ 
+ 	for_each_clamp_id(clamp_id) {
+-		uclamp_se_set(&p->uclamp_req[clamp_id],
+-			      uclamp_none(clamp_id), false);
++		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
++		uc_se->follow_cgroup = true;
++		uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
+ 	}
+ }
+ 
+@@ -1532,8 +1538,9 @@ static void __init init_uclamp(void)
+ 		init_uclamp_rq(cpu_rq(cpu));
+ 
+ 	for_each_clamp_id(clamp_id) {
+-		uclamp_se_set(&init_task.uclamp_req[clamp_id],
+-			      uclamp_none(clamp_id), false);
++		struct uclamp_se *uc_se = &init_task.uclamp_req[clamp_id];
++		uc_se->follow_cgroup = true;
++		uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
+ 	}
+ 
+ 	/* System defaults allow max clamp values for both indexes */
+-- 
+2.25.1
