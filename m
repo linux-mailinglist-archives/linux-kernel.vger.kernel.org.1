@@ -2,66 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24BA29EBC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF93C29EBDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgJ2MYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:24:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:35088 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgJ2MYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:24:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 067BF13A1;
-        Thu, 29 Oct 2020 05:24:49 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C89D3F719;
-        Thu, 29 Oct 2020 05:24:47 -0700 (PDT)
-References: <20201028174412.680-1-vincent.guittot@linaro.org> <BN8PR12MB2978D627EE0D6456DC2EEA6B9A140@BN8PR12MB2978.namprd12.prod.outlook.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Tao Zhou <ouwen210@hotmail.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org,
-        morten.rasmussen@arm.com
-Subject: Re: [PATCH v2] sched/fair: prefer prev cpu in asymmetric wakeup path
-In-reply-to: <BN8PR12MB2978D627EE0D6456DC2EEA6B9A140@BN8PR12MB2978.namprd12.prod.outlook.com>
-Date:   Thu, 29 Oct 2020 12:24:45 +0000
-Message-ID: <jhjimatp6cy.mognet@arm.com>
+        id S1726044AbgJ2M1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:27:39 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:6927 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgJ2M1j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 08:27:39 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CMPpg4BnQz70Xn;
+        Thu, 29 Oct 2020 20:27:39 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 29 Oct 2020 20:27:28 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH 0/4] clocksource/drivers/sp804: misc cleanup
+Date:   Thu, 29 Oct 2020 20:33:13 +0800
+Message-ID: <20201029123317.90286-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Kefeng Wang (4):
+  clocksource/drivers/sp804: Make some symbol static
+  clocksource/drivers/sp804: Use clk_prepare_enable and
+    clk_disable_unprepare
+  clocksource/drivers/sp804: Correct clk_get_rate handle
+  clocksource/drivers/sp804: Use pr_fmt
 
-On 29/10/20 12:17, Tao Zhou wrote:
-> Hi Vincent,
->
-> On Wed, Oct 28, 2020 at 06:44:12PM +0100, Vincent Guittot wrote:
->> @@ -6173,20 +6173,20 @@ static int
->>  select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
->>  {
->>      unsigned long best_cap = 0;
->> -	int cpu, best_cpu = -1;
->> +	int task_util, cpu, best_cpu = -1;
->>      struct cpumask *cpus;
->>
->> -	sync_entity_load_avg(&p->se);
->> -
->>      cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
->>      cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
->>
->> +	task_util = uclamp_task_util(p);
->
-> The return type of uclamp_task_util() is *unsigned long*.
-> But, task_util is *int*.
->
-> @Valentin: I checked that the return type of uclamp_task_util()
-> is changed from unsigned int to unsigned long by you
->
+ drivers/clocksource/timer-sp804.c | 41 ++++++++++---------------------
+ 1 file changed, 13 insertions(+), 28 deletions(-)
 
-Indeed, IIRC I stated in that changelog that the canonical type for
-utilization / capacity values is unsigned long.
+-- 
+2.26.2
+
