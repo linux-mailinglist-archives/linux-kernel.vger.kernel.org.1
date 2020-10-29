@@ -2,95 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B272B29F146
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ADD429F147
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgJ2QWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726561AbgJ2QWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:22:40 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:57736 "EHLO
+        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgJ2QWi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Oct 2020 12:22:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725855AbgJ2QWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:22:36 -0400
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E14420790;
-        Thu, 29 Oct 2020 16:21:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603988504;
-        bh=ZQl6PwB8eYHHaSUd4Ly+rkyj1Ds05w1/MvOZFY01+tI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dWim0MDONb1LcpzbZAtSdDBHCinv4taJds8d5+eZYro+kp0EGRaqvSl1u5Mg9MOFe
-         FHax7egJRxwhHrf/IQ+wdDuKFL4HGId1r7jfGP51g84gHBl01nyy+Yht+BAyNx2qLA
-         UWCvXYtbi4zELbc5BRLIAopIgEaMWGI3NwX6APVw=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 2/2] ARM: dts: freescale: align watchdog node name with dtschema
-Date:   Thu, 29 Oct 2020 17:21:33 +0100
-Message-Id: <20201029162133.81016-2-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201029162133.81016-1-krzk@kernel.org>
-References: <20201029162133.81016-1-krzk@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+        h=subject:references:from:mime-version:in-reply-to:to:cc:content-type:
+        content-transfer-encoding;
+        s=001; bh=TpcF+14T/6mqOqwF03OswUlyCDxtQaVGcvs2iBy2hLI=;
+        b=QgRgw6ieifvgHYmnV029yMUV14HLLLPJfRjI9fZOt2l1Ri2YgABPT5wEWYiRNt6ECptN
+        QX7VWP7HjNfnqZ/r37YhuijZhJOj4bRUxJ9cpwQ2GAx5Zwz46tPn7/6ylhErOmYmcmyID8
+        KRpXeF4Nvi8sVOpftCoXQUDHTJTwDq2Tg=
+Received: by filterdrecv-p3iad2-64988c98cc-t8x7c with SMTP id filterdrecv-p3iad2-64988c98cc-t8x7c-19-5F9AEC1B-15
+        2020-10-29 16:21:47.458268234 +0000 UTC m=+502013.655851203
+Received: from [192.168.10.211] (unknown)
+        by ismtpd0007p1lon1.sendgrid.net (SG) with ESMTP
+        id oz7KHslxSFiha_c3gSLayA
+        Thu, 29 Oct 2020 16:21:46.986 +0000 (UTC)
+Subject: Re: [PATCH 00/18] Add Hantro regmap and VC8000 h264 decode support
+References: <20201012205957.889185-1-adrian.ratiu@collabora.com>
+ <97e84bb5-972a-091d-a159-6ab1151f17ab@kwiboo.se>
+ <abc0321a81a3ada8eb66d227b56249024e549021.camel@collabora.com>
+From:   Jonas Karlman <jonas@kwiboo.se>
+Message-ID: <4943efb9-29c2-6848-9783-514276085f2b@kwiboo.se>
+Date:   Thu, 29 Oct 2020 16:21:47 +0000 (UTC)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <abc0321a81a3ada8eb66d227b56249024e549021.camel@collabora.com>
+X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h1YAKsV6Db0j8KSuu?=
+ =?us-ascii?Q?BeT9Fz3y+MIiVTUtHh2RJ1+Yb99WUU16rzvyEnS?=
+ =?us-ascii?Q?6Y1aiH8vVyHfr90NTPtRI4wNcF+byq6EEc3JxnX?=
+ =?us-ascii?Q?NpzyrXHNgc3KBiNymVvNWz3c3Z9LoqM16ze6Mko?=
+ =?us-ascii?Q?QUUuGkEi0EbzGjVNE3NSnKFYAXP866AW3awqiNA?=
+ =?us-ascii?Q?n0wX45epLzmz5Bm+NQQpg=3D=3D?=
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Kever Yang <kever.yang@rock-chips.com>,
+        Mark Brown <broonie@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Fruehberger Peter <Peter.Fruehberger@de.bosch.com>,
+        kuhanh.murugasen.krishnan@intel.com,
+        Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+X-Entity-ID: wSPGWgGSXUap++qShBI+ag==
+Content-Type: text/plain; charset=us-ascii
+Content-Language: sv
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dtschema expects watchdog device node name to be "watchdog":
+On 2020-10-29 13:38, Ezequiel Garcia wrote:
+> On Mon, 2020-10-12 at 23:39 +0000, Jonas Karlman wrote:
+>> Hi,
+>>
+>> On 2020-10-12 22:59, Adrian Ratiu wrote:
+>>> Dear all,
+>>>
+>>> This series introduces a regmap infrastructure for the Hantro driver
+>>> which is used to compensate for different HW-revision register layouts.
+>>> To justify it h264 decoding capability is added for newer VC8000 chips.
+>>>
+>>> This is a gradual conversion to the new infra - a complete conversion
+>>> would have been very big and I do not have all the HW yet to test (I'm
+>>> expecting a RK3399 shipment next week though ;). I think converting the
+>>> h264 decoder provides a nice blueprint for how the other codecs can be
+>>> converted and enabled for different HW revisions.
+>>>
+>>> The end goal of this is to make the driver more generic and eliminate
+>>> entirely custom boilerplate like `struct hantro_reg` or headers with
+>>> core-specific bit manipulations like `hantro_g1_regs.h` and instead rely
+>>> on the well-tested albeit more verbose regmap subsytem.
+>>>
+>>> To give just two examples of bugs which are easily discovered by using
+>>> more verbose regmap fields (very easy to compare with the datasheets)
+>>> instead of relying on bit-magic tricks: G1_REG_DEC_CTRL3_INIT_QP(x) was
+>>> off-by-1 and the wrong .clk_gate bit was set in hantro_postproc.c.
+>>>
+>>> Anyway, this series also extends the MMIO regmap API to allow relaxed
+>>> writes for the theoretical reason that avoiding unnecessary membarriers
+>>> leads to less CPU usage and small improvements to battery life. However,
+>>> in practice I could not measure differences between relaxed/non-relaxed
+>>> IO, so I'm on the fence whether to keep or remove the relaxed calls.
+>>>
+>>> What I could masure is the performance impact of adding more sub-reg
+>>> field acesses: a constant ~ 20 microsecond bump per G1 h264 frame. This
+>>> is acceptable considering the total time to decode a frame takes three
+>>> orders of magnitude longer, i.e. miliseconds ranges, depending on the
+>>> frame size and bitstream params, so it is an acceptable trade-off to
+>>> have a more generic driver.
+>>
+>> In the RK3399 variant all fields use completely different positions so
+>> in order to make the driver fully generic all around 145 sub-reg fields
+>> used for h264 needs to be converted, see [1] for a quick generation of
+>> field mappings used for h264 decoding.
+>>
+> 
+> Currently, we've only decided to support H.264 decoding via he RKVDEC
+> core on RK3399.
+> 
+> What your thoughts here Jonas, have you tested H.264 on RK3399 with
+> the G1 core? If it works, what benefits do we get from enabling both
+> cores?
 
-  arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dt.yaml: wdog@2ad0000:
-    $nodename:0: 'wdog@2ad0000' does not match '^watchdog(@.*|-[0-9a-f])?$'
+The G1 core was working back in Dec/Jan/Feb and was used for H.264 decoding in
+LibreELEC nightly images until the rkvdec h264 driver was submitted/merged.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+For RK3399 and other SoCs that both contain RKVDEC and VDPU2 IP it may not be
+much of a benefit. Possible for decoding multiple videos in parallel,
+it is unclear to me if both IP can be used at the same time.
 
----
+There are however SoCs that only have VDPU2 IP (px30/rk3326 and rk1808)
+that could benefit from adding support for the VDPU2 IP, see [1].
 
-Changes since v1:
-1. New patch
----
- arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi | 2 +-
- arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Should I submit the rk3399 variant in similar style as the rk3399 mpeg2 decoder?
+Or should I try and adopt it to be based on this series and use regmap?
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
-index 6a2c09199047..1393fc7e56bb 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
-@@ -401,7 +401,7 @@ gpio1: gpio@2310000 {
- 			#interrupt-cells = <2>;
- 		};
- 
--		wdog0: wdog@2ad0000 {
-+		wdog0: watchdog@2ad0000 {
- 			compatible = "fsl,ls1012a-wdt",
- 				     "fsl,imx21-wdt";
- 			reg = <0x0 0x2ad0000 0x0 0x10000>;
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
-index 0464b8aa4bc4..d550f00f1f6a 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
-@@ -725,7 +725,7 @@ lpuart5: serial@29a0000 {
- 			status = "disabled";
- 		};
- 
--		wdog0: wdog@2ad0000 {
-+		wdog0: watchdog@2ad0000 {
- 			compatible = "fsl,ls1043a-wdt", "fsl,imx21-wdt";
- 			reg = <0x0 0x2ad0000 0x0 0x10000>;
- 			interrupts = <0 83 0x4>;
--- 
-2.25.1
+[1] https://github.com/HermanChen/mpp/blob/develop/osal/mpp_platform.cpp#L80-L82
 
+Best regards,
+Jonas
+
+> 
+> Thanks!
+> Ezequiel
+> 
+>> Any indication on how the performance will be impacted with 145 fields
+>> compared to around 20 fields used in this series?
+>>
+>> Another issue with RK3399 variant is that some fields use different
+>> position depending on the codec used, e.g. two dec_ref_frames in [2].
+>> Should we use codec specific field maps? or any other suggestion on
+>> how we can handle such case?
+>>
+>> [1] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/8b88d94d2ed966c7d88d9a735c0c97368eb6c92d
+>> [2] https://github.com/Kwiboo/rockchip-vpu-regtool/blob/master/rk3399_dec_regs.c#L1065
+>> [3] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/9498326296445a9ce153b585cc48e0cea05d3c93
+>>
+>> Best regards,
+>> Jonas
+>>
+>>> This has been tested on next-20201009 with imx8mq for G1 and an SoC with
+>>> VC8000 which has not yet been added (hopefuly support lands soon).
+>>>
+>>> Kind regards,
+>>> Adrian
+>>>
+>>> Adrian Ratiu (18):
+>>>   media: hantro: document all int reg bits up to vc8000
+>>>   media: hantro: make consistent use of decimal register notation
+>>>   media: hantro: make G1_REG_SOFT_RESET Rockchip specific
+>>>   media: hantro: add reset controller support
+>>>   media: hantro: prepare clocks before variant inits are run
+>>>   media: hantro: imx8mq: simplify ctrlblk reset logic
+>>>   regmap: mmio: add config option to allow relaxed MMIO accesses
+>>>   media: hantro: add initial MMIO regmap infrastructure
+>>>   media: hantro: default regmap to relaxed MMIO
+>>>   media: hantro: convert G1 h264 decoder to regmap fields
+>>>   media: hantro: convert G1 postproc to regmap
+>>>   media: hantro: add VC8000D h264 decoding
+>>>   media: hantro: add VC8000D postproc support
+>>>   media: hantro: make PP enablement logic a bit smarter
+>>>   media: hantro: add user-selectable, platform-selectable H264 High10
+>>>   media: hantro: rename h264_dec as it's not G1 specific anymore
+>>>   media: hantro: add dump registers debug option before decode start
+>>>   media: hantro: document encoder reg fields
+>>>
+>>>  drivers/base/regmap/regmap-mmio.c             |   34 +-
+>>>  drivers/staging/media/hantro/Makefile         |    3 +-
+>>>  drivers/staging/media/hantro/hantro.h         |   79 +-
+>>>  drivers/staging/media/hantro/hantro_drv.c     |   41 +-
+>>>  drivers/staging/media/hantro/hantro_g1_regs.h |   92 +-
+>>>  ...hantro_g1_h264_dec.c => hantro_h264_dec.c} |  237 +++-
+>>>  drivers/staging/media/hantro/hantro_hw.h      |   23 +-
+>>>  .../staging/media/hantro/hantro_postproc.c    |  144 ++-
+>>>  drivers/staging/media/hantro/hantro_regmap.c  | 1015 +++++++++++++++++
+>>>  drivers/staging/media/hantro/hantro_regmap.h  |  295 +++++
+>>>  drivers/staging/media/hantro/hantro_v4l2.c    |    3 +-
+>>>  drivers/staging/media/hantro/imx8m_vpu_hw.c   |   75 +-
+>>>  drivers/staging/media/hantro/rk3288_vpu_hw.c  |    5 +-
+>>>  include/linux/regmap.h                        |    5 +
+>>>  14 files changed, 1795 insertions(+), 256 deletions(-)
+>>>  rename drivers/staging/media/hantro/{hantro_g1_h264_dec.c => hantro_h264_dec.c} (58%)
+>>>  create mode 100644 drivers/staging/media/hantro/hantro_regmap.c
+>>>  create mode 100644 drivers/staging/media/hantro/hantro_regmap.h
+>>>
+> 
+> 
