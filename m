@@ -2,151 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3957529EB49
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6F929EB4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 13:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725957AbgJ2MJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 08:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
+        id S1726036AbgJ2MJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 08:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725928AbgJ2MJH (ORCPT
+        with ESMTP id S1725972AbgJ2MJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 08:09:07 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBB9C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 05:09:07 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id f4so1354732vsk.7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 05:09:06 -0700 (PDT)
+        Thu, 29 Oct 2020 08:09:10 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA985C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 05:09:10 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id y10so639373vkl.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 05:09:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XOPDCJxGnjWbK/1ZDXPLwtwqPWavp4ha998oEkxsn8Q=;
-        b=flwJaH75+OYPqFvGJJOTCOx1TZi8IkdOeBuVeZ6SvXSpLNyp9g4K0i2zUPy8ZpviIZ
-         FXyorcgcn82PvQNIjdD8/qBH6bdqD7hVT1Yh1PeaKDstjGkUg4413rA6i5+2/J9Hozsj
-         XVZCH+AhVY9J4KolXVf3c9ZHtCXIN8FxYc7c0VrIwzuCJ0Xu8krbL3Bcd8Nk4qGdp/Vu
-         yuCc1wHdv6sPHUDSaO0/XKxsZ7AcOyXZUaFxHg8VF2p0pieU+79NaJ9CtD7ybcNsmchJ
-         jE7NNTaQcZmyho4l9WKNWBAPtIORLfwANGO0BXp5CZXGHA1Gr8qQImK3EbS2Nku/dNGV
-         ZgcA==
+        bh=2OKA9Pgk0ZZ7+DXmqAtn7byrzzqg0DhRt90w2UoAl54=;
+        b=p3Nt87l2xN8E/kW1cpinhezE9x7HXKo0TaISvtMl0md3/MASIkPOI4oWfHMDtV2fL8
+         HJf8642vtrJwRDG15XPPEhmxdnqKFj1DCvxvW0izscb4zY+MPp/WvvZTLUwkDNI9YTog
+         RMbzmKP8cNTp32zafmWVv7TbKNv7p4bZyuZ+QemO5SKdfFmSlt5+kiPbBo+xxxnypH60
+         t9nSQ/yHhI6zYAF4FVQiiEOTs4vK48hVWrxgCv3/XszpLqel8WuZDFHQmfkvcEkMHtcl
+         AWTYcD6quieQEWNs2sBIikUTjgIQzx/S+gm9fC7VmHV9Sy1HeHWtweWy6MGK4Ldk3KCm
+         8w6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XOPDCJxGnjWbK/1ZDXPLwtwqPWavp4ha998oEkxsn8Q=;
-        b=pTirYLCxwqrvHRGiuO7xUffm08anvDfpevTPOYqDoLcv6ySh3yTjsE/1n9p5FCImAn
-         X/kz/WgE2PJdUlk0hWbMu3jTeFZgakv+fJpHj1P35n/e1KK2pDzJa6wW0CJzWaEFfbIA
-         YCH/KLB++LnEKmZ9mK2KV4iztvo9C2BoIUCVI04rM3ijyjNM4aN/+Judy9+fOARngJ7g
-         qNKa9rLNJs6Is0SD/PafTDoBC8mJBS69zguVGTR+m8vdeqPPjSo84KQYcIxwbhf67GqX
-         0hgCZ94KIT3b5qWAtqh6zNcpVL4BWtUXZCYneYjAJLEHcSzNwfO9uEMrW8pW56Nl6aAy
-         lrYg==
-X-Gm-Message-State: AOAM531QwEKJ82+HRZup/24F8L8oBlCdB2Sa3pHJfM8lFXQRc3VIDAv+
-        78u7EBWs+7ob+woSXqoHVgWdiimNBjmcqhUn2m776Q==
-X-Google-Smtp-Source: ABdhPJx6Q9DF7vcO6aVmXdxaszAIPS70N4/DVXoQj6nfMycE8SxJR1X9NIaonbsZ7yKYflfVuVmupOxqyzRK8kMeNLY=
-X-Received: by 2002:a67:ec9a:: with SMTP id h26mr2466385vsp.34.1603973346162;
- Thu, 29 Oct 2020 05:09:06 -0700 (PDT)
+        bh=2OKA9Pgk0ZZ7+DXmqAtn7byrzzqg0DhRt90w2UoAl54=;
+        b=RQNvXQVPXzL4dykzDLFLlNvweBNnd9UXsqYxhX/igNi2UOJYQwbFT6Ms22Lro2YF+L
+         isRkmo7sRnk6i71ZySTflK+5Jtp211jroLXrH9epzNN9w9PMNnRe+jqDoRQM7PgdYRcr
+         3di4zzutbMURBmWFfXs/mULkBU2e2RVw4tD1tNgqtBL1FMX3QJpBoY4vtYUGeRMSUBKR
+         4n8u4qnpnEqZQymN0ZmyoHyGxnVLhg3mp5Vck4oCHn61Tc0n4j47Vl7MgDa1JJyxdGuJ
+         ZlDFlPNWAOYwpt/kvp60PYXDt2dj3W1ebavNc6cFOBttDApykpsRgpMVuLDtGdvdaCpR
+         j3eA==
+X-Gm-Message-State: AOAM532aVCr4rtyhjA9eahqC5GUhOPSl/3VAzFnVuyGiKIRwgIvxLNSM
+        A32a2ltrpdFIF+wUeN2SpGEQi7jKfprNI7zUiaMDGg==
+X-Google-Smtp-Source: ABdhPJyfh/wov0bgUNVgZKsf5ChZEKE/xeN/ahZVICTxi8+aUGFoAtBQTKr6ElCer1/at22RWmlzu2bKpXFwdKJFUFg=
+X-Received: by 2002:a1f:4c07:: with SMTP id z7mr2571896vka.15.1603973349970;
+ Thu, 29 Oct 2020 05:09:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201014030846.12428-1-wenbin.mei@mediatek.com>
-In-Reply-To: <20201014030846.12428-1-wenbin.mei@mediatek.com>
+References: <1603068193-44688-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1603068193-44688-1-git-send-email-tiantao6@hisilicon.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 29 Oct 2020 13:08:29 +0100
-Message-ID: <CAPDyKFo+sLQEWdDGkgDKp56a0Cua9nSGTqMUvdtEzUQx9RQt6Q@mail.gmail.com>
-Subject: Re: [PATCH v7 0/4] Add mmc support for MT8192 SoC
-To:     Wenbin Mei <wenbin.mei@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
+Date:   Thu, 29 Oct 2020 13:08:33 +0100
+Message-ID: <CAPDyKFpyASJCE8QtKX=R=eVeeT2=adknBZmWo8GVaaLDv8KAXw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mediatek: replace spin_lock_irqsave by spin_lock in
+ hard IRQ
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     haotian.jing@mediatek.com,
         Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.or>,
         "moderated list:ARM/Mediatek SoC support" 
         <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 at 05:08, Wenbin Mei <wenbin.mei@mediatek.com> wrote:
+On Mon, 19 Oct 2020 at 02:42, Tian Tao <tiantao6@hisilicon.com> wrote:
 >
-> Change in v7:
-> 1)add "unevaluatedProperties" in mtk-sd.yaml
-> 2)add Reviewed-by tag
+> The code has been in a irq-disabled context since it is hard IRQ. There
+> is no necessity to do it again.
 >
-> Change in v6:
-> 1)use devm_clk_get function for required clocks
->
-> Change in v5:
-> 1)remove Reviewed-by tag
-> 2)use devm_clk_bulk_get_optional instead of devm_clk_get_optional
->   for bulk clks
->
-> Change in v4:
-> 1)drop "vmmc" and "vqmmc" desciption in mtk-sd.yaml
-> 2)add vmmq/vqmmc supplies and the pinctrls to required properties
-> 3)change dbg level and exit this function
-> 4)use devm_clk_get_optional instead of devm_clk_get function
-> 5)remove else branch for sys_clk_cg
->
-> Change in v3:
-> 1)change maintainers name in mtk-sd.yaml
-> 2)change "compatible" properties to enum type and sort it
-> 3)drop these properties: "reg" and "interrupts"
-> 4)add "maxItems" constraints on these properties: "vmmc-supply", "vqmmc-supply",
->   "assigned-clocks", "assigned-clock-parents"
-> 5)add "minimum" and "maximum" constraints on these properties: "mediatek,hs400-cmd-int-delay",
->   "mediatek,latch-ck", "hs400-ds-delay", "mediatek,hs200-cmd-int-delay"
->
-> Change in v2:
-> Convert mtk-sd to json-schema
->
-> Wenbin Mei (4):
->   dt-bindings: mmc: Convert mtk-sd to json-schema
->   mmc: dt-bindings: add support for MT8192 SoC
->   arm64: dts: mt8192: add mmc device node
->   mmc: mediatek: Add subsys clock control for MT8192 msdc
-> ---
-> This patch depends on
-> [v4,1/3] arm64: dts: Add Mediatek SoC MT8192 and evaluation board dts and Makefile
-> [v3,1/9] dt-bindings: ARM: Mediatek: Document bindings for MT8192 BSP
-> [v3,6/9] clk: mediatek: Add dt-bindings for MT8192 clocks
-> [v3,9/9] clk: mediatek: Add MT8192 clock support
-> [v3,1/3] dt-bindings: pinctrl: mt8192: add pinctrl file
-> [v3,2/3] dt-bindings: pinctrl: mt8192: add binding document
-> [v3,3/3] pinctrl: add pinctrl driver on mt8192
-> [v2,1/4] soc: mediatek: pwrap: use BIT() macro
-> [v2,2/4] soc: mediatek: pwrap: add arbiter capability
-> [v2,3/4] dt-bindings: mediatek: add compatible for MT6873/8192 pwrap
-> [v2,4/4] soc: mediatek: pwrap: add pwrap driver for MT6873/8192 SoCs
-> [2/8] dt-bindings: mfd: Add compatible for the MediaTek MT6359 PMIC
-> [3/8] dt-bindings: regulator: Add document for MT6359 regulator
-> [4/8] mfd: Add support for the MediaTek MT6359 PMIC
-> [5/8] regulator: mt6359: Add support for MT6359 regulator
-> [7/8] regulator: mt6359: Add support for MT6359P regulator
-> [8/8] arm64: dts: mt6359: add PMIC MT6359 related nodes
->
-> Please also accept this patch together with [1][2][3][4][5]
-> to avoid build and dt binding check error.
-> [1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=332621
-> [2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=342593
-> [3] https://patchwork.kernel.org/project/linux-mediatek/list/?series=330017
-> [4] https://patchwork.kernel.org/project/linux-mediatek/list/?series=322937
-> [5] https://patchwork.kernel.org/project/linux-mediatek/list/?series=323171
-> ---
->  .../devicetree/bindings/mmc/mtk-sd.txt        |  75 --------
->  .../devicetree/bindings/mmc/mtk-sd.yaml       | 176 ++++++++++++++++++
->  arch/arm64/boot/dts/mediatek/mt8192-evb.dts   |  89 +++++++++
->  arch/arm64/boot/dts/mediatek/mt8192.dtsi      |  34 ++++
->  drivers/mmc/host/mtk-sd.c                     |  74 ++++++--
->  5 files changed, 355 insertions(+), 93 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mmc/mtk-sd.txt
->  create mode 100644 Documentation/devicetree/bindings/mmc/mtk-sd.yaml
->
-> --
-> 2.18.0
->
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 
-Applied for next, except patch 3 as needs to go via arm-soc, thanks!
+Applied for next, thanks!
 
 Kind regards
 Uffe
+
+
+> ---
+>  drivers/mmc/host/mtk-sd.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> index a704745..fb3e419 100644
+> --- a/drivers/mmc/host/mtk-sd.c
+> +++ b/drivers/mmc/host/mtk-sd.c
+> @@ -1536,13 +1536,12 @@ static irqreturn_t msdc_irq(int irq, void *dev_id)
+>         struct mmc_host *mmc = mmc_from_priv(host);
+>
+>         while (true) {
+> -               unsigned long flags;
+>                 struct mmc_request *mrq;
+>                 struct mmc_command *cmd;
+>                 struct mmc_data *data;
+>                 u32 events, event_mask;
+>
+> -               spin_lock_irqsave(&host->lock, flags);
+> +               spin_lock(&host->lock);
+>                 events = readl(host->base + MSDC_INT);
+>                 event_mask = readl(host->base + MSDC_INTEN);
+>                 if ((events & event_mask) & MSDC_INT_SDIOIRQ)
+> @@ -1553,7 +1552,7 @@ static irqreturn_t msdc_irq(int irq, void *dev_id)
+>                 mrq = host->mrq;
+>                 cmd = host->cmd;
+>                 data = host->data;
+> -               spin_unlock_irqrestore(&host->lock, flags);
+> +               spin_unlock(&host->lock);
+>
+>                 if ((events & event_mask) & MSDC_INT_SDIOIRQ)
+>                         sdio_signal_irq(mmc);
+> --
+> 2.7.4
+>
