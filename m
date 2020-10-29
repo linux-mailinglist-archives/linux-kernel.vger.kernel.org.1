@@ -2,211 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B1B29E4A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C02429E597
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 09:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730582AbgJ2HmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:42:16 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7095 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727051AbgJ2HmP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:42:15 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CM93c6g2kzLpc0;
-        Thu, 29 Oct 2020 10:53:00 +0800 (CST)
-Received: from [10.74.191.121] (10.74.191.121) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 29 Oct 2020 10:52:51 +0800
-Subject: Re: [PATCH v2 net] net: sch_generic: aviod concurrent reset and
- enqueue op for lockless qdisc
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-CC:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
-        "David Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Linux Kernel Network Developers" <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-References: <1599562954-87257-1-git-send-email-linyunsheng@huawei.com>
- <CAM_iQpX0_mz+McZdzZ7HFTjBihOKz5E6i4qJQSoFbZ=SZkVh=Q@mail.gmail.com>
- <830f85b5-ef29-c68e-c982-de20ac880bd9@huawei.com>
- <CAM_iQpU_tbRNO=Lznz_d6YjXmenYhowEfBoOiJgEmo9x8bEevw@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <1f8ebcde-f5ff-43df-960e-3661706e8d04@huawei.com>
-Date:   Thu, 29 Oct 2020 10:52:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S2387921AbgJ2H7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:59:04 -0400
+Received: from mga11.intel.com ([192.55.52.93]:50261 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389123AbgJ2H6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 03:58:51 -0400
+IronPort-SDR: zJweunFSToz6BAtrpeyBwguVkx5mJ3wTLRX16aKvCsbWpcpCUXPcnytpxN9dkEmJz0lFoM65+7
+ 32rlO9706n3A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="164872542"
+X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
+   d="scan'208";a="164872542"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 19:55:32 -0700
+IronPort-SDR: AGDVvrz7GtSUj+W6Rnn/mWCXhbO6VcicueMHNgjL3K6JwhjJj1FDbKRR7hcrhKoMheJXRkTuvC
+ LBh1Bi7/Jb3w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
+   d="scan'208";a="468976289"
+Received: from lkp-server02.sh.intel.com (HELO 72b1a4bebef6) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 28 Oct 2020 19:55:30 -0700
+Received: from kbuild by 72b1a4bebef6 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kXy66-00000Y-BM; Thu, 29 Oct 2020 02:55:30 +0000
+Date:   Thu, 29 Oct 2020 10:55:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ 921c7ebd1337d1a46783d7e15a850e12aed2eaa0
+Message-ID: <5f9a2f19.L4jjKIqhNQ/h2dOQ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <CAM_iQpU_tbRNO=Lznz_d6YjXmenYhowEfBoOiJgEmo9x8bEevw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.191.121]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/18 3:26, Cong Wang wrote:
-> On Fri, Sep 11, 2020 at 1:13 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2020/9/11 4:07, Cong Wang wrote:
->>> On Tue, Sep 8, 2020 at 4:06 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>>
->>>> Currently there is concurrent reset and enqueue operation for the
->>>> same lockless qdisc when there is no lock to synchronize the
->>>> q->enqueue() in __dev_xmit_skb() with the qdisc reset operation in
->>>> qdisc_deactivate() called by dev_deactivate_queue(), which may cause
->>>> out-of-bounds access for priv->ring[] in hns3 driver if user has
->>>> requested a smaller queue num when __dev_xmit_skb() still enqueue a
->>>> skb with a larger queue_mapping after the corresponding qdisc is
->>>> reset, and call hns3_nic_net_xmit() with that skb later.
->>>>
->>>> Reused the existing synchronize_net() in dev_deactivate_many() to
->>>> make sure skb with larger queue_mapping enqueued to old qdisc(which
->>>> is saved in dev_queue->qdisc_sleeping) will always be reset when
->>>> dev_reset_queue() is called.
->>>>
->>>> Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
->>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>>> ---
->>>> ChangeLog V2:
->>>>         Reuse existing synchronize_net().
->>>> ---
->>>>  net/sched/sch_generic.c | 48 +++++++++++++++++++++++++++++++++---------------
->>>>  1 file changed, 33 insertions(+), 15 deletions(-)
->>>>
->>>> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
->>>> index 265a61d..54c4172 100644
->>>> --- a/net/sched/sch_generic.c
->>>> +++ b/net/sched/sch_generic.c
->>>> @@ -1131,24 +1131,10 @@ EXPORT_SYMBOL(dev_activate);
->>>>
->>>>  static void qdisc_deactivate(struct Qdisc *qdisc)
->>>>  {
->>>> -       bool nolock = qdisc->flags & TCQ_F_NOLOCK;
->>>> -
->>>>         if (qdisc->flags & TCQ_F_BUILTIN)
->>>>                 return;
->>>> -       if (test_bit(__QDISC_STATE_DEACTIVATED, &qdisc->state))
->>>> -               return;
->>>> -
->>>> -       if (nolock)
->>>> -               spin_lock_bh(&qdisc->seqlock);
->>>> -       spin_lock_bh(qdisc_lock(qdisc));
->>>>
->>>>         set_bit(__QDISC_STATE_DEACTIVATED, &qdisc->state);
->>>> -
->>>> -       qdisc_reset(qdisc);
->>>> -
->>>> -       spin_unlock_bh(qdisc_lock(qdisc));
->>>> -       if (nolock)
->>>> -               spin_unlock_bh(&qdisc->seqlock);
->>>>  }
->>>>
->>>>  static void dev_deactivate_queue(struct net_device *dev,
->>>> @@ -1165,6 +1151,30 @@ static void dev_deactivate_queue(struct net_device *dev,
->>>>         }
->>>>  }
->>>>
->>>> +static void dev_reset_queue(struct net_device *dev,
->>>> +                           struct netdev_queue *dev_queue,
->>>> +                           void *_unused)
->>>> +{
->>>> +       struct Qdisc *qdisc;
->>>> +       bool nolock;
->>>> +
->>>> +       qdisc = dev_queue->qdisc_sleeping;
->>>> +       if (!qdisc)
->>>> +               return;
->>>> +
->>>> +       nolock = qdisc->flags & TCQ_F_NOLOCK;
->>>> +
->>>> +       if (nolock)
->>>> +               spin_lock_bh(&qdisc->seqlock);
->>>> +       spin_lock_bh(qdisc_lock(qdisc));
->>>
->>>
->>> I think you do not need this lock for lockless one.
->>
->> It seems so.
->> Maybe another patch to remove qdisc_lock(qdisc) for lockless
->> qdisc?
-> 
-> Yeah, but not sure if we still want this lockless qdisc any more,
-> it brings more troubles than gains.
-> 
->>
->>
->>>
->>>> +
->>>> +       qdisc_reset(qdisc);
->>>> +
->>>> +       spin_unlock_bh(qdisc_lock(qdisc));
->>>> +       if (nolock)
->>>> +               spin_unlock_bh(&qdisc->seqlock);
->>>> +}
->>>> +
->>>>  static bool some_qdisc_is_busy(struct net_device *dev)
->>>>  {
->>>>         unsigned int i;
->>>> @@ -1213,12 +1223,20 @@ void dev_deactivate_many(struct list_head *head)
->>>>                 dev_watchdog_down(dev);
->>>>         }
->>>>
->>>> -       /* Wait for outstanding qdisc-less dev_queue_xmit calls.
->>>> +       /* Wait for outstanding qdisc-less dev_queue_xmit calls or
->>>> +        * outstanding qdisc enqueuing calls.
->>>>          * This is avoided if all devices are in dismantle phase :
->>>>          * Caller will call synchronize_net() for us
->>>>          */
->>>>         synchronize_net();
->>>>
->>>> +       list_for_each_entry(dev, head, close_list) {
->>>> +               netdev_for_each_tx_queue(dev, dev_reset_queue, NULL);
->>>> +
->>>> +               if (dev_ingress_queue(dev))
->>>> +                       dev_reset_queue(dev, dev_ingress_queue(dev), NULL);
->>>> +       }
->>>> +
->>>>         /* Wait for outstanding qdisc_run calls. */
->>>>         list_for_each_entry(dev, head, close_list) {
->>>>                 while (some_qdisc_is_busy(dev)) {
->>>
->>> Do you want to reset before waiting for TX action?
->>>
->>> I think it is safer to do it after, at least prior to commit 759ae57f1b
->>> we did after.
->>
->> The reference to the txq->qdisc is always protected by RCU, so the synchronize_net()
->> should be enought to ensure there is no skb enqueued to the old qdisc that is saved
->> in the dev_queue->qdisc_sleeping, because __dev_queue_xmit can only see the new qdisc
->> after synchronize_net(), which is noop_qdisc, and noop_qdisc will make sure any skb
->> enqueued to it will be dropped and freed, right?
-> 
-> Hmm? In net_tx_action(), we do not hold RCU read lock, and we do not
-> reference qdisc via txq->qdisc but via sd->output_queue.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/urgent
+branch HEAD: 921c7ebd1337d1a46783d7e15a850e12aed2eaa0  futex: Fix incorrect should_fail_futex() handling
 
-Sorry for the delay reply, I seems to miss this.
+elapsed time: 724m
 
-I assumed synchronize_net() also wait for outstanding softirq to finish, right?
+configs tested: 203
+configs skipped: 2
 
-> 
-> 
->>
->> If we do any additional reset that is not related to qdisc in dev_reset_queue(), we
->> can move it after some_qdisc_is_busy() checking.
-> 
-> I am not suggesting to do an additional reset, I am suggesting to move
-> your reset after the busy waiting.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-There maybe a deadlock here if we reset the qdisc after the some_qdisc_is_busy() checking,
-because some_qdisc_is_busy() may require the qdisc reset to clear the skb, so that
-some_qdisc_is_busy() can return false. I am not sure this is really a problem, but
-sch_direct_xmit() may requeue the skb when dev_hard_start_xmit return TX_BUSY.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          landisk_defconfig
+arc                      axs103_smp_defconfig
+c6x                                 defconfig
+powerpc                     taishan_defconfig
+powerpc                     ppa8548_defconfig
+m68k                        m5307c3_defconfig
+s390                             allyesconfig
+arm                          prima2_defconfig
+ia64                          tiger_defconfig
+openrisc                         alldefconfig
+powerpc                 mpc8272_ads_defconfig
+mips                        maltaup_defconfig
+sh                           se7721_defconfig
+arc                          axs103_defconfig
+powerpc                 mpc836x_rdk_defconfig
+sh                            shmin_defconfig
+c6x                              alldefconfig
+arm                      integrator_defconfig
+arm                          pxa3xx_defconfig
+ia64                                defconfig
+ia64                        generic_defconfig
+mips                          malta_defconfig
+sh                          lboxre2_defconfig
+mips                           gcw0_defconfig
+powerpc                       ebony_defconfig
+sh                   sh7770_generic_defconfig
+arm                          simpad_defconfig
+c6x                              allyesconfig
+arm                        mvebu_v5_defconfig
+m68k                         amcore_defconfig
+arm                        mvebu_v7_defconfig
+mips                       lemote2f_defconfig
+arm                         nhk8815_defconfig
+alpha                            alldefconfig
+sh                          r7780mp_defconfig
+arm                            lart_defconfig
+mips                      bmips_stb_defconfig
+arm                        magician_defconfig
+m68k                        mvme147_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arm                              zx_defconfig
+c6x                         dsk6455_defconfig
+parisc                generic-32bit_defconfig
+powerpc                    gamecube_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                      chrp32_defconfig
+arc                     haps_hs_smp_defconfig
+m68k                       m5249evb_defconfig
+arm                           tegra_defconfig
+powerpc                 mpc834x_mds_defconfig
+arc                                 defconfig
+arm                       aspeed_g5_defconfig
+powerpc                      katmai_defconfig
+mips                          rb532_defconfig
+powerpc                      bamboo_defconfig
+arm                      pxa255-idp_defconfig
+xtensa                           alldefconfig
+powerpc                     tqm8560_defconfig
+s390                       zfcpdump_defconfig
+powerpc                    ge_imp3a_defconfig
+mips                      fuloong2e_defconfig
+h8300                    h8300h-sim_defconfig
+mips                          ath79_defconfig
+powerpc                 mpc8315_rdb_defconfig
+sh                             sh03_defconfig
+mips                           xway_defconfig
+powerpc                  storcenter_defconfig
+sh                        dreamcast_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                        edosk7760_defconfig
+sh                ecovec24-romimage_defconfig
+riscv                            alldefconfig
+powerpc                     asp8347_defconfig
+powerpc                     mpc512x_defconfig
+powerpc64                           defconfig
+mips                       capcella_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                      walnut_defconfig
+mips                     decstation_defconfig
+m68k                        m5407c3_defconfig
+mips                            gpr_defconfig
+mips                      malta_kvm_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                        multi_v5_defconfig
+arm                         s5pv210_defconfig
+arm                          tango4_defconfig
+arm                          badge4_defconfig
+powerpc                     tqm8540_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                malta_qemu_32r6_defconfig
+sh                             espt_defconfig
+arm                          ixp4xx_defconfig
+um                            kunit_defconfig
+m68k                          multi_defconfig
+nds32                            alldefconfig
+um                           x86_64_defconfig
+arm                      tct_hammer_defconfig
+mips                       bmips_be_defconfig
+arm                           viper_defconfig
+powerpc                    sam440ep_defconfig
+sh                          urquell_defconfig
+sh                          sdk7780_defconfig
+powerpc                     pseries_defconfig
+sh                              ul2_defconfig
+arm                            zeus_defconfig
+sh                          rsk7264_defconfig
+powerpc                    klondike_defconfig
+riscv                    nommu_virt_defconfig
+ia64                      gensparse_defconfig
+arm                          pxa168_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a001-20201029
+x86_64               randconfig-a002-20201029
+x86_64               randconfig-a003-20201029
+x86_64               randconfig-a006-20201029
+x86_64               randconfig-a005-20201029
+x86_64               randconfig-a004-20201029
+i386                 randconfig-a002-20201026
+i386                 randconfig-a003-20201026
+i386                 randconfig-a005-20201026
+i386                 randconfig-a001-20201026
+i386                 randconfig-a006-20201026
+i386                 randconfig-a004-20201026
+i386                 randconfig-a002-20201028
+i386                 randconfig-a005-20201028
+i386                 randconfig-a003-20201028
+i386                 randconfig-a001-20201028
+i386                 randconfig-a004-20201028
+i386                 randconfig-a006-20201028
+x86_64               randconfig-a011-20201028
+x86_64               randconfig-a013-20201028
+x86_64               randconfig-a016-20201028
+x86_64               randconfig-a015-20201028
+x86_64               randconfig-a012-20201028
+x86_64               randconfig-a014-20201028
+x86_64               randconfig-a011-20201026
+x86_64               randconfig-a013-20201026
+x86_64               randconfig-a016-20201026
+x86_64               randconfig-a015-20201026
+x86_64               randconfig-a012-20201026
+x86_64               randconfig-a014-20201026
+i386                 randconfig-a016-20201028
+i386                 randconfig-a014-20201028
+i386                 randconfig-a015-20201028
+i386                 randconfig-a013-20201028
+i386                 randconfig-a012-20201028
+i386                 randconfig-a011-20201028
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-> 
-> Thanks.
-> .
-> 
+clang tested configs:
+x86_64               randconfig-a001-20201028
+x86_64               randconfig-a002-20201028
+x86_64               randconfig-a003-20201028
+x86_64               randconfig-a006-20201028
+x86_64               randconfig-a005-20201028
+x86_64               randconfig-a004-20201028
+x86_64               randconfig-a001-20201026
+x86_64               randconfig-a003-20201026
+x86_64               randconfig-a002-20201026
+x86_64               randconfig-a006-20201026
+x86_64               randconfig-a004-20201026
+x86_64               randconfig-a005-20201026
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
