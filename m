@@ -2,264 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F5C29E05E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1ED29E0B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:28:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730994AbgJ2BVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55272 "EHLO
+        id S1729804AbgJ2B1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391051AbgJ2BVl (ORCPT
+        with ESMTP id S1729580AbgJ2B0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 21:21:41 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355CFC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:21:41 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id 184so1228806lfd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:21:41 -0700 (PDT)
+        Wed, 28 Oct 2020 21:26:03 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82880C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:26:02 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id y16so1362054ljk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:26:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PdxytuMJd08mN1AzD2gP5MclpEosgGEzK8SkNxNwB1w=;
-        b=ZWJfIoTFHaVeVMsy9oaYt+M/lxGRVTqf7eQy6Z0fR9Rd+L9h9dLeI+K/BWd07bIUL7
-         mBEtLbEAO+MbDBRrWQtsJsL9kGracj+BVs2Nxh+aCScFNQN298HLYUVSF8p5nhkWLwX6
-         DaedG/3MrsyvS7hBaqvfxIAkBbaa/C8+P4jMQu/z9O830ifulMcc/f5dG4DSxw8XSj8m
-         CdBOwHAqrojsbH2KQnClboGlUh96s5k1mEpB1nvnWRT2eWDIBxWYor5WucBhaNoIzzXH
-         strsUTw20gdr1zG5c3hHqWyyqAXpCc9T45EfSVM9f3rlzUCKRFHeZpV0yvQ6nU9B0O0Q
-         Cg5g==
+         :cc;
+        bh=ENdMKmrqyXsv1/gvLj91K20WZXwFdpBVsOP+30aC+9A=;
+        b=n+NDm9uRHARMU/e6YLntF4bh7Ic1db7mSFvWo17ThyF1eYKn1L85739nSonOGKrqnC
+         kZ0nlFbNvlIR/Q/2JRF3dO6W6ujHxM96SnAuNllGwpL9m6A+7kEFmy4RAWQS+jUmTxjn
+         9ul9cuqR7ho/eeQJthrON4IxQxk3p2YDClTnPzxAtgdgwrTvyZ27DjwyBaGl4BqIG4V7
+         0puw9K+PQT7gNCkfzLeKhBnYXnZGde9EZifRfkMemy25mZarKMIyUp2s0gdY++jrwXvQ
+         clYZysyxsTB7gC158N4MZLmHi519zTHkui8tiQKb99V1Puz5rk62zUFAGSyC+HqFyQbA
+         1hZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PdxytuMJd08mN1AzD2gP5MclpEosgGEzK8SkNxNwB1w=;
-        b=ctTyJDWV1pxZsMyRlPFf3jI37MMpZeMBVYZtfSu+ER3odzqFQ6Kdqfhkw06HZ1QjM4
-         3bxg43oXUMW53CO+/6W8k3kV8Xk7kYsgdd8X3dqK0hI1wHXF1ocntVHPSU4PxRiHFI2V
-         L+EYKGESfRlGiYQQAL+c0DQF5k3p1LwAkVLPfT783NF5lFt2nmJoTp7YVfrAMHN/LPlX
-         YfvWrQMXhBrot9CXIUPT/mbWiyQmj7XV2342FMcp2/5ogZqlDfXEdq6TeshF2tTlBC2/
-         GivokTZU5OvjvXGraIfqWNZWCBvlU3P0A/X8vxY4yOBG0uBfqDheUGzg4a7AcZoF1Vz2
-         fAqw==
-X-Gm-Message-State: AOAM532rw1mDuyctJkL0ipcnPMlzmRYQeBvR7fLv4YSfS4p2bP3x8Vv3
-        gtgHVy006f2CuZYWXMTr7gaC2sOQfpnUAPYAnNY=
-X-Google-Smtp-Source: ABdhPJx0/1WXqjeOh5EvimgfLVgi4qiyfhefc9GJ/kSeBWY/XnwDSnm+pmGKayZ2vNr5kgOeF7HXqU5WkbCNUOYPCCk=
-X-Received: by 2002:a19:f71a:: with SMTP id z26mr584684lfe.90.1603934499574;
- Wed, 28 Oct 2020 18:21:39 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=ENdMKmrqyXsv1/gvLj91K20WZXwFdpBVsOP+30aC+9A=;
+        b=RqDP/DlQ36C6IxAkWcRKpb4YXUd4IbabaQOcnzpGKxNHDqITqOohyr5LDK3UrASjbH
+         67js5ll8X7Gy8ZvpCj54Dzt4mEgTo7EN2QBZZfvks8cTueUCiVAEClSih1R5HJ+Cpalr
+         AVbTxG6Rgcb6pZvf2ptfTLyUA2g/XAfhS+tjaMmrChTjuiiUwAE2anih1Y9Jn+1yeiwb
+         Icvp8W0RABs++MU/cdJAPlbkhOMvR8fyQAyvAHhDYrj7wT8VEkhf6hJBoc8yvIAzilyB
+         vanoR70XAVZ+Y7+LpsEb++IbjJM0R8eyKyH9+yg54GlokEI9EtRXQCuAQYIxXOrGXXda
+         CtGg==
+X-Gm-Message-State: AOAM531oo1wKGviSdh6JhmWcGTVokOb7gcXsegcJlKg9y0qTEh+rQK21
+        152Jo6UTEcdD8rNKrshjbpxjSiKO+2nUgGmi+jnE/Q==
+X-Google-Smtp-Source: ABdhPJwSBXVg5r4lXf0UPgteTHOtKkgMMc0ONYCVefyPwWvqtqwkzI7TdHZDQ1HSs7qs5ycatnjoZtDgdYx9397f/pM=
+X-Received: by 2002:a2e:b6cf:: with SMTP id m15mr723367ljo.74.1603934760698;
+ Wed, 28 Oct 2020 18:26:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201027053818.3291747-1-daeho43@gmail.com> <20201027053818.3291747-2-daeho43@gmail.com>
- <290cd375-704e-9315-a035-ab4c1ce1f6f2@huawei.com>
-In-Reply-To: <290cd375-704e-9315-a035-ab4c1ce1f6f2@huawei.com>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Thu, 29 Oct 2020 10:21:28 +0900
-Message-ID: <CACOAw_ycvV9_O_tb=axgT2Pu9ySvdKfVjBv+Fe90+XObKGjjTg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v4 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION ioctl
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+ <20200930230327.GA1260245@cisco> <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
+ <20200930232456.GB1260245@cisco> <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
+ <202010251725.2BD96926E3@keescook> <CAG48ez2b-fnsp8YAR=H5uRMT4bBTid_hyU4m6KavHxDko1Efog@mail.gmail.com>
+ <202010281548.CCA92731F@keescook>
+In-Reply-To: <202010281548.CCA92731F@keescook>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 29 Oct 2020 02:25:34 +0100
+Message-ID: <CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+To:     Kees Cook <keescook@chromium.org>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chao,
+On Wed, Oct 28, 2020 at 11:53 PM Kees Cook <keescook@chromium.org> wrote:
+> On Mon, Oct 26, 2020 at 10:51:02AM +0100, Jann Horn wrote:
+> > The problem is the scenario where a process is interrupted while it's
+> > waiting for the supervisor to reply.
+> >
+> > Consider the following scenario (with supervisor "S" and target "T"; S
+> > wants to wait for events on two file descriptors seccomp_fd and
+> > other_fd):
+> >
+> > S: starts poll() to wait for events on seccomp_fd and other_fd
+> > T: performs a syscall that's filtered with RET_USER_NOTIF
+> > S: poll() returns and signals readiness of seccomp_fd
+> > T: receives signal SIGUSR1
+> > T: syscall aborts, enters signal handler
+> > T: signal handler blocks on unfiltered syscall (e.g. write())
+> > S: starts SECCOMP_IOCTL_NOTIF_RECV
+> > S: blocks because no syscalls are pending
+>
+> Oooh, yes, ew. Thanks for the illustration.
+>
+> Thinking about this from userspace's least-surprise view, I would expect
+> the "recv" to stay "queued", in the sense we'd see this:
+>
+> S: starts poll() to wait for events on seccomp_fd and other_fd
+> T: performs a syscall that's filtered with RET_USER_NOTIF
+> S: poll() returns and signals readiness of seccomp_fd
+> T: receives signal SIGUSR1
+> T: syscall aborts, enters signal handler
+> T: signal handler blocks on unfiltered syscall (e.g. write())
+> S: starts SECCOMP_IOCTL_NOTIF_RECV
+> S: gets (stale) seccomp_notif from seccomp_fd
+> S: sends seccomp_notif_resp, receives ENOENT (or some better errno?)
+>
+> This is not at all how things are designed internally right now, but
+> that behavior would work, yes?
 
-Do you want to print out a kernel warning message in this case? like
-"XX compression algorithm is set for this inode, but current mount
-option doesn't support this algorithm."?
+It would be really ugly, but it could theoretically be made to work,
+to some degree.
 
-2020=EB=85=84 10=EC=9B=94 28=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 3:47, =
-Chao Yu <yuchao0@huawei.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On 2020/10/27 13:38, Daeho Jeong wrote:
-> > From: Daeho Jeong <daehojeong@google.com>
-> >
-> > Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
-> > compression option of a file.
-> >
-> > struct f2fs_comp_option {
-> >      u8 algorithm;         =3D> compression algorithm
-> >                            =3D> 0:lzo, 1:lz4, 2:zstd, 3:lzorle
-> >      u8 log_cluster_size;  =3D> log scale cluster size
-> >                            =3D> 2 ~ 8
-> > };
-> >
-> > struct f2fs_comp_option option;
-> >
-> > option.algorithm =3D 1;
-> > option.log_cluster_size =3D 7;
-> >
-> > ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
-> >
-> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> > ---
-> >
-> > v4: changed commit message.
-> > v3: changed the error number more specific.
-> >      folded in fix for build breakage reported by kernel test robot
-> >      <lkp@intel.com> and Dan Carpenter <dan.carpenter@oracle.com>.
-> > v2: added ioctl description.
-> > ---
-> >   fs/f2fs/compress.c |  5 +++++
-> >   fs/f2fs/f2fs.h     |  7 +++++++
-> >   fs/f2fs/file.c     | 52 +++++++++++++++++++++++++++++++++++++++++++++=
-+
-> >   3 files changed, 64 insertions(+)
-> >
-> > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > index 7895186cc765..816d7adc914c 100644
-> > --- a/fs/f2fs/compress.c
-> > +++ b/fs/f2fs/compress.c
-> > @@ -514,6 +514,11 @@ bool f2fs_is_compress_backend_ready(struct inode *=
-inode)
-> >       return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
-> >   }
-> >
-> > +bool f2fs_is_compress_algorithm_ready(unsigned char algorithm)
-> > +{
-> > +     return algorithm < COMPRESS_MAX && f2fs_cops[algorithm] !=3D NULL=
-;
-> > +}
-> > +
-> >   static mempool_t *compress_page_pool;
-> >   static int num_compress_pages =3D 512;
-> >   module_param(num_compress_pages, uint, 0444);
-> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > index a33c90cf979b..cc38afde6c04 100644
-> > --- a/fs/f2fs/f2fs.h
-> > +++ b/fs/f2fs/f2fs.h
-> > @@ -435,6 +435,8 @@ static inline bool __has_cursum_space(struct f2fs_j=
-ournal *journal,
-> >                                               struct f2fs_sectrim_range=
-)
-> >   #define F2FS_IOC_GET_COMPRESS_OPTION        _IOR(F2FS_IOCTL_MAGIC, 21=
-,      \
-> >                                               struct f2fs_comp_option)
-> > +#define F2FS_IOC_SET_COMPRESS_OPTION _IOW(F2FS_IOCTL_MAGIC, 22,      \
-> > +                                             struct f2fs_comp_option)
-> >
-> >   /*
-> >    * should be same as XFS_IOC_GOINGDOWN.
-> > @@ -3915,6 +3917,7 @@ bool f2fs_compress_write_end(struct inode *inode,=
- void *fsdata,
-> >   int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool=
- lock);
-> >   void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
-> >   bool f2fs_is_compress_backend_ready(struct inode *inode);
-> > +bool f2fs_is_compress_algorithm_ready(unsigned char algorithm);
-> >   int f2fs_init_compress_mempool(void);
-> >   void f2fs_destroy_compress_mempool(void);
-> >   void f2fs_decompress_pages(struct bio *bio, struct page *page, bool v=
-erity);
-> > @@ -3945,6 +3948,10 @@ static inline bool f2fs_is_compress_backend_read=
-y(struct inode *inode)
-> >       /* not support compression */
-> >       return false;
-> >   }
-> > +static inline bool f2fs_is_compress_algorithm_ready(unsigned char algo=
-rithm)
-> > +{
-> > +     return false;
-> > +}
-> >   static inline struct page *f2fs_compress_control_page(struct page *pa=
-ge)
-> >   {
-> >       WARN_ON_ONCE(1);
-> > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > index 8922ab191a9d..8048b150e43b 100644
-> > --- a/fs/f2fs/file.c
-> > +++ b/fs/f2fs/file.c
-> > @@ -3963,6 +3963,55 @@ static int f2fs_ioc_get_compress_option(struct f=
-ile *filp, unsigned long arg)
-> >       return 0;
-> >   }
-> >
-> > +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned lo=
-ng arg)
-> > +{
-> > +     struct inode *inode =3D file_inode(filp);
-> > +     struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
-> > +     struct f2fs_comp_option option;
-> > +     int ret =3D 0;
-> > +
-> > +     if (!f2fs_sb_has_compression(sbi))
-> > +             return -EOPNOTSUPP;
-> > +
-> > +     if (!(filp->f_mode & FMODE_WRITE))
-> > +             return -EBADF;
-> > +
-> > +     if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg=
-,
-> > +                             sizeof(option)))
-> > +             return -EFAULT;
-> > +
-> > +     if (!f2fs_compressed_file(inode) ||
-> > +                     option.log_cluster_size < MIN_COMPRESS_LOG_SIZE |=
-|
-> > +                     option.log_cluster_size > MAX_COMPRESS_LOG_SIZE)
-> > +             return -EINVAL;
-> > +
-> > +     if (!f2fs_is_compress_algorithm_ready(option.algorithm))
-> > +             return -ENOPKG;
->
-> As we allow to mount image with different kernel which supports different=
- compress
-> algorithms, so I guess we can support to change algorithm to one other wh=
-ich current
-> kernel doesn't support, since we have add f2fs_is_compress_backend_ready(=
-) in all
-> foreground operations to disallow user to operate such inode's data.
->
-> IMO, just add to print one warnning message is fine.
->
-> Thanks,
->
-> > +
-> > +     file_start_write(filp);
-> > +     inode_lock(inode);
-> > +
-> > +     if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
-> > +             ret =3D -EBUSY;
-> > +             goto out;
-> > +     }
-> > +
-> > +     if (inode->i_size !=3D 0) {
-> > +             ret =3D -EFBIG;
-> > +             goto out;
-> > +     }
-> > +
-> > +     F2FS_I(inode)->i_compress_algorithm =3D option.algorithm;
-> > +     F2FS_I(inode)->i_log_cluster_size =3D option.log_cluster_size;
-> > +     F2FS_I(inode)->i_cluster_size =3D 1 << option.log_cluster_size;
-> > +     f2fs_mark_inode_dirty_sync(inode, true);
-> > +out:
-> > +     inode_unlock(inode);
-> > +     file_end_write(filp);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> >   long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long ar=
-g)
-> >   {
-> >       if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
-> > @@ -4053,6 +4102,8 @@ long f2fs_ioctl(struct file *filp, unsigned int c=
-md, unsigned long arg)
-> >               return f2fs_sec_trim_file(filp, arg);
-> >       case F2FS_IOC_GET_COMPRESS_OPTION:
-> >               return f2fs_ioc_get_compress_option(filp, arg);
-> > +     case F2FS_IOC_SET_COMPRESS_OPTION:
-> > +             return f2fs_ioc_set_compress_option(filp, arg);
-> >       default:
-> >               return -ENOTTY;
-> >       }
-> > @@ -4224,6 +4275,7 @@ long f2fs_compat_ioctl(struct file *file, unsigne=
-d int cmd, unsigned long arg)
-> >       case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
-> >       case F2FS_IOC_SEC_TRIM_FILE:
-> >       case F2FS_IOC_GET_COMPRESS_OPTION:
-> > +     case F2FS_IOC_SET_COMPRESS_OPTION:
-> >               break;
-> >       default:
-> >               return -ENOIOCTLCMD;
-> >
+
+The first bit of trouble is that currently the notification lives on
+the stack of the target process. If we want to be able to show
+userspace the stale notification, we'd have to store it elsewhere. And
+since we really don't want to start randomly throwing -ENOMEM in any
+of this stuff, we'd basically have to store it in pre-allocated memory
+inside the filter.
+
+
+The second bit of trouble is that if the supervisor is so oblivious
+that it doesn't realize that syscalls can be interrupted, it'll run
+into other problems. Let's say the target process does something like
+this:
+
+int func(void) {
+  char pathbuf[4096];
+  sprintf(pathbuf, "/tmp/blah.%d", some_number);
+  mount("foo", pathbuf, ...);
+}
+
+and mount() is handled with a notification. If the supervisor just
+reads the path string and immediately passes it into the real mount()
+syscall, something like this can happen:
+
+target: starts mount()
+target: receives signal, aborts mount()
+target: runs signal handler, returns from signal handler
+target: returns out of func()
+supervisor: receives notification
+supervisor: reads path from remote buffer
+supervisor: calls mount()
+
+but because the stack allocation has already been freed by the time
+the supervisor reads it, the supervisor just reads random garbage, and
+beautiful fireworks ensue.
+
+So the supervisor *fundamentally* has to be written to expect that at
+*any* time, the target can abandon a syscall. And every read of remote
+memory has to be separated from uses of that remote memory by a
+notification ID recheck.
+
+And at that point, I think it's reasonable to expect the supervisor to
+also be able to handle that a syscall can be aborted before the
+notification is delivered.
