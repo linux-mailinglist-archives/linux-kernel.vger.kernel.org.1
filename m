@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBB229F19D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9458029F195
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgJ2Qfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:35:50 -0400
-Received: from smtp1.de.adit-jv.com ([93.241.18.167]:47532 "EHLO
-        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgJ2QeS (ORCPT
+        id S1725965AbgJ2QeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:34:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727115AbgJ2QdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:34:18 -0400
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
-        by smtp1.de.adit-jv.com (Postfix) with ESMTP id 22C2D3C0588;
-        Thu, 29 Oct 2020 17:34:15 +0100 (CET)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
-        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id KF1LO2lg9uMQ; Thu, 29 Oct 2020 17:34:09 +0100 (CET)
-Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id D97B93C009C;
-        Thu, 29 Oct 2020 17:32:20 +0100 (CET)
-Received: from lxhi-065.adit-jv.com (10.72.94.11) by HI2EXCH01.adit-jv.com
- (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 29 Oct
- 2020 17:32:20 +0100
-Date:   Thu, 29 Oct 2020 17:32:13 +0100
-From:   Eugeniu Rosca <erosca@de.adit-jv.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steffen Pengel <spengel@de.adit-jv.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: renesas: r8a77961: ulcb-kf: Initial
- device tree
-Message-ID: <20201029163213.GA12422@lxhi-065.adit-jv.com>
-References: <20201029133741.25721-1-erosca@de.adit-jv.com>
- <20201029133741.25721-2-erosca@de.adit-jv.com>
- <CAMuHMdX5pCtR-LMbuSJQvDNyVOwcipt7zZOF3c3J-d-Bq98NQg@mail.gmail.com>
+        Thu, 29 Oct 2020 12:33:06 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305EDC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:33:04 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id w65so2799048pfd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:33:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CNp60uz7U6o1WyBX9AAMogQVRcPxcfAiqCLR+bSZ8wY=;
+        b=f6D+/uNPO6HW47eS+XdsuzOWR1OMKIbf1tDWGNa/eHlbdNS1fFyq73++vFXANcz6x2
+         ytHLCE17oAxpQhTZeiOQrmqhH4JsQDnMKEzIq5jZmBroArNr7f6GsZp52FWH2KkhY3sM
+         H8KsLn2uIX0lXXKFtXSbrA4roiZkm9N/rx+aLZ7Z/aAg0vhgc/QNYZtvX+naxEa054tr
+         J0G6xItBIlWQ5zhq1bPzfF1wq31Xu/yYiQL3OtYyEzqwyevlKs28VqyQLH4Vw4YcJ7ti
+         8EQJyl5qnkFrglTZQ6jMXOEWKksSQAolyC8ztjX4eIQqPqjYVEB+NEeUU6DztL2Vnx9B
+         0Pjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CNp60uz7U6o1WyBX9AAMogQVRcPxcfAiqCLR+bSZ8wY=;
+        b=Io7qf8i5r9rasO4UlRrOiihMGQu8RImYkCIBVc+ArwecvXmFc1R7atmaYAniISnnO7
+         B5og3mP+N+A0JnBVX5XgkBAM2EPOzuIUWSDdJEvVfTw4kqJ6QyBwQqxOHb/OlUdy1S95
+         kTnNtsYXf0nqvJqNjWOUsOECgigqLJ16cDRGyrp8LFcRCKkRMJ81grqG5Vhr9gwvh9PF
+         IBCvA4ytRock9uPBWxTAv/je4Z858plJgIHY1csO0hNPaSqXBIP7GlhZdyVd/SRCWFqs
+         2jsYbmNrC4XDgZy+W/8ZfX21ZOqmzcn0zwRDRxYsN5vO1G5lLB9ZjlkviKlwsWU0er2D
+         8OJA==
+X-Gm-Message-State: AOAM530ULTYwQQYB7w9Lzsl5oXXOqIHKJZPSwevsAeE/qzaiIddv99eB
+        KvvmomrwSLYhYS+2CvX1yZn26NOOWAMaSupZDGhPiA==
+X-Google-Smtp-Source: ABdhPJy1+WefzaCmcrBy2LFwrFD2Wq5MJeAwQJ74F2m6AHO5xCmR0PebTW6H1Op74Lq4+jARizRrOxwrObc2Oo0XhDY=
+X-Received: by 2002:a17:90b:198d:: with SMTP id mv13mr599421pjb.13.1603989183738;
+ Thu, 29 Oct 2020 09:33:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdX5pCtR-LMbuSJQvDNyVOwcipt7zZOF3c3J-d-Bq98NQg@mail.gmail.com>
-X-Originating-IP: [10.72.94.11]
+References: <20201028035013.99711-1-songmuchun@bytedance.com>
+ <CALvZod6p_y2fTEK5fzAL=JfPsguqYbttgWC4_GPc=rF1PsN6TQ@mail.gmail.com>
+ <CAMZfGtW38sFcdpnx3Xx+RgRL37WzpQsq8qvfdnmhbh4H9Ex0cg@mail.gmail.com> <CALvZod68HooK_bnaxFLEBL_neVybVRECkHJyb6r8LHWqwTOe5Q@mail.gmail.com>
+In-Reply-To: <CALvZod68HooK_bnaxFLEBL_neVybVRECkHJyb6r8LHWqwTOe5Q@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 30 Oct 2020 00:32:26 +0800
+Message-ID: <CAMZfGtUCXAzvjQ60VUEdOj1OocqUxGNZkikr-Lch2w-dkmQTwg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] mm: memcg/slab: Fix return child memcg
+ objcg for root memcg
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Chris Down <chris@chrisdown.name>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
+        Marco Elver <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-On Thu, Oct 29, 2020 at 03:09:10PM +0100, Geert Uytterhoeven wrote:
-> On Thu, Oct 29, 2020 at 2:38 PM Eugeniu Rosca <erosca@de.adit-jv.com> wrote:
-> > Create a dedicated DTB for M3-ES3.0 + ULCB + Kingfisher combo.
-> > Inspire from the pre-existing ULCB-KF device trees:
+On Fri, Oct 30, 2020 at 12:18 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Thu, Oct 29, 2020 at 9:09 AM Muchun Song <songmuchun@bytedance.com> wrote:
 > >
-> > $ ls -1 arch/arm64/boot/dts/renesas/*ulcb-kf.dts
-> > arch/arm64/boot/dts/renesas/r8a77950-ulcb-kf.dts
-> > arch/arm64/boot/dts/renesas/r8a77951-ulcb-kf.dts
-> > arch/arm64/boot/dts/renesas/r8a77960-ulcb-kf.dts
-> > arch/arm64/boot/dts/renesas/r8a77965-ulcb-kf.dts
+> > On Thu, Oct 29, 2020 at 11:48 PM Shakeel Butt <shakeelb@google.com> wrote:
+> > >
+> > > On Tue, Oct 27, 2020 at 8:50 PM Muchun Song <songmuchun@bytedance.com> wrote:
+> > > >
+> > > > Consider the following memcg hierarchy.
+> > > >
+> > > >                     root
+> > > >                    /    \
+> > > >                   A      B
+> > > >
+> > > > If we get the objcg of memcg A failed,
+> > >
+> > > Please fix the above statement.
 > >
-> > Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-> 
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> i.e. will queue in renesas-devel for v5.11.
+> > Sorry, could you be more specific, I don't quite understand.
+>
+> Fix the grammar. Something like "If we failed to get the reference on
+> objcg of memcg A..."
 
-Thank you for the prompt review!
-
-> > +       compatible = "shimafuji,kingfisher", "renesas,m3ulcb",
-> > +                    "renesas,r8a77961";
-> 
-> Can you please send a patch to add this combo to
-> Documentation/devicetree/bindings/arm/renesas.yaml?
-
-I would happily do so if you resolve below concerns.
-
-Since the inception of the Kingfisher extension board description in
-v4.15-rc1 commit 5418a900412699 ("arm: shmobile: Document Kingfisher
-board DT bindings"), nobody attempted describing the SoC+ULCB+KF
-combinations in spite of four of such DT configurations being actively
-used and maintained, i.e. r8a779{50,51,60,65}-ulcb-kf.
-
-So, if we start documenting the r8a77961-ulcb-kf combo as a board, this
-raises below questions:
-
-  => should the missing 4 SoC+ULCB+KF instances be documented as well?
-  => should a new compatible string be created for each such HW combo,
-     e.g. "renesas,<soc>-ulcb-kf"?
-
-I feel none of the above is really needed, based on the patterns
-established in Documentation/devicetree/bindings/arm/renesas.yaml,
-but I might be wrong. Thoughts/suggestions appreciated.
-
-IMHO one thing which is certainly worth clarifying and fixing is the
-KF revision currently documented in renesas.yaml, i.e. M03.
-
-Shimafuji released at least M04, M05 and M06 revisions of KF (nicely
-compared at https://elinux.org/R-Car/Boards/Kingfisher#Change_point).
-
-The question is, does the community intend to support M03 through M06
-(in which case all of them might need an entry in the documentation) or
-anything which is earlier than M06 has to be considered deprecated (in
-which case renesas.yaml would need a simple s/M03/M06/ update)?
+Got it. Sorry for my poor English, Thanks.
 
 -- 
-Best regards,
-Eugeniu Rosca
+Yours,
+Muchun
