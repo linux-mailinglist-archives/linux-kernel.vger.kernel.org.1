@@ -2,140 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D4A29F21E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D139729F224
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgJ2Que (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
+        id S1727703AbgJ2Qux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726848AbgJ2QuZ (ORCPT
+        with ESMTP id S1727436AbgJ2Qut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:50:25 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863B0C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:50:25 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t14so2843808pgg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 09:50:25 -0700 (PDT)
+        Thu, 29 Oct 2020 12:50:49 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D66DC0613D7;
+        Thu, 29 Oct 2020 09:50:49 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id d25so3813420ljc.11;
+        Thu, 29 Oct 2020 09:50:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cv4+7kQkXt9yP5NUmOCSvou0pMNFr/3DXVTAN8b/WEM=;
-        b=qc8xa9Jh2cxQTu85posvdCUXHcib4h8McXwY33UoEM9VfJXZHpj/WlpziCO5xhl43Y
-         M8P4fC8eostSJrpRNf2t5gjHMBYdyJJEQE2bgP+1qYA5o7qrhHj9+vOn2JXQxMWzQN2j
-         1MZdzFF4jynxe0Gq3ozgtBeI/Dt6G0AjfQ3498iTUnFwSwzqDT0ngg0fdbf3zs5mfNaj
-         v+SPH+n3zwEzjm2HCY+E1R+bPvQCYUDLmE5SbBMgF5+KsJn9QujEWnZSQOy5XEbDIGLI
-         O0UTO74cdV1fvKKVuizRoUGGKCzLZwfN+3nJy23j70bJE5xSzPzfAkyYowGAYMslvOKH
-         gaHQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oXgzbe5U4XFLjsPCkUNXib2Ktv+heUH4fugO2/UuzAo=;
+        b=eIvphrFb6Q5RrUDDTUMSr/ZMno55i9Sfn6olZ6eliCMHBduQPnRptiLXYdthVxFvpy
+         40beSO4pwApyCVPB67+ZLXrtP+oKd9oSCWMwLlyaVoBF8DgHOUi/iGn0KwKNULCU3JZs
+         ibpE30pqivMWX++pWEmP6KCu/MnfbpIqlsl6dCoiMw7nNysmGBSaUo3OfpiC0lHCpCwj
+         u6X7+x46SycUEbttqtwdKRjgiRCTsQFF0AtfOW0IiEWPVndIJZoSXQg6NwcnPXSjTb5O
+         ofQGURp3/KMyOs38KtkMg14y6oQ/DrWOsOm4qtk9eh/vtZffhJTzVPzSxp7kH1NBQW1R
+         5QCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cv4+7kQkXt9yP5NUmOCSvou0pMNFr/3DXVTAN8b/WEM=;
-        b=aG7ExriTGCH/Hh1me8eaj1bGTxxwKjj9jTuom2TH5jFHgltQGmz/Tm4xONDGqJJnKt
-         WWqjdiCnemci0vbp4nIpN0OzVESgXPlu55JWK8uT8RAm0HD35HnPMHckE4/CWHoCiJ3E
-         Sgr4X8U49LYwlbbKpm6QbEKFX4nVoTNXY4/+UDksMo6sBdsNxbzLKMCkgEZ3VXHM6Jal
-         YpxwdERDyNoHytWp03xmIjLam4r/LE30ER/cQN3vfXDMSzWiMrhAVXBSP8LjtguQ5xY8
-         oA4/+EOOqFRgffMJ4FZa1TT3TgiAAWrUkQDWTEl5HbBNhrdlMwGz5Iq8NKmAdS9Gus8z
-         c3HQ==
-X-Gm-Message-State: AOAM530hFnaiVb3QzblQAnpqYOMlzSfvXTtztQI1fGXtfryimbDNYzPo
-        il313IdqLn8Kg3+PBSNy+ixVc25ovDX2Y44czuYjEw==
-X-Google-Smtp-Source: ABdhPJxTU/rzp1TefKplfy18pqc1JkvBEZnJsfu/L9uepwZvlwmx4AKDOFVR2PVE6mzQaGOzgOlQXDe1stDkXDsD0Uw=
-X-Received: by 2002:a62:7695:0:b029:152:3ddd:24a3 with SMTP id
- r143-20020a6276950000b02901523ddd24a3mr4914942pfc.2.1603990224897; Thu, 29
- Oct 2020 09:50:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1602535397.git.andreyknvl@google.com> <94dfda607f7f7a28a5df9ee68703922aa9a52a1e.1602535397.git.andreyknvl@google.com>
- <CACT4Y+YhWM0MhS8wVsAmFmpBf4A8yDTLuV-JXtFYr79FJ9GGrQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+YhWM0MhS8wVsAmFmpBf4A8yDTLuV-JXtFYr79FJ9GGrQ@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oXgzbe5U4XFLjsPCkUNXib2Ktv+heUH4fugO2/UuzAo=;
+        b=i2WguML6x7TdoJZlIiilHQDkLoPwEpNGK3Ub34/nAZ4Tw/ESz/nRkzsBen5AyijbcT
+         F9fKuBZw/JracYGYfiXiohezwBiz3cbc+rP3+vk0MCsfPGLqItWJpb0tx61oplL6gCwV
+         mDBzG3tXLpFl0VIEvJvHSgpGW6OHL4gfA7GHwgH5Y+sZnJyzZrbtj04K26AQtrDLof2I
+         pRgh57XJQ/zenJeKKppvp1X4Rb1LRmZ3gtPmE6bjCUHIwm+z5bN8uPEmz6/90wYcFGTm
+         eiV58ZKvNBg2NBmaQMdT4oDAfA2oFSDfKHM2i4/hdjWMVNlghhH/P1K7ad2UC3Y96qQ/
+         IrGA==
+X-Gm-Message-State: AOAM533kix6HpDIcB/W00Gkn0tA5UXOAnjz//EqIWkw0JqHDsrDQDQIr
+        nU0ZaZZ3wbQnLDQOtdxA5oVzIjkHxNOq4A==
+X-Google-Smtp-Source: ABdhPJz/xfeA78PUVoSA71gyzWBpq4L4DajkrXaeh+qAnK7jcOb73wLBU+fe54cuz73BS52PPDMjjw==
+X-Received: by 2002:a2e:80d7:: with SMTP id r23mr2361375ljg.390.1603990247550;
+        Thu, 29 Oct 2020 09:50:47 -0700 (PDT)
+Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id s1sm331832lfd.236.2020.10.29.09.50.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 09:50:46 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 10/16] ARM: Cleanup PREEMPT_COUNT leftovers
 Date:   Thu, 29 Oct 2020 17:50:13 +0100
-Message-ID: <CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com>
-Subject: Re: [PATCH v5 02/40] arm64: mte: Add in-kernel MTE helpers
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <20201029165019.14218-10-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201029165019.14218-1-urezki@gmail.com>
+References: <20201029165019.14218-1-urezki@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 12:28 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[...]
+CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
+removed. Cleanup the leftovers before doing so.
 
-> > +void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
-> > +{
-> > +       void *ptr = addr;
-> > +
-> > +       if ((!system_supports_mte()) || (size == 0))
-> > +               return addr;
-> > +
-> > +       /* Make sure that size is MTE granule aligned. */
-> > +       WARN_ON(size & (MTE_GRANULE_SIZE - 1));
-> > +
-> > +       /* Make sure that the address is MTE granule aligned. */
-> > +       WARN_ON((u64)addr & (MTE_GRANULE_SIZE - 1));
-> > +
-> > +       tag = 0xF0 | tag;
-> > +       ptr = (void *)__tag_set(ptr, tag);
-> > +
-> > +       mte_assign_mem_tag_range(ptr, size);
->
-> This function will be called on production hot paths. I think it makes
-> sense to shave off some overheads here.
->
-> The additional debug checks may be useful, so maybe we need an
-> additional debug mode (debug of MTE/KASAN itself)?
->
-> Do we ever call this when !system_supports_mte()? I think we wanted to
-> have static_if's higher up the stack. Having additional checks
-> scattered across lower-level functions is overhead for every
-> malloc/free.
->
-> Looking at how this is called from KASAN code.
-> KASAN code already ensures addr/size are properly aligned. I think we
-> should either remove the duplicate alignment checks, or do them only
-> in the additional debugging mode.
-> Does KASAN also ensure proper tag value (0xF0 mask)?
->
-> KASAN wrapper is inlined in this patch:
-> https://linux-review.googlesource.com/c/linux/kernel/git/torvalds/linux/+/3699
-> but here we still have 2 non-inlined calls. The
-> mte_assign_mem_tag_range is kinda inherent since it's in .S. But then
-> I think this wrapper should be inlinable.
->
-> Also, can we move mte_assign_mem_tag_range into inline asm in the
-> header? This would avoid register spills around the call in
-> malloc/free.
->
-> The asm code seems to do the rounding of the size up at no additional
-> cost (checks remaining size > 0, right?). I think it makes sense to
-> document that as the contract and remove the additional round_up(size,
-> KASAN_GRANULE_SIZE) in KASAN code.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ arch/arm/include/asm/assembler.h   | 11 -----------
+ arch/arm/kernel/iwmmxt.S           |  2 --
+ arch/arm/mach-ep93xx/crunch-bits.S |  2 --
+ 3 files changed, 15 deletions(-)
 
-These are all valid concerns. It would be great to have inline asm
-mte_assign_mem_tag_range() implementation. We can also call it
-directly from KASAN code without all these additional checks.
+diff --git a/arch/arm/include/asm/assembler.h b/arch/arm/include/asm/assembler.h
+index feac2c8b86f2..fce52eedc6e1 100644
+--- a/arch/arm/include/asm/assembler.h
++++ b/arch/arm/include/asm/assembler.h
+@@ -212,7 +212,6 @@
+ /*
+  * Increment/decrement the preempt count.
+  */
+-#ifdef CONFIG_PREEMPT_COUNT
+ 	.macro	inc_preempt_count, ti, tmp
+ 	ldr	\tmp, [\ti, #TI_PREEMPT]	@ get preempt count
+ 	add	\tmp, \tmp, #1			@ increment it
+@@ -229,16 +228,6 @@
+ 	get_thread_info \ti
+ 	dec_preempt_count \ti, \tmp
+ 	.endm
+-#else
+-	.macro	inc_preempt_count, ti, tmp
+-	.endm
+-
+-	.macro	dec_preempt_count, ti, tmp
+-	.endm
+-
+-	.macro	dec_preempt_count_ti, ti, tmp
+-	.endm
+-#endif
+ 
+ #define USERL(l, x...)				\
+ 9999:	x;					\
+diff --git a/arch/arm/kernel/iwmmxt.S b/arch/arm/kernel/iwmmxt.S
+index 0dcae787b004..1f845be78c43 100644
+--- a/arch/arm/kernel/iwmmxt.S
++++ b/arch/arm/kernel/iwmmxt.S
+@@ -94,9 +94,7 @@ ENTRY(iwmmxt_task_enable)
+ 	mov	r2, r2				@ cpwait
+ 	bl	concan_save
+ 
+-#ifdef CONFIG_PREEMPT_COUNT
+ 	get_thread_info r10
+-#endif
+ 4:	dec_preempt_count r10, r3
+ 	ret	r9				@ normal exit from exception
+ 
+diff --git a/arch/arm/mach-ep93xx/crunch-bits.S b/arch/arm/mach-ep93xx/crunch-bits.S
+index fb2dbf76f09e..0aabcf4ebe8e 100644
+--- a/arch/arm/mach-ep93xx/crunch-bits.S
++++ b/arch/arm/mach-ep93xx/crunch-bits.S
+@@ -191,9 +191,7 @@ crunch_load:
+ 	cfldr64		mvdx15, [r0, #CRUNCH_MVDX15]
+ 
+ 1:
+-#ifdef CONFIG_PREEMPT_COUNT
+ 	get_thread_info r10
+-#endif
+ 2:	dec_preempt_count r10, r3
+ 	ret	lr
+ 
+-- 
+2.20.1
 
-Perhaps it makes sense to include this change into the other series
-that adds the production mode. And then squash if we decide to put
-both changes into a single one.
-
-Vincenzo, could you write a patch that adds inline asm
-mte_assign_mem_tag_range() implementation?
