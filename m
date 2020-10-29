@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6664429F42C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CC129F42B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgJ2ShG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 14:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgJ2ShF (ORCPT
+        id S1726010AbgJ2Sg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 14:36:56 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:37233 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgJ2Sgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 14:37:05 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824E4C0613CF;
-        Thu, 29 Oct 2020 11:37:05 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id i26so3062739pgl.5;
-        Thu, 29 Oct 2020 11:37:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0+QUp5estCwSbEP+dyAOoylqJ98ytC6E0wr9TdO3E1o=;
-        b=f0XBik8NWXMc9mmMNlwYBCxAJ8dK2XqMOHQG2y6XoFvEG9SvZj12+VSS/0wZt1Zcqf
-         bMPsHPN5HtWBI252MEquWcaVTXJMq4wLmglpFaguXhKvPdKpqVshs4jWrH2XMQ5i5fDx
-         RGHnfONL6LszCuJhc4ec2Ipzz9Ll3UOAINSkVvphJ2TbqNKvt9tL2Yb0mtSGFT7lUTkG
-         s5RfodRbGK0/wFTb5lCD/HC+uy6V1J8vQHG4MkmAUq6G9nq/w0qrxwyKnEqxp8RuvSsc
-         /VvkMd1CHCbIqANed6nsayZ3kiGpAXaA9LxKOHaJCJLVvm4TJ/2SLOI6m8kWy7IrkqU4
-         vKhA==
+        Thu, 29 Oct 2020 14:36:55 -0400
+Received: by mail-ej1-f65.google.com with SMTP id p9so5215729eji.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 11:36:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0+QUp5estCwSbEP+dyAOoylqJ98ytC6E0wr9TdO3E1o=;
-        b=GY7ZUgoh76Tqon1IYqLJXyp6zeXfRoC0/YTftmm4QxPyGhIjkup4ZgvogYi3LaP3HV
-         z7FUgV8biNKAb1E8nNAtWrbHowQ4Xrr4JV6i9P6HZw7RKTYCEiqE8qywXnyjiIP7G0LD
-         i7YSkTJloxNo1P6F6XRGxmIcnTxSQgGRi2IGU6mD8ji3RaeUUOg0ZE2nJhN9L4dYeJyK
-         h0+DwZIjP30ikou5Nq8uWbE2qEjKrJTycTq6ZOBAKEdUFLZf4Oep9G0+2JKje5P07JrV
-         39ZmxzC3Lg6L8qek6zaEbTnNh/7TF1l9T39pr66qGL1L1/E0nLLMJlpOdoskbyJUFUtp
-         fZsg==
-X-Gm-Message-State: AOAM533nXxnHNJ+anRdYbY6bZvO0b2+Zh9dmoVHocJkEbyXsHaUPLOOP
-        J/6pgOWXE3FQFW47UmPnGT9ZDkLCDT98aiIaOtk=
-X-Google-Smtp-Source: ABdhPJwaXuakqX62nMfSb/ByNLV62IST4kysb7WDh0gadhnvXIukwLVo9FZy3TV8THBK2Ve7clXVkQ24yrw5c5WHLKY=
-X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr466697pjb.129.1603996625112;
- Thu, 29 Oct 2020 11:37:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lTgq2KUsCb/reJLVeXMJ6WnOU7EAbYhrVIOVottwPXY=;
+        b=TH+qHdzmjQcCaNi1yyBSx6HJoQKktWZBFVLcaH/rzYr9TdsJALPFN0xAaahb0sdzwZ
+         V6RKZo/qzM7/ACOFjSfvAuXnsyd/7JoUB72CX3xdznf9f+AvTMsJr9uJAzou9yxEcmOF
+         GwlCct6aIx/mvx2xi5ECsPwfRU1OoVw332PtPoDNl9ZdLd105JkLVbk2VVIHYuMHKr4B
+         FFtdRGYtCZO5RNeLXzvjvet3oF7DUaBQrd1RYRjj+iuJWbXrCYTPRYRhdkEBvsko56r6
+         /CUIhtd+HQC7uTgoNg6BqpDSu2S4rUR8K4NV2USZwGe1mFRkGYk03WAXo/Y+lJ7YjIZE
+         kgGA==
+X-Gm-Message-State: AOAM530uj2S0Wlkk80rqY2SosDj5es/KonHBg1ot3TpsIWcYIhDyeFFC
+        GP/IkCsh3hOoQMCw5Jx0mh72EPRwkACT2A==
+X-Google-Smtp-Source: ABdhPJz15Gme1PyxsPn9plDfwSvEBR1ta3aL6LW0bJn08NQn+YqpzcbGI2E5da08qYYQ2eW1WaED+Q==
+X-Received: by 2002:a17:906:3daa:: with SMTP id y10mr5377897ejh.23.1603996614181;
+        Thu, 29 Oct 2020 11:36:54 -0700 (PDT)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id w25sm1888481ejy.123.2020.10.29.11.36.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 11:36:52 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 19:36:51 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Xu Wang <vulab@iscas.ac.cn>
+Cc:     sbkim73@samsung.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: samsung: i2s: Remove redundant null check before
+ clk_disable_unprepare
+Message-ID: <20201029183651.GA90952@kozik-lap>
+References: <20201029083715.28561-1-vulab@iscas.ac.cn>
 MIME-Version: 1.0
-References: <20201028142433.18501-1-kitakar@gmail.com> <20201028142433.18501-2-kitakar@gmail.com>
- <CA+ASDXMfuqy=kCECktP_mYm9cAapXukeLhe=1i3uPbTu9wS2Qw@mail.gmail.com>
-In-Reply-To: <CA+ASDXMfuqy=kCECktP_mYm9cAapXukeLhe=1i3uPbTu9wS2Qw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 29 Oct 2020 20:36:48 +0200
-Message-ID: <CAHp75VfUv6cD8BKxircd7dU-5p7Q6JL1dVz5X=0SC-Y4pqYhjA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mwifiex: disable ps_mode explicitly by default instead
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201029083715.28561-1-vulab@iscas.ac.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 8:29 PM Brian Norris <briannorris@chromium.org> wrote:
-> On Wed, Oct 28, 2020 at 7:04 PM Tsuchiya Yuto <kitakar@gmail.com> wrote:
+On Thu, Oct 29, 2020 at 08:37:15AM +0000, Xu Wang wrote:
+> Because clk_disable_unprepare() already checked NULL clock parameter,
+> so the additional check is unnecessary, just remove it.
 
-...
+You missed other places with it - the resume part.
 
-> For the record, Chrome OS supports plenty of mwifiex systems with 8897
-> (SDIO only) and 8997 (PCIe), with PS enabled, and you're hurting
-> those. Your problem sounds to be exclusively a problem with the PCIe
-> 8897 firmware.
+Best regards,
+Krzysztof
 
-And this feeling (that it's a FW issue) what I have. But the problem
-here, that Marvell didn't fix and probably won't fix their FW...
-
-Just wondering if Google (and MS in their turn) use different
-firmwares to what we have available in Linux.
-
--- 
-With Best Regards,
-Andy Shevchenko
+> 
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> ---
+>  sound/soc/samsung/i2s.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
