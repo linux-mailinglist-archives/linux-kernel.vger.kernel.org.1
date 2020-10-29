@@ -2,106 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F75C29F3FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F5429F407
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725870AbgJ2STL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 14:19:11 -0400
-Received: from smtprelay0240.hostedemail.com ([216.40.44.240]:54544 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725785AbgJ2STK (ORCPT
+        id S1725972AbgJ2SXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 14:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgJ2SXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 14:19:10 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 11EB9100E7B42;
-        Thu, 29 Oct 2020 18:19:08 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,coupons@perches.com,,RULES_HIT:41:69:355:379:800:960:966:968:973:988:989:1042:1260:1277:1311:1313:1314:1345:1437:1472:1515:1516:1518:1534:1542:1593:1594:1711:1714:1730:1747:1777:1792:2196:2199:2393:2538:2553:2559:2562:2734:2736:2828:3138:3139:3140:3141:3142:3351:3855:3865:3866:3867:3868:3870:3871:3874:4250:4321:4385:5007:6117:6119:7809:7901:8784:9149:10004:10400:10450:10455:10848:11658:11914:12043:12050:12262:12291:12295:12296:12297:12438:12555:12679:12683:12700:12737:12740:12760:12895:12986:13017:13018:13019:13439:13972:14093:14096:14097:14181:14345:14659:14721:14824:19904:19999:21067:21080:21212:21220:21365:21433:21451:21611:21627:21740:21772:21773:21939:30012:30054:30067:30079:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:9,LUA_SUMMARY:none
-X-HE-Tag: heat72_0c1867e2728f
-X-Filterd-Recvd-Size: 3640
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 29 Oct 2020 18:19:06 +0000 (UTC)
-Message-ID: <0d249f3a1dfb74c7d37716d2b3024345b0a27512.camel@perches.com>
-Subject: drivers/char/agp/hp-agp.c - mismatch between SPDX and MODULE_LICENSE
-From:   Joe Perches <coupons@perches.com>
-To:     Dave Jones <davej@codemonkey.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-spdx@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date:   Thu, 29 Oct 2020 11:19:05 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 29 Oct 2020 14:23:01 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D941C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 11:23:00 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id v5so740455wmh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 11:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WptYepIxvUtBGbdfe98byMus1rF84W8IHfRhIetB8kE=;
+        b=RQBKJR+7mIXmVt2BzbUwRmfEBlPWlq+vo62QPLGc5veKhuZtO2NmyOyX6KqEa1cc/V
+         Pz9XOpHJ6eo/sdS5lsc4BUAU+00BrTZ5SZd1Y9nLLzCOZ4x68BFzBDGCOdzdT1K9ldrC
+         yGPHEjqMynYomFJgV0EfMfpmEf+0TFA+yueS8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=WptYepIxvUtBGbdfe98byMus1rF84W8IHfRhIetB8kE=;
+        b=rzb7KKMDt4kutsEUpRiGv420wm266JB/pKQxfHfrKW+gtoxMwNN7FZWBnPGVhBtyFG
+         5xcY086T+Lr3YHQZDRKrtNp1/elIjRFYJr40F1hBTYu2St0PfZPgb0xa92n0paFJrLks
+         fqmAE+HiwbEjzEmnue11kIcam9i/TDAl0WiTLQiGbgbsU4Y9S+I/MFPxngbdeJrBYQPh
+         qYwfkrxjj6RZY9GdxHVb0wDFdF6JPsUdhndcslRsfj4A3iFmza3fAjatRjfJ+4Dm/fg4
+         CjNdW9MmlL2FIH+4qtj/EO6Fm4tkm9T6JEYwW110rcsbKHTj2frae5AWU2es+P4TpAR+
+         rW6A==
+X-Gm-Message-State: AOAM530jHMXT+wJbwIL5zS5xj8nAbB148yAAKpzEbfNEGzZnUH5hoEMF
+        PJiQGQc0XkZt9k+LLzLNsKL1/w==
+X-Google-Smtp-Source: ABdhPJyp95YENdHwZ66lxLNl0XS2/n4giFjn2XgtRCJ954OsgnABOBSWtRN3hojBXjSHm5FxATl9fQ==
+X-Received: by 2002:a1c:7c1a:: with SMTP id x26mr170768wmc.4.1603995779199;
+        Thu, 29 Oct 2020 11:22:59 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id o184sm1025591wmo.37.2020.10.29.11.22.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 11:22:58 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 19:22:56 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Sean Paul <sean@poorly.run>
+Subject: Re: [PATCH v4 23/23] drm/msm: Don't implicit-sync if only a single
+ ring
+Message-ID: <20201029182256.GD401619@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Sean Paul <sean@poorly.run>
+References: <20201023165136.561680-1-robdclark@gmail.com>
+ <20201023165136.561680-24-robdclark@gmail.com>
+ <d0fb714b99f13bea6000ecd17fba324433782ae5.camel@pengutronix.de>
+ <CAF6AEGsf=pJ5H4guvL-+AAkK0PwCZ5g9k3K=7UPYzFmr02ReoA@mail.gmail.com>
+ <20201026093405.GG401619@phenom.ffwll.local>
+ <CAKMK7uHK27hMu+zSR0O35gR-Nq-JDXpXWBFXPBcXUhOi_3AKnw@mail.gmail.com>
+ <CAF6AEGsSY2WtQ33mSZFmju7bSkjP3Zsi2vBnGDy35+YFCWu7qw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGsSY2WtQ33mSZFmju7bSkjP3Zsi2vBnGDy35+YFCWu7qw@mail.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(SPDX mismatches found using this grep)
+On Thu, Oct 29, 2020 at 09:59:09AM -0700, Rob Clark wrote:
+> On Thu, Oct 29, 2020 at 9:14 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Mon, Oct 26, 2020 at 10:34 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > >
+> > > On Fri, Oct 23, 2020 at 08:49:14PM -0700, Rob Clark wrote:
+> > > > On Fri, Oct 23, 2020 at 11:20 AM Lucas Stach <l.stach@pengutronix.de> wrote:
+> > > > >
+> > > > > On Fr, 2020-10-23 at 09:51 -0700, Rob Clark wrote:
+> > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > >
+> > > > > > If there is only a single ring (no-preemption), everything is FIFO order
+> > > > > > and there is no need to implicit-sync.
+> > > > > >
+> > > > > > Mesa should probably just always use MSM_SUBMIT_NO_IMPLICIT, as behavior
+> > > > > > is undefined when fences are not used to synchronize buffer usage across
+> > > > > > contexts (which is the only case where multiple different priority rings
+> > > > > > could come into play).
+> > > > >
+> > > > > Really, doesn't this break cross-device implicit sync? Okay, you may
+> > > > > not have many peripherals that rely on implicit sync on devices where
+> > > > > Adreno is usually found, but it seems rather heavy-handed.
+> > > > >
+> > > > > Wouldn't it be better to only ignore fences from your own ring context
+> > > > > in the implicit sync, like we do in the common DRM scheduler
+> > > > > (drm_sched_dependency_optimized)?
+> > > >
+> > > > we already do this.. as was discussed on an earlier iteration of this patchset
+> > > >
+> > > > But I'm not aware of any other non-gpu related implicit sync use-case
+> > > > (even on imx devices where display is decoupled from gpu).. I'll
+> > > > revert the patch if someone comes up with one, but otherwise lets let
+> > > > the implicit sync baggage die
+> > >
+> > > The thing is, dma_resv won't die, even if implicit sync is dead. We're
+> > > using internally for activity tracking and memory management. If you don't
+> > > set these, then we can't share generic code with msm, and I think everyone
+> > > inventing their own memory management is a bit a mistake.
+> > >
+> > > Now you only kill the implicit write sync stuff here, but I'm not sure
+> > > that's worth much since you still install all the read fences for
+> > > consistency. And if userspace doesn't want to be synced, they can set the
+> > > flag and do this on their own: I think you should be able to achieve
+> > > exactly the same thing in mesa.
+> > >
+> > > Aside: If you're worried about overhead, you can do O(1) submit if you
+> > > manage your ppgtt like amdgpu does.
+> >
+> > So just remember a use-case which is maybe a bit yucky, but it is
+> > actually possible to implement race-free. If you have implicit sync.
+> >
+> > There's screen-capture tool in mplayer and obs which capture your
+> > compositor by running getfb2 in a loop. It works, and after some
+> > initial screaming I realized it does actually work race-free. If you
+> > have implicit sync.
+> >
+> > I really don't think you can sunset this, as much as you want to. And
+> > sunsetting it inconsistently is probably the worst.
+> 
+> For the case where you only have a single ring, as long as it is
+> importing the fb in to egl to read it (which it would need to do to
+> get a linear view), this would still all work
 
-$ git grep --name-only 'MODULE_LICENSE("GPL and add' -- '*.c' | xargs grep SPDX
-drivers/char/agp/hp-agp.c:// SPDX-License-Identifier: GPL-2.0-only
-drivers/dma-buf/selftest.c:/* SPDX-License-Identifier: MIT */
-drivers/gpu/drm/ttm/ttm_module.c:/* SPDX-License-Identifier: GPL-2.0 OR MIT */
-drivers/gpu/drm/vboxvideo/vbox_drv.c:// SPDX-License-Identifier: MIT
-drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:// SPDX-License-Identifier: GPL-2.0 OR MIT
+Hm right we still have the implicit sync of the ringbuffer. At least until
+you add a submit scheduler to msm ...
 
-Back in 2003, the (fullhist) commit below perhaps inappropriately
-removed license text that allowed arbitrary changes to source
-code while adding 'MODULE_LICENSE("GPL and additional rights");'
+> (but I may drop this patch because it is just a micro-optimization and
+> seems to cause more confusion)
 
-Today, the license for this file is:
+Yeah I'd say without numbers to justify it it feels a bit on thin ice :-)
+-Daniel
 
-// SPDX-License-Identifier: GPL-2.0-only
+> 
+> BR,
+> -R
+> 
+> 
+> > -Daniel
+> >
+> > > -Daniel
+> > >
+> > > >
+> > > > BR,
+> > > > -R
+> > > >
+> > > >
+> > > >
+> > > > >
+> > > > > Regards,
+> > > > > Lucas
+> > > > >
+> > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > > > Reviewed-by: Kristian H. Kristensen <hoegsberg@google.com>
+> > > > > > ---
+> > > > > >  drivers/gpu/drm/msm/msm_gem_submit.c | 7 ++++---
+> > > > > >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> > > > > > index d04c349d8112..b6babc7f9bb8 100644
+> > > > > > --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> > > > > > +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> > > > > > @@ -283,7 +283,7 @@ static int submit_lock_objects(struct msm_gem_submit *submit)
+> > > > > >       return ret;
+> > > > > >  }
+> > > > > >
+> > > > > > -static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
+> > > > > > +static int submit_fence_sync(struct msm_gem_submit *submit, bool implicit_sync)
+> > > > > >  {
+> > > > > >       int i, ret = 0;
+> > > > > >
+> > > > > > @@ -303,7 +303,7 @@ static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
+> > > > > >                               return ret;
+> > > > > >               }
+> > > > > >
+> > > > > > -             if (no_implicit)
+> > > > > > +             if (!implicit_sync)
+> > > > > >                       continue;
+> > > > > >
+> > > > > >               ret = msm_gem_sync_object(&msm_obj->base, submit->ring->fctx,
+> > > > > > @@ -774,7 +774,8 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+> > > > > >       if (ret)
+> > > > > >               goto out;
+> > > > > >
+> > > > > > -     ret = submit_fence_sync(submit, !!(args->flags & MSM_SUBMIT_NO_IMPLICIT));
+> > > > > > +     ret = submit_fence_sync(submit, (gpu->nr_rings > 1) &&
+> > > > > > +                     !(args->flags & MSM_SUBMIT_NO_IMPLICIT));
+> > > > > >       if (ret)
+> > > > > >               goto out;
+> > > > > >
+> > > > >
+> > > > _______________________________________________
+> > > > dri-devel mailing list
+> > > > dri-devel@lists.freedesktop.org
+> > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > >
+> > > --
+> > > Daniel Vetter
+> > > Software Engineer, Intel Corporation
+> > > http://blog.ffwll.ch
+> >
+> >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
 
-So there is a mismatch between the SPDX identifier and the
-MODULE_LICENSE in the file.
-
-So the SPDX identifier now seems inappropriate.
-Perhaps that can be rectified somehow...
- 
-commit 229f2fcdfa1377fb20174e6990460d8c60d33ada
-Author: Dave Jones <davej@codemonkey.org.uk>
-Date:   Tue Dec 3 01:22:23 2002 -0100
-
-    rework as per Linus' suggestion. Chipset drivers are now seperate modules
-    that use the pci driver interfaces, and register with the agpgart backend.
----
- drivers/char/agp/hp-agp.c | 98 ++++++++++++++++++++++++++++++++---------------
- 1 file changed, 67 insertions(+), 31 deletions(-)
-
-diff --git a/drivers/char/agp/hp-agp.c b/drivers/char/agp/hp-agp.c
-index b1911f1dce7a..a733f38a3928 100644
---- a/drivers/char/agp/hp-agp.c
-+++ b/drivers/char/agp/hp-agp.c
-@@ -1,29 +1,5 @@
- /*
-- * AGPGART module version 0.99
-- * Copyright (C) 1999 Jeff Hartmann
-- * Copyright (C) 1999 Precision Insight, Inc.
-- * Copyright (C) 1999 Xi Graphics, Inc.
-- *
-- * Permission is hereby granted, free of charge, to any person obtaining a
-- * copy of this software and associated documentation files (the "Software"),
-- * to deal in the Software without restriction, including without limitation
-- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-- * and/or sell copies of the Software, and to permit persons to whom the
-- * Software is furnished to do so, subject to the following conditions:
-- *
-- * The above copyright notice and this permission notice shall be included
-- * in all copies or substantial portions of the Software.
-- *
-- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-- * JEFF HARTMANN, OR ANY OTHER CONTRIBUTORS BE LIABLE FOR ANY CLAIM, 
-- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
-- * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE 
-- * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-
-
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
