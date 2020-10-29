@@ -2,145 +2,433 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAEE29E6D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9E529E6D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgJ2JEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:04:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42938 "EHLO mx2.suse.de"
+        id S1726263AbgJ2JFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:05:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725904AbgJ2JEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:04:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603962262;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oOcANBdMPXC7B2WLthX/pictznBjPuN497vi+SoY2Xs=;
-        b=dhcd+7qqKCXHjOBxV2Cg7MiZML1GKPSWVlBB9FvKKYdgskekurmRpBQNM+RI6MvGVqp+Jy
-        rHDoUBCvqVGqB6VmHZ4YrMOJHX2JPN5EgX4efyqaLFx9qsziq9sLEQ92ttTPgewslMFBPo
-        vtnWnT1j6OGk084gTe9UcCdgAqlEQRc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 16A7EAC65;
-        Thu, 29 Oct 2020 09:04:22 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 10:04:21 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Rafael Aquini <aquini@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Rik van Riel <riel@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH -V2 1/2] mempolicy: Rename MPOL_F_MORON to MPOL_F_MOPRON
-Message-ID: <20201029090421.GC17500@dhcp22.suse.cz>
-References: <20201028023411.15045-1-ying.huang@intel.com>
- <20201028023411.15045-2-ying.huang@intel.com>
+        id S1726182AbgJ2JFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 05:05:10 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CB2D206D9;
+        Thu, 29 Oct 2020 09:05:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603962308;
+        bh=bXQpqXjFcd6CD8Yr2Pk+KS0NHOV3VnM9RdHqlEO9GTQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NmxY511Es2wVwTzRCsVo77KmDGNid9/rzFq1EAceMKRW3mzjGjWKA3Gmg9RMX/krq
+         5UDLR0U5cmKRHAnb2OLnj7WD32cXrwULQmbXWLGiSZvSVrKFuBChQ0KUJ/PmcBCioD
+         OSGVSovp/SHUFehvP8saqhUL0l9pCFkGlDeryfn4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.241
+Date:   Thu, 29 Oct 2020 10:05:57 +0100
+Message-Id: <16039623570104@kroah.com>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028023411.15045-2-ying.huang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 28-10-20 10:34:10, Huang Ying wrote:
-> To follow code-of-conduct better.
+I'm announcing the release of the 4.4.241 kernel.
 
-This is changing a user visible interface and any userspace which refers
-to the existing name will fail to compile unless I am missing something.
+All users of the 4.4 kernel series must upgrade.
 
-Have you checked how many applications would be affected?
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Btw I find "follow CoC better" a very weak argument without further
-explanation.
+thanks,
 
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Suggested-by: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Acked-by: Rafael Aquini <aquini@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Rik van Riel <riel@redhat.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Rafael Aquini <aquini@redhat.com>
-> ---
->  include/uapi/linux/mempolicy.h | 2 +-
->  kernel/sched/debug.c           | 2 +-
->  mm/mempolicy.c                 | 6 +++---
->  3 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
-> index 3354774af61e..3c3666d017e6 100644
-> --- a/include/uapi/linux/mempolicy.h
-> +++ b/include/uapi/linux/mempolicy.h
-> @@ -60,7 +60,7 @@ enum {
->  #define MPOL_F_SHARED  (1 << 0)	/* identify shared policies */
->  #define MPOL_F_LOCAL   (1 << 1)	/* preferred local allocation */
->  #define MPOL_F_MOF	(1 << 3) /* this policy wants migrate on fault */
-> -#define MPOL_F_MORON	(1 << 4) /* Migrate On protnone Reference On Node */
-> +#define MPOL_F_MOPRON	(1 << 4) /* Migrate On Protnone Reference On Node */
->  
->  
->  #endif /* _UAPI_LINUX_MEMPOLICY_H */
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index 0655524700d2..8bfb6adb3f31 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -898,7 +898,7 @@ static void sched_show_numa(struct task_struct *p, struct seq_file *m)
->  
->  	task_lock(p);
->  	pol = p->mempolicy;
-> -	if (pol && !(pol->flags & MPOL_F_MORON))
-> +	if (pol && !(pol->flags & MPOL_F_MOPRON))
->  		pol = NULL;
->  	mpol_get(pol);
->  	task_unlock(p);
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 3fde772ef5ef..f6948b659643 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -2511,7 +2511,7 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
->  	}
->  
->  	/* Migrate the page towards the node whose CPU is referencing it */
-> -	if (pol->flags & MPOL_F_MORON) {
-> +	if (pol->flags & MPOL_F_MOPRON) {
->  		polnid = thisnid;
->  
->  		if (!should_numa_migrate_memory(current, page, curnid, thiscpu))
-> @@ -2802,7 +2802,7 @@ void __init numa_policy_init(void)
->  		preferred_node_policy[nid] = (struct mempolicy) {
->  			.refcnt = ATOMIC_INIT(1),
->  			.mode = MPOL_PREFERRED,
-> -			.flags = MPOL_F_MOF | MPOL_F_MORON,
-> +			.flags = MPOL_F_MOF | MPOL_F_MOPRON,
->  			.v = { .preferred_node = nid, },
->  		};
->  	}
-> @@ -3010,7 +3010,7 @@ void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol)
->  	unsigned short mode = MPOL_DEFAULT;
->  	unsigned short flags = 0;
->  
-> -	if (pol && pol != &default_policy && !(pol->flags & MPOL_F_MORON)) {
-> +	if (pol && pol != &default_policy && !(pol->flags & MPOL_F_MOPRON)) {
->  		mode = pol->mode;
->  		flags = pol->flags;
->  	}
-> -- 
-> 2.28.0
-> 
+greg k-h
 
--- 
-Michal Hocko
-SUSE Labs
+------------
+
+ Documentation/networking/ip-sysctl.txt                |    4 
+ Makefile                                              |    2 
+ arch/arm/mm/cache-l2x0.c                              |   16 +-
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi                |    4 
+ arch/powerpc/include/asm/reg.h                        |    2 
+ arch/powerpc/kernel/tau_6xx.c                         |   82 ++++--------
+ arch/powerpc/perf/hv-gpci-requests.h                  |    6 
+ arch/powerpc/platforms/Kconfig                        |    9 -
+ arch/powerpc/platforms/powernv/opal-dump.c            |   41 ++++--
+ arch/powerpc/platforms/pseries/rng.c                  |    1 
+ arch/powerpc/sysdev/xics/icp-hv.c                     |    1 
+ arch/x86/kvm/emulate.c                                |    2 
+ arch/x86/mm/dump_pagetables.c                         |    2 
+ drivers/cpufreq/powernv-cpufreq.c                     |    9 -
+ drivers/crypto/ixp4xx_crypto.c                        |    2 
+ drivers/crypto/omap-sham.c                            |    3 
+ drivers/edac/i5100_edac.c                             |   11 -
+ drivers/gpu/drm/gma500/cdv_intel_dp.c                 |    2 
+ drivers/gpu/drm/virtio/virtgpu_kms.c                  |    2 
+ drivers/gpu/drm/virtio/virtgpu_vq.c                   |   10 +
+ drivers/hid/hid-roccat-kone.c                         |   23 ++-
+ drivers/infiniband/hw/mlx4/cm.c                       |    3 
+ drivers/input/keyboard/ep93xx_keypad.c                |    4 
+ drivers/input/keyboard/omap4-keypad.c                 |    6 
+ drivers/input/serio/sun4i-ps2.c                       |    9 -
+ drivers/input/touchscreen/imx6ul_tsc.c                |   27 ++--
+ drivers/media/firewire/firedtv-fw.c                   |    6 
+ drivers/media/i2c/m5mols/m5mols_core.c                |    3 
+ drivers/media/i2c/tc358743.c                          |    2 
+ drivers/media/pci/bt8xx/bttv-driver.c                 |   13 +-
+ drivers/media/pci/saa7134/saa7134-tvaudio.c           |    3 
+ drivers/media/platform/exynos4-is/fimc-isp.c          |    4 
+ drivers/media/platform/exynos4-is/fimc-lite.c         |    2 
+ drivers/media/platform/exynos4-is/media-dev.c         |    8 -
+ drivers/media/platform/exynos4-is/mipi-csis.c         |    4 
+ drivers/media/platform/omap3isp/isp.c                 |    6 
+ drivers/media/platform/sti/bdisp/bdisp-v4l2.c         |    3 
+ drivers/media/platform/ti-vpe/vpe.c                   |    2 
+ drivers/media/rc/ati_remote.c                         |    4 
+ drivers/media/usb/uvc/uvc_v4l2.c                      |   30 ++++
+ drivers/memory/fsl-corenet-cf.c                       |    6 
+ drivers/memory/omap-gpmc.c                            |    4 
+ drivers/mfd/rtsx_pcr.c                                |    4 
+ drivers/mfd/sm501.c                                   |    8 +
+ drivers/misc/mic/scif/scif_rma.c                      |    4 
+ drivers/misc/vmw_vmci/vmci_queue_pair.c               |   10 -
+ drivers/mmc/core/sdio_cis.c                           |    3 
+ drivers/mtd/lpddr/lpddr2_nvm.c                        |   35 ++---
+ drivers/mtd/mtdoops.c                                 |   11 -
+ drivers/net/ethernet/cisco/enic/enic.h                |    1 
+ drivers/net/ethernet/cisco/enic/enic_api.c            |    6 
+ drivers/net/ethernet/cisco/enic/enic_main.c           |   27 +++-
+ drivers/net/ethernet/ibm/ibmveth.c                    |   13 +-
+ drivers/net/ethernet/korina.c                         |    3 
+ drivers/net/ethernet/realtek/r8169.c                  |  116 +++++++++---------
+ drivers/net/wan/hdlc.c                                |   10 +
+ drivers/net/wan/hdlc_raw_eth.c                        |    1 
+ drivers/net/wireless/ath/ath10k/htt_rx.c              |    8 +
+ drivers/net/wireless/ath/ath6kl/main.c                |    3 
+ drivers/net/wireless/ath/ath6kl/wmi.c                 |    5 
+ drivers/net/wireless/ath/ath9k/hif_usb.c              |   19 ++
+ drivers/net/wireless/ath/ath9k/htc_hst.c              |    2 
+ drivers/net/wireless/ath/wcn36xx/main.c               |    2 
+ drivers/net/wireless/brcm80211/brcmfmac/msgbuf.c      |    2 
+ drivers/net/wireless/brcm80211/brcmsmac/phy/phy_lcn.c |    4 
+ drivers/net/wireless/mwifiex/scan.c                   |    2 
+ drivers/net/wireless/mwifiex/sdio.c                   |    2 
+ drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.c      |   10 +
+ drivers/scsi/csiostor/csio_hw.c                       |    2 
+ drivers/scsi/ibmvscsi/ibmvfc.c                        |    1 
+ drivers/scsi/mvumi.c                                  |    1 
+ drivers/scsi/qla4xxx/ql4_os.c                         |    2 
+ drivers/tty/hvc/hvcs.c                                |   14 +-
+ drivers/tty/ipwireless/network.c                      |    4 
+ drivers/tty/ipwireless/tty.c                          |    2 
+ drivers/tty/pty.c                                     |    2 
+ drivers/tty/serial/Kconfig                            |    1 
+ drivers/usb/class/cdc-acm.c                           |   11 +
+ drivers/usb/class/cdc-wdm.c                           |   72 ++++++++---
+ drivers/usb/core/urb.c                                |   89 ++++++++-----
+ drivers/usb/gadget/function/f_printer.c               |   16 ++
+ drivers/usb/gadget/function/u_ether.c                 |    2 
+ drivers/usb/host/ohci-hcd.c                           |   16 +-
+ drivers/vfio/pci/vfio_pci_intrs.c                     |    4 
+ drivers/video/backlight/sky81452-backlight.c          |    1 
+ drivers/video/fbdev/sis/init.c                        |   11 -
+ drivers/video/fbdev/vga16fb.c                         |   14 +-
+ drivers/virt/fsl_hypervisor.c                         |   17 +-
+ fs/cifs/asn1.c                                        |   16 +-
+ fs/ntfs/inode.c                                       |    6 
+ fs/quota/quota_v2.c                                   |    1 
+ fs/reiserfs/inode.c                                   |    3 
+ fs/reiserfs/super.c                                   |    8 -
+ fs/udf/inode.c                                        |   25 ++-
+ fs/udf/super.c                                        |    6 
+ fs/xfs/xfs_rtalloc.c                                  |   11 +
+ include/linux/compiler.h                              |   22 ++-
+ include/linux/kasan-checks.h                          |   12 +
+ include/net/ip.h                                      |    6 
+ include/scsi/scsi_common.h                            |    7 +
+ include/trace/events/target.h                         |   12 -
+ kernel/debug/kdb/kdb_io.c                             |    8 -
+ kernel/power/hibernate.c                              |   11 -
+ lib/crc32.c                                           |    2 
+ lib/string.c                                          |    2 
+ mm/kasan/kasan.c                                      |   76 +++++++----
+ net/bluetooth/l2cap_sock.c                            |    7 -
+ net/ipv4/icmp.c                                       |    7 -
+ net/ipv4/tcp_input.c                                  |    2 
+ net/netfilter/ipvs/ip_vs_ctl.c                        |    7 -
+ net/nfc/netlink.c                                     |    2 
+ net/tipc/msg.c                                        |    3 
+ net/wireless/nl80211.c                                |    5 
+ security/integrity/ima/ima_crypto.c                   |    2 
+ sound/core/seq/oss/seq_oss.c                          |    7 -
+ sound/firewire/bebob/bebob_hwdep.c                    |    3 
+ tools/perf/util/intel-pt.c                            |    8 -
+ 117 files changed, 811 insertions(+), 452 deletions(-)
+
+Abhishek Pandit-Subedi (1):
+      Bluetooth: Only mark socket zapped after unlocking
+
+Adam Goode (1):
+      media: uvcvideo: Ensure all probed info is returned to v4l2
+
+Adrian Hunter (1):
+      perf intel-pt: Fix "context_switch event has no tid" error
+
+Alex Dewar (1):
+      VMCI: check return value of get_user_pages_fast() for errors
+
+Alex Williamson (1):
+      vfio/pci: Clear token on bypass registration failure
+
+Andrey Ryabinin (6):
+      mm/kasan: print name of mem[set,cpy,move]() caller in report
+      mm/kasan: add API to check memory regions
+      compiler.h, kasan: Avoid duplicating __read_once_size_nocheck()
+      compiler.h: Add read_word_at_a_time() function.
+      lib/strscpy: Shut up KASAN false-positives in strscpy()
+      x86/mm/ptdump: Fix soft lockup in page table walker
+
+Arnd Bergmann (1):
+      mtd: lpddr: fix excessive stack usage with clang
+
+Artem Savkov (1):
+      pty: do tty_flip_buffer_push without port->lock in pty_write
+
+Brooke Basile (1):
+      ath9k: hif_usb: fix race condition between usb_get_urb() and usb_kill_anchored_urbs()
+
+Bryan O'Donoghue (1):
+      wcn36xx: Fix reported 802.11n rx_highest rate wcn3660/wcn3680
+
+Chris Chiu (1):
+      rtl8xxxu: prevent potential memory leak
+
+Christoph Hellwig (1):
+      PM: hibernate: remove the bogus call to get_gendisk() in software_resume()
+
+Christophe JAILLET (3):
+      crypto: ixp4xx - Fix the size used in a 'dma_free_coherent()' call
+      mwifiex: Do not use GFP_KERNEL in atomic context
+      scsi: qla4xxx: Fix an error handling path in 'qla4xxx_get_host_stats()'
+
+Colin Ian King (1):
+      video: fbdev: vga16fb: fix setting of pixclock because a pass-by-value error
+
+Cong Wang (1):
+      tipc: fix the skb_unshare() in tipc_buf_append()
+
+Dan Carpenter (9):
+      ALSA: bebob: potential info leak in hwdep_read()
+      cifs: remove bogus debug code
+      ath6kl: prevent potential array overflow in ath6kl_add_new_sta()
+      ath9k: Fix potential out of bounds in ath9k_htc_txcompletion_cb()
+      HID: roccat: add bounds checking in kone_sysfs_write_settings()
+      ath6kl: wmi: prevent a shift wrapping bug in ath6kl_wmi_delete_pstream_cmd()
+      mfd: sm501: Fix leaks in probe()
+      Input: imx6ul_tsc - clean up some errors in imx6ul_tsc_resume()
+      memory: omap-gpmc: Fix a couple off by ones
+
+Daniel Thompson (1):
+      kdb: Fix pager search for multi-line strings
+
+Darrick J. Wong (1):
+      xfs: make sure the rt allocator doesn't run off the end
+
+David Wilder (1):
+      ibmveth: Identify ingress large send packets.
+
+Defang Bo (1):
+      nfc: Ensure presence of NFC_ATTR_FIRMWARE_NAME attribute in nfc_genl_fw_download()
+
+Dinghao Liu (3):
+      EDAC/i5100: Fix error handling order in i5100_init_one()
+      media: omap3isp: Fix memleak in isp_probe
+      media: bdisp: Fix runtime PM imbalance on error
+
+Doug Horn (1):
+      Fix use after free in get_capset_info callback.
+
+Eli Billauer (1):
+      usb: core: Solve race condition in anchor cleanup functions
+
+Eric Biggers (1):
+      reiserfs: only call unlock_new_inode() if I_NEW
+
+Eric Dumazet (2):
+      icmp: randomize the global rate limiter
+      quota: clear padding in v2r1_mem2diskdqb()
+
+Finn Thain (3):
+      powerpc/tau: Use appropriate temperature sample interval
+      powerpc/tau: Remove duplicated set_thresholds() call
+      powerpc/tau: Disable TAU between measurements
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.241
+
+Guillaume Tucker (1):
+      ARM: 9007/1: l2c: fix prefetch bits init in L2X0_AUX_CTRL using DT values
+
+Hamish Martin (1):
+      usb: ohci: Default to per-port over-current protection
+
+Heiner Kallweit (1):
+      r8169: fix data corruption issue on RTL8402
+
+Håkon Bugge (1):
+      IB/mlx4: Adjust delayed work when a dup is observed
+
+Jan Kara (3):
+      udf: Limit sparing table size
+      udf: Avoid accessing uninitialized data on failed inode read
+      reiserfs: Fix memory leak in reiserfs_parse_options()
+
+Jing Xiangfeng (2):
+      scsi: mvumi: Fix error return in mvumi_io_attach()
+      scsi: ibmvfc: Fix error return in ibmvfc_probe()
+
+Johannes Berg (1):
+      nl80211: fix non-split wiphy information
+
+Kajol Jain (1):
+      powerpc/perf/hv-gpci: Fix starting index value
+
+Keita Suzuki (2):
+      misc: rtsx: Fix memory leak in rtsx_pci_probe
+      brcmsmac: fix memory leak in wlc_phy_attach_lcnphy
+
+Krzysztof Kozlowski (4):
+      Input: ep93xx_keypad - fix handling of platform_get_irq() error
+      Input: omap4-keypad - fix handling of platform_get_irq() error
+      Input: sun4i-ps2 - fix handling of platform_get_irq() error
+      memory: fsl-corenet-cf: Fix handling of platform_get_irq() error
+
+Lorenzo Colitti (1):
+      usb: gadget: u_ether: enable qmult on SuperSpeed Plus as well
+
+Maciej Żenczykowski (1):
+      net/ipv4: always honour route mtu during forwarding
+
+Mark Tomlinson (1):
+      mtd: mtdoops: Don't write panic data twice
+
+Mauro Carvalho Chehab (1):
+      media: saa7134: avoid a shift overflow
+
+Michal Simek (1):
+      arm64: dts: zynqmp: Remove additional compatible string for i2c IPs
+
+Neal Cardwell (1):
+      tcp: fix to update snd_wl1 in bulk receiver fast path
+
+Nicholas Mc Guire (2):
+      powerpc/pseries: Fix missing of_node_put() in rng_init()
+      powerpc/icp-hv: Fix missing of_node_put() in success path
+
+Oliver Neukum (2):
+      media: ati_remote: sanity check for both endpoints
+      USB: cdc-wdm: Make wdm_flush() interruptible and add wdm_fsync().
+
+Pali Rohár (1):
+      mmc: sdio: Check for CISTPL_VERS_1 buffer size
+
+Pavel Machek (1):
+      media: firewire: fix memory leak
+
+Peilin Ye (1):
+      ipvs: Fix uninit-value in do_ip_vs_set_ctl()
+
+Qiushi Wu (4):
+      media: ti-vpe: Fix a missing check and reference count leak
+      media: exynos4-is: Fix several reference count leaks due to pm_runtime_get_sync
+      media: exynos4-is: Fix a reference count leak due to pm_runtime_get_sync
+      media: exynos4-is: Fix a reference count leak
+
+Robert Hoo (1):
+      KVM: x86: emulating RDPID failure shall return #UD rather than #GP
+
+Roberto Sassu (1):
+      ima: Don't ignore errors from crypto_shash_update()
+
+Roman Bolshakov (1):
+      scsi: target: core: Add CONTROL field for trace events
+
+Rustam Kovhaev (1):
+      ntfs: add check for mft record size in superblock
+
+Souptick Joarder (2):
+      drivers/virt/fsl_hypervisor: Fix error handling path
+      misc: mic: scif: Fix error handling path
+
+Srikar Dronamraju (1):
+      cpufreq: powernv: Fix frame-size-overflow in powernv_cpufreq_reboot_notifier
+
+Sylwester Nawrocki (1):
+      media: Revert "media: exynos4-is: Add missed check for pinctrl_lookup_state()"
+
+Takashi Iwai (1):
+      ALSA: seq: oss: Avoid mutex lock for a long-time ioctl
+
+Tero Kristo (1):
+      crypto: omap-sham - fix digcnt register handling with export/import
+
+Thomas Gleixner (1):
+      net: enic: Cure the enic api locking trainwreck
+
+Tianjia Zhang (1):
+      scsi: csiostor: Fix wrong return value in csio_hw_prep_fw()
+
+Tobias Jordan (1):
+      lib/crc32.c: fix trivial typo in preprocessor condition
+
+Tom Rix (5):
+      media: m5mols: Check function pointer in m5mols_sensor_power
+      media: tc358743: initialize variable
+      drm/gma500: fix error check
+      video: fbdev: sis: fix null ptr dereference
+      mwifiex: fix double free
+
+Tong Zhang (2):
+      tty: serial: earlycon dependency
+      tty: ipwireless: fix error handling
+
+Tyrel Datwyler (1):
+      tty: hvcs: Don't NULL tty->driver_data until hvcs_cleanup()
+
+Valentin Vidic (2):
+      net: korina: fix kfree of rx/tx descriptor array
+      net: korina: cast KSEG0 address to pointer in kfree
+
+Vasant Hegde (1):
+      powerpc/powernv/dump: Fix race while processing OPAL dump
+
+Vincent Mailhol (1):
+      usb: cdc-acm: add quirk to blacklist ETAS ES58X devices
+
+Wang Yufen (1):
+      brcm80211: fix possible memleak in brcmf_proto_msgbuf_attach
+
+Xiaolong Huang (1):
+      media: media/pci: prevent memory leak in bttv_probe
+
+Xie He (2):
+      net: hdlc: In hdlc_rcv, check to make sure dev is an HDLC device
+      net: hdlc_raw_eth: Clear the IFF_TX_SKB_SHARING flag after calling ether_setup
+
+Zekun Shen (1):
+      ath10k: check idx validity in __ath10k_htt_rx_ring_fill_n()
+
+Zqiang (1):
+      usb: gadget: function: printer: fix use-after-free in __lock_acquire
+
+dinghao.liu@zju.edu.cn (1):
+      backlight: sky81452-backlight: Fix refcount imbalance on error
+
