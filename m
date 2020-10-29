@@ -2,116 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4005C29FFF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0A02A003A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgJ3I3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 04:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgJ3I3l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:29:41 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852E8C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 01:29:41 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id 10so4635584pfp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 01:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=e5m24XKv3rmYhiflffWvjSLRsXqJcmEBkgd6KO60GGg=;
-        b=TIrsUG6Ly9+zRcq+SJ/qIs+D8xBuzYeRKRBPKuzBE9LVf0SL0kNg4ppBSNsxfDNDul
-         Lk0zSfFvoKqSA7GIBDxpyXM8l3ABGxY3L4ImhU+1V4jOM4Os3vDryyJ6MRgNMKQ0uGMX
-         GEABVA3XiS+L7A12O32xu+vcrlPJC/drfj+6Mk9i+uL9X+E4X8n6mLcQQa52KY5kuf+y
-         MNKt/fG1vjTziXyBYz2WOE8HSADd+zwXaSGj0gMmNPs8SBqOY/MFn6X7+g4S+G07aFC8
-         VWaLYR0d9356UhkX310RR+dXx/AplZlRxmwCxeTGLe661aZ1Tu1zgeEBmzN/ZECyPY6L
-         hiRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=e5m24XKv3rmYhiflffWvjSLRsXqJcmEBkgd6KO60GGg=;
-        b=hHzQDGiqy1GyMHAOP5xo2qQ0aAW2gpTN0cHPWUtc7SG6hqbHVwLkrHoLfVOnaa2W24
-         d9uVmIq8XbICR8H5dGM69jwpUuDHB6nsZRAoaHP02U2TxZnCIQ3PVguH3jOAvtK2+69q
-         rYG2rkyg/83DBwrdl1JqBvND505/Whf58ncrF4Rz+pkDFiAHqm6+MYzeqyUTYKZsm03n
-         3RIo0NziCibe7/FIcA/iDe2l3jl2qih8+EzKr4ozmL+3N/BnnBOlCuoANHP+qS5rboGn
-         MwpuYarGKURgHxhKn9xWdGm3amVdLJbcCtic7avSsVpTVLZJU7CzF8yCIntrFmcmcvqZ
-         hTmQ==
-X-Gm-Message-State: AOAM5330qY+88R0FKfPgIJsIAeiq+F9GiergBGjI3q4De7/775yMx6vx
-        Lg/BYpXApkL6MYJ4pD2ls/zLiA==
-X-Google-Smtp-Source: ABdhPJzzLhbSDKD9gMJkttY9BBUGB9camLeOPwGl5E90BxlosCMqvnnScYBJaBwfmhPyHTY6LhFUAA==
-X-Received: by 2002:aa7:9af1:0:b029:152:6101:ad12 with SMTP id y17-20020aa79af10000b02901526101ad12mr8094707pfp.40.1604046580892;
-        Fri, 30 Oct 2020 01:29:40 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id w65sm5135011pfw.145.2020.10.30.01.29.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 30 Oct 2020 01:29:39 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 13:59:37 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, vireshk@kernel.org,
-        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com, rafael@kernel.org,
-        sudeep.holla@arm.com, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com
-Subject: Re: [PATCH 0/4] Add sustainable OPP concept
-Message-ID: <20201030082937.xgjmko2ohwhkt6f5@vireshk-i7>
-References: <20201028140847.1018-1-lukasz.luba@arm.com>
- <20201029074057.6ugmwyzna52x3oli@vireshk-i7>
- <20201029075356.rruej6jlerhfa4oy@vireshk-i7>
- <228fa1b3-bbd3-6941-fd4b-06581016d839@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <228fa1b3-bbd3-6941-fd4b-06581016d839@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        id S1725995AbgJ3In1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:43:27 -0400
+Received: from mga01.intel.com ([192.55.52.88]:36686 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgJ3In1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 04:43:27 -0400
+IronPort-SDR: qihjapCdtA4tALK9b/AaFESO1Pk11xVFJL67SDCeggYTN8QwbLwMyMnmJzUA6xxB787VgzrT8I
+ af5yZd1YS3tQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="186381985"
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="186381985"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 01:43:26 -0700
+IronPort-SDR: XjSnM+vJX1VrgkPr2onDnCG6DkgeY4rc7kXe01SYfsNPR9Qc79h8hEtXmgdG90cB0/3Y1T8bMn
+ 9Wd7cMCb5OLA==
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="536993206"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 01:43:23 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        mengdong.lin@intel.com, bard.liao@intel.com
+Subject: [PATCH v3] soundwire: SDCA: add helper macro to access controls
+Date:   Fri, 30 Oct 2020 04:49:55 +0800
+Message-Id: <20201029204955.8568-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-10-20, 09:56, Lukasz Luba wrote:
-> There were discussions about Energy Model (EM), scale of values (mW or
-> abstract scale) and relation to EAS and IPA. You can find quite long
-> discussion below v2 [1] (there is also v3 send after agreement [2]).
-> We have in thermal DT binding: 'sustainable-power' expressed in mW,
-> which is used by IPA, but it would not support bogoWatts.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Why so ? (I am sorry, can't dig into such long threads without knowing
-which message I am looking for :( ). Lets assume if that same property
-can be used for bogoWatts, will that be sufficient for you ? Or you
-will still need this patch set ?
+The upcoming SDCA (SoundWire Device Class Audio) specification defines
+a hierarchical encoding to interface with Class-defined capabilities.
 
-> The sustainable power is used for estimation of internal coefficients
-> (also for power budget), which I am trying to change to work with
-> 'abstract scale' [3][4].
-> 
-> This would allow to estimate sustainable power of the system based on
-> CPUs, GPU opp-sustainable points, where we don't have
-> 'sustainable-power' or devices using bogoWatts.
+The specification is not yet accessible to the general public but this
+information is released with explicit permission from the MIPI Board
+to avoid delays with SDCA support on Linux platforms.
 
-Then maybe we should ahve sustainable-power in those cases too instead
-of adding a meaningless (IMHO) binding.
+A block of 64 MBytes of register addresses are allocated to SDCA
+controls, starting at address 0x40000000. The 26 LSBs which identify
+individual controls are set based on the following variables:
 
-Honestly speaking, as Nishanth said, there is nothing like a
-sustainable OPP in reality. Moreover, the DT needs to describe the
-hardware as it is (and in some cases the behavior of the firmware).
-And what you are trying to add here is none of them and so it should
-not go in DT as such. There are too many factors which play a part
-here, ambient temperature is one of the biggest ones, and the software
-needs to find the sustainable OPP by itself based on the current
-situation.
+- Function Number. An SCDA device can be split in up to 8 independent
+  Functions. Each of these Functions is described in the SDCA
+  specification, e.g. Smart Amplifier, Smart Microphone, Simple
+  Microphone, Jack codec, HID, etc.
 
-So I don't really see a good reason why such a property should be
-added here.
+- Entity Number.  Within each Function,  an Entity is  an identifiable
+  block.  Up   to  127  Entities   are  connected  in   a  pre-defined
+  graph  (similar to  USB), with  Entity0 reserved  for Function-level
+  configurations.  In  contrast  to  USB, the  SDCA  spec  pre-defines
+  Function Types, topologies, and allowed  options, i.e. the degree of
+  freedom  is not  unlimited to  limit  the possibility  of errors  in
+  descriptors leading to software quirks.
 
-Coming to properties like suspend-opp, it made sense for some of the
-platforms as the last configured frequency of the CPU plays a part in
-deciding the power consumed by the SoC even when the system is
-suspended. And finding an optimal OPP (normally the lowest) there
-would make sense and so was that property added.
+- Control Selector. Within each Entity, the SDCA specification defines
+  48 controls such as Mute, Gain, AGC, etc, and 16 implementation
+  defined ones. Some Control Selectors might be used for low-level
+  platform setup, and other exposed to applications and users. Note
+  that the same Control Selector capability, e.g. Latency control,
+  might be located at different offsets in different entities, the
+  Control Selector mapping is Entity-specific.
 
+- Control Number. Some Control Selectors allow channel-specific values
+  to be set, with up to 64 channels allowed. This is mostly used for
+  volume control.
+
+- Current/Next values. Some Control Selectors are
+  'Dual-Ranked'. Software may either update the Current value directly
+  for immediate effect. Alternatively, software may write into the
+  'Next' values and update the SoundWire 1.2 'Commit Groups' register
+  to copy 'Next' values into 'Current' ones in a synchronized
+  manner. This is different from bank switching which is typically
+  used to change the bus configuration only.
+
+- MBQ. the Multi-Byte Quantity bit is used to provide atomic updates
+  when accessing more that one byte, for example a 16-bit volume
+  control would be updated consistently, the intermediate values
+  mixing old MSB with new LSB are not applied.
+
+These 6 parameters are used to build a 32-bit address to access the
+desired Controls. Because of address range, paging is required, but
+the most often used parameter values are placed in the lower 16 bits
+of the address. This helps to keep the paging registers constant while
+updating Controls for a specific Device/Function.
+
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+Changelog:
+
+v2:
+ - add SDW_SDCA_MBQ_CTL
+
+v3:
+ - add SDW_SDCA_NEXT_CTL
+
+---
+ include/linux/soundwire/sdw_registers.h | 32 +++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
+index f420e8059779..e14dff9a9c7f 100644
+--- a/include/linux/soundwire/sdw_registers.h
++++ b/include/linux/soundwire/sdw_registers.h
+@@ -298,4 +298,36 @@
+ #define SDW_CASC_PORT_MASK_INTSTAT3		1
+ #define SDW_CASC_PORT_REG_OFFSET_INTSTAT3	2
+ 
++/*
++ * v1.2 device - SDCA address mapping
++ *
++ * Spec definition
++ *	Bits		Contents
++ *	31		0 (required by addressing range)
++ *	30:26		0b10000 (Control Prefix)
++ *	25		0 (Reserved)
++ *	24:22		Function Number [2:0]
++ *	21		Entity[6]
++ *	20:19		Control Selector[5:4]
++ *	18		0 (Reserved)
++ *	17:15		Control Number[5:3]
++ *	14		Next
++ *	13		MBQ
++ *	12:7		Entity[5:0]
++ *	6:3		Control Selector[3:0]
++ *	2:0		Control Number[2:0]
++ */
++
++#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |			\
++						 (((fun) & 0x7) << 22) |	\
++						 (((ent) & 0x40) << 15) |	\
++						 (((ent) & 0x3f) << 7) |	\
++						 (((ctl) & 0x30) << 15) |	\
++						 (((ctl) & 0x0f) << 3) |	\
++						 (((ch) & 0x38) << 12) |	\
++						 ((ch) & 0x07))
++
++#define SDW_SDCA_MBQ_CTL(reg)			((reg) | BIT(13))
++#define SDW_SDCA_NEXT_CTL(reg)			((reg) | BIT(14))
++
+ #endif /* __SDW_REGISTERS_H */
 -- 
-viresh
+2.17.1
+
