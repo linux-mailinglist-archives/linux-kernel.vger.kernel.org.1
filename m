@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E3B29F13D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:20:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6482429F141
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 17:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgJ2QU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 12:20:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43138 "EHLO mail.kernel.org"
+        id S1726345AbgJ2QWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 12:22:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgJ2QU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:20:28 -0400
+        id S1725853AbgJ2QWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:22:36 -0400
 Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37AFF2076D;
-        Thu, 29 Oct 2020 16:20:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1115206FB;
+        Thu, 29 Oct 2020 16:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603988427;
-        bh=3qAjnhHz1kcAriq2G1giteB+HNPzOLqsVeeCAC7VxDA=;
+        s=default; t=1603988500;
+        bh=D0HoGSVDCybatgdLHprF7ihRpv/b7k8buAv4EbT5FRE=;
         h=From:To:Cc:Subject:Date:From;
-        b=RFnfg7Iow8R1ZrzmX0c9C4MoxZBa5/xOtn/SaXjH8mu7prmUQwnPrjLb6XIdfxdX6
-         rnxNtUIBO3fBDzyCpaSRP5+12k3IAz1BuXmg0oQJoOqxgltltMlv9Vq0wBirElIaaf
-         XkrJbcjOJ8ouAITA0mvpKa+I5VP9Ly5yaeURnkWE=
+        b=JXb+z71NH/3s5bjVDbaOTda+CAWCErEZASiAXCplQeSwV1MWh4CxblyxeOMx09JqV
+         kbnQB0KWqPRgNv58rw9g2qozpKkgVQNTAfCDfyJkLD1/We2isEgwJ3fwof+cozbnIH
+         L749SfdSwOU8xzIu34rlDaQLYcU/R9sBw/cWDjGk=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, Han Xu <han.xu@nxp.com>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v4] dt-bindings: mtd: gpmi-nand: Fix matching of clocks on different SoCs
-Date:   Thu, 29 Oct 2020 17:20:21 +0100
-Message-Id: <20201029162021.80839-1-krzk@kernel.org>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v2 1/2] dt-bindings: watchdog: fsl-imx: document NXP compatibles
+Date:   Thu, 29 Oct 2020 17:21:32 +0100
+Message-Id: <20201029162133.81016-1-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -41,129 +48,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Driver requires different amount of clocks for different SoCs.  Describe
-these requirements properly to fix dtbs_check warnings like:
+Document all ARMv5, ARMv6, ARMv7 and ARMv8 NXP (i.MX, Layerscape)
+compatibles used in DTSes (even though driver binds only to
+fsl,imx21-wdt) to fix dtbs_check warnings like:
 
-    arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dt.yaml: nand-controller@33002000: clock-names:1: 'gpmi_apb' was expected
+  arch/arm/boot/dts/imx53-qsb.dt.yaml: gpio@53fe0000: compatible:
+    ['fsl,imx53-gpio', 'fsl,imx35-gpio'] is not valid under any of the given schemas
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 ---
-
-Changes since v3:
-1. Go back to fixed order of clocks, after explanation from Rob.
 
 Changes since v1:
-1. Do not require order of clocks (use pattern).
+1. Add also Layerscape,
+2. Add Rob's review tag.
 ---
- .../devicetree/bindings/mtd/gpmi-nand.yaml    | 76 +++++++++++++++----
- 1 file changed, 61 insertions(+), 15 deletions(-)
+ .../bindings/watchdog/fsl-imx-wdt.yaml           | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-index 28ff8c581837..9d764e654e1d 100644
---- a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-@@ -9,9 +9,6 @@ title: Freescale General-Purpose Media Interface (GPMI) binding
- maintainers:
-   - Han Xu <han.xu@nxp.com>
+diff --git a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
+index 991b4e33486e..fb7695515be1 100644
+--- a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
++++ b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
+@@ -18,10 +18,26 @@ properties:
+       - const: fsl,imx21-wdt
+       - items:
+           - enum:
++              - fsl,imx25-wdt
++              - fsl,imx27-wdt
++              - fsl,imx31-wdt
++              - fsl,imx35-wdt
++              - fsl,imx50-wdt
++              - fsl,imx51-wdt
++              - fsl,imx53-wdt
++              - fsl,imx6q-wdt
++              - fsl,imx6sl-wdt
++              - fsl,imx6sll-wdt
++              - fsl,imx6sx-wdt
++              - fsl,imx6ul-wdt
++              - fsl,imx7d-wdt
+               - fsl,imx8mm-wdt
+               - fsl,imx8mn-wdt
+               - fsl,imx8mp-wdt
+               - fsl,imx8mq-wdt
++              - fsl,ls1012a-wdt
++              - fsl,ls1043a-wdt
++              - fsl,vf610-wdt
+           - const: fsl,imx21-wdt
  
--allOf:
--  - $ref: "nand-controller.yaml"
--
- description: |
-   The GPMI nand controller provides an interface to control the NAND
-   flash chips. The device tree may optionally contain sub-nodes
-@@ -58,22 +55,10 @@ properties:
-   clocks:
-     minItems: 1
-     maxItems: 5
--    items:
--      - description: SoC gpmi io clock
--      - description: SoC gpmi apb clock
--      - description: SoC gpmi bch clock
--      - description: SoC gpmi bch apb clock
--      - description: SoC per1 bch clock
- 
-   clock-names:
-     minItems: 1
-     maxItems: 5
--    items:
--      - const: gpmi_io
--      - const: gpmi_apb
--      - const: gpmi_bch
--      - const: gpmi_bch_apb
--      - const: per1_bch
- 
-   fsl,use-minimum-ecc:
-     type: boolean
-@@ -107,6 +92,67 @@ required:
- 
- unevaluatedProperties: false
- 
-+allOf:
-+  - $ref: "nand-controller.yaml"
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - fsl,imx23-gpmi-nand
-+              - fsl,imx28-gpmi-nand
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: SoC gpmi io clock
-+        clock-names:
-+          items:
-+            - const: gpmi_io
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - fsl,imx6q-gpmi-nand
-+              - fsl,imx6sx-gpmi-nand
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: SoC gpmi io clock
-+            - description: SoC gpmi apb clock
-+            - description: SoC gpmi bch clock
-+            - description: SoC gpmi bch apb clock
-+            - description: SoC per1 bch clock
-+        clock-names:
-+          items:
-+            - const: gpmi_io
-+            - const: gpmi_apb
-+            - const: gpmi_bch
-+            - const: gpmi_bch_apb
-+            - const: per1_bch
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: fsl,imx7d-gpmi-nand
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: SoC gpmi io clock
-+            - description: SoC gpmi bch apb clock
-+        clock-names:
-+          minItems: 2
-+          maxItems: 2
-+          items:
-+            - const: gpmi_io
-+            - const: gpmi_bch_apb
-+
- examples:
-   - |
-     nand-controller@8000c000 {
+   reg:
 -- 
 2.25.1
 
