@@ -2,176 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441F529E88E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAF629E8A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgJ2KJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:09:42 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:56503 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbgJ2KJk (ORCPT
+        id S1726212AbgJ2KMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbgJ2KMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:09:40 -0400
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id A9F1F40015;
-        Thu, 29 Oct 2020 10:09:36 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 11:09:36 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Matteo Scordino <matteo.scordino@gmail.com>
-Cc:     mripard@kernel.org, wens@csie.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] ARM: dts: sun8i: s3: Add dtsi for the Elimo Impetus
- SoM
-Message-ID: <20201029100936.GC460689@aptenodytes>
-References: <20201029022000.601913-1-matteo.scordino@gmail.com>
- <20201029022000.601913-4-matteo.scordino@gmail.com>
+        Thu, 29 Oct 2020 06:12:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E3BC0613D2;
+        Thu, 29 Oct 2020 03:12:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=HZ8TaPb14jta9j4bcrtWFgktOhAKRClMadxsO4T8de8=; b=VdcRykTjOvo/GkkbH7WQ1gIp1T
+        o0EPr73DnEcGkk13CfXBYBzZ7thU2nKryhAFanT33rN28lziv+mC1Iq3iqQd6tDwFaj5KGJYeREWJ
+        6hPgeV455iTnquqqS5YRe9J0qOuNK9xZMZBEoEKGQYi82jvLR2Cr1kRRBGl5VmXVdsQv/ud//tbwq
+        9UAkhv0ie0oFKRDbx4DsjlwtIK9cXevNxrsOoAL8HilkZyPef5FQGNv4dhVgoG7fdEoSfyeyHPUu3
+        zW6RbXF7u66Ica23RXUqx8cmAFMO+aESYKGvgXD5G0GnQMCCYVXRXIv/LOI+nR1cWgM/BFgmqOBfY
+        pu6NgVHA==;
+Received: from 089144193201.atnat0002.highway.a1.net ([89.144.193.201] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kY4uY-0003gB-Ho; Thu, 29 Oct 2020 10:12:03 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: support splice reads on seq_file based procfs files
+Date:   Thu, 29 Oct 2020 11:09:47 +0100
+Message-Id: <20201029100950.46668-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3siQDZowHQqNOShm"
-Content-Disposition: inline
-In-Reply-To: <20201029022000.601913-4-matteo.scordino@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Al,
 
---3siQDZowHQqNOShm
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Thu 29 Oct 20, 02:19, Matteo Scordino wrote:
-> The Elimo Engineering Impetus is an Open Source Hardware System-on-Module
-> based on the SoChip S3 SoC.
->=20
-> It is meant for integration into carrier boards or, more generally,
-> larger designs, and uses an M2 connector to facilitate that.
->=20
-> Interfaces on the M.2/NGFF 42mm connector:
-> WiFi IEEE 802. 11abgn (on-module Realtek)
-> Bluetooth 4.2/BLE (on-module Realtek)
-> RGB LCD Interface (on-module connector)
-> MIPI Camera Interface (on-module connector)
-> IEEE 802. 3u Ethernet MAC (external connecto)
-> USB2.0 (Host, Device, OTG) (external connector)
-> Audio Line In/Out (external connector)
->=20
-> Signed-off-by: Matteo Scordino <matteo.scordino@gmail.com>
-> ---
->  arch/arm/boot/dts/sun8i-s3-elimo-impetus.dtsi | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
->  create mode 100644 arch/arm/boot/dts/sun8i-s3-elimo-impetus.dtsi
->=20
-> diff --git a/arch/arm/boot/dts/sun8i-s3-elimo-impetus.dtsi b/arch/arm/boo=
-t/dts/sun8i-s3-elimo-impetus.dtsi
-> new file mode 100644
-> index 000000000000..3550125cf334
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/sun8i-s3-elimo-impetus.dtsi
-> @@ -0,0 +1,51 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (C) 2020 Matteo Scordino <matteo@elimo.io>
-> + */
-> +
-> +/dts-v1/;
-> +#include "sun8i-v3.dtsi"
-> +#include "sunxi-common-regulators.dtsi"
-> +
-> +/ {
-> +	model =3D "Elimo Impetus SoM";
-> +	compatible =3D "elimo,impetus", "sochip,s3", "allwinner,sun8i-s3";
-
-I'm wondering what to do about the SoC compatibles here:
-- Do we really need the "sochip,s3" compatible, as it seems redundant with
-  "allwinner,sun8i-s3"?
-- Could we add a "allwinner,sun8i-v3" compatible at the end since there is =
-no
-  functional difference between the two?
-
-Another thing is that we should probably add "allwinner,sun8i-v3" to
-mach-sunxi/sunxi.c so that it's matched by the DT_MACHINE_START.
-
-If that seems agreeable, I can craft a patch for the latter.
-
-What do you think?
-
-The rest of the dt looks good to me :)
-
-Cheers,
-
-Paul
-
-> +
-> +	aliases {
-> +		serial0 =3D &uart0;
-> +		serial1 =3D &uart1;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path =3D "serial0:115200n8";
-> +	};
-> +};
-> +
-> +&mmc0 {
-> +	broken-cd;
-> +	bus-width =3D <4>;
-> +	vmmc-supply =3D <&reg_vcc3v3>;
-> +	status =3D "okay";
-> +};
-> +
-> +&uart0 {
-> +	pinctrl-0 =3D <&uart0_pb_pins>;
-> +	pinctrl-names =3D "default";
-> +	status =3D "okay";
-> +};
-> +
-> +&uart1 {
-> +	pinctrl-0 =3D <&uart1_pg_pins>;
-> +	pinctrl-names =3D "default";
-> +	status =3D "okay";
-> +};
-> +
-> +&usb_otg {
-> +	dr_mode =3D "otg";
-> +	status =3D "okay";
-> +};
-> +
-> +&usbphy {
-> +	usb0_id_det-gpio =3D <&pio 5 6 GPIO_ACTIVE_HIGH>;
-> +	status =3D "okay";
-> +};
-> --=20
-> 2.20.1
->=20
->=20
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---3siQDZowHQqNOShm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+alOAACgkQ3cLmz3+f
-v9EmnQgAn+lmJ4WldMeeZzOVmSP/s7CWdSfpraIUOkaYBb92TvrOAg2XXIb6EGDP
-p2G4DRWqzQGGpWAXJHk6CGZkIn5s3Nwo697lFLaXcXLcbapjgidGNYXRhS4dSYn0
-kuoCzp0RhM8LcPLGFAqH6Vj2svF+u+oGGEjHG0Wn0mGZJZZ7dJrQAl7PisxWkMJS
-00lTX6hrcxfpMhgKkt06h1kaIqRCNw8CQvP81uR5kG7wOkk399fh7aqiFek8M/PV
-eDqCAkJ+qaibFVOTsAqGZAa+k5ItxktNok1LWhvyR/YvAndGsaEz7nDfJnsCHDpM
-LjxN6Do8HJvmoO6xcWrr6hXdL8STNw==
-=wg98
------END PGP SIGNATURE-----
-
---3siQDZowHQqNOShm--
+Greg reported a problem due to the fact that Android tests use procfs
+files to test splice, which stopped working with 5.10-rc1.  This series
+adds read_iter support for seq_file, and uses those for all proc files
+using seq_file to restore splice read support.
