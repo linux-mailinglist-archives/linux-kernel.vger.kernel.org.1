@@ -2,164 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93E429E839
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4D129E83F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 11:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726008AbgJ2KEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 06:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725562AbgJ2KEH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 06:04:07 -0400
-Received: from smtp3-1.goneo.de (smtp3.goneo.de [IPv6:2001:1640:5::8:37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BB0C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 03:04:06 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp3.goneo.de (Postfix) with ESMTP id 39F5723F9D3;
-        Thu, 29 Oct 2020 11:04:05 +0100 (CET)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.945
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.945 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.045, BAYES_00=-1.9] autolearn=ham
-Received: from smtp3.goneo.de ([127.0.0.1])
-        by localhost (smtp3.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Vy9hWqV97SFU; Thu, 29 Oct 2020 11:04:03 +0100 (CET)
-Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
-        by smtp3.goneo.de (Postfix) with ESMTPSA id 2505923F2CE;
-        Thu, 29 Oct 2020 11:04:03 +0100 (CET)
-Date:   Thu, 29 Oct 2020 11:03:57 +0100
-From:   Lars Poeschel <poeschel@lemonage.de>
-To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
-        Willy Tarreau <willy@haproxy.com>,
-        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/25] Make charlcd device independent
-Message-ID: <20201029100357.6so4jehdj3fj2fc3@lem-wkst-02.lemonage>
-References: <20201029095033.310788-1-poeschel@lemonage.de>
+        id S1726080AbgJ2KEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:04:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:58524 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725562AbgJ2KEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 06:04:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C972139F;
+        Thu, 29 Oct 2020 03:04:21 -0700 (PDT)
+Received: from [10.57.13.20] (unknown [10.57.13.20])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0A333F66E;
+        Thu, 29 Oct 2020 03:04:18 -0700 (PDT)
+Subject: Re: [PATCH 1/4] dt-bindings: opp: Introduce opp-sustainable bindings
+To:     Nishanth Menon <nm@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        vireshk@kernel.org, robh+dt@kernel.org, sboyd@kernel.org,
+        rafael@kernel.org, sudeep.holla@arm.com, daniel.lezcano@linaro.org,
+        Dietmar.Eggemann@arm.com
+References: <20201028140847.1018-1-lukasz.luba@arm.com>
+ <20201028140847.1018-2-lukasz.luba@arm.com>
+ <20201028214713.zttk47qtua5jhieo@pureness>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <5b3a99a8-6972-5c60-6cc5-00ec84387b97@arm.com>
+Date:   Thu, 29 Oct 2020 10:04:16 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029095033.310788-1-poeschel@lemonage.de>
+In-Reply-To: <20201028214713.zttk47qtua5jhieo@pureness>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series was sent wrong. Should be v5. Drop this one.
 
-Sorry and thanks,
-Lars
 
-On Thu, Oct 29, 2020 at 10:50:07AM +0100, poeschel@lemonage.de wrote:
-> From: Lars Poeschel <poeschel@lemonage.de>
+On 10/28/20 9:47 PM, Nishanth Menon wrote:
+> On 14:08-20201028, Lukasz Luba wrote:
+>> Add opp-sustainable as an additional property in the OPP node to describe
+>> the sustainable performance level of the device. This will help to
+>> estimate the sustainable performance of the whole system.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   Documentation/devicetree/bindings/opp/opp.txt | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/opp/opp.txt b/Documentation/devicetree/bindings/opp/opp.txt
+>> index 9847dfeeffcb..cd01028de305 100644
+>> --- a/Documentation/devicetree/bindings/opp/opp.txt
+>> +++ b/Documentation/devicetree/bindings/opp/opp.txt
+>> @@ -154,6 +154,10 @@ Optional properties:
+>>   - opp-suspend: Marks the OPP to be used during device suspend. If multiple OPPs
+>>     in the table have this, the OPP with highest opp-hz will be used.
+>>   
+>> +- opp-sustainable: Marks the OPP as sustainable. This property can be used for
+>> +  estimating sustainable performance of the whole system. If multiple OPPs in
+>> +  the table have this, the OPP with highest opp-hz will be used.
 > 
-> This tries to make charlcd device independent. At the moment hd44780
-> device specific code is contained deep in charlcd. This moves this out
-> into a hd44780_common module, where the two hd44780 drivers we have at
-> the moment (hd44780 and panel) can use this from. The goal is that at
-> the end other drivers can use the charlcd interface.
-> I add one such driver for a modtronix lcd displau  with the last patch.
-> I submitted this already some time ago, where the wish was so split
-> this into smaller chunks what I try to do with this patchset.
 > 
-> This is v5 of the patchset. I address a few review comments with this.
-> I fixed some typos, but more importantly Miguel spotted that I reverted
-> commit 3f03b6498 ("auxdisplay: charlcd: Reuse hex_to_bin() instead of
-> custom code") during rebasing. This is corrected now.
+> By "sustainable", do you mean sustainable across Process, Voltage and
+> Temperature corners upto the max rated operational Power-ON hours
+> without IDLE state being achieved on the processor?
+
+Yes, in case of CPU: running 100% without idle at that particular OPP.
+Running above that OPP would lead to cross control temperature.
+
 > 
-> As a note to patch 23:
-> This might slightly change behaviour.
-> On hd44780 displays with one or two lines the previous implementation
-> did still write characters to the buffer of the display even if they are
-> currently not visible. The shift_display command could be used so set
-> the "viewing window" to a new position in the buffer and then you could
-> see the characters previously written.
-> This described behaviour does not work for hd44780 displays with more
-> than two display lines. There simply is not enough buffer.
-> So the behaviour was a bit inconsistens across different displays.
-> The new behaviour is to stop writing character at the end of a visible
-> line, even if there would be room in the buffer. This allows us to have
-> an easy implementation, that should behave equal on all supported
-> displays. This is not hd44780 hardware dependent anymore.
-> 
-> Link: https://lore.kernel.org/lkml/20191016082430.5955-1-poeschel@lemonage.de/
-> Link: https://lore.kernel.org/lkml/CANiq72kS-u_Xd_m+2CQVh-JCncPf1XNXrXAZ=4z+mze8fwv2kw@mail.gmail.com/
-> 
-> Changes in v5:
-> - patch 1: Fix a commit message typo: of -> on
-> - patch 2: Remove some unnecessary newlines
-> - patch 8: Fix some typos
-> - patch 14: Fix commit message typo: it's -> its
-> - patch 15: this patch is squashed together from the former individual
->   hd44780_common_ function patches
-> - patch 16: combined two cleanup patches
-> - patch 17: I did previously undo commit 3f03b6498 which was a mistake.
->   This is now corrected.
-> - patch 24: Picked up Robs Reviewed-by
-> - patch 25: use hex_to_bin like in commit 3f03b6498 but for the lcd2s.c
->   file
-> 
-> Changes in v4:
-> - modtronix -> Modtronix in new lcd2s driver
-> - Kconfig: remove "default n" in new lcd2s driver
-> 
-> Changes in v3:
-> - Fix some typos in Kconfig stuff
-> - Fix kernel test robot reported error: Missed EXPORT_SYMBOL_GPL
-> - new patch to reduce display timeout
-> - better patch description to why not move cursor beyond end of a line
-> - Fixed make dt_binding_doc errors
-> 
-> Changes in v2:
-> - split whole patch into many smaller chunks
-> - device tree doc in yaml
-> 
-> Lars Poeschel (25):
->   auxdisplay: Use an enum for charlcd  backlight on/off ops
->   auxdisplay: Introduce hd44780_common.[ch]
->   auxdisplay: Move hwidth and bwidth to struct hd44780_common
->   auxdisplay: Move ifwidth to struct hd44780_common
->   auxdisplay: Move write_data pointer to hd44780_common
->   auxdisplay: Move write_cmd pointers to hd44780 drivers
->   auxdisplay: Move addr out of charlcd_priv
->   auxdisplay: hd44780_common_print
->   auxdisplay: provide hd44780_common_gotoxy
->   auxdisplay: add home to charlcd_ops
->   auxdisplay: Move clear_display to hd44780_common
->   auxdisplay: make charlcd_backlight visible to hd44780_common
->   auxdisplay: Make use of enum for backlight on / off
->   auxdisplay: Move init_display to hd44780_common
->   auxdisplay: implement various hd44780_common_ functions
->   auxdisplay: cleanup unnecessary hd44780 code in charlcd
->   auxdisplay: Move char redefine code to hd44780_common
->   auxdisplay: Call charlcd_backlight in place
->   auxdisplay: hd44780_common: Reduce clear_display timeout
->   auxdisplay: hd44780: Remove clear_fast
->   auxdisplay: charlcd: replace last device specific stuff
->   auxdisplay: Change gotoxy calling interface
->   auxdisplay: charlcd: Do not print chars at end of line
->   auxdisplay: lcd2s DT binding doc
->   auxdisplay: add a driver for lcd2s character display
-> 
->  .../bindings/auxdisplay/modtronix,lcd2s.yaml  |  58 +++
->  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
->  drivers/auxdisplay/Kconfig                    |  30 ++
->  drivers/auxdisplay/Makefile                   |   2 +
->  drivers/auxdisplay/charlcd.c                  | 412 +++++-------------
->  drivers/auxdisplay/charlcd.h                  |  86 +++-
->  drivers/auxdisplay/hd44780.c                  | 120 +++--
->  drivers/auxdisplay/hd44780_common.c           | 361 +++++++++++++++
->  drivers/auxdisplay/hd44780_common.h           |  33 ++
->  drivers/auxdisplay/lcd2s.c                    | 403 +++++++++++++++++
->  drivers/auxdisplay/panel.c                    | 180 ++++----
->  11 files changed, 1237 insertions(+), 450 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/auxdisplay/modtronix,lcd2s.yaml
->  create mode 100644 drivers/auxdisplay/hd44780_common.c
->  create mode 100644 drivers/auxdisplay/hd44780_common.h
->  create mode 100644 drivers/auxdisplay/lcd2s.c
-> 
-> -- 
-> 2.28.0
-> 
+> OR do you mean to leave it up to interpretation?
+
+I can tell how I would use them. There is thermal governor IPA, which
+needs sustainable power either form DT or uses internal algorithm to
+estimate it based on lowest allowed freq OPPs. Then it estimated
+internal coefficients based on that value, which is not optimal
+for lowest OPPs. When some higher OPP could be marked as sustainable,
+it would lead to better estimation and better power budget split.
+
+Regards,
+Lukasz
