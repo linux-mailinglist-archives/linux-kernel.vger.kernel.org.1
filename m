@@ -2,127 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBDF29F099
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DDF29F09B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728426AbgJ2Pzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727966AbgJ2Pzx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:55:53 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49800C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:55:53 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id s7so3982765iol.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:55:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BGtliy7VbPDqvRf66jgO8aJRTxLDK5wgVtmzIOeAeWQ=;
-        b=gq40u1rBao/eHnvvfgDJG47u3PWI9Hz8wnm4PQZZBz+Jh+lo1gq5gRmcA513QQbBev
-         sDWtPHIlKfbp7WT+tzt958R4dGa8o6DeuYTnx1WrMLba59CPCwLuTQfReh9juu1A3NOj
-         CR0UZWMGZ8vXU3PfcHX2xsy6slrlAn59O7XCD3zXJPefxfWARG6r2T+caPznDPq/QWV0
-         ZLgVezM0JwiKgcIRDIpTX4gRsvJN2OQ3/WYu3yOnAZFf4AdPP28/dLkgFFi++hDdZFTj
-         MZ0GFTtbxyBYRbbwK5oSzWJnMagwqD9l399xN0pnIXu+i6UZy5fbLB3JNVZYfpGb7HZl
-         CZDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=BGtliy7VbPDqvRf66jgO8aJRTxLDK5wgVtmzIOeAeWQ=;
-        b=C8uvdqjfm7yXNi4uvZ/nC+Xh5H/6FmbPZZ8SYza8+4wDNJV1VWJ/gTzPYwc2tqeL3T
-         kkuTI17+z8rmEFU3WZJhfdoS+pgb9GDF3CN/XCh3qw9mV9OR9OCne6dRYR4p8hWSkymr
-         7wJ5asilDpwTVL4OEJ9WLCeSvozYfcQLGdAeM4Rl3GZD2cqP10tU8KGjzs5Nmd7v9IsP
-         lFckXvemniBjUGt+GzNkMHIl72I8iHC3GzmOmpK7hEcmMUuIN+cuOUToElZX0vGIbfxL
-         L7qsaDOntx/sHIwObRM5GPljsl+ayETMeLeb6md4co63C7e3Bn3nPd0Eh66+pD3mDCcJ
-         AVFQ==
-X-Gm-Message-State: AOAM531t7pJaS6udFSk/1NeGtyWduyt+1vwn+wjmDbgN8ritMA5Cteno
-        8E3w3wFLpPfY2o6LHBc0DU4=
-X-Google-Smtp-Source: ABdhPJzYY8pa27RFtec4/dspQPw/u3GsTwCfoWzltwxNc7C70k+CqXNF4hRyZ/2usQvSex9X1Oklvw==
-X-Received: by 2002:a02:a10f:: with SMTP id f15mr4073738jag.62.1603986952450;
-        Thu, 29 Oct 2020 08:55:52 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id j85sm2996422ilg.82.2020.10.29.08.55.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 08:55:51 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Thu, 29 Oct 2020 11:55:49 -0400
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] x86/entry/64: Use TEST %reg,%reg instead of CMP $0,%reg
-Message-ID: <20201029155549.GA2503344@rani.riverdale.lan>
-References: <20201029142915.131752-1-ubizjak@gmail.com>
+        id S1728521AbgJ2P4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:56:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728450AbgJ2P4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:56:30 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CDFD206B2;
+        Thu, 29 Oct 2020 15:56:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603986989;
+        bh=UIYyaC9mWXzASi/e/U7uoy/4dyXW1LiDvKm13VKMy4s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PEI41i3ZoJhIeG7S0wdP61pqF6ebSRk+K7bVoA6WcmUVOTRSP7TeVEngKZIxFm9IC
+         2/I5TlPAOE902RPm+CL85tl7glSA+edgRpHtIKvbE1fbSh4qpma6ZuyY5n37A+3biq
+         QpqmaTuKGayA9PYTEjoam2qco5dRtw+uf4nTXBeA=
+Date:   Thu, 29 Oct 2020 08:56:27 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        devel@driverdev.osuosl.org, Arnd Bergmann <arnd@arndb.de>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [RFC] wimax: move out to staging
+Message-ID: <20201029085627.698080a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201028055628.GB244117@kroah.com>
+References: <20201027212448.454129-1-arnd@kernel.org>
+        <20201028055628.GB244117@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201029142915.131752-1-ubizjak@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 03:29:15PM +0100, Uros Bizjak wrote:
-> Use TEST %reg,%reg which sets the zero flag in the same way
-> as CMP $0,%reg, but the encoding uses one byte less.
+On Wed, 28 Oct 2020 06:56:28 +0100 Greg Kroah-Hartman wrote:
+> On Tue, Oct 27, 2020 at 10:20:13PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > There are no known users of this driver as of October 2020, and it will
+> > be removed unless someone turns out to still need it in future releases.
+> > 
+> > According to https://en.wikipedia.org/wiki/List_of_WiMAX_networks, there
+> > have been many public wimax networks, but it appears that these entries
+> > are all stale, after everyone has migrated to LTE or discontinued their
+> > service altogether.
+> > 
+> > NetworkManager appears to have dropped userspace support in 2015
+> > https://bugzilla.gnome.org/show_bug.cgi?id=747846, the
+> > www.linuxwimax.org
+> > site had already shut down earlier.
+> > 
+> > WiMax is apparently still being deployed on airport campus networks
+> > ("AeroMACS"), but in a frequency band that was not supported by the old
+> > Intel 2400m (used in Sandy Bridge laptops and earlier), which is the
+> > only driver using the kernel's wimax stack.
+> > 
+> > Move all files into drivers/staging/wimax, including the uapi header
+> > files and documentation, to make it easier to remove it when it gets
+> > to that. Only minimal changes are made to the source files, in order
+> > to make it possible to port patches across the move.
+> > 
+> > Also remove the MAINTAINERS entry that refers to a broken mailing
+> > list and website.
+> > 
+> > Suggested-by: Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
 > 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> Is this ok for me to take through the staging tree?  If so, I need an
+> ack from the networking maintainers.
+> 
+> If not, feel free to send it through the networking tree and add:
+> 
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Please use x86/boot/64 or x86/boot/compressed/64 for the commit subject.
-x86/entry is used for syscall/exception handler entries in the main
-kernel.
-
-> ---
->  arch/x86/boot/compressed/head_64.S | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-> index 017de6cc87dc..e94874f4bbc1 100644
-> --- a/arch/x86/boot/compressed/head_64.S
-> +++ b/arch/x86/boot/compressed/head_64.S
-> @@ -241,12 +241,12 @@ SYM_FUNC_START(startup_32)
->  	leal	rva(startup_64)(%ebp), %eax
->  #ifdef CONFIG_EFI_MIXED
->  	movl	rva(efi32_boot_args)(%ebp), %edi
-> -	cmp	$0, %edi
-> +	testl	%edi, %edi
->  	jz	1f
->  	leal	rva(efi64_stub_entry)(%ebp), %eax
->  	movl	rva(efi32_boot_args+4)(%ebp), %esi
->  	movl	rva(efi32_boot_args+8)(%ebp), %edx	// saved bootparams pointer
-> -	cmpl	$0, %edx
-> +	testl	%edx, %edx
->  	jnz	1f
->  	/*
->  	 * efi_pe_entry uses MS calling convention, which requires 32 bytes of
-> @@ -592,7 +592,7 @@ SYM_CODE_START(trampoline_32bit_src)
->  	movl	%eax, %cr0
->  
->  	/* Check what paging mode we want to be in after the trampoline */
-> -	cmpl	$0, %edx
-> +	testl	%edx, %edx
->  	jz	1f
->  
->  	/* We want 5-level paging: don't touch CR3 if it already points to 5-level page tables */
-> @@ -622,7 +622,7 @@ SYM_CODE_START(trampoline_32bit_src)
->  
->  	/* Enable PAE and LA57 (if required) paging modes */
->  	movl	$X86_CR4_PAE, %eax
-> -	cmpl	$0, %edx
-> +	testl	%edx, %edx
->  	jz	1f
->  	orl	$X86_CR4_LA57, %eax
->  1:
-> -- 
-> 2.26.2
-> 
+Thinking about it now - we want this applied to -next, correct? 
+In that case it may be better if we take it. The code is pretty dead
+but syzbot and the trivial fix crowd don't know it, so I may slip,
+apply something and we'll have a conflict.
