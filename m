@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4C129F90A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 00:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0512229F914
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 00:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725899AbgJ2XWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 19:22:41 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:50796 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgJ2XWk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 19:22:40 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TNJ9Sx088612;
-        Thu, 29 Oct 2020 23:22:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- from : mime-version : to : cc : subject : references : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=iCgOVVY9koyTzdluMrIUyT5Ny5E+jy24QzqSTuJHj3c=;
- b=UajiZKtOLPMZtL4AG64Xxkos9PRqnZddXJ5LXntzK8W3pU7KKiQPPFtzXX9vnGkiw2LM
- uqzNDfORhIbgplMymj7XD1FpMg/Hf8whx4L8tqGQDy9PXWAJ4ugOjSDRhW99TLdepN2J
- 7qQGSg8WqIZQE5qSmkOjXVD5B40b0/FZaxTInRIXxtLzKuzVTUFCmCrJ8mP3qDEZSnug
- QXag+cz2jOeaOANA4QZ6Z6aj3nu8crXupZni+vUedqpHmuoD8Q37t2Edoa+EcIUbP1HF
- P+syOCwB/I7mS5sR40frL/ppQqhslouqViVD3dUuz1LtZYDfYAKo6RmnnfnvELGJmRnE qQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34cc7m7ehf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 29 Oct 2020 23:22:35 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TNKC6J073198;
-        Thu, 29 Oct 2020 23:22:34 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 34cx612v67-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Oct 2020 23:22:34 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09TNMYBQ030489;
-        Thu, 29 Oct 2020 23:22:34 GMT
-Received: from [10.159.253.93] (/10.159.253.93)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Oct 2020 16:22:33 -0700
-Message-ID: <5F9B4EB7.607@oracle.com>
-Date:   Thu, 29 Oct 2020 16:22:31 -0700
-From:   si-wei liu <si-wei.liu@oracle.com>
-Organization: Oracle Corporation
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+        id S1725828AbgJ2X2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 19:28:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725372AbgJ2X2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 19:28:12 -0400
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 305BD20BED;
+        Thu, 29 Oct 2020 23:28:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604014091;
+        bh=ZGC+Xp6nyJqG7qQE4W73onxUN0sycaXuLyBzJX/PmHo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pmYHMztfmCpO3ah+/yJRu1db0AsnD1WO6AhahE2I+BumtOhoxSIWNRpafkV5Q8Wx8
+         c0q6g91/SD15ADY4HFR4BVXhRkBe4OVfD5qeMy1YHcRPed7jkkCilp9KScJgsRE8L6
+         28L6TeGAbrBndY4vIgvJ4GwUY1UTHmC2dDsXVO40=
+Received: by mail-lj1-f181.google.com with SMTP id 2so4908116ljj.13;
+        Thu, 29 Oct 2020 16:28:11 -0700 (PDT)
+X-Gm-Message-State: AOAM532Hc6D/GfpSkhM+j8m/uEDTGOBUqEF3PCsLZIsbvLYe0oUpy0yr
+        C1ycP9whcniltiaOOOflFx0azLjsz4ElZ/p8/8A=
+X-Google-Smtp-Source: ABdhPJxOGJLwtLYEFStmDIc3k+4w9x2xuYQZn/5sV0IRSs+f/rMDH16JY+DKvKX8LGuv7SN5GGwZXcQy+nh4+JDz1BE=
+X-Received: by 2002:a2e:a0d4:: with SMTP id f20mr1241951ljm.350.1604014089320;
+ Thu, 29 Oct 2020 16:28:09 -0700 (PDT)
 MIME-Version: 1.0
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Jason Wang <jasowang@redhat.com>, lingshan.zhu@intel.com,
-        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] vhost-vdpa: fix page pinning leakage in error
- path
-References: <1601701330-16837-1-git-send-email-si-wei.liu@oracle.com> <1601701330-16837-3-git-send-email-si-wei.liu@oracle.com> <574a64e3-8873-0639-fe32-248cb99204bc@redhat.com> <5F863B83.6030204@oracle.com> <835e79de-52d9-1d07-71dd-d9bee6b9f62e@redhat.com> <20201015091150-mutt-send-email-mst@kernel.org> <5F88AE4A.9030300@oracle.com> <20201029175305-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20201029175305-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
- suspectscore=2 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010290162
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 spamscore=0 clxscore=1011 mlxscore=0 suspectscore=2
- priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010290162
+References: <20201027170317.2011119-1-kpsingh@chromium.org> <20201027170317.2011119-2-kpsingh@chromium.org>
+In-Reply-To: <20201027170317.2011119-2-kpsingh@chromium.org>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 29 Oct 2020 16:27:58 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6yFbWLGZwpCE4whUm_ncJG4Fr7kf75XeqYLRWG8PvnWQ@mail.gmail.com>
+Message-ID: <CAPhsuW6yFbWLGZwpCE4whUm_ncJG4Fr7kf75XeqYLRWG8PvnWQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/5] bpf: Implement task local storage
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/29/2020 2:53 PM, Michael S. Tsirkin wrote:
-> On Thu, Oct 15, 2020 at 01:17:14PM -0700, si-wei liu wrote:
->> On 10/15/2020 6:11 AM, Michael S. Tsirkin wrote:
->>> On Thu, Oct 15, 2020 at 02:15:32PM +0800, Jason Wang wrote:
->>>> On 2020/10/14 上午7:42, si-wei liu wrote:
->>>>>> So what I suggest is to fix the pinning leakage first and do the
->>>>>> possible optimization on top (which is still questionable to me).
->>>>> OK. Unfortunately, this was picked and got merged in upstream. So I will
->>>>> post a follow up patch set to 1) revert the commit to the original
->>>>> __get_free_page() implementation, and 2) fix the accounting and leakage
->>>>> on top. Will it be fine?
->>>> Fine.
->>>>
->>>> Thanks
->>> Fine by me too.
->>>
->> Thanks, Michael & Jason. I will post the fix shortly. Stay tuned.
->>
->> -Siwei
-> did I miss the patch?
+On Wed, Oct 28, 2020 at 9:17 AM KP Singh <kpsingh@chromium.org> wrote:
 >
-You didn't, sorry. I was looking into a way to speed up the boot time 
-for large memory guest by multi-threading the page pinning process, and 
-it turns out I need more time on that. Will post the fix I have now 
-soon, hopefully tomorrow.
+> From: KP Singh <kpsingh@google.com>
+>
+> Similar to bpf_local_storage for sockets and inodes add local storage
+> for task_struct.
+>
+> The life-cycle of storage is managed with the life-cycle of the
+> task_struct.  i.e. the storage is destroyed along with the owning task
+> with a callback to the bpf_task_storage_free from the task_free LSM
+> hook.
 
--Siwei
+It looks like task local storage is tightly coupled to LSM. As we discussed,
+it will be great to use task local storage in tracing programs. Would you
+like to enable it from the beginning? Alternatively, I guess we can also do
+follow-up patches.
 
+>
+> The BPF LSM allocates an __rcu pointer to the bpf_local_storage in
+> the security blob which are now stackable and can co-exist with other
+> LSMs.
+>
+> The userspace map operations can be done by using a pid fd as a key
+> passed to the lookup, update and delete operations.
 
+While testing task local storage, I noticed a limitation of pid fd:
+
+/* Currently, the process identified by
+ * @pid must be a thread-group leader. This restriction currently exists
+ * for all aspects of pidfds including pidfd creation (CLONE_PIDFD cannot
+ * be used with CLONE_THREAD) and pidfd polling (only supports thread group
+ * leaders).
+ */
+
+This could be a problem for some use cases. How about we try to remove
+this restriction (maybe with a new flag to pidfd_open) as part of this set?
+
+Thanks,
+Song
+
+[...]
