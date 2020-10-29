@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6B829E7E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5660D29E7EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 10:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgJ2J4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 05:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726389AbgJ2J4I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:56:08 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613A6C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 02:56:08 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CMLRm3sBKz9sRR;
-        Thu, 29 Oct 2020 20:56:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1603965364;
-        bh=agmXWLfdIA/pQg1LOAdVjmxcr2Hn93lU+lUVrcQP8co=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=cJ89gKM6AYK1YY7ZnpS2yHhbxcLbjmfev6r+5Jf2idhvDbSxMIo9mcs5wY0pZEN+W
-         0cIi327yBjBEVGmz2pNNAQhtIV6qLKR3otIH/eMSHWT8mkLPkvUeDXaqyd9QCBHNzm
-         CfpAwbuDAh283Mb+6+j6c+iKHCQxlkMPxtW0ZlVJQx/hfchdhnlspaTuscYQS28C6O
-         QBWRvvDEFrskk+0H/CtSY0Sfiq0kkRmoVc8ubM3WkGa/iXYDThHknl8QOTMUnF5RxN
-         wBM1Rru6FhrMzWGzN5iSbrz6kKMpgR5ihXYDENlh5i9jVI4j2JWzRbw4K4THt9hwP+
-         LlKTdcZt3QDnQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>, linuxppc-dev@lists.ozlabs.org
-Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH kernel v4 2/2] powerpc/dma: Fallback to dma_ops when persistent memory present
-In-Reply-To: <20201029015241.73920-3-aik@ozlabs.ru>
-References: <20201029015241.73920-1-aik@ozlabs.ru> <20201029015241.73920-3-aik@ozlabs.ru>
-Date:   Thu, 29 Oct 2020 20:56:03 +1100
-Message-ID: <878sbpwe30.fsf@mpe.ellerman.id.au>
+        id S1726731AbgJ2J4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 05:56:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:58096 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725779AbgJ2J4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 05:56:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BD84139F;
+        Thu, 29 Oct 2020 02:56:12 -0700 (PDT)
+Received: from [10.57.13.20] (unknown [10.57.13.20])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3AEB43F66E;
+        Thu, 29 Oct 2020 02:56:08 -0700 (PDT)
+Subject: Re: [PATCH 0/4] Add sustainable OPP concept
+To:     Viresh Kumar <viresh.kumar@linaro.org>, vincent.guittot@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        vireshk@kernel.org, robh+dt@kernel.org, sboyd@kernel.org,
+        nm@ti.com, rafael@kernel.org, sudeep.holla@arm.com,
+        daniel.lezcano@linaro.org, Dietmar.Eggemann@arm.com
+References: <20201028140847.1018-1-lukasz.luba@arm.com>
+ <20201029074057.6ugmwyzna52x3oli@vireshk-i7>
+ <20201029075356.rruej6jlerhfa4oy@vireshk-i7>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <228fa1b3-bbd3-6941-fd4b-06581016d839@arm.com>
+Date:   Thu, 29 Oct 2020 09:56:07 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201029075356.rruej6jlerhfa4oy@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Kardashevskiy <aik@ozlabs.ru> writes:
-> So far we have been using huge DMA windows to map all the RAM available.
-> The RAM is normally mapped to the VM address space contiguously, and
-> there is always a reasonable upper limit for possible future hot plugged
-> RAM which makes it easy to map all RAM via IOMMU.
->
-> Now there is persistent memory ("ibm,pmemory" in the FDT) which (unlike
-> normal RAM) can map anywhere in the VM space beyond the maximum RAM size
-> and since it can be used for DMA, it requires extending the huge window
-> up to MAX_PHYSMEM_BITS which requires hypervisor support for:
-> 1. huge TCE tables;
-> 2. multilevel TCE tables;
-> 3. huge IOMMU pages.
->
-> Certain hypervisors cannot do either so the only option left is
-> restricting the huge DMA window to include only RAM and fallback to
-> the default DMA window for persistent memory.
->
-> This defines arch_dma_map_direct/etc to allow generic DMA code perform
-> additional checks on whether direct DMA is still possible.
->
-> This checks if the system has persistent memory. If it does not,
-> the DMA bypass mode is selected, i.e.
-> * dev->bus_dma_limit = 0
-> * dev->dma_ops_bypass = true <- this avoid calling dma_ops for mapping.
->
-> If there is such memory, this creates identity mapping only for RAM and
-> sets the dev->bus_dma_limit to let the generic code decide whether to
-> call into the direct DMA or the indirect DMA ops.
->
-> This should not change the existing behaviour when no persistent memory
-> as dev->dma_ops_bypass is expected to be set.
->
-> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
 
-cheers
+On 10/29/20 7:53 AM, Viresh Kumar wrote:
+> On 29-10-20, 13:10, Viresh Kumar wrote:
+>> On 28-10-20, 14:08, Lukasz Luba wrote:
+>>> Hi all,
+>>>
+>>> This patch set introduces a concept of sustainable OPP, which then can be used
+>>> by kernel frameworks or governors for estimating system sustainable system
+>>> state. This kind of estimation is done e.g. in thermal governor Intelligent
+>>> Power Allocation (IPA), which calculates sustainable power of the whole system
+>>> and then derives some coefficients for internal algorithm.
+>>>
+>>> The patch set introduces a new DT bindings 'opp-sustainable', with parsing
+>>> code. It also adds a function (in patch 3/4) which allows device drivers to set
+>>> directly the sustainable OPP. This is helpful when the device drivers populate
+>>> the OPP table by themself (example in patch 4/4).
+>>>
+>>
+>> Can we please have some more information about this ? What does the
+>> sustainable OPP mean ? How will platform guys know or learn about this
+>> ? How we are going to use it finally ? What does it have to do with
+>> temperature of the SoC or the thermal affects, etc.
+
+There were discussions about Energy Model (EM), scale of values (mW or
+abstract scale) and relation to EAS and IPA. You can find quite long
+discussion below v2 [1] (there is also v3 send after agreement [2]).
+We have in thermal DT binding: 'sustainable-power' expressed in mW,
+which is used by IPA, but it would not support bogoWatts.
+The sustainable power is used for estimation of internal coefficients
+(also for power budget), which I am trying to change to work with
+'abstract scale' [3][4].
+
+This would allow to estimate sustainable power of the system based on
+CPUs, GPU opp-sustainable points, where we don't have
+'sustainable-power' or devices using bogoWatts.
+
+> 
+> And that we need a real user of this first if it is ever going to be
+> merged.
+> 
+
+IPA would be the first user of this in combination with scmi-cpufreq.c,
+which can feed 'abstract scale' in to EM.
+Currently IPA takes lowest allowed OPPs into account for this estimation
+which is not optimal. This marked OPPs would make estimation a lot
+better.
+
+Regards,
+Lukasz
+
+
+[1] https://lore.kernel.org/lkml/20201002114426.31277-1-lukasz.luba@arm.com/
+[2] https://lore.kernel.org/lkml/20201019140601.3047-1-lukasz.luba@arm.com/
+[3] 
+https://lore.kernel.org/linux-pm/5f682bbb-b250-49e6-dbb7-aea522a58595@arm.com/
+[4] https://lore.kernel.org/lkml/20201009135850.14727-1-lukasz.luba@arm.com/
