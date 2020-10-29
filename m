@@ -2,102 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92F529F5C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C045029F5CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 21:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgJ2UDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 16:03:35 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:43752 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbgJ2UDe (ORCPT
+        id S1726309AbgJ2UEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 16:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726244AbgJ2UEJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:03:34 -0400
-Received: by mail-wr1-f66.google.com with SMTP id g12so4091782wrp.10;
-        Thu, 29 Oct 2020 13:03:32 -0700 (PDT)
+        Thu, 29 Oct 2020 16:04:09 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5D6C0613CF;
+        Thu, 29 Oct 2020 13:04:08 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id m22so3506312ots.4;
+        Thu, 29 Oct 2020 13:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=0F81eRwqq83+qPi3KAe4QleTCoxsZbUjRsximTvvoKs=;
+        b=P8Z9ExBJWweugFwpJG5IKZv+5cPh/bIf89zOVMz2t+Z0cZQn3YZ/KVlwYUOOh4XVb6
+         QdMK0pYiqohWFHRNiMjsiAbkShuGia47yxHzxtubf0tTzYnt7xh5TiUGVkeCXiuYnTh3
+         JbvKOyk/kHbJD36FaZiJ2pB1pGXsE1456sYpTtODCM+ite6rupVJIlBQlHnmZalvIAbd
+         +GqnmjMFSVh79RvDAAjSh+Jprb2ceqBxOyr4kWePOKIqs8docZa18zZeCfw+ApotwJ8c
+         h6haT4L9iuYf+ZCkWt6lgrCmwUUOPaXtDG8W0qeKCkk4nlPMX+78mj0W3XSYhl7wNqyR
+         ASPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L2/NcJj+iHYkGDNkmgcYCv1Kv0O8+QeL39KIf4j5s4g=;
-        b=hKGxXo1BI5C8fKuk0N6xNS+pDYiIw9dbPdhtQMfjMGCUkYdSKE2sQPpn8R8IyuvUsa
-         hqchIgDyp5Bixq0kNdG55IdCgCWJTE62ogSJKoOp7PPyMxKUB+55t5ak7yPLm+WGvIlA
-         uOi4yJxb92l6v04dYp3QduMz3yRRyn4p5qm0ZmuBqk32SRHc6SCY1IzDSOGZEbsEVjUi
-         ejj3Y6GW9lRtU6Pr8FG0rboSUvQlzFZ91cIUT716iTDOXbvDcNjMv1QsL9nDoyQYlnCO
-         RThdknu9ukJ6vQQKGEuwJIVAvXYaVIB08ryqAB2rbHtckYBGkmdb0/ZUN89Vsn9F7A5O
-         KRmA==
-X-Gm-Message-State: AOAM530zXL8w3fJcy+uBDmVV+QhgFUxJRh/0nkVTDSBGj+pHg1syp4lk
-        FJH/buf19XY8XVdBh5MRIn0kdwCxizo=
-X-Google-Smtp-Source: ABdhPJyl2gtV0/dunbmSNCoHhsW2+X6ivjkDdN7o58QU9x31MfatD3jnuHMyJzQ3n/yQ9xXV/ajtvA==
-X-Received: by 2002:a5d:660a:: with SMTP id n10mr4364043wru.59.1604001812246;
-        Thu, 29 Oct 2020 13:03:32 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:d32:e3ef:ad74:6ea9? ([2601:647:4802:9070:d32:e3ef:ad74:6ea9])
-        by smtp.gmail.com with ESMTPSA id r18sm7687328wrj.50.2020.10.29.13.03.29
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=0F81eRwqq83+qPi3KAe4QleTCoxsZbUjRsximTvvoKs=;
+        b=F8Srxj67OU/PX6d72qJVFZgziwjyeHzYkbQM9pma7PdbiFkvpFmW3VzNVqUDlDCAgj
+         IFvJOP+guIG7nzWKwYFqYBNAYzH/2HQRjoNLqhCHNoAUcYS6rMWFOznJ5Ln+F31z4Qwi
+         E9fH+xLUbb1erJhLOEamDVhvpKa2X/C5EiObr6BqxxrbhZ+PEXwKWVMkRnqlL1c3uSsJ
+         DhsJPcOA1Yc2ts6VQrk7Lihi5PYgnrLtAVBplBepVfFjE7M6EUrs7F7rplrNul+b7VOS
+         3earrAX1KD3YV0AUNQ8X3MoIWCy8sDygoJp9956zNDGxJyi794dSDUY8kUhuvDKFgGKv
+         5ERg==
+X-Gm-Message-State: AOAM5322fzed8nwwDj/Vs25I9L9bng7YJM+sF3U7sHKjqGj5o3mgy0xp
+        8alXeiLvUIv78D1I24I/rfjjwUbOChDMt4pK
+X-Google-Smtp-Source: ABdhPJye46ERAb8qLBxqL1PfHuZHcNKRR5vk7joij+9tHoxTIGpZR1lIYZ0IfbMbXTxzrBUA9VXN7g==
+X-Received: by 2002:a9d:365:: with SMTP id 92mr4473791otv.125.1604001847855;
+        Thu, 29 Oct 2020 13:04:07 -0700 (PDT)
+Received: from ?IPv6:2600:1700:4a30:eaf0::11? ([2600:1700:4a30:eaf0::11])
+        by smtp.gmail.com with ESMTPSA id m65sm852018otc.36.2020.10.29.13.04.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 13:03:31 -0700 (PDT)
-Subject: Re: [PATCH 3/3] blk-mq: Use llist_head for blk_cpu_done
-To:     Christoph Hellwig <hch@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-block@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <dwagner@suse.de>, Mike Galbraith <efault@gmx.de>
-References: <20201028065616.GA24449@infradead.org>
- <20201028141251.3608598-1-bigeasy@linutronix.de>
- <20201028141251.3608598-3-bigeasy@linutronix.de>
- <20201029131212.dsulzvsb6pahahbs@linutronix.de>
- <20201029140536.GA6376@infradead.org>
- <20201029145623.3zry7o6nh6ks5tjj@linutronix.de>
- <20201029145743.GA19379@infradead.org>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <d2c15411-5b21-535b-6e07-331ebe22f8c8@grimberg.me>
-Date:   Thu, 29 Oct 2020 13:03:26 -0700
+        Thu, 29 Oct 2020 13:04:07 -0700 (PDT)
+Subject: Re: [PATCH] Add devices for HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
+To:     Greg KH <greg@kroah.com>, Chris Ye <lzye@google.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, trivial@kernel.org
+References: <20201028235113.660272-1-lzye@google.com>
+ <20201029054147.GB3039992@kroah.com>
+ <CAFFudd+7DrJ+vYZ5wQ58mei6VMkMPGCpS1d7DwZMrzM-FVKzqQ@mail.gmail.com>
+ <20201029191413.GB986195@kroah.com>
+From:   Chris Ye <linzhao.ye@gmail.com>
+Message-ID: <8975d128-e47f-c97c-fbd9-6045de67f34a@gmail.com>
+Date:   Thu, 29 Oct 2020 13:04:06 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201029145743.GA19379@infradead.org>
+In-Reply-To: <20201029191413.GB986195@kroah.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
->>> Well, usb-storage obviously seems to do it, and the block layer
->>> does not prohibit it.
->>
->> Also loop, nvme-tcp and then I stopped looking.
->> Any objections about adding local_bh_disable() around it?
-> 
-> To me it seems like the whole IPI plus potentially softirq dance is
-> a little pointless when completing from process context.
+Yes, I can see them on https://lore.kernel.org/linux-input/ now.
 
-I agree.
+But I didn't put [PATCH v1] in subject,  should I sent them again with 
+version?
 
-> Sagi, any opinion on that from the nvme-tcp POV?
 
-nvme-tcp should (almost) always complete from the context that matches
-the rq->mq_ctx->cpu as the thread that processes incoming
-completions (per hctx) should be affinitized to match it (unless cpus
-come and go).
+Thanks!
 
-So for nvme-tcp I don't expect blk_mq_complete_need_ipi to return true
-in normal operation. That leaves the teardowns+aborts, which aren't very
-interesting here.
-
-I would note that nvme-tcp does not go to sleep after completing every
-I/O like how sebastian indicated usb does.
-
-Having said that, today the network stack is calling nvme_tcp_data_ready
-in napi context (softirq) which in turn triggers the queue thread to
-handle network rx (and complete the I/O). It's been measured recently
-that running the rx context directly in softirq will save some
-latency (possible because nvme-tcp rx context is non-blocking).
-
-So I'd think that patch #2 is unnecessary and just add overhead for
-nvme-tcp.. do note that the napi softirq cpu mapping depends on the RSS
-steering, which is unlikely to match rq->mq_ctx->cpu, hence if completed
-from napi context, nvme-tcp will probably always go to the IPI path.
-
+On 10/29/20 12:14 PM, Greg KH wrote:
+> A: Because it messes up the order in which people normally read text.
+> Q: Why is top-posting such a bad thing?
+> A: Top-posting.
+> Q: What is the most annoying thing in e-mail?
+>
+> A: No.
+> Q: Should I include quotations after my reply?
+>
+> http://daringfireball.net/2007/07/on_top
+>
+> On Thu, Oct 29, 2020 at 08:23:57AM -0700, Chris Ye wrote:
+>> Haha, thanks!
+>> I have fixed my git config and sent a new mail, can you check it?
+> Do you have a pointer to it on lore.kernel.org?
+>
+> And you did properly version the patch, right?
+>
+> thanks,
+>
+> greg k-h
