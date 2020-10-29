@@ -2,165 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFC029DCA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8331429DD7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:39:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388672AbgJ2Abn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:31:43 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50850 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728272AbgJ2Abk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 20:31:40 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kXvqm-0043hO-06; Thu, 29 Oct 2020 01:31:32 +0100
-Date:   Thu, 29 Oct 2020 01:31:31 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Cc:     jim.cromie@gmail.com, Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v4 3/5] net: ax88796c: ASIX AX88796C SPI Ethernet Adapter
- Driver
-Message-ID: <20201029003131.GF933237@lunn.ch>
-References: <20201028214012.9712-1-l.stelmach@samsung.com>
- <CGME20201028214016eucas1p19d2049a4edb4461b2424358e206dc59c@eucas1p1.samsung.com>
- <20201028214012.9712-4-l.stelmach@samsung.com>
+        id S2388800AbgJ2Aji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:39:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731951AbgJ2Aje (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 20:39:34 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D094C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:39:34 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id e7so864180pfn.12
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:39:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZedC2vigvm5YIn/fNFp5FXPUqakrWVfWwG+npbhFrco=;
+        b=a0s8idfnoRHJpK/+DESXypox99Vruk0+O4DxZW30HW8gOKipZ0aPYM4b6SdecDlU5u
+         FVXRZje7gGtILOMRJEDC4r/0++H2soJ7X2pBGgjQBi/Lt/Qx6BoCqLgHwO8ITqSrDgl4
+         YQ5cRpMxtT/xxtSGhwB7gw9nr+A2yLv1+jVLM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZedC2vigvm5YIn/fNFp5FXPUqakrWVfWwG+npbhFrco=;
+        b=G9Vde5LNcBxcwvPJpSrv7VOFI+r5pbKc43vC1Y/VAIKiBySP7DMqd8LIu0wNGeiKwr
+         9jlXqfuL24mHV+53YbBrB8HYLD0hmk2itJzTrZVllr9+Td2L6MePdeqaYr1EdGaQwm9R
+         40LzF50wdh4y+yd2va7gA+KxUOgGyjK2dO2GxhlNzFt0Ipb9jnWeltWHJbfl/Pz6hlLy
+         z8P6Iv4okwuHJgEwaYrPH07eYb/+MH4b6wToJxnRBC23L1Iv5PfNwiqTq1NHd8MHRYhl
+         a8+fgWdU8e3dVNX4eL2+o20GqLfvxAcSej4L/IbgoWN/blD5p0/R1uiwTXUBMzzYxlZC
+         BzZA==
+X-Gm-Message-State: AOAM531ZnK4UvRY7q3VVk5/QLvY0cgDArAtjpdhl1+r2auJS3WmEHf6n
+        EbjgrXFNfhwuccQL0naOswV3zw==
+X-Google-Smtp-Source: ABdhPJzqiMaBmN3vNxFrIabWhxn0PccdODJ8yXJGQuNfW1GBQC4WTzmNeQ9Ufdfb1aV1Bu+P38TCDw==
+X-Received: by 2002:a17:90b:230d:: with SMTP id mt13mr1445385pjb.177.1603931973929;
+        Wed, 28 Oct 2020 17:39:33 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id n64sm754497pfn.134.2020.10.28.17.39.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 17:39:33 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 17:39:31 -0700
+From:   mka@chromium.org
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, dri-devel@freedesktop.org
+Subject: Re: [v3,2/3] arm64: dts: qcom: sc7180: Add gpu cooling support
+Message-ID: <20201029003931.GA1855806@google.com>
+References: <1603892395-3570-2-git-send-email-akhilpo@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201028214012.9712-4-l.stelmach@samsung.com>
+In-Reply-To: <1603892395-3570-2-git-send-email-akhilpo@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static void
-> +ax88796c_get_regs(struct net_device *ndev, struct ethtool_regs *regs, void *_p)
-> +{
-> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
-> +	u16 *p = _p;
-> +	int offset, i;
+Hi Akhil,
 
-You missed a reverse christmass tree fix here.
-
-> +static int comp;
-> +static int msg_enable = NETIF_MSG_PROBE |
-> +			NETIF_MSG_LINK |
-> +			/* NETIF_MSG_TIMER | */
-> +			/* NETIF_MSG_IFDOWN | */
-> +			/* NETIF_MSG_IFUP | */
-> +			NETIF_MSG_RX_ERR |
-> +			NETIF_MSG_TX_ERR |
-> +			/* NETIF_MSG_TX_QUEUED | */
-> +			/* NETIF_MSG_INTR | */
-> +			/* NETIF_MSG_TX_DONE | */
-> +			/* NETIF_MSG_RX_STATUS | */
-> +			/* NETIF_MSG_PKTDATA | */
-> +			/* NETIF_MSG_HW | */
-> +			/* NETIF_MSG_WOL | */
-> +			0;
-
-You should probably delete anything which is commented out.
-
+On Wed, Oct 28, 2020 at 07:09:53PM +0530, Akhil P Oommen wrote:
+> Add cooling-cells property and the cooling maps for the gpu tzones
+> to support GPU cooling.
+> 
+> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 30 +++++++++++++++++++++++-------
+>  1 file changed, 23 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index d46b383..a7ea029 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -2,7 +2,7 @@
+>  /*
+>   * SC7180 SoC device tree source
+>   *
+> - * Copyright (c) 2019, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2019-20, The Linux Foundation. All rights reserved.
+>   */
+>  
+>  #include <dt-bindings/clock/qcom,dispcc-sc7180.h>
+> @@ -1886,6 +1886,8 @@
+>  			operating-points-v2 = <&gpu_opp_table>;
+>  			qcom,gmu = <&gmu>;
+>  
+> +			#cooling-cells = <2>;
 > +
-> +static char *no_regs_list = "80018001,e1918001,8001a001,fc0d0000";
-> +unsigned long ax88796c_no_regs_mask[AX88796C_REGDUMP_LEN / (sizeof(unsigned long) * 8)];
+>  			interconnects = <&gem_noc MASTER_GFX3D &mc_virt SLAVE_EBI1>;
+>  			interconnect-names = "gfx-mem";
+>  
+> @@ -3825,16 +3827,16 @@
+>  		};
+>  
+>  		gpuss0-thermal {
+> -			polling-delay-passive = <0>;
+> +			polling-delay-passive = <100>;
+>  			polling-delay = <0>;
+>  
+>  			thermal-sensors = <&tsens0 13>;
+>  
+>  			trips {
+>  				gpuss0_alert0: trip-point0 {
+> -					temperature = <90000>;
+> +					temperature = <95000>;
+>  					hysteresis = <2000>;
+> -					type = "hot";
+> +					type = "passive";
+>  				};
+>  
+>  				gpuss0_crit: gpuss0_crit {
+> @@ -3843,19 +3845,26 @@
+>  					type = "critical";
+>  				};
+>  			};
 > +
-> +module_param(comp, int, 0444);
-> +MODULE_PARM_DESC(comp, "0=Non-Compression Mode, 1=Compression Mode");
-
-I think you need to find a different way to configure this. How much
-does compression bring you anyway?
-
-> +module_param(msg_enable, int, 0444);
-> +MODULE_PARM_DESC(msg_enable, "Message mask (see linux/netdevice.h for bitmap)");
-
-I know a lot of drivers have msg_enable, but DaveM is generally
-against module parameters. So i would remove this.
-
-
-> +static void ax88796c_set_hw_multicast(struct net_device *ndev)
-> +{
-> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
-> +	u16 rx_ctl = RXCR_AB;
-> +	int mc_count = netdev_mc_count(ndev);
-
-reverse christmass tree.
-
-> +static struct sk_buff *
-> +ax88796c_tx_fixup(struct net_device *ndev, struct sk_buff_head *q)
-> +{
-> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
-> +	struct sk_buff *skb, *tx_skb;
-> +	struct tx_pkt_info *info;
-> +	struct skb_data *entry;
-> +	int headroom;
-> +	int tailroom;
-> +	u8 need_pages;
-> +	u16 tol_len, pkt_len;
-> +	u8 padlen, seq_num;
-> +	u8 spi_len = ax_local->ax_spi.comp ? 1 : 4;
-
-reverse christmass tree.
-
-> +static int ax88796c_receive(struct net_device *ndev)
-> +{
-> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
-> +	struct sk_buff *skb;
-> +	struct skb_data *entry;
-> +	u16 w_count, pkt_len;
-> +	u8 pkt_cnt;
-
-Reverse christmass tree
-
+> +			cooling-maps {
+> +				map0 {
+> +					trip = <&gpuss0_alert0>;
+> +					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+> +				};
+> +			};
+>  		};
+>  
+>  		gpuss1-thermal {
+> -			polling-delay-passive = <0>;
+> +			polling-delay-passive = <100>;
+>  			polling-delay = <0>;
+>  
+>  			thermal-sensors = <&tsens0 14>;
+>  
+>  			trips {
+>  				gpuss1_alert0: trip-point0 {
+> -					temperature = <90000>;
+> +					temperature = <95000>;
+>  					hysteresis = <2000>;
+> -					type = "hot";
+> +					type = "passive";
+>  				};
+>  
+>  				gpuss1_crit: gpuss1_crit {
+> @@ -3864,6 +3873,13 @@
+>  					type = "critical";
+>  				};
+>  			};
 > +
-> +static int ax88796c_process_isr(struct ax88796c_device *ax_local)
-> +{
-> +	u16 isr;
-> +	u8 done = 0;
-> +	struct net_device *ndev = ax_local->ndev;
+> +			cooling-maps {
+> +				map0 {
+> +					trip = <&gpuss0_alert0>;
 
-...
+Copy & paste error, this should be 'gpuss1_alert0'.
 
-> +static irqreturn_t ax88796c_interrupt(int irq, void *dev_instance)
-> +{
-> +	struct net_device *ndev = dev_instance;
-> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
-
-...
-
-> +static int
-> +ax88796c_open(struct net_device *ndev)
-> +{
-> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
-> +	int ret;
-> +	unsigned long irq_flag = IRQF_SHARED;
-> +	int fc = AX_FC_NONE;
-
-...
+> +					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+> +				};
+> +			};
+>  		};
+>  
+>  		aoss1-thermal {
 
 
-> +static int ax88796c_probe(struct spi_device *spi)
-> +{
-> +	struct net_device *ndev;
-> +	struct ax88796c_device *ax_local;
-> +	char phy_id[MII_BUS_ID_SIZE + 3];
-> +	int ret;
-> +	u16 temp;
+Other than the C&P error:
 
-...
-
-The mdio/phy/ethtool code looks O.K. now. I've not really looked at
-any of the frame transfer code, so i cannot comment on that.
-
-    Andrew
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
