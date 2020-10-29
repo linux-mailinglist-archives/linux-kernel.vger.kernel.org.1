@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1104F29EF08
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF20A29EF0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 16:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727896AbgJ2PCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 11:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726375AbgJ2PCh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 11:02:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2CCC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 08:01:47 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603983706;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pTsyIcVnDD6a7iWer5GKbvGB1SiRAC/OHn/Z/nzgsBM=;
-        b=wzbC3+nJdulBhl05Zn6UXjTe+7dRCQC0QsOeeoH655yD/ZusW9UPH3l1lxQvmPTt5xOjm9
-        HvuSHjhNY09Be+wx6X3EtVHVwSQglJDnSf3Tk47RGuW/QVcsp7aLe+RoNdYWMWh/FE2fHp
-        fK+XhyIvlkrjEAqy6jpMh3OBc40PQDeGwlxoRUapDyIjBBoLaYixpFOnSHdmsgqMZLt+wC
-        FoaG7Urk62MYqQ1gRU7UhJugEJx/nkk842XFnnRplvRyY+zaqARvNjDhPkfvQgIdWiIbFS
-        UxR65aBWAWqtDzNdG4wuP2DpJmCFTNHKQHJjzXJnaGNdQSfjudi28+mLnY96/w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603983706;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pTsyIcVnDD6a7iWer5GKbvGB1SiRAC/OHn/Z/nzgsBM=;
-        b=ayt7gsTDXllXYCrfopjZCoP2aGe3djg+/6dr3HBdW/DejAF6a4j0c+A2XH7cL08jEXIcMM
-        aOFZbQKQK2NeZdBQ==
+        id S1727926AbgJ2PDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 11:03:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51376 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727836AbgJ2PDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 11:03:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C9D1CAF0C;
+        Thu, 29 Oct 2020 15:03:11 +0000 (UTC)
+Date:   Thu, 29 Oct 2020 16:03:09 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
 To:     Petr Mladek <pmladek@suse.com>
-Cc:     "Zhang\, Qiang" <Qiang.Zhang@windriver.com>,
-        "tj\@kernel.org" <tj@kernel.org>,
-        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm\@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] kthread_worker: re-set CPU affinities if CPU come online
-In-Reply-To: <20201029130818.GC16774@alley>
-References: <20201028073031.4536-1-qiang.zhang@windriver.com> <874kme21nv.fsf@nanos.tec.linutronix.de> <BYAPR11MB263255ED056CED38285FC95BFF170@BYAPR11MB2632.namprd11.prod.outlook.com> <871rhi1z7j.fsf@nanos.tec.linutronix.de> <BYAPR11MB2632B18DF7C02B68E758932BFF140@BYAPR11MB2632.namprd11.prod.outlook.com> <874kmdfndd.fsf@nanos.tec.linutronix.de> <20201029130818.GC16774@alley>
-Date:   Thu, 29 Oct 2020 16:01:46 +0100
-Message-ID: <87pn51dqjp.fsf@nanos.tec.linutronix.de>
+cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH 6/9] livepatch/ftrace: Add recursion protection to the
+ ftrace callback
+In-Reply-To: <20201029145709.GD16774@alley>
+Message-ID: <alpine.LSU.2.21.2010291601510.1688@pobox.suse.cz>
+References: <20201028115244.995788961@goodmis.org> <20201028115613.291169246@goodmis.org> <alpine.LSU.2.21.2010291443310.1688@pobox.suse.cz> <20201029145709.GD16774@alley>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29 2020 at 14:08, Petr Mladek wrote:
-> On Thu 2020-10-29 09:27:26, Thomas Gleixner wrote:
->> The expected semantics of a cpu bound kthread_worker are completely
->> unclear and undocumented. This needs to be fixed first and once this is
->> established and agreed on then the gaps in the implementation can be
->> closed.
->
-> I thought about some sane semantic and it goes down to
-> the following problem:
->
-> The per-CPU kthread workers are created by explicitly calling
-> kthread_create_worker_on_cpu() on each CPU.
->
-> The API does _not_ store the information how to start the worker.
-> As a result, it is not able to start a new one when the CPU
-> goes online "for the first time". I mean when the CPU was offline
-> when the API user created the workers.
->
-> It means that the API user is responsible for handling CPU hotplug
-> on its own. We probably should just document it and do nothing else [*]
+On Thu, 29 Oct 2020, Petr Mladek wrote:
 
-> [*] IMHO, it does not even make sense to manipulate the affinity.
->     It would just give a false feeling that it is enough.
+> On Thu 2020-10-29 14:51:06, Miroslav Benes wrote:
+> > On Wed, 28 Oct 2020, Steven Rostedt wrote:
+> 
+> > Hm, I've always thought that we did not need any kind of recursion 
+> > protection for our callback. It is marked as notrace and it does not call 
+> > anything traceable. In fact, it does not call anything. I even have a note 
+> > in my todo list to mark the callback as RECURSION_SAFE :)
+> 
+> Well, it calls WARN_ON_ONCE() ;-)
 
-Agreed on both.
+Oh my, I learned to ignore these. Of course there is printk hidden 
+everywhere.
 
-> Alternative solution would be to extend the API and allow to create
-> kthread_worker on each online CPU. It would require to store
-> parameters needed to create the kthread only new online CPUs.
-> Then we might think about some sane semantic for CPU hotplug.
+> > At the same time, it probably does not hurt and the patch is still better 
+> > than what we have now without RECURSION_SAFE if I understand the patch set 
+> > correctly.
+> 
+> And better be on the safe side.
 
-That facility already exists: smpboot_register_percpu_thread()
+Agreed. 
+ 
+> > > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> > > Cc: Jiri Kosina <jikos@kernel.org>
+> > > Cc: Miroslav Benes <mbenes@suse.cz>
+> > > Cc: Petr Mladek <pmladek@suse.com>
+> > > Cc: Joe Lawrence <joe.lawrence@redhat.com>
+> > > Cc: live-patching@vger.kernel.org
+> > > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > > ---
+> > >  kernel/livepatch/patch.c | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > > 
+> > > diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
+> > > index b552cf2d85f8..6c0164d24bbd 100644
+> > > --- a/kernel/livepatch/patch.c
+> > > +++ b/kernel/livepatch/patch.c
+> > > @@ -45,9 +45,13 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+> > >  	struct klp_ops *ops;
+> > >  	struct klp_func *func;
+> > >  	int patch_state;
+> > > +	int bit;
+> > >  
+> > >  	ops = container_of(fops, struct klp_ops, fops);
+> > >  
+> > > +	bit = ftrace_test_recursion_trylock();
+> > > +	if (bit < 0)
+> > > +		return;
+> > 
+> > This means that the original function will be called in case of recursion. 
+> > That's probably fair, but I'm wondering if we should at least WARN about 
+> > it.
+> 
+> Yeah, the early return might break the consistency model and
+> unexpected things might happen. We should be aware of it.
+> Please use:
+> 
+> 	if (WARN_ON_ONCE(bit < 0))
+> 		return;
+> 
+> WARN_ON_ONCE() might be part of the recursion. But it should happen
+> only once. IMHO, it is worth the risk.
 
-So "all" you'd need to do is to provide a kthread_worker variant which
-utilizes that. It's straight forward, but not sure whether it's worth
-the trouble.
+Agreed.
 
-> Well, it might be hard to define a sane semantic unless there are
-> more users of the API. So, I tend to keep it simple and just
-> document the status quo.
-
-Ack.
-
-Thanks,
-
-        tglx
-
-
+Miroslav
