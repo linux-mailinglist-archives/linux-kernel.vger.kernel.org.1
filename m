@@ -2,419 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67F229E4A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A614C29E42F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 08:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730504AbgJ2Hks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 03:40:48 -0400
+        id S1729261AbgJ2Hfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 03:35:46 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727156AbgJ2HYw (ORCPT
+        with ESMTP id S1728028AbgJ2HY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:52 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FFEC08EADF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:20:09 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b3so1618742pfo.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:20:09 -0700 (PDT)
+        Thu, 29 Oct 2020 03:24:56 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A52C08EADB
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:19:56 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id s22so1595167pga.9
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 00:19:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=u3UF53vquJaw5yc8hotyKxe4w/WMIbGZ6vKYk9JL5x4=;
-        b=YEbGX+jQ0jJrCF4mo0FpgIFc6xtxHwdlwbijjQuZjycA6IJ9LlR8BDJ6+m7lzdodC/
-         rM0+YSnYa36jFUK4Ig7WDf8lQ+XY/eUBd3keszWE+qm8dJL9WiLvJuY5ZEOYIUNzYLzh
-         7XJfOk7bxpicQV7A3SBW7gQ8nKsHhwlWhje7yfKCa118/bkkK2zmH9L7Zxj7WcM3yird
-         2QwJbASOAy5ouFd2eYMsAiWVqF1t5cVfL73Ok37nbqkAtaXcg2BdaIeBaBqyHmX1i1PM
-         v+eJ8X2evvugS7PpHXAfkfjvQpyRrXMyDMtU0TcnB79xN4wF0yzYMmTOmH+pvqMA8Sjw
-         8F6w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=pe6/VmVqlNcMj2jI2o/REuBVuS5E1KvQtckugKCVKUc=;
+        b=s82FEYC68+zzD8FSSWf6SEHKC5++Uiz5FUkYsgOP1E95IgEHJjAqkSLrRsn5VsYWld
+         Gk2AbAiPxSpwGvDgKEQ2OWnVB2bn+DTc5srU4Qer2kLVTBfp7toNTYXlGtAxsJvndnUI
+         uDpXK77zwrRBrcI9TRqA+d9wrrk82GSFf8rRAyWwdl/mU2JkY/HkpHDG5ClHt4gy8Lv0
+         tuu3nl7gf3ISssA5zCCkaCLEHl8yEcyKXTCCu9ekE3dIDLT+op2WtjXI+bSEeAS93PLw
+         NHTvhkpDLqW1P7i7d5+HpjrTeC3ud0fbEhotPDTVpVPuCkHkkmTj3azkH11fl6e91Euw
+         pcww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=u3UF53vquJaw5yc8hotyKxe4w/WMIbGZ6vKYk9JL5x4=;
-        b=bAJF0HareWRbUXk+D7638etK8G864ty8iby400sYxdw6LNxgNce7+ZdKnLD1XLxAWu
-         SEJbw8oUrPqNd6XkuqNF6nG8VMr7c8kccikoxjPXT0WQOyrceywfc4g7Pdw20DpIEDoo
-         MkhaPGpxWaVM/1zFG5lAt8bBv8tKyI4BgxmYCKL4hmH5DTOt2xKICBNf7rU6mVXBgHoM
-         CW3UgOEV4fTaz4PzYjtNKXBQePl72LL3Kydq7Ztam2ZEdHJaF2hGZGhU75l4cxqjMrrS
-         lOeTloUi7jkDQJS1nW7gh5cUCN0h50aRjbrqJap3QNHNJ/MP15mNPH3JrlseFwqET0H+
-         D0+g==
-X-Gm-Message-State: AOAM5304Z8L2fI5LSHdo72Fn9lDRiF2PlLpFBi6H3B8p24P6TqxdoefF
-        uuxo57h1A/Yb/fQ14dICeFB9SQ==
-X-Google-Smtp-Source: ABdhPJwpXlIcDiaThx9xofMCwQmRanuo6pdqQgQPoaXtPXtO52zGMUmch+4IaWlhVIlJWNlXrfrS4w==
-X-Received: by 2002:a17:90a:f00f:: with SMTP id bt15mr3093243pjb.164.1603956009377;
-        Thu, 29 Oct 2020 00:20:09 -0700 (PDT)
-Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id a19sm1685857pjq.29.2020.10.29.00.20.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 29 Oct 2020 00:20:08 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v5 06/21] perf arm-spe: Refactor printing string to buffer
-Date:   Thu, 29 Oct 2020 15:19:12 +0800
-Message-Id: <20201029071927.9308-7-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201029071927.9308-1-leo.yan@linaro.org>
-References: <20201029071927.9308-1-leo.yan@linaro.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pe6/VmVqlNcMj2jI2o/REuBVuS5E1KvQtckugKCVKUc=;
+        b=W0JMyQ5dMI0QAI+Ia6HPrT6eFrW5Q2D2aNsYM6HL+rtokpa2Gyl6T9pyu/VkbpzLyG
+         CkxA+f3wMNkWaXAwP8Q2cLykWrH0FjUzJ9j+cSI/N/kVGbV8QPrlkF+nmR268VJ1Z6a9
+         RW1sH/Rj9WvIU1anJCtL/kAS5PMxLFYhENZPdWVA+CHFk+LKkbA6oQeQgp6XKabHE0NB
+         t/ynUjgiKkX18b9w/UKm1xz6jq5svI36fAjB8PaYvvXVE+O2pWpHUl3JHuMKXz0XVsla
+         tq3N33vpQtWYaaZHPO4Na5oQZm+u2UfXEQiY10wZiX0J9DTc4MRZCsdSbOYYvaQ17JdA
+         0QDA==
+X-Gm-Message-State: AOAM530Oi3wp9gmsUMPOZA/kvS3T22UJZZ1pw4D1oz5V9B5nvVDAJn4S
+        6tM/DdUtu0oJlMS7LZDSNU5QwJ5CYjgsKQ==
+X-Google-Smtp-Source: ABdhPJwqtqs9MmS/4Ufv/n9LpA9a2MnzNHgzU00OWZDwe/lod9Y7IUdHYUJYG/Qh4BIae7EpZ1xw7g==
+X-Received: by 2002:a17:90a:1102:: with SMTP id d2mr3130959pja.178.1603955995907;
+        Thu, 29 Oct 2020 00:19:55 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id ms10sm1741402pjb.46.2020.10.29.00.19.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Oct 2020 00:19:54 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 12:49:52 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     zhuguangqing83 <zhuguangqing83@gmail.com>
+Cc:     rjw@rjwysocki.net, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        'zhuguangqing' <zhuguangqing@xiaomi.com>
+Subject: Re: [PATCH] cpufreq: schedutil: set sg_policy->next_freq to the
+ final cpufreq
+Message-ID: <20201029071952.7yh5ncnxqxf62pjw@vireshk-i7>
+References: <095901d6ad94$e48d5140$ada7f3c0$@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <095901d6ad94$e48d5140$ada7f3c0$@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When outputs strings to the decoding buffer with function snprintf(),
-SPE decoder needs to detects if any error returns from snprintf() and if
-so needs to directly bail out.  If snprintf() returns success, it needs
-to update buffer pointer and reduce the buffer length so can continue to
-output the next string into the consequent memory space.
+Your mail client is screwing the "In-reply-to" field of the message
+and that prevents it to appear properly in the thread in mailboxes of
+other people, please fix that.
 
-This complex logics are spreading in the function arm_spe_pkt_desc() so
-there has many duplicate codes for handling error detecting, increment
-buffer pointer and decrement buffer size.
+On 29-10-20, 09:43, zhuguangqing83 wrote:
+> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> > index 0c5c61a095f6..bf7800e853d3 100644
+> > --- a/kernel/sched/cpufreq_schedutil.c
+> > +++ b/kernel/sched/cpufreq_schedutil.c
+> > @@ -105,7 +105,6 @@ static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
+> >         if (sg_policy->next_freq == next_freq)
+> >                 return false;
+> > 
+> > -       sg_policy->next_freq = next_freq;
+> >         sg_policy->last_freq_update_time = time;
+> > 
+> >         return true;
+> 
+> It's a little strange that sg_policy->next_freq and 
+> sg_policy->last_freq_update_time are not updated at the same time.
+> 
+> > @@ -115,7 +114,7 @@ static void sugov_fast_switch(struct sugov_policy *sg_policy, u64 time,
+> >                               unsigned int next_freq)
+> >  {
+> >         if (sugov_update_next_freq(sg_policy, time, next_freq))
+> > -               cpufreq_driver_fast_switch(sg_policy->policy, next_freq);
+> > +               sg_policy->next_freq = cpufreq_driver_fast_switch(sg_policy->policy, next_freq);
+> >  }
+> > 
+> 
+> Great, it also takes into account the issue that 0 is returned by the
+> driver's ->fast_switch() callback to indicate an error condition.
 
-To avoid the duplicate code, this patch introduces a new helper function
-arm_spe_pkt_snprintf() which is used to wrap up the complex logics, and
-it's used by the caller arm_spe_pkt_desc(); if printing buffer is called
-for multiple times in a flow, the error is a cumulative value and simply
-returns its final value.
+Yes but even my change wasn't good enough, more on it later.
 
-This patch also moves the variable 'blen' as the function's local
-variable, this allows to remove the unnecessary braces and improve the
-readability.
+> For policy->min/max may be not the real CPU frequency in OPPs, so
 
-Suggested-by: Dave Martin <Dave.Martin@arm.com>
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
----
- .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 263 ++++++++----------
- 1 file changed, 113 insertions(+), 150 deletions(-)
+No, that can't happen. If userspace tries to set a value too large or
+too small, we clamp that too to policy->max/min and so the below
+problem shall never occur.
 
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 04fd7fd7c15f..9147b88ae00c 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -9,6 +9,7 @@
- #include <endian.h>
- #include <byteswap.h>
- #include <linux/bitops.h>
-+#include <stdarg.h>
- 
- #include "arm-spe-pkt-decoder.h"
- 
-@@ -258,192 +259,154 @@ int arm_spe_get_packet(const unsigned char *buf, size_t len,
- 	return ret;
- }
- 
-+static int arm_spe_pkt_snprintf(int *err, char **buf_p, size_t *blen,
-+				const char *fmt, ...)
-+{
-+	va_list ap;
-+	int ret;
-+
-+	va_start(ap, fmt);
-+	ret = vsnprintf(*buf_p, *blen, fmt, ap);
-+	va_end(ap);
-+
-+	if (ret < 0) {
-+		if (err && !*err)
-+			*err = ret;
-+	} else {
-+		*buf_p += ret;
-+		*blen -= ret;
-+	}
-+
-+	return ret;
-+}
-+
- int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
- 		     size_t buf_len)
+> next_freq got from get_next_freq() which is after clamping between
+> policy->min and policy->max may be not the real CPU frequency in OPPs.
+> In that case, if we use a real CPU frequency in OPPs returned from
+> cpufreq_driver_fast_switch() to compare with next_freq,
+> "if (sg_policy->next_freq == next_freq)" will never be satisfied, so we
+> change the CPU frequency every time schedutil callback gets called from
+> the scheduler. I see the current code in get_next_freq() as following,
+> the issue mentioned above should not happen. Maybe it's just one of my
+> unnecessary worries.
+
+Coming back to my patch (and yours too), it only fixes the fast-switch
+case and not the slow path which can also end up clamping the
+frequency. And to be honest, even the drivers can have their own
+clamping code in place, no one is stopping them too.
+
+And we also need to do something about the cached_raw_freq as well, as
+it will not be in sync with next_freq anymore.
+
+Here is another attempt from me tackling this problem. The idea is to
+check if the previous freq update went as expected or not. And if not,
+we can't rely on next_freq or cached_raw_freq anymore. For this to
+work properly, we need to make sure policy->cur isn't getting updated
+at the same time when get_next_freq() is running. For that I have
+given a different meaning to work_in_progress flag, which now creates
+a lockless (kind of) critical section where we won't play with
+next_freq while the cpufreq core is updating the frequency.
+
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 0c5c61a095f6..8991cc31b011 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -121,13 +121,8 @@ static void sugov_fast_switch(struct sugov_policy *sg_policy, u64 time,
+ static void sugov_deferred_update(struct sugov_policy *sg_policy, u64 time,
+                                  unsigned int next_freq)
  {
--	int ret, ns, el, idx = packet->index;
-+	int ns, el, idx = packet->index;
- 	unsigned long long payload = packet->payload;
- 	const char *name = arm_spe_pkt_name(packet->type);
-+	size_t blen = buf_len;
-+	int err = 0;
- 
- 	switch (packet->type) {
- 	case ARM_SPE_BAD:
- 	case ARM_SPE_PAD:
- 	case ARM_SPE_END:
--		return snprintf(buf, buf_len, "%s", name);
--	case ARM_SPE_EVENTS: {
--		size_t blen = buf_len;
+-       if (!sugov_update_next_freq(sg_policy, time, next_freq))
+-               return;
 -
--		ret = 0;
--		ret = snprintf(buf, buf_len, "EV");
--		buf += ret;
--		blen -= ret;
--		if (payload & 0x1) {
--			ret = snprintf(buf, buf_len, " EXCEPTION-GEN");
--			buf += ret;
--			blen -= ret;
--		}
--		if (payload & 0x2) {
--			ret = snprintf(buf, buf_len, " RETIRED");
--			buf += ret;
--			blen -= ret;
--		}
--		if (payload & 0x4) {
--			ret = snprintf(buf, buf_len, " L1D-ACCESS");
--			buf += ret;
--			blen -= ret;
--		}
--		if (payload & 0x8) {
--			ret = snprintf(buf, buf_len, " L1D-REFILL");
--			buf += ret;
--			blen -= ret;
--		}
--		if (payload & 0x10) {
--			ret = snprintf(buf, buf_len, " TLB-ACCESS");
--			buf += ret;
--			blen -= ret;
--		}
--		if (payload & 0x20) {
--			ret = snprintf(buf, buf_len, " TLB-REFILL");
--			buf += ret;
--			blen -= ret;
--		}
--		if (payload & 0x40) {
--			ret = snprintf(buf, buf_len, " NOT-TAKEN");
--			buf += ret;
--			blen -= ret;
--		}
--		if (payload & 0x80) {
--			ret = snprintf(buf, buf_len, " MISPRED");
--			buf += ret;
--			blen -= ret;
--		}
-+		return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s", name);
-+	case ARM_SPE_EVENTS:
-+		arm_spe_pkt_snprintf(&err, &buf, &blen, "EV");
-+
-+		if (payload & 0x1)
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " EXCEPTION-GEN");
-+		if (payload & 0x2)
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " RETIRED");
-+		if (payload & 0x4)
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " L1D-ACCESS");
-+		if (payload & 0x8)
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " L1D-REFILL");
-+		if (payload & 0x10)
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " TLB-ACCESS");
-+		if (payload & 0x20)
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " TLB-REFILL");
-+		if (payload & 0x40)
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " NOT-TAKEN");
-+		if (payload & 0x80)
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, " MISPRED");
- 		if (idx > 1) {
--			if (payload & 0x100) {
--				ret = snprintf(buf, buf_len, " LLC-ACCESS");
--				buf += ret;
--				blen -= ret;
--			}
--			if (payload & 0x200) {
--				ret = snprintf(buf, buf_len, " LLC-REFILL");
--				buf += ret;
--				blen -= ret;
--			}
--			if (payload & 0x400) {
--				ret = snprintf(buf, buf_len, " REMOTE-ACCESS");
--				buf += ret;
--				blen -= ret;
--			}
-+			if (payload & 0x100)
-+				arm_spe_pkt_snprintf(&err, &buf, &blen, " LLC-ACCESS");
-+			if (payload & 0x200)
-+				arm_spe_pkt_snprintf(&err, &buf, &blen, " LLC-REFILL");
-+			if (payload & 0x400)
-+				arm_spe_pkt_snprintf(&err, &buf, &blen, " REMOTE-ACCESS");
- 		}
--		if (ret < 0)
--			return ret;
--		blen -= ret;
--		return buf_len - blen;
--	}
-+		return err ?: (int)(buf_len - blen);
-+
- 	case ARM_SPE_OP_TYPE:
- 		switch (idx) {
--		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
--					"COND-SELECT" : "INSN-OTHER");
--		case 1:	{
--			size_t blen = buf_len;
-+		case 0:
-+			return arm_spe_pkt_snprintf(&err, &buf, &blen,
-+					payload & 0x1 ? "COND-SELECT" : "INSN-OTHER");
-+		case 1:
-+			arm_spe_pkt_snprintf(&err, &buf, &blen,
-+					     payload & 0x1 ? "ST" : "LD");
- 
--			if (payload & 0x1)
--				ret = snprintf(buf, buf_len, "ST");
--			else
--				ret = snprintf(buf, buf_len, "LD");
--			buf += ret;
--			blen -= ret;
- 			if (payload & 0x2) {
--				if (payload & 0x4) {
--					ret = snprintf(buf, buf_len, " AT");
--					buf += ret;
--					blen -= ret;
--				}
--				if (payload & 0x8) {
--					ret = snprintf(buf, buf_len, " EXCL");
--					buf += ret;
--					blen -= ret;
--				}
--				if (payload & 0x10) {
--					ret = snprintf(buf, buf_len, " AR");
--					buf += ret;
--					blen -= ret;
--				}
-+				if (payload & 0x4)
-+					arm_spe_pkt_snprintf(&err, &buf, &blen, " AT");
-+				if (payload & 0x8)
-+					arm_spe_pkt_snprintf(&err, &buf, &blen, " EXCL");
-+				if (payload & 0x10)
-+					arm_spe_pkt_snprintf(&err, &buf, &blen, " AR");
- 			} else if (payload & 0x4) {
--				ret = snprintf(buf, buf_len, " SIMD-FP");
--				buf += ret;
--				blen -= ret;
--			}
--			if (ret < 0)
--				return ret;
--			blen -= ret;
--			return buf_len - blen;
--		}
--		case 2:	{
--			size_t blen = buf_len;
--
--			ret = snprintf(buf, buf_len, "B");
--			buf += ret;
--			blen -= ret;
--			if (payload & 0x1) {
--				ret = snprintf(buf, buf_len, " COND");
--				buf += ret;
--				blen -= ret;
--			}
--			if (payload & 0x2) {
--				ret = snprintf(buf, buf_len, " IND");
--				buf += ret;
--				blen -= ret;
-+				arm_spe_pkt_snprintf(&err, &buf, &blen, " SIMD-FP");
- 			}
--			if (ret < 0)
--				return ret;
--			blen -= ret;
--			return buf_len - blen;
--			}
--		default: return 0;
-+
-+			return err ?: (int)(buf_len - blen);
-+
-+		case 2:
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, "B");
-+
-+			if (payload & 0x1)
-+				arm_spe_pkt_snprintf(&err, &buf, &blen, " COND");
-+			if (payload & 0x2)
-+				arm_spe_pkt_snprintf(&err, &buf, &blen, " IND");
-+
-+			return err ?: (int)(buf_len - blen);
-+
-+		default:
-+			return 0;
- 		}
- 	case ARM_SPE_DATA_SOURCE:
- 	case ARM_SPE_TIMESTAMP:
--		return snprintf(buf, buf_len, "%s %lld", name, payload);
-+		return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s %lld", name, payload);
- 	case ARM_SPE_ADDRESS:
- 		switch (idx) {
- 		case 0:
- 		case 1: ns = !!(packet->payload & NS_FLAG);
- 			el = (packet->payload & EL_FLAG) >> 61;
- 			payload &= ~(0xffULL << 56);
--			return snprintf(buf, buf_len, "%s 0x%llx el%d ns=%d",
-+			return arm_spe_pkt_snprintf(&err, &buf, &blen,
-+					"%s 0x%llx el%d ns=%d",
- 				        (idx == 1) ? "TGT" : "PC", payload, el, ns);
--		case 2:	return snprintf(buf, buf_len, "VA 0x%llx", payload);
-+		case 2:
-+			return arm_spe_pkt_snprintf(&err, &buf, &blen,
-+						    "VA 0x%llx", payload);
- 		case 3:	ns = !!(packet->payload & NS_FLAG);
- 			payload &= ~(0xffULL << 56);
--			return snprintf(buf, buf_len, "PA 0x%llx ns=%d",
--					payload, ns);
--		default: return 0;
-+			return arm_spe_pkt_snprintf(&err, &buf, &blen,
-+						    "PA 0x%llx ns=%d", payload, ns);
-+		default:
-+			return 0;
- 		}
- 	case ARM_SPE_CONTEXT:
--		return snprintf(buf, buf_len, "%s 0x%lx el%d", name,
--				(unsigned long)payload, idx + 1);
--	case ARM_SPE_COUNTER: {
--		size_t blen = buf_len;
--
--		ret = snprintf(buf, buf_len, "%s %d ", name,
--			       (unsigned short)payload);
--		buf += ret;
--		blen -= ret;
-+		return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s 0x%lx el%d",
-+					    name, (unsigned long)payload, idx + 1);
-+	case ARM_SPE_COUNTER:
-+		arm_spe_pkt_snprintf(&err, &buf, &blen, "%s %d ", name,
-+				     (unsigned short)payload);
-+
- 		switch (idx) {
--		case 0:	ret = snprintf(buf, buf_len, "TOT"); break;
--		case 1:	ret = snprintf(buf, buf_len, "ISSUE"); break;
--		case 2:	ret = snprintf(buf, buf_len, "XLAT"); break;
--		default: ret = 0;
-+		case 0:
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, "TOT");
-+			break;
-+		case 1:
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, "ISSUE");
-+			break;
-+		case 2:
-+			arm_spe_pkt_snprintf(&err, &buf, &blen, "XLAT");
-+			break;
-+		default:
-+			break;
- 		}
--		if (ret < 0)
--			return ret;
--		blen -= ret;
--		return buf_len - blen;
--	}
-+
-+		return err ?: (int)(buf_len - blen);
-+
- 	default:
- 		break;
- 	}
- 
--	return snprintf(buf, buf_len, "%s 0x%llx (%d)",
--			name, payload, packet->index);
-+	return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s 0x%llx (%d)",
-+				    name, payload, packet->index);
+-       if (!sg_policy->work_in_progress) {
+-               sg_policy->work_in_progress = true;
++       if (sugov_update_next_freq(sg_policy, time, next_freq))
+                irq_work_queue(&sg_policy->irq_work);
+-       }
  }
--- 
-2.17.1
+ 
+ /**
+@@ -159,6 +154,15 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+        unsigned int freq = arch_scale_freq_invariant() ?
+                                policy->cpuinfo.max_freq : policy->cur;
+ 
++       /*
++        * The previous frequency update didn't go as we expected it to be. Lets
++        * start again to make sure we don't miss any updates.
++        */
++       if (unlikely(policy->cur != sg_policy->next_freq)) {
++               sg_policy->next_freq = 0;
++               sg_policy->cached_raw_freq = 0;
++       }
++
+        freq = map_util_freq(util, freq, max);
+ 
+        if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+@@ -337,8 +341,14 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
+ 
+        ignore_dl_rate_limit(sg_cpu, sg_policy);
+ 
++       if (!sg_policy->policy->fast_switch_enabled) {
++               raw_spin_lock(&sg_policy->update_lock);
++               if (sg_policy->work_in_progress)
++                       goto unlock;
++       }
++
+        if (!sugov_should_update_freq(sg_policy, time))
+-               return;
++               goto unlock;
+ 
+        /* Limits may have changed, don't skip frequency update */
+        busy = !sg_policy->need_freq_update && sugov_cpu_is_busy(sg_cpu);
+@@ -363,13 +373,14 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
+         * concurrently on two different CPUs for the same target and it is not
+         * necessary to acquire the lock in the fast switch case.
+         */
+-       if (sg_policy->policy->fast_switch_enabled) {
++       if (sg_policy->policy->fast_switch_enabled)
+                sugov_fast_switch(sg_policy, time, next_f);
+-       } else {
+-               raw_spin_lock(&sg_policy->update_lock);
++       else
+                sugov_deferred_update(sg_policy, time, next_f);
++
++unlock:
++       if (!sg_policy->policy->fast_switch_enabled)
+                raw_spin_unlock(&sg_policy->update_lock);
+-       }
+ }
+ 
+ static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 time)
+@@ -405,6 +416,9 @@ sugov_update_shared(struct update_util_data *hook, u64 time, unsigned int flags)
+ 
+        raw_spin_lock(&sg_policy->update_lock);
+ 
++       if (sg_policy->work_in_progress)
++               goto unlock;
++
+        sugov_iowait_boost(sg_cpu, time, flags);
+        sg_cpu->last_update = time;
+ 
+@@ -419,33 +433,30 @@ sugov_update_shared(struct update_util_data *hook, u64 time, unsigned int flags)
+                        sugov_deferred_update(sg_policy, time, next_f);
+        }
+ 
++unlock:
+        raw_spin_unlock(&sg_policy->update_lock);
+ }
+ 
+ static void sugov_work(struct kthread_work *work)
+ {
+        struct sugov_policy *sg_policy = container_of(work, struct sugov_policy, work);
+-       unsigned int freq;
+        unsigned long flags;
+ 
+        /*
+-        * Hold sg_policy->update_lock shortly to handle the case where:
+-        * incase sg_policy->next_freq is read here, and then updated by
+-        * sugov_deferred_update() just before work_in_progress is set to false
+-        * here, we may miss queueing the new update.
+-        *
+-        * Note: If a work was queued after the update_lock is released,
+-        * sugov_work() will just be called again by kthread_work code; and the
+-        * request will be proceed before the sugov thread sleeps.
++        * Prevent the schedutil hook to run in parallel while we are updating
++        * the frequency here and accessing next_freq.
+         */
+        raw_spin_lock_irqsave(&sg_policy->update_lock, flags);
+-       freq = sg_policy->next_freq;
+-       sg_policy->work_in_progress = false;
++       sg_policy->work_in_progress = true;
+        raw_spin_unlock_irqrestore(&sg_policy->update_lock, flags);
+ 
+        mutex_lock(&sg_policy->work_lock);
+-       __cpufreq_driver_target(sg_policy->policy, freq, CPUFREQ_RELATION_L);
++       __cpufreq_driver_target(sg_policy->policy, sg_policy->next_freq, CPUFREQ_RELATION_L);
+        mutex_unlock(&sg_policy->work_lock);
++
++       raw_spin_lock_irqsave(&sg_policy->update_lock, flags);
++       sg_policy->work_in_progress = false;
++       raw_spin_unlock_irqrestore(&sg_policy->update_lock, flags);
+ }
+ 
+ static void sugov_irq_work(struct irq_work *irq_work)
 
+-- 
+viresh
