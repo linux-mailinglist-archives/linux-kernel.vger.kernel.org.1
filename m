@@ -2,100 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D5029EEB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABA529EEB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 15:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbgJ2OtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 10:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgJ2OtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:49:08 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B2FC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:49:07 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id h22so136554wmb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 07:49:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7LxGB+4TzxSwVyjXFI/dxQ/ots0EBgGdDrOnwPOGE50=;
-        b=fI5v++3aJrQpBna2g71POK+3xT5hPm1jtuBc4x9ThYPVLzaN0VXW82bFNANs0sPxMT
-         0dNv9+ucEb1qTo8b7TZItQFbMkMmXbSQvdL4z02kcIfUvzQqNahsMlOkKzJ+MJByLg2A
-         uH5m6FSlyNFRCCT0+2Pkuvs0Tx9OE97Mntzk6tTPbBl/Kdf4C7Qm5Z3poNf9YETwlabv
-         r5K2mn3KshSbZJJH7OWbjTTMifIcWz3l/rnvI1DfraelzxxSSN7UsipSWPWsrwuWCRet
-         Gi74qF5sUsTZPcFb51Xy3HAt6s7JV2/2QAJlleJivMWjgbV4JmFSzy8yAmksY+DkEEWl
-         nhzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7LxGB+4TzxSwVyjXFI/dxQ/ots0EBgGdDrOnwPOGE50=;
-        b=sAtAlOXbG3MqYl5EOwkl6f/RALCIE5tXjRCjBOAIaxxQHbh+WGSJqz/+JtRPWVIA1V
-         sZuMg9cUXIrLk88LuAg/lxzlXNtwgV6bj5/jTtLn0pRFqLWwXEQizp/J7WZCke3O72Hh
-         EZrhuuIZUv1Ilh6wUvNTfYgtu+zFG7tlxhzD4VE/y4RthuSZsTCuS7HpHm/rVpyaBjt2
-         /quYYOVT1TDg6V+LRCucNMtqXG/WTZQwyXnT5wYa1s+zqA7ijbTWu6rjr1yNFcopMAo6
-         RRSDxzw2T38rz9VImy2tiDSz+SVRBB3hJl03ADyxFX7/aIM2FpwafsN3wMdwG3Yc0lJ2
-         s6bA==
-X-Gm-Message-State: AOAM530y8z5spT0FdEFSYGE3hbE+fXgC1BLnNCp3EAuRKTo1eUWs7GTc
-        vlhpj87jGj/pWHpgrqi4lSQ=
-X-Google-Smtp-Source: ABdhPJz1xOk6azYMfY85T03vlOEwaB8b531sFm7G47+zg/TrDlsfj79wbQgWg1vlYCn8rTU2SMAoYQ==
-X-Received: by 2002:a1c:9cc1:: with SMTP id f184mr174039wme.5.1603982946602;
-        Thu, 29 Oct 2020 07:49:06 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.117.206])
-        by smtp.gmail.com with ESMTPSA id l11sm4995833wro.89.2020.10.29.07.49.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 07:49:05 -0700 (PDT)
-Subject: Re: [PATCH v3 05/16] soc: mediatek: pm_domains: Make bus protection
- generic
-To:     Fabien Parent <fparent@baylibre.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, drinkcat@chromium.org,
-        hsinyi@chromium.org, Collabora Kernel ML <kernel@collabora.com>,
-        weiyi.lu@mediatek.com, Matthias Brugger <mbrugger@suse.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Miles Chen <miles.chen@mediatek.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-References: <20201026175526.2915399-1-enric.balletbo@collabora.com>
- <20201026175526.2915399-6-enric.balletbo@collabora.com>
- <CAOwMV_xJez8WB=XjBSWfRmQ7x6265+2iJ+nLN4BR5YjoQzingQ@mail.gmail.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <57c0aaf5-9650-a0ad-1cbe-8e89c2d9a669@gmail.com>
-Date:   Thu, 29 Oct 2020 15:49:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727876AbgJ2Otb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 10:49:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725782AbgJ2Ota (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 10:49:30 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 029F1206E3;
+        Thu, 29 Oct 2020 14:49:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603982968;
+        bh=1M8zHKAHm8tfB8AOV5kFGjQ5L8HBiwt2lqvdGfEDgxQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VwKBRazZTJNx5ayevPifAIJt6BcELHVSflPv1Pz3hhkIRLQu/hpqVx9zq6UOPHYwi
+         1Cr/eBqf+UTruLweRPs1uluGBSsUp8XS5oIZwMoDI9YYtGpTUHifWPeFkCnRe78Q3+
+         9acepxXtiAj1lspr5f5lKQxsgHU3+k3h2anx8nNM=
+Date:   Thu, 29 Oct 2020 14:49:12 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Javier =?UTF-8?B?R29uesOhbGV6?= <javier@javigon.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Bruno Meneguele <bmeneg@redhat.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Juergen Gross <jgross@suse.com>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Kranthi Kuntala <kranthi.kuntala@intel.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Len Brown <lenb@kernel.org>,
+        Leonid Maksymchuk <leonmaxx@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Oleh Kravchenko <oleg@kaa.org.ua>,
+        Orson Zhai <orsonzhai@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Peter Rosin <peda@axentia.se>, Petr Mladek <pmladek@suse.com>,
+        Philippe Bergheaud <felix@linux.ibm.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org, xen-devel@lists.xenproject.org
+Subject: Re: [PATCH 20/33] docs: ABI: testing: make the files compatible
+ with ReST output
+Message-ID: <20201029144912.3c0a239b@archlinux>
+In-Reply-To: <4ebaaa0320101479e392ce2db4b62e24fdf15ef1.1603893146.git.mchehab+huawei@kernel.org>
+References: <cover.1603893146.git.mchehab+huawei@kernel.org>
+        <4ebaaa0320101479e392ce2db4b62e24fdf15ef1.1603893146.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAOwMV_xJez8WB=XjBSWfRmQ7x6265+2iJ+nLN4BR5YjoQzingQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 28 Oct 2020 15:23:18 +0100
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> 
+> Some files over there won't parse well by Sphinx.
+> 
+> Fix them.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Query below...  I'm going to guess a rebase issue?
+
+Other than that
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> # for IIO
 
 
-On 27/10/2020 13:57, Fabien Parent wrote:
->> -               ret = mtk_infracfg_set_bus_protection(pd->infracfg,
->> -                                                     bpd[i].bus_prot_mask,
->> -                                                     bpd[i].bus_prot_reg_update);
-> 
-> [snip]
-> 
->> -               ret = mtk_infracfg_clear_bus_protection(pd->infracfg,
->> -                                                       bpd[i].bus_prot_mask,
->> -                                                       bpd[i].bus_prot_reg_update);
-> 
-> Since you got rid of all the dependencies to mtk-infracfg.c, maybe you
-> can also remove the "depends on MTK_INFRACFG" in the Kconfig.
-> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-timer-stm32 b/Documentation/ABI/testing/sysfs-bus-iio-timer-stm32
+> index b7259234ad70..a10a4de3e5fe 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-iio-timer-stm32
+> +++ b/Documentation/ABI/testing/sysfs-bus-iio-timer-stm32
+> @@ -3,67 +3,85 @@ KernelVersion:	4.11
+>  Contact:	benjamin.gaignard@st.com
+>  Description:
+>  		Reading returns the list possible master modes which are:
+> -		- "reset"     :	The UG bit from the TIMx_EGR register is
+> +
+> +
+> +		- "reset"
+> +				The UG bit from the TIMx_EGR register is
+>  				used as trigger output (TRGO).
+> -		- "enable"    : The Counter Enable signal CNT_EN is used
+> +		- "enable"
+> +				The Counter Enable signal CNT_EN is used
+>  				as trigger output.
+> -		- "update"    : The update event is selected as trigger output.
+> +		- "update"
+> +				The update event is selected as trigger output.
+>  				For instance a master timer can then be used
+>  				as a prescaler for a slave timer.
+> -		- "compare_pulse" : The trigger output send a positive pulse
+> -				    when the CC1IF flag is to be set.
+> -		- "OC1REF"    : OC1REF signal is used as trigger output.
+> -		- "OC2REF"    : OC2REF signal is used as trigger output.
+> -		- "OC3REF"    : OC3REF signal is used as trigger output.
+> -		- "OC4REF"    : OC4REF signal is used as trigger output.
+> +		- "compare_pulse"
+> +				The trigger output send a positive pulse
+> +				when the CC1IF flag is to be set.
+> +		- "OC1REF"
+> +				OC1REF signal is used as trigger output.
+> +		- "OC2REF"
+> +				OC2REF signal is used as trigger output.
+> +		- "OC3REF"
+> +				OC3REF signal is used as trigger output.
+> +		- "OC4REF"
+> +				OC4REF signal is used as trigger output.
+> +
+>  		Additional modes (on TRGO2 only):
+> -		- "OC5REF"    : OC5REF signal is used as trigger output.
+> -		- "OC6REF"    : OC6REF signal is used as trigger output.
+> +
+> +		- "OC5REF"
+> +				OC5REF signal is used as trigger output.
+> +		- "OC6REF"
+> +				OC6REF signal is used as trigger output.
+>  		- "compare_pulse_OC4REF":
+> -		  OC4REF rising or falling edges generate pulses.
+> +				OC4REF rising or falling edges generate pulses.
+>  		- "compare_pulse_OC6REF":
+> -		  OC6REF rising or falling edges generate pulses.
+> +				OC6REF rising or falling edges generate pulses.
+>  		- "compare_pulse_OC4REF_r_or_OC6REF_r":
+> -		  OC4REF or OC6REF rising edges generate pulses.
+> +				OC4REF or OC6REF rising edges generate pulses.
+>  		- "compare_pulse_OC4REF_r_or_OC6REF_f":
+> -		  OC4REF rising or OC6REF falling edges generate pulses.
+> +				OC4REF rising or OC6REF falling edges generate
+> +				pulses.
+>  		- "compare_pulse_OC5REF_r_or_OC6REF_r":
+> -		  OC5REF or OC6REF rising edges generate pulses.
+> +				OC5REF or OC6REF rising edges generate pulses.
+>  		- "compare_pulse_OC5REF_r_or_OC6REF_f":
+> -		  OC5REF rising or OC6REF falling edges generate pulses.
+> +				OC5REF rising or OC6REF falling edges generate
+> +				pulses.
+>  
+> -		+-----------+   +-------------+            +---------+
+> -		| Prescaler +-> | Counter     |        +-> | Master  | TRGO(2)
+> -		+-----------+   +--+--------+-+        |-> | Control +-->
+> -		                   |        |          ||  +---------+
+> -		                +--v--------+-+ OCxREF ||  +---------+
+> -		                | Chx compare +----------> | Output  | ChX
+> -		                +-----------+-+         |  | Control +-->
+> -		                      .     |           |  +---------+
+> -		                      .     |           |    .
+> -		                +-----------v-+ OC6REF  |    .
+> -		                | Ch6 compare +---------+>
+> -		                +-------------+
+> +		::
+>  
+> -		Example with: "compare_pulse_OC4REF_r_or_OC6REF_r":
+> +		  +-----------+   +-------------+            +---------+
+> +		  | Prescaler +-> | Counter     |        +-> | Master  | TRGO(2)
+> +		  +-----------+   +--+--------+-+        |-> | Control +-->
+> +		                     |        |          ||  +---------+
+> +		                  +--v--------+-+ OCxREF ||  +---------+
+> +		                  | Chx compare +----------> | Output  | ChX
+> +		                  +-----------+-+         |  | Control +-->
+> +		                        .     |           |  +---------+
+> +		                        .     |           |    .
+> +		                  +-----------v-+ OC6REF  |    .
+> +		                  | Ch6 compare +---------+>
+> +		                  +-------------+
+>  
+> -		                X
+> -		              X   X
+> -		            X .   . X
+> -		          X   .   .   X
+> -		        X     .   .     X
+> -		count X .     .   .     . X
+> -		        .     .   .     .
+> -		        .     .   .     .
+> -		        +---------------+
+> -		OC4REF  |     .   .     |
+> -		      +-+     .   .     +-+
+> -		        .     +---+     .
+> -		OC6REF  .     |   |     .
+> -		      +-------+   +-------+
+> -		        +-+   +-+
+> -		TRGO2   | |   | |
+> -		      +-+ +---+ +---------+
+> +		Example with: "compare_pulse_OC4REF_r_or_OC6REF_r"::
+> +
+> +		                  X
+> +		                X   X
+> +		              X .   . X
+> +		            X   .   .   X
+> +		          X     .   .     X
+> +		  count X .     .   .     . X
+> +		          .     .   .     .
+> +		          .     .   .     .
+> +		          +---------------+
+> +		  OC4REF  |     .   .     |
+> +		        +-+     .   .     +-+
+> +		          .     +---+     .
+> +		  OC6REF  .     |   |     .
+> +		        +-------+   +-------+
+> +		          +-+   +-+
+> +		  TRGO2   | |   | |
+> +		        +-+ +---+ +---------+
+>  
+>  What:		/sys/bus/iio/devices/triggerX/master_mode
+>  KernelVersion:	4.11
+> @@ -91,6 +109,30 @@ Description:
+>  		When counting down the counter start from preset value
+>  		and fire event when reach 0.
+>  
 
-We still need that file for the old driver.
+Where did these come from?
 
-Regards,
-Matthias
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_count_quadrature_mode_available
+> +KernelVersion:	4.12
+> +Contact:	benjamin.gaignard@st.com
+> +Description:
+> +		Reading returns the list possible quadrature modes.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_count0_quadrature_mode
+> +KernelVersion:	4.12
+> +Contact:	benjamin.gaignard@st.com
+> +Description:
+> +		Configure the device counter quadrature modes:
+> +
+> +		channel_A:
+> +			Encoder A input servers as the count input and B as
+> +			the UP/DOWN direction control input.
+> +
+> +		channel_B:
+> +			Encoder B input serves as the count input and A as
+> +			the UP/DOWN direction control input.
+> +
+> +		quadrature:
+> +			Encoder A and B inputs are mixed to get direction
+> +			and count with a scale of 0.25.
+> +
+>  What:		/sys/bus/iio/devices/iio:deviceX/in_count_enable_mode_available
+>  KernelVersion:	4.12
+>  Contact:	benjamin.gaignard@st.com
+> @@ -104,6 +146,7 @@ Description:
+>  		Configure the device counter enable modes, in all case
+>  		counting direction is set by in_count0_count_direction
+>  		attribute and the counter is clocked by the internal clock.
+> +
+>  		always:
+>  			Counter is always ON.
+>  
