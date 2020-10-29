@@ -2,170 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BCB29E9D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C37C529E9D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 12:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbgJ2LAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 07:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726829AbgJ2LAF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:00:05 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A4FC0613CF;
-        Thu, 29 Oct 2020 04:00:04 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id i7so101769pgh.6;
-        Thu, 29 Oct 2020 04:00:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Sf7Mt/9aAW63sbYQiNJIywd7guGaxmGyi9OLU5knt9k=;
-        b=HXlMWRjWYrTkYtOlApx6XBBfCdalWH4fyRaWPEMybT2MMUjGKEhrWW7Zwe6xR5VXMF
-         /ciiXhpH43ensX/hmYcUfet+qDQLc7EfAfJe7Jw3VWNH9md1raxiuXjfgyXpbhr653g2
-         HOF5xzOOItQe/yg5Tvjxv96UDJjaEOzhgEZbcZKzHwwGmxjTWIRdXAENwVqK7f+wlrLN
-         UDy6C97Q/p7WQ5nJj3wSHQQ5YzRfKB0BZ7sFgNYxgImNsDMueejpxG48Sp86wdNYCQFl
-         6XI1Y57w9ErAQ4vnmWhhPFldywgfpoEDsBKT+GmCt5T77SX7XeprCmcRVAc5eVtLwZW8
-         e8rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Sf7Mt/9aAW63sbYQiNJIywd7guGaxmGyi9OLU5knt9k=;
-        b=UVFzR5/CI9P3MjaOq89coQXwIiGQ971yAcHtyfkFpyIYtz+ntexPRh5GO3K15zjdpV
-         PFYGf6U+4zfZnprN6MjrJRdRzFJ1SiMCJ1iGX1sMzeYxuD9SejP7YHiTJ5Uoms4ohIz5
-         HyU0+SFRIix9hYViXOgqQEj3Ijm7C+NZ/LBquky/xWcUG+b9sV622lwCC6RFtckuX+/i
-         B6wM10k0l8YveRNQu9xGg+vkNGkVut4o11VZIuqeblo2oW+9uWAGAGNjXe2Xreo+3HHs
-         XFb+zfNd5EUf7PckUwo1MhDMCJ/O8AMD00uP8ZP4TV68SQtjAzQWxrIOdah8R5isEPAn
-         +JhQ==
-X-Gm-Message-State: AOAM5332x9G3cxJ0VQfiuq/QbLgLgxJxtNQVsixD+vKzoBx+524mqKIo
-        EAR5sfUdC0fjnRAtkigFwQQ=
-X-Google-Smtp-Source: ABdhPJy8sQ7kQ0CvEcrxzMNIMcNf+NNwlb3Al8UBVJNb3lDScOUNEAVKImbuclJKKDmwur1oVlzedw==
-X-Received: by 2002:a62:78d5:0:b029:154:ebc0:c92c with SMTP id t204-20020a6278d50000b0290154ebc0c92cmr3762635pfc.24.1603969203964;
-        Thu, 29 Oct 2020 04:00:03 -0700 (PDT)
-Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
-        by smtp.gmail.com with ESMTPSA id z10sm2532488pff.218.2020.10.29.04.00.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 04:00:03 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Thu, 29 Oct 2020 18:59:41 +0800
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Darren Hart <dvhart@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andy@infradead.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:X86 PLATFORM DRIVERS - ARCH" 
-        <platform-driver-x86@vger.kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] power: supply: olpc_battery: remove unnecessary
- CONFIG_PM_SLEEP
-Message-ID: <20201029105941.i2kr2424wnrgtvz5@Rk>
-References: <20201029074100.225806-1-coiby.xu@gmail.com>
- <5350ef53-cf70-c4b6-cdf8-5738e9d4b10a@redhat.com>
+        id S1727134AbgJ2K7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 06:59:54 -0400
+Received: from mga01.intel.com ([192.55.52.88]:56292 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725923AbgJ2K7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 06:59:51 -0400
+IronPort-SDR: tW8/rAiOqGnPAKQrkCpiljYdh5JBnmF+w5JeH3n8I8M+ySya8bIcwqdcELA/zTZHdLwb/TSvw/
+ iv0ZANxFSWfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="186197292"
+X-IronPort-AV: E=Sophos;i="5.77,429,1596524400"; 
+   d="scan'208";a="186197292"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 03:59:51 -0700
+IronPort-SDR: f3/Yq1V5A9wEvnDyIQcEhHJ+NEDT/hpJm1F9eLj2DJZgyBSNiLaUl0Nlt1hDDqZUyL39H2chtD
+ PipK+sgjLr7A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,429,1596524400"; 
+   d="scan'208";a="425017610"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Oct 2020 03:59:49 -0700
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: [PATCHv2 3/3] usb: dwc3: pci: Register a software node for the dwc3 platform device
+Date:   Thu, 29 Oct 2020 13:59:41 +0300
+Message-Id: <20201029105941.63410-4-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201029105941.63410-1-heikki.krogerus@linux.intel.com>
+References: <20201029105941.63410-1-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <5350ef53-cf70-c4b6-cdf8-5738e9d4b10a@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+By registering the software node directly instead of just
+the properties in it, the driver can take advantage of also
+the other features the software nodes have.
 
-Thank you for reviewing this patch!
+Initially using the nodes for isolating the Intel Broxton
+specific power management quirk by handling it in Broxton's
+very own power management operations (which are supplied as
+part of the software node) instead of the drivers generic
+ones.
 
-On Thu, Oct 29, 2020 at 11:04:36AM +0100, Hans de Goede wrote:
->Hi,
->
->On 10/29/20 8:41 AM, Coiby Xu wrote:
->> SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
->
->No it does not, when CONFIG_PM_SLEEP is not set then the
->SET_SYSTEM_SLEEP_PM_OPS macro which SIMPLE_DEV_PM_OPS uses
->is a no-op, so nothing will reference xo15_sci_resume leading to
->a compiler warning when CONFIG_PM_SLEEP is not set.
->
->You could drop the ifdef and add __maybe_unused to the definition
->of xo15_sci_resume, but that feels like needless churn, best to
->just keep this as is IMHO.
->
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Felipe Balbi <balbi@kernel.org>
+---
+ drivers/usb/dwc3/dwc3-pci.c | 175 ++++++++++++++++++------------------
+ 1 file changed, 86 insertions(+), 89 deletions(-)
 
-Actually, this is a tree-wide change by some semi-automation scripts.
-Thank you for pointing out the issue to prevent me from releasing
-another ~150 emails to flood other mailing lists.
+diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
+index 242b6210380a4..43cc0f602820d 100644
+--- a/drivers/usb/dwc3/dwc3-pci.c
++++ b/drivers/usb/dwc3/dwc3-pci.c
+@@ -54,17 +54,12 @@
+  * struct dwc3_pci - Driver private structure
+  * @dwc3: child dwc3 platform_device
+  * @pci: our link to PCI bus
+- * @guid: _DSM GUID
+- * @has_dsm_for_pm: true for devices which need to run _DSM on runtime PM
+  * @wakeup_work: work for asynchronous resume
+  */
+ struct dwc3_pci {
+ 	struct platform_device *dwc3;
+ 	struct pci_dev *pci;
+ 
+-	guid_t guid;
+-
+-	unsigned int has_dsm_for_pm:1;
+ 	struct work_struct wakeup_work;
+ };
+ 
+@@ -108,6 +103,50 @@ static int dwc3_byt_enable_ulpi_refclock(struct pci_dev *pci)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM
++static int dwc3_pci_intel_pm_dsm(struct device *dev, int param)
++{
++	union acpi_object *obj;
++	union acpi_object tmp;
++	union acpi_object argv4 = ACPI_INIT_DSM_ARGV4(1, &tmp);
++	guid_t guid;
++	int ret;
++
++	ret = guid_parse(PCI_INTEL_BXT_DSM_GUID, &guid);
++	if (ret)
++		return ret;
++
++	tmp.type = ACPI_TYPE_INTEGER;
++	tmp.integer.value = param;
++
++	obj = acpi_evaluate_dsm(ACPI_HANDLE(dev), &guid,
++				1, PCI_INTEL_BXT_FUNC_PMU_PWR, &argv4);
++	if (!obj) {
++		dev_err(dev, "failed to evaluate _DSM\n");
++		return -EIO;
++	}
++
++	ACPI_FREE(obj);
++
++	return 0;
++}
++
++static int dwc3_pci_intel_suspend(struct device *dev)
++{
++	return dwc3_pci_intel_pm_dsm(dev->parent, PCI_INTEL_BXT_STATE_D3);
++}
++
++static int dwc3_pci_intel_resume(struct device *dev)
++{
++	return dwc3_pci_intel_pm_dsm(dev->parent, PCI_INTEL_BXT_STATE_D0);
++}
++#endif /* CONFIG_PM */
++
++static const struct dev_pm_ops dwc3_pci_intel_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(dwc3_pci_intel_suspend, dwc3_pci_intel_resume)
++	SET_RUNTIME_PM_OPS(dwc3_pci_intel_suspend, dwc3_pci_intel_resume, NULL)
++};
++
+ static const struct property_entry dwc3_pci_intel_properties[] = {
+ 	PROPERTY_ENTRY_STRING("dr_mode", "peripheral"),
+ 	PROPERTY_ENTRY_BOOL("linux,sysdev_is_parent"),
+@@ -141,18 +180,28 @@ static const struct property_entry dwc3_pci_amd_properties[] = {
+ 	{}
+ };
+ 
++static const struct software_node dwc3_pci_intel_swnode = {
++	.properties = dwc3_pci_intel_properties,
++};
++
++static const struct software_node dwc3_pci_intel_pm_swnode = {
++	.properties = dwc3_pci_intel_properties,
++	.pm = &dwc3_pci_intel_pm_ops,
++};
++
++static const struct software_node dwc3_pci_intel_mrfld_swnode = {
++	.properties = dwc3_pci_mrfld_properties,
++};
++
++static const struct software_node dwc3_pci_amd_swnode = {
++	.properties = dwc3_pci_amd_properties,
++};
++
+ static int dwc3_pci_quirks(struct dwc3_pci *dwc)
+ {
+ 	struct pci_dev			*pdev = dwc->pci;
+ 
+ 	if (pdev->vendor == PCI_VENDOR_ID_INTEL) {
+-		if (pdev->device == PCI_DEVICE_ID_INTEL_BXT ||
+-		    pdev->device == PCI_DEVICE_ID_INTEL_BXT_M ||
+-		    pdev->device == PCI_DEVICE_ID_INTEL_EHLLP) {
+-			guid_parse(PCI_INTEL_BXT_DSM_GUID, &dwc->guid);
+-			dwc->has_dsm_for_pm = true;
+-		}
+-
+ 		if (pdev->device == PCI_DEVICE_ID_INTEL_BYT) {
+ 			struct gpio_desc *gpio;
+ 			int ret;
+@@ -221,7 +270,6 @@ static void dwc3_pci_resume_work(struct work_struct *work)
+ 
+ static int dwc3_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
+ {
+-	struct property_entry *p = (struct property_entry *)id->driver_data;
+ 	struct dwc3_pci		*dwc;
+ 	struct resource		res[2];
+ 	int			ret;
+@@ -264,7 +312,7 @@ static int dwc3_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
+ 	dwc->dwc3->dev.parent = dev;
+ 	ACPI_COMPANION_SET(&dwc->dwc3->dev, ACPI_COMPANION(dev));
+ 
+-	ret = platform_device_add_properties(dwc->dwc3, p);
++	ret = device_add_software_node(&dwc->dwc3->dev, (void *)id->driver_data);
+ 	if (ret < 0)
+ 		goto err;
+ 
+@@ -287,6 +335,7 @@ static int dwc3_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
+ 
+ 	return 0;
+ err:
++	device_remove_software_node(&dwc->dwc3->dev);
+ 	platform_device_put(dwc->dwc3);
+ 	return ret;
+ }
+@@ -303,121 +352,86 @@ static void dwc3_pci_remove(struct pci_dev *pci)
+ #endif
+ 	device_init_wakeup(&pci->dev, false);
+ 	pm_runtime_get(&pci->dev);
++	device_remove_software_node(&dwc->dwc3->dev);
+ 	platform_device_unregister(dwc->dwc3);
+ }
+ 
+ static const struct pci_device_id dwc3_pci_id_table[] = {
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_BSW),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_BYT),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_MRFLD),
+-	  (kernel_ulong_t) &dwc3_pci_mrfld_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_mrfld_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_CMLLP),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_CMLH),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_SPTLP),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_SPTH),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_BXT),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_pm_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_BXT_M),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_pm_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_APL),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_KBP),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_GLK),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_CNPLP),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_CNPH),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_CNPV),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ICLLP),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_EHLLP),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_pm_swnode },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_TGPLP),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_TGPH),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_JSP),
+-	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 
+ 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_NL_USB),
+-	  (kernel_ulong_t) &dwc3_pci_amd_properties, },
++	  (kernel_ulong_t) &dwc3_pci_amd_swnode, },
+ 	{  }	/* Terminating Entry */
+ };
+ MODULE_DEVICE_TABLE(pci, dwc3_pci_id_table);
+ 
+-#if defined(CONFIG_PM) || defined(CONFIG_PM_SLEEP)
+-static int dwc3_pci_dsm(struct dwc3_pci *dwc, int param)
+-{
+-	union acpi_object *obj;
+-	union acpi_object tmp;
+-	union acpi_object argv4 = ACPI_INIT_DSM_ARGV4(1, &tmp);
+-
+-	if (!dwc->has_dsm_for_pm)
+-		return 0;
+-
+-	tmp.type = ACPI_TYPE_INTEGER;
+-	tmp.integer.value = param;
+-
+-	obj = acpi_evaluate_dsm(ACPI_HANDLE(&dwc->pci->dev), &dwc->guid,
+-			1, PCI_INTEL_BXT_FUNC_PMU_PWR, &argv4);
+-	if (!obj) {
+-		dev_err(&dwc->pci->dev, "failed to evaluate _DSM\n");
+-		return -EIO;
+-	}
+-
+-	ACPI_FREE(obj);
+-
+-	return 0;
+-}
+-#endif /* CONFIG_PM || CONFIG_PM_SLEEP */
+-
+ #ifdef CONFIG_PM
+ static int dwc3_pci_runtime_suspend(struct device *dev)
+ {
+-	struct dwc3_pci		*dwc = dev_get_drvdata(dev);
+-
+-	if (device_can_wakeup(dev))
+-		return dwc3_pci_dsm(dwc, PCI_INTEL_BXT_STATE_D3);
+-
+-	return -EBUSY;
++	return device_can_wakeup(dev) ? 0 : -EBUSY;
+ }
+ 
+ static int dwc3_pci_runtime_resume(struct device *dev)
+ {
+ 	struct dwc3_pci		*dwc = dev_get_drvdata(dev);
+-	int			ret;
+-
+-	ret = dwc3_pci_dsm(dwc, PCI_INTEL_BXT_STATE_D0);
+-	if (ret)
+-		return ret;
+ 
+ 	queue_work(pm_wq, &dwc->wakeup_work);
+ 
+@@ -425,24 +439,7 @@ static int dwc3_pci_runtime_resume(struct device *dev)
+ }
+ #endif /* CONFIG_PM */
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int dwc3_pci_suspend(struct device *dev)
+-{
+-	struct dwc3_pci		*dwc = dev_get_drvdata(dev);
+-
+-	return dwc3_pci_dsm(dwc, PCI_INTEL_BXT_STATE_D3);
+-}
+-
+-static int dwc3_pci_resume(struct device *dev)
+-{
+-	struct dwc3_pci		*dwc = dev_get_drvdata(dev);
+-
+-	return dwc3_pci_dsm(dwc, PCI_INTEL_BXT_STATE_D0);
+-}
+-#endif /* CONFIG_PM_SLEEP */
+-
+ static const struct dev_pm_ops dwc3_pci_dev_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(dwc3_pci_suspend, dwc3_pci_resume)
+ 	SET_RUNTIME_PM_OPS(dwc3_pci_runtime_suspend, dwc3_pci_runtime_resume,
+ 		NULL)
+ };
+-- 
+2.28.0
 
-Currently there are 929 drivers has device PM callbacks,
-
-$ grep -rI "\.pm = &" --include=*.c  ./|wc -l
-929
-
-I put all files having device PM callbacks into four categories
-based on weather a file has CONFIG_PM_SLEEP or PM macro like
-SET_SYSTEM_SLEEP_PM_OPS, here are the statistics,
-   1. have both CONFIG_PM_SLEEP and PM_OPS macro: 213
-   2. have CONFIG_PM_SLEEP but no PM_OPS macro: 19
-   3. have PM macro but not CONFIG_PM_SLEEP: 347
-   4. no PM macro or CONFIG_PM_SLEEP: 302
-
-Some drivers which have PM macro but not CONFIG_PM_SLEEP like
-sound/x86/intel_hdmi_audio.c indeed use __maybe_unused to eliminate
-the compiling warning. In 2011, there's a patch proposing to remove
-ONFIG_PM altogether but an objection was turning CONFIG_PM on would
-increase the kernel size [1]. So __maybe_unused also have this issue.
-(I made a mistake when I thought PM macros like SIMPLE_DEV_PM_OPS
-didn't have this issue). What do you think? Btw, It's easy for me to
-add CONFIG_PM_SLEEP for those drivers have PM macro but not
-CONFIG_PM_SLEEP since I have already written the necessary automation
-scripts.
-
-[1] https://lists.linux-foundation.org/pipermail/linux-pm/2011-February/030215.html
-
->Also s/CONFIG_PM_CONFIG/CONFIG_PM_SLEEP/ in the commit message.
->
-
-Thank you for pointing out the typo. I've written some scripts to
-automate the whole process from changing code to submitting patches.
-Somehow there is still this issue.
-
->Regards,
->
->Hans
->
->
->>
->> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->> ---
->>  arch/x86/platform/olpc/olpc-xo15-sci.c | 2 --
->>  1 file changed, 2 deletions(-)
->>
->> diff --git a/arch/x86/platform/olpc/olpc-xo15-sci.c b/arch/x86/platform/olpc/olpc-xo15-sci.c
->> index 85f4638764d6..716eefd735a4 100644
->> --- a/arch/x86/platform/olpc/olpc-xo15-sci.c
->> +++ b/arch/x86/platform/olpc/olpc-xo15-sci.c
->> @@ -192,7 +192,6 @@ static int xo15_sci_remove(struct acpi_device *device)
->>  	return 0;
->>  }
->>
->> -#ifdef CONFIG_PM_SLEEP
->>  static int xo15_sci_resume(struct device *dev)
->>  {
->>  	/* Enable all EC events */
->> @@ -204,7 +203,6 @@ static int xo15_sci_resume(struct device *dev)
->>
->>  	return 0;
->>  }
->> -#endif
->>
->>  static SIMPLE_DEV_PM_OPS(xo15_sci_pm, NULL, xo15_sci_resume);
->>
->>
->
-
---
-Best regards,
-Coiby
