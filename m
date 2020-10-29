@@ -2,366 +2,449 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E28329F344
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F85829F35D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 18:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727800AbgJ2Ray (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 13:30:54 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:33973 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725879AbgJ2Ray (ORCPT
+        id S1726037AbgJ2RgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 13:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726069AbgJ2Rf7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:30:54 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 58F975C0211;
-        Thu, 29 Oct 2020 13:30:52 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 29 Oct 2020 13:30:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=aDTzGcRq8uj0IehmuOHDWTZbitX
-        s2g0zbVaX5jsC3xk=; b=UocIG3C8obC7TWkO0u7PRm7i8cF77YOrGsS7qIEXSVV
-        rYnTJmqy4C+kAWC5fq2S/e9Iq4JYkuVB6shWqdnbijzcKIuRxQcj0VaDXmwjS214
-        ht9nzvPCKxLECbCHAb79DlVSpjbqdNMXye1GZ9wvUQ/Pa69QDtqVhh/PHsrold/m
-        gAQBLo/9XV737d5TaXN7bxqtSnaZRih389zZj8POPyebNUfPXZw76fIF5o01S3MY
-        OpG83QFSNOrg2HHDr+ubjri/VVtPneTC9ltjJ6IS275oAXNiK71gXhI7h6VPy/kB
-        ofzIulhkjhZG2FJb92fkFUgMjvFCzTgajU8XtbFGPSQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=aDTzGc
-        Rq8uj0IehmuOHDWTZbitXs2g0zbVaX5jsC3xk=; b=bReMaTujLd7cnCIO7vW/X+
-        AAlGCAF/XDXGi6r3bCu00x2HCP+yif++g+KsyU25SsBoPUs3lz4HlJAiOUCYyfnx
-        chlYXwyt/J0cF2WeESLWu6UwSe0C9qezokjbQZVGucS+NrBJujeQW4AzYIrcIT4X
-        TycGJ6DFvCVwgQF+C6c/gMfaM9rw+R3CS+ksnbvJvqDb10PVtrqAPDHusVAPxuTz
-        4m+qkvZaIWC5/5Nlg9GqJpF5E6BImEGSZAbrz3dJGk3OjP3vfwrwi5Nk8t0i4Hkh
-        5eiWMr0HCd/LavMUkMjHshQJRXvdquRctK5GR8lEGoKIWr4bWa1+87fSxPEdFr5g
-        ==
-X-ME-Sender: <xms:SfyaX4dI0-GU0DoDqD6blsQ8ptOVbwlLmUazbcMTHmkfKDV9_OZq2A>
-    <xme:SfyaX6NHiTCf8N9wzfgtH1kBN7F_j9fxwO3jifZljZ42CLwka1HB9eEvLuDBABfiy
-    i1YZUnDfesmvplLhsY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleefgddutdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
-    ertddtvdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
-    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeelkeeghefhuddtleejgfeljeffhe
-    ffgfeijefhgfeufefhtdevteegheeiheegudenucfkphepledtrdekledrieekrdejieen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
-    hmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:SvyaX5hKdFyx50xzqrTXHrE8-7_uabf5TNV1BrdLsmqczCC0w7F2eA>
-    <xmx:SvyaX9--i7G53Ql-efhH1yni_eGVYUf_ffaGww4aLMr-TPCa6jomNg>
-    <xmx:SvyaX0tj1LmxzqDe4r1oNFnYEx_KcfhEnx0Rnn3ggMyBAV3_rVgoCw>
-    <xmx:TPyaXwKyhx4zyAQSDg8_4Zvh-XND1YWXGfgbrI4nonWC712Dmwt9pQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A0B80328005A;
-        Thu, 29 Oct 2020 13:30:49 -0400 (EDT)
-Date:   Thu, 29 Oct 2020 18:30:47 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Yu-Tung Chang <mtwget@gmail.com>
-Cc:     robh+dt@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] ARM: dts: sun8i: h3: Add initial NanoPi R1 support
-Message-ID: <20201029173047.7zrato523q6bgq33@gilmour.lan>
-References: <20201027084803.17368-1-mtwget@gmail.com>
- <20201027084803.17368-2-mtwget@gmail.com>
+        Thu, 29 Oct 2020 13:35:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354D2C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 10:28:00 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kYBi9-0004BG-6C; Thu, 29 Oct 2020 18:27:41 +0100
+Received: from [IPv6:2a03:f580:87bc:d400:ff11:c9c6:9242:6723] (unknown [IPv6:2a03:f580:87bc:d400:ff11:c9c6:9242:6723])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id DCB3F585014;
+        Thu, 29 Oct 2020 17:27:37 +0000 (UTC)
+To:     =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>,
+        Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?Q?Bart=c5=82omiej_=c5=bbolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>
+References: <20201028214012.9712-1-l.stelmach@samsung.com>
+ <CGME20201028214016eucas1p19d2049a4edb4461b2424358e206dc59c@eucas1p1.samsung.com>
+ <20201028214012.9712-4-l.stelmach@samsung.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Subject: Re: [PATCH v4 3/5] net: ax88796c: ASIX AX88796C SPI Ethernet Adapter
+ Driver
+Message-ID: <69bc0b01-4f97-8c7c-7504-bbcf9c504efa@pengutronix.de>
+Date:   Thu, 29 Oct 2020 18:27:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="irwkiecmuwf2s2v2"
-Content-Disposition: inline
-In-Reply-To: <20201027084803.17368-2-mtwget@gmail.com>
+In-Reply-To: <20201028214012.9712-4-l.stelmach@samsung.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="XASIWa1aViY7sQMmqRxN20OZTaEZUJ3Aa"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--XASIWa1aViY7sQMmqRxN20OZTaEZUJ3Aa
+Content-Type: multipart/mixed; boundary="w4kjhPGLFbuTqLc2IfUg8uGvd9hmQcO73";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>,
+ Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+ Heiner Kallweit <hkallweit1@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Russell King <linux@armlinux.org.uk>,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
+ =?UTF-8?Q?Bart=c5=82omiej_=c5=bbolnierkiewicz?= <b.zolnierkie@samsung.com>
+Message-ID: <69bc0b01-4f97-8c7c-7504-bbcf9c504efa@pengutronix.de>
+Subject: Re: [PATCH v4 3/5] net: ax88796c: ASIX AX88796C SPI Ethernet Adapter
+ Driver
+References: <20201028214012.9712-1-l.stelmach@samsung.com>
+ <CGME20201028214016eucas1p19d2049a4edb4461b2424358e206dc59c@eucas1p1.samsung.com>
+ <20201028214012.9712-4-l.stelmach@samsung.com>
+In-Reply-To: <20201028214012.9712-4-l.stelmach@samsung.com>
 
---irwkiecmuwf2s2v2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--w4kjhPGLFbuTqLc2IfUg8uGvd9hmQcO73
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Tue, Oct 27, 2020 at 04:48:03PM +0800, Yu-Tung Chang wrote:
-> The NanoPi R1 is a complete open source board developed
-> by FriendlyElec for makers, hobbyists, fans and etc.
+On 10/28/20 10:40 PM, =C5=81ukasz Stelmach wrote:
+> ASIX AX88796[1] is a versatile ethernet adapter chip, that can be
+> connected to a CPU with a 8/16-bit bus or with an SPI. This driver
+> supports SPI connection.
 >=20
-> NanoPi R1 key features
-> - Allwinner H3, Quad-core Cortex-A7@1.2GHz
-> - 512MB/1GB DDR3 RAM
-> - 8GB eMMC
-> - microSD slot
-> - 10/100/1000M Ethernet x 1
-> - 10/100 Ethernet x 1
-> - Wifi 802.11b/g/n
-> - Bluetooth 4.0
-> - Serial Debug Port
-> - 5V 2A DC power-supply
+> The driver has been ported from the vendor kernel for ARTIK5[2]
+> boards. Several changes were made to adapt it to the current kernel
+> which include:
 >=20
-> Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
+> + updated DT configuration,
+> + clock configuration moved to DT,
+> + new timer, ethtool and gpio APIs,
+> + dev_* instead of pr_* and custom printk() wrappers,
+> + removed awkward vendor power managemtn.
+>=20
+> [1] https://www.asix.com.tw/products.php?op=3DpItemdetail&PItemID=3D104=
+;65;86&PLine=3D65
+> [2] https://git.tizen.org/cgit/profile/common/platform/kernel/linux-3.1=
+0-artik/
+>=20
+> The other ax88796 driver is for NE2000 compatible AX88796L chip. These
+> chips are not compatible. Hence, two separate drivers are required.
+>=20
+> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
 > ---
->  .../devicetree/bindings/arm/sunxi.yaml        |   5 +
->  arch/arm/boot/dts/Makefile                    |   1 +
->  arch/arm/boot/dts/sun8i-h3-nanopi-r1.dts      | 199 ++++++++++++++++++
->  3 files changed, 205 insertions(+)
->  create mode 100644 arch/arm/boot/dts/sun8i-h3-nanopi-r1.dts
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documenta=
-tion/devicetree/bindings/arm/sunxi.yaml
-> index 0f23133672a3..54a1aaee7e22 100644
-> --- a/Documentation/devicetree/bindings/arm/sunxi.yaml
-> +++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
-> @@ -251,6 +251,11 @@ properties:
->            - const: friendlyarm,nanopi-neo-plus2
->            - const: allwinner,sun50i-h5
-> =20
-> +      - description: FriendlyARM NanoPi R1
-> +        items:
-> +          - const: friendlyarm,nanopi-r1
-> +          - const: allwinner,sun8i-h3
+>  MAINTAINERS                                |    6 +
+>  drivers/net/ethernet/Kconfig               |    1 +
+>  drivers/net/ethernet/Makefile              |    1 +
+>  drivers/net/ethernet/asix/Kconfig          |   22 +
+>  drivers/net/ethernet/asix/Makefile         |    6 +
+>  drivers/net/ethernet/asix/ax88796c_ioctl.c |  197 ++++
+>  drivers/net/ethernet/asix/ax88796c_ioctl.h |   26 +
+>  drivers/net/ethernet/asix/ax88796c_main.c  | 1144 ++++++++++++++++++++=
+
+>  drivers/net/ethernet/asix/ax88796c_main.h  |  578 ++++++++++
+>  drivers/net/ethernet/asix/ax88796c_spi.c   |  111 ++
+>  drivers/net/ethernet/asix/ax88796c_spi.h   |   69 ++
+>  11 files changed, 2161 insertions(+)
+>  create mode 100644 drivers/net/ethernet/asix/Kconfig
+>  create mode 100644 drivers/net/ethernet/asix/Makefile
+>  create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.c
+>  create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.h
+>  create mode 100644 drivers/net/ethernet/asix/ax88796c_main.c
+>  create mode 100644 drivers/net/ethernet/asix/ax88796c_main.h
+>  create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.c
+>  create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.h
+
+[...]
+
+> +enum watchdog_state {
+> +	chk_link =3D 0,
+> +	chk_cable,
+> +	ax_nop,
+> +};
 > +
->        - description: FriendlyARM ZeroPi
->          items:
->            - const: friendlyarm,zeropi
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 4f0adfead547..aabaf67f86ed 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -1192,6 +1192,7 @@ dtb-$(CONFIG_MACH_SUN8I) +=3D \
->  	sun8i-h3-nanopi-m1-plus.dtb \
->  	sun8i-h3-nanopi-neo.dtb \
->  	sun8i-h3-nanopi-neo-air.dtb \
-> +	sun8i-h3-nanopi-r1.dtb \
->  	sun8i-h3-orangepi-2.dtb \
->  	sun8i-h3-orangepi-lite.dtb \
->  	sun8i-h3-orangepi-one.dtb \
-> diff --git a/arch/arm/boot/dts/sun8i-h3-nanopi-r1.dts b/arch/arm/boot/dts=
-/sun8i-h3-nanopi-r1.dts
+> +struct ax88796c_device {
+> +	struct resource		*addr_res;   /* resources found */
+> +	struct resource		*addr_req;   /* resources requested */
+> +	struct resource		*irq_res;
+> +
+> +	struct spi_device	*spi;
+> +	struct net_device	*ndev;
+> +	struct net_device_stats	stats;
+> +
+> +	struct timer_list	watchdog;
+> +	enum watchdog_state	w_state;
+> +	size_t			w_ticks;
+
+are these used?
+
+> +
+> +	struct work_struct	ax_work;
+> +
+> +	struct mutex		spi_lock; /* device access */
+> +
+> +	struct sk_buff_head	tx_wait_q;
+> +
+> +	struct axspi_data	ax_spi;
+> +
+> +	struct mii_bus		*mdiobus;
+> +	struct phy_device	*phydev;
+> +
+> +	int			msg_enable;
+> +
+> +	u16			seq_num;
+> +
+> +	u8			multi_filter[AX_MCAST_FILTER_SIZE];
+> +
+> +	int			link;
+> +	int			speed;
+> +	int			duplex;
+> +	int			pause;
+> +	int			asym_pause;
+> +	int			flowctrl;
+> +		#define AX_FC_NONE		0
+> +		#define AX_FC_RX		BIT(0)
+> +		#define AX_FC_TX		BIT(1)
+> +		#define AX_FC_ANEG		BIT(2)
+> +
+> +	unsigned long		capabilities;
+> +		#define AX_CAP_DMA		BIT(0)
+> +		#define AX_CAP_COMP		BIT(1)
+> +		#define AX_CAP_BIDIR		BIT(2)
+> +
+> +	u8			plat_endian;
+> +		#define PLAT_LITTLE_ENDIAN	0
+> +		#define PLAT_BIG_ENDIAN		1
+> +
+> +	unsigned long		flags;
+> +		#define EVENT_INTR		BIT(0)
+> +		#define EVENT_TX		BIT(1)
+> +		#define EVENT_SET_MULTI		BIT(2)
+> +
+> +};
+> +
+> +#define to_ax88796c_device(ndev) ((struct ax88796c_device *)netdev_pri=
+v(ndev))
+> +
+> +enum skb_state {
+> +	illegal =3D 0,
+> +	tx_done,
+> +	rx_done,
+> +	rx_err,
+> +};
+> +
+> +struct skb_data {
+> +	enum skb_state state;
+> +	struct net_device *ndev;
+> +	struct sk_buff *skb;
+> +	size_t len;
+> +	dma_addr_t phy_addr;
+
+unused?
+
+[...]
+
+> diff --git a/drivers/net/ethernet/asix/ax88796c_spi.c b/drivers/net/eth=
+ernet/asix/ax88796c_spi.c
 > new file mode 100644
-> index 000000000000..d4b90892a4d8
+> index 000000000000..1a20bbeb4dc1
 > --- /dev/null
-> +++ b/arch/arm/boot/dts/sun8i-h3-nanopi-r1.dts
-> @@ -0,0 +1,199 @@
+> +++ b/drivers/net/ethernet/asix/ax88796c_spi.c
+> @@ -0,0 +1,111 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
 > +/*
-> + * Copyright (C) 2019 Igor Pecovnik <igor@armbian.com>
-> + * Copyright (C) 2020 Jayantajit Gogoi <jayanta.gogoi525@gmail.com>
-> + * Copyright (C) 2020 Yu-Tung Chang <mtwget@gmail.com>
+> + * Copyright (c) 2010 ASIX Electronics Corporation
+> + * Copyright (c) 2020 Samsung Electronics Co., Ltd.
 > + *
-> + * This file is dual-licensed: you can use it either under the terms
-> + * of the GPL or the X11 license, at your option. Note that this dual
-> + * licensing only applies to this file, and not this project as a
-> + * whole.
-> + *
-> + *  a) This file is free software; you can redistribute it and/or
-> + *     modify it under the terms of the GNU General Public License as
-> + *     published by the Free Software Foundation; either version 2 of the
-> + *     License, or (at your option) any later version.
-> + *
-> + *     This file is distributed in the hope that it will be useful,
-> + *     but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + *     GNU General Public License for more details.
-> + *
-> + * Or, alternatively,
-> + *
-> + *  b) Permission is hereby granted, free of charge, to any person
-> + *     obtaining a copy of this software and associated documentation
-> + *     files (the "Software"), to deal in the Software without
-> + *     restriction, including without limitation the rights to use,
-> + *     copy, modify, merge, publish, distribute, sublicense, and/or
-> + *     sell copies of the Software, and to permit persons to whom the
-> + *     Software is furnished to do so, subject to the following
-> + *     conditions:
-> + *
-> + *     The above copyright notice and this permission notice shall be
-> + *     included in all copies or substantial portions of the Software.
-> + *
-> + *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-> + *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-> + *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-> + *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-> + *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-> + *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-> + *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-> + *     OTHER DEALINGS IN THE SOFTWARE.
+> + * ASIX AX88796C SPI Fast Ethernet Linux driver
 > + */
+> +
+> +#define pr_fmt(fmt)	"ax88796c: " fmt
+> +
+> +#include <linux/string.h>
+> +#include <linux/spi/spi.h>
+> +
+> +#include "ax88796c_spi.h"
+> +
+> +/* driver bus management functions */
+> +int axspi_wakeup(const struct axspi_data *ax_spi)
+> +{
+> +	u8 tx_buf;
+> +	int ret;
+> +
+> +	tx_buf =3D AX_SPICMD_EXIT_PWD;	/* OP */
+> +	ret =3D spi_write(ax_spi->spi, &tx_buf, 1);
 
-You should use an SPDX header instead of the license text here
+spi_write() needs a DMA safe buffer.
 
-> +#include "sun8i-h3-nanopi.dtsi"
+> +	if (ret)
+> +		dev_err(&ax_spi->spi->dev, "%s() failed: ret =3D %d\n", __func__, re=
+t);
+> +	return ret;
+> +}
 > +
-> +/ {
-> +	model =3D "FriendlyARM NanoPi R1";
-> +	compatible =3D "friendlyarm,nanopi-r1", "allwinner,sun8i-h3";
+> +int axspi_read_status(const struct axspi_data *ax_spi, struct spi_stat=
+us *status)
+> +{
+> +	u8 tx_buf;
+> +	int ret;
 > +
-> +	reg_gmac_3v3: gmac-3v3 {
-> +		compatible =3D "regulator-fixed";
-> +		regulator-name =3D "gmac-3v3";
-> +		regulator-min-microvolt =3D <3300000>;
-> +		regulator-max-microvolt =3D <3300000>;
-> +		startup-delay-us =3D <100000>;
-> +		enable-active-high;
-> +		gpio =3D <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
-> +	};
+> +	/* OP */
+> +	tx_buf =3D AX_SPICMD_READ_STATUS;
+> +	ret =3D spi_write_then_read(ax_spi->spi, &tx_buf, 1, (u8 *)&status, 3=
+);
+> +	if (ret)
+> +		dev_err(&ax_spi->spi->dev, "%s() failed: ret =3D %d\n", __func__, re=
+t);
+> +	else
+> +		le16_to_cpus(&status->isr);
 > +
-> +	reg_vdd_cpux: gpio-regulator {
-> +		compatible =3D "regulator-gpio";
-> +		regulator-name =3D "vdd-cpux";
-> +		regulator-type =3D "voltage";
-> +		regulator-boot-on;
-> +		regulator-always-on;
-> +		regulator-min-microvolt =3D <1100000>;
-> +		regulator-max-microvolt =3D <1300000>;
-> +		regulator-ramp-delay =3D <50>;
-> +		gpios =3D <&r_pio 0 6 GPIO_ACTIVE_HIGH>; /* PL6 */
-> +		gpios-states =3D <0x1>;
-> +		states =3D <1100000 0x0
-> +			  1300000 0x1>;
-> +	};
+> +	return ret;
+> +}
 > +
-> +	wifi_pwrseq: wifi_pwrseq {
-> +		compatible =3D "mmc-pwrseq-simple";
-> +		reset-gpios =3D <&r_pio 0 7 GPIO_ACTIVE_LOW>; /* PL7 */
-> +		clocks =3D <&rtc 1>;
-> +		clock-names =3D "ext_clock";
-> +	};
+> +int axspi_read_rxq(struct axspi_data *ax_spi, void *data, int len)
+> +{
+> +	struct spi_transfer *xfer =3D ax_spi->spi_rx_xfer;
+> +	int ret;
 > +
-> +	leds {
+> +	memcpy(ax_spi->cmd_buf, rx_cmd_buf, 5);
 > +
+> +	xfer->tx_buf =3D ax_spi->cmd_buf;
+> +	xfer->rx_buf =3D NULL;
+> +	xfer->len =3D ax_spi->comp ? 2 : 5;
+> +	xfer->bits_per_word =3D 8;
+> +	spi_message_add_tail(xfer, &ax_spi->rx_msg);
+> +
+> +	xfer++;
+> +	xfer->rx_buf =3D data;
+> +	xfer->tx_buf =3D NULL;
+> +	xfer->len =3D len;
+> +	xfer->bits_per_word =3D 8;
+> +	spi_message_add_tail(xfer, &ax_spi->rx_msg);
+> +	ret =3D spi_sync(ax_spi->spi, &ax_spi->rx_msg);
+> +	if (ret)
+> +		dev_err(&ax_spi->spi->dev, "%s() failed: ret =3D %d\n", __func__, re=
+t);
+> +
+> +	return ret;
+> +}
+> +
+> +int axspi_write_txq(const struct axspi_data *ax_spi, void *data, int l=
+en)
+> +{
+> +	return spi_write(ax_spi->spi, data, len);
+> +}
+> +
+> +u16 axspi_read_reg(const struct axspi_data *ax_spi, u8 reg)
+> +{
+> +	u8 tx_buf[4];
+> +	u16 rx_buf =3D 0;
+> +	int ret;
+> +	int len =3D ax_spi->comp ? 3 : 4;
+> +
+> +	tx_buf[0] =3D 0x03;	/* OP code read register */
+> +	tx_buf[1] =3D reg;	/* register address */
+> +	tx_buf[2] =3D 0xFF;	/* dumy cycle */
+> +	tx_buf[3] =3D 0xFF;	/* dumy cycle */
+> +	ret =3D spi_write_then_read(ax_spi->spi, tx_buf, len, (u8 *)&rx_buf, =
+2);
+> +	if (ret)
+> +		dev_err(&ax_spi->spi->dev, "%s() failed: ret =3D %d\n", __func__, re=
+t);
+> +	else
+> +		le16_to_cpus(&rx_buf);
+> +
+> +	return rx_buf;
+> +}
+> +
+> +int axspi_write_reg(const struct axspi_data *ax_spi, u8 reg, u16 value=
+)
+> +{
+> +	u8 tx_buf[4];
+> +	int ret;
+> +
+> +	tx_buf[0] =3D AX_SPICMD_WRITE_REG;	/* OP code read register */
+> +	tx_buf[1] =3D reg;			/* register address */
+> +	tx_buf[2] =3D value;
+> +	tx_buf[3] =3D value >> 8;
+> +
+> +	ret =3D spi_write(ax_spi->spi, tx_buf, 4);
 
-There's an extra line here
+I think you need DMA safe mem for spi_write().
 
-> +		wan {
+Marc
 
-Those aren't valid node names, you should use led-[0-9] here
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-> +			label =3D "nanopi:green:wan";
 
-label is deprecated in favor of the "function" and "color" properties=20
+--w4kjhPGLFbuTqLc2IfUg8uGvd9hmQcO73--
 
-> +			gpios =3D <&pio 6 11 GPIO_ACTIVE_HIGH>; /* PG11 */
-> +		};
-> +
-> +		lan {
-> +			label =3D "nanopi:green:lan";
-> +			gpios =3D <&pio 0 9 GPIO_ACTIVE_HIGH>; /* PA9 */
-> +		};
-> +	};
-> +};
-> +
-> +&cpu0 {
-> +	cpu-supply =3D <&reg_vdd_cpux>;
-> +};
-> +
-> +&ehci1 {
-> +	status =3D "okay";
-> +};
-> +
-> +&ehci2 {
-> +	status =3D "okay";
-> +};
-> +
-> +&emac {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&emac_rgmii_pins>;
-> +	phy-supply =3D <&reg_gmac_3v3>;
-> +	phy-handle =3D <&ext_rgmii_phy>;
-> +	phy-mode =3D "rgmii-id";
-> +	status =3D "okay";
-> +};
-> +
-> +&external_mdio {
-> +	ext_rgmii_phy: ethernet-phy@7 {
-> +		compatible =3D "ethernet-phy-ieee802.3-c22";
-> +		reg =3D <7>;
-> +	};
-> +};
-> +
-> +&mmc1 {
-> +	vmmc-supply =3D <&reg_vcc3v3>;
-> +	vqmmc-supply =3D <&reg_vcc3v3>;
-> +	mmc-pwrseq =3D <&wifi_pwrseq>;
-> +	bus-width =3D <4>;
-> +	non-removable;
-> +	status =3D "okay";
-> +
-> +	sdio_wifi: sdio_wifi@1 {
-> +		reg =3D <1>;
-> +		compatible =3D "brcm,bcm4329-fmac";
-> +		interrupt-parent =3D <&pio>;
-> +		interrupts =3D <6 10 IRQ_TYPE_LEVEL_LOW>; /* PG10 / EINT10 */
-> +		interrupt-names =3D "host-wake";
-> +	};
-> +};
-> +
-> +&mmc2 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mmc2_8bit_pins>;
-> +	vmmc-supply =3D <&reg_vcc3v3>;
-> +	vqmmc-supply =3D <&reg_vcc3v3>;
-> +	bus-width =3D <8>;
-> +	non-removable;
-> +	status =3D "okay";
-> +};
-> +
-> +&ohci1 {
-> +	status =3D "okay";
-> +};
-> +
-> +&ohci2 {
-> +	status =3D "okay";
-> +};
-> +
-> +&reg_usb0_vbus {
-> +	gpio =3D <&r_pio 0 2 GPIO_ACTIVE_HIGH>; /* PL2 */
-> +	status =3D "okay";
-> +};
-> +
-> +&uart1 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&uart1_pins>;
-
-This should be the default already?
-
-> +	status =3D "okay";
-> +};
-> +
-> +&uart3 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&uart3_pins>, <&uart3_rts_cts_pins>;
-> +	uart-has-rtscts;
-> +	status =3D "okay";
-> +
-> +	bluetooth {
-> +		compatible =3D "brcm,bcm43438-bt";
-> +		clocks =3D <&rtc 1>;
-> +		clock-names =3D "lpo";
-> +		vbat-supply =3D <&reg_vcc3v3>;
-> +		vddio-supply =3D <&reg_vcc3v3>;
-> +		device-wakeup-gpios =3D <&pio 0 8 GPIO_ACTIVE_HIGH>; /* PA8 */
-> +		host-wakeup-gpios =3D <&pio 0 7 GPIO_ACTIVE_HIGH>; /* PA7 */
-> +		shutdown-gpios =3D <&pio 6 13 GPIO_ACTIVE_HIGH>; /* PG13 */
-> +	};
-> +};
-> +
-> +&usb_otg {
-> +	status =3D "okay";
-> +	dr_mode =3D "peripheral";
-
-If there's an ID pin and a controllable VBUS, you should be able to use
-otg here?
-
-Thanks!
-Maxime
-
---irwkiecmuwf2s2v2
+--XASIWa1aViY7sQMmqRxN20OZTaEZUJ3Aa
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5r8RwAKCRDj7w1vZxhR
-xRvGAP9vQldrPPVTHRtHP3GydBNmilDcYfan2nU4p0o65BnJ3QD/Q45gfhrQJ/1T
-VIO82okA9jPADYoNLFbRQrEVaSNF4QA=
-=iCX4
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+a+4UACgkQqclaivrt
+76m4WQgAmJO2Mucfu9zwvcLygFvIVigWvSUacWDVehcacR9ntjylqHdXlIKZ4vtx
+2dx0BBvr64CxSClQ1bESzQ2dX9Weu/TiYp3nqkz0x8r8OfuWLvj8UifjB+3FB2oX
+9BrD1cf8jnYzFM4Lfz0gCy6x3f7GB9ygkFf3jVgkL88bxO67gJn3EgUOWm7dRa/V
+CODYNsfooVlWkY1wMygTtz41dPoR4a5+FYdMIGSDoHeSwLnFfc/OqRq2oz2Ym9N3
+tLCG9QpW+/vsRtkd4JGkDxE1XU0FAPIAWMKx6X/VtFfL9Ud7Glp7nzwBaYSWxWnq
+mV7EA04MQgJTEQ/8HzWPglYOGUDCmA==
+=p6VL
 -----END PGP SIGNATURE-----
 
---irwkiecmuwf2s2v2--
+--XASIWa1aViY7sQMmqRxN20OZTaEZUJ3Aa--
