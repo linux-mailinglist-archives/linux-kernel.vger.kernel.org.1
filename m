@@ -2,120 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2284D29EC72
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDC329EC75
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 14:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgJ2NFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 09:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbgJ2NFf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 09:05:35 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11A3C0613CF;
-        Thu, 29 Oct 2020 06:05:34 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id 7so3767073ejm.0;
-        Thu, 29 Oct 2020 06:05:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jlRvw28Bxq+s0p/obAO5FUK/HKe/tOxPiCwhbWvjxq8=;
-        b=jGDq/k51RPhyM4yyaCIfGC86X13Z30xKHvi77d431dDIN7l+pK3cvKUspmos910vKD
-         7gCiDeHa7IriMOkCIvGjP3WOiyh22Pzl3Ql5Nu/J9+45YXM30riG+IR6nz3BDIiGB1gO
-         H6A5xAhyXWVc035SeaL+pC6jNpRCDnuOz3tjso3qy9TnoYAWFH/GnEiuyM9QutMwo1DL
-         o2Rofn/Ui+Lph30OYHyrRyoOJ/9uI9BJNKYVyvaWuWWVex5xyrp75tze7CMdxNjGKqAZ
-         mrx7Xc/KrsSybF3lpEWfoKR0o10dBcB7D2F208VUdJMKd5/x543Zn6NcRrlBzdP17Gl5
-         xn6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jlRvw28Bxq+s0p/obAO5FUK/HKe/tOxPiCwhbWvjxq8=;
-        b=sXqRP74mji+aywgshNE+i+JKgPRq0NsHD9R+168YNA5qXplWFD/xamjinBxso/hJa7
-         1AJb8FZMwS59fJckIfZBnMad8t/Y2NS99iNgUA+D5vfkp9f8LLWowj+SN5iP7oXfm2uF
-         g8WuNSFxCvc7zOIzaEYW+JOmSfWPO1MIxZXBMS4liN6GBKWlWCJtKrb3t8G/EyesYXYs
-         wRr1gvSKCOoXlQ2SZ3KHqxN7YMLyn2HM0js3PlxkN9VvkiiLfZaT1gmbKYqq30azZxYq
-         rQA9IpNYr+/7XX/al4eAVJBQjvQ/0JYdgmsND25j8kwEdsdHNc/yF9X/MjCPNSvbfIjM
-         f8+g==
-X-Gm-Message-State: AOAM5326H42dfANzVhFOQXp5933y9VePGcMtZhU5a+lTnz7Pcc6RiO6+
-        bm67YPBsb3UNaJbniu7IzLc=
-X-Google-Smtp-Source: ABdhPJxfDycUZglGd8qcujAsdtea0zQRdHkE08qqZmByL9hVYCQ+4ye2U1iBtn/f8I0HUbXfU67UQA==
-X-Received: by 2002:a17:906:1989:: with SMTP id g9mr2324714ejd.62.1603976733687;
-        Thu, 29 Oct 2020 06:05:33 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a6e3.dip0.t-ipconnect.de. [217.229.166.227])
-        by smtp.gmail.com with ESMTPSA id q19sm1469241ejx.118.2020.10.29.06.05.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 06:05:32 -0700 (PDT)
-Subject: Re: [PATCH -next] platform/surface: remove status assignment without
- reading
-To:     Zou Wei <zou_wei@huawei.com>, hdegoede@redhat.com,
-        mgross@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-References: <1603972048-64271-1-git-send-email-zou_wei@huawei.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <25642c19-6598-42c0-36ad-a2b2d507183a@gmail.com>
-Date:   Thu, 29 Oct 2020 14:05:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726126AbgJ2NGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 09:06:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:36170 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbgJ2NGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 09:06:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3585A139F;
+        Thu, 29 Oct 2020 06:06:53 -0700 (PDT)
+Received: from e107158-lin (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6ABA43F719;
+        Thu, 29 Oct 2020 06:06:52 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 13:06:49 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Yun Hsiang <hsiang023167@gmail.com>
+Cc:     dietmar.eggemann@arm.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, patrick.bellasi@matbug.net
+Subject: Re: [PATCH v3 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
+ flag to reset uclamp
+Message-ID: <20201029130649.h4wm2ak5j7zkgb3s@e107158-lin>
+References: <20201025073632.720393-1-hsiang023167@gmail.com>
+ <20201029110818.alrviwwljxnegmip@e107158-lin>
+ <20201029130243.GA897607@ubuntu>
 MIME-Version: 1.0
-In-Reply-To: <1603972048-64271-1-git-send-email-zou_wei@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201029130243.GA897607@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 12:47 PM, Zou Wei wrote:
-> The status local variable is assigned but never read:
+On 10/29/20 21:02, Yun Hsiang wrote:
+> Hi Qais,
+> 
+> On Thu, Oct 29, 2020 at 11:08:18AM +0000, Qais Yousef wrote:
+> > Hi Yun
+> > 
+> > Sorry for chipping in late.
+> > 
+> > On 10/25/20 15:36, Yun Hsiang wrote:
+> > > If the user wants to stop controlling uclamp and let the task inherit
+> > > the value from the group, we need a method to reset.
+> > > 
+> > > Add SCHED_FLAG_UTIL_CLAMP_RESET flag to allow the user to reset uclamp via
+> > > sched_setattr syscall.
+> > > 
+> > > The policy is
+> > > _CLAMP_RESET                           => reset both min and max
+> > > _CLAMP_RESET | _CLAMP_MIN              => reset min value
+> > > _CLAMP_RESET | _CLAMP_MAX              => reset max value
+> > > _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
+> > > 
+> > > Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
+> > > ---
+> > >  include/uapi/linux/sched.h |  7 +++++--
+> > >  kernel/sched/core.c        | 41 +++++++++++++++++++++++++++++++-------
+> > >  2 files changed, 39 insertions(+), 9 deletions(-)
+> > > 
+> > > diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
+> > > index 3bac0a8ceab2..6c823ddb1a1e 100644
+> > > --- a/include/uapi/linux/sched.h
+> > > +++ b/include/uapi/linux/sched.h
+> > > @@ -132,17 +132,20 @@ struct clone_args {
+> > >  #define SCHED_FLAG_KEEP_PARAMS		0x10
+> > >  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
+> > >  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
+> > > +#define SCHED_FLAG_UTIL_CLAMP_RESET	0x80
+> > >  
+> > >  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
+> > >  				 SCHED_FLAG_KEEP_PARAMS)
+> > >  
+> > >  #define SCHED_FLAG_UTIL_CLAMP	(SCHED_FLAG_UTIL_CLAMP_MIN | \
+> > > -				 SCHED_FLAG_UTIL_CLAMP_MAX)
+> > > +				 SCHED_FLAG_UTIL_CLAMP_MAX | \
+> > > +				 SCHED_FLAG_UTIL_CLAMP_RESET)
+> > 
+> > Is it safe to change this define in a uapi header without a potential
+> > consequence?
+> > 
+> > FWIW I still have concerns about this approach. We're doing a reset to control
+> > cgroup behavior, I don't see any correlation between the two. Besides the
+> > difference between RESET and setting uclamp_min=0 without RESET is not obvious
+> > nor intuitive for someone who didn't look at the code.
+> > 
+> > I propose something like the below which is more explicit about what is being
+> > requested and delivered here. And if we decide to deprecate this behavior,
+> > it'd be much easier to just ignore this flag.
+> > 
+> > You must set this flag with your uclamp request to retain the cgroup
+> > inheritance behavior. If the flag is not set, we automatically clear it.
+> 
+> I think this behavior may not meet android requirement. Becasue in
+> android there is group like top-app. And we want to boost the
+> group by setting group uclamp_min. If group inheritance is explicit, we
+> need to set this flag for all the tasks in top-app. This might be
+> costly.
 
-[...]
+You will not have to set it for every task. It's on by default like it works
+now. This behavior doesn't change.
 
->   static int s3_wmi_query_block(const char *guid, int instance, int *ret)
->   {
->   	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
-> -	acpi_status status;
->   	union acpi_object *obj;
->   	int error = 0;
->   
->   	mutex_lock(&s3_wmi_lock);
-> -	status = wmi_query_block(guid, instance, &output);
+But if you change the uclamp value of a task but still want it to continue to
+inherit the cgroup values if it's attached to one, you must set this flag when
+changing the uclamp value.
 
-I assume you want to remove the "status =" and not the whole line...
+Thanks
 
-Regardless, I personally would prefer explicit error handling (as is
-done in other contexts with wmi_query_block(), see e.g.
-platform/x86/intel-wmi-sbl-fw-update.c. Although, yes, the "if (!obj |
-..." should cover the error case as far as I can tell.
+--
+Qais Yousef
 
-Also there seems to be the same issue in platform/x86/msi-wmi.c.
-
-On a related note:
-
-Does anyone know if the mutex here is really required? If there are any
-problems, I believe it should rather go to s3_wmi_send_lid_state() and
-also wrap the input_report_switch() / input_sync(). Otherwise, if there
-were any race-type situations, not covering that could lead to wrong
-updates:
-
-     Thread 1                            Thread 2
-     
-     s3_query_lid() returns old
-                                         s3_query_lid() returns new
-                                         input_report_switch()
-                                         input_sync()
-     input_report_switch()
-     input_sync()
-
-I don't really expect those situations here as s3_wmi_send_lid_state()
-is only used in probe(), resume(), and notify() (please correct me if
-I'm wrong), so the mutex does seem weird to me here.
-
-Otherwise if it's needed, a comment explaining why wouldn't hurt.
-
-Regards,
-Max
+> 
+> > 
+> > Only compile tested.
+> > 
+> > Thanks
+> > 
+> > --
+> > Qais Yousef
+> > 
+> > 
+> > --------->8-----------
+> > 
+> > From fe48fde7dea582b3b075e80e6936e1199f24363d Mon Sep 17 00:00:00 2001
+> > From: Qais Yousef <qais.yousef@arm.com>
+> > Date: Wed, 28 Oct 2020 22:36:26 +0000
+> > Subject: [PATCH] sched/uclamp: Add new flag to control cgroup behavior
+> > 
+> > Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+> > ---
+> >  include/linux/sched.h      |  1 +
+> >  include/uapi/linux/sched.h |  6 ++++++
+> >  kernel/sched/core.c        | 25 ++++++++++++++++---------
+> >  3 files changed, 23 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > index afe01e232935..6eb35dfaa893 100644
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+> > @@ -604,6 +604,7 @@ struct uclamp_se {
+> >  	unsigned int bucket_id		: bits_per(UCLAMP_BUCKETS);
+> >  	unsigned int active		: 1;
+> >  	unsigned int user_defined	: 1;
+> > +	unsigned int follow_cgroup	: 1;
+> >  };
+> >  #endif /* CONFIG_UCLAMP_TASK */
+> >  
+> > diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
+> > index 3bac0a8ceab2..33ff716a7574 100644
+> > --- a/include/uapi/linux/sched.h
+> > +++ b/include/uapi/linux/sched.h
+> > @@ -132,6 +132,12 @@ struct clone_args {
+> >  #define SCHED_FLAG_KEEP_PARAMS		0x10
+> >  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
+> >  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
+> > +/*
+> > + * Control whether a task follows/inherits the cgroup uclamp.min/max or not.
+> > + * By default this flag is set for all tasks. Any explicit modification to a
+> > + * task's UCLAMP_MIN/MAX must set this flag to retain the bahavior.
+> > + */
+> > +#define SCHED_FLAG_UTIL_FOLLOW_CGROUP	0x80
+> >  
+> >  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
+> >  				 SCHED_FLAG_KEEP_PARAMS)
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 2d95dc3f4644..1c77d6b8bd96 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -1083,7 +1083,7 @@ uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+> >  		return uc_req;
+> >  
+> >  	uc_max = task_group(p)->uclamp[clamp_id];
+> > -	if (uc_req.value > uc_max.value || !uc_req.user_defined)
+> > +	if (uc_req.value > uc_max.value || uc_req.follow_cgroup)
+> >  		return uc_max;
+> >  #endif
+> >  
+> > @@ -1446,6 +1446,7 @@ static void __setscheduler_uclamp(struct task_struct *p,
+> >  				  const struct sched_attr *attr)
+> >  {
+> >  	enum uclamp_id clamp_id;
+> > +	bool follow_cgroup;
+> >  
+> >  	/*
+> >  	 * On scheduling class change, reset to default clamps for tasks
+> > @@ -1472,14 +1473,18 @@ static void __setscheduler_uclamp(struct task_struct *p,
+> >  	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+> >  		return;
+> >  
+> > +	follow_cgroup = attr->sched_flags & SCHED_FLAG_UTIL_FOLLOW_CGROUP;
+> > +
+> >  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+> > -		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
+> > -			      attr->sched_util_min, true);
+> > +		struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MIN];
+> > +		uc_se->follow_cgroup = follow_cgroup;
+> > +		uclamp_se_set(uc_se, attr->sched_util_min, true);
+> >  	}
+> >  
+> >  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
+> > -		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
+> > -			      attr->sched_util_max, true);
+> > +		struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MAX];
+> > +		uc_se->follow_cgroup = follow_cgroup;
+> > +		uclamp_se_set(uc_se, attr->sched_util_max, true);
+> >  	}
+> >  }
+> >  
+> > @@ -1498,8 +1503,9 @@ static void uclamp_fork(struct task_struct *p)
+> >  		return;
+> >  
+> >  	for_each_clamp_id(clamp_id) {
+> > -		uclamp_se_set(&p->uclamp_req[clamp_id],
+> > -			      uclamp_none(clamp_id), false);
+> > +		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
+> > +		uc_se->follow_cgroup = true;
+> > +		uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
+> >  	}
+> >  }
+> >  
+> > @@ -1532,8 +1538,9 @@ static void __init init_uclamp(void)
+> >  		init_uclamp_rq(cpu_rq(cpu));
+> >  
+> >  	for_each_clamp_id(clamp_id) {
+> > -		uclamp_se_set(&init_task.uclamp_req[clamp_id],
+> > -			      uclamp_none(clamp_id), false);
+> > +		struct uclamp_se *uc_se = &init_task.uclamp_req[clamp_id];
+> > +		uc_se->follow_cgroup = true;
+> > +		uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
+> >  	}
+> >  
+> >  	/* System defaults allow max clamp values for both indexes */
+> > -- 
+> > 2.25.1
