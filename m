@@ -2,89 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897A82A0E5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8562A0E6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbgJ3TNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 15:13:52 -0400
-Received: from mga07.intel.com ([134.134.136.100]:24463 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgJ3TNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:13:52 -0400
-IronPort-SDR: a7mewWF+bPyYXdmuyqloFOfFJodQ/TOMPOxM309smcyV+5at1cUR8M7v/DXGsV8KxCl2QLnSL/
- dhlylJvJzsiQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="232832674"
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="232832674"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 12:13:51 -0700
-IronPort-SDR: zOr0fSasaC4DcyXQU/yBP5MHlOwXIXCsiiZWgjwCWDZ8Vhti87QAzM1VQo5D2EJXLWyPuahCkV
- z8kprBo+a+2w==
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="362533982"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.209.46.60]) ([10.209.46.60])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 12:13:49 -0700
-Subject: Re: [PATCH v4 00/17] Add VFIO mediated device support and DEV-MSI
- support for the idxd driver
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     vkoul@kernel.org, megha.dey@intel.com, maz@kernel.org,
-        bhelgaas@google.com, tglx@linutronix.de,
-        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, yi.l.liu@intel.com, baolu.lu@intel.com,
-        kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
-        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
-        rafael@kernel.org, netanelg@mellanox.com, shahafs@mellanox.com,
-        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
-        samuel.ortiz@intel.com, mona.hossain@intel.com,
-        Megha Dey <megha.dey@linux.intel.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, kvm@vger.kernel.org
-References: <160408357912.912050.17005584526266191420.stgit@djiang5-desk3.ch.intel.com>
- <20201030185858.GI2620339@nvidia.com>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <c9303df4-3e57-6959-a89c-5fc98397ac70@intel.com>
-Date:   Fri, 30 Oct 2020 12:13:48 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1727439AbgJ3TPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 15:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727416AbgJ3TPG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 15:15:06 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF94C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:15:05 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id i6so9286174lfd.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:15:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wG/u6QLDIeO3+GPNzepwWscTWygaEgqcNOvOguEOtzE=;
+        b=GEScQJl/XRE+Al+2evygNVW34IiBSkoia8s5HzAl8Hv6DEbsHP21Lirga/6tIsjkoR
+         6pndjXo3bhKZOW1Dk5Uub2F/QyY+XpBeX+nLyHZxDUaPhBwraxjKmyUU389u1/xqXlL/
+         voC7OY6hmd5Fr4gE/vpOFEq+3M/K4uBWKjshMkpddljKtLvb7oEgjUepvGxdHLB+qlRi
+         lsXaJFer4KS7uPl33OEqYL9fA3HJYLgu76FbsgqoBkyILSU1vMZhuNLi6w9qOqfkXaAU
+         ytPJv1sI1qSIE1x7QKh8O++0G+mtEs+XlsK0dEAC2cz1JpC6LyJR8sRuqTs2bq0q6mTh
+         QDIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wG/u6QLDIeO3+GPNzepwWscTWygaEgqcNOvOguEOtzE=;
+        b=mWCIgZiE3a77YHKuB27WeMxFAy2C2zCoahAZjicJHwv746e5dZJblaz8HgR9b2A0ij
+         9LS36Iv8PGqXEau09vw51vy6powDFZLZntzvLXn4+LOwioBYg4ZGV0n8F7QxRvkrUKn1
+         VCZME/U2dzEqzgif7Q5EuFZXU79r8TbNSTgCYoDQ+8PpF6Q7EsPdSYgP6omabfx3LkTl
+         t6jdgbph4l76WCb9TNR5l1c4W4DjZRtF7D/tzoqlPFNMjuUZ2wwxOD+8apmZDsgpF6tY
+         xZ4VRz5fHFe9qvmNfASa5hz+4brCpeWYp727jrRwkKReugBTJRR4ybypsyjcTTj2QUeA
+         0slA==
+X-Gm-Message-State: AOAM533kpADyvD6Ayh7qdy8EMOGrzZbDnzQs1ErlgezOkPk/hTjoAZ9v
+        UtwGC63K344or7G7/QNK3rRdlhzQQN2ismymTjaiyQ==
+X-Google-Smtp-Source: ABdhPJwWwVpiw9gJ/puN8rWssNkdz8vVGHPzS0mmXDNNvTGXQ5m+dUeuCNcHNeJlQwiyM5w1WvddtFCfbNI2DKeMRtk=
+X-Received: by 2002:a05:6512:1054:: with SMTP id c20mr1626841lfb.576.1604085303713;
+ Fri, 30 Oct 2020 12:15:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201030185858.GI2620339@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+ <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com> <0de41eb1-e1fd-85da-61b7-fac4e3006726@gmail.com>
+In-Reply-To: <0de41eb1-e1fd-85da-61b7-fac4e3006726@gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 30 Oct 2020 20:14:37 +0100
+Message-ID: <CAG48ez3qKg-ReY4R=S_thQ6tOzv2ZHV=xW5qBxpqs0iSjH_oFQ@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 29, 2020 at 3:19 PM Michael Kerrisk (man-pages)
+<mtk.manpages@gmail.com> wrote:
+> On 10/29/20 2:42 AM, Jann Horn wrote:
+> > On Mon, Oct 26, 2020 at 10:55 AM Michael Kerrisk (man-pages)
+> > <mtk.manpages@gmail.com> wrote:
+> >>        static bool
+> >>        getTargetPathname(struct seccomp_notif *req, int notifyFd,
+> >>                          char *path, size_t len)
+> >>        {
+> >>            char procMemPath[PATH_MAX];
+> >>
+> >>            snprintf(procMemPath, sizeof(procMemPath), "/proc/%d/mem", req->pid);
+> >>
+> >>            int procMemFd = open(procMemPath, O_RDONLY);
+> >>            if (procMemFd == -1)
+> >>                errExit("\tS: open");
+> >>
+> >>            /* Check that the process whose info we are accessing is still alive.
+> >>               If the SECCOMP_IOCTL_NOTIF_ID_VALID operation (performed
+> >>               in checkNotificationIdIsValid()) succeeds, we know that the
+> >>               /proc/PID/mem file descriptor that we opened corresponds to the
+> >>               process for which we received a notification. If that process
+> >>               subsequently terminates, then read() on that file descriptor
+> >>               will return 0 (EOF). */
+> >>
+> >>            checkNotificationIdIsValid(notifyFd, req->id);
+> >>
+> >>            /* Read bytes at the location containing the pathname argument
+> >>               (i.e., the first argument) of the mkdir(2) call */
+> >>
+> >>            ssize_t nread = pread(procMemFd, path, len, req->data.args[0]);
+> >>            if (nread == -1)
+> >>                errExit("pread");
+> >
+> > As discussed at
+> > <https://lore.kernel.org/r/CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>,
+> > we need to re-check checkNotificationIdIsValid() after reading remote
+> > memory but before using the read value in any way. Otherwise, the
+> > syscall could in the meantime get interrupted by a signal handler, the
+> > signal handler could return, and then the function that performed the
+> > syscall could free() allocations or return (thereby freeing buffers on
+> > the stack).
+> >
+> > In essence, this pread() is (unavoidably) a potential use-after-free
+> > read; and to make that not have any security impact, we need to check
+> > whether UAF read occurred before using the read value. This should
+> > probably be called out elsewhere in the manpage, too...
+>
+> Thanks very much for pointing me at this!
+>
+> So, I want to conform that the fix to the code is as simple as
+> adding a check following the pread() call, something like:
+>
+> [[
+>      ssize_t nread = pread(procMemFd, path, len, req->data.args[argNum]);
+>      if (nread == -1)
+>         errExit("Supervisor: pread");
+>
+>      if (nread == 0) {
+>         fprintf(stderr, "\tS: pread() of /proc/PID/mem "
+>                 "returned 0 (EOF)\n");
+>         exit(EXIT_FAILURE);
+>      }
+>
+>      if (close(procMemFd) == -1)
+>         errExit("Supervisor: close-/proc/PID/mem");
+>
+> +    /* Once again check that the notification ID is still valid. The
+> +       case we are particularly concerned about here is that just
+> +       before we fetched the pathname, the target's blocked system
+> +       call was interrupted by a signal handler, and after the handler
+> +       returned, the target carried on execution (past the interrupted
+> +       system call). In that case, we have no guarantees about what we
+> +       are reading, since the target's memory may have been arbitrarily
+> +       changed by subsequent operations. */
+> +
+> +    if (!notificationIdIsValid(notifyFd, req->id, "post-open"))
+> +        return false;
+> +
+>      /* We have no guarantees about what was in the memory of the target
+>         process. We therefore treat the buffer returned by pread() as
+>         untrusted input. The buffer should be terminated by a null byte;
+>         if not, then we will trigger an error for the target process. */
+>
+>      if (strnlen(path, nread) < nread)
+>          return true;
+> ]]
 
-
-On 10/30/2020 11:58 AM, Jason Gunthorpe wrote:
-> On Fri, Oct 30, 2020 at 11:50:47AM -0700, Dave Jiang wrote:
->>   .../ABI/stable/sysfs-driver-dma-idxd          |    6 +
->>   Documentation/driver-api/vfio/mdev-idxd.rst   |  404 ++++++
->>   MAINTAINERS                                   |    1 +
->>   drivers/dma/Kconfig                           |    9 +
->>   drivers/dma/idxd/Makefile                     |    2 +
->>   drivers/dma/idxd/cdev.c                       |    6 +-
->>   drivers/dma/idxd/device.c                     |  294 ++++-
->>   drivers/dma/idxd/idxd.h                       |   67 +-
->>   drivers/dma/idxd/init.c                       |   86 ++
->>   drivers/dma/idxd/irq.c                        |    6 +-
->>   drivers/dma/idxd/mdev.c                       | 1121 +++++++++++++++++
->>   drivers/dma/idxd/mdev.h                       |  116 ++
-> 
-> Again, a subsytem driver belongs in the directory hierarchy of the
-> subsystem, not in other random places. All this mdev stuff belongs
-> under drivers/vfio
-
-Alex seems to have disagreed last time....
-https://lore.kernel.org/dmaengine/20200917113016.425dcde7@x1.home/
-
-And I do agree with his perspective. The mdev is an extension of the PF driver. 
-It's a bit awkward to be a stand alone mdev driver under vfio/mdev/.
-
-> 
-> Jason
-> 
+Yeah, that should do the job. With the caveat that a cancelled syscall
+could've also led to the memory being munmap()ed, so the nread==0 case
+could also happen legitimately - so you might want to move this check
+up above the nread==0 (mm went away) and nread==-1 (mm still exists,
+but read from address failed, errno EIO) checks if the error message
+shouldn't appear spuriously.
