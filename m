@@ -2,68 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF3D2A02EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DAE2A02EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgJ3Kcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgJ3Kcw (ORCPT
+        id S1726380AbgJ3Kc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:32:57 -0400
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:57205 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725993AbgJ3Kcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:32:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7987CC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:32:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kC/iXaDnkViO/EwRpn2Zres8ZBb6cXxROXB9UOEHSbs=; b=hNjlIC5tcT5H8d3IRZGvnYIri0
-        le5yP2DFrM+Fk3q01mXPY1O7RkVARmyeasyWb9MjOFAUjYLdxVdi9WQZihB9e+Ch9R8jK01qtX3Xn
-        nBqXtHS88ToUbgOsjSuyraM9pTaTyX2UWZmXuYA14n7tGDYFreBiW2U8Ree64zBM9PKQXCE/HiPd/
-        E6gKRCtGkvhf0BJUcTx2HmCxBpa6rNY+TYs2DW7bR8fszuncD3kO4NxAv6tXFDVKhC2vVaDcz8i2w
-        BGi9sYhXvITH2Gi9Vs9Ys1tkr7gAmlTwafEoqTc/8BKp8ypC9kMyelq/41t6xvzgszRlKbkXKtAG4
-        xEe0yR3A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYRhl-0001Lw-DN; Fri, 30 Oct 2020 10:32:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9C4A83012C3;
-        Fri, 30 Oct 2020 11:32:20 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 521CA203F0EC3; Fri, 30 Oct 2020 11:32:20 +0100 (CET)
-Date:   Fri, 30 Oct 2020 11:32:20 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, kan.liang@linux.intel.com,
-        like.xu@linux.intel.com
-Subject: Re: [BUG] Stack overflow when running perf and function tracer
-Message-ID: <20201030103220.GH2611@hirez.programming.kicks-ass.net>
-References: <20201030002722.766a22df@oasis.local.home>
- <20201030090037.GZ2628@hirez.programming.kicks-ass.net>
- <877dr8nh6u.fsf@nanos.tec.linutronix.de>
+        Fri, 30 Oct 2020 06:32:53 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id YRhpknn8TWvjMYRhskH3V2; Fri, 30 Oct 2020 11:32:28 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1604053948; bh=22JUqQBBILBmVwZwtLfugevAizud9zUlnOuqquupUA0=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Lp62cjNZVJTNkCMmYDdeUOU7krPwfp3XoJAjuM6bzy+NJhH7FnE8AN8A0sw56+QXr
+         YXWpwSii1ny+uDveJxDwjd6VfZNNo18MIKLwGG0LjzgN1GmRvBeV5s4ly7+S9JwLdI
+         k0gZYNh9WYU65HKmINHZfqERBEthlMMd38GhsaVngM2j1Pg8iJys8TmNwxBTUOcYD+
+         ffTDvgAPwsRGyXrNhgsoVgcFg+tJZooMF0U4U+rEwfKuJJhhUdXR8/AM4CdNTrqokL
+         znqx3xgrd5Vwtl8bq7bOSD5pL3D3b8HCfDdLmsdSoBa/KzPxTVNb4bM7UeRIqvBy6M
+         brKWdxGr2DClQ==
+Subject: Re: [PATCH] media: v4l2-compat-ioctl32: check for max size
+To:     Defang Bo <bodefang@126.com>, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1603108489-4832-1-git-send-email-bodefang@126.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <9a70ec34-95f3-c1f8-4002-a76b4836546a@xs4all.nl>
+Date:   Fri, 30 Oct 2020 11:32:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dr8nh6u.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <1603108489-4832-1-git-send-email-bodefang@126.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfNDpo6U0VcwkgfgVf1bGDnBfy0LMhP4pEAO9I9AmACO/skfw2ZxXfzcZI18QCoCSVO0nIZdzG8X2W31Az/7G7qN6T3LDdnLi1gOAQVu+rbpNmb1Tt/Ji
+ +n3IRWTjaIgjbQOrhUNh//7E4MEIwMwGLtKbEQrNAQaoA/UzA2i53NQYjT9GdvXQnjdt9qlrOWJ3DFSyxVRLayA8Mbgkp6dXVYFrZxpm7EitIErZAURa3ub3
+ F2MlKkDRN+Hc3TbhImbZgYIs2BCWWQNPG8bEPAWoDDWpPujq8AzsQxl9IOC01Z+WMpf8BcF6Kc2nnBjqljIDxw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 11:26:01AM +0100, Thomas Gleixner wrote:
-
-> > The only thing I can come up with in a hurry is that that dummy_iregs
-> > thing really should be static. That's 168 bytes of stack out the window
-> > right there.
+On 19/10/2020 13:54, Defang Bo wrote:
+> Similar to commit<ea72fbf588ac>("media: v4l2-compat-ioctl32: prevent go past max size"} ,add max size check for count variable.
 > 
-> What's worse is perf_sample_data which is 384 bytes and is 64 bytes aligned.
+> Signed-off-by: Defang Bo <bodefang@126.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-compat-ioctl32.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+> index a99e82e..5041d60 100644
+> --- a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+> +++ b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+> @@ -207,7 +207,7 @@ static int put_v4l2_window32(struct v4l2_window __user *p64,
+>  	    get_user(clipcount, &p64->clipcount) ||
+>  	    put_user(clipcount, &p32->clipcount))
+>  		return -EFAULT;
+> -	if (!clipcount)
+> +	if (!clipcount || count > (U32_MAX/sizeof(*uclips)))
 
-Urgh, that thing just keeps on growing :/
+Clearly you didn't compile this since count should have been clipcount.
 
-I'll try and have a look if we can both shrink the thing and move it off
-stack.
+And in any case, this is bogus since get_v4l2_window32() already checks that
+clipcount doesn't exceed 2048.
+
+Regards,
+
+	Hans
+
+>  		return 0;
+>  
+>  	if (get_user(kclips, &p64->clips))
+> 
+
