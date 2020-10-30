@@ -2,285 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE6A2A0577
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACC72A0582
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgJ3McE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 08:32:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51880 "EHLO mail.kernel.org"
+        id S1726541AbgJ3MeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 08:34:22 -0400
+Received: from mga01.intel.com ([192.55.52.88]:52812 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726055AbgJ3MbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:31:02 -0400
-Received: from google.com (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7DB520731;
-        Fri, 30 Oct 2020 12:31:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604061061;
-        bh=uAWtvTnGeRiAQGBeXWhiZ6TXWdrmX/qYwMYe3mrDHPk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CBZTvoofelM4iQ+RhR13m5AOlKzbdlWmqdzG6DRERIpYia2MuTcE12Vx9G+UlskjD
-         FbSEQ5MSFHn/sHO5CMEtlymrrw4PSjhuFIkzCbiDXwHJIG1R5dczaI3zxpmG930+7Z
-         vqevVQfiuSD7ep30JWzzPQbUK+KT4gSJ3V3gSjtE=
-Date:   Fri, 30 Oct 2020 05:30:59 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH v2] f2fs: move ioctl interface definitions to separated
- file
-Message-ID: <20201030123059.GA1877745@google.com>
-References: <20201030072610.57155-1-yuchao0@huawei.com>
+        id S1726362AbgJ3MeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 08:34:16 -0400
+IronPort-SDR: 15RDWgYcRM+7WseqXgC+YICIsEb+1wMC2sIhITfqCJaSF4ekybA6UdDWfoWgyLn8e0Q5VyVmOT
+ EEc9H6+ARoBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="186404738"
+X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
+   d="scan'208";a="186404738"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 05:34:16 -0700
+IronPort-SDR: 8ndeOHPXP/p2j7jyqdebHIOVZANShPLPqsgfyhKI8zvHnHWW/bp7Z1z/Eo5yahtVwntVX5uWDj
+ OtqgKUHJk/qQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
+   d="scan'208";a="537051199"
+Received: from lkp-server02.sh.intel.com (HELO fcc9f8859912) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 30 Oct 2020 05:34:14 -0700
+Received: from kbuild by fcc9f8859912 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kYTbi-00008U-72; Fri, 30 Oct 2020 12:34:14 +0000
+Date:   Fri, 30 Oct 2020 20:33:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:for-linus/kspp-fam0] BUILD SUCCESS
+ 8fdaabe1c9b3226172ba2e9e525627219be6d29a
+Message-ID: <5f9c080d.ZKRe5hf67vhcPxCp%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030072610.57155-1-yuchao0@huawei.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chao,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  for-linus/kspp-fam0
+branch HEAD: 8fdaabe1c9b3226172ba2e9e525627219be6d29a  scsi: target: tcmu: Replace zero-length array with flexible-array member
 
-Can we make a documentation for this in f2fs.rst?
+elapsed time: 720m
 
-Thanks,
+configs tested: 133
+configs skipped: 2
 
-On 10/30, Chao Yu wrote:
-> Like other filesystem does, we introduce a new file f2fs.h in path of
-> include/uapi/linux/, and move f2fs-specified ioctl interface definitions
-> to that file, after then, in order to use those definitions, userspace
-> developer only need to include the new header file rather than
-> copy & paste definitions from fs/f2fs/f2fs.h.
-> 
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> ---
-> v2: add missing "WITH Linux-syscall-note" for SPDX-License-Identifier
->  MAINTAINERS                 |  1 +
->  fs/f2fs/f2fs.h              | 79 ----------------------------------
->  fs/f2fs/file.c              |  1 +
->  include/trace/events/f2fs.h |  1 +
->  include/uapi/linux/f2fs.h   | 86 +++++++++++++++++++++++++++++++++++++
->  5 files changed, 89 insertions(+), 79 deletions(-)
->  create mode 100644 include/uapi/linux/f2fs.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d1d4e49a695a..b79a911f1e32 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6686,6 +6686,7 @@ F:	Documentation/filesystems/f2fs.rst
->  F:	fs/f2fs/
->  F:	include/linux/f2fs_fs.h
->  F:	include/trace/events/f2fs.h
-> +F:	include/uapi/linux/f2fs.h
->  
->  F71805F HARDWARE MONITORING DRIVER
->  M:	Jean Delvare <jdelvare@suse.com>
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index cb700d797296..99bcf4b44a9c 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -402,85 +402,6 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
->  	return size <= MAX_SIT_JENTRIES(journal);
->  }
->  
-> -/*
-> - * f2fs-specific ioctl commands
-> - */
-> -#define F2FS_IOCTL_MAGIC		0xf5
-> -#define F2FS_IOC_START_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 1)
-> -#define F2FS_IOC_COMMIT_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 2)
-> -#define F2FS_IOC_START_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 3)
-> -#define F2FS_IOC_RELEASE_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 4)
-> -#define F2FS_IOC_ABORT_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 5)
-> -#define F2FS_IOC_GARBAGE_COLLECT	_IOW(F2FS_IOCTL_MAGIC, 6, __u32)
-> -#define F2FS_IOC_WRITE_CHECKPOINT	_IO(F2FS_IOCTL_MAGIC, 7)
-> -#define F2FS_IOC_DEFRAGMENT		_IOWR(F2FS_IOCTL_MAGIC, 8,	\
-> -						struct f2fs_defragment)
-> -#define F2FS_IOC_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
-> -						struct f2fs_move_range)
-> -#define F2FS_IOC_FLUSH_DEVICE		_IOW(F2FS_IOCTL_MAGIC, 10,	\
-> -						struct f2fs_flush_device)
-> -#define F2FS_IOC_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,	\
-> -						struct f2fs_gc_range)
-> -#define F2FS_IOC_GET_FEATURES		_IOR(F2FS_IOCTL_MAGIC, 12, __u32)
-> -#define F2FS_IOC_SET_PIN_FILE		_IOW(F2FS_IOCTL_MAGIC, 13, __u32)
-> -#define F2FS_IOC_GET_PIN_FILE		_IOR(F2FS_IOCTL_MAGIC, 14, __u32)
-> -#define F2FS_IOC_PRECACHE_EXTENTS	_IO(F2FS_IOCTL_MAGIC, 15)
-> -#define F2FS_IOC_RESIZE_FS		_IOW(F2FS_IOCTL_MAGIC, 16, __u64)
-> -#define F2FS_IOC_GET_COMPRESS_BLOCKS	_IOR(F2FS_IOCTL_MAGIC, 17, __u64)
-> -#define F2FS_IOC_RELEASE_COMPRESS_BLOCKS				\
-> -					_IOR(F2FS_IOCTL_MAGIC, 18, __u64)
-> -#define F2FS_IOC_RESERVE_COMPRESS_BLOCKS				\
-> -					_IOR(F2FS_IOCTL_MAGIC, 19, __u64)
-> -#define F2FS_IOC_SEC_TRIM_FILE		_IOW(F2FS_IOCTL_MAGIC, 20,	\
-> -						struct f2fs_sectrim_range)
-> -
-> -/*
-> - * should be same as XFS_IOC_GOINGDOWN.
-> - * Flags for going down operation used by FS_IOC_GOINGDOWN
-> - */
-> -#define F2FS_IOC_SHUTDOWN	_IOR('X', 125, __u32)	/* Shutdown */
-> -#define F2FS_GOING_DOWN_FULLSYNC	0x0	/* going down with full sync */
-> -#define F2FS_GOING_DOWN_METASYNC	0x1	/* going down with metadata */
-> -#define F2FS_GOING_DOWN_NOSYNC		0x2	/* going down */
-> -#define F2FS_GOING_DOWN_METAFLUSH	0x3	/* going down with meta flush */
-> -#define F2FS_GOING_DOWN_NEED_FSCK	0x4	/* going down to trigger fsck */
-> -
-> -/*
-> - * Flags used by F2FS_IOC_SEC_TRIM_FILE
-> - */
-> -#define F2FS_TRIM_FILE_DISCARD		0x1	/* send discard command */
-> -#define F2FS_TRIM_FILE_ZEROOUT		0x2	/* zero out */
-> -#define F2FS_TRIM_FILE_MASK		0x3
-> -
-> -struct f2fs_gc_range {
-> -	u32 sync;
-> -	u64 start;
-> -	u64 len;
-> -};
-> -
-> -struct f2fs_defragment {
-> -	u64 start;
-> -	u64 len;
-> -};
-> -
-> -struct f2fs_move_range {
-> -	u32 dst_fd;		/* destination fd */
-> -	u64 pos_in;		/* start position in src_fd */
-> -	u64 pos_out;		/* start position in dst_fd */
-> -	u64 len;		/* size to move */
-> -};
-> -
-> -struct f2fs_flush_device {
-> -	u32 dev_num;		/* device number to flush */
-> -	u32 segments;		/* # of segments to flush */
-> -};
-> -
-> -struct f2fs_sectrim_range {
-> -	u64 start;
-> -	u64 len;
-> -	u64 flags;
-> -};
-> -
->  /* for inline stuff */
->  #define DEF_INLINE_RESERVED_SIZE	1
->  static inline int get_extra_isize(struct inode *inode);
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index ee861c6d9ff0..d898f1e2764b 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -31,6 +31,7 @@
->  #include "gc.h"
->  #include "trace.h"
->  #include <trace/events/f2fs.h>
-> +#include <uapi/linux/f2fs.h>
->  
->  static vm_fault_t f2fs_filemap_fault(struct vm_fault *vmf)
->  {
-> diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-> index f8f1e85ff130..56b113e3cd6a 100644
-> --- a/include/trace/events/f2fs.h
-> +++ b/include/trace/events/f2fs.h
-> @@ -6,6 +6,7 @@
->  #define _TRACE_F2FS_H
->  
->  #include <linux/tracepoint.h>
-> +#include <uapi/linux/f2fs.h>
->  
->  #define show_dev(dev)		MAJOR(dev), MINOR(dev)
->  #define show_dev_ino(entry)	show_dev(entry->dev), (unsigned long)entry->ino
-> diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
-> new file mode 100644
-> index 000000000000..ad25786feaa1
-> --- /dev/null
-> +++ b/include/uapi/linux/f2fs.h
-> @@ -0,0 +1,86 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +#ifndef _UAPI_LINUX_F2FS_H
-> +#define _UAPI_LINUX_F2FS_H
-> +
-> +#include <linux/ioctl.h>
-> +
-> +/*
-> + * f2fs-specific ioctl commands
-> + */
-> +#define F2FS_IOCTL_MAGIC		0xf5
-> +#define F2FS_IOC_START_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 1)
-> +#define F2FS_IOC_COMMIT_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 2)
-> +#define F2FS_IOC_START_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 3)
-> +#define F2FS_IOC_RELEASE_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 4)
-> +#define F2FS_IOC_ABORT_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 5)
-> +#define F2FS_IOC_GARBAGE_COLLECT	_IOW(F2FS_IOCTL_MAGIC, 6, __u32)
-> +#define F2FS_IOC_WRITE_CHECKPOINT	_IO(F2FS_IOCTL_MAGIC, 7)
-> +#define F2FS_IOC_DEFRAGMENT		_IOWR(F2FS_IOCTL_MAGIC, 8,	\
-> +						struct f2fs_defragment)
-> +#define F2FS_IOC_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
-> +						struct f2fs_move_range)
-> +#define F2FS_IOC_FLUSH_DEVICE		_IOW(F2FS_IOCTL_MAGIC, 10,	\
-> +						struct f2fs_flush_device)
-> +#define F2FS_IOC_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,	\
-> +						struct f2fs_gc_range)
-> +#define F2FS_IOC_GET_FEATURES		_IOR(F2FS_IOCTL_MAGIC, 12, __u32)
-> +#define F2FS_IOC_SET_PIN_FILE		_IOW(F2FS_IOCTL_MAGIC, 13, __u32)
-> +#define F2FS_IOC_GET_PIN_FILE		_IOR(F2FS_IOCTL_MAGIC, 14, __u32)
-> +#define F2FS_IOC_PRECACHE_EXTENTS	_IO(F2FS_IOCTL_MAGIC, 15)
-> +#define F2FS_IOC_RESIZE_FS		_IOW(F2FS_IOCTL_MAGIC, 16, __u64)
-> +#define F2FS_IOC_GET_COMPRESS_BLOCKS	_IOR(F2FS_IOCTL_MAGIC, 17, __u64)
-> +#define F2FS_IOC_RELEASE_COMPRESS_BLOCKS				\
-> +					_IOR(F2FS_IOCTL_MAGIC, 18, __u64)
-> +#define F2FS_IOC_RESERVE_COMPRESS_BLOCKS				\
-> +					_IOR(F2FS_IOCTL_MAGIC, 19, __u64)
-> +#define F2FS_IOC_SEC_TRIM_FILE		_IOW(F2FS_IOCTL_MAGIC, 20,	\
-> +						struct f2fs_sectrim_range)
-> +
-> +/*
-> + * should be same as XFS_IOC_GOINGDOWN.
-> + * Flags for going down operation used by FS_IOC_GOINGDOWN
-> + */
-> +#define F2FS_IOC_SHUTDOWN	_IOR('X', 125, __u32)	/* Shutdown */
-> +#define F2FS_GOING_DOWN_FULLSYNC	0x0	/* going down with full sync */
-> +#define F2FS_GOING_DOWN_METASYNC	0x1	/* going down with metadata */
-> +#define F2FS_GOING_DOWN_NOSYNC		0x2	/* going down */
-> +#define F2FS_GOING_DOWN_METAFLUSH	0x3	/* going down with meta flush */
-> +#define F2FS_GOING_DOWN_NEED_FSCK	0x4	/* going down to trigger fsck */
-> +
-> +/*
-> + * Flags used by F2FS_IOC_SEC_TRIM_FILE
-> + */
-> +#define F2FS_TRIM_FILE_DISCARD		0x1	/* send discard command */
-> +#define F2FS_TRIM_FILE_ZEROOUT		0x2	/* zero out */
-> +#define F2FS_TRIM_FILE_MASK		0x3
-> +
-> +struct f2fs_gc_range {
-> +	u32 sync;
-> +	u64 start;
-> +	u64 len;
-> +};
-> +
-> +struct f2fs_defragment {
-> +	u64 start;
-> +	u64 len;
-> +};
-> +
-> +struct f2fs_move_range {
-> +	u32 dst_fd;		/* destination fd */
-> +	u64 pos_in;		/* start position in src_fd */
-> +	u64 pos_out;		/* start position in dst_fd */
-> +	u64 len;		/* size to move */
-> +};
-> +
-> +struct f2fs_flush_device {
-> +	u32 dev_num;		/* device number to flush */
-> +	u32 segments;		/* # of segments to flush */
-> +};
-> +
-> +struct f2fs_sectrim_range {
-> +	u64 start;
-> +	u64 len;
-> +	u64 flags;
-> +};
-> +
-> +#endif /* _UAPI_LINUX_F2FS_H */
-> -- 
-> 2.26.2
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+h8300                     edosk2674_defconfig
+powerpc                    klondike_defconfig
+sh                             espt_defconfig
+m68k                         amcore_defconfig
+arm                         s3c2410_defconfig
+sh                          rsk7203_defconfig
+powerpc                 mpc832x_rdb_defconfig
+mips                        omega2p_defconfig
+powerpc                     pseries_defconfig
+arc                        nsim_700_defconfig
+microblaze                          defconfig
+h8300                       h8s-sim_defconfig
+powerpc                    socrates_defconfig
+mips                      pistachio_defconfig
+sh                           se7619_defconfig
+mips                         cobalt_defconfig
+arm                            pleb_defconfig
+sh                           se7712_defconfig
+sparc                       sparc64_defconfig
+sh                           se7780_defconfig
+powerpc                      pcm030_defconfig
+m68k                          amiga_defconfig
+m68k                       m5249evb_defconfig
+powerpc                     sbc8548_defconfig
+mips                  decstation_64_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                     sequoia_defconfig
+powerpc                     tqm8555_defconfig
+arm                     am200epdkit_defconfig
+arm                          badge4_defconfig
+h8300                               defconfig
+mips                        qi_lb60_defconfig
+sh                              ul2_defconfig
+um                            kunit_defconfig
+openrisc                    or1ksim_defconfig
+arm                              alldefconfig
+arm                             pxa_defconfig
+powerpc                      chrp32_defconfig
+mips                           ip27_defconfig
+arm                          gemini_defconfig
+sh                           se7751_defconfig
+c6x                        evmc6472_defconfig
+arm                           corgi_defconfig
+sh                          kfr2r09_defconfig
+arm                      tct_hammer_defconfig
+xtensa                  audio_kc705_defconfig
+mips                      maltaaprp_defconfig
+nds32                               defconfig
+powerpc                        warp_defconfig
+sh                     sh7710voipgw_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                 mpc8315_rdb_defconfig
+openrisc                         alldefconfig
+powerpc                      walnut_defconfig
+arm                        mini2440_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                        clps711x_defconfig
+riscv                            allyesconfig
+powerpc                      cm5200_defconfig
+mips                           rs90_defconfig
+arm                        neponset_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+parisc                              defconfig
+s390                                defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                                defconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20201030
+x86_64               randconfig-a001-20201030
+x86_64               randconfig-a002-20201030
+x86_64               randconfig-a003-20201030
+x86_64               randconfig-a006-20201030
+x86_64               randconfig-a004-20201030
+i386                 randconfig-a005-20201030
+i386                 randconfig-a003-20201030
+i386                 randconfig-a002-20201030
+i386                 randconfig-a001-20201030
+i386                 randconfig-a006-20201030
+i386                 randconfig-a004-20201030
+i386                 randconfig-a011-20201030
+i386                 randconfig-a014-20201030
+i386                 randconfig-a015-20201030
+i386                 randconfig-a012-20201030
+i386                 randconfig-a013-20201030
+i386                 randconfig-a016-20201030
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20201030
+x86_64               randconfig-a014-20201030
+x86_64               randconfig-a015-20201030
+x86_64               randconfig-a016-20201030
+x86_64               randconfig-a011-20201030
+x86_64               randconfig-a012-20201030
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
