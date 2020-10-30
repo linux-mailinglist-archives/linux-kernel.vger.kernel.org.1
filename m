@@ -2,166 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB712A0186
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D1F2A018E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726263AbgJ3JgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:36:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726234AbgJ3JgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:36:04 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1726198AbgJ3JiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgJ3JiQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 05:38:16 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25362C0613CF;
+        Fri, 30 Oct 2020 02:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8P3Vd0fpshJOqllZKRjIxmlOR9P1zlE3yNvn6d8Tb0c=; b=ow+j+doFQFKOTYO6mUOHH+uVQe
+        sJ/TZpUx9VvDrKLEdFD0GYonbAaNfzKampSB5XLxiS3HzVvw4THJrNwIRcbeqnk1j8bFDOdTF5cL2
+        eANk2KVQY00hPDG2tJXjrPB4AbBOcI+8boP4EDYzIMP1OFlRzmwUd+wUyy/0UKV12SV2GuoAq3zo8
+        BNlr1ORh5ZhOYQB748C2AZw90vdlL2i1VxI1ITH9sYum4KcPNnrXcNj0alzegS/PwftneKi20epVC
+        OMP/K2S50euuJI1d8GaOlliM4MXL9EqDIhMYKecbzuJeZz2613bKuBaCia9ifqFugsBMOVWQbhDvu
+        Nhr6RvwQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kYQrH-000364-Vy; Fri, 30 Oct 2020 09:38:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D258B20729;
-        Fri, 30 Oct 2020 09:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604050563;
-        bh=RI7z3K7eILvFHncLjd3L3uO0NKeB7z7jOonFatnns4E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jjupfj7uAi6xD50ApETPH+RDl/DqR9IWX31gydQAN+juak3UAXmBpFxqJ4qNdlIIH
-         PTNSIGIW9lfZoJhPhlg9ZgBuEF654JofOlqoVHO72a0wM2WnWMA2dDlBBnOgaGPdKV
-         e64mpXI+w+P+l5x0Zkplne4q2eVYr+7vutj2adEY=
-Date:   Fri, 30 Oct 2020 10:36:51 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, vkoul@kernel.org,
-        vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
-        sanyog.r.kale@intel.com, mengdong.lin@intel.com,
-        bard.liao@intel.com
-Subject: Re: [PATCH v3] soundwire: SDCA: add helper macro to access controls
-Message-ID: <20201030093651.GA2080962@kroah.com>
-References: <20201029204955.8568-1-yung-chuan.liao@linux.intel.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A4E3D30015A;
+        Fri, 30 Oct 2020 10:38:06 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 792AB2B974BDE; Fri, 30 Oct 2020 10:38:06 +0100 (CET)
+Date:   Fri, 30 Oct 2020 10:38:06 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        tip-bot2 for Peter Zijlstra <tip-bot2@linutronix.de>,
+        Qian Cai <cai@redhat.com>, x86 <x86@kernel.org>
+Subject: Re: [tip: locking/core] lockdep: Fix usage_traceoverflow
+Message-ID: <20201030093806.GA2628@hirez.programming.kicks-ass.net>
+References: <160379817513.29534.880306651053124370@build.alporthouse.com>
+ <20201027115955.GA2611@hirez.programming.kicks-ass.net>
+ <20201027123056.GE2651@hirez.programming.kicks-ass.net>
+ <160380535006.10461.1259632375207276085@build.alporthouse.com>
+ <20201027154533.GB2611@hirez.programming.kicks-ass.net>
+ <160381649396.10461.15013696719989662769@build.alporthouse.com>
+ <160390684819.31966.12048967113267928793@build.alporthouse.com>
+ <20201028194208.GF2628@hirez.programming.kicks-ass.net>
+ <20201028195910.GI2651@hirez.programming.kicks-ass.net>
+ <20201030035118.GB855403@boqun-archlinux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201029204955.8568-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20201030035118.GB855403@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 04:49:55AM +0800, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Fri, Oct 30, 2020 at 11:51:18AM +0800, Boqun Feng wrote:
+> On Wed, Oct 28, 2020 at 08:59:10PM +0100, Peter Zijlstra wrote:
+
+> Sorry for the late response.
+
+No worries, glad you could have a look.
+
+> > So that's commit f611e8cf98ec ("lockdep: Take read/write status in
+> > consideration when generate chainkey") that did that.
+> > 
 > 
-> The upcoming SDCA (SoundWire Device Class Audio) specification defines
-> a hierarchical encoding to interface with Class-defined capabilities.
+> Yeah, I think that's related, howver ...
+
+It's the commit that made the chainkey depend on the read state, and
+thus introduced this connondrum.
+
+> > So validate_chain() requires the new chain_key, but can change ->read
+> > which then invalidates the chain_key we just calculated.
+> > 
+> > This happens when check_deadlock() returns 2, which only happens when:
+> > 
+> >   - next->read == 2 && ... ; however @hext is our @hlock, so that's
+> >     pointless
+> > 
 > 
-> The specification is not yet accessible to the general public but this
-> information is released with explicit permission from the MIPI Board
-> to avoid delays with SDCA support on Linux platforms.
+> I don't think we should return 2 (earlier) in this case anymore. Because
+> now we have recursive read deadlock detection, it's safe to add dep:
+> "prev -> next" in the dependency graph. I think we can just continue in
+> this case. Actually I think this is something I'm missing in my
+> recursive read detection patchset :-/
+
+Yes, I agree, this case should go. We now fully support recursive read
+depndencies per your recent work.
+
+> >   - when there's a nest_lock involved ; ww_mutex uses that !!!
+> > 
 > 
-> A block of 64 MBytes of register addresses are allocated to SDCA
-> controls, starting at address 0x40000000. The 26 LSBs which identify
-> individual controls are set based on the following variables:
+> That leaves check_deadlock() return 2 only if hlock is a nest_lock, and
+> ...
+
+> > @@ -3597,8 +3598,12 @@ static int validate_chain(struct task_struct *curr,
+> >  		 * building dependencies (just like we jump over
+> >  		 * trylock entries):
+> >  		 */
+> > -		if (ret == 2)
+> > +		if (ret == 2) {
+> >  			hlock->read = 2;
+> > +			*chain_key = iterate_chain_key(hlock->prev_chain_key, hlock_id(hlock));
 > 
-> - Function Number. An SCDA device can be split in up to 8 independent
->   Functions. Each of these Functions is described in the SDCA
->   specification, e.g. Smart Amplifier, Smart Microphone, Simple
->   Microphone, Jack codec, HID, etc.
+> If "ret == 2" means hlock is a a nest_lock, than we don't need the
+> "->read = 2" trick here and we don't need to update chain_key either.
+> We used to have this "->read = 2" only because we want to skip the
+> dependency adding step afterwards. So how about the following:
 > 
-> - Entity Number.  Within each Function,  an Entity is  an identifiable
->   block.  Up   to  127  Entities   are  connected  in   a  pre-defined
->   graph  (similar to  USB), with  Entity0 reserved  for Function-level
->   configurations.  In  contrast  to  USB, the  SDCA  spec  pre-defines
->   Function Types, topologies, and allowed  options, i.e. the degree of
->   freedom  is not  unlimited to  limit  the possibility  of errors  in
->   descriptors leading to software quirks.
-> 
-> - Control Selector. Within each Entity, the SDCA specification defines
->   48 controls such as Mute, Gain, AGC, etc, and 16 implementation
->   defined ones. Some Control Selectors might be used for low-level
->   platform setup, and other exposed to applications and users. Note
->   that the same Control Selector capability, e.g. Latency control,
->   might be located at different offsets in different entities, the
->   Control Selector mapping is Entity-specific.
-> 
-> - Control Number. Some Control Selectors allow channel-specific values
->   to be set, with up to 64 channels allowed. This is mostly used for
->   volume control.
-> 
-> - Current/Next values. Some Control Selectors are
->   'Dual-Ranked'. Software may either update the Current value directly
->   for immediate effect. Alternatively, software may write into the
->   'Next' values and update the SoundWire 1.2 'Commit Groups' register
->   to copy 'Next' values into 'Current' ones in a synchronized
->   manner. This is different from bank switching which is typically
->   used to change the bus configuration only.
-> 
-> - MBQ. the Multi-Byte Quantity bit is used to provide atomic updates
->   when accessing more that one byte, for example a 16-bit volume
->   control would be updated consistently, the intermediate values
->   mixing old MSB with new LSB are not applied.
-> 
-> These 6 parameters are used to build a 32-bit address to access the
-> desired Controls. Because of address range, paging is required, but
-> the most often used parameter values are placed in the lower 16 bits
-> of the address. This helps to keep the paging registers constant while
-> updating Controls for a specific Device/Function.
-> 
-> Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> ---
-> Changelog:
-> 
-> v2:
->  - add SDW_SDCA_MBQ_CTL
-> 
-> v3:
->  - add SDW_SDCA_NEXT_CTL
-> 
-> ---
->  include/linux/soundwire/sdw_registers.h | 32 +++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
-> index f420e8059779..e14dff9a9c7f 100644
-> --- a/include/linux/soundwire/sdw_registers.h
-> +++ b/include/linux/soundwire/sdw_registers.h
-> @@ -298,4 +298,36 @@
->  #define SDW_CASC_PORT_MASK_INTSTAT3		1
->  #define SDW_CASC_PORT_REG_OFFSET_INTSTAT3	2
+> It survived a lockdep selftest at boot time.
+
+Right, but our self-tests didn't trigger this problem to begin with, let
+me go try and create one that does.
+
+> ----------------------------->8
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> index 3e99dfef8408..b23ca6196561 100644
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -2765,7 +2765,7 @@ print_deadlock_bug(struct task_struct *curr, struct held_lock *prev,
+>   * (Note that this has to be done separately, because the graph cannot
+>   * detect such classes of deadlocks.)
+>   *
+> - * Returns: 0 on deadlock detected, 1 on OK, 2 on recursive read
+> + * Returns: 0 on deadlock detected, 1 on OK, 2 on nest_lock
+>   */
+>  static int
+>  check_deadlock(struct task_struct *curr, struct held_lock *next)
+> @@ -2788,7 +2788,7 @@ check_deadlock(struct task_struct *curr, struct held_lock *next)
+>  		 * lock class (i.e. read_lock(lock)+read_lock(lock)):
+>  		 */
+>  		if ((next->read == 2) && prev->read)
+> -			return 2;
+> +			continue;
 >  
-> +/*
-> + * v1.2 device - SDCA address mapping
-> + *
-> + * Spec definition
-> + *	Bits		Contents
-> + *	31		0 (required by addressing range)
-> + *	30:26		0b10000 (Control Prefix)
-> + *	25		0 (Reserved)
-> + *	24:22		Function Number [2:0]
-> + *	21		Entity[6]
-> + *	20:19		Control Selector[5:4]
-> + *	18		0 (Reserved)
-> + *	17:15		Control Number[5:3]
-> + *	14		Next
-> + *	13		MBQ
-> + *	12:7		Entity[5:0]
-> + *	6:3		Control Selector[3:0]
-> + *	2:0		Control Number[2:0]
-> + */
-> +
-> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |			\
-> +						 (((fun) & 0x7) << 22) |	\
-> +						 (((ent) & 0x40) << 15) |	\
-> +						 (((ent) & 0x3f) << 7) |	\
-> +						 (((ctl) & 0x30) << 15) |	\
-> +						 (((ctl) & 0x0f) << 3) |	\
-> +						 (((ch) & 0x38) << 12) |	\
-> +						 ((ch) & 0x07))
-> +
-> +#define SDW_SDCA_MBQ_CTL(reg)			((reg) | BIT(13))
-> +#define SDW_SDCA_NEXT_CTL(reg)			((reg) | BIT(14))
-> +
->  #endif /* __SDW_REGISTERS_H */
+>  		/*
+>  		 * We're holding the nest_lock, which serializes this lock's
+> @@ -3592,16 +3592,9 @@ static int validate_chain(struct task_struct *curr,
+>  
+>  		if (!ret)
+>  			return 0;
+> -		/*
+> -		 * Mark recursive read, as we jump over it when
+> -		 * building dependencies (just like we jump over
+> -		 * trylock entries):
+> -		 */
+> -		if (ret == 2)
+> -			hlock->read = 2;
+>  		/*
+>  		 * Add dependency only if this lock is not the head
+> -		 * of the chain, and if it's not a secondary read-lock:
+> +		 * of the chain, and if it's not a nest_lock:
+>  		 */
+>  		if (!chain_head && ret != 2) {
+>  			if (!check_prevs_add(curr, hlock))
 
+I'm not entirely sure that doesn't still trigger the problem. Consider
+@chain_head := true.
 
-No users of these macros?
-
+Anyway, let me go try and write this self-tests, maybe that'll get my
+snot-addled brains sufficiently aligned to make sense of all this :/
