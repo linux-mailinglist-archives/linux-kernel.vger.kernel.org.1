@@ -2,157 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDAC2A0355
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:53:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A69B2A035D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgJ3KxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57376 "EHLO
+        id S1726230AbgJ3KyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgJ3KxM (ORCPT
+        with ESMTP id S1725355AbgJ3KyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:53:12 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65220C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:53:12 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id l2so7336470lfk.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:53:12 -0700 (PDT)
+        Fri, 30 Oct 2020 06:54:22 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D744C0613CF;
+        Fri, 30 Oct 2020 03:54:22 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id k9so3179161pgt.9;
+        Fri, 30 Oct 2020 03:54:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RGxKu6N/ljpRrMPYO1GHJVR+cRftYgBFEsOMeaX+uIU=;
-        b=jZND6rDLmrO9spICzgJTCgUyIjDgF2iwHIqFMlTUr5c9lYncRHD31/x/7EQi8MjLrT
-         uCRhE0xLq1LIUI/SSr+wlB7wQUcMXvAaLBBVYkc80DlaSVmw2nlcyDEh7KQtFUjODJfH
-         QdvLS+s3ocJFBCsofDUuwLvK2t30YKuqtpn8w=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fMSeGp1Wk17h0gEzm4qf92gRlBGhqMgJVhPuakb3z+U=;
+        b=C8L7IsXbltfbu9jYTr0xP2iybawi7lXuw/pb80Ghesam8dh98Dc7G9xHWMhvI29f8/
+         LsUWHG/EtK7vhDNQJkCEN7Cx8YZADQOdIntlon5Onj9ohl0eYTWj55gxpU3ErwRnLM1I
+         O7i/zvrMnlUNEqq4yoG9BnpdLxw5mkSgjFQ5gsyuNhsykKyvygOSK0lE8d/edtTrUd7D
+         ImjlEhhDh465RJgCmWQ+dbe9w6syuoS8KL5PoqtcLjXuxBY7TxFxQ+wdTyOp2F5lmV3W
+         HXJ42nSmKs85UhIiK02O1MxjWXpiAsCxMxe8h4pFmX38VlNU+tabktM3+b9djSluZ+2C
+         Dtxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RGxKu6N/ljpRrMPYO1GHJVR+cRftYgBFEsOMeaX+uIU=;
-        b=Yth2dvxeoYFtgH3y/WwT99HcCRB8857b0p/4HX540xfW8PeRMZWO/hqSQij5/Iw+ay
-         xRqKXnSvhScn+ObP22Go7ZDymiRkqyRmhA9ybQzrUoj5JaWS/EJZmSo0ZzFz3ttm4/FN
-         ansnJRL/o7VEU8RITjoODFjVhyeoChk2RCanTnGyvXQWSeNqzh12BQQUa6vcoJSIq8Ve
-         o3CpZ4nMQB4WV4i8Ha/Hq5MrovacuNoR4NeDnLQ/ti7NitF6B78u64rKSyiw3VV6bXtp
-         H42qQtZQZYhYDiJo1kO0hn7YTlB88ncWuulCiV/JVbRD3inXICIw6aC3isk851Y9pv5E
-         UAbw==
-X-Gm-Message-State: AOAM531XAgrE71CWba9mddgTbnscLu2tQi4U9ywque2UKESd+ZsakLHA
-        oxn2bg2E0k3v1LLg7/pOmwzYyk5iVHV9GOcL7ZnzqQ==
-X-Google-Smtp-Source: ABdhPJyn8C/IW8kpR0WGiynCq34PNMOu9BFU7lnVDmeeTtH6KSiBOtCcj00bW85p7RR18fFKc7htyMPhRGrh8t1bYY4=
-X-Received: by 2002:a19:c80a:: with SMTP id y10mr736934lff.329.1604055190871;
- Fri, 30 Oct 2020 03:53:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fMSeGp1Wk17h0gEzm4qf92gRlBGhqMgJVhPuakb3z+U=;
+        b=J6bVLFM47ru9f/S+bshD7TxKZFGXfLMkQ66zRORX0c9nPFEBqk45Ucx25Ms8ZzEhbi
+         yEl0HOH3UD0s0vL4GZBUzsdOTU0cwMN9P9v+p1XpyXpO3cp+EvaWjtVCaZRGgWs+Uef/
+         HO7shfhG7qRsGzI/x0iaQlBLa7WeX1caykaMqxMo00/rDGU/oWlG4R1OkrZpbpTPw3+r
+         2cVBuvJJCnhOZ0WNUYJJFSl0XTXgWfU4S8Q8XIFtC0cYanRcwi80THaCrPLFpzx076wy
+         7AnTF04Ao1oqkeUtjeeW7Z+hrDh4O0qwvYZXEmyos74AQEX2Nap4UawB94PMXSTf2jke
+         o+0Q==
+X-Gm-Message-State: AOAM532AFVTqceUBWH2LnF1sIeGsQHPowVuvCmODp7P4cacetdtrBqFh
+        1TwTBzlcVcnJypDIm7NA5a4=
+X-Google-Smtp-Source: ABdhPJzNy5/ZfqYTjyTB/QNEf6dyVobLovPABegJ0saOhSIvexPUVOJS6mlR02J3SvE3YXQNAURb4Q==
+X-Received: by 2002:a63:1a64:: with SMTP id a36mr1684793pgm.153.1604055261800;
+        Fri, 30 Oct 2020 03:54:21 -0700 (PDT)
+Received: from Thinkpad ([45.118.167.197])
+        by smtp.gmail.com with ESMTPSA id t11sm2897078pjs.8.2020.10.30.03.54.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 03:54:20 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 16:24:13 +0530
+From:   Anmol Karn <anmol.karan123@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     ralf@linux-mips.org, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        syzbot+a1c743815982d9496393@syzkaller.appspotmail.com,
+        linux-hams@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [Linux-kernel-mentees] [PATCH] net: rose: Fix Null pointer
+ dereference in rose_send_frame()
+Message-ID: <20201030105413.GA32091@Thinkpad>
+References: <20201015001712.72976-1-anmol.karan123@gmail.com>
+ <20201015051225.GA404970@kroah.com>
+ <20201015141012.GB77038@Thinkpad>
+ <20201015155051.GB66528@kroah.com>
 MIME-Version: 1.0
-References: <20201027170317.2011119-1-kpsingh@chromium.org>
- <20201027170317.2011119-2-kpsingh@chromium.org> <20201028011321.4yu62347lfzisxwy@kafai-mbp>
-In-Reply-To: <20201028011321.4yu62347lfzisxwy@kafai-mbp>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Fri, 30 Oct 2020 11:53:00 +0100
-Message-ID: <CACYkzJ5VU2Pd2ZiY7AKJM0yZ2NsDbQOu1Y_FYwkBv6M6NFvkcw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] bpf: Implement task local storage
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015155051.GB66528@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for taking a look!
+On Thu, Oct 15, 2020 at 05:50:51PM +0200, Greg KH wrote:
+> On Thu, Oct 15, 2020 at 07:40:12PM +0530, Anmol Karn wrote:
+> > On Thu, Oct 15, 2020 at 07:12:25AM +0200, Greg KH wrote:
+> > > On Thu, Oct 15, 2020 at 05:47:12AM +0530, Anmol Karn wrote:
+> > > > In rose_send_frame(), when comparing two ax.25 addresses, it assigns rose_call to 
+> > > > either global ROSE callsign or default port, but when the former block triggers and 
+> > > > rose_call is assigned by (ax25_address *)neigh->dev->dev_addr, a NULL pointer is 
+> > > > dereferenced by 'neigh' when dereferencing 'dev'.
+> > > > 
+> > > > - net/rose/rose_link.c
+> > > > This bug seems to get triggered in this line:
+> > > > 
+> > > > rose_call = (ax25_address *)neigh->dev->dev_addr;
+> > > > 
+> > > > Prevent it by checking NULL condition for neigh->dev before comparing addressed for 
+> > > > rose_call initialization.
+> > > > 
+> > > > Reported-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com 
+> > > > Link: https://syzkaller.appspot.com/bug?id=9d2a7ca8c7f2e4b682c97578dfa3f236258300b3 
+> > > > Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+> > > > ---
+> > > > I am bit sceptical about the error return code, please suggest if anything else is 
+> > > > appropriate in place of '-ENODEV'.
+> > > > 
+> > > >  net/rose/rose_link.c | 3 +++
+> > > >  1 file changed, 3 insertions(+)
+> > > > 
+> > > > diff --git a/net/rose/rose_link.c b/net/rose/rose_link.c
+> > > > index f6102e6f5161..92ea6a31d575 100644
+> > > > --- a/net/rose/rose_link.c
+> > > > +++ b/net/rose/rose_link.c
+> > > > @@ -97,6 +97,9 @@ static int rose_send_frame(struct sk_buff *skb, struct rose_neigh *neigh)
+> > > >  	ax25_address *rose_call;
+> > > >  	ax25_cb *ax25s;
+> > > >  
+> > > > +	if (!neigh->dev)
+> > > > +		return -ENODEV;
+> > > 
+> > > How can ->dev not be set at this point in time?  Shouldn't that be
+> > > fixed, because it could change right after you check this, right?
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > 
+> > Hello Sir,
+> > 
+> > Thanks for the review,
+> > After following the call trace i thought, if neigh->dev is NULL it should
+> > be checked, but I will figure out what is going on with the crash reproducer,
+> > and I think rose_loopback_timer() is the place where problem started. 
+> > 
+> > Also, I have created a diff for checking neigh->dev before assigning ROSE callsign
+> > , please give your suggestions on this.
+> > 
+> > 
+> > diff --git a/net/rose/rose_link.c b/net/rose/rose_link.c
+> > index f6102e6f5161..2ddd5e559442 100644
+> > --- a/net/rose/rose_link.c
+> > +++ b/net/rose/rose_link.c
+> > @@ -97,10 +97,14 @@ static int rose_send_frame(struct sk_buff *skb, struct rose_neigh *neigh)
+> >         ax25_address *rose_call;
+> >         ax25_cb *ax25s;
+> >  
+> > -       if (ax25cmp(&rose_callsign, &null_ax25_address) == 0)
+> > -               rose_call = (ax25_address *)neigh->dev->dev_addr;
+> > -       else
+> > -               rose_call = &rose_callsign;
+> > +       if (neigh->dev) {
+> > +               if (ax25cmp(&rose_callsign, &null_ax25_address) == 0)
+> > +                       rose_call = (ax25_address *)neigh->dev->dev_addr;
+> > +               else
+> > +                       rose_call = &rose_callsign;
+> > +       } else {
+> > +               return -ENODEV;
+> > +       }
+> 
+> The point I am trying to make is that if someone else is setting ->dev
+> to NULL in some other thread/context/whatever, while this is running,
+> checking for it like this will not work.
+> 
+> What is the lifetime rules of that pointer?  Who initializes it, and who
+> sets it to NULL.  Figure that out first please to determine how to check
+> for this properly.
+> 
+> thanks,
+> 
+> greg k-h
 
-On Wed, Oct 28, 2020 at 2:13 AM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Tue, Oct 27, 2020 at 06:03:13PM +0100, KP Singh wrote:
-> [ ... ]
->
-> > diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.c
-> > new file mode 100644
-> > index 000000000000..774140c458cc
-> > --- /dev/null
-> > +++ b/kernel/bpf/bpf_task_storage.c
-> > @@ -0,0 +1,327 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (c) 2019 Facebook
-> > + * Copyright 2020 Google LLC.
-> > + */
-> > +
-> > +#include "linux/pid.h"
-> > +#include "linux/sched.h"
-> > +#include <linux/rculist.h>
-> > +#include <linux/list.h>
-> > +#include <linux/hash.h>
-> > +#include <linux/types.h>
-> > +#include <linux/spinlock.h>
-> > +#include <linux/bpf.h>
-> > +#include <linux/bpf_local_storage.h>
-> > +#include <net/sock.h>
-> Is this required?
+Hello All,
 
-Nope. Removed.
+I investigated further on this,
 
->
-> > +#include <uapi/linux/sock_diag.h>
-> > +#include <uapi/linux/btf.h>
-> > +#include <linux/bpf_lsm.h>
-> > +#include <linux/btf_ids.h>
-> > +#include <linux/fdtable.h>
-> > +
-> > +DEFINE_BPF_STORAGE_CACHE(task_cache);
-> > +
-> > +static struct bpf_local_storage __rcu **task_storage_ptr(void *owner)
+Here is some things i noticed:
 
-[...]
+When I followed the call trace,
 
-> > +             err = -EBADF;
-> > +             goto out_fput;
-> > +     }
-> > +
-> > +     pid = get_pid(f->private_data);
-> n00b question. Is get_pid(f->private_data) required?
-> f->private_data could be freed while holding f->f_count?
+[ 84.241331][ C3] Call Trace:
+[ 84.241331][ C3] rose_transmit_clear_request ($SOURCE/net/rose/rose_link.c:255)
+[ 84.241331][ C3] ? lockdep_hardirqs_on ($SOURCE/kernel/locking/lockdep.c:4161)
+[ 84.241331][ C3] rose_rx_call_request ($SOURCE/net/rose/af_rose.c:999)
+[ 84.241331][ C3] ? rose_release ($SOURCE/net/rose/af_rose.c:970)
+[ 84.241331][ C3] rose_loopback_timer ($SOURCE/net/rose/rose_loopback.c:100)
+[ 84.241331][ C3] ? rose_transmit_link ($SOURCE/net/rose/rose_loopback.c:60)
 
-I would assume that holding a reference to the file should also
-keep the private_data alive but I was not sure so I grabbed the
-extra reference.
+in the rose_send_frame() it dereferenced `neigh->dev` when called from 
+rose_transmit_clear_request(), and the first occurance of the `neigh`
+is in rose_loopback_timer() as `rose_loopback_neigh`, and it is initialized 
+in rose_add_loopback_neighh() as NULL.
 
->
-> > +     task = get_pid_task(pid, PIDTYPE_PID);
-> Should put_task_struct() be called before returning?
+- net/rose/rose_route.c:381
 
-If we keep using get_pid_task then, yes, I see it grabs a reference to the task.
-We could also call pid_task under rcu locks but it might be cleaner to
-just get_pid_task
-and put_task_struct().
+void rose_add_loopback_neigh(void)
+{
+	struct rose_neigh *sn;
 
->
-> > +     if (!task || !task_storage_ptr(task)) {
-> "!task_storage_ptr(task)" is unnecessary, task_storage_lookup() should
-> have taken care of it.
->
->
-> > +             err = -ENOENT;
-> > +             goto out;
-> > +     }
-> > +
-> > +     sdata = task_storage_lookup(task, map, true);
-> > +     put_pid(pid);
+	rose_loopback_neigh = kmalloc(sizeof(struct rose_neigh), GFP_KERNEL);
+	if (!rose_loopback_neigh)
+		return;
+	sn = rose_loopback_neigh;
 
-[...]
+	sn->callsign  = null_ax25_address;
+	sn->digipeat  = NULL;
+	sn->ax25      = NULL;
+	sn->dev       = NULL;
+	^^^^^^^^^^^^^^^^^^^^^
 
-> > +     .map_lookup_elem = bpf_pid_task_storage_lookup_elem,
-> > +     .map_update_elem = bpf_pid_task_storage_update_elem,
-> > +     .map_delete_elem = bpf_pid_task_storage_delete_elem,
-> Please exercise the syscall use cases also in the selftest.
+i.e when `rose_loopback_neigh` used in rose_loopback_timer() its `->dev` was
+still NULL and rose_loopback_timer() was calling rose_rx_call_request() 
+without checking for NULL.
 
-Will do. Thanks for the nudge :)
 
->
-> > +     .map_check_btf = bpf_local_storage_map_check_btf,
-> > +     .map_btf_name = "bpf_local_storage_map",
-> > +     .map_btf_id = &task_storage_map_btf_id,
-> > +     .map_owner_storage_ptr = task_storage_ptr,
-> > +};
-> > +
+I have created the following patch to check for NULL pointer.
+
+diff --git a/net/rose/rose_loopback.c b/net/rose/rose_loopback.c
+index 7b094275ea8b..cd7774cb1d07 100644
+--- a/net/rose/rose_loopback.c
++++ b/net/rose/rose_loopback.c
+@@ -96,7 +96,7 @@ static void rose_loopback_timer(struct timer_list *unused)
+                }
+ 
+                if (frametype == ROSE_CALL_REQUEST) {
+-                       if ((dev = rose_dev_get(dest)) != NULL) {
++                       if (rose_loopback_neigh->dev && (dev = rose_dev_get(dest)) != NULL) {
+                                if (rose_rx_call_request(skb, dev, rose_loopback_neigh, lci_o) == 0)
+                                        kfree_skb(skb);
+                        } else {
+
+
+
+Please, review it and give me suggestions whether i am going right or not.
+
+
+Thanks,
+Anmol
