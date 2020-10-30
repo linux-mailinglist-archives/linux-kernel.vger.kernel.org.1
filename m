@@ -2,274 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6250929FBFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2443129FC04
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725963AbgJ3DHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 23:07:11 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7102 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3DHL (ORCPT
+        id S1726185AbgJ3DHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 23:07:40 -0400
+Received: from smtprelay0170.hostedemail.com ([216.40.44.170]:45330 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725780AbgJ3DHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 23:07:11 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CMnKT53MrzLnsn;
-        Fri, 30 Oct 2020 11:07:09 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 30 Oct 2020 11:07:01 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: move ioctl interface definitions to separated file
-Date:   Fri, 30 Oct 2020 11:06:56 +0800
-Message-ID: <20201030030656.29098-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 29 Oct 2020 23:07:40 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id DD427629;
+        Fri, 30 Oct 2020 03:07:37 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:1:2:41:334:355:368:369:379:541:800:960:967:968:973:988:989:1260:1311:1314:1345:1437:1515:1605:1730:1747:1777:1792:1801:1981:2194:2198:2199:2200:2393:2525:2561:2564:2682:2685:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3865:3866:3867:3868:3870:3872:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4052:4250:4321:4419:4605:5007:6119:6261:6691:6737:6742:7903:7904:8603:9025:9149:10004:10848:11026:11232:11473:11657:11658:11914:12043:12048:12296:12297:12438:12555:12895:12986:13894:13972:14394:21080:21433:21451:21627:30029:30054:30089,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: rain79_4f07ec327292
+X-Filterd-Recvd-Size: 11188
+Received: from joe-laptop.perches.com (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 30 Oct 2020 03:07:34 +0000 (UTC)
+From:   Joe Perches <joe@perches.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org,
+        linux-mm@kvack.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] treewide: Remove stringification from __alias macro definition
+Date:   Thu, 29 Oct 2020 20:07:31 -0700
+Message-Id: <8451df41359b52f048780d19e07b6fa4445b6392.1604026698.git.joe@perches.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like other filesystem does, we introduce a new file f2fs.h in path of
-include/uapi/linux/, and move f2fs-specified ioctl interface definitions
-to that file, after then, in order to use those definitions, userspace
-developer only need to include the new header file rather than
-copy & paste definitions from fs/f2fs/f2fs.h.
+Like the old __section macro, the __alias macro uses macro # stringification
+to create quotes around the symbol name used in the __attribute__.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
+This can cause differences between gcc and clang when the stringification
+itself contains a quote character.  So avoid these differences by always
+using quotes to define the aliased symbol.
+
+Remove the stringification and add quotes and when necessary a stringification
+when existing uses have a ## concatenation.
+
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
- MAINTAINERS                 |  1 +
- fs/f2fs/f2fs.h              | 79 ----------------------------------
- fs/f2fs/file.c              |  1 +
- include/trace/events/f2fs.h |  1 +
- include/uapi/linux/f2fs.h   | 86 +++++++++++++++++++++++++++++++++++++
- 5 files changed, 89 insertions(+), 79 deletions(-)
- create mode 100644 include/uapi/linux/f2fs.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d1d4e49a695a..b79a911f1e32 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6686,6 +6686,7 @@ F:	Documentation/filesystems/f2fs.rst
- F:	fs/f2fs/
- F:	include/linux/f2fs_fs.h
- F:	include/trace/events/f2fs.h
-+F:	include/uapi/linux/f2fs.h
- 
- F71805F HARDWARE MONITORING DRIVER
- M:	Jean Delvare <jdelvare@suse.com>
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 4629b5291cb7..c23d60941af7 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -403,85 +403,6 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
- 	return size <= MAX_SIT_JENTRIES(journal);
+Unlike the __section macro conversion in commit 33def8498fdd
+("treewide: Convert macro and uses of __section(foo) to __section("foo")")
+this one was done by hand.
+
+No other use of __alias exists in the kernel.
+
+This patch does _not_ convert any uses of __attribute__((alias("<foo>")))
+so it should not cause any compilation issues.
+
+ arch/x86/boot/compressed/string.c       |  6 +++---
+ arch/x86/include/asm/syscall_wrapper.h  |  2 +-
+ drivers/firmware/efi/runtime-wrappers.c |  2 +-
+ include/linux/compiler_attributes.h     |  2 +-
+ kernel/kcsan/core.c                     | 10 +++++-----
+ lib/crc32.c                             |  4 ++--
+ lib/crypto/aes.c                        |  4 ++--
+ mm/kasan/generic.c                      |  8 ++++----
+ 8 files changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/arch/x86/boot/compressed/string.c b/arch/x86/boot/compressed/string.c
+index 81fc1eaa3229..d38b122f51ef 100644
+--- a/arch/x86/boot/compressed/string.c
++++ b/arch/x86/boot/compressed/string.c
+@@ -75,7 +75,7 @@ void *memcpy(void *dest, const void *src, size_t n)
  }
  
--/*
-- * f2fs-specific ioctl commands
-- */
--#define F2FS_IOCTL_MAGIC		0xf5
--#define F2FS_IOC_START_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 1)
--#define F2FS_IOC_COMMIT_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 2)
--#define F2FS_IOC_START_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 3)
--#define F2FS_IOC_RELEASE_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 4)
--#define F2FS_IOC_ABORT_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 5)
--#define F2FS_IOC_GARBAGE_COLLECT	_IOW(F2FS_IOCTL_MAGIC, 6, __u32)
--#define F2FS_IOC_WRITE_CHECKPOINT	_IO(F2FS_IOCTL_MAGIC, 7)
--#define F2FS_IOC_DEFRAGMENT		_IOWR(F2FS_IOCTL_MAGIC, 8,	\
--						struct f2fs_defragment)
--#define F2FS_IOC_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
--						struct f2fs_move_range)
--#define F2FS_IOC_FLUSH_DEVICE		_IOW(F2FS_IOCTL_MAGIC, 10,	\
--						struct f2fs_flush_device)
--#define F2FS_IOC_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,	\
--						struct f2fs_gc_range)
--#define F2FS_IOC_GET_FEATURES		_IOR(F2FS_IOCTL_MAGIC, 12, __u32)
--#define F2FS_IOC_SET_PIN_FILE		_IOW(F2FS_IOCTL_MAGIC, 13, __u32)
--#define F2FS_IOC_GET_PIN_FILE		_IOR(F2FS_IOCTL_MAGIC, 14, __u32)
--#define F2FS_IOC_PRECACHE_EXTENTS	_IO(F2FS_IOCTL_MAGIC, 15)
--#define F2FS_IOC_RESIZE_FS		_IOW(F2FS_IOCTL_MAGIC, 16, __u64)
--#define F2FS_IOC_GET_COMPRESS_BLOCKS	_IOR(F2FS_IOCTL_MAGIC, 17, __u64)
--#define F2FS_IOC_RELEASE_COMPRESS_BLOCKS				\
--					_IOR(F2FS_IOCTL_MAGIC, 18, __u64)
--#define F2FS_IOC_RESERVE_COMPRESS_BLOCKS				\
--					_IOR(F2FS_IOCTL_MAGIC, 19, __u64)
--#define F2FS_IOC_SEC_TRIM_FILE		_IOW(F2FS_IOCTL_MAGIC, 20,	\
--						struct f2fs_sectrim_range)
--
--/*
-- * should be same as XFS_IOC_GOINGDOWN.
-- * Flags for going down operation used by FS_IOC_GOINGDOWN
-- */
--#define F2FS_IOC_SHUTDOWN	_IOR('X', 125, __u32)	/* Shutdown */
--#define F2FS_GOING_DOWN_FULLSYNC	0x0	/* going down with full sync */
--#define F2FS_GOING_DOWN_METASYNC	0x1	/* going down with metadata */
--#define F2FS_GOING_DOWN_NOSYNC		0x2	/* going down */
--#define F2FS_GOING_DOWN_METAFLUSH	0x3	/* going down with meta flush */
--#define F2FS_GOING_DOWN_NEED_FSCK	0x4	/* going down to trigger fsck */
--
--/*
-- * Flags used by F2FS_IOC_SEC_TRIM_FILE
-- */
--#define F2FS_TRIM_FILE_DISCARD		0x1	/* send discard command */
--#define F2FS_TRIM_FILE_ZEROOUT		0x2	/* zero out */
--#define F2FS_TRIM_FILE_MASK		0x3
--
--struct f2fs_gc_range {
--	u32 sync;
--	u64 start;
--	u64 len;
--};
--
--struct f2fs_defragment {
--	u64 start;
--	u64 len;
--};
--
--struct f2fs_move_range {
--	u32 dst_fd;		/* destination fd */
--	u64 pos_in;		/* start position in src_fd */
--	u64 pos_out;		/* start position in dst_fd */
--	u64 len;		/* size to move */
--};
--
--struct f2fs_flush_device {
--	u32 dev_num;		/* device number to flush */
--	u32 segments;		/* # of segments to flush */
--};
--
--struct f2fs_sectrim_range {
--	u64 start;
--	u64 len;
--	u64 flags;
--};
--
- /* for inline stuff */
- #define DEF_INLINE_RESERVED_SIZE	1
- static inline int get_extra_isize(struct inode *inode);
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index ee861c6d9ff0..d898f1e2764b 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -31,6 +31,7 @@
- #include "gc.h"
- #include "trace.h"
- #include <trace/events/f2fs.h>
-+#include <uapi/linux/f2fs.h>
+ #ifdef CONFIG_KASAN
+-extern void *__memset(void *s, int c, size_t n) __alias(memset);
+-extern void *__memmove(void *dest, const void *src, size_t n) __alias(memmove);
+-extern void *__memcpy(void *dest, const void *src, size_t n) __alias(memcpy);
++extern void *__memset(void *s, int c, size_t n) __alias("memset");
++extern void *__memmove(void *dest, const void *src, size_t n) __alias("memmove");
++extern void *__memcpy(void *dest, const void *src, size_t n) __alias("memcpy");
+ #endif
+diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+index a84333adeef2..f19d1bbbff3d 100644
+--- a/arch/x86/include/asm/syscall_wrapper.h
++++ b/arch/x86/include/asm/syscall_wrapper.h
+@@ -69,7 +69,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+ 	long __##abi##_##name(const struct pt_regs *regs);		\
+ 	ALLOW_ERROR_INJECTION(__##abi##_##name, ERRNO);			\
+ 	long __##abi##_##name(const struct pt_regs *regs)		\
+-		__alias(__do_##name);
++		__alias("__do_" #name);
  
- static vm_fault_t f2fs_filemap_fault(struct vm_fault *vmf)
- {
-diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-index f8f1e85ff130..56b113e3cd6a 100644
---- a/include/trace/events/f2fs.h
-+++ b/include/trace/events/f2fs.h
-@@ -6,6 +6,7 @@
- #define _TRACE_F2FS_H
+ #define __SYS_STUBx(abi, name, ...)					\
+ 	long __##abi##_##name(const struct pt_regs *regs);		\
+diff --git a/drivers/firmware/efi/runtime-wrappers.c b/drivers/firmware/efi/runtime-wrappers.c
+index 1410beaef5c3..14e380ac65d4 100644
+--- a/drivers/firmware/efi/runtime-wrappers.c
++++ b/drivers/firmware/efi/runtime-wrappers.c
+@@ -162,7 +162,7 @@ static DEFINE_SEMAPHORE(efi_runtime_lock);
+  * Expose the EFI runtime lock to the UV platform
+  */
+ #ifdef CONFIG_X86_UV
+-extern struct semaphore __efi_uv_runtime_lock __alias(efi_runtime_lock);
++extern struct semaphore __efi_uv_runtime_lock __alias("efi_runtime_lock");
+ #endif
  
- #include <linux/tracepoint.h>
-+#include <uapi/linux/f2fs.h>
+ /*
+diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+index ea7b756b1c8f..4819512c9abd 100644
+--- a/include/linux/compiler_attributes.h
++++ b/include/linux/compiler_attributes.h
+@@ -42,7 +42,7 @@
+ /*
+  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-alias-function-attribute
+  */
+-#define __alias(symbol)                 __attribute__((__alias__(#symbol)))
++#define __alias(symbol)                 __attribute__((__alias__(symbol)))
  
- #define show_dev(dev)		MAJOR(dev), MINOR(dev)
- #define show_dev_ino(entry)	show_dev(entry->dev), (unsigned long)entry->ino
-diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
-new file mode 100644
-index 000000000000..27f7477021e0
---- /dev/null
-+++ b/include/uapi/linux/f2fs.h
-@@ -0,0 +1,86 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _UAPI_LINUX_F2FS_H
-+#define _UAPI_LINUX_F2FS_H
-+
-+#include <linux/ioctl.h>
-+
-+/*
-+ * f2fs-specific ioctl commands
-+ */
-+#define F2FS_IOCTL_MAGIC		0xf5
-+#define F2FS_IOC_START_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 1)
-+#define F2FS_IOC_COMMIT_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 2)
-+#define F2FS_IOC_START_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 3)
-+#define F2FS_IOC_RELEASE_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 4)
-+#define F2FS_IOC_ABORT_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 5)
-+#define F2FS_IOC_GARBAGE_COLLECT	_IOW(F2FS_IOCTL_MAGIC, 6, __u32)
-+#define F2FS_IOC_WRITE_CHECKPOINT	_IO(F2FS_IOCTL_MAGIC, 7)
-+#define F2FS_IOC_DEFRAGMENT		_IOWR(F2FS_IOCTL_MAGIC, 8,	\
-+						struct f2fs_defragment)
-+#define F2FS_IOC_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
-+						struct f2fs_move_range)
-+#define F2FS_IOC_FLUSH_DEVICE		_IOW(F2FS_IOCTL_MAGIC, 10,	\
-+						struct f2fs_flush_device)
-+#define F2FS_IOC_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,	\
-+						struct f2fs_gc_range)
-+#define F2FS_IOC_GET_FEATURES		_IOR(F2FS_IOCTL_MAGIC, 12, __u32)
-+#define F2FS_IOC_SET_PIN_FILE		_IOW(F2FS_IOCTL_MAGIC, 13, __u32)
-+#define F2FS_IOC_GET_PIN_FILE		_IOR(F2FS_IOCTL_MAGIC, 14, __u32)
-+#define F2FS_IOC_PRECACHE_EXTENTS	_IO(F2FS_IOCTL_MAGIC, 15)
-+#define F2FS_IOC_RESIZE_FS		_IOW(F2FS_IOCTL_MAGIC, 16, __u64)
-+#define F2FS_IOC_GET_COMPRESS_BLOCKS	_IOR(F2FS_IOCTL_MAGIC, 17, __u64)
-+#define F2FS_IOC_RELEASE_COMPRESS_BLOCKS				\
-+					_IOR(F2FS_IOCTL_MAGIC, 18, __u64)
-+#define F2FS_IOC_RESERVE_COMPRESS_BLOCKS				\
-+					_IOR(F2FS_IOCTL_MAGIC, 19, __u64)
-+#define F2FS_IOC_SEC_TRIM_FILE		_IOW(F2FS_IOCTL_MAGIC, 20,	\
-+						struct f2fs_sectrim_range)
-+
-+/*
-+ * should be same as XFS_IOC_GOINGDOWN.
-+ * Flags for going down operation used by FS_IOC_GOINGDOWN
-+ */
-+#define F2FS_IOC_SHUTDOWN	_IOR('X', 125, __u32)	/* Shutdown */
-+#define F2FS_GOING_DOWN_FULLSYNC	0x0	/* going down with full sync */
-+#define F2FS_GOING_DOWN_METASYNC	0x1	/* going down with metadata */
-+#define F2FS_GOING_DOWN_NOSYNC		0x2	/* going down */
-+#define F2FS_GOING_DOWN_METAFLUSH	0x3	/* going down with meta flush */
-+#define F2FS_GOING_DOWN_NEED_FSCK	0x4	/* going down to trigger fsck */
-+
-+/*
-+ * Flags used by F2FS_IOC_SEC_TRIM_FILE
-+ */
-+#define F2FS_TRIM_FILE_DISCARD		0x1	/* send discard command */
-+#define F2FS_TRIM_FILE_ZEROOUT		0x2	/* zero out */
-+#define F2FS_TRIM_FILE_MASK		0x3
-+
-+struct f2fs_gc_range {
-+	u32 sync;
-+	u64 start;
-+	u64 len;
-+};
-+
-+struct f2fs_defragment {
-+	u64 start;
-+	u64 len;
-+};
-+
-+struct f2fs_move_range {
-+	u32 dst_fd;		/* destination fd */
-+	u64 pos_in;		/* start position in src_fd */
-+	u64 pos_out;		/* start position in dst_fd */
-+	u64 len;		/* size to move */
-+};
-+
-+struct f2fs_flush_device {
-+	u32 dev_num;		/* device number to flush */
-+	u32 segments;		/* # of segments to flush */
-+};
-+
-+struct f2fs_sectrim_range {
-+	u64 start;
-+	u64 len;
-+	u64 flags;
-+};
-+
-+#endif /* _UAPI_LINUX_F2FS_H */
+ /*
+  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-aligned-function-attribute
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index 3994a217bde7..465f6cfc317c 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -814,7 +814,7 @@ EXPORT_SYMBOL(__kcsan_check_access);
+ 	}                                                                      \
+ 	EXPORT_SYMBOL(__tsan_read##size);                                      \
+ 	void __tsan_unaligned_read##size(void *ptr)                            \
+-		__alias(__tsan_read##size);                                    \
++		__alias("__tsan_read" #size);                                  \
+ 	EXPORT_SYMBOL(__tsan_unaligned_read##size);                            \
+ 	void __tsan_write##size(void *ptr);                                    \
+ 	void __tsan_write##size(void *ptr)                                     \
+@@ -823,7 +823,7 @@ EXPORT_SYMBOL(__kcsan_check_access);
+ 	}                                                                      \
+ 	EXPORT_SYMBOL(__tsan_write##size);                                     \
+ 	void __tsan_unaligned_write##size(void *ptr)                           \
+-		__alias(__tsan_write##size);                                   \
++		__alias("__tsan_write" #size);                                 \
+ 	EXPORT_SYMBOL(__tsan_unaligned_write##size);                           \
+ 	void __tsan_read_write##size(void *ptr);                               \
+ 	void __tsan_read_write##size(void *ptr)                                \
+@@ -833,7 +833,7 @@ EXPORT_SYMBOL(__kcsan_check_access);
+ 	}                                                                      \
+ 	EXPORT_SYMBOL(__tsan_read_write##size);                                \
+ 	void __tsan_unaligned_read_write##size(void *ptr)                      \
+-		__alias(__tsan_read_write##size);                              \
++		__alias("__tsan_read_write" #size);                            \
+ 	EXPORT_SYMBOL(__tsan_unaligned_read_write##size)
+ 
+ DEFINE_TSAN_READ_WRITE(1);
+@@ -877,7 +877,7 @@ EXPORT_SYMBOL(__tsan_write_range);
+ 	}                                                                      \
+ 	EXPORT_SYMBOL(__tsan_volatile_read##size);                             \
+ 	void __tsan_unaligned_volatile_read##size(void *ptr)                   \
+-		__alias(__tsan_volatile_read##size);                           \
++		__alias("__tsan_volatile_read" #size);                         \
+ 	EXPORT_SYMBOL(__tsan_unaligned_volatile_read##size);                   \
+ 	void __tsan_volatile_write##size(void *ptr);                           \
+ 	void __tsan_volatile_write##size(void *ptr)                            \
+@@ -892,7 +892,7 @@ EXPORT_SYMBOL(__tsan_write_range);
+ 	}                                                                      \
+ 	EXPORT_SYMBOL(__tsan_volatile_write##size);                            \
+ 	void __tsan_unaligned_volatile_write##size(void *ptr)                  \
+-		__alias(__tsan_volatile_write##size);                          \
++		__alias("__tsan_volatile_write" #size);                        \
+ 	EXPORT_SYMBOL(__tsan_unaligned_volatile_write##size)
+ 
+ DEFINE_TSAN_VOLATILE_READ_WRITE(1);
+diff --git a/lib/crc32.c b/lib/crc32.c
+index 2a68dfd3b96c..373a17aaa432 100644
+--- a/lib/crc32.c
++++ b/lib/crc32.c
+@@ -206,8 +206,8 @@ u32 __pure __weak __crc32c_le(u32 crc, unsigned char const *p, size_t len)
+ EXPORT_SYMBOL(crc32_le);
+ EXPORT_SYMBOL(__crc32c_le);
+ 
+-u32 __pure crc32_le_base(u32, unsigned char const *, size_t) __alias(crc32_le);
+-u32 __pure __crc32c_le_base(u32, unsigned char const *, size_t) __alias(__crc32c_le);
++u32 __pure crc32_le_base(u32, unsigned char const *, size_t) __alias("crc32_le");
++u32 __pure __crc32c_le_base(u32, unsigned char const *, size_t) __alias("__crc32c_le");
+ 
+ /*
+  * This multiplies the polynomials x and y modulo the given modulus.
+diff --git a/lib/crypto/aes.c b/lib/crypto/aes.c
+index 827fe89922ff..5b80514595c2 100644
+--- a/lib/crypto/aes.c
++++ b/lib/crypto/aes.c
+@@ -82,8 +82,8 @@ static volatile const u8 __cacheline_aligned aes_inv_sbox[] = {
+ 	0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d,
+ };
+ 
+-extern const u8 crypto_aes_sbox[256] __alias(aes_sbox);
+-extern const u8 crypto_aes_inv_sbox[256] __alias(aes_inv_sbox);
++extern const u8 crypto_aes_sbox[256] __alias("aes_sbox");
++extern const u8 crypto_aes_inv_sbox[256] __alias("aes_inv_sbox");
+ 
+ EXPORT_SYMBOL(crypto_aes_sbox);
+ EXPORT_SYMBOL(crypto_aes_inv_sbox);
+diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+index 248264b9cb76..4496f897e4f5 100644
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -234,7 +234,7 @@ EXPORT_SYMBOL(__asan_unregister_globals);
+ 		check_memory_region_inline(addr, size, false, _RET_IP_);\
+ 	}								\
+ 	EXPORT_SYMBOL(__asan_load##size);				\
+-	__alias(__asan_load##size)					\
++	__alias("__asan_load" #size)					\
+ 	void __asan_load##size##_noabort(unsigned long);		\
+ 	EXPORT_SYMBOL(__asan_load##size##_noabort);			\
+ 	void __asan_store##size(unsigned long addr)			\
+@@ -242,7 +242,7 @@ EXPORT_SYMBOL(__asan_unregister_globals);
+ 		check_memory_region_inline(addr, size, true, _RET_IP_);	\
+ 	}								\
+ 	EXPORT_SYMBOL(__asan_store##size);				\
+-	__alias(__asan_store##size)					\
++	__alias("__asan_store" #size)					\
+ 	void __asan_store##size##_noabort(unsigned long);		\
+ 	EXPORT_SYMBOL(__asan_store##size##_noabort)
+ 
+@@ -258,7 +258,7 @@ void __asan_loadN(unsigned long addr, size_t size)
+ }
+ EXPORT_SYMBOL(__asan_loadN);
+ 
+-__alias(__asan_loadN)
++__alias("__asan_loadN")
+ void __asan_loadN_noabort(unsigned long, size_t);
+ EXPORT_SYMBOL(__asan_loadN_noabort);
+ 
+@@ -268,7 +268,7 @@ void __asan_storeN(unsigned long addr, size_t size)
+ }
+ EXPORT_SYMBOL(__asan_storeN);
+ 
+-__alias(__asan_storeN)
++__alias("__asan_storeN")
+ void __asan_storeN_noabort(unsigned long, size_t);
+ EXPORT_SYMBOL(__asan_storeN_noabort);
+ 
 -- 
-2.26.2
+2.26.0
 
