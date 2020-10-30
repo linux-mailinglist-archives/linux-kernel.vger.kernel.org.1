@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B52029FEE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D6529FEDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgJ3HnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:43:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51962 "EHLO mail.kernel.org"
+        id S1726488AbgJ3HnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:43:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726076AbgJ3HlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726078AbgJ3HlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Oct 2020 03:41:05 -0400
 Received: from mail.kernel.org (ip5f5ad5bb.dynamic.kabel-deutschland.de [95.90.213.187])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B302222C8;
+        by mail.kernel.org (Postfix) with ESMTPSA id 34FA8222D9;
         Fri, 30 Oct 2020 07:41:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1604043663;
-        bh=segxH5qhIJGNNI/Ye3+evMCmvSzyDneJvAcjm8Yoz20=;
+        bh=OPzgoINKCBaXsTP98YZcAIZ8eKjCtFBWsrDv+IXkK3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H09O/s9lOE7VCJcT74ssm7enzkIsq71R1eSmWF2oVB048IXDfiht15x7SLhjV+aTS
-         SaUq8f/2fvwOjvwFWlZsGvGPhumB4gklEJ47wEnMumj1Vw1obKuutBAB1Y+W0dliHI
-         sDM4Zq0PQoKQDy1TEamavtWNHYRAyKFLtaCNoKWI=
+        b=YuA5RPRmtYfNvgYFOg0Ahfz+Nqj1H0VvLfA0XeSZ6B3y9avI9NsCyPHupCF0wTZKd
+         FXyengVac+1XLnGqrwGeAwb3h7Vw5iKBxAg7QrNqi8MwXEmOTDcQEazMfXihTKtld8
+         zsXKDqErhVt3JiWIVIewTq8U9wUVpPtcgv0m40EQ=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kYP1x-004OgH-6T; Fri, 30 Oct 2020 08:41:01 +0100
+        id 1kYP1x-004OgJ-89; Fri, 30 Oct 2020 08:41:01 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 22/39] docs: ABI: make it parse ABI/stable as ReST-compatible files
-Date:   Fri, 30 Oct 2020 08:40:41 +0100
-Message-Id: <59ccbaa75ff05f23e701dd9a0bbe118e9343a553.1604042072.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v2 23/39] docs: ABI: create a 2-depth index for ABI
+Date:   Fri, 30 Oct 2020 08:40:42 +0100
+Message-Id: <e267b36ae7f32bab2a86f1da6b40bb3e62c877d4.1604042072.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1604042072.git.mchehab+huawei@kernel.org>
 References: <cover.1604042072.git.mchehab+huawei@kernel.org>
@@ -43,58 +43,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the stable ABI files are compatible with ReST,
-parse them without converting complex descriptions as literal
-blocks nor escaping special characters.
-
-Please notice that escaping special characters will probably
-be needed at descriptions, at least for the asterisk character.
+That helps to identify what ABI files are adding titles.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/admin-guide/abi-stable.rst | 1 +
- Documentation/sphinx/kernel_abi.py       | 8 ++++++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ Documentation/admin-guide/abi.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/abi-stable.rst b/Documentation/admin-guide/abi-stable.rst
-index 7495d7a35048..70490736e0d3 100644
---- a/Documentation/admin-guide/abi-stable.rst
-+++ b/Documentation/admin-guide/abi-stable.rst
-@@ -11,3 +11,4 @@ Most interfaces (like syscalls) are expected to never change and always
- be available.
+diff --git a/Documentation/admin-guide/abi.rst b/Documentation/admin-guide/abi.rst
+index 3b9645c77469..bcab3ef2597c 100644
+--- a/Documentation/admin-guide/abi.rst
++++ b/Documentation/admin-guide/abi.rst
+@@ -3,7 +3,7 @@ Linux ABI description
+ =====================
  
- .. kernel-abi:: $srctree/Documentation/ABI/stable
-+   :rst:
-diff --git a/Documentation/sphinx/kernel_abi.py b/Documentation/sphinx/kernel_abi.py
-index ce5f3b0ae811..f3da859c9878 100644
---- a/Documentation/sphinx/kernel_abi.py
-+++ b/Documentation/sphinx/kernel_abi.py
-@@ -73,12 +73,13 @@ class KernelCmd(Directive):
-     u"""KernelABI (``kernel-abi``) directive"""
+ .. toctree::
+-   :maxdepth: 1
++   :maxdepth: 2
  
-     required_arguments = 1
--    optional_arguments = 0
-+    optional_arguments = 2
-     has_content = False
-     final_argument_whitespace = True
- 
-     option_spec = {
--        "debug"     : directives.flag
-+        "debug"     : directives.flag,
-+        "rst"       : directives.unchanged
-     }
- 
-     def run(self):
-@@ -92,6 +93,9 @@ class KernelCmd(Directive):
-         cmd = "get_abi.pl rest --enable-lineno --dir "
-         cmd += self.arguments[0]
- 
-+        if 'rst' in self.options:
-+            cmd += " --rst-source"
-+
-         srctree = path.abspath(os.environ["srctree"])
- 
-         fname = cmd
+    abi-stable
+    abi-testing
 -- 
 2.26.2
 
