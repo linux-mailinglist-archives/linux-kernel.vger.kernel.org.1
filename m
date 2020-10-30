@@ -2,102 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E23429FC4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:48:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC5929FC4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbgJ3DsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 23:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48180 "EHLO
+        id S1726204AbgJ3Dta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 23:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgJ3Dr7 (ORCPT
+        with ESMTP id S1725790AbgJ3Dt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 23:47:59 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851D0C0613CF;
-        Thu, 29 Oct 2020 20:47:59 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id i21so3074852qka.12;
-        Thu, 29 Oct 2020 20:47:59 -0700 (PDT)
+        Thu, 29 Oct 2020 23:49:29 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBDCC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:49:29 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id r10so4061738pgb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:49:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IV173zBqFl+Nd3q2klgfVNAcerg3fmVbHR0gIkMTLmQ=;
-        b=jRHMIHN7cvodtRtpitWz1f5G94/VR65Hri+wxGanETse+Bq/fYMNmEcGIu4h6d8QIO
-         d46EzUegUSyNUJxpCEEBzlpqGWxAwXPP9rpqiYVd5eDJgmVpfdXdX4MRPzHfOTvClHib
-         D6O+IYm801uIXGf0zKtPqQSw13XeiwUnDBib8=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=POKlFlvAqzthNcFgF5vrqxopTlKMhI/9XKBoukQUU8Y=;
+        b=h1V0jDWUp1S3U6KREeWgcIWN1e0DzycLLMqGfeC39oGAgIucVZpXu+qs/YF1id8e7H
+         BfXsvLNFBOmQoSkP6umfYlOK0LL+bZeye00jojwKQHx2PHvznXOQc2ij0dDZqIzHkDMp
+         04HAiQaUGMojBG/+Ute7s7GQ3j2DNesgGx4BtHo3Q9kgWAs1ZaQ78PWXVxyY0sNeBYgF
+         h5BshH3kayBonxs960k9E5nUWeqQiU25v0K11oSCrm4vTtAk2JikLlIwRhyrmZES249n
+         SnwrxtKtr/aCdn6l2cQB7cxzCmMdT3XxPY99goQOx7YHh4k3cT4mvq8ogUbWoTgPM6P7
+         +aGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IV173zBqFl+Nd3q2klgfVNAcerg3fmVbHR0gIkMTLmQ=;
-        b=R/X2ZOAQ5nK5vFP6/QLKiBWWditom7aIJ8nTV6X3ese8jq7J7gpgaTxxuH3CpMglLF
-         nLpLyQiZNVUdNH4mObMJCUxjRLQxEeYRYNKn1mYS2SiAPUet9xyiCP6+FUh9NsL/358C
-         VbkLW+tq02AlgfcvlESR6iY2LMZt0FgWEU1DAmr/3TzDX88Im5gD5uzTq44Ss+B7IRPO
-         n6sTQTZ3YWcYphVeBaoxvcJ8hbPD7g5HPt9KNjdcLvzaNNbm3FbhH6Xl3sFe8rFgxPYm
-         Ne3Y59qLvQckvtGhek4wsV2ANGVqVhzSmB0NUJCx1C5da1LKqb1ET0uzrB17TyVkS8F8
-         GXbQ==
-X-Gm-Message-State: AOAM531C6sOsD3PKgG5G9tGVwfbZ8+FopmluvaWh+oOmA5484SbLlqCx
-        fNTUkV++TOrRquYmT5w+FDU5I2GGwq+HKPLvLSk=
-X-Google-Smtp-Source: ABdhPJz8dFRcEhMlqq1wlKnf6IBKOhndQxJdT1pNedv0ylUO8Z0m31UekBTKZL0DBjBeNhb37UXzMHszpOp+nnkyREQ=
-X-Received: by 2002:ae9:e90d:: with SMTP id x13mr436553qkf.66.1604029678730;
- Thu, 29 Oct 2020 20:47:58 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=POKlFlvAqzthNcFgF5vrqxopTlKMhI/9XKBoukQUU8Y=;
+        b=rGY8E+rWRbN1eX9ZJTGtYlTOAdi1wekaHCxPcyEOmSJaxVGD7YLZ9D4PUtn2/SpDpJ
+         sI8DPa8t5VXrWGERnblfFuPORIdCfUsDCX+O3EEmhXyTWuM3OdtZiqni3GvJM7buMSrc
+         m+CfhlTEU2KzudZ2X4DlhndlWXwENOAL/rTzgXxeNRWiOBkC9Y7FJh9ULBaDjPG2bgCm
+         2U2v3HGxOc5jlDVovyE85gKVFT9wGj0IlzVqB/2W4uKOunByU8MN0tMupVGqCaGDNuE4
+         xvMiirJNxI+YtS2jTQ1RU25EcBAZilIgiF8l8Jm5rlSdgT8hSvHGCJxySm0jzSYJ+tJ/
+         eKfg==
+X-Gm-Message-State: AOAM5319Hsc+IUAGcV6Jh8yPcepW569TyzF9suixnWJnaS9yuif95OmM
+        cvlKTODamBwzbUWdzhV6F8s=
+X-Google-Smtp-Source: ABdhPJwDGHNezweuCs5v1Slkjg0XOxMIxqhPAXFU8ZNNBjzXucjZ5NGURqeBtYJPkN5q74VxmTeM0g==
+X-Received: by 2002:a17:90a:fb92:: with SMTP id cp18mr429782pjb.228.1604029769012;
+        Thu, 29 Oct 2020 20:49:29 -0700 (PDT)
+Received: from [10.230.28.251] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id t129sm4578814pfc.140.2020.10.29.20.49.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 20:49:28 -0700 (PDT)
+Subject: Re: [PATCH 03/17] phy: broadcom: convert to
+ devm_platform_ioremap_resource(_byname)
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Ondrej Jirman <megous@megous.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Yue Wang <yue.wang@amlogic.com>,
+        Hanjie Lin <hanjie.lin@amlogic.com>,
+        Joe Perches <joe@perches.com>,
+        Bharat Gooty <bharat.gooty@broadcom.com>,
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
+        Peter Chen <peter.chen@nxp.com>, Roger Quadros <rogerq@ti.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        Sanket Parmar <sparmar@cadence.com>,
+        Anil Varughese <aniljoy@cadence.com>, Li Jun <jun.li@nxp.com>,
+        Ma Feng <mafeng.ma@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Al Cooper <alcooperx@gmail.com>
+References: <1603940079-8131-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1603940079-8131-3-git-send-email-chunfeng.yun@mediatek.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <9c33597e-34e7-f94b-a4fb-bfc2e6b0f8ba@gmail.com>
+Date:   Thu, 29 Oct 2020 20:49:24 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201029062723.20798-1-dylan_hung@aspeedtech.com>
-In-Reply-To: <20201029062723.20798-1-dylan_hung@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 30 Oct 2020 03:47:45 +0000
-Message-ID: <CACPK8XcJ6oWkj04kb3cjNkYY4q48Vk2p7zitCDp1_Q8etjFb1w@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: aspeed-g6: Fix HVI3C function-group in pinctrl dtsi
-To:     Dylan Hung <dylan_hung@aspeedtech.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1603940079-8131-3-git-send-email-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 at 06:28, Dylan Hung <dylan_hung@aspeedtech.com> wrote:
->
-> The HVI3C shall be a group of I3C function, not an independent function.
-> Correct the function name from "HVI3C" to "I3C".
->
-> Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
 
-Fixes: f510f04c8c83 ("ARM: dts: aspeed: Add AST2600 pinmux nodes")
 
-I have a few device tree fixes for 5.10 that I will include this in.
+On 10/28/2020 7:54 PM, Chunfeng Yun wrote:
+> Use devm_platform_ioremap_resource(_byname) to simplify code
+> 
+> Cc: Al Cooper <alcooperx@gmail.com>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-Cheers,
-
-Joel
-
-> ---
->  arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-> index 7028e21bdd98..910eacc8ad3b 100644
-> --- a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-> +++ b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-> @@ -208,12 +208,12 @@
->         };
->
->         pinctrl_hvi3c3_default: hvi3c3_default {
-> -               function = "HVI3C3";
-> +               function = "I3C3";
->                 groups = "HVI3C3";
->         };
->
->         pinctrl_hvi3c4_default: hvi3c4_default {
-> -               function = "HVI3C4";
-> +               function = "I3C4";
->                 groups = "HVI3C4";
->         };
->
-> --
-> 2.17.1
->
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
