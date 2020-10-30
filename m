@@ -2,116 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C869929FAE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:53:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E35129FAEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726231AbgJ3BxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 21:53:20 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:44004 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgJ3BxU (ORCPT
+        id S1726250AbgJ3BzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 21:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgJ3BzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 21:53:20 -0400
-Received: by mail-io1-f71.google.com with SMTP id f5so3271853iok.10
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 18:53:17 -0700 (PDT)
+        Thu, 29 Oct 2020 21:55:06 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158C6C0613CF;
+        Thu, 29 Oct 2020 18:55:06 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id b4so2634335vsd.4;
+        Thu, 29 Oct 2020 18:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=O2Bfrh7e0SfwIe9SuDWvIR9uYNcLv1ssbiRxQwdN9iY=;
+        b=Gc3dAipqASgtOIRGmBamjdZdmFXFKNzCfui1qkk4ipAQzwCWNx85nsFPYD/G+iTl67
+         ZRiIqzmIlCmRwCTxaJWss7/xvNNqnAwcUaUY78ApKMH0/zCjpXP3v59ZGkSvbtXAqw1T
+         tN1uU+raZBm9jk4OJJgTih0SCDjZG2dPft1DFtPgdQYzeI3rBmk0YbrCadCWMeX4xJy7
+         R1/qKDqGy+fCMNmbOBsNd5uN3FCVu/epI/GXhjHzgb7hDdeTJ3nO7dGmyJBpv3mIQLXl
+         4tbFCRTXf9lNMapnrJW5EDGxRVhM+fT+6NNgaZJ6bYxmN+ZNdiwp3XGbZbivshcUQg54
+         4iWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=lYmoRmhXPePOEaWuq72nDKpmvbrrsU0VoVnNfbqP8bI=;
-        b=VOqnOfllGtHmoWZ+Iyxq1iFH7AXKEEi9DmPHsfCDYzUPmJzBH9jMy91xl5snsolFL5
-         /dDINk8AYHv9TlYFU4j1WLOYFPaUG9w9hOvNqpqvijyeztbvc+Sw8IGWcBJ6U+hifVgt
-         HKIsuQmYFWEVTwnzS8ZHVRFRfgcZAWQmKV8udnPDWNd3Am1W17RcOSgHttqBNmc5Lxb6
-         tkbMC4GPOLMMMwnuoehCpa80a8iw8E2GXTS3vE0OzK7GrcTzGCKmMqENYUB32xyz6+Mt
-         GZ2/TpShs6/sgg0HEK0S56THkldBhOsJ2NpsYc9/8vKesqAMEnxE5gKqyjW0yFEocCmq
-         zC8A==
-X-Gm-Message-State: AOAM530LA0xaWvvaji/tR8gjF1ONoKzIFDvmP1BsH/eJlSBdzBi+tvRQ
-        fqzP+p2pVCgc+ajhWzJolD0FhBLEx7ntOGfbRUIwlsdLwnqb
-X-Google-Smtp-Source: ABdhPJzQlzCLVEhFBosJ2S8PNa5ncph6BY4NohjO7xRf0z57Vro/Sqgs6OZH/edzY1JakUK/o3vOddnSXOn+3weF9lpkrabDQm/+
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=O2Bfrh7e0SfwIe9SuDWvIR9uYNcLv1ssbiRxQwdN9iY=;
+        b=Sj28Zd9IBQdlzj19LBYA7DtzpGxSmm7n9vWmGiqp8nEfh0f7LFpfKcyeqIIoI53xKs
+         VYvmcqXZl/umL2vja3DWx2hocDYAGE0flVXxtLCUbZSNnBCqjWzHu1GC9uSLQ2elC1mR
+         O2LW17qavl4nyesS7Kt+P/nlSGN1go26AjfJ2T5/zkU6Hx7Ov5SrjGgYN4l8MV0r4G9j
+         12kKeYjJkzszZwOnNZ/uJt5rj5U3ei1f2wg44/SrqrY2o9sIK/Wh5pJpdpb8/uob7Xjd
+         qOPY6eq6GqwK9X1MdYTwmYLojEFnGmf6OSLWh7/mmyn3hil3IOgGpVzWptSC+IBTPTn+
+         7U9Q==
+X-Gm-Message-State: AOAM5328BenwcxShbJyqcoIWhzYSluj6oLSrX+qvMpRkrn+H6Wowyl9a
+        D8bzcFwQiLFCZ2k98Z6qSNxs+ug/2kfe4uLPlnc=
+X-Google-Smtp-Source: ABdhPJxsQ56AGU/3+xrQVJ8jrJpxHBC0lKnDYdah7PmyLCy34Sy+c/46LUL7dNf6w9JFX+plUXdhpk2L/oikjHAxHJQ=
+X-Received: by 2002:a67:b647:: with SMTP id e7mr6030927vsm.26.1604022905164;
+ Thu, 29 Oct 2020 18:55:05 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:9319:: with SMTP id k25mr155886iom.153.1604022797388;
- Thu, 29 Oct 2020 18:53:17 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 18:53:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000cd2e305b2d9a9db@google.com>
-Subject: BUG: using __this_cpu_read() in preemptible code in __bad_area_nosemaphore
-From:   syzbot <syzbot+cebc65195a8639f648b9@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com
+References: <20201029095806.10648-1-amelie.delaunay@st.com>
+ <20201029095806.10648-2-amelie.delaunay@st.com> <20201029154016.GA1917373@bogus>
+ <860d5620-4fdf-6e01-9a04-3967d6fcfd6b@st.com>
+In-Reply-To: <860d5620-4fdf-6e01-9a04-3967d6fcfd6b@st.com>
+From:   Jun Li <lijun.kernel@gmail.com>
+Date:   Fri, 30 Oct 2020 09:54:54 +0800
+Message-ID: <CAKgpwJVGUR9aSfoMkQ=ZXysgqn+H6n0uJbk5W9SeGiB7VXptwQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v3 1/4] dt-bindings: connector: add power-opmode
+ optional property to usb-connector
+To:     Amelie DELAUNAY <amelie.delaunay@st.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Amelie DELAUNAY <amelie.delaunay@st.com> =E4=BA=8E2020=E5=B9=B410=E6=9C=883=
+0=E6=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=8812:52=E5=86=99=E9=81=93=EF=
+=BC=9A
+>
+>
+>
+> On 10/29/20 4:40 PM, Rob Herring wrote:
+> > On Thu, Oct 29, 2020 at 10:58:03AM +0100, Amelie Delaunay wrote:
+> >> Power operation mode may depends on hardware design, so, add the optio=
+nal
+> >> property power-opmode for usb-c connector to select the power operatio=
+n
+> >> mode capability.
+> >>
+> >> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+> >> ---
+> >>   .../bindings/connector/usb-connector.yaml      | 18 ++++++++++++++++=
+++
+> >>   1 file changed, 18 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/connector/usb-connector=
+.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> >> index 728f82db073d..200d19c60fd5 100644
+> >> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> >> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> >> @@ -93,6 +93,24 @@ properties:
+> >>         - device
+> >>         - dual
+> >>
+> >> +  power-opmode:
+> >
+> > I've acked this version:
+> >
+> > https://lore.kernel.org/r/20201020093627.256885-2-badhri@google.com
 
-syzbot found the following issue on:
+That is a different property only for FRS.
 
-HEAD commit:    672f8871 Merge tag 'timers-urgent-2020-10-25' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14bb0aac500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ab976a648fdc6
-dashboard link: https://syzkaller.appspot.com/bug?extid=cebc65195a8639f648b9
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-userspace arch: i386
+> >
+>
+> frs is used for Fast Role Swap defined in USB PD spec.
+> I understand it allows to get the same information but I'm wondering why
+> the property name is limited to -frs- in this case. What about a
+> non-power delivery USB-C connector ?
 
-Unfortunately, I don't have any reproducer for this issue yet.
+It's only for FRS, FRS is in the scope of power delivery.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cebc65195a8639f648b9@syzkaller.appspotmail.com
+>
+> Moreover, power-opmode property support is already merged in typec class:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/drivers/usb/typec/class.c?h=3Dv5.10-rc1&id=3D12f3467b0d28369d3add7a0deb65f=
+dac9b503c90
+> and stusb160x driver uses it :(
+>
+> So, do I need to modify stusb160x driver (and bindings) to take into
+> account this USB PD specific property?
 
-check_preemption_disabled: 1 callbacks suppressed
-BUG: usqemu-system-x86_64: warning: guest updated active QH
-caller is lockdep_hardirqs_on_prepare+0x5e/0x410 kernel/locking/lockdep.c:4060
-CPU: 0 PID: 9482 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- check_preemption_disabled+0x123/0x130 lib/smp_processor_id.c:48
- lockdep_hardirqs_on_prepare+0x5e/0x410 kernel/locking/lockdep.c:4060
- trace_hardirqs_on+0x5b/0x1c0 kernel/trace/trace_preemptirq.c:49
- __bad_area_nosemaphore+0xc6/0x400 arch/x86/mm/fault.c:797
- do_user_addr_fault+0x7d7/0xb40 arch/x86/mm/fault.c:1335
- handle_page_fault arch/x86/mm/fault.c:1429 [inline]
- exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1485
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
-RIP: 0023:0x808bb62
-Code: 00 00 0f bc d1 f3 0f 7f 27 f3 0f 7f 6f 10 f3 0f 7f 77 20 f3 0f 7f 7f 30 83 c3 0f 29 d3 8d 7c 17 31 e9 d2 0b 00 00 66 0f ef c0 <66> 0f 6f 0e 66 0f 74 c1 66 0f d7 d0 83 fb 11 0f 86 e2 01 00 00 85
-RSP: 002b:00000000f5533c90 EFLAGS: 00010246
-RAX: 00000000f5533cb0 RBX: 00000000000003ff RCX: 0000000000000000
-RDX: 000000000002c550 RSI: 0000000000000000 RDI: 00000000f5533cb0
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000296 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-BUG: using __this_cpu_read() in preemptible [00000000] code: syz-executor.0/9482
-caller is lockdep_hardirqs_on+0x38/0x110 kernel/locking/lockdep.c:4129
-CPU: 0 PID: 9482 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- check_preemption_disabled+0x123/0x130 lib/smp_processor_id.c:48
- lockdep_hardirqs_on+0x38/0x110 kernel/locking/lockdep.c:4129
- __bad_area_nosemaphore+0xc6/0x400 arch/x86/mm/fault.c:797
- do_user_addr_fault+0x7d7/0xb40 arch/x86/mm/fault.c:1335
- handle_page_fault arch/x86/mm/fault.c:1429 [inline]
- exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1485
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
-RIP: 0023:0x808bb62
-Code: 00 00 0f bc d1 f3 0f 7f 27 f3 0f 7f 6f 10 f3 0f 7f 77 20 f3 0f 7f 7f 30 83 c3 0f 29 d3 8d 7c 17 31 e9 d2 0b 00 00 66 0f ef c0 <66> 0f 6f 0e 66 0f 74 c1 66 0f d7 d0 83 fb 11 0f 86 e2 01 00 00 85
-RSP: 002b:00000000f5533c90 EFLAGS: 00010246
-RAX: 00000000f5533cb0 RBX: 00000000000003ff RCX: 0000000000000000
-RDX: 000000000002c550 RSI: 0000000000000000 RDI: 00000000f5533cb0
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000296 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Only Type-C w/o PD need this "power-opmode" property, so this
+property is still required.
 
+Li Jun
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> Regards,
+> Amelie
+>
+> > Please ack it if you are okay with it.
+> >
+> > Rob
+> >
+> >
+> >> +    description: Determines the power operation mode that the Type C =
+connector
+> >> +      will support and will advertise through CC pins when it has no =
+power
+> >> +      delivery support.
+> >> +      - "default" corresponds to default USB voltage and current defi=
+ned by the
+> >> +        USB 2.0 and USB 3.2 specifications, 5V 500mA for USB 2.0 port=
+s and
+> >> +        5V 900mA or 1500mA for USB 3.2 ports in single-lane or dual-l=
+ane
+> >> +        operation respectively.
+> >> +      - "1.5A" and "3.0A", 5V 1.5A and 5V 3.0A respectively, as defin=
+ed in USB
+> >> +        Type-C Cable and Connector specification, when Power Delivery=
+ is not
+> >> +        supported.
+> >> +    allOf:
+> >> +      - $ref: /schemas/types.yaml#definitions/string
+> >> +    enum:
+> >> +      - default
+> >> +      - 1.5A
+> >> +      - 3.0A
+> >> +
+> >>     # The following are optional properties for "usb-c-connector" with=
+ power
+> >>     # delivery support.
+> >>     source-pdos:
+> >> --
+> >> 2.17.1
+> >>
