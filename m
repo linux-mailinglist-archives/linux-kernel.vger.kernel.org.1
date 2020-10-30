@@ -2,88 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 479192A03F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2341B2A03FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgJ3LTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
+        id S1726318AbgJ3LUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgJ3LTh (ORCPT
+        with ESMTP id S1725993AbgJ3LUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:19:37 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DBFC0613D5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:19:37 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id z5so7131645iob.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:19:37 -0700 (PDT)
+        Fri, 30 Oct 2020 07:20:46 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8041EC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:20:46 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id m188so4822374ybf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:20:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5RA/dTcPLcLSjFsM4pTf8628QTB+ljlVPvTwaOAvSI8=;
-        b=vPF6leW+6gfiBr1s7qfSqOlKqUhfUMZVxmg71BGMeoJBHzeltWCTbYEuXa0oT2dpud
-         wFpsNu4u69HfrJAKI0EOaTm6zsS8jIGH3m+9HVCNWrLlCCPoSjJqD2wE8IxwVeOWCTT/
-         s9zIz/l9hy6s0sd/GXp4XfEvSvKGZqcAbjIb+9V91QPh/+m5tmqwRgj69T+okuTdts7j
-         f8Rb2Xhxxuv3wU2FnzTR+xffJLffig2bPxtSDt6/d+Kun2cCrXvDLDclwQ1mGchUWUEe
-         kh7V2O04DMTgLQ+QNYBQpIuNOLClV0FN3U+CjlNZaGC2yFYQ9Oo0c77oTqWY7rM+3aR7
-         b19w==
+         :cc:content-transfer-encoding;
+        bh=G9dXGMHL3LoWEWUdy1Ms+BhIgQ35oL2d5aGD3k8A1UE=;
+        b=HqGvZhBVNP/Aty6lRkxtyeTfSpOJnW/80pgI0PLU4TQJYmLSG0M1XSw7w7i6FFlrvi
+         3pIRW5VMXotOtXIRIt2rApfUcO7vyIdMH7GAgiBiIZyLRdQDG5i1TM74aYQLMcYA/ezh
+         HcMWRVV5gcjRQru+OlFfIB3l8TkYUQAED7gMm3sfgHMhgfYEC0clXYhl/tUMerpH6voB
+         6XimbfQZF5pGpP/VwXS9vpeLl1J2MT2KPnp144nKnafF/UF9GwiWkLPyH4XXCBEbv8f5
+         Zeex7cHz/sIUzsLi2EeiP3deNt8t9KwddYNfMuhThMdmDiHR0AYdlHV+SHkPwPJYgpKr
+         R9dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5RA/dTcPLcLSjFsM4pTf8628QTB+ljlVPvTwaOAvSI8=;
-        b=HmK8CMg2TzrZWbKn6nzR93wDDHBmDh7Jf5JILHAnVBIjyKTAwULcSq9Lfut1QhEhiu
-         pel2iqa+GjRWDBLVhV5XeI58hAerJPUFTsiDQCrJJBqxJlTosuJCKt8MzVakD3uTdiY1
-         OT8bKFYqZkCF2xxQrJErL3pT4At9rBcD1SMCu3FH6Jl2mu46OxLFAAYDOOA8hEWqQ5dX
-         +vDSBWmSxYeJOayEC9pUAO8njzIQKcVysIa7O6SjYbyFJJzwqKLeDYrGLIlx77ggNeCL
-         boBthP3wsJWm/OEN5VAkIHhVULT3mizKbkTeT3z2i88cqFdGns0GeeVqmko1X6Ona87M
-         1oAA==
-X-Gm-Message-State: AOAM533FDTrIMG23TX0O+eaK+GibIqMzezJZdCTw4Aq4U7c8Fy3Uv4Zb
-        IqMWhoL4QfuVlhJ3k4lnlfvowfciOUnJIgI794WX/KFbnh2Aep6q
-X-Google-Smtp-Source: ABdhPJy/oufOebW5MWlnuf1Ro28TfvpmK+4mcN6r8qxQ28XDMOnf4ekL4Po96CPF9erK2pQu3QvP3fFFwmkHIFBVjmc=
-X-Received: by 2002:a5e:9244:: with SMTP id z4mr1374790iop.53.1604056776404;
- Fri, 30 Oct 2020 04:19:36 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=G9dXGMHL3LoWEWUdy1Ms+BhIgQ35oL2d5aGD3k8A1UE=;
+        b=G0e5Pv3kZZGtDEPf2MeRf2etsqRPZUDbbynUnbybkpfG8+nm3zTY2pub2x4XdFZ0Cs
+         ySgvsAUxXnaZ9kl5FeMRaAOSMUOZJqvxEtIE3h5bGLNEiK6uTHtStQBohJNrisHYMGPF
+         2OBRB5FiIGuB1mqpnpk0VE9RpK7tH+MeG07Zy59TiXWObV5bKWXglUZWn5tJVQzQCuas
+         3Rkwo43whJDvvRTPy2tcsz9s9N1IbU6URZL62WPHmfHbmUKSNpwm3kc9q4V2X4OcAwE5
+         sxZEI8CQoPNcdQ6LnaCoJyDhUlNYjF/suTsFD2ZUiSoP9R0V50bwtxkBTgf2m4JFBdfy
+         blBg==
+X-Gm-Message-State: AOAM531KmKOT2faFG958XX7XiuLXpGyYvLhBgYGXp2n375SiPy7HIIjE
+        4DcmJRoptuMHDhr83Cti0HofoClhAPsLmt6m+emFwg==
+X-Google-Smtp-Source: ABdhPJzra1pMG5DWzyNsqxZMtv8L71QZ9N4kNvy1uCXEHLUKRwFRdAqW8KJMoQPn5ok9GmGGT6GuLe6CgauTI6lkDu8=
+X-Received: by 2002:a5b:389:: with SMTP id k9mr2590084ybp.75.1604056845834;
+ Fri, 30 Oct 2020 04:20:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201030075724.1616766-1-ajye_huang@compal.corp-partner.google.com>
- <20201030075724.1616766-3-ajye_huang@compal.corp-partner.google.com>
- <CA+Px+wXPRg7aDU5+vr6R_BxuFfhuDeG3iEQeAUKWNtX8YmVC1Q@mail.gmail.com> <CALprXBZ+NmR8Y4sMkh4Y-N_FG+rGEOhUBVTKXRXNFp8H+f0btw@mail.gmail.com>
-In-Reply-To: <CALprXBZ+NmR8Y4sMkh4Y-N_FG+rGEOhUBVTKXRXNFp8H+f0btw@mail.gmail.com>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 30 Oct 2020 19:19:25 +0800
-Message-ID: <CA+Px+wWouXWS2F+Bqs3MkJxCuXORhpXcUF5ZuSHo6exprBF4hg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ASoC: qcom: sc7180: Modify machine driver for 2mic
-To:     Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Cc:     Ajye Huang <ajye.huang@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ALSA development <alsa-devel@alsa-project.org>
+References: <20201029100546.28686-1-gilad@benyossef.com> <20201029100546.28686-2-gilad@benyossef.com>
+ <3a4804a5-5d5c-1216-1503-c241cc24f3c2@gmail.com>
+In-Reply-To: <3a4804a5-5d5c-1216-1503-c241cc24f3c2@gmail.com>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Fri, 30 Oct 2020 13:20:41 +0200
+Message-ID: <CAOtvUMdJxVSFhN4QMNL+eiF6OB2LevThcgDK34M-=JDXCoDXMA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] crypto: add eboiv as a crypto API template
+To:     Milan Broz <gmazyland@gmail.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        Ofir Drang <ofir.drang@arm.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 6:55 PM Ajye Huang
-<ajye_huang@compal.corp-partner.google.com> wrote:
-> But dmic_get() will need dmic_switch, should i keep dmic_switch?
+Hi,
 
-I see.  I overlooked it.  You can keep the dmic_switch for this
-purpose or just call gpiod_get_value_cansleep().
+On Fri, Oct 30, 2020 at 12:33 PM Milan Broz <gmazyland@gmail.com> wrote:
+>
+> On 29/10/2020 11:05, Gilad Ben-Yossef wrote:
+> >
+> > +config CRYPTO_EBOIV
+> > +     tristate "EBOIV support for block encryption"
+> > +     default DM_CRYPT
+> > +     select CRYPTO_CBC
+> > +     help
+> > +       Encrypted byte-offset initialization vector (EBOIV) is an IV
+> > +       generation method that is used in some cases by dm-crypt for
+> > +       supporting the BitLocker volume encryption used by Windows 8
+> > +       and onwards as a backwards compatible version in lieu of XTS
+> > +       support.
+> > +
+> > +       It uses the block encryption key as the symmetric key for a
+> > +       block encryption pass applied to the sector offset of the block=
+.
+> > +       Additional details can be found at
+> > +       https://www.jedec.org/sites/default/files/docs/JESD223C.pdf
+>
+> This page is not available. Are you sure this is the proper documentation=
+?
+
+You need to register at the JEDEC web site to get the PDF. The
+registration is free though.
+
+It's the only standard I am aware of that describe this mode, as
+opposed to a paper.
+
+>
+> I think the only description we used (for dm-crypt) was original Ferguson=
+'s Bitlocker doc:
+> https://download.microsoft.com/download/0/2/3/0238acaf-d3bf-4a6d-b3d6-0a0=
+be4bbb36e/bitlockercipher200608.pdf
+
+
+Yes, the JEDEC has a reference to that as well, but the white paper
+doesn't actually describe the option without the diffuser.
+
+>
+> IIRC EBOIV was a shortcut I added to dm-crypt because we found no officia=
+l terminology for this IV.
+> And after lunchtime, nobody invented anything better, so it stayed as it =
+is now :-)
+
+Well, I still don't have any better name to offer, LOL :-)
+
+Gilad
+
+
+
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
+
+values of =CE=B2 will give rise to dom!
