@@ -2,231 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08242A0F37
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 123952A0F5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727305AbgJ3UJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 16:09:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727044AbgJ3UJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 16:09:24 -0400
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3C8A20723;
-        Fri, 30 Oct 2020 20:09:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604088562;
-        bh=dsb2fGpwSeCxaqOUaIEQtAt8Ev0KBIXRf/w3waNhKws=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=C7kxkKrxR6DMsZCWkCPW2z3xH1cj5sJoA50H0JjBsmJ5y+NZkzIscLRN8uh9+LmvV
-         rC5P1iFjJTq9PMYwOq6pLF4EksuZ9zTcv/WO0lE4JKrT+5pwQPfHId9AoRgXB1u1AJ
-         qyx82wFKRb9ICX5wZkT44IM9eVY6IWMXRzsQqGHk=
-Received: by mail-oi1-f178.google.com with SMTP id j7so7841421oie.12;
-        Fri, 30 Oct 2020 13:09:22 -0700 (PDT)
-X-Gm-Message-State: AOAM530GXqa8PqEBfmITeCu9GjzdWEpL8aO8zreuvqXoxNBnNaNEBHW2
-        8qLHqMTSyIhVXeXHzlY2mt7qACZZuqpez+/8ug==
-X-Google-Smtp-Source: ABdhPJxMveXb1QdoW8X4k60f8AsyuwhhjJRLNbCCb75J76E+r24ilhIfqWLz6ySjO7R/sD1GTdxpf4/zJ14/IGJYpM0=
-X-Received: by 2002:aca:5dc2:: with SMTP id r185mr2849061oib.106.1604088561838;
- Fri, 30 Oct 2020 13:09:21 -0700 (PDT)
+        id S1727115AbgJ3UVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 16:21:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726061AbgJ3UVE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 16:21:04 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7F3C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 13:11:22 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kYak4-00017c-Ax; Fri, 30 Oct 2020 21:11:20 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kYak3-0001Wy-MW; Fri, 30 Oct 2020 21:11:19 +0100
+Date:   Fri, 30 Oct 2020 21:11:17 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Lokesh Vutla <lokeshvutla@ti.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH] pwm: lp3943: Dynamically allocate pwm chip base
+Message-ID: <20201030201117.x5asfjxh7htwv35s@pengutronix.de>
+References: <20201030134135.28730-1-lokeshvutla@ti.com>
 MIME-Version: 1.0
-References: <1603188889-23664-1-git-send-email-hugues.fruchet@st.com>
- <1603188889-23664-3-git-send-email-hugues.fruchet@st.com> <20201021130033.GI2703@paasikivi.fi.intel.com>
- <657634eb-690a-53a6-2ac1-de3c06a1cec4@st.com> <20201021214058.GJ2703@paasikivi.fi.intel.com>
- <327ae9d5-8683-488f-7970-4983e2fec51d@st.com> <20201026141714.GA83693@bogus> <20201030174236.GV26150@paasikivi.fi.intel.com>
-In-Reply-To: <20201030174236.GV26150@paasikivi.fi.intel.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 30 Oct 2020 15:09:10 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+po4grPDJH6=ayFWrO5J=GzmSHNsgRjQ=ERsVCYzVXQg@mail.gmail.com>
-Message-ID: <CAL_Jsq+po4grPDJH6=ayFWrO5J=GzmSHNsgRjQ=ERsVCYzVXQg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] media: dt-bindings: media: st,stm32-dcmi: Add
- support of BT656
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Hugues FRUCHET <hugues.fruchet@st.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Alain VOLMAT <alain.volmat@st.com>,
-        Yannick FERTRE <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lx67b2e737v6sj34"
+Content-Disposition: inline
+In-Reply-To: <20201030134135.28730-1-lokeshvutla@ti.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 12:42 PM Sakari Ailus
-<sakari.ailus@linux.intel.com> wrote:
->
-> Hi Rob,
->
-> On Mon, Oct 26, 2020 at 09:17:14AM -0500, Rob Herring wrote:
-> > On Thu, Oct 22, 2020 at 02:56:17PM +0000, Hugues FRUCHET wrote:
-> > > Hi Sakari,
-> > >
-> > > + Jacopo for his work on ov772x binding related to BT656
-> > >
-> > > On 10/21/20 11:40 PM, Sakari Ailus wrote:
-> > > > Hi Hugues,
-> > > >
-> > > > On Wed, Oct 21, 2020 at 02:24:08PM +0000, Hugues FRUCHET wrote:
-> > > >> Hi Sakari,
-> > > >>
-> > > >> On 10/21/20 3:00 PM, Sakari Ailus wrote:
-> > > >>> Hi Hugues,
-> > > >>>
-> > > >>> On Tue, Oct 20, 2020 at 12:14:49PM +0200, Hugues Fruchet wrote:
-> > > >>>> Add support of BT656 parallel bus mode in DCMI.
-> > > >>>> This mode is enabled when hsync-active & vsync-active
-> > > >>>> fields are not specified.
-> > > >>>>
-> > > >>>> Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
-> > > >>>> ---
-> > > >>>>    .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 30 ++++++++++++++++++++++
-> > > >>>>    1 file changed, 30 insertions(+)
-> > > >>>>
-> > > >>>> diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-> > > >>>> index 3fe778c..1ee521a 100644
-> > > >>>> --- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-> > > >>>> +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-> > > >>>> @@ -44,6 +44,36 @@ properties:
-> > > >>>>          bindings defined in
-> > > >>>>          Documentation/devicetree/bindings/media/video-interfaces.txt.
-> > > >>>>
-> > > >>>> +    properties:
-> > > >>>> +      endpoint:
-> > > >>>> +        type: object
-> > > >>>> +
-> > > >>>> +        properties:
-> > > >>>> +          bus-width: true
-> > > >>>> +
-> > > >>>> +          hsync-active:
-> > > >>>> +            description:
-> > > >>>> +              If both HSYNC and VSYNC polarities are not specified, BT656
-> > > >>>> +              embedded synchronization is selected.
-> > > >>>> +            default: 0
-> > > >>>> +
-> > > >>>> +          vsync-active:
-> > > >>>> +            description:
-> > > >>>> +              If both HSYNC and VSYNC polarities are not specified, BT656
-> > > >>>> +              embedded synchronization is selected.
-> > > >>>> +            default: 0
-> > > >>>
-> > > >>> Should I understand this as if the polarities were not specified, BT.656
-> > > >>> will be used?
-> > > >>
-> > > >> Yes, this is what is documented in video-interfaces.txt:
-> > > >> "
-> > > >>     Note, that if HSYNC and VSYNC polarities are not specified, embedded
-> > > >>     synchronization may be required, where supported.
-> > > >> "
-> > > >> and
-> > > >> "
-> > > >>                          /* If hsync-active/vsync-active are missing,
-> > > >>                             embedded BT.656 sync is used */
-> > > >>                          hsync-active = <0>;     /* Active low */
-> > > >>                          vsync-active = <0>;     /* Active low */
-> > > >> "
-> > > >> and I found also this in
-> > > >> Documentation/devicetree/bindings/media/renesas,vin.yaml
-> > > >> "
-> > > >>             hsync-active:
-> > > >>               description:
-> > > >>                 If both HSYNC and VSYNC polarities are not specified,
-> > > >> embedded
-> > > >>                 synchronization is selected.
-> > > >>               default: 1
-> > > >>
-> > > >>             vsync-active:
-> > > >>               description:
-> > > >>                 If both HSYNC and VSYNC polarities are not specified,
-> > > >> embedded
-> > > >>                 synchronization is selected.
-> > > >>               default: 1
-> > > >
-> > > > Having the defaults leads to somewhat weird behaviour: specifying the
-> > > > default value on either property changes the bus type.
-> > > >
-> > > >> "
-> > > >>
-> > > >> In the other hand I've found few occurences of "bus-type"
-> > > >> (marvell,mmp2-ccic.yaml), it is why I asked you if "bus-type" is the new
-> > > >> way to go versus previous way to signal BT656 (without hsync/vsync) ?
-> > > >> As explained previously, I prefer this last way for backward compatibility.
-> > > >
-> > > > If you have a default for bus-type (BT.601), this won't be a problem.
-> > > >
-> > > > The old DT bindings were somewhat, well, opportunistic. The v4l2-of
-> > > > framework-let did its best and sometimes it worked. The behaviour is still
-> > > > supported but not encouraged in new bindings.
-> > > >
-> > >
-> > > OK, so let's go for the new way.
-> > > I've found an interesting patch from Jacopo that is of great help:
-> > > https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20200910162055.614089-4-jacopo+renesas@jmondi.org/
->
-> I wonder if Jacopo tested it. The idea seems interesting nonetheless.
->
-> > >
-> > > Here is a draft proposal before I push a new version, please comment:
-> > >
-> > >          properties:
-> > >            bus-type:
-> > >              enum: [5, 6]
-> > >              default: 5
-> > >
-> > >            bus-width:
-> > >              enum: [8, 10, 12, 14]
-> > >              default: 8
-> > >
-> > >            hsync-active:
-> > >              enum: [0, 1]
-> >
-> > For common properties, you can assume there's a common schema. As 0 and
-> > 1 are the only possible values, you don't need to define them here
-> > unless only a subset is valid for this device.
-> >
-> > >              default: 0
-> > >
-> > >            vsync-active:
-> > >              enum: [0, 1]
-> > >              default: 0
-> > >
-> > >            pclk-sample:
-> > >              enum: [0, 1]
-> > >              default: 0
-> > >
-> > >            remote-endpoint: true
-> > >
-> > >          allOf:
-> > >            - if:
-> > >                properties:
-> > >                  bus-type:
-> > >                    const: 6
-> >
-> > To fix the error, you need:
-> >
-> > required:
-> >   - bus-type
-> >
-> > The problem is the above schema is also true if the property
-> > is not present.
->
-> Hmm. The idea was that we could keep this consistent with old bindings that
-> only documented parallel mode, and thus didn't need bus-type. This is
-> actually quite common --- adding support for something that wasn't known or
-> cared for during the original review.
 
-TBC, the 'required' here is required for the 'if' in the if/then
-schema to work as you want. It's not making 'bus-type' a required
-property.
+--lx67b2e737v6sj34
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Rob
+On Fri, Oct 30, 2020 at 07:11:35PM +0530, Lokesh Vutla wrote:
+> When there are other pwm controllers enabled along with pwm-lp3943,
+> pwm-lp3942 is failing to probe with -EEXIST error. This is because
+> other pwm controller is probed first and assigned pwmchip 0 and
+> pwm-lp3943 is requesting for 0 again. In order to avoid this, assign the
+> chip base with -1, so that id is dynamically allocated.
+>=20
+> Fixes: af66b3c0934e ("pwm: Add LP3943 PWM driver")
+> Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
+
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-k=F6nig@pengutronix.de>
+
+With this patch applied only the pwm-ab8500 driver is left not using -1
+for base.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--lx67b2e737v6sj34
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+cc2EACgkQwfwUeK3K
+7AnkZQgAi/o3YwDU501EKDktgXEeNdF5I0thWm4dv6JY7LYO9/WKSlx/uxpy8SUi
+8yBNHyEVFjPQ/but9ofkXhFpiHZNh7JJeNEvDtVp5l+j7JczCa7s/37LWh/IUldv
+A01zeVXSxdcQOddfWWWiPFSp9RhHD7tztqxVkT3OKezIANmTxo3BHcyJAiadOcap
+adaAR6ukE2aNCU+iKJ030QziHFX3Al/DIr6nv6ORCa+7p/yRg7KWt8wDspWUj2Gb
+VjG7Akm2+Ek0RoWZmBicEe/ZwEDpCoEQ3WxWOutN7esrCTOISJm3Q8U+CWyqKqhn
+OWvjyvqH3g/VlD1V6L9YCHPsdE1XKA==
+=0s0w
+-----END PGP SIGNATURE-----
+
+--lx67b2e737v6sj34--
