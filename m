@@ -2,52 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3270C2A10B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7553D2A10B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:14:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725885AbgJ3WKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 18:10:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725870AbgJ3WKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 18:10:54 -0400
-Subject: Re: [GIT PULL] io_uring fixes for 5.10-rc
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604095854;
-        bh=7eoPqVn9ky43cERCPXoP59JYbhQ9ePlxXz+pTiO6nzg=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=BLIpuEkkayD5NUq323bdA6RrApKfutPwhiygh7gHCW8wz4UnJaFknxb0Cwlq8nAwb
-         pBh2G8LLVPpJtKXHijDXpdl1HIUwCVvxgA/CyD1Yf942oG6VdsAT3Geskw2N+9yV2y
-         xzLD123VZAt42y4/xU0GYS0N0k97wB70l2EjbAp0=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <394acda8-6cce-3cc9-5b5e-6b6f13851ef6@kernel.dk>
-References: <394acda8-6cce-3cc9-5b5e-6b6f13851ef6@kernel.dk>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <394acda8-6cce-3cc9-5b5e-6b6f13851ef6@kernel.dk>
-X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git tags/io_uring-5.10-2020-10-30
-X-PR-Tracked-Commit-Id: c8b5e2600a2cfa1cdfbecf151afd67aee227381d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cf9446cc8e6d85355642209538dde619f53770dc
-Message-Id: <160409585409.7779.10897843910551282266.pr-tracker-bot@kernel.org>
-Date:   Fri, 30 Oct 2020 22:10:54 +0000
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        id S1725830AbgJ3WOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 18:14:20 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45198 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbgJ3WOU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 18:14:20 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604096058;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zIgCECG34REYC6LVslxI9xTCHzmaTLZn/hPr5Sb937w=;
+        b=fmkzs5zeistuEEaSiqJ7Si0xIKCi6xAmGfatgNh5gT61d7GCU6gnc0d5ZWZK43U2DW6KWz
+        DLkQQBilHiCvne6fjAglx8cTbPsfyJKpHbAgnAeftPZrOZdkI17ZmatWX8RqholfCIVYhq
+        Ckl1mKPWtcCzBJEO9LAqnstgIGHWAyQaVf+IurX/X9bTte1/J2aJ290G9JrrOZQWmY19Cf
+        DI5pQqt7z6EjPuKm+I7vNTINAITvARUuXT/Bc/SltExU7lJZeUyf9eQ99IiBIWJSig5tua
+        kCzR2/QKA/384PVJlmpF5BQys4PheMTZV8ic2QXLgt9WDXJLUwGe/a/xj4cMgQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604096058;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zIgCECG34REYC6LVslxI9xTCHzmaTLZn/hPr5Sb937w=;
+        b=GJHn9ma1EEKdVbV3fRB4+lpol/Xsxp/1f8Yx2BH0c8bCV5uNZBaoYM4dqy8/9GWopuPz+O
+        QBstph6pRJdp9YDQ==
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, kan.liang@linux.intel.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, ak@linux.intel.com, eranian@google.com
+Subject: Re: [PATCH 4/6] perf: Optimize get_recursion_context()
+In-Reply-To: <20201030162248.58e388f0@oasis.local.home>
+References: <20201030151345.540479897@infradead.org> <20201030151955.187580298@infradead.org> <20201030181138.215b2b6a@carbon> <20201030162248.58e388f0@oasis.local.home>
+Date:   Fri, 30 Oct 2020 23:14:18 +0100
+Message-ID: <87v9erl5tx.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 30 Oct 2020 11:09:13 -0600:
+On Fri, Oct 30 2020 at 16:22, Steven Rostedt wrote:
+> As this is something that ftrace recursion also does, perhaps we should
+> move this into interrupt.h so that anyone that needs a counter can get
 
-> git://git.kernel.dk/linux-block.git tags/io_uring-5.10-2020-10-30
+Not in interrupt.h please. We should create kernel/include/ for stuff
+which really should only be available in the core kernel code.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cf9446cc8e6d85355642209538dde619f53770dc
+Thanks,
 
-Thank you!
+        tglx
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
