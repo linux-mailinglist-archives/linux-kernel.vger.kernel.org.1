@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B172A08BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0E02A08D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727002AbgJ3PAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726846AbgJ3PAa (ORCPT
+        id S1726885AbgJ3PAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:00:47 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:15998 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727021AbgJ3PAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:00:30 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E72C0613E4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:59:35 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id v4so7015638edi.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:59:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=9fkQXWnoPSypfyxvIrXWSyd1r4Ua0eeDJczOBpIf/BU=;
-        b=TjZDjTDUyG5IOPAjtKhDz6bJNm6DqwPh3GYjQnJOtk58Qe+VS+LrjG9D+UJTL89L5a
-         hPszd6YttBU2gVDN4Hgd0nVvKmUsgBGa0RfR9y4dU1VG6wqrOSeXXlqa/jT4b2a91QjD
-         sT+ma7QKBtdbME0ZKxl0kc6DEI2BSZsRxuMkNkQsvOWxO6URWAKkh65L3Tk879AJ4LqG
-         Bj9eXYFDUcjXqha9S32esb82rsLCjf9rEdFYrDoZfWxC18Um3HNxqbzetSufrWkdrmWB
-         Hgfuw2XlX0g8ZkLr3paRT5DvZbKL3ccSJq24BaLzNsiQWn1tArC4uUyPSHMQ3hVqPZo6
-         Sb9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=9fkQXWnoPSypfyxvIrXWSyd1r4Ua0eeDJczOBpIf/BU=;
-        b=Ut7hED5IOF+JbUv7l6Q2d4ssUU9a+rV9UVI/t1dhX1l7uvkd64Zy/9DGYbauh/I9dP
-         3AD4voMvvRXrMIR3VKbzgZSRFYNf1MJlhgELV6JDs3jxK9Dvpia5NFSxoeU/URuOAzsw
-         0X1vGzSknQCu8LcE7TMGKGUB2r4/mNWUjeUBcO7dZ+ZUmx+sF6E/wq0TT8Qp2XTRYCSe
-         W51tLv/qXLqWJwMNtW1BgV9AcxhK7k1HN4VNYmRkTZbuLjyLy+8Ryrhzh+PcGEazeFpe
-         tYM+f3bmZYDSWSaB9nmvDHJYzVLTm/m7oVX3SFRs87C7kYjvCopHqVSwqQBWQSUQYm4+
-         TUBQ==
-X-Gm-Message-State: AOAM530buDFs9BM+fxs/PnB4wUEoUIxiKpY71UrrQJ7hwQkloMGet1Jy
-        XT7F/iPArGgqPlssJFfAsF38FxfeCgh7m72cXg==
-X-Google-Smtp-Source: ABdhPJz0XXuJnPS5g3+lbBiW+XXmkDUqYoNBDu76t3os6QvlPQSI6Onyl30CWs+Md1o+E0r28qs03HXLpOQosKz8YWo=
-X-Received: by 2002:a50:f307:: with SMTP id p7mr2761574edm.235.1604069974505;
- Fri, 30 Oct 2020 07:59:34 -0700 (PDT)
+        Fri, 30 Oct 2020 11:00:42 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 30 Oct 2020 08:00:41 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 30 Oct 2020 08:00:39 -0700
+X-QCInternal: smtphost
+Received: from c-rojay-linux.qualcomm.com ([10.206.21.80])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 30 Oct 2020 20:30:05 +0530
+Received: by c-rojay-linux.qualcomm.com (Postfix, from userid 88981)
+        id AF77326B6; Fri, 30 Oct 2020 20:30:03 +0530 (IST)
+From:   Roja Rani Yarubandi <rojay@codeaurora.org>
+To:     wsa@kernel.org
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        vkaur@codeaurora.org, pyarlaga@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: [PATCH V6 1/3] soc: qcom: geni: Remove "iova" check
+Date:   Fri, 30 Oct 2020 20:29:57 +0530
+Message-Id: <20201030145959.505-2-rojay@codeaurora.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201030145959.505-1-rojay@codeaurora.org>
+References: <20201030145959.505-1-rojay@codeaurora.org>
 MIME-Version: 1.0
-Received: by 2002:a50:f14c:0:0:0:0:0 with HTTP; Fri, 30 Oct 2020 07:59:34
- -0700 (PDT)
-Reply-To: li.anable85@gmail.com
-From:   Liliane Abel <k.griest04@gmail.com>
-Date:   Fri, 30 Oct 2020 15:59:34 +0100
-Message-ID: <CABAZL7=b-NWks3DKb=fdDjnu_xt_-CcJCqf-F5s0yQCFVH73-A@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dearest
+Remove "iova" check from geni_se_tx_dma_unprep and geni_se_rx_dma_unprep
+functions as checking with dma_mapping_error() is enough.
 
-Greeting my dear, I am Liliane Abel by name, The only daughter of late
-Mr.Benson Abel. My father is one of the top Politician in our country
-and my mother is a farmers and cocoa merchant when they were both
-alive. After the death of my mother, long ago, my father was
-controlling their business until he was poisoned by his business
-associates which he suffered and died.
+Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+---
+Changes in V5:
+ - This is newly added patch in V5. As per Stephen's comments separted
+   this patch from shutdown callback patch.
 
-Before the death of my father, He told me about (two million five
-hundred thousand united states dollars) which he deposited in the bank
-in Lome-Togo, It was the money he intended to transfer overseas for
-investment before he was poisoned. He also instructed me that I should
-seek for foreign partners in any country of my choice who will assist
-me transfer this money in overseas account where the money will be
-wisely invested.
-I am seeking for your kind assistance in the following ways:  (1) to
-provide a safe bank account into where the money will be transferred
-for investment. (2) To serve as a guardian of this fund since I am a
-girl of 19 years old. (3) To make arrangement for me to come over to
-your country to further my education. This is my reason for writing to
-you. Please if you are willing to assist me I will offer you 25% of
-the total money. Reply if  you are interested
-Best regards.
-Liliane Abel.
+Changes in V6:
+ - Fixed nit-picks in commit text.
+
+ drivers/soc/qcom/qcom-geni-se.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
+index d0e4f520cff8..0216b38c1e9a 100644
+--- a/drivers/soc/qcom/qcom-geni-se.c
++++ b/drivers/soc/qcom/qcom-geni-se.c
+@@ -705,7 +705,7 @@ void geni_se_tx_dma_unprep(struct geni_se *se, dma_addr_t iova, size_t len)
+ {
+ 	struct geni_wrapper *wrapper = se->wrapper;
+ 
+-	if (iova && !dma_mapping_error(wrapper->dev, iova))
++	if (!dma_mapping_error(wrapper->dev, iova))
+ 		dma_unmap_single(wrapper->dev, iova, len, DMA_TO_DEVICE);
+ }
+ EXPORT_SYMBOL(geni_se_tx_dma_unprep);
+@@ -722,7 +722,7 @@ void geni_se_rx_dma_unprep(struct geni_se *se, dma_addr_t iova, size_t len)
+ {
+ 	struct geni_wrapper *wrapper = se->wrapper;
+ 
+-	if (iova && !dma_mapping_error(wrapper->dev, iova))
++	if (!dma_mapping_error(wrapper->dev, iova))
+ 		dma_unmap_single(wrapper->dev, iova, len, DMA_FROM_DEVICE);
+ }
+ EXPORT_SYMBOL(geni_se_rx_dma_unprep);
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
