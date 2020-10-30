@@ -2,59 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E1F2A0BBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2942A0BCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727275AbgJ3QvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:51:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59678 "EHLO mail.kernel.org"
+        id S1727323AbgJ3Qv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:51:28 -0400
+Received: from mga04.intel.com ([192.55.52.120]:51243 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725808AbgJ3QvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:51:09 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E03D20725;
-        Fri, 30 Oct 2020 16:51:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604076669;
-        bh=2yuS3dPoBINhat1fzUGcPGhNP/ehJNmVIZDPEmcvgH8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cSMRkTjLBABZ/BOpIqeJA8KfpzG2hpnc2UCNTYVdm2jUbO9IsNkpP3n++pCxCiDBt
-         13NSg8ToSZnt5eEtxTzm0WGGagP0+Tziainba3JUxXEVhv1HcNBJwRHb0vGPGXzNdG
-         a9tZKo7/lVxYbasbsSY+FoFWr8pz10wlFSh/Ij28=
-Date:   Fri, 30 Oct 2020 09:51:07 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Wong Vee Khee <vee.khee.wong@intel.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Wei Feng <weifeng.voon@intel.com>
-Subject: Re: [PATCH net 1/1] stmmac: intel: Fix kernel panic on pci probe
-Message-ID: <20201030095107.3cc31f3b@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201029093228.1741-1-vee.khee.wong@intel.com>
-References: <20201029093228.1741-1-vee.khee.wong@intel.com>
+        id S1726461AbgJ3Qv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:51:26 -0400
+IronPort-SDR: ShDNe3xdIuZALRB15BsRRKxU6HaYIGGNZmtl7kqewSonxR8eKiWa7/c2NECr8sYRfPcUhfB+vn
+ hrwJZfhkFA4Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="166049719"
+X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
+   d="scan'208";a="166049719"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 09:51:26 -0700
+IronPort-SDR: wv0X7bNvWdLe5bJkg147nXN3mkAZoJFZCPDp1E4cPBxsuXWPVbfmBPj427HfUjBsuFvjn/Re4/
+ lHerylMRUBIw==
+X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
+   d="scan'208";a="527169387"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 09:51:25 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kYXdb-002QZ6-RP; Fri, 30 Oct 2020 18:52:27 +0200
+Date:   Fri, 30 Oct 2020 18:52:27 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     john.p.donnelly@oracle.com
+Cc:     linux-kernel@vger.kernel.org, trix@redhat.com
+Subject: Re: [PATCH 4.14 v2 ] platform/x86: Corrects warning: missing braces
+ around initializer
+Message-ID: <20201030165227.GR4077@smile.fi.intel.com>
+References: <20201030155501.7491-1-john.p.donnelly@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030155501.7491-1-john.p.donnelly@oracle.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 17:32:28 +0800 Wong Vee Khee wrote:
-> The commit "stmmac: intel: Adding ref clock 1us tic for LPI cntr"
-> introduced a regression which leads to the kernel panic duing loading
-> of the dwmac_intel module.
+On Fri, Oct 30, 2020 at 08:55:01AM -0700, john.p.donnelly@oracle.com wrote:
+> From: John Donnelly <john.p.donnelly@oracle.com>
 > 
-> Move the code block after pci resources is obtained.
-> 
-> Fixes: b4c5f83ae3f3 ("stmmac: intel: Adding ref clock 1us tic for LPI cntr")
-> Cc: Voon Weifeng <weifeng.voon@intel.com>
-> Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+> The assignment statement of a local variable "struct tp_nvram_state s[2] = {0};
+> is not valid for all versions of compilers.
 
-Applied, thanks!
+I don't get the subject. IS it backport of existing change to v4.14, or you are
+trying to fix v4.14? If the latter is the case, it's not correct order. Try
+latest vanilla first (v5.10-rc1 as of today) and if there is still an issue,
+submit a patch.
+
+> Fixes: 515ded02bc4b ("platform/x86: thinkpad_acpi: initialize tp_nvram_state variable")
+> 
+> Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
+
+Should not be blank line in between.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
