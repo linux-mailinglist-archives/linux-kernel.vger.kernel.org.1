@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8652A0DBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E112A0DBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:46:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727354AbgJ3SqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:46:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727335AbgJ3SqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:46:21 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF1AF206DD;
-        Fri, 30 Oct 2020 18:46:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604083581;
-        bh=XyrEe9Gcfh+0x4dtsnOlf3pZdGqIPBd2velt068peaI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kjH8U21DIQtE2ViZ8Qu2Mfql194wpBkOU5B8oJZIOutyLpucYxxzBIDM/+s+T/qNW
-         E1TQRViMUhDKcJzaUBoCq0M/csNLsTKG+klSKV9iyP3jjZRf+7hYpUWblIprmOeYgb
-         mJj9QCCLi/dS8lbbmUh4Wa7zzVfXoouSbF48PG5I=
-Date:   Fri, 30 Oct 2020 18:46:13 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        moderated for non-subscribers <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: qcom: MSM8996 depends on COMMON_CLK
-Message-ID: <20201030184613.GK4405@sirena.org.uk>
-References: <548bb7f8-672d-3d95-0d78-cef1c9837a42@infradead.org>
- <a55d71fd-d5b1-26f9-c3f0-7f2ff91bef07@infradead.org>
+        id S1727374AbgJ3Sqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727349AbgJ3Sqa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 14:46:30 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36343C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:46:30 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id h21so8535768iob.10
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rKR3nSyjdOhRFeCLOasGmXfLUPItd6VT/MZ6kYlzlTI=;
+        b=ws87XD6GkkTF54VE/BqitpkVccv5nuUdtr1a4OWKvH3izPR1Dlnm8Vdllij2bllowW
+         s0ntfmIP4ghwFzRWMAo18OFqKKxqjd15SpmEJXH9txb6m27Kb2eF8D5sWMlWUEzpwKgx
+         oZzOQnASHz/BVD+6xNxDsBPssUrsnkrC90T0MDAXk1SNYBmMtmF1V7qgkeGC1d/1s+h1
+         Iytr+wISlR254q72Q8F5ur+VPUq9T9CnmviNcY++AnKjXEpSV3vkcgFN+7KmbToRsc7W
+         kjqvP+IcJoIuVDImTMuUUNxX0t2ZNlwbruQEEE/mk+R2Vt9u9tibJD9i3klGsFesGJjo
+         JrfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rKR3nSyjdOhRFeCLOasGmXfLUPItd6VT/MZ6kYlzlTI=;
+        b=f3VA+p5a+uV6TAP+NA9cN93YqPPQKyQDgeD6tq3YxdJYdPT6ZvBd6w5bWGR8YSIXs1
+         jcmJ4Al9BPAEX/P3MHWaIWz5XYpzQ5nmNbdwYqhNB6PS7+LEgHL/avSSiIwDigOiw+ts
+         w+9nSzIvv1M1UImZ/FWyaA7b1W9d9mSH6Bn1bxow0NbLpIFCnTVTZY5hXsg5xC+wBe68
+         SeIMDBxS3/mXMWgN/hZqdyMlDXuUnWN8VD4tjcF94t1ghU1uQNHaMRrCmCbWtqp4v5Go
+         BKnAekTEf8bj9fOO9zgUuo5hMNhnYmXbVDBQItfTvkC5U7L7WNuPPaMcs1jrLn9kewqf
+         MFMg==
+X-Gm-Message-State: AOAM533qUrZDila+iVyPm27HQr9fvdpwNB75KtJquDat4fqVMlzT7l6y
+        3RVtZFvCS7vcr9IkgxIDRtomMgMH4rWZww==
+X-Google-Smtp-Source: ABdhPJzPFbRkZgb5bbf+bDEq874LE5nnjojpANWw5M3akdwtJptMRqmVA6N5+ffeaQFVo6f0M85H9A==
+X-Received: by 2002:a02:ba13:: with SMTP id z19mr3094188jan.122.1604083588943;
+        Fri, 30 Oct 2020 11:46:28 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id c1sm5687324ile.0.2020.10.30.11.46.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 11:46:28 -0700 (PDT)
+Subject: Re: [PATCH -next] fs: Fix memory leaks in do_renameat2() error paths
+To:     Al Viro <viro@zeniv.linux.org.uk>, Qian Cai <cai@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201030152407.43598-1-cai@redhat.com>
+ <20201030184255.GP3576660@ZenIV.linux.org.uk>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <ad9357e9-8364-a316-392d-7504af614cac@kernel.dk>
+Date:   Fri, 30 Oct 2020 12:46:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="08ATZu8fEq0x2T3M"
-Content-Disposition: inline
-In-Reply-To: <a55d71fd-d5b1-26f9-c3f0-7f2ff91bef07@infradead.org>
-X-Cookie: Blow it out your ear.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201030184255.GP3576660@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/30/20 12:42 PM, Al Viro wrote:
+> On Fri, Oct 30, 2020 at 11:24:07AM -0400, Qian Cai wrote:
+>> We will need to call putname() before do_renameat2() returning -EINVAL
+>> to avoid memory leaks.
+>>
+>> Fixes: 3c5499fa56f5 ("fs: make do_renameat2() take struct filename")
+>> Signed-off-by: Qian Cai <cai@redhat.com>
+> 
+> May I ask where has the original commit been posted for review?  And why
+> the bleeding hell does io_uring touch rename-related codepaths in the
+> first place?
 
---08ATZu8fEq0x2T3M
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+See other reply, it's being posted soon, just haven't gotten there yet
+and it wasn't ready.
 
-On Fri, Oct 30, 2020 at 11:31:25AM -0700, Randy Dunlap wrote:
+It's a prep patch so we can call do_renameat2 and pass in a filename
+instead. The intent is not to have any functional changes in that prep
+patch. But once we can pass in filenames instead of user pointers, it's
+usable from io_uring.
 
-> Ping. I am still seeing this kconfig warning in linux-next 20201030.
+I'll post this as soon as I get around to it, it's been on the back
+burner for the last month or so.
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
+-- 
+Jens Axboe
 
-Sending content free pings adds to the mail volume (if they are seen at
-all) which is often the problem and since they can't be reviewed
-directly if something has gone wrong you'll have to resend the patches
-anyway, so sending again is generally a better approach though there are
-some other maintainers who like them - if in doubt look at how patches
-for the subsystem are normally handled.
-
---08ATZu8fEq0x2T3M
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+cX3QACgkQJNaLcl1U
-h9Bxgwf9EuOJbzQV1GpWxesW/kvtkASRPNpaKeiv1BMbxPRfx2Kb2FyVoOZU0+7d
-PjeJEgQHzETyT3vHYz8AT34DZGSq/+PXygoScPiSqKkQiyIY2CeQFkoQbivA6gSl
-Z8tCZCQ2voUq3trdSwxCVnxLUB45TePEQrdM7Y34azyqLRHQI7xJZkmLI7LFQQA9
-04+czJ17zD4eGXQ6oSmyJxUoTZO85zB2+cw84rNykHJBTm8qBXS5ZZAsZ4d9SFGU
-vOX7w9un6IZSWHgtlWfOkTn+p0FBFCowcIv1HT/EW451FFY1tmjXLCicd1R1QuUL
-fE0mmHQlgvCViEy8Vaws8J8OjTDVhg==
-=Z8YZ
------END PGP SIGNATURE-----
-
---08ATZu8fEq0x2T3M--
