@@ -2,95 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B4829FB31
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A684629FB33
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbgJ3C0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 22:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgJ3C0J (ORCPT
+        id S1726224AbgJ3C0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 22:26:18 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:34219 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbgJ3C0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 22:26:09 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA62C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:26:07 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c9so8749wml.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:26:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=googlenew;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0dSc/u2vFyuVIH9pLeGn6Txj8jzDcQIh2Oq8sqMcN9Q=;
-        b=Q4jgCNbSL6ILYvuVYYrVqY1MX9KZDszP7B3nuS9o1g6DunZxcLKcvv3TOx2EHN4Jwr
-         ZnoVlEFesIz7vpMBIuU5eYzLKKBKmoUz1yesKc2iDDFkY8T8IFJtQw8OtnmNj0+5pk+/
-         OY0KNi5DAWwixvYn+dnm3tsJO+4W4Kbre3ZRDNh8FEdI+FwDe+3DBi4CVQmfZL9NrPlc
-         Bk0e9O8g7WvvSRQMHGj+Nm+9jxeaqJ/XU08/HlAdeYzHbq1i01A9nFsc16DOBAkXvmBL
-         E+CFXkfPHFrV4FPbjzUVUe2zIQbDyEbzL/s/9NhIl1Lr3T+yMNoK5D9akT7OFwOTzSFf
-         RG9w==
+        Thu, 29 Oct 2020 22:26:17 -0400
+Received: by mail-lj1-f196.google.com with SMTP id y16so5340487ljk.1;
+        Thu, 29 Oct 2020 19:26:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0dSc/u2vFyuVIH9pLeGn6Txj8jzDcQIh2Oq8sqMcN9Q=;
-        b=VryTBSrSA9iNbHm9EpScR7EsazUVrpH7w7ia3hKt3bces4BQaMYdcJpq5ptEOtQogX
-         nlbNunJYJ0b5ufycRtAiSHpwhE07HPRlFEQ1nuXJ3apIWTKx8jS9EL8ZGohTe6kPKkFU
-         +uIFwKDgdpwxxy/cb/Rzt4ywX1HCqiLU3TNyjX6WVsjId/VoD5MXn+2X9BUZ8851RPpD
-         eCY84BgBRW/I1TGVXiMCmXvZMJDJLO5wvUqPtRu0y/BiFCA6kVperoqNoFE9McHSfyJW
-         5kcSS3cTbAY3RTozodusNfiTYxz3cxtwWNZ6D10cANJ1zWhYOadlbQwpURDmlTAChkKR
-         4sLw==
-X-Gm-Message-State: AOAM531foU/p/Q5y+uTxTfxu45Pb+qXq2HBvvHi6wN+oqHdC01Il0asx
-        bHNSgq0P6wlX2V0pRWsspmz1pom1dy/J9i3y
-X-Google-Smtp-Source: ABdhPJxu5DIa8TSCGmWh7GBS45lYXSHm2gfDhUjPWeZLCdWfEtvt3xCJm0a9LMNPck06YNScmAbsPw==
-X-Received: by 2002:a05:600c:22d9:: with SMTP id 25mr1942017wmg.21.1604024766044;
-        Thu, 29 Oct 2020 19:26:06 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id i14sm2757170wml.24.2020.10.29.19.26.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 19:26:05 -0700 (PDT)
-From:   Dmitry Safonov <dima@arista.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Dmitry Safonov <dima@arista.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hillf Danton <hdanton@sina.com>, netdev@vger.kernel.org
-Subject: [PATCH 3/3] xfrm/compat: Don't allocate memory with __GFP_ZERO
-Date:   Fri, 30 Oct 2020 02:26:00 +0000
-Message-Id: <20201030022600.724932-4-dima@arista.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201030022600.724932-1-dima@arista.com>
-References: <20201030022600.724932-1-dima@arista.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AMV8JRqZetrNRbRgXvrwv2LRGFW2iY1pfcrFgn9kKw8=;
+        b=Kh17ojqZiXVQnqIAXQh9/pvB5eJPGbvtq9lmRL0g/R2rjU2NruKNtYgVMErRU0WzT/
+         7UspPWrESxsZO0vDRcGEK1rqtTVzcXjGHeWFRo48EFtutxTOtR1R4wN8cP9TwrL49bRO
+         sY2F73FfRwxONcMkgy/E/YH9pm+egmj1sCix5+7ZYOHq24QezFEku2pR0qEORw0w2iBh
+         i72AOps4GSNaTKWgqbj2pRJhKf3XJXXeahTTXqBP8uxIgHV8N/uysKRPqywcbldemTwc
+         t7QFtPEVm+uxkSPUFsCHyIayHgjM7YVkPjPRXh6PAenr2HjDJBIFA0Z41xixpHEGOyS0
+         5UCw==
+X-Gm-Message-State: AOAM530PFMhRGLO4jkN2Jxu7RWCtQJl0iKCRdLdG5yQuCNJbIj868FWs
+        Ec/93dc2+DK76KMiPScIzs6wh/7zVce6vA==
+X-Google-Smtp-Source: ABdhPJyRtb9C52kh7wNjrSDWDdx3q81NZ3pX2rgWDkI246Rc9kvAOVzHUUq4Tlu7RIFmMD+rT3Z0vw==
+X-Received: by 2002:a2e:8e83:: with SMTP id z3mr52600ljk.341.1604024774498;
+        Thu, 29 Oct 2020 19:26:14 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id f24sm465377lfh.73.2020.10.29.19.26.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 19:26:14 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id b1so5883378lfp.11;
+        Thu, 29 Oct 2020 19:26:13 -0700 (PDT)
+X-Received: by 2002:ac2:46fc:: with SMTP id q28mr1114045lfo.551.1604024773741;
+ Thu, 29 Oct 2020 19:26:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201029201537.598182-1-jernej.skrabec@siol.net>
+In-Reply-To: <20201029201537.598182-1-jernej.skrabec@siol.net>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Fri, 30 Oct 2020 10:26:03 +0800
+X-Gmail-Original-Message-ID: <CAGb2v665GQBTPqjAju9Cauh94GHBWCcoZf595KhfeYR_kNrKVA@mail.gmail.com>
+Message-ID: <CAGb2v665GQBTPqjAju9Cauh94GHBWCcoZf595KhfeYR_kNrKVA@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH] arm64: dts: allwinner: h6: PineH64 model B:
+ Add wifi
+To:     Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-32-bit to 64-bit messages translator zerofies needed paddings in the
-translation, the rest is the actual payload.
-Don't allocate zero pages as they are not needed.
+On Fri, Oct 30, 2020 at 4:10 AM Jernej Skrabec <jernej.skrabec@siol.net> wrote:
+>
+> PineH64 model B contains RTL8723CS wifi+bt combo module.
+>
+> Since bluetooth support is not yet squared away, only wifi is enabled
+> for now.
+>
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> ---
+>  .../dts/allwinner/sun50i-h6-pine-h64-model-b.dts   | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts
+> index f4c8966a6497..3f42b8b29b0f 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts
+> @@ -10,6 +10,12 @@ / {
+>         compatible = "pine64,pine-h64-model-b", "allwinner,sun50i-h6";
+>
+>         /delete-node/ reg_gmac_3v3;
+> +
+> +       wifi_pwrseq: wifi_pwrseq {
+> +               compatible = "mmc-pwrseq-simple";
+> +               reset-gpios = <&r_pio 1 3 GPIO_ACTIVE_LOW>; /* PM3 */
+> +               post-power-on-delay-ms = <200>;
+> +       };
+>  };
+>
+>  &hdmi_connector {
+> @@ -19,3 +25,11 @@ &hdmi_connector {
+>  &emac {
+>         phy-supply = <&reg_aldo2>;
+>  };
+> +
+> +&mmc1 {
+> +       vmmc-supply = <&reg_cldo3>;
 
-Signed-off-by: Dmitry Safonov <dima@arista.com>
----
- net/xfrm/xfrm_compat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please add vqmmc-supply, which according to the schematic is supplied by ALDO1.
 
-diff --git a/net/xfrm/xfrm_compat.c b/net/xfrm/xfrm_compat.c
-index 556e9f33b815..d8e8a11ca845 100644
---- a/net/xfrm/xfrm_compat.c
-+++ b/net/xfrm/xfrm_compat.c
-@@ -564,7 +564,7 @@ static struct nlmsghdr *xfrm_user_rcv_msg_compat(const struct nlmsghdr *h32,
- 		return NULL;
- 
- 	len += NLMSG_HDRLEN;
--	h64 = kvmalloc(len, GFP_KERNEL | __GFP_ZERO);
-+	h64 = kvmalloc(len, GFP_KERNEL);
- 	if (!h64)
- 		return ERR_PTR(-ENOMEM);
- 
--- 
-2.28.0
+After that,
 
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+
+> +       mmc-pwrseq = <&wifi_pwrseq>;
+> +       bus-width = <4>;
+> +       non-removable;
+> +       status = "okay";
+> +};
+> --
+> 2.29.1
+>
+> --
+> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
+> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/20201029201537.598182-1-jernej.skrabec%40siol.net.
