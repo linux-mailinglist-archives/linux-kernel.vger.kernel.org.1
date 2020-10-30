@@ -2,175 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B765129FB85
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9461B29FB95
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725841AbgJ3Cmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 22:42:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3Cmm (ORCPT
+        id S1726270AbgJ3Cqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 22:46:33 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:33845 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbgJ3CqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 22:42:42 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9900C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:42:40 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id c11so5241004iln.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:42:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yIt6f0Gqp2APVc0CnjdajlwFirKpKzNrhzjPk7NUqxQ=;
-        b=EcGmpoVR5TR1/E877Qm8AlwHKKh3ntlOrhX8mAZVoc4SJYKL5Pq9/akRK5tu25b1uj
-         PD+1TAf2QXC8b7cJjT6SmnoE5v7GwuXBLr+8Mtmsl69kMcJ7byE/VMLlod1Vgc7pxZCy
-         /hisoA82dWzWaoKE8pAwJDjuLAOQ5hqAh7c2w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yIt6f0Gqp2APVc0CnjdajlwFirKpKzNrhzjPk7NUqxQ=;
-        b=Tl/zwE27IzBZf2xNTieQsiul7bjOknJj9a/XwcfHDjasGhfPEPZKf183cPK7d614aC
-         EgmjeOWS5H9Xz8H4lmtGReFcEreJquDveTDQWC+jnvbNnC12kyjSahE2/GX97RYIQbCS
-         Pld/kFNcmbolbYr1oDNgCgfEhCwPju1x4kdPCNVpPyXYykOikVzslwmTlrdDbWp4YQnT
-         z6tIxnt00cFyL7Vr1OMkVv79O5P1EP07GfIWQnfpimxx4/W5h0YBRyFsx33pEujhRCWG
-         EGYJtJDt2ziNaQYJjboQKtttOulnlmAvWzdkKE3B7TyDwE4Q5RgvEDgLeBWoXheAyfY6
-         tEjw==
-X-Gm-Message-State: AOAM5332BSX2MFbOLny9o+xKxdCQaNglSmTiawN7e7FqgGZ8krSdkW74
-        XTQ5Wg2aKBc3TrU/yQ6QyKopYV5U22TZ5QDi3evWSA==
-X-Google-Smtp-Source: ABdhPJxSHWF0JynyIEPbrtCks2nOnJJX/rxNtRdqIZhFHS7S7o146eNeOMMpamACN5bpuFw0kKquwZSlaLlwrhQEdfo=
-X-Received: by 2002:a92:8906:: with SMTP id n6mr370227ild.13.1604025760061;
- Thu, 29 Oct 2020 19:42:40 -0700 (PDT)
+        Thu, 29 Oct 2020 22:46:08 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 09U2jb7lB019635, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb03.realtek.com.tw[172.21.6.96])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 09U2jb7lB019635
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 30 Oct 2020 10:45:37 +0800
+Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
+ RTEXMB03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Fri, 30 Oct 2020 10:45:36 +0800
+Received: from RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa]) by
+ RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa%3]) with mapi id
+ 15.01.2044.006; Fri, 30 Oct 2020 10:45:36 +0800
+From:   Willy Liu <willy.liu@realtek.com>
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>
+CC:     "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next 1/2] net: phy: realtek: Add phy ids for RTL8226-CG/RTL8226B-CG
+Thread-Topic: [PATCH net-next 1/2] net: phy: realtek: Add phy ids for
+ RTL8226-CG/RTL8226B-CG
+Thread-Index: AQHWrew33+tlrfM0Wk2blDLfQG+RIamuD3mAgAAC/wCAAV3roA==
+Date:   Fri, 30 Oct 2020 02:45:36 +0000
+Message-ID: <e00771ccacb648b6a00b914e0421b080@realtek.com>
+References: <1603973277-1634-1-git-send-email-willy.liu@realtek.com>
+ <20201029133759.GQ933237@lunn.ch>
+ <2cca91c7-99eb-3109-9958-c3db43a43a9b@gmail.com>
+In-Reply-To: <2cca91c7-99eb-3109-9958-c3db43a43a9b@gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.179.131]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20201020014336.2076526-1-joel@joelfernandes.org>
- <20201020014336.2076526-9-joel@joelfernandes.org> <20201026124724.GT2611@hirez.programming.kicks-ass.net>
- <20201029182429.GA1844482@google.com> <20201029185933.GG2611@hirez.programming.kicks-ass.net>
- <CAEXW_YRtrhhL4Gc8W8_-2CR1CCw6_hhtnwSdQ-dMLYCJ+fP+RA@mail.gmail.com>
-In-Reply-To: <CAEXW_YRtrhhL4Gc8W8_-2CR1CCw6_hhtnwSdQ-dMLYCJ+fP+RA@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 29 Oct 2020 22:42:29 -0400
-Message-ID: <CAEXW_YTnJWANAZNeR9b=5xUeHu1CAPq9vgYaH8WSHgApJZ21Rw@mail.gmail.com>
-Subject: Re: [PATCH v8 -tip 08/26] sched/fair: Snapshot the min_vruntime of
- CPUs on force idle
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Glexiner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>,
-        =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 10:36 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-
-> > > > +bool cfs_prio_less(struct task_struct *a, struct task_struct *b)
-> > > > +{
-> > > > +   struct rq *rq = task_rq(a);
-> > > > +   struct sched_entity *sea = &a->se;
-> > > > +   struct sched_entity *seb = &b->se;
-> > > > +   struct cfs_rq *cfs_rqa;
-> > > > +   struct cfs_rq *cfs_rqb;
-> > > > +   s64 delta;
-> > > > +
-> > > > +   SCHED_WARN_ON(task_rq(b)->core != rq->core);
-> > > > +
-> > > > +   while (sea->cfs_rq->tg != seb->cfs_rq->tg) {
-> > > > +           int sea_depth = sea->depth;
-> > > > +           int seb_depth = seb->depth;
-> > > > +
-> > > > +           if (sea_depth >= seb_depth)
-> > > > +                   sea = parent_entity(sea);
-> > > > +           if (sea_depth <= seb_depth)
-> > > > +                   seb = parent_entity(seb);
-> > > > +   }
-> > > > +
-> > > > +   if (rq->core->core_forceidle) {
-> > > > +           se_fi_update(sea, rq->core->core_forceidle_seq, true);
-> > > > +           se_fi_update(seb, rq->core->core_forceidle_seq, true);
-> > > > +   }
-> > >
-> > > As we chatted on IRC you mentioned the reason for the sync here is:
-> > >
-> > >  say we have 2 cgroups (a,b) under root, and we go force-idle in a, then we
-> > >  update a and root. Then we pick and end up in b, but b hasn't been updated
-> > >  yet.
-> > >
-> > > One thing I was wondering about that was, if the pick of 'b' happens much
-> > > later than 'a', then the snapshot might be happening too late right?
-> >
-> > No, since this is the first pick in b since fi, it cannot have advanced.
-> > So by updating to fi_seq before picking, we guarantee it is unchanged
-> > since we went fi.
->
-> Makes complete sense.
->
-> I got it to a point where the latencies are much lower, but still not
-> at a point where it's as good as the initial patch I posted.
->
-> There could be more bugs. At the moment, the only one I corrected in
-> your patch is making the truth table do !(!fib && fi). But there is
-> still something else going on.
-
-Forgot to ask, do you also need to do the task_vruntime_update() for
-the unconstrained pick?
-
-That's in line with what you mentioned: That you still need to do the
-update if fi_before == false and fi_now == false.
-
-So something like this?
-@@ -4209,6 +4209,10 @@ pick_next_task(struct rq *rq, struct
-task_struct *prev, struct rq_flags *rf)
-                                next = p;
-                                trace_printk("unconstrained pick: %s/%d %lx\n",
-                                             next->comm, next->pid,
-next->core_cookie);
-+
-+                               WARN_ON_ONCE(fi_before);
-+                               task_vruntime_update(rq_i, p);
-+
-                                goto done;
-                        }
-
-Quoting the truth table:
-
-> >         fib     fi      X
-> >
-> >         0       0       1
-> >         0       1       0
-> >         1       0       1
-> >         1       1       1
-> >
-
-thanks,
-
- - Joel
+T24gVGh1LCBPY3QgMjksIDIwMjAgMjE6NDksIEhlaW5lciBIYWxsd2VpdCB3cm90ZToNCj4gT24g
+MjkuMTAuMjAyMCAxNDozNywgQW5kcmV3IEx1bm4gd3JvdGU6DQo+ID4gT24gVGh1LCBPY3QgMjks
+IDIwMjAgYXQgMDg6MDc6NTdQTSArMDgwMCwgV2lsbHkgTGl1IHdyb3RlOg0KPiA+PiBSZWFsdGVr
+IHNpbmdsZS1wb3J0IDIuNUdicHMgRXRoZXJuZXQgUEhZIGlkcyBhcyBiZWxvdzoNCj4gPj4gUlRM
+ODIyNi1DRzogMHgwMDFjYzgwMChFUykvMHgwMDFjYzgzOChNUCkNCj4gPj4gUlRMODIyNkItQ0cv
+UlRMODIyMUItQ0c6IDB4MDAxY2M4NDAoRVMpLzB4MDAxY2M4NDgoTVApDQo+ID4+IEVTOiBlbmdp
+bmVlciBzYW1wbGUNCj4gPj4gTVA6IG1hc3MgcHJvZHVjdGlvbg0KPiA+Pg0KPiA+PiBTaW5jZSBh
+Ym92ZSBQSFlzIGFyZSBhbHJlYWR5IGluIG1hc3MgcHJvZHVjdGlvbiBzdGFnZSwgbWFzcw0KPiA+
+PiBwcm9kdWN0aW9uIGlkIHNob3VsZCBiZSBhZGRlZC4NCj4gPj4NCj4gPj4gU2lnbmVkLW9mZi1i
+eTogV2lsbHkgTGl1IDx3aWxseS5saXVAcmVhbHRlay5jb20+DQo+ID4+IC0tLQ0KPiA+PiAgZHJp
+dmVycy9uZXQvcGh5L3JlYWx0ZWsuYyB8IDE4ICsrKysrKysrKysrKysrLS0tLQ0KPiA+PiAgMSBm
+aWxlIGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pICBtb2RlIGNoYW5n
+ZSAxMDA2NDQNCj4gPj4gPT4gMTAwNzU1IGRyaXZlcnMvbmV0L3BoeS9yZWFsdGVrLmMNCj4gPj4N
+Cj4gPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3BoeS9yZWFsdGVrLmMgYi9kcml2ZXJzL25l
+dC9waHkvcmVhbHRlay5jDQo+ID4+IG9sZCBtb2RlIDEwMDY0NCBuZXcgbW9kZSAxMDA3NTUgaW5k
+ZXggZmIxZGI3MS4uOTg4ZjA3NQ0KPiA+PiAtLS0gYS9kcml2ZXJzL25ldC9waHkvcmVhbHRlay5j
+DQo+ID4+ICsrKyBiL2RyaXZlcnMvbmV0L3BoeS9yZWFsdGVrLmMNCj4gPj4gQEAgLTU3LDYgKzU3
+LDkgQEANCj4gPj4gICNkZWZpbmUgUlRMR0VOX1NQRUVEX01BU0sJCQkweDA2MzANCj4gPj4NCj4g
+Pj4gICNkZWZpbmUgUlRMX0dFTkVSSUNfUEhZSUQJCQkweDAwMWNjODAwDQo+ID4+ICsjZGVmaW5l
+IFJUTF84MjI2X01QX1BIWUlECQkJMHgwMDFjYzgzOA0KPiA+PiArI2RlZmluZSBSVExfODIyMUJf
+RVNfUEhZSUQJCQkweDAwMWNjODQwDQo+ID4+ICsjZGVmaW5lIFJUTF84MjIxQl9NUF9QSFlJRAkJ
+CTB4MDAxY2M4NDgNCj4gPj4NCj4gPj4gIE1PRFVMRV9ERVNDUklQVElPTigiUmVhbHRlayBQSFkg
+ZHJpdmVyIik7DQo+IE1PRFVMRV9BVVRIT1IoIkpvaG5zb24NCj4gPj4gTGV1bmciKTsgQEAgLTUz
+MywxMCArNTM2LDE3IEBAIHN0YXRpYyBpbnQNCj4gPj4gcnRsZ2VuX21hdGNoX3BoeV9kZXZpY2Uo
+c3RydWN0IHBoeV9kZXZpY2UgKnBoeWRldikNCj4gPj4NCj4gPj4gIHN0YXRpYyBpbnQgcnRsODIy
+Nl9tYXRjaF9waHlfZGV2aWNlKHN0cnVjdCBwaHlfZGV2aWNlICpwaHlkZXYpICB7DQo+ID4+IC0J
+cmV0dXJuIHBoeWRldi0+cGh5X2lkID09IFJUTF9HRU5FUklDX1BIWUlEICYmDQo+ID4+ICsJcmV0
+dXJuIChwaHlkZXYtPnBoeV9pZCA9PSBSVExfR0VORVJJQ19QSFlJRCkgfHwNCj4gPj4gKwkgICAg
+ICAgKHBoeWRldi0+cGh5X2lkID09IFJUTF84MjI2X01QX1BIWUlEKSAmJg0KPiA+PiAgCSAgICAg
+ICBydGxnZW5fc3VwcG9ydHNfMl81Z2JwcyhwaHlkZXYpOw0KPiA+DQo+ID4gSGkgV2lsbHkNCj4g
+Pg0KPiA+IElmIGkgdW5kZXJzdGFuZCB0aGUgY29kZSBjb3JyZWN0bHksIHRoaXMgbWF0Y2ggZnVu
+Y3Rpb24gaXMgdXNlZA0KPiA+IGJlY2F1c2UgdGhlIGVuZ2luZWVyaW5nIHNhbXBsZSBkaWQgbm90
+IHVzZSBhIHByb3BlciBJRD8gVGhlIG1hc3MNCj4gPiBwcm9kdWN0aW9uIHBhcnQgZG9lcywgc28g
+dGhlcmUgaXMgbm8gbmVlZCB0byBtYWtlIHVzZSBvZiB0aGlzIGhhY2suDQo+ID4gUGxlYXNlIGp1
+c3QgbGlzdCBpdCBhcyBhIG5vcm1hbCBQSFkgdXNpbmcgUEhZX0lEX01BVENIX0VYQUNUKCkuDQo+
+ID4NCj4gUmlnaHQuIE15IHVuZGVyc3RhbmRpbmc6DQo+IFRoZXNlIFBIWSdzIGV4aXN0IGFzIHN0
+YW5kYWxvbmUgY2hpcHMgYW5kIGludGVncmF0ZWQgd2l0aCBSVEw4MTI1IE1BQy4NCj4gSUlSQyBm
+b3IgUlRMODEyNUEgdGhlIGludGVncmF0ZWQgUEhZIHJlcG9ydHMgUlRMX0dFTkVSSUNfUEhZSUQs
+IHNpbmNlDQo+IFJUTDgxMjVCIGl0IHJlcG9ydHMgdGhlIHNhbWUgUEhZSUQgYXMgdGhlIHN0YW5k
+YWxvbmUgbW9kZWwuDQpIaSBBbmRyZXcgJiYgSGVpbmVyLA0KVGhhbmtzIGZvciB5b3VyIGluZm9y
+bWF0aW9uLCBJIHdpbGwgY3JlYXRlIGRyaXZlcnMgZm9yIFJUTDgyMjYtQ0cgJiBSVEw4MjIxQi1D
+Rw0KYXMgc3RhbmRhbG9uZSBtb2RlbHMuDQogDQo+IC0tLS0tLVBsZWFzZSBjb25zaWRlciB0aGUg
+ZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZS1tYWlsLg0K
