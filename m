@@ -2,261 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2443129FC04
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D2629FC08
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbgJ3DHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 23:07:40 -0400
-Received: from smtprelay0170.hostedemail.com ([216.40.44.170]:45330 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725780AbgJ3DHk (ORCPT
+        id S1726122AbgJ3DIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 23:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbgJ3DIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 23:07:40 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id DD427629;
-        Fri, 30 Oct 2020 03:07:37 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:1:2:41:334:355:368:369:379:541:800:960:967:968:973:988:989:1260:1311:1314:1345:1437:1515:1605:1730:1747:1777:1792:1801:1981:2194:2198:2199:2200:2393:2525:2561:2564:2682:2685:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3865:3866:3867:3868:3870:3872:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4052:4250:4321:4419:4605:5007:6119:6261:6691:6737:6742:7903:7904:8603:9025:9149:10004:10848:11026:11232:11473:11657:11658:11914:12043:12048:12296:12297:12438:12555:12895:12986:13894:13972:14394:21080:21433:21451:21627:30029:30054:30089,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: rain79_4f07ec327292
-X-Filterd-Recvd-Size: 11188
-Received: from joe-laptop.perches.com (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 30 Oct 2020 03:07:34 +0000 (UTC)
-From:   Joe Perches <joe@perches.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org,
-        linux-mm@kvack.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] treewide: Remove stringification from __alias macro definition
-Date:   Thu, 29 Oct 2020 20:07:31 -0700
-Message-Id: <8451df41359b52f048780d19e07b6fa4445b6392.1604026698.git.joe@perches.com>
-X-Mailer: git-send-email 2.26.0
+        Thu, 29 Oct 2020 23:08:12 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C355C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:08:12 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id v6so5948242lfa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:08:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zehjsoI4/E9mlHSzS3GihRUsNzlSRlM3AQ/tc2JFGWU=;
+        b=q9NaR3BRuvTzXjW1tFWJC7ghaDMvWYJV4F/R/sfglQ1Do9mBfL2N70a3GMysG9ufy0
+         u543bRU8Q+xerhl0QLubqtnupkWBP51hSdP6NGnIl1X+ZkNPyDykSBY9poLAPBpDjUaq
+         0s/iVSYcxsg8yKonlY/PJPY/jry+VmI1lRRiHS3TdiNh6LhgQu6AH1HsJODK3KCF2zbN
+         XVJIkv9q1FDLnxGo0lUOJKAN5HFGYiHMifoR0MiKuttOYdJ8iNLqqbr7jNQUtCT2HPv6
+         PpvSh6aIPeBUKzLXaKv3qj2zy2CI2ktJbdFRW/aJd/vL4/1EkohKJVopAvgKPxXjiB09
+         YJRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zehjsoI4/E9mlHSzS3GihRUsNzlSRlM3AQ/tc2JFGWU=;
+        b=bu1yR0YXDjVW5riheL/yVOHhnS+56bSpPp71vfuEiTlm28DGQRgjy8qjL2z+9Dh/j0
+         409TuTpH1jQN+B8hK/M1Xkbb7V9SMh6qp8WuDt+9JiqfGdJFv398x3ov15NdKd6YdE8R
+         JC5HWbhVtB7VQvkSKCHbsOzQvUgSr6VvdNUpGHUjdyvvPtOG84JJOq1qt510uhm22tex
+         /b4G7aROgyDb9Td3O7pXUQKAmH+pmGWZYGfDXmXaxUCXT5jGRPj3TPCNhbGf87mONcn0
+         rKbk9lMG93yKgyPRU55NVc3L8THsD4QNMmCMYy/YR7oBzyjo/zivOsPQA0V8KRFaInnZ
+         PP9w==
+X-Gm-Message-State: AOAM532b9CVpRvtJcwzNzYE0k20ODQQuIHWQ6Bp8YRVOb5Kp8Fd9BwTO
+        pfKciED5+c6xmJk9A9bea2rCRSARcqfX0XCOoGpv2g==
+X-Google-Smtp-Source: ABdhPJwFhikEezi6cK75+Nh1jGpDUQvWygSxV/rVzK4JtvxTrHv+oYrN72yFW4FSMWmsrMzt7Jt48+wkeRxq1/Q08TY=
+X-Received: by 2002:a19:e308:: with SMTP id a8mr30300lfh.573.1604027290187;
+ Thu, 29 Oct 2020 20:08:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201027200358.557003-1-mic@digikod.net> <20201027200358.557003-9-mic@digikod.net>
+ <CAG48ez1San538w=+He309vHg4pBSCvAf7e5xeHdqeOHA6qwitw@mail.gmail.com> <de287149-ff42-40ca-5bd1-f48969880a06@digikod.net>
+In-Reply-To: <de287149-ff42-40ca-5bd1-f48969880a06@digikod.net>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 30 Oct 2020 04:07:44 +0100
+Message-ID: <CAG48ez1FQVkt78129WozBwFbVhAPyAr9oJAHFHAbbNxEBr9h1g@mail.gmail.com>
+Subject: Re: [PATCH v22 08/12] landlock: Add syscall implementations
+To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Kees Cook <keescook@chromium.org>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like the old __section macro, the __alias macro uses macro # stringification
-to create quotes around the symbol name used in the __attribute__.
+On Thu, Oct 29, 2020 at 12:30 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>=
+ wrote:
+> On 29/10/2020 02:06, Jann Horn wrote:
+> > On Tue, Oct 27, 2020 at 9:04 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.n=
+et> wrote:
+> >> These 3 system calls are designed to be used by unprivileged processes
+> >> to sandbox themselves:
+[...]
+> >> +       /*
+> >> +        * Similar checks as for seccomp(2), except that an -EPERM may=
+ be
+> >> +        * returned.
+> >> +        */
+> >> +       if (!task_no_new_privs(current)) {
+> >> +               err =3D security_capable(current_cred(), current_user_=
+ns(),
+> >> +                               CAP_SYS_ADMIN, CAP_OPT_NOAUDIT);
+> >
+> > I think this should be ns_capable_noaudit(current_user_ns(), CAP_SYS_AD=
+MIN)?
+>
+> Right. The main difference is that ns_capable*() set PF_SUPERPRIV in
+> current->flags. I guess seccomp should use ns_capable_noaudit() as well?
 
-This can cause differences between gcc and clang when the stringification
-itself contains a quote character.  So avoid these differences by always
-using quotes to define the aliased symbol.
+Yeah. That seccomp code is from commit e2cfabdfd0756, with commit date
+in April 2012, while ns_capable_noaudit() was introduced in commit
+98f368e9e263, with commit date in June 2016; the seccomp code predates
+the availability of that API.
 
-Remove the stringification and add quotes and when necessary a stringification
-when existing uses have a ## concatenation.
-
-Signed-off-by: Joe Perches <joe@perches.com>
----
-
-Unlike the __section macro conversion in commit 33def8498fdd
-("treewide: Convert macro and uses of __section(foo) to __section("foo")")
-this one was done by hand.
-
-No other use of __alias exists in the kernel.
-
-This patch does _not_ convert any uses of __attribute__((alias("<foo>")))
-so it should not cause any compilation issues.
-
- arch/x86/boot/compressed/string.c       |  6 +++---
- arch/x86/include/asm/syscall_wrapper.h  |  2 +-
- drivers/firmware/efi/runtime-wrappers.c |  2 +-
- include/linux/compiler_attributes.h     |  2 +-
- kernel/kcsan/core.c                     | 10 +++++-----
- lib/crc32.c                             |  4 ++--
- lib/crypto/aes.c                        |  4 ++--
- mm/kasan/generic.c                      |  8 ++++----
- 8 files changed, 19 insertions(+), 19 deletions(-)
-
-diff --git a/arch/x86/boot/compressed/string.c b/arch/x86/boot/compressed/string.c
-index 81fc1eaa3229..d38b122f51ef 100644
---- a/arch/x86/boot/compressed/string.c
-+++ b/arch/x86/boot/compressed/string.c
-@@ -75,7 +75,7 @@ void *memcpy(void *dest, const void *src, size_t n)
- }
- 
- #ifdef CONFIG_KASAN
--extern void *__memset(void *s, int c, size_t n) __alias(memset);
--extern void *__memmove(void *dest, const void *src, size_t n) __alias(memmove);
--extern void *__memcpy(void *dest, const void *src, size_t n) __alias(memcpy);
-+extern void *__memset(void *s, int c, size_t n) __alias("memset");
-+extern void *__memmove(void *dest, const void *src, size_t n) __alias("memmove");
-+extern void *__memcpy(void *dest, const void *src, size_t n) __alias("memcpy");
- #endif
-diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
-index a84333adeef2..f19d1bbbff3d 100644
---- a/arch/x86/include/asm/syscall_wrapper.h
-+++ b/arch/x86/include/asm/syscall_wrapper.h
-@@ -69,7 +69,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
- 	long __##abi##_##name(const struct pt_regs *regs);		\
- 	ALLOW_ERROR_INJECTION(__##abi##_##name, ERRNO);			\
- 	long __##abi##_##name(const struct pt_regs *regs)		\
--		__alias(__do_##name);
-+		__alias("__do_" #name);
- 
- #define __SYS_STUBx(abi, name, ...)					\
- 	long __##abi##_##name(const struct pt_regs *regs);		\
-diff --git a/drivers/firmware/efi/runtime-wrappers.c b/drivers/firmware/efi/runtime-wrappers.c
-index 1410beaef5c3..14e380ac65d4 100644
---- a/drivers/firmware/efi/runtime-wrappers.c
-+++ b/drivers/firmware/efi/runtime-wrappers.c
-@@ -162,7 +162,7 @@ static DEFINE_SEMAPHORE(efi_runtime_lock);
-  * Expose the EFI runtime lock to the UV platform
-  */
- #ifdef CONFIG_X86_UV
--extern struct semaphore __efi_uv_runtime_lock __alias(efi_runtime_lock);
-+extern struct semaphore __efi_uv_runtime_lock __alias("efi_runtime_lock");
- #endif
- 
- /*
-diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
-index ea7b756b1c8f..4819512c9abd 100644
---- a/include/linux/compiler_attributes.h
-+++ b/include/linux/compiler_attributes.h
-@@ -42,7 +42,7 @@
- /*
-  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-alias-function-attribute
-  */
--#define __alias(symbol)                 __attribute__((__alias__(#symbol)))
-+#define __alias(symbol)                 __attribute__((__alias__(symbol)))
- 
- /*
-  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-aligned-function-attribute
-diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index 3994a217bde7..465f6cfc317c 100644
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -814,7 +814,7 @@ EXPORT_SYMBOL(__kcsan_check_access);
- 	}                                                                      \
- 	EXPORT_SYMBOL(__tsan_read##size);                                      \
- 	void __tsan_unaligned_read##size(void *ptr)                            \
--		__alias(__tsan_read##size);                                    \
-+		__alias("__tsan_read" #size);                                  \
- 	EXPORT_SYMBOL(__tsan_unaligned_read##size);                            \
- 	void __tsan_write##size(void *ptr);                                    \
- 	void __tsan_write##size(void *ptr)                                     \
-@@ -823,7 +823,7 @@ EXPORT_SYMBOL(__kcsan_check_access);
- 	}                                                                      \
- 	EXPORT_SYMBOL(__tsan_write##size);                                     \
- 	void __tsan_unaligned_write##size(void *ptr)                           \
--		__alias(__tsan_write##size);                                   \
-+		__alias("__tsan_write" #size);                                 \
- 	EXPORT_SYMBOL(__tsan_unaligned_write##size);                           \
- 	void __tsan_read_write##size(void *ptr);                               \
- 	void __tsan_read_write##size(void *ptr)                                \
-@@ -833,7 +833,7 @@ EXPORT_SYMBOL(__kcsan_check_access);
- 	}                                                                      \
- 	EXPORT_SYMBOL(__tsan_read_write##size);                                \
- 	void __tsan_unaligned_read_write##size(void *ptr)                      \
--		__alias(__tsan_read_write##size);                              \
-+		__alias("__tsan_read_write" #size);                            \
- 	EXPORT_SYMBOL(__tsan_unaligned_read_write##size)
- 
- DEFINE_TSAN_READ_WRITE(1);
-@@ -877,7 +877,7 @@ EXPORT_SYMBOL(__tsan_write_range);
- 	}                                                                      \
- 	EXPORT_SYMBOL(__tsan_volatile_read##size);                             \
- 	void __tsan_unaligned_volatile_read##size(void *ptr)                   \
--		__alias(__tsan_volatile_read##size);                           \
-+		__alias("__tsan_volatile_read" #size);                         \
- 	EXPORT_SYMBOL(__tsan_unaligned_volatile_read##size);                   \
- 	void __tsan_volatile_write##size(void *ptr);                           \
- 	void __tsan_volatile_write##size(void *ptr)                            \
-@@ -892,7 +892,7 @@ EXPORT_SYMBOL(__tsan_write_range);
- 	}                                                                      \
- 	EXPORT_SYMBOL(__tsan_volatile_write##size);                            \
- 	void __tsan_unaligned_volatile_write##size(void *ptr)                  \
--		__alias(__tsan_volatile_write##size);                          \
-+		__alias("__tsan_volatile_write" #size);                        \
- 	EXPORT_SYMBOL(__tsan_unaligned_volatile_write##size)
- 
- DEFINE_TSAN_VOLATILE_READ_WRITE(1);
-diff --git a/lib/crc32.c b/lib/crc32.c
-index 2a68dfd3b96c..373a17aaa432 100644
---- a/lib/crc32.c
-+++ b/lib/crc32.c
-@@ -206,8 +206,8 @@ u32 __pure __weak __crc32c_le(u32 crc, unsigned char const *p, size_t len)
- EXPORT_SYMBOL(crc32_le);
- EXPORT_SYMBOL(__crc32c_le);
- 
--u32 __pure crc32_le_base(u32, unsigned char const *, size_t) __alias(crc32_le);
--u32 __pure __crc32c_le_base(u32, unsigned char const *, size_t) __alias(__crc32c_le);
-+u32 __pure crc32_le_base(u32, unsigned char const *, size_t) __alias("crc32_le");
-+u32 __pure __crc32c_le_base(u32, unsigned char const *, size_t) __alias("__crc32c_le");
- 
- /*
-  * This multiplies the polynomials x and y modulo the given modulus.
-diff --git a/lib/crypto/aes.c b/lib/crypto/aes.c
-index 827fe89922ff..5b80514595c2 100644
---- a/lib/crypto/aes.c
-+++ b/lib/crypto/aes.c
-@@ -82,8 +82,8 @@ static volatile const u8 __cacheline_aligned aes_inv_sbox[] = {
- 	0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d,
- };
- 
--extern const u8 crypto_aes_sbox[256] __alias(aes_sbox);
--extern const u8 crypto_aes_inv_sbox[256] __alias(aes_inv_sbox);
-+extern const u8 crypto_aes_sbox[256] __alias("aes_sbox");
-+extern const u8 crypto_aes_inv_sbox[256] __alias("aes_inv_sbox");
- 
- EXPORT_SYMBOL(crypto_aes_sbox);
- EXPORT_SYMBOL(crypto_aes_inv_sbox);
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 248264b9cb76..4496f897e4f5 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -234,7 +234,7 @@ EXPORT_SYMBOL(__asan_unregister_globals);
- 		check_memory_region_inline(addr, size, false, _RET_IP_);\
- 	}								\
- 	EXPORT_SYMBOL(__asan_load##size);				\
--	__alias(__asan_load##size)					\
-+	__alias("__asan_load" #size)					\
- 	void __asan_load##size##_noabort(unsigned long);		\
- 	EXPORT_SYMBOL(__asan_load##size##_noabort);			\
- 	void __asan_store##size(unsigned long addr)			\
-@@ -242,7 +242,7 @@ EXPORT_SYMBOL(__asan_unregister_globals);
- 		check_memory_region_inline(addr, size, true, _RET_IP_);	\
- 	}								\
- 	EXPORT_SYMBOL(__asan_store##size);				\
--	__alias(__asan_store##size)					\
-+	__alias("__asan_store" #size)					\
- 	void __asan_store##size##_noabort(unsigned long);		\
- 	EXPORT_SYMBOL(__asan_store##size##_noabort)
- 
-@@ -258,7 +258,7 @@ void __asan_loadN(unsigned long addr, size_t size)
- }
- EXPORT_SYMBOL(__asan_loadN);
- 
--__alias(__asan_loadN)
-+__alias("__asan_loadN")
- void __asan_loadN_noabort(unsigned long, size_t);
- EXPORT_SYMBOL(__asan_loadN_noabort);
- 
-@@ -268,7 +268,7 @@ void __asan_storeN(unsigned long addr, size_t size)
- }
- EXPORT_SYMBOL(__asan_storeN);
- 
--__alias(__asan_storeN)
-+__alias("__asan_storeN")
- void __asan_storeN_noabort(unsigned long, size_t);
- EXPORT_SYMBOL(__asan_storeN_noabort);
- 
--- 
-2.26.0
-
+Do you want to send a patch to Kees for that, or should I?
