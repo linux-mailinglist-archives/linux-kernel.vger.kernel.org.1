@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18202A0C3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 041462A0C40
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727379AbgJ3RLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 13:11:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55005 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726272AbgJ3RLx (ORCPT
+        id S1727096AbgJ3RMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 13:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbgJ3RMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 13:11:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604077913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xYKXOVaB9Lqk7p+DNzbwFvXdhWfTDvuqQ9VGT8imCvs=;
-        b=NRTnCr1cM8+gvfpsMGiR0DOFFp+CGxGH0151jVayg3vhcFtHAtB9ARhNQgCReSpz36Me0I
-        g4qeOa5nh+5ELTYwrK+0fa7ZCbh2IavjnHDaxCjdkR1ZDthtiwAxZWPBrISRY1Cdyk6ie5
-        q+2fKW3OjX+5sGW0UxsiqR5cKLD02ek=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-178-W7ntctm2N0eOOxax29wTxQ-1; Fri, 30 Oct 2020 13:11:48 -0400
-X-MC-Unique: W7ntctm2N0eOOxax29wTxQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B14B4107AFB6;
-        Fri, 30 Oct 2020 17:11:46 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 204696EF6A;
-        Fri, 30 Oct 2020 17:11:39 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 18:11:38 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org, kan.liang@linux.intel.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, ak@linux.intel.com, eranian@google.com,
-        brouer@redhat.com
-Subject: Re: [PATCH 4/6] perf: Optimize get_recursion_context()
-Message-ID: <20201030181138.215b2b6a@carbon>
-In-Reply-To: <20201030151955.187580298@infradead.org>
-References: <20201030151345.540479897@infradead.org>
-        <20201030151955.187580298@infradead.org>
+        Fri, 30 Oct 2020 13:12:53 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39736C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 10:12:52 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id k6so8291054ior.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 10:12:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FUbzL5XdQ1f8YYBKU5C0sP8LGZcBt1qJvGhftOqGF4E=;
+        b=aNbLbx6aajXxMw9iAkrV9bGley0HzSnyUh4Qz92ibH9zFMbBOmbUxysZ+za3eA6/D4
+         M37pzUQRVEb+i3WPAFry4wJ5J44lAb1M6S2Loajb2npO2n6ugKsni97Fc8wFh8eRn9n9
+         Ihw8IkvMQtK3fKBv3FMn700tiChrhL+MF94uU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FUbzL5XdQ1f8YYBKU5C0sP8LGZcBt1qJvGhftOqGF4E=;
+        b=WV4+aZIHTmNq8uBO1x64Wksl+SoxTfY2KyvlHKtrxGd+ED67SIBZrr1C2DLJ33XJlb
+         J97MsLTeNgAY9pJz9iU/A9kvRZeiBeK7++SqK3uRPMYozb1e4rygwNKjbogE8CcMGpKd
+         o3cngU82Rdk9ofZnpSgS9iYULNKxyGADwe3pzAk+JEql6fdbQYl7clU9LYugDRU/nxMQ
+         uMDA0m6Mk2A5J8+rl79EkornzLfcYqBoabdcpuQluHSCwRBOtlnL//CqGMouhwaIXbNO
+         eIZClIZSUUFnbjSNQGajtYbfvZwD/fHxBnOoAVUq7ec7wbNXHJAc9QJTYb+mvg87BM0x
+         kWNw==
+X-Gm-Message-State: AOAM530PBgx2rIl87mqDBR0Fy4qvJpIT9j/NFUpLDf8m2Qa/VR2nmw5A
+        YTybtQS0DVxqnZN7XV+mSRQd1Q==
+X-Google-Smtp-Source: ABdhPJzYWtoBbDYvzZ3xNeVMyVANpnHjx84A3cXKcNETpEhPGLmyVqezsvv/c80LwFhG2z8oErxZcw==
+X-Received: by 2002:a02:c80a:: with SMTP id p10mr2701625jao.114.1604077971626;
+        Fri, 30 Oct 2020 10:12:51 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id e12sm5004102ilq.65.2020.10.30.10.12.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 10:12:51 -0700 (PDT)
+Subject: Re: [PATCH v1 4/4] x86/msr: Do not allow writes to
+ MSR_IA32_ENERGY_PERF_BIAS
+To:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>
+Cc:     Thomas Renninger <trenn@suse.com>, Shuah Khan <shuah@kernel.org>,
+        Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201029190259.3476-1-bp@alien8.de>
+ <20201029190259.3476-5-bp@alien8.de>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f259f033-c62e-e1a2-2f46-85b7961ac0ad@linuxfoundation.org>
+Date:   Fri, 30 Oct 2020 11:12:50 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201029190259.3476-5-bp@alien8.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020 16:13:49 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
-
->   "Look ma, no branches!"
+On 10/29/20 1:02 PM, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
 > 
-> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Now that all in-kernel-tree users are converted to using the sysfs file,
+> remove the MSR from the "allowlist".
+> 
+> Signed-off-by: Borislav Petkov <bp@suse.de>
 > ---
-
-Cool trick! :-)
-
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-
->  kernel/events/internal.h |   17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
+>   arch/x86/kernel/msr.c | 3 ---
+>   1 file changed, 3 deletions(-)
 > 
-> --- a/kernel/events/internal.h
-> +++ b/kernel/events/internal.h
-> @@ -205,16 +205,15 @@ DEFINE_OUTPUT_COPY(__output_copy_user, a
->  
->  static inline int get_recursion_context(int *recursion)
->  {
-> -	int rctx;
-> +	unsigned int pc = preempt_count();
-> +	unsigned int rctx = 0;
->  
-> -	if (unlikely(in_nmi()))
-> -		rctx = 3;
-> -	else if (in_irq())
-> -		rctx = 2;
-> -	else if (in_serving_softirq())
-> -		rctx = 1;
-> -	else
-> -		rctx = 0;
-> +	if (pc & (NMI_MASK))
-> +		rctx++;
-> +	if (pc & (NMI_MASK | HARDIRQ_MASK))
-> +		rctx++;
-> +	if (pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET))
-> +		rctx++;
->  
->  	if (recursion[rctx])
->  		return -1;
-> 
+> diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
+> index c0d409810658..b1147862730c 100644
+> --- a/arch/x86/kernel/msr.c
+> +++ b/arch/x86/kernel/msr.c
+> @@ -99,9 +99,6 @@ static int filter_write(u32 reg)
+>   	if (!__ratelimit(&fw_rs))
+>   		return 0;
+>   
+> -	if (reg == MSR_IA32_ENERGY_PERF_BIAS)
+> -		return 0;
+> -
+>   	pr_err("Write to unrecognized MSR 0x%x by %s (pid: %d). Please report to x86@kernel.org.\n",
+>   	       reg, current->comm, current->pid);
+>   
 > 
 
+Thanks. Looks good to me.
 
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+thanks,
+-- Shuah
