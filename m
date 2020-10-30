@@ -2,230 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAD729FC80
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 05:10:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6AFA29FC8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 05:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgJ3EKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 00:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3EKp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 00:10:45 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F52C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:10:45 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id r186so4137813pgr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:10:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TS5bAPWJChRnrnmCdYH1q2m+OpWH8Ki5SVhUI5O7NG8=;
-        b=YSKcfciRNgxGwXndTT0H4XyeZ5o4hbOuGOye07As7oLYoMCwisIOHUYwkFLQoMuasi
-         3luBGGH0CkWn8Lp6tCxJ71ev0+URAJsQldYs6VEJJ1YzWhNx9vaQkMnVflw8P9TsdOa9
-         /EO1dYphqvsq9p2k0BKgYZHbzgrhPPvHME5oJH8ZuYitQ4FnAm8rxOyCJ+v15dIqD3Pv
-         BJ16XDMCgsZjJl9rXY0OVfageRioWm2i7Z9D3kda6u0cn2aoA4nOywBnyrTK7c+G/QYw
-         lRJ/UODkwZF+ldfj+GQIUm7Rulwt2NVuli/Ip4nTqym5zSSkDfZXAyC30r/ldk7S0raH
-         0puA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TS5bAPWJChRnrnmCdYH1q2m+OpWH8Ki5SVhUI5O7NG8=;
-        b=ZLXUneSH5g3l4Vwr3K0IkSu5vTf1bRep6H4kiYCyfKNbARdnOXe+pt4r+FkbMPtvVb
-         YFCnlOlbKlleODHDMuBcCwGBcakpeeKanjTRh/br83hPcr6o+83aGVXIprwlwMdKdU+W
-         Ne7zCoZ+gzX5XIw7noJTUV92e5MgR/yKNwQsXQpy8jyudHJBIrECj33bvQMJsHx5i1jW
-         9V3+Ey7oLnxbqOJIuD5NrHTNd685Tke3QnvUSfwDdTYhtVcjAja6jUDAfLQC/UWMB2Qo
-         PDl1KlTqNi2Men57cdSs6cnS9ZiZYJjiBdtv3IAjGiIanQYppbvEl/ra404hGhVKgwke
-         eymA==
-X-Gm-Message-State: AOAM533K60uodyoLhhNZEHSOwdGCZ6aNRbJQubaDEHy7bDynbSI3pXZC
-        WWAsPSDXIURUG+P2/OPNQOAZjTgleG4=
-X-Google-Smtp-Source: ABdhPJxOoxEwYEClmbUOYVjb/Tufop9jIxFetNPN/rC5/DfUrlkPkAbM3lJn+9W5NJH9yhDJUUH1xg==
-X-Received: by 2002:a62:62c2:0:b029:164:563a:b2c with SMTP id w185-20020a6262c20000b0290164563a0b2cmr7235970pfb.16.1604031044569;
-        Thu, 29 Oct 2020 21:10:44 -0700 (PDT)
-Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:a6ae:11ff:fe18:6ce2])
-        by smtp.gmail.com with ESMTPSA id k9sm4374326pfi.188.2020.10.29.21.10.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 21:10:43 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH v7 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION ioctl
-Date:   Fri, 30 Oct 2020 13:10:35 +0900
-Message-Id: <20201030041035.394565-2-daeho43@gmail.com>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-In-Reply-To: <20201030041035.394565-1-daeho43@gmail.com>
-References: <20201030041035.394565-1-daeho43@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726521AbgJ3ELS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 00:11:18 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:10763 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726413AbgJ3ELN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 00:11:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604031072; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=bhu3dVNa1poHcyO9P0oym7CJWWezz4vVImWxqI5HZAU=; b=oTr9qLsxUoyJk3lC5/0hLaMGQEF8nkteG7tYrrgTKYL6hD/a7KqQVmlgfye7vKNJ13cy1g9W
+ HhZEAc8i5Y19yJz/b+HCcNpswYL8i5Pv7afaZYbx0TKiBN1orG07JU2GvCjrCsDrYbUD4sD5
+ MkzxQ+QOnXcoskrCGGT10Co6+TY=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f9b9259c3d7c9858af1b199 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 04:11:05
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5E953C433C9; Fri, 30 Oct 2020 04:11:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5F4D9C433FF;
+        Fri, 30 Oct 2020 04:11:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5F4D9C433FF
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v3 00/12] Bug fixes and improvements for MHI power operations
+Date:   Thu, 29 Oct 2020 21:10:45 -0700
+Message-Id: <1604031057-32820-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+Bug fixes and improvements for MHI powerup and shutdown handling.
+Firmware load function names are updated to accurately reflect their purpose.
+Closed certain design gaps where the host (MHI bus) would allow clients to
+operate after a power down or error detection.
+Move to an error state sooner based on different scenarios.
 
-Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
-compression option of a file.
+These patches were tested on arm64 and X86_64 architectures.
 
-struct f2fs_comp_option {
-    u8 algorithm;         => compression algorithm
-                          => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
-    u8 log_cluster_size;  => log scale cluster size
-                          => 2 ~ 8
-};
+v3:
+-Fixed bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
+-Mistakenly placed the free_irq() calls in mhi_pm_sys_error_transition()
+-Moved it to mhi_pm_disable_transition()
 
-struct f2fs_comp_option option;
+v2:
+-Addressed patches based on review comments and made improvements
+-Added bus: mhi: core: Check for IRQ availability during registration
+-Dropped bus: mhi: core: Use the IRQF_ONESHOT flag for the BHI interrupt line
+-Split bus: mhi: core: Move to an error state on any firmware load failure
+-Modified the following patches:
+-bus: mhi: core: Disable IRQs when powering down
+-bus: mhi: core: Improve shutdown handling after link down detection
+-bus: mhi: core: Mark device inactive soon after host issues a shutdown
+-bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability
+-Addressed the above as follow-up patches with improvements:
+-bus: mhi: core: Prevent sending multiple RDDM entry callbacks
+-bus: mhi: core: Separate system error and power down handling
+-bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
 
-option.algorithm = 1;
-option.log_cluster_size = 7;
+Bhaumik Bhatt (12):
+  bus: mhi: core: Use appropriate names for firmware load functions
+  bus: mhi: core: Move to using high priority workqueue
+  bus: mhi: core: Skip device wake in error or shutdown states
+  bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability
+  bus: mhi: core: Prevent sending multiple RDDM entry callbacks
+  bus: mhi: core: Move to an error state on any firmware load failure
+  bus: mhi: core: Use appropriate label in firmware load handler API
+  bus: mhi: core: Move to an error state on mission mode failure
+  bus: mhi: core: Check for IRQ availability during registration
+  bus: mhi: core: Separate system error and power down handling
+  bus: mhi: core: Mark and maintain device states early on after power
+    down
+  bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
 
-ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
+ drivers/bus/mhi/core/boot.c |  60 ++++++-----
+ drivers/bus/mhi/core/init.c |  10 +-
+ drivers/bus/mhi/core/main.c |  16 +--
+ drivers/bus/mhi/core/pm.c   | 236 ++++++++++++++++++++++++++++++++------------
+ include/linux/mhi.h         |   2 +
+ 5 files changed, 225 insertions(+), 99 deletions(-)
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
-
-v6: changed the function name of checking compression algorithm validity.
-v5: allowed to set algorithm which is not currently enabled by kernel.
-v4: changed commit message.
-v3: changed the error number more specific.
-    folded in fix for build breakage reported by kernel test robot
-    <lkp@intel.com> and Dan Carpenter <dan.carpenter@oracle.com>.
-v2: added ioctl description.
----
- fs/f2fs/compress.c |  5 +++++
- fs/f2fs/f2fs.h     |  7 ++++++
- fs/f2fs/file.c     | 54 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 66 insertions(+)
-
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 7895186cc765..b0144670d320 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -514,6 +514,11 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
- 	return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
- }
- 
-+bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
-+{
-+	return f2fs_cops[algorithm] != NULL;
-+}
-+
- static mempool_t *compress_page_pool;
- static int num_compress_pages = 512;
- module_param(num_compress_pages, uint, 0444);
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index a33c90cf979b..70a8a2196888 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -435,6 +435,8 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
- 						struct f2fs_sectrim_range)
- #define F2FS_IOC_GET_COMPRESS_OPTION	_IOR(F2FS_IOCTL_MAGIC, 21,	\
- 						struct f2fs_comp_option)
-+#define F2FS_IOC_SET_COMPRESS_OPTION	_IOW(F2FS_IOCTL_MAGIC, 22,	\
-+						struct f2fs_comp_option)
- 
- /*
-  * should be same as XFS_IOC_GOINGDOWN.
-@@ -3915,6 +3917,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
- int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
- void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
- bool f2fs_is_compress_backend_ready(struct inode *inode);
-+bool f2fs_is_compress_algorithm_valid(unsigned char algorithm);
- int f2fs_init_compress_mempool(void);
- void f2fs_destroy_compress_mempool(void);
- void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
-@@ -3945,6 +3948,10 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
- 	/* not support compression */
- 	return false;
- }
-+static inline bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
-+{
-+	return false;
-+}
- static inline struct page *f2fs_compress_control_page(struct page *page)
- {
- 	WARN_ON_ONCE(1);
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index bd52df84219d..be56702e4939 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -3963,6 +3963,57 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
- 	return 0;
- }
- 
-+static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
-+{
-+	struct inode *inode = file_inode(filp);
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-+	struct f2fs_comp_option option;
-+	int ret = 0;
-+
-+	if (!f2fs_sb_has_compression(sbi))
-+		return -EOPNOTSUPP;
-+
-+	if (!(filp->f_mode & FMODE_WRITE))
-+		return -EBADF;
-+
-+	if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg,
-+				sizeof(option)))
-+		return -EFAULT;
-+
-+	if (!f2fs_compressed_file(inode) ||
-+			option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
-+			option.log_cluster_size > MAX_COMPRESS_LOG_SIZE ||
-+			option.algorithm >= COMPRESS_MAX)
-+		return -EINVAL;
-+
-+	file_start_write(filp);
-+	inode_lock(inode);
-+
-+	if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
-+	if (inode->i_size != 0) {
-+		ret = -EFBIG;
-+		goto out;
-+	}
-+
-+	F2FS_I(inode)->i_compress_algorithm = option.algorithm;
-+	F2FS_I(inode)->i_log_cluster_size = option.log_cluster_size;
-+	F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
-+	f2fs_mark_inode_dirty_sync(inode, true);
-+
-+	if (!f2fs_is_compress_algorithm_valid(option.algorithm))
-+		f2fs_warn(sbi, "compression algorithm is successfully set, "
-+			"but current kernel doesn't support this algorithm.");
-+out:
-+	inode_unlock(inode);
-+	file_end_write(filp);
-+
-+	return ret;
-+}
-+
- long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- {
- 	if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
-@@ -4053,6 +4104,8 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 		return f2fs_sec_trim_file(filp, arg);
- 	case F2FS_IOC_GET_COMPRESS_OPTION:
- 		return f2fs_ioc_get_compress_option(filp, arg);
-+	case F2FS_IOC_SET_COMPRESS_OPTION:
-+		return f2fs_ioc_set_compress_option(filp, arg);
- 	default:
- 		return -ENOTTY;
- 	}
-@@ -4224,6 +4277,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
- 	case F2FS_IOC_SEC_TRIM_FILE:
- 	case F2FS_IOC_GET_COMPRESS_OPTION:
-+	case F2FS_IOC_SET_COMPRESS_OPTION:
- 		break;
- 	default:
- 		return -ENOIOCTLCMD;
 -- 
-2.29.1.341.ge80a0c044ae-goog
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
