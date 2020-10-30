@@ -2,110 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB592A06FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0312A072E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:55:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbgJ3NxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 09:53:23 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:41893 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726871AbgJ3NxI (ORCPT
+        id S1726624AbgJ3Nzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 09:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726178AbgJ3Nzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 09:53:08 -0400
-Received: by mail-ot1-f66.google.com with SMTP id n15so5577052otl.8;
-        Fri, 30 Oct 2020 06:53:07 -0700 (PDT)
+        Fri, 30 Oct 2020 09:55:31 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EE6C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:55:30 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id d24so6927309ljg.10
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jEivHHHppW7lKJKSPaA2MJ5onUInG0PkEmmlb+QvN6w=;
+        b=htnlI/L0D+pPOTdEbli9XM5YC/psfkjbq7r2oMpqoiWUyoGis/mQCEbr+t/EYnCc0C
+         979OuGH5bYgzBKnrAZ+6W/E9f8qxwnMYapNv/omy8Qu0E8Kl/hTiOV7lCqN6IO5UnunT
+         NxcGVEHKW10cbrwjW1aZruyU5AZBiQMBUk4eqkDEuUAPTwx6I9fwI/lcf0DLlxKmAqd9
+         h/2cux67cuo3A8zYwyrO1C8WkMGu+vQ+PZLLmHgnDcaDrSwwI/gadVOGF/UAbi1m0aHW
+         VNdn7TuImE3850PXxcNtzDgyo/tY3iFAlD8ssbcY6jKuBtHYCWz7dSVAyVXroKxDXxL9
+         DWMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ggiAUaruNw1YhH2l2hRk36w59nO1Oq/R58cjSZ0WsS0=;
-        b=NQE6B6Is7YpCRNAhftj2H74uBamRW+67DvSQtL+dIHoYsARDpaZMHRM1nrS3KUtJ1w
-         5/p+B9b48PxrSSgxa+xe9uG0yPEyqWTKxJhCSRMrPpgqfM6Tqu8oGwmWQuQZpcV/WP/W
-         iKL+n1j4zp6kZ0lltwhX8r/Q6pd1e23hnBEleCgijJzi/Dn93z0ppFzNII0SMOc6OWWE
-         k2GOvrak9W99KSGT8k84Gz4sLwbchNTyOpcD1L0FQQxZK/tnq9dxXyVOLmwU0uYPBGxz
-         8eqrVOMA3ZUUdLvyAJmepaI722FHJGwc7X5SZbdrrTBoPtq46IaCvPlNacTqc/m35Kxy
-         XmgA==
-X-Gm-Message-State: AOAM5339HoY/m7Glp0jCwASdOmJq7KunwwJHJ+M62qEmwwyU7pmSi8SN
-        W5tVDcGYExCF8XH+26eSbA==
-X-Google-Smtp-Source: ABdhPJxq/KhYrqN/T8NyxVmXEavGpBaGULf6IaWMFkIEntoJ3gOZgHkdXrgULkZisLkAOY1u63cuMg==
-X-Received: by 2002:a9d:75d6:: with SMTP id c22mr1672627otl.213.1604065987144;
-        Fri, 30 Oct 2020 06:53:07 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j184sm1386766oih.8.2020.10.30.06.53.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 06:53:06 -0700 (PDT)
-Received: (nullmailer pid 3747758 invoked by uid 1000);
-        Fri, 30 Oct 2020 13:53:05 -0000
-Date:   Fri, 30 Oct 2020 08:53:05 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Fabien Parent <fparent@baylibre.com>,
-        linux-mediatek@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, srv_heupstream@mediatek.com,
-        youlin.pei@mediatek.com, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        iommu@lists.linux-foundation.org, anan.sun@mediatek.com,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        linux-kernel@vger.kernel.org, ming-fan.chen@mediatek.com,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] dt-bindings: memory: mediatek: Convert SMI to DT
- schema
-Message-ID: <20201030135305.GA3746616@bogus>
-References: <20201030091254.26382-1-yong.wu@mediatek.com>
- <20201030091254.26382-2-yong.wu@mediatek.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jEivHHHppW7lKJKSPaA2MJ5onUInG0PkEmmlb+QvN6w=;
+        b=nq5QDaIobbVX+Z+K8KheyaL8WCyVbqCAvJxqkPf/aV0h13jQ8nRW0d8L6G7juWyuQs
+         fY/aYthyZSISa+YKWLfcid79QqhD/AlcJrmMBiL7/7l/Vknz0hMVrQktYjt+wya+4iJq
+         kGC19ZWCRkajjRQBGKSgFobUB1zIjAYuLdVQNGG9kK9++aB1rs4klNkYMCTmwoYmFKG4
+         M7b3uSjwyltd49iqjjTCEw1jyzYD1GGxoVUdpVQlK+o8PHCvOKLUQaRtpX+rS9opTE+l
+         s174Rdfgfwx9IEvFGPvzsT3lnuKSa4k/i21bxyBjHVsmFgj19fdlWvsZdk3hh4/XUU2d
+         mWrQ==
+X-Gm-Message-State: AOAM5310WYI6r1CFW5hkroU3r4NkPCRSbqQKVUKlNXdNv2xVEonV1YQa
+        lGW8BmNN35rhMZltdYY7k+7fgQ==
+X-Google-Smtp-Source: ABdhPJxcxVFBXD2WZ2FNbzFXyybMDQDLxJSVhSrScs29gB2Kab/Nk1XvOZiqO64RPpB7wOWcP8lo6Q==
+X-Received: by 2002:a05:651c:1343:: with SMTP id j3mr1071034ljb.336.1604066129156;
+        Fri, 30 Oct 2020 06:55:29 -0700 (PDT)
+Received: from [192.168.1.211] ([188.162.64.225])
+        by smtp.gmail.com with ESMTPSA id b15sm696918ljp.117.2020.10.30.06.55.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 06:55:28 -0700 (PDT)
+Subject: Re: [PATCH] drm/msm/dsi: save PLL registers across first PHY reset
+To:     benl@squareup.com, robdclark@gmail.com, sean@poorly.run
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Harigovindan P <harigovi@codeaurora.org>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        zhengbin <zhengbin13@huawei.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Anibal Limon <anibal.limon@linaro.org>
+References: <010101750064e17e-3db0087e-fc37-494d-aac9-2c2b9b0a7c5b-000000@us-west-2.amazonses.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <508ae9e2-5240-2f43-6c97-493bb7d9fbe8@linaro.org>
+Date:   Fri, 30 Oct 2020 16:55:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030091254.26382-2-yong.wu@mediatek.com>
+In-Reply-To: <010101750064e17e-3db0087e-fc37-494d-aac9-2c2b9b0a7c5b-000000@us-west-2.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020 17:12:52 +0800, Yong Wu wrote:
-> Convert MediaTek SMI to DT schema.
+Hello,
+
+On 07/10/2020 03:10, benl-kernelpatches@squareup.com wrote:
+> From: Benjamin Li <benl@squareup.com>
 > 
-> CC: Fabien Parent <fparent@baylibre.com>
-> CC: Ming-Fan Chen <ming-fan.chen@mediatek.com>
-> CC: Matthias Brugger <matthias.bgg@gmail.com>
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> Take advantage of previously-added support for persisting PLL
+> registers across DSI PHY disable/enable cycles (see 328e1a6
+> 'drm/msm/dsi: Save/Restore PLL status across PHY reset') to
+> support persisting across the very first DSI PHY enable at
+> boot.
+
+Interesting enough, this breaks exactly on 8016. On DB410c with latest 
+bootloader and w/o splash screen this patch causes boot freeze. Without 
+this patch the board would successfully boot with display routed to HDMI.
+
+> The bootloader may have left the PLL registers in a non-default
+> state. For example, for dsi_pll_28nm.c on 8x16/8x39, the byte
+> clock mux's power-on reset configuration is to bypass DIV1, but
+> depending on bandwidth requirements[1] the bootloader may have
+> set the DIV1 path.
+> 
+> When the byte clock mux is registered with the generic clock
+> framework at probe time, the framework reads & caches the value
+> of the mux bit field (the initial clock parent). After PHY enable,
+> when clk_set_rate is called on the byte clock, the framework
+> assumes there is no need to reparent, and doesn't re-write the
+> mux bit field. But PHY enable resets PLL registers, so the mux
+> bit field actually silently reverted to the DIV1 bypass path.
+> This causes the byte clock to be off by a factor of e.g. 2 for
+> our tested WXGA panel.
+> 
+> The above issue manifests as the display not working and a
+> constant stream of FIFO/LP0 contention errors.
+> 
+> [1] The specific requirement for triggering the DIV1 path (and
+> thus this issue) on 28nm is a panel with pixel clock <116.7MHz
+> (one-third the minimum VCO setting). FHD/1080p (~145MHz) is fine,
+> WXGA/1280x800 (~75MHz) is not.
+> 
+> Signed-off-by: Benjamin Li <benl@squareup.com>
 > ---
->  .../mediatek,smi-common.txt                   |  50 -------
->  .../mediatek,smi-common.yaml                  | 140 ++++++++++++++++++
->  .../memory-controllers/mediatek,smi-larb.txt  |  50 -------
->  .../memory-controllers/mediatek,smi-larb.yaml | 129 ++++++++++++++++
->  4 files changed, 269 insertions(+), 100 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.yaml
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.c | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> index 009f5b843dd1..139b4a5aaf86 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> @@ -621,6 +621,22 @@ static int dsi_phy_driver_probe(struct platform_device *pdev)
+>   		phy->pll = NULL;
+>   	}
+>   
+> +	/*
+> +	 * As explained in msm_dsi_phy_enable, resetting the DSI PHY (as done
+> +	 * in dsi_mgr_phy_enable) silently changes its PLL registers to power-on
+> +	 * defaults, but the generic clock framework manages and caches several
+> +	 * of the PLL registers. It initializes these caches at registration
+> +	 * time via register read.
+> +	 *
+> +	 * As a result, we need to save DSI PLL registers once at probe in order
+> +	 * for the first call to msm_dsi_phy_enable to successfully bring PLL
+> +	 * registers back in line with what the generic clock framework expects.
+> +	 *
+> +	 * Subsequent PLL restores during msm_dsi_phy_enable will always be
+> +	 * paired with PLL saves in msm_dsi_phy_disable.
+> +	 */
+> +	msm_dsi_pll_save_state(phy->pll);
+> +
+>   	dsi_phy_disable_resource(phy);
+>   
+>   	platform_set_drvdata(pdev, phy);
 > 
 
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.yaml:84:8: [warning] wrong indentation: expected 6 but found 7 (indentation)
-./Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.yaml:98:13: [warning] wrong indentation: expected 10 but found 12 (indentation)
-./Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml:41:8: [warning] wrong indentation: expected 6 but found 7 (indentation)
-
-dtschema/dtc warnings/errors:
-
-
-See https://patchwork.ozlabs.org/patch/1390887
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+-- 
+With best wishes
+Dmitry
