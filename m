@@ -2,111 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7012A0A55
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0ECE2A0A5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727272AbgJ3Pty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:49:54 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:54149 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726610AbgJ3Ptv (ORCPT
+        id S1727298AbgJ3PuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:50:08 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:32943 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727243AbgJ3Ptq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:49:51 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id BD28EC82;
-        Fri, 30 Oct 2020 11:49:48 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 30 Oct 2020 11:49:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=VAX3nr0UfKRsL8dcSjmQItUjyxQ
-        QXBJdMzAIgrzhQLw=; b=vUERaHr5tIHohUlXRncfJbWrkz6MwBz9jz3Fso9rEfi
-        ikeFYG2FxWuwnWjw+MK6g/RzA5e3QFWZq/Xq2/FyFQ5yKDs9Jf+QcSNNb8EBDSzU
-        21+yvGcx0NyfcJ3dldT2B9pupK9Wg8Fwnu5SvRL6h97tcQKVsg+2Sao7y1IXWW+D
-        gov+r8KAZYmA0XY6nb7N+4a703w6DdNI0KUXc/j9HiPUqDZu9O0QBk/1n1daAwVa
-        CowTUacfvQQanPe10sIc7U9Jirpk0fqQBAsYwkY6du0UkJg7oxcRbj5VX80cku/8
-        9st1+QHwJ1pWvGHggIjIfO16xjcZeZYBTXkFnZffN6g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=VAX3nr
-        0UfKRsL8dcSjmQItUjyxQQXBJdMzAIgrzhQLw=; b=Mxy3XeioGra6s6scZmbSnC
-        IIiPOUDRe/+mtyjgriv0dDVeOfpVaFAjRKZJfmsRJ7I5Eu9q9FVULd5m5LOnVQS2
-        o8Z9EBh7xsqanKpa3I/2F0mZFuW7Qe8tOu9v4DbQdVTerHp+Eo1pC98hCHL80Qg3
-        uj1e+J7gbjfVEvboM3ik+MHvMQzARSxmLeDRXpa/HCsXl5+DizkMUL09ZduxCZzv
-        0LGU0TEuBZp0vQeGLaap3HT9S63rC1QTkqkeeKyJm8YgHoDGrZymqEyoq8V22qTa
-        58Xud9BLDZsj6tOuaeUFwUYiNNdWgfsum2YhBJoYbywmx4ISrycdpdMOA32mkctw
-        ==
-X-ME-Sender: <xms:GjacX2-73sJOtyVdEWL9xXGjADSy0vvoVmPekTB1GcE0I1Vm9lsiwA>
-    <xme:GjacX2ukhWkk5DET24BECBB8h4GIGRZMZUs2N2p-rnfIvZP-T1lBz7Kle5-R_sDAG
-    UrwOoVCXvHANeuTk28>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleehgdejiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:GjacX8B7o1Mj5vF0Pb7dJpXeCsL98XDbVr7gAPRn6t8HOluUNdHV9w>
-    <xmx:GjacX-ecrVfv1-pvn2FLmXTviid2eNZGJ8zxvGIJrj3umNDGnkj0lA>
-    <xmx:GjacX7McG4O-g0BG45GN-a3uR7gBO1suxkQaqS_Hnva5ra_mtJ6b-Q>
-    <xmx:HDacX2rFD3QrgtZTM6S0yfQ3ll8LM00a012Z5YEpVrHY9B55UVqu31cOaZo>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 97F02328005D;
-        Fri, 30 Oct 2020 11:49:46 -0400 (EDT)
-Date:   Fri, 30 Oct 2020 16:49:43 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Martin Cerveny <m.cerveny@computer.org>,
-        Chen-Yu Tsai <wens@csie.org>, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 0/6] ARM: dts: sun8i: v3s: Enable video decoder
-Message-ID: <20201030154943.2cmfa573huvh6lze@gilmour.lan>
-References: <20200912143052.30952-1-m.cerveny@computer.org>
- <034d8de1-bcf3-88e6-4d23-9a13e8b950c3@xs4all.nl>
+        Fri, 30 Oct 2020 11:49:46 -0400
+Received: by mail-ot1-f65.google.com with SMTP id i18so1226938ots.0;
+        Fri, 30 Oct 2020 08:49:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1ftl2mmglzVyNPpTmwwRhyO51W+rV9lT76LSvntTyw0=;
+        b=VrJEZoeBgRu8Y7gMbuWTtZk7x9F8rfiN4iBUghToNsUpoyU+wwAaqf+R1/DQAUPg5S
+         rkXGi5Oun77l2hf4GEZh836UosjIQfTrdVpjH9qGOSFAAGWiX20Q3NJOKIqRxqYcJc3c
+         Xd3DDmdC6ZzUr0vuBYvOyhhapsH8QyhB/UlMJuruuLp1L/Z0hSw9/UrmrxGzrf6kK0h1
+         rcVifeupPmBivyf3Z+cyr1Tc5xFABJ1Jsh6epZWT5R5RkdsTuJCoWOXARU2BL1q8jWTE
+         dQu4bIx0wSRD5DHiCDgJ5kjcBnEgy/zJDgBnD6zTONlVEmo8HcDdE7k1u/CX1XIvbdON
+         Vs0g==
+X-Gm-Message-State: AOAM531bxkoDCHd+b7JBb5kQQFRhbh8fUw7TZWWdtovlRNuURk73hLFk
+        x0l/RVxp4HjwAin4BdvYVQ==
+X-Google-Smtp-Source: ABdhPJz9aMo+yJ2ejJuLVzoOC70cg6U3LofBzYRBqTxOKAB+DSztHTx+rg5h2SrWLXIwxS+SilU8AQ==
+X-Received: by 2002:a05:6830:2018:: with SMTP id e24mr2241291otp.278.1604072985738;
+        Fri, 30 Oct 2020 08:49:45 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w8sm186211otm.64.2020.10.30.08.49.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 08:49:45 -0700 (PDT)
+Received: (nullmailer pid 3905477 invoked by uid 1000);
+        Fri, 30 Oct 2020 15:49:44 -0000
+Date:   Fri, 30 Oct 2020 10:49:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, chunkuang.hu@kernel.org,
+        matthias.bgg@gmail.com, devicetree@vger.kernel.org,
+        airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        robh+dt@kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/5] dt-bindings: display: mediatek: disp: add
+ documentation for MT8167 SoC
+Message-ID: <20201030154944.GA3905431@bogus>
+References: <20201023133130.194140-1-fparent@baylibre.com>
+ <20201023133130.194140-2-fparent@baylibre.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="uufs5p6b6nf52uao"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <034d8de1-bcf3-88e6-4d23-9a13e8b950c3@xs4all.nl>
+In-Reply-To: <20201023133130.194140-2-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 23 Oct 2020 15:31:26 +0200, Fabien Parent wrote:
+> Add binding documentation for the MT8167 SoC
+> 
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> ---
+> 
+> Changelog:
+> 
+> V2: No change
+> 
+>  .../devicetree/bindings/display/mediatek/mediatek,disp.txt    | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
 
---uufs5p6b6nf52uao
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-On Fri, Oct 30, 2020 at 12:06:10PM +0100, Hans Verkuil wrote:
-> Maxime,
->=20
-> Are you OK with this series? It looks good to me.
-
-I am, you can take it. I'll merge the dt patches through arm-soc=20
-
-Thanks!
-Maxime
-
---uufs5p6b6nf52uao
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5w2FwAKCRDj7w1vZxhR
-xY+AAQD8o4Tkz0kfe+3yVCldL+pH5eroTwl6fgV5eoCol3cjxwD/d3chMQgaYj27
-eLeYnrMSRMidwglTS9NnxVGyl9tFrgs=
-=EpHk
------END PGP SIGNATURE-----
-
---uufs5p6b6nf52uao--
+Acked-by: Rob Herring <robh@kernel.org>
