@@ -2,67 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4286029FB66
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4EA29FB71
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726117AbgJ3Cgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 22:36:49 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6670 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgJ3Cgt (ORCPT
+        id S1726073AbgJ3ChN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 22:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725841AbgJ3ChN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 22:36:49 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CMmfR4ZVQz15LL0;
-        Fri, 30 Oct 2020 10:36:47 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 30 Oct
- 2020 10:36:43 +0800
-Subject: Re: [f2fs-dev] [PATCH v6 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
- ioctl
-To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-CC:     Daeho Jeong <daehojeong@google.com>
-References: <20201030022748.332831-1-daeho43@gmail.com>
- <20201030022748.332831-2-daeho43@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <0b009361-7aff-d2e4-59b7-3316a299627d@huawei.com>
-Date:   Fri, 30 Oct 2020 10:36:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Thu, 29 Oct 2020 22:37:13 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC02FC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:37:12 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id h6so5963383lfj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:37:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xFYydufIASOT1348QHvdhcx054g3YPBB0GlnwkmPlA4=;
+        b=fqY0QzTowsczinxLoi7p1YYNLXiVR+Y1eB50Shh+M4uY9e+S4mD6vAMFR1OALIsedD
+         MqauLqgaFthhRU8wdL9elZGucHR9gtwwk0471Iz/x8n0b+FOO/QPNGMvzAiNilWkYSmg
+         ZmxNqP1efDTCryrgA6gj3HKdkq/PM6kIELyKnEb1eLPGfXJD21ZJKp3aRW6YF3x7vKj4
+         O+u71D45ZNiNHfCismLBiX85+LVKusxRIVLd07DLVBqmBYfJ1LSAX/Ji7HPyelS8iW2p
+         VNegffHh7yIcdcoHmF94VNQgn/bKVQcCWTBdb0TRCAcbs7n9RBiaprWdveBmLDmn7pGn
+         lQ/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xFYydufIASOT1348QHvdhcx054g3YPBB0GlnwkmPlA4=;
+        b=r4FxK8C8jQD55eYN1Y4XtCW/4a6UsjGqj9MINEIdy/A/3vhNXqphblQ65BXHRD07n9
+         THbGR4mdt2XE8hKxN5uym7QtD3PAwzDpcMqpH1t+Vxr27hkvG61j2K3TZ82EOz0WZvLC
+         XVfRCAiN9Zg6tNPS/nRHSUd49GbfZJXSTXnaJAjfqHXMwSUcicn26+Y5ppVYPF50csvi
+         /Xrv7KxpfMciCQvmGoIquKZ0z5zN/KADoyb+qJAGR9oWrMuKzhIhE1S2J684mZ/YqX7P
+         oyyJ7Qbumh4ikTjONQ3kSai1vPgeOl4A/gzOwIwMdhs4l8hzNia9ZeQTrNgsFjU3Fewf
+         m+uQ==
+X-Gm-Message-State: AOAM5303XG0AkdKkw2LT+JmUDJf1LOAQTJ5GcBaXh7B/U58HNW+1p+mu
+        JJFzagUvxRVz114K759zA3ao40Day5DWiPLNUyTJXQ==
+X-Google-Smtp-Source: ABdhPJyUQqafmlkZzWU1B91YkWKdrr/Hr9r99S3ohbNLGZnHZyRkPYMfEkd1tI0FXegIB2xTw60ou/cS/VrCEnK8aRQ=
+X-Received: by 2002:a19:c357:: with SMTP id t84mr15909lff.34.1604025431105;
+ Thu, 29 Oct 2020 19:37:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201030022748.332831-2-daeho43@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+References: <20201029220929.4068251-1-dlatypov@google.com>
+In-Reply-To: <20201029220929.4068251-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 30 Oct 2020 10:36:59 +0800
+Message-ID: <CABVgOS=t4q2EOqvmNrDWJsfSV73GQpecQCOpoH_nMJt-ARuNJw@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: print out stderr from make (like build warnings)
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/30 10:27, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
-> compression option of a file.
-> 
-> struct f2fs_comp_option {
->      u8 algorithm;         => compression algorithm
->                            => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
->      u8 log_cluster_size;  => log scale cluster size
->                            => 2 ~ 8
-> };
-> 
-> struct f2fs_comp_option option;
-> 
-> option.algorithm = 1;
-> option.log_cluster_size = 7;
-> 
-> ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+On Fri, Oct 30, 2020 at 6:10 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Currently the tool redirects make stdout + stderr, and only shows them
+> if the make command fails.
+> This means build warnings aren't shown to the user.
+>
+> This change prints the contents of stderr even if make succeeds, under
+> the assumption these are only build warnings or other messages the user
+> likely wants to see.
+>
+> We drop stdout from the raised exception since we can no longer easily
+> collate stdout and stderr and just showing the stderr seems fine.
+>
+> Example with a warning:
+>
+> [14:56:35] Building KUnit Kernel ...
+> ../lib/kunit/kunit-test.c: In function =E2=80=98kunit_test_successful_try=
+=E2=80=99:
+> ../lib/kunit/kunit-test.c:19:6: warning: unused variable =E2=80=98unused=
+=E2=80=99 [-Wunused-variable]
+>    19 |  int unused;
+>       |      ^~~~~~
+>
+> [14:56:40] Starting KUnit Kernel ...
+>
+> Note the stderr has a trailing \n, and since we use print, we add
+> another, but it helps separate make and kunit.py output.
+>
+> Example with a build error:
+>
+> [15:02:45] Building KUnit Kernel ...
+> ERROR:root:../lib/kunit/kunit-test.c: In function =E2=80=98kunit_test_suc=
+cessful_try=E2=80=99:
+> ../lib/kunit/kunit-test.c:19:2: error: unknown type name =E2=80=98invalid=
+_type=E2=80=99
+>    19 |  invalid_type *test =3D data;
+>       |  ^~~~~~~~~~~~
+> ...
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> ---
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Thanks a lot -- this was really bugging me, and works great.
 
-Thanks,
+Reviewed-by: David Gow <davidgow@google.com>
