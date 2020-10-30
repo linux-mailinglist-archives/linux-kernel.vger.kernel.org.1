@@ -2,30 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD95829FF8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:19:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC81C29FF9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgJ3ITM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Oct 2020 04:19:12 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:44509 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbgJ3ITL (ORCPT
+        id S1726051AbgJ3IXm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Oct 2020 04:23:42 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:36197 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJ3IXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:19:11 -0400
+        Fri, 30 Oct 2020 04:23:39 -0400
+X-Originating-IP: 91.224.148.103
 Received: from xps13 (unknown [91.224.148.103])
         (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 1A09D200005;
-        Fri, 30 Oct 2020 08:19:07 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 09:19:05 +0100
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 6D27CE0008;
+        Fri, 30 Oct 2020 08:23:30 +0000 (UTC)
+Date:   Fri, 30 Oct 2020 09:23:29 +0100
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Christophe Kerello <christophe.kerello@st.com>
-Cc:     <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH] mtd: rawnand: stm32_fmc2: fix broken ECC
-Message-ID: <20201030091905.111aa7a4@xps13>
-In-Reply-To: <1603989492-6670-1-git-send-email-christophe.kerello@st.com>
-References: <1603989492-6670-1-git-send-email-christophe.kerello@st.com>
+To:     "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     vigneshr@ti.com, tudor.ambarus@microchip.com,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        robh+dt@kernel.org, boris.brezillon@collabora.com,
+        devicetree@vger.kernel.org, simon.k.r.goldschmidt@gmail.com,
+        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com
+Subject: Re: [RESENDPATCH v15 2/2] mtd: rawnand: Add NAND controller support
+ on Intel LGM SoC
+Message-ID: <20201030092329.280466d9@xps13>
+In-Reply-To: <ab2b0b7a-93b6-51e4-ec08-7af4f4f38745@linux.intel.com>
+References: <20201026073021.33327-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20201026073021.33327-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20201028112037.326c06e2@xps13>
+        <ab2b0b7a-93b6-51e4-ec08-7af4f4f38745@linux.intel.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
@@ -35,67 +44,187 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+Hello,
 
-Christophe Kerello <christophe.kerello@st.com> wrote on Thu, 29 Oct
-2020 17:38:12 +0100:
-
-> Since commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user
-> input parsing bits"), ECC are broken in FMC2 driver in case of
-> nand-ecc-step-size and nand-ecc-strength are not set in the device tree.
-> The default user configuration set in FMC2 driver is lost when
-> rawnand_dt_init function is called. To avoid to lose the default user
-> configuration, it is needed to move it in the new user_conf structure.
+> >> +static const struct nand_controller_ops ebu_nand_controller_ops = {
+> >> +	.attach_chip = ebu_nand_attach_chip,
+> >> +	.setup_interface = ebu_nand_set_timings,
+> >> +	.exec_op = ebu_nand_exec_op,
+> >> +};
+> >> +
+> >> +static void ebu_dma_cleanup(struct ebu_nand_controller *ebu_host)
+> >> +{
+> >> +	if (ebu_host->dma_rx)
+> >> +		dma_release_channel(ebu_host->dma_rx);
+> >> +
+> >> +	if (ebu_host->dma_tx)
+> >> +		dma_release_channel(ebu_host->dma_tx);
+> >> +}
+> >> +
+> >> +static int ebu_nand_probe(struct platform_device *pdev)
+> >> +{
+> >> +	struct device *dev = &pdev->dev;
+> >> +	struct ebu_nand_controller *ebu_host;
+> >> +	struct nand_chip *nand;
+> >> +	struct mtd_info *mtd;
+> >> +	struct resource *res;
+> >> +	char *resname;
+> >> +	int ret, i;
+> >> +	u32 reg;
+> >> +
+> >> +	ebu_host = devm_kzalloc(dev, sizeof(*ebu_host), GFP_KERNEL);
+> >> +	if (!ebu_host)
+> >> +		return -ENOMEM;
+> >> +
+> >> +	ebu_host->dev = dev;
+> >> +	nand_controller_init(&ebu_host->controller);
+> >> +
+> >> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ebunand");
+> >> +	ebu_host->ebu = devm_ioremap_resource(&pdev->dev, res);
+> >> +	if (IS_ERR(ebu_host->ebu))
+> >> +		return PTR_ERR(ebu_host->ebu);
+> >> +
+> >> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hsnand");
+> >> +	ebu_host->hsnand = devm_ioremap_resource(&pdev->dev, res);
+> >> +	if (IS_ERR(ebu_host->hsnand))
+> >> +		return PTR_ERR(ebu_host->hsnand);
+> >> +
+> >> +	ret = device_property_read_u32(dev, "nand,cs", &reg);  
+> > 
+> > There is no nand,cs property. Use 'reg' instead.  
+> Noted.
+> >   
+> >> +	if (ret) {
+> >> +		dev_err(dev, "failed to get chip select: %d\n", ret);
+> >> +		return ret;
+> >> +	}
+> >> +	ebu_host->cs_num = reg;  
+> > 
+> > The following for loop is weird, above you can only store a single cs
+> > number, while below you seem to reserve serveral memory areas. Please
+> > clarify this code.  
+> This IP supports 2 chip select for 2 different memory regions so we used the below for loop, as per reviewers comment updated.
+> 		 EBU_CS0_BASE     0xE1C0_0000 (Memory-Mapped)
+> 		 EBU_CS0_IO_BASE  0x1740_0000 (FPI I/O Mapped)
 > 
-> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-> Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
-> ---
->  drivers/mtd/nand/raw/stm32_fmc2_nand.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+>                   EBU_CS1_BASE     0xE140_0000 (Memory-Mapped)
+>                   EBU_CS1_IO_BASE  0x17C0_0000 (FPI I/O Mapped)
+
+Please make a difference between, "there are two CS, either can be
+picked but we can use only one in this driver" or "there are two CS,
+one or both can be used". You can start with supporting a single CS (no
+matter which one is picked by the user with the reg property) but in
+this case there is no such for loop because only 1 CS is used. Or you
+can decide that both CS can be populated and in this case you must
+handle this in ->select_chip().
+
 > 
-> diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> index b31a581..dc86ac9 100644
-> --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> @@ -1846,6 +1846,7 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
->  	struct resource *res;
->  	struct mtd_info *mtd;
->  	struct nand_chip *chip;
-> +	struct nand_device *nanddev;
->  	struct resource cres;
->  	int chip_cs, mem_region, ret, irq;
->  	int start_region = 0;
-> @@ -1952,10 +1953,11 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
->  	chip->options |= NAND_BUSWIDTH_AUTO | NAND_NO_SUBPAGE_WRITE |
->  			 NAND_USES_DMA;
->  
-> -	/* Default ECC settings */
-> +	/* Default ECC user settings */
->  	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
-> -	chip->ecc.size = FMC2_ECC_STEP_SIZE;
-> -	chip->ecc.strength = FMC2_ECC_BCH8;
-> +	nanddev = mtd_to_nanddev(mtd);
-> +	nanddev->ecc.user_conf.step_size = FMC2_ECC_STEP_SIZE;
-> +	nanddev->ecc.user_conf.strength = FMC2_ECC_BCH8;
->  
->  	/* Scan to find existence of the device */
->  	ret = nand_scan(chip, nand->ncs);
+> >   
+> >> +
+> >> +	for (i = 0; i < MAX_CS; i++) {
+> >> +		resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", i);
+> >> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> >> +						   resname);
+> >> +		ebu_host->cs[i].chipaddr = devm_ioremap_resource(dev, res);
+> >> +		ebu_host->cs[i].nand_pa = res->start;
+> >> +		if (IS_ERR(ebu_host->cs[i].chipaddr))
+> >> +			return PTR_ERR(ebu_host->cs[i].chipaddr);
+> >> +	}
+> >> +
+> >> +	ebu_host->clk = devm_clk_get(dev, NULL);
+> >> +	if (IS_ERR(ebu_host->clk))
+> >> +		return dev_err_probe(dev, PTR_ERR(ebu_host->clk),
+> >> +				     "failed to get clock\n");
+> >> +
+> >> +	ret = clk_prepare_enable(ebu_host->clk);
+> >> +	if (ret) {
+> >> +		dev_err(dev, "failed to enable clock: %d\n", ret);
+> >> +		return ret;
+> >> +	}
+> >> +	ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
+> >> +
+> >> +	ebu_host->dma_tx = dma_request_chan(dev, "tx");
+> >> +	if (IS_ERR(ebu_host->dma_tx))
+> >> +		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
+> >> +				     "failed to request DMA tx chan!.\n");
+> >> +
+> >> +	ebu_host->dma_rx = dma_request_chan(dev, "rx");
+> >> +	if (IS_ERR(ebu_host->dma_rx))
+> >> +		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
+> >> +				     "failed to request DMA rx chan!.\n");
+> >> +
+> >> +	for (i = 0; i < MAX_CS; i++) {
+> >> +		resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", i);
+> >> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> >> +						   resname);
+> >> +		if (!res)
+> >> +			return -EINVAL;
+> >> +		ebu_host->cs[i].addr_sel = res->start;
+> >> +		writel(ebu_host->cs[i].addr_sel | EBU_ADDR_MASK(5) |
+> >> +		       EBU_ADDR_SEL_REGEN, ebu_host->ebu + EBU_ADDR_SEL(i));
+> >> +	}
+> >> +
+> >> +	nand_set_flash_node(&ebu_host->chip, dev->of_node);
+> >> +	if (!mtd->name) {
+> >> +		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
+> >> +		return -EINVAL;
+> >> +	}
+> >> +
+> >> +	mtd = nand_to_mtd(&ebu_host->chip);
+> >> +	mtd->dev.parent = dev;
+> >> +	ebu_host->dev = dev;
+> >> +
+> >> +	platform_set_drvdata(pdev, ebu_host);
+> >> +	nand_set_controller_data(&ebu_host->chip, ebu_host);
+> >> +
+> >> +	nand = &ebu_host->chip;
+> >> +	nand->controller = &ebu_host->controller;
+> >> +	nand->controller->ops = &ebu_nand_controller_ops;
+> >> +
+> >> +	/* Scan to find existence of the device */
+> >> +	ret = nand_scan(&ebu_host->chip, 1);
+> >> +	if (ret)
+> >> +		goto err_cleanup_dma;
+> >> +
+> >> +	ret = mtd_device_register(mtd, NULL, 0);
+> >> +	if (ret)
+> >> +		goto err_clean_nand;
+> >> +
+> >> +	return 0;
+> >> +
+> >> +err_clean_nand:
+> >> +	nand_cleanup(&ebu_host->chip);
+> >> +err_cleanup_dma:
+> >> +	ebu_dma_cleanup(ebu_host);
+> >> +	clk_disable_unprepare(ebu_host->clk);
+> >> +
+> >> +	return ret;
+> >> +}
+> >> +
+> >> +static int ebu_nand_remove(struct platform_device *pdev)
+> >> +{
+> >> +	struct ebu_nand_controller *ebu_host = platform_get_drvdata(pdev);
+> >> +	int ret;
+> >> +
+> >> +	ret = mtd_device_unregister(nand_to_mtd(&ebu_host->chip));
+> >> +	WARN_ON(ret);
+> >> +	nand_cleanup(&ebu_host->chip);
+> >> +	ebu_nand_disable(&ebu_host->chip);
+> >> +	ebu_dma_cleanup(ebu_host);
+> >> +	clk_disable_unprepare(ebu_host->clk);
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static const struct of_device_id ebu_nand_match[] = {
+> >> +	{ .compatible = "intel,nand-controller", },  
+> > 
+> > No version or soc in the compatible? (not mandatory).  
+> Yes, you're right, it should be "intel,lgm-ebunand", but this same driver supports 2 dfferent SOC's , that's the reason kept as generic
+> "intel,nand-controller"
 
-Sorry for breaking the driver with this change, but now I think we
-should have all ECC related bits in ->attach() instead of ->probe().
-The ->attach() hook is called during the nand_scan() operation and at
-this point the chip's requirements/layout are known (not before). I
-know that certain controllers don't really care about that, here your
-simply hardcode these two fields and you don't need to know anything
-about the chip's properties. But as a bid to harmonize all drivers with
-the target of a generic ECC engine in mind, I think it's now time to
-move these three lines (chip->ecc.* = ...) at the top of ->attach().
-Also, these fields should have been populated by the core so perhaps
-the best approach is to check if the user requirements are synced with
-the controller's capabilities and error out otherwise?
+In this case I guess declaring two compatibles is the way to go.
 
-We plan to send a fixes PR for -rc2, if the v2 arrives today I'll
-integrate it.
 
 Thanks,
 Miquèl
