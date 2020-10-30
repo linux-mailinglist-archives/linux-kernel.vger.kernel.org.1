@@ -2,72 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D9C29FCFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 06:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE5D29FD02
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 06:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725775AbgJ3FTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 01:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3FTR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 01:19:17 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DF6C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 22:19:16 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1725792AbgJ3FWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 01:22:53 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:19230 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725781AbgJ3FWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 01:22:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604035355; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=TnWAZdBttXycLF7Pg/ea+orhZ9ZprM5LnpXC0r6qX6s=;
+ b=uqn0ZNr06HWoZAjTY7dRRm5J+dOBS/GHPMM5YMp2I8r/PdxMD5iqAOxlbB24NTiAGwD/haMr
+ GTvczn2nFWhsJzzHeoqFIKUJXd6IOWQV31uKUWywcrDF3N/Elq2LvlTdlufgILsSXh7bUnkm
+ DLlCB/itkSgejQPogAaynXv14/w=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f9ba2d68335df1657b8ab8f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 05:21:26
+ GMT
+Sender: kathirav=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7E077C433C6; Fri, 30 Oct 2020 05:21:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CMrFp2wQkz9sSn;
-        Fri, 30 Oct 2020 16:19:09 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1604035152;
-        bh=g17NLadQlMNHRS3Ht5UYozcNciyiTHzLrix1dfy+teg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ZWtYU3oSZTvC/DroUBsF45c5IzIXb9Ywz7/J0acvBPlTOIC27HaTAZBYB1mteG1AQ
-         2945SGAhJd2MoV9nM98Q4otxrL2LRV4tWbDT0kphAbPQfHfGMJCCKR2/ra8WxRT/H4
-         RCxDdE6kuqmmiO2sF56YnnRqVOhupzboRbIDFiVknOSEl2irTF6sYNo4gJG1NHmTPg
-         JYFzBZDiFZxLFdciSH8jFET35mJv/DBAvReGwuzYQqBRlhDNfAiD7Md2MLlbHHUlTt
-         9dm+DM5qKPb/27a4kgX/G8IfWfEbB+jtP5CYahjGPAGl0+SNCMcsStY+iEwrWUKdo/
-         WdvWpTqgItTfw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Andreas Schwab <schwab@linux-m68k.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/32s: Setup the early hash table at all time.
-In-Reply-To: <87wnz8vizm.fsf@igel.home>
-References: <b8f8101c368b8a6451844a58d7bd7d83c14cf2aa.1601566529.git.christophe.leroy@csgroup.eu> <87wnz8vizm.fsf@igel.home>
-Date:   Fri, 30 Oct 2020 16:19:07 +1100
-Message-ID: <87y2jouw8k.fsf@mpe.ellerman.id.au>
+        (Authenticated sender: kathirav)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F015EC433F0;
+        Fri, 30 Oct 2020 05:21:24 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 30 Oct 2020 10:51:24 +0530
+From:   kathirav@codeaurora.org
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        wim@linux-watchdog.org, linux@roeck-us.net,
+        linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Luka Perkov <luka.perkov@sartura.hr>" <kathirav@codeaurora.org>
+Subject: Re: [PATCH v2] watchdog: qcom_wdt: set WDOG_HW_RUNNING bit when
+ appropriate
+In-Reply-To: <20201028114635.7570-1-robert.marko@sartura.hr>
+References: <20201028114635.7570-1-robert.marko@sartura.hr>
+Message-ID: <2f0653b7d05d1ef26f6624b38d1d7b2d@codeaurora.org>
+X-Sender: kathirav@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andreas Schwab <schwab@linux-m68k.org> writes:
-> On Okt 01 2020, Christophe Leroy wrote:
->
->> At the time being, an early hash table is set up when
->> CONFIG_KASAN is selected.
->>
->> There is nothing wrong with setting such an early hash table
->> all the time, even if it is not used. This is a statically
->> allocated 256 kB table which lies in the init data section.
->>
->> This makes the code simpler and may in the future allow to
->> setup early IO mappings with fixmap instead of hard coding BATs.
->>
->> Put create_hpte() and flush_hash_pages() in the .ref.text section
->> in order to avoid warning for the reference to early_hash[]. This
->> reference is removed by MMU_init_hw_patch() before init memory is
->> freed.
->
-> This breaks booting on the iBook G4.
+On 2020-10-28 17:16, Robert Marko wrote:
+> If the watchdog hardware is enabled/running during boot, e.g.
+> due to a boot loader configuring it, we must tell the
+> watchdog framework about this fact so that it can ping the
+> watchdog until userspace opens the device and takes over
+> control.
+> 
+> Do so using the WDOG_HW_RUNNING flag that exists for exactly
+> that use-case.
+> 
+> Given the watchdog driver core doesn't know what timeout was
+> originally set by whoever started the watchdog (boot loader),
+> we make sure to update the timeout in the hardware according
+> to what the watchdog core thinks it is.
+> 
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> ---
+> Changes in v2:
+> * Correct authorship
+> 
+>  drivers/watchdog/qcom-wdt.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
+> index ab7465d186fd..28c93a918e38 100644
+> --- a/drivers/watchdog/qcom-wdt.c
+> +++ b/drivers/watchdog/qcom-wdt.c
+> @@ -152,6 +152,13 @@ static int qcom_wdt_restart(struct
+> watchdog_device *wdd, unsigned long action,
+>  	return 0;
+>  }
+> 
+> +static int qcom_wdt_is_running(struct watchdog_device *wdd)
+> +{
+> +	struct qcom_wdt *wdt = to_qcom_wdt(wdd);
+> +
+> +	return (readl(wdt_addr(wdt, WDT_EN)) & 1);
 
-Do you get an oops or anything?
+QCOM_WDT_ENABLE macro can be used instead of 1?
 
-cheers
+> +}
+> +
+>  static const struct watchdog_ops qcom_wdt_ops = {
+>  	.start		= qcom_wdt_start,
+>  	.stop		= qcom_wdt_stop,
+> @@ -294,6 +301,21 @@ static int qcom_wdt_probe(struct platform_device 
+> *pdev)
+>  	wdt->wdd.timeout = min(wdt->wdd.max_timeout, 30U);
+>  	watchdog_init_timeout(&wdt->wdd, 0, dev);
+> 
+> +	if (qcom_wdt_is_running(&wdt->wdd)) {
+> +		/*
+> +		 * Make sure to apply timeout from watchdog core, taking
+> +		 * the prescaler of this driver here into account (the
+> +		 * boot loader might be using a different prescaler).
+> +		 *
+> +		 * To avoid spurious resets because of different scaling,
+> +		 * we first disable the watchdog, set the new prescaler
+> +		 * and timeout, and then re-enable the watchdog.
+> +		 */
+> +		qcom_wdt_stop(&wdt->wdd);
+
+qcom_wdt_start disables the WDT, configure the timeout values and 
+enables it. Do we still need to call qcom_wdt_stop?
+
+> +		qcom_wdt_start(&wdt->wdd);
+> +		set_bit(WDOG_HW_RUNNING, &wdt->wdd.status);
+> +	}
+> +
+>  	ret = devm_watchdog_register_device(dev, &wdt->wdd);
+>  	if (ret)
+>  		return ret;
