@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866CC2A11AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 00:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 466402A11B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 00:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725836AbgJ3Xgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 19:36:41 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:55664 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgJ3Xgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 19:36:41 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kYdwZ-004RBd-P3; Sat, 31 Oct 2020 00:36:27 +0100
-Date:   Sat, 31 Oct 2020 00:36:27 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Ioana Ciornei <ciorneiioana@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Andre Edich <andre.edich@microchip.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Dan Murphy <dmurphy@ti.com>,
-        Divya Koppera <Divya.Koppera@microchip.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Marek Vasut <marex@denx.de>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Mathias Kresin <dev@kresin.me>,
-        Maxim Kochetkov <fido_max@inbox.ru>,
-        Michael Walle <michael@walle.cc>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Nisar Sayed <Nisar.Sayed@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Willy Liu <willy.liu@realtek.com>,
-        Yuiko Oshino <yuiko.oshino@microchip.com>
-Subject: Re: [PATCH net-next 00/19] net: phy: add support for shared
- interrupts (part 1)
-Message-ID: <20201030233627.GA1054829@lunn.ch>
-References: <20201029100741.462818-1-ciorneiioana@gmail.com>
- <d05587fc-0cec-59fb-4e84-65386d0b3d6b@gmail.com>
+        id S1725895AbgJ3Xho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 19:37:44 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:28683 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725446AbgJ3Xho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 19:37:44 -0400
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 30 Oct 2020 16:37:43 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 30 Oct 2020 16:37:43 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id C20C5199F; Fri, 30 Oct 2020 16:37:42 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 16:37:42 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>
+Subject: Re: [PATCH v4 2/3] bindings: pm8941-misc: Add support for VBUS
+ detection
+Message-ID: <20201030233742.GA29492@codeaurora.org>
+References: <cover.1603869292.git.gurus@codeaurora.org>
+ <6c6bd3601ec8f4c68f581452fca3ef96f2ae94f9.1603869292.git.gurus@codeaurora.org>
+ <20201030133612.GB3721479@bogus>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d05587fc-0cec-59fb-4e84-65386d0b3d6b@gmail.com>
+In-Reply-To: <20201030133612.GB3721479@bogus>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > - Every PHY driver gains a .handle_interrupt() implementation that, for
-> >   the most part, would look like below:
+On Fri, Oct 30, 2020 at 08:36:12AM -0500, Rob Herring wrote:
+> On Wed, Oct 28, 2020 at 12:18:53AM -0700, Guru Das Srinagesh wrote:
+> > Add compatible string that adds support for reporting VBUS detection
+> > status that can be detected via a dedicated PMIC pin.
 > > 
-> > 	irq_status = phy_read(phydev, INTR_STATUS);
-> > 	if (irq_status < 0) {
-> > 		phy_error(phydev);
-> > 		return IRQ_NONE;
-> > 	}
+> > Signed-off-by: Anirudh Ghayal <aghayal@codeaurora.org>
+> > Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> > ---
+> >  Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml | 7 ++++++-
+> >  1 file changed, 6 insertions(+), 1 deletion(-)
 > > 
-> > 	if (irq_status == 0)
+> > diff --git a/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml b/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
+> > index e8eea83..15e3749 100644
+> > --- a/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
+> > +++ b/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
+> > @@ -15,18 +15,23 @@ description: |
+> >  
+> >  properties:
+> >    compatible:
+> > +    minItems: 1
+> >      items:
+> >        - const: qcom,pm8941-misc
+> > +      - const: qcom,pmd-vbus-det
 > 
-> Here I have a concern, bits may be set even if the respective interrupt
-> source isn't enabled. Therefore we may falsely blame a device to have
-> triggered the interrupt. irq_status should be masked with the actually
-> enabled irq source bits.
+> Do you really need another compatible here? Just detect this by having a 
+> 2nd interrupt.
 
-Hi Heiner
+Agreed; will drop this bit in the next patchset.
 
-I would say that is a driver implementation detail, for each driver to
-handle how it needs to handle it. I've seen some hardware where the
-interrupt status is already masked with the interrupt enabled
-bits. I've soon other hardware where it is not.
-
-For example code, what is listed above is O.K. The real implementation
-in a driver need knowledge of the hardware.
-
-      Andrew
+> 
+> >  
+> >    reg:
+> >      maxItems: 1
+> >  
+> >    interrupts:
+> > -    maxItems: 1
+> > +    minItems: 1
+> > +    maxItems: 2
+> >  
+> >    interrupt-names:
+> > +    minItems: 1
+> >      items:
+> >        - const: usb_id
+> > +      - const: usb_vbus
+> >  
+> >  required:
+> >    - compatible
+> > -- 
+> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> > a Linux Foundation Collaborative Project
+> > 
