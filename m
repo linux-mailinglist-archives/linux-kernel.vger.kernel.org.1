@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1572A0FC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDF82A0FC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:59:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727635AbgJ3U5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 16:57:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51921 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726163AbgJ3U5E (ORCPT
+        id S1727645AbgJ3U7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 16:59:21 -0400
+Received: from mail-ua1-f68.google.com ([209.85.222.68]:35655 "EHLO
+        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbgJ3U7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 16:57:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604091423;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G4Sd/bJr19YSAd9GdvU3fP5HNJ+0V8eKs7dPTIY2nYM=;
-        b=Mc78R1F+M2RXKP5x4SMSBHNUUfWmZtjLEvPhkRbjdE98o+RbNPV6w0xSOyrzKVTvHi6Qt0
-        BaIXd3zzK0p+zR7lahTkdvyNIeiZpka5565qKjlgobkf0vO5h+ZSr/pWg3jeeycXa3aLLj
-        EgdCWXRbVgsOH0vnRIZh68RtQ5Jd+YQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-182-dQ9rhtvwMhy-8YCCyffXSA-1; Fri, 30 Oct 2020 16:56:58 -0400
-X-MC-Unique: dQ9rhtvwMhy-8YCCyffXSA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B73C91087D68;
-        Fri, 30 Oct 2020 20:56:56 +0000 (UTC)
-Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8918476642;
-        Fri, 30 Oct 2020 20:56:55 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 14:56:55 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v6 4/5] iommu/vt-d: Add iommu_ops support for subdevice
- bus
-Message-ID: <20201030145655.07c692d8@w520.home>
-In-Reply-To: <20201030045809.957927-5-baolu.lu@linux.intel.com>
-References: <20201030045809.957927-1-baolu.lu@linux.intel.com>
-        <20201030045809.957927-5-baolu.lu@linux.intel.com>
+        Fri, 30 Oct 2020 16:59:20 -0400
+Received: by mail-ua1-f68.google.com with SMTP id f20so2139459uap.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 13:59:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0UF2Pmf+rwRBHY8l9mzh5Ann9thyXoIS3meDLoOTDgU=;
+        b=iC5u3aBoMuTm4wozxh9IV2gbv/eULJVvGJwWISRtlH6/QZ/5QTNObNPgcRygnPoup2
+         gJWynJb0Vzl7r/V/GgAPFNSXlWHl5B4S03tw8+ncgQxSD/z+KPAoeu10j/zc0m6Dm44n
+         oqeYKNPVGz4Qi8Vm9tkC+G7kQWnu2guC+ftnk1apgb4XBkO0Erzmv5gD9QhZ8Id/fOKs
+         XTDydJGK0o9drRmRXXX8tN+r2E09Qt+ivQKlzJ+Zn8n6pW2PF1JEmvPIQBpE5g9Co9vg
+         0ZWH+CfvBi9Wu3t63KanwE32eTBNGwfVaezmN5leKDkEKr02TcRy5C+1HmLlu+V5mM3N
+         Oj4A==
+X-Gm-Message-State: AOAM533sEhzdyBLMNYl2xUAmGQ4yfSWjlJHCq1wMFMbt5Sv5J8oHzKpl
+        HyK1dWdtCuPVJOnm0YY34NY=
+X-Google-Smtp-Source: ABdhPJyH72AuFmsvzp0sbpVX9j78iQsXQAIeLz8oNvMQJ3HePx7NsJR7CYskCVyb7OINrFDNoMoQWg==
+X-Received: by 2002:a9f:2212:: with SMTP id 18mr3048462uad.89.1604091559492;
+        Fri, 30 Oct 2020 13:59:19 -0700 (PDT)
+Received: from killington.c.googlers.com.com (239.145.196.35.bc.googleusercontent.com. [35.196.145.239])
+        by smtp.gmail.com with ESMTPSA id w123sm874205vke.26.2020.10.30.13.59.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 13:59:18 -0700 (PDT)
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Dennis Zhou <dennis@kernel.org>
+Subject: [PATCH] percpu: convert flexible array initializers to use struct_size()
+Date:   Fri, 30 Oct 2020 20:58:46 +0000
+Message-Id: <20201030205846.1105106-1-dennis@kernel.org>
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020 12:58:08 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
+Use the safer macro as sparked by the long discussion in [1].
 
-> +static const struct iommu_ops siov_iommu_ops = {
-> +	.capable		= intel_iommu_capable,
-> +	.domain_alloc		= siov_iommu_domain_alloc,
-> +	.domain_free		= intel_iommu_domain_free,
-> +	.attach_dev		= siov_iommu_attach_device,
-> +	.detach_dev		= siov_iommu_detach_device,
-> +	.map			= intel_iommu_map,
-> +	.unmap			= intel_iommu_unmap,
-> +	.iova_to_phys		= intel_iommu_iova_to_phys,
-> +	.probe_device		= siov_iommu_probe_device,
-> +	.release_device		= siov_iommu_release_device,
-> +	.get_resv_regions	= siov_iommu_get_resv_regions,
-> +	.put_resv_regions	= generic_iommu_put_resv_regions,
-> +	.device_group		= generic_device_group,
-> +	.pgsize_bitmap		= (~0xFFFUL),
-> +};
-> +
-> +void intel_siov_init(void)
-> +{
-> +	if (!scalable_mode_support() || !iommu_pasid_support())
-> +		return;
-> +
-> +	bus_set_iommu(&mdev_bus_type, &siov_iommu_ops);
-> +	pr_info("Intel(R) Scalable I/O Virtualization supported\n");
-> +}
+[1] https://lore.kernel.org/lkml/20200917204514.GA2880159@google.com/
 
-How can you presume to take over iommu_ops for an entire virtual bus?
-This also forces mdev and all the dependencies of mdev to be built into
-the kernel.  I don't find that acceptable.  Thanks,
+Signed-off-by: Dennis Zhou <dennis@kernel.org>
+---
+I'll apply it to for-5.10-fixes.
 
-Alex
+ mm/percpu.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/mm/percpu.c b/mm/percpu.c
+index 66a93f096394..ad7a37ee74ef 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -1315,8 +1315,8 @@ static struct pcpu_chunk * __init pcpu_alloc_first_chunk(unsigned long tmp_addr,
+ 	region_size = ALIGN(start_offset + map_size, lcm_align);
+ 
+ 	/* allocate chunk */
+-	alloc_size = sizeof(struct pcpu_chunk) +
+-		BITS_TO_LONGS(region_size >> PAGE_SHIFT) * sizeof(unsigned long);
++	alloc_size = struct_size(chunk, populated,
++				 BITS_TO_LONGS(region_size >> PAGE_SHIFT));
+ 	chunk = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
+ 	if (!chunk)
+ 		panic("%s: Failed to allocate %zu bytes\n", __func__,
+@@ -2521,8 +2521,8 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+ 	pcpu_unit_pages = ai->unit_size >> PAGE_SHIFT;
+ 	pcpu_unit_size = pcpu_unit_pages << PAGE_SHIFT;
+ 	pcpu_atom_size = ai->atom_size;
+-	pcpu_chunk_struct_size = sizeof(struct pcpu_chunk) +
+-		BITS_TO_LONGS(pcpu_unit_pages) * sizeof(unsigned long);
++	pcpu_chunk_struct_size = struct_size(chunk, populated,
++					     BITS_TO_LONGS(pcpu_unit_pages));
+ 
+ 	pcpu_stats_save_ai(ai);
+ 
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
