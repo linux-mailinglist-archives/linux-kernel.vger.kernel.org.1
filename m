@@ -2,145 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0262A09AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6336C2A09AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgJ3PWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726837AbgJ3PWx (ORCPT
+        id S1727010AbgJ3PXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:23:36 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:33213 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726384AbgJ3PXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:22:53 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F172DC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:22:52 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id a7so8334177lfk.9
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5sSkbnbDNPQyj7tIyOHf0OZ0EnyY+U+Tr7Q/pQTsliQ=;
-        b=wU+xx2bxR8RyIDjURsVJrhnOKOfcFiQYDMWEvIaeuyW5aGNhZqWf1dtpN2n4F3NsJU
-         HppUrs7H0lk2qIrSgTeFcNiE1h+/1/elHdKv2wBA/d3Cb+Yn/qVc5aHqDX2kTRM0FlS3
-         nIVVV0Oy4OkmdCIJ8AKJt8+jrvs0gfNjrKK5kQeR4X3twWg+3zGMFU4Hyzs987aPU5DC
-         1OTUdauKuFPZWjob1v3N8JTmx5MTcCoWOPGmX0D5W73tJhSWN3+F5ksSdNjv+Chq4veK
-         oyNBDfrWv3q2nrzVucDlW9OJlVKLQCeMpMTrtiyse23US5OjWuYJC8Eg07Fh6gR6Kzqd
-         NT1g==
+        Fri, 30 Oct 2020 11:23:35 -0400
+Received: by mail-oi1-f193.google.com with SMTP id s21so7049537oij.0;
+        Fri, 30 Oct 2020 08:23:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5sSkbnbDNPQyj7tIyOHf0OZ0EnyY+U+Tr7Q/pQTsliQ=;
-        b=qtq6isdBftavbshSIbfu+4OLb76RT1SFjQsJ+XtlzRwql1LMqkBveICDlUfZLYeZ0n
-         4J3YZwVyZQMnZSJBECguTLGvWIHGm67BedznRQCwnFy0zfuAJ+u5SOO9ZFlqNO24WFh+
-         XFnxdBv4dA0MZYE/R70/jiSr0mKmQbxe05caUw+7c8l4ZrKjEDcfYAeu+n2V+XoMBWBK
-         sV4E7U3J6LjlIo9S9von1uNtON2YsdwV8QKakLCwW8RDy2qDkYxpAdcWtR0ZK2FEA5ro
-         Od1cojWimUbnWLJkV7LvIH9EDkKwJF870GrxzTz6ZsiBj2EeSXiltjwC8bXbHZFWTJr5
-         LAKg==
-X-Gm-Message-State: AOAM531vt/PwNUPijv/zNs4Zw2kX/vKSgXEwXwWYmR+3pC1VHAh5w/EN
-        dVjUGN7JWiSKvMSL532K3E0l/elZlpGNxT3McKRkaw==
-X-Google-Smtp-Source: ABdhPJwLZMfK+/wKcVf/f3wxYqaH0PlYsimcp5h9RqJlxCzfH0SY3Zlp7ANGGJQDqEL2L9l6kszh99qZ39iPqxje9Z8=
-X-Received: by 2002:a05:6512:51a:: with SMTP id o26mr1098326lfb.381.1604071371166;
- Fri, 30 Oct 2020 08:22:51 -0700 (PDT)
+        bh=wasqnwYz4GmqPxfDBbw9YaJh5CbiEJhSDwPHe9OxKVc=;
+        b=BUSxEySNEopaYr8fKLn/0gpNqVCPWgisoVww1TBJ52zuT80vk0Ad4rZQ4FMO2CsyKj
+         boXdFoTjUzigZlEfBYj16de9hRmrt59zvc5e3dwSPoNffQpWQJJDrsCfYuyyFbvIok7a
+         CcT3M6uqQm3yk+K2mijvxTh+wheze32kOnr+S0//kEbv+e/k0i+VpL1dPxQxrOmB68KI
+         VvkYNP8z3gMOoFJtoiGJwg9PUqL2AHUqrO7Dgl2Be2h9m0+/jQU7vl2X9iNefTc+V3WG
+         V6qYKPJktthMmeKOO+K6mq/oGl2Q6bprySmxBjhK0KeHyDfloZ1wgEDNT8bIP2/WK/Gd
+         ocMQ==
+X-Gm-Message-State: AOAM530wUPnavR1Zz6iB2LRa9lIi0bweSsBkknmFb/xFnnTqF9eQ77Xu
+        E9B/tuKoiY7jKl64Lr6BRCgCVo2NmMIhdgZY8b0=
+X-Google-Smtp-Source: ABdhPJyM5/SucttxKsd1wqznBg3ep4n3Wy5//PMGi/CLLJ3R8UPOOzjY0fw4iXERuk9fP4fZF+WSYrOk9O3W5uhHbvE=
+X-Received: by 2002:aca:30d7:: with SMTP id w206mr2001006oiw.69.1604071414328;
+ Fri, 30 Oct 2020 08:23:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201029131649.182037-1-elver@google.com> <20201029131649.182037-3-elver@google.com>
- <CAG48ez1n7FrRA8Djq5685KcUJp1YgW0qijtBYNm2c9ZqQ1M4rw@mail.gmail.com> <CANpmjNNBoiL2=JDD=vC5dB_TPW1Ybe5k7SqqhvUE2B7GmzRLyg@mail.gmail.com>
-In-Reply-To: <CANpmjNNBoiL2=JDD=vC5dB_TPW1Ybe5k7SqqhvUE2B7GmzRLyg@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 30 Oct 2020 16:22:24 +0100
-Message-ID: <CAG48ez1=uad2yMeffArw7Nem3Hea3pnL9rqAFsB7fFzBd+4Hcw@mail.gmail.com>
-Subject: Re: [PATCH v6 2/9] x86, kfence: enable KFENCE for x86
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        =?UTF-8?Q?J=C3=B6rn_Engel?= <joern@purestorage.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
+References: <2954009.kBar6x9KXa@kreacher> <207ae817a778d79a99c30cb48f2ea1f527416519.1604042421.git.viresh.kumar@linaro.org>
+ <CAJZ5v0j2uoaUdSr1-OonPkR6QapjOm4RE2Ya=LBpV1KDrLF3gw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0j2uoaUdSr1-OonPkR6QapjOm4RE2Ya=LBpV1KDrLF3gw@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 30 Oct 2020 16:23:23 +0100
+Message-ID: <CAJZ5v0gURd-dcAWj0KdmodM3MfU_DQ_HEiX-CCcd+fHpRikSyA@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: schedutil: Don't skip freq update if
+ need_freq_update is set
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>, Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        zhuguangqing <zhuguangqing@xiaomi.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 2:00 PM Marco Elver <elver@google.com> wrote:
-> On Fri, 30 Oct 2020 at 03:49, Jann Horn <jannh@google.com> wrote:
-> > On Thu, Oct 29, 2020 at 2:17 PM Marco Elver <elver@google.com> wrote:
-> > > Add architecture specific implementation details for KFENCE and enable
-> > > KFENCE for the x86 architecture. In particular, this implements the
-> > > required interface in <asm/kfence.h> for setting up the pool and
-> > > providing helper functions for protecting and unprotecting pages.
-> > >
-> > > For x86, we need to ensure that the pool uses 4K pages, which is done
-> > > using the set_memory_4k() helper function.
-> > >
-> > > Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-> > > Co-developed-by: Marco Elver <elver@google.com>
-> > > Signed-off-by: Marco Elver <elver@google.com>
-> > > Signed-off-by: Alexander Potapenko <glider@google.com>
-> > [...]
-> > > diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> > [...]
-> > > @@ -725,6 +726,9 @@ no_context(struct pt_regs *regs, unsigned long error_code,
-> > >         if (IS_ENABLED(CONFIG_EFI))
-> > >                 efi_recover_from_page_fault(address);
-> > >
-> > > +       if (kfence_handle_page_fault(address))
-> > > +               return;
-[...]
-> > Unrelated sidenote: Since we're hooking after exception fixup
-> > handling, the debug-only KFENCE_STRESS_TEST_FAULTS can probably still
-> > cause some behavioral differences through spurious faults in places
-> > like copy_user_enhanced_fast_string (where the exception table entries
-> > are used even if the *kernel* pointer, not the user pointer, causes a
-> > fault). But since KFENCE_STRESS_TEST_FAULTS is exclusively for KFENCE
-> > development, the difference might not matter. And ordering them the
-> > other way around definitely isn't possible, because the kernel relies
-> > on being able to fixup OOB reads. So there probably isn't really
-> > anything we can do better here; it's just something to keep in mind.
-> > Maybe you can add a little warning to the help text for that Kconfig
-> > entry that warns people about this?
+On Fri, Oct 30, 2020 at 4:07 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
 >
-> Thanks for pointing it out, but that option really is *only* to stress
-> kfence with concurrent allocations/frees/page faults. If anybody
-> enables this option for anything other than testing kfence, it's their
-> own fault. ;-)
+> On Fri, Oct 30, 2020 at 8:31 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > The cpufreq policy's frequency limits (min/max) can get changed at any
+> > point of time, while schedutil is trying to update the next frequency.
+> > Though the schedutil governor has necessary locking and support in place
+> > to make sure we don't miss any of those updates, there is a corner case
+> > where the governor will find that the CPU is already running at the
+> > desired frequency and so may skip an update.
+> >
+> > For example, consider that the CPU can run at 1 GHz, 1.2 GHz and 1.4 GHz
+> > and is running at 1 GHz currently. Schedutil tries to update the
+> > frequency to 1.2 GHz, during this time the policy limits get changed as
+> > policy->min = 1.4 GHz. As schedutil (and cpufreq core) does clamp the
+> > frequency at various instances, we will eventually set the frequency to
+> > 1.4 GHz, while we will save 1.2 GHz in sg_policy->next_freq.
+> >
+> > Now lets say the policy limits get changed back at this time with
+> > policy->min as 1 GHz. The next time schedutil is invoked by the
+> > scheduler, we will reevaluate the next frequency (because
+> > need_freq_update will get set due to limits change event) and lets say
+> > we want to set the frequency to 1.2 GHz again. At this point
+> > sugov_update_next_freq() will find the next_freq == current_freq and
+> > will abort the update, while the CPU actually runs at 1.4 GHz.
+> >
+> > Until now need_freq_update was used as a flag to indicate that the
+> > policy's frequency limits have changed, and that we should consider the
+> > new limits while reevaluating the next frequency.
+> >
+> > This patch fixes the above mentioned issue by extending the purpose of
+> > the need_freq_update flag. If this flag is set now, the schedutil
+> > governor will not try to abort a frequency change even if next_freq ==
+> > current_freq.
+> >
+> > As similar behavior is required in the case of
+> > CPUFREQ_NEED_UPDATE_LIMITS flag as well, need_freq_update will never be
+> > set to false if that flag is set for the driver.
+> >
+> > We also don't need to consider the need_freq_update flag in
+> > sugov_update_single() anymore to handle the special case of busy CPU, as
+> > we won't abort a frequency update anymore.
+> >
+> > Reported-by: zhuguangqing <zhuguangqing@xiaomi.com>
+> > Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> Thanks for following my suggestion!
+>
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> >  kernel/sched/cpufreq_schedutil.c | 22 ++++++++++------------
+> >  1 file changed, 10 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> > index c03a5775d019..c6861be02c86 100644
+> > --- a/kernel/sched/cpufreq_schedutil.c
+> > +++ b/kernel/sched/cpufreq_schedutil.c
+> > @@ -102,9 +102,12 @@ static bool sugov_should_update_freq(struct sugov_policy *sg_policy, u64 time)
+> >  static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
+> >                                    unsigned int next_freq)
+> >  {
+> > -       if (sg_policy->next_freq == next_freq &&
+> > -           !cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
+> > -               return false;
+> > +       if (!sg_policy->need_freq_update) {
+> > +               if (sg_policy->next_freq == next_freq)
+> > +                       return false;
+> > +       } else if (!cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS)) {
+> > +               sg_policy->need_freq_update = false;
 
-Sounds fair. :P
+One nit, though.
 
-> I'll try to add a generic note to the Kconfig entry, but what you
-> mention here seems quite x86-specific.
+This can be changed into
 
-(FWIW, I think it could currently also happen on arm64 in the rare
-cases where KERNEL_DS is used. But luckily Christoph Hellwig has
-already gotten rid of most places that did that.)
+} else {
+      sg_policy->need_freq_update =
+cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS);
+}
+
+to save a branch and because need_freq_update is there in the cache
+already, this should be a fast update.
+
+So I'm going to make this change while applying the patch.
+
+> > +       }
+> >
+> >         sg_policy->next_freq = next_freq;
+> >         sg_policy->last_freq_update_time = time;
+> > @@ -162,11 +165,9 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+> >
+> >         freq = map_util_freq(util, freq, max);
+> >
+> > -       if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update &&
+> > -           !cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
+> > +       if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+> >                 return sg_policy->next_freq;
+> >
+> > -       sg_policy->need_freq_update = false;
+> >         sg_policy->cached_raw_freq = freq;
+> >         return cpufreq_driver_resolve_freq(policy, freq);
+> >  }
+> > @@ -442,7 +443,6 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
+> >         struct sugov_policy *sg_policy = sg_cpu->sg_policy;
+> >         unsigned long util, max;
+> >         unsigned int next_f;
+> > -       bool busy;
+> >         unsigned int cached_freq = sg_policy->cached_raw_freq;
+> >
+> >         sugov_iowait_boost(sg_cpu, time, flags);
+> > @@ -453,9 +453,6 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
+> >         if (!sugov_should_update_freq(sg_policy, time))
+> >                 return;
+> >
+> > -       /* Limits may have changed, don't skip frequency update */
+> > -       busy = !sg_policy->need_freq_update && sugov_cpu_is_busy(sg_cpu);
+> > -
+> >         util = sugov_get_util(sg_cpu);
+> >         max = sg_cpu->max;
+> >         util = sugov_iowait_apply(sg_cpu, time, util, max);
+> > @@ -464,7 +461,7 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
+> >          * Do not reduce the frequency if the CPU has not been idle
+> >          * recently, as the reduction is likely to be premature then.
+> >          */
+> > -       if (busy && next_f < sg_policy->next_freq) {
+> > +       if (sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
+> >                 next_f = sg_policy->next_freq;
+> >
+> >                 /* Restore cached freq as next_freq has changed */
+> > @@ -829,9 +826,10 @@ static int sugov_start(struct cpufreq_policy *policy)
+> >         sg_policy->next_freq                    = 0;
+> >         sg_policy->work_in_progress             = false;
+> >         sg_policy->limits_changed               = false;
+> > -       sg_policy->need_freq_update             = false;
+> >         sg_policy->cached_raw_freq              = 0;
+> >
+> > +       sg_policy->need_freq_update = cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS);
+> > +
+> >         for_each_cpu(cpu, policy->cpus) {
+> >                 struct sugov_cpu *sg_cpu = &per_cpu(sugov_cpu, cpu);
+> >
+> > --
+>
+> I'll queue it up for -rc3 next week, thanks!
