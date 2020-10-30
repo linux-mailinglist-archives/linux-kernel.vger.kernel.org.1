@@ -2,81 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7550D2A0D78
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDED2A0D7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:34:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727265AbgJ3Sd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:33:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
+        id S1727188AbgJ3SeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgJ3Sd1 (ORCPT
+        with ESMTP id S1725975AbgJ3SeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:33:27 -0400
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D96DC0613D2;
-        Fri, 30 Oct 2020 11:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:Sender:
-        Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=arFiHimQtiFJb6n6XZtdH+1ty6P+gA0qV1YCQIOIjbk=; b=aJHkwdWk41/8ufHHLn2WXErvDb
-        dSUEkmia/KuWPYiFNhG99EkAxwqDtmrRsVtEHBAsPL/Kof5rlu2W1676LwG/frn5/xY692AN+jiCi
-        dCsEfi2RXzUzi+OTzezrj/v1XcjZAFtOfBaW/WcS6TwRem5OCX/4uctfIQysgAbh0SPHuub5SB3iO
-        CsDE8JbSlwIymdTYGualZ2zoHw/i8qZwQyV346jMVe9jnuBfkodIkSjsa7/1N10/Gzkd8ydrmqstn
-        8bCyJzlVYMAkOoxkQ6gH30f25dFytHOMU8XnESJXrFWSi21vH9Dt05g/cVX7wb6dqU0tlN3wiZrD4
-        j2TNba8A==;
-Received: from noodles by the.earth.li with local (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1kYZD9-0001uR-F7; Fri, 30 Oct 2020 18:33:15 +0000
-Date:   Fri, 30 Oct 2020 18:33:15 +0000
-From:   Jonathan McDowell <noodles@earth.li>
-To:     DENG Qingfang <dqfext@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net] net: dsa: qca8k: Fix port MTU setting
-Message-ID: <20201030183315.GA6736@earth.li>
+        Fri, 30 Oct 2020 14:34:12 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5050C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:34:10 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id t11so7588788edj.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:34:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UGg1dh3V0sVY8xG316RCn13ndhN0+H8ulqokbaS5n1U=;
+        b=IkdXBODJEuUUuLLVn66wDZ8zSx76aeW2TXeeLw7vI4/A4m6IQ/gNaCpDQ07IgCAhgj
+         +weZ8XKhuPqQe7lWDQYv3fYG9Mc8VGuarP43lfD88O3T9z5riCI7cfUyLikWy4Z+5kVD
+         B0G06tXTyTv9gVluKIFENSPcOxRn9teFabczvJmSe1O4GEx0pePyQTKX4yPegUsTHBDW
+         Msefif90Iv+bEnmg9860jXd7pHj+EddaiL54KW+KM25zOKtKCRCUjaGpbM9zEQ0vGfeX
+         8lHpxJ8y8T/HFaUQ/ekqB8+le9MjhtGdDRY7GYPrJzLAz6ZgiojGhPJSjps4JYAdbJwp
+         tsyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UGg1dh3V0sVY8xG316RCn13ndhN0+H8ulqokbaS5n1U=;
+        b=J/9R71nGKDWz9we0z6NMWh7xQP/9jPnAvmLTSN1N0YFDZkX2w276JnXMWSdZfcEHur
+         RrfwwSP9hDjVgEf7OK+kw9GLMKeZcUSc97KVEOy9rrniALm6RwPmAmZDTGAkXHtULyvY
+         J7Y3SdBnNnBbOGrde1Cx28uooOPrXwSRKRY80Z6bZSXJiXOAKOdVTlZuNNCmN8bX/Z8J
+         BrhJDRuUpjedkEeETVKUCowxGW90XjfhQFf97ftZjMlQviwEMZmgXHp65mrwcOBSATsq
+         blN3pyQZN19C3Q7QbT/TtzQm+9OcwIFCPOdTmfXP8m8UwgWhT4nX4oLSShL60BwaoHwY
+         gHBQ==
+X-Gm-Message-State: AOAM532hk98jRppd5qAVggZ3Qex3UN6lJmcGUkg/XBDVnCnhN/fxcn/E
+        2rSoWVOTN/eqhRiJ6xnOt5dB9U3gPOT5K1BIopY=
+X-Google-Smtp-Source: ABdhPJxAiP5WB7O1cuZKak34I/WKP+kggx6dIlMDsB0pELyn8xkOAEo6jECiB9YltACS8PoKARZdCTxWUIvNMLbwmic=
+X-Received: by 2002:a50:cc48:: with SMTP id n8mr3872441edi.137.1604082848406;
+ Fri, 30 Oct 2020 11:34:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201029200435.3386066-1-zi.yan@sent.com> <20201030094308.GG1478@dhcp22.suse.cz>
+ <6CAAB1FC-2B41-490B-A67A-93063629C19B@nvidia.com> <20201030133625.GJ1478@dhcp22.suse.cz>
+In-Reply-To: <20201030133625.GJ1478@dhcp22.suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 30 Oct 2020 11:33:55 -0700
+Message-ID: <CAHbLzkqnmXqB-UThT9dMOwVpuweE6XwA78SF-_qD9=1EVpMSUg@mail.gmail.com>
+Subject: Re: [PATCH] mm/compaction: count pages and stop correctly during page isolation.
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>, Rik van Riel <riel@surriel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The qca8k only supports a switch-wide MTU setting, and the code to take
-the max of all ports was only looking at the port currently being set.
-Fix to examine all ports.
+On Fri, Oct 30, 2020 at 6:36 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 30-10-20 08:20:50, Zi Yan wrote:
+> > On 30 Oct 2020, at 5:43, Michal Hocko wrote:
+> >
+> > > [Cc Vlastimil]
+> > >
+> > > On Thu 29-10-20 16:04:35, Zi Yan wrote:
+> > >> From: Zi Yan <ziy@nvidia.com>
+> > >>
+> > >> In isolate_migratepages_block, when cc->alloc_contig is true, we are
+> > >> able to isolate compound pages, nr_migratepages and nr_isolated did not
+> > >> count compound pages correctly, causing us to isolate more pages than we
+> > >> thought. Use thp_nr_pages to count pages. Otherwise, we might be trapped
+> > >> in too_many_isolated while loop, since the actual isolated pages can go
+> > >> up to COMPACT_CLUSTER_MAX*512=16384, where COMPACT_CLUSTER_MAX is 32,
+> > >> since we stop isolation after cc->nr_migratepages reaches to
+> > >> COMPACT_CLUSTER_MAX.
+> > >>
+> > >> In addition, after we fix the issue above, cc->nr_migratepages could
+> > >> never be equal to COMPACT_CLUSTER_MAX if compound pages are isolated,
+> > >> thus page isolation could not stop as we intended. Change the isolation
+> > >> stop condition to >=.
+> > >>
+> > >> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> > >> ---
+> > >>  mm/compaction.c | 8 ++++----
+> > >>  1 file changed, 4 insertions(+), 4 deletions(-)
+> > >>
+> > >> diff --git a/mm/compaction.c b/mm/compaction.c
+> > >> index ee1f8439369e..0683a4999581 100644
+> > >> --- a/mm/compaction.c
+> > >> +++ b/mm/compaction.c
+> > >> @@ -1012,8 +1012,8 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+> > >>
+> > >>  isolate_success:
+> > >>            list_add(&page->lru, &cc->migratepages);
+> > >> -          cc->nr_migratepages++;
+> > >> -          nr_isolated++;
+> > >> +          cc->nr_migratepages += thp_nr_pages(page);
+> > >> +          nr_isolated += thp_nr_pages(page);
+> > >
+> > > Does thp_nr_pages work for __PageMovable pages?
+> >
+> > Yes. It is the same as compound_nr() but compiled
+> > to 1 when THP is not enabled.
+>
+> I am sorry but I do not follow. First of all the implementation of the
+> two is different and also I was asking about __PageMovable which should
+> never be THP IIRC. Can they be compound though?
 
-Reported-by: DENG Qingfang <dqfext@gmail.com>
-Fixes: f58d2598cf70 ("net: dsa: qca8k: implement the port MTU callbacks")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jonathan McDowell <noodles@earth.li>
----
- drivers/net/dsa/qca8k.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I have the same question, can they be compound? If they can be
+compound, PageTransHuge() can't tell from THP and compound movable
+page, right?
 
-diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-index 53064e0e1618..5bdac669a339 100644
---- a/drivers/net/dsa/qca8k.c
-+++ b/drivers/net/dsa/qca8k.c
-@@ -1219,8 +1219,8 @@ qca8k_port_change_mtu(struct dsa_switch *ds, int port, int new_mtu)
- 	priv->port_mtu[port] = new_mtu;
- 
- 	for (i = 0; i < QCA8K_NUM_PORTS; i++)
--		if (priv->port_mtu[port] > mtu)
--			mtu = priv->port_mtu[port];
-+		if (priv->port_mtu[i] > mtu)
-+			mtu = priv->port_mtu[i];
- 
- 	/* Include L2 header / FCS length */
- 	qca8k_write(priv, QCA8K_MAX_FRAME_SIZE, mtu + ETH_HLEN + ETH_FCS_LEN);
--- 
-2.20.1
-
+>
+> --
+> Michal Hocko
+> SUSE Labs
+>
