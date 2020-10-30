@@ -2,218 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224F32A02B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F992A02AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726351AbgJ3KS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52086 "EHLO
+        id S1726329AbgJ3KSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgJ3KS4 (ORCPT
+        with ESMTP id S1726171AbgJ3KSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:18:56 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6548AC0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:18:54 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k18so2418008wmj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:18:54 -0700 (PDT)
+        Fri, 30 Oct 2020 06:18:54 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ADF4C0613D7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:18:53 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id k65so6136828oih.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:18:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9QnPAe/9TEZoI6Lq3d/QkgDd9m9jvfSBzhcmPvWbSw4=;
-        b=xNIZ8cVBFbQ6bdjtq0Hmby0tUGqrogQ55WzB1NVugGBAxs6/uT7n7bTbHZG26skP/6
-         vlBkhqQR3eH1Jh1mHIOKSojs8X8EfyS4S5Ck3WuvfBx1L89a7KWXB1WgMOpYcxRRC805
-         I8j5s11o2aY3ulzx31MvrsaxIp5/9ov5SiZtTelhDB/pbex1AhTA5GLWYI5Z0McJChPO
-         6MSvuxHNMhRWEGuowKnaPUgqPITviOE1D8Qtsg/3XDpv4nDGSkZ1i1Rw2Eg5Ycwrc1IC
-         nZKvLRX+YDV7cPfrsoulWOqh6TJHwmx7YwkkL5kkvarpIlary1jzpnkRuyFGG4A0wPnn
-         7PRw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qSrgT+Sq6ixZqGRM1ApDzYbdNLSfueKKt5jrYnIpTKg=;
+        b=J/brQsIEXjkMtFsYYqBCMbN7+7Cmh0sjVyNHa6GCk49DXyvdvhr/CvjKzFrLjPezzh
+         Ks4w2XDcjvzJb+PPrLEQgUhcZX1Jm9QbzrgXNMykyjrC8K2BKrEoWVHTDkLX1pQBkosi
+         Ta+c14qVOgbtbcqoDC7k92+K9+TwjtNqNP4zs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9QnPAe/9TEZoI6Lq3d/QkgDd9m9jvfSBzhcmPvWbSw4=;
-        b=o1DfXZJ3XePdxZpYJCgbAR9IKH8gGN6lJ8rwBNqKEqr05DUDZZklZFvvW6mMm4G+iZ
-         9zHpW2kXHeL+wB51rW1gQB38yo21qiRF5PS1SD7igQGdPm+H9iMjAGtetXTkfECUA1Un
-         5UUCJfmcQlb1M/LPjL5cblHElWjfqgrFgsuBlcbdFZBNd1P5WIJY485o4xEyzkSaZ1f6
-         ssBt/WmoOebpkeUq9W4hpoMCrMfqBJKsFCvDnUrqLgxLC5beXGuyiXzAYJMbzUECnGqD
-         dJa/n379nkRwriA/UWEf0CHQo0QvYq6lyovJF3gIzEPRBMqU15Srqe1fR8F2i7IhCROj
-         IiNg==
-X-Gm-Message-State: AOAM531MjsmBY58peH2Jy7grPtO13YGurgF5wjhklmMG7rcep0loaWao
-        8TwjU4nLy95R88eXRjSdR6kq5g==
-X-Google-Smtp-Source: ABdhPJzmWJXNv2J4SwRd2WDFh46KarNhPjy8eGcF6DQVOctpW3uaD4eXLFO5VUk+d7zrIy//n4cEUA==
-X-Received: by 2002:a1c:1d51:: with SMTP id d78mr1755124wmd.60.1604053128250;
-        Fri, 30 Oct 2020 03:18:48 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id r28sm10482662wrr.81.2020.10.30.03.18.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 03:18:47 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 11:18:27 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     Jacob Pan <jacob.pan.linux@gmail.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-api@vger.kernel.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
-        Yi Sun <yi.y.sun@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3 01/14] docs: Document IO Address Space ID (IOASID) APIs
-Message-ID: <20201030101827.GB122147@myrica>
-References: <1601329121-36979-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1601329121-36979-2-git-send-email-jacob.jun.pan@linux.intel.com>
- <20201020135809.GA1515830@myrica>
- <20201026140506.1349dbb5@jacob-builder>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qSrgT+Sq6ixZqGRM1ApDzYbdNLSfueKKt5jrYnIpTKg=;
+        b=r7c1SOGxhevVVqzecbH/z91VrVbfBo3F+6XfUAO00JxbOb34cPrRQzlqxjZ9qF5ayh
+         TLj/sJDeq6EdgHQ6H+3JcQ44EDijS8IlZA0qsPWFUaSacNcfIibi62dXvXHfoaXBiZ6E
+         RUjzWlXGj2hYfGPpDS6QcW9M1S/2gDCsSnolT3MS47ZnB6rKyRLoxGpnn8KrKkIgIcnW
+         GjXp5KAnD+0Om0McGmdHEaEqBKoGHTEr7KFAo3kKalXLttoy3TKNg1auoXlLAjLTQpdH
+         ZuzKOU2soWlZLPb5qMXf4uPlksKSkCOxKENKbZLQDOrFixOksrXmbz891flWo0noPVby
+         T75g==
+X-Gm-Message-State: AOAM530qNR4efeWXjvcqDMu2k6+OjbsnBgC8jkNHYJ0RDOTa7cMBUOGA
+        8ja8Ie+tfQXgw9+vFc9JiVWpEG0dLGiBYQ==
+X-Google-Smtp-Source: ABdhPJwgGvy+HnckrKEQa4hvCFrZAZkBo7jWCOh2wMvLJ22MWxaM7HcTJ0Nf49G/CeFp70L5P6rlxg==
+X-Received: by 2002:aca:580a:: with SMTP id m10mr1025045oib.122.1604053132492;
+        Fri, 30 Oct 2020 03:18:52 -0700 (PDT)
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com. [209.85.210.52])
+        by smtp.gmail.com with ESMTPSA id m13sm1213737otn.20.2020.10.30.03.18.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 03:18:51 -0700 (PDT)
+Received: by mail-ot1-f52.google.com with SMTP id m26so5059316otk.11
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:18:51 -0700 (PDT)
+X-Received: by 2002:a9d:eca:: with SMTP id 68mr1003531otj.141.1604053131232;
+ Fri, 30 Oct 2020 03:18:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201026140506.1349dbb5@jacob-builder>
+References: <20201013124428.783025-1-acourbot@chromium.org> <20201013124428.783025-3-acourbot@chromium.org>
+In-Reply-To: <20201013124428.783025-3-acourbot@chromium.org>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Fri, 30 Oct 2020 19:18:40 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MXpXEPsgkWXAo0p3u_zFyYk3kYqKx3=+G6XEcGcsKCEYQ@mail.gmail.com>
+Message-ID: <CAPBb6MXpXEPsgkWXAo0p3u_zFyYk3kYqKx3=+G6XEcGcsKCEYQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] media: mtk-vcodec: fix build breakage when one of
+ VPU or SCP is enabled
+To:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 02:05:06PM -0700, Jacob Pan wrote:
-> > This looks good to me, with small comments below.
-> > 
-> Can I add your Reviewed-by tag after addressing the comments?
+On Tue, Oct 13, 2020 at 9:44 PM Alexandre Courbot <acourbot@chromium.org> wrote:
+>
+> The addition of MT8183 support added a dependency on the SCP remoteproc
+> module. However the initial patch used the "select" Kconfig directive,
+> which may result in the SCP module to not be compiled if remoteproc was
+> disabled. In such a case, mtk-vcodec would try to link against
+> non-existent SCP symbols. "select" was clearly misused here as explained
+> in kconfig-language.txt.
+>
+> Replace this by a "depends" directive on at least one of the VPU and
+> SCP modules, to allow the driver to be compiled as long as one of these
+> is enabled, and adapt the code to support this new scenario.
+>
+> Also adapt the Kconfig text to explain the extra requirements for MT8173
+> and MT8183.
+>
+> Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 
-Yes sure, this took forever to review so I'm happy not to do another pass :)
-
-
-> > > +Each IOASID set is created with a token, which can be one of the
-> > > +following token types:
-> > > +
-> > > + - IOASID_SET_TYPE_NULL (Arbitrary u64 value)  
-> > 
-> > Maybe NULL isn't the best name then. NONE?
-> > 
-> Agreed, 'NONE' makes more sense.
-
-Although patch 5 only allows a NULL token for this type. So the name seems
-fine, you could just fix this description.
-
-
-> > > +IOASID core has the notion of "custom allocator" such that guest can
-> > > +register virtual command allocator that precedes the default one.  
-> > 
-> > "Supersedes", rather than "precedes"?
-> > 
-> My understanding is that 'supersede' means replace something but 'precede'
-> means get in front of something. I do want to emphasis that the custom
-> allocator takes precedence over the default allocator.
-
-Right it's ambiguous. The custom allocator does entirely replace the
-allocation action, but the default one is still used for storage. Anyway,
-you can leave this.
-
-
-> > > +Let's examine the IOASID life cycle again when free happens *before*
-> > > +unbind. This could be a result of misbehaving guests or crash. Assuming
-> > > +VFIO cannot enforce unbind->free order. Notice that the setup part up
-> > > +until step #12 is identical to the normal case, the flow below starts
-> > > +with step 13.
-> > > +
-> > > +::
-> > > +
-> > > +     VFIO        IOMMU        KVM        VDCM        IOASID       Ref
-> > > +   ..................................................................
-> > > +   13 -------- GUEST STARTS DMA --------------------------
-> > > +   14 -------- *GUEST MISBEHAVES!!!* ----------------
-> > > +   15 ioasid_free()
-> > > +   16                                             ioasid_notify(FREE)
-> > > +   17                                             mark_free_pending
-> > > (1)  
-> > 
-> > Could we use superscript ¹²³⁴ for footnotes? These look like function
-> > parameters
-> > 
-> yes, much better
-> 
-> > > +   18                          kvm_nb_handler(FREE)
-> > > +   19                          vmcs_update_atomic()
-> > > +   20                          ioasid_put_locked()   ->           3
-> > > +   21                                   vdcm_nb_handler(FREE)
-> > > +   22            iomm_nb_handler(FREE)  
-> > 
-> > iommu_nb_handler
-> > 
-> got it
-> 
-> > > +   23 ioasid_free() returns(2)          schedule_work()           2  
-> > 
-> > I completely lost track here, couldn't figure out in which direction to
-> > read the diagram. What work is scheduled?
-> The time line goes downward but we only control the notification order in
-> terms of when the events are received. Some completions are async thus out
-> of order done by work items. The only in-order completion is the KVM update
-> of its PASID translation table.
-> 
-> After #23, the async works are scheduled to complete clean up work outside
-> the spinlock(held by the caller of the atomic notifier).
-> 
-> Any suggestions to improve the readability of the time line?
-
-Maybe explain what happens from line 23: ioasid_free() schedules... a FREE
-notification? Which happens on line 24 (corresponding to the second
-schedule_work()?) and is handled by (a) VDCM to clear the device context
-and (b) IOMMU to clear the PASID context, both ending up dropping their
-ref.
-
-> 
-> > Why does the IOMMU driver drop
-> > its reference to the IOASID before unbdind_gpasid()?
-> > 
-> This is the exception case where userspace issues IOASID free before
-> unbind_gpasid(). The equivalent of unbind is performed in the IOASID_FREE
-> notification handler. In IOASID_FREE handler, reference is dropped and
-> private data deleted. After that, if unbind comes to IOMMU driver, it will
-> not find IOASID private data therefore just return.
-
-Right ok. As you noted below the damage is caused by and limited to the
-guest, so I think it's fine.
-
-> 
-> > > +   24            schedule_work()        vdev_clear_wk(hpasid)
-> > > +   25            teardown_pasid_wk()
-> > > +   26                                   ioasid_put() ->           1
-> > > +   27            ioasid_put()                                     0
-> > > +   28                                                 Reclaimed
-> > > +   29 unbind_gpasid()
-> > > +   30            iommu_unbind()->ioasid_find() Fails(3)
-> > > +   -------------- New Life Cycle Begin ----------------------------
-> > > +
-> > > +Note:
-> > > +
-> > > +1. By marking IOASID FREE_PENDING at step #17, no new references can be
-> > > +   held. ioasid_get/find() will return -ENOENT;  
-> > 
-> > s/held/taken
-> > 
-> Got it.
-> 
-> > Thanks,
-> > Jean
-> > 
-> > > +2. After step #23, all events can go out of order. Shall not affect
-> > > +   the outcome.
-> > > +3. IOMMU driver fails to find private data for unbinding. If unbind is
-> > > +   called after the same IOASID is allocated for the same guest again,
-> > > +   this is a programming error. The damage is limited to the guest
-> > > +   itself since unbind performs permission checking based on the
-> > > +   IOASID set associated with the guest process.
-
-"guest process" can be confusing (process run by the guest?), just "guest"
-might be better.
-
-Thanks,
-Jean
+Fixes: bf1d556ad4e0 ("media: mtk-vcodec: abstract firmware interface")
