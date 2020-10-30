@@ -2,112 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926952A0D33
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFC32A0D38
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbgJ3SPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:15:53 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39568 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgJ3SPw (ORCPT
+        id S1727096AbgJ3SQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:16:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31697 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726061AbgJ3SQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:15:52 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09UIFkEl069707;
-        Fri, 30 Oct 2020 13:15:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604081746;
-        bh=9dgcKo3td0TMDTyJTQO2t4p6XonAw2x1KObaMxUhugI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=M8PYW0TLGUb7ESlGjL2CdFH3YaD98GhUYL8wYWbb8aXKPmvXax9952OBeBhlA48pe
-         CWkyr1PTjryjNazbRkN/4oRcFe8TeMTK8zaMIxDB3KULfdivEMbuYOQeKV5rWigoft
-         aXUbYdtDwwd+jBkv3ZgSBbVLd8XM71iiepnrTnPs=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09UIFka7020280
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Oct 2020 13:15:46 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 30
- Oct 2020 13:15:46 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 30 Oct 2020 13:15:46 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09UIFgcK032563;
-        Fri, 30 Oct 2020 13:15:43 -0500
-Subject: Re: [PATCH 4/4] bus: ti-sysc: Fix bogus resetdone warning for cpsw
-To:     Tony Lindgren <tony@atomide.com>, <linux-omap@vger.kernel.org>
-CC:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
-        Tero Kristo <t-kristo@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20201026105812.38418-1-tony@atomide.com>
- <20201026105812.38418-5-tony@atomide.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <b8a3cfc1-f9f5-1b18-b980-e88eb8b20e43@ti.com>
-Date:   Fri, 30 Oct 2020 20:15:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 30 Oct 2020 14:16:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604081817;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hQ9JbkxvNa0VjLQd06HFpKY/mjumkrtDAKSURNuwMaY=;
+        b=WoLd4bj5ki0phUEDp88YWNjxuxXM7VLVIMIuuOJClL04e+P/+DgapMPZGeS7Gwk+B0KxlZ
+        O8lYsej2JcTDoAe7XRoeVXR4enTLbDjvatYxFPcvUeDEXYHu0Pn0QmY64pp5alU5hosBDV
+        hzoUoH9N+PyTjQr4vBLhKNaQ+d2FADc=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-223-Fs0sByVmPfKZAdM-updCdQ-1; Fri, 30 Oct 2020 14:16:54 -0400
+X-MC-Unique: Fs0sByVmPfKZAdM-updCdQ-1
+Received: by mail-ej1-f71.google.com with SMTP id f11so2725340eja.23
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:16:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hQ9JbkxvNa0VjLQd06HFpKY/mjumkrtDAKSURNuwMaY=;
+        b=DRTlogsdrr4M65rlN1ApTGsB6j36EAsTDnY34LnkojN4qFa2v54s/YjoaTxxeUQYe0
+         s8Ou8rpNWpztm84E8YKO7lTdv7ID2fBYurkmhBaJSYwHIHV2CEwpP8zikm94u3iPTQnw
+         tjCt4maujIdKGQiwV4kwfSCk15wuvdwCYCWQZI0mxgTChozKNiYSA2XRauUEex3PCkgM
+         +kGRj4kFIvSKUHjvEprroyVpnOH/cU9pWI7KM9VQnAV73rWC8+eyuNmkU7sHsrUeriZu
+         2FY9uSIQQPHZHNiyIhdiI9AhxeX4gc+/l/EhASvDroOgC3aNWidKihznjDkdmcpmi1+o
+         y93A==
+X-Gm-Message-State: AOAM531ilxwMYvaM0SubVi/0F2lhmNGGMNSzn6+2JpGE8YqBNk3tov5h
+        vC8gO0iRdoFQltm4+C/TrJFdgbb6iM5r65v0wu033uVliRt97GAxZmRaYxBoS5U5moGIoU3+o9D
+        jkc3x+HMZ3/EEfpcea3vXDx+t
+X-Received: by 2002:a17:906:c20f:: with SMTP id d15mr3678306ejz.341.1604081812910;
+        Fri, 30 Oct 2020 11:16:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyxORp9yhzCHXkXQ+SV0R3eIJai4qo4teWFQf7D18bUb6YmyTx02WLXvoVEuul2E5KtdAUsMg==
+X-Received: by 2002:a17:906:c20f:: with SMTP id d15mr3678275ejz.341.1604081812714;
+        Fri, 30 Oct 2020 11:16:52 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id r24sm3338060eds.67.2020.10.30.11.16.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 11:16:51 -0700 (PDT)
+Subject: Re: [PATCH] [v2] x86: apic: avoid -Wshadow warning in header
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Arvind Sankar' <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     'Arnd Bergmann' <arnd@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+References: <20201028212417.3715575-1-arnd@kernel.org>
+ <38b11ed3fec64ebd82d6a92834a4bebe@AcuMS.aculab.com>
+ <20201029165611.GA2557691@rani.riverdale.lan>
+ <93180c2d-268c-3c33-7c54-4221dfe0d7ad@redhat.com>
+ <87v9esojdi.fsf@nanos.tec.linutronix.de>
+ <20201029213512.GA34524@rani.riverdale.lan>
+ <ad73f56e79d249b1b3614bccc85e2ca5@AcuMS.aculab.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <070f590f-b702-35f0-0b6c-c6455f08e9d5@redhat.com>
+Date:   Fri, 30 Oct 2020 19:16:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201026105812.38418-5-tony@atomide.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <ad73f56e79d249b1b3614bccc85e2ca5@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+On 29/10/20 23:12, David Laight wrote:
+>> https://godbolt.org/z/4dzPbM
+>>
+>> With -fno-strict-aliasing, the compiler reloads the pointer if you write
+>> to the start of what it points to, but not if you write to later
+>> elements.
+> I guess it assumes that global data doesn't overlap.
 
-On 26/10/2020 12:58, Tony Lindgren wrote:
-> The cpsw SOFT_RESET register is cleard when out of reset so let's
-> add SYSS_QUIRK_RESETDONE_INVERTED flag for cpsw. Otherwise we will
-> get bogus "OCP softreset timed out" warnings on boot.
+Yeah, setting
 
-Not sure if this quirk based approach is right way to move forward here.
+	p = (struct s *) ((char *)&p) - 8;
 
-The cpsw/cpgmac is "ti,sysc-omap4-simple" which means sysc_omap4_simple, which,
-in turn, has .srst_shift = -ENODEV.
+invokes undefined behavior _for a different reason than strict aliasing_
+(it's a pointer that is based on "p" but points before its start or
+after one byte past its end).  So the compiler assumes that only the
+first few bytes of a global can overlap it.
 
-And above should be enough to avoid both sysc_reset() and sysc_wait_softreset() for such modules.
+If you change the size of the fields from long to char in the compiler
+explorer link above, every field forces a reload of the global.
 
+Paolo
 
-> 
-> Fixes: d46f9fbec719 ("bus: ti-sysc: Use optional clocks on for enable and wait for softreset bit")
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
->   drivers/bus/ti-sysc.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-> --- a/drivers/bus/ti-sysc.c
-> +++ b/drivers/bus/ti-sysc.c
-> @@ -1364,6 +1364,8 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
->   	/* Quirks that need to be set based on detected module */
->   	SYSC_QUIRK("aess", 0, 0, 0x10, -ENODEV, 0x40000000, 0xffffffff,
->   		   SYSC_MODULE_QUIRK_AESS),
-> +	SYSC_QUIRK("cpgmac", 0, 0x1200, 0x1208, 0x1204, 0x4edb1902,
-> +		   0xffff00f0, SYSS_QUIRK_RESETDONE_INVERTED),
->   	SYSC_QUIRK("dcan", 0x48480000, 0x20, -ENODEV, -ENODEV, 0xa3170504, 0xffffffff,
->   		   SYSC_QUIRK_CLKDM_NOAUTO),
->   	SYSC_QUIRK("dss", 0x4832a000, 0, 0x10, 0x14, 0x00000020, 0xffffffff,
-> @@ -1423,8 +1425,6 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
->   	SYSC_QUIRK("atl", 0, 0, -ENODEV, -ENODEV, 0x0a070100, 0xffffffff, 0),
->   	SYSC_QUIRK("cm", 0, 0, -ENODEV, -ENODEV, 0x40000301, 0xffffffff, 0),
->   	SYSC_QUIRK("control", 0, 0, 0x10, -ENODEV, 0x40000900, 0xffffffff, 0),
-> -	SYSC_QUIRK("cpgmac", 0, 0x1200, 0x1208, 0x1204, 0x4edb1902,
-> -		   0xffff00f0, 0),
->   	SYSC_QUIRK("dcan", 0, 0x20, -ENODEV, -ENODEV, 0xa3170504, 0xffffffff, 0),
->   	SYSC_QUIRK("dcan", 0, 0x20, -ENODEV, -ENODEV, 0x4edb1902, 0xffffffff, 0),
->   	SYSC_QUIRK("dispc", 0x4832a400, 0, 0x10, 0x14, 0x00000030, 0xffffffff, 0),
-> 
-
--- 
-Best regards,
-grygorii
