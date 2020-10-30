@@ -2,111 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0F829FA32
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F81429FA38
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgJ3BCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 21:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
+        id S1726062AbgJ3BEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 21:04:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgJ3BCg (ORCPT
+        with ESMTP id S1725372AbgJ3BEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 21:02:36 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFE2C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 18:02:27 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id h62so4184827oth.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 18:02:27 -0700 (PDT)
+        Thu, 29 Oct 2020 21:04:30 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0997AC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 18:04:30 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id w23so1450042wmi.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 18:04:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8v0LR09o1q2keQ82icRFIanZ6SYH95u30bGsIWz70wM=;
-        b=voOINdGME5r7SS40N5xJySdvVN2o5El+ut5jOWRTCcL4LahtOQKhNXT6J4urs1LTou
-         EjsoCnUTqjs/mkPjJFz5DatBjwFhZ5PaeFK4ceTrY3kvthmHVw6z2LRxVI5KDuPDX7LY
-         5uz9W+BYYLErVIKqRUcpumgTWYjPLt3JU/sGil+oilksaiRN9TfB5NM1N9U2ymv4cokn
-         FBUleI8FOWmszEzDFwyLTooqujrIaQ09FE+X8gswkFeMKWGVAPUZNaeZ7+aUcsT/9j76
-         6+1+/pJKAjIKf2EjZIRgIQQUliUJddMkg1D3HmHux0/vSzjhR/qbdMcTP/cck0eOGPt9
-         R8xw==
+        bh=aMJdFe+wda9LSdQ71wLePMVbISAEiJjY2ccTxaYLRj4=;
+        b=GJJUtSj1ioJwZ93mp19aKD/oROzE8p6INODifkCAgqulw+gbmc+bJxueniSgyGUplM
+         w8dgmilCCldY/Xp2r0oFcZgtL2rDn2FtQYXus4BYKQPvqDc+GI48z/3ixIa6s/4ROm4N
+         0wJR9boE4hVnXmwvTsioiz0u9SSsl3GRxeT2sfXMY8xSYW8RxZHeddE8+dBTrzMsUiXy
+         8d9dzCq3XbsnBmwh9fQmxIdvbewxkxDICkOGUsJP1M+k1bhecbmHvQaZAd+gsRXeHbxx
+         NFzUuD8rOdCS3aYZffHh1ngaAHtTYL9E7W0GN5Y3x3pLfL/kkQDEc9m/f9dPKMLxwFHY
+         v70Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8v0LR09o1q2keQ82icRFIanZ6SYH95u30bGsIWz70wM=;
-        b=d2gaTu2Hd+AMMyVB2S3b/wpE1iYq58PqmLF+/uobfO6WYXxyVqY2F25KOUgJI5B0GI
-         aUi+vw2R+6P7FgUt7B06NDBMk/2OxvV2pzmiw4q4yCBpf/DpuXvZkmo/RV4dtoGs4RXd
-         /lV8kS6X9ey3/AO6bXfjR1LiiJjGK5xDiZjqSb26o4FUSrg7CksXMbV4mZ+SeaDkZBBO
-         80L5o5/24Ng4OqMq38bgNioWftJ9kh+h90Frzzl7d1xmROfU+2+3J2QfkRlXAKTz6Z54
-         NpVCKKyxiVNOnsAlEn4DhwtHPclJc1WzQql/NRmDtUOuVIkDzDIzNMGATBg56IAGkdlm
-         uHFA==
-X-Gm-Message-State: AOAM531EXRuNUHNE5b6U9fzyeWT9CKP+w5a+REupEgQ+KwJ3xH9O0MLA
-        SBjfBUXPFvs8Jx8BTxEpv/gXeUYCKOsHNqvgpsJQKw==
-X-Google-Smtp-Source: ABdhPJwTerSintYpMU7viWh2jWbkoDcom7lThKWTj8gvIHMRVeH+6XC8I1DuN16tS2twPZYOVGa/qvLBx0z24Bqky0Y=
-X-Received: by 2002:a05:6830:1558:: with SMTP id l24mr5088291otp.352.1604019746421;
- Thu, 29 Oct 2020 18:02:26 -0700 (PDT)
+        bh=aMJdFe+wda9LSdQ71wLePMVbISAEiJjY2ccTxaYLRj4=;
+        b=hIOxlmWlPOIgRF1c7AAb+FBamaWk7Qqz2mjssPrPe0pG09Uv0YYc8jnKMbjvK4S0fT
+         6HAei9fGDk0mNhxN/NDN31dNOcEZ1BeVu8LaobDnDW/ouRXfNSMTChYvm7tV26UveY7g
+         7EI3c3Oep5B6CozD6APBhgSaCXvsB/lsqul+abWCL1DlbOgdQN2Ud8tbXr2ju5fJra6+
+         4lTSaKjOecggXTX8KBuojzYg+EvheITptFcHrMgUD9Iuua3tdZxzEYNEM3dLZRx2muvo
+         Q626ncmzKDCkd9h+2Jv6Y+U69LrxDZPEDEGOrVq6AcxiBAoyv4ptjnB8y4FlUp3bPrNn
+         nnWg==
+X-Gm-Message-State: AOAM530tQtetRP5GD1yoYzXDS/cFtOthigDZngjmMBnDhjuaSWufY3jL
+        7d9GYswPSzEx0IXgMOtsVx1yu2oummrscykF9B4nbg==
+X-Google-Smtp-Source: ABdhPJwyTYwbAQ3IMxsQX4vYbseQhlN6Hzn1t7JeLGE4Q6a9b6jXCp41x6DLiEG5+YGcbF1DeWjzqbBG+cG27Y4G3J8=
+X-Received: by 2002:a7b:c181:: with SMTP id y1mr2046323wmi.58.1604019868502;
+ Thu, 29 Oct 2020 18:04:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200625001039.56174-1-john.stultz@linaro.org>
- <20200625001039.56174-6-john.stultz@linaro.org> <20200702141825.GA16941@willie-the-truck>
- <CALAqxLVZ2EhutYjOt7Be1RgnYwHT6-4m6DxA-t1wuxuSy=6yDQ@mail.gmail.com>
- <20200710075411.GA30011@willie-the-truck> <CALAqxLWadLrxckRHRAR0Q417RnFKquQJbRfO_DLEVH56cykRow@mail.gmail.com>
- <20200713204133.GA3731@willie-the-truck> <CALAqxLUDVEq4ds2Wbic6uaK3=dELKKO4eGQxjHFFz19GeUFd_w@mail.gmail.com>
- <20201028135118.GA28554@willie-the-truck> <ae6ba27a-d3c8-8b98-c263-ec779ef35738@arm.com>
-In-Reply-To: <ae6ba27a-d3c8-8b98-c263-ec779ef35738@arm.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Thu, 29 Oct 2020 18:02:14 -0700
-Message-ID: <CALAqxLW13=cvTX3ghskb9uG_YoVh7kvp8UQGUB8mVDGYXHWpVQ@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] firmware: QCOM_SCM: Allow qcom_scm driver to be
- loadable as a permenent module
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Maulik Shah <mkshah@codeaurora.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Andy Gross <agross@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Todd Kjos <tkjos@google.com>
+References: <20201028063813.8562-1-leo.yan@linaro.org> <20201028063813.8562-5-leo.yan@linaro.org>
+In-Reply-To: <20201028063813.8562-5-leo.yan@linaro.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 29 Oct 2020 18:04:17 -0700
+Message-ID: <CAP-5=fUiBTyW15BqcApL_Tm72Cnyoti=aXkEzj-Z5ZnAaCLwQQ@mail.gmail.com>
+Subject: Re: [PATCH v3 4/9] perf mem: Only initialize memory event for recording
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Al Grant <Al.Grant@arm.com>, James Clark <james.clark@arm.com>,
+        Wei Li <liwei391@huawei.com>,
+        =?UTF-8?Q?Andr=C3=A9_Przywara?= <andre.przywara@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 7:51 AM Robin Murphy <robin.murphy@arm.com> wrote:
-> Hmm, perhaps I'm missing something here, but even if the config options
-> *do* line up, what prevents arm-smmu probing before qcom-scm and
-> dereferencing NULL in qcom_scm_qsmmu500_wait_safe_toggle() before __scm
-> is initialised?
+On Tue, Oct 27, 2020 at 11:38 PM Leo Yan <leo.yan@linaro.org> wrote:
+>
+> It's needless to initialize memory events for reporting, this patch
+> moves memory event initialization for only recording.  Furthermore,
+> the change allows to parse perf data on cross platforms, e.g. perf
+> tool can report result properly even the machine doesn't support
+> the memory events.
+>
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-Oh man, this spun me on a "wait, but how does it all work!" trip. :)
+Acked-by: Ian Rogers <irogers@google.com>
 
-So in the non-module case, the qcom_scm driver is a subsys_initcall
-and the arm-smmu is a module_platform_driver, so the ordering works
-out.
+Thanks,
+Ian
 
-In the module case, the arm-smmu code isn't loaded until the qcom_scm
-driver finishes probing due to the symbol dependency handling.
-
-To double check this, I added a big msleep at the top of the
-qcom_scm_probe to try to open the race window you described, but the
-arm_smmu_device_probe() doesn't run until after qcom_scm_probe
-completes.
-
-So at least as a built in / built in, or a module/module case its ok.
-And in the case where arm-smmu is a module and qcom_scm is built in
-that's ok too.
-
-Its just the case my patch is trying to prevent is where arm-smmu is
-built in, but qcom_scm is a module that it can't work (due to build
-errors in missing symbols,  or if we tried to use function pointers to
-plug in the qcom_scm - the lack of initialization ordering).
-
-Hopefully that addresses your concern? Let me know if I'm still
-missing something.
-
-thanks
--john
+> ---
+>  tools/perf/builtin-mem.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
+> index 31144f586e77..f3dc2d2b879c 100644
+> --- a/tools/perf/builtin-mem.c
+> +++ b/tools/perf/builtin-mem.c
+> @@ -78,6 +78,11 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+>         OPT_END()
+>         };
+>
+> +       if (perf_mem_events__init()) {
+> +               pr_err("failed: memory events not supported\n");
+> +               return -1;
+> +       }
+> +
+>         argc = parse_options(argc, argv, options, record_mem_usage,
+>                              PARSE_OPT_KEEP_UNKNOWN);
+>
+> @@ -436,11 +441,6 @@ int cmd_mem(int argc, const char **argv)
+>                 NULL
+>         };
+>
+> -       if (perf_mem_events__init()) {
+> -               pr_err("failed: memory events not supported\n");
+> -               return -1;
+> -       }
+> -
+>         argc = parse_options_subcommand(argc, argv, mem_options, mem_subcommands,
+>                                         mem_usage, PARSE_OPT_KEEP_UNKNOWN);
+>
+> --
+> 2.17.1
+>
