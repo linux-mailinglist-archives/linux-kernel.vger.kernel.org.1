@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7221429FB4F
+	by mail.lfdr.de (Postfix) with ESMTP id E22D429FB50
 	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbgJ3Cab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 22:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
+        id S1726342AbgJ3Caj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 22:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbgJ3Caa (ORCPT
+        with ESMTP id S1726197AbgJ3Cah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 22:30:30 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C4FC0613CF;
-        Thu, 29 Oct 2020 19:30:30 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id e7so3955855pfn.12;
-        Thu, 29 Oct 2020 19:30:30 -0700 (PDT)
+        Thu, 29 Oct 2020 22:30:37 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44110C0613CF;
+        Thu, 29 Oct 2020 19:30:37 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id o3so3908736pgr.11;
+        Thu, 29 Oct 2020 19:30:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=j6uvYZsdn9TjVvj7gx86V/39t9vFMxPa68xHa2VlZqY=;
-        b=uVR8AlzNizv4t265Ok/jlnDW1uCEPkvT7AwY1qXZoV4G5n4PXgU3QGP36ag0UiIosC
-         C28NLyMp5uVkmwbw9CE3HkZzSBtz6AE1VMO5JulI4C07XQwWL624B6fhR7+jAUktsQqK
-         DLy073Zb7XE3fkKwD8vPU23CScz3reyvMJ38Np+D+mmDMb1n1rKzyomfljxSLwkIb9hA
-         1OcBmXBcFDXtGPDRANKIWoFR2N/iRDyVbhsJqRY2AwLNL9dNOC4PSLCRKg/XxC/gcWJN
-         MJ2NVTHZ9SnR/AFcCwngCMtNfaMOOvvJypjEN8nKy2Fqy+/+Llx2VA8AdFcOMyWj22ef
-         1PcQ==
+        bh=g7bH88D4g/VYGOa3hWMRp6XP+GTlXN0P1WC9N4Q2/XM=;
+        b=sIPVkoX/Of6nVZG0ZQgVEkv9eNrnT5+MLWijSKMQbASTMC4PXi8b+L2jK+WSCb12I2
+         rfzmY8ocgI9WK/Z4GFsF7Z2kU7rnTSDlzGasss0mN5YOb88P2MWW3SChA1B5PYj+XB2I
+         kJNeB95XEqJMVTz+DpoaPPEt8njOiIgrORPkp53nZQk37TTadn2it2iO6fJm3KXzEHWg
+         aroSeUO2kcm2plv5TQB9siuRYYT8neLqRjXBSV3YP+Z0mnUWzobdzdMUVQSYmmuJ6ZFp
+         aKeoU2Pg/DUf8Rbac59vFyzcs01F6JFxMSIBriLKvcElFtFTnahjusIKEXJWj6thO8wF
+         K7xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=j6uvYZsdn9TjVvj7gx86V/39t9vFMxPa68xHa2VlZqY=;
-        b=D7YAkR6UDqa0DlBrQwsf8yXBkeE4SJ/mnWfdPmhEiY79HlrMMuKH4I0ImqPd55U5Ro
-         vKffvibmgFbrJSSA4ewtq3NYj0AwR5lGs68yTpt2qK7X7kFuIVgeeCYovTMvASYngy3Q
-         uy76zfzvSTtgffIHKXmx1zdyDJV66oQcrhHXKgoU4rFxv3qrCFbjKGYPgrdG3LiJ/7PE
-         FV8kOJAgel9FUuYlyscjq239v8BzePnLFUJuWR9/HHwm7/TWMAV2tzDkbHWDdhwnIQBM
-         jZAbtBf1pjh2o5QSnio0118QOqJ6lJQkfenZ47MnkrfYQB0kSjynD8wOX80+xu2rFI39
-         gBsg==
-X-Gm-Message-State: AOAM531aYczfUb8X6huQyTn4BPw7r1zubZ5VM8sDHjbQhGG3Hqp4vWCh
-        vy5OWZTVqj2NWv3epdXp9iM=
-X-Google-Smtp-Source: ABdhPJyu1EPaHSCFZlovbQkLQnsN71kwV97oCj6PF+lOtnD37yOzU4TgofXiQeQtazI/n6hxRYVH+w==
-X-Received: by 2002:a63:105e:: with SMTP id 30mr224588pgq.33.1604025029908;
-        Thu, 29 Oct 2020 19:30:29 -0700 (PDT)
+        bh=g7bH88D4g/VYGOa3hWMRp6XP+GTlXN0P1WC9N4Q2/XM=;
+        b=NM23zp4bwwNtzSsVzMaWAYEDBoi0C5g6TxX2qA2xckqahc9TwtDOs+tZkAOSRC3O0+
+         e5P9jBwaWYeGA2k3vsZnmJ1FmR5jTiHasdBAnRes8zPKsGsIin0SKl5Y1L1Uwe0+8Ddr
+         NS3fVSnsXaAmHL6A/ZuQuggJoesqk/BFUuJZ+iY3MfrS0BdzoEJLE99oSYiMJu6B/Vtd
+         VMyAIEtNUv8AS0x4dXnang99d0eU15P1wVPTJls3KKczAiu5koO9eSbEFVTuTX6ehwvE
+         WTCw46H0LN9az/BNuDzePi+UXJ3AoF5d1awHUMTnPEXigwULpYTuvWYILH+ZWIE37Tp4
+         V94w==
+X-Gm-Message-State: AOAM531qoXbkw82+3cHNolDJFT3zT3gfnGjSRFfbidQFBnzswiuZK0mE
+        +3zsfcqL1QBa4b9YBzFaojA=
+X-Google-Smtp-Source: ABdhPJxaWSHPgJMIvnjBMqb0MKb8E8b7ORoASIJ2qcWWVTBzFsOJt3fNIkTg+R+jiGT58y7Q+xSCCA==
+X-Received: by 2002:a65:5a0d:: with SMTP id y13mr230777pgs.436.1604025036855;
+        Thu, 29 Oct 2020 19:30:36 -0700 (PDT)
 Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:dd13:d62a:9d03:9a42])
-        by smtp.gmail.com with ESMTPSA id i24sm4216588pfd.7.2020.10.29.19.30.28
+        by smtp.gmail.com with ESMTPSA id i24sm4216588pfd.7.2020.10.29.19.30.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 19:30:29 -0700 (PDT)
+        Thu, 29 Oct 2020 19:30:36 -0700 (PDT)
 From:   Xie He <xie.he.0141@gmail.com>
 To:     Jakub Kicinski <kuba@kernel.org>,
         "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
@@ -55,9 +55,9 @@ To:     Jakub Kicinski <kuba@kernel.org>,
         Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
         Krzysztof Halasa <khc@pm.waw.pl>
 Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next v4 4/5] net: hdlc_fr: Do skb_reset_mac_header for skbs received on normal PVC devices
-Date:   Thu, 29 Oct 2020 19:28:38 -0700
-Message-Id: <20201030022839.438135-5-xie.he.0141@gmail.com>
+Subject: [PATCH net-next v4 5/5] net: hdlc_fr: Add support for any Ethertype
+Date:   Thu, 29 Oct 2020 19:28:39 -0700
+Message-Id: <20201030022839.438135-6-xie.he.0141@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201030022839.438135-1-xie.he.0141@gmail.com>
 References: <20201030022839.438135-1-xie.he.0141@gmail.com>
@@ -67,48 +67,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When an skb is received on a normal (non-Ethernet-emulating) PVC device,
-call skb_reset_mac_header before we pass it to upper layers.
+Change the fr_rx function to make this driver support any Ethertype
+when receiving skbs on normal (non-Ethernet-emulating) PVC devices.
+(This driver is already able to handle any Ethertype when sending.)
 
-This is because normal PVC devices don't have header_ops, so any header we
-have would not be visible to upper layer code when sending, so the header
-shouldn't be visible to upper layer code when receiving, either.
+Originally in the fr_rx function, the code that parses the long (10-byte)
+header only recognizes a few Ethertype values and drops frames with other
+Ethertype values. This patch replaces this code to make fr_rx support
+any Ethertype. This patch also creates a new function fr_snap_parse as
+part of the new code.
 
 Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 Cc: Krzysztof Halasa <khc@pm.waw.pl>
 Signed-off-by: Xie He <xie.he.0141@gmail.com>
 ---
- drivers/net/wan/hdlc_fr.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/wan/hdlc_fr.c | 75 +++++++++++++++++++++++++--------------
+ 1 file changed, 49 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-index 3639c2bfb141..9a37575686b9 100644
+index 9a37575686b9..e95efc14bc97 100644
 --- a/drivers/net/wan/hdlc_fr.c
 +++ b/drivers/net/wan/hdlc_fr.c
-@@ -935,6 +935,7 @@ static int fr_rx(struct sk_buff *skb)
- 		skb_pull(skb, 4); /* Remove 4-byte header (hdr, UI, NLPID) */
- 		skb->dev = pvc->main;
- 		skb->protocol = htons(ETH_P_IP);
-+		skb_reset_mac_header(skb);
+@@ -871,6 +871,45 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
+ 	return 0;
+ }
  
- 	} else if (data[3] == NLPID_IPV6) {
- 		if (!pvc->main)
-@@ -942,6 +943,7 @@ static int fr_rx(struct sk_buff *skb)
- 		skb_pull(skb, 4); /* Remove 4-byte header (hdr, UI, NLPID) */
- 		skb->dev = pvc->main;
++static int fr_snap_parse(struct sk_buff *skb, struct pvc_device *pvc)
++{
++	/* OUI 00-00-00 indicates an Ethertype follows */
++	if (skb->data[0] == 0x00 &&
++	    skb->data[1] == 0x00 &&
++	    skb->data[2] == 0x00) {
++		if (!pvc->main)
++			return -1;
++		skb->dev = pvc->main;
++		skb->protocol = *(__be16 *)(skb->data + 3); /* Ethertype */
++		skb_pull(skb, 5);
++		skb_reset_mac_header(skb);
++		return 0;
++
++	/* OUI 00-80-C2 stands for the 802.1 organization */
++	} else if (skb->data[0] == 0x00 &&
++		   skb->data[1] == 0x80 &&
++		   skb->data[2] == 0xC2) {
++		/* PID 00-07 stands for Ethernet frames without FCS */
++		if (skb->data[3] == 0x00 &&
++		    skb->data[4] == 0x07) {
++			if (!pvc->ether)
++				return -1;
++			skb_pull(skb, 5);
++			if (skb->len < ETH_HLEN)
++				return -1;
++			skb->protocol = eth_type_trans(skb, pvc->ether);
++			return 0;
++
++		/* PID unsupported */
++		} else {
++			return -1;
++		}
++
++	/* OUI unsupported */
++	} else {
++		return -1;
++	}
++}
+ 
+ static int fr_rx(struct sk_buff *skb)
+ {
+@@ -945,35 +984,19 @@ static int fr_rx(struct sk_buff *skb)
  		skb->protocol = htons(ETH_P_IPV6);
-+		skb_reset_mac_header(skb);
+ 		skb_reset_mac_header(skb);
  
- 	} else if (skb->len > 10 && data[3] == FR_PAD &&
- 		   data[4] == NLPID_SNAP && data[5] == FR_PAD) {
-@@ -958,6 +960,7 @@ static int fr_rx(struct sk_buff *skb)
+-	} else if (skb->len > 10 && data[3] == FR_PAD &&
+-		   data[4] == NLPID_SNAP && data[5] == FR_PAD) {
+-		u16 oui = ntohs(*(__be16*)(data + 6));
+-		u16 pid = ntohs(*(__be16*)(data + 8));
+-		skb_pull(skb, 10);
+-
+-		switch ((((u32)oui) << 16) | pid) {
+-		case ETH_P_ARP: /* routed frame with SNAP */
+-		case ETH_P_IPX:
+-		case ETH_P_IP:	/* a long variant */
+-		case ETH_P_IPV6:
+-			if (!pvc->main)
+-				goto rx_drop;
+-			skb->dev = pvc->main;
+-			skb->protocol = htons(pid);
+-			skb_reset_mac_header(skb);
+-			break;
+-
+-		case 0x80C20007: /* bridged Ethernet frame */
+-			if (!pvc->ether)
++	} else if (data[3] == FR_PAD) {
++		if (skb->len < 5)
++			goto rx_error;
++		if (data[4] == NLPID_SNAP) { /* A SNAP header follows */
++			skb_pull(skb, 5);
++			if (skb->len < 5) /* Incomplete SNAP header */
++				goto rx_error;
++			if (fr_snap_parse(skb, pvc))
  				goto rx_drop;
- 			skb->dev = pvc->main;
- 			skb->protocol = htons(pid);
-+			skb_reset_mac_header(skb);
- 			break;
- 
- 		case 0x80C20007: /* bridged Ethernet frame */
+-			skb->protocol = eth_type_trans(skb, pvc->ether);
+-			break;
+-
+-		default:
+-			netdev_info(frad, "Unsupported protocol, OUI=%x PID=%x\n",
+-				    oui, pid);
++		} else {
+ 			goto rx_drop;
+ 		}
++
+ 	} else {
+ 		netdev_info(frad, "Unsupported protocol, NLPID=%x length=%i\n",
+ 			    data[3], skb->len);
 -- 
 2.27.0
 
