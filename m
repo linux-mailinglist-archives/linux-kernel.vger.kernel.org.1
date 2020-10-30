@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8312A0E80
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D7C2A0E7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727684AbgJ3TW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 15:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
+        id S1727663AbgJ3TW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 15:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727623AbgJ3TVb (ORCPT
+        with ESMTP id S1727624AbgJ3TVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:21:31 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91224C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:21:31 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id l62so2090289oig.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:21:31 -0700 (PDT)
+        Fri, 30 Oct 2020 15:21:36 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C377DC0613CF;
+        Fri, 30 Oct 2020 12:21:36 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id j18so6167934pfa.0;
+        Fri, 30 Oct 2020 12:21:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nB/MV5GLyjNu8UDfEZUP2zhFQAq8WaUlOhnxP+WLczo=;
-        b=Db7ytI3QoTKyC/bdolNU5gUWVNc46g31IGOBQ+DmMtde88iG8cUlKjZYe/983DcDhn
-         qWnPuTHZ07E448vG3lG+8TfAGGOQd/Jm+diYaoq9lWNhWlQTZDObhaVr11DeKQPSRu3W
-         1IzJaZ+F4GaDe5nt4o+U+ipzq/tCk5aVUlkQ1hQ9GbzA75QiCnd1NtwKBpjDeP1LXYu7
-         6zyALkTqMti7sDAEJd9kNDwzPsAHerX6lJAKeHIa/BiD8rOEEL+QaRtbibbexyRGctUK
-         s5lYr7r+FNoH2J9GqIvX/vZjg6fd5Jqy+Z9MJKi30pPMjpI1mcCXIa4RAqk66i/gDyNa
-         2WbQ==
+        bh=Zw5N/jCkLYe8gG0oOK08OE33XmxFC4T9rEPMRps3o6s=;
+        b=dCagn3RRbS2Av5tEK7SuOoJc6AOcR4cqdO1yf89DHwvbmFGEs8K/wu2u/wZNt5L9Im
+         ZW/x7B32N+cV/HmUcyOOHipQymTFzGBJ8s1v40vpn6VWstgw4avLuUfoPkG2wBVGWKzo
+         LMYVw/dEdRjw6zGWmTh6YhvsxI9L1W5hmPgZ/e/gTqKM0LX91hHmyvf6GBgX8uZK9aET
+         DrfSza1tS8bi1s7aGW121yjk+pN2noaHuHHPjgE1bktf/HVDo2lT8Ejgw9lk7P8zTJnR
+         44Ke9NcQGMBW0ZEV5FTymm//FnqalVDoltfI0Nd1uvS8q2uGG+FHfDTeBKGZlmm7kkC0
+         f9vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nB/MV5GLyjNu8UDfEZUP2zhFQAq8WaUlOhnxP+WLczo=;
-        b=MXXigk2P3Hhftf1wiF9/AN7m1EC4GEi4rYDjz2Vy2W2XletpnweBL4lFstenGsFYVg
-         icbrA48gMMyWY+BFSUYVLVoPEFv/HPtMKpKNWKOHk+s1TJIKKEhjynhWOdyesfKnzZZC
-         zZTCGJjOh6NvMlcQzWFimPmpEeS4CLe64ulAAGK51hcY+iiKyjTeDqPUZToGl0v0Evoj
-         ZXJgwXbFVoBUNDX3YfzNzy1N6RX4dERU9r2mLJO/XhpBuUfMHoVlm3xgS+ZDC2sZrcNW
-         4/t0N9dygLY0QwEPUW/NIjEyXccWnMtpUI8nV0eiQpUtjp3dtrU6XBZabNqeJU9ie4cD
-         fIpQ==
-X-Gm-Message-State: AOAM530sknl5J1q/MWjy28QjvYehaUc7VqW3OAtsEYiojlR+Dyekpkhq
-        l8mvRsoSA9ZTDMxTOXuxuVuQCARl0c1mYjbIxX2/szy46MQ=
-X-Google-Smtp-Source: ABdhPJyJXImIHpK83wwAip/CxzfDZ/jrYC8xy+ZEw+XNXk7wfku+ojOsZNj7E08ou2/Gb2qDLKqgTDw+df7YmNTNNJE=
-X-Received: by 2002:a05:6808:578:: with SMTP id j24mr2827168oig.10.1604085690947;
- Fri, 30 Oct 2020 12:21:30 -0700 (PDT)
+        bh=Zw5N/jCkLYe8gG0oOK08OE33XmxFC4T9rEPMRps3o6s=;
+        b=pKMvKRYWWSC14aDuo0XbeE0ndJYw13KAzk5TnTXisp1EWg64qc9pSdD8CwC7JGS0bX
+         XioIWTlzey97c9pw8KDdMQ3K0cB7RKZAh94NmGcn3vi2JtOYIr7oLLzhAOY95aMlyqcb
+         izSVgrpizspN0jvqOHZqOv9sbVQoeTX7CMtRgvrKVhov3rkboYZO6bn9XPLKnTaOVU/5
+         oX+hy0FieVAESg6seO685vlAGUTyJl6ExLCfl38euJ4AjRXyP/GZnsBAU8Y9OZSlIYsj
+         UpCsXAXTfYgO5Udgu2u/PLoRMsPWUkpeDeiXbI6HTnrJZsRCCALwHQZBiNr/w+QZ+Z/b
+         kTtA==
+X-Gm-Message-State: AOAM532F9c+GojQaIhwZss2bh5v9Y9kSyzzTfxAZXkHwzZGhbZFl33ul
+        mdSuBoPvMFFEC9TdO4Plq0KdoP/mxWpxFDEJmC4=
+X-Google-Smtp-Source: ABdhPJx8fLrzna1Se3Ha9jTpWNB+7f1DMjMM4geqta1/JjLqVOuc8wv6vRhXiF5kFhIrg4UGVDcCB5iojH1WkW2HdgQ=
+X-Received: by 2002:a17:90a:aa91:: with SMTP id l17mr4508499pjq.198.1604085696383;
+ Fri, 30 Oct 2020 12:21:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201030075023.3250-1-hdanton@sina.com>
-In-Reply-To: <20201030075023.3250-1-hdanton@sina.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 30 Oct 2020 12:21:18 -0700
-Message-ID: <CALAqxLXVMnnoRDt8=_qD=ipipC69u35fqDv+vmJ2JWnZtxCG7g@mail.gmail.com>
-Subject: Re: [PATCH v4 7/7] dma-buf: system_heap: Add a system-uncached heap
- re-using the system heap
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        Christoph Hellwig <hch@infradead.org>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+References: <20201030022839.438135-1-xie.he.0141@gmail.com>
+ <20201030022839.438135-4-xie.he.0141@gmail.com> <CA+FuTSe4yGowGs2ST5bDYZpZ-seFCziOmA8dsMMwAukJMcRuQw@mail.gmail.com>
+In-Reply-To: <CA+FuTSe4yGowGs2ST5bDYZpZ-seFCziOmA8dsMMwAukJMcRuQw@mail.gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Fri, 30 Oct 2020 12:21:24 -0700
+Message-ID: <CAJht_EOCba57aFarDYWU=Mhzn+k1ABn8HwgYt=Oq+kXijQPGvA@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 3/5] net: hdlc_fr: Improve the initial checks
+ when we receive an skb
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 12:51 AM Hillf Danton <hdanton@sina.com> wrote:
-> On Thu, 29 Oct 2020 21:04:30 -0700 John Stultz wrote:
-> >
-> > But I'll try to share my thoughts:
-> >
-> > So the system heap allows for allocation of non-contiguous buffers
-> > (currently allocated from page_alloc), which we keep track using
-> > sglists.
-> > Since the resulting dmabufs are shared between multiple devices, we
-> > want to provide a *specific type of memory* (in this case
-> > non-contiguous system memory), rather than what the underlying
-> > dma_alloc_attr() allocates for a specific device.
+On Fri, Oct 30, 2020 at 9:31 AM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
 >
-> If the memory slice(just a page for simple case) from
-> dma_alloc_attr(for device-A) does not work for device-B, nor can
-> page_alloc do the job imho.
+> > Add an fh->ea2 check to the initial checks in fr_rx. fh->ea2 == 1 means
+> > the second address byte is the final address byte. We only support the
+> > case where the address length is 2 bytes.
+>
+> Can you elaborate a bit for readers not intimately familiar with the codebase?
+>
+> Is there something in the following code that has this implicit
+> assumption on 2-byte address lengths?
 
-Right. That's why userland chooses which heap to allocate from, as
-it's the only one that knows the path the buffer will take.
+Yes, the address length must be 2 bytes, otherwise the 3rd and 4th
+bytes would not be the control and protocol fields as we assumed in
+the code.
 
-thanks
--john
+The frame format is specified in RFC 2427
+(https://tools.ietf.org/html/rfc2427). We can see the overall frame
+format on Page 3. If the address length is longer than 2 bytes, all
+the following fields will be shifted behind.
