@@ -2,147 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753BE2A090F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D48562A0936
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgJ3PEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40114 "EHLO
+        id S1726491AbgJ3PHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726739AbgJ3PEW (ORCPT
+        with ESMTP id S1726319AbgJ3PHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:04:22 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F06C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:04:22 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id b12so3093409plr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:04:22 -0700 (PDT)
+        Fri, 30 Oct 2020 11:07:13 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B9DC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:07:12 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id p16so1513807vkf.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:07:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yKh1gww6LqRAEgf9eBUACjdeNH/81Jlt6VPrqpP9HjY=;
-        b=OxvudRJgIRIEEE/kopiv2wGC9KQul3KWIc59iINcgjgEcQO8qfQgK8xCsvR6bU+eU6
-         FDQ1qaBXWySGwMUYEsNEsDv0aTIGv5YQaFZm5lXPjeB2wFlAXLWEhTMyK4oAp0PoqL+F
-         iuABlXhO0J/WJ1ufpzjcUec4SA4o0YYcsaSu8xG+OYXxD7BtwIJ9dV7tXa9mXZRPr+vT
-         UUiEEZXtOLTd4vzqssygE6Oa63FI3uxWTQEyUwcywZ29vuLuIWc9QOlZjyjXoeUkHa9h
-         hNTW8ftmJLgA1FECCCSdjcjedOdB+RPZii6KXMkFLuRElNHntKWZNEiKf9SVIZssfYr4
-         yx+A==
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qezUIHlvY9fFOmo2+xA2K+Ux6IJAtG5C7ju4HZIADck=;
+        b=FDk8YZ+1U0Xp/Ygw40EpV0XeoQqT33eCNWvzOPeOzuhtVGoPz8+inv5IWSqFU5QEQb
+         fbZH8kjd/7GZgBHweJS80LprkSJvRuThB5A2PYwcRJ19ifGSQ+mXOsFOxCp0TrHprMN8
+         Ow0nVKYl2sgjqAIi19jAw5kAX//XFX1+xWk6o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yKh1gww6LqRAEgf9eBUACjdeNH/81Jlt6VPrqpP9HjY=;
-        b=mKMYpijYrs9dM87URZlhXNUfyq+2COHesPWH1d4zYHBOBv6DaIcX7HYCqlVn6AhRRS
-         x+9M+sbC217WnMXznObjXNxksmUmpy55cJK9Pq25JygmCCI0JNUKRq7IHCiS7vpFleHD
-         ado9ENBivZMUIT6zp99pQkiOpnIsvuIJmQXRQbjIWM//rPK1gL52+LgIO7jA4BOxP0RN
-         GzHY4tiIGJ2F6VQ0kl58H36wBOvriCkXV/8OhEIXul5eHoWPWNyNbTq5360YnMT5iWgi
-         FyDwfZwmZXw/cQW9kvH9ZWe4p3Qsf4vJghv8I34j86oHL+jHuHzgzHgpA88egGjtCMjl
-         rKLQ==
-X-Gm-Message-State: AOAM533Ra+L99poc9arpTsMQ1H4B9GJJF+HC++MuBM1aFTAESxu6JpVd
-        mh1/9+q8jpi87U7cuHHGjxdmjDdlECBw8A==
-X-Google-Smtp-Source: ABdhPJzP0hrIb7ygkUfGzrbXaNTTe638OLEyXudJh20SphijYKQVMD6quFCnALW7JPRcfJXLPc0m2Q==
-X-Received: by 2002:a17:902:c084:b029:d6:b04a:b091 with SMTP id j4-20020a170902c084b02900d6b04ab091mr675658pld.14.1604070261958;
-        Fri, 30 Oct 2020 08:04:21 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id a19sm3685615pjq.29.2020.10.30.08.04.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 08:04:20 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 09:04:18 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] coresight: cti: Initialize dynamic sysfs attributes
-Message-ID: <20201030150418.GA1298977@xps15>
-References: <20201029164559.1268531-1-mathieu.poirier@linaro.org>
- <20201029164559.1268531-2-mathieu.poirier@linaro.org>
- <20201029191011.GA826513@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qezUIHlvY9fFOmo2+xA2K+Ux6IJAtG5C7ju4HZIADck=;
+        b=t1bGV0q9F1dA3Qy9xws6e2iZ+RxsmsaYR7d16HO760sdWEfxubL96zxYrllJ0Jtt8L
+         qIYwE56bVgU801HtU/bCK8dj+8NyUiSmFjzntX+LfOISf8z+em+KoOJlgR5j8DcKeHEl
+         vE6uaej98pq1koyqkjG992QKZ01Jp1h4K+tVU/NVhIZx74lKtuConY/RO05BCqHFA8zy
+         eVSJOl/moqjtU56FON+U7Yr5LwrRZCtGXnlW1CdPVcBa6JiSfhgQoswQmTl43ci+1Al/
+         xY9iTXuFJmqozRT60uscsP/aE5vAekimSO+zF2R4o2cwQoIUjfQPRocbjlJAKh8SXtzc
+         5mWg==
+X-Gm-Message-State: AOAM531gCrDexVmuMjwGkl4WWfLTKAodXSzxVDZVzkV6aWSW8QoVsZ+o
+        LOuEy291l0mXwWEkk4n5ecAz4f/wnmJSpBdkQsHeNA==
+X-Google-Smtp-Source: ABdhPJw6zBNZsPXoxIh2VrRKYWDLkA+cMVV5G3SLLuH30LfxgNrHG7rsMDRqvHz08mcMwgVJkAuegVhMmIf8qGqUmJE=
+X-Received: by 2002:ac5:c80e:: with SMTP id y14mr7299032vkl.3.1604070430985;
+ Fri, 30 Oct 2020 08:07:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029191011.GA826513@kroah.com>
+References: <20201021151903.652827-1-salyzyn@android.com> <20201021151903.652827-3-salyzyn@android.com>
+In-Reply-To: <20201021151903.652827-3-salyzyn@android.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 30 Oct 2020 16:07:00 +0100
+Message-ID: <CAJfpegtMoD85j5namV592sJD23QeUMD=+tq4SvFDqjVxsAszYQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v18 2/4] overlayfs: handle XATTR_NOSECURITY flag
+ for get xattr method
+To:     Mark Salyzyn <salyzyn@android.com>
+Cc:     linux-kernel@vger.kernel.org,
+        kernel-team <kernel-team@android.com>,
+        linux-fsdevel@vger.kernel.org,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Amir Goldstein <amir73il@gmail.com>, linux-doc@vger.kernel.org,
+        SElinux list <selinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 08:10:11PM +0100, Greg KH wrote:
-> On Thu, Oct 29, 2020 at 10:45:58AM -0600, Mathieu Poirier wrote:
-> > From: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > 
-> > With LOCKDEP enabled, CTI driver triggers the following splat due
-> > to uninitialized lock class for dynamically allocated attribute
-> > objects.
-> > 
-> > [    5.372901] coresight etm0: CPU0: ETM v4.0 initialized
-> > [    5.376694] coresight etm1: CPU1: ETM v4.0 initialized
-> > [    5.380785] coresight etm2: CPU2: ETM v4.0 initialized
-> > [    5.385851] coresight etm3: CPU3: ETM v4.0 initialized
-> > [    5.389808] BUG: key ffff00000564a798 has not been registered!
-> > [    5.392456] ------------[ cut here ]------------
-> > [    5.398195] DEBUG_LOCKS_WARN_ON(1)
-> > [    5.398233] WARNING: CPU: 1 PID: 32 at kernel/locking/lockdep.c:4623 lockdep_init_map_waits+0x14c/0x260
-> > [    5.406149] Modules linked in:
-> > [    5.415411] CPU: 1 PID: 32 Comm: kworker/1:1 Not tainted 5.9.0-12034-gbbe85027ce80 #51
-> > [    5.418553] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-> > [    5.426453] Workqueue: events amba_deferred_retry_func
-> > [    5.433299] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-> > [    5.438252] pc : lockdep_init_map_waits+0x14c/0x260
-> > [    5.444410] lr : lockdep_init_map_waits+0x14c/0x260
-> > [    5.449007] sp : ffff800012bbb720
-> > ...
-> > 
-> > [    5.531561] Call trace:
-> > [    5.536847]  lockdep_init_map_waits+0x14c/0x260
-> > [    5.539027]  __kernfs_create_file+0xa8/0x1c8
-> > [    5.543539]  sysfs_add_file_mode_ns+0xd0/0x208
-> > [    5.548054]  internal_create_group+0x118/0x3c8
-> > [    5.552307]  internal_create_groups+0x58/0xb8
-> > [    5.556733]  sysfs_create_groups+0x2c/0x38
-> > [    5.561160]  device_add+0x2d8/0x768
-> > [    5.565148]  device_register+0x28/0x38
-> > [    5.568537]  coresight_register+0xf8/0x320
-> > [    5.572358]  cti_probe+0x1b0/0x3f0
-> > 
-> > ...
-> > 
-> > Fix this by initializing the attributes when they are allocated.
-> > 
-> > Fixes: 3c5597e39812 ("coresight: cti: Add connection information to sysfs")
-> > Reported-by: Leo Yan <leo.yan@linaro.org>
-> > Tested-by: Leo Yan <leo.yan@linaro.org>
-> > Cc: Mike Leach <mike.leach@linaro.org>
-> > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > ---
-> >  drivers/hwtracing/coresight/coresight-cti-sysfs.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/drivers/hwtracing/coresight/coresight-cti-sysfs.c b/drivers/hwtracing/coresight/coresight-cti-sysfs.c
-> > index 392757f3a019..7ff7e7780bbf 100644
-> > --- a/drivers/hwtracing/coresight/coresight-cti-sysfs.c
-> > +++ b/drivers/hwtracing/coresight/coresight-cti-sysfs.c
-> > @@ -1065,6 +1065,13 @@ static int cti_create_con_sysfs_attr(struct device *dev,
-> >  	}
-> >  	eattr->var = con;
-> >  	con->con_attrs[attr_idx] = &eattr->attr.attr;
-> > +	/*
-> > +	 * Initialize the dynamically allocated attribute
-> > +	 * to avoid LOCKDEP splat. See include/linux/sysfs.h
-> > +	 * for more details.
-> > +	 */
-> > +	sysfs_attr_init(con->con_attrs[attr_idx]);
-> > +
-> >  	return 0;
-> >  }
-> 
-> Should go to stable kernels too, as the patch this fixes is in 5.7.
-> I'll add the stable tag here, but feel free to do it yourself next time
-> :)
+On Wed, Oct 21, 2020 at 5:19 PM Mark Salyzyn <salyzyn@android.com> wrote:
+>
+> Because of the overlayfs getxattr recursion, the incoming inode fails
+> to update the selinux sid resulting in avc denials being reported
+> against a target context of u:object_r:unlabeled:s0.
+>
+> Solution is to respond to the XATTR_NOSECURITY flag in get xattr
+> method that calls the __vfs_getxattr handler instead so that the
+> context can be read in, rather than being denied with an -EACCES
+> when vfs_getxattr handler is called.
+>
+> For the use case where access is to be blocked by the security layer.
+>
+> The path then would be security(dentry) ->
+> __vfs_getxattr({dentry...XATTR_NOSECURITY}) ->
+> handler->get({dentry...XATTR_NOSECURITY}) ->
+> __vfs_getxattr({realdentry...XATTR_NOSECURITY}) ->
+> lower_handler->get({realdentry...XATTR_NOSECURITY}) which
+> would report back through the chain data and success as expected,
+> the logging security layer at the top would have the data to
+> determine the access permissions and report back to the logs and
+> the caller that the target context was blocked.
+>
+> For selinux this would solve the cosmetic issue of the selinux log
+> and allow audit2allow to correctly report the rule needed to address
+> the access problem.
+>
+> Check impure, opaque, origin & meta xattr with no sepolicy audit
+> (using __vfs_getxattr) since these operations are internal to
+> overlayfs operations and do not disclose any data.  This became
+> an issue for credential override off since sys_admin would have
+> been required by the caller; whereas would have been inherently
+> present for the creator since it performed the mount.
+>
+> This is a change in operations since we do not check in the new
+> ovl_do_getxattr function if the credential override is off or not.
+> Reasoning is that the sepolicy check is unnecessary overhead,
+> especially since the check can be expensive.
+>
+> Because for override credentials off, this affects _everyone_ that
+> underneath performs private xattr calls without the appropriate
+> sepolicy permissions and sys_admin capability.  Providing blanket
+> support for sys_admin would be bad for all possible callers.
+>
+> For the override credentials on, this will affect only the mounter,
+> should it lack sepolicy permissions. Not considered a security
+> problem since mounting by definition has sys_admin capabilities,
+> but sepolicy contexts would still need to be crafted.
 
-Oh - I (wrongly) assumed all patches with a "Fixes" tag were going to stable. 
+This would be a problem when unprivileged mounting of overlay is
+introduced.  I'd really like to avoid weakening the current security
+model.
 
-> 
-> thanks,
-> 
-> greg k-h
+The big API churn in the 1/4 patch also seems excessive considering
+that this seems to be mostly a cosmetic issue for android.  Am I
+missing something?
+
+Thanks,
+Miklos
