@@ -2,61 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43CB2A02FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E072A0303
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbgJ3Ke6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:34:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60752 "EHLO mail.kernel.org"
+        id S1726302AbgJ3Kiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:38:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725790AbgJ3Ke6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:34:58 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725790AbgJ3Kiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:38:50 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E554C20704;
-        Fri, 30 Oct 2020 10:34:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA49B221FA;
+        Fri, 30 Oct 2020 10:38:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604054097;
-        bh=dH/Euy84o8UAK6ZWf2evrfdJN2070vU7e+DONC1HjU0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2FxmcBZeAumkCwIR+WD1V3Ity4QOnJ+X8IY0pyUPDJGqIa9e5VMRud/7w2mS5F4br
-         puB16ElAhqhzV24NCk32SoQshv/jPGqdpIe+pUVhLnHTNYh2Bgv0Xfie/RNRjGbD4r
-         Z+ymhqPKKslf/J8O5ratBR+SHombmiqmWQzNNN5w=
-Date:   Fri, 30 Oct 2020 18:34:49 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, krzk@kernel.org, aford173@gmail.com,
-        daniel.baluta@nxp.com, shengjiu.wang@nxp.com, peter.chen@nxp.com,
-        alifer.wsdm@gmail.com, abel.vesa@nxp.com, yibin.gong@nxp.com,
-        jun.li@nxp.com, l.stach@pengutronix.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Linux-imx@nxp.com
-Subject: Re: [PATCH V2 1/3] arm64: dts: imx8mm: Correct WDOG_B pin
- configuration
-Message-ID: <20201030103449.GR28755@dragon>
-References: <1602506642-5262-1-git-send-email-Anson.Huang@nxp.com>
+        s=default; t=1604054330;
+        bh=UXqdytnptRfkles0LLOMHaZ1KItSIYi00Dbknf+7zvM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hPWuGxnKPeGGg4xEDQk0B/67C7JPg5fAcMZe6g9C8HgaK77Qr6ctZ6wra7p755LQr
+         PxW3dPfEGZuWPi0xajrmCWGwDXYUeay3zw+RSoq4c2wAZZWSKvmHy9IAJANzuary7i
+         kz3VpA5AVqFRNosbaiK0QNDx6cqb1+KUJxY3JxGc=
+Received: by mail-oi1-f179.google.com with SMTP id u127so6182254oib.6;
+        Fri, 30 Oct 2020 03:38:49 -0700 (PDT)
+X-Gm-Message-State: AOAM530g3Ohwdb+kI5l5IuBNBvIoaq3skYNCSXc2ffZo4/uT8/DOEk63
+        Hud7/l52AlLOn9Iene6458x1qtONw8X4HOsmEnU=
+X-Google-Smtp-Source: ABdhPJzacafNknd0/KaizMeFWMq47Lp9y4/nuylAVvss7AW4Pu5kLB/dccb+jSCG2MgSzU2BmtgkIj3SyrJQgsYFMJc=
+X-Received: by 2002:aca:2310:: with SMTP id e16mr1028003oie.47.1604054329082;
+ Fri, 30 Oct 2020 03:38:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1602506642-5262-1-git-send-email-Anson.Huang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1604045940-33684-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1604045940-33684-1-git-send-email-tiantao6@hisilicon.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 30 Oct 2020 11:38:38 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXE-v=mDLUjiL=dhMN+wVs-UNTQiBLdhJftNqVQ3sxSQsQ@mail.gmail.com>
+Message-ID: <CAMj1kXE-v=mDLUjiL=dhMN+wVs-UNTQiBLdhJftNqVQ3sxSQsQ@mail.gmail.com>
+Subject: Re: [PATCH] crypto: arm64 - move const after static
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 08:44:00PM +0800, Anson Huang wrote:
-> Different revision of i.MX8MM EVK boards may have different external
-> pull up registor design, some are enabled while some are NOT, to make
-> sure the WDOG_B pin works properly, better to enable internal pull up
-> resistor. Since enabling internal pull up resistor is NOT harmful and
-> having benefit of flexibility on different board design, just enable
-> it for all i.MX8MM boards; And schmitt input is NOT necessary for this
-> WDOG_B output pin, so remove it; Open drain outputs provide more
-> flexibility to a designer as they can be pulled-up to any voltage found
-> in the system, so enable it as well.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+On Fri, 30 Oct 2020 at 09:18, Tian Tao <tiantao6@hisilicon.com> wrote:
+>
+> Fixed the WARNING: Move const after static - use 'static const u8'
+>
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 
-Applied all, thanks.
+Nak.
+
+What warning is that? This is perfectly valid C, and the const is
+already after the static. And in general, const applies to the type on
+the left, unless it comes first, so putting it after the type is less
+ambiguous:
+
+
+> ---
+>  arch/arm64/crypto/aes-ce-glue.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/crypto/aes-ce-glue.c b/arch/arm64/crypto/aes-ce-glue.c
+> index 56a5f6f..8ba6f04 100644
+> --- a/arch/arm64/crypto/aes-ce-glue.c
+> +++ b/arch/arm64/crypto/aes-ce-glue.c
+> @@ -77,7 +77,7 @@ int ce_aes_expandkey(struct crypto_aes_ctx *ctx, const u8 *in_key,
+>         /*
+>          * The AES key schedule round constants
+>          */
+> -       static u8 const rcon[] = {
+> +       static const u8 rcon[] = {
+>                 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36,
+>         };
+>
+> --
+> 2.7.4
+>
