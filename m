@@ -2,101 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8E92A0334
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0203A2A033B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbgJ3Krp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbgJ3Kro (ORCPT
+        id S1726505AbgJ3Kse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:48:34 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:46664 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbgJ3Ksc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:47:44 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B68C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:47:42 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id w14so5911986wrs.9
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:47:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jQiudrT92RoT4MnO8l4PixRWHyCh7YwN2t6t0NWCl8I=;
-        b=VFde5+mzL3XrpwutQuptYgGfpVk1egIssR+s26ty3ekZpYibBDTiuQV5zFapNyE8xz
-         6v3A8xMfNiFzLTb2cZNXwVhfFARk+bgSkdGbO1edAjpGrdx5RQU69IAKu6NNVcwyG0PF
-         womXcacbz9uNGUZOOgJZcSMSXlgQGCd9OLAmd/A0MLaIjmlAyAXznwmASzALVIyF50wC
-         84Aa6i3GxiZKW4MuYqFzR9Synue4zXdlcG6itsZ2CxWa7iREgT0xl/I6wTenPtbWqOAZ
-         9u++nR0d94pEaUBIH7tjNuyvVXlbrmkmFI2i4mOunI1OiwJyZvA9yxzHRXONpj+854wX
-         DXcA==
+        Fri, 30 Oct 2020 06:48:32 -0400
+Received: by mail-oi1-f193.google.com with SMTP id x1so6169289oic.13;
+        Fri, 30 Oct 2020 03:48:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jQiudrT92RoT4MnO8l4PixRWHyCh7YwN2t6t0NWCl8I=;
-        b=CCd3FwvBi1OUswk9sLk5y23oviR8l26vB0VTBt5/3ZJintjGt4AQWfoO0l60LNx0EY
-         08NpfLMDSgbbAJmXJVWf0y9SLQWHy7baYeCes90yadHS3TxZJbeIlJEWS/YzIxN76ahJ
-         +eckO0yNQzK/HxL3+hIIEuscnWQe4Og2AfpXV5SG6q5Rmm98hJl1V0wCEZ7u5mDQ0Rx5
-         Sa9NlcDsuBT7xBNtnnrjgLYUh3i6BfyxSqJgE02GIf2zxvZYXoYHODF3EYHrYat66N1j
-         THxqBzpb8qJEM9dww8u5d2hIfWyHbDNDHWMeWr6D29SL8caKaFORPnayFT0tWxW0xdcW
-         n3Mg==
-X-Gm-Message-State: AOAM53186eB8vOWOAt87vnnseJmXYM/npOndJPDPSqQYfCtBA64QTdbV
-        N4cL2+vhqyp+5OwnVPbXhqUkEA==
-X-Google-Smtp-Source: ABdhPJxoOQE0u2uOynQXeMQt4bBcTiACvEfnnakK42gV/IE5dKn3Hyesd2ExbFDOliawRXDUP6bYow==
-X-Received: by 2002:adf:df02:: with SMTP id y2mr2428311wrl.403.1604054861343;
-        Fri, 30 Oct 2020 03:47:41 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id y201sm4495303wmd.27.2020.10.30.03.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 03:47:40 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 11:47:20 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Zeng, Xin" <xin.zeng@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>
-Subject: Re: [PATCH v6 2/5] iommu: Use bus iommu ops for aux related callback
-Message-ID: <20201030104720.GA294997@myrica>
-References: <20201030045809.957927-1-baolu.lu@linux.intel.com>
- <20201030045809.957927-3-baolu.lu@linux.intel.com>
- <MWHPR11MB1645D795F7851F5894CB58D88C150@MWHPR11MB1645.namprd11.prod.outlook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o/a1Fg1l8jTDVjB4D1N/25wYLdlaFeX7TtKVbE5a6QU=;
+        b=MNbNqKWaeycBfMaxfs6jaw6By+KU4zltvwRJkSq0T1j0gdpXHOYSNhkpx2UXtopcBr
+         2Zu0dWaYcW4m/feTRAbvoxDHKGk44zdu/eW9schEKFU1hHEs8VrPDlLa1wLtz5UROleP
+         ytedGPZbXZUEpaNQHxmkmqzlXB6+25GZbIgD9+JxPofVcK7zAZbrnW9WXnQ7V20jbCHa
+         8uGphlESQC4eZUfyoApvINUZF/IjoDzxntLonSn37Sm3gQgIZjVh6KMj/lJ2q/drwbGz
+         T4Rs/v9mwPEvPyQZef7BnZb6hJxV/ZivDbUp0fexufOWW0gHj4hT0Ap1zV0xG0Q/U6Rz
+         7cag==
+X-Gm-Message-State: AOAM5331PGhsco4iAhx/h6G9z3qMFxJjJAbqpO3fMLtGF42zlNy/9WdH
+        dVny4LIJKJ19icKlxu5SnZzSP9XaekaWmtvtqdM=
+X-Google-Smtp-Source: ABdhPJz6VOJFKEvyavQMgMiOs1PPCRImkfzYWVg19kSmpxLT/Yeaz/lHde0Miqty14Cx+GLfOtOvCsICUqXj+iFp8yE=
+X-Received: by 2002:aca:c490:: with SMTP id u138mr1180705oif.54.1604054911030;
+ Fri, 30 Oct 2020 03:48:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB1645D795F7851F5894CB58D88C150@MWHPR11MB1645.namprd11.prod.outlook.com>
+References: <20201029105515.16309-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdVGO+DEgsTr62nA+egU2etZA_vwE9GrOG1JPWBvv90UXg@mail.gmail.com> <CA+V-a8sagMFjaxxVUGMeqG5wdAWwT=oqOPHgTBZ7j0hPP1LcNw@mail.gmail.com>
+In-Reply-To: <CA+V-a8sagMFjaxxVUGMeqG5wdAWwT=oqOPHgTBZ7j0hPP1LcNw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 30 Oct 2020 11:48:19 +0100
+Message-ID: <CAMuHMdX_x9YkUv3DCZxW_sydX1NiQ=5EJjsgo9yQ7pZV-xC_+g@mail.gmail.com>
+Subject: Re: [PATCH v2] clk: renesas: r8a774c0: Add RPC clocks
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 05:55:53AM +0000, Tian, Kevin wrote:
-> > From: Lu Baolu <baolu.lu@linux.intel.com>
-> > Sent: Friday, October 30, 2020 12:58 PM
-> > 
-> > The aux-domain apis were designed for macro driver where the subdevices
-> > are created and used inside a device driver. Use the device's bus iommu
-> > ops instead of that in iommu domain for various callbacks.
-> 
-> IIRC there are only two users on these apis. One is VFIO, and the other
-> is on the ARM side (not checked in yet). Jean, can you help confirm 
-> whether ARM-side usage still relies on aux apis even with this change?
+Hi Prabhakar,
 
-No, I have something out of tree but no plan to upstream it anymore, and
-the SMMUv2 implementation is out as well:
+On Fri, Oct 30, 2020 at 11:13 AM Lad, Prabhakar
+<prabhakar.csengg@gmail.com> wrote:
+> On Thu, Oct 29, 2020 at 2:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Thu, Oct 29, 2020 at 11:55 AM Lad Prabhakar
+> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > Describe the RPCSRC internal clock and the RPC[D2] clocks derived from it,
+> > > as well as the RPC-IF module clock, in the RZ/G2E (R8A774C0) CPG/MSSR
+> > > driver.
+> >
+> > Thanks for your patch!
+> >
+> > > Add new clk type CLK_TYPE_GEN3E3_RPCSRC to handle registering rpcsrc
+> > > clock as the source for RPCSRC can be either PLL0/PLL1 and this depends
+> > > on MD[1:4] pins where as compared to other R-Car Gen3 SoC's the RPCSRC
+> > > clock source is always PLL1.
+> > >
+> > > MD[4] MD[3] MD[2] MD[1]
+> > >   0     0     0    1     -> RPCSRC CLK source is PLL1
+> > >   0     0     1    1     -> RPCSRC CLK source is PLL1
+> > >   0     1     0    0     -> RPCSRC CLK source is PLL1
+> > >   1     0     1    1     -> RPCSRC CLK source is PLL1
+> > >   x     x     x    x     -> For any other values RPCSRC CLK source is PLL0
+> >
+> > AFAIU, the _initial values_ of the RPCCKCR bits depend on the MD pins.
+> > They can still be changed at run-time, and might have been changed by
+> > the bootloader before transferring control to Linux.
+> >
+> > > R-Car Gen3 manual Rev.2.20 has in-correct information related to
+> > > determining the clock source for RPCSRC.
+> >
+> > Which part of the information is not correct?
+> > Where can I find corrected information?
+> > Is my understanding above incorrect, too?
+> >
+> R-Car Gen3 HW manual mentions the below statement (page 529, Rev.2.20 manual):
+> [R-Car E3]
+> When (MD4, MD3, MD2, MD1) = (0, 0, 0, 1) or (0, 1, 0, 0): DIV[2:0] =
+> 011, DIV[4:3] = 00 (300 MHz PLL0)
 
-https://lore.kernel.org/linux-iommu/20200713173556.GC3815@jcrouse1-lnx.qualcomm.com/
+That indeed doesn't match the values in the DIV[4:0] bits description.
 
-> If no, possibly they can be removed completely?
+> Confirming with internal team this should be below:
+>
+> When (MD4, MD3, MD2, MD1) = (0, 0, 0, 1) or (0, 1, 0, 0): DIV[2:0] =
+> 011, DIV[4:3] = 00 (80 MHz PLL1)
+>
+> This should be fixed in the next version of the document, and when
+> available I'll ask Chris P to send it across.
 
-No objection from me. They can be added back later (I still belive adding
-PASID to the DMA API would be nice to have once more HW implements it).
+OK, that does match the bits.
 
-Thanks,
-Jean
+> > > @@ -696,6 +717,22 @@ struct clk * __init rcar_gen3_cpg_clk_register(struct device *dev,
+> > >                                                   cpg_rpcsrc_div_table,
+> > >                                                   &cpg_lock);
+> > >
+> > > +       case CLK_TYPE_GEN3E3_RPCSRC:
+> > > +               e3_rpcsrc_parent = cpg_rpcsrc_e3_get_parent(cpg_mode);
+> >
+> > This is not correct if the boot loader has changed the parent clock.
+> >
+> You mean by manually togelling the MD pins before we get into Linux ?
+
+No, by writing to the RPCCKCR register.
+Remember, the _initial_ values are determined by the MD pins.
+They can still be changed.
+
+E.g. on R-Car D3, I verified that changing PLL0CR.CKSEL at runtime
+does work.  In the end, we decided to just look at MD12 instead (IIRC
+because the CKSEL bit was removed from later documentation, but
+Rev 2.20 documents it again ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
