@@ -2,126 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E172A02CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 220C52A02CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbgJ3K1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:27:25 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:6981 "EHLO mx1.tq-group.com"
+        id S1726407AbgJ3K1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:27:07 -0400
+Received: from mga02.intel.com ([134.134.136.20]:26523 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgJ3K1X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:27:23 -0400
-IronPort-SDR: o6O08EGS7bTOtn37NhFXoZFR5YcHzmc4gGGY1zMFH2ElbuKIFMMncMnygFxy3CJehyVQNalOHN
- 8Wo+ruTprDRG5Rba9uaxgj/yRSyR0eJ1Xos0Awchi8t0/Bd/cIWVrEourucA+uUZmojAD3lC3u
- hEMWJ1JGU0Pv0GuIpzK2vafhWXcvN07zrN0x78Hwn/x2vpMEBPcelujtoKIbKx7n4oFf0truL6
- 0Dszi3ocEzJhx8IxGjh0ELVA8oSr0Cb8CmdHZScLAa78RXN4rCJb3ftGh3u0o+yp+s/1AF2HBt
- /dw=
-X-IronPort-AV: E=Sophos;i="5.77,432,1596492000"; 
-   d="scan'208";a="14511048"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 30 Oct 2020 11:27:21 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Fri, 30 Oct 2020 11:27:20 +0100
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Fri, 30 Oct 2020 11:27:20 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1604053641; x=1635589641;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=B4aRjAdCIiT+jqxl5xeNc+oGMypf6gdkXGtOqsQkS8E=;
-  b=J4m5uUOhm8/eYyzaqdt8o/MotSCu6t4YDjvJyJePQ6Jb7lIw6EBole+H
-   pqiH13yXlaMy8MjbkYtyaV4HSky4Oc++0RlatNXAdPszKof3lANFvdC16
-   CcBdn2kRReC7ebIg+4n3/Qw+j9TMJU0OP8r6dFdj7dG+uIfp7+iAAoHfd
-   xFMR/yM/MKejxecPnMR5eiCVTT3NqXKZJJ7Unmd4R6nP1x5ReKddmDzjD
-   lTRSYD7jGKgcAoCH1j3zF/BoV27MykgkGVeQY9KrussoyP2DT4GIphGAZ
-   YxPMbb8yB6a5kHrebkQmdK0Nsd2rtOpNydt5SPRXoDa6WfbkQLOGEiwRG
-   w==;
-IronPort-SDR: 2rw6PDEGMfLEp0p/dSZqqiTww5nauUVCLPDSwcdf2JnQ9aQFtGOEiP+vxQJQfZf6SlEG1milwQ
- hNiOHbeqaSF+uge24txgcBKMovWbB7pAcPcleud1YuAsvC9ldAu8vk6SbG14na027Rwswfk0JG
- W68FmGLWlAOV5AMfJqnKcXWSAVjlRfCyWhoLWOp2t5izdHGTCvvAhDT4BFQ0sIrucNi01gZ7LO
- KdB9oNfxuFexaJsbXamgrCSTRsW8tl1IMi56u9H1LTZgooID7CpHv9BK3LhQ00QH2KqBBBnXHo
- z8k=
-X-IronPort-AV: E=Sophos;i="5.77,432,1596492000"; 
-   d="scan'208";a="14511046"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 30 Oct 2020 11:27:21 +0100
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id EFF03280075;
-        Fri, 30 Oct 2020 11:27:20 +0100 (CET)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH v2 2/2] ARM: dts: imx7-mba7: add default SPI-NOR flash partition layout
-Date:   Fri, 30 Oct 2020 11:26:36 +0100
-Message-Id: <20201030102636.16476-2-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201030102636.16476-1-matthias.schiffer@ew.tq-group.com>
-References: <20201030102636.16476-1-matthias.schiffer@ew.tq-group.com>
+        id S1725801AbgJ3K1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:27:07 -0400
+IronPort-SDR: +Ct9FnS1yy80eJmATBXWTCWgCa+dpE+mz4iz+Qq48VqhG2X+ajxRG9jhM5vPpMZQu76hofzmof
+ a4vQolQzo/Mg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="155561955"
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="155561955"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 03:27:06 -0700
+IronPort-SDR: CT4FJJUbTUHOk1Y8VUb34jR9aa2OXnzu43+bz8SyWYkmZaQbVG4U2NH+Nq20uYPaB9JfIXFhc4
+ ew7ToGlln5yA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="425313417"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 30 Oct 2020 03:27:03 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 30 Oct 2020 12:27:02 +0200
+Date:   Fri, 30 Oct 2020 12:27:02 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Felipe Balbi <balbi@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCHv2 1/3] software node: Power management operations for
+ software nodes
+Message-ID: <20201030102702.GA2333887@kuha.fi.intel.com>
+References: <20201029105941.63410-1-heikki.krogerus@linux.intel.com>
+ <20201029105941.63410-2-heikki.krogerus@linux.intel.com>
+ <CAJZ5v0gc6ihoNuh5eR4MW+uf9CBH=qoRjGeeOHxgvjmUnorPCg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0gc6ihoNuh5eR4MW+uf9CBH=qoRjGeeOHxgvjmUnorPCg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the partition layout also used by the bootloader.
+Hi Rafael,
 
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
- arch/arm/boot/dts/imx7-mba7.dtsi | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+On Thu, Oct 29, 2020 at 06:10:59PM +0100, Rafael J. Wysocki wrote:
+> Well, this basically implements a wrapper PM domain that is somewhat
+> more generic, as a concept, then software nodes PM.
+> 
+> At least it is not specific to software nodes, so I'd prefer it to be
+> defined generically.
 
-v2: no changes
+I don't think we should generalize it like that. I do not think the
+power domains should have any links between each other at the general
+level (just like we probable should not link fwnodes together anymore
+like we do now with the "secondary" fwnode). That is why I have
+confined this to software nodes only for now.
+
+I think ideally devices could belong to multiple power domains. That
+would be the general solution. I did not think that trying to figure
+out how to do that would be reasonable as the first approach (maybe I
+should have done exactly that?). But would it be acceptable to allow
+devices to belong to multiple power domains?
+
+> Moreover, IIUC, this breaks if the "primary" PM domain callbacks try
+> to get to the original PM domain via the dev->pm_domain pointer, which
+> the genpd callbacks do.
+
+Ouch, that is true.
+
+> Do we want to wrap the ACPI PM domain only, by any chance?  If so, it
+> may be more straightforward to invoke swnode callbacks directly from
+> there, if any.
+
+The software node can still be the only "primary" fwnode. I don't
+think we should limit this to only platforms (and kernels) that
+support ACPI.
 
 
-diff --git a/arch/arm/boot/dts/imx7-mba7.dtsi b/arch/arm/boot/dts/imx7-mba7.dtsi
-index c6d1c63f7905..3683f97f946f 100644
---- a/arch/arm/boot/dts/imx7-mba7.dtsi
-+++ b/arch/arm/boot/dts/imx7-mba7.dtsi
-@@ -237,6 +237,38 @@
- 	};
- };
- 
-+&flash0 {
-+	uboot@0 {
-+		label = "U-Boot";
-+		reg = <0x0 0xd0000>;
-+	};
-+
-+	env1@d0000 {
-+		label = "ENV1";
-+		reg = <0xd0000 0x10000>;
-+	};
-+
-+	env2@e0000 {
-+		label = "ENV2";
-+		reg = <0xe0000 0x10000>;
-+	};
-+
-+	dtb@f0000 {
-+		label = "DTB";
-+		reg = <0xf0000 0x10000>;
-+	};
-+
-+	linux@100000 {
-+		label = "Linux";
-+		reg = <0x100000 0x700000>;
-+	};
-+
-+	rootfs@800000 {
-+		label = "RootFS";
-+		reg = <0x800000 0x3800000>;
-+	};
-+};
-+
- &flexcan1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_flexcan1>;
+thanks,
+
 -- 
-2.17.1
-
+heikki
