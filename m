@@ -2,142 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526F02A0517
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 466B92A0531
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726209AbgJ3MNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 08:13:38 -0400
-Received: from relay3.mymailcheap.com ([217.182.66.161]:52292 "EHLO
-        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3MNi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:13:38 -0400
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id 6B37A3ECDF;
-        Fri, 30 Oct 2020 13:13:34 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id AFD262A0F9;
-        Fri, 30 Oct 2020 08:13:33 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1604060013;
-        bh=Dmc4WgCmy0bLnq4AUakBedzgrdY7inhMkFJ0bs9ifZ0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ui4rOwU3Al6lLfr7t90XquObxnxwcVEc7HIGijM/wjo0XtjWFsr+VUQrEePO8cFiI
-         +q33UhlrqxHbBQu3w+IQ09aZq9tky8t+JjQOPwpy7rEKCWKzLcbvsDyt1BBvnPfeaT
-         YGmD/SqD9kOicisTWj/HzfoF/GpXxxhECHqIdeCM=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id YMKHTEy304Jo; Fri, 30 Oct 2020 08:13:31 -0400 (EDT)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Fri, 30 Oct 2020 08:13:31 -0400 (EDT)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 20384400BD;
-        Fri, 30 Oct 2020 12:13:27 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="swMfAQFZ";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [0.0.0.0] (unknown [113.52.132.214])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 8F29D400BD;
-        Fri, 30 Oct 2020 12:13:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1604060000;
-        bh=Dmc4WgCmy0bLnq4AUakBedzgrdY7inhMkFJ0bs9ifZ0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=swMfAQFZSKLmDxUHCBd7DXVObgX6pBNMxqDIanlJd11kI/4cTbpOBFQfWCMGC4DCe
-         STvlAYPxItZAvhAwzFGi/uJ+r1be8NeYO4azA0RTv0leovmdMh/7wWVRd4HyYGitF5
-         jbrU5udsvAEy16Nsb4RdQkq0Ec+ateJ8T3Mklm8k=
-Subject: Re: [PATCH 1/6] MIPS: Loongson64: Do not write the read only field
- LPA of CP0_CONFIG3
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-References: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
- <1603958581-4723-2-git-send-email-yangtiezhu@loongson.cn>
- <a384c467-048d-1296-4a0d-ecbf4cea844d@flygoat.com>
- <7306f77f-b70a-862d-b4c5-d8f20102dc62@loongson.cn>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <a3e4cd0f-7500-b994-15b1-8df1cff24ab5@flygoat.com>
-Date:   Fri, 30 Oct 2020 20:13:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S1726224AbgJ3MRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 08:17:17 -0400
+Received: from mout.gmx.net ([212.227.17.21]:49561 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgJ3MRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 08:17:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604060235;
+        bh=Yznrua1rAYLJyzyX5Y20Rgf33YP7dTKuIxygcJ2Da2w=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=Tli26PxQFCN2nmTkC92y1kZc2wOrrkLWFHiWSmYgyirK8zA60x4H5jLU8xHTk7Ele
+         6AcKXSe/R1O3xeJNtb4sc8qUQUwaOu4R+6TTTvYxAJ48Lw6bTwKPuKcWio6LQpafoJ
+         6Iuar0MK8D1ZXS/jifC/nXsdjxae+rN/yau/r77E=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from obelix.fritz.box ([46.142.24.28]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MDQeU-1kgkoe3UFa-00AUzj; Fri, 30
+ Oct 2020 13:17:14 +0100
+Subject: Re: [PATCH 5.9 000/757] 5.9.2-rc1 review
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <d8211fcd-ddb5-34e1-1f9e-aa5b94a03889@gmx.de>
+ <20201029091412.GA3749125@kroah.com>
+ <16326ab5-79f3-2e1b-511f-31f048608e6f@gmx.de>
+ <20201029191750.GA988039@kroah.com>
+From:   Ronald Warsow <rwarsow@gmx.de>
+Message-ID: <0928177e-0c93-b06b-59a6-b7597659ff34@gmx.de>
+Date:   Fri, 30 Oct 2020 13:17:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <7306f77f-b70a-862d-b4c5-d8f20102dc62@loongson.cn>
+In-Reply-To: <20201029191750.GA988039@kroah.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 20384400BD
-X-Spamd-Result: default: False [-0.10 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         RCPT_COUNT_FIVE(0.00)[6];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:jlKTkQkRJNc4/WpJSp7XUBcjiDU1w7e05OzY18NKpkvOPYuI4Ds
+ jw5Q5fz+ZzzstfYK2LzM367Phajud5vGMnld85PTzbLZmci0Ga3vIbm0h87zGRWlDVa0oaD
+ XW0sAmAGXpI2Mr/Ad1+bBVMLJINFbnHTc9rH+4oFwTqOVXUi2kg0Z4dxuaduOovonqfkJoJ
+ WbgMve/hhitO3MotKKHWg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:AFxalEPT35Y=:uu8SR6GjtLLNlumhHGW3wQ
+ 9yETuXk8h11rnkRddQb681HVd2Asdk+xUuHQ1x+SuIcB3lovsCPJbekUXvLsamtdIyPSIK6hH
+ t10kfS9nBd8DrOeXMI9GH8NjK37cS8kKZt64eA0xUsdl7nKNZ4AVJBCNqdJO2ieKQxMJG1Sit
+ LKX3XwwYyKIQiTHgBSgzSeGWYEsFCSKyQJpRd08/nF3jLJodSGzLdLxn+N6SIkU7EL1kFcGwb
+ xkgtSjwulBcWjhgnEoMOY57qNSAdozha0cFZQNr/8HrpmFgkKKKq2WVdKyb4dcpvvFO9/Uuip
+ S13BOx+YQaGX80uolpfBCo0Y/fp8oqcL9RsNdVS745jWM9RqHm2ukgCqhh6H58lRpOrPkDzsJ
+ ZKTq78V8ohF7kDqUxdxyS71SME6bj9X808qTnduBfbggmTxzQu9TaHxo7yn/vv98Y0E7voOZO
+ bdn9SUlsXL7VrWUXSztIcwSS+8Twy7nfMCVGcoi0Zv+NDmq+28+IkBD2QyjUSYYcKK/PCg3tJ
+ 3UmoKH5DK51wHo0ZLk3tdOnZF4xf5o4jpD2K9K4t+spVP1kRJ3IjdhXteroAH+9LqjaW33S53
+ yOUffp54zNodOCu+skw8mznsFA877zHqDExdEFV+JHTtlkpuhhZjLbIdfs7Qgyg0z39Dar3iJ
+ OxVNQ8/e17q8j9C/kuML+QQuwUpNmohtZ3mbmqTw7hRS7uJw/JSq7Y2V0igg++/mygRNzeiOJ
+ w0XSxSs+Pp3VMLPEe8xLCVW5xPK6EC7Td9poqfC4clulUGvF3md8lqKYa4g8S2RngUtZkPYbb
+ NlQOgHEH796jbQe0HInFVXmAwrgRnfS5jW2iuDxvGZiHf0t0op3K/xg85tygNGydjtJrQGbMZ
+ Ctiz4C2+23F+2uGnw2zA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2020/10/30 14:22, Tiezhu Yang 写道:
-> On 10/30/2020 12:00 PM, Jiaxun Yang wrote:
->>
->>
->> 在 2020/10/29 16:02, Tiezhu Yang 写道:
->>> The field LPA of CP0_CONFIG3 register is read only for Loongson64, 
->>> so the
->>> write operations are meaningless, remove them.
+On 29.10.20 20:17, Greg KH wrote:
+> On Thu, Oct 29, 2020 at 03:42:09PM +0100, Ronald Warsow wrote:
+>> On 29.10.20 10:14, Greg KH wrote:
+>>> On Tue, Oct 27, 2020 at 07:09:52PM +0100, Ronald Warsow wrote:
+>>>> Hallo
+>>>>
+>>>> this rc1 runs here (pure Intel-box) without errors.
+>>>> Thanks !
+>>>>
+>>>>
+>>>> An RPC (I'm thinking about since some month)
+>>>> =3D=3D=3D=3D=3D=3D
+>>>>
+>>>> Wouldn't it be better (and not so much add. work) to sort the
+>>>> Pseudo-Shortlog towards subsystem/driver ?
+>>>>
+>>>> something like this:
+>>>>
+>>>> ...
+>>>> usb: gadget: f_ncm: allow using NCM in SuperSpeed Plus gadgets.
+>>>> usb: cdns3: gadget: free interrupt after gadget has deleted
+>>>>
+>>>>      Lorenzo Colitti <lorenzo@google.com>
+>>>>      Peter Chen <peter.chen@nxp.com>
+>>>> ...
+>>>>
+>>>>
+>>>> Think of searching a bugfix in the shortlog.
+>>>>
+>>>> With the current layout I need to read/"visual grep" the whole log.
+>>>>
+>>>> With the new layout I'm able to jump to the "buggy" subsystem/driver =
+and
+>>>> only need to read that part of the log to get the info if the bug is
+>>>> fixed or not yet
 >>>
->>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->>> ---
->>>   arch/mips/include/asm/mach-loongson64/kernel-entry-init.h | 8 
->>> --------
->>>   arch/mips/loongson64/numa.c                               | 3 ---
->>>   2 files changed, 11 deletions(-)
->> Hi Tiezhu,
+>>> Do you have an example script that generates such a thing?  If so, I'l=
+l
+>>> be glad to look into it, but am not going to try to create it on my ow=
+n,
+>>> sorry.
+>>>
+>>> thanks,
+>>>
+>>> greg k-h
+>>>
 >>
->> AFAIK it's not read only on 3A1000.
->> Have you check with hardware guys?
+>> first of all: in the above mail it should read "RFC"
+>>
+>>
+>> Surely, who get the most benefit of it (the layout) does the most work.
+>> Agreed, I will see what I can do -I'm unsure -
+>>
+>> Currently, I'm thinking that the data for your shortlog are coming from
+>> a sort of an git query or so and it would just be an easy adjustment of
+>> the query parameter.
+>>
+>> This seems not to be the case ?
+>>
+>> To get an idea if my knowledge is sufficing (I'm no developer):
+>>
+>> Where do you get the data from to generate your shortlog ?
 >
-> Hi Jiaxun,
+> A "simple" git command:
+> 	git log --abbrev=3D12 --format=3D"%aN <%aE>%n    %s%n" ${VERSION}..HEAD=
+ > ${TMP_LOG}
 >
-> Yes, I checked it before send this patch,  the field LPA of CP0_CONFIG3
-> on 3A1000 is also read only,  we can see the related description in the
-> chapter 3.22 of Loongson_3A1000_cpu_user_2.
+> If you can come up with a command that replaces that, I'll be glad to
+> try it out.
+>
+> thanks,
+>
+> greg k-h
+>
 
-On page 36, it said:
-"能否写ELPA位依赖于Config3寄存器的LPA域 。当Config3的LPA位为0时，
-PageGrain的ELPA位被置位。"
+I'll have a look into it.
 
-Don't know if it matters.
+=2D-
+regards
 
-@Huacai, Any comments? Do you know why it exists here?
-
-Thanks
-
-- Jiaxun
-
+Ronald
