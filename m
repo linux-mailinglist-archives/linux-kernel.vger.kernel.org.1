@@ -2,130 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631A22A0A1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF83A2A0A23
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgJ3Po0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:44:26 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:39528 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbgJ3Po0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:44:26 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4CN67B72Fjz1qs0P;
-        Fri, 30 Oct 2020 16:44:22 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4CN67B649sz1qv52;
-        Fri, 30 Oct 2020 16:44:22 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id ZGZQQ6uWxFJ6; Fri, 30 Oct 2020 16:44:21 +0100 (CET)
-X-Auth-Info: oCko4kOVV9bSFGSiWx9nh6Yq9889MkbD8f+dbL7NnSM=
-Received: from jawa (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726992AbgJ3Ppt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:45:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726674AbgJ3Ppt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:45:49 -0400
+Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Fri, 30 Oct 2020 16:44:21 +0100 (CET)
-Date:   Fri, 30 Oct 2020 16:43:37 +0100
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andrei Vagin <avagin@gmail.com>, Dmitry Safonov <dima@arista.com>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: Re: [Y2038][time namespaces] Question regarding CLOCK_REALTIME
- support plans in Linux time namespaces
-Message-ID: <20201030164337.347fe961@jawa>
-In-Reply-To: <871rhfoo7z.fsf@nanos.tec.linutronix.de>
-References: <20201030110229.43f0773b@jawa>
-        <871rhfoo7z.fsf@nanos.tec.linutronix.de>
-Organization: denx.de
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96B6620936;
+        Fri, 30 Oct 2020 15:45:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604072748;
+        bh=nlOMXqka12e9yQIr/OhzGs4UNVMEOM0e+JUVN3RvNMk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TmRaUqarMiry5LSRwQ7CF1t9t2MeNM7kh8bk2DkIF7CQhWDT3xwEZAzbRrgeKFDnk
+         Td2bCdvpBwwWoLmoa1EH3+nDChqbPqnxXUVD2CPpWk7dLaeaU32XXKn/cJOTz+PiM4
+         7dj65fb+6Wrfaq4SWmJ0NQh2SIKHXTtrhIyMmYK0=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Russell King <linux@armlinux.org.uk>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v4 0/9] ARM: remove set_fs callers and implementation
+Date:   Fri, 30 Oct 2020 16:45:10 +0100
+Message-Id: <20201030154519.1245983-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/_jqYRZN8T2/HbbtXNFCRlTS"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_jqYRZN8T2/HbbtXNFCRlTS
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Arnd Bergmann <arnd@arndb.de>
 
-Hi Thomas,
+Hi Christoph, Russell,
 
-> Lukasz,
->=20
-> On Fri, Oct 30 2020 at 11:02, Lukasz Majewski wrote:
-> > I do have a question regarding the Linux time namespaces in respect
-> > of adding support for virtualizing the CLOCK_REALTIME.
-> >
-> > According to patch description [1] and time_namespaces documentation
-> > [2] the CLOCK_REALTIME is not supported (for now?) to avoid
-> > complexity and overhead in the kernel.
-> >
-> > Is there any plan to add support for it in a near future? =20
->=20
-> Not really. Just having an offset on clock realtime would be incorrect
-> in a number of ways. Doing it correct is a massive trainwreck.
->=20
-> For a debug aid, which is what you are looking for, the correctness
-> would not really matter, but providing that is a really slippery
-> slope.
->=20
-> If at all we could hide it under a debug option which depends on
-> CONFIG_BROKEN and emitting a big fat warning in dmesg with a clear
-> statement that it _is_ broken, stays so forever and any attempt to
-> "fix" it results in a permanent ban from all kernel lists.
->=20
-> Preferrably we don't go there.
+This is the rebased version of my ARM set_fs patches on top of
+v5.10-rc1, dropping the TASK_SIZE_MAX patch but leaving everything
+else unchanged.
 
-I see. Thanks for the explanation.
+I have tested the oabi-compat changes using the LTP tests for the three
+modified syscalls using an Armv7 kernel and a Debian 5 OABI user space.
 
-Now, I do use QEMU to emulate ARM 32 bit system with recent kernel
-(5.1+). It works.=20
+I also tested the syscall_get_nr() in all combinations of OABI/EABI
+kernel user space and fixed the bugs I found after Russell pointed
+out one of those issues.
 
-Another option would be to give a shoot to QEMU with the "user mode" to
-run cross-compiled tests (with using a cross-compiled glibc in earlier
-CI stage). The problem with above is the reliance on QEMU emulation of
-ARM syscalls (and if 64 bit time supporting syscalls - i.e.
-clock_settime64 - are available).
+Russell, you can pull these from
 
->=20
-> Thanks,
->=20
->         tglx
->=20
->=20
+ https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git arm-setfs_v4
+
+or I can add them to the ARM patch tracker if you prefer.
+
+     Arnd
 
 
+Arnd Bergmann (9):
+  mm/maccess: fix unaligned copy_{from,to}_kernel_nofault
+  ARM: traps: use get_kernel_nofault instead of set_fs()
+  ARM: oabi-compat: add epoll_pwait handler
+  ARM: syscall: always store thread_info->syscall
+  ARM: oabi-compat: rework epoll_wait/epoll_pwait emulation
+  ARM: oabi-compat: rework sys_semtimedop emulation
+  ARM: oabi-compat: rework fcntl64() emulation
+  ARM: uaccess: add __{get,put}_kernel_nofault
+  ARM: uaccess: remove set_fs() implementation
 
+ arch/arm/Kconfig                   |   1 -
+ arch/arm/include/asm/ptrace.h      |   1 -
+ arch/arm/include/asm/syscall.h     |  16 ++-
+ arch/arm/include/asm/thread_info.h |   4 -
+ arch/arm/include/asm/uaccess-asm.h |   6 -
+ arch/arm/include/asm/uaccess.h     | 169 ++++++++++++++-------------
+ arch/arm/kernel/asm-offsets.c      |   3 +-
+ arch/arm/kernel/entry-common.S     |  17 +--
+ arch/arm/kernel/process.c          |   7 +-
+ arch/arm/kernel/ptrace.c           |   9 +-
+ arch/arm/kernel/signal.c           |   8 --
+ arch/arm/kernel/sys_oabi-compat.c  | 181 ++++++++++++++++-------------
+ arch/arm/kernel/traps.c            |  47 +++-----
+ arch/arm/lib/copy_from_user.S      |   3 +-
+ arch/arm/lib/copy_to_user.S        |   3 +-
+ arch/arm/tools/syscall.tbl         |   2 +-
+ fs/eventpoll.c                     |   5 +-
+ include/linux/eventpoll.h          |  18 +++
+ include/linux/syscalls.h           |   3 +
+ ipc/sem.c                          |  84 ++++++++-----
+ mm/maccess.c                       |  28 ++++-
+ 21 files changed, 332 insertions(+), 283 deletions(-)
 
-Best regards,
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+-- 
+2.27.0
 
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/_jqYRZN8T2/HbbtXNFCRlTS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAl+cNKkACgkQAR8vZIA0
-zr1kdQgAxMpyJHLr7oWeB34cpyPU5D+gz+HgLKq4LZS/Tf7xMe4aZuwmPAti5FCn
-Nxu9Mv3r5j/g33jV8ZD0GJih+/Bey+5HYk3veAnLsJ78j3mERFT6z77erMMqDC0T
-Yl1BxjbIpFWRm5342R1o6EUoGmxGFRkWESPr/GXpNdFJZDSHUcb+MRDrtykzQZic
-ImQbZ51jg51gRkdfWme+0fcx1+J4nX/9QnClW2vRFR6hKK21vtsPxfzS+x/jANyZ
-e/YpF8wSgVwQHFwaZikW3mlJQHJMkkyTBcETFsWlca+2IS0fTE4kAq3g7y+hUFAz
-I8scySUJAxMivKdyQkuSktPm2TyPQg==
-=YQGD
------END PGP SIGNATURE-----
-
---Sig_/_jqYRZN8T2/HbbtXNFCRlTS--
