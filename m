@@ -2,103 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC5629FDA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7654529FDA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725911AbgJ3GJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 02:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgJ3GJf (ORCPT
+        id S1725838AbgJ3GLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 02:11:50 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7103 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgJ3GLt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 02:09:35 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45A5C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 23:09:34 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id n15so4634434otl.8
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 23:09:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OHv3qXD9Nsz5SAwNQFVqE8iplEapZHDVektBwmjGoKQ=;
-        b=lgxkN2Fiq0uQ+gFWcLDxMWjgOVcYPPlJM7bC4PRz2pSd+ehz1CZNpVLED6kwZy5nsc
-         jH9c4wXmRVZR8puuWHpatKJBb4XPHAcf6kcYw9ssDOd6ZZo22m+2C1ayerMeni7E1s6d
-         87p67dmH+pYH13N0VkV7Lv/SyzKEbUsu79/2B2G5xGo1boHvSZvw+ferESovUGFc5Jss
-         cgUF8AwDVRuDjL1wVuhYNjpYYEOF5GwBMD3ijyGmFSBuY6/r92ESfiK2Z2/M6qHofEQY
-         Gfq/h6GY422vzTK5+dwfvtC2XnfYtti1gk0XTuwQpwtpU4/3kIcQhQmWv+R4jFTp1E+C
-         VvMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OHv3qXD9Nsz5SAwNQFVqE8iplEapZHDVektBwmjGoKQ=;
-        b=rLe7OiGRqCf7+D+7LxUjrc3xyL6SUD5EiIIvJBvalTc01zdTXzxM19725NzI4XMe1V
-         k2fuPcPKy1XX5NKfV9QTRG7V9OKucnI4IrdfTe3uyqLKdaKTHWf+ttdgCgRfH/ml/X1z
-         0lezB0684SvESq6lPeHOWgw1zIIIxpmgU64w7xK5bM9uhNNr0PhoInVHkum7UcUugcEW
-         z/Q19FtSuz/FLROh2AVDaUFAtZyw3YXtSh/kLjqNJjs/vGjnCq1dFAPXWlnf13Dfu9BE
-         eIR7slrEGtziR7nhuWx3e7/Y08o6D7xCEnvLDmJ9AK5SvAKuzJDsi3W/2WgbBcB8Bp9r
-         831A==
-X-Gm-Message-State: AOAM530lpVXUW2kqSIcSvMhNf5IuXAFEmxyGF0hVe0gvN5w25DZ1nFd2
-        l+fDaiEEl1eSfMQO1ez4SOkSXeaTNAZ1hfxd5c3FYA==
-X-Google-Smtp-Source: ABdhPJy+qBsU/PGTXqQlbB+9AAjGvJ/8yyf5j0GKrjlrXDXbjKlnjfleDVvxRlBaDOzesvGrgg6pDipyuVyjHj8F22Q=
-X-Received: by 2002:a05:6830:400c:: with SMTP id h12mr561860ots.102.1604038173959;
- Thu, 29 Oct 2020 23:09:33 -0700 (PDT)
+        Fri, 30 Oct 2020 02:11:49 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CMsQX4XVlzLr1Y;
+        Fri, 30 Oct 2020 14:11:48 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 30 Oct
+ 2020 14:11:43 +0800
+Subject: Re: [f2fs-dev] [PATCH v7 1/2] f2fs: add F2FS_IOC_GET_COMPRESS_OPTION
+ ioctl
+To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
+CC:     Daeho Jeong <daehojeong@google.com>
+References: <20201030041035.394565-1-daeho43@gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <bdb48c95-f905-3d59-d751-2261547ac746@huawei.com>
+Date:   Fri, 30 Oct 2020 14:11:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <20200625001039.56174-1-john.stultz@linaro.org>
- <20200625001039.56174-6-john.stultz@linaro.org> <20200702141825.GA16941@willie-the-truck>
- <CALAqxLVZ2EhutYjOt7Be1RgnYwHT6-4m6DxA-t1wuxuSy=6yDQ@mail.gmail.com>
- <20200710075411.GA30011@willie-the-truck> <CALAqxLWadLrxckRHRAR0Q417RnFKquQJbRfO_DLEVH56cykRow@mail.gmail.com>
- <20200713204133.GA3731@willie-the-truck> <CALAqxLUDVEq4ds2Wbic6uaK3=dELKKO4eGQxjHFFz19GeUFd_w@mail.gmail.com>
- <20201028135118.GA28554@willie-the-truck>
-In-Reply-To: <20201028135118.GA28554@willie-the-truck>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Thu, 29 Oct 2020 23:09:21 -0700
-Message-ID: <CALAqxLWyam_+R6KubTpFKrWkHGPXrqa+6Tz=BDxeP3t_gSqHCg@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] firmware: QCOM_SCM: Allow qcom_scm driver to be
- loadable as a permenent module
-To:     Will Deacon <will@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        iommu@lists.linux-foundation.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201030041035.394565-1-daeho43@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 6:51 AM Will Deacon <will@kernel.org> wrote:
-> On Tue, Oct 27, 2020 at 10:53:47PM -0700, John Stultz wrote:
-> > Alternatively, I'm considering trying to switch the module dependency
-> > annotation so that the CONFIG_QCOM_SCM modularity depends on ARM_SMMU
-> > being a module. But that is sort of putting the restriction on the
-> > callee instead of the caller (sort of flipping the meaning of the
-> > depends), which feels prone to later trouble (and with multiple users
-> > of CONFIG_QCOM_SCM needing similar treatment, it would make it
-> > difficult to discover the right combination of configs needed to allow
-> > it to be a module).
-> >
-> > Anyway, I wanted to reach out to see if you had any further ideas
-> > here. Sorry for letting such a large time gap pass!
->
-> Well we can always go with your original hack, if it helps?
->
-> https://lore.kernel.org/linux-iommu/20200714075603.GE4277@willie-the-truck/
+On 2020/10/30 12:10, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> Added a new F2FS_IOC_GET_COMPRESS_OPTION ioctl to get file compression
+> option of a file.
+> 
+> struct f2fs_comp_option {
+>      u8 algorithm;         => compression algorithm
+>                            => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
+>      u8 log_cluster_size;  => log scale cluster size
+>                            => 2 ~ 8
+> };
+> 
+> struct f2fs_comp_option option;
+> 
+> ioctl(fd, F2FS_IOC_GET_COMPRESS_OPTION, &option);
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
 
-Yea. After trying a few more ideas that didn't pan out, I think I'm
-going to fall back to that. :(
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-thanks
--john
+Thanks,
