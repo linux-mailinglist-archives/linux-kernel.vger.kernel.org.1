@@ -2,66 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357D52A0A9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1292A0AAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgJ3QCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:02:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51494 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgJ3QCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:02:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604073763;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c1vCUXQx+8ujG1SC6TG7vRFSLw+HgEPq/pfglble5SE=;
-        b=dqLGMyFgMFJUqcupJ4r9KTUvdptU0xOcxXG+p9FKwbRQAhRVSkV9zEeA+RlnGZCI7FSKMp
-        H/wz5CB3L7mk+IcApg3qcTT4HNyqE643kLbgRQ6mKQkrmXFd60XCHPgG64PAgBZdDbRygY
-        bMRdq91KYbcTqan0mJ/Nl4crzQpZY+c=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3D367ACF5;
-        Fri, 30 Oct 2020 16:02:43 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 17:02:42 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Willy Tarreau <w@1wt.eu>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Arpitha Raghunandan <98.arpi@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-Subject: Re: [PATCH 2/4] kselftest_module.h: unconditionally expand the
- KSTM_MODULE_GLOBALS() macro
-Message-ID: <20201030160242.GC20201@alley>
-References: <20201025214842.5924-1-linux@rasmusvillemoes.dk>
- <20201025214842.5924-3-linux@rasmusvillemoes.dk>
+        id S1726317AbgJ3QGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJ3QGo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:06:44 -0400
+Received: from smtp-42aa.mail.infomaniak.ch (smtp-42aa.mail.infomaniak.ch [IPv6:2001:1600:4:17::42aa])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80628C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:06:44 -0700 (PDT)
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CN6cx2KK4zllGw2;
+        Fri, 30 Oct 2020 17:06:41 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4CN6cw2Rr9zlh8TQ;
+        Fri, 30 Oct 2020 17:06:40 +0100 (CET)
+Subject: Re: [PATCH v1 1/2] ptrace: Set PF_SUPERPRIV when checking capability
+To:     Jann Horn <jannh@google.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Kees Cook <keescook@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Eric Paris <eparis@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Will Drewry <wad@chromium.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20201030123849.770769-1-mic@digikod.net>
+ <20201030123849.770769-2-mic@digikod.net>
+ <CAG48ez1LFAKoi-nvipsar2SAH0eNhKkOzWj4Fuf9wNCtpWsH9A@mail.gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <94a86084-5aab-4a2c-e654-f55130190c1a@digikod.net>
+Date:   Fri, 30 Oct 2020 17:06:39 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201025214842.5924-3-linux@rasmusvillemoes.dk>
+In-Reply-To: <CAG48ez1LFAKoi-nvipsar2SAH0eNhKkOzWj4Fuf9wNCtpWsH9A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 2020-10-25 22:48:40, Rasmus Villemoes wrote:
-> Two out of three users of the kselftest_module.h header
-> manually define the failed_tests/total_tests variables instead of
-> making use of the KSTM_MODULE_GLOBALS() macro. However, instead of
-> just replacing those definitions with an invocation of that macro,
-> just unconditionally define them in the header file itself.
-> 
-> A coming change will add a few more global variables, and at least one
-> of those will be referenced from kstm_report() - however, that's not
-> possible currently, since when the definition is postponed until the
-> test module invokes KSTM_MODULE_GLOBALS(), the variable is not defined
-> by the time the compiler parses kstm_report().
-> 
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+On 30/10/2020 16:47, Jann Horn wrote:
+> On Fri, Oct 30, 2020 at 1:39 PM Mickaël Salaün <mic@digikod.net> wrote:
+>> Commit 69f594a38967 ("ptrace: do not audit capability check when outputing
+>> /proc/pid/stat") replaced the use of ns_capable() with
+>> has_ns_capability{,_noaudit}() which doesn't set PF_SUPERPRIV.
+>>
+>> Commit 6b3ad6649a4c ("ptrace: reintroduce usage of subjective credentials in
+>> ptrace_has_cap()") replaced has_ns_capability{,_noaudit}() with
+>> security_capable(), which doesn't set PF_SUPERPRIV neither.
+>>
+>> Since commit 98f368e9e263 ("kernel: Add noaudit variant of ns_capable()"), a
+>> new ns_capable_noaudit() helper is available.  Let's use it!
+>>
+>> As a result, the signature of ptrace_has_cap() is restored to its original one.
+>>
+>> Cc: Christian Brauner <christian.brauner@ubuntu.com>
+>> Cc: Eric Paris <eparis@redhat.com>
+>> Cc: Jann Horn <jannh@google.com>
+>> Cc: Kees Cook <keescook@chromium.org>
+>> Cc: Oleg Nesterov <oleg@redhat.com>
+>> Cc: Serge E. Hallyn <serge@hallyn.com>
+>> Cc: Tyler Hicks <tyhicks@linux.microsoft.com>
+>> Cc: stable@vger.kernel.org
+>> Fixes: 6b3ad6649a4c ("ptrace: reintroduce usage of subjective credentials in ptrace_has_cap()")
+>> Fixes: 69f594a38967 ("ptrace: do not audit capability check when outputing /proc/pid/stat")
+>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> 
+> Yeah... I guess this makes sense. (We'd have to undo or change it if
+> we ever end up needing to use a different set of credentials, e.g.
+> from ->f_cred, but I guess that's really something we should avoid
+> anyway.)
+> 
+> Reviewed-by: Jann Horn <jannh@google.com>
+> 
+> with one nit:
+> 
+> 
+> [...]
+>>  /* Returns 0 on success, -errno on denial. */
+>>  static int __ptrace_may_access(struct task_struct *task, unsigned int mode)
+>>  {
+>> -       const struct cred *cred = current_cred(), *tcred;
+>> +       const struct cred *const cred = current_cred(), *tcred;
+> 
+> This is an unrelated change, and almost no kernel code marks local
+> pointer variables as "const". I would drop this change from the patch.
 
-Best Regards,
-Petr
+This give guarantee that the cred variable will not be used for
+something else than current_cred(), which kinda prove that this patch
+doesn't change the behavior of __ptrace_may_access() by not using cred
+in ptrace_has_cap(). It doesn't hurt and I think it could be useful to
+spot issues when backporting.
+
+> 
+>>         struct mm_struct *mm;
+>>         kuid_t caller_uid;
+>>         kgid_t caller_gid;
