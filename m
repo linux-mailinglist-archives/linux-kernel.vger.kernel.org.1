@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0A12A06A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A65762A06A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbgJ3Nlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 09:41:46 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:39976 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJ3Nlq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 09:41:46 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09UDfeUB093582;
-        Fri, 30 Oct 2020 08:41:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604065300;
-        bh=yvVr19obSpLwUPQ/Gzos7pBM2m/777m1etKh7pftCw0=;
-        h=From:To:CC:Subject:Date;
-        b=RvFMg13dx1YLfHLhu7L0iFUwJZt0WSNSnnyHrnvy4UrUPEasvLkZ9URj5wjlg8JPh
-         pu0huHAN7rVv30nwwoYtCH+0CKx10npoUcJ4pkZLIv7JJYjuxJ4WTHkaOk9p787TSQ
-         iAZWSqhjjVTVJlSAB6zQiBimjYnVJHsiH29OPo7U=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09UDfeHZ088059
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Oct 2020 08:41:40 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 30
- Oct 2020 08:41:40 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 30 Oct 2020 08:41:40 -0500
-Received: from lokesh-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09UDfbaJ036552;
-        Fri, 30 Oct 2020 08:41:38 -0500
-From:   Lokesh Vutla <lokeshvutla@ti.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        <u.kleine-koenig@pengutronix.de>
-CC:     Lee Jones <lee.jones@linaro.org>, <linux-pwm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>
-Subject: [PATCH] pwm: lp3943: Dynamically allocate pwm chip base
-Date:   Fri, 30 Oct 2020 19:11:35 +0530
-Message-ID: <20201030134135.28730-1-lokeshvutla@ti.com>
-X-Mailer: git-send-email 2.28.0
+        id S1726642AbgJ3Nmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 09:42:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725939AbgJ3Nmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 09:42:37 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8C00206CB;
+        Fri, 30 Oct 2020 13:42:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604065357;
+        bh=gcZRJlf2vRw+dqbq1y4yCYsNH63imKJ3BSp0HkZ2ZC4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MINvTug0WTBf/n6Fo+7iut6Mqjv2PP3F3Vck/6HiSPumwTBmesOYEGHQOAVck39L8
+         Z10U8LiniP+QbNZoRYzD6J++wJErlDVRh897NnqxFBB9RLGge3BJoZICXVk2k69nun
+         1F1PkYhIhbwX2ZMRlf9pN0sK4UgsjhPzvAxcnLs8=
+Date:   Fri, 30 Oct 2020 13:42:27 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Bangzheng Liu <bangzheng.liu@unisoc.com>
+Subject: Re: [PATCH] spi: sprd: add runtime pm for transfer message
+Message-ID: <20201030134227.GC4405@sirena.org.uk>
+References: <20201030072444.22122-1-zhang.lyra@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sHrvAb52M6C8blB9"
+Content-Disposition: inline
+In-Reply-To: <20201030072444.22122-1-zhang.lyra@gmail.com>
+X-Cookie: Blow it out your ear.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there are other pwm controllers enabled along with pwm-lp3943,
-pwm-lp3942 is failing to probe with -EEXIST error. This is because
-other pwm controller is probed first and assigned pwmchip 0 and
-pwm-lp3943 is requesting for 0 again. In order to avoid this, assign the
-chip base with -1, so that id is dynamically allocated.
 
-Fixes: af66b3c0934e ("pwm: Add LP3943 PWM driver")
-Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
----
- drivers/pwm/pwm-lp3943.c | 1 +
- 1 file changed, 1 insertion(+)
+--sHrvAb52M6C8blB9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/pwm/pwm-lp3943.c b/drivers/pwm/pwm-lp3943.c
-index 7551253ada32..bf3f14fb5f24 100644
---- a/drivers/pwm/pwm-lp3943.c
-+++ b/drivers/pwm/pwm-lp3943.c
-@@ -275,6 +275,7 @@ static int lp3943_pwm_probe(struct platform_device *pdev)
- 	lp3943_pwm->chip.dev = &pdev->dev;
- 	lp3943_pwm->chip.ops = &lp3943_pwm_ops;
- 	lp3943_pwm->chip.npwm = LP3943_NUM_PWMS;
-+	lp3943_pwm->chip.base = -1;
- 
- 	platform_set_drvdata(pdev, lp3943_pwm);
- 
--- 
-2.28.0
+On Fri, Oct 30, 2020 at 03:24:44PM +0800, Chunyan Zhang wrote:
+> From: Bangzheng Liu <bangzheng.liu@unisoc.com>
+>=20
+> Before transfer one message, spi core would set chipselect, sprd spi
+> device should be resumed from runtime suspend, otherwise kernel would
+> crash once access spi registers. The sprd spi device can be suspended
+> until clearing chipselect which would be executed after transfer.
 
+The core should be handling runtime PM for normal transfers, if it's not
+managing to do that then we should fix the core so it's fixed for all
+drivers not just this one.
+
+--sHrvAb52M6C8blB9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+cGEIACgkQJNaLcl1U
+h9B4Pgf+IvIiwEDkZQaxyvEVcgYx1vNEX4NM/KNwpFoJfYbEERBxkcJ7YZaL5Y5W
+dRAoqjGdbvgXk4jXfzqjCXoodXEknonwAI7rU0KeWZeg4NUzSHbA4GOtNSDP1sBz
+5m2rv79+/B1u1Dp2iRAY4tSt+lnlvR6MjNZuyL4NrXrQDGs8Oma7uaOa1LYcGEx/
+91KdS71KXko68rLVJsDkjmzWuQigmQ+swHfIH8URGKAOpma68rbeVaB1SydUbkou
+kODB+bA/j8CfABKaddjmfVL2D00lk7Z0MvQ9ZJiw8dWQi+5JXG2cnbBJahx8jwMd
+zdjzNr+VcJpRlf6LvBaVRvRQl9ehbw==
+=Tpkr
+-----END PGP SIGNATURE-----
+
+--sHrvAb52M6C8blB9--
