@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8772129FCF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 06:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D9C29FCFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 06:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgJ3FHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 01:07:42 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:26934 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726042AbgJ3FHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 01:07:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604034461; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=i5EXSp5H1+wjz49bdX5MmWjfxCCpbPKZqpGfcNnScpk=; b=M5h1ksk5SK/qzx1j/dQ0i85eR6+91T4CSAtWvBS6Ldmzd0A/txNveIsev0CUij1tnhJhxYWs
- 7lF3RdH8lkIaIXEuqTqZCE735168zAHRoBEBFwkuagjPfMmnPY775tpiu19VUwUI0AuKfUhH
- lDbVy1N4qVfn/r8XYePJpJHDPCA=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f9b9f9d59fd12ae18a9eb55 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 05:07:41
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 94587C433CB; Fri, 30 Oct 2020 05:07:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.9] (unknown [61.3.219.238])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725775AbgJ3FTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 01:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJ3FTR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 01:19:17 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DF6C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 22:19:16 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E70BC433C6;
-        Fri, 30 Oct 2020 05:07:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6E70BC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [v4,1/3] drm/msm: Add support for GPU cooling
-To:     mka@chromium.org
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dianders@chromium.org, linux-kernel@vger.kernel.org,
-        dri-devel@freedesktop.org, freedreno@lists.freedesktop.org
-References: <1603958841-20233-1-git-send-email-akhilpo@codeaurora.org>
- <20201029204842.GC1855806@google.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <3d99a0e0-765d-0d89-37ed-0f0999580c1b@codeaurora.org>
-Date:   Fri, 30 Oct 2020 10:37:34 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CMrFp2wQkz9sSn;
+        Fri, 30 Oct 2020 16:19:09 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1604035152;
+        bh=g17NLadQlMNHRS3Ht5UYozcNciyiTHzLrix1dfy+teg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ZWtYU3oSZTvC/DroUBsF45c5IzIXb9Ywz7/J0acvBPlTOIC27HaTAZBYB1mteG1AQ
+         2945SGAhJd2MoV9nM98Q4otxrL2LRV4tWbDT0kphAbPQfHfGMJCCKR2/ra8WxRT/H4
+         RCxDdE6kuqmmiO2sF56YnnRqVOhupzboRbIDFiVknOSEl2irTF6sYNo4gJG1NHmTPg
+         JYFzBZDiFZxLFdciSH8jFET35mJv/DBAvReGwuzYQqBRlhDNfAiD7Md2MLlbHHUlTt
+         9dm+DM5qKPb/27a4kgX/G8IfWfEbB+jtP5CYahjGPAGl0+SNCMcsStY+iEwrWUKdo/
+         WdvWpTqgItTfw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Andreas Schwab <schwab@linux-m68k.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] powerpc/32s: Setup the early hash table at all time.
+In-Reply-To: <87wnz8vizm.fsf@igel.home>
+References: <b8f8101c368b8a6451844a58d7bd7d83c14cf2aa.1601566529.git.christophe.leroy@csgroup.eu> <87wnz8vizm.fsf@igel.home>
+Date:   Fri, 30 Oct 2020 16:19:07 +1100
+Message-ID: <87y2jouw8k.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20201029204842.GC1855806@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/2020 2:18 AM, mka@chromium.org wrote:
-> On Thu, Oct 29, 2020 at 01:37:19PM +0530, Akhil P Oommen wrote:
->> Register GPU as a devfreq cooling device so that it can be passively
->> cooled by the thermal framework.
+Andreas Schwab <schwab@linux-m68k.org> writes:
+> On Okt 01 2020, Christophe Leroy wrote:
+>
+>> At the time being, an early hash table is set up when
+>> CONFIG_KASAN is selected.
 >>
->> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
->> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> 
-> Wait, I did not post a 'Reviewed-by' tag for this patch!
-> 
-> I think the patch should be ok, but I'm still not super happy
-> about the resource management involving devfreq in general (see
-> discussion on https://patchwork.freedesktop.org/patch/394291/?series=82476&rev=1).
-> It's not really something introduced by this patch, but if it ever
-> gets fixed releasing the cooling device at the end of
-> msm_gpu_cleanup() after everything else might cause trouble.
-> 
-> In summary, I'm supportive of landing this patch, but reluctant to
-> 'sign it off' because of the above.
-> 
-> In any case:
-> 
-> Tested-by: Matthias Kaehlcke <mka@chromium.org>
-Sorry, Matthias. My mistake. You shared the reviewed tag for the 
-dt-bindings update. Will fix this ASAP. Thanks for verifying this.
+>> There is nothing wrong with setting such an early hash table
+>> all the time, even if it is not used. This is a statically
+>> allocated 256 kB table which lies in the init data section.
+>>
+>> This makes the code simpler and may in the future allow to
+>> setup early IO mappings with fixmap instead of hard coding BATs.
+>>
+>> Put create_hpte() and flush_hash_pages() in the .ref.text section
+>> in order to avoid warning for the reference to early_hash[]. This
+>> reference is removed by MMU_init_hw_patch() before init memory is
+>> freed.
+>
+> This breaks booting on the iBook G4.
 
--Akhil.
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> 
+Do you get an oops or anything?
 
+cheers
