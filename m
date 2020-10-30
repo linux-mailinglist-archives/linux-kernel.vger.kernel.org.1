@@ -2,168 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682A72A09BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B4E2A09D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726987AbgJ3P0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:26:46 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:41240 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726063AbgJ3P0p (ORCPT
+        id S1727208AbgJ3P1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:27:44 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:8338 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726307AbgJ3P1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:26:45 -0400
-Received: by mail-oi1-f196.google.com with SMTP id k65so7006156oih.8;
-        Fri, 30 Oct 2020 08:26:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5EQDzHk8IlUo/Q7O0mgQPpOp0accA5iV/LrucZmEgdc=;
-        b=pTBE+rdeElribli3O1mXJSvpsmu8m3VTqFPjKvs9txjTVcgNRV0ukviu1lD4fudUsK
-         bLwrhMIKeS4hnhRvLL6QM/hm0CgU2Lvaw8nmOnibQcuGISF0kiBTc0jDwmUavs5d02Em
-         xmc0BFXofJtb0lmehWiPZG+x3JjQBKOaC1Blbw9HB7WoZqhP/amwalFKq6X89wBhHITl
-         cyd6GjWTLg+7bCfzvsSPRbhOA51H2fKeNhIWSe0Y0XRAS3JMyxMrxJ55oDWeDfXF+21g
-         lvDT6rjhmxdk3geW3GzJ/wcS4j2KlOVQhnNjbZg22PedLFPrHjGVtKbQv+dfVHFZ1fYt
-         AdPw==
-X-Gm-Message-State: AOAM530datHPvv3GDWvN2KiK1+LhZeFNY1LGvKGmog7JGZEAWGgRZoXR
-        dC1j5Vvft3yP8+H0lgproESJp0gtXWlU5v9whJs=
-X-Google-Smtp-Source: ABdhPJy7JKMNayUP87P7qDpr/wye21t/8MnbLwLaIOORhFEMPPcV2Ss8hvjhOf3vRORYXAYPbAwsiFVFdFJjEI6t+SQ=
-X-Received: by 2002:aca:30d7:: with SMTP id w206mr2012412oiw.69.1604071603323;
- Fri, 30 Oct 2020 08:26:43 -0700 (PDT)
+        Fri, 30 Oct 2020 11:27:43 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09UF8LL1003715;
+        Fri, 30 Oct 2020 16:27:17 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=4QYEGEv6Dx43DkeQaT74KojLLBRyD+ORt/fhCMzqZTs=;
+ b=iRE+Mcwq8+6u5wET2e5Rw2WxAMM2pJcHvtToopcqvUS1o63ME83HPr+7HCScDjg/MmRn
+ oDz1b+FvQ6it4MNNkwAmMLl+zozfkufzi4UvSnWoD1QDQF2jgHm+EPHw5dJUn5/jDSGs
+ mbffz9lPaLDR10C1y2/k0zUzFfPApKuZfctIej5UTLXe+ZaXf2xYRRwXEC1oDYch0n+T
+ dfNE/SZ0BUbrHkYRPdgoCU0ogRajgN5NMdbkNtlotXRtbbdlboP/CocYT4UqcHVIxqdg
+ +geGqafFj6b3KZN8TYAP9J7R6dtOaN6UBg+rl/qfd11PlFQp4HEKFnVHyCUHDKejdzYF XQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34ccmrhjg6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 16:27:17 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9B09F100034;
+        Fri, 30 Oct 2020 16:27:16 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7F5D22257DC;
+        Fri, 30 Oct 2020 16:27:16 +0100 (CET)
+Received: from lmecxl0995.lme.st.com (10.75.127.45) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
+ 2020 16:27:15 +0100
+Subject: Re: [RESEND PATCH v3 1/4] dt-bindings: connector: add power-opmode
+ optional property to usb-connector
+To:     Rob Herring <robh@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
+References: <20201029095806.10648-1-amelie.delaunay@st.com>
+ <20201029095806.10648-2-amelie.delaunay@st.com>
+ <20201029154016.GA1917373@bogus>
+ <860d5620-4fdf-6e01-9a04-3967d6fcfd6b@st.com>
+ <CAL_JsqKs-Po8BdShjQNDNPjNWBCD3FSPdq4KbQGx3=VnV+3nPw@mail.gmail.com>
+From:   Amelie DELAUNAY <amelie.delaunay@st.com>
+Message-ID: <ebccf61a-c88f-c7f4-9f06-01d2bd1f43de@st.com>
+Date:   Fri, 30 Oct 2020 16:27:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201027180713.7642-1-ionela.voinescu@arm.com> <20201027180713.7642-2-ionela.voinescu@arm.com>
-In-Reply-To: <20201027180713.7642-2-ionela.voinescu@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 30 Oct 2020 16:26:32 +0100
-Message-ID: <CAJZ5v0gg7dz44s_fjtJKm8Sv87RZypxYe3EwXX74oAuk31GW1Q@mail.gmail.com>
-Subject: Re: [PATCH RESEND v2 1/3] sched/topology,schedutil: wrap sched
- domains rebuild
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAL_JsqKs-Po8BdShjQNDNPjNWBCD3FSPdq4KbQGx3=VnV+3nPw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-30_07:2020-10-30,2020-10-30 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 7:08 PM Ionela Voinescu <ionela.voinescu@arm.com> wrote:
->
-> Add the rebuild_sched_domains_energy() function to wrap the functionality
-> that rebuilds the scheduling domains if any of the Energy Aware Scheduling
-> (EAS) initialisation conditions change. This functionality is used when
-> schedutil is added or removed or when EAS is enabled or disabled
-> through the sched_energy_aware sysctl.
->
-> Therefore, create a single function that is used in both these cases and
-> that can be later reused.
->
-> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Acked-by: Quentin Perret <qperret@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
 
-For the schedutil part:
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 10/30/20 3:29 PM, Rob Herring wrote:
+> On Thu, Oct 29, 2020 at 11:49 AM Amelie DELAUNAY <amelie.delaunay@st.com> wrote:
+>>
+>>
+>>
+>> On 10/29/20 4:40 PM, Rob Herring wrote:
+>>> On Thu, Oct 29, 2020 at 10:58:03AM +0100, Amelie Delaunay wrote:
+>>>> Power operation mode may depends on hardware design, so, add the optional
+>>>> property power-opmode for usb-c connector to select the power operation
+>>>> mode capability.
+>>>>
+>>>> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+>>>> ---
+>>>>    .../bindings/connector/usb-connector.yaml      | 18 ++++++++++++++++++
+>>>>    1 file changed, 18 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>>>> index 728f82db073d..200d19c60fd5 100644
+>>>> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>>>> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>>>> @@ -93,6 +93,24 @@ properties:
+>>>>          - device
+>>>>          - dual
+>>>>
+>>>> +  power-opmode:
+>>>
+>>> I've acked this version:
+>>>
+>>> https://lore.kernel.org/r/20201020093627.256885-2-badhri@google.com
+>>>
+>>
+>> frs is used for Fast Role Swap defined in USB PD spec.
+>> I understand it allows to get the same information but I'm wondering why
+>> the property name is limited to -frs- in this case. What about a
+>> non-power delivery USB-C connector ?
+> 
+> I've got no idea. The folks that know USB-C and PD details need to get
+> together and work all this out. To me, it looks like the same thing...
+> 
 
-and I'm assuming the patch to be taken care of by Peter.
+It looks but...
 
-> ---
->  include/linux/sched/topology.h   |  8 ++++++++
->  kernel/sched/cpufreq_schedutil.c |  9 +--------
->  kernel/sched/topology.c          | 18 +++++++++++-------
->  3 files changed, 20 insertions(+), 15 deletions(-)
->
-> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-> index 9ef7bf686a9f..8f0f778b7c91 100644
-> --- a/include/linux/sched/topology.h
-> +++ b/include/linux/sched/topology.h
-> @@ -225,6 +225,14 @@ static inline bool cpus_share_cache(int this_cpu, int that_cpu)
->
->  #endif /* !CONFIG_SMP */
->
-> +#if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
-> +extern void rebuild_sched_domains_energy(void);
-> +#else
-> +static inline void rebuild_sched_domains_energy(void)
-> +{
-> +}
-> +#endif
-> +
->  #ifndef arch_scale_cpu_capacity
->  /**
->   * arch_scale_cpu_capacity - get the capacity scale factor of a given CPU.
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index e254745a82cb..37b303890336 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -899,16 +899,9 @@ struct cpufreq_governor *cpufreq_default_governor(void)
->  cpufreq_governor_init(schedutil_gov);
->
->  #ifdef CONFIG_ENERGY_MODEL
-> -extern bool sched_energy_update;
-> -extern struct mutex sched_energy_mutex;
-> -
->  static void rebuild_sd_workfn(struct work_struct *work)
->  {
-> -       mutex_lock(&sched_energy_mutex);
-> -       sched_energy_update = true;
-> -       rebuild_sched_domains();
-> -       sched_energy_update = false;
-> -       mutex_unlock(&sched_energy_mutex);
-> +       rebuild_sched_domains_energy();
->  }
->  static DECLARE_WORK(rebuild_sd_work, rebuild_sd_workfn);
->
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index dd7770226086..270bafb73506 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -211,6 +211,15 @@ unsigned int sysctl_sched_energy_aware = 1;
->  DEFINE_MUTEX(sched_energy_mutex);
->  bool sched_energy_update;
->
-> +void rebuild_sched_domains_energy(void)
-> +{
-> +       mutex_lock(&sched_energy_mutex);
-> +       sched_energy_update = true;
-> +       rebuild_sched_domains();
-> +       sched_energy_update = false;
-> +       mutex_unlock(&sched_energy_mutex);
-> +}
-> +
->  #ifdef CONFIG_PROC_SYSCTL
->  int sched_energy_aware_handler(struct ctl_table *table, int write,
->                 void *buffer, size_t *lenp, loff_t *ppos)
-> @@ -223,13 +232,8 @@ int sched_energy_aware_handler(struct ctl_table *table, int write,
->         ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
->         if (!ret && write) {
->                 state = static_branch_unlikely(&sched_energy_present);
-> -               if (state != sysctl_sched_energy_aware) {
-> -                       mutex_lock(&sched_energy_mutex);
-> -                       sched_energy_update = 1;
-> -                       rebuild_sched_domains();
-> -                       sched_energy_update = 0;
-> -                       mutex_unlock(&sched_energy_mutex);
-> -               }
-> +               if (state != sysctl_sched_energy_aware)
-> +                       rebuild_sched_domains_energy();
->         }
->
->         return ret;
-> --
-> 2.17.1
->
+The purpose of power-opmode property is to configure the USB-C 
+controllers, especially the non-PD USB-C controllers to determine the 
+power operation mode that the Type C connector will support and will 
+advertise through CC pins when it has no power delivery support, 
+whatever the power role: Sink, Source or Dual
+The management of the property is the same that data-role and power-role 
+properties, and done by USB Type-C Connector Class.
+
+new-source-frs-typec-current specifies initial current capability of the 
+new source when vSafe5V is applied during PD3.0 Fast Role Swap. So here, 
+this property is not applied at usb-c controller configuration level, 
+but during PD Fast Role Swap, so when the Sink become the Source.
+Moreover, the related driver code says FRS can only be supported by DRP 
+ports. So new-source-frs-typec-current property, in addition to being 
+specific to PD, is also dedicated to DRP usb-c controller.
+The property is managed by Type-C Port Controller Manager for PD.
+
+> And it's not just this, but the stream of USB-C additions that trickle in.
+> 
+>> Moreover, power-opmode property support is already merged in typec class:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/usb/typec/class.c?h=v5.10-rc1&id=12f3467b0d28369d3add7a0deb65fdac9b503c90
+>> and stusb160x driver uses it :(
+>>
+>> So, do I need to modify stusb160x driver (and bindings) to take into
+>> account this USB PD specific property?
+> 
+> If not documented, then it's not an ABI, so yes.
+
+I have tried to document it since months ago
+v1: https://lkml.org/lkml/2020/6/15/927
+v2: https://lkml.org/lkml/2020/7/23/445 integrating your remarks
+v2 RESENT: https://lkml.org/lkml/2020/9/2/174
+v3: https://lkml.org/lkml/2020/9/24/306 integrated Li Jun remarks
+
+Regards,
+Amelie
