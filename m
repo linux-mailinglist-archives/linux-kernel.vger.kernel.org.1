@@ -2,115 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07192A02C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9772A02C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgJ3KZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:25:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7532 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725948AbgJ3KZj (ORCPT
+        id S1726362AbgJ3K0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgJ3K0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:25:39 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09UA9m60136302;
-        Fri, 30 Oct 2020 06:25:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=BAtE6Ob70yoHPBs9fGXumLJu/pahuZYKYKpQlaPGQ64=;
- b=l2ifPTg/kS+mEKGybalkN/9dmaPNBtWpmrJrXOvBn6pDa5l9Cp1U09OTlT8Ov4AI3W6w
- 7ybEaSjyIWQUyQT28jtCrcHNUF356IF6RfECkRDuuWwZnkWFAY9qP2BcPvU0sa/OV00w
- I5dY3+6EjaZQy22M5PufDk8mQ2lrYAxJNLbq42sudy7pwuCMDooADXzpi0dH06P0N9At
- N9XbtN0Jam7maRsbLnVdBQVRe5zHUM70XN2dnmgGzxZL3I0tIdr9TEyKyAEt78G5vC/l
- n95AyuCe06B+7pRotF2SkOMfZj89ZDKhUOO9Mny+ETGA25FUap/Yof+lnCJq6j8paRZQ Hg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34fww7xdbv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Oct 2020 06:25:29 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09UAEu7o159555;
-        Fri, 30 Oct 2020 06:25:29 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34fww7xdb2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Oct 2020 06:25:29 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09UAMet4024766;
-        Fri, 30 Oct 2020 10:25:26 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 34g41xrmm1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Oct 2020 10:25:26 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09UAPOqT28901670
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Oct 2020 10:25:24 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B4304204F;
-        Fri, 30 Oct 2020 10:25:24 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0922F4205F;
-        Fri, 30 Oct 2020 10:25:24 +0000 (GMT)
-Received: from [9.145.145.233] (unknown [9.145.145.233])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 30 Oct 2020 10:25:23 +0000 (GMT)
-Subject: Re: [PATCH V8] GCOV: Add config to check the preqequisites situation
-To:     gengcixi@gmail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
-        Cixi Geng <cixi.geng1@unisoc.com>
-References: <20201028131505.482037-1-gengcixi@gmail.com>
-From:   Peter Oberparleiter <oberpar@linux.ibm.com>
-Message-ID: <fb2bbd79-e17a-775e-6f2b-d97acd69b50f@linux.ibm.com>
-Date:   Fri, 30 Oct 2020 11:25:24 +0100
+        Fri, 30 Oct 2020 06:26:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76292C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:26:03 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604053562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8pf3sYX6uhqreYow0JUobm7dh3ohRmmP578ZgXGTClM=;
+        b=mQHbguNd2TNiV46kH4gt0A99mYtiVPvlUKjtQHlh8ci9VP3KQqENlxOBatwM9CUJzwmDa1
+        cQ5WgcOK2CawViJqCUGDhpMBRlQ1LhiX74vIA6oAzgMBQ3yy2PMKLC7w8V5eERnrV0wZ5W
+        0tr7QtWJz2ZOR+6nTfZj4++H9vBRtyHQZolbzD+0onnz52jh3M+Q/K4Sr8b+tAJfP4INkk
+        dMGTiOmzWF2v/pnnmC1q7cpSw0AN2t6IwQiGB2Ezlfi/eoa1uhYD5t+HNDtPrM56KMM9NK
+        vWbTllLao1KDPxQ9Yq6eaks4BM5RsXMVdVhXXiCAIMujRSbhHOHzl2/z1/nPkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604053562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8pf3sYX6uhqreYow0JUobm7dh3ohRmmP578ZgXGTClM=;
+        b=/OkGvxo86gHtpZ6YX58n2IGYRruDM3rEp4RTcUmtBSVrTQjT/ckI9hAalglaiidO9Ak6kl
+        tKeTjBB4loEhL2Aw==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, kan.liang@linux.intel.com,
+        like.xu@linux.intel.com
+Subject: Re: [BUG] Stack overflow when running perf and function tracer
+In-Reply-To: <20201030090037.GZ2628@hirez.programming.kicks-ass.net>
+References: <20201030002722.766a22df@oasis.local.home> <20201030090037.GZ2628@hirez.programming.kicks-ass.net>
+Date:   Fri, 30 Oct 2020 11:26:01 +0100
+Message-ID: <877dr8nh6u.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201028131505.482037-1-gengcixi@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-30_01:2020-10-30,2020-10-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1 spamscore=0
- clxscore=1011 mlxscore=0 priorityscore=1501 phishscore=0 adultscore=0
- malwarescore=0 mlxlogscore=999 bulkscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300075
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.10.2020 14:15, gengcixi@gmail.com wrote:
-> From: Cixi Geng <cixi.geng1@unisoc.com>
-> 
-> Introduce new configuration option GCOV_PROFILE_PREREQS that can be
-> used to check whether the prerequisites for enabling gcov profiling
-> for specific files and directories are met.
-> 
-> Only add SERIAL_GCOV for an example.
+On Fri, Oct 30 2020 at 10:00, Peter Zijlstra wrote:
+> On Fri, Oct 30, 2020 at 12:27:22AM -0400, Steven Rostedt wrote:
+>> I found a bug in the recursion protection that prevented function
+>> tracing from running in NMI context. Applying this fix to 5.9 worked
+>> fine (tested by running perf record and function tracing at the same
+>> time). But when I applied the patch to 5.10-rc1, it blew up with a
+>> stack overflow:
+>
+> So we just blew away our NMI stack, right?
 
-[...]
+Looks like that:
 
-> +config GCOV_PROFILE_PREREQS
-> +	bool "Profile Kernel for prereqs"
-> +	def_bool y if GCOV_KERNEL && !COMPILE_TEST
-> +	help
-> +	  This options activates profiling for the specified kernel modules.
-> +	  When some modules need Gcov data, enable this config, then configure
-> +	  with gcov on the corresponding modules,The directories or files of
-> +	  these modules will be added profiling flags after kernel compile.
-> +
->  endmenu
+>>  RSP: 0018:fffffe000003c000 EFLAGS: 00010046
 
-This version still produces a prompt during make oldconfig. You need to
-remove the "bool" line and the "help" lines.
+Clearly a page boundary.
 
-Before sending another version please test it to make sure that it does
-not produce a prompt.
+>>  RAX: 000000000000001c RBX: ffff928ada27b400 RCX: 0000000000000000
+>>  RDX: ffff928ada07b200 RSI: fffffe000003c028 RDI: ffff928ada27b400
+>>  RBP: ffff928ada27b4f0 R08: 0000000000000001 R09: 0000000000000000
+>>  R10: fffffe000003c440 R11: ffff928a7383cc60 R12: fffffe000003c028
+>>  R13: 00000000000003e8 R14: 0000000000000046 R15: 0000000000110001
+>>  FS:  00007f25d43cf780(0000) GS:ffff928adaa40000(0000) knlGS:0000000000000000
+>>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>  CR2: fffffe000003bff8 CR3: 00000000b52a8005 CR4: 00000000001707e0
+
+and CR2 says it tried below.
+
+>> I bisected it down to:
+>> 
+>> 35d1ce6bec133679ff16325d335217f108b84871 ("perf/x86/intel/ds: Fix
+>> x86_pmu_stop warning for large PEBS")
+>> 
+>> Which looks to be storing an awful lot on the stack:
+>> 
+>> static void __intel_pmu_pebs_event(struct perf_event *event,
+>> 				   struct pt_regs *iregs,
+>> 				   void *base, void *top,
+>> 				   int bit, int count,
+>> 				   void (*setup_sample)(struct perf_event *,
+>> 						struct pt_regs *,
+>> 						void *,
+>> 						struct perf_sample_data *,
+>> 						struct pt_regs *))
+>> {
+>> 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>> 	struct hw_perf_event *hwc = &event->hw;
+>> 	struct perf_sample_data data;
+>> 	struct x86_perf_regs perf_regs;
+>> 	struct pt_regs *regs = &perf_regs.regs;
+>> 	void *at = get_next_pebs_record_by_bit(base, top, bit);
+>> 	struct pt_regs dummy_iregs;
+>
+> The only thing I can come up with in a hurry is that that dummy_iregs
+> thing really should be static. That's 168 bytes of stack out the window
+> right there.
+
+What's worse is perf_sample_data which is 384 bytes and is 64 bytes aligned.
+
+> Still, this seems to suggest (barring some actual issue hidding in those
+> 135 lost lines, we're very close to the limit on the NMI stack, which is
+> a single 4k page IIRC.
+
+Yes, unless KASAN is enabled
+
+Thanks,
+
+        tglx
 
 
--- 
-Peter Oberparleiter
-Linux on Z Development - IBM Germany
+
+
