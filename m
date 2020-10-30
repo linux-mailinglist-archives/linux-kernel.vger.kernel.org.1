@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB442A07F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C702A07F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726772AbgJ3OfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35402 "EHLO
+        id S1726773AbgJ3OeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgJ3OfH (ORCPT
+        with ESMTP id S1726727AbgJ3OeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:35:07 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42E2C0613D4;
-        Fri, 30 Oct 2020 07:35:05 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x13so5450109pfa.9;
-        Fri, 30 Oct 2020 07:35:05 -0700 (PDT)
+        Fri, 30 Oct 2020 10:34:05 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18C3C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:34:05 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id o3so5344854pgr.11
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:34:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yn61Plqu8DosKmtbURIY5n3p9zI2gsP6LnQwK6jcMQE=;
-        b=fdRqvJlsl8H82CBFcJB3jGpvah4+qaIsmEaDpV+N96MQFt4gkuKDPiTP8hBfPa5xW+
-         KNTOedU3MIrs/Y18XSOJdHd/nYrEy1nJQnf5xsb6bu+RewfweNAITp3vrIJc3Bh0lbv/
-         RfYiuZfKhfnBSc0JpAbdheW/7kBvAfZAuyTL3ixz3P48HNOzCMa8jEeHrUL+oyqPCWOs
-         zmePLR8idSmmVAJNoe0UP+E+H4wwoVnk8Ivh7mfxQ7+/nh+pVa/xWjiYaThxttsqDKZr
-         BUEMpexZb34JY4P2zsPAHfO7oTSKKEBrY7q6MUS+DtfW3aP0w9ROzMICLJpmsYS2ySTX
-         1L2g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aw/VF12mK0i6Qcr+s24GfzXWS/XgMV9QCU8EN9tQ+Kc=;
+        b=h0HxsmW6ed7k6XoRD+SXKe7j/wgUC3VJY/H69Wh9al5l5EcQCfsnYEZL1EY0oru0j0
+         OTXN2SoMMhVc8u+JtShuzVueOOqHKaFAVbXHt1YtHrpZaLyafCAdvEEIDg0jSXFTjsVh
+         j4xhD3NAmEhE4rtMNfc/vq5jNvRtocZcXSUIR/XL90H6yaTGsPWmKnPa/iKmolOLpccU
+         fAPbFDKqnpMUj2ao+7ici6JSsPLIe0VGwmTj75kWVs3b8iUdA8DQCfYTVHM0OAIzyeNs
+         HCHB3FHAob5dBEH7Q+zpJIwL+YeCGurCUWqHOPclDbEuwt7Diisg8a2ud482JtYIp+0H
+         ImZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yn61Plqu8DosKmtbURIY5n3p9zI2gsP6LnQwK6jcMQE=;
-        b=ZpGlAmB5OkBHWD9LPScj0ClBN7/ryokzPy31WWSNglblk7UymMa1yw3Iy59EtHwVpl
-         /pi82pY2SAGtR3zfoKV1ctrz+B8pRXXOW5HM0mifGuSqHoII8x9qtu+lOXhyxWg+tDrM
-         E454PbtmDL66FWAy4ObqpEdkp6bvjR+YLSq90D2Aiz5nuAMUcYinXGd1rZCkNXcXCNoL
-         b2o1PqBo9/YYfNnLW3ItY3QByBRp0uNBvrsmWviFvPdNUQ0gT5VjRpQn0LFFDcoUKvzy
-         xtTw1FHJlQEh2PZ7KLJp38fXEd4YpVmc+JFJag1ukBcRwTP6BhRPQWVO46gQnZOXekl4
-         rEnQ==
-X-Gm-Message-State: AOAM532AqlRx0qXWd0WNi5yhsSoyqA534WuIw+krPc76ZssQrx30Ei39
-        4GsIGkJPgCz0JCMNzj01pnY=
-X-Google-Smtp-Source: ABdhPJzfoWF5oEXYlfzln2y3269yOhZ+7XnbgadWlCsWbkkM2OhZkKZTS9+3lYjLVfPAmSDDq6+7MQ==
-X-Received: by 2002:a63:c042:: with SMTP id z2mr2534669pgi.32.1604068505364;
-        Fri, 30 Oct 2020 07:35:05 -0700 (PDT)
-Received: from localhost ([240e:472:3d00:779:b01a:f9a7:6a68:30ac])
-        by smtp.gmail.com with ESMTPSA id t17sm5816834pfg.169.2020.10.30.07.35.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 07:35:04 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Fri, 30 Oct 2020 22:34:10 +0800
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/15] iio: accel: remove unnecessary CONFIG_PM_SLEEP
-Message-ID: <20201030143410.pbixjo2cllhd27zp@Rk>
-References: <20201029074910.227859-1-coiby.xu@gmail.com>
- <20201029144007.77d967b0@archlinux>
- <CAHp75Vc829u6XPPA+eE=_AFZSPF+yVqT7nUXxtzkwx7-xLLrCg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aw/VF12mK0i6Qcr+s24GfzXWS/XgMV9QCU8EN9tQ+Kc=;
+        b=cMN7WuofHS0k91AZ/qsWHQyOvdKDu+fX5NZV7t/2A1AIahGEh1S7AbQNBCSQgGjcyZ
+         60du0kQ2KqnoakPONhuMkwlV2lM6DP4Sf5NLKS4TAUq0Fx0MFWYeceN2p72ycJ3H/Q7F
+         807txzWKYnOqhZvhBLy0zpQs9fH7imitBYGTUdjLb9/isL9ZwmJkap4IxYeRHdq25/Dm
+         sUTXPaHSK6zdPEMD89jM9vn6AfKnNxBge2Ck9RWwU3Kr/W45Jk32VmSf+xfX+gmd/S0i
+         /oY0kKHYr11Qi1EjEBetC0uXSp+klioEBTnE4g1M6Gv6W3shIpTh//02eBROSsThO4rr
+         sg+A==
+X-Gm-Message-State: AOAM5302IAOw7bcFcLOViA9UE8nxpk99AhsB9UmNKy0PVGhKAtVWJVmF
+        ycnsBBMhTfjXHlGu6/D0BtshP22QUpvn28VYWpRWjMlGjVA=
+X-Google-Smtp-Source: ABdhPJxY/TdlQkvOVEcGRXnHnLHjsX/ZAjmEI8PHDGmCk/Xd6r0Gqm8rZ99E+lcArVp2gdGhskPtAlGv1y+iwxXDQT8=
+X-Received: by 2002:a62:343:0:b029:15c:e33c:faff with SMTP id
+ 64-20020a6203430000b029015ce33cfaffmr9148758pfd.7.1604068445385; Fri, 30 Oct
+ 2020 07:34:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vc829u6XPPA+eE=_AFZSPF+yVqT7nUXxtzkwx7-xLLrCg@mail.gmail.com>
+References: <20201029100647.233361-1-coiby.xu@gmail.com> <20201029100647.233361-3-coiby.xu@gmail.com>
+ <20201029110029.GF4077@smile.fi.intel.com> <20201029142911.p54mbwbfaeymrqy5@Rk>
+ <20201029152719.GC4127@dell> <CAHp75Vd6dV18x9BLOSSEqL-nVSRhAEc9zQCyOJF7P7tur86BDA@mail.gmail.com>
+ <20201030142242.r4jqhvtzh7hnahuv@Rk>
+In-Reply-To: <20201030142242.r4jqhvtzh7hnahuv@Rk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 30 Oct 2020 16:34:54 +0200
+Message-ID: <CAHp75VcqPh4fWhdLYaETmgh0jvS_m9vzXgppgZX2nE8avSGymA@mail.gmail.com>
+Subject: Re: [PATCH 3/9] mfd: intel_soc_pmic: remove unnecessary CONFIG_PM_SLEEP
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 07:06:40PM +0200, Andy Shevchenko wrote:
->On Thu, Oct 29, 2020 at 4:42 PM Jonathan Cameron <jic23@kernel.org> wrote:
->> On Thu, 29 Oct 2020 15:48:56 +0800
->> Coiby Xu <coiby.xu@gmail.com> wrote:
->
->> Please put a cover letter on your next series explaining the context.
->> In this particular case some of the replies you have gotten are
->> general at it is a lot easier to find these sorts of things via
->> replying to the cover letter.
->
->Looking at the number of duplicate messages I would suggest that one
->needs to go through documentation on how to use git format-patch and
->git send-email.
->
+On Fri, Oct 30, 2020 at 4:23 PM Coiby Xu <coiby.xu@gmail.com> wrote:
+> On Thu, Oct 29, 2020 at 07:04:44PM +0200, Andy Shevchenko wrote:
+> >On Thu, Oct 29, 2020 at 5:27 PM Lee Jones <lee.jones@linaro.org> wrote:
 
-Thank you for the suggestion! Actually it's a tree-wide change and it
-seems the kernel community prefer individual patches or series for
-subsystems having the same maintainer over a huge patch set so I wrote
-some scripts to automate the process. That's why you see ~50 emails
-with almost the same commit message. The only difference of these
-commit messages is the name of PM macro.
+...
 
->--
->With Best Regards,
->Andy Shevchenko
+> >There are pros and cons of each approach, but not above.
+> >
+> Can you elaborate on the pros and cons of each approach? There's
+> convincing reason to prefer __maybe_unused over CONFIG_PM_SLEEP
+> according to Arnd Bergmann [1],
 
---
-Best regards,
-Coiby
+First what comes to my mind. Perhaps more, but somebody else may
+extend / correct below.
+
+ifdeffery (pros):
+ - compiler doesn't need even to look at that code
+
+ifdeffery (cons):
+ - if depends on configuration and thus harder to test coverage
+
+__maybe_unused (pros):
+ - removes ugly ifdeffery in the code, increases readability
+
+__maybe_unused (cons):
+ - it's a burden for compiler (increasing compilation time) and to
+linker (to drop the section)
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
