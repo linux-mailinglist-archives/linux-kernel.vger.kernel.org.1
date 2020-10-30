@@ -2,133 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3442A1030
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:29:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068992A1024
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:28:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727896AbgJ3V2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 17:28:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727727AbgJ3V2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 17:28:44 -0400
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F8E822241;
-        Fri, 30 Oct 2020 21:28:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604093323;
-        bh=tZSPplLftF65YenDg5MlNkzy10RGzZxkh25MXH0GVn4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PnRgQyolUgqkCmxzG1qYuQvzFNCGWid218+CcJ56bfcRGfXuszO7y5Pa6YL7Yze08
-         J/7Tsj67hoX/Y1z9arApiqu3hxdDEUtyRhSVJltPMxBHhMPJleX9zExIEGYRtwALYT
-         WM/wRk2bR5M1DT5XgRdUsyy5cegXXECSS8xLX2YE=
-Received: by mail-qk1-f171.google.com with SMTP id k9so6251708qki.6;
-        Fri, 30 Oct 2020 14:28:43 -0700 (PDT)
-X-Gm-Message-State: AOAM533LWWoL0PXBLjvgY64ovW0oNDnxqEq0ALj7ZVc0y6hMgc6wQ5y4
-        gKnz69slxqfC9cMEwzVQ/+z07NdMglggMESgAE8=
-X-Google-Smtp-Source: ABdhPJwzRQW1k5B6zbrTfsf30S/rHG5MM3vjwuzzwTJuv1SPViYWCLHZOGFiwlUAQWhT5QXO52QrgMTVaMhXXk5+ufM=
-X-Received: by 2002:a05:620a:215d:: with SMTP id m29mr4296031qkm.138.1604093322540;
- Fri, 30 Oct 2020 14:28:42 -0700 (PDT)
+        id S1726283AbgJ3V2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 17:28:39 -0400
+Received: from mail-dm6nam11on2067.outbound.protection.outlook.com ([40.107.223.67]:42753
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726163AbgJ3V2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 17:28:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MOWNK5BL/26KLV1525vcu45CIZiOJhAK/TR4Ky0sRJf9MH6rH3cXerj8smqi6y+OoKwdd9y5Hmp2n0gY1/07wdh+8tawxD6Ny64ZVIahb6OwtozGj19UhQDc1FiOO/ggh6nHjbUEQCF86szTmGqKZ0qwwkGVgfs9QPMXQDcOAG6Y+ET3+wfw6YiQIlhJadchCvWSbrrzLK/YJcuPm2Jq/vT3iHj3KakT7SFJ2gSB93S2KcQ0d318ZrwlCwcGdpHJG846jRYtdCNmIbAl5So29sESvnKzb0gZyhar8iJc8lsIST5S+mZpMhsqIEjX30OU4tqlvWeqUq11Ui0kinZiUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6a/z321J4dCS+Kgc3upj5Y5XKcWcnWBA81iQTbn4WwI=;
+ b=jrQPkSH8Xss8wskVlT4BRcLtBbpbDQt0HCaJh0bAZ4ryCzJVsGxSfro/j1PlCAoznvkdeBnBI9iiihXBnpVNYQs8vNnEAmiDZOR/ptJmgFsQfUok6hAdefg1Ud7pqpvs0RjruP6OmBpnTBEBJVedBsterBPb/3ubriGe05A4Rf9mCKoFj32nziOrL80Wwot81OscN9g2d2SFLx2iIHd4hJkB94g75toXhJ44hjgu7JKefi3DPN/weJ/jXfSKwU+W21318RCsRh3LawQ80yiKyMpBKFnOGqC4ACe8iOYb6uLSmeprMcGTsVXGS4ZHA0eSPLMk2l5TfrMw/yr3UdZjHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=linaro.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6a/z321J4dCS+Kgc3upj5Y5XKcWcnWBA81iQTbn4WwI=;
+ b=niphpXzeJHNke0DEv1EGA1jiCR+U9+mOfilpm+KbZfxEuSSUupwqH5V70sX8kh9wYEqoGazLGYleFLBcHhdrhTEXKcRXR1SUNp/6wDwO+593J56Om3yu43Ut3M71+R6dUsM9FTy9njhvZSDXJrniPdjs5na9y0QaA3Tu5LSlaBo=
+Received: from SN4PR0701CA0028.namprd07.prod.outlook.com
+ (2603:10b6:803:2d::29) by BYAPR02MB4742.namprd02.prod.outlook.com
+ (2603:10b6:a03:4d::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Fri, 30 Oct
+ 2020 21:28:36 +0000
+Received: from SN1NAM02FT064.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:2d:cafe::cc) by SN4PR0701CA0028.outlook.office365.com
+ (2603:10b6:803:2d::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend
+ Transport; Fri, 30 Oct 2020 21:28:36 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT064.mail.protection.outlook.com (10.152.72.143) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3499.20 via Frontend Transport; Fri, 30 Oct 2020 21:28:35 +0000
+Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Fri, 30 Oct 2020 14:28:34 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Fri, 30 Oct 2020 14:28:34 -0700
+Envelope-to: stefanos@xilinx.com,
+ mathieu.poirier@linaro.org,
+ devicetree@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Received: from [172.19.2.206] (port=56470 helo=xsjblevinsk50.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1kYbwo-0003JM-Cs; Fri, 30 Oct 2020 14:28:34 -0700
+From:   Ben Levinsky <ben.levinsky@xilinx.com>
+To:     <stefanos@xilinx.com>, <mathieu.poirier@linaro.org>
+CC:     <devicetree@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v20 0/5] Provide basic driver to control Arm R5 co-processor found on Xilinx ZynqMP
+Date:   Fri, 30 Oct 2020 14:28:29 -0700
+Message-ID: <20201030212834.18270-1-ben.levinsky@xilinx.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20201030154519.1245983-1-arnd@kernel.org> <20201030154919.1246645-1-arnd@kernel.org>
- <20201030154919.1246645-4-arnd@kernel.org> <20201030165338.GG1551@shell.armlinux.org.uk>
-In-Reply-To: <20201030165338.GG1551@shell.armlinux.org.uk>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 30 Oct 2020 22:28:26 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0ZCinLU0zWj9x0=QoFkrui+1QACjADzAa4yyUaO+qzXA@mail.gmail.com>
-Message-ID: <CAK8P3a0ZCinLU0zWj9x0=QoFkrui+1QACjADzAa4yyUaO+qzXA@mail.gmail.com>
-Subject: Re: [PATCH 4/9] ARM: syscall: always store thread_info->syscall
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c07826d0-bec9-4f06-706f-08d87d1ac2a1
+X-MS-TrafficTypeDiagnostic: BYAPR02MB4742:
+X-Microsoft-Antispam-PRVS: <BYAPR02MB474206C0E45271BEDFA8F76CB5150@BYAPR02MB4742.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ii3fXZFjk9OxgPMO7PxPxcj9ovEQZYRnBPdeGnHJv6iEpwx5PFHv4gAgAqeg8p2C9hqpae9Eydg+qReVggd06SMw+SYlH6xrRt6aLIZZ8QiSXWsSXvd0P5RJHgmDs8YFnhxdbEnGNRgJXYV3cRvsPdYd4Oj7vzKpNYv38A6DgGVrJ19BabH8V/5crbXQe7nKKpVMLtW82TmJVn03NiLosM/xubGUDf3zktg2Yj+JiOPnN4BPTeJ9tGQh1kAnUN56REEkAMNz8RvrvNZqHkmySd8X7INZ7/zns9RcjWi3lA/8lmdiJjzcexajRfN2AYt1b+R/1v9Q/A4m1X4wSkrma4pHTgLsHiSIEV8QHhKU4duWB/wUySpSJ3qAB6pleHxZCrXfTH9reLlnrSN0E6jisnbPhbgPrDIe78gbXtYiQZjURLk1hjuNOK6v6ozdR8LVeUWN+a8LTlayurtCk+IBNhLaoPeifKlR0Bj/lT44CD+upUvP8+ycRLyzLjCWiAIv
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(39860400002)(396003)(46966005)(356005)(336012)(36756003)(82310400003)(47076004)(186003)(2906002)(83380400001)(316002)(8676002)(2616005)(1076003)(426003)(4326008)(8936002)(5660300002)(44832011)(9786002)(82740400003)(26005)(36906005)(110136005)(54906003)(7636003)(478600001)(70206006)(6666004)(7696005)(70586007)(966005)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2020 21:28:35.9897
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c07826d0-bec9-4f06-706f-08d87d1ac2a1
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT064.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4742
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 5:53 PM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> On Fri, Oct 30, 2020 at 04:49:14PM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > The system call number is used in a a couple of places, in particular
-> > ptrace, seccomp and /proc/<pid>/syscall.
-> >
-> > The last one apparently never worked reliably on ARM for tasks
-> > that are not currently getting traced.
-> >
-> > Storing the syscall number in the normal entry path makes it work,
-> > as well as allowing us to see if the current system call is for
-> > OABI compat mode, which is the next thing I want to hook into.
->
-> I'm not sure this patch is correct.
+Update as follows:
 
-I'm not following where you still see a mismatch, I was hoping I
-had fixed them all after your previous review :(
+Xilinx R5 Device Tree Bindings
+- update typos and style
+- add compat string for singular r5 core to accomodate
+  devm_of_platform_populate
 
-The thread_info->syscall entry should now consistently contain
-__NR_SYSCALL_BASE on an EABI kernel, and all users of
-that should consistently mask it out.
 
-> Tracing the existing code for OABI:
->
-> asmlinkage int syscall_trace_enter(struct pt_regs *regs, int scno)
-> {
->         current_thread_info()->syscall = scno;
+Remoteproc Driver:
+- remove zynqmp_r5_rproc::dt_node and replace usage with
+  zynqmp_r5_rproc->dev->of_node throughout file
+- emulate TI K3 R5 probe use of devm_of_platform_populate to set devices for
+  each R5 core's corresponding remoteproc device
+- replace zynqmp_r5_rproc var name 'core' to 'z_rproc' throughout file for
+  consistency
+- update indentation
+- remove unused var in zynqmp_r5_remoteproc_probe
+- update typo in Kconfig
 
-This no longer stores to current_thread_info()->syscall but instead
-reads the number from syscall_get_nr().
 
->         /* Legacy ABI only. */
-> USER(   ldr     scno, [saved_pc, #-4]   )       @ get SWI instruction
->         bic     scno, scno, #0xff000000         @ mask off SWI op-code
->         eor     scno, scno, #__NR_SYSCALL_BASE  @ check OS number
->         tst     r10, #_TIF_SYSCALL_WORK         @ are we tracing syscalls?
->         bne     __sys_trace
->
-> __sys_trace:
->         mov     r1, scno
->         add     r0, sp, #S_OFF
->         bl      syscall_trace_enter
->
-> So, thread_info->syscall does not include __NR_SYSCALL_BASE. The
-> reason for this is the code that makes use of that via syscall_get_nr().
-> kernel/trace/trace_syscalls.c:
+Previous version https://patchwork.kernel.org/project/linux-remoteproc/list/?series=367125
 
-On both CONFIG_OABI_COMPAT and on !CONFIG_AEABI kernels,
-I store the value before masking out __NR_SYSCALL_BASE
-after my change. For EABI-only kernels there is no need for
-the mask.
+Ben Levinsky (5):
+  firmware: xilinx: Add ZynqMP firmware ioctl enums for RPU
+    configuration.
+  firmware: xilinx: Add shutdown/wakeup APIs
+  firmware: xilinx: Add RPU configuration APIs
+  dt-bindings: remoteproc: Add documentation for ZynqMP R5 rproc
+    bindings
+  remoteproc: Add initial zynqmp R5 remoteproc driver
 
->         syscall_nr = trace_get_syscall_nr(current, regs);
->         if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
->                 return;
->
-> and NR_syscalls is the number of syscalls, which doesn't include the
-> __NR_SYSCALL_BASE offset.
->
-> So, I think this patch actually breaks OABI.
+ .../xilinx,zynqmp-r5-remoteproc.yaml          | 143 ++++
+ drivers/firmware/xilinx/zynqmp.c              |  96 +++
+ drivers/remoteproc/Kconfig                    |   8 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/zynqmp_r5_remoteproc.c     | 771 ++++++++++++++++++
+ include/linux/firmware/xlnx-zynqmp.h          |  60 ++
+ 6 files changed, 1079 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+ create mode 100644 drivers/remoteproc/zynqmp_r5_remoteproc.c
 
-The value returned from trace_get_syscall_nr() is always in
-the 0...NR_syscalls range without the __NR_SYSCALL_BASE
-for a valid syscall. because of the added
+-- 
+2.17.1
 
- static inline int syscall_get_nr(struct task_struct *task,
-                                 struct pt_regs *regs)
- {
--       return task_thread_info(task)->syscall;
-+       return task_thread_info(task)->syscall & ~__NR_OABI_SYSCALL_BASE;
- }
-
-(plus the corresponding logic for OABI_COMPAT.
-
-Which of the above do you think I got wrong?
-
-      Arnd
