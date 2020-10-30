@@ -2,131 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB5C2A0C01
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8FB2A0C06
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727263AbgJ3RBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 13:01:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48323 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725844AbgJ3RBA (ORCPT
+        id S1727318AbgJ3RBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 13:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726095AbgJ3RBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 13:01:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604077258;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gxfqukHcbkTD7X3ox1ou1pebvrWuXAmJeGcia/vnGj8=;
-        b=RGlaks7H2PzhiDrlPNU+jCoXSUoP+nynqWq/5BIouPHMBsDWWacjV794PL29OrhO92t9ec
-        LPvRmG9cqL/zFy7JX8Y0bNnPDWWySACHY5hi/kVJJZ5C9Y8c5fexivLZPYzmNtS1C1/tHT
-        3PWX9SYZ1FsjU9b+EP1LzLNOkLSuGok=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-288-iqN5WoOGPL6FclNIrAkFGw-1; Fri, 30 Oct 2020 12:58:54 -0400
-X-MC-Unique: iqN5WoOGPL6FclNIrAkFGw-1
-Received: by mail-qt1-f198.google.com with SMTP id p2so4322897qtw.16
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:58:54 -0700 (PDT)
+        Fri, 30 Oct 2020 13:01:54 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839DAC0613D7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 10:01:52 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id x6so7680106ljd.3
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 10:01:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EMdzijelkbZc6mxQzWCPjofX1r5jEPxpyQAed1Y4dDc=;
+        b=F50WZ11SDhm5TPptkROELzncL5xUQ2qnMPk7ayz8cHM3zlvadoqgBLf2rGEmZMMnJv
+         PyivlsKebSBiWJa+mtQYCtTT7KiMp+AFFnt9C4HwsszJe+zbP4+STKUn0mo/1YtT6+Lm
+         yJ0ke5LRLwsmTr2dFjF29gyrB1Y979jDugSs9ZBCnPOPmG9Wx9LGMSqv3t0dhTjjfC8f
+         98KR+Ttufi5On7jhXTKE4ZWDzj8xyaXeqiDgdLm8Oxh6dMpUEfqaX+SoNENG7XkDwcVl
+         NXtlCuZIqOoA9o18i49RCAgHUiVxskoDrofICgFGPssHMOfCBANdsOWDFsb8Ji3XMV1d
+         kIvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=gxfqukHcbkTD7X3ox1ou1pebvrWuXAmJeGcia/vnGj8=;
-        b=tlPWyYr9c8nvaKbidzL0DPNMQzOZsO97eoAUXMNbtVEsYY/B8lYl7a1zUb0CuKkTYr
-         pvx6fmOoTjbiKs9XtGiR58+MZ30i/GgeEU8nj4wML7OXdLsiPzB4Aw6e3Parx8A9ovBl
-         Gk89Lo/yO8nP04cKH08ZDLKhKtm+fZSzbWjodmxl+fcATISj78sgtMqvUY8h++izp4HW
-         OOqwhrjLClPDlUTTiR7bsro/dPLefusUgdm2kqZSXGCQZmzibPo31SDHKQYtJ9ew6WLy
-         tVDAN5wwuizUdbWJ//uabxYEBQv6QLlqhpMshUzb86PNyVXtXegb9m31GWkCLmCys8/d
-         qsPA==
-X-Gm-Message-State: AOAM533kvY1cIPxyQnkbqi8QPWb+TL2NY3WRMggjPRXvz5F0Jo8PFT8C
-        +ArYlIyV5pLNgp0RULp1PcvIQQOCf9r0zv9vgi1pKfcxAX3MASJpqYliJ8WM2pX79X6QCm+M61O
-        U2BLxT5eGQ+dq/qsvu7Cf3x54
-X-Received: by 2002:ad4:4841:: with SMTP id t1mr9144561qvy.34.1604077133292;
-        Fri, 30 Oct 2020 09:58:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwYy+y4KegMcHE38+ry6q9jqqq9aaJ0lz4oZAPJv96jST8zKUGewygF8ZOWBX+WQqa+NZzz+Q==
-X-Received: by 2002:ad4:4841:: with SMTP id t1mr9144540qvy.34.1604077133087;
-        Fri, 30 Oct 2020 09:58:53 -0700 (PDT)
-Received: from [192.168.1.16] (198-84-214-74.cpe.teksavvy.com. [198.84.214.74])
-        by smtp.gmail.com with ESMTPSA id x5sm2896788qkf.44.2020.10.30.09.58.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 09:58:52 -0700 (PDT)
-Subject: Re: [Y2038][time namespaces] Question regarding CLOCK_REALTIME
- support plans in Linux time namespaces
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Zack Weinberg <zackw@panix.com>, Cyril Hrubis <chrubis@suse.cz>
-Cc:     Dmitry Safonov <dima@arista.com>, Andrei Vagin <avagin@gmail.com>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201030110229.43f0773b@jawa> <20201030135816.GA1790@yuki.lan>
- <CAKCAbMgemuaG61seKMvhjOHdPCEQJRQBiQgzcf_eO=xm2t+KBw@mail.gmail.com>
- <87sg9vn40t.fsf@nanos.tec.linutronix.de>
-From:   Carlos O'Donell <carlos@redhat.com>
-Organization: Red Hat
-Message-ID: <72bbb207-b041-7710-98ad-b08579fe17e4@redhat.com>
-Date:   Fri, 30 Oct 2020 12:58:51 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EMdzijelkbZc6mxQzWCPjofX1r5jEPxpyQAed1Y4dDc=;
+        b=FmfHTqq1IF/2jB/Nr39sbmqRRx1h8txY3ycI28ZQwkQGDKXVlwwyeFqXkbq3RKtDIs
+         kas/ONhZiTE183I7HGx4QoL993cVCRXkatG+Tphgrnp1aihH7WxISy77ESils0GnnMrc
+         WbF/1PaApQB9NRT2QHentVod8zK7yHXeuZGORKQTmq3CTxiPlhZGhpcEbUjfsT4ZJxY2
+         hc5WWVB4okR07wFDzb5TxDVL3LdyNpHujYnfbQR0hdAS0CLqYTxXqw5W0wUH2Cp/eEmZ
+         l8u5yH+Hb/omCNQfmdwDiZlafMuFTXJs8YqMymiLPNANKnRuQSaf6H/k5JpaBNIKc1up
+         dXVQ==
+X-Gm-Message-State: AOAM531U6uQ2bjDpLemVeK+so491wQkSduyN1VCz1oYVsMuWVexDFUht
+        AAXCfjM5U/OF8eZu8WZj5hlzzK4uNGod69EeVk8WFzLYQNn/Hw==
+X-Google-Smtp-Source: ABdhPJxNIBbkWgC8YsNwrPXjtP5HMr/a0E+XP/FoIPYgjN318kXjHpUdmUQpG8mYRqWMGry1RDevkSjswl7iARkq8es=
+X-Received: by 2002:a2e:9985:: with SMTP id w5mr1615992lji.332.1604077309957;
+ Fri, 30 Oct 2020 10:01:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87sg9vn40t.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CALvZod4FWLsV9byrKQojeus7tMDhHjQHFF5J_JpNsyB0HkaERA@mail.gmail.com>
+ <20200922111202.GY12990@dhcp22.suse.cz> <CALvZod6=VwQduoG3GiW-=csAQja4vCsXAhKH_tSuA4JYx0dEiA@mail.gmail.com>
+ <20200922151654.GA12990@dhcp22.suse.cz> <CALvZod7jvxEdbMzrmmt6Vrse=Ui4yhhVYyxPkPmmzWC5Z_6rtw@mail.gmail.com>
+ <20200922163401.GC12990@dhcp22.suse.cz> <CALvZod753Peyyg6aHUaFoiv3uXEPHqsyrSiariV8bF-vhH6iRA@mail.gmail.com>
+ <20200922170106.GE12990@dhcp22.suse.cz>
+In-Reply-To: <20200922170106.GE12990@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 30 Oct 2020 10:01:38 -0700
+Message-ID: <CALvZod4Ww1vzxD90HFePVweFaQn+3WDwu8G-gHMA1AeiJGprBg@mail.gmail.com>
+Subject: Re: Machine lockups on extreme memory pressure
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/20 11:10 AM, Thomas Gleixner via Libc-alpha wrote:
-> On Fri, Oct 30 2020 at 10:02, Zack Weinberg wrote:
->> On Fri, Oct 30, 2020 at 9:57 AM Cyril Hrubis <chrubis@suse.cz> wrote:
->>>> According to patch description [1] and time_namespaces documentation
->>>> [2] the CLOCK_REALTIME is not supported (for now?) to avoid complexity
->>>> and overhead in the kernel.
->> ...
->>>> To be more specific - [if this were supported] it would be possible to modify time after time_t
->>>> 32 bit overflow (i.e. Y2038 bug) on the process running Y2038
->>>> regression tests on the host system (64 bit one). By using Linux time
->>>> namespaces the system time will not be affected in any way.
->>>
->>> And what's exactly wrong with moving the system time forward for a
->>> duration of the test?
->>
->> Interference with other processes on the same computer?  Some of us
->> *do* like to run the glibc test suite on computers not entirely
->> devoted to glibc CI.
-> 
-> That's what virtual machines are for.
+On Tue, Sep 22, 2020 at 10:01 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Tue 22-09-20 09:51:30, Shakeel Butt wrote:
+> > On Tue, Sep 22, 2020 at 9:34 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Tue 22-09-20 09:29:48, Shakeel Butt wrote:
+> [...]
+> > > > Anyways, what do you think of the in-kernel PSI based
+> > > > oom-kill trigger. I think Johannes had a prototype as well.
+> > >
+> > > We have talked about something like that in the past and established
+> > > that auto tuning for oom killer based on PSI is almost impossible to get
+> > > right for all potential workloads and that so this belongs to userspace.
+> > > The kernel's oom killer is there as a last resort when system gets close
+> > > to meltdown.
+> >
+> > The system is already in meltdown state from the users perspective. I
+> > still think allowing the users to optionally set the oom-kill trigger
+> > based on PSI makes sense. Something like 'if all processes on the
+> > system are stuck for 60 sec, trigger oom-killer'.
+>
+> We already do have watchdogs for that no? If you cannot really schedule
+> anything then soft lockup detector should fire. In a meltdown state like
+> that the reboot is likely the best way forward anyway.
 
-Certainly, that is always an option, just like real hardware.
+Yes, soft lockup detector can catch this situation but I still think
+we can do better than panic/reboot.
 
-However, every requirement we add to testing reduces the number of
-times that developer will run the test on their system and potentially
-catch a problem during development. Yes, CI helps, but "make check"
-gives more coverage. More kernel variants tested in all downstream rpm
-%check builds or developer systems. Just like kernel self tests help
-today.
+Anyways, I think we now know the reason for this extreme pressure and
+I just wanted to share if someone else might be facing a similar
+situation.
 
-glibc uses namespaces in "make check" to increase the number of userspace
-and kernel features we can test immediately and easily on developer
-*or* distribution build systems.
-
-So the natural extension is to further isolate the testing namespace
-using the time namespace to test and verify y2038. If we can't use
-namespaces then we'll have to move the tests out to the less
-frequently run scripts we use for cross-target toolchain testing,
-and so we'll see a 100x drop in coverage.
-
-I expect that more requests for further time isolation will happen
-given the utility of this in containers.
-
-If we have to use qemu today then that's where we're at, but again
-I expect our use case is representative of more than just glibc.
-
-Does checkpointing work robustly when userspace APIS use 
-CLOCK_REALTIME (directly or indirectly) in the container?
-
--- 
-Cheers,
-Carlos.
-
+There were several thousand TCP delayed ACKs queued on the system. The
+system was under memory pressure and alloc_skb(GFP_ATOMIC) for delayed
+ACKs were either stealing from reclaimers or failing. For the delayed
+ACKs whose allocation failed, the kernel reschedules them infinitely.
+So, these failing allocations for delayed ACKs were keeping the system
+in this lockup state for hours. The commit a37c2134bed6 ("tcp: add
+exponential backoff in __tcp_send_ack()") recently added the fix for
+this situation.
