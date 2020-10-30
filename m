@@ -2,99 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D777029FF2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF04529FF31
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725927AbgJ3Hzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:55:35 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:36053 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3Hze (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 03:55:34 -0400
-Received: by mail-oo1-f67.google.com with SMTP id j6so1388632oot.3;
-        Fri, 30 Oct 2020 00:55:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i23jS/gbz5X7YN7KU9IqT0XWSw21v9qjwEgB0M7JaQM=;
-        b=P8avz5J2YYC5arHRgMlkWfbqNCHBsJwfOXqCIJ24J0T9JBhEULWpC67WEGnHPRZZuh
-         Y388zxjLVNAckW5WUKGSquMdtXfHqNErsKTIvjmbkj6e68U3dqRX7GqF9A0ExewkOl9s
-         MMRx1SMJHJkQ8HAHRlx5iWjhYKfn1GlSQ5glZu+pCa5mvdxDVbZyyf630fGlOjgKhKyd
-         mbReQ82T2Raw9WGb66qttzpnMu7XUT3wgiIN9wJNwq6KDn4eCQdrS2eHGzwwQUCSX0DT
-         L+MdnfL6bCqv822INYgmQkU7Vn367vM4jP2SabTg2EUJ7m1wEsTPqs6XRMJoWRT1M5/C
-         HOOQ==
-X-Gm-Message-State: AOAM532WchCJrGnQgZYohbob0MjtGCuHs6ZdFpD4BWoYAYRX9NBblMCG
-        MLi3Rm8K1sw7qbi4yMXD3S4QlisLLA9Mic6eskSrAZQl80Q=
-X-Google-Smtp-Source: ABdhPJzwt6U2dN2noBCm4rBxAA8dll1gAIICIkruPqhq0tUoD/H23nOY3qY9x9+ZBK5Y6BShJKmej98K+uA4CIwDFQ4=
-X-Received: by 2002:a4a:e80b:: with SMTP id b11mr813437oob.1.1604044532122;
- Fri, 30 Oct 2020 00:55:32 -0700 (PDT)
+        id S1725949AbgJ3H5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:57:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgJ3H5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 03:57:11 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8016420719;
+        Fri, 30 Oct 2020 07:57:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604044630;
+        bh=skMmy2Vr9/AuSxj3bzuIBOiuSOxk+xs9CPjuY1ruZJA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=04Arz/yzW8Lq26ElySPjCpknyJJ6S9D54AU8XABbc64vFnnBR6esPj3/6jZ0yNQ0e
+         5IYDgU5xZyHyDIleWgOztBm0sX2R+v4ZWSfv0nTpDRg6yI5A5wLA+X72TLxs9qV6NB
+         jG0IJ4aJZBFhnCGty6y/9dP5ZaGqX/uOWdeX8r8c=
+Date:   Fri, 30 Oct 2020 15:57:04 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: imx8mm-beacon-som: Fix Choppy BT audio
+Message-ID: <20201030075703.GJ28755@dragon>
+References: <20201007130237.230613-1-aford173@gmail.com>
 MIME-Version: 1.0
-References: <20201029105515.16309-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVGO+DEgsTr62nA+egU2etZA_vwE9GrOG1JPWBvv90UXg@mail.gmail.com>
-In-Reply-To: <CAMuHMdVGO+DEgsTr62nA+egU2etZA_vwE9GrOG1JPWBvv90UXg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 30 Oct 2020 08:55:21 +0100
-Message-ID: <CAMuHMdVPHhot+noBYwqfCtwYzKJD4hkwjBk_gwN4pDR0agwipg@mail.gmail.com>
-Subject: Re: [PATCH v2] clk: renesas: r8a774c0: Add RPC clocks
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007130237.230613-1-aford173@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On Wed, Oct 07, 2020 at 08:02:37AM -0500, Adam Ford wrote:
+> When streaming bluetooth audio, the sound is choppy due to the
+> fact that the default baud rate of the HCI interface is too slow
+> to handle 16-bit stereo at 48KHz.
+> 
+> The Bluetooth chip is capable of up to 4M baud on the serial port,
+> so this patch sets the max-speed to 4000000 in order to properly
+> stream audio over the Bluetooth.
+> 
+> Fixes: 593816fa2f35 ("arm64: dts: imx: Add Beacon i.MX8m-Mini development kit")
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-On Thu, Oct 29, 2020 at 3:28 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Thu, Oct 29, 2020 at 11:55 AM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Describe the RPCSRC internal clock and the RPC[D2] clocks derived from it,
-> > as well as the RPC-IF module clock, in the RZ/G2E (R8A774C0) CPG/MSSR
-> > driver.
-
-> > +               if (e3_rpcsrc_parent) {
-> > +                       parent = clks[core->parent >> 16];
-> > +                       if (IS_ERR(parent))
-> > +                               return ERR_CAST(parent);
-> > +               }
-> > +
-> > +               return clk_register_divider_table(NULL, core->name,
-> > +                                                 __clk_get_name(parent), 0,
-> > +                                                 base + CPG_RPCCKCR, 3, 2, 0,
-> > +                                                 e3_rpcsrc_parent ?
-> > +                                                 cpg_rpcsrc_e3_pll1_div_table :
-> > +                                                 cpg_rpcsrc_e3_pll0_div_table,
-> > +                                                 &cpg_lock);
-> > +
->
-> So you want to keep the parent clock selection fixed, but still allow
-> the system to change the divider?
-> Why not support changing the parent too, by modeling this as a composite
-> clock consisting of a mux and a divider?
-
-To clarify: basically you have two options here:
-  1. Model this clock as a non-mutable clock, based on the register settings
-     at the time the kernel boots.  I.e. register it as a fixed-divider clock.
-     This is how we handle the PLLx clocks.
-  2. Model this clock as a fully-programmable clock.  I.e. implement both
-     dynamic parent selection and dynamic divider selection.
-
-You have picked something in between ;-)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Applied, thanks.
