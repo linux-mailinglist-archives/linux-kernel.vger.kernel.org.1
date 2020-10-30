@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A599729FBCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A5B29FBD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgJ3C6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 22:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
+        id S1726252AbgJ3C6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 22:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgJ3C6B (ORCPT
+        with ESMTP id S1726215AbgJ3C6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 22:58:01 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31EEEC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:58:00 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id z1so2260286plo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:58:00 -0700 (PDT)
+        Thu, 29 Oct 2020 22:58:05 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF64C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:58:05 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id x13so3973608pgp.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:58:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Re9txxlgEUEpxxffpKQDQFN978aw9VSYLQsYYRx+ZCo=;
-        b=iJa/z/XtKFZHLdRuhZ+mm1s7fKkHTxZiE96ew0RJKjIjwU6TyH3aZdje6NhpoRGMgm
-         Uhx8XCr5qyAZcDG/HXQ5kAcfNpF5u7Cs3paWD8ygRrS7xwtca9PQ9NJt6FfJkfMLx26N
-         6kLgadONqcnqU7K8FQlj2W3c/UCUrhBSvowpHeIUHpNuLXyWtnX1tL+Xt5NtjF+FE1FV
-         uhsxBXqW4HW8PXttJyF1T0O5QpCy2wuX2AV2hh0Dmlcderbuas7d9SsyMRx3vNlLe5XV
-         Q3YFWxzNbsrSF7ABc57HUeIBbgor76fIIGg1aOUgkK6iu2psLD9qlLwOrC8L+9p+xb2f
-         QyPw==
+        bh=ggrCrrOmIGShBF925Jr9ht3p0sf/ZpOgGfgHeELSUDk=;
+        b=Vu4z4Cqln9FGVzr7ocIV2iUz9NosWL3bVBrjundp4l4N9WZ0JqbQbhpz6O6foDwMuO
+         lPZQOsLUZK4uO+V/pAHOoTH0qjBS6uJ/Hh0PHjtBjd0hatISqCfckYNYFHrdF01jYdv6
+         Kq1BgBosv4KweYIXgyvNNG5OfVi3n/VIf9rW2I+AfoMpVyH8kJXGj8wjXlQ2dVOF3TES
+         BETLhm4q1J8ipMBmvMH/6gEp6HrDfJ9oaT6c4C98G0XYlXgbqE3vcMtNnb/R523eppyW
+         4xXWzK7H97GsHaCZT7dxJVey1wXRYqMYjs7UlSXpdkJ2jLUkWD/oZoSPCQc4NWPE/P+F
+         jt5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=Re9txxlgEUEpxxffpKQDQFN978aw9VSYLQsYYRx+ZCo=;
-        b=YPvObGwVP6fr9dahg2V7uClLmE9A6ULgy4krHPOiLYVueRT5f2qwnHdk4hWBXrNjz7
-         1AHSbUgX1dAa96S5/9X6505oHdtGHcolUwAQEBXokO2fI6mHDdz4FjFghn+qgT7pjQd7
-         wEO/seJZ03By5RIvWzXf2Rj1qH8wi+pIH9BJJobtU9ay8v5BcE28N3rocmD/Ad1pzpkq
-         A9tBaK4Rkn/TivtKzutjkm7SoNOnk7EXD/w+sEFKJQH5P8bPDGZiBrws2zHvLRm0sb3d
-         RVh9FEb1FlDXcfmBeGw/QwNaaK6dzoXRjjwR1OzLe4fzmGMmc/gm9ooR7Pe+napEtui7
-         bw1Q==
-X-Gm-Message-State: AOAM532bX8oLvh/jhTu79WLp1rjq/bWompeDOR4n8GYF1XxTSNVC2MO/
-        es/X6am3tAbhzHASOoJ06qkd+g==
-X-Google-Smtp-Source: ABdhPJzUrnHMp6WGzi+ssAQSYgXhJGm9cJTGo2Nh8p2muF/Iyo2qhT1T3xb6ECcKpCvMpSg4mEwtUQ==
-X-Received: by 2002:a17:902:8493:b029:d2:42a6:238 with SMTP id c19-20020a1709028493b02900d242a60238mr7099328plo.4.1604026679778;
-        Thu, 29 Oct 2020 19:57:59 -0700 (PDT)
+        bh=ggrCrrOmIGShBF925Jr9ht3p0sf/ZpOgGfgHeELSUDk=;
+        b=RlY9U4V3W7VF9QPnBDCX2WsT7td9xM01JM3clesBAASWw5kRjnMwa5iZLK6eLv81LO
+         UfF83HOTRnmRgn5Kx8vhRhLiJLz1furZT6wO+RuhDH+rsr8Pjp4wfl4mFWhWuEq/dzG0
+         dVkgkILs4Ris0fR8YA6ZLFFI55CVCXDIVIX4ghAb79Rl8VkZOcAjLS/b5I/v4Lacf9T0
+         nl6wjDQnK9k8wS9RhpGP0GR7PuMDZVC8L03kazG5qbIkV+Z4mCzL1/tyeByN/mf0KFhR
+         9Ayz3vnsHNPzxtnUH17qAumQR1MZ1kgdB5euPphISzmSF0wo2CtfeaD74PnTlaDE3qFp
+         C8KA==
+X-Gm-Message-State: AOAM530+OczLSVDkeIz8ZSmuT1a0J9jFJEoH1OyAXy3RUvSNpCwqg3z9
+        Yfn4JWUnK5x/45lV5KBkX0C24Q==
+X-Google-Smtp-Source: ABdhPJz42MmG17roSt+j4+pcGFvo/MjAn6NGD/ul2IqUvZy9VIh2gmDUv5ep2GD5ic73p4iJdKAiQw==
+X-Received: by 2002:a63:af08:: with SMTP id w8mr281450pge.419.1604026684582;
+        Thu, 29 Oct 2020 19:58:04 -0700 (PDT)
 Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id a17sm4409271pfo.108.2020.10.29.19.57.58
+        by smtp.gmail.com with ESMTPSA id 145sm3918986pga.46.2020.10.29.19.58.03
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 29 Oct 2020 19:57:59 -0700 (PDT)
+        Thu, 29 Oct 2020 19:58:04 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -60,9 +60,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Dave Martin <Dave.Martin@arm.com>, Al Grant <Al.Grant@arm.com>,
         Wei Li <liwei391@huawei.com>, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v6 03/21] perf arm-spe: Refactor payload size calculation
-Date:   Fri, 30 Oct 2020 10:57:06 +0800
-Message-Id: <20201030025724.19157-4-leo.yan@linaro.org>
+Subject: [PATCH v6 04/21] perf arm-spe: Refactor arm_spe_get_events()
+Date:   Fri, 30 Oct 2020 10:57:07 +0800
+Message-Id: <20201030025724.19157-5-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201030025724.19157-1-leo.yan@linaro.org>
 References: <20201030025724.19157-1-leo.yan@linaro.org>
@@ -70,51 +70,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch defines macro to extract "sz" field from header, and renames
-the function payloadlen() to arm_spe_payload_len().
+In function arm_spe_get_events(), the event packet's 'index' is assigned
+as payload length, but the flow is not directive: it firstly gets the
+packet length from the return value of arm_spe_get_payload(), the value
+includes header length (1) and payload length:
+
+  int ret = arm_spe_get_payload(buf, len, packet);
+
+and then reduces header length from packet length, so finally get the
+payload length:
+
+  packet->index = ret - 1;
+
+To simplify the code, this patch directly assigns payload length to
+event packet's index; and at the end it calls arm_spe_get_payload() to
+return the payload value.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 ---
- .../util/arm-spe-decoder/arm-spe-pkt-decoder.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 7c7b5eb09fba..06b3eec4494e 100644
+index 06b3eec4494e..f1b4cb008837 100644
 --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
 +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -69,22 +69,22 @@ const char *arm_spe_pkt_name(enum arm_spe_pkt_type type)
- 	return arm_spe_packet_name[type];
+@@ -136,8 +136,6 @@ static int arm_spe_get_timestamp(const unsigned char *buf, size_t len,
+ static int arm_spe_get_events(const unsigned char *buf, size_t len,
+ 			      struct arm_spe_pkt *packet)
+ {
+-	int ret = arm_spe_get_payload(buf, len, packet);
+-
+ 	packet->type = ARM_SPE_EVENTS;
+ 
+ 	/* we use index to identify Events with a less number of
+@@ -145,9 +143,9 @@ static int arm_spe_get_events(const unsigned char *buf, size_t len,
+ 	 * LLC-REFILL, and REMOTE-ACCESS events are identified if
+ 	 * index > 1.
+ 	 */
+-	packet->index = ret - 1;
++	packet->index = arm_spe_payload_len(buf[0]);
+ 
+-	return ret;
++	return arm_spe_get_payload(buf, len, packet);
  }
  
--/* return ARM SPE payload size from its encoding,
-- * which is in bits 5:4 of the byte.
-- * 00 : byte
-- * 01 : halfword (2)
-- * 10 : word (4)
-- * 11 : doubleword (8)
-+/*
-+ * Extracts the field "sz" from header bits and converts to bytes:
-+ *   00 : byte (1)
-+ *   01 : halfword (2)
-+ *   10 : word (4)
-+ *   11 : doubleword (8)
-  */
--static int payloadlen(unsigned char byte)
-+static unsigned int arm_spe_payload_len(unsigned char hdr)
- {
--	return 1 << ((byte & 0x30) >> 4);
-+	return 1U << ((hdr & GENMASK_ULL(5, 4)) >> 4);
- }
- 
- static int arm_spe_get_payload(const unsigned char *buf, size_t len,
- 			       struct arm_spe_pkt *packet)
- {
--	size_t payload_len = payloadlen(buf[0]);
-+	size_t payload_len = arm_spe_payload_len(buf[0]);
- 
- 	if (len < 1 + payload_len)
- 		return ARM_SPE_NEED_MORE_BYTES;
+ static int arm_spe_get_data_source(const unsigned char *buf, size_t len,
 -- 
 2.17.1
 
