@@ -2,115 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECAF929FBBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5094429FBC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgJ3Cui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 22:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgJ3Cue (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 22:50:34 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4AEC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:50:34 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id y16so5388632ljk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:50:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C030SNL8ytYALn4NBSzKMY+djTDRmDtL+lOw/6SUbHM=;
-        b=UCfTk7uMOAOzQcb/VvndxncmgbOs7L5QoOsM1VqMLv72Bp5P7f9rIxux442H9WGfiX
-         0tymPqZhINabpNeKxBMsW0wa8ree2d81hNcfuqlt0A2EafNJuUqCw2u2wpwF3VnKhD0S
-         /QtV3zFTZmvEU1tecICZRF5BgawODRvIs2Vz1uzCEMJpDKtctlcdKziXgrlQjzLif2xD
-         aBstmfISwfrHUpWS3BdpLDEMrcGPdcR/1f3oxg7ENHQnf97piB7uZ5NQeamBRNSoAwh8
-         SjHQvD5BX61roU/X2MUzMmF0QSqAKbxCJJHaxLpADdKDD/ifcwnUgXBmd04A2bTLlNaE
-         Ip6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C030SNL8ytYALn4NBSzKMY+djTDRmDtL+lOw/6SUbHM=;
-        b=AfamB7CfWmbrAIAFrqQFZWgfPVJpWI6VX5ke3H6dV665kiIhtkPLfPegndMvEGLMHw
-         A2wKPqgz6UbVtNi848DX+3PzBXOsTtHHXOiunKIdm5U3KwG3Cu9w2ebK5dk2su7XuPhq
-         Hzho9Pht/9rvoJ0kxOkmJOkKh6lOHrRixeX//lISxzV5yL4kcKbK1TgQyIPNy6Yw4qeA
-         ueuGij+5ze7OjdJL6lvT1Mq2Vz9wkCZ7frc9OFQY8/Q9jFlkRarJy387TFOFruvJrNIV
-         sHKJOcFLZEbU6pGAfNNemuqm/jlHJI/9FuBtrEPK2wssyGlhDIcrLs2FsZdmiwVUzbjY
-         qCCQ==
-X-Gm-Message-State: AOAM531tYfO8DI55MR9YxOvAEi+8b32m9F0YLeAmwvHPlbiaEnVPT3ya
-        3s+NLZxyxsOCypK7sNTcCmxARNsAUaN3zpH5o5Gu3g==
-X-Google-Smtp-Source: ABdhPJyhKmaQFQjloELZVYyipnpl1QPmddMqBl1H13KxiIV3UlurGqLCKHtxKCyf6M12wAB9WBq5NCbeAJx4FoIIBcw=
-X-Received: by 2002:a2e:b6cf:: with SMTP id m15mr98951ljo.74.1604026232451;
- Thu, 29 Oct 2020 19:50:32 -0700 (PDT)
+        id S1726365AbgJ3CvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 22:51:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725780AbgJ3CvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 22:51:10 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84B252076E;
+        Fri, 30 Oct 2020 02:51:08 +0000 (UTC)
+Date:   Thu, 29 Oct 2020 22:51:06 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     syzbot <syzbot+cebc65195a8639f648b9@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: BUG: using __this_cpu_read() in preemptible code in
+ __bad_area_nosemaphore
+Message-ID: <20201029225106.0ce492a4@oasis.local.home>
+In-Reply-To: <0000000000000cd2e305b2d9a9db@google.com>
+References: <0000000000000cd2e305b2d9a9db@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201029131649.182037-1-elver@google.com> <20201029131649.182037-10-elver@google.com>
-In-Reply-To: <20201029131649.182037-10-elver@google.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 30 Oct 2020 03:50:05 +0100
-Message-ID: <CAG48ez1sfD=Pe9BZRVZK4wpWp9ci91eMrrYus+a4uaactVUVtg@mail.gmail.com>
-Subject: Re: [PATCH v6 9/9] MAINTAINERS: Add entry for KFENCE
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, joern@purestorage.com,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>, SeongJae Park <sjpark@amazon.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 2:17 PM Marco Elver <elver@google.com> wrote:
-> Add entry for KFENCE maintainers.
->
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-> Reviewed-by: SeongJae Park <sjpark@amazon.de>
-> Co-developed-by: Alexander Potapenko <glider@google.com>
-> Signed-off-by: Alexander Potapenko <glider@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-[...]
-> diff --git a/MAINTAINERS b/MAINTAINERS
-[...]
-> +KFENCE
-> +M:     Alexander Potapenko <glider@google.com>
-> +M:     Marco Elver <elver@google.com>
-> +R:     Dmitry Vyukov <dvyukov@google.com>
-> +L:     kasan-dev@googlegroups.com
-> +S:     Maintained
-> +F:     Documentation/dev-tools/kfence.rst
-> +F:     include/linux/kfence.h
-> +F:     lib/Kconfig.kfence
-> +F:     mm/kfence/
+On Thu, 29 Oct 2020 18:53:17 -0700
+syzbot <syzbot+cebc65195a8639f648b9@syzkaller.appspotmail.com> wrote:
 
-Plus arch/*/include/asm/kfence.h?
+> Hello,
+> 
+> syzbot found the following issue on:
+
+Didn't Peter already send a fix for this? Is it not upstream yet?
+
+-- Steve
+
+> 
+> HEAD commit:    672f8871 Merge tag 'timers-urgent-2020-10-25' of git://git..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14bb0aac500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6ab976a648fdc6
+> dashboard link: https://syzkaller.appspot.com/bug?extid=cebc65195a8639f648b9
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> userspace arch: i386
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+cebc65195a8639f648b9@syzkaller.appspotmail.com
+> 
+> check_preemption_disabled: 1 callbacks suppressed
+> BUG: usqemu-system-x86_64: warning: guest updated active QH
+> caller is lockdep_hardirqs_on_prepare+0x5e/0x410 kernel/locking/lockdep.c:4060
+> CPU: 0 PID: 9482 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:118
+>  check_preemption_disabled+0x123/0x130 lib/smp_processor_id.c:48
+>  lockdep_hardirqs_on_prepare+0x5e/0x410 kernel/locking/lockdep.c:4060
+>  trace_hardirqs_on+0x5b/0x1c0 kernel/trace/trace_preemptirq.c:49
+>  __bad_area_nosemaphore+0xc6/0x400 arch/x86/mm/fault.c:797
+>  do_user_addr_fault+0x7d7/0xb40 arch/x86/mm/fault.c:1335
+>  handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+>  exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1485
+>  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+> RIP: 0023:0x808bb62
+> Code: 00 00 0f bc d1 f3 0f 7f 27 f3 0f 7f 6f 10 f3 0f 7f 77 20 f3 0f 7f 7f 30 83 c3 0f 29 d3 8d 7c 17 31 e9 d2 0b 00 00 66 0f ef c0 <66> 0f 6f 0e 66 0f 74 c1 66 0f d7 d0 83 fb 11 0f 86 e2 01 00 00 85
+> RSP: 002b:00000000f5533c90 EFLAGS: 00010246
+> RAX: 00000000f5533cb0 RBX: 00000000000003ff RCX: 0000000000000000
+> RDX: 000000000002c550 RSI: 0000000000000000 RDI: 00000000f5533cb0
+> RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000296 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> BUG: using __this_cpu_read() in preemptible [00000000] code: syz-executor.0/9482
+> caller is lockdep_hardirqs_on+0x38/0x110 kernel/locking/lockdep.c:4129
+> CPU: 0 PID: 9482 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:118
+>  check_preemption_disabled+0x123/0x130 lib/smp_processor_id.c:48
+>  lockdep_hardirqs_on+0x38/0x110 kernel/locking/lockdep.c:4129
+>  __bad_area_nosemaphore+0xc6/0x400 arch/x86/mm/fault.c:797
+>  do_user_addr_fault+0x7d7/0xb40 arch/x86/mm/fault.c:1335
+>  handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+>  exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1485
+>  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:583
+> RIP: 0023:0x808bb62
+> Code: 00 00 0f bc d1 f3 0f 7f 27 f3 0f 7f 6f 10 f3 0f 7f 77 20 f3 0f 7f 7f 30 83 c3 0f 29 d3 8d 7c 17 31 e9 d2 0b 00 00 66 0f ef c0 <66> 0f 6f 0e 66 0f 74 c1 66 0f d7 d0 83 fb 11 0f 86 e2 01 00 00 85
+> RSP: 002b:00000000f5533c90 EFLAGS: 00010246
+> RAX: 00000000f5533cb0 RBX: 00000000000003ff RCX: 0000000000000000
+> RDX: 000000000002c550 RSI: 0000000000000000 RDI: 00000000f5533cb0
+> RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000296 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
