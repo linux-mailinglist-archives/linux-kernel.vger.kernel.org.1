@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA0D29FFC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AAB29FFDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726052AbgJ3IYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 04:24:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgJ3IYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:24:31 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A5E422253;
-        Fri, 30 Oct 2020 08:24:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604046270;
-        bh=gSmXKcEPU74GTRAjfSumqviFvknWDQc7X1JOOAmSq+A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Si1Xp4kz2nZiduJ6OnRI3808vnUeGlBGzEWnvohCTFWiL8OcNDVlCtzhiiSyo7uzA
-         KWQToIUK6uyhXgmnpE6atZe+J3Vo7O9puJespbTMC9te+eVnaZjc+YQgbIsXwNys2L
-         dfWEeyNDkAPCuWamjOc+NQFyjoaE2fmTeWcsQD0Q=
-Date:   Fri, 30 Oct 2020 09:25:18 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Deepak R Varma <mh12gx2825@gmail.com>,
-        outreachy-kernel@googlegroups.com,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        melissa.srw@gmail.com, daniel.vetter@ffwll.ch
-Subject: Re: [Outreachy kernel] [PATCH] drm/amdgpu: use
- DEFINE_DEBUGFS_ATTRIBUTE with debugfs_create_file_unsafe()
-Message-ID: <20201030082518.GB1619669@kroah.com>
-References: <20201030032245.GA274478@my--box>
- <20201030071120.GA1493629@kroah.com>
- <20201030075716.GA6976@my--box>
- <5a7d8e8d-8db5-ff56-6448-3f1cefc11ef8@amd.com>
+        id S1726019AbgJ3I0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJ3I0t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 04:26:49 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F363C0613CF;
+        Fri, 30 Oct 2020 01:26:49 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 10so4630018pfp.5;
+        Fri, 30 Oct 2020 01:26:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=9sa1bg73D0x099X3MrEdTzCi2bBpnJdmhmD55NwNbw0=;
+        b=agaDoT+v7jfXwoJOO28Cnai7r0LKY1ArBtGqfGy8y9XHN8U6Xf0tLlR1+0v3s91vfc
+         Sqf9eR7tvBxw+2+L29yncSNtP5ADtA6VGLcojqBBZprmb7XeBV/psXmGQ+iW7+9rXqPp
+         Bmt1x4qXQyt35GW0gCVwCmohW8/UWq/uqRtnG9DZC4ix/JWn8fUnZaTG8kA87LxeKPnV
+         mAzaDkCPC+kqO39qTVn4HXIFfz/3Joqe++Mmtssn7PlyMzAwTA2HgBJXMn8TgyWIME/7
+         zVUFemlAVl/OL7aida5WM/n2OmxRp2NSHG2Xzrq0TLSQ7ArlkFlM1jKFas7BSLYaJRgK
+         rmXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=9sa1bg73D0x099X3MrEdTzCi2bBpnJdmhmD55NwNbw0=;
+        b=DCVYOFyiYRuZfNgWfxP6FmGqeSAy0hdmStSBpkjN2kE72vRvCOZrTa22NXvPwu51sO
+         k22ZKMU62SjzonWL9xDFMfHVMddFymXnVnilAvkQFLNoZcJwpl35eoVrYz362o9S1BMp
+         0fpE/BdxHbV9M7wRJWMTKNuIF3wpMNf28vsKZWx8Z4CSGdVQz0oXq21MtiOEpCi/eltp
+         Nk0Tv8xgbYb6USL98MD5IIr4sh6QmZpqGiwT+r9JfcJJHC6x02+ljK7xd6hZ64O27fq5
+         rZIm2WRkflM1TScnRu30yng3Sv64LtLQ6zyS7znNHI4UqVjJGAVzTewxqXGM6iyXHbpZ
+         Oryw==
+X-Gm-Message-State: AOAM532qpH/7bXRBcpX8vjYoKfTVLuLhcu4aNLflBobEF7njktGBtQLj
+        Sjom8UULUp4ev9n7HNsKYF6S6b5rJCuD04fl
+X-Google-Smtp-Source: ABdhPJyaGbuLtcFpNv5IwLgvwDSH38a0GCWNaCdVWVMSCD+tiAJbsZLxVwXHkBw30k4eLWV7W0phEg==
+X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr1547383pja.36.1604046408886;
+        Fri, 30 Oct 2020 01:26:48 -0700 (PDT)
+Received: from [192.168.1.59] (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
+        by smtp.gmail.com with ESMTPSA id t129sm5457071pfc.140.2020.10.30.01.26.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 01:26:48 -0700 (PDT)
+Message-ID: <ea4f248fc656d9aa470fd0cfaae6b914cbe268ae.camel@gmail.com>
+Subject: Re: [PATCH 0/3] mwifiex: disable ps_mode by default for stability
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>, verdre@v0yd.nl
+Date:   Fri, 30 Oct 2020 17:26:41 +0900
+In-Reply-To: <20201028152115.GT4077@smile.fi.intel.com>
+References: <20201028142433.18501-1-kitakar@gmail.com>
+         <20201028152115.GT4077@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5a7d8e8d-8db5-ff56-6448-3f1cefc11ef8@amd.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 09:00:04AM +0100, Christian König wrote:
-> Am 30.10.20 um 08:57 schrieb Deepak R Varma:
-> > On Fri, Oct 30, 2020 at 08:11:20AM +0100, Greg KH wrote:
-> > > On Fri, Oct 30, 2020 at 08:52:45AM +0530, Deepak R Varma wrote:
-> > > > Using DEFINE_DEBUGFS_ATTRIBUTE macro with debugfs_create_file_unsafe()
-> > > > function in place of the debugfs_create_file() function will make the
-> > > > file operation struct "reset" aware of the file's lifetime. Additional
-> > > > details here: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flists.archive.carbon60.com%2Flinux%2Fkernel%2F2369498&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cddd7a6ac8164415a639708d87ca97004%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637396414464384011%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=o6GOHvMxNMuOPlC4nhDyURCHBLqfQZhYQq%2BiIMt3D3s%3D&amp;reserved=0
-> > > > 
-> > > > Issue reported by Coccinelle script:
-> > > > scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
-> > > > 
-> > > > Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
-> > > > ---
-> > > > Please Note: This is a Outreachy project task patch.
-> > > > 
-> > > >   drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 20 ++++++++++----------
-> > > >   1 file changed, 10 insertions(+), 10 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> > > > index 2d125b8b15ee..f076b1ba7319 100644
-> > > > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> > > > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> > > > @@ -1551,29 +1551,29 @@ static int amdgpu_debugfs_sclk_set(void *data, u64 val)
-> > > >   	return 0;
-> > > >   }
-> > > > -DEFINE_SIMPLE_ATTRIBUTE(fops_ib_preempt, NULL,
-> > > > -			amdgpu_debugfs_ib_preempt, "%llu\n");
-> > > > +DEFINE_DEBUGFS_ATTRIBUTE(fops_ib_preempt, NULL,
-> > > > +			 amdgpu_debugfs_ib_preempt, "%llu\n");
-> > > Are you sure this is ok?  Do these devices need this additional
-> > > "protection"?  Do they have the problem that these macros were written
-> > > for?
-> > > 
-> > > Same for the other patches you just submitted here, I think you need to
-> > > somehow "prove" that these changes are necessary, checkpatch isn't able
-> > > to determine this all the time.
-> > Hi Greg,
-> > Based on my understanding, the current function debugfs_create_file()
-> > adds an overhead of lifetime managing proxy for such fop structs. This
-> > should be applicable to these set of drivers as well. Hence I think this
-> > change will be useful.
+On Wed, 2020-10-28 at 17:21 +0200, Andy Shevchenko wrote:
+> On Wed, Oct 28, 2020 at 11:24:30PM +0900, Tsuchiya Yuto wrote:
+> > Hello all,
+> > 
+> > On Microsoft Surface devices (PCIe-88W8897), we are observing stability
+> > issues when ps_mode (IEEE power_save) is enabled, then eventually causes
+> > firmware crash. Especially on 5GHz APs, the connection is completely
+> > unstable and almost unusable.
+> > 
+> > I think the most desirable change is to fix the ps_mode itself. But is
+> > seems to be hard work [1], I'm afraid we have to go this way.
+> > 
+> > Therefore, the first patch of this series disables the ps_mode by default
+> > instead of enabling it on driver init. I'm not sure if explicitly
+> > disabling it is really required or not. I don't have access to the details
+> > of this chip. Let me know if it's enough to just remove the code that
+> > enables ps_mode.
+> > 
+> > The Second patch adds a new module parameter named "allow_ps_mode". Since
+> > other wifi drivers just disable power_save by default by module parameter
+> > like this, I also added this.
+> > 
+> > The third patch adds a message when ps_mode will be changed. Useful when
+> > diagnosing connection issues.
 > 
-> Well since this is only created once per device instance I don't really care
-> about this little overhead.
+> > [1] https://bugzilla.kernel.org/show_bug.cgi?id=109681
 > 
-> But what exactly is debugfs doing or not doing here?
+> Can you attach this to the actual patch as BugLink: tag?
+> 
 
-It is trying to save drivers from having debugfs files open that point
-to memory that can go away at any time.  For graphics devices, I doubt
-that is the case.
+Thanks! Indeed I should have added this... I wrote it in the replies.
+If I send the v2 version of this series, I'll add it to them.
 
-thanks,
 
-greg k-h
