@@ -2,136 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCB32A0445
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6282A0439
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:36:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgJ3Lgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726545AbgJ3Lgd (ORCPT
+        id S1726236AbgJ3LgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:36:04 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41868 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJ3LgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:36:33 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DE6C0613D2;
-        Fri, 30 Oct 2020 04:36:31 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id p93so6259943edd.7;
-        Fri, 30 Oct 2020 04:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rxQE3as5qmdywGCryWlJxFvuu0GYbuByAf+xTUWNAXQ=;
-        b=ZBPfc8KueINthUvsgeH+gUXzjzVe4NvMEM9x8mlWF3G5v8nNNA4h09KDyzPsGLJpkt
-         J5AiFyqhCW8Sowo3ErZyOE5SfM0nvaRVtkB7OvwNunhz3I3cdywX3lXQ6NP2Uyl0vI5g
-         QhZnPc2N3k4+TKQTTLSFX9OgDCj1ZS6d1r2wRKeosD6ptsV7Xr32QrA9h7o5CBrN2kQ3
-         uA/B715QaNyGqbIjRIq/J03P3XKg5OiOesl4nLP5TvUXH3BzD9QUx0VnqgI2Z2uoltJL
-         W4YAXaHCyYscmS1i4hz3wzDZ/w+/qPGNxNhgsVbxgJDeCVBCWh1sGo/tklgiPc8qUQSU
-         e7cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rxQE3as5qmdywGCryWlJxFvuu0GYbuByAf+xTUWNAXQ=;
-        b=gM8J1YD02j+7eXENhyoVrRJGSvMdckJ9MtYE45I9QKjTKgDjjgm55EEMBgJXboJ8z5
-         gOoq/Oh5M7Bc8seJAtXFDACbPJuGJvuDgtRuw8abGLAyRbwI602HHEHYhC+aI93AX7J1
-         etLavc+/yArgKWV4Q5HIcJDlXItB7E6BVMKLVkClPasOPz/nlJNue8rn9bHqzMJqioGO
-         zezdetJ/GUGp+8Erbk1DXDreWUCZtGAUABcK3q1v9lSdcSqSNvHpOnCZHxV10T8FVhKJ
-         2z6GzfoXLPjOzpK4Z6mUFPS4+ImjygcIQkEJSLWgr/5PGas/Zqm0QEN48z5ECU8Axdk7
-         +MjQ==
-X-Gm-Message-State: AOAM533LEG/INMVKlndXDOh7+C8i1IdpeG80e13fjorvq8v0C+cD7cQE
-        WOPY0WZ7SW/uAnH+jMAz764=
-X-Google-Smtp-Source: ABdhPJxFEUmnJbF7ddeya1V030+teKQyup2L2MRyuq0Sjnda7xD8Ms9KucAcworSdN15PM2k0RiaWQ==
-X-Received: by 2002:a05:6402:395:: with SMTP id o21mr1807804edv.2.1604057790490;
-        Fri, 30 Oct 2020 04:36:30 -0700 (PDT)
-Received: from yoga-910.localhost ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id q19sm2850861ejx.118.2020.10.30.04.36.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 04:36:29 -0700 (PDT)
-From:   Ioana Ciornei <ciorneiioana@gmail.com>
-To:     shawnguo@kernel.org
-Cc:     robh+dt@kernel.org, leoyang.li@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH v5 11/11] arm64: dts: lx2160ardb: add nodes for the AQR107 PHYs
-Date:   Fri, 30 Oct 2020 13:35:55 +0200
-Message-Id: <20201030113555.726487-12-ciorneiioana@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201030113555.726487-1-ciorneiioana@gmail.com>
-References: <20201030113555.726487-1-ciorneiioana@gmail.com>
+        Fri, 30 Oct 2020 07:36:04 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604057762;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rt26X5MkA+U4JNX02cIhMuWaKRtR15syAcGfxqiATPQ=;
+        b=ho6xQHjuoWuljI1zTFFo6aCJM8yb+fyRyKdUSvfpZ/1WnVjhs6ejuF4CDNlHXAHlH2I7x7
+        89O7c6EJ7SVFg9n4KAnrkMq7i3EeqUkjbJMHKXP7bBh8L2qkDeSmERaFXFVUG5NzEYBhmD
+        XyPJLwpI2CodqxPvgSH4wr0IU68Y6pHTZ7EATYzmAgSs3Uq3fJX/MnaJzSHlKWU1Y5IVOp
+        U52jI7MFdpEHYObO8IzCExBYKYsKTJHOEMHKhIDQoA3kC5MGn5wgjnC0R+n3fEZD59ewTn
+        4LbkX2S12eO+7PMB1gszk+tgt+yVG2+iehdF5bgbQH2H63/1Rvfu3mvNmmE/2A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604057762;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rt26X5MkA+U4JNX02cIhMuWaKRtR15syAcGfxqiATPQ=;
+        b=YIosfFPO3HTIKOYNyoAVO1IurOEP2BVnmA03j7Q1iwLsZ59iV7bY3EwnxF+TGfCAdqsleK
+        gf4lsBKPXXWhifBA==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, kan.liang@linux.intel.com,
+        like.xu@linux.intel.com
+Subject: Re: [BUG] Stack overflow when running perf and function tracer
+In-Reply-To: <20201030103220.GH2611@hirez.programming.kicks-ass.net>
+References: <20201030002722.766a22df@oasis.local.home> <20201030090037.GZ2628@hirez.programming.kicks-ass.net> <877dr8nh6u.fsf@nanos.tec.linutronix.de> <20201030103220.GH2611@hirez.programming.kicks-ass.net>
+Date:   Fri, 30 Oct 2020 12:36:02 +0100
+Message-ID: <874kmcndy5.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ioana Ciornei <ioana.ciornei@nxp.com>
+On Fri, Oct 30 2020 at 11:32, Peter Zijlstra wrote:
+> On Fri, Oct 30, 2020 at 11:26:01AM +0100, Thomas Gleixner wrote:
+>
+>> > The only thing I can come up with in a hurry is that that dummy_iregs
+>> > thing really should be static. That's 168 bytes of stack out the window
+>> > right there.
+>> 
+>> What's worse is perf_sample_data which is 384 bytes and is 64 bytes
+>> aligned.
 
-Annotate the EMDIO1 node and describe the 2 AQR107 PHYs found on the
-LX2160ARDB board. Also, add the necessary phy-handles for DPMACs 3 and 4
-to their associated PHY.
+And there is also x86_perf_regs which is another 176 bytes ....
 
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
----
- .../boot/dts/freescale/fsl-lx2160a-rdb.dts    | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
+> Urgh, that thing just keeps on growing :/
+>
+> I'll try and have a look if we can both shrink the thing and move it off
+> stack.
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-index 54fe8cd3a711..7723ad5efd37 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-@@ -35,6 +35,18 @@ &crypto {
- 	status = "okay";
- };
+Even then we still need to worry about the stack depth because that
+tracer code was not yet done. Throw some BPF at it and it goes south
+again.
+
+So the real question is what else is on that stack which blows it up
+close to 4k? Btw, it would be massively helpful for this kind of crash
+to print the actual stack depth per entry in the backtrace.
+
+Here is the partial stack trace:
+                                                Stack usage
+  ring_buffer_lock_reserve+0x12c/0x380          
+  trace_function+0x27/0x130
+  function_trace_call+0x133/0x180
+  perf_output_begin+0x4d/0x2d0                   64+
+  perf_log_throttle+0x9a/0x120                  470+
+  __perf_event_account_interrupt+0xa9/0x120
+  __perf_event_overflow+0x2b/0xf0               
+  __intel_pmu_pebs_event+0x2ec/0x3e0            760+
+  intel_pmu_drain_pebs_nhm+0x268/0x330          200+
+  handle_pmi_common+0xc2/0x2b0                  
+
+The missing call chain is:
+
+ intel_pmu_handle_irq or intel_pmu_handle_irq_v4
+ perf_event_nmi_handler
+ nmi
  
-+&dpmac3 {
-+	phy-handle = <&aquantia_phy1>;
-+	phy-connection-type = "usxgmii";
-+	managed = "in-band-status";
-+};
-+
-+&dpmac4 {
-+	phy-handle = <&aquantia_phy2>;
-+	phy-connection-type = "usxgmii";
-+	managed = "in-band-status";
-+};
-+
- &dpmac17 {
- 	phy-handle = <&rgmii_phy1>;
- 	phy-connection-type = "rgmii-id";
-@@ -61,6 +73,18 @@ rgmii_phy2: ethernet-phy@2 {
- 		reg = <0x2>;
- 		eee-broken-1000t;
- 	};
-+
-+	aquantia_phy1: ethernet-phy@4 {
-+		/* AQR107 PHY */
-+		compatible = "ethernet-phy-ieee802.3-c45";
-+		reg = <0x4>;
-+	};
-+
-+	aquantia_phy2: ethernet-phy@5 {
-+		/* AQR107 PHY */
-+		compatible = "ethernet-phy-ieee802.3-c45";
-+		reg = <0x5>;
-+	};
- };
- 
- &esdhc0 {
-@@ -156,6 +180,14 @@ rtc@51 {
- 	};
- };
- 
-+&pcs_mdio3 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio4 {
-+	status = "okay";
-+};
-+
- &sata0 {
- 	status = "okay";
- };
--- 
-2.28.0
+So the larger offenders accumulate to ~1.5k data on stack, but
+where is the rest of the 4k?
 
+It's about 15 calls. So to fill up the stack you'd need about 230 bytes
+per call to go up to 4k.
+
+Something is fishy.
+
+Thanks,
+
+        tglx
