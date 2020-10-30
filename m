@@ -2,152 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D49B2A0CBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7272A0CBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727211AbgJ3Rpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 13:45:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:41196 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726424AbgJ3Rpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 13:45:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 859C51063;
-        Fri, 30 Oct 2020 10:45:43 -0700 (PDT)
-Received: from bogus (unknown [10.57.13.237])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D21C43F719;
-        Fri, 30 Oct 2020 10:45:40 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 17:45:31 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Elliot Berman <eberman@codeaurora.org>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Trilok Soni <tsoni@codeaurora.org>,
-        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
-Message-ID: <20201030174531.ywwkcntq4ge33lrh@bogus>
-References: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
- <87v9f04n8r.fsf@nanos.tec.linutronix.de>
- <a6d7f84679240fcf580520230a88c058@codeaurora.org>
- <20201026171224.GV2611@hirez.programming.kicks-ass.net>
- <a9fa1f8d-52c7-adca-9087-160b1ecda6b8@codeaurora.org>
- <20201028145516.23lm66mora5b3wqr@e107158-lin>
- <20201028151558.odxwolnwbes2gihi@bogus>
- <cb175d84-7a89-344d-0dd8-76bf4ece9e3b@codeaurora.org>
+        id S1726858AbgJ3Rqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 13:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725844AbgJ3Rqq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 13:46:46 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6766C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 10:46:46 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id cv1so3142862qvb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 10:46:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+DWGshIzBKZkowUsfKXy+FsPzRhu2gsbri/5lPafTJ0=;
+        b=ZXXWtx1Pbs8pMJTJnYFVoEtqtLap1iZkY6G5Fh8lMVJqCCGDYhY8E19a8EJdRMGo2Z
+         Ee9+8bxgmGo1AN6ABpJ16CdUth6nAF3Jhy+uZWhEwrizCMp5Rjs+ApCkssS/Op58bOcZ
+         a+qPbIediFWA4I80Rx/D9tyV6Pr4aeYud9kivqbxpOR1CesWSbSge91Bl1/8joF1HZNG
+         ZgOyvBgdhQoVzFCLj8+YhsSJJ9sZIIJo1yXEs9Axoj9n5GN9SiJcwByYMooQGJEV/2gC
+         L8RrkDMuOf4AVdX0O6Rd5ubKxeRs2JdB4gv6wwXscN8uqGlKdQw6iWBla39gWxFOcHwd
+         9DjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+DWGshIzBKZkowUsfKXy+FsPzRhu2gsbri/5lPafTJ0=;
+        b=Z4XHYiuXP0LAjTH8OUqwOMNgdqGAZZWGdUuZdbKEQAbMw50sW1ZvZ9UbbGOK5C/cfz
+         JsT1/xIJx7fAydr21WIsAJXGq+6fkvlRMkGIFwLQfzIIY5+/Fbff1ybxbDjn0YK0pIQv
+         Gur6zQKU6q2MVVTIsJYaocMp3xI1tiKLmxPgVtmRJqkv6n/AQm6aKRsKEvYkDSwGLVuo
+         DopRISWM5Jqnv0w59nI3r38oxIE97NGeclnRQCsb3WEij4Qo3IaiPRvMphURfmPBJ0OE
+         t4z5W8IqCyZnen3Ak3vXpxnhqRmqBpr0s+Hr3AOE0h5bH0nUQl8FCZ4S1BPTu/5fNSIk
+         yC4g==
+X-Gm-Message-State: AOAM532aHBNu3qIAIYdYFctYQO8fJ6+4P0rMt4833tS/gvQlOkhsNRYk
+        QIa3hf4yEvatP66ot6tAEiochK5C/R+itT/OaVee+w==
+X-Google-Smtp-Source: ABdhPJxQ9rQz32r4JmDJAlhCcli/7SKf2LLsP72XKDpHUf2yg2onReDSTMzkXEBq7AlNv74LToj085dqk3VHcI/DfbQ=
+X-Received: by 2002:a05:6214:a0f:: with SMTP id dw15mr10113630qvb.44.1604080005622;
+ Fri, 30 Oct 2020 10:46:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cb175d84-7a89-344d-0dd8-76bf4ece9e3b@codeaurora.org>
-User-Agent: NeoMutt/20171215
+References: <cover.1603372719.git.andreyknvl@google.com> <6f87cb86aeeca9f4148d435ff01ad7d21af4bdfc.1603372719.git.andreyknvl@google.com>
+ <CACT4Y+bJxJ+EeStyytnnRyjRwoZNPGJ9ws20GfoCBFGWvUSBPg@mail.gmail.com> <CAAeHK+wkjVVHy+fB2SHpqNOC3s2afKEGG-=gs=Z8nwwF7hJdmA@mail.gmail.com>
+In-Reply-To: <CAAeHK+wkjVVHy+fB2SHpqNOC3s2afKEGG-=gs=Z8nwwF7hJdmA@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 30 Oct 2020 18:46:33 +0100
+Message-ID: <CACT4Y+ZUTkMgtQUiaS-7r-G=urYJo7LFZihZ4ZeimAmkg=0MyA@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 12/21] kasan: inline and rename kasan_unpoison_memory
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 02:37:06PM -0700, Elliot Berman wrote:
-> On 10/28/2020 8:15 AM, Sudeep Holla wrote:
-> > > > > > Hi Thomas and Peter,
-> > > > > >
-> > > > > > Based on my understanding with maxcpus option provides, maximum no of CPUs
-> > > > > > are brough up during the device boot up. There is a different case, in which
-> > > > > > we want to restrict which CPUs to be brough up.
-> > > > > > On a system with 8 cpus, if we set maxcpus as 3, cpu0, cpu1, and cpu2 are
-> > > > > > brough up during the bootup.  For example, if we want to bring core0, core3
-> > > > > > and core4 current maxcpu(as 3) setting would not help us.
-> > > > > > On some platform we want the flexibility on which CPUs to bring up during
-> > > > > > the device bootup. bootcpus command line is helping to bring specific CPUs
-> > > > > > and these patches are working downstream.
-> > > > >
-> >
-> > Either offline "unwanted" CPUs from user space. If that is not possible
-> > for whatever thermal reasons, we need to check if we can disable them in
-> > the DT like ACPI does. IIUC, it is not supported for some reasons I need
-> > to recall/check, can't remember that now. If that is not possible, make
-> > those nodes disappear in the bootloader ?
-> >
->
-> If I disappear the cpu nodes in bootloader, then I can't later online these
-> cpus back up when policy permits.
-
-No I meant, to have policy in bootloader and manage device nodes based on
-what you need in that boot.
-
-> In our experience, there is a performance hit of ~100ms to modify any
-> devicetree node in bootloader, which is significant on a commercial
-> device wanting to disable bootup of certain cores for thermal.
->
-
-I bet that performance hit is nowhere close to what you may have when you
-offline a bunch of big cores, so I dismiss that, sorry.
-
-> > > > > That's a lot of words, but exactly 0 on _WHY_ you would want to do that.
-> > > > >
-> > > >
-> > > > We find the ability to limit the number of cpus brought online at bootup
-> > > > useful, and to possibly later enable those cores. One use case is when
-> > > > device is undergoing initial testing is to use bootcpus to limit bootup to
-> > > > only a couple cores and later bring up the other cores for a controlled
-> > > > stress test. A core brought up during boot is also running device
-> > > > initialization. Besides being useful for SoC vendor bringup which typically
-> > > > occurs downstream, this particular use case could be exercised by developer
-> > > > of upstream support for a SoC when initial CPU settings are being
-> > > > determined.
-> > > >
-> >
-> > Why not try single core instead of couple of core and add the needed ones
-> > for the user-space ?
->
-> In some instances, we have seen that further debugging is needed from
-> firmware or hardware teams. In these instances, we wanted device to still be
-> able to do SMP boot, but with a few cores disabled.
->
-
-Still manageable with different configuration in the bootloader.
-
-> In the case where commercial device is using feature for thermal, device
-> should boot multiple small cores. Booting only one core means we would not
-> be able to use all possible cores to maximum extent possible in this thermal
-> case.
->
-
-
-I understood that point. But you haven't responded on my logical vs physical
-number argument. I am clearly NACKing this patch as is for just usage of
-logical CPU IDs in the command line while your intention is to control
-the physical CPUs. So once again, NACK for that reason.
-
-> > > > Another use case is if user wishes to limit bootup only to the smaller or
-> > > > bigger cores. maxcpus= is not sufficient here to ensure that only those
-> > > > cores are booted since it limits only to the first N cores, which may not be
-> > > > the desired small or big cores. User may want to bring up only the smaller
-> > > > cores during bootup for thermal reasons. For instance, device may be later
-> > > > sufficiently charged such that boot up of the bigger cores is now
-> > > > permissible. Relying on thermal drivers to later take care of putting core
-> > > > into lower power idle may not occur until much later in boot (for instance,
-> > > > if the governor is a module).
+On Fri, Oct 30, 2020 at 5:35 PM 'Andrey Konovalov' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+> > On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
 > > >
-> > > I would have thought that FW/SCP would have the power to block booting up the
-> > > CPUs if it deemed that to be unsafe.
+> > > Currently kasan_unpoison_memory() is used as both an external annotation
+> > > and as internal memory poisoning helper. Rename external annotation to
+> > > kasan_unpoison_data() and inline the internal helper for for hardware
+> > > tag-based mode to avoid undeeded function calls.
 > > >
+> > > There's the external annotation kasan_unpoison_slab() that is currently
+> > > defined as static inline and uses kasan_unpoison_memory(). With this
+> > > change it's turned into a function call. Overall, this results in the
+> > > same number of calls for hardware tag-based mode as
+> > > kasan_unpoison_memory() is now inlined.
 > >
-> > I think it is more like *desire* to run with whatever battery life is left
-> > rather than *unsafe* to bring up the core.
-> >
-> > Also not sure if we can put such battery life related policies in the
-> > firmware. If there is a thermal constraint, I am sure f/w will and must
-> > refuse to boot the core. I doubt if we are talking about that here. It is
-> > more a policy to extract max out of the battery life left, at-least the way
-> > I see this issue. I may not have full context here, sorry.
+> > Can't we leave kasan_unpoison_slab as is? Or there are other reasons
+> > to uninline it?
 >
-> This is correct, FW here does not actually prevent core from starting since
-> it is not a significant enough thermal issue.
+> Just to have cleaner kasan.h callbacks definitions.
+>
+> > It seems that uninling it is orthogonal to the rest of this patch.
+>
+> I can split it out into a separate patch if you think this makes sense?
 
-Thanks for confirming.
-
---
-Regards,
-Sudeep
+I don't have a strong opinion either way.
