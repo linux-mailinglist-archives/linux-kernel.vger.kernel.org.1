@@ -2,115 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A452A0687
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A43712A0683
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgJ3NeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 09:34:18 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:10712 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725939AbgJ3NeS (ORCPT
+        id S1726718AbgJ3Nd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 09:33:57 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:60230 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725939AbgJ3Nd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 09:34:18 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09UDWJt9007267;
-        Fri, 30 Oct 2020 14:34:04 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=9xPycxgddNCQRIwCKrfgnU5GFmmuJ6NyQaq4vP1TrmY=;
- b=U08f8vbdA9Td2YH4t+3PGJY6Ey2UrD9yBjtsmGtZcwdLUW0858O+Q7WB2m3dpbxJrvH/
- 5yFaXicbRaSsMOyODIJfiNPkLxF9p6ryTMZO2W/H9OnAZFnKot7Y+wnHf5rh3Z6ftT5M
- /vDOdHIz4fBpvj71bTtUiBDrQc1hHlgdapvyW8ZZq9HbVrWMFvDFu2QnZQW+wFUBBpwp
- XqtF0HCPE9Ds1gf8cygUJVZeBnV9bbJGbGiDrmARw/Vs1j+1Bo/RHfmM2cuCpYp5NG3R
- cVEJHw7fVgGPWEkLgyHioSlOc3Nj65uWS6RbVPdctXV9yE4DkMfUrDLZwG2n7JD+ma8e Yg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34ccmrgxsu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Oct 2020 14:34:04 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5E022100034;
-        Fri, 30 Oct 2020 14:34:03 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 496FE20DDA6;
-        Fri, 30 Oct 2020 14:34:03 +0100 (CET)
-Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct 2020 14:34:02
- +0100
-From:   Christophe Kerello <christophe.kerello@st.com>
-To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Christophe Kerello <christophe.kerello@st.com>
-Subject: [PATCH v2] mtd: rawnand: stm32_fmc2: fix broken ECC
-Date:   Fri, 30 Oct 2020 14:33:39 +0100
-Message-ID: <1604064819-26861-1-git-send-email-christophe.kerello@st.com>
-X-Mailer: git-send-email 1.9.1
+        Fri, 30 Oct 2020 09:33:57 -0400
+Received: from [IPv6:2003:c7:cf1c:4d00:58b3:6683:91ae:b6a8] (p200300c7cf1c4d0058b3668391aeb6a8.dip0.t-ipconnect.de [IPv6:2003:c7:cf1c:4d00:58b3:6683:91ae:b6a8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 06CB61F45FE1;
+        Fri, 30 Oct 2020 13:33:54 +0000 (GMT)
+Subject: Re: [PATCH v2 1/5] docs: automarkup.py: Use new C roles in Sphinx 3
+To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@protonmail.com>, Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+References: <20201013231218.2750109-1-nfraprado@protonmail.com>
+ <20201013231218.2750109-2-nfraprado@protonmail.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <5053e824-625b-5a76-d862-2c855c79c427@collabora.com>
+Date:   Fri, 30 Oct 2020 14:33:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG4NODE1.st.com (10.75.127.10) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-30_04:2020-10-30,2020-10-30 signatures=0
+In-Reply-To: <20201013231218.2750109-2-nfraprado@protonmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user
-input parsing bits"), ECC are broken in FMC2 driver in case of
-nand-ecc-step-size and nand-ecc-strength are not set in the device tree.
-To avoid this issue, the default settings are now set in
-stm32_fmc2_nfc_attach_chip function.
+Hi
 
-Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
----
-Changes in v2:
- - move default ECC settings in stm32_fmc2_nfc_attach_chip function.
+Am 14.10.20 um 01:13 schrieb Nícolas F. R. A. Prado:
+> While Sphinx 2 used a single c:type role for struct, union, enum and
+> typedef, Sphinx 3 uses a specific role for each one.
+> To keep backward compatibility, detect the Sphinx version and use the
+> correct roles for that version.
+> 
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@protonmail.com>
+> ---
+>   Documentation/sphinx/automarkup.py | 55 ++++++++++++++++++++++++++----
+>   1 file changed, 49 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/automarkup.py
+> index a1b0f554cd82..db13fb15cedc 100644
+> --- a/Documentation/sphinx/automarkup.py
+> +++ b/Documentation/sphinx/automarkup.py
+> @@ -23,7 +23,21 @@ from itertools import chain
+>   # bit tries to restrict matches to things that won't create trouble.
+>   #
+>   RE_function = re.compile(r'(([\w_][\w\d_]+)\(\))')
+> -RE_type = re.compile(r'(struct|union|enum|typedef)\s+([\w_][\w\d_]+)')
+> +
+> +#
+> +# Sphinx 2 uses the same :c:type role for struct, union, enum and typedef
+> +#
+> +RE_generic_type = re.compile(r'(struct|union|enum|typedef)\s+([\w_][\w\d_]+)')
+> +
+> +#
+> +# Sphinx 3 uses a different C role for each one of struct, union, enum and
+> +# typedef
+> +#
+> +RE_struct = re.compile(r'\b(struct)\s+([a-zA-Z_]\w+)', flags=re.ASCII)
+> +RE_union = re.compile(r'\b(union)\s+([a-zA-Z_]\w+)', flags=re.ASCII)
+> +RE_enum = re.compile(r'\b(enum)\s+([a-zA-Z_]\w+)', flags=re.ASCII)
+> +RE_typedef = re.compile(r'\b(typedef)\s+([a-zA-Z_]\w+)', flags=re.ASCII)
 
- drivers/mtd/nand/raw/stm32_fmc2_nand.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+I use ubuntu 18.04, my default python is 2.7,
+when running 'make htmldocs' with that fix I get:
 
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index b31a581..550bda4 100644
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -1708,6 +1708,13 @@ static int stm32_fmc2_nfc_attach_chip(struct nand_chip *chip)
- 		return -EINVAL;
- 	}
- 
-+	/* Default ECC settings in case they are not set in the device tree */
-+	if (!chip->ecc.size)
-+		chip->ecc.size = FMC2_ECC_STEP_SIZE;
-+
-+	if (!chip->ecc.strength)
-+		chip->ecc.strength = FMC2_ECC_BCH8;
-+
- 	ret = nand_ecc_choose_conf(chip, &stm32_fmc2_nfc_ecc_caps,
- 				   mtd->oobsize - FMC2_BBM_LEN);
- 	if (ret) {
-@@ -1727,8 +1734,7 @@ static int stm32_fmc2_nfc_attach_chip(struct nand_chip *chip)
- 
- 	mtd_set_ooblayout(mtd, &stm32_fmc2_nfc_ooblayout_ops);
- 
--	if (chip->options & NAND_BUSWIDTH_16)
--		stm32_fmc2_nfc_set_buswidth_16(nfc, true);
-+	stm32_fmc2_nfc_setup(chip);
- 
- 	return 0;
- }
-@@ -1952,11 +1958,6 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
- 	chip->options |= NAND_BUSWIDTH_AUTO | NAND_NO_SUBPAGE_WRITE |
- 			 NAND_USES_DMA;
- 
--	/* Default ECC settings */
--	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
--	chip->ecc.size = FMC2_ECC_STEP_SIZE;
--	chip->ecc.strength = FMC2_ECC_BCH8;
--
- 	/* Scan to find existence of the device */
- 	ret = nand_scan(chip, nand->ncs);
- 	if (ret)
--- 
-1.9.1
+AttributeError: 'module' object has no attribute 'ASCII'
 
+Thanks,
+Dafna
+
+> +
+>   #
+>   # Detects a reference to a documentation page of the form Documentation/... with
+>   # an optional extension
+> @@ -48,9 +62,22 @@ def markup_refs(docname, app, node):
+>       #
+>       # Associate each regex with the function that will markup its matches
+>       #
+> -    markup_func = {RE_type: markup_c_ref,
+> -                   RE_function: markup_c_ref,
+> -                   RE_doc: markup_doc_ref}
+> +    markup_func_sphinx2 = {RE_doc: markup_doc_ref,
+> +                           RE_function: markup_c_ref,
+> +                           RE_generic_type: markup_c_ref}
+> +
+> +    markup_func_sphinx3 = {RE_doc: markup_doc_ref,
+> +                           RE_function: markup_c_ref,
+> +                           RE_struct: markup_c_ref,
+> +                           RE_union: markup_c_ref,
+> +                           RE_enum: markup_c_ref,
+> +                           RE_typedef: markup_c_ref}
+> +
+> +    if sphinx.version_info[0] >= 3:
+> +        markup_func = markup_func_sphinx3
+> +    else:
+> +        markup_func = markup_func_sphinx2
+> +
+>       match_iterators = [regex.finditer(t) for regex in markup_func]
+>       #
+>       # Sort all references by the starting position in text
+> @@ -79,8 +106,24 @@ def markup_refs(docname, app, node):
+>   # type_name) with an appropriate cross reference.
+>   #
+>   def markup_c_ref(docname, app, match):
+> -    class_str = {RE_function: 'c-func', RE_type: 'c-type'}
+> -    reftype_str = {RE_function: 'function', RE_type: 'type'}
+> +    class_str = {RE_function: 'c-func',
+> +                 # Sphinx 2 only
+> +                 RE_generic_type: 'c-type',
+> +                 # Sphinx 3+ only
+> +                 RE_struct: 'c-struct',
+> +                 RE_union: 'c-union',
+> +                 RE_enum: 'c-enum',
+> +                 RE_typedef: 'c-type',
+> +                 }
+> +    reftype_str = {RE_function: 'function',
+> +                   # Sphinx 2 only
+> +                   RE_generic_type: 'type',
+> +                   # Sphinx 3+ only
+> +                   RE_struct: 'struct',
+> +                   RE_union: 'union',
+> +                   RE_enum: 'enum',
+> +                   RE_typedef: 'type',
+> +                   }
+>   
+>       cdom = app.env.domains['c']
+>       #
+> 
