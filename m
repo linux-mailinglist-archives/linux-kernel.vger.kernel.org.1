@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE5D29FD02
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 06:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8405429FD2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 06:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725792AbgJ3FWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 01:22:53 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:19230 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbgJ3FWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 01:22:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604035355; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=TnWAZdBttXycLF7Pg/ea+orhZ9ZprM5LnpXC0r6qX6s=;
- b=uqn0ZNr06HWoZAjTY7dRRm5J+dOBS/GHPMM5YMp2I8r/PdxMD5iqAOxlbB24NTiAGwD/haMr
- GTvczn2nFWhsJzzHeoqFIKUJXd6IOWQV31uKUWywcrDF3N/Elq2LvlTdlufgILsSXh7bUnkm
- DLlCB/itkSgejQPogAaynXv14/w=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5f9ba2d68335df1657b8ab8f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 05:21:26
- GMT
-Sender: kathirav=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7E077C433C6; Fri, 30 Oct 2020 05:21:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kathirav)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F015EC433F0;
-        Fri, 30 Oct 2020 05:21:24 +0000 (UTC)
+        id S1725805AbgJ3FY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 01:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgJ3FY6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 01:24:58 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A6DC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 22:24:58 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id x20so5471778ilj.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 22:24:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lmMwQ8b55cUdayZvKYDJthFQ/LoSw2w1EcxeNL4OYcs=;
+        b=iwQyLSzpHg/fSGBBOvHQ7AebPJ9cDXSz+3APoggXro3e6RqW4lYDdtPUX1+GdogWT4
+         CEykeB0V7LaWqNniBdK88FmznGPeU+StD/zmUZvvMsElTYWk2ojvE8tpWtbnuWp3KwFh
+         WnSHs7JhQtUd8M0QaBdcVH46YAClF5UicuuhHZyOpXQeE57YAReA7AkurXCcYzNSvde0
+         tP5trblzCjLMuzwtBD0h8ZKF3fiy8HLtwvaEygGWbDGgfg9+nHaOTCWcUjjy914wSojY
+         5RYFPPLGDm+naHOBBUJ11PFN8w1SjoF/fH339AulsgVX2ige4kyzAVJr0hWVtCQ6aeBa
+         n+9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lmMwQ8b55cUdayZvKYDJthFQ/LoSw2w1EcxeNL4OYcs=;
+        b=oAeU8pJuGf3/ZySsEhIGOF91m8OhTxP8yLnIsZwy94SXIySrJkTrh9SABTJoNX207o
+         xWPRrMr850s6iTlRRhYM2dPDANckdTB24WUjrFM/JWUNw5HUxjvIVyL7yCQS53x0OZ9Z
+         KVwaYEqR1TmD9/IxxNTnOMJyJgsTyl/+s9zO1XVJ/w9LkHdjaVFimfgmFCJpL0bj3WL2
+         bt0IQHX1yq0+dhREadia6/WLlC+bK85xvOglFrRz8LgF67dAi5eRpQhxk6BNcvJdXLd/
+         o436nYwZ5Mi9UDj+hdAICsEv2HIbP5XV5wcss0mxQpvcb1cH1xcKkyzFkxr89Gpl4gB4
+         WCqA==
+X-Gm-Message-State: AOAM533W9vKcDsBbgT6GQwwdrBcFPdS7WQSKjQr+VG4SA0ewaIhLlD8x
+        v2Zi4Zm79+LD1NXIMhBG+hCWtX4rGYMunAK5K8wDapx1Armacg==
+X-Google-Smtp-Source: ABdhPJzaanR4CgFbc03oJFpky18iVumfvVzkCYtCPFtLD3bf0c6h3u0Ous9bPnH+4HImwAZMVkk1jULVCOGyQIJw7AA=
+X-Received: by 2002:a05:6e02:1310:: with SMTP id g16mr684884ilr.110.1604035497455;
+ Thu, 29 Oct 2020 22:24:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 30 Oct 2020 10:51:24 +0530
-From:   kathirav@codeaurora.org
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        wim@linux-watchdog.org, linux@roeck-us.net,
-        linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Luka Perkov <luka.perkov@sartura.hr>" <kathirav@codeaurora.org>
-Subject: Re: [PATCH v2] watchdog: qcom_wdt: set WDOG_HW_RUNNING bit when
- appropriate
-In-Reply-To: <20201028114635.7570-1-robert.marko@sartura.hr>
-References: <20201028114635.7570-1-robert.marko@sartura.hr>
-Message-ID: <2f0653b7d05d1ef26f6624b38d1d7b2d@codeaurora.org>
-X-Sender: kathirav@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20201021220752.418832-1-dlatypov@google.com> <CABVgOSkXfWihPN5-1dPn2BstpJ7eiG1Qj=cg5EL2oEhv=YHj4g@mail.gmail.com>
+In-Reply-To: <CABVgOSkXfWihPN5-1dPn2BstpJ7eiG1Qj=cg5EL2oEhv=YHj4g@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Thu, 29 Oct 2020 22:24:46 -0700
+Message-ID: <CAGS_qxrUkCaG6D+Kj-x2NjSdc-_KMg29-ncD3kqyBqgN8LR6Jg@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: fix pre-existing python type annotation errors
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-28 17:16, Robert Marko wrote:
-> If the watchdog hardware is enabled/running during boot, e.g.
-> due to a boot loader configuring it, we must tell the
-> watchdog framework about this fact so that it can ping the
-> watchdog until userspace opens the device and takes over
-> control.
-> 
-> Do so using the WDOG_HW_RUNNING flag that exists for exactly
-> that use-case.
-> 
-> Given the watchdog driver core doesn't know what timeout was
-> originally set by whoever started the watchdog (boot loader),
-> we make sure to update the timeout in the hardware according
-> to what the watchdog core thinks it is.
-> 
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> Cc: Luka Perkov <luka.perkov@sartura.hr>
-> ---
-> Changes in v2:
-> * Correct authorship
-> 
->  drivers/watchdog/qcom-wdt.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
-> index ab7465d186fd..28c93a918e38 100644
-> --- a/drivers/watchdog/qcom-wdt.c
-> +++ b/drivers/watchdog/qcom-wdt.c
-> @@ -152,6 +152,13 @@ static int qcom_wdt_restart(struct
-> watchdog_device *wdd, unsigned long action,
->  	return 0;
->  }
-> 
-> +static int qcom_wdt_is_running(struct watchdog_device *wdd)
-> +{
-> +	struct qcom_wdt *wdt = to_qcom_wdt(wdd);
-> +
-> +	return (readl(wdt_addr(wdt, WDT_EN)) & 1);
+On Thu, Oct 29, 2020 at 7:56 PM David Gow <davidgow@google.com> wrote:
+>
+> On Thu, Oct 22, 2020 at 6:08 AM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+> > The code uses annotations, but they aren't accurate.
+> > Note that type checking in python is a separate process, running
+> > `kunit.py run` will not check and complain about invalid types at
+> > runtime.
+> >
+> > Fix pre-existing issues found by running a type checker
+> > $ mypy *.py
+> >
+> > All but one of these were returning `None` without denoting this
+> > properly (via `Optional[Type]`).
+> >
+> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > ---
+>
+> I'm not going to pretend to really understand python annotations
+> completely, but this all seems correct from what I know of the code,
+> and I was able to install mypy and verify the issues were fixed.
+>
+> Clearly, if we're going to have type annotations here, we should be
+> verifying the code against them. Is there a way we could get python
+> itself to verify this code when the script runs, rather than have to
+> use mypy as a tool to verify it separately? Otherwise, maybe we can
 
-QCOM_WDT_ENABLE macro can be used instead of 1?
+Type annotations are https://www.python.org/dev/peps/pep-0484/
+There isn't support for python itself to type check and it calls out
+(only) mypy by name as a type-checker.
 
-> +}
-> +
->  static const struct watchdog_ops qcom_wdt_ops = {
->  	.start		= qcom_wdt_start,
->  	.stop		= qcom_wdt_stop,
-> @@ -294,6 +301,21 @@ static int qcom_wdt_probe(struct platform_device 
-> *pdev)
->  	wdt->wdd.timeout = min(wdt->wdd.max_timeout, 30U);
->  	watchdog_init_timeout(&wdt->wdd, 0, dev);
-> 
-> +	if (qcom_wdt_is_running(&wdt->wdd)) {
-> +		/*
-> +		 * Make sure to apply timeout from watchdog core, taking
-> +		 * the prescaler of this driver here into account (the
-> +		 * boot loader might be using a different prescaler).
-> +		 *
-> +		 * To avoid spurious resets because of different scaling,
-> +		 * we first disable the watchdog, set the new prescaler
-> +		 * and timeout, and then re-enable the watchdog.
-> +		 */
-> +		qcom_wdt_stop(&wdt->wdd);
+I don't have a good answer for how we prevent them from bitrotting :/
 
-qcom_wdt_start disables the WDT, configure the timeout values and 
-enables it. Do we still need to call qcom_wdt_stop?
+> run it automatically from the kunit_tool_test.py unit tests or
+> something similar?
 
-> +		qcom_wdt_start(&wdt->wdd);
-> +		set_bit(WDOG_HW_RUNNING, &wdt->wdd.status);
-> +	}
-> +
->  	ret = devm_watchdog_register_device(dev, &wdt->wdd);
->  	if (ret)
->  		return ret;
+I don't think it's possible to do so cleanly.
+
+E.g. I don't know python that well, but here's my guess at what it'd
+have to look like:
+* We have to assume mypy is installed
+* dynamically loading the module inside a `try` (so we don't break
+users who don't have it)
+* figure out what func is the entry point to mypy and call it on
+"./kunit.py" somehow
+
+>
+> Regardless, this is
+>
+> Reviewed-by: David Gow <davidgow@google.com>
+>
+> Cheers,
+> -- David
