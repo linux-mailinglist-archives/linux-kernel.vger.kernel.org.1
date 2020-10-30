@@ -2,130 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F400C2A0F33
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C2B2A0F3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727571AbgJ3UHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 16:07:46 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37842 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727218AbgJ3UHm (ORCPT
+        id S1727855AbgJ3UIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 16:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727134AbgJ3UH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 16:07:42 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09UK7bel104296;
-        Fri, 30 Oct 2020 15:07:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604088457;
-        bh=NmGweRIDX1yhKI72wcflgzMMwyqgecQXkJJNNwnR1iI=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=GndEjExQ+C9cnER0da4nyjxUa+0uAgFKwNEM7EPhncxs2VRAIWH5qG8g78Jy/nJb4
-         lLzYrmn31azVTkEGq2J5tQ7aq3jDzBFCSR0gcKPIcXLmUE7wulAYQdSgb87dKWAglT
-         6bmsxh0gkMk9lgKQLjes/G7Vd3UL0CHuh8iVOhFM=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09UK7bgR055640
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Oct 2020 15:07:37 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 30
- Oct 2020 15:07:37 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 30 Oct 2020 15:07:37 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09UK7aSC009507;
-        Fri, 30 Oct 2020 15:07:36 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        "Reviewed-by : Jesse Brandeburg" <jesse.brandeburg@intel.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH net-next v3 10/10] net: ethernet: ti: am65-cpsw: handle deferred probe with dev_err_probe()
-Date:   Fri, 30 Oct 2020 22:07:07 +0200
-Message-ID: <20201030200707.24294-11-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201030200707.24294-1-grygorii.strashko@ti.com>
-References: <20201030200707.24294-1-grygorii.strashko@ti.com>
+        Fri, 30 Oct 2020 16:07:58 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0ADC0613CF;
+        Fri, 30 Oct 2020 13:07:57 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k125so3272630wmf.0;
+        Fri, 30 Oct 2020 13:07:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FpCslJZ/vqty4l/vz2YpbZGTlDZJ7cQIaDs0z8MBb9Q=;
+        b=YcN9bdquotAjnrthfpW3IwHIEkgx6h42SlkjKXvr0CpceHRxdmjmaYllQhz0bPMBZt
+         3icp020XsDQDBucbMTtt1SU6D/cUzNLj1NRRgq8OKrrZCDmSBnhhJcGGWoLyYP/5AtoJ
+         XlnMFNSB4iOVvfOQ16M14Dd8tGmwatI/40hvL8dPt7tuMQAURvwDrISXwJgwyBzhXfbg
+         XzLdvwZP+9ZhFYrcn+lKV0mwT63/XGHADrurSBn6/tQg0CPWeJcMklmELuSNJ/RBT/+S
+         MEZRpvWfuwB3oCbxo8nlbfgbaqv8p+IF4/SA+AqrZB1jyW1tt3hVIbzxQLqEB/4VA4Kq
+         8/HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FpCslJZ/vqty4l/vz2YpbZGTlDZJ7cQIaDs0z8MBb9Q=;
+        b=kG+HnApDrJFT2XSNYMYv67us0iTxpcqJ0MJtdeTdwsHqrej8Z0Ie97iC1s0e5QXKBM
+         XHWgAA6BjXGrxmAaUC2rCv2H/k+F/Hy/Q9r1jsyhejoLDcUKF2MdaCobJls3vRBmeRKK
+         d3RoLMbU2eMNgwaBg1hgyyBurDQTR76ZV+otPZhnzQKO4FSWVzrKNWV9lgfOuWopWP6i
+         Xu5eK7O6tfY1Xoef8xuBRCDQrLSU+GUbRfT6fzrPA7/fgV75wXuImSiw2FHy5zPUuzci
+         IFspwPuPR914K91/XV+Uiiw7l/dA7uQkiaZmaAnWkCoQqH6cmjrpbyZdy/6zXw5U/8yK
+         c6XQ==
+X-Gm-Message-State: AOAM530gloPcfLV5FXEj3A4uR+IOkSUrmUdXvYvkLs+nDanFRjWU8XBk
+        dzq6C4RKhhGHKo1SJyLmCCI=
+X-Google-Smtp-Source: ABdhPJztQtotCRmX3fj5tBmhKO5lYUgAvoZG+N03iU1161n3w8ULxgpWHp87pzLrq1ac+M8i05ZZQQ==
+X-Received: by 2002:a1c:c90b:: with SMTP id f11mr4614649wmb.54.1604088476501;
+        Fri, 30 Oct 2020 13:07:56 -0700 (PDT)
+Received: from ?IPv6:2001:a61:245a:d801:2e74:88ad:ef9:5218? ([2001:a61:245a:d801:2e74:88ad:ef9:5218])
+        by smtp.gmail.com with ESMTPSA id j9sm11929205wrp.59.2020.10.30.13.07.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 13:07:55 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Will Drewry <wad@chromium.org>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        linux-man <linux-man@vger.kernel.org>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Christian Brauner <christian@brauner.io>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     Jann Horn <jannh@google.com>
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+ <20201029152609.k3urvzjocf3s7uml@gmail.com>
+ <91b74ce1-de95-2b92-c62e-e2715d6071d3@gmail.com>
+ <CAG48ez0TZrwBoEi4d6n+FUN19hq6Pc+DOGNrRb-zHDSZVm9kfw@mail.gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <f610cecf-d824-3501-e188-357efd9b1c76@gmail.com>
+Date:   Fri, 30 Oct 2020 21:07:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CAG48ez0TZrwBoEi4d6n+FUN19hq6Pc+DOGNrRb-zHDSZVm9kfw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use new dev_err_probe() API to handle deferred probe properly and simplify
-the code.
+On 10/30/20 8:24 PM, Jann Horn wrote:
+> On Thu, Oct 29, 2020 at 8:53 PM Michael Kerrisk (man-pages)
+> <mtk.manpages@gmail.com> wrote:
+>> On 10/29/20 4:26 PM, Christian Brauner wrote:
+>>> I like this manpage. I think this is the most comprehensive explanation
+>>> of any seccomp feature
+>>
+>> Thanks (at least, I think so...)
+>>
+>>> and somewhat understandable.
+>>       ^^^^^^^^
+>>
+>> (... but I'm not sure ;-).)
+> 
+> Relevant: http://tinefetz.net/files/gimgs/78_78_17.jpg
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 28 +++++++++---------------
- 1 file changed, 10 insertions(+), 18 deletions(-)
+Perfekt :-).
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index feb94b813ffc..766e8866bbef 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -1561,9 +1561,8 @@ static int am65_cpsw_nuss_init_tx_chns(struct am65_cpsw_common *common)
- 						    tx_chn->tx_chn_name,
- 						    &tx_cfg);
- 		if (IS_ERR(tx_chn->tx_chn)) {
--			ret = PTR_ERR(tx_chn->tx_chn);
--			dev_err(dev, "Failed to request tx dma channel %d\n",
--				ret);
-+			ret = dev_err_probe(dev, PTR_ERR(tx_chn->tx_chn),
-+					    "Failed to request tx dma channel\n");
- 			goto err;
- 		}
- 
-@@ -1634,8 +1633,8 @@ static int am65_cpsw_nuss_init_rx_chns(struct am65_cpsw_common *common)
- 
- 	rx_chn->rx_chn = k3_udma_glue_request_rx_chn(dev, "rx", &rx_cfg);
- 	if (IS_ERR(rx_chn->rx_chn)) {
--		ret = PTR_ERR(rx_chn->rx_chn);
--		dev_err(dev, "Failed to request rx dma channel %d\n", ret);
-+		ret = dev_err_probe(dev, PTR_ERR(rx_chn->rx_chn),
-+				    "Failed to request rx dma channel\n");
- 		goto err;
- 	}
- 
-@@ -1850,12 +1849,10 @@ static int am65_cpsw_nuss_init_slave_ports(struct am65_cpsw_common *common)
- 		/* get phy/link info */
- 		if (of_phy_is_fixed_link(port_np)) {
- 			ret = of_phy_register_fixed_link(port_np);
--			if (ret) {
--				if (ret != -EPROBE_DEFER)
--					dev_err(dev, "%pOF failed to register fixed-link phy: %d\n",
--						port_np, ret);
--				return ret;
--			}
-+			if (ret)
-+				return dev_err_probe(dev, ret,
-+						     "failed to register fixed-link phy %pOF\n",
-+						     port_np);
- 			port->slave.phy_node = of_node_get(port_np);
- 		} else {
- 			port->slave.phy_node =
-@@ -2180,13 +2177,8 @@ static int am65_cpsw_nuss_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	clk = devm_clk_get(dev, "fck");
--	if (IS_ERR(clk)) {
--		ret = PTR_ERR(clk);
--
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "error getting fck clock %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(clk))
-+		return dev_err_probe(dev, PTR_ERR(clk), "getting fck clock\n");
- 	common->bus_freq = clk_get_rate(clk);
- 
- 	pm_runtime_enable(dev);
+
 -- 
-2.17.1
-
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
