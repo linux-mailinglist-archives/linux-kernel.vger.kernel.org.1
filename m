@@ -2,152 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F9E29FE5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A28329FE59
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725979AbgJ3HXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:23:09 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:62941 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3HXH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 03:23:07 -0400
-Received: from epcas3p1.samsung.com (unknown [182.195.41.19])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201030072304epoutp024c74c2fe5d49c25b108e686ce86a82f4~CtDtMij2b0407704077epoutp02d
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:23:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201030072304epoutp024c74c2fe5d49c25b108e686ce86a82f4~CtDtMij2b0407704077epoutp02d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604042584;
-        bh=zIa/iAQyUWRdLL248i5rBcR+7OjxdKqM8e03d3lBWdg=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=PW2bhkkvNw3abopm/9ylHbob9VMjLD7IApjSrK2p0Tl52wJyV1eDx6bNBA2cZeUw6
-         bFiSI33zFtF0qBJdBFfzLTF+e19Ya8g/299mq51uhqPUAKbmq6fAPfx1jmt6jSg3iB
-         2Hw8zeOQ/6hSxWhR5Z4phwvHfiBD7VSnL4AUdofU=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
-        20201030072303epcas3p37bda4b0e72a1b108186275c79fecf857~CtDsfMimt2348123481epcas3p3K;
-        Fri, 30 Oct 2020 07:23:03 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp1.localdomain
-        (Postfix) with ESMTP id 4CMv0l1zz2zMqYlx; Fri, 30 Oct 2020 07:23:03 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v2 1/1] scsi: ufs: Fix unexpected values get from
- ufshcd_read_desc_param()
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>
-CC:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "hongwus@codeaurora.org" <hongwus@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
-        "rnayak@codeaurora.org" <rnayak@codeaurora.org>,
-        "salyzyn@google.com" <salyzyn@google.com>,
-        "saravanak@google.com" <saravanak@google.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <da29783bdd6eb1326e3ff8fd50921c54@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1796371666.41604042583278.JavaMail.epsvc@epcpadp4>
-Date:   Fri, 30 Oct 2020 16:19:52 +0900
-X-CMS-MailID: 20201030071952epcms2p323893cc8af6782093860228dde7424b8
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20201023063528epcms2p11b57d929a926d582539ce4e1a57caf80
-References: <da29783bdd6eb1326e3ff8fd50921c54@codeaurora.org>
-        <963815509.21603435202191.JavaMail.epsvc@epcpadp1>
-        <CGME20201023063528epcms2p11b57d929a926d582539ce4e1a57caf80@epcms2p3>
+        id S1725913AbgJ3HUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:20:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgJ3HUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 03:20:33 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C03032083B;
+        Fri, 30 Oct 2020 07:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604042430;
+        bh=n1U/jwDmO28iTY1E7jx8zDWTnnrZD+VTD8qx7LukQsA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YeSNZ615axN+XxQKryKAG80j38GWW+g2EUBngSwkILuznQyiw6BM5JpL46C86AP1s
+         ig4sNYvcusQlBo0lHdWAWfjShC9IpIiSAiK5brycpeiawc9GYWrQRsRZGmW6D3MxNX
+         EI9R7CORkH0tFymV0r/MBt1vduRdNevsmQa9b+5U=
+Date:   Fri, 30 Oct 2020 08:21:18 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Anand K Mistry <amistry@google.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH 1/1] debugfs: Add a helper to export atomic64_t values
+Message-ID: <20201030072118.GB1495407@kroah.com>
+References: <20201030070442.457739-1-amistry@google.com>
+ <20201030180403.1.I9c36fd7a0e4d52e300c1004a0f6f2fc705e2b065@changeid>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030180403.1.I9c36fd7a0e4d52e300c1004a0f6f2fc705e2b065@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Hi, Can Guo
->> 
->>> Since WB feature has been added, WB related sysfs entries can be 
->>> accessed
->>> even when an UFS device does not support WB feature. In that case, the
->>> descriptors which are not supported by the UFS device may be wrongly
->>> reported when they are accessed from their corrsponding sysfs entries.
->>> Fix it by adding a sanity check of parameter offset against the actual
->>> decriptor length.
->>> 
->>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>> ---
->>> drivers/scsi/ufs/ufshcd.c | 24 +++++++++++++++---------
->>> 1 file changed, 15 insertions(+), 9 deletions(-)
->>> 
->>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->>> index a2ebcc8..aeec10d 100644
->>> --- a/drivers/scsi/ufs/ufshcd.c
->>> +++ b/drivers/scsi/ufs/ufshcd.c
->>> @@ -3184,13 +3184,19 @@ int ufshcd_read_desc_param(struct ufs_hba 
->>> *hba,
->>> 	/* Get the length of descriptor */
->>> 	ufshcd_map_desc_id_to_length(hba, desc_id, &buff_len);
->>> 	if (!buff_len) {
->>> -		dev_err(hba->dev, "%s: Failed to get desc length", __func__);
->>> +		dev_err(hba->dev, "%s: Failed to get desc length\n", __func__);
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	if (param_offset >= buff_len) {
->>> +		dev_err(hba->dev, "%s: Invalid offset 0x%x in descriptor IDN 0x%x, 
->>> length 0x%x\n",
->>> +			__func__, param_offset, desc_id, buff_len);
->> 
->> In my understanding, this code seems to check incorrect access to not
->> supportted features (e.g. WB) via buff_len value from
->> ufshcd_map_desc_id_to_length().
->> However, since buff_len is initialized as QUERY_DESC_MAX_SIZE and is
->> updated later by ufshcd_update_desc_length(), So it is impossible to 
->> find
->> incorrect access by checking buff_len at first time.
->> 
->> Thanks,
->> Daejun
->
->Yes, I considered that during bootup time, but the current driver won't 
->even
->access WB related stuffs it is not supported (there are checks against 
->UFS version
->and feature supports in ufshcd_wb_probe()). So this change is only 
->proecting illegal
->access from sysfs entries after bootup is done. Do you see real error 
->during bootup
->time? If yes, please let me know.
->
->Thanks,
->
->Can Guo.
+On Fri, Oct 30, 2020 at 06:04:42PM +1100, Anand K Mistry wrote:
+> This mirrors support for exporting atomic_t values.
+> 
+> Signed-off-by: Anand K Mistry <amistry@google.com>
+> 
+> ---
+> 
+>  fs/debugfs/file.c       | 37 +++++++++++++++++++++++++++++++++++++
+>  include/linux/debugfs.h |  6 ++++++
+>  2 files changed, 43 insertions(+)
+> 
+> diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+> index a768a09430c3..798bd3bdedec 100644
+> --- a/fs/debugfs/file.c
+> +++ b/fs/debugfs/file.c
+> @@ -770,6 +770,43 @@ void debugfs_create_atomic_t(const char *name, umode_t mode,
+>  }
+>  EXPORT_SYMBOL_GPL(debugfs_create_atomic_t);
+>  
+> +static int debugfs_atomic64_t_set(void *data, u64 val)
+> +{
+> +	atomic64_set((atomic64_t *)data, val);
+> +	return 0;
+> +}
+> +static int debugfs_atomic64_t_get(void *data, u64 *val)
+> +{
+> +	*val = atomic64_read((atomic64_t *)data);
+> +	return 0;
+> +}
+> +DEFINE_DEBUGFS_ATTRIBUTE(fops_atomic64_t, debugfs_atomic64_t_get,
+> +			debugfs_atomic64_t_set, "%lld\n");
+> +DEFINE_DEBUGFS_ATTRIBUTE(fops_atomic64_t_ro, debugfs_atomic64_t_get, NULL,
+> +			"%lld\n");
+> +DEFINE_DEBUGFS_ATTRIBUTE(fops_atomic64_t_wo, NULL, debugfs_atomic64_t_set,
+> +			"%lld\n");
+> +
+> +/**
+> + * debugfs_create_atomic64_t - create a debugfs file that is used to read and
+> + * write an atomic64_t value
+> + * @name: a pointer to a string containing the name of the file to create.
+> + * @mode: the permission that the file should have
+> + * @parent: a pointer to the parent dentry for this file.  This should be a
+> + *          directory dentry if set.  If this parameter is %NULL, then the
+> + *          file will be created in the root of the debugfs filesystem.
+> + * @value: a pointer to the variable that the file should read to and write
+> + *         from.
+> + */
+> +void debugfs_create_atomic64_t(const char *name, umode_t mode,
+> +			       struct dentry *parent, atomic64_t *value)
+> +{
+> +	debugfs_create_mode_unsafe(name, mode, parent, value,
+> +				   &fops_atomic64_t, &fops_atomic64_t_ro,
+> +				   &fops_atomic64_t_wo);
+> +}
+> +EXPORT_SYMBOL_GPL(debugfs_create_atomic64_t);
+> +
+>  ssize_t debugfs_read_file_bool(struct file *file, char __user *user_buf,
+>  			       size_t count, loff_t *ppos)
+>  {
+> diff --git a/include/linux/debugfs.h b/include/linux/debugfs.h
+> index 851dd1f9a8a5..0fac84c53eab 100644
+> --- a/include/linux/debugfs.h
+> +++ b/include/linux/debugfs.h
+> @@ -126,6 +126,8 @@ void debugfs_create_size_t(const char *name, umode_t mode,
+>  			   struct dentry *parent, size_t *value);
+>  void debugfs_create_atomic_t(const char *name, umode_t mode,
+>  			     struct dentry *parent, atomic_t *value);
+> +void debugfs_create_atomic64_t(const char *name, umode_t mode,
+> +				     struct dentry *parent, atomic64_t *value);
+>  struct dentry *debugfs_create_bool(const char *name, umode_t mode,
+>  				  struct dentry *parent, bool *value);
+>  
+> @@ -291,6 +293,10 @@ static inline void debugfs_create_atomic_t(const char *name, umode_t mode,
+>  					   atomic_t *value)
+>  { }
+>  
+> +static inline void debugfs_create_atomic64_t(const char *name, umode_t mode,
+> +					     struct dentry *parent, atomic64_t *value)
+> +{ }
+> +
+>  static inline struct dentry *debugfs_create_bool(const char *name, umode_t mode,
+>  						 struct dentry *parent,
+>  						 bool *value)
 
-Can Guo,
-I haven't seen any real errors. If it's meant to prevent erroneous access
-from sysfs, it seems good enough.
+Looks good, but where is the user of this code?  I can't add new apis
+without a user.
 
-Acked-by: Daejun Park <daejun7.park@samsung.com>
+And are you _SURE_ you want to be using an atomic64_t in the first
+place?  We are starting to reduce the "raw" usage of atomic variables as
+almost no one needs them, they should be using something else instead,
+or just a u64 as atomics are not needed for simple statistics.
 
-Avri,
-ufshcd_is_wb_attrs or ufshcd_is_wb_flag is used to match appropriate lun
-in case of shared lu WB. I think Can Guo's code is suitable to prevent
-wrong access to descriptors.
+thanks,
 
-Thanks,
-Daejun
+greg k-h
