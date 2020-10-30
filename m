@@ -2,245 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547E529FDE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 209ED29FDEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725857AbgJ3GhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 02:37:10 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:43170 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725355AbgJ3GhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 02:37:10 -0400
-Received: from [10.130.0.80] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxKtCQtJtflvACAA--.647S3;
-        Fri, 30 Oct 2020 14:37:05 +0800 (CST)
-Subject: Re: [PATCH 4/6] MIPS: Loongson64: Add Mail_Send support for 3A4000+
- CPU
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>
-References: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
- <1603958581-4723-5-git-send-email-yangtiezhu@loongson.cn>
- <8acd5e34-43c1-4571-fa29-5a145d4834bc@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Lu Zeng <zenglu@loongson.cn>,
-        Jianmin Lv <lvjianmin@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <1e1595d5-e721-8ea7-441d-c5f73dbd5963@loongson.cn>
-Date:   Fri, 30 Oct 2020 14:37:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1725823AbgJ3GoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 02:44:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51081 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725355AbgJ3GoD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 02:44:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604040241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TYxMylt0sxpBW5aagScW+aC0G3Hu64EJitlvKMN9xxM=;
+        b=H2VtgW8w8kypjtaTPUvnQr2XQIW4IEafYzzGKW4D9hDHP0t453VIiKcl/1cYgYA24CRy2d
+        VjpWzAJ9v5XFnpJaoBAB+I2Wm8ujhsGJbzrzxLhQGAQcIEbktUmLzu9MRjCgkn8tqB/GIW
+        2wSKrAmL/oHNAFOPlTy/tCcrmd002jI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-351-CN9of5O-Pd6w8RAdv3Ocvg-1; Fri, 30 Oct 2020 02:41:44 -0400
+X-MC-Unique: CN9of5O-Pd6w8RAdv3Ocvg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32B3034914;
+        Fri, 30 Oct 2020 06:41:42 +0000 (UTC)
+Received: from [10.36.112.97] (ovpn-112-97.ams2.redhat.com [10.36.112.97])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 758B46EF6F;
+        Fri, 30 Oct 2020 06:41:39 +0000 (UTC)
+Subject: Re: mm/memblock: export memblock_{start/end}_of_DRAM
+To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        Pratik Patel <pratikp@codeaurora.org>
+References: <d0580051d03df3f3e9f333f6bfe968cf@codeaurora.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <7b50c0fa-bbeb-1041-c05c-2667134044b6@redhat.com>
+Date:   Fri, 30 Oct 2020 07:41:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <8acd5e34-43c1-4571-fa29-5a145d4834bc@flygoat.com>
+In-Reply-To: <d0580051d03df3f3e9f333f6bfe968cf@codeaurora.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxKtCQtJtflvACAA--.647S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxKr4kAw4fWF13Ww43ur1ftFb_yoWxAF47pF
-        yqy3W3GFW0qas7urs8J3y5Xr18JryDGanFyF4IyF4jgas8CwnxWFyxG3ZrJrs7AFZxXF4f
-        Zr1v9rWDK3ZrCa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCY02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-        73UjIFyTuYvjfU1uc_DUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/2020 12:06 PM, Jiaxun Yang wrote:
->
->
-> 在 2020/10/29 16:02, Tiezhu Yang 写道:
->> Loongson 3A4000+ CPU has per-core Mail_Send register to send mail,
->> there is no need to maintain register address of each core and node,
->> just simply specify cpu number.
->>
->> Signed-off-by: Lu Zeng <zenglu@loongson.cn>
->> Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>   .../include/asm/mach-loongson64/loongson_regs.h    | 10 +++
->>   arch/mips/loongson64/smp.c                         | 75 
->> +++++++++++++++++-----
->>   2 files changed, 68 insertions(+), 17 deletions(-)
->>
->> diff --git a/arch/mips/include/asm/mach-loongson64/loongson_regs.h 
->> b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
->> index 83dbb9f..1659935 100644
->> --- a/arch/mips/include/asm/mach-loongson64/loongson_regs.h
->> +++ b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
->> @@ -227,6 +227,16 @@ static inline void csr_writeq(u64 val, u32 reg)
->>   #define CSR_IPI_SEND_CPU_SHIFT    16
->>   #define CSR_IPI_SEND_BLOCK    BIT(31)
->>   +#define LOONGSON_CSR_MAIL_BUF0        0x1020
->> +#define LOONGSON_CSR_MAIL_SEND        0x1048
->> +#define CSR_MAIL_SEND_BLOCK        BIT_ULL(31)
->> +#define CSR_MAIL_SEND_BOX_LOW(box)    (box << 1)
->> +#define CSR_MAIL_SEND_BOX_HIGH(box)    ((box << 1) + 1)
->> +#define CSR_MAIL_SEND_BOX_SHIFT        2
->> +#define CSR_MAIL_SEND_CPU_SHIFT        16
->> +#define CSR_MAIL_SEND_BUF_SHIFT        32
->> +#define CSR_MAIL_SEND_H32_MASK        0xFFFFFFFF00000000ULL
->> +
->>   static inline u64 drdtime(void)
->>   {
->>       int rID = 0;
->> diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
->> index 7d58853..33597d2 100644
->> --- a/arch/mips/loongson64/smp.c
->> +++ b/arch/mips/loongson64/smp.c
->> @@ -54,6 +54,26 @@ static uint32_t core0_c0count[NR_CPUS];
->>   u32 (*ipi_read_clear)(int cpu);
->>   void (*ipi_write_action)(int cpu, u32 action);
->>   +/* send mail via Mail_Send register for 3A4000+ CPU */
->> +static void csr_mail_send(uint64_t data, int cpu, int mailbox)
->> +{
->> +    uint64_t val;
->> +
->> +    /* send high 32 bits */
->> +    val = CSR_MAIL_SEND_BLOCK;
->> +    val |= (CSR_MAIL_SEND_BOX_HIGH(mailbox) << 
->> CSR_MAIL_SEND_BOX_SHIFT);
->> +    val |= (cpu << CSR_MAIL_SEND_CPU_SHIFT);
->> +    val |= (data & CSR_MAIL_SEND_H32_MASK);
->> +    csr_writeq(val, LOONGSON_CSR_MAIL_SEND);
->> +
->> +    /* send low 32 bits */
->> +    val = CSR_MAIL_SEND_BLOCK;
->> +    val |= (CSR_MAIL_SEND_BOX_LOW(mailbox) << CSR_MAIL_SEND_BOX_SHIFT);
->> +    val |= (cpu << CSR_MAIL_SEND_CPU_SHIFT);
->> +    val |= (data << CSR_MAIL_SEND_BUF_SHIFT);
->> +    csr_writeq(val, LOONGSON_CSR_MAIL_SEND);
->> +};
->> +
->>   static u32 csr_ipi_read_clear(int cpu)
->>   {
->>       u32 action;
->> @@ -348,7 +368,10 @@ static void loongson3_init_secondary(void)
->>       /* Set interrupt mask, but don't enable */
->>       change_c0_status(ST0_IM, imask);
->>   -    loongson3_ipi_write32(0xffffffff, 
->> ipi_en0_regs[cpu_logical_map(cpu)]);
->> +    if (cpu_has_csr() && csr_readl(LOONGSON_CSR_FEATURES) & 
->> LOONGSON_CSRF_IPI)
->> +        csr_writel(0xffffffff, LOONGSON_CSR_IPI_EN);
->
-> Hi Tiezhu,
->
-> Feature cheking is duplicated. could you please abstract them to 
-> callbacks and set
-> them in csr_ipi probe?
+On 29.10.20 22:29, Sudarshan Rajagopalan wrote:
+> Hello all,
+> 
 
-Hi Jiaxun,
+Hi!
 
-Thanks for your suggestion. I will do it and then send v2.
+> We have a usecase where a module driver adds certain memory blocks using
+> add_memory_driver_managed(), so that it can perform memory hotplug
+> operations on these blocks. In general, these memory blocks aren’t
+> something that gets physically added later, but is part of actual RAM
+> that system booted up with. Meaning – we set the ‘mem=’ cmdline
+> parameter to limit the memory and later add the remaining ones using
+> add_memory*() variants.
+> 
+> The basic idea is to have driver have ownership and manage certain
+> memory blocks for hotplug operations.
 
+So, in summary, you're still abusing the memory hot(un)plug 
+infrastructure from your driver - just not in a severe way as before. 
+And I'll tell you why, so you might understand why exposing this API is 
+not really a good idea and why your driver wouldn't - for example - be 
+upstream material.
+
+Don't get me wrong, what you are doing might be ok in your context, but 
+it's simply not universally applicable in our current model.
+
+Ordinary system RAM works different than many other devices (like PCI 
+devices) whereby *something* senses the device and exposes it to the 
+system, and some available driver binds to it and owns the memory.
+
+Memory is detected by a driver and added to the system via e.g., 
+add_memory_driver_managed(). Memory devices are created and the memory 
+is directly handed off to the system, to be used as system RAM as soon 
+as memory devices are onlined. There is no driver that "binds" memory 
+like other devices - it's rather the core (buddy) that uses/owns that 
+memory immediately after device creation.
+
+> 
+> For the driver be able to know how much memory was limited and how much
+> actually present, we take the delta of ‘bootmem physical end address’
+> and ‘memblock_end_of_DRAM’. The 'bootmem physical end address' is
+> obtained by scanning the reg values in ‘memory’ DT node and determining
+> the max {addr,size}. Since our driver is getting modularized, we won’t
+> have access to memblock_end_of_DRAM (i.e. end address of all memory
+> blocks after ‘mem=’ is applied).
+
+What you do with "mem=" is force memory detection to ignore some of it's 
+detected memory.
+
+> 
+> So checking if memblock_{start/end}_of_DRAM() symbols can be exported?
+> Also, this information can be obtained by userspace by doing ‘cat
+> /proc/iomem’ and greping for ‘System RAM’. So wondering if userspace can
+
+Not correct: with "mem=", cat /proc/iomem only shows *detected* + added 
+system RAM, not the unmodified detection.
+
+> have access to such info, can we allow kernel module drivers have access
+> by exporting memblock_{start/end}_of_DRAM().
+> 
+> Or are there any other ways where a module driver can get the end
+> address of system memory block?
+
+And here is our problem: You disabled *detection* of that memory by the 
+responsible driver (here: core). Now your driver wants to know what 
+would have been detected. Assume you have memory hole in that region - 
+it would not work by simply looking at start/end. You're driver is not 
+the one doing the detection.
+
+Another issue is: when using such memory for KVM guests, there is no 
+mechanism that tracks ownership of that memory - imagine another driver 
+wanting to use that memory. This really only works in special environments.
+
+Yet another issue: you cannot assume that memblock data will stay around 
+after boot. While we do it right now for arm64, that might change at 
+some point. This is also one of the reasons why we don't export any real 
+memblock data to drivers.
+
+
+When using "mem=" you have to know the exact layout of your system RAM 
+and communicate the right places how that layout looks like manually: 
+here, to your driver.
+
+The clean way of doing things today is to allocate RAM and use it for 
+guests - e.g., using hugetlb/gigantic pages. As I said, there are other 
+techniques coming up to deal with minimizing struct page overhead - if 
+that's what you're concerned with (I still don't know why you're 
+removing the memory from the host when giving it to the guest).
+
+-- 
 Thanks,
-Tiezhu
 
->
-> e.g.
-> ipi_write_enable
->
->
->> +    else
->> +        loongson3_ipi_write32(0xffffffff, 
->> ipi_en0_regs[cpu_logical_map(cpu)]);
->>         per_cpu(cpu_state, cpu) = CPU_ONLINE;
->>       cpu_set_core(&cpu_data[cpu],
->> @@ -380,8 +403,12 @@ static void loongson3_smp_finish(void)
->>         write_c0_compare(read_c0_count() + mips_hpt_frequency/HZ);
->>       local_irq_enable();
->> -    loongson3_ipi_write64(0,
->> -            ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x0);
->> +
->> +    if (cpu_has_csr() && csr_readl(LOONGSON_CSR_FEATURES) & 
->> LOONGSON_CSRF_IPI)
->> +        csr_writel(0, LOONGSON_CSR_MAIL_BUF0);
->> +    else
->> +        loongson3_ipi_write64(0, 
->> ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x0);
->> +
->
-> ditto here,
-> ipi_write_buf
->
->>       pr_info("CPU#%d finished, CP0_ST=%x\n",
->>               smp_processor_id(), read_c0_status());
->>   }
->> @@ -414,12 +441,18 @@ static void __init loongson3_smp_setup(void)
->>       }
->>         csr_ipi_probe();
->> -    ipi_set0_regs_init();
->> -    ipi_clear0_regs_init();
->> -    ipi_status0_regs_init();
->> -    ipi_en0_regs_init();
->> -    ipi_mailbox_buf_init();
->> -    loongson3_ipi_write32(0xffffffff, 
->> ipi_en0_regs[cpu_logical_map(0)]);
->> +
->> +    if (cpu_has_csr() && csr_readl(LOONGSON_CSR_FEATURES) & 
->> LOONGSON_CSRF_IPI) {
->> +        csr_writel(0xffffffff, LOONGSON_CSR_IPI_EN);
->> +    } else {
->> +        ipi_set0_regs_init();
->> +        ipi_clear0_regs_init();
->> +        ipi_status0_regs_init();
->> +        ipi_en0_regs_init();
->> +        ipi_mailbox_buf_init();
->> +        loongson3_ipi_write32(0xffffffff, 
->> ipi_en0_regs[cpu_logical_map(0)]);
->> +    }
->> +
->>       cpu_set_core(&cpu_data[0],
->>                cpu_logical_map(0) % loongson_sysconf.cores_per_package);
->>       cpu_data[0].package = cpu_logical_map(0) / 
->> loongson_sysconf.cores_per_package;
->> @@ -452,14 +485,22 @@ static int loongson3_boot_secondary(int cpu, 
->> struct task_struct *idle)
->>       pr_debug("CPU#%d, func_pc=%lx, sp=%lx, gp=%lx\n",
->>               cpu, startargs[0], startargs[1], startargs[2]);
->>   -    loongson3_ipi_write64(startargs[3],
->> -            ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x18);
->> -    loongson3_ipi_write64(startargs[2],
->> -            ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x10);
->> -    loongson3_ipi_write64(startargs[1],
->> -            ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x8);
->> -    loongson3_ipi_write64(startargs[0],
->> -            ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x0);
->> +    if (cpu_has_csr() && csr_readl(LOONGSON_CSR_FEATURES) & 
->> LOONGSON_CSRF_IPI) {
->> +        csr_mail_send(startargs[3], cpu_logical_map(cpu), 3);
->> +        csr_mail_send(startargs[2], cpu_logical_map(cpu), 2);
->> +        csr_mail_send(startargs[1], cpu_logical_map(cpu), 1);
->> +        csr_mail_send(startargs[0], cpu_logical_map(cpu), 0);
-> ditto
->
-> Thanks.
->
-> - Jiaxun
->
->> +    } else {
->> +        loongson3_ipi_write64(startargs[3],
->> +                ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x18);
->> +        loongson3_ipi_write64(startargs[2],
->> +                ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x10);
->> +        loongson3_ipi_write64(startargs[1],
->> +                ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x8);
->> +        loongson3_ipi_write64(startargs[0],
->> +                ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x0);
->> +    }
->> +
->>       return 0;
->>   }
+David / dhildenb
 
