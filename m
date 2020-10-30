@@ -2,148 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA712A04D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E092A04D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgJ3Lxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:53:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726078AbgJ3Lxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:53:39 -0400
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 930B022245;
-        Fri, 30 Oct 2020 11:53:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604058817;
-        bh=d3fuMxWlzDmtJJrL2Md7MIp8HAK24XJci5Rj9/IXNek=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=P639Eq7j8YcRl1gPHu3NalkhSdzAgeREjxAHYFtNfZ7GJFEfqabKpISxNCUeguPj7
-         tZgHFaKIfT87mpWK9ZLJoqfZWoOyDjXLApMaO+AwJEcDLRVR5Bf8F3bmwtOxa2bZpB
-         8xT/YuQW+hpuGxNSXYwIqPBoBUrv0dLxFI5amGD0=
-Received: by mail-oi1-f173.google.com with SMTP id l62so716474oig.1;
-        Fri, 30 Oct 2020 04:53:37 -0700 (PDT)
-X-Gm-Message-State: AOAM5339tVq8wMSQN7Jm0IkReW1ohWt1p1aVl8Nu5UplDPBmRl0JS2Xv
-        iqn02xnjhuaXrOr11DsVhLUyUpQ/Bx1GW8zMRHg=
-X-Google-Smtp-Source: ABdhPJzgiMhx0rV2JinMkA8Ww1A1B72xR8FBexBi9QJsDuwAWFMOSjFL8BwlpiIHRIAnVKfRfajVNQgJV1+RiQPhRDo=
-X-Received: by 2002:aca:5c82:: with SMTP id q124mr1316465oib.33.1604058816714;
- Fri, 30 Oct 2020 04:53:36 -0700 (PDT)
+        id S1726533AbgJ3LyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:54:15 -0400
+Received: from smtprelay0038.hostedemail.com ([216.40.44.38]:50028 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726078AbgJ3LyO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 07:54:14 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id B9A60100E7B46;
+        Fri, 30 Oct 2020 11:54:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2691:2828:3138:3139:3140:3141:3142:3352:3622:3834:3865:3866:3867:3868:3870:3871:3872:3874:4321:4560:5007:6119:7875:9010:10004:10400:10848:11026:11232:11473:11658:11914:12297:12438:12663:12740:12760:12895:13019:13069:13311:13357:13439:14096:14097:14181:14659:14721:14777:21080:21433:21451:21627:21660:21819:30003:30022:30029:30034:30054:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: books89_2d0b00427295
+X-Filterd-Recvd-Size: 2063
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 30 Oct 2020 11:54:12 +0000 (UTC)
+Message-ID: <9d5c8699f94481ab5bf2d37348199ca1d6343c8b.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: improve handling of email comments
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        yashsri421@gmail.com
+Date:   Fri, 30 Oct 2020 04:54:11 -0700
+In-Reply-To: <20201030090704.40533-1-dwaipayanray1@gmail.com>
+References: <20201030090704.40533-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-References: <20201030060840.1810-1-clin@suse.com> <20201030060840.1810-4-clin@suse.com>
-In-Reply-To: <20201030060840.1810-4-clin@suse.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 30 Oct 2020 12:53:25 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFhZEHP37_tkzzHHhkk-Ej+eRcCinMv-tOdp7vvb1d1mQ@mail.gmail.com>
-Message-ID: <CAMj1kXFhZEHP37_tkzzHHhkk-Ej+eRcCinMv-tOdp7vvb1d1mQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] arm64/ima: add ima_arch support
-To:     Chester Lin <clin@suse.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-security-module@vger.kernel.org, X86 ML <x86@kernel.org>,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020 at 07:09, Chester Lin <clin@suse.com> wrote:
+On Fri, 2020-10-30 at 14:37 +0530, Dwaipayan Ray wrote:
+> checkpatch has limited support for parsing email comments. It only
+> support single name comments or single after address comments.
+> Whereas, RFC 5322 specifies that comments can be inserted in
+> between any tokens of the email fields.
+> 
+> Improve comment parsing mechanism in checkpatch.
+> 
+> What is handled now:
+> 
+> - Multiple name/address comments
+> - Comments anywhere in between name/address
+> - Nested comments like (John (Doe))
 >
-> Add arm64 IMA arch support. The code and arch policy is mainly inherited
-> from x86.
->
-> Signed-off-by: Chester Lin <clin@suse.com>
-> ---
->  arch/arm64/Kconfig           |  1 +
->  arch/arm64/kernel/Makefile   |  2 ++
->  arch/arm64/kernel/ima_arch.c | 43 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 46 insertions(+)
->  create mode 100644 arch/arm64/kernel/ima_arch.c
->
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index a42e8d13cc88..496a4a26afc6 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -201,6 +201,7 @@ config ARM64
->         select SWIOTLB
->         select SYSCTL_EXCEPTION_TRACE
->         select THREAD_INFO_IN_TASK
-> +       imply IMA_SECURE_AND_OR_TRUSTED_BOOT if EFI
->         help
->           ARM 64-bit (AArch64) Linux support.
->
-> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-> index bbaf0bc4ad60..0f6cbb50668c 100644
-> --- a/arch/arm64/kernel/Makefile
-> +++ b/arch/arm64/kernel/Makefile
-> @@ -69,3 +69,5 @@ extra-y                                       += $(head-y) vmlinux.lds
->  ifeq ($(CONFIG_DEBUG_EFI),y)
->  AFLAGS_head.o += -DVMLINUX_PATH="\"$(realpath $(objtree)/vmlinux)\""
->  endif
-> +
-> +obj-$(CONFIG_IMA_SECURE_AND_OR_TRUSTED_BOOT)   += ima_arch.o
-> diff --git a/arch/arm64/kernel/ima_arch.c b/arch/arm64/kernel/ima_arch.c
-> new file mode 100644
-> index 000000000000..564236d77adc
-> --- /dev/null
-> +++ b/arch/arm64/kernel/ima_arch.c
-> @@ -0,0 +1,43 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright (C) 2018 IBM Corporation
-> + */
-> +#include <linux/efi.h>
-> +#include <linux/module.h>
-> +#include <linux/ima.h>
-> +
-> +bool arch_ima_get_secureboot(void)
-> +{
-> +       static bool sb_enabled;
-> +       static bool initialized;
-> +
-> +       if (!initialized & efi_enabled(EFI_BOOT)) {
-> +               sb_enabled = ima_get_efi_secureboot();
-> +               initialized = true;
-> +       }
-> +
-> +       return sb_enabled;
-> +}
-> +
-> +/* secure and trusted boot arch rules */
-> +static const char * const sb_arch_rules[] = {
-> +#if !IS_ENABLED(CONFIG_KEXEC_SIG)
-> +       "appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig",
-> +#endif /* CONFIG_KEXEC_SIG */
-> +       "measure func=KEXEC_KERNEL_CHECK",
-> +#if !IS_ENABLED(CONFIG_MODULE_SIG)
-> +       "appraise func=MODULE_CHECK appraise_type=imasig",
-> +#endif
-> +       "measure func=MODULE_CHECK",
-> +       NULL
-> +};
-> +
-> +const char * const *arch_get_ima_policy(void)
-> +{
-> +       if (IS_ENABLED(CONFIG_IMA_ARCH_POLICY) && arch_ima_get_secureboot()) {
-> +               if (IS_ENABLED(CONFIG_MODULE_SIG))
-> +                       set_module_sig_enforced();
-> +               return sb_arch_rules;
-> +       }
-> +       return NULL;
-> +}
-> --
-> 2.28.0
->
+> A brief analysis of checkpatch output on v5.0..v5.7 showed that
+> after these modifications, the number of BAD_SIGN_OFF warnings
+> came down from 2944 to 1424, and FROM_SIGN_OFF_MISMATCH came
+> down from 2366 to 2330.
+> 
+> So, a total of 1556 false positives were resolved in total.
 
-Can we move all this stuff into security/integrity/ima/ima_efi.c instead?
+A mere reduction in messages emitted isn't necessarily good.
+
+Please send me privately a complete list of these nominally
+false positive messages that are no longer emitted.
+
+I believe one of the relatively common incorrect messages is
+for the cc: <stable@vger.kernel.org> where a version number is
+continued on the same line after a #.
+
+CC: stable@vger.kernel.org # for versions x.y.z and above
+
+
+
