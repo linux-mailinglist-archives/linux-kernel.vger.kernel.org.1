@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82D72A0C42
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B46772A0C54
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbgJ3RNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 13:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbgJ3RNu (ORCPT
+        id S1726814AbgJ3RUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 13:20:03 -0400
+Received: from mailoutvs12.siol.net ([185.57.226.203]:43474 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725863AbgJ3RUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 13:13:50 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB48AC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 10:13:48 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id s7so8240511iol.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 10:13:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=szMBELtKzxhB5vLQY6nxOOzk0TwbzjSvsZ1JzLhDTHA=;
-        b=JpyR7lxktxfr3/YD/6xwXxm05y5jNPrsXLiJegDHwonoSCqIAk2lEuNHqIbvcdtDsO
-         BgdxMYv2cd++kiv+rCWkSjtRxn/nqTUI21yQ5PtEf0uQ9IPaj2eOHTDqOjattOXdrmlx
-         IG2NbG4Gf41pP6W724rMLpZ0KN1/0UhZG0ixQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=szMBELtKzxhB5vLQY6nxOOzk0TwbzjSvsZ1JzLhDTHA=;
-        b=JqY1CqDsFsJxhznjjEHmFF24e75y4rjMVNIIjwaf74rvcbI9guBKn6OOKiNzW+PCXK
-         ypTF7za3sAoLbZU3v1CwIE6GqaM+Yx7i/Ay1wgIQV7VevmwUJ6WdmUBZqKyL4MgJT8mH
-         4/fZaaNTDenZD3KQWKZ01wJFy8o0Z2XzgXIWM75IJcO2mqHH+g3Zny1phwqrOsd0+1uu
-         dVYgVug9Y62jHiORFOLPbgwz7H3K8+qXtw4RofJ+o0tUV52cUAqbOggTkIVpL3/z0Zvn
-         ptNqDL0pEnOogMs7GoFnYyC7fyWE8rK2XNDoPFvoHWaP/hxkwCBlbXf49h3whDZvvLya
-         vP3Q==
-X-Gm-Message-State: AOAM533c8dPYpnjvtBQoNspMP5AtgFJM4obccDEkJ+piW0rGIILs14l9
-        825VPfonIwBgIpasWInzmIvb2pqlPvsWQg==
-X-Google-Smtp-Source: ABdhPJwR/vg8mQM9eAwkk849NXVDcx1hD8BS8XYHU3zHgKwqHAGUB6c+au2wXZij9PQCOQKCd9v2Gg==
-X-Received: by 2002:a6b:3c10:: with SMTP id k16mr2671008iob.209.1604078028191;
-        Fri, 30 Oct 2020 10:13:48 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id k8sm5259666ilh.8.2020.10.30.10.13.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 10:13:47 -0700 (PDT)
-Subject: Re: [PATCH v1 1/4] tools/power/cpupower: Read energy_perf_bias from
- sysfs
-To:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>
-Cc:     Thomas Renninger <trenn@suse.com>, Shuah Khan <shuah@kernel.org>,
-        Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201029190259.3476-1-bp@alien8.de>
- <20201029190259.3476-2-bp@alien8.de>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <d6da5f48-5f50-a201-1f6c-5084466f81ee@linuxfoundation.org>
-Date:   Fri, 30 Oct 2020 11:13:47 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 30 Oct 2020 13:20:02 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id 896CB52783A;
+        Fri, 30 Oct 2020 18:19:59 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id SkOpVqWXThhu; Fri, 30 Oct 2020 18:19:59 +0100 (CET)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id 4348E52783B;
+        Fri, 30 Oct 2020 18:19:59 +0100 (CET)
+Received: from kista.localdomain (cpe1-5-97.cable.triera.net [213.161.5.97])
+        (Authenticated sender: 031275009)
+        by mail.siol.net (Postfix) with ESMTPSA id A2607527839;
+        Fri, 30 Oct 2020 18:19:58 +0100 (CET)
+From:   Jernej Skrabec <jernej.skrabec@siol.net>
+To:     mripard@kernel.org, wens@csie.org
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: [PATCH v2] arm64: dts: allwinner: h6: PineH64 model B: Add wifi
+Date:   Fri, 30 Oct 2020 18:25:30 +0100
+Message-Id: <20201030172530.1096394-1-jernej.skrabec@siol.net>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-In-Reply-To: <20201029190259.3476-2-bp@alien8.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 1:02 PM, Borislav Petkov wrote:
-> From: Borislav Petkov <bp@suse.de>
-> 
-> ... instead of poking at the MSR. For that, move the accessor functions
-> to misc.c and add a sysfs-writing function too.
-> 
-> There should be no functional changes resulting from this.
-> 
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Cc: Thomas Renninger <trenn@suse.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> ---
->   tools/power/cpupower/lib/cpupower.c          | 23 +++++++++-
->   tools/power/cpupower/lib/cpupower_intern.h   |  5 ++
->   tools/power/cpupower/utils/cpupower-info.c   |  2 +-
->   tools/power/cpupower/utils/cpupower-set.c    |  2 +-
->   tools/power/cpupower/utils/helpers/helpers.h |  8 ++--
->   tools/power/cpupower/utils/helpers/misc.c    | 48 ++++++++++++++++++++
->   tools/power/cpupower/utils/helpers/msr.c     | 28 ------------
->   7 files changed, 81 insertions(+), 35 deletions(-)
-> 
+PineH64 model B contains RTL8723CS wifi+bt combo module.
 
-Thanks. Looks good to me.
+Since bluetooth support is not yet squared away, only wifi is enabled
+for now.
 
-Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+---
+Changes from v1:
+- added Chen-Yu tag
+- added vqmmc-supply
 
-thanks,
--- Shuah
+ .../dts/allwinner/sun50i-h6-pine-h64-model-b.dts  | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts=
+ b/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts
+index f4c8966a6497..7fea1e4e2d49 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts
+@@ -10,6 +10,12 @@ / {
+ 	compatible =3D "pine64,pine-h64-model-b", "allwinner,sun50i-h6";
+=20
+ 	/delete-node/ reg_gmac_3v3;
++
++	wifi_pwrseq: wifi_pwrseq {
++		compatible =3D "mmc-pwrseq-simple";
++		reset-gpios =3D <&r_pio 1 3 GPIO_ACTIVE_LOW>; /* PM3 */
++		post-power-on-delay-ms =3D <200>;
++	};
+ };
+=20
+ &hdmi_connector {
+@@ -19,3 +25,12 @@ &hdmi_connector {
+ &emac {
+ 	phy-supply =3D <&reg_aldo2>;
+ };
++
++&mmc1 {
++	vmmc-supply =3D <&reg_cldo3>;
++	vqmmc-supply =3D <&reg_aldo1>;
++	mmc-pwrseq =3D <&wifi_pwrseq>;
++	bus-width =3D <4>;
++	non-removable;
++	status =3D "okay";
++};
+--=20
+2.29.1
+
