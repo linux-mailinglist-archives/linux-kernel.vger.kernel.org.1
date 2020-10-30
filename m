@@ -2,226 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B258829FC2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA84029FC2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726259AbgJ3D2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 23:28:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725909AbgJ3D2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 23:28:15 -0400
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B23F20796;
-        Fri, 30 Oct 2020 03:28:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604028494;
-        bh=5bWbc+rk6iFjGM/ynMw2nwmBb0fImGIaV/wftktq57g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ImH+C2h6vvBgZxYYeXPtz3xhowPZh4CJNuPBb3tmmyrNnzBOWtxVMIHGREvPr3q9z
-         0K6JvY0BBf/dsi8Z330a0B85AI05LSqm6+KO7zDufSlwYFItjLjylAt+vVFl+HOuo/
-         1uinU4SFVPMNUB9ZcADQeKT9hPpweWbqsqSXiCw0=
-Received: by mail-lj1-f171.google.com with SMTP id d25so5376636ljc.11;
-        Thu, 29 Oct 2020 20:28:14 -0700 (PDT)
-X-Gm-Message-State: AOAM532N/FZ7FK0IPfNQxvpJotmXwJYKTXe8otZ2g/becWoJCQCPuafm
-        mvI4ay6vX+aDQYl3LMQvHcAWIBZHCPYB16HqR64=
-X-Google-Smtp-Source: ABdhPJymmsta1af3Be4tZIeK2tuuwY/zbAZDHIq5ay5bW/EzniyTMq7KysPhNarwv4UQVjr6ntyqlqus/G9USrnLhZ0=
-X-Received: by 2002:a2e:85c4:: with SMTP id h4mr136001ljj.250.1604028492494;
- Thu, 29 Oct 2020 20:28:12 -0700 (PDT)
+        id S1726110AbgJ3D3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 23:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbgJ3D3y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 23:29:54 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1392CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:29:53 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id a200so4068835pfa.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=kNFigGmlnT8RRi6z0sCPMt5Zg63u/lv6a6WCx8xI9/k=;
+        b=mq0/8Qy7Ve6u00MU6iGI3ZON19U0Xh/nF42bdR7N8KoIOexf6e9uuP1lJ7aPL9gxUF
+         /6hU8zFSrMi6wE7MgmKYzth/P3AAHrFx3hiCLQqn74BJsqXoEznfDAxOU5bUjLpHiriW
+         +xvNTLfTgQB/aH1BCeDHWPLsRnuRkZqcguv6AiS45T+8S70dPK3t9d1Z5D89aEvbA36h
+         SSN0kZRpx6bb/PIB4Mg9d0IvpLH3k8tMjtCqBHy9vjRtvysTEcMkFXvrsqVhBh/S1tVI
+         a9I2R3URX8Eno+U2bihtbF7TL09mAfmAwplYxtkDUuWuhZ8HRtLZLiCIVNjSul1ss+1T
+         towA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=kNFigGmlnT8RRi6z0sCPMt5Zg63u/lv6a6WCx8xI9/k=;
+        b=aw7vbBYtvpgxwzpvikegqNU6ZEmOKUsqvcjqwy01C8NPKtA+KhHdSonqyncr7muVFx
+         SgKWNSm8ohmlbL2hVuNOe8WdLwyUXuoemJ4GYSGfhHPs7rSLzSs/YtXCHvfLkx3bBEFr
+         DIZDoU3RGpcqpff/71NlDt1ev+V9Su7qypqcHxEgIIyaYk9tpUnyPcDV3KFp1Nf9jjiW
+         AW+EMkLvnUcsARXnl/7Qdu+SDV7/y/2J72JJqkciMyC9yTKFte5N/a/3jhvE73H+2pSd
+         idwLaNXvDI4jaIWshRcSeg1FNvbV6jv1jhQReVeaPTESWSemipPL9XcalsQ6zDr9QsXI
+         y2qg==
+X-Gm-Message-State: AOAM531ZXCmxtbL5LE86c1Jl3UIH6PBKCm9v8R4nkDg0pHjNqO2VkDu5
+        ZFxh+mDFPWEw2MXTwoEnKOg=
+X-Google-Smtp-Source: ABdhPJwIVMjw39qjT1TY0hYU+IjXwoIA0G3zsE2DQwL6bJLjQU34JC8Hiwe282UUBVpaiq3XeYJhvQ==
+X-Received: by 2002:a63:c053:: with SMTP id z19mr393466pgi.418.1604028592566;
+        Thu, 29 Oct 2020 20:29:52 -0700 (PDT)
+Received: from my--box ([103.98.79.70])
+        by smtp.gmail.com with ESMTPSA id b16sm220933pju.16.2020.10.29.20.29.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 20:29:52 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 08:59:45 +0530
+From:   Deepak R Varma <mh12gx2825@gmail.com>
+To:     outreachy-kernel@googlegroups.com,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     mh12gx2825@gmail.com, melissa.srw@gmail.com, daniel.vetter@ffwll.ch
+Subject: [PATCH] drm/i915/gvt: use DEFINE_DEBUGFS_ATTRIBUTE with
+ debugfs_create_file_unsafe()
+Message-ID: <20201030032945.GA274850@my--box>
 MIME-Version: 1.0
-References: <20201021073839.43935-1-zong.li@sifive.com> <CAJF2gTTnGSYAc3AZKCPvhNJsPm_TchPjPrtqc_WzaK7K5eNt+w@mail.gmail.com>
- <CAOnJCULN8h0Jk3H-vskgbaXhgBTgTTAT5Dji0qHi6yHoXGePvg@mail.gmail.com>
- <CANXhq0q_fOg7vsniVMtNd8VezW1yymf55FYRc61WMkXMOtZpgA@mail.gmail.com>
- <CAJF2gTR-_=_vDLsST9BVxRFC0OTR4_TYV-2=nH_Gux_zWDOk3Q@mail.gmail.com> <CAOnJCU+d5YQzKW2qs0NURJt1_5zrM6YXrkP4FzB_=zgbb-5DuA@mail.gmail.com>
-In-Reply-To: <CAOnJCU+d5YQzKW2qs0NURJt1_5zrM6YXrkP4FzB_=zgbb-5DuA@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 30 Oct 2020 11:28:01 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTT9gZZftoUD4eMT0Th=oYOpsdYbrFdr=5kO2-N+ki51NA@mail.gmail.com>
-Message-ID: <CAJF2gTT9gZZftoUD4eMT0Th=oYOpsdYbrFdr=5kO2-N+ki51NA@mail.gmail.com>
-Subject: Re: [PATCH] stop_machine: Mark functions as notrace
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Zong Li <zong.li@sifive.com>, Paul McKenney <paulmck@kernel.org>,
-        josh@joshtriplett.org, Steven Rostedt <rostedt@goodmis.org>,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, vincent.whitchurch@axis.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 2:46 AM Atish Patra <atishp@atishpatra.org> wrote:
->
-> On Thu, Oct 29, 2020 at 9:06 AM Guo Ren <guoren@kernel.org> wrote:
-> >
-> > On Thu, Oct 29, 2020 at 10:34 AM Zong Li <zong.li@sifive.com> wrote:
-> > >
-> > > On Thu, Oct 29, 2020 at 8:23 AM Atish Patra <atishp@atishpatra.org> wrote:
-> > > >
-> > > > On Wed, Oct 28, 2020 at 8:44 AM Guo Ren <guoren@kernel.org> wrote:
-> > > > >
-> > > > > Hi Zong & Atish,
-> > > > >
-> > > > > In our 2 harts c910 chip, we found:
-> > > > >
-> > > > > echo function > /sys/kernel/debug/tracing/current_tracer
-> > > > > echo function_graph > /sys/kernel/debug/tracing/current_tracer
-> > > > > echo function > /sys/kernel/debug/tracing/current_tracer
-> > > > > echo function_graph > /sys/kernel/debug/tracing/current_tracer
-> > > > >
-> > > > > Then one core halted at stop_machine_yield:
-> > > > > arch_cpu_idle () at arch/riscv/kernel/process.c:39
-> > > > > 39              local_irq_enable();
-> > > > > (gdb) i th
-> > > > >   Id   Target Id         Frame
-> > > > > * 1    Thread 1 (CPU#0)  arch_cpu_idle () at arch/riscv/kernel/process.c:39
-> > > > >   2    Thread 2 (CPU#1)  stop_machine_yield
-> > > > > (cpumask=0xffffffe001371fa8 <__cpu_online_mask>) at
-> > > > > ./arch/riscv/include/asm/vdso/processor.h:12
-> > > > > (gdb) thread 2
-> > > > > [Switching to thread 2 (Thread 2)]
-> > > > > #0  stop_machine_yield (cpumask=0xffffffe001371fa8
-> > > > > <__cpu_online_mask>) at ./arch/riscv/include/asm/vdso/processor.h:12
-> > > > > 12              __asm__ __volatile__ ("div %0, %0, zero" : "=r" (dummy));
-> > > > >
-> > > > > With your patch, it's solved. For this patch, I'll give:
-> > > > > Tested by: Guo Ren <guoren@kernel.org>
-> > > > >
-> > > > > But that's not enough, we still need:
-> > > > >
-> > > > > diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> > > > > index 226ccce..12b8808 100644
-> > > > > --- a/arch/riscv/kernel/sbi.c
-> > > > > +++ b/arch/riscv/kernel/sbi.c
-> > > > > @@ -376,7 +376,7 @@ EXPORT_SYMBOL(sbi_send_ipi);
-> > > > >   *
-> > > > >   * Return: None
-> > > > >   */
-> > > > > -void sbi_remote_fence_i(const unsigned long *hart_mask)
-> > > > > +void notrace sbi_remote_fence_i(const unsigned long *hart_mask)
-> > > > >  {
-> > > > >         __sbi_rfence(SBI_EXT_RFENCE_REMOTE_FENCE_I,
-> > > > >                      hart_mask, 0, 0, 0, 0);
-> > > > > diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-> > > > > index 400b945d..9467d987 100644
-> > > > > --- a/arch/riscv/mm/cacheflush.c
-> > > > > +++ b/arch/riscv/mm/cacheflush.c
-> > > > > @@ -9,12 +9,12 @@
-> > > > >
-> > > > >  #include <asm/sbi.h>
-> > > > >
-> > > > > -static void ipi_remote_fence_i(void *info)
-> > > > > +static void notrace ipi_remote_fence_i(void *info)
-> > > > >  {
-> > > > >         return local_flush_icache_all();
-> > > > >  }
-> > > > >
-> > > > > -void flush_icache_all(void)
-> > > > > +void notrace flush_icache_all(void)
-> > > > >  {
-> > > > >         if (IS_ENABLED(CONFIG_RISCV_SBI))
-> > > > >                 sbi_remote_fence_i(NULL);
-> > > > >
-> > > >
-> > > > Did you see any issue if these functions are not marked as notrace ?
-> > > >
-> > > > As per Zong's explanation, the issue was that the other harts already
-> > > > fetched the next 2 nops and
-> > > > executed 1 while kernel patching replaced other with one of the auipc
-> > > > + jalr pair.
-> > > >
-> > > > @Zong can correct me if I am wrong.
-> > > >
-> > > > These functions are too far ahead. Can it cause such issues ? If yes,
-> > > > then we need to mark each and every function
-> > > > that can be invoked from patch_text_nosync and are not inlined.
-> > > >
-> > > > That includes copy_to_kernel_nofault, __sbi_rfence_v02,
-> > > > __sbi_rfence_v02_call, sbi_ecall.
-> > > >
-> > > > Few of these functions may be inlined by compiler. Can we depend on that ?
-> > > >
-> > > > > Because:
-> > > > > (gdb) bt
-> > > > > #0  flush_icache_all () at arch/riscv/mm/cacheflush.c:20
-> > > > > #1  0xffffffe00020473a in patch_text_nosync (addr=<optimized out>, insns=
-> > > > >     <optimized out>, len=<optimized out>) at arch/riscv/kernel/patch.c:96
-> > > > > #2  0xffffffe000206792 in ftrace_make_call (rec=<optimized out>,
-> > > > > addr=<optimized out>) at arch/riscv/kernel/ftrace.c:109
-> > > > > #3  0xffffffe0002c9be4 in __ftrace_replace_code (rec=0xffffffe01ae40020, e
-> > > > >     nable=true) at kernel/trace/ftrace.c:2503
-> > > > > #4  0xffffffe0002ca092 in ftrace_replace_code (mod_flags=<optimized
-> > > > >     out>) at kernel/trace/ftrace.c:2530
-> > > > > #5  0xffffffe0002ca24a in ftrace_modify_all_code (command=9) at kernel
-> > > > >    /trace/ftrace.c:2677
-> > > > > #6  0xffffffe0002ca2ee in __ftrace_modify_code (data=<optimized out>) at
-> > > > >    kernel/trace/ftrace.c:2703
-> > > > > #7  0xffffffe0002c1390 in multi_cpu_stop (data=0x0) at kernel/stop_machin
-> > > > >    e.c:224
-> > > > > #8  0xffffffe0002c0fbe in cpu_stopper_thread (cpu=<optimized out>) at kern
-> > > > >    el/stop_machine.c:491
-> > > > > #9  0xffffffe0002343be in smpboot_thread_fn (data=0x0) at kernel/smpboot.
-> > > > >    c:165
-> > > > > #10 0xffffffe00022f894 in kthread (_create=0xffffffe01af13040) at kern
-> > > > >    el/kthread.c:292
-> > > > > #11 0xffffffe000201fac in handle_exception () at arch/riscv/kernel/entry.S:236
-> > > > >
-> > >
-> > > It seems to me that the problem happens on the waiting threads, it
-> > No, that is the call trace to show ftrace_make_call ->
-> > flush_icache_all and we should give notrace on the whole path.
-> >
->
-> Hmm. I am curious to understand how other architectures avoid this problem.
+Using DEFINE_DEBUGFS_ATTRIBUTE macro with debugfs_create_file_unsafe()
+function in place of the debugfs_create_file() function will make the
+file operation struct "reset" aware of the file's lifetime. Additional
+details here: https://lists.archive.carbon60.com/linux/kernel/2369498
 
-for arm64
-static int ftrace_modify_code(unsigned long pc, u32 old, u32 new,
-                              bool validate)
-{
-        u32 replaced;
-...
-        if (aarch64_insn_patch_text_nosync((void *)pc, new))
-                return -EPERM;
+Issue reported by Coccinelle script:
+scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
 
-int __kprobes aarch64_insn_patch_text_nosync(void *addr, u32 insn)
-{
-        u32 *tp = addr;
-        int ret;
+Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+---
+Please Note: This is a Outreachy project task patch.
 
-        /* A64 instructions must be word aligned */
-        if ((uintptr_t)tp & 0x3)
-                return -EINVAL;
+ drivers/gpu/drm/i915/gvt/debugfs.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-        ret = aarch64_insn_write(tp, insn);
-        if (ret == 0)
-                __flush_icache_range((uintptr_t)tp,
-                                     (uintptr_t)tp + AARCH64_INSN_SIZE);
-
-Look at arm64, they __kprobes flag and I guess it would also prevent
-ftrace call site.
-
-__flush_icache_range is written in asm and no possible ftrace call site.
-
-> Is it a bigger issue in RISC-V because we have to switch privilege
-> mode to sync I/D cache ?
-We should sync I/D cache at s-mode because we need virtual address.
-For c910 we've added icache broadcast invalid instructions by physical
-address and virtual address.
-
-Current linux/arch/riscv I/D cache sync is so expensive.
-
+diff --git a/drivers/gpu/drm/i915/gvt/debugfs.c b/drivers/gpu/drm/i915/gvt/debugfs.c
+index 62e6a14ad58e..18adfa2d5f5b 100644
+--- a/drivers/gpu/drm/i915/gvt/debugfs.c
++++ b/drivers/gpu/drm/i915/gvt/debugfs.c
+@@ -147,9 +147,8 @@ vgpu_scan_nonprivbb_set(void *data, u64 val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(vgpu_scan_nonprivbb_fops,
+-			vgpu_scan_nonprivbb_get, vgpu_scan_nonprivbb_set,
+-			"0x%llx\n");
++DEFINE_DEBUGFS_ATTRIBUTE(vgpu_scan_nonprivbb_fops, vgpu_scan_nonprivbb_get,
++			 vgpu_scan_nonprivbb_set, "0x%llx\n");
+ 
+ /**
+  * intel_gvt_debugfs_add_vgpu - register debugfs entries for a vGPU
+@@ -165,8 +164,8 @@ void intel_gvt_debugfs_add_vgpu(struct intel_vgpu *vgpu)
+ 	debugfs_create_bool("active", 0444, vgpu->debugfs, &vgpu->active);
+ 	debugfs_create_file("mmio_diff", 0444, vgpu->debugfs, vgpu,
+ 			    &vgpu_mmio_diff_fops);
+-	debugfs_create_file("scan_nonprivbb", 0644, vgpu->debugfs, vgpu,
+-			    &vgpu_scan_nonprivbb_fops);
++	debugfs_create_file_unsafe("scan_nonprivbb", 0644, vgpu->debugfs, vgpu,
++				   &vgpu_scan_nonprivbb_fops);
+ }
+ 
+ /**
 -- 
-Best Regards
- Guo Ren
+2.25.1
 
-ML: https://lore.kernel.org/linux-csky/
