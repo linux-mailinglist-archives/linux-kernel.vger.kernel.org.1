@@ -2,148 +2,641 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045402A0CF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D215A2A0D02
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726904AbgJ3SAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:00:49 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:35645 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgJ3SAr (ORCPT
+        id S1727203AbgJ3SBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:01:31 -0400
+Received: from pbmsgap02.intersil.com ([192.157.179.202]:40172 "EHLO
+        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726072AbgJ3SBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:00:47 -0400
-Received: by mail-ot1-f67.google.com with SMTP id n11so6345114ota.2;
-        Fri, 30 Oct 2020 11:00:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Lr4y4KoOe23xrjqNwW8I6PIt//Qb7SqS16VoByKxO7E=;
-        b=luoRkr1eCebIAD+kOUfEEYgRqoaGCXeKDsYbwtDULXLlvT2eulraaHK9nex84hXYWw
-         i5kjCS/zelakjPjDM75WKZrs6r3Ig2U2hzxdKqhV/F43tKTycnIOXKWvICau3v15e4bs
-         I14xC3V5KvKRFCP18tvH26Md4Lewe0oheHAgXK6oq2/BgpIcA83J/Q0OBZKHaat92GF3
-         vAaUYOqYIyDKnfRvPwjhJlsFWgNTxdBcOwvLPajGlqUdmqBZ/N6AuUr9ow1PahsAXtOP
-         EJYPSoFP3x/8H2hmfGQE3bMrUuGA0Wpa4zKhlkg7cr8kSWOrGGCs6j721lU55KdV1W2e
-         abiA==
-X-Gm-Message-State: AOAM533zIk1/VwmEEjdBaWjz0lca1ck2m7CZ4K5l/HSvMfBIx1/7nh0k
-        HLUWc7wLX2dwjOSnEOKXsg==
-X-Google-Smtp-Source: ABdhPJxGs7yVMgVQYSktpFKDHpqq3xduuddkl2U/2zQoDnipcdutMUifZehDC8fqGYid00IMFD8aBA==
-X-Received: by 2002:a05:6830:1e4e:: with SMTP id e14mr2542560otj.253.1604080844650;
-        Fri, 30 Oct 2020 11:00:44 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k21sm1502672otr.27.2020.10.30.11.00.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 11:00:43 -0700 (PDT)
-Received: (nullmailer pid 4068454 invoked by uid 1000);
-        Fri, 30 Oct 2020 18:00:42 -0000
-Date:   Fri, 30 Oct 2020 13:00:42 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        andrea@borgia.bo.it, Kai Heng Feng <kai.heng.feng@canonical.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Hans De Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] dt-bindings: HID: i2c-hid: Label this binding as
- deprecated
-Message-ID: <20201030180042.GB3967106@bogus>
-References: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
- <CAO-hwJLn5XKV+cp+fCRY395uBWuX=JrxgiGSHUnJXFpTzFWu4w@mail.gmail.com>
+        Fri, 30 Oct 2020 14:01:31 -0400
+X-Greylist: delayed 338 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Oct 2020 14:01:29 EDT
+Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
+        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 09UHtAoD017252;
+        Fri, 30 Oct 2020 13:55:50 -0400
+Received: from pbmxdp02.intersil.corp (pbmxdp02.pb.intersil.com [132.158.200.223])
+        by pbmsgap02.intersil.com with ESMTP id 34ceefu2xf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 13:55:50 -0400
+Received: from pbmxdp03.intersil.corp (132.158.200.224) by
+ pbmxdp02.intersil.corp (132.158.200.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.1979.3; Fri, 30 Oct 2020 13:55:48 -0400
+Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
+ (132.158.200.224) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Fri, 30 Oct 2020 13:55:48 -0400
+From:   <min.li.xe@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Min Li <min.li.xe@renesas.com>
+Subject: [PATCH net 1/1] ptp: idt82p33: add adjphase support
+Date:   Fri, 30 Oct 2020 13:55:32 -0400
+Message-ID: <1604080532-22410-1-git-send-email-min.li.xe@renesas.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAO-hwJLn5XKV+cp+fCRY395uBWuX=JrxgiGSHUnJXFpTzFWu4w@mail.gmail.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-30_08:2020-10-30,2020-10-30 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 adultscore=0 mlxlogscore=999
+ bulkscore=0 spamscore=0 suspectscore=4 malwarescore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010300132
+X-Proofpoint-Spam-Reason: mlx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 11:51:53AM +0100, Benjamin Tissoires wrote:
-> Hi Doug,
-> 
-> Foreword: I was about to say "yeah, whatever" to please Rob for once.
+From: Min Li <min.li.xe@renesas.com>
 
-Read my other reply first... I think we mostly agree.
+Add idt82p33_adjwritephase() to support PHC write phase mode.
 
-> But after re-reading this and more specifically patch 3 of the series,
-> that won't do. More comments inlined.
-> 
-> On Sat, Oct 24, 2020 at 1:23 AM Douglas Anderson <dianders@chromium.org> wrote:
-> >
-> > As pointed out by Rob Herring [1], we should have a device-specific
-> > compatible string.  This means people shouldn't be using the
-> > "i2c-over-hid" compatible string anymore, or at least not without a
-> > more specific compatible string before it.  Specifically:
-> >
-> > 1. For newly added devices we should just have the device-specific
-> >    device string (no "hid-over-i2c" fallback) and infer the timings
-> >    and hid-descr-addr from there.
-> 
-> And that's a big NACK from a maintainer point of view. I know in the
-> device tree world these strings are important so that people can just
-> say "I have a device compatible with X", and go on, but in the HID
-> world that means we will have to implement one compatible struct per
-> vendor/device, which is not something I want to do.
+Signed-off-by: Min Li <min.li.xe@renesas.com>
+---
+ drivers/ptp/ptp_idt82p33.c | 307 +++++++++++++++++++++++++++++++++++----------
+ drivers/ptp/ptp_idt82p33.h |   3 +
+ 2 files changed, 243 insertions(+), 67 deletions(-)
 
-It's not really any different than PCI and USB VID/PIDs.
+diff --git a/drivers/ptp/ptp_idt82p33.c b/drivers/ptp/ptp_idt82p33.c
+index 179f6c4..3d91aee 100644
+--- a/drivers/ptp/ptp_idt82p33.c
++++ b/drivers/ptp/ptp_idt82p33.c
+@@ -33,6 +33,9 @@ module_param(phase_snap_threshold, uint, 0);
+ MODULE_PARM_DESC(phase_snap_threshold,
+ "threshold (150000ns by default) below which adjtime would ignore");
+ 
++static char *firmware;
++module_param(firmware, charp, 0);
++
+ static void idt82p33_byte_array_to_timespec(struct timespec64 *ts,
+ 					    u8 buf[TOD_BYTE_COUNT])
+ {
+@@ -77,15 +80,15 @@ static void idt82p33_timespec_to_byte_array(struct timespec64 const *ts,
+ 	}
+ }
+ 
+-static int idt82p33_xfer(struct idt82p33 *idt82p33,
+-			 unsigned char regaddr,
+-			 unsigned char *buf,
+-			 unsigned int count,
+-			 int write)
++static int idt82p33_xfer_read(struct idt82p33 *idt82p33,
++			      unsigned char regaddr,
++			      unsigned char *buf,
++			      unsigned int count)
+ {
+ 	struct i2c_client *client = idt82p33->client;
+ 	struct i2c_msg msg[2];
+ 	int cnt;
++	char *fmt = "i2c_transfer failed at %d in %s, at addr: %04X!\n";
+ 
+ 	msg[0].addr = client->addr;
+ 	msg[0].flags = 0;
+@@ -93,13 +96,17 @@ static int idt82p33_xfer(struct idt82p33 *idt82p33,
+ 	msg[0].buf = &regaddr;
+ 
+ 	msg[1].addr = client->addr;
+-	msg[1].flags = write ? 0 : I2C_M_RD;
++	msg[1].flags = I2C_M_RD;
+ 	msg[1].len = count;
+ 	msg[1].buf = buf;
+ 
+ 	cnt = i2c_transfer(client->adapter, msg, 2);
+ 	if (cnt < 0) {
+-		dev_err(&client->dev, "i2c_transfer returned %d\n", cnt);
++		dev_err(&client->dev,
++			fmt,
++			__LINE__,
++			__func__,
++			(u8) regaddr);
+ 		return cnt;
+ 	} else if (cnt != 2) {
+ 		dev_err(&client->dev,
+@@ -109,6 +116,37 @@ static int idt82p33_xfer(struct idt82p33 *idt82p33,
+ 	return 0;
+ }
+ 
++static int idt82p33_xfer_write(struct idt82p33 *idt82p33,
++			       u8 regaddr,
++			       u8 *buf,
++			       u16 count)
++{
++	struct i2c_client *client = idt82p33->client;
++	/* we add 1 byte for device register */
++	u8 msg[IDT82P33_MAX_WRITE_COUNT + 1];
++	int cnt;
++	char *fmt = "i2c_master_send failed at %d in %s, at addr: %04X!\n";
++
++	if (count > IDT82P33_MAX_WRITE_COUNT)
++		return -EINVAL;
++
++	msg[0] = regaddr;
++	memcpy(&msg[1], buf, count);
++
++	cnt = i2c_master_send(client, msg, count + 1);
++
++	if (cnt < 0) {
++		dev_err(&client->dev,
++			fmt,
++			__LINE__,
++			__func__,
++			regaddr);
++		return cnt;
++	}
++
++	return 0;
++}
++
+ static int idt82p33_page_offset(struct idt82p33 *idt82p33, unsigned char val)
+ {
+ 	int err;
+@@ -116,7 +154,7 @@ static int idt82p33_page_offset(struct idt82p33 *idt82p33, unsigned char val)
+ 	if (idt82p33->page_offset == val)
+ 		return 0;
+ 
+-	err = idt82p33_xfer(idt82p33, PAGE_ADDR, &val, sizeof(val), 1);
++	err = idt82p33_xfer_write(idt82p33, PAGE_ADDR, &val, sizeof(val));
+ 	if (err)
+ 		dev_err(&idt82p33->client->dev,
+ 			"failed to set page offset %d\n", val);
+@@ -137,11 +175,12 @@ static int idt82p33_rdwr(struct idt82p33 *idt82p33, unsigned int regaddr,
+ 
+ 	err = idt82p33_page_offset(idt82p33, page);
+ 	if (err)
+-		goto out;
++		return err;
+ 
+-	err = idt82p33_xfer(idt82p33, offset, buf, count, write);
+-out:
+-	return err;
++	if (write)
++		return idt82p33_xfer_write(idt82p33, offset, buf, count);
++
++	return idt82p33_xfer_read(idt82p33, offset, buf, count);
+ }
+ 
+ static int idt82p33_read(struct idt82p33 *idt82p33, unsigned int regaddr,
+@@ -448,8 +487,13 @@ static int idt82p33_measure_tod_write_overhead(struct idt82p33_channel *channel)
+ 
+ 	err = idt82p33_measure_settime_gettime_gap_overhead(channel, &gap_ns);
+ 
+-	if (err)
++	if (err) {
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
+ 		return err;
++	}
+ 
+ 	err = idt82p33_measure_one_byte_write_overhead(channel,
+ 						       &one_byte_write_ns);
+@@ -518,12 +562,10 @@ static int idt82p33_sync_tod(struct idt82p33_channel *channel, bool enable)
+ 	u8 sync_cnfg;
+ 	int err;
+ 
+-	if (enable == channel->sync_tod_on) {
+-		if (enable && sync_tod_timeout) {
+-			mod_delayed_work(system_wq, &channel->sync_tod_work,
+-					 sync_tod_timeout * HZ);
+-		}
+-		return 0;
++	/* Turn it off after sync_tod_timeout seconds */
++	if (enable && sync_tod_timeout) {
++		ptp_schedule_worker(channel->ptp_clock,
++				    sync_tod_timeout * HZ);
+ 	}
+ 
+ 	err = idt82p33_read(idt82p33, channel->dpll_sync_cnfg,
+@@ -541,20 +583,13 @@ static int idt82p33_sync_tod(struct idt82p33_channel *channel, bool enable)
+ 	if (err)
+ 		return err;
+ 
+-	channel->sync_tod_on = enable;
+-
+-	if (enable && sync_tod_timeout) {
+-		mod_delayed_work(system_wq, &channel->sync_tod_work,
+-				 sync_tod_timeout * HZ);
+-	}
+-
+ 	return 0;
+ }
+ 
+-static void idt82p33_sync_tod_work_handler(struct work_struct *work)
++static long idt82p33_sync_tod_work_handler(struct ptp_clock_info *ptp)
+ {
+ 	struct idt82p33_channel *channel =
+-		container_of(work, struct idt82p33_channel, sync_tod_work.work);
++			container_of(ptp, struct idt82p33_channel, caps);
+ 	struct idt82p33 *idt82p33 = channel->idt82p33;
+ 
+ 	mutex_lock(&idt82p33->reg_lock);
+@@ -562,35 +597,51 @@ static void idt82p33_sync_tod_work_handler(struct work_struct *work)
+ 	(void)idt82p33_sync_tod(channel, false);
+ 
+ 	mutex_unlock(&idt82p33->reg_lock);
++
++	/* Return a negative value here to not reschedule */
++	return -1;
+ }
+ 
+-static int idt82p33_pps_enable(struct idt82p33_channel *channel, bool enable)
++static int idt82p33_output_enable(struct idt82p33_channel *channel,
++				  bool enable, unsigned int outn)
+ {
+ 	struct idt82p33 *idt82p33 = channel->idt82p33;
+-	u8 mask, outn, val;
+ 	int err;
++	u8 val;
++
++	err = idt82p33_read(idt82p33, OUT_MUX_CNFG(outn), &val, sizeof(val));
++
++	if (err)
++		return err;
++
++	if (enable)
++		val &= ~SQUELCH_ENABLE;
++	else
++		val |= SQUELCH_ENABLE;
++
++	return idt82p33_write(idt82p33, OUT_MUX_CNFG(outn), &val, sizeof(val));
++}
++
++static int idt82p33_output_mask_enable(struct idt82p33_channel *channel,
++				       bool enable)
++{
++	u16 mask;
++	int err;
++	u8 outn;
+ 
+ 	mask = channel->output_mask;
+ 	outn = 0;
+ 
+ 	while (mask) {
+-		if (mask & 0x1) {
+-			err = idt82p33_read(idt82p33, OUT_MUX_CNFG(outn),
+-					    &val, sizeof(val));
+-			if (err)
+-				return err;
+ 
+-			if (enable)
+-				val &= ~SQUELCH_ENABLE;
+-			else
+-				val |= SQUELCH_ENABLE;
++		if (mask & 0x1) {
+ 
+-			err = idt82p33_write(idt82p33, OUT_MUX_CNFG(outn),
+-					     &val, sizeof(val));
++			err = idt82p33_output_enable(channel, enable, outn);
+ 
+ 			if (err)
+ 				return err;
+ 		}
++
+ 		mask >>= 0x1;
+ 		outn++;
+ 	}
+@@ -598,6 +649,20 @@ static int idt82p33_pps_enable(struct idt82p33_channel *channel, bool enable)
+ 	return 0;
+ }
+ 
++static int idt82p33_perout_enable(struct idt82p33_channel *channel,
++				  bool enable,
++				  struct ptp_perout_request *perout)
++{
++	unsigned int flags = perout->flags;
++
++	/* Enable/disable output based on output_mask */
++	if (flags == PEROUT_ENABLE_OUTPUT_MASK)
++		return idt82p33_output_mask_enable(channel, enable);
++
++	/* Enable/disable individual output instead */
++	return idt82p33_output_enable(channel, enable, perout->index);
++}
++
+ static int idt82p33_enable_tod(struct idt82p33_channel *channel)
+ {
+ 	struct idt82p33 *idt82p33 = channel->idt82p33;
+@@ -611,15 +676,27 @@ static int idt82p33_enable_tod(struct idt82p33_channel *channel)
+ 	if (err)
+ 		return err;
+ 
+-	err = idt82p33_pps_enable(channel, false);
++	/* Temporary workaround for ts2phc compatibility */
++	if (0)
++		err = idt82p33_output_mask_enable(channel, false);
+ 
+-	if (err)
++	if (err) {
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
+ 		return err;
++	}
+ 
+ 	err = idt82p33_measure_tod_write_overhead(channel);
+ 
+-	if (err)
++	if (err) {
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
+ 		return err;
++	}
+ 
+ 	err = _idt82p33_settime(channel, &ts);
+ 
+@@ -638,10 +715,8 @@ static void idt82p33_ptp_clock_unregister_all(struct idt82p33 *idt82p33)
+ 
+ 		channel = &idt82p33->channel[i];
+ 
+-		if (channel->ptp_clock) {
++		if (channel->ptp_clock)
+ 			ptp_clock_unregister(channel->ptp_clock);
+-			cancel_delayed_work_sync(&channel->sync_tod_work);
+-		}
+ 	}
+ }
+ 
+@@ -659,14 +734,16 @@ static int idt82p33_enable(struct ptp_clock_info *ptp,
+ 
+ 	if (rq->type == PTP_CLK_REQ_PEROUT) {
+ 		if (!on)
+-			err = idt82p33_pps_enable(channel, false);
++			err = idt82p33_perout_enable(channel, false,
++						     &rq->perout);
+ 
+ 		/* Only accept a 1-PPS aligned to the second. */
+ 		else if (rq->perout.start.nsec || rq->perout.period.sec != 1 ||
+ 		    rq->perout.period.nsec) {
+ 			err = -ERANGE;
+ 		} else
+-			err = idt82p33_pps_enable(channel, true);
++			err = idt82p33_perout_enable(channel, true,
++						     &rq->perout);
+ 	}
+ 
+ 	mutex_unlock(&idt82p33->reg_lock);
+@@ -674,6 +751,51 @@ static int idt82p33_enable(struct ptp_clock_info *ptp,
+ 	return err;
+ }
+ 
++static int idt82p33_adjwritephase(struct ptp_clock_info *ptp, s32 offsetNs)
++{
++	struct idt82p33_channel *channel =
++		container_of(ptp, struct idt82p33_channel, caps);
++	struct idt82p33 *idt82p33 = channel->idt82p33;
++	s64 offsetInFs;
++	s64 offsetRegVal;
++	u8 val[4] = {0};
++	int err;
++
++	offsetInFs = (s64)(-offsetNs) * 1000000;
++
++	if (offsetInFs > WRITE_PHASE_OFFSET_LIMIT)
++		offsetInFs = WRITE_PHASE_OFFSET_LIMIT;
++	else if (offsetInFs < -WRITE_PHASE_OFFSET_LIMIT)
++		offsetInFs = -WRITE_PHASE_OFFSET_LIMIT;
++
++	/* Convert from phaseOffsetInFs to register value */
++	offsetRegVal = ((offsetInFs * 1000) / IDT_T0DPLL_PHASE_RESOL);
++
++	val[0] = offsetRegVal & 0xFF;
++	val[1] = (offsetRegVal >> 8) & 0xFF;
++	val[2] = (offsetRegVal >> 16) & 0xFF;
++	val[3] = (offsetRegVal >> 24) & 0x1F;
++	val[3] |= PH_OFFSET_EN;
++
++	mutex_lock(&idt82p33->reg_lock);
++
++	err = idt82p33_dpll_set_mode(channel, PLL_MODE_WPH);
++	if (err) {
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
++		goto out;
++	}
++
++	err = idt82p33_write(idt82p33, channel->dpll_phase_cnfg, val,
++			     sizeof(val));
++
++out:
++	mutex_unlock(&idt82p33->reg_lock);
++	return err;
++}
++
+ static int idt82p33_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
+ {
+ 	struct idt82p33_channel *channel =
+@@ -683,6 +805,11 @@ static int idt82p33_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
+ 
+ 	mutex_lock(&idt82p33->reg_lock);
+ 	err = _idt82p33_adjfine(channel, scaled_ppm);
++	if (err)
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
+ 	mutex_unlock(&idt82p33->reg_lock);
+ 
+ 	return err;
+@@ -706,10 +833,19 @@ static int idt82p33_adjtime(struct ptp_clock_info *ptp, s64 delta_ns)
+ 
+ 	if (err) {
+ 		mutex_unlock(&idt82p33->reg_lock);
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
+ 		return err;
+ 	}
+ 
+ 	err = idt82p33_sync_tod(channel, true);
++	if (err)
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
+ 
+ 	mutex_unlock(&idt82p33->reg_lock);
+ 
+@@ -725,6 +861,11 @@ static int idt82p33_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
+ 
+ 	mutex_lock(&idt82p33->reg_lock);
+ 	err = _idt82p33_gettime(channel, ts);
++	if (err)
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
+ 	mutex_unlock(&idt82p33->reg_lock);
+ 
+ 	return err;
+@@ -740,6 +881,11 @@ static int idt82p33_settime(struct ptp_clock_info *ptp,
+ 
+ 	mutex_lock(&idt82p33->reg_lock);
+ 	err = _idt82p33_settime(channel, ts);
++	if (err)
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
+ 	mutex_unlock(&idt82p33->reg_lock);
+ 
+ 	return err;
+@@ -772,9 +918,6 @@ static int idt82p33_channel_init(struct idt82p33_channel *channel, int index)
+ 		return -EINVAL;
+ 	}
+ 
+-	INIT_DELAYED_WORK(&channel->sync_tod_work,
+-			  idt82p33_sync_tod_work_handler);
+-	channel->sync_tod_on = false;
+ 	channel->current_freq_ppb = 0;
+ 
+ 	return 0;
+@@ -784,11 +927,14 @@ static void idt82p33_caps_init(struct ptp_clock_info *caps)
+ {
+ 	caps->owner = THIS_MODULE;
+ 	caps->max_adj = 92000;
++	caps->n_per_out = 11;
++	caps->adjphase = idt82p33_adjwritephase;
+ 	caps->adjfine = idt82p33_adjfine;
+ 	caps->adjtime = idt82p33_adjtime;
+ 	caps->gettime64 = idt82p33_gettime;
+ 	caps->settime64 = idt82p33_settime;
+ 	caps->enable = idt82p33_enable;
++	caps->do_aux_work = idt82p33_sync_tod_work_handler;
+ }
+ 
+ static int idt82p33_enable_channel(struct idt82p33 *idt82p33, u32 index)
+@@ -802,23 +948,19 @@ static int idt82p33_enable_channel(struct idt82p33 *idt82p33, u32 index)
+ 	channel = &idt82p33->channel[index];
+ 
+ 	err = idt82p33_channel_init(channel, index);
+-	if (err)
++	if (err) {
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
+ 		return err;
++	}
+ 
+ 	channel->idt82p33 = idt82p33;
+ 
+ 	idt82p33_caps_init(&channel->caps);
+ 	snprintf(channel->caps.name, sizeof(channel->caps.name),
+ 		 "IDT 82P33 PLL%u", index);
+-	channel->caps.n_per_out = hweight8(channel->output_mask);
+-
+-	err = idt82p33_dpll_set_mode(channel, PLL_MODE_DCO);
+-	if (err)
+-		return err;
+-
+-	err = idt82p33_enable_tod(channel);
+-	if (err)
+-		return err;
+ 
+ 	channel->ptp_clock = ptp_clock_register(&channel->caps, NULL);
+ 
+@@ -831,6 +973,24 @@ static int idt82p33_enable_channel(struct idt82p33 *idt82p33, u32 index)
+ 	if (!channel->ptp_clock)
+ 		return -ENOTSUPP;
+ 
++	err = idt82p33_dpll_set_mode(channel, PLL_MODE_DCO);
++	if (err) {
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
++		return err;
++	}
++
++	err = idt82p33_enable_tod(channel);
++	if (err) {
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
++		return err;
++	}
++
+ 	dev_info(&idt82p33->client->dev, "PLL%d registered as ptp%d\n",
+ 		 index, channel->ptp_clock->index);
+ 
+@@ -839,19 +999,27 @@ static int idt82p33_enable_channel(struct idt82p33 *idt82p33, u32 index)
+ 
+ static int idt82p33_load_firmware(struct idt82p33 *idt82p33)
+ {
++	char fname[128] = FW_FILENAME;
+ 	const struct firmware *fw;
+ 	struct idt82p33_fwrc *rec;
+ 	u8 loaddr, page, val;
+ 	int err;
+ 	s32 len;
+ 
+-	dev_dbg(&idt82p33->client->dev,
+-		"requesting firmware '%s'\n", FW_FILENAME);
++	if (firmware) /* module parameter */
++		snprintf(fname, sizeof(fname), "%s", firmware);
+ 
+-	err = request_firmware(&fw, FW_FILENAME, &idt82p33->client->dev);
++	dev_dbg(&idt82p33->client->dev, "requesting firmware '%s'\n", fname);
+ 
+-	if (err)
++	err = request_firmware(&fw, fname, &idt82p33->client->dev);
++
++	if (err) {
++		dev_err(&idt82p33->client->dev,
++			"Failed at line %d in func %s!\n",
++			__LINE__,
++			__func__);
+ 		return err;
++	}
+ 
+ 	dev_dbg(&idt82p33->client->dev, "firmware size %zu bytes\n", fw->size);
+ 
+@@ -935,8 +1103,13 @@ static int idt82p33_probe(struct i2c_client *client,
+ 		for (i = 0; i < MAX_PHC_PLL; i++) {
+ 			if (idt82p33->pll_mask & (1 << i)) {
+ 				err = idt82p33_enable_channel(idt82p33, i);
+-				if (err)
++				if (err) {
++					dev_err(&idt82p33->client->dev,
++						"Failed at %d in func %s!\n",
++						__LINE__,
++						__func__);
+ 					break;
++				}
+ 			}
+ 		}
+ 	} else {
+diff --git a/drivers/ptp/ptp_idt82p33.h b/drivers/ptp/ptp_idt82p33.h
+index 9d46966..1c7a0f0 100644
+--- a/drivers/ptp/ptp_idt82p33.h
++++ b/drivers/ptp/ptp_idt82p33.h
+@@ -56,6 +56,8 @@
+ #define PLL_MODE_SHIFT                    (0)
+ #define PLL_MODE_MASK                     (0x1F)
+ 
++#define PEROUT_ENABLE_OUTPUT_MASK         (0xdeadbeef)
++
+ enum pll_mode {
+ 	PLL_MODE_MIN = 0,
+ 	PLL_MODE_AUTOMATIC = PLL_MODE_MIN,
+@@ -93,6 +95,7 @@ enum hw_tod_trig_sel {
+ #define MAX_MEASURMENT_COUNT (5)
+ #define SNAP_THRESHOLD_NS (150000)
+ #define SYNC_TOD_TIMEOUT_SEC (5)
++#define IDT82P33_MAX_WRITE_COUNT (512)
+ 
+ #define PLLMASK_ADDR_HI	0xFF
+ #define PLLMASK_ADDR_LO	0xA5
+-- 
+2.7.4
 
-> You can think of it as if you are suddenly saying that because it
-> would be easier for a few particular USB devices that need a quirk,
-> you "just" need to add the list of *all* USB HID devices that are
-> around. i2c-hid should be a driver that doesn't change unless 2 things
-> happen:
-> - there is a change in the spec
-> - there is a specific quirk required for a device that doesn't follow the spec.
-
-Or does something outside of what the spec covers. 
-
-> So if having device tree support for these means we suddenly need to
-> add every single device around in the compatible table, I would be
-> tempted to just drop the support for those new devices.
-> 
-> Again, you (or anyone else) have to understand that the descriptor
-> address is just a parameter which is known at the manufacturing time,
-> but that can vary with different vendors and or products. In the ACPI
-> world, this parameter is provided in the DSDT, and there is no reason
-> for it to not be provided in the DT.
-
-Whether that makes sense as a standard 'hid-over-i2c' property is a 
-separate discussion. Seems like it might be.
-
-It's trying to parameterize power sequencing to be generic and a never 
-ending stream of quirk property additions that I'm against. That's based 
-on the mistake of accepting those to some point in the past. 
-hid-over-i2c is not special here.
-
-If we wanted to parameterize power control/sequences in DT, then we'd 
-need to handle any number of controls (GPIO, regulators, clocks, power 
-domains, register poking, firmware loading, etc.) in any order and 
-amounts of time in between. What we'd end up needing is some programming 
-language in DT (Forth anyone?).
-
-> The last thing I want to see is people using device tree having to
-> recompile i2c-hid to register their own device.
-
-That's fine if they don't need extra things like power control...
-
-> If this part of the Device Tree binding is so important for the DT
-> world, then we should split up the DT bindings from i2c-hid, and have
-> some platform driver that would handle a conversion between devicetree
-> and platform data. But this driver won't be maintained by me.
-> 
-> I agree adding the various sleep parameters in the platform data is
-> not good, but I prefer that over having to maintain an endless table
-> of parameters for every single i2c-hid device out there.
-
-How is match data any different from platform data? It not other than 
-one is all in the same file and the other adds a bunch of boilerplate 
-and a pointless driver. If it's really such a maintainer burden, then 
-perhaps the driver model could learn how to add match entries 
-dynamically or from multiple sources (like a 2nd file of ids and 
-data). Just throwing out ideas here...
-
-Rob
