@@ -2,81 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB732A0018
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCB92A0060
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:50:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbgJ3IdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 04:33:16 -0400
-Received: from smtp1.de.adit-jv.com ([93.241.18.167]:56416 "EHLO
-        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726154AbgJ3IdO (ORCPT
+        id S1726156AbgJ3Iu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:50:26 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:6945 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726028AbgJ3IuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:33:14 -0400
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
-        by smtp1.de.adit-jv.com (Postfix) with ESMTP id 9F43A3C057F;
-        Fri, 30 Oct 2020 09:33:11 +0100 (CET)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
-        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id bMSDwdgJbKdM; Fri, 30 Oct 2020 09:33:06 +0100 (CET)
-Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 45E2C3C058B;
-        Fri, 30 Oct 2020 09:31:52 +0100 (CET)
-Received: from lxhi-065.adit-jv.com (10.72.94.31) by HI2EXCH01.adit-jv.com
- (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 30 Oct
- 2020 09:31:51 +0100
-From:   Eugeniu Rosca <erosca@de.adit-jv.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        <linux-renesas-soc@vger.kernel.org>
-CC:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Steffen Pengel <spengel@de.adit-jv.com>,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>
-Subject: [PATCH v2 3/3] dt-bindings: arm: renesas: Add R-Car M3-W+ ULCB with Kingfisher
-Date:   Fri, 30 Oct 2020 09:30:51 +0100
-Message-ID: <20201030083051.18752-4-erosca@de.adit-jv.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201030083051.18752-1-erosca@de.adit-jv.com>
-References: <20201030083051.18752-1-erosca@de.adit-jv.com>
+        Fri, 30 Oct 2020 04:50:25 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CMwWp0Kpwz70HS;
+        Fri, 30 Oct 2020 16:31:34 +0800 (CST)
+Received: from huawei.com (10.69.192.56) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Fri, 30 Oct 2020
+ 16:31:24 +0800
+From:   Luo Jiaxing <luojiaxing@huawei.com>
+To:     <akpm@linux-foundation.org>, <viro@zeniv.linux.org.uk>,
+        <andriy.shevchenko@linux.intel.com>
+CC:     <linux-kernel@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <john.garry@huawei.com>, <himanshu.madhani@cavium.com>,
+        <felipe.balbi@linux.intel.com>, <gregkh@linuxfoundation.org>,
+        <uma.shankar@intel.com>, <anshuman.gupta@intel.com>,
+        <animesh.manna@intel.com>, <linux-usb@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH v2 0/5] Introduce a new helper marco DEFINE_SHOW_STORE_ATTRIBUTE at seq_file.c
+Date:   Fri, 30 Oct 2020 16:31:57 +0800
+Message-ID: <1604046722-15531-1-git-send-email-luojiaxing@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.72.94.31]
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the use of the Kingfisher expansion board with the R-Car
-Starter Kit Pro equipped with an R-Car M3-W+ (aka M3-ES3.0) SoC.
+We already own DEFINE_SHOW_ATTRIBUTE() helper macro for defining attribute
+for read-only file, but we found many of drivers also want a helper marco for
+read-write file too.
 
-Inspired from v5.5 commit 24169f0a453754 ("dt-bindings: arm: renesas:
-Add R-Car M3-N ULCB with Kingfisher").
+So we try to add this macro to help decrease code duplication.
 
-Suggested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
----
+Luo Jiaxing (5):
+  seq_file: Introduce DEFINE_SHOW_STORE_ATTRIBUTE() helper macro
+  scsi: hisi_sas: Introduce DEFINE_SHOW_STORE_ATTRIBUTE for debugfs
+  scsi: qla2xxx: Introduce DEFINE_SHOW_STORE_ATTRIBUTE for debugfs
+  usb: dwc3: debugfs: Introduce DEFINE_SHOW_STORE_ATTRIBUTE
+  drm/i915/display: Introduce DEFINE_SHOW_STORE_ATTRIBUTE for debugfs
 
-v2: Newly added
-v1: NA
----
- Documentation/devicetree/bindings/arm/renesas.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ .../gpu/drm/i915/display/intel_display_debugfs.c   |  55 +--------
+ drivers/scsi/hisi_sas/hisi_sas_main.c              | 135 +++------------------
+ drivers/scsi/qla2xxx/qla_dfs.c                     |  19 +--
+ drivers/usb/dwc3/debugfs.c                         |  52 +-------
+ include/linux/seq_file.h                           |  15 +++
+ 5 files changed, 41 insertions(+), 235 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/renesas.yaml b/Documentation/devicetree/bindings/arm/renesas.yaml
-index ff94c45eefb0..fe11be65039a 100644
---- a/Documentation/devicetree/bindings/arm/renesas.yaml
-+++ b/Documentation/devicetree/bindings/arm/renesas.yaml
-@@ -245,6 +245,7 @@ properties:
-           - enum:
-               - renesas,r8a7795
-               - renesas,r8a7796
-+              - renesas,r8a77961
-               - renesas,r8a77965
- 
-       - description: R-Car M3-N (R8A77965)
 -- 
-2.29.0
+2.7.4
 
