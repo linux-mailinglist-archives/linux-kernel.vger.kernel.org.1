@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A8F2A0460
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C10F2A043F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgJ3Lg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35890 "EHLO
+        id S1726527AbgJ3Lga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726394AbgJ3LgV (ORCPT
+        with ESMTP id S1726423AbgJ3LgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:36:21 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BFBC0613D5;
-        Fri, 30 Oct 2020 04:36:20 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id g25so5448628edm.6;
-        Fri, 30 Oct 2020 04:36:20 -0700 (PDT)
+        Fri, 30 Oct 2020 07:36:22 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1DCC0613D2;
+        Fri, 30 Oct 2020 04:36:22 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id dg9so6223364edb.12;
+        Fri, 30 Oct 2020 04:36:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bBz8lpV3BEz5nI41EelA8kr8OaTMOshWjzZxTJgUigo=;
-        b=Hf4GZux6GbsdsZS95/lNPfUIBdFl7ZnLnBNMdTDStOPmBk3aZt9JFooPnW8uaqQKVZ
-         v+5tIur8rTBSGdohdPD4LxroQF5EDi3sTL/APv5M2YYusFfe+sFYq9hhEx4iOIFpzfc5
-         Vn8hpCeVVHNXnJ1AqV7og0SPnKNPdw9qtyVPfhzywHUZA1wmBqBuP2RzxvUBSR1/tSv4
-         4KPcn6GLjDJxv4jHFcDBiiaQfAli2z0oZLF8nxpv+7L3Ru0jcyRhkatB+9HV/Srs6Ldx
-         IvJ32934LwT6qOUUYeJ9dZ1KvZA53m+TYhExiH8W/7ls+Bb/2eQvJBGTMpcP54/Aqs1E
-         eRaw==
+        bh=R5fc9CtyHSfM/gOgfL12XY4x3FY6xOYb3mBqJV1UFD8=;
+        b=LJgZLPVfZ/CGN3BAz8TBVIiOii3UR1VVzAi/vZbXWzsx8ekteK5pyoWBVjPVoF+aqh
+         VqkmQL+aLQaTSNkeV3LltIqnyCmXApG/YFXHwFiTJQMZv9RH2PyHtFpAqbypaRzXs0LK
+         W82a4TR2QIjj6cWmLyK6/lE7qMpsTrPGp6o36A48g5NEFNbScIP2MjLrQlB7uMzWGKSd
+         x0e+lc2pA4v2Yla1z48ihXb2T8Bn9TUU0Gz7/CMfPXxmEZQPQU2o2/90+UEoHTNqTaN1
+         mnW2YIBovvcg3dp5z6NPmOvA0SD/I4P12BgIDMX/3lMcvmJmD2eho7+u9dYqNxUA8NUq
+         6t0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bBz8lpV3BEz5nI41EelA8kr8OaTMOshWjzZxTJgUigo=;
-        b=iuL67zqGg+u130HcFKMs+TV3Beq2OHxSt/HK+apA99sJVZduQCndBFF2hWvZyuHOoK
-         3fPI88z7zbHYN1ilTZaM7Qhmmw1YiD8ijyndF6VGSZUNhg7cQD+ttXH9AftMSWr75RNV
-         JJLEaAR7VSkyfIXFVp2NelibJWBzcnmS1p2MdApLMvrvyN6aOfsGDQhRbG27kwg0+nkE
-         clo3eRZMYcOAbfP6r40biFTU0vrqY/FE94WZeCbG4kaoa6yOE8PjoAdhTehBcFNqwZdX
-         wzUnFhpe+6l3k7ZoAPeQddaEFkNEbVPiCJy9gk77ElQ+A8umKA5He6ScGB4v8AwsdUJj
-         hEdQ==
-X-Gm-Message-State: AOAM530sbWl3vce74YRGEcDqc//Fg5nrJSFv8PY6SNCpNBmiTKEnn1kA
-        KLC32E0PAN3UV7gXqHWUlEo=
-X-Google-Smtp-Source: ABdhPJyLWN5+FkmjEe3yDdE6H23aMerOkRptmfO5N+mQYRmLrx2okTC2/hgaUmBuJOFF2Mze+DbKDQ==
-X-Received: by 2002:a05:6402:74f:: with SMTP id p15mr1849925edy.69.1604057779508;
-        Fri, 30 Oct 2020 04:36:19 -0700 (PDT)
+        bh=R5fc9CtyHSfM/gOgfL12XY4x3FY6xOYb3mBqJV1UFD8=;
+        b=pJinypTqY1iEagc5xHyDMv1QeaotpA3Jte5/mcErEJYw8UJ8KyTzZSgKHnysTcOMGs
+         vfwdXDyhxsqxidNItZm4qmmumqQZFnBixSYCU1QY/zowATcFeN1G35GGFJmU1Fslb9/h
+         PmIufLLmarGWe8T+4DZ+QsAtV7gtaCZMdTGteeRL4YfrOZGTiCiaOwKWln3b/wG1NtVG
+         EL2g2hwFvVtGbvEDczklnuiMOU7YexnDufQ/REJQAWleBWOIeXTP47sorNYfT3rzvSXn
+         GjTM3Uvlr5pHitVoqhYjUAkWGxVr4ZvclYcNTy5mBieFJDkj6O+igjLkqqPbN0X2NYwT
+         wm6A==
+X-Gm-Message-State: AOAM530llao2+phmWmV52RkeFkWWw4tOogyG0yoKej43ZJQuHix21MVm
+        OT/NGpA18aQb4R+7C/J8blk=
+X-Google-Smtp-Source: ABdhPJzwsNrESRDrlth/Bs04ag9oyxJLeJ7SSMCFhzHOvr5TWlsfGUUDVKnKa6KeLXO9E7NbZSQSDw==
+X-Received: by 2002:a05:6402:1d2c:: with SMTP id dh12mr1759083edb.256.1604057780849;
+        Fri, 30 Oct 2020 04:36:20 -0700 (PDT)
 Received: from yoga-910.localhost ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id q19sm2850861ejx.118.2020.10.30.04.36.18
+        by smtp.gmail.com with ESMTPSA id q19sm2850861ejx.118.2020.10.30.04.36.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 04:36:18 -0700 (PDT)
+        Fri, 30 Oct 2020 04:36:20 -0700 (PDT)
 From:   Ioana Ciornei <ciorneiioana@gmail.com>
 To:     shawnguo@kernel.org
 Cc:     robh+dt@kernel.org, leoyang.li@nxp.com, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH v5 03/11] arm64: dts: ls1088a: add external MDIO device nodes
-Date:   Fri, 30 Oct 2020 13:35:47 +0200
-Message-Id: <20201030113555.726487-4-ciorneiioana@gmail.com>
+Subject: [PATCH v5 04/11] arm64: dts: ls1088ardb: add QSGMII PHY nodes
+Date:   Fri, 30 Oct 2020 13:35:48 +0200
+Message-Id: <20201030113555.726487-5-ciorneiioana@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201030113555.726487-1-ciorneiioana@gmail.com>
 References: <20201030113555.726487-1-ciorneiioana@gmail.com>
@@ -66,52 +66,272 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-Add the external MDIO device nodes found in the WRIOP global memory
-region. This is needed for management of external PHYs.
+Annotate the external MDIO1 node and describe the 8 QSGMII PHYs found on
+the LS1088ARDB board and add phy-handles for DPMACs 3-10 to its
+associated PHY.  Also, add the internal PCS MDIO nodes for the internal
+MDIO buses found on the LS1088A SoC along with their internal PCS PHY
+and link the corresponding DPMAC to the PCS through the pcs-handle.
+Also, rename the dpmac@x nodes to ethernet@x in order to be compliant
+with the naming convention used by ethernet controllers.
 
 Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
 ---
 Changes in v2:
- - removed the 0x from the unit addresses
-Changes in v3:
  - none
+Changes in v3:
+ - renamed dpmac@x into ethernet@x
 Changes in v4:
  - none
 Changes in v5:
- - used only lowercase letters for the hex address
+ - renamed all PHY nodes to ethernet-phy@X where the unit address is the
+   reg value
 
- arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ .../boot/dts/freescale/fsl-ls1088a-rdb.dts    | 100 ++++++++++++++++++
+ .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi |  70 ++++++++++--
+ 2 files changed, 160 insertions(+), 10 deletions(-)
 
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
+index 5633e59febc3..e28443ba2633 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
+@@ -17,6 +17,98 @@ / {
+ 	compatible = "fsl,ls1088a-rdb", "fsl,ls1088a";
+ };
+ 
++&dpmac3 {
++	phy-handle = <&mdio1_phy5>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs3_0>;
++};
++
++&dpmac4 {
++	phy-handle = <&mdio1_phy6>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs3_1>;
++};
++
++&dpmac5 {
++	phy-handle = <&mdio1_phy7>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs3_2>;
++};
++
++&dpmac6 {
++	phy-handle = <&mdio1_phy8>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs3_3>;
++};
++
++&dpmac7 {
++	phy-handle = <&mdio1_phy1>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs7_0>;
++};
++
++&dpmac8 {
++	phy-handle = <&mdio1_phy2>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs7_1>;
++};
++
++&dpmac9 {
++	phy-handle = <&mdio1_phy3>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs7_2>;
++};
++
++&dpmac10 {
++	phy-handle = <&mdio1_phy4>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs7_3>;
++};
++
++&emdio1 {
++	status = "okay";
++
++	mdio1_phy5: ethernet-phy@c {
++		reg = <0xc>;
++	};
++
++	mdio1_phy6: ethernet-phy@d {
++		reg = <0xd>;
++	};
++
++	mdio1_phy7: ethernet-phy@e {
++		reg = <0xe>;
++	};
++
++	mdio1_phy8: ethernet-phy@f {
++		reg = <0xf>;
++	};
++
++	mdio1_phy1: ethernet-phy@1c {
++		reg = <0x1c>;
++	};
++
++	mdio1_phy2: ethernet-phy@1d {
++		reg = <0x1d>;
++	};
++
++	mdio1_phy3: ethernet-phy@1e {
++		reg = <0x1e>;
++	};
++
++	mdio1_phy4: ethernet-phy@1f {
++		reg = <0x1f>;
++	};
++};
++
+ &i2c0 {
+ 	status = "okay";
+ 
+@@ -87,6 +179,14 @@ &esdhc {
+ 	status = "okay";
+ };
+ 
++&pcs_mdio3 {
++	status = "okay";
++};
++
++&pcs_mdio7 {
++	status = "okay";
++};
++
+ &qspi {
+ 	status = "okay";
+ 
 diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-index ff5805206a28..58b6a5aa8df2 100644
+index 58b6a5aa8df2..4bcd4772164d 100644
 --- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
 +++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-@@ -672,6 +672,24 @@ ptp-timer@8b95000 {
- 			fsl,extts-fifo;
+@@ -690,6 +690,56 @@ emdio2: mdio@8b97000 {
+ 			status = "disabled";
  		};
  
-+		emdio1: mdio@8b96000 {
++		pcs_mdio3: mdio@8c0f000 {
 +			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8b96000 0x0 0x1000>;
++			reg = <0x0 0x8c0f000 0x0 0x1000>;
 +			little-endian;
 +			#address-cells = <1>;
 +			#size-cells = <0>;
 +			status = "disabled";
++
++			pcs3_0: ethernet-phy@0 {
++				reg = <0>;
++			};
++
++			pcs3_1: ethernet-phy@1 {
++				reg = <1>;
++			};
++
++			pcs3_2: ethernet-phy@2 {
++				reg = <2>;
++			};
++
++			pcs3_3: ethernet-phy@3 {
++				reg = <3>;
++			};
 +		};
 +
-+		emdio2: mdio@8b97000 {
++		pcs_mdio7: mdio@8c1f000 {
 +			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8b97000 0x0 0x1000>;
++			reg = <0x0 0x8c1f000 0x0 0x1000>;
 +			little-endian;
 +			#address-cells = <1>;
 +			#size-cells = <0>;
 +			status = "disabled";
++
++			pcs7_0: ethernet-phy@0 {
++				reg = <0>;
++			};
++
++			pcs7_1: ethernet-phy@1 {
++				reg = <1>;
++			};
++
++			pcs7_2: ethernet-phy@2 {
++				reg = <2>;
++			};
++
++			pcs7_3: ethernet-phy@3 {
++				reg = <3>;
++			};
 +		};
 +
  		cluster1_core0_watchdog: wdt@c000000 {
  			compatible = "arm,sp805-wdt", "arm,primecell";
  			reg = <0x0 0xc000000 0x0 0x1000>;
+@@ -767,52 +817,52 @@ dpmacs {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 
+-				dpmac1: dpmac@1 {
++				dpmac1: ethernet@1 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <1>;
+ 				};
+ 
+-				dpmac2: dpmac@2 {
++				dpmac2: ethernet@2 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <2>;
+ 				};
+ 
+-				dpmac3: dpmac@3 {
++				dpmac3: ethernet@3 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <3>;
+ 				};
+ 
+-				dpmac4: dpmac@4 {
++				dpmac4: ethernet@4 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <4>;
+ 				};
+ 
+-				dpmac5: dpmac@5 {
++				dpmac5: ethernet@5 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <5>;
+ 				};
+ 
+-				dpmac6: dpmac@6 {
++				dpmac6: ethernet@6 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <6>;
+ 				};
+ 
+-				dpmac7: dpmac@7 {
++				dpmac7: ethernet@7 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <7>;
+ 				};
+ 
+-				dpmac8: dpmac@8 {
++				dpmac8: ethernet@8 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <8>;
+ 				};
+ 
+-				dpmac9: dpmac@9 {
++				dpmac9: ethernet@9 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <9>;
+ 				};
+ 
+-				dpmac10: dpmac@a {
++				dpmac10: ethernet@a {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <0xa>;
+ 				};
 -- 
 2.28.0
 
