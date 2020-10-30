@@ -2,98 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA532A002D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B47202A0035
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725993AbgJ3Iiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 04:38:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgJ3Iiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:38:51 -0400
-Received: from kernel.org (unknown [87.71.17.26])
+        id S1725948AbgJ3ImU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJ3ImU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 04:42:20 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01CA1C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 01:42:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mK1sKeQRc51Ss+CdNz/7onPx5BwriPwjLZ9pRTEesu0=; b=2V6UYgLBWG3/PqKfitYx5/qc/p
+        PamQxEOIq1AGoq8oXkYPRWYUw2rezgQT83YfdLrwI9hUPi3EK3CX+q/4KF7QC6AzQpOjarjf7pQsK
+        YkzmO5Aat2U8JdhJ95VjbydruuaRRrElnL3wWacOXce3ObJuoBJ89V6ANj51zMx6Cxhsjcbc5g81N
+        JX90N/P3WN0fWwFIVo6hUQ+s+KiQXj2Ofb0V1l9BILwSMK7Cnm7pP5cL3rdZ3+2LNovFNX35U5+5E
+        Ms08WVMInt0xh4J3+fQ8pPVo5sgbhYoT2kFA/NNFWDHXlwmgD6tygu2CrRFmLzsSXHGwi+/2LHBwZ
+        iprh8QXQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kYPyK-0007L0-S2; Fri, 30 Oct 2020 08:41:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2FB62075E;
-        Fri, 30 Oct 2020 08:38:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604047130;
-        bh=5pnaYeg0slp/C6LJW0tZt7NwF2KtZxhAKuysRfnP6vg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gub5VpJy/YKwwNSXMPAehOYKrC3ZbBRzR+owx6+zxhiDElhexw2Rjmwo8LSt+G9qO
-         DphIEXohytWWawhFH2y7mnynjSHE/ZNRtpKmHZYAKratdTBUOeJ5Hpd2U+St3EbTf2
-         fhtkkWeIaBP95rcXFwQ1RMEiJd1jZPaJUolALiSE=
-Date:   Fri, 30 Oct 2020 10:38:42 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Steven Price <steven.price@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Greg Kroah-Hartman <gregkh@google.com>,
-        Pratik Patel <pratikp@codeaurora.org>
-Subject: Re: mm/memblock: export memblock_{start/end}_of_DRAM
-Message-ID: <20201030083842.GA4319@kernel.org>
-References: <d0580051d03df3f3e9f333f6bfe968cf@codeaurora.org>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 266C93012C3;
+        Fri, 30 Oct 2020 09:41:13 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EDF4820DCC48D; Fri, 30 Oct 2020 09:41:12 +0100 (CET)
+Date:   Fri, 30 Oct 2020 09:41:12 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Glexiner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>,
+        =?utf-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH v8 -tip 08/26] sched/fair: Snapshot the min_vruntime of
+ CPUs on force idle
+Message-ID: <20201030084112.GX2628@hirez.programming.kicks-ass.net>
+References: <20201020014336.2076526-1-joel@joelfernandes.org>
+ <20201020014336.2076526-9-joel@joelfernandes.org>
+ <20201026124724.GT2611@hirez.programming.kicks-ass.net>
+ <20201029182429.GA1844482@google.com>
+ <20201029185933.GG2611@hirez.programming.kicks-ass.net>
+ <CAEXW_YRtrhhL4Gc8W8_-2CR1CCw6_hhtnwSdQ-dMLYCJ+fP+RA@mail.gmail.com>
+ <CAEXW_YTnJWANAZNeR9b=5xUeHu1CAPq9vgYaH8WSHgApJZ21Rw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d0580051d03df3f3e9f333f6bfe968cf@codeaurora.org>
+In-Reply-To: <CAEXW_YTnJWANAZNeR9b=5xUeHu1CAPq9vgYaH8WSHgApJZ21Rw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 02:29:27PM -0700, Sudarshan Rajagopalan wrote:
-> Hello all,
-> 
-> We have a usecase where a module driver adds certain memory blocks using
-> add_memory_driver_managed(), so that it can perform memory hotplug
-> operations on these blocks. In general, these memory blocks aren’t something
-> that gets physically added later, but is part of actual RAM that system
-> booted up with. Meaning – we set the ‘mem=’ cmdline parameter to limit the
-> memory and later add the remaining ones using add_memory*() variants.
-> 
-> The basic idea is to have driver have ownership and manage certain memory
-> blocks for hotplug operations.
-> 
-> For the driver be able to know how much memory was limited and how much
-> actually present, we take the delta of ‘bootmem physical end address’ and
-> ‘memblock_end_of_DRAM’. The 'bootmem physical end address' is obtained by
-> scanning the reg values in ‘memory’ DT node and determining the max
-> {addr,size}. Since our driver is getting modularized, we won’t have access
-> to memblock_end_of_DRAM (i.e. end address of all memory blocks after ‘mem=’
-> is applied).
-> 
-> So checking if memblock_{start/end}_of_DRAM() symbols can be exported? Also,
-> this information can be obtained by userspace by doing ‘cat /proc/iomem’ and
-> greping for ‘System RAM’. So wondering if userspace can have access to such
-> info, can we allow kernel module drivers have access by exporting
-> memblock_{start/end}_of_DRAM().
+On Thu, Oct 29, 2020 at 10:42:29PM -0400, Joel Fernandes wrote:
 
-These functions cannot be exported not because we want to hide this
-information from the modules but because it is unsafe to use them.
-On most architecturs these functions are __init so they are discarded
-after boot anyway. Beisdes, the memory configuration known to memblock
-might be not accurate in many cases as David explained in his reply.
+> Forgot to ask, do you also need to do the task_vruntime_update() for
+> the unconstrained pick?
 
-> Or are there any other ways where a module driver can get the end address of
-> system memory block?
- 
-What do you mean by "system memory block"? There could be a lot of
-interpretations if you take into account memory hotplug, "mem=" option,
-reserved and firmware memory.
+Humm.. interesting case.
 
-I'd suggest you to describe the entire use case in more detail. Having
-the complete picture would help finding a proper solution.
+Yes, however... since in that case the picks aren't synchronized it's a
+wee bit dodgy. I'll throw it on the pile together with SMT4.
 
-> Sudarshan
-> 
 
---
-Sincerely yours,
-Mike.
+Also, I'm still hoping you can make this form work:
+
+  https://lkml.kernel.org/r/20201026093131.GF2628@hirez.programming.kicks-ass.net
+
+(note that the put_prev_task() needs an additional rq argument)
+
+That's both simpler code and faster.
