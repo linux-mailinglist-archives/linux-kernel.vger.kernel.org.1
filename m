@@ -2,94 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786572A10A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7A12A10A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725882AbgJ3WBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 18:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgJ3WBJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 18:01:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154B0C0613CF;
-        Fri, 30 Oct 2020 15:01:09 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604095267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AZrSPySqcQcgsfU3kuIbRjApMl6QJyJy0VjP/tJus60=;
-        b=GyzrUO6hsGdW88qLMmGVvuNdOYpZfq0O448OrekB+80h4p3WsTxpXJzyoRT+1G8FH7zoy1
-        6nrqSYDGZDLSsyTmJQHBDoD6XRwQhfpK6OWVcTbRCqFgt7zkTzqv19l+2yGa+ERzlTSo30
-        sCQzdyResgcnl7B8E20ag1+V1DR0iHWRAIyN+cyD+0kpkJY+e/RACUh0ka404Q4Pv42087
-        FisQaHl+YVV75wZafhO8LyvPEtl2D70Y/qyOLs1bSQk6gbLhlrbOrgpiFK3h0r1KgyQK/E
-        pHGt1cKKXhvfmuVxlRfdFFgDbzNv/NmGX2p1TtZvJEraQkhlcs6bALu4ODlzeg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604095267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AZrSPySqcQcgsfU3kuIbRjApMl6QJyJy0VjP/tJus60=;
-        b=kpvwOqLjk1P2Px68Wml+7RtTTNJPJhCoXSDD5c5GTV+MSY2qkGMoo/pnJQfyaI5SHVa6vs
-        16h/XUdDzBFMsfBw==
-To:     Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
-        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
-        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
-        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
-        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
-        jgg@mellanox.com, rafael@kernel.org, netanelg@mellanox.com,
-        shahafs@mellanox.com, yan.y.zhao@linux.intel.com,
-        pbonzini@redhat.com, samuel.ortiz@intel.com, mona.hossain@intel.com
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v4 01/17] irqchip: Add IMS (Interrupt Message Store) driver
-In-Reply-To: <160408385476.912050.16205225207591080075.stgit@djiang5-desk3.ch.intel.com>
-References: <160408357912.912050.17005584526266191420.stgit@djiang5-desk3.ch.intel.com> <160408385476.912050.16205225207591080075.stgit@djiang5-desk3.ch.intel.com>
-Date:   Fri, 30 Oct 2020 23:01:07 +0100
-Message-ID: <871rhfml0c.fsf@nanos.tec.linutronix.de>
+        id S1725884AbgJ3WGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 18:06:36 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:23688 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725830AbgJ3WGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 18:06:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604095596; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=lGkiIC6aCmxVlnP+kS5/v1V4Xiy5BR0zSGoVebzuAD4=;
+ b=E9guYytSgnxz+YfFRC4FZjFKfdVJlcOjC8LR5JWa5UuOByoIzCdTTfTHPmblsP3cFlxheByw
+ r88fkmC8HN/a1VEza1O/Dejstv/5JlaXHnqDg78hg5W7NSwOCvKrL16Pb7BWyy/P0ORgX0xb
+ IMqCOsIf2fmJkyaSpYzyI3O2aLM=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f9c8e6bd306da06745d2c2d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 22:06:35
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D21C6C43382; Fri, 30 Oct 2020 22:06:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F1979C433C8;
+        Fri, 30 Oct 2020 22:06:33 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 30 Oct 2020 15:06:33 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     robdclark@gmail.com, sean@poorly.run, tanmay@codeaurora.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dp: skip checking LINK_STATUS_UPDATED bit
+In-Reply-To: <160323215566.884498.14018580767640192186@swboyd.mtv.corp.google.com>
+References: <20201020165959.7441-1-khsieh@codeaurora.org>
+ <160323215566.884498.14018580767640192186@swboyd.mtv.corp.google.com>
+Message-ID: <546018237be3f05b4eb33c916ed1d939@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30 2020 at 11:50, Dave Jiang wrote:
-> --- a/include/linux/interrupt.h
-> +++ b/include/linux/interrupt.h
-> @@ -487,6 +487,8 @@ extern int irq_get_irqchip_state(unsigned int irq, enum irqchip_irq_state which,
->  extern int irq_set_irqchip_state(unsigned int irq, enum irqchip_irq_state which,
->  				 bool state);
->  
-> +int irq_set_auxdata(unsigned int irq, unsigned int which, u64 val);
-....
-> +EXPORT_SYMBOL_GPL(irq_set_auxdata);
+On 2020-10-20 15:15, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2020-10-20 09:59:59)
+>> No need to check LINK_STATuS_UPDATED bit before
+> 
+> LINK_STATUS_UPDATED?
+> 
+>> return 6 bytes of link status during link training.
+> 
+> Why?
+> 
+>> This patch also fix phy compliance test link rate
+>> conversion error.
+> 
+> How?
+> 
+>> 
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> ---
+> 
+> Any Fixes: tag?
+> 
+>>  drivers/gpu/drm/msm/dp/dp_ctrl.c | 20 ++++++--------------
+>>  drivers/gpu/drm/msm/dp/dp_link.c | 24 +++++++++++-------------
+>>  2 files changed, 17 insertions(+), 27 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
+>> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> index 6bdaec778c4c..76e891c91c6e 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> @@ -1061,23 +1061,15 @@ static bool dp_ctrl_train_pattern_set(struct 
+>> dp_ctrl_private *ctrl,
+>>  static int dp_ctrl_read_link_status(struct dp_ctrl_private *ctrl,
+>>                                     u8 *link_status)
+>>  {
+>> -       int len = 0;
+>> -       u32 const offset = DP_LANE_ALIGN_STATUS_UPDATED - 
+>> DP_LANE0_1_STATUS;
+>> -       u32 link_status_read_max_retries = 100;
+>> -
+>> -       while (--link_status_read_max_retries) {
+>> -               len = drm_dp_dpcd_read_link_status(ctrl->aux,
+>> -                       link_status);
+>> -               if (len != DP_LINK_STATUS_SIZE) {
+>> -                       DRM_ERROR("DP link status read failed, err: 
+>> %d\n", len);
+>> -                       return len;
+>> -               }
+>> +       int ret = 0, len;
+>> 
+>> -               if (!(link_status[offset] & DP_LINK_STATUS_UPDATED))
+>> -                       return 0;
+>> +       len = drm_dp_dpcd_read_link_status(ctrl->aux, link_status);
+>> +       if (len != DP_LINK_STATUS_SIZE) {
+>> +               DRM_ERROR("DP link status read failed, err: %d\n", 
+>> len);
+>> +               ret = len;
+> 
+> Could this be positive if the len is greater than 0 but not
+> DP_LINK_STATUS_SIZE? Maybe the check should be len < 0? We certainly
+> don't want to return some smaller size from this function, right?
+> 
 
-Again: Read and follow documentation. This does not belong into this
-driver patch and wants to be a standalone preperatory patch.
+no, it should be exactly the byte number requested to read.
+otherwise, it should be failed and will re read at next run.
 
-Also the core change, the irq chip, the iommu support and the device msi
-dependency has to be completely seperate from this idxd series.
+>>         }
+>> 
+>> -       return -ETIMEDOUT;
+>> +       return ret;
+>>  }
+>> 
+>>  static int dp_ctrl_link_train_1(struct dp_ctrl_private *ctrl,
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c 
+>> b/drivers/gpu/drm/msm/dp/dp_link.c
+>> index c811da515fb3..58d65daae3b3 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_link.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
+>> @@ -773,7 +773,8 @@ static int 
+>> dp_link_process_link_training_request(struct dp_link_private *link)
+>>                         link->request.test_lane_count);
+>> 
+>>         link->dp_link.link_params.num_lanes = 
+>> link->request.test_lane_count;
+>> -       link->dp_link.link_params.rate = link->request.test_link_rate;
+>> +       link->dp_link.link_params.rate =
+>> +               
+>> drm_dp_bw_code_to_link_rate(link->request.test_link_rate);
+> 
+> Why are we storing bw_code in test_link_rate? This looks very 
+> confusing.
 
-You cannot just dump a pile of patches touching several subsystems at
-once plus having dependencies on stuff which is not even agreed on and
-merged and then expect that everything just falls into place.
+Test_link_rate contains link rate from dpcd read. it need to be convert 
+to real
+rate by timing 2.7Mb before start phy compliance test.
 
-The various subsystems involved are not holding their breath and putting
-a lock on development just because you have a series against some random
-snapshot.
-
-The dependencies, e.g. the device msi infrastructure, are not going to
-make their way magically into the proper maintainer tree either.
-
-If this ever goes into a mergeable state, then the merge logistics for
-this whole thing need to be carefully sorted out and it's on you to make
-that as simple as possible for every maintainer involved.
-
-Thanks,
-
-        tglx
+> 
+>> 
+>>         return 0;
+>>  }
