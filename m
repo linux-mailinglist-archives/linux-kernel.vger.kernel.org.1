@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91892A0336
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCC72A0340
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgJ3Kru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:47:50 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:43275 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726479AbgJ3Krp (ORCPT
+        id S1726515AbgJ3KtY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Oct 2020 06:49:24 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:38790 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726317AbgJ3KtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:47:45 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 68699DC4;
-        Fri, 30 Oct 2020 06:47:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 30 Oct 2020 06:47:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm2; bh=d
-        reWqn1C6oyy9WYNPasIYL1TsiHmeKDgek8Y92LJVqY=; b=AjT9HbPP7yQ9dcAc3
-        6oVXokGG8zlE9AuegBPbJN5bYkv1Mwqu8Ca3eUFa14JEhfUZWP72aU5AFyQbkJVI
-        bzOBwAF8yLpQAaYKCGFMArmVwCzUl9bXibG0IPDptjMexJHEgeSXJvk7klglir6X
-        9YplL5Ik367W1jYIkozmY/BDkxaW+DdS+U7/4x2OgneDigqXjsw2oCKCQj1EHmUn
-        4UMmzTNLjQB5WMv1iDGksFFCbSbz+N6xVnSaavpc/VnLMii1oG9efPk9+cemP0US
-        yz/YsnnAYnupWTjCLO1L+Ed3n2fWUqLPxhPfEx8kzId9oZf1ng2CgaoNNYouRi9m
-        V7heA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=dreWqn1C6oyy9WYNPasIYL1TsiHmeKDgek8Y92LJV
-        qY=; b=jLrtJWMLHo9eLqazfiYacp6g7jIiq/PT94+5XaQhIfEZxtO4rhe0M5YMH
-        E9mSHutVlQ5pab0D6PBBa3StWpmDYrMJk8Ad7GcCFjTR3epyum6BR8J5OAxfsUtT
-        guIVdC84v1XjMxlWXLg5rmoyIKx5C0Ml6WMAyYL2e28kvH5QOUNhS7R1zS1j5m1z
-        5DM3NcEpGJHPmruLItw2xOWjExYgNq4uLtTOAzuss18ax+kumkOCAewU5H88PGWN
-        CLvk8qAUwCEsM4HDx2+UwFmm+NzqjdQHz+S3g1lMOWuFTXXNQvdgWZ944ZbRYPwI
-        GqO3qDPZM3sJPlRHNXJNpwkAty/iA==
-X-ME-Sender: <xms:T--bX9ceQcv29UpxDLOKNDzCeMHdK1Fr-1-JbAvf5T_JIiM7fEd8rg>
-    <xme:T--bX7NnmTQJ08Mgquog7LKFkkiS-f71cLS8ZF_W7SwPnYXZr5FxsjBxxiatpW-Uu
-    AIIroiXTXucTA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleehgddulecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtkeertddttddunecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeefveduge
-    fgieeltefftddvieeuleelgeefjefhfeettdfhgeetfedutefgiefftdenucffohhmrghi
-    nhepfihikhhiphgvughirgdrohhrghdpuggrrhhinhhgfhhirhgvsggrlhhlrdhnvghtpd
-    hkvghrnhgvlhdrohhrghenucfkphepkeefrdekiedrjeegrdeigeenucevlhhushhtvghr
-    ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtg
-    homh
-X-ME-Proxy: <xmx:T--bX2hR4AKiSu6JxmUfWYDwpYnH6p03t1f5_zIuZVosJS92HMwObA>
-    <xmx:T--bX2-FaUNhySKAA9adqJrxNHSfS2CjT444uL_xMFgxrP9ktxx7Bg>
-    <xmx:T--bX5tOZwIerdIZg1DJBhiupD0CgSg47BOvC1cb9pckW9KJPfn9Rw>
-    <xmx:UO-bX3UrfBUZKadGh-meMuyUmtc7iNWLuLq4Hh69_Ykv5fdDOAhwFw>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 6875A328005D;
-        Fri, 30 Oct 2020 06:47:43 -0400 (EDT)
-Date:   Fri, 30 Oct 2020 11:48:31 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Chris Ye <linzhao.ye@gmail.com>
-Cc:     Chris Ye <lzye@google.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, trivial@kernel.org
-Subject: Re: [PATCH] Add devices for HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
-Message-ID: <20201030104831.GD2395528@kroah.com>
-References: <20201028235113.660272-1-lzye@google.com>
- <20201029054147.GB3039992@kroah.com>
- <CAFFudd+7DrJ+vYZ5wQ58mei6VMkMPGCpS1d7DwZMrzM-FVKzqQ@mail.gmail.com>
- <20201029191413.GB986195@kroah.com>
- <8975d128-e47f-c97c-fbd9-6045de67f34a@gmail.com>
+        Fri, 30 Oct 2020 06:49:23 -0400
+Received: by mail-ot1-f67.google.com with SMTP id b2so5154075ots.5;
+        Fri, 30 Oct 2020 03:49:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DxbIWzNpadhYFOHMUtiUrYp7aLL+EHToyZld4U4MCe0=;
+        b=MhheAvcgX4ZOGwew1TBqymQF/8E7x6GYpICMAF6C2hs5IwQyKKDpMNTWhG3qNrexxa
+         b4p0LWtLBXcTFQOr8JlG514pgCtDUwywYvAclkSqkYKIUshKlzZECFKu0a5d2XUBz0IR
+         O7tZOaQmckvx+ZKVc4gkVArPy0ZuhvRxpm/Og0UwIm17kN7DpcSm40ewmFrSkSSaXVUJ
+         98pJaAk3SBMNrtIoDT99phP4qpGHc+7j2DhYq+t7Fk2OW+0H0NDyMIyCVzTHhN7tSOZL
+         8VcvCxmV0GJ5dKLKQOz30LQdmT18xdoAebBnMc6mg8iwOcyT9t5f42tBUGPsCi5GLUPa
+         ZyOg==
+X-Gm-Message-State: AOAM530NyyD6AKstQLH+YDiiynbEybetZmp+DwhCTL9OzxDBtNuACx2z
+        hsxu2EaGEKdGa3X0StmLm/YZ/Ui3uyG7ui7E/pU=
+X-Google-Smtp-Source: ABdhPJy9u74BmkVjZUFAuaURT/kEEdBGpSqzi3KJMiCa3ikzKpuqxbG/v/dEUk5lGOwft38huDOCIItC4IP+PfOAO30=
+X-Received: by 2002:a9d:5e14:: with SMTP id d20mr1064521oti.107.1604054962859;
+ Fri, 30 Oct 2020 03:49:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8975d128-e47f-c97c-fbd9-6045de67f34a@gmail.com>
+References: <20201029145841.144173-1-hch@lst.de> <20201029145841.144173-3-hch@lst.de>
+ <20201029192236.GA991240@kroah.com> <20201029193242.GA4799@lst.de> <20201030104033.GA2392682@kroah.com>
+In-Reply-To: <20201030104033.GA2392682@kroah.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 30 Oct 2020 11:49:11 +0100
+Message-ID: <CAMuHMdXuzM0Z+yXXWqw8E2u-TNaC6C7NMRMH+X8oWQGaD=jckw@mail.gmail.com>
+Subject: Re: [PATCH 02/18] block: open code kobj_map into in block/genhd.c
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        scsi <linux-scsi@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
-A: http://en.wikipedia.org/wiki/Top_post
-Q: Were do I find info about this thing called top-posting?
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
+On Fri, Oct 30, 2020 at 11:40 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Thu, Oct 29, 2020 at 08:32:42PM +0100, Christoph Hellwig wrote:
+> > On Thu, Oct 29, 2020 at 08:22:36PM +0100, Greg Kroah-Hartman wrote:
+> > > After this, you want me to get rid of kobj_map, right?  Or you don't
+> > > care as block doesn't use it anymore?  :)
+> >
+> > I have a patch to kill it, but it causes odd regressions with the
+> > tpm driver according to the kernel test.  As I have grand plans that
+> > build on the block Ñ•ide of this series for 5.11, I plan to defer the
+> > chardev side and address it for 5.12.
+>
+> Ok, sounds good.
+>
+> Wow, I just looked at the tpm code, and it is, um, "interesting" in how
+> it thinks device lifespans work.  Nothing like having 4 different
+> structures with different lifespans embedded within a single structure.
+> Good thing that no one can dynamically remove a TPM device during
+> "normal" operation.
 
-A: No.
-Q: Should I include quotations after my reply?
+/sys/.../unbind?
 
-http://daringfireball.net/2007/07/on_top
+Gr{oetje,eeting}s,
 
-On Thu, Oct 29, 2020 at 01:04:06PM -0700, Chris Ye wrote:
-> Hi Greg,
-> 
-> Yes, I can see them on https://lore.kernel.org/linux-input/ now.
-> 
-> But I didn't put [PATCH v1] in subject,  should I sent them again with
-> version?
+                        Geert
 
-It should be v2 at the least, right?  And please read the documentation
-for how to do that properly.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-thanks,
-
-greg k-h
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
