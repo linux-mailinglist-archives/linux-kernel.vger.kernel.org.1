@@ -2,125 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3AD2A0E56
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D3F2A0E59
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727397AbgJ3TIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 15:08:09 -0400
-Received: from mga07.intel.com ([134.134.136.100]:23979 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726163AbgJ3TIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:08:09 -0400
-IronPort-SDR: 8SP93TkFEbCSkQEn5aHKEZVq4V/mk9JLHnK4lzrje5x/l1na395qtZ5qPuhbZ3/cl7NvAUoIsw
- /mt1m0WLJbYA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="232831984"
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="232831984"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 12:08:08 -0700
-IronPort-SDR: 2HVcMSo12Sm5KKBwNdvW5f+GxI+aFV0l719IoVciWyy64zbqlm5QHIeqP7aYZKiBbyzE8gSGU9
- ph0lUpmHIMaA==
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="537169798"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 12:08:08 -0700
-Date:   Fri, 30 Oct 2020 12:08:07 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Philippe Conde <conde.philippe@skynet.be>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/mce: Enable additional error logging on certain
- Intel CPUs
-Message-ID: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
-References: <fcb21490-84a1-8b99-b494-3a6ac2a0e16a@skynet.be>
- <20201029100655.GA31903@zn.tnic>
- <20201029151518.GA23990@agluck-desk2.amr.corp.intel.com>
- <20201029194118.GC31903@zn.tnic>
- <87ft5wo8zn.fsf@nanos.tec.linutronix.de>
- <20201030091056.GA6532@zn.tnic>
- <20201030190400.GA13797@agluck-desk2.amr.corp.intel.com>
+        id S1727293AbgJ3TMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 15:12:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52313 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726317AbgJ3TMc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 15:12:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604085140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XBFiXaNj39XsUADHC7RDyTutSj/q4HGNQHJgvQLCxmE=;
+        b=gTbelnJ0dOw7zPoSw3AWAPOm+XY5k6oSA1ZVM5l4j5kK9LpVUtbWHDKoSRR0fwNeX0QIw/
+        y/U9vPvnG+CiHZzUPWyElsXk+OKoo52SCD2ZrUEVBS/Xo4EoarpHbeVeBr7QrEldbqZJ6N
+        rOvdWIX99P8z1G6wriNhU2bHYW3s4ik=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-iFLSSu4TPd--l9yA-mM9Tw-1; Fri, 30 Oct 2020 15:12:19 -0400
+X-MC-Unique: iFLSSu4TPd--l9yA-mM9Tw-1
+Received: by mail-pf1-f197.google.com with SMTP id 190so1997pfz.16
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:12:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XBFiXaNj39XsUADHC7RDyTutSj/q4HGNQHJgvQLCxmE=;
+        b=PKDzIz/oi1RY0Uzj3P3RowFvPBC9vVbHc13E1giudcCJ3+VbGjYHeNc6FNXugssbpS
+         0piwiPF/Pu0rQENCDC5okLydAzciJs7KMvbyLey6kX2g0EzFYC9x1xUhdWd2DE0i5PdG
+         YQCPM5GTlJboYS7cCR9wIYLaSxfzAfvKtQwmRGnEFeQdZl31xxJTyqNRVBTi8lJG3Lb5
+         Ul4cGTSQ3XOmpj3n7SpJd1Q4kuVjyFmVM9c825/WrfTCNH6CLHCyuIodvW5G6wdCgdz3
+         2JJSQ3ELeztGQLFU8JNMz5uJHKNP2OBQZbASxujnAz2RtXH03sY0c9MnpMX/K/+sBEo3
+         An6Q==
+X-Gm-Message-State: AOAM530udecPMOrOzHBIJRTKN220O39TpZgOEcAHDGJfVFrlaahGIwH5
+        3OiT5H5OmhM49nb6c5GiLZo4yap71CgH7kTSu3pztwCrnc7PRp4qAcbGJ0cUXg66LYJIrKL0vol
+        hdnQ4B9Bw1VDI9FsWIUwN5q3r7fQG7Bsdty1Xtywx
+X-Received: by 2002:a63:490e:: with SMTP id w14mr3382419pga.275.1604085137786;
+        Fri, 30 Oct 2020 12:12:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz7oX81tGXy5zmWWvxzMzbhtIyWdYvUdA8PBADUj5CXHeRQPuitjFCWH9vEsZ801x+j0z7pVaseAlXdf3tPWR4=
+X-Received: by 2002:a63:490e:: with SMTP id w14mr3382396pga.275.1604085137412;
+ Fri, 30 Oct 2020 12:12:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030190400.GA13797@agluck-desk2.amr.corp.intel.com>
+References: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
+ <CAO-hwJLn5XKV+cp+fCRY395uBWuX=JrxgiGSHUnJXFpTzFWu4w@mail.gmail.com> <20201030180042.GB3967106@bogus>
+In-Reply-To: <20201030180042.GB3967106@bogus>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Fri, 30 Oct 2020 20:12:06 +0100
+Message-ID: <CAO-hwJK8c+BrH3u5PMCndv6Jjj6K2z=4nyKMAojD09EcHjBROA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: HID: i2c-hid: Label this binding as deprecated
+To:     Rob Herring <robh@kernel.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        andrea@borgia.bo.it, Kai Heng Feng <kai.heng.feng@canonical.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Hans De Goede <hdegoede@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        DTML <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 12:04:03PM -0700, Luck, Tony wrote:
+On Fri, Oct 30, 2020 at 7:00 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, Oct 30, 2020 at 11:51:53AM +0100, Benjamin Tissoires wrote:
+> > Hi Doug,
+> >
+> > Foreword: I was about to say "yeah, whatever" to please Rob for once.
+>
+> Read my other reply first... I think we mostly agree.
+>
+> > But after re-reading this and more specifically patch 3 of the series,
+> > that won't do. More comments inlined.
+> >
+> > On Sat, Oct 24, 2020 at 1:23 AM Douglas Anderson <dianders@chromium.org> wrote:
+> > >
+> > > As pointed out by Rob Herring [1], we should have a device-specific
+> > > compatible string.  This means people shouldn't be using the
+> > > "i2c-over-hid" compatible string anymore, or at least not without a
+> > > more specific compatible string before it.  Specifically:
+> > >
+> > > 1. For newly added devices we should just have the device-specific
+> > >    device string (no "hid-over-i2c" fallback) and infer the timings
+> > >    and hid-descr-addr from there.
+> >
+> > And that's a big NACK from a maintainer point of view. I know in the
+> > device tree world these strings are important so that people can just
+> > say "I have a device compatible with X", and go on, but in the HID
+> > world that means we will have to implement one compatible struct per
+> > vendor/device, which is not something I want to do.
+>
+> It's not really any different than PCI and USB VID/PIDs.
 
-Bah, didn't notice this conversation didn't include LKML.
+Well, it is, because in the USB (HID) world, there is a specification
+that provides all of the entry points a device needs. In the i2c-hid
+case, the only entry point a device needs, in the ACPI world is one
+register address, and this is provided by ACPI itself. So in the ACPI
+world, for i2c-hid devices, we don't need to recompile the driver to
+support any current or new devices.
 
-> The Xeon versions of Sandy Bridge, Ivy Bridge and Haswell support an
-> optional additional error logging mode which is enabled by an MSR.
-> 
-> Previously this mode was enabled from the mcelog(8) tool via /dev/cpu,
-> but the kernel is now very picky about which MSRs may be written. So
-> move the enabling into the kernel.
-> 
-> Suggested-by: Boris Petkov <bp@alien8.de>
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> ---
-> 
-> N.B. I don't have any of these old systems in my lab any more. So
-> this is untested :-(
-> 
->  arch/x86/include/asm/msr-index.h |  1 +
->  arch/x86/kernel/cpu/mce/intel.c  | 20 ++++++++++++++++++++
->  2 files changed, 21 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-> index 972a34d93505..b2dd2648c0e2 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -139,6 +139,7 @@
->  #define MSR_IA32_MCG_CAP		0x00000179
->  #define MSR_IA32_MCG_STATUS		0x0000017a
->  #define MSR_IA32_MCG_CTL		0x0000017b
-> +#define MSR_ERROR_CONTROL		0x0000017f
->  #define MSR_IA32_MCG_EXT_CTL		0x000004d0
->  
->  #define MSR_OFFCORE_RSP_0		0x000001a6
-> diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
-> index abe9fe0fb851..b47883e364b4 100644
-> --- a/arch/x86/kernel/cpu/mce/intel.c
-> +++ b/arch/x86/kernel/cpu/mce/intel.c
-> @@ -509,12 +509,32 @@ static void intel_ppin_init(struct cpuinfo_x86 *c)
->  	}
->  }
->  
-> +/*
-> + * Enable additional error logs from the integrated
-> + * memory controller on processors that support this.
-> + */
-> +static void intel_imc_init(struct cpuinfo_x86 *c)
-> +{
-> +	u64 error_control;
-> +
-> +	switch (c->x86_model) {
-> +	case INTEL_FAM6_SANDYBRIDGE_X:
-> +	case INTEL_FAM6_IVYBRIDGE_X:
-> +	case INTEL_FAM6_HASWELL_X:
-> +		rdmsrl(MSR_ERROR_CONTROL, error_control);
-> +		error_control |= 2;
-> +		wrmsrl(MSR_ERROR_CONTROL, error_control);
-> +		break;
-> +	}
-> +}
-> +
->  void mce_intel_feature_init(struct cpuinfo_x86 *c)
->  {
->  	intel_init_thermal(c);
->  	intel_init_cmci();
->  	intel_init_lmce();
->  	intel_ppin_init(c);
-> +	intel_imc_init(c);
->  }
->  
->  void mce_intel_feature_clear(struct cpuinfo_x86 *c)
-> -- 
-> 2.21.1
-> 
+>
+> > You can think of it as if you are suddenly saying that because it
+> > would be easier for a few particular USB devices that need a quirk,
+> > you "just" need to add the list of *all* USB HID devices that are
+> > around. i2c-hid should be a driver that doesn't change unless 2 things
+> > happen:
+> > - there is a change in the spec
+> > - there is a specific quirk required for a device that doesn't follow the spec.
+>
+> Or does something outside of what the spec covers.
+
+This is solved in the ACPI case by running ACPI callbacks, and I am
+more and more thinking we should mimic that for DT devices.
+
+>
+> > So if having device tree support for these means we suddenly need to
+> > add every single device around in the compatible table, I would be
+> > tempted to just drop the support for those new devices.
+> >
+> > Again, you (or anyone else) have to understand that the descriptor
+> > address is just a parameter which is known at the manufacturing time,
+> > but that can vary with different vendors and or products. In the ACPI
+> > world, this parameter is provided in the DSDT, and there is no reason
+> > for it to not be provided in the DT.
+>
+> Whether that makes sense as a standard 'hid-over-i2c' property is a
+> separate discussion. Seems like it might be.
+
+Actually it is not TBH. The spec doesn't mention that sleep time (or
+the reset line FWIW), so it shouldn't even be seen by i2c-hid. But I
+accepted maybe too much parametrization on i2c-hid, and now is
+probably the time we take a step back and rewrite the code that goes
+out of spec.
+
+>
+> It's trying to parameterize power sequencing to be generic and a never
+> ending stream of quirk property additions that I'm against. That's based
+> on the mistake of accepting those to some point in the past.
+> hid-over-i2c is not special here.
+
+Ack
+
+>
+> If we wanted to parameterize power control/sequences in DT, then we'd
+> need to handle any number of controls (GPIO, regulators, clocks, power
+> domains, register poking, firmware loading, etc.) in any order and
+> amounts of time in between. What we'd end up needing is some programming
+> language in DT (Forth anyone?).
+
+Understood, and we are hitting the exact same problem here. The only
+difference is that i2c-hid is already generic for anything but
+power/reset, and this is what we are vehemently agreeing here :P
+
+>
+> > The last thing I want to see is people using device tree having to
+> > recompile i2c-hid to register their own device.
+>
+> That's fine if they don't need extra things like power control...
+>
+> > If this part of the Device Tree binding is so important for the DT
+> > world, then we should split up the DT bindings from i2c-hid, and have
+> > some platform driver that would handle a conversion between devicetree
+> > and platform data. But this driver won't be maintained by me.
+> >
+> > I agree adding the various sleep parameters in the platform data is
+> > not good, but I prefer that over having to maintain an endless table
+> > of parameters for every single i2c-hid device out there.
+>
+> How is match data any different from platform data? It not other than
+
+The platform data is filled by ACPI based on the DSDT, and only a few
+options are used: HID descriptor register address and irq IIRC.
+
+The other platform data options were added more specifically to work
+around the fact that DT doesn't have the language mentioned above, and
+that's where dragons are coming in.
+
+> one is all in the same file and the other adds a bunch of boilerplate
+> and a pointless driver. If it's really such a maintainer burden, then
+> perhaps the driver model could learn how to add match entries
+> dynamically or from multiple sources (like a 2nd file of ids and
+> data). Just throwing out ideas here...
+
+I couldn't agree more (see my comment in patch 3/3 at
+https://patchwork.kernel.org/project/linux-input/patch/20201023162220.v2.3.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid/#23723561
+in case you were not cc-ed).
+
+Ideally, we should split out anything DT related in the i2c-hid code,
+and work around it in the same "hidden" way ACPI is: have a few
+functions that could be overridden when entering into full power, or
+sleep. This code could be then maintained separately from the generic
+code, and we would be able to have some compatible definitions there,
+without polluting the other devices. And as you mentioned, maybe we
+could make this dynamic.
+
+I honestly wish we could have this as a separate module that would be
+in charge of the DT folks, but already having it as a separate file
+would be a win.
+
+Cheers,
+Benjamin
+
+>
+> Rob
+>
+
