@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910382A0B00
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:21:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 226FB2A0B01
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgJ3QU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:20:59 -0400
+        id S1727043AbgJ3QVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:21:01 -0400
 Received: from mga02.intel.com ([134.134.136.20]:56316 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726063AbgJ3QU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:20:58 -0400
-IronPort-SDR: C3FH/ReVIX6HzV+796IgyQvAZZqWCRWbeb/DP4MRgixouOt0IOdlAFGEvMunRopMOgfcts5dRu
- CSn3Uq9Hwycw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="155605450"
+        id S1726239AbgJ3QU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:20:59 -0400
+IronPort-SDR: H6qPlZr2aIW2KHaTQY1FcWJLEUFKR1337Vzv0fiZaCR0DCuns9EgKC1Lu/MWrKiLyARTXKjrbb
+ bQUH8UoiPe8A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="155605456"
 X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
-   d="scan'208";a="155605450"
+   d="scan'208";a="155605456"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 09:18:55 -0700
-IronPort-SDR: 4V+oBVfVfMxQcsh23dOEWukp6Eehl2L0agOFjNOCS8wxqVHaAjV6Rr+CStfFRW0L1/wYRGKgIQ
- l4l0BWoQD5SQ==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 09:18:57 -0700
+IronPort-SDR: v7d++dT9BRThG0MG1InxV2OTTNixcD8NCJY7V1esU0gaTNU1hG5s3uil8latuNTB6EgBv6iowb
+ /iR8hjJs+bjg==
 X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
-   d="scan'208";a="469569446"
+   d="scan'208";a="469569456"
 Received: from rdchavez-mobl2.amr.corp.intel.com (HELO [10.212.91.180]) ([10.212.91.180])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 09:18:54 -0700
-Subject: Re: [PATCH 2/2] ASoC: intel: sof_rt5682: Add quirk for Dooly
-To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Jason Yan <yanaijie@huawei.com>, linux-kernel@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 09:18:56 -0700
+Subject: Re: [PATCH v3] soundwire: SDCA: add helper macro to access controls
+To:     Takashi Iwai <tiwai@suse.de>, "Liao, Bard" <bard.liao@intel.com>
+Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "vinod.koul@linaro.org" <vinod.koul@linaro.org>,
+        "Lin, Mengdong" <mengdong.lin@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hui.wang@canonical.com" <hui.wang@canonical.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "jank@cadence.com" <jank@cadence.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
         Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>
-References: <20201030063654.25877-1-brent.lu@intel.com>
- <20201030063654.25877-3-brent.lu@intel.com>
+        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
+References: <20201029204955.8568-1-yung-chuan.liao@linux.intel.com>
+ <20201030093651.GA2080962@kroah.com>
+ <DM6PR11MB40748AD8D57C73E4D79D4676FF150@DM6PR11MB4074.namprd11.prod.outlook.com>
+ <s5hsg9wrlhc.wl-tiwai@suse.de>
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <c83b3f20-2afd-12da-c349-31f35f8f6aa5@linux.intel.com>
-Date:   Fri, 30 Oct 2020 10:32:28 -0500
+Message-ID: <880a22a2-49f6-fa1c-46ad-6388cbd26ee4@linux.intel.com>
+Date:   Fri, 30 Oct 2020 10:52:24 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201030063654.25877-3-brent.lu@intel.com>
+In-Reply-To: <s5hsg9wrlhc.wl-tiwai@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -60,63 +62,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/30/20 1:36 AM, Brent Lu wrote:
-> This DMI product family string of this board is "Google_Hatch" so the
-> DMI quirk will take place. However, this board is using rt1015 speaker
-> amp instead of max98357a specified in the quirk. Therefore, we need an
-> new DMI quirk for this board.
-
-Do you actually need a DMI quirk for this platform?
-
-the .driver_data below uses the exact same settings as what you would 
-use with the generic solution based on ACPI IDs, see below.
-
-Wondering if patch1 would be enough?
-
+>>>> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |
+>>> 		\
+>>>> +						 (((fun) & 0x7) << 22) |	\
+>>>> +						 (((ent) & 0x40) << 15) |	\
+>>>> +						 (((ent) & 0x3f) << 7) |	\
+>>>> +						 (((ctl) & 0x30) << 15) |	\
+>>>> +						 (((ctl) & 0x0f) << 3) |	\
+>>>> +						 (((ch) & 0x38) << 12) |	\
+>>>> +						 ((ch) & 0x07))
+>>>> +
+>>>> +#define SDW_SDCA_MBQ_CTL(reg)			((reg) | BIT(13))
+>>>> +#define SDW_SDCA_NEXT_CTL(reg)			((reg) | BIT(14))
+>>>> +
+>>>>   #endif /* __SDW_REGISTERS_H */
+>>>
+>>>
+>>> No users of these macros?
+>>
+>> SDW_SDCA_CTL is used in sdca codec drivers which are not upstream yet.
+>> SDW_SDCA_MBQ_CTL will be used in a new regmap method.
+>> SDW_SDCA_NEXT_CTL can be used in sdca codec drivers, too.
 > 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> ---
->   sound/soc/intel/boards/sof_rt5682.c | 14 ++++++++++++++
->   1 file changed, 14 insertions(+)
-> 
-> diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-> index 7701957e0eb7..dfcdf6d4b6c8 100644
-> --- a/sound/soc/intel/boards/sof_rt5682.c
-> +++ b/sound/soc/intel/boards/sof_rt5682.c
-> @@ -100,6 +100,20 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
->   					SOF_RT5682_MCLK_24MHZ |
->   					SOF_RT5682_SSP_CODEC(1)),
->   	},
-> +	{
-> +		.callback = sof_rt5682_quirk_cb,
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "Dooly"),
-> +		},
-> +		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
-> +					SOF_RT5682_MCLK_24MHZ |
-> +					SOF_RT5682_SSP_CODEC(0) |
-> +					SOF_SPEAKER_AMP_PRESENT |
-> +					SOF_RT1015_SPEAKER_AMP_PRESENT |
-> +					SOF_RT1015_SPEAKER_AMP_100FS |
-> +					SOF_RT5682_SSP_AMP(1)),
-> +	},
+> Well, the point is that it's hard to review without seeing how the
+> code of actual users are.
 
-is this really needed? it's the same as the .driver_data below:
+Agree, but our job is not made easy by the three-way dependency on 
+regmap, SoundWire before we can submit ASoC codec drivers (developed by 
+Realtek and tested by Intel).
 
-@@ -875,6 +901,16 @@ static const struct platform_device_id board_ids[] = {
-  					SOF_MAX98360A_SPEAKER_AMP_PRESENT |
-  					SOF_RT5682_SSP_AMP(1)),
-  	},
-+	{
-+		.name = "cml_rt1015_rt5682",
-+		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_MCLK_24MHZ |
-+					SOF_RT5682_SSP_CODEC(0) |
-+					SOF_SPEAKER_AMP_PRESENT |
-+					SOF_RT1015_SPEAKER_AMP_PRESENT |
-+					SOF_RT1015_SPEAKER_AMP_100FS |
-+					SOF_RT5682_SSP_AMP(1)),
-+	},
+If you prefer us to send all patches for SDCA codec support in one shot, 
+that would be fine with us.
+> BTW, the bit definitions can be simplified with GENMASK().
+> I personally don't think GENMASK() necessarily good, but it may fit
+> better in a case like this.
 
+we use this macro in switch cases, e.g. for regmap properties to define 
+read/volatile registers:
+
+case SDW_SDCA_CTL(FUN_JACK_CODEC, RT711_SDCA_ENT_GE49, 
+RT711_SDCA_CTL_SELECTED_MODE, 0):
+	case SDW_SDCA_CTL(FUN_JACK_CODEC, RT711_SDCA_ENT_GE49, 
+RT711_SDCA_CTL_DETECTED_MODE, 0):
+	case SDW_SDCA_CTL(FUN_HID, RT711_SDCA_ENT_HID01, 
+RT711_SDCA_CTL_HIDTX_CURRENT_OWNER, 0) ...
+		SDW_SDCA_CTL(FUN_HID, RT711_SDCA_ENT_HID01, 
+RT711_SDCA_CTL_HIDTX_MESSAGE_LENGTH, 0):
+	case RT711_BUF_ADDR_HID1 ... RT711_BUF_ADDR_HID2:
+		return true;
+
+https://github.com/thesofproject/linux/blob/70fe32e776dafb4b03581d62a4569f65c2f13ada/sound/soc/codecs/rt711-sdca-sdw.c#L35
+
+and unfortunately all our attempts to use FIELD_PREP, FIELD_GET, 
+u32_encode, as suggested by Vinod, failed for this case due to 
+compilation issues (can't use these macros outside of a function scope). 
+The errors were shared with Vinod.
+
+That's why we went back to the initial suggestion to deal with the 
+shifts/masks by hand. For now we don't have a better solution that works 
+in all cases were the macro is used.
+
+Thanks
+-Pierre
 
