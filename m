@@ -2,141 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D150D2A028E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7154C2A029A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgJ3KLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50860 "EHLO
+        id S1726210AbgJ3KNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgJ3KLK (ORCPT
+        with ESMTP id S1725808AbgJ3KNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:11:10 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52163C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:11:10 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id l2so4346646qkf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:11:10 -0700 (PDT)
+        Fri, 30 Oct 2020 06:13:04 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C016C0613D7;
+        Fri, 30 Oct 2020 03:13:04 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id b138so4658581yba.5;
+        Fri, 30 Oct 2020 03:13:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4C47VY8rj0f0TZkMvqSBACCRHl1uymcfamoikS1zYcw=;
-        b=ZUIXyGrxqh9DiUr8d9MeGkConoqvm6ObHQ05opE3WL+oxpY95+e0pXoTZpazAnJMUk
-         /Kpd3kVuSzz37kWQWWVS++MGsQxcNg/fi9BmtuCL8COxPsFgXUTKqD002hY9Rv2+q+a2
-         lCK8dou+h9z+Rge7Z4UnslRgBI38LiAp+15JB2f0UoDZMpW8NkjEqMcFMryvl/AAHxbO
-         9akHHvim1WSvYOSyEcxWj4+VTGhAG/7hrZ1T7kwMTeb9nrj/kKhP3pbyecT/QUF3/zeU
-         1sVkLEBUeKon2tnfC/PVvi0Z5bqtDJ7qIoUWX2DIT7iTF6/dPs3JmqEcUlx+gxR+2eU/
-         IWVw==
+         :cc:content-transfer-encoding;
+        bh=oDcavtlo/8YUsmK9GgsBJflj43Hqu+2PyoI44vqAcTU=;
+        b=biXZYjRb0GPdyR0DAE8go697q9yupBOQdA0c+g//EvceAxEz3ujehBpIeJVlIloJOd
+         +0/mnmPDLYR/ky1NAX1DDieFSBHzciMTCQGtOHlmtKbQBegIKLKsemKeO9I5+rv0Nc36
+         5ILbiUbNIXud/Ns21lRgoPKzNnQx1KtniiZpTRMZyi/H+MJal97kB8+TkqA+PT8n2nYn
+         rotSf1sOCvT8+Kgn6jOA008cGNl/JRxz8SUZF0ZTNnhPABM6vWkRFH58i1PUSmXmzne4
+         3A73hX9tuKLrGbrd/eh7jsnWJyXuOeNg0cAbEq/QlOKMZ7YkMn4r4+/4E/J8XzW15Iss
+         Wy7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4C47VY8rj0f0TZkMvqSBACCRHl1uymcfamoikS1zYcw=;
-        b=qvat6xtJC7iY8y+1k8gHFBe8qGXVXzR/h1XVgeR7hVDbmlZgz7s4oXOeJjoI0ImOS/
-         xSCs5ZQm39bUXvQAg38suVkzk9OPtNpCsDXZXF5DLGoPtTEaI45/ZxD2Zn4chbNy++h5
-         2qPoO05sq8wgqHci5tDj8XTAS7xDKanD8wH+mPhJw2ZN0LdJEcWNm1T6xgV13jtzkOVq
-         RK95kpZ8cw7yzss+0uAYovKDK4r6KPVip4wOH+dS5sTfkmZXWEnXGj8ppA7KmGaObv3f
-         pp26h4nreK6qXjCbz4rYdhdT7EhTZ0QzU+p3W01rLoVtngLrPjUWOWu88Bb8xOyXiuom
-         YQDw==
-X-Gm-Message-State: AOAM533DMo5h2Hno/qG072CiMi47K0EHcxjEFeCJZ9eaknPYPTLZHdxx
-        6v6FFuK2u4R+7vaBidllPFBSomHqXyCrHZmqsQutxg==
-X-Google-Smtp-Source: ABdhPJxf/3+v4bL4dn7MpW2/9jzHYsQxYUtbGD8a7hjNUYn2i5+nq928uMVooytEb5gTEofbRIXzLVX5oZ5G0aEsDsQ=
-X-Received: by 2002:a37:9747:: with SMTP id z68mr1265803qkd.424.1604052669287;
- Fri, 30 Oct 2020 03:11:09 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oDcavtlo/8YUsmK9GgsBJflj43Hqu+2PyoI44vqAcTU=;
+        b=UtIdRhnjHbjPS4jBs0jHg62+DH4YxWr3a74dPHYIeMepd8DGh9ofQcoQJSI0L+Stnu
+         tLshrPSfILj2jz/MuqSrDlDgZ0X5fQ43itVbrsfGpffTsOy9LUu5y9/PMCz7ZlkwYch/
+         D/AqOohTgYPuGm/iGXNDJtTq+iW1oprroFSu3kSJ+yJM74O8W1WvW6lEXFsTOjYPycq7
+         CUppoF6CrQPDTrSr9IqJSmPrc8PfWqpW/Zvwt9r2R3bYFv9GfQuKKnXgTS70CyfL5v6t
+         pdD3iaYeMuCB53xcpDjZoWbdK2RyZds6zpBJHd4iPUHhjaR1sQlsdTkHcWQSiIb4T1DD
+         CR5Q==
+X-Gm-Message-State: AOAM533A3ZNSQgrhkZhGlepa7tfQnaaV1UBHlJ+ipCUPFbbQoH02LWrU
+        vgSRUtCSA8exAaJbdyQkAvVTty1Vgn2JfJvW14o=
+X-Google-Smtp-Source: ABdhPJyof1kh9nXjlOyzIhWRhG2sDZT1FgNFvCUja1r22GV0LzsJwTnBEH9LQ9SthBE7NLhzAr5PRFCKQSWEEjs9448=
+X-Received: by 2002:a25:740e:: with SMTP id p14mr2256546ybc.401.1604052783366;
+ Fri, 30 Oct 2020 03:13:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <0000000000008fbadb05af94b61e@google.com> <01bcf380-c806-02fa-67ac-ff66fd0100c7@oracle.com>
-In-Reply-To: <01bcf380-c806-02fa-67ac-ff66fd0100c7@oracle.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 30 Oct 2020 11:10:58 +0100
-Message-ID: <CACT4Y+ZakmsaKN+R94SWyErZc6FeKcmBP8d5yY8FO4+aL5WxOw@mail.gmail.com>
-Subject: Re: WARNING in close_fs_devices (2)
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     syzbot <syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com>,
-        Chris Mason <clm@fb.com>, dsterba@suse.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <20201029105515.16309-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVGO+DEgsTr62nA+egU2etZA_vwE9GrOG1JPWBvv90UXg@mail.gmail.com>
+In-Reply-To: <CAMuHMdVGO+DEgsTr62nA+egU2etZA_vwE9GrOG1JPWBvv90UXg@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 30 Oct 2020 10:12:37 +0000
+Message-ID: <CA+V-a8sagMFjaxxVUGMeqG5wdAWwT=oqOPHgTBZ7j0hPP1LcNw@mail.gmail.com>
+Subject: Re: [PATCH v2] clk: renesas: r8a774c0: Add RPC clocks
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 2:37 PM Anand Jain <anand.jain@oracle.com> wrote:
->
-> On 18/9/20 7:22 pm, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    e4c26faa Merge tag 'usb-5.9-rc5' of git://git.kernel.org/p..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=15bf1621900000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=4cfe71a4da060be47502
-> > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
-> >
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 1 PID: 3612 at fs/btrfs/volumes.c:1166 close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
-> > Kernel panic - not syncing: panic_on_warn set ...
-> > CPU: 1 PID: 3612 Comm: syz-executor.2 Not tainted 5.9.0-rc4-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >   __dump_stack lib/dump_stack.c:77 [inline]
-> >   dump_stack+0x198/0x1fd lib/dump_stack.c:118
-> >   panic+0x347/0x7c0 kernel/panic.c:231
-> >   __warn.cold+0x20/0x46 kernel/panic.c:600
-> >   report_bug+0x1bd/0x210 lib/bug.c:198
-> >   handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
-> >   exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
-> >   asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-> > RIP: 0010:close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
-> > Code: 0f b6 04 02 84 c0 74 02 7e 33 48 8b 44 24 18 c6 80 30 01 00 00 00 48 83 c4 30 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 99 ce 6a fe <0f> 0b e9 71 ff ff ff e8 8d ce 6a fe 0f 0b e9 20 ff ff ff e8 d1 d5
-> > RSP: 0018:ffffc900091777e0 EFLAGS: 00010246
-> > RAX: 0000000000040000 RBX: ffffffffffffffff RCX: ffffc9000c8b7000
-> > RDX: 0000000000040000 RSI: ffffffff83097f47 RDI: 0000000000000007
-> > RBP: dffffc0000000000 R08: 0000000000000001 R09: ffff8880988a187f
-> > R10: 0000000000000000 R11: 0000000000000001 R12: ffff88809593a130
-> > R13: ffff88809593a1ec R14: ffff8880988a1908 R15: ffff88809593a050
-> >   close_fs_devices fs/btrfs/volumes.c:1193 [inline]
-> >   btrfs_close_devices+0x95/0x1f0 fs/btrfs/volumes.c:1179
-> >   open_ctree+0x4984/0x4a2d fs/btrfs/disk-io.c:3434
-> >   btrfs_fill_super fs/btrfs/super.c:1316 [inline]
-> >   btrfs_mount_root.cold+0x14/0x165 fs/btrfs/super.c:1672
-> >   legacy_get_tree+0x105/0x220 fs/fs_context.c:592
-> >   vfs_get_tree+0x89/0x2f0 fs/super.c:1547
-> >   fc_mount fs/namespace.c:978 [inline]
-> >   vfs_kern_mount.part.0+0xd3/0x170 fs/namespace.c:1008
-> >   vfs_kern_mount+0x3c/0x60 fs/namespace.c:995
-> >   btrfs_mount+0x234/0xaa0 fs/btrfs/super.c:1732
-> >   legacy_get_tree+0x105/0x220 fs/fs_context.c:592
-> >   vfs_get_tree+0x89/0x2f0 fs/super.c:1547
-> >   do_new_mount fs/namespace.c:2875 [inline]
-> >   path_mount+0x1387/0x2070 fs/namespace.c:3192
-> >   do_mount fs/namespace.c:3205 [inline]
-> >   __do_sys_mount fs/namespace.c:3413 [inline]
-> >   __se_sys_mount fs/namespace.c:3390 [inline]
-> >   __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
-> >   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > RIP: 0033:0x46004a
-> > Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da 89 fb ff c3 66 0f 1f 84 00 00 00 00 00
-> > RSP: 002b:00007f414d78da88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-> > RAX: ffffffffffffffda RBX: 00007f414d78db20 RCX: 000000000046004a
-> > RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f414d78dae0
-> > RBP: 00007f414d78dae0 R08: 00007f414d78db20 R09: 0000000020000000
-> > R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
-> > R13: 0000000020000100 R14: 0000000020000200 R15: 000000002001a800
-> > Kernel Offset: disabled
-> > Rebooting in 86400 seconds..
->
->
-> #syz fix: btrfs: fix rw_devices count in __btrfs_free_extra_devids
+Hi Geert,
 
-Is it the correct patch title? It still does not exist anywhere
-including linux-next...
+Thank you for the review.
+
+On Thu, Oct 29, 2020 at 2:29 PM Geert Uytterhoeven <geert@linux-m68k.org> w=
+rote:
+>
+> Hi Prabhakar,
+>
+> On Thu, Oct 29, 2020 at 11:55 AM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Describe the RPCSRC internal clock and the RPC[D2] clocks derived from =
+it,
+> > as well as the RPC-IF module clock, in the RZ/G2E (R8A774C0) CPG/MSSR
+> > driver.
+>
+> Thanks for your patch!
+>
+> > Add new clk type CLK_TYPE_GEN3E3_RPCSRC to handle registering rpcsrc
+> > clock as the source for RPCSRC can be either PLL0/PLL1 and this depends
+> > on MD[1:4] pins where as compared to other R-Car Gen3 SoC's the RPCSRC
+> > clock source is always PLL1.
+> >
+> > MD[4] MD[3] MD[2] MD[1]
+> >   0     0     0    1     -> RPCSRC CLK source is PLL1
+> >   0     0     1    1     -> RPCSRC CLK source is PLL1
+> >   0     1     0    0     -> RPCSRC CLK source is PLL1
+> >   1     0     1    1     -> RPCSRC CLK source is PLL1
+> >   x     x     x    x     -> For any other values RPCSRC CLK source is P=
+LL0
+>
+> AFAIU, the _initial values_ of the RPCCKCR bits depend on the MD pins.
+> They can still be changed at run-time, and might have been changed by
+> the bootloader before transferring control to Linux.
+>
+> > R-Car Gen3 manual Rev.2.20 has in-correct information related to
+> > determining the clock source for RPCSRC.
+>
+> Which part of the information is not correct?
+> Where can I find corrected information?
+> Is my understanding above incorrect, too?
+>
+R-Car Gen3 HW manual mentions the below statement (page 529, Rev.2.20 manua=
+l):
+[R-Car E3]
+When (MD4, MD3, MD2, MD1) =3D (0, 0, 0, 1) or (0, 1, 0, 0): DIV[2:0] =3D
+011, DIV[4:3] =3D 00 (300 MHz PLL0)
+
+Confirming with internal team this should be below:
+
+When (MD4, MD3, MD2, MD1) =3D (0, 0, 0, 1) or (0, 1, 0, 0): DIV[2:0] =3D
+011, DIV[4:3] =3D 00 (80 MHz PLL1)
+
+This should be fixed in the next version of the document, and when
+available I'll ask Chris P to send it across.
+
+> > --- a/drivers/clk/renesas/r8a774c0-cpg-mssr.c
+> > +++ b/drivers/clk/renesas/r8a774c0-cpg-mssr.c
+>
+> > @@ -73,6 +74,12 @@ static const struct cpg_core_clk r8a774c0_core_clks[=
+] __initconst =3D {
+> >         DEF_FIXED(".s2",       CLK_S2,             CLK_PLL1,       4, 1=
+),
+> >         DEF_FIXED(".s3",       CLK_S3,             CLK_PLL1,       6, 1=
+),
+> >         DEF_FIXED(".sdsrc",    CLK_SDSRC,          CLK_PLL1,       2, 1=
+),
+> > +       DEF_BASE(".rpcsrc",    CLK_RPCSRC, CLK_TYPE_GEN3E3_RPCSRC, (CLK=
+_PLL1 << 16) | CLK_PLL0),
+>
+> You may want to add a new DEF_* helper macro for this.
+>
+> > --- a/drivers/clk/renesas/rcar-gen3-cpg.c
+> > +++ b/drivers/clk/renesas/rcar-gen3-cpg.c
+> > @@ -441,6 +441,14 @@ static const struct clk_div_table cpg_rpcsrc_div_t=
+able[] =3D {
+> >         { 2, 5 }, { 3, 6 }, { 0, 0 },
+> >  };
+> >
+> > +static const struct clk_div_table cpg_rpcsrc_e3_pll0_div_table[] =3D {
+> > +       { 2, 8 }, { 0, 0 },
+> > +};
+> > +
+> > +static const struct clk_div_table cpg_rpcsrc_e3_pll1_div_table[] =3D {
+> > +       { 0, 5 }, { 1, 3 }, { 3, 2 }, { 0, 0 },
+> > +};
+> > +
+> >  static const struct clk_div_table cpg_rpc_div_table[] =3D {
+> >         { 1, 2 }, { 3, 4 }, { 5, 6 }, { 7, 8 }, { 0, 0 },
+> >  };
+> > @@ -515,6 +523,18 @@ static struct clk * __init cpg_rpcd2_clk_register(=
+const char *name,
+> >         return clk;
+> >  }
+> >
+> > +static int __init cpg_rpcsrc_e3_get_parent(u32 mode)
+> > +{
+> > +       unsigned int e3_rpcsrc =3D (mode & GENMASK(4, 1)) >> 1;
+> > +       unsigned int pll1[] =3D { 0x1, 0x3, 0x4, 0xb, };
+> > +       int i;
+> > +
+> > +       for (i =3D 0; i < ARRAY_SIZE(pll1); i++)
+> > +               if (e3_rpcsrc =3D=3D pll1[i])
+> > +                       return 1;
+> > +
+> > +       return 0;
+> > +}
+> >
+> >  static const struct rcar_gen3_cpg_pll_config *cpg_pll_config __initdat=
+a;
+> >  static unsigned int cpg_clk_extalr __initdata;
+> > @@ -552,6 +572,7 @@ struct clk * __init rcar_gen3_cpg_clk_register(stru=
+ct device *dev,
+> >         const struct clk *parent;
+> >         unsigned int mult =3D 1;
+> >         unsigned int div =3D 1;
+> > +       int e3_rpcsrc_parent;
+> >         u32 value;
+> >
+> >         parent =3D clks[core->parent & 0xffff];   /* some types use hig=
+h bits */
+> > @@ -696,6 +717,22 @@ struct clk * __init rcar_gen3_cpg_clk_register(str=
+uct device *dev,
+> >                                                   cpg_rpcsrc_div_table,
+> >                                                   &cpg_lock);
+> >
+> > +       case CLK_TYPE_GEN3E3_RPCSRC:
+> > +               e3_rpcsrc_parent =3D cpg_rpcsrc_e3_get_parent(cpg_mode)=
+;
+>
+> This is not correct if the boot loader has changed the parent clock.
+>
+You mean by manually togelling the MD pins before we get into Linux ?
+
+> > +               if (e3_rpcsrc_parent) {
+> > +                       parent =3D clks[core->parent >> 16];
+> > +                       if (IS_ERR(parent))
+> > +                               return ERR_CAST(parent);
+> > +               }
+> > +
+> > +               return clk_register_divider_table(NULL, core->name,
+> > +                                                 __clk_get_name(parent=
+), 0,
+> > +                                                 base + CPG_RPCCKCR, 3=
+, 2, 0,
+> > +                                                 e3_rpcsrc_parent ?
+> > +                                                 cpg_rpcsrc_e3_pll1_di=
+v_table :
+> > +                                                 cpg_rpcsrc_e3_pll0_di=
+v_table,
+> > +                                                 &cpg_lock);
+> > +
+>
+> So you want to keep the parent clock selection fixed, but still allow
+> the system to change the divider?
+> Why not support changing the parent too, by modeling this as a composite
+> clock consisting of a mux and a divider?
+>
+I will investigate this further (read more about composite clocks).
+Below are the values for RPC and RPCD2,
+
+RPC=CF=95 =3D 320 MHz, RPCD2=CF=95 =3D 160MHz.
+RPC=CF=95 =3D 160 MHz, RPCD2=CF=95 =3D 80MHz.
+RPC=CF=95 =3D 80 MHz, RPCD2=CF=95 =3D 40MHz.
+
+Cheers,
+Prabhakar
