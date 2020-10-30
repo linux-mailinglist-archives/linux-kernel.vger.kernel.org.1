@@ -2,82 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9292A088D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC292A08D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbgJ3Ozs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:55:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38524 "EHLO mx2.suse.de"
+        id S1727050AbgJ3PAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:00:44 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:32703 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726178AbgJ3Ozr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:55:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 035CCAC12;
-        Fri, 30 Oct 2020 14:55:46 +0000 (UTC)
-Subject: Re: [PATCH] mm/compaction: count pages and stop correctly during page
- isolation.
-To:     Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Rik van Riel <riel@surriel.com>, linux-kernel@vger.kernel.org
-References: <20201029200435.3386066-1-zi.yan@sent.com>
- <20201030094308.GG1478@dhcp22.suse.cz>
- <6CAAB1FC-2B41-490B-A67A-93063629C19B@nvidia.com>
- <20201030133625.GJ1478@dhcp22.suse.cz>
- <400B3460-65C0-4C48-A7EA-1A9F5780EC9C@nvidia.com>
- <20201030144917.GK1478@dhcp22.suse.cz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <e0f38829-8e47-62d7-924a-920096aae739@suse.cz>
-Date:   Fri, 30 Oct 2020 15:55:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S1726662AbgJ3PAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:00:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604069973; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=NRiAvEzduLH4Fyb+nC9qHYSc/q8IvoaoKJXFIDpgOag=;
+ b=uEdmCX24MegZT0stROoDcWddCJOxx/P6O/HhKTg5pAM6aVqIRgb23qqUhosEk7/oAfuJ0x+0
+ II0tpPi4L2uZq4OnU70In/um6T/5IwTA6loCXdqqJ33Jt1WY5WWmdr48C89a+8lxTJCtWkrI
+ 1E064YMT7gI/knG+CSDA/DC5FPc=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f9c2a54b01cad7dbfeeadbd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 14:59:32
+ GMT
+Sender: rojay=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8E71FC433C6; Fri, 30 Oct 2020 14:59:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rojay)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E8E1BC433C9;
+        Fri, 30 Oct 2020 14:59:31 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20201030144917.GK1478@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 30 Oct 2020 20:29:31 +0530
+From:   rojay@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     wsa@kernel.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        vkaur@codeaurora.org, pyarlaga@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH V5 3/3] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+In-Reply-To: <160168919332.310579.15311671258384969025@swboyd.mtv.corp.google.com>
+References: <20201001084425.23117-1-rojay@codeaurora.org>
+ <20201001084425.23117-4-rojay@codeaurora.org>
+ <160168919332.310579.15311671258384969025@swboyd.mtv.corp.google.com>
+Message-ID: <17edaa6ceded98199a6f94a505cbd436@codeaurora.org>
+X-Sender: rojay@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/20 3:49 PM, Michal Hocko wrote:
-> On Fri 30-10-20 10:35:43, Zi Yan wrote:
->> On 30 Oct 2020, at 9:36, Michal Hocko wrote:
->> 
->> > On Fri 30-10-20 08:20:50, Zi Yan wrote:
->> >> On 30 Oct 2020, at 5:43, Michal Hocko wrote:
->> >>
->> >>> [Cc Vlastimil]
->> >>>
->> >>> On Thu 29-10-20 16:04:35, Zi Yan wrote:
->> >>>
->> >>> Does thp_nr_pages work for __PageMovable pages?
->> >>
->> >> Yes. It is the same as compound_nr() but compiled
->> >> to 1 when THP is not enabled.
->> >
->> > I am sorry but I do not follow. First of all the implementation of the
->> > two is different and also I was asking about __PageMovable which should
->> > never be THP IIRC. Can they be compound though?
->> 
->> __PageMovable, non-lru movable pages, can be compound and thp_nr_page cannot
->> be used for it, since when THP is off, thp_nr_page will return the wrong number.
->> I got confused by its name, sorry.
-> 
-> OK, this matches my understanding. Good we are on the same page.
-> 
->> But __PageMovable is irrelevant to this patch, since we are using
->> __isolate_lru_page to isolate pages. non-lru __PageMovable should not appear
->> after isolate_succes. thp_nr_pages can be used here.
-> 
-> But this is still not clear to me. __PageMovable pages are isolated by
-> isolate_movable_page and then jump to isolate_succes. Does that somehow
-> changes the nature of the page being compound or tat thp_nr_page would
-> start working on those pages.
+Hi Stephen,
 
-Agreed that page movable can appear after isolate_success. compound_nr() should 
-work for both.
-Note that too_many_isolated() doesn't see __PageMovable isolated pages, as they 
-are not counted as NR_ISOLATED_FILE/NR_ISOLATED_ANON, AFAIK. So in that sense 
-they are irrelevant to the bug at hand... for now.
+On 2020-10-03 07:09, Stephen Boyd wrote:
+> Quoting Roja Rani Yarubandi (2020-10-01 01:44:25)
+>> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c 
+>> b/drivers/i2c/busses/i2c-qcom-geni.c
+>> index aee2a1dd2c62..56d3fbfe7eb6 100644
+>> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+>> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+>> @@ -380,6 +380,36 @@ static void geni_i2c_tx_msg_cleanup(struct 
+>> geni_i2c_dev *gi2c,
+>>         }
+>>  }
+>> 
+>> +static void geni_i2c_stop_xfer(struct geni_i2c_dev *gi2c)
+>> +{
+>> +       int ret;
+>> +       u32 geni_status;
+>> +       unsigned long flags;
+>> +       struct i2c_msg *cur;
+>> +
+>> +       /* Resume device, runtime suspend can happen anytime during 
+>> transfer */
+>> +       ret = pm_runtime_get_sync(gi2c->se.dev);
+>> +       if (ret < 0) {
+>> +               dev_err(gi2c->se.dev, "Failed to resume device: %d\n", 
+>> ret);
+>> +               return;
+>> +       }
+>> +
+>> +       spin_lock_irqsave(&gi2c->lock, flags);
+> 
+> We grab the lock here.
+> 
+>> +       geni_status = readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
+>> +       if (!(geni_status & M_GENI_CMD_ACTIVE))
+>> +               goto out;
+>> +
+>> +       cur = gi2c->cur;
+>> +       geni_i2c_abort_xfer(gi2c);
+> 
+> But it looks like this function takes the lock again? Did you test this
+> with lockdep enabled? It should hang even without lockdep, so it seems
+> like this path of code has not been tested.
+> 
 
+Tested with lockdep enabled, and fixed the unsafe lock order issue here.
+And to be more proper moved spin_lock/unlock to cleanup functions.
+
+>> +       if (cur->flags & I2C_M_RD)
+>> +               geni_i2c_rx_msg_cleanup(gi2c, cur);
+>> +       else
+>> +               geni_i2c_tx_msg_cleanup(gi2c, cur);
+>> +       spin_unlock_irqrestore(&gi2c->lock, flags);
+>> +out:
+>> +       pm_runtime_put_sync_suspend(gi2c->se.dev);
+>> +}
+>> +
+>>  static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct 
+>> i2c_msg *msg,
+>>                                 u32 m_param)
+>>  {
