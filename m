@@ -2,85 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1C12A0BFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE572A0C27
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727282AbgJ3RAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 13:00:15 -0400
-Received: from mga18.intel.com ([134.134.136.126]:23301 "EHLO mga18.intel.com"
+        id S1727332AbgJ3RJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 13:09:23 -0400
+Received: from mga03.intel.com ([134.134.136.65]:52619 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726384AbgJ3Q77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:59:59 -0400
-IronPort-SDR: 9okJ5D8e68fPce6YVZpJNOVkzZbTXdlLD3iA6e6Ff0Jj+uzNttNCINYHr4i874yKl0/1Yes4He
- V8RVZNniqLGQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="156409552"
+        id S1726461AbgJ3RJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 13:09:21 -0400
+IronPort-SDR: e1NsEu5GSFSTQ/6xpbbuAEUpOhddV8f/odcNrrja5FER7GlFENV1pqjdNVgX726wptxqupxy4Q
+ 0tyyuG1u9Q5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="168733504"
 X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="156409552"
+   d="scan'208";a="168733504"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 09:59:26 -0700
-IronPort-SDR: d/J/nuxwkIfLocNU+z20Qnvu1v3oTx0L/VU2g/crrf7ikpwzlmAHCs/hNbuIUOQwLminprexI9
- iqWlJd0tOcJA==
-X-ExtLoop1: 1
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 10:09:19 -0700
+IronPort-SDR: BiLJew72EJoWCdLhy033Fh1u26n2eXAIZ+BnUAZR6QFJahl7/ks2vtcv2uDdcO4iNBHjTQXYoE
+ rsbRvcmmXQTQ==
 X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="351926030"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Oct 2020 09:59:24 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id CDFAC772; Fri, 30 Oct 2020 18:59:20 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 5/5] regmap: irq: Convert to use fwnode directly
-Date:   Fri, 30 Oct 2020 18:59:19 +0200
-Message-Id: <20201030165919.86234-6-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201030165919.86234-1-andriy.shevchenko@linux.intel.com>
-References: <20201030165919.86234-1-andriy.shevchenko@linux.intel.com>
+   d="scan'208";a="351930010"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 10:09:16 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id E60BA20C9F; Fri, 30 Oct 2020 18:37:22 +0200 (EET)
+Date:   Fri, 30 Oct 2020 18:37:22 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Maxime Ripard <mripard@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: media: i2c: Add OV5648 bindings
+ documentation
+Message-ID: <20201030163722.GS26150@paasikivi.fi.intel.com>
+References: <20201023174944.504358-1-paul.kocialkowski@bootlin.com>
+ <20201023174944.504358-2-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023174944.504358-2-paul.kocialkowski@bootlin.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since IRQ domain provides an API to take fwnode as a parameter,
-switch regmap IRQ to use that directly instead of be limited
-to OF case only.
+Hi Paul,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Mark Brown <broonie@kernel.org>
----
- drivers/base/regmap/regmap-irq.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+On Fri, Oct 23, 2020 at 07:49:43PM +0200, Paul Kocialkowski wrote:
+> This introduces YAML bindings documentation for the OV5648
+> image sensor.
+> 
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> ---
+>  .../bindings/media/i2c/ovti,ov5648.yaml       | 115 ++++++++++++++++++
+>  1 file changed, 115 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov5648.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov5648.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov5648.yaml
+> new file mode 100644
+> index 000000000000..347af925b450
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov5648.yaml
+> @@ -0,0 +1,115 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/i2c/ovti,ov5648.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: OmniVision OV5648 Image Sensor Device Tree Bindings
+> +
+> +maintainers:
+> +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: ovti,ov5648
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: XVCLK Clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: xvclk
+> +
+> +  dvdd-supply:
+> +    description: Digital Domain Power Supply
+> +
+> +  avdd-supply:
+> +    description: Analog Domain Power Supply (internal AVDD is used if missing)
+> +
+> +  dovdd-supply:
+> +    description: I/O Domain Power Supply
+> +
+> +  powerdown-gpios:
+> +    maxItems: 1
+> +    description: Power Down Pin GPIO Control (active low)
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +    description: Reset Pin GPIO Control (active low)
+> +
+> +  port:
+> +    type: object
+> +    description: Input port, connect to a MIPI CSI-2 receiver
 
-diff --git a/drivers/base/regmap/regmap-irq.c b/drivers/base/regmap/regmap-irq.c
-index ad5c2de395d1..19db764ffa4a 100644
---- a/drivers/base/regmap/regmap-irq.c
-+++ b/drivers/base/regmap/regmap-irq.c
-@@ -803,13 +803,12 @@ int regmap_add_irq_chip_fwnode(struct fwnode_handle *fwnode,
- 	}
- 
- 	if (irq_base)
--		d->domain = irq_domain_add_legacy(to_of_node(fwnode),
--						  chip->num_irqs, irq_base,
--						  0, &regmap_domain_ops, d);
-+		d->domain = irq_domain_create_legacy(fwnode, chip->num_irqs,
-+						     irq_base, 0,
-+						     &regmap_domain_ops, d);
- 	else
--		d->domain = irq_domain_add_linear(to_of_node(fwnode),
--						  chip->num_irqs,
--						  &regmap_domain_ops, d);
-+		d->domain = irq_domain_create_linear(fwnode, chip->num_irqs,
-+						     &regmap_domain_ops, d);
- 	if (!d->domain) {
- 		dev_err(map->dev, "Failed to create IRQ domain\n");
- 		ret = -ENOMEM;
+"Input"? I'd describe this as output.
+
+How about e.g. "MIPI CSI-2 transmitter port"?
+
+> +
+> +    properties:
+> +      endpoint:
+> +        type: object
+> +
+> +        properties:
+> +          remote-endpoint: true
+> +
+> +          bus-type:
+> +            const: 4
+> +
+> +          clock-lanes:
+> +            maxItems: 1
+
+You can drop the two as they're always the same.
+
+> +
+> +          data-lanes:
+> +            minItems: 1
+> +            maxItems: 2
+> +
+> +        required:
+> +          - bus-type
+> +          - data-lanes
+> +          - remote-endpoint
+> +
+> +        additionalProperties: false
+> +
+> +    required:
+> +      - endpoint
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - dvdd-supply
+> +  - dovdd-supply
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/sun8i-v3s-ccu.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    i2c0 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        ov5648: camera@36 {
+> +            compatible = "ovti,ov5648";
+> +            reg = <0x36>;
+> +
+> +            dvdd-supply = <&ov5648_dvdd>;
+> +            avdd-supply = <&ov5648_avdd>;
+> +            dovdd-supply = <&ov5648_dovdd>;
+> +            clocks = <&ov5648_xvclk 0>;
+> +            clock-names = "xvclk";
+> +
+> +            ov5648_out: port {
+> +                ov5648_out_mipi_csi2: endpoint {
+> +                    bus-type = <4>; /* MIPI CSI-2 D-PHY */
+> +                    clock-lanes = <0>;
+> +                    data-lanes = <1 2>;
+> +
+> +                    remote-endpoint = <&mipi_csi2_in_ov5648>;
+> +                };
+> +            };
+> +        };
+> +    };
+
 -- 
-2.28.0
-
+Sakari Ailus
