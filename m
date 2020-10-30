@@ -2,70 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06382A00D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0421F2A00D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726198AbgJ3JJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:09:39 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:16888 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgJ3JJi (ORCPT
+        id S1726329AbgJ3JJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgJ3JJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:09:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1604048974;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=5skifHevDR09DZ+3DcvL3A/4jheCtjdVQh+kEKKrLb4=;
-        b=LBIV/ycNHz8wLXTnN0EEVFvpy0A3YHe2CdNALlyVEWYnj1yb7yY47j5YN4lYRddrXb
-        HcxF/JmJHL/7AkVBY/+GezeyeBONKilF0ueD0rMr/VgZTzGOduwNcM7GPBMf1lHgZwpN
-        oqesUl6mB/FszHjGJiWf5wxIRTNxONbnfa75N9cwomM4qpqM7UngwRdzKM+2/eLrMZ1Y
-        5ci11UJJb0/5Na4IuD1t04TOr1V4ptsZAvyW6ymxy7S249iwxBE6ewwJqgxAmF3WGTf4
-        v2Bn0D+9sBtIFoEBCpkmb/d1r0CRLlSRa537RqFrTdz+M7FefUCyeSX/9zyCIiuD4QzX
-        ux3A==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGHPrqwDOs1yM="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 47.3.0 DYNA|AUTH)
-        with ESMTPSA id R040bew9U99K5eT
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Fri, 30 Oct 2020 10:09:20 +0100 (CET)
-Subject: Re: [PATCH 0/2] AMR: DTS: fix and extension for Pandaboard ES
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <cover.1601734200.git.hns@goldelico.com>
-Date:   Fri, 30 Oct 2020 10:09:18 +0100
-Cc:     linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com
-Content-Transfer-Encoding: 7bit
-Message-Id: <0EB41455-D489-4F38-A8F7-C264BAE8D903@goldelico.com>
-References: <cover.1601734200.git.hns@goldelico.com>
-To:     =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>
-X-Mailer: Apple Mail (2.3124)
+        Fri, 30 Oct 2020 05:09:56 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666D6C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:09:56 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a9so5571308wrg.12
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:09:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bfUnFTOfSXFG25x3BnIgOzcDN4IPlLEtsgB9WMJzOuA=;
+        b=eSDiZBsdVeZ8YhjpBNK5ZgQZWSgQI5Mysm8lQ5TsGB2ZqMUdGhEFIZP0VVXlfMcKUm
+         LwPd8O3SIgi+6vu/tXHEeeU5K9mHbQELrYgErcweripmTqaSfkaydOeJidaFvanXfJF2
+         8NsNV450bLQ0tB+LEYEGZIkv3HbBIQr4uUz9AT3g7vq97ZJtf/SbHZk/vpqr1f0nSmmh
+         RzYdh3Yli3/CeK2CMtGvCgC50qQAT7iXmNNKrUEa0VVC3fDCR7zFXvsl7GFmDapfrU2W
+         LRzQo9BWPe95GLGk0Mur0lzUE7SqBeACwPzrbqLJ8ONVm2cUNvOj1miLDmYYNjlcSxK+
+         FNUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bfUnFTOfSXFG25x3BnIgOzcDN4IPlLEtsgB9WMJzOuA=;
+        b=bdQBIrji0Y124dGfZpoGv+LmWfpgKjY61bE3qP/pXPRjTZnbmbMuBhXicRP/kg/Iub
+         AuveXM4CAs6UPHzt+V0AVxts8CYWQhGffpNYgOxbs0F25S32+MD1pzlgkjZkR+TIvZQH
+         EwNcW8hHRfbhTFNXnYQgB/VL07EVWds5keBUiE4hLdtCxOEncE9QUmniA4mnvik0XD3U
+         ydgd3azwbnkcSR5OdYkmzj+iCLDcCWKTnRlBUbgr04ftieEvZ5HGxxagx5eBdJZemiY4
+         J87xsFCZ0A6+DvytfMs9kOutAQ2lLTHi7ywCWzKmpmG3TviohD9m1VUJqxxoTNlhulZl
+         vzMw==
+X-Gm-Message-State: AOAM532v8zDImjxeJzjt2oZQrJS8dy4Pcsc6WcGb1Y8NzxQ/J2WJgPQ1
+        fBWzlvcb86XM2xVFjhEiDSrFUgw6KImNrjbx0nQxsA==
+X-Google-Smtp-Source: ABdhPJyA9i/Zk/3TmJNQX1c4BPqrlSQfKCOiUmrNfi7O3zDzfW1MV/RUDeOTVF3R3BgHfJ1Qhnt5xSnKRxgMdqlarFM=
+X-Received: by 2002:a5d:6681:: with SMTP id l1mr1797680wru.356.1604048995074;
+ Fri, 30 Oct 2020 02:09:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201028232759.1928479-1-atish.patra@wdc.com> <20201028232759.1928479-4-atish.patra@wdc.com>
+In-Reply-To: <20201028232759.1928479-4-atish.patra@wdc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Fri, 30 Oct 2020 14:39:43 +0530
+Message-ID: <CAAhSdy0bgeCLYNTELdyFPj9_W1N6kDTwS6rUmLLnM=N3pTAp0g@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/3] RISC-V: Enable Microchip PolarFire ICICLE SoC
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>, devicetree@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Padmarao Begari <padmarao.begari@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Cyril.Jean@microchip.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping
+On Thu, Oct 29, 2020 at 4:58 AM Atish Patra <atish.patra@wdc.com> wrote:
+>
+> Enable Microchip PolarFire ICICLE soc config in defconfig.
+> It allows the default upstream kernel to boot on PolarFire ICICLE board.
+>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> ---
+>  arch/riscv/configs/defconfig | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+> index d222d353d86d..2660fa05451e 100644
+> --- a/arch/riscv/configs/defconfig
+> +++ b/arch/riscv/configs/defconfig
+> @@ -16,6 +16,7 @@ CONFIG_EXPERT=y
+>  CONFIG_BPF_SYSCALL=y
+>  CONFIG_SOC_SIFIVE=y
+>  CONFIG_SOC_VIRT=y
+> +CONFIG_SOC_MICROCHIP_POLARFIRE=y
+>  CONFIG_SMP=y
+>  CONFIG_JUMP_LABEL=y
+>  CONFIG_MODULES=y
+> @@ -79,6 +80,9 @@ CONFIG_USB_OHCI_HCD=y
+>  CONFIG_USB_OHCI_HCD_PLATFORM=y
+>  CONFIG_USB_STORAGE=y
+>  CONFIG_USB_UAS=y
+> +CONFIG_SDHCI=y
+> +CONFIG_MMC_SDHCI_PLTFM=y
+> +CONFIG_MMC_SDHCI_CADENCE=y
+>  CONFIG_MMC=y
+>  CONFIG_MMC_SPI=y
+>  CONFIG_RTC_CLASS=y
+> --
+> 2.25.1
+>
 
-> Am 03.10.2020 um 16:09 schrieb H. Nikolaus Schaller <hns@goldelico.com>:
-> 
-> * fix wrong pinmux offset preventing the user button from working
-> * add uart connection for bluetooth wl1271 hci
-> 
-> H. Nikolaus Schaller (2):
->  ARM: dts: pandaboard: fix pinmux for gpio user button of Pandaboard ES
->  ARM: dts: pandaboard es: add bluetooth uart for HCI
-> 
-> arch/arm/boot/dts/omap4-panda-es.dts | 34 +++++++++++++++++++++++++++-
-> 1 file changed, 33 insertions(+), 1 deletion(-)
-> 
-> -- 
-> 2.26.2
-> 
+Looks good to me.
 
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+Regards,
+Anup
