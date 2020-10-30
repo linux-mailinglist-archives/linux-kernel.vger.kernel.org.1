@@ -2,129 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CE329FC21
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D366529FC1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbgJ3DW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 23:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44304 "EHLO
+        id S1726196AbgJ3DWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 23:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgJ3DWw (ORCPT
+        with ESMTP id S1725800AbgJ3DWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Oct 2020 23:22:52 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB922C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:22:52 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id y14so4049519pfp.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:22:52 -0700 (PDT)
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AB1C0613CF;
+        Thu, 29 Oct 2020 20:22:52 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id r10so4013416pgb.10;
+        Thu, 29 Oct 2020 20:22:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=qBvjZd1NQE+Opu2oXBohKdYFGkxmEuNNU11hjYVYnCQ=;
-        b=Mj33b48h76F1dSMxppcMSK6G6p3jotJKxzTrYojGUxfEpvhTrFPdTY+HPZoV2gq4oJ
-         h+0vUFVO+e7BWDVQgOVC+R2T284CGbNoAAo+6ZYFsnOjZml55tKAFQ78cH3A15oJEZVG
-         mrujRZtGJyCFgMx3FPZyX51iESlyui7nGtxqcddwonAsLZgt8dav4aFYBqgk71eEFUzL
-         n2dOdvx+xZU5afm/QgSBfDbLIW7cbGz77YROOkiUFUc9acef+jknLNCe4n+Fc/2MIj3L
-         iq760Cb4WVXRxzHf61KnVYP4HVfscx/HGeX/hkGimxhD2UZcbmv6WlkH5dxV34/JJVP3
-         LIDA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9STGJQi8a1xzdZYEEhl0ksIPPGpWDWskcupD6CiT7K0=;
+        b=LveUchPbVi1koQW7bKPxDDHOqgNcdw++j1kJJT/288hBHAcCW9eTY/N6DKotpp6I5d
+         4kwKicvd8PviMhSE1oo7tq9EgnDV/KUXiaRtGdk35u7nCC/AsVeoJEWlg+aKakP7Yxay
+         U6QLpa3KZdUQWdTwtsz+Is2q0+jbVzFQ4lXSwigNsWkcJltZ/6Aln9NxiU6H/GiN/9GI
+         xSzKhbPoQXY+m2ilqmg6gM96Nir9msMKNpXQa3UkLy9OtopOZE+xuCCTgCg/gmVB67hr
+         zWCJH2xAX94cNiJYCLoRh3TAcMA0QUN1hTKArLNFjMImgMnkK+zKI3PolyFpGnSbgyI8
+         lUKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=qBvjZd1NQE+Opu2oXBohKdYFGkxmEuNNU11hjYVYnCQ=;
-        b=Y5lIL7YIuTRMA44w079Pm3y3I/fKZ870g7xEP7aG5nnSrLMAIv8jQzWkQk7/WSQHQA
-         zGIPgOO4pW9ckCzZr/b6snrEaCQlSq+fAMExLre5JagOVapYkzCPyc0OW1/vFDXyG3w+
-         3oiGPGZXpO/LIfNq3Cur/MGlIVdEX1el8bIfq/HXYvQyGkWmHzLJwRU0r/1izvfpjfAV
-         jLielWT6xML6nBldIjQvZ0Db6jkMRHgkJuXckp/Z6s9h+si/YUt1eXSB5IlDoysk8RvC
-         6lVmxQ3vhZStyI4EIyyrQl5mOAJ+DnRg+IP1f2qsdkiWq2dqhazq4zTr1sk1TJexPcTl
-         nG5A==
-X-Gm-Message-State: AOAM532qi31sEmCYEZ2PlDOr8hiwmoe1KUZlJKXQho89Jk6/HOB0wUeY
-        5PRggWDM+fsId1ULXqTx5X3dudy8KI4=
-X-Google-Smtp-Source: ABdhPJyrvqLEAX4zvr4eTeY6PHbOJQStYG9uu59XSfJnfnWLOEyPgXFp1yJk3y8FgbIJaX3YgghUYw==
-X-Received: by 2002:a63:ec57:: with SMTP id r23mr374312pgj.257.1604028172484;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9STGJQi8a1xzdZYEEhl0ksIPPGpWDWskcupD6CiT7K0=;
+        b=oTo5j6UFckwKMSbBMvb9wIT6dtT4nhNEwOrG0wdwOYz+HKS6ZkmrWuP/Xhsad2y5m0
+         IfMyoUiF+d32oDqFjOz6otxSJlAvQT5Lkw+33lkkgcLMYOVgSOUBwFskkPOFCBvmJWtm
+         4c5okXbBMn47WDggu0c6KUA/CLoLAqA+fI9PsljHCR4+oShNPxO4Ax4MHazlUMkmeYZL
+         cyRhJCWs9Uh/bG8mMiXlhzeQGlcdNJXUSt0RNg0JvVPalLJ8mDC2UYikTQxpEgWtfgik
+         7roMJUiPrNmEz1Ckj6/zB2833xZHhNyHl67LN+0k8azAicvxi0pjfBNw6QwV+xLe2YOv
+         0kCg==
+X-Gm-Message-State: AOAM5329ZdLtDqkeNKmKhCrJpq0kx1bgIhJ+FHsYkEB0NHTUK1OJcdeV
+        xXH4HOPn4QeYVaIACO5WCIU=
+X-Google-Smtp-Source: ABdhPJzQgMOq4ZzNF7YAn7j1F6iUJAwbfZIdjJV25dsV4gdUa17Loyaj4ME/CxIUiGaUuXS0fRaUCw==
+X-Received: by 2002:a17:90a:f293:: with SMTP id fs19mr312500pjb.41.1604028172052;
         Thu, 29 Oct 2020 20:22:52 -0700 (PDT)
-Received: from my--box ([103.98.79.70])
-        by smtp.gmail.com with ESMTPSA id 92sm1313206pjv.32.2020.10.29.20.22.48
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:71de])
+        by smtp.gmail.com with ESMTPSA id q123sm4370329pfq.56.2020.10.29.20.22.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 20:22:51 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 08:52:45 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     outreachy-kernel@googlegroups.com,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     mh12gx2825@gmail.com, melissa.srw@gmail.com, daniel.vetter@ffwll.ch
-Subject: [PATCH] drm/amdgpu: use DEFINE_DEBUGFS_ATTRIBUTE with
- debugfs_create_file_unsafe()
-Message-ID: <20201030032245.GA274478@my--box>
+        Thu, 29 Oct 2020 20:22:50 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 20:22:47 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v2 1/2] bpf: don't rely on GCC __attribute__((optimize))
+ to disable GCSE
+Message-ID: <20201030032247.twch6rvnk6ql3zjb@ast-mbp.dhcp.thefacebook.com>
+References: <20201028171506.15682-1-ardb@kernel.org>
+ <20201028171506.15682-2-ardb@kernel.org>
+ <20201028213903.fvdjydadqt6tx765@ast-mbp.dhcp.thefacebook.com>
+ <CAMj1kXFHcM-Jb+MwsLtB4NMUmMyAGGLeNGNLC9vTATot3NJLrA@mail.gmail.com>
+ <20201028225919.6ydy3m2u4p7x3to7@ast-mbp.dhcp.thefacebook.com>
+ <CAMj1kXG8PmvO6bLhGXPWtzKMnAsip2WDa-qdrd+kFfr30sd8-A@mail.gmail.com>
+ <20201028232001.pp7erdwft7oyt2xm@ast-mbp.dhcp.thefacebook.com>
+ <CAKwvOd=Zrza=i54_=H3n2HkmMhg9EJ3Wy0kR5AXTSqBowsQV5g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CAKwvOd=Zrza=i54_=H3n2HkmMhg9EJ3Wy0kR5AXTSqBowsQV5g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using DEFINE_DEBUGFS_ATTRIBUTE macro with debugfs_create_file_unsafe()
-function in place of the debugfs_create_file() function will make the
-file operation struct "reset" aware of the file's lifetime. Additional
-details here: https://lists.archive.carbon60.com/linux/kernel/2369498
+On Thu, Oct 29, 2020 at 05:28:11PM -0700, Nick Desaulniers wrote:
+> 
+> We already know that -fno-asynchronous-unwind-tables get dropped,
+> hence this patch.  
 
-Issue reported by Coccinelle script:
-scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
+On arm64 only. Not on x86
 
-Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
----
-Please Note: This is a Outreachy project task patch.
+> And we know -fomit-frame-pointer or
+> -fno-omit-frame-pointer I guess gets dropped, hence your ask.  
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+yep. that one is bugged.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-index 2d125b8b15ee..f076b1ba7319 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-@@ -1551,29 +1551,29 @@ static int amdgpu_debugfs_sclk_set(void *data, u64 val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(fops_ib_preempt, NULL,
--			amdgpu_debugfs_ib_preempt, "%llu\n");
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_ib_preempt, NULL,
-+			 amdgpu_debugfs_ib_preempt, "%llu\n");
- 
--DEFINE_SIMPLE_ATTRIBUTE(fops_sclk_set, NULL,
--			amdgpu_debugfs_sclk_set, "%llu\n");
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_sclk_set, NULL,
-+			 amdgpu_debugfs_sclk_set, "%llu\n");
- 
- int amdgpu_debugfs_init(struct amdgpu_device *adev)
- {
- 	int r, i;
- 
- 	adev->debugfs_preempt =
--		debugfs_create_file("amdgpu_preempt_ib", 0600,
--				    adev_to_drm(adev)->primary->debugfs_root, adev,
--				    &fops_ib_preempt);
-+		debugfs_create_file_unsafe("amdgpu_preempt_ib", 0600,
-+					   adev_to_drm(adev)->primary->debugfs_root, adev,
-+					   &fops_ib_preempt);
- 	if (!(adev->debugfs_preempt)) {
- 		DRM_ERROR("unable to create amdgpu_preempt_ib debugsfs file\n");
- 		return -EIO;
- 	}
- 
- 	adev->smu.debugfs_sclk =
--		debugfs_create_file("amdgpu_force_sclk", 0200,
--				    adev_to_drm(adev)->primary->debugfs_root, adev,
--				    &fops_sclk_set);
-+		debugfs_create_file_unsafe("amdgpu_force_sclk", 0200,
-+					   adev_to_drm(adev)->primary->debugfs_root, adev,
-+					   &fops_sclk_set);
- 	if (!(adev->smu.debugfs_sclk)) {
- 		DRM_ERROR("unable to create amdgpu_set_sclk debugsfs file\n");
- 		return -EIO;
--- 
-2.25.1
+> We might not know the full extent which other flags get dropped with the
+> optimize attribute, but I'd argue that my list above can all result in
+> pretty bad bugs when accidentally omitted (ok, maybe not -fshort-wchar
+> or -fmacro-prefix-map, idk what those do) or when mixed with code that
 
+true.
+Few month back I've checked that strict-aliasing and no-common flags
+from your list are not dropped by this attr in gcc [6789].
+I've also checked that no-red-zone and model=kernel preserved as well.
+
+> has different values those flags control.  Searching GCC's bug tracker
+> for `__attribute__((optimize` turns up plenty of reports to make me
+> think this attribute maybe doesn't work the way folks suspect or
+> intend: https://gcc.gnu.org/bugzilla/buglist.cgi?quicksearch=__attribute__%28%28optimize&list_id=283390.
+
+There is a risk.
+Is it a footgun? Sure.
+Yet. gcc testsuite is using __attribute__((optimize)).
+And some of these tests were added _after_ offical gcc doc said that this
+attribute is broken.
+imo it's like 'beware of the dog' sign.
+
+> There's plenty of folks arguing against the use of the optimize
+> attribute in favor of the command line flag.  I urge you to please
+> reconsider the request.
+
+ok. Applied this first patch to bpf tree and will get it to Linus soon.
+Second patch that is splitting interpreter out because of this mess
+is dropped. The effect of gcse on performance is questionable.
+iirc some interpreters used to do -fno-gcse to gain performance.
