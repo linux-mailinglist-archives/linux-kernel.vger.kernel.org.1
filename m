@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9612A0462
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCB32A0445
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgJ3Lgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
+        id S1726596AbgJ3Lgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726529AbgJ3Lga (ORCPT
+        with ESMTP id S1726545AbgJ3Lgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:36:30 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667BEC0613D2;
-        Fri, 30 Oct 2020 04:36:30 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id oq3so6265314ejb.7;
-        Fri, 30 Oct 2020 04:36:30 -0700 (PDT)
+        Fri, 30 Oct 2020 07:36:33 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DE6C0613D2;
+        Fri, 30 Oct 2020 04:36:31 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id p93so6259943edd.7;
+        Fri, 30 Oct 2020 04:36:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=57fSwVBTzmU3l7gmdhA7s4dp/Q6QzS27NIu7QOnb3dI=;
-        b=LQZ9VCdMVTCLLCzWeTbJ1HNs1heJ8GLJijcYi9HvAgE3Eki/gtIiG0dfKO2jNXnz+G
-         u+QfsWeucVNFMV7cf8/iIZyhEFYruYfCn95H4Ehkg6xuNoL2hpVgBP3dEafZ/vJbEuNa
-         Dw2K3kR/+Vhdj3XOabZ3nwzSyxr3lemAwPdG7ME/r7EyKWsIdK+pRSPreJuJJza3bqOd
-         wXHPI/3RxCP3IyyDxC0iKN8mQRrFw9ztq1zaOJmvHgxFRqHQ0n/Wk0ABiou6+uudW2bU
-         tG82Um4w3P/xzZr2e2Qz9bXGTwVbm4XWFXADL1xMN+lZctTsycnwe42gNhtpAdBSntII
-         qlDA==
+        bh=rxQE3as5qmdywGCryWlJxFvuu0GYbuByAf+xTUWNAXQ=;
+        b=ZBPfc8KueINthUvsgeH+gUXzjzVe4NvMEM9x8mlWF3G5v8nNNA4h09KDyzPsGLJpkt
+         J5AiFyqhCW8Sowo3ErZyOE5SfM0nvaRVtkB7OvwNunhz3I3cdywX3lXQ6NP2Uyl0vI5g
+         QhZnPc2N3k4+TKQTTLSFX9OgDCj1ZS6d1r2wRKeosD6ptsV7Xr32QrA9h7o5CBrN2kQ3
+         uA/B715QaNyGqbIjRIq/J03P3XKg5OiOesl4nLP5TvUXH3BzD9QUx0VnqgI2Z2uoltJL
+         W4YAXaHCyYscmS1i4hz3wzDZ/w+/qPGNxNhgsVbxgJDeCVBCWh1sGo/tklgiPc8qUQSU
+         e7cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=57fSwVBTzmU3l7gmdhA7s4dp/Q6QzS27NIu7QOnb3dI=;
-        b=fehBheXMONRAoSfJq5zZ7+aU24cvW3LTJZtR3bAJaWuoU/P+5q/N5xqy7Q9c0TukOe
-         DjiKJa4MYnauaJrRThnk3908DA1LaivoFvPlZxcPiTtJeQpxLzx+5M4wblttNywsTe6M
-         RgKNG1FblR/hnvknTYT3R1dAMNbIoFaMN0ZJYvn4XdeRHDf+rlSROuXC9Ler+bMmXAJo
-         gvNThbRrJkuCaOUx/73NIEA+J9swWd+tE5LkQaWmjJAuqVRMzUlWLjRnUa8igj3wxXT6
-         R8GKQwO30y9IEfhIhaGihB4vSxc0Ol3UHU/1NvYOdgLIxsevDf/6nfIneFP2Rr2dmXUo
-         fpNw==
-X-Gm-Message-State: AOAM530oTVGRCLVal6BZlEYZGDX9zZTEQtnoW4o079FLVFkSFqsR177O
-        sCyCLDiQCpey0IiYZ8IupyfR8WJKY4JzEBRS
-X-Google-Smtp-Source: ABdhPJwvcX0FvFQvTgIoys5EQoChrPflNu8Lz2sZluuAhKF59k6jwQ1Owyv6eJzQVNiX4yQiMRlIlg==
-X-Received: by 2002:a17:906:1643:: with SMTP id n3mr1926609ejd.459.1604057789126;
-        Fri, 30 Oct 2020 04:36:29 -0700 (PDT)
+        bh=rxQE3as5qmdywGCryWlJxFvuu0GYbuByAf+xTUWNAXQ=;
+        b=gM8J1YD02j+7eXENhyoVrRJGSvMdckJ9MtYE45I9QKjTKgDjjgm55EEMBgJXboJ8z5
+         gOoq/Oh5M7Bc8seJAtXFDACbPJuGJvuDgtRuw8abGLAyRbwI602HHEHYhC+aI93AX7J1
+         etLavc+/yArgKWV4Q5HIcJDlXItB7E6BVMKLVkClPasOPz/nlJNue8rn9bHqzMJqioGO
+         zezdetJ/GUGp+8Erbk1DXDreWUCZtGAUABcK3q1v9lSdcSqSNvHpOnCZHxV10T8FVhKJ
+         2z6GzfoXLPjOzpK4Z6mUFPS4+ImjygcIQkEJSLWgr/5PGas/Zqm0QEN48z5ECU8Axdk7
+         +MjQ==
+X-Gm-Message-State: AOAM533LEG/INMVKlndXDOh7+C8i1IdpeG80e13fjorvq8v0C+cD7cQE
+        WOPY0WZ7SW/uAnH+jMAz764=
+X-Google-Smtp-Source: ABdhPJxFEUmnJbF7ddeya1V030+teKQyup2L2MRyuq0Sjnda7xD8Ms9KucAcworSdN15PM2k0RiaWQ==
+X-Received: by 2002:a05:6402:395:: with SMTP id o21mr1807804edv.2.1604057790490;
+        Fri, 30 Oct 2020 04:36:30 -0700 (PDT)
 Received: from yoga-910.localhost ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id q19sm2850861ejx.118.2020.10.30.04.36.27
+        by smtp.gmail.com with ESMTPSA id q19sm2850861ejx.118.2020.10.30.04.36.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 04:36:28 -0700 (PDT)
+        Fri, 30 Oct 2020 04:36:29 -0700 (PDT)
 From:   Ioana Ciornei <ciorneiioana@gmail.com>
 To:     shawnguo@kernel.org
 Cc:     robh+dt@kernel.org, leoyang.li@nxp.com, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH v5 10/11] arm64: dts: lx2160a: add PCS MDIO and PCS PHY nodes
-Date:   Fri, 30 Oct 2020 13:35:54 +0200
-Message-Id: <20201030113555.726487-11-ciorneiioana@gmail.com>
+Subject: [PATCH v5 11/11] arm64: dts: lx2160ardb: add nodes for the AQR107 PHYs
+Date:   Fri, 30 Oct 2020 13:35:55 +0200
+Message-Id: <20201030113555.726487-12-ciorneiioana@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201030113555.726487-1-ciorneiioana@gmail.com>
 References: <20201030113555.726487-1-ciorneiioana@gmail.com>
@@ -66,402 +66,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-Add PCS MDIO nodes for the internal MDIO buses on the LX2160A, along
-with their internal PCS PHYs, which will be used when the DPMAC is
-in TYPE_PHY mode.
-Also, rename the dpmac@x nodes to ethernet@x in order to be compliant
-with the naming convention used by ethernet controllers.
+Annotate the EMDIO1 node and describe the 2 AQR107 PHYs found on the
+LX2160ARDB board. Also, add the necessary phy-handles for DPMACs 3 and 4
+to their associated PHY.
 
 Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
 ---
-Changes in v2:
- - none
-Changes in v3:
- - renamed dpmac@x into ethernet@x
-Changes in v4:
- - none
-Changes in v5:
- - renamed all PHY nodes to ethernet-phy@X
+ .../boot/dts/freescale/fsl-lx2160a-rdb.dts    | 32 +++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
- .../arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 288 ++++++++++++++++--
- 1 file changed, 270 insertions(+), 18 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-index 83072da6f6c6..197397777c83 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-@@ -1305,6 +1305,240 @@ emdio2: mdio@8b97000 {
- 			status = "disabled";
- 		};
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+index 54fe8cd3a711..7723ad5efd37 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+@@ -35,6 +35,18 @@ &crypto {
+ 	status = "okay";
+ };
  
-+		pcs_mdio1: mdio@8c07000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c07000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
++&dpmac3 {
++	phy-handle = <&aquantia_phy1>;
++	phy-connection-type = "usxgmii";
++	managed = "in-band-status";
++};
 +
-+			pcs1: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
++&dpmac4 {
++	phy-handle = <&aquantia_phy2>;
++	phy-connection-type = "usxgmii";
++	managed = "in-band-status";
++};
 +
-+		pcs_mdio2: mdio@8c0b000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c0b000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
+ &dpmac17 {
+ 	phy-handle = <&rgmii_phy1>;
+ 	phy-connection-type = "rgmii-id";
+@@ -61,6 +73,18 @@ rgmii_phy2: ethernet-phy@2 {
+ 		reg = <0x2>;
+ 		eee-broken-1000t;
+ 	};
 +
-+			pcs2: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
++	aquantia_phy1: ethernet-phy@4 {
++		/* AQR107 PHY */
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <0x4>;
++	};
 +
-+		pcs_mdio3: mdio@8c0f000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c0f000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs3: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio4: mdio@8c13000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c13000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs4: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio5: mdio@8c17000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c17000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs5: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio6: mdio@8c1b000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c1b000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs6: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio7: mdio@8c1f000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c1f000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs7: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio8: mdio@8c23000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c23000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs8: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio9: mdio@8c27000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c27000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs9: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio10: mdio@8c2b000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c2b000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs10: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio11: mdio@8c2f000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c2f000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs11: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio12: mdio@8c33000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c33000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs12: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio13: mdio@8c37000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c37000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs13: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio14: mdio@8c3b000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c3b000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs14: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio15: mdio@8c3f000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c3f000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs15: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio16: mdio@8c43000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c43000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs16: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio17: mdio@8c47000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c47000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs17: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
-+		pcs_mdio18: mdio@8c4b000 {
-+			compatible = "fsl,fman-memac-mdio";
-+			reg = <0x0 0x8c4b000 0x0 0x1000>;
-+			little-endian;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			pcs18: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+		};
-+
- 		fsl_mc: fsl-mc@80c000000 {
- 			compatible = "fsl,qoriq-mc";
- 			reg = <0x00000008 0x0c000000 0 0x40>,
-@@ -1330,94 +1564,112 @@ dpmacs {
- 				#address-cells = <1>;
- 				#size-cells = <0>;
++	aquantia_phy2: ethernet-phy@5 {
++		/* AQR107 PHY */
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <0x5>;
++	};
+ };
  
--				dpmac1: dpmac@1 {
-+				dpmac1: ethernet@1 {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0x1>;
-+					pcs-handle = <&pcs1>;
- 				};
+ &esdhc0 {
+@@ -156,6 +180,14 @@ rtc@51 {
+ 	};
+ };
  
--				dpmac2: dpmac@2 {
-+				dpmac2: ethernet@2 {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0x2>;
-+					pcs-handle = <&pcs2>;
- 				};
- 
--				dpmac3: dpmac@3 {
-+				dpmac3: ethernet@3 {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0x3>;
-+					pcs-handle = <&pcs3>;
- 				};
- 
--				dpmac4: dpmac@4 {
-+				dpmac4: ethernet@4 {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0x4>;
-+					pcs-handle = <&pcs4>;
- 				};
- 
--				dpmac5: dpmac@5 {
-+				dpmac5: ethernet@5 {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0x5>;
-+					pcs-handle = <&pcs5>;
- 				};
- 
--				dpmac6: dpmac@6 {
-+				dpmac6: ethernet@6 {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0x6>;
-+					pcs-handle = <&pcs6>;
- 				};
- 
--				dpmac7: dpmac@7 {
-+				dpmac7: ethernet@7 {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0x7>;
-+					pcs-handle = <&pcs7>;
- 				};
- 
--				dpmac8: dpmac@8 {
-+				dpmac8: ethernet@8 {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0x8>;
-+					pcs-handle = <&pcs8>;
- 				};
- 
--				dpmac9: dpmac@9 {
-+				dpmac9: ethernet@9 {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0x9>;
-+					pcs-handle = <&pcs9>;
- 				};
- 
--				dpmac10: dpmac@a {
-+				dpmac10: ethernet@a {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0xa>;
-+					pcs-handle = <&pcs10>;
- 				};
- 
--				dpmac11: dpmac@b {
-+				dpmac11: ethernet@b {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0xb>;
-+					pcs-handle = <&pcs11>;
- 				};
- 
--				dpmac12: dpmac@c {
-+				dpmac12: ethernet@c {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0xc>;
-+					pcs-handle = <&pcs12>;
- 				};
- 
--				dpmac13: dpmac@d {
-+				dpmac13: ethernet@d {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0xd>;
-+					pcs-handle = <&pcs13>;
- 				};
- 
--				dpmac14: dpmac@e {
-+				dpmac14: ethernet@e {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0xe>;
-+					pcs-handle = <&pcs14>;
- 				};
- 
--				dpmac15: dpmac@f {
-+				dpmac15: ethernet@f {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0xf>;
-+					pcs-handle = <&pcs15>;
- 				};
- 
--				dpmac16: dpmac@10 {
-+				dpmac16: ethernet@10 {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0x10>;
-+					pcs-handle = <&pcs16>;
- 				};
- 
--				dpmac17: dpmac@11 {
-+				dpmac17: ethernet@11 {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0x11>;
-+					pcs-handle = <&pcs17>;
- 				};
- 
--				dpmac18: dpmac@12 {
-+				dpmac18: ethernet@12 {
- 					compatible = "fsl,qoriq-mc-dpmac";
- 					reg = <0x12>;
-+					pcs-handle = <&pcs18>;
- 				};
- 			};
- 		};
++&pcs_mdio3 {
++	status = "okay";
++};
++
++&pcs_mdio4 {
++	status = "okay";
++};
++
+ &sata0 {
+ 	status = "okay";
+ };
 -- 
 2.28.0
 
