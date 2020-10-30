@@ -2,86 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B0C2A0FF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC452A0FF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727689AbgJ3VGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 17:06:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40869 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727050AbgJ3VGg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 17:06:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604091995;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X7I6BvcvTcATCs3ne7yJMoF1DIkz9Wxm1G9qxszsAaE=;
-        b=N3cqHD0H5Ozfa7xuYjj5tgl1dsrqp60Ts2TJ0L+UU3fi2QZgMjn+gYnN2/1uDGgayAAvG2
-        EmpogKhABhLd7pKxGykSyuGXSszMIATIvVexW7TQxXxL13iE5kW1d6XK/89IpDS6iEhwpD
-        Rc1QHYN3gPSF+An85J3qh8uiFgovui8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-521-S3rixnEdOD6JCsTzbTJiPw-1; Fri, 30 Oct 2020 17:06:30 -0400
-X-MC-Unique: S3rixnEdOD6JCsTzbTJiPw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727765AbgJ3VGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 17:06:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727715AbgJ3VGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 17:06:43 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B01B1005E77;
-        Fri, 30 Oct 2020 21:06:27 +0000 (UTC)
-Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 448DD76668;
-        Fri, 30 Oct 2020 21:06:26 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 15:06:25 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Zeng, Xin" <xin.zeng@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH v6 5/5] vfio/type1: Use mdev bus iommu_ops for IOMMU
- callbacks
-Message-ID: <20201030150625.2dc5fb9b@w520.home>
-In-Reply-To: <MWHPR11MB1645DEBE7C0E7A61D22081DD8C150@MWHPR11MB1645.namprd11.prod.outlook.com>
-References: <20201030045809.957927-1-baolu.lu@linux.intel.com>
-        <20201030045809.957927-6-baolu.lu@linux.intel.com>
-        <MWHPR11MB1645DEBE7C0E7A61D22081DD8C150@MWHPR11MB1645.namprd11.prod.outlook.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F8E62076D;
+        Fri, 30 Oct 2020 21:06:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604092003;
+        bh=/YSYg3MX1gmq60yBiMNI0M/GyW8FTSnsDYb125M+f1M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qL1K8eKIujjdHMP+86gTqwBU4fxVuWCeq5i7LmSVccR/XTZwS6Y25IMZE2UaqggIu
+         IX/AcGam0XLEbxNBoiVoDW2Hoi/yHXvf/7d2jwUWBm/hhNtfgEgR3Eo7SI3xHqK8eM
+         72SUeIeUrC+E6W+nbR+PnjM7iK7sUBUfcZN0QWzo=
+Date:   Fri, 30 Oct 2020 14:06:41 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-safety@lists.elisa.tech
+Subject: Re: [PATCH] net: cls_api: remove unneeded local variable in
+ tc_dump_chain()
+Message-ID: <20201030140641.4fbeb575@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201028113533.26160-1-lukas.bulwahn@gmail.com>
+References: <20201028113533.26160-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020 06:16:28 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
-
-> > From: Lu Baolu <baolu.lu@linux.intel.com>
-> > Sent: Friday, October 30, 2020 12:58 PM
-> > 
-> > With the IOMMU driver registering iommu_ops for the mdev_bus, the
-> > IOMMU
-> > operations on an mdev could be done in the same way as any normal device
-> > (for example, PCI/PCIe). There's no need to distinguish an mdev from
-> > others for iommu operations. Remove the unnecessary code.  
+On Wed, 28 Oct 2020 12:35:33 +0100 Lukas Bulwahn wrote:
+> make clang-analyzer on x86_64 defconfig caught my attention with:
 > 
-> This is really a nice cleanup as the output of this change! :)
+> net/sched/cls_api.c:2964:3: warning: Value stored to 'parent' is never read
+>   [clang-analyzer-deadcode.DeadStores]
+>                 parent = 0;
+>                 ^
+> 
+> net/sched/cls_api.c:2977:4: warning: Value stored to 'parent' is never read
+>   [clang-analyzer-deadcode.DeadStores]
+>                         parent = q->handle;
+>                         ^
+> 
+> Commit 32a4f5ecd738 ("net: sched: introduce chain object to uapi")
+> introduced tc_dump_chain() and this initial implementation already
+> contained these unneeded dead stores.
+> 
+> Simplify the code to make clang-analyzer happy.
+> 
+> As compilers will detect these unneeded assignments and optimize this
+> anyway, the resulting binary is identical before and after this change.
+> 
+> No functional change. No change in object code.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> applies cleanly on current master and next-20201028
+> 
+> Jamal, Cong, Jiri, please ack.
+> David, Jakub, please pick this minor non-urgent clean-up patch.
 
-It's easy to remove a bunch of code when the result is breaking
-everyone else.  Please share with me how SR-IOV backed mdevs continue
-to work on AMD platforms, or how they might work on ARM platforms, when
-siov_iommu_ops (VT-d only) becomes the one and only provider of
-iommu_ops on the mdev bus.  Hard NAK on this series.  Thanks,
-
-Alex 
-
+Applied, thanks!
