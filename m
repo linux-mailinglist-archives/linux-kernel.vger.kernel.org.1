@@ -2,115 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82BB29FF65
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C3B29FF6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgJ3IHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 04:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3IHu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:07:50 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F64DC0613CF;
-        Fri, 30 Oct 2020 01:07:49 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id s15so7321588ejf.8;
-        Fri, 30 Oct 2020 01:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=8FeZSR5JJEGqlwf1fe2OSNQV7ZS283nxPmYWkHwkrfI=;
-        b=N1Dk0soD9CSKegS0fdxrtvzukOgfxcNtMUzCsulbTETYMXkSQtMq3iy/oHsZt52eUU
-         Y8qePqycBWyouhZczH150ALf3jJGydo9QIdasWbWpnLmD4WSvNzuo7nkRhN7IGL2rdQJ
-         Z9+Yo2PTrpz5mXp06pdr35rX2STP3zT4AzvDbaNp2ZqaIVA0zwQHzSLB8gxaHsCncHbv
-         4uK3tApkXdBgZtYf3ZClt3WP7WTSfAZz01LdBrwrc4yCri8dna5IzNXHCyN45tF2wY/n
-         BZgc8CPlMZQDGQj6JDRQeI8LtneyR6aNAYFOxNZ0cKMcUMW+2S4VfFmWO7fV6JV74Oyv
-         IqaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=8FeZSR5JJEGqlwf1fe2OSNQV7ZS283nxPmYWkHwkrfI=;
-        b=aUEY3suQyod3hmwz6tQdsXPpF/4iImzh5DSl9gqi76Lv00TGHTWNDCQChu33uofDVL
-         QuJFNdhMGONizkrfxNPL3vQZxsIjv3zsaTmXDaiKjTCt1RmuxSsrEgfCCrxXBf0/lPmW
-         x9Vo8J5dksTJxOX5A7IrQAYeXQubHYa+owja4snOZh2AF+bqA+n32FiW2OytNDCDRhEf
-         Oy6fxeIVjIoZCURRTCOuDBzYUR2wi4nBApkuiyxPt7JBDNBIsuVWQ3VP7Ss29sWDvoHR
-         XhXBHTxVR9V8GvqHtwkOayJ3aCymUgMN0cJZ6gTB7PliO6/pK4Snqm2o6rRbWQPDTSzL
-         DVgA==
-X-Gm-Message-State: AOAM5326wGQtCo78piHek8A4vcqpJBsO0aAJCfm1LNIVawigpcMWB7lu
-        Kt6EhEYnIfy9n2edgsZ2o48=
-X-Google-Smtp-Source: ABdhPJxv6SUC8utzKVS9G9mWsefaki08dPetrAgRpX+nZMlB1C4vxJg53ikjJrig5XN+MtLQnfA9Vw==
-X-Received: by 2002:a17:906:31c6:: with SMTP id f6mr1314210ejf.164.1604045267897;
-        Fri, 30 Oct 2020 01:07:47 -0700 (PDT)
-Received: from felia ([2001:16b8:2d02:400:25af:1ff4:dc3:177c])
-        by smtp.gmail.com with ESMTPSA id a10sm2672299edu.78.2020.10.30.01.07.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 01:07:47 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Fri, 30 Oct 2020 09:07:39 +0100 (CET)
-X-X-Sender: lukas@felia
-To:     Sandeep Singh <Sandeep.Singh@amd.com>,
-        Jiri Kosina <jikos@kernel.org>
-cc:     benjamin.tissoires@redhat.com, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, srinivas.pandruvada@linux.intel.com,
-        jic23@kernel.org, linux-iio@vger.kernel.org, hdegoede@redhat.com,
-        Nehal-bakulchandra.Shah@amd.com, andy.shevchenko@gmail.com,
-        mail@richard-neumann.de, m.felsch@pengutronix.de,
-        rdunlap@infradead.org, Shyam-sundar.S-k@amd.com
-Subject: Re: [PATCH v8 1/4] SFH: Add maintainers and documentation for AMD
- SFH based on HID framework
-In-Reply-To: <20201009200138.1847317-2-Sandeep.Singh@amd.com>
-Message-ID: <alpine.DEB.2.21.2010300902220.16621@felia>
-References: <20201009200138.1847317-1-Sandeep.Singh@amd.com> <20201009200138.1847317-2-Sandeep.Singh@amd.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1725988AbgJ3IIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:08:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgJ3IIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 04:08:22 -0400
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E7CF22228;
+        Fri, 30 Oct 2020 08:08:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604045301;
+        bh=acxrTQkHAJd6J4NM+xeR/HLxVVlvpm5kFDDF2TgWGBg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tVJmbi1QFNYykyvuUOJpOGNO0icuPGIQpKRAE+G/AldhJTYHKNiIMlUaO7oet5qOl
+         qeLV4wSNAV+13ID3Ak5mMGiaXivvt8xn8UtvCiXabOQzc6LZDVpeSn1HTDyOIwtqxW
+         ydGux+as4ScLi0mix+qUKMhtS/4xgwUCSoxc3Uc8=
+Date:   Fri, 30 Oct 2020 10:08:15 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [RESEND PATCH] KEYS: asymmetric: Fix kerneldoc
+Message-ID: <20201030080815.GA51616@kernel.org>
+References: <20201029154830.26997-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029154830.26997-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Sat, 10 Oct 2020, Sandeep Singh wrote:
-
-> From: Sandeep Singh <sandeep.singh@amd.com>
+On Thu, Oct 29, 2020 at 04:48:30PM +0100, Krzysztof Kozlowski wrote:
+> Fix W=1 compile warnings (invalid kerneldoc):
 > 
-> Add Maintainers for AMD SFH(SENSOR FUSION HUB) Solution and work flow
-> document.
+>     crypto/asymmetric_keys/asymmetric_type.c:160: warning: Function parameter or member 'kid1' not described in 'asymmetric_key_id_same'
+>     crypto/asymmetric_keys/asymmetric_type.c:160: warning: Function parameter or member 'kid2' not described in 'asymmetric_key_id_same'
+>     crypto/asymmetric_keys/asymmetric_type.c:160: warning: Excess function parameter 'kid_1' description in 'asymmetric_key_id_same'
+>     crypto/asymmetric_keys/asymmetric_type.c:160: warning: Excess function parameter 'kid_2' description in 'asymmetric_key_id_same'
 > 
-> Co-developed-by: Nehal Shah <Nehal-bakulchandra.Shah@amd.com>
-> Signed-off-by: Nehal Shah <Nehal-bakulchandra.Shah@amd.com>
-> Signed-off-by: Sandeep Singh <sandeep.singh@amd.com>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
 > ---
->  Documentation/hid/amd-sfh-hid.rst | 145 ++++++++++++++++++++++++++++++
->  Documentation/hid/index.rst       |   1 +
->  MAINTAINERS                       |   8 ++
->  3 files changed, 154 insertions(+)
->  create mode 100644 Documentation/hid/amd-sfh-hid.rst
->
 
-I do not know where something went wrong here, but it seems that
-the git commit 302f0dad8c97 ("SFH: Add maintainers and 
-documentation for AMD SFH based on HID framework") on next-20201030 
-dropped the addition of the rst file compared to this patch v8 here.
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@iki.fi>
 
-See:  git show --stat 302f0dad8c97a11abcf145ff3c70
+>  crypto/asymmetric_keys/asymmetric_type.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/crypto/asymmetric_keys/asymmetric_type.c b/crypto/asymmetric_keys/asymmetric_type.c
+> index 33e77d846caa..ad8af3d70ac0 100644
+> --- a/crypto/asymmetric_keys/asymmetric_type.c
+> +++ b/crypto/asymmetric_keys/asymmetric_type.c
+> @@ -152,7 +152,8 @@ EXPORT_SYMBOL_GPL(asymmetric_key_generate_id);
+>  
+>  /**
+>   * asymmetric_key_id_same - Return true if two asymmetric keys IDs are the same.
+> - * @kid_1, @kid_2: The key IDs to compare
+> + * @kid1: The key ID to compare
+> + * @kid2: The key ID to compare
+>   */
+>  bool asymmetric_key_id_same(const struct asymmetric_key_id *kid1,
+>  			    const struct asymmetric_key_id *kid2)
+> @@ -168,7 +169,8 @@ EXPORT_SYMBOL_GPL(asymmetric_key_id_same);
+>  /**
+>   * asymmetric_key_id_partial - Return true if two asymmetric keys IDs
+>   * partially match
+> - * @kid_1, @kid_2: The key IDs to compare
+> + * @kid1: The key ID to compare
+> + * @kid2: The key ID to compare
+>   */
+>  bool asymmetric_key_id_partial(const struct asymmetric_key_id *kid1,
+>  			       const struct asymmetric_key_id *kid2)
+> -- 
+> 2.25.1
+> 
+> 
 
-[...]
-
- Documentation/hid/index.rst | 1 +
- MAINTAINERS                 | 8 ++++++++
- 2 files changed, 9 insertions(+)
-
-
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
-
-  warning: no file matches    F:    Documentation/hid/amd-sfh*
-
-
-Just that you know...
-
-Lukas
+/Jarkko
