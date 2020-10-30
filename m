@@ -2,139 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937182A1104
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD8A2A1105
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgJ3WoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 18:44:18 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:55555 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3WoR (ORCPT
+        id S1726025AbgJ3Wol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 18:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgJ3Wok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 18:44:17 -0400
-Received: by mail-il1-f200.google.com with SMTP id d9so5672706iln.22
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 15:44:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=tbbGq5aNlO9degpAN1D8DlynwJQJHs0cUXencP4MFxc=;
-        b=qLMBtWGR4jTa5/SuZSq5Ad1yS2Toe1cctDzrRxB7swaH/oElVPYd1APiKUi+2L2AIg
-         VJUjQqn6zKuw7ccPazcnT0W6tvrCyY3QWUzGCHffU7zBSM7PDNqE9MEhKD2iHs7h2Dw8
-         ZvnFT4tfgwD/rBz1Pe3i6NmI3gZbVqCex5qDlGhzWF/9b/w/OTe3C6dILdk7spmy55F2
-         I9gd7xh6R2PbDwzDQIzx4KJUvMujdAQLYYN0tiOU0Zb7JkerPoPcOYnlOFiQNFrkhFcH
-         MuVFULNiDpyeILzvmLqlDUbPgxSrcLU3ckzojbJwfTrL6aZLdT90y8xUF+af251NRWQx
-         s9VA==
-X-Gm-Message-State: AOAM5322Z88ephYeKCFvcoASyElz+iRpdVHigFombEPZD6SQRauTUT9F
-        HKc4YDU/NO0FxXN73Jq5adlyZFdzTAcS+osYaWTjcKNjv2bq
-X-Google-Smtp-Source: ABdhPJyLd3gde0CNV+gdHb3xqkQpujTtiIJVGrNoovHxAjXich8pF+WsgaMZXT0i7FgPCE11ykuuYCp12nWKtcO6EmQvaBOTxQat
+        Fri, 30 Oct 2020 18:44:40 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732CEC0613D5;
+        Fri, 30 Oct 2020 15:44:40 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: koike)
+        with ESMTPSA id 327E91F45F45
+Subject: Re: [PATCH 00/14] Allwinner MIPI CSI-2 support for A31/V3s/A83T
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <d15d724b-6af7-3e51-1316-7bdde5a42c60@collabora.com>
+Date:   Fri, 30 Oct 2020 19:44:28 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-X-Received: by 2002:a6b:3f88:: with SMTP id m130mr3434557ioa.78.1604097856950;
- Fri, 30 Oct 2020 15:44:16 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 15:44:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f2d59c05b2eb22e0@google.com>
-Subject: INFO: task hung in gfs2_gl_hash_clear
-From:   syzbot <syzbot+938b0fd3a48bf32ef1f1@syzkaller.appspotmail.com>
-To:     agruenba@redhat.com, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Paul,
 
-syzbot found the following issue on:
+I have some comments through the series, I hope this helps.
 
-HEAD commit:    07e08873 Merge tag 'fallthrough-fixes-clang-5.10-rc2' of g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11483132500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cb6c2acf60eb5bfd
-dashboard link: https://syzkaller.appspot.com/bug?extid=938b0fd3a48bf32ef1f1
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+On 10/23/20 2:45 PM, Paul Kocialkowski wrote:
+> This series introduces support for MIPI CSI-2, with the A31 controller that is
+> found on most SoCs (A31, V3s and probably V5) as well as the A83T-specific
+> controller. While the former uses the same MIPI D-PHY that is already supported
+> for DSI, the latter embeds its own D-PHY.
+> 
+> In order to distinguish the use of the D-PHY between Rx mode (for MIPI CSI-2)
+> and Tx mode (for MIPI DSI), a submode is introduced for D-PHY in the PHY API.
+> This allows adding Rx support in the A31 D-PHY driver.
+> 
+> A few changes and fixes are applied to the A31 CSI controller driver, in order
+> to support the MIPI CSI-2 use-case.
+> 
+> Follows is the V4L2 device topology representing the interactions between
+> the MIPI CSI-2 sensor, the MIPI CSI-2 controller (which controls the D-PHY)
+> and the CSI controller:
+> - entity 1: sun6i-csi (1 pad, 1 link)
+>             type Node subtype V4L flags 0
+>             device node name /dev/video0
+> 	pad0: Sink
+> 		<- "sun6i-mipi-csi2":1 [ENABLED,IMMUTABLE]
+> 
+> - entity 5: sun6i-mipi-csi2 (2 pads, 2 links)
+>             type V4L2 subdev subtype Unknown flags 0
+> 	pad0: Sink
+> 		<- "ov5648 0-0036":0 [ENABLED,IMMUTABLE]
+> 	pad1: Source
+> 		-> "sun6i-csi":0 [ENABLED,IMMUTABLE]
+> 
+> - entity 8: ov5648 0-0036 (1 pad, 1 link)
+>             type V4L2 subdev subtype Sensor flags 0
+>             device node name /dev/v4l-subdev0
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Question: I noticed is that sun6i-mipi-csi2 doesn't expose a node under /dev/, but the sensor
+exposes it. Probably because it uses V4L2_SUBDEV_FL_HAS_DEVNODE and sun6i-csi() calls
+v4l2_device_register_subdev_nodes().
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+938b0fd3a48bf32ef1f1@syzkaller.appspotmail.com
+I find this weird from a userspace pov, since usually we don't mix manual and auto propagation
+of the configs, so I started wondering if sun6i-csi driver should be calling
+v4l2_device_register_subdev_nodes() in the first place.
 
-INFO: task syz-executor.0:12142 blocked for more than 143 seconds.
-      Not tainted 5.10.0-rc1-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.0  state:D stack:25896 pid:12142 ppid:  8475 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3774 [inline]
- __schedule+0x893/0x2130 kernel/sched/core.c:4523
- schedule+0xcf/0x270 kernel/sched/core.c:4601
- schedule_timeout+0x148/0x250 kernel/time/timer.c:1876
- gfs2_gl_hash_clear+0x240/0x270 fs/gfs2/glock.c:1989
- gfs2_fill_super+0x1e81/0x23f0 fs/gfs2/ops_fstype.c:1233
- get_tree_bdev+0x421/0x740 fs/super.c:1344
- gfs2_get_tree+0x4a/0x270 fs/gfs2/ops_fstype.c:1256
- vfs_get_tree+0x89/0x2f0 fs/super.c:1549
- do_new_mount fs/namespace.c:2875 [inline]
- path_mount+0x13ad/0x20c0 fs/namespace.c:3205
- do_mount fs/namespace.c:3218 [inline]
- __do_sys_mount fs/namespace.c:3426 [inline]
- __se_sys_mount fs/namespace.c:3403 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3403
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x46090a
-Code: Unable to access opcode bytes at RIP 0x4608e0.
-RSP: 002b:00007f9ee56a8a88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f9ee56a8b20 RCX: 000000000046090a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f9ee56a8ae0
-RBP: 00007f9ee56a8ae0 R08: 00007f9ee56a8b20 R09: 0000000020000000
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
-R13: 0000000020000100 R14: 0000000020000200 R15: 0000000020047a20
+Also, sun6i-csi doesn't seem to be used by any board dts (it's declared on the dtsi, but I
+didn't find any dts enabling it), so I wonder if it would be a bad thing if we update it.
 
-Showing all locks held in the system:
-2 locks held by kworker/u4:1/21:
-1 lock held by khungtaskd/1643:
- #0: ffffffff8b337060 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6259
-1 lock held by systemd-journal/4882:
-1 lock held by in:imklog/8120:
- #0: ffff8880134e75f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
-1 lock held by syz-executor.0/12142:
- #0: ffff88805df5c0e0 (&type->s_umount_key#62/1){+.+.}-{3:3}, at: alloc_super+0x1b8/0xa80 fs/super.c:229
+> 	pad0: Source
+> 		[fmt:SBGGR8_1X8/640x480@1/30 field:none colorspace:raw xfer:none ycbcr:601 quantization:full-range]
+> 		-> "sun6i-mipi-csi2":0 [ENABLED,IMMUTABLE]
 
-=============================================
+If I understand correctly, this is very similar to ipu3:
+    sensor->bus->dma_engine
 
-NMI backtrace for cpu 1
-CPU: 1 PID: 1643 Comm: khungtaskd Not tainted 5.10.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd43/0xfa0 kernel/hung_task.c:295
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 4882 Comm: systemd-journal Not tainted 5.10.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0033:0x7f3f056c561d
-Code: f9 79 f1 ff 83 f8 06 0f 8e bd fd ff ff 48 83 ec 08 4c 8d 0d 6d a1 02 00 4c 8d 05 ae fe 03 00 53 b9 1e 03 00 00 e9 eb fe ff ff <49> 83 f8 10 75 0c 49 89 45 00 45 31 e4 e9 94 fd ff ff 31 d2 4d 89
-RSP: 002b:00007ffe73800a50 EFLAGS: 00000246
-RAX: 00007f3f02e08798 RBX: 00000000002b2798 RCX: 0000000000000040
-RDX: 0000000000000001 RSI: 00007f3f05705480 RDI: 000056506c959140
-RBP: 000056506c958ea0 R08: 0000000000000065 R09: 000056506c959140
-R10: c68c15b713e34dde R11: 836311406455d5a5 R12: 0000000000000001
-R13: 00007ffe73800ac8 R14: 0000000000000000 R15: 00007ffe73800a50
-FS:  00007f3f059d68c0 GS:  0000000000000000
+in the case of ipu3-cio2:
+    sensor->ipu3-csi2->ipu3-cio2
 
+in this case:
+    ov5648->sun6i-mipi-csi2->sun6i-csi
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On thing that is confusing me is the name csi2 with csi (that makes me think of csi
+vesun6i-csirsion one, which is not the case), I would rename it to sun6i-video (or maybe
+it is just me who gets confused).
+I know this driver is already upstream and not part of this series, but on the other hand it
+doesn't seem to be used.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On another note, I always wonder if we should expose the bus in the topology, I'm not
+sure if it provides any useful API or information for userspace, and you could have
+a cleaner code (maybe code could be under phy subsystem). But at the same time, it
+seems this is a pattern on v4l2.
+
+I'd like to hear what others think on the above.
+
+Regards,
+Helen
+
+> 
+> Happy reviewing!
+> 
+> Paul Kocialkowski (14):
+>   phy: Distinguish between Rx and Tx for MIPI D-PHY with submodes
+>   phy: allwinner: phy-sun6i-mipi-dphy: Support D-PHY Rx mode for MIPI
+>     CSI-2
+>   media: sun6i-csi: Support an optional dedicated memory pool
+>   media: sun6i-csi: Fix the image storage bpp for 10/12-bit Bayer
+>     formats
+>   media: sun6i-csi: Only configure the interface data width for parallel
+>   media: sun6i-csi: Support feeding from the MIPI CSI-2 controller
+>   dt-bindings: media: i2c: Add A31 MIPI CSI-2 bindings documentation
+>   media: sunxi: Add support for the A31 MIPI CSI-2 controller
+>   ARM: dts: sun8i: v3s: Add CSI0 camera interface node
+>   ARM: dts: sun8i: v3s: Add MIPI D-PHY and MIPI CSI-2 interface nodes
+>   dt-bindings: media: i2c: Add A83T MIPI CSI-2 bindings documentation
+>   media: sunxi: Add support for the A83T MIPI CSI-2 controller
+>   ARM: dts: sun8i: a83t: Add MIPI CSI-2 controller node
+>   media: sunxi: sun8i-a83t-mipi-csi2: Avoid using the (unsolicited)
+>     interrupt
+> 
+>  .../media/allwinner,sun6i-a31-mipi-csi2.yaml  | 168 +++++
+>  .../media/allwinner,sun8i-a83t-mipi-csi2.yaml | 158 +++++
+>  arch/arm/boot/dts/sun8i-a83t.dtsi             |  26 +
+>  arch/arm/boot/dts/sun8i-v3s.dtsi              |  62 ++
+>  drivers/media/platform/sunxi/Kconfig          |   2 +
+>  drivers/media/platform/sunxi/Makefile         |   2 +
+>  .../platform/sunxi/sun6i-csi/sun6i_csi.c      |  54 +-
+>  .../platform/sunxi/sun6i-csi/sun6i_csi.h      |  20 +-
+>  .../platform/sunxi/sun6i-mipi-csi2/Kconfig    |  11 +
+>  .../platform/sunxi/sun6i-mipi-csi2/Makefile   |   4 +
+>  .../sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c   | 635 +++++++++++++++++
+>  .../sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.h   | 116 +++
+>  .../sunxi/sun8i-a83t-mipi-csi2/Kconfig        |  11 +
+>  .../sunxi/sun8i-a83t-mipi-csi2/Makefile       |   4 +
+>  .../sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.c    |  92 +++
+>  .../sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.h    |  39 ++
+>  .../sun8i_a83t_mipi_csi2.c                    | 660 ++++++++++++++++++
+>  .../sun8i_a83t_mipi_csi2.h                    | 196 ++++++
+>  drivers/phy/allwinner/phy-sun6i-mipi-dphy.c   | 164 ++++-
+>  drivers/staging/media/rkisp1/rkisp1-isp.c     |   3 +-
+>  include/linux/phy/phy-mipi-dphy.h             |  13 +
+>  21 files changed, 2408 insertions(+), 32 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/media/allwinner,sun6i-a31-mipi-csi2.yaml
+>  create mode 100644 Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-mipi-csi2.yaml
+>  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/Kconfig
+>  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/Makefile
+>  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c
+>  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.h
+>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/Kconfig
+>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/Makefile
+>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.c
+>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.h
+>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun8i_a83t_mipi_csi2.c
+>  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun8i_a83t_mipi_csi2.h
+> 
