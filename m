@@ -2,96 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4192D2A0955
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:12:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 780D92A099F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgJ3PMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
+        id S1727168AbgJ3PVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgJ3PMO (ORCPT
+        with ESMTP id S1727160AbgJ3PVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:12:14 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799B7C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:12:12 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id d25so7229879ljc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:12:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HmLApEco+rX8mEQowG+X3JrxaqslQdNzajS3RXlAwc4=;
-        b=Tqb7O5kk3DsDfwbCyi/N62cSbTRuKTlWvRDOrRX0UK94p5yx2nykHIfq3F83pRzD4m
-         CBnP5gDVH25wtvfCi2WXDdN2Y+eGpbOa0UF6EClN/a1EuS4jsF8amYFS5Y2QOlKWJ8tf
-         VVZ7wxL1YgWLRwqKaSWmI2CfH1+lxGwoUixJXMmCe7NxnpYilaBe5ufBKlnUFNXwoSFj
-         cFzuMsujm6jKIJR5jMaRCwoEfh3YTFGu36xe8FEkz4RHLMCqMOQ7h0CeAuu107yf6ngb
-         06ijysHFIcmX9g4KNx9rK3vmkRombtOQhaPt+MzK9H4TG7Wn93OGrQ8027CBTkEV2wZO
-         T4BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HmLApEco+rX8mEQowG+X3JrxaqslQdNzajS3RXlAwc4=;
-        b=i6TAZUKz94x6zjLEOCRIdCY8Vg64ufz5JAR0zg/wvtTwdaWfdR/Q2PY0khWc4u58FE
-         FFgJC2NHlZcSfwJrHYR/ksIO4lYKUh1JfY5bzV18JiDQ2S5UQ4+2dMKLTVe93w9/ADFw
-         FjijTaTp6MF2jAv98qazIr+FyxM5XV0rwo7n6oNKGmmYfzfyOY/kIFmzIp1Ri3mUIbpw
-         LIOauTTJi2I4gNLrlwfzxAq45yZGnOwR5NyTdSc9vQcBXlTFymh25SHUkQFRpR9Dw8ck
-         nDA1AttAIJagUqvgcy/8+2Kxx3TL9Za/JFUntrTFUW3D0/oyP3/OeYEPm1F+0HOjovuI
-         2C/Q==
-X-Gm-Message-State: AOAM532q5Pkfw1nD8wvk30Nwgz0z1ptd4xYNDsD1NehCDdw5fJYQ8y9I
-        2XqbqVAausxZWIAjUL6NAHWPLQ==
-X-Google-Smtp-Source: ABdhPJz8Jf3qUgHHL0oIhqFyjGJF47n865tCXisEWtPQ4NvvEiiPTNTUXmZA8itu60q/kdRV0TymxA==
-X-Received: by 2002:a05:651c:1139:: with SMTP id e25mr1238791ljo.63.1604070731032;
-        Fri, 30 Oct 2020 08:12:11 -0700 (PDT)
-Received: from eriador.lan ([188.162.64.225])
-        by smtp.gmail.com with ESMTPSA id l16sm647269lfe.78.2020.10.30.08.12.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 08:12:10 -0700 (PDT)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     benl-kernelpatches@squareup.com
-Cc:     airlied@linux.ie, benl@squareup.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        harigovi@codeaurora.org, kholk11@gmail.com, konradybcio@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robdclark@gmail.com, sean@poorly.run, zhengbin13@huawei.com
-Subject: [PATCH] drm/msm/dsi: do not try reading 28nm vco rate if it's not enabled
-Date:   Fri, 30 Oct 2020 18:12:07 +0300
-Message-Id: <20201030151207.766857-1-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <010101750064e17e-3db0087e-fc37-494d-aac9-2c2b9b0a7c5b-000000@us-west-2.amazonses.com>
-References: <010101750064e17e-3db0087e-fc37-494d-aac9-2c2b9b0a7c5b-000000@us-west-2.amazonses.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 30 Oct 2020 11:21:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E6FC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:21:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=C+NMDJMujZJ3KX+YseGQHydLQrgfF2pQ41zKS+C9IeQ=; b=hrVNeBS2LxUa80OoJLrImiBlG9
+        SVA36NyZ4A0eB5JNP2ca7LawD5lTniKopVYFVB/Q5MKLz5BoQsp05AMme0cuG8pe7spnNKuatJrje
+        e0MaS/yw7mqwAxRES+7w9y2YJYBBWEdtVmoOfW/Z2yxpdIiLz6EfqyF6rn1ZLk8KR30reroxcPG+W
+        uyA5VZGl4OAFsxCdCj/YlWmni/Pwnd3Lnl7I/lvBtQ04euj+EkxCQZw3w4NhXAk1GSt7lCoUa/ib2
+        iPAnEivZUEGzgnbbvLZ2gGzRUvcFZWcJRUd+42uNQSnWy1QMKflD3qBbKfhLCAb6g4z6VE23NAzCd
+        lTGgBn2w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kYWDK-0002ka-IT; Fri, 30 Oct 2020 15:21:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0AB60307691;
+        Fri, 30 Oct 2020 16:21:11 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id E31B32B708567; Fri, 30 Oct 2020 16:21:11 +0100 (CET)
+Message-ID: <20201030151345.540479897@infradead.org>
+User-Agent: quilt/0.66
+Date:   Fri, 30 Oct 2020 16:13:45 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, tglx@linutronix.de, rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org, kan.liang@linux.intel.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, ak@linux.intel.com, eranian@google.com,
+        peterz@infradead.org
+Subject: [PATCH 0/6] perf: Reduce stack usage (and misc bits)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reading VCO rate for this PLL can cause boot stalls, if it is not
-enabled. Guard clk_hw_get_rate with a call to
-dsi_pll_28nm_clk_is_enabled().
+Hi,
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/gpu/drm/msm/dsi/pll/dsi_pll_28nm.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Steve reported an NMI stack overflow when running perf and function tracing
+together. Thomas found that we had 4 copies of struct perf_sample_data
+on-stack.
 
-diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_28nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_28nm.c
-index 6dffd7f4a99b..37a1f996a588 100644
---- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_28nm.c
-+++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_28nm.c
-@@ -447,7 +447,10 @@ static void dsi_pll_28nm_save_state(struct msm_dsi_pll *pll)
- 	cached_state->postdiv1 =
- 			pll_read(base + REG_DSI_28nm_PHY_PLL_POSTDIV1_CFG);
- 	cached_state->byte_mux = pll_read(base + REG_DSI_28nm_PHY_PLL_VREG_CFG);
--	cached_state->vco_rate = clk_hw_get_rate(&pll->clk_hw);
-+	if (dsi_pll_28nm_clk_is_enabled(&pll->clk_hw))
-+		cached_state->vco_rate = clk_hw_get_rate(&pll->clk_hw);
-+	else
-+		cached_state->vco_rate = 0;
- }
- 
- static int dsi_pll_28nm_restore_state(struct msm_dsi_pll *pll)
--- 
-2.28.0
+These here patches reduce that to 2 copies and half the size of it.
+
+So just for perf_sample_data we go from 4*384=1536 to 2*192=384 bytes of stack.
+Also remove one struct pt_regs instance from __intel_pmu_pebs_event(); it has
+another instance in struct x86_perf_regs which I haven't yet managed to
+offload.
+
+Perf seems to still work... :-)
 
