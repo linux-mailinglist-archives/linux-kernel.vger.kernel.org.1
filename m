@@ -2,121 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9562A02F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 914292A02F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgJ3Kdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:33:40 -0400
-Received: from relay2.mymailcheap.com ([151.80.165.199]:37615 "EHLO
-        relay2.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgJ3Kdi (ORCPT
+        id S1726421AbgJ3Kde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgJ3Kde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:33:38 -0400
-X-Greylist: delayed 86921 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Oct 2020 06:33:37 EDT
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id 9F53D3ECD9;
-        Fri, 30 Oct 2020 11:33:35 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id DE1C02A0F9;
-        Fri, 30 Oct 2020 06:33:34 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1604054014;
-        bh=HvwCgKOnxLXkV7fUAyLVaPhbNSLuoL4UnVDpoRKO5Kg=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=Fm0byw7jlzccZB+zMK7lXj2pl1+GWZRFIMX6f2XuzT46cnrpAaAtoRLZ9XENCQ3Am
-         NLCGQxaGaew63CpCDFrJoEpqUHLpF3YiDbVAGNM7bIqwSEjYgUlJoBublfONQg6LA4
-         NZ4aO1H7Zn/1fXBZNZyFnacNjGt46yrj7epbWaAk=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id f_bVXTqV9dFy; Fri, 30 Oct 2020 06:33:33 -0400 (EDT)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Fri, 30 Oct 2020 06:33:33 -0400 (EDT)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id D724B400BD;
-        Fri, 30 Oct 2020 10:33:31 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="bQQzw09A";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [172.19.0.1] (unknown [64.225.114.122])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 4062F400BD;
-        Fri, 30 Oct 2020 10:33:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1604054003; bh=HvwCgKOnxLXkV7fUAyLVaPhbNSLuoL4UnVDpoRKO5Kg=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=bQQzw09AhBf1fcMG1g5A5AbW2rRQ2NCYTZlrP4+heMj4ZK0QAbV5szky5Y+njkkpf
-         C12sXCns7PwVONVkFLm2oXlp5v4MrH7S4RewLm4OEspbQFzw3G01Ze4h1l9B/wUPBH
-         hKQ6zwTA7LJg43lTn4lGPz+2eGAi7OKLLgHTt+GI=
-Date:   Fri, 30 Oct 2020 18:33:12 +0800
-User-Agent: K-9 Mail for Android
-In-Reply-To: <ea5967cdbd6281557d6a739c0eb63a979351b453.camel@gmail.com>
-References: <20201029022000.601913-1-matteo.scordino@gmail.com> <20201029022000.601913-5-matteo.scordino@gmail.com> <20201029101304.yja4m747pc62re34@gilmour.lan> <92612D42-FF4C-450C-ADB1-A220B94838CB@aosc.io> <ea5967cdbd6281557d6a739c0eb63a979351b453.camel@gmail.com>
+        Fri, 30 Oct 2020 06:33:34 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE24FC0613CF;
+        Fri, 30 Oct 2020 03:33:33 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id k10so4542964wrw.13;
+        Fri, 30 Oct 2020 03:33:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cilZ+udfA8JnGi8jWqanKiLiFvzSWTw4Z1ASaR4ui20=;
+        b=oazpO/HcgVzOwukg6DMxBqAdxdcz6Chre5fBs3HcgHOHrcwP+QnjgYVIl9Iik2vJe4
+         DNOQSk9/PQmw5q9ofMtYcZ5tleMr26nJo42/LSDHSIyJ2MRwbCn4k92sQM1zCq1gpRnW
+         trTAJCiz0GrYMwzslop6T7dDS2coD3G9bqgaszDe1Umfk+BrBFpHwYxdm/cIj4NeXEjS
+         1UpxRNcIQWLcIMFRPMGEZgsKhJHxq5DsUoxdnpTLUKSTZNyBm0KVryaH6BMoYRHJnMEi
+         V9QKDUPF+uhGIO28l1xLSCF2Ka4FsamO4C8fWmbrvWHFHjJEnCIGEr0N1YmCIAs54b2m
+         VYTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cilZ+udfA8JnGi8jWqanKiLiFvzSWTw4Z1ASaR4ui20=;
+        b=fe6DjyARBKmG1Uf6JQZ6yHVNsKO9jooR6MHVfg/UKdmWKzmtqpvmng9slU4q+0+Bp+
+         4MzOBEczxqnMF5oSx9p1BQNijrQ2KAu81qleGvryJErx7uOpG4sDGobtdW+WNP8bEIL0
+         b1E2aNMpS61FTMhj+iAvB5hymIVaQK1/Rha5Jr/iLziS+tOUeyJILQ8sCwu4q6y5rTOF
+         Ac+wi0vw20j+rMOIwGGdTZytzVqgYlwmlnPAwbOo7rQP0DzoEYL4u3a7I5CTJzKjq2Bh
+         tF8zKPKaWO0q2T7CmQJn5tyW2Q8IlSi+nMlgjuxUIpW9UXlo7EZUQnFgEB+0mTwu0git
+         2tsw==
+X-Gm-Message-State: AOAM533Kl7MWw65VQEyewc6zLIcRrWjnB8s92b5KgDKEXdoEY2bD+rio
+        0e01bF2WfrXcK6T7hmtLwaVEv+jSd/4=
+X-Google-Smtp-Source: ABdhPJwOA2WNkf2VuwSDmM8C2HAwpPF2FvWE7mqh3rpIOcZnF4uB8wWXxzxHmZnUkkMa5u/9iJH5oQ==
+X-Received: by 2002:a5d:4612:: with SMTP id t18mr2205623wrq.307.1604054012411;
+        Fri, 30 Oct 2020 03:33:32 -0700 (PDT)
+Received: from [192.168.2.27] (39.35.broadband4.iol.cz. [85.71.35.39])
+        by smtp.gmail.com with ESMTPSA id d20sm10565162wra.38.2020.10.30.03.33.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 03:33:31 -0700 (PDT)
+Subject: Re: [PATCH v3 1/4] crypto: add eboiv as a crypto API template
+To:     Gilad Ben-Yossef <gilad@benyossef.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com
+Cc:     Ofir Drang <ofir.drang@arm.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201029100546.28686-1-gilad@benyossef.com>
+ <20201029100546.28686-2-gilad@benyossef.com>
+From:   Milan Broz <gmazyland@gmail.com>
+Message-ID: <3a4804a5-5d5c-1216-1503-c241cc24f3c2@gmail.com>
+Date:   Fri, 30 Oct 2020 11:33:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 4/5] dt-bindings: arm: sunxi: add Elimo bindings
-To:     Matteo Scordino <matteo.scordino@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>
-CC:     wens@csie.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-From:   Icenowy Zheng <icenowy@aosc.io>
-Message-ID: <A93A2E6B-DF6A-40C2-93C7-BA0335C52658@aosc.io>
-X-Rspamd-Queue-Id: D724B400BD
-X-Spamd-Result: default: False [1.40 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[dt];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         FREEMAIL_TO(0.00)[gmail.com,cerno.tech];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+In-Reply-To: <20201029100546.28686-2-gilad@benyossef.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 29/10/2020 11:05, Gilad Ben-Yossef wrote:
+>  
+> +config CRYPTO_EBOIV
+> +	tristate "EBOIV support for block encryption"
+> +	default DM_CRYPT
+> +	select CRYPTO_CBC
+> +	help
+> +	  Encrypted byte-offset initialization vector (EBOIV) is an IV
+> +	  generation method that is used in some cases by dm-crypt for
+> +	  supporting the BitLocker volume encryption used by Windows 8
+> +	  and onwards as a backwards compatible version in lieu of XTS
+> +	  support.
+> +
+> +	  It uses the block encryption key as the symmetric key for a
+> +	  block encryption pass applied to the sector offset of the block.
+> +	  Additional details can be found at
+> +	  https://www.jedec.org/sites/default/files/docs/JESD223C.pdf
 
+This page is not available. Are you sure this is the proper documentation?
 
-=E4=BA=8E 2020=E5=B9=B410=E6=9C=8830=E6=97=A5 GMT+08:00 =E4=B8=8A=E5=8D=88=
-8:24:04, Matteo Scordino <matteo=2Escordino@gmail=2Ecom> =E5=86=99=E5=88=B0=
-:
->Hello,
->
->thank you both for reviewing=2E
->
->I didn't realise the file was kept in alphabetical order, I will fix
->that=2E
->And I agree that board/som + "sochip,s3, allwinner,sun8i-v3" makes
->sense,
->I will resubmit the patch with those (and sync them with the dt
->bindings file)=2E
->
->Should I submit a patch to update the pinecube to use "sochip,s3,
->allwinner,sun8i-v3", too?
+I think the only description we used (for dm-crypt) was original Ferguson's Bitlocker doc:
+https://download.microsoft.com/download/0/2/3/0238acaf-d3bf-4a6d-b3d6-0a0be4bbb36e/bitlockercipher200608.pdf
 
-If possible, thanks=2E
+IIRC EBOIV was a shortcut I added to dm-crypt because we found no official terminology for this IV.
+And after lunchtime, nobody invented anything better, so it stayed as it is now :-)
+
+Milan
