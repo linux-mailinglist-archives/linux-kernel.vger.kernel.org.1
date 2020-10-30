@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710952A0995
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C2A2A0974
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727152AbgJ3PUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:20:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52708 "EHLO mail.kernel.org"
+        id S1727045AbgJ3PUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:20:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726674AbgJ3PUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:20:01 -0400
+        id S1726820AbgJ3PUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:20:00 -0400
 Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D39820756;
-        Fri, 30 Oct 2020 15:18:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD8CD2151B;
+        Fri, 30 Oct 2020 15:18:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604071127;
-        bh=iDfeVQLWc0H76d65dMCO1CjztYPtBiAdqFL9uiIlkxA=;
+        s=default; t=1604071131;
+        bh=PU/541LNe7KQVoj0GelP71V9M6lqpXqIzsKggfodUE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jhb1OIn10HVnUycRJeZeUqhvjqY7b4mZX550t1143M1pIBYLmQQr0nzbiZElXNTXc
-         bYTQ0X2dUf+nNTz58NXmdjsqCiSPXs5uSCmOEw7151a70EDxo3by7tfJNhBu9i2yER
-         0eNneQ49BRZzFLRnGlBHU9e+toxVifn5GrJivi9I=
+        b=FFLXIAKBFWVd9ecYM21HfZkJplkhfM3bZQ0R7PkQmzardEopUkKhAHjnTqwP+pTiP
+         2ttCQBI7+h4XcDTtbVlBwD5898pA49vyxKPJujloUB4o6Gickc+yrGhBahg3+OgUsI
+         pEYA6HGniIewW3Cg1KawLRzwLEB06wZJHC4s1qoA=
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -45,9 +45,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Parisc List <linux-parisc@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2 06/15] ARM: rpc: use legacy_timer_tick
-Date:   Fri, 30 Oct 2020 16:17:49 +0100
-Message-Id: <20201030151758.1241164-7-arnd@kernel.org>
+Subject: [PATCH v2 07/15] parisc: use legacy_timer_tick
+Date:   Fri, 30 Oct 2020 16:17:50 +0100
+Message-Id: <20201030151758.1241164-8-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201030151758.1241164-1-arnd@kernel.org>
 References: <20201030151758.1241164-1-arnd@kernel.org>
@@ -59,81 +59,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-rpc is the only user of the timer_tick() function now, and can
-just call the newly added generic version instead.
+parisc has selected CONFIG_GENERIC_CLOCKEVENTS since commit 43b1f6abd590
+("parisc: Switch to generic sched_clock implementation"), but does not
+appear to actually be using it, and instead calls the low-level
+timekeeping functions directly.
+
+Remove the GENERIC_CLOCKEVENTS select again, and instead convert to
+the newly added legacy_timer_tick() helper.
 
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/Kconfig                 |  1 +
- arch/arm/include/asm/mach/time.h |  2 --
- arch/arm/kernel/time.c           | 14 --------------
- arch/arm/mach-rpc/time.c         |  2 +-
- 4 files changed, 2 insertions(+), 17 deletions(-)
+ Documentation/features/time/clockevents/arch-support.txt | 2 +-
+ arch/parisc/Kconfig                                      | 2 +-
+ arch/parisc/kernel/time.c                                | 9 +++------
+ 3 files changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 1b9fda08b92f..dbadfa186f72 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -452,6 +452,7 @@ config ARCH_RPC
- 	select HAVE_IDE
- 	select HAVE_PATA_PLATFORM
- 	select ISA_DMA_API
+diff --git a/Documentation/features/time/clockevents/arch-support.txt b/Documentation/features/time/clockevents/arch-support.txt
+index 8287b6aa522e..61a5c9d68c15 100644
+--- a/Documentation/features/time/clockevents/arch-support.txt
++++ b/Documentation/features/time/clockevents/arch-support.txt
+@@ -21,7 +21,7 @@
+     |       nds32: |  ok  |
+     |       nios2: |  ok  |
+     |    openrisc: |  ok  |
+-    |      parisc: |  ok  |
++    |      parisc: | TODO |
+     |     powerpc: |  ok  |
+     |       riscv: |  ok  |
+     |        s390: |  ok  |
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index b234e8154cbd..78b17621ee4a 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -52,7 +52,7 @@ config PARISC
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select GENERIC_SCHED_CLOCK
+ 	select HAVE_UNSTABLE_SCHED_CLOCK if SMP
+-	select GENERIC_CLOCKEVENTS
 +	select LEGACY_TIMER_TICK
- 	select NEED_MACH_IO_H
- 	select NEED_MACH_MEMORY_H
- 	select NO_IOPORT_MAP
-diff --git a/arch/arm/include/asm/mach/time.h b/arch/arm/include/asm/mach/time.h
-index d75d39280db7..5f522916ec99 100644
---- a/arch/arm/include/asm/mach/time.h
-+++ b/arch/arm/include/asm/mach/time.h
-@@ -7,8 +7,6 @@
- #ifndef __ASM_ARM_MACH_TIME_H
- #define __ASM_ARM_MACH_TIME_H
+ 	select CPU_NO_EFFICIENT_FFS
+ 	select NEED_DMA_MAP_STATE
+ 	select NEED_SG_DMA_LENGTH
+diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
+index 13d94f0f94a0..08e4d480abe1 100644
+--- a/arch/parisc/kernel/time.c
++++ b/arch/parisc/kernel/time.c
+@@ -70,8 +70,6 @@ irqreturn_t __irq_entry timer_interrupt(int irq, void *dev_id)
+ 	/* gcc can optimize for "read-only" case with a local clocktick */
+ 	unsigned long cpt = clocktick;
  
--extern void timer_tick(void);
--
- typedef void (*clock_access_fn)(struct timespec64 *);
- extern int register_persistent_clock(clock_access_fn read_persistent);
- 
-diff --git a/arch/arm/kernel/time.c b/arch/arm/kernel/time.c
-index 09b149b09c43..b3836c94dc74 100644
---- a/arch/arm/kernel/time.c
-+++ b/arch/arm/kernel/time.c
-@@ -60,20 +60,6 @@ unsigned long profile_pc(struct pt_regs *regs)
- EXPORT_SYMBOL(profile_pc);
- #endif
- 
--#ifndef CONFIG_GENERIC_CLOCKEVENTS
--/*
-- * Kernel system timer support.
-- */
--void timer_tick(void)
--{
 -	profile_tick(CPU_PROFILING);
--	xtime_update(1);
--#ifndef CONFIG_SMP
--	update_process_times(user_mode(get_irq_regs()));
--#endif
--}
--#endif
 -
- static void dummy_clock_access(struct timespec64 *ts)
- {
- 	ts->tv_sec = 0;
-diff --git a/arch/arm/mach-rpc/time.c b/arch/arm/mach-rpc/time.c
-index da85cac761ba..9f8edcfe9357 100644
---- a/arch/arm/mach-rpc/time.c
-+++ b/arch/arm/mach-rpc/time.c
-@@ -81,7 +81,7 @@ static irqreturn_t
- ioc_timer_interrupt(int irq, void *dev_id)
- {
- 	ioc_time += RPC_LATCH;
--	timer_tick();
-+	legacy_timer_tick(1);
- 	return IRQ_HANDLED;
- }
+ 	/* Initialize next_tick to the old expected tick time. */
+ 	next_tick = cpuinfo->it_value;
  
+@@ -86,10 +84,9 @@ irqreturn_t __irq_entry timer_interrupt(int irq, void *dev_id)
+ 	cpuinfo->it_value = next_tick;
+ 
+ 	/* Go do system house keeping. */
+-	if (cpu == 0)
+-		xtime_update(ticks_elapsed);
+-
+-	update_process_times(user_mode(get_irq_regs()));
++	if (cpu != 0)
++		ticks_elapsed = 0;
++	legacy_timer_tick(ticks_elapsed);
+ 
+ 	/* Skip clockticks on purpose if we know we would miss those.
+ 	 * The new CR16 must be "later" than current CR16 otherwise
 -- 
 2.27.0
 
