@@ -2,152 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66702A0370
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A10A2A0372
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbgJ3K4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:56:19 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:58580 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgJ3K4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:56:18 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 4081F1F45E6C
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: Re: [PATCH v3 06/16] soc: mediatek: pm-domains: Add SMI block as bus
- protection block
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-References: <20201026175526.2915399-1-enric.balletbo@collabora.com>
- <20201026175526.2915399-7-enric.balletbo@collabora.com>
- <CANMq1KCDNH1w+jo5kjyhusLdzCR0hF8QUi3a+jkkDvv75uGK5A@mail.gmail.com>
-Message-ID: <adbcc9a6-d101-62e1-265c-146b38c3165a@collabora.com>
-Date:   Fri, 30 Oct 2020 11:56:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726433AbgJ3K4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:56:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:59650 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725993AbgJ3K4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:56:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62A87139F;
+        Fri, 30 Oct 2020 03:56:35 -0700 (PDT)
+Received: from [10.57.13.192] (unknown [10.57.13.192])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A0EC3F719;
+        Fri, 30 Oct 2020 03:56:32 -0700 (PDT)
+Subject: Re: [PATCH 0/4] Add sustainable OPP concept
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com, rafael@kernel.org,
+        sudeep.holla@arm.com, daniel.lezcano@linaro.org,
+        Dietmar.Eggemann@arm.com
+References: <20201028140847.1018-1-lukasz.luba@arm.com>
+ <20201029074057.6ugmwyzna52x3oli@vireshk-i7>
+ <20201029075356.rruej6jlerhfa4oy@vireshk-i7>
+ <228fa1b3-bbd3-6941-fd4b-06581016d839@arm.com>
+ <20201030082937.xgjmko2ohwhkt6f5@vireshk-i7>
+ <a0a6db69-fc3e-c39f-7586-5ac3227b746e@arm.com>
+ <20201030095248.abej6h5wphud2ihb@vireshk-i7>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <757fe3b1-745f-2656-fe21-c7b39f123a25@arm.com>
+Date:   Fri, 30 Oct 2020 10:56:30 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <CANMq1KCDNH1w+jo5kjyhusLdzCR0hF8QUi3a+jkkDvv75uGK5A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201030095248.abej6h5wphud2ihb@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
 
-Thank you for your comments.
 
-On 27/10/20 3:44, Nicolas Boichat wrote:
-> On Tue, Oct 27, 2020 at 1:55 AM Enric Balletbo i Serra
-> <enric.balletbo@collabora.com> wrote:
->>
->> From: Matthias Brugger <mbrugger@suse.com>
->>
->> Apart from the infracfg block, the SMI block is used to enable the bus
->> protection for some power domains. Add support for this block.
->>
->> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
->> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->> ---
->>
->> Changes in v3:
->> - Do not reuse bpd for 2 different things.
->> - Disable pd->smi first and after that pd->infracfg.
->> - Rename BUT_PROT_UPDATE_MT8173 to BUS_PROT_UPDATE_TOPAXI as in all the
->>   other SoCs TOPAXI is mapped to the same address.
->>
-> [snip]
->>  static int scpsys_power_on(struct generic_pm_domain *genpd)
->> @@ -266,6 +271,10 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
->>         if (IS_ERR(pd->infracfg))
->>                 pd->infracfg = NULL;
->>
->> +       pd->smi = syscon_regmap_lookup_by_phandle(node, "mediatek,smi");
->> +       if (IS_ERR(pd->smi))
->> +               pd->smi = NULL;
+On 10/30/20 9:52 AM, Viresh Kumar wrote:
+> On 30-10-20, 09:19, Lukasz Luba wrote:
+>> How about dropping the DT binding, but just adding this new field into
+>> dev_pm_opp? There will be no DT parsing code, just the get/set
+>> functions, which will be used in SCMI patch 4/4 and in IPA?
+>> That would not require to change any DT bindings.
+>   
+>> I see. Just for your information SCMI supports 'Sustained Performance'
+>>   expressed in kHz.
 > 
-> This is the second time I see this pattern, I think.
+> Even that doesn't sound great (but then I don't have any background of
+> why that was added there). The problem is not about how do we get this
+> data into the kernel (from DT or firmware), but why is it even
+> required. I really feel that software can find the sustainable OPP by
+> itself (which can keep changing).
+
+IPA tries to do that, even dynamically when e.g. GPU is supper busy
+in 3D games (~2000W) or almost idle showing 2D home screen.
+It tries to find highest 'sustainable' frequencies for the devices,
+at that various workloads and temp. But it needs some coefficients to
+start, which have big impact on the algorithm. It could slow down IPA a
+lot, when those coefficients are calculated based on lowest OPPs.
+
+
 > 
-> Do we want to create a new syscon_regmap_lookup_by_phandle_optional wrapper?
+> About moving it into the OPP core, I am open to getting something
+> added there if it is really useful and if the OPP core is the best
+> suited place to keep such data. Though I am not sure of that for this
+> field right now.
+> 
+> Is it ever going to be used by anyone else apart from IPA ? If not,
+> what about adding a helper in IPA to set sustainable-freq for a device
+> ?
+
+My backup plan was to add a flag into EM em_perf_state, extend SCMI perf
+exposing the 'sustained_freq_khz' to scmi-cpufreq, which would set that
+field after registering EM. IPA depends on EM, so should be OK.
+
+> 
+> So only SCMI based platforms will be able to use this stuff ? That's
+
+I don't know who would also use it in future. I just presented you
+current user of this, as you asked.
+
+> very limited, isn't it ? I think we should still try to make it better
+> for everyone by making the software smarter. It has so much data, the
+> OPPs, the power it will consume (based on microvolt property?), the
+> heat we produce from that (from thermal framework), etc. Perhaps
+> building this information continuously at runtime based on when and
+> how we hit the trip points ? So we know which is the right frequency
+> where we can refrain from hitting the trip points.
+
+IPA works in this way.
+
+> 
+> But may be I am asking too much :(
 > 
 
-I think could be useful, yes. So I sent a patch to add this wrapper, let's see
-what the MFD maintainers think.
+When you asked for user of this, I gave you instantly. This is one is
+more difficult. I am still not there with IPA tests in LISA. I have some
+out-of-tree kernel driver for testing, which also need polishing before
+can be used with LISA. Then proper workloads with results processing.
+EM for devfreq cooling devices. Then decent 'hot' board running
+preferably mainline kernel.
+What you requested is on my list, but it needs more work, which
+won't be ready over night.
 
-> Also, are we ok with ignoring all errors? I agree we can ignore
-> -ENODEV if optional, but I'm not sure about the others.
-> 
-
-Right, we shouldn't ignore the other errors.
-
->> +
->>         pd->num_clks = of_clk_get_parent_count(node);
->>         if (pd->num_clks > 0) {
->>                 pd->clks = devm_kcalloc(scpsys->dev, pd->num_clks, sizeof(*pd->clks), GFP_KERNEL);
->> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
->> index e428fe23a7e3..7b1abcfc4ba3 100644
->> --- a/drivers/soc/mediatek/mtk-pm-domains.h
->> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
->> @@ -34,8 +34,31 @@
->>
->>  #define SPM_MAX_BUS_PROT_DATA          3
->>
->> +#define _BUS_PROT(_mask, _set, _clr, _sta, _update) {  \
->> +               .bus_prot_mask = (_mask),               \
->> +               .bus_prot_set = _set,                   \
->> +               .bus_prot_clr = _clr,                   \
->> +               .bus_prot_sta = _sta,                   \
->> +               .bus_prot_reg_update = _update,         \
->> +       }
->> +
->> +#define BUS_PROT_WR(_mask, _set, _clr, _sta)           \
->> +               _BUS_PROT(_mask, _set, _clr, _sta, false)
->> +
->> +#define BUS_PROT_UPDATE(_mask, _set, _clr, _sta)               \
->> +               _BUS_PROT(_mask, _set, _clr, _sta, true)
->> +
->> +#define BUS_PROT_UPDATE_TOPAXI(_mask)                          \
->> +               BUS_PROT_UPDATE(_mask,                          \
->> +                               INFRA_TOPAXI_PROTECTEN,         \
->> +                               INFRA_TOPAXI_PROTECTEN_CLR,     \
->> +                               INFRA_TOPAXI_PROTECTSTA1)
->> +
->>  struct scpsys_bus_prot_data {
->>         u32 bus_prot_mask;
->> +       u32 bus_prot_set;
->> +       u32 bus_prot_clr;
->> +       u32 bus_prot_sta;
->>         bool bus_prot_reg_update;
->>  };
->>
->> @@ -47,6 +70,7 @@ struct scpsys_bus_prot_data {
->>   * @sram_pdn_ack_bits: The mask for sram power control acked bits.
->>   * @caps: The flag for active wake-up action.
->>   * @bp_infracfg: bus protection for infracfg subsystem
->> + * @bp_smi: bus protection for smi subsystem
->>   */
->>  struct scpsys_domain_data {
->>         u32 sta_mask;
->> @@ -55,6 +79,7 @@ struct scpsys_domain_data {
->>         u32 sram_pdn_ack_bits;
->>         u8 caps;
->>         const struct scpsys_bus_prot_data bp_infracfg[SPM_MAX_BUS_PROT_DATA];
->> +       const struct scpsys_bus_prot_data bp_smi[SPM_MAX_BUS_PROT_DATA];
->>  };
->>
->>  struct scpsys_soc_data {
->> --
->> 2.28.0
->>
+Regards,
+Lukasz
