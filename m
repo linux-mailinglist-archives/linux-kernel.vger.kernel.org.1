@@ -2,137 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76442A060C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 915202A060E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgJ3M6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 08:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48602 "EHLO
+        id S1726617AbgJ3M6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 08:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJ3M6T (ORCPT
+        with ESMTP id S1726434AbgJ3M6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:58:19 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0056C0613CF;
-        Fri, 30 Oct 2020 05:58:18 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id h21so7370212iob.10;
-        Fri, 30 Oct 2020 05:58:18 -0700 (PDT)
+        Fri, 30 Oct 2020 08:58:46 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8649C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 05:58:45 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id h6so7764722lfj.3
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 05:58:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DEjwCz6RYcTNQfWnCWPDSlK+EiMHXu1I2qKUPcY2Sh4=;
-        b=HBlLv1td8ZGbbQpa0MJPMXQx1wDSoEh19ueH+HpLQn7HCeunMObf8TyVowEs6h3R1m
-         iO4vu+D+ag+gypjHMSJ/h5TbRu/++9EMN4/xsfsDdMPaUZtE4oFglwtgR08CcW2G2AdX
-         UmlQm9AfRndgv1zsgN3sTlb+QByMJzLQycWwoPdDgQWPlOLC+3cw/yAxHS9xGEcsfk25
-         oL5Gr2GsEfDIMPaQ/3v0cjoZYemL+EIxWgI9EmA1QEc1Kc55bB7q7X6z5rvkgrdV8Wln
-         YUSHz2U73sjUjSPC7fP0Cum01fYXKZPtnwqJrgS23oaIaaD/6+9OjVGgGaguXxagZ3Lq
-         1xAw==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uNc4aZmCV+V66ek4n0vGZyiabsnlsPVrA/E+N6Pxy2w=;
+        b=LeCwheLxnLSKQ0afV1Zx/F0R0vdGaODFv+ShILQ1t99lDmCgZXhHgnsxb2XVZ+y75H
+         PC5Y6abOYPnX1IlhLrUphlEpSxVHu0Q8Rx7lu3oIRqDXAFXipeU12yM6ByjjGSQYfsYT
+         RRM8IA98Kyq//zkbpAYkpV+s2yFVOGGyf3GNo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DEjwCz6RYcTNQfWnCWPDSlK+EiMHXu1I2qKUPcY2Sh4=;
-        b=EOHe3djSOCTuYt7jKFKoVMSvjUaO7l16O6M0jH9Difv6Wj7i4dqcGRbOWPGFbKMbOY
-         GF4s+LdYuMzpyZHagCL/H68jaF7r0LaQCAQEOaenUfbd5BHyxpNxU4D9bOOYP0eEgIWA
-         OO0DKzz1o/25/RdgWBjPSGqE/BtnM6X3besT2MOMiweyXwxvcgoQ9FDGX2ycTgae0bgy
-         tLDzJE3LMIuyHO4qegzE3VtM+3/FCZf1ofebkxQ0rcTFUHqdEcB3jncNKQbmsSoIrg/X
-         HdPf4K8m5oXpHhbSRLcjGBaKodwzKD6zTfWk7aidQv9u6N62wQBu0AB8VyOYIFwdXKUv
-         yxxg==
-X-Gm-Message-State: AOAM5338qPaJy+A571akTDSoS2cVyE3yUdANhhCEIO1C8n9+q1mEs2BZ
-        x1zmXUtB9XZk/8yvcCMvYuvQDtcJXcBFIuigCMg=
-X-Google-Smtp-Source: ABdhPJzgAY6KtKOPC6tfzKmvA8QQMoxhHFJsZyDBWBxynYs54LG5exJnFVce2ePcyXh7zbs+RcwK2Q1VsHbq+C9CSvQ=
-X-Received: by 2002:a05:6638:1351:: with SMTP id u17mr1911170jad.120.1604062698162;
- Fri, 30 Oct 2020 05:58:18 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uNc4aZmCV+V66ek4n0vGZyiabsnlsPVrA/E+N6Pxy2w=;
+        b=UXpBiQjxwmKmYwIZws47MWcburRjL6F2fDNvh8oeCXWA7ruCoTHKLQK0Mcdqi9PjWO
+         54dJ2lazMLG20jtL29W4eGnTUtTdac2q/Jfj1NgogcarSBOhWkD9UBEtjGcC8cagdORR
+         Hwc0UvlwQVbyF88Gj2AZzj88Jbsd2pSLxTR0fw4AsmCRUEMrzMvocWeKpXAEs/HjhfVl
+         YaYDXAhVWG9nzNEJN4/KIMaAeyh0kOr10wIhF5/0neddaw+10KLiELUkGLj/RqwWpPh4
+         Z9eVBChmg8T1sNFzFrQV55BCqbilWF6tT/d2RKbbgoDZW7++3FJJrGrMljY+9LHdSN1C
+         K2QQ==
+X-Gm-Message-State: AOAM531cXQLp9A6sMGm69Iiv0Fd/vjedoe/jGTSy0WwM+jdxJx0LxLP6
+        VrsH4TqA3mV0FFqEJDg1DHhTaA==
+X-Google-Smtp-Source: ABdhPJzY3CJVQ93L6hUMcAs1mWQGITL9zUbrGBXT9azIo9XmUImab/GfczuRGjf7PGl+41B3aWjVUA==
+X-Received: by 2002:a19:7e56:: with SMTP id z83mr813191lfc.98.1604062724149;
+        Fri, 30 Oct 2020 05:58:44 -0700 (PDT)
+Received: from [172.16.11.132] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id n18sm616110lfq.255.2020.10.30.05.58.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 05:58:43 -0700 (PDT)
+Subject: Re: [PATCH 0/4] deterministic random testing
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Petr Mladek <pmladek@suse.com>, Willy Tarreau <w@1wt.eu>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>
+References: <20201025214842.5924-1-linux@rasmusvillemoes.dk>
+ <20201026105927.GC4077@smile.fi.intel.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <24397a58-17cd-7238-488c-7a3346465ab8@rasmusvillemoes.dk>
+Date:   Fri, 30 Oct 2020 13:58:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201027183149.145165-1-peron.clem@gmail.com> <20201027183149.145165-2-peron.clem@gmail.com>
- <01e34ad3-c695-c6eb-95dd-76c2cda77c6f@linux.intel.com> <CAJiuCcdX7jc-VMWYfPPL3qu9RcUU7VMdjshyPH_xLA0yVXftUw@mail.gmail.com>
- <3f0c46e2-24a4-b6ee-1ea2-9de5344cfb9d@sholland.org>
-In-Reply-To: <3f0c46e2-24a4-b6ee-1ea2-9de5344cfb9d@sholland.org>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Fri, 30 Oct 2020 13:58:07 +0100
-Message-ID: <CAJiuCceqhGjzJV+=KQkzswpiG2QRb3NhVHqmrXHBi50wNZBFXw@mail.gmail.com>
-Subject: Re: [PATCH v9 01/14] ASoC: sun4i-i2s: Change set_chan_cfg() params
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201026105927.GC4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Samuel
+On 26/10/2020 11.59, Andy Shevchenko wrote:
+> On Sun, Oct 25, 2020 at 10:48:38PM +0100, Rasmus Villemoes wrote:
+>> This is a bit of a mixed bag.
+>>
+>> The background is that I have some sort() and list_sort() rework
+>> planned, but as part of that series I want to extend their their test
+>> suites somewhat to make sure I don't goof up - and I want to use lots
+>> of random list lengths with random contents to increase the chance of
+>> somebody eventually hitting "hey, sort() is broken when the length is
+>> 3 less than a power of 2 and only the last two elements are out of
+>> order". But when such a case is hit, it's vitally important that the
+>> developer can reproduce the exact same test case, which means using a
+>> deterministic sequence of random numbers.
+>>
+>> Since Petr noticed [1] the non-determinism in test_printf in
+>> connection with Arpitha's work on rewriting it to kunit, this prompted
+>> me to use test_printf as a first place to apply that principle, and
+>> get the infrastructure in place that will avoid repeating the "module
+>> parameter/seed the rnd_state/report the seed used" boilerplate in each
+>> module.
+>>
+>> Shuah, assuming the kselftest_module.h changes are ok, I think it's
+>> most natural if you carry these patches, though I'd be happy with any
+>> other route as well.
+> 
+> Completely in favour of this.
+> 
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-On Fri, 30 Oct 2020 at 02:20, Samuel Holland <samuel@sholland.org> wrote:
->
-> On 10/27/20 4:43 PM, Cl=C3=A9ment P=C3=A9ron wrote:
-> > Hi Pierre-Louis,
-> >
-> > On Tue, 27 Oct 2020 at 19:59, Pierre-Louis Bossart
-> > <pierre-louis.bossart@linux.intel.com> wrote:
-> >>
-> >>
-> >>> @@ -452,11 +454,11 @@ static int sun8i_i2s_set_chan_cfg(const struct =
-sun4i_i2s *i2s,
-> >>>       case SND_SOC_DAIFMT_DSP_B:
-> >>>       case SND_SOC_DAIFMT_LEFT_J:
-> >>>       case SND_SOC_DAIFMT_RIGHT_J:
-> >>> -             lrck_period =3D params_physical_width(params) * slots;
-> >>> +             lrck_period =3D slot_width * slots;
-> >>>               break;
-> >>>
-> >>>       case SND_SOC_DAIFMT_I2S:
-> >>> -             lrck_period =3D params_physical_width(params);
-> >>> +             lrck_period =3D slot_width;
-> >>>               break;
-> >>
-> >> Aren't I2S, LEFT_J and RIGHT_J pretty much the same in terms of lrclk
-> >> rate/period? the only thing that can change is the polarity, no?
-> >>
-> >> Not sure why it's handled differently here?
-> >
-> > I just had a look at the User Manual for H3 and H6 and I didn't find
-> > any reason why LEFT_J and RIGHT_J should be computed in a different
-> > way as I2S.
->
-> Yes, and the manual explicitly groups LEFT_J and RIGHT_J with I2S when
-> describing this field:
->
->    PCM Mode: Number of BCLKs within (Left + Right) channel width.
->    I2S/Left-Justified/Right-Justified Mode: Number of BCLKs within each
-> individual channel width(Left or Right)
->
-> So I agree that the code is wrong here.
+Thanks.
 
-Thanks, I will send a fix in the v10.
+> One note though. AFAIU the global variables are always being used in the
+> modules that include the corresponding header. Otherwise we might have an extra
+> warning(s). I believe you have compiled with W=1 to exclude other cases.
 
-Regards,
-Clement
+Yes, I unconditionally define the two new variables. gcc doesn't warn
+about them being unused, since they are referenced from inside a
 
->
-> Regards,
-> Samuel
->
-> > Also the commit introducing this doesn't mention it.
-> > 7ae7834ec446 ("ASoC: sun4i-i2s: Add support for DSP formats")
-> >
-> > I can't test it with my board but if nobody complains about it, I will
-> > introduce a fix for this in the next version and change this also for
-> > H6.
-> >
-> > Thanks for your review,
-> > Clement
-> >
->
+  if (0) {}
+
+block. And when those references are the only ones, gcc is smart enough
+to elide the static variables completely, so they don't even take up
+space in .data (or .init.data) - you can verify by running nm on
+test_printf.o and test_bitmap.o - the former has 'seed' and 'rnd_state'
+symbols, the latter does not.
+
+I did it that way to reduce the need for explicit preprocessor
+conditionals inside C functions.
+
+Rasmus
