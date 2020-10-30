@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2341B2A03FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCC22A03FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726318AbgJ3LUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
+        id S1726423AbgJ3LVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgJ3LUq (ORCPT
+        with ESMTP id S1725993AbgJ3LVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:20:46 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8041EC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:20:46 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id m188so4822374ybf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:20:46 -0700 (PDT)
+        Fri, 30 Oct 2020 07:21:11 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6384BC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:21:11 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id k10so4703463wrw.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:21:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=G9dXGMHL3LoWEWUdy1Ms+BhIgQ35oL2d5aGD3k8A1UE=;
-        b=HqGvZhBVNP/Aty6lRkxtyeTfSpOJnW/80pgI0PLU4TQJYmLSG0M1XSw7w7i6FFlrvi
-         3pIRW5VMXotOtXIRIt2rApfUcO7vyIdMH7GAgiBiIZyLRdQDG5i1TM74aYQLMcYA/ezh
-         HcMWRVV5gcjRQru+OlFfIB3l8TkYUQAED7gMm3sfgHMhgfYEC0clXYhl/tUMerpH6voB
-         6XimbfQZF5pGpP/VwXS9vpeLl1J2MT2KPnp144nKnafF/UF9GwiWkLPyH4XXCBEbv8f5
-         Zeex7cHz/sIUzsLi2EeiP3deNt8t9KwddYNfMuhThMdmDiHR0AYdlHV+SHkPwPJYgpKr
-         R9dQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PY8VY7Lg2r+nNtn/aiXnf3Ry80P2IGhr1b0m3sFi9DQ=;
+        b=EifaV15jGWbv+xrYmi8PHuSMmiSPUIpOec8jdquckPbYszwXuOdaGWCDJ5fa3SMld+
+         p7XY+v9sBhQ2TC69nFqrtW0kTzjUZh7uqP6z/YYMh6kWHO6PGBkLbjJ1C81JkgymScfp
+         GzwfYqu0ycoicLJOHxHwvW03x5ViT6IaGYfGhx/6rpolX9Qjd4CNBV5w0UM1LK3qT8G6
+         9EmDoQgnhMASbEVNr7Sa0aDEN0/Dzp3PXkVYgnx5SB4lARH0jSLoX05QZcJKlWPVlAHJ
+         3buujft3D3dt60h8ts0XscmcLp5jftXxT3b/5+jwwuX36c27xwxlKiYdPNB/UCsP8a+T
+         W5KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=G9dXGMHL3LoWEWUdy1Ms+BhIgQ35oL2d5aGD3k8A1UE=;
-        b=G0e5Pv3kZZGtDEPf2MeRf2etsqRPZUDbbynUnbybkpfG8+nm3zTY2pub2x4XdFZ0Cs
-         ySgvsAUxXnaZ9kl5FeMRaAOSMUOZJqvxEtIE3h5bGLNEiK6uTHtStQBohJNrisHYMGPF
-         2OBRB5FiIGuB1mqpnpk0VE9RpK7tH+MeG07Zy59TiXWObV5bKWXglUZWn5tJVQzQCuas
-         3Rkwo43whJDvvRTPy2tcsz9s9N1IbU6URZL62WPHmfHbmUKSNpwm3kc9q4V2X4OcAwE5
-         sxZEI8CQoPNcdQ6LnaCoJyDhUlNYjF/suTsFD2ZUiSoP9R0V50bwtxkBTgf2m4JFBdfy
-         blBg==
-X-Gm-Message-State: AOAM531KmKOT2faFG958XX7XiuLXpGyYvLhBgYGXp2n375SiPy7HIIjE
-        4DcmJRoptuMHDhr83Cti0HofoClhAPsLmt6m+emFwg==
-X-Google-Smtp-Source: ABdhPJzra1pMG5DWzyNsqxZMtv8L71QZ9N4kNvy1uCXEHLUKRwFRdAqW8KJMoQPn5ok9GmGGT6GuLe6CgauTI6lkDu8=
-X-Received: by 2002:a5b:389:: with SMTP id k9mr2590084ybp.75.1604056845834;
- Fri, 30 Oct 2020 04:20:45 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PY8VY7Lg2r+nNtn/aiXnf3Ry80P2IGhr1b0m3sFi9DQ=;
+        b=fKFk4nbc4zHGNgmo/+LaXCJ1G9H0UELuf/v8GlIiQZ05IwKPoXk+w9GQxuH+WRJce6
+         A5EJe9GOKFYz1XWt+MjCThHLU+KMVlGNqAQ17q8o1Ac0oLZOFvz/Allci8GzGDPXzEDP
+         OdoV2C6I8KNNYg6EjQ052DIN0KrU/9QmytejDZm9dW8h+c3GZ6MAqzHuiVSYkafcoOaJ
+         6kAzEHTFTjKXMVKHe5/zvadAacClfXtdo7WcSPrWqxqCuCX4enVbveFcTU2iLa5cS73p
+         BeFG++OepbFKbXxIQDLKqCeTDiAIBgAVrVjl2d7+Sg7yrDQChKFqO5KVATO9QPkmVCjb
+         +lqQ==
+X-Gm-Message-State: AOAM532ivZke4xCBv9CjRUCdbppRN3U7YRf4GMctqv3n9R37Ksm9jTPH
+        HiZcnAiNMYUYsp4kkW+7LM7HQw==
+X-Google-Smtp-Source: ABdhPJyYoG+Ufe4d6bH2/5AFGxInIECDMe61KRfWD5Evy7c+I7WSrVQJlVzvyO4uOU08BvV1rZtXXw==
+X-Received: by 2002:a5d:4747:: with SMTP id o7mr2544785wrs.423.1604056870033;
+        Fri, 30 Oct 2020 04:21:10 -0700 (PDT)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id d20sm10716237wra.38.2020.10.30.04.21.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 30 Oct 2020 04:21:09 -0700 (PDT)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        georgi.djakov@linaro.org
+Subject: [GIT PULL] interconnect fixes for 5.10
+Date:   Fri, 30 Oct 2020 13:21:10 +0200
+Message-Id: <20201030112110.2362-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201029100546.28686-1-gilad@benyossef.com> <20201029100546.28686-2-gilad@benyossef.com>
- <3a4804a5-5d5c-1216-1503-c241cc24f3c2@gmail.com>
-In-Reply-To: <3a4804a5-5d5c-1216-1503-c241cc24f3c2@gmail.com>
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-Date:   Fri, 30 Oct 2020 13:20:41 +0200
-Message-ID: <CAOtvUMdJxVSFhN4QMNL+eiF6OB2LevThcgDK34M-=JDXCoDXMA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] crypto: add eboiv as a crypto API template
-To:     Milan Broz <gmazyland@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        Ofir Drang <ofir.drang@arm.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello Greg,
 
-On Fri, Oct 30, 2020 at 12:33 PM Milan Broz <gmazyland@gmail.com> wrote:
->
-> On 29/10/2020 11:05, Gilad Ben-Yossef wrote:
-> >
-> > +config CRYPTO_EBOIV
-> > +     tristate "EBOIV support for block encryption"
-> > +     default DM_CRYPT
-> > +     select CRYPTO_CBC
-> > +     help
-> > +       Encrypted byte-offset initialization vector (EBOIV) is an IV
-> > +       generation method that is used in some cases by dm-crypt for
-> > +       supporting the BitLocker volume encryption used by Windows 8
-> > +       and onwards as a backwards compatible version in lieu of XTS
-> > +       support.
-> > +
-> > +       It uses the block encryption key as the symmetric key for a
-> > +       block encryption pass applied to the sector offset of the block=
-.
-> > +       Additional details can be found at
-> > +       https://www.jedec.org/sites/default/files/docs/JESD223C.pdf
->
-> This page is not available. Are you sure this is the proper documentation=
-?
+Here is a pull request with interconnect fixes for 5.10-rc. Please
+take them into char-misc-linus when possible. All patches have been
+in linux-next with no reported issues.
 
-You need to register at the JEDEC web site to get the PDF. The
-registration is free though.
+Thanks,
+Georgi
 
-It's the only standard I am aware of that describe this mode, as
-opposed to a paper.
+The following changes since commit 86d6e5793e0fa3a510cff466894d0d3051fd716e:
 
->
-> I think the only description we used (for dm-crypt) was original Ferguson=
-'s Bitlocker doc:
-> https://download.microsoft.com/download/0/2/3/0238acaf-d3bf-4a6d-b3d6-0a0=
-be4bbb36e/bitlockercipher200608.pdf
+  interconnect: imx: simplify the return expression of imx_icc_unregister (2020-09-21 11:15:02 +0300)
 
+are available in the Git repository at:
 
-Yes, the JEDEC has a reference to that as well, but the white paper
-doesn't actually describe the option without the diffuser.
+  https://git.linaro.org/people/georgi.djakov/linux.git tags/icc-5.10-rc2
 
->
-> IIRC EBOIV was a shortcut I added to dm-crypt because we found no officia=
-l terminology for this IV.
-> And after lunchtime, nobody invented anything better, so it stayed as it =
-is now :-)
+for you to fetch changes up to fce52ad3483281930dc9215a68d69837f219f889:
 
-Well, I still don't have any better name to offer, LOL :-)
+  interconnect: qcom: use icc_sync state for sm8[12]50 (2020-10-27 16:01:22 +0200)
 
-Gilad
+----------------------------------------------------------------
+interconnect fixes for v5.10
 
+This contains one core fix and a few driver fixes.
+- Fix the core to perform also aggregation when setting the initial
+  bandwidth with sync_state.
+- Fixes in some drivers to make sure the correct sequence is used for
+  initialization when we use sync_state.
+- Fix in the sdm845 driver to prevent a board hang that was hit when
+  bandwidth scaling for display and multimedia was enabled.
 
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 
---=20
-Gilad Ben-Yossef
-Chief Coffee Drinker
+----------------------------------------------------------------
+Dmitry Baryshkov (1):
+      interconnect: qcom: use icc_sync state for sm8[12]50
 
-values of =CE=B2 will give rise to dom!
+Georgi Djakov (5):
+      interconnect: qcom: sdm845: Enable keepalive for the MM1 BCM
+      interconnect: Aggregate before setting initial bandwidth
+      interconnect: qcom: sdm845: Init BCMs before creating the nodes
+      interconnect: qcom: sc7180: Init BCMs before creating the nodes
+      interconnect: qcom: Ensure that the floor bandwidth value is enforced
+
+ drivers/interconnect/core.c          | 3 +++
+ drivers/interconnect/qcom/icc-rpmh.c | 7 +++++++
+ drivers/interconnect/qcom/sc7180.c   | 6 +++---
+ drivers/interconnect/qcom/sdm845.c   | 8 ++++----
+ drivers/interconnect/qcom/sm8150.c   | 7 ++++---
+ drivers/interconnect/qcom/sm8250.c   | 7 ++++---
+ 6 files changed, 25 insertions(+), 13 deletions(-)
