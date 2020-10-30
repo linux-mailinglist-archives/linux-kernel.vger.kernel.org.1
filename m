@@ -2,144 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602402A0968
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:18:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 351762A09C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgJ3PSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:18:11 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16533 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgJ3PSK (ORCPT
+        id S1727071AbgJ3P0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:26:53 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:32790 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726957AbgJ3P0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:18:10 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9c2ebd0000>; Fri, 30 Oct 2020 08:18:21 -0700
-Received: from [10.2.173.19] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
- 2020 15:18:09 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        Rik van Riel <riel@surriel.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm/compaction: count pages and stop correctly during page
- isolation.
-Date:   Fri, 30 Oct 2020 11:18:07 -0400
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <7C9FAF14-075D-4E29-B5F5-ADF15E687C3A@nvidia.com>
-In-Reply-To: <16bdfad8-05f9-6ecf-0db6-c2dcf8e60309@suse.cz>
-References: <20201029200435.3386066-1-zi.yan@sent.com>
- <16bdfad8-05f9-6ecf-0db6-c2dcf8e60309@suse.cz>
+        Fri, 30 Oct 2020 11:26:52 -0400
+Received: by mail-oi1-f193.google.com with SMTP id s21so7060797oij.0;
+        Fri, 30 Oct 2020 08:26:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IWy+P3aKBbRZHPdpo7UhZCYAWAA7vOrQ687V0Kfj+d4=;
+        b=rYOOoSBkqstcMNH/nv3ldtrCItPKoNhoxaMHwoao9E5ShWq2swu3aaacaOAvYHB5tw
+         GQkjbKAdvQUmlXSiaTmUW1B1ov18/dcP91FrzYbq3zdunFw9F8tQHy7NeZHFadrt/gsR
+         9kUfuFWPp600gaglSrnr9Pyi/Bz95EvsV027Rga5vSq0Rex6lFLI2qrvPPWH5mDcvg/M
+         7bEIp4/3M32gq3UEKaI2DR9vTwIq9vIhOmzAbL8lZbapf4fZv3M844rVfCKwE/DCd3sm
+         vG/Ki0NgFX3jTGAQFSMrXajDMsxI4DclNQTigEN/k9Gmm18Z9yiVy5r4KEWYMa353KhO
+         ZRWQ==
+X-Gm-Message-State: AOAM533h997EFeBDtUVMfVSpBod5TsW7T5UjjUNOuJZkEGe+WF1nOn3v
+        Ei+YmSJ/dwBeAI9R5QAq7xfnXrnlDw==
+X-Google-Smtp-Source: ABdhPJxny1b0UA2smGz0Vnx/UGlxYxru7MMA1VE6f82QrLATUrGdH2e+mclwmwC7hlceadibHYd78Q==
+X-Received: by 2002:aca:ea42:: with SMTP id i63mr1902640oih.130.1604071119098;
+        Fri, 30 Oct 2020 08:18:39 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h7sm1409124oop.40.2020.10.30.08.18.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 08:18:38 -0700 (PDT)
+Received: (nullmailer pid 3862951 invoked by uid 1000);
+        Fri, 30 Oct 2020 15:18:37 -0000
+Date:   Fri, 30 Oct 2020 10:18:37 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     broonie@kernel.org, vigneshr@ti.com, tudor.ambarus@microchip.com,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
+        simon.k.r.goldschmidt@gmail.com, dinguyen@kernel.org,
+        richard@nod.at, cheol.yong.kim@intel.com, qi-ming.wu@intel.com
+Subject: Re: [PATCH v6 5/6] dt-bindings: spi: Convert cadence-quadspi.txt to
+ cadence-quadspi.yaml
+Message-ID: <20201030151837.GA3854035@bogus>
+References: <20201030053153.5319-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201030053153.5319-6-vadivel.muruganx.ramuthevar@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed;
-        boundary="=_MailMate_12CC4A4F-A68B-42A0-802B-75C263460CC2_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604071101; bh=IZcvHFrEo6j+XKYW2oDy7BzNNWblNOa44181hJqkZ6U=;
-        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
-         References:MIME-Version:Content-Type:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=LO/3QOVvOhkD4eDacszYN71WOrEqnXGsmcscKgrUErVo0wG+YiQjq/kok1ysmBQg6
-         +xYkhNP8WOa3GIYfCJixuimii24psf9Jjqa0TujqJuZ/hRhkW6Nc8fOgDI+530knrX
-         ng5YDc7hovyOpGf/nK7WeSiJTXceNmkVdoKwN3YApwuqIV2VXJuCjMwq6GxlTQIsue
-         IfdIQV8hUTO+aF6fEeDMEWK3eQPQDX9JlNVrYhKtGAXM3ukEIEI9Pszt1k2UOvIVpb
-         kzkL4/QTQZq2TBNkxj2EwWB4GPJybWKXv/6F4e7Gnqa8bnE4MX0CekX0CsC8IZa+U2
-         KIn9L8giNN2Tw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030053153.5319-6-vadivel.muruganx.ramuthevar@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_12CC4A4F-A68B-42A0-802B-75C263460CC2_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Fri, Oct 30, 2020 at 01:31:52PM +0800, Ramuthevar,Vadivel MuruganX wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> 
+> Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
+> remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
+> 
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> ---
+>  .../devicetree/bindings/spi/cadence-quadspi.txt    |  67 ---------
+>  .../devicetree/bindings/spi/cadence-quadspi.yaml   | 149 +++++++++++++++++++++
+>  2 files changed, 149 insertions(+), 67 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.txt
+>  create mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.txt b/Documentation/devicetree/bindings/spi/cadence-quadspi.txt
+> deleted file mode 100644
+> index 945be7d5b236..000000000000
+> --- a/Documentation/devicetree/bindings/spi/cadence-quadspi.txt
+> +++ /dev/null
+> @@ -1,67 +0,0 @@
+> -* Cadence Quad SPI controller
+> -
+> -Required properties:
+> -- compatible : should be one of the following:
+> -	Generic default - "cdns,qspi-nor".
+> -	For TI 66AK2G SoC - "ti,k2g-qspi", "cdns,qspi-nor".
+> -	For TI AM654 SoC  - "ti,am654-ospi", "cdns,qspi-nor".
+> -- reg : Contains two entries, each of which is a tuple consisting of a
+> -	physical address and length. The first entry is the address and
+> -	length of the controller register set. The second entry is the
+> -	address and length of the QSPI Controller data area.
+> -- interrupts : Unit interrupt specifier for the controller interrupt.
+> -- clocks : phandle to the Quad SPI clock.
+> -- cdns,fifo-depth : Size of the data FIFO in words.
+> -- cdns,fifo-width : Bus width of the data FIFO in bytes.
+> -- cdns,trigger-address : 32-bit indirect AHB trigger address.
+> -
+> -Optional properties:
+> -- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
+> -- cdns,rclk-en : Flag to indicate that QSPI return clock is used to latch
+> -  the read data rather than the QSPI clock. Make sure that QSPI return
+> -  clock is populated on the board before using this property.
+> -
+> -Optional subnodes:
+> -Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
+> -custom properties:
+> -- cdns,read-delay : Delay for read capture logic, in clock cycles
+> -- cdns,tshsl-ns : Delay in nanoseconds for the length that the master
+> -                  mode chip select outputs are de-asserted between
+> -		  transactions.
+> -- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being
+> -                  de-activated and the activation of another.
+> -- cdns,tchsh-ns : Delay in nanoseconds between last bit of current
+> -                  transaction and deasserting the device chip select
+> -		  (qspi_n_ss_out).
+> -- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
+> -                  and first bit transfer.
+> -- resets	: Must contain an entry for each entry in reset-names.
+> -		  See ../reset/reset.txt for details.
+> -- reset-names	: Must include either "qspi" and/or "qspi-ocp".
+> -
+> -Example:
+> -
+> -	qspi: spi@ff705000 {
+> -		compatible = "cdns,qspi-nor";
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -		reg = <0xff705000 0x1000>,
+> -		      <0xffa00000 0x1000>;
+> -		interrupts = <0 151 4>;
+> -		clocks = <&qspi_clk>;
+> -		cdns,is-decoded-cs;
+> -		cdns,fifo-depth = <128>;
+> -		cdns,fifo-width = <4>;
+> -		cdns,trigger-address = <0x00000000>;
+> -		resets = <&rst QSPI_RESET>, <&rst QSPI_OCP_RESET>;
+> -		reset-names = "qspi", "qspi-ocp";
+> -
+> -		flash0: n25q00@0 {
+> -			...
+> -			cdns,read-delay = <4>;
+> -			cdns,tshsl-ns = <50>;
+> -			cdns,tsd2d-ns = <50>;
+> -			cdns,tchsh-ns = <4>;
+> -			cdns,tslch-ns = <4>;
+> -		};
+> -	};
+> diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
+> new file mode 100644
+> index 000000000000..ec22b040d804
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
+> @@ -0,0 +1,149 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/cadence-quadspi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Cadence Quad SPI controller
+> +
+> +maintainers:
+> +  - Vadivel Murugan <vadivel.muruganx.ramuthevar@intel.com>
+> +
+> +allOf:
+> +  - $ref: "spi-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
 
-On 30 Oct 2020, at 10:50, Vlastimil Babka wrote:
+You don't need 'oneOf' if there is only one entry...
 
-> On 10/29/20 9:04 PM, Zi Yan wrote:
->> From: Zi Yan <ziy@nvidia.com>
->>
->> In isolate_migratepages_block, when cc->alloc_contig is true, we are
->> able to isolate compound pages, nr_migratepages and nr_isolated did no=
-t
->> count compound pages correctly, causing us to isolate more pages than =
-we
->> thought. Use thp_nr_pages to count pages. Otherwise, we might be trapp=
-ed
->> in too_many_isolated while loop, since the actual isolated pages can g=
-o
->> up to COMPACT_CLUSTER_MAX*512=3D16384, where COMPACT_CLUSTER_MAX is 32=
-,
->> since we stop isolation after cc->nr_migratepages reaches to
->> COMPACT_CLUSTER_MAX.
->
-> I wonder if a better fix would be to adjust the too_many_isolated() che=
-ck so that if we have non-zero cc->nr_migratepages, we bail out from furt=
-her isolation and migrate what we have immediately, instead of looping.
+So you've dropped 'cdns,qspi-nor' alone being valid. Granted, the txt 
+file was fuzzy as to whether or not that was valid. So you have to look 
+at all the dts files and see. I prefer we don't allow that and require a 
+more specific compatible, but if there's a bunch then we should allow 
+for it. The commit message should summarize what you decide.
 
-I just tested your fix and it works too. The difference is that with
-your fix alloc_contig_range will fail quickly without killing the user
-application mlocking THPs in the CMA region (for more context, please
-see my other email to Andrew explaining how to reproduce in userspace),
-whereas my fix will oom the user application and make alloc_contig_range
-successful at the end.
+> +          - enum:
+> +              - ti,k2g-qspi
+> +              - ti,am654-ospi
+> +          - const: cdns,qspi-nor
 
-Anyway, I will add your fix below and send v2:
+> +examples:
+> +  - |
+> +    qspi: spi@ff705000 {
+> +      compatible = "cadence,qspi","cdns,qpsi-nor";
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index ee1f8439369e..8fa11637ccfd 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -817,6 +817,9 @@ isolate_migratepages_block(struct compact_control *cc=
-, unsigned long low_pfn,
-         * delay for some time until fewer pages are isolated
-         */
-        while (unlikely(too_many_isolated(pgdat))) {
-+               /* stop isolation if there are still pages not migrated *=
-/
-+               if (cc->nr_migratepages)
-+                       return 0;
-                /* async migration should just abort */
-                if (cc->mode =3D=3D MIGRATE_ASYNC)
-                        return 0;
+And you missed fixing this.
 
->
-> Because I can also imagine a hypothetical situation where multiple thre=
-ads in parallel cause too_many_isolated() to be true, and will all loop t=
-here forever. The proposed fix should prevent such situation as well, AFA=
-ICT.
-
-Yes. oom01 from ltp tests the multi-threaded situation and my fix works t=
-here too.
-
-
-=E2=80=94
-Best Regards,
-Yan Zi
-
---=_MailMate_12CC4A4F-A68B-42A0-802B-75C263460CC2_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+cLq8PHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqK9D4QAKVpUdtG4B1p2K3qHffqsBxttPCXRVSU1e+N
-9gSoxWs6/Q04FCkTMlOBwn34j9ZspH2pq/WngqKj8P//9UC/8z5WTnL6LU6E4NRY
-btvjWlMA4xMeGgobB7N/1xYSg4Ejqw/m4Wh2sBBUHejZKfsRZBR4QLzAIwoTgqOb
-5my/z7pSkrnczuw2cTCao+qJiJwpUZOXn47p8ymLqw8b70A3NDqh0iksbLM4uXsO
-d+HG7u2P6JyqZIMeMKkFCMKT5ptXKx+cNY77nNUN15kktJ6gbTgSumzqU8fEyyIY
-pnmMnHevwLWZzBX6pxGj9P8zVvqtq0w4FugYg3nDKCpnAKbqSxElshtwjql1fWq3
-2u0w6QbOXIhGK57RlMzrhO3bhHYQ9tahboz/ln/wDqhDOjlrw5sCzg5HyZQAzR7G
-PWPMHhXoCELIXre+LTtvOqpDLaGWBBeF4QjvgAkBBtF+0m4pM1relpGxjOPzcomG
-t+zM25Ga1aTTqXEy/WrEf3SgkjZu14rP43go2W00qXAvGXkwtNF9sFbd7balvjyb
-SreVTDZwjlT+QKh4pT7M9kfyZscPhIta/6HF/ZN5DLqfue1pY7tPm7kkSobZMs2J
-7WtWT8gORb9C1kCsk9nPf2GlpPiyuMuG3hKSPiFD9GHRR9KTg0ly54FNFDSN8REY
-QRose3Fq
-=0VtA
------END PGP SIGNATURE-----
-
---=_MailMate_12CC4A4F-A68B-42A0-802B-75C263460CC2_=--
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      reg = <0xff705000 0x1000>,
+> +            <0xffa00000 0x1000>;
+> +      interrupts = <0 151 4>;
+> +      clocks = <&qspi_clk>;
+> +      cdns,fifo-depth = <128>;
+> +      cdns,fifo-width = <4>;
+> +      cdns,trigger-address = <0x00000000>;
+> +      resets = <&rst 0x1>, <&rst 0x2>;
+> +      reset-names = "qspi", "qspi-ocp";
+> +
+> +      flash@0 {
+> +              compatible = "jedec,spi-nor";
+> +              reg = <0x0>;
+> +              cdns,read-delay = <4>;
+> +              cdns,tshsl-ns = <50>;
+> +              cdns,tsd2d-ns = <50>;
+> +              cdns,tchsh-ns = <4>;
+> +              cdns,tslch-ns = <4>;
+> +     };
+> +
+> +    };
+> +
+> +...
+> -- 
+> 2.11.0
+> 
