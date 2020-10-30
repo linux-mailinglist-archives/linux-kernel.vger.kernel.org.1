@@ -2,68 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3492A02C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F07192A02C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:25:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgJ3KZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:25:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726316AbgJ3KZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:25:13 -0400
-Received: from gaia (unknown [95.145.162.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA8B420825;
-        Fri, 30 Oct 2020 10:25:10 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 10:25:08 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-Cc:     linux-arm-kernel@lists.infradead.org, patches@amperecomputing.com,
-        linux-kernel@vger.kernel.org, Anshuman.Khandual@arm.com,
-        Valentin.Schneider@arm.com, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2] arm64: NUMA: Kconfig: Increase NODES_SHIFT to 4
-Message-ID: <20201030102507.GB23196@gaia>
-References: <20201029203752.1114948-1-vanshikonda@os.amperecomputing.com>
+        id S1726343AbgJ3KZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:25:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7532 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725948AbgJ3KZj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:25:39 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09UA9m60136302;
+        Fri, 30 Oct 2020 06:25:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=BAtE6Ob70yoHPBs9fGXumLJu/pahuZYKYKpQlaPGQ64=;
+ b=l2ifPTg/kS+mEKGybalkN/9dmaPNBtWpmrJrXOvBn6pDa5l9Cp1U09OTlT8Ov4AI3W6w
+ 7ybEaSjyIWQUyQT28jtCrcHNUF356IF6RfECkRDuuWwZnkWFAY9qP2BcPvU0sa/OV00w
+ I5dY3+6EjaZQy22M5PufDk8mQ2lrYAxJNLbq42sudy7pwuCMDooADXzpi0dH06P0N9At
+ N9XbtN0Jam7maRsbLnVdBQVRe5zHUM70XN2dnmgGzxZL3I0tIdr9TEyKyAEt78G5vC/l
+ n95AyuCe06B+7pRotF2SkOMfZj89ZDKhUOO9Mny+ETGA25FUap/Yof+lnCJq6j8paRZQ Hg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34fww7xdbv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 06:25:29 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09UAEu7o159555;
+        Fri, 30 Oct 2020 06:25:29 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34fww7xdb2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 06:25:29 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09UAMet4024766;
+        Fri, 30 Oct 2020 10:25:26 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 34g41xrmm1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 10:25:26 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09UAPOqT28901670
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Oct 2020 10:25:24 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5B4304204F;
+        Fri, 30 Oct 2020 10:25:24 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0922F4205F;
+        Fri, 30 Oct 2020 10:25:24 +0000 (GMT)
+Received: from [9.145.145.233] (unknown [9.145.145.233])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 30 Oct 2020 10:25:23 +0000 (GMT)
+Subject: Re: [PATCH V8] GCOV: Add config to check the preqequisites situation
+To:     gengcixi@gmail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        Cixi Geng <cixi.geng1@unisoc.com>
+References: <20201028131505.482037-1-gengcixi@gmail.com>
+From:   Peter Oberparleiter <oberpar@linux.ibm.com>
+Message-ID: <fb2bbd79-e17a-775e-6f2b-d97acd69b50f@linux.ibm.com>
+Date:   Fri, 30 Oct 2020 11:25:24 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029203752.1114948-1-vanshikonda@os.amperecomputing.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201028131505.482037-1-gengcixi@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-30_01:2020-10-30,2020-10-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1 spamscore=0
+ clxscore=1011 mlxscore=0 priorityscore=1501 phishscore=0 adultscore=0
+ malwarescore=0 mlxlogscore=999 bulkscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010300075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 01:37:52PM -0700, Vanshidhar Konda wrote:
-> The current arm64 default config limits max NUMA nodes available on
-> system to 4 (NODES_SHIFT = 2). Today's arm64 systems can reach or
-> exceed 16 NUMA nodes. To accomodate current hardware and to fit
-> NODES_SHIFT within page flags on arm64, increase NODES_SHIFT to 4.
+On 28.10.2020 14:15, gengcixi@gmail.com wrote:
+> From: Cixi Geng <cixi.geng1@unisoc.com>
 > 
-> Discussion on v1 of the patch:
-> https://lkml.org/lkml/2020/10/20/767
-
-Better use a stable link to refer to the past discussion:
-
-Link: https://lore.kernel.org/r/20201020173409.1266576-1-vanshikonda@os.amperecomputing.com
-
-> Signed-off-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-> ---
->  arch/arm64/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Introduce new configuration option GCOV_PROFILE_PREREQS that can be
+> used to check whether the prerequisites for enabling gcov profiling
+> for specific files and directories are met.
 > 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index f858c352f72a..cffcc677011f 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -982,7 +982,7 @@ config NUMA
->  config NODES_SHIFT
->  	int "Maximum NUMA Nodes (as a power of 2)"
->  	range 1 10
-> -	default "2"
-> +	default "4"
->  	depends on NEED_MULTIPLE_NODES
->  	help
->  	  Specify the maximum number of NUMA Nodes available on the target
+> Only add SERIAL_GCOV for an example.
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+[...]
+
+> +config GCOV_PROFILE_PREREQS
+> +	bool "Profile Kernel for prereqs"
+> +	def_bool y if GCOV_KERNEL && !COMPILE_TEST
+> +	help
+> +	  This options activates profiling for the specified kernel modules.
+> +	  When some modules need Gcov data, enable this config, then configure
+> +	  with gcov on the corresponding modules,The directories or files of
+> +	  these modules will be added profiling flags after kernel compile.
+> +
+>  endmenu
+
+This version still produces a prompt during make oldconfig. You need to
+remove the "bool" line and the "help" lines.
+
+Before sending another version please test it to make sure that it does
+not produce a prompt.
+
+
+-- 
+Peter Oberparleiter
+Linux on Z Development - IBM Germany
