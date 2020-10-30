@@ -2,77 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40DE2A02E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D75D42A02E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgJ3K36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgJ3K36 (ORCPT
+        id S1726445AbgJ3KaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:30:06 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58086 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgJ3KaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:29:58 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBA4C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:29:57 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id n5so6037004ile.7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:29:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=9sx1pWoZJXcLY5Wm9TAUSmY3vOK4DUm68sL/ca16vuM=;
-        b=NR8L81S9+Q2rXA+eNj78mO7XRQt/RQds0XcWiIlxQrVyNS5GfvcsC4N6yEaw/f8ASU
-         s1m7i8Y+7SbD4J7dAmapYnZlltdUG/gVaPWBLa5DciSelzGlDb4qFKHJxhhksIajQ3P1
-         OH23wga6hVxGgb6M9F79k86YLkAf7XIVFvrwyt9Kc8eK7/KC+hcZCMuGZzLBPO4jZG1m
-         XzFwzagCmUmBPdx62fq2AGUwhruZGjTYo6sVz7mgGW+X9iJaETPm1vsTB0wnvj1mig2g
-         MeJ0D+uWfjT8t9XQsPkACY7Mdbu3JT+qtdhKxL8YfQ48DWL0j6q07HPYCE9rNVhbYR9m
-         1W2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=9sx1pWoZJXcLY5Wm9TAUSmY3vOK4DUm68sL/ca16vuM=;
-        b=HJ/6P9NoT1kv8HOvUgY12lz9afJgfjCqOAf7tSjjaY48VkWnCzPXqiUU5lxqMwQneh
-         DVbAhmbTYbYzQiJJTqQ2+/zgZbHOz/leA+HTiKez03NFoWLk6joRpPGqXS+KeM6HGkEk
-         HqUxiQfEFB5WbqcZkNgJDmUiuF4O6HxVTc4hPiTjnSRET8HDAaoZfs4BZsDikzQhcWmL
-         hC6TIY0CI+s3OU6fohgF6+2+z7jknAQvVMsXyuaWbJ0eQLE4SOjFvd1A5sGWuRR27X7T
-         C4eRJjCbfCJNvcV5layIp9wQl+m15mvyZw6lQ38Y7X6OKdqnyXUPPLuMvbPU5wxuQf4Q
-         qbwg==
-X-Gm-Message-State: AOAM531dK83UvF02wiZwGgQ84Y48n2WbII6Es27pJayGsTfwKi1Go+dn
-        zcMXupJoyunPDLj4iqDYN4eoY8yZNdXkwWEMAQ8eEwzOQ0E9mzE9
-X-Google-Smtp-Source: ABdhPJwKPzdHqKZmTe0eTTdzPBkY2P1Ps01r+uZ6c9N+iLdEzFKoIHdfBMck7ydrFn1gCt7CIdg8r7pdE9inLUPmDxw=
-X-Received: by 2002:a92:9ed1:: with SMTP id s78mr1294883ilk.71.1604053796854;
- Fri, 30 Oct 2020 03:29:56 -0700 (PDT)
+        Fri, 30 Oct 2020 06:30:04 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 57E141F45E58
+Subject: Re: [PATCH v2 02/12] soc: mediatek: Add MediaTek SCPSYS power domains
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+References: <20201001160154.3587848-1-enric.balletbo@collabora.com>
+ <20201001160154.3587848-3-enric.balletbo@collabora.com>
+ <CANMq1KDSsfX3r1440qbmWggqbD7pU_iM4S36LUF8rsS2jVGqOg@mail.gmail.com>
+ <ebba9def-e394-c183-dd80-6dc3716a7bd1@collabora.com>
+ <CANMq1KBfKK9-RfMK89hRCGzhqZVqs6+YRdw8o2K+jA+3VN1_gw@mail.gmail.com>
+ <2e6def0a-400c-836f-ef8b-c4fe6ac6c26e@collabora.com>
+ <CANMq1KDJPqiyXJKyeER7rSVbu7VxAcvrcV8rxDLMV+VEyx-Xmg@mail.gmail.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <72dca621-ceb4-72ae-f340-c01474cb5b8d@collabora.com>
+Date:   Fri, 30 Oct 2020 11:29:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 30 Oct 2020 15:59:45 +0530
-Message-ID: <CA+G9fYth+F1TnG6GQNKtrxvChvX9m+nGa8LKFG18WCzsqNJg5w@mail.gmail.com>
-Subject: arc: kernel/entry.S:310: Error: inappropriate arguments for opcode 'and'
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-snps-arc@lists.infradead.org, lkft-triage@lists.linaro.org
-Cc:     Christian Brauner <christian@brauner.io>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANMq1KDJPqiyXJKyeER7rSVbu7VxAcvrcV8rxDLMV+VEyx-Xmg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arc defconfig build failed on linux next 20201030 with gcc-8 and gcc-9.
+Hi Nicolas,
 
-make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=arc
-CROSS_COMPILE=arc-elf32- HOSTCC=gcc CC="sccache arc-elf32-gcc" O=build
-uImage
-#
-../arch/arc/kernel/entry.S: Assembler messages:
-../arch/arc/kernel/entry.S:310: Error: inappropriate arguments for opcode 'and'
-make[3]: *** [../scripts/Makefile.build:364:
-arch/arc/kernel/entry-arcv2.o] Error 1
+On 28/10/20 2:13, Nicolas Boichat wrote:
+> On Wed, Oct 28, 2020 at 12:25 AM Enric Balletbo i Serra
+> <enric.balletbo@collabora.com> wrote:
+>>
+>> Hi Nicolas,
+>>
+>> On 27/10/20 1:19, Nicolas Boichat wrote:
+>>> Hi Enric,
+>>>
+>>> On Mon, Oct 26, 2020 at 11:17 PM Enric Balletbo i Serra
+>>> <enric.balletbo@collabora.com> wrote:
+>>>>
+>>>> Hi Nicolas,
+>>>>
+>>>> Many thanks for looking at this.
+>>>
+>>> Thanks to you ,-)
+>>>
+>>> [snip]
+>>>>>> +       if (id >= scpsys->soc_data->num_domains) {
+>>>>>> +               dev_err_probe(scpsys->dev, -EINVAL, "%pOFn: invalid domain id %d\n", node, id);
+>>>>>> +               return -EINVAL;
+>>>>>> +       }
+>>>>>> +
+>>>>>> +       domain_data = &scpsys->soc_data->domains[id];
+>>>>>> +       if (!domain_data) {
+>>>>>
+>>>>> Is that even possible at all? I mean, even if
+>>>>> scpsys->soc_data->domains is NULL, as long as id != 0, this will no
+>>>>> happen.
+>>>>>
+>>>>
+>>>> I think could happen with a bad DT definition. I.e if for the definition of the
+>>>> MT8173 domains you use a wrong value for the reg property, a value that is not
+>>>> present in the SoC data. It is unlikely if you use the defines but could happen
+>>>> if you hardcore the value. We cannot check this with the DT json-schema.
+>>>
+>>> I wasn't clear in my explanation, and looking further there is more
+>>> that looks wrong.
+>>>
+>>> This expression &scpsys->soc_data->domains[id] is a pointer to element
+>>> "id" of the array domains. So if you convert to integer arithmetic,
+>>> it'll be something like `(long)scpsys->soc_data->domains +
+>>> (sizeof(struct generic_pm_domain *)) * id`. The only way this can be
+>>> NULL is if scpsys->soc_data->domains pointer is NULL, which, actually,
+>>> can't really happen as it's the 5th element of a struct scpsys
+>>> structure `(long)scpsys->soc_data + offset_of(domains, struct scpsys)
+>>> + (sizeof(struct generic_pm_domain *)) * id`.
+>>>
+>>> I think what you mean is either:
+>>> domain_data = &scpsys->soc_data->domains[id];
+>>> if (!*domain_data)
+>>> [but then domain_data type should be `struct generic_pm_domain **`?
+>>
+>> I think you're confusing the field `struct generic_pm_domain *domains[]`from the
+>> `struct scpsys` with `const struct scpsys_domain_data *domains` from `struct
+>> scpsys_soc_data`. My bad they have the same name, I should probably rename the
+>> second one as domain_info or domain_data to avoid that confusion.
+> 
+> Oh, okay, get it, thanks for clarifying, I got myself confused indeed ,-P
+> 
+> But, still, part of my integer arithmetics still holds...
+> 
+> &scpsys->soc_data->domains[id] = (long)scpsys->soc_data->domains +
+> (sizeof(struct generic_pm_domain *)) * id. The only way domain_data
+> can be NULL is if scpsys->soc_data->domains pointer is NULL (it can't
+> be, really, assuming scpsys_soc_data structures are well defined) AND
+> id is 0.
+> 
+> Now, if I understand what you want to check here. If a domain id is
+> not specified in scpsys_domain_data (e.g. if there is a gap in
+> MT8XXX_POWER_DOMAIN_YYY indices and if `id` points at one of those
+> gaps), you'll get an all-zero entry in domain_data. So maybe you can
+> just check that domain_data->sta_mask != 0? Would that be enough? (I
+> expect that sta_mask would always need to be set?)
+> 
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Yes, that would be enough. I'll change for the next version.
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+> But then again, are there ever gaps in MT8XXX_POWER_DOMAIN_YYY indices?
+> 
+
+AFAIK, there is no gaps, but one could make gaps when filling that info.  I
+still think is worth have this check although is "unlikely" to happen due an
+human error :-). I'll maintain for the next version, but I don't really care to
+remove it if all you prefer I remove it.
+
+Thanks,
+  Enric
+
+
+>>
+>>
+>> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h
+>> b/drivers/soc/mediatek/mtk-pm-domains.h
+>> index 7c8efcb3cef2..6ff095db8a27 100644
+>> --- a/drivers/soc/mediatek/mtk-pm-domains.h
+>> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
+>> @@ -56,7 +56,7 @@ struct scpsys_domain_data {
+>>  };
+>>
+>>  struct scpsys_soc_data {
+>> -       const struct scpsys_domain_data *domains;
+>> +       const struct scpsys_domain_data *domain_data;
+>>         int num_domains;
+>>         int pwr_sta_offs;
+>>         int pwr_sta2nd_offs;
+>>
+>> ---
+>>
+>> struct scpsys {
+>>     ...
+>>     const struct scpsys_soc_data *soc_data;
+>>     ...
+>>     struct generic_pm_domain *domains[];
+>> }
+>>
+>>
+>> domain_data = &scpsys->soc_data->domain_data[id];
+>> if (!domain_data)
+>>
+>> Thanks,
+>>   Enric
+>>
+>>
+>>> Does your code compile with warnings enabled?]
+>>> or:
+>>> domain_data = scpsys->soc_data->domains[id];
+>>> if (!domain_data)
+>>> [then the test makes sense]
+>>>
+>>> [snip]
+>>>
