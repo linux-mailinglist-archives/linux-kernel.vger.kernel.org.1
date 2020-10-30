@@ -2,640 +2,447 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6512A00AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4C62A00AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726110AbgJ3JEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:04:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37914 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726061AbgJ3JET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:04:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 17916AF27;
-        Fri, 30 Oct 2020 09:04:13 +0000 (UTC)
-Subject: Re: [PATCH v5 1/1] arm64: dts: Add Mediatek SoC MT8192 and evaluation
- board dts and Makefile
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-To:     Seiya Wang <seiya.wang@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srv_heupstream@mediatek.com
-References: <20201027102652.12806-1-seiya.wang@mediatek.com>
- <20201027102652.12806-2-seiya.wang@mediatek.com>
- <5695b5cb-c57d-f6de-27b7-e9c2de6a088d@gmail.com>
-Message-ID: <c51090c5-46ce-7779-fd6b-df38dc7ba7c1@gmail.com>
-Date:   Fri, 30 Oct 2020 10:04:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726112AbgJ3JFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgJ3JFo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 05:05:44 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F7A5C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:05:44 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 126so6902247lfi.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:05:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wuS5u1doYgwJMrQ1HQaz2hiwPQ/dACD5OsCQyigRClI=;
+        b=h7pf6DdOD7RmWd3oL0OMKqO3VA+HHBjIglyYGHiJrbDITIQrZ+7BxOU3+eFBXamPCG
+         myV/ZOuma7t7c/O3TiEZYHI26M+uyiDZloylZcBu7sMYX3498wCBhv9AE63XwPIC40Qm
+         F3NBmr1gO71vYwXqHA33XaBtWYHC2ca1ct14MQpYJ15itobbxe9A6Luz4h1W3KT9+JcO
+         goBGIl3MSLgCfqcuxfxn45h1m2zd1vVdfMnRpIM8No2h+mycIVHWkMX9Rp6SegRjLIqP
+         QlBbddpowxyvdrsjNlCtanZALX9uOMjawC3F430supnuLtBeptC0gUQbu247TCGiRrde
+         JNPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wuS5u1doYgwJMrQ1HQaz2hiwPQ/dACD5OsCQyigRClI=;
+        b=K1x/plqI502LzzOxKfuu1Z0m7W2V2N0tzIm+r2Y4JP8auLkM0VnV3Pzy7JtxTAqxC6
+         NX3eWZx6JvvLRjtOSmdmHmv3448uT8kqCP8OmCvwG65XV9brVchX0X651uBNHa9mQsDn
+         3psYnRi4Ip1GxB1REMwMsEBOXs3LDcw8zaUOqtCD0gYVNvwFA+kqGJ4Iu6vqT4IJFtqs
+         YdITgPpea6kgFxPQmSAXQE3DvBhoJWXmzVPCrXy5/nuYaUQGK1gXhPk7cVnYYH8ZPry0
+         qOd+0SfnElDRF+cT1pYHanuwWz1yQWWeXmdDUYdzfwikUFjFTpzFGgqZjWiIvfr1ZU8E
+         1LgA==
+X-Gm-Message-State: AOAM533pF+iRpWeb6HfpeOH5kQQblxWKlO2b+yyKzAHuPB/EqX2zOCH4
+        9H165xMCYxwQNH22UcRhqs8qGqk1xuq/lDJzyoCvAQ==
+X-Google-Smtp-Source: ABdhPJyy29DKvlmhSGLrkaffIQCfwSejXh+C1NwBmK26auf6nYDHNgTcUdxbrM+XOi2UCmABu6cU0zzmKdonhvYu018=
+X-Received: by 2002:a19:6a04:: with SMTP id u4mr543814lfu.493.1604048742501;
+ Fri, 30 Oct 2020 02:05:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5695b5cb-c57d-f6de-27b7-e9c2de6a088d@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201028232759.1928479-1-atish.patra@wdc.com> <20201028232759.1928479-3-atish.patra@wdc.com>
+In-Reply-To: <20201028232759.1928479-3-atish.patra@wdc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Fri, 30 Oct 2020 14:35:30 +0530
+Message-ID: <CAAhSdy0pW8AFCDtFkEO_4zjg8Exp+XTb09AjhErdX9u-Jw3OuQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] RISC-V: Initial DTS for Microchip ICICLE board
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>, devicetree@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Padmarao Begari <padmarao.begari@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Cyril.Jean@microchip.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/10/2020 16:50, Matthias Brugger wrote:
-> 
-> 
-> On 27/10/2020 11:26, Seiya Wang wrote:
->> Add basic chip support for Mediatek MT8192
->>
->> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
-> 
-> Pushed to v5.10-next/dts64
-> 
-> Thanks!
-> 
->> ---
->>   arch/arm64/boot/dts/mediatek/Makefile       |   1 +
->>   arch/arm64/boot/dts/mediatek/mt8192-evb.dts |  29 ++
->>   arch/arm64/boot/dts/mediatek/mt8192.dtsi    | 513 ++++++++++++++++++++++++++++
->>   3 files changed, 543 insertions(+)
->>   create mode 100644 arch/arm64/boot/dts/mediatek/mt8192-evb.dts
->>   create mode 100644 arch/arm64/boot/dts/mediatek/mt8192.dtsi
->>
->> diff --git a/arch/arm64/boot/dts/mediatek/Makefile 
->> b/arch/arm64/boot/dts/mediatek/Makefile
->> index 3ee682c266cc..b431ee2d6cac 100644
->> --- a/arch/arm64/boot/dts/mediatek/Makefile
->> +++ b/arch/arm64/boot/dts/mediatek/Makefile
->> @@ -12,4 +12,5 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana-rev7.dtb
->>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-evb.dtb
->>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-evb.dtb
->>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
->> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-evb.dtb
->>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts 
->> b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
->> new file mode 100644
->> index 000000000000..0205837fa698
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
->> @@ -0,0 +1,29 @@
->> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
->> +/*
->> + * Copyright (C) 2020 MediaTek Inc.
->> + * Author: Seiya Wang <seiya.wang@mediatek.com>
->> + */
->> +/dts-v1/;
->> +#include "mt8192.dtsi"
->> +
->> +/ {
->> +    model = "MediaTek MT8192 evaluation board";
->> +    compatible = "mediatek,mt8192-evb", "mediatek,mt8192";
->> +
->> +    aliases {
->> +        serial0 = &uart0;
->> +    };
->> +
->> +    chosen {
->> +        stdout-path = "serial0:921600n8";
->> +    };
->> +
->> +    memory@40000000 {
->> +        device_type = "memory";
->> +        reg = <0 0x40000000 0 0x80000000>;
->> +    };
->> +};
->> +
->> +&uart0 {
->> +    status = "okay";
->> +};
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi 
->> b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
->> new file mode 100644
->> index 000000000000..648f0f269b8b
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
->> @@ -0,0 +1,513 @@
->> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
->> +/*
->> + * Copyright (C) 2020 MediaTek Inc.
->> + * Author: Seiya Wang <seiya.wang@mediatek.com>
->> + */
->> +
->> +/dts-v1/;
->> +#include <dt-bindings/clock/mt8192-clk.h>
+On Thu, Oct 29, 2020 at 4:58 AM Atish Patra <atish.patra@wdc.com> wrote:
+>
+> Add initial DTS for Microchip ICICLE board having only
+> essential devcies (clocks, sdhci, ethernet, serial, etc).
+>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> ---
+>  arch/riscv/boot/dts/Makefile                  |   1 +
+>  arch/riscv/boot/dts/microchip/Makefile        |   2 +
+>  .../microchip/microchip-icicle-kit-a000.dts   | 313 ++++++++++++++++++
 
-AFAIK the clock driver is not upstream.
-Did you tried to compile this at least?
+I suggest we split this DTS into two parts:
+1. SOC (microchip-polarfire.dtsi)
+2. Board (microchip-icicle-kit-a000.dts)
 
-I dropped it for now. If you want to get that in without the clock driver bein 
-accepted first, you will need to fix this patch. And please make sure it 
-compiles against v5.10-rc1
+This will be much cleaner and aligned with what is done
+on other architectures.
+
+>  3 files changed, 316 insertions(+)
+>  create mode 100644 arch/riscv/boot/dts/microchip/Makefile
+>  create mode 100644 arch/riscv/boot/dts/microchip/microchip-icicle-kit-a0=
+00.dts
+>
+> diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
+> index ca1f8cbd78c0..3ea94ea0a18a 100644
+> --- a/arch/riscv/boot/dts/Makefile
+> +++ b/arch/riscv/boot/dts/Makefile
+> @@ -1,5 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  subdir-y +=3D sifive
+>  subdir-y +=3D kendryte
+> +subdir-y +=3D microchip
+>
+>  obj-$(CONFIG_BUILTIN_DTB) :=3D $(addsuffix /, $(subdir-y))
+> diff --git a/arch/riscv/boot/dts/microchip/Makefile b/arch/riscv/boot/dts=
+/microchip/Makefile
+> new file mode 100644
+> index 000000000000..55ad77521304
+> --- /dev/null
+> +++ b/arch/riscv/boot/dts/microchip/Makefile
+> @@ -0,0 +1,2 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +dtb-$(CONFIG_SOC_MICROCHIP_POLARFIRE) +=3D microchip-icicle-kit-a000.dtb
+> diff --git a/arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.dts =
+b/arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.dts
+> new file mode 100644
+> index 000000000000..5848920af55c
+> --- /dev/null
+> +++ b/arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.dts
+> @@ -0,0 +1,313 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/* Copyright (c) 2020 Microchip Technology Inc */
+> +
+> +/dts-v1/;
+> +
+> +/* Clock frequency (in Hz) of the rtcclk */
+> +#define RTCCLK_FREQ            1000000
+> +
+> +/ {
+> +       #address-cells =3D <2>;
+> +       #size-cells =3D <2>;
+> +       model =3D "Microchip PolarFire-SoC";
+> +       compatible =3D "microchip,polarfire-soc";
+> +
+> +       chosen {
+> +               stdout-path =3D &serial0;
+> +       };
+> +
+> +       cpus {
+> +               #address-cells =3D <1>;
+> +               #size-cells =3D <0>;
+> +               timebase-frequency =3D <RTCCLK_FREQ>;
+> +
+> +               cpu@0 {
+> +                       clock-frequency =3D <0>;
+> +                       compatible =3D "sifive,rocket0", "riscv";
+> +                       device_type =3D "cpu";
+> +                       i-cache-block-size =3D <64>;
+> +                       i-cache-sets =3D <128>;
+> +                       i-cache-size =3D <16384>;
+> +                       reg =3D <0>;
+> +                       riscv,isa =3D "rv64imac";
+> +                       status =3D "disabled";
+> +
+> +                       cpu0_intc: interrupt-controller {
+> +                               #interrupt-cells =3D <1>;
+> +                               compatible =3D "riscv,cpu-intc";
+> +                               interrupt-controller;
+> +                       };
+> +               };
+> +
+> +               cpu@1 {
+> +                       clock-frequency =3D <0>;
+> +                       compatible =3D "sifive,rocket0", "riscv";
+> +                       d-cache-block-size =3D <64>;
+> +                       d-cache-sets =3D <64>;
+> +                       d-cache-size =3D <32768>;
+> +                       d-tlb-sets =3D <1>;
+> +                       d-tlb-size =3D <32>;
+> +                       device_type =3D "cpu";
+> +                       i-cache-block-size =3D <64>;
+> +                       i-cache-sets =3D <64>;
+> +                       i-cache-size =3D <32768>;
+> +                       i-tlb-sets =3D <1>;
+> +                       i-tlb-size =3D <32>;
+> +                       mmu-type =3D "riscv,sv39";
+> +                       reg =3D <1>;
+> +                       riscv,isa =3D "rv64imafdc";
+> +                       tlb-split;
+> +                       status =3D "okay";
+> +
+> +                       cpu1_intc: interrupt-controller {
+> +                               #interrupt-cells =3D <1>;
+> +                               compatible =3D "riscv,cpu-intc";
+> +                               interrupt-controller;
+> +                       };
+> +               };
+> +
+> +               cpu@2 {
+> +                       clock-frequency =3D <0>;
+> +                       compatible =3D "sifive,rocket0", "riscv";
+> +                       d-cache-block-size =3D <64>;
+> +                       d-cache-sets =3D <64>;
+> +                       d-cache-size =3D <32768>;
+> +                       d-tlb-sets =3D <1>;
+> +                       d-tlb-size =3D <32>;
+> +                       device_type =3D "cpu";
+> +                       i-cache-block-size =3D <64>;
+> +                       i-cache-sets =3D <64>;
+> +                       i-cache-size =3D <32768>;
+> +                       i-tlb-sets =3D <1>;
+> +                       i-tlb-size =3D <32>;
+> +                       mmu-type =3D "riscv,sv39";
+> +                       reg =3D <2>;
+> +                       riscv,isa =3D "rv64imafdc";
+> +                       tlb-split;
+> +                       status =3D "okay";
+> +
+> +                       cpu2_intc: interrupt-controller {
+> +                               #interrupt-cells =3D <1>;
+> +                               compatible =3D "riscv,cpu-intc";
+> +                               interrupt-controller;
+> +                       };
+> +               };
+> +
+> +               cpu@3 {
+> +                       clock-frequency =3D <0>;
+> +                       compatible =3D "sifive,rocket0", "riscv";
+> +                       d-cache-block-size =3D <64>;
+> +                       d-cache-sets =3D <64>;
+> +                       d-cache-size =3D <32768>;
+> +                       d-tlb-sets =3D <1>;
+> +                       d-tlb-size =3D <32>;
+> +                       device_type =3D "cpu";
+> +                       i-cache-block-size =3D <64>;
+> +                       i-cache-sets =3D <64>;
+> +                       i-cache-size =3D <32768>;
+> +                       i-tlb-sets =3D <1>;
+> +                       i-tlb-size =3D <32>;
+> +                       mmu-type =3D "riscv,sv39";
+> +                       reg =3D <3>;
+> +                       riscv,isa =3D "rv64imafdc";
+> +                       tlb-split;
+> +                       status =3D "okay";
+> +
+> +                       cpu3_intc: interrupt-controller {
+> +                               #interrupt-cells =3D <1>;
+> +                               compatible =3D "riscv,cpu-intc";
+> +                               interrupt-controller;
+> +                       };
+> +               };
+> +
+> +               cpu@4 {
+> +                       clock-frequency =3D <0>;
+> +                       compatible =3D "sifive,rocket0", "riscv";
+> +                       d-cache-block-size =3D <64>;
+> +                       d-cache-sets =3D <64>;
+> +                       d-cache-size =3D <32768>;
+> +                       d-tlb-sets =3D <1>;
+> +                       d-tlb-size =3D <32>;
+> +                       device_type =3D "cpu";
+> +                       i-cache-block-size =3D <64>;
+> +                       i-cache-sets =3D <64>;
+> +                       i-cache-size =3D <32768>;
+> +                       i-tlb-sets =3D <1>;
+> +                       i-tlb-size =3D <32>;
+> +                       mmu-type =3D "riscv,sv39";
+> +                       reg =3D <4>;
+> +                       riscv,isa =3D "rv64imafdc";
+> +                       tlb-split;
+> +                       status =3D "okay";
+> +                       cpu4_intc: interrupt-controller {
+> +                               #interrupt-cells =3D <1>;
+> +                               compatible =3D "riscv,cpu-intc";
+> +                               interrupt-controller;
+> +                       };
+> +               };
+> +       };
+> +
+> +       memory@80000000 {
+> +               device_type =3D "memory";
+> +               reg =3D <0x0 0x80000000 0x0 0x40000000>;
+> +               clocks =3D <&clkcfg 26>;
+> +       };
+> +
+> +       soc {
+> +               #address-cells =3D <2>;
+> +               #size-cells =3D <2>;
+> +               compatible =3D "simple-bus";
+> +               ranges;
+> +
+> +               cache-controller@2010000 {
+> +                       compatible =3D "sifive,fu540-c000-ccache", "cache=
+";
+> +                       cache-block-size =3D <64>;
+> +                       cache-level =3D <2>;
+> +                       cache-sets =3D <1024>;
+> +                       cache-size =3D <2097152>;
+> +                       cache-unified;
+> +                       interrupt-parent =3D <&plic>;
+> +                       interrupts =3D <1 2 3>;
+> +                       reg =3D <0x0 0x2010000 0x0 0x1000>;
+> +               };
+> +
+> +               clint@2000000 {
+> +                       compatible =3D "riscv,clint0";
+> +                       reg =3D <0x0 0x2000000 0x0 0xC000>;
+> +                       interrupts-extended =3D <&cpu0_intc 3 &cpu0_intc =
+7
+> +                                               &cpu1_intc 3 &cpu1_intc 7
+> +                                               &cpu2_intc 3 &cpu2_intc 7
+> +                                               &cpu3_intc 3 &cpu3_intc 7
+> +                                               &cpu4_intc 3 &cpu4_intc 7=
+>;
+> +               };
+> +
+> +               plic: interrupt-controller@c000000 {
+> +                       #interrupt-cells =3D <1>;
+> +                       compatible =3D "sifive,plic-1.0.0";
+> +                       reg =3D <0x0 0xc000000 0x0 0x4000000>;
+> +                       riscv,ndev =3D <53>;
+> +                       interrupt-controller;
+> +                       interrupts-extended =3D <&cpu0_intc 11
+> +                                       &cpu1_intc 11 &cpu1_intc 9
+> +                                       &cpu2_intc 11 &cpu2_intc 9
+> +                                       &cpu3_intc 11 &cpu3_intc 9
+> +                                       &cpu4_intc 11 &cpu4_intc 9>;
+> +               };
+> +
+> +               dma@3000000 {
+> +                       compatible =3D "sifive,fu540-c000-pdma";
+> +                       reg =3D <0x0 0x3000000 0x0 0x8000>;
+> +                       interrupt-parent =3D <&plic>;
+> +                       interrupts =3D <23 24 25 26 27 28 29 30>;
+> +                       #dma-cells =3D <1>;
+> +               };
+> +
+> +               refclk: refclk {
+> +                       compatible =3D "fixed-clock";
+> +                       #clock-cells =3D <0>;
+> +                       clock-frequency =3D <600000000>;
+> +                       clock-output-names =3D "msspllclk";
+> +               };
+> +
+> +               clkcfg: clkcfg@20002000 {
+> +                       compatible =3D "microchip,pfsoc-clkcfg";
+> +                       reg =3D <0x0 0x20002000 0x0 0x1000>;
+> +                       reg-names =3D "mss_sysreg";
+> +                       clocks =3D <&refclk>;
+> +                       #clock-cells =3D <1>;
+> +                       clock-output-names =3D "cpuclk", "axiclk", "ahbcl=
+k", "ENVMclk", "MAC0clk", "MAC1clk", "MMCclk", "TIMERclk", "MMUART0clk", "M=
+MUART1clk", "MMUART2clk", "MMUART3clk", "MMUART4clk", "SPI0clk", "SPI1clk",=
+ "I2C0clk", "I2C1clk", "CAN0clk", "CAN1clk", "USBclk", "RESERVED", "RTCclk"=
+, "QSPIclk", "GPIO0clk", "GPIO1clk", "GPIO2clk", "DDRCclk", "FIC0clk", "FIC=
+1clk", "FIC2clk", "FIC3clk", "ATHENAclk", "CFMclk";
+> +               };
+> +
+> +               serial0: serial@20000000 {
+> +                       compatible =3D "ns16550a";
+> +                       reg =3D <0x0 0x20000000 0x0 0x400>;
+> +                       reg-io-width =3D <4>;
+> +                       reg-shift =3D <2>;
+> +                       interrupt-parent =3D <&plic>;
+> +                       interrupts =3D <90>;
+> +                       current-speed =3D <115200>;
+> +                       clocks =3D <&clkcfg 8>;
+> +                       status =3D "okay";
+> +               };
+> +
+> +               serial1: serial@20100000 {
+> +                       compatible =3D "ns16550a";
+> +                       reg =3D <0x0 0x20100000 0x0 0x400>;
+> +                       reg-io-width =3D <4>;
+> +                       reg-shift =3D <2>;
+> +                       interrupt-parent =3D <&plic>;
+> +                       interrupts =3D <91>;
+> +                       current-speed =3D <115200>;
+> +                       clocks =3D <&clkcfg 9>;
+> +                       status =3D "okay";
+> +               };
+> +
+> +               serial2: serial@20102000 {
+> +                       compatible =3D "ns16550a";
+> +                       reg =3D <0x0 0x20102000 0x0 0x400>;
+> +                       reg-io-width =3D <4>;
+> +                       reg-shift =3D <2>;
+> +                       interrupt-parent =3D <&plic>;
+> +                       interrupts =3D <92>;
+> +                       current-speed =3D <115200>;
+> +                       clocks =3D <&clkcfg 10>;
+> +                       status =3D "okay";
+> +               };
+> +
+> +               serial3: serial@20104000 {
+> +                       compatible =3D "ns16550a";
+> +                       reg =3D <0x0 0x20104000 0x0 0x400>;
+> +                       reg-io-width =3D <4>;
+> +                       reg-shift =3D <2>;
+> +                       interrupt-parent =3D <&plic>;
+> +                       interrupts =3D <93>;
+> +                       current-speed =3D <115200>;
+> +                       clocks =3D <&clkcfg 11>;
+> +                       status =3D "okay";
+> +               };
+> +
+> +               sdcard: sdhc@20008000 {
+> +                       compatible =3D "cdns,sd4hc";
+> +                       reg =3D <0x0 0x20008000 0x0 0x1000>;
+> +                       interrupt-parent =3D <&plic>;
+> +                       interrupts =3D <88>;
+> +                       pinctrl-names =3D "default";
+> +                       clocks =3D <&clkcfg 6>;
+> +                       bus-width =3D <4>;
+> +                       disable-wp;
+> +                       no-1-8-v;
+> +                       cap-mmc-highspeed;
+> +                       cap-sd-highspeed;
+> +                       card-detect-delay =3D <200>;
+> +                       sd-uhs-sdr12;
+> +                       sd-uhs-sdr25;
+> +                       sd-uhs-sdr50;
+> +                       sd-uhs-sdr104;
+> +                       max-frequency =3D <200000000>;
+> +                       status =3D "okay";
+> +               };
+> +
+> +               emac1: ethernet@20112000 {
+> +                       compatible =3D "cdns,macb";
+> +                       reg =3D <0x0 0x20112000 0x0 0x2000>;
+> +                       interrupt-parent =3D <&plic>;
+> +                       interrupts =3D <70 71 72 73>;
+> +                       mac-address =3D [56 34 12 00 FC 00];
+> +                       phy-mode =3D "sgmii";
+> +                       clocks =3D <&clkcfg 5>, <&clkcfg 2>;
+> +                       clock-names =3D "pclk", "hclk";
+> +                       #address-cells =3D <1>;
+> +                       #size-cells =3D <0>;
+> +                       phy1: ethernet-phy@9 {
+> +                               reg =3D <9>;
+> +                               ti,fifo-depth =3D <0x01>;
+> +                       };
+> +               };
+> +
+> +               uio_axi_lsram@2030000000 {
+> +                       compatible =3D "generic-uio";
+> +                       reg =3D <0x20 0x30000000 0 0x80000000 >;
+> +                       status =3D "okay";
+> +               };
+> +       };
+> +};
+> --
+> 2.25.1
+>
 
 Regards,
-Matthias
-
->> +#include <dt-bindings/interrupt-controller/arm-gic.h>
->> +#include <dt-bindings/interrupt-controller/irq.h>
->> +#include <dt-bindings/pinctrl/mt8192-pinfunc.h>
->> +
->> +/ {
->> +    compatible = "mediatek,mt8192";
->> +    interrupt-parent = <&gic>;
->> +    #address-cells = <2>;
->> +    #size-cells = <2>;
->> +
->> +    clk26m: oscillator0 {
->> +        compatible = "fixed-clock";
->> +        #clock-cells = <0>;
->> +        clock-frequency = <26000000>;
->> +        clock-output-names = "clk26m";
->> +    };
->> +
->> +    clk32k: oscillator1 {
->> +        compatible = "fixed-clock";
->> +        #clock-cells = <0>;
->> +        clock-frequency = <32768>;
->> +        clock-output-names = "clk32k";
->> +    };
->> +
->> +    cpus {
->> +        #address-cells = <1>;
->> +        #size-cells = <0>;
->> +
->> +        cpu0: cpu@0 {
->> +            device_type = "cpu";
->> +            compatible = "arm,cortex-a55";
->> +            reg = <0x000>;
->> +            enable-method = "psci";
->> +            clock-frequency = <1701000000>;
->> +            next-level-cache = <&l2_0>;
->> +            capacity-dmips-mhz = <530>;
->> +        };
->> +
->> +        cpu1: cpu@100 {
->> +            device_type = "cpu";
->> +            compatible = "arm,cortex-a55";
->> +            reg = <0x100>;
->> +            enable-method = "psci";
->> +            clock-frequency = <1701000000>;
->> +            next-level-cache = <&l2_0>;
->> +            capacity-dmips-mhz = <530>;
->> +        };
->> +
->> +        cpu2: cpu@200 {
->> +            device_type = "cpu";
->> +            compatible = "arm,cortex-a55";
->> +            reg = <0x200>;
->> +            enable-method = "psci";
->> +            clock-frequency = <1701000000>;
->> +            next-level-cache = <&l2_0>;
->> +            capacity-dmips-mhz = <530>;
->> +        };
->> +
->> +        cpu3: cpu@300 {
->> +            device_type = "cpu";
->> +            compatible = "arm,cortex-a55";
->> +            reg = <0x300>;
->> +            enable-method = "psci";
->> +            clock-frequency = <1701000000>;
->> +            next-level-cache = <&l2_0>;
->> +            capacity-dmips-mhz = <530>;
->> +        };
->> +
->> +        cpu4: cpu@400 {
->> +            device_type = "cpu";
->> +            compatible = "arm,cortex-a76";
->> +            reg = <0x400>;
->> +            enable-method = "psci";
->> +            clock-frequency = <2171000000>;
->> +            next-level-cache = <&l2_1>;
->> +            capacity-dmips-mhz = <1024>;
->> +        };
->> +
->> +        cpu5: cpu@500 {
->> +            device_type = "cpu";
->> +            compatible = "arm,cortex-a76";
->> +            reg = <0x500>;
->> +            enable-method = "psci";
->> +            clock-frequency = <2171000000>;
->> +            next-level-cache = <&l2_1>;
->> +            capacity-dmips-mhz = <1024>;
->> +        };
->> +
->> +        cpu6: cpu@600 {
->> +            device_type = "cpu";
->> +            compatible = "arm,cortex-a76";
->> +            reg = <0x600>;
->> +            enable-method = "psci";
->> +            clock-frequency = <2171000000>;
->> +            next-level-cache = <&l2_1>;
->> +            capacity-dmips-mhz = <1024>;
->> +        };
->> +
->> +        cpu7: cpu@700 {
->> +            device_type = "cpu";
->> +            compatible = "arm,cortex-a76";
->> +            reg = <0x700>;
->> +            enable-method = "psci";
->> +            clock-frequency = <2171000000>;
->> +            next-level-cache = <&l2_1>;
->> +            capacity-dmips-mhz = <1024>;
->> +        };
->> +
->> +        cpu-map {
->> +            cluster0 {
->> +                core0 {
->> +                    cpu = <&cpu0>;
->> +                };
->> +                core1 {
->> +                    cpu = <&cpu1>;
->> +                };
->> +                core2 {
->> +                    cpu = <&cpu2>;
->> +                };
->> +                core3 {
->> +                    cpu = <&cpu3>;
->> +                };
->> +            };
->> +
->> +            cluster1 {
->> +                core0 {
->> +                    cpu = <&cpu4>;
->> +                };
->> +                core1 {
->> +                    cpu = <&cpu5>;
->> +                };
->> +                core2 {
->> +                    cpu = <&cpu6>;
->> +                };
->> +                core3 {
->> +                    cpu = <&cpu7>;
->> +                };
->> +            };
->> +        };
->> +
->> +        l2_0: l2-cache0 {
->> +            compatible = "cache";
->> +            next-level-cache = <&l3_0>;
->> +        };
->> +
->> +        l2_1: l2-cache1 {
->> +            compatible = "cache";
->> +            next-level-cache = <&l3_0>;
->> +        };
->> +
->> +        l3_0: l3-cache {
->> +            compatible = "cache";
->> +        };
->> +    };
->> +
->> +    pmu-a55 {
->> +        compatible = "arm,cortex-a55-pmu";
->> +        interrupt-parent = <&gic>;
->> +        interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH &ppi_cluster0>;
->> +    };
->> +
->> +    pmu-a76 {
->> +        compatible = "arm,cortex-a76-pmu";
->> +        interrupt-parent = <&gic>;
->> +        interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH &ppi_cluster1>;
->> +    };
->> +
->> +    psci {
->> +        compatible = "arm,psci-1.0";
->> +        method = "smc";
->> +    };
->> +
->> +    timer: timer {
->> +        compatible = "arm,armv8-timer";
->> +        interrupt-parent = <&gic>;
->> +        interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_HIGH 0>,
->> +                 <GIC_PPI 14 IRQ_TYPE_LEVEL_HIGH 0>,
->> +                 <GIC_PPI 11 IRQ_TYPE_LEVEL_HIGH 0>,
->> +                 <GIC_PPI 10 IRQ_TYPE_LEVEL_HIGH 0>;
->> +        clock-frequency = <13000000>;
->> +    };
->> +
->> +    soc {
->> +        #address-cells = <2>;
->> +        #size-cells = <2>;
->> +        compatible = "simple-bus";
->> +        ranges;
->> +
->> +        gic: interrupt-controller@c000000 {
->> +            compatible = "arm,gic-v3";
->> +            #interrupt-cells = <4>;
->> +            #redistributor-regions = <1>;
->> +            interrupt-parent = <&gic>;
->> +            interrupt-controller;
->> +            reg = <0 0x0c000000 0 0x40000>,
->> +                  <0 0x0c040000 0 0x200000>;
->> +            interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH 0>;
->> +
->> +            ppi-partitions {
->> +                ppi_cluster0: interrupt-partition-0 {
->> +                    affinity = <&cpu0 &cpu1 &cpu2 &cpu3>;
->> +                };
->> +                ppi_cluster1: interrupt-partition-1 {
->> +                    affinity = <&cpu4 &cpu5 &cpu6 &cpu7>;
->> +                };
->> +            };
->> +        };
->> +
->> +        pio: pinctrl@10005000 {
->> +            compatible = "mediatek,mt8192-pinctrl";
->> +            reg = <0 0x10005000 0 0x1000>,
->> +                  <0 0x11c20000 0 0x1000>,
->> +                  <0 0x11d10000 0 0x1000>,
->> +                  <0 0x11d30000 0 0x1000>,
->> +                  <0 0x11d40000 0 0x1000>,
->> +                  <0 0x11e20000 0 0x1000>,
->> +                  <0 0x11e70000 0 0x1000>,
->> +                  <0 0x11ea0000 0 0x1000>,
->> +                  <0 0x11f20000 0 0x1000>,
->> +                  <0 0x11f30000 0 0x1000>,
->> +                  <0 0x1000b000 0 0x1000>;
->> +            reg-names = "iocfg0", "iocfg_rm", "iocfg_bm",
->> +                    "iocfg_bl", "iocfg_br", "iocfg_lm",
->> +                    "iocfg_lb", "iocfg_rt", "iocfg_lt",
->> +                    "iocfg_tl", "eint";
->> +            gpio-controller;
->> +            #gpio-cells = <2>;
->> +            gpio-ranges = <&pio 0 0 220>;
->> +            interrupt-controller;
->> +            interrupts = <GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            #interrupt-cells = <2>;
->> +        };
->> +
->> +        systimer: timer@10017000 {
->> +            compatible = "mediatek,mt8192-timer",
->> +                     "mediatek,mt6765-timer";
->> +            reg = <0 0x10017000 0 0x1000>;
->> +            interrupts = <GIC_SPI 233 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&topckgen CLK_TOP_CSW_F26M_D2>;
->> +            clock-names = "clk13m";
->> +        };
->> +
->> +        uart0: serial@11002000 {
->> +            compatible = "mediatek,mt8192-uart",
->> +                     "mediatek,mt6577-uart";
->> +            reg = <0 0x11002000 0 0x1000>;
->> +            interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&clk26m>, <&clk26m>;
->> +            clock-names = "baud", "bus";
->> +            status = "disabled";
->> +        };
->> +
->> +        uart1: serial@11003000 {
->> +            compatible = "mediatek,mt8192-uart",
->> +                     "mediatek,mt6577-uart";
->> +            reg = <0 0x11003000 0 0x1000>;
->> +            interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&clk26m>, <&clk26m>;
->> +            clock-names = "baud", "bus";
->> +            status = "disabled";
->> +        };
->> +
->> +        spi0: spi@1100a000 {
->> +            compatible = "mediatek,mt8192-spi",
->> +                     "mediatek,mt6765-spi";
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            reg = <0 0x1100a000 0 0x1000>;
->> +            interrupts = <GIC_SPI 159 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&topckgen CLK_TOP_MAINPLL_D5_D4>,
->> +                 <&topckgen CLK_TOP_SPI_SEL>,
->> +                 <&infracfg CLK_INFRA_SPI0>;
->> +            clock-names = "parent-clk", "sel-clk", "spi-clk";
->> +            status = "disabled";
->> +        };
->> +
->> +        spi1: spi@11010000 {
->> +            compatible = "mediatek,mt8192-spi",
->> +                     "mediatek,mt6765-spi";
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            reg = <0 0x11010000 0 0x1000>;
->> +            interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&topckgen CLK_TOP_MAINPLL_D5_D4>,
->> +                 <&topckgen CLK_TOP_SPI_SEL>,
->> +                 <&infracfg CLK_INFRA_SPI1>;
->> +            clock-names = "parent-clk", "sel-clk", "spi-clk";
->> +            status = "disabled";
->> +        };
->> +
->> +        spi2: spi@11012000 {
->> +            compatible = "mediatek,mt8192-spi",
->> +                     "mediatek,mt6765-spi";
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            reg = <0 0x11012000 0 0x1000>;
->> +            interrupts = <GIC_SPI 161 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&topckgen CLK_TOP_MAINPLL_D5_D4>,
->> +                 <&topckgen CLK_TOP_SPI_SEL>,
->> +                 <&infracfg CLK_INFRA_SPI2>;
->> +            clock-names = "parent-clk", "sel-clk", "spi-clk";
->> +            status = "disabled";
->> +        };
->> +
->> +        spi3: spi@11013000 {
->> +            compatible = "mediatek,mt8192-spi",
->> +                     "mediatek,mt6765-spi";
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            reg = <0 0x11013000 0 0x1000>;
->> +            interrupts = <GIC_SPI 162 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&topckgen CLK_TOP_MAINPLL_D5_D4>,
->> +                 <&topckgen CLK_TOP_SPI_SEL>,
->> +                 <&infracfg CLK_INFRA_SPI3>;
->> +            clock-names = "parent-clk", "sel-clk", "spi-clk";
->> +            status = "disabled";
->> +        };
->> +
->> +        spi4: spi@11018000 {
->> +            compatible = "mediatek,mt8192-spi",
->> +                     "mediatek,mt6765-spi";
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            reg = <0 0x11018000 0 0x1000>;
->> +            interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&topckgen CLK_TOP_MAINPLL_D5_D4>,
->> +                 <&topckgen CLK_TOP_SPI_SEL>,
->> +                 <&infracfg CLK_INFRA_SPI4>;
->> +            clock-names = "parent-clk", "sel-clk", "spi-clk";
->> +            status = "disabled";
->> +        };
->> +
->> +        spi5: spi@11019000 {
->> +            compatible = "mediatek,mt8192-spi",
->> +                     "mediatek,mt6765-spi";
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            reg = <0 0x11019000 0 0x1000>;
->> +            interrupts = <GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&topckgen CLK_TOP_MAINPLL_D5_D4>,
->> +                 <&topckgen CLK_TOP_SPI_SEL>,
->> +                 <&infracfg CLK_INFRA_SPI5>;
->> +            clock-names = "parent-clk", "sel-clk", "spi-clk";
->> +            status = "disabled";
->> +        };
->> +
->> +        spi6: spi@1101d000 {
->> +            compatible = "mediatek,mt8192-spi",
->> +                     "mediatek,mt6765-spi";
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            reg = <0 0x1101d000 0 0x1000>;
->> +            interrupts = <GIC_SPI 165 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&topckgen CLK_TOP_MAINPLL_D5_D4>,
->> +                 <&topckgen CLK_TOP_SPI_SEL>,
->> +                 <&infracfg CLK_INFRA_SPI6>;
->> +            clock-names = "parent-clk", "sel-clk", "spi-clk";
->> +            status = "disabled";
->> +        };
->> +
->> +        spi7: spi@1101e000 {
->> +            compatible = "mediatek,mt8192-spi",
->> +                     "mediatek,mt6765-spi";
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            reg = <0 0x1101e000 0 0x1000>;
->> +            interrupts = <GIC_SPI 166 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&topckgen CLK_TOP_MAINPLL_D5_D4>,
->> +                 <&topckgen CLK_TOP_SPI_SEL>,
->> +                 <&infracfg CLK_INFRA_SPI7>;
->> +            clock-names = "parent-clk", "sel-clk", "spi-clk";
->> +            status = "disabled";
->> +        };
->> +
->> +        i2c3: i2c3@11cb0000 {
->> +            compatible = "mediatek,mt8192-i2c";
->> +            reg = <0 0x11cb0000 0 0x1000>,
->> +                  <0 0x10217300 0 0x80>;
->> +            interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&clk26m>, <&clk26m>;
->> +            clock-names = "main", "dma";
->> +            clock-div = <1>;
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            status = "disabled";
->> +        };
->> +
->> +        i2c7: i2c7@11d00000 {
->> +            compatible = "mediatek,mt8192-i2c";
->> +            reg = <0 0x11d00000 0 0x1000>,
->> +                  <0 0x10217600 0 0x180>;
->> +            interrupts = <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&clk26m>, <&clk26m>;
->> +            clock-names = "main", "dma";
->> +            clock-div = <1>;
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            status = "disabled";
->> +        };
->> +
->> +        i2c8: i2c8@11d01000 {
->> +            compatible = "mediatek,mt8192-i2c";
->> +            reg = <0 0x11d01000 0 0x1000>,
->> +                  <0 0x10217780 0 0x180>;
->> +            interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&clk26m>, <&clk26m>;
->> +            clock-names = "main", "dma";
->> +            clock-div = <1>;
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            status = "disabled";
->> +        };
->> +
->> +        i2c9: i2c9@11d02000 {
->> +            compatible = "mediatek,mt8192-i2c";
->> +            reg = <0 0x11d02000 0 0x1000>,
->> +                  <0 0x10217900 0 0x180>;
->> +            interrupts = <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&clk26m>, <&clk26m>;
->> +            clock-names = "main", "dma";
->> +            clock-div = <1>;
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            status = "disabled";
->> +        };
->> +
->> +        i2c1: i2c1@11d20000 {
->> +            compatible = "mediatek,mt8192-i2c";
->> +            reg = <0 0x11d20000 0 0x1000>,
->> +                  <0 0x10217100 0 0x80>;
->> +            interrupts = <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&clk26m>, <&clk26m>;
->> +            clock-names = "main", "dma";
->> +            clock-div = <1>;
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            status = "disabled";
->> +        };
->> +
->> +        i2c2: i2c2@11d21000 {
->> +            compatible = "mediatek,mt8192-i2c";
->> +            reg = <0 0x11d21000 0 0x1000>,
->> +                  <0 0x10217180 0 0x180>;
->> +            interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&clk26m>, <&clk26m>;
->> +            clock-names = "main", "dma";
->> +            clock-div = <1>;
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            status = "disabled";
->> +        };
->> +
->> +        i2c4: i2c4@11d22000 {
->> +            compatible = "mediatek,mt8192-i2c";
->> +            reg = <0 0x11d22000 0 0x1000>,
->> +                  <0 0x10217380 0 0x180>;
->> +            interrupts = <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&clk26m>, <&clk26m>;
->> +            clock-names = "main", "dma";
->> +            clock-div = <1>;
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            status = "disabled";
->> +        };
->> +
->> +        i2c5: i2c5@11e00000 {
->> +            compatible = "mediatek,mt8192-i2c";
->> +            reg = <0 0x11e00000 0 0x1000>,
->> +                  <0 0x10217500 0 0x80>;
->> +            interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&clk26m>, <&clk26m>;
->> +            clock-names = "main", "dma";
->> +            clock-div = <1>;
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            status = "disabled";
->> +        };
->> +
->> +        i2c0: i2c0@11f00000 {
->> +            compatible = "mediatek,mt8192-i2c";
->> +            reg = <0 0x11f00000 0 0x1000>,
->> +                  <0 0x10217080 0 0x80>;
->> +            interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&clk26m>, <&clk26m>;
->> +            clock-names = "main", "dma";
->> +            clock-div = <1>;
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            status = "disabled";
->> +        };
->> +
->> +        i2c6: i2c6@11f01000 {
->> +            compatible = "mediatek,mt8192-i2c";
->> +            reg = <0 0x11f01000 0 0x1000>,
->> +                  <0 0x10217580 0 0x80>;
->> +            interrupts = <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH 0>;
->> +            clocks = <&clk26m>, <&clk26m>;
->> +            clock-names = "main", "dma";
->> +            clock-div = <1>;
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            status = "disabled";
->> +        };
->> +    };
->> +};
->>
-
+Anup
