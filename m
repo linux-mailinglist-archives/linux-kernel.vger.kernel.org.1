@@ -2,168 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F682A00F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B10DE2A00FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726210AbgJ3JP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
+        id S1726190AbgJ3JQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725888AbgJ3JPZ (ORCPT
+        with ESMTP id S1725876AbgJ3JQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:15:25 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7732DC0613D7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:15:25 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id v5so2172357wmh.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:15:25 -0700 (PDT)
+        Fri, 30 Oct 2020 05:16:14 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957BBC0613D7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:16:13 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id l28so6916978lfp.10
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:16:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ajiZKDquHTFSl0096pkCVJGMC7tGtJTQuVLJuoBU2x4=;
-        b=PI2jc1onHCGHTFVrOglMW6SqUxii06UoetHncrrfRN7UKVNuoUUMafkCmOCrbDnzS7
-         jd4EeQYASCzCZt0DNZ3dlCHo1pb4Mb1DvEHQNrrI6M9J4m95H/fuuYPptNcbR1pHAbFj
-         sPRW9/fLFAdAe5xhF5kXN0H02zqfTXGuOmrao=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=axY5NcdwlSv1c1KvaEFDb7PC+MtewMuvPnKh1EeG+e0=;
+        b=lFC4zom2i++6RSIOY13b+KTLAOAtrZzNIvyK2kvrVzQ4s1GVbQUAd/1WbMXuXxfmgV
+         ML7UN6s2C5EgCvBYLfRmNumwHSuRgXX4siPmdUBSNiY9sHH5dNXqmXQi37NJBA9o1TFd
+         NM2IxSbisOihdV9l5r3Iy03WFIpW4J/a6LXZMcD+SRovFqq3ZtcodnSSMqyP5TJjz9UA
+         hlW15eYZqoNT/4ae3epHQjVWOLfGfgNByEyP0vvuRD4DPTCBwzd0QrObhJTYqCjjGdLr
+         88GeEJ8oR/CISep0VEVWpxn0xcI7E3q8YiIlcLxRlQ0nHZ7+DTk76lAm3aOMDR1dIHoH
+         qI6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=ajiZKDquHTFSl0096pkCVJGMC7tGtJTQuVLJuoBU2x4=;
-        b=Vp6vZ81UfYtp6jhYX5GKV+atvccwgH9OdoD/urDtALJdgsCLMghVFLNEkk0HOrmqXR
-         XLHsGyHL7ECei4dhYBVvm+CgFJg0q644E/UYvN6S3gqcU5Mjgv1NE+l4ZL8TtKnVD8M9
-         Ew9OJiiGwGIoNeqVSNNU5DqkfZBBbhMdCWWvlqb7wDiYPy5CU34JORc5oohygZeS6Am5
-         REdb6D98yym+s+mCVHEihJI3YjHrQs5JnxQibl8ECvqH4nLa/7inP1h5iE12kNqXcCsw
-         TgghZHZVXUY/XBOoXbPTvqfeBaDp2eyD3z5mYZ80gf99uV+HV3bwYwjLbErEuDEeiMPt
-         gZtw==
-X-Gm-Message-State: AOAM53212AjstpcJT6QXBqY5pi3JojeQUJNp4ToFsro546j0EuDN/d6u
-        MCzRWIhib3tphuOtVK6TdYCOsw==
-X-Google-Smtp-Source: ABdhPJz1w5owVaYO5YAhR8bSJx5mzCGURblvQtjgVDkUzIP6+/UvUQcNl1nNuFPePlumK451ec2/Tg==
-X-Received: by 2002:a1c:7dc5:: with SMTP id y188mr1425897wmc.37.1604049324133;
-        Fri, 30 Oct 2020 02:15:24 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id v14sm10240364wrq.46.2020.10.30.02.15.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 02:15:23 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 10:15:21 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        outreachy-kernel@googlegroups.com,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        melissa.srw@gmail.com, daniel.vetter@ffwll.ch
-Subject: Re: [Outreachy kernel] [PATCH] drm/amdgpu: use
- DEFINE_DEBUGFS_ATTRIBUTE with debugfs_create_file_unsafe()
-Message-ID: <20201030091521.GH401619@phenom.ffwll.local>
-Mail-Followup-To: Greg KH <gregkh@linuxfoundation.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        outreachy-kernel@googlegroups.com,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        melissa.srw@gmail.com
-References: <20201030032245.GA274478@my--box>
- <20201030071120.GA1493629@kroah.com>
- <20201030075716.GA6976@my--box>
- <5a7d8e8d-8db5-ff56-6448-3f1cefc11ef8@amd.com>
- <20201030082518.GB1619669@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=axY5NcdwlSv1c1KvaEFDb7PC+MtewMuvPnKh1EeG+e0=;
+        b=fca6rAZyTDkCeaz/jmNSmlxoagafGCv4XYOoKW7YJ4UubFuxWGK+cPAcuP6yDz8Bm3
+         TLlN1VG0UdgNXRGdijht/XT6aBWA3taiWJmfcBpkhD6fDvgHdL7gooGw/SMYsnNElDYu
+         QFpUHuoErJsTY8USQdZ0UtqEZUCAzMfxttdFFualER+E2PUTQ2MMNdfV9PhGoXyzDDYK
+         WMVM9nPAwMJwFcCghDnRnIwRM3RNA7nZj9mNw14/fqdFohPpnhZJFgTSdl5FAYd6Bk/7
+         daXpYZvgP37Y/wYmS8EJBWA52R5t89V98BOS2aHr2plU9uBEsfKWv5j9cg3Uk3GcKCdI
+         vcTw==
+X-Gm-Message-State: AOAM532I7l2WoUYAVQbc7cb1Agvhf9fWCp5HUZE4CSUWM+T/0wjAiPrd
+        tBKXrp8keA35lFV2m1AIUtNRPcB1XgOE4s0//m/wnA==
+X-Google-Smtp-Source: ABdhPJypeWp27nLOJgUO1aa9262/jxLVAuXOHvXLFSdI3nyOxVzb5QgEBHG38ZbxC8Ow2WPekfJMtmLbLMsM0E+SPo8=
+X-Received: by 2002:a19:2355:: with SMTP id j82mr490414lfj.385.1604049372054;
+ Fri, 30 Oct 2020 02:16:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201030082518.GB1619669@kroah.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+References: <DB4481A8-FD4E-4879-9CD2-275ABAFC09CF@fb.com> <CAKfTPtBiOFXwV9SkZ=YBw16xoS6LSrKVR4sFX6r2hZPZ9_5-+A@mail.gmail.com>
+ <0014CA62-A632-495A-92B0-4B14C8CA193C@fb.com> <20201026142455.GA13495@vingu-book>
+ <465597a2250d69346cff73dd07817794d3e80244.camel@surriel.com>
+ <CAKfTPtCVzass7GM5oj3o3y0ru4HQViWZc2+D-RpFoLvg=__FrA@mail.gmail.com>
+ <334f491d2887a6ed7c5347d5125412849feb8a0a.camel@surriel.com>
+ <CAKfTPtAfKn0jzOpPNR4NUb0zLs02iLQq2_UCDSCEwhTB2LDAig@mail.gmail.com>
+ <20201026120445.6a5dbbbe@imladris.surriel.com> <20201026162029.GA11367@vingu-book>
+ <B23038A4-945F-48E9-8D38-EABE8204F208@fb.com> <CAKfTPtCROc_+rPYm8FGHDNJ-U6h1iZ0nm2+xy+tZ+L1q09h28w@mail.gmail.com>
+ <3cac87ec39253019bfa04a9dfd61ce40ac85cc31.camel@surriel.com>
+In-Reply-To: <3cac87ec39253019bfa04a9dfd61ce40ac85cc31.camel@surriel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 30 Oct 2020 10:16:00 +0100
+Message-ID: <CAKfTPtAspXqAoBTsyC_d1TOr=or3wq6F=2UFFuWBf04f7K7s-g@mail.gmail.com>
+Subject: Re: [PATCH] fix scheduler regression from "sched/fair: Rework load_balance()"
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Chris Mason <clm@fb.com>, Peter Zijlstra <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 09:25:18AM +0100, Greg KH wrote:
-> On Fri, Oct 30, 2020 at 09:00:04AM +0100, Christian König wrote:
-> > Am 30.10.20 um 08:57 schrieb Deepak R Varma:
-> > > On Fri, Oct 30, 2020 at 08:11:20AM +0100, Greg KH wrote:
-> > > > On Fri, Oct 30, 2020 at 08:52:45AM +0530, Deepak R Varma wrote:
-> > > > > Using DEFINE_DEBUGFS_ATTRIBUTE macro with debugfs_create_file_unsafe()
-> > > > > function in place of the debugfs_create_file() function will make the
-> > > > > file operation struct "reset" aware of the file's lifetime. Additional
-> > > > > details here: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flists.archive.carbon60.com%2Flinux%2Fkernel%2F2369498&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cddd7a6ac8164415a639708d87ca97004%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637396414464384011%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=o6GOHvMxNMuOPlC4nhDyURCHBLqfQZhYQq%2BiIMt3D3s%3D&amp;reserved=0
-> > > > > 
-> > > > > Issue reported by Coccinelle script:
-> > > > > scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
-> > > > > 
-> > > > > Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
-> > > > > ---
-> > > > > Please Note: This is a Outreachy project task patch.
-> > > > > 
-> > > > >   drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 20 ++++++++++----------
-> > > > >   1 file changed, 10 insertions(+), 10 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> > > > > index 2d125b8b15ee..f076b1ba7319 100644
-> > > > > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> > > > > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> > > > > @@ -1551,29 +1551,29 @@ static int amdgpu_debugfs_sclk_set(void *data, u64 val)
-> > > > >   	return 0;
-> > > > >   }
-> > > > > -DEFINE_SIMPLE_ATTRIBUTE(fops_ib_preempt, NULL,
-> > > > > -			amdgpu_debugfs_ib_preempt, "%llu\n");
-> > > > > +DEFINE_DEBUGFS_ATTRIBUTE(fops_ib_preempt, NULL,
-> > > > > +			 amdgpu_debugfs_ib_preempt, "%llu\n");
-> > > > Are you sure this is ok?  Do these devices need this additional
-> > > > "protection"?  Do they have the problem that these macros were written
-> > > > for?
-> > > > 
-> > > > Same for the other patches you just submitted here, I think you need to
-> > > > somehow "prove" that these changes are necessary, checkpatch isn't able
-> > > > to determine this all the time.
-> > > Hi Greg,
-> > > Based on my understanding, the current function debugfs_create_file()
-> > > adds an overhead of lifetime managing proxy for such fop structs. This
-> > > should be applicable to these set of drivers as well. Hence I think this
-> > > change will be useful.
-> > 
-> > Well since this is only created once per device instance I don't really care
-> > about this little overhead.
-> > 
-> > But what exactly is debugfs doing or not doing here?
-> 
-> It is trying to save drivers from having debugfs files open that point
-> to memory that can go away at any time.  For graphics devices, I doubt
-> that is the case.
+On Fri, 30 Oct 2020 at 03:11, Rik van Riel <riel@surriel.com> wrote:
+>
+> On Mon, 2020-10-26 at 17:52 +0100, Vincent Guittot wrote:
+> > On Mon, 26 Oct 2020 at 17:48, Chris Mason <clm@fb.com> wrote:
+> > > On 26 Oct 2020, at 12:20, Vincent Guittot wrote:
+> > >
+> > > > what you are suggesting is something like:
+> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > > index 4978964e75e5..3b6fbf33abc2 100644
+> > > > --- a/kernel/sched/fair.c
+> > > > +++ b/kernel/sched/fair.c
+> > > > @@ -9156,7 +9156,8 @@ static inline void
+> > > > calculate_imbalance(struct
+> > > > lb_env *env, struct sd_lb_stats *s
+> > > >          * emptying busiest.
+> > > >          */
+> > > >         if (local->group_type =3D=3D group_has_spare) {
+> > > > -               if (busiest->group_type > group_fully_busy) {
+> > > > +               if ((busiest->group_type > group_fully_busy) &&
+> > > > +                   !(env->sd->flags & SD_SHARE_PKG_RESOURCES)) {
+> > > >                         /*
+> > > >                          * If busiest is overloaded, try to fill
+> > > > spare
+> > > >                          * capacity. This might end up creating
+> > > > spare
+> > > > capacity
+> > > >
+> > > > which also fixes the problem for me and alignes LB with wakeup
+> > > > path
+> > > > regarding the migration
+> > > > in the LLC
+> > >
+> > > Vincent=E2=80=99s patch on top of 5.10-rc1 looks pretty great:
+> > >
+> > > Latency percentiles (usec) runtime 90 (s) (3320 total samples)
+> > >          50.0th: 161 (1687 samples)
+> > >          75.0th: 200 (817 samples)
+> > >          90.0th: 228 (488 samples)
+> > >          95.0th: 254 (164 samples)
+> > >          *99.0th: 314 (131 samples)
+> > >          99.5th: 330 (17 samples)
+> > >          99.9th: 356 (13 samples)
+> > >          min=3D29, max=3D358
+> > >
+> > > Next we test in prod, which probably won=E2=80=99t have answers until
+> > > tomorrow.  Thanks again Vincent!
+> >
+> > Great !
+> >
+> > I'm going to run more tests on my setup as well to make sure that it
+> > doesn't generate unexpected side effects on other kinds of use cases.
+>
+> We have tested the patch with several pretty demanding
+> workloads for the past several days, and it seems to
+> do the trick!
+>
+> With all the current scheduler code from the Linus tree,
+> plus this patch on top, performance is as good as it ever
+> was before with one workload, and slightly better with
+> the other.
 
-So for anything we add/remove we have two-stage cleanup
+Thanks for the test results.
+I still have a few tests to run on my systems but current results look
+good for me too.
 
-1. drm_dev_unregister (or drm_connector_unregisters, those are the only
-two hotunpluggable things we have) unregister all the uapi interfaces.
-This deletes all the sysfs and debugfs files.
 
-2. Once all the references to the underlying object disappear from the
-kernel, we free up the data structure.
-
-Now for chardev and similar uapi, we hold full references for open files.
-But for sysfs and debugfs we assume that those uapi layers will make sure
-that after we deleted the files in step 1 all access through these
-functions are guaranteed to have finished. If that's not the case, then we
-need to rework our refcounting and also refcount the underlying drm
-structure (drm_device or drm_connector) from sysfs/debugfs files.
-
-Now I tried to look at the patch Deepak references, and I'm not really
-clear what changes. Or whether we made a wrong assumption previously about
-what debugfs/sysfs guarantee when we delete the files.
--Daniel
-
-> 
-> thanks,
-> 
-> greg k-h
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+>
+> --
+> All Rights Reversed.
