@@ -2,70 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2332A0D81
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 391F62A0D89
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727240AbgJ3Sfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:35:51 -0400
-Received: from mga18.intel.com ([134.134.136.126]:32235 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726704AbgJ3Sfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:35:50 -0400
-IronPort-SDR: Uc37Kg3lxeULabXK4s/x18We0GtplkapAtaAXzT2sFXKuTFu2rB8pF6tW2H2gkawWAot0MAsNy
- OhwfJFhRevwg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="156423697"
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="156423697"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 11:35:49 -0700
-IronPort-SDR: 6mJ2oVgHdD7BkpEIbV5of800mmDBMZ6eQH4DTFeHWoqBrhBEDAUEmSyB6nLeBlRFDCvKK1vzTi
- QCeeUd4+mEQg==
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="324164975"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 11:35:48 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kYZGc-002RgL-Fd; Fri, 30 Oct 2020 20:36:50 +0200
-Date:   Fri, 30 Oct 2020 20:36:50 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] uuid: Make guid_t completely internal type to the
- kernel
-Message-ID: <20201030183650.GT4077@smile.fi.intel.com>
-References: <20201030182847.78753-1-andriy.shevchenko@linux.intel.com>
- <20201030182847.78753-2-andriy.shevchenko@linux.intel.com>
+        id S1727301AbgJ3ShM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:37:12 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:46935 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726061AbgJ3ShM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 14:37:12 -0400
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 9CF62240013;
+        Fri, 30 Oct 2020 18:37:08 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH v2 0/4] pwm: atmel-tcb: rework device tree binding
+Date:   Fri, 30 Oct 2020 19:36:54 +0100
+Message-Id: <20201030183658.1007395-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030182847.78753-2-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 08:28:47PM +0200, Andy Shevchenko wrote:
-> The guid_t type was defined in UAPI by mistake.
-> Keep it an internal type and leave uuid_le UAPI
-> for it's only user, i.e. MEI.
+Hello,
 
-...
+This was sent as part of a 58 patches series back in 2017. The bindings
+were agreed upon back then:
 
->  static inline int uuid_le_cmp(const guid_t u1, const guid_t u2)
->  {
->  	return memcmp(&u1, &u2, sizeof(guid_t));
+https://lore.kernel.org/linux-arm-kernel/20170607211752.avts3cofvac7ks3q@rob-hp-laptop/
 
-This also has to be changed... (though it compiles).
+There is still only one user of atmel,tcb-pwm in the tree and I still
+think it is worth doing that change now.
 
-I'll send v2.
+The various dependencies are now in v5.9-rc1 so it is ready to be
+applied.
+
+I have another series removing atmel_tclib once this is applied.
+
+Changes in v2:
+ - rework binding commit message
+ - use enum for the pwm node reg values
+
+Alexandre Belloni (4):
+  dt-bindings: microchip: atmel,at91rm9200-tcb: add atmel,tcb-pwm
+  pwm: atmel-tcb: switch to new binding
+  pwm: atmel-tcb: add sama5d2 support
+  ARM: dts: at91: kizbox: switch to new pwm-atmel-tcb binding
+
+ .../devicetree/bindings/pwm/atmel-tcb-pwm.txt |  16 --
+ .../soc/microchip/atmel,at91rm9200-tcb.yaml   |  34 ++-
+ arch/arm/boot/dts/at91-kizbox.dts             |  45 ++-
+ drivers/pwm/Kconfig                           |   3 +-
+ drivers/pwm/pwm-atmel-tcb.c                   | 264 ++++++++++--------
+ 5 files changed, 220 insertions(+), 142 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/pwm/atmel-tcb-pwm.txt
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.26.2
 
