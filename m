@@ -2,204 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2332A0A40
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF6F2A0A47
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727162AbgJ3PtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:49:04 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:40576 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbgJ3PtD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:49:03 -0400
-Received: by mail-ot1-f66.google.com with SMTP id f97so5936435otb.7;
-        Fri, 30 Oct 2020 08:49:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wvhmhQZ595EHWiOyMTrpXxnXiO+S8jr6sziyYhJ7P/c=;
-        b=LOWKlbDSa8uW+G9xdGBehYu2pTnIIf2dpIIVl4rsYMharb0K6iXfddxLxZKjg6Sn7B
-         acvkBPNJmZMTl4U9Gy4B4jiZcVkX+WyFIMrMqx6IDZP09SMDJFKYQLee0tmKxWJyJyJA
-         K1Cew2z3Ze2zcoKPqqktGbw5/K4TFSBv4Pi7Vzcjt1idUEJy0So43NZ8OLGuWuzaFgew
-         PrDGfsPSaNnUxjd7aT7hoRm9COUL62eQb4wNtSR6lnBXC2Pn+VPrbADa4iSYjC9YakH+
-         T7r/84/DEMN96Xm7AHe/cf852UWfAWhuXVTRccWdqy6LwGdL4erihtKaXdrYH5STMKHr
-         y0kg==
-X-Gm-Message-State: AOAM5304T2LScT2qH19Wqx+VHgoSQziHH56+a2U4Fg5juVh07zQKrXcq
-        InvFzqfi6iMtwSGp7nS7x8XQpZI9OQ==
-X-Google-Smtp-Source: ABdhPJzvwtWYSfsAkZsXKE4AQZP7q8bZS1ji8R3rczatLWY+P3gyv4r3JunHxDA269Um0LmsnJSVvw==
-X-Received: by 2002:a9d:8e3:: with SMTP id 90mr2193424otf.309.1604072942991;
-        Fri, 30 Oct 2020 08:49:02 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y5sm1423510ool.30.2020.10.30.08.49.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 08:49:02 -0700 (PDT)
-Received: (nullmailer pid 3904388 invoked by uid 1000);
-        Fri, 30 Oct 2020 15:49:00 -0000
-Date:   Fri, 30 Oct 2020 10:49:00 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Guru Das Srinagesh <gurus@codeaurora.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Joe Perches <joe@perches.com>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Anirudh Ghayal <aghayal@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] dt-bindings: mfd: Add QCOM PM8008 MFD bindings
-Message-ID: <20201030154900.GA3896697@bogus>
-References: <cover.1603402280.git.gurus@codeaurora.org>
- <b224632c03055a92022edb5929f22f26db66bc6d.1603402280.git.gurus@codeaurora.org>
+        id S1727181AbgJ3Ptb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:49:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726178AbgJ3Pta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:49:30 -0400
+Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED397206E9;
+        Fri, 30 Oct 2020 15:49:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604072969;
+        bh=xH/xlh89YROcQ6IGanzE2IUwe7x9ABvjpXSH43dVrJE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WVmWqQwGHaS4dTDzDIyxXEX9rwVMnmELKiEcch4wuAWUu8jAMUxoLWiZkQfs4syTF
+         F84Lc34G02PqLbS7gUO690oFismOg2pygTQWoC8GmN6c7zobjVWdHA3RXEXTJh299w
+         R7/iMgOB2iHrCSL1nCvDdOuXub2rAYRb+K9ubr3M=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Russell King <linux@armlinux.org.uk>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        viro@zeniv.linux.org.uk, linus.walleij@linaro.org, arnd@arndb.de
+Subject: [PATCH 1/9] mm/maccess: fix unaligned copy_{from,to}_kernel_nofault
+Date:   Fri, 30 Oct 2020 16:49:11 +0100
+Message-Id: <20201030154919.1246645-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201030154519.1245983-1-arnd@kernel.org>
+References: <20201030154519.1245983-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b224632c03055a92022edb5929f22f26db66bc6d.1603402280.git.gurus@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 02:35:41PM -0700, Guru Das Srinagesh wrote:
-> Add device tree bindings for the driver for Qualcomm Technology Inc.'s
-> PM8008 MFD PMIC.
-> 
-> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
-> ---
->  .../bindings/mfd/qcom,pm8008-irqchip.yaml          | 102 +++++++++++++++++++++
->  1 file changed, 102 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml b/Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml
-> new file mode 100644
-> index 0000000..31d7b68
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml
-> @@ -0,0 +1,102 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/qcom,pm8008-irqchip.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies, Inc. PM8008 Multi-Function Device PMIC
-> +
-> +maintainers:
-> +  - Guru Das Srinagesh <gurus@codeaurora.org>
-> +
-> +description: |
-> +  PM8008 is a PMIC that contains 7 LDOs, 2 GPIOs, temperature monitoring, and
-> +  can be interfaced over I2C.
+From: Arnd Bergmann <arnd@arndb.de>
 
-No bindings for all those functions? Bindings should be complete.
+On machines such as ARMv5 that trap unaligned accesses, these
+two functions can be slow when each access needs to be emulated,
+or they might not work at all.
 
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: qcom,pm8008-irqchip
+Change them so that each loop is only used when both the src
+and dst pointers are naturally aligned.
 
-Why irqchip?
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ mm/maccess.c | 28 ++++++++++++++++++++++------
+ 1 file changed, 22 insertions(+), 6 deletions(-)
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupt-names:
-> +    items:
-> +      - const: pm8008
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  interrupt-controller: true
-> +
-> +  "#address-cells":
-> +    const: 1
-> +    description: Must be specified if child nodes are specified.
-> +
-> +  "#size-cells":
-> +    const: 0
-> +    description: Must be specified if child nodes are specified.
-> +
-> +  "#interrupt-cells":
-> +    const: 2
-> +    description: |
-> +      The first cell is the IRQ number, the second cell is the IRQ trigger flag.
-> +
-> +patternProperties:
-> +  "^.*@[0-9a-f]+$":
+diff --git a/mm/maccess.c b/mm/maccess.c
+index 3bd70405f2d8..d3f1a1f0b1c1 100644
+--- a/mm/maccess.c
++++ b/mm/maccess.c
+@@ -24,13 +24,21 @@ bool __weak copy_from_kernel_nofault_allowed(const void *unsafe_src,
+ 
+ long copy_from_kernel_nofault(void *dst, const void *src, size_t size)
+ {
++	unsigned long align = 0;
++
++	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
++		align = (unsigned long)dst | (unsigned long)src;
++
+ 	if (!copy_from_kernel_nofault_allowed(src, size))
+ 		return -ERANGE;
+ 
+ 	pagefault_disable();
+-	copy_from_kernel_nofault_loop(dst, src, size, u64, Efault);
+-	copy_from_kernel_nofault_loop(dst, src, size, u32, Efault);
+-	copy_from_kernel_nofault_loop(dst, src, size, u16, Efault);
++	if (!(align & 7))
++		copy_from_kernel_nofault_loop(dst, src, size, u64, Efault);
++	if (!(align & 3))
++		copy_from_kernel_nofault_loop(dst, src, size, u32, Efault);
++	if (!(align & 1))
++		copy_from_kernel_nofault_loop(dst, src, size, u16, Efault);
+ 	copy_from_kernel_nofault_loop(dst, src, size, u8, Efault);
+ 	pagefault_enable();
+ 	return 0;
+@@ -50,10 +58,18 @@ EXPORT_SYMBOL_GPL(copy_from_kernel_nofault);
+ 
+ long copy_to_kernel_nofault(void *dst, const void *src, size_t size)
+ {
++	unsigned long align = 0;
++
++	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
++		align = (unsigned long)dst | (unsigned long)src;
++
+ 	pagefault_disable();
+-	copy_to_kernel_nofault_loop(dst, src, size, u64, Efault);
+-	copy_to_kernel_nofault_loop(dst, src, size, u32, Efault);
+-	copy_to_kernel_nofault_loop(dst, src, size, u16, Efault);
++	if (!(align & 7))
++		copy_to_kernel_nofault_loop(dst, src, size, u64, Efault);
++	if (!(align & 3))
++		copy_to_kernel_nofault_loop(dst, src, size, u32, Efault);
++	if (!(align & 1))
++		copy_to_kernel_nofault_loop(dst, src, size, u16, Efault);
+ 	copy_to_kernel_nofault_loop(dst, src, size, u8, Efault);
+ 	pagefault_enable();
+ 	return 0;
+-- 
+2.27.0
 
-'^.*' can be dropped. That's redundant.
-
-> +    type: object
-> +    # Each peripheral in PM8008 must be represented as a child node with an
-> +    # optional label for referencing as phandle elsewhere. This is optional.
-> +    properties:
-> +      compatible:
-> +        description: The compatible string for the peripheral's driver.
-> +
-> +      reg:
-> +        maxItems: 1
-
-What does the address represent? It's non-standard, so it needs to be 
-defined.
-
-> +
-> +      interrupts:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - compatible
-> +      - reg
-> +      - interrupts
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - "#interrupt-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    qupv3_se13_i2c {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            pm8008i@8 {
-> +                    compatible = "qcom,pm8008-irqchip";
-> +                    reg = <0x8>;
-> +                    #address-cells = <1>;
-> +                    #size-cells = <0>;
-> +                    interrupt-controller;
-> +                    #interrupt-cells = <2>;
-> +
-> +                    interrupt-names = "pm8008";
-> +                    interrupt-parent = <&tlmm>;
-> +                    interrupts = <32 IRQ_TYPE_EDGE_RISING>;
-> +
-> +                    pm8008_tz: qcom,temp-alarm@2400 {
-
-Must be documented.
-
-And don't use vendor prefixes in node names. 
-
-> +                            compatible = "qcom,spmi-temp-alarm";
-> +                            reg = <0x2400>;
-> +                            interrupts = <0x5 IRQ_TYPE_EDGE_BOTH>;
-> +                            #thermal-sensor-cells = <0>;
-> +                    };
-> +            };
-> +    };
-> +
-> +...
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
