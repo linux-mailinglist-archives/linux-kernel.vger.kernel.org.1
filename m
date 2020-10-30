@@ -2,133 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652522A0536
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAB72A0540
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgJ3MS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 08:18:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725975AbgJ3MS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:18:29 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDD7B20724;
-        Fri, 30 Oct 2020 12:18:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604060307;
-        bh=rTUCskofcejaNV/fI9K6l3yz9Z3J3fA43M7XsVa9EUo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gGas1L8ZMREn+b7fSRIEk6jXm0xlmFxr5iZINA1C5AmawbKK6eq2jd+b8hKry4TXb
-         /1PWD4Ws5RFNOghKPyFbFHmEV0YvuQpBvUihVvtRm91dxpvcWHwOHrSU73LR4Yz4xB
-         5/WCOf90GN9y/BKtkzOPMPSsPab/YurqUc1E+YW8=
-Date:   Fri, 30 Oct 2020 13:19:15 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Jungrae Kim <jryu.kim@samsung.com>
-Cc:     HyungJae Im <hj2.im@samsung.com>,
-        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "rydberg@bitmath.org" <rydberg@bitmath.org>
-Subject: Re: Re: (3) [PATCH v2] input: add 2 kind of switch
-Message-ID: <20201030121915.GA2522106@kroah.com>
-References: <20201030114142.GA2409436@kroah.com>
- <20201030104628.GB2395528@kroah.com>
- <20201029135715.GB3470996@kroah.com>
- <20201029132747epcms1p8fae559dff47bf0eebdcc9f94efd9a1bf@epcms1p8>
- <20201030043916epcms1p3b289ca5cd902883a97e7d13ceb5c1efb@epcms1p3>
- <20201030112812epcms1p7d031bb4949b319135e48dfac9409743b@epcms1p7>
- <CGME20201029132747epcms1p8fae559dff47bf0eebdcc9f94efd9a1bf@epcms1p4>
- <20201030115918epcms1p4aaae97a4549a1b3e505709fed3d91ecb@epcms1p4>
+        id S1726596AbgJ3MWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 08:22:09 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11090 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgJ3MUy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 08:20:54 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9c052b0000>; Fri, 30 Oct 2020 05:20:59 -0700
+Received: from [10.2.173.19] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
+ 2020 12:20:53 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Michal Hocko <mhocko@suse.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        Rik van Riel <riel@surriel.com>,
+        <linux-kernel@vger.kernel.org>, Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm/compaction: count pages and stop correctly during page
+ isolation.
+Date:   Fri, 30 Oct 2020 08:20:50 -0400
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <6CAAB1FC-2B41-490B-A67A-93063629C19B@nvidia.com>
+In-Reply-To: <20201030094308.GG1478@dhcp22.suse.cz>
+References: <20201029200435.3386066-1-zi.yan@sent.com>
+ <20201030094308.GG1478@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201030115918epcms1p4aaae97a4549a1b3e505709fed3d91ecb@epcms1p4>
+Content-Type: multipart/signed;
+        boundary="=_MailMate_0E566DE4-2C9D-4382-B78D-D13295DD7141_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604060459; bh=okKEe8Mo/jhn6sWL761J9KIZh3zK8blaHHaM73DFTk4=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=NB8p2m2NBA5Z5WyVwC3X6zg3ik9DK54qnQneOmuyHVnLBgwbg6Ou0IzGCyrIlO6Kw
+         pKtVUEU2Yh/DHgg4mtU6DSrJuJA4aQHZQMle2uavmiKwHrjwb1vPGcTzpE+6Soenjv
+         yssNUwIMkc6D9qlO/bO6yUIqjVv7qVUjxsSWiCxOjSX3HncbGJ806OytxCdT9sseHf
+         nNrUt3uA23rsjC3+pjENuQk2J07DXX7cVfz8IG4q7oBVTZHciI3vouCDKhpdObsJ08
+         qlQstgAZTKHEDfvgDnNX/Cbx21aU8qJffumeTcOy9QmTk1Rf0b82czmuz0UPGWCvtw
+         LzioH8/AD9/+A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 08:59:18PM +0900, Jungrae Kim wrote:
-> > On Fri, Oct 30, 2020 at 08:28:12PM +0900, Jungrae Kim wrote:
-> > > > On Fri, Oct 30, 2020 at 01:39:16PM +0900, HyungJae Im wrote:
-> > > > > Hello, This is Hyungjae Im from Samsung Electronics.
-> > > > > Let me answer your questions inline.
-> > > > > 
-> > > > > >On Thu, Oct 29, 2020 at 10:27:47PM +0900, HyungJae Im wrote:
-> > > > > >> From: "hj2.im" <hj2.im@samsung.com>
-> > > > > >> Date: Thu, 29 Oct 2020 22:11:24 +0900
-> > > > > >> Subject: [PATCH v2] input: add 2 kind of switch
-> > > > > > 
-> > > > > >Why is this in the body of that patch?
-> > > > > 
-> > > > > I read "how to send your first kernel patch", but still making so many mistakes.
-> > > > > I will be cautious with this.
-> > > > >  
-> > > > > >> 
-> > > > > >> We need support to various accessories on the device,
-> > > > > >> some switch does not exist in switch list.
-> > > > > >> So added switch for the following purpose.
-> > > > > >> 
-> > > > > >> SW_COVER_ATTACHED is for the checking the cover
-> > > > > >> attached or not on the device. SW_EXT_PEN_ATTACHED is for the
-> > > > > >> checking the external pen attached or not on the device
-> > > > > > 
-> > > > > >You didn't answer the previous question as to why the existing values do
-> > > > > >not work for you instead of having to create new ones?
-> > > > > 
-> > > > >  I think I should clarify this part the most for this review.
-> > > > >  As you know, new added events both has similar existing events,
-> > > > >  but it has to operate separately.
-> > > > > 
-> > > > >  First, SW_COVER_ATTACHED is similar with SW_MACHINE_COVER.
-> > > > >  We need two events for our cover interaction.
-> > > > >  One is to detect if flip cover is open/closed(covers screen or not),
-> > > > >  and one is for detecting if cover is attached(detect if device is put into cover).
-> > > > >  With the second event, we send event for attachment and start authentication
-> > > > >  distinguishing if it was Samsung made cover.
-> > > > > 
-> > > > >  Second, SW_EXT_PEN_ATTACHED detects if pen is attached externally on tablet models.
-> > > > >  It is different with SW_PEN_INSERTED since this is detecting pens like our NOTE series.
-> > > > >  SW_EXT_PEN_ATTACHED has an unique role to set wacom tuning table differently
-> > > > >  while pen is attached/detached.
-> > > >  
-> > > > All of that needs to go in the changelog text for the individual patches
-> > > > when you submit them.
-> > > >  
-> > > > But as Dmitry pointed out, it doesn't look like either of these drivers
-> > > > are needed at all, just use the gpio-keys driver instead.
-> > > >  
-> > > > thanks,
-> > > >  
-> > > > greg k-h
-> > >  
-> > > Can you accept V1 patch? or need to add a change of device tree?
-> > 
-> > What is "v1" patch?  Do you have a pointer to it on lore.kernel.org?
-> > 
-> > > Please let me know what do I do now. 
-> > 
-> > What is wrong with just using a device tree entry for the gpio-keys
-> > driver instead?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> V1 Patch : https://lore.kernel.org/lkml/20201021031216epcms1p556d8d7d5d763ec47f67cd8cbe3972935@epcms1p5/
+--=_MailMate_0E566DE4-2C9D-4382-B78D-D13295DD7141_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As I said there, that patch is not acceptable for style reasons alone,
-nothing we can do with that unless it is fixed, right?
+On 30 Oct 2020, at 5:43, Michal Hocko wrote:
 
-> I think do not need modify gpio_keys. And I`m not sure device tree need to added to patch.
+> [Cc Vlastimil]
+>
+> On Thu 29-10-20 16:04:35, Zi Yan wrote:
+>> From: Zi Yan <ziy@nvidia.com>
+>>
+>> In isolate_migratepages_block, when cc->alloc_contig is true, we are
+>> able to isolate compound pages, nr_migratepages and nr_isolated did no=
+t
+>> count compound pages correctly, causing us to isolate more pages than =
+we
+>> thought. Use thp_nr_pages to count pages. Otherwise, we might be trapp=
+ed
+>> in too_many_isolated while loop, since the actual isolated pages can g=
+o
+>> up to COMPACT_CLUSTER_MAX*512=3D16384, where COMPACT_CLUSTER_MAX is 32=
+,
+>> since we stop isolation after cc->nr_migratepages reaches to
+>> COMPACT_CLUSTER_MAX.
+>>
+>> In addition, after we fix the issue above, cc->nr_migratepages could
+>> never be equal to COMPACT_CLUSTER_MAX if compound pages are isolated,
+>> thus page isolation could not stop as we intended. Change the isolatio=
+n
+>> stop condition to >=3D.
+>>
+>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>> ---
+>>  mm/compaction.c | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/mm/compaction.c b/mm/compaction.c
+>> index ee1f8439369e..0683a4999581 100644
+>> --- a/mm/compaction.c
+>> +++ b/mm/compaction.c
+>> @@ -1012,8 +1012,8 @@ isolate_migratepages_block(struct compact_contro=
+l *cc, unsigned long low_pfn,
+>>
+>>  isolate_success:
+>>  		list_add(&page->lru, &cc->migratepages);
+>> -		cc->nr_migratepages++;
+>> -		nr_isolated++;
+>> +		cc->nr_migratepages +=3D thp_nr_pages(page);
+>> +		nr_isolated +=3D thp_nr_pages(page);
+>
+> Does thp_nr_pages work for __PageMovable pages?
 
-No, you don't need to modify it, just use it.
+Yes. It is the same as compound_nr() but compiled
+to 1 when THP is not enabled.
 
-So what exactly is the issue anymore?  Just use the gpio-keys driver and
-all should be fine, right?
+=E2=80=94
+Best Regards,
+Yan Zi
 
-thanks,
+--=_MailMate_0E566DE4-2C9D-4382-B78D-D13295DD7141_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
 
-greg k-h
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+cBSIPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKh9wP/0NRK3pX7DdLy120KM7whlo3IG3W7r73oD2E
+eprNTY1zaLojAqBshDaEYwcvviHIWzrxpvIJuHRMIxpcaIiBEZs6sJXT7thbMZ1O
++hzT+ltpTXGXHdpVEs+3cAtdW+tsIGHoDUuXVBvtSXCkmCm2khYFZGMDRHuPltd2
+MXbiCdkshxOjwOl7hc+/M0fbsg8ATrpFF7XnpcAm03X0/oi64apptIB5gc5eU/83
+aYXe3ydZmgQLROPYYzO6LT1PU/TxGTdfVSIZ42B61DEZoLjVpyMxcke0IGpgMLHB
+xF8pnOnIY7DZkBnXxYtdm2eTkf5xpSYIkb59TTJDhjSSRh45cLXMcSmaTpp7B9na
+qCOnrSB8Cy22FjljmKKUhATbo5797Ch22ecrZTy4aleLXGtEl8IQg1vb0gAKJ1iE
+ohPyYOiZ/ZwFr1LQ1hBEkfOmiJArrsKd3D21mWWsv9qPofsrzoAohpsL40ID4dg/
+rZS8+oIFokwimXGEa+61b0ueSpKxRFU7yYvZ1ftZNad8SQ1iSZJ3QghTdGSgFD4e
+PFyYyH5eIxkKHJ8RrF1A7+lH1QZCkP0fa6JyeSOZWwPbSYrE6TO+7Uemhr5cJKtm
+si9oMzUNONI76DP7dWuwIwJ/XN7LBMwIJyUqn2MU2Hrtlh3FVV62eTdVBXcQxvcZ
+iRToEWAg
+=dIpG
+-----END PGP SIGNATURE-----
+
+--=_MailMate_0E566DE4-2C9D-4382-B78D-D13295DD7141_=--
