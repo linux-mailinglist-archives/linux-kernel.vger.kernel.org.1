@@ -2,79 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA6329FA51
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0F829FA32
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:02:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgJ3BIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 21:08:30 -0400
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:38684 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725800AbgJ3BIa (ORCPT
+        id S1726116AbgJ3BCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 21:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgJ3BCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 21:08:30 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 5522E1280F20;
-        Thu, 29 Oct 2020 18:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1604019667;
-        bh=ArhwSw02l2+zYA145GJrqD+OhHeXj1BmGxWm0ojTKrU=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=rpYTzHySxpyWzbtUH+BBoO84zPXHBs6A7L7owNJB6jmCqIs5THk9AqeMrxwOqZDOa
-         lDwm70ioT3TEVJWwvj9OCJ6P22yBeIC0q8tUpTbg5afbFvDbRikwB2hiRgSO8O5SXZ
-         Q1bMwLcOlx1CINqsKM/+2MmNDNy7+4p6PUvhaDJk=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ETx2M70lPmub; Thu, 29 Oct 2020 18:01:07 -0700 (PDT)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 54C7D1280F16;
-        Thu, 29 Oct 2020 18:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1604019667;
-        bh=ArhwSw02l2+zYA145GJrqD+OhHeXj1BmGxWm0ojTKrU=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=rpYTzHySxpyWzbtUH+BBoO84zPXHBs6A7L7owNJB6jmCqIs5THk9AqeMrxwOqZDOa
-         lDwm70ioT3TEVJWwvj9OCJ6P22yBeIC0q8tUpTbg5afbFvDbRikwB2hiRgSO8O5SXZ
-         Q1bMwLcOlx1CINqsKM/+2MmNDNy7+4p6PUvhaDJk=
-Message-ID: <202d1246a14617e4e7a4a7b723dc92191815d134.camel@HansenPartnership.com>
-Subject: Re: [PATCH] z2ram: MODULE_LICENSE update and neatening
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Joe Perches <joe@perches.com>, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        Hannes Reinecke <hare@suse.de>
-Date:   Thu, 29 Oct 2020 18:01:05 -0700
-In-Reply-To: <4945b720d67e9f67b8c8ba02a29c6af1ffa15b08.camel@perches.com>
-References: <20201029145841.144173-1-hch@lst.de>
-         <20201029145841.144173-18-hch@lst.de>
-         <4945b720d67e9f67b8c8ba02a29c6af1ffa15b08.camel@perches.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Thu, 29 Oct 2020 21:02:36 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFE2C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 18:02:27 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id h62so4184827oth.9
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 18:02:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8v0LR09o1q2keQ82icRFIanZ6SYH95u30bGsIWz70wM=;
+        b=voOINdGME5r7SS40N5xJySdvVN2o5El+ut5jOWRTCcL4LahtOQKhNXT6J4urs1LTou
+         EjsoCnUTqjs/mkPjJFz5DatBjwFhZ5PaeFK4ceTrY3kvthmHVw6z2LRxVI5KDuPDX7LY
+         5uz9W+BYYLErVIKqRUcpumgTWYjPLt3JU/sGil+oilksaiRN9TfB5NM1N9U2ymv4cokn
+         FBUleI8FOWmszEzDFwyLTooqujrIaQ09FE+X8gswkFeMKWGVAPUZNaeZ7+aUcsT/9j76
+         6+1+/pJKAjIKf2EjZIRgIQQUliUJddMkg1D3HmHux0/vSzjhR/qbdMcTP/cck0eOGPt9
+         R8xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8v0LR09o1q2keQ82icRFIanZ6SYH95u30bGsIWz70wM=;
+        b=d2gaTu2Hd+AMMyVB2S3b/wpE1iYq58PqmLF+/uobfO6WYXxyVqY2F25KOUgJI5B0GI
+         aUi+vw2R+6P7FgUt7B06NDBMk/2OxvV2pzmiw4q4yCBpf/DpuXvZkmo/RV4dtoGs4RXd
+         /lV8kS6X9ey3/AO6bXfjR1LiiJjGK5xDiZjqSb26o4FUSrg7CksXMbV4mZ+SeaDkZBBO
+         80L5o5/24Ng4OqMq38bgNioWftJ9kh+h90Frzzl7d1xmROfU+2+3J2QfkRlXAKTz6Z54
+         NpVCKKyxiVNOnsAlEn4DhwtHPclJc1WzQql/NRmDtUOuVIkDzDIzNMGATBg56IAGkdlm
+         uHFA==
+X-Gm-Message-State: AOAM531EXRuNUHNE5b6U9fzyeWT9CKP+w5a+REupEgQ+KwJ3xH9O0MLA
+        SBjfBUXPFvs8Jx8BTxEpv/gXeUYCKOsHNqvgpsJQKw==
+X-Google-Smtp-Source: ABdhPJwTerSintYpMU7viWh2jWbkoDcom7lThKWTj8gvIHMRVeH+6XC8I1DuN16tS2twPZYOVGa/qvLBx0z24Bqky0Y=
+X-Received: by 2002:a05:6830:1558:: with SMTP id l24mr5088291otp.352.1604019746421;
+ Thu, 29 Oct 2020 18:02:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200625001039.56174-1-john.stultz@linaro.org>
+ <20200625001039.56174-6-john.stultz@linaro.org> <20200702141825.GA16941@willie-the-truck>
+ <CALAqxLVZ2EhutYjOt7Be1RgnYwHT6-4m6DxA-t1wuxuSy=6yDQ@mail.gmail.com>
+ <20200710075411.GA30011@willie-the-truck> <CALAqxLWadLrxckRHRAR0Q417RnFKquQJbRfO_DLEVH56cykRow@mail.gmail.com>
+ <20200713204133.GA3731@willie-the-truck> <CALAqxLUDVEq4ds2Wbic6uaK3=dELKKO4eGQxjHFFz19GeUFd_w@mail.gmail.com>
+ <20201028135118.GA28554@willie-the-truck> <ae6ba27a-d3c8-8b98-c263-ec779ef35738@arm.com>
+In-Reply-To: <ae6ba27a-d3c8-8b98-c263-ec779ef35738@arm.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Thu, 29 Oct 2020 18:02:14 -0700
+Message-ID: <CALAqxLW13=cvTX3ghskb9uG_YoVh7kvp8UQGUB8mVDGYXHWpVQ@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] firmware: QCOM_SCM: Allow qcom_scm driver to be
+ loadable as a permenent module
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Maulik Shah <mkshah@codeaurora.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Todd Kjos <tkjos@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-10-29 at 17:11 -0700, Joe Perches wrote:
-> This file still does not have an SPDX line.  What should it be?
+On Wed, Oct 28, 2020 at 7:51 AM Robin Murphy <robin.murphy@arm.com> wrote:
+> Hmm, perhaps I'm missing something here, but even if the config options
+> *do* line up, what prevents arm-smmu probing before qcom-scm and
+> dereferencing NULL in qcom_scm_qsmmu500_wait_safe_toggle() before __scm
+> is initialised?
 
-It's old style MIT with a slight variation:
+Oh man, this spun me on a "wait, but how does it all work!" trip. :)
 
-https://fedoraproject.org/wiki/Licensing:MIT#Old_Style
+So in the non-module case, the qcom_scm driver is a subsys_initcall
+and the arm-smmu is a module_platform_driver, so the ordering works
+out.
 
-James
+In the module case, the arm-smmu code isn't loaded until the qcom_scm
+driver finishes probing due to the symbol dependency handling.
 
+To double check this, I added a big msleep at the top of the
+qcom_scm_probe to try to open the race window you described, but the
+arm_smmu_device_probe() doesn't run until after qcom_scm_probe
+completes.
 
+So at least as a built in / built in, or a module/module case its ok.
+And in the case where arm-smmu is a module and qcom_scm is built in
+that's ok too.
 
+Its just the case my patch is trying to prevent is where arm-smmu is
+built in, but qcom_scm is a module that it can't work (due to build
+errors in missing symbols,  or if we tried to use function pointers to
+plug in the qcom_scm - the lack of initialization ordering).
 
+Hopefully that addresses your concern? Let me know if I'm still
+missing something.
+
+thanks
+-john
