@@ -2,312 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529E32A0C79
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBB82A0C7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727279AbgJ3R2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 13:28:41 -0400
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:44638 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726491AbgJ3R2k (ORCPT
+        id S1727305AbgJ3RaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 13:30:02 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58274 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726904AbgJ3RaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 13:28:40 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 18EFF1280E76;
-        Fri, 30 Oct 2020 10:28:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1604078920;
-        bh=lj+KONZ4I+w3XheO3CXxtBVadfPLMATA9vF6xJgMjfM=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=Ak0Ng3HYGt5I0Sd67ks+ZvjR2V7hASUoByMK7qi12U39PM0tFYHRaq762OrtkjLZ+
-         8MYazovDVOvrqLLqMA1UyLAw0C/QYEgr6KJB6j9fh5SUf3KPx9ZUd5y1DUFO8CCAPY
-         jj3n8qvi7cJ7t6VuJzy3phUOswtzOfp2RkrWJaqE=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id B6A-uv44Vqdr; Fri, 30 Oct 2020 10:28:40 -0700 (PDT)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id A8A661280E51;
-        Fri, 30 Oct 2020 10:28:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1604078919;
-        bh=lj+KONZ4I+w3XheO3CXxtBVadfPLMATA9vF6xJgMjfM=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=ZIx9TQgUIh87iYb0ATBMo4WrbY4+oBNhz1izuRSEKz1cnuV8kZKXiEe+99t2dvoSy
-         iFJvSYA8bpAqfqa6GFsQPZKe9EAaK5PPkHTqgWW/ewDtZEUquCBLZgeo7NgTWJ5ac8
-         MgfOEeLy4NkU3yQBV8gVpQ2fk7xZABKpQwCtqHcs=
-Message-ID: <86563422e11735ab7ec6cf0edbd8a7863e46a96a.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 5.10-rc1
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 30 Oct 2020 10:28:38 -0700
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Fri, 30 Oct 2020 13:30:01 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09UHTqWK053560;
+        Fri, 30 Oct 2020 12:29:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604078992;
+        bh=Zmb+rJO51gJljmJKDg9ATgo4QTdbYtTtaS+87OtvIWU=;
+        h=From:To:CC:Subject:Date;
+        b=qlOlKoZ0/c3sDrehhJToCM0xM0Oe11Yy+2HoumRWDNSpyL/xfEH0lJEWWYQP1B0La
+         vDjaCU6SEBe8pLJ/D9Z0FJwkCcWmKSdYfr1CNZEVCDEAQTsj5hZdPIEzor/HLx6gKc
+         NRZcyLsnWo5gLQhk7BYyXpx1iATdyvtu/5O6toRg=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09UHTqRV056282
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 30 Oct 2020 12:29:52 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 30
+ Oct 2020 12:29:51 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 30 Oct 2020 12:29:51 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09UHTpNC046294;
+        Fri, 30 Oct 2020 12:29:51 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <davem@davemloft.net>, <andrew@lunn.ch>, <f.fainelli@gmail.com>,
+        <hkallweit1@gmail.com>, <robh@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH net-next v3 0/4] DP83TD510 Single Pair 10Mbps Ethernet PHY
+Date:   Fri, 30 Oct 2020 12:29:46 -0500
+Message-ID: <20201030172950.12767-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Four driver fixes and one core fix.  The core fix closes a race window
-where we could kick off a second asynchronous scan because the test and
-set of the variable preventing it isn't atomic.
+Hello
 
-The patch is available here:
+The DP83TD510 is an Ethernet PHY supporting single pair of twisted wires. The
+PHY is capable of 10Mbps communication over long distances and exceeds the
+IEEE 802.3cg 10BASE-T1L single-pair Ethernet specification.  The PHY supports
+various voltage level signalling and can be forced to support a specific
+voltage or allowed to perfrom auto negotiation on the voltage level. The
+default for the PHY is auto negotiation but if the PHY is forced to a specific
+voltage then the LP must also support the same voltage.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+Add the 10BASE-T1L linkmodes for ethtool to properly advertise the PHY's
+capability.
 
-The short changelog is:
+Dan
 
-Daniel Wagner (1):
-      scsi: qla2xxx: Return EBUSY on fcport deletion
+Dan Murphy (4):
+  ethtool: Add 10base-T1L link mode entries
+  dt-bindings: net: Add Rx/Tx output configuration for 10base T1L
+  dt-bindings: dp83td510: Add binding for DP83TD510 Ethernet PHY
+  net: phy: dp83td510: Add support for the DP83TD510 Ethernet PHY
 
-Helge Deller (1):
-      scsi: mptfusion: Fix null pointer dereferences in mptscsih_remove()
+ .../devicetree/bindings/net/ethernet-phy.yaml |   5 +
+ .../devicetree/bindings/net/ti,dp83td510.yaml |  62 ++
+ drivers/net/phy/Kconfig                       |   6 +
+ drivers/net/phy/Makefile                      |   1 +
+ drivers/net/phy/dp83td510.c                   | 681 ++++++++++++++++++
+ drivers/net/phy/phy-core.c                    |   4 +-
+ include/uapi/linux/ethtool.h                  |   2 +
+ net/ethtool/common.c                          |   2 +
+ net/ethtool/linkmodes.c                       |   2 +
+ 9 files changed, 764 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/net/ti,dp83td510.yaml
+ create mode 100644 drivers/net/phy/dp83td510.c
 
-John Garry (1):
-      scsi: hisi_sas: Stop using queue #0 always for v2 hw
-
-Ming Lei (1):
-      scsi: core: Don't start concurrent async scan on same host
-
-Tyrel Datwyler (1):
-      scsi: ibmvscsi: Fix potential race after loss of transport
-
-And the diffstat:
-
- drivers/message/fusion/mptscsih.c     | 13 ++++++++-----
- drivers/scsi/hisi_sas/hisi_sas_main.c |  2 +-
- drivers/scsi/ibmvscsi/ibmvscsi.c      | 36 +++++++++++++++++++++++++----------
- drivers/scsi/qla2xxx/qla_nvme.c       |  6 ++++--
- drivers/scsi/scsi_scan.c              |  7 ++++---
- 5 files changed, 43 insertions(+), 21 deletions(-)
-
-With full diff below.
-
-James
-
----
-
-diff --git a/drivers/message/fusion/mptscsih.c b/drivers/message/fusion/mptscsih.c
-index a5ef9faf71c7..e7f0d4ae0f96 100644
---- a/drivers/message/fusion/mptscsih.c
-+++ b/drivers/message/fusion/mptscsih.c
-@@ -1176,8 +1176,10 @@ mptscsih_remove(struct pci_dev *pdev)
- 	MPT_SCSI_HOST		*hd;
- 	int sz1;
- 
--	if((hd = shost_priv(host)) == NULL)
--		return;
-+	if (host == NULL)
-+		hd = NULL;
-+	else
-+		hd = shost_priv(host);
- 
- 	mptscsih_shutdown(pdev);
- 
-@@ -1193,14 +1195,15 @@ mptscsih_remove(struct pci_dev *pdev)
- 	    "Free'd ScsiLookup (%d) memory\n",
- 	    ioc->name, sz1));
- 
--	kfree(hd->info_kbuf);
-+	if (hd)
-+		kfree(hd->info_kbuf);
- 
- 	/* NULL the Scsi_Host pointer
- 	 */
- 	ioc->sh = NULL;
- 
--	scsi_host_put(host);
--
-+	if (host)
-+		scsi_host_put(host);
- 	mpt_detach(pdev);
- 
- }
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
-index 128583dfccf2..c8dd8588f800 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_main.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
-@@ -445,7 +445,7 @@ static int hisi_sas_task_prep(struct sas_task *task,
- 		}
- 	}
- 
--	if (scmd) {
-+	if (scmd && hisi_hba->shost->nr_hw_queues) {
- 		unsigned int dq_index;
- 		u32 blk_tag;
- 
-diff --git a/drivers/scsi/ibmvscsi/ibmvscsi.c b/drivers/scsi/ibmvscsi/ibmvscsi.c
-index b1f3017b6547..29fcc44be2d5 100644
---- a/drivers/scsi/ibmvscsi/ibmvscsi.c
-+++ b/drivers/scsi/ibmvscsi/ibmvscsi.c
-@@ -806,6 +806,22 @@ static void purge_requests(struct ibmvscsi_host_data *hostdata, int error_code)
- 	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
- }
- 
-+/**
-+ * ibmvscsi_set_request_limit - Set the adapter request_limit in response to
-+ * an adapter failure, reset, or SRP Login. Done under host lock to prevent
-+ * race with SCSI command submission.
-+ * @hostdata:	adapter to adjust
-+ * @limit:	new request limit
-+ */
-+static void ibmvscsi_set_request_limit(struct ibmvscsi_host_data *hostdata, int limit)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(hostdata->host->host_lock, flags);
-+	atomic_set(&hostdata->request_limit, limit);
-+	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
-+}
-+
- /**
-  * ibmvscsi_reset_host - Reset the connection to the server
-  * @hostdata:	struct ibmvscsi_host_data to reset
-@@ -813,7 +829,7 @@ static void purge_requests(struct ibmvscsi_host_data *hostdata, int error_code)
- static void ibmvscsi_reset_host(struct ibmvscsi_host_data *hostdata)
- {
- 	scsi_block_requests(hostdata->host);
--	atomic_set(&hostdata->request_limit, 0);
-+	ibmvscsi_set_request_limit(hostdata, 0);
- 
- 	purge_requests(hostdata, DID_ERROR);
- 	hostdata->action = IBMVSCSI_HOST_ACTION_RESET;
-@@ -1146,13 +1162,13 @@ static void login_rsp(struct srp_event_struct *evt_struct)
- 		dev_info(hostdata->dev, "SRP_LOGIN_REJ reason %u\n",
- 			 evt_struct->xfer_iu->srp.login_rej.reason);
- 		/* Login failed.  */
--		atomic_set(&hostdata->request_limit, -1);
-+		ibmvscsi_set_request_limit(hostdata, -1);
- 		return;
- 	default:
- 		dev_err(hostdata->dev, "Invalid login response typecode 0x%02x!\n",
- 			evt_struct->xfer_iu->srp.login_rsp.opcode);
- 		/* Login failed.  */
--		atomic_set(&hostdata->request_limit, -1);
-+		ibmvscsi_set_request_limit(hostdata, -1);
- 		return;
- 	}
- 
-@@ -1163,7 +1179,7 @@ static void login_rsp(struct srp_event_struct *evt_struct)
- 	 * This value is set rather than added to request_limit because
- 	 * request_limit could have been set to -1 by this client.
- 	 */
--	atomic_set(&hostdata->request_limit,
-+	ibmvscsi_set_request_limit(hostdata,
- 		   be32_to_cpu(evt_struct->xfer_iu->srp.login_rsp.req_lim_delta));
- 
- 	/* If we had any pending I/Os, kick them */
-@@ -1195,13 +1211,13 @@ static int send_srp_login(struct ibmvscsi_host_data *hostdata)
- 	login->req_buf_fmt = cpu_to_be16(SRP_BUF_FORMAT_DIRECT |
- 					 SRP_BUF_FORMAT_INDIRECT);
- 
--	spin_lock_irqsave(hostdata->host->host_lock, flags);
- 	/* Start out with a request limit of 0, since this is negotiated in
- 	 * the login request we are just sending and login requests always
- 	 * get sent by the driver regardless of request_limit.
- 	 */
--	atomic_set(&hostdata->request_limit, 0);
-+	ibmvscsi_set_request_limit(hostdata, 0);
- 
-+	spin_lock_irqsave(hostdata->host->host_lock, flags);
- 	rc = ibmvscsi_send_srp_event(evt_struct, hostdata, login_timeout * 2);
- 	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
- 	dev_info(hostdata->dev, "sent SRP login\n");
-@@ -1781,7 +1797,7 @@ static void ibmvscsi_handle_crq(struct viosrp_crq *crq,
- 		return;
- 	case VIOSRP_CRQ_XPORT_EVENT:	/* Hypervisor telling us the connection is closed */
- 		scsi_block_requests(hostdata->host);
--		atomic_set(&hostdata->request_limit, 0);
-+		ibmvscsi_set_request_limit(hostdata, 0);
- 		if (crq->format == 0x06) {
- 			/* We need to re-setup the interpartition connection */
- 			dev_info(hostdata->dev, "Re-enabling adapter!\n");
-@@ -2137,12 +2153,12 @@ static void ibmvscsi_do_work(struct ibmvscsi_host_data *hostdata)
- 	}
- 
- 	hostdata->action = IBMVSCSI_HOST_ACTION_NONE;
-+	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
- 
- 	if (rc) {
--		atomic_set(&hostdata->request_limit, -1);
-+		ibmvscsi_set_request_limit(hostdata, -1);
- 		dev_err(hostdata->dev, "error after %s\n", action);
- 	}
--	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
- 
- 	scsi_unblock_requests(hostdata->host);
- }
-@@ -2226,7 +2242,7 @@ static int ibmvscsi_probe(struct vio_dev *vdev, const struct vio_device_id *id)
- 	init_waitqueue_head(&hostdata->work_wait_q);
- 	hostdata->host = host;
- 	hostdata->dev = dev;
--	atomic_set(&hostdata->request_limit, -1);
-+	ibmvscsi_set_request_limit(hostdata, -1);
- 	hostdata->host->max_sectors = IBMVSCSI_MAX_SECTORS_DEFAULT;
- 
- 	if (map_persist_bufs(hostdata)) {
-diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
-index 1f9005125313..b7a1dc24db38 100644
---- a/drivers/scsi/qla2xxx/qla_nvme.c
-+++ b/drivers/scsi/qla2xxx/qla_nvme.c
-@@ -554,10 +554,12 @@ static int qla_nvme_post_cmd(struct nvme_fc_local_port *lport,
- 
- 	fcport = qla_rport->fcport;
- 
--	if (!qpair || !fcport || (qpair && !qpair->fw_started) ||
--	    (fcport && fcport->deleted))
-+	if (!qpair || !fcport)
- 		return -ENODEV;
- 
-+	if (!qpair->fw_started || fcport->deleted)
-+		return -EBUSY;
-+
- 	vha = fcport->vha;
- 
- 	if (!(fcport->nvme_flag & NVME_FLAG_REGISTERED))
-diff --git a/drivers/scsi/scsi_scan.c b/drivers/scsi/scsi_scan.c
-index f2437a7570ce..9af50e6f94c4 100644
---- a/drivers/scsi/scsi_scan.c
-+++ b/drivers/scsi/scsi_scan.c
-@@ -1714,15 +1714,16 @@ static void scsi_sysfs_add_devices(struct Scsi_Host *shost)
-  */
- static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
- {
--	struct async_scan_data *data;
-+	struct async_scan_data *data = NULL;
- 	unsigned long flags;
- 
- 	if (strncmp(scsi_scan_type, "sync", 4) == 0)
- 		return NULL;
- 
-+	mutex_lock(&shost->scan_mutex);
- 	if (shost->async_scan) {
- 		shost_printk(KERN_DEBUG, shost, "%s called twice\n", __func__);
--		return NULL;
-+		goto err;
- 	}
- 
- 	data = kmalloc(sizeof(*data), GFP_KERNEL);
-@@ -1733,7 +1734,6 @@ static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
- 		goto err;
- 	init_completion(&data->prev_finished);
- 
--	mutex_lock(&shost->scan_mutex);
- 	spin_lock_irqsave(shost->host_lock, flags);
- 	shost->async_scan = 1;
- 	spin_unlock_irqrestore(shost->host_lock, flags);
-@@ -1748,6 +1748,7 @@ static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
- 	return data;
- 
-  err:
-+	mutex_unlock(&shost->scan_mutex);
- 	kfree(data);
- 	return NULL;
- }
+-- 
+2.28.0.585.ge1cfff676549
 
