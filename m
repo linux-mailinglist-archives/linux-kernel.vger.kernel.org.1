@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A292A00BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA7F2A00BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbgJ3JHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:07:41 -0400
-Received: from smtp1.de.adit-jv.com ([93.241.18.167]:56878 "EHLO
-        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgJ3JHl (ORCPT
+        id S1726157AbgJ3JIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725784AbgJ3JI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:07:41 -0400
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
-        by smtp1.de.adit-jv.com (Postfix) with ESMTP id 128063C0579;
-        Fri, 30 Oct 2020 10:07:39 +0100 (CET)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
-        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id vUlCa8jIhWC8; Fri, 30 Oct 2020 10:07:32 +0100 (CET)
-Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id D3DA73C009C;
-        Fri, 30 Oct 2020 10:07:32 +0100 (CET)
-Received: from lxhi-065.adit-jv.com (10.72.94.31) by HI2EXCH01.adit-jv.com
- (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 30 Oct
- 2020 10:07:32 +0100
-Date:   Fri, 30 Oct 2020 10:07:28 +0100
-From:   Eugeniu Rosca <erosca@de.adit-jv.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steffen Pengel <spengel@de.adit-jv.com>,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: renesas: r8a77961: ulcb-kf: Initial
- device tree
-Message-ID: <20201030090728.GA19340@lxhi-065.adit-jv.com>
-References: <20201029133741.25721-1-erosca@de.adit-jv.com>
- <20201029133741.25721-2-erosca@de.adit-jv.com>
- <CAMuHMdX5pCtR-LMbuSJQvDNyVOwcipt7zZOF3c3J-d-Bq98NQg@mail.gmail.com>
- <20201029163213.GA12422@lxhi-065.adit-jv.com>
- <CAMuHMdXbwfPk5_dZEzjLuUZx6ysxdmu6hKbd54Ev6jTQUObTCA@mail.gmail.com>
+        Fri, 30 Oct 2020 05:08:29 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5A7C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:08:29 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id k25so6069034lji.9
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:08:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c3nqhr01eQvSJI6e+N1t85n2JUuDRDQvN6DV/F+qtOg=;
+        b=Pbc9yb6+BtXWo1L5tuGBtUvLjbqwm8vybLhFatacNFqibwrwzRpTS1ds3Zvak0xcKM
+         V8P8DuKXdbc+a6Ys+3QbJ5f5quGNRRmM0WyphpMhiJGoqAPyXW04d2UyiYyatvzvLNrh
+         4gKHIvkWMvdV3C++5KUU95Ml4r3h/PIVS7ve1IglLFYhMmtShvv8EyNSBp9/5IY5OsPr
+         qTejUAekNMJwYtQesHJ7J6nFxSnAY0XDT9GIRrSpg3W4+sPzais1l89GOmnJJPjxqyQ2
+         AHcyCbdLkBHEYCRJH0aXliCp/mXw00OYwaPBEML+r4pIIweZ6TMnfi6jLYoOslg8IipD
+         MWAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c3nqhr01eQvSJI6e+N1t85n2JUuDRDQvN6DV/F+qtOg=;
+        b=T277O1HgB6EgPDLiytTEJYCKTiGAtXoMFVEBvpOI8XQzP2rp/vxwvbSKAtFlWpBazT
+         qDR689FO22nQOZ4XfB0blbItV7QrjBWjrWMfUIptaAqxCIehPBOyiequnvdSxMT6ZSid
+         RlraToWsUr/eCaFKoqemeWkeAGhn+5/nfoUlZB/PKqOioYStf6JpajAuXAjT2C+9G4ax
+         XDbRXsLAqfH+/Ux6kxy5/VYrukIZ+H5hIfcrwdn7gerDMr6sbTtOR1+z7RlIjmiYlYZm
+         Kh3yR//MsfdJuTCxpO+w7920ffKnI9uGkVkOt7MA2eD1cSXEZKgYDm2XjZD+k0iI3RgM
+         jzuA==
+X-Gm-Message-State: AOAM5307nFMs5NTQJGS8TpOrylLL5F9h6N3wfi47DZBUj0mODgGO+Lxa
+        3MWfSJAYn/hTeNtl3J4cGp5xVj0UTgz+rGs0vEr1BA==
+X-Google-Smtp-Source: ABdhPJxkLrO+rJWRgS6d7zV8/ubv9r6UYekRS16NxBfxGeFBlNnomGPzrvg/AntYqT8EDdFMBhFZ1RH0FCIF+gOiV0k=
+X-Received: by 2002:a2e:819a:: with SMTP id e26mr623157ljg.469.1604048907900;
+ Fri, 30 Oct 2020 02:08:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdXbwfPk5_dZEzjLuUZx6ysxdmu6hKbd54Ev6jTQUObTCA@mail.gmail.com>
-X-Originating-IP: [10.72.94.31]
+References: <20201028232759.1928479-1-atish.patra@wdc.com> <20201028232759.1928479-2-atish.patra@wdc.com>
+In-Reply-To: <20201028232759.1928479-2-atish.patra@wdc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Fri, 30 Oct 2020 14:38:16 +0530
+Message-ID: <CAAhSdy3bf6gTrb5qA8aHm+KzrZQTKqSdBkGNpN1k_+_Vn3=uuQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] RISC-V: Add Microchip PolarFire SoC kconfig option
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>, devicetree@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Padmarao Begari <padmarao.begari@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Cyril.Jean@microchip.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Thu, Oct 29, 2020 at 4:58 AM Atish Patra <atish.patra@wdc.com> wrote:
+>
+> Add Microchip PolarFire kconfig option which selects SoC specific
+> and common drivers that is required for this SoC.
+>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> ---
+>  arch/riscv/Kconfig.socs | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+> index 8a55f6156661..74d07250ecc5 100644
+> --- a/arch/riscv/Kconfig.socs
+> +++ b/arch/riscv/Kconfig.socs
+> @@ -22,6 +22,13 @@ config SOC_VIRT
+>         help
+>           This enables support for QEMU Virt Machine.
+>
+> +config SOC_MICROCHIP_POLARFIRE
+> +       bool "Microchip PolarFire SoCs"
+> +       select MCHP_CLK_PFSOC
+> +       select SIFIVE_PLIC
+> +       help
+> +         This enables support for Microchip PolarFire SoC platforms.
+> +
+>  config SOC_KENDRYTE
+>         bool "Kendryte K210 SoC"
+>         depends on !MMU
+> --
+> 2.25.1
+>
 
-On Thu, Oct 29, 2020 at 07:23:53PM +0100, Geert Uytterhoeven wrote:
-> On Thu, Oct 29, 2020 at 5:34 PM Eugeniu Rosca <erosca@de.adit-jv.com> wrote:
+Looks good to me.
 
-[..]
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
-> I don't think we want to add new compatible string to describe each
-> combo. Just add "renesas,r8a77961" to the last enum?
-
-I'm afraid I misinterpreted your request. I've pushed your proposal to
-https://lore.kernel.org/linux-renesas-soc/20201030083051.18752-4-erosca@de.adit-jv.com/
-
-> > IMHO one thing which is certainly worth clarifying and fixing is the
-> > KF revision currently documented in renesas.yaml, i.e. M03.
-> >
-> > Shimafuji released at least M04, M05 and M06 revisions of KF (nicely
-> > compared at https://elinux.org/R-Car/Boards/Kingfisher#Change_point).
-> >
-> > The question is, does the community intend to support M03 through M06
-> > (in which case all of them might need an entry in the documentation) or
-> > anything which is earlier than M06 has to be considered deprecated (in
-> > which case renesas.yaml would need a simple s/M03/M06/ update)?
-> 
-> I'm not that familiar with KingFisher and the various revisions.
-> Do these differences have an impact on the software side?
-> The diodes and filters probably don't.
-
-I personally no longer use KF M03, since its major limitation is not
-being able to update the contents of Hyperflash using Lauterbach if
-ULCB is stacked on the expansion board (unplugging ULCB each time
-it is flashed is absolutely not practical).
-
-I've heard from audio engineers that recent revisions are more suitable
-for audio use-cases, but I don't know the full details.
-
-> The I2C repeaters are PCA9548ADB on M03, hence they use a Linux
-> driver. By what have they been replaced?
-> What's the nature of the MOST ↔ GPS Function select register change?
-
-I will try to collect more information and, if I succeed, I will come
-back with feedback. Thank you for your patience.
-
--- 
-Best regards,
-Eugeniu Rosca
+Regards,
+Anup
