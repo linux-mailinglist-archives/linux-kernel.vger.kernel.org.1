@@ -2,79 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1859A2A0664
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E63912A0667
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgJ3N1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 09:27:01 -0400
-Received: from mga12.intel.com ([192.55.52.136]:6321 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726078AbgJ3N1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726634AbgJ3N1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 30 Oct 2020 09:27:00 -0400
-IronPort-SDR: KOaE4zNRPzH3ePzMvkbq72dsnuHqH8+hm/1VqtBZOt/DXRgQe86S8ppXlW2JPB5mwjBH5luV6Q
- AAb8B1FCRTgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="147889745"
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
-   d="scan'208";a="147889745"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 06:26:10 -0700
-IronPort-SDR: YV4wtnH3IbPh9jWJxKOoi2HaVoQvD2DRl2ZQ7xMBjrzlRSS29MaPLlNoVKeXW4U+RJngJoRIqD
- wRuU8KGsnIew==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
-   d="scan'208";a="425344461"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 30 Oct 2020 06:26:07 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 30 Oct 2020 15:26:06 +0200
-Date:   Fri, 30 Oct 2020 15:26:06 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Amelie Delaunay <amelie.delaunay@st.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Subject: Re: [PATCH 1/1] usb: typec: add missing MODULE_DEVICE_TABLE() to
- stusb160x
-Message-ID: <20201030132606.GD2333887@kuha.fi.intel.com>
-References: <20201028151703.31195-1-amelie.delaunay@st.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgJ3N07 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 09:26:59 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD83C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:26:56 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id s9so6446482wro.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:26:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=malat-biz.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wG2sI8EW6iI9IIulD8zNExRHnDRv1t9L6KpFgetl1O0=;
+        b=It8HY9X7/21o8aISYouyA5HeQJR4CCaRRs3ChM8/RbuT86Cx9uowa8WNGRmEhBJpfU
+         uV/tjlMepuV9TWvjZgT0SE/ExK0KLXrFQcGo++QJ1+5ItYLdB6GqdZ8aL3qg7ofLL46H
+         M4QuaatKS9KZ2Au2x/jVA7IkcNBZ1cQ9suATXD3061TRSNrlM2+CrZUGOI4fpQ16A5py
+         J1zWnauZrVz2F+Jfxcpa8xxFyX4RqITSMtXmD9UMVjFg8AwQs90tFR6pjgluERsE5SpH
+         DmHHZALymZXhwfKJT0JOQsxV/F2Ujqe4kOHA4rBdoP2U4edrZ2kA0DTh8W6mRDW/RTOa
+         eIgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wG2sI8EW6iI9IIulD8zNExRHnDRv1t9L6KpFgetl1O0=;
+        b=ina9hAUEef9ZqDPWAX2kTwJTPpllbsRK0a53uFUHWQLsnINpqLonvz2lqHCJWP96fA
+         btvcviOdp+kex6fzUEbye3zA+XnlM8pX++hm3ZWHTeMt9Ub47KEprgLBJSLN6/xuSHYQ
+         lXBCyuQQ+uay/4vaA18ClM9iz2RuE4w+uO6BhDxs06SpnUKE9oWCAxNBW/dZ9VINAjr+
+         gvYshgyFY8jlsz9kOCiLzIYegrCxnKRAtvggUSQyuIIDW4zbUpPNQxTL+VLk7KYGot0L
+         71/L0YbH0k5H+gFTaJINmxMVKHOn2GHjMyqmRY9FanwMsH5I8O80WmJq2CnisPz1mzei
+         oCXw==
+X-Gm-Message-State: AOAM533UhMDdEucnTN4z6Hgg7b1sn+9Hsts+f6398R+8eWhUuZaodrAL
+        HKeJQYDwPX/YbFuTYe1nDpQiEg==
+X-Google-Smtp-Source: ABdhPJz2Gsl2quuKCrrrlNHBxMbkJnTdMepfA15AuCCR6ljz17dnt7nM9KLlfdWe+bwLXN3Z0Scwpw==
+X-Received: by 2002:adf:f9cf:: with SMTP id w15mr3237771wrr.185.1604064414963;
+        Fri, 30 Oct 2020 06:26:54 -0700 (PDT)
+Received: from ntb.petris.klfree.cz (snat2.klfree.cz. [81.201.48.25])
+        by smtp.googlemail.com with ESMTPSA id z15sm10160401wrq.24.2020.10.30.06.26.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 06:26:54 -0700 (PDT)
+From:   Petr Malat <oss@malat.biz>
+To:     linux-sctp@vger.kernel.org
+Cc:     Petr Malat <oss@malat.biz>, Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] sctp: Fix COMM_LOST/CANT_STR_ASSOC err reporting on big-endian platforms
+Date:   Fri, 30 Oct 2020 14:26:33 +0100
+Message-Id: <20201030132633.7045-1-oss@malat.biz>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028151703.31195-1-amelie.delaunay@st.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 04:17:03PM +0100, Amelie Delaunay wrote:
-> When stusb160x driver is built as a module, no modalias information is
-> available, and it prevents the module to be loaded by udev.
-> Add MODULE_DEVICE_TABLE() to fix this issue.
-> 
-> Fixes: da0cb6310094 ("usb: typec: add support for STUSB160x Type-C controller family")
-> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+Commit 978aa0474115 ("sctp: fix some type cast warnings introduced since
+very beginning")' broke err reading from sctp_arg, because it reads the
+value as 32-bit integer, although the value is stored as 16-bit integer.
+Later this value is passed to the userspace in 16-bit variable, thus the
+user always gets 0 on big-endian platforms. Fix it by reading the __u16
+field of sctp_arg union, as reading err field would produce a sparse
+warning.
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Petr Malat <oss@malat.biz>
+---
+ net/sctp/sm_sideeffect.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> ---
->  drivers/usb/typec/stusb160x.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/usb/typec/stusb160x.c b/drivers/usb/typec/stusb160x.c
-> index da7f1957bcb3..42076697e26c 100644
-> --- a/drivers/usb/typec/stusb160x.c
-> +++ b/drivers/usb/typec/stusb160x.c
-> @@ -633,6 +633,7 @@ static const struct of_device_id stusb160x_of_match[] = {
->  	{ .compatible = "st,stusb1600", .data = &stusb1600_regmap_config},
->  	{},
->  };
-> +MODULE_DEVICE_TABLE(of, stusb160x_of_match);
->  
->  static int stusb160x_probe(struct i2c_client *client)
->  {
-> -- 
-> 2.17.1
-
+diff --git a/net/sctp/sm_sideeffect.c b/net/sctp/sm_sideeffect.c
+index aa821e71f05e..813d30767204 100644
+--- a/net/sctp/sm_sideeffect.c
++++ b/net/sctp/sm_sideeffect.c
+@@ -1601,12 +1601,12 @@ static int sctp_cmd_interpreter(enum sctp_event_type event_type,
+ 			break;
+ 
+ 		case SCTP_CMD_INIT_FAILED:
+-			sctp_cmd_init_failed(commands, asoc, cmd->obj.u32);
++			sctp_cmd_init_failed(commands, asoc, cmd->obj.u16);
+ 			break;
+ 
+ 		case SCTP_CMD_ASSOC_FAILED:
+ 			sctp_cmd_assoc_failed(commands, asoc, event_type,
+-					      subtype, chunk, cmd->obj.u32);
++					      subtype, chunk, cmd->obj.u16);
+ 			break;
+ 
+ 		case SCTP_CMD_INIT_COUNTER_INC:
 -- 
-heikki
+2.20.1
+
