@@ -2,167 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B542A0EAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FA52A0EC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727443AbgJ3TaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 15:30:11 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:28128 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727294AbgJ3TaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:30:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604086208; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=aMVth6hwZwOVSjCuTwSCJ1aUcxckVR0dkeIqsdhpRpE=;
- b=tGZlRbl/J6C9ZSAXQ1s4wXmWOnqRjAT3b5fwJ6NHYvWXe/Bb6SKcT8x/kzTYbsGw0sID7LPU
- 5ckJXfTObTTbfc15JL9sGupIX2X+8A6QyXWv4qgjIWDm19Kcfzp3PUbUFLhZ68faj3habtez
- SNcgtL7Cd0kErhVW4jQM8zckxhc=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f9c69b85a52eef4951931a7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 19:30:00
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EA302C433FE; Fri, 30 Oct 2020 19:29:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 84C64C433F0;
-        Fri, 30 Oct 2020 19:29:59 +0000 (UTC)
+        id S1727582AbgJ3TWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 15:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727571AbgJ3TUw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 15:20:52 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC64C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:20:52 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id a7so9242849lfk.9
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:20:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7ltXFGIEC1wD1/DcBqIE9Zp9UpD0Eob4weHsly+LU6s=;
+        b=NKzAXeWRhEzSsyPxWy8lABW/VB/K7yCL712Wgf/ZLf7MLh2aHZKNViiJYIbi5Z9IUk
+         0D2VbKnfwvyD2QdfVIYU+1lfoDbLp2UF9hubMPUnOM8plYKIesS4Jd32XnljUf+5Wr21
+         fZ+UR9thk5kKUDBVcXk7E/KewhR4XtulAfljMrcCfiNYGTQrDJ4EF1AvjbDZkzjilzB1
+         1k4tGbZ6wS/da8Gqb6S3LJWsxLFX5rCei0jdonnPR7zzIioIklmXmIkKlgBZLR+ERq9I
+         TtV6o7qnXxRlP9zqMwKYrd9GYW6Mnx069+xDdw7tkMGQAZ/IdoP9rZYBB5nLy51sfqsR
+         3SeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ltXFGIEC1wD1/DcBqIE9Zp9UpD0Eob4weHsly+LU6s=;
+        b=iHFF5BpHGSVVB89MygCQgcLCxvAy3RGCxaB/bufM6J8eV+KF+J26Gcd4ZCRWoX/NOx
+         TowLvryJMfPeyhBQrJPMvJ/fsrthaGhAQ/Q91+UHiqNBKlzCkLv+dViOPgrlIzTJRAQI
+         RfVaKdUxtYI2NPc/ZZ1tfVXx9jA2awPgxKGs7Jf96mGjud9UnQUqr6yBI//l4j+BsIab
+         /VVjRYNCwOKBxQZ9WN8yTRxrkqfBvrrba6clTWfz4a103mCcMCPdt/cWUgRFXkakQRRE
+         RoH8vM8qBmeP8WtjemuFo6IPwdcpyQn9Z9beLe/rmxIeNTwAaPw07QduojlMZrog6187
+         lTng==
+X-Gm-Message-State: AOAM531OH2cyx4T+toDuAvlMkFhRhEpqxTud8ivX+pbYxkDR/s48y/KT
+        3+bR/aoKybnHj32sfrh0qDur9vT+Zx4sdqkLNc+sAQ==
+X-Google-Smtp-Source: ABdhPJzPd9Yn3eLEZ6vKKsiFecuFzporMourNqE58Gif0brpSLNfw6y269RW0/w1hGnLsri5OaWqZgnLzVxfJTsympg=
+X-Received: by 2002:a19:c357:: with SMTP id t84mr1432560lff.34.1604085650471;
+ Fri, 30 Oct 2020 12:20:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 30 Oct 2020 12:29:59 -0700
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 04/12] bus: mhi: core: Move to SYS_ERROR regardless of
- RDDM capability
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <20201030135218.GG3818@Mani-XPS-13-9360>
-References: <1604031057-32820-1-git-send-email-bbhatt@codeaurora.org>
- <1604031057-32820-5-git-send-email-bbhatt@codeaurora.org>
- <20201030135218.GG3818@Mani-XPS-13-9360>
-Message-ID: <59d5abb24e06920311719862f6e749a1@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+ <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com> <93cfdc79-4c48-bceb-3620-4c63e9f4822e@gmail.com>
+In-Reply-To: <93cfdc79-4c48-bceb-3620-4c63e9f4822e@gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 30 Oct 2020 20:20:24 +0100
+Message-ID: <CAG48ez3nH2Oiz9wMSpvUxxX_TRYTT98d3Nj1vnCuJOj9CCXH8Q@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
+On Thu, Oct 29, 2020 at 8:14 PM Michael Kerrisk (man-pages)
+<mtk.manpages@gmail.com> wrote:
+> On 10/29/20 2:42 AM, Jann Horn wrote:
+> > As discussed at
+> > <https://lore.kernel.org/r/CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>,
+> > we need to re-check checkNotificationIdIsValid() after reading remote
+> > memory but before using the read value in any way. Otherwise, the
+> > syscall could in the meantime get interrupted by a signal handler, the
+> > signal handler could return, and then the function that performed the
+> > syscall could free() allocations or return (thereby freeing buffers on
+> > the stack).
+> >
+> > In essence, this pread() is (unavoidably) a potential use-after-free
+> > read; and to make that not have any security impact, we need to check
+> > whether UAF read occurred before using the read value. This should
+> > probably be called out elsewhere in the manpage, too...
+> >
+> > Now, of course, **reading** is the easy case. The difficult case is if
+> > we have to **write** to the remote process... because then we can't
+> > play games like that. If we write data to a freed pointer, we're
+> > screwed, that's it. (And for somewhat unrelated bonus fun, consider
+> > that /proc/$pid/mem is originally intended for process debugging,
+> > including installing breakpoints, and will therefore happily write
+> > over "readonly" private mappings, such as typical mappings of
+> > executable code.)
+> >
+> > So, uuuuh... I guess if anyone wants to actually write memory back to
+> > the target process, we'd better come up with some dedicated API for
+> > that, using an ioctl on the seccomp fd that magically freezes the
+> > target process inside the syscall while writing to its memory, or
+> > something like that? And until then, the manpage should have a big fat
+> > warning that writing to the target's memory is simply not possible
+> > (safely).
+>
+> Thank you for your very clear explanation! It turned out to be
+> trivially easy to demonstrate this issue with a slightly modified
+> version of my program.
+>
+> As well as the change to the code example that I already mentioned
+> my reply of a few hours ago, I've added the following text to the
+> page:
+>
+>    Caveats regarding the use of /proc/[tid]/mem
+>        The discussion above noted the need to use the
+>        SECCOMP_IOCTL_NOTIF_ID_VALID ioctl(2) when opening the
+>        /proc/[tid]/mem file of the target to avoid the possibility of
+>        accessing the memory of the wrong process in the event that the
+>        target terminates and its ID is recycled by another (unrelated)
+>        thread.  However, the use of this ioctl(2) operation is also
+>        necessary in other situations, as explained in the following
+>        pargraphs.
 
-On 2020-10-30 06:52, Manivannan Sadhasivam wrote:
-> On Thu, Oct 29, 2020 at 09:10:49PM -0700, Bhaumik Bhatt wrote:
->> In some cases, the entry of device to RDDM execution environment
->> can occur after a significant amount of time has elapsed and a
->> SYS_ERROR state change event has already arrived.
-> 
-> I don't quite understand this statement. Can you elaborate? This 
-> doesn't
-> relate to what the patch is doing.
-> 
-So the mhi_intvec_threaded_handler() (BHI) MSI that fires to switch the 
-EE
-to RDDM may come much later than the SYS_ERROR state change event from 
-the
-control event ring. We currently, do not move to MHI_PM_SYS_ERR_DETECT
-state if RDDM is supported i.e. mhi_cntrl->rddm_image is set. However, 
-it
-means that we will remain in an "active" MHI PM state for the duration 
-of
-time until RDDM EE (BHI) MSI comes in. We have seen it take 5 seconds in
-some bad cases.
->> This can result
->> in scenarios where MHI controller and client drivers are unaware
->> of the error state of the device. Remove the check for rddm_image
->> when processing the SYS_ERROR state change as it is present in
->> mhi_pm_sys_err_handler() already and prevent further activity
->> until the expected RDDM execution environment change occurs or
->> the controller driver decides further action.
->> 
->> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> ---
->>  drivers/bus/mhi/core/main.c | 12 ++++--------
->>  1 file changed, 4 insertions(+), 8 deletions(-)
->> 
->> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
->> index 2cff5dd..1f32d67 100644
->> --- a/drivers/bus/mhi/core/main.c
->> +++ b/drivers/bus/mhi/core/main.c
->> @@ -733,19 +733,15 @@ int mhi_process_ctrl_ev_ring(struct 
->> mhi_controller *mhi_cntrl,
->>  				break;
->>  			case MHI_STATE_SYS_ERR:
->>  			{
->> -				enum mhi_pm_state new_state;
->> -
->> -				/* skip SYS_ERROR handling if RDDM supported */
->> -				if (mhi_cntrl->ee == MHI_EE_RDDM ||
->> -				    mhi_cntrl->rddm_image)
->> -					break;
->> +				enum mhi_pm_state state = MHI_PM_STATE_MAX;
->> 
->>  				dev_dbg(dev, "System error detected\n");
->>  				write_lock_irq(&mhi_cntrl->pm_lock);
->> -				new_state = mhi_tryset_pm_state(mhi_cntrl,
->> +				if (mhi_cntrl->ee != MHI_EE_RDDM)
-> 
-> But you are still checking for RDDM EE?
-> 
-> Please explain why you want to skip RDDM check.
-> 
-> Thanks,
-> Mani
-> 
-Yes, the point is to only remove the mhi_cntrl->rddm_image check but 
-still
-retain the "has EE moved to become RDDM" check. This allows us to avoid 
-any
-extra processing of moving states to MHI_PM_SYS_ERR_DETECT state if it 
-may
-be unnecessary (EE already changed to RDDM). The mhi_cntrl->rddm_image 
-is
-also present in mhi_pm_sys_err_handler(mhi_cntrl) function so it is not
-needed here.
->> +					state = mhi_tryset_pm_state(mhi_cntrl,
->>  							MHI_PM_SYS_ERR_DETECT);
->>  				write_unlock_irq(&mhi_cntrl->pm_lock);
->> -				if (new_state == MHI_PM_SYS_ERR_DETECT)
->> +				if (state == MHI_PM_SYS_ERR_DETECT)
->>  					mhi_pm_sys_err_handler(mhi_cntrl);
->>  				break;
->>  			}
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+(nit: paragraphs)
 
-This is why I mention the word RDDM "capability". If controller supports 
-RDDM
-is not enough to skip the move to MHI_PM_SYS_ERR_DETECT state as it is 
-safer
-to move and stop client drivers from pushing data.
+>        Consider the following scenario, where the supervisor tries to
+>        read the pathname argument of a target's blocked mount(2) system
+>        call:
+[...]
+> Seem okay?
 
-Thanks,
-Bhaumik
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Yeah, sounds good.
+
+> By the way, is there any analogous kind of issue concerning
+> pidfd_getfd()? I'm thinking not, but I wonder if I've missed
+> something.
+
+When it is used by a seccomp supervisor, you mean? I think basically
+the same thing applies - when resource identifiers (such as memory
+addresses or file descriptors) are passed to a syscall, it generally
+has to be assumed that those identifiers may become invalid and be
+reused as soon as the syscall has returned.
