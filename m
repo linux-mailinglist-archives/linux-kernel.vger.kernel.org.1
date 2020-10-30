@@ -2,68 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8242A0D70
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFE22A0D73
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727144AbgJ3Sce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:32:34 -0400
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:37825 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726077AbgJ3Scb (ORCPT
+        id S1727227AbgJ3Sc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:32:59 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:39274 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727159AbgJ3Sc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:32:31 -0400
-Received: by mail-oo1-f66.google.com with SMTP id f25so1820619oou.4;
-        Fri, 30 Oct 2020 11:31:49 -0700 (PDT)
+        Fri, 30 Oct 2020 14:32:58 -0400
+Received: by mail-ot1-f66.google.com with SMTP id z16so1243124otq.6;
+        Fri, 30 Oct 2020 11:32:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=JL7tBQPFa/wNgOqpZzofCb+/SCrLWucF9tNzz58UpHE=;
-        b=tsF2Sy8A/WyVgknYAHDxsswG4oosZ/0GQNFSTGg4z6gnlZgmdELg3DSeT2GuNavCnX
-         FLD2FyZGAujMWrUVTckpbXvpvjF99klWB/BQlIRLL15RF1ApQocZu20WbGYcL7lkygkT
-         ILeFuo0TUsm/fJa3e+++4v66iUjfOR2oW2gU13dEWmraznni9hjzuEw2c7WvgsvgMunr
-         Pf5SgqmpuRoavIN7VTUCn2ddBp2CY+YbKfcuJjdq3uITEPDiQkk2ZQu4jZ0TYWOfTphI
-         YMj5pKyfj0TWQKkJCtXS2d6rMyXkN7HmEBijLd0vMfOV949whtqO3/ZO4iYIb2v/TWos
-         vSFg==
-X-Gm-Message-State: AOAM531L7ktVqkwBf8U7mWHWaPGI+hSaaKsbpUjRknAWdxEYdstS/Q/s
-        EKX3kT6YSE0FVZwIZZ3X6g==
-X-Google-Smtp-Source: ABdhPJzk4MpgRkuoEicJMKEsUPr6GWrKKzg2550RpTAlbzDGLLzCnUX7KQH8myvUGN0/AMM2FMPofw==
-X-Received: by 2002:a4a:d104:: with SMTP id k4mr3040292oor.0.1604082709416;
-        Fri, 30 Oct 2020 11:31:49 -0700 (PDT)
+        bh=U11U1RUcXJQMVTzn4DAQFEhylkdQvUKwt78eo7W7jVI=;
+        b=CChnYa7ay8Edl5BXAL6DeaFawt2YwH85MshKc2TTcZhdZdZYg9VYxtFY+PnCJRbY2A
+         oufEzXsPm8o/MFQONrWpO/BhFC3BnlkLHhW/XSELJSzkdI/13ZvQCwjKVODRvaQoJhg0
+         +88we/St3XurhwdejHwwKKHk7m7oVoS6C4UfgUnGyVa7GRQiC3dkb88LjMUqPKam9U3g
+         uSQhrcBo7/RrdKz1iaOIIkwzWLzcDKTAGtxbFg39muL6zJHChbeL09Ko3MRfu/3K92He
+         eSeHsmz2Dv+Y9EiK8ZaKrtQa9RbGbZqqa31b0+oGh8AePMmL18IQTHtJWB92BN8T563K
+         MBbg==
+X-Gm-Message-State: AOAM533Plz2cSIlXT8JPuAuC1Fdn8U/2fzBOGoED6c6JeiPM3tGyC7+g
+        /KCCVnk+AS5cRwJspFCOBg==
+X-Google-Smtp-Source: ABdhPJydLUAT3cGVwlYDKmLSTYmAxhTmAahEfuKb37pqdf9FFUjUpuAye1WCcA8uXXxsDHaC/qDyow==
+X-Received: by 2002:a05:6830:1089:: with SMTP id y9mr248688oto.191.1604082778089;
+        Fri, 30 Oct 2020 11:32:58 -0700 (PDT)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t20sm1590416oic.1.2020.10.30.11.31.48
+        by smtp.gmail.com with ESMTPSA id u22sm1485907oor.13.2020.10.30.11.32.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 11:31:48 -0700 (PDT)
-Received: (nullmailer pid 4110275 invoked by uid 1000);
-        Fri, 30 Oct 2020 18:31:47 -0000
-Date:   Fri, 30 Oct 2020 13:31:47 -0500
+        Fri, 30 Oct 2020 11:32:57 -0700 (PDT)
+Received: (nullmailer pid 4112164 invoked by uid 1000);
+        Fri, 30 Oct 2020 18:32:56 -0000
+Date:   Fri, 30 Oct 2020 13:32:56 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-Cc:     mingkai.hu@nxp.com, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        minghuan.Lian@nxp.com, linux-kernel@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, bhelgaas@google.com, roy.zang@nxp.com
-Subject: Re: [PATCH 1/2] dt-bindings: pci: layerscape-pci: Add compatible
- strings for LX2160A rev2
-Message-ID: <20201030183147.GA4110222@bogus>
-References: <20201026051448.1913-1-Zhiqiang.Hou@nxp.com>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     kyarlagadda@nvidia.com, kthota@nvidia.com,
+        lorenzo.pieralisi@arm.com, linux-kernel@vger.kernel.org,
+        mmaddireddy@nvidia.com, linux-tegra@vger.kernel.org,
+        robh+dt@kernel.org, sagar.tv@gmail.com,
+        amurray@thegoodpenguin.co.uk, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, jckuo@nvidia.com, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: Fix entry name for I/O High Voltage
+ property
+Message-ID: <20201030183256.GA4112134@bogus>
+References: <20201026063902.14744-1-vidyas@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201026051448.1913-1-Zhiqiang.Hou@nxp.com>
+In-Reply-To: <20201026063902.14744-1-vidyas@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 13:14:47 +0800, Zhiqiang Hou wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+On Mon, 26 Oct 2020 12:09:01 +0530, Vidya Sagar wrote:
+> Correct the name of the I/O High Voltage Property from
+> 'nvidia,io-high-voltage' to 'nvidia,io-hv'.
 > 
-> Add PCIe Endpoint mode compatible string "fsl,lx2160ar2-pcie-ep"
-> 
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> Fixes: 2585a584f844 ("pinctrl: Add Tegra194 pinctrl DT bindings")
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
 > ---
->  Documentation/devicetree/bindings/pci/layerscape-pci.txt | 1 +
->  1 file changed, 1 insertion(+)
+>  .../devicetree/bindings/pinctrl/nvidia,tegra194-pinmux.txt      | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
