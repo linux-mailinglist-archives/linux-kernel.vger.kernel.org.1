@@ -2,150 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAF02A1126
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3142A1125
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgJ3Wqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 18:46:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
+        id S1726056AbgJ3Wqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 18:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726108AbgJ3Wqp (ORCPT
+        with ESMTP id S1725792AbgJ3Wqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 18:46:45 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A6AC0613D5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 15:46:45 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id p15so8558297ljj.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 15:46:45 -0700 (PDT)
+        Fri, 30 Oct 2020 18:46:38 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C412FC0613D5;
+        Fri, 30 Oct 2020 15:46:37 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id s15so10720187ejf.8;
+        Fri, 30 Oct 2020 15:46:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FrhxrWCIONXWoPxsDWMRBR+W10EJDGZ7OkgmkAXhFNU=;
-        b=NSjEistXDK7QrUisKBKyvvsUCTs8KpdALOTDGFQa3ZlxOrfYPgQ15P5Hp32THt3kZR
-         cN7sjbd0KoMQ3npg9DHgup7Q9J8GXdmUQ8lIGjC/f9HFg6XaYw9GqJyObayLgtYOnfyC
-         +DPogaxfsLaFCM9OrmD2eUZrIvZD8sMP/wXjA=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hdzDQCqjJnyS3Rh4YggWshAkvweKf0RvdENbWdlXEkM=;
+        b=CY4unsu17OUZQUauhh2Rye+vPeAYREKAhg2mX/BP1/pKALco4g6FN8LYtMFWjpB8Q3
+         ThGudIMUk2SwzRFyZBUVDHpm6zylt8aOS1iOpK1gO9rMorrdB6U3yfLR+xuXzhyNDvMx
+         rBfJlebdcqXgfORR3MEFyUKPPtnHCF4Xxwx3ofqaQMa2TZ1oYYuFasUCYog5op5R92Jy
+         FTa4JnQff2RZ+ZI2Qei6u52Y9gsgEThw5mSeiSNG0djPec+SsDKDiAdD6NgiDNomJqZz
+         Ogf2rlJmSkU1w8x5E5oxryKCPKODBzwfAbMwqKsgDJsBVrQnJP97T4gKeWysv12VPWyn
+         b85Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FrhxrWCIONXWoPxsDWMRBR+W10EJDGZ7OkgmkAXhFNU=;
-        b=HKmfCte3YR1a5DE2MDxopD20YEMf2cl+sX0yLhUo9LO2yPnx/v5TH4xpvt9F6Fn7fZ
-         XOJitFo4En56MGj2Y3V495DfmiCE4TXEwNvPvIR+tQI+vwsWk3TxSPeeCCk6IgRamP3r
-         R0JX8qzEXCG42sZNhMFih7nA2YrDyYsUY5ZB+UdjPgH3nch7YLOVUYnAX6PxaFM6FtRp
-         LHSXUNTWx5tEm99MNNgyMNwcDevfwyLL/+VOte118RXV/M+2nDDgbLn708FJurM3qlRf
-         waxWjOve84qtKXPMJJLqNopdmXO8bI5GnnRyb+3xmi4yHCsUhhiczVPy+HQOkxpmyQHm
-         d0WQ==
-X-Gm-Message-State: AOAM5326kwi5yLBQGKlMWb9A57tVqBFFiX9wfenS6JyIiRayay3z+fOI
-        T9BIIbFyJe8CPhIUa6RihaTejF5IFVhaLw==
-X-Google-Smtp-Source: ABdhPJx0TPzYJmMBh43wT95siunPAhRZaisYowgEnsKrw6D/p2BvQPGofVtSjT5k4lIrhHSnjvTptQ==
-X-Received: by 2002:a05:651c:96:: with SMTP id 22mr2086086ljq.76.1604098003717;
-        Fri, 30 Oct 2020 15:46:43 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id r5sm802043ljm.77.2020.10.30.15.46.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 15:46:43 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id j30so9869602lfp.4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 15:46:43 -0700 (PDT)
-X-Received: by 2002:a19:4815:: with SMTP id v21mr1949766lfa.603.1604098002560;
- Fri, 30 Oct 2020 15:46:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201029221806.189523375@linutronix.de> <CAHk-=wiFxxGapdOyZHE-7LbFPk+jdfoqdeeJg0zWNQ86WvJGXg@mail.gmail.com>
- <87pn50ob0s.fsf@nanos.tec.linutronix.de> <87blgknjcw.fsf@nanos.tec.linutronix.de>
- <CAHk-=whsJv0bwWRVZHsLoSe48ykAea6T7Oi=G+r8ckLrZ0YUpg@mail.gmail.com> <87sg9vl59i.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87sg9vl59i.fsf@nanos.tec.linutronix.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 30 Oct 2020 15:46:26 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjjO9BtTUAsLraqZqdzaPGJ-qvubZfwUsmRUX896eHcGw@mail.gmail.com>
-Message-ID: <CAHk-=wjjO9BtTUAsLraqZqdzaPGJ-qvubZfwUsmRUX896eHcGw@mail.gmail.com>
-Subject: Re: [patch V2 00/18] mm/highmem: Preemptible variant of kmap_atomic & friends
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Christoph Hellwig <hch@lst.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hdzDQCqjJnyS3Rh4YggWshAkvweKf0RvdENbWdlXEkM=;
+        b=E+1D1tKd4VdnRZVviWP6ryUlqzgmCtVfLKZqkEkQjiUIIoUpQWpPh3oy/N2ODhhWpz
+         qShopynnpoLaqb5H0zZE3/La5407Q0fpHqBXEhEFyeHyJa6CYML36zYLKM8XWzcRNIMc
+         gURGlUXfrP2xjea8TkDRNcComgggrEztAM/4lK7Gbmj5s/eLDQrBfHqyoouyU+VqW2JZ
+         Zn3vfDhGFV+TjHWsKN34/arOif6cBLDhk1r251oZC07LqxWjronDnabu//SWSGt3SC6Z
+         UdYHyHMQVSRBgljpREd+buu+jGqTOWJh/oC80CkFVVAT1ax2jUIvrzxfP7bd6fDE+2l4
+         1y5A==
+X-Gm-Message-State: AOAM533jZN/uZTUFvISXgzj3hIf1U+CNrVvmWbzpT18eMJhTFYDNv8jj
+        ShWGAPAK+9WGy5Hxd/kk5ng=
+X-Google-Smtp-Source: ABdhPJyx2iiPB5QekUKLvQvIJOO45HCgd8rDjQpuJSC1lrnZ8+reRpTv1dpezghb2eQUWhLEXC14Tw==
+X-Received: by 2002:a17:906:c114:: with SMTP id do20mr4645145ejc.169.1604097996471;
+        Fri, 30 Oct 2020 15:46:36 -0700 (PDT)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id ce13sm3720161edb.32.2020.10.30.15.46.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 15:46:35 -0700 (PDT)
+Date:   Sat, 31 Oct 2020 00:46:33 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Ioana Ciornei <ciorneiioana@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
         Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org, Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andre Edich <andre.edich@microchip.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Dan Murphy <dmurphy@ti.com>,
+        Divya Koppera <Divya.Koppera@microchip.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Mathias Kresin <dev@kresin.me>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Michael Walle <michael@walle.cc>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Willy Liu <willy.liu@realtek.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+Subject: Re: [PATCH net-next 00/19] net: phy: add support for shared
+ interrupts (part 1)
+Message-ID: <20201030224633.wxvkt7p7pb2kfbuk@skbuf>
+References: <20201029100741.462818-1-ciorneiioana@gmail.com>
+ <43d672ae-c089-6621-5ab3-3a0f0303e51a@gmail.com>
+ <20201030220642.ctkt2pitdvri3byt@skbuf>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030220642.ctkt2pitdvri3byt@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 3:26 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> While at it I might have a look at that debug request from Willy in the
-> other end of this thread. Any comment on that?
->
->  https://lore.kernel.org/r/87k0v7mrrd.fsf@nanos.tec.linutronix.de
+On Sat, Oct 31, 2020 at 12:06:42AM +0200, Vladimir Oltean wrote:
+> On Fri, Oct 30, 2020 at 10:56:24PM +0100, Heiner Kallweit wrote:
+> > I'd just like to avoid the term "shared interrupt", because it has
+> > a well-defined meaning. Our major concern isn't shared interrupts
+> > but support for multiple interrupt sources (in addition to
+> > link change) in a PHY.
+> 
+> You may be a little bit confused Heiner.
+> This series adds support for exactly _that_ meaning of shared interrupts.
+> Shared interrupts (aka wired-OR on the PCB) don't work today with the
+> PHY library. I have a board that won't even boot to prompt when the
+> interrupt lines of its 2 PHYs are enabled, that this series fixes.
+> You might need to take another look through the commit messages I'm afraid.
 
-I do think that it would be nice to have a debug mode, particularly
-since over the last few years we've really lost a lot of HIGHMEM
-coverage (to the point that I've wondered how worthwhile it really is
-to support at all any more - I think it's Arnd who argued that it's
-mainly some embedded ARM variants that will want it for the forseeable
-future).
+Maybe this diagram will help you visualize better.
 
-So I'm honestly somewhat torn. I think HIGHMEM is dying, and yes that
-argues for "non-HIGHMEM had better have some debug coverage", but at
-the same time I think it doesn't even really matter any more. At some
-point those embedded ARM platforms just aren't even interesting - they
-might as well use older kernels if they are the only thing really
-arguing for HIGHMEM at all.
+time
+ |
+ |       PHY 1                  PHY 2 has pending IRQ
+ |         |                      (e.g. link up)
+ |         v                             |
+ |   phy_interrupt()                     |
+ |  called for PHY 1                     |
+ |         |                             |
+ |         v                             |
+ | returns IRQ_HANDLED via               |
+ |  phy_clear_interrupt()                |
+ |         |                             |
+ |         |                             |
+ |         v                             |
+ | handling of shared IRQ                |
+ |     ends here                         |
+ |         |                             |
+ |         |                             v
+ |         |                PHY 2 still has pending IRQ
+ |         |            because, you know, it wasn't actually
+ |         |                          serviced
+ |         v                             |
+ |   phy_interrupt()                     |
+ |  called for PHY 1                     |
+ |         |                             |
+ |         v                             |
+ | returns IRQ_HANDLED via               |
+ |  phy_clear_interrupt()                |
+ |         |                             |
+ |         |                             |
+ |         v                             |
+ | handling of shared IRQ                |
+ |     ends here                         |
+ |         |                PHY 2: Hey! It's me! Over here!
+ |         |                             |
+ |         v                             |
+ |   phy_interrupt()                     |
+ |  called for PHY 1                     |
+ |         |                             |
+ |         v                             |
+ | returns IRQ_HANDLED via               |
+ |  phy_clear_interrupt()                |
+ |         |                             |
+ |         |                             |
+ |         v                             |
+ | handling of shared IRQ                |
+ |     ends here                         |
+ |         |                       PHY 2: Srsly?
+ |         |                             |
+ |         v                             |
+ |   phy_interrupt()                     |
+ |  called for PHY 1                     |
+ |         |                             |
+ |         v                             |
+ |        ...                           ...
+ |
+ |               21 seconds later
+ |
+ |                  RCU stall
+ v
 
-This is one reason why I'd like the new kmap_local() to be a no-op,
-and I'd prefer for it to have no other side effects - because I want
-to be ready to remove it entirely some day. And if we end up having
-some transition where people start rewriting "kmap_atomic()" to be
-"kmap_local() + explicit preemption disable", then I think that would
-be a good step on that whole "kmap will eventually go away" path.
+This happens because today, the way phy_interrupt() is written, you can
+only return IRQ_NONE and give the other driver a chance _if_ your driver
+implements .did_interrupt(). But the kernel documentation of
+.did_interrupt() only recommends to implement that function if you are a
+multi-PHY package driver (otherwise stated, the hardware chip has an
+embedded shared IRQ). But as things stand, _everybody_ should implement
+.did_interrupt() in order for any combination of PHY drivers to support
+shared IRQs.
 
-But I do *not* believe that we need to add _so_ much debug support
-that we'd catch Willy's "more than one page" case. And I absolutely do
-not believe for a second that we should start caring about compound
-pages. NO. kmap() is almost dead already, we're not making it worse.
+What Ioana is proposing, and this is something that I fully agree with,
+is that we just get rid of the layering where the PHY library tries to
+be helpful but instead invites everybody to write systematically bad
+code. Anyone knows how to write an IRQ handler with eyes closed, but the
+fact that .did_interrupt() is mandatory for proper shared IRQ support is
+not obvious to everybody, it seems. So let's just have a dedicated IRQ
+handling function per each PHY driver, so that we don't get confused in
+this sloppy mess of return values, and the code can actually be
+followed.
 
-To me, your patch series has two big advantages:
+Even _with_ Ioana's changes, there is one more textbook case of shared
+interrupts causing trouble, and that is actually the reason why nobody
+likes them except hardware engineers who don't get to deal with this.
 
- - more common code
+time
+ |
+ |   PHY 1 probed
+ | (module or built-in)
+ |         |                   PHY 2 has pending IRQ
+ |         |               (it had link up from previous
+ |         v               boot, or from bootloader, etc)
+ |   phy_interrupt()                     |
+ |  called for PHY 1                     |
+ |         |                             |
+ |         v                             |
+ | returns IRQ_NONE as                   |
+ |     it should                         v
+ |         |                PHY 2 still has pending IRQ
+ |         |               but its handler wasn't called
+ |         |              because its driver has not been
+ |         |                        yet loaded
+ |         v                             |
+ |   phy_interrupt()                     |
+ |  called for PHY 1                     |
+ |         |                             |
+ |         v                             |
+ | returns IRQ_NONE as                   |
+ |      it should                        v
+ |         |                   PHY 2: Not again :(
+ |         |                             |
+ |         v                             |
+ |   phy_interrupt()                     |
+ |  called for PHY 1                     |
+ |         |                             |
+ |         v                             |
+ | returns IRQ_NONE as                   |
+ |      it should                        |
+ |         |                             |
+ |        ...                           ...
+ |         |                             |
+ |         |                PHY 2 driver never gets probed
+ |         |               either because it's a module or
+ |         |                because the system is too busy
+ |         |                checking PHY 1 over and over
+ |         |                again for an interrupt that
+ |         |                     it did not trigger
+ |         |                             |
+ |        ...                           ...
+ |
+ |               21 seconds later
+ |
+ |                  RCU stall
+ v
 
- - kmap_local() becomes more of a no-op
+The way that it's solved is that it's never 100% solved.
+This one you can just avoid, but never recover from it.
+To avoid it, you must ensure from your previous boot environments
+(bootloader, kexec) that the IRQ line is not pending. Because if you
+leave the shared IRQ line pending, the system is kaput if it happens to
+probe the drivers in the wrong order (aka don't probe first the driver
+that will clear that shared IRQ). It's like Minesweeper, only worse.
 
-and the last thing we want is to expand on kmap.
+That's why the shutdown hook is there, as a best-effort attempt for
+Linux to clean up after itself. But we're always at the mercy of the
+bootloader, or even at the mercy of chance. If the previous kernel
+panicked, there's no orderly cleanup to speak of.
 
-           Linus
+Hope it's clearer now.
