@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107D82A0F0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D56112A0F11
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgJ3UFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 16:05:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43012 "EHLO mail.kernel.org"
+        id S1727274AbgJ3UF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 16:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725975AbgJ3UFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 16:05:49 -0400
-Subject: Re: [git pull] drm fixes for 5.10-rc2
+        id S1726991AbgJ3UFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 16:05:50 -0400
+Subject: Re: [GIT PULL] PNP fix for v5.10-rc2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604088349;
-        bh=18GkA6iRo2BzVyR0d6ewM6Nt8BeX5/+XG0fMOzXKNGo=;
+        s=default; t=1604088350;
+        bh=NFPQXUJkgY4qruWuQhfZ/5zPgvl8Ew7+xHmnXURbgIQ=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=g6TwEtkgqZtqP7nhTt1th3PkwIEccFb82BvemeskW2/lYBTwX23/ltgs8Inj/iJxC
-         UF7NiQJpctFudhSZdUljU7P//Lvn7tJsfhPsXBsdwarC60caGD6r7/JfAFhEoJ0+lK
-         GxmAJkH9+35a3GTjO77Cq749jOOQpwnWEiLlWt/E=
+        b=DsNyx+41562yli7rnIIYhyBx3Y6R0iL/25dNJSJiaIFNguCEwWqo3hKIuuge4pjmP
+         FjgRuFR87q3Nsnk0I8ghLykptbX0LRYoN1qfMmhs6ZRcpA2sW1OwuWYKvnxfc4QRFH
+         pSIiICaS4HARZBc8AY0zZpLgFlwxSPuyXEhYCtPs=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9tw8m2318cixWC-_BvLTpO7usf6wiYiNbdT3W9NaVa5qpg@mail.gmail.com>
-References: <CAPM=9tw8m2318cixWC-_BvLTpO7usf6wiYiNbdT3W9NaVa5qpg@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gYkVwz1HvMUDPcLya+okWSNiMPkuStGxAjkxcAJXcBsQ@mail.gmail.com>
+References: <CAJZ5v0gYkVwz1HvMUDPcLya+okWSNiMPkuStGxAjkxcAJXcBsQ@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAPM=9tw8m2318cixWC-_BvLTpO7usf6wiYiNbdT3W9NaVa5qpg@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-10-30-1
-X-PR-Tracked-Commit-Id: 7babd126327b8b5a3904d2f8f01c95235801af2a
+X-PR-Tracked-Message-Id: <CAJZ5v0gYkVwz1HvMUDPcLya+okWSNiMPkuStGxAjkxcAJXcBsQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pnp-5.10-rc2
+X-PR-Tracked-Commit-Id: e510785f8aca4a7346497edd4d5aceefe5370960
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7ba4d8675090480e64388f4669271c03123072b2
-Message-Id: <160408834914.13990.10597880144562985068.pr-tracker-bot@kernel.org>
-Date:   Fri, 30 Oct 2020 20:05:49 +0000
-To:     Dave Airlie <airlied@gmail.com>
+X-PR-Merge-Commit-Id: d2c4d6e8acc6548a3ddae0f2e8d8120ead09ad80
+Message-Id: <160408835012.13990.1772967253106302433.pr-tracker-bot@kernel.org>
+Date:   Fri, 30 Oct 2020 20:05:50 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 30 Oct 2020 12:01:27 +1000:
+The pull request you sent on Fri, 30 Oct 2020 17:32:37 +0100:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-10-30-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pnp-5.10-rc2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7ba4d8675090480e64388f4669271c03123072b2
+https://git.kernel.org/torvalds/c/d2c4d6e8acc6548a3ddae0f2e8d8120ead09ad80
 
 Thank you!
 
