@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DDF82A0FC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D74A2A0FCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727645AbgJ3U7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 16:59:21 -0400
-Received: from mail-ua1-f68.google.com ([209.85.222.68]:35655 "EHLO
-        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbgJ3U7U (ORCPT
+        id S1727677AbgJ3U7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 16:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbgJ3U7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 16:59:20 -0400
-Received: by mail-ua1-f68.google.com with SMTP id f20so2139459uap.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 13:59:19 -0700 (PDT)
+        Fri, 30 Oct 2020 16:59:47 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F0EC0613CF;
+        Fri, 30 Oct 2020 13:59:46 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id dk16so9830976ejb.12;
+        Fri, 30 Oct 2020 13:59:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=k3WkoFBU74q2UUkntKKl2jUcW+YT3JWi72RY5sPwOfk=;
+        b=vesqpwoVaNunwsRNYlewpH7leCs8rK5Ez+sifuWXtWFpLMB1bhb0y33nDMgYvwByw3
+         tohjzgZ/ttG3vlbRT3y7ZJa+WYJ3ASCgH9VHXLHhX+FIpqlEH6rGnUyQnja+k1c/nxZk
+         SLz4bWfb7lwECVgzXLuPxET1rNSJeudHd5mBOCFsRULvJOViO9/dKHLp/9oJrS9iJPyT
+         qJ/wHQl7TA1n0jHpQr6bx91XwsO0AvQ66YnQeurV0oLG7b4zl3xEOttK/VK6w/GxeCQU
+         HC8iVDJdVa8xV4JGvM1SeTOAInlCEwS/LsnMI4jxcaco7bGqbpcB5bQ4pPjx5aK6DFT9
+         3fZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0UF2Pmf+rwRBHY8l9mzh5Ann9thyXoIS3meDLoOTDgU=;
-        b=iC5u3aBoMuTm4wozxh9IV2gbv/eULJVvGJwWISRtlH6/QZ/5QTNObNPgcRygnPoup2
-         gJWynJb0Vzl7r/V/GgAPFNSXlWHl5B4S03tw8+ncgQxSD/z+KPAoeu10j/zc0m6Dm44n
-         oqeYKNPVGz4Qi8Vm9tkC+G7kQWnu2guC+ftnk1apgb4XBkO0Erzmv5gD9QhZ8Id/fOKs
-         XTDydJGK0o9drRmRXXX8tN+r2E09Qt+ivQKlzJ+Zn8n6pW2PF1JEmvPIQBpE5g9Co9vg
-         0ZWH+CfvBi9Wu3t63KanwE32eTBNGwfVaezmN5leKDkEKr02TcRy5C+1HmLlu+V5mM3N
-         Oj4A==
-X-Gm-Message-State: AOAM533sEhzdyBLMNYl2xUAmGQ4yfSWjlJHCq1wMFMbt5Sv5J8oHzKpl
-        HyK1dWdtCuPVJOnm0YY34NY=
-X-Google-Smtp-Source: ABdhPJyH72AuFmsvzp0sbpVX9j78iQsXQAIeLz8oNvMQJ3HePx7NsJR7CYskCVyb7OINrFDNoMoQWg==
-X-Received: by 2002:a9f:2212:: with SMTP id 18mr3048462uad.89.1604091559492;
-        Fri, 30 Oct 2020 13:59:19 -0700 (PDT)
-Received: from killington.c.googlers.com.com (239.145.196.35.bc.googleusercontent.com. [35.196.145.239])
-        by smtp.gmail.com with ESMTPSA id w123sm874205vke.26.2020.10.30.13.59.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=k3WkoFBU74q2UUkntKKl2jUcW+YT3JWi72RY5sPwOfk=;
+        b=qqp8+puUBL4OywMMn9W8R4CcrqLYMTrd+Go6pHd8zyD2G/loMAfzW91pWaSJwwRNJ+
+         ydNQa3dFv3gKMJBLi1rmYCHPlDSI6WgTZDBYP5DJNc5hEdVYQsBWYZoa8o4Aff8X0cYS
+         oqpz4Xosox42YmJb01Uxi4vMzu+0IPtbCosQqJzuPVzv4NFwGiNZsz3qpZ1qIzAUPchd
+         LjfTLquiQGewGDg2E3C5CKnblLxXjs1hWLDWEUrla/7gEXm+zh5xdS7gyJAB7nNQc8FS
+         kdqJJO8z/Qxi5BTu3GBbK8w8PfpIbGVKFzYk3oQ84da/wOJui2OIkepzNyLQvfQKLZLb
+         WxLA==
+X-Gm-Message-State: AOAM531rk8gA768vAAUl2Dcv/RnIAYNhdZI1cZ8Qm0L9cioiiWz9HMvo
+        9dIfUqI9oWz0fnt5YUgxjvg=
+X-Google-Smtp-Source: ABdhPJxnmacl+QU6UAVfnglw7U9K7nUmqKXuVD/IqcAM7LsfWaAjX4Ia4WbMBk84ZIpYZC9Qp37Uxg==
+X-Received: by 2002:a17:906:2e59:: with SMTP id r25mr4478407eji.520.1604091585688;
+        Fri, 30 Oct 2020 13:59:45 -0700 (PDT)
+Received: from jernej-laptop.localnet (cpe1-5-97.cable.triera.net. [213.161.5.97])
+        by smtp.gmail.com with ESMTPSA id bn2sm3376596ejb.48.2020.10.30.13.59.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 13:59:18 -0700 (PDT)
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Dennis Zhou <dennis@kernel.org>
-Subject: [PATCH] percpu: convert flexible array initializers to use struct_size()
-Date:   Fri, 30 Oct 2020 20:58:46 +0000
-Message-Id: <20201030205846.1105106-1-dennis@kernel.org>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+        Fri, 30 Oct 2020 13:59:44 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     linux-sunxi@googlegroups.com
+Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        monnier@iro.umontreal.ca
+Subject: Re: [linux-sunxi] Re: [PATCH v10 00/15] Add Allwinner H3/H5/H6/A64 HDMI audio
+Date:   Fri, 30 Oct 2020 21:59:43 +0100
+Message-ID: <1619332.Na9eyGIdAE@jernej-laptop>
+In-Reply-To: <jwv361va1g9.fsf-monnier+gmane.comp.hardware.netbook.arm.sunxi@gnu.org>
+References: <20201030144648.397824-1-peron.clem@gmail.com> <160408688151.11950.1284919768798155829.b4-ty@kernel.org> <jwv361va1g9.fsf-monnier+gmane.comp.hardware.netbook.arm.sunxi@gnu.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the safer macro as sparked by the long discussion in [1].
+Dne petek, 30. oktober 2020 ob 21:50:43 CET je Stefan Monnier napisal(a):
+> >> This series add H6 I2S support and the I2S node missing to support
+> >> HDMI audio in different Allwinner SoC.
+> > 
+> > Applied to
+> > 
+> >    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+> >    for-next
+> 
+> Yay!
 
-[1] https://lore.kernel.org/lkml/20200917204514.GA2880159@google.com/
+Note that this doesn't bring HDMI audio card just yet. Another driver will be 
+needed for that.
 
-Signed-off-by: Dennis Zhou <dennis@kernel.org>
----
-I'll apply it to for-5.10-fixes.
+> 
+> Now, I wonder: will that make it easier to add support for HDMI-Audio for
+> the A10/A20?
 
- mm/percpu.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+No, A10/A20 HDMI audio uses completely different interface.
 
-diff --git a/mm/percpu.c b/mm/percpu.c
-index 66a93f096394..ad7a37ee74ef 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -1315,8 +1315,8 @@ static struct pcpu_chunk * __init pcpu_alloc_first_chunk(unsigned long tmp_addr,
- 	region_size = ALIGN(start_offset + map_size, lcm_align);
- 
- 	/* allocate chunk */
--	alloc_size = sizeof(struct pcpu_chunk) +
--		BITS_TO_LONGS(region_size >> PAGE_SHIFT) * sizeof(unsigned long);
-+	alloc_size = struct_size(chunk, populated,
-+				 BITS_TO_LONGS(region_size >> PAGE_SHIFT));
- 	chunk = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
- 	if (!chunk)
- 		panic("%s: Failed to allocate %zu bytes\n", __func__,
-@@ -2521,8 +2521,8 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
- 	pcpu_unit_pages = ai->unit_size >> PAGE_SHIFT;
- 	pcpu_unit_size = pcpu_unit_pages << PAGE_SHIFT;
- 	pcpu_atom_size = ai->atom_size;
--	pcpu_chunk_struct_size = sizeof(struct pcpu_chunk) +
--		BITS_TO_LONGS(pcpu_unit_pages) * sizeof(unsigned long);
-+	pcpu_chunk_struct_size = struct_size(chunk, populated,
-+					     BITS_TO_LONGS(pcpu_unit_pages));
- 
- 	pcpu_stats_save_ai(ai);
- 
--- 
-2.29.1.341.ge80a0c044ae-goog
+> 
+> (there was a patch for that submitted earlier this year by Stefan
+> Mavrodiev <stefan@olimex.com>, but it seems there hasn't been any
+> progress on it since then (I think the last message on it concluded that
+> it should be rewritten to use ALSA instead of ASoC)).
+
+IIUC original author left Olimex, so work stalled.
+
+Best regards,
+Jernej
+
+> 
+> [ To clarify, don't know what's the difference between ALSA and ASoC;
+>   I'm only interested here as an owner of an A20 box on which I'd
+>   love to be able to use the HDMI-Audio.  ]
+> 
+> 
+> -- Stefan
+
+
+
 
