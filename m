@@ -2,275 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53EF29FE69
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FDC29FE6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgJ3H0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:26:32 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6709 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3H0c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 03:26:32 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CMv4f20ktzkbgM;
-        Fri, 30 Oct 2020 15:26:26 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 30 Oct 2020 15:26:16 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v2] f2fs: move ioctl interface definitions to separated file
-Date:   Fri, 30 Oct 2020 15:26:10 +0800
-Message-ID: <20201030072610.57155-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        id S1725900AbgJ3H15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:27:57 -0400
+Received: from mga05.intel.com ([192.55.52.43]:28028 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgJ3H14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 03:27:56 -0400
+IronPort-SDR: I1n160I84Sa+mYQWxFs846jqgafqj/s5zuk9mCSaawi09YIBrp8VisXAQlEqFKPf8xkaUSoezI
+ 8jOwVeuGzYlw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="253279356"
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="253279356"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 00:27:55 -0700
+IronPort-SDR: pI5j+anJbHbX5tSuB+HWmUKVyY+Vg2pu4M0vxMSvvHSBgGOl/h0yBzkllmIegU5jtWqgrSmKyB
+ ZR9OmC4LPeRA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="319237011"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.65])
+  by orsmga003.jf.intel.com with ESMTP; 30 Oct 2020 00:27:51 -0700
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
+        Rafael Aquini <aquini@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Rik van Riel <riel@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>
+Subject: Re: [PATCH -V2 1/2] mempolicy: Rename MPOL_F_MORON to MPOL_F_MOPRON
+References: <20201028023411.15045-1-ying.huang@intel.com>
+        <20201028023411.15045-2-ying.huang@intel.com>
+        <20201029090421.GC17500@dhcp22.suse.cz>
+Date:   Fri, 30 Oct 2020 15:27:51 +0800
+In-Reply-To: <20201029090421.GC17500@dhcp22.suse.cz> (Michal Hocko's message
+        of "Thu, 29 Oct 2020 10:04:21 +0100")
+Message-ID: <87h7qcxjew.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like other filesystem does, we introduce a new file f2fs.h in path of
-include/uapi/linux/, and move f2fs-specified ioctl interface definitions
-to that file, after then, in order to use those definitions, userspace
-developer only need to include the new header file rather than
-copy & paste definitions from fs/f2fs/f2fs.h.
+Michal Hocko <mhocko@suse.com> writes:
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v2: add missing "WITH Linux-syscall-note" for SPDX-License-Identifier
- MAINTAINERS                 |  1 +
- fs/f2fs/f2fs.h              | 79 ----------------------------------
- fs/f2fs/file.c              |  1 +
- include/trace/events/f2fs.h |  1 +
- include/uapi/linux/f2fs.h   | 86 +++++++++++++++++++++++++++++++++++++
- 5 files changed, 89 insertions(+), 79 deletions(-)
- create mode 100644 include/uapi/linux/f2fs.h
+> On Wed 28-10-20 10:34:10, Huang Ying wrote:
+>> To follow code-of-conduct better.
+>
+> This is changing a user visible interface and any userspace which refers
+> to the existing name will fail to compile unless I am missing something.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d1d4e49a695a..b79a911f1e32 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6686,6 +6686,7 @@ F:	Documentation/filesystems/f2fs.rst
- F:	fs/f2fs/
- F:	include/linux/f2fs_fs.h
- F:	include/trace/events/f2fs.h
-+F:	include/uapi/linux/f2fs.h
- 
- F71805F HARDWARE MONITORING DRIVER
- M:	Jean Delvare <jdelvare@suse.com>
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index cb700d797296..99bcf4b44a9c 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -402,85 +402,6 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
- 	return size <= MAX_SIT_JENTRIES(journal);
- }
- 
--/*
-- * f2fs-specific ioctl commands
-- */
--#define F2FS_IOCTL_MAGIC		0xf5
--#define F2FS_IOC_START_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 1)
--#define F2FS_IOC_COMMIT_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 2)
--#define F2FS_IOC_START_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 3)
--#define F2FS_IOC_RELEASE_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 4)
--#define F2FS_IOC_ABORT_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 5)
--#define F2FS_IOC_GARBAGE_COLLECT	_IOW(F2FS_IOCTL_MAGIC, 6, __u32)
--#define F2FS_IOC_WRITE_CHECKPOINT	_IO(F2FS_IOCTL_MAGIC, 7)
--#define F2FS_IOC_DEFRAGMENT		_IOWR(F2FS_IOCTL_MAGIC, 8,	\
--						struct f2fs_defragment)
--#define F2FS_IOC_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
--						struct f2fs_move_range)
--#define F2FS_IOC_FLUSH_DEVICE		_IOW(F2FS_IOCTL_MAGIC, 10,	\
--						struct f2fs_flush_device)
--#define F2FS_IOC_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,	\
--						struct f2fs_gc_range)
--#define F2FS_IOC_GET_FEATURES		_IOR(F2FS_IOCTL_MAGIC, 12, __u32)
--#define F2FS_IOC_SET_PIN_FILE		_IOW(F2FS_IOCTL_MAGIC, 13, __u32)
--#define F2FS_IOC_GET_PIN_FILE		_IOR(F2FS_IOCTL_MAGIC, 14, __u32)
--#define F2FS_IOC_PRECACHE_EXTENTS	_IO(F2FS_IOCTL_MAGIC, 15)
--#define F2FS_IOC_RESIZE_FS		_IOW(F2FS_IOCTL_MAGIC, 16, __u64)
--#define F2FS_IOC_GET_COMPRESS_BLOCKS	_IOR(F2FS_IOCTL_MAGIC, 17, __u64)
--#define F2FS_IOC_RELEASE_COMPRESS_BLOCKS				\
--					_IOR(F2FS_IOCTL_MAGIC, 18, __u64)
--#define F2FS_IOC_RESERVE_COMPRESS_BLOCKS				\
--					_IOR(F2FS_IOCTL_MAGIC, 19, __u64)
--#define F2FS_IOC_SEC_TRIM_FILE		_IOW(F2FS_IOCTL_MAGIC, 20,	\
--						struct f2fs_sectrim_range)
--
--/*
-- * should be same as XFS_IOC_GOINGDOWN.
-- * Flags for going down operation used by FS_IOC_GOINGDOWN
-- */
--#define F2FS_IOC_SHUTDOWN	_IOR('X', 125, __u32)	/* Shutdown */
--#define F2FS_GOING_DOWN_FULLSYNC	0x0	/* going down with full sync */
--#define F2FS_GOING_DOWN_METASYNC	0x1	/* going down with metadata */
--#define F2FS_GOING_DOWN_NOSYNC		0x2	/* going down */
--#define F2FS_GOING_DOWN_METAFLUSH	0x3	/* going down with meta flush */
--#define F2FS_GOING_DOWN_NEED_FSCK	0x4	/* going down to trigger fsck */
--
--/*
-- * Flags used by F2FS_IOC_SEC_TRIM_FILE
-- */
--#define F2FS_TRIM_FILE_DISCARD		0x1	/* send discard command */
--#define F2FS_TRIM_FILE_ZEROOUT		0x2	/* zero out */
--#define F2FS_TRIM_FILE_MASK		0x3
--
--struct f2fs_gc_range {
--	u32 sync;
--	u64 start;
--	u64 len;
--};
--
--struct f2fs_defragment {
--	u64 start;
--	u64 len;
--};
--
--struct f2fs_move_range {
--	u32 dst_fd;		/* destination fd */
--	u64 pos_in;		/* start position in src_fd */
--	u64 pos_out;		/* start position in dst_fd */
--	u64 len;		/* size to move */
--};
--
--struct f2fs_flush_device {
--	u32 dev_num;		/* device number to flush */
--	u32 segments;		/* # of segments to flush */
--};
--
--struct f2fs_sectrim_range {
--	u64 start;
--	u64 len;
--	u64 flags;
--};
--
- /* for inline stuff */
- #define DEF_INLINE_RESERVED_SIZE	1
- static inline int get_extra_isize(struct inode *inode);
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index ee861c6d9ff0..d898f1e2764b 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -31,6 +31,7 @@
- #include "gc.h"
- #include "trace.h"
- #include <trace/events/f2fs.h>
-+#include <uapi/linux/f2fs.h>
- 
- static vm_fault_t f2fs_filemap_fault(struct vm_fault *vmf)
- {
-diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-index f8f1e85ff130..56b113e3cd6a 100644
---- a/include/trace/events/f2fs.h
-+++ b/include/trace/events/f2fs.h
-@@ -6,6 +6,7 @@
- #define _TRACE_F2FS_H
- 
- #include <linux/tracepoint.h>
-+#include <uapi/linux/f2fs.h>
- 
- #define show_dev(dev)		MAJOR(dev), MINOR(dev)
- #define show_dev_ino(entry)	show_dev(entry->dev), (unsigned long)entry->ino
-diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
-new file mode 100644
-index 000000000000..ad25786feaa1
---- /dev/null
-+++ b/include/uapi/linux/f2fs.h
-@@ -0,0 +1,86 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _UAPI_LINUX_F2FS_H
-+#define _UAPI_LINUX_F2FS_H
-+
-+#include <linux/ioctl.h>
-+
-+/*
-+ * f2fs-specific ioctl commands
-+ */
-+#define F2FS_IOCTL_MAGIC		0xf5
-+#define F2FS_IOC_START_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 1)
-+#define F2FS_IOC_COMMIT_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 2)
-+#define F2FS_IOC_START_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 3)
-+#define F2FS_IOC_RELEASE_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 4)
-+#define F2FS_IOC_ABORT_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 5)
-+#define F2FS_IOC_GARBAGE_COLLECT	_IOW(F2FS_IOCTL_MAGIC, 6, __u32)
-+#define F2FS_IOC_WRITE_CHECKPOINT	_IO(F2FS_IOCTL_MAGIC, 7)
-+#define F2FS_IOC_DEFRAGMENT		_IOWR(F2FS_IOCTL_MAGIC, 8,	\
-+						struct f2fs_defragment)
-+#define F2FS_IOC_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
-+						struct f2fs_move_range)
-+#define F2FS_IOC_FLUSH_DEVICE		_IOW(F2FS_IOCTL_MAGIC, 10,	\
-+						struct f2fs_flush_device)
-+#define F2FS_IOC_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,	\
-+						struct f2fs_gc_range)
-+#define F2FS_IOC_GET_FEATURES		_IOR(F2FS_IOCTL_MAGIC, 12, __u32)
-+#define F2FS_IOC_SET_PIN_FILE		_IOW(F2FS_IOCTL_MAGIC, 13, __u32)
-+#define F2FS_IOC_GET_PIN_FILE		_IOR(F2FS_IOCTL_MAGIC, 14, __u32)
-+#define F2FS_IOC_PRECACHE_EXTENTS	_IO(F2FS_IOCTL_MAGIC, 15)
-+#define F2FS_IOC_RESIZE_FS		_IOW(F2FS_IOCTL_MAGIC, 16, __u64)
-+#define F2FS_IOC_GET_COMPRESS_BLOCKS	_IOR(F2FS_IOCTL_MAGIC, 17, __u64)
-+#define F2FS_IOC_RELEASE_COMPRESS_BLOCKS				\
-+					_IOR(F2FS_IOCTL_MAGIC, 18, __u64)
-+#define F2FS_IOC_RESERVE_COMPRESS_BLOCKS				\
-+					_IOR(F2FS_IOCTL_MAGIC, 19, __u64)
-+#define F2FS_IOC_SEC_TRIM_FILE		_IOW(F2FS_IOCTL_MAGIC, 20,	\
-+						struct f2fs_sectrim_range)
-+
-+/*
-+ * should be same as XFS_IOC_GOINGDOWN.
-+ * Flags for going down operation used by FS_IOC_GOINGDOWN
-+ */
-+#define F2FS_IOC_SHUTDOWN	_IOR('X', 125, __u32)	/* Shutdown */
-+#define F2FS_GOING_DOWN_FULLSYNC	0x0	/* going down with full sync */
-+#define F2FS_GOING_DOWN_METASYNC	0x1	/* going down with metadata */
-+#define F2FS_GOING_DOWN_NOSYNC		0x2	/* going down */
-+#define F2FS_GOING_DOWN_METAFLUSH	0x3	/* going down with meta flush */
-+#define F2FS_GOING_DOWN_NEED_FSCK	0x4	/* going down to trigger fsck */
-+
-+/*
-+ * Flags used by F2FS_IOC_SEC_TRIM_FILE
-+ */
-+#define F2FS_TRIM_FILE_DISCARD		0x1	/* send discard command */
-+#define F2FS_TRIM_FILE_ZEROOUT		0x2	/* zero out */
-+#define F2FS_TRIM_FILE_MASK		0x3
-+
-+struct f2fs_gc_range {
-+	u32 sync;
-+	u64 start;
-+	u64 len;
-+};
-+
-+struct f2fs_defragment {
-+	u64 start;
-+	u64 len;
-+};
-+
-+struct f2fs_move_range {
-+	u32 dst_fd;		/* destination fd */
-+	u64 pos_in;		/* start position in src_fd */
-+	u64 pos_out;		/* start position in dst_fd */
-+	u64 len;		/* size to move */
-+};
-+
-+struct f2fs_flush_device {
-+	u32 dev_num;		/* device number to flush */
-+	u32 segments;		/* # of segments to flush */
-+};
-+
-+struct f2fs_sectrim_range {
-+	u64 start;
-+	u64 len;
-+	u64 flags;
-+};
-+
-+#endif /* _UAPI_LINUX_F2FS_H */
--- 
-2.26.2
+Although these flags are put in uapi, I found these flags are actually
+internal flags used in "flags" field of struct mempolicy, they are never
+used as flags for any user space API.  I guess they are placed in uapi
+header file to guarantee they aren't conflict with MPOL_MODE_FLAGS.
 
+> Have you checked how many applications would be affected?
+
+Based on above analysis, I think there is no application that will be
+affected.
+
+> Btw I find "follow CoC better" a very weak argument without further
+> explanation.
+
+That is the only reason for the patch.  If nobody thinks the change is
+necessary, I can just drop the patch.
+
+Best Regards,
+Huang, Ying
+
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>> Suggested-by: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+>> Acked-by: Rafael Aquini <aquini@redhat.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Mel Gorman <mgorman@suse.de>
+>> Cc: Rik van Riel <riel@redhat.com>
+>> Cc: Johannes Weiner <hannes@cmpxchg.org>
+>> Cc: Dave Hansen <dave.hansen@intel.com>
+>> Cc: Andi Kleen <ak@linux.intel.com>
+>> Cc: Michal Hocko <mhocko@suse.com>
+>> Cc: David Rientjes <rientjes@google.com>
+>> Cc: Rafael Aquini <aquini@redhat.com>
+>> ---
+>>  include/uapi/linux/mempolicy.h | 2 +-
+>>  kernel/sched/debug.c           | 2 +-
+>>  mm/mempolicy.c                 | 6 +++---
+>>  3 files changed, 5 insertions(+), 5 deletions(-)
+>> 
+>> diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
+>> index 3354774af61e..3c3666d017e6 100644
+>> --- a/include/uapi/linux/mempolicy.h
+>> +++ b/include/uapi/linux/mempolicy.h
+>> @@ -60,7 +60,7 @@ enum {
+>>  #define MPOL_F_SHARED  (1 << 0)	/* identify shared policies */
+>>  #define MPOL_F_LOCAL   (1 << 1)	/* preferred local allocation */
+>>  #define MPOL_F_MOF	(1 << 3) /* this policy wants migrate on fault */
+>> -#define MPOL_F_MORON	(1 << 4) /* Migrate On protnone Reference On Node */
+>> +#define MPOL_F_MOPRON	(1 << 4) /* Migrate On Protnone Reference On Node */
+>>  
+>>  
+>>  #endif /* _UAPI_LINUX_MEMPOLICY_H */
+>> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+>> index 0655524700d2..8bfb6adb3f31 100644
+>> --- a/kernel/sched/debug.c
+>> +++ b/kernel/sched/debug.c
+>> @@ -898,7 +898,7 @@ static void sched_show_numa(struct task_struct *p, struct seq_file *m)
+>>  
+>>  	task_lock(p);
+>>  	pol = p->mempolicy;
+>> -	if (pol && !(pol->flags & MPOL_F_MORON))
+>> +	if (pol && !(pol->flags & MPOL_F_MOPRON))
+>>  		pol = NULL;
+>>  	mpol_get(pol);
+>>  	task_unlock(p);
+>> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+>> index 3fde772ef5ef..f6948b659643 100644
+>> --- a/mm/mempolicy.c
+>> +++ b/mm/mempolicy.c
+>> @@ -2511,7 +2511,7 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+>>  	}
+>>  
+>>  	/* Migrate the page towards the node whose CPU is referencing it */
+>> -	if (pol->flags & MPOL_F_MORON) {
+>> +	if (pol->flags & MPOL_F_MOPRON) {
+>>  		polnid = thisnid;
+>>  
+>>  		if (!should_numa_migrate_memory(current, page, curnid, thiscpu))
+>> @@ -2802,7 +2802,7 @@ void __init numa_policy_init(void)
+>>  		preferred_node_policy[nid] = (struct mempolicy) {
+>>  			.refcnt = ATOMIC_INIT(1),
+>>  			.mode = MPOL_PREFERRED,
+>> -			.flags = MPOL_F_MOF | MPOL_F_MORON,
+>> +			.flags = MPOL_F_MOF | MPOL_F_MOPRON,
+>>  			.v = { .preferred_node = nid, },
+>>  		};
+>>  	}
+>> @@ -3010,7 +3010,7 @@ void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol)
+>>  	unsigned short mode = MPOL_DEFAULT;
+>>  	unsigned short flags = 0;
+>>  
+>> -	if (pol && pol != &default_policy && !(pol->flags & MPOL_F_MORON)) {
+>> +	if (pol && pol != &default_policy && !(pol->flags & MPOL_F_MOPRON)) {
+>>  		mode = pol->mode;
+>>  		flags = pol->flags;
+>>  	}
+>> -- 
+>> 2.28.0
+>> 
