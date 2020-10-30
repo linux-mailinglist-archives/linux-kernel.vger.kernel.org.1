@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696A62A0B1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:30:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E762A0B1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgJ3QaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:30:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725844AbgJ3Q37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:29:59 -0400
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B7B72151B;
-        Fri, 30 Oct 2020 16:29:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604075399;
-        bh=Zd4lIVf1bsz555QMx+XmVLs68UwovqEKCGJ66eBzUhc=;
-        h=From:Date:Subject:To:Cc:From;
-        b=Yo5gl6bWEa+vscqKcXDbnZ+cNEqf+Dqc77TT9cGfbxUDUVNknEn9bm4XT28bgFfSo
-         EIpRMFBAOcaBFTZWaJjbaYlfjb+cy6G14GYmBB0u58zKkDTSfTj8jVjW1DYc7rU5lD
-         K/K7STUnxnSj9L7e7XZLkRB3FfWgsSDC543c1L2g=
-Received: by mail-qv1-f46.google.com with SMTP id w5so2993522qvn.12;
-        Fri, 30 Oct 2020 09:29:59 -0700 (PDT)
-X-Gm-Message-State: AOAM533Qon/54O/4e3BIkPEq7Y07PNxi1i6YHnEGUU40kbaL/Jg7oz6J
-        OyyiC5pPiaoN6Pty0XwKIqV7K9xqLsuANsD0qjs=
-X-Google-Smtp-Source: ABdhPJxzmAmY7xhPzaG3cP5JLj6pWRCKQ2WXEhuCWvPMgxtR74KLqkGKvXmy80cZdRvYbV7SlrEukKe8zjVwGj1uKOQ=
-X-Received: by 2002:a0c:a2a6:: with SMTP id g35mr9870760qva.4.1604075398185;
- Fri, 30 Oct 2020 09:29:58 -0700 (PDT)
+        id S1727126AbgJ3QaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:30:22 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:34363 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725844AbgJ3QaV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:30:21 -0400
+Received: by mail-oi1-f194.google.com with SMTP id l62so1564948oig.1;
+        Fri, 30 Oct 2020 09:30:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=2+04HUHyNvB2dWKZqMu50rtGHzpdRig+Y0RoGuV51Q8=;
+        b=eIOUk47yXQW1kouq5ZUr68lexeLt4irSe+/j09LqwaKglMyaQVrGDK8pLSMwBNnNpD
+         SX5Hl+Ee5033ZtVgwCYoghqUk85MNptiqq1LTmGx9SZMlNP4HV5ZzQkwQ8syAfLXNhc9
+         9006WLOfr+a/bwCCcUn04qbbp/lGI5jHV8BOWeXMg+FcdfAYzPX6yuNRZsfY6s9Ppki3
+         pJGzIt8NpKphgt7k9+CnOwxP1zeeD8n/H6vINJAyVzQljjK9JDu16LnmR887ft0862Zr
+         po99VIOoscfZ5Uch3xM6QjIIF8o3tpGqfTHNmB+3SaRvtReX7Erq7u0QCeoowQlQX1tE
+         KFGg==
+X-Gm-Message-State: AOAM533fwrRhsmQU7v2ce8iCpKERRFE2aSPOknc6TSdG/BwsAYRItD0O
+        eixDQwJBiLfAT5r2BN4mq10eRTKOonxozrzg39g=
+X-Google-Smtp-Source: ABdhPJwerNnfgT5SUDvFOoVErp8Ja5fQETkIuxlUNoo323jNkmX6iKJhIVhgprR1OL3B/6cpe9yNLF9rz9ESEvfytiQ=
+X-Received: by 2002:aca:30d7:: with SMTP id w206mr2221950oiw.69.1604075420623;
+ Fri, 30 Oct 2020 09:30:20 -0700 (PDT)
 MIME-Version: 1.0
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 30 Oct 2020 17:29:42 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a37eA8s68pkHcmR_wtvPaDBouqRF7S2T+t3=YUh9HuCOg@mail.gmail.com>
-Message-ID: <CAK8P3a37eA8s68pkHcmR_wtvPaDBouqRF7S2T+t3=YUh9HuCOg@mail.gmail.com>
-Subject: [GIT PULL] asm-generic: bugfix for v5.10
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 30 Oct 2020 17:30:09 +0100
+Message-ID: <CAJZ5v0g+mRzT6pscD0WKgTTyNqTLbXPvt9Jn27oQ7jtTVEsUdw@mail.gmail.com>
+Subject: [GIT PULL] ACPI fixes for v5.10-rc2
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+Hi Linus,
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+Please pull from the tag
 
-are available in the Git repository at:
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.10-rc2
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git
-tags/asm-generic-fixes-5.10
+with top-most commit 8f7304bb9113c95b256d3aa79a884b4c60a806e1
 
-for you to fetch changes up to 0bcd0a2be8c9ef39d84d167ff85359a49f7be175:
+ Merge branches 'acpi-button' and 'acpi-dock'
 
-  asm-generic: mark __{get,put}_user_fn as __always_inline (2020-10-27
-16:13:09 +0100)
+on top of commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec
 
-----------------------------------------------------------------
-asm-generic: fixes for v5.10
+ Linux 5.10-rc1
 
-There is one small bugfix, fixing a build regression for RISC-V
+to receive ACPI fixes for 5.10-rc2.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+These fix three assorted minor issues.
 
-----------------------------------------------------------------
-Christoph Hellwig (1):
-      asm-generic: mark __{get,put}_user_fn as __always_inline
+Specifics:
 
- include/asm-generic/uaccess.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ - Eliminate compiler warning emitted when building the ACPI dock
+   driver (Arnd Bergmann).
+
+ - Drop lid_init_state quirk for Acer SW5-012 that is not needed any
+   more after recent changes (Hans de Goede).
+
+ - Fix "missing minus" typo in the NFIT parsing code (Zhang Qilong).
+
+Thanks!
+
+
+---------------
+
+Arnd Bergmann (1):
+      ACPI: dock: fix enum-conversion warning
+
+Hans de Goede (1):
+      ACPI: button: Drop no longer necessary Acer SW5-012 lid_init_state quirk
+
+Zhang Qilong (1):
+      ACPI: NFIT: Fix comparison to '-ENXIO'
+
+---------------
+
+ drivers/acpi/button.c    | 13 -------------
+ drivers/acpi/dock.c      |  3 ++-
+ drivers/acpi/nfit/core.c |  2 +-
+ 3 files changed, 3 insertions(+), 15 deletions(-)
