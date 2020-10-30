@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344112A0E40
+	by mail.lfdr.de (Postfix) with ESMTP id A1B662A0E41
 	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727502AbgJ3TDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 15:03:00 -0400
+        id S1727522AbgJ3TDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 15:03:03 -0400
 Received: from mga11.intel.com ([192.55.52.93]:30204 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727430AbgJ3TCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:02:51 -0400
-IronPort-SDR: aZyS2rohDoAuMzVG6G9WhDJhb6cfxXS+UG8JWwtLChYwvvKh+PjMANm4JuR0LebmK9o6dHnR5B
- FyUO74DlMCHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="165154842"
+        id S1727451AbgJ3TCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 15:02:52 -0400
+IronPort-SDR: qTYRaPyLhHmge4V8YZv08hNBqyfIcEArIyZCA5/6C4ByOP40WjJ8LB2KvUHVKCWE7niuMJ6Q0g
+ zLb3o89b/X8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="165154848"
 X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="165154842"
+   d="scan'208";a="165154848"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 12:02:51 -0700
-IronPort-SDR: SuIoIL/dDSU08OxuWu8YahYZfn8VQvQTKVMPi4c+6T8GsDkvv3KVoI87AZbhAFxrAVg2m9nEpy
- ZdMoZYP/dKfA==
+IronPort-SDR: BaEq9jfMC8z/cKfYoy+F1sulYcsqWnz9zF3IlRo+BIpHkuzlqTj/BH3jtO3eGBtkr0xDiResWB
+ Eb95nxA4EEPg==
 X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="537167706"
+   d="scan'208";a="537167713"
 Received: from kingelix-mobl.amr.corp.intel.com (HELO bwidawsk-mobl5.local) ([10.252.139.120])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 12:02:50 -0700
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 12:02:51 -0700
 From:   Ben Widawsky <ben.widawsky@intel.com>
 To:     linux-mm <linux-mm@kvack.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
         Andrew Morton <akpm@linux-foundation.org>
 Cc:     Ben Widawsky <ben.widawsky@intel.com>,
         Dave Hansen <dave.hansen@intel.com>,
         Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/12] mm/mempolicy: VMA allocation for many preferred
-Date:   Fri, 30 Oct 2020 12:02:36 -0700
-Message-Id: <20201030190238.306764-11-ben.widawsky@intel.com>
+Subject: [PATCH 11/12] mm/mempolicy: huge-page allocation for many preferred
+Date:   Fri, 30 Oct 2020 12:02:37 -0700
+Message-Id: <20201030190238.306764-12-ben.widawsky@intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201030190238.306764-1-ben.widawsky@intel.com>
 References: <20201030190238.306764-1-ben.widawsky@intel.com>
@@ -44,84 +45,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch implements MPOL_PREFERRED_MANY for alloc_pages_vma(). Like
-alloc_pages_current(), alloc_pages_vma() needs to support policy based
-decisions if they've been configured via mbind(2).
+Implement the missing huge page allocation functionality while obeying
+the preferred node semantics.
 
-The temporary "hack" of treating MPOL_PREFERRED and MPOL_PREFERRED_MANY
-can now be removed with this, too.
+This uses a fallback mechanism to try multiple preferred nodes first,
+and then all other nodes. It cannot use the helper function that was
+introduced because huge page allocation already has its own helpers and
+it was more LOC, and effort to try to consolidate that.
 
-All the actual machinery to make this work was part of
-("mm/mempolicy: Create a page allocator for policy")
+The weirdness is MPOL_PREFERRED_MANY can't be called yet because it is
+part of the UAPI we haven't yet exposed. Instead of make that define
+global, it's simply changed with the UAPI patch.
 
-Link: https://lore.kernel.org/r/20200630212517.308045-11-ben.widawsky@intel.com
+Link: https://lore.kernel.org/r/20200630212517.308045-12-ben.widawsky@intel.com
 Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
 ---
- mm/mempolicy.c | 29 +++++++++++++++++++++--------
- 1 file changed, 21 insertions(+), 8 deletions(-)
+ mm/hugetlb.c   | 20 +++++++++++++++++---
+ mm/mempolicy.c |  3 ++-
+ 2 files changed, 19 insertions(+), 4 deletions(-)
 
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index fe76f8fd5a73..d9acc25ed3b5 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1094,7 +1094,7 @@ static struct page *dequeue_huge_page_vma(struct hstate *h,
+ 				unsigned long address, int avoid_reserve,
+ 				long chg)
+ {
+-	struct page *page;
++	struct page *page = NULL;
+ 	struct mempolicy *mpol;
+ 	gfp_t gfp_mask;
+ 	nodemask_t *nodemask;
+@@ -1115,7 +1115,14 @@ static struct page *dequeue_huge_page_vma(struct hstate *h,
+ 
+ 	gfp_mask = htlb_alloc_mask(h);
+ 	nid = huge_node(vma, address, gfp_mask, &mpol, &nodemask);
+-	page = dequeue_huge_page_nodemask(h, gfp_mask, nid, nodemask);
++	if (mpol->mode != MPOL_BIND && nodemask) { /* AKA MPOL_PREFERRED_MANY */
++		page = dequeue_huge_page_nodemask(h, gfp_mask | __GFP_RETRY_MAYFAIL,
++						  nid, nodemask);
++		if (!page)
++			page = dequeue_huge_page_nodemask(h, gfp_mask, nid, NULL);
++	} else {
++		page = dequeue_huge_page_nodemask(h, gfp_mask, nid, nodemask);
++	}
+ 	if (page && !avoid_reserve && vma_has_reserves(vma, chg)) {
+ 		SetPagePrivate(page);
+ 		h->resv_huge_pages--;
+@@ -1977,7 +1984,14 @@ struct page *alloc_buddy_huge_page_with_mpol(struct hstate *h,
+ 	nodemask_t *nodemask;
+ 
+ 	nid = huge_node(vma, addr, gfp_mask, &mpol, &nodemask);
+-	page = alloc_surplus_huge_page(h, gfp_mask, nid, nodemask);
++	if (mpol->mode != MPOL_BIND && nodemask) { /* AKA MPOL_PREFERRED_MANY */
++		page = alloc_surplus_huge_page(h, gfp_mask | __GFP_RETRY_MAYFAIL,
++					       nid, nodemask);
++		if (!page)
++			alloc_surplus_huge_page(h, gfp_mask, nid, NULL);
++	} else {
++		page = alloc_surplus_huge_page(h, gfp_mask, nid, nodemask);
++	}
+ 	mpol_cond_put(mpol);
+ 
+ 	return page;
 diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 2d19235413db..343340c87f03 100644
+index 343340c87f03..aab9ef698aa8 100644
 --- a/mm/mempolicy.c
 +++ b/mm/mempolicy.c
-@@ -2259,8 +2259,6 @@ alloc_pages_vma(gfp_t gfp, int order, struct vm_area_struct *vma,
- {
- 	struct mempolicy *pol;
- 	struct page *page;
--	int preferred_nid;
--	nodemask_t *nmask;
- 
- 	pol = get_vma_policy(vma, addr);
- 
-@@ -2274,6 +2272,7 @@ alloc_pages_vma(gfp_t gfp, int order, struct vm_area_struct *vma,
+@@ -2075,7 +2075,8 @@ int huge_node(struct vm_area_struct *vma, unsigned long addr, gfp_t gfp_flags,
+ 					huge_page_shift(hstate_vma(vma)));
+ 	} else {
+ 		nid = policy_node(gfp_flags, *mpol, numa_node_id());
+-		if ((*mpol)->mode == MPOL_BIND)
++		if ((*mpol)->mode == MPOL_BIND ||
++		    (*mpol)->mode == MPOL_PREFERRED_MANY)
+ 			*nodemask = &(*mpol)->nodes;
  	}
- 
- 	if (unlikely(IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) && hugepage)) {
-+		nodemask_t *nmask;
- 		int hpage_node = node;
- 
- 		/*
-@@ -2287,10 +2286,26 @@ alloc_pages_vma(gfp_t gfp, int order, struct vm_area_struct *vma,
- 		 * does not allow the current node in its nodemask, we allocate
- 		 * the standard way.
- 		 */
--		if ((pol->mode == MPOL_PREFERRED ||
--		     pol->mode == MPOL_PREFERRED_MANY) &&
--		    !(pol->flags & MPOL_F_LOCAL))
-+		if (pol->mode == MPOL_PREFERRED || !(pol->flags & MPOL_F_LOCAL)) {
- 			hpage_node = first_node(pol->nodes);
-+		} else if (pol->mode == MPOL_PREFERRED_MANY) {
-+			struct zoneref *z;
-+
-+			/*
-+			 * In this policy, with direct reclaim, the normal
-+			 * policy based allocation will do the right thing - try
-+			 * twice using the preferred nodes first, and all nodes
-+			 * second.
-+			 */
-+			if (gfp & __GFP_DIRECT_RECLAIM) {
-+				page = alloc_pages_policy(pol, gfp, order, NUMA_NO_NODE);
-+				goto out;
-+			}
-+
-+			z = first_zones_zonelist(node_zonelist(numa_node_id(), GFP_HIGHUSER),
-+						 gfp_zone(GFP_HIGHUSER), &pol->nodes);
-+			hpage_node = zone_to_nid(z->zone);
-+		}
- 
- 		nmask = policy_nodemask(gfp, pol);
- 		if (!nmask || node_isset(hpage_node, *nmask)) {
-@@ -2316,9 +2331,7 @@ alloc_pages_vma(gfp_t gfp, int order, struct vm_area_struct *vma,
- 		}
- 	}
- 
--	nmask = policy_nodemask(gfp, pol);
--	preferred_nid = policy_node(gfp, pol, node);
--	page = __alloc_pages_nodemask(gfp, order, preferred_nid, nmask);
-+	page = alloc_pages_policy(pol, gfp, order, NUMA_NO_NODE);
- 	mpol_cond_put(pol);
- out:
- 	return page;
+ 	return nid;
 -- 
 2.29.2
 
