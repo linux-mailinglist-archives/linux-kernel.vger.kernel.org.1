@@ -2,121 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B33E2A0274
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D150D2A028E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgJ3KKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:10:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
+        id S1726656AbgJ3KLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726596AbgJ3KKU (ORCPT
+        with ESMTP id S1726318AbgJ3KLK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:10:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBA7C0613CF;
-        Fri, 30 Oct 2020 03:10:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=u7YtPu1a20CnPHKzQzS9jt9YAYOEyPc1Wfcc8V34Xok=; b=fVtxGVHLRaB/i9LkESEDWY4fpY
-        i1nZDijtIzs41S7n2+bLrB1hRAtmpSLn55vJmu3SVqpsd/cccJGwSqAMDzFIn6Cd65G4QVAiZMkhw
-        oOC+dvwW+up7FAVrEgw+uu7d93QJDK6PzTBYn3DekeUNXXD2rooW09tj9dSBlsski5m2hjjh21wjd
-        V0MfX3DJcVT+NHG4uwVzlLiaLsBsTP/zsTzvYyhS4/wWNEf3+gij5dQ2JKukorVbT5GdYMr8+Z2pG
-        Fk09Ew+jE6c1rsXU2eVd9BsphbsVJseRUBAZyWw32IIUkNr+2uDujapgkD3FBUNVPDO+swYk3pToJ
-        KvHniNtQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYRMF-0008Dy-CF; Fri, 30 Oct 2020 10:10:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E2E79307197;
-        Fri, 30 Oct 2020 11:10:04 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D01612BEF0521; Fri, 30 Oct 2020 11:10:04 +0100 (CET)
-Date:   Fri, 30 Oct 2020 11:10:04 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mark Wielaard <mark@klomp.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-toolchains@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Phillips, Kim" <kim.phillips@amd.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: Additional debug info to aid cacheline analysis
-Message-ID: <20201030101004.GB2628@hirez.programming.kicks-ass.net>
-References: <20201006131703.GR2628@hirez.programming.kicks-ass.net>
- <CABPqkBSkdqXjm6QuF9j6AO8MUnt1yZ_cA2PV=Qo8e4wKmK_6Ug@mail.gmail.com>
- <20201008070231.GS2628@hirez.programming.kicks-ass.net>
- <50338de81b34031db8637337f08b89b588476211.camel@klomp.org>
- <CAM9d7chX+VxN+6T0y=CWfiMPWY6em3grGJL+oYnX99aOfFO2fg@mail.gmail.com>
- <20201030091649.GB3100@wildebeest.org>
+        Fri, 30 Oct 2020 06:11:10 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52163C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:11:10 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id l2so4346646qkf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4C47VY8rj0f0TZkMvqSBACCRHl1uymcfamoikS1zYcw=;
+        b=ZUIXyGrxqh9DiUr8d9MeGkConoqvm6ObHQ05opE3WL+oxpY95+e0pXoTZpazAnJMUk
+         /Kpd3kVuSzz37kWQWWVS++MGsQxcNg/fi9BmtuCL8COxPsFgXUTKqD002hY9Rv2+q+a2
+         lCK8dou+h9z+Rge7Z4UnslRgBI38LiAp+15JB2f0UoDZMpW8NkjEqMcFMryvl/AAHxbO
+         9akHHvim1WSvYOSyEcxWj4+VTGhAG/7hrZ1T7kwMTeb9nrj/kKhP3pbyecT/QUF3/zeU
+         1sVkLEBUeKon2tnfC/PVvi0Z5bqtDJ7qIoUWX2DIT7iTF6/dPs3JmqEcUlx+gxR+2eU/
+         IWVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4C47VY8rj0f0TZkMvqSBACCRHl1uymcfamoikS1zYcw=;
+        b=qvat6xtJC7iY8y+1k8gHFBe8qGXVXzR/h1XVgeR7hVDbmlZgz7s4oXOeJjoI0ImOS/
+         xSCs5ZQm39bUXvQAg38suVkzk9OPtNpCsDXZXF5DLGoPtTEaI45/ZxD2Zn4chbNy++h5
+         2qPoO05sq8wgqHci5tDj8XTAS7xDKanD8wH+mPhJw2ZN0LdJEcWNm1T6xgV13jtzkOVq
+         RK95kpZ8cw7yzss+0uAYovKDK4r6KPVip4wOH+dS5sTfkmZXWEnXGj8ppA7KmGaObv3f
+         pp26h4nreK6qXjCbz4rYdhdT7EhTZ0QzU+p3W01rLoVtngLrPjUWOWu88Bb8xOyXiuom
+         YQDw==
+X-Gm-Message-State: AOAM533DMo5h2Hno/qG072CiMi47K0EHcxjEFeCJZ9eaknPYPTLZHdxx
+        6v6FFuK2u4R+7vaBidllPFBSomHqXyCrHZmqsQutxg==
+X-Google-Smtp-Source: ABdhPJxf/3+v4bL4dn7MpW2/9jzHYsQxYUtbGD8a7hjNUYn2i5+nq928uMVooytEb5gTEofbRIXzLVX5oZ5G0aEsDsQ=
+X-Received: by 2002:a37:9747:: with SMTP id z68mr1265803qkd.424.1604052669287;
+ Fri, 30 Oct 2020 03:11:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030091649.GB3100@wildebeest.org>
+References: <0000000000008fbadb05af94b61e@google.com> <01bcf380-c806-02fa-67ac-ff66fd0100c7@oracle.com>
+In-Reply-To: <01bcf380-c806-02fa-67ac-ff66fd0100c7@oracle.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 30 Oct 2020 11:10:58 +0100
+Message-ID: <CACT4Y+ZakmsaKN+R94SWyErZc6FeKcmBP8d5yY8FO4+aL5WxOw@mail.gmail.com>
+Subject: Re: WARNING in close_fs_devices (2)
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     syzbot <syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com>,
+        Chris Mason <clm@fb.com>, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 10:16:49AM +0100, Mark Wielaard wrote:
-> Hi Namhyung,
-> 
-> On Fri, Oct 30, 2020 at 02:26:19PM +0900, Namhyung Kim wrote:
-> > On Thu, Oct 8, 2020 at 6:38 PM Mark Wielaard <mark@klomp.org> wrote:
-> > > GCC using -fvar-tracking and -fvar-tracking-assignments is pretty good
-> > > at keeping track of where variables are held (in memory or registers)
-> > > when in the program, even through various optimizations.
-> > >
-> > > -fvar-tracking-assignments is the default with -g -O2.
-> > > Except for the upstream linux kernel code. Most distros enable it
-> > > again, but you do want to enable it by hand when building from the
-> > > upstream linux git repo.
-> > 
-> > Please correct me if I'm wrong.  This seems to track local variables.
-> > But I'm not sure it's enough for this purpose as we want to know
-> > types of any memory references (not directly from a variable).
-> > 
-> > Let's say we have a variable like below:
-> > 
-> >   struct xxx a;
-> > 
-> >   a.b->c->d++;
-> > 
-> > And we have a sample where 'd' is updated, then how can we know
-> > it's from the variable 'a'?  Maybe we don't need to know it, but we
-> > should know it accesses the 'd' field in the struct 'c'.
-> > 
-> > Probably we can analyze the asm code and figure out it's from 'a'
-> > and accessing 'd' at the moment.  I'm curious if there's a way in
-> > the DWARF to help this kind of work.
-> 
-> DWARF does have that information, but it stores it in a way that is
-> kind of opposite to how you want to access it. Given a variable and an
-> address, you can easily get the location where that variable is
-> stored. But if you want to map back from a given (memory) location and
-> address to the variable, that is more work.
+On Tue, Sep 22, 2020 at 2:37 PM Anand Jain <anand.jain@oracle.com> wrote:
+>
+> On 18/9/20 7:22 pm, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    e4c26faa Merge tag 'usb-5.9-rc5' of git://git.kernel.org/p..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=15bf1621900000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=4cfe71a4da060be47502
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
+> >
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 1 PID: 3612 at fs/btrfs/volumes.c:1166 close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
+> > Kernel panic - not syncing: panic_on_warn set ...
+> > CPU: 1 PID: 3612 Comm: syz-executor.2 Not tainted 5.9.0-rc4-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Call Trace:
+> >   __dump_stack lib/dump_stack.c:77 [inline]
+> >   dump_stack+0x198/0x1fd lib/dump_stack.c:118
+> >   panic+0x347/0x7c0 kernel/panic.c:231
+> >   __warn.cold+0x20/0x46 kernel/panic.c:600
+> >   report_bug+0x1bd/0x210 lib/bug.c:198
+> >   handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+> >   exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+> >   asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+> > RIP: 0010:close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
+> > Code: 0f b6 04 02 84 c0 74 02 7e 33 48 8b 44 24 18 c6 80 30 01 00 00 00 48 83 c4 30 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 99 ce 6a fe <0f> 0b e9 71 ff ff ff e8 8d ce 6a fe 0f 0b e9 20 ff ff ff e8 d1 d5
+> > RSP: 0018:ffffc900091777e0 EFLAGS: 00010246
+> > RAX: 0000000000040000 RBX: ffffffffffffffff RCX: ffffc9000c8b7000
+> > RDX: 0000000000040000 RSI: ffffffff83097f47 RDI: 0000000000000007
+> > RBP: dffffc0000000000 R08: 0000000000000001 R09: ffff8880988a187f
+> > R10: 0000000000000000 R11: 0000000000000001 R12: ffff88809593a130
+> > R13: ffff88809593a1ec R14: ffff8880988a1908 R15: ffff88809593a050
+> >   close_fs_devices fs/btrfs/volumes.c:1193 [inline]
+> >   btrfs_close_devices+0x95/0x1f0 fs/btrfs/volumes.c:1179
+> >   open_ctree+0x4984/0x4a2d fs/btrfs/disk-io.c:3434
+> >   btrfs_fill_super fs/btrfs/super.c:1316 [inline]
+> >   btrfs_mount_root.cold+0x14/0x165 fs/btrfs/super.c:1672
+> >   legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+> >   vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+> >   fc_mount fs/namespace.c:978 [inline]
+> >   vfs_kern_mount.part.0+0xd3/0x170 fs/namespace.c:1008
+> >   vfs_kern_mount+0x3c/0x60 fs/namespace.c:995
+> >   btrfs_mount+0x234/0xaa0 fs/btrfs/super.c:1732
+> >   legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+> >   vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+> >   do_new_mount fs/namespace.c:2875 [inline]
+> >   path_mount+0x1387/0x2070 fs/namespace.c:3192
+> >   do_mount fs/namespace.c:3205 [inline]
+> >   __do_sys_mount fs/namespace.c:3413 [inline]
+> >   __se_sys_mount fs/namespace.c:3390 [inline]
+> >   __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
+> >   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > RIP: 0033:0x46004a
+> > Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da 89 fb ff c3 66 0f 1f 84 00 00 00 00 00
+> > RSP: 002b:00007f414d78da88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+> > RAX: ffffffffffffffda RBX: 00007f414d78db20 RCX: 000000000046004a
+> > RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f414d78dae0
+> > RBP: 00007f414d78dae0 R08: 00007f414d78db20 R09: 0000000020000000
+> > R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
+> > R13: 0000000020000100 R14: 0000000020000200 R15: 000000002001a800
+> > Kernel Offset: disabled
+> > Rebooting in 86400 seconds..
+>
+>
+> #syz fix: btrfs: fix rw_devices count in __btrfs_free_extra_devids
 
-The principal idea in this thread doesn't care about the address of the
-variables. The idea was to get the data type and member information from
-the instruction.
-
-So in the above example: a.b->c->d++; what we'll end up with is
-something like:
-
-	inc	8(%rax)
-
-Where %rax contains c, and the offset of d in c is 8.
-
-So what we want to (easily) find for that instruction is c::d.
-
-So given any instruction with a memop (either load or store) we want to
-find: type::member.
-
-
+Is it the correct patch title? It still does not exist anywhere
+including linux-next...
