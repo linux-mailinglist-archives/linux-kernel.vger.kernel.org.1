@@ -2,120 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4235329FA76
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CB329FA83
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725831AbgJ3BUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 21:20:20 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15554 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgJ3BUU (ORCPT
+        id S1725996AbgJ3BX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 21:23:29 -0400
+Received: from smtprelay0213.hostedemail.com ([216.40.44.213]:52318 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725379AbgJ3BX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 21:20:20 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9b6a590000>; Thu, 29 Oct 2020 18:20:25 -0700
-Received: from [10.2.173.19] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
- 2020 01:20:19 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Yang Shi <shy828301@gmail.com>, Linux MM <linux-mm@kvack.org>,
-        Rik van Riel <riel@surriel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-Subject: Re: [PATCH] mm/compaction: count pages and stop correctly during page
- isolation.
-Date:   Thu, 29 Oct 2020 21:20:16 -0400
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <7DC14FB8-8DA4-4DB4-BB0B-3409CA8D6DD9@nvidia.com>
-In-Reply-To: <20201029172822.da31fa5ab34c3a795361768f@linux-foundation.org>
-References: <20201029200435.3386066-1-zi.yan@sent.com>
- <CAHbLzkpka7s1DFeXO5dxfGvxZFcTYb9KH0AE_AXuxeFO4q_rtg@mail.gmail.com>
- <EC915762-AE2E-4ACB-AB27-E7C95A584A0C@nvidia.com>
- <20201029172822.da31fa5ab34c3a795361768f@linux-foundation.org>
+        Thu, 29 Oct 2020 21:23:27 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A389A18029210;
+        Fri, 30 Oct 2020 01:23:25 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1042:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2525:2538:2560:2563:2682:2685:2691:2734:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3855:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:6117:6119:6742:9025:9108:10004:10400:10848:11232:11658:11914:12043:12297:12679:12740:12760:12895:13069:13161:13200:13229:13311:13357:13439:14096:14097:14659:14721:14819:21063:21067:21080:21451:21627:21772:30054:30067:30070:30079:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: teeth17_541127c27292
+X-Filterd-Recvd-Size: 2939
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 30 Oct 2020 01:23:22 +0000 (UTC)
+Message-ID: <0b286566394d2e65cf3977ce3a76c6bbc18cb947.camel@perches.com>
+Subject: Re: [PATCH] z2ram: MODULE_LICENSE update and neatening
+From:   Joe Perches <joe@perches.com>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        Hannes Reinecke <hare@suse.de>
+Date:   Thu, 29 Oct 2020 18:23:21 -0700
+In-Reply-To: <202d1246a14617e4e7a4a7b723dc92191815d134.camel@HansenPartnership.com>
+References: <20201029145841.144173-1-hch@lst.de>
+         <20201029145841.144173-18-hch@lst.de>
+         <4945b720d67e9f67b8c8ba02a29c6af1ffa15b08.camel@perches.com>
+         <202d1246a14617e4e7a4a7b723dc92191815d134.camel@HansenPartnership.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: multipart/signed;
-        boundary="=_MailMate_F7AF6098-5787-4D04-BE62-9B2642263752_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604020825; bh=mvZsLVM6tlK6PbjaUtfB4jNu8ApWwcVhlCkzmZmnkzk=;
-        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
-         References:MIME-Version:Content-Type:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=PVbfUvLB+69Tb4HT5qcDP0k+dYwzMNRTqvuiIWEdPmfliK/0EI6jcQ1DTL67sHRTt
-         IMZnAeq0hse4NS9cdN3B4CLJhcAnGVaKOSa5hpXcKdwzZc91Fi7qPt8PNIfIBmSPM/
-         rvrNbLTnjK9EUYeqpNWGF8djdyrilOya5k0NYz5cxMGPIPsdhDa/xSwUP+YIr+P0H7
-         vR+C1SA8quFRODqoU9REMd9m1X59xztMXalWsJYkjemWwSM120HkDMhMZRmjEbZYrA
-         7fqca2gBYwixOno0NEJWUx9IBINwzpuZGzTf+MEv44z/OWJq6CoUIKev3Tekl8ZrX2
-         K6YeXpD5WfhGA==
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_F7AF6098-5787-4D04-BE62-9B2642263752_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Thu, 2020-10-29 at 18:01 -0700, James Bottomley wrote:
+> On Thu, 2020-10-29 at 17:11 -0700, Joe Perches wrote:
+> > This file still does not have an SPDX line.  What should it be?
+> 
+> It's old style MIT with a slight variation:
+> 
+> https://fedoraproject.org/wiki/Licensing:MIT#Old_Style
 
-On 29 Oct 2020, at 20:28, Andrew Morton wrote:
+Yes, it's quite similar.
+But ", and sell" does not exist in this variant.
 
-> On Thu, 29 Oct 2020 17:31:28 -0400 Zi Yan <ziy@nvidia.com> wrote:
->
->>>
->>> Shall you add Fixes tag to commit
->>> 1da2f328fa643bd72197dfed0c655148af31e4eb? And may cc stable.
->>
->> Sure.
->>
->> Fixes: 1da2f328fa64 (=E2=80=9Cmm,thp,compaction,cma: allow THP migrati=
-on for CMA allocations=E2=80=9D)
->>
->> stable cc'ed.
->
-> A think a cc:stable really requires a description of the end-user
-> visible effects of the bug.  Could you please provide that?
+So I believe its use of MODULE_LICENSE("GPL") is not correct and
+that MODULE_LICENSE("GPL and additional rights") might be the best
+available option.
 
-Sure.
+MIT Old style:
 
-For example, in a system with 16GB memory and an 8GB CMA region reserved =
-by hugetlb_cma,
-if we first allocate 10GB THPs and mlock them (so some THPs are allocated=
- in the CMA
-region and mlocked), reserving 6 1GB hugetlb pages via
-/sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages will get stuck =
-(looping
-in too_many_isolated function) until we kill either task. With the patch =
-applied,
-oom will kill the application with 10GB THPs and let hugetlb page reserva=
-tion finish.
+Permission to use, copy, modify, distribute, and sell this software and its
+documentation for any purpose is hereby granted without fee, provided that
+the above copyright notice appear in all copies and that both that
+copyright notice and this permission notice appear in supporting
+documentation.  No representations are made about the suitability of this
+software for any purpose.  It is provided "as is" without express or
+implied warranty.
 
-=E2=80=94
-Best Regards,
-Yan Zi
+License in the file:
 
---=_MailMate_F7AF6098-5787-4D04-BE62-9B2642263752_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted, provided
+ * that the above copyright notice appear in all copies and that both that
+ * copyright notice and this permission notice appear in supporting
+ * documentation.  This software is provided "as is" without express or
+ * implied warranty.
 
------BEGIN PGP SIGNATURE-----
 
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+balAPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKM68P/0+QGFqt++5awuTrfb0Lct/UGOPe0oz/k7Qy
-uVG1tVaiWcUKjl3qHvt0twOPjslKMzV/CqxJ418XzqnM5w3oMOi5g1WSmABAQyyA
-B+4D3D+rpgN5gep7V+DXxbHIecmBXHsmVw0wcCShgQwkO5BYAed3fduPNiSRSYRb
-JUVXyBkyzg9mTV1pFXIdXoYrfy/iy8OTUceRUfmUGr/Sjx8tgLuxFx73iGG0kDPK
-UZHUi8DZ1BMrOJ6wJb9H1WbFOyIZhsk6BwsvFm/8OinOTuckLo1ikXOXkdDU70fS
-tMC8C2HuLLt5UFBpa7XYfDhk2CwlAM1BEtb1z1Q6eeLQnTNUH34wOEDJlRmnwLkO
-VBC+B0wKthSWDhaTmqfwxB+Hg2Ve87gKcgSiyjTq8i+MdPQVuXSOY27AApFetQby
-Vqt9VJXMzgOnkBnT31L9ITEEz9Ciy29OtA3tZ8cfLTidNlNiPCR7UiNqz7fRKfbh
-8oqstMbxl5H6/yXlMRb1ZcIj9KW6xY75pH0TfYo4aVDsggCgXqadUTqk9GIsJTOj
-nJETE6WzSdTU17nDFF5gUWsoUZSC6AHbJcpFRnXAjoGdd26rrzaW+H6lShCIL3pZ
-2hXBD1vGU9BMV0LSuQQxIzo8LyynzrmfYabUSiUbdI2JesIcvMz/cYlqSeNzEzZF
-Oo8hV/Xn
-=2Vrc
------END PGP SIGNATURE-----
-
---=_MailMate_F7AF6098-5787-4D04-BE62-9B2642263752_=--
