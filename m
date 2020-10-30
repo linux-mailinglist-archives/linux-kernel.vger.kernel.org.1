@@ -2,101 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F992A075B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2BC2A0765
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgJ3ODI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:03:08 -0400
-Received: from mga02.intel.com ([134.134.136.20]:43064 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726878AbgJ3ODI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:03:08 -0400
-IronPort-SDR: +rjR0DeCvQyCDw67nVe9mLVMAHKG7RBuWMWfMMe1y7PNpDJe25g1ckrlj/CGo6xGskI2T0MYxP
- Lsz1qJUHIIYw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="155583784"
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
-   d="scan'208";a="155583784"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 07:02:55 -0700
-IronPort-SDR: Q3U52sSfyDhy6D8+Qn+ADT9gbqGym7r6Q48NRQeuEJGqTkHVSZRpMjbn+IWhWWqRZjw0fMVrV2
- hnQt1dBzl8CQ==
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
-   d="scan'208";a="537074393"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.168.224]) ([10.249.168.224])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 07:02:49 -0700
-Subject: Re: [mm] e6e88712e4: stress-ng.tmpfs.ops_per_sec -69.7% regression
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Huang Ying <ying.huang@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Qian Cai <cai@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, lkp@intel.com, feng.tang@intel.com,
-        zhengjun.xing@intel.com
-References: <20201030071715.GV31092@shao2-debian>
- <20201030131711.GJ27442@casper.infradead.org>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <dc3864d6-f474-02b8-fdf2-ca138afe3735@intel.com>
-Date:   Fri, 30 Oct 2020 22:02:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726634AbgJ3OHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbgJ3OHA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 10:07:00 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3881C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:06:05 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id i21so4139083qka.12
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:06:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=XFvLixYNsnzdj4toTcnFoItKGAiR6MimcB7uXhxEsAY=;
+        b=YdSmPnE65j6ZxU34kUIayYUWOJdr/r9gmpdMjuHb3lqo4k7Ldna9+SpQYp+Q/O0rpo
+         WDajdXIoc3E12pCo7NqjkA5VdTd3GcxyIs6fRkV9TDwZFbcvFqV+vpX1kEwgkglssWVp
+         hrXznUwOVgnLP4ssAB6TzjQZYCZCsYzKg3NFhoUAkFoL5+R2IA2zHpXGCyjZ/IF6/MMx
+         gqFNMF1zPrQ27+qJm3plMXyMAHfqxPv8dn/ClpIMvSHlmfhmD44gWnz56F6/+2+9h2y+
+         kYQTmd6XxzlYFlW17S94k8DW9B2C0Zx8DoGp66gvVqRDJ3ZbNZTsrXicfYnke5xW9AFr
+         1v2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XFvLixYNsnzdj4toTcnFoItKGAiR6MimcB7uXhxEsAY=;
+        b=aErasn0qp7etrvXkKgJiAuf7v0InhmJ0LpilpbhZGvmvUd7Q2fbJ8rZr8XIGKdrEJG
+         +O89E9xD0JjwdPGNlSoY2CsBedUVpPwYNusj13CZ1xHjpW3pGLUF9xB5zjjDlB2uiMrA
+         YnL5nt7D1d9R+PeafWMAKFqpq6V6kvUJkiiwds6dsFtXDT5Z1O1020ClpwhISruH322P
+         5KB4Bx1s5S+p0bQz0X0zMTgi8QmYC9fhjXnV83/CrGAyQalv5kI981g8iJibHlU4FJ0S
+         cFl+sAIcqhR5RhyW1wYZLKlNGfOMKc6lax+x+cvXMk+7qtApXBPfWmgP4qpbYOKRRd/3
+         G67A==
+X-Gm-Message-State: AOAM533KbeZfJwYT+O6VADCRu4/r6KoNokNxsIoW7xbZubW+0L3oqxw/
+        PPD9pCZu0FOjsGWtetplFAxdfA==
+X-Google-Smtp-Source: ABdhPJy6GSdDtgopMaSrcuhTI50F6OgXI/etTV6OK///4TfnmY4zL1gXH/AwTDzNi59Yk5VOzZtUbA==
+X-Received: by 2002:ae9:e802:: with SMTP id a2mr2343108qkg.227.1604066764803;
+        Fri, 30 Oct 2020 07:06:04 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:fb53])
+        by smtp.gmail.com with ESMTPSA id 19sm2609429qki.33.2020.10.30.07.06.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 07:06:03 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 10:04:20 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH v20 02/20] mm/memcg: bail early from swap accounting if
+ memcg disabled
+Message-ID: <20201030140420.GB666074@cmpxchg.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-3-git-send-email-alex.shi@linux.alibaba.com>
+ <20201029134648.GC599825@cmpxchg.org>
+ <96b6d122-df0e-dfb0-368c-6bd714fab116@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20201030131711.GJ27442@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <96b6d122-df0e-dfb0-368c-6bd714fab116@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/30/2020 9:17 PM, Matthew Wilcox wrote:
-> On Fri, Oct 30, 2020 at 03:17:15PM +0800, kernel test robot wrote:
->> Details are as below:
->> -------------------------------------------------------------------------------------------------->
->>
->>
->> To reproduce:
->>
->>          git clone https://github.com/intel/lkp-tests.git
->>          cd lkp-tests
->>          bin/lkp install job.yaml  # job file is attached in this email
->>          bin/lkp run     job.yaml
+On Fri, Oct 30, 2020 at 10:27:51AM +0800, Alex Shi wrote:
 > 
-> Do you actually test these instructions before you send them out?
 > 
-> hdd_partitions: "/dev/disk/by-id/ata-WDC_WD2500BEKT-00PVMT0_WD-WX11A23L4840-part
-> 1"
-> ssd_partitions: "/dev/nvme1n1p1 /dev/nvme0n1p1"
-> rootfs_partition: "/dev/disk/by-id/ata-INTEL_SSDSC2CW240A3_CVCV204303WP240CGN-part1"
+> 在 2020/10/29 下午9:46, Johannes Weiner 写道:
+> >>  ? release_pages+0x1ae/0x410
+> >>  shmem_alloc_and_acct_page+0x77/0x1c0
+> >>  shmem_getpage_gfp+0x162/0x910
+> >>  shmem_fault+0x74/0x210
+> >>  ? filemap_map_pages+0x29c/0x410
+> >>  __do_fault+0x37/0x190
+> >>  handle_mm_fault+0x120a/0x1770
+> >>  exc_page_fault+0x251/0x450
+> >>  ? asm_exc_page_fault+0x8/0x30
+> >>  asm_exc_page_fault+0x1e/0x30
+> >>
+> >> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> >> Reviewed-by: Roman Gushchin <guro@fb.com>
+> >> Acked-by: Michal Hocko <mhocko@suse.com>
+> >> Acked-by: Hugh Dickins <hughd@google.com>
+> >> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> >> Cc: Michal Hocko <mhocko@kernel.org>
+> >> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> >> Cc: Andrew Morton <akpm@linux-foundation.org>
+> >> Cc: cgroups@vger.kernel.org
+> >> Cc: linux-mm@kvack.org
+> >> Cc: linux-kernel@vger.kernel.org
+> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > 
+> > This should go in before the previous patch that adds the WARN for it.
 > 
-> That's _very_ specific to a given machine.  I'm not familiar with
-> this test, so I don't know what I need to change.
+> Right, but than the long ops may not weird. Should I remove the ops and resend the whole patchset?
 
+You mean the warning in the changelog? I think that's alright. You can
+just say that you're about to remove the !page->memcg check in the
+next patch because the original reasons for having it are gone, and
+memcg being disabled is the only remaining exception, so this patch
+makes that check explicit in preparation for the next.
 
-Hi Matthew,
-
-Sorry about that, I copied the job.yaml file from the server,
-the right way to do is to set your disk partitions in the yaml,
-please see https://github.com/intel/lkp-tests#run-your-own-disk-partitions.
-
-there is another reproduce script attached in the original mail
-for your reference.
-
-Best Regards,
-Rong Chen
-
-
-
-> 
-> [snipped 4000 lines of gunk]
-> 
+Sorry, it's all a bit of a hassle, I just wouldn't want to introduce a
+known warning into the kernel between those two patches (could confuse
+bisection runs, complicates partial reverts etc.)
