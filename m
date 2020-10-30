@@ -2,93 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262142A0D50
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 688FC2A0D53
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgJ3SYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgJ3SYv (ORCPT
+        id S1727044AbgJ3S0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:26:40 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:26669 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726061AbgJ3S0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:24:51 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156E5C0613CF;
-        Fri, 30 Oct 2020 11:24:51 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id j24so9833712ejc.11;
-        Fri, 30 Oct 2020 11:24:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1GiuXwACspAwUSLnSPZJpvg6PgQyL8EK07COgwjeSeo=;
-        b=RxVlWt0YJULnLaCMp1skZbYCy9kyBPWrcjYb2YLiaOvGsKmUHravyblcgO2AEe1Mxy
-         g4lmhctwhVkLj7WTOz9iQ9VZ9ATYUcbIun+SLMJlQmMgFrtdoWLq/VIwpxeX6HSNBlSR
-         KjmV4zJWrMEy0mPll8SwxMCNihB+rtWuneEcFWKYO/PrqlGA4hdnWSJnifa+NIntrzxs
-         XhCa92gXwkUtkQuUaIPzTpd0no+HquQpHhn4Zfvdcev0SoFJbT6uczuWO7idm5gIfDp9
-         M70JOlPL7c01khJ20sgqm+KbPajd1qHmJKiLN1m5zb1iUSN0MJ+5V5yhsJKCRQ9kyimx
-         OvuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1GiuXwACspAwUSLnSPZJpvg6PgQyL8EK07COgwjeSeo=;
-        b=Puif4QZCXNoKZs5b0v8qeN2eegEfKGftY8d2GUnkknvXNsPvcajcm4wD6er3tVZDLh
-         Y45dk9mjQ72SeEqsqvqb1SOoR2HFTNqavhz/obX5dFIKLcD9fMeEoF60VDxVR0uawTDv
-         oWKLvi3Wegwj0IxJ9Y3qoOcLWr14ZkTvlKRQ4w4ajd1Cng8Mx6tnX4xGvqhqdXlS+xZw
-         3P3iF+TOMtwd/FyJraPJ2UnwvcjJ4wQhxETkuJw529tOjbx3YpEvvsT3NP+dZzvtZt1Q
-         Cd0vLy020BefUbiP13nIhmzsCmRZw4IbTn64wKxWTtu8OV8RVjV6FddDk4HEVYld89aN
-         fNLw==
-X-Gm-Message-State: AOAM530Jlw9Gsqq7Ux8tJFx15e0yWoQzEnRqp99bV1U6oQgcjEddiUk1
-        kwALcc+dfa00lpXaiQgaTmHMa5tcE/g=
-X-Google-Smtp-Source: ABdhPJzZcIgLqrMs+1siG0FP3QZcbHqAccvNY+Ug5zMwXN30nN4+SfRnVv7wAdLLiUAriF5KqTR+4Q==
-X-Received: by 2002:a17:906:5618:: with SMTP id f24mr3769064ejq.86.1604082289662;
-        Fri, 30 Oct 2020 11:24:49 -0700 (PDT)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id df12sm3464504edb.8.2020.10.30.11.24.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 11:24:49 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 20:24:47 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Richard Cochran <richardcochran@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add
- hardware time stamping support
-Message-ID: <20201030182447.2day7x3vad7xgcah@skbuf>
-References: <20201019172435.4416-1-ceggers@arri.de>
- <20201022023233.GA904@hoboy.vegasvil.org>
- <2975985.V79r5fVmzq@n95hx1g2>
- <1680734.pGj3N1mgWS@n95hx1g2>
+        Fri, 30 Oct 2020 14:26:40 -0400
+Received: from localhost.localdomain ([81.185.160.173])
+        by mwinf5d86 with ME
+        id mJSW2300E3km4KV03JSWA8; Fri, 30 Oct 2020 19:26:37 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 30 Oct 2020 19:26:37 +0100
+X-ME-IP: 81.185.160.173
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] iommu/vt-d: Avoid GFP_ATOMIC where it is not needed
+Date:   Fri, 30 Oct 2020 19:26:30 +0100
+Message-Id: <20201030182630.5154-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1680734.pGj3N1mgWS@n95hx1g2>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 12:17:48PM +0200, Christian Eggers wrote:
-> I tried to study the effect of setting the ocmode bit on the KSZ either to
-> master or to slave. The main visible change is, that some PTP message types
-> are be filtered out on RX:
-> - in "master" mode, "Sync" messages from other nodes will not be received
-> (but everything else like "Announce" seem to work)
-> - in "slave" mode, "Delay_Req" messages from other nodes will not be received
+There is no reason to use GFP_ATOMIC in a 'suspend' function.
+Use GFP_KERNEL instead to give more opportunities to allocate the
+requested memory.
 
-Could you dump the contents of your REG_PTP_MSG_CONF2 register?
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Should GFP_ATOMIC be mandatory here, a comment explaining why would be great
+---
+ drivers/iommu/intel/iommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index f8177c59d229..cd2a82ed78b5 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -4114,7 +4114,7 @@ static int iommu_suspend(void)
+ 
+ 	for_each_active_iommu(iommu, drhd) {
+ 		iommu->iommu_state = kcalloc(MAX_SR_DMAR_REGS, sizeof(u32),
+-						 GFP_ATOMIC);
++					     GFP_KERNEL);
+ 		if (!iommu->iommu_state)
+ 			goto nomem;
+ 	}
+-- 
+2.27.0
+
