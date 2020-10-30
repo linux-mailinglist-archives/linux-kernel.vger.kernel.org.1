@@ -2,116 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8942229FFF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4005C29FFF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726103AbgJ3I32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 04:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
+        id S1726144AbgJ3I3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3I31 (ORCPT
+        with ESMTP id S1725946AbgJ3I3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:29:27 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4ACC0613CF;
-        Fri, 30 Oct 2020 01:29:27 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id h12so3576984qtu.1;
-        Fri, 30 Oct 2020 01:29:27 -0700 (PDT)
+        Fri, 30 Oct 2020 04:29:41 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852E8C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 01:29:41 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id 10so4635584pfp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 01:29:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2SmP2XG2z3yyrdfUO9SkbT5PkhpXi9KOLge2mZeMb5U=;
-        b=i1bDXsBm1niQ4dkdDbmR9gg6PC1JZxcVuqDMoIU0x9yV4eCKiO7o8WT1gLVhGbua+W
-         VSQZz/9X1dfTZK7P3wLdKlpscV6K9QmiH3GTCxZkVydSulOWMgGtX1r8H2KdukRelmYV
-         edizOroqwJafVC6nOIPEiBOx37tjE8bEon36kr6517o7gv5RrScCd7ln8wa8xhnpGqsU
-         b3auk81D2jZttt3Ztoa/HIhlJh3DakWKMdVWiXa85ZDKeLn4IAPgv7Zo/hpuTilTU9gA
-         oyW+WpiGsqHa2x3pWM0/xE7mMhPGN5KP4Gb11NEJo4XszZzED+eirG1lNWhaHn4vo1Dl
-         upGQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=e5m24XKv3rmYhiflffWvjSLRsXqJcmEBkgd6KO60GGg=;
+        b=TIrsUG6Ly9+zRcq+SJ/qIs+D8xBuzYeRKRBPKuzBE9LVf0SL0kNg4ppBSNsxfDNDul
+         Lk0zSfFvoKqSA7GIBDxpyXM8l3ABGxY3L4ImhU+1V4jOM4Os3vDryyJ6MRgNMKQ0uGMX
+         GEABVA3XiS+L7A12O32xu+vcrlPJC/drfj+6Mk9i+uL9X+E4X8n6mLcQQa52KY5kuf+y
+         MNKt/fG1vjTziXyBYz2WOE8HSADd+zwXaSGj0gMmNPs8SBqOY/MFn6X7+g4S+G07aFC8
+         VWaLYR0d9356UhkX310RR+dXx/AplZlRxmwCxeTGLe661aZ1Tu1zgeEBmzN/ZECyPY6L
+         hiRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2SmP2XG2z3yyrdfUO9SkbT5PkhpXi9KOLge2mZeMb5U=;
-        b=saPZliaV5pZ6F3tqtFDYWoHy31ee1OLs9LEmYQX9lfzbFGF8T0lAnzoY4V41B0RPiJ
-         XqoqXgxz+4JzDaJI1etK95ksB7lz4Le2/D/JOICMFNB7gCiWpPRMw6JYMJbojJo4i9yz
-         B7KwuUreMPTTdFS5U8bxRtDm6B1SDWYDE9u556VINYDILAvWA6WDrMA6jwFDm0ebXAfr
-         ANETw3z1gI/s7ZnFtGz0liJ1+AK+I8S5j3Q7uPLl1PiwUNYIVLoy9rnnU1KTygiLm2/v
-         EOeD1twsRpWo0ubXXhMhcWRr5ojwMHVQF0qIdVVUL3UNkh1834z/sO3QasysW49Qd+BA
-         V1JQ==
-X-Gm-Message-State: AOAM530yQa7y90PVb/Yy4kHQ3W1S2Nei43MK+tlFZ4CgRCJQ4OrPF+qy
-        U+wknP7eG0g1Oh6JoHhDnl3/CR/nFScPO8jhYO0=
-X-Google-Smtp-Source: ABdhPJzkbx+wUo5qTc/A5mLSgJdG9vfP6tbrvgVQoe1Oj4ip/QKJPl/1/B4em0IUQc5bqYk4VWdgJWXeCNWIuiLyc9s=
-X-Received: by 2002:aed:26e3:: with SMTP id q90mr947606qtd.121.1604046566560;
- Fri, 30 Oct 2020 01:29:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=e5m24XKv3rmYhiflffWvjSLRsXqJcmEBkgd6KO60GGg=;
+        b=hHzQDGiqy1GyMHAOP5xo2qQ0aAW2gpTN0cHPWUtc7SG6hqbHVwLkrHoLfVOnaa2W24
+         d9uVmIq8XbICR8H5dGM69jwpUuDHB6nsZRAoaHP02U2TxZnCIQ3PVguH3jOAvtK2+69q
+         rYG2rkyg/83DBwrdl1JqBvND505/Whf58ncrF4Rz+pkDFiAHqm6+MYzeqyUTYKZsm03n
+         3RIo0NziCibe7/FIcA/iDe2l3jl2qih8+EzKr4ozmL+3N/BnnBOlCuoANHP+qS5rboGn
+         MwpuYarGKURgHxhKn9xWdGm3amVdLJbcCtic7avSsVpTVLZJU7CzF8yCIntrFmcmcvqZ
+         hTmQ==
+X-Gm-Message-State: AOAM5330qY+88R0FKfPgIJsIAeiq+F9GiergBGjI3q4De7/775yMx6vx
+        Lg/BYpXApkL6MYJ4pD2ls/zLiA==
+X-Google-Smtp-Source: ABdhPJzzLhbSDKD9gMJkttY9BBUGB9camLeOPwGl5E90BxlosCMqvnnScYBJaBwfmhPyHTY6LhFUAA==
+X-Received: by 2002:aa7:9af1:0:b029:152:6101:ad12 with SMTP id y17-20020aa79af10000b02901526101ad12mr8094707pfp.40.1604046580892;
+        Fri, 30 Oct 2020 01:29:40 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id w65sm5135011pfw.145.2020.10.30.01.29.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 30 Oct 2020 01:29:39 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 13:59:37 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com, rafael@kernel.org,
+        sudeep.holla@arm.com, daniel.lezcano@linaro.org,
+        Dietmar.Eggemann@arm.com
+Subject: Re: [PATCH 0/4] Add sustainable OPP concept
+Message-ID: <20201030082937.xgjmko2ohwhkt6f5@vireshk-i7>
+References: <20201028140847.1018-1-lukasz.luba@arm.com>
+ <20201029074057.6ugmwyzna52x3oli@vireshk-i7>
+ <20201029075356.rruej6jlerhfa4oy@vireshk-i7>
+ <228fa1b3-bbd3-6941-fd4b-06581016d839@arm.com>
 MIME-Version: 1.0
-References: <1603877930-10553-1-git-send-email-shengjiu.wang@nxp.com> <20201029152721.GB1901783@bogus>
-In-Reply-To: <20201029152721.GB1901783@bogus>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Fri, 30 Oct 2020 16:29:15 +0800
-Message-ID: <CAA+D8AOC3FSCH48p8e61W7Vz5Ri9Hhz_Hbw24cXtEp0OO2gT8g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: dt-bindings: fsl_aud2htx: Add binding doc
- for aud2htx module
-To:     Rob Herring <robh@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, Timur Tabi <timur@kernel.org>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <228fa1b3-bbd3-6941-fd4b-06581016d839@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 11:28 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, 28 Oct 2020 17:38:49 +0800, Shengjiu Wang wrote:
-> > AUD2HTX (Audio Subsystem TO HDMI TX Subsystem) is a new
-> > IP module found on i.MX8MP.
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > ---
-> > changes in v2:
-> > - fix indentation issue
-> > - remove nodename
-> >
-> >  .../bindings/sound/fsl,aud2htx.yaml           | 64 +++++++++++++++++++
-> >  1 file changed, 64 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml
-> >
->
->
-> My bot found errors running 'make dt_binding_check' on your patch:
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml: 'additionalProperties' is a required property
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml: ignoring, error in schema:
-> warning: no schema found in file: ./Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml
->
->
-> See https://patchwork.ozlabs.org/patch/1389813
->
-> The base for the patch is generally the last rc1. Any dependencies
-> should be noted.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit.
->
+On 29-10-20, 09:56, Lukasz Luba wrote:
+> There were discussions about Energy Model (EM), scale of values (mW or
+> abstract scale) and relation to EAS and IPA. You can find quite long
+> discussion below v2 [1] (there is also v3 send after agreement [2]).
+> We have in thermal DT binding: 'sustainable-power' expressed in mW,
+> which is used by IPA, but it would not support bogoWatts.
 
-ok, will fix it.
+Why so ? (I am sorry, can't dig into such long threads without knowing
+which message I am looking for :( ). Lets assume if that same property
+can be used for bogoWatts, will that be sufficient for you ? Or you
+will still need this patch set ?
 
-best regards
-wang shengjiu
+> The sustainable power is used for estimation of internal coefficients
+> (also for power budget), which I am trying to change to work with
+> 'abstract scale' [3][4].
+> 
+> This would allow to estimate sustainable power of the system based on
+> CPUs, GPU opp-sustainable points, where we don't have
+> 'sustainable-power' or devices using bogoWatts.
+
+Then maybe we should ahve sustainable-power in those cases too instead
+of adding a meaningless (IMHO) binding.
+
+Honestly speaking, as Nishanth said, there is nothing like a
+sustainable OPP in reality. Moreover, the DT needs to describe the
+hardware as it is (and in some cases the behavior of the firmware).
+And what you are trying to add here is none of them and so it should
+not go in DT as such. There are too many factors which play a part
+here, ambient temperature is one of the biggest ones, and the software
+needs to find the sustainable OPP by itself based on the current
+situation.
+
+So I don't really see a good reason why such a property should be
+added here.
+
+Coming to properties like suspend-opp, it made sense for some of the
+platforms as the last configured frequency of the CPU plays a part in
+deciding the power consumed by the SoC even when the system is
+suspended. And finding an optimal OPP (normally the lowest) there
+would make sense and so was that property added.
+
+-- 
+viresh
