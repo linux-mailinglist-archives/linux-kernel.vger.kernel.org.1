@@ -2,118 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3E92A07EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB442A07F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgJ3Odv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:33:51 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:44320 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJ3Odu (ORCPT
+        id S1726772AbgJ3OfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgJ3OfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:33:50 -0400
-Received: by mail-oi1-f196.google.com with SMTP id k27so6810445oij.11;
-        Fri, 30 Oct 2020 07:33:48 -0700 (PDT)
+        Fri, 30 Oct 2020 10:35:07 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42E2C0613D4;
+        Fri, 30 Oct 2020 07:35:05 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x13so5450109pfa.9;
+        Fri, 30 Oct 2020 07:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yn61Plqu8DosKmtbURIY5n3p9zI2gsP6LnQwK6jcMQE=;
+        b=fdRqvJlsl8H82CBFcJB3jGpvah4+qaIsmEaDpV+N96MQFt4gkuKDPiTP8hBfPa5xW+
+         KNTOedU3MIrs/Y18XSOJdHd/nYrEy1nJQnf5xsb6bu+RewfweNAITp3vrIJc3Bh0lbv/
+         RfYiuZfKhfnBSc0JpAbdheW/7kBvAfZAuyTL3ixz3P48HNOzCMa8jEeHrUL+oyqPCWOs
+         zmePLR8idSmmVAJNoe0UP+E+H4wwoVnk8Ivh7mfxQ7+/nh+pVa/xWjiYaThxttsqDKZr
+         BUEMpexZb34JY4P2zsPAHfO7oTSKKEBrY7q6MUS+DtfW3aP0w9ROzMICLJpmsYS2ySTX
+         1L2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7uDnmH/1wuwyzpYaFsPZUp73EW9NEF1HmJXwYciKPjU=;
-        b=i1cqH6JZn+iFmtl8lmxDn/teyQwqlESAKOQYnnYGVjEEVdI7HvUJKRPofbSQjShlN8
-         3XBF+qgafdUiNteawUvQxZdhjw8FEU+0MMWALaQLZp2CLXMeqi3P/sNWWY7MmIJsWKxw
-         7Yd0LiRcuWgr78+aATrGfYGI3a4Fq5GHDCyZGuTwSAQqxivTH90ZeoOiecOh1plD2AAn
-         JWMeFPlzX5Mi5kuwFC3j6LMnW5y9kR7iIYmu6espu1k34KieKigNyHHbJ3KqpKp42Lbc
-         WWaRjUWEjpjCsePfw5ASbDp79bJOwgcxbEwjFIpMiE40XliAv4+7CimYi1UdYbnQZ5uZ
-         Ge/g==
-X-Gm-Message-State: AOAM532wvMzrmue83sYJg7LI77ptOEsYsg9dmJshDwcyClraMxKTpvEm
-        TxEel1qCnEfv2LdEgVkikDZGkzSToRjUvT4ivVQ=
-X-Google-Smtp-Source: ABdhPJwoigk8hKZ9PUi2XNypHmQ2bImzkHi3fJBeQ7mfChhlYaxX/LbtQsfYuKpRTsGfxrIrOtNC9ztZDCv9sX0Z5hE=
-X-Received: by 2002:aca:30d7:: with SMTP id w206mr1833906oiw.69.1604068428127;
- Fri, 30 Oct 2020 07:33:48 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yn61Plqu8DosKmtbURIY5n3p9zI2gsP6LnQwK6jcMQE=;
+        b=ZpGlAmB5OkBHWD9LPScj0ClBN7/ryokzPy31WWSNglblk7UymMa1yw3Iy59EtHwVpl
+         /pi82pY2SAGtR3zfoKV1ctrz+B8pRXXOW5HM0mifGuSqHoII8x9qtu+lOXhyxWg+tDrM
+         E454PbtmDL66FWAy4ObqpEdkp6bvjR+YLSq90D2Aiz5nuAMUcYinXGd1rZCkNXcXCNoL
+         b2o1PqBo9/YYfNnLW3ItY3QByBRp0uNBvrsmWviFvPdNUQ0gT5VjRpQn0LFFDcoUKvzy
+         xtTw1FHJlQEh2PZ7KLJp38fXEd4YpVmc+JFJag1ukBcRwTP6BhRPQWVO46gQnZOXekl4
+         rEnQ==
+X-Gm-Message-State: AOAM532AqlRx0qXWd0WNi5yhsSoyqA534WuIw+krPc76ZssQrx30Ei39
+        4GsIGkJPgCz0JCMNzj01pnY=
+X-Google-Smtp-Source: ABdhPJzfoWF5oEXYlfzln2y3269yOhZ+7XnbgadWlCsWbkkM2OhZkKZTS9+3lYjLVfPAmSDDq6+7MQ==
+X-Received: by 2002:a63:c042:: with SMTP id z2mr2534669pgi.32.1604068505364;
+        Fri, 30 Oct 2020 07:35:05 -0700 (PDT)
+Received: from localhost ([240e:472:3d00:779:b01a:f9a7:6a68:30ac])
+        by smtp.gmail.com with ESMTPSA id t17sm5816834pfg.169.2020.10.30.07.35.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 07:35:04 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Fri, 30 Oct 2020 22:34:10 +0800
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/15] iio: accel: remove unnecessary CONFIG_PM_SLEEP
+Message-ID: <20201030143410.pbixjo2cllhd27zp@Rk>
+References: <20201029074910.227859-1-coiby.xu@gmail.com>
+ <20201029144007.77d967b0@archlinux>
+ <CAHp75Vc829u6XPPA+eE=_AFZSPF+yVqT7nUXxtzkwx7-xLLrCg@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1604042072.git.mchehab+huawei@kernel.org> <f56daf94b80f1051438e8c787ba04552adb66e67.1604042072.git.mchehab+huawei@kernel.org>
-In-Reply-To: <f56daf94b80f1051438e8c787ba04552adb66e67.1604042072.git.mchehab+huawei@kernel.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 30 Oct 2020 15:33:36 +0100
-Message-ID: <CAJZ5v0jM7Q-kozwSp9-EoZv8BUqbys2SmFoCizOJOSHbE-Bfeg@mail.gmail.com>
-Subject: Re: [PATCH v2 27/39] docs: ABI: convert testing/configfs-acpi to ReST
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vc829u6XPPA+eE=_AFZSPF+yVqT7nUXxtzkwx7-xLLrCg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 8:42 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
+On Thu, Oct 29, 2020 at 07:06:40PM +0200, Andy Shevchenko wrote:
+>On Thu, Oct 29, 2020 at 4:42 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>> On Thu, 29 Oct 2020 15:48:56 +0800
+>> Coiby Xu <coiby.xu@gmail.com> wrote:
 >
-> There are some problems with this file when a ReST content
-> is produced. Fix it.
+>> Please put a cover letter on your next series explaining the context.
+>> In this particular case some of the replies you have gotten are
+>> general at it is a lot easier to find these sorts of things via
+>> replying to the cover letter.
 >
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>Looking at the number of duplicate messages I would suggest that one
+>needs to go through documentation on how to use git format-patch and
+>git send-email.
+>
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Thank you for the suggestion! Actually it's a tree-wide change and it
+seems the kernel community prefer individual patches or series for
+subsystems having the same maintainer over a huge patch set so I wrote
+some scripts to automate the process. That's why you see ~50 emails
+with almost the same commit message. The only difference of these
+commit messages is the name of PM macro.
 
-and I assume this to go in via the documentation tree.
+>--
+>With Best Regards,
+>Andy Shevchenko
 
-> ---
->  Documentation/ABI/testing/configfs-acpi | 34 ++++++++++++++++++-------
->  1 file changed, 25 insertions(+), 9 deletions(-)
->
-> diff --git a/Documentation/ABI/testing/configfs-acpi b/Documentation/ABI/testing/configfs-acpi
-> index 4ab4e99aa863..c09b640c3cb1 100644
-> --- a/Documentation/ABI/testing/configfs-acpi
-> +++ b/Documentation/ABI/testing/configfs-acpi
-> @@ -14,7 +14,8 @@ Description:
->                 This group contains the configuration for user defined ACPI
->                 tables. The attributes of a user define table are:
->
-> -               aml             - a binary attribute that the user can use to
-> +               aml
-> +                             - a binary attribute that the user can use to
->                                 fill in the ACPI aml definitions. Once the aml
->                                 data is written to this file and the file is
->                                 closed the table will be loaded and ACPI devices
-> @@ -26,11 +27,26 @@ Description:
->                 The rest of the attributes are read-only and are valid only
->                 after the table has been loaded by filling the aml entry:
->
-> -               signature       - ASCII table signature
-> -               length          - length of table in bytes, including the header
-> -               revision        - ACPI Specification minor version number
-> -               oem_id          - ASCII OEM identification
-> -               oem_table_id    - ASCII OEM table identification
-> -               oem_revision    - OEM revision number
-> -               asl_compiler_id - ASCII ASL compiler vendor ID
-> -               asl_compiler_revision - ASL compiler version
-> +               signature
-> +                               - ASCII table signature
-> +
-> +               length
-> +                               - length of table in bytes, including the header
-> +
-> +               revision
-> +                               - ACPI Specification minor version number
-> +
-> +               oem_id
-> +                               - ASCII OEM identification
-> +
-> +               oem_table_id
-> +                               - ASCII OEM table identification
-> +
-> +               oem_revision
-> +                               - OEM revision number
-> +
-> +               asl_compiler_id
-> +                               - ASCII ASL compiler vendor ID
-> +
-> +               asl_compiler_revision
-> +                               - ASL compiler version
-> --
-> 2.26.2
->
+--
+Best regards,
+Coiby
