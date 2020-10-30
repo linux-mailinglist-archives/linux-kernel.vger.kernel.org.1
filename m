@@ -2,154 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634E22A02A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9A02A02AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:18:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgJ3KRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:17:52 -0400
-Received: from mail-bn8nam11on2054.outbound.protection.outlook.com ([40.107.236.54]:56481
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725801AbgJ3KRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:17:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hCCVMYbQYHAmVfUOr7lm6mhCDRif3ofAmLE1UYhUrlsqquanddMYigY6C2vOwkrfFI1h6HnoTjD4l5SbUXU+antJRKfIZ3vMyWesMhNxMlxymAGsP16pcT1P0KvQigM9L1LyCYi9E4oki7/XQ1+qJcdtaqWqA5IRJq+hM4nVvWu6LHIak2hMtyUWSQMVaQuDFTTtGSZWU3g6HOGVhFPw771T9h5ydQCAMG4fiTT9rsENnzXTepVGnx/V32CnZimfi0Rh0oTdhJ/XAE0GBz98z/7NeksTTMXl3YkzgYVqD2jsotGRcLxGB3jPoUPSo7hwI2qE/k7UERgDP9TlGFbt5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=usebVktceIoYGgqTzo2Nm72LGONYoa8QJMtCtTVq2n8=;
- b=PuT0jcsJtzSkTb2i+i273T8EcgyqBOe4tO0PIZyunHv/1C9We3815XKMjuh4LaQwUEBDIj68TSA8VD50GfQJHr93RzX5ig5ZB9ZOfPu5FD8tvY25hgth7KgHFokpWjbNgpyWhdaaN3qG18x/ISkLvabfgL7KF8nzL3O/fIztW1VcWdl/K/gxnKY15lEB3s1DrIwxYknrH+u5bNcRasfzK+8ZfdlU2OH6ZbJfsuMZ3486dP0hzLnvY/4uEuEu3vwwFdJgzlcP6tx3eacbzSyK2/uHhgb2ZGTDmkjexI0wAY6mnua9Nz3TM4OmiKhBis14GGaP8POP98cNbg0QlecJDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
+        id S1726272AbgJ3KSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgJ3KS2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:18:28 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99C6C0613D8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:18:27 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id h62so5079640oth.9
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:18:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=usebVktceIoYGgqTzo2Nm72LGONYoa8QJMtCtTVq2n8=;
- b=RcYsexpptAi37P76MS7Y6TMLcFV4X6OvjkoQ1kWTX/TdmA6VW/1U7gBgsF6vQ2fYADnA1hUGF5NN7w1/B2rB2PJ6pKa0mGUl7qAwRySQY2TUtcJQBPxjQgfAK3NNpwXY+YU5rj98xhUihR81XEfPUkBfPjC7JRYPQUNG8H5jiFQ=
-Received: from SN4PR0201MB3472.namprd02.prod.outlook.com
- (2603:10b6:803:48::19) by SN6PR02MB5389.namprd02.prod.outlook.com
- (2603:10b6:805:e1::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Fri, 30 Oct
- 2020 10:17:48 +0000
-Received: from SN4PR0201MB3472.namprd02.prod.outlook.com
- ([fe80::91b6:5ae:e8d5:2d5f]) by SN4PR0201MB3472.namprd02.prod.outlook.com
- ([fe80::91b6:5ae:e8d5:2d5f%6]) with mapi id 15.20.3477.028; Fri, 30 Oct 2020
- 10:17:47 +0000
-From:   Dragan Cvetic <draganc@xilinx.com>
-To:     Harshal Chaudhari <harshalchau04@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     Derek Kiernan <dkiernan@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, Michal Simek <michals@xilinx.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] misc: xilinx_sdfec: add compat_ptr_ioctl()
-Thread-Topic: [PATCH] misc: xilinx_sdfec: add compat_ptr_ioctl()
-Thread-Index: AQHWq7DXhLHdnUTr2kmvVFzvFhkfaKmv8jvg
-Date:   Fri, 30 Oct 2020 10:17:47 +0000
-Message-ID: <SN4PR0201MB34725868C7009E7290B396FBCB150@SN4PR0201MB3472.namprd02.prod.outlook.com>
-References: <20201026155801.16053-1-harshalchau04@gmail.com>
-In-Reply-To: <20201026155801.16053-1-harshalchau04@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=xilinx.com;
-x-originating-ip: [149.199.80.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e5c9fb00-c55a-4a76-0eaf-08d87cbd0ce2
-x-ms-traffictypediagnostic: SN6PR02MB5389:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR02MB53891F251F8DC097CACA2E05CB150@SN6PR02MB5389.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WmJNZBMuvMTgXp+NvBefZdgRL9zoIhD3aoWBLGL/Mckg4z6NKWRC1Nn79jaPqWQGMKsJvIussyDaQq0ztZ53eF5EBuZc10WP3bSfSyuqAA344cbiXQbk/mdyvMVRBb2RBtCDKwPYr2JOZ2RznN3RVs+yNSSvl2ftUcd9DfbFShbLAlRj0ZGujKNcxAzdPXZ9hbzaKK6AjvZj/7ltPECRYP3m+SH319OhEiRarWcjAMtapGdWbo9WN6/sRgm9VdfAsqkCUaHHutgehlNGyHPxVCbYHaWwzxhPPKpeEmApIKAdjK+tfr+EisicYBkquP9ObJBPKagGlr7OD+gyqwBddQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0201MB3472.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(396003)(39860400002)(366004)(66946007)(76116006)(66476007)(66556008)(64756008)(86362001)(66446008)(26005)(71200400001)(478600001)(52536014)(186003)(2906002)(33656002)(110136005)(83380400001)(4326008)(316002)(54906003)(7696005)(9686003)(53546011)(8676002)(8936002)(55016002)(5660300002)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: e6jG0ZN1ia839PJrQkCWd48zWRFYI7W74BV4jo2J9VMzsshW9avfkcSsVVuuJMbVA8MjjgDEhNAiD+sJLjdfVUb3+3L6YOJl9du/5TAFAle9La8TgPjWoO9CZmFiYzdfpMwQBm7Q/cTwbgffvCx6CfKWdtYO9rT/kMFS/FsRYKR/Jt2w+SDHug3ynwWOumUdKz2cDLwZW3ckBDoYQCZRfOMu86NuEz8G2JverRhmFjakTumBOqmT2RiLyTe7LQjbKTxjR/6SHtx9IL8Q2quXhpcIWeeedRT6xWbxMlib78JB/dttaY26ziDlF9wBrilMBqehMapHHIwEVY+9/EZKUrdIIHxsm2M1xvsjXYfAJJKHITPqHcNXyMGDfdynbnNOUxlg1sAPNf8uxJ7V8xQRvwv3d9ZfCUZtW2k07TQ8/7aL9k9t9GkuSJG1mTl84+/bfgv6Fh6kV0DX21nFjypwy2L8T9E1LQ6JQRqSEhX9C5ihFS7qm6D0a41SBZWhqTFaWzhOxwfek4tC+XO7tFO2u2EFn+Rjhj2K9B1Op8tZ79WgCWQqFPyRKr+oPXO7azFPMqxM/iHIZR4nPiXGBUiKhdOYgsClGv1jGv2G/j2YIigJWkSr05cttm2WNBuc0mvx2jnZUwX473wKZY7hqV0TAA==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IwY6FSEEQBoBQdBLoaBkXQfT/X+1XphfDMCbhC85FPE=;
+        b=DvmaArxE3OLEtqflsjntfLlw/Wss53+p2/dgBLUeQywMt9TgtmFviI9Ck1dtZoxs0S
+         osEpDNFeaFdOpCvTmssUE0GQLkrYE7+2oesIMZe3W7dBb3WC9jZOuo94KTIjnbM2W3kP
+         7hevmXm2cfinGdnEnBdAJM3QkvRQc5FGjF/jY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IwY6FSEEQBoBQdBLoaBkXQfT/X+1XphfDMCbhC85FPE=;
+        b=Blo4Fk49KJgVjVBlLshtJlyUwlgcX61h99RkkXouKgWWxD6n+5zuGm7avh+aJPv4uu
+         yGwChesUUra+FxJyWfxwDLigdihE0Kp1lcelLvaww8A8r7z/R+FeVRStvs3mn/1pGs4y
+         xtxxDYCJYT2PtIacv5NUjKzsmuF9xXnnlYpJb2DDYHCc7EDisTaHKPG0Vq+tZySCbCwQ
+         qG0bhHNqr79Hy/IQAu7AQsLKCG0FGQGpPK1B1Sg0Oc10OxFTrFO+4SS/dVRtTq3+NkvL
+         4QDNmjFBPjgXLyIFxFpuiO1iXISvzINSRwps3oAL7/g02zYsmPlamVtZtY1MwvNH7Hs4
+         bIrA==
+X-Gm-Message-State: AOAM531LVCqku/xpiQrpA7zCouyVljIMOV3sVE+v9Jlse4hEegkI9q30
+        nZ1P2FuRnepxBXllSlmjMv0legiwWhTtSQ==
+X-Google-Smtp-Source: ABdhPJwNLgKTWIj63vjmfctr/rZlagCYJao+munl2DbiNbZUTDbkhDdbm1ZuvlpFI+INEwA2neI5+A==
+X-Received: by 2002:a9d:6052:: with SMTP id v18mr1076852otj.33.1604053106639;
+        Fri, 30 Oct 2020 03:18:26 -0700 (PDT)
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com. [209.85.167.179])
+        by smtp.gmail.com with ESMTPSA id t5sm1307133oth.16.2020.10.30.03.18.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 03:18:25 -0700 (PDT)
+Received: by mail-oi1-f179.google.com with SMTP id d9so149613oib.3
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:18:25 -0700 (PDT)
+X-Received: by 2002:a05:6808:95:: with SMTP id s21mr1001625oic.55.1604053104887;
+ Fri, 30 Oct 2020 03:18:24 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0201MB3472.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5c9fb00-c55a-4a76-0eaf-08d87cbd0ce2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2020 10:17:47.7341
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aa6os0EPMg8Jn2fEI4+c4K8R9r/LQfGaoTkw63iqB8N4O3KtxXgZtAaMPWDHHTG9uKqrBv5y3HUg1EXE7697Sw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB5389
+References: <20201013124428.783025-1-acourbot@chromium.org> <20201013124428.783025-2-acourbot@chromium.org>
+In-Reply-To: <20201013124428.783025-2-acourbot@chromium.org>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Fri, 30 Oct 2020 19:18:14 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MUscqohRt4v10=L+yM0KO65Ny6DskvG5V549YByVDDgbA@mail.gmail.com>
+Message-ID: <CAPBb6MUscqohRt4v10=L+yM0KO65Ny6DskvG5V549YByVDDgbA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] media: mtk-vcodec: move firmware implementations
+ into their own files
+To:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Harshal,
+On Tue, Oct 13, 2020 at 9:44 PM Alexandre Courbot <acourbot@chromium.org> wrote:
+>
+> mtk-vcodec supports two kinds of firmware, VPU and SCP. Both were
+> supported from the same source files, but this is clearly unclean and
+> makes it more difficult to disable support for one or the other.
+>
+> Move these implementations into their own file, after adding the
+> necessary private interfaces.
+>
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 
-The code change is fine, no comment,=20
-but testing will be done at the beginning of the next week.
-Sorry for the late reply,
+This should also have included a
 
-Regards
-Dragan
+Fixes: bf1d556ad4e0 ("media: mtk-vcodec: abstract firmware interface")
 
-
-> -----Original Message-----
-> From: Harshal Chaudhari <harshalchau04@gmail.com>
-> Sent: Monday 26 October 2020 15:58
-> To: gregkh@linuxfoundation.org
-> Cc: Derek Kiernan <dkiernan@xilinx.com>; Dragan Cvetic <draganc@xilinx.co=
-m>; arnd@arndb.de; Michal Simek
-> <michals@xilinx.com>; linux-arm-kernel@lists.infradead.org; linux-kernel@=
-vger.kernel.org
-> Subject: [PATCH] misc: xilinx_sdfec: add compat_ptr_ioctl()
->=20
-> Driver has a trivial helper function to convert
-> the pointer argument and then call the native ioctl handler.
-> But now we have a generic implementation for that, so we can use it.
->=20
-> Signed-off-by: Harshal Chaudhari <harshalchau04@gmail.com>
-> ---
->  drivers/misc/xilinx_sdfec.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
->=20
-> diff --git a/drivers/misc/xilinx_sdfec.c b/drivers/misc/xilinx_sdfec.c
-> index 92291292756a..6f252793dceb 100644
-> --- a/drivers/misc/xilinx_sdfec.c
-> +++ b/drivers/misc/xilinx_sdfec.c
-> @@ -1016,14 +1016,6 @@ static long xsdfec_dev_ioctl(struct file *fptr, un=
-signed int cmd,
->  	return rval;
->  }
->=20
-> -#ifdef CONFIG_COMPAT
-> -static long xsdfec_dev_compat_ioctl(struct file *file, unsigned int cmd,
-> -				    unsigned long data)
-> -{
-> -	return xsdfec_dev_ioctl(file, cmd, (unsigned long)compat_ptr(data));
-> -}
-> -#endif
-> -
->  static __poll_t xsdfec_poll(struct file *file, poll_table *wait)
->  {
->  	__poll_t mask =3D 0;
-> @@ -1054,9 +1046,7 @@ static const struct file_operations xsdfec_fops =3D=
- {
->  	.release =3D xsdfec_dev_release,
->  	.unlocked_ioctl =3D xsdfec_dev_ioctl,
->  	.poll =3D xsdfec_poll,
-> -#ifdef CONFIG_COMPAT
-> -	.compat_ioctl =3D xsdfec_dev_compat_ioctl,
-> -#endif
-> +	.compat_ioctl =3D compat_ptr_ioctl,
->  };
->=20
->  static int xsdfec_parse_of(struct xsdfec_dev *xsdfec)
-> --
-> 2.17.1
-
+Sorry for the omission.
