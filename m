@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AFC32A0D38
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC6E2A0D3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbgJ3SQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:16:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31697 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726061AbgJ3SQ6 (ORCPT
+        id S1726860AbgJ3SSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725844AbgJ3SSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:16:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604081817;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hQ9JbkxvNa0VjLQd06HFpKY/mjumkrtDAKSURNuwMaY=;
-        b=WoLd4bj5ki0phUEDp88YWNjxuxXM7VLVIMIuuOJClL04e+P/+DgapMPZGeS7Gwk+B0KxlZ
-        O8lYsej2JcTDoAe7XRoeVXR4enTLbDjvatYxFPcvUeDEXYHu0Pn0QmY64pp5alU5hosBDV
-        hzoUoH9N+PyTjQr4vBLhKNaQ+d2FADc=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-Fs0sByVmPfKZAdM-updCdQ-1; Fri, 30 Oct 2020 14:16:54 -0400
-X-MC-Unique: Fs0sByVmPfKZAdM-updCdQ-1
-Received: by mail-ej1-f71.google.com with SMTP id f11so2725340eja.23
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:16:53 -0700 (PDT)
+        Fri, 30 Oct 2020 14:18:35 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BE0C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:18:35 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id b8so7511493wrn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=POr4JSNxo9Vex3KFhgjAL6YPhe46OQ89C08+ir6XPTs=;
+        b=dTIDxPGPYckzrbOC6452Z1q6L3MaW1Z9CfWUkssYbkTuuKzC890B9DQnGXkQ7eYX4z
+         u1en4kP44xS3sM/Sgpw6aBzPfKh4+PI/qo9M4VNRqIY1ByMdgt7DuqqF4VXyqEkLLyfF
+         z/OlkU05m48R64suFmuHzsonZet4HZnEru7tKDc4g858Tiq/hW2+1Fzp8jNtMePX23Ki
+         /w42o716i+5AxhmT5iFTFAo+uxQ2sYqjeYRU8rMYdXhAOtNfPmOik3Qc+Om9sR+Vf1op
+         ySXnMFI1sW67thE7M1Q4bUoemFEL/KIT/fgNKzdMso1GUM7oddT9hVN602WGpg1RbCyu
+         d2CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hQ9JbkxvNa0VjLQd06HFpKY/mjumkrtDAKSURNuwMaY=;
-        b=DRTlogsdrr4M65rlN1ApTGsB6j36EAsTDnY34LnkojN4qFa2v54s/YjoaTxxeUQYe0
-         s8Ou8rpNWpztm84E8YKO7lTdv7ID2fBYurkmhBaJSYwHIHV2CEwpP8zikm94u3iPTQnw
-         tjCt4maujIdKGQiwV4kwfSCk15wuvdwCYCWQZI0mxgTChozKNiYSA2XRauUEex3PCkgM
-         +kGRj4kFIvSKUHjvEprroyVpnOH/cU9pWI7KM9VQnAV73rWC8+eyuNmkU7sHsrUeriZu
-         2FY9uSIQQPHZHNiyIhdiI9AhxeX4gc+/l/EhASvDroOgC3aNWidKihznjDkdmcpmi1+o
-         y93A==
-X-Gm-Message-State: AOAM531ilxwMYvaM0SubVi/0F2lhmNGGMNSzn6+2JpGE8YqBNk3tov5h
-        vC8gO0iRdoFQltm4+C/TrJFdgbb6iM5r65v0wu033uVliRt97GAxZmRaYxBoS5U5moGIoU3+o9D
-        jkc3x+HMZ3/EEfpcea3vXDx+t
-X-Received: by 2002:a17:906:c20f:: with SMTP id d15mr3678306ejz.341.1604081812910;
-        Fri, 30 Oct 2020 11:16:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyxORp9yhzCHXkXQ+SV0R3eIJai4qo4teWFQf7D18bUb6YmyTx02WLXvoVEuul2E5KtdAUsMg==
-X-Received: by 2002:a17:906:c20f:: with SMTP id d15mr3678275ejz.341.1604081812714;
-        Fri, 30 Oct 2020 11:16:52 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r24sm3338060eds.67.2020.10.30.11.16.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 11:16:51 -0700 (PDT)
-Subject: Re: [PATCH] [v2] x86: apic: avoid -Wshadow warning in header
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Arvind Sankar' <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     'Arnd Bergmann' <arnd@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "x86@kernel.org" <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-References: <20201028212417.3715575-1-arnd@kernel.org>
- <38b11ed3fec64ebd82d6a92834a4bebe@AcuMS.aculab.com>
- <20201029165611.GA2557691@rani.riverdale.lan>
- <93180c2d-268c-3c33-7c54-4221dfe0d7ad@redhat.com>
- <87v9esojdi.fsf@nanos.tec.linutronix.de>
- <20201029213512.GA34524@rani.riverdale.lan>
- <ad73f56e79d249b1b3614bccc85e2ca5@AcuMS.aculab.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <070f590f-b702-35f0-0b6c-c6455f08e9d5@redhat.com>
-Date:   Fri, 30 Oct 2020 19:16:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        bh=POr4JSNxo9Vex3KFhgjAL6YPhe46OQ89C08+ir6XPTs=;
+        b=O36vgJKWssg4OffHjDLZYsHNbziZ63MNEPtWVj+2yfr9pt0AyqYkO6HCsC71WZ0Vv+
+         qk3h0vnDtPnOLsW+idMxKuq4usKawr7UmoEPirIpdxxlJxnpl/w1fQBGOsKkaFnSNWHC
+         Q8lXBg6pvRPtIUZtRH0o88hBOXtlSNH58C18V8JZ626Vy2m7eUxohQYwv5YtgHj6q3D2
+         DfFUcD+99NG9PBvjHAL3775jmk4R/4OHzR7nA0//1B5fctLcyBQrHcWNSFznczlIluiD
+         Zy4hnvYNcad2STUI2ED/5F7CIuujo8uwy8usXostxRlG3NFcIj5XpWWHPr2it0+/vDFw
+         F29A==
+X-Gm-Message-State: AOAM533sOSOenpZQnhbBIuu7VtglMSRCU832mfKX3Is0FNPnHRWnJU7V
+        t+5Z1T5/SdYLR53vCY/Eka/HBw==
+X-Google-Smtp-Source: ABdhPJxonhFew2B7p2VHkxM2LDKbQTJFr887Y1UWz9SfxnrnktBXTh6CZjDeCt19buh2y+hpgrAsxw==
+X-Received: by 2002:adf:b7c8:: with SMTP id t8mr4941556wre.143.1604081913792;
+        Fri, 30 Oct 2020 11:18:33 -0700 (PDT)
+Received: from dell.default ([91.110.221.176])
+        by smtp.gmail.com with ESMTPSA id q6sm5666782wma.0.2020.10.30.11.18.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 11:18:32 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     daniel.vetter@ffwll.ch, gregkh@linuxfoundation.org,
+        yepeilin.cs@gmail.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>, stable@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>
+Subject: [PATCH 1/1] Fonts: font_acorn_8x8: Replace discarded const qualifier
+Date:   Fri, 30 Oct 2020 18:18:22 +0000
+Message-Id: <20201030181822.570402-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <ad73f56e79d249b1b3614bccc85e2ca5@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/10/20 23:12, David Laight wrote:
->> https://godbolt.org/z/4dzPbM
->>
->> With -fno-strict-aliasing, the compiler reloads the pointer if you write
->> to the start of what it points to, but not if you write to later
->> elements.
-> I guess it assumes that global data doesn't overlap.
+Commit 09e5b3fd5672 ("Fonts: Support FONT_EXTRA_WORDS macros for
+built-in fonts") introduced the following error when building
+rpc_defconfig (only this build appears to be affected):
 
-Yeah, setting
+ `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compressed/ll_char_wr.o:
+    defined in discarded section `.data' of arch/arm/boot/compressed/font.o
+ `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boot/compressed/font.o:
+    defined in discarded section `.data' of arch/arm/boot/compressed/font.o
+ make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: arch/arm/boot/compressed/vmlinux] Error 1
+ make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boot/compressed/vmlinux] Error 2
+ make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
 
-	p = (struct s *) ((char *)&p) - 8;
+The .data section is discarded at link time.  Reinstating
+acorndata_8x8 as const ensures it is still available after linking.
 
-invokes undefined behavior _for a different reason than strict aliasing_
-(it's a pointer that is based on "p" but points before its start or
-after one byte past its end).  So the compiler assumes that only the
-first few bytes of a global can overlap it.
+Cc: <stable@vger.kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ lib/fonts/font_acorn_8x8.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If you change the size of the fields from long to char in the compiler
-explorer link above, every field forces a reload of the global.
-
-Paolo
+diff --git a/lib/fonts/font_acorn_8x8.c b/lib/fonts/font_acorn_8x8.c
+index 069b3e80c4344..fb395f0d40317 100644
+--- a/lib/fonts/font_acorn_8x8.c
++++ b/lib/fonts/font_acorn_8x8.c
+@@ -5,7 +5,7 @@
+ 
+ #define FONTDATAMAX 2048
+ 
+-static struct font_data acorndata_8x8 = {
++static const struct font_data acorndata_8x8 = {
+ { 0, 0, FONTDATAMAX, 0 }, {
+ /* 00 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* ^@ */
+ /* 01 */  0x7e, 0x81, 0xa5, 0x81, 0xbd, 0x99, 0x81, 0x7e, /* ^A */
+-- 
+2.25.1
 
