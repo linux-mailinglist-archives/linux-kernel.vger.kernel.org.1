@@ -2,108 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423152A0107
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 928772A0109
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgJ3JRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:17:43 -0400
-Received: from wildebeest.demon.nl ([212.238.236.112]:55904 "EHLO
-        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgJ3JRn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:17:43 -0400
-Received: from librem (deer0x15.wildebeest.org [172.31.17.151])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by gnu.wildebeest.org (Postfix) with ESMTPSA id C4BF330278CD;
-        Fri, 30 Oct 2020 10:17:40 +0100 (CET)
-Received: by librem (Postfix, from userid 1000)
-        id B0FE9C379B; Fri, 30 Oct 2020 10:16:49 +0100 (CET)
-Date:   Fri, 30 Oct 2020 10:16:49 +0100
-From:   Mark Wielaard <mark@klomp.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-toolchains@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Phillips, Kim" <kim.phillips@amd.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: Additional debug info to aid cacheline analysis
-Message-ID: <20201030091649.GB3100@wildebeest.org>
-References: <20201006131703.GR2628@hirez.programming.kicks-ass.net>
- <CABPqkBSkdqXjm6QuF9j6AO8MUnt1yZ_cA2PV=Qo8e4wKmK_6Ug@mail.gmail.com>
- <20201008070231.GS2628@hirez.programming.kicks-ass.net>
- <50338de81b34031db8637337f08b89b588476211.camel@klomp.org>
- <CAM9d7chX+VxN+6T0y=CWfiMPWY6em3grGJL+oYnX99aOfFO2fg@mail.gmail.com>
+        id S1726226AbgJ3JRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:17:47 -0400
+Received: from mga11.intel.com ([192.55.52.93]:46824 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725790AbgJ3JRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 05:17:45 -0400
+IronPort-SDR: rNr9pPVO4fdyMYGV2odKEToeKjjkRi85MkDljANnssPdrlkJdXuK6+Udcfu67iC2PbEpvtGWsZ
+ 7785V4iMXNNA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="165085212"
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="165085212"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 02:17:43 -0700
+IronPort-SDR: w1IbwbktkrkgHUUjogQKipmETVnYkQgC1XD48IhM6Dy/nQ7FmnuoJJIAz/3IXbD//Qowa+xUcT
+ qd4Pn+F5AuEA==
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="361791463"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 02:17:38 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 9A48120736; Fri, 30 Oct 2020 11:17:36 +0200 (EET)
+Date:   Fri, 30 Oct 2020 11:17:36 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Shawn Tu <shawnx.tu@intel.com>,
+        Ricardo Ribalda <ribalda@kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        Wenyou Yang <wenyou.yang@microchip.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH 01/25] media: i2c: imx214: simplify getting state
+ container
+Message-ID: <20201030091736.GP26150@paasikivi.fi.intel.com>
+References: <20201029164239.84240-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAM9d7chX+VxN+6T0y=CWfiMPWY6em3grGJL+oYnX99aOfFO2fg@mail.gmail.com>
+In-Reply-To: <20201029164239.84240-1-krzk@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Namhyung,
+Hi Krzysztof,
 
-On Fri, Oct 30, 2020 at 02:26:19PM +0900, Namhyung Kim wrote:
-> On Thu, Oct 8, 2020 at 6:38 PM Mark Wielaard <mark@klomp.org> wrote:
-> > GCC using -fvar-tracking and -fvar-tracking-assignments is pretty good
-> > at keeping track of where variables are held (in memory or registers)
-> > when in the program, even through various optimizations.
-> >
-> > -fvar-tracking-assignments is the default with -g -O2.
-> > Except for the upstream linux kernel code. Most distros enable it
-> > again, but you do want to enable it by hand when building from the
-> > upstream linux git repo.
+On Thu, Oct 29, 2020 at 05:42:15PM +0100, Krzysztof Kozlowski wrote:
+> The pointer to 'struct v4l2_subdev' is stored in drvdata via
+> v4l2_i2c_subdev_init() so there is no point of a dance like:
 > 
-> Please correct me if I'm wrong.  This seems to track local variables.
-> But I'm not sure it's enough for this purpose as we want to know
-> types of any memory references (not directly from a variable).
+>     struct i2c_client *client = to_i2c_client(struct device *dev)
+>     struct v4l2_subdev *sd = i2c_get_clientdata(client);
 > 
-> Let's say we have a variable like below:
+> This allows to remove local variable 'client' and few pointer
+> dereferences.  White at it, use 'dev' directly instead of 'imx214->dev'.
 > 
->   struct xxx a;
-> 
->   a.b->c->d++;
-> 
-> And we have a sample where 'd' is updated, then how can we know
-> it's from the variable 'a'?  Maybe we don't need to know it, but we
-> should know it accesses the 'd' field in the struct 'c'.
-> 
-> Probably we can analyze the asm code and figure out it's from 'a'
-> and accessing 'd' at the moment.  I'm curious if there's a way in
-> the DWARF to help this kind of work.
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-DWARF does have that information, but it stores it in a way that is
-kind of opposite to how you want to access it. Given a variable and an
-address, you can easily get the location where that variable is
-stored. But if you want to map back from a given (memory) location and
-address to the variable, that is more work.
+I've applied the original set to my tree here:
 
-In theory what you could do is make a list of global variables from
-the top-level DWARF CUs. Then take the debug aranges to map from the
-program address to the DWARF CU that covers that address. Then for
-that CU you would walk the CU DIE tree while keeping track of all
-variables in scope till you find the function covering that
-address. Then for each global variable and all variables in scope you
-get the DWARF location description at the given address (for global
-ones that is most likely always a static address, but for local ones
-it depends on where exactly in the program you take the sample). That
-plus the type information for each variable should then make it
-possible to see which variable covers the given memory location.
+<URL:https://git.linuxtv.org/sailus/media_tree.git/log/>
 
-But that is a lot of work to do for each sample.
+The status of the patches is generally indicated in Patchwork:
 
-Cheers,
+<URL:https://patchwork.linuxtv.org/project/linux-media/list/>
 
-Mark
+"Under review" effectively, but perhaps confusingly, is also used to tell
+that the patch is in someone else's tree and on its way to Mauro's. IOW, it
+is not necessary to resend them.
+
+-- 
+Regards,
+
+Sakari Ailus
