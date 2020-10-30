@@ -2,60 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEE42A043B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4D22A043E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgJ3LgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35874 "EHLO
+        id S1726510AbgJ3Lg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3LgR (ORCPT
+        with ESMTP id S1725355AbgJ3LgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:36:17 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F246C0613D2;
-        Fri, 30 Oct 2020 04:36:17 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id za3so8132820ejb.5;
-        Fri, 30 Oct 2020 04:36:16 -0700 (PDT)
+        Fri, 30 Oct 2020 07:36:18 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67509C0613D2;
+        Fri, 30 Oct 2020 04:36:18 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id w25so6306885edx.2;
+        Fri, 30 Oct 2020 04:36:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2ntyqySv0dNRSUQuLSRy73nPmECP2AXw3xwCrbYmb5w=;
-        b=Wh/4WyHx0BOJQFGA8uk0QwNSX1vNc4OKQcIYtrFN42Q/h0ovjKe7j5sKq8kDBZLH8v
-         QeAfzFexTs5TOa5A++b1IyaLUeeFGl2Wpz+WCRcXbes9zUsPQ+8OoxFxuDYIT9BUvUPy
-         Q3LCq+x6vvVh/0vz1F8MjbnarZq6/+KvrI7Lh32iOG7RU3j4ZQawrHaYVJDj1nm/30hq
-         JOFW/qemGwpXeyi4m1CkbbOjQMDlxXm6hu/mJqGLRph7mbS0ztNHaHXGe0/hDoCiVLv5
-         zhtc6Ng4eAZrhpQqU0rox0erbEJPAy5y9fpKkJm+x3KzK9290uHNXa60wUvF4bXCQEW3
-         l6pQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1fPvXfEo6tDYrksaupTeUcaqt7QQRL4mRzXpccz682w=;
+        b=Nz01zMYdDTwWbGDy9hK5B/NPp3lF1UTRfNKmllSb2BGlM4FBMAHcQvoJaTq1WX0tkf
+         ziEjPSMncxx951yA3oc6cokxS3jNviBek7I/h7aAYYr+F07ffM18ret9lMhPmmCluqPM
+         GdEPzK/MuoKdTc1xbuS9r5Z8cEyRxpQjGc/Heu8+8dsJTKDV/W4nJbuDbMdfSRcx4CKY
+         hCJpE6tMVLdPIFLFVCfcco9zxaYQnQgq6YbOAeRDIIuhmao+Hs/SOzHqUfZQVErDsA4x
+         hUZob6pIperO2ZnGAM9FigeYryqEpqn0r3WukBxIdBgi6TwZ3xkwdxq1FFJcxwaG8DWX
+         nokg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2ntyqySv0dNRSUQuLSRy73nPmECP2AXw3xwCrbYmb5w=;
-        b=kl1RVdvsCEtqY/ZpWXgbEf75EmJpclNuN6ctHqEnOoHG/G24WUVDjtJETu0vjYYFSd
-         vTlt5YYrUPKt9BqyMAopkN/W3DATztI9xhsCSaKGtNgEa1TwbQmzG9GyyTbPBo0Py4hc
-         LrMP/mvVxGd6ZGoPprhMBIULBp+jUZOTO88jDmki6zn+u4MlRcELTtFBeGecRVZfVEuy
-         GRWU/sL8EtEsLHZeCm6hVhmtMrnZViHNSfm+GHDV+3v3kjOW2RzsSnNKaxEb489sNvlD
-         gpNvQEYSAWPz/EqfMFu8beI1yGbTws7gSsKX6IK3E12amnZkfkAi62FiT/EKSVgGjezU
-         Mb6A==
-X-Gm-Message-State: AOAM530ZTrbvxrJGB26gYH7DgdbEwK8oFAFSh8Gyj9OvJl7Llo/Ggzz+
-        mcWwPNbQMLZDhsAlidGBqz8lwLEQqCEY5LGS
-X-Google-Smtp-Source: ABdhPJz6fojo550yzO50CrNGrN4HLwqfWDkRftZB7slO8iNE62fBxF8XdZBQ2Yd0zCUNDctV6QDhHQ==
-X-Received: by 2002:a17:906:8812:: with SMTP id zh18mr1847124ejb.361.1604057775637;
-        Fri, 30 Oct 2020 04:36:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1fPvXfEo6tDYrksaupTeUcaqt7QQRL4mRzXpccz682w=;
+        b=OBbOkuH07HSyr4ML9qpclQLbrfA/dcmsqxP9dp9gLBRV6//6XPnDEuQPQCjBdgtgPD
+         21sysJD2ciOnaw568NZa0GdYhzYX9bxxjuSv75q/nxwF4P/As5uj/XhANycFVizdpw4l
+         5KoEJLn81KjTcMoDnNbEZVF/yQCorCTkf30bhHUuJMbdz6sSo52GzP67gFzBUn3WtMfM
+         s+jD613HhGP9DAcF0rbiMtdkgeJlT7L3e+0+IfPPyKF+dL+EK4zmKiZ7e3dROvd0MEqN
+         xkougpF81yA1nPjBT/zq4/aXD8tSabqrxlupGbt21aXogQNd8MAZ8M75tnqsBTvxPg7i
+         GAxw==
+X-Gm-Message-State: AOAM532N/xXoSs0kGzs9HK5NhhIKvHHGCtqeUo842w7QXi1ShJ8jDrUD
+        WY1eeiDDhSVbcgARXykH71g=
+X-Google-Smtp-Source: ABdhPJxHMtbrAkCqfmRCZoRvHtegiOI+nujon+I5UcjZPB7r1BONaieUlfjKeeyX6QBFQoiQWeIH2A==
+X-Received: by 2002:a50:eb45:: with SMTP id z5mr1782625edp.144.1604057777033;
+        Fri, 30 Oct 2020 04:36:17 -0700 (PDT)
 Received: from yoga-910.localhost ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id q19sm2850861ejx.118.2020.10.30.04.36.13
+        by smtp.gmail.com with ESMTPSA id q19sm2850861ejx.118.2020.10.30.04.36.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 04:36:14 -0700 (PDT)
+        Fri, 30 Oct 2020 04:36:16 -0700 (PDT)
 From:   Ioana Ciornei <ciorneiioana@gmail.com>
 To:     shawnguo@kernel.org
 Cc:     robh+dt@kernel.org, leoyang.li@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH v5 00/11] arm64: dts: layerscape: update MAC nodes with PHY information 
-Date:   Fri, 30 Oct 2020 13:35:44 +0200
-Message-Id: <20201030113555.726487-1-ciorneiioana@gmail.com>
+        linux-kernel@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 01/11] dt-bindings: net: add the DPAA2 MAC DTS definition
+Date:   Fri, 30 Oct 2020 13:35:45 +0200
+Message-Id: <20201030113555.726487-2-ciorneiioana@gmail.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201030113555.726487-1-ciorneiioana@gmail.com>
+References: <20201030113555.726487-1-ciorneiioana@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -64,58 +68,95 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-This patch set aims to add the necessary DTS nodes to complete the
-MAC/PCS/PHY representation on DPAA2 devices. The external MDIO bus nodes
-and the PHYs found on them are added, along with the PCS MDIO internal
-buses and their PCS PHYs. Also, links to these PHYs are added from the
-DPMAC node.
+Add a documentation entry for the DTS bindings needed and supported by
+the dpaa2-mac driver.
 
+Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
 Changes in v2:
- - documented the dpmac node into a new yaml entry
- - dropped the '0x' from some unit addresses
-
+ - new patch
 Changes in v3:
  - renamed dpmac@x into ethernet@x
  - renamed the new documentation file to use the same name as the
    compatible
  - marked additionalProperties as false
  - added a reference to ethernet-controller.yaml
- - added a new patch to document 10gbase-r - 2/11
-
 Changes in v4:
- - move the phy-connection-type attribute to the ethernet node in 7,8/11
- - remove the interrupts description from 8/11 since I plan to properly
-   add all interrupt lines for all platforms
-
+ - none
 Changes in v5:
- - renamed all PHY nodes to ethernet-phy@x
- - added some empty lines between nodes
- - used the reg as the unit address
+ - none
 
-Ioana Ciornei (11):
-  dt-bindings: net: add the DPAA2 MAC DTS definition
-  dt-bindings: net: add the 10gbase-r connection type
-  arm64: dts: ls1088a: add external MDIO device nodes
-  arm64: dts: ls1088ardb: add QSGMII PHY nodes
-  arm64: dts: ls1088ardb: add necessary DTS nodes for DPMAC2
-  arm64: dts: ls208xa: add the external MDIO nodes
-  arm64: dts: ls2088ardb: add PHY nodes for the CS4340 PHYs
-  arm64: dts: ls2088ardb: add PHY nodes for the AQR405 PHYs
-  arm64: dts: ls208xa: add PCS MDIO and PCS PHY nodes
-  arm64: dts: lx2160a: add PCS MDIO and PCS PHY nodes
-  arm64: dts: lx2160ardb: add nodes for the AQR107 PHYs
-
- .../bindings/net/ethernet-controller.yaml     |   1 +
- .../bindings/net/fsl,qoriq-mc-dpmac.yaml      |  60 ++++
- .../boot/dts/freescale/fsl-ls1088a-rdb.dts    | 119 ++++++++
- .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 101 +++++-
- .../boot/dts/freescale/fsl-ls2088a-rdb.dts    | 120 ++++++++
- .../arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 274 ++++++++++++++++-
- .../boot/dts/freescale/fsl-lx2160a-rdb.dts    |  32 ++
- .../arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 288 ++++++++++++++++--
- 8 files changed, 951 insertions(+), 44 deletions(-)
+ .../bindings/net/fsl,qoriq-mc-dpmac.yaml      | 60 +++++++++++++++++++
+ 1 file changed, 60 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/net/fsl,qoriq-mc-dpmac.yaml
 
+diff --git a/Documentation/devicetree/bindings/net/fsl,qoriq-mc-dpmac.yaml b/Documentation/devicetree/bindings/net/fsl,qoriq-mc-dpmac.yaml
+new file mode 100644
+index 000000000000..2159b7d1f537
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/fsl,qoriq-mc-dpmac.yaml
+@@ -0,0 +1,60 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/fsl,qoriq-mc-dpmac.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: DPAA2 MAC bindings
++
++maintainers:
++  - Ioana Ciornei <ioana.ciornei@nxp.com>
++
++description:
++  This binding represents the DPAA2 MAC objects found on the fsl-mc bus and
++  located under the 'dpmacs' node for the fsl-mc bus DTS node.
++
++allOf:
++  - $ref: "ethernet-controller.yaml#"
++
++properties:
++  compatible:
++    const: fsl,qoriq-mc-dpmac
++
++  reg:
++    maxItems: 1
++    description: The DPMAC number
++
++  phy-handle: true
++
++  phy-connection-type: true
++
++  phy-mode: true
++
++  pcs-handle:
++    $ref: /schemas/types.yaml#definitions/phandle
++    description:
++      A reference to a node representing a PCS PHY device found on
++      the internal MDIO bus.
++
++  managed: true
++
++required:
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    dpmacs {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      ethernet@4 {
++        compatible = "fsl,qoriq-mc-dpmac";
++        reg = <0x4>;
++        phy-handle = <&mdio1_phy6>;
++        phy-connection-type = "qsgmii";
++        managed = "in-band-status";
++        pcs-handle = <&pcs3_1>;
++      };
++    };
 -- 
 2.28.0
 
