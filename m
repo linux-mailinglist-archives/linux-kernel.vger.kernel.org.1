@@ -2,220 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20AC2A0F76
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 997CA2A0F7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727385AbgJ3U3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 16:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34672 "EHLO
+        id S1727320AbgJ3U1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 16:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727045AbgJ3U3O (ORCPT
+        with ESMTP id S1725975AbgJ3U1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 16:29:14 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AEEC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 13:29:14 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id k6so8866220ior.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 13:29:14 -0700 (PDT)
+        Fri, 30 Oct 2020 16:27:25 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1556C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 13:27:24 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id q1so7608022ilt.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 13:27:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7VREF7/JJHI66A/48k9gSIWFihXYo0nC0DsshW2DhXo=;
-        b=DMUlqDBS/HfvoY5Up8fsprLugIn/vkn1Fjvd//pbjobYFG89McRnVf43UIjpDXd9rA
-         3NE9R5uE2CtPkMmiBFyCwR+lFLy/M0z7OQFzyomTi16k0sUNwXdmx1MUJb6CDt7QrNo5
-         vhD5qCsUpgyPOgAIwVHhbFUQjhWjZax3/Ldv4=
+        d=sargun.me; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=kuTknbqhK1g3g34Id4lOLSPvzBLGm3ypK3b32iZifKg=;
+        b=JcmDIem2DY8j3ivVnlrkMam0ek18/0CnWlwG377b0w6s30XPah+BB6apss2qjDJPk/
+         tRger9u7a/DBnbP+UE3nY2Ufv8AUayYoWm/SMtrKLpqy+0YSc9ENcNtPcbaU2PY2mMUp
+         N9a+88Sznpph7Deu3XgNM6Wo7kwi7Z1TZAzEk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7VREF7/JJHI66A/48k9gSIWFihXYo0nC0DsshW2DhXo=;
-        b=ZJ0qWno5v/5WKy7ah9s5EJDFedTGA2S1YRQ2bwCgdZmVOvFTOePiUhsq1FcfAkaLAv
-         cgpkORbEv2SHOkDP0jjXizxTK0aEMy8IMnnWp0aVtuNfA75DpmsNWuvIw705RmeUFkPV
-         vOIPHsGLVMFL3O1BbW4/x5gJEcvgzU8ge4mdZnI/1X5i8e0WD7sqfJS0T6wyIb8ty2Op
-         ayQI3fJrO55+ud0B6MLAyHgc2Dt9jOrXzMOJyG9hU4PQpLdgXB7+J8wjYug9dfRzWMA7
-         CFPQBLGDzMycWUZAs1PneCAZSKpLEgB2wIh3nfoSbqaNPKK+aG+YqeLDsYDpPf3gYDrM
-         vnhA==
-X-Gm-Message-State: AOAM533wgmMHDaG7qOJN7yBjTV9UFhCMOs9rxhk/hcLBINqf3yEQGbgm
-        pwjeREvOD1L9sg4KZ8LDC3BFeZw8HNXyEnBgti1Z
-X-Google-Smtp-Source: ABdhPJzdzkOqM24jGONDbH5CFcA1utJ+rlF756F0BuufHd154tG4AL9WwW90wJJ55eBWWufh6PVX4sP6C3iLW5I9G54=
-X-Received: by 2002:a02:6a5b:: with SMTP id m27mr1211998jaf.58.1604089753954;
- Fri, 30 Oct 2020 13:29:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201026230254.911912-1-atish.patra@wdc.com> <20201026230254.911912-6-atish.patra@wdc.com>
- <20201027104545.GM1154158@kernel.org> <CAOnJCULsowob2sgs9qFyUDBRUcuci6e4HEMoE_JuucCX082LCA@mail.gmail.com>
- <20201030084915.GB4319@kernel.org>
-In-Reply-To: <20201030084915.GB4319@kernel.org>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Fri, 30 Oct 2020 13:29:03 -0700
-Message-ID: <CAOnJCUJFiNJ2-v4jGxCug7Xc78MXns4jYypnYFOR0L6Gkew8fA@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] RISC-V: Protect .init.text & .init.data
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=kuTknbqhK1g3g34Id4lOLSPvzBLGm3ypK3b32iZifKg=;
+        b=Y8a05TYmNEpSp8E5ew1VsAo1cVBsirQu23tfHgqDdGobrUc61ganQWyKEnhRxv/G5+
+         +6dcma2jqN6RLEF1R9U5j1xeQu8y17njXOdYeOAzQ4YVhxoqfAhFkjUkaC4z4xMU6R5b
+         GtqQP3Ph8I2HuP15bo3fSvR5sCkebWiuFjwi4kUWOd7Uq2NOL7f82sfITc8MiCxeZ4zE
+         2T6Q0qv82Z6tU1EisNO5pUG+5EifO5oduUTudFUYObfPu33MjxB1tt++4ViJe0gLLXVn
+         2F9iODDzvZz4vu05Re65VqwfB9Bs6CcG4maJX1f/2CpvxW76OcfDZN2xkF5pzYSH7AB0
+         qdow==
+X-Gm-Message-State: AOAM532yZvgB7XjI4E5p+N5A+60jKP8u1OqqGN+uCVfajcq/LxXhXjIJ
+        +TinXdolpNTP5HpusBUpZ9tgew==
+X-Google-Smtp-Source: ABdhPJwdWv9Z3WhLsQ1bfA8nV/BDPpM8CGlCQuuS505gefn5JvsbjjIaN6ZFze/YAovCoe5uvhzl1g==
+X-Received: by 2002:a05:6e02:52c:: with SMTP id h12mr3133023ils.196.1604089643962;
+        Fri, 30 Oct 2020 13:27:23 -0700 (PDT)
+Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
+        by smtp.gmail.com with ESMTPSA id r17sm4934936iov.7.2020.10.30.13.27.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 30 Oct 2020 13:27:23 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 20:27:21 +0000
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        Christian Brauner <christian@brauner.io>,
         Kees Cook <keescook@chromium.org>,
-        Anup Patel <anup@brainfault.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Zong Li <zong.li@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Michel Lespinasse <walken@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+Message-ID: <20201030202720.GA4088@ircssh-2.c.rugged-nimbus-611.internal>
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+ <20201029085312.GC29881@ircssh-2.c.rugged-nimbus-611.internal>
+ <48e5937b-80f5-c48b-1c67-e8c9db263ca5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <48e5937b-80f5-c48b-1c67-e8c9db263ca5@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 1:49 AM Mike Rapoport <rppt@kernel.org> wrote:
->
-> On Thu, Oct 29, 2020 at 12:21:41PM -0700, Atish Patra wrote:
-> > On Tue, Oct 27, 2020 at 3:46 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > >
-> > > On Mon, Oct 26, 2020 at 04:02:53PM -0700, Atish Patra wrote:
-> > > > Currently, .init.text & .init.data are intermixed which makes it impossible
-> > > > apply different permissions to them. .init.data shouldn't need exec
-> > > > permissions while .init.text shouldn't have write permission.
-> > > >
-> > > > Keep them in separate sections so that different permissions are applied to
-> > > > each section. This improves the kernel protection under
-> > > > CONFIG_STRICT_KERNEL_RWX. We also need to restore the permissions for the
-> > > > entire _init section after it is freed so that those pages can be used for
-> > > > other purpose.
-> > > >
-> > > > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > > > ---
-> > > >  arch/riscv/include/asm/sections.h   |  2 ++
-> > > >  arch/riscv/include/asm/set_memory.h |  2 ++
-> > > >  arch/riscv/kernel/setup.c           |  9 +++++
-> > > >  arch/riscv/kernel/vmlinux.lds.S     | 51 ++++++++++++++++-------------
-> > > >  arch/riscv/mm/init.c                |  8 ++++-
-> > > >  arch/riscv/mm/pageattr.c            |  6 ++++
-> > > >  6 files changed, 54 insertions(+), 24 deletions(-)
-> > > >
-> > > > diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/asm/sections.h
-> > > > index 3a9971b1210f..1595c5b60cfd 100644
-> > > > --- a/arch/riscv/include/asm/sections.h
-> > > > +++ b/arch/riscv/include/asm/sections.h
-> > > > @@ -9,5 +9,7 @@
-> > > >
-> > > >  extern char _start[];
-> > > >  extern char _start_kernel[];
-> > > > +extern char __init_data_begin[], __init_data_end[];
-> > > > +extern char __init_text_begin[], __init_text_end[];
-> > > >
-> > > >  #endif /* __ASM_SECTIONS_H */
-> > > > diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-> > > > index 4cc3a4e2afd3..913429c9c1ae 100644
-> > > > --- a/arch/riscv/include/asm/set_memory.h
-> > > > +++ b/arch/riscv/include/asm/set_memory.h
-> > > > @@ -15,6 +15,7 @@ int set_memory_ro(unsigned long addr, int numpages);
-> > > >  int set_memory_rw(unsigned long addr, int numpages);
-> > > >  int set_memory_x(unsigned long addr, int numpages);
-> > > >  int set_memory_nx(unsigned long addr, int numpages);
-> > > > +int set_memory_default(unsigned long addr, int numpages);
-> > > >  void protect_kernel_text_data(void);
-> > > >  #else
-> > > >  static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
-> > > > @@ -22,6 +23,7 @@ static inline int set_memory_rw(unsigned long addr, int numpages) { return 0; }
-> > > >  static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
-> > > >  static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
-> > > >  static inline void protect_kernel_text_data(void) {};
-> > > > +static inline int set_memory_default(unsigned long addr, int numpages) { return 0; }
-> > > >  #endif
-> > > >
-> > > >  int set_direct_map_invalid_noflush(struct page *page);
-> > > > diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> > > > index b722c5bf892c..abfbdc8cfef3 100644
-> > > > --- a/arch/riscv/kernel/setup.c
-> > > > +++ b/arch/riscv/kernel/setup.c
-> > > > @@ -123,3 +123,12 @@ static int __init topology_init(void)
-> > > >       return 0;
-> > > >  }
-> > > >  subsys_initcall(topology_init);
-> > > > +
-> > > > +void free_initmem(void)
-> > > > +{
-> > > > +     unsigned long init_begin = (unsigned long)__init_begin;
-> > > > +     unsigned long init_end = (unsigned long)__init_end;
-> > > > +
-> > > > +     set_memory_default(init_begin, (init_end - init_begin) >> PAGE_SHIFT);
-> > >
-> > > And what does "default" imply?
-> > > Maybe set_memory_rw() would better name ...
-> > >
-> > > > +     free_initmem_default(POISON_FREE_INITMEM);
-> > > > +}
-> > >
-> > > ...
-> > >
-> > > > diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
-> > > > index 19fecb362d81..04f3fc16aa9c 100644
-> > > > --- a/arch/riscv/mm/pageattr.c
-> > > > +++ b/arch/riscv/mm/pageattr.c
-> > > > @@ -128,6 +128,12 @@ static int __set_memory(unsigned long addr, int numpages, pgprot_t set_mask,
-> > > >       return ret;
-> > > >  }
-> > > >
-> > > > +int set_memory_default(unsigned long addr, int numpages)
-> > > > +{
-> > > > +     return __set_memory(addr, numpages, __pgprot(_PAGE_KERNEL),
-> > > > +                         __pgprot(_PAGE_EXEC));
-> > >
-> > > ... because you'd need to find what _PAGE_KERNEL is, do bitwise ops and
-> > > than find out that default is apparently RW :)
-> > >
-> >
-> > Yeah. But We have explicitly disable the EXECUTE bit as these pages were marked
-> > with RWX earlier. set_memory_rw makes sure that RW bits are set but
-> > doesn't disable
-> > the X bit.
->
-> Maybe set_memory_rw_nx() then?
-> Then there will be no ambiguity about what this function does.
->
+On Thu, Oct 29, 2020 at 09:37:21PM +0100, Michael Kerrisk (man-pages) wrote:
+> Hello Sargun,,
+> 
+> On 10/29/20 9:53 AM, Sargun Dhillon wrote:
+> > On Mon, Oct 26, 2020 at 10:55:04AM +0100, Michael Kerrisk (man-pages) wrote:
+> 
+> [...]
+> 
+> >>    ioctl(2) operations
+> >>        The following ioctl(2) operations are provided to support seccomp
+> >>        user-space notification.  For each of these operations, the first
+> >>        (file descriptor) argument of ioctl(2) is the listening file
+> >>        descriptor returned by a call to seccomp(2) with the
+> >>        SECCOMP_FILTER_FLAG_NEW_LISTENER flag.
+> >>
+> >>        SECCOMP_IOCTL_NOTIF_RECV
+> >>               This operation is used to obtain a user-space notification
+> >>               event.  If no such event is currently pending, the
+> >>               operation blocks until an event occurs.  The third
+> >>               ioctl(2) argument is a pointer to a structure of the
+> >>               following form which contains information about the event.
+> >>               This structure must be zeroed out before the call.
+> >>
+> >>                   struct seccomp_notif {
+> >>                       __u64  id;              /* Cookie */
+> >>                       __u32  pid;             /* TID of target thread */
+> >>                       __u32  flags;           /* Currently unused (0) */
+> >>                       struct seccomp_data data;   /* See seccomp(2) */
+> >>                   };
+> >>
+> >>               The fields in this structure are as follows:
+> >>
+> >>               id     This is a cookie for the notification.  Each such
+> >>                      cookie is guaranteed to be unique for the
+> >>                      corresponding seccomp filter.
+> >>
+> >>                      · It can be used with the
+> >>                        SECCOMP_IOCTL_NOTIF_ID_VALID ioctl(2) operation
+> >>                        to verify that the target is still alive.
+> >>
+> >>                      · When returning a notification response to the
+> >>                        kernel, the supervisor must include the cookie
+> >>                        value in the seccomp_notif_resp structure that is
+> >>                        specified as the argument of the
+> >>                        SECCOMP_IOCTL_NOTIF_SEND operation.
+> >>
+> >>               pid    This is the thread ID of the target thread that
+> >>                      triggered the notification event.
+> >>
+> >>               flags  This is a bit mask of flags providing further
+> >>                      information on the event.  In the current
+> >>                      implementation, this field is always zero.
+> >>
+> >>               data   This is a seccomp_data structure containing
+> >>                      information about the system call that triggered
+> >>                      the notification.  This is the same structure that
+> >>                      is passed to the seccomp filter.  See seccomp(2)
+> >>                      for details of this structure.
+> >>
+> >>               On success, this operation returns 0; on failure, -1 is
+> >>               returned, and errno is set to indicate the cause of the
+> >>               error.  This operation can fail with the following errors:
+> >>
+> >>               EINVAL (since Linux 5.5)
+> >>                      The seccomp_notif structure that was passed to the
+> >>                      call contained nonzero fields.
+> >>
+> >>               ENOENT The target thread was killed by a signal as the
+> >>                      notification information was being generated, or
+> >>                      the target's (blocked) system call was interrupted
+> >>                      by a signal handler.
+> >>
+> > 
+> > I think I commented in another thread somewhere that the supervisor is not 
+> > notified if the syscall is preempted. Therefore if it is performing a 
+> > preemptible, long-running syscall, you need to poll
+> > SECCOMP_IOCTL_NOTIF_ID_VALID in the background, otherwise you can
+> > end up in a bad situation -- like leaking resources, or holding on to
+> > file descriptors after the program under supervision has intended to
+> > release them.
+> 
+> It's been a long day, and I'm not sure I reallu understand this.
+> Could you outline the scnario in more detail?
+> 
+S: Sets up filter + interception for accept
+T: socket(AF_INET, SOCK_STREAM, 0) = 7
+T: bind(7, {127.0.0.1, 4444}, ..)
+T: listen(7, 10)
+T: pidfd_getfd(T, 7) = 7 # For the sake of discussion.
+T: accept(7, ...)
+S: Intercepts accept
+S: Does accept in background
+T: Receives signal, and accept(...) responds in EINTR
+T: close(7)
+S: Still running accept(7, ....), holding port 4444, so if now T retries
+   to bind to port 4444, things fail.
 
-Sure. I will do that in v2.
+> > A very specific example is if you're performing an accept on behalf
+> > of the program generating the notification, and the program intends
+> > to reuse the port. You can get into all sorts of awkward situations
+> > there.
+> 
+> [...]
+> 
+See above
 
-> Besides, having set_memory_default() and set_direct_map_default() with
-> different masks would be confusing :)
->
+> > 	SECCOMP_IOCTL_NOTIF_ADDFD (Since Linux v5.9)
+> > 		This operations is used by the supervisor to add a file
+> > 		descriptor to the process that generated the notification.
+> > 		This can be used by the supervisor to enable "emulation"
+> > 		[Probably a better word] of syscalls which return file
+> > 		descriptors, such as socket(2), or open(2).
+> > 
+> > 		When the file descriptor is received by the process that
+> > 		is associated with the notification / cookie, it follows
+> > 		SCM_RIGHTS like semantics, and is evaluated by MAC.
+> 
+> I'm not sure what you mean by SCM_RIGHTS like semantics. Do you mean,
+> the file descriptor refers to the same open file description
+> ('struct file')?
+> 
+> "is evaluated by MAC"... Do you mean something like: the FD is 
+> subject  to LSM checks?
+> 
+The same model of SCM_RIGHTS, where it's checked against LSMs in the same way, 
+and if your lsm hooks in, it'll activate the same hook as moving the file via 
+SCM_RIGHTS would trigger. Also, SCM_RIGHTS does result in some aspects of the fd 
+being shared and others being different (like flags). Perhaps there's a better 
+term to describe these semantics.
 
-Of course :).
+RE: Evaluated by MAC - yes, checked by LSMs.
 
-> > > > +}
-> > > > +
-> > > >  int set_memory_ro(unsigned long addr, int numpages)
-> > > >  {
-> > > >       return __set_memory(addr, numpages, __pgprot(_PAGE_READ),
-> > > > --
-> > > > 2.25.1
-> > > >
-> > >
-> > > --
-> > > Sincerely yours,
-> > > Mike.
-> > >
-> > > _______________________________________________
-> > > linux-riscv mailing list
-> > > linux-riscv@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >
-> >
-> >
-> > --
-> > Regards,
-> > Atish
->
-> --
-> Sincerely yours,
-> Mike.
+> > 		In addition, if it is a socket, it inherits the cgroup
+> > 		v1 classid and netprioidx of the receiving process.
+> > 
+> > 		The argument of this is as follows:
+> > 
+> > 			struct seccomp_notif_addfd {
+> > 				__u64 id;
+> > 				__u32 flags;
+> > 				__u32 srcfd;
+> > 				__u32 newfd;
+> > 				__u32 newfd_flags;
+> > 			};
+> > 
+> > 		id
+> > 			This is the cookie value that was obtained using
+> > 			SECCOMP_IOCTL_NOTIF_RECV.
+> > 
+> > 		flags
+> > 			A bitmask that includes zero or more of the
+> > 			SECCOMP_ADDFD_FLAG_* bits set
+> > 
+> > 			SECCOMP_ADDFD_FLAG_SETFD - Use dup2 (or dup3?)
+> > 				like semantics when copying the file
+> > 				descriptor.
+> > 
+> > 		srcfd
+> > 			The file descriptor number to copy in the
+> > 			supervisor process.
+> > 
+> > 		newfd
+> > 			If the SECCOMP_ADDFD_FLAG_SETFD flag is specified
+> > 			this will be the file descriptor that is used
+> > 			in the dup2 semantics. If this file descriptor
+> > 			exists in the receiving process, it is closed
+> > 			and replaced by this file descriptor in an
+> > 			atomic fashion. If the copy process fails
+> > 			due to a MAC failure, or if srcfd is invalid,
+> > 			the newfd will not be closed in the receiving
+> > 			process.
+> 
+> Great description!
+> 
+> > 			If SECCOMP_ADDFD_FLAG_SETFD it not set, then
+> > 			this value must be 0.
+> > 
+> > 		newfd_flags
+> > 			The file descriptor flags to set on
+> > 			the file descriptor after it has been received
+> > 			by the process. The only flag that can currently
+> > 			be specified is O_CLOEXEC.
+> > 
+> > 		On success, this operation returns the file descriptor
+> > 		number in the receiving process. On failure, -1 is returned.
+> > 
+> > 		It can fail with the following error codes:
+> > 
+> > 		EINPROGRESS
+> > 			The cookie number specified hasn't been received
+> > 			by the listener
+> 
+> I don't understand this. Can you say more about the scenario?
+> 
 
+This should not really happen. But if you do a ADDFD(...), on a notification 
+*before* you've received it, you will get this error. So for example,
+--> epoll(....) -> returns
+--> RECV(...) cookie id is 777
+--> epoll(...) -> returns
+<-- ioctl(ADDFD, id = 778) # Notice how we haven't done a receive yet
+    where we've received a notification for 778.
 
+> > 		ENOENT
+> > 			The cookie number is not valid. This can happen
+> > 			if a response has already been sent, or if the
+> > 			syscall was interrupted
+> > 
+> > 		EBADF
+> > 			If the file descriptor specified in srcfd is
+> > 			invalid, or if the fd is out of range of the
+> > 			destination program.
+> 
+> The piece "or if the fd is out of range of the destination
+> program" is not clear to me. Can you say some more please.
+> 
 
--- 
-Regards,
-Atish
+IIRC the maximum fd range is specific in proc by some sysctl named
+nr_open. It's also evaluated against RLIMITs, and nr_max.
+
+If nr-open (maximum fds open per process, iiirc) is 1000, even
+if 10 FDs are open, it wont work if newfd is 1001.
+
+> > 		EINVAL
+> > 			If flags or new_flags were unrecognized, or
+> > 			if newfd is non-zero, and SECCOMP_ADDFD_FLAG_SETFD
+> > 			has not been set.
+> > 
+> > 		EMFILE
+> > 			Too many files are open by the destination process.
+> > 
+> > 		[there's other error codes possible, like from the LSMs
+> > 		 or if memory can't be read / written or ebusy]
+> > 		 
+> > Does this help?
+> 
+> It's a good start!
+> 
+> Thanks,
+> 
+> Michael
+> 
+> 
+> -- 
+> Michael Kerrisk
+> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+> Linux/UNIX System Programming Training: http://man7.org/training/
