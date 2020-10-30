@@ -2,83 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2406F2A050C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 526F02A0517
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgJ3MKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 08:10:13 -0400
-Received: from smtprelay0084.hostedemail.com ([216.40.44.84]:52220 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725922AbgJ3MKM (ORCPT
+        id S1726209AbgJ3MNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 08:13:38 -0400
+Received: from relay3.mymailcheap.com ([217.182.66.161]:52292 "EHLO
+        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJ3MNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:10:12 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 94D22180286DE;
-        Fri, 30 Oct 2020 12:10:11 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:4321:4605:5007:7903:10004:10400:11026:11232:11473:11658:11914:12043:12297:12438:12555:12679:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21063:21080:21365:21433:21451:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: turn44_2e084d327295
-X-Filterd-Recvd-Size: 2361
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 30 Oct 2020 12:10:10 +0000 (UTC)
-Message-ID: <926a2f22e12bf989d46dc36c8779c50183bf4b7e.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add fix option for GERRIT_CHANGE_ID
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        lukas.bulwahn@gmail.com, Andrew Morton <akpm@linux-foundation.org>
-Date:   Fri, 30 Oct 2020 05:10:09 -0700
-In-Reply-To: <20201030114447.24199-1-yashsri421@gmail.com>
-References: <20201030114447.24199-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 30 Oct 2020 08:13:38 -0400
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay3.mymailcheap.com (Postfix) with ESMTPS id 6B37A3ECDF;
+        Fri, 30 Oct 2020 13:13:34 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id AFD262A0F9;
+        Fri, 30 Oct 2020 08:13:33 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1604060013;
+        bh=Dmc4WgCmy0bLnq4AUakBedzgrdY7inhMkFJ0bs9ifZ0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ui4rOwU3Al6lLfr7t90XquObxnxwcVEc7HIGijM/wjo0XtjWFsr+VUQrEePO8cFiI
+         +q33UhlrqxHbBQu3w+IQ09aZq9tky8t+JjQOPwpy7rEKCWKzLcbvsDyt1BBvnPfeaT
+         YGmD/SqD9kOicisTWj/HzfoF/GpXxxhECHqIdeCM=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id YMKHTEy304Jo; Fri, 30 Oct 2020 08:13:31 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Fri, 30 Oct 2020 08:13:31 -0400 (EDT)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 20384400BD;
+        Fri, 30 Oct 2020 12:13:27 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="swMfAQFZ";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (unknown [113.52.132.214])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 8F29D400BD;
+        Fri, 30 Oct 2020 12:13:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1604060000;
+        bh=Dmc4WgCmy0bLnq4AUakBedzgrdY7inhMkFJ0bs9ifZ0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=swMfAQFZSKLmDxUHCBd7DXVObgX6pBNMxqDIanlJd11kI/4cTbpOBFQfWCMGC4DCe
+         STvlAYPxItZAvhAwzFGi/uJ+r1be8NeYO4azA0RTv0leovmdMh/7wWVRd4HyYGitF5
+         jbrU5udsvAEy16Nsb4RdQkq0Ec+ateJ8T3Mklm8k=
+Subject: Re: [PATCH 1/6] MIPS: Loongson64: Do not write the read only field
+ LPA of CP0_CONFIG3
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+References: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
+ <1603958581-4723-2-git-send-email-yangtiezhu@loongson.cn>
+ <a384c467-048d-1296-4a0d-ecbf4cea844d@flygoat.com>
+ <7306f77f-b70a-862d-b4c5-d8f20102dc62@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <a3e4cd0f-7500-b994-15b1-8df1cff24ab5@flygoat.com>
+Date:   Fri, 30 Oct 2020 20:13:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <7306f77f-b70a-862d-b4c5-d8f20102dc62@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 20384400BD
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         RCPT_COUNT_FIVE(0.00)[6];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-30 at 17:14 +0530, Aditya Srivastava wrote:
-> Currently, whenever a Gerrit Change-Id is present in a commit,
-> checkpatch.pl warns to remove the Change-Id before submitting the patch.
-> 
-> E.g., running checkpatch on commit adc311a5bbf6 ("iwlwifi: bump FW
-> API to 53 for 22000 series") reports this error:
-> 
-> ERROR: Remove Gerrit Change-Id's before submitting upstream
-> Change-Id: I5725e46394f3f53c3069723fd513cc53c7df383d
-> 
-> Provide a simple fix option by simply deleting the indicated line.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -2852,8 +2852,11 @@ sub process {
-> �
-> 
-> �# Check for Gerrit Change-Ids not in any patch context
-> �		if ($realfile eq '' && !$has_patch_separator && $line =~ /^\s*change-id:/i) {
-> -			ERROR("GERRIT_CHANGE_ID",
-> -			      "Remove Gerrit Change-Id's before submitting upstream\n" . $herecurr);
-> +			if (ERROR("GERRIT_CHANGE_ID",
-> +			          "Remove Gerrit Change-Id's before submitting upstream\n" . $herecurr) &&
-> +			    $fix) {
-> +                                fix_delete_line($fixlinenr, $rawline);
-> +                        }
-> �		}
 
-Seems sensible, thanks.
 
-It might also be sensible if the line before and the line after
-this change-id is also blank to remove one of those blank lines.
+在 2020/10/30 14:22, Tiezhu Yang 写道:
+> On 10/30/2020 12:00 PM, Jiaxun Yang wrote:
+>>
+>>
+>> 在 2020/10/29 16:02, Tiezhu Yang 写道:
+>>> The field LPA of CP0_CONFIG3 register is read only for Loongson64, 
+>>> so the
+>>> write operations are meaningless, remove them.
+>>>
+>>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>>> ---
+>>>   arch/mips/include/asm/mach-loongson64/kernel-entry-init.h | 8 
+>>> --------
+>>>   arch/mips/loongson64/numa.c                               | 3 ---
+>>>   2 files changed, 11 deletions(-)
+>> Hi Tiezhu,
+>>
+>> AFAIK it's not read only on 3A1000.
+>> Have you check with hardware guys?
+>
+> Hi Jiaxun,
+>
+> Yes, I checked it before send this patch,  the field LPA of CP0_CONFIG3
+> on 3A1000 is also read only,  we can see the related description in the
+> chapter 3.22 of Loongson_3A1000_cpu_user_2.
 
-On second thought:
+On page 36, it said:
+"能否写ELPA位依赖于Config3寄存器的LPA域 。当Config3的LPA位为0时，
+PageGrain的ELPA位被置位。"
 
-A quick check shows less than 20 of those in kernel git history
-so it might not be too worthwhile.
+Don't know if it matters.
 
-Acked-by: Joe Perches <joe@perches.com>
+@Huacai, Any comments? Do you know why it exists here?
 
+Thanks
+
+- Jiaxun
 
