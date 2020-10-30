@@ -2,99 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D16E2A0C4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:17:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2B22A0C1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:09:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgJ3RRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 13:17:12 -0400
-Received: from mga12.intel.com ([192.55.52.136]:26899 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726564AbgJ3RRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 13:17:12 -0400
-IronPort-SDR: QqZJas1bqZvooxbLn8gzHJcSN+40wNRhPbrvy5Lor/r9ZyqtQ5+TMXH9WEvq1YoGQTNslQ6a6D
- fxt96xhOME8Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="147923449"
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="147923449"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 10:17:11 -0700
-IronPort-SDR: 1kklI0b9O1wKMbbpvK/ZW2KDzAGwZBabH/P6SCpUgvKOB81gxahNsi0TinDJ1ft+YdwxAcZKWJ
- c3fhczMXsJaA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="469584718"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
-  by orsmga004.jf.intel.com with ESMTP; 30 Oct 2020 10:17:08 -0700
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Brent Lu <brent.lu@intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Jason Yan <yanaijie@huawei.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] ASoC: intel: sof_rt5682: Add quirk for Dooly
-Date:   Sat, 31 Oct 2020 01:05:59 +0800
-Message-Id: <20201030170559.20370-3-brent.lu@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201030170559.20370-1-brent.lu@intel.com>
-References: <20201030170559.20370-1-brent.lu@intel.com>
+        id S1727233AbgJ3RJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 13:09:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44838 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726259AbgJ3RJH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 13:09:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604077745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bJ1mTppI0IB1R7JLwvwRStzfx4lBSnTdOO6YlKS1jso=;
+        b=i1ZUecsR0ML32+TM0h6mCwZDtk9iIaZOy29CTOw+IaTJwmvXdoYrUrtUb0tGqRomDgqjFi
+        +4xfSWIXWNkvlF+0F3kLeIR7bUnNkLuqZ+k7HjRCI+cvrjg7mtcsSU4hEw6BsrcJfC//tL
+        T3YiCncBBrPj+Cxj3mu/aHfe1jTVyDE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-357-3PwWS2F6PPC8jAX-FtL6eg-1; Fri, 30 Oct 2020 13:09:04 -0400
+X-MC-Unique: 3PwWS2F6PPC8jAX-FtL6eg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6491D10866AD;
+        Fri, 30 Oct 2020 17:09:02 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-119-148.rdu2.redhat.com [10.10.119.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 69D4D5B4D0;
+        Fri, 30 Oct 2020 17:09:01 +0000 (UTC)
+Subject: Re: [PATCH 3/3] sched: Add cond_resched_rwlock
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>
+References: <20201027164950.1057601-1-bgardon@google.com>
+ <20201027164950.1057601-3-bgardon@google.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <5e1101b9-6568-ae91-d2a2-847af8d63660@redhat.com>
+Date:   Fri, 30 Oct 2020 13:09:00 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20201027164950.1057601-3-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This DMI product family string of this board is "Google_Hatch" so the
-DMI quirk will take place. However, this board is using rt1015 speaker
-amp instead of max98357a specified in the quirk. Therefore, we need an
-new DMI quirk for this board.
+On 10/27/20 12:49 PM, Ben Gardon wrote:
+> Rescheduling while holding a spin lock is essential for keeping long
+> running kernel operations running smoothly. Add the facility to
+> cond_resched rwlocks.
+>
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>   include/linux/sched.h | 12 ++++++++++++
+>   kernel/sched/core.c   | 40 ++++++++++++++++++++++++++++++++++++++++
+>   2 files changed, 52 insertions(+)
+>
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 77179160ec3ab..2eb0c53fce115 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1841,12 +1841,24 @@ static inline int _cond_resched(void) { return 0; }
+>   })
+>   
+>   extern int __cond_resched_lock(spinlock_t *lock);
+> +extern int __cond_resched_rwlock_read(rwlock_t *lock);
+> +extern int __cond_resched_rwlock_write(rwlock_t *lock);
+>   
+>   #define cond_resched_lock(lock) ({				\
+>   	___might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);\
+>   	__cond_resched_lock(lock);				\
+>   })
+>   
+> +#define cond_resched_rwlock_read(lock) ({			\
+> +	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
+> +	__cond_resched_rwlock_read(lock);			\
+> +})
+> +
+> +#define cond_resched_rwlock_write(lock) ({			\
+> +	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
+> +	__cond_resched_rwlock_write(lock);			\
+> +})
+> +
+>   static inline void cond_resched_rcu(void)
+>   {
+>   #if defined(CONFIG_DEBUG_ATOMIC_SLEEP) || !defined(CONFIG_PREEMPT_RCU)
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index d2003a7d5ab55..ac58e7829a063 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -6152,6 +6152,46 @@ int __cond_resched_lock(spinlock_t *lock)
+>   }
+>   EXPORT_SYMBOL(__cond_resched_lock);
+>   
+> +int __cond_resched_rwlock_read(rwlock_t *lock)
+> +{
+> +	int resched = should_resched(PREEMPT_LOCK_OFFSET);
+> +	int ret = 0;
+> +
+> +	lockdep_assert_held(lock);
+> +
+> +	if (rwlock_needbreak(lock) || resched) {
+> +		read_unlock(lock);
+> +		if (resched)
+> +			preempt_schedule_common();
+> +		else
+> +			cpu_relax();
+> +		ret = 1;
+> +		read_lock(lock);
+> +	}
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(__cond_resched_rwlock_read);
+> +
+> +int __cond_resched_rwlock_write(rwlock_t *lock)
+> +{
+> +	int resched = should_resched(PREEMPT_LOCK_OFFSET);
+> +	int ret = 0;
+> +
+> +	lockdep_assert_held(lock);
+> +
+> +	if (rwlock_needbreak(lock) || resched) {
+> +		write_unlock(lock);
+> +		if (resched)
+> +			preempt_schedule_common();
+> +		else
+> +			cpu_relax();
+> +		ret = 1;
+> +		write_lock(lock);
+> +	}
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(__cond_resched_rwlock_write);
+> +
+>   /**
+>    * yield - yield the current processor to other threads.
+>    *
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/intel/boards/sof_rt5682.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+Other than the lockdep_assert_held() changes spotted by others, this 
+patch looks good to me.
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 7701957e0eb7..e7d9a82ca70d 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -100,6 +100,24 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
- 					SOF_RT5682_MCLK_24MHZ |
- 					SOF_RT5682_SSP_CODEC(1)),
- 	},
-+	{
-+		/*
-+		 * Dooly is hatch family but using rt1015 amp so it
-+		 * requires a quirk before "Google_Hatch".
-+		 */
-+		.callback = sof_rt5682_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Dooly"),
-+		},
-+		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_MCLK_24MHZ |
-+					SOF_RT5682_SSP_CODEC(0) |
-+					SOF_SPEAKER_AMP_PRESENT |
-+					SOF_RT1015_SPEAKER_AMP_PRESENT |
-+					SOF_RT1015_SPEAKER_AMP_100FS |
-+					SOF_RT5682_SSP_AMP(1)),
-+	},
- 	{
- 		.callback = sof_rt5682_quirk_cb,
- 		.matches = {
--- 
-2.17.1
+Acked-by: Waiman Long <longman@redhat.com>
 
