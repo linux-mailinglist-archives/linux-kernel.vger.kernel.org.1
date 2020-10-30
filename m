@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D792B2A1031
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3442A1030
 	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727905AbgJ3V2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 17:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727874AbgJ3V2q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 17:28:46 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D328C0613CF;
-        Fri, 30 Oct 2020 14:28:46 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id p9so10556567eji.4;
-        Fri, 30 Oct 2020 14:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KIEqmAs1XvFA4WtieDpHn8W98wDndtvbNRzM5vlXQqQ=;
-        b=OXwM1aBFDr0JDNTu4U+hStfZXgkHxfwMJZ9aeai0r+0Jaz2wn+KfqpOYzUSKCUSUct
-         Zt7GLhvUl8H+TYFgZRSRfRaKV0+97ZnPe58X+YhbJurwjt7R4t4L/TGxRJaYSl2iiFSi
-         MxfPm6TijKpmrBZ/CxfxZRIxm1fCrU6vRRF9jpaCzUxwRUkKTGAjfXgz9Eac5tioO3E3
-         HDptKXy3ELgbqTqaC6NHZHTfVSMCJSE0JhoYWffusHV/82dXgelNY3NMI9XY2BaEScda
-         a5LFIJvbsfrUz69oueA1HiYPygw7gL9oTln4s4xYDPFYOPHX33DPtbGloP5r2mFMOS/c
-         Zhxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KIEqmAs1XvFA4WtieDpHn8W98wDndtvbNRzM5vlXQqQ=;
-        b=ZzoxSiZwJ6SbG8oUMTdcG0m0myVLmrEHR7/uDGEawKFZS0BM/NoSFZKsxUlP9E09X0
-         iCIAynVR59gpBW6Z+BqjPrGRRPScmBuqiJs9wji8ReiPugUXGASwuL1lW0hULphcXXyB
-         EfFCz9Oe+679prdhHk45kj3B9eQghFDqH9tVc7P95FqVdANgSehscUjCCuhZ3c2Y9heN
-         QbhWSZ912a9Gt7qf/YCIXgWd3lpTx9fGBiWeFRNve0xyByrWoNMQ5UCdD86D0LFfOGEh
-         pEozN6zFiH+2azz63m6a8vE1pO8WdnYLuZ/Dh6C12ayYHvrXp3VkIyz02FLFjBdSw1Mi
-         5q3g==
-X-Gm-Message-State: AOAM5308BrKOCo5dq5Gz0Cdo4Y509+7OI/RBrDmI/vUzbmgeTlxmyV9r
-        BZjyA0paCPMnbVJkUu+wU0esUFvewvKDEsyTjGg=
-X-Google-Smtp-Source: ABdhPJyK6dBJGoNM+fMJRcP3Tpi3M/H1TgR+Y+WgDjqkvnPfDFipzAReO0qgJolyelEiXrSYCUSsiVOHqiSPNe2r3BU=
-X-Received: by 2002:a17:906:3b91:: with SMTP id u17mr4421859ejf.504.1604093324767;
- Fri, 30 Oct 2020 14:28:44 -0700 (PDT)
+        id S1727896AbgJ3V2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 17:28:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727727AbgJ3V2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 17:28:44 -0400
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F8E822241;
+        Fri, 30 Oct 2020 21:28:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604093323;
+        bh=tZSPplLftF65YenDg5MlNkzy10RGzZxkh25MXH0GVn4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PnRgQyolUgqkCmxzG1qYuQvzFNCGWid218+CcJ56bfcRGfXuszO7y5Pa6YL7Yze08
+         J/7Tsj67hoX/Y1z9arApiqu3hxdDEUtyRhSVJltPMxBHhMPJleX9zExIEGYRtwALYT
+         WM/wRk2bR5M1DT5XgRdUsyy5cegXXECSS8xLX2YE=
+Received: by mail-qk1-f171.google.com with SMTP id k9so6251708qki.6;
+        Fri, 30 Oct 2020 14:28:43 -0700 (PDT)
+X-Gm-Message-State: AOAM533LWWoL0PXBLjvgY64ovW0oNDnxqEq0ALj7ZVc0y6hMgc6wQ5y4
+        gKnz69slxqfC9cMEwzVQ/+z07NdMglggMESgAE8=
+X-Google-Smtp-Source: ABdhPJwzRQW1k5B6zbrTfsf30S/rHG5MM3vjwuzzwTJuv1SPViYWCLHZOGFiwlUAQWhT5QXO52QrgMTVaMhXXk5+ufM=
+X-Received: by 2002:a05:620a:215d:: with SMTP id m29mr4296031qkm.138.1604093322540;
+ Fri, 30 Oct 2020 14:28:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201030022839.438135-1-xie.he.0141@gmail.com>
- <20201030022839.438135-5-xie.he.0141@gmail.com> <CA+FuTSczR03KGNdksH2KyAyzoR9jc6avWNrD+UWyc7sXd44J4w@mail.gmail.com>
- <CAJht_ENORPqd+GQPPzNfmCapQ6fwL_YGW8=1h20fqGe4_wDe9Q@mail.gmail.com>
-In-Reply-To: <CAJht_ENORPqd+GQPPzNfmCapQ6fwL_YGW8=1h20fqGe4_wDe9Q@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Fri, 30 Oct 2020 17:28:07 -0400
-Message-ID: <CAF=yD-J8PvkR5xTgv8bb6MHJatWtq5Y_mPjx4+tpWvweMPFFHA@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 4/5] net: hdlc_fr: Do skb_reset_mac_header for
- skbs received on normal PVC devices
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
+References: <20201030154519.1245983-1-arnd@kernel.org> <20201030154919.1246645-1-arnd@kernel.org>
+ <20201030154919.1246645-4-arnd@kernel.org> <20201030165338.GG1551@shell.armlinux.org.uk>
+In-Reply-To: <20201030165338.GG1551@shell.armlinux.org.uk>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 30 Oct 2020 22:28:26 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0ZCinLU0zWj9x0=QoFkrui+1QACjADzAa4yyUaO+qzXA@mail.gmail.com>
+Message-ID: <CAK8P3a0ZCinLU0zWj9x0=QoFkrui+1QACjADzAa4yyUaO+qzXA@mail.gmail.com>
+Subject: Re: [PATCH 4/9] ARM: syscall: always store thread_info->syscall
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 4:08 PM Xie He <xie.he.0141@gmail.com> wrote:
+On Fri, Oct 30, 2020 at 5:53 PM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
 >
-> On Fri, Oct 30, 2020 at 9:30 AM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
+> On Fri, Oct 30, 2020 at 04:49:14PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
 > >
-> > Acked-by: Willem de Bruijn <willemb@google.com>
+> > The system call number is used in a a couple of places, in particular
+> > ptrace, seccomp and /proc/<pid>/syscall.
+> >
+> > The last one apparently never worked reliably on ARM for tasks
+> > that are not currently getting traced.
+> >
+> > Storing the syscall number in the normal entry path makes it work,
+> > as well as allowing us to see if the current system call is for
+> > OABI compat mode, which is the next thing I want to hook into.
 >
-> Thanks for your ack!
+> I'm not sure this patch is correct.
+
+I'm not following where you still see a mismatch, I was hoping I
+had fixed them all after your previous review :(
+
+The thread_info->syscall entry should now consistently contain
+__NR_SYSCALL_BASE on an EABI kernel, and all users of
+that should consistently mask it out.
+
+> Tracing the existing code for OABI:
 >
-> > Should this go to net if a bugfix though?
+> asmlinkage int syscall_trace_enter(struct pt_regs *regs, int scno)
+> {
+>         current_thread_info()->syscall = scno;
+
+This no longer stores to current_thread_info()->syscall but instead
+reads the number from syscall_get_nr().
+
+>         /* Legacy ABI only. */
+> USER(   ldr     scno, [saved_pc, #-4]   )       @ get SWI instruction
+>         bic     scno, scno, #0xff000000         @ mask off SWI op-code
+>         eor     scno, scno, #__NR_SYSCALL_BASE  @ check OS number
+>         tst     r10, #_TIF_SYSCALL_WORK         @ are we tracing syscalls?
+>         bne     __sys_trace
 >
-> Yes, this should theoretically be a bug fix. But I didn't think this
-> was an important fix, because af_packet.c already had workarounds for
-> this issue for all drivers that didn't have header_ops. We can
-> separate this patch to make it go to "net" though, but I'm afraid that
-> this will cause merging conflicts between "net" and "net-next".
+> __sys_trace:
+>         mov     r1, scno
+>         add     r0, sp, #S_OFF
+>         bl      syscall_trace_enter
+>
+> So, thread_info->syscall does not include __NR_SYSCALL_BASE. The
+> reason for this is the code that makes use of that via syscall_get_nr().
+> kernel/trace/trace_syscalls.c:
 
-Yes, it might require holding off the other patches until net is
-merged into net-next.
+On both CONFIG_OABI_COMPAT and on !CONFIG_AEABI kernels,
+I store the value before masking out __NR_SYSCALL_BASE
+after my change. For EABI-only kernels there is no need for
+the mask.
 
-Packet sockets are likely not the only way these packets are received?
-It changes mac_len as computed in __netif_receive_skb_core.
+>         syscall_nr = trace_get_syscall_nr(current, regs);
+>         if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
+>                 return;
+>
+> and NR_syscalls is the number of syscalls, which doesn't include the
+> __NR_SYSCALL_BASE offset.
+>
+> So, I think this patch actually breaks OABI.
 
-If there is no real bug that is fixed, net-next is fine.
+The value returned from trace_get_syscall_nr() is always in
+the 0...NR_syscalls range without the __NR_SYSCALL_BASE
+for a valid syscall. because of the added
+
+ static inline int syscall_get_nr(struct task_struct *task,
+                                 struct pt_regs *regs)
+ {
+-       return task_thread_info(task)->syscall;
++       return task_thread_info(task)->syscall & ~__NR_OABI_SYSCALL_BASE;
+ }
+
+(plus the corresponding logic for OABI_COMPAT.
+
+Which of the above do you think I got wrong?
+
+      Arnd
