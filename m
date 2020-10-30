@@ -2,253 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6DD2A021E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5523B2A0228
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbgJ3KHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:07:04 -0400
-Received: from mga06.intel.com ([134.134.136.31]:21461 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726019AbgJ3KHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:07:04 -0400
-IronPort-SDR: vCs6nUcPpXGwgXKuS1vpTQ3k4dXS69SrcEspUeyQv99tJBi7uEw8Bu1dYlNON3ZeZ2kfR4UDFK
- xmEZ40PtdtIw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="230221625"
-X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
-   d="scan'208";a="230221625"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 03:07:03 -0700
-IronPort-SDR: B+dFTSx9H2RpfWItIplOW5X6Z6paV7eHCGfCwgj60zhUPW+qIcTWBl10ZRoPyjBgzTfCZlGJkp
- 3qKEm+MIzz1w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
-   d="scan'208";a="525843590"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 30 Oct 2020 03:07:02 -0700
-Received: from [10.255.142.248] (vramuthx-MOBL1.gar.corp.intel.com [10.255.142.248])
-        by linux.intel.com (Postfix) with ESMTP id 7EB2B5808A3;
-        Fri, 30 Oct 2020 03:06:58 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [RESENDPATCH v15 2/2] mtd: rawnand: Add NAND controller support
- on Intel LGM SoC
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     vigneshr@ti.com, tudor.ambarus@microchip.com,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        robh+dt@kernel.org, boris.brezillon@collabora.com,
-        devicetree@vger.kernel.org, simon.k.r.goldschmidt@gmail.com,
-        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com
-References: <20201026073021.33327-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201026073021.33327-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201028112037.326c06e2@xps13>
- <ab2b0b7a-93b6-51e4-ec08-7af4f4f38745@linux.intel.com>
- <20201030092329.280466d9@xps13>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <42724eab-7840-27f2-31ad-b5bc10fd89fd@linux.intel.com>
-Date:   Fri, 30 Oct 2020 18:06:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1726285AbgJ3KIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbgJ3KIk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:08:40 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D71C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:08:38 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id n15so5827999wrq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:08:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oyVNIJTztKiRHheNSQoUfnLRDya4SJw9IE1Vxl86s7c=;
+        b=Ghb99UprNaKvFH2nWksoxxcjJMtuQ7UBnEvdaqQ2Xt27pEUza+n/3VR0T/qCjTsgrw
+         pnOgvc7R/Us4ABF8mAoJmL0AdohhbtFrlQIZHCXvlxhr3ShQwZsUCHMdPOY4nT2sPNV2
+         3n2sDDQkLekRqiTyUq6gRYR6GdNDanQomtL14=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oyVNIJTztKiRHheNSQoUfnLRDya4SJw9IE1Vxl86s7c=;
+        b=Zsptu1iy7+8ScPDsOBaiz6oJWbwTfWUEDI2NAbQKi70j5gP2Q2qGCTuRFaV/M8s/T1
+         kgcjIifObcXCh/8BwbIs8aRCXmpHw0MIw6mvIr7NHk+E3ZGWjr9w+yAR1MtuyNZZYUrk
+         XGsjKeIAe6IMxsZAqYfu4Vs5gw7HKBeuZ16N8LI1LdOwjQsiZMsUIUyLzp4+Bq67/fJE
+         I95Q+KyQ3uqrH2rLxuCWtIvT0abflYiv7BNV3XK8zW2urLdFNKL94AJCLRO04keBirLP
+         9qmIZLf5sBPjwIUKmcZVkPdn1O5WMPglMKfjzcVP7xsMnOo0XDhRNUSn9QpNQhRvmJZu
+         MUSg==
+X-Gm-Message-State: AOAM531EGKZnOdHpXea6dzGRRRqOIk1MPw2v9O1UB2W1IR/mOhTDEuM+
+        zkPcQwjhzLBb5m32GXh3/S5tIg==
+X-Google-Smtp-Source: ABdhPJw0H9VR4VRiDyzFX/cH5pwaV8XuDt6bBdU2cQb4UZ7RdbthoCu2zTbDyFJZiy6ZQIc6vY++Ww==
+X-Received: by 2002:adf:f80a:: with SMTP id s10mr2082685wrp.275.1604052517093;
+        Fri, 30 Oct 2020 03:08:37 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id v189sm4430947wmg.14.2020.10.30.03.08.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 03:08:35 -0700 (PDT)
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+To:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH v5 00/15] follow_pfn and other iomap races
+Date:   Fri, 30 Oct 2020 11:08:00 +0100
+Message-Id: <20201030100815.2269-1-daniel.vetter@ffwll.ch>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201030092329.280466d9@xps13>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+Hi all
 
-On 30/10/2020 4:23 pm, Miquel Raynal wrote:
-> Hello,
-> 
->>>> +static const struct nand_controller_ops ebu_nand_controller_ops = {
->>>> +	.attach_chip = ebu_nand_attach_chip,
->>>> +	.setup_interface = ebu_nand_set_timings,
->>>> +	.exec_op = ebu_nand_exec_op,
->>>> +};
->>>> +
->>>> +static void ebu_dma_cleanup(struct ebu_nand_controller *ebu_host)
->>>> +{
->>>> +	if (ebu_host->dma_rx)
->>>> +		dma_release_channel(ebu_host->dma_rx);
->>>> +
->>>> +	if (ebu_host->dma_tx)
->>>> +		dma_release_channel(ebu_host->dma_tx);
->>>> +}
->>>> +
->>>> +static int ebu_nand_probe(struct platform_device *pdev)
->>>> +{
->>>> +	struct device *dev = &pdev->dev;
->>>> +	struct ebu_nand_controller *ebu_host;
->>>> +	struct nand_chip *nand;
->>>> +	struct mtd_info *mtd;
->>>> +	struct resource *res;
->>>> +	char *resname;
->>>> +	int ret, i;
->>>> +	u32 reg;
->>>> +
->>>> +	ebu_host = devm_kzalloc(dev, sizeof(*ebu_host), GFP_KERNEL);
->>>> +	if (!ebu_host)
->>>> +		return -ENOMEM;
->>>> +
->>>> +	ebu_host->dev = dev;
->>>> +	nand_controller_init(&ebu_host->controller);
->>>> +
->>>> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ebunand");
->>>> +	ebu_host->ebu = devm_ioremap_resource(&pdev->dev, res);
->>>> +	if (IS_ERR(ebu_host->ebu))
->>>> +		return PTR_ERR(ebu_host->ebu);
->>>> +
->>>> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hsnand");
->>>> +	ebu_host->hsnand = devm_ioremap_resource(&pdev->dev, res);
->>>> +	if (IS_ERR(ebu_host->hsnand))
->>>> +		return PTR_ERR(ebu_host->hsnand);
->>>> +
->>>> +	ret = device_property_read_u32(dev, "nand,cs", &reg);
->>>
->>> There is no nand,cs property. Use 'reg' instead.
->> Noted.
->>>    
->>>> +	if (ret) {
->>>> +		dev_err(dev, "failed to get chip select: %d\n", ret);
->>>> +		return ret;
->>>> +	}
->>>> +	ebu_host->cs_num = reg;
->>>
->>> The following for loop is weird, above you can only store a single cs
->>> number, while below you seem to reserve serveral memory areas. Please
->>> clarify this code.
->> This IP supports 2 chip select for 2 different memory regions so we used the below for loop, as per reviewers comment updated.
->> 		 EBU_CS0_BASE     0xE1C0_0000 (Memory-Mapped)
->> 		 EBU_CS0_IO_BASE  0x1740_0000 (FPI I/O Mapped)
->>
->>                    EBU_CS1_BASE     0xE140_0000 (Memory-Mapped)
->>                    EBU_CS1_IO_BASE  0x17C0_0000 (FPI I/O Mapped)
-> 
-> Please make a difference between, "there are two CS, either can be
-> picked but we can use only one in this driver" or "there are two CS,
-> one or both can be used". You can start with supporting a single CS (no
-> matter which one is picked by the user with the reg property) but in
-> this case there is no such for loop because only 1 CS is used. Or you
-> can decide that both CS can be populated and in this case you must
-> handle this in ->select_chip().
-Sure, I will hadle the same as per your suggestion, thanks a lot!
+Another update of my patch series to clamp down a bunch of races and gaps
+around follow_pfn and other access to iomem mmaps. Previous version:
 
-Regards
-Vadivel
-> 
->>
->>>    
->>>> +
->>>> +	for (i = 0; i < MAX_CS; i++) {
->>>> +		resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", i);
->>>> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
->>>> +						   resname);
->>>> +		ebu_host->cs[i].chipaddr = devm_ioremap_resource(dev, res);
->>>> +		ebu_host->cs[i].nand_pa = res->start;
->>>> +		if (IS_ERR(ebu_host->cs[i].chipaddr))
->>>> +			return PTR_ERR(ebu_host->cs[i].chipaddr);
->>>> +	}
->>>> +
->>>> +	ebu_host->clk = devm_clk_get(dev, NULL);
->>>> +	if (IS_ERR(ebu_host->clk))
->>>> +		return dev_err_probe(dev, PTR_ERR(ebu_host->clk),
->>>> +				     "failed to get clock\n");
->>>> +
->>>> +	ret = clk_prepare_enable(ebu_host->clk);
->>>> +	if (ret) {
->>>> +		dev_err(dev, "failed to enable clock: %d\n", ret);
->>>> +		return ret;
->>>> +	}
->>>> +	ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
->>>> +
->>>> +	ebu_host->dma_tx = dma_request_chan(dev, "tx");
->>>> +	if (IS_ERR(ebu_host->dma_tx))
->>>> +		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
->>>> +				     "failed to request DMA tx chan!.\n");
->>>> +
->>>> +	ebu_host->dma_rx = dma_request_chan(dev, "rx");
->>>> +	if (IS_ERR(ebu_host->dma_rx))
->>>> +		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
->>>> +				     "failed to request DMA rx chan!.\n");
->>>> +
->>>> +	for (i = 0; i < MAX_CS; i++) {
->>>> +		resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", i);
->>>> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
->>>> +						   resname);
->>>> +		if (!res)
->>>> +			return -EINVAL;
->>>> +		ebu_host->cs[i].addr_sel = res->start;
->>>> +		writel(ebu_host->cs[i].addr_sel | EBU_ADDR_MASK(5) |
->>>> +		       EBU_ADDR_SEL_REGEN, ebu_host->ebu + EBU_ADDR_SEL(i));
->>>> +	}
->>>> +
->>>> +	nand_set_flash_node(&ebu_host->chip, dev->of_node);
->>>> +	if (!mtd->name) {
->>>> +		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
->>>> +		return -EINVAL;
->>>> +	}
->>>> +
->>>> +	mtd = nand_to_mtd(&ebu_host->chip);
->>>> +	mtd->dev.parent = dev;
->>>> +	ebu_host->dev = dev;
->>>> +
->>>> +	platform_set_drvdata(pdev, ebu_host);
->>>> +	nand_set_controller_data(&ebu_host->chip, ebu_host);
->>>> +
->>>> +	nand = &ebu_host->chip;
->>>> +	nand->controller = &ebu_host->controller;
->>>> +	nand->controller->ops = &ebu_nand_controller_ops;
->>>> +
->>>> +	/* Scan to find existence of the device */
->>>> +	ret = nand_scan(&ebu_host->chip, 1);
->>>> +	if (ret)
->>>> +		goto err_cleanup_dma;
->>>> +
->>>> +	ret = mtd_device_register(mtd, NULL, 0);
->>>> +	if (ret)
->>>> +		goto err_clean_nand;
->>>> +
->>>> +	return 0;
->>>> +
->>>> +err_clean_nand:
->>>> +	nand_cleanup(&ebu_host->chip);
->>>> +err_cleanup_dma:
->>>> +	ebu_dma_cleanup(ebu_host);
->>>> +	clk_disable_unprepare(ebu_host->clk);
->>>> +
->>>> +	return ret;
->>>> +}
->>>> +
->>>> +static int ebu_nand_remove(struct platform_device *pdev)
->>>> +{
->>>> +	struct ebu_nand_controller *ebu_host = platform_get_drvdata(pdev);
->>>> +	int ret;
->>>> +
->>>> +	ret = mtd_device_unregister(nand_to_mtd(&ebu_host->chip));
->>>> +	WARN_ON(ret);
->>>> +	nand_cleanup(&ebu_host->chip);
->>>> +	ebu_nand_disable(&ebu_host->chip);
->>>> +	ebu_dma_cleanup(ebu_host);
->>>> +	clk_disable_unprepare(ebu_host->clk);
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +
->>>> +static const struct of_device_id ebu_nand_match[] = {
->>>> +	{ .compatible = "intel,nand-controller", },
->>>
->>> No version or soc in the compatible? (not mandatory).
->> Yes, you're right, it should be "intel,lgm-ebunand", but this same driver supports 2 dfferent SOC's , that's the reason kept as generic
->> "intel,nand-controller"
-> 
-> In this case I guess declaring two compatibles is the way to go.
-> 
-> 
-> Thanks,
-> Miquèl
-> 
+v1: https://lore.kernel.org/dri-devel/20201007164426.1812530-1-daniel.vetter@ffwll.ch/
+v2: https://lore.kernel.org/dri-devel/20201009075934.3509076-1-daniel.vetter@ffwll.ch
+v3: https://lore.kernel.org/dri-devel/20201021085655.1192025-1-daniel.vetter@ffwll.ch/
+v4: https://lore.kernel.org/dri-devel/20201026105818.2585306-1-daniel.vetter@ffwll.ch/
+
+And the discussion that sparked this journey:
+
+https://lore.kernel.org/dri-devel/20201007164426.1812530-1-daniel.vetter@ffwll.ch/
+
+Changes in v5:
+- Tomasz found some issues in the media patches
+- Polish suggested by Christoph for the unsafe_follow_pfn patch
+
+Changes in v4:
+- Drop the s390 patch, that was very stand-alone and now queued up to land
+  through s390 trees.
+- Comment polish per Dan's review.
+
+Changes in v3:
+- Bunch of polish all over, no functional changes aside from one barrier
+  in the resource code, for consistency.
+- A few more r-b tags.
+
+Changes in v2:
+- tons of small polish&fixes all over, thanks to all the reviewers who
+  spotted issues
+- I managed to test at least the generic_access_phys and pci mmap revoke
+  stuff with a few gdb sessions using our i915 debug tools (hence now also
+  the drm/i915 patch to properly request all the pci bar regions)
+- reworked approach for the pci mmap revoke: Infrastructure moved into
+  kernel/resource.c, address_space mapping is now set up at open time for
+  everyone (which required some sysfs changes). Does indeed look a lot
+  cleaner and a lot less invasive than I feared at first.
+
+I feel like this is ready for some wider soaking. Since the remaining bits
+are all kinda connnected probably simplest if it all goes through -mm.
+
+Cheers, Daniel
+
+Daniel Vetter (15):
+  drm/exynos: Stop using frame_vector helpers
+  drm/exynos: Use FOLL_LONGTERM for g2d cmdlists
+  misc/habana: Stop using frame_vector helpers
+  misc/habana: Use FOLL_LONGTERM for userptr
+  mm/frame-vector: Use FOLL_LONGTERM
+  media: videobuf2: Move frame_vector into media subsystem
+  mm: Close race in generic_access_phys
+  mm: Add unsafe_follow_pfn
+  media/videbuf1|2: Mark follow_pfn usage as unsafe
+  vfio/type1: Mark follow_pfn as unsafe
+  PCI: Obey iomem restrictions for procfs mmap
+  /dev/mem: Only set filp->f_mapping
+  resource: Move devmem revoke code to resource framework
+  sysfs: Support zapping of binary attr mmaps
+  PCI: Revoke mappings like devmem
+
+ drivers/char/mem.c                            |  86 +--------------
+ drivers/gpu/drm/exynos/Kconfig                |   1 -
+ drivers/gpu/drm/exynos/exynos_drm_g2d.c       |  48 ++++-----
+ drivers/media/common/videobuf2/Kconfig        |   1 -
+ drivers/media/common/videobuf2/Makefile       |   1 +
+ .../media/common/videobuf2}/frame_vector.c    |  57 ++++------
+ .../media/common/videobuf2/videobuf2-memops.c |   3 +-
+ drivers/media/platform/omap/Kconfig           |   1 -
+ drivers/media/v4l2-core/videobuf-dma-contig.c |   2 +-
+ drivers/misc/habanalabs/Kconfig               |   1 -
+ drivers/misc/habanalabs/common/habanalabs.h   |   6 +-
+ drivers/misc/habanalabs/common/memory.c       |  50 ++++-----
+ drivers/pci/pci-sysfs.c                       |   4 +
+ drivers/pci/proc.c                            |   6 ++
+ drivers/vfio/vfio_iommu_type1.c               |   4 +-
+ fs/sysfs/file.c                               |  11 ++
+ include/linux/ioport.h                        |   6 +-
+ include/linux/mm.h                            |  47 +-------
+ include/linux/sysfs.h                         |   2 +
+ include/media/frame_vector.h                  |  47 ++++++++
+ include/media/videobuf2-core.h                |   1 +
+ kernel/resource.c                             | 101 +++++++++++++++++-
+ mm/Kconfig                                    |   3 -
+ mm/Makefile                                   |   1 -
+ mm/memory.c                                   |  80 +++++++++++++-
+ mm/nommu.c                                    |  27 ++++-
+ security/Kconfig                              |  13 +++
+ 27 files changed, 360 insertions(+), 250 deletions(-)
+ rename {mm => drivers/media/common/videobuf2}/frame_vector.c (84%)
+ create mode 100644 include/media/frame_vector.h
+
+-- 
+2.28.0
+
