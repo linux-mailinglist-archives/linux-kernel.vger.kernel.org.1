@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EA42A0169
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7822A00FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgJ3J0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:26:55 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7106 "EHLO
+        id S1726220AbgJ3JQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:16:35 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7105 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgJ3J0z (ORCPT
+        with ESMTP id S1725790AbgJ3JQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:26:55 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CMxld1bvzzLnSy;
-        Fri, 30 Oct 2020 17:26:53 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 30 Oct 2020 17:26:48 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/hisilicon: Remove redundant null check
-Date:   Fri, 30 Oct 2020 17:27:26 +0800
-Message-ID: <1604050046-64539-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 30 Oct 2020 05:16:35 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CMxWg5XM4zLrQN;
+        Fri, 30 Oct 2020 17:16:31 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 30 Oct 2020 17:16:21 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <alcooperx@gmail.com>, <gregkh@linuxfoundation.org>,
+        <f.fainelli@gmail.com>, <bcm-kernel-feedback-list@broadcom.com>
+CC:     <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] usb: Make sync_all_pins static
+Date:   Fri, 30 Oct 2020 17:28:17 +0800
+Message-ID: <1604050097-91302-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
+X-Originating-IP: [10.175.103.112]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm_irq_uninstall can handle the case where dev->irq_enable is false,
-so Remove redundant null check.
+Fix the following sparse warning:
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+drivers/usb/misc/brcmstb-usb-pinmap.c:219:6: warning: symbol 'sync_all_pins' was not declared. Should it be static?
+
+The sync_all_pins has only call site within brcmstb-usb-pinmap.c
+It should be static
+
+Fixes: 517c4c44b323 ("usb: Add driver to allow any GPIO to be used for 7211 USB signals")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/misc/brcmstb-usb-pinmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-index 0c1b40d..b71589b1 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-@@ -246,13 +246,13 @@ static int hibmc_unload(struct drm_device *dev)
- 
- 	drm_atomic_helper_shutdown(dev);
- 
--	if (dev->irq_enabled)
--		drm_irq_uninstall(dev);
--
-+	drm_irq_uninstall(dev);
- 	pci_disable_msi(dev->pdev);
-+
- 	hibmc_kms_fini(priv);
- 	hibmc_mm_fini(priv);
- 	dev->dev_private = NULL;
-+
+diff --git a/drivers/usb/misc/brcmstb-usb-pinmap.c b/drivers/usb/misc/brcmstb-usb-pinmap.c
+index 02144c3..cc9618d 100644
+--- a/drivers/usb/misc/brcmstb-usb-pinmap.c
++++ b/drivers/usb/misc/brcmstb-usb-pinmap.c
+@@ -216,7 +216,7 @@ static int parse_pins(struct device *dev, struct device_node *dn,
  	return 0;
  }
  
+-void sync_all_pins(struct brcmstb_usb_pinmap_data *pdata)
++static void sync_all_pins(struct brcmstb_usb_pinmap_data *pdata)
+ {
+ 	struct out_pin *pout;
+ 	struct in_pin *pin;
 -- 
-2.7.4
+2.6.2
 
