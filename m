@@ -2,84 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E0C29FD6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 06:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6B029FD71
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 06:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725834AbgJ3Fsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 01:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725770AbgJ3Fsh (ORCPT
+        id S1725844AbgJ3FwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 01:52:06 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55398 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbgJ3FwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 01:48:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938C6C0613D4;
-        Thu, 29 Oct 2020 22:48:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=C8nOGEB9+7gSvITmKEcodA3o6SzFPOIfJZ7sTsW9pwY=; b=gl8xCFEB4IfN/X6awW1jnfXbYK
-        zOW4ZE0DLQFQG/4nHnjgqGty7LROKhwC2uHg03SquKFh3pRbqGBVHvlmV3R+OeQrH1+P7rvfWPZBn
-        hl/cy085Li5NB7hfS8RENSZYfil3mY4SXu8qLM/ivHga2ov9s3SsxjvsALAx2QiZMSs1muYrpMsUc
-        OGbEcQY67dSBR5011BQHMu0Rsoq0yH9FngVE2d/nsDuMZw8bcylbn+8ZRp1Ibdr8MMuZ6GGLdBjWS
-        3p7TRIsHM+R2hkSrcQ0GX/AZitZY6JZWYvGOLQIlIoZRnRKRJInjRJkblOqMRxHbVBfZub0TNzdP9
-        yqgqtvQA==;
-Received: from [2601:1c0:6280:3f0::371c]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYNH8-0000AK-WD; Fri, 30 Oct 2020 05:48:35 +0000
-Subject: Re: [PATCH v11 4/4] bus: mhi: Add userspace client interface driver
-To:     Hemant Kumar <hemantk@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, netdev@vger.kernel.org
-References: <1604025946-28288-1-git-send-email-hemantk@codeaurora.org>
- <1604025946-28288-5-git-send-email-hemantk@codeaurora.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <88077bd6-be17-d88a-2959-9ea249614019@infradead.org>
-Date:   Thu, 29 Oct 2020 22:48:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 30 Oct 2020 01:52:06 -0400
+Received: from floko.floko.floko (unknown [IPv6:2804:14c:483:7e3e::1005])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1DA1B1F458F6;
+        Fri, 30 Oct 2020 05:52:00 +0000 (GMT)
+From:   Helen Koike <helen.koike@collabora.com>
+To:     linux-media@vger.kernel.org
+Cc:     linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        heiko@sntech.de, kernel@collabora.com, hverkuil-cisco@xs4all.nl,
+        dafna.hirschfeld@collabora.com, zhengsq@rock-chips.com,
+        laurent.pinchart@ideasonboard.com, niklas.soderlund@ragnatech.se,
+        mchehab@kernel.org, tfiga@chromium.org, ribalda@google.com
+Subject: [PATCH 0/2] destage Rockchip ISP1 driver
+Date:   Fri, 30 Oct 2020 02:51:51 -0300
+Message-Id: <20201030055153.1981530-1-helen.koike@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <1604025946-28288-5-git-send-email-hemantk@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 7:45 PM, Hemant Kumar wrote:
-> diff --git a/drivers/bus/mhi/Kconfig b/drivers/bus/mhi/Kconfig
-> index e841c10..476cc55 100644
-> --- a/drivers/bus/mhi/Kconfig
-> +++ b/drivers/bus/mhi/Kconfig
-> @@ -20,3 +20,16 @@ config MHI_BUS_DEBUG
->  	  Enable debugfs support for use with the MHI transport. Allows
->  	  reading and/or modifying some values within the MHI controller
->  	  for debug and test purposes.
-> +
-> +config MHI_UCI
-> +	tristate "MHI UCI"
-> +	depends on MHI_BUS
-> +	help
-> +	  MHI based Userspace Client Interface (UCI) driver is used for
+Hello,
 
-	  MHI-based
+I think it is time to move this driver out of staging.
 
-> +	  transferring raw data between host and device using standard file
-> +	  operations from userspace. Open, read, write, and close operations
-> +	  are supported by this driver. Please check mhi_uci_match_table for
+Thanks all who contributed, specially to Dafna, who put a lot of
+effort addressing all the items in the TODO list, fixing bugs,
+cleaning the code, addressing past comments and testing.
 
-also poll according to the documentation.
+Please, review the driver, see if there is any other thing that should
+be addressed before this change.
 
-> +	  all supported channels that are exposed to userspace.
-> +
-> +	  To compile this driver as a module, choose M here: the module will be
-> +	  called mhi_uci.
+> media-ctl -p
+http://ix.io/2Cso
 
+> media-ctl --print-dot
+http://ix.io/2Csp
+
+> v4l2-compliance -m0
+http://ix.io/2Csk
+
+> v4l2-compliance -v -d /dev/video0 -s10
+http://ix.io/2Csq
+
+> v4l2-compliance -v -d /dev/video1 -s10
+http://ix.io/2Css
+
+This patch depends on the following series:
+
+* media: staging: rkisp1: uapi: add "WITH Linux-syscall-note"
+  https://patchwork.linuxtv.org/project/linux-media/patch/20201020132514.26651-1-dafna.hirschfeld@collabora.com/
+
+* [0/2] media: staging: rkisp1: Fix formats for metadata pads
+  https://patchwork.linuxtv.org/project/linux-media/cover/20200325212704.29862-1-dafna.hirschfeld@collabora.com/
+
+* [v2,1/2] media: uapi: add MEDIA_BUS_FMT_METADATA_FIXED media bus format.
+  [v2,2/2] media: staging: rkisp1: isp: set metadata pads to MEDIA_BUS_FMT_METADATA_FIXED
+  https://patchwork.linuxtv.org/project/linux-media/patch/20201020154522.654-1-dafna.hirschfeld@collabora.com/
+
+* [0/6] media: staging: rkisp1: improvements
+  https://patchwork.linuxtv.org/project/linux-media/cover/20201002184222.7094-1-dafna.hirschfeld@collabora.com/
+
+* [0/4] media: staging: rkisp1: send cleanups and checkpatch fixes
+  https://patchwork.linuxtv.org/project/linux-media/cover/20201019205956.6980-1-dafna.hirschfeld@collabora.com/
+
+* media: staging: rkisp1: capture: set default quantization on 'set_fmt'
+  https://patchwork.linuxtv.org/project/linux-media/patch/20201026162848.18310-1-dafna.hirschfeld@collabora.com/
+
+* media: staging: rkisp1: remove TODO item to document quantization handling
+  https://patchwork.linuxtv.org/project/linux-media/patch/20200928152809.27490-1-dafna.hirschfeld@collabora.com/
+
+* [v2] media: staging: rkisp1: cap: refactor enable/disable stream to allow multistreaming
+  https://patchwork.linuxtv.org/project/linux-media/patch/20201019160434.877568-1-helen.koike@collabora.com/
+
+* [v6,0/9] move Rockchip ISP bindings out of staging / add ISP DT nodes for RK3399
+  https://patchwork.linuxtv.org/project/linux-media/patch/20201020193850.1460644-2-helen.koike@collabora.com/
+
+You can also see all of them applied in this branch:
+
+    https://gitlab.collabora.com/koike/linux/-/tree/rockchip/isp/destage
+
+Thanks
+Helen
+
+Helen Koike (1):
+  media: rockchip: rkisp1: destage Rockchip ISP1 driver
+
+Shunqian Zheng (1):
+  media: videodev2.h, v4l2-ioctl: add rkisp1 meta buffer format
+
+ .../media/v4l/pixfmt-meta-rkisp1.rst          |  2 +-
+ drivers/media/platform/Kconfig                | 18 ++++++++++++++++++
+ drivers/media/platform/Makefile               |  1 +
+ .../platform/rockchip}/rkisp1/Makefile        |  0
+ .../rockchip}/rkisp1/rkisp1-capture.c         |  0
+ .../platform/rockchip}/rkisp1/rkisp1-common.c |  0
+ .../platform/rockchip}/rkisp1/rkisp1-common.h |  2 +-
+ .../platform/rockchip}/rkisp1/rkisp1-dev.c    |  0
+ .../platform/rockchip}/rkisp1/rkisp1-isp.c    |  0
+ .../platform/rockchip}/rkisp1/rkisp1-params.c |  0
+ .../platform/rockchip}/rkisp1/rkisp1-regs.h   |  0
+ .../rockchip}/rkisp1/rkisp1-resizer.c         |  0
+ .../platform/rockchip}/rkisp1/rkisp1-stats.c  |  0
+ drivers/media/v4l2-core/v4l2-ioctl.c          |  2 ++
+ drivers/staging/media/Kconfig                 |  2 --
+ drivers/staging/media/Makefile                |  1 -
+ drivers/staging/media/rkisp1/Kconfig          | 19 -------------------
+ drivers/staging/media/rkisp1/TODO             |  6 ------
+ .../uapi/linux}/rkisp1-config.h               |  4 ----
+ include/uapi/linux/videodev2.h                |  4 ++++
+ 20 files changed, 27 insertions(+), 34 deletions(-)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/Makefile (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-capture.c (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-common.c (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-common.h (99%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-dev.c (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-isp.c (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-params.c (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-regs.h (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-resizer.c (100%)
+ rename drivers/{staging/media => media/platform/rockchip}/rkisp1/rkisp1-stats.c (100%)
+ delete mode 100644 drivers/staging/media/rkisp1/Kconfig
+ delete mode 100644 drivers/staging/media/rkisp1/TODO
+ rename {drivers/staging/media/rkisp1/uapi => include/uapi/linux}/rkisp1-config.h (99%)
 
 -- 
-~Randy
+2.28.0
 
