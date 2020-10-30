@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6F82A0B50
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC662A0B9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgJ3QiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbgJ3QiG (ORCPT
+        id S1727230AbgJ3Qqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:46:38 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:44171 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725943AbgJ3Qqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:38:06 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C42C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:38:06 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id s7so8120703iol.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:38:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/NMWfJdThiQHSZltQUuuJFzcFqVdG447qNC171x9a/Y=;
-        b=ODWyrEvD6hidSish6vxd8Gj+j/RCGcIS4EiPZu2JeJFn1Ph2/oGamcYM7lFsTI8q/J
-         RKAhniFX7WMVaSJrLOMYIxo/DPh5HbfEFQOkvhmUc7TBhKmkssDlboMAxSfP6LKFb9/B
-         85PwTBYi6N5UAuGwhd6XBVCHMT9sdo33zxoTs=
+        Fri, 30 Oct 2020 12:46:37 -0400
+Received: by mail-ot1-f68.google.com with SMTP id m26so6076010otk.11;
+        Fri, 30 Oct 2020 09:46:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/NMWfJdThiQHSZltQUuuJFzcFqVdG447qNC171x9a/Y=;
-        b=qiJ8mXYXIQySSQp+fxVQdTkSlXKY0IsLIfEfscJa3MUThTWa4eMyMcAh+A1S1ihti0
-         xTABk/IFClClDP3tYY0LGC166eys2TpjK1vA3bFPffCpGDCSxQpzJd6/EpsTh8Bxr7eN
-         ftn6MpO8kMIjWEqTWhrJpmAXexTn5qFGkEYRqMlGBbsGEf6tnpQ+h1ShARMxsEifPWIT
-         LYa6rOP6a6LYgPr7UhBlwRDCxO7yGoGmoQwAdO12paHWbMWiC7xeqVv+KaoowWEZY2bs
-         WrjZMnDdG9kJWD3njZ6OZNPk+JY7a4w/KiFta+7fJx1Ji0ZUoKJBDjesUiD0HunDTriY
-         phDA==
-X-Gm-Message-State: AOAM531heyvyuEXZVgmWN+DcRKSxdim8sNqCccJ1I4NKNycEbLcbqDh9
-        uvKVc/iJcSY4oHsvEcvLMiO1FA==
-X-Google-Smtp-Source: ABdhPJyfLkj0EO05SQ+gdoV9tNN97dvMwlZ6+Icbb6ArpuE3Z++p7arHViQSYKInsp6wZuFWBL07Gg==
-X-Received: by 2002:a05:6638:102c:: with SMTP id n12mr2611533jan.87.1604075885305;
-        Fri, 30 Oct 2020 09:38:05 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id b14sm6133790ilg.63.2020.10.30.09.38.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 09:38:04 -0700 (PDT)
-Subject: Re: linux-next: manual merge of the staging tree with the
- kselftest-fixes tree
-To:     Greg KH <greg@kroah.com>, Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201029132713.3a41c80b@canb.auug.org.au>
- <20201029052225.GC282324@kroah.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <2de3f605-23f7-e36d-6cee-2f9c6cf36e55@linuxfoundation.org>
-Date:   Fri, 30 Oct 2020 10:38:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zdHn4Bghzba5wOelTeZ6mhUplKqje06p67vbKsYURC0=;
+        b=cFMBnFtwUKvmqXAdDDDbjD190ZucouS1+crWbSRnVgI3b/fHLOvFIW4kudTNuZ1TW+
+         zH4gB56F4bOiD3duQX0L08rd86k0PoOjL2JrJtYVtz+BYQPWbZsM33gEYUYqh70oKFn7
+         p7TkqXxq+9h/8B3w38mBNt64C7pf2++2t863VEkFa7RbEFV3w0jW4y38q/D4n5iYj9bv
+         lfH50ltOEzuactU0zTXgNuFR2Bi0KqA7hxo7b1ZdUib+UZajdFvz/CXD2wZImdaYSgYx
+         e0SMI+cmoHlg5Sgg1Ow+37TZDuwlTGdQ9rVqtya3uHBAk+P5PKq+wpvkqMzyfJMdAr/m
+         APtw==
+X-Gm-Message-State: AOAM532jN4UOomxjj8K/3WXDwcUWkFsJt+gwR0Iphposk5a0N9X1pJ8x
+        dHt7FIR/ftxTeE6sitK4vQbbEgCf0MAEAjGhFuFCXReXie4=
+X-Google-Smtp-Source: ABdhPJxQnyAvlfHtIgYhFfMOUC6BuhMQiwnFHpToclGQhxGMD4Ajfu4gnrgfD0oPO2jq5IWpmVzD470Ajv8wMlhEutc=
+X-Received: by 2002:a4a:e80b:: with SMTP id b11mr2575066oob.1.1604075920719;
+ Fri, 30 Oct 2020 09:38:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201029052225.GC282324@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <6543936.FbWAdBN1tG@kreacher>
+In-Reply-To: <6543936.FbWAdBN1tG@kreacher>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 30 Oct 2020 17:38:29 +0100
+Message-ID: <CAJZ5v0hRMcsdGVOHCfeK4_k81L+PJSNq80kx1BpwDBs+WtgqpA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] PM: runtime: Fixes related to device links management
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lukas Wunner <lukas@wunner.de>,
+        Saravana Kannan <saravanak@google.com>,
+        Xiang Chen <chenxiang66@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/20 11:22 PM, Greg KH wrote:
-> On Thu, Oct 29, 2020 at 01:27:13PM +1100, Stephen Rothwell wrote:
->> Hi all,
->>
->> Today's linux-next merge of the staging tree got conflicts in:
->>
->>    tools/testing/selftests/android/ion/ipcsocket.c
->>    tools/testing/selftests/android/ion/ipcsocket.h
->>
->> between commit:
->>
->>    08c5d41130e5 ("selftests: android: fix multiple definition of sock_name")
->>
->> from the kselftest-fixes tree and commit:
->>
->>    e722a295cf49 ("staging: ion: remove from the tree")
->>
->> from the staging tree.
->>
->> I fixed it up (I just removed the files) and can carry the fix as
->> necessary. This is now fixed as far as linux-next is concerned, but any
->> non trivial conflicts should be mentioned to your upstream maintainer
->> when your tree is submitted for merging.  You may also want to consider
->> cooperating with the maintainer of the conflicting tree to minimise any
->> particularly complex conflicts.
-> 
-> Easy fix, thanks!
-> 
+Hi Greg,
 
-Thanks for catching it. I knew this test was removed. My bad.
+On Wed, Oct 21, 2020 at 9:14 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>
+> Hi Greg & all,
+>
+> Commit d12544fb2aa9 ("PM: runtime: Remove link state checks in
+> rpm_get/put_supplier()") merged recently introduced a weakness
+> in the handling of device links in the runtime PM framework that
+> may be confusing and even harmful.
+>
+> Namely, the checks removed by that commit prevented PM-runtime from
+> getting or dropping references to the supplier device whose driver
+> was going away via its links to consumers, which specifically allowed
+> the pm_runtime_clean_up_links() called from __device_release_driver()
+> to run without interfering with runtime suspend/resume of consumer
+> devices (which still might happen even though the drivers had been
+> unbound from them by that time).
+>
+> After the above commit, calling pm_runtime_clean_up_links() from
+> __device_release_driver() makes a little sense and it may be interfering
+> destructively with regular PM-runtime suspend/resume control flows, so
+> it needs to be either fixed or dropped altogether.  I prefer the latter,
+> because among other things this removes an arbitrary difference in the
+> handling of managed device links with respect to the stateless ones,
+> so patch [2/3] is doing just that.
+>
+> However, in some rare cases pm_runtime_clean_up_links() may help to clean
+> up leftover PM-runtime references, so if that function goes away, they
+> need to be cleaned up elsewhere.  That's why patch [1/3] modifies
+> __device_link_del() to drop them upon device link removal (which also
+> needs to be done for stateless device links and that's why I'm regarding
+> this patch as a fix).
+>
+> Finally, to avoid pointless overhead related to suspending and resuming
+> the target device for multiple times in a row in __device_release_driver(),
+> it is better to resume it upfront before checking its links to consumers,
+> which is done by patch [3/3].
+>
+> While this series touches the driver core, it really is mostly related to
+> runtime PM, so I can apply it if that's OK.
 
--- Shuah
+Any concerns regarding this series?
 
+If not, I'd like to queue it up for -rc3, because the current behavior
+in there is quite confusing (or worse).
+
+Cheers!
