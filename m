@@ -2,126 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E5D2A0131
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E39682A0143
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726322AbgJ3JWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:22:38 -0400
-Received: from mail-eopbgr80053.outbound.protection.outlook.com ([40.107.8.53]:51381
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725355AbgJ3JWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:22:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QlTOWZwEFV7TL1HohxLSvBLRbE2wHMVXcxdnR+oGKVQqyldPx0oS19dc8UtHfobeanEeNZmKE0GEnJG4xLQSfPAX3j1yNuDca9jYBT9y4GvGWzvmnf6soc8DdytzU5+ZUK4NSKTORwxPHVsbP2Il0ts7bmfd4YR6iHZCcFsunHFlVFWwlyQVRvlFUiOsaSdJSGzaHlUVjr7kDmSr5cuSr6NgwbfvuPIXI31jfsvHFm/YEF7LLaouYpQjkvVPRqt/FqZuXI3oQqbAcn0NW6FuAy9D8x8f5IGkIhY0h1lNJG7+dvbVFJFAnPsxOOBzLqN6qp6J1jH3yy1hbLY4dCZsDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=II7icuHba+vR/928JCkPy8mZfhAvgGmud9BJKR/LfB4=;
- b=RKKW5k7DyRn8REJHHafD1bO5bAtOJnws5jGqHHz42Akumzcrl9PXbVNbh+euUlP+MNRBOjlq0T/TQ3ke7RIHM725ecDBdpLAzJAnnAk+H7QcVG3xeJrZHjqJtleTWmfCxr19qn3yBMFnG9eDuGEN1RQKbS99H4ygKkOnbUITGkGWkyYvJWhbdSIhf3ZJc8M8O7QkKkcDi5EkaGTq5Pjq/b1qmeux/N7Lq79lUhCO0GzeyMjenzAIZOeNck3m0nqXQECpKP+xHMnFQVHPfAW4uVKfsGh0p6MdyeN7eBV29ri+V/Qx4rsTY3Y6nucVeFgLnGOdh6IptK/9GG2CcYj0EA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=II7icuHba+vR/928JCkPy8mZfhAvgGmud9BJKR/LfB4=;
- b=ZsdY1Siqus9EZA8kW/SgQVlMLFziDTUznIBjAPAGVkpiMYbtUVYk5wBVu27KktY0sYI6LFBb+Ju86yq3/Nj0F0O8E6+6AUWZh4KVRm6MPTANj5SbqUE9b1pQJ313LMkbiNbHhTrqSsrGlK3V1n4I5W+bU9gSgLyJ0/UaFcucLZQ=
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- (2603:10a6:803:16::14) by VI1PR04MB5567.eurprd04.prod.outlook.com
- (2603:10a6:803:d5::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.27; Fri, 30 Oct
- 2020 09:22:35 +0000
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::607d:cbc4:9191:b324]) by VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::607d:cbc4:9191:b324%5]) with mapi id 15.20.3499.029; Fri, 30 Oct 2020
- 09:22:35 +0000
-From:   Ioana Ciornei <ioana.ciornei@nxp.com>
-To:     Shawn Guo <shawnguo@kernel.org>
-CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Leo Li <leoyang.li@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 03/11] arm64: dts: ls1088a: add external MDIO device
- nodes
-Thread-Topic: [PATCH v4 03/11] arm64: dts: ls1088a: add external MDIO device
- nodes
-Thread-Index: AQHWq7KPgPLchCf2i0mGrv1L3kt/jqmv0oCAgAASgQA=
-Date:   Fri, 30 Oct 2020 09:22:34 +0000
-Message-ID: <20201030091942.t2h6f4rdp4uhcaqa@skbuf>
-References: <20201026161005.5421-1-ioana.ciornei@nxp.com>
- <20201026161005.5421-4-ioana.ciornei@nxp.com> <20201030081617.GM28755@dragon>
-In-Reply-To: <20201030081617.GM28755@dragon>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.25.2.177]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6efa5542-20c4-4db5-1f2f-08d87cb55637
-x-ms-traffictypediagnostic: VI1PR04MB5567:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB5567EE559FF369634909733BE0150@VI1PR04MB5567.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2dlrdNpJVZntZB3JZkwyyC7w3aj9sOm47DNT7kr418ipzbZXwPRxRhupo1eC/hFjXqPoxump1F19dUP5aYSzzraF5r5QuZQCEAiNh0WkS4Nexpl4tze0JLaU9DK6xyz+ck4bqNPufR50yO0+/g/dbDNzq/YbliSw/SLTwzVm6mZJLzp5ejN8+85/S/FIifI3H90q8JARrsxEPUcRSnvb4joUByQl5+/eZ9m3sdmQB+E3Jn7PkXi2hAQx4WYODggn86oe1icWjXGeQ6V1K9i8dN8shpP/1eNiRpDw8uojGKZY3byS9pj61heytf3b9zaZ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3871.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(136003)(396003)(346002)(376002)(39850400004)(366004)(44832011)(33716001)(186003)(2906002)(316002)(54906003)(6916009)(4326008)(26005)(71200400001)(1076003)(5660300002)(6506007)(8936002)(76116006)(478600001)(6486002)(9686003)(66946007)(6512007)(66446008)(64756008)(66556008)(66476007)(8676002)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: pSVzuz9tyxW+y5MR/43dbBUbH3xzSmwZeL9YwSr57PE+VW0URii8eeQMz/JXcqOygx47qq3IPjRQ8qbBQ+y0GUvBiVYlg1Jfav7fMw1TDYDuAiFwvO3z/THE+Uxt3ng7NI1bFgZEoW4T3R1jFRHzssz1LMA8TfTZ8Mw+nESt/SS3h+1k9ShlR7Uvntxjg2U6PjuLeWXIlkjrUHDf/yhalT9J6Ik3Yo6ugaiFoMUYtzPxBUQq23E52C3GqIVWyvLR/XKdf1lVyLCZto3kalvOa3ImJ+RcCxE+EkHqqw03IMItrJTOOfpqC+GZao1bd+Pl7Ylbz0R0yMLkMU7K3NOk1DQsb+JPFMV9mhI1mRYzUgMi2b0dBD830MwrIGeympjhlZhfzskBkFONYMpPrQDh/XIabbQw7frBdG5hxlCEKn7a4+oCkBxgEwZ+JitHS3qiR4GPMqgiXHcXFuLvt2P/ZcHLtDJ87R7BrdTfbixy65EL+M9rBpT7rqwT6jw3PoZw91RkBqaKjn8cwtVUOYbiv20mUyaG4Do+aFwEk0qyI3yWVcXoS1N8vzYcFS1ddO8kwYdg8C+aFZCqk+mfqnQfTpTjFcfoFjuVJpimOd1rS6RnN/912UNUsS0pkONWRTe/Xebd316g55aBN8M2cfnYVA==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <94BF6A89714E3646A254893FFFF69BCA@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726345AbgJ3JYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:24:04 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:64389 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726344AbgJ3JYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 05:24:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604049843; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=sp3VGRZxfTRi7zyMLplfiFQMyG0a61g9nkqFH0o13ZY=; b=LLMpjWD7/Mvh/m/sQzqjCwt52eOITvehybI1Ztnm383UrgOcnrHw0xvW/Weq141FMh3YmrT+
+ PJiPIt/zz1KfsIrhHNDMJA5px3QMlsoZc0mNg+Pm+MQjle9wstVm5oiD7uY+VNIhK+yvCtPm
+ RwntyTz8iK7H0gu5K0kwt+xe6aw=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f9bdb901df7f5f83cf293be (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 09:23:28
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4266DC43382; Fri, 30 Oct 2020 09:23:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EBBADC43382;
+        Fri, 30 Oct 2020 09:23:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EBBADC43382
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel@lists.freedesktop.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv7 0/7] System Cache support for GPU and required SMMU support
+Date:   Fri, 30 Oct 2020 14:53:07 +0530
+Message-Id: <cover.1604048969.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3871.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6efa5542-20c4-4db5-1f2f-08d87cb55637
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2020 09:22:34.9823
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: v50xOMmJB1J/Z0haSOhi6mqzFfqmdxu/VbSmyo+nDUvt6aIdP4VQHMP/nJVWQchu2kZjq2b0SSrorq7xZKyB2g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5567
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 04:16:21PM +0800, Shawn Guo wrote:
-> On Mon, Oct 26, 2020 at 06:09:57PM +0200, Ioana Ciornei wrote:
-> > Add the external MDIO device nodes found in the WRIOP global memory
-> > region. This is needed for management of external PHYs.
-> >=20
-> > Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
-> > ---
-> > Changes in v2:
-> >  - removed the 0x from the unit addresses
-> > Changes in v3:
-> >  - none
-> > Changes in v4:
-> >  - none
-> >=20
-> >  arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> >=20
-> > diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm6=
-4/boot/dts/freescale/fsl-ls1088a.dtsi
-> > index ff5805206a28..aea42e9e947f 100644
-> > --- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-> > +++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-> > @@ -672,6 +672,24 @@ ptp-timer@8b95000 {
-> >  			fsl,extts-fifo;
-> >  		};
-> > =20
-> > +		emdio1: mdio@8b96000 {
-> > +			compatible =3D "fsl,fman-memac-mdio";
-> > +			reg =3D <0x0 0x8B96000 0x0 0x1000>;
->=20
-> Use lowercase for hex values.
->=20
+Some hardware variants contain a system cache or the last level
+cache(llc). This cache is typically a large block which is shared
+by multiple clients on the SOC. GPU uses the system cache to cache
+both the GPU data buffers(like textures) as well the SMMU pagetables.
+This helps with improved render performance as well as lower power
+consumption by reducing the bus traffic to the system memory.
 
-Sure, will change in next version.
+The system cache architecture allows the cache to be split into slices
+which then be used by multiple SOC clients. This patch series is an
+effort to enable and use two of those slices preallocated for the GPU,
+one for the GPU data buffers and another for the GPU SMMU hardware
+pagetables.
 
-Ioana=
+Patch 1 - Patch 5 adds system cache support in SMMU and GPU driver.
+Patch 6 and 7 are minor cleanups for arm-smmu impl.
+
+Changes in v7:
+ * Squash Jordan's patch to support MMU500 targets
+ * Rebase on top of for-joerg/arm-smmu/updates and Jordan's short series for adreno-smmu impl
+
+Changes in v6:
+ * Move table to arm-smmu-qcom (Robin)
+
+Changes in v5:
+ * Drop cleanup of blank lines since it was intentional (Robin)
+ * Rebase again on top of msm-next-pgtables as it moves pretty fast
+
+Changes in v4:
+ * Drop IOMMU_SYS_CACHE prot flag
+ * Rebase on top of https://gitlab.freedesktop.org/drm/msm/-/tree/msm-next-pgtables
+
+Changes in v3:
+ * Fix domain attribute setting to before iommu_attach_device()
+ * Fix few code style and checkpatch warnings
+ * Rebase on top of Jordan's latest split pagetables and per-instance
+   pagetables support
+
+Changes in v2:
+ * Addressed review comments and rebased on top of Jordan's split
+   pagetables series
+
+Jordan Crouse (1):
+  drm/msm/a6xx: Add support for using system cache on MMU500 based
+    targets
+
+Sai Prakash Ranjan (4):
+  iommu/io-pgtable-arm: Add support to use system cache
+  iommu/arm-smmu: Add domain attribute for system cache
+  iommu: arm-smmu-impl: Use table to list QCOM implementations
+  iommu: arm-smmu-impl: Add a space before open parenthesis
+
+Sharat Masetty (2):
+  drm/msm: rearrange the gpu_rmw() function
+  drm/msm/a6xx: Add support for using system cache(LLC)
+
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 109 +++++++++++++++++++++
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.h      |   5 +
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c    |  17 ++++
+ drivers/gpu/drm/msm/msm_drv.c              |   8 ++
+ drivers/gpu/drm/msm/msm_drv.h              |   1 +
+ drivers/gpu/drm/msm/msm_gpu.h              |   5 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu-impl.c |  11 +--
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c |  21 +++-
+ drivers/iommu/arm/arm-smmu/arm-smmu.c      |  17 ++++
+ drivers/iommu/arm/arm-smmu/arm-smmu.h      |   2 +-
+ drivers/iommu/io-pgtable-arm.c             |   7 +-
+ include/linux/io-pgtable.h                 |   4 +
+ include/linux/iommu.h                      |   1 +
+ 13 files changed, 188 insertions(+), 20 deletions(-)
+
+
+base-commit: f9081b8ff5934b8d69c748d0200e844cadd2c667
+prerequisite-patch-id: db09851f375ca5efde35f2e5c21b3959eed7d8a8
+prerequisite-patch-id: 55c6af17808c2047b67cdbd04af5541156ef496e
+prerequisite-patch-id: e82c1e678da701e112ac255ea966c6797d975692
+prerequisite-patch-id: f7978f5f2fb06528b7a1f75fa4255e386a30b91a
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
