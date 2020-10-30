@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED6C2A0FCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A398E2A0FD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727705AbgJ3U7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 16:59:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57244 "EHLO mail.kernel.org"
+        id S1727718AbgJ3VAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 17:00:01 -0400
+Received: from mga01.intel.com ([192.55.52.88]:32555 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726163AbgJ3U7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 16:59:50 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9ED3820797;
-        Fri, 30 Oct 2020 20:59:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604091590;
-        bh=g75KANMpn+QyFlKM9RAAm6BIhFn3Ci6qgnn766q1Hy0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jVCtK0ob8Wx5rTuY9eV73iXjZ4Vy/PDg2lD8OuRuPS24MvS5TODyrb9xesuYecKeC
-         owFaNEwpozmKBO6Y8p8x5ZUsO1SMxITG6GygYQtz3pE5296Rc5BHflER34txiaYUXG
-         5qyIaFc0hVklS2vGT+/s8ll5ns1r0+60zuYWOvsM=
-Date:   Fri, 30 Oct 2020 13:59:48 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-safety@lists.elisa.tech
-Subject: Re: [PATCH] ipv6: mcast: make annotations for ip6_mc_msfget()
- consistent
-Message-ID: <20201030135948.32fc1a7c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201028115349.6855-1-lukas.bulwahn@gmail.com>
-References: <20201028115349.6855-1-lukas.bulwahn@gmail.com>
+        id S1726163AbgJ3VAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 17:00:00 -0400
+IronPort-SDR: S2DaGEK3/ky/qmCbeZzsq/gFlizJXKIypHJiKQE5XXgwg2CMUSFs2FBpyfeHAn6Hkr3wopH21c
+ gIxqRjJA/Cjg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="186480721"
+X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
+   d="scan'208";a="186480721"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 13:59:59 -0700
+IronPort-SDR: WOuCnB6z/vixUqU6DOU8AuXfxBTwkTHr/qas0/VMtwNEackb2rVWrkIjghZqtBj5/Pc55Phihb
+ P+bAw3V20zVA==
+X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
+   d="scan'208";a="362556466"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.209.46.60]) ([10.209.46.60])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 13:59:57 -0700
+Subject: Re: [PATCH v4 00/17] Add VFIO mediated device support and DEV-MSI
+ support for the idxd driver
+To:     Thomas Gleixner <tglx@linutronix.de>, vkoul@kernel.org,
+        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
+        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
+        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
+        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
+        rafael@kernel.org, netanelg@mellanox.com, shahafs@mellanox.com,
+        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
+        samuel.ortiz@intel.com, mona.hossain@intel.com
+Cc:     Megha Dey <megha.dey@linux.intel.com>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <160408357912.912050.17005584526266191420.stgit@djiang5-desk3.ch.intel.com>
+ <878sbnmodd.fsf@nanos.tec.linutronix.de>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <9430e488-e6fc-0101-85dc-b3d8a1a40899@intel.com>
+Date:   Fri, 30 Oct 2020 13:59:56 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <878sbnmodd.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 12:53:49 +0100 Lukas Bulwahn wrote:
-> Commit 931ca7ab7fe8 ("ip*_mc_gsfget(): lift copyout of struct group_filter
-> into callers") adjusted the type annotations for ip6_mc_msfget() at its
-> declaration, but missed the type annotations at its definition.
-> 
-> Hence, sparse complains on ./net/ipv6/mcast.c:
-> 
->   mcast.c:550:5: error: symbol 'ip6_mc_msfget' redeclared with different type \
->   (incompatible argument 3 (different address spaces))
-> 
-> Make ip6_mc_msfget() annotations consistent, which also resolves this
-> warning from sparse:
-> 
->   mcast.c:607:34: warning: incorrect type in argument 1 (different address spaces)
->   mcast.c:607:34:    expected void [noderef] __user *to
->   mcast.c:607:34:    got struct __kernel_sockaddr_storage *p
-> 
-> No functional change. No change in object code.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Applied, thank you!
+
+On 10/30/2020 1:48 PM, Thomas Gleixner wrote:
+> On Fri, Oct 30 2020 at 11:50, Dave Jiang wrote:
+>> The code has dependency on Thomas’s MSI restructuring patch series:
+>> https://lore.kernel.org/lkml/20200826111628.794979401@linutronix.de/
+> 
+> which is outdated and not longer applicable.
+
+Yes.... I wasn't sure how to point to these patches from you as a dependency.
+
+irqdomain/msi: Provide msi_alloc/free_store() callbacks
+platform-msi: Add device MSI infrastructure
+genirq/msi: Provide and use msi_domain_set_default_info_flags()
+genirq/proc: Take buslock on affinity write
+platform-msi: Provide default irq_chip:: Ack
+x86/msi: Rename and rework pci_msi_prepare() to cover non-PCI MSI
+x86/irq: Add DEV_MSI allocation type
+
+Do I need to include these patches in my series? Thanks!
+
+> 
+> Thanks,
+> 
+>          tglx
+> 
