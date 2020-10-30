@@ -2,104 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A62D2A0886
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9292A088D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgJ3OyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726827AbgJ3OyI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:54:08 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7359C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:54:07 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id za3so9004473ejb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:54:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q691nw1GaPkDFqjRLqSBRGymD9FCcdqizVVQkT/qKrs=;
-        b=Ieu76FGZe4nrpc4PkAIX5Dz2qLRwmQwgBp7/L/cmwA0z5C5IecMAhDZbj63ThJrQVD
-         /6s8Dfklit41Djj466ondkBnfpUzP6J9mi/+irdrwtbbGC1gFqttEQUu/lvC93HqB4Fn
-         G/LExXcbPyAJVGmyS2VjFLwP4Caoo4w15E5plTM0h58TYOIFLDsDkvnx6qs+4e0GSv0n
-         2Qq5d/m6zKjDlRVpafCEewxohpBSchLw3NRMu3YVrCT0Y4ew5l4Cu4D5pxGFAQbzHM46
-         2y64CWuUud6oSSnVOdgmbPXin9SrJ0bhZS/GVtNeUfjjxzt6bKLabkkVMHlbkIRalprH
-         BR7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q691nw1GaPkDFqjRLqSBRGymD9FCcdqizVVQkT/qKrs=;
-        b=sfhXBXHZo9xeXNejyAft9Ylq9ohhSf2alJa3LsSe1OSxbi/0Sl6jJ93gMXUhG4Hr3o
-         +4t1BR4WhKGXx82vZcY1xM9vbfFtgTAahx7wcsfVM6Zsdt/mgKTegoFe461XD2gSIY/8
-         TYD03GHZpt60zaINrPt13K56XXK0jZZlJgkEWg5BVnBIJKWDKowE8Mrlqz1X1ovJsypP
-         lsfehwZqS/BRBRnAel1MQ40le8n9Anrk5YNFB8WCHlpXp2PLLNkqkjpFCnZMDNZZBO3D
-         LB0j2kllmaUCTxle0/UNeP0xDHLluk//utu3rMJgD37ky9hW7q+IvpAWQUN5iHFSZaq/
-         NqeQ==
-X-Gm-Message-State: AOAM5318fBMw5KFYAzHTVAD9k4K+CEWmuQXvozxEsYgfYeggcDHovNPC
-        2WnMhPOWryGstHC6wsWNTDTf8CM0Zv1GzocL/dOM8s7bVok=
-X-Google-Smtp-Source: ABdhPJy7SBvOS7vtF6Cq3aM89II0s9Z1P7hOcvRuJ7tQSVs+YT+zaLUVxAmIqd810u7gn+Kos4guy7+p0UQK3IpMcLM=
-X-Received: by 2002:a17:906:7d0:: with SMTP id m16mr2773722ejc.445.1604069646371;
- Fri, 30 Oct 2020 07:54:06 -0700 (PDT)
+        id S1726708AbgJ3Ozs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:55:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38524 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726178AbgJ3Ozr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 10:55:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 035CCAC12;
+        Fri, 30 Oct 2020 14:55:46 +0000 (UTC)
+Subject: Re: [PATCH] mm/compaction: count pages and stop correctly during page
+ isolation.
+To:     Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Rik van Riel <riel@surriel.com>, linux-kernel@vger.kernel.org
+References: <20201029200435.3386066-1-zi.yan@sent.com>
+ <20201030094308.GG1478@dhcp22.suse.cz>
+ <6CAAB1FC-2B41-490B-A67A-93063629C19B@nvidia.com>
+ <20201030133625.GJ1478@dhcp22.suse.cz>
+ <400B3460-65C0-4C48-A7EA-1A9F5780EC9C@nvidia.com>
+ <20201030144917.GK1478@dhcp22.suse.cz>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <e0f38829-8e47-62d7-924a-920096aae739@suse.cz>
+Date:   Fri, 30 Oct 2020 15:55:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-References: <20201029084832.13933-1-warthog618@gmail.com>
-In-Reply-To: <20201029084832.13933-1-warthog618@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 30 Oct 2020 15:53:55 +0100
-Message-ID: <CAMpxmJXoK=39ZBCNLUOGASAhxUfEkem0Z+i3g4XbKgZ0NMTD=g@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: cdev: add GPIO_V2_LINE_FLAG_EDGE_BOTH and use it
- in edge_irq_thread()
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201030144917.GK1478@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 9:48 AM Kent Gibson <warthog618@gmail.com> wrote:
->
-> Add GPIO_V2_LINE_FLAG_EDGE_BOTH macro and use it in edge_irq_thread() to
-> improve readability of edge handling cases.
->
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Kent Gibson <warthog618@gmail.com>
-> ---
->  drivers/gpio/gpiolib-cdev.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-> index ea787eb3810d..5eb4435afa64 100644
-> --- a/drivers/gpio/gpiolib-cdev.c
-> +++ b/drivers/gpio/gpiolib-cdev.c
-> @@ -510,6 +510,8 @@ struct linereq {
->         (GPIO_V2_LINE_FLAG_EDGE_RISING | \
->          GPIO_V2_LINE_FLAG_EDGE_FALLING)
->
-> +#define GPIO_V2_LINE_FLAG_EDGE_BOTH GPIO_V2_LINE_EDGE_FLAGS
-> +
->  #define GPIO_V2_LINE_VALID_FLAGS \
->         (GPIO_V2_LINE_FLAG_ACTIVE_LOW | \
->          GPIO_V2_LINE_DIRECTION_FLAGS | \
-> @@ -569,8 +571,7 @@ static irqreturn_t edge_irq_thread(int irq, void *p)
->         line->timestamp_ns = 0;
->
->         eflags = READ_ONCE(line->eflags);
-> -       if (eflags == (GPIO_V2_LINE_FLAG_EDGE_RISING |
-> -                      GPIO_V2_LINE_FLAG_EDGE_FALLING)) {
-> +       if (eflags == GPIO_V2_LINE_FLAG_EDGE_BOTH) {
->                 int level = gpiod_get_value_cansleep(line->desc);
->
->                 if (level)
-> --
-> 2.29.0
->
+On 10/30/20 3:49 PM, Michal Hocko wrote:
+> On Fri 30-10-20 10:35:43, Zi Yan wrote:
+>> On 30 Oct 2020, at 9:36, Michal Hocko wrote:
+>> 
+>> > On Fri 30-10-20 08:20:50, Zi Yan wrote:
+>> >> On 30 Oct 2020, at 5:43, Michal Hocko wrote:
+>> >>
+>> >>> [Cc Vlastimil]
+>> >>>
+>> >>> On Thu 29-10-20 16:04:35, Zi Yan wrote:
+>> >>>
+>> >>> Does thp_nr_pages work for __PageMovable pages?
+>> >>
+>> >> Yes. It is the same as compound_nr() but compiled
+>> >> to 1 when THP is not enabled.
+>> >
+>> > I am sorry but I do not follow. First of all the implementation of the
+>> > two is different and also I was asking about __PageMovable which should
+>> > never be THP IIRC. Can they be compound though?
+>> 
+>> __PageMovable, non-lru movable pages, can be compound and thp_nr_page cannot
+>> be used for it, since when THP is off, thp_nr_page will return the wrong number.
+>> I got confused by its name, sorry.
+> 
+> OK, this matches my understanding. Good we are on the same page.
+> 
+>> But __PageMovable is irrelevant to this patch, since we are using
+>> __isolate_lru_page to isolate pages. non-lru __PageMovable should not appear
+>> after isolate_succes. thp_nr_pages can be used here.
+> 
+> But this is still not clear to me. __PageMovable pages are isolated by
+> isolate_movable_page and then jump to isolate_succes. Does that somehow
+> changes the nature of the page being compound or tat thp_nr_page would
+> start working on those pages.
 
-Applied, thanks!
+Agreed that page movable can appear after isolate_success. compound_nr() should 
+work for both.
+Note that too_many_isolated() doesn't see __PageMovable isolated pages, as they 
+are not counted as NR_ISOLATED_FILE/NR_ISOLATED_ANON, AFAIK. So in that sense 
+they are irrelevant to the bug at hand... for now.
 
-Bartosz
