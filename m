@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A9129FCA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 05:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F4329FCA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 05:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbgJ3EPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 00:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
+        id S1726325AbgJ3ERm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 00:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgJ3EPw (ORCPT
+        with ESMTP id S1725780AbgJ3ERm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 00:15:52 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A1AC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:15:51 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id p22so1670281wmg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:15:51 -0700 (PDT)
+        Fri, 30 Oct 2020 00:17:42 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7CDC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:17:41 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id k1so5362170ilc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:17:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BqWBGxp83tXBly8ZHVM6eJ0MtxhFupmftKu7NV/OBXU=;
-        b=IC4UPPAraPaFBL01yPA31xu/1JnYIZLD2Zb8bHtgPnFS1fkrboUlvaF7A1g1CETk1U
-         aA4c51rNES2T7YczUU3hL21wRB7DXzJz3MEPy7XrTmw0Jt3V3Mse/Kj8DKOtyMmIl9GJ
-         i/OYoRR8ZYklJTFxTYilS3tSY0Orf5nONcbZ0s+hotGD+cw1VQCL7V9eZgh7pdO0zi2D
-         nqjeYX2EpcgR9v2E0gijfUByEDDqRo0f8Q1XrQX+23XrR4l0CBoxwt5wzNVctkRBpCYR
-         Hx33UJdV7HQR+MCZ0yWv4GQxGsehskZS981FlGT986u1b0Kxmo9wFVOuns36BJuyohH/
-         u3gw==
+        h=from:content-transfer-encoding:mime-version:date:subject:message-id
+         :to;
+        bh=NlI8bA9kSBOKCCQolvn/+d+88U2/TVkApy5GQTziez8=;
+        b=aRayF8g+Uq34C6nr2uUThPcfW+mKNwyzNmPYX+lLVV+SMas0273a7ZokoEZi4wBdr1
+         PNLypQCKT2JZN82qAKnqQtJWWfuatbex6P6HaXdnYSDjeTNa85dwkUH3fbGQ3FI18GUW
+         +5390OyK+IcKpO1d4H7PVb4kiuXkkOqYZFH23I3ki8Q+8Ww+gRJAPNyHpAUk9/eTfErH
+         RjFNY3SSnRyLO8vOxkVsK6bJhZk/h5h7RG0KokqBDIXcGSR68mIqvSolMNIS6wR0VbLJ
+         YwQ+avaWWR7wfQoAkauS8habC8Vyc2brlt5bdY6U2sxvVCLnKsHPLX+8ZaMSGK9m+eoO
+         BFxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BqWBGxp83tXBly8ZHVM6eJ0MtxhFupmftKu7NV/OBXU=;
-        b=qMvv365jno03NoUmiDcEA3j4OdMuTl+rbHbRbOwJDv8lXuS1exJmM/4UivnqfHo0of
-         KMKtC2vHkXZS50MHFg/9cBUe6f7RNkENpFmKc713TkcoRECn9vTswzZb3suY4rxUj2Ly
-         P8b9Kjq5oXFTMDo6qFtgNvHYojvJg764otYjiqh0p/eQjbbxNrX0WzTrpQ8l4EEBEkq+
-         NiOrch/FCqnwYbNLcSX9eeP2sybI8mEdsUx6pfBGC8YCKj+zZVPASIvDO1BUXbtpciYO
-         h7vfxb4ou7p7wiNZjQWSpMeMfyghVyUznl0TR4qZW9FPmtw5S0EDtxS+epokth1RUs97
-         vpkw==
-X-Gm-Message-State: AOAM531Y5kR/qqnyGj7UCGRvixt7FHbig8fzfsVWMdjqBUMWUSK6ZlqT
-        0IBDTDNCQdI/L+sw6tpCTubkPCKrNtQpV5dLUKs=
-X-Google-Smtp-Source: ABdhPJxEbj4ViG6nx+9BHcArb72+dptqPezIyx9BdE/F9YYCz5xQc1TZuRt+lxUttX6q3ieThBBuPMwGgeNM4Sc8HwY=
-X-Received: by 2002:a05:600c:25a:: with SMTP id 26mr327725wmj.39.1604031350500;
- Thu, 29 Oct 2020 21:15:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201029094346.14185-1-unixbhaskar@gmail.com>
-In-Reply-To: <20201029094346.14185-1-unixbhaskar@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 30 Oct 2020 00:15:39 -0400
-Message-ID: <CADnq5_Ooq5zdskLceuBgkFoYux3mTkhTsv=bLWLadoMH6Mz22g@mail.gmail.com>
-Subject: Re: [PATCH] drivers: amdgpu: Correct spelling defalut to default in comment
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version:date
+         :subject:message-id:to;
+        bh=NlI8bA9kSBOKCCQolvn/+d+88U2/TVkApy5GQTziez8=;
+        b=pOczlf0kZPONC6syJj085cstAtBtwI0XSrIn+Ir9/lbTOKcS5fxNNxpLWdl017gzCh
+         qJt3Mhnir6r15gSlxOtG6S96w4tD/vGkaGj28zRnbh/ldC9X7dSy5eDS9BXyQLofUfzc
+         7IHNLc1lP6uyJt+WkeR+SEUft16kv4V6aT0q+MxTkHbMis6NPR9DdqO0E/MKDI50p6Mn
+         D9B/lrCcL9zY61+/naM6kdiPohpsYd+2SvhQ47uWyFdSM7+yHvrbweiYBenRuFcakYY3
+         hL2xl+a9QtXojjAAk67oEBTrs+gtkFrkbYHO/kA+S4Z7/2c2HohXge0yUfFuj06q2G0q
+         XYsQ==
+X-Gm-Message-State: AOAM533wY2p7KZnXKifRvIz7Hw3zbudKQUzLtWBgkjYpmg/CGfiud/LU
+        zpAPxW1mFfqsG0+vUlxO0B5sSP0P7xQ=
+X-Google-Smtp-Source: ABdhPJwjcV/1Z5m/yuANyOI397hPBazw52icUjswf55wPE8h15+qAt7BcGUHNZBi/Q18ftTMcEiuZA==
+X-Received: by 2002:a92:5b54:: with SMTP id p81mr576694ilb.290.1604031460686;
+        Thu, 29 Oct 2020 21:17:40 -0700 (PDT)
+Received: from [10.200.10.20] ([114.141.194.12])
+        by smtp.gmail.com with ESMTPSA id p18sm3916040ile.72.2020.10.29.21.17.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Oct 2020 21:17:39 -0700 (PDT)
+From:   NASA Jeff <tallboy258@gmail.com>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (1.0)
+Date:   Fri, 30 Oct 2020 04:17:07 +0000
+Subject: Freezing between .48 and .51 when hitting swap.
+Message-Id: <9FF0D29F-1282-4F96-8C80-05D5D45B6935@gmail.com>
+To:     linux-kernel@vger.kernel.org
+X-Mailer: iPhone Mail (16G201)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+I have an issue on my laptop which is old but with 2.5gb of ram an ssd hdd a=
+nd using zram compression I believe.
+When ever it hits swap the system completely locks up and I have to reboot.
+This only started occurring in .51
+I only have access to my phone at the moment though I=E2=80=99ve looked at t=
+he code and have what I believe is a workable solution that should mitigate a=
+gainst and future issues. The code base looked a little old so was probably q=
+uite stable but it really could do with some modernisation.
+The issue was with the active app in user space.
+What needs to be done is to swap out inactive pages in background user apps p=
+rior to the active apps hitting the memory threshold which was causing the l=
+ockup to occure.
 
-Alex
+An improvement on the existing code would be to swap in and out inactive pag=
+es gradually so as to avoid any heavy system load.
 
-On Thu, Oct 29, 2020 at 9:17 AM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
->
-> Correct spelling in one of the comment.
->
-> s/defalut/default/p
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  CCing Greg becasue it touched drivers file. Trivial though.
->
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-> index 8cd646eef096..cdc8dd220a77 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-> @@ -556,7 +556,7 @@ static ssize_t dp_phy_test_pattern_debugfs_write(struct file *f, const char __us
->         bool disable_hpd = false;
->         bool valid_test_pattern = false;
->         uint8_t param_nums = 0;
-> -       /* init with defalut 80bit custom pattern */
-> +       /* init with default 80bit custom pattern */
->         uint8_t custom_pattern[10] = {
->                         0x1f, 0x7c, 0xf0, 0xc1, 0x07,
->                         0x1f, 0x7c, 0xf0, 0xc1, 0x07
-> --
-> 2.26.2
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+It may also be an idea to set the up priority to near idel for such heavy io=
+ background processes so that the overlapping io doesn=E2=80=99t cause issue=
+s with user space io.
+
+I believe this is similar to the main Linux scheduler since bfs because impl=
+ementing a script to renice processes that started hitting higish cpu and th=
+en again when their cpu dipped didn=E2=80=99t seem to make much difference. I=
+t was unclear if this was also implemented for cocurent io as the window man=
+agers now seem to queue io tasks instead of executing them concurrently. Con=
+current io was at least a historic issue.
+
+Kind regards,
+Oliverthered=20
+
+Sent from my iPhone=
