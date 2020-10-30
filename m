@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323322A004E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3402A2A0061
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726003AbgJ3Is2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 04:48:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53866 "EHLO mail.kernel.org"
+        id S1725946AbgJ3Iuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:50:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgJ3Is2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:48:28 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1726186AbgJ3Iuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 04:50:37 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C680A20704;
-        Fri, 30 Oct 2020 08:48:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B15120704;
+        Fri, 30 Oct 2020 08:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604047707;
-        bh=EoamfXZEZdx3YAhsBX1sTng3tOL0F7DLpmSrdtkTeP4=;
+        s=default; t=1604047836;
+        bh=Q3xH7hudUvNja+v+7AwRUOAon6v7ksEpEbBYTZuoyeo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OfMxO/rhyMJ79ZUGEYLTOIagmd8co1r2I3yZbdaBpsQmFpJE/F+RP+bhPV95J7nnt
-         w4xdWSmju3P+GN11oGQD35d7/SAyXm+DrQOJUQh4PTeywSoyS582fQXF646YMIF+lt
-         JTcDHXBDmdlT4vODjMhLLanaDXtxq7qwEz4nG1PY=
-Date:   Fri, 30 Oct 2020 09:49:15 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz
-Subject: Re: Linux 4.19.153
-Message-ID: <20201030084915.GB1625087@kroah.com>
-References: <160396822019115@kroah.com>
- <20201030082653.GA29475@amd>
+        b=JypjtsyCxIU6VauqD4UpHdH8DMgOlkXpcUQEaX/5bjS8Bn/XqC/4992xr2jJ06Dvw
+         EMj8BJrmJDpcqIxuA3F6209SHe6K7ILVp0ZYyt6sfYlKnae41NJudE1Af7CEL+GK34
+         IEizxvskY1zlBNX6JK5WBL1Nd0/pbdKm9yHqiukI=
+Date:   Fri, 30 Oct 2020 16:50:30 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v1] ARM: dts: protonic prti6q: fix PHY address
+Message-ID: <20201030085029.GO28755@dragon>
+References: <20201012071816.22434-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201030082653.GA29475@amd>
+In-Reply-To: <20201012071816.22434-1-o.rempel@pengutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 09:26:54AM +0100, Pavel Machek wrote:
-> Hi!
+On Mon, Oct 12, 2020 at 09:18:16AM +0200, Oleksij Rempel wrote:
+> Due to bug in the bootloader, the PHY has floating address and may
+> randomly change on each PHY reset. To avoid it, the updated bootloader
+> with the following patch[0] should be used:
 > 
-> > I'm announcing the release of the 4.19.153 kernel.
-> > 
-> > All users of the 4.19 kernel series must upgrade.
-> > 
-> > The updated 4.19.y git tree can be found at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.19.y
-> > and can be browsed at the normal kernel.org git web browser:
-> > 	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+> | ARM: protonic: disable on-die termination to fix PHY bootstrapping
+> |
+> | If on-die termination is enabled, the RXC pin of iMX6 will be pulled
+> | high. Since we already have an 10K pull-down on board, the RXC level on
+> | PHY reset will be ~800mV, which is mostly interpreted as 1. On some
+> | reboots we get 0 instead and kernel can't detect the PHY properly.
+> |
+> | Since the default 0x020e07ac value is 0, it is sufficient to remove this
+> | entry from the affected imxcfg files.
+> |
+> | Since we get stable 0 on pin PHYADDR[2], the PHY address is changed from
+> | 4 to 0.
 > 
-> Did something go seriously wrong here?
+> With latest bootloader update, the PHY address will be fixed to "0".
 > 
-> The original 4.19.153-rc1 series had 264 patches. "powerpc/tau: Remove
-> duplicated set_thresholds() call" is 146/264 of the series, but it is
-> last one in 4.19.153 as released. "178/264 ext4: limit entries
-> returned when counting...", for example, is not present in
-> 4.19.153... as are others, for example "net: korina: cast KSEG0
-> address to pointer in kfree". Looks like 118 or so patches are
-> missing.
+> [0] https://git.pengutronix.de/cgit/barebox/commit/?id=93f7dcf631edfcda19e7757b28d66017ea274b81
 > 
-> They are not in origin/queue/4.19, either.
+> Fixes: 0d446a50559 ("ARM: dts: add Protonic PRTI6Q board")
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-Wow, something did go wrong here, thanks for catching this.
+Changed subject prefix to 'ARM: dts: imx6q-prti6q: ' and applied the
+patch.
 
-Let me dig and see what happened, the whole series did not apply, which
-makes me wonder if the same thing happened for other branches as well...
-
-thanks for checking up and finding this.
-
-Give me a bit...
-
-greg k-h
+Shawn
