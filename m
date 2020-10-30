@@ -2,296 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061222A090D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 753BE2A090F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgJ3PD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:03:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726642AbgJ3PD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:03:26 -0400
-Received: from [192.168.0.105] (unknown [117.89.214.195])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1EAB32075E;
-        Fri, 30 Oct 2020 15:03:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604070204;
-        bh=jn3fWnoz79KnJ/0/j/SqRAF00voMWN+cRg4NeO7wud0=;
-        h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
-        b=seRRDOgeXWYIJz0wQK/xqDDCOP9yaJxhTILaKrGogACVSecPwbCqF31e9fElWuRok
-         OJmDhZ+bFAlg7Cs93MxS40BjCKjhASHPUx1tYsFVPR9l0Fo3jamqcOA3Aa5C+AGNEp
-         5xf18AGWeynOhrHzXINa1gHByIUBXCAZBXXJq4WQ=
-Subject: Re: [PATCH v2] f2fs: move ioctl interface definitions to separated
- file
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>
-References: <20201030072610.57155-1-yuchao0@huawei.com>
- <20201030123059.GA1877745@google.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <f7b0e6b0-b338-0ed6-9ae2-a4081df4d936@kernel.org>
-Date:   Fri, 30 Oct 2020 23:03:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S1726951AbgJ3PEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726739AbgJ3PEW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:04:22 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F06C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:04:22 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id b12so3093409plr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:04:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yKh1gww6LqRAEgf9eBUACjdeNH/81Jlt6VPrqpP9HjY=;
+        b=OxvudRJgIRIEEE/kopiv2wGC9KQul3KWIc59iINcgjgEcQO8qfQgK8xCsvR6bU+eU6
+         FDQ1qaBXWySGwMUYEsNEsDv0aTIGv5YQaFZm5lXPjeB2wFlAXLWEhTMyK4oAp0PoqL+F
+         iuABlXhO0J/WJ1ufpzjcUec4SA4o0YYcsaSu8xG+OYXxD7BtwIJ9dV7tXa9mXZRPr+vT
+         UUiEEZXtOLTd4vzqssygE6Oa63FI3uxWTQEyUwcywZ29vuLuIWc9QOlZjyjXoeUkHa9h
+         hNTW8ftmJLgA1FECCCSdjcjedOdB+RPZii6KXMkFLuRElNHntKWZNEiKf9SVIZssfYr4
+         yx+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yKh1gww6LqRAEgf9eBUACjdeNH/81Jlt6VPrqpP9HjY=;
+        b=mKMYpijYrs9dM87URZlhXNUfyq+2COHesPWH1d4zYHBOBv6DaIcX7HYCqlVn6AhRRS
+         x+9M+sbC217WnMXznObjXNxksmUmpy55cJK9Pq25JygmCCI0JNUKRq7IHCiS7vpFleHD
+         ado9ENBivZMUIT6zp99pQkiOpnIsvuIJmQXRQbjIWM//rPK1gL52+LgIO7jA4BOxP0RN
+         GzHY4tiIGJ2F6VQ0kl58H36wBOvriCkXV/8OhEIXul5eHoWPWNyNbTq5360YnMT5iWgi
+         FyDwfZwmZXw/cQW9kvH9ZWe4p3Qsf4vJghv8I34j86oHL+jHuHzgzHgpA88egGjtCMjl
+         rKLQ==
+X-Gm-Message-State: AOAM533Ra+L99poc9arpTsMQ1H4B9GJJF+HC++MuBM1aFTAESxu6JpVd
+        mh1/9+q8jpi87U7cuHHGjxdmjDdlECBw8A==
+X-Google-Smtp-Source: ABdhPJzP0hrIb7ygkUfGzrbXaNTTe638OLEyXudJh20SphijYKQVMD6quFCnALW7JPRcfJXLPc0m2Q==
+X-Received: by 2002:a17:902:c084:b029:d6:b04a:b091 with SMTP id j4-20020a170902c084b02900d6b04ab091mr675658pld.14.1604070261958;
+        Fri, 30 Oct 2020 08:04:21 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id a19sm3685615pjq.29.2020.10.30.08.04.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 08:04:20 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 09:04:18 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] coresight: cti: Initialize dynamic sysfs attributes
+Message-ID: <20201030150418.GA1298977@xps15>
+References: <20201029164559.1268531-1-mathieu.poirier@linaro.org>
+ <20201029164559.1268531-2-mathieu.poirier@linaro.org>
+ <20201029191011.GA826513@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20201030123059.GA1877745@google.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029191011.GA826513@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-30 20:30, Jaegeuk Kim wrote:
-> Hi Chao,
->
-> Can we make a documentation for this in f2fs.rst?
+On Thu, Oct 29, 2020 at 08:10:11PM +0100, Greg KH wrote:
+> On Thu, Oct 29, 2020 at 10:45:58AM -0600, Mathieu Poirier wrote:
+> > From: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > 
+> > With LOCKDEP enabled, CTI driver triggers the following splat due
+> > to uninitialized lock class for dynamically allocated attribute
+> > objects.
+> > 
+> > [    5.372901] coresight etm0: CPU0: ETM v4.0 initialized
+> > [    5.376694] coresight etm1: CPU1: ETM v4.0 initialized
+> > [    5.380785] coresight etm2: CPU2: ETM v4.0 initialized
+> > [    5.385851] coresight etm3: CPU3: ETM v4.0 initialized
+> > [    5.389808] BUG: key ffff00000564a798 has not been registered!
+> > [    5.392456] ------------[ cut here ]------------
+> > [    5.398195] DEBUG_LOCKS_WARN_ON(1)
+> > [    5.398233] WARNING: CPU: 1 PID: 32 at kernel/locking/lockdep.c:4623 lockdep_init_map_waits+0x14c/0x260
+> > [    5.406149] Modules linked in:
+> > [    5.415411] CPU: 1 PID: 32 Comm: kworker/1:1 Not tainted 5.9.0-12034-gbbe85027ce80 #51
+> > [    5.418553] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+> > [    5.426453] Workqueue: events amba_deferred_retry_func
+> > [    5.433299] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+> > [    5.438252] pc : lockdep_init_map_waits+0x14c/0x260
+> > [    5.444410] lr : lockdep_init_map_waits+0x14c/0x260
+> > [    5.449007] sp : ffff800012bbb720
+> > ...
+> > 
+> > [    5.531561] Call trace:
+> > [    5.536847]  lockdep_init_map_waits+0x14c/0x260
+> > [    5.539027]  __kernfs_create_file+0xa8/0x1c8
+> > [    5.543539]  sysfs_add_file_mode_ns+0xd0/0x208
+> > [    5.548054]  internal_create_group+0x118/0x3c8
+> > [    5.552307]  internal_create_groups+0x58/0xb8
+> > [    5.556733]  sysfs_create_groups+0x2c/0x38
+> > [    5.561160]  device_add+0x2d8/0x768
+> > [    5.565148]  device_register+0x28/0x38
+> > [    5.568537]  coresight_register+0xf8/0x320
+> > [    5.572358]  cti_probe+0x1b0/0x3f0
+> > 
+> > ...
+> > 
+> > Fix this by initializing the attributes when they are allocated.
+> > 
+> > Fixes: 3c5597e39812 ("coresight: cti: Add connection information to sysfs")
+> > Reported-by: Leo Yan <leo.yan@linaro.org>
+> > Tested-by: Leo Yan <leo.yan@linaro.org>
+> > Cc: Mike Leach <mike.leach@linaro.org>
+> > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > ---
+> >  drivers/hwtracing/coresight/coresight-cti-sysfs.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/drivers/hwtracing/coresight/coresight-cti-sysfs.c b/drivers/hwtracing/coresight/coresight-cti-sysfs.c
+> > index 392757f3a019..7ff7e7780bbf 100644
+> > --- a/drivers/hwtracing/coresight/coresight-cti-sysfs.c
+> > +++ b/drivers/hwtracing/coresight/coresight-cti-sysfs.c
+> > @@ -1065,6 +1065,13 @@ static int cti_create_con_sysfs_attr(struct device *dev,
+> >  	}
+> >  	eattr->var = con;
+> >  	con->con_attrs[attr_idx] = &eattr->attr.attr;
+> > +	/*
+> > +	 * Initialize the dynamically allocated attribute
+> > +	 * to avoid LOCKDEP splat. See include/linux/sysfs.h
+> > +	 * for more details.
+> > +	 */
+> > +	sysfs_attr_init(con->con_attrs[attr_idx]);
+> > +
+> >  	return 0;
+> >  }
+> 
+> Should go to stable kernels too, as the patch this fixes is in 5.7.
+> I'll add the stable tag here, but feel free to do it yourself next time
+> :)
 
-Jaegeuk,
+Oh - I (wrongly) assumed all patches with a "Fixes" tag were going to stable. 
 
-Sure, let me work on this.
-
-Thanks,
-
->
-> Thanks,
->
-> On 10/30, Chao Yu wrote:
->> Like other filesystem does, we introduce a new file f2fs.h in path of
->> include/uapi/linux/, and move f2fs-specified ioctl interface definitions
->> to that file, after then, in order to use those definitions, userspace
->> developer only need to include the new header file rather than
->> copy & paste definitions from fs/f2fs/f2fs.h.
->>
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->> v2: add missing "WITH Linux-syscall-note" for SPDX-License-Identifier
->>  MAINTAINERS                 |  1 +
->>  fs/f2fs/f2fs.h              | 79 ----------------------------------
->>  fs/f2fs/file.c              |  1 +
->>  include/trace/events/f2fs.h |  1 +
->>  include/uapi/linux/f2fs.h   | 86 +++++++++++++++++++++++++++++++++++++
->>  5 files changed, 89 insertions(+), 79 deletions(-)
->>  create mode 100644 include/uapi/linux/f2fs.h
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index d1d4e49a695a..b79a911f1e32 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -6686,6 +6686,7 @@ F:	Documentation/filesystems/f2fs.rst
->>  F:	fs/f2fs/
->>  F:	include/linux/f2fs_fs.h
->>  F:	include/trace/events/f2fs.h
->> +F:	include/uapi/linux/f2fs.h
->>
->>  F71805F HARDWARE MONITORING DRIVER
->>  M:	Jean Delvare <jdelvare@suse.com>
->> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->> index cb700d797296..99bcf4b44a9c 100644
->> --- a/fs/f2fs/f2fs.h
->> +++ b/fs/f2fs/f2fs.h
->> @@ -402,85 +402,6 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
->>  	return size <= MAX_SIT_JENTRIES(journal);
->>  }
->>
->> -/*
->> - * f2fs-specific ioctl commands
->> - */
->> -#define F2FS_IOCTL_MAGIC		0xf5
->> -#define F2FS_IOC_START_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 1)
->> -#define F2FS_IOC_COMMIT_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 2)
->> -#define F2FS_IOC_START_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 3)
->> -#define F2FS_IOC_RELEASE_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 4)
->> -#define F2FS_IOC_ABORT_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 5)
->> -#define F2FS_IOC_GARBAGE_COLLECT	_IOW(F2FS_IOCTL_MAGIC, 6, __u32)
->> -#define F2FS_IOC_WRITE_CHECKPOINT	_IO(F2FS_IOCTL_MAGIC, 7)
->> -#define F2FS_IOC_DEFRAGMENT		_IOWR(F2FS_IOCTL_MAGIC, 8,	\
->> -						struct f2fs_defragment)
->> -#define F2FS_IOC_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
->> -						struct f2fs_move_range)
->> -#define F2FS_IOC_FLUSH_DEVICE		_IOW(F2FS_IOCTL_MAGIC, 10,	\
->> -						struct f2fs_flush_device)
->> -#define F2FS_IOC_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,	\
->> -						struct f2fs_gc_range)
->> -#define F2FS_IOC_GET_FEATURES		_IOR(F2FS_IOCTL_MAGIC, 12, __u32)
->> -#define F2FS_IOC_SET_PIN_FILE		_IOW(F2FS_IOCTL_MAGIC, 13, __u32)
->> -#define F2FS_IOC_GET_PIN_FILE		_IOR(F2FS_IOCTL_MAGIC, 14, __u32)
->> -#define F2FS_IOC_PRECACHE_EXTENTS	_IO(F2FS_IOCTL_MAGIC, 15)
->> -#define F2FS_IOC_RESIZE_FS		_IOW(F2FS_IOCTL_MAGIC, 16, __u64)
->> -#define F2FS_IOC_GET_COMPRESS_BLOCKS	_IOR(F2FS_IOCTL_MAGIC, 17, __u64)
->> -#define F2FS_IOC_RELEASE_COMPRESS_BLOCKS				\
->> -					_IOR(F2FS_IOCTL_MAGIC, 18, __u64)
->> -#define F2FS_IOC_RESERVE_COMPRESS_BLOCKS				\
->> -					_IOR(F2FS_IOCTL_MAGIC, 19, __u64)
->> -#define F2FS_IOC_SEC_TRIM_FILE		_IOW(F2FS_IOCTL_MAGIC, 20,	\
->> -						struct f2fs_sectrim_range)
->> -
->> -/*
->> - * should be same as XFS_IOC_GOINGDOWN.
->> - * Flags for going down operation used by FS_IOC_GOINGDOWN
->> - */
->> -#define F2FS_IOC_SHUTDOWN	_IOR('X', 125, __u32)	/* Shutdown */
->> -#define F2FS_GOING_DOWN_FULLSYNC	0x0	/* going down with full sync */
->> -#define F2FS_GOING_DOWN_METASYNC	0x1	/* going down with metadata */
->> -#define F2FS_GOING_DOWN_NOSYNC		0x2	/* going down */
->> -#define F2FS_GOING_DOWN_METAFLUSH	0x3	/* going down with meta flush */
->> -#define F2FS_GOING_DOWN_NEED_FSCK	0x4	/* going down to trigger fsck */
->> -
->> -/*
->> - * Flags used by F2FS_IOC_SEC_TRIM_FILE
->> - */
->> -#define F2FS_TRIM_FILE_DISCARD		0x1	/* send discard command */
->> -#define F2FS_TRIM_FILE_ZEROOUT		0x2	/* zero out */
->> -#define F2FS_TRIM_FILE_MASK		0x3
->> -
->> -struct f2fs_gc_range {
->> -	u32 sync;
->> -	u64 start;
->> -	u64 len;
->> -};
->> -
->> -struct f2fs_defragment {
->> -	u64 start;
->> -	u64 len;
->> -};
->> -
->> -struct f2fs_move_range {
->> -	u32 dst_fd;		/* destination fd */
->> -	u64 pos_in;		/* start position in src_fd */
->> -	u64 pos_out;		/* start position in dst_fd */
->> -	u64 len;		/* size to move */
->> -};
->> -
->> -struct f2fs_flush_device {
->> -	u32 dev_num;		/* device number to flush */
->> -	u32 segments;		/* # of segments to flush */
->> -};
->> -
->> -struct f2fs_sectrim_range {
->> -	u64 start;
->> -	u64 len;
->> -	u64 flags;
->> -};
->> -
->>  /* for inline stuff */
->>  #define DEF_INLINE_RESERVED_SIZE	1
->>  static inline int get_extra_isize(struct inode *inode);
->> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->> index ee861c6d9ff0..d898f1e2764b 100644
->> --- a/fs/f2fs/file.c
->> +++ b/fs/f2fs/file.c
->> @@ -31,6 +31,7 @@
->>  #include "gc.h"
->>  #include "trace.h"
->>  #include <trace/events/f2fs.h>
->> +#include <uapi/linux/f2fs.h>
->>
->>  static vm_fault_t f2fs_filemap_fault(struct vm_fault *vmf)
->>  {
->> diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
->> index f8f1e85ff130..56b113e3cd6a 100644
->> --- a/include/trace/events/f2fs.h
->> +++ b/include/trace/events/f2fs.h
->> @@ -6,6 +6,7 @@
->>  #define _TRACE_F2FS_H
->>
->>  #include <linux/tracepoint.h>
->> +#include <uapi/linux/f2fs.h>
->>
->>  #define show_dev(dev)		MAJOR(dev), MINOR(dev)
->>  #define show_dev_ino(entry)	show_dev(entry->dev), (unsigned long)entry->ino
->> diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
->> new file mode 100644
->> index 000000000000..ad25786feaa1
->> --- /dev/null
->> +++ b/include/uapi/linux/f2fs.h
->> @@ -0,0 +1,86 @@
->> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->> +#ifndef _UAPI_LINUX_F2FS_H
->> +#define _UAPI_LINUX_F2FS_H
->> +
->> +#include <linux/ioctl.h>
->> +
->> +/*
->> + * f2fs-specific ioctl commands
->> + */
->> +#define F2FS_IOCTL_MAGIC		0xf5
->> +#define F2FS_IOC_START_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 1)
->> +#define F2FS_IOC_COMMIT_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 2)
->> +#define F2FS_IOC_START_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 3)
->> +#define F2FS_IOC_RELEASE_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 4)
->> +#define F2FS_IOC_ABORT_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 5)
->> +#define F2FS_IOC_GARBAGE_COLLECT	_IOW(F2FS_IOCTL_MAGIC, 6, __u32)
->> +#define F2FS_IOC_WRITE_CHECKPOINT	_IO(F2FS_IOCTL_MAGIC, 7)
->> +#define F2FS_IOC_DEFRAGMENT		_IOWR(F2FS_IOCTL_MAGIC, 8,	\
->> +						struct f2fs_defragment)
->> +#define F2FS_IOC_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
->> +						struct f2fs_move_range)
->> +#define F2FS_IOC_FLUSH_DEVICE		_IOW(F2FS_IOCTL_MAGIC, 10,	\
->> +						struct f2fs_flush_device)
->> +#define F2FS_IOC_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,	\
->> +						struct f2fs_gc_range)
->> +#define F2FS_IOC_GET_FEATURES		_IOR(F2FS_IOCTL_MAGIC, 12, __u32)
->> +#define F2FS_IOC_SET_PIN_FILE		_IOW(F2FS_IOCTL_MAGIC, 13, __u32)
->> +#define F2FS_IOC_GET_PIN_FILE		_IOR(F2FS_IOCTL_MAGIC, 14, __u32)
->> +#define F2FS_IOC_PRECACHE_EXTENTS	_IO(F2FS_IOCTL_MAGIC, 15)
->> +#define F2FS_IOC_RESIZE_FS		_IOW(F2FS_IOCTL_MAGIC, 16, __u64)
->> +#define F2FS_IOC_GET_COMPRESS_BLOCKS	_IOR(F2FS_IOCTL_MAGIC, 17, __u64)
->> +#define F2FS_IOC_RELEASE_COMPRESS_BLOCKS				\
->> +					_IOR(F2FS_IOCTL_MAGIC, 18, __u64)
->> +#define F2FS_IOC_RESERVE_COMPRESS_BLOCKS				\
->> +					_IOR(F2FS_IOCTL_MAGIC, 19, __u64)
->> +#define F2FS_IOC_SEC_TRIM_FILE		_IOW(F2FS_IOCTL_MAGIC, 20,	\
->> +						struct f2fs_sectrim_range)
->> +
->> +/*
->> + * should be same as XFS_IOC_GOINGDOWN.
->> + * Flags for going down operation used by FS_IOC_GOINGDOWN
->> + */
->> +#define F2FS_IOC_SHUTDOWN	_IOR('X', 125, __u32)	/* Shutdown */
->> +#define F2FS_GOING_DOWN_FULLSYNC	0x0	/* going down with full sync */
->> +#define F2FS_GOING_DOWN_METASYNC	0x1	/* going down with metadata */
->> +#define F2FS_GOING_DOWN_NOSYNC		0x2	/* going down */
->> +#define F2FS_GOING_DOWN_METAFLUSH	0x3	/* going down with meta flush */
->> +#define F2FS_GOING_DOWN_NEED_FSCK	0x4	/* going down to trigger fsck */
->> +
->> +/*
->> + * Flags used by F2FS_IOC_SEC_TRIM_FILE
->> + */
->> +#define F2FS_TRIM_FILE_DISCARD		0x1	/* send discard command */
->> +#define F2FS_TRIM_FILE_ZEROOUT		0x2	/* zero out */
->> +#define F2FS_TRIM_FILE_MASK		0x3
->> +
->> +struct f2fs_gc_range {
->> +	u32 sync;
->> +	u64 start;
->> +	u64 len;
->> +};
->> +
->> +struct f2fs_defragment {
->> +	u64 start;
->> +	u64 len;
->> +};
->> +
->> +struct f2fs_move_range {
->> +	u32 dst_fd;		/* destination fd */
->> +	u64 pos_in;		/* start position in src_fd */
->> +	u64 pos_out;		/* start position in dst_fd */
->> +	u64 len;		/* size to move */
->> +};
->> +
->> +struct f2fs_flush_device {
->> +	u32 dev_num;		/* device number to flush */
->> +	u32 segments;		/* # of segments to flush */
->> +};
->> +
->> +struct f2fs_sectrim_range {
->> +	u64 start;
->> +	u64 len;
->> +	u64 flags;
->> +};
->> +
->> +#endif /* _UAPI_LINUX_F2FS_H */
->> --
->> 2.26.2
+> 
+> thanks,
+> 
+> greg k-h
