@@ -2,173 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC942A0C62
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D48022A0C73
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgJ3R0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 13:26:21 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:43148 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726860AbgJ3R0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 13:26:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604078780; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ApagzBEHmy4pQ9nSEZNslcZNN8M1wmnYo5rgOzRaMxA=;
- b=XlsderXZVNZpSgxXtmoT0T2w5j+pWtst7X4LVMyc5w1NRpdq+m8KQ8ly1JARg5JSQp9ha3YO
- 9OiX2B1gmcpLb/WATAwuPYGwih+7zx1lgKee6b+swQh+FWVAn+aLWt427qsRrPos8hh2aIJw
- zhDbOYPz0fcSwRg9KqA/WTTaCfk=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f9c4cb3d5ed89ceee4afc9e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 17:26:10
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E248BC433AF; Fri, 30 Oct 2020 17:26:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 87166C433CB;
-        Fri, 30 Oct 2020 17:26:09 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 30 Oct 2020 22:56:09 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        id S1727238AbgJ3R1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 13:27:50 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11348 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727139AbgJ3R1s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 13:27:48 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09UH4JbG086980;
+        Fri, 30 Oct 2020 13:26:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=kRv/mdN0gxrWM4bjmBGarbvn1q9ZLkvFoS6y5DzvQks=;
+ b=UWWtqWmXJl3nSrq5VxzL3fA7gftqPT2l/7zujH5kX5UvHZQ2eMEv18xIFli+pDzv7TND
+ NhYhOuFvYct9W6WTKfBbUytZ8/Cf+k1x8aeC7Oe5QD8YYyP+4VpoSpOUMvDWDIAhxnB6
+ c5FhsgKRalTM6aUBHcNHDfpT9wtGJzgUJ5nY4j/m0uXK5U6stXBYO3eHSNoVzcotT/Xy
+ 9WS3NIpRpBYAz5DKkKDBBTsOJC2EE7S2Jsz0m9qB01bvBxEWMhFx70vhSmjAfeVZzs6/
+ v05iYc3aUMt+dm/aSv5oejFCOaASxJm22fB+sZfWIK+97WfQXSV6rjYLkmgp0HqWCmHh bQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34gm93xm0w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 13:26:38 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09UH5286089727;
+        Fri, 30 Oct 2020 13:26:37 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34gm93xm01-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 13:26:37 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09UHH2Ts031290;
+        Fri, 30 Oct 2020 17:26:35 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 34dwh0jff3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 17:26:35 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09UHQWf831130076
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Oct 2020 17:26:32 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 81EE111C05C;
+        Fri, 30 Oct 2020 17:26:32 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 60F4211C050;
+        Fri, 30 Oct 2020 17:26:30 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.85.67])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 30 Oct 2020 17:26:30 +0000 (GMT)
+Subject: Re: [PATCH v2 20/39] docs: ABI: testing: make the files compatible
+ with ReST output
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        =?UTF-8?Q?Javier_Gonz=c3=a1lez?= <javier@javigon.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-In-Reply-To: <20201030164806.GB1301231@xps15>
-References: <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
- <20201023094115.GR2611@hirez.programming.kicks-ass.net>
- <bd8c136d-9dfa-a760-31f9-eb8d6698aced@arm.com>
- <20201023105431.GM2594@hirez.programming.kicks-ass.net>
- <2457de8f-8bc3-b350-fdc7-61276da31ce6@arm.com>
- <20201023131628.GY2628@hirez.programming.kicks-ass.net>
- <728fd89c-78f2-0c5c-0443-c91c62b02f0e@arm.com>
- <20201023134416.GA2628@hirez.programming.kicks-ass.net>
- <20201023203729.GA819775@xps15>
- <70e3a508af119be481c8f0a0acf0a44d@codeaurora.org>
- <20201030164806.GB1301231@xps15>
-Message-ID: <85c285361ce1c71b1a8274493aab9ca7@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Bruno Meneguele <bmeneg@redhat.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Kranthi Kuntala <kranthi.kuntala@intel.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Len Brown <lenb@kernel.org>,
+        Leonid Maksymchuk <leonmaxx@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Oleh Kravchenko <oleg@kaa.org.ua>,
+        Orson Zhai <orsonzhai@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Peter Rosin <peda@axentia.se>, Petr Mladek <pmladek@suse.com>,
+        Philippe Bergheaud <felix@linux.ibm.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Rix <trix@redhat.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <cover.1604042072.git.mchehab+huawei@kernel.org>
+ <58cf3c2d611e0197fb215652719ebd82ca2658db.1604042072.git.mchehab+huawei@kernel.org>
+From:   Frederic Barrat <fbarrat@linux.ibm.com>
+Message-ID: <94520e35-6b73-c951-206e-0031d41ebf83@linux.ibm.com>
+Date:   Fri, 30 Oct 2020 18:26:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <58cf3c2d611e0197fb215652719ebd82ca2658db.1604042072.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-30_07:2020-10-30,2020-10-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ phishscore=0 clxscore=1011 mlxlogscore=999 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010300122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
 
-On 2020-10-30 22:18, Mathieu Poirier wrote:
-> On Fri, Oct 30, 2020 at 01:29:56PM +0530, Sai Prakash Ranjan wrote:
->> Hello guys,
->> 
->> On 2020-10-24 02:07, Mathieu Poirier wrote:
->> > On Fri, Oct 23, 2020 at 03:44:16PM +0200, Peter Zijlstra wrote:
->> > > On Fri, Oct 23, 2020 at 02:29:54PM +0100, Suzuki Poulose wrote:
->> > > > On 10/23/20 2:16 PM, Peter Zijlstra wrote:
->> > > > > On Fri, Oct 23, 2020 at 01:56:47PM +0100, Suzuki Poulose wrote:
->> > >
->> > > > > > That way another session could use the same sink if it is free. i.e
->> > > > > >
->> > > > > > perf record -e cs_etm/@sink0/u --per-thread app1
->> > > > > >
->> > > > > > and
->> > > > > >
->> > > > > > perf record -e cs_etm/@sink0/u --per-thread app2
->> > > > > >
->> > > > > > both can work as long as the sink is not used by the other session.
->> > > > >
->> > > > > Like said above, if sink is shared between CPUs, that's going to be a
->> > > > > trainwreck :/ Why do you want that?
->> > > >
->> > > > That ship has sailed. That is how the current generation of systems are,
->> > > > unfortunately. But as I said, this is changing and there are guidelines
->> > > > in place to avoid these kind of topologies. With the future
->> > > > technologies, this will be completely gone.
->> > >
->> > > I understand that the hardware is like that, but why do you want to
->> > > support this insanity in software?
->> > >
->> > > If you only allow a single sink user (group) at the same time, your
->> > > problem goes away. Simply disallow the above scenario, do not allow
->> > > concurrent sink users if sinks are shared like this.
->> > >
->> > > Have the perf-record of app2 above fail because the sink is in-user
->> > > already.
->> >
->> > I agree with you that --per-thread scenarios are easy to deal with, but
->> > to
->> > support cpu-wide scenarios events must share a sink (because there is
->> > one event
->> > per CPU).  CPU-wide support can't be removed because it has been around
->> > for close to a couple of years and heavily used. I also think using the
->> > pid of
->> > the process that created the events, i.e perf, is a good idea.  We just
->> > need to
->> > agree on how to gain access to it.
->> >
->> > In Sai's patch you objected to the following:
->> >
->> > > +     struct task_struct *task = READ_ONCE(event->owner);
->> > > +
->> > > +     if (!task || is_kernel_event(event))
->> >
->> > Would it be better to use task_nr_pid(current) instead of event->owner?
->> > The end
->> > result will be exactly the same.  There is also no need to check the
->> > validity of
->> > @current since it is a user process.
->> >
->> 
->> We have devices deployed where these crashes are seen consistently,
->> so for some immediate relief, could we atleast get some fix in this
->> cycle without major design overhaul which would likely take more time.
->> Perhaps my first patch [1] without any check for owner or
->> I can post a new version as Suzuki suggested [2] dropping the export
->> of is_kernel_event(). Then we can always work on top of it based on 
->> the
->> conclusion of this discussion, we will atleast not have the systems
->> crash in the meantime, thoughts?
+
+Le 30/10/2020 à 08:40, Mauro Carvalho Chehab a écrit :
+> Some files over there won't parse well by Sphinx.
 > 
-> For the time being I think [1], exactly the way it is, is a reasonable 
-> way
-> forward.
+> Fix them.
 > 
+> Acked-by: Jonathan Cameron<Jonathan.Cameron@huawei.com>  # for IIO
+> Signed-off-by: Mauro Carvalho Chehab<mchehab+huawei@kernel.org>
+> ---
+...
+>   Documentation/ABI/testing/sysfs-class-cxl     |  15 +-
+...
+>   Documentation/ABI/testing/sysfs-class-ocxl    |   3 +
 
-Sure, I just checked now and [1] still applies neatly on top of 
-coresight
-next branch.
 
-[1] https://lore.kernel.org/patchwork/patch/1318098/
+Patches 20, 28 and 31 look good for cxl and ocxl.
+Acked-by: Frederic Barrat <fbarrat@linux.ibm.com>
 
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+   Fred
