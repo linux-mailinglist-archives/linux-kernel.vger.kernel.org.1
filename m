@@ -2,108 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D74A2A0FCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED6C2A0FCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727677AbgJ3U7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 16:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbgJ3U7r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 16:59:47 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F0EC0613CF;
-        Fri, 30 Oct 2020 13:59:46 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id dk16so9830976ejb.12;
-        Fri, 30 Oct 2020 13:59:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=k3WkoFBU74q2UUkntKKl2jUcW+YT3JWi72RY5sPwOfk=;
-        b=vesqpwoVaNunwsRNYlewpH7leCs8rK5Ez+sifuWXtWFpLMB1bhb0y33nDMgYvwByw3
-         tohjzgZ/ttG3vlbRT3y7ZJa+WYJ3ASCgH9VHXLHhX+FIpqlEH6rGnUyQnja+k1c/nxZk
-         SLz4bWfb7lwECVgzXLuPxET1rNSJeudHd5mBOCFsRULvJOViO9/dKHLp/9oJrS9iJPyT
-         qJ/wHQl7TA1n0jHpQr6bx91XwsO0AvQ66YnQeurV0oLG7b4zl3xEOttK/VK6w/GxeCQU
-         HC8iVDJdVa8xV4JGvM1SeTOAInlCEwS/LsnMI4jxcaco7bGqbpcB5bQ4pPjx5aK6DFT9
-         3fZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=k3WkoFBU74q2UUkntKKl2jUcW+YT3JWi72RY5sPwOfk=;
-        b=qqp8+puUBL4OywMMn9W8R4CcrqLYMTrd+Go6pHd8zyD2G/loMAfzW91pWaSJwwRNJ+
-         ydNQa3dFv3gKMJBLi1rmYCHPlDSI6WgTZDBYP5DJNc5hEdVYQsBWYZoa8o4Aff8X0cYS
-         oqpz4Xosox42YmJb01Uxi4vMzu+0IPtbCosQqJzuPVzv4NFwGiNZsz3qpZ1qIzAUPchd
-         LjfTLquiQGewGDg2E3C5CKnblLxXjs1hWLDWEUrla/7gEXm+zh5xdS7gyJAB7nNQc8FS
-         kdqJJO8z/Qxi5BTu3GBbK8w8PfpIbGVKFzYk3oQ84da/wOJui2OIkepzNyLQvfQKLZLb
-         WxLA==
-X-Gm-Message-State: AOAM531rk8gA768vAAUl2Dcv/RnIAYNhdZI1cZ8Qm0L9cioiiWz9HMvo
-        9dIfUqI9oWz0fnt5YUgxjvg=
-X-Google-Smtp-Source: ABdhPJxnmacl+QU6UAVfnglw7U9K7nUmqKXuVD/IqcAM7LsfWaAjX4Ia4WbMBk84ZIpYZC9Qp37Uxg==
-X-Received: by 2002:a17:906:2e59:: with SMTP id r25mr4478407eji.520.1604091585688;
-        Fri, 30 Oct 2020 13:59:45 -0700 (PDT)
-Received: from jernej-laptop.localnet (cpe1-5-97.cable.triera.net. [213.161.5.97])
-        by smtp.gmail.com with ESMTPSA id bn2sm3376596ejb.48.2020.10.30.13.59.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 13:59:44 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     linux-sunxi@googlegroups.com
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        monnier@iro.umontreal.ca
-Subject: Re: [linux-sunxi] Re: [PATCH v10 00/15] Add Allwinner H3/H5/H6/A64 HDMI audio
-Date:   Fri, 30 Oct 2020 21:59:43 +0100
-Message-ID: <1619332.Na9eyGIdAE@jernej-laptop>
-In-Reply-To: <jwv361va1g9.fsf-monnier+gmane.comp.hardware.netbook.arm.sunxi@gnu.org>
-References: <20201030144648.397824-1-peron.clem@gmail.com> <160408688151.11950.1284919768798155829.b4-ty@kernel.org> <jwv361va1g9.fsf-monnier+gmane.comp.hardware.netbook.arm.sunxi@gnu.org>
+        id S1727705AbgJ3U7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 16:59:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726163AbgJ3U7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 16:59:50 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9ED3820797;
+        Fri, 30 Oct 2020 20:59:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604091590;
+        bh=g75KANMpn+QyFlKM9RAAm6BIhFn3Ci6qgnn766q1Hy0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jVCtK0ob8Wx5rTuY9eV73iXjZ4Vy/PDg2lD8OuRuPS24MvS5TODyrb9xesuYecKeC
+         owFaNEwpozmKBO6Y8p8x5ZUsO1SMxITG6GygYQtz3pE5296Rc5BHflER34txiaYUXG
+         5qyIaFc0hVklS2vGT+/s8ll5ns1r0+60zuYWOvsM=
+Date:   Fri, 30 Oct 2020 13:59:48 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-safety@lists.elisa.tech
+Subject: Re: [PATCH] ipv6: mcast: make annotations for ip6_mc_msfget()
+ consistent
+Message-ID: <20201030135948.32fc1a7c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201028115349.6855-1-lukas.bulwahn@gmail.com>
+References: <20201028115349.6855-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne petek, 30. oktober 2020 ob 21:50:43 CET je Stefan Monnier napisal(a):
-> >> This series add H6 I2S support and the I2S node missing to support
-> >> HDMI audio in different Allwinner SoC.
-> > 
-> > Applied to
-> > 
-> >    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-> >    for-next
+On Wed, 28 Oct 2020 12:53:49 +0100 Lukas Bulwahn wrote:
+> Commit 931ca7ab7fe8 ("ip*_mc_gsfget(): lift copyout of struct group_filter
+> into callers") adjusted the type annotations for ip6_mc_msfget() at its
+> declaration, but missed the type annotations at its definition.
 > 
-> Yay!
-
-Note that this doesn't bring HDMI audio card just yet. Another driver will be 
-needed for that.
-
+> Hence, sparse complains on ./net/ipv6/mcast.c:
 > 
-> Now, I wonder: will that make it easier to add support for HDMI-Audio for
-> the A10/A20?
-
-No, A10/A20 HDMI audio uses completely different interface.
-
+>   mcast.c:550:5: error: symbol 'ip6_mc_msfget' redeclared with different type \
+>   (incompatible argument 3 (different address spaces))
 > 
-> (there was a patch for that submitted earlier this year by Stefan
-> Mavrodiev <stefan@olimex.com>, but it seems there hasn't been any
-> progress on it since then (I think the last message on it concluded that
-> it should be rewritten to use ALSA instead of ASoC)).
-
-IIUC original author left Olimex, so work stalled.
-
-Best regards,
-Jernej
-
+> Make ip6_mc_msfget() annotations consistent, which also resolves this
+> warning from sparse:
 > 
-> [ To clarify, don't know what's the difference between ALSA and ASoC;
->   I'm only interested here as an owner of an A20 box on which I'd
->   love to be able to use the HDMI-Audio.  ]
+>   mcast.c:607:34: warning: incorrect type in argument 1 (different address spaces)
+>   mcast.c:607:34:    expected void [noderef] __user *to
+>   mcast.c:607:34:    got struct __kernel_sockaddr_storage *p
 > 
+> No functional change. No change in object code.
 > 
-> -- Stefan
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-
-
-
+Applied, thank you!
