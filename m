@@ -2,83 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55A529FCAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 05:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B67B29FCAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 05:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbgJ3EUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 00:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
+        id S1726438AbgJ3EUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 00:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3EUI (ORCPT
+        with ESMTP id S1725780AbgJ3EUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 00:20:08 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23249C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:20:06 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 10so4170494pfp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:20:06 -0700 (PDT)
+        Fri, 30 Oct 2020 00:20:33 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F6CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:20:33 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id b15so6170316iod.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:20:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=A7UPbmXdI+eqRuzY6sKRJs9PFgKewHuLB4lD0EbWj1A=;
-        b=NLFXEWJf7ld3LjuijyzbNyrvDi+zFyqS6KWQVl5ncYdWN0F1G1M7r88w+89hG5vTdn
-         TdCWI1mZHeUhxj1xBrWJPqh9NREd+ulmd7AeqDki8FnGgv4wJ+OicXI/P2mtFtO6X5pO
-         rIR9gDmOg+3UA6STqdVgaxN6YZc78z9KZ+zPvrondm4lYku66EIhFuuzCTYchfocWnHT
-         9ghG/vUDbRWFAa2wL1zqf8PfjjRXVGCZEvVSPDah4C0bNK6Y+eso6wxixDMZOWg1iozE
-         W7M+E/P5JhZdW5cw6EN586/tTm3vzk1S9CG8vi9gz4Zr5/cEy0O9dWAvgmeRIztSzbMO
-         +nLQ==
+        d=gmail.com; s=20161025;
+        h=from:content-transfer-encoding:mime-version:date:subject:message-id
+         :to;
+        bh=uoULYXfmfsYvZeTl2rSN1/TVjepk39OejLyjg4WnFN0=;
+        b=XzkbfPEjbJluRFcgAD0P+lgIJVUfuPLtnp37IhlJhszpPjOKrOXFEnWjSGe9Gwsmn+
+         X/lZ7NJamO/rvQUNfEej4WOZjo+yIpxfxwBlRgXBZSGXHJOsXlY6DlHi8AEgdK26IlP7
+         YAKmuVxgNQ96Kp/9m2DZRJLL+KlC1atrguBc1gMAIzCDfzOVh3UBB7TLybUxJhDSV88V
+         t0U/GSy2HucnJomAJD2aW7gq3urzNuBVOy5woA1ox5yHzC8rmJIVm7E94VEunATI81YK
+         bHxaxRGdFv0XAwtIgyPl0b/ZY5wtTU57kHjAUl3Gaba9wFJy9NpyGTgH210UGrRW9sai
+         jxjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=A7UPbmXdI+eqRuzY6sKRJs9PFgKewHuLB4lD0EbWj1A=;
-        b=Xu/BBJYS6/xDfdCUbAwcj3HXf1w4QrhOP7WQLo6KAsgWOgFW7B+gLfdhMw0PQlWZnW
-         c+n3n+PIKNJwCnRXEGXr/T243idsW2x5MDMBc+gJdmFi1tRDzyCfSdGfq897kdOhudbi
-         r3hY1LDCWJr05lfW12Yg5L61BYpdPJpBJQh0+ngKod17Jo17qbMo8w/FEn4uGrdkSfUH
-         kRyixldX+4Q4YAjUun0aWbGn6gVjoPqs/blbdkdeEey3Elha6C+Wd12S/Wa5wzMs08YK
-         X6zLfM1fJ9tkX5ANYxZNvYp2ohnko4TyfeXT1QIVkII1CPfQJ9nEu7P0FEKFq3+1ej4t
-         HKpw==
-X-Gm-Message-State: AOAM531k3WT+f6pYeGMfGZk+HbdyyNN1n8XpVow7C9EIldp1juGkFXX7
-        b9DvooWYiW5S95YVsr3iuGZSSw==
-X-Google-Smtp-Source: ABdhPJyG/7Uq+1HblV489jOm9SHT3AjXVwUxt2jrCQdB45iDuFcqly/0fs65QVVOLGM/tcvhdRMqNQ==
-X-Received: by 2002:a17:90a:4b45:: with SMTP id o5mr471611pjl.223.1604031605572;
-        Thu, 29 Oct 2020 21:20:05 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id 16sm1480433pjf.36.2020.10.29.21.20.04
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version:date
+         :subject:message-id:to;
+        bh=uoULYXfmfsYvZeTl2rSN1/TVjepk39OejLyjg4WnFN0=;
+        b=a6teMiSGRx/bUj5LvcFddp26xgPkydyTNbDd4o10Dietg8NK3I240qs+/WF63ps006
+         8hdpU8eH9F9oQWdNQ4P3Ke8Lh+rg1GO2KT20d4oVN4kK0nSAJA3N1gFwQDocq5PR6WFC
+         +z72dXWCbut9wQCt3BKubObNywpy9l1IBb4nrDjLUOQ2PiMGNTZgQ1vGDp9zHK6G11kn
+         H3SvuSgRSjmYWqqE/EtzfgsBzc/D3H5VSJ6Aln+VjwEbXT1t6ds+luvqDHNbMa6pX7wx
+         /bsGE5yXh9cEPmjAMf5SKe//cegfYr8Sk2MA4EMjoDvgOgNQJv1cWGchmCIfNzpJmTEp
+         39Fw==
+X-Gm-Message-State: AOAM533Ql4YzAbcASD07aFVlDcWroIGZc5Wpa5S0653zhn4QCg/MpQek
+        jWXGVCM3Cvm+goFbD1DzJiD/MglsUWc=
+X-Google-Smtp-Source: ABdhPJymr10ktMT0DsNy33l16iY9/vU2GtfzBxBkEd57en9dthBX+PfriBk1mbiE9ylxeSHvlQ0opQ==
+X-Received: by 2002:a05:6638:102c:: with SMTP id n12mr523501jan.87.1604031632521;
+        Thu, 29 Oct 2020 21:20:32 -0700 (PDT)
+Received: from [10.200.10.20] ([114.141.194.12])
+        by smtp.gmail.com with ESMTPSA id f77sm4564212ilf.40.2020.10.29.21.20.25
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 29 Oct 2020 21:20:04 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 09:50:00 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Nishanth Menon <nm@ti.com>, Viresh Kumar <vireshk@kernel.org>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Rob Clark <robdclark@gmail.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] opp: Reduce the size of critical section in
- _opp_table_kref_release()
-Message-ID: <20201030042000.bo3dwrmi7efoe42v@vireshk-i7>
-References: <e0df59de670b48a923246fae1f972317b84b2764.1603785323.git.viresh.kumar@linaro.org>
- <160392797572.884498.11353243518476305974@swboyd.mtv.corp.google.com>
- <20201029041019.xps4dcavkvk6imp5@vireshk-i7>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029041019.xps4dcavkvk6imp5@vireshk-i7>
-User-Agent: NeoMutt/20180716-391-311a52
+        Thu, 29 Oct 2020 21:20:31 -0700 (PDT)
+From:   NASA Jeff <tallboy258@gmail.com>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (1.0)
+Date:   Fri, 30 Oct 2020 04:20:05 +0000
+Subject: One note 
+Message-Id: <3511E8B5-E3FD-44DD-B2CF-B22236F6AF18@gmail.com>
+To:     linux-kernel@vger.kernel.org
+X-Mailer: iPhone Mail (16G201)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-10-20, 09:40, Viresh Kumar wrote:
-> Thanks a lot. I was a bit worried about the crazy idea I had to solve
-> this :)
+Pages in active areas shouldn=E2=80=99t be swapped out only those in inactiv=
+e areas. So it=E2=80=99s a bit like seminary rock.
 
-Hmm, I thought this is the other patch where I had that crazy idea.
-This one was quite straight forward :)
-
--- 
-viresh
+Sent from my iPhone=
