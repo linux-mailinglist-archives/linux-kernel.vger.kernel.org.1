@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03A82A097C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3592A0990
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgJ3PUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:20:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52800 "EHLO mail.kernel.org"
+        id S1727139AbgJ3PUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:20:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726875AbgJ3PUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:20:02 -0400
+        id S1726867AbgJ3PUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:20:01 -0400
 Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3345A22241;
-        Fri, 30 Oct 2020 15:18:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF5EC22246;
+        Fri, 30 Oct 2020 15:18:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604071136;
-        bh=pGAZMgkSQzQnK5XXMYMtPK06PKFW8k5jOE9zOrtJrI0=;
+        s=default; t=1604071140;
+        bh=1U0ECVqd2hNgqIJBzCiaE0G3Htac28AHKdGuEc6XP0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KqmTdXUczVYg8nzUmdKhkXwl62PsaUL9yYoXshAidiENZDTEhO+JINwM7OwkQ0RUU
-         guX5BIX0CKtUDZOUKuZWPfA+dB6l79hcbT7twhn1QRrwesrDBIRZ9dMjYPl4dL24mK
-         pYic3TVa5X+fORUfBbWbl7F2GE3Qf70TJjhvyY3U=
+        b=mYdsPP8cT4riayqUCnHMvcpTSpOrhi3YSE4t0JqeIOcSvOMDaPTkYggDnUgQb2faP
+         h/CoXoTiH3Ok9f0NYQ9R/g3i6G1WgP0MSYZIfi+kiBxsYesZvCwAAJs1uQN9fFAKGG
+         SuIrZnPotazCQd8YQ5skHinbiEbDmJqn58vnt3kQ=
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -44,10 +44,11 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-ia64@vger.kernel.org,
         Parisc List <linux-parisc@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2 08/15] m68k: coldfire: use legacy_timer_tick()
-Date:   Fri, 30 Oct 2020 16:17:51 +0100
-Message-Id: <20201030151758.1241164-9-arnd@kernel.org>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v2 09/15] m68k: split heartbeat out of timer function
+Date:   Fri, 30 Oct 2020 16:17:52 +0100
+Message-Id: <20201030151758.1241164-10-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201030151758.1241164-1-arnd@kernel.org>
 References: <20201030151758.1241164-1-arnd@kernel.org>
@@ -59,297 +60,150 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Replace the indirect function calls in the timer code
-with direct calls to the newly added legacy_timer_tick()
-helper for those that have not yet been converted to
-generic clockevents.
+The heartbeat functionality is mostly separate from the
+actual timer interrupt handling, and it is only used on
+five platforms.
 
-This makes the timer code a little more self-contained.
+Split it out into a separate function and call that directly
+from the timer irq on those platforms.
 
-Tested-by: Greg Ungerer <gerg@linux-m68k.org>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/m68k/Kconfig.cpu         | 35 +++++++++++++++++++++++++++++------
- arch/m68k/coldfire/Makefile   | 32 ++++++++++++++++++--------------
- arch/m68k/coldfire/sltimers.c |  6 ++----
- arch/m68k/coldfire/timers.c   |  6 ++----
- 4 files changed, 51 insertions(+), 28 deletions(-)
+ arch/m68k/amiga/config.c        | 1 +
+ arch/m68k/apollo/config.c       | 1 +
+ arch/m68k/atari/time.c          | 2 ++
+ arch/m68k/hp300/time.c          | 1 +
+ arch/m68k/include/asm/machdep.h | 7 +++++++
+ arch/m68k/kernel/time.c         | 7 +++++--
+ arch/m68k/q40/q40ints.c         | 2 ++
+ 7 files changed, 19 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index 694c4fca9f5d..322a35ef14c6 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -137,6 +137,7 @@ config M5206
- 	bool "MCF5206"
- 	depends on !MMU
- 	select COLDFIRE_SW_A7
-+	select COLDFIRE_TIMERS
- 	select HAVE_MBAR
- 	select CPU_NO_EFFICIENT_FFS
- 	help
-@@ -146,6 +147,7 @@ config M5206e
- 	bool "MCF5206e"
- 	depends on !MMU
- 	select COLDFIRE_SW_A7
-+	select COLDFIRE_TIMERS
- 	select HAVE_MBAR
- 	select CPU_NO_EFFICIENT_FFS
- 	help
-@@ -154,7 +156,7 @@ config M5206e
- config M520x
- 	bool "MCF520x"
- 	depends on !MMU
--	select GENERIC_CLOCKEVENTS
-+	select COLDFIRE_PIT_TIMER
- 	select HAVE_CACHE_SPLIT
- 	help
- 	   Freescale Coldfire 5207/5208 processor support.
-@@ -162,7 +164,7 @@ config M520x
- config M523x
- 	bool "MCF523x"
- 	depends on !MMU
--	select GENERIC_CLOCKEVENTS
-+	select COLDFIRE_PIT_TIMER
- 	select HAVE_CACHE_SPLIT
- 	select HAVE_IPSBAR
- 	help
-@@ -172,6 +174,7 @@ config M5249
- 	bool "MCF5249"
- 	depends on !MMU
- 	select COLDFIRE_SW_A7
-+	select COLDFIRE_TIMERS
- 	select HAVE_MBAR
- 	select CPU_NO_EFFICIENT_FFS
- 	help
-@@ -181,6 +184,7 @@ config M525x
- 	bool "MCF525x"
- 	depends on !MMU
- 	select COLDFIRE_SW_A7
-+	select COLDFIRE_TIMERS
- 	select HAVE_MBAR
- 	select CPU_NO_EFFICIENT_FFS
- 	help
-@@ -189,10 +193,10 @@ config M525x
- config M5271
- 	bool "MCF5271"
- 	depends on !MMU
-+	select COLDFIRE_PIT_TIMER
- 	select M527x
- 	select HAVE_CACHE_SPLIT
- 	select HAVE_IPSBAR
--	select GENERIC_CLOCKEVENTS
- 	help
- 	  Freescale (Motorola) ColdFire 5270/5271 processor support.
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index bee9f240f35d..29f92333119e 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -480,6 +480,7 @@ static irqreturn_t ciab_timer_handler(int irq, void *dev_id)
+ 	clk_total += jiffy_ticks;
+ 	clk_offset = 0;
+ 	timer_routine(0, NULL);
++	timer_heartbeat();
  
-@@ -200,6 +204,7 @@ config M5272
- 	bool "MCF5272"
- 	depends on !MMU
- 	select COLDFIRE_SW_A7
-+	select COLDFIRE_TIMERS
- 	select HAVE_MBAR
- 	select CPU_NO_EFFICIENT_FFS
- 	help
-@@ -208,17 +213,17 @@ config M5272
- config M5275
- 	bool "MCF5275"
- 	depends on !MMU
-+	select COLDFIRE_PIT_TIMER
- 	select M527x
- 	select HAVE_CACHE_SPLIT
- 	select HAVE_IPSBAR
--	select GENERIC_CLOCKEVENTS
- 	help
- 	  Freescale (Motorola) ColdFire 5274/5275 processor support.
- 
- config M528x
- 	bool "MCF528x"
- 	depends on !MMU
--	select GENERIC_CLOCKEVENTS
-+	select COLDFIRE_PIT_TIMER
- 	select HAVE_CACHE_SPLIT
- 	select HAVE_IPSBAR
- 	help
-@@ -227,6 +232,7 @@ config M528x
- config M5307
- 	bool "MCF5307"
- 	depends on !MMU
-+	select COLDFIRE_TIMERS
- 	select COLDFIRE_SW_A7
- 	select HAVE_CACHE_CB
- 	select HAVE_MBAR
-@@ -237,6 +243,7 @@ config M5307
- config M532x
- 	bool "MCF532x"
- 	depends on !MMU
-+	select COLDFIRE_TIMERS
- 	select M53xx
- 	select HAVE_CACHE_CB
- 	help
-@@ -245,6 +252,7 @@ config M532x
- config M537x
- 	bool "MCF537x"
- 	depends on !MMU
-+	select COLDFIRE_TIMERS
- 	select M53xx
- 	select HAVE_CACHE_CB
- 	help
-@@ -254,6 +262,7 @@ config M5407
- 	bool "MCF5407"
- 	depends on !MMU
- 	select COLDFIRE_SW_A7
-+	select COLDFIRE_TIMERS
- 	select HAVE_CACHE_CB
- 	select HAVE_MBAR
- 	select CPU_NO_EFFICIENT_FFS
-@@ -263,6 +272,7 @@ config M5407
- config M547x
- 	bool "MCF547x"
- 	select M54xx
-+	select COLDFIRE_SLTIMERS
- 	select MMU_COLDFIRE if MMU
- 	select FPU if MMU
- 	select HAVE_CACHE_CB
-@@ -273,6 +283,7 @@ config M547x
- 
- config M548x
- 	bool "MCF548x"
-+	select COLDFIRE_SLTIMERS
- 	select MMU_COLDFIRE if MMU
- 	select FPU if MMU
- 	select M54xx
-@@ -284,8 +295,8 @@ config M548x
- 
- config M5441x
- 	bool "MCF5441x"
-+	select COLDFIRE_PIT_TIMER
- 	select MMU_COLDFIRE if MMU
--	select GENERIC_CLOCKEVENTS
- 	select HAVE_CACHE_CB
- 	help
- 	  Freescale Coldfire 54410/54415/54416/54417/54418 processor support.
-@@ -302,6 +313,18 @@ config M54xx
- 	select HAVE_PCI
- 	bool
- 
-+config COLDFIRE_PIT_TIMER
-+	bool
-+	select GENERIC_CLOCKEVENTS
-+
-+config COLDFIRE_TIMERS
-+	bool
-+	select LEGACY_TIMER_TICK
-+
-+config COLDFIRE_SLTIMERS
-+	bool
-+	select LEGACY_TIMER_TICK
-+
- endif # COLDFIRE
- 
- 
-diff --git a/arch/m68k/coldfire/Makefile b/arch/m68k/coldfire/Makefile
-index 573eabca1a3a..a3e18d73d8b8 100644
---- a/arch/m68k/coldfire/Makefile
-+++ b/arch/m68k/coldfire/Makefile
-@@ -16,20 +16,24 @@
- asflags-$(CONFIG_FULLDEBUG) := -DDEBUGGER_COMPATIBLE_CACHE=1
- 
- obj-$(CONFIG_COLDFIRE)	+= cache.o clk.o device.o dma.o entry.o vectors.o
--obj-$(CONFIG_M5206)	+= m5206.o timers.o intc.o reset.o
--obj-$(CONFIG_M5206e)	+= m5206.o timers.o intc.o reset.o
--obj-$(CONFIG_M520x)	+= m520x.o pit.o intc-simr.o reset.o
--obj-$(CONFIG_M523x)	+= m523x.o pit.o dma_timer.o intc-2.o reset.o
--obj-$(CONFIG_M5249)	+= m5249.o timers.o intc.o intc-5249.o reset.o
--obj-$(CONFIG_M525x)	+= m525x.o timers.o intc.o intc-525x.o reset.o
--obj-$(CONFIG_M527x)	+= m527x.o pit.o intc-2.o reset.o
--obj-$(CONFIG_M5272)	+= m5272.o intc-5272.o timers.o
--obj-$(CONFIG_M528x)	+= m528x.o pit.o intc-2.o reset.o
--obj-$(CONFIG_M5307)	+= m5307.o timers.o intc.o reset.o
--obj-$(CONFIG_M53xx)	+= m53xx.o timers.o intc-simr.o reset.o
--obj-$(CONFIG_M5407)	+= m5407.o timers.o intc.o reset.o
--obj-$(CONFIG_M54xx)	+= m54xx.o sltimers.o intc-2.o
--obj-$(CONFIG_M5441x)	+= m5441x.o pit.o intc-simr.o reset.o
-+obj-$(CONFIG_M5206)	+= m5206.o intc.o reset.o
-+obj-$(CONFIG_M5206e)	+= m5206.o intc.o reset.o
-+obj-$(CONFIG_M520x)	+= m520x.o intc-simr.o reset.o
-+obj-$(CONFIG_M523x)	+= m523x.o dma_timer.o intc-2.o reset.o
-+obj-$(CONFIG_M5249)	+= m5249.o intc.o intc-5249.o reset.o
-+obj-$(CONFIG_M525x)	+= m525x.o intc.o intc-525x.o reset.o
-+obj-$(CONFIG_M527x)	+= m527x.o intc-2.o reset.o
-+obj-$(CONFIG_M5272)	+= m5272.o intc-5272.o
-+obj-$(CONFIG_M528x)	+= m528x.o intc-2.o reset.o
-+obj-$(CONFIG_M5307)	+= m5307.o intc.o reset.o
-+obj-$(CONFIG_M53xx)	+= m53xx.o intc-simr.o reset.o
-+obj-$(CONFIG_M5407)	+= m5407.o intc.o reset.o
-+obj-$(CONFIG_M54xx)	+= m54xx.o intc-2.o
-+obj-$(CONFIG_M5441x)	+= m5441x.o intc-simr.o reset.o
-+
-+obj-$(CONFIG_COLDFIRE_PIT_TIMER) += pit.o
-+obj-$(CONFIG_COLDFIRE_TIMERS)	 += timers.o
-+obj-$(CONFIG_COLDFIRE_SLTIMERS)	 += sltimers.o
- 
- obj-$(CONFIG_NETtel)	+= nettel.o
- obj-$(CONFIG_CLEOPATRA)	+= nettel.o
-diff --git a/arch/m68k/coldfire/sltimers.c b/arch/m68k/coldfire/sltimers.c
-index 5ab81c9c552d..25a1319f3cb8 100644
---- a/arch/m68k/coldfire/sltimers.c
-+++ b/arch/m68k/coldfire/sltimers.c
-@@ -83,14 +83,13 @@ void mcfslt_profile_init(void)
- static u32 mcfslt_cycles_per_jiffy;
- static u32 mcfslt_cnt;
- 
--static irq_handler_t timer_interrupt;
--
- static irqreturn_t mcfslt_tick(int irq, void *dummy)
- {
- 	/* Reset Slice Timer 0 */
- 	__raw_writel(MCFSLT_SSR_BE | MCFSLT_SSR_TE, TA(MCFSLT_SSR));
- 	mcfslt_cnt += mcfslt_cycles_per_jiffy;
--	return timer_interrupt(irq, dummy);
-+	legacy_timer_tick(1);
-+	return IRQ_HANDLED;
+ 	return IRQ_HANDLED;
  }
+diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
+index 762da5d7a415..30915f1a8760 100644
+--- a/arch/m68k/apollo/config.c
++++ b/arch/m68k/apollo/config.c
+@@ -173,6 +173,7 @@ irqreturn_t dn_timer_int(int irq, void *dev_id)
+ 	volatile unsigned char x;
  
- static u64 mcfslt_read_clk(struct clocksource *cs)
-@@ -136,7 +135,6 @@ void hw_timer_init(irq_handler_t handler)
- 	/* initialize mcfslt_cnt knowing that slice timers count down */
- 	mcfslt_cnt = mcfslt_cycles_per_jiffy;
+ 	timer_handler(irq, dev_id);
++	timer_heartbeat();
  
--	timer_interrupt = handler;
- 	r = request_irq(MCF_IRQ_TIMER, mcfslt_tick, IRQF_TIMER, "timer", NULL);
- 	if (r) {
- 		pr_err("Failed to request irq %d (timer): %pe\n", MCF_IRQ_TIMER,
-diff --git a/arch/m68k/coldfire/timers.c b/arch/m68k/coldfire/timers.c
-index b8301fddf901..24b5e2d1b00b 100644
---- a/arch/m68k/coldfire/timers.c
-+++ b/arch/m68k/coldfire/timers.c
-@@ -48,8 +48,6 @@ void coldfire_profile_init(void);
- static u32 mcftmr_cycles_per_jiffy;
- static u32 mcftmr_cnt;
+ 	x = *(volatile unsigned char *)(apollo_timer + 3);
+ 	x = *(volatile unsigned char *)(apollo_timer + 5);
+diff --git a/arch/m68k/atari/time.c b/arch/m68k/atari/time.c
+index ce923a523695..ce4a5961ca93 100644
+--- a/arch/m68k/atari/time.c
++++ b/arch/m68k/atari/time.c
+@@ -21,6 +21,7 @@
+ #include <linux/export.h>
  
--static irq_handler_t timer_interrupt;
--
- /***************************************************************************/
+ #include <asm/atariints.h>
++#include <asm/machdep.h>
  
- static void init_timer_irq(void)
-@@ -77,7 +75,8 @@ static irqreturn_t mcftmr_tick(int irq, void *dummy)
- 	__raw_writeb(MCFTIMER_TER_CAP | MCFTIMER_TER_REF, TA(MCFTIMER_TER));
+ DEFINE_SPINLOCK(rtc_lock);
+ EXPORT_SYMBOL_GPL(rtc_lock);
+@@ -49,6 +50,7 @@ static irqreturn_t mfp_timer_c_handler(int irq, void *dev_id)
+ 	} while (last_timer_count == 1);
+ 	clk_total += INT_TICKS;
+ 	timer_routine(0, NULL);
++	timer_heartbeat();
+ 	local_irq_restore(flags);
  
- 	mcftmr_cnt += mcftmr_cycles_per_jiffy;
--	return timer_interrupt(irq, dummy);
-+	legacy_timer_tick(1);
+ 	return IRQ_HANDLED;
+diff --git a/arch/m68k/hp300/time.c b/arch/m68k/hp300/time.c
+index bfee13e1d0fe..e3cd938de0f9 100644
+--- a/arch/m68k/hp300/time.c
++++ b/arch/m68k/hp300/time.c
+@@ -65,6 +65,7 @@ static irqreturn_t hp300_tick(int irq, void *dev_id)
+ 	clk_total += INTVAL;
+ 	clk_offset = 0;
+ 	timer_routine(0, NULL);
++	timer_heartbeat();
+ 	local_irq_restore(flags);
+ 
+ 	/* Turn off the network and SCSI leds */
+diff --git a/arch/m68k/include/asm/machdep.h b/arch/m68k/include/asm/machdep.h
+index 49bd3266b4b1..e62a39d01ae4 100644
+--- a/arch/m68k/include/asm/machdep.h
++++ b/arch/m68k/include/asm/machdep.h
+@@ -35,6 +35,13 @@ extern void (*mach_beep) (unsigned int, unsigned int);
+ /* Hardware clock functions */
+ extern void hw_timer_init(irq_handler_t handler);
+ extern unsigned long hw_timer_offset(void);
++#ifdef CONFIG_HEARTBEAT
++extern void timer_heartbeat(void);
++#else
++static inline void timer_heartbeat(void)
++{
++}
++#endif
+ 
+ extern void config_BSP(char *command, int len);
+ 
+diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
+index c2697a4d4ddd..c05cec21b05f 100644
+--- a/arch/m68k/kernel/time.c
++++ b/arch/m68k/kernel/time.c
+@@ -45,8 +45,12 @@ static irqreturn_t timer_interrupt(int irq, void *dummy)
+ 	xtime_update(1);
+ 	update_process_times(user_mode(get_irq_regs()));
+ 	profile_tick(CPU_PROFILING);
 +	return IRQ_HANDLED;
++}
+ 
+ #ifdef CONFIG_HEARTBEAT
++void timer_heartbeat(void)
++{
+ 	/* use power LED as a heartbeat instead -- much more useful
+ 	   for debugging -- based on the version for PReP by Cort */
+ 	/* acts like an actual heart beat -- ie thump-thump-pause... */
+@@ -68,9 +72,8 @@ static irqreturn_t timer_interrupt(int irq, void *dummy)
+ 		dist = period / 4;
+ 	    }
+ 	}
+-#endif /* CONFIG_HEARTBEAT */
+-	return IRQ_HANDLED;
  }
++#endif /* CONFIG_HEARTBEAT */
  
- /***************************************************************************/
-@@ -126,7 +125,6 @@ void hw_timer_init(irq_handler_t handler)
+ #ifdef CONFIG_M68KCLASSIC
+ #if !IS_BUILTIN(CONFIG_RTC_DRV_GENERIC)
+diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
+index 1c696906c159..b01b545a2db0 100644
+--- a/arch/m68k/q40/q40ints.c
++++ b/arch/m68k/q40/q40ints.c
+@@ -17,6 +17,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
  
- 	clocksource_register_hz(&mcftmr_clk, FREQ);
++#include <asm/machdep.h>
+ #include <asm/ptrace.h>
+ #include <asm/traps.h>
  
--	timer_interrupt = handler;
- 	init_timer_irq();
- 	r = request_irq(MCF_IRQ_TIMER, mcftmr_tick, IRQF_TIMER, "timer", NULL);
- 	if (r) {
+@@ -144,6 +145,7 @@ static irqreturn_t q40_timer_int(int irq, void *dev_id)
+ 
+ 		local_irq_save(flags);
+ 		timer_routine(0, NULL);
++		timer_heartbeat();
+ 		local_irq_restore(flags);
+ 	}
+ 	return IRQ_HANDLED;
 -- 
 2.27.0
 
