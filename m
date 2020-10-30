@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB0E29FC4E
+	by mail.lfdr.de (Postfix) with ESMTP id 0E23429FC4D
 	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgJ3DsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 23:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
+        id S1726461AbgJ3DsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 23:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726441AbgJ3DsB (ORCPT
+        with ESMTP id S1726437AbgJ3Dr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 23:48:01 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45184C0613D2;
-        Thu, 29 Oct 2020 20:48:01 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id h6so4074338pgk.4;
-        Thu, 29 Oct 2020 20:48:01 -0700 (PDT)
+        Thu, 29 Oct 2020 23:47:59 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851D0C0613CF;
+        Thu, 29 Oct 2020 20:47:59 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id i21so3074852qka.12;
+        Thu, 29 Oct 2020 20:47:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SvAQt88Nti2V+feV/QlVUCDtPsB4Ur7fsvT8VcZnsT0=;
-        b=bcgbACuH72su7pDDnfab31Hni99eoTCPaTi90I2VTVWR1RGEbQqptxdTftXx5FUDfs
-         U9pKvoUgNK3grRCXO2pbnMUZcP1UG649PYFGLITLBYhBTE6B2oBpKOi+rhtpqhcLiPuo
-         4L19Lt+/8PU39o3+zD9a4FF743rqXOks6q1im1EmYqzfNpQz3LNWiiH7EFyRxqcETplc
-         pIDmGakROAheZqXMAct2GbFbAhhQ4OoZ0BFaHPOtX0KNMDezl+7dz9/YIm+6viUCL2RR
-         S+qdXgs9OQMiKQE6B+HvfTAUxeTZz4hc+hmcS9jwPYf9sMzFIOTgv1PE3bw71C93eg8/
-         sL1g==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IV173zBqFl+Nd3q2klgfVNAcerg3fmVbHR0gIkMTLmQ=;
+        b=jRHMIHN7cvodtRtpitWz1f5G94/VR65Hri+wxGanETse+Bq/fYMNmEcGIu4h6d8QIO
+         d46EzUegUSyNUJxpCEEBzlpqGWxAwXPP9rpqiYVd5eDJgmVpfdXdX4MRPzHfOTvClHib
+         D6O+IYm801uIXGf0zKtPqQSw13XeiwUnDBib8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SvAQt88Nti2V+feV/QlVUCDtPsB4Ur7fsvT8VcZnsT0=;
-        b=AyLLSfN9KAuRA/LsJ76MqFqtLSDAfJoqzcqeKiyqIEMFfnQz1Zrlf07gSJc5lwZEIo
-         zFgKVxn/l6PzXoX/UbHngYiS/bAuFlwVvHQST6jxQ3/bwGzgLx0HyxDJMNqygEKkijDQ
-         G866PagDdIkbeRljgFMlx0sTOcAO3NZ0ix9NxZb2bYqgxohwJtmGaYletMNTtsdqzzPC
-         s8dF9pDuUzo1cTYGT5VH2O8wUB9RV0v0LOAheSv8zNzKYvR0Lm0ukukN/fqePuVHJa9V
-         xWlDZsbxoM92C84hikNorv2/zUAHf7S0QpkPjWPCoCY0CaX0wsoJ75Q7ttrGgorDPxwF
-         MoQw==
-X-Gm-Message-State: AOAM533JaMrRaIpxla/k7hmLTweqvwzOfM3l1GA8JT1kttkUBrssIc4T
-        Inbqoi0lgx1wQhU0gTOBDb9Ccsi0a7Y=
-X-Google-Smtp-Source: ABdhPJxLlYFVN2eGtAleVeq8Ajpzy6ZK6HxlYw6KE4x5CIbgNRTAmTYe9X2ufB9Pu6n7jP7MbsqMcw==
-X-Received: by 2002:a63:685:: with SMTP id 127mr460771pgg.158.1604029680941;
-        Thu, 29 Oct 2020 20:48:00 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id f21sm4323093pfn.173.2020.10.29.20.47.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 20:48:00 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: [PATCH v2 2/2] hwspinlock: sprd: use module_platform_driver() instead postcore initcall
-Date:   Fri, 30 Oct 2020 11:46:54 +0800
-Message-Id: <20201030034654.15775-3-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201030034654.15775-1-zhang.lyra@gmail.com>
-References: <20201030034654.15775-1-zhang.lyra@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IV173zBqFl+Nd3q2klgfVNAcerg3fmVbHR0gIkMTLmQ=;
+        b=R/X2ZOAQ5nK5vFP6/QLKiBWWditom7aIJ8nTV6X3ese8jq7J7gpgaTxxuH3CpMglLF
+         nLpLyQiZNVUdNH4mObMJCUxjRLQxEeYRYNKn1mYS2SiAPUet9xyiCP6+FUh9NsL/358C
+         VbkLW+tq02AlgfcvlESR6iY2LMZt0FgWEU1DAmr/3TzDX88Im5gD5uzTq44Ss+B7IRPO
+         n6sTQTZ3YWcYphVeBaoxvcJ8hbPD7g5HPt9KNjdcLvzaNNbm3FbhH6Xl3sFe8rFgxPYm
+         Ne3Y59qLvQckvtGhek4wsV2ANGVqVhzSmB0NUJCx1C5da1LKqb1ET0uzrB17TyVkS8F8
+         GXbQ==
+X-Gm-Message-State: AOAM531C6sOsD3PKgG5G9tGVwfbZ8+FopmluvaWh+oOmA5484SbLlqCx
+        fNTUkV++TOrRquYmT5w+FDU5I2GGwq+HKPLvLSk=
+X-Google-Smtp-Source: ABdhPJz8dFRcEhMlqq1wlKnf6IBKOhndQxJdT1pNedv0ylUO8Z0m31UekBTKZL0DBjBeNhb37UXzMHszpOp+nnkyREQ=
+X-Received: by 2002:ae9:e90d:: with SMTP id x13mr436553qkf.66.1604029678730;
+ Thu, 29 Oct 2020 20:47:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201029062723.20798-1-dylan_hung@aspeedtech.com>
+In-Reply-To: <20201029062723.20798-1-dylan_hung@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Fri, 30 Oct 2020 03:47:45 +0000
+Message-ID: <CACPK8XcJ6oWkj04kb3cjNkYY4q48Vk2p7zitCDp1_Q8etjFb1w@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: aspeed-g6: Fix HVI3C function-group in pinctrl dtsi
+To:     Dylan Hung <dylan_hung@aspeedtech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+On Thu, 29 Oct 2020 at 06:28, Dylan Hung <dylan_hung@aspeedtech.com> wrote:
+>
+> The HVI3C shall be a group of I3C function, not an independent function.
+> Correct the function name from "HVI3C" to "I3C".
+>
+> Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
 
-The hardware spinlock devices are defined in the DT, there's no need for
-init calls order, remove boilerplate code by using module_platform_driver.
+Fixes: f510f04c8c83 ("ARM: dts: aspeed: Add AST2600 pinmux nodes")
 
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
- drivers/hwspinlock/sprd_hwspinlock.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+I have a few device tree fixes for 5.10 that I will include this in.
 
-diff --git a/drivers/hwspinlock/sprd_hwspinlock.c b/drivers/hwspinlock/sprd_hwspinlock.c
-index 4c63e2546064..19d1924044e5 100644
---- a/drivers/hwspinlock/sprd_hwspinlock.c
-+++ b/drivers/hwspinlock/sprd_hwspinlock.c
-@@ -151,18 +151,7 @@ static struct platform_driver sprd_hwspinlock_driver = {
- 		.of_match_table = of_match_ptr(sprd_hwspinlock_of_match),
- 	},
- };
--
--static int __init sprd_hwspinlock_init(void)
--{
--	return platform_driver_register(&sprd_hwspinlock_driver);
--}
--postcore_initcall(sprd_hwspinlock_init);
--
--static void __exit sprd_hwspinlock_exit(void)
--{
--	platform_driver_unregister(&sprd_hwspinlock_driver);
--}
--module_exit(sprd_hwspinlock_exit);
-+module_platform_driver(sprd_hwspinlock_driver);
- 
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("Hardware spinlock driver for Spreadtrum");
--- 
-2.20.1
+Cheers,
 
+Joel
+
+> ---
+>  arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
+> index 7028e21bdd98..910eacc8ad3b 100644
+> --- a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
+> +++ b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
+> @@ -208,12 +208,12 @@
+>         };
+>
+>         pinctrl_hvi3c3_default: hvi3c3_default {
+> -               function = "HVI3C3";
+> +               function = "I3C3";
+>                 groups = "HVI3C3";
+>         };
+>
+>         pinctrl_hvi3c4_default: hvi3c4_default {
+> -               function = "HVI3C4";
+> +               function = "I3C4";
+>                 groups = "HVI3C4";
+>         };
+>
+> --
+> 2.17.1
+>
