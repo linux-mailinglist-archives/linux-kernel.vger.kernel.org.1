@@ -2,106 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D512A10F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 000B12A10F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbgJ3WhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 18:37:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56864 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725780AbgJ3WhD (ORCPT
+        id S1725962AbgJ3WjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 18:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbgJ3WjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 18:37:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604097422;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qq45dMSj/bMik5Wh4gyNqqt1gMuAckWwvWSldBl/aWU=;
-        b=aZydHbuLKIjduiW1IfEGPS8blFtsnXDlmYKkr7OoDWfijzIqD/XNjb1ydyh2Uwk0xstIjI
-        NK8xBk5p6w0InQFkvDRYb3Tn7k9WL/iM9XMNbMIS510MOl8S1QpvEa10MasEOujavd0X01
-        jES4GOVO3xb+LwqvcqfuIWH5KmQCrEg=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-211-Ux1AGhKuMRaLFUXnsdjqmQ-1; Fri, 30 Oct 2020 18:36:59 -0400
-X-MC-Unique: Ux1AGhKuMRaLFUXnsdjqmQ-1
-Received: by mail-qk1-f197.google.com with SMTP id q18so1647069qke.9
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 15:36:59 -0700 (PDT)
+        Fri, 30 Oct 2020 18:39:05 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B41C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 15:39:05 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id dd7so4706746qvb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 15:39:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=rsquC6V2aWWJbPPQRsoIKbC4L7TvYUAe7PufDzFe/I0=;
+        b=Y9L8bmXrBwKfHVaIUGLy2AFEtprKExDiuwMa/z77ZIDPZ+UhH4RkNi5sgoS/RZUf4J
+         7wR+VwWblnxThaJgvO1Pd10ptu0tmLAIhApbMOeH/9K1FakPDvbILdEx8QEdUyc37Njx
+         hgtzJyk2G5u1a2wmuY665GovfQLJxqr49AACIDsLrKSDTXC/SVlzKMIpT70xgrr+OjNY
+         RWVVEDm8ZEca04Y3JiRI4QdzOKMqyQYBfQcqHHNSXG0MwPjJRuAq2DaE31nsMTfPZks7
+         rTbvWzVvtsY8zMYhWOxiXsod7r7RlKnDvH5dKKL/hhW69O6DtJKE5RUOKTdFUtbcpUC8
+         tKIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Qq45dMSj/bMik5Wh4gyNqqt1gMuAckWwvWSldBl/aWU=;
-        b=T9gaAgBk6xMeIAVJgbjV1CVYmcFYc0g1E+HZbRHYBzR8Z7MuDkF1XZ0AARJ3esdNRL
-         f5FjZlAh+LGtBgbc95MkGnRa7Ga4mcG4r2tZ3CWNxbF92UQFhBpVqSP7X0lKulWdAcSy
-         WOM+l4D2/JW2YgS7rxFnd3yw34YY42waS+MdqtDO6EcMDVtchXz5EjEDXoYJD7IXtzxS
-         RBmrN/57+dXqa86FmQAfnYPAl+jrFnnL+7ZT5Ud8CSGQwkxT+qvZLFlZA2eKC/ZjORsU
-         HzXrvuEDhv1LRDk75JZ0XDP6QTtlnaG/lAQcmwycOfoKXT/QTpgbrEL6X7QYmrWecGLv
-         3J7g==
-X-Gm-Message-State: AOAM531g2SlWcMUTzOaY6P+n0/VccnOpwZf/xs7T4E7ALyUVfOV9GvU5
-        ZATP5o20qF4kj85B6I6lngPDUfEV3QXBAmFwjT6IoG0KnDfuSoKgIulyCUFbiRkT4pkHhLWDvE0
-        lbVqGi+S4xhVRnwk8NqoBmf9A
-X-Received: by 2002:ac8:71d3:: with SMTP id i19mr4668192qtp.303.1604097418842;
-        Fri, 30 Oct 2020 15:36:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx69YUegI58a8F94tm8MT3wSOUPYJaasS2eaJea/KNCuStGp448Fl2U21ozxonXFxuA0bV+cA==
-X-Received: by 2002:ac8:71d3:: with SMTP id i19mr4668171qtp.303.1604097418599;
-        Fri, 30 Oct 2020 15:36:58 -0700 (PDT)
-Received: from xz-x1 (toroon474qw-lp140-04-174-95-215-133.dsl.bell.ca. [174.95.215.133])
-        by smtp.gmail.com with ESMTPSA id j16sm3566658qkg.26.2020.10.30.15.36.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 15:36:57 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 18:36:55 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v2 1/2] mm: reorganize internal_get_user_pages_fast()
-Message-ID: <20201030223655.GA6357@xz-x1>
-References: <0-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
- <1-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=rsquC6V2aWWJbPPQRsoIKbC4L7TvYUAe7PufDzFe/I0=;
+        b=ZtGOAaAZyhDX/i1AnATfDG2CKz6O4nV4O/oLTd+1aBgEcLCr2vpPSoxaHAsa1kcCe6
+         Kqh0rievIilPH1jo16NpJC+3GnG35D9gTWtB9nQ3R1hurbpSmr25ypBrNU86CouA2Fxc
+         leHwM1c3ksYPY3myvfZSVmEeFCZlkGZZT/zAkHBNPhYdtNrQ8pFRvUVSZ3oiqKSK9P6o
+         S0IxbqmZwhGErzIPZxTzqT4UmjtqVhcRzN/koFv82vcxie/ILsFfJTn+hOy/vSLXyWfE
+         1tuRJL7A7RCXXaYqkWVz4ZDGjzCN7x89OsWsWn3VjMWv7e69bkHAwfU5yKyqOesaA9d7
+         d5Xg==
+X-Gm-Message-State: AOAM530u4yJk2uUgdo7SJg17JR3AHBMni40vJGavk98mwbjQHgr2ZHxF
+        6KWqqOz37LnvHhLNQ91DQqIn+cGI+cxc6A==
+X-Google-Smtp-Source: ABdhPJx/AtcKQbo/+CPtxla/lfu0s6wDA0FRbmhX7JlluhVtoziQ4wAeYVZVSACtAE42kTOZooKC9xB0PX9dIQ==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
+ (user=dlatypov job=sendgmr) by 2002:a05:6214:9a7:: with SMTP id
+ du7mr11120338qvb.21.1604097544579; Fri, 30 Oct 2020 15:39:04 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 15:38:53 -0700
+Message-Id: <20201030223853.554597-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH] kunit: tool: fix extra trailing \n in raw + parsed test output
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 11:46:20AM -0300, Jason Gunthorpe wrote:
-> The next patch in this series makes the lockless flow a little more
-> complex, so move the entire block into a new function and remove a level
-> of indention. Tidy a bit of cruft:
-> 
->  - addr is always the same as start, so use start
-> 
->  - Use the modern check_add_overflow() for computing end = start + len
-> 
->  - nr_pinned/pages << PAGE_SHIFT needs the LHS to be unsigned long to
->    avoid shift overflow, make the variables unsigned long to avoid coding
->    casts in both places. nr_pinned was missing its cast
-> 
->  - The handling of ret and nr_pinned can be streamlined a bit
-> 
-> No functional change.
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+For simplcity, strip all trailing whitespace from parsed output.
+I imagine no one is printing out meaningful trailing whitespace via
+KUNIT_FAIL() or similar, and that if they are, they really shouldn't.
 
-Sorry for a very late reply (due to other distractions):
+`isolate_kunit_output()` yielded liens with trailing \n, which results
+in artifacty output like this:
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+$ ./tools/testing/kunit/kunit.py run
+[16:16:46] [FAILED] example_simple_test
+[16:16:46]     # example_simple_test: EXPECTATION FAILED at lib/kunit/kunit-example-test.c:29
 
-Thanks,
+[16:16:46]     Expected 1 + 1 == 3, but
 
+[16:16:46]         1 + 1 == 2
+
+[16:16:46]         3 == 3
+
+[16:16:46]     not ok 1 - example_simple_test
+
+[16:16:46]
+
+After this change:
+[16:16:46]     # example_simple_test: EXPECTATION FAILED at lib/kunit/kunit-example-test.c:29
+[16:16:46]     Expected 1 + 1 == 3, but
+[16:16:46]         1 + 1 == 2
+[16:16:46]         3 == 3
+[16:16:46]     not ok 1 - example_simple_test
+[16:16:46]
+
+We should *not* be expecting lines to end with \n in kunit_tool_test.py
+for this reason.
+
+Do the same for `raw_output()` as well which suffers from the same
+issue.
+
+This is a followup to [1], but rebased onto kunit-fixes to pick up the
+other raw_output() fix and fixes for kunit_tool_test.py.
+
+[1] https://lore.kernel.org/linux-kselftest/20201020233219.4146059-1-dlatypov@google.com/
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ tools/testing/kunit/kunit_parser.py    | 3 ++-
+ tools/testing/kunit/kunit_tool_test.py | 4 ++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index 84a1af2581f5..edd6fbd1cf18 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -54,6 +54,7 @@ kunit_end_re = re.compile('(List of all partitions:|'
+ def isolate_kunit_output(kernel_output):
+ 	started = False
+ 	for line in kernel_output:
++		line = line.rstrip()  # line always has a trailing \n
+ 		if kunit_start_re.search(line):
+ 			prefix_len = len(line.split('TAP version')[0])
+ 			started = True
+@@ -65,7 +66,7 @@ def isolate_kunit_output(kernel_output):
+ 
+ def raw_output(kernel_output):
+ 	for line in kernel_output:
+-		print(line)
++		print(line.rstrip())
+ 
+ DIVIDER = '=' * 60
+ 
+diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+index 0b60855fb819..497ab51bc170 100755
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -102,7 +102,7 @@ class KUnitParserTest(unittest.TestCase):
+ 			'test_data/test_output_isolated_correctly.log')
+ 		file = open(log_path)
+ 		result = kunit_parser.isolate_kunit_output(file.readlines())
+-		self.assertContains('TAP version 14\n', result)
++		self.assertContains('TAP version 14', result)
+ 		self.assertContains('	# Subtest: example', result)
+ 		self.assertContains('	1..2', result)
+ 		self.assertContains('	ok 1 - example_simple_test', result)
+@@ -115,7 +115,7 @@ class KUnitParserTest(unittest.TestCase):
+ 			'test_data/test_pound_sign.log')
+ 		with open(log_path) as file:
+ 			result = kunit_parser.isolate_kunit_output(file.readlines())
+-		self.assertContains('TAP version 14\n', result)
++		self.assertContains('TAP version 14', result)
+ 		self.assertContains('	# Subtest: kunit-resource-test', result)
+ 		self.assertContains('	1..5', result)
+ 		self.assertContains('	ok 1 - kunit_resource_test_init_resources', result)
+
+base-commit: cab67acc8a18d7c6f1850313e3da1a030abe8fc4
 -- 
-Peter Xu
+2.29.1.341.ge80a0c044ae-goog
 
