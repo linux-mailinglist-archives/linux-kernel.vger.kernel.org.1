@@ -2,89 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0879F29FE4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E270829FE50
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725905AbgJ3HOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3HOr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 03:14:47 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD01C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 00:14:46 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id w65so4496589pfd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 00:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sslab.ics.keio.ac.jp; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=Nn37IfTCXj7OmHgyU0P/qf2aXP/R5yi/4Un5UCinwUE=;
-        b=MJ4AKEXn7TirRPKSoWVdZOqbNugwSZWnOJSKdKoZwBvgJ2HvloooFF8TK6++IkvgR/
-         LG3qbXpz+St1TZ8+d/VnMmvoAStv2CDgczOGUs2r11P8ViMcwHmgfRpj/wLW7hlo+TwC
-         I+EuRT6mAu0aLtMGFtMtMoxEfM8ODh7OnnIb8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Nn37IfTCXj7OmHgyU0P/qf2aXP/R5yi/4Un5UCinwUE=;
-        b=tNzDGaf3ICo5nmq4rsuxgdpgv8pXz+2Fyi86Hx7QlmxqKRvKAYFwgvRt5fhO4evUsu
-         AhZcsOVGj1+wMb4rUCch3Ut1EpETl3NuPPa/6odhw9N0TomYHM1+12waA53Aio+BTF99
-         dLadFgrwllKAr69KOZJIcPQELisPJyLZfZpUzMm90XlYMCW+V3fP+OYDQVhcOczj3uKq
-         zt4xmZBa4bVDrF0SSPdqsLynwPhCJo4ObDI7ep+XUR0Z0w+rMxzexq47EFccvwnrAIU4
-         Bqa9ipg2cciRRU0yLxK43G9oHqCdDF6XM+silrgPoLLSjXFzM2qli2YGxMyvpeSLc4ZD
-         aclw==
-X-Gm-Message-State: AOAM5325qHdJHxUpx9VMQ70dZBJyE/fVMVECdIrFwCotYIJhPDZvkIMj
-        Sx6PQSe+1kADhTKVwMaDePbWWw==
-X-Google-Smtp-Source: ABdhPJyM76ixBnDtfwwg71qY1GdE0SSR1uXigQAvZciL/lMm6nMzKuHOPOTW2EhMHzsyMoq95V1IpA==
-X-Received: by 2002:a17:90a:73c9:: with SMTP id n9mr1231337pjk.90.1604042085301;
-        Fri, 30 Oct 2020 00:14:45 -0700 (PDT)
-Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
-        by smtp.googlemail.com with ESMTPSA id y203sm4996152pfb.70.2020.10.30.00.14.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 00:14:44 -0700 (PDT)
-From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
-        takafumi@sslab.ics.keio.ac.jp,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] i40e: Fix memory leak in i40e_probe
-Date:   Fri, 30 Oct 2020 07:14:30 +0000
-Message-Id: <20201030071431.10488-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        id S1725944AbgJ3HPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:15:55 -0400
+Received: from mga04.intel.com ([192.55.52.120]:4176 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgJ3HPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 03:15:54 -0400
+IronPort-SDR: 0CwdAfBywyDMv8l50tyToNrpApAMaQH+nxxngZU9WF+Is6giRb50gIFulSUzY9CCOVqqkuBUyA
+ ci4PWO6lW6aw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="165984024"
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="165984024"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 00:15:53 -0700
+IronPort-SDR: aIf945ceWslDHmHkij/EK5h+L8OE2liL1dmZN2kXR4OKsZ3R3Q0+x4jCjdJ6SFzN81O6mmQ8Jk
+ kJJnT0nKXZOw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="323990006"
+Received: from lkp-server02.sh.intel.com (HELO fcc9f8859912) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 30 Oct 2020 00:15:52 -0700
+Received: from kbuild by fcc9f8859912 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kYOdb-00002a-B4; Fri, 30 Oct 2020 07:15:51 +0000
+Date:   Fri, 30 Oct 2020 15:15:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/seves] BUILD SUCCESS
+ 2411cd82112397bfb9d8f0f19cd46c3d71e0ce67
+Message-ID: <5f9bbd8e.io12niUpkY1qWAu/%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Struct i40e_veb is allocated in function i40e_setup_pf_switch, and
-stored to an array field veb inside struct i40e_pf. However when
-i40e_setup_misc_vector fails, this memory leaks.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/seves
+branch HEAD: 2411cd82112397bfb9d8f0f19cd46c3d71e0ce67  x86/sev-es: Do not support MMIO to/from encrypted memory
 
-Fix this by calling exit and teardown functions.
+elapsed time: 721m
 
-Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+configs tested: 135
+configs skipped: 65
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+h8300                       h8s-sim_defconfig
+powerpc                    socrates_defconfig
+powerpc                    klondike_defconfig
+mips                      pistachio_defconfig
+sh                           se7619_defconfig
+mips                         cobalt_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                     sequoia_defconfig
+powerpc                     tqm8555_defconfig
+arm                     am200epdkit_defconfig
+arm                          badge4_defconfig
+h8300                               defconfig
+mips                        qi_lb60_defconfig
+sh                              ul2_defconfig
+um                            kunit_defconfig
+openrisc                    or1ksim_defconfig
+arm                              alldefconfig
+um                           x86_64_defconfig
+arc                            hsdk_defconfig
+mips                        bcm47xx_defconfig
+m68k                           sun3_defconfig
+sh                            migor_defconfig
+microblaze                      mmu_defconfig
+arm                           corgi_defconfig
+sh                          kfr2r09_defconfig
+arm                      tct_hammer_defconfig
+xtensa                  audio_kc705_defconfig
+mips                      maltaaprp_defconfig
+powerpc                 mpc8540_ads_defconfig
+m68k                       m5475evb_defconfig
+sh                ecovec24-romimage_defconfig
+powerpc                    gamecube_defconfig
+powerpc                     stx_gp3_defconfig
+powerpc                       maple_defconfig
+nds32                               defconfig
+m68k                        m5307c3_defconfig
+m68k                       m5208evb_defconfig
+mips                        omega2p_defconfig
+powerpc                        warp_defconfig
+sh                     sh7710voipgw_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                 mpc8315_rdb_defconfig
+openrisc                         alldefconfig
+powerpc                      walnut_defconfig
+arm                        mini2440_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                        clps711x_defconfig
+riscv                            allyesconfig
+powerpc                      cm5200_defconfig
+mips                           rs90_defconfig
+arm                        neponset_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20201030
+x86_64               randconfig-a001-20201030
+x86_64               randconfig-a002-20201030
+x86_64               randconfig-a003-20201030
+x86_64               randconfig-a006-20201030
+x86_64               randconfig-a004-20201030
+i386                 randconfig-a002-20201029
+i386                 randconfig-a005-20201029
+i386                 randconfig-a003-20201029
+i386                 randconfig-a001-20201029
+i386                 randconfig-a004-20201029
+i386                 randconfig-a006-20201029
+i386                 randconfig-a005-20201030
+i386                 randconfig-a003-20201030
+i386                 randconfig-a002-20201030
+i386                 randconfig-a001-20201030
+i386                 randconfig-a006-20201030
+i386                 randconfig-a004-20201030
+i386                 randconfig-a016-20201029
+i386                 randconfig-a014-20201029
+i386                 randconfig-a015-20201029
+i386                 randconfig-a013-20201029
+i386                 randconfig-a012-20201029
+i386                 randconfig-a011-20201029
+i386                 randconfig-a011-20201030
+i386                 randconfig-a014-20201030
+i386                 randconfig-a015-20201030
+i386                 randconfig-a012-20201030
+i386                 randconfig-a013-20201030
+i386                 randconfig-a016-20201030
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20201030
+x86_64               randconfig-a014-20201030
+x86_64               randconfig-a015-20201030
+x86_64               randconfig-a016-20201030
+x86_64               randconfig-a011-20201030
+x86_64               randconfig-a012-20201030
+
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 4f8a2154b93f..428964c4ade1 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -15104,6 +15104,8 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		if (err) {
- 			dev_info(&pdev->dev,
- 				 "setup of misc vector failed: %d\n", err);
-+			i40e_cloud_filter_exit(pf);
-+			i40e_fdir_teardown(pf);
- 			goto err_vsis;
- 		}
- 	}
--- 
-2.17.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
