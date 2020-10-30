@@ -2,116 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72782A0BD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C5E2A0BD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgJ3Qyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:54:36 -0400
-Received: from mga05.intel.com ([192.55.52.43]:9998 "EHLO mga05.intel.com"
+        id S1727115AbgJ3Qzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:55:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726058AbgJ3Qyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:54:36 -0400
-IronPort-SDR: nGyGXZK18pW6S2W6un9df1JturJ9PoFNlHIbOnKZ6/kHGlXCjJXVGc61TzYysTL1JTJ8H/30ny
- VScsMeqsELuA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="253342504"
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="253342504"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 09:54:36 -0700
-IronPort-SDR: PLekFtLEEY6YTiYO9pHHlQ2RtiqVwr2QLS6Dk/6e85wc5VXor0qhwFoEcmpxbknRBx5PX/4SMx
- bENMMqlCIQ5w==
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="469577604"
-Received: from rdchavez-mobl2.amr.corp.intel.com (HELO [10.212.91.180]) ([10.212.91.180])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 09:54:34 -0700
-Subject: Re: [PATCH 2/2] ASoC: intel: sof_rt5682: Add quirk for Dooly
-To:     "Lu, Brent" <brent.lu@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Nujella, Sathyanarayana" <sathyanarayana.nujella@intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        "Wang, Rander" <rander.wang@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        "Zhi, Yong" <yong.zhi@intel.com>
-References: <20201030063654.25877-1-brent.lu@intel.com>
- <20201030063654.25877-3-brent.lu@intel.com>
- <c83b3f20-2afd-12da-c349-31f35f8f6aa5@linux.intel.com>
- <DM6PR11MB3642F7AB13991ACF8A32B1DE97150@DM6PR11MB3642.namprd11.prod.outlook.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <95b8d2f7-3b8d-ee61-c99f-a62fce165618@linux.intel.com>
-Date:   Fri, 30 Oct 2020 11:54:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726902AbgJ3Qzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:55:40 -0400
+Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EAED22075E;
+        Fri, 30 Oct 2020 16:55:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604076939;
+        bh=fbJgu8N7+CMSMQRM8erno00wsX4J3XXENIBb3YPbau0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OqsxjyUI4MwsxQaC/VueYp64UA6qK4/iak5n48lhLhiUwFMRdxIIdlxRsrZmVyI45
+         LrEn4tkYYvU4bx0FCDLIpx5dCrGTVG/hnBWB/StkiARo9z1NctpsRb2ddBoif92UhP
+         9ooGWGIEYkgPbrfMTfgoZelouTiVpYhYb1qWv06Y=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
+        mchehab@kernel.org, hch@lst.de, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/8] media: v4l2: simplify compat ioctl handling
+Date:   Fri, 30 Oct 2020 17:55:21 +0100
+Message-Id: <20201030165529.1255175-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <DM6PR11MB3642F7AB13991ACF8A32B1DE97150@DM6PR11MB3642.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
+I have a series to remove all uses of compat_alloc_user_space() and
+copy_in_user() from the kernel, this is the part of it that involves
+the v4l2 compat code.
 
-On 10/30/20 11:44 AM, Lu, Brent wrote:
-> , Brent Lu wrote:
->>> This DMI product family string of this board is "Google_Hatch" so the
->>> DMI quirk will take place. However, this board is using rt1015 speaker
->>> amp instead of max98357a specified in the quirk. Therefore, we need an
->>> new DMI quirk for this board.
->>
->> Do you actually need a DMI quirk for this platform?
->>
->> the .driver_data below uses the exact same settings as what you would use
->> with the generic solution based on ACPI IDs, see below.
->>
->> Wondering if patch1 would be enough?
->>
-> 
-> Dooly has DMI family string " Google_Hatch" so the DMI quirk will overwrite the
-> driver_data. I asked google but they prefer not removing this string so it seems to
-> me that one extra DMI quirk is needed.
+The resulting code is significantly shorter and arguably more readable,
+but I have not done any testing beyond compilation on it, so at the
+minimum this first needs to pass the test suite for both native and
+compat users space.
 
-I find this pretty funny. The PRODUCT_FAMILY was added to reduce the 
-number of quirks, but of course there's a variant that has nothing to do 
-with this 'FAMILY'.
+The first version had a number of bugs that Hans Verkuil managed to
+fix, I have now rebased my series on top of linux-5.10-rc1 and included
+his bugfixes.
 
-You should add a comment on this, to make sure this information remains 
-in the code and we don't lose it during code cleanups.
+This series and the remaining changes for removing compat_alloc_user_space
+are available for further testing in
 
-> 
->                  {
->                                  .callback = sof_rt5682_quirk_cb,
->                                  .matches = {
->                                                  DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Hatch"),
->                                  },
->                                  .driver_data = (void *)(SOF_RT5682_MCLK_EN |
->                                                                                  SOF_RT5682_MCLK_24MHZ |
->                                                                                  SOF_RT5682_SSP_CODEC(0) |
->                                                                                  SOF_SPEAKER_AMP_PRESENT |
->                                                                                  SOF_RT5682_SSP_AMP(1)),
->                  },
-> 
-> The other way is using acpi_dev_present() in probe to update the quirk with correct
-> codec setting. Which one do you think is better?
+https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git compat-alloc-user-space-4
 
-The DMI quirk you added is probably better for now, I don't know if the 
-odds of getting things right with acpi_dev_present() are that high or if 
-we are going to get even more variants on top of this variant (e.g. 
-tweeter/booster cases...).
-If we get too many quirks we'll see later if we can simplify.
+     Arnd
 
-So if you don't mind adding a comment on the 'Dooly' quirk in a v3 that 
-series is good to go.  Thank you!
+Arnd Bergmann (8):
+  media: v4l2: prepare compat-ioctl rework
+  media: v4l2: remove unneeded compat ioctl handlers
+  media: v4l2: move v4l2_ext_controls conversion
+  media: v4l2: move compat handling for v4l2_buffer
+  media: v4l2: allocate v4l2_clip objects early
+  media: v4l2: convert v4l2_format compat ioctls
+  media: v4l2: remaining compat handlers
+  media: v4l2: remove remaining compat_ioctl
+
+ drivers/media/common/saa7146/saa7146_video.c  |    6 +-
+ drivers/media/pci/bt8xx/bttv-driver.c         |    8 +-
+ drivers/media/pci/saa7134/saa7134-video.c     |   19 +-
+ .../media/test-drivers/vivid/vivid-vid-cap.c  |   18 +-
+ .../media/test-drivers/vivid/vivid-vid-out.c  |   18 +-
+ drivers/media/v4l2-core/v4l2-compat-ioctl32.c | 1773 ++++++-----------
+ drivers/media/v4l2-core/v4l2-ioctl.c          |  182 +-
+ include/media/v4l2-ioctl.h                    |   11 +
+ include/uapi/linux/videodev2.h                |    2 +-
+ 9 files changed, 760 insertions(+), 1277 deletions(-)
+
+Cc: linux-media@vger.kernel.org
+Cc: mchehab@kernel.org
+Cc: hverkuil@xs4all.nl
+Cc: hch@lst.de
+Cc: linux-kernel@vger.kernel.org
+
+-- 
+2.27.0
 
