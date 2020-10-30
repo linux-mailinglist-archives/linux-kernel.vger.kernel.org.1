@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6282A0439
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 212832A0466
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgJ3LgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:36:04 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41868 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3LgE (ORCPT
+        id S1726738AbgJ3Lhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:37:52 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58956 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbgJ3Lgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:36:04 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604057762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rt26X5MkA+U4JNX02cIhMuWaKRtR15syAcGfxqiATPQ=;
-        b=ho6xQHjuoWuljI1zTFFo6aCJM8yb+fyRyKdUSvfpZ/1WnVjhs6ejuF4CDNlHXAHlH2I7x7
-        89O7c6EJ7SVFg9n4KAnrkMq7i3EeqUkjbJMHKXP7bBh8L2qkDeSmERaFXFVUG5NzEYBhmD
-        XyPJLwpI2CodqxPvgSH4wr0IU68Y6pHTZ7EATYzmAgSs3Uq3fJX/MnaJzSHlKWU1Y5IVOp
-        U52jI7MFdpEHYObO8IzCExBYKYsKTJHOEMHKhIDQoA3kC5MGn5wgjnC0R+n3fEZD59ewTn
-        4LbkX2S12eO+7PMB1gszk+tgt+yVG2+iehdF5bgbQH2H63/1Rvfu3mvNmmE/2A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604057762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rt26X5MkA+U4JNX02cIhMuWaKRtR15syAcGfxqiATPQ=;
-        b=YIosfFPO3HTIKOYNyoAVO1IurOEP2BVnmA03j7Q1iwLsZ59iV7bY3EwnxF+TGfCAdqsleK
-        gf4lsBKPXXWhifBA==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, kan.liang@linux.intel.com,
-        like.xu@linux.intel.com
-Subject: Re: [BUG] Stack overflow when running perf and function tracer
-In-Reply-To: <20201030103220.GH2611@hirez.programming.kicks-ass.net>
-References: <20201030002722.766a22df@oasis.local.home> <20201030090037.GZ2628@hirez.programming.kicks-ass.net> <877dr8nh6u.fsf@nanos.tec.linutronix.de> <20201030103220.GH2611@hirez.programming.kicks-ass.net>
-Date:   Fri, 30 Oct 2020 12:36:02 +0100
-Message-ID: <874kmcndy5.fsf@nanos.tec.linutronix.de>
+        Fri, 30 Oct 2020 07:36:31 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id B07EF1F45EBC
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        weiyi.lu@mediatek.com, fparent@baylibre.com,
+        Joerg Roedel <jroedel@suse.de>,
+        Miles Chen <miles.chen@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v4 00/16] soc: mediatek: pm-domains: Add new driver for SCPSYS power domains controller
+Date:   Fri, 30 Oct 2020 12:36:06 +0100
+Message-Id: <20201030113622.201188-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30 2020 at 11:32, Peter Zijlstra wrote:
-> On Fri, Oct 30, 2020 at 11:26:01AM +0100, Thomas Gleixner wrote:
->
->> > The only thing I can come up with in a hurry is that that dummy_iregs
->> > thing really should be static. That's 168 bytes of stack out the window
->> > right there.
->> 
->> What's worse is perf_sample_data which is 384 bytes and is 64 bytes
->> aligned.
+Dear all,
 
-And there is also x86_perf_regs which is another 176 bytes ....
+This is a new driver with the aim to deprecate the mtk-scpsys driver.
+The problem with that driver is that, in order to support more Mediatek
+SoCs you need to add some logic to handle properly the power-up
+sequence of newer Mediatek SoCs, doesn't handle parent-child power
+domains and need to hardcode all the clocks in the driver itself. The
+result is that the driver is getting bigger and bigger every time a
+new SoC needs to be supported.
 
-> Urgh, that thing just keeps on growing :/
->
-> I'll try and have a look if we can both shrink the thing and move it off
-> stack.
+All this information can be getted from a properly defined binding, so
+can be cleaner and smaller, hence, we implemented a new driver. For
+now, only MT8173 and MT8183 is supported but should be fairly easy to
+add support for new SoCs.
 
-Even then we still need to worry about the stack depth because that
-tracer code was not yet done. Throw some BPF at it and it goes south
-again.
+Three important notes:
 
-So the real question is what else is on that stack which blows it up
-close to 4k? Btw, it would be massively helpful for this kind of crash
-to print the actual stack depth per entry in the backtrace.
+1. This patch depends now on [1] to build correctly.
 
-Here is the partial stack trace:
-                                                Stack usage
-  ring_buffer_lock_reserve+0x12c/0x380          
-  trace_function+0x27/0x130
-  function_trace_call+0x133/0x180
-  perf_output_begin+0x4d/0x2d0                   64+
-  perf_log_throttle+0x9a/0x120                  470+
-  __perf_event_account_interrupt+0xa9/0x120
-  __perf_event_overflow+0x2b/0xf0               
-  __intel_pmu_pebs_event+0x2ec/0x3e0            760+
-  intel_pmu_drain_pebs_nhm+0x268/0x330          200+
-  handle_pmi_common+0xc2/0x2b0                  
+2. Support for MT8183 is not ready to land yet because has some
+   dependencies, i.e mmsys support is still missing.
 
-The missing call chain is:
+3. Support for MT8192. I picked the patches [2] from Weiyi Lu and
+   adapted to this new series. I posted only for reference due that this
+   new version has some changes that affects that patchset.
 
- intel_pmu_handle_irq or intel_pmu_handle_irq_v4
- perf_event_nmi_handler
- nmi
- 
-So the larger offenders accumulate to ~1.5k data on stack, but
-where is the rest of the 4k?
+Only patches from 1 to 9 are ready, the others are provided for reference and test.
 
-It's about 15 calls. So to fill up the stack you'd need about 230 bytes
-per call to go up to 4k.
+[1] https://lore.kernel.org/patchwork/patch/1328096/
+[2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=368821
 
-Something is fishy.
+Best regards,
+  Enric
 
-Thanks,
+Enric Balletbo i Serra (5):
+  dt-bindings: power: Add bindings for the Mediatek SCPSYS power domains
+    controller
+  soc: mediatek: Add MediaTek SCPSYS power domains
+  arm64: dts: mediatek: Add mt8173 power domain controller
+  dt-bindings: power: Add MT8183 power domains
+  arm64: dts: mediatek: Add smi_common node for MT8183
 
-        tglx
+Matthias Brugger (8):
+  soc: mediatek: pm-domains: Add bus protection protocol
+  soc: mediatek: pm_domains: Make bus protection generic
+  soc: mediatek: pm-domains: Add SMI block as bus protection block
+  soc: mediatek: pm-domains: Add extra sram control
+  soc: mediatek: pm-domains: Add subsystem clocks
+  soc: mediatek: pm-domains: Allow bus protection to ignore clear ack
+  soc: mediatek: pm-domains: Add support for mt8183
+  arm64: dts: mediatek: Add mt8183 power domains controller
+
+Weiyi Lu (3):
+  dt-bindings: power: Add MT8192 power domains
+  soc: mediatek: pm-domains: Add default power off flag
+  soc: mediatek: pm-domains: Add support for mt8192
+
+ .../power/mediatek,power-controller.yaml      | 293 +++++++++
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi      | 164 +++--
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 172 +++++
+ drivers/soc/mediatek/Kconfig                  |  12 +
+ drivers/soc/mediatek/Makefile                 |   1 +
+ drivers/soc/mediatek/mt8173-pm-domains.h      |  94 +++
+ drivers/soc/mediatek/mt8183-pm-domains.h      | 221 +++++++
+ drivers/soc/mediatek/mt8192-pm-domains.h      | 292 +++++++++
+ drivers/soc/mediatek/mtk-infracfg.c           |   5 -
+ drivers/soc/mediatek/mtk-pm-domains.c         | 614 ++++++++++++++++++
+ drivers/soc/mediatek/mtk-pm-domains.h         | 102 +++
+ include/dt-bindings/power/mt8183-power.h      |  26 +
+ include/dt-bindings/power/mt8192-power.h      |  32 +
+ include/linux/soc/mediatek/infracfg.h         | 107 +++
+ 14 files changed, 2081 insertions(+), 54 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+ create mode 100644 drivers/soc/mediatek/mt8173-pm-domains.h
+ create mode 100644 drivers/soc/mediatek/mt8183-pm-domains.h
+ create mode 100644 drivers/soc/mediatek/mt8192-pm-domains.h
+ create mode 100644 drivers/soc/mediatek/mtk-pm-domains.c
+ create mode 100644 drivers/soc/mediatek/mtk-pm-domains.h
+ create mode 100644 include/dt-bindings/power/mt8183-power.h
+ create mode 100644 include/dt-bindings/power/mt8192-power.h
+
+-- 
+2.28.0
+
