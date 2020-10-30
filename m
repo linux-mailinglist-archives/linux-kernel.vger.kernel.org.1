@@ -2,135 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8669B2A067E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A452A0687
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbgJ3NdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 09:33:24 -0400
-Received: from mgw-02.mpynet.fi ([82.197.21.91]:57544 "EHLO mgw-02.mpynet.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725939AbgJ3NdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 09:33:23 -0400
-Received: from pps.filterd (mgw-02.mpynet.fi [127.0.0.1])
-        by mgw-02.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 09UDRJwN082960;
-        Fri, 30 Oct 2020 15:32:56 +0200
-Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
-        by mgw-02.mpynet.fi with ESMTP id 34c7xwfyab-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 30 Oct 2020 15:32:55 +0200
-Received: from [192.168.108.50] (194.100.106.190) by tuxera-exch.ad.tuxera.com
- (10.20.48.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 30 Oct
- 2020 15:32:55 +0200
-Subject: Re: [PATCH 1/4] erofs: fix setting up pcluster for temporary pages
-To:     Gao Xiang <hsiangkao@redhat.com>
-CC:     <linux-erofs@lists.ozlabs.org>, Gao Xiang <hsiangkao@aol.com>,
-        <stable@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20201022145724.27284-1-hsiangkao.ref@aol.com>
- <20201022145724.27284-1-hsiangkao@aol.com>
- <ba952daf-c55d-c251-9dfc-3bf199a2d4ff@tuxera.com>
- <20201030124745.GB133455@xiangao.remote.csb>
-From:   Vladimir Zapolskiy <vladimir@tuxera.com>
-Message-ID: <02427b81-7854-1d97-662f-ab2d2b868514@tuxera.com>
-Date:   Fri, 30 Oct 2020 15:32:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726740AbgJ3NeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 09:34:18 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:10712 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725939AbgJ3NeS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 09:34:18 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09UDWJt9007267;
+        Fri, 30 Oct 2020 14:34:04 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=9xPycxgddNCQRIwCKrfgnU5GFmmuJ6NyQaq4vP1TrmY=;
+ b=U08f8vbdA9Td2YH4t+3PGJY6Ey2UrD9yBjtsmGtZcwdLUW0858O+Q7WB2m3dpbxJrvH/
+ 5yFaXicbRaSsMOyODIJfiNPkLxF9p6ryTMZO2W/H9OnAZFnKot7Y+wnHf5rh3Z6ftT5M
+ /vDOdHIz4fBpvj71bTtUiBDrQc1hHlgdapvyW8ZZq9HbVrWMFvDFu2QnZQW+wFUBBpwp
+ XqtF0HCPE9Ds1gf8cygUJVZeBnV9bbJGbGiDrmARw/Vs1j+1Bo/RHfmM2cuCpYp5NG3R
+ cVEJHw7fVgGPWEkLgyHioSlOc3Nj65uWS6RbVPdctXV9yE4DkMfUrDLZwG2n7JD+ma8e Yg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34ccmrgxsu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 14:34:04 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5E022100034;
+        Fri, 30 Oct 2020 14:34:03 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 496FE20DDA6;
+        Fri, 30 Oct 2020 14:34:03 +0100 (CET)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct 2020 14:34:02
+ +0100
+From:   Christophe Kerello <christophe.kerello@st.com>
+To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Christophe Kerello <christophe.kerello@st.com>
+Subject: [PATCH v2] mtd: rawnand: stm32_fmc2: fix broken ECC
+Date:   Fri, 30 Oct 2020 14:33:39 +0100
+Message-ID: <1604064819-26861-1-git-send-email-christophe.kerello@st.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-In-Reply-To: <20201030124745.GB133455@xiangao.remote.csb>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [194.100.106.190]
-X-ClientProxiedBy: tuxera-exch.ad.tuxera.com (10.20.48.11) To
- tuxera-exch.ad.tuxera.com (10.20.48.11)
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG4NODE1.st.com (10.75.127.10) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-10-30_04:2020-10-30,2020-10-30 signatures=0
-X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 mlxlogscore=999 malwarescore=0
- spamscore=0 bulkscore=0 adultscore=0 suspectscore=2 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gao Xiang,
+Since commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user
+input parsing bits"), ECC are broken in FMC2 driver in case of
+nand-ecc-step-size and nand-ecc-strength are not set in the device tree.
+To avoid this issue, the default settings are now set in
+stm32_fmc2_nfc_attach_chip function.
 
-On 10/30/20 2:47 PM, Gao Xiang wrote:
-> Hi Vladimir,
-> 
-> On Fri, Oct 30, 2020 at 02:20:31PM +0200, Vladimir Zapolskiy wrote:
->> Hello Gao Xiang,
->>
->> On 10/22/20 5:57 PM, Gao Xiang via Linux-erofs wrote:
->>> From: Gao Xiang <hsiangkao@redhat.com>
->>>
->>> pcluster should be only set up for all managed pages instead of
->>> temporary pages. Since it currently uses page->mapping to identify,
->>> the impact is minor for now.
->>>
->>> Fixes: 5ddcee1f3a1c ("erofs: get rid of __stagingpage_alloc helper")
->>> Cc: <stable@vger.kernel.org> # 5.5+
->>> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
->>
->> I was looking exactly at this problem recently, my change is one-to-one
->> to your fix, thus I can provide a tag:
->>
->> Tested-by: Vladimir Zapolskiy <vladimir@tuxera.com>
-> 
-> Many thanks for confirming this!
-> I found this when I was killing magical stagingpage page->mapping,
-> it's somewhat late :-)
-> 
+Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
+---
+Changes in v2:
+ - move default ECC settings in stm32_fmc2_nfc_attach_chip function.
 
-sure, for me it was an exciting immersion into the filesystem code :)
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
->>
->>
->> The fixed problem is minor, but the kernel log becomes polluted, if
->> a page allocation debug option is enabled:
->>
->>      % md5sum ~/erofs/testfile
->>      BUG: Bad page state in process kworker/u9:0  pfn:687de
->>      page:0000000057b8bcb4 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x687de
->>      flags: 0x4000000000002000(private)
->>      raw: 4000000000002000 dead000000000100 dead000000000122 0000000000000000
->>      raw: 0000000000000000 ffff888066758690 00000000ffffffff 0000000000000000
->>      page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
->>      Modules linked in:
->>      CPU: 1 PID: 602 Comm: kworker/u9:0 Not tainted 5.9.1 #2
->>      Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
->>      Workqueue: erofs_unzipd z_erofs_decompressqueue_work
->>      Call Trace:
->>       dump_stack+0x84/0xba
->>       bad_page.cold+0xac/0xb1
->>       check_free_page_bad+0xb0/0xc0
->>       free_pcp_prepare+0x2c8/0x2d0
->>       free_unref_page+0x18/0xf0
->>       put_pages_list+0x11a/0x120
->>       z_erofs_decompressqueue_work+0xc9/0x110
->>       ? z_erofs_decompress_pcluster.isra.0+0xf10/0xf10
->>       ? read_word_at_a_time+0x12/0x20
->>       ? strscpy+0xc7/0x1a0
->>       process_one_work+0x30c/0x730
->>       worker_thread+0x91/0x640
->>       ? __kasan_check_read+0x11/0x20
->>       ? rescuer_thread+0x8a0/0x8a0
->>       kthread+0x1dd/0x200
->>       ? kthread_unpark+0xa0/0xa0
->>       ret_from_fork+0x1f/0x30
->>      Disabling lock debugging due to kernel taint
-> 
-> Yeah, I can make a pull-request to Linus if you need this to be in master
-> now, or I can post it for v5.11-rc1 since 5.4 LTS isn't effected (and it
-> would be only a print problem with debugging option.)
-> 
+diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+index b31a581..550bda4 100644
+--- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
++++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+@@ -1708,6 +1708,13 @@ static int stm32_fmc2_nfc_attach_chip(struct nand_chip *chip)
+ 		return -EINVAL;
+ 	}
+ 
++	/* Default ECC settings in case they are not set in the device tree */
++	if (!chip->ecc.size)
++		chip->ecc.size = FMC2_ECC_STEP_SIZE;
++
++	if (!chip->ecc.strength)
++		chip->ecc.strength = FMC2_ECC_BCH8;
++
+ 	ret = nand_ecc_choose_conf(chip, &stm32_fmc2_nfc_ecc_caps,
+ 				   mtd->oobsize - FMC2_BBM_LEN);
+ 	if (ret) {
+@@ -1727,8 +1734,7 @@ static int stm32_fmc2_nfc_attach_chip(struct nand_chip *chip)
+ 
+ 	mtd_set_ooblayout(mtd, &stm32_fmc2_nfc_ooblayout_ops);
+ 
+-	if (chip->options & NAND_BUSWIDTH_16)
+-		stm32_fmc2_nfc_set_buswidth_16(nfc, true);
++	stm32_fmc2_nfc_setup(chip);
+ 
+ 	return 0;
+ }
+@@ -1952,11 +1958,6 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
+ 	chip->options |= NAND_BUSWIDTH_AUTO | NAND_NO_SUBPAGE_WRITE |
+ 			 NAND_USES_DMA;
+ 
+-	/* Default ECC settings */
+-	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+-	chip->ecc.size = FMC2_ECC_STEP_SIZE;
+-	chip->ecc.strength = FMC2_ECC_BCH8;
+-
+ 	/* Scan to find existence of the device */
+ 	ret = nand_scan(chip, nand->ncs);
+ 	if (ret)
+-- 
+1.9.1
 
-As for myself I don't utterly need this fix on the master branch ASAP, however
-it might be reasonable to get it included right into the next v5.10 release,
-because I believe it'll be an LTS. Eventually it's up to you to make a decision,
-from my side I won't urge you, the fixed issue is obviously a non-critical one.
-
-Thank you for the original fix and taking my opinion into consideration :)
-
---
-Best wishes,
-Vladimir
