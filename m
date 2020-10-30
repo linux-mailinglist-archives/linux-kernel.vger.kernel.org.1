@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B90529FFCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA0D29FFC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725961AbgJ3IZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 04:25:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36532 "EHLO mx2.suse.de"
+        id S1726052AbgJ3IYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:24:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgJ3IZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:25:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604046318;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TlqCc445gHa4XWddBXHmQOwC+ZbidmpZH/MCUItZO28=;
-        b=cRZ7sKHzINgJBComDadhYBb4ZxkFePL4FZ8wqGbVKvc7wZACT7qdiHOQEvP0z3lmxP+/Ur
-        gA/a5Ka0jvM9XCWI0sxD8YwZ+9cO2a1qz1GMXoZ5su6MLcg85BFBPvxi7A/4uQY66xLS3H
-        T4mkFih8LVEbOqYF1mh0wwWRzAbrTxg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9FB0FAD31;
-        Fri, 30 Oct 2020 08:25:18 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 09:25:17 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Rafael Aquini <aquini@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Rik van Riel <riel@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH -V2 1/2] mempolicy: Rename MPOL_F_MORON to MPOL_F_MOPRON
-Message-ID: <20201030082517.GD1478@dhcp22.suse.cz>
-References: <20201028023411.15045-1-ying.huang@intel.com>
- <20201028023411.15045-2-ying.huang@intel.com>
- <20201029090421.GC17500@dhcp22.suse.cz>
- <87h7qcxjew.fsf@yhuang-dev.intel.com>
+        id S1725355AbgJ3IYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 04:24:31 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A5E422253;
+        Fri, 30 Oct 2020 08:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604046270;
+        bh=gSmXKcEPU74GTRAjfSumqviFvknWDQc7X1JOOAmSq+A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Si1Xp4kz2nZiduJ6OnRI3808vnUeGlBGzEWnvohCTFWiL8OcNDVlCtzhiiSyo7uzA
+         KWQToIUK6uyhXgmnpE6atZe+J3Vo7O9puJespbTMC9te+eVnaZjc+YQgbIsXwNys2L
+         dfWEeyNDkAPCuWamjOc+NQFyjoaE2fmTeWcsQD0Q=
+Date:   Fri, 30 Oct 2020 09:25:18 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Deepak R Varma <mh12gx2825@gmail.com>,
+        outreachy-kernel@googlegroups.com,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        melissa.srw@gmail.com, daniel.vetter@ffwll.ch
+Subject: Re: [Outreachy kernel] [PATCH] drm/amdgpu: use
+ DEFINE_DEBUGFS_ATTRIBUTE with debugfs_create_file_unsafe()
+Message-ID: <20201030082518.GB1619669@kroah.com>
+References: <20201030032245.GA274478@my--box>
+ <20201030071120.GA1493629@kroah.com>
+ <20201030075716.GA6976@my--box>
+ <5a7d8e8d-8db5-ff56-6448-3f1cefc11ef8@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <87h7qcxjew.fsf@yhuang-dev.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5a7d8e8d-8db5-ff56-6448-3f1cefc11ef8@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 30-10-20 15:27:51, Huang, Ying wrote:
-> Michal Hocko <mhocko@suse.com> writes:
+On Fri, Oct 30, 2020 at 09:00:04AM +0100, Christian König wrote:
+> Am 30.10.20 um 08:57 schrieb Deepak R Varma:
+> > On Fri, Oct 30, 2020 at 08:11:20AM +0100, Greg KH wrote:
+> > > On Fri, Oct 30, 2020 at 08:52:45AM +0530, Deepak R Varma wrote:
+> > > > Using DEFINE_DEBUGFS_ATTRIBUTE macro with debugfs_create_file_unsafe()
+> > > > function in place of the debugfs_create_file() function will make the
+> > > > file operation struct "reset" aware of the file's lifetime. Additional
+> > > > details here: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flists.archive.carbon60.com%2Flinux%2Fkernel%2F2369498&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cddd7a6ac8164415a639708d87ca97004%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637396414464384011%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=o6GOHvMxNMuOPlC4nhDyURCHBLqfQZhYQq%2BiIMt3D3s%3D&amp;reserved=0
+> > > > 
+> > > > Issue reported by Coccinelle script:
+> > > > scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
+> > > > 
+> > > > Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+> > > > ---
+> > > > Please Note: This is a Outreachy project task patch.
+> > > > 
+> > > >   drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 20 ++++++++++----------
+> > > >   1 file changed, 10 insertions(+), 10 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+> > > > index 2d125b8b15ee..f076b1ba7319 100644
+> > > > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+> > > > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+> > > > @@ -1551,29 +1551,29 @@ static int amdgpu_debugfs_sclk_set(void *data, u64 val)
+> > > >   	return 0;
+> > > >   }
+> > > > -DEFINE_SIMPLE_ATTRIBUTE(fops_ib_preempt, NULL,
+> > > > -			amdgpu_debugfs_ib_preempt, "%llu\n");
+> > > > +DEFINE_DEBUGFS_ATTRIBUTE(fops_ib_preempt, NULL,
+> > > > +			 amdgpu_debugfs_ib_preempt, "%llu\n");
+> > > Are you sure this is ok?  Do these devices need this additional
+> > > "protection"?  Do they have the problem that these macros were written
+> > > for?
+> > > 
+> > > Same for the other patches you just submitted here, I think you need to
+> > > somehow "prove" that these changes are necessary, checkpatch isn't able
+> > > to determine this all the time.
+> > Hi Greg,
+> > Based on my understanding, the current function debugfs_create_file()
+> > adds an overhead of lifetime managing proxy for such fop structs. This
+> > should be applicable to these set of drivers as well. Hence I think this
+> > change will be useful.
 > 
-> > On Wed 28-10-20 10:34:10, Huang Ying wrote:
-> >> To follow code-of-conduct better.
-> >
-> > This is changing a user visible interface and any userspace which refers
-> > to the existing name will fail to compile unless I am missing something.
+> Well since this is only created once per device instance I don't really care
+> about this little overhead.
 > 
-> Although these flags are put in uapi, I found these flags are actually
-> internal flags used in "flags" field of struct mempolicy, they are never
-> used as flags for any user space API.  I guess they are placed in uapi
-> header file to guarantee they aren't conflict with MPOL_MODE_FLAGS.
+> But what exactly is debugfs doing or not doing here?
 
-You are right. I have missed that. The comment in the header even explains
-that. Anyway the placement is rather unusual and I think that those
-flags do not belong there.
- 
-> > Have you checked how many applications would be affected?
-> 
-> Based on above analysis, I think there is no application that will be
-> affected.
-> 
-> > Btw I find "follow CoC better" a very weak argument without further
-> > explanation.
-> 
-> That is the only reason for the patch.  If nobody thinks the change is
-> necessary, I can just drop the patch.
+It is trying to save drivers from having debugfs files open that point
+to memory that can go away at any time.  For graphics devices, I doubt
+that is the case.
 
-Well, to be honest I do not see any problem with the naming.
--- 
-Michal Hocko
-SUSE Labs
+thanks,
+
+greg k-h
