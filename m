@@ -2,88 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13182A081F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 709A02A0824
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgJ3Ojo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbgJ3Ojn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:39:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BAAC0613CF;
-        Fri, 30 Oct 2020 07:39:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/nuHOYGzfdSAxG5g3XnaFq7PaodpHm2ctY0x0q4Q3jE=; b=LWE3y7rRfF9Ta8lyu4v8Uz1Mj4
-        4Zr3VB2IFdAlpLSmIkkuCpNhrTt4ew2Irzas0nMtK3qQgCIIFJQZP/Np9qt0MFFGqUE2VHV9wMCJI
-        44IbPDGbsAadlu0w421qlDB/5dEaja94mzcpRfeKjazUq7kMDQstW5y9isdYG9GfqEVk18YJAxEcZ
-        9uU9L1LBS45FH35mzVCis8Zr2scX9zvWEzEuiC1j1fsTu53/cm9lRKDSiZiv7Kmzt2kUbkioH8Yp9
-        SL31I+fVVXXyGlVrrJLnl2PY0Y0odAcEhBweZQckD62XuIcDrd9liaC7UHi+hIMFc4K4kJ2jrMJDF
-        KuIBvFUQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYVZ3-0008Ba-Je; Fri, 30 Oct 2020 14:39:37 +0000
-Date:   Fri, 30 Oct 2020 14:39:37 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
-        <nfraprado@protonmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org,
-        andrealmeid@collabora.com
-Subject: Re: Python 2.7 support and automarkup.py - Was: Re: [PATCH v2 1/5]
- docs: automarkup.py: Use new C roles in Sphinx 3
-Message-ID: <20201030143937.GK27442@casper.infradead.org>
-References: <20201013231218.2750109-1-nfraprado@protonmail.com>
- <20201013231218.2750109-2-nfraprado@protonmail.com>
- <5053e824-625b-5a76-d862-2c855c79c427@collabora.com>
- <20201030151026.3afd7997@coco.lan>
- <20201030081440.47a74dad@lwn.net>
+        id S1726813AbgJ3OkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:40:20 -0400
+Received: from mx01-sz.bfs.de ([194.94.69.67]:59470 "EHLO mx01-sz.bfs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725975AbgJ3OkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 10:40:19 -0400
+Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
+        by mx01-sz.bfs.de (Postfix) with ESMTPS id 4D43620376;
+        Fri, 30 Oct 2020 15:40:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
+        t=1604068817;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jZnQpOQ/iSFZgnx0ImVpwj+MiYVyArc7pKEbMLyMQfo=;
+        b=Kf/3QG1UDjQ8arSPYw6fY20I2SBA0AWN8RJCPryJo7URn646CV33Z20EkGV2EnroFw/Qe1
+        0HilhpjViDMer8RC1znJOz1w4AqvqthANeam5c7STONWNm0JUUCHV1f5z530o2bXjAbSXX
+        ovqeyKZAl0gcIRPnkHXMdAup1yZ3nqBdcu8CGYjnKP89/DJ8mR6rxNY5BQBS0ckyaIPyvo
+        /oEJU8Y7e5XUO9i9SkiU/0KoNEodpEy5fdIoPjq9iS2aYhzOvo12xHXVqoGZQfb9Wg6Eqx
+        ZjnfR1hIw3qsZlStZRxGIIS/ww+A3PP0XzrgsLicl8NFzhe3xNrUNeoRftJgLw==
+Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
+ (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2106.2; Fri, 30 Oct
+ 2020 15:40:16 +0100
+Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
+ SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%6]) with mapi id
+ 15.01.2106.002; Fri, 30 Oct 2020 15:40:16 +0100
+From:   Walter Harms <wharms@bfs.de>
+To:     Colin King <colin.king@canonical.com>,
+        Nehal Shah <nehal-bakulchandra.shah@amd.com>,
+        Sandeep Singh <sandeep.singh@amd.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: AW: [PATCH][next] SFH: fix error return check for -ERESTARTSYS
+Thread-Topic: [PATCH][next] SFH: fix error return check for -ERESTARTSYS
+Thread-Index: AQHWrskuXLpwIZymK0ijx6Rejl2IgqmwNwWH
+Date:   Fri, 30 Oct 2020 14:40:16 +0000
+Message-ID: <7f7ed9ecdd05422ab83e0c08918063bc@bfs.de>
+References: <20201030143002.535531-1-colin.king@canonical.com>
+In-Reply-To: <20201030143002.535531-1-colin.king@canonical.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.137.16.40]
+x-tm-as-product-ver: SMEX-14.0.0.3031-8.6.1012-25754.007
+x-tm-as-result: No-10--2.352600-5.000000
+x-tmase-matchedrid: mvluSfSKbybed0Ij9t5iQyEyJ8xFEVolPknazlXMVpV+SLLtNOiBhrLs
+        vs6J0rHdn7u/QIiCqWwtbPbgNcDnUHsC/8Evf2rHuLHENGl+3A8s+CgjlNydnK3DfQXYDXXmRiM
+        0r5DoZkAaKUs5KpcJNCpx2wcbM9GceJsRTRVp6OeBgUO0zfAYGiYof8qPjr5Vr3DiW2de5g9WL1
+        ppT+hcnkrdOgydR3zuSRrr9O/+ItA4qGaEI/i7xj8Ckw9b/GFeTJDl9FKHbrlVZCccrGnfyE7Mp
+        Biz7lGO2FGkLR/Vo15CRcUvq6BHE+q4eBfl/7E8ngIgpj8eDcByZ8zcONpAscRB0bsfrpPInxMy
+        eYT53RmeE9fZ+hq24B951RXwyVmMgCFeXgdqtNDboEDzCkGr8rttoi14YodtmWT8ZL8Jd0nDAOD
+        iwfECzWgr//OP2OLmwgNrDDOh+Ifn97Tpk1RUclMrCGEFu0pWavaGrHEVCAk0gJueLVvpvFZca9
+        RSYo/b
+x-tm-as-user-approved-sender: No
+x-tm-as-user-blocked-sender: No
+x-tmase-result: 10--2.352600-5.000000
+x-tmase-version: SMEX-14.0.0.3031-8.6.1012-25754.007
+x-tm-snts-smtp: 444385313A455BFB87A92C665C16806337DE81BD868772F9F1F807BDB9CCB3422000:9
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030081440.47a74dad@lwn.net>
+X-Spam-Status: No, score=-2.42
+Authentication-Results: mx01-sz.bfs.de;
+        none
+X-Spamd-Result: default: False [-2.42 / 7.00];
+         ARC_NA(0.00)[];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         HAS_XOIP(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         NEURAL_HAM(-0.00)[-0.926];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         BAYES_HAM(-2.42)[97.34%]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 08:14:40AM -0600, Jonathan Corbet wrote:
-> On Fri, 30 Oct 2020 15:10:26 +0100
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-> 
-> > I see a few alternatives:
-> > 
-> > 1) fix automarkup.py for it to work again with python 2.7;
-> > 
-> > 2) conf.py could gain some logic to disable automarkup with
-> >    Python < 3;
-> > 
-> > 3) scripts/sphinx-pre-install already detects Python version. 
-> >    It should likely be easy to ask the user to use python 3.x,
-> >    if an older version is detected.
-> > 
-> > Doing (1) or (2) will require an additional step when we raise
-> > the bar for Python version.
-> 
-> We haven't dropped support for Python 2 yet, so this constitutes a
-> regression.  My own approach would be something like this at the top of
-> automarkup.py:
-> 
-> 	if python2:
-> 	    ascii = 0
-> 	else:
-> 	    ascii = re.ASCII
-> 
-> ...then s/re.ASCII/ascii/ throughout.  I can probably put together
-> something later this morning.
+nit picking:
+i would  without "else" to improve readability:
 
-Could we have a warning somewhere that python 2.7 is going to produce
-inferior docs?
+       if (ret =3D=3D -ERESTARTSYS)
+                 return -ERESTARTSYS;
 
-Alternatively, https://docs.python.org/2/library/re.html suggests
-using "The third-party regex module".
+        if (ret < 0)
+              return -ETIMEDOUT;
+
+          return 0;
+
+jm2c
+ wh
+________________________________________
+Von: Colin King <colin.king@canonical.com>
+Gesendet: Freitag, 30. Oktober 2020 15:30:02
+An: Nehal Shah; Sandeep Singh; Jiri Kosina; Benjamin Tissoires; linux-input=
+@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
+Betreff: [PATCH][next] SFH: fix error return check for -ERESTARTSYS
+
+From: Colin Ian King <colin.king@canonical.com>
+
+Currently the check for the error return code -ERESTARTSYS is dead code
+and never executed because a previous check for ret < 0 is catching this
+and returning -ETIMEDOUT instead.  Fix this by checking for -ERESTARTSYS
+before the more generic negative error code.
+
+Addresses-Coverity: ("Logically dead code")
+Fixes: 4b2c53d93a4b ("SFH:Transport Driver to add support of AMD Sensor Fus=
+ion Hub (SFH)")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/hid/amd-sfh-hid/amd_sfh_hid.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/hid/amd-sfh-hid/amd_sfh_hid.c b/drivers/hid/amd-sfh-hi=
+d/amd_sfh_hid.c
+index a471079a3bd0..4f989483aa03 100644
+--- a/drivers/hid/amd-sfh-hid/amd_sfh_hid.c
++++ b/drivers/hid/amd-sfh-hid/amd_sfh_hid.c
+@@ -88,10 +88,10 @@ static int amdtp_wait_for_response(struct hid_device *h=
+id)
+                ret =3D wait_event_interruptible_timeout(hid_data->hid_wait=
+,
+                                                       cli_data->request_do=
+ne[i],
+                                                       msecs_to_jiffies(AMD=
+_SFH_RESPONSE_TIMEOUT));
+-       if (ret < 0)
+-               return -ETIMEDOUT;
+-       else if (ret =3D=3D -ERESTARTSYS)
++       if (ret =3D=3D -ERESTARTSYS)
+                return -ERESTARTSYS;
++       else if (ret < 0)
++               return -ETIMEDOUT;
+        else
+                return 0;
+ }
+--
+2.27.0
+
