@@ -2,255 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0472A107F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:48:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8041B2A1080
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725817AbgJ3VsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 17:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        id S1725844AbgJ3VtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 17:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3VsI (ORCPT
+        with ESMTP id S1725780AbgJ3VtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 17:48:08 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C12C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 14:48:08 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id k6so7772289ilq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 14:48:08 -0700 (PDT)
+        Fri, 30 Oct 2020 17:49:15 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712D8C0613CF;
+        Fri, 30 Oct 2020 14:49:15 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id w21so6455269pfc.7;
+        Fri, 30 Oct 2020 14:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2H6cPN0gnqQZAudY3hjr6N8uSef0pLDKUZk1I184RGs=;
-        b=Iuoe3TrDQMXYgYBYoFwqatJLMHxMuM2piSNX8Ny+q2pX80tWo4LElHitBLDDbAYVXS
-         sscYvyHpT0v9rwQQchtbt1McePjU14Ij5+lJ5QmFFswHp/Ip8zo1TXFcD0ibt/UqW44P
-         +BRIaRIDeDNZAomnbqHwTB2ggHd4z/LUAqsWI=
+        bh=QMAAS0p4jKFE9qps1JnEBoN58ABu2M0kNCMhmGgt+hs=;
+        b=TvRXlpOytiEDQ40UohV35i39LxvuKG9Seb6lphF3K0GrEkqTzTmrYA1rQhRvOdikAW
+         WJoaXShW3Ra/8Ooj5nuRMOwVV0KutJJIy/T/H0BNjFUQ0+28PKa3BbpYSN44fvGTTezx
+         aY9LqG0ebaLYLAkRnL7oc422uctNAusDy9r7UoHtUdjDDbKVRTC8Dh71mGTE2FSk9zwe
+         hmwvWZKI055PR15g+yB9n+G/E1I/Dr96F1WrMgdPHA2t1Xiw/owlR3lUrEGDdTBFwl39
+         TqLFEONPeE57VqfQv8U7c5+tUPhMtndoOwFmk21ykwJqRJTP3GuByIBsR8RRD/JyGCV9
+         hLtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2H6cPN0gnqQZAudY3hjr6N8uSef0pLDKUZk1I184RGs=;
-        b=eAhO9Tvb0DvExBwSWG0hpreoCt1zH6Vrd0wrXoZYTZdCN6/4fI4PpVQaRNtfa103kW
-         Dz7Pu5EAlBzJH1MyneyAUrBhyAxQQ83LXl5KJLCq5hVPfK1g52x8klXrv5kerbQQ4dHe
-         6801KSKQ/8GCJa1CdVkX65+mB6j2MZjY++aSYh7rsd+V824JHjD0rbppqIfkWCsiIsVG
-         zEpY93P5s4mgJjfzbzIifwg8BWHGYRsE2r5Ggs5uUMVHtH0x05NPtL2ncpLpkRJ4H3j2
-         Oly9XNkMcgK4RkaZceR0G25L2MWNYmVRPylS9ye5tIqepkpOll3VSw0xcRKuyN/DAI9L
-         I61Q==
-X-Gm-Message-State: AOAM530AU/W1rmpHADzcYuhcAledndTHibmtQaHPvjCMr7932YATHs5a
-        RO32FjCYl0dczxul+z14M9xD4CQWZhqR9kTb5u2E
-X-Google-Smtp-Source: ABdhPJx45HoI2f4RZvZCH7KAQELph+nUvcbrtm+d57rUNxmPQ2I0qcM3CMfoNbDCwl6XI9f7u0V4I5G/oUlUYGC8gpg=
-X-Received: by 2002:a92:cf41:: with SMTP id c1mr2471028ilr.219.1604094487353;
- Fri, 30 Oct 2020 14:48:07 -0700 (PDT)
+        bh=QMAAS0p4jKFE9qps1JnEBoN58ABu2M0kNCMhmGgt+hs=;
+        b=LeMo+foOuid5M0pYHfLXE0Hoa3gQvSdNjOSVAjC6D/r7Cmpop+zvqXFZSEVaxJU00e
+         mAl3q0k9tLEDSiSHfx73xenh3GQuSGq8lLn/Lq7GRZbBalbEVXd/MKB2K22R+KoiBqr4
+         2mFKkSk5SbTlBciN0hXTIXWyEwQ4cngJCvFkwtyR0vvYo6jjdsrhdiKq+qHsnPF9xwcc
+         nT1ucAT8/it4r3UgNWEgBwODOHsHfUe3NbD5mhHTi5DB2kQQiTIE8hTUxwAP88pnSBJY
+         +sWsIS3o/qgoXP/oBlVUpjjtU4wJsaQXuhhTRITFb6aKsUdv6GBNQB6BDfbL9sfSNq13
+         Q8tQ==
+X-Gm-Message-State: AOAM532DE+JshA9IdhKCsdo/3vDeaSspWwuMvVOhtB21dpoqf6aY0Oko
+        9DsYzWuytTd7TKV234bXLWJp6gP2wPQKP3Zdlq+y9G5d0SE=
+X-Google-Smtp-Source: ABdhPJxwN2zh7wVq6PqBMCHN4uYi87x5Si8xX0kx+wAak6R3qDltA7rQuQ6enR5P1ucrMw6PpFjGbHlMeaJjZ5SFnB4=
+X-Received: by 2002:a63:3581:: with SMTP id c123mr3826426pga.233.1604094555109;
+ Fri, 30 Oct 2020 14:49:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201021073839.43935-1-zong.li@sifive.com> <CAJF2gTTnGSYAc3AZKCPvhNJsPm_TchPjPrtqc_WzaK7K5eNt+w@mail.gmail.com>
- <CAOnJCULN8h0Jk3H-vskgbaXhgBTgTTAT5Dji0qHi6yHoXGePvg@mail.gmail.com>
- <CANXhq0q_fOg7vsniVMtNd8VezW1yymf55FYRc61WMkXMOtZpgA@mail.gmail.com>
- <CAJF2gTR-_=_vDLsST9BVxRFC0OTR4_TYV-2=nH_Gux_zWDOk3Q@mail.gmail.com>
- <CAOnJCU+d5YQzKW2qs0NURJt1_5zrM6YXrkP4FzB_=zgbb-5DuA@mail.gmail.com> <CAJF2gTT9gZZftoUD4eMT0Th=oYOpsdYbrFdr=5kO2-N+ki51NA@mail.gmail.com>
-In-Reply-To: <CAJF2gTT9gZZftoUD4eMT0Th=oYOpsdYbrFdr=5kO2-N+ki51NA@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Fri, 30 Oct 2020 14:47:56 -0700
-Message-ID: <CAOnJCULO7TuRhBcx6KUVr6t_jqouN-0rao9QXC1RgrU5ehutkw@mail.gmail.com>
-Subject: Re: [PATCH] stop_machine: Mark functions as notrace
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Zong Li <zong.li@sifive.com>, Paul McKenney <paulmck@kernel.org>,
-        josh@joshtriplett.org, Steven Rostedt <rostedt@goodmis.org>,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, vincent.whitchurch@axis.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
+References: <20201030022839.438135-1-xie.he.0141@gmail.com>
+ <20201030022839.438135-5-xie.he.0141@gmail.com> <CA+FuTSczR03KGNdksH2KyAyzoR9jc6avWNrD+UWyc7sXd44J4w@mail.gmail.com>
+ <CAJht_ENORPqd+GQPPzNfmCapQ6fwL_YGW8=1h20fqGe4_wDe9Q@mail.gmail.com> <CAF=yD-J8PvkR5xTgv8bb6MHJatWtq5Y_mPjx4+tpWvweMPFFHA@mail.gmail.com>
+In-Reply-To: <CAF=yD-J8PvkR5xTgv8bb6MHJatWtq5Y_mPjx4+tpWvweMPFFHA@mail.gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Fri, 30 Oct 2020 14:49:05 -0700
+Message-ID: <CAJht_EPscUkmcgidk5sGAO4K1iVeqDpBRDy75RQ+s0OKK3mB8Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 4/5] net: hdlc_fr: Do skb_reset_mac_header for
+ skbs received on normal PVC devices
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 8:28 PM Guo Ren <guoren@kernel.org> wrote:
+On Fri, Oct 30, 2020 at 2:28 PM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
 >
-> On Fri, Oct 30, 2020 at 2:46 AM Atish Patra <atishp@atishpatra.org> wrote:
-> >
-> > On Thu, Oct 29, 2020 at 9:06 AM Guo Ren <guoren@kernel.org> wrote:
-> > >
-> > > On Thu, Oct 29, 2020 at 10:34 AM Zong Li <zong.li@sifive.com> wrote:
-> > > >
-> > > > On Thu, Oct 29, 2020 at 8:23 AM Atish Patra <atishp@atishpatra.org> wrote:
-> > > > >
-> > > > > On Wed, Oct 28, 2020 at 8:44 AM Guo Ren <guoren@kernel.org> wrote:
-> > > > > >
-> > > > > > Hi Zong & Atish,
-> > > > > >
-> > > > > > In our 2 harts c910 chip, we found:
-> > > > > >
-> > > > > > echo function > /sys/kernel/debug/tracing/current_tracer
-> > > > > > echo function_graph > /sys/kernel/debug/tracing/current_tracer
-> > > > > > echo function > /sys/kernel/debug/tracing/current_tracer
-> > > > > > echo function_graph > /sys/kernel/debug/tracing/current_tracer
-> > > > > >
-> > > > > > Then one core halted at stop_machine_yield:
-> > > > > > arch_cpu_idle () at arch/riscv/kernel/process.c:39
-> > > > > > 39              local_irq_enable();
-> > > > > > (gdb) i th
-> > > > > >   Id   Target Id         Frame
-> > > > > > * 1    Thread 1 (CPU#0)  arch_cpu_idle () at arch/riscv/kernel/process.c:39
-> > > > > >   2    Thread 2 (CPU#1)  stop_machine_yield
-> > > > > > (cpumask=0xffffffe001371fa8 <__cpu_online_mask>) at
-> > > > > > ./arch/riscv/include/asm/vdso/processor.h:12
-> > > > > > (gdb) thread 2
-> > > > > > [Switching to thread 2 (Thread 2)]
-> > > > > > #0  stop_machine_yield (cpumask=0xffffffe001371fa8
-> > > > > > <__cpu_online_mask>) at ./arch/riscv/include/asm/vdso/processor.h:12
-> > > > > > 12              __asm__ __volatile__ ("div %0, %0, zero" : "=r" (dummy));
-> > > > > >
-> > > > > > With your patch, it's solved. For this patch, I'll give:
-> > > > > > Tested by: Guo Ren <guoren@kernel.org>
-> > > > > >
-> > > > > > But that's not enough, we still need:
-> > > > > >
-> > > > > > diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> > > > > > index 226ccce..12b8808 100644
-> > > > > > --- a/arch/riscv/kernel/sbi.c
-> > > > > > +++ b/arch/riscv/kernel/sbi.c
-> > > > > > @@ -376,7 +376,7 @@ EXPORT_SYMBOL(sbi_send_ipi);
-> > > > > >   *
-> > > > > >   * Return: None
-> > > > > >   */
-> > > > > > -void sbi_remote_fence_i(const unsigned long *hart_mask)
-> > > > > > +void notrace sbi_remote_fence_i(const unsigned long *hart_mask)
-> > > > > >  {
-> > > > > >         __sbi_rfence(SBI_EXT_RFENCE_REMOTE_FENCE_I,
-> > > > > >                      hart_mask, 0, 0, 0, 0);
-> > > > > > diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-> > > > > > index 400b945d..9467d987 100644
-> > > > > > --- a/arch/riscv/mm/cacheflush.c
-> > > > > > +++ b/arch/riscv/mm/cacheflush.c
-> > > > > > @@ -9,12 +9,12 @@
-> > > > > >
-> > > > > >  #include <asm/sbi.h>
-> > > > > >
-> > > > > > -static void ipi_remote_fence_i(void *info)
-> > > > > > +static void notrace ipi_remote_fence_i(void *info)
-> > > > > >  {
-> > > > > >         return local_flush_icache_all();
-> > > > > >  }
-> > > > > >
-> > > > > > -void flush_icache_all(void)
-> > > > > > +void notrace flush_icache_all(void)
-> > > > > >  {
-> > > > > >         if (IS_ENABLED(CONFIG_RISCV_SBI))
-> > > > > >                 sbi_remote_fence_i(NULL);
-> > > > > >
-> > > > >
-> > > > > Did you see any issue if these functions are not marked as notrace ?
-> > > > >
-> > > > > As per Zong's explanation, the issue was that the other harts already
-> > > > > fetched the next 2 nops and
-> > > > > executed 1 while kernel patching replaced other with one of the auipc
-> > > > > + jalr pair.
-> > > > >
-> > > > > @Zong can correct me if I am wrong.
-> > > > >
-> > > > > These functions are too far ahead. Can it cause such issues ? If yes,
-> > > > > then we need to mark each and every function
-> > > > > that can be invoked from patch_text_nosync and are not inlined.
-> > > > >
-> > > > > That includes copy_to_kernel_nofault, __sbi_rfence_v02,
-> > > > > __sbi_rfence_v02_call, sbi_ecall.
-> > > > >
-> > > > > Few of these functions may be inlined by compiler. Can we depend on that ?
-> > > > >
-> > > > > > Because:
-> > > > > > (gdb) bt
-> > > > > > #0  flush_icache_all () at arch/riscv/mm/cacheflush.c:20
-> > > > > > #1  0xffffffe00020473a in patch_text_nosync (addr=<optimized out>, insns=
-> > > > > >     <optimized out>, len=<optimized out>) at arch/riscv/kernel/patch.c:96
-> > > > > > #2  0xffffffe000206792 in ftrace_make_call (rec=<optimized out>,
-> > > > > > addr=<optimized out>) at arch/riscv/kernel/ftrace.c:109
-> > > > > > #3  0xffffffe0002c9be4 in __ftrace_replace_code (rec=0xffffffe01ae40020, e
-> > > > > >     nable=true) at kernel/trace/ftrace.c:2503
-> > > > > > #4  0xffffffe0002ca092 in ftrace_replace_code (mod_flags=<optimized
-> > > > > >     out>) at kernel/trace/ftrace.c:2530
-> > > > > > #5  0xffffffe0002ca24a in ftrace_modify_all_code (command=9) at kernel
-> > > > > >    /trace/ftrace.c:2677
-> > > > > > #6  0xffffffe0002ca2ee in __ftrace_modify_code (data=<optimized out>) at
-> > > > > >    kernel/trace/ftrace.c:2703
-> > > > > > #7  0xffffffe0002c1390 in multi_cpu_stop (data=0x0) at kernel/stop_machin
-> > > > > >    e.c:224
-> > > > > > #8  0xffffffe0002c0fbe in cpu_stopper_thread (cpu=<optimized out>) at kern
-> > > > > >    el/stop_machine.c:491
-> > > > > > #9  0xffffffe0002343be in smpboot_thread_fn (data=0x0) at kernel/smpboot.
-> > > > > >    c:165
-> > > > > > #10 0xffffffe00022f894 in kthread (_create=0xffffffe01af13040) at kern
-> > > > > >    el/kthread.c:292
-> > > > > > #11 0xffffffe000201fac in handle_exception () at arch/riscv/kernel/entry.S:236
-> > > > > >
-> > > >
-> > > > It seems to me that the problem happens on the waiting threads, it
-> > > No, that is the call trace to show ftrace_make_call ->
-> > > flush_icache_all and we should give notrace on the whole path.
-> > >
-> >
-> > Hmm. I am curious to understand how other architectures avoid this problem.
+> Yes, it might require holding off the other patches until net is
+> merged into net-next.
 >
-> for arm64
-> static int ftrace_modify_code(unsigned long pc, u32 old, u32 new,
->                               bool validate)
-> {
->         u32 replaced;
-> ...
->         if (aarch64_insn_patch_text_nosync((void *)pc, new))
->                 return -EPERM;
->
-> int __kprobes aarch64_insn_patch_text_nosync(void *addr, u32 insn)
-> {
->         u32 *tp = addr;
->         int ret;
->
->         /* A64 instructions must be word aligned */
->         if ((uintptr_t)tp & 0x3)
->                 return -EINVAL;
->
->         ret = aarch64_insn_write(tp, insn);
->         if (ret == 0)
->                 __flush_icache_range((uintptr_t)tp,
->                                      (uintptr_t)tp + AARCH64_INSN_SIZE);
->
-> Look at arm64, they __kprobes flag and I guess it would also prevent
-> ftrace call site.
->
+> Packet sockets are likely not the only way these packets are received?
+> It changes mac_len as computed in __netif_receive_skb_core.
 
-Are you sure about that ? __kprobes puts the code in .kprobes.text section
-which is under whitelist sections in recordmcount.pl & recordmcount.c.
+I looked at __netif_receive_skb_core. I didn't see it computing mac_len?
 
-> __flush_icache_range is written in asm and no possible ftrace call site.
->
-> > Is it a bigger issue in RISC-V because we have to switch privilege
-> > mode to sync I/D cache ?
-> We should sync I/D cache at s-mode because we need virtual address.
-> For c910 we've added icache broadcast invalid instructions by physical
-> address and virtual address.
->
-> Current linux/arch/riscv I/D cache sync is so expensive.
->
+I thought only AF_PACKET/RAW sockets would need this information
+because other upper layers would not care about what happened in L2.
 
-Yes. It is a known fact. Unfortunately, RISC-V specifications doesn't
-allow any other method yet.
-I hope the specification is modified to allow some method to sync I/D
-cache from S-mode soon.
+I see mac_len is computed in netif_receive_generic_xdp. I'm not clear
+about the reason why it calculates it. But it seems that it considers
+the L2 header as an Ethernet header, which is incorrect for this
+driver.
 
-> --
-> Best Regards
->  Guo Ren
->
-> ML: https://lore.kernel.org/linux-csky/
-
-
-
--- 
-Regards,
-Atish
+> If there is no real bug that is fixed, net-next is fine.
