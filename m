@@ -2,75 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84BB2A042D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEE42A043B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726297AbgJ3Lcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:32:53 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:42786 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgJ3Lcx (ORCPT
+        id S1726353AbgJ3LgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJ3LgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:32:53 -0400
-Received: by mail-wr1-f67.google.com with SMTP id w14so6063418wrs.9;
-        Fri, 30 Oct 2020 04:32:49 -0700 (PDT)
+        Fri, 30 Oct 2020 07:36:17 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F246C0613D2;
+        Fri, 30 Oct 2020 04:36:17 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id za3so8132820ejb.5;
+        Fri, 30 Oct 2020 04:36:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2ntyqySv0dNRSUQuLSRy73nPmECP2AXw3xwCrbYmb5w=;
+        b=Wh/4WyHx0BOJQFGA8uk0QwNSX1vNc4OKQcIYtrFN42Q/h0ovjKe7j5sKq8kDBZLH8v
+         QeAfzFexTs5TOa5A++b1IyaLUeeFGl2Wpz+WCRcXbes9zUsPQ+8OoxFxuDYIT9BUvUPy
+         Q3LCq+x6vvVh/0vz1F8MjbnarZq6/+KvrI7Lh32iOG7RU3j4ZQawrHaYVJDj1nm/30hq
+         JOFW/qemGwpXeyi4m1CkbbOjQMDlxXm6hu/mJqGLRph7mbS0ztNHaHXGe0/hDoCiVLv5
+         zhtc6Ng4eAZrhpQqU0rox0erbEJPAy5y9fpKkJm+x3KzK9290uHNXa60wUvF4bXCQEW3
+         l6pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hap6ztNwMjmpscZQ5TX7IlxwkAmalUa6Muelsp2kCkA=;
-        b=tyqy9T5LP6CY7A1N5NG7X6I1NPC5kPC6n1qyDbRlQ+dHplZ9b05hiSZR4LjlkS2w+H
-         0QXP3+dq33JSvChBqztuoOcW5A8J2RLlsMj9DCz09km7FXpBkmfqL1fS2gK2enS7kFq6
-         aZExC9kVsVAKFW7nnRDEfT7rI1j3/fEjwzBDSKO2/mmYsr/gXGwIbV77elHQzdpJk6uy
-         bRfmkzsBFFUqizcdgO9BovtNXx/KdqjHYSmyl6N8ik03ckrkMEKwmpN38zw/jyVvLEq7
-         C9o9mLCBxdOt5RI3dX/Ow/ZxPC3xBFliHMSn2bxXDIvskJQcJo0zz4wkidWo55PFBJU3
-         JrsQ==
-X-Gm-Message-State: AOAM531K8oNMwVAZaIAZ3Diqw/M3ZhDF9JzSSmCtwOJ7E8NNC6qoLy/7
-        nMJzQqmnK0V4M4GfQlDeIBk=
-X-Google-Smtp-Source: ABdhPJzKlBaSS25MdiKT8LGCKeRmdbRIDx3zyM2O2N9VebtMjrl2esOMTev85oxF/KGyIEzyjATfeA==
-X-Received: by 2002:adf:e490:: with SMTP id i16mr2707012wrm.178.1604057569279;
-        Fri, 30 Oct 2020 04:32:49 -0700 (PDT)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id b7sm9560104wrp.16.2020.10.30.04.32.47
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2ntyqySv0dNRSUQuLSRy73nPmECP2AXw3xwCrbYmb5w=;
+        b=kl1RVdvsCEtqY/ZpWXgbEf75EmJpclNuN6ctHqEnOoHG/G24WUVDjtJETu0vjYYFSd
+         vTlt5YYrUPKt9BqyMAopkN/W3DATztI9xhsCSaKGtNgEa1TwbQmzG9GyyTbPBo0Py4hc
+         LrMP/mvVxGd6ZGoPprhMBIULBp+jUZOTO88jDmki6zn+u4MlRcELTtFBeGecRVZfVEuy
+         GRWU/sL8EtEsLHZeCm6hVhmtMrnZViHNSfm+GHDV+3v3kjOW2RzsSnNKaxEb489sNvlD
+         gpNvQEYSAWPz/EqfMFu8beI1yGbTws7gSsKX6IK3E12amnZkfkAi62FiT/EKSVgGjezU
+         Mb6A==
+X-Gm-Message-State: AOAM530ZTrbvxrJGB26gYH7DgdbEwK8oFAFSh8Gyj9OvJl7Llo/Ggzz+
+        mcWwPNbQMLZDhsAlidGBqz8lwLEQqCEY5LGS
+X-Google-Smtp-Source: ABdhPJz6fojo550yzO50CrNGrN4HLwqfWDkRftZB7slO8iNE62fBxF8XdZBQ2Yd0zCUNDctV6QDhHQ==
+X-Received: by 2002:a17:906:8812:: with SMTP id zh18mr1847124ejb.361.1604057775637;
+        Fri, 30 Oct 2020 04:36:15 -0700 (PDT)
+Received: from yoga-910.localhost ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id q19sm2850861ejx.118.2020.10.30.04.36.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 04:32:48 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 12:32:46 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] media: i2c: imx258: validate rotation only if it is
- provided
-Message-ID: <20201030113246.GC36162@kozik-lap>
-References: <20201005151559.12003-1-krzk@kernel.org>
- <20201005151559.12003-2-krzk@kernel.org>
- <20201028092343.GA100461@kozik-lap>
+        Fri, 30 Oct 2020 04:36:14 -0700 (PDT)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+To:     shawnguo@kernel.org
+Cc:     robh+dt@kernel.org, leoyang.li@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>
+Subject: [PATCH v5 00/11] arm64: dts: layerscape: update MAC nodes with PHY information 
+Date:   Fri, 30 Oct 2020 13:35:44 +0200
+Message-Id: <20201030113555.726487-1-ciorneiioana@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201028092343.GA100461@kozik-lap>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:23:43AM +0100, Krzysztof Kozlowski wrote:
-> On Mon, Oct 05, 2020 at 05:15:59PM +0200, Krzysztof Kozlowski wrote:
-> > The sensor supports rotation by 180 degrees however the value of
-> > "rotation" property should be validated only if it exists.  If
-> > "rotation" is missing, do not fail the probe:
-> > 
-> >     imx258: probe of 3-001a failed with error -22
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> This is actually a fix, so these should be added:
-> Fixes: 17121d12a5c1 ("media: imx258: Check the rotation property has a value of 180")
-> Cc: <stable@vger.kernel.org>
-> 
-> Best regards,
-> Krzysztof
+From: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-Please drop this patch. I misunderstood the comment.
+This patch set aims to add the necessary DTS nodes to complete the
+MAC/PCS/PHY representation on DPAA2 devices. The external MDIO bus nodes
+and the PHYs found on them are added, along with the PCS MDIO internal
+buses and their PCS PHYs. Also, links to these PHYs are added from the
+DPMAC node.
 
-Best regards,
-Krzysztof
+Changes in v2:
+ - documented the dpmac node into a new yaml entry
+ - dropped the '0x' from some unit addresses
+
+Changes in v3:
+ - renamed dpmac@x into ethernet@x
+ - renamed the new documentation file to use the same name as the
+   compatible
+ - marked additionalProperties as false
+ - added a reference to ethernet-controller.yaml
+ - added a new patch to document 10gbase-r - 2/11
+
+Changes in v4:
+ - move the phy-connection-type attribute to the ethernet node in 7,8/11
+ - remove the interrupts description from 8/11 since I plan to properly
+   add all interrupt lines for all platforms
+
+Changes in v5:
+ - renamed all PHY nodes to ethernet-phy@x
+ - added some empty lines between nodes
+ - used the reg as the unit address
+
+Ioana Ciornei (11):
+  dt-bindings: net: add the DPAA2 MAC DTS definition
+  dt-bindings: net: add the 10gbase-r connection type
+  arm64: dts: ls1088a: add external MDIO device nodes
+  arm64: dts: ls1088ardb: add QSGMII PHY nodes
+  arm64: dts: ls1088ardb: add necessary DTS nodes for DPMAC2
+  arm64: dts: ls208xa: add the external MDIO nodes
+  arm64: dts: ls2088ardb: add PHY nodes for the CS4340 PHYs
+  arm64: dts: ls2088ardb: add PHY nodes for the AQR405 PHYs
+  arm64: dts: ls208xa: add PCS MDIO and PCS PHY nodes
+  arm64: dts: lx2160a: add PCS MDIO and PCS PHY nodes
+  arm64: dts: lx2160ardb: add nodes for the AQR107 PHYs
+
+ .../bindings/net/ethernet-controller.yaml     |   1 +
+ .../bindings/net/fsl,qoriq-mc-dpmac.yaml      |  60 ++++
+ .../boot/dts/freescale/fsl-ls1088a-rdb.dts    | 119 ++++++++
+ .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 101 +++++-
+ .../boot/dts/freescale/fsl-ls2088a-rdb.dts    | 120 ++++++++
+ .../arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 274 ++++++++++++++++-
+ .../boot/dts/freescale/fsl-lx2160a-rdb.dts    |  32 ++
+ .../arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 288 ++++++++++++++++--
+ 8 files changed, 951 insertions(+), 44 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/fsl,qoriq-mc-dpmac.yaml
+
+-- 
+2.28.0
+
