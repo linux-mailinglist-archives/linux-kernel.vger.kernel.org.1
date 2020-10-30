@@ -2,154 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F252A0CA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B862A0CA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726991AbgJ3Rmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 13:42:53 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18876 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726873AbgJ3Rmv (ORCPT
+        id S1726913AbgJ3Ros (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 13:44:48 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:50146 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726061AbgJ3Ror (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 13:42:51 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09UHWrvS005795;
-        Fri, 30 Oct 2020 13:42:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=PzfPzrlZS4/NE7RAe34/AFVliQy6XVFJveRmvBjyQ8o=;
- b=kMDZAtH8NCWrGs9qG/6Rvzh3KlP+yd6dqWIFOLVJR9x5bKK1pfvhaL0kxeScBZTjB4YV
- kUTZi8ZB5tkWo59xBMVOapjMCIVn9Yzdk3wpHUr4EPvw5engqS43df4939KYYHxaCdeJ
- FOcn+TmSAvC82vyY3itFMbUsWQCPAoNLW2VyntFq4n42WOiB/cDUVhlJL50l1yGbVQqR
- F0RvBmxhhvcD4V5EtmAXudqa1nojmz92/SsMD81cvgll/yYKenrurR9KXit50CV/Bznc
- 250q/ug3/WD1pI5+vvUxd3XtC8n7shSfHQ53l1ghlJvK41NCRiQrJQ5Tn8nB1ZY3Wrky 2A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34gp17jpnh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Oct 2020 13:42:51 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09UHZO0x020137;
-        Fri, 30 Oct 2020 13:42:50 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34gp17jpmp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Oct 2020 13:42:50 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09UHbtFq032658;
-        Fri, 30 Oct 2020 17:42:48 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 34f7s3s8xt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Oct 2020 17:42:48 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09UHgjFI30671170
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Oct 2020 17:42:45 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 43F814C04A;
-        Fri, 30 Oct 2020 17:42:45 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7FA6C4C044;
-        Fri, 30 Oct 2020 17:42:44 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.145.172.93])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 30 Oct 2020 17:42:44 +0000 (GMT)
-Date:   Fri, 30 Oct 2020 18:42:42 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v11 01/14] s390/vfio-ap: No need to disable IRQ after
- queue reset
-Message-ID: <20201030184242.3bceee09.pasic@linux.ibm.com>
-In-Reply-To: <7a2c5930-9c37-8763-7e5d-c08a3638e6a1@linux.ibm.com>
-References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
-        <20201022171209.19494-2-akrowiak@linux.ibm.com>
-        <20201027074846.30ee0ddc.pasic@linux.ibm.com>
-        <7a2c5930-9c37-8763-7e5d-c08a3638e6a1@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Fri, 30 Oct 2020 13:44:47 -0400
+Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 555AE20B4905;
+        Fri, 30 Oct 2020 10:44:45 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 555AE20B4905
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1604079885;
+        bh=7TnyUaUUazyljvJPPu7HdnhPyePCDIjVBvgDsHhSRLc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ng9FydkfzsZt/fGyVRKu8dfu897Ws3lduxS5VWUfvYwvb/EZ79lA/8LxQPiQCl9jq
+         fGCgMmlJVnYiu+HLgn22ljYKKYsuPhPifGERWIROXejoP1T29AdrJOhOhq5qDwpbig
+         7PRORV+hbhyFdFUPectQ/GJrCJrdw51LCwngHfAc=
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
+        gregkh@linuxfoundation.org, james.morse@arm.com,
+        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
+        balajib@linux.microsoft.com
+Subject: [PATCH v8 0/4] Carry forward IMA measurement log on kexec on ARM64
+Date:   Fri, 30 Oct 2020 10:44:25 -0700
+Message-Id: <20201030174429.29893-1-nramas@linux.microsoft.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-30_08:2020-10-30,2020-10-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0
- adultscore=0 phishscore=0 priorityscore=1501 suspectscore=2 clxscore=1015
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 19:29:35 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+On kexec file load Integrity Measurement Architecture (IMA) subsystem
+may verify the IMA signature of the kernel and initramfs, and measure
+it. The command line parameters passed to the kernel in the kexec call
+may also be measured by IMA. A remote attestation service can verify
+the measurement through the IMA log and the TPM PCR data. This can be
+achieved only if the IMA measurement log is carried over from
+the current kernel to the next kernel across the kexec call.
+However in the current implementation the IMA measurement logs are not
+carried over on ARM64 platforms. Therefore a remote attestation service
+cannot verify the authenticity of the running kernel on ARM64 platforms
+when the kernel is updated through the kexec system call.
 
-> >> @@ -1177,7 +1166,10 @@ static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
-> >>   			 */
-> >>   			if (ret)
-> >>   				rc = ret;
-> >> -			vfio_ap_irq_disable_apqn(AP_MKQID(apid, apqi));
-> >> +			q = vfio_ap_get_queue(matrix_mdev,
-> >> +					      AP_MKQID(apid, apqi));
-> >> +			if (q)
-> >> +				vfio_ap_free_aqic_resources(q);  
-> > Is it safe to do vfio_ap_free_aqic_resources() at this point? I don't
-> > think so. I mean does the current code (and vfio_ap_mdev_reset_queue()
-> > in particular guarantee that the reset is actually done when we arrive
-> > here)? BTW, I think we have a similar problem with the current code as
-> > well.  
-> 
-> If the return code from the vfio_ap_mdev_reset_queue() function
-> is zero, then yes, we are guaranteed the reset was done and the
-> queue is empty.
+This patch series adds support for carrying forward the IMA measurement
+log on kexec on ARM64. powerpc already supports carrying forward
+the IMA measurement log on kexec.
 
-I've read up on this and I disagree. We should discuss this offline.
+This series refactors the platform independent code defined for powerpc
+such that it can be reused for ARM64 as well. A chosen node namely
+"linux,ima-kexec-buffer" is added to the DTB for ARM64 to hold
+the address and the size of the memory reserved to carry
+the IMA measurement log.
 
->  The function returns a non-zero return code if
-> the reset fails or the queue the reset did not complete within a given
-> amount of time, so maybe we shouldn't free AQIC resources when
-> we get a non-zero return code from the reset function?
-> 
+This patch series has been tested for ARM64 platform using QEMU.
+I would like help from the community for testing this change on powerpc.
+Thanks.
 
-If the queue is gone, or broken, it won't produce interrupts or poke the
-notifier bit, and we should clean up the AQIC resources.
+This patch series is based on
+commit 598a597636f8 ("Merge tag 'afs-fixes-20201029' of git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs")
+in https://github.com/torvalds/linux "master" branch.
 
+Changelog:
 
-> There are three occasions when the vfio_ap_mdev_reset_queues()
-> is called:
-> 1. When the VFIO_DEVICE_RESET ioctl is invoked from userspace
->      (i.e., when the guest is started)
-> 2. When the mdev fd is closed (vfio_ap_mdev_release())
-> 3. When the mdev is removed (vfio_ap_mdev_remove())
-> 
-> The IRQ resources are initialized when the PQAP(AQIC)
-> is intercepted to enable interrupts. This would occur after
-> the guest boots and the AP bus initializes. So, 1 would
-> presumably occur before that happens. I couldn't find
-> anywhere in the AP bus or zcrypt code where a PQAP(AQIC)
-> is executed to disable interrupts, so my assumption is
-> that IRQ disablement is accomplished by a reset on
-> the guest. I'll have to ask Harald about that. So, 2 would
-> occur when the guest is about to terminate and 3
-> would occur only after the guest is terminated. In any
-> case, it seems that IRQ resources should be cleaned up.
-> Maybe it would be more appropriate to do that in the
-> vfio_ap_mdev_release() and vfio_ap_mdev_remove()
-> functions themselves?
+v8:
+  - Moved remove_ima_kexec_buffer(), do_get_kexec_buffer(), and
+    delete_fdt_mem_rsv() to drivers/of/fdt.c
+  - Moved ima_dump_measurement_list() and ima_add_kexec_buffer()
+    back to security/integrity/ima/ima_kexec.c
 
-I'm a bit confused. But I think you are wrong. What happens when the
-guest reIPLs? I guess the subsystem reset should also do the
-VFIO_DEVICE_RESET ioctl, and that has to reset the queues and disable
-the interrupts. Or?
+v7:
+  - Renamed remove_ima_buffer() to remove_ima_kexec_buffer() and moved
+    this function definition to kernel.
+  - Moved delete_fdt_mem_rsv() definition to kernel
+  - Moved ima_dump_measurement_list() and ima_add_kexec_buffer() to
+    a new file namely ima_kexec_fdt.c in IMA
 
-Regards,
-Halil
+v6:
+  - Remove any existing FDT_PROP_IMA_KEXEC_BUFFER property in the device
+    tree and also its corresponding memory reservation in the currently
+    running kernel.
+  - Moved the function remove_ima_buffer() defined for powerpc to IMA
+    and renamed the function to ima_remove_kexec_buffer(). Also, moved
+    delete_fdt_mem_rsv() from powerpc to IMA.
+
+v5:
+  - Merged get_addr_size_cells() and do_get_kexec_buffer() into a single
+    function when moving the arch independent code from powerpc to IMA
+  - Reverted the change to use FDT functions in powerpc code and added
+    back the original code in get_addr_size_cells() and
+    do_get_kexec_buffer() for powerpc.
+  - Added fdt_add_mem_rsv() for ARM64 to reserve the memory for
+    the IMA log buffer during kexec.
+  - Fixed the warning reported by kernel test bot for ARM64
+    arch_ima_add_kexec_buffer() - moved this function to a new file
+    namely arch/arm64/kernel/ima_kexec.c
+
+v4:
+  - Submitting the patch series on behalf of the original author
+    Prakhar Srivastava <prsriva@linux.microsoft.com>
+  - Moved FDT_PROP_IMA_KEXEC_BUFFER ("linux,ima-kexec-buffer") to
+    libfdt.h so that it can be shared by multiple platforms.
+
+v3:
+Breakup patches further into separate patches.
+  - Refactoring non architecture specific code out of powerpc
+  - Update powerpc related code to use fdt functions
+  - Update IMA buffer read related code to use of functions
+  - Add support to store the memory information of the IMA
+    measurement logs to be carried forward.
+  - Update the property strings to align with documented nodes
+    https://github.com/devicetree-org/dt-schema/pull/46
+
+v2:
+  Break patches into separate patches.
+  - Powerpc related Refactoring
+  - Updating the docuemntation for chosen node
+  - Updating arm64 to support IMA buffer pass
+
+v1:
+  Refactoring carrying over IMA measuremnet logs over Kexec. This patch
+    moves the non-architecture specific code out of powerpc and adds to
+    security/ima.(Suggested by Thiago)
+  Add Documentation regarding the ima-kexec-buffer node in the chosen
+    node documentation
+
+v0:
+  Add a layer of abstraction to use the memory reserved by device tree
+    for ima buffer pass.
+  Add support for ima buffer pass using reserved memory for arm64 kexec.
+    Update the arch sepcific code path in kexec file load to store the
+    ima buffer in the reserved memory. The same reserved memory is read
+    on kexec or cold boot.
+
+Lakshmi Ramasubramanian (4):
+  powerpc: Refactor kexec functions to move arch independent code to
+    drivers/of
+  powerpc: Refactor kexec functions to move arch independent code to ima
+  arm64: Store IMA log information in kimage used for kexec
+  arm64: Add IMA kexec buffer to DTB
+
+ arch/arm64/Kconfig                     |   1 +
+ arch/arm64/include/asm/ima.h           |  18 ++++
+ arch/arm64/include/asm/kexec.h         |   3 +
+ arch/arm64/kernel/Makefile             |   1 +
+ arch/arm64/kernel/ima_kexec.c          |  34 ++++++++
+ arch/arm64/kernel/machine_kexec_file.c |  18 ++++
+ arch/powerpc/include/asm/ima.h         |  13 +--
+ arch/powerpc/include/asm/kexec.h       |   1 -
+ arch/powerpc/kexec/Makefile            |   7 +-
+ arch/powerpc/kexec/file_load.c         |  33 +-------
+ arch/powerpc/kexec/ima.c               | 111 ++-----------------------
+ drivers/of/fdt.c                       | 110 ++++++++++++++++++++++++
+ include/linux/kexec.h                  |  24 ++++++
+ include/linux/libfdt.h                 |   3 +
+ security/integrity/ima/ima_kexec.c     |  57 +++++++++++++
+ 15 files changed, 282 insertions(+), 152 deletions(-)
+ create mode 100644 arch/arm64/include/asm/ima.h
+ create mode 100644 arch/arm64/kernel/ima_kexec.c
+
+-- 
+2.29.0
 
