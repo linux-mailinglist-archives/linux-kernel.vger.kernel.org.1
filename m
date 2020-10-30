@@ -2,63 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7553D2A10B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:14:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F32BE2A10B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725830AbgJ3WOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 18:14:20 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45198 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgJ3WOU (ORCPT
+        id S1725805AbgJ3WQe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Oct 2020 18:16:34 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:48661 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725774AbgJ3WQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 18:14:20 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604096058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zIgCECG34REYC6LVslxI9xTCHzmaTLZn/hPr5Sb937w=;
-        b=fmkzs5zeistuEEaSiqJ7Si0xIKCi6xAmGfatgNh5gT61d7GCU6gnc0d5ZWZK43U2DW6KWz
-        DLkQQBilHiCvne6fjAglx8cTbPsfyJKpHbAgnAeftPZrOZdkI17ZmatWX8RqholfCIVYhq
-        Ckl1mKPWtcCzBJEO9LAqnstgIGHWAyQaVf+IurX/X9bTte1/J2aJ290G9JrrOZQWmY19Cf
-        DI5pQqt7z6EjPuKm+I7vNTINAITvARUuXT/Bc/SltExU7lJZeUyf9eQ99IiBIWJSig5tua
-        kCzR2/QKA/384PVJlmpF5BQys4PheMTZV8ic2QXLgt9WDXJLUwGe/a/xj4cMgQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604096058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zIgCECG34REYC6LVslxI9xTCHzmaTLZn/hPr5Sb937w=;
-        b=GJHn9ma1EEKdVbV3fRB4+lpol/Xsxp/1f8Yx2BH0c8bCV5uNZBaoYM4dqy8/9GWopuPz+O
-        QBstph6pRJdp9YDQ==
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, kan.liang@linux.intel.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, ak@linux.intel.com, eranian@google.com
-Subject: Re: [PATCH 4/6] perf: Optimize get_recursion_context()
-In-Reply-To: <20201030162248.58e388f0@oasis.local.home>
-References: <20201030151345.540479897@infradead.org> <20201030151955.187580298@infradead.org> <20201030181138.215b2b6a@carbon> <20201030162248.58e388f0@oasis.local.home>
-Date:   Fri, 30 Oct 2020 23:14:18 +0100
-Message-ID: <87v9erl5tx.fsf@nanos.tec.linutronix.de>
+        Fri, 30 Oct 2020 18:16:34 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-61-f8gWZUeEPIy3ZCB6ot-DsQ-1; Fri, 30 Oct 2020 22:16:29 +0000
+X-MC-Unique: f8gWZUeEPIy3ZCB6ot-DsQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 30 Oct 2020 22:16:29 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 30 Oct 2020 22:16:29 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Benjamin Segall' <bsegall@google.com>, Hui Su <sh_def@163.com>
+CC:     "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] sched/fair: remove the spin_lock operations
+Thread-Topic: [PATCH] sched/fair: remove the spin_lock operations
+Thread-Index: AQHWru02j9v+7b8fw0CwtF3P4oRlh6mwtROg
+Date:   Fri, 30 Oct 2020 22:16:29 +0000
+Message-ID: <22f99ee1d9b245c2a356d4d555b54e6a@AcuMS.aculab.com>
+References: <20201030144621.GA96974@rlk> <xm26mu0335zz.fsf@google.com>
+In-Reply-To: <xm26mu0335zz.fsf@google.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30 2020 at 16:22, Steven Rostedt wrote:
-> As this is something that ftrace recursion also does, perhaps we should
-> move this into interrupt.h so that anyone that needs a counter can get
+From: Benjamin Segall
+> Sent: 30 October 2020 18:48
+> 
+> Hui Su <sh_def@163.com> writes:
+> 
+> > Since 'ab93a4bc955b ("sched/fair: Remove
+> > distribute_running fromCFS bandwidth")',there is
+> > nothing to protect between raw_spin_lock_irqsave/store()
+> > in do_sched_cfs_slack_timer().
+> >
+> > So remove it.
+> 
+> Reviewed-by: Ben Segall <bsegall@google.com>
+> 
+> (I might nitpick the subject to be clear that it should be trivial
+> because the lock area is empty, or call them dead or something, but it's
+> not all that important)
 
-Not in interrupt.h please. We should create kernel/include/ for stuff
-which really should only be available in the core kernel code.
+I don't know about this case, but a lock+unlock can be used
+to ensure that nothing else holds the lock when acquiring
+the lock requires another lock be held.
 
-Thanks,
+So if the normal sequence is:
+	lock(table)
+	# lookup item
+	lock(item)
+	unlock(table)
+	....
+	unlock(item)
 
-        tglx
+Then it can make sense to do:
+	lock(table)
+	lock(item)
+	unlock(item)
+	....
+	unlock(table)
 
+although that ought to deserve a comment.
+
+	avid
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
