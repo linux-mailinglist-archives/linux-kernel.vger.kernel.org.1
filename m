@@ -2,101 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0ED2A117A
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 00:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CF72A117E
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 00:23:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725852AbgJ3XVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 19:21:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgJ3XVr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 19:21:47 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D03C0613D7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 16:21:47 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id f38so6469666pgm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 16:21:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=szW1ujHcKlBlbMuxSna8/x1FV/mLWXPIGi7WYHdP5RM=;
-        b=MRu1uNMLSDq03iUk3DC0Pyz6AuV+8o119QEJ7Puem5z6bNl0q5bPjercQbL8bYsRoF
-         dqkAeLhHPy3CZsdyVPycF7b9++R3t4rKKe8WWWJo+j1rWGHsEXuVb69iRFl7LV8HAv7D
-         sUUals8KvsFxC1klknVWcsqZj5g6BwXcv4fctxjISJZ3m7O48K3ZGxuJ9tGSJl4Ao4m/
-         chODOm/qUrj+7qHI9Viv47dRIhWnChXLheBD/fqpepLGc144igZGAY/vDY3gQXa1VfFd
-         QSUTWuHYP3Cc6n6pzJIQAgtAXcacZ1m5I6bB4u9ep4pVa0MuKFeYnCzcL0Od5oAu+5CI
-         0Dsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=szW1ujHcKlBlbMuxSna8/x1FV/mLWXPIGi7WYHdP5RM=;
-        b=aku61QO4+gkUU/qEU8OXwlhvHLh3DG9pqh2Ca4iNEBQI4cXEhZCf+3BGxVKvNLSc7B
-         uRACK5IPXfZimsz6q3qj76ehauClKulh6DdewpGrh8pmvE5yR8D1CQ1nkB581f8mSJyk
-         kb6j6JwPXZO2ur79S+FN3Fs4ctuf2i/wx8yZsOaVZ3OcbGHP969z1lCniePsSAKJwu9J
-         SUmRpiT9QtNtoBQN7cvQmWeAZJSe1VALIkxmkgLPKHOfKDBrCz8fJxfA405fDGQnl+te
-         krqEyAd5ByXG3KiEjmUYenmDMdn1KVd6rRQ+rPzlYzuwaoKjQDxXuMij/9Ubpg2KSMtk
-         7ddg==
-X-Gm-Message-State: AOAM532EyDkZpSbBznbySJhow0xAEw0FCykouAJG0SdXLB1qyfBPA2X4
-        G3A0pJPMCscPDlSrrmw7uKpk78/O59Ou9A==
-X-Google-Smtp-Source: ABdhPJxE49m3f1tuToCW0KsWKfsPhKhMZaTatHli0bSelZdrZm9BlFEbvOaF/9jL8wcme/V2ibEAYg==
-X-Received: by 2002:a62:1844:0:b029:152:80d3:8647 with SMTP id 65-20020a6218440000b029015280d38647mr11131900pfy.18.1604100106559;
-        Fri, 30 Oct 2020 16:21:46 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id w205sm6744899pfc.78.2020.10.30.16.21.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 16:21:45 -0700 (PDT)
-Subject: Re: [PATCH -next] fs: Fix memory leaks in do_renameat2() error paths
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Qian Cai <cai@redhat.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201030152407.43598-1-cai@redhat.com>
- <20201030184255.GP3576660@ZenIV.linux.org.uk>
- <ad9357e9-8364-a316-392d-7504af614cac@kernel.dk>
- <20201030184918.GQ3576660@ZenIV.linux.org.uk>
- <d858ba48-624f-43be-93cf-07d94f0ebefd@kernel.dk>
- <20201030222213.GR3576660@ZenIV.linux.org.uk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a1e17902-a204-f03d-2a51-469633eca751@kernel.dk>
-Date:   Fri, 30 Oct 2020 17:21:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725961AbgJ3XXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 19:23:08 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:36376 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725681AbgJ3XXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 19:23:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604100187; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=BLdO/YyUeVr9H8mVh5lP1ZN3Iw/7BuwJ8Kl9rrPhSww=; b=HYKxyU39C0AkqhR2dTcqTfY12sK59WQCA4UL88oHlKtqm5bdIiQaAAEMjVa3VTlftj6RrOXA
+ u1AdZ7Fyr0IfmzoxUePui3PabcMSyu7QdVuhA3qesCBsB2qGZ6X8CtzohdXc//mj8ZUdNae0
+ JuhSQrcXi/UmTedysLTlJz3jN+Q=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f9ca056d306da067489b46c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 23:23:02
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 284E1C433C6; Fri, 30 Oct 2020 23:23:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4DACFC433C8;
+        Fri, 30 Oct 2020 23:23:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4DACFC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org,
+        rnayak@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/dp: deinitialize mainlink if link training failedo
+Date:   Fri, 30 Oct 2020 16:22:53 -0700
+Message-Id: <20201030232253.11049-1-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201030222213.GR3576660@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/20 4:22 PM, Al Viro wrote:
-> On Fri, Oct 30, 2020 at 02:33:11PM -0600, Jens Axboe wrote:
->> On 10/30/20 12:49 PM, Al Viro wrote:
->>> On Fri, Oct 30, 2020 at 12:46:26PM -0600, Jens Axboe wrote:
->>>
->>>> See other reply, it's being posted soon, just haven't gotten there yet
->>>> and it wasn't ready.
->>>>
->>>> It's a prep patch so we can call do_renameat2 and pass in a filename
->>>> instead. The intent is not to have any functional changes in that prep
->>>> patch. But once we can pass in filenames instead of user pointers, it's
->>>> usable from io_uring.
->>>
->>> You do realize that pathname resolution is *NOT* offloadable to helper
->>> threads, I hope...
->>
->> How so? If we have all the necessary context assigned, what's preventing
->> it from working?
-> 
-> Semantics of /proc/self/..., for starters (and things like /proc/mounts, etc.
-> *do* pass through that, /dev/stdin included)
+DP compo phy have to be enable to start link training. When
+link training failed phy need to be disabled so that next
+link trainng can be proceed smoothly at next plug in. This
+patch de initialize mainlink to disable phy if link training
+failed. This prevent system crash due to
+disp_cc_mdss_dp_link_intf_clk stuck at "off" state.  This patch
+also perform checking power_on flag at dp_display_enable() and
+dp_display_disable() to avoid crashing when unplug cable while
+display is off.
 
-Don't we just need ->thread_pid for that to work?
+Fixes: fdaf9a5e3c15 (drm/msm/dp: fixes wrong connection state caused by failure of link train
 
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 34 +++++++++++++++++++++++++++--
+ drivers/gpu/drm/msm/dp/dp_display.c | 13 +++++++++++
+ 2 files changed, 45 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index cee161c8ecc6..904698dfc7f7 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1468,6 +1468,29 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
+ 	return ret;
+ }
+ 
++static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
++{
++	struct dp_io *dp_io;
++	struct phy *phy;
++	int ret = 0;
++
++	dp_io = &ctrl->parser->io;
++	phy = dp_io->phy;
++
++	dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
++
++	dp_catalog_ctrl_reset(ctrl->catalog);
++
++	ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, false);
++	if (ret)
++		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
++
++	phy_power_off(phy);
++	phy_exit(phy);
++
++	return -ECONNRESET;
++}
++
+ static int dp_ctrl_link_maintenance(struct dp_ctrl_private *ctrl)
+ {
+ 	int ret = 0;
+@@ -1648,8 +1671,7 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+ 	if (rc)
+ 		return rc;
+ 
+-	while (--link_train_max_retries &&
+-		!atomic_read(&ctrl->dp_ctrl.aborted)) {
++	while (--link_train_max_retries) {
+ 		rc = dp_ctrl_reinitialize_mainlink(ctrl);
+ 		if (rc) {
+ 			DRM_ERROR("Failed to reinitialize mainlink. rc=%d\n",
+@@ -1664,6 +1686,9 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+ 			break;
+ 		} else if (training_step == DP_TRAINING_1) {
+ 			/* link train_1 failed */
++			if (!dp_catalog_hpd_get_state_status(ctrl->catalog))
++				break;		/* link cable unplugged */
++
+ 			rc = dp_ctrl_link_rate_down_shift(ctrl);
+ 			if (rc < 0) { /* already in RBR = 1.6G */
+ 				if (cr.lane_0_1 & DP_LANE0_1_CR_DONE) {
+@@ -1683,6 +1708,9 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+ 			}
+ 		} else if (training_step == DP_TRAINING_2) {
+ 			/* link train_2 failed, lower lane rate */
++			if (!dp_catalog_hpd_get_state_status(ctrl->catalog))
++				break;		/* link cable unplugged */
++
+ 			rc = dp_ctrl_link_lane_down_shift(ctrl);
+ 			if (rc < 0) {
+ 				/* end with failure */
+@@ -1703,6 +1731,8 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+ 	 */
+ 	if (rc == 0)  /* link train successfully */
+ 		dp_ctrl_push_idle(dp_ctrl);
++	else
++		rc = dp_ctrl_deinitialize_mainlink(ctrl);
+ 
+ 	return rc;
+ }
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 3eb0d428abf7..13b66266cd69 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -529,6 +529,11 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 	if (ret) {	/* link train failed */
+ 		hpd->hpd_high = 0;
+ 		dp->hpd_state = ST_DISCONNECTED;
++
++		if (ret == -ECONNRESET) { /* cable unplugged */
++			dp->core_initialized = false;
++		}
++
+ 	} else {
+ 		/* start sentinel checking in case of missing uevent */
+ 		dp_add_event(dp, EV_CONNECT_PENDING_TIMEOUT, 0, tout);
+@@ -794,6 +799,11 @@ static int dp_display_enable(struct dp_display_private *dp, u32 data)
+ 
+ 	dp_display = g_dp_display;
+ 
++	if (dp_display->power_on) {
++		DRM_DEBUG_DP("Link already setup, return\n");
++		return 0;
++	}
++
+ 	rc = dp_ctrl_on_stream(dp->ctrl);
+ 	if (!rc)
+ 		dp_display->power_on = true;
+@@ -826,6 +836,9 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
+ 
+ 	dp_display = g_dp_display;
+ 
++	if (!dp_display->power_on)
++		return -EINVAL;
++
+ 	/* wait only if audio was enabled */
+ 	if (dp_display->audio_enabled) {
+ 		if (!wait_for_completion_timeout(&dp->audio_comp,
+
+base-commit: fd4a29bed29b3d8f15942fdf77e7a0a52796d836
 -- 
-Jens Axboe
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
