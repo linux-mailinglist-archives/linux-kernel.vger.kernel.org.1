@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6A02A068C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F4A2A068F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgJ3NgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 09:36:16 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:41025 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJ3NgP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 09:36:15 -0400
-Received: by mail-ot1-f68.google.com with SMTP id n15so5530713otl.8;
-        Fri, 30 Oct 2020 06:36:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p9w7P/A2OBELZ1Bq0/ol6GtvG2PGvbv8sCU2FOhAfqU=;
-        b=NzLpWHsAvYNTolBxXQtrSWMwPVeQ/wP544OChmtkBqrHfdCFRlpFyWrElvirjPgc6u
-         b5mFkF7991En9d2o+Fl19m5174MdvzhXQUdtQq4fx5Dn4YxXEcpvIvfTIzQCu1u3bgP8
-         UZl/cpk4hrSKB1/aFrQBjRwa9O25fhafpYir2+T1mC/glc0NSPCulAFCSr97qr4vfRyO
-         gGXI2fV09UizMpz2QsXsSthmEctJzI5cc7T1YvP1xtTLS/DEP5lcGTtDwKhckC+Ga9jt
-         F/leoHKQRv4Me3mdUTGEwpJ+9ZKYqyyUN4uNcztv7JMBtn3BCdHowpZ3s5HwAnUi26By
-         ByaA==
-X-Gm-Message-State: AOAM533EPK+s/d0bdqEgbFC7gYmBcvgIrj3LrrQ8IcY6L+r/EW/fCjqG
-        SaCr3Q5HuLQYPjLOdLSD/w==
-X-Google-Smtp-Source: ABdhPJwER7Xre1KClzOfwGGQrYZjpicOP4ke9dof2LTfNyTgXSG6DH5FsbZx0HdBcXQq0GPTzyKNyw==
-X-Received: by 2002:a9d:12ab:: with SMTP id g40mr1787031otg.369.1604064974636;
-        Fri, 30 Oct 2020 06:36:14 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i14sm1351759ota.59.2020.10.30.06.36.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 06:36:13 -0700 (PDT)
-Received: (nullmailer pid 3724590 invoked by uid 1000);
-        Fri, 30 Oct 2020 13:36:12 -0000
-Date:   Fri, 30 Oct 2020 08:36:12 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Guru Das Srinagesh <gurus@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Anirudh Ghayal <aghayal@codeaurora.org>
-Subject: Re: [PATCH v4 2/3] bindings: pm8941-misc: Add support for VBUS
- detection
-Message-ID: <20201030133612.GB3721479@bogus>
-References: <cover.1603869292.git.gurus@codeaurora.org>
- <6c6bd3601ec8f4c68f581452fca3ef96f2ae94f9.1603869292.git.gurus@codeaurora.org>
+        id S1726677AbgJ3Nga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 09:36:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33992 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726181AbgJ3Ng2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 09:36:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604064986;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MLDU2WgduZNN0MVmwnPP3R8cVpkShSV+1zceFDjlKds=;
+        b=fQpeUSZe+qod9PZTRwXluMus/79lNvYepKz6hMxpA01SN37f9rNIcMqNq94OzfGBV/5/BG
+        uZtGZsYA+ZixbHwN4aDq5pShpWqAgE1qEQPsc1mdJQSGCBP9fPMiJTYOfaO0zmX1gWw6SD
+        4dcDm6rKdu4YSrqkhM/v8AVzroZORxA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 70B6CB922;
+        Fri, 30 Oct 2020 13:36:26 +0000 (UTC)
+Date:   Fri, 30 Oct 2020 14:36:25 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Rik van Riel <riel@surriel.com>,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm/compaction: count pages and stop correctly during
+ page isolation.
+Message-ID: <20201030133625.GJ1478@dhcp22.suse.cz>
+References: <20201029200435.3386066-1-zi.yan@sent.com>
+ <20201030094308.GG1478@dhcp22.suse.cz>
+ <6CAAB1FC-2B41-490B-A67A-93063629C19B@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6c6bd3601ec8f4c68f581452fca3ef96f2ae94f9.1603869292.git.gurus@codeaurora.org>
+In-Reply-To: <6CAAB1FC-2B41-490B-A67A-93063629C19B@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 12:18:53AM -0700, Guru Das Srinagesh wrote:
-> Add compatible string that adds support for reporting VBUS detection
-> status that can be detected via a dedicated PMIC pin.
+On Fri 30-10-20 08:20:50, Zi Yan wrote:
+> On 30 Oct 2020, at 5:43, Michal Hocko wrote:
 > 
-> Signed-off-by: Anirudh Ghayal <aghayal@codeaurora.org>
-> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+> > [Cc Vlastimil]
+> >
+> > On Thu 29-10-20 16:04:35, Zi Yan wrote:
+> >> From: Zi Yan <ziy@nvidia.com>
+> >>
+> >> In isolate_migratepages_block, when cc->alloc_contig is true, we are
+> >> able to isolate compound pages, nr_migratepages and nr_isolated did not
+> >> count compound pages correctly, causing us to isolate more pages than we
+> >> thought. Use thp_nr_pages to count pages. Otherwise, we might be trapped
+> >> in too_many_isolated while loop, since the actual isolated pages can go
+> >> up to COMPACT_CLUSTER_MAX*512=16384, where COMPACT_CLUSTER_MAX is 32,
+> >> since we stop isolation after cc->nr_migratepages reaches to
+> >> COMPACT_CLUSTER_MAX.
+> >>
+> >> In addition, after we fix the issue above, cc->nr_migratepages could
+> >> never be equal to COMPACT_CLUSTER_MAX if compound pages are isolated,
+> >> thus page isolation could not stop as we intended. Change the isolation
+> >> stop condition to >=.
+> >>
+> >> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> >> ---
+> >>  mm/compaction.c | 8 ++++----
+> >>  1 file changed, 4 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/mm/compaction.c b/mm/compaction.c
+> >> index ee1f8439369e..0683a4999581 100644
+> >> --- a/mm/compaction.c
+> >> +++ b/mm/compaction.c
+> >> @@ -1012,8 +1012,8 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+> >>
+> >>  isolate_success:
+> >>  		list_add(&page->lru, &cc->migratepages);
+> >> -		cc->nr_migratepages++;
+> >> -		nr_isolated++;
+> >> +		cc->nr_migratepages += thp_nr_pages(page);
+> >> +		nr_isolated += thp_nr_pages(page);
+> >
+> > Does thp_nr_pages work for __PageMovable pages?
 > 
-> diff --git a/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml b/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
-> index e8eea83..15e3749 100644
-> --- a/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
-> +++ b/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
-> @@ -15,18 +15,23 @@ description: |
->  
->  properties:
->    compatible:
-> +    minItems: 1
->      items:
->        - const: qcom,pm8941-misc
-> +      - const: qcom,pmd-vbus-det
+> Yes. It is the same as compound_nr() but compiled
+> to 1 when THP is not enabled.
 
-Do you really need another compatible here? Just detect this by having a 
-2nd interrupt.
+I am sorry but I do not follow. First of all the implementation of the
+two is different and also I was asking about __PageMovable which should
+never be THP IIRC. Can they be compound though?
 
->  
->    reg:
->      maxItems: 1
->  
->    interrupts:
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 2
->  
->    interrupt-names:
-> +    minItems: 1
->      items:
->        - const: usb_id
-> +      - const: usb_vbus
->  
->  required:
->    - compatible
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+-- 
+Michal Hocko
+SUSE Labs
