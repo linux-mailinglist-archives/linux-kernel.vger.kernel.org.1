@@ -2,108 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3AA2A034D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 693D02A034F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgJ3Kww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726294AbgJ3Kwv (ORCPT
+        id S1726297AbgJ3Kwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:52:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47309 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726334AbgJ3Kwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:52:51 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5247BC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:52:11 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id h21so6994505iob.10
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:52:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HZ3jKEDXZlqXtXgXWZosWZYuBzB1jkXYoNWcA+wZdxc=;
-        b=TnAq0JDV19kWvbxA92eLES19ttE/Y4+2XhGiV0zhyUlwcuVbhprQpPq0ZQV+p1JqHI
-         O4cvJJEB5wliVeYPxTumc9aXaH530u/UX9HqP/vNCI2+H9UjMgPnrn2PfWTkkX8aFZal
-         zuRzHXhdUZjRSOIFCg/VRtay2lIk7B1PQRFeSCDJQrwZZa5KqF3n09xpbqqx2YWe6XPn
-         YieuBV9edXHvcpbEi9BfDxyajn3f/0X5zH+EHF/Eg9a7WaoFklq5CpC36ppf/mLpYWHZ
-         EP3rncmS93asi48WYZwo415QvqRG7Z7gHz/FuXK/z6XKFsVazoUn+9wFizdM5QLF0p/0
-         sCUw==
+        Fri, 30 Oct 2020 06:52:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604055142;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/tnpVHIMYpFd1srPSH8uONR7RCWAfqrebxJ6st1yKpM=;
+        b=SmnG804RP01GsuMXRF44513H5A4jQtpBjQqcsNiPtA8zB3Uxvdy6TBkcqsXW0M1VqWUgZ1
+        Ov8Q5G3hca+SEG0VPb1dmScKFl0Vl/kSpPMb5PwvSlqkOVA0FL7u0ECyKKP4Ne2gA+llu1
+        +JVr66sla6Ay3H/ON4QKRvXsNPZUhog=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-9-d57tzNB_MY-RJa9zaj2hCw-1; Fri, 30 Oct 2020 06:52:19 -0400
+X-MC-Unique: d57tzNB_MY-RJa9zaj2hCw-1
+Received: by mail-pg1-f198.google.com with SMTP id m11so4337699pgq.7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:52:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HZ3jKEDXZlqXtXgXWZosWZYuBzB1jkXYoNWcA+wZdxc=;
-        b=au5Y/9sybVbDHux1FFMdqqJK7m8JRRgFjSSdbs20frv8i1HGRArlH85TtKW46TJYta
-         zQmQ5h/zF5tkPwiEfNHcYwK3grU/Rs6UCHTiU0jzhQ1pmwcWhud77vCaoEzkQucswSc9
-         dW8hUjX5c4OW6XrJ4dm/XV39SP8nfpWU8NFTQslzZmZ7/ceN3+2w4B6ivbMXldPwhiOI
-         r/e8mg1HjwsdNGJZyZ5eEclBQNcDyzHzLI+sHRcIeeibWUvfZmXXePuQl71qUUc6ORr+
-         XdNe6HaJmVCba5cCLiCO8ECuNCdsvi0osulO1/w5/qyayLZC0M49jlDNkNOTf+S49ZOC
-         1GPw==
-X-Gm-Message-State: AOAM530kiB3jQbFfNB/06QQdrDBvnU3TLnW64WNeNgdYKew5sOzyZ2PT
-        fRSVYgxI1N6BVUo/PlmIdHBZdHK7Fs9GzYMJNnHa4A==
-X-Google-Smtp-Source: ABdhPJxOZMCH6oMWFYGWOJLLt7kcLu7C1LC8cEzfORXLn1CTUwczkRvHrR55P3QXjffP+L+Eq2o9yphjTp27lAvj+Oo=
-X-Received: by 2002:a05:6602:2b90:: with SMTP id r16mr1276394iov.31.1604055130752;
- Fri, 30 Oct 2020 03:52:10 -0700 (PDT)
+        bh=/tnpVHIMYpFd1srPSH8uONR7RCWAfqrebxJ6st1yKpM=;
+        b=UgFqOmMIH7lI+yGPNZs1DChJREwExhghZ8gl4wfDquAqm7mb7cIgxh1sUf7rCb6bYa
+         tBWbvSDYSZ0LseBE08OM8U4MgXlucMad+CW+FuvpvLf5k36GQ32E3Nu9YgpO+WRPAmmE
+         o2tJAVMcLLiFSS5gJWBl9DEYRuOBi1sxorls9kM+uJuQPToI53UyXiP8Fn52wjUi6BvP
+         puXWPo6xzG/lQdG3kZIOVceSPOzorRkM6wyyeaJwtxARvfgNAz/3j6fR0jCyVz4HD6XT
+         c/hlgUAupM6K9vrwLx5TYOmlNZFZf5qXXAoDFi08kUJweeikHJ8uRzcvWpSraCMgXq7O
+         kxKg==
+X-Gm-Message-State: AOAM530WqeseqpxZUY4dDtzZ8VUmsLmcQNtRB8e9pv179p+Zdk54geFF
+        0TKdgFeTpRoDHBTe8jPBlDublPRiD+cw9tUxXFnth4wLrYnFsM6SveSdsPjiE+bBfFz0ikrtwI2
+        2KYV3PHb4SXzvt/bI14nd0miYHhYbVUWXeUjZqIS7
+X-Received: by 2002:a17:90a:d795:: with SMTP id z21mr2084271pju.56.1604055138433;
+        Fri, 30 Oct 2020 03:52:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwqfUY5TSSruhXVNF2Ob/Fv4sN9KGKR2ZqJAnxCFvwVKptzWk1DP09awzgBvZZwKt4ADZ5ClPghjTDQUQhfv2o=
+X-Received: by 2002:a17:90a:d795:: with SMTP id z21mr2084242pju.56.1604055138246;
+ Fri, 30 Oct 2020 03:52:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201026133609.24262-1-brgl@bgdev.pl> <20201026133609.24262-5-brgl@bgdev.pl>
- <20201029154118.12fd6c23@archlinux>
-In-Reply-To: <20201029154118.12fd6c23@archlinux>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 30 Oct 2020 11:52:00 +0100
-Message-ID: <CAMRc=Mfun85W+ZfJqaXohCQ8tNGDxjxmvdFuwsQ07jMhG+vU7w@mail.gmail.com>
-Subject: Re: [PATCH 4/5] iio: adc: xilinx: use devres for irq handling
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
+ <20201023162220.v2.2.Ibb28033c81d87fcc13a6ba28c6ea7ac154d65f93@changeid>
+In-Reply-To: <20201023162220.v2.2.Ibb28033c81d87fcc13a6ba28c6ea7ac154d65f93@changeid>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Fri, 30 Oct 2020 11:52:07 +0100
+Message-ID: <CAO-hwJ+PbcsGNojeJd89TCv-1GQ0fEqcezZ8pw6qA7jjvGo5-g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: HID: i2c-hid: Introduce bindings for
+ the Goodix GT7375P
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Jiri Kosina <jkosina@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        andrea@borgia.bo.it, Kai Heng Feng <kai.heng.feng@canonical.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Hans De Goede <hdegoede@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 4:41 PM Jonathan Cameron <jic23@kernel.org> wrote:
+Hi Doug,
+
+On Sat, Oct 24, 2020 at 1:23 AM Douglas Anderson <dianders@chromium.org> wrote:
 >
-> On Mon, 26 Oct 2020 14:36:08 +0100
-> Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> This adds new bindings for the Goodix GT7375P touchscreen.  While this
+> touchscreen works with generic "i2c-over-hid", the current advice is
+> to give it its own compatible string.  The cleanest way to do this is
+> to give it its own bindings.
 >
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > Further simplify the remove() callback and error paths in probe() by
-> > using the managed variant of request_irq() as well as using a devm action
-> > for cancelling the delayed work at driver detach.
-> >
-> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Among other things, this has the advantage that we can list the two
+> possible i2c addresses for this device, which gives extra checking.
 >
-> Again, this is potentially fine but I'd rather you cleaned up the ordering first
-> rather than doing things in this order.
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 >
-> The end result of the whole series looks like it will be correct, but that isn't
-> so obvious for the intermediate patches on their own.
+> Changes in v2:
+> - ("dt-bindings: HID: i2c-hid: Introduce bindings for the Goodix GT7375P") new in v2.
 >
-> Also, you end up with a lot of noise renaming gotos that then go away at the
-> end.
+>  .../bindings/input/goodix,gt7375p.yaml        | 64 +++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/goodix,gt7375p.yaml
 >
-> Jonathan
+> diff --git a/Documentation/devicetree/bindings/input/goodix,gt7375p.yaml b/Documentation/devicetree/bindings/input/goodix,gt7375p.yaml
+> new file mode 100644
+> index 000000000000..b5008f89e26c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/goodix,gt7375p.yaml
+> @@ -0,0 +1,64 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/goodix,gt7375p.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Goodix GT7375P touchscreen
+> +
+> +maintainers:
+> +  - Benjamin Tissoires <benjamin.tissoires@redhat.com>
+
+Given my answer in patch 1, I am not very happy being added as a
+maintainer here.
+
+Cheers,
+Benjamin
+
+
+> +  - Douglas Anderson <dianders@chromium.org>
+> +
+> +description:
+> +  Supports the Goodix GT7375P touchscreen.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: goodix,gt7375p
+> +
+> +  reg:
+> +    enum:
+> +      - 0x5d
+> +      - 0x14
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    true
+> +
+> +  vdd-supply:
+> +    description: The 3.3V supply to the touchscreen.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - reset-gpios
+> +  - vdd-supply
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,rpmh.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      ap_ts: touchscreen@5d {
+> +        compatible = "hid-over-i2c";
+> +        reg = <0x5d>;
+> +
+> +        interrupt-parent = <&tlmm>;
+> +        interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
+> +
+> +        reset-gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
+> +        vdd-supply = <&pp3300_ts>;
+> +      };
+> +    };
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
 >
 
-Hi Jonathan,
-
-My two priorities for the ordering of this series were: correct
-end-result and not breaking anything on the way. The latter
-unfortunately gets in the way of cleaner looking intermediate patches.
-
-I tried to not alter the ordering in which the resources are freed at
-any step. As devres release callbacks are called *after* remove() and
-in a reverse order to how they were registered, I needed to start from
-the bottom of the remove() callback and convert the last operation,
-then go upwards from there.
-
-If I tried to do it from the top - I probably could remove labels
-earlier and in a cleaner manner but it wouldn't guarantee
-bisectability.
-
-Bartosz
