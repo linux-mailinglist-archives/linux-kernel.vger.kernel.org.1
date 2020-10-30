@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9CC2A0853
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE6F2A0852
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727060AbgJ3OsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37364 "EHLO
+        id S1727020AbgJ3OsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726913AbgJ3OrT (ORCPT
+        with ESMTP id S1726923AbgJ3OrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:47:19 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D67C0613D2;
-        Fri, 30 Oct 2020 07:47:17 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id d9so889657oib.3;
-        Fri, 30 Oct 2020 07:47:17 -0700 (PDT)
+        Fri, 30 Oct 2020 10:47:20 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83C8C0613D7;
+        Fri, 30 Oct 2020 07:47:20 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id m26so5716130otk.11;
+        Fri, 30 Oct 2020 07:47:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=seaaLxuXC47KqE088aencrRQLeI5ux80vm71afqUdyA=;
-        b=JDTfsx/667GOIoeFYPL8+ATV+JIP+HyQlZpIUdUyROlnl1laFM3ZrgazcxvxZ7z95C
-         clBppZn1oOmwlHvERhmWPK9avsBm33h3wus6BFLujMt1WqDwO0UcENp8WkpCXHPJES6E
-         gX3L6jK8L1QXL2AY8gagEA5kxWf26n0Hye3RM50qOy/LoyV7RoQ055PVTT6kqU+Arf14
-         E3gQ1UfR5p4ZS+kK+WdnAaxFXwri6m02swS5DPntXxrbWWZXIuoVQRJAjTFz05OozT7h
-         +U5qggs/lDF8JmRVaO34plp1RY4RThzD4g4vt1mjvTnwEywxeQfGCjOrog15NPa7D7jD
-         GbjA==
+        bh=ZdYIRpJXQysolM6oP9zf52EwQrg31M/ZfGFP3DuIu5M=;
+        b=OX4GPg5VsTfhqBx058ybshrvZonS3TOFrNB6pQSQYAt9GOJf/+kvU57cdit7QM6sWg
+         OQp+W+SwmjJkR80VsUmpkDYuNc6SuE99SGUCm5+RylcABXjLczpWr+cCyFtzH90PV1XN
+         ptiSiA5yJ+7Q7MXCWzrawRRbIqzYeIuJdSQJN9gSAJ7g/RPqLvHdWdMSnvm6o/RKr/Fk
+         wEM1RD7d9koaF/h9g1WRGU1aj3r68PoV9LoKUPM3muv+LSYDPlILDz6EYEyvuerNju7I
+         IBEvamVsWC/fz4GlUzS+cJiO5nXB9HPNJqIsAs6Yfgs6eJApEBMVI/k/wiuYDYdueBfB
+         YuLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=seaaLxuXC47KqE088aencrRQLeI5ux80vm71afqUdyA=;
-        b=te+HOLreht/w0ROmZ1pKXN5cy/tWWWE8C3zjRiWtOG/dvjilrOXWJFnTfdlxKrZNam
-         t5VpKVxgaKB7LJimYYEmvkJF8FJYU+uRmppjvfz9NqvKgWDaKj4OGNC0ZF39OwWRkOXd
-         xsUQBzmf6YSCdsR5Fkvdvh725g72L/CI3i/xXBapk3jwxeskW7YQPer5cdT6smWKKRvE
-         xsdKHcMB/vC79VUj/xabhFGgxP3WhaEwu4Y2twHfkyMuca21ZKpAUl8W44l9QBI7ILot
-         3rcaK69H4IE52uH8ObQiMsfgVzea/+B60607279uFLnsXe8Ex/qubsurwaXkR1GOzSey
-         APLw==
-X-Gm-Message-State: AOAM531prvRCoFbgPSKFVoUgyIEZM89Pc/IzKfI9r4PACaDaYYT341+1
-        pr2f/C3wq+htlgPimjeD7Rc=
-X-Google-Smtp-Source: ABdhPJxb0Rgt0hrFUpPy/a6TWm63vy8fvs1PgpicFO1L/F9gNYJzJ+657M8+wq2gDmHjFHbdDHfXzQ==
-X-Received: by 2002:aca:ec92:: with SMTP id k140mr1933772oih.173.1604069237021;
-        Fri, 30 Oct 2020 07:47:17 -0700 (PDT)
+        bh=ZdYIRpJXQysolM6oP9zf52EwQrg31M/ZfGFP3DuIu5M=;
+        b=guBZqbQ4M2otLNP66Z9BEzkxdgsDwwK0NrdszadU0/7qEK6PhSiNQEMfFJEOy+uyvC
+         fbye3QpXmA3F7li1e6v/xLC0mKqSj/hR6KWrKV2ztcLGJQgGHidSZ+pU/ka8XNxb+iQv
+         fLmtrpeOKI+IesnR20qFSrPI7yCaxsDxQgLiJcelN9cD3wgkn5wgyCIhu4rcQyPQiC9R
+         /iiV21O/jQYU1xX9kb130eOKjoyToQ+7rLGHoOXByH/wZWgIM2HQerS8U4YgDXCsB0u4
+         czBkvagMNLmvZJrWzbMSd7r32+t9ARISacUBJjn+2IM8EV3399+OWWksuWf5m+fW0qyB
+         UE1Q==
+X-Gm-Message-State: AOAM531dWDPrAWGYlH/yPfPswBrDGaaswp9GZU4XrP5xkk8s0h1UnVLX
+        o30sQwbp3ubHZ2yJ2Ox94jU=
+X-Google-Smtp-Source: ABdhPJxuVgbxtNmHxZe8XmLqrwhnM3JiW3gaijw6IDQCb9UiO1JffwDqHqrVnxqYvCOajuDO2rv+Hw==
+X-Received: by 2002:a9d:7cce:: with SMTP id r14mr1989365otn.204.1604069240086;
+        Fri, 30 Oct 2020 07:47:20 -0700 (PDT)
 Received: from localhost.localdomain (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id s20sm1462856oof.39.2020.10.30.07.47.14
+        by smtp.gmail.com with ESMTPSA id s20sm1462856oof.39.2020.10.30.07.47.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 07:47:16 -0700 (PDT)
+        Fri, 30 Oct 2020 07:47:19 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -58,11 +58,11 @@ Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
         alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
+        linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v10 07/15] ASoC: sun4i-i2s: Fix sun8i volatile regs
-Date:   Fri, 30 Oct 2020 15:46:40 +0100
-Message-Id: <20201030144648.397824-8-peron.clem@gmail.com>
+Subject: [PATCH v10 08/15] ASoC: sun4i-i2s: Fix setting of FIFO modes
+Date:   Fri, 30 Oct 2020 15:46:41 +0100
+Message-Id: <20201030144648.397824-9-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201030144648.397824-1-peron.clem@gmail.com>
 References: <20201030144648.397824-1-peron.clem@gmail.com>
@@ -73,47 +73,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The FIFO TX reg is volatile and sun8i i2s register
-mapping is different from sun4i.
+From: Samuel Holland <samuel@sholland.org>
 
-Even if in this case it's doesn't create an issue,
-Avoid setting some regs that are undefined in sun8i.
+Because SUN4I_I2S_FIFO_CTRL_REG is volatile, writes done while the
+regmap is cache-only are ignored. To work around this, move the
+configuration to a callback that runs while the ASoC core has a
+runtime PM reference to the device.
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Samuel Holland <samuel@sholland.org>
 Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Acked-by: Maxime Ripard <mripard@kernel.org>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 786731191d90..003610c0badf 100644
+index 003610c0badf..4f5cd850752d 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -1162,12 +1162,19 @@ static bool sun8i_i2s_rd_reg(struct device *dev, unsigned int reg)
+@@ -596,6 +596,13 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
  
- static bool sun8i_i2s_volatile_reg(struct device *dev, unsigned int reg)
- {
--	if (reg == SUN8I_I2S_INT_STA_REG)
-+	switch (reg) {
-+	case SUN4I_I2S_FIFO_CTRL_REG:
-+	case SUN4I_I2S_FIFO_RX_REG:
-+	case SUN4I_I2S_FIFO_STA_REG:
-+	case SUN4I_I2S_RX_CNT_REG:
-+	case SUN4I_I2S_TX_CNT_REG:
-+	case SUN8I_I2S_FIFO_TX_REG:
-+	case SUN8I_I2S_INT_STA_REG:
- 		return true;
--	if (reg == SUN8I_I2S_FIFO_TX_REG)
--		return false;
++	/* Set significant bits in our FIFOs */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
++			   SUN4I_I2S_FIFO_CTRL_TX_MODE_MASK |
++			   SUN4I_I2S_FIFO_CTRL_RX_MODE_MASK,
++			   SUN4I_I2S_FIFO_CTRL_TX_MODE(1) |
++			   SUN4I_I2S_FIFO_CTRL_RX_MODE(1));
++
+ 	switch (params_physical_width(params)) {
+ 	case 16:
+ 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+@@ -924,13 +931,6 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return ret;
+ 	}
  
--	return sun4i_i2s_volatile_reg(dev, reg);
-+	default:
-+		return false;
-+	}
- }
+-	/* Set significant bits in our FIFOs */
+-	regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
+-			   SUN4I_I2S_FIFO_CTRL_TX_MODE_MASK |
+-			   SUN4I_I2S_FIFO_CTRL_RX_MODE_MASK,
+-			   SUN4I_I2S_FIFO_CTRL_TX_MODE(1) |
+-			   SUN4I_I2S_FIFO_CTRL_RX_MODE(1));
+-
+ 	i2s->format = fmt;
  
- static const struct reg_default sun4i_i2s_reg_defaults[] = {
+ 	return 0;
 -- 
 2.25.1
 
