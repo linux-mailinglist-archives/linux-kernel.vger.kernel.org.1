@@ -2,90 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123952A0F5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CC72A0F43
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgJ3UVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 16:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33416 "EHLO
+        id S1727599AbgJ3UNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 16:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbgJ3UVE (ORCPT
+        with ESMTP id S1726424AbgJ3UM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 16:21:04 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7F3C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 13:11:22 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kYak4-00017c-Ax; Fri, 30 Oct 2020 21:11:20 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kYak3-0001Wy-MW; Fri, 30 Oct 2020 21:11:19 +0100
-Date:   Fri, 30 Oct 2020 21:11:17 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lokesh Vutla <lokeshvutla@ti.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH] pwm: lp3943: Dynamically allocate pwm chip base
-Message-ID: <20201030201117.x5asfjxh7htwv35s@pengutronix.de>
-References: <20201030134135.28730-1-lokeshvutla@ti.com>
+        Fri, 30 Oct 2020 16:12:26 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C3AC0613D5;
+        Fri, 30 Oct 2020 13:11:28 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id f72so588377pfa.6;
+        Fri, 30 Oct 2020 13:11:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2nVZWZO04zycBikJuA9X0V2AALdDHuFF2+u3DoIbK0M=;
+        b=AZnpsS/q6KDXDlsiuU0SHiFvxOlQaSRQKYq9CfWi7JV5RckrWBG9o5XcXH3Zmi3qwJ
+         1CFCRqVMYJatFzIg9EPfUFyQXrGykhxY8C/3Vv7ntTH3m0iRwun1kyUVqOElc/aZNnJ4
+         4jmzuwqggwDA+Jl7iN4/p39rcASMe+2Gc4ryDRv89QgNKzR8d1y0pwjSqkXfGJWZFQuZ
+         rjMaIhjOwbVYYrVkPxXDr3d9usyGwB7McEaG7UtbR1tUE5J1wCFeZrDo/olTckHVtGnt
+         EBG6NKKzGSEzb+BfeLN2otf2ZPFMQhNtKpZzHc+R7PbO9VGkmPAtf372NU5b9lYfSQ5k
+         ULXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2nVZWZO04zycBikJuA9X0V2AALdDHuFF2+u3DoIbK0M=;
+        b=qzgrXmwsLjzg5ZBWSw7AYJZz9PsvWiYrSN8nwghqhJPs03JjxXAT1GLjEtuWdeIHN/
+         7u7A7bKwmjoMXiFzW85UYhrWXxHxbvF9ILgMe4r9NbOf1Er0USqVkrgbuVqh592Xya2N
+         cYN3FSu384+UGtW9fA+/rnK4GBHVR64aRwg0wpUouDGy9BYo6kgHXMxEtwAJm+50ickT
+         S1nAYvyOSSNjT3G7eCPuqbH8KyHbNqbb1/CW1ej6fDQJA2Ibk0PAJ5sS+gBbqO1Y6pfv
+         x6WxGlcL8a+Wh1dHz62fJid4PKZsZjPm3GKS2hdDhoZVuqPxh+OF4XtEn3CARn8I2ZGe
+         KTPA==
+X-Gm-Message-State: AOAM533618fUZMdzjJwt19WEgphePyIOvMuaYYvHiryiDtvMBVlIbpi2
+        nAPidmKFHy2QcIUXRBAqxqY=
+X-Google-Smtp-Source: ABdhPJxfQAHDYz1Rw9AjHNEdEvVxfry8WnbqLPpXQ488E9GE188OUSSrHa9ty/QEGdwjpW1P83coKg==
+X-Received: by 2002:a63:de07:: with SMTP id f7mr1379407pgg.27.1604088688225;
+        Fri, 30 Oct 2020 13:11:28 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id g22sm6839219pfh.147.2020.10.30.13.11.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 13:11:27 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 13:11:24 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        andrea@borgia.bo.it, Kai Heng Feng <kai.heng.feng@canonical.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Hans De Goede <hdegoede@redhat.com>,
+        DTML <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] dt-bindings: HID: i2c-hid: Label this binding as
+ deprecated
+Message-ID: <20201030201124.GG2547185@dtor-ws>
+References: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
+ <CAO-hwJLn5XKV+cp+fCRY395uBWuX=JrxgiGSHUnJXFpTzFWu4w@mail.gmail.com>
+ <20201030180042.GB3967106@bogus>
+ <CAO-hwJK8c+BrH3u5PMCndv6Jjj6K2z=4nyKMAojD09EcHjBROA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lx67b2e737v6sj34"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201030134135.28730-1-lokeshvutla@ti.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAO-hwJK8c+BrH3u5PMCndv6Jjj6K2z=4nyKMAojD09EcHjBROA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 30, 2020 at 08:12:06PM +0100, Benjamin Tissoires wrote:
+> On Fri, Oct 30, 2020 at 7:00 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Fri, Oct 30, 2020 at 11:51:53AM +0100, Benjamin Tissoires wrote:
+> > > Hi Doug,
+> > >
+> > > Foreword: I was about to say "yeah, whatever" to please Rob for once.
+> >
+> > Read my other reply first... I think we mostly agree.
+> >
+> > > But after re-reading this and more specifically patch 3 of the series,
+> > > that won't do. More comments inlined.
+> > >
+> > > On Sat, Oct 24, 2020 at 1:23 AM Douglas Anderson <dianders@chromium.org> wrote:
+> > > >
+> > > > As pointed out by Rob Herring [1], we should have a device-specific
+> > > > compatible string.  This means people shouldn't be using the
+> > > > "i2c-over-hid" compatible string anymore, or at least not without a
+> > > > more specific compatible string before it.  Specifically:
+> > > >
+> > > > 1. For newly added devices we should just have the device-specific
+> > > >    device string (no "hid-over-i2c" fallback) and infer the timings
+> > > >    and hid-descr-addr from there.
+> > >
+> > > And that's a big NACK from a maintainer point of view. I know in the
+> > > device tree world these strings are important so that people can just
+> > > say "I have a device compatible with X", and go on, but in the HID
+> > > world that means we will have to implement one compatible struct per
+> > > vendor/device, which is not something I want to do.
+> >
+> > It's not really any different than PCI and USB VID/PIDs.
+> 
+> Well, it is, because in the USB (HID) world, there is a specification
+> that provides all of the entry points a device needs. In the i2c-hid
+> case, the only entry point a device needs, in the ACPI world is one
+> register address, and this is provided by ACPI itself. So in the ACPI
+> world, for i2c-hid devices, we don't need to recompile the driver to
+> support any current or new devices.
+> 
+> >
+> > > You can think of it as if you are suddenly saying that because it
+> > > would be easier for a few particular USB devices that need a quirk,
+> > > you "just" need to add the list of *all* USB HID devices that are
+> > > around. i2c-hid should be a driver that doesn't change unless 2 things
+> > > happen:
+> > > - there is a change in the spec
+> > > - there is a specific quirk required for a device that doesn't follow the spec.
+> >
+> > Or does something outside of what the spec covers.
+> 
+> This is solved in the ACPI case by running ACPI callbacks, and I am
+> more and more thinking we should mimic that for DT devices.
 
---lx67b2e737v6sj34
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So this is the root of the problem. I2CHID spec was done for ACPI-based
+systems, with very limited interface between hardware and the kernel and
+all "unplesantness" such as powering up and down devices properly tucked
+safely away into firmware. So there is still a lot of custom code, we
+just do not see it and can pretend it does not exist.
 
-On Fri, Oct 30, 2020 at 07:11:35PM +0530, Lokesh Vutla wrote:
-> When there are other pwm controllers enabled along with pwm-lp3943,
-> pwm-lp3942 is failing to probe with -EEXIST error. This is because
-> other pwm controller is probed first and assigned pwmchip 0 and
-> pwm-lp3943 is requesting for 0 again. In order to avoid this, assign the
-> chip base with -1, so that id is dynamically allocated.
->=20
-> Fixes: af66b3c0934e ("pwm: Add LP3943 PWM driver")
-> Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
+So even in case of "standard" I2C one can not say they do not need to
+recompile to use a new device, they just need to recompile different
+thing (driver vs firmware).
 
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-k=F6nig@pengutronix.de>
+I am still unsure if we want a flexible way of describing power up
+sequence, or simply hard-code based on a given model. Given that here
+are many I2C-HID compatible devices a flexible scheme would be nice IMO.
 
-With this patch applied only the pwm-ab8500 driver is left not using -1
-for base.
+Thanks.
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---lx67b2e737v6sj34
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+cc2EACgkQwfwUeK3K
-7AnkZQgAi/o3YwDU501EKDktgXEeNdF5I0thWm4dv6JY7LYO9/WKSlx/uxpy8SUi
-8yBNHyEVFjPQ/but9ofkXhFpiHZNh7JJeNEvDtVp5l+j7JczCa7s/37LWh/IUldv
-A01zeVXSxdcQOddfWWWiPFSp9RhHD7tztqxVkT3OKezIANmTxo3BHcyJAiadOcap
-adaAR6ukE2aNCU+iKJ030QziHFX3Al/DIr6nv6ORCa+7p/yRg7KWt8wDspWUj2Gb
-VjG7Akm2+Ek0RoWZmBicEe/ZwEDpCoEQ3WxWOutN7esrCTOISJm3Q8U+CWyqKqhn
-OWvjyvqH3g/VlD1V6L9YCHPsdE1XKA==
-=0s0w
------END PGP SIGNATURE-----
-
---lx67b2e737v6sj34--
+-- 
+Dmitry
