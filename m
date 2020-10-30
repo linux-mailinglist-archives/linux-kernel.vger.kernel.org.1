@@ -2,144 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255DD29FC40
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:43:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70DD29FC43
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbgJ3DnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 23:43:04 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:34378 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726397AbgJ3DnB (ORCPT
+        id S1726423AbgJ3DpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 23:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726365AbgJ3DpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 23:43:01 -0400
-Received: from mailhost.synopsys.com (sv1-mailhost2.synopsys.com [10.205.2.132])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 6C7FFC00BE;
-        Fri, 30 Oct 2020 03:42:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1604029380; bh=kjSG/8bFRPHkB2CFhnWfjh3ZEfK5o+yA97DGB8dFr8Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BHCZ7qExbozK0aztY3F+sO2bo5sMXt3MQCMvIei+aHMEQmme6f7GoSn5F6N16QbGa
-         RNLb4mppRiQ47BkQy46JjM/ycrcLEYjAKERrG7ceL1u8pLcORqsiaqA1tHVqV4x2DR
-         yycR2UpJGAcQiQJsvbmtiDy2if7YTifraxJ9emc5QkcoAnQuC9WByhzZjMl4czCIEe
-         Xc/fIKrAM79L5Z17Up4+2japJZOJuPXu+EPvlDmx3Njlj9JrVj0m1Qh7aRm9Ne6nHy
-         ImAZEcP1QTpb7nagOp2YdYB9guHmyCn+GM5GdLRTDXlh5aHEsXU0BWg217aInhbh91
-         icafQBl+WmbRA==
-Received: from vineetg-Latitude-7400.internal.synopsys.com (unknown [10.13.183.89])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 21938A0072;
-        Fri, 30 Oct 2020 03:42:56 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
-To:     linux-snps-arc@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org
-Subject: [PATCH] ARC: [plat-hsdk] Remap CCMs super early in asm boot trampoline
-Date:   Thu, 29 Oct 2020 20:42:54 -0700
-Message-Id: <20201030034254.4166696-1-vgupta@synopsys.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 29 Oct 2020 23:45:00 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B1AC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:45:00 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id k10so3609460wrw.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:45:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CqRQo1k+LyBootWHIaIxWjANkP7ifh1D8uGLNtgxfI4=;
+        b=NfiTO9tOxd9P308/HhlATOrmcqAD62BLyB79f+18OkTCEA10hoCvxR7zLfUXi5/+kp
+         KldGo5NtKuI+jcxjVy8Gqr02bkHtRt9CHRs4hiiazCClbDwj+ENrxo4mvlry36WvX2XG
+         Hfc9cuTHpbt6ectqZUDDpS0EPNxCUjTISiweYb4ETvTml0blH6j96nYm9au7/26Sndje
+         sof5VpViWl/mpTMcsb0obaLPyri3JwFbPh21iSHQHUVLkIqCZXI2MuwteDJOD6YHS4Uh
+         +rZtkkm6S0uUzkjSruu0NHg0Ac0fjVw5fIbTeTtUOzLHPGcjaMC4qA3CN6xaTp9fwL+9
+         ZDag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CqRQo1k+LyBootWHIaIxWjANkP7ifh1D8uGLNtgxfI4=;
+        b=U4784cBpj0NoCeBDZvpsjGc4lsgZYMMmFG/3GxkhGu9VSzwNm9WRXQbrsi/9REiekP
+         HzHFzRxmZYzJ8Z1xonKFcYyiLaC0Lu2nZ0J38Sgk2TsP98pFBPUjdyXUVecYB3l9nDJn
+         R/RLV/u9BsOnpeAk/UZdVDGW6QnALjM5XZu1sGIcA5K1mmVebCqypVCCMfsslNFvih4f
+         rBEomtYWFc+bEMUVPumnJo5FZ+AesAHKXheSUnAAvZVMo2d2wsD1LWzFlJbJKhQkyEEk
+         YpCjaH6VKswkavIW4DqSzWA+sd0dS7oiH65QlpKq0jLhEDSNtfihFbUKyVDVrwabLQhh
+         OPQA==
+X-Gm-Message-State: AOAM5329+IDIPtClVznsQkzrnOa9vTm7BLTzUGKyb9+rs7zgD6sOUI2V
+        VkX7XdLlu4uZqu+gFi/mgHxn0BZ2uVz9iDl6Pbw=
+X-Google-Smtp-Source: ABdhPJyZsaTRPa6cjCtyjtMW3tmQylPLGZh/UEBXCyh2htGgoNYKtpTOtToxkbQ8qz6xDinhIr5w6dbXejWAKDUGNhw=
+X-Received: by 2002:adf:dd8f:: with SMTP id x15mr401458wrl.124.1604029499181;
+ Thu, 29 Oct 2020 20:44:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201026210039.3884312-1-arnd@kernel.org> <20201026210039.3884312-2-arnd@kernel.org>
+In-Reply-To: <20201026210039.3884312-2-arnd@kernel.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 29 Oct 2020 23:44:47 -0400
+Message-ID: <CADnq5_OORogMPV6zrEPGNGJ-jEamkzymdGTyHetrF_9xvoVx_w@mail.gmail.com>
+Subject: Re: [PATCH 2/5] drm/amdgpu: fix incorrect enum type
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Galiffi <david.galiffi@amd.com>,
+        Jun Lei <Jun.Lei@amd.com>, Martin Tsai <martin.tsai@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Wenjing Liu <wenjing.liu@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Hersen Wu <hersenxs.wu@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        abdoulaye berthe <abdoulaye.berthe@amd.com>,
+        jinlong zhang <jinlong.zhang@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ARC HSDK platform stopped booting on released v5.10-rc1, getting stuck
-in startup of non master SMP cores.
+Applied.  Thanks!
 
-This was bisected to upstream commit 7fef431be9c9ac25
-"(mm/page_alloc: place pages to tail in __free_pages_core())"
-That commit itself is harmless, it just exposed a subtle assumption in
-our platform code (hence CC'ing linux-mm just as FYI in case some other
-arches / platforms trip on it).
+Alex
 
-The upstream commit is semantically disruptive as it reverses the order
-of page allocations (actually it can be good test for hardware
-verification to exercise different memory patterns altogether).
-For ARC HSDK platform that meant a remapped memory region (pertaining to
-unused Closely Coupled Memory) started getting used early for dynamice
-allocations, while not effectively remapped on all the cores, triggering
-memory error exception on those cores.
-
-The fix is to move the CCM remapping from early platform code to to early core
-boot code. And while it is undesirable to riddle common boot code with
-platform quirks, there is no other way to do this since the faltering code
-involves setting up stack itself so even function calls are not allowed at
-that point.
-
-If anyone is interested, all the gory details can be found at Link below.
-
-Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/32
-Cc: David Hildenbrand <david@redhat.com>
-Cc: linux-mm@kvack.org
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
----
- arch/arc/kernel/head.S        | 17 ++++++++++++++++-
- arch/arc/plat-hsdk/platform.c | 17 -----------------
- 2 files changed, 16 insertions(+), 18 deletions(-)
-
-diff --git a/arch/arc/kernel/head.S b/arch/arc/kernel/head.S
-index 17fd1ed700cc..9152782444b5 100644
---- a/arch/arc/kernel/head.S
-+++ b/arch/arc/kernel/head.S
-@@ -67,7 +67,22 @@
- 	sr	r5, [ARC_REG_LPB_CTRL]
- 1:
- #endif /* CONFIG_ARC_LPB_DISABLE */
--#endif
-+
-+	/* On HSDK, CCMs need to remapped super early */
-+#ifdef CONFIG_ARC_SOC_HSDK
-+	mov	r6, 0x60000000
-+	lr	r5, [ARC_REG_ICCM_BUILD]
-+	breq	r5, 0, 1f
-+	sr	r6, [ARC_REG_AUX_ICCM]
-+1:
-+	lr	r5, [ARC_REG_DCCM_BUILD]
-+	breq	r5, 0, 2f
-+	sr	r6, [ARC_REG_AUX_DCCM]
-+2:
-+#endif	/* CONFIG_ARC_SOC_HSDK */
-+
-+#endif	/* CONFIG_ISA_ARCV2 */
-+
- 	; Config DSP_CTRL properly, so kernel may use integer multiply,
- 	; multiply-accumulate, and divide operations
- 	DSP_EARLY_INIT
-diff --git a/arch/arc/plat-hsdk/platform.c b/arch/arc/plat-hsdk/platform.c
-index 0b63fc095b99..b3ea1fa11f87 100644
---- a/arch/arc/plat-hsdk/platform.c
-+++ b/arch/arc/plat-hsdk/platform.c
-@@ -17,22 +17,6 @@ int arc_hsdk_axi_dmac_coherent __section(".data") = 0;
- 
- #define ARC_CCM_UNUSED_ADDR	0x60000000
- 
--static void __init hsdk_init_per_cpu(unsigned int cpu)
--{
--	/*
--	 * By default ICCM is mapped to 0x7z while this area is used for
--	 * kernel virtual mappings, so move it to currently unused area.
--	 */
--	if (cpuinfo_arc700[cpu].iccm.sz)
--		write_aux_reg(ARC_REG_AUX_ICCM, ARC_CCM_UNUSED_ADDR);
--
--	/*
--	 * By default DCCM is mapped to 0x8z while this area is used by kernel,
--	 * so move it to currently unused area.
--	 */
--	if (cpuinfo_arc700[cpu].dccm.sz)
--		write_aux_reg(ARC_REG_AUX_DCCM, ARC_CCM_UNUSED_ADDR);
--}
- 
- #define ARC_PERIPHERAL_BASE	0xf0000000
- #define CREG_BASE		(ARC_PERIPHERAL_BASE + 0x1000)
-@@ -339,5 +323,4 @@ static const char *hsdk_compat[] __initconst = {
- MACHINE_START(SIMULATION, "hsdk")
- 	.dt_compat	= hsdk_compat,
- 	.init_early     = hsdk_init_early,
--	.init_per_cpu	= hsdk_init_per_cpu,
- MACHINE_END
--- 
-2.25.1
-
+On Mon, Oct 26, 2020 at 5:01 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> core_link_write_dpcd() returns enum dc_status, not ddc_result:
+>
+> display/dc/core/dc_link_dp.c: In function 'dp_set_panel_mode':
+> display/dc/core/dc_link_dp.c:4237:11: warning: implicit conversion from 'enum dc_status' to 'enum ddc_result'
+> [-Wenum-conversion]
+>
+> Avoid the warning by using the correct enum in the caller.
+>
+> Fixes: 0b226322434c ("drm/amd/display: Synchronous DisplayPort Link Training")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+> index ff1e9963ec7a..98464886341f 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+> @@ -4230,7 +4230,7 @@ void dp_set_panel_mode(struct dc_link *link, enum dp_panel_mode panel_mode)
+>
+>                 if (edp_config_set.bits.PANEL_MODE_EDP
+>                         != panel_mode_edp) {
+> -                       enum ddc_result result = DDC_RESULT_UNKNOWN;
+> +                       enum dc_status result = DC_ERROR_UNEXPECTED;
+>
+>                         edp_config_set.bits.PANEL_MODE_EDP =
+>                         panel_mode_edp;
+> @@ -4240,7 +4240,7 @@ void dp_set_panel_mode(struct dc_link *link, enum dp_panel_mode panel_mode)
+>                                 &edp_config_set.raw,
+>                                 sizeof(edp_config_set.raw));
+>
+> -                       ASSERT(result == DDC_RESULT_SUCESSFULL);
+> +                       ASSERT(result == DC_OK);
+>                 }
+>         }
+>         DC_LOG_DETECTION_DP_CAPS("Link: %d eDP panel mode supported: %d "
+> --
+> 2.27.0
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
