@@ -2,61 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B8029FADC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1FC29FAEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgJ3Bw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 21:52:28 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7100 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726350AbgJ3BwS (ORCPT
+        id S1726156AbgJ3Byt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 21:54:49 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:35224 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgJ3Byt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 21:52:18 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CMlg60RdbzLmp9;
-        Fri, 30 Oct 2020 09:52:18 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 30 Oct
- 2020 09:52:15 +0800
-Subject: Re: [f2fs-dev] [PATCH v5 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
- ioctl
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <kernel-team@android.com>, "Daeho Jeong" <daehojeong@google.com>
-References: <20201029041538.4165209-1-daeho43@gmail.com>
- <20201029041538.4165209-2-daeho43@gmail.com>
- <92f4da8e-27a1-7577-84f9-39038eaa88cb@huawei.com>
- <20201029155453.GB849@sol.localdomain>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <69dfcb36-158c-e524-494c-6c5377a56945@huawei.com>
-Date:   Fri, 30 Oct 2020 09:52:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Thu, 29 Oct 2020 21:54:49 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09U1p1mn195227;
+        Fri, 30 Oct 2020 01:54:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=9BwIeQoynB864aanJXPNY53QHQixtwGUBJ8VvBjvPy0=;
+ b=UGqKo3vYLw/Zyj51N8hNzIcI8Jmp7POHk+8JBD2SkijIKlRvun0D/r77Gec596/BwVLS
+ Gm1m1tN6B4E6vuibk3oF7O0pi6UXt1zha2PAeKx2tu1kStRyRId4JkQydEPq3lrk2FOb
+ 6DrCCgYW053Fxm6+ZNLg+bKhPzvhaCRj2Www4rXR+s4yYf0+eZDMclGg698UjhmvHOTv
+ usvaIqMgx+emHY/LP/yPw1pjB1Gs+jE5EOtBJd45MB+VNLdf+quPRssasLYOWQJnt6+X
+ uyBTTrAeZXKqhvOIukGSU6tMMOeA92Rn855Tj6vC5leBLGdEERZnAdLzMRi2wWEzAK+l Ig== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 34cc7m7pd2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 30 Oct 2020 01:54:39 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09U1oXsD189072;
+        Fri, 30 Oct 2020 01:52:39 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 34cwuqf0t5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Oct 2020 01:52:39 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09U1qYLU031468;
+        Fri, 30 Oct 2020 01:52:35 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 29 Oct 2020 18:52:34 -0700
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>, Arnd Bergmann <arnd@arndb.de>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org
+Subject: Re: [PATCH 1/2] libfc: move scsi/fc_encode.h to libfc
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1y2jo1nvx.fsf@ca-mkp.ca.oracle.com>
+References: <20201026160705.3706396-1-arnd@kernel.org>
+Date:   Thu, 29 Oct 2020 21:52:30 -0400
+In-Reply-To: <20201026160705.3706396-1-arnd@kernel.org> (Arnd Bergmann's
+        message of "Mon, 26 Oct 2020 17:06:12 +0100")
 MIME-Version: 1.0
-In-Reply-To: <20201029155453.GB849@sol.localdomain>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 adultscore=0 malwarescore=0 mlxlogscore=999 suspectscore=1
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010300011
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=1
+ priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010300011
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/29 23:54, Eric Biggers wrote:
-> Note that my intent with recommending ENOPKG was for it to be returned in the
-> !f2fs_cops[algorithm] case, similar to how opening an encrypted file when the
-> encryption algorithm is recognized but not supported by the kernel returns
-> ENOPKG.  For a truly unrecognized algorithm (algorithm >= COMPRESS_MAX), EINVAL
-> would probably be more appropriate.  So if !f2fs_cops[algorithm] is now allowed,
-> then ENOPKG should no longer be among the error codes this ioctl returns.
 
-Agreed.
+Arnd,
 
-Thanks,
+> Most of this file is only used inside of libfc, so move it to where it
+> is actually used, with only fc_fill_fc_hdr() left inside of the
+> header.
 
-> 
-> - Eric
-> .
-> 
+Applied to 5.11/scsi-staging, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
