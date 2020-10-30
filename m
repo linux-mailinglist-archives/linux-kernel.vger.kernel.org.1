@@ -2,151 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF8A2A021B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6DD2A021E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726220AbgJ3KGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgJ3KGn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:06:43 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAB9C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:06:43 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id q1so402106qvn.5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:06:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tELbhXfQariElQPBOqAGKxNGlZL8E/ZXdebHFJy/Swk=;
-        b=dELZIPtiqtXpHQ7fjyuo6GNNLMPs9DWb1SMjCY5eGwM76MPPy2eDyZ83N4PcOAIdw4
-         azxWdm/nMgQB+vwbL7e+vM6rC8RxvpnG8J0HI2DVrPTRokppZTH1IRHAaNNtdbJ4e0fl
-         QTjg0w+zCa3J9iS69rMs9evPg5HihkvUxD4Gjqi5UdZzKfYHq3qWqGxmzlkLTAmQ4yO8
-         2/lSCoVhAhMykIiGXz2yfbE0KeBjUBSU/4mPnf76/PzSPtX3LigZ4+mYrLTFUNo2W1sY
-         huVfAUajc8PLsdlzL+Zec2BKncYiE/5Gp8Um1ls03omFXuz23v8lQvEhHYlf5mRRJTI6
-         B9Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tELbhXfQariElQPBOqAGKxNGlZL8E/ZXdebHFJy/Swk=;
-        b=r2+Hyk0BxNkCgN1GikT+OkG9s9xdiuLdq7mDPjTGckVyG/x5CAGTXv49FH6J5F7rDx
-         +/HTBs4+HGGyUHJaBl5EQ1BZqLmuFmWSkDAtO8ecpp58kN3cCMBQR4ueVihjV/8kljwB
-         wuMNd/QzfqBIgS5rQrUM4gqIvBe23YGDTXFIKt671uKG2adJF2jFUyNwF8nqCOGu/8hk
-         cnKLOk9oKaubcS9MqWALPWguxrwCCyU/XFIA/WhPjmgGWmYlygh9+q/F2IltutqeqK98
-         JI/in7OvqzzxRTcPB1eSVJ10NgiQOp9egz7NOCxBS8raMp+7gs1KI6gMMTZiQ3kSLsUU
-         2fuw==
-X-Gm-Message-State: AOAM53359/Y/+8Q4jsxrlTdioBFDJbrvzg6oOFaPs2kDaVibfFjXpBo3
-        iVlzvKWSIvwR8JmYeBgiOBHaPUJwqoFidqsr5Oe+XQ==
-X-Google-Smtp-Source: ABdhPJwc1+7TcV9MSi+z6TcWtLeHmWbO58lYC2oSiF2SxLlKXLntRRFRSM9/doT/IR40mAYb6sLnwqstaBc+DrKnU/M=
-X-Received: by 2002:ad4:414d:: with SMTP id z13mr8680267qvp.37.1604052402013;
- Fri, 30 Oct 2020 03:06:42 -0700 (PDT)
+        id S1726274AbgJ3KHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:07:04 -0400
+Received: from mga06.intel.com ([134.134.136.31]:21461 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726019AbgJ3KHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:07:04 -0400
+IronPort-SDR: vCs6nUcPpXGwgXKuS1vpTQ3k4dXS69SrcEspUeyQv99tJBi7uEw8Bu1dYlNON3ZeZ2kfR4UDFK
+ xmEZ40PtdtIw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="230221625"
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="230221625"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 03:07:03 -0700
+IronPort-SDR: B+dFTSx9H2RpfWItIplOW5X6Z6paV7eHCGfCwgj60zhUPW+qIcTWBl10ZRoPyjBgzTfCZlGJkp
+ 3qKEm+MIzz1w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="525843590"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Oct 2020 03:07:02 -0700
+Received: from [10.255.142.248] (vramuthx-MOBL1.gar.corp.intel.com [10.255.142.248])
+        by linux.intel.com (Postfix) with ESMTP id 7EB2B5808A3;
+        Fri, 30 Oct 2020 03:06:58 -0700 (PDT)
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Subject: Re: [RESENDPATCH v15 2/2] mtd: rawnand: Add NAND controller support
+ on Intel LGM SoC
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     vigneshr@ti.com, tudor.ambarus@microchip.com,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        robh+dt@kernel.org, boris.brezillon@collabora.com,
+        devicetree@vger.kernel.org, simon.k.r.goldschmidt@gmail.com,
+        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com
+References: <20201026073021.33327-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201026073021.33327-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201028112037.326c06e2@xps13>
+ <ab2b0b7a-93b6-51e4-ec08-7af4f4f38745@linux.intel.com>
+ <20201030092329.280466d9@xps13>
+From:   "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <42724eab-7840-27f2-31ad-b5bc10fd89fd@linux.intel.com>
+Date:   Fri, 30 Oct 2020 18:06:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <00000000000030a45905aedd879d@google.com> <20200909134317.19732-1-hdanton@sina.com>
- <4d55d988-d45e-ba36-fed7-342e0a6ab16e@kernel.dk> <20200909153235.joqj6hjyxug3wtwv@steredhat>
-In-Reply-To: <20200909153235.joqj6hjyxug3wtwv@steredhat>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 30 Oct 2020 11:06:30 +0100
-Message-ID: <CACT4Y+ZpzjQgFCaOD00oP17sFcsFNvFyShY-ydoJGQnGEKri1w@mail.gmail.com>
-Subject: Re: INFO: task hung in io_sq_thread_stop
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+3c23789ea938faaef049@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201030092329.280466d9@xps13>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 5:32 PM Stefano Garzarella <sgarzare@redhat.com> wrote:
->
-> On Wed, Sep 09, 2020 at 08:05:33AM -0600, Jens Axboe wrote:
-> > On 9/9/20 7:43 AM, Hillf Danton wrote:
-> > >
-> > > On Wed, 9 Sep 2020 12:03:55 +0200 Stefano Garzarella wrote:
-> > >> On Wed, Sep 09, 2020 at 01:49:22AM -0700, syzbot wrote:
-> > >>> Hello,
-> > >>>
-> > >>> syzbot found the following issue on:
-> > >>>
-> > >>> HEAD commit:    dff9f829 Add linux-next specific files for 20200908
-> > >>> git tree:       linux-next
-> > >>> console output: https://syzkaller.appspot.com/x/log.txt?x=112f880d900000
-> > >>> kernel config:  https://syzkaller.appspot.com/x/.config?x=37b3426c77bda44c
-> > >>> dashboard link: https://syzkaller.appspot.com/bug?extid=3c23789ea938faaef049
-> > >>> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > >>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c082a5900000
-> > >>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1474f5f9900000
-> > >>>
-> > >>> Bisection is inconclusive: the first bad commit could be any of:
-> > >>>
-> > >>> d730b1a2 io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
-> > >>> 7ec3d1dd io_uring: allow disabling rings during the creation
-> > >>
-> > >> I'm not sure it is related, but while rebasing I forgot to update the
-> > >> right label in the error path.
-> > >>
-> > >> Since the check of ring state is after the increase of ctx refcount, we
-> > >> need to decrease it jumping to 'out' label instead of 'out_fput':
-> > >
-> > > I think we need to fix 6a7bb9ff5744 ("io_uring: remove need for
-> > > sqd->ctx_lock in io_sq_thread()") because the syzbot report
-> > > indicates the io_sq_thread has to wake up the kworker before
-> > > scheduling, and in turn the kworker has the chance to unpark it.
-> > >
-> > > Below is the minimum walkaround I can have because it can't
-> > > ensure the parker will be waken in every case.
-> > >
-> > > --- a/fs/io_uring.c
-> > > +++ b/fs/io_uring.c
-> > > @@ -6834,6 +6834,10 @@ static int io_sq_thread(void *data)
-> > >                     io_sq_thread_drop_mm();
-> > >             }
-> > >
-> > > +           if (kthread_should_park()) {
-> > > +                   /* wake up parker before scheduling */
-> > > +                   continue;
-> > > +           }
-> > >             if (ret & SQT_SPIN) {
-> > >                     io_run_task_work();
-> > >                     cond_resched();
-> > >
-> >
-> > I think this should go in the slow path:
-> >
-> >
-> > diff --git a/fs/io_uring.c b/fs/io_uring.c
-> > index 652cc53432d4..1c4fa2a0fd82 100644
-> > --- a/fs/io_uring.c
-> > +++ b/fs/io_uring.c
-> > @@ -6839,6 +6839,8 @@ static int io_sq_thread(void *data)
-> >               } else if (ret == SQT_IDLE) {
-> >                       list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
-> >                               io_ring_set_wakeup_flag(ctx);
-> > +                     if (kthread_should_park())
-> > +                             continue;
-> >                       schedule();
-> >                       start_jiffies = jiffies;
-> >               }
-> >
->
-> Yes, I agree since only in this case the kthread is not rescheduled.
->
-> Thanks both for the fix :-)
-> Feel free to add my R-b:
->
-> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Hi Miquel,
 
-What happened with this fix?
-The bug is marked as fixed with commit "io_uring: don't sleep schedule
-in SQPOLL thread if we need to park":
-https://syzkaller.appspot.com/bug?id=d0cf0b29fc5520a8987b28f1a7b63264ae02535e
-But such commit cannot be found in any tree.
+On 30/10/2020 4:23 pm, Miquel Raynal wrote:
+> Hello,
+> 
+>>>> +static const struct nand_controller_ops ebu_nand_controller_ops = {
+>>>> +	.attach_chip = ebu_nand_attach_chip,
+>>>> +	.setup_interface = ebu_nand_set_timings,
+>>>> +	.exec_op = ebu_nand_exec_op,
+>>>> +};
+>>>> +
+>>>> +static void ebu_dma_cleanup(struct ebu_nand_controller *ebu_host)
+>>>> +{
+>>>> +	if (ebu_host->dma_rx)
+>>>> +		dma_release_channel(ebu_host->dma_rx);
+>>>> +
+>>>> +	if (ebu_host->dma_tx)
+>>>> +		dma_release_channel(ebu_host->dma_tx);
+>>>> +}
+>>>> +
+>>>> +static int ebu_nand_probe(struct platform_device *pdev)
+>>>> +{
+>>>> +	struct device *dev = &pdev->dev;
+>>>> +	struct ebu_nand_controller *ebu_host;
+>>>> +	struct nand_chip *nand;
+>>>> +	struct mtd_info *mtd;
+>>>> +	struct resource *res;
+>>>> +	char *resname;
+>>>> +	int ret, i;
+>>>> +	u32 reg;
+>>>> +
+>>>> +	ebu_host = devm_kzalloc(dev, sizeof(*ebu_host), GFP_KERNEL);
+>>>> +	if (!ebu_host)
+>>>> +		return -ENOMEM;
+>>>> +
+>>>> +	ebu_host->dev = dev;
+>>>> +	nand_controller_init(&ebu_host->controller);
+>>>> +
+>>>> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ebunand");
+>>>> +	ebu_host->ebu = devm_ioremap_resource(&pdev->dev, res);
+>>>> +	if (IS_ERR(ebu_host->ebu))
+>>>> +		return PTR_ERR(ebu_host->ebu);
+>>>> +
+>>>> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hsnand");
+>>>> +	ebu_host->hsnand = devm_ioremap_resource(&pdev->dev, res);
+>>>> +	if (IS_ERR(ebu_host->hsnand))
+>>>> +		return PTR_ERR(ebu_host->hsnand);
+>>>> +
+>>>> +	ret = device_property_read_u32(dev, "nand,cs", &reg);
+>>>
+>>> There is no nand,cs property. Use 'reg' instead.
+>> Noted.
+>>>    
+>>>> +	if (ret) {
+>>>> +		dev_err(dev, "failed to get chip select: %d\n", ret);
+>>>> +		return ret;
+>>>> +	}
+>>>> +	ebu_host->cs_num = reg;
+>>>
+>>> The following for loop is weird, above you can only store a single cs
+>>> number, while below you seem to reserve serveral memory areas. Please
+>>> clarify this code.
+>> This IP supports 2 chip select for 2 different memory regions so we used the below for loop, as per reviewers comment updated.
+>> 		 EBU_CS0_BASE     0xE1C0_0000 (Memory-Mapped)
+>> 		 EBU_CS0_IO_BASE  0x1740_0000 (FPI I/O Mapped)
+>>
+>>                    EBU_CS1_BASE     0xE140_0000 (Memory-Mapped)
+>>                    EBU_CS1_IO_BASE  0x17C0_0000 (FPI I/O Mapped)
+> 
+> Please make a difference between, "there are two CS, either can be
+> picked but we can use only one in this driver" or "there are two CS,
+> one or both can be used". You can start with supporting a single CS (no
+> matter which one is picked by the user with the reg property) but in
+> this case there is no such for loop because only 1 CS is used. Or you
+> can decide that both CS can be populated and in this case you must
+> handle this in ->select_chip().
+Sure, I will hadle the same as per your suggestion, thanks a lot!
+
+Regards
+Vadivel
+> 
+>>
+>>>    
+>>>> +
+>>>> +	for (i = 0; i < MAX_CS; i++) {
+>>>> +		resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", i);
+>>>> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+>>>> +						   resname);
+>>>> +		ebu_host->cs[i].chipaddr = devm_ioremap_resource(dev, res);
+>>>> +		ebu_host->cs[i].nand_pa = res->start;
+>>>> +		if (IS_ERR(ebu_host->cs[i].chipaddr))
+>>>> +			return PTR_ERR(ebu_host->cs[i].chipaddr);
+>>>> +	}
+>>>> +
+>>>> +	ebu_host->clk = devm_clk_get(dev, NULL);
+>>>> +	if (IS_ERR(ebu_host->clk))
+>>>> +		return dev_err_probe(dev, PTR_ERR(ebu_host->clk),
+>>>> +				     "failed to get clock\n");
+>>>> +
+>>>> +	ret = clk_prepare_enable(ebu_host->clk);
+>>>> +	if (ret) {
+>>>> +		dev_err(dev, "failed to enable clock: %d\n", ret);
+>>>> +		return ret;
+>>>> +	}
+>>>> +	ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
+>>>> +
+>>>> +	ebu_host->dma_tx = dma_request_chan(dev, "tx");
+>>>> +	if (IS_ERR(ebu_host->dma_tx))
+>>>> +		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
+>>>> +				     "failed to request DMA tx chan!.\n");
+>>>> +
+>>>> +	ebu_host->dma_rx = dma_request_chan(dev, "rx");
+>>>> +	if (IS_ERR(ebu_host->dma_rx))
+>>>> +		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
+>>>> +				     "failed to request DMA rx chan!.\n");
+>>>> +
+>>>> +	for (i = 0; i < MAX_CS; i++) {
+>>>> +		resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", i);
+>>>> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+>>>> +						   resname);
+>>>> +		if (!res)
+>>>> +			return -EINVAL;
+>>>> +		ebu_host->cs[i].addr_sel = res->start;
+>>>> +		writel(ebu_host->cs[i].addr_sel | EBU_ADDR_MASK(5) |
+>>>> +		       EBU_ADDR_SEL_REGEN, ebu_host->ebu + EBU_ADDR_SEL(i));
+>>>> +	}
+>>>> +
+>>>> +	nand_set_flash_node(&ebu_host->chip, dev->of_node);
+>>>> +	if (!mtd->name) {
+>>>> +		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
+>>>> +		return -EINVAL;
+>>>> +	}
+>>>> +
+>>>> +	mtd = nand_to_mtd(&ebu_host->chip);
+>>>> +	mtd->dev.parent = dev;
+>>>> +	ebu_host->dev = dev;
+>>>> +
+>>>> +	platform_set_drvdata(pdev, ebu_host);
+>>>> +	nand_set_controller_data(&ebu_host->chip, ebu_host);
+>>>> +
+>>>> +	nand = &ebu_host->chip;
+>>>> +	nand->controller = &ebu_host->controller;
+>>>> +	nand->controller->ops = &ebu_nand_controller_ops;
+>>>> +
+>>>> +	/* Scan to find existence of the device */
+>>>> +	ret = nand_scan(&ebu_host->chip, 1);
+>>>> +	if (ret)
+>>>> +		goto err_cleanup_dma;
+>>>> +
+>>>> +	ret = mtd_device_register(mtd, NULL, 0);
+>>>> +	if (ret)
+>>>> +		goto err_clean_nand;
+>>>> +
+>>>> +	return 0;
+>>>> +
+>>>> +err_clean_nand:
+>>>> +	nand_cleanup(&ebu_host->chip);
+>>>> +err_cleanup_dma:
+>>>> +	ebu_dma_cleanup(ebu_host);
+>>>> +	clk_disable_unprepare(ebu_host->clk);
+>>>> +
+>>>> +	return ret;
+>>>> +}
+>>>> +
+>>>> +static int ebu_nand_remove(struct platform_device *pdev)
+>>>> +{
+>>>> +	struct ebu_nand_controller *ebu_host = platform_get_drvdata(pdev);
+>>>> +	int ret;
+>>>> +
+>>>> +	ret = mtd_device_unregister(nand_to_mtd(&ebu_host->chip));
+>>>> +	WARN_ON(ret);
+>>>> +	nand_cleanup(&ebu_host->chip);
+>>>> +	ebu_nand_disable(&ebu_host->chip);
+>>>> +	ebu_dma_cleanup(ebu_host);
+>>>> +	clk_disable_unprepare(ebu_host->clk);
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +static const struct of_device_id ebu_nand_match[] = {
+>>>> +	{ .compatible = "intel,nand-controller", },
+>>>
+>>> No version or soc in the compatible? (not mandatory).
+>> Yes, you're right, it should be "intel,lgm-ebunand", but this same driver supports 2 dfferent SOC's , that's the reason kept as generic
+>> "intel,nand-controller"
+> 
+> In this case I guess declaring two compatibles is the way to go.
+> 
+> 
+> Thanks,
+> Miquèl
+> 
