@@ -2,111 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0421F2A00D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 889672A00D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgJ3JJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgJ3JJ4 (ORCPT
+        id S1726292AbgJ3JJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:09:53 -0400
+Received: from mail-out.m-online.net ([212.18.0.9]:51487 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgJ3JJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:09:56 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666D6C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:09:56 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a9so5571308wrg.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:09:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bfUnFTOfSXFG25x3BnIgOzcDN4IPlLEtsgB9WMJzOuA=;
-        b=eSDiZBsdVeZ8YhjpBNK5ZgQZWSgQI5Mysm8lQ5TsGB2ZqMUdGhEFIZP0VVXlfMcKUm
-         LwPd8O3SIgi+6vu/tXHEeeU5K9mHbQELrYgErcweripmTqaSfkaydOeJidaFvanXfJF2
-         8NsNV450bLQ0tB+LEYEGZIkv3HbBIQr4uUz9AT3g7vq97ZJtf/SbHZk/vpqr1f0nSmmh
-         RzYdh3Yli3/CeK2CMtGvCgC50qQAT7iXmNNKrUEa0VVC3fDCR7zFXvsl7GFmDapfrU2W
-         LRzQo9BWPe95GLGk0Mur0lzUE7SqBeACwPzrbqLJ8ONVm2cUNvOj1miLDmYYNjlcSxK+
-         FNUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bfUnFTOfSXFG25x3BnIgOzcDN4IPlLEtsgB9WMJzOuA=;
-        b=bdQBIrji0Y124dGfZpoGv+LmWfpgKjY61bE3qP/pXPRjTZnbmbMuBhXicRP/kg/Iub
-         AuveXM4CAs6UPHzt+V0AVxts8CYWQhGffpNYgOxbs0F25S32+MD1pzlgkjZkR+TIvZQH
-         EwNcW8hHRfbhTFNXnYQgB/VL07EVWds5keBUiE4hLdtCxOEncE9QUmniA4mnvik0XD3U
-         ydgd3azwbnkcSR5OdYkmzj+iCLDcCWKTnRlBUbgr04ftieEvZ5HGxxagx5eBdJZemiY4
-         J87xsFCZ0A6+DvytfMs9kOutAQ2lLTHi7ywCWzKmpmG3TviohD9m1VUJqxxoTNlhulZl
-         vzMw==
-X-Gm-Message-State: AOAM532v8zDImjxeJzjt2oZQrJS8dy4Pcsc6WcGb1Y8NzxQ/J2WJgPQ1
-        fBWzlvcb86XM2xVFjhEiDSrFUgw6KImNrjbx0nQxsA==
-X-Google-Smtp-Source: ABdhPJyA9i/Zk/3TmJNQX1c4BPqrlSQfKCOiUmrNfi7O3zDzfW1MV/RUDeOTVF3R3BgHfJ1Qhnt5xSnKRxgMdqlarFM=
-X-Received: by 2002:a5d:6681:: with SMTP id l1mr1797680wru.356.1604048995074;
- Fri, 30 Oct 2020 02:09:55 -0700 (PDT)
+        Fri, 30 Oct 2020 05:09:52 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4CMxMx5vhpz1qs0Y;
+        Fri, 30 Oct 2020 10:09:49 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4CMxMx4dgTz1qsWc;
+        Fri, 30 Oct 2020 10:09:49 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id wAF-Y83BoLiQ; Fri, 30 Oct 2020 10:09:48 +0100 (CET)
+X-Auth-Info: 4AtbbN48/aZMiOAZFS4xlKpOKabhtpCSh7fP3AYSsvWeDjdfAfWjfqVMzEwh5No5
+Received: from igel.home (ppp-46-244-190-51.dynamic.mnet-online.de [46.244.190.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri, 30 Oct 2020 10:09:48 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+        id 2DAC62C089E; Fri, 30 Oct 2020 10:09:48 +0100 (CET)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] powerpc/32s: Setup the early hash table at all time.
+References: <b8f8101c368b8a6451844a58d7bd7d83c14cf2aa.1601566529.git.christophe.leroy@csgroup.eu>
+        <87wnz8vizm.fsf@igel.home> <87y2jouw8k.fsf@mpe.ellerman.id.au>
+X-Yow:  NOT fucking!! Also not a PACKAGE of LOOSE-LEAF PAPER!!
+Date:   Fri, 30 Oct 2020 10:09:48 +0100
+In-Reply-To: <87y2jouw8k.fsf@mpe.ellerman.id.au> (Michael Ellerman's message
+        of "Fri, 30 Oct 2020 16:19:07 +1100")
+Message-ID: <87v9esaxlv.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20201028232759.1928479-1-atish.patra@wdc.com> <20201028232759.1928479-4-atish.patra@wdc.com>
-In-Reply-To: <20201028232759.1928479-4-atish.patra@wdc.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 30 Oct 2020 14:39:43 +0530
-Message-ID: <CAAhSdy0bgeCLYNTELdyFPj9_W1N6kDTwS6rUmLLnM=N3pTAp0g@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/3] RISC-V: Enable Microchip PolarFire ICICLE SoC
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>, devicetree@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Padmarao Begari <padmarao.begari@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Cyril.Jean@microchip.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 4:58 AM Atish Patra <atish.patra@wdc.com> wrote:
->
-> Enable Microchip PolarFire ICICLE soc config in defconfig.
-> It allows the default upstream kernel to boot on PolarFire ICICLE board.
->
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/configs/defconfig | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-> index d222d353d86d..2660fa05451e 100644
-> --- a/arch/riscv/configs/defconfig
-> +++ b/arch/riscv/configs/defconfig
-> @@ -16,6 +16,7 @@ CONFIG_EXPERT=y
->  CONFIG_BPF_SYSCALL=y
->  CONFIG_SOC_SIFIVE=y
->  CONFIG_SOC_VIRT=y
-> +CONFIG_SOC_MICROCHIP_POLARFIRE=y
->  CONFIG_SMP=y
->  CONFIG_JUMP_LABEL=y
->  CONFIG_MODULES=y
-> @@ -79,6 +80,9 @@ CONFIG_USB_OHCI_HCD=y
->  CONFIG_USB_OHCI_HCD_PLATFORM=y
->  CONFIG_USB_STORAGE=y
->  CONFIG_USB_UAS=y
-> +CONFIG_SDHCI=y
-> +CONFIG_MMC_SDHCI_PLTFM=y
-> +CONFIG_MMC_SDHCI_CADENCE=y
->  CONFIG_MMC=y
->  CONFIG_MMC_SPI=y
->  CONFIG_RTC_CLASS=y
-> --
-> 2.25.1
->
+On Okt 30 2020, Michael Ellerman wrote:
 
-Looks good to me.
+> Andreas Schwab <schwab@linux-m68k.org> writes:
+>> On Okt 01 2020, Christophe Leroy wrote:
+>>
+>>> At the time being, an early hash table is set up when
+>>> CONFIG_KASAN is selected.
+>>>
+>>> There is nothing wrong with setting such an early hash table
+>>> all the time, even if it is not used. This is a statically
+>>> allocated 256 kB table which lies in the init data section.
+>>>
+>>> This makes the code simpler and may in the future allow to
+>>> setup early IO mappings with fixmap instead of hard coding BATs.
+>>>
+>>> Put create_hpte() and flush_hash_pages() in the .ref.text section
+>>> in order to avoid warning for the reference to early_hash[]. This
+>>> reference is removed by MMU_init_hw_patch() before init memory is
+>>> freed.
+>>
+>> This breaks booting on the iBook G4.
+>
+> Do you get an oops or anything?
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+Nope, nothing at all.
 
-Regards,
-Anup
+Andreas.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
