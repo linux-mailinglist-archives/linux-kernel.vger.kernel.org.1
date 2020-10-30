@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7C229FBB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D79B329FBB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726295AbgJ3CuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 22:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
+        id S1726320AbgJ3CuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 22:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725963AbgJ3CuK (ORCPT
+        with ESMTP id S1725963AbgJ3CuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 22:50:10 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71BAC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:50:09 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id d25so5309178ljc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:50:09 -0700 (PDT)
+        Thu, 29 Oct 2020 22:50:16 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8087C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:50:15 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id d24so5306391ljg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 19:50:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kiZ/FvhUKgnzktM7r0SIhiQ+o9jRSo0aasuFIIfF3Y4=;
-        b=cI/RSXbZ3J08HVkL+vxrbM0y0ixEiW+UufDqi9EAkN5pqVxxegRDoJPui5zHfZ7qjJ
-         W8J63y0QQOu8sjqOyYPK2vOVdbuWG8XtwGWniWLz3CsMmEp9olTucaQhSUiHdGohBk9s
-         HCF02zZFCKFSvDrXYT3Jcd3/Dfg2xKE+Jo7v9WHylqDTi35IZRyIolZA3vpGaLIlo5SR
-         8sbesLXWXbq5qxOr76b+jAy8CSLL9RIjyZiGrFk6bz02n2Fw/atjkAG3KwkVj8bq3LkC
-         GCP/2Oop9izxkyn5RHaKefvSPajk5eXfdHcNgyE7zZ8gG7pjo7ejTNlbjHakBsLWi3SU
-         8PBw==
+        bh=29/mvfnx5ijMJBRqUvdSEy/Y/vTbwUpvdNL7Ey86vSQ=;
+        b=faQ03KFXKTqcZsL9fNFS449tMLuSCnxgJhFtKnocwN9b8EWh6TdCML+T98o4vgW7Bu
+         XCQiDVChwaKfpII7QJ2X4N5GwQ1TPBeAjfsX/8MLjFClRaQq+OqOOfP+roZR/UGlXVbb
+         4YgxL9/KNeIMCBpTL8YLMVECSbAzn3aDvGoLs04L1RJZGeLUvrTQRykq5sSoL1e+g9wg
+         h7UL/N4Xs7ifr6BQXsfIqsuv9NA8kAuUtAe3XL1FrrBskNV6jNxlegPBEkzQoyGx4ZGK
+         XDJ6FzSnZVFU10lqVIb2wCF7ByrUQ9rGD6xhdqwFvzrziUaCOySrO9CoTcPqUBJKDnBT
+         MNUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kiZ/FvhUKgnzktM7r0SIhiQ+o9jRSo0aasuFIIfF3Y4=;
-        b=PKzsZiq1HhSIflyXE8z11mjCENzLnP4bBBYC8Z3ma7vImwA5RsYoRogEp9KY9UIaWc
-         6fSTxNI78stdPs1Cl3s1NaC/dOaT8Kn7BMFHr2Kj5atdUB9f6RHyI7/0DUorDsT5nbYn
-         7rkbAwSwk8xwc34XWgm/UBhcPLkbOJlmtzte/SkMqCrjpcG8apdnPFa3BxWEZ2DR2QtP
-         KYXr/XWEOczbWumTzUMVTShezVAAH3V+lIJTDIu4pJrbDcJkPQ8eARXuVFybvyIq+K9w
-         3W84uxM+nPZC36r5CJneC8U4oSA6i56KtI83IBJjhV6m9v5Qaa7XmEfX5dgKcSlmajDN
-         mBKw==
-X-Gm-Message-State: AOAM531gaoThOZmXNyNQDQoIxIZfsuVCwE6t3e8XiQQ8Ezu1aLNm8L1n
-        KeytaSCm3PBYcG25FMetsUVo/Zd1uGMY8/ZFy5SB7w==
-X-Google-Smtp-Source: ABdhPJzeJARslRAT+guaj4Ff3DrOlfqS+AGv0L6pZO5uH8AEy32OHFCAY9odVyg2ahuPLAqwrFcx0LUf5ahITqeZkLk=
-X-Received: by 2002:a2e:9c84:: with SMTP id x4mr96553lji.326.1604026208097;
- Thu, 29 Oct 2020 19:50:08 -0700 (PDT)
+        bh=29/mvfnx5ijMJBRqUvdSEy/Y/vTbwUpvdNL7Ey86vSQ=;
+        b=H0PVU/q59xd/xEgi+Nem2ii+Yugnw2dxBOsC+KnOW81vinYJKsz3UFvO2qKawFy6ky
+         /0gywFHGFPV0BH0nfKGPfM78lj0vHNMcCNgYWWbBII4kFvewREtqfGlm0nbh1yY/cSlt
+         ru5O4pLLVPDmUrvcboWKoExrQ2fQYsbt0WCR4HkUrOTRwN0HiLfHr4cUg9lru0nLCSh3
+         U6hHh0qlGWl+V8CDRU6x/UIb67K6FpeEGp/8OBEZQoK/FuuwLZ+LZmW756jb4sskUK1A
+         XNaqEA445+z0uptEpAA8/2HPPHnTDmGsrBRSSwKm1LwftSngdir3dlVFnFSYdCBMOhTQ
+         yHsw==
+X-Gm-Message-State: AOAM532eL43GsDcHBgm1MZXVBBs7REwHB1H7Fywqb1xpOTUJbKEw6czx
+        p4owthYbixNcd/WEkU2654oDsgYTTLTtPI+D+WB+9w==
+X-Google-Smtp-Source: ABdhPJy0sA1WwM3kiKvHJaFMz/TR3IbjqMOlo5/1P3W63q7nS9+CEqGgFqxqrIzS0II1dZBsMQzuyhJLO08x8Y27c1k=
+X-Received: by 2002:a2e:9f13:: with SMTP id u19mr101336ljk.160.1604026214056;
+ Thu, 29 Oct 2020 19:50:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201029131649.182037-1-elver@google.com> <20201029131649.182037-6-elver@google.com>
-In-Reply-To: <20201029131649.182037-6-elver@google.com>
+References: <20201029131649.182037-1-elver@google.com> <20201029131649.182037-7-elver@google.com>
+In-Reply-To: <20201029131649.182037-7-elver@google.com>
 From:   Jann Horn <jannh@google.com>
-Date:   Fri, 30 Oct 2020 03:49:41 +0100
-Message-ID: <CAG48ez005N4SVKNXDL7k1C+JPiEbY7eTBJ+kL53N7g=bgWGAeQ@mail.gmail.com>
-Subject: Re: [PATCH v6 5/9] mm, kfence: insert KFENCE hooks for SLUB
+Date:   Fri, 30 Oct 2020 03:49:47 +0100
+Message-ID: <CAG48ez0N5iKCmg-JEwZ2oKw3zUA=5EdsL0CMi6biwLbtqFXqCA@mail.gmail.com>
+Subject: Re: [PATCH v6 6/9] kfence, kasan: make KFENCE compatible with KASAN
 To:     Marco Elver <elver@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Alexander Potapenko <glider@google.com>,
@@ -92,23 +92,14 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Oct 29, 2020 at 2:17 PM Marco Elver <elver@google.com> wrote:
-> Inserts KFENCE hooks into the SLUB allocator.
+> We make KFENCE compatible with KASAN for testing KFENCE itself. In
+> particular, KASAN helps to catch any potential corruptions to KFENCE
+> state, or other corruptions that may be a result of freepointer
+> corruptions in the main allocators.
 >
-> To pass the originally requested size to KFENCE, add an argument
-> 'orig_size' to slab_alloc*(). The additional argument is required to
-> preserve the requested original size for kmalloc() allocations, which
-> uses size classes (e.g. an allocation of 272 bytes will return an object
-> of size 512). Therefore, kmem_cache::size does not represent the
-> kmalloc-caller's requested size, and we must introduce the argument
-> 'orig_size' to propagate the originally requested size to KFENCE.
->
-> Without the originally requested size, we would not be able to detect
-> out-of-bounds accesses for objects placed at the end of a KFENCE object
-> page if that object is not equal to the kmalloc-size class it was
-> bucketed into.
->
-> When KFENCE is disabled, there is no additional overhead, since
-> slab_alloc*() functions are __always_inline.
+> To indicate that the combination of the two is generally discouraged,
+> CONFIG_EXPERT=y should be set. It also gives us the nice property that
+> KFENCE will be build-tested by allyesconfig builds.
 >
 > Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 > Co-developed-by: Marco Elver <elver@google.com>
@@ -117,44 +108,24 @@ On Thu, Oct 29, 2020 at 2:17 PM Marco Elver <elver@google.com> wrote:
 
 Reviewed-by: Jann Horn <jannh@google.com>
 
-if you fix one nit:
+with one nit:
 
 [...]
-> diff --git a/mm/slub.c b/mm/slub.c
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
 [...]
-> @@ -2658,7 +2664,8 @@ static inline void *get_freelist(struct kmem_cache *s, struct page *page)
->   * already disabled (which is the case for bulk allocation).
->   */
->  static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
-> -                         unsigned long addr, struct kmem_cache_cpu *c)
-> +                         unsigned long addr, struct kmem_cache_cpu *c,
-> +                         size_t orig_size)
-
-orig_size is added as a new argument, but never used. (And if you
-remove this argument, __slab_alloc will also not be using its
-orig_size argument anymore.)
-
-
-
->  {
->         void *freelist;
->         struct page *page;
-> @@ -2763,7 +2770,8 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
->   * cpu changes by refetching the per cpu area pointer.
->   */
->  static void *__slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
-> -                         unsigned long addr, struct kmem_cache_cpu *c)
-> +                         unsigned long addr, struct kmem_cache_cpu *c,
-> +                         size_t orig_size)
->  {
->         void *p;
->         unsigned long flags;
-> @@ -2778,7 +2786,7 @@ static void *__slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
->         c = this_cpu_ptr(s->cpu_slab);
->  #endif
+> @@ -141,6 +142,14 @@ void kasan_unpoison_shadow(const void *address, size_t size)
+>          */
+>         address = reset_tag(address);
 >
-> -       p = ___slab_alloc(s, gfpflags, node, addr, c);
-> +       p = ___slab_alloc(s, gfpflags, node, addr, c, orig_size);
->         local_irq_restore(flags);
->         return p;
->  }
+> +       /*
+> +        * We may be called from SL*B internals, such as ksize(): with a size
+> +        * not a multiple of machine-word size, avoid poisoning the invalid
+> +        * portion of the word for KFENCE memory.
+> +        */
+> +       if (is_kfence_address(address))
+> +               return;
+
+It might be helpful if you could add a comment that explains that
+kasan_poison_object_data() does not need a similar guard because
+kasan_poison_object_data() is always paired with
+kasan_unpoison_object_data() - that threw me off a bit at first.
