@@ -2,197 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7452A01F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9102A01FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgJ3KAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
+        id S1726198AbgJ3KBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgJ3KAC (ORCPT
+        with ESMTP id S1725993AbgJ3KBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:00:02 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0BEC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:00:01 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id w14so5750464wrs.9
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:00:01 -0700 (PDT)
+        Fri, 30 Oct 2020 06:01:30 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB12C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:01:30 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id s1so2479589qvm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:01:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1kpn8tL60J6jUZj6S/8IL9NPr/GsyMly5AdFbYCZgvQ=;
-        b=MFhtam6cQr0WDVqRVGrFF0SN/MFXEP3V0VwTX6NBN3v8QKE/PkUDesI5KjDfTb11nE
-         VLjuLyKy+4jexu+gDDYMvZFFFfuuM6NBAUGcLWCxuI1FrcpuzPgPObLxkPxElGCbB317
-         ool+JyCmgDCjjBTr0Z3EBtSVbhAyTVIZEIsmsYo3IJSSHefYmRmht/pWnmFR1xFKk18F
-         rfMZ766LyhVB8VINDPlu2ShTUZFS6dZcydX8V88LPiGT3nIGC7yvBIE43IkAmH8rfaRL
-         RKiOnKFt/JODSXKArqagTnc4WnV/DHpLBBmzJOUxQO3XxnJ1fo80M/ZXJz8u8KqIKUA3
-         T2BQ==
+         :cc;
+        bh=2MZDR/MYcfoRFoqjTqvWCPEWN4K5yR/E0hHIPltutOI=;
+        b=R9cbVXM9wsTW2PZAo9z5UJ/1l55XOUyQhx64GjKCVGR/j78k/IoSjbfdEZss+9i7ZT
+         8zo3aX+0sljxa7o9dKGqIbSJGLXKKf8ELg5thAle6aFnjyimF1dIaREVeZw+2/sPyyaR
+         PAUnWAeBqwkhV5h4DfeWbef0f5sISxjeHkym6IdO3WjS9d+uosrP1w9K1Ko0nTZ4Np4P
+         45MusI1/1Y46IzK93Hfh3lmDHxjDR1LcmV8sr16udVCK1LmQfST2irj9sX2FbP5vmE3M
+         Ocg/IAexcr/w6/d+mCa52gUFNR5x3q+kQmFoML2Kw9Hx39oQxN7/KOdxV+rk7IDHGU8d
+         Rj4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1kpn8tL60J6jUZj6S/8IL9NPr/GsyMly5AdFbYCZgvQ=;
-        b=NQgnkU67+yZbIuLUMd36AZEu/ogxNHmVwPiUZdTm4tXFrumFccM9LhmGQVkicUOpba
-         jMVVBjAFUsMOJ+6OqioXMOqb8XbZ2+UvCaPt87XDnbSPNXeNeiJkCpOJs71BH1p+aXBg
-         xMSvUgGgJtL+0wWqdk9eICSXpql+4Mx5k0kX/YAiCR6d1jfPiC1s2wjoMfikjrDQSSOC
-         5RPc85SnJlJrJiJBlZ7MCvLb+1cj2VnXVUhdKiX266eUkmz8lgzEUThKmlclmMuPWRMV
-         /PaJ1Vh48iCDkcZAXjmBzC/aMLhmAyRqI+iMCIQLKW+9bV95lzHokv6Z1gG4nBndjMA5
-         JN2Q==
-X-Gm-Message-State: AOAM532AipjR7g1UAWTw8acVyq/ttqUR1wHc3foKoLQF6gtpCV/V5eYm
-        fr6ecFM0LPdgMUC31t6u7fA0xWqRB1d+MlUr9QO5/g==
-X-Google-Smtp-Source: ABdhPJx2AapdVpzESp7l+9ioty7xKcHGb/WVGuWkjUItyCyA6sKR7NX97R6xtF97EzRWcSdTxjQ9t3NI3ksYCtk7guU=
-X-Received: by 2002:adf:ea49:: with SMTP id j9mr2008573wrn.391.1604051999974;
- Fri, 30 Oct 2020 02:59:59 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=2MZDR/MYcfoRFoqjTqvWCPEWN4K5yR/E0hHIPltutOI=;
+        b=KJg+8JCPJD1G8TdHRmFk8swKo7Q2r86m5g6QjT/7I1loLEHD2COHJNHKzkzqajYMAn
+         f67RfTmfMP1h82+wkVEc3Ox9b6t8/C2jRHKHaQMre8dLfpZ92Oxj3nqASrc6mBLgect8
+         KwidX9y38oEsnLRJDDnGEDqzW8AUv68idhqIpK9rZ5fdrQnCli1bRQuDE2oApM+Hh63f
+         xpBqcpishwpgF9bNA5UB89PVA87F213g7d2N4naAhSDTaOPAPMolDbx89IbZVAx0SxKX
+         NFl3mlD2QHSm0Hu6mgtZd+A81/50t78f+lnk8ueJyhBG1x7rm6taqUZOXz2qCVJWCsxv
+         OmcQ==
+X-Gm-Message-State: AOAM533m4DOx/BO7rCpfXq87VedM66otl3hSKzXI34OctsDTVRtwqd+N
+        qnFr0G93VKZmXfHa1LcgFrfNaCwmeesDBPsIfCMIMg==
+X-Google-Smtp-Source: ABdhPJwpcOP254wagsJO/NnsWHauYPYipA4bLPB/UUFJ4P9UcdyfTcKkIdCk9NU06pQtCFKEwcASCK4iLSAuWCwsP/8=
+X-Received: by 2002:ad4:54e9:: with SMTP id k9mr8557083qvx.18.1604052089184;
+ Fri, 30 Oct 2020 03:01:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201029131649.182037-1-elver@google.com> <20201029131649.182037-8-elver@google.com>
- <CAG48ez2ak7mWSSJJ3Zxd+cK1c5uZVqeF2zZ9HLtmXEoiG5=m-Q@mail.gmail.com>
-In-Reply-To: <CAG48ez2ak7mWSSJJ3Zxd+cK1c5uZVqeF2zZ9HLtmXEoiG5=m-Q@mail.gmail.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 30 Oct 2020 10:59:48 +0100
-Message-ID: <CAG_fn=Xq+E5s_2rVBm-cM4Bvfyn9Ar9fTHWtxeFFZkcAUBwHiQ@mail.gmail.com>
-Subject: Re: [PATCH v6 7/9] kfence, Documentation: add KFENCE documentation
-To:     Jann Horn <jannh@google.com>
-Cc:     Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, joern@purestorage.com,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>
+References: <000000000000602d0405ae64aca3@google.com> <20200903111515.17364-1-hdanton@sina.com>
+ <5e0d35fb-73f7-cbb1-3932-1a1c55fa57fc@kernel.dk>
+In-Reply-To: <5e0d35fb-73f7-cbb1-3932-1a1c55fa57fc@kernel.dk>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 30 Oct 2020 11:01:17 +0100
+Message-ID: <CACT4Y+Z-OcWgbVNdjPjNvp=Gqhb4o7ac8GGJxTp_zAfT=+Z26g@mail.gmail.com>
+Subject: Re: INFO: task hung in io_uring_setup
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+107dd59d1efcaf3ffca4@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, sgarzare@redhat.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 3:50 AM Jann Horn <jannh@google.com> wrote:
+On Thu, Sep 3, 2020 at 1:44 PM Jens Axboe <axboe@kernel.dk> wrote:
 >
-> On Thu, Oct 29, 2020 at 2:17 PM Marco Elver <elver@google.com> wrote:
-> > Add KFENCE documentation in dev-tools/kfence.rst, and add to index.
-> [...]
-> > +The KFENCE memory pool is of fixed size, and if the pool is exhausted,=
- no
-> > +further KFENCE allocations occur. With ``CONFIG_KFENCE_NUM_OBJECTS`` (=
-default
-> > +255), the number of available guarded objects can be controlled. Each =
-object
-> > +requires 2 pages, one for the object itself and the other one used as =
-a guard
-> > +page; object pages are interleaved with guard pages, and every object =
-page is
-> > +therefore surrounded by two guard pages.
-> > +
-> > +The total memory dedicated to the KFENCE memory pool can be computed a=
-s::
-> > +
-> > +    ( #objects + 1 ) * 2 * PAGE_SIZE
+> On 9/3/20 5:15 AM, Hillf Danton wrote:
+> >
+> > Thu, 03 Sep 2020 01:38:15 -0700
+> >> syzbot found the following issue on:
+> >>
+> >> HEAD commit:    4442749a Add linux-next specific files for 20200902
+> >> git tree:       linux-next
+> >> console output: https://syzkaller.appspot.com/x/log.txt?x=12f9e915900000
+> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=39134fcec6c78e33
+> >> dashboard link: https://syzkaller.appspot.com/bug?extid=107dd59d1efcaf3ffca4
+> >> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11594671900000
+> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111ca835900000
+> >>
+> >> The issue was bisected to:
+> >>
+> >> commit dfe127799f8e663c7e3e48b5275ca538b278177b
+> >> Author: Stefano Garzarella <sgarzare@redhat.com>
+> >> Date:   Thu Aug 27 14:58:31 2020 +0000
+> >>
+> >>     io_uring: allow disabling rings during the creation
+> >>
+> >> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11bc66c1900000
+> >> final oops:     https://syzkaller.appspot.com/x/report.txt?x=13bc66c1900000
+> >> console output: https://syzkaller.appspot.com/x/log.txt?x=15bc66c1900000
+> >>
+> >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >> Reported-by: syzbot+107dd59d1efcaf3ffca4@syzkaller.appspotmail.com
+> >> Fixes: dfe127799f8e ("io_uring: allow disabling rings during the creation")
+> >>
+> >> INFO: task syz-executor047:6853 blocked for more than 143 seconds.
+> >>       Not tainted 5.9.0-rc3-next-20200902-syzkaller #0
+> >> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> >> task:syz-executor047 state:D stack:28104 pid: 6853 ppid:  6847 flags:0x00004000
+> >> Call Trace:
+> >>  context_switch kernel/sched/core.c:3777 [inline]
+> >>  __schedule+0xea9/0x2230 kernel/sched/core.c:4526
+> >>  schedule+0xd0/0x2a0 kernel/sched/core.c:4601
+> >>  schedule_timeout+0x1d8/0x250 kernel/time/timer.c:1855
+> >>  do_wait_for_common kernel/sched/completion.c:85 [inline]
+> >>  __wait_for_common kernel/sched/completion.c:106 [inline]
+> >>  wait_for_common kernel/sched/completion.c:117 [inline]
+> >>  wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
+> >>  io_sq_thread_stop fs/io_uring.c:6906 [inline]
+> >>  io_finish_async fs/io_uring.c:6920 [inline]
+> >>  io_sq_offload_create fs/io_uring.c:7595 [inline]
+> >>  io_uring_create fs/io_uring.c:8671 [inline]
+> >>  io_uring_setup+0x1495/0x29a0 fs/io_uring.c:8744
+> >>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> >> RIP: 0033:0x440299
+> >> Code: Bad RIP value.
+> >> RSP: 002b:00007ffc57cff668 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
+> >> RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440299
+> >> RDX: 0000000000400b40 RSI: 0000000020000100 RDI: 0000000000003ffe
+> >> RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
+> >> R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000401aa0
+> >> R13: 0000000000401b30 R14: 0000000000000000 R15: 0000000000000000
+> >> INFO: task io_uring-sq:6854 blocked for more than 143 seconds.
+> >>       Not tainted 5.9.0-rc3-next-20200902-syzkaller #0
+> >> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> >> task:io_uring-sq     state:D stack:31200 pid: 6854 ppid:     2 flags:0x00004000
+> >> Call Trace:
+> >>  context_switch kernel/sched/core.c:3777 [inline]
+> >>  __schedule+0xea9/0x2230 kernel/sched/core.c:4526
+> >>  schedule+0xd0/0x2a0 kernel/sched/core.c:4601
+> >>  schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4660
+> >>  kthread+0x2ac/0x4a0 kernel/kthread.c:285
+> >>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> >>
+> >> Showing all locks held in the system:
+> >> 1 lock held by khungtaskd/1174:
+> >>  #0: ffffffff89c67980 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5829
+> >> 3 locks held by in:imklog/6525:
+> >>  #0: ffff8880a3de2df0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
+> >>  #1: ffff8880907d8968 (&mm->mmap_lock#2){++++}-{3:3}, at: rq_lock kernel/sched/sched.h:1292 [inline]
+> >>  #1: ffff8880907d8968 (&mm->mmap_lock#2){++++}-{3:3}, at: ttwu_queue kernel/sched/core.c:2698 [inline]
+> >>  #1: ffff8880907d8968 (&mm->mmap_lock#2){++++}-{3:3}, at: try_to_wake_up+0x52b/0x12b0 kernel/sched/core.c:2978
+> >>  #2: ffff8880ae620ec8 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x2fb/0x400 kernel/sched/psi.c:833
+> >>
+> >> =============================================
+> >>
+> >> NMI backtrace for cpu 1
+> >> CPU: 1 PID: 1174 Comm: khungtaskd Not tainted 5.9.0-rc3-next-20200902-syzkaller #0
+> >> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> >> Call Trace:
+> >>  __dump_stack lib/dump_stack.c:77 [inline]
+> >>  dump_stack+0x198/0x1fd lib/dump_stack.c:118
+> >>  nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+> >>  nmi_trigger_cpumask_backtrace+0x1b3/0x223 lib/nmi_backtrace.c:62
+> >>  trigger_all_cpu_backtrace include/linux/nmi.h:147 [inline]
+> >>  check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
+> >>  watchdog+0xd89/0xf30 kernel/hung_task.c:339
+> >>  kthread+0x3b5/0x4a0 kernel/kthread.c:292
+> >>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> >> Sending NMI from CPU 1 to CPUs 0:
+> >> NMI backtrace for cpu 0
+> >> CPU: 0 PID: 3901 Comm: systemd-journal Not tainted 5.9.0-rc3-next-20200902-syzkaller #0
+> >> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> >> RIP: 0010:unwind_next_frame+0x139a/0x1f90 arch/x86/kernel/unwind_orc.c:607
+> >> Code: 49 39 47 28 0f 85 3e f0 ff ff 80 3d df 2c 84 09 00 0f 85 31 f0 ff ff e9 06 18 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 14 24 <48> c1 ea 03 80 3c 02 00 0f 85 02 08 00 00 49 8d 7f 08 49 8b 6f 38
+> >> RSP: 0018:ffffc900040475f8 EFLAGS: 00000246
+> >> RAX: dffffc0000000000 RBX: 1ffff92000808ec7 RCX: 1ffff92000808ee2
+> >> RDX: ffffc90004047708 RSI: ffffc90004047aa8 RDI: ffffc90004047aa8
+> >> RBP: 0000000000000001 R08: ffffffff8b32a670 R09: 0000000000000001
+> >> R10: 000000000007201e R11: 0000000000000001 R12: ffffc90004047ac8
+> >> R13: ffffc90004047705 R14: ffffc90004047720 R15: ffffc900040476d0
+> >> FS:  00007efc659ac8c0(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+> >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >> CR2: 00007efc62d51000 CR3: 0000000093d6a000 CR4: 00000000001506f0
+> >> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >> Call Trace:
+> >>  arch_stack_walk+0x81/0xf0 arch/x86/kernel/stacktrace.c:25
+> >>  stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:123
+> >>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+> >>  kasan_set_track mm/kasan/common.c:56 [inline]
+> >>  __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+> >>  slab_post_alloc_hook mm/slab.h:517 [inline]
+> >>  slab_alloc mm/slab.c:3312 [inline]
+> >>  kmem_cache_alloc+0x13a/0x3a0 mm/slab.c:3482
+> >>  kmem_cache_zalloc include/linux/slab.h:656 [inline]
+> >>  __alloc_file+0x21/0x350 fs/file_table.c:101
+> >>  alloc_empty_file+0x6d/0x170 fs/file_table.c:151
+> >>  path_openat+0xe3/0x2730 fs/namei.c:3354
+> >>  do_filp_open+0x17e/0x3c0 fs/namei.c:3395
+> >>  do_sys_openat2+0x16d/0x420 fs/open.c:1168
+> >>  do_sys_open fs/open.c:1184 [inline]
+> >>  __do_sys_open fs/open.c:1192 [inline]
+> >>  __se_sys_open fs/open.c:1188 [inline]
+> >>  __x64_sys_open+0x119/0x1c0 fs/open.c:1188
+> >>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> >
+> > Add wakeup to make sure the wait for completion will be completed.
+> >
+> > --- a/fs/io_uring.c
+> > +++ b/fs/io_uring.c
+> > @@ -6903,6 +6903,7 @@ static int io_sqe_files_unregister(struc
+> >  static void io_sq_thread_stop(struct io_ring_ctx *ctx)
+> >  {
+> >       if (ctx->sqo_thread) {
+> > +             wake_up_process(ctx->sqo_thread);
+> >               wait_for_completion(&ctx->sq_thread_comp);
+> >               /*
+> >                * The park is a bit of a work-around, without it we get
 >
-> Plus memory overhead from shattered hugepages. With the default object
-> count, on x86, we allocate 2MiB of memory pool, but if we have to
-> shatter a 2MiB hugepage for that, we may cause the allocation of one
-> extra page table, or 4KiB. Of course that's pretty much negligible.
-> But on arm64 it's worse, because there we have to disable hugepages in
-> the linear map completely. So on a device with 4GiB memory, we might
-> end up with something on the order of 4GiB/2MiB * 0x1000 bytes =3D 8MiB
-> of extra L1 page tables that wouldn't have been needed otherwise -
-> significantly more than the default memory pool size.
+> Yeah this looks reasonable, if the thread is attempted stopped if it
+> was created de-activated and never started.
+>
+> Needs a comment to that effect. Care to add that and send it as a
+> properly formatted patch (with commit message, etc)?
 
-Note that with CONFIG_RODATA_FULL_DEFAULT_ENABLED (which is on by
-default now) these hugepages are already disabled (see patch 3/9)
-
-> If the memory overhead is documented, this detail should probably be
-> documented, too.
-
-But, yes, documenting that also makes sense.
-
-> > +Using the default config, and assuming a page size of 4 KiB, results i=
-n
-> > +dedicating 2 MiB to the KFENCE memory pool.
-> [...]
-> > +For such errors, the address where the corruption as well as the inval=
-idly
->
-> nit: "the address where the corruption occurred" or "the address of
-> the corruption"
->
-> > +written bytes (offset from the address) are shown; in this representat=
-ion, '.'
-> > +denote untouched bytes. In the example above ``0xac`` is the value wri=
-tten to
-> > +the invalid address at offset 0, and the remaining '.' denote that no =
-following
-> > +bytes have been touched. Note that, real values are only shown for
-> > +``CONFIG_DEBUG_KERNEL=3Dy`` builds; to avoid information disclosure fo=
-r non-debug
-> > +builds, '!' is used instead to denote invalidly written bytes.
-> [...]
-> > +KFENCE objects each reside on a dedicated page, at either the left or =
-right
-> > +page boundaries selected at random. The pages to the left and right of=
- the
-> > +object page are "guard pages", whose attributes are changed to a prote=
-cted
-> > +state, and cause page faults on any attempted access. Such page faults=
- are then
-> > +intercepted by KFENCE, which handles the fault gracefully by reporting=
- an
-> > +out-of-bounds access.
->
-> ... and marking the page as accessible so that the faulting code can
-> continue (wrongly) executing.
->
->
-> [...]
-> > +Interface
-> > +---------
-> > +
-> > +The following describes the functions which are used by allocators as =
-well page
->
-> nit: "as well as"?
->
->
->
-> > +handling code to set up and deal with KFENCE allocations.
-
-
-
---=20
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+What happened with this fix?
+The bug is marked as fixed with commit "io_uring: fix task hung in
+io_uring_setup":
+https://syzkaller.appspot.com/bug?id=a2b6779df9f5006318875364e0f18cc3af14fa60
+but this commit cannot be found in any tree.
