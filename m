@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB012A0D9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BB32A0DB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727344AbgJ3Siv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:38:51 -0400
-Received: from mga01.intel.com ([192.55.52.88]:22418 "EHLO mga01.intel.com"
+        id S1727314AbgJ3Spq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:45:46 -0400
+Received: from mga17.intel.com ([192.55.52.151]:56882 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726095AbgJ3Siv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:38:51 -0400
-IronPort-SDR: s95V9oRhkg8Ie/V9Jzy3FU++OzO7DtnbF4VtF6XwUq4ZMj5wkCrxl1zDJsruH5/MWN4qZwZ1Si
- AGPOvAl3gw/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="186461896"
+        id S1726061AbgJ3Spq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 14:45:46 -0400
+IronPort-SDR: aO7ULQQA/RZXSAal60z3fIJ+r9rLQFWWMgFKnohTCJeBVPpMkT6b0hoVXcCZAbPYpAlyuqe+aQ
+ RJkMa1DlpGgw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="148506876"
 X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="186461896"
+   d="scan'208";a="148506876"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 11:38:50 -0700
-IronPort-SDR: sWS8nP9fxbb51wZ+w8+0jbuRCP0/ZpwsaHH2BCBYQTmVawVQJ2n8+JlwUK90Q6+4UN2oZbjJOD
- gBQA3taJdPfg==
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 11:45:46 -0700
+IronPort-SDR: 3ahx2GKN/xdAL/+2IHK8awgXWKZkKus9sR4KcfmtSkrdox5j/9J+5KXXh4/W54Sc3vJ3KaJirZ
+ pYqanAfU9+IA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="527206129"
+   d="scan'208";a="319406882"
 Received: from xshen14-linux.bj.intel.com ([10.238.155.105])
-  by fmsmga005.fm.intel.com with ESMTP; 30 Oct 2020 11:38:47 -0700
+  by orsmga003.jf.intel.com with ESMTP; 30 Oct 2020 11:45:42 -0700
 From:   Xiaochen Shen <xiaochen.shen@intel.com>
 To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
         tony.luck@intel.com, fenghua.yu@intel.com,
@@ -34,11 +34,11 @@ To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
 Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, pei.p.jia@intel.com,
         xiaochen.shen@intel.com
 Subject: [PATCH 1/3] x86/resctrl: Remove superfluous kernfs_get() calls to prevent refcount leak
-Date:   Sat, 31 Oct 2020 03:03:58 +0800
-Message-Id: <1604084638-31197-1-git-send-email-xiaochen.shen@intel.com>
+Date:   Sat, 31 Oct 2020 03:10:53 +0800
+Message-Id: <1604085053-31639-1-git-send-email-xiaochen.shen@intel.com>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1604084530-31048-1-git-send-email-xiaochen.shen>
-References: <1604084530-31048-1-git-send-email-xiaochen.shen>
+In-Reply-To: <1604084530-31048-1-git-send-email-xiaochen.shen@intel.com>
+References: <1604084530-31048-1-git-send-email-xiaochen.shen@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
