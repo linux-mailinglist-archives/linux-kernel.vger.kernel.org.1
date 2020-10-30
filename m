@@ -2,132 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0FA2A0890
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 332D62A085E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgJ3O4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgJ3O4E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:56:04 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB393C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:45:38 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id i18so1035308ots.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:45:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/l7OXXa9UuvkPT+n4O4t3Y5d8yYC198Ym1kgNFK1uSc=;
-        b=ZFm0kFcro+V05IMdtsrtx/vo9o8fF+HtuBLxfxPZS6T904N++atZAPBiHQmeaSmSdh
-         Jdaqu/oB4bN4JqHAhWjey+0PJhXGaS5ER6ZRf+3w6fn3UW6ymuFqnKjiblQUPu9TEdwi
-         BOfNy2FAuKBkFObkVK5x3oL2D9BTCsoUz80Qtq/Bb4ZS00ogo5uGkIBMX5w/gVgXPURQ
-         DlJ4PyqwVXVLZLubA045vnqlNPp8xUpt6jzc38HUKFHw+f9vQq59yyJOiQ8+TtoBgGhA
-         rv0aJzyf+2zyBHjNx2haGi5H3e2E3CIhNudK7Yoa4dA491JK61IpshPU3ILNGZtxUm+G
-         kSwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/l7OXXa9UuvkPT+n4O4t3Y5d8yYC198Ym1kgNFK1uSc=;
-        b=KDBRNbtabv/JpAHUVrigG8eOdJ64n2ygv+kuDnl5gLI2gNRmf9NwoPbNQluz5JUYm0
-         nWHhMmlIw6oyetHpgNJ3Mu/1gYd5Us1MH/sdnUSw4gVZmt10keUpI4DkafLM/a1NYK/H
-         C9hl4ToS1qSs4aGiGHVz9F1GFXUeTEIH1XVmeFJuAsnMZjuORlNu3JLZBWCEYYZ3cOfL
-         H4M6qUBBLZif/a00kWA841oT57mtjK4BeDp06Q9HeJs0YK+QUZUTNM7hIDDtofXncbFZ
-         q4goJrPmn2fNps4NzvAv5aGak51nWfRoMdvgkDT6slNw/iP8Bv+wN+CrKh5540X/b2eL
-         +h7w==
-X-Gm-Message-State: AOAM533wNN2q88NTcUm/s83cOoEnSU7Xs+WxxVeLVX03tbv9dt1qMff7
-        rtqn1vG3efLSxWvs68cCvNmFRQMFrUGiilavbBnN1Q==
-X-Google-Smtp-Source: ABdhPJxY15nYWXTiFbl1s/chME9yMWamqIVsOT48t27QyzLn4hhUUMlSCrFnyzg36C8tpxklYueWZCrZRlYZRKJjNz0=
-X-Received: by 2002:a9d:649:: with SMTP id 67mr1983160otn.233.1604069137790;
- Fri, 30 Oct 2020 07:45:37 -0700 (PDT)
+        id S1726960AbgJ3Osg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:48:36 -0400
+Received: from mga03.intel.com ([134.134.136.65]:38461 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726239AbgJ3OrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 10:47:01 -0400
+IronPort-SDR: MYes1HbQxGgmM41l95aX8YwVuh1tfsxeQCboDVSBAEGIm0oLpRkgxTPWfG02Kvs7DojbhYuQ94
+ Axr1IMy/RzRA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="168712021"
+X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
+   d="scan'208";a="168712021"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 07:46:05 -0700
+IronPort-SDR: JFvH7no/9HmOkEt0yQULlmCJZDuhjNnU/TSiSzPDvyqnNz1LgU7P1Fjl1F4JIqA0/hpVlmtQyN
+ 66OYUgcPkH+g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
+   d="scan'208";a="356609975"
+Received: from mylly.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by fmsmga002.fm.intel.com with ESMTP; 30 Oct 2020 07:46:03 -0700
+Subject: Re: [PATCH 2/2] i2c: designware: slave should do WRITE_REQUESTED
+ before WRITE_RECEIVED
+To:     Michael Wu <michael.wu@vatics.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Morgan Chang <morgan.chang@vatics.com>
+References: <20201030080420.28016-1-michael.wu@vatics.com>
+ <20201030080420.28016-3-michael.wu@vatics.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <85c6cb3f-2eeb-07c7-0a53-a502b45c91a5@linux.intel.com>
+Date:   Fri, 30 Oct 2020 16:46:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com> <6a4a7626bf280871518656f4fa89cb064740baf7.1603372719.git.andreyknvl@google.com>
-In-Reply-To: <6a4a7626bf280871518656f4fa89cb064740baf7.1603372719.git.andreyknvl@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 30 Oct 2020 15:45:26 +0100
-Message-ID: <CANpmjNPxUwrwAjN_c5sfBx5uE+Qf70B=8dbFcYPF2z1hWfpATg@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 14/21] kasan: add and integrate kasan boot parameters
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201030080420.28016-3-michael.wu@vatics.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Oct 2020 at 15:19, Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> TODO: no meaningful description here yet, please see the cover letter
->       for this RFC series.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/If7d37003875b2ed3e0935702c8015c223d6416a4
+On 10/30/20 10:04 AM, Michael Wu wrote:
+> Sometimes we would get the following flow when doing an i2cset:
+> 
+> 0x1 STATUS SLAVE_ACTIVITY=0x1 : RAW_INTR_STAT=0x514 : INTR_STAT=0x4
+> I2C_SLAVE_WRITE_RECEIVED
+> 0x1 STATUS SLAVE_ACTIVITY=0x0 : RAW_INTR_STAT=0x714 : INTR_STAT=0x204
+> I2C_SLAVE_WRITE_REQUESTED
+> I2C_SLAVE_WRITE_RECEIVED
+> 
+> Documentation/i2c/slave-interface.rst says that I2C_SLAVE_WRITE_REQUESTED,
+> which is mandatory, should be sent while the data did not arrive yet. It
+> means in a write-request I2C_SLAVE_WRITE_REQUESTED should be reported
+> before any I2C_SLAVE_WRITE_RECEIVED.
+> 
+> By the way, I2C_SLAVE_STOP didn't be reported in the above case because
+> DW_IC_INTR_STAT was not 0x200.
+> 
+> dev->status can be used to record the current state, especially Designware
+> I2C controller has no interrupts to identify a write-request. This patch
+> makes not only I2C_SLAVE_WRITE_REQUESTED been reported first when
+> IC_INTR_RX_FULL is rising and dev->status isn't STATUS_WRITE_IN_PROGRESS
+> but also I2C_SLAVE_STOP been reported when a STOP condition is received.
+> 
+> Signed-off-by: Michael Wu <michael.wu@vatics.com>
 > ---
->  mm/kasan/common.c  |  92 +++++++++++++-----------
->  mm/kasan/generic.c |   5 ++
->  mm/kasan/hw_tags.c | 169 ++++++++++++++++++++++++++++++++++++++++++++-
->  mm/kasan/kasan.h   |   9 +++
->  mm/kasan/report.c  |  14 +++-
->  mm/kasan/sw_tags.c |   5 ++
->  6 files changed, 250 insertions(+), 44 deletions(-)
->
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 1a5e6c279a72..cc129ef62ab1 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -129,35 +129,37 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
->         unsigned int redzone_size;
->         int redzone_adjust;
->
-> -       /* Add alloc meta. */
-> -       cache->kasan_info.alloc_meta_offset = *size;
-> -       *size += sizeof(struct kasan_alloc_meta);
-> -
-> -       /* Add free meta. */
-> -       if (IS_ENABLED(CONFIG_KASAN_GENERIC) &&
-> -           (cache->flags & SLAB_TYPESAFE_BY_RCU || cache->ctor ||
-> -            cache->object_size < sizeof(struct kasan_free_meta))) {
-> -               cache->kasan_info.free_meta_offset = *size;
-> -               *size += sizeof(struct kasan_free_meta);
-> -       }
-> -
-> -       redzone_size = optimal_redzone(cache->object_size);
-> -       redzone_adjust = redzone_size - (*size - cache->object_size);
-> -       if (redzone_adjust > 0)
-> -               *size += redzone_adjust;
-> -
-> -       *size = min_t(unsigned int, KMALLOC_MAX_SIZE,
-> -                       max(*size, cache->object_size + redzone_size));
-> +       if (static_branch_unlikely(&kasan_stack)) {
-
-I just looked at this file in your Github repo, and noticed that this
-could just be
-
-if (!static_branch_unlikely(&kasan_stack))
-    return;
-
-since the if-block ends at the function. That might hopefully make the
-diff a bit smaller.
-
-Thanks,
--- Marco
+>   drivers/i2c/busses/i2c-designware-slave.c | 45 +++++++++--------------
+>   1 file changed, 18 insertions(+), 27 deletions(-)
+> 
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
