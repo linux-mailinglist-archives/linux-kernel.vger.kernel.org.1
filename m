@@ -2,157 +2,406 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE6829FDC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E717529FDCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725832AbgJ3GYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 02:24:55 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:39976 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3GYz (ORCPT
+        id S1725823AbgJ3G1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 02:27:47 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:53181 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgJ3G1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 02:24:55 -0400
-X-UUID: 8232f4ff14204ef7b469d3635da84219-20201030
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=YW4q5ZJRm8kC2ou+oovRsbefAl2EDK2GL+44143nPrc=;
-        b=jFAcBTi+hXNJeRD5HTU1aX1W+EMS+wc3DC7HxNTwO50DR5FPFf3vleREos23czHpyqwjXiPbe69iH5jLRSNF/SkTjp4P6JuAk1roNb698mndZeeYXShsvclNskLOE/xc/XYAx791fCYeKROldR0jfMcAWcRsC0bfhbV0RV+1/j0=;
-X-UUID: 8232f4ff14204ef7b469d3635da84219-20201030
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 355014566; Fri, 30 Oct 2020 14:24:12 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS32N2.mediatek.inc
- (172.27.4.72) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 30 Oct
- 2020 14:24:09 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 30 Oct 2020 14:24:08 +0800
-Message-ID: <1604039049.31607.13.camel@mhfsdcap03>
-Subject: Re: [PATCH 2/3] phy: mediatek: Move mtk_mipi_dsi_phy driver into
- drivers/phy/mediatek folder
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Fri, 30 Oct 2020 14:24:09 +0800
-In-Reply-To: <20201029152702.533-3-chunkuang.hu@kernel.org>
-References: <20201029152702.533-1-chunkuang.hu@kernel.org>
-         <20201029152702.533-3-chunkuang.hu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 1C109F125DCD51B7526C344C915E61B96ACE847500F15FDE08582526232B511C2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Fri, 30 Oct 2020 02:27:47 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201030062742epoutp04763ac2f9b7191629125f0a22b6dc48dd~CsTXzU4b11839218392epoutp04I
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:27:42 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201030062742epoutp04763ac2f9b7191629125f0a22b6dc48dd~CsTXzU4b11839218392epoutp04I
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604039262;
+        bh=wy+mweEvFF3VxmAY6EeQc5m5zCoxEggWPFod2Ta1xDc=;
+        h=Subject:Reply-To:From:To:Date:References:From;
+        b=H/APMDC1Buq9w+qDwRr8CqfQpGQhS3HJu1yhKbw5kenkt6y70q+foR8IW5/a/SIIg
+         /kpxqL+4XO/dDyhUBvV8ZW4M0R+M1LuheDchJ3LeRkeqjcrKN1I8g/FRqYIQDK/qKt
+         KdThYKV+1g2JpiqM+OWQB2noiutl7BVIvY0ZMYb4=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20201030062742epcas1p3d41af59e1336779c8294cf263dc6a69d~CsTXXhF7-0383403834epcas1p3u;
+        Fri, 30 Oct 2020 06:27:42 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.160]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4CMsms1G5vzMqYm1; Fri, 30 Oct
+        2020 06:27:41 +0000 (GMT)
+X-AuditID: b6c32a38-f11ff700000028df-e2-5f9bb25d4a83
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        71.F3.10463.D52BB9F5; Fri, 30 Oct 2020 15:27:41 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH] Input: add switch event(SW_EXT_PEN_ATTACHED)
+Reply-To: hj2.im@samsung.com
+Sender: HyungJae Im <hj2.im@samsung.com>
+From:   HyungJae Im <hj2.im@samsung.com>
+To:     HyungJae Im <hj2.im@samsung.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rydberg@bitmath.org" <rydberg@bitmath.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20201030062740epcms1p614195fb639c807cd2db762d117cc69fc@epcms1p6>
+Date:   Fri, 30 Oct 2020 15:27:40 +0900
+X-CMS-MailID: 20201030062740epcms1p614195fb639c807cd2db762d117cc69fc
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBKsWRmVeSWpSXmKPExsWy7bCmrm7sptnxBq3LWC2aF69ns1gw3c7i
+        5qdvrBaXd81hs7jb0slqceLbNCYHNo/Pq16xety5tofNY//cNewefVtWMXp83iQXwBqVY5OR
+        mpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkDdICSQlliTilQ
+        KCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8DQoECvODG3uDQvXS85P9fK0MDAyBSoMiEn4/jR
+        28wF3R4VW/f4NDC22nQxcnJICJhING84xAxiCwnsYJS4fTWoi5GDg1dAUOLvDmGQsLCArcSj
+        d92MIGEhARmJrj1GEGENiaUtnxlBbDYBNYnfa/awdTFycYgIXGeS2LjkKAvEeF6JGe1PoWxp
+        ie3LtzJC2KISN1e/ZYex3x+bDxUXkWi9d5YZwhaUePBzNyNM79Iri5lAFkgItDNKXLz5ixXC
+        aWGUWLD0MBtElb7Elf6ZTBAP+Ep8v1kOEmYRUJWY8G8u1CAXiR1TX4HZzALyEtvfzmEGKWcW
+        0JRYv0sfokRRYufvuVAlfBLvvvawwvyyY94TJghbQWLjok9QW8UkZs27DfWjh8T2b5eYIMEZ
+        KPH3/WzWCYxysxAhOgvJ4lkIixcwMq9iFEstKM5NTy02LDBBjsJNjOAkp2Wxg3Hu2w96hxiZ
+        OBgPMUpwMCuJ8L4QnBkvxJuSWFmVWpQfX1Sak1p8iNEU6OWJzFKiyfnANJtXEm9oamRsbGxh
+        YmZuZmqsJM77R7sjXkggPbEkNTs1tSC1CKaPiYNTqoFJq9tMcObiaxm2lq7lX9vVA49YbJv9
+        Omr17qJdQtesNJ1TNzzptpznpd7wLbG4U5S/NefHyTvR+Ztt4qZ8ZXD5vMFp3eYjmdtP3W6b
+        cv5VE1P1g6TNsXec53L8F1nXeWCthFzl68+ulyU9vtSdsp/wPpv5Rd21J6mWttEpB5938lWo
+        JZssW/TmKA9jj1e+npx3qvet11YJSrKJ2h+1g0782pV2apo9p9ryla6SQpu47gbctO97YOLK
+        mSR5eflSpTXllS5X1yU1BqYebxLS0fS7o73RWdaR8V7FS1n9lZnzF/Hfa057qTmjIMhqnbR/
+        ZVy3qlEFi1DzTRZ5hr+3+Tnbtx+OfXPzpS9HSzCbthJLcUaioRZzUXEiAK5f/6f7AwAA
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201030062740epcms1p614195fb639c807cd2db762d117cc69fc
+References: <CGME20201030062740epcms1p614195fb639c807cd2db762d117cc69fc@epcms1p6>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTEwLTI5IGF0IDIzOjI3ICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
-PiBtdGtfbWlwaV9kc2lfcGh5IGlzIGN1cnJlbnRseSBwbGFjZWQgaW5zaWRlIG1lZGlhdGVrIGRy
-bSBkcml2ZXIsIGJ1dCBpdCdzDQo+IG1vcmUgc3VpdGFibGUgdG8gcGxhY2UgYSBwaHkgZHJpdmVy
-IGludG8gcGh5IGRyaXZlciBmb2xkZXIsIHNvIG1vdmUNCj4gbXRrX21pcGlfZHNpX3BoeSBkcml2
-ZXIgaW50byBwaHkgZHJpdmVyIGZvbGRlci4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IENodW4tS3Vh
-bmcgSHUgPGNodW5rdWFuZy5odUBrZXJuZWwub3JnPg0KPiAtLS0NCj4gIGRyaXZlcnMvZ3B1L2Ry
-bS9tZWRpYXRlay9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgICAgfCA3IC0tLS0tLS0N
-Cj4gIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAg
-ICAgICAgfCA2IC0tLS0tLQ0KPiAgZHJpdmVycy9waHkvbWVkaWF0ZWsvS2NvbmZpZyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8IDcgKysrKysrKw0KPiAgZHJpdmVycy9waHkvbWVkaWF0
-ZWsvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDUgKysrKysNCj4gIC4u
-Li9tZWRpYXRlay9waHktbXRrLW1pcGktZHNpLW10ODE3My5jfSAgICAgICAgICAgICAgICAgICAg
-fCAyICstDQo+ICAuLi4vbWVkaWF0ZWsvcGh5LW10ay1taXBpLWRzaS1tdDgxODMuY30gICAgICAg
-ICAgICAgICAgICAgIHwgMiArLQ0KPiAgLi4uL210a19taXBpX3R4LmMgPT4gcGh5L21lZGlhdGVr
-L3BoeS1tdGstbWlwaS1kc2kuY30gICAgICB8IDIgKy0NCj4gIC4uLi9tdGtfbWlwaV90eC5oID0+
-IHBoeS9tZWRpYXRlay9waHktbXRrLW1pcGktZHNpLmh9ICAgICAgfCAwDQo+ICA4IGZpbGVzIGNo
-YW5nZWQsIDE1IGluc2VydGlvbnMoKyksIDE2IGRlbGV0aW9ucygtKQ0KPiAgcmVuYW1lIGRyaXZl
-cnMve2dwdS9kcm0vbWVkaWF0ZWsvbXRrX210ODE3M19taXBpX3R4LmMgPT4gcGh5L21lZGlhdGVr
-L3BoeS1tdGstbWlwaS1kc2ktbXQ4MTczLmN9ICg5OSUpDQo+ICByZW5hbWUgZHJpdmVycy97Z3B1
-L2RybS9tZWRpYXRlay9tdGtfbXQ4MTgzX21pcGlfdHguYyA9PiBwaHkvbWVkaWF0ZWsvcGh5LW10
-ay1taXBpLWRzaS1tdDgxODMuY30gKDk5JSkNCj4gIHJlbmFtZSBkcml2ZXJzL3tncHUvZHJtL21l
-ZGlhdGVrL210a19taXBpX3R4LmMgPT4gcGh5L21lZGlhdGVrL3BoeS1tdGstbWlwaS1kc2kuY30g
-KDk5JSkNCj4gIHJlbmFtZSBkcml2ZXJzL3tncHUvZHJtL21lZGlhdGVrL210a19taXBpX3R4Lmgg
-PT4gcGh5L21lZGlhdGVrL3BoeS1tdGstbWlwaS1kc2kuaH0gKDEwMCUpDQoNClJldmlld2VkLWJ5
-OiBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+DQoNClBsZWFzZSBhZGQg
-cGh5IG1haW50YW5pbmVyICJWaW5vZCBLb3VsIDx2a291bEBrZXJuZWwub3JnPiINCg0KVGhhbmtz
-DQoNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvS2NvbmZpZyBi
-L2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9LY29uZmlnDQo+IGluZGV4IDI0YzQ4OTBhNmU2NS4u
-Mjk3NmQyMWU5YTM0IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvS2Nv
-bmZpZw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvS2NvbmZpZw0KPiBAQCAtMjgs
-MTAgKzI4LDMgQEAgY29uZmlnIERSTV9NRURJQVRFS19IRE1JDQo+ICAJc2VsZWN0IFBIWV9NVEtf
-SERNSQ0KPiAgCWhlbHANCj4gIAkgIERSTS9LTVMgSERNSSBkcml2ZXIgZm9yIE1lZGlhdGVrIFNv
-Q3MNCj4gLQ0KPiAtY29uZmlnIFBIWV9NVEtfTUlQSV9EU0kNCj4gLQl0cmlzdGF0ZSAiTWVkaWF0
-ZWsgTUlQSS1EU0ktUEhZIERyaXZlciINCj4gLQlkZXBlbmRzIG9uIEFSQ0hfTUVESUFURUsgJiYg
-T0YNCj4gLQlzZWxlY3QgR0VORVJJQ19QSFkNCj4gLQloZWxwDQo+IC0JICBTdXBwb3J0IE1JUEkg
-RFNJIFBIWSBmb3IgTWVkaWF0ZWsgU29Dcy4NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2Ry
-bS9tZWRpYXRlay9NYWtlZmlsZSBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9NYWtlZmlsZQ0K
-PiBpbmRleCBiYWExODgwMDA1NDMuLmE4OTJlZGVjNTU2MyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVy
-cy9ncHUvZHJtL21lZGlhdGVrL01ha2VmaWxlDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRp
-YXRlay9NYWtlZmlsZQ0KPiBAQCAtMTksOSArMTksMyBAQCBtZWRpYXRlay1kcm0taGRtaS1vYmpz
-IDo9IG10a19jZWMubyBcDQo+ICAJCQkgIG10a19oZG1pX2RkYy5vDQo+ICANCj4gIG9iai0kKENP
-TkZJR19EUk1fTUVESUFURUtfSERNSSkgKz0gbWVkaWF0ZWstZHJtLWhkbWkubw0KPiAtDQo+IC1w
-aHktbXRrLW1pcGktZHNpLWRydi1vYmpzIDo9IG10a19taXBpX3R4Lm8gXA0KPiAtCQkJICAgICBt
-dGtfbXQ4MTczX21pcGlfdHgubyBcDQo+IC0JCQkgICAgIG10a19tdDgxODNfbWlwaV90eC5vDQo+
-IC0NCj4gLW9iai0kKENPTkZJR19QSFlfTVRLX01JUElfRFNJKSArPSBwaHktbXRrLW1pcGktZHNp
-LWRydi5vDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9LY29uZmlnIGIvZHJp
-dmVycy9waHkvbWVkaWF0ZWsvS2NvbmZpZw0KPiBpbmRleCA1MGM1ZTkzMDZlMTkuLjU3NGI4ZTYz
-OThkMiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9waHkvbWVkaWF0ZWsvS2NvbmZpZw0KPiArKysg
-Yi9kcml2ZXJzL3BoeS9tZWRpYXRlay9LY29uZmlnDQo+IEBAIC00MiwzICs0MiwxMCBAQCBjb25m
-aWcgUEhZX01US19IRE1JDQo+ICAJc2VsZWN0IEdFTkVSSUNfUEhZDQo+ICAJaGVscA0KPiAgCSAg
-U3VwcG9ydCBIRE1JIFBIWSBmb3IgTWVkaWF0ZWsgU29Dcy4NCj4gKw0KPiArY29uZmlnIFBIWV9N
-VEtfTUlQSV9EU0kNCj4gKwl0cmlzdGF0ZSAiTWVkaWFUZWsgTUlQSS1EU0kgRHJpdmVyIg0KPiAr
-CWRlcGVuZHMgb24gQVJDSF9NRURJQVRFSyAmJiBPRg0KPiArCXNlbGVjdCBHRU5FUklDX1BIWQ0K
-PiArCWhlbHANCj4gKwkgIFN1cHBvcnQgTUlQSSBEU0kgZm9yIE1lZGlhdGVrIFNvQ3MuDQo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9NYWtlZmlsZSBiL2RyaXZlcnMvcGh5L21l
-ZGlhdGVrL01ha2VmaWxlDQo+IGluZGV4IDYzMjVlMzg3MDllZC4uYWNlNjYwZmJlZDNhIDEwMDY0
-NA0KPiAtLS0gYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9NYWtlZmlsZQ0KPiArKysgYi9kcml2ZXJz
-L3BoeS9tZWRpYXRlay9NYWtlZmlsZQ0KPiBAQCAtMTEsMyArMTEsOCBAQCBwaHktbXRrLWhkbWkt
-ZHJ2LXkJCQk6PSBwaHktbXRrLWhkbWkubw0KPiAgcGh5LW10ay1oZG1pLWRydi15CQkJKz0gcGh5
-LW10ay1oZG1pLW10MjcwMS5vDQo+ICBwaHktbXRrLWhkbWktZHJ2LXkJCQkrPSBwaHktbXRrLWhk
-bWktbXQ4MTczLm8NCj4gIG9iai0kKENPTkZJR19QSFlfTVRLX0hETUkpCQkrPSBwaHktbXRrLWhk
-bWktZHJ2Lm8NCj4gKw0KPiArcGh5LW10ay1taXBpLWRzaS1kcnYteQkJCTo9IHBoeS1tdGstbWlw
-aS1kc2kubw0KPiArcGh5LW10ay1taXBpLWRzaS1kcnYteQkJCSs9IHBoeS1tdGstbWlwaS1kc2kt
-bXQ4MTczLm8NCj4gK3BoeS1tdGstbWlwaS1kc2ktZHJ2LXkJCQkrPSBwaHktbXRrLW1pcGktZHNp
-LW10ODE4My5vDQo+ICtvYmotJChDT05GSUdfUEhZX01US19NSVBJX0RTSSkJCSs9IHBoeS1tdGst
-bWlwaS1kc2ktZHJ2Lm8NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9t
-dGtfbXQ4MTczX21pcGlfdHguYyBiL2RyaXZlcnMvcGh5L21lZGlhdGVrL3BoeS1tdGstbWlwaS1k
-c2ktbXQ4MTczLmMNCj4gc2ltaWxhcml0eSBpbmRleCA5OSUNCj4gcmVuYW1lIGZyb20gZHJpdmVy
-cy9ncHUvZHJtL21lZGlhdGVrL210a19tdDgxNzNfbWlwaV90eC5jDQo+IHJlbmFtZSB0byBkcml2
-ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLW1pcGktZHNpLW10ODE3My5jDQo+IGluZGV4IGYxOGRi
-MTRkOGI2My4uN2E4NDc5NTQ1OTRmIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVk
-aWF0ZWsvbXRrX210ODE3M19taXBpX3R4LmMNCj4gKysrIGIvZHJpdmVycy9waHkvbWVkaWF0ZWsv
-cGh5LW10ay1taXBpLWRzaS1tdDgxNzMuYw0KPiBAQCAtNCw3ICs0LDcgQEANCj4gICAqIEF1dGhv
-cjogaml0YW8uc2hpIDxqaXRhby5zaGlAbWVkaWF0ZWsuY29tPg0KPiAgICovDQo+ICANCj4gLSNp
-bmNsdWRlICJtdGtfbWlwaV90eC5oIg0KPiArI2luY2x1ZGUgInBoeS1tdGstbWlwaS1kc2kuaCIN
-Cj4gIA0KPiAgI2RlZmluZSBNSVBJVFhfRFNJX0NPTgkJMHgwMA0KPiAgI2RlZmluZSBSR19EU0lf
-TERPQ09SRV9FTgkJQklUKDApDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0
-ZWsvbXRrX210ODE4M19taXBpX3R4LmMgYi9kcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLW1p
-cGktZHNpLW10ODE4My5jDQo+IHNpbWlsYXJpdHkgaW5kZXggOTklDQo+IHJlbmFtZSBmcm9tIGRy
-aXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfbXQ4MTgzX21pcGlfdHguYw0KPiByZW5hbWUgdG8g
-ZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5LW10ay1taXBpLWRzaS1tdDgxODMuYw0KPiBpbmRleCA5
-ZjNlNTVhZWViYjIuLjk5MTA4NDI2ZDU3YyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJt
-L21lZGlhdGVrL210a19tdDgxODNfbWlwaV90eC5jDQo+ICsrKyBiL2RyaXZlcnMvcGh5L21lZGlh
-dGVrL3BoeS1tdGstbWlwaS1kc2ktbXQ4MTgzLmMNCj4gQEAgLTQsNyArNCw3IEBADQo+ICAgKiBB
-dXRob3I6IGppdGFvLnNoaSA8aml0YW8uc2hpQG1lZGlhdGVrLmNvbT4NCj4gICAqLw0KPiAgDQo+
-IC0jaW5jbHVkZSAibXRrX21pcGlfdHguaCINCj4gKyNpbmNsdWRlICJwaHktbXRrLW1pcGktZHNp
-LmgiDQo+ICANCj4gICNkZWZpbmUgTUlQSVRYX0xBTkVfQ09OCQkweDAwMGMNCj4gICNkZWZpbmUg
-UkdfRFNJX0NQSFlfVDFEUlZfRU4JCUJJVCgwKQ0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUv
-ZHJtL21lZGlhdGVrL210a19taXBpX3R4LmMgYi9kcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRr
-LW1pcGktZHNpLmMNCj4gc2ltaWxhcml0eSBpbmRleCA5OSUNCj4gcmVuYW1lIGZyb20gZHJpdmVy
-cy9ncHUvZHJtL21lZGlhdGVrL210a19taXBpX3R4LmMNCj4gcmVuYW1lIHRvIGRyaXZlcnMvcGh5
-L21lZGlhdGVrL3BoeS1tdGstbWlwaS1kc2kuYw0KPiBpbmRleCBmMmE4OTJlMTZjMjcuLjE4YzQ4
-MTI1MWYwNCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19taXBp
-X3R4LmMNCj4gKysrIGIvZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5LW10ay1taXBpLWRzaS5jDQo+
-IEBAIC0zLDcgKzMsNyBAQA0KPiAgICogQ29weXJpZ2h0IChjKSAyMDE1IE1lZGlhVGVrIEluYy4N
-Cj4gICAqLw0KPiAgDQo+IC0jaW5jbHVkZSAibXRrX21pcGlfdHguaCINCj4gKyNpbmNsdWRlICJw
-aHktbXRrLW1pcGktZHNpLmgiDQo+ICANCj4gIGlubGluZSBzdHJ1Y3QgbXRrX21pcGlfdHggKm10
-a19taXBpX3R4X2Zyb21fY2xrX2h3KHN0cnVjdCBjbGtfaHcgKmh3KQ0KPiAgew0KPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19taXBpX3R4LmggYi9kcml2ZXJzL3Bo
-eS9tZWRpYXRlay9waHktbXRrLW1pcGktZHNpLmgNCj4gc2ltaWxhcml0eSBpbmRleCAxMDAlDQo+
-IHJlbmFtZSBmcm9tIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfbWlwaV90eC5oDQo+IHJl
-bmFtZSB0byBkcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLW1pcGktZHNpLmgNCg0K
+We need support to various accessories on the device,
+some requiring switch does not exist in switch list.
+So added switch for the following purpose.
 
+SW_EXT_PEN_ATTACHED is for the checking the external pen
+attached or not on the device. We also added driver
+that uses such event.
+
+Signed-off-by: Hyungjae Im <hj2.im@samsung.com>
+---
+ drivers/input/Kconfig                  |  12 ++
+ drivers/input/Makefile                 |   1 +
+ drivers/input/ext_pen_detect.c         | 237 +++++++++++++++++++++++++
+ include/linux/mod_devicetable.h        |   2 +-
+ include/uapi/linux/input-event-codes.h |   3 +-
+ 5 files changed, 253 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/input/ext_pen_detect.c
+
+diff --git a/drivers/input/Kconfig b/drivers/input/Kconfig
+index ba5e7444c547..5d6d15c8f7e7 100644
+--- a/drivers/input/Kconfig
++++ b/drivers/input/Kconfig
+@@ -197,6 +197,18 @@ config INPUT_COVER_DETECT
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called cover_detect.
+ 
++config INPUT_EXT_PEN_DETECT
++	tristate "Enable external pen attach detection"
++	help
++	  Say Y here to enable external pen detection
++	  and send a event when external pen is attached/detached.
++	  Active gpio state is low and active event value is 0.
++
++	  If unsure, say N.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called ext_pen_detect.
++
+ comment "Input Device Drivers"
+ 
+ source "drivers/input/keyboard/Kconfig"
+diff --git a/drivers/input/Makefile b/drivers/input/Makefile
+index fc8dd9091821..0ccf02e34557 100644
+--- a/drivers/input/Makefile
++++ b/drivers/input/Makefile
+@@ -31,3 +31,4 @@ obj-$(CONFIG_INPUT_APMPOWER)	+= apm-power.o
+ obj-$(CONFIG_RMI4_CORE)		+= rmi4/
+ 
+ obj-$(CONFIG_INPUT_COVER_DETECT)+= cover_detect.o
++obj-$(CONFIG_INPUT_EXT_PEN_DETECT)+= ext_pen_detect.o
+diff --git a/drivers/input/ext_pen_detect.c b/drivers/input/ext_pen_detect.c
+new file mode 100644
+index 000000000000..9a0d106e49f8
+--- /dev/null
++++ b/drivers/input/ext_pen_detect.c
+@@ -0,0 +1,237 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Support detection pen attachment externally on device
++ *
++ * Copyright (C) 2020 Samsung Electronics Co. Ltd. All Rights Reserved.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/interrupt.h>
++#include <linux/pm.h>
++#include <linux/slab.h>
++#include <linux/platform_device.h>
++#include <linux/input.h>
++#include <linux/gpio.h>
++#include <linux/of_gpio.h>
++#include <linux/wakelock.h>
++
++struct ext_pen_detect_drvdata {
++	struct input_dev *input;
++	struct delayed_work ext_pen_detect_dwork;
++	struct wakeup_source *ws;
++	int gpio_ext_pen_detect;
++	int irq_ext_pen_detect;
++};
++
++static void ext_pen_detect_work(struct work_struct *work)
++{
++	struct ext_pen_detect_drvdata *ddata =
++		container_of(work, struct ext_pen_detect_drvdata,
++				ext_pen_detect_dwork.work);
++	bool ext_pen_status;
++
++	ext_pen_status = gpio_get_value(ddata->gpio_ext_pen_detect);
++
++	input_report_switch(ddata->input,
++			SW_EXT_PEN_ATTACHED, ext_pen_status);
++	input_sync(ddata->input);
++}
++
++static void __ext_pen_detect(struct ext_pen_detect_drvdata *ddata,
++				bool ext_pen_status)
++{
++	cancel_delayed_work_sync(&ddata->ext_pen_detect_dwork);
++	if (ext_pen_status) {
++		__pm_wakeup_event(ddata->ws, jiffies_to_msecs(HZ / 20));
++		schedule_delayed_work(&ddata->ext_pen_detect_dwork,
++					HZ * 1 / 100);
++	} else {
++		__pm_relax(ddata->ws);
++		schedule_delayed_work(&ddata->ext_pen_detect_dwork, 0);
++	}
++}
++
++static irqreturn_t ext_pen_detect_irq(int irq, void *dev_id)
++{
++	bool ext_pen_status;
++	struct ext_pen_detect_drvdata *ddata = dev_id;
++
++	ext_pen_status = gpio_get_value(ddata->gpio_ext_pen_detect);
++
++	__ext_pen_detect(ddata, ext_pen_status);
++
++	return IRQ_HANDLED;
++}
++
++static int ext_pen_detect_open(struct input_dev *input)
++{
++	struct ext_pen_detect_drvdata *ddata = input_get_drvdata(input);
++	/* update the current status */
++	schedule_delayed_work(&ddata->ext_pen_detect_dwork, HZ / 2);
++	/* Report current state of buttons that are connected to GPIOs */
++	input_sync(input);
++
++	return 0;
++}
++
++static void ext_pen_detect_close(struct input_dev *input)
++{
++}
++
++static void init_ext_pen_detect_irq(struct input_dev *input)
++{
++	struct ext_pen_detect_drvdata *ddata = input_get_drvdata(input);
++
++	int ret = 0;
++	int irq = ddata->irq_ext_pen_detect;
++
++	ret =	request_threaded_irq(
++		irq, NULL,
++		ext_pen_detect_irq,
++		IRQF_TRIGGER_RISING |
++		IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++		"ext_pen_detect", ddata);
++	if (ret < 0)
++		pr_err("keys: failed to request ext_pen detect irq %d gpio %d\n",
++				irq, ddata->gpio_ext_pen_detect);
++}
++
++#ifdef CONFIG_OF
++static int of_ext_pen_detect_data_parsing_dt(struct device *dev,
++					struct ext_pen_detect_drvdata *ddata)
++{
++	struct device_node *np = dev->of_node;
++	int gpio;
++	enum of_gpio_flags flags;
++
++	gpio = of_get_named_gpio_flags(np, "gpio_ext_pen_detect", 0, &flags);
++	ddata->gpio_ext_pen_detect = gpio;
++
++	ddata->irq_ext_pen_detect = gpio_to_irq(gpio);
++
++	return 0;
++}
++#endif
++
++static int ext_pen_detect_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct ext_pen_detect_drvdata *ddata;
++	struct input_dev *input;
++	int error;
++	int wakeup = 0;
++
++	ddata = kzalloc(sizeof(struct ext_pen_detect_drvdata), GFP_KERNEL);
++	if (!ddata)
++		return -ENOMEM;
++
++#ifdef CONFIG_OF
++	if (dev->of_node) {
++		error = of_ext_pen_detect_data_parsing_dt(dev, ddata);
++		if (error < 0) {
++			dev_err(dev, "fail to get the devicetree, error: %d\n",
++					error);
++			goto fail1;
++		}
++	}
++#endif
++
++	input = input_allocate_device();
++	if (!input) {
++		dev_err(dev, "failed to allocate state\n");
++		error = -ENOMEM;
++		goto fail1;
++	}
++
++	ddata->input = input;
++
++	ddata->ws = wakeup_source_register(NULL, "ext_pen_detect");
++
++	platform_set_drvdata(pdev, ddata);
++	input_set_drvdata(input, ddata);
++
++	input->name = "ext_pen_detect";
++	input->phys = "ext_pen_detect";
++	input->dev.parent = &pdev->dev;
++
++	input->evbit[0] |= BIT_MASK(EV_SW);
++	input_set_capability(input, EV_SW, SW_EXT_PEN_ATTACHED);
++
++	input->open = ext_pen_detect_open;
++	input->close = ext_pen_detect_close;
++
++	/* Enable auto repeat feature of Linux input subsystem */
++	__set_bit(EV_REP, input->evbit);
++
++	INIT_DELAYED_WORK(&ddata->ext_pen_detect_dwork, ext_pen_detect_work);
++
++	init_ext_pen_detect_irq(input);
++
++	if (ddata->gpio_ext_pen_detect != 0) {
++		error = input_register_device(input);
++		if (error) {
++			dev_err(dev, "Unable to register input device, error: %d\n",
++				error);
++			goto fail1;
++		}
++	}
++
++	device_init_wakeup(&pdev->dev, wakeup);
++
++	return 0;
++
++ fail1:
++	kfree(ddata);
++
++	return error;
++}
++
++static int ext_pen_detect_remove(struct platform_device *pdev)
++{
++	struct ext_pen_detect_drvdata *ddata = platform_get_drvdata(pdev);
++	struct input_dev *input = ddata->input;
++
++	device_init_wakeup(&pdev->dev, 0);
++
++	input_unregister_device(input);
++
++	wakeup_source_unregister(ddata->ws);
++
++	kfree(ddata);
++
++	return 0;
++}
++
++#if defined(CONFIG_OF)
++static const struct of_device_id ext_pen_detect_dt_ids[] = {
++	{ .compatible = "ext_pen_detect" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, ext_pen_detect_dt_ids);
++#endif /* CONFIG_OF */
++
++static struct platform_driver ext_pen_detect_device_driver = {
++	.probe		= ext_pen_detect_probe,
++	.remove		= ext_pen_detect_remove,
++	.driver		= {
++		.name	= "ext_pen_detect",
++		.owner	= THIS_MODULE,
++#if defined(CONFIG_OF)
++		.of_match_table	= ext_pen_detect_dt_ids,
++#endif /* CONFIG_OF */
++	}
++};
++
++static int __init ext_pen_detect_init(void)
++{
++	return platform_driver_register(&ext_pen_detect_device_driver);
++}
++
++static void __exit ext_pen_detect_exit(void)
++{
++	platform_driver_unregister(&ext_pen_detect_device_driver);
++}
++
++module_init(ext_pen_detect_init);
++module_exit(ext_pen_detect_exit);
+diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+index 2e6ae686555b..897f5a3e7721 100644
+--- a/include/linux/mod_devicetable.h
++++ b/include/linux/mod_devicetable.h
+@@ -320,7 +320,7 @@ struct pcmcia_device_id {
+ #define INPUT_DEVICE_ID_LED_MAX		0x0f
+ #define INPUT_DEVICE_ID_SND_MAX		0x07
+ #define INPUT_DEVICE_ID_FF_MAX		0x7f
+-#define INPUT_DEVICE_ID_SW_MAX		0x11
++#define INPUT_DEVICE_ID_SW_MAX		0x12
+ #define INPUT_DEVICE_ID_PROP_MAX	0x1f
+ 
+ #define INPUT_DEVICE_ID_MATCH_BUS	1
+diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
+index 32e27732161c..8ca2acee1f92 100644
+--- a/include/uapi/linux/input-event-codes.h
++++ b/include/uapi/linux/input-event-codes.h
+@@ -890,7 +890,8 @@
+ #define SW_PEN_INSERTED		0x0f  /* set = pen inserted */
+ #define SW_MACHINE_COVER	0x10  /* set = cover closed */
+ #define SW_COVER_ATTACHED	0x11  /* set = cover attached */
+-#define SW_MAX			0x11
++#define SW_EXT_PEN_ATTACHED	0x12  /* set = external pen attached */
++#define SW_MAX			0x12
+ #define SW_CNT			(SW_MAX+1)
+ 
+ /*
+-- 
+2.17.1
