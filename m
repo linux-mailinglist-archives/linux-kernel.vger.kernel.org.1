@@ -2,157 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9450C2A08D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E102A0937
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgJ3PA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:00:56 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:15998 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726779AbgJ3PAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:00:43 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 30 Oct 2020 08:00:43 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 30 Oct 2020 08:00:41 -0700
-X-QCInternal: smtphost
-Received: from c-rojay-linux.qualcomm.com ([10.206.21.80])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 30 Oct 2020 20:30:08 +0530
-Received: by c-rojay-linux.qualcomm.com (Postfix, from userid 88981)
-        id 21BEE26B6; Fri, 30 Oct 2020 20:30:07 +0530 (IST)
-From:   Roja Rani Yarubandi <rojay@codeaurora.org>
-To:     wsa@kernel.org
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, akashast@codeaurora.org,
-        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        vkaur@codeaurora.org, pyarlaga@codeaurora.org,
-        rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-Subject: [PATCH V6 3/3] i2c: i2c-qcom-geni: Add shutdown callback for i2c
-Date:   Fri, 30 Oct 2020 20:29:59 +0530
-Message-Id: <20201030145959.505-4-rojay@codeaurora.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201030145959.505-1-rojay@codeaurora.org>
-References: <20201030145959.505-1-rojay@codeaurora.org>
+        id S1726899AbgJ3PHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:07:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:36990 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726820AbgJ3PHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:07:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E96B6139F;
+        Fri, 30 Oct 2020 07:58:56 -0700 (PDT)
+Received: from e112269-lin.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E63B3F68F;
+        Fri, 30 Oct 2020 07:58:55 -0700 (PDT)
+From:   Steven Price <steven.price@arm.com>
+To:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Cc:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Subject: [PATCH] drm/panfrost: Fix module unload
+Date:   Fri, 30 Oct 2020 14:58:33 +0000
+Message-Id: <20201030145833.29006-1-steven.price@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the hardware is still accessing memory after SMMU translation
-is disabled (as part of smmu shutdown callback), then the
-IOVAs (I/O virtual address) which it was using will go on the bus
-as the physical addresses which will result in unknown crashes
-like NoC/interconnect errors.
+When unloading the call to pm_runtime_put_sync_suspend() will attempt to
+turn the GPU cores off, however panfrost_device_fini() will have turned
+the clocks off. This leads to the hardware locking up.
 
-So, implement shutdown callback to i2c driver to stop on-going transfer
-and unmap DMA mappings during system "reboot" or "shutdown".
+Instead don't call pm_runtime_put_sync_suspend() and instead simply mark
+the device as suspended using pm_runtime_set_suspended(). And also
+include this on the error path in panfrost_probe().
 
-Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
-Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+Fixes: aebe8c22a912 ("drm/panfrost: Fix possible suspend in panfrost_remove")
+Signed-off-by: Steven Price <steven.price@arm.com>
 ---
-Changes in V2:
- - As per Stephen's comments added seperate function for stop transfer,
-   fixed minor nitpicks.
- - As per Stephen's comments, changed commit text.
+ drivers/gpu/drm/panfrost/panfrost_drv.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Changes in V3:
- - As per Stephen's comments, squashed patch 1 into patch 2, added Fixes tag.
- - As per Akash's comments, included FIFO case in stop_xfer, fixed minor nitpicks.
-
-Changes in V4:
- - As per Stephen's comments cleaned up geni_i2c_stop_xfer function,
-   added dma_buf in geni_i2c_dev struct to call i2c_put_dma_safe_msg_buf()
-   from other functions, removed "iova" check in geni_se_rx_dma_unprep()
-   and geni_se_tx_dma_unprep() functions.
- - Added two helper functions geni_i2c_rx_one_msg_done() and
-   geni_i2c_tx_one_msg_done() to unwrap the things after rx/tx FIFO/DMA
-   transfers, so that the same can be used in geni_i2c_stop_xfer() function
-   during shutdown callback. Updated commit text accordingly.
- - Checking whether it is tx/rx transfer using I2C_M_RD which is valid for both
-   FIFO and DMA cases, so dropped DMA_RX_ACTIVE and DMA_TX_ACTIVE bit checking
-
-Changes in V5:
- - As per Stephen's comments, added spin_lock_irqsave & spin_unlock_irqsave in 
-   geni_i2c_stop_xfer() function.
-
-Changes in V6:
- - As per Stephen's comments, taken care of unsafe lock order in
-   geni_i2c_stop_xfer().
- - Moved spin_lock/unlock to geni_i2c_rx_msg_cleanup() and
-   geni_i2c_tx_msg_cleanup() functions.
-
- drivers/i2c/busses/i2c-qcom-geni.c | 35 ++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
-
-diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-index e3a4ae88ed31..0c35e3e27a01 100644
---- a/drivers/i2c/busses/i2c-qcom-geni.c
-+++ b/drivers/i2c/busses/i2c-qcom-geni.c
-@@ -385,6 +385,33 @@ static void geni_i2c_tx_msg_cleanup(struct geni_i2c_dev *gi2c,
- 	spin_unlock_irqrestore(&gi2c->lock, flags);
- }
+diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+index 23513869500c..0ac8ad18fdc6 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_drv.c
++++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+@@ -627,6 +627,7 @@ static int panfrost_probe(struct platform_device *pdev)
+ err_out1:
+ 	pm_runtime_disable(pfdev->dev);
+ 	panfrost_device_fini(pfdev);
++	pm_runtime_set_suspended(pfdev->dev);
+ err_out0:
+ 	drm_dev_put(ddev);
+ 	return err;
+@@ -641,9 +642,9 @@ static int panfrost_remove(struct platform_device *pdev)
+ 	panfrost_gem_shrinker_cleanup(ddev);
  
-+static void geni_i2c_stop_xfer(struct geni_i2c_dev *gi2c)
-+{
-+	int ret;
-+	u32 geni_status;
-+	struct i2c_msg *cur;
-+
-+	/* Resume device, as runtime suspend can happen anytime during transfer */
-+	ret = pm_runtime_get_sync(gi2c->se.dev);
-+	if (ret < 0) {
-+		dev_err(gi2c->se.dev, "Failed to resume device: %d\n", ret);
-+		return;
-+	}
-+
-+	geni_status = readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
-+	if (!(geni_status & M_GENI_CMD_ACTIVE))
-+		goto out;
-+
-+	cur = gi2c->cur;
-+	geni_i2c_abort_xfer(gi2c);
-+	if (cur->flags & I2C_M_RD)
-+		geni_i2c_rx_msg_cleanup(gi2c, cur);
-+	else
-+		geni_i2c_tx_msg_cleanup(gi2c, cur);
-+out:
-+	pm_runtime_put_sync_suspend(gi2c->se.dev);
-+}
-+
- static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 				u32 m_param)
- {
-@@ -666,6 +693,13 @@ static int geni_i2c_remove(struct platform_device *pdev)
+ 	pm_runtime_get_sync(pfdev->dev);
+-	panfrost_device_fini(pfdev);
+-	pm_runtime_put_sync_suspend(pfdev->dev);
+ 	pm_runtime_disable(pfdev->dev);
++	panfrost_device_fini(pfdev);
++	pm_runtime_set_suspended(pfdev->dev);
+ 
+ 	drm_dev_put(ddev);
  	return 0;
- }
- 
-+static void  geni_i2c_shutdown(struct platform_device *pdev)
-+{
-+	struct geni_i2c_dev *gi2c = platform_get_drvdata(pdev);
-+
-+	geni_i2c_stop_xfer(gi2c);
-+}
-+
- static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
- {
- 	int ret;
-@@ -730,6 +764,7 @@ MODULE_DEVICE_TABLE(of, geni_i2c_dt_match);
- static struct platform_driver geni_i2c_driver = {
- 	.probe  = geni_i2c_probe,
- 	.remove = geni_i2c_remove,
-+	.shutdown = geni_i2c_shutdown,
- 	.driver = {
- 		.name = "geni_i2c",
- 		.pm = &geni_i2c_pm_ops,
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.20.1
 
