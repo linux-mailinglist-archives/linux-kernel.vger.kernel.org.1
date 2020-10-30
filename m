@@ -2,126 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81E62A0211
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF8A2A021B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726171AbgJ3KES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
+        id S1726220AbgJ3KGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgJ3KER (ORCPT
+        with ESMTP id S1726055AbgJ3KGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:04:17 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2C8C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:04:17 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id y12so5783567wrp.6
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:04:17 -0700 (PDT)
+        Fri, 30 Oct 2020 06:06:43 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAB9C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:06:43 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id q1so402106qvn.5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:06:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gQH8tfnS5gABqR+rI2vYNKDqWdjjH0cmP3e9KTBgftU=;
-        b=B9rJTdT06fBjkoaC4E33GsRL6XklEaCtgE6RSNGKr1R6NIN6tshFsvlrm73+qDotTs
-         TgtMR2VLSrECST5bfnSTgKL7Wgi9dLvx0b+wOp98ZwTdU4Ui8lhbwxRwAvAFaXlLlBUv
-         kIF79xh7rAnLeAmFUb7OH8iS2qmajJB6f90j1t67g5Zqi8ZvFcvZqslE0Nw79PSToAvD
-         N9OdQRnS+ec6wQ18zcvo4xYOB+MrwDVlSeHj5ODLObBC4OqIgDsKYG4VpZ7Zwf1s+0XG
-         E8uv8pTzD1YjF2GLDWWylcwx+GDZ++SmMtTJoKDLvlekOLEjOvRKbLbn1NSmNnF0g7r5
-         ocZw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tELbhXfQariElQPBOqAGKxNGlZL8E/ZXdebHFJy/Swk=;
+        b=dELZIPtiqtXpHQ7fjyuo6GNNLMPs9DWb1SMjCY5eGwM76MPPy2eDyZ83N4PcOAIdw4
+         azxWdm/nMgQB+vwbL7e+vM6rC8RxvpnG8J0HI2DVrPTRokppZTH1IRHAaNNtdbJ4e0fl
+         QTjg0w+zCa3J9iS69rMs9evPg5HihkvUxD4Gjqi5UdZzKfYHq3qWqGxmzlkLTAmQ4yO8
+         2/lSCoVhAhMykIiGXz2yfbE0KeBjUBSU/4mPnf76/PzSPtX3LigZ4+mYrLTFUNo2W1sY
+         huVfAUajc8PLsdlzL+Zec2BKncYiE/5Gp8Um1ls03omFXuz23v8lQvEhHYlf5mRRJTI6
+         B9Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gQH8tfnS5gABqR+rI2vYNKDqWdjjH0cmP3e9KTBgftU=;
-        b=VqpeaexeSG9Jl73xDmTqVGbYnW/F745X1zbL2ZT5QBuei5tHqVo6qhJscF+t8tVv2e
-         n+pmtuUOZ1JT2wtBUXYFqejpBTf94kyVkJw47nZlYpzA9gfkwAeTH+tnMSxbBwRL32oU
-         HpfadXst9qpZ3ApivupG8bqCummLQ8Asw/DzClQjsMSTAQbcEDBx+lDCvYhr0tRLpcsw
-         97tu4NpofrWrkyYYcq0zu7TFkP35t/inc4Rq5C6ExCtAOu5oSC8vVTmx6EGhTg48uM2I
-         78e+7uMDHEEMZh0rYAt609pqjt5KfWTUu8fLYGo0MBXyJaz0r8EgGRhajMxtVrTTc2KX
-         1QhQ==
-X-Gm-Message-State: AOAM53237mxpxm38aLbgJdczOKi1h2SY5VJ4Ecx2ZDv8AMhW5EgwMgSo
-        xv7lqqCuFBqOm133YiklzFHBJQ==
-X-Google-Smtp-Source: ABdhPJyiqwsuWF8oCOJ2p5mgrL1UOBEF3qjVNKqZ9hb80Q/uxO4LXY5WvIi3i2M6psl12Cn+2MTVIQ==
-X-Received: by 2002:a5d:40c3:: with SMTP id b3mr2187416wrq.157.1604052256376;
-        Fri, 30 Oct 2020 03:04:16 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id h8sm7699531wro.14.2020.10.30.03.04.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 30 Oct 2020 03:04:15 -0700 (PDT)
-Subject: Re: [PATCH v2 19/39] docs: ABI: stable: make files ReST compatible
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Juergen Gross <jgross@suse.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Tom Rix <trix@redhat.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        xen-devel@lists.xenproject.org
-References: <cover.1604042072.git.mchehab+huawei@kernel.org>
- <467a0dfbcdf00db710a629d3fe4a2563750339d8.1604042072.git.mchehab+huawei@kernel.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <bc393307-d7dc-1666-f25c-6d756ebf5993@linaro.org>
-Date:   Fri, 30 Oct 2020 10:04:13 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tELbhXfQariElQPBOqAGKxNGlZL8E/ZXdebHFJy/Swk=;
+        b=r2+Hyk0BxNkCgN1GikT+OkG9s9xdiuLdq7mDPjTGckVyG/x5CAGTXv49FH6J5F7rDx
+         +/HTBs4+HGGyUHJaBl5EQ1BZqLmuFmWSkDAtO8ecpp58kN3cCMBQR4ueVihjV/8kljwB
+         wuMNd/QzfqBIgS5rQrUM4gqIvBe23YGDTXFIKt671uKG2adJF2jFUyNwF8nqCOGu/8hk
+         cnKLOk9oKaubcS9MqWALPWguxrwCCyU/XFIA/WhPjmgGWmYlygh9+q/F2IltutqeqK98
+         JI/in7OvqzzxRTcPB1eSVJ10NgiQOp9egz7NOCxBS8raMp+7gs1KI6gMMTZiQ3kSLsUU
+         2fuw==
+X-Gm-Message-State: AOAM53359/Y/+8Q4jsxrlTdioBFDJbrvzg6oOFaPs2kDaVibfFjXpBo3
+        iVlzvKWSIvwR8JmYeBgiOBHaPUJwqoFidqsr5Oe+XQ==
+X-Google-Smtp-Source: ABdhPJwc1+7TcV9MSi+z6TcWtLeHmWbO58lYC2oSiF2SxLlKXLntRRFRSM9/doT/IR40mAYb6sLnwqstaBc+DrKnU/M=
+X-Received: by 2002:ad4:414d:: with SMTP id z13mr8680267qvp.37.1604052402013;
+ Fri, 30 Oct 2020 03:06:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <467a0dfbcdf00db710a629d3fe4a2563750339d8.1604042072.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <00000000000030a45905aedd879d@google.com> <20200909134317.19732-1-hdanton@sina.com>
+ <4d55d988-d45e-ba36-fed7-342e0a6ab16e@kernel.dk> <20200909153235.joqj6hjyxug3wtwv@steredhat>
+In-Reply-To: <20200909153235.joqj6hjyxug3wtwv@steredhat>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 30 Oct 2020 11:06:30 +0100
+Message-ID: <CACT4Y+ZpzjQgFCaOD00oP17sFcsFNvFyShY-ydoJGQnGEKri1w@mail.gmail.com>
+Subject: Re: INFO: task hung in io_sq_thread_stop
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+3c23789ea938faaef049@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 9, 2020 at 5:32 PM Stefano Garzarella <sgarzare@redhat.com> wrote:
+>
+> On Wed, Sep 09, 2020 at 08:05:33AM -0600, Jens Axboe wrote:
+> > On 9/9/20 7:43 AM, Hillf Danton wrote:
+> > >
+> > > On Wed, 9 Sep 2020 12:03:55 +0200 Stefano Garzarella wrote:
+> > >> On Wed, Sep 09, 2020 at 01:49:22AM -0700, syzbot wrote:
+> > >>> Hello,
+> > >>>
+> > >>> syzbot found the following issue on:
+> > >>>
+> > >>> HEAD commit:    dff9f829 Add linux-next specific files for 20200908
+> > >>> git tree:       linux-next
+> > >>> console output: https://syzkaller.appspot.com/x/log.txt?x=112f880d900000
+> > >>> kernel config:  https://syzkaller.appspot.com/x/.config?x=37b3426c77bda44c
+> > >>> dashboard link: https://syzkaller.appspot.com/bug?extid=3c23789ea938faaef049
+> > >>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > >>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c082a5900000
+> > >>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1474f5f9900000
+> > >>>
+> > >>> Bisection is inconclusive: the first bad commit could be any of:
+> > >>>
+> > >>> d730b1a2 io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
+> > >>> 7ec3d1dd io_uring: allow disabling rings during the creation
+> > >>
+> > >> I'm not sure it is related, but while rebasing I forgot to update the
+> > >> right label in the error path.
+> > >>
+> > >> Since the check of ring state is after the increase of ctx refcount, we
+> > >> need to decrease it jumping to 'out' label instead of 'out_fput':
+> > >
+> > > I think we need to fix 6a7bb9ff5744 ("io_uring: remove need for
+> > > sqd->ctx_lock in io_sq_thread()") because the syzbot report
+> > > indicates the io_sq_thread has to wake up the kworker before
+> > > scheduling, and in turn the kworker has the chance to unpark it.
+> > >
+> > > Below is the minimum walkaround I can have because it can't
+> > > ensure the parker will be waken in every case.
+> > >
+> > > --- a/fs/io_uring.c
+> > > +++ b/fs/io_uring.c
+> > > @@ -6834,6 +6834,10 @@ static int io_sq_thread(void *data)
+> > >                     io_sq_thread_drop_mm();
+> > >             }
+> > >
+> > > +           if (kthread_should_park()) {
+> > > +                   /* wake up parker before scheduling */
+> > > +                   continue;
+> > > +           }
+> > >             if (ret & SQT_SPIN) {
+> > >                     io_run_task_work();
+> > >                     cond_resched();
+> > >
+> >
+> > I think this should go in the slow path:
+> >
+> >
+> > diff --git a/fs/io_uring.c b/fs/io_uring.c
+> > index 652cc53432d4..1c4fa2a0fd82 100644
+> > --- a/fs/io_uring.c
+> > +++ b/fs/io_uring.c
+> > @@ -6839,6 +6839,8 @@ static int io_sq_thread(void *data)
+> >               } else if (ret == SQT_IDLE) {
+> >                       list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
+> >                               io_ring_set_wakeup_flag(ctx);
+> > +                     if (kthread_should_park())
+> > +                             continue;
+> >                       schedule();
+> >                       start_jiffies = jiffies;
+> >               }
+> >
+>
+> Yes, I agree since only in this case the kthread is not rescheduled.
+>
+> Thanks both for the fix :-)
+> Feel free to add my R-b:
+>
+> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-
-On 30/10/2020 07:40, Mauro Carvalho Chehab wrote:
-> Several entries at the stable ABI files won't parse if we pass
-> them directly to the ReST output.
-> 
-> Adjust them, in order to allow adding their contents as-is at
-> the stable ABI book.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->   Documentation/ABI/stable/firewire-cdev        |  4 +
->   Documentation/ABI/stable/sysfs-acpi-pmprofile | 22 +++--
->   Documentation/ABI/stable/sysfs-bus-firewire   |  3 +
->   Documentation/ABI/stable/sysfs-bus-nvmem      | 19 ++--
-
-for nvmem parts:
-
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
---srini
-
->   Documentation/ABI/stable/sysfs-bus-usb        |  6 +-
->   .../ABI/stable/sysfs-class-backlight          |  1 +
->   .../ABI/stable/sysfs-class-infiniband         | 93 +++++++++++++------
->   Documentation/ABI/stable/sysfs-class-rfkill   | 13 ++-
->   Documentation/ABI/stable/sysfs-class-tpm      | 90 +++++++++---------
->   Documentation/ABI/stable/sysfs-devices        |  5 +-
->   Documentation/ABI/stable/sysfs-driver-ib_srp  |  1 +
->   .../ABI/stable/sysfs-firmware-efi-vars        |  4 +
->   .../ABI/stable/sysfs-firmware-opal-dump       |  5 +
->   .../ABI/stable/sysfs-firmware-opal-elog       |  2 +
->   Documentation/ABI/stable/sysfs-hypervisor-xen |  3 +
->   Documentation/ABI/stable/vdso                 |  5 +-
->   16 files changed, 176 insertions(+), 100 deletions(-)
-> 
+What happened with this fix?
+The bug is marked as fixed with commit "io_uring: don't sleep schedule
+in SQPOLL thread if we need to park":
+https://syzkaller.appspot.com/bug?id=d0cf0b29fc5520a8987b28f1a7b63264ae02535e
+But such commit cannot be found in any tree.
