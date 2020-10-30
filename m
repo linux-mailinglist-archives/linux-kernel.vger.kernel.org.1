@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5443C2A0029
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA532A002D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgJ3IiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 04:38:00 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:43705 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgJ3IiA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:38:00 -0400
-Received: by mail-ot1-f68.google.com with SMTP id a6so4877726otp.10;
-        Fri, 30 Oct 2020 01:37:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7ptl6SDfjcDqIRDTQhsGvZcOItESChqs80RIvWCLj/w=;
-        b=t9eCc1NM7L1A74p5P483XBHrLhpElb7Hd0dlYJ7vNJmDXDR5dXq484+FkheERieVxt
-         IREE92G/oy8VquEMRj67asn/qde8F1sJ0PJLb7bkMq+4XFVrg1IR4ud8GLGnYon8p7rp
-         eZRpHXdZnCDUKdXRXZii5a8ntYE4ULySJSC+wZ4cq4ERYywbsOCwpFASxwyewYChtQCf
-         1ja9xgv8pT1ddeEmY6OnGLm65fXvNpnwzR44Ei3VQ2cMDttXAfXf0CHg2SH4920hYnEr
-         TwhhEfOTHCi2hiXKCTy08jvP9PVwE8tiJkH67/IT/nyxbNnoYMxoExfWkrJpIJTH0NX8
-         irVQ==
-X-Gm-Message-State: AOAM533oi94SyA0yUmOuvbaxhv+l/VfGfIUsQG+vTUMUpeo07r2Y+VDz
-        YIyL0QVVJMbnsWFx0Z5IS/N9c9KFjOR9z45rs+W8WsUsDx0=
-X-Google-Smtp-Source: ABdhPJyEgNf6Vzx8E8yMGp6mWU5z4DRp4VqKxzo/S74sYqGk6X6WS0r0ozBZimz4V/JlsqofuZuwzE+oyBDFOOgUwOc=
-X-Received: by 2002:a9d:3b76:: with SMTP id z109mr839396otb.250.1604047079087;
- Fri, 30 Oct 2020 01:37:59 -0700 (PDT)
+        id S1725993AbgJ3Iiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:38:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgJ3Iiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 04:38:51 -0400
+Received: from kernel.org (unknown [87.71.17.26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2FB62075E;
+        Fri, 30 Oct 2020 08:38:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604047130;
+        bh=5pnaYeg0slp/C6LJW0tZt7NwF2KtZxhAKuysRfnP6vg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gub5VpJy/YKwwNSXMPAehOYKrC3ZbBRzR+owx6+zxhiDElhexw2Rjmwo8LSt+G9qO
+         DphIEXohytWWawhFH2y7mnynjSHE/ZNRtpKmHZYAKratdTBUOeJ5Hpd2U+St3EbTf2
+         fhtkkWeIaBP95rcXFwQ1RMEiJd1jZPaJUolALiSE=
+Date:   Fri, 30 Oct 2020 10:38:42 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Steven Price <steven.price@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        Pratik Patel <pratikp@codeaurora.org>
+Subject: Re: mm/memblock: export memblock_{start/end}_of_DRAM
+Message-ID: <20201030083842.GA4319@kernel.org>
+References: <d0580051d03df3f3e9f333f6bfe968cf@codeaurora.org>
 MIME-Version: 1.0
-References: <20201030083051.18752-1-erosca@de.adit-jv.com> <20201030083051.18752-4-erosca@de.adit-jv.com>
-In-Reply-To: <20201030083051.18752-4-erosca@de.adit-jv.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 30 Oct 2020 09:37:47 +0100
-Message-ID: <CAMuHMdUBn3=0k7MEc5w2ixn83G_x2ZDh+YuN7Lp+W7ReJ21UUg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] dt-bindings: arm: renesas: Add R-Car M3-W+ ULCB
- with Kingfisher
-To:     Eugeniu Rosca <erosca@de.adit-jv.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steffen Pengel <spengel@de.adit-jv.com>,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d0580051d03df3f3e9f333f6bfe968cf@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 9:33 AM Eugeniu Rosca <erosca@de.adit-jv.com> wrote:
-> Document the use of the Kingfisher expansion board with the R-Car
-> Starter Kit Pro equipped with an R-Car M3-W+ (aka M3-ES3.0) SoC.
->
-> Inspired from v5.5 commit 24169f0a453754 ("dt-bindings: arm: renesas:
-> Add R-Car M3-N ULCB with Kingfisher").
->
-> Suggested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+On Thu, Oct 29, 2020 at 02:29:27PM -0700, Sudarshan Rajagopalan wrote:
+> Hello all,
+> 
+> We have a usecase where a module driver adds certain memory blocks using
+> add_memory_driver_managed(), so that it can perform memory hotplug
+> operations on these blocks. In general, these memory blocks aren’t something
+> that gets physically added later, but is part of actual RAM that system
+> booted up with. Meaning – we set the ‘mem=’ cmdline parameter to limit the
+> memory and later add the remaining ones using add_memory*() variants.
+> 
+> The basic idea is to have driver have ownership and manage certain memory
+> blocks for hotplug operations.
+> 
+> For the driver be able to know how much memory was limited and how much
+> actually present, we take the delta of ‘bootmem physical end address’ and
+> ‘memblock_end_of_DRAM’. The 'bootmem physical end address' is obtained by
+> scanning the reg values in ‘memory’ DT node and determining the max
+> {addr,size}. Since our driver is getting modularized, we won’t have access
+> to memblock_end_of_DRAM (i.e. end address of all memory blocks after ‘mem=’
+> is applied).
+> 
+> So checking if memblock_{start/end}_of_DRAM() symbols can be exported? Also,
+> this information can be obtained by userspace by doing ‘cat /proc/iomem’ and
+> greping for ‘System RAM’. So wondering if userspace can have access to such
+> info, can we allow kernel module drivers have access by exporting
+> memblock_{start/end}_of_DRAM().
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.11.
+These functions cannot be exported not because we want to hide this
+information from the modules but because it is unsafe to use them.
+On most architecturs these functions are __init so they are discarded
+after boot anyway. Beisdes, the memory configuration known to memblock
+might be not accurate in many cases as David explained in his reply.
 
-Gr{oetje,eeting}s,
+> Or are there any other ways where a module driver can get the end address of
+> system memory block?
+ 
+What do you mean by "system memory block"? There could be a lot of
+interpretations if you take into account memory hotplug, "mem=" option,
+reserved and firmware memory.
 
-                        Geert
+I'd suggest you to describe the entire use case in more detail. Having
+the complete picture would help finding a proper solution.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> Sudarshan
+> 
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--
+Sincerely yours,
+Mike.
