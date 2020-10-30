@@ -2,209 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB5129FF3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E0629FF40
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726083AbgJ3H6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:58:08 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7010 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3H6I (ORCPT
+        id S1726140AbgJ3H6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJ3H6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 03:58:08 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CMvn93PZmzhd2n;
-        Fri, 30 Oct 2020 15:58:05 +0800 (CST)
-Received: from [10.174.177.167] (10.174.177.167) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 30 Oct 2020 15:57:53 +0800
-Subject: Re: [RFC PATCH v2] selinux: Fix kmemleak after disabling selinux
- runtime
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        Chen Jun <chenjun102@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>
-CC:     <stephen.smalley.work@gmail.com>, <eparis@parisplace.org>,
-        <rui.xiang@huawei.com>, <guohanjun@huawei.com>
-References: <20201028020615.8789-1-chenjun102@huawei.com>
- <c2eba2fb-79f8-eb48-ddd1-77fbc205ebff@schaufler-ca.com>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <c9e1646e-f242-4d76-f482-f6281585860e@huawei.com>
-Date:   Fri, 30 Oct 2020 15:57:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 30 Oct 2020 03:58:39 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFFDC0613CF;
+        Fri, 30 Oct 2020 00:58:38 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 10so4574432pfp.5;
+        Fri, 30 Oct 2020 00:58:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=xZQ2THIAPp3CeaUayQZop8mnVehMh5jmfzwWnkd39wI=;
+        b=OpjLRrWqL/AAXkAysic/cBVIDF0sWhjg1pOIrdCRMe6vMCoGa+otctItlGATrUXv4v
+         DF4U7Me/ok6tLghjnaJNG/S4srUR25jQycOERJLoIP2t9a4KuaZMJdO+v1jH9cDr2Dgm
+         428XoMvz45hJS8hRrj+iCqjCJO4U0Y9KkBQN0yqz2WBk5wUQ1+TFZz1Z/X9/vPrQ3UM3
+         3A8wK6bvRIXajXr9h+oELPq6cC+wfqdyv4OeUBV2pQp+Al/q+ONKUychaxR7014snUnn
+         UaeGAZ/0lloVp6Zr1tH0HQ/1Uxdm9hGxWrXgqa7pHP2zEzCwi+odZdqvqTKAaBtwBmr4
+         uEJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=xZQ2THIAPp3CeaUayQZop8mnVehMh5jmfzwWnkd39wI=;
+        b=hOCNBkrCYzfU5bV5P72D05bYo61uHELEVGS8bsZxuwkzJsdLIi1iFhRdphnrceHkbq
+         mWA8iil363X9TnhQ7T8qQEZmhcPrjoZLrb40MV2KuKprNbZq8/erRq5MYYZPJesR3k/l
+         NLf1Ynh58+WTv8GKrpCZtCPGyBA+CMNYjyANN/gA9osXU30SsSm+kNEB/lz26ucrfX4Y
+         9PPJqxmerEp8ir59DPUVJ1Vyn4wIBBukMfPHCm5mKwngoIkK4w3y16KMmXbL9wrs5VSu
+         VI6Qb3fAUZS6EBuyKAsN/E8pnVhXVRAt0ZuqqH7bPFS+AHJLG5EBWiM9QfblVEa/H/DR
+         LPhg==
+X-Gm-Message-State: AOAM530j6GMKHsHsEf7In8iCbSeNmDHcs6CHXqn2O8osEpLimN4hsjIH
+        ZLCwNCoJrH/+59YFs1/v/v4=
+X-Google-Smtp-Source: ABdhPJx0vnWOecHcNLdC/+nRjUYBCw1iG5v5iX/Kb4GE6JO6zSebkN3aolnq+qtv3bT7ty2UbnvDnQ==
+X-Received: by 2002:a17:90a:ce13:: with SMTP id f19mr1396016pju.122.1604044718182;
+        Fri, 30 Oct 2020 00:58:38 -0700 (PDT)
+Received: from [192.168.1.59] (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
+        by smtp.gmail.com with ESMTPSA id bo16sm2359198pjb.41.2020.10.30.00.58.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 00:58:37 -0700 (PDT)
+Message-ID: <837d7ecd6f8a810153d219ec0b4995856abbe458.camel@gmail.com>
+Subject: Re: [PATCH 2/3] mwifiex: add allow_ps_mode module parameter
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
+Date:   Fri, 30 Oct 2020 16:58:33 +0900
+In-Reply-To: <CA+ASDXMXoyOr9oHBjtXZ1w9XxDggv+=XS4nwn0qKWCHQ3kybdw@mail.gmail.com>
+References: <20201028142433.18501-1-kitakar@gmail.com>
+         <20201028142433.18501-3-kitakar@gmail.com>
+         <CA+ASDXMXoyOr9oHBjtXZ1w9XxDggv+=XS4nwn0qKWCHQ3kybdw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 
 MIME-Version: 1.0
-In-Reply-To: <c2eba2fb-79f8-eb48-ddd1-77fbc205ebff@schaufler-ca.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.167]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 2020/10/29 0:29, Casey Schaufler wrote:
-> On 10/27/2020 7:06 PM, Chen Jun wrote:
->> From: Chen Jun <c00424029@huawei.com>
->>
->> Kmemleak will report a problem after using
->> "echo 1 > /sys/fs/selinux/disable" to disable selinux on runtime.
+On Wed, 2020-10-28 at 15:04 -0700, Brian Norris wrote:
+> On Wed, Oct 28, 2020 at 2:56 PM Tsuchiya Yuto <kitakar@gmail.com> wrote:
+> > 
+> > To make the ps_mode (power_save) control easier, this commit adds a new
+> > module parameter allow_ps_mode and set it false (disallowed) by default.
 > 
-> Runtime disable of SELinux has been deprecated. It would be
-> wasteful to make these changes in support of a facility that
-> is going away.
+> This sounds like a bad idea, as it breaks all the existing users who
+> expect this feature to be allowed. Seems like you should flip the
+> defaults. Without some better justification, NACK.
+
+Thanks for the review! I wanted to open a discussion widely and wanted
+to ask from the upstream developers the direction of how this stability
+issue should be resolved.
+
+I added the link to the Bugzilla in the cover-letter (that should have
+arrived on the mailing list now), but I should have added this to every
+commit as well:
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=109681
+
+This stability issue exists for a long time. I also submitted there the
+required kernel log and device_dump more than three months ago. However,
+unfortunately, it's not fixed yet. So, I have to send a series like this.
+
+If we know that the power_save feature is broken (on some devices), I
+think it should be fixed in either firmware or driver for the affected
+devices. It makes no sense to keep enabling the broken features by
+default.
+
+Because userspace tools sometimes try to enable power_save anyway
+regardless of default driver settings (expecting it's not broken, but
+in fact it's broken), the module parameter like this is required in
+addition to the first patch of this series. The commit 8298383c2cd5
+("ath9k: Do not support PowerSave by default") also does the same thing
+for this purpose.
+
+On the other hand, I agree that I don't want to break the existing users.
+As you mentioned in the reply to the first patch, I can set the default
+value of this parameter depending on the chip id (88W8897) or DMI matching.
+
+> Also, I can't find the other 2 patches in this alleged series. Maybe
+> they're still making it through the mailing lists and archives.
+
+Yes, there seems to be a problem with the mailing list at the time.
+All the other patches I sent have arrived by now.
+
+> Brian
 > 
-But this sysfs file will still be present and workable on LTS kernel versions, so
-is the proposed fixe OK for these LTS kernel versions ?
+> > When this parameter is set to false, changing the power_save mode will
+> > be disallowed like the following:
+> > 
+> >     $ sudo iw dev mlan0 set power_save on
+> >     command failed: Operation not permitted (-1)
+> > 
+> > Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
 
-Regards,
-Tao
 
-
->>
->> kmemleak report：
->> unreferenced object 0xffff901281c208a0 (size 96):
->>   comm "swapper/0", pid 1, jiffies 4294668265 (age 692.799s)
->>   hex dump (first 32 bytes):
->>     00 40 c8 81 12 90 ff ff 03 00 00 00 05 00 00 00  .@..............
->>     03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->>   backtrace:
->>     [<0000000014622ef8>] selinux_sb_alloc_security+0x1b/0xa0
->>     [<00000000044914e1>] security_sb_alloc+0x1d/0x30
->>     [<000000009f9d5ffd>] alloc_super+0xa7/0x310
->>     [<000000003c5f0b5b>] sget_fc+0xca/0x230
->>     [<00000000367a9996>] vfs_get_super+0x37/0x110
->>     [<000000001c47e818>] vfs_get_tree+0x20/0xc0
->>     [<00000000d239b404>] fc_mount+0x9/0x30
->>     [<00000000708a102f>] vfs_kern_mount.part.36+0x6a/0x80
->>     [<000000005db542fe>] kern_mount+0x1b/0x30
->>     [<0000000051919f9f>] init_sel_fs+0x8b/0x119
->>     [<000000000f328fe0>] do_one_initcall+0x3f/0x1d0
->>     [<000000008a6ceb81>] kernel_init_freeable+0x1b4/0x1f2
->>     [<000000003a425dcd>] kernel_init+0x5/0x110
->>     [<000000004e8d6c9d>] ret_from_fork+0x22/0x30
->>
->> "echo 1 > /sys/fs/selinux/disable" will delete the hooks.
->> Any memory alloced by calling HOOKFUNCTION (like call_int_hook(sb_alloc_security, 0, sb))
->> has no chance to be freed after deleting hooks.
->>
->> Add a flag to mark a hook not be delete when deleting hooks.
->>
->> Signed-off-by: Chen Jun <chenjun102@huawei.com>
->> ---
->>  include/linux/lsm_hooks.h |  6 +++++-
->>  security/selinux/hooks.c  | 20 ++++++++++----------
->>  2 files changed, 15 insertions(+), 11 deletions(-)
->>
->> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
->> index c503f7ab8afb..85de731b0c74 100644
->> --- a/include/linux/lsm_hooks.h
->> +++ b/include/linux/lsm_hooks.h
->> @@ -1554,6 +1554,7 @@ struct security_hook_list {
->>  	struct hlist_head		*head;
->>  	union security_list_options	hook;
->>  	char				*lsm;
->> +	bool				no_del;
->>  } __randomize_layout;
->>  
->>  /*
->> @@ -1582,6 +1583,8 @@ struct lsm_blob_sizes {
->>   */
->>  #define LSM_HOOK_INIT(HEAD, HOOK) \
->>  	{ .head = &security_hook_heads.HEAD, .hook = { .HEAD = HOOK } }
->> +#define LSM_HOOK_INIT_NO_DEL(HEAD, HOOK) \
->> +	{ .head = &security_hook_heads.HEAD, .hook = { .HEAD = HOOK }, .no_del = 1 }
->>  
->>  extern struct security_hook_heads security_hook_heads;
->>  extern char *lsm_names;
->> @@ -1638,7 +1641,8 @@ static inline void security_delete_hooks(struct security_hook_list *hooks,
->>  	int i;
->>  
->>  	for (i = 0; i < count; i++)
->> -		hlist_del_rcu(&hooks[i].list);
->> +		if (!hooks[i].no_del)
->> +			hlist_del_rcu(&hooks[i].list);
->>  }
->>  #endif /* CONFIG_SECURITY_SELINUX_DISABLE */
->>  
->> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
->> index 6b1826fc3658..daff084fd1c7 100644
->> --- a/security/selinux/hooks.c
->> +++ b/security/selinux/hooks.c
->> @@ -6974,8 +6974,8 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
->>  	LSM_HOOK_INIT(bprm_committing_creds, selinux_bprm_committing_creds),
->>  	LSM_HOOK_INIT(bprm_committed_creds, selinux_bprm_committed_creds),
->>  
->> -	LSM_HOOK_INIT(sb_free_security, selinux_sb_free_security),
->> -	LSM_HOOK_INIT(sb_free_mnt_opts, selinux_free_mnt_opts),
->> +	LSM_HOOK_INIT_NO_DEL(sb_free_security, selinux_sb_free_security),
->> +	LSM_HOOK_INIT_NO_DEL(sb_free_mnt_opts, selinux_free_mnt_opts),
->>  	LSM_HOOK_INIT(sb_remount, selinux_sb_remount),
->>  	LSM_HOOK_INIT(sb_kern_mount, selinux_sb_kern_mount),
->>  	LSM_HOOK_INIT(sb_show_options, selinux_sb_show_options),
->> @@ -7081,7 +7081,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
->>  
->>  	LSM_HOOK_INIT(ismaclabel, selinux_ismaclabel),
->>  	LSM_HOOK_INIT(secctx_to_secid, selinux_secctx_to_secid),
->> -	LSM_HOOK_INIT(release_secctx, selinux_release_secctx),
->> +	LSM_HOOK_INIT_NO_DEL(release_secctx, selinux_release_secctx),
->>  	LSM_HOOK_INIT(inode_invalidate_secctx, selinux_inode_invalidate_secctx),
->>  	LSM_HOOK_INIT(inode_notifysecctx, selinux_inode_notifysecctx),
->>  	LSM_HOOK_INIT(inode_setsecctx, selinux_inode_setsecctx),
->> @@ -7107,7 +7107,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
->>  	LSM_HOOK_INIT(socket_getpeersec_stream,
->>  			selinux_socket_getpeersec_stream),
->>  	LSM_HOOK_INIT(socket_getpeersec_dgram, selinux_socket_getpeersec_dgram),
->> -	LSM_HOOK_INIT(sk_free_security, selinux_sk_free_security),
->> +	LSM_HOOK_INIT_NO_DEL(sk_free_security, selinux_sk_free_security),
->>  	LSM_HOOK_INIT(sk_clone_security, selinux_sk_clone_security),
->>  	LSM_HOOK_INIT(sk_getsecid, selinux_sk_getsecid),
->>  	LSM_HOOK_INIT(sock_graft, selinux_sock_graft),
->> @@ -7121,7 +7121,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
->>  	LSM_HOOK_INIT(secmark_refcount_inc, selinux_secmark_refcount_inc),
->>  	LSM_HOOK_INIT(secmark_refcount_dec, selinux_secmark_refcount_dec),
->>  	LSM_HOOK_INIT(req_classify_flow, selinux_req_classify_flow),
->> -	LSM_HOOK_INIT(tun_dev_free_security, selinux_tun_dev_free_security),
->> +	LSM_HOOK_INIT_NO_DEL(tun_dev_free_security, selinux_tun_dev_free_security),
->>  	LSM_HOOK_INIT(tun_dev_create, selinux_tun_dev_create),
->>  	LSM_HOOK_INIT(tun_dev_attach_queue, selinux_tun_dev_attach_queue),
->>  	LSM_HOOK_INIT(tun_dev_attach, selinux_tun_dev_attach),
->> @@ -7130,7 +7130,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
->>  	LSM_HOOK_INIT(ib_pkey_access, selinux_ib_pkey_access),
->>  	LSM_HOOK_INIT(ib_endport_manage_subnet,
->>  		      selinux_ib_endport_manage_subnet),
->> -	LSM_HOOK_INIT(ib_free_security, selinux_ib_free_security),
->> +	LSM_HOOK_INIT_NO_DEL(ib_free_security, selinux_ib_free_security),
->>  #endif
->>  #ifdef CONFIG_SECURITY_NETWORK_XFRM
->>  	LSM_HOOK_INIT(xfrm_policy_free_security, selinux_xfrm_policy_free),
->> @@ -7144,7 +7144,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
->>  #endif
->>  
->>  #ifdef CONFIG_KEYS
->> -	LSM_HOOK_INIT(key_free, selinux_key_free),
->> +	LSM_HOOK_INIT_NO_DEL(key_free, selinux_key_free),
->>  	LSM_HOOK_INIT(key_permission, selinux_key_permission),
->>  	LSM_HOOK_INIT(key_getsecurity, selinux_key_getsecurity),
->>  #ifdef CONFIG_KEY_NOTIFICATIONS
->> @@ -7162,13 +7162,13 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
->>  	LSM_HOOK_INIT(bpf, selinux_bpf),
->>  	LSM_HOOK_INIT(bpf_map, selinux_bpf_map),
->>  	LSM_HOOK_INIT(bpf_prog, selinux_bpf_prog),
->> -	LSM_HOOK_INIT(bpf_map_free_security, selinux_bpf_map_free),
->> -	LSM_HOOK_INIT(bpf_prog_free_security, selinux_bpf_prog_free),
->> +	LSM_HOOK_INIT_NO_DEL(bpf_map_free_security, selinux_bpf_map_free),
->> +	LSM_HOOK_INIT_NO_DEL(bpf_prog_free_security, selinux_bpf_prog_free),
->>  #endif
->>  
->>  #ifdef CONFIG_PERF_EVENTS
->>  	LSM_HOOK_INIT(perf_event_open, selinux_perf_event_open),
->> -	LSM_HOOK_INIT(perf_event_free, selinux_perf_event_free),
->> +	LSM_HOOK_INIT_NO_DEL(perf_event_free, selinux_perf_event_free),
->>  	LSM_HOOK_INIT(perf_event_read, selinux_perf_event_read),
->>  	LSM_HOOK_INIT(perf_event_write, selinux_perf_event_write),
->>  #endif
-> .
-> 
