@@ -2,95 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3472A0A6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D486A2A0A71
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727173AbgJ3PwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:52:18 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:48394 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJ3PwS (ORCPT
+        id S1726869AbgJ3PyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:54:24 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:55814 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725939AbgJ3PyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:52:18 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09UFnWGY099062;
-        Fri, 30 Oct 2020 15:52:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=M8PTIODvLNUFHHyfGSAyZPimivloXIZ/HBatAnV1IWE=;
- b=L9dMiBRd08sZBojslzSxCJojLcfCkqRMeUcGhTOm7ZbUGdKshvkNSwpD7iIeKqJhsSxT
- 1A7PENGNfmezR61SY/PJl+CEJIgmVATnIsGtwV97/aUgzMPYCf2gDqRH2nFz6DBLj2pM
- gF8P9yQGIkHGed1L4CXkXssu5lRml94GpvknOcE6Klw2Y9FwWnQCAyWyKe+rSi8MOTHv
- jaUUBlnxY44Vus9aDqig2YcpR4H3TG3D/nY0MJ64CiuZvOq3TAQUeDbZ6jum1Lj5VcC4
- MmhKtgJngSU0pqR3hOE+BY1HJSkNG5K5OU/v/vFNEngjOgoHRsAMC9svWDLZt2mCfQab Ng== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 34c9sbahyx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Oct 2020 15:52:12 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09UFoEJS080973;
-        Fri, 30 Oct 2020 15:52:12 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
-        by aserp3020.oracle.com with ESMTP id 34cx61udse-1;
-        Fri, 30 Oct 2020 15:52:12 +0000
-From:   john.p.donnelly@oracle.com
-To:     linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, andriy.shevchenko@linux.intel.com
-Subject: [PATCH 4.14 ] platform/x86: Corrects warning: missing braces around initializer
-Date:   Fri, 30 Oct 2020 08:52:11 -0700
-Message-Id: <20201030155211.7218-1-john.p.donnelly@oracle.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 30 Oct 2020 11:54:23 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id DCC2A821E1;
+        Fri, 30 Oct 2020 18:54:19 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1604073259;
+        bh=syPIYL65kzdSI9QtlC1kkmn71u9ZYAZkCYUkgaozJR0=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=CYotYB9f5yhJUVk3re1IZ5/cHgQOFkf/NWjQh6GkFrDl2D+BC3PdllRfbU5yfAUIa
+         TbpyTNfnzfDlNnr9HU9F0V1cRRKlkmTPM2Cl2gxcsSCrEnqO8Mer8XUregPd7hUlwW
+         5+PNO56HiSIMHexxCC+GjcgY6TzHv5//DVbzs5A4=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 30 Oct 2020 18:54:19 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.1847.003; Fri, 30 Oct 2020 18:54:19 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "aaptel@suse.com" <aaptel@suse.com>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "joe@perches.com" <joe@perches.com>,
+        "mark@harmstone.com" <mark@harmstone.com>,
+        "nborisov@suse.com" <nborisov@suse.com>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "anton@tuxera.com" <anton@tuxera.com>
+Subject: RE: [PATCH v10 02/10] fs/ntfs3: Add initialization of super block
+Thread-Topic: [PATCH v10 02/10] fs/ntfs3: Add initialization of super block
+Thread-Index: AQHWqVNpqBsn1Djmw0u2qExWV5sKkamlTrSAgAsIPMA=
+Date:   Fri, 30 Oct 2020 15:54:19 +0000
+Message-ID: <afb07a383dc747398f65ac541206b562@paragon-software.com>
+References: <20201023154431.1853715-1-almaz.alexandrovich@paragon-software.com>
+ <20201023154431.1853715-3-almaz.alexandrovich@paragon-software.com>
+ <20201023182503.GE20115@casper.infradead.org>
+In-Reply-To: <20201023182503.GE20115@casper.infradead.org>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.8.36]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9790 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
- suspectscore=1 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010300117
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9790 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 phishscore=0 clxscore=1011 suspectscore=1
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Donnelly <john.p.donnelly@oracle.com>
+From: Matthew Wilcox <willy@infradead.org>
+Sent: Friday, October 23, 2020 9:25 PM
+> To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> Cc: linux-fsdevel@vger.kernel.org; viro@zeniv.linux.org.uk; linux-kernel@=
+vger.kernel.org; pali@kernel.org; dsterba@suse.cz;
+> aaptel@suse.com; rdunlap@infradead.org; joe@perches.com; mark@harmstone.c=
+om; nborisov@suse.com; linux-ntfs-
+> dev@lists.sourceforge.net; anton@tuxera.com
+> Subject: Re: [PATCH v10 02/10] fs/ntfs3: Add initialization of super bloc=
+k
+>=20
+> On Fri, Oct 23, 2020 at 06:44:23PM +0300, Konstantin Komarov wrote:
+> > +
+> > +/*ntfs_readpage*/
+> > +/*ntfs_readpages*/
+> > +/*ntfs_writepage*/
+> > +/*ntfs_writepages*/
+> > +/*ntfs_block_truncate_page*/
+>=20
+> What are these for?
+>=20
+> > +int ntfs_readpage(struct file *file, struct page *page)
+> > +{
+> > +	int err;
+> > +	struct address_space *mapping =3D page->mapping;
+> > +	struct inode *inode =3D mapping->host;
+> > +	struct ntfs_inode *ni =3D ntfs_i(inode);
+> > +	u64 vbo =3D (u64)page->index << PAGE_SHIFT;
+> > +	u64 valid;
+> > +	struct ATTRIB *attr;
+> > +	const char *data;
+> > +	u32 data_size;
+> > +
+> [...]
+> > +
+> > +	if (is_compressed(ni)) {
+> > +		if (PageUptodate(page)) {
+> > +			unlock_page(page);
+> > +			return 0;
+> > +		}
+>=20
+> You can skip this -- the readpage op won't be called for pages which
+> are Uptodate.
+>=20
+> > +	/* normal + sparse files */
+> > +	err =3D mpage_readpage(page, ntfs_get_block);
+> > +	if (err)
+> > +		goto out;
+>=20
+> It would be nice to use iomap instead of mpage, but that's a big ask.
+>=20
+> > +	valid =3D ni->i_valid;
+> > +	if (vbo < valid && valid < vbo + PAGE_SIZE) {
+> > +		if (PageLocked(page))
+> > +			wait_on_page_bit(page, PG_locked);
+> > +		if (PageError(page)) {
+> > +			ntfs_inode_warn(inode, "file garbage at 0x%llx", valid);
+> > +			goto out;
+> > +		}
+> > +		zero_user_segment(page, valid & (PAGE_SIZE - 1), PAGE_SIZE);
+>=20
+> Nono, you can't zero data after the page has been unlocked.  You can
+> handle this case in ntfs_get_block().  If the block is entirely beyond
+> i_size, returning a hole will cause mpage_readpage() to zero it.  If it
+> straddles i_size, you can either ensure that the on-media block contains
+> zeroes after the EOF, or if you can't depend on that, you can read it
+> in synchronously in your get_block() and then zero the tail and set the
+> buffer Uptodate.  Not the most appetising solution, but what you have her=
+e
+> is racy with the user writing to it after reading.
 
-The assignment statement of a local variable "struct tp_nvram_state s[2] = {0}; "
-is not valid for all versions of compilers (UEK6 on OL7).
+Hello Matthew! Thanks a lot for this feedback. Fixed in v11, please check o=
+ut.
 
-Fixes: 515ded02bc4b ("platform/x86: thinkpad_acpi: initialize tp_nvram_state variable")
-
-Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
----
- drivers/platform/x86/thinkpad_acpi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index ffaaccded34e..c41ac0385304 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -2477,7 +2477,7 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
-  */
- static int hotkey_kthread(void *data)
- {
--	struct tp_nvram_state s[2] = { 0 };
-+	struct tp_nvram_state s[2];
- 	u32 poll_mask, event_mask;
- 	unsigned int si, so;
- 	unsigned long t;
-@@ -2488,6 +2488,8 @@ static int hotkey_kthread(void *data)
- 	if (tpacpi_lifecycle == TPACPI_LIFE_EXITING)
- 		goto exit;
- 
-+	memset(&s, 0, sizeof(s));
-+
- 	set_freezable();
- 
- 	so = 0;
--- 
-2.27.0
-
+Cheers!
