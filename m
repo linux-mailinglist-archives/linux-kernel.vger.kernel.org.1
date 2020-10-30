@@ -2,172 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C712A0BA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA8A2A0BA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbgJ3QsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        id S1726929AbgJ3Qta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726858AbgJ3QsK (ORCPT
+        with ESMTP id S1725844AbgJ3Qt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:48:10 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD9BC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:48:10 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id y14so5759869pfp.13
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:48:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wSEWtbWhI0R9DkaPMhQMnTY3fTZkSIH21v7K93YzkH0=;
-        b=Pm5tPmOc2OXH3sg4QefPKFbCjKyDB5HJQGUHoeXG8betextZWa+omrfutWN2ZTC6To
-         yXk3FJwR6pPlp0Ahzni1BTypMk/mPyp6C9XdLzTWzNOMvZDjYx8Xn9pPIWt5f+aVbim0
-         gBcPOD6nj/Mnv8eDSYqGxd/MljUe2pO3KQnEIEcCpwbMlVMMK98pQRDTOtgqqMEwZrdT
-         ZBR8qBaZWd+xggES0t7YY32orHHlz3MRtipXNBvn7V2Z/rFuJZpL794+JNYFuLJ78mwF
-         jIHY2HDSvbf7/sKPdyqYBYVMpdlpPbgnu9ADbesY46YMUPmeCLN/opGyZYKILuuDwOxQ
-         ds6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wSEWtbWhI0R9DkaPMhQMnTY3fTZkSIH21v7K93YzkH0=;
-        b=eD283w+d9dr5i1gbIakLEqvcRfpV3S/YP72kbqnXSthFT1DH5U5Sc6g8BSZ4T83FHk
-         ifmB/w/Yh1zCeJHxn+GVJ9efjtXfA8/IV+8qs3XkoOQQpT4z8fr3s0OaBcYBD9dmqwMO
-         +LfgMb8G7KzzBpsFRA8MmIQcEczK7VHct2r3YwlHhoFcwjgXppVMfjmReVfenSblqctc
-         hgWHGC1N9wJuU5QGN2ojxAIKcS/svL9qdJsMiGKH4JUS6rWjbHlGAkkRGdeETvG1o4up
-         nybDqVYbzdBm0PDfjVENNoRu/UY4Gvo6NsQVtL9pztos700K6TN3UYDUZpwTxRnoTaZw
-         ASug==
-X-Gm-Message-State: AOAM532vn+ytPt0cqc8TqtTCtH9ZX2evoWSM2+aF5yYgKOrjqjBwzqN4
-        iIM9b02RWWSRnonohXr9Av6t46Q6KlfkQwku
-X-Google-Smtp-Source: ABdhPJwkbDqYTl7565CUkmpVtzCXGeHcVFB0EoSWg4z5M/YK/EXCpJP2KveoN6LQKcrhGIYvYlsnUA==
-X-Received: by 2002:a63:74c:: with SMTP id 73mr2932647pgh.68.1604076489528;
-        Fri, 30 Oct 2020 09:48:09 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id g16sm2727949pju.5.2020.10.30.09.48.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 09:48:08 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 10:48:06 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-Message-ID: <20201030164806.GB1301231@xps15>
-References: <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
- <20201023094115.GR2611@hirez.programming.kicks-ass.net>
- <bd8c136d-9dfa-a760-31f9-eb8d6698aced@arm.com>
- <20201023105431.GM2594@hirez.programming.kicks-ass.net>
- <2457de8f-8bc3-b350-fdc7-61276da31ce6@arm.com>
- <20201023131628.GY2628@hirez.programming.kicks-ass.net>
- <728fd89c-78f2-0c5c-0443-c91c62b02f0e@arm.com>
- <20201023134416.GA2628@hirez.programming.kicks-ass.net>
- <20201023203729.GA819775@xps15>
- <70e3a508af119be481c8f0a0acf0a44d@codeaurora.org>
+        Fri, 30 Oct 2020 12:49:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB28C0613CF;
+        Fri, 30 Oct 2020 09:49:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=bLkVPUZj71HqYK7QTvtXQx4ZFoQRz5HBYZMu9LxVxOk=; b=bQ54/X+nUFyGnYfsDHFjttzPMr
+        EkV0OjHqDeWDb9DwMfZM+LTYjGA2KivyIVg3dhIuj68A0GI6Imqf2JYgh38YJlqVwnOcybT1FwT7V
+        n+txOHf0jpbRyf+UxLMP7XIL0mx2y7vEoZiNHJSZGC9m/jxGW/6SnN8k3Zk5PGw9BJ5uvE/9UhAem
+        aPQ2GmIV3HotoN3oMes1tNQ0OdMOk4Lra4JoCDgFiNLn2Q0VbHbsZ6UC4WsM9b22J9DrKxW/e9t52
+        EvNPqGoQge0kROLYZ5ekDd6GgtIlCnKdrHfEAo3OfzqH6xaZllyK1uCDo8A0YCJSuQXrOGAMLz1+C
+        pbEQoSAQ==;
+Received: from [2601:1c0:6280:3f0::371c]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kYXab-0008UR-PW; Fri, 30 Oct 2020 16:49:22 +0000
+Subject: Re: [PATCH v2 26/39] docs: Kconfig/Makefile: add a check for broken
+ ABI files
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Changbin Du <changbin.du@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Peter Enderborg <peter.enderborg@sony.com>,
+        Tom Rix <trix@redhat.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1604042072.git.mchehab+huawei@kernel.org>
+ <57a38de85cb4b548857207cf1fc1bf1ee08613c9.1604042072.git.mchehab+huawei@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <4bc8b5ff-4797-4fa9-c2fe-5813be18d50b@infradead.org>
+Date:   Fri, 30 Oct 2020 09:49:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <70e3a508af119be481c8f0a0acf0a44d@codeaurora.org>
+In-Reply-To: <57a38de85cb4b548857207cf1fc1bf1ee08613c9.1604042072.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 01:29:56PM +0530, Sai Prakash Ranjan wrote:
-> Hello guys,
-> 
-> On 2020-10-24 02:07, Mathieu Poirier wrote:
-> > On Fri, Oct 23, 2020 at 03:44:16PM +0200, Peter Zijlstra wrote:
-> > > On Fri, Oct 23, 2020 at 02:29:54PM +0100, Suzuki Poulose wrote:
-> > > > On 10/23/20 2:16 PM, Peter Zijlstra wrote:
-> > > > > On Fri, Oct 23, 2020 at 01:56:47PM +0100, Suzuki Poulose wrote:
-> > > 
-> > > > > > That way another session could use the same sink if it is free. i.e
-> > > > > >
-> > > > > > perf record -e cs_etm/@sink0/u --per-thread app1
-> > > > > >
-> > > > > > and
-> > > > > >
-> > > > > > perf record -e cs_etm/@sink0/u --per-thread app2
-> > > > > >
-> > > > > > both can work as long as the sink is not used by the other session.
-> > > > >
-> > > > > Like said above, if sink is shared between CPUs, that's going to be a
-> > > > > trainwreck :/ Why do you want that?
-> > > >
-> > > > That ship has sailed. That is how the current generation of systems are,
-> > > > unfortunately. But as I said, this is changing and there are guidelines
-> > > > in place to avoid these kind of topologies. With the future
-> > > > technologies, this will be completely gone.
-> > > 
-> > > I understand that the hardware is like that, but why do you want to
-> > > support this insanity in software?
-> > > 
-> > > If you only allow a single sink user (group) at the same time, your
-> > > problem goes away. Simply disallow the above scenario, do not allow
-> > > concurrent sink users if sinks are shared like this.
-> > > 
-> > > Have the perf-record of app2 above fail because the sink is in-user
-> > > already.
-> > 
-> > I agree with you that --per-thread scenarios are easy to deal with, but
-> > to
-> > support cpu-wide scenarios events must share a sink (because there is
-> > one event
-> > per CPU).  CPU-wide support can't be removed because it has been around
-> > for close to a couple of years and heavily used. I also think using the
-> > pid of
-> > the process that created the events, i.e perf, is a good idea.  We just
-> > need to
-> > agree on how to gain access to it.
-> > 
-> > In Sai's patch you objected to the following:
-> > 
-> > > +     struct task_struct *task = READ_ONCE(event->owner);
-> > > +
-> > > +     if (!task || is_kernel_event(event))
-> > 
-> > Would it be better to use task_nr_pid(current) instead of event->owner?
-> > The end
-> > result will be exactly the same.  There is also no need to check the
-> > validity of
-> > @current since it is a user process.
-> > 
-> 
-> We have devices deployed where these crashes are seen consistently,
-> so for some immediate relief, could we atleast get some fix in this
-> cycle without major design overhaul which would likely take more time.
-> Perhaps my first patch [1] without any check for owner or
-> I can post a new version as Suzuki suggested [2] dropping the export
-> of is_kernel_event(). Then we can always work on top of it based on the
-> conclusion of this discussion, we will atleast not have the systems
-> crash in the meantime, thoughts?
+Hi Mauro,
 
-For the time being I think [1], exactly the way it is, is a reasonable way
-forward.
 
-Regards,
-Mathieu
+On 10/30/20 12:40 AM, Mauro Carvalho Chehab wrote:
+> The files under Documentation/ABI should follow the syntax
+> as defined at Documentation/ABI/README.
+> 
+> Allow checking if they're following the syntax by running
+> the ABI parser script on COMPILE_TEST.
+> 
+> With that, when there's a problem with a file under
+> Documentation/ABI, it would produce a warning like:
+> 
+> 	Warning: file ./Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats#14:
+> 		What '/sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_cor' doesn't have a description
+> 	Warning: file ./Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats#21:
+> 		What '/sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_fatal' doesn't have a description
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/Kconfig  | 10 ++++++++++
+>  Documentation/Makefile |  5 +++++
+>  lib/Kconfig.debug      |  2 ++
+>  scripts/get_abi.pl     | 14 +++++++++++---
+>  4 files changed, 28 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/Kconfig b/Documentation/Kconfig
+> index 66046fa1c341..e549a61f4d96 100644
+> --- a/Documentation/Kconfig
+> +++ b/Documentation/Kconfig
+> @@ -10,4 +10,14 @@ config WARN_MISSING_DOCUMENTS
+>  
+>  	   If unsure, select 'N'.
+>  
+> +config WARN_ABI_ERRORS
+> +	bool "Warn if there are errors at ABI files"
+> +	depends on COMPILE_TEST
+> +	help
+> +	   The files under Documentation/ABI should follow what's
+> +	   described at Documentation/ABI/README. Yet, as they're manually
+> +	   written, it would be possible that some of those files would
+> +	   have errors that would break them for being parsed by
+> +	   scripts/get_abi.pl. Add a check to verify them.
+>  
+> +	   If unsure, select 'N'.
 
-> 
-> [1] https://lore.kernel.org/patchwork/patch/1318098/
-> [2]
-> https://lore.kernel.org/lkml/fa6cdf34-88a0-1050-b9ea-556d0a9438cb@arm.com/
-> 
-> Thanks,
-> Sai
-> 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+I need a bot for this:
+
+Please follow coding-style for Kconfig files:
+
+from Documentation/process/coding-style.rst, section 10):
+
+For all of the Kconfig* configuration files throughout the source tree,
+the indentation is somewhat different.  Lines under a ``config`` definition
+are indented with one tab, while help text is indented an additional two
+spaces.
+
+
+
+thanks.
+-- 
+~Randy
+
