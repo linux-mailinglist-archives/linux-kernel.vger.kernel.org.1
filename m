@@ -2,105 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0412A03FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:19:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 479192A03F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726394AbgJ3LTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33262 "EHLO
+        id S1726343AbgJ3LTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgJ3LTj (ORCPT
+        with ESMTP id S1726236AbgJ3LTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:19:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBACC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:19:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=C89nhQ/URSZktNIS3aB5HrXeyoOTPLxKQZpfjbNyo30=; b=tQPmzsqrLeLNoDjWyGTE0r/fRs
-        mpCvmGn3rCDqXrwz7Ka+8iZ7UbQx/Ydk0u/BYxpwYGw9iRsKYj6s0aiPqHx9BXVdu2cAt8OCTwIRv
-        nE7IAsOH8Y6pofQiQY7d0hMmD/9ggVgYry42baqBfzuy9q4MNKL1POdo8Tf1onWWrSmTn0YyXJUBN
-        YOtQVbLVgpyDfxkDENpbLzu3Dq21ieWgT5knkekBRFmgyxZY0OPIFruI4SgwL0i29HDiSNDq2W7mq
-        S5rtDH8VtxDkzXi2GUMUOuuWfbRN2LaLBn04opPIHAgCZIPMoC1WIldfUT7cDI9bBdjuK3Nhd23yr
-        CM0zhXVw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYSRF-0004SW-2Z; Fri, 30 Oct 2020 11:19:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3CBAD3062EA;
-        Fri, 30 Oct 2020 12:19:20 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E7AE22B449DC2; Fri, 30 Oct 2020 12:19:19 +0100 (CET)
-Date:   Fri, 30 Oct 2020 12:19:19 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, kan.liang@linux.intel.com,
-        like.xu@linux.intel.com
-Subject: [PATCH] perf/x86: Make dummy_iregs static
-Message-ID: <20201030111919.GM2651@hirez.programming.kicks-ass.net>
-References: <20201030002722.766a22df@oasis.local.home>
- <20201030090037.GZ2628@hirez.programming.kicks-ass.net>
+        Fri, 30 Oct 2020 07:19:37 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DBFC0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:19:37 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id z5so7131645iob.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:19:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5RA/dTcPLcLSjFsM4pTf8628QTB+ljlVPvTwaOAvSI8=;
+        b=vPF6leW+6gfiBr1s7qfSqOlKqUhfUMZVxmg71BGMeoJBHzeltWCTbYEuXa0oT2dpud
+         wFpsNu4u69HfrJAKI0EOaTm6zsS8jIGH3m+9HVCNWrLlCCPoSjJqD2wE8IxwVeOWCTT/
+         s9zIz/l9hy6s0sd/GXp4XfEvSvKGZqcAbjIb+9V91QPh/+m5tmqwRgj69T+okuTdts7j
+         f8Rb2Xhxxuv3wU2FnzTR+xffJLffig2bPxtSDt6/d+Kun2cCrXvDLDclwQ1mGchUWUEe
+         kh7V2O04DMTgLQ+QNYBQpIuNOLClV0FN3U+CjlNZaGC2yFYQ9Oo0c77oTqWY7rM+3aR7
+         b19w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5RA/dTcPLcLSjFsM4pTf8628QTB+ljlVPvTwaOAvSI8=;
+        b=HmK8CMg2TzrZWbKn6nzR93wDDHBmDh7Jf5JILHAnVBIjyKTAwULcSq9Lfut1QhEhiu
+         pel2iqa+GjRWDBLVhV5XeI58hAerJPUFTsiDQCrJJBqxJlTosuJCKt8MzVakD3uTdiY1
+         OT8bKFYqZkCF2xxQrJErL3pT4At9rBcD1SMCu3FH6Jl2mu46OxLFAAYDOOA8hEWqQ5dX
+         +vDSBWmSxYeJOayEC9pUAO8njzIQKcVysIa7O6SjYbyFJJzwqKLeDYrGLIlx77ggNeCL
+         boBthP3wsJWm/OEN5VAkIHhVULT3mizKbkTeT3z2i88cqFdGns0GeeVqmko1X6Ona87M
+         1oAA==
+X-Gm-Message-State: AOAM533FDTrIMG23TX0O+eaK+GibIqMzezJZdCTw4Aq4U7c8Fy3Uv4Zb
+        IqMWhoL4QfuVlhJ3k4lnlfvowfciOUnJIgI794WX/KFbnh2Aep6q
+X-Google-Smtp-Source: ABdhPJy/oufOebW5MWlnuf1Ro28TfvpmK+4mcN6r8qxQ28XDMOnf4ekL4Po96CPF9erK2pQu3QvP3fFFwmkHIFBVjmc=
+X-Received: by 2002:a5e:9244:: with SMTP id z4mr1374790iop.53.1604056776404;
+ Fri, 30 Oct 2020 04:19:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030090037.GZ2628@hirez.programming.kicks-ass.net>
+References: <20201030075724.1616766-1-ajye_huang@compal.corp-partner.google.com>
+ <20201030075724.1616766-3-ajye_huang@compal.corp-partner.google.com>
+ <CA+Px+wXPRg7aDU5+vr6R_BxuFfhuDeG3iEQeAUKWNtX8YmVC1Q@mail.gmail.com> <CALprXBZ+NmR8Y4sMkh4Y-N_FG+rGEOhUBVTKXRXNFp8H+f0btw@mail.gmail.com>
+In-Reply-To: <CALprXBZ+NmR8Y4sMkh4Y-N_FG+rGEOhUBVTKXRXNFp8H+f0btw@mail.gmail.com>
+From:   Tzung-Bi Shih <tzungbi@google.com>
+Date:   Fri, 30 Oct 2020 19:19:25 +0800
+Message-ID: <CA+Px+wWouXWS2F+Bqs3MkJxCuXORhpXcUF5ZuSHo6exprBF4hg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ASoC: qcom: sc7180: Modify machine driver for 2mic
+To:     Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Cc:     Ajye Huang <ajye.huang@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 10:00:37AM +0100, Peter Zijlstra wrote:
-> > static void __intel_pmu_pebs_event(struct perf_event *event,
-> > 				   struct pt_regs *iregs,
-> > 				   void *base, void *top,
-> > 				   int bit, int count,
-> > 				   void (*setup_sample)(struct perf_event *,
-> > 						struct pt_regs *,
-> > 						void *,
-> > 						struct perf_sample_data *,
-> > 						struct pt_regs *))
-> > {
-> > 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-> > 	struct hw_perf_event *hwc = &event->hw;
-> > 	struct perf_sample_data data;
-> > 	struct x86_perf_regs perf_regs;
-> > 	struct pt_regs *regs = &perf_regs.regs;
-> > 	void *at = get_next_pebs_record_by_bit(base, top, bit);
-> > 	struct pt_regs dummy_iregs;
-> 
-> The only thing I can come up with in a hurry is that that dummy_iregs
-> thing really should be static. That's 168 bytes of stack out the window
-> right there.
+On Fri, Oct 30, 2020 at 6:55 PM Ajye Huang
+<ajye_huang@compal.corp-partner.google.com> wrote:
+> But dmic_get() will need dmic_switch, should i keep dmic_switch?
 
----
-Subject: perf/x86: Make dummy_iregs static
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Fri Oct 30 12:15:06 CET 2020
-
-Having pt_regs on-stack is unfortunate, it's 168 bytes. Since it isn't
-actually used, make it a static variable. This both gets if off the
-stack and ensures it gets 0 initialized, just in case someone does
-look at it.
-
-Reported-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/events/intel/ds.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -1735,7 +1735,7 @@ static void __intel_pmu_pebs_event(struc
- 	struct x86_perf_regs perf_regs;
- 	struct pt_regs *regs = &perf_regs.regs;
- 	void *at = get_next_pebs_record_by_bit(base, top, bit);
--	struct pt_regs dummy_iregs;
-+	static struct pt_regs dummy_iregs;
- 
- 	if (hwc->flags & PERF_X86_EVENT_AUTO_RELOAD) {
- 		/*
+I see.  I overlooked it.  You can keep the dmic_switch for this
+purpose or just call gpiod_get_value_cansleep().
