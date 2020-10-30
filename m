@@ -2,83 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC9229FFDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF2529FFE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:28:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbgJ3I1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 04:27:00 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51716 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3I06 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:26:58 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 6B78A1C0B82; Fri, 30 Oct 2020 09:26:54 +0100 (CET)
-Date:   Fri, 30 Oct 2020 09:26:54 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz
-Subject: Re: Linux 4.19.153
-Message-ID: <20201030082653.GA29475@amd>
-References: <160396822019115@kroah.com>
+        id S1725933AbgJ3I2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:28:05 -0400
+Received: from mga04.intel.com ([192.55.52.120]:10088 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgJ3I2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 04:28:05 -0400
+IronPort-SDR: XGTX75eoKYefFyN9is3RzGgNBnU0sLTztEKQZ02HiYxrATGnpjo2lKCIfsbFx9gm2/I25vYHk7
+ foItgCRiGFIg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="165990984"
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="165990984"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 01:28:00 -0700
+IronPort-SDR: 2mURADV/3zPx1T70mcvQVDFUOfBWjhQ4SnS+vWR9v7VVd3NQ4Z0r/0FgRoJoez0aYPfWXz3JWb
+ HfjmaSTysagw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="351235929"
+Received: from lkp-server02.sh.intel.com (HELO fcc9f8859912) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 30 Oct 2020 01:27:58 -0700
+Received: from kbuild by fcc9f8859912 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kYPlO-00004B-9u; Fri, 30 Oct 2020 08:27:58 +0000
+Date:   Fri, 30 Oct 2020 16:27:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:for-linus/kspp-clang] BUILD SUCCESS
+ 4169e889e5889405d54cec27d6e9f7f0ce3c7096
+Message-ID: <5f9bce77.xAw1nkxxwW5E+YEA%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="fdj2RfSjLxBAspz7"
-Content-Disposition: inline
-In-Reply-To: <160396822019115@kroah.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  for-linus/kspp-clang
+branch HEAD: 4169e889e5889405d54cec27d6e9f7f0ce3c7096  include: jhash/signal: Fix fall-through warnings for Clang
 
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+elapsed time: 723m
 
-Hi!
+configs tested: 139
+configs skipped: 2
 
-> I'm announcing the release of the 4.19.153 kernel.
->=20
-> All users of the 4.19 kernel series must upgrade.
->=20
-> The updated 4.19.y git tree can be found at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git li=
-nux-4.19.y
-> and can be browsed at the normal kernel.org git web browser:
-> 	https://git.kernel.org/?p=3Dlinux/kernel/git/stable/linux-stable.git;a=
-=3Dsummary
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Did something go seriously wrong here?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                   motionpro_defconfig
+c6x                        evmc6678_defconfig
+arm                        mvebu_v5_defconfig
+xtensa                    smp_lx200_defconfig
+h8300                     edosk2674_defconfig
+powerpc                    klondike_defconfig
+sh                             espt_defconfig
+m68k                         amcore_defconfig
+arm                         s3c2410_defconfig
+h8300                       h8s-sim_defconfig
+powerpc                    socrates_defconfig
+mips                      pistachio_defconfig
+sh                           se7619_defconfig
+mips                         cobalt_defconfig
+arm                            pleb_defconfig
+sh                           se7712_defconfig
+sparc                       sparc64_defconfig
+sh                           se7780_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                     sequoia_defconfig
+powerpc                     tqm8555_defconfig
+arm                     am200epdkit_defconfig
+arm                          badge4_defconfig
+h8300                               defconfig
+arm                          pxa3xx_defconfig
+mips                        qi_lb60_defconfig
+arm                       versatile_defconfig
+mips                           ip32_defconfig
+sh                           sh2007_defconfig
+arm                             pxa_defconfig
+powerpc                      chrp32_defconfig
+mips                           ip27_defconfig
+arm                          gemini_defconfig
+sh                           se7751_defconfig
+c6x                        evmc6472_defconfig
+um                           x86_64_defconfig
+arc                            hsdk_defconfig
+mips                        bcm47xx_defconfig
+m68k                           sun3_defconfig
+sh                            migor_defconfig
+microblaze                      mmu_defconfig
+powerpc                 mpc8540_ads_defconfig
+m68k                       m5475evb_defconfig
+sh                ecovec24-romimage_defconfig
+powerpc                    gamecube_defconfig
+powerpc                     stx_gp3_defconfig
+openrisc                         alldefconfig
+arm                      tct_hammer_defconfig
+powerpc                      walnut_defconfig
+arm                        mini2440_defconfig
+powerpc                 mpc837x_mds_defconfig
+c6x                        evmc6457_defconfig
+mips                malta_qemu_32r6_defconfig
+ia64                             alldefconfig
+arm                            mps2_defconfig
+arm                        clps711x_defconfig
+riscv                            allyesconfig
+powerpc                      cm5200_defconfig
+mips                           rs90_defconfig
+arm                        neponset_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20201030
+x86_64               randconfig-a001-20201030
+x86_64               randconfig-a002-20201030
+x86_64               randconfig-a003-20201030
+x86_64               randconfig-a006-20201030
+x86_64               randconfig-a004-20201030
+i386                 randconfig-a005-20201030
+i386                 randconfig-a003-20201030
+i386                 randconfig-a002-20201030
+i386                 randconfig-a001-20201030
+i386                 randconfig-a006-20201030
+i386                 randconfig-a004-20201030
+i386                 randconfig-a002-20201029
+i386                 randconfig-a005-20201029
+i386                 randconfig-a003-20201029
+i386                 randconfig-a001-20201029
+i386                 randconfig-a004-20201029
+i386                 randconfig-a006-20201029
+i386                 randconfig-a016-20201029
+i386                 randconfig-a014-20201029
+i386                 randconfig-a015-20201029
+i386                 randconfig-a013-20201029
+i386                 randconfig-a012-20201029
+i386                 randconfig-a011-20201029
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-The original 4.19.153-rc1 series had 264 patches. "powerpc/tau: Remove
-duplicated set_thresholds() call" is 146/264 of the series, but it is
-last one in 4.19.153 as released. "178/264 ext4: limit entries
-returned when counting...", for example, is not present in
-4.19.153... as are others, for example "net: korina: cast KSEG0
-address to pointer in kfree". Looks like 118 or so patches are
-missing.
+clang tested configs:
+x86_64               randconfig-a013-20201030
+x86_64               randconfig-a014-20201030
+x86_64               randconfig-a015-20201030
+x86_64               randconfig-a016-20201030
+x86_64               randconfig-a011-20201030
+x86_64               randconfig-a012-20201030
 
-They are not in origin/queue/4.19, either.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---fdj2RfSjLxBAspz7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+bzk0ACgkQMOfwapXb+vKxngCfWG0eOBqy6pZVRIubXq0ghR9n
-D64AoLDH6iYLON9nsNftfOrUMXwAOCpP
-=7NnE
------END PGP SIGNATURE-----
-
---fdj2RfSjLxBAspz7--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
