@@ -2,167 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CD12A1169
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 00:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E592A1175
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 00:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbgJ3XD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 19:03:59 -0400
-Received: from gateway22.websitewelcome.com ([192.185.46.187]:22983 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725850AbgJ3XD6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 19:03:58 -0400
-X-Greylist: delayed 1485 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Oct 2020 19:03:57 EDT
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id C6D526F49
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 17:39:10 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id Yd38kILLtosA0Yd38k0zhf; Fri, 30 Oct 2020 17:39:10 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Ya3HaNdc6rW9B8ZhDSP9KLp7XazbGtftJvvlIR6JPMI=; b=SMgCKZZ8lD802/M/HMtNIgttYe
-        Muw3nBaJEkyuL8G476v3Wm+d1MViYEu3MC8NKj2mhcGFlM5fMh2n3InK9PDrNUuxxnOpf4iz/NKlt
-        oNSwKp98sDnK0rRuTdhui0OzvofCKe1xith4CtRHX4VopbqOrF5iJQfgFVWyvAxHLwkWrO8xkMYOZ
-        InDljljv7P/Jk9unfch463DzHTO0rmVCzI5e5xbs4+QbcOUImOzdpubnjytfWczIwVQDoZ9lwvJdM
-        cSmltYDAmbu748f/ch2vvwopi9P03iD/EzhTYX6G8SS8gaefLSAlToXDUxKeOJX1mtqt8zKdaWTHu
-        tmFY+PjQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:58706 helo=[192.168.15.4])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1kYd38-000v4X-Ef; Fri, 30 Oct 2020 17:39:10 -0500
-Subject: Re: [PATCH] percpu: convert flexible array initializers to use
- struct_size()
-To:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20201030205846.1105106-1-dennis@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Message-ID: <04b2a0ec-4b2e-60d2-5f7b-26d07b93a88d@embeddedor.com>
-Date:   Fri, 30 Oct 2020 16:38:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725977AbgJ3XOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 19:14:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725681AbgJ3XOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 19:14:18 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6A0420825;
+        Fri, 30 Oct 2020 23:14:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604099657;
+        bh=1hqChdUKXVD3YuY81cq4wvV4czcVIDxraUTMZdAupSw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=txCsPYzjFNlNYjyU0+7KRMwEA8x9z45Nr6lzQz2wVC8+0qX6vnntSSiaR0FZzst/S
+         VR2M4esQaWkMuFFT8xtGVKQwfY5VJqglsrWoZpRXbK4TjTB8Om/+nC9d6el7G5v03v
+         j9Bn8YyvhX6jDBJYGXdV8OYQuuGWVs57y07Scbbs=
+Date:   Fri, 30 Oct 2020 17:13:42 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] flexible array conversions for 5.10-rc2
+Message-ID: <20201030221342.GA6183@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20201030205846.1105106-1-dennis@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1kYd38-000v4X-Ef
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.4]) [187.162.31.110]:58706
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 5
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
 
-On 10/30/20 15:58, Dennis Zhou wrote:
-> Use the safer macro as sparked by the long discussion in [1].
-> 
-> [1] https://lore.kernel.org/lkml/20200917204514.GA2880159@google.com/
-> 
-> Signed-off-by: Dennis Zhou <dennis@kernel.org>
+are available in the Git repository at:
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/flexible-array-conversions-5.10-rc2
+
+for you to fetch changes up to a38283da05d321fa1fce38ea3cf41c9f1dbd1f21:
+
+  printk: ringbuffer: Replace zero-length array with flexible-array member (2020-10-30 16:57:42 -0500)
+
+----------------------------------------------------------------
+flexible-array member conversion patches for 5.10-rc2
+
+Hi Linus,
+
+Please, pull the following patches that replace zero-length arrays with
+flexible-array members.
 
 Thanks
 --
 Gustavo
 
-> ---
-> I'll apply it to for-5.10-fixes.
-> 
->  mm/percpu.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/percpu.c b/mm/percpu.c
-> index 66a93f096394..ad7a37ee74ef 100644
-> --- a/mm/percpu.c
-> +++ b/mm/percpu.c
-> @@ -1315,8 +1315,8 @@ static struct pcpu_chunk * __init pcpu_alloc_first_chunk(unsigned long tmp_addr,
->  	region_size = ALIGN(start_offset + map_size, lcm_align);
->  
->  	/* allocate chunk */
-> -	alloc_size = sizeof(struct pcpu_chunk) +
-> -		BITS_TO_LONGS(region_size >> PAGE_SHIFT) * sizeof(unsigned long);
-> +	alloc_size = struct_size(chunk, populated,
-> +				 BITS_TO_LONGS(region_size >> PAGE_SHIFT));
->  	chunk = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
->  	if (!chunk)
->  		panic("%s: Failed to allocate %zu bytes\n", __func__,
-> @@ -2521,8 +2521,8 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
->  	pcpu_unit_pages = ai->unit_size >> PAGE_SHIFT;
->  	pcpu_unit_size = pcpu_unit_pages << PAGE_SHIFT;
->  	pcpu_atom_size = ai->atom_size;
-> -	pcpu_chunk_struct_size = sizeof(struct pcpu_chunk) +
-> -		BITS_TO_LONGS(pcpu_unit_pages) * sizeof(unsigned long);
-> +	pcpu_chunk_struct_size = struct_size(chunk, populated,
-> +					     BITS_TO_LONGS(pcpu_unit_pages));
->  
->  	pcpu_stats_save_ai(ai);
->  
-> 
+----------------------------------------------------------------
+Gustavo A. R. Silva (17):
+      dmaengine: ti-cppi5: Replace zero-length array with flexible-array member
+      mailbox: zynqmp-ipi-message: Replace zero-length array with flexible-array member
+      platform/chrome: cros_ec_commands: Replace zero-length array with flexible-array member
+      platform/chrome: cros_ec_proto: Replace zero-length array with flexible-array member
+      tracepoint: Replace zero-length array with flexible-array member
+      params: Replace zero-length array with flexible-array member
+      Bluetooth: Replace zero-length array with flexible-array member
+      fs: Replace zero-length array with flexible-array member
+      enetc: Replace zero-length array with flexible-array member
+      ima: Replace zero-length array with flexible-array member
+      scsi: target: tcmu: Replace zero-length array with flexible-array member
+      Bluetooth: btintel: Replace zero-length array with flexible-array member
+      gve: Replace zero-length array with flexible-array member
+      mei: hw: Replace zero-length array with flexible-array member
+      net/mlx5: Replace zero-length array with flexible-array member
+      net/smc: Replace zero-length array with flexible-array member
+      printk: ringbuffer: Replace zero-length array with flexible-array member
+
+ drivers/bluetooth/btintel.h                      |  2 +-
+ drivers/misc/mei/hw.h                            |  6 +++---
+ drivers/net/ethernet/freescale/enetc/enetc_qos.c |  2 +-
+ drivers/net/ethernet/google/gve/gve_adminq.h     |  2 +-
+ drivers/net/ethernet/google/gve/gve_main.c       |  5 ++---
+ drivers/target/target_core_user.c                |  2 +-
+ fs/binfmt_elf.c                                  |  2 +-
+ fs/hfs/btree.h                                   |  2 +-
+ fs/hfsplus/hfsplus_fs.h                          |  2 +-
+ fs/isofs/rock.h                                  |  8 ++++----
+ fs/select.c                                      |  4 ++--
+ include/linux/dma/ti-cppi5.h                     |  4 ++--
+ include/linux/fs.h                               |  2 +-
+ include/linux/mailbox/zynqmp-ipi-message.h       |  2 +-
+ include/linux/mlx5/mlx5_ifc.h                    |  4 ++--
+ include/linux/platform_data/cros_ec_commands.h   | 14 +++++++-------
+ include/linux/platform_data/cros_ec_proto.h      |  2 +-
+ kernel/params.c                                  |  2 +-
+ kernel/printk/printk_ringbuffer.c                |  2 +-
+ kernel/tracepoint.c                              |  2 +-
+ net/bluetooth/msft.c                             |  3 ++-
+ net/smc/smc_clc.h                                |  4 ++--
+ security/integrity/ima/ima.h                     |  2 +-
+ 23 files changed, 40 insertions(+), 40 deletions(-)
