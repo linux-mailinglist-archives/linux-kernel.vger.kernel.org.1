@@ -2,447 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4C62A00AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C902A00B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgJ3JFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
+        id S1726019AbgJ3JHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgJ3JFo (ORCPT
+        with ESMTP id S1725801AbgJ3JHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:05:44 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F7A5C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:05:44 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id 126so6902247lfi.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:05:44 -0700 (PDT)
+        Fri, 30 Oct 2020 05:07:34 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DB3C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:07:34 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 15so4640972pgd.12
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:07:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wuS5u1doYgwJMrQ1HQaz2hiwPQ/dACD5OsCQyigRClI=;
-        b=h7pf6DdOD7RmWd3oL0OMKqO3VA+HHBjIglyYGHiJrbDITIQrZ+7BxOU3+eFBXamPCG
-         myV/ZOuma7t7c/O3TiEZYHI26M+uyiDZloylZcBu7sMYX3498wCBhv9AE63XwPIC40Qm
-         F3NBmr1gO71vYwXqHA33XaBtWYHC2ca1ct14MQpYJ15itobbxe9A6Luz4h1W3KT9+JcO
-         goBGIl3MSLgCfqcuxfxn45h1m2zd1vVdfMnRpIM8No2h+mycIVHWkMX9Rp6SegRjLIqP
-         QlBbddpowxyvdrsjNlCtanZALX9uOMjawC3F430supnuLtBeptC0gUQbu247TCGiRrde
-         JNPA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+B7DrabjALESSLgvrRU2SUJPeb/davPcXgiTuHjAvYs=;
+        b=FCFsB3/tIibDL4zx1fW1oF29wuAfAoJ1hS97J0MKs7E1RJUrUZ94sjGhHikaqpnYmG
+         tCr+48OEbfz6TqXrGwlOURI68Ik1O2UMqQveFp3XHKB2rF8Vo05gSrZOAdpt1USJrB/G
+         IFZ4GOiqKb0MGjsIoErdioH8lV1BXqMhbMJqPI2xpDxN3y1Q5No8seR5k6RxTPQFF9G5
+         C69+8qUCIyqkggXfZf0B4Ngn/X1Zkg/nnv3HSvReNWIZv+qogBm87gVAOmsTiiyP3ys7
+         gFu6PMZf3DMGTng4VwRUQLm0h5D6xcLXW4nr/SkDyCIUdwvWbKB2iR7kfKUw/5zE4f6d
+         TidQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wuS5u1doYgwJMrQ1HQaz2hiwPQ/dACD5OsCQyigRClI=;
-        b=K1x/plqI502LzzOxKfuu1Z0m7W2V2N0tzIm+r2Y4JP8auLkM0VnV3Pzy7JtxTAqxC6
-         NX3eWZx6JvvLRjtOSmdmHmv3448uT8kqCP8OmCvwG65XV9brVchX0X651uBNHa9mQsDn
-         3psYnRi4Ip1GxB1REMwMsEBOXs3LDcw8zaUOqtCD0gYVNvwFA+kqGJ4Iu6vqT4IJFtqs
-         YdITgPpea6kgFxPQmSAXQE3DvBhoJWXmzVPCrXy5/nuYaUQGK1gXhPk7cVnYYH8ZPry0
-         qOd+0SfnElDRF+cT1pYHanuwWz1yQWWeXmdDUYdzfwikUFjFTpzFGgqZjWiIvfr1ZU8E
-         1LgA==
-X-Gm-Message-State: AOAM533pF+iRpWeb6HfpeOH5kQQblxWKlO2b+yyKzAHuPB/EqX2zOCH4
-        9H165xMCYxwQNH22UcRhqs8qGqk1xuq/lDJzyoCvAQ==
-X-Google-Smtp-Source: ABdhPJyy29DKvlmhSGLrkaffIQCfwSejXh+C1NwBmK26auf6nYDHNgTcUdxbrM+XOi2UCmABu6cU0zzmKdonhvYu018=
-X-Received: by 2002:a19:6a04:: with SMTP id u4mr543814lfu.493.1604048742501;
- Fri, 30 Oct 2020 02:05:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+B7DrabjALESSLgvrRU2SUJPeb/davPcXgiTuHjAvYs=;
+        b=aaKgKBJFzGyGoRk9fOYnoUvg+txP0gLpSslejlYM3P/yT43ESmhhSH+t/f1fTC94HT
+         sbaef23zo1l3bUYFnEI6dGIrC94jg2ma3m1S6puJF702O9ekfvm4wJds6iP1/4Kd2T0a
+         nRV0SkP7hAdSX2UDF/2LTVf6KN1Znaw6VCcEwP2zpLwEXJRtEl6oKX4ZLKF0kZdepC66
+         RLrZXnfXf6oZYM7ivik0W5B6WkpVE0RX18z4aiNZ008gwqvkhbuMb+tG5YxQVaIYAPB9
+         wEhBbUS0yPY3t9mh/pAl4GaNSx2HfNXqVd5LkX5c+ydgrY8bYd0ULmEdDkvyyRQH03Tp
+         AqJA==
+X-Gm-Message-State: AOAM5323AgUT6AUXDQFbciVOCjxsJzKeQ/qUjnAXJqsm76tYjOUiW1HA
+        vU7AITmeQwgSn8EYQl3png7DuNMnEW2fwxPY
+X-Google-Smtp-Source: ABdhPJwQoy5lGoxWGCu+w56vGEHkheybredgq458reF1b9S+aRPHgVNaR+OoMNWdPanqXrkH9up5ng==
+X-Received: by 2002:a63:6503:: with SMTP id z3mr1313531pgb.2.1604048853824;
+        Fri, 30 Oct 2020 02:07:33 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:9004:6819:f451:9e0a:873f:ed68])
+        by smtp.gmail.com with ESMTPSA id w187sm5245878pfb.93.2020.10.30.02.07.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 02:07:32 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com, yashsri421@gmail.com
+Subject: [PATCH] checkpatch: improve handling of email comments
+Date:   Fri, 30 Oct 2020 14:37:04 +0530
+Message-Id: <20201030090704.40533-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201028232759.1928479-1-atish.patra@wdc.com> <20201028232759.1928479-3-atish.patra@wdc.com>
-In-Reply-To: <20201028232759.1928479-3-atish.patra@wdc.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 30 Oct 2020 14:35:30 +0530
-Message-ID: <CAAhSdy0pW8AFCDtFkEO_4zjg8Exp+XTb09AjhErdX9u-Jw3OuQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/3] RISC-V: Initial DTS for Microchip ICICLE board
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>, devicetree@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Padmarao Begari <padmarao.begari@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Cyril.Jean@microchip.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 4:58 AM Atish Patra <atish.patra@wdc.com> wrote:
->
-> Add initial DTS for Microchip ICICLE board having only
-> essential devcies (clocks, sdhci, ethernet, serial, etc).
->
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/boot/dts/Makefile                  |   1 +
->  arch/riscv/boot/dts/microchip/Makefile        |   2 +
->  .../microchip/microchip-icicle-kit-a000.dts   | 313 ++++++++++++++++++
+checkpatch has limited support for parsing email comments. It only
+support single name comments or single after address comments.
+Whereas, RFC 5322 specifies that comments can be inserted in
+between any tokens of the email fields.
 
-I suggest we split this DTS into two parts:
-1. SOC (microchip-polarfire.dtsi)
-2. Board (microchip-icicle-kit-a000.dts)
+Improve comment parsing mechanism in checkpatch.
 
-This will be much cleaner and aligned with what is done
-on other architectures.
+What is handled now:
 
->  3 files changed, 316 insertions(+)
->  create mode 100644 arch/riscv/boot/dts/microchip/Makefile
->  create mode 100644 arch/riscv/boot/dts/microchip/microchip-icicle-kit-a0=
-00.dts
->
-> diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
-> index ca1f8cbd78c0..3ea94ea0a18a 100644
-> --- a/arch/riscv/boot/dts/Makefile
-> +++ b/arch/riscv/boot/dts/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->  subdir-y +=3D sifive
->  subdir-y +=3D kendryte
-> +subdir-y +=3D microchip
->
->  obj-$(CONFIG_BUILTIN_DTB) :=3D $(addsuffix /, $(subdir-y))
-> diff --git a/arch/riscv/boot/dts/microchip/Makefile b/arch/riscv/boot/dts=
-/microchip/Makefile
-> new file mode 100644
-> index 000000000000..55ad77521304
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/microchip/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +dtb-$(CONFIG_SOC_MICROCHIP_POLARFIRE) +=3D microchip-icicle-kit-a000.dtb
-> diff --git a/arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.dts =
-b/arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.dts
-> new file mode 100644
-> index 000000000000..5848920af55c
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.dts
-> @@ -0,0 +1,313 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/* Copyright (c) 2020 Microchip Technology Inc */
-> +
-> +/dts-v1/;
-> +
-> +/* Clock frequency (in Hz) of the rtcclk */
-> +#define RTCCLK_FREQ            1000000
-> +
-> +/ {
-> +       #address-cells =3D <2>;
-> +       #size-cells =3D <2>;
-> +       model =3D "Microchip PolarFire-SoC";
-> +       compatible =3D "microchip,polarfire-soc";
-> +
-> +       chosen {
-> +               stdout-path =3D &serial0;
-> +       };
-> +
-> +       cpus {
-> +               #address-cells =3D <1>;
-> +               #size-cells =3D <0>;
-> +               timebase-frequency =3D <RTCCLK_FREQ>;
-> +
-> +               cpu@0 {
-> +                       clock-frequency =3D <0>;
-> +                       compatible =3D "sifive,rocket0", "riscv";
-> +                       device_type =3D "cpu";
-> +                       i-cache-block-size =3D <64>;
-> +                       i-cache-sets =3D <128>;
-> +                       i-cache-size =3D <16384>;
-> +                       reg =3D <0>;
-> +                       riscv,isa =3D "rv64imac";
-> +                       status =3D "disabled";
-> +
-> +                       cpu0_intc: interrupt-controller {
-> +                               #interrupt-cells =3D <1>;
-> +                               compatible =3D "riscv,cpu-intc";
-> +                               interrupt-controller;
-> +                       };
-> +               };
-> +
-> +               cpu@1 {
-> +                       clock-frequency =3D <0>;
-> +                       compatible =3D "sifive,rocket0", "riscv";
-> +                       d-cache-block-size =3D <64>;
-> +                       d-cache-sets =3D <64>;
-> +                       d-cache-size =3D <32768>;
-> +                       d-tlb-sets =3D <1>;
-> +                       d-tlb-size =3D <32>;
-> +                       device_type =3D "cpu";
-> +                       i-cache-block-size =3D <64>;
-> +                       i-cache-sets =3D <64>;
-> +                       i-cache-size =3D <32768>;
-> +                       i-tlb-sets =3D <1>;
-> +                       i-tlb-size =3D <32>;
-> +                       mmu-type =3D "riscv,sv39";
-> +                       reg =3D <1>;
-> +                       riscv,isa =3D "rv64imafdc";
-> +                       tlb-split;
-> +                       status =3D "okay";
-> +
-> +                       cpu1_intc: interrupt-controller {
-> +                               #interrupt-cells =3D <1>;
-> +                               compatible =3D "riscv,cpu-intc";
-> +                               interrupt-controller;
-> +                       };
-> +               };
-> +
-> +               cpu@2 {
-> +                       clock-frequency =3D <0>;
-> +                       compatible =3D "sifive,rocket0", "riscv";
-> +                       d-cache-block-size =3D <64>;
-> +                       d-cache-sets =3D <64>;
-> +                       d-cache-size =3D <32768>;
-> +                       d-tlb-sets =3D <1>;
-> +                       d-tlb-size =3D <32>;
-> +                       device_type =3D "cpu";
-> +                       i-cache-block-size =3D <64>;
-> +                       i-cache-sets =3D <64>;
-> +                       i-cache-size =3D <32768>;
-> +                       i-tlb-sets =3D <1>;
-> +                       i-tlb-size =3D <32>;
-> +                       mmu-type =3D "riscv,sv39";
-> +                       reg =3D <2>;
-> +                       riscv,isa =3D "rv64imafdc";
-> +                       tlb-split;
-> +                       status =3D "okay";
-> +
-> +                       cpu2_intc: interrupt-controller {
-> +                               #interrupt-cells =3D <1>;
-> +                               compatible =3D "riscv,cpu-intc";
-> +                               interrupt-controller;
-> +                       };
-> +               };
-> +
-> +               cpu@3 {
-> +                       clock-frequency =3D <0>;
-> +                       compatible =3D "sifive,rocket0", "riscv";
-> +                       d-cache-block-size =3D <64>;
-> +                       d-cache-sets =3D <64>;
-> +                       d-cache-size =3D <32768>;
-> +                       d-tlb-sets =3D <1>;
-> +                       d-tlb-size =3D <32>;
-> +                       device_type =3D "cpu";
-> +                       i-cache-block-size =3D <64>;
-> +                       i-cache-sets =3D <64>;
-> +                       i-cache-size =3D <32768>;
-> +                       i-tlb-sets =3D <1>;
-> +                       i-tlb-size =3D <32>;
-> +                       mmu-type =3D "riscv,sv39";
-> +                       reg =3D <3>;
-> +                       riscv,isa =3D "rv64imafdc";
-> +                       tlb-split;
-> +                       status =3D "okay";
-> +
-> +                       cpu3_intc: interrupt-controller {
-> +                               #interrupt-cells =3D <1>;
-> +                               compatible =3D "riscv,cpu-intc";
-> +                               interrupt-controller;
-> +                       };
-> +               };
-> +
-> +               cpu@4 {
-> +                       clock-frequency =3D <0>;
-> +                       compatible =3D "sifive,rocket0", "riscv";
-> +                       d-cache-block-size =3D <64>;
-> +                       d-cache-sets =3D <64>;
-> +                       d-cache-size =3D <32768>;
-> +                       d-tlb-sets =3D <1>;
-> +                       d-tlb-size =3D <32>;
-> +                       device_type =3D "cpu";
-> +                       i-cache-block-size =3D <64>;
-> +                       i-cache-sets =3D <64>;
-> +                       i-cache-size =3D <32768>;
-> +                       i-tlb-sets =3D <1>;
-> +                       i-tlb-size =3D <32>;
-> +                       mmu-type =3D "riscv,sv39";
-> +                       reg =3D <4>;
-> +                       riscv,isa =3D "rv64imafdc";
-> +                       tlb-split;
-> +                       status =3D "okay";
-> +                       cpu4_intc: interrupt-controller {
-> +                               #interrupt-cells =3D <1>;
-> +                               compatible =3D "riscv,cpu-intc";
-> +                               interrupt-controller;
-> +                       };
-> +               };
-> +       };
-> +
-> +       memory@80000000 {
-> +               device_type =3D "memory";
-> +               reg =3D <0x0 0x80000000 0x0 0x40000000>;
-> +               clocks =3D <&clkcfg 26>;
-> +       };
-> +
-> +       soc {
-> +               #address-cells =3D <2>;
-> +               #size-cells =3D <2>;
-> +               compatible =3D "simple-bus";
-> +               ranges;
-> +
-> +               cache-controller@2010000 {
-> +                       compatible =3D "sifive,fu540-c000-ccache", "cache=
-";
-> +                       cache-block-size =3D <64>;
-> +                       cache-level =3D <2>;
-> +                       cache-sets =3D <1024>;
-> +                       cache-size =3D <2097152>;
-> +                       cache-unified;
-> +                       interrupt-parent =3D <&plic>;
-> +                       interrupts =3D <1 2 3>;
-> +                       reg =3D <0x0 0x2010000 0x0 0x1000>;
-> +               };
-> +
-> +               clint@2000000 {
-> +                       compatible =3D "riscv,clint0";
-> +                       reg =3D <0x0 0x2000000 0x0 0xC000>;
-> +                       interrupts-extended =3D <&cpu0_intc 3 &cpu0_intc =
-7
-> +                                               &cpu1_intc 3 &cpu1_intc 7
-> +                                               &cpu2_intc 3 &cpu2_intc 7
-> +                                               &cpu3_intc 3 &cpu3_intc 7
-> +                                               &cpu4_intc 3 &cpu4_intc 7=
->;
-> +               };
-> +
-> +               plic: interrupt-controller@c000000 {
-> +                       #interrupt-cells =3D <1>;
-> +                       compatible =3D "sifive,plic-1.0.0";
-> +                       reg =3D <0x0 0xc000000 0x0 0x4000000>;
-> +                       riscv,ndev =3D <53>;
-> +                       interrupt-controller;
-> +                       interrupts-extended =3D <&cpu0_intc 11
-> +                                       &cpu1_intc 11 &cpu1_intc 9
-> +                                       &cpu2_intc 11 &cpu2_intc 9
-> +                                       &cpu3_intc 11 &cpu3_intc 9
-> +                                       &cpu4_intc 11 &cpu4_intc 9>;
-> +               };
-> +
-> +               dma@3000000 {
-> +                       compatible =3D "sifive,fu540-c000-pdma";
-> +                       reg =3D <0x0 0x3000000 0x0 0x8000>;
-> +                       interrupt-parent =3D <&plic>;
-> +                       interrupts =3D <23 24 25 26 27 28 29 30>;
-> +                       #dma-cells =3D <1>;
-> +               };
-> +
-> +               refclk: refclk {
-> +                       compatible =3D "fixed-clock";
-> +                       #clock-cells =3D <0>;
-> +                       clock-frequency =3D <600000000>;
-> +                       clock-output-names =3D "msspllclk";
-> +               };
-> +
-> +               clkcfg: clkcfg@20002000 {
-> +                       compatible =3D "microchip,pfsoc-clkcfg";
-> +                       reg =3D <0x0 0x20002000 0x0 0x1000>;
-> +                       reg-names =3D "mss_sysreg";
-> +                       clocks =3D <&refclk>;
-> +                       #clock-cells =3D <1>;
-> +                       clock-output-names =3D "cpuclk", "axiclk", "ahbcl=
-k", "ENVMclk", "MAC0clk", "MAC1clk", "MMCclk", "TIMERclk", "MMUART0clk", "M=
-MUART1clk", "MMUART2clk", "MMUART3clk", "MMUART4clk", "SPI0clk", "SPI1clk",=
- "I2C0clk", "I2C1clk", "CAN0clk", "CAN1clk", "USBclk", "RESERVED", "RTCclk"=
-, "QSPIclk", "GPIO0clk", "GPIO1clk", "GPIO2clk", "DDRCclk", "FIC0clk", "FIC=
-1clk", "FIC2clk", "FIC3clk", "ATHENAclk", "CFMclk";
-> +               };
-> +
-> +               serial0: serial@20000000 {
-> +                       compatible =3D "ns16550a";
-> +                       reg =3D <0x0 0x20000000 0x0 0x400>;
-> +                       reg-io-width =3D <4>;
-> +                       reg-shift =3D <2>;
-> +                       interrupt-parent =3D <&plic>;
-> +                       interrupts =3D <90>;
-> +                       current-speed =3D <115200>;
-> +                       clocks =3D <&clkcfg 8>;
-> +                       status =3D "okay";
-> +               };
-> +
-> +               serial1: serial@20100000 {
-> +                       compatible =3D "ns16550a";
-> +                       reg =3D <0x0 0x20100000 0x0 0x400>;
-> +                       reg-io-width =3D <4>;
-> +                       reg-shift =3D <2>;
-> +                       interrupt-parent =3D <&plic>;
-> +                       interrupts =3D <91>;
-> +                       current-speed =3D <115200>;
-> +                       clocks =3D <&clkcfg 9>;
-> +                       status =3D "okay";
-> +               };
-> +
-> +               serial2: serial@20102000 {
-> +                       compatible =3D "ns16550a";
-> +                       reg =3D <0x0 0x20102000 0x0 0x400>;
-> +                       reg-io-width =3D <4>;
-> +                       reg-shift =3D <2>;
-> +                       interrupt-parent =3D <&plic>;
-> +                       interrupts =3D <92>;
-> +                       current-speed =3D <115200>;
-> +                       clocks =3D <&clkcfg 10>;
-> +                       status =3D "okay";
-> +               };
-> +
-> +               serial3: serial@20104000 {
-> +                       compatible =3D "ns16550a";
-> +                       reg =3D <0x0 0x20104000 0x0 0x400>;
-> +                       reg-io-width =3D <4>;
-> +                       reg-shift =3D <2>;
-> +                       interrupt-parent =3D <&plic>;
-> +                       interrupts =3D <93>;
-> +                       current-speed =3D <115200>;
-> +                       clocks =3D <&clkcfg 11>;
-> +                       status =3D "okay";
-> +               };
-> +
-> +               sdcard: sdhc@20008000 {
-> +                       compatible =3D "cdns,sd4hc";
-> +                       reg =3D <0x0 0x20008000 0x0 0x1000>;
-> +                       interrupt-parent =3D <&plic>;
-> +                       interrupts =3D <88>;
-> +                       pinctrl-names =3D "default";
-> +                       clocks =3D <&clkcfg 6>;
-> +                       bus-width =3D <4>;
-> +                       disable-wp;
-> +                       no-1-8-v;
-> +                       cap-mmc-highspeed;
-> +                       cap-sd-highspeed;
-> +                       card-detect-delay =3D <200>;
-> +                       sd-uhs-sdr12;
-> +                       sd-uhs-sdr25;
-> +                       sd-uhs-sdr50;
-> +                       sd-uhs-sdr104;
-> +                       max-frequency =3D <200000000>;
-> +                       status =3D "okay";
-> +               };
-> +
-> +               emac1: ethernet@20112000 {
-> +                       compatible =3D "cdns,macb";
-> +                       reg =3D <0x0 0x20112000 0x0 0x2000>;
-> +                       interrupt-parent =3D <&plic>;
-> +                       interrupts =3D <70 71 72 73>;
-> +                       mac-address =3D [56 34 12 00 FC 00];
-> +                       phy-mode =3D "sgmii";
-> +                       clocks =3D <&clkcfg 5>, <&clkcfg 2>;
-> +                       clock-names =3D "pclk", "hclk";
-> +                       #address-cells =3D <1>;
-> +                       #size-cells =3D <0>;
-> +                       phy1: ethernet-phy@9 {
-> +                               reg =3D <9>;
-> +                               ti,fifo-depth =3D <0x01>;
-> +                       };
-> +               };
-> +
-> +               uio_axi_lsram@2030000000 {
-> +                       compatible =3D "generic-uio";
-> +                       reg =3D <0x20 0x30000000 0 0x80000000 >;
-> +                       status =3D "okay";
-> +               };
-> +       };
-> +};
-> --
-> 2.25.1
->
+- Multiple name/address comments
+- Comments anywhere in between name/address
+- Nested comments like (John (Doe))
 
-Regards,
-Anup
+
+A brief analysis of checkpatch output on v5.0..v5.7 showed that
+after these modifications, the number of BAD_SIGN_OFF warnings
+came down from 2944 to 1424, and FROM_SIGN_OFF_MISMATCH came
+down from 2366 to 2330.
+
+So, a total of 1556 false positives were resolved in total.
+
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+ scripts/checkpatch.pl | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index fab38b493cef..ae8436385fc1 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -1183,14 +1183,20 @@ sub parse_email {
+ 		}
+ 	}
+ 
+-	$comment = trim($comment);
++	# Comments in between name like John(A nice chap) Doe
++	while ($name =~ s/\s*($balanced_parens)\s*/ /) {
++		$name_comment .= trim($1);
++	}
+ 	$name = trim($name);
+ 	$name =~ s/^\"|\"$//g;
+-	if ($name =~ s/(\s*\([^\)]+\))\s*//) {
+-		$name_comment = trim($1);
++
++	# Comments in between address like <john(his account)@doe.com>
++	while ($address =~ s/\s*($balanced_parens)\s*//) {
++		$comment .= trim($1);
+ 	}
+ 	$address = trim($address);
+ 	$address =~ s/^\<|\>$//g;
++	$comment = trim($comment);
+ 
+ 	if ($name =~ /[^\w \-]/i) { ##has "must quote" chars
+ 		$name =~ s/(?<!\\)"/\\"/g; ##escape quotes
+@@ -1205,8 +1211,6 @@ sub format_email {
+ 
+ 	my $formatted_email;
+ 
+-	$name_comment = trim($name_comment);
+-	$comment = trim($comment);
+ 	$name = trim($name);
+ 	$name =~ s/^\"|\"$//g;
+ 	$address = trim($address);
+@@ -1216,6 +1220,11 @@ sub format_email {
+ 		$name = "\"$name\"";
+ 	}
+ 
++	$name_comment = trim($name_comment);
++	$name_comment =~ s/(.+)/ $1/;
++	$comment = trim($comment);
++	$comment =~ s/(.+)/ $1/;
++
+ 	if ("$name" eq "") {
+ 		$formatted_email = "$address";
+ 	} else {
+-- 
+2.27.0
+
