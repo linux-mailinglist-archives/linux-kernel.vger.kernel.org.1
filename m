@@ -2,122 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA4C2A0A7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD6A2A0A84
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgJ3P4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:56:32 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:45430 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgJ3P4c (ORCPT
+        id S1726970AbgJ3P5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:57:33 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:55841 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726899AbgJ3P5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:56:32 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09UFtCic029929;
-        Fri, 30 Oct 2020 15:56:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=EVU30gD91LGa1Y1VdxSOZe8O/74NXoz9gkkfDNj0ves=;
- b=Sa+1udKUyhvhEs5UdIrzRdpV+Dpi9n5+Q7HSsbzu6Ajbh9ICzefahIoKgQqD1qGBsEwP
- yhHo7kAzcMjblYqLXyHZU4TAd3LIzfc8TNabWSONyhL9dL70hLk6J1wa+NqsMPwpDB2e
- He59UWMd4JRlIoNprJRmcEs8TAgH2yoj1mcP8sGcd29MbEGu3Hk2THfGb6eFJSjWZJJR
- mzd/vXuai8YDzY1DZr6EaBAR5XzLoVN9qGHMPNgw1Lcsjbh93QffHFogEukjfZB+o3u6
- iyz7umRhWtY4s7IX5cKY3ChqjfQKhoEM+6Puu/CoQViZDqKr8gwb03fzXsURM73Sk+M6 lA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 34cc7mae9c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Oct 2020 15:56:28 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09UFuRiA079053;
-        Fri, 30 Oct 2020 15:56:28 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 34cx1um638-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Oct 2020 15:56:27 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09UFuLEa015836;
-        Fri, 30 Oct 2020 15:56:21 GMT
-Received: from dhcp-10-154-181-248.vpn.oracle.com (/10.154.181.248)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 30 Oct 2020 08:56:20 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.5\))
-Subject: Re: [PATCH 4.14 ] platform/x86: Corrects warning: missing braces
- around initializer
-From:   John Donnelly <john.p.donnelly@oracle.com>
-In-Reply-To: <20201030155211.7218-1-john.p.donnelly@oracle.com>
-Date:   Fri, 30 Oct 2020 10:56:19 -0500
-Cc:     trix@redhat.com, andriy.shevchenko@linux.intel.com
+        Fri, 30 Oct 2020 11:57:32 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2BD295C02E4;
+        Fri, 30 Oct 2020 11:57:31 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 30 Oct 2020 11:57:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
+        :to:cc:subject:date:message-id:reply-to:mime-version
+        :content-type:content-transfer-encoding; s=fm1; bh=GgFywE3sedM8p
+        RqGb2GCUrt5KozSDzUlHAh3jMIZlYc=; b=ELu5vcLmJCPbE1orsyqdaspWVSIsY
+        5oksyRCGM576vzsq89hLCxIBtbLPiCCrpDaFw83NsKi3/IznqGNNbiqhpTwgQhK+
+        Ufls4ptpwl56aGFMNH6Df/oT3Wu+08VrHoUK+yqU72y2JeCEzoNkETULRfqFXcx3
+        6oCb2Asj+gmC+Y2ZZCEJtz7EXKo1eNDHHRwHn7pGhXWCxaGQE+ZD1hoG7Ju8pSvM
+        CyYf+VwStncPVVlBqmQ7GGbCb7yAEuyid1JVD9faaPMlLpPcD4tarWsAl95+voEw
+        4sC0+/7hjoGctlNjU0tAZLv0Mzuo0WVb3UpYE4xYxvdHSwxv+tQslMSYg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:reply-to:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=GgFywE3sedM8pRqGb2GCUrt5KozSDzUlHAh3jMIZlYc=; b=kcys9TqQ
+        hx/6X5aclY41cAAm2+CfJLf318GOtMzVEb/zdTO0t/7En4msj8YMVxEWK5DtkKo0
+        p0sc/FfWfrwEvsGTXVK2R/zZhZ261K7d6pSKPJTw+H3V91x4fJxDxfo4ITgtejc7
+        J1vhAC2//JgIyKVxNowH5HCr2Ta1qo1s7GXVQyP+VSohKjuJryAdbiFbLaMHwEAI
+        9TjVqDghhW/QbkkhhJDsjd9mCJNsogaj5/ztJJR2BDoM5AsJH0QxdA03I500RqdX
+        a4p8c2+VD+GQ1qixZkJ8OgaL9+hXQqkh4G9KUtXdLe2xaZ5MBInP2/P43rRZn6ng
+        +KASUSrMSm1fuA==
+X-ME-Sender: <xms:6jecXxg_gwZ5JGpMUQWVAkYyxETPf1H_nKX48ZCsvM7Rfi4AdJMBqA>
+    <xme:6jecX2CJp_J4KLY4M2llGpto-z2f9BNE5qKVEueM5IKp1GjCQGTlDJOFYrvnpjc01
+    I3L3yI5sxhim1x2dA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleehgdejkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofhrgggtgfesthhqredtredtjeenucfhrhhomhepkghiucgjrghn
+    uceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepudevleffhe
+    duuddvhfdtvdehfeekjedtleeifefhgeehjeetvdethfefvdekkeelnecukfhppeduvddr
+    geeirddutdeirdduieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepiihirdihrghnsehsvghnthdrtghomh
+X-ME-Proxy: <xmx:6jecXxEWorKtSdxIzLyeaxLWpNqaf6Ga4dQDdayfjPA2Q273mekKqA>
+    <xmx:6jecX2QXZgkVAUY8Feb4FjPY-rRDPkvlJT3HHxROI2guU0kNLvecpg>
+    <xmx:6jecX-yR7z3thC0k-bOrAdvJOH5sU9sM8gjuFPLZLReLY813vPwfUQ>
+    <xmx:6zecX1maHvD-O-QuMbHHXs7cUF5FpywD-m1hpxc84WUFIb0S7G6fTw>
+Received: from nvrsysarch6.NVidia.COM (unknown [12.46.106.164])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0B8B8328005E;
+        Fri, 30 Oct 2020 11:57:30 -0400 (EDT)
+From:   Zi Yan <zi.yan@sent.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Zi Yan <ziy@nvidia.com>
+Subject: [PATCH v2 1/2] mm/compaction: count pages and stop correctly during page isolation.
+Date:   Fri, 30 Oct 2020 11:57:15 -0400
+Message-Id: <20201030155716.3614401-1-zi.yan@sent.com>
+X-Mailer: git-send-email 2.28.0
+Reply-To: Zi Yan <ziy@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <B8B7C690-0EDE-4545-AEC1-D1B227B636C1@oracle.com>
-References: <20201030155211.7218-1-john.p.donnelly@oracle.com>
-To:     linux-kernel@vger.kernel.org
-X-Mailer: Apple Mail (2.3445.9.5)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9790 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- suspectscore=5 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010300118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9790 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=5
- priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zi Yan <ziy@nvidia.com>
 
+In isolate_migratepages_block, when cc->alloc_contig is true, we are
+able to isolate compound pages, nr_migratepages and nr_isolated did not
+count compound pages correctly, causing us to isolate more pages than we
+thought. Use thp_nr_pages to count pages. Otherwise, we might be trapped
+in too_many_isolated while loop, since the actual isolated pages can go
+up to COMPACT_CLUSTER_MAX*512=3D16384, where COMPACT_CLUSTER_MAX is 32,
+since we stop isolation after cc->nr_migratepages reaches to
+COMPACT_CLUSTER_MAX.
 
-> On Oct 30, 2020, at 10:52 AM, john.p.donnelly@oracle.com wrote:
->=20
-> From: John Donnelly <john.p.donnelly@oracle.com>
->=20
-> The assignment statement of a local variable "struct tp_nvram_state =
-s[2] =3D {0}; "
-> is not valid for all versions of compilers (UEK6 on OL7).
->=20
-> Fixes: 515ded02bc4b ("platform/x86: thinkpad_acpi: initialize =
-tp_nvram_state variable")
->=20
-> Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
-> ---
-> drivers/platform/x86/thinkpad_acpi.c | 4 +++-
-> 1 file changed, 3 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/platform/x86/thinkpad_acpi.c =
-b/drivers/platform/x86/thinkpad_acpi.c
-> index ffaaccded34e..c41ac0385304 100644
-> --- a/drivers/platform/x86/thinkpad_acpi.c
-> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> @@ -2477,7 +2477,7 @@ static void =
-hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
->  */
-> static int hotkey_kthread(void *data)
-> {
-> -	struct tp_nvram_state s[2] =3D { 0 };
-> +	struct tp_nvram_state s[2];
-> 	u32 poll_mask, event_mask;
-> 	unsigned int si, so;
-> 	unsigned long t;
-> @@ -2488,6 +2488,8 @@ static int hotkey_kthread(void *data)
-> 	if (tpacpi_lifecycle =3D=3D TPACPI_LIFE_EXITING)
-> 		goto exit;
->=20
-> +	memset(&s, 0, sizeof(s));
-> +
-> 	set_freezable();
->=20
-> 	so =3D 0;
-> --=20
-> 2.27.0
->=20
+In addition, after we fix the issue above, cc->nr_migratepages could
+never be equal to COMPACT_CLUSTER_MAX if compound pages are isolated,
+thus page isolation could not stop as we intended. Change the isolation
+stop condition to >=3D.
 
-Please ignore and use :
+The issue can be triggered as follows:
+In a system with 16GB memory and an 8GB CMA region reserved by
+hugetlb_cma, if we first allocate 10GB THPs and mlock them
+(so some THPs are allocated in the CMA region and mlocked), reserving
+6 1GB hugetlb pages via
+/sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages will get stuck
+(looping in too_many_isolated function) until we kill either task.
+With the patch applied, oom will kill the application with 10GB THPs and
+let hugetlb page reservation finish.
 
-PATCH 4.14 v2 ] platform/x86: Corrects warning: missing braces around =
-initializer
+Fixes: 1da2f328fa64 (=E2=80=9Cmm,thp,compaction,cma: allow THP migration fo=
+r CMA allocations=E2=80=9D)
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Cc: <stable@vger.kernel.org>
+---
+ mm/compaction.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/mm/compaction.c b/mm/compaction.c
+index ee1f8439369e..3e834ac402f1 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1012,8 +1012,8 @@ isolate_migratepages_block(struct compact_control *cc=
+, unsigned long low_pfn,
+=20
+ isolate_success:
+ 		list_add(&page->lru, &cc->migratepages);
+-		cc->nr_migratepages++;
+-		nr_isolated++;
++		cc->nr_migratepages +=3D compound_nr(page);
++		nr_isolated +=3D compound_nr(page);
+=20
+ 		/*
+ 		 * Avoid isolating too much unless this block is being
+@@ -1021,7 +1021,7 @@ isolate_migratepages_block(struct compact_control *cc=
+, unsigned long low_pfn,
+ 		 * or a lock is contended. For contention, isolate quickly to
+ 		 * potentially remove one source of contention.
+ 		 */
+-		if (cc->nr_migratepages =3D=3D COMPACT_CLUSTER_MAX &&
++		if (cc->nr_migratepages >=3D COMPACT_CLUSTER_MAX &&
+ 		    !cc->rescan && !cc->contended) {
+ 			++low_pfn;
+ 			break;
+@@ -1132,7 +1132,7 @@ isolate_migratepages_range(struct compact_control *cc=
+, unsigned long start_pfn,
+ 		if (!pfn)
+ 			break;
+=20
+-		if (cc->nr_migratepages =3D=3D COMPACT_CLUSTER_MAX)
++		if (cc->nr_migratepages >=3D COMPACT_CLUSTER_MAX)
+ 			break;
+ 	}
+=20
+--=20
+2.28.0
 
