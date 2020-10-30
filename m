@@ -2,165 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07ADA2A0A73
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 004C92A0A77
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727014AbgJ3Pyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:54:35 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:16518 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726881AbgJ3Pye (ORCPT
+        id S1727076AbgJ3PzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727050AbgJ3PzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:54:34 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201030155432epoutp03d118d2c23806fec9116eb4430b3481f2~C0CSClrg21269112691epoutp03K
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 15:54:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201030155432epoutp03d118d2c23806fec9116eb4430b3481f2~C0CSClrg21269112691epoutp03K
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604073272;
-        bh=oxRleJibUvvcFLp2nIYkMSCqYD/fctdcVA8rJUE5yhw=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=LsczV1UbbgSjd1jOcT1mSEaRNFwYGZEf5/gwQVSBNEA4gyOvlfZryeoU4jOtZGgmp
-         jsO4YHJRAnbL9zoKIm9HheuofRLKPBg7gvfUoCMGGEOTPInGQ8BaxiKruoiy3Qm3qt
-         fhEgHIRRb3wAoz6eL/XsrNMF+XiaimBiKza12l5o=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20201030155431epcas1p3478927eed43b4c8958ccdc48a1c2f852~C0CRg78LT1970019700epcas1p38;
-        Fri, 30 Oct 2020 15:54:31 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.164]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4CN6Lv0K44zMqYkW; Fri, 30 Oct
-        2020 15:54:31 +0000 (GMT)
-X-AuditID: b6c32a37-8afff7000000256e-a9-5f9c3736ebfd
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7A.20.09582.6373C9F5; Sat, 31 Oct 2020 00:54:30 +0900 (KST)
-Mime-Version: 1.0
-Subject: Re:(2) [PATCH] Input: add SW_COVER_ATTACHED and SW_EXT_PEN_ATTACHED
-Reply-To: jryu.kim@samsung.com
-Sender: Jungrae Kim <jryu.kim@samsung.com>
-From:   Jungrae Kim <jryu.kim@samsung.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Jungrae Kim <jryu.kim@samsung.com>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        HyungJae Im <hj2.im@samsung.com>,
-        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "rydberg@bitmath.org" <rydberg@bitmath.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20201030154113.6moks2gr57ztmujk@earth.universe>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20201030155430epcms1p3d7f91681f7a6f1f59927a574db9b6b75@epcms1p3>
-Date:   Sat, 31 Oct 2020 00:54:30 +0900
-X-CMS-MailID: 20201030155430epcms1p3d7f91681f7a6f1f59927a574db9b6b75
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAJsWRmVeSWpSXmKPExsWy7bCmga6Z+Zx4g/33TC2aF69ns1gw3c7i
-        8LYJTBY3P31jtbi8aw6bxd2WTlaLE9+mMVmc3l3iwOHxedUrVo9NqzrZPO5c28PmsX/uGnaP
-        vi2rGD0+b5ILYIvKsclITUxJLVJIzUvOT8nMS7dV8g6Od443NTMw1DW0tDBXUshLzE21VXLx
-        CdB1y8wBOkdJoSwxpxQoFJBYXKykb2dTlF9akqqQkV9cYquUWpCSU2BoUKBXnJhbXJqXrpec
-        n2tlaGBgZApUmZCTsWHtU/aCuZIVa8+eZ2pgXCjUxcjJISFgIvHxwF7WLkYuDiGBHYwSP45t
-        Zexi5ODgFRCU+LtDGKRGWMBH4sbXfUwgtpCAnMTCOacYIeJaEvv2TmYHsdkENCS+rjzLAmKL
-        CHhJzOp/zAIyk1ngOpPExx3/2CGW8UrMaH/KAmFLS2xfvhVsEKeArcT9p5+h4qISN1e/ZYex
-        3x+bzwhhi0i03jvLDGELSjz4uRvsTpA5n6fngOySEOhnlOj4eIgZwulhlHjXfIYNokFf4kr/
-        TCaIx3wlth7RAAmzCKhK/Di8ggVijovE1q9lIGFmAXmJ7W/nMIOEmQU0Jdbv0ocYoiix8/dc
-        RogSPol3X3tYYb7aMe8JE4StJLG1azGULSHxaOolqE88JNY2v2OHBPNpFomZT88zTmBUmIUI
-        6VlINs9C2LyAkXkVo1hqQXFuemqxYYExcuRuYgQnTS3zHYzT3n7QO8TIxMF4iFGCg1lJhPf/
-        2dnxQrwpiZVVqUX58UWlOanFhxhNgV6eyCwlmpwPTNt5JfGGpkbGxsYWJmbmZqbGSuK8f7Q7
-        4oUE0hNLUrNTUwtSi2D6mDg4pRqYFkusLV948ITReRZ7/kNitncu+ZqxvqrJ2ib3l8f71h7J
-        jprJ+vuvxS3M3MSp0SDbs0lKLyXl9p+H/FEsM54aHgnf84D3eMbPvDc7ePQWMeWF+86zZBJ9
-        yl3buOftN7ULH0zfnjN6JeDJmzaH7a+09bEri3+dfTdfayVfXsifhoedb0+fmvl+3ra82+eK
-        lBzl1bqYxLdN1C1f9mv/ul+8DL8/Hb01balq8XfZqS2iCW/s5qiGPbzR15tp/OOA4dRIsQfT
-        qrZMZvvZHHbg0+EStgNsLq49m6YJH9r3fNpcgazb15LTs5asVpz4I6W6ZIJk26UFU2YcaJHI
-        eXB91eyU+/4zsle8vndDUsh7fdrTdh4lluKMREMt5qLiRAA8vF31IwQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201029132747epcms1p8fae559dff47bf0eebdcc9f94efd9a1bf
-References: <20201030154113.6moks2gr57ztmujk@earth.universe>
-        <20201030115918epcms1p4aaae97a4549a1b3e505709fed3d91ecb@epcms1p4>
-        <20201030114142.GA2409436@kroah.com> <20201030104628.GB2395528@kroah.com>
-        <20201029135715.GB3470996@kroah.com>
-        <20201029132747epcms1p8fae559dff47bf0eebdcc9f94efd9a1bf@epcms1p8>
-        <20201030043916epcms1p3b289ca5cd902883a97e7d13ceb5c1efb@epcms1p3>
-        <20201030112812epcms1p7d031bb4949b319135e48dfac9409743b@epcms1p7>
-        <20201030131552epcms1p2cfe412ede3d3b2c5286d2fff4260300c@epcms1p2>
-        <CGME20201029132747epcms1p8fae559dff47bf0eebdcc9f94efd9a1bf@epcms1p3>
+        Fri, 30 Oct 2020 11:55:03 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCADC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:55:03 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id m22so5966820ots.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sCugon9AoPEJ8csYK/QZPsPZOpWR2wJLxLfUDJUrNWA=;
+        b=K0Bt4tbRQHFuGp039wzieHLjfl0FuYhnRx5bfqQwpQXcTVdbCpoeUKNfv5Ij31ox1y
+         Kws5dwUYP+1Z1b0TCvdeeALRVxpVZ1kz8I3/bm1D9orCfONXEhAJUNAdi+s6OVB3SRoB
+         lVG2y3PV1epogTO8AjkZs5Y17FJXXdSHdEeIeROL4OyAiGcGEjXR2mMg6TXOSoqJG7KW
+         1yJcYhY9GzfGcUdSnVR0oHtCe5c5HEsVjJmA8uwwAESkc9CJT6QnbSn1CPMEwlPWSjQC
+         FWRgCdmSzxorAWWMWF7FZDcGsPLG/FNlKSttzXuCH6+u/MNwmJdJa8wUh6sGnwEcn/uk
+         wxow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sCugon9AoPEJ8csYK/QZPsPZOpWR2wJLxLfUDJUrNWA=;
+        b=h4NLov9TyOpvS48X62Us02XIo4zgQVw5imJcHhx4hnCmjWGBchpDk2FHWSZMNOVmog
+         5026tGsRi1mXuPYSm8T1mK3KbiQeRfYayGfXbFItQ795D0LJEe3mr7tUNsYpFz+Bsnv1
+         WJliY4+3BdP5A7M6wpycfTu9dmozEnEHGUzhdRuYoUv9A5OcOj5EmP3VgkqqD0KJjumB
+         tUvyJVjT6wKon/mV8N9A9Ky9/XubBy1fOaFpt1VtoN51+HP+We7EjuRS5OZhNcEmgYrl
+         AFK2VNrsrfLuok7wrcyz2tSsDn6/ZhXWfrrXa1M7JCVd1OngPaDujofnofd91bWt34Lv
+         Zjow==
+X-Gm-Message-State: AOAM531TBchr72s9fFFWEN8WRjr99a3mmQi/t+onR7N8KUjYuEluHhqs
+        PXOqFAc2D+BBjuYHtIZxpUvWyrM1JBeFYTPsoXjowQ==
+X-Google-Smtp-Source: ABdhPJwFbGXqi/JUtaO8L3QpxlNT87x8n1E4ITjvXc7fTnDKfS6vdmn4tuvb4bOooP2JLa8nQWHFVlMXtC4HQiPhYYM=
+X-Received: by 2002:a9d:649:: with SMTP id 67mr2236333otn.233.1604073302210;
+ Fri, 30 Oct 2020 08:55:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201029131649.182037-1-elver@google.com> <20201029131649.182037-4-elver@google.com>
+ <20201030154745.GD50718@C02TD0UTHF1T.local>
+In-Reply-To: <20201030154745.GD50718@C02TD0UTHF1T.local>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 30 Oct 2020 16:54:50 +0100
+Message-ID: <CANpmjNNko4pYa3zrzWOVROZF8RGsaH4tNffZrDOaNpVa2ZkNRA@mail.gmail.com>
+Subject: Re: [PATCH v6 3/9] arm64, kfence: enable KFENCE for ARM64
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        =?UTF-8?Q?J=C3=B6rn_Engel?= <joern@purestorage.com>,
+        Kees Cook <keescook@chromium.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hi,
-> 
-> On Fri, Oct 30, 2020 at 10:15:52PM +0900, Jungrae Kim wrote:
-> > From 23aed4567e234b7e108c31abadb9f3a3ccccf7d2 Mon Sep 17 00:00:00 2001
-> > From: Jungrae Kim <jryu.kim@samsung.com>
-> > Date: Fri, 30 Oct 2020 21:23:12 +0900
-> > Subject: [PATCH] Input: add SW_COVER_ATTACHED and SW_EXT_PEN_ATTACHED
-> > 
-> > SW_COVER_ATTACHED represents the connected state of a removable cover
-> > of a device. Value 0 means cover was attached with device, value 1 means
-> > removed it.
-> 
-> Any reason against using SW_MACHINE_COVER? That was introduced for Nokia
-> N900, where you actually remove the cover to access battery/SD card/
-> SIM card (so there is state 0 = cover removed/open and state 1 = cover
-> attached/closed).
-> 
-> -- Sebastian
-> 
-> > SW_EXT_PEN_ATTACHED represents the state of the pen.
-> > Some device have internal pen slot. but other some device have external pen
-> > slot. These two cases has different use case in userspace. So need to
-> > separate a event. Value 0 means pen was detach on external pen slot on
-> > device, value 1 means pen was attached external pen slot on device.
-> > 
-> > Signed-off-by: Jungrae Kim <jryu.kim@samsung.com>
+On Fri, 30 Oct 2020 at 16:47, Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> On Thu, Oct 29, 2020 at 02:16:43PM +0100, Marco Elver wrote:
+> > Add architecture specific implementation details for KFENCE and enable
+> > KFENCE for the arm64 architecture. In particular, this implements the
+> > required interface in <asm/kfence.h>.
+> >
+> > KFENCE requires that attributes for pages from its memory pool can
+> > individually be set. Therefore, force the entire linear map to be mapped
+> > at page granularity. Doing so may result in extra memory allocated for
+> > page tables in case rodata=full is not set; however, currently
+> > CONFIG_RODATA_FULL_DEFAULT_ENABLED=y is the default, and the common case
+> > is therefore not affected by this change.
+> >
+> > Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> > Co-developed-by: Alexander Potapenko <glider@google.com>
+> > Signed-off-by: Alexander Potapenko <glider@google.com>
+> > Signed-off-by: Marco Elver <elver@google.com>
 > > ---
-> >  include/linux/mod_devicetable.h        | 2 +-
-> >  include/uapi/linux/input-event-codes.h | 4 +++-
-> >  2 files changed, 4 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-> > index 5b08a473cdba..897f5a3e7721 100644
-> > --- a/include/linux/mod_devicetable.h
-> > +++ b/include/linux/mod_devicetable.h
-> > @@ -320,7 +320,7 @@ struct pcmcia_device_id {
-> >  #define INPUT_DEVICE_ID_LED_MAX                0x0f
-> >  #define INPUT_DEVICE_ID_SND_MAX                0x07
-> >  #define INPUT_DEVICE_ID_FF_MAX         0x7f
-> > -#define INPUT_DEVICE_ID_SW_MAX         0x10
-> > +#define INPUT_DEVICE_ID_SW_MAX         0x12
-> >  #define INPUT_DEVICE_ID_PROP_MAX       0x1f
-> > 
-> >  #define INPUT_DEVICE_ID_MATCH_BUS      1
-> > diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
-> > index ee93428ced9a..a0506369de6d 100644
-> > --- a/include/uapi/linux/input-event-codes.h
-> > +++ b/include/uapi/linux/input-event-codes.h
-> > @@ -893,7 +893,9 @@
-> >  #define SW_MUTE_DEVICE         0x0e  /* set = device disabled */
-> >  #define SW_PEN_INSERTED                0x0f  /* set = pen inserted */
-> >  #define SW_MACHINE_COVER       0x10  /* set = cover closed */
-> > -#define SW_MAX                 0x10
-> > +#define SW_COVER_ATTACHED      0x11  /* set = cover attached */
-> > +#define SW_EXT_PEN_ATTACHED    0x12  /* set = external pen attached */
-> > +#define SW_MAX                 0x12
-> >  #define SW_CNT                 (SW_MAX+1)
-> > 
-> >  /*
-> > -- 
-> > 2.17.1
+> > v5:
+> > * Move generic page allocation code to core.c [suggested by Jann Horn].
+> > * Remove comment about HAVE_ARCH_KFENCE_STATIC_POOL, since we no longer
+> >   support static pools.
+> > * Force page granularity for the linear map [suggested by Mark Rutland].
+> > ---
+> >  arch/arm64/Kconfig              |  1 +
+> >  arch/arm64/include/asm/kfence.h | 19 +++++++++++++++++++
+> >  arch/arm64/mm/fault.c           |  4 ++++
+> >  arch/arm64/mm/mmu.c             |  7 ++++++-
+> >  4 files changed, 30 insertions(+), 1 deletion(-)
+> >  create mode 100644 arch/arm64/include/asm/kfence.h
+> >
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index f858c352f72a..2f8b32dddd8b 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -135,6 +135,7 @@ config ARM64
+> >       select HAVE_ARCH_JUMP_LABEL_RELATIVE
+> >       select HAVE_ARCH_KASAN if !(ARM64_16K_PAGES && ARM64_VA_BITS_48)
+> >       select HAVE_ARCH_KASAN_SW_TAGS if HAVE_ARCH_KASAN
+> > +     select HAVE_ARCH_KFENCE if (!ARM64_16K_PAGES && !ARM64_64K_PAGES)
+>
+> Why does this depend on the page size?
+>
+> If this is functional, but has a larger overhead on 16K or 64K, I'd
+> suggest removing the dependency, and just updating the Kconfig help text
+> to explain that.
 
-We need 2 kind of event, cover open/close and cover attach/detach.
-The open/close of the cover must work only if the cover is attached.
-So we will check cover open/close status using SW_MACHINE_COVER.
+Good point, I don't think anything is requiring us to force 4K pages.
+Let's remove it.
 
-Thanks
-Jungrae Kim
-                                                                                                                                                                                          68,1          Bot
+Thanks,
+-- Marco
+
+> Otherwise, this patch looks fine to me.
+>
+> Thanks,
+> Mark.
