@@ -2,137 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02BB29FE46
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5874729FE3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:10:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725998AbgJ3HLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:11:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45034 "EHLO mail.kernel.org"
+        id S1725939AbgJ3HKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:10:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgJ3HLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 03:11:30 -0400
-Received: from coco.lan (ip5f5ad5bb.dynamic.kabel-deutschland.de [95.90.213.187])
+        id S1725823AbgJ3HKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 03:10:33 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5A6620729;
-        Fri, 30 Oct 2020 07:11:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1665120723;
+        Fri, 30 Oct 2020 07:10:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604041889;
-        bh=HMfalVRoys07ml7VPXGsddZqQtyxcaotzZe94CKTB5U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=R7y6Bkg5GrGcYmjgIayZshuogEXNtD+N43HIj2ydphSqWHTpEKjdj+tkINZ9lO4pX
-         +EzN06y8xtiLvvAwAlP7B2jMtZP7Xz5TMkR6xCd/tfAA7bm7KHEvTD9Bw/cC31SHKp
-         JuVmtl721avx2j0rGBNlzZnqYSENceoWWYTIE5Wc=
-Date:   Fri, 30 Oct 2020 08:11:09 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Javier =?UTF-8?B?R29uesOhbGV6?= <javier@javigon.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Bruno Meneguele <bmeneg@redhat.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Juergen Gross <jgross@suse.com>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Kranthi Kuntala <kranthi.kuntala@intel.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Len Brown <lenb@kernel.org>,
-        Leonid Maksymchuk <leonmaxx@gmail.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Mario Limonciello <mario.limonciello@dell.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Oleh Kravchenko <oleg@kaa.org.ua>,
-        Orson Zhai <orsonzhai@gmail.com>, Pavel Machek <pavel@ucw.cz>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Peter Rosin <peda@axentia.se>, Petr Mladek <pmladek@suse.com>,
-        Philippe Bergheaud <felix@linux.ibm.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        netdev@vger.kernel.org, xen-devel@lists.xenproject.org
-Subject: Re: [PATCH 20/33] docs: ABI: testing: make the files compatible
- with ReST output
-Message-ID: <20201030081109.5f7bbdaf@coco.lan>
-In-Reply-To: <20201029144912.3c0a239b@archlinux>
-References: <cover.1603893146.git.mchehab+huawei@kernel.org>
-        <4ebaaa0320101479e392ce2db4b62e24fdf15ef1.1603893146.git.mchehab+huawei@kernel.org>
-        <20201029144912.3c0a239b@archlinux>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        s=default; t=1604041832;
+        bh=6UZfI9KlukChYkAwmZBY+j32nu5aC1F84wLitkAFcHg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wp8/hvRE/LfhJJ1P3TNOzq9lgzVnDlBRiSdLAl6MZXbf1TkKDHk95RR2Xjzd6+IUb
+         tgKDQcRYbI6wWvk5mHsZThQB/1uDo+V8qIpoGs4X6ScEv9ONzxbN9egoDEZGb29nxz
+         T8j3F0UclYetTTGfjJGzHyDJSfrpyLmCI0/UquMY=
+Date:   Fri, 30 Oct 2020 08:11:20 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Deepak R Varma <mh12gx2825@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        melissa.srw@gmail.com, daniel.vetter@ffwll.ch
+Subject: Re: [Outreachy kernel] [PATCH] drm/amdgpu: use
+ DEFINE_DEBUGFS_ATTRIBUTE with debugfs_create_file_unsafe()
+Message-ID: <20201030071120.GA1493629@kroah.com>
+References: <20201030032245.GA274478@my--box>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030032245.GA274478@my--box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 29 Oct 2020 14:49:12 +0000
-Jonathan Cameron <jic23@kernel.org> escreveu:
-
-> On Wed, 28 Oct 2020 15:23:18 +0100
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+On Fri, Oct 30, 2020 at 08:52:45AM +0530, Deepak R Varma wrote:
+> Using DEFINE_DEBUGFS_ATTRIBUTE macro with debugfs_create_file_unsafe()
+> function in place of the debugfs_create_file() function will make the
+> file operation struct "reset" aware of the file's lifetime. Additional
+> details here: https://lists.archive.carbon60.com/linux/kernel/2369498
 > 
-> > From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> > 
-> > Some files over there won't parse well by Sphinx.
-> > 
-> > Fix them.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
+> Issue reported by Coccinelle script:
+> scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
 > 
-> Query below...  I'm going to guess a rebase issue?
+> Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+> ---
+> Please Note: This is a Outreachy project task patch.
+> 
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+> index 2d125b8b15ee..f076b1ba7319 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+> @@ -1551,29 +1551,29 @@ static int amdgpu_debugfs_sclk_set(void *data, u64 val)
+>  	return 0;
+>  }
+>  
+> -DEFINE_SIMPLE_ATTRIBUTE(fops_ib_preempt, NULL,
+> -			amdgpu_debugfs_ib_preempt, "%llu\n");
+> +DEFINE_DEBUGFS_ATTRIBUTE(fops_ib_preempt, NULL,
+> +			 amdgpu_debugfs_ib_preempt, "%llu\n");
 
-Yes. I sent this series about 1,5 years ago. On that time, it
-ended by not being merged, as there were too much docs patches
-floating around. 
+Are you sure this is ok?  Do these devices need this additional
+"protection"?  Do they have the problem that these macros were written
+for?
 
-The second SoB is not there on my tree. It was added by
-git send-email ;-)
+Same for the other patches you just submitted here, I think you need to
+somehow "prove" that these changes are necessary, checkpatch isn't able
+to determine this all the time.
 
-Anyway, fixed.
+thanks,
 
-Thanks,
-Mauro
+greg k-h
