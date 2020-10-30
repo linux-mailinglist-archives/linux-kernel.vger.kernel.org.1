@@ -2,106 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D342A04FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD192A0503
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgJ3MH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 08:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726413AbgJ3MH6 (ORCPT
+        id S1726500AbgJ3MIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 08:08:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47546 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726413AbgJ3MIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:07:58 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2FEC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 05:07:57 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id m8so535948ljj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 05:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vWl6kkg5Q6VUV9xC9388CJRuaSl1dYHpzCndnob9kB4=;
-        b=By0SXtM4SXWxM2wU8asEz1qFRuwUiKgBv8vGy49bbCERVMAdtch2iRW6JJydatEryU
-         VoiGk06sr1rzNJD+QePlUkQ0lTbwVzoJsL2jDBgjlT5555GSEKNsZ1wB0FjTFk8g8nZI
-         1crvgs7RPEYf2mQuH61gDt1F76dUXCI6k4TbUn7JMRuKvZLvyJ1rGrKnXofltRLRGcK0
-         nxehGVP2eHV4qmkBO/dUDZfLDo9yuOClcs/Mg0M15lCLb3XFHciCauqsub5dxyAJTirh
-         wv2ViUXOzX5/h6RT+ckBGuoycOPpepWs9cQq9p3svkgo0R7XZMFcYCQroLICgjZB4gCM
-         XwCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vWl6kkg5Q6VUV9xC9388CJRuaSl1dYHpzCndnob9kB4=;
-        b=ETf5NLJZV6jTjJh4kz7L9leQ3ZYtQmnuuRBFXBXbA5qtVg2HDSVBsm219xEDKFOYF5
-         ZrbhQ7by5MRAuQjr331Tn6XEVcuEtqRCfKv6LQOjMLcsmDBiB0y5lsKLbNp1JDOfMBQR
-         QdKzfe/lpqh5SSr9rObrbOWnI2xF27kddMnyCn8ieZbayX4RfI7ZfhP3/j7D/9bEhtIJ
-         fF9FNybQP4BFwSRaa6PWssst8JYcl4KRjhqqGV/ksM2LrkNlR1U3B8M6H2dSPvr+JfJI
-         OW3z1UBKrW0edaHD3BTXryv0k+z+vuU30wijXPN7Kv5YQq+CvnkK1BOzt4IZ5hNSbLPV
-         q5YQ==
-X-Gm-Message-State: AOAM530LOamu7hfVIooHZkSuk1KV2NKMsIID/qpUgjt0vqlwZlPHoRqx
-        Vn9l8dq9uKSdwJ02U1H/dGCR+Q==
-X-Google-Smtp-Source: ABdhPJy9IPZM1kQFdevcRyM6Ic+gWdL1WQ8ywwuUqOhgZS3tV4XXAG7nvD55YzfI4I97HhCTEQOuig==
-X-Received: by 2002:a2e:9dd1:: with SMTP id x17mr828972ljj.219.1604059676093;
-        Fri, 30 Oct 2020 05:07:56 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-131-134.NA.cust.bahnhof.se. [155.4.131.134])
-        by smtp.gmail.com with ESMTPSA id a6sm603780lfm.207.2020.10.30.05.07.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 05:07:54 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [GIT PULL] MMC fixes for v5.10-rc2
-Date:   Fri, 30 Oct 2020 13:07:52 +0100
-Message-Id: <20201030120752.100388-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 30 Oct 2020 08:08:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604059700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KxlJ8Mwn0Tke0WPb8nHZ6w8mEJXEo5j2Z00nnV/ApfQ=;
+        b=RIdgxlY6iQ0/cWzjuztCs3yLSNoFPiu2wvIaeCkOUC5fJC4DEvcZKVQBJr0bW1toWZBdGY
+        vYe5hM1+Dy5mAzwk4wyIKUNz5R7uxO9qJjcF9NwRFpEVh9+3VhGQSXo231aTSTTO6GAHT1
+        AuAH71UuqhM40pGz2hEU8IO2AsbOY1w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-50-AzIfXLJtNRSF2-f3T9HVoQ-1; Fri, 30 Oct 2020 08:08:18 -0400
+X-MC-Unique: AzIfXLJtNRSF2-f3T9HVoQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A88A101F000;
+        Fri, 30 Oct 2020 12:08:17 +0000 (UTC)
+Received: from ovpn-66-212.rdu2.redhat.com (ovpn-66-212.rdu2.redhat.com [10.10.66.212])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F238219C71;
+        Fri, 30 Oct 2020 12:08:15 +0000 (UTC)
+Message-ID: <be8410fb81e6908457a524bc8e1df83a648d38f1.camel@redhat.com>
+Subject: Re: kernel BUG at mm/page-writeback.c:2241 [
+ BUG_ON(PageWriteback(page); ]
+From:   Qian Cai <cai@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-mm@kvack.org
+Date:   Fri, 30 Oct 2020 08:08:15 -0400
+In-Reply-To: <20201022171243.GX20115@casper.infradead.org>
+References: <645a3f332f37e09057c10bc32f4f298ce56049bb.camel@lca.pw>
+         <20201022004906.GQ20115@casper.infradead.org>
+         <7ec15e2710db02be81a6c47afc57abed4bf8016c.camel@lca.pw>
+         <20201022171243.GX20115@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, 2020-10-22 at 18:12 +0100, Matthew Wilcox wrote:
+> On Thu, Oct 22, 2020 at 11:35:26AM -0400, Qian Cai wrote:
+> > On Thu, 2020-10-22 at 01:49 +0100, Matthew Wilcox wrote:
+> > > On Wed, Oct 21, 2020 at 08:30:18PM -0400, Qian Cai wrote:
+> > > > Today's linux-next starts to trigger this wondering if anyone has any
+> > > > clue.
+> > > 
+> > > I've seen that occasionally too.  I changed that BUG_ON to VM_BUG_ON_PAGE
+> > > to try to get a clue about it.  Good to know it's not the THP patches
+> > > since they aren't in linux-next.
+> > > 
+> > > I don't understand how it can happen.  We have the page locked, and then
+> > > we
+> > > do:
+> > > 
+> > >                         if (PageWriteback(page)) {
+> > >                                 if (wbc->sync_mode != WB_SYNC_NONE)
+> > >                                         wait_on_page_writeback(page);
+> > >                                 else
+> > >                                         goto continue_unlock;
+> > >                         }
+> > > 
+> > >                         VM_BUG_ON_PAGE(PageWriteback(page), page);
+> > > 
+> > > Nobody should be able to put this page under writeback while we have it
+> > > locked ... right?  The page can be redirtied by the code that's supposed
+> > > to be writing it back, but I don't see how anyone can make PageWriteback
+> > > true while we're holding the page lock.
+> > 
+> > It happened again on today's linux-next:
+> > 
+> > [ 7613.579890][T55770] page:00000000a4b35e02 refcount:3 mapcount:0
+> > mapping:00000000457ceb87 index:0x3e pfn:0x1cef4e
+> > [ 7613.590594][T55770] aops:xfs_address_space_operations ino:805d85a dentry
+> > name:"doio.f1.55762"
+> > [ 7613.599192][T55770] flags:
+> > 0xbfffc0000000bf(locked|waiters|referenced|uptodate|dirty|lru|active)
+> > [ 7613.608596][T55770] raw: 00bfffc0000000bf ffffea0005027d48
+> > ffff88810eaec030 ffff888231f3a6a8
+> > [ 7613.617101][T55770] raw: 000000000000003e 0000000000000000
+> > 00000003ffffffff ffff888143724000
+> > [ 7613.625590][T55770] page dumped because:
+> > VM_BUG_ON_PAGE(PageWriteback(page))
+> > [ 7613.632695][T55770] page->mem_cgroup:ffff888143724000
+> 
+> Seems like it reproduces for you pretty quickly.  I have no luck ;-(
+> 
+> Can you add this?
 
-Here's a PR with a couple of MMC fixes intended for v5.10-rc2. Details about the
-highlights are as usual found in the signed tag.
+It turns out I had no luck for the last a few days. I'll keep running and report
+back if it triggers again.
 
-Please pull this in!
+> 
+> +++ b/mm/page-writeback.c
+> @@ -2774,6 +2774,7 @@ int __test_set_page_writeback(struct page *page, bool
+> keep_write)
+>         struct address_space *mapping = page_mapping(page);
+>         int ret, access_ret;
+>  
+> +       VM_BUG_ON_PAGE(!PageLocked(page), page);
+>         lock_page_memcg(page);
+>         if (mapping && mapping_use_writeback_tags(mapping)) {
+>                 XA_STATE(xas, &mapping->i_pages, page_index(page));
+> 
+> This is the only place (afaict) that sets PageWriteback, so that will
+> tell us whether someone is setting Writeback without holding the lock,
+> or whether we're suffering from a spurious wakeup.
+> 
 
-Kind regards
-Ulf Hansson
-
-
-The following changes since commit 3e4fb4346c781068610d03c12b16c0cfb0fd24a3:
-
-  Merge tag 'spdx-5.10-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/spdx (2020-10-14 16:19:42 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.10-2
-
-for you to fetch changes up to 011fde48394b7dc8dfd6660d1013b26a00157b80:
-
-  mmc: sdhci-of-esdhc: make sure delay chain locked for HS400 (2020-10-28 11:07:01 +0100)
-
-----------------------------------------------------------------
-MMC host:
- - sdhci: Fix performance regression with auto CMD auto select
- - sdhci-of-esdhc: Fix initialization for eMMC HS400 mode
- - sdhci-of-esdhc: Fix timeout bug for tuning commands
-
-----------------------------------------------------------------
-Jisheng Zhang (1):
-      mmc: sdhci: Use Auto CMD Auto Select only when v4_mode is true
-
-Michael Walle (1):
-      mmc: sdhci-of-esdhc: set timeout to max before tuning
-
-Yangbo Lu (1):
-      mmc: sdhci-of-esdhc: make sure delay chain locked for HS400
-
- drivers/mmc/host/sdhci-esdhc.h    |  2 ++
- drivers/mmc/host/sdhci-of-esdhc.c | 28 ++++++++++++++++++++++++++++
- drivers/mmc/host/sdhci.c          |  6 ++++--
- 3 files changed, 34 insertions(+), 2 deletions(-)
