@@ -2,128 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9D82A0F14
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 860AE2A0F1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727425AbgJ3UGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 16:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727472AbgJ3UGH (ORCPT
+        id S1727690AbgJ3UHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 16:07:09 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33138 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbgJ3UHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 16:06:07 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77080C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 13:06:07 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604088365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WThTzRS5YBDgg0iNd/sKe4DTY2Nu1BYO3f6TbP5AoZI=;
-        b=WKyvmn4uOyWaHUs4cXBdKq8IKoBuflJ/Jx/Nnc331bZXC4beplyVURU3+DbvbW9QiAEx1u
-        fXU/+qYWFIoryZNEzU3qBUF+4qaOkiBoyLjiFH8gmDF/o5vSEXDQvUjtC4IJZyFIYVXWe7
-        n1QGf5zc+0hUdLWDKZigN9JqZfJ/4q3sf4YH3LoY0+ABLNzCxnibDzCGjvy+aB1ASo2lHk
-        tEl8R3xD6ZlTrCzqpmi1BjjZ4lFbM5TAhQYzWeAcbiD6Rpm70r4hwHUenUHEVmov/3B5HM
-        tuXBYQKTszckLXMpSOPKbC6lPaInrcGhnleCIppErI7M5e/jFamg/arDQDVcEA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604088365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WThTzRS5YBDgg0iNd/sKe4DTY2Nu1BYO3f6TbP5AoZI=;
-        b=NebTZ5naH1uT2FIkj0wKMb7t8993JUDzYgpobYKoxzsumLrWAMNUNrFeOgB0uiIiIC6IzY
-        y/oD5JxGxw1rX4Cw==
-To:     Carlos O'Donell <carlos@redhat.com>,
-        Zack Weinberg <zackw@panix.com>, Cyril Hrubis <chrubis@suse.cz>
-Cc:     Dmitry Safonov <dima@arista.com>, Andrei Vagin <avagin@gmail.com>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [Y2038][time namespaces] Question regarding CLOCK_REALTIME support plans in Linux time namespaces
-In-Reply-To: <72bbb207-b041-7710-98ad-b08579fe17e4@redhat.com>
-References: <20201030110229.43f0773b@jawa> <20201030135816.GA1790@yuki.lan> <CAKCAbMgemuaG61seKMvhjOHdPCEQJRQBiQgzcf_eO=xm2t+KBw@mail.gmail.com> <87sg9vn40t.fsf@nanos.tec.linutronix.de> <72bbb207-b041-7710-98ad-b08579fe17e4@redhat.com>
-Date:   Fri, 30 Oct 2020 21:06:04 +0100
-Message-ID: <87h7qbmqc3.fsf@nanos.tec.linutronix.de>
+        Fri, 30 Oct 2020 16:07:08 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09UK71rY108040;
+        Fri, 30 Oct 2020 15:07:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604088421;
+        bh=rIc2Rlbdsgh8YepaFO9M3sefdA21E5gYn0Lu0N3mkqA=;
+        h=From:To:CC:Subject:Date;
+        b=J9zns5qNqPKUIoZlBpxlD65oINfytI+Li2MVOS6oHa4Wiof5gmcd1mPONzWH/rm86
+         NA3+zqZKIuuVpEriPIx70dKOmzdrcfNjY0B6hIh2B1sujyKNaqo7hh4hCc37dlCSXr
+         QV2KZJkls/GTzncDBfZmBBTFtyWL4/tOROTmBpOo=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09UK71Md035328
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 30 Oct 2020 15:07:01 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 30
+ Oct 2020 15:07:01 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 30 Oct 2020 15:07:01 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09UK70sH100346;
+        Fri, 30 Oct 2020 15:07:01 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        "Reviewed-by : Jesse Brandeburg" <jesse.brandeburg@intel.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH net-next v3 00/10] net: ethernet: ti: am65-cpsw: add multi port support in mac-only mode
+Date:   Fri, 30 Oct 2020 22:06:57 +0200
+Message-ID: <20201030200707.24294-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30 2020 at 12:58, Carlos O'Donell wrote:
-> On 10/30/20 11:10 AM, Thomas Gleixner via Libc-alpha wrote:
->> That's what virtual machines are for.
->
-> Certainly, that is always an option, just like real hardware.
->
-> However, every requirement we add to testing reduces the number of
-> times that developer will run the test on their system and potentially
-> catch a problem during development. Yes, CI helps, but "make check"
-> gives more coverage. More kernel variants tested in all downstream rpm
-> %check builds or developer systems. Just like kernel self tests help
-> today.
->
-> glibc uses namespaces in "make check" to increase the number of userspace
-> and kernel features we can test immediately and easily on developer
-> *or* distribution build systems.
->
-> So the natural extension is to further isolate the testing namespace
-> using the time namespace to test and verify y2038. If we can't use
-> namespaces then we'll have to move the tests out to the less
-> frequently run scripts we use for cross-target toolchain testing,
-> and so we'll see a 100x drop in coverage.
+Hi
 
-I understand that.
+This series adds multi-port support in mac-only mode (multi MAC mode) to TI
+AM65x CPSW driver in preparation for enabling support for multi-port devices,
+like Main CPSW0 on K3 J721E SoC or future CPSW3g on K3 AM64x SoC.
 
-> I expect that more requests for further time isolation will happen
-> given the utility of this in containers.
+The multi MAC mode is implemented by configuring every enabled port in "mac-only"
+mode (all ingress packets are sent only to the Host port and egress packets
+directed to target Ext. Port) and creating separate net_device for
+every enabled Ext. port.
 
-There was a lengthy discussion about this and the only "usecase" which
-was brought up was having different NTP servers in name spaces, i.e. the
-leap second ones and the smearing ones.
+This series does not affect on existing CPSW2g one Ext. Port devices and xmit
+path changes are done only for multi-port devices by splitting xmit path for
+one-port and multi-port devices. 
 
-Now imagine 1000 containers each running their own NTP. Guess what the
-host does in each timer interrupt? Chasing 1000 containers and update
-their notion of CLOCK_REALTIME. In the remaining 5% CPU time the 1000
-containers can do their computations.
+Patches 1-3: Preparation patches to improve K3 CPSW configuration depending on DT
+Patches 4-5: Fix VLAN offload for multi MAC mode
+Patch 6: Fixes CPTS context lose issue during PM runtime transition
+Patch 7: Fixes TX csum offload for multi MAC mode
+Patches 8-9: add multi-port support to TI AM65x CPSW
+Patch 10: handle deferred probe with new dev_err_probe() API
 
-But even if you restrict it to a trivial offset without NTP
-capabilities, what's the semantics of that offset when the host time is
-set?
+changes in v3:
+ - rebased
+ - added Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+ - added Patch 10 which is minor optimization
 
- - Does the offset just stay the same and container time just jumps
-   around with the host time?
+changes in v2:
+- patch 8: xmit path split for one-port and multi-port devices to avoid
+  performance losses 
+- patch 9: fixed the case when Port 1 is disabled
+- Patch 7: added fix for TX csum offload 
 
- - Has it to change so that the containers notion of realtime is not
-   affected? Which is pretty much equivalent to the NTP case of chasing
-   a gazillion of containers, just it might give the containers a bit
-   more than 5% remaining CPU time.
+v2: https://lore.kernel.org/patchwork/cover/1321608/
+v1: https://lore.kernel.org/patchwork/cover/1315766/
 
- - Can the offset of the container be changed at runtime,
-   i.e. is clock_settime() possible from withing the container?
+Grygorii Strashko (10):
+  net: ethernet: ti: am65-cpsw: move ale selection in pdata
+  net: ethernet: ti: am65-cpsw: move free desc queue mode selection in
+    pdata
+  net: ethernet: ti: am65-cpsw: use cppi5_desc_is_tdcm()
+  net: ethernet: ti: cpsw_ale: add cpsw_ale_vlan_del_modify()
+  net: ethernet: ti: am65-cpsw: fix vlan offload for multi mac mode
+  net: ethernet: ti: am65-cpsw: keep active if cpts enabled
+  net: ethernet: ti: am65-cpsw: fix tx csum offload for multi mac mode
+  net: ethernet: ti: am65-cpsw: prepare xmit/rx path for multi-port
+    devices in mac-only mode
+  net: ethernet: ti: am65-cpsw: add multi port support in mac-only mode
+  net: ethernet: ti: am65-cpsw: handle deferred probe with
+    dev_err_probe()
 
-There are some other bits related to that as well, but the above is
-already mindboggling.
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 355 ++++++++++++++---------
+ drivers/net/ethernet/ti/am65-cpsw-nuss.h |   5 +
+ drivers/net/ethernet/ti/cpsw_ale.c       |  41 ++-
+ drivers/net/ethernet/ti/cpsw_ale.h       |   1 +
+ drivers/net/ethernet/ti/cpsw_switchdev.c |   2 +-
+ 5 files changed, 261 insertions(+), 143 deletions(-)
 
-> If we have to use qemu today then that's where we're at, but again
-> I expect our use case is representative of more than just glibc.
-
-For testing purposes it might be. For real world use cases not so
-much. People tend to rely on the coordinated nature of CLOCK_TAI and
-CLOCK_REALTIME.
-
-> Does checkpointing work robustly when userspace APIS use 
-> CLOCK_REALTIME (directly or indirectly) in the container?
-
-AFAICT, yes. That was the conclusion over the lenghty discussion about
-time name spaces and their requirements.
-
-Here is the Linux plumber session related to that:
-
-     https://www.youtube.com/watch?v=sjRUiqJVzOA
-
-Thanks,
-
-        tglx
+-- 
+2.17.1
 
