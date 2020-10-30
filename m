@@ -2,61 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90DCD29FF19
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D8C29FF05
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgJ3HwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:52:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726052AbgJ3HwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 03:52:10 -0400
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21B2022210;
-        Fri, 30 Oct 2020 07:41:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604043696;
-        bh=EzS4Q085qiKWq0D+PvSXvFRn693pGfvNpZNQQ9f3iFI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qjgCdNllhDqfGgLQRuI3A4WCt10168Nb/SKVoUozUmNGEGzJorCXdNGsQ1P/qzYEU
-         q1qGDmTsm5O7LhSJHy9/FDg797yJCoDx8uu1eULkFCBFTcD2W600xLmR4L0ydk/F3p
-         jfcBk7N2VW1FveWFJftEEsqavrTRHg1QsESuMRS4=
-Received: by mail-ed1-f42.google.com with SMTP id l16so5646108eds.3;
-        Fri, 30 Oct 2020 00:41:36 -0700 (PDT)
-X-Gm-Message-State: AOAM531JAGr49jsvUsgeM//fAObzvuJyfg+kbiq36w3NZB0SgDgpsy6n
-        MGPRf+m6WVKgx4NrIPXXr3TJsZG54CkTeKzH/yY=
-X-Google-Smtp-Source: ABdhPJxge1YztybJz+XVGLvussORcQAXRiCZsUYCxXGbaVy2UmWQavumA9JP59uf+LBXYWaM/uUmlEVySdUWx3per5Y=
-X-Received: by 2002:a05:6402:cf:: with SMTP id i15mr982230edu.246.1604043694545;
- Fri, 30 Oct 2020 00:41:34 -0700 (PDT)
+        id S1726067AbgJ3Hqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:46:33 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:44707 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725784AbgJ3Hqb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 03:46:31 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UDctq3W_1604043987;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UDctq3W_1604043987)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 30 Oct 2020 15:46:28 +0800
+Subject: Re: [PATCH v2] Documentation: Chinese translation of
+ Documentation/arm64/perf.rst
+To:     Bailu Lin <bailu.lin@vivo.com>
+Cc:     catalin.marinas@arm.com, corbet@lwn.net, harryxiyou@gmail.com,
+        kernel@vivo.com, linux-arm-kernel@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        will@kernel.org
+References: <07c84db5-9a07-c106-300c-583f2625f9a7@linux.alibaba.com>
+ <20201030040541.8733-1-bailu.lin@vivo.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <ab1f47b9-20d6-8b7d-4d28-ab3f38d6e550@linux.alibaba.com>
+Date:   Fri, 30 Oct 2020 15:44:21 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201030081018.11279822@canb.auug.org.au>
-In-Reply-To: <20201030081018.11279822@canb.auug.org.au>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Fri, 30 Oct 2020 08:41:22 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPfy-iXsL43S2AYrOXGzbKjxi_Cp6BvP5zNTGGe9+G3V9w@mail.gmail.com>
-Message-ID: <CAJKOXPfy-iXsL43S2AYrOXGzbKjxi_Cp6BvP5zNTGGe9+G3V9w@mail.gmail.com>
-Subject: Re: linux-next: failure while fetching the pinctrl-samsung-fixes tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201030040541.8733-1-bailu.lin@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 at 22:10, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Fetching the pinctrl-samsung-fixes tree produces this error:
->
-> fatal: couldn't find remote ref refs/heads/pinctrl-fixes
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-That's my fault - I wanted to have unified naming across by
-repositories. Could you start fetching branch "fixes" instead?
-
-Best Regards.
-Krzysztof
+在 2020/10/30 下午12:05, Bailu Lin 写道:
+> This is a Chinese translated version of
+>  Documentation/arm64/perf.rst
+> 
+> Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
+> ---
