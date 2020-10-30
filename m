@@ -2,155 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400CE2A0DA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 628FF2A0DA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727305AbgJ3Smc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727055AbgJ3Smb (ORCPT
+        id S1727136AbgJ3Sm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:42:29 -0400
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:35903 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726061AbgJ3Sm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:42:31 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC85CC0613D8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:42:30 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id 12so1887196qkl.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:42:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AIX0iUNYmKTGpsjIpq65NL9/sGsFnH8oZZCQcI/WsJo=;
-        b=bYlk+E9UZt4DRqoUdZ6MTPapJE+3m7W6ymaVF0A/Ytf9ysgpdiRa2L3mNtWF5+Vqjs
-         RUnhj68xulwkUTq7j5c+HznqkyxNCukA4LIN6ia0n8qO/Kg3DtA91F3vJui8So439Q1B
-         cggJSTEdzhgvZe1TGhZPgF6lf16mwOJWW8TEp5PTzSQGsuDd3fDgy6s+XiODTahP9RQY
-         VB2sNyLygfTA4c91kLbgbihNfNrxuJ4YT+AJzF0Fse4fAzUT/P4vszrp25TBRhOXY4kc
-         lTUsNHB/0fpFCNRNNH56EWKkzwpAZ5naDTicUEgS2YMjYDTr3lNkagtjB5K+TxakydPn
-         pFfw==
+        Fri, 30 Oct 2020 14:42:28 -0400
+Received: by mail-oo1-f67.google.com with SMTP id j6so1824592oot.3;
+        Fri, 30 Oct 2020 11:42:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AIX0iUNYmKTGpsjIpq65NL9/sGsFnH8oZZCQcI/WsJo=;
-        b=HASDEpGkKlVhwf+O1RcI/RQtRxlWXd6VNg4+z66oh5NtfDnZIqVLZRfHmAacWTrLIX
-         jwsNXv2yB0XuGWmw1wghi9W0rkTg02ob2G0HNyIrqieSzeCNnOjkXbegNlF96WsFVbbj
-         s/1z8chk7/jHWypvyhHVJqbTGSZntupPYGU//r7HgUe6x7toaTRbWtxHfUG2R0Nr7fxJ
-         QRieXj9rlZlc9qxZJKqv+qf6CpDn6eGEQg1bbSpJXda1850kdelOokShkRWpq7fXOhP+
-         nLzEDz9VX6acP/wHzmWs0owZlPDil2YfoIrGeNEWX/1dTQQ7gZ6eVVQG9kDB3uQL4LLT
-         P+sA==
-X-Gm-Message-State: AOAM533ZI2l18fGPMlbv2IYTtRw6ypnLApmFdI3teQo2nbTonuVJvFed
-        AgUc94n3iGFOmO7hWWKa6Pd2ELQv81b2taS9ryQfTg==
-X-Google-Smtp-Source: ABdhPJwWqIIGNUYiTZ//s/YW0jRWPtDrC/n5h2OIIkwmgvD9ZkczTEC7CFfpCs24TkfvR1NV9DvQppWgtO49wZ3mj+4=
-X-Received: by 2002:a37:9747:: with SMTP id z68mr3469115qkd.424.1604083349448;
- Fri, 30 Oct 2020 11:42:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hVpzN2Y06wbPSBaS0y+ngz3c1r0CShTKe8sn3RB15os=;
+        b=Ux5poqlq+MQUTTC4Zb1pZazoj3rOgbDbLKgLc9SHxR02uXp0yDQ/uFzlfmOOCJeVMB
+         4gN7stfm6CLgtJ7HvK2jS8NsC9qYK/2Grsly8WAwG6xlzFePhIDDEtsvS2Y8h0SqEVIE
+         +KOMdPhTCwJmUQGK+SmTCdxetNw/e4fGpVLYtmknpDmM9OXbAFWjEoc9plSnnRh6xvn1
+         HBZRDqP6TuUdMeD3sI/rf3ScWO/1IHlkmt24xvQ/TDPh1cXvPla3VxfJfyYy0UwmFZxj
+         CDY1CQVUazDY3Gg4IBnX1F29vbAK3yThf91F6xqQLXVe1Q+oaHSeGUiwY7+Dw0skomgs
+         whvQ==
+X-Gm-Message-State: AOAM532buPwpe3J4hmAl0KnxNJdxKxBAYxU+jKV0SZqCk8JEAiIXpLsG
+        x4eC3813djMA3QrR/gF8pw==
+X-Google-Smtp-Source: ABdhPJwuElRorIJ/ryeLFKrkeSnYyHD6uSpDInFB4YcyWH/0aW7YRFBBUvhD92ko8NoOXRBrDuarGQ==
+X-Received: by 2002:a4a:8e02:: with SMTP id q2mr2989133ook.60.1604083347817;
+        Fri, 30 Oct 2020 11:42:27 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j3sm1590729oij.9.2020.10.30.11.42.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 11:42:26 -0700 (PDT)
+Received: (nullmailer pid 4125177 invoked by uid 1000);
+        Fri, 30 Oct 2020 18:42:25 -0000
+Date:   Fri, 30 Oct 2020 13:42:25 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bogdan Togorean <bogdan.togorean@analog.com>
+Cc:     Mike Looijmans <mike.looijmans@topic.nl>,
+        devicetree@vger.kernel.org,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>, sam@ravnborg.org,
+        David Airlie <airlied@linux.ie>
+Subject: Re: [PATCH v2 2/2] drm: dt-bindings: adi: axi-hdmi-tx: Add DT
+ bindings for axi-hdmi-tx
+Message-ID: <20201030184225.GA4125095@bogus>
+References: <20201026064122.2831-1-bogdan.togorean@analog.com>
+ <20201026064122.2831-2-bogdan.togorean@analog.com>
 MIME-Version: 1.0
-References: <0000000000008caae305ab9a5318@google.com> <000000000000a726a405ada4b6cf@google.com>
- <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com> <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com>
-In-Reply-To: <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 30 Oct 2020 19:42:18 +0100
-Message-ID: <CACT4Y+Yyxdju4FR-E3bc5ERM6xhecnos6mkJR5==xS+RS_DUuw@mail.gmail.com>
-Subject: Re: general protection fault in security_inode_getattr
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        network dev <netdev@vger.kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026064122.2831-2-bogdan.togorean@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 2:02 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> On Mon, Aug 24, 2020 at 11:00 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> >
-> > On Mon, Aug 24, 2020 at 9:37 PM syzbot
-> > <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com> wrote:
-> > > syzbot has found a reproducer for the following issue on:
-> >
-> > Looping in fsdevel and OverlayFS maintainers, as this seems to be
-> > FS/OverlayFS related...
->
-> Hmm, the oopsing code is always something like:
->
-> All code
-> ========
->    0: 1b fe                sbb    %esi,%edi
->    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
->    6: 48 89 d8              mov    %rbx,%rax
->    9: 48 c1 e8 03          shr    $0x3,%rax
->    d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
->   12: 74 08                je     0x1c
->   14: 48 89 df              mov    %rbx,%rdi
->   17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
->   1c: 48 8b 1b              mov    (%rbx),%rbx
->   1f: 48 83 c3 68          add    $0x68,%rbx
->   23: 48 89 d8              mov    %rbx,%rax
->   26: 48 c1 e8 03          shr    $0x3,%rax
->   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
->   2f: 74 08                je     0x39
->   31: 48 89 df              mov    %rbx,%rdi
->   34: e8 9f b4 5b fe        callq  0xfffffffffe5bb4d8
->   39: 48 8b 1b              mov    (%rbx),%rbx
->   3c: 48 83 c3 0c          add    $0xc,%rbx
->
->
-> And that looks (to me) like the unrolled loop in call_int_hook().  I
-> don't see how that could be related to overlayfs, though it's
-> definitely interesting why it only triggers from
-> overlay->vfs_getattr()->security_inode_getattr()...
+On Mon, 26 Oct 2020 08:41:06 +0200, Bogdan Togorean wrote:
+> Add YAML device tree bindings for Analog Devices Inc. AXI HDMI TX
+> IP core DRM driver.
+> 
+> Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
+> ---
+>  .../bindings/display/adi/adi,axi-hdmi-tx.yaml | 72 +++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/adi/adi,axi-hdmi-tx.yaml
+> 
 
-
->   26: 48 c1 e8 03          shr    $0x3,%rax
->   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
-
-
-This access is part of KASAN check. But the original address kernel
-tries to access is NULL, so it's not an issue with KASAN.
-
-The line is this:
-
-int security_inode_getattr(const struct path *path)
-{
-    if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
-        return 0;
-
-So it's either path is NULL, or something in d_backing_inode
-dereferences NULL path->dentry.
-
-The reproducer does involve overlayfs:
-
-mkdir(&(0x7f0000000240)='./file1\x00', 0x0)
-mkdir(&(0x7f0000000300)='./bus\x00', 0x0)
-r0 = creat(&(0x7f00000000c0)='./bus/file1\x00', 0x0)
-mkdir(&(0x7f0000000080)='./file0\x00', 0x0)
-mount$overlay(0x400002, &(0x7f0000000000)='./bus\x00',
-&(0x7f0000000100)='overlay\x00', 0x0,
-&(0x7f00000003c0)=ANY=[@ANYBLOB='upperdir=./file1,lowerdir=./bus,workdir=./file0,metacopy=on'])
-link(&(0x7f0000000200)='./bus/file1\x00', &(0x7f00000002c0)='./bus/file0\x00')
-write$RDMA_USER_CM_CMD_RESOLVE_ADDR(r0, 0x0, 0x0)
-acct(&(0x7f0000000040)='./bus/file0\x00')
-
-Though, it may be overlayfs-related, or it may be a generic bug that
-requires a tricky reproducer and the only reproducer syzbot come up
-with happened to involve overlayfs.
-But there are 4 reproducers on syzbot dashboard and all of them
-involve overlayfs and they are somewhat different. So my bet would be
-on overlayfs.
+Reviewed-by: Rob Herring <robh@kernel.org>
