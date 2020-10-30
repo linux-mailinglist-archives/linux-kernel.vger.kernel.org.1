@@ -2,160 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7749929FB1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D87A929FB26
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726215AbgJ3CQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 22:16:16 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:49618 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725806AbgJ3CQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 22:16:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604024174; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=LRMgOFZbItBqfHE6rw+IhX6ADhrLY1wYvZCBR3GV4N0=; b=N4Vpw4EnkX39Wb2hgLw5Ro6EE4u2Uew22BjfqsrBnlSphZdTP9Y1OP1ph1xiQfHrmaVHcYBL
- Ve+eQmp0qGl+iEMjt3jDCqDoHaeytADGg/LK9xlRRmdNN6EZj+g3UW8+fxNH/GrZXhYK79C2
- X0iyu4b0AZk8FT3DN0b8kTkBUZk=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f9b776d1df7f5f83c818583 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 02:16:13
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4357DC433FE; Fri, 30 Oct 2020 02:16:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1AEACC433C9;
-        Fri, 30 Oct 2020 02:16:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1AEACC433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v10 3/4] docs: Add documentation for userspace client
- interface
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, netdev@vger.kernel.org
-References: <1604007647-32163-1-git-send-email-hemantk@codeaurora.org>
- <1604007647-32163-4-git-send-email-hemantk@codeaurora.org>
- <6f508e54-a170-8409-886c-a882b6fd5f63@infradead.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <cc3055e5-9522-aeaa-4b29-e4f811b832a8@codeaurora.org>
-Date:   Thu, 29 Oct 2020 19:16:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726070AbgJ3CU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 22:20:28 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:56370 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgJ3CU1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 22:20:27 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09U2FXQK143934;
+        Fri, 30 Oct 2020 02:20:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=8RV3DVUM4dxiFGT4hEb0ar6t+vieEVsI4rpYwnOrKds=;
+ b=HX2yPDkitG1NjY2snzcZpTyrfMLqisYtaeUR2HnPxhwbXU6LVjkzPBbfgC80TvOyes2l
+ rsjVB9+Xt0pfU9GgbQi0fOEa2nkmX/wdUY2ZLkst+ghVtQY1+8vhTQmHYAZgYT0+eURM
+ ImNNiyaCUjKIyyKYHaRd5flzKfiN/kwkJoJInguyJe9AIx75ynNZ4qoj1pWuYKn5/kQs
+ Z16ONbDLlypiVUfMMn8lDuWXRKGjPG7KGYLpmgPNHck46ENUm7smVvncFdVoza47NcJG
+ 7HVlTX70Ak6zNVjzoQf08Pc1WkF+nsEZCUmncDVpw49F//8KI4cFYICInd2RUMfsouod Hg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 34c9sb7w6q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 30 Oct 2020 02:20:22 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09U2KDDm171495;
+        Fri, 30 Oct 2020 02:20:22 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 34cx617265-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Oct 2020 02:20:22 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09U2KIUR003180;
+        Fri, 30 Oct 2020 02:20:18 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 29 Oct 2020 19:20:18 -0700
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, Don Brace <don.brace@microsemi.com>,
+        esc.storagedev@microsemi.com, linux-kernel@vger.kernel.org,
+        takafumi@sslab.ics.keio.ac.jp
+Subject: Re: [PATCH v3] scsi: hpsa: fix memory leak in hpsa_init_one
+Date:   Thu, 29 Oct 2020 22:20:17 -0400
+Message-Id: <160402432641.14215.8278310688594247277.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201027073125.14229-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
+References: <CAEYrHjmJRmcKX+F8R_wjd146FXnSHekodauG_eNQBXArE4OBeA@mail.gmail.com> <20201027073125.14229-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
 MIME-Version: 1.0
-In-Reply-To: <6f508e54-a170-8409-886c-a882b6fd5f63@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=739
+ suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010300016
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
+ mlxlogscore=756 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010300015
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+On Tue, 27 Oct 2020 07:31:24 +0000, Keita Suzuki wrote:
 
-On 10/29/20 2:51 PM, Randy Dunlap wrote:
-> Hi,
+> When hpsa_scsi_add_host fails, h->lastlogicals is leaked since it lacks
+> free in the error handler.
 > 
-> On 10/29/20 2:40 PM, Hemant Kumar wrote:
->> MHI userspace client driver is creating device file node
->> for user application to perform file operations. File
->> operations are handled by MHI core driver. Currently
->> Loopback MHI channel is supported by this driver.
->>
->> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
->> ---
->>   Documentation/mhi/index.rst |  1 +
->>   Documentation/mhi/uci.rst   | 83 +++++++++++++++++++++++++++++++++++++++++++++
->>   2 files changed, 84 insertions(+)
->>   create mode 100644 Documentation/mhi/uci.rst
-> 
-> 
->> diff --git a/Documentation/mhi/uci.rst b/Documentation/mhi/uci.rst
->> new file mode 100644
->> index 0000000..fe901c4
->> --- /dev/null
->> +++ b/Documentation/mhi/uci.rst
->> @@ -0,0 +1,83 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +=================================
->> +Userspace Client Interface (UCI)
->> +=================================
->> +
-> 
-> 
-> Lots of TLAs.
-> 
->> +
->> +read
->> +----
->> +
->> +When data transfer is completed on downlink channel, TRE buffer is copied to
->> +pending list. Reader is unblocked and data is copied to userspace buffer. TRE
->> +buffer is queued back to downlink channel transfer ring.
-> 
-> What is TRE?
-Transfer Ring Element
-i will add that in small bracket inline.
-> 
->> +
->> +Usage
->> +=====
->> +
->> +Device file node is created with format:-
->> +
->> +/dev/mhi_<controller_name>_<mhi_device_name>
->> +
->> +controller_name is the name of underlying bus used to transfer data. mhi_device
->> +name is the name of the MHI channel being used by MHI client in userspace to
->> +send or receive data using MHI protocol.
->> +
->> +There is a separate character device file node created for each channel
->> +specified in mhi device id table. MHI channels are statically defined by MHI
-> 
->                  MHI
-> unless it is a variable name, like below: mhi_device_id
-Done.
-> 
->> +specification. The list of supported channels is in the channel list variable
->> +of mhi_device_id table in UCI driver.
->> +
-> 
->> +Other Use Cases
->> +---------------
->> +
->> +Getting MHI device specific diagnostics information to userspace MHI diag client
-> 
->                                                                          diagnostic client
-Done.
-> 
->> +using DIAG channel 4 (Host to device) and 5 (Device to Host).
->>
-> 
-> thanks.
-> 
+> Fix this by adding free when hpsa_scsi_add_host fails.
 
-Thanks for reviewing it. Let me fix it and re-upload.
+Applied to 5.10/scsi-fixes, thanks!
 
-Thanks,
-Hemant
+[1/1] scsi: hpsa: Fix memory leak in hpsa_init_one()
+      https://git.kernel.org/mkp/scsi/c/af61bc1e33d2
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Martin K. Petersen	Oracle Linux Engineering
