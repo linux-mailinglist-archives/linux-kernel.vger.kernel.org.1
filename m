@@ -2,118 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FFA29FC77
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 05:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4897429FC7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 05:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgJ3EEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 00:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgJ3EEn (ORCPT
+        id S1726211AbgJ3EFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 00:05:55 -0400
+Received: from mail-m1272.qiye.163.com ([115.236.127.2]:5038 "EHLO
+        mail-m1272.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgJ3EFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 00:04:43 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FC8C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:04:42 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id j21so4449377ota.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:04:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0QbgsLhT6Fyvwnbaijbhr3l5RA06hcZ/IdPt56ssLa8=;
-        b=GariH0e4pbsh6GGADmUy/dS2os+uR5r4sOXfanz6DN+7fol5JKiM8tWtLEbf8zgBV7
-         2CbQcwrWgKr2vJ11bjvSqQhshoGeY5e0vqec5+fTVIOVHjp10YRzACXkLJ8pU5j+LLJi
-         jkWrGT3zvIYVGwD3MsxAr3AiEtcRzd7LFrM4Pj61lhdQf2ZlyRMd/GghvRRIcNDX5AS5
-         WUnMDK84ziVUNlRa3ulbRSuAOgwlYl4385elWqjoihZT4dKHd6j5wnHhtY+RCqzTy0cU
-         VeE/ZKMq5im3Z3qgeF3HtoYVCllg14h+SWNS5ge/11cQDgvwKYMYi8FAgx8qL+P01K/k
-         k7LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0QbgsLhT6Fyvwnbaijbhr3l5RA06hcZ/IdPt56ssLa8=;
-        b=CaXbCwTOMsWX0OUBJnlGiwVEFcCBr9nZhUx3jG37FPIFCSEKLN9nY2XqSjm4vcU4TI
-         cwNUB73rPEZKFTLKvOiQaJuT6fHSeT33Xb8FwhACZLPnZNWcXajlMaMvm6n0DHWREFxs
-         bOvRBZy5yBlmA6aB22orC5diCJ1kxkF2XKTtrStZXmGoHvBiBCSuC8psGfrbRiOtUwrC
-         4AkmouoIFACm0ChMwhB2sjXJJT8FYKNmVDRwhr53PSge+61IfvTZ33B6/BqzOqBaKrxW
-         4P/Znn+KQj+MKZQMw/5vwNw3RCCIOIHs4wkAaNNW6sp9IxWknjShBZtH9zJILtMhX7YC
-         iM7A==
-X-Gm-Message-State: AOAM533eLHIB4sg+SKcp+jd8KIJzY/Za4wplBh2CJRuPGTK83TtQ2+tt
-        pWyciZfJtPhweI2CMDk53rbsMKXBkgD6tyA07ezP+A==
-X-Google-Smtp-Source: ABdhPJxrCBDhKCig/L03qPCOkK6xkvYmtMRhhDx50CzXEzRfvqmALH8yZdNAOgx9V2zMS9Ca92cGk+lDn4xB8OMhuZ8=
-X-Received: by 2002:a05:6830:400c:: with SMTP id h12mr271298ots.102.1604030682075;
- Thu, 29 Oct 2020 21:04:42 -0700 (PDT)
+        Fri, 30 Oct 2020 00:05:54 -0400
+Received: from ubuntu.localdomain (unknown [58.250.176.229])
+        by mail-m1272.qiye.163.com (Hmail) with ESMTPA id 9C6AFB024CF;
+        Fri, 30 Oct 2020 12:05:48 +0800 (CST)
+From:   Bailu Lin <bailu.lin@vivo.com>
+To:     alex.shi@linux.alibaba.com
+Cc:     catalin.marinas@arm.com, corbet@lwn.net, harryxiyou@gmail.com,
+        kernel@vivo.com, linux-arm-kernel@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        will@kernel.org, Bailu Lin <bailu.lin@vivo.com>
+Subject: [PATCH v2] Documentation: Chinese translation of  Documentation/arm64/perf.rst
+Date:   Thu, 29 Oct 2020 21:05:41 -0700
+Message-Id: <20201030040541.8733-1-bailu.lin@vivo.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <07c84db5-9a07-c106-300c-583f2625f9a7@linux.alibaba.com>
+References: <07c84db5-9a07-c106-300c-583f2625f9a7@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20201030024746.3128-1-hdanton@sina.com>
-In-Reply-To: <20201030024746.3128-1-hdanton@sina.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Thu, 29 Oct 2020 21:04:30 -0700
-Message-ID: <CALAqxLVqLdvEWH_jz-urLghVN7SbrktyN877A1QH47Hf6mqo3w@mail.gmail.com>
-Subject: Re: [PATCH v4 7/7] dma-buf: system_heap: Add a system-uncached heap
- re-using the system heap
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        Christoph Hellwig <hch@infradead.org>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTUNISB4YSxoaSU5MVkpNS09LSEtMT0JLQ0xVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kzo6Gjo4ST8ZSiwVKzVONCMZ
+        LzgKFBNVSlVKTUtPS0hLTE9CTk1CVTMWGhIXVRkaEhcOVRcSFTsNEg0UVRgUFkVZV1kSC1lBWU5D
+        VUlOS1VKTE1VSUlCWVdZCAFZQU5MQ0o3Bg++
+X-HM-Tid: 0a7577aed94f98b7kuuu9c6afb024cf
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 7:48 PM Hillf Danton <hdanton@sina.com> wrote:
-> On Thu, 29 Oct 2020 15:28:34 -0700 John Stultz wrote:
-> > On Thu, Oct 29, 2020 at 12:10 AM Hillf Danton <hdanton@sina.com> wrote:
-> > > On Thu, 29 Oct 2020 00:16:24 +0000 John Stultz wrote:
-> > > > @@ -194,6 +210,9 @@ static int system_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
-> > > >       struct sg_page_iter piter;
-> > > >       int ret;
-> > > >
-> > > > +     if (buffer->uncached)
-> > > > +             vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
-> > > > +
-> > >
-> > > Wonder why you turn back to dma_mmap_wc() and friends?
-> >
-> > Sorry, can you expand on what you are proposing here instead?  I'm not
-> > sure I see how dma_alloc/mmap/*_wc() quite fits here.
->
-> I just wondered if *_wc() could save you two minutes or three. Can you
-> shed some light on your concerns about their unfitness?
+This is a Chinese translated version of
+ Documentation/arm64/perf.rst
 
-Sorry, I feel a bit daft here. I'm still not exactly sure what you're
-proposing, and your reply of saving minutes doesn't really clarify
-things.
-So I'm not sure it's a good use of time to try to (most likely,
-incorrectly) refute all the possible things you might be suggesting.
-:)
+Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
+---
+Changes in v2:
+ - Modify a translation of 'guest/host/blackout window' as Alex sugguested.
+---
+ Documentation/arm64/perf.rst                  |  2 +
+ .../translations/zh_CN/arm64/index.rst        |  1 +
+ .../translations/zh_CN/arm64/perf.rst         | 86 +++++++++++++++++++
+ 3 files changed, 89 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/arm64/perf.rst
 
-But I'll try to share my thoughts:
+diff --git a/Documentation/arm64/perf.rst b/Documentation/arm64/perf.rst
+index 9c76a97baf28..b567f177d385 100644
+--- a/Documentation/arm64/perf.rst
++++ b/Documentation/arm64/perf.rst
+@@ -1,5 +1,7 @@
+ .. SPDX-License-Identifier: GPL-2.0
+ 
++.. _perf_index:
++
+ =====================
+ Perf Event Attributes
+ =====================
+diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
+index e31a6090384d..f51fed166326 100644
+--- a/Documentation/translations/zh_CN/arm64/index.rst
++++ b/Documentation/translations/zh_CN/arm64/index.rst
+@@ -15,3 +15,4 @@ ARM64 架构
+ 
+     amu
+     hugetlbpage
++    perf
+diff --git a/Documentation/translations/zh_CN/arm64/perf.rst b/Documentation/translations/zh_CN/arm64/perf.rst
+new file mode 100644
+index 000000000000..9bf21d73f4d1
+--- /dev/null
++++ b/Documentation/translations/zh_CN/arm64/perf.rst
+@@ -0,0 +1,86 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: :ref:`Documentation/arm64/perf.rst <perf_index>`
++
++Translator: Bailu Lin <bailu.lin@vivo.com>
++
++=============
++Perf 事件属性
++=============
++
++:作者: Andrew Murray <andrew.murray@arm.com>
++:日期: 2019-03-06
++
++exclude_user
++------------
++
++该属性排除用户空间。
++
++用户空间始终运行在 EL0，因此该属性将排除 EL0。
++
++
++exclude_kernel
++--------------
++
++该属性排除内核空间。
++
++打开 VHE 时内核运行在 EL2，不打开 VHE 时内核运行在 EL1。客户机
++内核总是运行在 EL1。
++
++对于宿主机，该属性排除 EL1 和 VHE 上的 EL2。
++
++对于客户机，该属性排除 EL1。请注意客户机从来不会运行在 EL2。
++
++
++exclude_hv
++----------
++
++该属性排除虚拟机监控器。
++
++对于 VHE 宿主机该属性将被忽略，此时我们认为宿主机内核是虚拟机监
++控器。
++
++对于 non-VHE 宿主机该属性将排除 EL2，因为虚拟机监控器运行在 EL2
++的任何代码主要用于客户机和宿主机的切换。
++
++对于客户机该属性无效。请注意客户机从来不会运行在 EL2。
++
++
++exclude_host / exclude_guest
++----------------------------
++
++这些属性分别排除了 KVM 宿主机和客户机。
++
++KVM 宿主机可能运行在 EL0（用户空间），EL1（non-VHE 内核）和
++EL2（VHE 内核 或 non-VHE 虚拟机监控器）。
++
++KVM 客户机可能运行在 EL0（用户空间）和 EL1（内核）。
++
++由于宿主机和客户机之间重叠的异常级别，我们不能仅仅依靠 PMU 的硬件异
++常过滤机制-因此我们必须启用/禁用对于客户机进入和退出的计数。而这在
++VHE 和 non-VHE 系统上表现不同。
++
++对于 non-VHE 系统的 exclude_host 属性排除 EL2 - 在进入和退出客户
++机时，我们会根据 exclude_host 和 exclude_guest 属性在适当的情况下
++禁用/启用该事件。
++
++对于 VHE 系统的 exclude_guest 属性排除 EL1，而对其中的 exclude_host
++属性同时排除 EL0，EL2。在进入和退出客户机时，我们会适当地根据
++exclude_host 和 exclude_guest 属性包括/排除 EL0。
++
++以上声明也适用于在 not-VHE 客户机使用这些属性时，但是请注意客户机从
++来不会运行在 EL2。
++
++
++准确性
++------
++
++在 non-VHE 宿主机上，我们在 EL2 进入/退出宿主机/客户机的切换时启用/
++关闭计数器 -但是在启用/禁用计数器和进入/退出客户机之间存在一段延时。
++对于 exclude_host， 我们可以通过过滤 EL2 消除在客户机进入/退出边界
++上用于计数客户机事件的宿主机事件计数器。但是当使用 !exclude_hv 时，
++在客户机进入/退出有一个小的停电窗口无法捕获到宿主机的事件。
++
++在 VHE 系统没有停电窗口。
+-- 
+2.20.1
 
-So the system heap allows for allocation of non-contiguous buffers
-(currently allocated from page_alloc), which we keep track using
-sglists.
-Since the resulting dmabufs are shared between multiple devices, we
-want to provide a *specific type of memory* (in this case
-non-contiguous system memory), rather than what the underlying
-dma_alloc_attr() allocates for a specific device.
-
-My sense is dma_mmap_wc() likely ought to be paired with switching to
-using dma_alloc_wc() as well, which calls down to dma_alloc_attr().
-Maybe one could use dma_alloc_attr against the heap device to allocate
-chunks that we track in the sglist. But I'm not sure how that saves us
-much other than possibly swapping dma_mmap_wc() for remap_pfn_range()?
-
-But again, I suspect I've mischaracterized what you're actually
-suggesting. So please let me know what you're thinking and I'm happy
-to consider it.
-
-thanks
--john
