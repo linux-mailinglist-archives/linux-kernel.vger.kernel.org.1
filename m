@@ -2,118 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A10A2A0372
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B242A0379
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgJ3K4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:56:36 -0400
-Received: from foss.arm.com ([217.140.110.172]:59650 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgJ3K4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:56:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62A87139F;
-        Fri, 30 Oct 2020 03:56:35 -0700 (PDT)
-Received: from [10.57.13.192] (unknown [10.57.13.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A0EC3F719;
-        Fri, 30 Oct 2020 03:56:32 -0700 (PDT)
-Subject: Re: [PATCH 0/4] Add sustainable OPP concept
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, vireshk@kernel.org,
-        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com, rafael@kernel.org,
-        sudeep.holla@arm.com, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com
-References: <20201028140847.1018-1-lukasz.luba@arm.com>
- <20201029074057.6ugmwyzna52x3oli@vireshk-i7>
- <20201029075356.rruej6jlerhfa4oy@vireshk-i7>
- <228fa1b3-bbd3-6941-fd4b-06581016d839@arm.com>
- <20201030082937.xgjmko2ohwhkt6f5@vireshk-i7>
- <a0a6db69-fc3e-c39f-7586-5ac3227b746e@arm.com>
- <20201030095248.abej6h5wphud2ihb@vireshk-i7>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <757fe3b1-745f-2656-fe21-c7b39f123a25@arm.com>
-Date:   Fri, 30 Oct 2020 10:56:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726481AbgJ3K5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbgJ3K5G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:57:06 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D07C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:57:06 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id x203so6205992oia.10
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:57:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x083AjvGF0zQfoi/Zp4lR99mcm5WG8qTkAtv8ezIp6w=;
+        b=TfYtmrepxSGkTOhnz89oz6fSDep8VfjQbMpR6CczHyYU+W2W7jTUmEowCn4QD/hVvq
+         dsWCZauyXVabXaqJnvVyWA0PwsX0aWqKTQ7ckuvxEREHo2CGKGVQcZRnxqxutoHya7za
+         6QPSPDYJmVISC6QxiRn1TMZpWFIqSBWHAMQRqRPj+wTPNmDukvtu9Vp56kZSAIBKkGLo
+         6Z5VieLX+zzEXrsM7nqfyZXoq6B6+/cUtEh46djyIf/4EhucCioVM3q8c00a0RdHT3AD
+         RcDiuqZCdNgmt5y+jqSaBseAoLg3/PpF7r96838wOeOEM2oPoa0HChKzDMv6jrZVVaaS
+         sfKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x083AjvGF0zQfoi/Zp4lR99mcm5WG8qTkAtv8ezIp6w=;
+        b=o5WoDIWHgZOhJoGcnuE7tO/NUX3dOTK5DgH5HjveO/ko5oStXyAWSd0Ftq5p2PIM2r
+         B50sLTbSZ/hR2bkeTb+C9qENTnN/fcx4MQ9j9vjAS3Wd/WV+E30wnvXlh0UuZcEbWdZH
+         g+vRKXLDDyKi2z7w7G8HNug1Z02IUXT1+yKrs4+krvyPj1L65POI+wF0ZhTNuFpzxzNR
+         r9mfdsiITLEFxr7i8+bYk5ysMZWGPx9/9HM2xdx9M1m+9p405DZ8rTuKl8wAdQ18p+su
+         xJwzB5LaHysyQxjUjj6eW+NWNNyiXpNJQ/Rim3EAM7RbyoUo/NttVGoPbjz4PbFETkhz
+         9aVA==
+X-Gm-Message-State: AOAM532TmXAsvaXcjVyJPYRfA2RL30UFI7wCq0Xt8Xduddn4Hw00rTPJ
+        TqdzO7ddsRHs+vPNvdTdUpf3QTrYQHO3lCSZ1RmcZw==
+X-Google-Smtp-Source: ABdhPJz3C4ZPru/opHgaUXloKSf0xyz52fj93A1p3T9rYcAFfZuZf7nAa+ojQJj0KzgJdsGQpQt03lRixeBInl+1H40=
+X-Received: by 2002:aca:4f55:: with SMTP id d82mr1153951oib.172.1604055425438;
+ Fri, 30 Oct 2020 03:57:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201030095248.abej6h5wphud2ihb@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201029131649.182037-1-elver@google.com> <CAG48ez1xg0uRV6LqYOO-ibVqOO7jNRJGLVLrQfGW=s8TcbPGoQ@mail.gmail.com>
+In-Reply-To: <CAG48ez1xg0uRV6LqYOO-ibVqOO7jNRJGLVLrQfGW=s8TcbPGoQ@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 30 Oct 2020 11:56:53 +0100
+Message-ID: <CANpmjNOx=6ZRUC-Gkx=RqX4EPtuLe=AMshGSMcnd6a3=2iNtkQ@mail.gmail.com>
+Subject: Re: [PATCH v6 0/9] KFENCE: A low-overhead sampling-based memory
+ safety error detector
+To:     Jann Horn <jannh@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        =?UTF-8?Q?J=C3=B6rn_Engel?= <joern@purestorage.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 30 Oct 2020 at 03:49, Jann Horn <jannh@google.com> wrote:
+> On Thu, Oct 29, 2020 at 2:16 PM Marco Elver <elver@google.com> wrote:
+> > This adds the Kernel Electric-Fence (KFENCE) infrastructure. KFENCE is a
+> > low-overhead sampling-based memory safety error detector of heap
+> > use-after-free, invalid-free, and out-of-bounds access errors.  This
+> > series enables KFENCE for the x86 and arm64 architectures, and adds
+> > KFENCE hooks to the SLAB and SLUB allocators.
+>
+> I think this is getting close to a good state, just a couple minor issues left.
 
+Thanks for your comments. We'll address all of them for v7.
 
-On 10/30/20 9:52 AM, Viresh Kumar wrote:
-> On 30-10-20, 09:19, Lukasz Luba wrote:
->> How about dropping the DT binding, but just adding this new field into
->> dev_pm_opp? There will be no DT parsing code, just the get/set
->> functions, which will be used in SCMI patch 4/4 and in IPA?
->> That would not require to change any DT bindings.
->   
->> I see. Just for your information SCMI supports 'Sustained Performance'
->>   expressed in kHz.
-> 
-> Even that doesn't sound great (but then I don't have any background of
-> why that was added there). The problem is not about how do we get this
-> data into the kernel (from DT or firmware), but why is it even
-> required. I really feel that software can find the sustainable OPP by
-> itself (which can keep changing).
+> Now that the magic "embed the memory pool in the BSS section" stuff is
+> gone, this series looks fairly straightforward.
 
-IPA tries to do that, even dynamically when e.g. GPU is supper busy
-in 3D games (~2000W) or almost idle showing 2D home screen.
-It tries to find highest 'sustainable' frequencies for the devices,
-at that various workloads and temp. But it needs some coefficients to
-start, which have big impact on the algorithm. It could slow down IPA a
-lot, when those coefficients are calculated based on lowest OPPs.
+Good to hear. :-)
 
-
-> 
-> About moving it into the OPP core, I am open to getting something
-> added there if it is really useful and if the OPP core is the best
-> suited place to keep such data. Though I am not sure of that for this
-> field right now.
-> 
-> Is it ever going to be used by anyone else apart from IPA ? If not,
-> what about adding a helper in IPA to set sustainable-freq for a device
-> ?
-
-My backup plan was to add a flag into EM em_perf_state, extend SCMI perf
-exposing the 'sustained_freq_khz' to scmi-cpufreq, which would set that
-field after registering EM. IPA depends on EM, so should be OK.
-
-> 
-> So only SCMI based platforms will be able to use this stuff ? That's
-
-I don't know who would also use it in future. I just presented you
-current user of this, as you asked.
-
-> very limited, isn't it ? I think we should still try to make it better
-> for everyone by making the software smarter. It has so much data, the
-> OPPs, the power it will consume (based on microvolt property?), the
-> heat we produce from that (from thermal framework), etc. Perhaps
-> building this information continuously at runtime based on when and
-> how we hit the trip points ? So we know which is the right frequency
-> where we can refrain from hitting the trip points.
-
-IPA works in this way.
-
-> 
-> But may be I am asking too much :(
-> 
-
-When you asked for user of this, I gave you instantly. This is one is
-more difficult. I am still not there with IPA tests in LISA. I have some
-out-of-tree kernel driver for testing, which also need polishing before
-can be used with LISA. Then proper workloads with results processing.
-EM for devfreq cooling devices. Then decent 'hot' board running
-preferably mainline kernel.
-What you requested is on my list, but it needs more work, which
-won't be ready over night.
-
-Regards,
-Lukasz
+Thanks,
+-- Marco
