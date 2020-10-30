@@ -2,136 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAB72A0540
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C03FD2A053F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgJ3MWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 08:22:09 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11090 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgJ3MUy (ORCPT
+        id S1726583AbgJ3MWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 08:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbgJ3MVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:20:54 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9c052b0000>; Fri, 30 Oct 2020 05:20:59 -0700
-Received: from [10.2.173.19] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
- 2020 12:20:53 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        Rik van Riel <riel@surriel.com>,
-        <linux-kernel@vger.kernel.org>, Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm/compaction: count pages and stop correctly during page
- isolation.
-Date:   Fri, 30 Oct 2020 08:20:50 -0400
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <6CAAB1FC-2B41-490B-A67A-93063629C19B@nvidia.com>
-In-Reply-To: <20201030094308.GG1478@dhcp22.suse.cz>
-References: <20201029200435.3386066-1-zi.yan@sent.com>
- <20201030094308.GG1478@dhcp22.suse.cz>
+        Fri, 30 Oct 2020 08:21:13 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B459C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 05:21:13 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id s15so8294972ejf.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 05:21:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yCKWkz6WsiFrJUW0f9hCTQKUvyKMyz6Kme4fPCErzMk=;
+        b=HELDt+tcVG9L3FE/J2f9SWBNccZarXz9UfbOm7YD1rQwIjLP/0vg56ErKLexeBW8sm
+         mAFVsZjE5XfkAO1q88Vixk09s/9NonMe/UM+n+F9G8KT6d8OjomKa6v2ECYUGTAJfgN3
+         A5E5H/CZNDC+752lzKX+wzbF+GPu2Q2GBEH7ssg4mchVzX/OK0cXurqHBOMXs/kxRclm
+         ILLLQ5jvR68/BTTmyCqbp6P8v2+nSBO0Oyax+QsxmCZgXdKHxu7z0wiI3VRwksT01jv7
+         Sk7yuWkl+MiEdmDuA+Mzuhb4nLUAAmQZoKRso/Oh8J0v/k/C5nG/OeR4jegW8HRSeuCV
+         sKKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yCKWkz6WsiFrJUW0f9hCTQKUvyKMyz6Kme4fPCErzMk=;
+        b=Je8X/xcf/ABBORmHPV+00+mAvyShZELdks2Va69PBS0uqbtR+IU7TKc8/O+CwdZcu8
+         h5owylLUorkpNABVOgqLAt09xLdWpjXFt+s5o8wrqKzXbF0faGzdPwGNoIxBD/U9i2UC
+         Sd+5Za0VgJjIC76X2nM1gBEpPi1EsNu4QthGQtYlBPgNkOOog1SivgRtuCvE/v6Z1Y8K
+         4fy/KMhpluE80fFqAIx3FGxqlHLcQejWy3wXzVICClnZPAmIH1NSuPp6CBYMR/GMdE9F
+         H1dqDupvWDWzQG4MWSzOFCJ+OkY1mOl4oS9EBwrEYK2mjFRy1n1mCtnKD3+qGuGlejUr
+         Yjzw==
+X-Gm-Message-State: AOAM530MzWYTt32doHncV1fUe8RQgGNbC+x7qHkN8jMXhaZVhiyYtW5O
+        Eb8GV9zYB9SZH/VAYpmktDyqaUYkjXqcsQjwcH4v1Q==
+X-Google-Smtp-Source: ABdhPJxnQljVKJszeD8urGRCQBiLaoP1QQuhatJDvcsf8NS/HjBn9WiJd+WA6s5d90ZqXyp+cs4xMg8CILkelzMooZA=
+X-Received: by 2002:a17:906:b009:: with SMTP id v9mr2291539ejy.155.1604060471862;
+ Fri, 30 Oct 2020 05:21:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed;
-        boundary="=_MailMate_0E566DE4-2C9D-4382-B78D-D13295DD7141_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604060459; bh=okKEe8Mo/jhn6sWL761J9KIZh3zK8blaHHaM73DFTk4=;
-        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
-         References:MIME-Version:Content-Type:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=NB8p2m2NBA5Z5WyVwC3X6zg3ik9DK54qnQneOmuyHVnLBgwbg6Ou0IzGCyrIlO6Kw
-         pKtVUEU2Yh/DHgg4mtU6DSrJuJA4aQHZQMle2uavmiKwHrjwb1vPGcTzpE+6Soenjv
-         yssNUwIMkc6D9qlO/bO6yUIqjVv7qVUjxsSWiCxOjSX3HncbGJ806OytxCdT9sseHf
-         nNrUt3uA23rsjC3+pjENuQk2J07DXX7cVfz8IG4q7oBVTZHciI3vouCDKhpdObsJ08
-         qlQstgAZTKHEDfvgDnNX/Cbx21aU8qJffumeTcOy9QmTk1Rf0b82czmuz0UPGWCvtw
-         LzioH8/AD9/+A==
+References: <20201026122728.8522-1-brgl@bgdev.pl> <20201026131427.GF4077@smile.fi.intel.com>
+ <CAMRc=MfuejMqpcfOedPMMTR3EY6s2K+4whoWyk7RmJYPaB176w@mail.gmail.com>
+ <20201030105706.GK4077@smile.fi.intel.com> <20201030105834.GL4077@smile.fi.intel.com>
+ <CAMpxmJWxsNY_Eepq2fx0diDr96prBZKGtyb2j43PLe4_vGZAwA@mail.gmail.com>
+In-Reply-To: <CAMpxmJWxsNY_Eepq2fx0diDr96prBZKGtyb2j43PLe4_vGZAwA@mail.gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 30 Oct 2020 13:21:00 +0100
+Message-ID: <CAMpxmJV43KqQEdY1MfgsXn_uvNqewDGZJkPXDU+0jOkG=2wTbg@mail.gmail.com>
+Subject: Re: [PATCH] devres: zero the memory in devm_krealloc() if needed
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_0E566DE4-2C9D-4382-B78D-D13295DD7141_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On 30 Oct 2020, at 5:43, Michal Hocko wrote:
-
-> [Cc Vlastimil]
+On Fri, Oct 30, 2020 at 12:03 PM Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
 >
-> On Thu 29-10-20 16:04:35, Zi Yan wrote:
->> From: Zi Yan <ziy@nvidia.com>
->>
->> In isolate_migratepages_block, when cc->alloc_contig is true, we are
->> able to isolate compound pages, nr_migratepages and nr_isolated did no=
-t
->> count compound pages correctly, causing us to isolate more pages than =
-we
->> thought. Use thp_nr_pages to count pages. Otherwise, we might be trapp=
-ed
->> in too_many_isolated while loop, since the actual isolated pages can g=
-o
->> up to COMPACT_CLUSTER_MAX*512=3D16384, where COMPACT_CLUSTER_MAX is 32=
-,
->> since we stop isolation after cc->nr_migratepages reaches to
->> COMPACT_CLUSTER_MAX.
->>
->> In addition, after we fix the issue above, cc->nr_migratepages could
->> never be equal to COMPACT_CLUSTER_MAX if compound pages are isolated,
->> thus page isolation could not stop as we intended. Change the isolatio=
-n
->> stop condition to >=3D.
->>
->> Signed-off-by: Zi Yan <ziy@nvidia.com>
->> ---
->>  mm/compaction.c | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/mm/compaction.c b/mm/compaction.c
->> index ee1f8439369e..0683a4999581 100644
->> --- a/mm/compaction.c
->> +++ b/mm/compaction.c
->> @@ -1012,8 +1012,8 @@ isolate_migratepages_block(struct compact_contro=
-l *cc, unsigned long low_pfn,
->>
->>  isolate_success:
->>  		list_add(&page->lru, &cc->migratepages);
->> -		cc->nr_migratepages++;
->> -		nr_isolated++;
->> +		cc->nr_migratepages +=3D thp_nr_pages(page);
->> +		nr_isolated +=3D thp_nr_pages(page);
+> On Fri, Oct 30, 2020 at 11:56 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
 >
-> Does thp_nr_pages work for __PageMovable pages?
+> [snip]
+>
+> > > >
+> > > > Any use case? Because to me it sounds contradictory to the whole idea of [k]realloc().
+> > >
+> > > This is kind of a gray area in original krealloc() too and I want to
+> > > submit a patch for mm too. Right now krealloc ignores the __GFP_ZERO
+> > > flag if new_size <= old_size but zeroes the memory if new_size >
+> > > old_size.
+> >
+> > > This should be consistent - either ignore __GFP_ZERO or
+> > > don't ignore it in both cases. I think that not ignoring it is better
+> > > - if user passes it then it's for a reason.
+> >
+> > Sorry, but I consider in these two choices the best is the former one, i.e.
+> > ignoring, because non-ignoring for sizes less than current is counter the
+> > REalloc() by definition.
+> >
+> > Reading realloc(3):
+> >
+> > "If the new size is larger than the old size, the added memory will not be
+> > initialized."
+> >
+> > So, supports my choice over yours.
+>
+> Kernel memory management API is not really orthogonal to the one in
+> user-space. For example: kmalloc() takes the gfp parameter and if you
+> pass __GFP_ZERO to it, it zeroes the memory even if user-space
+> malloc() never does.
+>
 
-Yes. It is the same as compound_nr() but compiled
-to 1 when THP is not enabled.
+Ok so I was wrong - it turns out that krealloc() is consistent in
+ignoring __GFP_ZERO after all. In that case this patch can be dropped.
 
-=E2=80=94
-Best Regards,
-Yan Zi
-
---=_MailMate_0E566DE4-2C9D-4382-B78D-D13295DD7141_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+cBSIPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKh9wP/0NRK3pX7DdLy120KM7whlo3IG3W7r73oD2E
-eprNTY1zaLojAqBshDaEYwcvviHIWzrxpvIJuHRMIxpcaIiBEZs6sJXT7thbMZ1O
-+hzT+ltpTXGXHdpVEs+3cAtdW+tsIGHoDUuXVBvtSXCkmCm2khYFZGMDRHuPltd2
-MXbiCdkshxOjwOl7hc+/M0fbsg8ATrpFF7XnpcAm03X0/oi64apptIB5gc5eU/83
-aYXe3ydZmgQLROPYYzO6LT1PU/TxGTdfVSIZ42B61DEZoLjVpyMxcke0IGpgMLHB
-xF8pnOnIY7DZkBnXxYtdm2eTkf5xpSYIkb59TTJDhjSSRh45cLXMcSmaTpp7B9na
-qCOnrSB8Cy22FjljmKKUhATbo5797Ch22ecrZTy4aleLXGtEl8IQg1vb0gAKJ1iE
-ohPyYOiZ/ZwFr1LQ1hBEkfOmiJArrsKd3D21mWWsv9qPofsrzoAohpsL40ID4dg/
-rZS8+oIFokwimXGEa+61b0ueSpKxRFU7yYvZ1ftZNad8SQ1iSZJ3QghTdGSgFD4e
-PFyYyH5eIxkKHJ8RrF1A7+lH1QZCkP0fa6JyeSOZWwPbSYrE6TO+7Uemhr5cJKtm
-si9oMzUNONI76DP7dWuwIwJ/XN7LBMwIJyUqn2MU2Hrtlh3FVV62eTdVBXcQxvcZ
-iRToEWAg
-=dIpG
------END PGP SIGNATURE-----
-
---=_MailMate_0E566DE4-2C9D-4382-B78D-D13295DD7141_=--
+Bartosz
