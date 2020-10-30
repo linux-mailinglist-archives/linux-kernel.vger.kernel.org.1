@@ -2,89 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853DA29FC32
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C53929FC35
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgJ3DaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 23:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
+        id S1726197AbgJ3Db6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 23:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726215AbgJ3DaT (ORCPT
+        with ESMTP id S1725797AbgJ3Db6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 23:30:19 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C14C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:30:17 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id f7so5377651oib.4
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:30:17 -0700 (PDT)
+        Thu, 29 Oct 2020 23:31:58 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F417EC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:31:56 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 13so4092122pfy.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:31:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6oMY9pxFypCz+sF9iqPwWsJbC9qvwpmj8H4dhF+NfdQ=;
-        b=Cm2BCBaE0HkCTyOU/fbadFmrRd5FXxeBg8UMkDSDS1j6UyRSiTx5urdd8HHKLA6zHR
-         hY06B2HqNpN+dCebixLmWfx7eJpaIQ4VrKXtvWStO+woq17+xkAiZkij8073l2qZVMfM
-         /yge+eZBZQbEZ/DBrYRiyEwSv4qYPr5cGlc8O/WbKQmnfcMStPl+g4wLrSNImh8CLwEI
-         32NkObz9twkgzIWYkvMls7X2hNLrhSJiqi21XNx9Ccop5rYvlKeKtv+Okwy0RirNRC9k
-         UhOiE8R4dvHFjQ6CydKSNwMesYjB2yeiEnVXHYw6SK2UD0VGcyum+RxmbZdvVbJBb7FG
-         MbOA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=/T4zGmBDffm929p//CkvLaNebm6nyFAD9zUf2m9Khc4=;
+        b=X1UWJ4sPXdTWBIvP+F+d5R4n1cI/VqlbKPsD5DFU8zgNOzIuU0AC9ZGBu9xoK1nvc9
+         nLQpLTzbDXu6GLCZo8rs9F21QC1I/ouTPmpeh9aZRrsPJmQsdSz1mmWiVUDlJ2pxCFBQ
+         HsUC+ecXEg0DEsWwh1r1i7yZZrhGSZ3sVXc+21L8sIz1N0MiX+FBnYm9qRkgAol30CU9
+         gRgT+nzRfWjSCo4tfKtNOWkwE+WpXvnFmyjFz6L8aXVDOX+8DriE1vxyPtxNOs1NbTPq
+         K6vUU6cObxxoRI09vmq3cdOPXcYnXPouUZzw9wcZwy++N2E4Sx1IY1REOHmCj4ER+4Yt
+         K3Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6oMY9pxFypCz+sF9iqPwWsJbC9qvwpmj8H4dhF+NfdQ=;
-        b=Fxn8QBwyLw1TWv59XZwWaUlQHPF/ybi6l/7LETvkhNVEgfUVoTqlek6jdP7mIhHHiZ
-         EZLxYblmTF3XBcj+ZwTp/CMSTtJq7rLgRvI76BZp/Sm50VgaBrbSL+Yo7cMlkgfmc5Nl
-         EcsZhYRbhk0sX2oHazsnUUNNHFUDQGWp72mk8rYRTRxGIS9C173I0etjEUOlHW2DDPSv
-         vGkgVAfPqBS8oGSi/fmI1ba2og+5A3Icroqj1ECwh2EQu2TP/p3RRqWOki8IFZn0jV+9
-         65WSaAnndWWOQPcCYsoMXDhyvG0MqB44eGjWRNhW5h2tInO9I5ggGUq/i4k2VEPD7b69
-         3D2g==
-X-Gm-Message-State: AOAM533tTOEZRkMFVjdJJrUZE4a41LJ+mWZbw1sbmpkkngVAFth/DXIR
-        LGAnz0HxZNvnqg8pK6AB+a0l7P9TSjFdmVV6bM/eIQ==
-X-Google-Smtp-Source: ABdhPJyoYlDfNB9INSs49MENv3IRsfUKToKB7mwBdmNjsIcA5aDVVdbolYFcxBttTKe/8dItjxvA3P8hwe661BVNN2c=
-X-Received: by 2002:aca:1a07:: with SMTP id a7mr224448oia.169.1604028616954;
- Thu, 29 Oct 2020 20:30:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=/T4zGmBDffm929p//CkvLaNebm6nyFAD9zUf2m9Khc4=;
+        b=E8KCG/Qx7O+jocSLXN05Cbs7FXtsySZFq7shA0/NrAwcpoZsznMvZ6XwqQ+qnf2zHp
+         pKRAOXL3tYIHdkwErURv8IR9b16mhOjL2iqU4FCPcCUrxXcW5renWg6d2xZLDs4Eg1rg
+         hcND0FAWKkJ7hyPqUBsN32RTyjkvegycJUpKmu/CEowrTFVhJVsk2MNWvP+QPVAGTYzV
+         RmXCFuFfdlLfIdniq/DCQpa4MAq/uSycDKL4CXS0bNcMK7oTUDZFCa66cSMbnzdonq2V
+         7RrUKwNTzuaWRG1ZZz5k16SZi3Ukq8mtTIgQdG7VtciArSA0WsW6b8JrQ9GpNbPte23R
+         FRfw==
+X-Gm-Message-State: AOAM530N1gb2TuUkuVWuEDQrOBQF4tSGg/9w9mkkpJ8zTvPs/xGoAXAG
+        djn5iC9zOtOvanl7ugVZCAU=
+X-Google-Smtp-Source: ABdhPJxkSyJmnutDKVjlWOgdwKq+ADH5KNQw1TaMs0tFikKarD1tEV+1DKJFm/wnchCxAFJxjRiytg==
+X-Received: by 2002:a17:90a:ba8d:: with SMTP id t13mr376040pjr.38.1604028716631;
+        Thu, 29 Oct 2020 20:31:56 -0700 (PDT)
+Received: from my--box ([103.98.79.70])
+        by smtp.gmail.com with ESMTPSA id b17sm3932152pgb.94.2020.10.29.20.31.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 20:31:56 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 09:01:50 +0530
+From:   Deepak R Varma <mh12gx2825@gmail.com>
+To:     outreachy-kernel@googlegroups.com,
+        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Purism Kernel Team <kernel@puri.sm>,
+        Ondrej Jirman <megous@megous.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     mh12gx2825@gmail.com, melissa.srw@gmail.com, daniel.vetter@ffwll.ch
+Subject: [PATCH] drm/panel: st7703: use DEFINE_DEBUGFS_ATTRIBUTE with
+ debugfs_create_file_unsafe()
+Message-ID: <20201030033150.GA275009@my--box>
 MIME-Version: 1.0
-References: <20201030023427.3078-1-hdanton@sina.com>
-In-Reply-To: <20201030023427.3078-1-hdanton@sina.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Thu, 29 Oct 2020 20:30:04 -0700
-Message-ID: <CALAqxLU1=vScNWfxc-Ji9F_cY311z8GuFLiFT0q0PrDyJVxViA@mail.gmail.com>
-Subject: Re: [PATCH v4 5/7] dma-buf: system_heap: Allocate higher order pages
- if available
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 7:34 PM Hillf Danton <hdanton@sina.com> wrote:
-> On Thu, 29 Oct 2020 12:34:51 -0700 John Stultz wrote:
-> > As for your comment on HPAGE_PMD_ORDER (9 on arm64/arm) and
-> > PAGE_ALLOC_COSTLY_ORDER(3), I'm not totally sure I understand your
-> > question? Are you suggesting those values would be more natural orders
-> > to choose from?
->
-> The numbers, 9 and 3, are not magic themselves but under the mm diretory
-> they draw more attentions than others do. Sometimes it would take two
-> minutes for me to work out that HPAGE_PMD_ORDER does not mean 1MiB, on
-> platforms like arm64 or not.
+Using DEFINE_DEBUGFS_ATTRIBUTE macro with debugfs_create_file_unsafe()
+function in place of the debugfs_create_file() function will make the
+file operation struct "reset" aware of the file's lifetime. Additional
+details here: https://lists.archive.carbon60.com/linux/kernel/2369498
 
-Yes, I can say it took me longer than two minutes to dig around and
-work out HPAGE_PMD_ORDER for my last reply.  :)
+Issue reported by Coccinelle script:
+scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
 
-Though I'm still a bit unsure if you are proposing something more than
-just a comment to explain why order 8 and order 4 allocations are used
-in my patch? Please let me know if so.
+Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+---
+Please Note: This is a Outreachy project task patch.
 
-thanks
--john
+ drivers/gpu/drm/panel/panel-sitronix-st7703.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+index c22e7c49e077..89b71d4f810d 100644
+--- a/drivers/gpu/drm/panel/panel-sitronix-st7703.c
++++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+@@ -502,15 +502,14 @@ static int allpixelson_set(void *data, u64 val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(allpixelson_fops, NULL,
+-			allpixelson_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(allpixelson_fops, NULL, allpixelson_set, "%llu\n");
+ 
+ static void st7703_debugfs_init(struct st7703 *ctx)
+ {
+ 	ctx->debugfs = debugfs_create_dir(DRV_NAME, NULL);
+ 
+-	debugfs_create_file("allpixelson", 0600, ctx->debugfs, ctx,
+-			    &allpixelson_fops);
++	debugfs_create_file_unsafe("allpixelson", 0600, ctx->debugfs, ctx,
++				   &allpixelson_fops);
+ }
+ 
+ static void st7703_debugfs_remove(struct st7703 *ctx)
+-- 
+2.25.1
+
