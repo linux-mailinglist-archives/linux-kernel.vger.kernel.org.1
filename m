@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6912A0469
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:38:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9612A0462
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgJ3Lh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35922 "EHLO
+        id S1726564AbgJ3Lgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbgJ3Lg3 (ORCPT
+        with ESMTP id S1726529AbgJ3Lga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:36:29 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B749C0613D4;
-        Fri, 30 Oct 2020 04:36:29 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id k9so6293047edo.5;
-        Fri, 30 Oct 2020 04:36:29 -0700 (PDT)
+        Fri, 30 Oct 2020 07:36:30 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667BEC0613D2;
+        Fri, 30 Oct 2020 04:36:30 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id oq3so6265314ejb.7;
+        Fri, 30 Oct 2020 04:36:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=htP1Snv7NkPVsjMLWMR+sUOLT5JkPpjPoyR9+y5vN8U=;
-        b=p5vZsgB/K7eKZtKVile6kvpN9plOyuy+mtGUMdNa7Vzw2DMSstVQO5bKFehtOhech+
-         Wv99kQXFhbPDwhrXFzALINWmV0jkYs4JkqjYBFz7UpSL1bDc8Ov/ID+tSMx10T76Y1So
-         8rGmZatLWR7qP7Aem/gANGZrsigDyzsQCg2n8wgzG3YqHvHYou5zhuGHMhFMtoa10r/0
-         G8HHM6v1YSDUDv3k0ewJD39Q+zOtKnB7opMpSy8bou0CXIz++J3KRMjo6ltlVSzEk1El
-         AfueJcdeLTB6MqUxO7lmU6MIKAkXsW5WZZGsP9LfeKVspphXfQ9OYoX+6Ht3iIcUC+hZ
-         MMwg==
+        bh=57fSwVBTzmU3l7gmdhA7s4dp/Q6QzS27NIu7QOnb3dI=;
+        b=LQZ9VCdMVTCLLCzWeTbJ1HNs1heJ8GLJijcYi9HvAgE3Eki/gtIiG0dfKO2jNXnz+G
+         u+QfsWeucVNFMV7cf8/iIZyhEFYruYfCn95H4Ehkg6xuNoL2hpVgBP3dEafZ/vJbEuNa
+         Dw2K3kR/+Vhdj3XOabZ3nwzSyxr3lemAwPdG7ME/r7EyKWsIdK+pRSPreJuJJza3bqOd
+         wXHPI/3RxCP3IyyDxC0iKN8mQRrFw9ztq1zaOJmvHgxFRqHQ0n/Wk0ABiou6+uudW2bU
+         tG82Um4w3P/xzZr2e2Qz9bXGTwVbm4XWFXADL1xMN+lZctTsycnwe42gNhtpAdBSntII
+         qlDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=htP1Snv7NkPVsjMLWMR+sUOLT5JkPpjPoyR9+y5vN8U=;
-        b=AbVU3syf/0VvJYI10/+zEamDiqV7JqXGXNWFLC1L0P8gZFIS7kIWcbxB73Uxh4y86q
-         z3yefWpvxp45OcKZ27PG7yCaOm6T5zapQsXZEe6kWIeBzB+5LqhmfCP2kbEJ9vIRBKNM
-         kHntbXK5bPrdN+o0c2P6Yy4gxDDZa3jOjy0+IIcWYq+VXkAH9rLyfsdChMAia1Vj/jYp
-         Fe5XMVrORUsRKZL9DAlvsb3D5Ytcmlfv0Vwtm2gmddfFLQTzLt5cz5hzDvmDHGHBcUXj
-         CnZxrWcCwbJyEMXYiobEYV9ZljtQIzvvUMzQbA/JsgVz91znNqJRYfUXWCDMapuaNKal
-         wYdQ==
-X-Gm-Message-State: AOAM532LtfnLLO6KU+Ocf4Ia7bDk6Wf8fFWxl1SmeZ+ah9NN2Gt0T/TQ
-        6YsJpW1Ym6B7R7LGM4/8RB0=
-X-Google-Smtp-Source: ABdhPJwGyn7gx16w4mr29Qs2c9yhBLPwlPoL84yH6GFDS+om/IWWkGGjiRPwvjsendDZWSiBG3396g==
-X-Received: by 2002:a05:6402:1779:: with SMTP id da25mr1780653edb.60.1604057787755;
-        Fri, 30 Oct 2020 04:36:27 -0700 (PDT)
+        bh=57fSwVBTzmU3l7gmdhA7s4dp/Q6QzS27NIu7QOnb3dI=;
+        b=fehBheXMONRAoSfJq5zZ7+aU24cvW3LTJZtR3bAJaWuoU/P+5q/N5xqy7Q9c0TukOe
+         DjiKJa4MYnauaJrRThnk3908DA1LaivoFvPlZxcPiTtJeQpxLzx+5M4wblttNywsTe6M
+         RgKNG1FblR/hnvknTYT3R1dAMNbIoFaMN0ZJYvn4XdeRHDf+rlSROuXC9Ler+bMmXAJo
+         gvNThbRrJkuCaOUx/73NIEA+J9swWd+tE5LkQaWmjJAuqVRMzUlWLjRnUa8igj3wxXT6
+         R8GKQwO30y9IEfhIhaGihB4vSxc0Ol3UHU/1NvYOdgLIxsevDf/6nfIneFP2Rr2dmXUo
+         fpNw==
+X-Gm-Message-State: AOAM530oTVGRCLVal6BZlEYZGDX9zZTEQtnoW4o079FLVFkSFqsR177O
+        sCyCLDiQCpey0IiYZ8IupyfR8WJKY4JzEBRS
+X-Google-Smtp-Source: ABdhPJwvcX0FvFQvTgIoys5EQoChrPflNu8Lz2sZluuAhKF59k6jwQ1Owyv6eJzQVNiX4yQiMRlIlg==
+X-Received: by 2002:a17:906:1643:: with SMTP id n3mr1926609ejd.459.1604057789126;
+        Fri, 30 Oct 2020 04:36:29 -0700 (PDT)
 Received: from yoga-910.localhost ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id q19sm2850861ejx.118.2020.10.30.04.36.26
+        by smtp.gmail.com with ESMTPSA id q19sm2850861ejx.118.2020.10.30.04.36.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 04:36:27 -0700 (PDT)
+        Fri, 30 Oct 2020 04:36:28 -0700 (PDT)
 From:   Ioana Ciornei <ciorneiioana@gmail.com>
 To:     shawnguo@kernel.org
 Cc:     robh+dt@kernel.org, leoyang.li@nxp.com, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH v5 09/11] arm64: dts: ls208xa: add PCS MDIO and PCS PHY nodes
-Date:   Fri, 30 Oct 2020 13:35:53 +0200
-Message-Id: <20201030113555.726487-10-ciorneiioana@gmail.com>
+Subject: [PATCH v5 10/11] arm64: dts: lx2160a: add PCS MDIO and PCS PHY nodes
+Date:   Fri, 30 Oct 2020 13:35:54 +0200
+Message-Id: <20201030113555.726487-11-ciorneiioana@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201030113555.726487-1-ciorneiioana@gmail.com>
 References: <20201030113555.726487-1-ciorneiioana@gmail.com>
@@ -66,8 +66,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-Add PCS MDIO nodes for the internal MDIO buses on the LS208x SoCs, along
-with their internal PCS PHYs which will be used when the DPMAC object is
+Add PCS MDIO nodes for the internal MDIO buses on the LX2160A, along
+with their internal PCS PHYs, which will be used when the DPMAC is
 in TYPE_PHY mode.
 Also, rename the dpmac@x nodes to ethernet@x in order to be compliant
 with the naming convention used by ethernet controllers.
@@ -81,58 +81,16 @@ Changes in v3:
 Changes in v4:
  - none
 Changes in v5:
- - renamed all PHY nodes to ethernet-phy
+ - renamed all PHY nodes to ethernet-phy@X
 
+ .../arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 288 ++++++++++++++++--
+ 1 file changed, 270 insertions(+), 18 deletions(-)
 
- .../boot/dts/freescale/fsl-ls2088a-rdb.dts    |  32 +++
- .../arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 256 ++++++++++++++++--
- 2 files changed, 272 insertions(+), 16 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls2088a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls2088a-rdb.dts
-index 854f604049ca..60563917be44 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls2088a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls2088a-rdb.dts
-@@ -110,3 +110,35 @@ mdio2_phy4: ethernet-phy@3 {
- 		reg = <0x3>;
- 	};
- };
-+
-+&pcs_mdio1 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio2 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio3 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio4 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio5 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio6 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio7 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio8 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-index 4f59937793ef..9c0e43173cbf 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-@@ -476,6 +476,214 @@ emdio2: mdio@8b97000 {
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+index 83072da6f6c6..197397777c83 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+@@ -1305,6 +1305,240 @@ emdio2: mdio@8b97000 {
  			status = "disabled";
  		};
  
@@ -344,10 +302,36 @@ index 4f59937793ef..9c0e43173cbf 100644
 +			};
 +		};
 +
++		pcs_mdio17: mdio@8c47000 {
++			compatible = "fsl,fman-memac-mdio";
++			reg = <0x0 0x8c47000 0x0 0x1000>;
++			little-endian;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++
++			pcs17: ethernet-phy@0 {
++				reg = <0>;
++			};
++		};
++
++		pcs_mdio18: mdio@8c4b000 {
++			compatible = "fsl,fman-memac-mdio";
++			reg = <0x0 0x8c4b000 0x0 0x1000>;
++			little-endian;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++
++			pcs18: ethernet-phy@0 {
++				reg = <0>;
++			};
++		};
++
  		fsl_mc: fsl-mc@80c000000 {
  			compatible = "fsl,qoriq-mc";
- 			reg = <0x00000008 0x0c000000 0 0x40>,	 /* MC portal base */
-@@ -500,84 +708,100 @@ dpmacs {
+ 			reg = <0x00000008 0x0c000000 0 0x40>,
+@@ -1330,94 +1564,112 @@ dpmacs {
  				#address-cells = <1>;
  				#size-cells = <0>;
  
@@ -461,6 +445,20 @@ index 4f59937793ef..9c0e43173cbf 100644
  					compatible = "fsl,qoriq-mc-dpmac";
  					reg = <0x10>;
 +					pcs-handle = <&pcs16>;
+ 				};
+ 
+-				dpmac17: dpmac@11 {
++				dpmac17: ethernet@11 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <0x11>;
++					pcs-handle = <&pcs17>;
+ 				};
+ 
+-				dpmac18: dpmac@12 {
++				dpmac18: ethernet@12 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <0x12>;
++					pcs-handle = <&pcs18>;
  				};
  			};
  		};
