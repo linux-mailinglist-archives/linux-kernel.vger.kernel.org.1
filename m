@@ -2,479 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D07529FC10
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D21129FC19
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgJ3DIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 23:08:20 -0400
-Received: from mail.v3.sk ([167.172.186.51]:42024 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725996AbgJ3DIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 23:08:15 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 423B5DF885;
-        Fri, 30 Oct 2020 03:05:54 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id xM6zTemaot4v; Fri, 30 Oct 2020 03:05:52 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 7C4F4DF5E1;
-        Fri, 30 Oct 2020 03:05:52 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 96xyIB698yvg; Fri, 30 Oct 2020 03:05:52 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id 09A8DDF885;
-        Fri, 30 Oct 2020 03:05:52 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH v6 2/2] drm/bridge: hx8837: add a Himax HX8837 display controller driver
-Date:   Fri, 30 Oct 2020 04:08:00 +0100
-Message-Id: <20201030030800.1036888-3-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201030030800.1036888-1-lkundrak@v3.sk>
-References: <20201030030800.1036888-1-lkundrak@v3.sk>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        id S1725962AbgJ3DTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 23:19:02 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:56623 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725780AbgJ3DTC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 23:19:02 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 1C1B55C00D8;
+        Thu, 29 Oct 2020 23:19:01 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Thu, 29 Oct 2020 23:19:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=g1UFE2VfgvZHci7NuTUW5H0p/65rAXn
+        S0ZULATTBK7k=; b=QuKE+qlfoPG3NTEYdxDMseJK/N0tt4z/T/NQD75of7L7Zuv
+        5CdKrsrlX8zHdm2HM//x6ARWBPBSXrWmevcCtePQz1/xMVVm7CPp/o+pscpXO1L9
+        8e0/L+mNmU8s+uvwGnVudRY6mKr1Ea+TLaVWmiyFFZOUDq5pvi5LILaaxkl/kmxb
+        uxxCtDyC4J5SIoSre5XAae2cGmQWLL4/89o1kD5IUcFzDDi159Ldcr1slv9Er25d
+        Ef6/Yb9yI8nJQdBuVu77V3zZd6XycYN/C4VlEblUOYJ93jzcWjBFrnTcG+K++aVM
+        Flt7/NA/3QiASnH1zrKEXNQQcrYd2+ci8UnnkGg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=g1UFE2
+        VfgvZHci7NuTUW5H0p/65rAXnS0ZULATTBK7k=; b=KE+i01IM6OxLV2I2Hrfqk7
+        LrrP9R1GiEAa1x3JwbmSASqlBvNkigPxUc1Bg68QXXey4GpTiqNcxL4666gPVZ6m
+        0v9Ljmzx6xxmkdgMp6AW+XiJm9IrvKnikZUqIsBT/7PD3QPzEud//ZkrYh1cdvvg
+        lhUsoy/HLUMVU6B87b83qR8vF/01gQlN2IUVUQS2rRGIQ5ykhlSm6d24vEt7TZMV
+        kgNicwUoFow7RSCz9X8qP1JbMfX/UJNFJj5O4yp0lR9c+y1PoiimPNghwLt2ynDY
+        18SqD17Bhs7/GbFPbiGFheQcD73DfuDQMYAW+0OBmA2XmzKBdmNd/DET1IVt+kmQ
+        ==
+X-ME-Sender: <xms:IYabX0BEj2z_ZcpK6fzuV4U3sYLaqLt7gUmJ8af_yftckVVUkTh5fA>
+    <xme:IYabX2irR6OH42WrMaxTXw9bywxNcaWKNJ-TdreYpM0SFkhzlQV7SZ4_umeHoNOLw
+    ys_pXdJuCV9UzAvEw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleeggdehiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpedutddtkeeugeegvddttdeukeeiuddtgfeuuddtfeeiueetfeeileettedv
+    tdfhieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:IYabX3nDwxSBj4Yicc-WLio1U5kpsesVMsqgvDoua3elByElxoHuwA>
+    <xmx:IYabX6xcaB8zGSG-eNQpl4NcBBFrIEyBfvpOdxQBdWtxBgw5GyWj3g>
+    <xmx:IYabX5TBhfUdcQmdxjpSWuY13HKasHxinSmClhxYbHuRXqrnAq5z1Q>
+    <xmx:JYabXyLufK38dbWko70d-k2ezGZMu9Lfo_08PD4Bc44wgGtDrNxcgA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 16AE6E00AF; Thu, 29 Oct 2020 23:18:56 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-530-g8da6958-fm-20201021.003-g69105b13-v35
+Mime-Version: 1.0
+Message-Id: <c3b4c7d8-65fc-4196-b635-bf65ed3b44a1@www.fastmail.com>
+In-Reply-To: <20201029062723.20798-1-dylan_hung@aspeedtech.com>
+References: <20201029062723.20798-1-dylan_hung@aspeedtech.com>
+Date:   Fri, 30 Oct 2020 13:48:36 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Dylan Hung" <dylan_hung@aspeedtech.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     BMC-SW@aspeedtech.com
+Subject: =?UTF-8?Q?Re:_[PATCH]_ARM:_dts:_aspeed-g6:_Fix_HVI3C_function-group_in_p?=
+ =?UTF-8?Q?inctrl_dtsi?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Himax HX8837 is used to drive the LCD panel on OLPC platforms.
 
-It controls the panel backlight and is able to refresh it when the LCD
-controller (and the rest of the plaform) is powered off.
 
-It also converts regular RGB color data from the LCDC so that it looks
-reasonable on the OLPC LCD panel with a monochromatic layer on top of a
-layer that can either reflect light (b/w sunlight readable mode) or light
-pattern of red, green and blue pixels.
+On Thu, 29 Oct 2020, at 16:57, Dylan Hung wrote:
+> The HVI3C shall be a group of I3C function, not an independent function.
+> Correct the function name from "HVI3C" to "I3C".
+> 
+> Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
 
-At this point, the driver is rather basic. The self-refresh mode is not
-supported. There's no way of independently controlling the color swizzlin=
-g,
-antialiasing or b/w conversion, but it probably isn't too useful either.
+Good catch. Thanks Dylan.
 
-There's another driver for the same hardware on OLPC XO-1.5 and XO-1.75
-in drivers/staging/olpc_dcon. The display on that hardware doesn't utiliz=
-e
-DRM, so this driver doesn't replace the other one yet.
-
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-
----
-Changes since v5:
-(All based on feedback from Sam Ravnborg)
-- Fix indentation in Kconfig
-- Sort #includes
-- Use a constant for max brightness instead of a literal
-- Remove struct drm_panel from priv data
-- Use dev_err() instead of DRM_ERROR
-- Replace direct use of backlight props.brightness with
-  backlight_get_brightness()
-- Document sentinels with { /* sentinel */ }
-- Remove unsetting of panel->backlight
-
-Changes since v3:
-- Added this patch, in place of a driver derived from
-  drivers/staging/olpc_dcon. Compared to the previous one this
-  implements the bare minimum, without the fancy stuff such as
-  self-refresh that need more work/thinking.
-
- drivers/gpu/drm/bridge/Kconfig        |  13 +
- drivers/gpu/drm/bridge/Makefile       |   1 +
- drivers/gpu/drm/bridge/himax-hx8837.c | 330 ++++++++++++++++++++++++++
- 3 files changed, 344 insertions(+)
- create mode 100644 drivers/gpu/drm/bridge/himax-hx8837.c
-
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kcon=
-fig
-index ef91646441b16..881780719af7c 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -48,6 +48,19 @@ config DRM_DISPLAY_CONNECTOR
- 	  on ARM-based platforms. Saying Y here when this driver is not needed
- 	  will not cause any issue.
-=20
-+config DRM_HIMAX_HX8837
-+	tristate "HiMax HX8837 OLPC Display Controller"
-+	depends on OF
-+	depends on OLPC || ARCH_MMP || COMPILE_TEST
-+	select DRM_KMS_HELPER
-+	select BACKLIGHT_LCD_SUPPORT
-+	select BACKLIGHT_CLASS_DEVICE
-+	help
-+	  Enable support for HiMax HX8837 Display Controller as found in the
-+	  OLPC XO laptops.
-+
-+	  If your laptop doesn't have green ears, say "N"
-+
- config DRM_LONTIUM_LT9611
- 	tristate "Lontium LT9611 DSI/HDMI bridge"
- 	select SND_SOC_HDMI_CODEC if SND_SOC
-diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Mak=
-efile
-index 2b3aff104e466..21f72df3260db 100644
---- a/drivers/gpu/drm/bridge/Makefile
-+++ b/drivers/gpu/drm/bridge/Makefile
-@@ -2,6 +2,7 @@
- obj-$(CONFIG_DRM_CDNS_DSI) +=3D cdns-dsi.o
- obj-$(CONFIG_DRM_CHRONTEL_CH7033) +=3D chrontel-ch7033.o
- obj-$(CONFIG_DRM_DISPLAY_CONNECTOR) +=3D display-connector.o
-+obj-$(CONFIG_DRM_HIMAX_HX8837) +=3D himax-hx8837.o
- obj-$(CONFIG_DRM_LONTIUM_LT9611) +=3D lontium-lt9611.o
- obj-$(CONFIG_DRM_LVDS_CODEC) +=3D lvds-codec.o
- obj-$(CONFIG_DRM_MEGACHIPS_STDPXXXX_GE_B850V3_FW) +=3D megachips-stdpxxx=
-x-ge-b850v3-fw.o
-diff --git a/drivers/gpu/drm/bridge/himax-hx8837.c b/drivers/gpu/drm/brid=
-ge/himax-hx8837.c
-new file mode 100644
-index 0000000000000..f472e16cc331d
---- /dev/null
-+++ b/drivers/gpu/drm/bridge/himax-hx8837.c
-@@ -0,0 +1,330 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * HiMax HX8837 Display Controller Driver
-+ *
-+ * Datasheet: http://wiki.laptop.org/images/0/09/DCON_datasheet_HX8837-A=
-.pdf
-+ *
-+ * Copyright (C) 2020 Lubomir Rintel
-+ */
-+
-+#include <drm/drm_atomic_helper.h>
-+#include <drm/drm_bridge.h>
-+#include <drm/drm_of.h>
-+#include <drm/drm_panel.h>
-+#include <drm/drm_print.h>
-+#include <drm/drm_probe_helper.h>
-+
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+
-+#define bridge_to_hx8837_priv(x) \
-+	container_of(x, struct hx8837_priv, bridge)
-+
-+/* DCON registers */
-+enum {
-+	DCON_REG_ID		=3D 0x00,
-+	DCON_REG_MODE		=3D 0x01,
-+	DCON_REG_HRES		=3D 0x02,
-+	DCON_REG_HTOTAL		=3D 0x03,
-+	DCON_REG_HSYNC_WIDTH	=3D 0x04,
-+	DCON_REG_VRES		=3D 0x05,
-+	DCON_REG_VTOTAL		=3D 0x06,
-+	DCON_REG_VSYNC_WIDTH	=3D 0x07,
-+	DCON_REG_TIMEOUT	=3D 0x08,
-+	DCON_REG_SCAN_INT	=3D 0x09,
-+	DCON_REG_BRIGHT		=3D 0x0a,
-+	DCON_REG_MEM_OPT_A	=3D 0x41,
-+	DCON_REG_MEM_OPT_B	=3D 0x42,
-+};
-+
-+/* DCON_REG_MODE */
-+enum {
-+	MODE_PASSTHRU		=3D BIT(0),
-+	MODE_SLEEP		=3D BIT(1),
-+	MODE_SLEEP_AUTO		=3D BIT(2),
-+	MODE_BL_ENABLE		=3D BIT(3),
-+	MODE_BLANK		=3D BIT(4),
-+	MODE_CSWIZZLE		=3D BIT(5),
-+	MODE_COL_AA		=3D BIT(6),
-+	MODE_MONO_LUMA		=3D BIT(7),
-+	MODE_SCAN_INT		=3D BIT(8),
-+	MODE_CLOCKDIV		=3D BIT(9),
-+	MODE_DEBUG		=3D BIT(14),
-+	MODE_SELFTEST		=3D BIT(15),
-+};
-+
-+/* DCON_REG_BRIGHT */
-+enum {
-+	BRIGHT_MASK		=3D GENMASK(7, 0),
-+};
-+
-+struct hx8837_priv {
-+	struct device *dev;
-+	struct regmap *regmap;
-+	struct gpio_desc *load_gpio;
-+
-+	struct drm_bridge *panel_bridge;
-+	struct drm_bridge bridge;
-+};
-+
-+static int hx8837_bridge_attach(struct drm_bridge *bridge,
-+				enum drm_bridge_attach_flags flags)
-+{
-+	struct hx8837_priv *priv =3D bridge_to_hx8837_priv(bridge);
-+
-+	return drm_bridge_attach(bridge->encoder, priv->panel_bridge,
-+				 bridge, flags);
-+}
-+
-+static enum drm_mode_status hx8837_bridge_mode_valid(
-+				struct drm_bridge *bridge,
-+				const struct drm_display_info *info,
-+				const struct drm_display_mode *mode)
-+{
-+	if (mode->hdisplay > 0xffff)
-+		return MODE_BAD_HVALUE;
-+	if (mode->htotal > 0xffff)
-+		return MODE_BAD_HVALUE;
-+	if (mode->hsync_start - mode->hdisplay > 0xff)
-+		return MODE_HBLANK_WIDE;
-+	if (mode->hsync_end - mode->hsync_start > 0xff)
-+		return MODE_HSYNC_WIDE;
-+	if (mode->vdisplay > 0xffff)
-+		return MODE_BAD_VVALUE;
-+	if (mode->vtotal > 0xffff)
-+		return MODE_BAD_VVALUE;
-+	if (mode->vsync_start - mode->vdisplay > 0xff)
-+		return MODE_VBLANK_WIDE;
-+	if (mode->vsync_end - mode->vsync_start > 0xff)
-+		return MODE_VSYNC_WIDE;
-+
-+	return MODE_OK;
-+}
-+
-+static void hx8837_bridge_disable(struct drm_bridge *bridge)
-+{
-+	struct hx8837_priv *priv =3D bridge_to_hx8837_priv(bridge);
-+	int ret;
-+
-+	ret =3D gpiod_direction_output(priv->load_gpio, 0);
-+	if (ret)
-+		dev_err(priv->dev, "error enabling the dcon load: %d\n", ret);
-+
-+	ret =3D regmap_update_bits(priv->regmap, DCON_REG_MODE,
-+					       MODE_PASSTHRU |
-+					       MODE_SLEEP,
-+					       MODE_PASSTHRU |
-+					       MODE_SLEEP);
-+	if (ret)
-+		dev_err(priv->dev, "error disabling the dcon: %d\n", ret);
-+}
-+
-+static void hx8837_bridge_enable(struct drm_bridge *bridge)
-+{
-+	struct hx8837_priv *priv =3D bridge_to_hx8837_priv(bridge);
-+	int ret;
-+
-+	ret =3D regmap_update_bits(priv->regmap, DCON_REG_MODE,
-+					       MODE_PASSTHRU |
-+					       MODE_SLEEP |
-+					       MODE_SLEEP_AUTO |
-+					       MODE_BLANK |
-+					       MODE_SCAN_INT |
-+					       MODE_CLOCKDIV |
-+					       MODE_DEBUG |
-+					       MODE_SELFTEST,
-+					       MODE_PASSTHRU);
-+	if (ret)
-+		dev_err(priv->dev, "error enabling the dcon: %d\n", ret);
-+
-+	ret =3D gpiod_direction_output(priv->load_gpio, 1);
-+	if (ret)
-+		dev_err(priv->dev, "error enabling the dcon load: %d\n", ret);
-+}
-+
-+static void hx8837_bridge_mode_set(struct drm_bridge *bridge,
-+			   const struct drm_display_mode *mode,
-+			   const struct drm_display_mode *adjusted_mode)
-+{
-+	struct hx8837_priv *priv =3D bridge_to_hx8837_priv(bridge);
-+
-+	regmap_write(priv->regmap, DCON_REG_HRES, mode->hdisplay);
-+	regmap_write(priv->regmap, DCON_REG_HTOTAL, mode->htotal);
-+	regmap_write(priv->regmap, DCON_REG_HSYNC_WIDTH,
-+			(mode->hsync_start - mode->hdisplay) << 8 |
-+			(mode->hsync_end - mode->hsync_start));
-+	regmap_write(priv->regmap, DCON_REG_VRES, mode->vdisplay);
-+	regmap_write(priv->regmap, DCON_REG_VTOTAL, mode->vtotal);
-+	regmap_write(priv->regmap, DCON_REG_VSYNC_WIDTH,
-+			(mode->vsync_start - mode->vdisplay) << 8 |
-+			(mode->vsync_end - mode->vsync_start));
-+}
-+
-+static const struct drm_bridge_funcs hx8837_bridge_funcs =3D {
-+	.attach =3D hx8837_bridge_attach,
-+	.mode_valid =3D hx8837_bridge_mode_valid,
-+	.disable =3D hx8837_bridge_disable,
-+	.enable =3D hx8837_bridge_enable,
-+	.mode_set =3D hx8837_bridge_mode_set,
-+};
-+
-+static int hx8837_bl_update_status(struct backlight_device *bl)
-+{
-+	struct hx8837_priv *priv =3D bl_get_data(bl);
-+	unsigned int val;
-+	int ret;
-+
-+	ret =3D regmap_update_bits(priv->regmap, DCON_REG_BRIGHT,
-+					       BRIGHT_MASK,
-+					       backlight_get_brightness(bl));
-+	if (ret) {
-+		dev_err(&bl->dev, "error setting the backlight: %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (backlight_get_brightness(bl))
-+		val =3D MODE_CSWIZZLE | MODE_COL_AA;
-+	else
-+		val =3D MODE_MONO_LUMA;
-+
-+	ret =3D regmap_update_bits(priv->regmap, DCON_REG_MODE,
-+					       MODE_CSWIZZLE |
-+					       MODE_COL_AA |
-+					       MODE_MONO_LUMA,
-+					       val);
-+	if (ret) {
-+		dev_err(&bl->dev, "error setting color mode: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct backlight_ops hx8837_bl_ops =3D {
-+	.update_status =3D hx8837_bl_update_status,
-+};
-+
-+static const struct regmap_config hx8837_regmap_config =3D {
-+	.reg_bits =3D 8,
-+	.val_bits =3D 16,
-+	.max_register =3D 0x4c,
-+	.val_format_endian =3D REGMAP_ENDIAN_LITTLE,
-+};
-+
-+static int hx8837_probe(struct i2c_client *client,
-+			const struct i2c_device_id *id)
-+{
-+	struct backlight_properties bl_props =3D {
-+		.type =3D BACKLIGHT_RAW,
-+		.max_brightness =3D BRIGHT_MASK,
-+	};
-+	struct device *dev =3D &client->dev;
-+	struct backlight_device *bl;
-+	struct hx8837_priv *priv;
-+	struct drm_panel *panel;
-+	unsigned int val;
-+	int ret;
-+
-+	priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	dev_set_drvdata(dev, priv);
-+	priv->dev =3D dev;
-+
-+	priv->load_gpio =3D devm_gpiod_get(dev, "load", GPIOD_ASIS);
-+	if (IS_ERR(priv->load_gpio))
-+		return PTR_ERR(priv->load_gpio);
-+
-+	ret =3D drm_of_find_panel_or_bridge(dev->of_node, 1, -1, &panel, NULL);
-+	if (ret)
-+		return ret;
-+
-+	if (panel->backlight) {
-+		dev_err(dev, "the panel already has a backlight controller\n");
-+		return -ENODEV;
-+	}
-+
-+	priv->panel_bridge =3D devm_drm_panel_bridge_add(dev, panel);
-+	if (IS_ERR(priv->panel_bridge))
-+		return PTR_ERR(priv->panel_bridge);
-+
-+	priv->regmap =3D devm_regmap_init_i2c(client, &hx8837_regmap_config);
-+	if (IS_ERR(priv->regmap)) {
-+		dev_err(dev, "regmap init failed\n");
-+		return PTR_ERR(priv->regmap);
-+	}
-+
-+	ret =3D regmap_read(priv->regmap, DCON_REG_ID, &val);
-+	if (ret < 0) {
-+		dev_err(dev, "error reading the model id: %d\n", ret);
-+		return ret;
-+	}
-+	if ((val & 0xff00) !=3D 0xdc00) {
-+		dev_err(dev, "the device is not a hx8837\n");
-+		return -ENODEV;
-+	}
-+
-+	ret =3D regmap_read(priv->regmap, DCON_REG_BRIGHT, &val);
-+	if (ret < 0) {
-+		dev_err(&bl->dev, "error getting the backlight: %d\n", ret);
-+		return ret;
-+	}
-+	bl_props.brightness =3D val & 0xf;
-+
-+	bl =3D devm_backlight_device_register(dev, dev_name(dev), dev, priv,
-+					    &hx8837_bl_ops, &bl_props);
-+	if (IS_ERR(bl)) {
-+		dev_err(dev, "failed to register backlight\n");
-+		return PTR_ERR(bl);
-+	}
-+
-+	panel->backlight =3D bl;
-+
-+	INIT_LIST_HEAD(&priv->bridge.list);
-+	priv->bridge.funcs =3D &hx8837_bridge_funcs;
-+	priv->bridge.of_node =3D dev->of_node;
-+	drm_bridge_add(&priv->bridge);
-+
-+	dev_info(dev, "HiMax HX8837 Display Controller Driver\n");
-+	return 0;
-+}
-+
-+static int hx8837_remove(struct i2c_client *client)
-+{
-+	struct device *dev =3D &client->dev;
-+	struct hx8837_priv *priv =3D dev_get_drvdata(dev);
-+
-+	drm_bridge_remove(&priv->bridge);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id hx8837_dt_ids[] =3D {
-+	{ .compatible =3D "himax,hx8837", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, hx8837_dt_ids);
-+
-+static const struct i2c_device_id hx8837_ids[] =3D {
-+	{ "hx8837", 0 },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(i2c, hx8837_ids);
-+
-+static struct i2c_driver hx8837_driver =3D {
-+	.probe =3D hx8837_probe,
-+	.remove =3D hx8837_remove,
-+	.driver =3D {
-+		.name =3D "hx8837",
-+		.of_match_table =3D of_match_ptr(hx8837_dt_ids),
-+	},
-+	.id_table =3D hx8837_ids,
-+};
-+
-+module_i2c_driver(hx8837_driver);
-+
-+MODULE_AUTHOR("Lubomir Rintel <lkundrak@v3.sk>");
-+MODULE_DESCRIPTION("HiMax HX8837 Display Controller Driver");
-+MODULE_LICENSE("GPL");
---=20
-2.28.0
-
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
