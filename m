@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC3F2A0847
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF012A083A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgJ3Ort (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37446 "EHLO
+        id S1726948AbgJ3OrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgJ3Orl (ORCPT
+        with ESMTP id S1726820AbgJ3OrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:47:41 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDC0C0613D2;
-        Fri, 30 Oct 2020 07:47:41 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id w145so1223364oie.9;
-        Fri, 30 Oct 2020 07:47:41 -0700 (PDT)
+        Fri, 30 Oct 2020 10:47:17 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE4FC0613D2;
+        Fri, 30 Oct 2020 07:47:16 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l8so3192649wmg.3;
+        Fri, 30 Oct 2020 07:47:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Q/UCGl1ZdUoHsUHtTTTH+r1dTXLa/BTl7CcT5LFzhtQ=;
-        b=L8NewlTl2v389QZz8ht74WOfDH8lbv8sEbUY62YMCIc1MPp0XqhWtIMQqyPK3Pbht7
-         ic/aKAjTU+oGl9cnLGAUGJNVbZtCWOrn3T6Yjn9urVLbuARWMhwAKGPdPhP+Qs67XDYh
-         mgMnHLLQIIs7XW6W+fPNuP+y1CiKhY4GnokUwNW+llbZj01BG5W5PEOWjk32vSWuuQOl
-         EPtw2ISuQhuma8JYz8Oqi7HRk7zkxJaQkSaQzBD/e3DYjcMpL8kr8Q4roHHaYKg89G8C
-         qL2tKrkikxgmmTGDX5F4APhCYiPRZVe47aXA3byMHRO3cx2u6JsdOBeVfRwKzv5MZ//1
-         +Yaw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ScZ+VzP1QYcZfstHOxjjBbZNAzcQQLSuH0DC5A967ic=;
+        b=HDeKD/cMtLiNV5ZI3CH312ywH4G7LVfd+AlUSoSURojP+LK8mOCwVR+uATUr+vVUcV
+         xPuxgxsEtD4DKydBTdBliDNbh3ffeb9mgXSY4Q4TMeswQg9hEgT0Uh8hy5qkTxlOP+uo
+         K7kWGlcA3q0TA+3UReaTq3Vi5MBMRkohTDiCEdVbgCe61iwZmB7gV1dPvJNElhGQpJrr
+         4HULxXM/ZpyyFIw6mkz/CPLJnRCtBfoigpvgMHFlwrLsUPIWjSM20bLAp6aZLpDhu4B/
+         Vwhi1hpGddWys00jpzkggjYHa8CkLrGs+kdKSV3U3FUn3FTovVh9UiidvgS7mvKHZASN
+         efow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Q/UCGl1ZdUoHsUHtTTTH+r1dTXLa/BTl7CcT5LFzhtQ=;
-        b=VOsUxzriqvcMA/Rt5IeN8OaKmN9LG1Y/kx/IenwWFjpN0yOWAVQM5zRtzmdGr35Aah
-         xaIH+Fu3uQMmWkAquWWAxir3sKXKPIRTwABlXzy91i91NSGpXAnI5/bcOqlwX0vo5zQp
-         e4SIzMqBML3kdT20xVrf9O/zKYkTlzY6t54hccXCogMUqc1+HiMCHKktb7mX/g8nt4ux
-         7TbwH9uV9JJ1INpMshwfo+r8qAPuokhSfacwjDADNwoRTx0yecP9wVabhjeBzuXKJUfN
-         RQilbGyv9Re4t/iJzYzLYvxwBGIWJTxg8owjaHxcdMj3ikjsIfJe3b86guAp4cZ7Zjax
-         QnGw==
-X-Gm-Message-State: AOAM5310Nr7adeArTLAxphK4GuJ8mp1CpAdFHz12an93pwSTfHjPrmx6
-        Z8alyskAE7eJBwVrTS1A2SpfNwzNQ7RB6Q==
-X-Google-Smtp-Source: ABdhPJwnuy2Hle+FbWPJ+65edNgwFb56SDLKD8JH7gKIYhEi8Q4jZAAu1NPE1Wv/nSiQZuWwCNMFqA==
-X-Received: by 2002:aca:4d14:: with SMTP id a20mr1789519oib.46.1604069260878;
-        Fri, 30 Oct 2020 07:47:40 -0700 (PDT)
-Received: from localhost.localdomain (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id s20sm1462856oof.39.2020.10.30.07.47.38
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ScZ+VzP1QYcZfstHOxjjBbZNAzcQQLSuH0DC5A967ic=;
+        b=ifLMpde1ahXyV2uA86o7TNMI1656E5ZBPUm1+sL6yRlqU4nzG9HaSWCpEOIPC2jGEM
+         K9rNyNI+WVrbhapv5wNhPfLGVJiwV3YF5F4q06doQRK8jL4UtNkMPUHCxfyJIRZ/AJUK
+         6CICghUS4vXYRop35cYpeakPJSU2VcG7MTrf/K3GSg+OagrP3l8zPukXUPXb3zTA/j9s
+         f7SMbEtoGmsW29IJuzZ2HCm8Maldz/Pox9QaMreyiRMPGKYx5IaoYBqGApwjV0XSsSJy
+         cwrgAqGgjvJVufl1039erE7fKGS9e6JhvPuYpSxLHkZj6xeB9C22U2Hp+E0YWEyqGmD/
+         ihpQ==
+X-Gm-Message-State: AOAM533joeW5XMH31zRvAKERfs2USA2spAOTgXV9D8WTkaM7+wwiFCib
+        YcXY1hm4s0ETReg/kqTjo5iN0lA7vI4=
+X-Google-Smtp-Source: ABdhPJxASGYs7QMUz4F5m/JlOUcIg5llz68iga1rHeYUKCzCIjk8CZAUY04aXGOtXP4RVskZhmNVzw==
+X-Received: by 2002:a7b:c858:: with SMTP id c24mr3108010wml.176.1604069234977;
+        Fri, 30 Oct 2020 07:47:14 -0700 (PDT)
+Received: from avogadro.redhat.com ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id p21sm5058785wmc.28.2020.10.30.07.47.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 07:47:40 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v10 15/15] arm: dts: sunxi: h3/h5: Add I2S2 node
-Date:   Fri, 30 Oct 2020 15:46:48 +0100
-Message-Id: <20201030144648.397824-16-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201030144648.397824-1-peron.clem@gmail.com>
-References: <20201030144648.397824-1-peron.clem@gmail.com>
+        Fri, 30 Oct 2020 07:47:14 -0700 (PDT)
+Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        corbet@lwn.net
+Cc:     Eduardo Habkost <ehabkost@redhat.com>
+Subject: [PATCH 0/2] kernel-doc: Handle function typedefs
+Date:   Fri, 30 Oct 2020 15:47:11 +0100
+Message-Id: <20201030144713.201372-1-pbonzini@redhat.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+Hi all,
 
-Add H3/H5 I2S2 node connected to the HDMI interface.
+QEMU has been using kernel-doc for a while and we're very happy with it. :)
+These two patches are relatively simple regex changes that were done to
+support QEMU header files; they handle function typedefs (i.e. not
+function _pointer_ typedefs).
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- arch/arm/boot/dts/sunxi-h3-h5.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+These are basically the only difference between Linux and QEMU kernel-doc,
+so I thought I'd just send them out and see what you people think.
 
-diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-index 22d533d18992..9be13378d4df 100644
---- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-+++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-@@ -662,6 +662,19 @@ i2s1: i2s@1c22400 {
- 			status = "disabled";
- 		};
- 
-+		i2s2: i2s@1c22800 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun8i-h3-i2s";
-+			reg = <0x01c22800 0x400>;
-+			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
-+			clock-names = "apb", "mod";
-+			dmas = <&dma 27>;
-+			resets = <&ccu RST_BUS_I2S2>;
-+			dma-names = "tx";
-+			status = "disabled";
-+		};
-+
- 		codec: codec@1c22c00 {
- 			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun8i-h3-codec";
+Paolo
+
+Eduardo Habkost (2):
+  kernel-doc: Handle function typedefs that return pointers
+  kernel-doc: Handle function typedefs without asterisks
+
+ scripts/kernel-doc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
 -- 
-2.25.1
+2.28.0
 
