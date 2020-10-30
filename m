@@ -2,142 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2ADC29FDCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC0F29FDDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725855AbgJ3G2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 02:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725770AbgJ3G2L (ORCPT
+        id S1725888AbgJ3Gds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 02:33:48 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48006 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725355AbgJ3Gdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 02:28:11 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8CFC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 23:28:10 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id z4so5281174ybk.15
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 23:28:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=bWMjUjDke7pBpB9uHk2we86RqTYCbGgwv7HBCqDmkBk=;
-        b=BGIzhBaOQzCy918fMVC4TFa10N0YhlADR/ixgTvZJMqd3+rJFhMvD8EirCJS6J3i9R
-         AAD479c7ZJCnmD6A8FGxmfrSIMCARnD1WmwAdivVHYl9oWbcmwDX3X9Cwiwr1Mf3cy4F
-         +gP+Z3Nn8DClAFt3hRzPQtyGtLNkIfR/iqz/vp1kXBWPGVPBexqPnlYHiFxEAsLXOSaP
-         q7UQit63yJDiVv6sKfVUYDmp1gOtetgj1mpeTv0qdVCGrRdT0hl+QF4ekmkFIM6T38hi
-         3ukU+5A8Ng7JvYsYIkhow3forXhlR773Mt50lN42juLKtIqY1leNDQrCFQN3/3Fbd9C7
-         plKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=bWMjUjDke7pBpB9uHk2we86RqTYCbGgwv7HBCqDmkBk=;
-        b=gDwPrzIr0gzY9de+OCdNAhkEc5hmw70E2e4maLsr/wNObW1SFtLxaDg28pC/FZVK6V
-         jcjFe3Q2gXkIcM6NZR0XCU6KGJE82mXtdWcl4T5cNUKrRuyl3fg1tJV5w96srDt7TrRr
-         uV5QcHlGOYiE+I5Dds6fna3HSPVHv/viZUdUk37CVHCpjLX42FkXVz09I/iMRERjfkZq
-         unYLvV5ALWnAM0rQ0PrmESoKER5tdUg/HEGwUOX7cadH/0kOVibx1vF6ryTQMbkWXF+T
-         cqVSCQGHcS6WM8pYzX46LkZHsZKshUuG9T7NGxlpG+8V2yDDppeZtU0uXXkzQq/UrWms
-         QEmw==
-X-Gm-Message-State: AOAM5332rHvNsoD/o3k3zmWGeQShKYJ20GBgMZYx23rjuZWJdPdZSmWT
-        upDjo6wRjbsP2DuDcpY1qWzWus0DsTm0
-X-Google-Smtp-Source: ABdhPJyjWoN7g18PEOSVgNYJa5w0pnzBX5Eojzcj2juAqLdSFphueziCdTrqvkmCh247cBGnJLIxsOP+ddDg
-Sender: "amistry via sendgmr" <amistry@nandos.syd.corp.google.com>
-X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:725a:fff:fe46:72ab])
- (user=amistry job=sendgmr) by 2002:a25:740e:: with SMTP id
- p14mr1380333ybc.401.1604039289538; Thu, 29 Oct 2020 23:28:09 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 17:27:54 +1100
-Message-Id: <20201030172731.1.I7782b0cedb705384a634cfd8898eb7523562da99@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH] proc: Provide details on indirect branch speculation
-From:   Anand K Mistry <amistry@google.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     asteinhauser@google.com, joelaf@google.com, tglx@linutronix.de,
-        Anand K Mistry <amistry@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Fri, 30 Oct 2020 02:33:46 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09U6Ud2r194419;
+        Fri, 30 Oct 2020 02:33:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=a5fAtWaCtw2lw0dSgLdjA+CSR8i93E5P4UH6V5O3U0U=;
+ b=ASUzYsr9w5PpIlo1FB1Ujvp4AT5YXH/OUre7Gkp3TDu90qGcpRmvyPjU0AUUYnRxmqG0
+ 7vmmN2sP3M7cVc/O+Rda3iOTvpOVji7shv3DHKfGIdcDJXRZZuSMGr6NLUnJbjG+tBFp
+ Juc6oDm95+h5SspcMspge/3HT+LWaYZ9I0uL4oB9nGfzicRJ6Wsfl7zvItlgDNcyTWt4
+ nnY2QLVyYwMf//UzG7l+fzLLAO4V6HLrUQRGqTEM11EUfSLTfK3Sys6tWbG+1CfiTrPZ
+ D3H7tFAQ317lT4utCRZMHCVhNuIYSoO8jmtflcv4DnHKDeKyWHhyzdUDndjk605C6MTD VA== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34g15h5cq8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 02:33:44 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09U6O1Zx017390;
+        Fri, 30 Oct 2020 06:33:42 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 34f7s3s051-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 06:33:42 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09U6Xc8235455466
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Oct 2020 06:33:38 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA5E7AE04D;
+        Fri, 30 Oct 2020 06:33:37 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EF445AE055;
+        Fri, 30 Oct 2020 06:33:04 +0000 (GMT)
+Received: from vajain21.in.ibm.com (unknown [9.79.209.23])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri, 30 Oct 2020 06:33:04 +0000 (GMT)
+Received: by vajain21.in.ibm.com (sSMTP sendmail emulation); Fri, 30 Oct 2020 12:03:03 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Peter Chen <peter.chen@nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        dri-devel@lists.freedesktop.org, Pavel Machek <pavel@ucw.cz>,
+        Christian Gromm <christian.gromm@microchip.com>,
+        ceph-devel@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-acpi@vger.kernel.org,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ohad Ben-Cohen <ohad@wizery.com>, linux-pm@vger.kernel.org,
+        Simon Gaiser <simon@invisiblethingslab.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stefan Achatz <erazor_de@users.sourceforge.net>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Mathieu Malaterre <malat@debian.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@kernel.org>, NeilBrown <neilb@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wu Hao <hao.wu@intel.com>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Oleh Kravchenko <oleg@kaa.org.ua>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Marek =?utf-8?Q?Marczykowski-G=C3=B3r?= =?utf-8?Q?ecki?= 
+        <marmarek@invisiblethingslab.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Len Brown <lenb@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org, linux-media@vger.kernel.org,
+        Frederic@d06av26.portsmouth.uk.ibm.com,
+        "Barrat <fbarrat"@linux.ibm.com
+Subject: Re: [PATCH 30/33] docs: ABI: cleanup several ABI documents
+In-Reply-To: <95ef2cf3a58f4e50f17d9e58e0d9440ad14d0427.1603893146.git.mchehab+huawei@kernel.org>
+References: <cover.1603893146.git.mchehab+huawei@kernel.org>
+ <95ef2cf3a58f4e50f17d9e58e0d9440ad14d0427.1603893146.git.mchehab+huawei@kernel.org>
+Date:   Fri, 30 Oct 2020 12:03:03 +0530
+Message-ID: <87k0v8jk9s.fsf@vajain21.in.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-29_12:2020-10-29,2020-10-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ priorityscore=1501 suspectscore=2 bulkscore=0 adultscore=0 mlxscore=0
+ spamscore=0 lowpriorityscore=0 clxscore=1011 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010300046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to speculation store bypass, show information about the indirect
-branch speculation mode of a task in /proc/$pid/status.
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
 
-Signed-off-by: Anand K Mistry <amistry@google.com>
----
+> There are some ABI documents that, while they don't generate
+> any warnings, they have issues when parsed by get_abi.pl script
+> on its output result.
+>
+> Address them, in order to provide a clean output.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
- Documentation/filesystems/proc.rst |  2 ++
- fs/proc/array.c                    | 28 ++++++++++++++++++++++++++++
- 2 files changed, 30 insertions(+)
+<snip>
+> diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
+> index c1a67275c43f..8316c33862a0 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-papr-pmem
+> +++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
+> @@ -11,19 +11,26 @@ Description:
+>  		at 'Documentation/powerpc/papr_hcalls.rst' . Below are
+>  		the flags reported in this sysfs file:
+>  
+> -		* "not_armed"	: Indicates that NVDIMM contents will not
+> +		* "not_armed"
+> +				  Indicates that NVDIMM contents will not
+>  				  survive a power cycle.
+> -		* "flush_fail"	: Indicates that NVDIMM contents
+> +		* "flush_fail"
+> +				  Indicates that NVDIMM contents
+>  				  couldn't be flushed during last
+>  				  shut-down event.
+> -		* "restore_fail": Indicates that NVDIMM contents
+> +		* "restore_fail"
+> +				  Indicates that NVDIMM contents
+>  				  couldn't be restored during NVDIMM
+>  				  initialization.
+> -		* "encrypted"	: NVDIMM contents are encrypted.
+> -		* "smart_notify": There is health event for the NVDIMM.
+> -		* "scrubbed"	: Indicating that contents of the
+> +		* "encrypted"
+> +				  NVDIMM contents are encrypted.
+> +		* "smart_notify"
+> +				  There is health event for the NVDIMM.
+> +		* "scrubbed"
+> +				  Indicating that contents of the
+>  				  NVDIMM have been scrubbed.
+> -		* "locked"	: Indicating that NVDIMM contents cant
+> +		* "locked"
+> +				  Indicating that NVDIMM contents cant
+>  				  be modified until next power cycle.
+>  
+>  What:		/sys/bus/nd/devices/nmemX/papr/perf_stats
+> @@ -51,4 +58,4 @@ Description:
+>  		* "MedWDur " : Media Write Duration
+>  		* "CchRHCnt" : Cache Read Hit Count
+>  		* "CchWHCnt" : Cache Write Hit Count
+> -		* "FastWCnt" : Fast Write Count
+> \ No newline at end of file
+> +		* "FastWCnt" : Fast Write Count
+<snip>
 
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 533c79e8d2cd..710dd69614b9 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -210,6 +210,7 @@ read the file /proc/PID/status::
-   NoNewPrivs:     0
-   Seccomp:        0
-   Speculation_Store_Bypass:       thread vulnerable
-+  Speculation_Indirect_Branch:    conditional enabled
-   voluntary_ctxt_switches:        0
-   nonvoluntary_ctxt_switches:     1
- 
-@@ -292,6 +293,7 @@ It's slow but very precise.
-  NoNewPrivs                  no_new_privs, like prctl(PR_GET_NO_NEW_PRIV, ...)
-  Seccomp                     seccomp mode, like prctl(PR_GET_SECCOMP, ...)
-  Speculation_Store_Bypass    speculative store bypass mitigation status
-+ Speculation_Indirect_Branch indirect branch speculation mode
-  Cpus_allowed                mask of CPUs on which this process may run
-  Cpus_allowed_list           Same as previous, but in "list format"
-  Mems_allowed                mask of memory nodes allowed to this process
-diff --git a/fs/proc/array.c b/fs/proc/array.c
-index 65ec2029fa80..ce4fa948c9dd 100644
---- a/fs/proc/array.c
-+++ b/fs/proc/array.c
-@@ -368,6 +368,34 @@ static inline void task_seccomp(struct seq_file *m, struct task_struct *p)
- 		seq_puts(m, "vulnerable");
- 		break;
- 	}
-+
-+	seq_puts(m, "\nSpeculation_Indirect_Branch:\t");
-+	switch (arch_prctl_spec_ctrl_get(p, PR_SPEC_INDIRECT_BRANCH)) {
-+	case -EINVAL:
-+		seq_puts(m, "unsupported");
-+		break;
-+	case PR_SPEC_NOT_AFFECTED:
-+		seq_puts(m, "not affected");
-+		break;
-+	case PR_SPEC_PRCTL | PR_SPEC_FORCE_DISABLE:
-+		seq_puts(m, "conditional force disabled");
-+		break;
-+	case PR_SPEC_PRCTL | PR_SPEC_DISABLE:
-+		seq_puts(m, "conditional disabled");
-+		break;
-+	case PR_SPEC_PRCTL | PR_SPEC_ENABLE:
-+		seq_puts(m, "conditional enabled");
-+		break;
-+	case PR_SPEC_ENABLE:
-+		seq_puts(m, "always enabled");
-+		break;
-+	case PR_SPEC_DISABLE:
-+		seq_puts(m, "always disabled");
-+		break;
-+	default:
-+		seq_puts(m, "unknown");
-+		break;
-+	}
- 	seq_putc(m, '\n');
- }
- 
--- 
-2.29.1.341.ge80a0c044ae-goog
+Thanks,
+
+I am fine with proposed changes to sysfs-bus-papr-pmem.
+
+Acked-by: Vaibhav Jain <vaibhav@linux.ibm.com> # for sysfs-bus-papr-pmem
 
