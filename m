@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743322A0489
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3452A049C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgJ3Lnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgJ3Lnd (ORCPT
+        id S1726434AbgJ3LpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:45:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53114 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726614AbgJ3LpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:43:33 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F3DC0613CF;
-        Fri, 30 Oct 2020 04:43:32 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id F132C1F45EBC
-Subject: Re: [PATCH v2 1/2] dt-bindings: power: Add MT8167 power domains
-To:     Fabien Parent <fparent@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Weiyi Lu <weiyi.lu@mediatek.com>
-Cc:     Matthias Brugger <mbrugger@suse.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20201027131122.374046-1-fparent@baylibre.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <c00a5ba1-154d-66ab-2ac7-c504e2e87b3e@collabora.com>
-Date:   Fri, 30 Oct 2020 12:43:28 +0100
+        Fri, 30 Oct 2020 07:45:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604058300;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rMzfcfElqXmYjTtD+miGi6l1YpfMLIM07gwUkJW1Ka4=;
+        b=PVFKwuwqTRUUOhLjZ8FB3UshrB7jvRAkCkQWB9YzfaCXf7DPKhuwqf5TTBC1eZLoIQPwoo
+        pkOM+cjabNQWwpY/Ndx6W85sy1bwDu/IWqIaJxlZL1/WuZGCdDHVSD01TeOzO9IzdBWyBK
+        zRKMzH4XITTHa3KkV9akZ4frnMPH5+4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-3sQS_sVaMLePpUqD5ntZlw-1; Fri, 30 Oct 2020 07:44:55 -0400
+X-MC-Unique: 3sQS_sVaMLePpUqD5ntZlw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B6F01017DD0;
+        Fri, 30 Oct 2020 11:44:54 +0000 (UTC)
+Received: from [10.72.12.248] (ovpn-12-248.pek2.redhat.com [10.72.12.248])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 820275CC26;
+        Fri, 30 Oct 2020 11:44:45 +0000 (UTC)
+Subject: Re: [PATCH] vhost/vsock: add IOTLB API support
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     mst@redhat.com, netdev@vger.kernel.org,
+        Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20201029174351.134173-1-sgarzare@redhat.com>
+ <751cc074-ae68-72c8-71de-a42458058761@redhat.com>
+ <20201030105422.ju2aj2bmwsckdufh@steredhat>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <278f4732-e561-2b4f-03ee-b26455760b01@redhat.com>
+Date:   Fri, 30 Oct 2020 19:44:43 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201027131122.374046-1-fparent@baylibre.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201030105422.ju2aj2bmwsckdufh@steredhat>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabien,
 
-Thank you for the patch and base it on [0]
+On 2020/10/30 下午6:54, Stefano Garzarella wrote:
+> On Fri, Oct 30, 2020 at 06:02:18PM +0800, Jason Wang wrote:
+>>
+>> On 2020/10/30 上午1:43, Stefano Garzarella wrote:
+>>> This patch enables the IOTLB API support for vhost-vsock devices,
+>>> allowing the userspace to emulate an IOMMU for the guest.
+>>>
+>>> These changes were made following vhost-net, in details this patch:
+>>> - exposes VIRTIO_F_ACCESS_PLATFORM feature and inits the iotlb
+>>>   device if the feature is acked
+>>> - implements VHOST_GET_BACKEND_FEATURES and
+>>>   VHOST_SET_BACKEND_FEATURES ioctls
+>>> - calls vq_meta_prefetch() before vq processing to prefetch vq
+>>>   metadata address in IOTLB
+>>> - provides .read_iter, .write_iter, and .poll callbacks for the
+>>>   chardev; they are used by the userspace to exchange IOTLB messages
+>>>
+>>> This patch was tested with QEMU and a patch applied [1] to fix a
+>>> simple issue:
+>>>     $ qemu -M q35,accel=kvm,kernel-irqchip=split \
+>>>            -drive file=fedora.qcow2,format=qcow2,if=virtio \
+>>>            -device intel-iommu,intremap=on \
+>>>            -device vhost-vsock-pci,guest-cid=3,iommu_platform=on
+>>
+>>
+>> Patch looks good, but a question:
+>>
+>> It looks to me you don't enable ATS which means vhost won't get any 
+>> invalidation request or did I miss anything?
+>>
+>
+> You're right, I didn't see invalidation requests, only miss and updates.
+> Now I have tried to enable 'ats' and 'device-iotlb' but I still don't 
+> see any invalidation.
+>
+> How can I test it? (Sorry but I don't have much experience yet with 
+> vIOMMU)
 
-On 27/10/20 14:11, Fabien Parent wrote:
-> Add power domains dt-bindings for MT8167.
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
-> 
-> This patch depends on the SCPSYS PM domains driver [0].
-> 
-> v2:
-> 	* Implement on top of new SCPSYS PM domains driver [0]
-> 
-> [0] https://patchwork.kernel.org/project/linux-mediatek/list/?series=370737
-> 
->  .../power/mediatek,power-controller.yaml       |  2 ++
->  include/dt-bindings/power/mt8167-power.h       | 18 ++++++++++++++++++
->  2 files changed, 20 insertions(+)
->  create mode 100644 include/dt-bindings/power/mt8167-power.h
-> 
-> diff --git a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
-> index 0318ffb1133c..73e5452c3a5d 100644
-> --- a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
-> +++ b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
-> @@ -23,6 +23,7 @@ properties:
->  
->    compatible:
->      enum:
-> +      - mediatek,mt8167-power-controller
->        - mediatek,mt8173-power-controller
->        - mediatek,mt8183-power-controller
->        - mediatek,mt8192-power-controller
-> @@ -59,6 +60,7 @@ patternProperties:
->        reg:
->          description: |
->            Power domain index. Valid values are defined in:
-> +              "include/dt-bindings/power/mt8167-power.h" - for MT8167 type power domain.
->                "include/dt-bindings/power/mt8173-power.h" - for MT8173 type power domain.
->                "include/dt-bindings/power/mt8183-power.h" - for MT8183 type power domain.
->                "include/dt-bindings/power/mt8192-power.h" - for MT8192 type power domain.
-> diff --git a/include/dt-bindings/power/mt8167-power.h b/include/dt-bindings/power/mt8167-power.h
-> new file mode 100644
-> index 000000000000..7e3babfc2eef
-> --- /dev/null
-> +++ b/include/dt-bindings/power/mt8167-power.h
-> @@ -0,0 +1,18 @@
-> +/* SPDX-License-Identifier: GPL-2.0
-> + *
-> + * Copyright (c) 2020 MediaTek Inc.
-> + */
-> +
-> +#ifndef _DT_BINDINGS_POWER_MT8167_POWER_H
-> +#define _DT_BINDINGS_POWER_MT8167_POWER_H
-> +
-> +#define MT8167_POWER_DOMAIN_MM		0
-> +#define MT8167_POWER_DOMAIN_DISP	0
 
-Is that correct? Both domains have the same index?
+I guess it's because the batched unmap. Maybe you can try to use 
+"intel_iommu=strict" in guest kernel command line to see if it works.
 
-> +#define MT8167_POWER_DOMAIN_VDEC	1
-> +#define MT8167_POWER_DOMAIN_ISP		2
-> +#define MT8167_POWER_DOMAIN_CONN	3
-> +#define MT8167_POWER_DOMAIN_MFG_ASYNC	4
-> +#define MT8167_POWER_DOMAIN_MFG_2D	5
-> +#define MT8167_POWER_DOMAIN_MFG		6
-> +
-> +#endif /* _DT_BINDINGS_POWER_MT8167_POWER_H */
-> 
+Btw, make sure the qemu contains the patch [1]. Otherwise ATS won't be 
+enabled for recent Linux Kernel in the guest.
+
+Thanks
+
+[1] https://patchew.org/QEMU/20200909081731.24688-1-jasowang@redhat.com/
+
+>
+> Thanks,
+> Stefano
+>
+
