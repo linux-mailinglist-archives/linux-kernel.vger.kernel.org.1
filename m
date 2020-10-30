@@ -2,196 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4591029FE78
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:31:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2CA29FE76
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgJ3HbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
+        id S1725988AbgJ3HbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgJ3HbE (ORCPT
+        with ESMTP id S1725808AbgJ3HbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 03:31:04 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A2B0C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 00:21:15 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o3so4437638pgr.11
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 00:21:15 -0700 (PDT)
+        Fri, 30 Oct 2020 03:31:02 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A6CC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 00:31:02 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id g7so5659007ilr.12
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 00:31:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FKffrVOQX7anjwx1MfdXS1XL/Tw95pOKF2Q6qrmVHDE=;
-        b=hBoHo5nv0l5AXDe0dorVGfDWr4y1RVEy4vrUnJXlMep3X8WWcdiu2KQ24MeBpkT5E6
-         Yn7Gc5Nd839ZswOuefX+h6OgXwVL6AgJ/DewfHXqrRhXuoJxwKEu9IAH/vJfC6SlxU11
-         lDtnkGl5EjjFkXyIouXEyyNEBfcU0eFx0mQBO4fqD79yEnd2kT8umR8lV14TOzILs3NN
-         uv2gRxmgv5p0m6oQMKgU2eSerYdv32qi5UzHRNf9nMp1dj8PWcKnfR21OENDaxMEYQwu
-         wKByzuPCi9GKwDznCzl9KTABGmL+d3aTwfvBe8R0adaVlDiODhFL3/gD6Q1tZGxp5NHU
-         sDMA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VcgKIcIjc8QS9zXXE+6ZVBu7oRx/ZUqPRqd/fYIBaIo=;
+        b=OD+N+A7YwZDCB60kVffWKcbXO8kZanPoRTN6TMzfr1ZttR5kugqX+JwYh9fdiryhNu
+         UoOofhVrRiRQe+csRW6+EZt8DiCKYnsBtJUYrizcQ2BX41uX0uWR6jyYALemvyP26yxu
+         KgYD0d6XIM0/i9YZfDX/ajXuzWoU2+zhx9CPJj5NpUfNt21k2aATOLzyfWdifBLjqTPp
+         Jb0KfCSe14wIqTnAc5SzROurym5GRm6aT2V6Cper/Nw5ej3+gttZfYKtDS7AdYKQCYwb
+         PBoThdqyfZqr6G5ePVdyojvBdVGP34P19GIO4NusEOmAoC4IpXiOsLEWSTq4LsOsPh37
+         sSCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FKffrVOQX7anjwx1MfdXS1XL/Tw95pOKF2Q6qrmVHDE=;
-        b=aCDKNEXa+CM+lRSR5LnCtMH4AgBQlT3Jh/MTCDdGKPBZ7dPQ88E2QonBEbXxGc4gIK
-         KKFDVp9LiXCLnH7DBGgc2SoMfqoMGt/CeEyxRvvxpkF1NY0xIQsSOcm62OHWpAgwN7Ca
-         ikHLOhUwP22F/KSLiRnZ2gaJoYXVgrbodXyi5OUkSPTYzn12RhfU/FfPV3QluSv8PyQx
-         bc84DQGiHrEPB2yXFgaa7eDmTqnEl3zSpu8KgSVFDdqAKNooVrGUA8iud8jG9M6oiavt
-         T5rQhY+t7hN4Itk9csazdY8hZY0x3UYIrO2ndcCBmzGVxJdbA9mwIN73hNOySEXEM2iv
-         bYGg==
-X-Gm-Message-State: AOAM530qY8xdmtkrXRQVVq6FFs2LHQ4E+vtT2nv4Nh/sO+veJs+LaMHc
-        y1piWNCeWMWw8anHskIpcoyazw==
-X-Google-Smtp-Source: ABdhPJzxtkLCcvB3IIC01eRZtq7WVSgCMxuhOXw/XpBpz6w2AhlGXOpCoZZTJ7was9xa0tSYWnHl2w==
-X-Received: by 2002:a62:216:0:b029:164:bdf3:2cbf with SMTP id 22-20020a6202160000b0290164bdf32cbfmr5943609pfc.33.1604042474765;
-        Fri, 30 Oct 2020 00:21:14 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id kk14sm2004031pjb.47.2020.10.30.00.21.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 30 Oct 2020 00:21:13 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     linux-pm@vger.kernel.org, zhuguangqing <zhuguangqing@xiaomi.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] cpufreq: schedutil: Don't skip freq update if need_freq_update is set
-Date:   Fri, 30 Oct 2020 12:51:08 +0530
-Message-Id: <207ae817a778d79a99c30cb48f2ea1f527416519.1604042421.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <2954009.kBar6x9KXa@kreacher>
-References: <2954009.kBar6x9KXa@kreacher>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VcgKIcIjc8QS9zXXE+6ZVBu7oRx/ZUqPRqd/fYIBaIo=;
+        b=FYmG4XtEwPJ765AxKBTq2oMmJLXnbKvKsz/dh6eBMT0Y8Af5/SlcaTDCD7Tn7mjmTK
+         isDK0KwQwCtxoVTc7ag5fO5TKr7u3EBpm3rM4ggtYMg6pu5C9GJOQw+E9L+uq6rzrHrq
+         RLLFai5G5xfGjSE41nk7HOnTjNNJ5p8N8q69QDmuAoH0oEgyFx7h7UcWuvZ+LFmT/vAm
+         gg0OiY3v4c73usHc8f5Yi4jDwUf1aByQDbxcZ16QzknJ6+Zl+yuUKjFY+QM/6PwZlyBH
+         5xK2wC8MzcpsEgsyUFwSs4AAfOINpU4+Z8eOxmecWGHZN5om8R5kALYPMNQgF88mIV7T
+         6kRw==
+X-Gm-Message-State: AOAM533SjqRDTDq/ZM/WS/l3wcwxxh8iaRP3ISmSr6sZVqkt2KUejDpN
+        NQGvYyEWDI+7XlqFiX0qttsWOA5pgsBZsp9c1TjVAiJD3fLFHw==
+X-Google-Smtp-Source: ABdhPJzZ2x5670S6TzoeWcc1ccHyLnuBiP+QqEwFmQiR9HgO3fzElUSxu9vRknGwFwvxpWW3g2hbP6ngQHkGSRPSnSY=
+X-Received: by 2002:a92:d5d0:: with SMTP id d16mr966201ilq.223.1604043061789;
+ Fri, 30 Oct 2020 00:31:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201030070442.457739-1-amistry@google.com> <20201030180403.1.I9c36fd7a0e4d52e300c1004a0f6f2fc705e2b065@changeid>
+ <20201030072118.GB1495407@kroah.com>
+In-Reply-To: <20201030072118.GB1495407@kroah.com>
+From:   "Anand K. Mistry" <amistry@google.com>
+Date:   Fri, 30 Oct 2020 18:30:49 +1100
+Message-ID: <CAATStaMAyE+mbdjjRauYNKrj85h78_=tPpWC3PRzKHYPq8mh=w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] debugfs: Add a helper to export atomic64_t values
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cpufreq policy's frequency limits (min/max) can get changed at any
-point of time, while schedutil is trying to update the next frequency.
-Though the schedutil governor has necessary locking and support in place
-to make sure we don't miss any of those updates, there is a corner case
-where the governor will find that the CPU is already running at the
-desired frequency and so may skip an update.
+On Fri, 30 Oct 2020 at 18:20, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, Oct 30, 2020 at 06:04:42PM +1100, Anand K Mistry wrote:
+> > This mirrors support for exporting atomic_t values.
+> >
+> > Signed-off-by: Anand K Mistry <amistry@google.com>
+> >
+> > ---
+> >
+> >  fs/debugfs/file.c       | 37 +++++++++++++++++++++++++++++++++++++
+> >  include/linux/debugfs.h |  6 ++++++
+> >  2 files changed, 43 insertions(+)
+> >
+> > diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+> > index a768a09430c3..798bd3bdedec 100644
+> > --- a/fs/debugfs/file.c
+> > +++ b/fs/debugfs/file.c
+> > @@ -770,6 +770,43 @@ void debugfs_create_atomic_t(const char *name, umode_t mode,
+> >  }
+> >  EXPORT_SYMBOL_GPL(debugfs_create_atomic_t);
+> >
+> > +static int debugfs_atomic64_t_set(void *data, u64 val)
+> > +{
+> > +     atomic64_set((atomic64_t *)data, val);
+> > +     return 0;
+> > +}
+> > +static int debugfs_atomic64_t_get(void *data, u64 *val)
+> > +{
+> > +     *val = atomic64_read((atomic64_t *)data);
+> > +     return 0;
+> > +}
+> > +DEFINE_DEBUGFS_ATTRIBUTE(fops_atomic64_t, debugfs_atomic64_t_get,
+> > +                     debugfs_atomic64_t_set, "%lld\n");
+> > +DEFINE_DEBUGFS_ATTRIBUTE(fops_atomic64_t_ro, debugfs_atomic64_t_get, NULL,
+> > +                     "%lld\n");
+> > +DEFINE_DEBUGFS_ATTRIBUTE(fops_atomic64_t_wo, NULL, debugfs_atomic64_t_set,
+> > +                     "%lld\n");
+> > +
+> > +/**
+> > + * debugfs_create_atomic64_t - create a debugfs file that is used to read and
+> > + * write an atomic64_t value
+> > + * @name: a pointer to a string containing the name of the file to create.
+> > + * @mode: the permission that the file should have
+> > + * @parent: a pointer to the parent dentry for this file.  This should be a
+> > + *          directory dentry if set.  If this parameter is %NULL, then the
+> > + *          file will be created in the root of the debugfs filesystem.
+> > + * @value: a pointer to the variable that the file should read to and write
+> > + *         from.
+> > + */
+> > +void debugfs_create_atomic64_t(const char *name, umode_t mode,
+> > +                            struct dentry *parent, atomic64_t *value)
+> > +{
+> > +     debugfs_create_mode_unsafe(name, mode, parent, value,
+> > +                                &fops_atomic64_t, &fops_atomic64_t_ro,
+> > +                                &fops_atomic64_t_wo);
+> > +}
+> > +EXPORT_SYMBOL_GPL(debugfs_create_atomic64_t);
+> > +
+> >  ssize_t debugfs_read_file_bool(struct file *file, char __user *user_buf,
+> >                              size_t count, loff_t *ppos)
+> >  {
+> > diff --git a/include/linux/debugfs.h b/include/linux/debugfs.h
+> > index 851dd1f9a8a5..0fac84c53eab 100644
+> > --- a/include/linux/debugfs.h
+> > +++ b/include/linux/debugfs.h
+> > @@ -126,6 +126,8 @@ void debugfs_create_size_t(const char *name, umode_t mode,
+> >                          struct dentry *parent, size_t *value);
+> >  void debugfs_create_atomic_t(const char *name, umode_t mode,
+> >                            struct dentry *parent, atomic_t *value);
+> > +void debugfs_create_atomic64_t(const char *name, umode_t mode,
+> > +                                  struct dentry *parent, atomic64_t *value);
+> >  struct dentry *debugfs_create_bool(const char *name, umode_t mode,
+> >                                 struct dentry *parent, bool *value);
+> >
+> > @@ -291,6 +293,10 @@ static inline void debugfs_create_atomic_t(const char *name, umode_t mode,
+> >                                          atomic_t *value)
+> >  { }
+> >
+> > +static inline void debugfs_create_atomic64_t(const char *name, umode_t mode,
+> > +                                          struct dentry *parent, atomic64_t *value)
+> > +{ }
+> > +
+> >  static inline struct dentry *debugfs_create_bool(const char *name, umode_t mode,
+> >                                                struct dentry *parent,
+> >                                                bool *value)
+>
+> Looks good, but where is the user of this code?  I can't add new apis
+> without a user.
 
-For example, consider that the CPU can run at 1 GHz, 1.2 GHz and 1.4 GHz
-and is running at 1 GHz currently. Schedutil tries to update the
-frequency to 1.2 GHz, during this time the policy limits get changed as
-policy->min = 1.4 GHz. As schedutil (and cpufreq core) does clamp the
-frequency at various instances, we will eventually set the frequency to
-1.4 GHz, while we will save 1.2 GHz in sg_policy->next_freq.
+Fair enough. Right now, the user is just some local
+debugging/performance measuring which will never be upstreamed.
+Happy to let this drop.
 
-Now lets say the policy limits get changed back at this time with
-policy->min as 1 GHz. The next time schedutil is invoked by the
-scheduler, we will reevaluate the next frequency (because
-need_freq_update will get set due to limits change event) and lets say
-we want to set the frequency to 1.2 GHz again. At this point
-sugov_update_next_freq() will find the next_freq == current_freq and
-will abort the update, while the CPU actually runs at 1.4 GHz.
+>
+> And are you _SURE_ you want to be using an atomic64_t in the first
+> place?  We are starting to reduce the "raw" usage of atomic variables as
+> almost no one needs them, they should be using something else instead,
+> or just a u64 as atomics are not needed for simple statistics.
 
-Until now need_freq_update was used as a flag to indicate that the
-policy's frequency limits have changed, and that we should consider the
-new limits while reevaluating the next frequency.
+I understand, and would generally never use atomics in real code. I
+used an atomic since I wanted accuracy
+(for some of the benchmarks I want to run) but can't use anything that
+blocks (spinlock/mutex) since
+the code is somewhere inside the scheduler.
 
-This patch fixes the above mentioned issue by extending the purpose of
-the need_freq_update flag. If this flag is set now, the schedutil
-governor will not try to abort a frequency change even if next_freq ==
-current_freq.
+>
+> thanks,
+>
+> greg k-h
 
-As similar behavior is required in the case of
-CPUFREQ_NEED_UPDATE_LIMITS flag as well, need_freq_update will never be
-set to false if that flag is set for the driver.
-
-We also don't need to consider the need_freq_update flag in
-sugov_update_single() anymore to handle the special case of busy CPU, as
-we won't abort a frequency update anymore.
-
-Reported-by: zhuguangqing <zhuguangqing@xiaomi.com>
-Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- kernel/sched/cpufreq_schedutil.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index c03a5775d019..c6861be02c86 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -102,9 +102,12 @@ static bool sugov_should_update_freq(struct sugov_policy *sg_policy, u64 time)
- static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
- 				   unsigned int next_freq)
- {
--	if (sg_policy->next_freq == next_freq &&
--	    !cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
--		return false;
-+	if (!sg_policy->need_freq_update) {
-+		if (sg_policy->next_freq == next_freq)
-+			return false;
-+	} else if (!cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS)) {
-+		sg_policy->need_freq_update = false;
-+	}
- 
- 	sg_policy->next_freq = next_freq;
- 	sg_policy->last_freq_update_time = time;
-@@ -162,11 +165,9 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
- 
- 	freq = map_util_freq(util, freq, max);
- 
--	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update &&
--	    !cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
-+	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
- 		return sg_policy->next_freq;
- 
--	sg_policy->need_freq_update = false;
- 	sg_policy->cached_raw_freq = freq;
- 	return cpufreq_driver_resolve_freq(policy, freq);
- }
-@@ -442,7 +443,6 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
- 	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
- 	unsigned long util, max;
- 	unsigned int next_f;
--	bool busy;
- 	unsigned int cached_freq = sg_policy->cached_raw_freq;
- 
- 	sugov_iowait_boost(sg_cpu, time, flags);
-@@ -453,9 +453,6 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
- 	if (!sugov_should_update_freq(sg_policy, time))
- 		return;
- 
--	/* Limits may have changed, don't skip frequency update */
--	busy = !sg_policy->need_freq_update && sugov_cpu_is_busy(sg_cpu);
--
- 	util = sugov_get_util(sg_cpu);
- 	max = sg_cpu->max;
- 	util = sugov_iowait_apply(sg_cpu, time, util, max);
-@@ -464,7 +461,7 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
- 	 * Do not reduce the frequency if the CPU has not been idle
- 	 * recently, as the reduction is likely to be premature then.
- 	 */
--	if (busy && next_f < sg_policy->next_freq) {
-+	if (sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
- 		next_f = sg_policy->next_freq;
- 
- 		/* Restore cached freq as next_freq has changed */
-@@ -829,9 +826,10 @@ static int sugov_start(struct cpufreq_policy *policy)
- 	sg_policy->next_freq			= 0;
- 	sg_policy->work_in_progress		= false;
- 	sg_policy->limits_changed		= false;
--	sg_policy->need_freq_update		= false;
- 	sg_policy->cached_raw_freq		= 0;
- 
-+	sg_policy->need_freq_update = cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS);
-+
- 	for_each_cpu(cpu, policy->cpus) {
- 		struct sugov_cpu *sg_cpu = &per_cpu(sugov_cpu, cpu);
- 
 -- 
-2.25.0.rc1.19.g042ed3e048af
-
+Anand K. Mistry
+Software Engineer
+Google Australia
