@@ -2,135 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57162A0D95
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FB92A0D98
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727362AbgJ3ShW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:37:22 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:45253 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727282AbgJ3ShT (ORCPT
+        id S1727218AbgJ3SiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:38:18 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:58917 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725975AbgJ3SiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:37:19 -0400
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 8C3302000A;
-        Fri, 30 Oct 2020 18:37:15 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Antoine Aubert <a.aubert@overkiz.com>
-Subject: [PATCH v2 4/4] ARM: dts: at91: kizbox: switch to new pwm-atmel-tcb binding
-Date:   Fri, 30 Oct 2020 19:36:58 +0100
-Message-Id: <20201030183658.1007395-5-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201030183658.1007395-1-alexandre.belloni@bootlin.com>
-References: <20201030183658.1007395-1-alexandre.belloni@bootlin.com>
+        Fri, 30 Oct 2020 14:38:17 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id B3DF25C01B0;
+        Fri, 30 Oct 2020 14:38:16 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 30 Oct 2020 14:38:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
+        :to:cc:subject:date:message-id:reply-to:mime-version
+        :content-type:content-transfer-encoding; s=fm1; bh=WHa0SDu+o/Klm
+        eJ7jdg6c0+1vR3M09ykjvWEYKJShPk=; b=WL7U4SG3EyfKXayCNo3Wc90uaP7yR
+        ex/cFhD399XwftJhR13NsWFiLKA28wwbzRPGShPoNFk9l3e+jkx8wMPtTOl4rapV
+        xL1a3P/VLC0+03aFdBaHU9OsYGcjytJj1Ws9G5zEuDv/Cb/FuuWF/DKQJMI6s64/
+        utb4B39d7Q4apl+gux/EJy3tv9j/+M23UoZ1ztLLA3BC29K4o3BPa/I9+otoi8fu
+        OOurMM/reUMSXotBaZcGgLa6Nw0SgIPCXbXPaFuPQJ3VEZdze7JYSEa660ODuz2C
+        O8f4b9KKD5Lw9ZK5tOMjVUDVra1jtp7v29N6MVAMNSmxBZYqppYu8K0LQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:reply-to:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=WHa0SDu+o/KlmeJ7jdg6c0+1vR3M09ykjvWEYKJShPk=; b=PFdhSCBI
+        czjbLSxl1+LquOZu4uQ4k7uTfrDtBwAmoiRwmJ+rUnyB/hz1uCW559BZMWjKJz6u
+        G0repYGim34yzi+aMrcsXr4vvtJDSEK/W2ft23A4v6BcEZ/tPwf4j0DpbwUzkZj2
+        s90gWU19OWAgrk3ESqR6GwISf6mXOqayecSU+ueC6g2HFU+Xu4LrSGBuntJ0sgM/
+        uIu9ez7YhgwNrkReyKTR+4ZmlSZOZOUmRXyJfyC9Sb8LipnUluB4cD/t4vHbBfkY
+        8ZUuACXgc5/9SI+gMhVRNFMT2tCF6sWH36a2artw0eQG1P3ERR3vNyM2bSZWoOit
+        RQMRCtjqdlzOEg==
+X-ME-Sender: <xms:lV2cX9WFbI56iqq3vXP7WOTGQwEMQn0rC-06nu8vv8pIgVsyRSnQ4A>
+    <xme:lV2cX9l1xIIwgPUAZ3vYFJqi81ttpgpwGlSI1SexV_WwGOHmU9Cak2pI8jRN2VhtH
+    Gw1cuQRwpRpgKCY_g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleehgdduuddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkfforhggtgfgsehtqhertdertdejnecuhfhrohhmpegkihcujggr
+    nhcuoeiiihdrhigrnhesshgvnhhtrdgtohhmqeenucggtffrrghtthgvrhhnpeduveelff
+    ehudduvdfhtddvheefkeejtdelieefhfegheejtedvtefhfedvkeekleenucfkphepuddv
+    rdegiedruddtiedrudeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
+X-ME-Proxy: <xmx:lV2cX5Z78_h0U2ZW8JZWNjBX169USqAWU135EFDnhPKSx1CrplPexg>
+    <xmx:lV2cXwXP3wc-TJkuS-2mo6JpZzqupZ28A6ZRRVja27BeF1BMqLH5mg>
+    <xmx:lV2cX3lnKdmBYvPocJmLtnb1_6vn7q9pIOn7af2vqO7KE1Ly5ZVPpw>
+    <xmx:mF2cX1YKizL0LU_4FdfZhyFvxVhZytcWR_hyBr_TEyzff0QXTFbUaQ>
+Received: from nvrsysarch6.NVidia.COM (unknown [12.46.106.164])
+        by mail.messagingengine.com (Postfix) with ESMTPA id F0D153280059;
+        Fri, 30 Oct 2020 14:38:12 -0400 (EDT)
+From:   Zi Yan <zi.yan@sent.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Zi Yan <ziy@nvidia.com>
+Subject: [PATCH v3 1/2] mm/compaction: count pages and stop correctly during page isolation.
+Date:   Fri, 30 Oct 2020 14:38:08 -0400
+Message-Id: <20201030183809.3616803-1-zi.yan@sent.com>
+X-Mailer: git-send-email 2.28.0
+Reply-To: Zi Yan <ziy@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to the new pwm-atmel-tcb binding that avoid wasting TCB channels.
+From: Zi Yan <ziy@nvidia.com>
 
-Cc: Antoine Aubert <a.aubert@overkiz.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+In isolate_migratepages_block, when cc->alloc_contig is true, we are
+able to isolate compound pages, nr_migratepages and nr_isolated did not
+count compound pages correctly, causing us to isolate more pages than we
+thought. Count compound pages as the number of base pages they contain.
+Otherwise, we might be trapped in too_many_isolated while loop,
+since the actual isolated pages can go up to
+COMPACT_CLUSTER_MAX*512=3D16384, where COMPACT_CLUSTER_MAX is 32,
+since we stop isolation after cc->nr_migratepages reaches to
+COMPACT_CLUSTER_MAX.
+
+In addition, after we fix the issue above, cc->nr_migratepages could
+never be equal to COMPACT_CLUSTER_MAX if compound pages are isolated,
+thus page isolation could not stop as we intended. Change the isolation
+stop condition to >=3D.
+
+The issue can be triggered as follows:
+In a system with 16GB memory and an 8GB CMA region reserved by
+hugetlb_cma, if we first allocate 10GB THPs and mlock them
+(so some THPs are allocated in the CMA region and mlocked), reserving
+6 1GB hugetlb pages via
+/sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages will get stuck
+(looping in too_many_isolated function) until we kill either task.
+With the patch applied, oom will kill the application with 10GB THPs and
+let hugetlb page reservation finish.
+
+Fixes: 1da2f328fa64 (=E2=80=9Cmm,thp,compaction,cma: allow THP migration fo=
+r CMA allocations=E2=80=9D)
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Cc: <stable@vger.kernel.org>
 ---
- arch/arm/boot/dts/at91-kizbox.dts | 45 ++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 15 deletions(-)
+ mm/compaction.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/at91-kizbox.dts b/arch/arm/boot/dts/at91-kizbox.dts
-index 7add151f6250..cc9e87e48fe7 100644
---- a/arch/arm/boot/dts/at91-kizbox.dts
-+++ b/arch/arm/boot/dts/at91-kizbox.dts
-@@ -53,43 +53,32 @@ pwm_leds {
- 
- 		network_green {
- 			label = "pwm:green:network";
--			pwms = <&tcb_pwm 2 10000000 PWM_POLARITY_INVERTED>;
-+			pwms = <&tcb1_pwm1 0 10000000 PWM_POLARITY_INVERTED>;
- 			max-brightness = <255>;
- 			linux,default-trigger = "default-on";
- 		};
- 
- 		network_red {
- 			label = "pwm:red:network";
--			pwms = <&tcb_pwm 4 10000000 PWM_POLARITY_INVERTED>;
-+			pwms = <&tcb1_pwm2 0 10000000 PWM_POLARITY_INVERTED>;
- 			max-brightness = <255>;
- 			linux,default-trigger = "default-on";
- 		};
- 
- 		user_green {
- 			label = "pwm:green:user";
--			pwms = <&tcb_pwm 0 10000000 PWM_POLARITY_INVERTED>;
-+			pwms = <&tcb1_pwm0 0 10000000 PWM_POLARITY_INVERTED>;
- 			max-brightness = <255>;
- 			linux,default-trigger = "default-on";
- 		};
- 
- 		user_red {
- 			label = "pwm:red:user";
--			pwms = <&tcb_pwm 1 10000000 PWM_POLARITY_INVERTED>;
-+			pwms = <&tcb1_pwm0 1 10000000 PWM_POLARITY_INVERTED>;
- 			max-brightness = <255>;
- 			linux,default-trigger = "default-on";
- 		};
- 	};
--
--	tcb_pwm: pwm {
--		compatible = "atmel,tcb-pwm";
--		#pwm-cells = <3>;
--		tc-block = <1>;
--		pinctrl-names = "default";
--		pinctrl-0 = <&pinctrl_tcb1_tioa0
--			     &pinctrl_tcb1_tioa1
--			     &pinctrl_tcb1_tioa2
--			     &pinctrl_tcb1_tiob0>;
--	};
- };
- 
- &tcb0 {
-@@ -104,6 +93,32 @@ timer@2 {
- 	};
- };
- 
-+&tcb1 {
-+	tcb1_pwm0: pwm@0 {
-+		compatible = "atmel,tcb-pwm";
-+		reg = <0>;
-+		#pwm-cells = <3>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_tcb1_tioa0 &pinctrl_tcb1_tiob0>;
-+	};
-+
-+	tcb1_pwm1: pwm@1 {
-+		compatible = "atmel,tcb-pwm";
-+		reg = <1>;
-+		#pwm-cells = <3>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_tcb1_tioa1>;
-+	};
-+
-+	tcb1_pwm2: pwm@2 {
-+		compatible = "atmel,tcb-pwm";
-+		reg = <2>;
-+		#pwm-cells = <3>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_tcb1_tioa2>;
-+	};
-+};
-+
- &ebi {
- 	status = "okay";
- };
--- 
-2.26.2
+diff --git a/mm/compaction.c b/mm/compaction.c
+index ee1f8439369e..3e834ac402f1 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1012,8 +1012,8 @@ isolate_migratepages_block(struct compact_control *cc=
+, unsigned long low_pfn,
+=20
+ isolate_success:
+ 		list_add(&page->lru, &cc->migratepages);
+-		cc->nr_migratepages++;
+-		nr_isolated++;
++		cc->nr_migratepages +=3D compound_nr(page);
++		nr_isolated +=3D compound_nr(page);
+=20
+ 		/*
+ 		 * Avoid isolating too much unless this block is being
+@@ -1021,7 +1021,7 @@ isolate_migratepages_block(struct compact_control *cc=
+, unsigned long low_pfn,
+ 		 * or a lock is contended. For contention, isolate quickly to
+ 		 * potentially remove one source of contention.
+ 		 */
+-		if (cc->nr_migratepages =3D=3D COMPACT_CLUSTER_MAX &&
++		if (cc->nr_migratepages >=3D COMPACT_CLUSTER_MAX &&
+ 		    !cc->rescan && !cc->contended) {
+ 			++low_pfn;
+ 			break;
+@@ -1132,7 +1132,7 @@ isolate_migratepages_range(struct compact_control *cc=
+, unsigned long start_pfn,
+ 		if (!pfn)
+ 			break;
+=20
+-		if (cc->nr_migratepages =3D=3D COMPACT_CLUSTER_MAX)
++		if (cc->nr_migratepages >=3D COMPACT_CLUSTER_MAX)
+ 			break;
+ 	}
+=20
+--=20
+2.28.0
 
