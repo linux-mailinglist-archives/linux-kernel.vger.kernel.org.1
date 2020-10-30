@@ -2,170 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A7D2A077D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 343C62A077F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgJ3OKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726798AbgJ3OKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:10:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726224AbgJ3OKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Oct 2020 10:10:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40199 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726101AbgJ3OKb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:10:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604067029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oE7zJnELOj3JSr2Ymb2+NJIOFKcpsBSnN86Rkhl8axs=;
-        b=OorXOklm+xoyx3z3G6aTPyW6vywT119EPPvga/WPSnOeEqFi/5qMYTBguD0AXXUNoUOkMf
-        0QVlGsJlTRxk8eE+uq6Y6rRa+JHH0w7Qx9Zs4wirUFNttgRm1pB90IkuTn+M1vOjQBuMvE
-        HnKSseRyyU+zDbDgXBj+wwGN5LP7u3g=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-Vc2t_TQrPPCRy2sQWCuJow-1; Fri, 30 Oct 2020 10:10:27 -0400
-X-MC-Unique: Vc2t_TQrPPCRy2sQWCuJow-1
-Received: by mail-pl1-f198.google.com with SMTP id bb2so4593428plb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:10:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oE7zJnELOj3JSr2Ymb2+NJIOFKcpsBSnN86Rkhl8axs=;
-        b=MV0ngNtA3UHDwh6dQ/yDLztcpa2zJZss+dD2PGQv6H0pg16T0DWDMF/xxonzkngRAR
-         Q+wtCBlJlnKUciZI6PrFeJqiiwhBbEQFxtN9Usk7Hfg7OIh3swH8evd5GN2qX0BuCnED
-         0a0Zn1wCzTAFIVbeNsvR4p2Cw5abm7z4uP/ut/lD5UpTkZ2EabdWLDSgY3IKGLYAgG2d
-         PIDQZjzyMP4x5zjPhjJuh9+e3Pvx3/bHrhY2/i8MCr/fI9hUXmIi8aMmgmUR+XHGmwcP
-         agF17qWirRsspXS+he/TS+mKH0Ph1G+ieWaixY9dSZxyKbmS+wXRlNa+ru2KF/a+OYXo
-         9sfA==
-X-Gm-Message-State: AOAM5322epxwVDbSdUTYfDkbUEupHbDFjlQuBnvOh3WzRCh2TN/SQVvJ
-        3TM/YJAhdXZ7WzhrFDatWtH8kN8uGW0AdHfy8FViu4owEvd6VtwRxDBb72qO7ReQUzdfSPHgusj
-        LRRJCpdurytr49VwrwBG7bq8z
-X-Received: by 2002:a17:902:6b84:b029:d5:ef85:1a79 with SMTP id p4-20020a1709026b84b02900d5ef851a79mr9345447plk.32.1604067026849;
-        Fri, 30 Oct 2020 07:10:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/z761PmX0cKUlUg1KK66JGCtUiz7/Ov5sHMUFfjPd16VSFCbQsCyxL7bzJDnjhvp8e02ulw==
-X-Received: by 2002:a17:902:6b84:b029:d5:ef85:1a79 with SMTP id p4-20020a1709026b84b02900d5ef851a79mr9345377plk.32.1604067025973;
-        Fri, 30 Oct 2020 07:10:25 -0700 (PDT)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id mz23sm3376896pjb.3.2020.10.30.07.10.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 07:10:25 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 22:10:15 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Vladimir Zapolskiy <vladimir@tuxera.com>
-Cc:     linux-erofs@lists.ozlabs.org, Gao Xiang <hsiangkao@aol.com>,
-        stable@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] erofs: fix setting up pcluster for temporary pages
-Message-ID: <20201030141015.GC133455@xiangao.remote.csb>
-References: <20201022145724.27284-1-hsiangkao.ref@aol.com>
- <20201022145724.27284-1-hsiangkao@aol.com>
- <ba952daf-c55d-c251-9dfc-3bf199a2d4ff@tuxera.com>
- <20201030124745.GB133455@xiangao.remote.csb>
- <02427b81-7854-1d97-662f-ab2d2b868514@tuxera.com>
+Received: from coco.lan (ip5f5ad5bb.dynamic.kabel-deutschland.de [95.90.213.187])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 763E0206F7;
+        Fri, 30 Oct 2020 14:10:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604067031;
+        bh=vtiRxNbEy+gM88Ub3zLztcjaUW8rsYPrflGqYT98Cp4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FRXIwTOCwrgNpPpAwII8TU2AKjH+oJ+vWUF+020EC6eZ3SFlT5iDE9vEzbdyId8e/
+         eSKzQ/GHfGrWInrSygQJXo9+yxWQ9Z0DBDbDEjklDrg/Rxo8+p0bc6PG06lRN8h2OU
+         WhTU+nalICuNkZLhL74oR3VpXcsmktJOSLm1RPTo=
+Date:   Fri, 30 Oct 2020 15:10:26 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org,
+        andrealmeid@collabora.com
+Subject: Python 2.7 support and automarkup.py - Was: Re: [PATCH v2 1/5]
+ docs: automarkup.py: Use new C roles in Sphinx 3
+Message-ID: <20201030151026.3afd7997@coco.lan>
+In-Reply-To: <5053e824-625b-5a76-d862-2c855c79c427@collabora.com>
+References: <20201013231218.2750109-1-nfraprado@protonmail.com>
+        <20201013231218.2750109-2-nfraprado@protonmail.com>
+        <5053e824-625b-5a76-d862-2c855c79c427@collabora.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <02427b81-7854-1d97-662f-ab2d2b868514@tuxera.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 03:32:55PM +0200, Vladimir Zapolskiy wrote:
-> Hi Gao Xiang,
-> 
-> On 10/30/20 2:47 PM, Gao Xiang wrote:
-> > Hi Vladimir,
-> > 
-> > On Fri, Oct 30, 2020 at 02:20:31PM +0200, Vladimir Zapolskiy wrote:
-> > > Hello Gao Xiang,
-> > > 
-> > > On 10/22/20 5:57 PM, Gao Xiang via Linux-erofs wrote:
-> > > > From: Gao Xiang <hsiangkao@redhat.com>
-> > > > 
-> > > > pcluster should be only set up for all managed pages instead of
-> > > > temporary pages. Since it currently uses page->mapping to identify,
-> > > > the impact is minor for now.
-> > > > 
-> > > > Fixes: 5ddcee1f3a1c ("erofs: get rid of __stagingpage_alloc helper")
-> > > > Cc: <stable@vger.kernel.org> # 5.5+
-> > > > Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
-> > > 
-> > > I was looking exactly at this problem recently, my change is one-to-one
-> > > to your fix, thus I can provide a tag:
-> > > 
-> > > Tested-by: Vladimir Zapolskiy <vladimir@tuxera.com>
-> > 
-> > Many thanks for confirming this!
-> > I found this when I was killing magical stagingpage page->mapping,
-> > it's somewhat late :-)
-> > 
-> 
-> sure, for me it was an exciting immersion into the filesystem code :)
+Hi Dafna,
 
-Thanks for your effort on this!
+Em Fri, 30 Oct 2020 14:33:52 +0100
+Dafna Hirschfeld <dafna.hirschfeld@collabora.com> escreveu:
 
-You could also post related kernel message in advance and
-I will definitly look into that as well. :)
+> Hi
+>=20
+> Am 14.10.20 um 01:13 schrieb N=C3=ADcolas F. R. A. Prado:
+> > While Sphinx 2 used a single c:type role for struct, union, enum and
+> > typedef, Sphinx 3 uses a specific role for each one.
+> > To keep backward compatibility, detect the Sphinx version and use the
+> > correct roles for that version.
+> >=20
+> > Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
+> > ---
+> >   Documentation/sphinx/automarkup.py | 55 ++++++++++++++++++++++++++----
+> >   1 file changed, 49 insertions(+), 6 deletions(-)
+> >=20
+> > diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/=
+automarkup.py
+> > index a1b0f554cd82..db13fb15cedc 100644
+> > --- a/Documentation/sphinx/automarkup.py
+> > +++ b/Documentation/sphinx/automarkup.py
+> > @@ -23,7 +23,21 @@ from itertools import chain
+> >   # bit tries to restrict matches to things that won't create trouble.
+> >   #
+> >   RE_function =3D re.compile(r'(([\w_][\w\d_]+)\(\))')
+> > -RE_type =3D re.compile(r'(struct|union|enum|typedef)\s+([\w_][\w\d_]+)=
+')
+> > +
+> > +#
+> > +# Sphinx 2 uses the same :c:type role for struct, union, enum and type=
+def
+> > +#
+> > +RE_generic_type =3D re.compile(r'(struct|union|enum|typedef)\s+([\w_][=
+\w\d_]+)')
+> > +
+> > +#
+> > +# Sphinx 3 uses a different C role for each one of struct, union, enum=
+ and
+> > +# typedef
+> > +#
+> > +RE_struct =3D re.compile(r'\b(struct)\s+([a-zA-Z_]\w+)', flags=3Dre.AS=
+CII)
+> > +RE_union =3D re.compile(r'\b(union)\s+([a-zA-Z_]\w+)', flags=3Dre.ASCI=
+I)
+> > +RE_enum =3D re.compile(r'\b(enum)\s+([a-zA-Z_]\w+)', flags=3Dre.ASCII)
+> > +RE_typedef =3D re.compile(r'\b(typedef)\s+([a-zA-Z_]\w+)', flags=3Dre.=
+ASCII) =20
+>=20
+> I use ubuntu 18.04, my default python is 2.7,
+> when running 'make htmldocs' with that fix I get:
+>=20
+> AttributeError: 'module' object has no attribute 'ASCII'
 
-> 
-> > > 
-> > > 
-> > > The fixed problem is minor, but the kernel log becomes polluted, if
-> > > a page allocation debug option is enabled:
-> > > 
-> > >      % md5sum ~/erofs/testfile
-> > >      BUG: Bad page state in process kworker/u9:0  pfn:687de
-> > >      page:0000000057b8bcb4 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x687de
-> > >      flags: 0x4000000000002000(private)
-> > >      raw: 4000000000002000 dead000000000100 dead000000000122 0000000000000000
-> > >      raw: 0000000000000000 ffff888066758690 00000000ffffffff 0000000000000000
-> > >      page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
-> > >      Modules linked in:
-> > >      CPU: 1 PID: 602 Comm: kworker/u9:0 Not tainted 5.9.1 #2
-> > >      Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> > >      Workqueue: erofs_unzipd z_erofs_decompressqueue_work
-> > >      Call Trace:
-> > >       dump_stack+0x84/0xba
-> > >       bad_page.cold+0xac/0xb1
-> > >       check_free_page_bad+0xb0/0xc0
-> > >       free_pcp_prepare+0x2c8/0x2d0
-> > >       free_unref_page+0x18/0xf0
-> > >       put_pages_list+0x11a/0x120
-> > >       z_erofs_decompressqueue_work+0xc9/0x110
-> > >       ? z_erofs_decompress_pcluster.isra.0+0xf10/0xf10
-> > >       ? read_word_at_a_time+0x12/0x20
-> > >       ? strscpy+0xc7/0x1a0
-> > >       process_one_work+0x30c/0x730
-> > >       worker_thread+0x91/0x640
-> > >       ? __kasan_check_read+0x11/0x20
-> > >       ? rescuer_thread+0x8a0/0x8a0
-> > >       kthread+0x1dd/0x200
-> > >       ? kthread_unpark+0xa0/0xa0
-> > >       ret_from_fork+0x1f/0x30
-> > >      Disabling lock debugging due to kernel taint
-> > 
-> > Yeah, I can make a pull-request to Linus if you need this to be in master
-> > now, or I can post it for v5.11-rc1 since 5.4 LTS isn't effected (and it
-> > would be only a print problem with debugging option.)
-> > 
-> 
-> As for myself I don't utterly need this fix on the master branch ASAP, however
-> it might be reasonable to get it included right into the next v5.10 release,
-> because I believe it'll be an LTS. Eventually it's up to you to make a decision,
-> from my side I won't urge you, the fixed issue is obviously a non-critical one.
-> 
-> Thank you for the original fix and taking my opinion into consideration :)
+FYI, there's a discussion at kernel-doc ML about dropping support for
+python 2.7 at Kernel 5.11. While not explicitly mentioned at the
+discussion, this is the rationale:
 
-Yeah, v5.10 is a LTS version, and you are right, I will try to make a
-pull-request after I get Chao's RVB.
+	https://www.python.org/doc/sunset-python-2/
+
+As this is currently broken with Python 2.7, then perhaps we can
+do that for 5.10 :-)
+
+Jon,
+
+What do you think?=20
+
+I see a few alternatives:
+
+1) fix automarkup.py for it to work again with python 2.7;
+
+2) conf.py could gain some logic to disable automarkup with
+   Python < 3;
+
+3) scripts/sphinx-pre-install already detects Python version.=20
+   It should likely be easy to ask the user to use python 3.x,
+   if an older version is detected.
+
+Doing (1) or (2) will require an additional step when we raise
+the bar for Python version.
 
 Thanks,
-Gao Xiang
-
-> 
-> --
-> Best wishes,
-> Vladimir
-> 
-
+Mauro
