@@ -2,184 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC0F29FDDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D3D29FDE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725888AbgJ3Gds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 02:33:48 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48006 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725355AbgJ3Gdq (ORCPT
+        id S1725913AbgJ3GfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 02:35:17 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19307 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJ3GfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 02:33:46 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09U6Ud2r194419;
-        Fri, 30 Oct 2020 02:33:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=a5fAtWaCtw2lw0dSgLdjA+CSR8i93E5P4UH6V5O3U0U=;
- b=ASUzYsr9w5PpIlo1FB1Ujvp4AT5YXH/OUre7Gkp3TDu90qGcpRmvyPjU0AUUYnRxmqG0
- 7vmmN2sP3M7cVc/O+Rda3iOTvpOVji7shv3DHKfGIdcDJXRZZuSMGr6NLUnJbjG+tBFp
- Juc6oDm95+h5SspcMspge/3HT+LWaYZ9I0uL4oB9nGfzicRJ6Wsfl7zvItlgDNcyTWt4
- nnY2QLVyYwMf//UzG7l+fzLLAO4V6HLrUQRGqTEM11EUfSLTfK3Sys6tWbG+1CfiTrPZ
- D3H7tFAQ317lT4utCRZMHCVhNuIYSoO8jmtflcv4DnHKDeKyWHhyzdUDndjk605C6MTD VA== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34g15h5cq8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Oct 2020 02:33:44 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09U6O1Zx017390;
-        Fri, 30 Oct 2020 06:33:42 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 34f7s3s051-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Oct 2020 06:33:42 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09U6Xc8235455466
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Oct 2020 06:33:38 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA5E7AE04D;
-        Fri, 30 Oct 2020 06:33:37 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EF445AE055;
-        Fri, 30 Oct 2020 06:33:04 +0000 (GMT)
-Received: from vajain21.in.ibm.com (unknown [9.79.209.23])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Fri, 30 Oct 2020 06:33:04 +0000 (GMT)
-Received: by vajain21.in.ibm.com (sSMTP sendmail emulation); Fri, 30 Oct 2020 12:03:03 +0530
-From:   Vaibhav Jain <vaibhav@linux.ibm.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Peter Chen <peter.chen@nxp.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        dri-devel@lists.freedesktop.org, Pavel Machek <pavel@ucw.cz>,
-        Christian Gromm <christian.gromm@microchip.com>,
-        ceph-devel@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-acpi@vger.kernel.org,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Ohad Ben-Cohen <ohad@wizery.com>, linux-pm@vger.kernel.org,
-        Simon Gaiser <simon@invisiblethingslab.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stefan Achatz <erazor_de@users.sourceforge.net>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Mathieu Malaterre <malat@debian.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-kernel@vger.kernel.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wu Hao <hao.wu@intel.com>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Oleh Kravchenko <oleg@kaa.org.ua>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Marek =?utf-8?Q?Marczykowski-G=C3=B3r?= =?utf-8?Q?ecki?= 
-        <marmarek@invisiblethingslab.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Len Brown <lenb@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, linux-media@vger.kernel.org,
-        Frederic@d06av26.portsmouth.uk.ibm.com,
-        "Barrat <fbarrat"@linux.ibm.com
-Subject: Re: [PATCH 30/33] docs: ABI: cleanup several ABI documents
-In-Reply-To: <95ef2cf3a58f4e50f17d9e58e0d9440ad14d0427.1603893146.git.mchehab+huawei@kernel.org>
-References: <cover.1603893146.git.mchehab+huawei@kernel.org>
- <95ef2cf3a58f4e50f17d9e58e0d9440ad14d0427.1603893146.git.mchehab+huawei@kernel.org>
-Date:   Fri, 30 Oct 2020 12:03:03 +0530
-Message-ID: <87k0v8jk9s.fsf@vajain21.in.ibm.com>
+        Fri, 30 Oct 2020 02:35:16 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9bb4290001>; Thu, 29 Oct 2020 23:35:21 -0700
+Received: from [10.25.99.37] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
+ 2020 06:35:08 +0000
+Subject: Re: [PATCH v4 00/15] Audio graph card updates and usage with Tegra210
+ audio
+To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
+        <kuninori.morimoto.gx@renesas.com>,
+        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
+        <tiwai@suse.com>, <p.zabel@pengutronix.de>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
+CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
+        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
+        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
+        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
+        <nicoleotsuka@gmail.com>
+References: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <c98d63a7-f311-a94f-abcc-1c5a87ba8025@nvidia.com>
+Date:   Fri, 30 Oct 2020 12:04:50 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-29_12:2020-10-29,2020-10-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- priorityscore=1501 suspectscore=2 bulkscore=0 adultscore=0 mlxscore=0
- spamscore=0 lowpriorityscore=0 clxscore=1011 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300046
+In-Reply-To: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604039721; bh=ycvf4n5KD1xsLuNvIWPme1ipDvYuSNjDWB6qo9gxrm0=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=OFw85CW5ZHPXwP2yMStP6E8VJZGIr7gva0pPhFEPMqhFXd/kbLi0yx6xXFBnoiCj9
+         scstZc7uTWQBYHCxC8lcqQvSxa4QZjYOsH0nCbPxZP30C1tbMIRl2cfXcQR8FDH7J7
+         c3LBaUOOEcLZICdBXB2ZWKYqIB0Vc6Hm0VA6gnyPJ0lwP430wVX1CippU+vVpVOfsj
+         ZeYmF3TXY030eMT1m/uhVd5gD3VKLp3T3YWWoKdtkHafIiVd07tdhHDA8zzT/VZcaD
+         VECCUJqlDuilUr3l2JwuUEO4h5EUdu1lBW0j4lR3DRHIf/oiYZwv1MhV/OhUJA65UR
+         CJqGl6OxIyi0g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
+Hi Mark, Morimoto-san,
 
-> There are some ABI documents that, while they don't generate
-> any warnings, they have issues when parsed by get_abi.pl script
-> on its output result.
+> Summary of changes:
+>   * Support multiple instances of a component. For example there can be
+>     multiple I2S devices which can use the same component driver.
 >
-> Address them, in order to provide a clean output.
+>   * Support open platforms with empty Codec endpoint. Customers can plug
+>     their own HW and can populate codec endpoint.
 >
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>   * In a component model there can be many components which can be
+>     connected togethe. In such cases Identify no-pcm DPCM DAI links which
+>     can be used in BE<->BE connections.
+>
+>   * Add Tegra audio graph driver which is based on generic audio graph
+>     driver and specific customizations are done in Tegra driver.
+>
+>   * This pushes DT support for Tegra210 based platforms which uses
+>     audio-graph card and above enhancements.
+>
+> The series is based on following references where DPCM usgae for Tegra
+> Audio and simple-card driver proposal were discussed.
+>
+>   * https://lkml.org/lkml/2020/4/30/519 (DPCM for Tegra)
+>   * https://lkml.org/lkml/2020/6/27/4 (simple-card driver)
+>
+> Changelog
+> =========
+>
+> v3 -> v4
+> --------
+>   * Added new patches to convert graph.txt and audio-graph-card.txt
+>     to corresponding json-schema files. Later these references
+>     are used in Tegra audio graph schema.
+>
+>   * AHUB component binding docs are updated to reflect the usage
+>     of ports/port/endpoint
+>
+>   * More common stuff is moved into graph_parse_of() and this is
+>     used by both generic and Tegra audio graph.
+>
+>   * DT binding for Tegra audio graph is updated to included "ports { }"
+>
+>   * As per the suggestion 'void *data' member is dropped from
+>     'asoc_simple_priv' and instead container method is used to
+>     maintain required custom data internal to Tegra audio graph.
+>
+> v2 -> v3
+> --------
+>   * Dropped new compatible addition in generic graph driver
+>     after reviewing it with Morimoto-san. Instead added Tegra
+>     audio graph driver and new compatibles are added in the same.
+>   * Added new patches to expose new members for customization
+>     in audio graph driver.
+>   * Added new patch for Tegra audio graph driver and related
+>     documentation.
+>   * Minor change in below commit where mutex version of helper is used
+>     "ASoC: audio-graph: Identify 'no_pcm' DAI links for DPCM"
+>   * DT binding is updated to use the newly exposed compatibles
+>   * No changes in other patches
+>
+> v1 -> v2
+> --------
+>   * Re-organized ports/endpoints description for ADMAIF and XBAR.
+>     Updated DT patches accordingly.
+>   * After above change, multiple Codec endpoint support is not
+>     required and hence dropped for now. This will be considered
+>     separately if at all required in future.
+>   * Re-ordered patches in the series.
 
-<snip>
-> diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-> index c1a67275c43f..8316c33862a0 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-papr-pmem
-> +++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-> @@ -11,19 +11,26 @@ Description:
->  		at 'Documentation/powerpc/papr_hcalls.rst' . Below are
->  		the flags reported in this sysfs file:
->  
-> -		* "not_armed"	: Indicates that NVDIMM contents will not
-> +		* "not_armed"
-> +				  Indicates that NVDIMM contents will not
->  				  survive a power cycle.
-> -		* "flush_fail"	: Indicates that NVDIMM contents
-> +		* "flush_fail"
-> +				  Indicates that NVDIMM contents
->  				  couldn't be flushed during last
->  				  shut-down event.
-> -		* "restore_fail": Indicates that NVDIMM contents
-> +		* "restore_fail"
-> +				  Indicates that NVDIMM contents
->  				  couldn't be restored during NVDIMM
->  				  initialization.
-> -		* "encrypted"	: NVDIMM contents are encrypted.
-> -		* "smart_notify": There is health event for the NVDIMM.
-> -		* "scrubbed"	: Indicating that contents of the
-> +		* "encrypted"
-> +				  NVDIMM contents are encrypted.
-> +		* "smart_notify"
-> +				  There is health event for the NVDIMM.
-> +		* "scrubbed"
-> +				  Indicating that contents of the
->  				  NVDIMM have been scrubbed.
-> -		* "locked"	: Indicating that NVDIMM contents cant
-> +		* "locked"
-> +				  Indicating that NVDIMM contents cant
->  				  be modified until next power cycle.
->  
->  What:		/sys/bus/nd/devices/nmemX/papr/perf_stats
-> @@ -51,4 +58,4 @@ Description:
->  		* "MedWDur " : Media Write Duration
->  		* "CchRHCnt" : Cache Read Hit Count
->  		* "CchWHCnt" : Cache Write Hit Count
-> -		* "FastWCnt" : Fast Write Count
-> \ No newline at end of file
-> +		* "FastWCnt" : Fast Write Count
-<snip>
+>
+> Sameer Pujar (15):
+>    ASoC: soc-core: Fix component name_prefix parsing
+>    ASoC: soc-pcm: Get all BEs along DAPM path
+>    ASoC: audio-graph: Use of_node and DAI for DPCM DAI link names
+>    ASoC: audio-graph: Identify 'no_pcm' DAI links for DPCM
+>    ASoC: audio-graph: Support empty Codec endpoint
+>    ASoC: audio-graph: Expose new members for asoc_simple_priv
+>    ASoC: audio-graph: Expose helpers from audio graph
 
-Thanks,
+Would you suggest to keep above in a separate series and thus not 
+blocked by below doc updates? If so do I need to resend above in a next 
+revision or if these are good to be picked up?
 
-I am fine with proposed changes to sysfs-bus-papr-pmem.
+>    Documentation: of: Convert graph bindings to json-schema
+>    ASoC: dt-bindings: audio-graph: Convert bindings to json-schema
+>    ASoC: dt-bindings: tegra: Add graph bindings
+>    ASoC: dt-bindings: tegra: Add json-schema for Tegra audio graph card
 
-Acked-by: Vaibhav Jain <vaibhav@linux.ibm.com> # for sysfs-bus-papr-pmem
+Documentation patches in the series have some dependency over 
+Morimoto-san's audio-graph series 
+https://patchwork.kernel.org/project/alsa-devel/list/?series=372759. I 
+will update doc related patches once dependency is merged.
 
+>    ASoC: tegra: Add audio graph based card driver
+>    arm64: defconfig: Enable Tegra audio graph card driver
+>    arm64: tegra: Audio graph header for Tegra210
+>    arm64: tegra: Audio graph sound card for Jetson Nano and TX1
