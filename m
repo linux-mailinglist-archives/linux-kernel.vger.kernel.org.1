@@ -2,88 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F812A0EBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CE22A0EBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:35:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727468AbgJ3TfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 15:35:13 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:37103 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727430AbgJ3Tea (ORCPT
+        id S1727617AbgJ3TfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 15:35:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44354 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727449AbgJ3TfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:34:30 -0400
-Received: by mail-ot1-f67.google.com with SMTP id m22so6592318ots.4;
-        Fri, 30 Oct 2020 12:34:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I+UOeLqddKwm96yK8/kkxVHqI4jCc+oL+/3b1gAK09w=;
-        b=Pv2i//XFiH0QojFcwx/lwnGdA8vdgfB2oZjIzDWyzsNHPhIlvK8bX5/I4DpuMfOtwT
-         r3xRLfWBOTQZQK/htjKW5OThJ8s44dVLlFjsP5xmDU54qWnG1NsS/+brhu0IMZXbLedj
-         /wajdFgDlsKuE9GOcYd+K4xXrYPd0kDKd/0aJZivXLz6pwAXBu34j1aUcu5Of1HTl6k0
-         llzsKNDO3ZANz8wPv/s0o3n1dCNmA998w9E0HKAaOyq1AuUOpkbPYPpBHb39AMR9tEX3
-         j5l3EorItGHypWudx+dDOfINPLRAF1iArMy3JGVmQSAh7/4mNxA2YR19Lf3wi0G7b7S5
-         gMVA==
-X-Gm-Message-State: AOAM531L/OBIW19NfBb0071MoRPaa4g6CryL1KqC1k2JkTodwWYlA7c7
-        6rKx0qGptk3bY5J6J1gxZg==
-X-Google-Smtp-Source: ABdhPJzrbgSdZT7jNBJMAOvryFhc8QxGC4cCiqDn1uoYbML+ca7yGo6EtGBIzCnl2qxPgzky7V80fQ==
-X-Received: by 2002:a9d:53cc:: with SMTP id i12mr2777619oth.215.1604086469813;
-        Fri, 30 Oct 2020 12:34:29 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b21sm1442029ots.30.2020.10.30.12.34.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 12:34:28 -0700 (PDT)
-Received: (nullmailer pid 913 invoked by uid 1000);
-        Fri, 30 Oct 2020 19:34:27 -0000
-Date:   Fri, 30 Oct 2020 14:34:27 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        vireshk@kernel.org, sboyd@kernel.org, nm@ti.com, rafael@kernel.org,
-        sudeep.holla@arm.com, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com
-Subject: Re: [PATCH 1/4] dt-bindings: opp: Introduce opp-sustainable bindings
-Message-ID: <20201030193427.GA4186428@bogus>
-References: <20201028140847.1018-1-lukasz.luba@arm.com>
- <20201028140847.1018-2-lukasz.luba@arm.com>
+        Fri, 30 Oct 2020 15:35:21 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604086519;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjnQMCzBdzGXaCOpmbjT8Ur9FZq3y7opRBflIXIldZw=;
+        b=db633F26JvpFY6g0OD9+HbOB2bGDkf74GvzdnzaI3Jackio3Pxmuc4jaTjmmTn0rWAIpK+
+        FwvojioAnGZiiH15k8FN/MiA2IKJM2U7IeHO0IsBZqBGgEsd8kwilqueFED/GNpoidpnzO
+        yy2TxOvoKUkHNkNBXz892WSrXAjSj1bek74dJCnwm2fooU7rVOQjFed7q+Vvsmw9zNfHs4
+        G2wInIc2Xh8w8e1+gsfiziPOVyn2tk/4xzLJndeycG1E0X5k3bHmibgmZZcOeJXy9ENlqt
+        1WjhiLEbUG/fvEPPOJsLp5CaNR4eEbW+SMl/VHUu0cW+yWNLKzRpz7CwuUxChg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604086519;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjnQMCzBdzGXaCOpmbjT8Ur9FZq3y7opRBflIXIldZw=;
+        b=il7YKHjaiUFmDOQKgI3UCsxgkMmYaTjOnYVZzaPy8He727Hr6NRROPSIn6WIMwC/jiW6Jw
+        nlMa3TiG03b3UjDQ==
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Christoph Hellwig <hch@lst.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        x86@kernel.org, Vineet Gupta <vgupta@synopsys.com>,
+        linux-snps-arc@lists.infradead.org,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org
+Subject: Re: [patch V2 00/18] mm/highmem: Preemptible variant of kmap_atomic & friends
+In-Reply-To: <20201030130627.GI27442@casper.infradead.org>
+References: <20201029221806.189523375@linutronix.de> <20201030130627.GI27442@casper.infradead.org>
+Date:   Fri, 30 Oct 2020 20:35:18 +0100
+Message-ID: <87k0v7mrrd.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028140847.1018-2-lukasz.luba@arm.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 02:08:44PM +0000, Lukasz Luba wrote:
-> Add opp-sustainable as an additional property in the OPP node to describe
-> the sustainable performance level of the device. This will help to
-> estimate the sustainable performance of the whole system.
-> 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  Documentation/devicetree/bindings/opp/opp.txt | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/opp/opp.txt b/Documentation/devicetree/bindings/opp/opp.txt
-> index 9847dfeeffcb..cd01028de305 100644
-> --- a/Documentation/devicetree/bindings/opp/opp.txt
-> +++ b/Documentation/devicetree/bindings/opp/opp.txt
-> @@ -154,6 +154,10 @@ Optional properties:
->  - opp-suspend: Marks the OPP to be used during device suspend. If multiple OPPs
->    in the table have this, the OPP with highest opp-hz will be used.
->  
-> +- opp-sustainable: Marks the OPP as sustainable. This property can be used for
-> +  estimating sustainable performance of the whole system. If multiple OPPs in
-> +  the table have this, the OPP with highest opp-hz will be used.
-> +
+On Fri, Oct 30 2020 at 13:06, Matthew Wilcox wrote:
+> On Thu, Oct 29, 2020 at 11:18:06PM +0100, Thomas Gleixner wrote:
+>> This series provides kmap_local.* iomap_local variants which only disable
+>> migration to keep the virtual mapping address stable accross preemption,
+>> but do neither disable pagefaults nor preemption. The new functions can be
+>> used in any context, but if used in atomic context the caller has to take
+>> care of eventually disabling pagefaults.
+>
+> Could I ask for a CONFIG_KMAP_DEBUG which aliases all the kmap variants
+> to vmap()?  I think we currently have a problem in iov_iter on HIGHMEM
+> configs:
 
-Isn't this just the inverse of the turbo? or boost? flag we already 
-have? 
+For kmap() that would work, but for kmap_atomic() not so much when it is
+called in non-preemptible context because vmap() might sleep.
 
-Couldn't this be learned? I ran at this frequency and then overheated. 
-That could be dependent on ambient temperatures or dust build up on 
-fans/heatsink.
+> copy_page_to_iter() calls page_copy_sane() which checks:
+>
+>         head = compound_head(page);
+>         if (likely(n <= v && v <= page_size(head)))
+>                 return true;
+>
+> but then:
+>
+>                 void *kaddr = kmap_atomic(page);
+>                 size_t wanted = copy_to_iter(kaddr + offset, bytes, i);
+>                 kunmap_atomic(kaddr);
+>
+> so if offset to offset+bytes is larger than PAGE_SIZE, this is going to
+> work for lowmem pages and fail miserably for highmem pages.  I suggest
+> vmap() because vmap has a PAGE_SIZE gap between each allocation.
 
-Rob
+On 32bit highmem the kmap_atomic() case is easy: Double the number of
+mapping slots and only use every second one, which gives you a guard
+page between the maps.
+
+For 64bit we could do something ugly: Enable the highmem kmap_atomic()
+crud and enforce an alias mapping (at least on the architectures where
+this is reasonable). Then you get the same as for 32bit.
+
+> Alternatively if we could have a kmap_atomic_compound(), that would
+> be awesome, but probably not realistic to implement.  I've more
+> or less resigned myself to having to map things one page at a time.
+
+That might be horribly awesome on 32bit :)
+
+Thanks,
+
+        tglx
