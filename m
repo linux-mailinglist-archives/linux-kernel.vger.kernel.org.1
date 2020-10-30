@@ -2,95 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA222A0310
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FB02A0319
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgJ3Kle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:41:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39262 "EHLO mx2.suse.de"
+        id S1726353AbgJ3Ko1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:44:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725790AbgJ3Kld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:41:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604054491;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p/BtQ++5zS+WPjtM1dDZdlm+h9v0/VVu9/G1z1EDdzU=;
-        b=AA0N4PoNb6MlvO++SZr0bFnfX/1FNrhcT2/AdQ69oGGuqQIkpv3ZWKWOuflfxV0DVx65XL
-        xhO/pviHTaXMKMiBUMxXeDO3yBoLJlrnar1T2x5KQsLMM4xj3zyW9Z09QWH/7SCefQNDQg
-        nYFCxkvzrNdsUYN1x++SjyLSTk+D14U=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D0ABEAC53;
-        Fri, 30 Oct 2020 10:41:31 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 11:41:30 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH 6/9] livepatch/ftrace: Add recursion protection to the
- ftrace callback
-Message-ID: <20201030104130.GA1602@alley>
-References: <20201028115244.995788961@goodmis.org>
- <20201028115613.291169246@goodmis.org>
- <alpine.LSU.2.21.2010291443310.1688@pobox.suse.cz>
- <20201029145709.GD16774@alley>
- <20201029142406.3c46855a@gandalf.local.home>
- <alpine.LSU.2.21.2010301048080.22360@pobox.suse.cz>
+        id S1725801AbgJ3Ko1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:44:27 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14FB320720;
+        Fri, 30 Oct 2020 10:44:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604054665;
+        bh=ppbuAI+W7nY0G+0QkAsjoiOlnWYiUYwhaoxDj+dZeCI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mUGdN5+8qnLNSy0dpMY2+ziw+HhYwFf+fCtqEEal/tTi6H1FfJv+8opF0eEWiDM0w
+         2owrqhz2Z6ZJMflZjSEbMKyrNu4aYNYjhsuxl5+HUyNQ1MZvqNSdFR4GXwJaXVb6Qk
+         S96uDp0YWj/mhE5hRB77X/2HfA4chigwqWpRtKTc=
+Date:   Fri, 30 Oct 2020 11:45:13 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     HyungJae Im <hj2.im@samsung.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rydberg@bitmath.org" <rydberg@bitmath.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH] Input: add switch event(SW_EXT_PEN_ATTACHED)
+Message-ID: <20201030104513.GA2395528@kroah.com>
+References: <CGME20201030062740epcms1p614195fb639c807cd2db762d117cc69fc@epcms1p6>
+ <20201030062740epcms1p614195fb639c807cd2db762d117cc69fc@epcms1p6>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2010301048080.22360@pobox.suse.cz>
+In-Reply-To: <20201030062740epcms1p614195fb639c807cd2db762d117cc69fc@epcms1p6>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-10-30 10:48:58, Miroslav Benes wrote:
-> > > > > +	bit = ftrace_test_recursion_trylock();
-> > > > > +	if (bit < 0)
-> > > > > +		return;  
-> > > > 
-> > > > This means that the original function will be called in case of recursion. 
-> > > > That's probably fair, but I'm wondering if we should at least WARN about 
-> > > > it.  
-> > > 
-> > > Yeah, the early return might break the consistency model and
-> > > unexpected things might happen. We should be aware of it.
-> > > Please use:
-> > > 
-> > > 	if (WARN_ON_ONCE(bit < 0))
-> > > 		return;
-> > > 
-> > > WARN_ON_ONCE() might be part of the recursion. But it should happen
-> > > only once. IMHO, it is worth the risk.
-> > > 
-> > > Otherwise it looks good.
-> > 
-> > Perhaps we can add that as a separate patch, because this patch doesn't add
-> > any real functionality change. It only moves the recursion testing from the
-> > helper function (which ftrace wraps all callbacks that do not have the
-> > RECURSION flags set, including this one) down to your callback.
-> > 
-> > In keeping with one patch to do one thing principle, the added of
-> > WARN_ON_ONCE() should be a separate patch, as that will change the
-> > functionality.
-> > 
-> > If that WARN_ON_ONCE() breaks things, I'd like it to be bisected to another
-> > patch other than this one.
+On Fri, Oct 30, 2020 at 03:27:40PM +0900, HyungJae Im wrote:
+> We need support to various accessories on the device,
+> some requiring switch does not exist in switch list.
+> So added switch for the following purpose.
 > 
-> Works for me.
+> SW_EXT_PEN_ATTACHED is for the checking the external pen
+> attached or not on the device. We also added driver
+> that uses such event.
+> 
+> Signed-off-by: Hyungjae Im <hj2.im@samsung.com>
+> ---
+>  drivers/input/Kconfig                  |  12 ++
+>  drivers/input/Makefile                 |   1 +
+>  drivers/input/ext_pen_detect.c         | 237 +++++++++++++++++++++++++
+>  include/linux/mod_devicetable.h        |   2 +-
+>  include/uapi/linux/input-event-codes.h |   3 +-
+>  5 files changed, 253 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/input/ext_pen_detect.c
+> 
+> diff --git a/drivers/input/Kconfig b/drivers/input/Kconfig
+> index ba5e7444c547..5d6d15c8f7e7 100644
+> --- a/drivers/input/Kconfig
+> +++ b/drivers/input/Kconfig
+> @@ -197,6 +197,18 @@ config INPUT_COVER_DETECT
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called cover_detect.
+>  
+> +config INPUT_EXT_PEN_DETECT
+> +	tristate "Enable external pen attach detection"
+> +	help
+> +	  Say Y here to enable external pen detection
+> +	  and send a event when external pen is attached/detached.
+> +	  Active gpio state is low and active event value is 0.
+> +
+> +	  If unsure, say N.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called ext_pen_detect.
+> +
+>  comment "Input Device Drivers"
+>  
+>  source "drivers/input/keyboard/Kconfig"
+> diff --git a/drivers/input/Makefile b/drivers/input/Makefile
+> index fc8dd9091821..0ccf02e34557 100644
+> --- a/drivers/input/Makefile
+> +++ b/drivers/input/Makefile
+> @@ -31,3 +31,4 @@ obj-$(CONFIG_INPUT_APMPOWER)	+= apm-power.o
+>  obj-$(CONFIG_RMI4_CORE)		+= rmi4/
+>  
+>  obj-$(CONFIG_INPUT_COVER_DETECT)+= cover_detect.o
+> +obj-$(CONFIG_INPUT_EXT_PEN_DETECT)+= ext_pen_detect.o
+> diff --git a/drivers/input/ext_pen_detect.c b/drivers/input/ext_pen_detect.c
+> new file mode 100644
+> index 000000000000..9a0d106e49f8
+> --- /dev/null
+> +++ b/drivers/input/ext_pen_detect.c
+> @@ -0,0 +1,237 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Support detection pen attachment externally on device
+> + *
+> + * Copyright (C) 2020 Samsung Electronics Co. Ltd. All Rights Reserved.
+> + *
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/pm.h>
+> +#include <linux/slab.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/input.h>
+> +#include <linux/gpio.h>
+> +#include <linux/of_gpio.h>
+> +#include <linux/wakelock.h>
+> +
+> +struct ext_pen_detect_drvdata {
+> +	struct input_dev *input;
+> +	struct delayed_work ext_pen_detect_dwork;
+> +	struct wakeup_source *ws;
+> +	int gpio_ext_pen_detect;
+> +	int irq_ext_pen_detect;
+> +};
+> +
+> +static void ext_pen_detect_work(struct work_struct *work)
+> +{
+> +	struct ext_pen_detect_drvdata *ddata =
+> +		container_of(work, struct ext_pen_detect_drvdata,
+> +				ext_pen_detect_dwork.work);
+> +	bool ext_pen_status;
+> +
+> +	ext_pen_status = gpio_get_value(ddata->gpio_ext_pen_detect);
+> +
+> +	input_report_switch(ddata->input,
+> +			SW_EXT_PEN_ATTACHED, ext_pen_status);
 
-+1
+As this is just a gpio device, again, why is this needed and you can't
+just use the gpio_keys driver instead?
 
-So, with the updated commit message:
+Why does this have to be a new driver?
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+thanks,
 
-Best Regards,
-Petr
+greg k-h
