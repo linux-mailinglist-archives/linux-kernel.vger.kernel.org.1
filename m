@@ -2,147 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5579E2A0905
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B640D2A0910
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgJ3PB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:01:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21461 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726815AbgJ3PB6 (ORCPT
+        id S1726962AbgJ3PEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:04:48 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:35374 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726691AbgJ3PEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:01:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604070117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HRlXzgPlOlTLzlZheP17qFCHXA+/zGO9eoSgNLbBfiQ=;
-        b=PrGxf9XtP+6ElXABX5fH6t+gLlIISJrU5BIyrq1db0lbNhqvZ/47zSLt5wjrTlUE+R+oD4
-        O8KQ6A2wsr3oOBxwAFBh1atzg8M9cAbdxQeuJAsyjeLjqg9//tE1jjLCv1ShhVzfyUpT4I
-        vEHOWfWWJ4fsxTx8JQhmfenxKN4lOrM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-373-skMTrk0COkScOKr7YEaIdA-1; Fri, 30 Oct 2020 11:01:55 -0400
-X-MC-Unique: skMTrk0COkScOKr7YEaIdA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E375787950C;
-        Fri, 30 Oct 2020 15:01:53 +0000 (UTC)
-Received: from gimli.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8C6205B4AA;
-        Fri, 30 Oct 2020 15:01:50 +0000 (UTC)
-Subject: [PATCH] vfio/pci: Implement ioeventfd thread handler for contended
- memory lock
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     alex.williamson@redhat.com
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        cohuck@redhat.com
-Date:   Fri, 30 Oct 2020 09:01:50 -0600
-Message-ID: <160407008986.9986.83949368176304529.stgit@gimli.home>
-User-Agent: StGit/0.21-dirty
+        Fri, 30 Oct 2020 11:04:47 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 25BD26A;
+        Fri, 30 Oct 2020 18:04:45 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1604070285;
+        bh=fhZl7OP2dqz9jup6Nu5SrVMqgLyV9oMKzBF2nI5Z2As=;
+        h=From:To:CC:Subject:Date;
+        b=Q+HdX69pkHsWrGt6ujFxRJntsZlARXlf5Qms1g7CU9OVseU9eiTuWHF57mHjjZwjb
+         fitd6Tr7Wg4cjwTCxuRQsNxkS/BCW3NzBNr/Yj2+O+2QVY1wgO7mi//Vrbp/Y9jawW
+         T3oMkYkvVuGkjDQVS6OrtX+hugbgWr//71pVH9Ec=
+Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 30 Oct 2020 18:04:44 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <linux-fsdevel@vger.kernel.org>
+CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
+        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
+        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
+        <mark@harmstone.com>, <nborisov@suse.com>,
+        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v11 00/10] NTFS read-write driver GPL implementation by Paragon Software
+Date:   Fri, 30 Oct 2020 18:02:29 +0300
+Message-ID: <20201030150239.3957156-1-almaz.alexandrovich@paragon-software.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.30.114.105]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ioeventfd is called under spinlock with interrupts disabled,
-therefore if the memory lock is contended defer code that might
-sleep to a thread context.
+This patch adds NTFS Read-Write driver to fs/ntfs3.
 
-Fixes: bc93b9ae0151 ("vfio-pci: Avoid recursive read-lock usage")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209253#c1
-Reported-by: Ian Pilcher <arequipeno@gmail.com>
-Tested-by: Ian Pilcher <arequipeno@gmail.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
----
- drivers/vfio/pci/vfio_pci_rdwr.c |   43 +++++++++++++++++++++++++++++++-------
- 1 file changed, 35 insertions(+), 8 deletions(-)
+Having decades of expertise in commercial file systems development and huge
+test coverage, we at Paragon Software GmbH want to make our contribution to
+the Open Source Community by providing implementation of NTFS Read-Write
+driver for the Linux Kernel.
 
-diff --git a/drivers/vfio/pci/vfio_pci_rdwr.c b/drivers/vfio/pci/vfio_pci_rdwr.c
-index 9e353c484ace..a0b5fc8e46f4 100644
---- a/drivers/vfio/pci/vfio_pci_rdwr.c
-+++ b/drivers/vfio/pci/vfio_pci_rdwr.c
-@@ -356,34 +356,60 @@ ssize_t vfio_pci_vga_rw(struct vfio_pci_device *vdev, char __user *buf,
- 	return done;
- }
- 
--static int vfio_pci_ioeventfd_handler(void *opaque, void *unused)
-+static void vfio_pci_ioeventfd_do_write(struct vfio_pci_ioeventfd *ioeventfd,
-+					bool test_mem)
- {
--	struct vfio_pci_ioeventfd *ioeventfd = opaque;
--
- 	switch (ioeventfd->count) {
- 	case 1:
--		vfio_pci_iowrite8(ioeventfd->vdev, ioeventfd->test_mem,
-+		vfio_pci_iowrite8(ioeventfd->vdev, test_mem,
- 				  ioeventfd->data, ioeventfd->addr);
- 		break;
- 	case 2:
--		vfio_pci_iowrite16(ioeventfd->vdev, ioeventfd->test_mem,
-+		vfio_pci_iowrite16(ioeventfd->vdev, test_mem,
- 				   ioeventfd->data, ioeventfd->addr);
- 		break;
- 	case 4:
--		vfio_pci_iowrite32(ioeventfd->vdev, ioeventfd->test_mem,
-+		vfio_pci_iowrite32(ioeventfd->vdev, test_mem,
- 				   ioeventfd->data, ioeventfd->addr);
- 		break;
- #ifdef iowrite64
- 	case 8:
--		vfio_pci_iowrite64(ioeventfd->vdev, ioeventfd->test_mem,
-+		vfio_pci_iowrite64(ioeventfd->vdev, test_mem,
- 				   ioeventfd->data, ioeventfd->addr);
- 		break;
- #endif
- 	}
-+}
-+
-+static int vfio_pci_ioeventfd_handler(void *opaque, void *unused)
-+{
-+	struct vfio_pci_ioeventfd *ioeventfd = opaque;
-+	struct vfio_pci_device *vdev = ioeventfd->vdev;
-+
-+	if (ioeventfd->test_mem) {
-+		if (!down_read_trylock(&vdev->memory_lock))
-+			return 1; /* Lock contended, use thread */
-+		if (!__vfio_pci_memory_enabled(vdev)) {
-+			up_read(&vdev->memory_lock);
-+			return 0;
-+		}
-+	}
-+
-+	vfio_pci_ioeventfd_do_write(ioeventfd, false);
-+
-+	if (ioeventfd->test_mem)
-+		up_read(&vdev->memory_lock);
- 
- 	return 0;
- }
- 
-+static void vfio_pci_ioeventfd_thread(void *opaque, void *unused)
-+{
-+	struct vfio_pci_ioeventfd *ioeventfd = opaque;
-+
-+	vfio_pci_ioeventfd_do_write(ioeventfd, ioeventfd->test_mem);
-+}
-+
- long vfio_pci_ioeventfd(struct vfio_pci_device *vdev, loff_t offset,
- 			uint64_t data, int count, int fd)
- {
-@@ -457,7 +483,8 @@ long vfio_pci_ioeventfd(struct vfio_pci_device *vdev, loff_t offset,
- 	ioeventfd->test_mem = vdev->pdev->resource[bar].flags & IORESOURCE_MEM;
- 
- 	ret = vfio_virqfd_enable(ioeventfd, vfio_pci_ioeventfd_handler,
--				 NULL, NULL, &ioeventfd->virqfd, fd);
-+				 vfio_pci_ioeventfd_thread, NULL,
-+				 &ioeventfd->virqfd, fd);
- 	if (ret) {
- 		kfree(ioeventfd);
- 		goto out_unlock;
+This is fully functional NTFS Read-Write driver. Current version works with
+NTFS(including v3.1) and normal/compressed/sparse files and supports journal replaying.
+
+We plan to support this version after the codebase once merged, and add new
+features and fix bugs. For example, full journaling support over JBD will be
+added in later updates.
+
+v2:
+ - patch splitted to chunks (file-wise)
+ - build issues fixed
+ - sparse and checkpatch.pl errors fixed
+ - NULL pointer dereference on mkfs.ntfs-formatted volume mount fixed
+ - cosmetics + code cleanup
+
+v3:
+ - added acl, noatime, no_acs_rules, prealloc mount options
+ - added fiemap support
+ - fixed encodings support
+ - removed typedefs
+ - adapted Kernel-way logging mechanisms
+ - fixed typos and corner-case issues
+
+v4:
+ - atomic_open() refactored
+ - code style updated
+ - bugfixes
+
+v5:
+- nls/nls_alt mount options added
+- Unicode conversion fixes
+- Improved very fragmented files operations
+- logging cosmetics
+
+v6:
+- Security Descriptors processing changed
+  added system.ntfs_security xattr to set
+  SD
+- atomic_open() optimized
+- cosmetics
+
+v7:
+- Security Descriptors validity checks added (by Mark Harmstone)
+- atomic_open() fixed for the compressed file creation with directio
+  case
+- remount support
+- temporarily removed readahead usage
+- cosmetics
+
+v8:
+- Compressed files operations fixed
+
+v9:
+- Further cosmetics applied as suggested
+by Joe Perches
+
+v10:
+- operations with compressed/sparse files on very fragmented volumes improved
+- reduced memory consumption for above cases
+
+v11:
+- further compressed files optimizations: reads/writes are now skipping bufferization
+- journal wipe to the initial state optimized (bufferization is also skipped)
+- optimized run storage (re-packing cluster metainformation)
+- fixes based on Matthew Wilcox feedback to the v10
+- compressed/sparse/normal could be set for empty files with 'system.ntfs_attrib' xattr
+
+Konstantin Komarov (10):
+  fs/ntfs3: Add headers and misc files
+  fs/ntfs3: Add initialization of super block
+  fs/ntfs3: Add bitmap
+  fs/ntfs3: Add file operations and implementation
+  fs/ntfs3: Add attrib operations
+  fs/ntfs3: Add compression
+  fs/ntfs3: Add NTFS journal
+  fs/ntfs3: Add Kconfig, Makefile and doc
+  fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
+  fs/ntfs3: Add MAINTAINERS
+
+ Documentation/filesystems/ntfs3.rst |  112 +
+ MAINTAINERS                         |    7 +
+ fs/Kconfig                          |    1 +
+ fs/Makefile                         |    1 +
+ fs/ntfs3/Kconfig                    |   23 +
+ fs/ntfs3/Makefile                   |   11 +
+ fs/ntfs3/attrib.c                   | 1400 +++++++
+ fs/ntfs3/attrlist.c                 |  463 +++
+ fs/ntfs3/bitfunc.c                  |  135 +
+ fs/ntfs3/bitmap.c                   | 1504 ++++++++
+ fs/ntfs3/debug.h                    |   61 +
+ fs/ntfs3/dir.c                      |  610 ++++
+ fs/ntfs3/file.c                     | 1153 ++++++
+ fs/ntfs3/frecord.c                  | 2696 ++++++++++++++
+ fs/ntfs3/fslog.c                    | 5221 +++++++++++++++++++++++++++
+ fs/ntfs3/fsntfs.c                   | 2565 +++++++++++++
+ fs/ntfs3/index.c                    | 2665 ++++++++++++++
+ fs/ntfs3/inode.c                    | 2030 +++++++++++
+ fs/ntfs3/lznt.c                     |  452 +++
+ fs/ntfs3/namei.c                    |  576 +++
+ fs/ntfs3/ntfs.h                     | 1262 +++++++
+ fs/ntfs3/ntfs_fs.h                  |  988 +++++
+ fs/ntfs3/record.c                   |  613 ++++
+ fs/ntfs3/run.c                      | 1190 ++++++
+ fs/ntfs3/super.c                    | 1479 ++++++++
+ fs/ntfs3/upcase.c                   |   77 +
+ fs/ntfs3/xattr.c                    | 1069 ++++++
+ 27 files changed, 28364 insertions(+)
+ create mode 100644 Documentation/filesystems/ntfs3.rst
+ create mode 100644 fs/ntfs3/Kconfig
+ create mode 100644 fs/ntfs3/Makefile
+ create mode 100644 fs/ntfs3/attrib.c
+ create mode 100644 fs/ntfs3/attrlist.c
+ create mode 100644 fs/ntfs3/bitfunc.c
+ create mode 100644 fs/ntfs3/bitmap.c
+ create mode 100644 fs/ntfs3/debug.h
+ create mode 100644 fs/ntfs3/dir.c
+ create mode 100644 fs/ntfs3/file.c
+ create mode 100644 fs/ntfs3/frecord.c
+ create mode 100644 fs/ntfs3/fslog.c
+ create mode 100644 fs/ntfs3/fsntfs.c
+ create mode 100644 fs/ntfs3/index.c
+ create mode 100644 fs/ntfs3/inode.c
+ create mode 100644 fs/ntfs3/lznt.c
+ create mode 100644 fs/ntfs3/namei.c
+ create mode 100644 fs/ntfs3/ntfs.h
+ create mode 100644 fs/ntfs3/ntfs_fs.h
+ create mode 100644 fs/ntfs3/record.c
+ create mode 100644 fs/ntfs3/run.c
+ create mode 100644 fs/ntfs3/super.c
+ create mode 100644 fs/ntfs3/upcase.c
+ create mode 100644 fs/ntfs3/xattr.c
+
+-- 
+2.25.4
 
