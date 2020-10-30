@@ -2,178 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0705B2A1130
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B86972A1138
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725976AbgJ3Ww4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 18:52:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55105 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725780AbgJ3Ww4 (ORCPT
+        id S1726009AbgJ3Wyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 18:54:55 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10758 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbgJ3Wyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 18:52:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604098374;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fxycBzU/SbTsOhTDMCX2G197w3tCiGFDNk6KNKI6/KA=;
-        b=ekXHKPRBTN12+5gp17UkEUncNvjlVh8GmKL4sz8lpR/z3XOVh8zKIJR5553FOx0En1AaNT
-        5yM6oEd4AtovL8rNZQGG1RmwZktOKA8FM1QXyUs19NQJqKRb2s1IgoIeEyKvcCP0/pHQLW
-        iOGPU5AYlbyhlhgBNUWyUb4/zZMetD0=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-464-pAb9-WUlPzezy3gDq_JekA-1; Fri, 30 Oct 2020 18:52:53 -0400
-X-MC-Unique: pAb9-WUlPzezy3gDq_JekA-1
-Received: by mail-qv1-f69.google.com with SMTP id d41so4682939qvc.23
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 15:52:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fxycBzU/SbTsOhTDMCX2G197w3tCiGFDNk6KNKI6/KA=;
-        b=iWCJjXPLPf4dZQH9PE/LEF6ht2nEAU5IQGAmvWh6KzlTJV0NyxuLh/YGV8cSY7A1UT
-         rYzlhDwOIVOYjhyEG1zo3AERjntf6o++gp/wvJiFABiBv2GpDknsrYGyN3PG6SGHdtAq
-         ByAsweWtTrVoIsvK1bm2VzAB9iQBy7qpie9azLK8djX4qxoVIyRPJ3MkxBQwWRxEtDCx
-         h9cTCHF+9biN/LWf+swy5lCyHBlGxC6RkZpr9rCkkrZaAkte2c0/LEVPSXkPU8e0O+AO
-         7lc6oyOO3nQEnF8lO7gxSn3zUcutR0Cw4UFfmxeqB4E6AaBzktXUTd1jWXH8uzSITMJh
-         SjqA==
-X-Gm-Message-State: AOAM5322ZOI0M0+KdYXZGiJzfyFMXtB9y6ofuDMMA9w13m6EEnkDT/Ng
-        XJCdPq3FRZr5PUXGZJ2OYAYwN1Sgpo5IIMki7rud6INTqfotq+5d3fU2Ky5uz8NjUeQujcHbPcm
-        VCIO3eXC+Fw9TjYOWStT9fvnY
-X-Received: by 2002:a37:b642:: with SMTP id g63mr4450337qkf.460.1604098372618;
-        Fri, 30 Oct 2020 15:52:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzXCfrderOASI/SbrdK/WvIiHp8Bbc9kF9zYpz4/Ssr4wyebZK9kh6LojNxU3ku1jcBoJTNFw==
-X-Received: by 2002:a37:b642:: with SMTP id g63mr4450321qkf.460.1604098372371;
-        Fri, 30 Oct 2020 15:52:52 -0700 (PDT)
-Received: from xz-x1 (toroon474qw-lp140-04-174-95-215-133.dsl.bell.ca. [174.95.215.133])
-        by smtp.gmail.com with ESMTPSA id k24sm353066qtp.35.2020.10.30.15.52.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 15:52:51 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 18:52:50 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v2 2/2] mm: prevent gup_fast from racing with COW during
- fork
-Message-ID: <20201030225250.GB6357@xz-x1>
-References: <0-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
- <2-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Fri, 30 Oct 2020 18:54:55 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9c99c30000>; Fri, 30 Oct 2020 15:54:59 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
+ 2020 22:54:49 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.109)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 30 Oct 2020 22:54:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P07rXYSFLv/YilQQPk/sqJHQd6PLcgn1M71/WNIBdcNbj8mCoN0YCCA/FMTxSMM/d9mSq5l93oONrQ8EXYHoHLYKr3o2ZrcTMSb2fGKLbjEPJ9blcxnzBKWfCPzfnTNoRqDsjdNkaF3x31HSjspFIfjdiaGUgyUPjENCr+OICHtp0delS6EozXwq4aikAipPtWtA42D1PKw1nYUGO4iFNRn7zNQECFib9812TAPkZN0k+c1s1P9xh9GccOzgycfyjV6LzoBzIzWIhXrdzPnBQHNx8B3hpQ0iogxASx7721K4MCmeDwESetGHt0HhFkF+2okv8XDho3hl9GQ9pC1DWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qGZEkwaxogpzjW0ojadFTDq0iq4f0cxfyeJXrCJYIKU=;
+ b=aTS6Yxk3wzDtA8ru2npT+yR09lVrqv7ok23EMl6giHesiK3uL8Y54haNv4QsdDnPtnWNOvO1IO7pl8JcP2YAsdR/8kUoDrDVN1U7yspSOVb5c14Wv+xfgd4uWgHCw+vKCWujPTT6IGAJBPawMUqr9g/wAwX2FvMVaPUKfdWd+Xg7aKj8udpd8wJugP9sa1DLH8aX4iWrwYn7Zi9UHmAE01z8h+eXBqkNZXYHRl0dSuTbaI0ASYZq6CLNWmtL3IVyqcrbiMOkGfFQPj5gxT3m3b5x+9J7ms+IU/MJS9DHSFj9IKtSNJepUkmSGOCVSAiidpI+NCEBDsFgI/GiXcqEaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB2485.namprd12.prod.outlook.com (2603:10b6:4:bb::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Fri, 30 Oct
+ 2020 22:54:48 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Fri, 30 Oct 2020
+ 22:54:48 +0000
+Date:   Fri, 30 Oct 2020 19:54:46 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+CC:     Dave Jiang <dave.jiang@intel.com>, <vkoul@kernel.org>,
+        <megha.dey@intel.com>, <maz@kernel.org>, <bhelgaas@google.com>,
+        <tglx@linutronix.de>, <alex.williamson@redhat.com>,
+        <jacob.jun.pan@intel.com>, <yi.l.liu@intel.com>,
+        <baolu.lu@intel.com>, <kevin.tian@intel.com>,
+        <sanjay.k.kumar@intel.com>, <tony.luck@intel.com>,
+        <jing.lin@intel.com>, <dan.j.williams@intel.com>,
+        <kwankhede@nvidia.com>, <eric.auger@redhat.com>,
+        <parav@mellanox.com>, <rafael@kernel.org>, <netanelg@mellanox.com>,
+        <shahafs@mellanox.com>, <yan.y.zhao@linux.intel.com>,
+        <pbonzini@redhat.com>, <samuel.ortiz@intel.com>,
+        <mona.hossain@intel.com>, Megha Dey <megha.dey@linux.intel.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <kvm@vger.kernel.org>
+Subject: Re: [PATCH v4 00/17] Add VFIO mediated device support and DEV-MSI
+ support for the idxd driver
+Message-ID: <20201030225446.GO2620339@nvidia.com>
+References: <160408357912.912050.17005584526266191420.stgit@djiang5-desk3.ch.intel.com>
+ <20201030185858.GI2620339@nvidia.com>
+ <c9303df4-3e57-6959-a89c-5fc98397ac70@intel.com>
+ <20201030191706.GK2620339@nvidia.com> <20201030192325.GA105832@otc-nc-03>
+ <20201030193045.GM2620339@nvidia.com> <20201030204307.GA683@otc-nc-03>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <2-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
+In-Reply-To: <20201030204307.GA683@otc-nc-03>
+X-ClientProxiedBy: MN2PR20CA0052.namprd20.prod.outlook.com
+ (2603:10b6:208:235::21) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR20CA0052.namprd20.prod.outlook.com (2603:10b6:208:235::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Fri, 30 Oct 2020 22:54:47 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kYdIE-00E4HD-TA; Fri, 30 Oct 2020 19:54:46 -0300
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604098499; bh=qGZEkwaxogpzjW0ojadFTDq0iq4f0cxfyeJXrCJYIKU=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
+        b=QHZfAZx5fCexDjCAutspu+dlHQgsKPnmGW17P2F+UaUyxDDRRHvgZ3u+Nd6pHcGEc
+         ktPmAL0VjFhqdnbfWMun1jy6rJ2NKL9Mqt85BMmSCSuUS1XF3djQnW+JA1l5EIibnJ
+         j9jdsYzEbH28O/FmD0p/7zvsA96heNmU+WSS5IQ0u1bi+BtUG8+/A5ompAc/PTCrrW
+         wxyk57DNFXDzmkKCjcIUcUbt3unVultNiePZrOAMmrPQrRPuKCd+NDfd71nBG72wnk
+         w7E1GSqYpGh7xRe5JuT9u4+YrwuZDo1zjGwJPxqjLya5FvH1moxv0UZctBBiFz5imm
+         /82XRbUsrCsmw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason,
+On Fri, Oct 30, 2020 at 01:43:07PM -0700, Raj, Ashok wrote:
+ 
+> So drawing that parallel, do you expect all drivers that call
+> pci_register_driver() to be located in drivers/pci? Aren't they scattered
+> all over the place ata,scsi, platform drivers and such?
 
-I think majorly the patch looks good to me, but I have a few pure questions
-majorly not directly related to the patch itself, but around the contexts.
-Since I _feel_ like there'll be a new version to update the comments below,
-maybe I can still ask aloud... Please bare with me. :)
+The subsystem is the thing that calls
+device_register. pci_register_driver() doesn't do that.
 
-On Fri, Oct 30, 2020 at 11:46:21AM -0300, Jason Gunthorpe wrote:
-> Slow GUP is safe against this race because copy_page_range() is only
-> called while holding the exclusive side of the mmap_lock on the src
-> mm_struct.
+> As Alex pointed out, i915 and handful of s390 drivers that are mdev users
+> are not in drivers/vfio. Are you sayint those drivers don't get reviewed? 
 
-Pure question: I understand that this patch requires this, but... Could anyone
-remind me why read lock of mmap_sem is not enough for fork() before this one?
+Past mistakes do not justify continuing to do it wrong.
 
-> 
-> Fixes: f3c64eda3e50 ("mm: avoid early COW write protect games during fork()")
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Link: https://lore.kernel.org/r/CAHk-=wi=iCnYCARbPGjkVJu9eyYeZ13N64tZYLdOB8CP5Q_PLw@mail.gmail.com
-> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  arch/x86/kernel/tboot.c    |  1 +
->  drivers/firmware/efi/efi.c |  1 +
->  include/linux/mm_types.h   |  7 +++++++
->  kernel/fork.c              |  1 +
->  mm/gup.c                   | 19 +++++++++++++++++++
->  mm/init-mm.c               |  1 +
->  mm/memory.c                | 10 +++++++++-
->  7 files changed, 39 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/tboot.c b/arch/x86/kernel/tboot.c
-> index 992fb1415c0f1f..6a2f542d9588a4 100644
-> --- a/arch/x86/kernel/tboot.c
-> +++ b/arch/x86/kernel/tboot.c
-> @@ -93,6 +93,7 @@ static struct mm_struct tboot_mm = {
->  	.pgd            = swapper_pg_dir,
->  	.mm_users       = ATOMIC_INIT(2),
->  	.mm_count       = ATOMIC_INIT(1),
-> +	.write_protect_seq = SEQCNT_ZERO(tboot_mm.write_protect_seq),
->  	MMAP_LOCK_INITIALIZER(init_mm)
->  	.page_table_lock =  __SPIN_LOCK_UNLOCKED(init_mm.page_table_lock),
->  	.mmlist         = LIST_HEAD_INIT(init_mm.mmlist),
-> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-> index 5e5480a0a32d7d..2520f6e05f4d44 100644
-> --- a/drivers/firmware/efi/efi.c
-> +++ b/drivers/firmware/efi/efi.c
-> @@ -57,6 +57,7 @@ struct mm_struct efi_mm = {
->  	.mm_rb			= RB_ROOT,
->  	.mm_users		= ATOMIC_INIT(2),
->  	.mm_count		= ATOMIC_INIT(1),
-> +	.write_protect_seq      = SEQCNT_ZERO(efi_mm.write_protect_seq),
->  	MMAP_LOCK_INITIALIZER(efi_mm)
->  	.page_table_lock	= __SPIN_LOCK_UNLOCKED(efi_mm.page_table_lock),
->  	.mmlist			= LIST_HEAD_INIT(efi_mm.mmlist),
+ARM and PPC went through a huge multi year cleanup moving code out of
+arch and into the proper drivers/ directories. We know this is the
+correct way to work the development process.
 
-Another pure question: I'm just curious how you find all the statically
-definied mm_structs, and to make sure all of them are covered (just in case
-un-initialized seqcount could fail strangely).
+> Your argument seems interesting even entertaining :-). But honestly i'm not finding it
+> practical :-). So every caller of mmu_register_notifier() needs to be in
+> mm? 
 
-Actually I'm thinking whether we should have one place to keep all the init
-vars for all the statically definied mm_structs, so we don't need to find them
-everytime, but only change that one place.
+mmu notifiers are not a subsytem, they are core libary code.
 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index c48f8df6e50268..294c2c3c4fe00d 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -1171,6 +1171,12 @@ copy_page_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
->  		mmu_notifier_range_init(&range, MMU_NOTIFY_PROTECTION_PAGE,
->  					0, src_vma, src_mm, addr, end);
->  		mmu_notifier_invalidate_range_start(&range);
-> +		/*
-> +		 * The read side doesn't spin, it goes to the mmap_lock, so the
-> +		 * raw version is used to avoid disabling preemption here
-> +		 */
-> +		mmap_assert_write_locked(src_mm);
-> +		raw_write_seqcount_t_begin(&src_mm->write_protect_seq);
+You seem to completely not understand what a subsystem is. :(
 
-Would raw_write_seqcount_begin() be better here?
+> I know you aren't going to give up, but there is little we can do. I want
+> the maintainers to make that call and I'm not add more noise to this.
 
-My understanding is that we used raw_write_seqcount_t_begin() because we're
-with spin lock so assuming we disabled preemption already.  However I'm
-thinking whether raw_write_seqcount_begin() would be even better to guarantee
-that.  I have no idea of how the rt kernel merging topic, but if rt kernel
-merged into mainline then IIUC preemption is allowed here (since pgtable spin
-lock should be rt_spin_lock, not raw spin locks).
+Well, hopefully Vinod will insist on following kernel norms here.
 
-An even further pure question on __seqcount_preemptible() (feel free to ignore
-this question!): I saw that __seqcount_preemptible() seems to have been
-constantly defined as "return false".  Not sure what happened there..
-
-Thanks,
-
--- 
-Peter Xu
-
+Jason
