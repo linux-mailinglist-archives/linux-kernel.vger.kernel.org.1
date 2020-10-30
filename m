@@ -2,116 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653D82A066E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBC82A0670
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:29:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgJ3N2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 09:28:50 -0400
-Received: from mga05.intel.com ([192.55.52.43]:56233 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726458AbgJ3N2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 09:28:49 -0400
-IronPort-SDR: ga4WjFHUjh7IwMRXUBjM1E14AZxx/xfqM4oSjXx8X779U4Vo6bHpkcDJMBHhAsNiMPzhOp/HSL
- O9UuYDmgY5sQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="253313046"
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
-   d="scan'208";a="253313046"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 06:28:49 -0700
-IronPort-SDR: d2vczdT8qt0jfMqhqbMv0zVLWQV95IAonDqS5Xd0n1QDDz0vD/czgebU3kb4llfSyyl104I3Ve
- 0rqvpTmhVm8g==
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
-   d="scan'208";a="537065891"
-Received: from lshi-mobl1.ccr.corp.intel.com (HELO [10.249.168.224]) ([10.249.168.224])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 06:28:46 -0700
-Subject: Re: [kbuild-all] Re: drivers/video/backlight/ltv350qv.c:192:12:
- warning: stack frame size of 13472 bytes in function 'ltv350qv_power'
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <202010260230.VivTG0Gb-lkp@intel.com>
- <20201025121708.04d4070a44e28146baf9a6a7@linux-foundation.org>
- <CAAeHK+wdv=X-iD208M2m3Xte9F+g2kYRDqQr4A+GP7Z1tY85BA@mail.gmail.com>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <650988cc-2f70-d03a-b456-bf1915b64836@intel.com>
-Date:   Fri, 30 Oct 2020 21:28:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726645AbgJ3N3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 09:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbgJ3N3y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 09:29:54 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B24BC0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:29:54 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id c20so5277230pfr.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:29:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ExTHezvn9Sy6laRwgzj3aOhJ09Yd64dHo+tc0qUe4rQ=;
+        b=RPTf2Kin/Q0/DnBCi2vqOMQJS6NQbGwg9NI3v001mJqd67C0ChhsEEGvM5XRuytTAM
+         voy08aQ1E6uZ/sgNQdQ6/WR3J3lWlkCrcjuhmltxi41t2OR59UicYhOu5OVuIU6wuZxz
+         /B9VRvQc6WBqxTfxUU5eqgW1U9AxwTj2jmOS/X2A5npfRG9Eny/5kKNDeykUr3Lgfah2
+         UjflkLNNLZcUlB/Adu9Cew4y2oDppCI64cmqITqUVLXo+rnjzucDIw5M8x4I5NJ2IQf7
+         9RV0lor0rsoo14va70Ihxbo7iCF9nW39RcT1Fjm+0CNx/FDwGZ+jzbmh7o7ch7Kk9l5X
+         6KkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ExTHezvn9Sy6laRwgzj3aOhJ09Yd64dHo+tc0qUe4rQ=;
+        b=e71Y00aOJtbAx4bcoHq6pf3BXo1r1TWtf6mDci1Jj3oJtOYR87EsQkt6i7bLpjp8aN
+         VDHeLmolzr6/9zYRMHRxEq9Yep7fuhkUxXdBbvOYQNbIpp3NJKiHfzJkpSc7y62gnMty
+         zs6fgJoKmzF65qlXISsyyLOWrhVGPydN/0VnssMmT7/4UdviaFQYnl5nuw+04mbxSv7L
+         8tpLEcOm8kxkYsMZxx9uyO51CXaTXtDSclSB1ii4j66AZqz/L+zL/ZNpLMUKcyqoUx7h
+         I/rkKXXdJOtyb+EAZCos1lK/nVzR3AlvQw+sVjkkSI+vQQiwJB3f8pevoxhJaxuSYC4c
+         J3+A==
+X-Gm-Message-State: AOAM531PigR2QzGStlreO86wUVA/p1MU7iFTTzYYusezwg0RcCq59Nbv
+        jaoHBvRIat1pdrgvbsCCsaIjygoU951w
+X-Google-Smtp-Source: ABdhPJxxvznJs4QE5lIaufU+cqwHl6xs0Hs/72w28bIvs6b+A0+4b0D42SQUvKoUBMmW3rcGHFWFSQ==
+X-Received: by 2002:a63:8bc3:: with SMTP id j186mr2170643pge.303.1604064593940;
+        Fri, 30 Oct 2020 06:29:53 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:918:28fe:10d5:aaf5:e319:ec72])
+        by smtp.gmail.com with ESMTPSA id jy19sm3896674pjb.9.2020.10.30.06.29.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 30 Oct 2020 06:29:53 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 18:59:48 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/12] bus: mhi: core: Use appropriate names for
+ firmware load functions
+Message-ID: <20201030132948.GE3818@Mani-XPS-13-9360>
+References: <1604031057-32820-1-git-send-email-bbhatt@codeaurora.org>
+ <1604031057-32820-2-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <CAAeHK+wdv=X-iD208M2m3Xte9F+g2kYRDqQr4A+GP7Z1tY85BA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604031057-32820-2-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/29/2020 11:28 PM, Andrey Konovalov wrote:
-> On Sun, Oct 25, 2020 at 8:17 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->>
->> On Mon, 26 Oct 2020 02:15:37 +0800 kernel test robot <lkp@intel.com> wrote:
->>
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>> head:   d76913908102044f14381df865bb74df17a538cb
->>> commit: cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4 kasan: allow enabling stack tagging for tag-based mode
->>> date:   3 months ago
->>> config: arm64-randconfig-r005-20201026 (attached as .config)
->>> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 1c8371692dfe8245bc6690ff1262dcced4649d21)
->>> reproduce (this is a W=1 build):
->>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>          chmod +x ~/bin/make.cross
->>>          # install arm64 cross compiling tool for clang build
->>>          # apt-get install binutils-aarch64-linux-gnu
->>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4
->>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>          git fetch --no-tags linus master
->>>          git checkout cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4
->>>          # save the attached .config to linux build tree
->>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All warnings (new ones prefixed by >>):
->>>
->>>>> drivers/video/backlight/ltv350qv.c:192:12: warning: stack frame size of 13472 bytes in function 'ltv350qv_power' [-Wframe-larger-than=]
->>
->> That's a lot of stack.
->>
->>>     static int ltv350qv_power(struct ltv350qv *lcd, int power)
->>>                ^
->>>     1 warning generated.
->>>
->>> vim +/ltv350qv_power +192 drivers/video/backlight/ltv350qv.c
->>
->> Odd - the code looks pretty normal.  It is possible that your compiler
->> is (crazily) inlining ltv350qv_write_reg()?
+On Thu, Oct 29, 2020 at 09:10:46PM -0700, Bhaumik Bhatt wrote:
+> mhi_fw_load_sbl() function is currently used to transfer SBL or EDL
+> images over BHI (Boot Host Interface). Same goes with mhi_fw_load_amss()
+> which uses BHIe. However, the contents of these functions do not
+> indicate support for a specific set of images. Since these can be used
+> for any image download over BHI or BHIe, rename them based on the
+> protocol used.
 > 
-> This is the same issue in LLVM that was reported by Arnd for generic
-> KASAN (also see KASAN_STACK_ENABLE option description). By default
-> KASAN shouldn't have stack instrumentation enabled unless
-> KASAN_STACK_ENABLE is specified. Perhaps it makes sense to disable it
-> for KASAN_SW_TAGS config on the kernel test robot.
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-Hi Andrey,
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Thanks for your advice, we'll take a look.
+Thanks,
+Mani
 
-Best Regards,
-Rong Chen
-
+> ---
+>  drivers/bus/mhi/core/boot.c | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
 > 
-> [1] https://bugs.llvm.org/show_bug.cgi?id=38809
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
+> index 24422f5..7d6b3a7 100644
+> --- a/drivers/bus/mhi/core/boot.c
+> +++ b/drivers/bus/mhi/core/boot.c
+> @@ -171,7 +171,7 @@ int mhi_download_rddm_img(struct mhi_controller *mhi_cntrl, bool in_panic)
+>  }
+>  EXPORT_SYMBOL_GPL(mhi_download_rddm_img);
+>  
+> -static int mhi_fw_load_amss(struct mhi_controller *mhi_cntrl,
+> +static int mhi_fw_load_bhie(struct mhi_controller *mhi_cntrl,
+>  			    const struct mhi_buf *mhi_buf)
+>  {
+>  	void __iomem *base = mhi_cntrl->bhie;
+> @@ -187,7 +187,7 @@ static int mhi_fw_load_amss(struct mhi_controller *mhi_cntrl,
+>  	}
+>  
+>  	sequence_id = MHI_RANDOM_U32_NONZERO(BHIE_TXVECSTATUS_SEQNUM_BMSK);
+> -	dev_dbg(dev, "Starting AMSS download via BHIe. Sequence ID:%u\n",
+> +	dev_dbg(dev, "Starting image download via BHIe. Sequence ID: %u\n",
+>  		sequence_id);
+>  	mhi_write_reg(mhi_cntrl, base, BHIE_TXVECADDR_HIGH_OFFS,
+>  		      upper_32_bits(mhi_buf->dma_addr));
+> @@ -218,7 +218,7 @@ static int mhi_fw_load_amss(struct mhi_controller *mhi_cntrl,
+>  	return (!ret) ? -ETIMEDOUT : 0;
+>  }
+>  
+> -static int mhi_fw_load_sbl(struct mhi_controller *mhi_cntrl,
+> +static int mhi_fw_load_bhi(struct mhi_controller *mhi_cntrl,
+>  			   dma_addr_t dma_addr,
+>  			   size_t size)
+>  {
+> @@ -245,7 +245,7 @@ static int mhi_fw_load_sbl(struct mhi_controller *mhi_cntrl,
+>  	}
+>  
+>  	session_id = MHI_RANDOM_U32_NONZERO(BHI_TXDB_SEQNUM_BMSK);
+> -	dev_dbg(dev, "Starting SBL download via BHI. Session ID:%u\n",
+> +	dev_dbg(dev, "Starting image download via BHI. Session ID: %u\n",
+>  		session_id);
+>  	mhi_write_reg(mhi_cntrl, base, BHI_STATUS, 0);
+>  	mhi_write_reg(mhi_cntrl, base, BHI_IMGADDR_HIGH,
+> @@ -446,9 +446,9 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+>  		return;
+>  	}
+>  
+> -	/* Download SBL image */
+> +	/* Download image using BHI */
+>  	memcpy(buf, firmware->data, size);
+> -	ret = mhi_fw_load_sbl(mhi_cntrl, dma_addr, size);
+> +	ret = mhi_fw_load_bhi(mhi_cntrl, dma_addr, size);
+>  	mhi_free_coherent(mhi_cntrl, size, buf, dma_addr);
+>  
+>  	if (!mhi_cntrl->fbc_download || ret || mhi_cntrl->ee == MHI_EE_EDL)
+> @@ -456,7 +456,7 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+>  
+>  	/* Error or in EDL mode, we're done */
+>  	if (ret) {
+> -		dev_err(dev, "MHI did not load SBL, ret:%d\n", ret);
+> +		dev_err(dev, "MHI did not load image over BHI, ret: %d\n", ret);
+>  		return;
+>  	}
+>  
+> @@ -506,11 +506,12 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+>  
+>  	/* Start full firmware image download */
+>  	image_info = mhi_cntrl->fbc_image;
+> -	ret = mhi_fw_load_amss(mhi_cntrl,
+> +	ret = mhi_fw_load_bhie(mhi_cntrl,
+>  			       /* Vector table is the last entry */
+>  			       &image_info->mhi_buf[image_info->entries - 1]);
+>  	if (ret)
+> -		dev_err(dev, "MHI did not load AMSS, ret:%d\n", ret);
+> +		dev_err(dev, "MHI did not load image over BHIe, ret: %d\n",
+> +			ret);
+>  
+>  	release_firmware(firmware);
+>  
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
 > 
