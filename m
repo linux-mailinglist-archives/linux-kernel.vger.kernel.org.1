@@ -2,136 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8942A0188
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB712A0186
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgJ3Jgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:36:40 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42486 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgJ3Jgj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:36:39 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09U9aNtH011493;
-        Fri, 30 Oct 2020 04:36:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604050583;
-        bh=plbRCPunQhuoqC8RieptDvFiVzdwprZYDvYCIEZB/dg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=lPUGuKiO0JhRuZYhGTyRHyexUQc0c3hnjUXZ9lMQTItomQQDUD5SX3zJLnc77O0GA
-         KDn9sGTIznuVpKzpO6Vb2aPih1dmPk9Am+c06QGmztv4GFt4CTBuF19/ZHQd0gfqUH
-         ZxUgdK12jHfp5i/qJ/fZLb+mh6RQyNxrU2USY8aQ=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09U9aNER122177
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Oct 2020 04:36:23 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 30
- Oct 2020 04:36:23 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 30 Oct 2020 04:36:23 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09U9aIv8019998;
-        Fri, 30 Oct 2020 04:36:19 -0500
-Subject: Re: [PATCH] ARM: multi_v7_defconfig: ti: Enable networking options
- for nfs boot
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Nishanth Menon <nm@ti.com>, Tony Lindgren <tony@atomide.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Russell King <linux@armlinux.org.uk>
-References: <20201001202725.16034-1-grygorii.strashko@ti.com>
- <20201002125000.5b5kho4e5de7jjrj@akan>
- <bb6e0bd9-a8fe-f63b-14fd-92a1f8cea0bb@ti.com>
- <CAK8P3a1-CCcKmEkdw+NNr4Yo7z+BEzX0g7uU_SnXOB+VEZm8HA@mail.gmail.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <497f744e-68be-7a87-6a18-824249ddcac8@ti.com>
-Date:   Fri, 30 Oct 2020 11:36:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726263AbgJ3JgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:36:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726234AbgJ3JgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 05:36:04 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D258B20729;
+        Fri, 30 Oct 2020 09:36:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604050563;
+        bh=RI7z3K7eILvFHncLjd3L3uO0NKeB7z7jOonFatnns4E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jjupfj7uAi6xD50ApETPH+RDl/DqR9IWX31gydQAN+juak3UAXmBpFxqJ4qNdlIIH
+         PTNSIGIW9lfZoJhPhlg9ZgBuEF654JofOlqoVHO72a0wM2WnWMA2dDlBBnOgaGPdKV
+         e64mpXI+w+P+l5x0Zkplne4q2eVYr+7vutj2adEY=
+Date:   Fri, 30 Oct 2020 10:36:51 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, vkoul@kernel.org,
+        vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        jank@cadence.com, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
+        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
+        sanyog.r.kale@intel.com, mengdong.lin@intel.com,
+        bard.liao@intel.com
+Subject: Re: [PATCH v3] soundwire: SDCA: add helper macro to access controls
+Message-ID: <20201030093651.GA2080962@kroah.com>
+References: <20201029204955.8568-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1-CCcKmEkdw+NNr4Yo7z+BEzX0g7uU_SnXOB+VEZm8HA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029204955.8568-1-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
-
-On 29/10/2020 22:06, Arnd Bergmann wrote:
-> On Thu, Oct 29, 2020 at 8:15 PM Grygorii Strashko
-> <grygorii.strashko@ti.com> wrote:
->> On 02/10/2020 15:50, Nishanth Menon wrote:
->>> On 23:27-20201001, Grygorii Strashko wrote:
->>>> Enable networking options required for NFS boot on TI platforms, which is
->>>> widely for automated test systems.
->>>> - enable new TI CPSW switch driver and related NET_SWITCHDEV config
->>>> - enable TI DP83867 phy
->>>> - explicitly enable PTP clock support to ensure dependent networking
->>>> drivers will stay built-in
->>>>
->>>> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
->>>> ---
->>>>    arch/arm/configs/multi_v7_defconfig | 5 +++++
->>>>    1 file changed, 5 insertions(+)
->>>>
->>>
->>> [...]
->>>
->>> Reviewed-by: Nishanth Menon <nm@ti.com>
->>>
->>
->> Are there any actions need to be done to have this patch merged?
+On Fri, Oct 30, 2020 at 04:49:55AM +0800, Bard Liao wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> I would prefer if a platform maintainer (I assume Tony in this case)
-> picks it up and forwards it to soc@kernel.org together with other
-> related changes. Olof and I tend to ignore patches sent directly
-> to us, so we don't get in the way of platform maintainers that
-> may have already merged similar patches or have comments.
+> The upcoming SDCA (SoundWire Device Class Audio) specification defines
+> a hierarchical encoding to interface with Class-defined capabilities.
 > 
-> I suspect Tony didn't pick it up either because from the patch
-> subject and the description, it is not clear that he is the one
-> to act on it. It helps to be more specific and ask the maintainer
-> by addressing them in person below the '---' line, as well as
-> only putting one person in 'To:' and the rest in 'Cc:'.
-
-Thanks for your comments and sorry that I disturbed you.
-
-But, honestly, I'm confused (and probably I'm not the first one) as multi_v7 is common
-for all ARM platforms while change is TI OMAP specific,
-and neither Documentation neither get_maintainer.pl provide any reliable information
-on how to proceed :( and who should be responsible for merging multi_x patches.
-
-I'd really have tried to do some checking while preparing patch and TO/CC list - some patches applied by
-platform maintainers, but some by top ARM maintainers.
-
+> The specification is not yet accessible to the general public but this
+> information is released with explicit permission from the MIPI Board
+> to avoid delays with SDCA support on Linux platforms.
 > 
-> One comment on the contents of the patch: IIRC this is a fairly
-> large driver. To ensure we don't burden other users too much,
-> can you include the size of the vmlinux file before and after
-> this patch?
+> A block of 64 MBytes of register addresses are allocated to SDCA
+> controls, starting at address 0x40000000. The 26 LSBs which identify
+> individual controls are set based on the following variables:
+> 
+> - Function Number. An SCDA device can be split in up to 8 independent
+>   Functions. Each of these Functions is described in the SDCA
+>   specification, e.g. Smart Amplifier, Smart Microphone, Simple
+>   Microphone, Jack codec, HID, etc.
+> 
+> - Entity Number.  Within each Function,  an Entity is  an identifiable
+>   block.  Up   to  127  Entities   are  connected  in   a  pre-defined
+>   graph  (similar to  USB), with  Entity0 reserved  for Function-level
+>   configurations.  In  contrast  to  USB, the  SDCA  spec  pre-defines
+>   Function Types, topologies, and allowed  options, i.e. the degree of
+>   freedom  is not  unlimited to  limit  the possibility  of errors  in
+>   descriptors leading to software quirks.
+> 
+> - Control Selector. Within each Entity, the SDCA specification defines
+>   48 controls such as Mute, Gain, AGC, etc, and 16 implementation
+>   defined ones. Some Control Selectors might be used for low-level
+>   platform setup, and other exposed to applications and users. Note
+>   that the same Control Selector capability, e.g. Latency control,
+>   might be located at different offsets in different entities, the
+>   Control Selector mapping is Entity-specific.
+> 
+> - Control Number. Some Control Selectors allow channel-specific values
+>   to be set, with up to 64 channels allowed. This is mostly used for
+>   volume control.
+> 
+> - Current/Next values. Some Control Selectors are
+>   'Dual-Ranked'. Software may either update the Current value directly
+>   for immediate effect. Alternatively, software may write into the
+>   'Next' values and update the SoundWire 1.2 'Commit Groups' register
+>   to copy 'Next' values into 'Current' ones in a synchronized
+>   manner. This is different from bank switching which is typically
+>   used to change the bus configuration only.
+> 
+> - MBQ. the Multi-Byte Quantity bit is used to provide atomic updates
+>   when accessing more that one byte, for example a 16-bit volume
+>   control would be updated consistently, the intermediate values
+>   mixing old MSB with new LSB are not applied.
+> 
+> These 6 parameters are used to build a 32-bit address to access the
+> desired Controls. Because of address range, paging is required, but
+> the most often used parameter values are placed in the lower 16 bits
+> of the address. This helps to keep the paging registers constant while
+> updating Controls for a specific Device/Function.
+> 
+> Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> ---
+> Changelog:
+> 
+> v2:
+>  - add SDW_SDCA_MBQ_CTL
+> 
+> v3:
+>  - add SDW_SDCA_NEXT_CTL
+> 
+> ---
+>  include/linux/soundwire/sdw_registers.h | 32 +++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+> 
+> diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
+> index f420e8059779..e14dff9a9c7f 100644
+> --- a/include/linux/soundwire/sdw_registers.h
+> +++ b/include/linux/soundwire/sdw_registers.h
+> @@ -298,4 +298,36 @@
+>  #define SDW_CASC_PORT_MASK_INTSTAT3		1
+>  #define SDW_CASC_PORT_REG_OFFSET_INTSTAT3	2
+>  
+> +/*
+> + * v1.2 device - SDCA address mapping
+> + *
+> + * Spec definition
+> + *	Bits		Contents
+> + *	31		0 (required by addressing range)
+> + *	30:26		0b10000 (Control Prefix)
+> + *	25		0 (Reserved)
+> + *	24:22		Function Number [2:0]
+> + *	21		Entity[6]
+> + *	20:19		Control Selector[5:4]
+> + *	18		0 (Reserved)
+> + *	17:15		Control Number[5:3]
+> + *	14		Next
+> + *	13		MBQ
+> + *	12:7		Entity[5:0]
+> + *	6:3		Control Selector[3:0]
+> + *	2:0		Control Number[2:0]
+> + */
+> +
+> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |			\
+> +						 (((fun) & 0x7) << 22) |	\
+> +						 (((ent) & 0x40) << 15) |	\
+> +						 (((ent) & 0x3f) << 7) |	\
+> +						 (((ctl) & 0x30) << 15) |	\
+> +						 (((ctl) & 0x0f) << 3) |	\
+> +						 (((ch) & 0x38) << 12) |	\
+> +						 ((ch) & 0x07))
+> +
+> +#define SDW_SDCA_MBQ_CTL(reg)			((reg) | BIT(13))
+> +#define SDW_SDCA_NEXT_CTL(reg)			((reg) | BIT(14))
+> +
+>  #endif /* __SDW_REGISTERS_H */
 
-before:
-    text	   data	    bss	    dec	    hex	filename
-14703736	8024602	 444976	23173314	16198c2	./omap-arm/vmlinux
 
-after:
-    text	   data	    bss	    dec	    hex	filename
-14727271	8029150	 444528	23200949	16204b5	./omap-arm/vmlinux
+No users of these macros?
 
-diff: 27635 (dec)
-
--- 
-Best regards,
-grygorii
