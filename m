@@ -2,136 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A28329FE59
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EBB29FE5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbgJ3HUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:20:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgJ3HUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 03:20:33 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C03032083B;
-        Fri, 30 Oct 2020 07:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604042430;
-        bh=n1U/jwDmO28iTY1E7jx8zDWTnnrZD+VTD8qx7LukQsA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YeSNZ615axN+XxQKryKAG80j38GWW+g2EUBngSwkILuznQyiw6BM5JpL46C86AP1s
-         ig4sNYvcusQlBo0lHdWAWfjShC9IpIiSAiK5brycpeiawc9GYWrQRsRZGmW6D3MxNX
-         EI9R7CORkH0tFymV0r/MBt1vduRdNevsmQa9b+5U=
-Date:   Fri, 30 Oct 2020 08:21:18 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Anand K Mistry <amistry@google.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH 1/1] debugfs: Add a helper to export atomic64_t values
-Message-ID: <20201030072118.GB1495407@kroah.com>
-References: <20201030070442.457739-1-amistry@google.com>
- <20201030180403.1.I9c36fd7a0e4d52e300c1004a0f6f2fc705e2b065@changeid>
+        id S1725946AbgJ3HWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725784AbgJ3HWv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 03:22:51 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3DDC0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 00:22:47 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id m16so5832019ljo.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 00:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9jP/zlBzvvGdT4+2/zjgwcM/I3DRgZiU14M8AdD3umM=;
+        b=fYQP+PVeNcV26dBeX7kcma6dzmJlP1Bdz9T9EGXILiNtWKPtioJxVDUK3xDQkI3hew
+         IFmrTkedpAa3viOa73NM5n7w7RCSaZbSlrQqE/Xi5sTl/WyqguYMwaZ7LTWDbjwKwsvj
+         H0MTBGPQqn3yvEIqlCuuUXkOovuc3gVOEJeJTNFr9KmgxDei87M6e6QW/UOWMJ8BDama
+         tCl9snHe4n//f2TVgH4P8I3ZtSuqKwZ9PpAXJS08Y0yR3r+vjD/mF3wVH/8PWDjzl0Gx
+         gDOXODl//7VQ1yig4z9izG3Emw1WOusXBa+79Bu0vUtYabZie0hcxjzgwsrPzJxOI6B4
+         GOAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9jP/zlBzvvGdT4+2/zjgwcM/I3DRgZiU14M8AdD3umM=;
+        b=ftpxrLCslfP3AIpHBCKSE2pPNfgEiv0tyYE6cmfVfrHxkzdCRyvdRroPucmMzkTs/B
+         +Ci1sa+0iVca33wJ9C6UDP+YUm3eJJnzn8aWehrd3OzEMk98FH4U9GqA0MtvQeWPTEzy
+         7sk8y0t55H5Q29niVuONYZyUcURNyvQzlvLL19/s/wb8XDokoeJsTIF3QS6f7DLcLmbx
+         CCkMeTHHg03RmL0PaHpVxoj1hXcy74cxEPLuq3xw3zRe2IUU/SryU0mEpZtGf6HIDtRd
+         vPYTT16StptWXtvix5d+FW0k/pqpShG0YHDaOe7Lm5AdQpjaLpuiEzn74ByVwOg39Tdd
+         PxOw==
+X-Gm-Message-State: AOAM5323Qzd5aIxZzlM75Yz5zKLM6u4UWfciFQB0kH6WkIbFQ+djjjCD
+        L/EHz0TpbSeXb5lc1G95oX3I5/lK59JczWrH+Qg+2g==
+X-Google-Smtp-Source: ABdhPJwXbYJuODsKWa1F8WEroy9dh/4cLqUzXIJJcBF0AmXk7vS4dFSTFr0MRN7h3EW+SxW0YNZH8C07Ba22O1wxMeg=
+X-Received: by 2002:a2e:9a89:: with SMTP id p9mr472806lji.363.1604042566041;
+ Fri, 30 Oct 2020 00:22:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030180403.1.I9c36fd7a0e4d52e300c1004a0f6f2fc705e2b065@changeid>
+References: <20201020233219.4146059-1-dlatypov@google.com> <CABVgOSnPpC=j7MrcmDpvvG6i_voiFQe4137ieyYX+-9B4=G39w@mail.gmail.com>
+ <CAGS_qxpp5ZwA_fWuSG0_P2azS2PpojQDQjzQrwWqYoNNZYs7tg@mail.gmail.com>
+In-Reply-To: <CAGS_qxpp5ZwA_fWuSG0_P2azS2PpojQDQjzQrwWqYoNNZYs7tg@mail.gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 30 Oct 2020 15:22:34 +0800
+Message-ID: <CABVgOSkbq+t919Bf6z_Ua=WSmOuCCRPy5fe+sseR2R65QtyrCg@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: fix extra trailing \n in parsed test output
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 06:04:42PM +1100, Anand K Mistry wrote:
-> This mirrors support for exporting atomic_t values.
-> 
-> Signed-off-by: Anand K Mistry <amistry@google.com>
-> 
-> ---
-> 
->  fs/debugfs/file.c       | 37 +++++++++++++++++++++++++++++++++++++
->  include/linux/debugfs.h |  6 ++++++
->  2 files changed, 43 insertions(+)
-> 
-> diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
-> index a768a09430c3..798bd3bdedec 100644
-> --- a/fs/debugfs/file.c
-> +++ b/fs/debugfs/file.c
-> @@ -770,6 +770,43 @@ void debugfs_create_atomic_t(const char *name, umode_t mode,
->  }
->  EXPORT_SYMBOL_GPL(debugfs_create_atomic_t);
->  
-> +static int debugfs_atomic64_t_set(void *data, u64 val)
-> +{
-> +	atomic64_set((atomic64_t *)data, val);
-> +	return 0;
-> +}
-> +static int debugfs_atomic64_t_get(void *data, u64 *val)
-> +{
-> +	*val = atomic64_read((atomic64_t *)data);
-> +	return 0;
-> +}
-> +DEFINE_DEBUGFS_ATTRIBUTE(fops_atomic64_t, debugfs_atomic64_t_get,
-> +			debugfs_atomic64_t_set, "%lld\n");
-> +DEFINE_DEBUGFS_ATTRIBUTE(fops_atomic64_t_ro, debugfs_atomic64_t_get, NULL,
-> +			"%lld\n");
-> +DEFINE_DEBUGFS_ATTRIBUTE(fops_atomic64_t_wo, NULL, debugfs_atomic64_t_set,
-> +			"%lld\n");
-> +
-> +/**
-> + * debugfs_create_atomic64_t - create a debugfs file that is used to read and
-> + * write an atomic64_t value
-> + * @name: a pointer to a string containing the name of the file to create.
-> + * @mode: the permission that the file should have
-> + * @parent: a pointer to the parent dentry for this file.  This should be a
-> + *          directory dentry if set.  If this parameter is %NULL, then the
-> + *          file will be created in the root of the debugfs filesystem.
-> + * @value: a pointer to the variable that the file should read to and write
-> + *         from.
-> + */
-> +void debugfs_create_atomic64_t(const char *name, umode_t mode,
-> +			       struct dentry *parent, atomic64_t *value)
-> +{
-> +	debugfs_create_mode_unsafe(name, mode, parent, value,
-> +				   &fops_atomic64_t, &fops_atomic64_t_ro,
-> +				   &fops_atomic64_t_wo);
-> +}
-> +EXPORT_SYMBOL_GPL(debugfs_create_atomic64_t);
-> +
->  ssize_t debugfs_read_file_bool(struct file *file, char __user *user_buf,
->  			       size_t count, loff_t *ppos)
->  {
-> diff --git a/include/linux/debugfs.h b/include/linux/debugfs.h
-> index 851dd1f9a8a5..0fac84c53eab 100644
-> --- a/include/linux/debugfs.h
-> +++ b/include/linux/debugfs.h
-> @@ -126,6 +126,8 @@ void debugfs_create_size_t(const char *name, umode_t mode,
->  			   struct dentry *parent, size_t *value);
->  void debugfs_create_atomic_t(const char *name, umode_t mode,
->  			     struct dentry *parent, atomic_t *value);
-> +void debugfs_create_atomic64_t(const char *name, umode_t mode,
-> +				     struct dentry *parent, atomic64_t *value);
->  struct dentry *debugfs_create_bool(const char *name, umode_t mode,
->  				  struct dentry *parent, bool *value);
->  
-> @@ -291,6 +293,10 @@ static inline void debugfs_create_atomic_t(const char *name, umode_t mode,
->  					   atomic_t *value)
->  { }
->  
-> +static inline void debugfs_create_atomic64_t(const char *name, umode_t mode,
-> +					     struct dentry *parent, atomic64_t *value)
-> +{ }
-> +
->  static inline struct dentry *debugfs_create_bool(const char *name, umode_t mode,
->  						 struct dentry *parent,
->  						 bool *value)
+On Fri, Oct 30, 2020 at 1:41 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> On Thu, Oct 29, 2020 at 7:34 PM David Gow <davidgow@google.com> wrote:
+> >
+> > On Wed, Oct 21, 2020 at 7:32 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > >
+> > > For simplcity, strip all trailing whitespace from parsed output.
+> > > I imagine no one is printing out meaningful trailing whitespace via
+> > > KUNIT_FAIL() or similar, and that if they are, they really shouldn't.
+> > >
+> > > At some point, the lines from `isolate_kunit_output()` started having
+> > > trailing \n, which results in artifacty output like this:
+> > >
+> > > $ ./tools/testing/kunit/kunit.py run
+> > > [16:16:46] [FAILED] example_simple_test
+> > > [16:16:46]     # example_simple_test: EXPECTATION FAILED at lib/kunit/kunit-example-test.c:29
+> > >
+> > > [16:16:46]     Expected 1 + 1 == 3, but
+> > >
+> > > [16:16:46]         1 + 1 == 2
+> > >
+> > > [16:16:46]         3 == 3
+> > >
+> > > [16:16:46]     not ok 1 - example_simple_test
+> > >
+> > > [16:16:46]
+> > >
+> > > After this change:
+> > > [16:16:46]     # example_simple_test: EXPECTATION FAILED at lib/kunit/kunit-example-test.c:29
+> > > [16:16:46]     Expected 1 + 1 == 3, but
+> > > [16:16:46]         1 + 1 == 2
+> > > [16:16:46]         3 == 3
+> > > [16:16:46]     not ok 1 - example_simple_test
+> > > [16:16:46]
+> > >
+> > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > > ---
+> >
+> > Thanks! This is a long-overdue fix, and it worked well for me.
+> >
+> > Tested-by: David Gow <davidgow@google.com>
+> >
+> > One comment below:
+> >
+> > >  tools/testing/kunit/kunit_parser.py | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+> > > index 8019e3dd4c32..e68b1c66a73f 100644
+> > > --- a/tools/testing/kunit/kunit_parser.py
+> > > +++ b/tools/testing/kunit/kunit_parser.py
+> > > @@ -342,7 +342,8 @@ def parse_run_tests(kernel_output) -> TestResult:
+> > >         total_tests = 0
+> > >         failed_tests = 0
+> > >         crashed_tests = 0
+> > > -       test_result = parse_test_result(list(isolate_kunit_output(kernel_output)))
+> > > +       test_result = parse_test_result(list(
+> > > +            l.rstrip() for l in isolate_kunit_output(kernel_output)))
+> >
+> > Could we do this inside isolate_kunit_output() instead? That seems
+> > like it'd be a more logical place for it (removing the newline is a
+> > sort of isolating the output), and it'd avoid making this line quite
+> > as horrifyingly nested.
+>
+> Good point.
+> We could either do it on each yield (messy), or before, i.e.
+>
+> diff --git a/tools/testing/kunit/kunit_parser.py
+> b/tools/testing/kunit/kunit_parser.py
+> index 8019e3dd4c32..14d35deb96cd 100644
+> --- a/tools/testing/kunit/kunit_parser.py
+> +++ b/tools/testing/kunit/kunit_parser.py
+> @@ -54,6 +54,7 @@ kunit_end_re = re.compile('(List of all partitions:|'
+>  def isolate_kunit_output(kernel_output):
+>         started = False
+>         for line in kernel_output:
+> +               line = line.rstrip()  # line always has a trailing \n
+>                 if kunit_start_re.search(line):
+>                         prefix_len = len(line.split('TAP version')[0])
+>                         started = True
+>
+> I had some vague concerns about this as
+>   kunit_start_re = re.compile(r'TAP version [0-9]+$')
+> has that anchor at the end.
+>
+> This could ostensibly make it match more things than before.
+> Since I'm using rstrip() out of laziness, that means strings like
+>   '<prefix we allow for some reason>TAP version 42\t\n'
+> will now also match.
+>
+> I don't really think that's an issue, but I'd sent this as a more
+> conservative change initially.
+> I can send the diff above as a replacement for this patch.
 
-Looks good, but where is the user of this code?  I can't add new apis
-without a user.
+I prefer this if it works. From my cursory testing, it does (though
+the kunt_tool_tests.py tests will need updating). At the very least,
+I'm able to get it to work with --alltests / allyesconfig (with a few
+options tactically disabled), which was the main reason we needed
+isolate_kunit_output() in the first place.
 
-And are you _SURE_ you want to be using an atomic64_t in the first
-place?  We are starting to reduce the "raw" usage of atomic variables as
-almost no one needs them, they should be using something else instead,
-or just a u64 as atomics are not needed for simple statistics.
+So, unless anyone can find a real-world case where this breaks
+something, let's go with this.
 
-thanks,
+Cheers,
+-- David
 
-greg k-h
+>
+> >
+> > >         if test_result.status == TestStatus.NO_TESTS:
+> > >                 print(red('[ERROR] ') + yellow('no tests run!'))
+> > >         elif test_result.status == TestStatus.FAILURE_TO_PARSE_TESTS:
+> > >
+> > > base-commit: c4d6fe7311762f2e03b3c27ad38df7c40c80cc93
+> > > --
+> > > 2.29.0.rc1.297.gfa9743e501-goog
+> > >
