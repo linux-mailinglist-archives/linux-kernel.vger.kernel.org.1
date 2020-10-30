@@ -2,134 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB0E2A0AFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE1F2A0B04
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgJ3QUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:20:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21735 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726239AbgJ3QUB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:20:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604074785;
+        id S1726645AbgJ3QXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:23:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38766 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725922AbgJ3QXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:23:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604074989;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OcrYeen7idQg6fj59+qOuiD8Ij+RF++6T9svNJR2I70=;
-        b=WFoIKu8bEgawaKpofPfpt75m424pwi8tumYuYah7rS1nkdbDkWlkA8KddGEXr/QQ5Xedum
-        n+Ex1/aV7OWMViQvkjss2ByTB13kk49aMObzWY40/3jrF+ZMaBYqbOyrdoyOHbeihTvync
-        cYJpC8APtle7r2TmC3DvVR2BlBlUOa8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-H3XUmfxvMjCjTie4T3G5MA-1; Fri, 30 Oct 2020 12:19:43 -0400
-X-MC-Unique: H3XUmfxvMjCjTie4T3G5MA-1
-Received: by mail-wm1-f72.google.com with SMTP id s85so794781wme.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:19:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OcrYeen7idQg6fj59+qOuiD8Ij+RF++6T9svNJR2I70=;
-        b=iApuDHdXlMLXldgf8p6uwXtqOwIb1kLJJkCdQBHou7nTgGNqkgW61HfE+7O39qkD/2
-         kCMPFSy85RzrdIp1nISCR37nta/66xiKcbVCxAN91yDLN1VCNsCjazmUgEuOtPTEMzuH
-         gny9JX/X/JIxAL2t/qpamUSaSk1VztyPxvEV8QPy5WyfNT0pzovZpWZxKpX3QNXYTeKT
-         cp4cpb7eRQD4IiQLFidlrcxQTV9VwZg8u9YbS/3sP3X3nXZ6pL+qnaBIFyh3WlnVYsmB
-         /aV/0uJIQHuG5JC7ESnrcsmGYld6jgf19zE8we/gji6wk+0AwdXFJ0FkTAt/yNeujybf
-         88cw==
-X-Gm-Message-State: AOAM530K4tMcKz1+NKKOJavH3yT6ygShfK2g7faU3DFVy15mAnD6SM9O
-        2rqRpD1yc0YD2XGaqtZ4V5MjP7oJy0LcKVGJpYtMPplDoFXYvtUn4Lh2qNixLXGGjINwszAe4W6
-        i3NzNUsd1dVtHPQHWsN73P/yJ
-X-Received: by 2002:a5d:420d:: with SMTP id n13mr4159702wrq.196.1604074781982;
-        Fri, 30 Oct 2020 09:19:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz+DKWtX/KpuvIKWLXpz4cbRsYAjyJQ2MhSo5RnPibttiUk+A4yTfvDUDF0AaH/EFGWlo/yNg==
-X-Received: by 2002:a5d:420d:: with SMTP id n13mr4159679wrq.196.1604074781780;
-        Fri, 30 Oct 2020 09:19:41 -0700 (PDT)
-Received: from steredhat (host-79-22-200-33.retail.telecomitalia.it. [79.22.200.33])
-        by smtp.gmail.com with ESMTPSA id o4sm11021368wrv.8.2020.10.30.09.19.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 09:19:41 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 17:19:38 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     mst@redhat.com, netdev@vger.kernel.org,
-        Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vhost/vsock: add IOTLB API support
-Message-ID: <20201030161938.n7xqeu557dmsqpzv@steredhat>
-References: <20201029174351.134173-1-sgarzare@redhat.com>
- <751cc074-ae68-72c8-71de-a42458058761@redhat.com>
- <20201030105422.ju2aj2bmwsckdufh@steredhat>
- <278f4732-e561-2b4f-03ee-b26455760b01@redhat.com>
+        bh=64gR4AhnvtOA27gAC9tqrXw7cMfiN953TiGFaLX23T4=;
+        b=dWZtJF9lR4GPm6LH/wln66pxL5AkWykOesxPPHzfAIz0AC48Y/rs/Nr6Uph9uxvRrleQ/M
+        AKKRSRSDGPmSQe4ehHkP8GWXObZDrWLZbU0rVZ5502SDCgceWgmKCkIf/M8Sw6EgD8yUsR
+        eIjMtA0+CvpiSrJEth44Ygrpk1rFBKs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 64EC1ACF5;
+        Fri, 30 Oct 2020 16:23:09 +0000 (UTC)
+Date:   Fri, 30 Oct 2020 17:23:08 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Willy Tarreau <w@1wt.eu>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>
+Subject: Re: [PATCH 3/4] kselftest_module.h: add struct rnd_state and seed
+ parameter
+Message-ID: <20201030162308.GD20201@alley>
+References: <20201025214842.5924-1-linux@rasmusvillemoes.dk>
+ <20201025214842.5924-4-linux@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <278f4732-e561-2b4f-03ee-b26455760b01@redhat.com>
+In-Reply-To: <20201025214842.5924-4-linux@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 07:44:43PM +0800, Jason Wang wrote:
->
->On 2020/10/30 下午6:54, Stefano Garzarella wrote:
->>On Fri, Oct 30, 2020 at 06:02:18PM +0800, Jason Wang wrote:
->>>
->>>On 2020/10/30 上午1:43, Stefano Garzarella wrote:
->>>>This patch enables the IOTLB API support for vhost-vsock devices,
->>>>allowing the userspace to emulate an IOMMU for the guest.
->>>>
->>>>These changes were made following vhost-net, in details this patch:
->>>>- exposes VIRTIO_F_ACCESS_PLATFORM feature and inits the iotlb
->>>>  device if the feature is acked
->>>>- implements VHOST_GET_BACKEND_FEATURES and
->>>>  VHOST_SET_BACKEND_FEATURES ioctls
->>>>- calls vq_meta_prefetch() before vq processing to prefetch vq
->>>>  metadata address in IOTLB
->>>>- provides .read_iter, .write_iter, and .poll callbacks for the
->>>>  chardev; they are used by the userspace to exchange IOTLB messages
->>>>
->>>>This patch was tested with QEMU and a patch applied [1] to fix a
->>>>simple issue:
->>>>    $ qemu -M q35,accel=kvm,kernel-irqchip=split \
->>>>           -drive file=fedora.qcow2,format=qcow2,if=virtio \
->>>>           -device intel-iommu,intremap=on \
->>>>           -device vhost-vsock-pci,guest-cid=3,iommu_platform=on
->>>
->>>
->>>Patch looks good, but a question:
->>>
->>>It looks to me you don't enable ATS which means vhost won't get 
->>>any invalidation request or did I miss anything?
->>>
->>
->>You're right, I didn't see invalidation requests, only miss and updates.
->>Now I have tried to enable 'ats' and 'device-iotlb' but I still 
->>don't see any invalidation.
->>
->>How can I test it? (Sorry but I don't have much experience yet with 
->>vIOMMU)
->
->
->I guess it's because the batched unmap. Maybe you can try to use 
->"intel_iommu=strict" in guest kernel command line to see if it works.
->
->Btw, make sure the qemu contains the patch [1]. Otherwise ATS won't be 
->enabled for recent Linux Kernel in the guest.
->
+On Sun 2020-10-25 22:48:41, Rasmus Villemoes wrote:
+> Some test suites make use of random numbers to increase the test
+> coverage when the test suite gets run on different machines and
+> increase the chance of some corner case bug being discovered - and I'm
+> planning on extending some existing ones in that direction as
+> well. However, should a bug be found this way, it's important that the
+> exact same series of tests can be repeated to verify the bug is
+> fixed. That means the random numbers must be obtained
+> deterministically from a generator private to the test module.
+> 
+> To avoid adding boilerplate to various test modules, put some logic
+> into kselftest_module.h: If the module declares that it will use
+> random numbers, add a "seed" module parameter. If not explicitly given
+> when the module is loaded (or via kernel command line), obtain a
+> random one. In either case, print the seed used, and repeat that
+> information if there was at least one test failing.
+> 
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+>  tools/testing/selftests/kselftest_module.h | 35 ++++++++++++++++++++--
+>  1 file changed, 32 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kselftest_module.h b/tools/testing/selftests/kselftest_module.h
+> index c81c0b0c054befaf665b..43f3ca58fcd550b8ac83 100644
+> --- a/tools/testing/selftests/kselftest_module.h
+> +++ b/tools/testing/selftests/kselftest_module.h
+> @@ -3,14 +3,31 @@
+>  #define __KSELFTEST_MODULE_H
+>  
+>  #include <linux/module.h>
+> +#include <linux/prandom.h>
+> +#include <linux/random.h>
+>  
+>  /*
+>   * Test framework for writing test modules to be loaded by kselftest.
+>   * See Documentation/dev-tools/kselftest.rst for an example test module.
+>   */
+>  
+> +/*
+> + * If the test module makes use of random numbers, define KSTM_RANDOM
+> + * to 1 before including this header. Then a module parameter "seed"
+> + * will be defined. If not given, a random one will be obtained. In
+> + * either case, the used seed is reported, so the exact same series of
+> + * tests can be repeated by loading the module with that seed
+> + * given.
+> + */
+> +
+> +#ifndef KSTM_RANDOM
+> +#define KSTM_RANDOM 0
+> +#endif
+> +
+>  static unsigned int total_tests __initdata;
+>  static unsigned int failed_tests __initdata;
+> +static struct rnd_state rnd_state __initdata;
+> +static u64 seed __initdata;
+>  
+>  #define KSTM_CHECK_ZERO(x) do {						\
+>  	total_tests++;							\
+> @@ -22,11 +39,13 @@ static unsigned int failed_tests __initdata;
+>  
+>  static inline int kstm_report(unsigned int total_tests, unsigned int failed_tests)
+>  {
+> -	if (failed_tests == 0)
+> +	if (failed_tests == 0) {
+>  		pr_info("all %u tests passed\n", total_tests);
+> -	else
+> +	} else {
+>  		pr_warn("failed %u out of %u tests\n", failed_tests, total_tests);
+> -
+> +		if (KSTM_RANDOM)
+> +			pr_info("random seed used was 0x%016llx\n", seed);
 
-I tried with "intel_iommu=strict" in the guest kernel and QEMU patch 
-applied, but I didn't see any invalidation.
+I have a bit mixed feelings about this. It is genial and dirty hack at the
+same time ;-) Well, it is basically the same approach as with
+IS_ENABLED(CONFIG_bla_bla).
 
-Maybe I did something wrong, you know it is friday, KVM Forum is ending, 
-etc... ;-)
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-I'll investigate better next week.
-
-Thanks for the useful info,
-Stefano
-
+Best Regards,
+Petr
