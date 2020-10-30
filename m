@@ -2,120 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BD02A0B14
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E85582A0B15
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgJ3Q2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:28:44 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:44904 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgJ3Q2n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:28:43 -0400
-Received: by mail-oi1-f194.google.com with SMTP id k27so7186991oij.11;
-        Fri, 30 Oct 2020 09:28:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=N4XrkGP0kfHl+6C37uH3pC+4L7r56rDfCcTmxy0Tqe4=;
-        b=NSi8IEFeNftS6rA3ivbLaq1ck0bDnY9AjsC0/OBl4FQSOYDsn/CZgbsMkLTHC3d4Fw
-         A0R3xV1uZlZL9BSxzaEr0ruwR3YxPHjzFXQVKqtk0CdNwzM3P/6mzVz2WqBK40vUU2J0
-         WUA1wRgBYdfZ/mobS67DUBO2Qct5zkB/cPrd6fu+auy3FSGhmst1QwZjOTHf6kgcZ59i
-         ivOVAITQmMd7j9LtvN1fM5VyYcTxSdXtoQ5t+oTq/YVKC4HxGyVmurNASftJUAjBZSlk
-         YQED8lrdIYcF3KEasg1al08GJy4wW4QAlKTfO3uVqcBQOSAfanJCdZChnYkx9WeBSSi2
-         s/Mg==
-X-Gm-Message-State: AOAM531FyKJoebXyZzvNh/atC7Exg1lVeC5zJ9GkESxxTcDJVf/ECwYl
-        X0FWMARKF7JMHsUZis26gYnmYzEm+uTFtWT270ueHyVuPMc=
-X-Google-Smtp-Source: ABdhPJzWZ6yTjfPS5vwqqtSHtRnnbwbG5hJgNNxEv4FVatTJYAqTaWDcfM2oBIsSdR23WFtS9IljS74PvlS5EgWE0+E=
-X-Received: by 2002:aca:724a:: with SMTP id p71mr2159790oic.157.1604075322923;
- Fri, 30 Oct 2020 09:28:42 -0700 (PDT)
+        id S1727014AbgJ3Q3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:29:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41716 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725844AbgJ3Q3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:29:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2C09EACF5;
+        Fri, 30 Oct 2020 16:29:12 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id A1F6B1E12F3; Fri, 30 Oct 2020 17:29:11 +0100 (CET)
+Date:   Fri, 30 Oct 2020 17:29:11 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH v2 1/2] mm: reorganize internal_get_user_pages_fast()
+Message-ID: <20201030162911.GG19757@quack2.suse.cz>
+References: <0-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
+ <1-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 30 Oct 2020 17:28:32 +0100
-Message-ID: <CAJZ5v0jUdG-6MO8BWz0BsJTqFCbaad1Bk6MexFy8ugdgBFexLg@mail.gmail.com>
-Subject: [GIT PULL] Power management fixes for v5.10-rc2
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri 30-10-20 11:46:20, Jason Gunthorpe wrote:
+> The next patch in this series makes the lockless flow a little more
+> complex, so move the entire block into a new function and remove a level
+> of indention. Tidy a bit of cruft:
+> 
+>  - addr is always the same as start, so use start
+> 
+>  - Use the modern check_add_overflow() for computing end = start + len
+> 
+>  - nr_pinned/pages << PAGE_SHIFT needs the LHS to be unsigned long to
+>    avoid shift overflow, make the variables unsigned long to avoid coding
+>    casts in both places. nr_pinned was missing its cast
+> 
+>  - The handling of ret and nr_pinned can be streamlined a bit
+> 
+> No functional change.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Please pull from the tag
+Looks good to me. You can add:
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.10-rc2
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-with top-most commit dea47cf45a7f9bb94684830c47d4b259d5f8d6af
+								Honza
 
- Merge branches 'pm-cpuidle' and 'pm-sleep'
-
-on top of commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec
-
- Linux 5.10-rc1
-
-to receive power management fixes for 5.10-rc2.
-
-These fix a few issues related to running intel_pstate in the passive
-mode with HWP enabled, correct the handling of the max_cstate module
-parameter in intel_idle and make a few janitorial changes.
-
-Specifics:
-
- - Modify Kconfig to prevent configuring either the "conservative"
-   or the "ondemand" governor as the default cpufreq governor if
-   intel_pstate is selected, in which case "schedutil" is the
-   default choice for the default governor setting (Rafael Wysocki).
-
- - Modify the cpufreq core, intel_pstate and the schedutil governor
-   to avoid missing updates of the HWP max limit when intel_pstate
-   operates in the passive mode with HWP enabled (Rafael Wysocki).
-
- - Fix max_cstate module parameter handling in intel_idle for
-   processor models with C-state tables coming from ACPI (Chen Yu).
-
- - Clean up assorted pieces of power management code (Jackie Zamow,
-   Tom Rix, Zhang Qilong).
-
-Thanks!
-
-
----------------
-
-Chen Yu (1):
-      intel_idle: Fix max_cstate for processor models without C-state tables
-
-Jackie Zamow (1):
-      PM: sleep: fix typo in kernel/power/process.c
-
-Rafael J. Wysocki (5):
-      cpufreq: Avoid configuring old governors as default with intel_pstate
-      cpufreq: Introduce CPUFREQ_NEED_UPDATE_LIMITS driver flag
-      cpufreq: intel_pstate: Avoid missing HWP max updates in passive mode
-      cpufreq: Introduce cpufreq_driver_test_flags()
-      cpufreq: schedutil: Always call driver if
-CPUFREQ_NEED_UPDATE_LIMITS is set
-
-Tom Rix (1):
-      cpufreq: speedstep: remove unneeded semicolon
-
-Zhang Qilong (1):
-      cpufreq: e_powersaver: remove unreachable break
-
----------------
-
- drivers/cpufreq/Kconfig          |  2 ++
- drivers/cpufreq/cpufreq.c        | 15 ++++++++++++++-
- drivers/cpufreq/e_powersaver.c   |  1 -
- drivers/cpufreq/intel_pstate.c   | 13 ++++++-------
- drivers/cpufreq/longhaul.c       |  1 -
- drivers/cpufreq/speedstep-lib.c  |  2 +-
- drivers/idle/intel_idle.c        |  2 +-
- include/linux/cpufreq.h          | 11 ++++++++++-
- kernel/power/process.c           |  2 +-
- kernel/sched/cpufreq_schedutil.c |  6 ++++--
- 10 files changed, 39 insertions(+), 16 deletions(-)
+> ---
+>  mm/gup.c | 99 ++++++++++++++++++++++++++++++--------------------------
+>  1 file changed, 54 insertions(+), 45 deletions(-)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 102877ed77a4b4..150cc962c99201 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -2671,13 +2671,43 @@ static int __gup_longterm_unlocked(unsigned long start, int nr_pages,
+>  	return ret;
+>  }
+>  
+> -static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
+> +static unsigned long lockless_pages_from_mm(unsigned long start,
+> +					    unsigned long end,
+> +					    unsigned int gup_flags,
+> +					    struct page **pages)
+> +{
+> +	unsigned long flags;
+> +	int nr_pinned = 0;
+> +
+> +	if (!IS_ENABLED(CONFIG_HAVE_FAST_GUP) ||
+> +	    !gup_fast_permitted(start, end))
+> +		return 0;
+> +
+> +	/*
+> +	 * Disable interrupts. The nested form is used, in order to allow full,
+> +	 * general purpose use of this routine.
+> +	 *
+> +	 * With interrupts disabled, we block page table pages from being freed
+> +	 * from under us. See struct mmu_table_batch comments in
+> +	 * include/asm-generic/tlb.h for more details.
+> +	 *
+> +	 * We do not adopt an rcu_read_lock() here as we also want to block IPIs
+> +	 * that come from THPs splitting.
+> +	 */
+> +	local_irq_save(flags);
+> +	gup_pgd_range(start, end, gup_flags, pages, &nr_pinned);
+> +	local_irq_restore(flags);
+> +	return nr_pinned;
+> +}
+> +
+> +static int internal_get_user_pages_fast(unsigned long start,
+> +					unsigned long nr_pages,
+>  					unsigned int gup_flags,
+>  					struct page **pages)
+>  {
+> -	unsigned long addr, len, end;
+> -	unsigned long flags;
+> -	int nr_pinned = 0, ret = 0;
+> +	unsigned long len, end;
+> +	unsigned long nr_pinned;
+> +	int ret;
+>  
+>  	if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM |
+>  				       FOLL_FORCE | FOLL_PIN | FOLL_GET |
+> @@ -2691,54 +2721,33 @@ static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
+>  		might_lock_read(&current->mm->mmap_lock);
+>  
+>  	start = untagged_addr(start) & PAGE_MASK;
+> -	addr = start;
+> -	len = (unsigned long) nr_pages << PAGE_SHIFT;
+> -	end = start + len;
+> -
+> -	if (end <= start)
+> +	len = nr_pages << PAGE_SHIFT;
+> +	if (check_add_overflow(start, len, &end))
+>  		return 0;
+>  	if (unlikely(!access_ok((void __user *)start, len)))
+>  		return -EFAULT;
+>  
+> -	/*
+> -	 * Disable interrupts. The nested form is used, in order to allow
+> -	 * full, general purpose use of this routine.
+> -	 *
+> -	 * With interrupts disabled, we block page table pages from being
+> -	 * freed from under us. See struct mmu_table_batch comments in
+> -	 * include/asm-generic/tlb.h for more details.
+> -	 *
+> -	 * We do not adopt an rcu_read_lock(.) here as we also want to
+> -	 * block IPIs that come from THPs splitting.
+> -	 */
+> -	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP) && gup_fast_permitted(start, end)) {
+> -		unsigned long fast_flags = gup_flags;
+> -
+> -		local_irq_save(flags);
+> -		gup_pgd_range(addr, end, fast_flags, pages, &nr_pinned);
+> -		local_irq_restore(flags);
+> -		ret = nr_pinned;
+> -	}
+> +	nr_pinned = lockless_pages_from_mm(start, end, gup_flags, pages);
+> +	if (nr_pinned == nr_pages || gup_flags & FOLL_FAST_ONLY)
+> +		return nr_pinned;
+>  
+> -	if (nr_pinned < nr_pages && !(gup_flags & FOLL_FAST_ONLY)) {
+> -		/* Try to get the remaining pages with get_user_pages */
+> -		start += nr_pinned << PAGE_SHIFT;
+> -		pages += nr_pinned;
+> -
+> -		ret = __gup_longterm_unlocked(start, nr_pages - nr_pinned,
+> -					      gup_flags, pages);
+> -
+> -		/* Have to be a bit careful with return values */
+> -		if (nr_pinned > 0) {
+> -			if (ret < 0)
+> -				ret = nr_pinned;
+> -			else
+> -				ret += nr_pinned;
+> -		}
+> +	/* Slow path: try to get the remaining pages with get_user_pages */
+> +	start += nr_pinned << PAGE_SHIFT;
+> +	pages += nr_pinned;
+> +	ret = __gup_longterm_unlocked(start, nr_pages - nr_pinned, gup_flags,
+> +				      pages);
+> +	if (ret < 0) {
+> +		/*
+> +		 * The caller has to unpin the pages we already pinned so
+> +		 * returning -errno is not an option
+> +		 */
+> +		if (nr_pinned)
+> +			return nr_pinned;
+> +		return ret;
+>  	}
+> -
+> -	return ret;
+> +	return ret + nr_pinned;
+>  }
+> +
+>  /**
+>   * get_user_pages_fast_only() - pin user pages in memory
+>   * @start:      starting user address
+> -- 
+> 2.28.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
