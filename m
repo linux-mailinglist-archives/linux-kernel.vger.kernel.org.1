@@ -2,84 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889672A00D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A154E2A00DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgJ3JJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:09:53 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:51487 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgJ3JJw (ORCPT
+        id S1726163AbgJ3JLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:11:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57378 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725876AbgJ3JLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:09:52 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4CMxMx5vhpz1qs0Y;
-        Fri, 30 Oct 2020 10:09:49 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4CMxMx4dgTz1qsWc;
-        Fri, 30 Oct 2020 10:09:49 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id wAF-Y83BoLiQ; Fri, 30 Oct 2020 10:09:48 +0100 (CET)
-X-Auth-Info: 4AtbbN48/aZMiOAZFS4xlKpOKabhtpCSh7fP3AYSsvWeDjdfAfWjfqVMzEwh5No5
-Received: from igel.home (ppp-46-244-190-51.dynamic.mnet-online.de [46.244.190.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 30 Oct 2020 05:11:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604049066;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vEjyFFVdDRI1CvpF5KW9IORpE6DZMofZZiWLmGCXiyM=;
+        b=bP5RID4Fke9m3Am1+nlIJQK/HXo643XC13d/9eNmyD3TAAmW7fgrKtMyoJnFfh7xQQuH/X
+        Xq4cpeJKkjeLD3xVgCSEPB8ZD2bF3j6CQfkdwPVTmz2sKqCYY06cjsljo2Ep3RdSN1YVDZ
+        RmlEzpS7iThSCs5VSfA83e3eZY15HVQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-569-1n2DHti4PbGQTv2He3_xlA-1; Fri, 30 Oct 2020 05:11:03 -0400
+X-MC-Unique: 1n2DHti4PbGQTv2He3_xlA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Fri, 30 Oct 2020 10:09:48 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-        id 2DAC62C089E; Fri, 30 Oct 2020 10:09:48 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/32s: Setup the early hash table at all time.
-References: <b8f8101c368b8a6451844a58d7bd7d83c14cf2aa.1601566529.git.christophe.leroy@csgroup.eu>
-        <87wnz8vizm.fsf@igel.home> <87y2jouw8k.fsf@mpe.ellerman.id.au>
-X-Yow:  NOT fucking!! Also not a PACKAGE of LOOSE-LEAF PAPER!!
-Date:   Fri, 30 Oct 2020 10:09:48 +0100
-In-Reply-To: <87y2jouw8k.fsf@mpe.ellerman.id.au> (Michael Ellerman's message
-        of "Fri, 30 Oct 2020 16:19:07 +1100")
-Message-ID: <87v9esaxlv.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11A821006C9B;
+        Fri, 30 Oct 2020 09:11:02 +0000 (UTC)
+Received: from localhost (ovpn-113-41.ams2.redhat.com [10.36.113.41])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A163019C71;
+        Fri, 30 Oct 2020 09:10:58 +0000 (UTC)
+Date:   Fri, 30 Oct 2020 09:10:57 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     mst@redhat.com, netdev@vger.kernel.org, kvm@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vhost/vsock: add IOTLB API support
+Message-ID: <20201030091057.GB307361@stefanha-x1.localdomain>
+References: <20201029174351.134173-1-sgarzare@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201029174351.134173-1-sgarzare@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=stefanha@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="QKdGvSO+nmPlgiQ/"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Okt 30 2020, Michael Ellerman wrote:
+--QKdGvSO+nmPlgiQ/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Andreas Schwab <schwab@linux-m68k.org> writes:
->> On Okt 01 2020, Christophe Leroy wrote:
->>
->>> At the time being, an early hash table is set up when
->>> CONFIG_KASAN is selected.
->>>
->>> There is nothing wrong with setting such an early hash table
->>> all the time, even if it is not used. This is a statically
->>> allocated 256 kB table which lies in the init data section.
->>>
->>> This makes the code simpler and may in the future allow to
->>> setup early IO mappings with fixmap instead of hard coding BATs.
->>>
->>> Put create_hpte() and flush_hash_pages() in the .ref.text section
->>> in order to avoid warning for the reference to early_hash[]. This
->>> reference is removed by MMU_init_hw_patch() before init memory is
->>> freed.
->>
->> This breaks booting on the iBook G4.
->
-> Do you get an oops or anything?
+On Thu, Oct 29, 2020 at 06:43:51PM +0100, Stefano Garzarella wrote:
+> This patch enables the IOTLB API support for vhost-vsock devices,
+> allowing the userspace to emulate an IOMMU for the guest.
+>=20
+> These changes were made following vhost-net, in details this patch:
+> - exposes VIRTIO_F_ACCESS_PLATFORM feature and inits the iotlb
+>   device if the feature is acked
+> - implements VHOST_GET_BACKEND_FEATURES and
+>   VHOST_SET_BACKEND_FEATURES ioctls
+> - calls vq_meta_prefetch() before vq processing to prefetch vq
+>   metadata address in IOTLB
+> - provides .read_iter, .write_iter, and .poll callbacks for the
+>   chardev; they are used by the userspace to exchange IOTLB messages
+>=20
+> This patch was tested with QEMU and a patch applied [1] to fix a
+> simple issue:
+>     $ qemu -M q35,accel=3Dkvm,kernel-irqchip=3Dsplit \
+>            -drive file=3Dfedora.qcow2,format=3Dqcow2,if=3Dvirtio \
+>            -device intel-iommu,intremap=3Don \
+>            -device vhost-vsock-pci,guest-cid=3D3,iommu_platform=3Don
+>=20
+> [1] https://lists.gnu.org/archive/html/qemu-devel/2020-10/msg09077.html
+>=20
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+>  drivers/vhost/vsock.c | 68 +++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 65 insertions(+), 3 deletions(-)
 
-Nope, nothing at all.
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
 
-Andreas.
+--QKdGvSO+nmPlgiQ/
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl+b2KEACgkQnKSrs4Gr
+c8heawf7BlGCmdi/Ph7QeU55JSh58NjuVO52mV385qiSfOFHZhlEhfLdm0ZoP4GR
+OY+LpLUr4g+AkSEYXKh1zOFWnsll0nE1AlTKjX/W13BYTLxgJyca/4cPYU2IkrRA
+dYgf0RDKPTWqrkykyN+WQZg3X37Lf6Lnbb9ScSuGAkfgYln6Lsx+k5RuJyS7yhRS
+zqjA8mtUZRHlWrhZIg85pRqpE8plGYzw7MDccxQ+V139YskPek6nPXC1/5Mrqqyg
+bSBx5i21oD/hWzwaOZTv7Ux/4vdJV6qPNQCRcwGy0TXUwayHY1YolhfYnBtE+0e0
+GD/hy5jYsYaCgOcp7o604sYccTV6tg==
+=+iwf
+-----END PGP SIGNATURE-----
+
+--QKdGvSO+nmPlgiQ/--
+
