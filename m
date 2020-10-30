@@ -2,62 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB3C2A02B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B242A02BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgJ3KWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:22:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55776 "EHLO mail.kernel.org"
+        id S1726308AbgJ3KXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:23:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42952 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725801AbgJ3KWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:22:22 -0400
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 870BF20719
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 10:22:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604053341;
-        bh=QaPlm2yPC/zGow/8UqnUJUgg/ASms6xiu1xXrafKBmg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=wipxcyVEGaxq8MVcw9E/LiiemNBX+xPZQ5xsk0oXiUMowIuH1CEBBUJVZQvdJsftk
-         Vb8XEl6Jog/Z7I8CAtuSbMQ/Kf9L/Zu0SRUNlTMw5dsSgWushL6BxxvFbgjJhE+0dY
-         39YBF2NjrdYrXnz5UCW1wCPdD3tOinn1rHuD77JU=
-Received: by mail-qv1-f52.google.com with SMTP id t20so2516952qvv.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:22:21 -0700 (PDT)
-X-Gm-Message-State: AOAM533M/p65MucoiuvzIeZeCGH+SVo6PXyUdtZv4xNzUypAxD2j73EC
-        xdDDfYLYwJa19wSqd9v9QJQRgJV/d+3dcZu8Tmk=
-X-Google-Smtp-Source: ABdhPJyeMrXwgn5YEt4E78QS/eOYS7oKwvspZ7I8dqbF6D9CKkAro+aMi2W52X+lwqBOOwcgymN2lfzqb/vMlJi26OM=
-X-Received: by 2002:a0c:f447:: with SMTP id h7mr8023532qvm.7.1604053340646;
- Fri, 30 Oct 2020 03:22:20 -0700 (PDT)
+        id S1725801AbgJ3KXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:23:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E11A6AEE0;
+        Fri, 30 Oct 2020 10:23:15 +0000 (UTC)
+Date:   Fri, 30 Oct 2020 11:23:14 +0100
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Erdem Aktas <erdemaktas@google.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        linux-tip-commits@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>
+Subject: Re: [tip: x86/seves] x86/kvm: Add KVM-specific VMMCALL handling
+ under SEV-ES
+Message-ID: <20201030102314.GP22179@suse.de>
+References: <20200907131613.12703-64-joro@8bytes.org>
+ <159972972598.20229.12880317872521101289.tip-bot2@tip-bot2>
+ <CAAYXXYx=Eq4gYfUqdO7u37VRD_GpPYFQgN=GZySmAMcDc2AM=g@mail.gmail.com>
+ <CAAYXXYw7ZKM+4ZCzn_apb4iy07R5VfcYeyus-kc0ETh_vkBkPg@mail.gmail.com>
+ <20201028094952.GI22179@suse.de>
+ <CAAYXXYwqYeXY3gaExMYX9Pt0nN_D=jbz9FWSuk1hDF8GcK-kfA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201026155801.16053-1-harshalchau04@gmail.com>
-In-Reply-To: <20201026155801.16053-1-harshalchau04@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 30 Oct 2020 11:22:04 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1bv4SjJjx0pEQPPzwO_2aEKQ-QBzGVuK8UmnZ_Uk62qA@mail.gmail.com>
-Message-ID: <CAK8P3a1bv4SjJjx0pEQPPzwO_2aEKQ-QBzGVuK8UmnZ_Uk62qA@mail.gmail.com>
-Subject: Re: [PATCH] misc: xilinx_sdfec: add compat_ptr_ioctl()
-To:     Harshal Chaudhari <harshalchau04@gmail.com>
-Cc:     gregkh <gregkh@linuxfoundation.org>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAYXXYwqYeXY3gaExMYX9Pt0nN_D=jbz9FWSuk1hDF8GcK-kfA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 4:58 PM Harshal Chaudhari
-<harshalchau04@gmail.com> wrote:
->
-> Driver has a trivial helper function to convert
-> the pointer argument and then call the native ioctl handler.
-> But now we have a generic implementation for that, so we can use it.
->
-> Signed-off-by: Harshal Chaudhari <harshalchau04@gmail.com>
+On Wed, Oct 28, 2020 at 11:03:05AM -0700, Erdem Aktas wrote:
+> I might be missing something here but I think what you say is only
+> correct for the kvm_hypercall4 cases. All other functions use a
+> smaller number of registers. #VC blindly assumes that all those
+> registers are used in the vmcall and exposes them.
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Right, I think we should fix that in the guest and zero out the unused
+registers. VMMCALL can come from userspace after all, and the #VC
+handler does not look at the hypercall numbers.
+
+Further, on the host side KVM will unconditionally read out all 4
+registers too, which requires us to set them valid in the GHCB.
+
+Regards,
+
+	Joerg
