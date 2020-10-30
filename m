@@ -2,161 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC8F2A0D9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 400CE2A0DA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:42:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbgJ3SjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:39:06 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6674 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgJ3SjF (ORCPT
+        id S1727305AbgJ3Smc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727055AbgJ3Smb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:39:05 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9c5dce0000>; Fri, 30 Oct 2020 11:39:10 -0700
-Received: from [10.2.173.19] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
- 2020 18:39:04 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Yang Shi <shy828301@gmail.com>
-CC:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>, Rik van Riel <riel@surriel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm/compaction: count pages and stop correctly during page
- isolation.
-Date:   Fri, 30 Oct 2020 14:39:02 -0400
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <BE903088-CF3E-4264-A9CA-8A27AC12EF65@nvidia.com>
-In-Reply-To: <CAHbLzkqnmXqB-UThT9dMOwVpuweE6XwA78SF-_qD9=1EVpMSUg@mail.gmail.com>
-References: <20201029200435.3386066-1-zi.yan@sent.com>
- <20201030094308.GG1478@dhcp22.suse.cz>
- <6CAAB1FC-2B41-490B-A67A-93063629C19B@nvidia.com>
- <20201030133625.GJ1478@dhcp22.suse.cz>
- <CAHbLzkqnmXqB-UThT9dMOwVpuweE6XwA78SF-_qD9=1EVpMSUg@mail.gmail.com>
+        Fri, 30 Oct 2020 14:42:31 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC85CC0613D8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:42:30 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id 12so1887196qkl.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:42:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AIX0iUNYmKTGpsjIpq65NL9/sGsFnH8oZZCQcI/WsJo=;
+        b=bYlk+E9UZt4DRqoUdZ6MTPapJE+3m7W6ymaVF0A/Ytf9ysgpdiRa2L3mNtWF5+Vqjs
+         RUnhj68xulwkUTq7j5c+HznqkyxNCukA4LIN6ia0n8qO/Kg3DtA91F3vJui8So439Q1B
+         cggJSTEdzhgvZe1TGhZPgF6lf16mwOJWW8TEp5PTzSQGsuDd3fDgy6s+XiODTahP9RQY
+         VB2sNyLygfTA4c91kLbgbihNfNrxuJ4YT+AJzF0Fse4fAzUT/P4vszrp25TBRhOXY4kc
+         lTUsNHB/0fpFCNRNNH56EWKkzwpAZ5naDTicUEgS2YMjYDTr3lNkagtjB5K+TxakydPn
+         pFfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AIX0iUNYmKTGpsjIpq65NL9/sGsFnH8oZZCQcI/WsJo=;
+        b=HASDEpGkKlVhwf+O1RcI/RQtRxlWXd6VNg4+z66oh5NtfDnZIqVLZRfHmAacWTrLIX
+         jwsNXv2yB0XuGWmw1wghi9W0rkTg02ob2G0HNyIrqieSzeCNnOjkXbegNlF96WsFVbbj
+         s/1z8chk7/jHWypvyhHVJqbTGSZntupPYGU//r7HgUe6x7toaTRbWtxHfUG2R0Nr7fxJ
+         QRieXj9rlZlc9qxZJKqv+qf6CpDn6eGEQg1bbSpJXda1850kdelOokShkRWpq7fXOhP+
+         nLzEDz9VX6acP/wHzmWs0owZlPDil2YfoIrGeNEWX/1dTQQ7gZ6eVVQG9kDB3uQL4LLT
+         P+sA==
+X-Gm-Message-State: AOAM533ZI2l18fGPMlbv2IYTtRw6ypnLApmFdI3teQo2nbTonuVJvFed
+        AgUc94n3iGFOmO7hWWKa6Pd2ELQv81b2taS9ryQfTg==
+X-Google-Smtp-Source: ABdhPJwWqIIGNUYiTZ//s/YW0jRWPtDrC/n5h2OIIkwmgvD9ZkczTEC7CFfpCs24TkfvR1NV9DvQppWgtO49wZ3mj+4=
+X-Received: by 2002:a37:9747:: with SMTP id z68mr3469115qkd.424.1604083349448;
+ Fri, 30 Oct 2020 11:42:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed;
-        boundary="=_MailMate_39F95D72-F34A-46D4-92E5-7EF47E8EF89B_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604083150; bh=g/YnYMgCoBBEyZnTNWw3FE62Lv8lPjtnXr9pHWmcOt8=;
-        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
-         References:MIME-Version:Content-Type:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=AU1cxw4Y9sh11ASB0Flr+WLBaVYkFal+dk40q22hxV02mEk/rKtOmU67c11xOWeKq
-         fEwAHGrA9l5S4dm5CLaJILZvMTMGX464I5xOEtkc+Z3yHcciMsINP055WC3iMJRaCR
-         ffhktTj536x8QUu2DltLc2gCEPxE+vzs75C+lZulZyxmyFTnb5tkaq8VB9+1uWLALp
-         wW5lDcr3yx6DZ0rYxQfmpOl+lO621DJzNhIEHi7QRgvJU89vEwVXkOfR2PHRq5HO5p
-         2b5whobOnDZ+g6MAZG2bPYt4MsX6HjvOLg2v8EnQhTY31vkRAdNha+lODhE0ek2F3r
-         egIQYYb4uAT+Q==
+References: <0000000000008caae305ab9a5318@google.com> <000000000000a726a405ada4b6cf@google.com>
+ <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com> <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com>
+In-Reply-To: <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 30 Oct 2020 19:42:18 +0100
+Message-ID: <CACT4Y+Yyxdju4FR-E3bc5ERM6xhecnos6mkJR5==xS+RS_DUuw@mail.gmail.com>
+Subject: Re: general protection fault in security_inode_getattr
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_39F95D72-F34A-46D4-92E5-7EF47E8EF89B_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On 30 Oct 2020, at 14:33, Yang Shi wrote:
-
-> On Fri, Oct 30, 2020 at 6:36 AM Michal Hocko <mhocko@suse.com> wrote:
->>
->> On Fri 30-10-20 08:20:50, Zi Yan wrote:
->>> On 30 Oct 2020, at 5:43, Michal Hocko wrote:
->>>
->>>> [Cc Vlastimil]
->>>>
->>>> On Thu 29-10-20 16:04:35, Zi Yan wrote:
->>>>> From: Zi Yan <ziy@nvidia.com>
->>>>>
->>>>> In isolate_migratepages_block, when cc->alloc_contig is true, we ar=
-e
->>>>> able to isolate compound pages, nr_migratepages and nr_isolated did=
- not
->>>>> count compound pages correctly, causing us to isolate more pages th=
-an we
->>>>> thought. Use thp_nr_pages to count pages. Otherwise, we might be tr=
-apped
->>>>> in too_many_isolated while loop, since the actual isolated pages ca=
-n go
->>>>> up to COMPACT_CLUSTER_MAX*512=3D16384, where COMPACT_CLUSTER_MAX is=
- 32,
->>>>> since we stop isolation after cc->nr_migratepages reaches to
->>>>> COMPACT_CLUSTER_MAX.
->>>>>
->>>>> In addition, after we fix the issue above, cc->nr_migratepages coul=
-d
->>>>> never be equal to COMPACT_CLUSTER_MAX if compound pages are isolate=
-d,
->>>>> thus page isolation could not stop as we intended. Change the isola=
-tion
->>>>> stop condition to >=3D.
->>>>>
->>>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>>>> ---
->>>>>  mm/compaction.c | 8 ++++----
->>>>>  1 file changed, 4 insertions(+), 4 deletions(-)
->>>>>
->>>>> diff --git a/mm/compaction.c b/mm/compaction.c
->>>>> index ee1f8439369e..0683a4999581 100644
->>>>> --- a/mm/compaction.c
->>>>> +++ b/mm/compaction.c
->>>>> @@ -1012,8 +1012,8 @@ isolate_migratepages_block(struct compact_con=
-trol *cc, unsigned long low_pfn,
->>>>>
->>>>>  isolate_success:
->>>>>            list_add(&page->lru, &cc->migratepages);
->>>>> -          cc->nr_migratepages++;
->>>>> -          nr_isolated++;
->>>>> +          cc->nr_migratepages +=3D thp_nr_pages(page);
->>>>> +          nr_isolated +=3D thp_nr_pages(page);
->>>>
->>>> Does thp_nr_pages work for __PageMovable pages?
->>>
->>> Yes. It is the same as compound_nr() but compiled
->>> to 1 when THP is not enabled.
->>
->> I am sorry but I do not follow. First of all the implementation of the=
-
->> two is different and also I was asking about __PageMovable which shoul=
-d
->> never be THP IIRC. Can they be compound though?
+On Fri, Oct 30, 2020 at 2:02 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
 >
-> I have the same question, can they be compound? If they can be
-> compound, PageTransHuge() can't tell from THP and compound movable
-> page, right?
+> On Mon, Aug 24, 2020 at 11:00 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> >
+> > On Mon, Aug 24, 2020 at 9:37 PM syzbot
+> > <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com> wrote:
+> > > syzbot has found a reproducer for the following issue on:
+> >
+> > Looping in fsdevel and OverlayFS maintainers, as this seems to be
+> > FS/OverlayFS related...
+>
+> Hmm, the oopsing code is always something like:
+>
+> All code
+> ========
+>    0: 1b fe                sbb    %esi,%edi
+>    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
+>    6: 48 89 d8              mov    %rbx,%rax
+>    9: 48 c1 e8 03          shr    $0x3,%rax
+>    d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
+>   12: 74 08                je     0x1c
+>   14: 48 89 df              mov    %rbx,%rdi
+>   17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
+>   1c: 48 8b 1b              mov    (%rbx),%rbx
+>   1f: 48 83 c3 68          add    $0x68,%rbx
+>   23: 48 89 d8              mov    %rbx,%rax
+>   26: 48 c1 e8 03          shr    $0x3,%rax
+>   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+>   2f: 74 08                je     0x39
+>   31: 48 89 df              mov    %rbx,%rdi
+>   34: e8 9f b4 5b fe        callq  0xfffffffffe5bb4d8
+>   39: 48 8b 1b              mov    (%rbx),%rbx
+>   3c: 48 83 c3 0c          add    $0xc,%rbx
+>
+>
+> And that looks (to me) like the unrolled loop in call_int_hook().  I
+> don't see how that could be related to overlayfs, though it's
+> definitely interesting why it only triggers from
+> overlay->vfs_getattr()->security_inode_getattr()...
 
-Right. I have updated the patch and use compound_nr instead.
 
-=E2=80=94
-Best Regards,
-Yan Zi
+>   26: 48 c1 e8 03          shr    $0x3,%rax
+>   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
 
---=_MailMate_39F95D72-F34A-46D4-92E5-7EF47E8EF89B_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+This access is part of KASAN check. But the original address kernel
+tries to access is NULL, so it's not an issue with KASAN.
 
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+cXcYPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKRAkP/jSOdKd1rzNd+SwOVTQYeIoDxSX8treiEYM+
-kVwomAWlSi1mutl1ew+hxSZIRQ0a5V9r+IJZDob7W23Z2mEVGCQLCOW6GKcZv7CX
-RECU2+CdB6uY3r2p1YWx32Cb9mlpyJc4TJhlPgNgg9OHr7r5Ma1KkHCDNwU8o7Zg
-M/l22g0VHd/TnhrYIrfd+YNcMGO4s/j6R5KOZ4S6Cig/FLgb7RFrixaJ2bSSVPTh
-E4sdvPdqVSf6znSEY8eMhOf1jFgAtOwdfIppc8OSIthPrdvKBdik7/tlo/iwGMj2
-0DM3wrP0eFwm9G2fFLlJCXqUyLzygaz3Ac/NtrvvivtI/E5irZAgZAMCdO6bbZXq
-5fbXk5oZ9LHeTqwfI7s5E13wv8VGPyXcTgliD6aa9U9BKzq4YjbSwMZ9BT+vo3IX
-s7N2Xs5bzuvL6PB5LSFSSq63FzY1YTkrAZ+45yQ8xhVnN4Q1/7BoNzQaTk03zVRq
-SpBzQz3oPI63fPWf/FgFCiOE769Mpd91sgKprfbgPGFavUlhm0T8S9II2HdP5qaB
-8A1JECql9v72F1LrGbo+UoCq8kN1uooSnxNEU5jIvu0Y2F0/39UmNqy0ixCJJ5QC
-hIyLz/z+YBLZVfCko+QZaLILBJfXMz7CmiWiqjLfG+RD1CA7bx6GPd4/+2ysGJRy
-vVPE4e3h
-=v/oH
------END PGP SIGNATURE-----
+The line is this:
 
---=_MailMate_39F95D72-F34A-46D4-92E5-7EF47E8EF89B_=--
+int security_inode_getattr(const struct path *path)
+{
+    if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
+        return 0;
+
+So it's either path is NULL, or something in d_backing_inode
+dereferences NULL path->dentry.
+
+The reproducer does involve overlayfs:
+
+mkdir(&(0x7f0000000240)='./file1\x00', 0x0)
+mkdir(&(0x7f0000000300)='./bus\x00', 0x0)
+r0 = creat(&(0x7f00000000c0)='./bus/file1\x00', 0x0)
+mkdir(&(0x7f0000000080)='./file0\x00', 0x0)
+mount$overlay(0x400002, &(0x7f0000000000)='./bus\x00',
+&(0x7f0000000100)='overlay\x00', 0x0,
+&(0x7f00000003c0)=ANY=[@ANYBLOB='upperdir=./file1,lowerdir=./bus,workdir=./file0,metacopy=on'])
+link(&(0x7f0000000200)='./bus/file1\x00', &(0x7f00000002c0)='./bus/file0\x00')
+write$RDMA_USER_CM_CMD_RESOLVE_ADDR(r0, 0x0, 0x0)
+acct(&(0x7f0000000040)='./bus/file0\x00')
+
+Though, it may be overlayfs-related, or it may be a generic bug that
+requires a tricky reproducer and the only reproducer syzbot come up
+with happened to involve overlayfs.
+But there are 4 reproducers on syzbot dashboard and all of them
+involve overlayfs and they are somewhat different. So my bet would be
+on overlayfs.
