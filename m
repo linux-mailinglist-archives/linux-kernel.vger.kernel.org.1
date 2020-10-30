@@ -2,215 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27AB2A0B55
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2962C2A0B93
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgJ3QkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:40:01 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:38722 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbgJ3QkB (ORCPT
+        id S1727256AbgJ3Qpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:45:38 -0400
+Received: from schatzi.steelbluetech.co.uk ([92.63.139.240]:42757 "EHLO
+        schatzi.steelbluetech.co.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725943AbgJ3Qph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:40:01 -0400
-Received: by mail-oi1-f194.google.com with SMTP id 9so7250344oir.5;
-        Fri, 30 Oct 2020 09:39:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XKztsWcZasal2O06qo55L0eJo2O/+Ed23onN3u66G6Y=;
-        b=Dapu6PrPHbrKvseok7FCclsfzpK9uQ8zNQ3Nd3WdgYoDa3QYaY9wLetUINyAx4Mgkn
-         KjSb3ntzWDu61Zyk+3kYzJScUyn3k3MlCEokr2xhluG5dRpoqrY1l0o6wNKS91svp8CB
-         p5MifmJ6G56npLbjR5CWkiAU/vUHWvkngv8GrMQvRKdvnl4d3DZOela0zRzS85u/Pp65
-         p/dfqyIau4zP71TpdOC8FWmOs0AT1qL3sHQwEyg9ne40FyISL66YWokVf7iCCJCqGn0v
-         usMpab8Y3wOZmdbC2B4Tw/jHyLP/PAjSWwCxfelUx2G6IBdlq1FGMpFTTYz1ytNaC/CK
-         rTgg==
-X-Gm-Message-State: AOAM532AkESChNo+Ra93AfUfILTrWRs8WmrVrj1Jp+j9DEPxd3/YSioL
-        Ye5oLUsIRDDIy6c1hSb8+Q==
-X-Google-Smtp-Source: ABdhPJyj/mHVLN92/7MH5CL/dIFYAuNvLkG5xyiLxfWbikKyWL1yAsPDt8TxCNgsD1r7UZmTrtRCWQ==
-X-Received: by 2002:aca:5047:: with SMTP id e68mr2115953oib.175.1604075958774;
-        Fri, 30 Oct 2020 09:39:18 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id g203sm1534170oib.22.2020.10.30.09.39.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 09:39:18 -0700 (PDT)
-Received: (nullmailer pid 3965405 invoked by uid 1000);
-        Fri, 30 Oct 2020 16:39:17 -0000
-Date:   Fri, 30 Oct 2020 11:39:17 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, kevin.lhopital@hotmail.com,
-        =?iso-8859-1?Q?K=E9vin_L'h=F4pital?= <kevin.lhopital@bootlin.com>
-Subject: Re: [PATCH 1/3] dt-bindings: media: i2c: Add OV8865 bindings
- documentation
-Message-ID: <20201030163917.GA3963319@bogus>
-References: <20201023175406.504527-1-paul.kocialkowski@bootlin.com>
- <20201023175406.504527-2-paul.kocialkowski@bootlin.com>
+        Fri, 30 Oct 2020 12:45:37 -0400
+X-Greylist: delayed 336 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Oct 2020 12:45:37 EDT
+Received: from [10.0.5.25] (tv.ehuk.net [10.0.5.25])
+        by schatzi.steelbluetech.co.uk (Postfix) with ESMTP id 89D72BFBC4;
+        Fri, 30 Oct 2020 16:39:23 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 schatzi.steelbluetech.co.uk 89D72BFBC4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ehuk.net; s=default;
+        t=1604075963; bh=KvsvgqsUoKW97rC5X8q/vTeBR02YT9qoeTJpH/Pc2XY=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=uVRjAUx6OV/pDmE/itYaVqE0jo4E7Xpocb1pUdZsnnN2lZtMV6Trv/tAPcQRJ57Ay
+         6Qcx1HsU4p/QdZdrInJzb6nXLwkhqXyuf+6og5iM/9spTsMEC3tR6CcEXg9qOPKAQC
+         PP0SyESbLkuVmt7zDP7Fbm09hTwotwgPzipuBrDQ=
+Reply-To: eddie@ehuk.net
+Subject: Re: Linux 4.19.153
+To:     Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org,
+        stable@vger.kernel.org, lwn@lwn.net, jslaby@suse.cz
+References: <160396822019115@kroah.com> <20201030082653.GA29475@amd>
+ <20201030084915.GB1625087@kroah.com> <20201030091416.GA1759200@kroah.com>
+ <20201030144438.GH87646@sasha-vm>
+From:   Eddie Chapman <eddie@ehuk.net>
+Message-ID: <7cd7053d-bf03-42a2-b4e7-bc2ff547d65b@ehuk.net>
+Date:   Fri, 30 Oct 2020 16:39:23 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20201030144438.GH87646@sasha-vm>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201023175406.504527-2-paul.kocialkowski@bootlin.com>
+X-Scanned-By: MIMEDefang
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 07:54:04PM +0200, Paul Kocialkowski wrote:
-> This introduces YAML bindings documentation for the OV8865
-> image sensor.
+On 30/10/2020 14:44, Sasha Levin wrote:
+> On Fri, Oct 30, 2020 at 10:14:16AM +0100, Greg Kroah-Hartman wrote:
+>> On Fri, Oct 30, 2020 at 09:49:15AM +0100, Greg Kroah-Hartman wrote:
+>>> On Fri, Oct 30, 2020 at 09:26:54AM +0100, Pavel Machek wrote:
+>>> > Hi!
+>>> >
+>>> > > I'm announcing the release of the 4.19.153 kernel.
+>>> > >
+>>> > > All users of the 4.19 kernel series must upgrade.
+>>> > >
+>>> > > The updated 4.19.y git tree can be found at:
+>>> > >     
+>>> git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git 
+>>> linux-4.19.y
+>>> > > and can be browsed at the normal kernel.org git web browser:
+>>> > >     
+>>> https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary 
+>>>
+>>> >
+>>> > Did something go seriously wrong here?
+>>> >
+>>> > The original 4.19.153-rc1 series had 264 patches. "powerpc/tau: Remove
+>>> > duplicated set_thresholds() call" is 146/264 of the series, but it is
+>>> > last one in 4.19.153 as released. "178/264 ext4: limit entries
+>>> > returned when counting...", for example, is not present in
+>>> > 4.19.153... as are others, for example "net: korina: cast KSEG0
+>>> > address to pointer in kfree". Looks like 118 or so patches are
+>>> > missing.
+>>> >
+>>> > They are not in origin/queue/4.19, either.
+>>>
+>>> Wow, something did go wrong here, thanks for catching this.
+>>>
+>>> Let me dig and see what happened, the whole series did not apply, which
+>>> makes me wonder if the same thing happened for other branches as well...
+>>>
+>>> thanks for checking up and finding this.
+>>>
+>>> Give me a bit...
+>>
+>> Ok, figure3d it out.
+>>
+>> Sasha changed a powerpc patch to build properly but didn't realize that
+>> later powerpc patches would not apply because of that.Â  I didn't run my
+>> "apply all patches to make sure they are clean" script before doing the
+>> release after he did that, so 'git quiltimport' failed when applying the
+>> series at the place where the powerpc path failed to apply.
+>>
+>> My scripts don't check for the result of 'git quiltimport' being
+>> successful or not (I don't even know if it return an error for this type
+>> of thing), and just moved on in the release process.
+>>
+>> I'll go do a new 4.19 release with the rest of the patches missed here,
+>> thank you for finding this.
+>>
+>> And I'll go make my release scripts more robust to failures like this as
+>> well.
+>>
+>> thanks so much!
 > 
-> Co-developed-by: Kévin L'hôpital <kevin.lhopital@bootlin.com>
-> Signed-off-by: Kévin L'hôpital <kevin.lhopital@bootlin.com>
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> ---
->  .../bindings/media/i2c/ovti,ov8865.yaml       | 124 ++++++++++++++++++
->  1 file changed, 124 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
-> new file mode 100644
-> index 000000000000..807f1a94afae
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
-> @@ -0,0 +1,124 @@
-> +# SPDX-License-Identifier: GPL-2.0
+> You're right, sorry :( And thanks Pavel!
 
-Dual license please. With that,
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/ovti,ov8865.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: OmniVision OV8865 Image Sensor Device Tree Bindings
-> +
-> +maintainers:
-> +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: ovti,ov8865
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: EXTCLK Clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: extclk
-> +
-> +  dvdd-supply:
-> +    description: Digital Domain Power Supply
-> +
-> +  avdd-supply:
-> +    description: Analog Domain Power Supply (internal AVDD is used if missing)
-> +
-> +  dovdd-supply:
-> +    description: I/O Domain Power Supply
-> +
-> +  powerdown-gpios:
-> +    maxItems: 1
-> +    description: Power Down Pin GPIO Control (active low)
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +    description: Reset Pin GPIO Control (active low)
-> +
-> +  port:
-> +    type: object
-> +    description: Input port, connect to a MIPI CSI-2 receiver
-> +
-> +    properties:
-> +      endpoint:
-> +        type: object
-> +
-> +        properties:
-> +          remote-endpoint: true
-> +
-> +          bus-type:
-> +            const: 4
-> +
-> +          clock-lanes:
-> +            maxItems: 1
-> +
-> +          data-lanes:
-> +            minItems: 1
-> +            maxItems: 4
-> +
-> +        required:
-> +          - bus-type
-> +          - data-lanes
-> +          - remote-endpoint
-> +
-> +        additionalProperties: false
-> +
-> +    required:
-> +      - endpoint
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - dvdd-supply
-> +  - dovdd-supply
-> +  - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/sun8i-a83t-ccu.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    i2c2 {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        ov8865: camera@36 {
-> +            compatible = "ovti,ov8865";
-> +            reg = <0x36>;
-> +
-> +            pinctrl-names = "default";
-> +            pinctrl-0 = <&csi_mclk_pin>;
-> +
-> +            clocks = <&ccu CLK_CSI_MCLK>;
-> +            clock-names = "extclk";
-> +
-> +            avdd-supply = <&reg_ov8865_avdd>;
-> +            dovdd-supply = <&reg_ov8865_dovdd>;
-> +            dvdd-supply = <&reg_ov8865_dvdd>;
-> +
-> +            powerdown-gpios = <&pio 4 17 GPIO_ACTIVE_LOW>; /* PE17 */
-> +            reset-gpios = <&pio 4 16 GPIO_ACTIVE_LOW>; /* PE16 */
-> +
-> +            port {
-> +                ov8865_out_mipi_csi2: endpoint {
-> +                    bus-type = <4>; /* MIPI CSI-2 D-PHY */
-> +                    clock-lanes = <0>;
-> +                    data-lanes = <1 2 3 4>;
-> +
-> +                    remote-endpoint = <&mipi_csi2_in_ov8865>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
-> -- 
-> 2.28.0
-> 
+Hey Greg and Sasha, just want to express my gratitude for all the work 
+you guys do maintaining a gazillion stable kernels :-) There is bound to 
+be a hiccup in the process every once in a while.
