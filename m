@@ -2,67 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382642A0E70
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDF62A0E6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgJ3TSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 15:18:37 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:45317 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727424AbgJ3TRh (ORCPT
+        id S1727535AbgJ3TUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 15:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727394AbgJ3TSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:17:37 -0400
-Received: by mail-ot1-f65.google.com with SMTP id f37so6516645otf.12;
-        Fri, 30 Oct 2020 12:17:35 -0700 (PDT)
+        Fri, 30 Oct 2020 15:18:52 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6B7C0613CF;
+        Fri, 30 Oct 2020 12:18:51 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id x7so7651179wrl.3;
+        Fri, 30 Oct 2020 12:18:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IrqyDdMvE+JRoxAk0MitbhLtaLtVtioGwkRtLnVXhjI=;
+        b=Q8UWGuaUdpOZOxFlJeo+0oULNHZOeF+d4H9IVO8eySyMqnQzVteo45TO5LbvwYLfuo
+         oFsDM8w8wX+oojpeQ34TSgfZlJrWx3KyElfjLq6nk/jbbdUaSZzvwxvJXV/XpzzXzqu0
+         n8uQMUb0qH+hFD6qq9UVWLf4HEtutadJ7o8HxfyAJyuzRIVKs7t+x+PEu+0SClMOZv3Y
+         HNo16y6RfzphDX3X0cl2KYIeIjUMkOT/MPkRjA49yfz0/BPEabbr5EBYBPEyVlEa1k9y
+         NK5JaOcSsLI7qH55urPYCoBaKzthA8QjwVblD7imY+aSwdjnEMRT0KbpWoFWV9hs0Aba
+         JRgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EdL9baVv630hTUqWo6OvHJipP30+abrcAYUdSdJVn1o=;
-        b=bpgtVckDZm2lc4Eu6RQjS236OucI6bofw0SiyhSgsDi/4GB0q8ASuIjtrAq0mza7Bq
-         zJlLQhyEO21Mb8ZEajBRi9QzZRJk/zK/MHr1GIp9CdUvHys8jCwuC1IORKBt+YVy1pLs
-         GLPERE9PaIiXQxu+PMNFsnTTv9gi+dz4IhuebI1bjGqciratyWsFGNdO/h44RAIZbUs4
-         ldPlHhynhvNxbxoPwoh18rLgy8grjFatwss3qpt4DRLx11ErqlGnr8+S2CFcb7ZocPHu
-         psEPzE8VXgdMrcVAHf3SsiLoO60P57wyR/yUCuClcwANwJWp8OxS6E590/1V3/sGML0l
-         xEXQ==
-X-Gm-Message-State: AOAM533FAbOThkj61cvFWFpRzZUTWM4GCKaUnIIsrQgzlAmzmEHkL+2l
-        g9yRScKrZaogGhx6+YBURg==
-X-Google-Smtp-Source: ABdhPJygR1SjnNx0pgftEfYieev15JjQRggZxKmOPg0emitnERRGW8bHgSTq1z6YGe70Flv8U3k20g==
-X-Received: by 2002:a9d:3e54:: with SMTP id h20mr2776914otg.236.1604085455157;
-        Fri, 30 Oct 2020 12:17:35 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q8sm1461462otf.7.2020.10.30.12.17.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 12:17:34 -0700 (PDT)
-Received: (nullmailer pid 4172199 invoked by uid 1000);
-        Fri, 30 Oct 2020 19:17:33 -0000
-Date:   Fri, 30 Oct 2020 14:17:33 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sean Wang <sean.wang@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/3] dt-bindings: arm64: dts: mediatek: Add
- mt8167-pumpkin board
-Message-ID: <20201030191733.GA4172169@bogus>
-References: <20201027194816.1227654-1-fparent@baylibre.com>
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IrqyDdMvE+JRoxAk0MitbhLtaLtVtioGwkRtLnVXhjI=;
+        b=SntI9wmA4ZUrkmfkWXtvt/lDU4kSC2ywFQ6eohbM0wdbcXk8fVEMeC8xtUhufBjPhi
+         WMcYhfQscpSN82tUjXfnnC/ioT3v4YeJblOecZ0G4TmQKgzbLsm8p+kbAeqcekJEqzv5
+         NK71ncChRWxWyPfWYYkNFrbfnf6tHZdHlswbf4YAQTUYI5Zey5nfGhDp6HBi4O9V4zNt
+         vt+UNn/HneKVkGG0nMDV293/XZnrn21IlX6MFPxPgRtvciwdWzOg+MIzXPfHg4tdmLQT
+         uz+xTLP4m5d/s2l3vF7Y6bhEoiElE30LcxfJYXCo9G9bsM5Nibgt4BozJ2nYzDUfa5su
+         BrvQ==
+X-Gm-Message-State: AOAM533Y7CL0BOnMw4vlR6MAS1strAkTfwqTRQwL61G6mywI0LDETiCR
+        0GCH4ciAHI29LK2AQmMqqZ5REOwReGE=
+X-Google-Smtp-Source: ABdhPJz1g3k1ZxPyZhhlG2zkxLi40WxeZ5ikkdQDUqsy3nOOpRbyHRzUVhdTGlTt4fvE0tyoPc1FeQ==
+X-Received: by 2002:adf:f212:: with SMTP id p18mr5204719wro.386.1604085529607;
+        Fri, 30 Oct 2020 12:18:49 -0700 (PDT)
+Received: from ?IPv6:2001:a61:245a:d801:2e74:88ad:ef9:5218? ([2001:a61:245a:d801:2e74:88ad:ef9:5218])
+        by smtp.gmail.com with ESMTPSA id v24sm11953700wrv.80.2020.10.30.12.18.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 12:18:48 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] futex.2: srcfix
+To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
+References: <20201030123956.36169-1-colomar.6.4.3@gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <cc2918a3-5413-7f88-46b1-c73c1d24d27a@gmail.com>
+Date:   Fri, 30 Oct 2020 20:18:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027194816.1227654-1-fparent@baylibre.com>
+In-Reply-To: <20201030123956.36169-1-colomar.6.4.3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 20:48:13 +0100, Fabien Parent wrote:
-> Add binding documentation for the MT8167 Pumpkin board.
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+On 10/30/20 1:39 PM, Alejandro Colomar wrote:
+> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+
+Hi Alex,
+
+I've applied this patch, but would prefer to avoid such
+patches in the future. Nothing is actually broken in the 
+old version, so I tend to regard such patches as unnecessary
+chur,.
+
+Thanks,
+
+Michael
+
 > ---
->  Documentation/devicetree/bindings/arm/mediatek.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
+>  man2/futex.2 | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/man2/futex.2 b/man2/futex.2
+> index f82602c11..837adbd25 100644
+> --- a/man2/futex.2
+> +++ b/man2/futex.2
+> @@ -25,8 +25,8 @@ futex \- fast user-space locking
+>  .SH SYNOPSIS
+>  .nf
+>  .PP
+> -.B "#include <linux/futex.h>"
+> -.B "#include <sys/time.h>"
+> +.B #include <linux/futex.h>
+> +.B #include <sys/time.h>
+>  .PP
+>  .BI "int futex(int *" uaddr ", int " futex_op ", int " val ,
+>  .BI "          const struct timespec *" timeout , \
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
