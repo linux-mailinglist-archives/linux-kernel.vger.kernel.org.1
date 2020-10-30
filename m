@@ -2,95 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D4D29FE5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9E829FE63
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726003AbgJ3HXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
+        id S1725948AbgJ3HZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbgJ3HXH (ORCPT
+        with ESMTP id S1725780AbgJ3HZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 03:23:07 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D025C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 00:23:06 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id 2so5783966ljj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 00:23:06 -0700 (PDT)
+        Fri, 30 Oct 2020 03:25:11 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED71C0613D3;
+        Fri, 30 Oct 2020 00:25:10 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id t6so2527598plq.11;
+        Fri, 30 Oct 2020 00:25:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1+0+hcPw9hiA2N8VeGNQmNaGhTeQiMRTQ38kHTPj/A4=;
-        b=hRdtNuEm07hzyAkZDjHciqako2c3MS3efQ83LmgSSHeMGo4rLC9IoAvnQDaD3oQdcj
-         iIyiZAXsz4HtnNdK0NPgm+GuhsYl8WOeUcfh7OOElaj5r9+vkpXDVKJtP9PZm6bHhTQj
-         m1OZcy2oYAKEUizydv/JuHt8UUbr9AgnouOgx84QzDl5pzRklFfQ40SiV6tEtjVk/sWK
-         bLAJb/V+kyppNSuMRhTruFMou0gScpXBvG4s0CFLZWHdq8olBcpsi56UyB+yBbgigxen
-         DZ9/SbmR3oyFprrpBQkqZMQLS+XQm0AAcZv3/vcorICXW3vow2sd3anoRkXgjMbUz1rU
-         qA+A==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hw/KvprqF2aWL/drMKTS7o6ufRsuBx5x5vRDgirN2WY=;
+        b=mGOR8hd7i0ta5xeu/n+B2eq8da3ixbJY2wWNH+Sk0jHMDG5oUDnhDEhRuRw/rTFBN7
+         LVPNhafi/GRSJJwI9lLrcEn2nYWJcXm2IbgsBayFQNobmyQ6rtQTVu0S3hEjkZB5P21W
+         OhC6CkCW3Qbmor01eJpgXmRdyLlcudxhoqnbzQtmat4KMmL/3QOXW5Dm7cfWJaYPt1tl
+         udqazUPqrtAfkKSR7ThsiU7qfRp9tERKA29pp/p64BFFGsU+wQzi5H2Fe62R4ZxnhSxd
+         l2pjrxRtTcpCeQxAumJ6ZBDS6GwfII6gs/p5oGW/wI672SzKmhQhc/Ep+Qo/C832Eekd
+         rSow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1+0+hcPw9hiA2N8VeGNQmNaGhTeQiMRTQ38kHTPj/A4=;
-        b=fWnmpXtUyHk/A4NyByevjt8Zp8cIxh+t+3e2ZxAzroK3xSqcI1oZseRzDo4CEFsRUX
-         1Umi6QNXxt5WsXz12o0JOl+am8Q95Xp3+sGl8dxvdvjBDaLcjOSU9jC/AP1nD6njl6rt
-         ol+dOcwVZJymSZNtJvOx/FLRvHc5K/vLkGbcWsqgZcAeSu+qCNZi9jbrXLtnF8wr8Ih4
-         lBuCMxcl3bUJ9f60++uRqnl5ob4IOBiRqR9TPpr6yB/QejbPtZeAt78tLSK75ZJV+Q+5
-         tuWCg7hXVv58e41JejCD/MMpBSA/x0md9eEi00HMzi/D+6adj1pHVAX58+ZFlu4XlKgX
-         +Ldg==
-X-Gm-Message-State: AOAM531/pdtX72BMTdaYY4aauowcmlwPRM7V7khQbjd/fmHsGC6K+B/M
-        YDou1Lh0NkmYZP4q65GEpSjoaSb03EjjEWIxIDsfQw==
-X-Google-Smtp-Source: ABdhPJwh3QNHZg7opOMZVBdwLRjUA3pBcah/ZGhVI1TBFzhvygkq1Eno3AvWYaQ8ff+n7XpgNUjxjw06fWBwoFI7Ung=
-X-Received: by 2002:a2e:9789:: with SMTP id y9mr437932lji.456.1604042584493;
- Fri, 30 Oct 2020 00:23:04 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hw/KvprqF2aWL/drMKTS7o6ufRsuBx5x5vRDgirN2WY=;
+        b=g4siQ0W5wGF2q1uzUZk0CqYQXr0USYpA6Zr8EbHcaFYg+wTSyLUU12EFv45sGV44lA
+         AJOI0goXfdW6ch8uTQf5/WovIIbSDXaUdnNVykWZp12UWn0WWTiGFF1dGC58HagB4hby
+         ejy1ak4lfErmFCfX9daEMmrslVacEWpjzXRBiKoXsFwZEoiDnxJCRcIdc73QW+zZgEW2
+         Fp326GHGwfoRhBkBJCpfW4N+pqK4ajlhLixgZ/9CB8itY021ABurMc67/URHJ1jB4+5V
+         X0OSo52NtYv+0ATqSofFh6FQA4lVRZTrrpvempVo1jtZ5pepN6sJXrokqNR/XHJEI5xM
+         3zPQ==
+X-Gm-Message-State: AOAM532Toc+LMhqtrrP7gGQfEPYkUsRKcUuYZHVqhNtEflxKmseNKXiX
+        JGgojHtCKvvb38KwU9i9VCE=
+X-Google-Smtp-Source: ABdhPJwwSDxlAVPNV6R9bvmn4/zwrH64JjCCMrXyWhUNz/DKEn4/f4wt2kdJC6/9SHjhTLGsSKH/5A==
+X-Received: by 2002:a17:902:bd03:b029:d6:89e2:5b5e with SMTP id p3-20020a170902bd03b02900d689e25b5emr6831929pls.70.1604042710013;
+        Fri, 30 Oct 2020 00:25:10 -0700 (PDT)
+Received: from ubt.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id h2sm2126510pjv.15.2020.10.30.00.24.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 00:25:09 -0700 (PDT)
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Bangzheng Liu <bangzheng.liu@unisoc.com>
+Subject: [PATCH] spi: sprd: add runtime pm for transfer message
+Date:   Fri, 30 Oct 2020 15:24:44 +0800
+Message-Id: <20201030072444.22122-1-zhang.lyra@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20201030061655.162839-1-dlatypov@google.com>
-In-Reply-To: <20201030061655.162839-1-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Fri, 30 Oct 2020 15:22:53 +0800
-Message-ID: <CABVgOSkn1n-N50YZr7aNTgAGxkj7zkZO31B16Ji88OxM8m2WPQ@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: fix --raw_output to actually show output
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 2:17 PM Daniel Latypov <dlatypov@google.com> wrote:
->
-> Currently --raw_output means nothing gets shown.
-> Why?
-> Because `raw_output()` has a `yield` and therefore is a generator, which
-> means it only executes when you ask it for a value.
->
-> Given no one actually is using it as a generator (checked via the added
-> type annotation), drop the yield so we actually print the output.
->
-> Also strip off the trailing \n (and any other whitespace) to avoid
->   [<601d6d3a>] ? printk+0x0/0x9b
->
->   [<601e5058>] ? kernel_init+0x23/0x14b
->
->   [<600170d2>] ? new_thread_handler+0x82/0xc0
-> making the output unreadable.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> ---
+From: Bangzheng Liu <bangzheng.liu@unisoc.com>
 
-The bug where --raw_output doesn't show anything is already fixed[1],
-but it does still show the extra newlines.
+Before transfer one message, spi core would set chipselect, sprd spi
+device should be resumed from runtime suspend, otherwise kernel would
+crash once access spi registers. The sprd spi device can be suspended
+until clearing chipselect which would be executed after transfer.
 
-Maybe it's worth making just the newline fix, and rolling it into the
-other patch[2] handling newlines?
+Fixes: e7d973a31c24 ("spi: sprd: Add SPI driver for Spreadtrum SC9860")
+Signed-off-by: Bangzheng Liu <bangzheng.liu@unisoc.com>
+Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+---
+ drivers/spi/spi-sprd.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-Cheers,
--- David
+diff --git a/drivers/spi/spi-sprd.c b/drivers/spi/spi-sprd.c
+index 635738f54c73..1733d10eb296 100644
+--- a/drivers/spi/spi-sprd.c
++++ b/drivers/spi/spi-sprd.c
+@@ -293,15 +293,25 @@ static void sprd_spi_chipselect(struct spi_device *sdev, bool cs)
+ 	struct spi_controller *sctlr = sdev->controller;
+ 	struct sprd_spi *ss = spi_controller_get_devdata(sctlr);
+ 	u32 val;
++	int ret;
+ 
+-	val = readl_relaxed(ss->base + SPRD_SPI_CTL0);
+ 	/*  The SPI controller will pull down CS pin if cs is 0 */
+ 	if (!cs) {
+-		val &= ~SPRD_SPI_CS0_VALID;
++		ret = pm_runtime_get_sync(ss->dev);
++		if (ret < 0) {
++			pm_runtime_put_noidle(ss->dev);
++			dev_err(ss->dev, "Failed to power device: %d\n", ret);
++			return;
++		}
++		val = readl_relaxed(ss->base + SPRD_SPI_CTL0);
++		val &= ~SPRD_SPI_CS0_VALID; /* set cs0 valid */
+ 		writel_relaxed(val, ss->base + SPRD_SPI_CTL0);
+ 	} else {
+-		val |= SPRD_SPI_CSN_MASK;
++		val = readl_relaxed(ss->base + SPRD_SPI_CTL0);
++		val |= SPRD_SPI_CSN_MASK; /* set all cs invalid */
+ 		writel_relaxed(val, ss->base + SPRD_SPI_CTL0);
++		pm_runtime_mark_last_busy(ss->dev);
++		pm_runtime_put_autosuspend(ss->dev);
+ 	}
+ }
+ 
+-- 
+2.20.1
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit-fixes&id=3023d8ff3fc60e5d32dc1d05f99ad6ffa12b0033
-[2]: https://lore.kernel.org/linux-kselftest/20201020233219.4146059-1-dlatypov@google.com/
