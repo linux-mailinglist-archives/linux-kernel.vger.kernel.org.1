@@ -2,173 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A1F2A07BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5EE2A07C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbgJ3OW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:22:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJ3OW7 (ORCPT
+        id S1726691AbgJ3OY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:24:29 -0400
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:58420 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725939AbgJ3OY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:22:59 -0400
-Received: from filter03-ipv6-out05.totaalholding.nl (filter03-ipv6-out05.totaalholding.nl [IPv6:2a02:c207:2038:8169::5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D936FC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:22:58 -0700 (PDT)
-Received: from www98.totaalholding.nl ([185.94.230.81])
-        by filter03.totaalholding.nl with esmtps (TLSv1.2:AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <mjbaars1977.linux-kernel@cyberfiber.eu>)
-        id 1kYVIr-0005aj-B4
-        for linux-kernel@vger.kernel.org; Fri, 30 Oct 2020 15:22:56 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=cyberfiber.eu; s=default; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:To:From:Subject:Message-ID:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=7/2pb3PekncDyTm+RZ5+ncI/72N47jqAulFj4Sdhl2k=; b=b7EFy7UBhbREce4QG2sy+9Tnh
-        anoFaIMQMETZwfwOhQvRMql4gu3FG2pzw4TdHz3GSsf+PMfeAOoJVyyL90n+Pua/+ZA6UZHSjY3Ja
-        ead1ZZrJHUohzDnlM9mXAvdqp0nJPCXrMhn7Uk0RkTEPaooM7ntIMvIC81txffNyR984fOvjy87du
-        oUS86n0S+Ngu98v0XFYscX3QMIhvmWKirZLNoJgacOtflbKViCCZM03V3QGX1Y5Y4b6yn+wHSHO3K
-        qWHlthw/UrFVohbVKiAL7WwiI43hvgEn5L7pOgdWLpD6HI/X6jMQFW2c4eTAhgFr5XOKqz/VTS0E1
-        OA1x7TRmA==;
-Received: from 134-134-146-85.ftth.glasoperator.nl ([85.146.134.134]:49222 helo=as06.cyberfiber.eu)
-        by www98.totaalholding.nl with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <mjbaars1977.linux-kernel@cyberfiber.eu>)
-        id 1kYVIp-0007j8-15; Fri, 30 Oct 2020 15:22:51 +0100
-Message-ID: <af7cc60da6ee12a870c9a4a7467cda6add89ef99.camel@cyberfiber.eu>
-Subject: Re: SIGHUP on connect
-From:   "Michael J. Baars" <mjbaars1977.linux-kernel@cyberfiber.eu>
-To:     Bernd Petrovitsch <bernd@petrovitsch.priv.at>,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 30 Oct 2020 15:22:52 +0100
-In-Reply-To: <c47a429f287a0a085a54483df0994fae58d4c356.camel@petrovitsch.priv.at>
-References: <0e0db8180bc560c9ebaeb42957cf2ecc365cc80d.camel@cyberfiber.eu>
-         <8b693bb1-1711-5289-5bc8-e5955da21968@petrovitsch.priv.at>
-         <2ce68928bcec23a0f41864f4f0fb55f2dd81d739.camel@cyberfiber.eu>
-         <c47a429f287a0a085a54483df0994fae58d4c356.camel@petrovitsch.priv.at>
-Content-Type: multipart/mixed; boundary="=-yKNsiC9WNBngOp9I0rJ9"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Fri, 30 Oct 2020 10:24:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1604067867; x=1635603867;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=Fi3ezR484UJE9S/iHTVxqIxtZBhvpJptVqXk3S5CYRM=;
+  b=jGkpaHHbNAhPZ7iY4KBJ0Wn0Yc7UqX4macWoXMdEiae2xMiJIpC5vl6a
+   Eh9eTvXYO53PTF7TlR8O9/Etw6gTHNz8VyT4G08ZNqpGFTuGLjQu+BWXM
+   I5NZ+e56BQrDVtq94PTn70GGKZ6wsd44YXehVV6nftrrNyFxWBjXYeVdI
+   gARccbaWD+TbWH7yHh3ncpLJ8tXxizJXG7AqKJiaZKme6oAi5/jryhOpZ
+   pihPjWxIbHMhuBAkV6Og1xv2VpiKtnaFdMnzulhJneFcf1YzytaTPo9fq
+   /BPdgfR/CZznj4xtVVrPNW0xgsEgbYDjMDorPz618sTDkNL1pqF5KL1el
+   g==;
+IronPort-SDR: gOAyZQ/xS8zJV8XDcYxw0e2QaOrMBsH1CCetkI66kOx/UY8xbmWw6Q+Sj1b6pGKJCUhi7rxMDd
+ 9BmJntKPFTeBe3/A11ao/75V48WxrZRUT5BCwKN8+7ckotA4ZjGhtutIQKfIoHf+dIntUh88wK
+ ETB0mr4cyfh0KyoCsQeNU06YC3H0Ro/Fxg8n9RHOyRD68b5VQMDgq1clFAzZ7rj40ZRuir+k4I
+ wZNT2J0f+3DPEi5O5IUj3Rilarbb6U1QPC11pd9jn126zwFsfk6zlY+RUDccmsYOi9XPrSJioY
+ sd8=
+X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
+   d="scan'208";a="91965309"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Oct 2020 07:24:26 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 30 Oct 2020 07:24:26 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Fri, 30 Oct 2020 07:24:26 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BTh57yhuM1R5byV2MI/pA26krtIg+NQggmb0gWK7MDAP6aap4WhuPeW3CZJVzavYOjSCwq3phqIiO8xskO/s0z/2/ULX7e/xsHn/XWLtqOlX+3MpMrQ3QoO+z3ceLFEKt0jRXuVGA7Y7Wj93TsVkLki55AGoiHNKT3LYlPf3gnkkEmK/XhQa3CxQJHly3NJSWoejG00B+h75hkpUQNZCYwUnc67+sP7skeDUfG1N7q7j5hp+PRLcICDxyFvk5BaPST6uM+/T3yme0Z5Wi5xRp/Ny+WSKxmSz0PfgUgPJk3LAz0JPC61Tza/9guB5cWX/bL97FvBVdVVS+Aeyo3tvYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fi3ezR484UJE9S/iHTVxqIxtZBhvpJptVqXk3S5CYRM=;
+ b=ii2glWileM0MJc45ZByHEvo4jc0IVee3EtqmUtF3GTm/7k4ZFhWmlNtxaZmEHlSNcpAefrT/DHK9Z8yp3WdOPe+4pv60PBJxeGXU5KHaeQb6wbeSlv0R1uORt+VrtZNmTeT6TXm/Lyl6x6t7up5JvOL5mGELyl78tx9L8LzmZOKzqKuk0Foo3+rRqZWZnADa1HLOWFheg/oI9+CWxsLk+wVpvXf4ZGQhYAZc7hlVIwdxDpAgrqo9IA1g/KU37xcI+xSUaP25KQxFRdgT5SXdE+LJRXNMjCP1rZO0fOonDMOm4hTkdM05toD/AQb2e1FzvqbwtrXZipMArVdQy9MPdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fi3ezR484UJE9S/iHTVxqIxtZBhvpJptVqXk3S5CYRM=;
+ b=WrTExv/Hd9abZGvwZjpYPE1WelqOkmXY/J8jk3NZizleFShq/dI5VtvcDtbXgHO6I8/dq9Qe9IUIpmdbLGWzeBPV/oAq6Y5LwLSW4kLyy5tD9+R/Ve163mwr42m0lkU0lMNSA2NyvxMHfthwmLvv6HOqw8EcmyT3PH9GCbFQ9vw=
+Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
+ (2603:10b6:903:b1::22) by CY4PR11MB2006.namprd11.prod.outlook.com
+ (2603:10b6:903:2f::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Fri, 30 Oct
+ 2020 14:24:24 +0000
+Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
+ ([fe80::908:a628:69ca:d62e]) by CY4PR1101MB2341.namprd11.prod.outlook.com
+ ([fe80::908:a628:69ca:d62e%7]) with mapi id 15.20.3499.027; Fri, 30 Oct 2020
+ 14:24:24 +0000
+From:   <Codrin.Ciubotariu@microchip.com>
+To:     <Nicolas.Ferre@microchip.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <richard.genoud@gmail.com>,
+        <lee.jones@linaro.org>
+CC:     <alexandre.belloni@bootlin.com>, <Ludovic.Desroches@microchip.com>
+Subject: Re: [PATCH] ARM: dts: at91: add serial MFD sub-node for usart
+Thread-Topic: [PATCH] ARM: dts: at91: add serial MFD sub-node for usart
+Thread-Index: AQHWrq0BNGYIfVuhjkKKUxhuAsgrHKmwJpcAgAAMyIA=
+Date:   Fri, 30 Oct 2020 14:24:24 +0000
+Message-ID: <f370bbf7-5cfc-1524-8103-061698ba6b67@microchip.com>
+References: <20201030110702.886638-1-codrin.ciubotariu@microchip.com>
+ <b054ce5c-58fd-dd86-2cb6-1e1f06a0899e@microchip.com>
+In-Reply-To: <b054ce5c-58fd-dd86-2cb6-1e1f06a0899e@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: microchip.com; dkim=none (message not signed)
+ header.d=none;microchip.com; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [86.121.145.173]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 800cf4cf-7d45-4247-d4cb-08d87cdf806e
+x-ms-traffictypediagnostic: CY4PR11MB2006:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR11MB20062DE86A62CBB1A15D7576E7150@CY4PR11MB2006.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:125;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QVIdH68enQjc4v9G23QDmumMwQYszeS4SN5M+TSdt1zAOUI5xtJgXzD1RBQaEIAnUZw752Ynz6vcdztk0JFFq3om8pnPzqT2+AJQ12yZ87bGt15WrNZXs9knHdw/d1V1EFokSbe9QCElVlBFm1rAER1/W4eBnESPZ89lZ+aOjj6Jfrg9KOS1Yl8o1hy7T7rugD1CvaAWoF7K8jO3zkx0fTfRTCzxtzGP+aVgexUFq81I3ED05Pemn6qoaX32wjMIOHEZTHI/E1bDn+cKrQykY4Wv3Nn5wIPtp5pdD5098hT7F3+S/EZWY1xZUQcb3Ss9wXdKo6HfrVG7J/wnLGxQLASNTfFxuw0dugw5C4PEj2yS6000RdjGD0Fid0LkxI8D
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2341.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(376002)(346002)(366004)(136003)(2906002)(71200400001)(107886003)(64756008)(8936002)(66446008)(91956017)(76116006)(66476007)(66556008)(8676002)(36756003)(26005)(316002)(66946007)(5660300002)(4326008)(478600001)(2616005)(6486002)(31696002)(53546011)(6512007)(54906003)(110136005)(31686004)(186003)(83380400001)(86362001)(6506007)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: q71Hl5AScYHFPt3zv5urPRsyB3ujIKbhp0IXBH3nvQ3DK3dhypFogwOWC8U9zIUnUjImHl+Nqa36BPQ7BIiYd6QGyiE1gWQVtYbMlbdHg66IJBBEhRZY/vM1PZxEO+xpbB3TazpBrNttNY7jbBfSs9vv1wyEcl5BPkNIJ2zS/8wqRJaJCwSwH1a1PsbxLR4ZFA50ipUfFiPq9+6LWf6wbOsiNftyWXHotoKxAUThNx47d8ViwCZOwjf/ZTYEnBLxk8NUU/gyFBp/MujDtxJLNwd1Cjzydllys4FU3Ld94lw0TCIKLT7tyXusyqY02ITzdSlS6HWPuqYxWdd41xJAPLuSOp67E9HTyL2khcjTKbbSSXIcrw4giIlVCaQdvmIamnGPEiCBL1o0wrhrGnl+kycN30EOBDb5GB0g/Q12KC2A/g9z7nx1gOHBAlKNeay0qVA+hHJv1TzeLje/GUVdmFjyh1Xx3snHw40njxithRyjfiwMUVt114sT0L1oAlgTbn8iD8HJuRsR3TY0VrzeM0bOgV2YJYzzafqfU3kPlolehSYu92DyClcdn4WXlMyvZ8DSAfjNoFWZ2BTS7suJLiwtyScGSObRyrLXFmKDk+VjaEi3sACtTca6Icy0o+bmyMkJD3bkk7XnKK+aJQLVSA==
+Content-Type: text/plain; charset="Windows-1252"
+Content-ID: <BF7A8435D1C5F84AB77750FB2CD43A21@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - www98.totaalholding.nl
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - cyberfiber.eu
-X-Get-Message-Sender-Via: www98.totaalholding.nl: authenticated_id: mjbaars1977.linux-kernel@cyberfiber.eu
-X-Authenticated-Sender: www98.totaalholding.nl: mjbaars1977.linux-kernel@cyberfiber.eu
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Originating-IP: 185.94.230.81
-X-SpamExperts-Domain: out.totaalholding.nl
-X-SpamExperts-Username: 185.94.230.81
-Authentication-Results: totaalholding.nl; auth=pass smtp.auth=185.94.230.81@out.totaalholding.nl
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.27)
-X-Recommended-Action: accept
-X-Filter-ID: Mvzo4OR0dZXEDF/gcnlw0QBfAh7lyK8tB8mq1asnDr6pSDasLI4SayDByyq9LIhVBoeDRKxkLvir
- l60W1uawa0TNWdUk1Ol2OGx3IfrIJKywOmJyM1qr8uRnWBrbSAGD2wvHbfwld3xCwVQvwEuT77Ld
- J48jzkmtY6e2hJZwYRTnx8yeplRO3sLIqUlSH7OGPXxNbpPplBB5vA/Kmor5m4MlhcTgOXSCz8qb
- ysTVYVkxZLzl78CRJp/CkBuSEXrbq0f8Oqhr0yw75RiyQ1Tv4oYfDsyVogV4aMr3Qc/zKVxPR9o0
- 14ICOs9pIWX8OtLJJ/fzpL1xEqFXtTRVS8F6mWjSUnK0zv6WWniSLupvi38VVSdplb6JAjtr1Y6X
- 6/3l9/kVsZY09AACYKLhz64OUenE6wHyAbSyVXutrqMjgFKKeHGV1+GDbwcApRSCc9xvAYudz7JX
- uXFJjriWRDMOxphVVYFnQVypBB9PvvyYUf0GvhRBPk5kyv+h5d+mP9t/vCrJPmnnTHzVkpybMK7Z
- TS77fIOcTZ0QyShr1nakhTiNms8bhxfe2nIpwkiiQMh/2EOU3dkV7Fl9iAAb2pM9OvO+DA/1wzD6
- XJ7+peR66u4zj3NxBud7i94+By/iITLKmz3NJmJzTE1T6wyg1SHXC9sW9t3OJQkq8DzYYYHNOdmg
- Gl1aPxAtivmw3hSDPS17NO9HdJC214j/JVELVUkR1atG/1JdtNnfKKRmXtO//dRDTITIra6HuQDr
- wTqu4I+nIhDkc96CUg/BeRPoiucrOGXHsOW5uveNZyphlRIAJuFZ130p38pxLYtWprhx8NwOlbt6
- bXpgIOK9oVJzr/2NDSTmWBgStbRbqatAKMOg3gDcKvpH0FCfpzqf6pVE49yQu2HNzdpz+LC7ym5s
- BkAiwhXo00OarAnLeEfdJ8lTt/H1H/aAwarQpYDOYx/6JtUO7PDPngA/1/V34QW37TqIq16b0j+J
- oe500YUP9nmhSjvm8hwvMNv4DzXyMfB6PxPaS/eqNnCSUgKma3ZcLfAU/oH4qn6TGLoge/5Hiw9C
- lnehkIcTOMzqGiJ1kxt76RL4iLsDClfbaI84RZiugwT8QXndwcgUdq9CmjcVQOstghA=
-X-Report-Abuse-To: spam@filter01.totaalholding.nl
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2341.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 800cf4cf-7d45-4247-d4cb-08d87cdf806e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2020 14:24:24.6393
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9Y8ahwWL/DKGa+gJMImP2BZsYLlxMzVlAe6Zj0OgV4zXxFh2B9GgWyHvqTyvQp5KRKzUcFJBacmR02veCcm+pme7cevLfsO5gQPmhZ7hS5A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB2006
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 30.10.2020 15:38, Nicolas Ferre wrote:
+> On 30/10/2020 at 12:07, Codrin Ciubotariu wrote:
+>> The "atmel,at91sam9260-usart" driver is a MFD driver, so it needs=20
+>> sub-nodes
+>> to match the registered platform device. For this reason, we add a seria=
+l
+>> subnode to all the "atmel,at91sam9260-usart" serial compatible nods. Thi=
+s
+>> will also remove the boot warning:
+>> "atmel_usart_serial: Failed to locate of_node [id: -2]"
+>=20
+> I don't remember this warning was raised previously even if the MFD=20
+> driver was added a while ago (Sept. 2018).
+>=20
+> I would say it's due to 466a62d7642f ("mfd: core: Make a best effort=20
+> attempt to match devices with the correct of_nodes") which was added on=20
+> mid August and corrected with 22380b65dc70 ("mfd: mfd-core: Ensure=20
+> disabled devices are ignored without error") but maybe not covering our=20
+> case.
 
---=-yKNsiC9WNBngOp9I0rJ9
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Well, it's not covering our enabled devices.
 
-Here, think I got it :)
+>=20
+> So, well, I don't know what's the best option to this change. Moreover,=20
+> I would say that all other USART related properties go into the child=20
+> not if there is a need for one.
+>=20
+> Lee, I suspect that we're not the only ones experiencing this ugly=20
+> warning during the boot log: can you point us out how to deal with it=20
+> for our existing atmel_serial.c users?
 
-Just run 'make; make run'
+My understading is that platform devices registered by MFD should have a=20
+correspondig DT node. The parrent properties are also available for the=20
+other usart device (usart-spi), so I think we should keep them in the=20
+parrent.
 
-Thank you for your help.
-
-On Thu, 2020-10-29 at 21:48 +0100, Bernd Petrovitsch wrote:
-> Hi all!
-> 
-> On 29/10/2020 14:10, Michael J. Baars wrote:
-> [...] 
-> > According to manual page socket(7), SO_REUSEADDR allows for local addresses to be reused for binding. I've tested this socket option with the WAN address,
-> > it
-> > appears the problem is solved for both local and non-local connections.
-> 
-> Yup.
-> 
-> > I also found the the SO_LINGER socket option to be useful in some way. By default, SO_LINGER is set to 0, so you would think that lingering connections were
-> > out
-> > of the question. However, an enabled linger with a l_onoff = 1 and a l_linger = 0 seems to work a lot better than a disabled linger with a l_onoff = 0 and a
-> > l_linger = 0.
-> > 
-> > Which option would you use?
-> 
-> I never used SO_LINGER before.
-> 
-> From the description in `man 7 socket`, active SO_LINGER just
-> makes shutdown() to block if not all data has been transmitted
-> (and ACKed?).
-> close() on a socket calls shutdown() automatically (unless
-> the shutdown() has been already called).
-> 
-> The timeout which you're application runs into
-> applies after shutting down/closing the connection.
-> 
-> MfG,
-> 	Bernd
-
---=-yKNsiC9WNBngOp9I0rJ9
-Content-Type: application/x-xz-compressed-tar; name="so_reuseaddr and so_linger.tar.xz"
-Content-Disposition: attachment; filename="so_reuseaddr and so_linger.tar.xz"
-Content-Transfer-Encoding: base64
-
-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
-t+KxxGf7AgAAAAAEWVo=
-
-
---=-yKNsiC9WNBngOp9I0rJ9--
-
+Best regards,
+Codrin
