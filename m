@@ -2,184 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75D42A02E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D47712A02E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgJ3KaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:30:06 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:58086 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgJ3KaE (ORCPT
+        id S1726458AbgJ3KaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbgJ3KaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:30:04 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 57E141F45E58
-Subject: Re: [PATCH v2 02/12] soc: mediatek: Add MediaTek SCPSYS power domains
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-References: <20201001160154.3587848-1-enric.balletbo@collabora.com>
- <20201001160154.3587848-3-enric.balletbo@collabora.com>
- <CANMq1KDSsfX3r1440qbmWggqbD7pU_iM4S36LUF8rsS2jVGqOg@mail.gmail.com>
- <ebba9def-e394-c183-dd80-6dc3716a7bd1@collabora.com>
- <CANMq1KBfKK9-RfMK89hRCGzhqZVqs6+YRdw8o2K+jA+3VN1_gw@mail.gmail.com>
- <2e6def0a-400c-836f-ef8b-c4fe6ac6c26e@collabora.com>
- <CANMq1KDJPqiyXJKyeER7rSVbu7VxAcvrcV8rxDLMV+VEyx-Xmg@mail.gmail.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <72dca621-ceb4-72ae-f340-c01474cb5b8d@collabora.com>
-Date:   Fri, 30 Oct 2020 11:29:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 30 Oct 2020 06:30:20 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B064AC0613CF;
+        Fri, 30 Oct 2020 03:30:20 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id b12so2750858plr.4;
+        Fri, 30 Oct 2020 03:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=vmR0xRpwru0r8RqR6Di+jbvSyh5RJTUS+Ibwo4lVDH0=;
+        b=c+dyB/nIrgNfcpQA+7ogNajQ0rdUF4Pl5UCnqY/3R2iAW88tjSeRb+Ezx+u0PLKCMw
+         g9VH2/KDzTFeSmXE+A2fezdsa8mU5/799uy4Gq9/xOXI6JEUSEvhdxjd5RRTCmIWQA1m
+         yownctA+sPFBtbtjfxnR0nMvWqN83pcgyRaxmmO5Uyy+wi27ej80Esh4YU1Ph6fkhYaY
+         LHN+E7oeoMRsVO9iV80IBFk57Yt3wptBwtVTWukJeefhAQ6ZU+aT8JJMF0WLK68zJ9kX
+         bzsCLglJhk6CkTmnfQy3I/gXgVv7iib4iCu20cemDvYq6FdhqU0KvJdYgHeHMbX2g4iq
+         W2iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=vmR0xRpwru0r8RqR6Di+jbvSyh5RJTUS+Ibwo4lVDH0=;
+        b=HS+RKFdRG+xOidVv1g0N6gVoybXpWHgCdFf5fK6F4Xn1rmXDhOTa/dEwy57I868aEf
+         k9QJTOgowYDn5potwWX5hPtA1RWtIb2AWSrDVubBl7LhWnAX2lZF2QnVfJj5na8t9Koc
+         JBw61OgfHYn4725fN+rRu5fwQb9KnilewuafMEq8fJfGtEdNKTXYPba58gP2XaE0UtvS
+         8hqZN0AUiZyznjAevYEyIcjTMdfJUV0XunlXxmy5yozudjlKnYKKFlxobAitGJBDfJL4
+         qd8+fQv7Bb9+DbxYzW1dD8OZUGOygd8Vdz/iZkMMRWh+Dx59eWhZB7dLGovKOA+V0KsD
+         wkvA==
+X-Gm-Message-State: AOAM532u1cpv5U6shpoGt7bya6p+LF8BAT0WnxvW5F4R46nlSDRGlA6w
+        bHBxlR/U8bQUDTgmGy+Ss2M=
+X-Google-Smtp-Source: ABdhPJwz8r9gsVVt86pXumYGcxNlb/aUgHxXvbAauAxb1OzNcDaEIw3RpdsRz89Pan7QJlUpwKW5sg==
+X-Received: by 2002:a17:902:bb86:b029:d5:28ac:8800 with SMTP id m6-20020a170902bb86b02900d528ac8800mr8258339pls.27.1604053820134;
+        Fri, 30 Oct 2020 03:30:20 -0700 (PDT)
+Received: from [192.168.1.59] (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
+        by smtp.gmail.com with ESMTPSA id g22sm5705468pfh.147.2020.10.30.03.30.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 03:30:19 -0700 (PDT)
+Message-ID: <7db5b6cba1548308a63855ec1dda836b6d6d9757.camel@gmail.com>
+Subject: Re: [PATCH] mwifiex: pcie: add enable_device_dump module parameter
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
+Date:   Fri, 30 Oct 2020 19:30:15 +0900
+In-Reply-To: <CA+ASDXPX+fadTKLnxNVZQ0CehsHNwvWHXEdLqZVDoQ6hf6Wp8Q@mail.gmail.com>
+References: <20201028142625.18642-1-kitakar@gmail.com>
+         <CA+ASDXPX+fadTKLnxNVZQ0CehsHNwvWHXEdLqZVDoQ6hf6Wp8Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 
 MIME-Version: 1.0
-In-Reply-To: <CANMq1KDJPqiyXJKyeER7rSVbu7VxAcvrcV8rxDLMV+VEyx-Xmg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
-
-On 28/10/20 2:13, Nicolas Boichat wrote:
-> On Wed, Oct 28, 2020 at 12:25 AM Enric Balletbo i Serra
-> <enric.balletbo@collabora.com> wrote:
->>
->> Hi Nicolas,
->>
->> On 27/10/20 1:19, Nicolas Boichat wrote:
->>> Hi Enric,
->>>
->>> On Mon, Oct 26, 2020 at 11:17 PM Enric Balletbo i Serra
->>> <enric.balletbo@collabora.com> wrote:
->>>>
->>>> Hi Nicolas,
->>>>
->>>> Many thanks for looking at this.
->>>
->>> Thanks to you ,-)
->>>
->>> [snip]
->>>>>> +       if (id >= scpsys->soc_data->num_domains) {
->>>>>> +               dev_err_probe(scpsys->dev, -EINVAL, "%pOFn: invalid domain id %d\n", node, id);
->>>>>> +               return -EINVAL;
->>>>>> +       }
->>>>>> +
->>>>>> +       domain_data = &scpsys->soc_data->domains[id];
->>>>>> +       if (!domain_data) {
->>>>>
->>>>> Is that even possible at all? I mean, even if
->>>>> scpsys->soc_data->domains is NULL, as long as id != 0, this will no
->>>>> happen.
->>>>>
->>>>
->>>> I think could happen with a bad DT definition. I.e if for the definition of the
->>>> MT8173 domains you use a wrong value for the reg property, a value that is not
->>>> present in the SoC data. It is unlikely if you use the defines but could happen
->>>> if you hardcore the value. We cannot check this with the DT json-schema.
->>>
->>> I wasn't clear in my explanation, and looking further there is more
->>> that looks wrong.
->>>
->>> This expression &scpsys->soc_data->domains[id] is a pointer to element
->>> "id" of the array domains. So if you convert to integer arithmetic,
->>> it'll be something like `(long)scpsys->soc_data->domains +
->>> (sizeof(struct generic_pm_domain *)) * id`. The only way this can be
->>> NULL is if scpsys->soc_data->domains pointer is NULL, which, actually,
->>> can't really happen as it's the 5th element of a struct scpsys
->>> structure `(long)scpsys->soc_data + offset_of(domains, struct scpsys)
->>> + (sizeof(struct generic_pm_domain *)) * id`.
->>>
->>> I think what you mean is either:
->>> domain_data = &scpsys->soc_data->domains[id];
->>> if (!*domain_data)
->>> [but then domain_data type should be `struct generic_pm_domain **`?
->>
->> I think you're confusing the field `struct generic_pm_domain *domains[]`from the
->> `struct scpsys` with `const struct scpsys_domain_data *domains` from `struct
->> scpsys_soc_data`. My bad they have the same name, I should probably rename the
->> second one as domain_info or domain_data to avoid that confusion.
+On Wed, 2020-10-28 at 17:12 -0700, Brian Norris wrote:
+> On Wed, Oct 28, 2020 at 3:58 PM Tsuchiya Yuto <kitakar@gmail.com> wrote:
+> > 
+> > The devicve_dump may take a little bit long time and users may want to
+> > disable the dump for daily usage.
+> > 
+> > This commit adds a new module parameter enable_device_dump and disables
+> > the device_dump by default.
 > 
-> Oh, okay, get it, thanks for clarifying, I got myself confused indeed ,-P
-> 
-> But, still, part of my integer arithmetics still holds...
-> 
-> &scpsys->soc_data->domains[id] = (long)scpsys->soc_data->domains +
-> (sizeof(struct generic_pm_domain *)) * id. The only way domain_data
-> can be NULL is if scpsys->soc_data->domains pointer is NULL (it can't
-> be, really, assuming scpsys_soc_data structures are well defined) AND
-> id is 0.
-> 
-> Now, if I understand what you want to check here. If a domain id is
-> not specified in scpsys_domain_data (e.g. if there is a gap in
-> MT8XXX_POWER_DOMAIN_YYY indices and if `id` points at one of those
-> gaps), you'll get an all-zero entry in domain_data. So maybe you can
-> just check that domain_data->sta_mask != 0? Would that be enough? (I
-> expect that sta_mask would always need to be set?)
-> 
+> As with one of your other patches, please don't change the defaults
+> and hide them under a module parameter. If you're adding a module
+> parameter, leave the default behavior alone.
 
-Yes, that would be enough. I'll change for the next version.
+Thanks for the review!
 
-> But then again, are there ever gaps in MT8XXX_POWER_DOMAIN_YYY indices?
-> 
+I mentioned about power_save stability on the other patches. But I should
+have added this fact into the commit message of this patch that even if
+we disable that power_save, the firmware crashes a lot on some specific
+devices. Really a lot.
 
-AFAIK, there is no gaps, but one could make gaps when filling that info.  I
-still think is worth have this check although is "unlikely" to happen due an
-human error :-). I'll maintain for the next version, but I don't really care to
-remove it if all you prefer I remove it.
+For example, as far as I know Surface Pro 5 needs ASPM L1.2 substate
+disabled to avoid the firmware crash. Disabling it is still acceptable.
+On the other hand, Surface 3 needs L1 ASPM state disabled. This is not
+acceptable because this breaks S0ix. Anyway, handling ASPM should be done
+in firmware I think.
 
-Thanks,
-  Enric
+So, the context of why I sent this patch is the next. We can't fix the
+fw crash itself, so, we decided to just let it crash and reset by itself
+(with the other fw reset quirks I sent). In this way, the time it does
+device_dump is really annoying if fw crashes so often.
+
+Let me know if splitting this patch like this works. 1) The first patch
+is to add this module parameter but don't change the default behavior.
+2) The second patch is to change the parameter value depending on the
+DMI matching or something so that it doesn't break the existing users.
+
+But what I want to say here as well is that, if the firmware can be fixed,
+we don't need a patch like this.
+
+> This also seems like something that might be nicer as a user-space
+> knob in generic form (similar to "/sys/class/devcoredump/disabled",
+> except on a per-device basis, and fed back to the driver so it doesn't
+> waste time generating such dumps), but I suppose I can see why a
+> module parameter (so you can just stick your configuration in
+> /etc/modprobe.d/) might be easier to deal with in some cases.
+
+Agreed.
+
+> Brian
 
 
->>
->>
->> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h
->> b/drivers/soc/mediatek/mtk-pm-domains.h
->> index 7c8efcb3cef2..6ff095db8a27 100644
->> --- a/drivers/soc/mediatek/mtk-pm-domains.h
->> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
->> @@ -56,7 +56,7 @@ struct scpsys_domain_data {
->>  };
->>
->>  struct scpsys_soc_data {
->> -       const struct scpsys_domain_data *domains;
->> +       const struct scpsys_domain_data *domain_data;
->>         int num_domains;
->>         int pwr_sta_offs;
->>         int pwr_sta2nd_offs;
->>
->> ---
->>
->> struct scpsys {
->>     ...
->>     const struct scpsys_soc_data *soc_data;
->>     ...
->>     struct generic_pm_domain *domains[];
->> }
->>
->>
->> domain_data = &scpsys->soc_data->domain_data[id];
->> if (!domain_data)
->>
->> Thanks,
->>   Enric
->>
->>
->>> Does your code compile with warnings enabled?]
->>> or:
->>> domain_data = scpsys->soc_data->domains[id];
->>> if (!domain_data)
->>> [then the test makes sense]
->>>
->>> [snip]
->>>
