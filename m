@@ -2,405 +2,438 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19D729FD8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FEFF29FD91
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725808AbgJ3GC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 02:02:56 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:14674 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3GC4 (ORCPT
+        id S1725838AbgJ3GEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 02:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJ3GEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 02:02:56 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201030060206epoutp01097f2db1fc4e276698aa81aed45eba79~Cr9BZS72n2310123101epoutp01F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:02:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201030060206epoutp01097f2db1fc4e276698aa81aed45eba79~Cr9BZS72n2310123101epoutp01F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604037726;
-        bh=sfnfDN9oHZvJZ8SpDyvhPxBdPi/Wk7JCNN5ZgJCkFIg=;
-        h=Subject:Reply-To:From:To:Date:References:From;
-        b=Ayqpp2ASuQYvdtrfSp1A4QHZw2KSRmH7fKCKKbeCvY7jXMI2kEvD2SzC14sBIFTRb
-         qiFJG0qNJTomy6QJpz74QmLHhbmp6NEW2O4I/wy1G/6l+DiaRWHHV33mYmowdtgSxh
-         NIZWeT9EyhnLYgw3/F2OTyg3u18Tkh6VOtn8Edzo=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201030060206epcas1p24dce25766763646e6ba67a8d2a1a7c0d~Cr9A9HCIc1643316433epcas1p28;
-        Fri, 30 Oct 2020 06:02:06 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.166]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4CMsCK1Ht1zMqYkn; Fri, 30 Oct
-        2020 06:02:05 +0000 (GMT)
-X-AuditID: b6c32a36-6dfff7000000f7e2-29-5f9bac5d8609
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CD.8D.63458.D5CAB9F5; Fri, 30 Oct 2020 15:02:05 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH] Input: add switch event(SW_COVER_ATTACHED)
-Reply-To: hj2.im@samsung.com
-Sender: HyungJae Im <hj2.im@samsung.com>
-From:   HyungJae Im <hj2.im@samsung.com>
-To:     HyungJae Im <hj2.im@samsung.com>,
-        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "rydberg@bitmath.org" <rydberg@bitmath.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20201030060204epcms1p48c0c3d0b82d0304c6e1b296cb6ebc778@epcms1p4>
-Date:   Fri, 30 Oct 2020 15:02:04 +0900
-X-CMS-MailID: 20201030060204epcms1p48c0c3d0b82d0304c6e1b296cb6ebc778
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHKsWRmVeSWpSXmKPExsWy7bCmrm7smtnxBveOsFksmG5ncfPTN1aL
-        y7vmsFncbelktTjxbRqTA6vH51WvWD3uXNvD5tG3ZRWjx+dNcgEsUTk2GamJKalFCql5yfkp
-        mXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUBrlRTKEnNKgUIBicXFSvp2NkX5
-        pSWpChn5xSW2SqkFKTkFhgYFesWJucWleel6yfm5VoYGBkamQJUJORmrTs5kLZjnVnF55R72
-        BsZ5Vl2MHBwSAiYSd39mdTFycQgJ7GCUWLnmCRtInFdAUOLvDuEuRk4OYQFriTc7TjKDhIUE
-        ZCS69hhBhDUklrZ8ZgSx2QTUJH6v2cMGMkZEYBaTxNv5J8ASEgK8EjPan7JA2NIS25dvhYqL
-        Stxc/ZYdxn5/bD5UXESi9d5ZZghbUOLBz92MML1LryxmAlkgIdDOKHHx5i9WCKeFUWLB0sNs
-        EFX6Elf6ZzKB2LwCvhI/HpxiB7maRUBV4uQeaYh/XSTmzfMHqWAWkJfY/nYO2F/MApoS63fp
-        QwxRlNj5ey4jRAmfxLuvPawwr+yY94QJwlaQ2LjoE9RSMYlZ825Dvegh8e3tF7AaIYFAiW9L
-        77JNYJSbhQjQWUgWz0JYvICReRWjWGpBcW56arFhgRFyFG5iBCc0LbMdjJPeftA7xMjEwXiI
-        UYKDWUmE94XgzHgh3pTEyqrUovz4otKc1OJDjKZAD09klhJNzgem1LySeENTI2NjYwsTM3Mz
-        U2Mlcd4/2h3xQgLpiSWp2ampBalFMH1MHJxSDUx6ERKiZ05NzKwqZCrNVKv63Wlk1nr0/pI7
-        nuvuaOb++MAWs/Dx08TPfpZuU4QnaU5dHW7ZtK31VF8Tj7reNn91QffWuc/mHGhi/TT1WIe+
-        /6uZ9anuJV0bpt2U2LzDSG/yxB/nfBsstk04o3b43Pvj2jI1XCmn31ifr7FUTNrf+4ElRXvN
-        tMTYv7sOz85227CfOT3Z6XC8w/KvmXrfVp8TZb9uf2phwek6ke/N6mJ/ZZfNzgnafJo7Z9dc
-        Uf2U/Fld+85brN6+9dqvSewSyy+6GRknbtsgtPoSi8OGqcd7Kk/8alzQbmYQ9/Qpy7eViTlf
-        uuw5C1Ybt8RJ8VSUiV+7Wnhl7i2zT580z0dOL/unxFKckWioxVxUnAgAnuSDqvEDAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201030060204epcms1p48c0c3d0b82d0304c6e1b296cb6ebc778
-References: <CGME20201030060204epcms1p48c0c3d0b82d0304c6e1b296cb6ebc778@epcms1p4>
+        Fri, 30 Oct 2020 02:04:08 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2B2C0613CF;
+        Thu, 29 Oct 2020 23:04:08 -0700 (PDT)
+Received: from [IPv6:2804:14c:483:7e3e::1005] (unknown [IPv6:2804:14c:483:7e3e::1005])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6920A1F4545C;
+        Fri, 30 Oct 2020 06:04:04 +0000 (GMT)
+Subject: Re: [PATCH v2] media: staging: rkisp1: cap: refactor enable/disable
+ stream to allow multistreaming
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        linux-media@vger.kernel.org
+Cc:     laurent.pinchart@ideasonboard.com, hverkuil@xs4all.nl,
+        kernel@collabora.com, sakari.ailus@linux.intel.com,
+        linux-rockchip@lists.infradead.org, mchehab@kernel.org,
+        tfiga@chromium.org, linux-kernel@vger.kernel.org
+References: <20201019160434.877568-1-helen.koike@collabora.com>
+ <b0657648-2af9-c78a-c55a-9581ff3bd9ee@collabora.com>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <2262856e-56d0-2bca-d375-fae0fb1d0a5b@collabora.com>
+Date:   Fri, 30 Oct 2020 03:04:00 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
+MIME-Version: 1.0
+In-Reply-To: <b0657648-2af9-c78a-c55a-9581ff3bd9ee@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need support to various accessories on the device,
-some requiring switch does not exist in switch list.
-So added switch for the following purpose.
+Hi Dafna,
 
-SW_COVER_ATTACHED is for the checking the cover
-attached or not on the device. We also added driver
-that uses such event.
+On 10/26/20 2:50 PM, Dafna Hirschfeld wrote:
+> Hi,
+> 
+> 
+> Am 19.10.20 um 18:04 schrieb Helen Koike:
+>> Allow streaming from self picture path and main picture path at the same
+>> time.
+>>
+>> Take care for s_stream() callbacks to not be called twice.
+>> When starting a stream, s_stream(true) shouldn't be called for the isp
+>> and the sensor if the other stream is already enabled (since it was
+>> already called).
+>> When stopping a stream, s_stream(false) shouldn't be called for isp and
+>> the sensor if the other stream is still enabled.
+>>
+>> Remove the callback function scheme for navigating through the topology,
+>> simplifying the code, improving readability.
+>>
+>> Remove multistreaming item from the TODO list.
+>>
+>> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+>> ---
+>>
+>> Hello,
+>>
+>> Since we didn't reach an agreement on the helpers in the core[1], I'm
+>> sending this patch to fix this limitation only for rkisp1.
+>>
+>> [1] https://patchwork.linuxtv.org/project/linux-media/cover/20200415013044.1778572-1-helen.koike@collabora.com/
+>>
+>> If we decide to add the helpers in the future, we can clean up drivers
+>> even more, but I don't want to block this feature.
+>>
+>> This Patch depends on patch:
+>> "media: staging: rkisp1: validate links before powering and streaming"
+>> https://patchwork.linuxtv.org/project/linux-media/patch/20201002184222.7094-2-dafna.hirschfeld@collabora.com/
+>>
+>> Changes in V2:
+>> ==============
+>> - Rebase on top of patch
+>> "media: staging: rkisp1: validate links before powering and streaming"
+>> which fixes media_pipeline_{start,stop}() calling order.
+>> - Fix commit message
+>> - Fix disable order
+>> - Disable capture when s_stream(true) of the resizer fails
+>>
+>> Overview of the patch:
+>> ======================
+>>
+>> * Rename rkisp1_stream_{start,stop}() to
+>>    rkisp1_cap_stream_{enable,disable}() to clarify the difference between
+>>    other stream enable/disable functions
+>>
+>> * Implement rkisp1_pipeline_stream_{enable,disable}() to replace
+>>    rkisp1_pipeline_{enable,disable}_cb() and rkisp1_pipeline_sink_walk(),
+>>    which were removed.
+>>
+>> * Call rkisp1_cap_stream_{enable,disable}() from
+>>    rkisp1_pipeline_stream_{enable,disable}() for better
+>>    unwind handling and function name semantics.
+>>
+>> * Remove item from TODO list (I also reviewed the use of the
+>>    is_streaming var in the code and lgtm).
+>>
+>> This patch was tested on rockpi4 board with:
+>> ============================================
+>>
+>> "media-ctl" "-d" "platform:rkisp1" "-r"
+>> "media-ctl" "-d" "platform:rkisp1" "-l" "'imx219 4-0010':0 -> 'rkisp1_isp':0 [1]"
+>> "media-ctl" "-d" "platform:rkisp1" "-l" "'rkisp1_isp':2 -> 'rkisp1_resizer_selfpath':0 [1]"
+>> "media-ctl" "-d" "platform:rkisp1" "-l" "'rkisp1_isp':2 -> 'rkisp1_resizer_mainpath':0 [1]"
+>>
+>> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"imx219 4-0010":0 [fmt:SRGGB10_1X10/1640x1232]'
+>>
+>> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_isp":0 [fmt:SRGGB10_1X10/1640x1232 crop: (0,0)/1600x1200]'
+>> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_isp":2 [fmt:YUYV8_2X8/1600x1200 crop: (0,0)/1500x1100]'
+>>
+>> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_resizer_selfpath":0 [fmt:YUYV8_2X8/1500x1100 crop: (300,400)/1400x1000]'
+>> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_resizer_selfpath":1 [fmt:YUYV8_2X8/900x800]'
+>>
+>> "v4l2-ctl" "-z" "platform:rkisp1" "-d" "rkisp1_selfpath" "-v" "width=900,height=800,"
+>> "v4l2-ctl" "-z" "platform:rkisp1" "-d" "rkisp1_selfpath" "-v" "pixelformat=422P"
+>>
+>> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_resizer_mainpath":0 [fmt:YUYV8_2X8/1500x1100 crop: (300,400)/1400x1000]'
+>> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_resizer_mainpath":1 [fmt:YUYV8_2X8/900x800]'
+>>
+>> "v4l2-ctl" "-z" "platform:rkisp1" "-d" "rkisp1_mainpath" "-v" "width=900,height=800,"
+>> "v4l2-ctl" "-z" "platform:rkisp1" "-d" "rkisp1_mainpath" "-v" "pixelformat=422P"
+>>
+>> sleep 1
+>>
+>> time v4l2-ctl "-z" "platform:rkisp1" "-d" "rkisp1_mainpath" "--stream-mmap" "--stream-count" "100" &
+>> time v4l2-ctl "-z" "platform:rkisp1" "-d" "rkisp1_selfpath" "--stream-mmap" "--stream-count" "100" &
+>>
+>> wait
+>> echo "Completed"
+>>
+>> Thanks
+>> Helen
+>> ---
+>>   drivers/staging/media/rkisp1/TODO             |   3 -
+>>   drivers/staging/media/rkisp1/rkisp1-capture.c | 219 +++++++++---------
+>>   2 files changed, 110 insertions(+), 112 deletions(-)
+>>
+>> diff --git a/drivers/staging/media/rkisp1/TODO b/drivers/staging/media/rkisp1/TODO
+>> index e7c8398fc2cef..a2dd0ad951c25 100644
+>> --- a/drivers/staging/media/rkisp1/TODO
+>> +++ b/drivers/staging/media/rkisp1/TODO
+>> @@ -1,9 +1,6 @@
+>>   * Fix pad format size for statistics and parameters entities.
+>>   * Fix checkpatch errors.
+>>   * Add uapi docs. Remember to add documentation of how quantization is handled.
+>> -* streaming paths (mainpath and selfpath) check if the other path is streaming
+>> -in several places of the code, review this, specially that it doesn't seem it
+>> -supports streaming from both paths at the same time.
+>>     NOTES:
+>>   * All v4l2-compliance test must pass.
+>> diff --git a/drivers/staging/media/rkisp1/rkisp1-capture.c b/drivers/staging/media/rkisp1/rkisp1-capture.c
+>> index 9b4a12e13f135..13463c899b009 100644
+>> --- a/drivers/staging/media/rkisp1/rkisp1-capture.c
+>> +++ b/drivers/staging/media/rkisp1/rkisp1-capture.c
+>> @@ -830,71 +830,43 @@ static void rkisp1_return_all_buffers(struct rkisp1_capture *cap,
+>>   }
+>>     /*
+>> - * rkisp1_pipeline_sink_walk - Walk through the pipeline and call cb
+>> - * @from: entity at which to start pipeline walk
+>> - * @until: entity at which to stop pipeline walk
+>> - *
+>> - * Walk the entities chain starting at the pipeline video node and stop
+>> - * all subdevices in the chain.
+>> - *
+>> - * If the until argument isn't NULL, stop the pipeline walk when reaching the
+>> - * until entity. This is used to disable a partially started pipeline due to a
+>> - * subdev start error.
+>> + * Most of registers inside rockchip ISP1 have shadow register since
+>> + * they must be not be changed during processing a frame.
+>> + * Usually, each sub-module updates its shadow register after
+>> + * processing the last pixel of a frame.
+>>    */
+>> -static int rkisp1_pipeline_sink_walk(struct media_entity *from,
+>> -                     struct media_entity *until,
+>> -                     int (*cb)(struct media_entity *from,
+>> -                           struct media_entity *curr))
+>> +static void rkisp1_cap_stream_enable(struct rkisp1_capture *cap)
+>>   {
+>> -    struct media_entity *entity = from;
+>> -    struct media_pad *pad;
+>> -    unsigned int i;
+>> -    int ret;
+>> -
+>> -    while (1) {
+>> -        pad = NULL;
+>> -        /* Find remote source pad */
+>> -        for (i = 0; i < entity->num_pads; i++) {
+>> -            struct media_pad *spad = &entity->pads[i];
+>> -
+>> -            if (!(spad->flags & MEDIA_PAD_FL_SINK))
+>> -                continue;
+>> -            pad = media_entity_remote_pad(spad);
+>> -            if (pad && is_media_entity_v4l2_subdev(pad->entity))
+>> -                break;
+>> -        }
+>> -        if (!pad || !is_media_entity_v4l2_subdev(pad->entity))
+>> -            break;
+>> +    struct rkisp1_device *rkisp1 = cap->rkisp1;
+>> +    struct rkisp1_capture *other = &rkisp1->capture_devs[cap->id ^ 1];
+>>   -        entity = pad->entity;
+>> -        if (entity == until)
+>> -            break;
+>> +    cap->ops->set_data_path(cap);
+>> +    cap->ops->config(cap);
+>>   -        ret = cb(from, entity);
+>> -        if (ret)
+>> -            return ret;
+>> +    /* Setup a buffer for the next frame */
+>> +    spin_lock_irq(&cap->buf.lock);
+>> +    rkisp1_set_next_buf(cap);
+>> +    cap->ops->enable(cap);
+>> +    /* It's safe to config ACTIVE and SHADOW regs for the
+>> +     * first stream. While when the second is starting, do NOT
+>> +     * force update because it also update the first one.
+>> +     *
+>> +     * The latter case would drop one more buf(that is 2) since
+>> +     * there's not buf in shadow when the second FE received. This's
+>> +     * also required because the second FE maybe corrupt especially
+>> +     * when run at 120fps.
+>> +     */
+>> +    if (!other->is_streaming) {
+>> +        /* force cfg update */
+>> +        rkisp1_write(rkisp1,
+>> +                 RKISP1_CIF_MI_INIT_SOFT_UPD, RKISP1_CIF_MI_INIT);
+>> +        rkisp1_set_next_buf(cap);
+>>       }
+>> -
+>> -    return 0;
+>> -}
+>> -
+>> -static int rkisp1_pipeline_disable_cb(struct media_entity *from,
+>> -                      struct media_entity *curr)
+>> -{
+>> -    struct v4l2_subdev *sd = media_entity_to_v4l2_subdev(curr);
+>> -
+>> -    return v4l2_subdev_call(sd, video, s_stream, false);
+>> -}
+>> -
+>> -static int rkisp1_pipeline_enable_cb(struct media_entity *from,
+>> -                     struct media_entity *curr)
+>> -{
+>> -    struct v4l2_subdev *sd = media_entity_to_v4l2_subdev(curr);
+>> -
+>> -    return v4l2_subdev_call(sd, video, s_stream, true);
+>> +    spin_unlock_irq(&cap->buf.lock);
+>> +    cap->is_streaming = true;
+>>   }
+>>   -static void rkisp1_stream_stop(struct rkisp1_capture *cap)
+>> +static void rkisp1_cap_stream_disable(struct rkisp1_capture *cap)
+>>   {
+>>       int ret;
+>>   @@ -911,6 +883,82 @@ static void rkisp1_stream_stop(struct rkisp1_capture *cap)
+>>       }
+>>   }
+>>   +/*
+>> + * rkisp1_pipeline_stream_disable - disable nodes in the pipeline
+>> + *
+>> + * Call s_stream(false) in the reverse order from
+>> + * rkisp1_pipeline_stream_enable() and disable the DMA engine.
+>> + * Should be called before media_pipeline_stop()
+>> + */
+>> +static void rkisp1_pipeline_stream_disable(struct rkisp1_capture *cap)
+>> +    __must_hold(&cap->rkisp1->stream_lock)
+>> +{
+>> +    struct rkisp1_device *rkisp1 = cap->rkisp1;
+>> +
+>> +    /*
+>> +     * If the other capture is streaming, isp and sensor nodes shouldn't
+>> +     * be disabled, skip them.
+>> +     */
+>> +    if (rkisp1->pipe.streaming_count < 2) {
+>> +        v4l2_subdev_call(rkisp1->active_sensor->sd, video, s_stream,
+>> +                 false);
+>> +        v4l2_subdev_call(&rkisp1->isp.sd, video, s_stream, false);
+>> +    }
+>> +
+>> +    v4l2_subdev_call(&rkisp1->resizer_devs[cap->id].sd, video, s_stream,
+>> +             false);
+>> +
+>> +    rkisp1_cap_stream_disable(cap);
+>> +}
+>> +
+>> +/*
+>> + * rkisp1_pipeline_stream_enable - enable nodes in the pipeline
+>> + *
+>> + * Enable the DMA Engine and call s_stream(true) through the pipeline.
+>> + * Should be called after media_pipeline_start()
+>> + */
+>> +static int rkisp1_pipeline_stream_enable(struct rkisp1_capture *cap)
+>> +    __must_hold(&cap->rkisp1->stream_lock)
+>> +{
+>> +    struct rkisp1_device *rkisp1 = cap->rkisp1;
+>> +    int ret;
+>> +
+>> +    rkisp1_cap_stream_enable(cap);
+>> +
+>> +    ret = v4l2_subdev_call(&rkisp1->resizer_devs[cap->id].sd, video,
+>> +                   s_stream, true);
+>> +    if (ret)
+>> +        goto err_disable_cap;
+>> +
+>> +    /*
+>> +     * If the other capture is streaming, isp and sensor nodes are already
+>> +     * enabled, skip them.
+>> +     */
+>> +    if (rkisp1->pipe.streaming_count > 1)
+>> +        return 0;
+>> +
+>> +    ret = v4l2_subdev_call(&rkisp1->isp.sd, video, s_stream, true);
+>> +    if (ret)
+>> +        goto err_disable_rsz;
+>> +
+>> +    ret = v4l2_subdev_call(rkisp1->active_sensor->sd, video, s_stream,
+>> +                   true);
+>> +    if (ret)
+>> +        goto err_disable_isp;
+>> +
+>> +    return 0;
+>> +
+>> +err_disable_isp:
+>> +    v4l2_subdev_call(&rkisp1->isp.sd, video, s_stream, false);
+>> +err_disable_rsz:
+>> +    v4l2_subdev_call(&rkisp1->resizer_devs[cap->id].sd, video, s_stream,
+>> +             false);
+>> +err_disable_cap:
+>> +    rkisp1_cap_stream_disable(cap);
+>> +
+>> +    return ret;
+>> +}
+>> +
+>>   static void rkisp1_vb2_stop_streaming(struct vb2_queue *queue)
+>>   {
+>>       struct rkisp1_capture *cap = queue->drv_priv;
+>> @@ -920,12 +968,7 @@ static void rkisp1_vb2_stop_streaming(struct vb2_queue *queue)
+>>         mutex_lock(&cap->rkisp1->stream_lock);
+>>   -    rkisp1_stream_stop(cap);
+>> -    ret = rkisp1_pipeline_sink_walk(&node->vdev.entity, NULL,
+>> -                    rkisp1_pipeline_disable_cb);
+>> -    if (ret)
+>> -        dev_err(rkisp1->dev,
+>> -            "pipeline stream-off failed error:%d\n", ret);
+>> +    rkisp1_pipeline_stream_disable(cap);
+>>         rkisp1_return_all_buffers(cap, VB2_BUF_STATE_ERROR);
+>>   @@ -941,43 +984,6 @@ static void rkisp1_vb2_stop_streaming(struct vb2_queue *queue)
+>>       mutex_unlock(&cap->rkisp1->stream_lock);
+>>   }
+>>   -/*
+>> - * Most of registers inside rockchip ISP1 have shadow register since
+>> - * they must be not be changed during processing a frame.
+>> - * Usually, each sub-module updates its shadow register after
+>> - * processing the last pixel of a frame.
+>> - */
+>> -static void rkisp1_stream_start(struct rkisp1_capture *cap)
+>> -{
+>> -    struct rkisp1_device *rkisp1 = cap->rkisp1;
+>> -    struct rkisp1_capture *other = &rkisp1->capture_devs[cap->id ^ 1];
+>> -
+>> -    cap->ops->set_data_path(cap);
+>> -    cap->ops->config(cap);
+>> -
+>> -    /* Setup a buffer for the next frame */
+>> -    spin_lock_irq(&cap->buf.lock);
+>> -    rkisp1_set_next_buf(cap);
+>> -    cap->ops->enable(cap);
+>> -    /* It's safe to config ACTIVE and SHADOW regs for the
+>> -     * first stream. While when the second is starting, do NOT
+>> -     * force update because it also update the first one.
+>> -     *
+>> -     * The latter case would drop one more buf(that is 2) since
+>> -     * there's not buf in shadow when the second FE received. This's
+>> -     * also required because the second FE maybe corrupt especially
+>> -     * when run at 120fps.
+>> -     */
+>> -    if (!other->is_streaming) {
+>> -        /* force cfg update */
+>> -        rkisp1_write(rkisp1,
+>> -                 RKISP1_CIF_MI_INIT_SOFT_UPD, RKISP1_CIF_MI_INIT);
+>> -        rkisp1_set_next_buf(cap);
+>> -    }
+>> -    spin_unlock_irq(&cap->buf.lock);
+>> -    cap->is_streaming = true;
+>> -}
+>> -
+>>   static int
+>>   rkisp1_vb2_start_streaming(struct vb2_queue *queue, unsigned int count)
+>>   {
+>> @@ -1008,20 +1014,15 @@ rkisp1_vb2_start_streaming(struct vb2_queue *queue, unsigned int count)
+>>           goto err_pipe_pm_put;
+>>       }
+>>   -    rkisp1_stream_start(cap);
+>> -
+>> -    /* start sub-devices */
+>> -    ret = rkisp1_pipeline_sink_walk(entity, NULL,
+>> -                    rkisp1_pipeline_enable_cb);
+> 
+> We should also make sure that the resizer is connected to the isp
+> and fail if not.
 
-Signed-off-by: Hyungjae Im <hj2.im@samsung.com>
----
- drivers/input/Kconfig                  |  12 ++
- drivers/input/Makefile                 |   2 +
- drivers/input/cover_detect.c           | 236 +++++++++++++++++++++++++
- include/linux/mod_devicetable.h        |   2 +-
- include/uapi/linux/input-event-codes.h |   3 +-
- 5 files changed, 253 insertions(+), 2 deletions(-)
- create mode 100644 drivers/input/cover_detect.c
+As I mentioned in the previous version, this is not required, since the
+pad has MUST_CONNECT flag, media_piipeline_start() will catch it.
 
-diff --git a/drivers/input/Kconfig b/drivers/input/Kconfig
-index 1efd3154b68d..ba5e7444c547 100644
---- a/drivers/input/Kconfig
-+++ b/drivers/input/Kconfig
-@@ -185,6 +185,18 @@ config INPUT_APMPOWER
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called apm-power.
- 
-+config INPUT_COVER_DETECT
-+	tristate "Enable cover attach detection"
-+	help
-+	  Say Y here to enable cover attach detection
-+	  and send a event when cover is attached/detached.
-+	  Active gpio state is low and active event value is 0.
-+
-+	  If unsure, say N.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called cover_detect.
-+
- comment "Input Device Drivers"
- 
- source "drivers/input/keyboard/Kconfig"
-diff --git a/drivers/input/Makefile b/drivers/input/Makefile
-index e35650930371..fc8dd9091821 100644
---- a/drivers/input/Makefile
-+++ b/drivers/input/Makefile
-@@ -29,3 +29,5 @@ obj-$(CONFIG_INPUT_MISC)	+= misc/
- obj-$(CONFIG_INPUT_APMPOWER)	+= apm-power.o
- 
- obj-$(CONFIG_RMI4_CORE)		+= rmi4/
-+
-+obj-$(CONFIG_INPUT_COVER_DETECT)+= cover_detect.o
-diff --git a/drivers/input/cover_detect.c b/drivers/input/cover_detect.c
-new file mode 100644
-index 000000000000..4a5947356d50
---- /dev/null
-+++ b/drivers/input/cover_detect.c
-@@ -0,0 +1,236 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Support detection for cover attachment
-+ *
-+ * Copyright (C) 2020 Samsung Electronics Co. Ltd. All Rights Reserved.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/interrupt.h>
-+#include <linux/pm.h>
-+#include <linux/slab.h>
-+#include <linux/platform_device.h>
-+#include <linux/input.h>
-+#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
-+#include <linux/wakelock.h>
-+
-+struct cover_detect_drvdata {
-+	struct input_dev *input;
-+	struct delayed_work cover_detect_dwork;
-+	struct wakeup_source *ws;
-+	int gpio_cover_detect;
-+	int irq_cover_detect;
-+};
-+
-+static void cover_detect_work(struct work_struct *work)
-+{
-+	struct cover_detect_drvdata *ddata =
-+		container_of(work, struct cover_detect_drvdata,
-+				cover_detect_dwork.work);
-+	bool cover_status;
-+
-+	cover_status = gpio_get_value(ddata->gpio_cover_detect);
-+
-+	input_report_switch(ddata->input,
-+			SW_COVER_ATTACHED, cover_status);
-+	input_sync(ddata->input);
-+}
-+
-+static void __cover_detect(struct cover_detect_drvdata *ddata,
-+				 bool cover_status)
-+{
-+	cancel_delayed_work_sync(&ddata->cover_detect_dwork);
-+	if (cover_status) {
-+		__pm_wakeup_event(ddata->ws, jiffies_to_msecs(HZ / 20));
-+		schedule_delayed_work(&ddata->cover_detect_dwork, HZ * 1 / 100);
-+	} else {
-+		__pm_relax(ddata->ws);
-+		schedule_delayed_work(&ddata->cover_detect_dwork, 0);
-+	}
-+}
-+
-+static irqreturn_t cover_detect_irq(int irq, void *dev_id)
-+{
-+	bool cover_status;
-+	struct cover_detect_drvdata *ddata = dev_id;
-+
-+	cover_status = gpio_get_value(ddata->gpio_cover_detect);
-+
-+	__cover_detect(ddata, cover_status);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int cover_detect_open(struct input_dev *input)
-+{
-+	struct cover_detect_drvdata *ddata = input_get_drvdata(input);
-+	/* update the current status */
-+	schedule_delayed_work(&ddata->cover_detect_dwork, HZ / 2);
-+	/* Report current state of buttons that are connected to GPIOs */
-+	input_sync(input);
-+
-+	return 0;
-+}
-+
-+static void cover_detect_close(struct input_dev *input)
-+{
-+}
-+
-+static void init_cover_detect_irq(struct input_dev *input)
-+{
-+	struct cover_detect_drvdata *ddata = input_get_drvdata(input);
-+
-+	int ret = 0;
-+	int irq = ddata->irq_cover_detect;
-+
-+	ret =	request_threaded_irq(
-+		irq, NULL,
-+		cover_detect_irq,
-+		IRQF_TRIGGER_RISING |
-+		IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-+		"cover_detect", ddata);
-+	if (ret < 0)
-+		pr_err("keys: failed to request cover detect irq %d gpio %d\n",
-+			irq, ddata->gpio_cover_detect);
-+}
-+
-+#ifdef CONFIG_OF
-+static int of_cover_detect_data_parsing_dt(struct device *dev,
-+					struct cover_detect_drvdata *ddata)
-+{
-+	struct device_node *np = dev->of_node;
-+	int gpio;
-+	enum of_gpio_flags flags;
-+
-+	gpio = of_get_named_gpio_flags(np, "gpio_cover_detect", 0, &flags);
-+	ddata->gpio_cover_detect = gpio;
-+
-+	ddata->irq_cover_detect = gpio_to_irq(gpio);
-+
-+	return 0;
-+}
-+#endif
-+
-+static int cover_detect_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct cover_detect_drvdata *ddata;
-+	struct input_dev *input;
-+	int error;
-+	int wakeup = 0;
-+
-+	ddata = kzalloc(sizeof(struct cover_detect_drvdata), GFP_KERNEL);
-+	if (!ddata)
-+		return -ENOMEM;
-+
-+#ifdef CONFIG_OF
-+	if (dev->of_node) {
-+		error = of_cover_detect_data_parsing_dt(dev, ddata);
-+		if (error < 0) {
-+			dev_err(dev, "fail to get the devicetree, error: %d\n",
-+					error);
-+			goto fail1;
-+		}
-+	}
-+#endif
-+
-+	input = input_allocate_device();
-+	if (!input) {
-+		dev_err(dev, "failed to allocate state\n");
-+		error = -ENOMEM;
-+		goto fail1;
-+	}
-+
-+	ddata->input = input;
-+
-+	ddata->ws = wakeup_source_register(NULL, "cover_detect");
-+
-+	platform_set_drvdata(pdev, ddata);
-+	input_set_drvdata(input, ddata);
-+
-+	input->name = "cover_detect";
-+	input->phys = "cover_detect";
-+	input->dev.parent = &pdev->dev;
-+
-+	input->evbit[0] |= BIT_MASK(EV_SW);
-+	input_set_capability(input, EV_SW, SW_COVER_ATTACHED);
-+
-+	input->open = cover_detect_open;
-+	input->close = cover_detect_close;
-+
-+	/* Enable auto repeat feature of Linux input subsystem */
-+	__set_bit(EV_REP, input->evbit);
-+
-+	INIT_DELAYED_WORK(&ddata->cover_detect_dwork, cover_detect_work);
-+
-+	init_cover_detect_irq(input);
-+
-+	if (ddata->gpio_cover_detect != 0) {
-+		error = input_register_device(input);
-+		if (error) {
-+			dev_err(dev, "Unable to register input device, error: %d\n",
-+				error);
-+			goto fail1;
-+		}
-+	}
-+
-+	device_init_wakeup(&pdev->dev, wakeup);
-+
-+	return 0;
-+
-+ fail1:
-+	kfree(ddata);
-+
-+	return error;
-+}
-+
-+static int cover_detect_remove(struct platform_device *pdev)
-+{
-+	struct cover_detect_drvdata *ddata = platform_get_drvdata(pdev);
-+	struct input_dev *input = ddata->input;
-+
-+	device_init_wakeup(&pdev->dev, 0);
-+
-+	input_unregister_device(input);
-+
-+	wakeup_source_unregister(ddata->ws);
-+
-+	kfree(ddata);
-+
-+	return 0;
-+}
-+
-+#if defined(CONFIG_OF)
-+static const struct of_device_id cover_detect_dt_ids[] = {
-+	{ .compatible = "cover_detect" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, cover_detect_dt_ids);
-+#endif /* CONFIG_OF */
-+
-+static struct platform_driver cover_detect_device_driver = {
-+	.probe		= cover_detect_probe,
-+	.remove		= cover_detect_remove,
-+	.driver		= {
-+		.name	= "cover_detect",
-+		.owner	= THIS_MODULE,
-+#if defined(CONFIG_OF)
-+		.of_match_table	= cover_detect_dt_ids,
-+#endif /* CONFIG_OF */
-+	}
-+};
-+
-+static int __init cover_detect_init(void)
-+{
-+	return platform_driver_register(&cover_detect_device_driver);
-+}
-+
-+static void __exit cover_detect_exit(void)
-+{
-+	platform_driver_unregister(&cover_detect_device_driver);
-+}
-+
-+module_init(cover_detect_init);
-+module_exit(cover_detect_exit);
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index 5b08a473cdba..2e6ae686555b 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -320,7 +320,7 @@ struct pcmcia_device_id {
- #define INPUT_DEVICE_ID_LED_MAX		0x0f
- #define INPUT_DEVICE_ID_SND_MAX		0x07
- #define INPUT_DEVICE_ID_FF_MAX		0x7f
--#define INPUT_DEVICE_ID_SW_MAX		0x10
-+#define INPUT_DEVICE_ID_SW_MAX		0x11
- #define INPUT_DEVICE_ID_PROP_MAX	0x1f
- 
- #define INPUT_DEVICE_ID_MATCH_BUS	1
-diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
-index 0c2e27d28e0a..32e27732161c 100644
---- a/include/uapi/linux/input-event-codes.h
-+++ b/include/uapi/linux/input-event-codes.h
-@@ -889,7 +889,8 @@
- #define SW_MUTE_DEVICE		0x0e  /* set = device disabled */
- #define SW_PEN_INSERTED		0x0f  /* set = pen inserted */
- #define SW_MACHINE_COVER	0x10  /* set = cover closed */
--#define SW_MAX			0x10
-+#define SW_COVER_ATTACHED	0x11  /* set = cover attached */
-+#define SW_MAX			0x11
- #define SW_CNT			(SW_MAX+1)
- 
- /*
--- 
-2.17.1
+> otherwise,
+> 
+> Reviewed-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+
+Thanks
+Helen
+
+> 
+>> +    ret = rkisp1_pipeline_stream_enable(cap);
+>>       if (ret)
+>> -        goto err_stop_stream;
+>> +        goto err_v4l2_pm_put;
+>>         mutex_unlock(&cap->rkisp1->stream_lock);
+>>         return 0;
+>>   -err_stop_stream:
+>> -    rkisp1_stream_stop(cap);
+>> +err_v4l2_pm_put:
+>>       v4l2_pipeline_pm_put(entity);
+>>   err_pipe_pm_put:
+>>       pm_runtime_put(cap->rkisp1->dev);
+>>
+> 
