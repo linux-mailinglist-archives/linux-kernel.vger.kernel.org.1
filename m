@@ -2,103 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC6E2A0D3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55B22A0D41
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgJ3SSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgJ3SSf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:18:35 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BE0C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:18:35 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id b8so7511493wrn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=POr4JSNxo9Vex3KFhgjAL6YPhe46OQ89C08+ir6XPTs=;
-        b=dTIDxPGPYckzrbOC6452Z1q6L3MaW1Z9CfWUkssYbkTuuKzC890B9DQnGXkQ7eYX4z
-         u1en4kP44xS3sM/Sgpw6aBzPfKh4+PI/qo9M4VNRqIY1ByMdgt7DuqqF4VXyqEkLLyfF
-         z/OlkU05m48R64suFmuHzsonZet4HZnEru7tKDc4g858Tiq/hW2+1Fzp8jNtMePX23Ki
-         /w42o716i+5AxhmT5iFTFAo+uxQ2sYqjeYRU8rMYdXhAOtNfPmOik3Qc+Om9sR+Vf1op
-         ySXnMFI1sW67thE7M1Q4bUoemFEL/KIT/fgNKzdMso1GUM7oddT9hVN602WGpg1RbCyu
-         d2CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=POr4JSNxo9Vex3KFhgjAL6YPhe46OQ89C08+ir6XPTs=;
-        b=O36vgJKWssg4OffHjDLZYsHNbziZ63MNEPtWVj+2yfr9pt0AyqYkO6HCsC71WZ0Vv+
-         qk3h0vnDtPnOLsW+idMxKuq4usKawr7UmoEPirIpdxxlJxnpl/w1fQBGOsKkaFnSNWHC
-         Q8lXBg6pvRPtIUZtRH0o88hBOXtlSNH58C18V8JZ626Vy2m7eUxohQYwv5YtgHj6q3D2
-         DfFUcD+99NG9PBvjHAL3775jmk4R/4OHzR7nA0//1B5fctLcyBQrHcWNSFznczlIluiD
-         Zy4hnvYNcad2STUI2ED/5F7CIuujo8uwy8usXostxRlG3NFcIj5XpWWHPr2it0+/vDFw
-         F29A==
-X-Gm-Message-State: AOAM533sOSOenpZQnhbBIuu7VtglMSRCU832mfKX3Is0FNPnHRWnJU7V
-        t+5Z1T5/SdYLR53vCY/Eka/HBw==
-X-Google-Smtp-Source: ABdhPJxonhFew2B7p2VHkxM2LDKbQTJFr887Y1UWz9SfxnrnktBXTh6CZjDeCt19buh2y+hpgrAsxw==
-X-Received: by 2002:adf:b7c8:: with SMTP id t8mr4941556wre.143.1604081913792;
-        Fri, 30 Oct 2020 11:18:33 -0700 (PDT)
-Received: from dell.default ([91.110.221.176])
-        by smtp.gmail.com with ESMTPSA id q6sm5666782wma.0.2020.10.30.11.18.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 11:18:32 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     daniel.vetter@ffwll.ch, gregkh@linuxfoundation.org,
-        yepeilin.cs@gmail.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, stable@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>
-Subject: [PATCH 1/1] Fonts: font_acorn_8x8: Replace discarded const qualifier
-Date:   Fri, 30 Oct 2020 18:18:22 +0000
-Message-Id: <20201030181822.570402-1-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S1727004AbgJ3STn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:19:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726061AbgJ3STn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 14:19:43 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3A3520729;
+        Fri, 30 Oct 2020 18:19:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604081982;
+        bh=DrO9rPPWe7yx2o/HYgXvtOmqEqLUOzIreLpRvG6OK3Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wU8MnfZn0r9WZ7MSs4KtDlRCtLRj8URezg836exJfCE6Vhc1S2TSv1aTFY7lXScvJ
+         M6sO9r83fWp48vJbvoz0NKV228kCOSLD/EHw9VSw3Gq5gZkiagfYQsLdo1b82ncFYO
+         tpbMtXUv5jiVrnckcuQWJQWfR7nv6D7iYx5gYwnw=
+Date:   Fri, 30 Oct 2020 18:19:35 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v10 14/15] dt-bindings: sound: sun4i-i2s: Document H3
+ with missing RX channel possibility
+Message-ID: <20201030181935.GJ4405@sirena.org.uk>
+References: <20201030144648.397824-1-peron.clem@gmail.com>
+ <20201030144648.397824-15-peron.clem@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="liqSWPDvh3eyfZ9k"
+Content-Disposition: inline
+In-Reply-To: <20201030144648.397824-15-peron.clem@gmail.com>
+X-Cookie: Blow it out your ear.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 09e5b3fd5672 ("Fonts: Support FONT_EXTRA_WORDS macros for
-built-in fonts") introduced the following error when building
-rpc_defconfig (only this build appears to be affected):
 
- `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compressed/ll_char_wr.o:
-    defined in discarded section `.data' of arch/arm/boot/compressed/font.o
- `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boot/compressed/font.o:
-    defined in discarded section `.data' of arch/arm/boot/compressed/font.o
- make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: arch/arm/boot/compressed/vmlinux] Error 1
- make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boot/compressed/vmlinux] Error 2
- make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
+--liqSWPDvh3eyfZ9k
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The .data section is discarded at link time.  Reinstating
-acorndata_8x8 as const ensures it is still available after linking.
+On Fri, Oct 30, 2020 at 03:46:47PM +0100, Cl=E9ment P=E9ron wrote:
+> Like A83T the Allwinner H3 doesn't have the DMA reception available for
+> some audio interfaces.
 
-Cc: <stable@vger.kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- lib/fonts/font_acorn_8x8.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please if you're going to mix dts updates in with subsystem changes like
+this keep the bits for different subsystems grouped, this makes it much
+easier to handle things.
 
-diff --git a/lib/fonts/font_acorn_8x8.c b/lib/fonts/font_acorn_8x8.c
-index 069b3e80c4344..fb395f0d40317 100644
---- a/lib/fonts/font_acorn_8x8.c
-+++ b/lib/fonts/font_acorn_8x8.c
-@@ -5,7 +5,7 @@
- 
- #define FONTDATAMAX 2048
- 
--static struct font_data acorndata_8x8 = {
-+static const struct font_data acorndata_8x8 = {
- { 0, 0, FONTDATAMAX, 0 }, {
- /* 00 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* ^@ */
- /* 01 */  0x7e, 0x81, 0xa5, 0x81, 0xbd, 0x99, 0x81, 0x7e, /* ^A */
--- 
-2.25.1
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
+--liqSWPDvh3eyfZ9k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+cWTYACgkQJNaLcl1U
+h9AyXwf7BSDWwTiF7Jtj3QLLD/yBskzrynLALio7KhuzLph2YZtmmDVoIW63VgJw
+9ZpYqNu7iFdaSumpaOdukhHNRvB61XKOmhyFAUXjBER7X6AIA+fPCXoJi3JmqnfN
+jxEehlb9wJJ5Fg74VASMsIuZo9et0xUtuNkU3rsmlwdIpE29EEGQVZYfMUkcDqIF
+XluxWNIT6a4xQlsqan6n6do7kPz3OAVfQaZnnm4vzahnG7QhsGKob6BrBEYCdyLQ
+PfC3SAIsXO+l6c/5+gRmLn/JOVWZdFdVxBz2FAd8rhgXmgxL1nbZRcBBU7IDnptb
+0snc+vze5mOnvk7EFwTDHKNbUvwAOw==
+=ngof
+-----END PGP SIGNATURE-----
+
+--liqSWPDvh3eyfZ9k--
