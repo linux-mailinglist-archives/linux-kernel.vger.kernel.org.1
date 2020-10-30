@@ -2,279 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF1F2A0387
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C41F22A038D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgJ3K7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:59:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgJ3K7c (ORCPT
+        id S1726316AbgJ3LBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:01:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43437 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726230AbgJ3LBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:59:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E97FC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:59:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Re5NgACoN7F2zaJeTTiiLGYlcMbHRPmiWlgvTkVmQtY=; b=Ga2AgZUtOvzvEfvyctNCZksdJP
-        0hLDlm74u6/UuKu/Ie2Nv6PBU5dxU+HEpwfz8FkH4ulSdcrv/hGcCzS4Q82k2eomPaFifdOP1cWD3
-        44rwwoloaTE8Pocs6Lo+iKFkJe4twmvF6ZW5m73zgjedZiZxSATyoF4Jwxeb2ESuiBw7GY0W4F75P
-        3VX1CMnG8thuHh2KUNXacxFJ2C3nSnC7kS2/WUv93/WXDxizEt0tqSCmExDXzWrguyxOGPS7x/TWc
-        zhrENj7GJ6f9Yjc65eE4n78FRYYKu0ypED5E2czVUnUutg7KlIDIJJRTqcn39TnNKEZ1o/9WcQKIY
-        ChYNyX1A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYS7s-0003BK-LD; Fri, 30 Oct 2020 10:59:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 161373012C3;
-        Fri, 30 Oct 2020 11:59:18 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EFF97203F0EC3; Fri, 30 Oct 2020 11:59:17 +0100 (CET)
-Date:   Fri, 30 Oct 2020 11:59:17 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, kan.liang@linux.intel.com,
-        like.xu@linux.intel.com, Andy Lutomirski <luto@amacapital.net>
-Subject: [PATCH] perf/arch: Remove perf_sample_data::regs_user_copy
-Message-ID: <20201030105917.GI2611@hirez.programming.kicks-ass.net>
-References: <20201030002722.766a22df@oasis.local.home>
- <20201030090037.GZ2628@hirez.programming.kicks-ass.net>
- <877dr8nh6u.fsf@nanos.tec.linutronix.de>
+        Fri, 30 Oct 2020 07:01:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604055678;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S5QGM5P6b9ARkEdABLTK/zb8A9b8E1Yedm8BuogwyYA=;
+        b=LJwiNPXWmuaRACBOSZ8k9MInx105kKQ3ndfHlGkf/0FS0fvyi6nj9kNvaqrc2HTfHq8oLA
+        b0q2Mh6Qm477nmVL9dD1qnztVLwwn93hv0ihct5jhQRJ3KZvVLHMaP+YYpgl/OCcB8z+YO
+        gCp404lUCJfDrMiJt/TSNNRm7nqmdMU=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-353-wLor0Oe8O0Ce_beqcnVvGg-1; Fri, 30 Oct 2020 07:01:16 -0400
+X-MC-Unique: wLor0Oe8O0Ce_beqcnVvGg-1
+Received: by mail-pg1-f199.google.com with SMTP id t12so4381748pgv.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:01:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S5QGM5P6b9ARkEdABLTK/zb8A9b8E1Yedm8BuogwyYA=;
+        b=aXnYfD0Qc0jlCY/FCFX6yexc7QGPVbreJQofw/EXXasJxvzSwM1UGw36CKCfu3UKQC
+         2gbnpvTBxOxwrk0RXKs487RR9MZQ+6JZAEiMqFHGQLRzYhlZEYbo4C3taPBVW8rAJImr
+         9MT7xQr7FUXlbh7VylSqB4p6A6mmTlZQCbBUYWMkIAPO+GF7QzGkfn8yznRnjCFPxJ6Z
+         D/RC3Gvf5to3XtsKHhQVEXa//If7RWj3O37B3nXPshLBErKzvLv/6FNo3gZpA+sBgXWX
+         TnmZe7bXiAUG8Kf7bdqmM9tNdho2ybvaD913vhuJXhmEZ5NaLOhfoSrI1PcEv8Fz4jG5
+         ooFQ==
+X-Gm-Message-State: AOAM533EDrjqYKHo0W299gMmhvuId+PioevdCKrSApnrd7/W8cucdzqP
+        m97/hqmpsJisPjlElnAN6ISqhCncQLVH5odvy89g/17yYlaCFnjcuv47wJN+OYva2rDxtUg9fca
+        SgF5ZCUiNUefHGIbjPR45WJQ6wdb3/keYyGE9k7K4
+X-Received: by 2002:a17:90a:3d0f:: with SMTP id h15mr2165813pjc.234.1604055675461;
+        Fri, 30 Oct 2020 04:01:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxCoz4UgkfUvLFKuUDZUK1pZfx793wwOva7KOR4Dsj6XiL9iruQJKlXna7TJNdtO560pzRNC5AF0RMIkMfqIak=
+X-Received: by 2002:a17:90a:3d0f:: with SMTP id h15mr2165755pjc.234.1604055675036;
+ Fri, 30 Oct 2020 04:01:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dr8nh6u.fsf@nanos.tec.linutronix.de>
+References: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
+ <20201023162220.v2.3.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
+In-Reply-To: <20201023162220.v2.3.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Fri, 30 Oct 2020 12:01:04 +0100
+Message-ID: <CAO-hwJ+TovXt6aTqcNeXY5nmSk7WHHb_mh+uKkM_zQjFqXWqng@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] HID: i2c-hid: Support the Goodix GT7375P touchscreen
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Jiri Kosina <jkosina@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        andrea@borgia.bo.it, Kai Heng Feng <kai.heng.feng@canonical.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Hans De Goede <hdegoede@redhat.com>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>, Pavel Balan <admin@kryma.net>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 11:26:01AM +0100, Thomas Gleixner wrote:
-> What's worse is perf_sample_data which is 384 bytes and is 64 bytes aligned.
+Hi Doug,
 
-Here; this shrinks it to 192 bytes. Combined with the static dummy this
-should reduce stack usage by 360 bytes.
+On Sat, Oct 24, 2020 at 1:23 AM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> The Goodix GT7375P touchscreen uses i2c-hid so we can support it with
+> just a few changes to the i2c-hid driver.  Specifically this
+> touchscreen needs to control a reset GPIO during its power sequencing.
+>
+> The Goodix timing diagram shows this:
+>
+>          +----------------------------------
+>          |
+> AVDD ----+
+>                +------------------------------
+>          | (a) |
+> RESET ---------+
+>                      +-------------
+>                | (b) |
+> I2C comm OK ---------+
+>
+> Where (a) is 10 ms and (b) is 120 ms.
 
----
-Subject: perf/arch: Remove perf_sample_data::regs_user_copy
+These timing issues always bother me. Is there any hint that this
+particular touchscreen model is "certified" for a Windows usage?
+Because if so, then we might as well mimic the timings the Windows
+driver is doing instead of adding parameters for every single device.
 
-struct perf_sample_data lives on-stack, we should be careful about it's
-size. Furthermore, the pt_regs copy in there is only because x86_64 is a
-trainwreck, solve it differently.
+>
+> While we could just add some properties and specify this generically
+> in the device tree, the guidance from the device tree maintainer is
+> that it's better to list the specific model and infer everything from
+> there.  Thus that's what this patch implements.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>
+> Changes in v2:
+> - Use a separate compatible string for this new touchscreen.
+> - Get timings based on the compatible string.
+>
+>  drivers/hid/i2c-hid/i2c-hid-core.c    | 50 ++++++++++++++++++++++++++-
+>  include/linux/platform_data/i2c-hid.h |  5 +++
+>  2 files changed, 54 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+> index 786e3e9af1c9..0b2cd78b05e1 100644
+> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+> @@ -71,6 +71,12 @@ do {                                                                   \
+>                 dev_printk(KERN_DEBUG, &(ihid)->client->dev, fmt, ##arg); \
+>  } while (0)
+>
+> +struct i2c_hid_match_data {
+> +       u16 hid_descriptor_address;
+> +       int post_power_delay_ms;
+> +       int post_gpio_reset_delay_ms;
+> +};
+> +
+>  struct i2c_hid_desc {
+>         __le16 wHIDDescLength;
+>         __le16 bcdVersion;
+> @@ -962,6 +968,21 @@ static inline void i2c_hid_acpi_enable_wakeup(struct device *dev) {}
+>  #endif
+>
+>  #ifdef CONFIG_OF
+> +static bool i2c_hid_init_from_of_match(struct device *dev,
+> +                                      struct i2c_hid_platform_data *pdata)
+> +{
+> +       const struct i2c_hid_match_data *match_data = device_get_match_data(dev);
+> +
+> +       if (!match_data)
+> +               return false;
+> +
+> +       pdata->hid_descriptor_address = match_data->hid_descriptor_address;
+> +       pdata->post_power_delay_ms = match_data->post_power_delay_ms;
+> +       pdata->post_gpio_reset_delay_ms = match_data->post_gpio_reset_delay_ms;
+> +
+> +       return true;
+> +}
+> +
+>  static int i2c_hid_of_probe(struct i2c_client *client,
+>                 struct i2c_hid_platform_data *pdata)
+>  {
+> @@ -969,6 +990,11 @@ static int i2c_hid_of_probe(struct i2c_client *client,
+>         u32 val;
+>         int ret;
+>
+> +       /* Try getting everything based on the compatible string first */
+> +       if (i2c_hid_init_from_of_match(&client->dev, pdata))
+> +               return 0;
+> +
+> +       /* Fallback to getting hid-descr-addr from a property */
+>         ret = of_property_read_u32(dev->of_node, "hid-descr-addr", &val);
+>         if (ret) {
+>                 dev_err(&client->dev, "HID register address not provided\n");
+> @@ -984,8 +1010,15 @@ static int i2c_hid_of_probe(struct i2c_client *client,
+>         return 0;
+>  }
+>
+> +static const struct i2c_hid_match_data goodix_gt7375p_match_data = {
+> +       .hid_descriptor_address = 0x0001,
 
-Halves sizeof(perf_sample_data).
+Nah, please don't. See 1/3 of this series.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/arm/kernel/perf_regs.c   |  3 +--
- arch/arm64/kernel/perf_regs.c |  3 +--
- arch/csky/kernel/perf_regs.c  |  3 +--
- arch/powerpc/perf/perf_regs.c |  3 +--
- arch/riscv/kernel/perf_regs.c |  3 +--
- arch/s390/kernel/perf_regs.c  |  3 +--
- arch/x86/kernel/perf_regs.c   | 15 +++++++++++----
- include/linux/perf_event.h    |  6 ------
- include/linux/perf_regs.h     |  6 ++----
- kernel/events/core.c          |  8 +++-----
- 10 files changed, 22 insertions(+), 31 deletions(-)
+> +       .post_power_delay_ms = 10,
+> +       .post_gpio_reset_delay_ms = 120,
+> +};
+> +
+>  static const struct of_device_id i2c_hid_of_match[] = {
+> -       { .compatible = "hid-over-i2c" },
+> +       { .compatible = "goodix,gt7375p", .data = &goodix_gt7375p_match_data },
+> +       { .compatible = "hid-over-i2c" }, /* Deprecated */
+>         {},
+>  };
+>  MODULE_DEVICE_TABLE(of, i2c_hid_of_match);
+> @@ -1053,6 +1086,12 @@ static int i2c_hid_probe(struct i2c_client *client,
+>         ihid->pdata.supplies[0].supply = "vdd";
+>         ihid->pdata.supplies[1].supply = "vddl";
+>
+> +       /* Start out with reset asserted */
+> +       ihid->pdata.reset_gpio =
+> +               devm_gpiod_get_optional(&client->dev, "reset", GPIOD_OUT_HIGH);
+> +       if (IS_ERR(ihid->pdata.reset_gpio))
+> +               return PTR_ERR(ihid->pdata.reset_gpio);
+> +
 
-diff --git a/arch/arm/kernel/perf_regs.c b/arch/arm/kernel/perf_regs.c
-index 05fe92aa7d98..0529f90395c9 100644
---- a/arch/arm/kernel/perf_regs.c
-+++ b/arch/arm/kernel/perf_regs.c
-@@ -32,8 +32,7 @@ u64 perf_reg_abi(struct task_struct *task)
- }
- 
- void perf_get_regs_user(struct perf_regs *regs_user,
--			struct pt_regs *regs,
--			struct pt_regs *regs_user_copy)
-+			struct pt_regs *regs)
- {
- 	regs_user->regs = task_pt_regs(current);
- 	regs_user->abi = perf_reg_abi(current);
-diff --git a/arch/arm64/kernel/perf_regs.c b/arch/arm64/kernel/perf_regs.c
-index 94e8718e7229..f6f58e6265df 100644
---- a/arch/arm64/kernel/perf_regs.c
-+++ b/arch/arm64/kernel/perf_regs.c
-@@ -73,8 +73,7 @@ u64 perf_reg_abi(struct task_struct *task)
- }
- 
- void perf_get_regs_user(struct perf_regs *regs_user,
--			struct pt_regs *regs,
--			struct pt_regs *regs_user_copy)
-+			struct pt_regs *regs)
- {
- 	regs_user->regs = task_pt_regs(current);
- 	regs_user->abi = perf_reg_abi(current);
-diff --git a/arch/csky/kernel/perf_regs.c b/arch/csky/kernel/perf_regs.c
-index eb32838b8210..09b7f88a2d6a 100644
---- a/arch/csky/kernel/perf_regs.c
-+++ b/arch/csky/kernel/perf_regs.c
-@@ -32,8 +32,7 @@ u64 perf_reg_abi(struct task_struct *task)
- }
- 
- void perf_get_regs_user(struct perf_regs *regs_user,
--			struct pt_regs *regs,
--			struct pt_regs *regs_user_copy)
-+			struct pt_regs *regs)
- {
- 	regs_user->regs = task_pt_regs(current);
- 	regs_user->abi = perf_reg_abi(current);
-diff --git a/arch/powerpc/perf/perf_regs.c b/arch/powerpc/perf/perf_regs.c
-index 8e53f2fc3fe0..6f681b105eec 100644
---- a/arch/powerpc/perf/perf_regs.c
-+++ b/arch/powerpc/perf/perf_regs.c
-@@ -144,8 +144,7 @@ u64 perf_reg_abi(struct task_struct *task)
- }
- 
- void perf_get_regs_user(struct perf_regs *regs_user,
--			struct pt_regs *regs,
--			struct pt_regs *regs_user_copy)
-+			struct pt_regs *regs)
- {
- 	regs_user->regs = task_pt_regs(current);
- 	regs_user->abi = (regs_user->regs) ? perf_reg_abi(current) :
-diff --git a/arch/riscv/kernel/perf_regs.c b/arch/riscv/kernel/perf_regs.c
-index 04a38fbeb9c7..fd304a248de6 100644
---- a/arch/riscv/kernel/perf_regs.c
-+++ b/arch/riscv/kernel/perf_regs.c
-@@ -36,8 +36,7 @@ u64 perf_reg_abi(struct task_struct *task)
- }
- 
- void perf_get_regs_user(struct perf_regs *regs_user,
--			struct pt_regs *regs,
--			struct pt_regs *regs_user_copy)
-+			struct pt_regs *regs)
- {
- 	regs_user->regs = task_pt_regs(current);
- 	regs_user->abi = perf_reg_abi(current);
-diff --git a/arch/s390/kernel/perf_regs.c b/arch/s390/kernel/perf_regs.c
-index 4352a504f235..6e9e5d5e927e 100644
---- a/arch/s390/kernel/perf_regs.c
-+++ b/arch/s390/kernel/perf_regs.c
-@@ -53,8 +53,7 @@ u64 perf_reg_abi(struct task_struct *task)
- }
- 
- void perf_get_regs_user(struct perf_regs *regs_user,
--			struct pt_regs *regs,
--			struct pt_regs *regs_user_copy)
-+			struct pt_regs *regs)
- {
- 	/*
- 	 * Use the regs from the first interruption and let
-diff --git a/arch/x86/kernel/perf_regs.c b/arch/x86/kernel/perf_regs.c
-index bb7e1132290b..750129bf539c 100644
---- a/arch/x86/kernel/perf_regs.c
-+++ b/arch/x86/kernel/perf_regs.c
-@@ -101,8 +101,7 @@ u64 perf_reg_abi(struct task_struct *task)
- }
- 
- void perf_get_regs_user(struct perf_regs *regs_user,
--			struct pt_regs *regs,
--			struct pt_regs *regs_user_copy)
-+			struct pt_regs *regs)
- {
- 	regs_user->regs = task_pt_regs(current);
- 	regs_user->abi = perf_reg_abi(current);
-@@ -129,12 +128,20 @@ u64 perf_reg_abi(struct task_struct *task)
- 		return PERF_SAMPLE_REGS_ABI_64;
- }
- 
-+static DEFINE_PER_CPU(struct pt_regs, nmi_user_regs);
-+
- void perf_get_regs_user(struct perf_regs *regs_user,
--			struct pt_regs *regs,
--			struct pt_regs *regs_user_copy)
-+			struct pt_regs *regs)
- {
-+	struct pt_regs *regs_user_copy = this_cpu_ptr(&nmi_user_regs);
- 	struct pt_regs *user_regs = task_pt_regs(current);
- 
-+	if (!in_nmi()) {
-+		regs_user->regs = task_pt_regs(current);
-+		regs_user->abi = perf_reg_abi(current);
-+		return;
-+	}
-+
- 	/*
- 	 * If we're in an NMI that interrupted task_pt_regs setup, then
- 	 * we can't sample user regs at all.  This check isn't really
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 0c19d279b97f..e58f4e6b6e1c 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1022,13 +1022,7 @@ struct perf_sample_data {
- 	struct perf_callchain_entry	*callchain;
- 	u64				aux_size;
- 
--	/*
--	 * regs_user may point to task_pt_regs or to regs_user_copy, depending
--	 * on arch details.
--	 */
- 	struct perf_regs		regs_user;
--	struct pt_regs			regs_user_copy;
--
- 	struct perf_regs		regs_intr;
- 	u64				stack_user_size;
- 
-diff --git a/include/linux/perf_regs.h b/include/linux/perf_regs.h
-index 2d12e97d5e7b..5efcdb768c75 100644
---- a/include/linux/perf_regs.h
-+++ b/include/linux/perf_regs.h
-@@ -20,8 +20,7 @@ u64 perf_reg_value(struct pt_regs *regs, int idx);
- int perf_reg_validate(u64 mask);
- u64 perf_reg_abi(struct task_struct *task);
- void perf_get_regs_user(struct perf_regs *regs_user,
--			struct pt_regs *regs,
--			struct pt_regs *regs_user_copy);
-+			struct pt_regs *regs);
- #else
- 
- #define PERF_REG_EXTENDED_MASK	0
-@@ -42,8 +41,7 @@ static inline u64 perf_reg_abi(struct task_struct *task)
- }
- 
- static inline void perf_get_regs_user(struct perf_regs *regs_user,
--				      struct pt_regs *regs,
--				      struct pt_regs *regs_user_copy)
-+				      struct pt_regs *regs);
- {
- 	regs_user->regs = task_pt_regs(current);
- 	regs_user->abi = perf_reg_abi(current);
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index da467e1dd49a..14709182d94e 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6374,14 +6374,13 @@ perf_output_sample_regs(struct perf_output_handle *handle,
- }
- 
- static void perf_sample_regs_user(struct perf_regs *regs_user,
--				  struct pt_regs *regs,
--				  struct pt_regs *regs_user_copy)
-+				  struct pt_regs *regs)
- {
- 	if (user_mode(regs)) {
- 		regs_user->abi = perf_reg_abi(current);
- 		regs_user->regs = regs;
- 	} else if (!(current->flags & PF_KTHREAD)) {
--		perf_get_regs_user(regs_user, regs, regs_user_copy);
-+		perf_get_regs_user(regs_user, regs);
- 	} else {
- 		regs_user->abi = PERF_SAMPLE_REGS_ABI_NONE;
- 		regs_user->regs = NULL;
-@@ -7083,8 +7082,7 @@ void perf_prepare_sample(struct perf_event_header *header,
- 	}
- 
- 	if (sample_type & (PERF_SAMPLE_REGS_USER | PERF_SAMPLE_STACK_USER))
--		perf_sample_regs_user(&data->regs_user, regs,
--				      &data->regs_user_copy);
-+		perf_sample_regs_user(&data->regs_user, regs);
- 
- 	if (sample_type & PERF_SAMPLE_REGS_USER) {
- 		/* regs dump ABI info */
+That gpio change should go into its own commit. The commit briefly
+mentioned this, but we could get more information on it, because this
+is modifying the common probe path.
+
+
+[... re-reading, thinking later ...]
+
+Well, the whole point of this patch is for that specific GPIO. And I
+am really not happy having that merged here:
+what if suddenly we have another device that has a reset line that
+requires a different "protocol" (i.e. low instead of high, or need to
+switch it 3 times from high to low before the sleep)?
+ACPI integrated devices don't need that reset line. Or if they do, it
+is integrated at the ACPI level. So can we have something similar
+here? Either force Goodix not to use a reset line, either have a
+platform driver (well, platform might not be the correct place) that
+would handle those compatible strings and reset lines before i2c-hid?
+
+The more I think of it, the more I think we should have another piece
+in front of i2c-hid, to emulate somehow what ACPI is capable of doing
+behind our back. That might require a little bit of work in i2c-hid,
+but if in the end we can remove the regulator specifics, reset
+specifics and any DT specifics that were added in the past and have
+i2c-hid being just the spec it follows, that will surely help us
+moving forward.
+
+Cheers,
+Benjamin
+
+>         ret = devm_regulator_bulk_get(&client->dev,
+>                                       ARRAY_SIZE(ihid->pdata.supplies),
+>                                       ihid->pdata.supplies);
+> @@ -1067,6 +1106,10 @@ static int i2c_hid_probe(struct i2c_client *client,
+>         if (ihid->pdata.post_power_delay_ms)
+>                 msleep(ihid->pdata.post_power_delay_ms);
+>
+> +       gpiod_set_value_cansleep(ihid->pdata.reset_gpio, 0);
+> +       if (ihid->pdata.post_gpio_reset_delay_ms)
+> +               msleep(ihid->pdata.post_gpio_reset_delay_ms);
+> +
+>         i2c_set_clientdata(client, ihid);
+>
+>         ihid->client = client;
+> @@ -1163,6 +1206,7 @@ static int i2c_hid_remove(struct i2c_client *client)
+>         if (ihid->bufsize)
+>                 i2c_hid_free_buffers(ihid);
+>
+> +       gpiod_set_value_cansleep(ihid->pdata.reset_gpio, 1);
+>         regulator_bulk_disable(ARRAY_SIZE(ihid->pdata.supplies),
+>                                ihid->pdata.supplies);
+>
+> @@ -1228,6 +1272,10 @@ static int i2c_hid_resume(struct device *dev)
+>
+>                 if (ihid->pdata.post_power_delay_ms)
+>                         msleep(ihid->pdata.post_power_delay_ms);
+> +
+> +               gpiod_set_value_cansleep(ihid->pdata.reset_gpio, 0);
+> +               if (ihid->pdata.post_gpio_reset_delay_ms)
+> +                       msleep(ihid->pdata.post_gpio_reset_delay_ms);
+>         } else if (ihid->irq_wake_enabled) {
+>                 wake_status = disable_irq_wake(client->irq);
+>                 if (!wake_status)
+> diff --git a/include/linux/platform_data/i2c-hid.h b/include/linux/platform_data/i2c-hid.h
+> index c628bb5e1061..b2150223ffa6 100644
+> --- a/include/linux/platform_data/i2c-hid.h
+> +++ b/include/linux/platform_data/i2c-hid.h
+> @@ -12,6 +12,7 @@
+>  #ifndef __LINUX_I2C_HID_H
+>  #define __LINUX_I2C_HID_H
+>
+> +#include <linux/gpio/consumer.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/types.h>
+>
+> @@ -20,6 +21,8 @@
+>   * @hid_descriptor_address: i2c register where the HID descriptor is stored.
+>   * @supplies: regulators for powering on the device.
+>   * @post_power_delay_ms: delay after powering on before device is usable.
+> + * @post_gpio_reset_delay_ms: delay after reset via GPIO.
+> + * @reset_gpio: optional gpio to de-assert after post_power_delay_ms.
+>   *
+>   * Note that it is the responsibility of the platform driver (or the acpi 5.0
+>   * driver, or the flattened device tree) to setup the irq related to the gpio in
+> @@ -36,6 +39,8 @@ struct i2c_hid_platform_data {
+>         u16 hid_descriptor_address;
+>         struct regulator_bulk_data supplies[2];
+>         int post_power_delay_ms;
+> +       int post_gpio_reset_delay_ms;
+> +       struct gpio_desc *reset_gpio;
+>  };
+>
+>  #endif /* __LINUX_I2C_HID_H */
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
+
