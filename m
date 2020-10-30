@@ -2,94 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA35A2A0ED1
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 678D72A0ED2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727553AbgJ3Tmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727520AbgJ3Tmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 30 Oct 2020 15:42:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35774 "EHLO mail.kernel.org"
+Received: from mga01.intel.com ([192.55.52.88]:27176 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727357AbgJ3Tlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:41:35 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE76820739;
-        Fri, 30 Oct 2020 19:41:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604086894;
-        bh=6APAouS5gTipcXWfVkIabBDcftgnh4LjNXjLSb8L+3Q=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=EiRFCM8k8ht84bI9je+gxuuqS1xxj9UReHpl8DG7oDaMD9NFD9ryzM+koPnR1JAwt
-         SWA+uenTovAUvAka7GgmBntTLIZvYAqKDbmIHVWnq+cgfMJ90b512IV9duTXkNCWLR
-         AAiG2waZw5dXLwpc04+lk2nQY6FrCNH8YncVdmGI=
-Date:   Fri, 30 Oct 2020 19:41:27 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
-Cc:     Jason Yan <yanaijie@huawei.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <20201030170559.20370-1-brent.lu@intel.com>
-References: <20201030170559.20370-1-brent.lu@intel.com>
-Subject: Re: [PATCH v2 0/2] Add rt1015 support to CML boards
-Message-Id: <160408688150.11950.1006967503782392855.b4-ty@kernel.org>
+        id S1727368AbgJ3TmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 15:42:23 -0400
+IronPort-SDR: H8baRqi+RF0MeV4/YFrIGgvvLthUiaHU+MYJTzrchE3NqRv+5uqEm0oYOfWzk/TEjmGx1EF+CW
+ pCDPSBr8SyHQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="186470801"
+X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
+   d="scan'208";a="186470801"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 12:42:23 -0700
+IronPort-SDR: 2LqzMpecaSGCZgZvZ74w3bc3M2jxvYKrTt1mYBKkqHn7PTdeCWM98yxWZGilqE2kHyCRsaei8f
+ 23ZRHIjMRZYg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
+   d="scan'208";a="425432865"
+Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
+  by fmsmga001.fm.intel.com with ESMTP; 30 Oct 2020 12:42:22 -0700
+Date:   Fri, 30 Oct 2020 19:42:22 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Christopherson Sean J <sean.j.christopherson@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
+Subject: Re: [PATCH RFC v2 4/4] Documentation: Change doc for
+ split_lock_detect parameter
+Message-ID: <20201030194222.GB3568909@otcwcpicx6.sc.intel.com>
+References: <20201028202804.3562179-1-fenghua.yu@intel.com>
+ <20201028202804.3562179-5-fenghua.yu@intel.com>
+ <1bb9d2f7-e20d-a0d9-c94f-328e1dc83323@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1bb9d2f7-e20d-a0d9-c94f-328e1dc83323@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Oct 2020 01:05:57 +0800, Brent Lu wrote:
-> First patch adds tdm 4-slot 100fs DAI setting to avoid jitter of using
-> 64fs on CML boards. Second patch is a DMI quirk for HP Dooly.
+Hi, Randy,
+
+On Wed, Oct 28, 2020 at 10:14:20PM -0700, Randy Dunlap wrote:
+> On 10/28/20 1:28 PM, Fenghua Yu wrote:
+> > Since #DB for bus lock detect changes the split_lock_detect parameter,
+> > update the documentation for the changes.
+> > 
+> > Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> > Reviewed-by: Tony Luck <tony.luck@intel.com>
+> > ---
+> >  .../admin-guide/kernel-parameters.txt         | 47 +++++++++++++++----
+> >  1 file changed, 39 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 526d65d8573a..51312484c2b6 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -5044,27 +5044,58 @@
+> >  	spia_peddr=
+> >  
+> >  	split_lock_detect=
+> > -			[X86] Enable split lock detection
+> > +			[X86] Enable split lock detection or bus lock detection
+> >  
+> >  			When enabled (and if hardware support is present), atomic
+> >  			instructions that access data across cache line
+> > -			boundaries will result in an alignment check exception.
+> > +			boundaries will result in an alignment check exception
+> > +			for split lock detection or an debug exception for
+> > +			bus lock detection.
+> >  
+> >  			off	- not enabled
+> >  
+> > -			warn	- the kernel will emit rate limited warnings
+> > -				  about applications triggering the #AC
+> > -				  exception. This mode is the default on CPUs
+> > -				  that supports split lock detection.
+> > +			warn	- Default mode.
+> >  
+> > -			fatal	- the kernel will send SIGBUS to applications
+> > -				  that trigger the #AC exception.
+> > +				  If split lock detection is enabled in
+> > +				  hardware, the kernel will emit rate limited
+> > +				  warnings about applications triggering the #AC
+> > +				  exception.
+> > +
+> > +				  If bus lock detection is enabled in hardware,
+> > +				  the kernel will emit rate limited warnings
+> > +				  about applications triggering the #DB
+> > +				  exception.
+> > +
+> > +				  Default behavior is from bus lock detection
+> > +				  if both features are enabled in hardware.
+> > +
+> > +			fatal	- If split lock detection is enabled in
+> > +				  hardware, the kernel will send SIGBUS to
+> > +				  applications that trigger the #AC exception.
+> > +
+> > +				  If bus lock detection is enabled in hardware,
+> > +				  the kernel will send SIGBUS to application
+> > +				  that trigger the #DB exception.
+> > +
+> > +				  Default behavior is from split lock detection
+> > +				  if both are enabled in hardware.
+> > +
 > 
-> Changes since v1:
-> -Add comment on Dooly's DMI quirk
-> 
-> Brent Lu (2):
->   ASoC: intel: sof_rt5682: Add support for cml_rt1015_rt5682
->   ASoC: intel: sof_rt5682: Add quirk for Dooly
-> 
-> [...]
+> Hi,
+> This appears to have quite a bit of duplicated lines....
 
-Applied to
+Ok. I will simplify this paragraph.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Thank you very much for your review!
 
-Thanks!
-
-[1/2] ASoC: intel: sof_rt5682: Add support for cml_rt1015_rt5682
-      commit: 35249a5684fd01377bb40e20b8a604774cb073d8
-[2/2] ASoC: intel: sof_rt5682: Add quirk for Dooly
-      commit: bdd088ce5bfd32b95ab1bd90b49405e7c1f1fff5
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-Fenghua
