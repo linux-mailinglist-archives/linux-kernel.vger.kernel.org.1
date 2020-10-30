@@ -2,115 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D2629FC08
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 073C529FC12
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:08:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbgJ3DIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 23:08:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbgJ3DIM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726397AbgJ3DI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 23:08:26 -0400
+Received: from mail.v3.sk ([167.172.186.51]:41964 "EHLO shell.v3.sk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725780AbgJ3DIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Oct 2020 23:08:12 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C355C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:08:12 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id v6so5948242lfa.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:08:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zehjsoI4/E9mlHSzS3GihRUsNzlSRlM3AQ/tc2JFGWU=;
-        b=q9NaR3BRuvTzXjW1tFWJC7ghaDMvWYJV4F/R/sfglQ1Do9mBfL2N70a3GMysG9ufy0
-         u543bRU8Q+xerhl0QLubqtnupkWBP51hSdP6NGnIl1X+ZkNPyDykSBY9poLAPBpDjUaq
-         0s/iVSYcxsg8yKonlY/PJPY/jry+VmI1lRRiHS3TdiNh6LhgQu6AH1HsJODK3KCF2zbN
-         XVJIkv9q1FDLnxGo0lUOJKAN5HFGYiHMifoR0MiKuttOYdJ8iNLqqbr7jNQUtCT2HPv6
-         PpvSh6aIPeBUKzLXaKv3qj2zy2CI2ktJbdFRW/aJd/vL4/1EkohKJVopAvgKPxXjiB09
-         YJRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zehjsoI4/E9mlHSzS3GihRUsNzlSRlM3AQ/tc2JFGWU=;
-        b=bu1yR0YXDjVW5riheL/yVOHhnS+56bSpPp71vfuEiTlm28DGQRgjy8qjL2z+9Dh/j0
-         409TuTpH1jQN+B8hK/M1Xkbb7V9SMh6qp8WuDt+9JiqfGdJFv398x3ov15NdKd6YdE8R
-         JC5HWbhVtB7VQvkSKCHbsOzQvUgSr6VvdNUpGHUjdyvvPtOG84JJOq1qt510uhm22tex
-         /b4G7aROgyDb9Td3O7pXUQKAmH+pmGWZYGfDXmXaxUCXT5jGRPj3TPCNhbGf87mONcn0
-         rKbk9lMG93yKgyPRU55NVc3L8THsD4QNMmCMYy/YR7oBzyjo/zivOsPQA0V8KRFaInnZ
-         PP9w==
-X-Gm-Message-State: AOAM532b9CVpRvtJcwzNzYE0k20ODQQuIHWQ6Bp8YRVOb5Kp8Fd9BwTO
-        pfKciED5+c6xmJk9A9bea2rCRSARcqfX0XCOoGpv2g==
-X-Google-Smtp-Source: ABdhPJwFhikEezi6cK75+Nh1jGpDUQvWygSxV/rVzK4JtvxTrHv+oYrN72yFW4FSMWmsrMzt7Jt48+wkeRxq1/Q08TY=
-X-Received: by 2002:a19:e308:: with SMTP id a8mr30300lfh.573.1604027290187;
- Thu, 29 Oct 2020 20:08:10 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id 581A7DF6FB;
+        Fri, 30 Oct 2020 03:05:53 +0000 (UTC)
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 1VQQUa6AtEMT; Fri, 30 Oct 2020 03:05:52 +0000 (UTC)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id E3C18DF87E;
+        Fri, 30 Oct 2020 03:05:51 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at zimbra.v3.sk
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id xtRULSH0Q7PE; Fri, 30 Oct 2020 03:05:51 +0000 (UTC)
+Received: from localhost (unknown [109.183.109.54])
+        by zimbra.v3.sk (Postfix) with ESMTPSA id E90F6DF5E1;
+        Fri, 30 Oct 2020 03:05:50 +0000 (UTC)
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: 
+Date:   Fri, 30 Oct 2020 04:07:58 +0100
+Message-Id: <20201030030800.1036888-1-lkundrak@v3.sk>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201027200358.557003-1-mic@digikod.net> <20201027200358.557003-9-mic@digikod.net>
- <CAG48ez1San538w=+He309vHg4pBSCvAf7e5xeHdqeOHA6qwitw@mail.gmail.com> <de287149-ff42-40ca-5bd1-f48969880a06@digikod.net>
-In-Reply-To: <de287149-ff42-40ca-5bd1-f48969880a06@digikod.net>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 30 Oct 2020 04:07:44 +0100
-Message-ID: <CAG48ez1FQVkt78129WozBwFbVhAPyAr9oJAHFHAbbNxEBr9h1g@mail.gmail.com>
-Subject: Re: [PATCH v22 08/12] landlock: Add syscall implementations
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Kees Cook <keescook@chromium.org>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 12:30 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>=
- wrote:
-> On 29/10/2020 02:06, Jann Horn wrote:
-> > On Tue, Oct 27, 2020 at 9:04 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.n=
-et> wrote:
-> >> These 3 system calls are designed to be used by unprivileged processes
-> >> to sandbox themselves:
-[...]
-> >> +       /*
-> >> +        * Similar checks as for seccomp(2), except that an -EPERM may=
- be
-> >> +        * returned.
-> >> +        */
-> >> +       if (!task_no_new_privs(current)) {
-> >> +               err =3D security_capable(current_cred(), current_user_=
-ns(),
-> >> +                               CAP_SYS_ADMIN, CAP_OPT_NOAUDIT);
-> >
-> > I think this should be ns_capable_noaudit(current_user_ns(), CAP_SYS_AD=
-MIN)?
->
-> Right. The main difference is that ns_capable*() set PF_SUPERPRIV in
-> current->flags. I guess seccomp should use ns_capable_noaudit() as well?
+Subject: [PATCH v6 0/2] Add a Himax HX8837 display controller driver
+Date: Sat, 26 Sep 2020 02:07:17 +0200
+Message-ID: <20200926000719.229204-1-lkundrak@v3.sk> (raw)
 
-Yeah. That seccomp code is from commit e2cfabdfd0756, with commit date
-in April 2012, while ns_capable_noaudit() was introduced in commit
-98f368e9e263, with commit date in June 2016; the seccomp code predates
-the availability of that API.
+Hi,
 
-Do you want to send a patch to Kees for that, or should I?
+please take a look at the patches chained to this messages and consider
+applying them. They add support for the controller that drives the panel
+on the OLPC XO laptops.
+
+Compared to v5, points risen in review by Sam Ravnborg have been
+addressed. Details in change log of patch 2/2.
+
+Tested on an OLPC XO-1.75 laptop.
+
+Thank you
+Lubo
+
+
