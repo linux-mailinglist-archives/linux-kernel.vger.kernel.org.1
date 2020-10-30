@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE5029FC75
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 05:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FFA29FC77
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 05:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725967AbgJ3EEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 00:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50734 "EHLO
+        id S1726261AbgJ3EEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 00:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3EEH (ORCPT
+        with ESMTP id S1725943AbgJ3EEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 00:04:07 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3544EC0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:04:06 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id 15so4078162pgd.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:04:06 -0700 (PDT)
+        Fri, 30 Oct 2020 00:04:43 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FC8C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:04:42 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id j21so4449377ota.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:04:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=omeX/7USjZZ0bCTBjHGOVLTjZl1oqWJzp7gUz7b6h8o=;
-        b=nDvPvTn9phgjic1rYziuxJbM/OAHLhdXJG7ZM3/oaHXZLLEojGVPRr0/dOJEMOX2ZV
-         0y48gTkP0J6wfHakJaZv98m/RyzH64FNDGl4ALrV2KM0/WaO9GWXgd60CUeWwwTgZd9x
-         OwQYnx4Jv+QedwVrqKomnqgBSkiMcVlKi+DDXHX4aEeYmacKedUyw4sfEn2NK2gooOAW
-         UUng2XwfDd6pkqZjUw9pOpsV8BXzcYBMYGqGFu+80jE1qe25+6V+wsPRSdQkpdAXnQQN
-         9ksbWoIOgpNjOQYJQIpN/EEZBgTd8eMZ5xqHhYPSPdH0UiU2VOZ5eOZ6WszqRidIbY3A
-         /BOA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0QbgsLhT6Fyvwnbaijbhr3l5RA06hcZ/IdPt56ssLa8=;
+        b=GariH0e4pbsh6GGADmUy/dS2os+uR5r4sOXfanz6DN+7fol5JKiM8tWtLEbf8zgBV7
+         2CbQcwrWgKr2vJ11bjvSqQhshoGeY5e0vqec5+fTVIOVHjp10YRzACXkLJ8pU5j+LLJi
+         jkWrGT3zvIYVGwD3MsxAr3AiEtcRzd7LFrM4Pj61lhdQf2ZlyRMd/GghvRRIcNDX5AS5
+         WUnMDK84ziVUNlRa3ulbRSuAOgwlYl4385elWqjoihZT4dKHd6j5wnHhtY+RCqzTy0cU
+         VeE/ZKMq5im3Z3qgeF3HtoYVCllg14h+SWNS5ge/11cQDgvwKYMYi8FAgx8qL+P01K/k
+         k7LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=omeX/7USjZZ0bCTBjHGOVLTjZl1oqWJzp7gUz7b6h8o=;
-        b=p8Gd2yPOgst0cn6IVaQhG+pR9jlpwluFc4V45xtjp3LCiuEW2O7AIzAXtiVBJiTSzG
-         DaTCwxtGCkf45ldE1Xi5dxLPt3nUcQVBK6OyG0wH65ShAGGh7+NPR3AaAQ32LC3YQvtI
-         Ne2vKDSQ6bB8tEoH4VDS51p5/uSmToH3zo/UrhgUkBRlNUVW1/Nw+lnARqfy4AKSToKx
-         1hJilQsaM5nr95YMJxFWqqNJLXlLFgIFXsMz2qce7jfWy8tgQGWC74STQqVKMUAjFjFd
-         S273ApSuNpaxAPkFNFuHJ441IPjPoQp5ruYsjohXaMneVtEkzxBY8X7bv4P2cvjl+XX0
-         EBRw==
-X-Gm-Message-State: AOAM533aSO8hRpqR0Z+dUg3q/cW0SjAHOkiTTtHNdDacjQqYfWpiJPCi
-        69awsuKIBVUprGo2XSpZ/tI=
-X-Google-Smtp-Source: ABdhPJwln0YHLlt3cQgyT3IiP+FDpP1bJ7gzY5729HwxsrRS9rA7GRyYw5IR8mCvUPP0U5gk7iKY8g==
-X-Received: by 2002:a63:5152:: with SMTP id r18mr458807pgl.381.1604030645846;
-        Thu, 29 Oct 2020 21:04:05 -0700 (PDT)
-Received: from my--box ([103.98.79.70])
-        by smtp.gmail.com with ESMTPSA id j2sm4048182pgi.48.2020.10.29.21.04.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 21:04:05 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 09:33:59 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     outreachy-kernel@googlegroups.com,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     mh12gx2825@gmail.com, melissa.srw@gmail.com, daniel.vetter@ffwll.ch
-Subject: [PATCH v2] drm/amd/pm: replace kmalloc+memcpy by kmemdup
-Message-ID: <20201030040359.GA276414@my--box>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0QbgsLhT6Fyvwnbaijbhr3l5RA06hcZ/IdPt56ssLa8=;
+        b=CaXbCwTOMsWX0OUBJnlGiwVEFcCBr9nZhUx3jG37FPIFCSEKLN9nY2XqSjm4vcU4TI
+         cwNUB73rPEZKFTLKvOiQaJuT6fHSeT33Xb8FwhACZLPnZNWcXajlMaMvm6n0DHWREFxs
+         bOvRBZy5yBlmA6aB22orC5diCJ1kxkF2XKTtrStZXmGoHvBiBCSuC8psGfrbRiOtUwrC
+         4AkmouoIFACm0ChMwhB2sjXJJT8FYKNmVDRwhr53PSge+61IfvTZ33B6/BqzOqBaKrxW
+         4P/Znn+KQj+MKZQMw/5vwNw3RCCIOIHs4wkAaNNW6sp9IxWknjShBZtH9zJILtMhX7YC
+         iM7A==
+X-Gm-Message-State: AOAM533eLHIB4sg+SKcp+jd8KIJzY/Za4wplBh2CJRuPGTK83TtQ2+tt
+        pWyciZfJtPhweI2CMDk53rbsMKXBkgD6tyA07ezP+A==
+X-Google-Smtp-Source: ABdhPJxrCBDhKCig/L03qPCOkK6xkvYmtMRhhDx50CzXEzRfvqmALH8yZdNAOgx9V2zMS9Ca92cGk+lDn4xB8OMhuZ8=
+X-Received: by 2002:a05:6830:400c:: with SMTP id h12mr271298ots.102.1604030682075;
+ Thu, 29 Oct 2020 21:04:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20201030024746.3128-1-hdanton@sina.com>
+In-Reply-To: <20201030024746.3128-1-hdanton@sina.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Thu, 29 Oct 2020 21:04:30 -0700
+Message-ID: <CALAqxLVqLdvEWH_jz-urLghVN7SbrktyN877A1QH47Hf6mqo3w@mail.gmail.com>
+Subject: Re: [PATCH v4 7/7] dma-buf: system_heap: Add a system-uncached heap
+ re-using the system heap
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        Christoph Hellwig <hch@infradead.org>,
+        James Jones <jajones@nvidia.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use kmemdup() for instructions using kmalloc() + memcpy(). More
-information here: https://lwn.net/Articles/198928/
-Issue reported by coccinelle script: scripts/coccinelle/api/memdup.cocci
+On Thu, Oct 29, 2020 at 7:48 PM Hillf Danton <hdanton@sina.com> wrote:
+> On Thu, 29 Oct 2020 15:28:34 -0700 John Stultz wrote:
+> > On Thu, Oct 29, 2020 at 12:10 AM Hillf Danton <hdanton@sina.com> wrote:
+> > > On Thu, 29 Oct 2020 00:16:24 +0000 John Stultz wrote:
+> > > > @@ -194,6 +210,9 @@ static int system_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
+> > > >       struct sg_page_iter piter;
+> > > >       int ret;
+> > > >
+> > > > +     if (buffer->uncached)
+> > > > +             vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
+> > > > +
+> > >
+> > > Wonder why you turn back to dma_mmap_wc() and friends?
+> >
+> > Sorry, can you expand on what you are proposing here instead?  I'm not
+> > sure I see how dma_alloc/mmap/*_wc() quite fits here.
+>
+> I just wondered if *_wc() could save you two minutes or three. Can you
+> shed some light on your concerns about their unfitness?
 
-Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
----
-Changes since v1:
-   - Update patch subject and log message to match proposed change.
-   
-Please Note: This is a Outreachy project task patch.
+Sorry, I feel a bit daft here. I'm still not exactly sure what you're
+proposing, and your reply of saving minutes doesn't really clarify
+things.
+So I'm not sure it's a good use of time to try to (most likely,
+incorrectly) refute all the possible things you might be suggesting.
+:)
 
- .../gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c  | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+But I'll try to share my thoughts:
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c
-index 740e2fc7a034..1e79baab753e 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c
-@@ -252,12 +252,11 @@ static int init_powerplay_table_information(
- 	phm_copy_clock_limits_array(hwmgr, &pptable_information->power_saving_clock_max, powerplay_table->PowerSavingClockMax, ATOM_VEGA12_PPCLOCK_COUNT);
- 	phm_copy_clock_limits_array(hwmgr, &pptable_information->power_saving_clock_min, powerplay_table->PowerSavingClockMin, ATOM_VEGA12_PPCLOCK_COUNT);
- 
--	pptable_information->smc_pptable = kmalloc(sizeof(PPTable_t), GFP_KERNEL);
-+	pptable_information->smc_pptable = kmemdup(&(powerplay_table->smcPPTable),
-+						   sizeof(PPTable_t), GFP_KERNEL);
- 	if (pptable_information->smc_pptable == NULL)
- 		return -ENOMEM;
- 
--	memcpy(pptable_information->smc_pptable, &(powerplay_table->smcPPTable), sizeof(PPTable_t));
--
- 	result = append_vbios_pptable(hwmgr, (pptable_information->smc_pptable));
- 
- 	return result;
--- 
-2.25.1
+So the system heap allows for allocation of non-contiguous buffers
+(currently allocated from page_alloc), which we keep track using
+sglists.
+Since the resulting dmabufs are shared between multiple devices, we
+want to provide a *specific type of memory* (in this case
+non-contiguous system memory), rather than what the underlying
+dma_alloc_attr() allocates for a specific device.
 
+My sense is dma_mmap_wc() likely ought to be paired with switching to
+using dma_alloc_wc() as well, which calls down to dma_alloc_attr().
+Maybe one could use dma_alloc_attr against the heap device to allocate
+chunks that we track in the sglist. But I'm not sure how that saves us
+much other than possibly swapping dma_mmap_wc() for remap_pfn_range()?
+
+But again, I suspect I've mischaracterized what you're actually
+suggesting. So please let me know what you're thinking and I'm happy
+to consider it.
+
+thanks
+-john
