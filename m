@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D252A079D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4532A2A07AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgJ3OQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:16:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725834AbgJ3OQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:16:03 -0400
-Received: from coco.lan (ip5f5ad5bb.dynamic.kabel-deutschland.de [95.90.213.187])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FDAF2076E;
-        Fri, 30 Oct 2020 14:16:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604067363;
-        bh=0brlscylgaQTxX0ekfO/xD5tY9Q8B9NUREgRnvRyJMk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=np6IRWXPmN0gw/SGabp4bPAVfHdc+yyvXMxAphzV8HwenCqrpQk4jpe4zcAhy4Ate
-         ZOxkatGkxXKVrI0cIl44o9uhCeukJQdGbJzAS4EXXSRAFV+YrAfbqLy8XNNMlY6gO9
-         Am7XdF4/gd/GwqYbhQacUxlGK2hOLiWfVzlG0Mf8=
-Date:   Fri, 30 Oct 2020 15:15:58 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        "=?UTF-8?B?TsOtY29s?= =?UTF-8?B?YXM=?= F. R. A. Prado" 
-        <nfraprado@protonmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org,
-        andrealmeid@collabora.com
-Subject: Re: Python 2.7 support and automarkup.py - Was: Re: [PATCH v2 1/5]
- docs: automarkup.py: Use new C roles in Sphinx 3
-Message-ID: <20201030151558.65330bff@coco.lan>
-In-Reply-To: <20201030081440.47a74dad@lwn.net>
-References: <20201013231218.2750109-1-nfraprado@protonmail.com>
-        <20201013231218.2750109-2-nfraprado@protonmail.com>
-        <5053e824-625b-5a76-d862-2c855c79c427@collabora.com>
-        <20201030151026.3afd7997@coco.lan>
-        <20201030081440.47a74dad@lwn.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726776AbgJ3OSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:18:43 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:52246 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726402AbgJ3OSm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 10:18:42 -0400
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D858920B9C34
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:18:41 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D858920B9C34
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1604067521;
+        bh=7UykXxKuhXvnD0pPPledPURv1zD8fsOWW1uVdnm6m4c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JyYHfDBTp4HVSAwxv9gSd6JlMT9P6X/4ZnYIt1E5up8xqXhWJpj/gHQa0r36NqVvj
+         NUjVS5DmsytzujpWE+gPvIcrSUWUsmGNlTcDwRNd1tXD59+tdHELbUib051eIRcSGM
+         rrUMBJp2AoHEJ9QRPwtyTADXwcWojlOzfkPmPnwk=
+Received: by mail-qt1-f177.google.com with SMTP id h12so4137300qtc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:18:41 -0700 (PDT)
+X-Gm-Message-State: AOAM5307vatV4wBCoDLYffxgP3MWvVLrYcTaRqHtApCXwAhh0th4TqbR
+        qg66dSS+BWMfvHuHObR5XbMuxzIc+mLU3Xx66JE=
+X-Google-Smtp-Source: ABdhPJxf44vFdPqblAg8m63rmdMWM6RRnMj2t589nY8TpfmmG5Bi2apIVDg6uHrfKyRocCvrb9b4TKUbcX3Q6sWZ0XU=
+X-Received: by 2002:ac8:7408:: with SMTP id p8mr2204569qtq.320.1604067520927;
+ Fri, 30 Oct 2020 07:18:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201027133545.58625-1-mcroce@linux.microsoft.com>
+ <20201027133545.58625-2-mcroce@linux.microsoft.com> <20201027134243.GC991306@kroah.com>
+ <20201030141324.GD1602@alley>
+In-Reply-To: <20201030141324.GD1602@alley>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 30 Oct 2020 15:18:04 +0100
+X-Gmail-Original-Message-ID: <CAFnufp3sSb6_puAUpCdp9v2Kzw77-dtSAZrmzEwQpUeu6rRAUw@mail.gmail.com>
+Message-ID: <CAFnufp3sSb6_puAUpCdp9v2Kzw77-dtSAZrmzEwQpUeu6rRAUw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] reboot: fix overflow parsing reboot cpu number
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Robin Holt <robinmholt@gmail.com>,
+        Fabian Frederick <fabf@skynet.be>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 30 Oct 2020 08:14:40 -0600
-Jonathan Corbet <corbet@lwn.net> escreveu:
+On Fri, Oct 30, 2020 at 3:13 PM Petr Mladek <pmladek@suse.com> wrote:
+>
+> On Tue 2020-10-27 14:42:43, Greg KH wrote:
+> > On Tue, Oct 27, 2020 at 02:35:44PM +0100, Matteo Croce wrote:
+> > > From: Matteo Croce <mcroce@microsoft.com>
+> > >
+> > > Limit the CPU number to num_possible_cpus(), because setting it
+> > > to a value lower than INT_MAX but higher than NR_CPUS produces the
+> > > following error on reboot and shutdown:
+> > >
+> > > Fixes: 1b3a5d02ee07 ("reboot: move arch/x86 reboot= handling to generic kernel")
+> > > Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+>
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
+>
+> > <formletter>
+> >
+> > This is not the correct way to submit patches for inclusion in the
+> > stable kernel tree.  Please read:
+> >     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> > for how to do this properly.
+> >
+> > </formletter>
+>
+> The best way is to add the following line before Signed-off-by line:
+>
+> Cc: stable@vger.kernel.org
+>
 
-> On Fri, 30 Oct 2020 15:10:26 +0100
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-> 
-> > I see a few alternatives:
-> > 
-> > 1) fix automarkup.py for it to work again with python 2.7;
-> > 
-> > 2) conf.py could gain some logic to disable automarkup with
-> >    Python < 3;
-> > 
-> > 3) scripts/sphinx-pre-install already detects Python version. 
-> >    It should likely be easy to ask the user to use python 3.x,
-> >    if an older version is detected.
-> > 
-> > Doing (1) or (2) will require an additional step when we raise
-> > the bar for Python version.  
-> 
-> We haven't dropped support for Python 2 yet, so this constitutes a
-> regression.  My own approach would be something like this at the top of
-> automarkup.py:
-> 
-> 	if python2:
-> 	    ascii = 0
-> 	else:
-> 	    ascii = re.ASCII
-> 
-> ...then s/re.ASCII/ascii/ throughout.  I can probably put together
-> something later this morning.
-
-Makes sense.
-
-> 
-> jon
+I see, sorry for the noise. Should I resend, or I eventually write to
+stable@vger.kernel.org after the merge?
 
 
-
-Thanks,
-Mauro
+-- 
+per aspera ad upstream
