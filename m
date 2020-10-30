@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A022A0E2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF522A0E30
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727099AbgJ3S6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:58:11 -0400
-Received: from m12-14.163.com ([220.181.12.14]:35101 "EHLO m12-14.163.com"
+        id S1727386AbgJ3S7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:59:06 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:44701 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726061AbgJ3S6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:58:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=FTOYd
-        4xfiIeQjxtwB6Cv+3cAXXCIcv2qvGvBd4ClkuI=; b=XUYL0Rt5gE4mFraONWcOn
-        Vy7rfuZfKcF0InNH+LVF9XO+IzhklNV7TMzZYUQ5Y5Pp3oFG+y9qGjwiryIYR8ZL
-        l6/f8RPlD5ELgUE8PEKaojmZut0hNzWmnWpGqGVa+B1cPmjhWnkJDcZvUl1Qz2r+
-        ZvZBXvmpQzXMnLFV4LFYjI=
-Received: from localhost (unknown [101.86.209.82])
-        by smtp10 (Coremail) with SMTP id DsCowADHDvsOYpxfc9EpTA--.36234S2;
-        Sat, 31 Oct 2020 02:57:18 +0800 (CST)
-Date:   Sat, 31 Oct 2020 02:57:18 +0800
-From:   Hui Su <sh_def@163.com>
-To:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: define flags using bit numbers
-Message-ID: <20201030185718.GA150073@rlk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1726061AbgJ3S7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 14:59:05 -0400
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9c62770000>; Sat, 31 Oct 2020 02:59:03 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
+ 2020 18:59:02 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 30 Oct 2020 18:59:02 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YbDLas1Qq8QhCgtNDOgE1D43sa2m0W+vEDnBdJlyauMyO2XaJo8rfTkdvQ8stf28AqW1gaPWsZs9VYUPwbye5bxBSZZAP0P2MjJUo6Ot6MFLoM7G3sMeANwLetjopMe5RA1Xp/BMhS21vCk4/KliiUPOVOdAeMzlnvt0LHizjkEeBwafns+3W7fht2j/CYVlWbIAkJPG4s5uEMrgpR/lsSqey5TShX8djJCifTx0aL2AlhBxdKA8u4+2gI6egt4XqmwF/HbT6hpr9sIeezBgvcJaAf9BG4a1EWvJ3ANQciVfnd4VdondIxwJmkgtc+lEnUU9PxdnAkUCBa2H+tAhHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DYY+InYme0phU/MkMoVEnVOWWlNxTb0gHn0/Oyfj/J4=;
+ b=RIOd7Py2kJTyB8Wm6kgIwTSXSY75Xv1tgcJUUxooiiFXBpMk9a9GhBKnFoLHNDeTZdCCLM4GIXvwQf42s7sdH0j2NGILx7iFVTWymkLSZ6kOX253oTBbbvFnraeECAkXUxDwgh4qjAZTB4xzAotZ+Ts1nJUpqNHe6pvAhwh2Dx2nrKo4sCOxAysE7rN5HxSaPdP+03/uIBvN9x/eCBHIXtF1XUV/pywfKbysZAAUS/y0QyGlPjuBzw3dGxhWmMTZ8Myqe3hgHbKeXA2c+69xIKVcv+aZkgguiuMniv7Zzhm3sH9aGYga5UZU/7V6+T9sGo2dENWVlf3ZZHuvZa3sSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4265.namprd12.prod.outlook.com (2603:10b6:5:211::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.28; Fri, 30 Oct
+ 2020 18:59:00 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Fri, 30 Oct 2020
+ 18:58:59 +0000
+Date:   Fri, 30 Oct 2020 15:58:58 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dave Jiang <dave.jiang@intel.com>
+CC:     <vkoul@kernel.org>, <megha.dey@intel.com>, <maz@kernel.org>,
+        <bhelgaas@google.com>, <tglx@linutronix.de>,
+        <alex.williamson@redhat.com>, <jacob.jun.pan@intel.com>,
+        <ashok.raj@intel.com>, <yi.l.liu@intel.com>, <baolu.lu@intel.com>,
+        <kevin.tian@intel.com>, <sanjay.k.kumar@intel.com>,
+        <tony.luck@intel.com>, <jing.lin@intel.com>,
+        <dan.j.williams@intel.com>, <kwankhede@nvidia.com>,
+        <eric.auger@redhat.com>, <parav@mellanox.com>, <rafael@kernel.org>,
+        <netanelg@mellanox.com>, <shahafs@mellanox.com>,
+        <yan.y.zhao@linux.intel.com>, <pbonzini@redhat.com>,
+        <samuel.ortiz@intel.com>, <mona.hossain@intel.com>,
+        Megha Dey <megha.dey@linux.intel.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <kvm@vger.kernel.org>
+Subject: Re: [PATCH v4 00/17] Add VFIO mediated device support and DEV-MSI
+ support for the idxd driver
+Message-ID: <20201030185858.GI2620339@nvidia.com>
+References: <160408357912.912050.17005584526266191420.stgit@djiang5-desk3.ch.intel.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-X-CM-TRANSID: DsCowADHDvsOYpxfc9EpTA--.36234S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tFy5WF4ktFW5Ww43KF1rWFg_yoW8Wr48pF
-        Z0gF98Gr1FvF42k3Z2yF1DWFy8AFWDKay7Kr1j934xu3W3Xr18XF95AF45Za4rXFZ3Gay3
-        uwn09347Zr1qyFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jyiihUUUUU=
-X-Originating-IP: [101.86.209.82]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbipA7NX1r7rHdVdwAAsg
+In-Reply-To: <160408357912.912050.17005584526266191420.stgit@djiang5-desk3.ch.intel.com>
+X-ClientProxiedBy: MN2PR20CA0019.namprd20.prod.outlook.com
+ (2603:10b6:208:e8::32) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR20CA0019.namprd20.prod.outlook.com (2603:10b6:208:e8::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Fri, 30 Oct 2020 18:58:59 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kYZc2-00DmW7-E4; Fri, 30 Oct 2020 15:58:58 -0300
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604084343; bh=DYY+InYme0phU/MkMoVEnVOWWlNxTb0gHn0/Oyfj/J4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
+        b=IKhkGda+Bj4OnNKwbWvKGlrhEIdb+v/KyTIXMUxi8HftGTtlvZ+c/AObUb38UBNvI
+         JPZnTQGJbMo6ke+G+L8+jIaQtvclqrGCAhgyEifq1OlYCJ4bpsnpcBAfOxEz7qOdAn
+         qgGbrjJ2tWm5Q8JRMkwMyIDaIzFpuo3UHsAQlvcGmxn307O4eMo2zHudLXSyISe6B1
+         vcZPFqB5wKbrqVZdIqE8spPUti9vdGb4xSRx021Nh60j8NNCA4IGU+R5yhfbCTW/ve
+         Ho+zkXcR1J3vOyFamaKzqzTuaSXSNJEzOkYorL6Re51etS8goQojCFvn4ds5PPU22+
+         Iva5Wnstl2ytg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These flag is meant the bit numbers, they are
-used like '(type & SLOTS_CACHE)' and so on.
+On Fri, Oct 30, 2020 at 11:50:47AM -0700, Dave Jiang wrote:
+>  .../ABI/stable/sysfs-driver-dma-idxd          |    6 +
+>  Documentation/driver-api/vfio/mdev-idxd.rst   |  404 ++++++
+>  MAINTAINERS                                   |    1 +
+>  drivers/dma/Kconfig                           |    9 +
+>  drivers/dma/idxd/Makefile                     |    2 +
+>  drivers/dma/idxd/cdev.c                       |    6 +-
+>  drivers/dma/idxd/device.c                     |  294 ++++-
+>  drivers/dma/idxd/idxd.h                       |   67 +-
+>  drivers/dma/idxd/init.c                       |   86 ++
+>  drivers/dma/idxd/irq.c                        |    6 +-
+>  drivers/dma/idxd/mdev.c                       | 1121 +++++++++++++++++
+>  drivers/dma/idxd/mdev.h                       |  116 ++
 
-Define these flags using bit numbers instead of
-hardcoding powers of 2, which maybe better.
+Again, a subsytem driver belongs in the directory hierarchy of the
+subsystem, not in other random places. All this mdev stuff belongs
+under drivers/vfio
 
-No change in the actual values.
-
-Signed-off-by: Hui Su <sh_def@163.com>
----
- mm/swap_slots.c | 4 ++--
- mm/swapfile.c   | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/mm/swap_slots.c b/mm/swap_slots.c
-index 0357fbe70645..18e7a01fd35c 100644
---- a/mm/swap_slots.c
-+++ b/mm/swap_slots.c
-@@ -47,8 +47,8 @@ static void deactivate_swap_slots_cache(void);
- static void reactivate_swap_slots_cache(void);
- 
- #define use_swap_slot_cache (swap_slot_cache_active && swap_slot_cache_enabled)
--#define SLOTS_CACHE 0x1
--#define SLOTS_CACHE_RET 0x2
-+#define SLOTS_CACHE		(1 << 0)
-+#define SLOTS_CACHE_RET	(1 << 1)
- 
- static void deactivate_swap_slots_cache(void)
- {
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index c4a613688a17..a0476c121c0e 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -113,14 +113,14 @@ static inline unsigned char swap_count(unsigned char ent)
- }
- 
- /* Reclaim the swap entry anyway if possible */
--#define TTRS_ANYWAY		0x1
-+#define TTRS_ANYWAY		(1 << 0)
- /*
-  * Reclaim the swap entry if there are no more mappings of the
-  * corresponding page
-  */
--#define TTRS_UNMAPPED		0x2
-+#define TTRS_UNMAPPED		(1 << 1)
- /* Reclaim the swap entry if swap is getting full*/
--#define TTRS_FULL		0x4
-+#define TTRS_FULL		(1 << 2)
- 
- /* returns 1 if swap entry is freed */
- static int __try_to_reclaim_swap(struct swap_info_struct *si,
--- 
-2.29.0
-
-
+Jason
