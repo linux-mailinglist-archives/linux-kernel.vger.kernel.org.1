@@ -2,120 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCD72A0026
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5443C2A0029
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgJ3Ig0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Oct 2020 04:36:26 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:35259 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgJ3Ig0 (ORCPT
+        id S1726027AbgJ3IiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:38:00 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:43705 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgJ3IiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:36:26 -0400
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 071C21C0005;
-        Fri, 30 Oct 2020 08:36:22 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 09:36:21 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Christophe Kerello <christophe.kerello@st.com>
-Cc:     <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH] mtd: rawnand: stm32_fmc2: fix broken ECC
-Message-ID: <20201030093621.6315ea1a@xps13>
-In-Reply-To: <d3073938-e714-6b5d-1dc9-36887b11de46@st.com>
-References: <1603989492-6670-1-git-send-email-christophe.kerello@st.com>
-        <20201030091905.111aa7a4@xps13>
-        <d3073938-e714-6b5d-1dc9-36887b11de46@st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 30 Oct 2020 04:38:00 -0400
+Received: by mail-ot1-f68.google.com with SMTP id a6so4877726otp.10;
+        Fri, 30 Oct 2020 01:37:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ptl6SDfjcDqIRDTQhsGvZcOItESChqs80RIvWCLj/w=;
+        b=t9eCc1NM7L1A74p5P483XBHrLhpElb7Hd0dlYJ7vNJmDXDR5dXq484+FkheERieVxt
+         IREE92G/oy8VquEMRj67asn/qde8F1sJ0PJLb7bkMq+4XFVrg1IR4ud8GLGnYon8p7rp
+         eZRpHXdZnCDUKdXRXZii5a8ntYE4ULySJSC+wZ4cq4ERYywbsOCwpFASxwyewYChtQCf
+         1ja9xgv8pT1ddeEmY6OnGLm65fXvNpnwzR44Ei3VQ2cMDttXAfXf0CHg2SH4920hYnEr
+         TwhhEfOTHCi2hiXKCTy08jvP9PVwE8tiJkH67/IT/nyxbNnoYMxoExfWkrJpIJTH0NX8
+         irVQ==
+X-Gm-Message-State: AOAM533oi94SyA0yUmOuvbaxhv+l/VfGfIUsQG+vTUMUpeo07r2Y+VDz
+        YIyL0QVVJMbnsWFx0Z5IS/N9c9KFjOR9z45rs+W8WsUsDx0=
+X-Google-Smtp-Source: ABdhPJyEgNf6Vzx8E8yMGp6mWU5z4DRp4VqKxzo/S74sYqGk6X6WS0r0ozBZimz4V/JlsqofuZuwzE+oyBDFOOgUwOc=
+X-Received: by 2002:a9d:3b76:: with SMTP id z109mr839396otb.250.1604047079087;
+ Fri, 30 Oct 2020 01:37:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20201030083051.18752-1-erosca@de.adit-jv.com> <20201030083051.18752-4-erosca@de.adit-jv.com>
+In-Reply-To: <20201030083051.18752-4-erosca@de.adit-jv.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 30 Oct 2020 09:37:47 +0100
+Message-ID: <CAMuHMdUBn3=0k7MEc5w2ixn83G_x2ZDh+YuN7Lp+W7ReJ21UUg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] dt-bindings: arm: renesas: Add R-Car M3-W+ ULCB
+ with Kingfisher
+To:     Eugeniu Rosca <erosca@de.adit-jv.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steffen Pengel <spengel@de.adit-jv.com>,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+On Fri, Oct 30, 2020 at 9:33 AM Eugeniu Rosca <erosca@de.adit-jv.com> wrote:
+> Document the use of the Kingfisher expansion board with the R-Car
+> Starter Kit Pro equipped with an R-Car M3-W+ (aka M3-ES3.0) SoC.
+>
+> Inspired from v5.5 commit 24169f0a453754 ("dt-bindings: arm: renesas:
+> Add R-Car M3-N ULCB with Kingfisher").
+>
+> Suggested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
 
-Christophe Kerello <christophe.kerello@st.com> wrote on Fri, 30 Oct
-2020 09:31:25 +0100:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.11.
 
-> Hi Miquel,
-> 
-> On 10/30/20 9:19 AM, Miquel Raynal wrote:
-> > Hi Christophe,
-> > 
-> > Christophe Kerello <christophe.kerello@st.com> wrote on Thu, 29 Oct
-> > 2020 17:38:12 +0100:
-> >   
-> >> Since commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user
-> >> input parsing bits"), ECC are broken in FMC2 driver in case of
-> >> nand-ecc-step-size and nand-ecc-strength are not set in the device tree.
-> >> The default user configuration set in FMC2 driver is lost when
-> >> rawnand_dt_init function is called. To avoid to lose the default user
-> >> configuration, it is needed to move it in the new user_conf structure.
-> >>
-> >> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-> >> Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
-> >> ---
-> >>   drivers/mtd/nand/raw/stm32_fmc2_nand.c | 8 +++++---
-> >>   1 file changed, 5 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> >> index b31a581..dc86ac9 100644
-> >> --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> >> +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> >> @@ -1846,6 +1846,7 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
-> >>   	struct resource *res;
-> >>   	struct mtd_info *mtd;
-> >>   	struct nand_chip *chip;
-> >> +	struct nand_device *nanddev;
-> >>   	struct resource cres;
-> >>   	int chip_cs, mem_region, ret, irq;
-> >>   	int start_region = 0;
-> >> @@ -1952,10 +1953,11 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
-> >>   	chip->options |= NAND_BUSWIDTH_AUTO | NAND_NO_SUBPAGE_WRITE |
-> >>   			 NAND_USES_DMA;  
-> >>   >> -	/* Default ECC settings */  
-> >> +	/* Default ECC user settings */
-> >>   	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
-> >> -	chip->ecc.size = FMC2_ECC_STEP_SIZE;
-> >> -	chip->ecc.strength = FMC2_ECC_BCH8;
-> >> +	nanddev = mtd_to_nanddev(mtd);
-> >> +	nanddev->ecc.user_conf.step_size = FMC2_ECC_STEP_SIZE;
-> >> +	nanddev->ecc.user_conf.strength = FMC2_ECC_BCH8;  
-> >>   >>   	/* Scan to find existence of the device */  
-> >>   	ret = nand_scan(chip, nand->ncs);  
-> > 
-> > Sorry for breaking the driver with this change, but now I think we
-> > should have all ECC related bits in ->attach() instead of ->probe().
-> > The ->attach() hook is called during the nand_scan() operation and at
-> > this point the chip's requirements/layout are known (not before). I
-> > know that certain controllers don't really care about that, here your
-> > simply hardcode these two fields and you don't need to know anything
-> > about the chip's properties. But as a bid to harmonize all drivers with
-> > the target of a generic ECC engine in mind, I think it's now time to
-> > move these three lines (chip->ecc.* = ...) at the top of ->attach().
-> > Also, these fields should have been populated by the core so perhaps
-> > the best approach is to check if the user requirements are synced with
-> > the controller's capabilities and error out otherwise?
-> > 
-> > We plan to send a fixes PR for -rc2, if the v2 arrives today I'll
-> > integrate it.  
-> 
-> Ok. Issue is that the controller is initialized when stm32_fmc2_nfc_select_chip is called. This function will be called before the ->attach() hook, when the first command will be sent to the NAND device (reset command). So, moving the default ECC initialization
-> needs probably more modifications in the driver.
-> I will try to send a v2 today.
+Gr{oetje,eeting}s,
 
-The ECC engine is not supposed to be used before nand_scan() and its
-default state should be disabled. Maybe this driver needs an update
-about that, but then -hopefully- it will be pretty straightforward.
+                        Geert
 
-No hurry though, if the fix is not ready we'll wait an additional week
-(it will be in next as soon as it is ready anyway).
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Thanks,
-Miquèl
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
