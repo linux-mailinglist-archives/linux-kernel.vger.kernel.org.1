@@ -2,171 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6B92A0398
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5682A0396
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgJ3LCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725888AbgJ3LCY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726440AbgJ3LCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 30 Oct 2020 07:02:24 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5AFBC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:02:23 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id p15so6402434ljj.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:02:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g4U1X0cuCQq2FJSQGKH/y0J4HgoYleMzFhYfqXT6nxc=;
-        b=JSwXE9sBPDBUqg2kuEuZw1n+pERLqzwPWDFohb2kNYPyXt+bjyF+ILxAmh39Qoa3GU
-         cLOipdPwlMWuEQNz0tiRBRY/I66ddjuP0kaCeqF8RQEgQvjBatJBDF9a485IKk61Ct0y
-         sqZ7j2iJ1v8KcissNCU0QYlgKFLfT8RgTBmSk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g4U1X0cuCQq2FJSQGKH/y0J4HgoYleMzFhYfqXT6nxc=;
-        b=XwpGnpHnmaRzjavoKZadM99m8xKpm9uxaWEEuBdpFnwAMl+i0U+0nlzKdxhOceHbD5
-         fVlpUtGgy7OYeJuKF30n21OC4eUsnQeRdZsDbq4a4OHxWmzrlWk0qE/P1mLIgdz9Oe8m
-         Y7OTINz1pDwWgTsqWRDfrAxzy2wDonTBwutgBkLU3BY74RYo5ugItzdmdYOA4u0P8xmA
-         cL5koKG4WF38uA4mKEnOarTPAKAvKu3PtPPqQz+YqypunFywKGxoCfnBMwhIp0O6gEsi
-         ViCwD6Gxku6vreq0PDTxEG4VI7eojgUUX7UA3G+tCD0I1MXBxJE2EkH3kgKe9pVbjID9
-         ZYHA==
-X-Gm-Message-State: AOAM532S2VSuE8GwqUxRTRbTDZVtjbbWKYrN3g0O7uGwI+ACXWRoTDmD
-        NTgKpPeyOv8VnOOnQJphVdbhMw/WhtueabEdDCJY3A==
-X-Google-Smtp-Source: ABdhPJy1jGh/rtq4K33qnnzBvC7eTnFrN+rfLl3SG/zcWBoCosXpOO4VlL2ZklJLdz4ALEvuzL4kudPxxv3GLbQ2TOc=
-X-Received: by 2002:a05:651c:1345:: with SMTP id j5mr819011ljb.430.1604055742294;
- Fri, 30 Oct 2020 04:02:22 -0700 (PDT)
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:35315 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725888AbgJ3LCX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 07:02:23 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id YSAjknxoLWvjMYSAnkH9ix; Fri, 30 Oct 2020 12:02:21 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1604055741; bh=9wAKYtMKuaz2VLjYIa5xQW2SHXFnlEwWuHN2LUMl+w0=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=e5HpHI80GU59ObCmyhkIqMrBAII/rntPAPre/+hg3Ql7D+jKAceFfP5Jm4nTvPxW2
+         dDcpBspIIRIfBzoH2rF9QfPQVn+P1ijHR6qPxAqyQewQh6QdLeS1JxHgJpkqnNB4yR
+         l6BUKeXy2LxWPgVvEgebIP0HVAZ+Lg0N4BFWw9qRopkadALSbZVMSrEo07X1KQ16rv
+         OEjpXnsbQnpmu6wwCVPla6jinAyYulH9q3nsewE5Lv/6z4n4gx/lz4p3bNNFRgCwBg
+         O7bTWIajd+H0SMLg2cugYF6be9m8mf9fy6ZKSnlwMRoPEE/hVyqghDIm7/Prz+a4wL
+         zbyP2wH2gwZcg==
+Subject: Re: [PATCH v1 1/2] gpu: host1x: Allow COMPILE_TEST to build host1x
+ driver on all platforms
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <1601434958-29305-1-git-send-email-skomatineni@nvidia.com>
+ <1601434958-29305-2-git-send-email-skomatineni@nvidia.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <b8dc62e4-902b-9b72-8b51-5f7480d01760@xs4all.nl>
+Date:   Fri, 30 Oct 2020 12:02:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201027170317.2011119-1-kpsingh@chromium.org>
- <20201027170317.2011119-2-kpsingh@chromium.org> <CAEf4BzatLFGpht-CiSmOfSjBY_nATZsgnWhLnUFuDgvMi4yXLw@mail.gmail.com>
-In-Reply-To: <CAEf4BzatLFGpht-CiSmOfSjBY_nATZsgnWhLnUFuDgvMi4yXLw@mail.gmail.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Fri, 30 Oct 2020 12:02:11 +0100
-Message-ID: <CACYkzJ6iEVQ1GNexBH58jtPrtwzrYWi87sj_jsEaGuWypxbA4w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] bpf: Implement task local storage
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1601434958-29305-2-git-send-email-skomatineni@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfB8/zSD8BM3lIczgCja5xi8yPFCTRTGqgP/kcLpJU+kTHjKGNjGyIwAZp6HFlEjqbJaF4p2I5YtFWavsI3NLu1CmpWET7z/fymVb0fa867wHvO9qMwkY
+ U0+j9PqLLHUvzqi5z/Mc+t49ZEnZRPQNQHHHroMlJ0NPPyPu2/H9lKBpc/AY4P8/vdHVKgz7VcI0r5a1MBuWVgeC3oIKdHlTer5K842PKobGhmdbpfyMONwh
+ KZZoDhAii5m+ZY9jvO4KHHb1oAtto60i2ic1VeKqvbYNLw71132F4PeA4B8NhA6qyFAII5KkOsZSPGRraG5Afj1oxi27TYtMG9HMQS0V3LgmviBPSZ37ZLGN
+ 9pZklNVA2QTIj0R15tkr+zB+I0+/nQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 12:12 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Oct 28, 2020 at 9:17 AM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > Similar to bpf_local_storage for sockets and inodes add local storage
-> > for task_struct.
-> >
-> > The life-cycle of storage is managed with the life-cycle of the
-> > task_struct.  i.e. the storage is destroyed along with the owning task
-> > with a callback to the bpf_task_storage_free from the task_free LSM
-> > hook.
-> >
-> > The BPF LSM allocates an __rcu pointer to the bpf_local_storage in
-> > the security blob which are now stackable and can co-exist with other
-> > LSMs.
-> >
-> > The userspace map operations can be done by using a pid fd as a key
-> > passed to the lookup, update and delete operations.
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > ---
->
-> Please also double-check all three of get_pid_task() uses, you need to
-> put_task_struct() in all cases.
+Thierry,
 
-Done, Martin also pointed it out.
+On 30/09/2020 05:02, Sowjanya Komatineni wrote:
+> Tegra V4L2 driver has dependency on this host1x driver and currently
+> host1x driver is allowed to build with COMPILE_TEST only on ARM and
+> this also limits Tegra V4L2 driver building.
+> 
+> So, this patch allows building host1x driver with COMPILE_TEST on
+> all platforms.
 
->
-> >  include/linux/bpf_lsm.h                       |  23 ++
-> >  include/linux/bpf_types.h                     |   1 +
-> >  include/uapi/linux/bpf.h                      |  39 +++
-> >  kernel/bpf/Makefile                           |   1 +
+Can you Ack/Review this so I can merge both patches for v5.11?
+If you prefer to merge this on your side, then I can Ack patch 2/2
+as well, but I think it makes more sense if this goes through the
+media subsystem.
 
-[...]
+Regards,
 
->
-> > + *
-> > + * int bpf_task_storage_delete(struct bpf_map *map, void *task)
->
-> please use long for return type, as all other helpers (except
-> bpf_inode_storage_delete, which would be nice to fix as well) do.
+	Hans
 
-Done. Will also fix the return value of bpf_inode_storage_delete in a
-separate patch.
+> 
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  drivers/gpu/host1x/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/host1x/Kconfig b/drivers/gpu/host1x/Kconfig
+> index 6dab94a..977a0ac 100644
+> --- a/drivers/gpu/host1x/Kconfig
+> +++ b/drivers/gpu/host1x/Kconfig
+> @@ -1,7 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  config TEGRA_HOST1X
+>  	tristate "NVIDIA Tegra host1x driver"
+> -	depends on ARCH_TEGRA || (ARM && COMPILE_TEST)
+> +	depends on ARCH_TEGRA || COMPILE_TEST
+>  	select IOMMU_IOVA
+>  	help
+>  	  Driver for the NVIDIA Tegra host1x hardware.
+> 
 
->
-> > + *     Description
-> > + *             Delete a bpf_local_storage from a *task*.
-> > + *     Return
-> > + *             0 on success.
-
-[...]
-
-> > +               return;
-> > +       }
-> > +
-> > +       /* Netiher the bpf_prog nor the bpf-map's syscall
->
-> typo: Neither
-
-Thanks. Fixed.
-
->
-> > +        * could be modifying the local_storage->list now.
-> > +        * Thus, no elem can be added-to or deleted-from the
-> > +        * local_storage->list by the bpf_prog or by the bpf-map's syscall.
-> > +        *
-> > +        * It is racing with bpf_local_storage_map_free() alone
-> > +        * when unlinking elem from the local_storage->list and
-> > +        * the map's bucket->list.
-> > +        */
-> > +       raw_spin_lock_bh(&local_storage->lock);
-> > +       hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
-> > +               /* Always unlink from map before unlinking from
-> > +                * local_storage.
-> > +                */
-> > +               bpf_selem_unlink_map(selem);
-> > +               free_task_storage = bpf_selem_unlink_storage_nolock(
-> > +                       local_storage, selem, false);
->
-> this will override the previous value of free_task_storage. Did you
-> intend to do || here?
-
-in bpf_selem_unlink_storage_nolock:
-
-  free_local_storage = hlist_is_singular_node(&selem->snode,
-  &local_storage->list);
-
-free_local_storage is only true when the linked list has one element, so it does
-not really matter. I guess we could use the "||" here for correctness, and if
-we do that, we should also update the other local storages.
-
->
-> > +       }
-> > +       raw_spin_unlock_bh(&local_storage->lock);
-> > +       rcu_read_unlock();
-> > +
-> > +       /* free_task_storage should always be true as long as
-> > +        * local_storage->list was non-empty.
-> > +        */
-> > +       if (free_task_storage)
-> > +               kfree_rcu(local_storage, rcu);
-> > +}
-> > +
->
-> [...]
