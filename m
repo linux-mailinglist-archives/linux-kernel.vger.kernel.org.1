@@ -2,160 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140622A07FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA602A0807
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgJ3Ofs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:35:48 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13018 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726765AbgJ3Ofr (ORCPT
+        id S1726760AbgJ3Oh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbgJ3Oh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:35:47 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9c24ce0001>; Fri, 30 Oct 2020 07:35:58 -0700
-Received: from [10.2.173.19] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
- 2020 14:35:46 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        Rik van Riel <riel@surriel.com>,
-        <linux-kernel@vger.kernel.org>, Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm/compaction: count pages and stop correctly during page
- isolation.
-Date:   Fri, 30 Oct 2020 10:35:43 -0400
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <400B3460-65C0-4C48-A7EA-1A9F5780EC9C@nvidia.com>
-In-Reply-To: <20201030133625.GJ1478@dhcp22.suse.cz>
-References: <20201029200435.3386066-1-zi.yan@sent.com>
- <20201030094308.GG1478@dhcp22.suse.cz>
- <6CAAB1FC-2B41-490B-A67A-93063629C19B@nvidia.com>
- <20201030133625.GJ1478@dhcp22.suse.cz>
+        Fri, 30 Oct 2020 10:37:29 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DB6C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:37:28 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id k125so2703334wmf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:37:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lNJ7K1TJmsYMR5itLjFjlihOiprWWU7zuitod0PiKvs=;
+        b=CTr8HxwAHGc6ShL1X7yvlTdqlow0Nb10ISQ9uQ7Wka7jyRqsNwEFAfv9Si5g2VHMxW
+         Bz3Tv+AQYtMX1zvHlsOtsRdN1SYPbRITcQJiriaS4kGdfjui1ifg8w8cB96kUSx/i4nh
+         mXnLvULUarK8C8k34wcJN6GgKSqTa73CruoCa6LDB8nJ+Y+yEe7JiXsYrra/qDvuqH/H
+         z7dT5qtZ+3bXz9gRLVvQVvWst3Ik7P5a5yUlyS5Wcim7/7xJfSt1lc2nfA3taLZS+Bal
+         u9gJe/K6mI7QzBYGATtikQDo4bIE7KwEKwmcEbxUFw5CxD5Z0fD0Kw37ILD4fwzzWfOA
+         y5ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lNJ7K1TJmsYMR5itLjFjlihOiprWWU7zuitod0PiKvs=;
+        b=XHBVrps98QD0W3HqYZU7fHVKsWt/4g6ZXEKRMhT3iJu5vA+KjC4F/irE8bDOnu1sy0
+         6R38spShdakOdzm3twRJDv7i5MDjvLNTQO3B3P2tDPt/aLHyVziWpWOd1xzJ4VgzowCY
+         AB2xMrNhWy7BXtM4hl9HMwNQJ7qJe3VkBYu7LT54tL7dpGVRD227wdYdDL4tYrJBqqYI
+         S9GLYS1vDy567N9d5CFi/95aHAHtpG67gUUdMYOZFx+jIoLtB4JGPwXO09dCAp4ICBTN
+         gXpIm0eInpQOYyc2VHth1iI9exyLYboWys7kA72fX0g9s/oVKkAJFuoq1AHO5i+F1yV5
+         H8/w==
+X-Gm-Message-State: AOAM5321PMuY2mL4vlCOpMHQ/stmulvJ0GZ0dfWcEBZAehd65wZupZae
+        JIRrClkYFKYIv1HT4Ea5ublHIQ==
+X-Google-Smtp-Source: ABdhPJxLBvaADHWstiRIFtYVpEuEUUBPHak0Hggtc+Q3Y8bcFIcp50jupsadRZQyi4CKFaX6mzMnmw==
+X-Received: by 2002:a7b:c0d3:: with SMTP id s19mr3090592wmh.102.1604068647296;
+        Fri, 30 Oct 2020 07:37:27 -0700 (PDT)
+Received: from localhost.localdomain ([37.172.114.188])
+        by smtp.gmail.com with ESMTPSA id y200sm351481wmc.23.2020.10.30.07.37.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 07:37:26 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     hverkuil@xs4all.nl
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] media: meson: Add support for the Amlogic GE2D Accelerator Unit
+Date:   Fri, 30 Oct 2020 15:37:11 +0100
+Message-Id: <20201030143715.577641-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed;
-        boundary="=_MailMate_FF351A69-91F4-4104-94B4-25A1A8FDDADC_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604068558; bh=nzKN/nyMcIdQ0ieE9+5RMC75/VHGE/aO/PbumbJXAKc=;
-        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
-         References:MIME-Version:Content-Type:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=GHkoKBiocGCEK4m7pitFBr2f4OISVjwLzVgEdgp0jdwJ4NAp2i//bl8xlgXZX5n7M
-         GS8mOh2RTy2JeltWIukVkZCfxq1xu4w3bgTWuCM9SqIhQbiWaqPeTxNQ9kXCklHneD
-         Gy4c42kq1He8BNfBAMELZ4PLVG0a6cnrWpn2/MDpzhr5SVI4gv8t3fQixO+pVBjQlC
-         qhWiDuMJmFysUka8/rROUa7svQISV2JJ5/QpBH2enZWW+LOv8TD6XiQW4ykuOQXZF6
-         OlNCEUQXpq4lqfDZcpFyODq3GBn9P8l8eQ9xPWjh+9NKNUqP7adCrPCKoaK3OKhkSi
-         pS8i7+c0b3hVQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_FF351A69-91F4-4104-94B4-25A1A8FDDADC_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+The GE2D is a 2D accelerator with various features like configurable blitter
+with alpha blending, frame rotation, scaling, format conversion and colorspace
+conversion.
 
-On 30 Oct 2020, at 9:36, Michal Hocko wrote:
+The driver implements a Memory2Memory VB2 V4L2 streaming device permitting:
+- 0, 90, 180, 270deg rotation
+- horizontal/vertical flipping
+- source cropping
+- destination compositing
+- 32bit/24bit/16bit format conversion
 
-> On Fri 30-10-20 08:20:50, Zi Yan wrote:
->> On 30 Oct 2020, at 5:43, Michal Hocko wrote:
->>
->>> [Cc Vlastimil]
->>>
->>> On Thu 29-10-20 16:04:35, Zi Yan wrote:
->>>> From: Zi Yan <ziy@nvidia.com>
->>>>
->>>> In isolate_migratepages_block, when cc->alloc_contig is true, we are=
+This adds the support for the GE2D version found in the AXG SoCs Family.
 
->>>> able to isolate compound pages, nr_migratepages and nr_isolated did =
-not
->>>> count compound pages correctly, causing us to isolate more pages tha=
-n we
->>>> thought. Use thp_nr_pages to count pages. Otherwise, we might be tra=
-pped
->>>> in too_many_isolated while loop, since the actual isolated pages can=
- go
->>>> up to COMPACT_CLUSTER_MAX*512=3D16384, where COMPACT_CLUSTER_MAX is =
-32,
->>>> since we stop isolation after cc->nr_migratepages reaches to
->>>> COMPACT_CLUSTER_MAX.
->>>>
->>>> In addition, after we fix the issue above, cc->nr_migratepages could=
+The missing features are:
+- Source scaling
+- Colorspace conversion
+- Advanced alpha blending & blitting options
 
->>>> never be equal to COMPACT_CLUSTER_MAX if compound pages are isolated=
-,
->>>> thus page isolation could not stop as we intended. Change the isolat=
-ion
->>>> stop condition to >=3D.
->>>>
->>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>>> ---
->>>>  mm/compaction.c | 8 ++++----
->>>>  1 file changed, 4 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/mm/compaction.c b/mm/compaction.c
->>>> index ee1f8439369e..0683a4999581 100644
->>>> --- a/mm/compaction.c
->>>> +++ b/mm/compaction.c
->>>> @@ -1012,8 +1012,8 @@ isolate_migratepages_block(struct compact_cont=
-rol *cc, unsigned long low_pfn,
->>>>
->>>>  isolate_success:
->>>>  		list_add(&page->lru, &cc->migratepages);
->>>> -		cc->nr_migratepages++;
->>>> -		nr_isolated++;
->>>> +		cc->nr_migratepages +=3D thp_nr_pages(page);
->>>> +		nr_isolated +=3D thp_nr_pages(page);
->>>
->>> Does thp_nr_pages work for __PageMovable pages?
->>
->> Yes. It is the same as compound_nr() but compiled
->> to 1 when THP is not enabled.
->
-> I am sorry but I do not follow. First of all the implementation of the
-> two is different and also I was asking about __PageMovable which should=
+Dependencies:
+- Patches 1-3: None
+- Patch 4: https://lkml.kernel.org/r/20200915124553.8056-1-narmstrong@baylibre.com (applied for 5.11)
 
-> never be THP IIRC. Can they be compound though?
+Changes since v1:
+- Rebased on v5.10-rc1
 
-__PageMovable, non-lru movable pages, can be compound and thp_nr_page can=
-not
-be used for it, since when THP is off, thp_nr_page will return the wrong =
-number.
-I got confused by its name, sorry.
+/ # v4l2-compliance -s
+v4l2-compliance SHA: ea16a7ef13a902793a5c2626b0cefc4d956147f3, 64 bits, 64-bit time_t
 
-But __PageMovable is irrelevant to this patch, since we are using
-__isolate_lru_page to isolate pages. non-lru __PageMovable should not app=
-ear
-after isolate_succes. thp_nr_pages can be used here.
+Compliance test for meson-ge2d device /dev/video0:
 
-=E2=80=94
-Best Regards,
-Yan Zi
+Driver Info:
+	Driver name      : meson-ge2d
+	Card type        : meson-ge2d
+	Bus info         : platform:meson-ge2d
+	Driver version   : 5.9.0
+	Capabilities     : 0x84208000
+		Video Memory-to-Memory
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04208000
+		Video Memory-to-Memory
+		Streaming
+		Extended Pix Format
 
---=_MailMate_FF351A69-91F4-4104-94B4-25A1A8FDDADC_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
+Required ioctls:
+	test VIDIOC_QUERYCAP: OK
 
------BEGIN PGP SIGNATURE-----
+Allow for multiple opens:
+	test second /dev/video0 open: OK
+	test VIDIOC_QUERYCAP: OK
+	test VIDIOC_G/S_PRIORITY: OK
+	test for unlimited opens: OK
 
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+cJL8PHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKzd4P/j85uF2YYZmjqQD44q+ZTWYleP4Tm1qSQyhE
-z/LAgnDq4lFMN/BPFHfdGjUONdTGO2aOfmD+PqhRtES5LDnFZD1w1RbDUUKxSKny
-XKdKCWv7VdUAs4gctw9Dy5k//rEPLB+/N3qaL6WCVo3lM4u1SpWweh/yjS6GRNlX
-VMyYu3Uopu/dHIqbc6hsgeVQQJdi+MommU6q/eC7T1VMy87pXK3FLlVRzFBAkEkV
-Nobb5hE5hDxmN5ics7jOSLBnODBpQJfONHmsd8p33LuEHxRq8rcYwm4yJeqZVIiR
-3kkanmWn0Zu3ApgXBv8tSEMmT+WFqS8Fb+cDgjyskkc75vP4+S3VS0p/3N99G6L6
-BKuaZpcpu5S3He4XnQx3QulfqBwIk0a8YDHczJmb69fQtTGK9tac7b2hp+UrwLyt
-gTQot4SBO0nIoI/b9Z3rykSYVWfF9Fw/Czy9aBHQXD0XdFDnfU7PZyxtmC2QRyYs
-yjeXU6KYMh/TkqGhHdUkeozkrA/IJonx/F6xvksBYtDRMj4bDFOaTbhxMEllz7Lj
-E9pcwk7/w5QjYZ2KtkRCirMClid0wm6s8bVxdZbq9FZHmYj0LelEOXQ+kY3rQMh2
-5DqCXWQPTGfp59uVzwyEgEXbWIO1fNZYc623pX6smfFRGfyEFMnxxZ+e0bMfVyVI
-UFJwJMSn
-=JfiY
------END PGP SIGNATURE-----
+	test invalid ioctls: OK
+Debug ioctls:
+	test VIDIOC_DBG_G/S_REGISTER: OK
+	test VIDIOC_LOG_STATUS: OK (Not Supported)
 
---=_MailMate_FF351A69-91F4-4104-94B4-25A1A8FDDADC_=--
+Input ioctls:
+	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+	Inputs: 0 Audio Inputs: 0 Tuners: 0
+
+Output ioctls:
+	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+	Outputs: 0 Audio Outputs: 0 Modulators: 0
+
+Input/Output configuration ioctls:
+	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+	test VIDIOC_G/S_EDID: OK (Not Supported)
+
+Control ioctls:
+	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
+	test VIDIOC_QUERYCTRL: OK
+	test VIDIOC_G/S_CTRL: OK
+	test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
+	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+	Standard Controls: 4 Private Controls: 0
+
+Format ioctls:
+	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+	test VIDIOC_G/S_PARM: OK (Not Supported)
+	test VIDIOC_G_FBUF: OK (Not Supported)
+	test VIDIOC_G_FMT: OK
+	test VIDIOC_TRY_FMT: OK
+	test VIDIOC_S_FMT: OK
+	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+	test Cropping: OK
+	test Composing: OK
+	test Scaling: OK (Not Supported)
+
+Codec ioctls:
+	test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+	test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+
+Buffer ioctls:
+	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+	test VIDIOC_EXPBUF: OK
+	test Requests: OK (Not Supported)
+
+Test input 0:
+
+Streaming ioctls:
+	test read/write: OK (Not Supported)
+	test blocking wait: OK
+	Video Capture: Captured 58 buffers                
+	test MMAP (no poll): OK
+	Video Capture: Captured 58 buffers                
+	test MMAP (select): OK
+	Video Capture: Captured 58 buffers                
+	test MMAP (epoll): OK
+	test USERPTR (no poll): OK (Not Supported)
+	test USERPTR (select): OK (Not Supported)
+	test DMABUF: Cannot test, specify --expbuf-device
+
+Total for meson-ge2d device /dev/video0: 52, Succeeded: 52, Failed: 0, Warnings: 0
+
+Neil Armstrong (4):
+  dt-bindings: media: Add bindings for the Amlogic GE2D Accelerator Unit
+  media: meson: Add M2M driver for the Amlogic GE2D Accelerator Unit
+  MAINTAINERS: Add myself as maintainer of the Amlogic GE2D driver
+  arm64: dts: meson-axg: add GE2D node
+
+ .../bindings/media/amlogic,axg-ge2d.yaml      |   47 +
+ MAINTAINERS                                   |    9 +
+ arch/arm64/boot/dts/amlogic/meson-axg.dtsi    |    9 +
+ drivers/media/platform/Kconfig                |   13 +
+ drivers/media/platform/Makefile               |    2 +
+ drivers/media/platform/meson/ge2d/Makefile    |    3 +
+ drivers/media/platform/meson/ge2d/ge2d-regs.h |  360 ++++++
+ drivers/media/platform/meson/ge2d/ge2d.c      | 1105 +++++++++++++++++
+ 8 files changed, 1548 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/amlogic,axg-ge2d.yaml
+ create mode 100644 drivers/media/platform/meson/ge2d/Makefile
+ create mode 100644 drivers/media/platform/meson/ge2d/ge2d-regs.h
+ create mode 100644 drivers/media/platform/meson/ge2d/ge2d.c
+
+-- 
+2.25.1
+
