@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A675229FC74
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 05:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE5029FC75
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 05:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgJ3ECn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 00:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50508 "EHLO
+        id S1725967AbgJ3EEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 00:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgJ3ECl (ORCPT
+        with ESMTP id S1725780AbgJ3EEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 00:02:41 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC4CC0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:02:41 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id n18so4966899wrs.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:02:40 -0700 (PDT)
+        Fri, 30 Oct 2020 00:04:07 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3544EC0613D5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:04:06 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 15so4078162pgd.12
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 21:04:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vjWZgeQF3Hnb5tdCJ+i/96Sx1yBAjj2MSvrs4rWutEU=;
-        b=Ngf/V7zTThX+UgeXi04wCUgJCG0ZAyJg9G9QXgvzJf5p/FZE7hbd1Trf5bGDHxUTgt
-         Pe8kwXT9+ZfxjMz/pJxkIwAAgL+CPLMsq8hmmB1G74V8pBdA4M2LdhoqUGqCUfze+nun
-         7KKuvg0zXbDarpUr1rOvN30GVcrBjISGDh0isy0Y/zBx8vjMDBY+UDalV1A5Vlu+O6el
-         brGAYvhMU4kEuvurzdeIeR+Ng6az49T0g+FcW2tyfva4Wo/eBpzFciglzTh767yhzOj/
-         FSVK8rg3Nc7rYjSm0WYnd3J/pSg3gfrN3fBp1FLhq3aTxNuKSc8vqu7FDO7dfphOKoWM
-         2gJw==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=omeX/7USjZZ0bCTBjHGOVLTjZl1oqWJzp7gUz7b6h8o=;
+        b=nDvPvTn9phgjic1rYziuxJbM/OAHLhdXJG7ZM3/oaHXZLLEojGVPRr0/dOJEMOX2ZV
+         0y48gTkP0J6wfHakJaZv98m/RyzH64FNDGl4ALrV2KM0/WaO9GWXgd60CUeWwwTgZd9x
+         OwQYnx4Jv+QedwVrqKomnqgBSkiMcVlKi+DDXHX4aEeYmacKedUyw4sfEn2NK2gooOAW
+         UUng2XwfDd6pkqZjUw9pOpsV8BXzcYBMYGqGFu+80jE1qe25+6V+wsPRSdQkpdAXnQQN
+         9ksbWoIOgpNjOQYJQIpN/EEZBgTd8eMZ5xqHhYPSPdH0UiU2VOZ5eOZ6WszqRidIbY3A
+         /BOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vjWZgeQF3Hnb5tdCJ+i/96Sx1yBAjj2MSvrs4rWutEU=;
-        b=jR+wtaxkktMkakd17aGp7UI6et1pfCAS44nKbgBRTgaAMpJRchOkfe13N51lrRvQIm
-         XENM0EFqkbYd+IkOpXesr+TlB43yNpKg2SgvFkPJvo5WQbnFf4dbWH0ApMuucKUHeweI
-         QZfDuVQryMAwH4cVjA7swJ36k5nlVQtUzz7wDBajD86L5AK5+3yOJ/semLvkWoAc6lz6
-         UhA8Xj5tP0CVRmjUYWSB81j8GMIk0nvZ8RTeVwXeHX0B4biOolDef7/TguCaTZPPxJiy
-         hWootocQhefpTztFomAEFdBCF/EmwiBoYAilxL6JmpYT6tdLFzcWZzfkx5QykjurntzR
-         kQYg==
-X-Gm-Message-State: AOAM531i5pGLQzt7ohAgxCfdyS9vhJnNyuAh5OvGOmsEsMXgUoe2hP4D
-        opKkF/nWkWGTgLV0nqkkyvdRf54TqcupY/aK+pE=
-X-Google-Smtp-Source: ABdhPJz6VrLiMSegTurNvXqSrj8b9Jp2ijo81GDANxFAWohbS/UL6YDBlH7xbDgi7DHPWVLunUxhQDQs2f73E7Nd9YI=
-X-Received: by 2002:adf:ef92:: with SMTP id d18mr416245wro.420.1604030559857;
- Thu, 29 Oct 2020 21:02:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=omeX/7USjZZ0bCTBjHGOVLTjZl1oqWJzp7gUz7b6h8o=;
+        b=p8Gd2yPOgst0cn6IVaQhG+pR9jlpwluFc4V45xtjp3LCiuEW2O7AIzAXtiVBJiTSzG
+         DaTCwxtGCkf45ldE1Xi5dxLPt3nUcQVBK6OyG0wH65ShAGGh7+NPR3AaAQ32LC3YQvtI
+         Ne2vKDSQ6bB8tEoH4VDS51p5/uSmToH3zo/UrhgUkBRlNUVW1/Nw+lnARqfy4AKSToKx
+         1hJilQsaM5nr95YMJxFWqqNJLXlLFgIFXsMz2qce7jfWy8tgQGWC74STQqVKMUAjFjFd
+         S273ApSuNpaxAPkFNFuHJ441IPjPoQp5ruYsjohXaMneVtEkzxBY8X7bv4P2cvjl+XX0
+         EBRw==
+X-Gm-Message-State: AOAM533aSO8hRpqR0Z+dUg3q/cW0SjAHOkiTTtHNdDacjQqYfWpiJPCi
+        69awsuKIBVUprGo2XSpZ/tI=
+X-Google-Smtp-Source: ABdhPJwln0YHLlt3cQgyT3IiP+FDpP1bJ7gzY5729HwxsrRS9rA7GRyYw5IR8mCvUPP0U5gk7iKY8g==
+X-Received: by 2002:a63:5152:: with SMTP id r18mr458807pgl.381.1604030645846;
+        Thu, 29 Oct 2020 21:04:05 -0700 (PDT)
+Received: from my--box ([103.98.79.70])
+        by smtp.gmail.com with ESMTPSA id j2sm4048182pgi.48.2020.10.29.21.04.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 21:04:05 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 09:33:59 +0530
+From:   Deepak R Varma <mh12gx2825@gmail.com>
+To:     outreachy-kernel@googlegroups.com,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     mh12gx2825@gmail.com, melissa.srw@gmail.com, daniel.vetter@ffwll.ch
+Subject: [PATCH v2] drm/amd/pm: replace kmalloc+memcpy by kmemdup
+Message-ID: <20201030040359.GA276414@my--box>
 MIME-Version: 1.0
-References: <20201029100647.233361-1-coiby.xu@gmail.com> <20201029100647.233361-9-coiby.xu@gmail.com>
-In-Reply-To: <20201029100647.233361-9-coiby.xu@gmail.com>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Fri, 30 Oct 2020 12:02:03 +0800
-Message-ID: <CAAfSe-vv=EXzC4xjnF6RNO+ifoodYCui4cgdodNisQio0TLHtg@mail.gmail.com>
-Subject: Re: [PATCH 9/9] mfd: sprd-sc27xx-spi: remove unnecessary CONFIG_PM_SLEEP
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Coiby,
+Use kmemdup() for instructions using kmalloc() + memcpy(). More
+information here: https://lwn.net/Articles/198928/
+Issue reported by coccinelle script: scripts/coccinelle/api/memdup.cocci
 
-After removing CONFIG_PM_SLEEP, sprd_pmic_suspend/resume() would not
-be built into symbol table with clang compiler though, that would
-cause clang compiler report warnings of "unused function" if
-CONFIG_PM_SLEEP is not set. So I also prefer to add a __maybe_unused
-instead as other people suggested in the mail list.
+Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+---
+Changes since v1:
+   - Update patch subject and log message to match proposed change.
+   
+Please Note: This is a Outreachy project task patch.
 
-Thanks,
-Chunyan
+ .../gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c  | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c
+index 740e2fc7a034..1e79baab753e 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c
+@@ -252,12 +252,11 @@ static int init_powerplay_table_information(
+ 	phm_copy_clock_limits_array(hwmgr, &pptable_information->power_saving_clock_max, powerplay_table->PowerSavingClockMax, ATOM_VEGA12_PPCLOCK_COUNT);
+ 	phm_copy_clock_limits_array(hwmgr, &pptable_information->power_saving_clock_min, powerplay_table->PowerSavingClockMin, ATOM_VEGA12_PPCLOCK_COUNT);
+ 
+-	pptable_information->smc_pptable = kmalloc(sizeof(PPTable_t), GFP_KERNEL);
++	pptable_information->smc_pptable = kmemdup(&(powerplay_table->smcPPTable),
++						   sizeof(PPTable_t), GFP_KERNEL);
+ 	if (pptable_information->smc_pptable == NULL)
+ 		return -ENOMEM;
+ 
+-	memcpy(pptable_information->smc_pptable, &(powerplay_table->smcPPTable), sizeof(PPTable_t));
+-
+ 	result = append_vbios_pptable(hwmgr, (pptable_information->smc_pptable));
+ 
+ 	return result;
+-- 
+2.25.1
 
-On Thu, 29 Oct 2020 at 18:07, Coiby Xu <coiby.xu@gmail.com> wrote:
->
-> SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG. Signed-=
-off-by: Coiby Xu <coiby.xu@gmail.com>  drivers/mfd/sprd-sc27xx-spi.c | 2 --=
-  1 file changed, 2 deletions(-) diff --git a/drivers/mfd/sprd-sc27xx-spi.c=
- b/drivers/mfd/sprd-sc27xx-spi.c index 6b7956604a0f..4db2ec9ef2ff 100644 --=
-- a/drivers/mfd/sprd-sc27xx-spi.c +++ b/drivers/mfd/sprd-sc27xx-spi.c @@ -2=
-06,7 +206,6 @@ static int sprd_pmic_probe(struct spi_device *spi) return 0;=
- -#ifdef CONFIG_PM_SLEEP  static int sprd_pmic_suspend(struct device *dev) =
-struct sprd_pmic *ddata =3D dev_get_drvdata(dev); @@ -226,7 +225,6 @@ stati=
-c int sprd_pmic_resume(struct device *dev) return 0; -#endif  static SIMPLE=
-_DEV_PM_OPS(sprd_pmic_pm_ops, sprd_pmic_suspend, sprd_pmic_resume); 2.28.0
