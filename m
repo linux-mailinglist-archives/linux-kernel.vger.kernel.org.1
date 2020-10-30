@@ -2,223 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C402A0633
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25D32A0634
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgJ3NHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 09:07:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58932 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726486AbgJ3NHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 09:07:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 05626ABAE;
-        Fri, 30 Oct 2020 13:07:12 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 14:07:11 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Steven Rostedt <rostedt@goodmis.org>
-cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, live-patching@vger.kernel.org
-Subject: Re: [RFC][PATCH 3/3 v3] livepatching: Use the default ftrace_ops
- instead of REGS when ARGS is available
-In-Reply-To: <20201029002253.192388563@goodmis.org>
-Message-ID: <alpine.LSU.2.21.2010301359370.22360@pobox.suse.cz>
-References: <20201029000816.272878754@goodmis.org> <20201029002253.192388563@goodmis.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1726604AbgJ3NH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 09:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726178AbgJ3NH0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 09:07:26 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68476C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:07:24 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c8000d91be9ab8def3715.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:8000:d91b:e9ab:8def:3715])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5196A1EC0489;
+        Fri, 30 Oct 2020 14:07:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1604063242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=VgvJcU+pd41uDgd6MEikLWeoDHldRBQaktu2xQKIa18=;
+        b=RxVhDRgGXeE2PJvLCQ+6fb5x2574USaZQ67M4+ggOy6M/H9+MgbFewSZZ8xxrwtnOw7+WH
+        ZRXazcJ5ue419ZaixYh32B7ynf74AhrWBZdqVJQB+BcVBTRBDeuSyDWaEH3nuPWw46skBq
+        dxazMjVPeGV2ZyRRLvIbZH4fm1zlQCs=
+Date:   Fri, 30 Oct 2020 14:07:13 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, x86-ml <x86@kernel.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] Have insn decoder functions return success/failure
+Message-ID: <20201030130713.GB6532@zn.tnic>
+References: <20201022163100.1139b28220da4eafb5e70fcc@kernel.org>
+ <20201022093044.GA29222@zn.tnic>
+ <20201022222140.f46e6db1243e05fdd049b504@kernel.org>
+ <CALCETrWhzzZ=EAoKZ4=k3FjffvS_3R4o5N1Rkj9FkHQdiUag6A@mail.gmail.com>
+ <20201023182850.c54ac863159fb312c411c029@kernel.org>
+ <20201023093254.GC23324@zn.tnic>
+ <20201023194704.f723c86e5f8dfc1133dd5930@kernel.org>
+ <20201023232741.GF23324@zn.tnic>
+ <20201029124231.GB31903@zn.tnic>
+ <20201030102453.73ed996eb4ec9b242d4138b2@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201030102453.73ed996eb4ec9b242d4138b2@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(live-patching ML CCed, keeping the complete email for reference)
+On Fri, Oct 30, 2020 at 10:24:53AM +0900, Masami Hiramatsu wrote:
+> What's the objdump say here?
 
-Hi,
+The expected "bad":
 
-a nit concerning the subject. We use just "livepatch:" as a prefix.
+   0:   c5 ec 95                (bad)
+   3:   b2 02                   mov    $0x2,%dl
+   5:   bd 4b c8 a8 36          mov    $0x36a8c84b,%ebp
+   a:   b2 c5                   mov    $0xc5,%dl
+   c:   c0 df 13                rcr    $0x13,%bh
 
-On Wed, 28 Oct 2020, Steven Rostedt wrote:
+> Yes, in this case, we would better to handle it as an undecodable input
+> instead of access violation in insn_sanity.
 
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> When CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS is available, the ftrace call
-> will be able to set the ip of the calling function. This will improve the
-> performance of live kernel patching where it does not need all the regs to
-> be stored just to change the instruction pointer.
-> 
-> If all archs that support live kernel patching also support
-> HAVE_DYNAMIC_FTRACE_WITH_ARGS, then the architecture specific function
-> klp_arch_set_pc() could be made generic.
+Ok, good. I've got the hunk below now and it does the right thing. The
+whole patch has become huuge now, lemme split it finally. :)
 
-I think this is a nice idea, which could easily lead to removing 
-FTRACE_WITH_REGS altogether. I'm really looking forward to that because 
-every consolidation step is welcome.
+Thx.
 
-My only remark is for the config. LIVEPATCH now depends on 
-DYNAMIC_FTRACE_WITH_REGS which is not completely true after this change, 
-so we should probably make it depend on DYNAMIC_FTRACE_WITH_REGS || 
-DYNAMIC_FTRACE_WITH_ARGS, just to reflect the situation better.
+---
+diff --git a/arch/x86/tools/insn_sanity.c b/arch/x86/tools/insn_sanity.c
+index 185ceba9d289..f20765beec9c 100644
+--- a/arch/x86/tools/insn_sanity.c
++++ b/arch/x86/tools/insn_sanity.c
+@@ -222,8 +224,8 @@ static void parse_args(int argc, char **argv)
+ 
+ int main(int argc, char **argv)
+ {
++       int insns = 0, ret;
+        struct insn insn;
+-       int insns = 0;
+        int errors = 0;
+        unsigned long i;
+        unsigned char insn_buff[MAX_INSN_SIZE * 2];
+@@ -241,15 +243,15 @@ int main(int argc, char **argv)
+                        continue;
+ 
+                /* Decode an instruction */
+-               insn_init(&insn, insn_buff, sizeof(insn_buff), x86_64);
+-               insn_get_length(&insn);
++               ret = insn_decode(&insn, insn_buff, sizeof(insn_buff),
++                                 x86_64 ? INSN_MODE_64 : INSN_MODE_32);
+ 
+                if (insn.next_byte <= insn.kaddr ||
+                    insn.kaddr + MAX_INSN_SIZE < insn.next_byte) {
+                        /* Access out-of-range memory */
+                        dump_stream(stderr, "Error: Found an access violation", i, insn_buff, &insn);
+                        errors++;
+-               } else if (verbose && !insn_complete(&insn))
++               } else if (verbose && ret < 0)
+                        dump_stream(stdout, "Info: Found an undecodable input", i, insn_buff, &insn);
+                else if (verbose >= 2)
+                        dump_insn(stdout, &insn);
 
-Anyway, it passed my tests too and the patch looks good to me, so
+-- 
+Regards/Gruss,
+    Boris.
 
-Acked-by: Miroslav Benes <mbenes@suse.cz>
-
-M
-
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  arch/powerpc/include/asm/livepatch.h | 4 +++-
->  arch/s390/include/asm/livepatch.h    | 5 ++++-
->  arch/x86/include/asm/ftrace.h        | 3 +++
->  arch/x86/include/asm/livepatch.h     | 4 ++--
->  arch/x86/kernel/ftrace_64.S          | 4 ++++
->  include/linux/ftrace.h               | 7 +++++++
->  kernel/livepatch/patch.c             | 9 +++++----
->  7 files changed, 28 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/livepatch.h b/arch/powerpc/include/asm/livepatch.h
-> index 4a3d5d25fed5..ae25e6e72997 100644
-> --- a/arch/powerpc/include/asm/livepatch.h
-> +++ b/arch/powerpc/include/asm/livepatch.h
-> @@ -12,8 +12,10 @@
->  #include <linux/sched/task_stack.h>
->  
->  #ifdef CONFIG_LIVEPATCH
-> -static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-> +static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
->  {
-> +	struct pt_regs *regs = ftrace_get_regs(fregs);
-> +
->  	regs->nip = ip;
->  }
->  
-> diff --git a/arch/s390/include/asm/livepatch.h b/arch/s390/include/asm/livepatch.h
-> index 818612b784cd..d578a8c76676 100644
-> --- a/arch/s390/include/asm/livepatch.h
-> +++ b/arch/s390/include/asm/livepatch.h
-> @@ -11,10 +11,13 @@
->  #ifndef ASM_LIVEPATCH_H
->  #define ASM_LIVEPATCH_H
->  
-> +#include <linux/ftrace.h>
->  #include <asm/ptrace.h>
->  
-> -static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-> +static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
->  {
-> +	struct pt_regs *regs = ftrace_get_regs(fregs);
-> +
->  	regs->psw.addr = ip;
->  }
->  
-> diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-> index 6b175c2468e6..7042e80941e5 100644
-> --- a/arch/x86/include/asm/ftrace.h
-> +++ b/arch/x86/include/asm/ftrace.h
-> @@ -62,6 +62,9 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
->  		return NULL;
->  	return &fregs->regs;
->  }
-> +
-> +#define ftrace_regs_set_ip(fregs, _ip)		\
-> +	do { (fregs)->regs.ip = (_ip); } while (0)
->  #endif
->  
->  #endif /*  CONFIG_DYNAMIC_FTRACE */
-> diff --git a/arch/x86/include/asm/livepatch.h b/arch/x86/include/asm/livepatch.h
-> index 1fde1ab6559e..59a08d5c6f1d 100644
-> --- a/arch/x86/include/asm/livepatch.h
-> +++ b/arch/x86/include/asm/livepatch.h
-> @@ -12,9 +12,9 @@
->  #include <asm/setup.h>
->  #include <linux/ftrace.h>
->  
-> -static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-> +static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
->  {
-> -	regs->ip = ip;
-> +	ftrace_regs_set_ip(fregs, ip);
->  }
->  
->  #endif /* _ASM_X86_LIVEPATCH_H */
-> diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-> index c4177bd00cd2..d00806dd8eed 100644
-> --- a/arch/x86/kernel/ftrace_64.S
-> +++ b/arch/x86/kernel/ftrace_64.S
-> @@ -157,6 +157,10 @@ SYM_INNER_LABEL(ftrace_caller_op_ptr, SYM_L_GLOBAL)
->  SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
->  	call ftrace_stub
->  
-> +	/* Handlers can change the RIP */
-> +	movq RIP(%rsp), %rax
-> +	movq %rax, MCOUNT_REG_SIZE(%rsp)
-> +
->  	restore_mcount_regs
->  
->  	/*
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index 588ea7023a7a..b4eb962e2be9 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -97,6 +97,13 @@ struct ftrace_regs {
->  };
->  #define arch_ftrace_get_regs(fregs) (&(fregs)->regs)
->  
-> +/*
-> + * ftrace_regs_set_ip() is to be defined by the architecture if
-> + * to allow setting of the instruction pointer from the ftrace_regs
-> + * when HAVE_DYNAMIC_FTRACE_WITH_ARGS is set and it supports
-> + * live kernel patching.
-> + */
-> +#define ftrace_regs_set_ip(fregs, ip) do { } while (0)
->  #endif /* CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS */
->  
->  static __always_inline struct pt_regs *ftrace_get_regs(struct ftrace_regs *fregs)
-> diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
-> index 9af0a7c8a255..722266472903 100644
-> --- a/kernel/livepatch/patch.c
-> +++ b/kernel/livepatch/patch.c
-> @@ -42,7 +42,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
->  				       struct ftrace_ops *fops,
->  				       struct ftrace_regs *fregs)
->  {
-> -	struct pt_regs *regs = ftrace_get_regs(fregs);
->  	struct klp_ops *ops;
->  	struct klp_func *func;
->  	int patch_state;
-> @@ -118,7 +117,7 @@ static void notrace klp_ftrace_handler(unsigned long ip,
->  	if (func->nop)
->  		goto unlock;
->  
-> -	klp_arch_set_pc(regs, (unsigned long)func->new_func);
-> +	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
->  
->  unlock:
->  	preempt_enable_notrace();
-> @@ -200,8 +199,10 @@ static int klp_patch_func(struct klp_func *func)
->  			return -ENOMEM;
->  
->  		ops->fops.func = klp_ftrace_handler;
-> -		ops->fops.flags = FTRACE_OPS_FL_SAVE_REGS |
-> -				  FTRACE_OPS_FL_DYNAMIC |
-> +		ops->fops.flags = FTRACE_OPS_FL_DYNAMIC |
-> +#ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> +				  FTRACE_OPS_FL_SAVE_REGS |
-> +#endif
->  				  FTRACE_OPS_FL_IPMODIFY |
->  				  FTRACE_OPS_FL_PERMANENT;
->  
-> -- 
-> 2.28.0
-> 
-> 
-
+https://people.kernel.org/tglx/notes-about-netiquette
