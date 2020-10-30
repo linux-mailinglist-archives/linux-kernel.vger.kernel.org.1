@@ -2,57 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA8A2A0BA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5212A0BAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:49:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgJ3Qta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
+        id S1727159AbgJ3Qti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgJ3Qt3 (ORCPT
+        with ESMTP id S1727109AbgJ3Qti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:49:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB28C0613CF;
-        Fri, 30 Oct 2020 09:49:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=bLkVPUZj71HqYK7QTvtXQx4ZFoQRz5HBYZMu9LxVxOk=; b=bQ54/X+nUFyGnYfsDHFjttzPMr
-        EkV0OjHqDeWDb9DwMfZM+LTYjGA2KivyIVg3dhIuj68A0GI6Imqf2JYgh38YJlqVwnOcybT1FwT7V
-        n+txOHf0jpbRyf+UxLMP7XIL0mx2y7vEoZiNHJSZGC9m/jxGW/6SnN8k3Zk5PGw9BJ5uvE/9UhAem
-        aPQ2GmIV3HotoN3oMes1tNQ0OdMOk4Lra4JoCDgFiNLn2Q0VbHbsZ6UC4WsM9b22J9DrKxW/e9t52
-        EvNPqGoQge0kROLYZ5ekDd6GgtIlCnKdrHfEAo3OfzqH6xaZllyK1uCDo8A0YCJSuQXrOGAMLz1+C
-        pbEQoSAQ==;
-Received: from [2601:1c0:6280:3f0::371c]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYXab-0008UR-PW; Fri, 30 Oct 2020 16:49:22 +0000
-Subject: Re: [PATCH v2 26/39] docs: Kconfig/Makefile: add a check for broken
- ABI files
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Changbin Du <changbin.du@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Peter Enderborg <peter.enderborg@sony.com>,
-        Tom Rix <trix@redhat.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1604042072.git.mchehab+huawei@kernel.org>
- <57a38de85cb4b548857207cf1fc1bf1ee08613c9.1604042072.git.mchehab+huawei@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4bc8b5ff-4797-4fa9-c2fe-5813be18d50b@infradead.org>
-Date:   Fri, 30 Oct 2020 09:49:16 -0700
+        Fri, 30 Oct 2020 12:49:38 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E2DC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:49:36 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id z5so8224033iob.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tG+n/t1qBUCj/v91rLdw/q5jo3ynBwp9llr1Pk6zEPE=;
+        b=l8D1Ji+XaROHEacSN2Rjdc7PFJjkcXtiPo8gC7oxf46mBeSxyFW+VH3f+CDlnsjmQ3
+         tRqLM8UACXn+ZDZYvN1CuE7DksVY91gtlEk+TkxLBX5n9K8RmBojLDJ6ZD+M/zAvuTG/
+         bjrKnXsoZ9PZMwoau41Pm43aj3uRXeZ17zMBKXDHpIWcCZ3sHJE+nARyFvDzMQ+TLnKU
+         8JKS3Hh036P+gJH7adFif2JEgvMCOlunyoc+nJUEaLan+t5q22dMEu3dnBiezLwTaGzr
+         yqKCo5rI5Dr36LssyX9YEnEP+PcK81z2BbS9YwKYDgeL0KqERQ1uOHjur9fQ84NhMyt7
+         1Fnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tG+n/t1qBUCj/v91rLdw/q5jo3ynBwp9llr1Pk6zEPE=;
+        b=ivq2TtMA05lYHx99rU8Iuarh7FiB5ikFJ67sVgwEDChk5WSygiJ5MOJr5W4xKP9N5M
+         R8+AIkomuvE70QjucDAPLlb5feS1n2C6rJfZUdgEgU6W9yjJALbSlGcmZYoPcw34hrv/
+         5otdPXR0Tdj6Zk5UJvlKO/2Vgu89O+ExIGETbSf9W8KEe6aOmiV/LkD8Yvvq3Xb14rUH
+         Y3mg/xvFy0hbKvLl4Qj4oz72OwIo9IcSfR9PECWAPVrTi9kZKEMa/alKp0ChJO6vJlaf
+         PQGPkCAX+6W93iA8O+gdLp2/wEcZ+L4RsB4WVU4lRUC/CBtRFpotoQYdSCCSEOgHPj8T
+         6YPg==
+X-Gm-Message-State: AOAM531I73WINqOsrDV1nGvIVUcz+9bulzFZS17YZOsvwp3EqzsMB1id
+        aT4eTlI5L67YDC4UuiYvJdzT/g==
+X-Google-Smtp-Source: ABdhPJxT5w7sUnGbO12W5ab3BhmMX1OspT+ztMfJzg/947sne96PI/SWqmcXtcBF9UeP3bkrH5NcYA==
+X-Received: by 2002:a02:5d04:: with SMTP id w4mr2686525jaa.67.1604076576106;
+        Fri, 30 Oct 2020 09:49:36 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id w68sm5844136ila.1.2020.10.30.09.49.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 09:49:35 -0700 (PDT)
+Subject: Re: [PATCH -next] fs: Fix memory leaks in do_renameat2() error paths
+To:     Qian Cai <cai@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20201030152407.43598-1-cai@redhat.com>
+ <251c80d6-a2d0-4053-404f-bffd5a53313e@kernel.dk>
+ <09fa614adb555358d39ab606a8c6a2d89ba4a11d.camel@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <fa085de9-766c-156a-e6ef-bd834b0cc626@kernel.dk>
+Date:   Fri, 30 Oct 2020 10:49:34 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <57a38de85cb4b548857207cf1fc1bf1ee08613c9.1604042072.git.mchehab+huawei@kernel.org>
+In-Reply-To: <09fa614adb555358d39ab606a8c6a2d89ba4a11d.camel@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -60,66 +72,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
-
-
-On 10/30/20 12:40 AM, Mauro Carvalho Chehab wrote:
-> The files under Documentation/ABI should follow the syntax
-> as defined at Documentation/ABI/README.
+On 10/30/20 9:52 AM, Qian Cai wrote:
+> On Fri, 2020-10-30 at 09:27 -0600, Jens Axboe wrote:
+>> On 10/30/20 9:24 AM, Qian Cai wrote:
+>>> We will need to call putname() before do_renameat2() returning -EINVAL
+>>> to avoid memory leaks.
+>>
+>> Thanks, should mention that this isn't final by any stretch (which is
+>> why it hasn't been posted yet), just pushed out for some exposure.
 > 
-> Allow checking if they're following the syntax by running
-> the ABI parser script on COMPILE_TEST.
-> 
-> With that, when there's a problem with a file under
-> Documentation/ABI, it would produce a warning like:
-> 
-> 	Warning: file ./Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats#14:
-> 		What '/sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_cor' doesn't have a description
-> 	Warning: file ./Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats#21:
-> 		What '/sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_fatal' doesn't have a description
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/Kconfig  | 10 ++++++++++
->  Documentation/Makefile |  5 +++++
->  lib/Kconfig.debug      |  2 ++
->  scripts/get_abi.pl     | 14 +++++++++++---
->  4 files changed, 28 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/Kconfig b/Documentation/Kconfig
-> index 66046fa1c341..e549a61f4d96 100644
-> --- a/Documentation/Kconfig
-> +++ b/Documentation/Kconfig
-> @@ -10,4 +10,14 @@ config WARN_MISSING_DOCUMENTS
->  
->  	   If unsure, select 'N'.
->  
-> +config WARN_ABI_ERRORS
-> +	bool "Warn if there are errors at ABI files"
-> +	depends on COMPILE_TEST
-> +	help
-> +	   The files under Documentation/ABI should follow what's
-> +	   described at Documentation/ABI/README. Yet, as they're manually
-> +	   written, it would be possible that some of those files would
-> +	   have errors that would break them for being parsed by
-> +	   scripts/get_abi.pl. Add a check to verify them.
->  
-> +	   If unsure, select 'N'.
+> I don't know what other people think about this, but I do find a bit
+> discouraging in testing those half-baked patches in linux-next where it does not
+> even ready to post for a review.
 
-I need a bot for this:
+I don't disagree with that and this doesn't normally happen. I don't
+want to get into the reasonings, but things had to be shuffled which is
+why they ended up in -next before being posted this week. They will go
+out shortly.
 
-Please follow coding-style for Kconfig files:
-
-from Documentation/process/coding-style.rst, section 10):
-
-For all of the Kconfig* configuration files throughout the source tree,
-the indentation is somewhat different.  Lines under a ``config`` definition
-are indented with one tab, while help text is indented an additional two
-spaces.
-
-
-
-thanks.
 -- 
-~Randy
+Jens Axboe
 
