@@ -2,87 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024052A0B6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A13532A0B78
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727249AbgJ3Ql0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:41:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727205AbgJ3Ql0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:41:26 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80B6620724;
-        Fri, 30 Oct 2020 16:41:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604076085;
-        bh=yDGK3HSIn6gb/VVUQS5nuiDIvM6Z+CXvckaxC2BQVug=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RvqHZFbdFPQgGVkp6TB84dHb/Yqrz6V82kIm749gIwjEDtgoYqwUhlXZ6ZLV8iVWv
-         LpsimexulpWcW9CR5aJ6YNSpUxlD40Sk03En52ysB2sPlR5bWK5SfGh4uRP3A70lBR
-         mdRuOMQ5ZaWXlPjaf8Zpx65yor6iGGJ46QeWnrbA=
-Received: by pali.im (Postfix)
-        id D8D2786D; Fri, 30 Oct 2020 17:41:22 +0100 (CET)
-Date:   Fri, 30 Oct 2020 17:41:22 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, dsterba@suse.cz, aaptel@suse.com,
-        willy@infradead.org, rdunlap@infradead.org, joe@perches.com,
-        mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com
-Subject: Re: [PATCH v11 00/10] NTFS read-write driver GPL implementation by
- Paragon Software
-Message-ID: <20201030164122.vuao3avogggnk42q@pali>
-References: <20201030150239.3957156-1-almaz.alexandrovich@paragon-software.com>
+        id S1727205AbgJ3QnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgJ3QnE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:43:04 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E40C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:43:04 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id v18so7084160ilg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:43:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NZmqGfCg08N6iXx9q7TVWlSnhQqIDOwOjzOwbvXDxjI=;
+        b=INVfZz/fkvsZivy8jdRFY4jjuumPUnT03fIMmAZxhr2j3OQtTxmqWeMui9FFLMvZFz
+         QB2ePhBsJkuNysGjMHbU9DiLLxlLmss4JFzjBmUNAkJoiiGzYBFH/upOKm0AUQMizu+W
+         okAB9PgkVOM5lyq7RfM3eZWziu4Lw6xFmIPsA3WEdWrepzCLkMsPGFysW4PIdG4Ix46W
+         ABDHiqA089OjzR7YGXqWWnY73UPmGi5ssu5dObic6I8EipSHtDNSFTIEabkYZFtOUw53
+         gKZFvyCe8mIA4cQPQ5Ji/NguzzOPrnGBpJ5jXdtWnz2BLO+k8PETRjkg1JznRZelvTOY
+         uyUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NZmqGfCg08N6iXx9q7TVWlSnhQqIDOwOjzOwbvXDxjI=;
+        b=rCcBlefpaRYgM+vXyK4lzNyQd54ypmm7vh83/uSuYnIUmqgMe4YiYI3HoBdkwDBQpX
+         r8WX5/jlcjHhmpq1lbzdYZAYEX6iPD4YH/M7JNmle5woBGtftUKvwfNBjLbTABuNDFoo
+         T5jwcskM9R6BXQQHpRjsRMROTppf51PON63jMnkkFvqOKUHq6A4ohponUmHx+rVdhR19
+         4QvMYqtkDhtzQ5yRRcvom6U3cyn3WOsKSbfFc+d7YKux9/UVqghyRYwRuQvL1BKdmVvl
+         SwHs1m49Q3VE2gMdnw4OrptaFJODLqkhhPcpSsD78/ENSzzikZdvdX/3kji/H8QhNJ0D
+         vITw==
+X-Gm-Message-State: AOAM532WZOCi4nj4WXef4hA2kPj9+JVdwQcsikeJNTbT5ut41bsmtSSO
+        V0ICQ/kiwz6yqjjI6Ntpv5j749ArQCZshN1+ZO653w==
+X-Google-Smtp-Source: ABdhPJwYf7SWuKIRh8xsBOBodbVLmuU+KCM1QaVpZsez95JZOYKTbDYung3PLxm+lfmttII+vBXdnzsUUs8NHjrseg0=
+X-Received: by 2002:a92:6403:: with SMTP id y3mr2528711ilb.72.1604076184121;
+ Fri, 30 Oct 2020 09:43:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030150239.3957156-1-almaz.alexandrovich@paragon-software.com>
-User-Agent: NeoMutt/20180716
+References: <cover.1604042072.git.mchehab+huawei@kernel.org> <5bc78e5b68ed1e9e39135173857cb2e753be868f.1604042072.git.mchehab+huawei@kernel.org>
+In-Reply-To: <5bc78e5b68ed1e9e39135173857cb2e753be868f.1604042072.git.mchehab+huawei@kernel.org>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Fri, 30 Oct 2020 10:42:53 -0600
+Message-ID: <CANLsYkxc2uzA57Hg5OX31JOx08JCZfynzebjABv=6H01796xGA@mail.gmail.com>
+Subject: Re: [PATCH v2 31/39] docs: ABI: cleanup several ABI documents
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
+        =?UTF-8?Q?Marek_Marczykowski=2DG=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Chao Yu <chao@kernel.org>,
+        Christian Gromm <christian.gromm@microchip.com>,
+        Colin Cross <ccross@android.com>, Dan Murphy <dmurphy@ti.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        David Sterba <dsterba@suse.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Johan Hovold <johan@kernel.org>,
+        Jonas Meurer <jonas@freesources.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Kranthi Kuntala <kranthi.kuntala@intel.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee.jones@linaro.org>, Len Brown <lenb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Oleh Kravchenko <oleg@kaa.org.ua>, Pavel Machek <pavel@ucw.cz>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Chen <peter.chen@nxp.com>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Roman Sudarikov <roman.sudarikov@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stefan Achatz <erazor_de@users.sourceforge.net>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Rix <trix@redhat.com>, Tony Luck <tony.luck@intel.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        Wu Hao <hao.wu@intel.com>, ceph-devel@vger.kernel.org,
+        Coresight ML <coresight@lists.linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-f2fs-devel@lists.sourceforge.net, linux-fpga@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i3c@lists.infradead.org,
+        linux-iio@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Fri, 30 Oct 2020 at 01:41, Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> There are some ABI documents that, while they don't generate
+> any warnings, they have issues when parsed by get_abi.pl script
+> on its output result.
+>
+> Address them, in order to provide a clean output.
+>
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> #for IIO
+> Reviewed-by: Tom Rix <trix@redhat.com> # for fpga-manager
+> Reviewed-By: Kajol Jain<kjain@linux.ibm.com> # for sysfs-bus-event_source-devices-hv_gpci and sysfs-bus-event_source-devices-hv_24x7
+> Acked-by: Oded Gabbay <oded.gabbay@gmail.com> # for Habanalabs
+> Acked-by: Vaibhav Jain <vaibhav@linux.ibm.com> # for sysfs-bus-papr-pmem
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
 
-On Friday 30 October 2020 18:02:29 Konstantin Komarov wrote:
->  27 files changed, 28364 insertions(+)
->  create mode 100644 Documentation/filesystems/ntfs3.rst
->  create mode 100644 fs/ntfs3/Kconfig
->  create mode 100644 fs/ntfs3/Makefile
->  create mode 100644 fs/ntfs3/attrib.c
->  create mode 100644 fs/ntfs3/attrlist.c
->  create mode 100644 fs/ntfs3/bitfunc.c
->  create mode 100644 fs/ntfs3/bitmap.c
->  create mode 100644 fs/ntfs3/debug.h
->  create mode 100644 fs/ntfs3/dir.c
->  create mode 100644 fs/ntfs3/file.c
->  create mode 100644 fs/ntfs3/frecord.c
->  create mode 100644 fs/ntfs3/fslog.c
->  create mode 100644 fs/ntfs3/fsntfs.c
->  create mode 100644 fs/ntfs3/index.c
->  create mode 100644 fs/ntfs3/inode.c
->  create mode 100644 fs/ntfs3/lznt.c
->  create mode 100644 fs/ntfs3/namei.c
->  create mode 100644 fs/ntfs3/ntfs.h
->  create mode 100644 fs/ntfs3/ntfs_fs.h
->  create mode 100644 fs/ntfs3/record.c
->  create mode 100644 fs/ntfs3/run.c
->  create mode 100644 fs/ntfs3/super.c
->  create mode 100644 fs/ntfs3/upcase.c
->  create mode 100644 fs/ntfs3/xattr.c
+>  .../testing/sysfs-bus-coresight-devices-etb10 |   5 +-
 
-I would like to open discussion about two ntfs kernel drivers. Do we
-really need two drivers (one read only - current version and one
-read/write - this new version)?
+For the CoreSight part:
 
-What other people think?
-
-I remember that Christoph (added to loop) had in past a good argument
-about old staging exfat driver (it had support also for fat32/vfat),
-that it would cause problems if two filesystem drivers would provide
-support for same filesystem.
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
