@@ -2,84 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F202A060A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C28452A0624
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgJ3M6R convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Oct 2020 08:58:17 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:22337 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725939AbgJ3M6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:58:17 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CN2RS2Hrdz9vCxr;
-        Fri, 30 Oct 2020 13:58:12 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id g-TNzz5dYdfZ; Fri, 30 Oct 2020 13:58:12 +0100 (CET)
-Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CN2RS1156z9vCxm;
-        Fri, 30 Oct 2020 13:58:12 +0100 (CET)
-Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
-        id 7996D24BA; Fri, 30 Oct 2020 14:00:47 +0100 (CET)
-Received: from 37-171-46-117.coucou-networks.fr
- (37-171-46-117.coucou-networks.fr [37.171.46.117]) by messagerie.c-s.fr
- (Horde Framework) with HTTP; Fri, 30 Oct 2020 14:00:47 +0100
-Date:   Fri, 30 Oct 2020 14:00:47 +0100
-Message-ID: <20201030140047.Horde.TJJqKGzG9vSGbMRNIj-MPg7@messagerie.c-s.fr>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH] powerpc/32s: Setup the early hash table at all time.
-References: <b8f8101c368b8a6451844a58d7bd7d83c14cf2aa.1601566529.git.christophe.leroy@csgroup.eu>
- <87wnz8vizm.fsf@igel.home> <87y2jouw8k.fsf@mpe.ellerman.id.au>
- <87v9esaxlv.fsf@igel.home>
-In-Reply-To: <87v9esaxlv.fsf@igel.home>
-User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
-Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
+        id S1726634AbgJ3NCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 09:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbgJ3NCg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 09:02:36 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE918C0613D7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:02:34 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id y10so1431395vkl.5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:02:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hfUp6uvT0mNo9qOvWz4kadVZif4hwG0EcrIPidc71AU=;
+        b=c/0np4r5fnnReVFjWkDWXo8hF0To3ovSOoxgoL/QWs9VxL86iqjKdadij03d378/T5
+         B7rjoCbR258EwTEX+UW+6QMPF65hDWZsco0RfSUG9stFDcsd6ZZkDH+4oFGIQiro7Wrf
+         /VUafL5CtS83KydlI6lpgD86QMrk86JITh21I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hfUp6uvT0mNo9qOvWz4kadVZif4hwG0EcrIPidc71AU=;
+        b=hD1wmqIbf3/4YIkR59nUaHWtCHHpGxXGp26cWCZBCJpLf74OIQrKdRtxmnx2RQi7Bt
+         lii5rqbF4mz/VFpD1PoWMGz4QGWN7IByP8R+2B+f70zatAYwfUSrDayOmd3DSzw5eyw3
+         +Azo5nt3/WkCGj8TmFyYaecCB40RbJzZcDe2EHL8GjVhYk0jfZjdtjFiCJkOEntke3QX
+         K6W6UG+Q+KUyZ8FJxKdx90IiWfjtCobP1lNQbUaPoGzQFn55nS+wAqaov0qEZW7wKXa1
+         FIX87L6/6BZRk0lGWI+x1Kq+56QlyjHlDqccYaejATH4C4WltfaazfP3VEIWnHaPCZkl
+         aShQ==
+X-Gm-Message-State: AOAM530VdGr92zepBzXuqm0Z69f3m7NMCWyHsKp6JsmUdfuAB2Uh4zDA
+        tyZZlFuE0nCHm01iJo5TLoAUmJXCuudCagaCsxMFqg==
+X-Google-Smtp-Source: ABdhPJxPa9+zamc48OrPbKG+5+YeIbGDLouPEl6taVV7SKI2yGqJZrMzqI/DHpB0Je2VEJI3rTxbB6w6g9+fXjI8Kns=
+X-Received: by 2002:a1f:23d0:: with SMTP id j199mr6640364vkj.11.1604062953264;
+ Fri, 30 Oct 2020 06:02:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
+References: <0000000000008caae305ab9a5318@google.com> <000000000000a726a405ada4b6cf@google.com>
+ <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com>
+In-Reply-To: <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 30 Oct 2020 14:02:22 +0100
+Message-ID: <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com>
+Subject: Re: general protection fault in security_inode_getattr
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>,
+        andriin@fb.com, Alexei Starovoitov <ast@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>, john.fastabend@gmail.com,
+        kafai@fb.com, KP Singh <kpsingh@chromium.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>, yhs@fb.com,
+        linux-fsdevel@vger.kernel.org,
+        overlayfs <linux-unionfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andreas Schwab <schwab@linux-m68k.org> a écrit :
-
-> On Okt 30 2020, Michael Ellerman wrote:
+On Mon, Aug 24, 2020 at 11:00 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
 >
->> Andreas Schwab <schwab@linux-m68k.org> writes:
->>> On Okt 01 2020, Christophe Leroy wrote:
->>>
->>>> At the time being, an early hash table is set up when
->>>> CONFIG_KASAN is selected.
->>>>
->>>> There is nothing wrong with setting such an early hash table
->>>> all the time, even if it is not used. This is a statically
->>>> allocated 256 kB table which lies in the init data section.
->>>>
->>>> This makes the code simpler and may in the future allow to
->>>> setup early IO mappings with fixmap instead of hard coding BATs.
->>>>
->>>> Put create_hpte() and flush_hash_pages() in the .ref.text section
->>>> in order to avoid warning for the reference to early_hash[]. This
->>>> reference is removed by MMU_init_hw_patch() before init memory is
->>>> freed.
->>>
->>> This breaks booting on the iBook G4.
->>
->> Do you get an oops or anything?
+> On Mon, Aug 24, 2020 at 9:37 PM syzbot
+> <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com> wrote:
+> > syzbot has found a reproducer for the following issue on:
 >
-> Nope, nothing at all.
->
+> Looping in fsdevel and OverlayFS maintainers, as this seems to be
+> FS/OverlayFS related...
 
-Under qemu it was working.
+Hmm, the oopsing code is always something like:
 
-Can you share your .config, or are you using one of the defconfig ?
+All code
+========
+   0: 1b fe                sbb    %esi,%edi
+   2: 49 8d 5e 08          lea    0x8(%r14),%rbx
+   6: 48 89 d8              mov    %rbx,%rax
+   9: 48 c1 e8 03          shr    $0x3,%rax
+   d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
+  12: 74 08                je     0x1c
+  14: 48 89 df              mov    %rbx,%rdi
+  17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
+  1c: 48 8b 1b              mov    (%rbx),%rbx
+  1f: 48 83 c3 68          add    $0x68,%rbx
+  23: 48 89 d8              mov    %rbx,%rax
+  26: 48 c1 e8 03          shr    $0x3,%rax
+  2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+  2f: 74 08                je     0x39
+  31: 48 89 df              mov    %rbx,%rdi
+  34: e8 9f b4 5b fe        callq  0xfffffffffe5bb4d8
+  39: 48 8b 1b              mov    (%rbx),%rbx
+  3c: 48 83 c3 0c          add    $0xc,%rbx
 
-Christophe
 
+And that looks (to me) like the unrolled loop in call_int_hook().  I
+don't see how that could be related to overlayfs, though it's
+definitely interesting why it only triggers from
+overlay->vfs_getattr()->security_inode_getattr()...
+
+Thanks,
+Miklos
