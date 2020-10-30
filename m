@@ -2,54 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F64B29FF4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDDB229FFE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgJ3IAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 04:00:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725784AbgJ3IAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:00:33 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10585206DC;
-        Fri, 30 Oct 2020 08:00:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604044833;
-        bh=A5DqtYVC+Vuu9s3i/DSxLYmaYp166CzIlSseYdbIrQs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0/uwP2z4FYfcl3tBJEmeorlBzl1rw7AE13l+HpNAP2e+sQ5Sdp6jemI0j7niAj8ya
-         qBiWtj5M+NJbysp9r+rtPTnP42+BQRiw8GqSktTtnCbbzAigJwDfD0WnWpZmHsCvAG
-         hpJvr3q9+MuMon2IIyJxEVoI5tvmtJvNpmhcCgIk=
-Date:   Fri, 30 Oct 2020 16:00:27 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8mm-beacon-som: Configure supplies on
- secondary cpus
-Message-ID: <20201030080026.GK28755@dragon>
-References: <20201007140457.233697-1-aford173@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007140457.233697-1-aford173@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726095AbgJ3I1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:27:15 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:38132 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgJ3I1N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 04:27:13 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09U8Ie03157762;
+        Fri, 30 Oct 2020 08:27:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=SPTCCzaaMoMH7ZkqcSn/3OnyNUPLbSrB1kzNwJ9Szq4=;
+ b=ukvu6M07XEqbvu3282i4sI5HiwsbeRgyi9XTQlqSQtg8lQKI1NqWI+fO9qtnvaRvjVvw
+ HnH0otzm6Ad4armKPstpcrzpDVSGK9gGmXADz2x3SLhT/3jxleionCsr1KI0JBctYMDL
+ +/YJzw/6b64AasDIuHo4F7RH+4CHxuvdh6M2d9/Dh/TqCs6I7rJkP7yTCNBg+poD5PCH
+ vCK/AcuJp73Dx5rwH+65ILiiAhvtlsYyGKniVMkED8JWbnVCy+r737iaF1HDLqu31MDV
+ 48v6NnbxaXeWH4gN9gQ7/Ai3IdrGjF7xIraaqMeykpCYoQY04fR7dmtHCJ8aivkfQaSZ 3w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 34dgm4e4k6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 30 Oct 2020 08:27:04 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09U8QYuU005266;
+        Fri, 30 Oct 2020 08:27:03 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 34cwuqqcxj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Oct 2020 08:27:03 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09U8R12b006577;
+        Fri, 30 Oct 2020 08:27:01 GMT
+Received: from ban25x6uut24.us.oracle.com (/10.153.73.24)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 30 Oct 2020 01:27:00 -0700
+From:   Si-Wei Liu <si-wei.liu@oracle.com>
+To:     mst@redhat.com, jasowang@redhat.com, lingshan.zhu@intel.com
+Cc:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH 1/2] Revert "vhost-vdpa: fix page pinning leakage in error path"
+Date:   Fri, 30 Oct 2020 03:45:43 -0400
+Message-Id: <1604043944-4897-1-git-send-email-si-wei.liu@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 adultscore=0 malwarescore=0 mlxlogscore=999 suspectscore=2
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010300063
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=2 clxscore=1015 mlxscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010300062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 09:04:57AM -0500, Adam Ford wrote:
-> Each cpu core should have a corresponding supply, but only cpu0 does.
-> This patch adds a supply for each of the secondary cpus.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+This reverts commit 7ed9e3d97c32d969caded2dfb6e67c1a2cc5a0b1.
 
-Applied, thanks.
+Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+---
+ drivers/vhost/vdpa.c | 119 +++++++++++++++++++++------------------------------
+ 1 file changed, 48 insertions(+), 71 deletions(-)
+
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index a2dbc85..b6d9016 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -588,19 +588,21 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+ 	struct vhost_dev *dev = &v->vdev;
+ 	struct vhost_iotlb *iotlb = dev->iotlb;
+ 	struct page **page_list;
+-	struct vm_area_struct **vmas;
++	unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
+ 	unsigned int gup_flags = FOLL_LONGTERM;
+-	unsigned long map_pfn, last_pfn = 0;
+-	unsigned long npages, lock_limit;
+-	unsigned long i, nmap = 0;
++	unsigned long npages, cur_base, map_pfn, last_pfn = 0;
++	unsigned long locked, lock_limit, pinned, i;
+ 	u64 iova = msg->iova;
+-	long pinned;
+ 	int ret = 0;
+ 
+ 	if (vhost_iotlb_itree_first(iotlb, msg->iova,
+ 				    msg->iova + msg->size - 1))
+ 		return -EEXIST;
+ 
++	page_list = (struct page **) __get_free_page(GFP_KERNEL);
++	if (!page_list)
++		return -ENOMEM;
++
+ 	if (msg->perm & VHOST_ACCESS_WO)
+ 		gup_flags |= FOLL_WRITE;
+ 
+@@ -608,86 +610,61 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+ 	if (!npages)
+ 		return -EINVAL;
+ 
+-	page_list = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
+-	vmas = kvmalloc_array(npages, sizeof(struct vm_area_struct *),
+-			      GFP_KERNEL);
+-	if (!page_list || !vmas) {
+-		ret = -ENOMEM;
+-		goto free;
+-	}
+-
+ 	mmap_read_lock(dev->mm);
+ 
++	locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
+ 	lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+-	if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
+-		ret = -ENOMEM;
+-		goto unlock;
+-	}
+ 
+-	pinned = pin_user_pages(msg->uaddr & PAGE_MASK, npages, gup_flags,
+-				page_list, vmas);
+-	if (npages != pinned) {
+-		if (pinned < 0) {
+-			ret = pinned;
+-		} else {
+-			unpin_user_pages(page_list, pinned);
+-			ret = -ENOMEM;
+-		}
+-		goto unlock;
++	if (locked > lock_limit) {
++		ret = -ENOMEM;
++		goto out;
+ 	}
+ 
++	cur_base = msg->uaddr & PAGE_MASK;
+ 	iova &= PAGE_MASK;
+-	map_pfn = page_to_pfn(page_list[0]);
+-
+-	/* One more iteration to avoid extra vdpa_map() call out of loop. */
+-	for (i = 0; i <= npages; i++) {
+-		unsigned long this_pfn;
+-		u64 csize;
+-
+-		/* The last chunk may have no valid PFN next to it */
+-		this_pfn = i < npages ? page_to_pfn(page_list[i]) : -1UL;
+-
+-		if (last_pfn && (this_pfn == -1UL ||
+-				 this_pfn != last_pfn + 1)) {
+-			/* Pin a contiguous chunk of memory */
+-			csize = last_pfn - map_pfn + 1;
+-			ret = vhost_vdpa_map(v, iova, csize << PAGE_SHIFT,
+-					     map_pfn << PAGE_SHIFT,
+-					     msg->perm);
+-			if (ret) {
+-				/*
+-				 * Unpin the rest chunks of memory on the
+-				 * flight with no corresponding vdpa_map()
+-				 * calls having been made yet. On the other
+-				 * hand, vdpa_unmap() in the failure path
+-				 * is in charge of accounting the number of
+-				 * pinned pages for its own.
+-				 * This asymmetrical pattern of accounting
+-				 * is for efficiency to pin all pages at
+-				 * once, while there is no other callsite
+-				 * of vdpa_map() than here above.
+-				 */
+-				unpin_user_pages(&page_list[nmap],
+-						 npages - nmap);
+-				goto out;
++
++	while (npages) {
++		pinned = min_t(unsigned long, npages, list_size);
++		ret = pin_user_pages(cur_base, pinned,
++				     gup_flags, page_list, NULL);
++		if (ret != pinned)
++			goto out;
++
++		if (!last_pfn)
++			map_pfn = page_to_pfn(page_list[0]);
++
++		for (i = 0; i < ret; i++) {
++			unsigned long this_pfn = page_to_pfn(page_list[i]);
++			u64 csize;
++
++			if (last_pfn && (this_pfn != last_pfn + 1)) {
++				/* Pin a contiguous chunk of memory */
++				csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
++				if (vhost_vdpa_map(v, iova, csize,
++						   map_pfn << PAGE_SHIFT,
++						   msg->perm))
++					goto out;
++				map_pfn = this_pfn;
++				iova += csize;
+ 			}
+-			atomic64_add(csize, &dev->mm->pinned_vm);
+-			nmap += csize;
+-			iova += csize << PAGE_SHIFT;
+-			map_pfn = this_pfn;
++
++			last_pfn = this_pfn;
+ 		}
+-		last_pfn = this_pfn;
++
++		cur_base += ret << PAGE_SHIFT;
++		npages -= ret;
+ 	}
+ 
+-	WARN_ON(nmap != npages);
++	/* Pin the rest chunk */
++	ret = vhost_vdpa_map(v, iova, (last_pfn - map_pfn + 1) << PAGE_SHIFT,
++			     map_pfn << PAGE_SHIFT, msg->perm);
+ out:
+-	if (ret)
++	if (ret) {
+ 		vhost_vdpa_unmap(v, msg->iova, msg->size);
+-unlock:
++		atomic64_sub(npages, &dev->mm->pinned_vm);
++	}
+ 	mmap_read_unlock(dev->mm);
+-free:
+-	kvfree(vmas);
+-	kvfree(page_list);
++	free_page((unsigned long)page_list);
+ 	return ret;
+ }
+ 
+-- 
+1.8.3.1
+
