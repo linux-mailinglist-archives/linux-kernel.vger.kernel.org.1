@@ -2,223 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10EB2A103D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A30AA2A1042
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbgJ3Vb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 17:31:56 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12872 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727836AbgJ3Vb4 (ORCPT
+        id S1727732AbgJ3Vgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 17:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbgJ3Vgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 17:31:56 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9c86560005>; Fri, 30 Oct 2020 14:32:06 -0700
-Received: from [10.2.58.85] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
- 2020 21:31:55 +0000
-Subject: Re: [PATCH v2 1/2] mm: reorganize internal_get_user_pages_fast()
-To:     Jason Gunthorpe <jgg@nvidia.com>, <linux-kernel@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>
-References: <1-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <aba86298-cced-bdb7-542f-678646468502@nvidia.com>
-Date:   Fri, 30 Oct 2020 14:31:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 30 Oct 2020 17:36:47 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E10C0613CF;
+        Fri, 30 Oct 2020 14:36:47 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id z3so51881pfz.6;
+        Fri, 30 Oct 2020 14:36:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jz1ojc56VCax4qjassESi35sE0VVRGRm/xQUCoU7Q+I=;
+        b=kOGbl2KExwy1TDwPx1zqxK+U+nTurI4I7M8mPFS/pkoC8UqkQNWv8TjxKEXtbvRnzB
+         0v7f8T3wDBXeCTBOF4zEYwBBZvp5tZE471nJN2bEKVftruZcFZtcSC9eHTi6xJNISz6Q
+         s1KyjpXtjcPDQ3lkIl1EDVO56p1ZaifA1oEwiVPKdaXmhBqvYgKZsXg5GqCQPOQ+gteE
+         Tnn/4rRmvlGzTbnpKPyBv2VXsNJUNTO2ELzRDLxfKf4QD2WLopzSO5Gjh1Qf/3hN7Of5
+         b6THQa4BBVTxbfK8Yn+VDCDJJzJ4BXJUUGX45l+bd8FMQ0hePIorTwxR9YzzzseGkblx
+         WR6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jz1ojc56VCax4qjassESi35sE0VVRGRm/xQUCoU7Q+I=;
+        b=I2Gi7ULGL+Yqe9n6B2OM2n5pCr55lcCkyLfIvFLB8/je4x6WV35QydYFs3bS5domRT
+         VdRm4w9am4AahmLQfWYwZGDXffGsqtLIuIJfMBeBsMtEP93ozeEc68vfdaa5rtxp5b87
+         tzaMRQZQNFvLPYXsNuDOUORNq/5I9jUMJWLw4QAVSqrOG0wkXNqGewzR9GUPNiEr52uL
+         P4+khp2yCVCDlP3z8CrIuW61nPbu3DXWgKXycUX3qzCsA0HP9FWdEaAZw5NmBTLB3g1P
+         WowVlxs76Py30RDaJwLDH+Knxls5obAaKZvNvnSTMuf4lGm3owO3+UP4GMHrVD8Lzdt5
+         gc+w==
+X-Gm-Message-State: AOAM532DWj9nsh9rcWYChKhm14JhrUfejCQXv5n5E6y4Zsldhryt1bzB
+        7wfuBVDhDCPJJfePaWBYWd4LtggkGBHKw1kEtrE=
+X-Google-Smtp-Source: ABdhPJwyCYMmIAjugG5yxEXa/G1YnAmw1oic1Q+6Ao5fsAEkBPRsoZwUHTMqK6BaUpXFa+7WETHfauqx799hIwZRo5U=
+X-Received: by 2002:a62:3004:0:b029:156:47d1:4072 with SMTP id
+ w4-20020a6230040000b029015647d14072mr11089372pfw.63.1604093807278; Fri, 30
+ Oct 2020 14:36:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604093526; bh=1mc0Fp4jVz+8KrtVi+SMgOqlryl8D8Pz0DF+cX1srFU=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=h9Q18+++j1c82wPbP4bAgxjzYKFU7mKQKk5m0R+97ejbiXRTGHWognE4h+fIqWiop
-         q+cNY9rjhmWCDF1QDb2xQlA+h6OK614RrVCRbCmB3B1+NMhHyw+RLHI5k3hPazXnWV
-         GVtqKHQ0hZsTKenmuLL5Ltj/oRehogrzBqW1o9flywivslmapS1LBuMVBFGVGrZUI5
-         NdB0snjcGT3NNPJp+Davt34STjn8pdV9qrFhEACieCY5s6icuitgNJoCQ3ieuZFgVk
-         S9aFdPZZxDhQAde34id279AmytC4OCNp+cpZ9iKUtBkvXkUSb7HnZqGlxXtYe393Py
-         Ni21eK92eNLhA==
+References: <20201030022839.438135-1-xie.he.0141@gmail.com>
+ <20201030022839.438135-4-xie.he.0141@gmail.com> <CA+FuTSe4yGowGs2ST5bDYZpZ-seFCziOmA8dsMMwAukJMcRuQw@mail.gmail.com>
+ <CAJht_EOCba57aFarDYWU=Mhzn+k1ABn8HwgYt=Oq+kXijQPGvA@mail.gmail.com> <CAF=yD-+fQMZxSWT-_XLvdO9bQA_8xTMry49WA-ZsrcOQcz6H2A@mail.gmail.com>
+In-Reply-To: <CAF=yD-+fQMZxSWT-_XLvdO9bQA_8xTMry49WA-ZsrcOQcz6H2A@mail.gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Fri, 30 Oct 2020 14:36:37 -0700
+Message-ID: <CAJht_EP60zsbrf9jR8PG6q-xU98eUjpPf4_vysB1uA8hmnBq-w@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 3/5] net: hdlc_fr: Improve the initial checks
+ when we receive an skb
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/20 7:46 AM, Jason Gunthorpe wrote:
-> The next patch in this series makes the lockless flow a little more
-> complex, so move the entire block into a new function and remove a level
-> of indention. Tidy a bit of cruft:
-> 
->   - addr is always the same as start, so use start
-> 
->   - Use the modern check_add_overflow() for computing end = start + len
-> 
->   - nr_pinned/pages << PAGE_SHIFT needs the LHS to be unsigned long to
->     avoid shift overflow, make the variables unsigned long to avoid coding
->     casts in both places. nr_pinned was missing its cast
-> 
->   - The handling of ret and nr_pinned can be streamlined a bit
-> 
-> No functional change.
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->   mm/gup.c | 99 ++++++++++++++++++++++++++++++--------------------------
->   1 file changed, 54 insertions(+), 45 deletions(-)
+On Fri, Oct 30, 2020 at 2:20 PM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> Thanks for that context. If it's not captured in the code, it would be
+> great to include in the commit message.
 
-Everything still looks correct.
+OK. I'll update the commit message.
 
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> From a quick scan, RFC 2427 does not appear to actually define the
+> Q.922 address. For that I ended up reading ITU-T doc "Q.922 : ISDN
+> data link layer specification for frame mode bearer services", section
+> 3.2.
 
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
-
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 102877ed77a4b4..150cc962c99201 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -2671,13 +2671,43 @@ static int __gup_longterm_unlocked(unsigned long start, int nr_pages,
->   	return ret;
->   }
->   
-> -static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
-> +static unsigned long lockless_pages_from_mm(unsigned long start,
-> +					    unsigned long end,
-> +					    unsigned int gup_flags,
-> +					    struct page **pages)
-> +{
-> +	unsigned long flags;
-> +	int nr_pinned = 0;
-> +
-> +	if (!IS_ENABLED(CONFIG_HAVE_FAST_GUP) ||
-> +	    !gup_fast_permitted(start, end))
-> +		return 0;
-> +
-> +	/*
-> +	 * Disable interrupts. The nested form is used, in order to allow full,
-> +	 * general purpose use of this routine.
-> +	 *
-> +	 * With interrupts disabled, we block page table pages from being freed
-> +	 * from under us. See struct mmu_table_batch comments in
-> +	 * include/asm-generic/tlb.h for more details.
-> +	 *
-> +	 * We do not adopt an rcu_read_lock() here as we also want to block IPIs
-> +	 * that come from THPs splitting.
-> +	 */
-> +	local_irq_save(flags);
-> +	gup_pgd_range(start, end, gup_flags, pages, &nr_pinned);
-> +	local_irq_restore(flags);
-> +	return nr_pinned;
-> +}
-> +
-> +static int internal_get_user_pages_fast(unsigned long start,
-> +					unsigned long nr_pages,
->   					unsigned int gup_flags,
->   					struct page **pages)
->   {
-> -	unsigned long addr, len, end;
-> -	unsigned long flags;
-> -	int nr_pinned = 0, ret = 0;
-> +	unsigned long len, end;
-> +	unsigned long nr_pinned;
-> +	int ret;
->   
->   	if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM |
->   				       FOLL_FORCE | FOLL_PIN | FOLL_GET |
-> @@ -2691,54 +2721,33 @@ static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
->   		might_lock_read(&current->mm->mmap_lock);
->   
->   	start = untagged_addr(start) & PAGE_MASK;
-> -	addr = start;
-> -	len = (unsigned long) nr_pages << PAGE_SHIFT;
-> -	end = start + len;
-> -
-> -	if (end <= start)
-> +	len = nr_pages << PAGE_SHIFT;
-> +	if (check_add_overflow(start, len, &end))
->   		return 0;
->   	if (unlikely(!access_ok((void __user *)start, len)))
->   		return -EFAULT;
->   
-> -	/*
-> -	 * Disable interrupts. The nested form is used, in order to allow
-> -	 * full, general purpose use of this routine.
-> -	 *
-> -	 * With interrupts disabled, we block page table pages from being
-> -	 * freed from under us. See struct mmu_table_batch comments in
-> -	 * include/asm-generic/tlb.h for more details.
-> -	 *
-> -	 * We do not adopt an rcu_read_lock(.) here as we also want to
-> -	 * block IPIs that come from THPs splitting.
-> -	 */
-> -	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP) && gup_fast_permitted(start, end)) {
-> -		unsigned long fast_flags = gup_flags;
-> -
-> -		local_irq_save(flags);
-> -		gup_pgd_range(addr, end, fast_flags, pages, &nr_pinned);
-> -		local_irq_restore(flags);
-> -		ret = nr_pinned;
-> -	}
-> +	nr_pinned = lockless_pages_from_mm(start, end, gup_flags, pages);
-> +	if (nr_pinned == nr_pages || gup_flags & FOLL_FAST_ONLY)
-> +		return nr_pinned;
->   
-> -	if (nr_pinned < nr_pages && !(gup_flags & FOLL_FAST_ONLY)) {
-> -		/* Try to get the remaining pages with get_user_pages */
-> -		start += nr_pinned << PAGE_SHIFT;
-> -		pages += nr_pinned;
-> -
-> -		ret = __gup_longterm_unlocked(start, nr_pages - nr_pinned,
-> -					      gup_flags, pages);
-> -
-> -		/* Have to be a bit careful with return values */
-> -		if (nr_pinned > 0) {
-> -			if (ret < 0)
-> -				ret = nr_pinned;
-> -			else
-> -				ret += nr_pinned;
-> -		}
-> +	/* Slow path: try to get the remaining pages with get_user_pages */
-> +	start += nr_pinned << PAGE_SHIFT;
-> +	pages += nr_pinned;
-> +	ret = __gup_longterm_unlocked(start, nr_pages - nr_pinned, gup_flags,
-> +				      pages);
-> +	if (ret < 0) {
-> +		/*
-> +		 * The caller has to unpin the pages we already pinned so
-> +		 * returning -errno is not an option
-> +		 */
-> +		if (nr_pinned)
-> +			return nr_pinned;
-> +		return ret;
->   	}
-> -
-> -	return ret;
-> +	return ret + nr_pinned;
->   }
-> +
->   /**
->    * get_user_pages_fast_only() - pin user pages in memory
->    * @start:      starting user address
-> 
-
+Yeah. Thanks for posting the name of the document. It's good to see
+ITU's documents are published in multiple languages because this feels
+more international :)
