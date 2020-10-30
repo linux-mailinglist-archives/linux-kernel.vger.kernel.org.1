@@ -2,317 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F632A0C9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F252A0CA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgJ3Rmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 13:42:47 -0400
-Received: from mga04.intel.com ([192.55.52.120]:55971 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725844AbgJ3Rmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 13:42:47 -0400
-IronPort-SDR: 8IHfPTwlT72uQGQDlkg8kWR+RQAAD4SSP64F38xgyxotVkDxHIHXr98yqfvvMA/uM8ZmKH3Vuf
- t66+xtxsyv+w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="166057060"
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="166057060"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 10:42:42 -0700
-IronPort-SDR: u0VlTcOCWik0vZQo+TUUWNyFbz904SGSGwgQ7zW6+hUGJedWePSms1/vxj414WiHgmu0fXoOy2
- yfm4rHDjQjlg==
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="469590759"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 10:42:38 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 270E120736; Fri, 30 Oct 2020 19:42:36 +0200 (EET)
-Date:   Fri, 30 Oct 2020 19:42:36 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Hugues FRUCHET <hugues.fruchet@st.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Alain VOLMAT <alain.volmat@st.com>,
-        Yannick FERTRE <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Subject: Re: [PATCH v4 2/2] media: dt-bindings: media: st,stm32-dcmi: Add
- support of BT656
-Message-ID: <20201030174236.GV26150@paasikivi.fi.intel.com>
-References: <1603188889-23664-1-git-send-email-hugues.fruchet@st.com>
- <1603188889-23664-3-git-send-email-hugues.fruchet@st.com>
- <20201021130033.GI2703@paasikivi.fi.intel.com>
- <657634eb-690a-53a6-2ac1-de3c06a1cec4@st.com>
- <20201021214058.GJ2703@paasikivi.fi.intel.com>
- <327ae9d5-8683-488f-7970-4983e2fec51d@st.com>
- <20201026141714.GA83693@bogus>
+        id S1726991AbgJ3Rmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 13:42:53 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18876 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726873AbgJ3Rmv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 13:42:51 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09UHWrvS005795;
+        Fri, 30 Oct 2020 13:42:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=PzfPzrlZS4/NE7RAe34/AFVliQy6XVFJveRmvBjyQ8o=;
+ b=kMDZAtH8NCWrGs9qG/6Rvzh3KlP+yd6dqWIFOLVJR9x5bKK1pfvhaL0kxeScBZTjB4YV
+ kUTZi8ZB5tkWo59xBMVOapjMCIVn9Yzdk3wpHUr4EPvw5engqS43df4939KYYHxaCdeJ
+ FOcn+TmSAvC82vyY3itFMbUsWQCPAoNLW2VyntFq4n42WOiB/cDUVhlJL50l1yGbVQqR
+ F0RvBmxhhvcD4V5EtmAXudqa1nojmz92/SsMD81cvgll/yYKenrurR9KXit50CV/Bznc
+ 250q/ug3/WD1pI5+vvUxd3XtC8n7shSfHQ53l1ghlJvK41NCRiQrJQ5Tn8nB1ZY3Wrky 2A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34gp17jpnh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 13:42:51 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09UHZO0x020137;
+        Fri, 30 Oct 2020 13:42:50 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34gp17jpmp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 13:42:50 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09UHbtFq032658;
+        Fri, 30 Oct 2020 17:42:48 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 34f7s3s8xt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 17:42:48 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09UHgjFI30671170
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Oct 2020 17:42:45 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 43F814C04A;
+        Fri, 30 Oct 2020 17:42:45 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7FA6C4C044;
+        Fri, 30 Oct 2020 17:42:44 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.145.172.93])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 30 Oct 2020 17:42:44 +0000 (GMT)
+Date:   Fri, 30 Oct 2020 18:42:42 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v11 01/14] s390/vfio-ap: No need to disable IRQ after
+ queue reset
+Message-ID: <20201030184242.3bceee09.pasic@linux.ibm.com>
+In-Reply-To: <7a2c5930-9c37-8763-7e5d-c08a3638e6a1@linux.ibm.com>
+References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
+        <20201022171209.19494-2-akrowiak@linux.ibm.com>
+        <20201027074846.30ee0ddc.pasic@linux.ibm.com>
+        <7a2c5930-9c37-8763-7e5d-c08a3638e6a1@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026141714.GA83693@bogus>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-30_08:2020-10-30,2020-10-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0
+ adultscore=0 phishscore=0 priorityscore=1501 suspectscore=2 clxscore=1015
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010300131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Thu, 29 Oct 2020 19:29:35 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-On Mon, Oct 26, 2020 at 09:17:14AM -0500, Rob Herring wrote:
-> On Thu, Oct 22, 2020 at 02:56:17PM +0000, Hugues FRUCHET wrote:
-> > Hi Sakari,
-> > 
-> > + Jacopo for his work on ov772x binding related to BT656
-> > 
-> > On 10/21/20 11:40 PM, Sakari Ailus wrote:
-> > > Hi Hugues,
-> > > 
-> > > On Wed, Oct 21, 2020 at 02:24:08PM +0000, Hugues FRUCHET wrote:
-> > >> Hi Sakari,
-> > >>
-> > >> On 10/21/20 3:00 PM, Sakari Ailus wrote:
-> > >>> Hi Hugues,
-> > >>>
-> > >>> On Tue, Oct 20, 2020 at 12:14:49PM +0200, Hugues Fruchet wrote:
-> > >>>> Add support of BT656 parallel bus mode in DCMI.
-> > >>>> This mode is enabled when hsync-active & vsync-active
-> > >>>> fields are not specified.
-> > >>>>
-> > >>>> Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
-> > >>>> ---
-> > >>>>    .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 30 ++++++++++++++++++++++
-> > >>>>    1 file changed, 30 insertions(+)
-> > >>>>
-> > >>>> diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-> > >>>> index 3fe778c..1ee521a 100644
-> > >>>> --- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-> > >>>> +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-> > >>>> @@ -44,6 +44,36 @@ properties:
-> > >>>>          bindings defined in
-> > >>>>          Documentation/devicetree/bindings/media/video-interfaces.txt.
-> > >>>>    
-> > >>>> +    properties:
-> > >>>> +      endpoint:
-> > >>>> +        type: object
-> > >>>> +
-> > >>>> +        properties:
-> > >>>> +          bus-width: true
-> > >>>> +
-> > >>>> +          hsync-active:
-> > >>>> +            description:
-> > >>>> +              If both HSYNC and VSYNC polarities are not specified, BT656
-> > >>>> +              embedded synchronization is selected.
-> > >>>> +            default: 0
-> > >>>> +
-> > >>>> +          vsync-active:
-> > >>>> +            description:
-> > >>>> +              If both HSYNC and VSYNC polarities are not specified, BT656
-> > >>>> +              embedded synchronization is selected.
-> > >>>> +            default: 0
-> > >>>
-> > >>> Should I understand this as if the polarities were not specified, BT.656
-> > >>> will be used?
-> > >>
-> > >> Yes, this is what is documented in video-interfaces.txt:
-> > >> "
-> > >>     Note, that if HSYNC and VSYNC polarities are not specified, embedded
-> > >>     synchronization may be required, where supported.
-> > >> "
-> > >> and
-> > >> "
-> > >> 				/* If hsync-active/vsync-active are missing,
-> > >> 				   embedded BT.656 sync is used */
-> > >> 				hsync-active = <0>;	/* Active low */
-> > >> 				vsync-active = <0>;	/* Active low */
-> > >> "
-> > >> and I found also this in
-> > >> Documentation/devicetree/bindings/media/renesas,vin.yaml
-> > >> "
-> > >>             hsync-active:
-> > >>               description:
-> > >>                 If both HSYNC and VSYNC polarities are not specified,
-> > >> embedded
-> > >>                 synchronization is selected.
-> > >>               default: 1
-> > >>
-> > >>             vsync-active:
-> > >>               description:
-> > >>                 If both HSYNC and VSYNC polarities are not specified,
-> > >> embedded
-> > >>                 synchronization is selected.
-> > >>               default: 1
-> > > 
-> > > Having the defaults leads to somewhat weird behaviour: specifying the
-> > > default value on either property changes the bus type.
-> > > 
-> > >> "
-> > >>
-> > >> In the other hand I've found few occurences of "bus-type"
-> > >> (marvell,mmp2-ccic.yaml), it is why I asked you if "bus-type" is the new
-> > >> way to go versus previous way to signal BT656 (without hsync/vsync) ?
-> > >> As explained previously, I prefer this last way for backward compatibility.
-> > > 
-> > > If you have a default for bus-type (BT.601), this won't be a problem.
-> > > 
-> > > The old DT bindings were somewhat, well, opportunistic. The v4l2-of
-> > > framework-let did its best and sometimes it worked. The behaviour is still
-> > > supported but not encouraged in new bindings.
-> > > 
-> > 
-> > OK, so let's go for the new way.
-> > I've found an interesting patch from Jacopo that is of great help:
-> > https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20200910162055.614089-4-jacopo+renesas@jmondi.org/
-
-I wonder if Jacopo tested it. The idea seems interesting nonetheless.
-
-> > 
-> > Here is a draft proposal before I push a new version, please comment:
-> > 
-> >          properties:
-> >            bus-type:
-> >              enum: [5, 6]
-> >              default: 5
-> > 
-> >            bus-width:
-> >              enum: [8, 10, 12, 14]
-> >              default: 8
-> > 
-> >            hsync-active:
-> >              enum: [0, 1]
+> >> @@ -1177,7 +1166,10 @@ static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
+> >>   			 */
+> >>   			if (ret)
+> >>   				rc = ret;
+> >> -			vfio_ap_irq_disable_apqn(AP_MKQID(apid, apqi));
+> >> +			q = vfio_ap_get_queue(matrix_mdev,
+> >> +					      AP_MKQID(apid, apqi));
+> >> +			if (q)
+> >> +				vfio_ap_free_aqic_resources(q);  
+> > Is it safe to do vfio_ap_free_aqic_resources() at this point? I don't
+> > think so. I mean does the current code (and vfio_ap_mdev_reset_queue()
+> > in particular guarantee that the reset is actually done when we arrive
+> > here)? BTW, I think we have a similar problem with the current code as
+> > well.  
 > 
-> For common properties, you can assume there's a common schema. As 0 and 
-> 1 are the only possible values, you don't need to define them here 
-> unless only a subset is valid for this device.
-> 
-> >              default: 0
-> > 
-> >            vsync-active:
-> >              enum: [0, 1]
-> >              default: 0
-> > 
-> >            pclk-sample:
-> >              enum: [0, 1]
-> >              default: 0
-> > 
-> >            remote-endpoint: true
-> > 
-> >          allOf:
-> >            - if:
-> >                properties:
-> >                  bus-type:
-> >                    const: 6
-> 
-> To fix the error, you need:
-> 
-> required:
->   - bus-type
-> 
-> The problem is the above schema is also true if the property 
-> is not present. 
+> If the return code from the vfio_ap_mdev_reset_queue() function
+> is zero, then yes, we are guaranteed the reset was done and the
+> queue is empty.
 
-Hmm. The idea was that we could keep this consistent with old bindings that
-only documented parallel mode, and thus didn't need bus-type. This is
-actually quite common --- adding support for something that wasn't known or
-cared for during the original review.
+I've read up on this and I disagree. We should discuss this offline.
 
-I guess this could be done in the driver, too, adding a comment that the
-bindings earlier did not require it.
-
+>  The function returns a non-zero return code if
+> the reset fails or the queue the reset did not complete within a given
+> amount of time, so maybe we shouldn't free AQIC resources when
+> we get a non-zero return code from the reset function?
 > 
-> >              then:
-> >                properties:
-> >                  hsync-active: false
-> >                  vsync-active: false
-> >                  bus-width:
-> >                    enum: [8]
-> > 
-> >          required:
-> >            - remote-endpoint
-> > 
-> >          unevaluatedProperties: false
-> > 
-> > 
-> > Unfortunately, the "default: 5" for bus-type is not working !!
-> > If we don't specify "bus-type" in example, dt_binding_check is failing 
-> > as if default was 6, it's hardly understandable (see below) !
-> >          port {
-> >               dcmi_0: endpoint {
-> >                     remote-endpoint = <&ov5640_0>;
-> >                     bus-width = <10>;
-> >                     hsync-active = <0>;
-> >                     vsync-active = <0>;
-> >                     pclk-sample = <1>;
-> >               };
-> > => this should be OK but error claimed:
-> >    DTC 
-> > Documentation/devicetree/bindings/media/st,stm32-dcmi.example.dt.yaml
-> >    CHECK 
-> > Documentation/devicetree/bindings/media/st,stm32-dcmi.example.dt.yaml
-> > Documentation/devicetree/bindings/media/st,stm32-dcmi.example.dt.yaml: 
-> > dcmi@4c006000: port:endpoint:vsync-active: False schema does not allow [[0]]
-> > dcmi@4c006000: port:endpoint:hsync-active: False schema does not allow [[0]]
-> > dcmi@4c006000: port:endpoint:bus-width:0:0: 10 is not one of [8]
-> > 	From schema: Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-> > 
-> > => if "bus-type" is explicitly set to 5, all is fine (see below) !
-> >          port {
-> >               dcmi_0: endpoint {
-> >                     remote-endpoint = <&ov5640_0>;
-> >                     bus-type = <5>;
-> >                     bus-width = <10>;
-> >                     hsync-active = <0>;
-> >                     vsync-active = <0>;
-> >                     pclk-sample = <1>;
-> >               };
-> >          };
-> > 
-> >   DTC 
-> > Documentation/devicetree/bindings/media/st,stm32-dcmi.example.dt.yaml
-> >    CHECK 
-> > Documentation/devicetree/bindings/media/st,stm32-dcmi.example.dt.yaml
-> > ~/.../media_tree$
-> > 
-> > 
-> > >>
-> > >>
-> > >> The bindings previously documented BT.601 (parallel) only, so
-> > >>> it was somewhat ambigious to begin with. Is there a risk of interpreting
-> > >>> old BT.601 bindings as BT.656?
-> > >> I don't think so.
-> > >>
-> > >> With bus-type property, I believe you could
-> > >>> avoid at least that risk.
-> > >> yes but as explained, I'll prefer not to amend current boards device
-> > >> tree files.
-> > > 
-> > > I don't think it matters from this point of view --- you can have a
-> > > default bus-type.
-> > > 
-> > >>
-> > >>>
-> > >>> Also not specifying at least one of the default values leads to BT.656
-> > >>> without bus-type. That could be addressed by removing the defaults.
-> > >>>
-> > >> I'm new to yaml, I've taken that from renesas,vin.yaml. Should I just
-> > >> drop the "default: 1" lines ?
-> > > 
-> > > That's one option, yes. Then you have to have those for BT.601 and it's no
-> > > longer ambiguous.
-> > > 
-> > 
-> > BR,
-> > Hugues.
 
--- 
-Kind regards,
+If the queue is gone, or broken, it won't produce interrupts or poke the
+notifier bit, and we should clean up the AQIC resources.
 
-Sakari Ailus
+
+> There are three occasions when the vfio_ap_mdev_reset_queues()
+> is called:
+> 1. When the VFIO_DEVICE_RESET ioctl is invoked from userspace
+>      (i.e., when the guest is started)
+> 2. When the mdev fd is closed (vfio_ap_mdev_release())
+> 3. When the mdev is removed (vfio_ap_mdev_remove())
+> 
+> The IRQ resources are initialized when the PQAP(AQIC)
+> is intercepted to enable interrupts. This would occur after
+> the guest boots and the AP bus initializes. So, 1 would
+> presumably occur before that happens. I couldn't find
+> anywhere in the AP bus or zcrypt code where a PQAP(AQIC)
+> is executed to disable interrupts, so my assumption is
+> that IRQ disablement is accomplished by a reset on
+> the guest. I'll have to ask Harald about that. So, 2 would
+> occur when the guest is about to terminate and 3
+> would occur only after the guest is terminated. In any
+> case, it seems that IRQ resources should be cleaned up.
+> Maybe it would be more appropriate to do that in the
+> vfio_ap_mdev_release() and vfio_ap_mdev_remove()
+> functions themselves?
+
+I'm a bit confused. But I think you are wrong. What happens when the
+guest reIPLs? I guess the subsystem reset should also do the
+VFIO_DEVICE_RESET ioctl, and that has to reset the queues and disable
+the interrupts. Or?
+
+Regards,
+Halil
+
