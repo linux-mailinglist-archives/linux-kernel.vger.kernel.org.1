@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14CC2A0690
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBA02A0676
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgJ3Nge convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Oct 2020 09:36:34 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:60917 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726181AbgJ3Ngd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 09:36:33 -0400
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id B132B200006;
-        Fri, 30 Oct 2020 13:36:28 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 14:36:27 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Christophe Kerello <christophe.kerello@st.com>
-Cc:     <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH v2] mtd: rawnand: stm32_fmc2: fix broken ECC
-Message-ID: <20201030143627.1a910cbc@xps13>
-In-Reply-To: <1604064819-26861-1-git-send-email-christophe.kerello@st.com>
-References: <1604064819-26861-1-git-send-email-christophe.kerello@st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726633AbgJ3Ncv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 09:32:51 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:35762 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726101AbgJ3Ncu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 09:32:50 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 2A4B24139B;
+        Fri, 30 Oct 2020 13:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-type:content-type:content-transfer-encoding:mime-version
+        :x-mailer:message-id:date:date:subject:subject:from:from
+        :received:received:received; s=mta-01; t=1604064768; x=
+        1605879169; bh=GBnliRSXHzOk8VmuuanSwENRgAzGOqdnK85S/HHZ0Vs=; b=I
+        yQDQsVDIDpAdU2cPG3BjaqX8EcchRfQDL55leS3gLjTqalCekidPdb9+f6u5eR6q
+        CaZk4d4e+icbt5Ivtwhd4LjAQ7aiL3oHNwxOspsLubsMzKzqi3mDw92dddncQHix
+        oGJGT2FbRiCHu7d/PtKNkcRfHF0M156YiOnuLTN/0E=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7tbokTmwqF5K; Fri, 30 Oct 2020 16:32:48 +0300 (MSK)
+Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 8C14A4137C;
+        Fri, 30 Oct 2020 16:32:41 +0300 (MSK)
+Received: from localhost.dev.yadro.com (10.199.0.28) by
+ T-EXCH-04.corp.yadro.com (172.17.100.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.669.32; Fri, 30 Oct 2020 16:32:40 +0300
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>
+CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>
+Subject: [PATCH v3 0/3] add ast2400/2500 phy-handle support
+Date:   Fri, 30 Oct 2020 16:37:04 +0300
+Message-ID: <20201030133707.12099-1-i.mikhaylov@yadro.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.199.0.28]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-04.corp.yadro.com (172.17.100.104)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+This patch introduces ast2400/2500 phy-handle support with an embedded
+MDIO controller. At the current moment it is not possible to set options
+with this format on ast2400/2500:
 
-Christophe Kerello <christophe.kerello@st.com> wrote on Fri, 30 Oct
-2020 14:33:39 +0100:
+mac {
+	phy-handle = <&phy>;
+	phy-mode = "rgmii";
 
-> Since commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user
-> input parsing bits"), ECC are broken in FMC2 driver in case of
-> nand-ecc-step-size and nand-ecc-strength are not set in the device tree.
-> To avoid this issue, the default settings are now set in
-> stm32_fmc2_nfc_attach_chip function.
-> 
-> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-> Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
-> ---
-> Changes in v2:
->  - move default ECC settings in stm32_fmc2_nfc_attach_chip function.
-> 
->  drivers/mtd/nand/raw/stm32_fmc2_nand.c | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> index b31a581..550bda4 100644
-> --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> @@ -1708,6 +1708,13 @@ static int stm32_fmc2_nfc_attach_chip(struct nand_chip *chip)
->  		return -EINVAL;
->  	}
->  
-> +	/* Default ECC settings in case they are not set in the device tree */
-> +	if (!chip->ecc.size)
-> +		chip->ecc.size = FMC2_ECC_STEP_SIZE;
-> +
-> +	if (!chip->ecc.strength)
-> +		chip->ecc.strength = FMC2_ECC_BCH8;
-> +
->  	ret = nand_ecc_choose_conf(chip, &stm32_fmc2_nfc_ecc_caps,
->  				   mtd->oobsize - FMC2_BBM_LEN);
->  	if (ret) {
-> @@ -1727,8 +1734,7 @@ static int stm32_fmc2_nfc_attach_chip(struct nand_chip *chip)
->  
->  	mtd_set_ooblayout(mtd, &stm32_fmc2_nfc_ooblayout_ops);
->  
-> -	if (chip->options & NAND_BUSWIDTH_16)
-> -		stm32_fmc2_nfc_set_buswidth_16(nfc, true);
-> +	stm32_fmc2_nfc_setup(chip);
->  
->  	return 0;
->  }
-> @@ -1952,11 +1958,6 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
->  	chip->options |= NAND_BUSWIDTH_AUTO | NAND_NO_SUBPAGE_WRITE |
->  			 NAND_USES_DMA;
->  
-> -	/* Default ECC settings */
-> -	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
-> -	chip->ecc.size = FMC2_ECC_STEP_SIZE;
-> -	chip->ecc.strength = FMC2_ECC_BCH8;
-> -
->  	/* Scan to find existence of the device */
->  	ret = nand_scan(chip, nand->ncs);
->  	if (ret)
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
 
-This overall looks very good to me, thanks for this update!
+		phy: ethernet-phy@0 {
+			compatible = "ethernet-phy-idxxxx.yyyy";
+			reg = <0>;
+		};
+	};
+};
 
-Cheers,
-Miquèl
+The patch fixes it and gets possible PHYs and register them with
+of_mdiobus_register.
+
+Changes from v3:
+   1. add dt-bindings description of MDIO node and phy-handle option
+      with example.
+
+Changes from v2:
+   1. change manual phy interface type check on phy_interface_mode_is_rgmii
+      function.
+   2. add err_phy_connect label.
+   3. split ftgmac100_destroy_mdio into ftgmac100_phy_disconnect and
+      ftgmac100_destroy_mdio.
+   4. remove unneeded mdio_np checks.
+
+Changes from v1:
+   1. split one patch into two.
+
+Ivan Mikhaylov (3):
+  net: ftgmac100: move phy connect out from ftgmac100_setup_mdio
+  net: ftgmac100: add handling of mdio/phy nodes for ast2400/2500
+  dt-bindings: net: ftgmac100: describe phy-handle and MDIO
+
+ .../devicetree/bindings/net/ftgmac100.txt     |  25 ++++
+ drivers/net/ethernet/faraday/ftgmac100.c      | 122 ++++++++++--------
+ 2 files changed, 96 insertions(+), 51 deletions(-)
+
+-- 
+2.21.1
+
