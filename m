@@ -2,200 +2,488 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23B429F981
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 01:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 661FC29F983
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 01:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726029AbgJ3ALP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 20:11:15 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:13920 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725926AbgJ3ALO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 20:11:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604016673; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=XtLO8pM5RDeX7lY1ebLyAmC5q+xYAHLrk21DbMgerCI=; b=Ozte6R1vL9arbd1VishQyMKcL6GB2wRGmumkh9Q1WIXqcB6ScmsToSPnRVhHpgMm8Ip8t/H4
- U/vEoQUpzqMVa2lRYaJYLTQ2TrDxNDliqFsIboPESr4gOgmupmSSsNXorZxK8EAbjsU3NNLX
- Ol9SwTYpOCj1CfbdJYx9/TAbjqo=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f9b5a10fc3d7f56d0a57c95 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 00:10:56
- GMT
-Sender: rishabhb=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 88964C433FE; Fri, 30 Oct 2020 00:10:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4D4F0C433C8;
-        Fri, 30 Oct 2020 00:10:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4D4F0C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rishabhb@codeaurora.org
-From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
-To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org
-Cc:     tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Subject: [PATCH] remoteproc: qcom: Add notification timeouts
-Date:   Thu, 29 Oct 2020 17:10:46 -0700
-Message-Id: <1604016646-28057-1-git-send-email-rishabhb@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1726111AbgJ3ALw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 20:11:52 -0400
+Received: from smtprelay0132.hostedemail.com ([216.40.44.132]:56254 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725846AbgJ3ALw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 20:11:52 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 4AEA618224D75;
+        Fri, 30 Oct 2020 00:11:50 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:1:41:69:355:379:800:960:966:968:973:982:988:989:1042:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1593:1594:1605:1730:1747:1777:1792:2196:2199:2393:2538:2559:2562:2638:2734:2828:2898:2899:2901:3138:3139:3140:3141:3142:3369:3855:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:4385:4605:5007:6117:6119:6742:7875:7903:7904:8603:9010:9036:9592:10004:10848:11026:11232:11473:11658:11914:12043:12291:12296:12297:12438:12555:12679:12683:12760:12986:13439:14394:14659:21063:21067:21080:21433:21451:21627:21772:21939:21987:21990:30012:30054:30067:30070:30079,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: watch11_400bb4e27291
+X-Filterd-Recvd-Size: 14105
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 30 Oct 2020 00:11:47 +0000 (UTC)
+Message-ID: <4945b720d67e9f67b8c8ba02a29c6af1ffa15b08.camel@perches.com>
+Subject: [PATCH] z2ram: MODULE_LICENSE update and neatening
+From:   Joe Perches <joe@perches.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        Hannes Reinecke <hare@suse.de>
+Date:   Thu, 29 Oct 2020 17:11:46 -0700
+In-Reply-To: <20201029145841.144173-18-hch@lst.de>
+References: <20201029145841.144173-1-hch@lst.de>
+         <20201029145841.144173-18-hch@lst.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clients can register their callbacks for power-on/off notifications
-of remote processors. While executing the notifier chain sometimes
-these callbacks may get stuck or take a long time which is not desired.
-To detect such cases this patch introduces a timeout and prints out a
-warning indicating that notifier chain is taking a long time.
-The timeout is set to 20secs by default and can be adjusted.
+Additional style neatenings.
 
-Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Miscellanea:
+
+o Make MODULE_LICENSE match the actual license text
+o Comment neatening
+o alloc failure message removals as there is already a dump_stack()
+o Add pr_fmt() and convert printks to pr_<level>
+o Unindent code blocks by using continue
+o Return early z2open when current_device != 1 and unindent code block
+o Add and remove braces where appropriate
+
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
- drivers/remoteproc/Kconfig       | 16 ++++++++++++++++
- drivers/remoteproc/qcom_common.c | 41 ++++++++++++++++++++++++++++++++--------
- 2 files changed, 49 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index d99548f..e1e623e 100644
---- a/drivers/remoteproc/Kconfig
-+++ b/drivers/remoteproc/Kconfig
-@@ -234,6 +234,22 @@ config QCOM_WCNSS_PIL
- 	  Say y here to support the Peripheral Image Loader for the Qualcomm
- 	  Wireless Connectivity Subsystem.
+Uncompiled/untested.
+
+On top of Christoph's changes.
+This file still does not have an SPDX line.  What should it be?
+Is this still used by anyone?
+
+ drivers/block/z2ram.c | 304 ++++++++++++++++++++++----------------------------
+ 1 file changed, 132 insertions(+), 172 deletions(-)
+
+diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
+index c1d20818e649..4e6c5564f1e8 100644
+--- a/drivers/block/z2ram.c
++++ b/drivers/block/z2ram.c
+@@ -1,30 +1,31 @@
+ /*
+-** z2ram - Amiga pseudo-driver to access 16bit-RAM in ZorroII space
+-**         as a block device, to be used as a RAM disk or swap space
+-** 
+-** Copyright (C) 1994 by Ingo Wilken (Ingo.Wilken@informatik.uni-oldenburg.de)
+-**
+-** ++Geert: support for zorro_unused_z2ram, better range checking
+-** ++roman: translate accesses via an array
+-** ++Milan: support for ChipRAM usage
+-** ++yambo: converted to 2.0 kernel
+-** ++yambo: modularized and support added for 3 minor devices including:
+-**          MAJOR  MINOR  DESCRIPTION
+-**          -----  -----  ----------------------------------------------
+-**          37     0       Use Zorro II and Chip ram
+-**          37     1       Use only Zorro II ram
+-**          37     2       Use only Chip ram
+-**          37     4-7     Use memory list entry 1-4 (first is 0)
+-** ++jskov: support for 1-4th memory list entry.
+-**
+-** Permission to use, copy, modify, and distribute this software and its
+-** documentation for any purpose and without fee is hereby granted, provided
+-** that the above copyright notice appear in all copies and that both that
+-** copyright notice and this permission notice appear in supporting
+-** documentation.  This software is provided "as is" without express or
+-** implied warranty.
+-*/
+-
++ * z2ram - Amiga pseudo-driver to access 16bit-RAM in ZorroII space
++ *         as a block device, to be used as a RAM disk or swap space
++ *
++ * Copyright (C) 1994 by Ingo Wilken (Ingo.Wilken@informatik.uni-oldenburg.de)
++ *
++ * ++Geert: support for zorro_unused_z2ram, better range checking
++ * ++roman: translate accesses via an array
++ * ++Milan: support for ChipRAM usage
++ * ++yambo: converted to 2.0 kernel
++ * ++yambo: modularized and support added for 3 minor devices including:
++ *          MAJOR  MINOR  DESCRIPTION
++ *          -----  -----  ----------------------------------------------
++ *          37     0       Use Zorro II and Chip ram
++ *          37     1       Use only Zorro II ram
++ *          37     2       Use only Chip ram
++ *          37     4-7     Use memory list entry 1-4 (first is 0)
++ * ++jskov: support for 1-4th memory list entry.
++ *
++ * Permission to use, copy, modify, and distribute this software and its
++ * documentation for any purpose and without fee is hereby granted, provided
++ * that the above copyright notice appear in all copies and that both that
++ * copyright notice and this permission notice appear in supporting
++ * documentation.  This software is provided "as is" without express or
++ * implied warranty.
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ #define DEVICE_NAME "Z2RAM"
  
-+config QCOM_NOTIFY_TIMEOUT
-+	int "Default timeout for ssr notifications to complete (in milliseconds)"
-+	depends on QCOM_RPROC_COMMON
-+	default 20000
-+	help
-+	  As part of ssr notification clients can register their callbacks
-+	  to a notifier chain which is invoked whenever the remoteproc
-+	  powers-on/off. This option controls the timeout for ssr notifications
-+	  to complete.
-+	  This is a good to have debug feature as sometimes callbacks
-+	  can get stuck or take a long time. This feature helps in identifying
-+	  such scenarios.
-+
-+	  The default value is kept as 20 secs and should be left as it is
-+	  in most cases.
-+
- config ST_REMOTEPROC
- 	tristate "ST remoteproc support"
- 	depends on ARCH_STI
-diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
-index 085fd73..d72c4f5 100644
---- a/drivers/remoteproc/qcom_common.c
-+++ b/drivers/remoteproc/qcom_common.c
-@@ -29,6 +29,8 @@ struct qcom_ssr_subsystem {
- 	const char *name;
- 	struct srcu_notifier_head notifier_list;
- 	struct list_head list;
-+	struct timer_list notify_timer;
-+	const char *notify_type;
- };
+ #include <linux/major.h>
+@@ -51,7 +52,7 @@
+ #define Z2MINOR_MEMLIST4      (7)
+ #define Z2MINOR_COUNT         (8)	/* Move this down when adding a new minor */
  
- static LIST_HEAD(qcom_ssr_subsystem_list);
-@@ -198,6 +200,14 @@ void qcom_remove_smd_subdev(struct rproc *rproc, struct qcom_rproc_subdev *smd)
- }
- EXPORT_SYMBOL_GPL(qcom_remove_smd_subdev);
+-#define Z2RAM_CHUNK1024       ( Z2RAM_CHUNKSIZE >> 10 )
++#define Z2RAM_CHUNK1024       (Z2RAM_CHUNKSIZE >> 10)
  
-+static void notify_timeout_handler(struct timer_list *t)
-+{
-+	struct qcom_ssr_subsystem *info = from_timer(info, t, notify_timer);
-+
-+	WARN(1, "srcu notifier chain for %s:%s taking too long", info->name,
-+	     info->notify_type);
-+}
-+
- static struct qcom_ssr_subsystem *qcom_ssr_get_subsys(const char *name)
+ static DEFINE_MUTEX(z2ram_mutex);
+ static u_long *z2ram_map = NULL;
+@@ -75,8 +76,7 @@ static blk_status_t z2_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	blk_mq_start_request(req);
+ 
+ 	if (start + len > z2ram_size) {
+-		pr_err(DEVICE_NAME ": bad access: block=%llu, "
+-		       "count=%u\n",
++		pr_err("bad access: block=%llu, count=%u\n",
+ 		       (unsigned long long)blk_rq_pos(req),
+ 		       blk_rq_cur_sectors(req));
+ 		return BLK_STS_IOERR;
+@@ -93,9 +93,9 @@ static blk_status_t z2_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 			size = len;
+ 		addr += z2ram_map[start >> Z2RAM_CHUNKSHIFT];
+ 		if (rq_data_dir(req) == READ)
+-			memcpy(buffer, (char *)addr, size);
++			memcpy(buffer, (void *)addr, size);
+ 		else
+-			memcpy((char *)addr, buffer, size);
++			memcpy((void *)addr, buffer, size);
+ 		start += size;
+ 		len -= size;
+ 	}
+@@ -107,37 +107,29 @@ static blk_status_t z2_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 
+ static void get_z2ram(void)
  {
- 	struct qcom_ssr_subsystem *info;
-@@ -216,6 +226,9 @@ static struct qcom_ssr_subsystem *qcom_ssr_get_subsys(const char *name)
- 	info->name = kstrdup_const(name, GFP_KERNEL);
- 	srcu_init_notifier_head(&info->notifier_list);
++	unsigned long vaddr = (unsigned long)ZTWO_VADDR(Z2RAM_START);
+ 	int i;
  
-+	/* Setup the notification timer */
-+	timer_setup(&info->notify_timer, notify_timeout_handler, 0);
-+
- 	/* Add to global notification list */
- 	list_add_tail(&info->list, &qcom_ssr_subsystem_list);
- 
-@@ -266,6 +279,18 @@ int qcom_unregister_ssr_notifier(void *notify, struct notifier_block *nb)
+ 	for (i = 0; i < Z2RAM_SIZE / Z2RAM_CHUNKSIZE; i++) {
+-		if (test_bit(i, zorro_unused_z2ram)) {
+-			z2_count++;
+-			z2ram_map[z2ram_size++] =
+-			    (unsigned long)ZTWO_VADDR(Z2RAM_START) +
+-			    (i << Z2RAM_CHUNKSHIFT);
+-			clear_bit(i, zorro_unused_z2ram);
+-		}
++		if (!test_and_clear_bit(i, zorro_unused_z2ram))
++			continue;
++		z2_count++;
++		z2ram_map[z2ram_size++] = vaddr + (i << Z2RAM_CHUNKSHIFT);
+ 	}
+-
+-	return;
  }
- EXPORT_SYMBOL_GPL(qcom_unregister_ssr_notifier);
  
-+static inline void notify_ssr_clients(struct qcom_rproc_ssr *ssr,
-+				      enum qcom_ssr_notify_type type,
-+				      struct qcom_ssr_notify_data *data)
-+{
-+	unsigned long timeout;
-+
-+	timeout = jiffies + msecs_to_jiffies(CONFIG_QCOM_NOTIFY_TIMEOUT);
-+	mod_timer(&ssr->info->notify_timer, timeout);
-+	srcu_notifier_call_chain(&ssr->info->notifier_list, type, data);
-+	del_timer_sync(&ssr->info->notify_timer);
-+}
-+
- static int ssr_notify_prepare(struct rproc_subdev *subdev)
+ static void get_chipram(void)
  {
- 	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-@@ -274,8 +299,8 @@ static int ssr_notify_prepare(struct rproc_subdev *subdev)
- 		.crashed = false,
- 	};
+-
+ 	while (amiga_chip_avail() > (Z2RAM_CHUNKSIZE * 4)) {
+ 		chip_count++;
+ 		z2ram_map[z2ram_size] =
+-		    (u_long) amiga_chip_alloc(Z2RAM_CHUNKSIZE, "z2ram");
++		    (u_long)amiga_chip_alloc(Z2RAM_CHUNKSIZE, "z2ram");
  
--	srcu_notifier_call_chain(&ssr->info->notifier_list,
--				 QCOM_SSR_BEFORE_POWERUP, &data);
-+	ssr->info->notify_type = "BEFORE_POWERUP";
-+	notify_ssr_clients(ssr, QCOM_SSR_BEFORE_POWERUP, &data);
+-		if (z2ram_map[z2ram_size] == 0) {
++		if (z2ram_map[z2ram_size] == 0)
+ 			break;
+-		}
+ 
+ 		z2ram_size++;
+ 	}
+-
+-	return;
+ }
+ 
+ static int z2_open(struct block_device *bdev, fmode_t mode)
+@@ -146,146 +138,120 @@ static int z2_open(struct block_device *bdev, fmode_t mode)
+ 	int max_z2_map = (Z2RAM_SIZE / Z2RAM_CHUNKSIZE) * sizeof(z2ram_map[0]);
+ 	int max_chip_map = (amiga_chip_size / Z2RAM_CHUNKSIZE) *
+ 	    sizeof(z2ram_map[0]);
+-	int rc = -ENOMEM;
++	int ret = -ENOMEM;
+ 
+ 	device = MINOR(bdev->bd_dev);
+ 
+ 	mutex_lock(&z2ram_mutex);
+-	if (current_device != -1 && current_device != device) {
+-		rc = -EBUSY;
+-		goto err_out;
++	if (current_device != -1) {
++		ret = (current_device != device) ? -EBUSY : 0;
++		mutex_unlock(&z2ram_mutex);
++		return ret;
+ 	}
+ 
+-	if (current_device == -1) {
+-		z2_count = 0;
+-		chip_count = 0;
+-		list_count = 0;
+-		z2ram_size = 0;
+-
+-		/* Use a specific list entry. */
+-		if (device >= Z2MINOR_MEMLIST1 && device <= Z2MINOR_MEMLIST4) {
+-			int index = device - Z2MINOR_MEMLIST1 + 1;
+-			unsigned long size, paddr, vaddr;
+-
+-			if (index >= m68k_realnum_memory) {
+-				printk(KERN_ERR DEVICE_NAME
+-				       ": no such entry in z2ram_map\n");
+-				goto err_out;
+-			}
++	z2_count = 0;
++	chip_count = 0;
++	list_count = 0;
++	z2ram_size = 0;
+ 
+-			paddr = m68k_memory[index].addr;
+-			size = m68k_memory[index].size & ~(Z2RAM_CHUNKSIZE - 1);
++	/* Use a specific list entry. */
++	if (device >= Z2MINOR_MEMLIST1 && device <= Z2MINOR_MEMLIST4) {
++		int index = device - Z2MINOR_MEMLIST1 + 1;
++		unsigned long size, paddr, vaddr;
++
++		if (index >= m68k_realnum_memory) {
++			pr_err("no such entry in z2ram_map\n");
++			goto err_out;
++		}
++
++		paddr = m68k_memory[index].addr;
++		size = m68k_memory[index].size & ~(Z2RAM_CHUNKSIZE - 1);
+ 
+ #ifdef __powerpc__
+-			/* FIXME: ioremap doesn't build correct memory tables. */
+-			{
+-				vfree(vmalloc(size));
+-			}
++		/* FIXME: ioremap doesn't build correct memory tables. */
++		{
++			vfree(vmalloc(size));
++		}
+ 
+-			vaddr = (unsigned long)ioremap_wt(paddr, size);
++		vaddr = (unsigned long)ioremap_wt(paddr, size);
+ 
+ #else
+-			vaddr =
+-			    (unsigned long)z_remap_nocache_nonser(paddr, size);
++		vaddr = (unsigned long)z_remap_nocache_nonser(paddr, size);
+ #endif
+-			z2ram_map =
+-			    kmalloc_array(size / Z2RAM_CHUNKSIZE,
++		z2ram_map = kmalloc_array(size / Z2RAM_CHUNKSIZE,
+ 					  sizeof(z2ram_map[0]), GFP_KERNEL);
+-			if (z2ram_map == NULL) {
+-				printk(KERN_ERR DEVICE_NAME
+-				       ": cannot get mem for z2ram_map\n");
++		if (!z2ram_map)
++			goto err_out;
++
++		while (size) {
++			z2ram_map[z2ram_size++] = vaddr;
++			size -= Z2RAM_CHUNKSIZE;
++			vaddr += Z2RAM_CHUNKSIZE;
++			list_count++;
++		}
++
++		if (z2ram_size != 0)
++			pr_info("using %iK List Entry %d Memory\n",
++				list_count * Z2RAM_CHUNK1024, index);
++	} else {
++		switch (device) {
++		case Z2MINOR_COMBINED:
++
++			z2ram_map = kmalloc(max_z2_map + max_chip_map,
++					    GFP_KERNEL);
++			if (!z2ram_map)
+ 				goto err_out;
+-			}
+ 
+-			while (size) {
+-				z2ram_map[z2ram_size++] = vaddr;
+-				size -= Z2RAM_CHUNKSIZE;
+-				vaddr += Z2RAM_CHUNKSIZE;
+-				list_count++;
+-			}
++			get_z2ram();
++			get_chipram();
+ 
+ 			if (z2ram_size != 0)
+-				printk(KERN_INFO DEVICE_NAME
+-				       ": using %iK List Entry %d Memory\n",
+-				       list_count * Z2RAM_CHUNK1024, index);
+-		} else
+-			switch (device) {
+-			case Z2MINOR_COMBINED:
+-
+-				z2ram_map =
+-				    kmalloc(max_z2_map + max_chip_map,
+-					    GFP_KERNEL);
+-				if (z2ram_map == NULL) {
+-					printk(KERN_ERR DEVICE_NAME
+-					       ": cannot get mem for z2ram_map\n");
+-					goto err_out;
+-				}
+-
+-				get_z2ram();
+-				get_chipram();
+-
+-				if (z2ram_size != 0)
+-					printk(KERN_INFO DEVICE_NAME
+-					       ": using %iK Zorro II RAM and %iK Chip RAM (Total %dK)\n",
+-					       z2_count * Z2RAM_CHUNK1024,
+-					       chip_count * Z2RAM_CHUNK1024,
+-					       (z2_count +
+-						chip_count) * Z2RAM_CHUNK1024);
+-
+-				break;
+-
+-			case Z2MINOR_Z2ONLY:
+-				z2ram_map = kmalloc(max_z2_map, GFP_KERNEL);
+-				if (z2ram_map == NULL) {
+-					printk(KERN_ERR DEVICE_NAME
+-					       ": cannot get mem for z2ram_map\n");
+-					goto err_out;
+-				}
+-
+-				get_z2ram();
+-
+-				if (z2ram_size != 0)
+-					printk(KERN_INFO DEVICE_NAME
+-					       ": using %iK of Zorro II RAM\n",
+-					       z2_count * Z2RAM_CHUNK1024);
+-
+-				break;
+-
+-			case Z2MINOR_CHIPONLY:
+-				z2ram_map = kmalloc(max_chip_map, GFP_KERNEL);
+-				if (z2ram_map == NULL) {
+-					printk(KERN_ERR DEVICE_NAME
+-					       ": cannot get mem for z2ram_map\n");
+-					goto err_out;
+-				}
+-
+-				get_chipram();
+-
+-				if (z2ram_size != 0)
+-					printk(KERN_INFO DEVICE_NAME
+-					       ": using %iK Chip RAM\n",
+-					       chip_count * Z2RAM_CHUNK1024);
+-
+-				break;
+-
+-			default:
+-				rc = -ENODEV;
++				pr_info("using %iK Zorro II RAM and %iK Chip RAM (Total %dK)\n",
++					z2_count * Z2RAM_CHUNK1024,
++					chip_count * Z2RAM_CHUNK1024,
++					(z2_count + chip_count) * Z2RAM_CHUNK1024);
++
++			break;
++
++		case Z2MINOR_Z2ONLY:
++			z2ram_map = kmalloc(max_z2_map, GFP_KERNEL);
++			if (!z2ram_map)
++				goto err_out;
++
++			get_z2ram();
++
++			if (z2ram_size != 0)
++				pr_info("using %iK of Zorro II RAM\n",
++					z2_count * Z2RAM_CHUNK1024);
++			break;
++
++		case Z2MINOR_CHIPONLY:
++			z2ram_map = kmalloc(max_chip_map, GFP_KERNEL);
++			if (!z2ram_map)
+ 				goto err_out;
+ 
+-				break;
+-			}
++			get_chipram();
+ 
+-		if (z2ram_size == 0) {
+-			printk(KERN_NOTICE DEVICE_NAME
+-			       ": no unused ZII/Chip RAM found\n");
+-			goto err_out_kfree;
++			if (z2ram_size != 0)
++				pr_info("using %iK Chip RAM\n",
++					chip_count * Z2RAM_CHUNK1024);
++			break;
++
++		default:
++			ret = -ENODEV;
++			goto err_out;
+ 		}
++	}
+ 
+-		current_device = device;
+-		z2ram_size <<= Z2RAM_CHUNKSHIFT;
+-		set_capacity(z2ram_gendisk[device], z2ram_size >> 9);
++	if (z2ram_size == 0) {
++		pr_notice("no unused ZII/Chip RAM found\n");
++		goto err_out_kfree;
+ 	}
+ 
++	current_device = device;
++	z2ram_size <<= Z2RAM_CHUNKSHIFT;
++	set_capacity(z2ram_gendisk[device], z2ram_size >> 9);
++
+ 	mutex_unlock(&z2ram_mutex);
  	return 0;
+ 
+@@ -293,7 +259,7 @@ static int z2_open(struct block_device *bdev, fmode_t mode)
+ 	kfree(z2ram_map);
+ err_out:
+ 	mutex_unlock(&z2ram_mutex);
+-	return rc;
++	return ret;
  }
  
-@@ -287,8 +312,8 @@ static int ssr_notify_start(struct rproc_subdev *subdev)
- 		.crashed = false,
- 	};
+ static void z2_release(struct gendisk *disk, fmode_t mode)
+@@ -401,24 +367,18 @@ static void __exit z2_exit(void)
+ 	if (current_device != -1) {
+ 		i = 0;
  
--	srcu_notifier_call_chain(&ssr->info->notifier_list,
--				 QCOM_SSR_AFTER_POWERUP, &data);
-+	ssr->info->notify_type = "AFTER_POWERUP";
-+	notify_ssr_clients(ssr, QCOM_SSR_AFTER_POWERUP, &data);
- 	return 0;
+-		for (j = 0; j < z2_count; j++) {
++		for (j = 0; j < z2_count; j++)
+ 			set_bit(i++, zorro_unused_z2ram);
+-		}
+ 
+ 		for (j = 0; j < chip_count; j++) {
+-			if (z2ram_map[i]) {
++			if (z2ram_map[i])
+ 				amiga_chip_free((void *)z2ram_map[i++]);
+-			}
+ 		}
+ 
+-		if (z2ram_map != NULL) {
+-			kfree(z2ram_map);
+-		}
++		kfree(z2ram_map);
+ 	}
+-
+-	return;
  }
  
-@@ -300,8 +325,8 @@ static void ssr_notify_stop(struct rproc_subdev *subdev, bool crashed)
- 		.crashed = crashed,
- 	};
- 
--	srcu_notifier_call_chain(&ssr->info->notifier_list,
--				 QCOM_SSR_BEFORE_SHUTDOWN, &data);
-+	ssr->info->notify_type = "BEFORE_SHUTDOWN";
-+	notify_ssr_clients(ssr, QCOM_SSR_BEFORE_SHUTDOWN, &data);
- }
- 
- static void ssr_notify_unprepare(struct rproc_subdev *subdev)
-@@ -312,8 +337,8 @@ static void ssr_notify_unprepare(struct rproc_subdev *subdev)
- 		.crashed = false,
- 	};
- 
--	srcu_notifier_call_chain(&ssr->info->notifier_list,
--				 QCOM_SSR_AFTER_SHUTDOWN, &data);
-+	ssr->info->notify_type = "AFTER_SHUTDOWN";
-+	notify_ssr_clients(ssr, QCOM_SSR_AFTER_SHUTDOWN, &data);
- }
- 
- /**
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+ module_init(z2_init);
+ module_exit(z2_exit);
+-MODULE_LICENSE("GPL");
++MODULE_LICENSE("GPL and additional rights");
 
