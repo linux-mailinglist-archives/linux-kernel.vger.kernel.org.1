@@ -2,108 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDFB2A0588
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAEE2A0566
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgJ3Mhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 08:37:43 -0400
-Received: from mgw-01.mpynet.fi ([82.197.21.90]:58598 "EHLO mgw-01.mpynet.fi"
+        id S1726520AbgJ3Max (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 08:30:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725939AbgJ3Mhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:37:43 -0400
-X-Greylist: delayed 991 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Oct 2020 08:37:42 EDT
-Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
-        by mgw-01.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 09UCBMOo060917;
-        Fri, 30 Oct 2020 14:20:42 +0200
-Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
-        by mgw-01.mpynet.fi with ESMTP id 34g4hx0uhv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 30 Oct 2020 14:20:42 +0200
-Received: from [192.168.108.50] (194.100.106.190) by tuxera-exch.ad.tuxera.com
- (10.20.48.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 30 Oct
- 2020 14:20:42 +0200
-Subject: Re: [PATCH 1/4] erofs: fix setting up pcluster for temporary pages
-To:     <linux-erofs@lists.ozlabs.org>, Gao Xiang <hsiangkao@redhat.com>
-CC:     Gao Xiang <hsiangkao@aol.com>, <stable@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20201022145724.27284-1-hsiangkao.ref@aol.com>
- <20201022145724.27284-1-hsiangkao@aol.com>
-From:   Vladimir Zapolskiy <vladimir@tuxera.com>
-Message-ID: <ba952daf-c55d-c251-9dfc-3bf199a2d4ff@tuxera.com>
-Date:   Fri, 30 Oct 2020 14:20:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726259AbgJ3Mao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 08:30:44 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8836320731;
+        Fri, 30 Oct 2020 12:30:42 +0000 (UTC)
+Date:   Fri, 30 Oct 2020 08:30:39 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, nstange@suse.de
+Subject: Re: [PATCH 1/9] ftrace: Move the recursion testing into global
+ headers
+Message-ID: <20201030083039.0c6135ad@oasis.local.home>
+In-Reply-To: <alpine.LSU.2.21.2010301008160.22360@pobox.suse.cz>
+References: <20201028115244.995788961@goodmis.org>
+        <20201028115612.460535535@goodmis.org>
+        <alpine.LSU.2.21.2010301008160.22360@pobox.suse.cz>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201022145724.27284-1-hsiangkao@aol.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [194.100.106.190]
-X-ClientProxiedBy: tuxera-exch.ad.tuxera.com (10.20.48.11) To
- tuxera-exch.ad.tuxera.com (10.20.48.11)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-30_04:2020-10-30,2020-10-30 signatures=0
-X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 spamscore=0 malwarescore=0
- suspectscore=2 mlxscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Gao Xiang,
+On Fri, 30 Oct 2020 10:13:50 +0100 (CET)
+Miroslav Benes <mbenes@suse.cz> wrote:
 
-On 10/22/20 5:57 PM, Gao Xiang via Linux-erofs wrote:
-> From: Gao Xiang <hsiangkao@redhat.com>
+> how does this work in case of NMI? trace_get_context_bit() returns 0 (it 
+> does not change later in the patch set). "start" in 
+> trace_test_and_set_recursion() is 0 zero too as used later in the patch 
+> set by ftrace_test_recursion_trylock(). So trace_test_and_set_recursion() 
+> returns 0. That is perfectly sane, but then...
 > 
-> pcluster should be only set up for all managed pages instead of
-> temporary pages. Since it currently uses page->mapping to identify,
-> the impact is minor for now.
+> > +static __always_inline void trace_clear_recursion(int bit)
+> > +{
+> > +	unsigned int val = current->trace_recursion;
+> > +
+> > +	if (!bit)
+> > +		return;  
 > 
-> Fixes: 5ddcee1f3a1c ("erofs: get rid of __stagingpage_alloc helper")
-> Cc: <stable@vger.kernel.org> # 5.5+
-> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+> ... the bit is not cleared here.
 
-I was looking exactly at this problem recently, my change is one-to-one
-to your fix, thus I can provide a tag:
+Yeah, I found that and fixed it yesterday, which discovered stack
+overflow in perf:
 
-Tested-by: Vladimir Zapolskiy <vladimir@tuxera.com>
+  https://lore.kernel.org/r/20201030002722.766a22df@oasis.local.home
 
+There's another bug that causes a false positive during interrupt
+context transition. I have a fix for that too.
 
-The fixed problem is minor, but the kernel log becomes polluted, if
-a page allocation debug option is enabled:
-
-     % md5sum ~/erofs/testfile
-     BUG: Bad page state in process kworker/u9:0  pfn:687de
-     page:0000000057b8bcb4 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x687de
-     flags: 0x4000000000002000(private)
-     raw: 4000000000002000 dead000000000100 dead000000000122 0000000000000000
-     raw: 0000000000000000 ffff888066758690 00000000ffffffff 0000000000000000
-     page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
-     Modules linked in:
-     CPU: 1 PID: 602 Comm: kworker/u9:0 Not tainted 5.9.1 #2
-     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-     Workqueue: erofs_unzipd z_erofs_decompressqueue_work
-     Call Trace:
-      dump_stack+0x84/0xba
-      bad_page.cold+0xac/0xb1
-      check_free_page_bad+0xb0/0xc0
-      free_pcp_prepare+0x2c8/0x2d0
-      free_unref_page+0x18/0xf0
-      put_pages_list+0x11a/0x120
-      z_erofs_decompressqueue_work+0xc9/0x110
-      ? z_erofs_decompress_pcluster.isra.0+0xf10/0xf10
-      ? read_word_at_a_time+0x12/0x20
-      ? strscpy+0xc7/0x1a0
-      process_one_work+0x30c/0x730
-      worker_thread+0x91/0x640
-      ? __kasan_check_read+0x11/0x20
-      ? rescuer_thread+0x8a0/0x8a0
-      kthread+0x1dd/0x200
-      ? kthread_unpark+0xa0/0xa0
-      ret_from_fork+0x1f/0x30
-     Disabling lock debugging due to kernel taint
-
---
-Best wishes,
-Vladimir
+-- Steve
