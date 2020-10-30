@@ -2,118 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB3729FBF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6250929FBFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 04:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgJ3DDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 23:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbgJ3DDG (ORCPT
+        id S1725963AbgJ3DHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 23:07:11 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7102 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgJ3DHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 23:03:06 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C476FC0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:03:05 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 141so5998932lfn.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 20:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qetmnWNVsQksjakl8dXjUkaIoxiVzA6keFiGM2ap5AY=;
-        b=AybJN8x6VEeLGCBEBx81sKm96EvpYJ8EOMN+ehVaa6kd1osmMtolGYpNiB+P0jXeBh
-         JKcVuff4V9jHq7LjenAGN4DP3DoekAwTcbRvi61IrciA2+MhWuRptX/cfrMWp2rh9BUL
-         WfSbatM3Au8j1fzzyV3HW0euf/Cis4dc9BCinMZ0G63d+e5Ck9hSrP0cmSaexwCaLIK9
-         WfxfJxdjfpqlNROWMWoWk7G1JjCULiMI0/IvyTkN/Ok5//vRUceaGL6seL1jFZ9UpPZ/
-         9JxTapyOGkoyBE2PhKDWHY3u4CBkCKKhDihE7xCjbPZeuq44+LhTw7iHPhvtRuHFZqre
-         rTQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qetmnWNVsQksjakl8dXjUkaIoxiVzA6keFiGM2ap5AY=;
-        b=YdJpofAiXXm7F9K3gJNUc9CWgacf5gLSM531PGCMc26zl+uuA0/VU5KIQGECQ0Shqe
-         praPIEqOIOpufakRzwf8UxUevO3IwD3JKRwQiRt5MCyfZ+AilZhNJN2Hi1kEZWvIV6Gn
-         6g5ao7Cbiz8n9qGb8f7Dv3pZ9Umj2lph/Xo7T/XgsBkHnMxGplJatP0JEd/VpGW+6wyv
-         eh4AXpS1nAcXZx0952h1hnu6tVlUmMoXyAgmkFcW8DPvr/AQXl9VnhX8nR+RB4gmfXud
-         2sNUBFuM1WqEzZzYBbO/DOJI3oBEfzk94LO/z0z4wxBr6hfBv+YFwFfFthw+rAfGBzGf
-         Hebg==
-X-Gm-Message-State: AOAM532jZLa3bZ8HKvB4P7Xc5EJ0IZVEuW0h2v/IwpQcnMTuy101hPyS
-        KppaJT9+ILHLMoMtriPs2asHG/MKbslAqJjMUKT94w==
-X-Google-Smtp-Source: ABdhPJzYTNXH60XmJevS1nU77QTkbnJdxDa2BUkj+JK2GK03XFm5dsruLADHPeQtCXNc8JlilkKNtelCRS8CC6e1sv0=
-X-Received: by 2002:a19:c357:: with SMTP id t84mr39422lff.34.1604026983869;
- Thu, 29 Oct 2020 20:03:03 -0700 (PDT)
+        Thu, 29 Oct 2020 23:07:11 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CMnKT53MrzLnsn;
+        Fri, 30 Oct 2020 11:07:09 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 30 Oct 2020 11:07:01 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: move ioctl interface definitions to separated file
+Date:   Fri, 30 Oct 2020 11:06:56 +0800
+Message-ID: <20201030030656.29098-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20201027200358.557003-1-mic@digikod.net> <20201027200358.557003-2-mic@digikod.net>
- <CAG48ez3CKa12SFHjVUPnYzJm2E7OBWnuh3JzVMrsvqdcMS1A8A@mail.gmail.com> <afa8e978-d22c-f06a-d57b-e0d1a9918062@digikod.net>
-In-Reply-To: <afa8e978-d22c-f06a-d57b-e0d1a9918062@digikod.net>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 30 Oct 2020 04:02:37 +0100
-Message-ID: <CAG48ez0eXxjRJ2S3pbYqEsp8xVCdHQMKrPg9WHPB_Rv_kWC_nA@mail.gmail.com>
-Subject: Re: [PATCH v22 01/12] landlock: Add object management
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 10:30 AM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>=
- wrote:
-> On 29/10/2020 02:05, Jann Horn wrote:
-> > On Tue, Oct 27, 2020 at 9:04 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.n=
-et> wrote:
-> >> A Landlock object enables to identify a kernel object (e.g. an inode).
-> >> A Landlock rule is a set of access rights allowed on an object.  Rules
-> >> are grouped in rulesets that may be tied to a set of processes (i.e.
-> >> subjects) to enforce a scoped access-control (i.e. a domain).
-[...]
-> >> diff --git a/security/landlock/object.c b/security/landlock/object.c
-> > [...]
-> >> +void landlock_put_object(struct landlock_object *const object)
-> >> +{
-> >> +       /*
-> >> +        * The call to @object->underops->release(object) might sleep =
-e.g.,
-> >
-> > s/ e.g.,/, e.g./
->
-> I indeed prefer the comma preceding the "e.g.", but it seems that there
-> is a difference between UK english and US english:
-> https://english.stackexchange.com/questions/16172/should-i-always-use-a-c=
-omma-after-e-g-or-i-e
-> Looking at the kernel documentation makes it clear:
-> $ git grep -F 'e.g. ' | wc -l
-> 1179
-> $ git grep -F 'e.g., ' | wc -l
-> 160
->
-> I'll apply your fix in the whole patch series.
+Like other filesystem does, we introduce a new file f2fs.h in path of
+include/uapi/linux/, and move f2fs-specified ioctl interface definitions
+to that file, after then, in order to use those definitions, userspace
+developer only need to include the new header file rather than
+copy & paste definitions from fs/f2fs/f2fs.h.
 
-Ooh, sorry. I didn't realize that that's valid in UK English...
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ MAINTAINERS                 |  1 +
+ fs/f2fs/f2fs.h              | 79 ----------------------------------
+ fs/f2fs/file.c              |  1 +
+ include/trace/events/f2fs.h |  1 +
+ include/uapi/linux/f2fs.h   | 86 +++++++++++++++++++++++++++++++++++++
+ 5 files changed, 89 insertions(+), 79 deletions(-)
+ create mode 100644 include/uapi/linux/f2fs.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d1d4e49a695a..b79a911f1e32 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6686,6 +6686,7 @@ F:	Documentation/filesystems/f2fs.rst
+ F:	fs/f2fs/
+ F:	include/linux/f2fs_fs.h
+ F:	include/trace/events/f2fs.h
++F:	include/uapi/linux/f2fs.h
+ 
+ F71805F HARDWARE MONITORING DRIVER
+ M:	Jean Delvare <jdelvare@suse.com>
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 4629b5291cb7..c23d60941af7 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -403,85 +403,6 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
+ 	return size <= MAX_SIT_JENTRIES(journal);
+ }
+ 
+-/*
+- * f2fs-specific ioctl commands
+- */
+-#define F2FS_IOCTL_MAGIC		0xf5
+-#define F2FS_IOC_START_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 1)
+-#define F2FS_IOC_COMMIT_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 2)
+-#define F2FS_IOC_START_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 3)
+-#define F2FS_IOC_RELEASE_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 4)
+-#define F2FS_IOC_ABORT_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 5)
+-#define F2FS_IOC_GARBAGE_COLLECT	_IOW(F2FS_IOCTL_MAGIC, 6, __u32)
+-#define F2FS_IOC_WRITE_CHECKPOINT	_IO(F2FS_IOCTL_MAGIC, 7)
+-#define F2FS_IOC_DEFRAGMENT		_IOWR(F2FS_IOCTL_MAGIC, 8,	\
+-						struct f2fs_defragment)
+-#define F2FS_IOC_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
+-						struct f2fs_move_range)
+-#define F2FS_IOC_FLUSH_DEVICE		_IOW(F2FS_IOCTL_MAGIC, 10,	\
+-						struct f2fs_flush_device)
+-#define F2FS_IOC_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,	\
+-						struct f2fs_gc_range)
+-#define F2FS_IOC_GET_FEATURES		_IOR(F2FS_IOCTL_MAGIC, 12, __u32)
+-#define F2FS_IOC_SET_PIN_FILE		_IOW(F2FS_IOCTL_MAGIC, 13, __u32)
+-#define F2FS_IOC_GET_PIN_FILE		_IOR(F2FS_IOCTL_MAGIC, 14, __u32)
+-#define F2FS_IOC_PRECACHE_EXTENTS	_IO(F2FS_IOCTL_MAGIC, 15)
+-#define F2FS_IOC_RESIZE_FS		_IOW(F2FS_IOCTL_MAGIC, 16, __u64)
+-#define F2FS_IOC_GET_COMPRESS_BLOCKS	_IOR(F2FS_IOCTL_MAGIC, 17, __u64)
+-#define F2FS_IOC_RELEASE_COMPRESS_BLOCKS				\
+-					_IOR(F2FS_IOCTL_MAGIC, 18, __u64)
+-#define F2FS_IOC_RESERVE_COMPRESS_BLOCKS				\
+-					_IOR(F2FS_IOCTL_MAGIC, 19, __u64)
+-#define F2FS_IOC_SEC_TRIM_FILE		_IOW(F2FS_IOCTL_MAGIC, 20,	\
+-						struct f2fs_sectrim_range)
+-
+-/*
+- * should be same as XFS_IOC_GOINGDOWN.
+- * Flags for going down operation used by FS_IOC_GOINGDOWN
+- */
+-#define F2FS_IOC_SHUTDOWN	_IOR('X', 125, __u32)	/* Shutdown */
+-#define F2FS_GOING_DOWN_FULLSYNC	0x0	/* going down with full sync */
+-#define F2FS_GOING_DOWN_METASYNC	0x1	/* going down with metadata */
+-#define F2FS_GOING_DOWN_NOSYNC		0x2	/* going down */
+-#define F2FS_GOING_DOWN_METAFLUSH	0x3	/* going down with meta flush */
+-#define F2FS_GOING_DOWN_NEED_FSCK	0x4	/* going down to trigger fsck */
+-
+-/*
+- * Flags used by F2FS_IOC_SEC_TRIM_FILE
+- */
+-#define F2FS_TRIM_FILE_DISCARD		0x1	/* send discard command */
+-#define F2FS_TRIM_FILE_ZEROOUT		0x2	/* zero out */
+-#define F2FS_TRIM_FILE_MASK		0x3
+-
+-struct f2fs_gc_range {
+-	u32 sync;
+-	u64 start;
+-	u64 len;
+-};
+-
+-struct f2fs_defragment {
+-	u64 start;
+-	u64 len;
+-};
+-
+-struct f2fs_move_range {
+-	u32 dst_fd;		/* destination fd */
+-	u64 pos_in;		/* start position in src_fd */
+-	u64 pos_out;		/* start position in dst_fd */
+-	u64 len;		/* size to move */
+-};
+-
+-struct f2fs_flush_device {
+-	u32 dev_num;		/* device number to flush */
+-	u32 segments;		/* # of segments to flush */
+-};
+-
+-struct f2fs_sectrim_range {
+-	u64 start;
+-	u64 len;
+-	u64 flags;
+-};
+-
+ /* for inline stuff */
+ #define DEF_INLINE_RESERVED_SIZE	1
+ static inline int get_extra_isize(struct inode *inode);
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index ee861c6d9ff0..d898f1e2764b 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -31,6 +31,7 @@
+ #include "gc.h"
+ #include "trace.h"
+ #include <trace/events/f2fs.h>
++#include <uapi/linux/f2fs.h>
+ 
+ static vm_fault_t f2fs_filemap_fault(struct vm_fault *vmf)
+ {
+diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
+index f8f1e85ff130..56b113e3cd6a 100644
+--- a/include/trace/events/f2fs.h
++++ b/include/trace/events/f2fs.h
+@@ -6,6 +6,7 @@
+ #define _TRACE_F2FS_H
+ 
+ #include <linux/tracepoint.h>
++#include <uapi/linux/f2fs.h>
+ 
+ #define show_dev(dev)		MAJOR(dev), MINOR(dev)
+ #define show_dev_ino(entry)	show_dev(entry->dev), (unsigned long)entry->ino
+diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
+new file mode 100644
+index 000000000000..27f7477021e0
+--- /dev/null
++++ b/include/uapi/linux/f2fs.h
+@@ -0,0 +1,86 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _UAPI_LINUX_F2FS_H
++#define _UAPI_LINUX_F2FS_H
++
++#include <linux/ioctl.h>
++
++/*
++ * f2fs-specific ioctl commands
++ */
++#define F2FS_IOCTL_MAGIC		0xf5
++#define F2FS_IOC_START_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 1)
++#define F2FS_IOC_COMMIT_ATOMIC_WRITE	_IO(F2FS_IOCTL_MAGIC, 2)
++#define F2FS_IOC_START_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 3)
++#define F2FS_IOC_RELEASE_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 4)
++#define F2FS_IOC_ABORT_VOLATILE_WRITE	_IO(F2FS_IOCTL_MAGIC, 5)
++#define F2FS_IOC_GARBAGE_COLLECT	_IOW(F2FS_IOCTL_MAGIC, 6, __u32)
++#define F2FS_IOC_WRITE_CHECKPOINT	_IO(F2FS_IOCTL_MAGIC, 7)
++#define F2FS_IOC_DEFRAGMENT		_IOWR(F2FS_IOCTL_MAGIC, 8,	\
++						struct f2fs_defragment)
++#define F2FS_IOC_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
++						struct f2fs_move_range)
++#define F2FS_IOC_FLUSH_DEVICE		_IOW(F2FS_IOCTL_MAGIC, 10,	\
++						struct f2fs_flush_device)
++#define F2FS_IOC_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,	\
++						struct f2fs_gc_range)
++#define F2FS_IOC_GET_FEATURES		_IOR(F2FS_IOCTL_MAGIC, 12, __u32)
++#define F2FS_IOC_SET_PIN_FILE		_IOW(F2FS_IOCTL_MAGIC, 13, __u32)
++#define F2FS_IOC_GET_PIN_FILE		_IOR(F2FS_IOCTL_MAGIC, 14, __u32)
++#define F2FS_IOC_PRECACHE_EXTENTS	_IO(F2FS_IOCTL_MAGIC, 15)
++#define F2FS_IOC_RESIZE_FS		_IOW(F2FS_IOCTL_MAGIC, 16, __u64)
++#define F2FS_IOC_GET_COMPRESS_BLOCKS	_IOR(F2FS_IOCTL_MAGIC, 17, __u64)
++#define F2FS_IOC_RELEASE_COMPRESS_BLOCKS				\
++					_IOR(F2FS_IOCTL_MAGIC, 18, __u64)
++#define F2FS_IOC_RESERVE_COMPRESS_BLOCKS				\
++					_IOR(F2FS_IOCTL_MAGIC, 19, __u64)
++#define F2FS_IOC_SEC_TRIM_FILE		_IOW(F2FS_IOCTL_MAGIC, 20,	\
++						struct f2fs_sectrim_range)
++
++/*
++ * should be same as XFS_IOC_GOINGDOWN.
++ * Flags for going down operation used by FS_IOC_GOINGDOWN
++ */
++#define F2FS_IOC_SHUTDOWN	_IOR('X', 125, __u32)	/* Shutdown */
++#define F2FS_GOING_DOWN_FULLSYNC	0x0	/* going down with full sync */
++#define F2FS_GOING_DOWN_METASYNC	0x1	/* going down with metadata */
++#define F2FS_GOING_DOWN_NOSYNC		0x2	/* going down */
++#define F2FS_GOING_DOWN_METAFLUSH	0x3	/* going down with meta flush */
++#define F2FS_GOING_DOWN_NEED_FSCK	0x4	/* going down to trigger fsck */
++
++/*
++ * Flags used by F2FS_IOC_SEC_TRIM_FILE
++ */
++#define F2FS_TRIM_FILE_DISCARD		0x1	/* send discard command */
++#define F2FS_TRIM_FILE_ZEROOUT		0x2	/* zero out */
++#define F2FS_TRIM_FILE_MASK		0x3
++
++struct f2fs_gc_range {
++	u32 sync;
++	u64 start;
++	u64 len;
++};
++
++struct f2fs_defragment {
++	u64 start;
++	u64 len;
++};
++
++struct f2fs_move_range {
++	u32 dst_fd;		/* destination fd */
++	u64 pos_in;		/* start position in src_fd */
++	u64 pos_out;		/* start position in dst_fd */
++	u64 len;		/* size to move */
++};
++
++struct f2fs_flush_device {
++	u32 dev_num;		/* device number to flush */
++	u32 segments;		/* # of segments to flush */
++};
++
++struct f2fs_sectrim_range {
++	u64 start;
++	u64 len;
++	u64 flags;
++};
++
++#endif /* _UAPI_LINUX_F2FS_H */
+-- 
+2.26.2
+
