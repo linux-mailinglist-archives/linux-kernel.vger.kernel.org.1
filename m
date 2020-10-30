@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D9E29FEE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6CF29FEDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgJ3Hm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:42:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51870 "EHLO mail.kernel.org"
+        id S1726452AbgJ3HnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:43:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgJ3HlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726068AbgJ3HlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Oct 2020 03:41:05 -0400
 Received: from mail.kernel.org (ip5f5ad5bb.dynamic.kabel-deutschland.de [95.90.213.187])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ABD0422249;
+        by mail.kernel.org (Postfix) with ESMTPSA id BFECD22255;
         Fri, 30 Oct 2020 07:41:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604043662;
-        bh=RSLlp7NFOho2DOxE67B0Km3fmvoT/Ed43tCyvFwn4sk=;
+        s=default; t=1604043663;
+        bh=xZL+H15izrbGtr5KqY6QX8NVwThRYtTxS7Af3m3hYcE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AnkZ7pNsgqubpz5jGi6zGKZjzVBM2pH6nOtPne5s0/UkGE+Nac6Hx+Yq5BZwpvPr3
-         eJGUE+yMS+QY9BQIEqm7FW1I4FmYMyTsk1EhjWkpZ0JwAFW619B3cWx/vgkPq1hZHn
-         JXRn34/ROsSoa+1MfFnomjg/9zRmpW6EPiBTmSlc=
+        b=CyosOInF3V42KLcajhq/WMYy6wk7LkGZ/SfzxiuJlPfD3ZpQiWxX1K1paLIEN2Lgw
+         KLBEVwhvAjX13vgic7uX2fpRf1a2LFjwJzc1BVwFObl3GNd4lXJiAoCenZEWX7mkb7
+         AHKEdDPNpzcVjqxCf478xzYCnI6bLP/zKdibe1NI=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kYP1w-004Oft-ON; Fri, 30 Oct 2020 08:41:00 +0100
+        id 1kYP1w-004Ofz-Q6; Fri, 30 Oct 2020 08:41:00 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 16/39] docs: kernel_abi.py: Handle with a lazy Sphinx parser
-Date:   Fri, 30 Oct 2020 08:40:35 +0100
-Message-Id: <4659b60795739308e34d2d00c57ee0742a9cd2ab.1604042072.git.mchehab+huawei@kernel.org>
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 17/39] docs: add ABI documentation to the admin-guide book
+Date:   Fri, 30 Oct 2020 08:40:36 +0100
+Message-Id: <5651482b06500e69a1acdf92152f90a203e6521d.1604042072.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1604042072.git.mchehab+huawei@kernel.org>
 References: <cover.1604042072.git.mchehab+huawei@kernel.org>
@@ -43,115 +47,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Sphinx docutils parser is lazy: if the content is bigger than
-a certain number of lines, it silenlty stops parsing it,
-producing an incomplete content. This seems to be worse on newer
-Sphinx versions, like 2.0.
+As we don't want a generic Sphinx extension to execute commands,
+change the one proposed to Markus to call the abi_book.pl
+script.
 
-So, change the logic to parse the contents per input file.
+Use a script to parse the Documentation/ABI directory and output
+it at the admin-guide.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/sphinx/kernel_abi.py | 39 ++++++++++++++++++++----------
- 1 file changed, 26 insertions(+), 13 deletions(-)
+ Documentation/admin-guide/abi-obsolete.rst | 10 ++++++++++
+ Documentation/admin-guide/abi-removed.rst  |  4 ++++
+ Documentation/admin-guide/abi-stable.rst   | 13 +++++++++++++
+ Documentation/admin-guide/abi-testing.rst  | 19 +++++++++++++++++++
+ Documentation/admin-guide/abi.rst          | 11 +++++++++++
+ Documentation/admin-guide/index.rst        |  2 ++
+ Documentation/conf.py                      |  3 ++-
+ 7 files changed, 61 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/admin-guide/abi-obsolete.rst
+ create mode 100644 Documentation/admin-guide/abi-removed.rst
+ create mode 100644 Documentation/admin-guide/abi-stable.rst
+ create mode 100644 Documentation/admin-guide/abi-testing.rst
+ create mode 100644 Documentation/admin-guide/abi.rst
 
-diff --git a/Documentation/sphinx/kernel_abi.py b/Documentation/sphinx/kernel_abi.py
-index 096dec482e96..ce5f3b0ae811 100644
---- a/Documentation/sphinx/kernel_abi.py
-+++ b/Documentation/sphinx/kernel_abi.py
-@@ -37,6 +37,7 @@ import os
- import subprocess
- import sys
- import re
-+import kernellog
- 
- from os import path
- 
-@@ -80,12 +81,6 @@ class KernelCmd(Directive):
-         "debug"     : directives.flag
-     }
- 
--    def warn(self, message, **replace):
--        replace["fname"]   = self.state.document.current_source
--        replace["line_no"] = replace.get("line_no", self.lineno)
--        message = ("%(fname)s:%(line_no)s: [kernel-abi WARN] : " + message) % replace
--        self.state.document.settings.env.app.warn(message, prefix="")
--
-     def run(self):
- 
-         doc = self.state.document
-@@ -111,7 +106,7 @@ class KernelCmd(Directive):
-         shell_env["srctree"] = srctree
- 
-         lines = self.runCmd(cmd, shell=True, cwd=cwd, env=shell_env)
--        nodeList = self.nestedParse(lines, fname)
-+        nodeList = self.nestedParse(lines, self.arguments[0])
-         return nodeList
- 
-     def runCmd(self, cmd, **kwargs):
-@@ -138,9 +133,9 @@ class KernelCmd(Directive):
-                               % (self.name, ErrorString(exc)))
-         return out
- 
--    def nestedParse(self, lines, f):
-+    def nestedParse(self, lines, fname):
-         content = ViewList()
--        node    = nodes.section()
-+        node = nodes.section()
- 
-         if "debug" in self.options:
-             code_block = "\n\n.. code-block:: rst\n    :linenos:\n"
-@@ -150,22 +145,42 @@ class KernelCmd(Directive):
- 
-         line_regex = re.compile("^#define LINENO (\S+)\#([0-9]+)$")
-         ln = 0
-+        n = 0
-+        f = fname
- 
-         for line in lines.split("\n"):
-+            n = n + 1
-             match = line_regex.search(line)
-             if match:
--                f = match.group(1)
-+                new_f = match.group(1)
+diff --git a/Documentation/admin-guide/abi-obsolete.rst b/Documentation/admin-guide/abi-obsolete.rst
+new file mode 100644
+index 000000000000..cda9168445a5
+--- /dev/null
++++ b/Documentation/admin-guide/abi-obsolete.rst
+@@ -0,0 +1,10 @@
++ABI obsolete symbols
++====================
 +
-+                # Sphinx parser is lazy: it stops parsing contents in the
-+                # middle, if it is too big. So, handle it per input file
-+                if new_f != f and content:
-+                    self.do_parse(content, node)
-+                    content = ViewList()
++Documents interfaces that are still remaining in the kernel, but are
++marked to be removed at some later point in time.
 +
-+                f = new_f
++The description of the interface will document the reason why it is
++obsolete and when it can be expected to be removed.
 +
-                 # sphinx counts lines from 0
-                 ln = int(match.group(2)) - 1
-             else:
-                 content.append(line, f, ln)
++.. kernel-abi:: $srctree/Documentation/ABI/obsolete
+diff --git a/Documentation/admin-guide/abi-removed.rst b/Documentation/admin-guide/abi-removed.rst
+new file mode 100644
+index 000000000000..497978fc9632
+--- /dev/null
++++ b/Documentation/admin-guide/abi-removed.rst
+@@ -0,0 +1,4 @@
++ABI removed symbols
++===================
++
++.. kernel-abi:: $srctree/Documentation/ABI/removed
+diff --git a/Documentation/admin-guide/abi-stable.rst b/Documentation/admin-guide/abi-stable.rst
+new file mode 100644
+index 000000000000..7495d7a35048
+--- /dev/null
++++ b/Documentation/admin-guide/abi-stable.rst
+@@ -0,0 +1,13 @@
++ABI stable symbols
++==================
++
++Documents the interfaces that the developer has defined to be stable.
++
++Userspace programs are free to use these interfaces with no
++restrictions, and backward compatibility for them will be guaranteed
++for at least 2 years.
++
++Most interfaces (like syscalls) are expected to never change and always
++be available.
++
++.. kernel-abi:: $srctree/Documentation/ABI/stable
+diff --git a/Documentation/admin-guide/abi-testing.rst b/Documentation/admin-guide/abi-testing.rst
+new file mode 100644
+index 000000000000..5c886fc50b9e
+--- /dev/null
++++ b/Documentation/admin-guide/abi-testing.rst
+@@ -0,0 +1,19 @@
++ABI testing symbols
++===================
++
++Documents interfaces that are felt to be stable,
++as the main development of this interface has been completed.
++
++The interface can be changed to add new features, but the
++current interface will not break by doing this, unless grave
++errors or security problems are found in them.
++
++Userspace programs can start to rely on these interfaces, but they must
++be aware of changes that can occur before these interfaces move to
++be marked stable.
++
++Programs that use these interfaces are strongly encouraged to add their
++name to the description of these interfaces, so that the kernel
++developers can easily notify them if any changes occur.
++
++.. kernel-abi:: $srctree/Documentation/ABI/testing
+diff --git a/Documentation/admin-guide/abi.rst b/Documentation/admin-guide/abi.rst
+new file mode 100644
+index 000000000000..3b9645c77469
+--- /dev/null
++++ b/Documentation/admin-guide/abi.rst
+@@ -0,0 +1,11 @@
++=====================
++Linux ABI description
++=====================
++
++.. toctree::
++   :maxdepth: 1
++
++   abi-stable
++   abi-testing
++   abi-obsolete
++   abi-removed
+diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
+index ed1cf94ea50c..4e0c4ae44acd 100644
+--- a/Documentation/admin-guide/index.rst
++++ b/Documentation/admin-guide/index.rst
+@@ -18,6 +18,8 @@ etc.
+    devices
+    sysctl/index
  
--        buf  = self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter
-+        kernellog.info(self.state.document.settings.env.app, "%s: parsed %i lines" % (fname, n))
++   abi
++
+ This section describes CPU vulnerabilities and their mitigations.
  
-+        if content:
-+            self.do_parse(content, node)
-+
-+        return node.children
-+
-+    def do_parse(self, content, node):
-         if Use_SSI:
-             with switch_source_input(self.state, content):
-                 self.state.nested_parse(content, 0, node, match_titles=1)
-         else:
-+            buf  = self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter
-+
-             self.state.memo.title_styles  = []
-             self.state.memo.section_level = 0
-             self.state.memo.reporter      = AutodocReporter(content, self.state.memo.reporter)
-@@ -173,5 +188,3 @@ class KernelCmd(Directive):
-                 self.state.nested_parse(content, 0, node, match_titles=1)
-             finally:
-                 self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter = buf
--
--        return node.children
+ .. toctree::
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 7ee05fd4cb17..ed2b43ec7754 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -38,7 +38,8 @@ needs_sphinx = '1.3'
+ # ones.
+ extensions = ['kerneldoc', 'rstFlatTable', 'kernel_include',
+               'kfigure', 'sphinx.ext.ifconfig', 'automarkup',
+-              'maintainers_include', 'sphinx.ext.autosectionlabel' ]
++              'maintainers_include', 'sphinx.ext.autosectionlabel',
++              'kernel_abi']
+ 
+ #
+ # cdomain is badly broken in Sphinx 3+.  Leaving it out generates *most*
 -- 
 2.26.2
 
