@@ -2,212 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494452A09D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 126F82A09D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbgJ3P1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726939AbgJ3P1n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:27:43 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003CEC0613CF;
-        Fri, 30 Oct 2020 08:27:42 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 133so5589749pfx.11;
-        Fri, 30 Oct 2020 08:27:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=cerH7A6E9c/e7WcTUbUIVWqeE/Rr/7wvJ+hfwZcTH2M=;
-        b=vU48EE9gtfxsPSE1qCZVWuji8LUolC0C0N3wjAgbFuG2MkTpF0cVc7AtiitxPCETOF
-         1Z+Lt1XUjUPmZS/+LNdgVdDoYSUtbjzVeh1+gydIBgOKfd3ZRmXd3hvDgkOPGNdYl+Mv
-         AlLhs7VlOcwtFohsSCdvOJ+P9S86UV1Ky8my2UhjjCUAp5bdgFMBPLQZ1L4eVUtHSxX3
-         J+2SsbX0u1JHtWO8+jFYaazhzWHO9B1Zl6ogbXwmXATYwmz35VBRwj3j7IlA09DKM795
-         w56PxDOkjqSE8dmYpm27EUSmwUzLh7Dz7/3AABLDxyvfz6mBebUB4gD+b/u3+wPVdLuz
-         fukg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=cerH7A6E9c/e7WcTUbUIVWqeE/Rr/7wvJ+hfwZcTH2M=;
-        b=EopTPaZZmqmhd2g2+YduZ44k3prEkyYph9uKZ36vIBvC1DAdH2eTzZLv9AOGsqk5rP
-         w38F5zhuze25MvUeFrMHo9tcjs2OQsx5FW4gSLXq3WtR3tmaky2OYsDwCVN0zPRJQb+D
-         EwOy+BkT8IVVZmTqC51cCTAXV/1BYzZX5HfNETe9LdDxookeIVZUhVYJAUZRNlawyBWj
-         gkDBPzMMJyWUXBDIbxnh8YTijbb/VYu1mlRwBMhLthkW9sm0Uq7jXky3srMo2df1iKkR
-         9eH5cIyu7tZiuDhoUUgBSLDyGk4TlqS8Txr5tz23OAGChWrclXsI/Fp9ktg6rHqD2Cuo
-         qsiw==
-X-Gm-Message-State: AOAM531Fvrlvv2KAHvt/2045xZVKkj9gZ0Ze3utPeGiUvIp10Xc4IkBQ
-        yGPwz7KEK46zZfFdEEMimOI=
-X-Google-Smtp-Source: ABdhPJwT1P1hFDAuzcrR9sqdQhfD+6b3w88a5fVOPwka4NSUniKB1T7kBqWnKLP7kLK39qyXiDRCeA==
-X-Received: by 2002:a65:6158:: with SMTP id o24mr2757919pgv.120.1604071662384;
-        Fri, 30 Oct 2020 08:27:42 -0700 (PDT)
-Received: from [192.168.1.59] (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
-        by smtp.gmail.com with ESMTPSA id b4sm6404480pfi.208.2020.10.30.08.27.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 08:27:41 -0700 (PDT)
-Message-ID: <8c56efa5420eb4211b1af789ef63931d3504d8e1.camel@gmail.com>
-Subject: Re: [RFC PATCH] mwifiex: pcie: use shutdown_sw()/reinit_sw() on
- suspend/resume
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        id S1727154AbgJ3P2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:28:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45166 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726063AbgJ3P2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:28:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604071690;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zjFVfadmbfOYJYU6bWK4dj3vP5s6atsYIfJPOXVexSk=;
+        b=VNCF2HlnvxvXu6YGxVKdLYaiCA9EP8/jC5gY2SphIZJDNpfuexlyTlU6SVkeZ2MZZ3ke/J
+        3fVOhAdnOfAXFvSbCgKKlKZshsokCu6POHF2Bg2eVXgP7E7H/Wk5T/nE3hMWWRcacfL84L
+        WT3zXOgohdssKttb1tnz9rFwJfpklQI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B6FF3AE2C;
+        Fri, 30 Oct 2020 15:28:10 +0000 (UTC)
+Date:   Fri, 30 Oct 2020 16:28:10 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
-Date:   Sat, 31 Oct 2020 00:27:36 +0900
-In-Reply-To: <20201028142719.18765-1-kitakar@gmail.com>
-References: <20201028142719.18765-1-kitakar@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 
+        John Ogness <john.ogness@linutronix.de>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-embedded@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] init/Kconfig: Increase default log buffer size
+ from 128 KB to 512 KB
+Message-ID: <20201030152810.GA20201@alley>
+References: <20200811092924.6256-1-pmenzel@molgen.mpg.de>
+ <20200811092924.6256-2-pmenzel@molgen.mpg.de>
+ <20200811105352.GG6215@alley>
+ <92a13465-d133-0b39-f64b-7074dbbb3fcc@molgen.mpg.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92a13465-d133-0b39-f64b-7074dbbb3fcc@molgen.mpg.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-28 at 23:27 +0900, Tsuchiya Yuto wrote:
-> On Microsoft Surface devices (PCIe-88W8897), there are issues with S0ix
-> achievement and AP scanning after suspend with the current Host Sleep
-> method.
->
-> When using the Host Sleep method, it prevents the platform to reach S0ix
-> during suspend. Also, sometimes AP scanning won't work, resulting in
-> non-working wifi after suspend.
->
-> To fix such issues, perform shutdown_sw()/reinit_sw() instead of Host
-> Sleep on suspend/resume.
->
-> Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
-> ---
-> As a side effect, this patch disables wakeups (means that Wake-On-WLAN
-> can't be used anymore, if it was working before), and might also reset
-> some internal states.
->
-> Of course it's the best to rather fix Host Sleep itself. But if it's
-> difficult, I'm afraid we have to go this way.
->
-> I reused the contents of suspend()/resume() functions as much as possible,
-> and removed only the parts that are incompatible or redundant with
-> shutdown_sw()/reinit_sw().
->
-> - Removed wait_for_completion() as redundant
->   mwifiex_shutdown_sw() does this.
-> - Removed flush_workqueue() as incompatible
->   Causes kernel crashing.
-> - Removed mwifiex_enable_wake()/mwifiex_disable_wake()
->   as incompatible and redundant because the driver will be shut down
->   instead of entering Host Sleep.
->
-> I'm worried about why flush_workqueue() causes kernel crash with this
-> suspend method. Is it OK to just drop it? At least We Microsoft Surface
-> devices users used this method for about one month and haven't observed
-> any issues.
->
-> Note that suspend() no longer checks if it's already suspended.
-> With the previous Host Sleep method, the check was done by looking at
-> adapter->hs_activated in mwifiex_enable_hs() [sta_ioctl.c], but not
-> MWIFIEX_IS_SUSPENDED. So, what the previous method checked was instead
-> Host Sleep state, not suspend itself.
->
-> Therefore, there is no need to check the suspend state now.
-> Also removed comment for suspend state check at top of suspend()
-> accordingly.
+On Thu 2020-10-29 23:16:01, Paul Menzel wrote:
+> Dear Petr,
+> 
+> 
+> Am 11.08.20 um 12:53 schrieb Petr Mladek:
+> > On Tue 2020-08-11 11:29:24, Paul Menzel wrote:
+> > > Commit f17a32e97e (let LOG_BUF_SHIFT default to 17) from 2008 was the
+> > > last time, the the default log buffer size bump was increased.
+> > > 
+> > > Machines have evolved, and on current hardware, enough memory is
+> > > present, and some devices have over 200 PCI devices, like a two socket
+> > > Skylake-E server, resulting a lot of lines.
+> > > 
+> > > Therefore, increase the default from 128 KB to 512 KB. Anyone, with
+> > > limited memory, can still lower it.
+> > > 
+> > > --- a/init/Kconfig
+> > > +++ b/init/Kconfig
+> > > @@ -681,9 +681,9 @@ config IKHEADERS
+> > >   	  kheaders.ko is built which can be loaded on-demand to get access to headers.
+> > >   config LOG_BUF_SHIFT
+> > > -	int "Kernel log buffer size (16 => 64KB, 17 => 128KB)"
+> > > +	int "Kernel log buffer size (17 => 128KB, 19 => 512KB)"
+> > >   	range 12 25
+> > > -	default 17
+> > > +	default 19
+> > >   	depends on PRINTK
+> > >   	help
+> > >   	  Select the minimal kernel log buffer size as a power of 2.
+> > 
+> > Honestly, I do not have experience with changing the defaults. People
+> > hacking small devices might complain. Well, this can be solved
+> > by increasing the default only when BASE_FULL is set.
+> > 
+> > I am personally fine with increasing the default when BASE_FULL
+> > is set. The amount of messages is growing over time because of
+> > increasing complexity of both the hardware and software.
+> > Fortunately also the amount of available memory is growing.
+> > 
+> > Well, this should get discussed in wider audience. Adding some
+> > people into CC.
+> > 
+> > JFYI, it started with report of lost messages, see
+> > https://lore.kernel.org/lkml/264bfbae-122d-9c41-59ea-6413f91bd866@molgen.mpg.de/
+> 
+> As there was no objection, is it possible to apply the two patches, and
+> maybe even get them into Linux 5.10?
 
-This patch depends on the following mwifiex_shutdown_sw() fix I sent
-separately.
+Thanks for reminding me. I am sorry but it is too late for
+5.10. Such a change should be added during the merge window.
 
-[PATCH 1/2] mwifiex: fix mwifiex_shutdown_sw() causing sw reset failure
-https://lore.kernel.org/linux-wireless/20201028142110.18144-2-kitakar@gmail.com/
+Well, the size of the ring buffer has effectively increased in 5.10.
+The lockless implementation stores strings and metadata separately.
+It basically doubled the memory needs and people around embedded
+devices were not happy, see
+https://lore.kernel.org/r/CAMuHMdXHFFUrjRMEHnXXU8QQkgD9x_S6R3N0Q7Q4H2RSfy2GGw@mail.gmail.com
 
->  drivers/net/wireless/marvell/mwifiex/pcie.c | 29 +++++++--------------
->  1 file changed, 10 insertions(+), 19 deletions(-)
->
-> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
-> index 6a10ff0377a24..3b5c614def2f5 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/pcie.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
-> @@ -293,8 +293,7 @@ static bool mwifiex_pcie_ok_to_access_hw(struct mwifiex_adapter *adapter)
->   * registered functions must have drivers with suspend and resume
->   * methods. Failing that the kernel simply removes the whole card.
->   *
-> - * If already not suspended, this function allocates and sends a host
-> - * sleep activate request to the firmware and turns off the traffic.
-> + * This function shuts down the adapter.
->   */
->  static int mwifiex_pcie_suspend(struct device *dev)
->  {
-> @@ -302,31 +301,21 @@ static int mwifiex_pcie_suspend(struct device *dev)
->  	struct pcie_service_card *card = dev_get_drvdata(dev);
->  
->  
-> -	/* Might still be loading firmware */
-> -	wait_for_completion(&card->fw_done);
-> -
->  	adapter = card->adapter;
->  	if (!adapter) {
->  		dev_err(dev, "adapter is not valid\n");
->  		return 0;
->  	}
->  
-> -	mwifiex_enable_wake(adapter);
-> -
-> -	/* Enable the Host Sleep */
-> -	if (!mwifiex_enable_hs(adapter)) {
-> +	/* Shut down SW */
-> +	if (mwifiex_shutdown_sw(adapter)) {
->  		mwifiex_dbg(adapter, ERROR,
->  			    "cmd: failed to suspend\n");
-> -		clear_bit(MWIFIEX_IS_HS_ENABLING, &adapter->work_flags);
-> -		mwifiex_disable_wake(adapter);
->  		return -EFAULT;
->  	}
->  
-> -	flush_workqueue(adapter->workqueue);
-> -
->  	/* Indicate device suspended */
->  	set_bit(MWIFIEX_IS_SUSPENDED, &adapter->work_flags);
-> -	clear_bit(MWIFIEX_IS_HS_ENABLING, &adapter->work_flags);
->  
->  	return 0;
->  }
-> @@ -336,13 +325,13 @@ static int mwifiex_pcie_suspend(struct device *dev)
->   * registered functions must have drivers with suspend and resume
->   * methods. Failing that the kernel simply removes the whole card.
->   *
-> - * If already not resumed, this function turns on the traffic and
-> - * sends a host sleep cancel request to the firmware.
-> + * If already not resumed, this function reinits the adapter.
->   */
->  static int mwifiex_pcie_resume(struct device *dev)
->  {
->  	struct mwifiex_adapter *adapter;
->  	struct pcie_service_card *card = dev_get_drvdata(dev);
-> +	int ret;
->  
->  
->  	if (!card->adapter) {
-> @@ -360,9 +349,11 @@ static int mwifiex_pcie_resume(struct device *dev)
->  
->  	clear_bit(MWIFIEX_IS_SUSPENDED, &adapter->work_flags);
->  
-> -	mwifiex_cancel_hs(mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_STA),
-> -			  MWIFIEX_ASYNC_CMD);
-> -	mwifiex_disable_wake(adapter);
-> +	ret = mwifiex_reinit_sw(adapter);
-> +	if (ret)
-> +		dev_err(dev, "reinit failed: %d\n", ret);
-> +	else
-> +		mwifiex_dbg(adapter, INFO, "%s, successful\n", __func__);
->  
->  	return 0;
->  }
+Please update the patch so that the default stays the same for
+BASE_SMALL. Please, add Rasmus Villemoes
+<linux@rasmusvillemoes.dk> and Geert Uytterhoeven
+<geert@linux-m68k.org> into CC when you send it.
 
-
+Best Regards,
+Petr
