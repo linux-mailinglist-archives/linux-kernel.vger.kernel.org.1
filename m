@@ -2,165 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126C62A0347
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E48E92A0353
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726334AbgJ3Kuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgJ3Kuq (ORCPT
+        id S1726445AbgJ3KxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:53:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41469 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726198AbgJ3Kwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:50:46 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDD4C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:50:45 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id d9so225899oib.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hvuWYo7Yuy4+Xoosva2YfT/B6vDa7o+k5TcZrFjzw2I=;
-        b=mCyFqjN1bQQC8Hvkpi7xW/3dnxa3ThGOZg+0wqlUrAHvvhX8m/ncxpq7Pyp/dRRs3g
-         4WEWXc3YTkQEmBo4hMY8pxvX5o+Gv/Ie9TXg7vKqqMwjs5D7KvUPpTYMZtWdx8246Vkw
-         J6HR1GHDIFM02CVcqc8Kk+Y6oFzxFgYqMnr0GfrzLUtvoripkAXvu1boXzKL84jaqzZ0
-         JLMFVm206/J5PjBOhMmilJ6+hEiScGTLGEKl7zMM1R9M2vfhOCCinAqTix2sr1UDctvr
-         8/O6shRzAPdYkLPxVflRgSxCAY0CYhUvm76k9hSxcnPW4WCKFajDZSAKGSGrz5NSjsJN
-         Ywlw==
+        Fri, 30 Oct 2020 06:52:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604055127;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z1EL/9Be6tly17XVpcb5msTAyiBBVJln1M0uiO+xToM=;
+        b=SvRfyT8s8JI/G6/UFi/egFz0/UlmN/RKmcT4imbFovoWybpZlYerG81dV2dToznn+L6AXN
+        TmH86JtdUaYrr6PEiR5PuRd6wc+u9DjzUUlcBruuTq+puesYoj+Xkyf1si1RcVqMNG/K0K
+        S8aTZYHNex7d5TxzhQSgCdSkdInkCPc=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-Gvl5OqTKNR6jI6goubdRhg-1; Fri, 30 Oct 2020 06:52:05 -0400
+X-MC-Unique: Gvl5OqTKNR6jI6goubdRhg-1
+Received: by mail-pg1-f197.google.com with SMTP id y10so4351409pgq.19
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:52:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hvuWYo7Yuy4+Xoosva2YfT/B6vDa7o+k5TcZrFjzw2I=;
-        b=iodq8p4jt7QUgOghu0a3DWxtvHwrbVYDGUbuYrNEjl4yVP7+VeZaELq2BegvMx+GpL
-         er+nZBjJlyzbAjgZAoX/wOpn1QV877oHOG2xm8gSIH8Xo3B48UXbmP8Pt/zoW/u+3bNa
-         DxsPtKjtMWXFtPGakJ7Re8Nu8PXcAM/FUyXX5qnjx+05gm0qGJ7BU64pJoyqZTHrUxj1
-         TiU+LoBaXH3rQTmL3aQgh6rc4hC95tpJ7aBZ1z2ZEj+mqNurCek5BUfnNhR7TsGw9Nld
-         YRO6eGTCaXl1smyi6CV7xfDBv4BExCewKWm6nbqXooP2GUipbuA9Td9o1rD5lyrs2Ma2
-         m/AQ==
-X-Gm-Message-State: AOAM530zh9Ujr3xsdTluQyDGjpgjFE7b2Fpq2PlUKjwv2coxdOady6Pk
-        +sLdfGPNLdp0tlU6TguHtlFgVMSA2E0zN4QHqFt0mg==
-X-Google-Smtp-Source: ABdhPJw9y4ECaTHMdQAHz0FiGUzAKJL50sOGurP0au+ieUbVtdZIpyIHjQtwwPIJDX0B/6q9TBKmmH52j9NmaIeqdOQ=
-X-Received: by 2002:aca:4f55:: with SMTP id d82mr1138528oib.172.1604055045058;
- Fri, 30 Oct 2020 03:50:45 -0700 (PDT)
+        bh=Z1EL/9Be6tly17XVpcb5msTAyiBBVJln1M0uiO+xToM=;
+        b=XU5/ERlls88SoJDgX2QAoQx0k71UiCtiaxGIVqrbBKpLaXoGYIniaxspBM8I+CylOP
+         OlvTcNarUnVXoQZ4H5MuK5DnxhXHQGMjm0mBHT4gqEkfMAkP3CgKyNAycYzbUoVaCqef
+         oZvzJfdu4UO6YaC0SPAcfSjQ3kTb6amx0/r77gb9V8PKBK98ocG0sAyNhZLyHPeyxnzD
+         Er3hQrdaXqkDA0uIJjCdR65Tp+r2BFcXrBZzhA/uuMALMKebcyFoVicGDrL+eTallKUU
+         uiOwGGY1a3hxJBn4yoUlNIwJQvrOWpGo+T5yGeePci2FXMKk9WD2Vy/WRWqT/nq80ZP9
+         3png==
+X-Gm-Message-State: AOAM533ag3/d7a6pNmHlQRxLBu00XO8OkkFmT6gaY/GqX6xWNf4RVk2J
+        ymVar04TcJGmFX8J+5/WHwyyGftgNv7X+ZklE9wQStaB2IFsY+mYPdLqAaWT3BLTfgnZzPdQMv0
+        ++3eB4HyutqUKra9QEDrfpbhKT9EW+x96Mvc8wfq1
+X-Received: by 2002:a17:90a:3d0f:: with SMTP id h15mr2123540pjc.234.1604055124704;
+        Fri, 30 Oct 2020 03:52:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZm8Jjrt7RwQSmEXD6n0EGanX49bnWzOOT4SJxESfA9P6Q0Zin/X974quyCTlaFgiQZ0aiYXBGx0kCgB58FOk=
+X-Received: by 2002:a17:90a:3d0f:: with SMTP id h15mr2123522pjc.234.1604055124441;
+ Fri, 30 Oct 2020 03:52:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201029131649.182037-1-elver@google.com> <20201029131649.182037-9-elver@google.com>
- <CAG48ez071wf5kvBwpmRk9QiSDzDDN7zh17zEcZjPDWKUjbqosA@mail.gmail.com>
-In-Reply-To: <CAG48ez071wf5kvBwpmRk9QiSDzDDN7zh17zEcZjPDWKUjbqosA@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 30 Oct 2020 11:50:32 +0100
-Message-ID: <CANpmjNPDksUk1BLS9BuYrx4E3Lf+m2jWXn0yn7zO43c9PboAmw@mail.gmail.com>
-Subject: Re: [PATCH v6 8/9] kfence: add test suite
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
+References: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
+In-Reply-To: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Fri, 30 Oct 2020 11:51:53 +0100
+Message-ID: <CAO-hwJLn5XKV+cp+fCRY395uBWuX=JrxgiGSHUnJXFpTzFWu4w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: HID: i2c-hid: Label this binding as deprecated
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Jiri Kosina <jkosina@suse.cz>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        =?UTF-8?Q?J=C3=B6rn_Engel?= <joern@purestorage.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>
+        andrea@borgia.bo.it, Kai Heng Feng <kai.heng.feng@canonical.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Hans De Goede <hdegoede@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020 at 03:50, Jann Horn <jannh@google.com> wrote:
->
-> On Thu, Oct 29, 2020 at 2:17 PM Marco Elver <elver@google.com> wrote:
-> > Add KFENCE test suite, testing various error detection scenarios. Makes
-> > use of KUnit for test organization. Since KFENCE's interface to obtain
-> > error reports is via the console, the test verifies that KFENCE outputs
-> > expected reports to the console.
-> [...]
-> > diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
-> [...]
-> > +static void *test_alloc(struct kunit *test, size_t size, gfp_t gfp, enum allocation_policy policy)
-> > +{
-> > +       void *alloc;
-> > +       unsigned long timeout, resched_after;
-> [...]
-> > +       /*
-> > +        * 100x the sample interval should be more than enough to ensure we get
-> > +        * a KFENCE allocation eventually.
-> > +        */
-> > +       timeout = jiffies + msecs_to_jiffies(100 * CONFIG_KFENCE_SAMPLE_INTERVAL);
-> > +       /*
-> > +        * Especially for non-preemption kernels, ensure the allocation-gate
-> > +        * timer has time to catch up.
-> > +        */
-> > +       resched_after = jiffies + msecs_to_jiffies(CONFIG_KFENCE_SAMPLE_INTERVAL);
-> > +       do {
-> [...]
-> > +               if (time_after(jiffies, resched_after))
-> > +                       cond_resched();
->
-> You probably meant to recalculate resched_after after the call to
-> cond_resched()?
+Hi Doug,
 
-This is intentional. After @resched_after is reached, every failed
-allocation attempt will result in a cond_resched(), because we know
-the sample interval has elapsed and KFENCE should have kicked in. So
-we just want to ensure the delayed work gets to run as soon as
-possible, and just keep yielding.
+Foreword: I was about to say "yeah, whatever" to please Rob for once.
+But after re-reading this and more specifically patch 3 of the series,
+that won't do. More comments inlined.
 
-Added a clarifying comment.
+On Sat, Oct 24, 2020 at 1:23 AM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> As pointed out by Rob Herring [1], we should have a device-specific
+> compatible string.  This means people shouldn't be using the
+> "i2c-over-hid" compatible string anymore, or at least not without a
+> more specific compatible string before it.  Specifically:
+>
+> 1. For newly added devices we should just have the device-specific
+>    device string (no "hid-over-i2c" fallback) and infer the timings
+>    and hid-descr-addr from there.
 
-> > +       } while (time_before(jiffies, timeout));
-> > +
-> > +       KUNIT_ASSERT_TRUE_MSG(test, false, "failed to allocate from KFENCE");
-> > +       return NULL; /* Unreachable. */
-> > +}
-> [...]
-> > +/*
-> > + * KFENCE is unable to detect an OOB if the allocation's alignment requirements
-> > + * leave a gap between the object and the guard page. Specifically, an
-> > + * allocation of e.g. 73 bytes is aligned on 8 and 128 bytes for SLUB or SLAB
-> > + * respectively. Therefore it is impossible for the allocated object to adhere
-> > + * to either of the page boundaries.
->
-> Should this be "to the left page boundary" instead of "to either of
-> the page boundaries"?
+And that's a big NACK from a maintainer point of view. I know in the
+device tree world these strings are important so that people can just
+say "I have a device compatible with X", and go on, but in the HID
+world that means we will have to implement one compatible struct per
+vendor/device, which is not something I want to do.
 
-Thanks for spotting. I think it's "Therefore it is impossible for the
-allocated object to contiguously line up with the right guard page."
+You can think of it as if you are suddenly saying that because it
+would be easier for a few particular USB devices that need a quirk,
+you "just" need to add the list of *all* USB HID devices that are
+around. i2c-hid should be a driver that doesn't change unless 2 things
+happen:
+- there is a change in the spec
+- there is a specific quirk required for a device that doesn't follow the spec.
 
-> > + * However, we test that an access to memory beyond the gap result in KFENCE
->
-> *results
->
->
->
-> > + * detecting an OOB access.
-> > + */
-> > +static void test_kmalloc_aligned_oob_read(struct kunit *test)
+So if having device tree support for these means we suddenly need to
+add every single device around in the compatible table, I would be
+tempted to just drop the support for those new devices.
 
-Thanks, will address these for v7.
+Again, you (or anyone else) have to understand that the descriptor
+address is just a parameter which is known at the manufacturing time,
+but that can vary with different vendors and or products. In the ACPI
+world, this parameter is provided in the DSDT, and there is no reason
+for it to not be provided in the DT.
+
+The last thing I want to see is people using device tree having to
+recompile i2c-hid to register their own device.
+
+If this part of the Device Tree binding is so important for the DT
+world, then we should split up the DT bindings from i2c-hid, and have
+some platform driver that would handle a conversion between devicetree
+and platform data. But this driver won't be maintained by me.
+
+I agree adding the various sleep parameters in the platform data is
+not good, but I prefer that over having to maintain an endless table
+of parameters for every single i2c-hid device out there.
+
+Cheers,
+Benjamin
+
+
+>
+> 2. If there's a need for a device tree to be backward compatible, we
+>    should list the device-specific compatible string and add the
+>    "hid-over-i2c" fallback and the various timings.
+>
+> [1] https://lore.kernel.org/r/20201019211036.GA3595039@bogus
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>
+> Changes in v2:
+> - ("dt-bindings: HID: i2c-hid: Label this binding as deprecated") new in v2.
+>
+>  Documentation/devicetree/bindings/input/hid-over-i2c.txt | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/input/hid-over-i2c.txt b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
+> index c76bafaf98d2..733a5f053280 100644
+> --- a/Documentation/devicetree/bindings/input/hid-over-i2c.txt
+> +++ b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
+> @@ -1,5 +1,8 @@
+>  * HID over I2C Device-Tree bindings
+>
+> +WARNING: this binding is deprecated.  Instead of using this, create specific
+> +bindings for each hid-over-i2c device.
+> +
+>  HID over I2C provides support for various Human Interface Devices over the
+>  I2C bus. These devices can be for example touchpads, keyboards, touch screens
+>  or sensors.
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
+
