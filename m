@@ -2,160 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D92D29FF46
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE3E29FF4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 09:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725964AbgJ3H77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:59:59 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:27936 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgJ3H76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 03:59:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604044798; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=wzAYLmtiqKUHYKNwoQvgJ/EArCoML40Wcybfuv2xAzo=;
- b=IRpRmwxSwAoo3sRXPH4upLl1L+ZVQBIGG4g9QOojdddWj9x72vaqX2B4SVrRn+bPLghUaTxS
- QjvmNTDZsC27MqfmrIINveNyWLynK4jSf1NHAMwz/bmLd+8ZmbOW9BC7MribnQ6B40S99u5C
- +Jm6kECcfx6j6Euap0Ayg7nmYoU=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f9bc7fe89dd7476335ded74 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 07:59:58
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6E955C433FE; Fri, 30 Oct 2020 07:59:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 445F1C433C6;
-        Fri, 30 Oct 2020 07:59:56 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+        id S1725974AbgJ3IAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 04:00:19 -0400
+Received: from mail-dm6nam11on2065.outbound.protection.outlook.com ([40.107.223.65]:6208
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725784AbgJ3IAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 04:00:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gpRoeGHBrLn4ObkrXe2tMuy5uNJ9tuUasLB5YXLy2Uoz6v1J0lYSzGFPtGDlvmg/MWkiKNW+Kb99gZ9lo0jCd0SMOZfBLGtSAooXBqbu6V0Q3LAb36MoNdK9iz0exDQJhntSpo5Z/ycbcpzauJgYmKiRfOI/ybW5fAXCFGV/nv1oH7pjYAFp/6m+rF3z3mMyGnPOAeB1GIFaE8J5Ro1X10lC68U9MwUQlkoqdTL/+YYSsC3dgqIeGPt+U/Oj6Wtq8ffob0WUVb9gK2jEPzy7E4rtVMMmBJtPFL+9CTOdNaOHfBDuu3dMwQiSs8z/EPtL/DXqyo4xx6HHRgbcbxNjmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R50FfW+0YisEFwHW7BnxV3bANK9rDM+i+0z2VN/b5xU=;
+ b=BxeiB13zTVsT0pTsUbkz13NCua8y2FlcaS2SsACC8RdSobePoDyfSewb2BiNX5lk2aI5hwkVLaCHpaeNdF/+I6nWKjIXXqUOlBQEkNEEgyQ2v4j9QXK7+FUM+AZTDOyxj7leTvxxENQU1YG3ZKiBUf0mid/6UfIAKceRZtF2eONvH+0IKpgK+NhUvVhr/DeX+C+mXJxHMBTTTkVjDkabyY3MxoTDJcIOM5WqD22AI7/dY1a/B3Ub4/6XOBWrrmO8NGIO1Q3AuGIfbe2lpU6xJVyIj+0ccFKQJMhTCxLcYm8NaE7VKzHqkgDtVKNCRwmU22HCimT1WRNFDOUnPO3ziA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R50FfW+0YisEFwHW7BnxV3bANK9rDM+i+0z2VN/b5xU=;
+ b=ZN0/lyWrJR81Iv3ydGoyk8UQ68khAGtwy57Wgzhe7kMa6sRfQAFhtQi63uhlrv7IS16Vh3tUiY/wPfjwMAV743QrApFyznd0FnVu6d+gEDVO5U1RYlFWaSSsoLW1u/FySHCk9GraqaKDlzPLRrd8YloSqEoHyyMKETS6HmKNWKw=
+Authentication-Results: ffwll.ch; dkim=none (message not signed)
+ header.d=none;ffwll.ch; dmarc=none action=none header.from=amd.com;
+Received: from BY5PR12MB3764.namprd12.prod.outlook.com (2603:10b6:a03:1ac::17)
+ by BYAPR12MB3431.namprd12.prod.outlook.com (2603:10b6:a03:da::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.28; Fri, 30 Oct
+ 2020 08:00:14 +0000
+Received: from BY5PR12MB3764.namprd12.prod.outlook.com
+ ([fe80::21a4:4ed1:c6bb:5437]) by BY5PR12MB3764.namprd12.prod.outlook.com
+ ([fe80::21a4:4ed1:c6bb:5437%5]) with mapi id 15.20.3499.027; Fri, 30 Oct 2020
+ 08:00:13 +0000
+Subject: Re: [Outreachy kernel] [PATCH] drm/amdgpu: use
+ DEFINE_DEBUGFS_ATTRIBUTE with debugfs_create_file_unsafe()
+To:     Deepak R Varma <mh12gx2825@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     outreachy-kernel@googlegroups.com,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        melissa.srw@gmail.com, daniel.vetter@ffwll.ch
+References: <20201030032245.GA274478@my--box>
+ <20201030071120.GA1493629@kroah.com> <20201030075716.GA6976@my--box>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <5a7d8e8d-8db5-ff56-6448-3f1cefc11ef8@amd.com>
+Date:   Fri, 30 Oct 2020 09:00:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201030075716.GA6976@my--box>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 30 Oct 2020 13:29:56 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>
-Cc:     Mike Leach <mike.leach@linaro.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-In-Reply-To: <20201023203729.GA819775@xps15>
-References: <20201022212033.GA646497@xps15>
- <20201023073905.GM2611@hirez.programming.kicks-ass.net>
- <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
- <20201023094115.GR2611@hirez.programming.kicks-ass.net>
- <bd8c136d-9dfa-a760-31f9-eb8d6698aced@arm.com>
- <20201023105431.GM2594@hirez.programming.kicks-ass.net>
- <2457de8f-8bc3-b350-fdc7-61276da31ce6@arm.com>
- <20201023131628.GY2628@hirez.programming.kicks-ass.net>
- <728fd89c-78f2-0c5c-0443-c91c62b02f0e@arm.com>
- <20201023134416.GA2628@hirez.programming.kicks-ass.net>
- <20201023203729.GA819775@xps15>
-Message-ID: <70e3a508af119be481c8f0a0acf0a44d@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: FR2P281CA0022.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::9) To BY5PR12MB3764.namprd12.prod.outlook.com
+ (2603:10b6:a03:1ac::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by FR2P281CA0022.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:14::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.8 via Frontend Transport; Fri, 30 Oct 2020 08:00:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: bb609e36-384c-486a-68d8-08d87ca9d4af
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3431:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR12MB34317CCE5EA4818C074F924B83150@BYAPR12MB3431.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NItOQ8x5uK3f/ZiYgkh8vccMDDR2KOp9V9iVscHV8SC+6hgKvIQu2WuKhhEMuKqNyCm84wwsQuM/5p4BF11UjR3xv19MsxhRN0+NXwPLytLHqD7CSGBnhH70rrqyZ+hIyamREmFM2goXI58tA63Yc1zuolG9SK8c1fq9Iz/9KGiPMXmMHKmN21LDD3SFWKyviSkOsAZ+1soGnFAQUv1N8cKtIu4uwCCF4EEQaHqMwpCs9Nm2CtTRbo+MJs9QeBllJg2/2+tJ8+I1tLuYwnByn59VtvIOeMM85hQQ1JMdD+u/N8v/3YVfKChU2X78FJDUUIVH1KFKB4q72MdnGnWBxSMB6IuANNhxq8W0v/sjdZrsNoM4dalrNr3v8LV2wayI2pezvywFS1swpXp3O/1H35dkRiKV1L6LidV6XmgQZvUrxLIz3ZMVZPxqnK6wpKV1kMEKASUURi7d8NpVrTLD0A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3764.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(366004)(396003)(66946007)(66556008)(966005)(5660300002)(36756003)(52116002)(4326008)(316002)(86362001)(83380400001)(7416002)(54906003)(110136005)(66476007)(6486002)(8676002)(16526019)(2616005)(6666004)(478600001)(31686004)(31696002)(186003)(45080400002)(8936002)(2906002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Ty/hQ5oBKxL5iR5EiOmjONC8IrrPFer9HDkRBgAmeaxI+mWAk5gpGzd33tA+xvSyzTZeyH+1dhaU0VYidtiY9yIGuXCwz5wFDfKyP3svo4W3OaybKOwDAmsvXn4bQGtahoTKI7cIZ+J8BnMy23It4l88vnHd/sAzj2GS97WEEE9lQBTfOU4uSSUZuEB97/e9W2nKYNdjiXVNdW75tpUavQYbwm+aCIDJAABUQ4KpVXDKxHaVHIUBC9ypV+vIrHCYUutqordXKoKeVcEAW6+g8c9zvHlfK09dwsMaiJtmra9gYDJFGzbbMz+bfu28zXYGtx4NYayBO3RjxRSU3I3KB8TbWvOHXx2BpAXDoP5bgexgwwpEaY48JBY02qMppX+cSzzCZjkWpvQW1FPxiYipQOOiwYSXOXPIPkVfMDSLhHDEJ6/lSbLjV3Pac7pFvCU9QpGDhcnThtymh4jKLnDc33dr6UA6vGO0CQG4wLj32I6nMi4dUAd/XLOEay1u5gs5NFHLVOzJDwXrQBAHwuR0Tfs+peApzsfx66l4VZpd7sa6CSWPyvFDqorjM+GDOBFlPCeStjHRRdvBcStIS2ONhudRFyn5IVnZ5iOakiEW7Tc9ETpATGpzikRWZ+PWfkzHmWUhXrE6X/At2mM0NiXGq90o9oGfQjUu4Vwlu1rdB5QLtEce1FNqQjwUQNBUUK3pkX2SwrCpqB9yyBAEG5I+ew==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb609e36-384c-486a-68d8-08d87ca9d4af
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3764.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2020 08:00:13.6055
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VOHYJ1KCxZDCQNpaVYWZ+qQtCUUjQ88s9/KTk7gKxqCA8zvGJ/ybu/4h65F6OWSF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3431
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello guys,
+Am 30.10.20 um 08:57 schrieb Deepak R Varma:
+> On Fri, Oct 30, 2020 at 08:11:20AM +0100, Greg KH wrote:
+>> On Fri, Oct 30, 2020 at 08:52:45AM +0530, Deepak R Varma wrote:
+>>> Using DEFINE_DEBUGFS_ATTRIBUTE macro with debugfs_create_file_unsafe()
+>>> function in place of the debugfs_create_file() function will make the
+>>> file operation struct "reset" aware of the file's lifetime. Additional
+>>> details here: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flists.archive.carbon60.com%2Flinux%2Fkernel%2F2369498&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cddd7a6ac8164415a639708d87ca97004%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637396414464384011%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=o6GOHvMxNMuOPlC4nhDyURCHBLqfQZhYQq%2BiIMt3D3s%3D&amp;reserved=0
+>>>
+>>> Issue reported by Coccinelle script:
+>>> scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
+>>>
+>>> Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+>>> ---
+>>> Please Note: This is a Outreachy project task patch.
+>>>
+>>>   drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 20 ++++++++++----------
+>>>   1 file changed, 10 insertions(+), 10 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+>>> index 2d125b8b15ee..f076b1ba7319 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+>>> @@ -1551,29 +1551,29 @@ static int amdgpu_debugfs_sclk_set(void *data, u64 val)
+>>>   	return 0;
+>>>   }
+>>>   
+>>> -DEFINE_SIMPLE_ATTRIBUTE(fops_ib_preempt, NULL,
+>>> -			amdgpu_debugfs_ib_preempt, "%llu\n");
+>>> +DEFINE_DEBUGFS_ATTRIBUTE(fops_ib_preempt, NULL,
+>>> +			 amdgpu_debugfs_ib_preempt, "%llu\n");
+>> Are you sure this is ok?  Do these devices need this additional
+>> "protection"?  Do they have the problem that these macros were written
+>> for?
+>>
+>> Same for the other patches you just submitted here, I think you need to
+>> somehow "prove" that these changes are necessary, checkpatch isn't able
+>> to determine this all the time.
+> Hi Greg,
+> Based on my understanding, the current function debugfs_create_file()
+> adds an overhead of lifetime managing proxy for such fop structs. This
+> should be applicable to these set of drivers as well. Hence I think this
+> change will be useful.
 
-On 2020-10-24 02:07, Mathieu Poirier wrote:
-> On Fri, Oct 23, 2020 at 03:44:16PM +0200, Peter Zijlstra wrote:
->> On Fri, Oct 23, 2020 at 02:29:54PM +0100, Suzuki Poulose wrote:
->> > On 10/23/20 2:16 PM, Peter Zijlstra wrote:
->> > > On Fri, Oct 23, 2020 at 01:56:47PM +0100, Suzuki Poulose wrote:
->> 
->> > > > That way another session could use the same sink if it is free. i.e
->> > > >
->> > > > perf record -e cs_etm/@sink0/u --per-thread app1
->> > > >
->> > > > and
->> > > >
->> > > > perf record -e cs_etm/@sink0/u --per-thread app2
->> > > >
->> > > > both can work as long as the sink is not used by the other session.
->> > >
->> > > Like said above, if sink is shared between CPUs, that's going to be a
->> > > trainwreck :/ Why do you want that?
->> >
->> > That ship has sailed. That is how the current generation of systems are,
->> > unfortunately. But as I said, this is changing and there are guidelines
->> > in place to avoid these kind of topologies. With the future
->> > technologies, this will be completely gone.
->> 
->> I understand that the hardware is like that, but why do you want to
->> support this insanity in software?
->> 
->> If you only allow a single sink user (group) at the same time, your
->> problem goes away. Simply disallow the above scenario, do not allow
->> concurrent sink users if sinks are shared like this.
->> 
->> Have the perf-record of app2 above fail because the sink is in-user
->> already.
-> 
-> I agree with you that --per-thread scenarios are easy to deal with, but 
-> to
-> support cpu-wide scenarios events must share a sink (because there is 
-> one event
-> per CPU).  CPU-wide support can't be removed because it has been around
-> for close to a couple of years and heavily used. I also think using the 
-> pid of
-> the process that created the events, i.e perf, is a good idea.  We just 
-> need to
-> agree on how to gain access to it.
-> 
-> In Sai's patch you objected to the following:
-> 
->> +     struct task_struct *task = READ_ONCE(event->owner);
->> +
->> +     if (!task || is_kernel_event(event))
-> 
-> Would it be better to use task_nr_pid(current) instead of event->owner? 
->  The end
-> result will be exactly the same.  There is also no need to check the 
-> validity of
-> @current since it is a user process.
-> 
+Well since this is only created once per device instance I don't really 
+care about this little overhead.
 
-We have devices deployed where these crashes are seen consistently,
-so for some immediate relief, could we atleast get some fix in this
-cycle without major design overhaul which would likely take more time.
-Perhaps my first patch [1] without any check for owner or
-I can post a new version as Suzuki suggested [2] dropping the export
-of is_kernel_event(). Then we can always work on top of it based on the
-conclusion of this discussion, we will atleast not have the systems
-crash in the meantime, thoughts?
+But what exactly is debugfs doing or not doing here?
 
-[1] https://lore.kernel.org/patchwork/patch/1318098/
-[2] 
-https://lore.kernel.org/lkml/fa6cdf34-88a0-1050-b9ea-556d0a9438cb@arm.com/
+Regards,
+Christian.
 
-Thanks,
-Sai
+>
+> I will wait for comments from other experts for driver specific
+> consideration / behavior.
+>
+> Thanks,
+> drv
+>
+>
+>> thanks,
+>>
+>> greg k-h
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
