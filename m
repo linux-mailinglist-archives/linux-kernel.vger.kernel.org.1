@@ -2,107 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183B72A0BA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C712A0BA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgJ3Qrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:47:47 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:36315 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgJ3Qrq (ORCPT
+        id S1727096AbgJ3QsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726858AbgJ3QsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:47:46 -0400
-Received: by mail-oi1-f193.google.com with SMTP id d9so1287379oib.3;
-        Fri, 30 Oct 2020 09:47:45 -0700 (PDT)
+        Fri, 30 Oct 2020 12:48:10 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD9BC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:48:10 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id y14so5759869pfp.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wSEWtbWhI0R9DkaPMhQMnTY3fTZkSIH21v7K93YzkH0=;
+        b=Pm5tPmOc2OXH3sg4QefPKFbCjKyDB5HJQGUHoeXG8betextZWa+omrfutWN2ZTC6To
+         yXk3FJwR6pPlp0Ahzni1BTypMk/mPyp6C9XdLzTWzNOMvZDjYx8Xn9pPIWt5f+aVbim0
+         gBcPOD6nj/Mnv8eDSYqGxd/MljUe2pO3KQnEIEcCpwbMlVMMK98pQRDTOtgqqMEwZrdT
+         ZBR8qBaZWd+xggES0t7YY32orHHlz3MRtipXNBvn7V2Z/rFuJZpL794+JNYFuLJ78mwF
+         jIHY2HDSvbf7/sKPdyqYBYVMpdlpPbgnu9ADbesY46YMUPmeCLN/opGyZYKILuuDwOxQ
+         ds6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=qbBstdJF6lGYUkgMfbYRnDBzY8X2ICeJU7MFuE1dEQk=;
-        b=LTrfBF11vAxV9dwVMW2xJPWVxrIzBvykfBtny9VTQgZXq3qia61z1iZ5sO/cB3QQKW
-         0wW6TdivNx5eRk1TlRA9tQL/baii5emUMbS+F7eGntgpOfk0DAG1pTwQJ4UiQINCtJzY
-         pOZhQIBOUCdV/ZfRXizbQV0x4bFbfW8tTRHpR2I+H44xOyD2lxKL3xrkP84+fcEjM0EQ
-         SvwQcmlPBDCTbAFyCN/Z7bXA46SIpm+SarEofbM4l1EzbkK3ar39kk4XiLZ1M8teIBPl
-         YmR2FgtVEaUAOwWLL8RZL8E0C1CYHLU/XLMnGePvTUpe4WAHLJaqO7fLWKBlADq3QCWk
-         QOHw==
-X-Gm-Message-State: AOAM530XbUKDDEFfq1iv82tVZKgB193BwkNN/+ZMGKNLhxNFJyseTFdH
-        oVAFLakfLslHjvIE3Y3jJQ==
-X-Google-Smtp-Source: ABdhPJzdcsQqAHak2T12Li0TXyhwHSilYrAQGNK76OohNpykaBDznTKvLv+Xg1UpohlJ9Q/gE8hUlQ==
-X-Received: by 2002:aca:4cd6:: with SMTP id z205mr2190199oia.32.1604076465380;
-        Fri, 30 Oct 2020 09:47:45 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i12sm1557959oon.26.2020.10.30.09.47.44
+        bh=wSEWtbWhI0R9DkaPMhQMnTY3fTZkSIH21v7K93YzkH0=;
+        b=eD283w+d9dr5i1gbIakLEqvcRfpV3S/YP72kbqnXSthFT1DH5U5Sc6g8BSZ4T83FHk
+         ifmB/w/Yh1zCeJHxn+GVJ9efjtXfA8/IV+8qs3XkoOQQpT4z8fr3s0OaBcYBD9dmqwMO
+         +LfgMb8G7KzzBpsFRA8MmIQcEczK7VHct2r3YwlHhoFcwjgXppVMfjmReVfenSblqctc
+         hgWHGC1N9wJuU5QGN2ojxAIKcS/svL9qdJsMiGKH4JUS6rWjbHlGAkkRGdeETvG1o4up
+         nybDqVYbzdBm0PDfjVENNoRu/UY4Gvo6NsQVtL9pztos700K6TN3UYDUZpwTxRnoTaZw
+         ASug==
+X-Gm-Message-State: AOAM532vn+ytPt0cqc8TqtTCtH9ZX2evoWSM2+aF5yYgKOrjqjBwzqN4
+        iIM9b02RWWSRnonohXr9Av6t46Q6KlfkQwku
+X-Google-Smtp-Source: ABdhPJwkbDqYTl7565CUkmpVtzCXGeHcVFB0EoSWg4z5M/YK/EXCpJP2KveoN6LQKcrhGIYvYlsnUA==
+X-Received: by 2002:a63:74c:: with SMTP id 73mr2932647pgh.68.1604076489528;
+        Fri, 30 Oct 2020 09:48:09 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id g16sm2727949pju.5.2020.10.30.09.48.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 09:47:44 -0700 (PDT)
-Received: (nullmailer pid 3974942 invoked by uid 1000);
-        Fri, 30 Oct 2020 16:47:43 -0000
-Date:   Fri, 30 Oct 2020 11:47:43 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     jkosina@suse.cz, benjamin.tissoires@redhat.com,
-        gregkh@linuxfoundation.org, andrea@borgia.bo.it,
-        kai.heng.feng@canonical.com, linux-input@vger.kernel.org,
-        swboyd@chromium.org, hdegoede@redhat.com,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: HID: i2c-hid: Label this binding as
- deprecated
-Message-ID: <20201030164743.GA3967106@bogus>
-References: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
+        Fri, 30 Oct 2020 09:48:08 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 10:48:06 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+Message-ID: <20201030164806.GB1301231@xps15>
+References: <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
+ <20201023094115.GR2611@hirez.programming.kicks-ass.net>
+ <bd8c136d-9dfa-a760-31f9-eb8d6698aced@arm.com>
+ <20201023105431.GM2594@hirez.programming.kicks-ass.net>
+ <2457de8f-8bc3-b350-fdc7-61276da31ce6@arm.com>
+ <20201023131628.GY2628@hirez.programming.kicks-ass.net>
+ <728fd89c-78f2-0c5c-0443-c91c62b02f0e@arm.com>
+ <20201023134416.GA2628@hirez.programming.kicks-ass.net>
+ <20201023203729.GA819775@xps15>
+ <70e3a508af119be481c8f0a0acf0a44d@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
+In-Reply-To: <70e3a508af119be481c8f0a0acf0a44d@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 04:22:52PM -0700, Douglas Anderson wrote:
-> As pointed out by Rob Herring [1], we should have a device-specific
-> compatible string.  This means people shouldn't be using the
-> "i2c-over-hid" compatible string anymore, or at least not without a
-> more specific compatible string before it.  Specifically:
+On Fri, Oct 30, 2020 at 01:29:56PM +0530, Sai Prakash Ranjan wrote:
+> Hello guys,
 > 
-> 1. For newly added devices we should just have the device-specific
->    device string (no "hid-over-i2c" fallback) and infer the timings
->    and hid-descr-addr from there.
+> On 2020-10-24 02:07, Mathieu Poirier wrote:
+> > On Fri, Oct 23, 2020 at 03:44:16PM +0200, Peter Zijlstra wrote:
+> > > On Fri, Oct 23, 2020 at 02:29:54PM +0100, Suzuki Poulose wrote:
+> > > > On 10/23/20 2:16 PM, Peter Zijlstra wrote:
+> > > > > On Fri, Oct 23, 2020 at 01:56:47PM +0100, Suzuki Poulose wrote:
+> > > 
+> > > > > > That way another session could use the same sink if it is free. i.e
+> > > > > >
+> > > > > > perf record -e cs_etm/@sink0/u --per-thread app1
+> > > > > >
+> > > > > > and
+> > > > > >
+> > > > > > perf record -e cs_etm/@sink0/u --per-thread app2
+> > > > > >
+> > > > > > both can work as long as the sink is not used by the other session.
+> > > > >
+> > > > > Like said above, if sink is shared between CPUs, that's going to be a
+> > > > > trainwreck :/ Why do you want that?
+> > > >
+> > > > That ship has sailed. That is how the current generation of systems are,
+> > > > unfortunately. But as I said, this is changing and there are guidelines
+> > > > in place to avoid these kind of topologies. With the future
+> > > > technologies, this will be completely gone.
+> > > 
+> > > I understand that the hardware is like that, but why do you want to
+> > > support this insanity in software?
+> > > 
+> > > If you only allow a single sink user (group) at the same time, your
+> > > problem goes away. Simply disallow the above scenario, do not allow
+> > > concurrent sink users if sinks are shared like this.
+> > > 
+> > > Have the perf-record of app2 above fail because the sink is in-user
+> > > already.
+> > 
+> > I agree with you that --per-thread scenarios are easy to deal with, but
+> > to
+> > support cpu-wide scenarios events must share a sink (because there is
+> > one event
+> > per CPU).  CPU-wide support can't be removed because it has been around
+> > for close to a couple of years and heavily used. I also think using the
+> > pid of
+> > the process that created the events, i.e perf, is a good idea.  We just
+> > need to
+> > agree on how to gain access to it.
+> > 
+> > In Sai's patch you objected to the following:
+> > 
+> > > +     struct task_struct *task = READ_ONCE(event->owner);
+> > > +
+> > > +     if (!task || is_kernel_event(event))
+> > 
+> > Would it be better to use task_nr_pid(current) instead of event->owner?
+> > The end
+> > result will be exactly the same.  There is also no need to check the
+> > validity of
+> > @current since it is a user process.
+> > 
+> 
+> We have devices deployed where these crashes are seen consistently,
+> so for some immediate relief, could we atleast get some fix in this
+> cycle without major design overhaul which would likely take more time.
+> Perhaps my first patch [1] without any check for owner or
+> I can post a new version as Suzuki suggested [2] dropping the export
+> of is_kernel_event(). Then we can always work on top of it based on the
+> conclusion of this discussion, we will atleast not have the systems
+> crash in the meantime, thoughts?
 
-I wouldn't go that far. Having a fallback is perfectly acceptible. And 
-hopefully there are at least some devices where that's good enough for 
-drivers to use.
+For the time being I think [1], exactly the way it is, is a reasonable way
+forward.
 
-If we have cases of only 'i2c-over-hid' being used (in DT), then the 
-solution is making this a schema so we can enforce that as not valid.
+Regards,
+Mathieu
 
 > 
-> 2. If there's a need for a device tree to be backward compatible, we
->    should list the device-specific compatible string and add the
->    "hid-over-i2c" fallback and the various timings.
+> [1] https://lore.kernel.org/patchwork/patch/1318098/
+> [2]
+> https://lore.kernel.org/lkml/fa6cdf34-88a0-1050-b9ea-556d0a9438cb@arm.com/
 > 
-> [1] https://lore.kernel.org/r/20201019211036.GA3595039@bogus
+> Thanks,
+> Sai
 > 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
-> Changes in v2:
-> - ("dt-bindings: HID: i2c-hid: Label this binding as deprecated") new in v2.
-> 
->  Documentation/devicetree/bindings/input/hid-over-i2c.txt | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/input/hid-over-i2c.txt b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
-> index c76bafaf98d2..733a5f053280 100644
-> --- a/Documentation/devicetree/bindings/input/hid-over-i2c.txt
-> +++ b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
-> @@ -1,5 +1,8 @@
->  * HID over I2C Device-Tree bindings
->  
-> +WARNING: this binding is deprecated.  Instead of using this, create specific
-> +bindings for each hid-over-i2c device.
-> +
->  HID over I2C provides support for various Human Interface Devices over the
->  I2C bus. These devices can be for example touchpads, keyboards, touch screens
->  or sensors.
 > -- 
-> 2.29.0.rc1.297.gfa9743e501-goog
-> 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
