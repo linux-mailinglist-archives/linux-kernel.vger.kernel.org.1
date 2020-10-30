@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BBD29FEE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 065E929FEE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 08:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726394AbgJ3Hng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 03:43:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51662 "EHLO mail.kernel.org"
+        id S1726164AbgJ3Hnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 03:43:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726054AbgJ3HlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726066AbgJ3HlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Oct 2020 03:41:04 -0400
 Received: from mail.kernel.org (ip5f5ad5bb.dynamic.kabel-deutschland.de [95.90.213.187])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95A8022243;
+        by mail.kernel.org (Postfix) with ESMTPSA id A30F622248;
         Fri, 30 Oct 2020 07:41:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1604043662;
-        bh=W7PNLmhh//aID+0WBTkeSWxEJWNoZT9N7SOJWc4l/FA=;
+        bh=9/c5OmFlR/hmRku2FTUlNg+8TtpQZ2resIqT66CTs3g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MDSZTmeulo+LBfb/X/fU4V85aJDpWS00gcBzero4Sza+K+dqvkqbzjgEKTs2U8kMp
-         oPdowqteqwb2Xe8LwyhjySvpojLoHfPkZsYJ7VJWfX4A4UVZr6m4ULduNOFx5X7MN9
-         rudHuQtooje6c5uoX78WW7bKCtQdgOrVgkREaP6w=
+        b=Zs6kTxFKDCQd9iFqeWFUy1Sk2qPPL0SnhU4x7bwyeu7gdaYZQ3A1SXpGmb4lKY0yX
+         dIGZ9KKrVGf4VR3jyzYJblymnemRwVD584F9oD0/kCzV4TJcWGFgC/8cu7Z3A8aZ7d
+         +grVaYCDseX8CFveEOxXc+vISzddYTKgRUbXK7NM=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kYP1w-004Ofo-MT; Fri, 30 Oct 2020 08:41:00 +0100
+        id 1kYP1w-004Ofq-NU; Fri, 30 Oct 2020 08:41:00 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 14/39] docs: kernel_abi.py: make it compatible with Sphinx 1.7+
-Date:   Fri, 30 Oct 2020 08:40:33 +0100
-Message-Id: <f2b25caef5db7738629773a03463908d3b39b83a.1604042072.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v2 15/39] docs: kernel_abi.py: use --enable-lineno for get_abi.pl
+Date:   Fri, 30 Oct 2020 08:40:34 +0100
+Message-Id: <d6155ab16fb7631f2fa8e7a770eae72f24bf7cc5.1604042072.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1604042072.git.mchehab+huawei@kernel.org>
 References: <cover.1604042072.git.mchehab+huawei@kernel.org>
@@ -43,78 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The same way kerneldoc.py needed changes to work with newer
-Sphinx, this script needs the same changes.
+Just like kernel-doc extension, we need to be able to identify
+what part of an imported document has issues, as reporting them
+as:
 
-While here, reorganize the include order to match kerneldoc.py.
+	get_abi.pl rest --dir $srctree/Documentation/ABI/obsolete --rst-source:1689: ERROR: Unexpected indentation.
+
+Makes a lot harder for someone to fix.
+
+It should be noticed that it the line which will be reported is
+the line where the "What:" definition is, and not the line
+with actually has an error.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/sphinx/kernel_abi.py | 39 +++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 12 deletions(-)
+ Documentation/sphinx/kernel_abi.py | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/Documentation/sphinx/kernel_abi.py b/Documentation/sphinx/kernel_abi.py
-index fe69c213716d..8601a3b75a28 100644
+index 8601a3b75a28..096dec482e96 100644
 --- a/Documentation/sphinx/kernel_abi.py
 +++ b/Documentation/sphinx/kernel_abi.py
-@@ -33,18 +33,27 @@ u"""
- """
- 
- import codecs
--import sys
+@@ -36,6 +36,7 @@ import codecs
  import os
--from os import path
  import subprocess
-+import sys
+ import sys
++import re
  
--from sphinx.ext.autodoc import AutodocReporter
-+from os import path
+ from os import path
  
--from docutils import nodes
--from docutils.parsers.rst import Directive, directives
-+from docutils import nodes, statemachine
- from docutils.statemachine import ViewList
-+from docutils.parsers.rst import directives, Directive
- from docutils.utils.error_reporting import ErrorString
+@@ -93,7 +94,7 @@ class KernelCmd(Directive):
  
-+#
-+# AutodocReporter is only good up to Sphinx 1.7
-+#
-+import sphinx
+         env = doc.settings.env
+         cwd = path.dirname(doc.current_source)
+-        cmd = "get_abi.pl rest --dir "
++        cmd = "get_abi.pl rest --enable-lineno --dir "
+         cmd += self.arguments[0]
+ 
+         srctree = path.abspath(os.environ["srctree"])
+@@ -137,7 +138,7 @@ class KernelCmd(Directive):
+                               % (self.name, ErrorString(exc)))
+         return out
+ 
+-    def nestedParse(self, lines, fname):
++    def nestedParse(self, lines, f):
+         content = ViewList()
+         node    = nodes.section()
+ 
+@@ -147,8 +148,17 @@ class KernelCmd(Directive):
+                 code_block += "\n    " + l
+             lines = code_block + "\n\n"
+ 
+-        for c, l in enumerate(lines.split("\n")):
+-            content.append(l, fname, c)
++        line_regex = re.compile("^#define LINENO (\S+)\#([0-9]+)$")
++        ln = 0
 +
-+Use_SSI = sphinx.__version__[:3] >= '1.7'
-+if Use_SSI:
-+    from sphinx.util.docutils import switch_source_input
-+else:
-+    from sphinx.ext.autodoc import AutodocReporter
- 
- __version__  = '1.0'
- 
-@@ -142,11 +151,17 @@ class KernelCmd(Directive):
-             content.append(l, fname, c)
++        for line in lines.split("\n"):
++            match = line_regex.search(line)
++            if match:
++                f = match.group(1)
++                # sphinx counts lines from 0
++                ln = int(match.group(2)) - 1
++            else:
++                content.append(line, f, ln)
  
          buf  = self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter
--        self.state.memo.title_styles  = []
--        self.state.memo.section_level = 0
--        self.state.memo.reporter      = AutodocReporter(content, self.state.memo.reporter)
--        try:
--            self.state.nested_parse(content, 0, node, match_titles=1)
--        finally:
--            self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter = buf
-+
-+        if Use_SSI:
-+            with switch_source_input(self.state, content):
-+                self.state.nested_parse(content, 0, node, match_titles=1)
-+        else:
-+            self.state.memo.title_styles  = []
-+            self.state.memo.section_level = 0
-+            self.state.memo.reporter      = AutodocReporter(content, self.state.memo.reporter)
-+            try:
-+                self.state.nested_parse(content, 0, node, match_titles=1)
-+            finally:
-+                self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter = buf
-+
-         return node.children
+ 
 -- 
 2.26.2
 
