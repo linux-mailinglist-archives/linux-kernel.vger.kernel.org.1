@@ -2,127 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE1F2A0B04
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 691672A0B07
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgJ3QXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:23:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38766 "EHLO mx2.suse.de"
+        id S1726482AbgJ3QYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:24:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725922AbgJ3QXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:23:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604074989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=64gR4AhnvtOA27gAC9tqrXw7cMfiN953TiGFaLX23T4=;
-        b=dWZtJF9lR4GPm6LH/wln66pxL5AkWykOesxPPHzfAIz0AC48Y/rs/Nr6Uph9uxvRrleQ/M
-        AKKRSRSDGPmSQe4ehHkP8GWXObZDrWLZbU0rVZ5502SDCgceWgmKCkIf/M8Sw6EgD8yUsR
-        eIjMtA0+CvpiSrJEth44Ygrpk1rFBKs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 64EC1ACF5;
-        Fri, 30 Oct 2020 16:23:09 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 17:23:08 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Willy Tarreau <w@1wt.eu>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Arpitha Raghunandan <98.arpi@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-Subject: Re: [PATCH 3/4] kselftest_module.h: add struct rnd_state and seed
- parameter
-Message-ID: <20201030162308.GD20201@alley>
-References: <20201025214842.5924-1-linux@rasmusvillemoes.dk>
- <20201025214842.5924-4-linux@rasmusvillemoes.dk>
+        id S1725844AbgJ3QYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:24:43 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6EE020A8B;
+        Fri, 30 Oct 2020 16:24:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604075082;
+        bh=JsEAfGGgoOV85RaVdC5H8YDmaqo/M0m8S3exAQEGvmI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mk0rODp+2RGw0c85aihYBKBFpCgl/1h4tNccV3Iq5LT510uI7O/GYH9VqdtGLy4dy
+         9bNAg+TJWTLJj6geLwsawPpm4jO09ieIhXr3+q/vTB+AoeYcWBjjpPh0CC+KOtUbHp
+         TADzb4NTvF7Wl2F6WUuuGARezXxw4Uv96M3I5u8Q=
+Received: by pali.im (Postfix)
+        id 39EB486D; Fri, 30 Oct 2020 17:24:39 +0100 (CET)
+Date:   Fri, 30 Oct 2020 17:24:39 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "aaptel@suse.com" <aaptel@suse.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "joe@perches.com" <joe@perches.com>,
+        "mark@harmstone.com" <mark@harmstone.com>,
+        "nborisov@suse.com" <nborisov@suse.com>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "anton@tuxera.com" <anton@tuxera.com>
+Subject: Re: [PATCH v11 00/10] NTFS read-write driver GPL implementation by
+ Paragon Software
+Message-ID: <20201030162439.byd6p3flwjyimuae@pali>
+References: <20201030150239.3957156-1-almaz.alexandrovich@paragon-software.com>
+ <20201030152450.77mtzkxjove36qfd@pali>
+ <5313baaad14c40d09738bf63e4659ac9@paragon-software.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201025214842.5924-4-linux@rasmusvillemoes.dk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5313baaad14c40d09738bf63e4659ac9@paragon-software.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 2020-10-25 22:48:41, Rasmus Villemoes wrote:
-> Some test suites make use of random numbers to increase the test
-> coverage when the test suite gets run on different machines and
-> increase the chance of some corner case bug being discovered - and I'm
-> planning on extending some existing ones in that direction as
-> well. However, should a bug be found this way, it's important that the
-> exact same series of tests can be repeated to verify the bug is
-> fixed. That means the random numbers must be obtained
-> deterministically from a generator private to the test module.
-> 
-> To avoid adding boilerplate to various test modules, put some logic
-> into kselftest_module.h: If the module declares that it will use
-> random numbers, add a "seed" module parameter. If not explicitly given
-> when the module is loaded (or via kernel command line), obtain a
-> random one. In either case, print the seed used, and repeat that
-> information if there was at least one test failing.
-> 
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> ---
->  tools/testing/selftests/kselftest_module.h | 35 ++++++++++++++++++++--
->  1 file changed, 32 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kselftest_module.h b/tools/testing/selftests/kselftest_module.h
-> index c81c0b0c054befaf665b..43f3ca58fcd550b8ac83 100644
-> --- a/tools/testing/selftests/kselftest_module.h
-> +++ b/tools/testing/selftests/kselftest_module.h
-> @@ -3,14 +3,31 @@
->  #define __KSELFTEST_MODULE_H
->  
->  #include <linux/module.h>
-> +#include <linux/prandom.h>
-> +#include <linux/random.h>
->  
->  /*
->   * Test framework for writing test modules to be loaded by kselftest.
->   * See Documentation/dev-tools/kselftest.rst for an example test module.
->   */
->  
-> +/*
-> + * If the test module makes use of random numbers, define KSTM_RANDOM
-> + * to 1 before including this header. Then a module parameter "seed"
-> + * will be defined. If not given, a random one will be obtained. In
-> + * either case, the used seed is reported, so the exact same series of
-> + * tests can be repeated by loading the module with that seed
-> + * given.
-> + */
-> +
-> +#ifndef KSTM_RANDOM
-> +#define KSTM_RANDOM 0
-> +#endif
-> +
->  static unsigned int total_tests __initdata;
->  static unsigned int failed_tests __initdata;
-> +static struct rnd_state rnd_state __initdata;
-> +static u64 seed __initdata;
->  
->  #define KSTM_CHECK_ZERO(x) do {						\
->  	total_tests++;							\
-> @@ -22,11 +39,13 @@ static unsigned int failed_tests __initdata;
->  
->  static inline int kstm_report(unsigned int total_tests, unsigned int failed_tests)
->  {
-> -	if (failed_tests == 0)
-> +	if (failed_tests == 0) {
->  		pr_info("all %u tests passed\n", total_tests);
-> -	else
-> +	} else {
->  		pr_warn("failed %u out of %u tests\n", failed_tests, total_tests);
-> -
-> +		if (KSTM_RANDOM)
-> +			pr_info("random seed used was 0x%016llx\n", seed);
+Hello!
 
-I have a bit mixed feelings about this. It is genial and dirty hack at the
-same time ;-) Well, it is basically the same approach as with
-IS_ENABLED(CONFIG_bla_bla).
+On Friday 30 October 2020 15:51:10 Konstantin Komarov wrote:
+> From: Pali Rohár <pali@kernel.org>
+> Sent: Friday, October 30, 2020 6:25 PM
+> > To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> > Cc: linux-fsdevel@vger.kernel.org; viro@zeniv.linux.org.uk; linux-kernel@vger.kernel.org; dsterba@suse.cz; aaptel@suse.com;
+> > willy@infradead.org; rdunlap@infradead.org; joe@perches.com; mark@harmstone.com; nborisov@suse.com; linux-ntfs-
+> > dev@lists.sourceforge.net; anton@tuxera.com
+> > Subject: Re: [PATCH v11 00/10] NTFS read-write driver GPL implementation by Paragon Software
+> > 
+> > Hello and thanks for update!
+> > 
+> > I have just two comments for the last v11 version.
+> > 
+> > I really do not like nls_alt mount option and I do not think we should
+> > merge this mount option into ntfs kernel driver. Details I described in:
+> > https://lore.kernel.org/linux-fsdevel/20201009154734.andv4es3azkkskm5@pali/
+> > 
+> > tl;dr it is not systematic solution and is incompatible with existing
+> > in-kernel ntfs driver, also incompatible with in-kernel vfat, udf and
+> > ext4 (with UNICODE support) drivers. In my opinion, all kernel fs
+> > drivers which deals with UNICODE should handle it in similar way.
+> > 
+> 
+> Hello Pali! First of all, apologies for not providing a feedback on your previous
+> message regarding the 'nls_alt'. We had internal discussions on the topic and
+> overall conclusion is that: we do not want to compromise Kernel standards with
+> our submission. So we will remove the 'nls_alt' option in the next version.
+> 
+> However, there are still few points we have on the topic, please read below.
+> 
+> > It would be really bad if userspace application need to behave
+> > differently for this new ntfs driver and differently for all other
+> > UNICODE drivers.
+> > 
+> 
+> The option does not anyhow affect userspace applications. For the "default" example
+> of unzip/tar:
+> 1 - if this option is not applied (e.g. "vfat case"), trying to unzip an archive with, e.g. CP-1251,
+> names inside to the target fs volume, will return error, and issued file(s) won't be unzipped;
+> 2 - if this option is applied and "nls_alt" is set, the above case will result in unzipping all the files;
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+I understand what is the point and I'm not against discussion how to fix
+it. But it should be implemented for all filesystems with UNICODE
+semantic, so behavior would be same.
 
-Best Regards,
-Petr
+For user application point of view, behavior of vfat, ntfs, udf and ext4
+(with UNICODE support; see below) in handling file names should be very
+similar (or exactly same if fs tech details allows it).
+
+> Also, this issue in general only applies to "non-native" filesystems. I.e. ext4 is not affected by it
+> in any case, as it just stores the name as bytes, no matter what those bytes are. The above case
+> won't give an unzip error on ext4. The only symptom of this would be, maybe, "incorrect encoding"
+> marking within the listing of such files (in File Manager or Terminal, e.g. in Ubuntu), but there won't
+> be an unzip process termination with incomplete unarchived fileset, unlike it is for vfat/exfat/ntfs
+> without "nls_alt".
+
+When using ext4 in default mode then it really does not apply here. But
+I wrote that it applies for ext4 with UNICODE support. This mode needs
+to be first enabled for directory, it is relatively new feature and I do
+not know if there are users of it and how many people tried different
+crazy test scenarios with normalization, etc...
+
+> > Second comment is simplification of usage nls_load() with UTF-8 parameter
+> > which I described in older email:
+> > https://lore.kernel.org/linux-fsdevel/948ac894450d494ea15496c2e5b8c906@paragon-software.com/
+> > 
+> > You wrote that you have applied it, but seems it was lost (maybe during
+> > rebase?) as it is not present in the last v11 version.
+> > 
+> > I suggested to not use nls_load() with UTF-8 at all. Your version of
+> > ntfs driver does not use kernel's nls utf8 module for UTF-8 support, so
+> > trying to load it should be avoided. Also kernel can be compiled without
+> > utf8 nls module (which is moreover broken) and with my above suggestion,
+> > ntfs driver would work correctly. Without that suggestion, mounting
+> > would fail.
+> 
+> Thanks for pointing that out. It is likely the "nls_load()" fixes were lost during rebase.
+> Will recheck it and return them to the v12.
+
+OK!
