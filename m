@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE21A2A0AD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF972A0AD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727159AbgJ3QMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:12:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:39104 "EHLO foss.arm.com"
+        id S1727172AbgJ3QMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:12:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:39126 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727086AbgJ3QMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:12:50 -0400
+        id S1727086AbgJ3QMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:12:53 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4D521692;
-        Fri, 30 Oct 2020 09:12:49 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFA3116F2;
+        Fri, 30 Oct 2020 09:12:52 -0700 (PDT)
 Received: from eglon.eretz (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 80E0B3F719;
-        Fri, 30 Oct 2020 09:12:47 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF8BD3F719;
+        Fri, 30 Oct 2020 09:12:50 -0700 (PDT)
 From:   James Morse <james.morse@arm.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org
 Cc:     Fenghua Yu <fenghua.yu@intel.com>,
@@ -27,9 +27,9 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Jamie Iles <jamie@nuviainc.com>,
         D Scott Phillips OS <scott@os.amperecomputing.com>,
         James Morse <james.morse@arm.com>
-Subject: [PATCH 13/24] x86/resctrl: Allow different CODE/DATA configurations to be staged
-Date:   Fri, 30 Oct 2020 16:11:09 +0000
-Message-Id: <20201030161120.227225-14-james.morse@arm.com>
+Subject: [PATCH 14/24] x86/resctrl: Make update_domains() learn the affected closids
+Date:   Fri, 30 Oct 2020 16:11:10 +0000
+Message-Id: <20201030161120.227225-15-james.morse@arm.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201030161120.227225-1-james.morse@arm.com>
 References: <20201030161120.227225-1-james.morse@arm.com>
@@ -39,145 +39,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the configuration is staged via an array, allow resctrl to
-stage more than configuration at a time for a single resource and
-closid.
+Now that the closid is present in the staged configuration,
+update_domains() can learn which low/high values it should update,
+instead of being explicitly told. This paves the way for multiple
+configuration changes being staged, affecting different indexes
+in the ctrlval array.
 
-To detect that the same schema is being specified twice when the schemata
-file is written, the same slot in the staged_configuration array must be
-used for each schema. Use the conf_type enum directly as an index.
+Remove the single passed in closid, and update msr_param as each
+staged config is applied.
+
+Once the L2/L2CODE/L2DATA resources are merged this will allow
+update_domains() to be called once for the single resource, even
+when CDP is in use. This results in both CODE and DATA
+configurations being applied and the two consecutive closids being
+updated with a single smp_call_function_many().
+
+This keeps the CDP odd/even behaviour inside the arch code for resctrl,
+so that architectures that don't do this don't need to emulate it.
+
+As update_domains() applies the staged configuration to the hw_dom's
+configuration array, and updates the hardware, make it part of the
+arch code interface.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
- arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 16 ++++++++++------
- arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  5 +++--
- include/linux/resctrl.h                   |  4 +++-
- 3 files changed, 16 insertions(+), 9 deletions(-)
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 40 +++++++++++++++++------
+ arch/x86/kernel/cpu/resctrl/internal.h    |  6 ++--
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  2 +-
+ include/linux/resctrl.h                   |  1 +
+ 4 files changed, 35 insertions(+), 14 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-index b107c0202cfb..f7152c7fdc1b 100644
+index f7152c7fdc1b..91864c2e5795 100644
 --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
 +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-@@ -60,10 +60,11 @@ static bool bw_validate(char *buf, unsigned long *data, struct rdt_resource *r)
- int parse_bw(struct rdt_parse_data *data, struct resctrl_schema *s,
- 	     struct rdt_domain *d)
- {
--	struct resctrl_staged_config *cfg = &d->staged_config[0];
-+	struct resctrl_staged_config *cfg;
- 	struct rdt_resource *r = s->res;
- 	unsigned long bw_val;
+@@ -249,37 +249,44 @@ static int parse_line(char *line, struct resctrl_schema *s,
+ 	return -EINVAL;
+ }
  
-+	cfg = &d->staged_config[s->conf_type];
- 	if (cfg->have_new_ctrl) {
- 		rdt_last_cmd_printf("Duplicate domain %d\n", d->id);
- 		return -EINVAL;
-@@ -131,11 +132,12 @@ static bool cbm_validate(char *buf, u32 *data, struct rdt_resource *r)
- int parse_cbm(struct rdt_parse_data *data, struct resctrl_schema *s,
- 	      struct rdt_domain *d)
+-static void apply_config(struct rdt_hw_domain *hw_dom,
++/*
++ * Merge the staged config with the domains configuration array.
++ * Return true if changes were made.
++ */
++static bool apply_config(struct rdt_hw_domain *hw_dom,
+ 			 struct resctrl_staged_config *cfg,
+-			 cpumask_var_t cpu_mask, bool mba_sc)
++			 cpumask_var_t cpu_mask, u32 idx, bool mba_sc)
  {
--	struct resctrl_staged_config *cfg = &d->staged_config[0];
- 	struct rdtgroup *rdtgrp = data->rdtgrp;
-+	struct resctrl_staged_config *cfg;
- 	struct rdt_resource *r = s->res;
- 	u32 cbm_val;
+ 	struct rdt_domain *dom = &hw_dom->resctrl;
+ 	u32 *dc = mba_sc ? hw_dom->mbps_val : hw_dom->ctrl_val;
  
-+	cfg = &d->staged_config[s->conf_type];
- 	if (cfg->have_new_ctrl) {
- 		rdt_last_cmd_printf("Duplicate domain %d\n", d->id);
- 		return -EINVAL;
-@@ -194,6 +196,7 @@ int parse_cbm(struct rdt_parse_data *data, struct resctrl_schema *s,
- static int parse_line(char *line, struct resctrl_schema *s,
- 		      struct rdtgroup *rdtgrp)
+-	if (cfg->new_ctrl != dc[cfg->closid]) {
++	cfg->have_new_ctrl = false;
++	if (cfg->new_ctrl != dc[idx]) {
+ 		cpumask_set_cpu(cpumask_any(&dom->cpu_mask), cpu_mask);
+-		dc[cfg->closid] = cfg->new_ctrl;
++		dc[idx] = cfg->new_ctrl;
++
++		return true;
+ 	}
+ 
+-	cfg->have_new_ctrl = false;
++	return false;
+ }
+ 
+-int update_domains(struct rdt_resource *r, int closid)
++int resctrl_arch_update_domains(struct rdt_resource *r)
  {
-+	enum resctrl_conf_type t = s->conf_type;
- 	struct resctrl_staged_config *cfg;
- 	struct rdt_resource *r = s->res;
- 	struct rdt_parse_data data;
-@@ -225,7 +228,7 @@ static int parse_line(char *line, struct resctrl_schema *s,
- 			if (r->parse_ctrlval(&data, s, d))
- 				return -EINVAL;
- 			if (rdtgrp->mode ==  RDT_MODE_PSEUDO_LOCKSETUP) {
--				cfg = &d->staged_config[0];
-+				cfg = &d->staged_config[t];
- 				/*
- 				 * In pseudo-locking setup mode and just
- 				 * parsed a valid CBM that should be
-@@ -266,10 +269,11 @@ int update_domains(struct rdt_resource *r, int closid)
  	struct resctrl_staged_config *cfg;
  	struct rdt_hw_domain *hw_dom;
++	bool msr_param_init = false;
  	struct msr_param msr_param;
-+	enum resctrl_conf_type t;
+ 	enum resctrl_conf_type t;
  	cpumask_var_t cpu_mask;
  	struct rdt_domain *d;
  	bool mba_sc;
--	int cpu, i;
-+	int cpu;
+ 	int cpu;
++	u32 idx;
  
  	if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
  		return -ENOMEM;
-@@ -281,8 +285,8 @@ int update_domains(struct rdt_resource *r, int closid)
+ 
+-	msr_param.low = closid;
+-	msr_param.high = msr_param.low + 1;
+ 	msr_param.res = r;
+ 
  	mba_sc = is_mba_sc(r);
- 	list_for_each_entry(d, &r->domains, list) {
- 		hw_dom = resctrl_to_arch_dom(d);
--		for (i = 0; i < ARRAY_SIZE(d->staged_config); i++) {
--			cfg = &hw_dom->resctrl.staged_config[i];
-+		for (t = 0; t < ARRAY_SIZE(d->staged_config); t++) {
-+			cfg = &hw_dom->resctrl.staged_config[t];
+@@ -290,10 +297,23 @@ int update_domains(struct rdt_resource *r, int closid)
  			if (!cfg->have_new_ctrl)
  				continue;
  
+-			apply_config(hw_dom, cfg, cpu_mask, mba_sc);
++			idx = cfg->closid;
++			if (!apply_config(hw_dom, cfg, cpu_mask, idx, mba_sc))
++				continue;
++
++			if (!msr_param_init) {
++				msr_param.low = idx;
++				msr_param.high = idx;
++				msr_param_init = true;
++			} else {
++				msr_param.low = min(msr_param.low, idx);
++				msr_param.high = max(msr_param.high, idx);
++			}
+ 		}
+ 	}
+ 
++	msr_param.high += 1;
++
+ 	/*
+ 	 * Avoid writing the control msr with control values when
+ 	 * MBA software controller is enabled
+@@ -387,7 +407,7 @@ ssize_t rdtgroup_schemata_write(struct kernfs_open_file *of,
+ 
+ 	list_for_each_entry(s, &resctrl_all_schema, list) {
+ 		r = s->res;
+-		ret = update_domains(r, rdtgrp->closid);
++		ret = resctrl_arch_update_domains(r);
+ 		if (ret)
+ 			goto out;
+ 	}
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 5294ae0c3ed9..e86550d888cc 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -324,8 +324,8 @@ static inline struct rdt_hw_domain *resctrl_to_arch_dom(struct rdt_domain *r)
+  */
+ struct msr_param {
+ 	struct rdt_resource	*res;
+-	int			low;
+-	int			high;
++	u32			low;
++	u32			high;
+ };
+ 
+ static inline bool is_llc_occupancy_enabled(void)
+@@ -498,7 +498,7 @@ void rdt_pseudo_lock_release(void);
+ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtgrp);
+ void rdtgroup_pseudo_lock_remove(struct rdtgroup *rdtgrp);
+ struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r);
+-int update_domains(struct rdt_resource *r, int closid);
++int update_domains(struct rdt_resource *r);
+ int closids_supported(void);
+ void closid_free(int closid);
+ int alloc_rmid(void);
 diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 1092631ac0b3..5eb14dc9c579 100644
+index 5eb14dc9c579..c6689cad1ce7 100644
 --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -2747,6 +2747,7 @@ static u32 cbm_ensure_valid(u32 _val, struct rdt_resource *r)
- static int __init_one_rdt_domain(struct rdt_domain *d, struct resctrl_schema *s,
- 				 u32 closid)
- {
-+	enum resctrl_conf_type t = s-> conf_type;
- 	struct rdt_resource *r_cdp = NULL;
- 	struct resctrl_staged_config *cfg;
- 	struct rdt_domain *d_cdp = NULL;
-@@ -2758,7 +2759,7 @@ static int __init_one_rdt_domain(struct rdt_domain *d, struct resctrl_schema *s,
- 	int i;
+@@ -2870,7 +2870,7 @@ static int rdtgroup_init_alloc(struct rdtgroup *rdtgrp)
+ 				return ret;
+ 		}
  
- 	rdt_cdp_peer_get(r, d, &r_cdp, &d_cdp);
--	cfg = &d->staged_config[0];
-+	cfg = &d->staged_config[t];
- 	cfg->have_new_ctrl = false;
- 	cfg->new_ctrl = r->cache.shareable_bits;
- 	used_b = r->cache.shareable_bits;
-@@ -2843,7 +2844,7 @@ static void rdtgroup_init_mba(struct rdt_resource *r, u32 closid)
- 	struct rdt_domain *d;
- 
- 	list_for_each_entry(d, &r->domains, list) {
--		cfg = &d->staged_config[0];
-+		cfg = &d->staged_config[CDP_BOTH];
- 		cfg->new_ctrl = is_mba_sc(r) ? MBA_MAX_MBPS : r->default_ctrl;
- 		cfg->closid = closid;
- 		cfg->have_new_ctrl = true;
+-		ret = update_domains(r, rdtgrp->closid);
++		ret = resctrl_arch_update_domains(r);
+ 		if (ret < 0) {
+ 			rdt_last_cmd_puts("Failed to initialize allocations\n");
+ 			return ret;
 diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index 695247c08ba3..e33d6dfce8a1 100644
+index e33d6dfce8a1..2b3828df13cf 100644
 --- a/include/linux/resctrl.h
 +++ b/include/linux/resctrl.h
-@@ -25,6 +25,8 @@ enum resctrl_conf_type {
- 	CDP_CODE,
- 	CDP_DATA,
- };
-+#define NUM_CDP_TYPES	CDP_DATA + 1
-+
+@@ -203,5 +203,6 @@ struct resctrl_schema {
  
- /**
-  * struct resctrl_staged_config - parsed configuration to be applied
-@@ -67,7 +69,7 @@ struct rdt_domain {
- 	int				cqm_work_cpu;
+ /* The number of closid supported by this resource regardless of CDP */
+ u32 resctrl_arch_get_num_closid(struct rdt_resource *r);
++int resctrl_arch_update_domains(struct rdt_resource *r);
  
- 	struct pseudo_lock_region	*plr;
--	struct resctrl_staged_config	staged_config[1];
-+	struct resctrl_staged_config	staged_config[NUM_CDP_TYPES];
- };
- 
- /**
+ #endif /* _RESCTRL_H */
 -- 
 2.28.0
 
