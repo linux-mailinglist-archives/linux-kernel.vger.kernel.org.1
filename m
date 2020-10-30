@@ -2,195 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F442A0EE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD65E2A0EEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgJ3Tz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 15:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
+        id S1727249AbgJ3T42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 15:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726072AbgJ3Tzz (ORCPT
+        with ESMTP id S1726163AbgJ3T41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:55:55 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E4DC0613CF;
-        Fri, 30 Oct 2020 12:55:55 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id w14so7715872wrs.9;
-        Fri, 30 Oct 2020 12:55:55 -0700 (PDT)
+        Fri, 30 Oct 2020 15:56:27 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB46C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:56:27 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id w5so3304624qvn.12
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:56:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zpVQTZD78OFj17EEqoZI735YgM/3UTX6XH/7k9Whf2U=;
-        b=sLn5EyrRI+HXn2QKUwzYzIBkHbpBFnyBhAblOjMkvzQxL6W6S9vUEgx1xl6qGurkZ8
-         5F1r+y2W6T1sVf2BXy7NpTBNufgQ8HFA+KX8VOpsJvyGb1pA6gtj+atqQy2U1fL01Bn4
-         pronZdO2RC1SqiFsc7+wwwo4qdCEAaATMKr8sWM+7grwnPy9rFYhI9Eovl8lahgFdmvT
-         Sd9KzQKlLVaUGixS7DTiVR+BypwEV0VzOwTtE1NIE63ZY+F4RT9T4xrdXARMC7EUWRzO
-         VihobCoVfhJTjNGh+wCGvalOLhs9xwyLFFOJD4gna3QihS28cNmghg5ECR0krYqS3Vvj
-         vtfA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xCXdIDDEOQ4sp35BxxEEwDK4u7wEsOXSjw7fR5lQ1JM=;
+        b=vSrIWJfPbZcyzboU1vKIyWhst9w6jkZcPg2Fd/Tyr/+5CsiSbu6ptsTz5Soh4jBnSD
+         3d1HnaDhJZn9EjJglKvv49w7CobE+jurkMtZr4ontDfkag7fi8SMbKRE9K9iDEHM8d/r
+         b8PaN2BYUxO4vhprE3ysd+Nz+bafxOlSE52B/xKdBxRMgEE82BqyuUTkV/sN9j1nm33W
+         5pwRVCFeS/MgH+7kB9uvyyhPHbpiukb9ZrmJCP4YffU4dVFLpi0rS8nLvgsZQvkPSGxm
+         A0+7Vg38JWaO54eyWDMDNHz8l0xAi5gk8+WQSphC/9CaBpqNYnuF2s2KwntRGphDdthR
+         J1Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zpVQTZD78OFj17EEqoZI735YgM/3UTX6XH/7k9Whf2U=;
-        b=WgmDo/JvuSNmHK+lIA/q11nw4HE5uZWurIyUVB9DoDYRxwWyaB6tOXO6ASyoHyaFBT
-         dA2BjuSmAYNxDiEJvhCr4f7WhFxVR09jeS3WxugWxRNdVY8xC3VElBRsM7a4Ryi8DJ/T
-         dyGklFI4Lah7W6bFke8YM859vKZkM6MHcQ3blsXdSK5N8aYgFDcsPEVNQDawcBG8/2mq
-         XBG8YGSWDyHhf8UNO312V3uv+iM6RLAMSLo5TzUA9l18UHCkUR3/hwHQis0AG0Y0LBN3
-         mAiAW0moY51AJXQyCnmT84nm9BEsz92U3rI+fLNKxjNgn7VfP3j45uufAJ4hnhGWgnA6
-         ZZhA==
-X-Gm-Message-State: AOAM530aZBcS4yoRhptwGTyBY97Sxpn9RmI0k9e0zQwYMQ3MI/ruO9ys
-        uDTHd9vQ4w18ffk9ETb7R5W/UdL2yj4=
-X-Google-Smtp-Source: ABdhPJx9lYgf0Ot8qdXeswlsg3TuED5/IA6AqVFo/gIDTHXwLsCwlDTjylnofYeA8rSvh8sILF1DDg==
-X-Received: by 2002:adf:ce0b:: with SMTP id p11mr5123884wrn.318.1604087753322;
-        Fri, 30 Oct 2020 12:55:53 -0700 (PDT)
-Received: from ?IPv6:2001:a61:245a:d801:2e74:88ad:ef9:5218? ([2001:a61:245a:d801:2e74:88ad:ef9:5218])
-        by smtp.gmail.com with ESMTPSA id q2sm11387412wrw.40.2020.10.30.12.55.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 12:55:51 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] futex.2: Use appropriate types
-To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
-References: <20201030123956.36169-1-colomar.6.4.3@gmail.com>
- <20201030123956.36169-2-colomar.6.4.3@gmail.com>
- <bfffdeae-26e6-0469-f9af-f48b3b60a363@gmail.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <fc43c725-163c-ebcf-df33-a9a9aef188d8@gmail.com>
-Date:   Fri, 30 Oct 2020 20:55:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xCXdIDDEOQ4sp35BxxEEwDK4u7wEsOXSjw7fR5lQ1JM=;
+        b=j8bi8Htp6A/xX5HOWEijIlsvgGYARad7EdsZqNWM/mLCxCAnecv5tl7soi8MSxAncE
+         EDDMRN/1Xg9098s0niI1YZshch5qC1NfdpgBkgys8fbtpQKAPM7U2sbGmnEduD/SnFJO
+         hTDKC+rp8zCPAL0a4TFos77QHCR9YGJL+UrAB5B2VrEDHa1MlL49BT6rpt4vWWrx37nw
+         CCnL791YL8zY63LUi/AsP7q/5Slx5xsEtmxSWQ/52fPGCiO87vsQ37Ij9qriucLiirXc
+         dtgBu53WxpQwJnZevHwvOpShLfwrbsGbwQC9x27I5Hsi6Qhm3XXvVU0y8F3KCY9IB3ld
+         pRxQ==
+X-Gm-Message-State: AOAM533nQf7SO3A/MPeKSOrjIc6yvdiJUhdYYCZLWiGed2juTjwYOVGq
+        kZi/UU5YUPUoyXVl3Z0sOMqXVqq3tAL64JnPrMnJwA==
+X-Google-Smtp-Source: ABdhPJxs/TiX12vaQ2OCHQSHT0seDFqKNQ1HIDLofONsrmnhk8Sokx0OyG77Wl1u033wcuYrmkJaHnokNGqh8OxS2bo=
+X-Received: by 2002:a0c:8d8b:: with SMTP id t11mr11297208qvb.13.1604087786355;
+ Fri, 30 Oct 2020 12:56:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <bfffdeae-26e6-0469-f9af-f48b3b60a363@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <0000000000008caae305ab9a5318@google.com> <000000000000a726a405ada4b6cf@google.com>
+ <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com>
+ <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com>
+ <CACT4Y+Yyxdju4FR-E3bc5ERM6xhecnos6mkJR5==xS+RS_DUuw@mail.gmail.com> <CAJfpegsAabASuHYtoi_DoooV1vM7Evfrd8ESZDDTx2oXHiR6cw@mail.gmail.com>
+In-Reply-To: <CAJfpegsAabASuHYtoi_DoooV1vM7Evfrd8ESZDDTx2oXHiR6cw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 30 Oct 2020 20:56:14 +0100
+Message-ID: <CACT4Y+a2aSoEZpytAGKnx77a012z0yzOSu6P2rKQpoBYFBzBDg@mail.gmail.com>
+Subject: Re: general protection fault in security_inode_getattr
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+On Fri, Oct 30, 2020 at 8:21 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
+> > > On Mon, Aug 24, 2020 at 11:00 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > > >
+> > > > On Mon, Aug 24, 2020 at 9:37 PM syzbot
+> > > > <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com> wrote:
+> > > > > syzbot has found a reproducer for the following issue on:
+> > > >
+> > > > Looping in fsdevel and OverlayFS maintainers, as this seems to be
+> > > > FS/OverlayFS related...
+> > >
+> > > Hmm, the oopsing code is always something like:
+> > >
+> > > All code
+> > > ========
+> > >    0: 1b fe                sbb    %esi,%edi
+> > >    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
+> > >    6: 48 89 d8              mov    %rbx,%rax
+> > >    9: 48 c1 e8 03          shr    $0x3,%rax
+> > >    d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
+> > >   12: 74 08                je     0x1c
+> > >   14: 48 89 df              mov    %rbx,%rdi
+> > >   17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
+> > >   1c: 48 8b 1b              mov    (%rbx),%rbx
+> > >   1f: 48 83 c3 68          add    $0x68,%rbx
+> > >   23: 48 89 d8              mov    %rbx,%rax
+> > >   26: 48 c1 e8 03          shr    $0x3,%rax
+> > >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+> > >   2f: 74 08                je     0x39
+> > >   31: 48 89 df              mov    %rbx,%rdi
+> > >   34: e8 9f b4 5b fe        callq  0xfffffffffe5bb4d8
+> > >   39: 48 8b 1b              mov    (%rbx),%rbx
+> > >   3c: 48 83 c3 0c          add    $0xc,%rbx
+> > >
+> > >
+> > > And that looks (to me) like the unrolled loop in call_int_hook().  I
+> > > don't see how that could be related to overlayfs, though it's
+> > > definitely interesting why it only triggers from
+> > > overlay->vfs_getattr()->security_inode_getattr()...
+> >
+> >
+> > >   26: 48 c1 e8 03          shr    $0x3,%rax
+> > >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+> >
+> >
+> > This access is part of KASAN check. But the original address kernel
+> > tries to access is NULL, so it's not an issue with KASAN.
+> >
+> > The line is this:
+> >
+> > int security_inode_getattr(const struct path *path)
+> > {
+> >     if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
+> >         return 0;
+> >
+> > So it's either path is NULL, or something in d_backing_inode
+> > dereferences NULL path->dentry.
+> >
+> > The reproducer does involve overlayfs:
+> >
+> > mkdir(&(0x7f0000000240)='./file1\x00', 0x0)
+> > mkdir(&(0x7f0000000300)='./bus\x00', 0x0)
+> > r0 = creat(&(0x7f00000000c0)='./bus/file1\x00', 0x0)
+> > mkdir(&(0x7f0000000080)='./file0\x00', 0x0)
+> > mount$overlay(0x400002, &(0x7f0000000000)='./bus\x00',
+> > &(0x7f0000000100)='overlay\x00', 0x0,
+> > &(0x7f00000003c0)=ANY=[@ANYBLOB='upperdir=./file1,lowerdir=./bus,workdir=./file0,metacopy=on'])
+> > link(&(0x7f0000000200)='./bus/file1\x00', &(0x7f00000002c0)='./bus/file0\x00')
+> > write$RDMA_USER_CM_CMD_RESOLVE_ADDR(r0, 0x0, 0x0)
+> > acct(&(0x7f0000000040)='./bus/file0\x00')
+> >
+> > Though, it may be overlayfs-related, or it may be a generic bug that
+> > requires a tricky reproducer and the only reproducer syzbot come up
+> > with happened to involve overlayfs.
+> > But there are 4 reproducers on syzbot dashboard and all of them
+> > involve overlayfs and they are somewhat different. So my bet would be
+> > on overlayfs.
+>
+> Seems there's no C reproducer, though.   Can this be reproduced
+> without KASAN obfuscating the oops?
 
-On 10/30/20 2:46 PM, Alejandro Colomar wrote:
-> BTW, apparently the kernel doesn't use 'const' for 'utime'
-> ('timeout' in the manual page),
-> but effectively, it doesn't modify it, AFAICS.
-> 
-> Should the kernel use 'const'?
-> Is there a reason for the kernel not using 'const'?
-> Should we do anything about it in the manual page?
+I guess so.
+If you are interest in what exact field is NULL, I think there is
+enough info in the asm already:
 
-I'm not sure about the kernel, but I think we don't need to 
-worry in the manual page.
+> > >    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
+> > >    6: 48 89 d8              mov    %rbx,%rax
+> > >    9: 48 c1 e8 03          shr    $0x3,%rax
+> > >    d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
+> > >   12: 74 08                je     0x1c
+> > >   14: 48 89 df              mov    %rbx,%rdi
+> > >   17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
+> > >   1c: 48 8b 1b              mov    (%rbx),%rbx
+> > >   1f: 48 83 c3 68          add    $0x68,%rbx
+> > >   23: 48 89 d8              mov    %rbx,%rax
+> > >   26: 48 c1 e8 03          shr    $0x3,%rax
+> > >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
 
-Thanks,
+The access via the NULL pointer happens with offset 0x68:
 
-Michael
+> > >   1f: 48 83 c3 68          add    $0x68,%rbx
 
-> On 2020-10-30 13:39, Alejandro Colomar wrote:
->> The Linux kernel uses the following:
->>
->> kernel/futex.c:3778:
->> SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
->> 		struct __kernel_timespec __user *, utime, u32 __user *, uaddr2,
->> 		u32, val3)
->>
->> Since there is no glibc wrapper, use the same types the kernel uses.
->>
->> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
->> ---
->>   man2/futex.2 | 27 ++++++++++++++-------------
->>   1 file changed, 14 insertions(+), 13 deletions(-)
->>
->> diff --git a/man2/futex.2 b/man2/futex.2
->> index 837adbd25..73de71623 100644
->> --- a/man2/futex.2
->> +++ b/man2/futex.2
->> @@ -26,12 +26,13 @@ futex \- fast user-space locking
->>   .nf
->>   .PP
->>   .B #include <linux/futex.h>
->> +.B #include <stdint.h>
->>   .B #include <sys/time.h>
->>   .PP
->> -.BI "int futex(int *" uaddr ", int " futex_op ", int " val ,
->> +.BI "long futex(uint32_t *" uaddr ", int " futex_op ", uint32_t " val ,
->>   .BI "          const struct timespec *" timeout , \
->>   " \fR  /* or: \fBuint32_t \fIval2\fP */"
->> -.BI "          int *" uaddr2 ", int " val3 );
->> +.BI "          uint32_t *" uaddr2 ", uint32_t " val3 );
->>   .fi
->>   .PP
->>   .IR Note :
->> @@ -581,8 +582,8 @@ any of the two supplied futex words:
->>   .IP
->>   .in +4n
->>   .EX
->> -int oldval = *(int *) uaddr2;
->> -*(int *) uaddr2 = oldval \fIop\fP \fIoparg\fP;
->> +uint32_t oldval = *(uint32_t *) uaddr2;
->> +*(uint32_t *) uaddr2 = oldval \fIop\fP \fIoparg\fP;
->>   futex(uaddr, FUTEX_WAKE, val, 0, 0, 0);
->>   if (oldval \fIcmp\fP \fIcmparg\fP)
->>       futex(uaddr2, FUTEX_WAKE, val2, 0, 0, 0);
->> @@ -1765,11 +1766,11 @@ Child  (18535) 4
->>   #define errExit(msg)    do { perror(msg); exit(EXIT_FAILURE); \e
->>                           } while (0)
->>   
->> -static int *futex1, *futex2, *iaddr;
->> +static uint32_t *futex1, *futex2, *iaddr;
->>   
->>   static int
->> -futex(int *uaddr, int futex_op, int val,
->> -      const struct timespec *timeout, int *uaddr2, int val3)
->> +futex(uint32_t *uaddr, int futex_op, uint32_t val,
->> +      const struct timespec *timeout, uint32_t *uaddr2, uint32_t val3)
->>   {
->>       return syscall(SYS_futex, uaddr, futex_op, val,
->>                      timeout, uaddr2, val3);
->> @@ -1779,9 +1780,9 @@ futex(int *uaddr, int futex_op, int val,
->>      become 1, and then set the value to 0. */
->>   
->>   static void
->> -fwait(int *futexp)
->> +fwait(uint32_t *futexp)
->>   {
->> -    int s;
->> +    long s;
->>   
->>       /* atomic_compare_exchange_strong(ptr, oldval, newval)
->>          atomically performs the equivalent of:
->> @@ -1794,7 +1795,7 @@ fwait(int *futexp)
->>       while (1) {
->>   
->>           /* Is the futex available? */
->> -        const int one = 1;
->> +        const uint32_t one = 1;
->>           if (atomic_compare_exchange_strong(futexp, &one, 0))
->>               break;      /* Yes */
->>   
->> @@ -1811,13 +1812,13 @@ fwait(int *futexp)
->>      so that if the peer is blocked in fpost(), it can proceed. */
->>   
->>   static void
->> -fpost(int *futexp)
->> +fpost(uint32_t *futexp)
->>   {
->> -    int s;
->> +    long s;
->>   
->>       /* atomic_compare_exchange_strong() was described in comments above */
->>   
->> -    const int zero = 0;
->> +    const uint32_t zero = 0;
->>       if (atomic_compare_exchange_strong(futexp, &zero, 1)) {
->>           s = futex(futexp, FUTEX_WAKE, 1, NULL, NULL, 0);
->>           if (s  == \-1)
->>
+So we just need to find what's here accesses with offset 0x68:
 
+> >     if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
 
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+And that pointer itself was loaded from something at offset 0x8 previously:
+
+> > >    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
