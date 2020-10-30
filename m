@@ -2,82 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A863229FAC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:50:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D05B29FACA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgJ3BuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 21:50:25 -0400
-Received: from ozlabs.org ([203.11.71.1]:47561 "EHLO ozlabs.org"
+        id S1726148AbgJ3BwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 21:52:13 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:59408 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgJ3BuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 21:50:23 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1725372AbgJ3BwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 21:52:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604022731; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=AiiVdcj6bYFwhyVGIXgAGlkRkHLNXBDjK0b11X3URuQ=; b=er063QoJeSea4UAjwxx/KRNCEAF2uVmmJ1azvR0GZDxRPQWrQpAQjoaiSUFTIKAfT5wJ4Q/J
+ G+MUq1EwHcTOa1lxBdaDfK+g20QjuQVCYZT3YJrox+eBZkiWRNA8YW6O7jTYVowVy7obWRuZ
+ pJU8Khypvn3narBgQFphWtUVxpU=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f9b71cbfc3d7f56d0d0841a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 01:52:11
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D09DBC433C6; Fri, 30 Oct 2020 01:52:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CMlcq2YWZz9sTR;
-        Fri, 30 Oct 2020 12:50:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604022619;
-        bh=9/i0rv9ZLGsFDVVuaKTfoc2P51VClvw0Z+tQAsiLhLM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=m/Nl+BwHSu38fJcsVYXvtMNL1KVevqwJRdtcnG7X5UyuJwyo0rE4ZoMooen01F+vZ
-         YDZkrxXCcSyAzNfntjiqaB4GbMXlfQDbNut8lu/KndBTHK48II4cM/PddZIkGY2ICE
-         Fn7Yh2MtrqlPR01b06ZRXBuKCXwbFF8ln1VaXCOc11ytF7t8t3YkoNIhB608MthtdM
-         8JB07k/Unc1wgcZM/rd7EV5xMZYk4JQRlDAZRxW4lwCIXdDdJrK2u1ILoiJSQ5WVNO
-         7uN4nh9yba84q90abbcYqXKmEoWEwbjcW4StLkP9qmC9JwSYtn0vPZOvOVsTOTHswh
-         9HhIAmF5xhxGg==
-Date:   Fri, 30 Oct 2020 12:50:16 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jianqun Xu <jay.xu@rock-chips.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the pinctrl tree
-Message-ID: <20201030125016.3423d2fe@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/bDW6QLZGF7o1o6ih4EpN+_R";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EFC22C433C8;
+        Fri, 30 Oct 2020 01:52:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EFC22C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v2 00/12] Bug fixes and improvements for MHI power operations
+Date:   Thu, 29 Oct 2020 18:51:51 -0700
+Message-Id: <1604022723-34578-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/bDW6QLZGF7o1o6ih4EpN+_R
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+v2:
+-Addressed patches based on review comments and made improvements
+-Added bus: mhi: core: Check for IRQ availability during registration
+-Dropped bus: mhi: core: Use the IRQF_ONESHOT flag for the BHI interrupt line
+-Split bus: mhi: core: Move to an error state on any firmware load failure
+-Modified the following patches:
+-bus: mhi: core: Disable IRQs when powering down
+-bus: mhi: core: Improve shutdown handling after link down detection
+-bus: mhi: core: Mark device inactive soon after host issues a shutdown
+-bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability
+-Addressed the above as follow-up patches with improvements:
+-bus: mhi: core: Prevent sending multiple RDDM entry callbacks
+-bus: mhi: core: Separate system error and power down handling
+-bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
 
-Hi all,
+Bug fixes and improvements for MHI powerup and shutdown handling.
+Firmware load function names are updated to accurately reflect their purpose.
+Closed certain design gaps where the host (MHI bus) would allow clients to
+operate after a power down or error detection.
+Move to an error state sooner based on different scenarios.
 
-After merging the pinctrl tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+These patches were tested on arm64 and X86_64 architectures.
 
-ERROR: modpost: "irq_gc_set_wake" [drivers/pinctrl/pinctrl-rockchip.ko] und=
-efined!
+Bhaumik Bhatt (12):
+  bus: mhi: core: Use appropriate names for firmware load functions
+  bus: mhi: core: Move to using high priority workqueue
+  bus: mhi: core: Skip device wake in error or shutdown states
+  bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability
+  bus: mhi: core: Prevent sending multiple RDDM entry callbacks
+  bus: mhi: core: Move to an error state on any firmware load failure
+  bus: mhi: core: Use appropriate label in firmware load handler API
+  bus: mhi: core: Move to an error state on mission mode failure
+  bus: mhi: core: Check for IRQ availability during registration
+  bus: mhi: core: Separate system error and power down handling
+  bus: mhi: core: Mark and maintain device states early on after power
+    down
+  bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
 
-Caused by commit
+ drivers/bus/mhi/core/boot.c |  60 ++++++-----
+ drivers/bus/mhi/core/init.c |  10 +-
+ drivers/bus/mhi/core/main.c |  16 +--
+ drivers/bus/mhi/core/pm.c   | 236 ++++++++++++++++++++++++++++++++------------
+ include/linux/mhi.h         |   2 +
+ 5 files changed, 225 insertions(+), 99 deletions(-)
 
-  6c684f5e79ea ("pinctrl: rockchip: make driver be tristate module")
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-I have reverted that commit for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/bDW6QLZGF7o1o6ih4EpN+_R
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+bcVgACgkQAVBC80lX
-0GzC4gf/RCZiSfx3wR1RAM0zdBCwDN4HdfpakKVi94J27CRgQrOhAf3HXG+Bg1sp
-m6oXkWKlifXBMJxiYpO3kG9N1lxm0WqcHGdQSQUnmERS+wYU7ZnJBYMYVtYEEZVm
-cRuTF0rv83NgeL1wdViHOvwrcB0dmzKwfFO57Doy4zacduKPm7rBLO02P9rhd24I
-J8hTIDH7aAr2uOPRe/fDlZJNFeTviurruvIPUWQXNisU7JFYrufW3sQbwvz1+Y/R
-OmvbdH07x7V/jfhjr5NqnHVvnePIPt721U8sc+ry2Ri+7LT30LIJZfCvXLCSKz+6
-Qfm8DfO7HfFBKpHllPpX2PQlJtxy6g==
-=V76Z
------END PGP SIGNATURE-----
-
---Sig_/bDW6QLZGF7o1o6ih4EpN+_R--
