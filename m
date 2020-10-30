@@ -2,74 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48E22A0DAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 456642A0DB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727331AbgJ3SoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:44:09 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:38640 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgJ3SoJ (ORCPT
+        id S1727334AbgJ3SpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:45:22 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:45099 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727234AbgJ3SpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:44:09 -0400
-Received: by mail-ot1-f67.google.com with SMTP id b2so6450709ots.5;
-        Fri, 30 Oct 2020 11:44:08 -0700 (PDT)
+        Fri, 30 Oct 2020 14:45:21 -0400
+Received: by mail-ot1-f68.google.com with SMTP id f37so6429559otf.12;
+        Fri, 30 Oct 2020 11:45:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gcNHJHCau2pOQDpyrZFfl1xJmZDsePWMpoESjYncX1c=;
-        b=djzc+nyU1mUonI5WezInvuY4FHaTWxjSZR3tQm7nRzG/EhiHq5HlRS5cnpT7Kp2rD3
-         8VZyXTwGnA8TBkyA/HUKqfj5BjcL+iHKquHAq6+1lvS515gR+2I4kdM7S0j7Qr0pP/+x
-         w8ggTGfOFTUCIUGW4fquCI2t5+KsCWrWOiEqBtP8BYE/ICTveVXnxe0OmIIg1lHl+Sc4
-         HnociNBzCir2cws8G5T2I6+blFp5eh9xeJNE75QkwY2Kfy50XAwzD+X6DGLNN+lt0ZFN
-         QiATuXrpvTehRqadUpmztVT/yCGDSgcj+smD41Y37jfY+CSQTrVD9iWc+XI/vfpLiY8W
-         tNpA==
-X-Gm-Message-State: AOAM531pAlRrwB9jSh9g3YJMCedDbnyMqBXB5n19xXdF0Zn63/riyrIo
-        kmJkJOZlHDiHrrZM+u12aw==
-X-Google-Smtp-Source: ABdhPJzvm7F7vBRH4cH6t3hxs9pt9tO7//v63JS74luelUUJOxBLVqB87resXg6syLdyeUlPHUUS0w==
-X-Received: by 2002:a9d:3b4:: with SMTP id f49mr1313853otf.188.1604083448041;
-        Fri, 30 Oct 2020 11:44:08 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=vkMKJ2eqiQquOQSzTOKFv95/64lgkzU1Z0DoWHjMcuA=;
+        b=A6FgiZXY0sGrATGX7QBElPppe9uMbfAjlNfLRAQS0XDRfmjkJbZTx+v+LyzaFOdRjn
+         lqdbB6qLkmtsQr1//Q9y+LeRcqLxR3VbPRXhvx+DpJOgWh7/taqjvU9mwQaLMZ8/rTkd
+         QTGcnte6O3sHFkhajN11nwU4mqzXg1GWo7pUvUP4HsNgOxOVw4e5ZMWTAdpusqYU2DIh
+         psUTHbVs8r6qJ8RHo1aeciJMKdUIWCyGNeIy7H5PHe7YXpauJ521WgYOFryq1FtoBHTD
+         zBU2v+cmolfFDFDOC/gUqbHgK0Xr+lEcRtlkeIy+7lqRe247OVk8s89iWyOl7poOisu/
+         Cufw==
+X-Gm-Message-State: AOAM531F0HLMq7gnp13DZ+4rjydYy9Sr+fhcEPmb3uEZp5M4im+2ihip
+        1YnnsbxNu4t0NJs/AJJY9g==
+X-Google-Smtp-Source: ABdhPJz1noWcHkG0acilS14npra1FTJs7FrC7ortYfxhp6d4ZfvWMrm3RWg2qWwzEfFkMkGYTGwg2g==
+X-Received: by 2002:a05:6830:1db6:: with SMTP id z22mr2597009oti.20.1604083520849;
+        Fri, 30 Oct 2020 11:45:20 -0700 (PDT)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z8sm1470690otm.45.2020.10.30.11.44.07
+        by smtp.gmail.com with ESMTPSA id 186sm1556392ooe.20.2020.10.30.11.45.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 11:44:07 -0700 (PDT)
-Received: (nullmailer pid 4127461 invoked by uid 1000);
-        Fri, 30 Oct 2020 18:44:06 -0000
-Date:   Fri, 30 Oct 2020 13:44:06 -0500
+        Fri, 30 Oct 2020 11:45:16 -0700 (PDT)
+Received: (nullmailer pid 4129088 invoked by uid 1000);
+        Fri, 30 Oct 2020 18:45:15 -0000
+Date:   Fri, 30 Oct 2020 13:45:15 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dma-mapping: Fix 32-bit overflow with CONFIG_ARM_LPAE=n
-Message-ID: <20201030184406.GA4125298@bogus>
-References: <20201026152755.3738293-1-geert+renesas@glider.be>
- <20201027075551.GB22487@lst.de>
- <20201029155918.GA23872@lst.de>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     dongsheng.qiu@ingenic.com, rick.tyliu@ingenic.com,
+        robh+dt@kernel.org, sernia.zhou@foxmail.com, aric.pzqi@ingenic.com,
+        yanfei.li@ingenic.com, zhenwenjin@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        daniel.lezcano@linaro.org
+Subject: Re: [PATCH v3 1/1] dt-bindings: timer: Add new OST support for the
+ upcoming new driver.
+Message-ID: <20201030184515.GA4129054@bogus>
+References: <20201026155842.10196-1-zhouyanjie@wanyeetech.com>
+ <20201026155842.10196-2-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201029155918.GA23872@lst.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201026155842.10196-2-zhouyanjie@wanyeetech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 04:59:18PM +0100, Christoph Hellwig wrote:
-> On Tue, Oct 27, 2020 at 08:55:51AM +0100, Christoph Hellwig wrote:
-> > Looks good:
-> > 
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > 
-> > Rob and Frank: do you want to take this through the OF tree, or should
-> > I queue it up in the dma-mapping tree that caused the problem?
+On Mon, 26 Oct 2020 23:58:42 +0800, 周琰杰 (Zhou Yanjie) wrote:
+> The new OST has one global timer and two or four percpu timers, so there
+> will be three combinations in the upcoming new OST driver: the original
+> GLOBAL_TIMER + PERCPU_TIMER, the new GLOBAL_TIMER + PERCPU_TIMER0/1 and
+> GLOBAL_TIMER + PERCPU_TIMER0/1/2/3, For this, add the macro definition
+> about OST_CLK_PERCPU_TIMER0/1/2/3. And in order to ensure that all the
+> combinations work normally, the original ABI values of OST_CLK_PERCPU_TIMER
+> and OST_CLK_GLOBAL_TIMER need to be exchanged to ensure that in any
+> combinations, the clock can be registered (by calling clk_hw_register())
+> from index 0.
 > 
-> I've picked this up in the dma-mapping tree so that we don't miss
-> rc2.
+> Before this patch, OST_CLK_PERCPU_TIMER and OST_CLK_GLOBAL_TIMER are only
+> used in two places, one is when using "assigned-clocks" to configure the
+> clocks in the DTS file; the other is when registering the clocks in the
+> sysost driver. When the values of these two ABIs are exchanged, the ABI
+> value used by sysost driver when registering the clock, and the ABI value
+> used by DTS when configuring the clock using "assigned-clocks" will also
+> change accordingly. Therefore, there is no situation that causes the wrong
+> clock to the configured. Therefore, exchanging ABI values will not cause
+> errors in the existing codes when registering and configuring the clocks.
+> 
+> Currently, in the mainline, only X1000 and X1830 are using sysost driver,
+> and the upcoming X2000 will also use sysost driver. This patch has been
+> tested on all three SoCs and all works fine.
+> 
+> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+> 
+> Notes:
+>     v1->v2:
+>     Rewrite the commit message so that each line is less than 80 characters.
+> 
+>     v2->v3:
+>     Add the description of why the exchange of ABI values will not affect
+>     the existing driver into the commit message.
+> 
+>  include/dt-bindings/clock/ingenic,sysost.h | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
 
-Thanks.
-
-Rob
+Reviewed-by: Rob Herring <robh@kernel.org>
