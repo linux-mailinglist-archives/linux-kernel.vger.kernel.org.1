@@ -2,83 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D64F52A0A8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A41D2A0A91
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgJ3QAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:00:22 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:34631 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726120AbgJ3QAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:00:21 -0400
-Received: from [192.168.0.2] (ip5f5af1ae.dynamic.kabel-deutschland.de [95.90.241.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id C1CC220646217;
-        Fri, 30 Oct 2020 17:00:18 +0100 (CET)
-Subject: Re: [PATCH v2 1/2] init/Kconfig: Fix CPU number in
- LOG_CPU_MAX_BUF_SHIFT description
-To:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     "Luis R . Rodriguez" <mcgrof@suse.com>,
-        linux-kernel@vger.kernel.org
-References: <20200811092924.6256-1-pmenzel@molgen.mpg.de>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <d7cad0f8-5831-7730-42d5-fa6d8c46edbb@molgen.mpg.de>
-Date:   Fri, 30 Oct 2020 17:00:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726779AbgJ3QAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:00:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725844AbgJ3QAi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:00:38 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DA9C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:00:38 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id p17so3134552pli.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:00:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=kKt7pHAKQpnFJF12jxzi9fLLgrjsbw4l8hL54Ww6iU8=;
+        b=NahNG3PvD8Awiwv/sUn2qOB5hiM+g/VNjnR6xA9UfRw77lqHX8DS5k2mmtDndEYvNd
+         TcyBWTeyzvogkivnYN2KpUOchUBCBDW7MYh6c9gQrk7yQwNRehqBlVy9stqHFQCKXAxp
+         mAruZcvz17zbcOVZyupeN2LEHIVlEcuF0kA6OM7kluy4kBKGICzQO7TRVFtGhRYgm4G/
+         epGDpjWJAhgVJvmjQl9VvC9Y+rMPrLfKjO1W8hFKx/Hsjx8kxaBOgURdl7CPgVj/ADZE
+         Ry2cFQhksssN5Qc2L5GciynEZYukVYwGVdv+MPS8Jl7m/B6eenSqJIp3iOM3sAYOmzCD
+         qFnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=kKt7pHAKQpnFJF12jxzi9fLLgrjsbw4l8hL54Ww6iU8=;
+        b=V4Zm3bgxdeA+blJqJpK4ZZLippajrTRgS+6eSiDDmt2gDuOGlavDvpyDohgCa1zh9s
+         LYFJNsBQECsIp17SIdcVVklxb39EYqwp4hnSafwHDpG7z7TipKGjTBkDKO6p3Fb7GEwX
+         mnqeZwY2xKzsXw05NPtBVq+YPdFtccqhikFphf7kOM8VzPkkUkRQzlVIiBkCbnHNRO4d
+         BWwd1sdE1fJz0m19Wse/uX5gwAJ3tjiefJb/cpG1nqLEzvnA8KsWgrjEVX/tTuiEM/up
+         X76gafpqPVhfyZYRTD4fTS4BYAdjUkPV2dbP8XGzsmar6eb9gh1XdDMTu4vHVZ6Kl6BG
+         o29A==
+X-Gm-Message-State: AOAM533TdqldLwgEZ0AesLwOPKKhQRR78yUBQPh1ptRW/HGpZcbBzHc8
+        s49sxluVFw/hs+cD77X7fqj5ug==
+X-Google-Smtp-Source: ABdhPJyFHNJ15LoD22fVBqJzTUJvOmXvhHBsh0O/WA1uU8bivi1QJRg5Mzi9O6wFnruxqZUW2T202g==
+X-Received: by 2002:a17:902:8f87:b029:d6:8da3:96ec with SMTP id z7-20020a1709028f87b02900d68da396ecmr7812217plo.55.1604073637475;
+        Fri, 30 Oct 2020 09:00:37 -0700 (PDT)
+Received: from nebulus.mtv.corp.google.com ([2620:15c:211:200:4a0f:cfff:fe35:d61b])
+        by smtp.googlemail.com with ESMTPSA id e20sm6058721pgr.54.2020.10.30.09.00.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 09:00:36 -0700 (PDT)
+Subject: Re: [RESEND PATCH v18 2/4] overlayfs: handle XATTR_NOSECURITY flag
+ for get xattr method
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-kernel@vger.kernel.org,
+        kernel-team <kernel-team@android.com>,
+        linux-fsdevel@vger.kernel.org,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Amir Goldstein <amir73il@gmail.com>, linux-doc@vger.kernel.org,
+        SElinux list <selinux@vger.kernel.org>
+References: <20201021151903.652827-1-salyzyn@android.com>
+ <20201021151903.652827-3-salyzyn@android.com>
+ <CAJfpegtMoD85j5namV592sJD23QeUMD=+tq4SvFDqjVxsAszYQ@mail.gmail.com>
+From:   Mark Salyzyn <salyzyn@android.com>
+Message-ID: <2fd64e4f-c573-c841-abb6-ec0908f78cdd@android.com>
+Date:   Fri, 30 Oct 2020 09:00:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200811092924.6256-1-pmenzel@molgen.mpg.de>
+In-Reply-To: <CAJfpegtMoD85j5namV592sJD23QeUMD=+tq4SvFDqjVxsAszYQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Petr,
+On 10/30/20 8:07 AM, Miklos Szeredi wrote:
+> On Wed, Oct 21, 2020 at 5:19 PM Mark Salyzyn <salyzyn@android.com> wrote:
+>> Because of the overlayfs getxattr recursion, the incoming inode fails
+>> to update the selinux sid resulting in avc denials being reported
+>> against a target context of u:object_r:unlabeled:s0.
+>>
+>> Solution is to respond to the XATTR_NOSECURITY flag in get xattr
+>> method that calls the __vfs_getxattr handler instead so that the
+>> context can be read in, rather than being denied with an -EACCES
+>> when vfs_getxattr handler is called.
+>>
+>> For the use case where access is to be blocked by the security layer.
+>>
+>> The path then would be security(dentry) ->
+>> __vfs_getxattr({dentry...XATTR_NOSECURITY}) ->
+>> handler->get({dentry...XATTR_NOSECURITY}) ->
+>> __vfs_getxattr({realdentry...XATTR_NOSECURITY}) ->
+>> lower_handler->get({realdentry...XATTR_NOSECURITY}) which
+>> would report back through the chain data and success as expected,
+>> the logging security layer at the top would have the data to
+>> determine the access permissions and report back to the logs and
+>> the caller that the target context was blocked.
+>>
+>> For selinux this would solve the cosmetic issue of the selinux log
+>> and allow audit2allow to correctly report the rule needed to address
+>> the access problem.
+>>
+>> Check impure, opaque, origin & meta xattr with no sepolicy audit
+>> (using __vfs_getxattr) since these operations are internal to
+>> overlayfs operations and do not disclose any data.  This became
+>> an issue for credential override off since sys_admin would have
+>> been required by the caller; whereas would have been inherently
+>> present for the creator since it performed the mount.
+>>
+>> This is a change in operations since we do not check in the new
+>> ovl_do_getxattr function if the credential override is off or not.
+>> Reasoning is that the sepolicy check is unnecessary overhead,
+>> especially since the check can be expensive.
+>>
+>> Because for override credentials off, this affects _everyone_ that
+>> underneath performs private xattr calls without the appropriate
+>> sepolicy permissions and sys_admin capability.  Providing blanket
+>> support for sys_admin would be bad for all possible callers.
+>>
+>> For the override credentials on, this will affect only the mounter,
+>> should it lack sepolicy permissions. Not considered a security
+>> problem since mounting by definition has sys_admin capabilities,
+>> but sepolicy contexts would still need to be crafted.
+> This would be a problem when unprivileged mounting of overlay is
+> introduced.  I'd really like to avoid weakening the current security
+> model.
+
+The current security model does not deal with non-overlapping security 
+contexts between init (which on android has MAC permissions only when 
+necessary, only enough permissions to perform the mount and other 
+mundane operations, missing exec and read permissions in key spots) and 
+user calls.
+
+We are only weakening (that is actually an incorrect statement, security 
+is there, just not double security of both mounter and caller) the 
+security around calls that retrieve the xattr for administrative and 
+internal purposes. No data is exposed to the caller that it would not 
+otherwise have permissions for.
+
+This patch becomes necessary when matched with the PATCH v18 3/4 of the 
+series which fixes the user space break introduced in ~4.6 that formerly 
+used the callers credentials for all accesses in all places. Security is 
+weakened already as-is in overlayfs with all the overriding of the 
+credentials for internal accesses to overlayfs mechanics based on the 
+mounter credentials. Using the mounter credentials as a wider security 
+hole is the problem, at least with PATCH v18 3/4 of the series we go 
+back optionally to only using the caller's credentials to perform the 
+operations. Admittedly some of the internal operations like mknod are 
+privileged, but at least in Android's use case we are not using them 
+with callers without the necessary credentials.
+
+Android does not give the mounter more credentials than the callers, 
+there is very little overlap in the MAC security.
+
+> The big API churn in the 1/4 patch also seems excessive considering
+> that this seems to be mostly a cosmetic issue for android.  Am I
+> missing something?
+
+Breaks sepolicy, it no longer has access to the context data at the 
+overlayfs security boundary.
+
+unknown is a symptom of being denied based on the denial to xattr data 
+from the underlying filesystem layer. Being denied the security context 
+of the target is not a good thing within the sepolicy security layer.
+
+>
+> Thanks,
+> Miklos
 
 
-Am 11.08.20 um 11:29 schrieb Paul Menzel:
-> Currently, LOG_BUF_SHIFT defaults to 17, which is 2 ^ 17 bytes = 128 KB,
-> and LOG_CPU_MAX_BUF_SHIFT defaults to 12, which is 2 ^ 12 bytes = 4 KB.
-> 
-> Half of 128 KB is 64 KB, so more than 16 CPUs are required for the value
-> to be used, as then the sum of contributions is greater than 64 KB for
-> the first time. My guess is, that the description was written with the
-> configuration values used in the SUSE in mind.
-> 
-> Fixes: 23b2899f7f ("printk: allow increasing the ring buffer depending on the number of CPUs")
-> Cc: Luis R. Rodriguez <mcgrof@suse.com>
-> Cc: linux-kernel@vger.kernel.org
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
-> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> ---
-> v2: Add Reviewed-by tag
-> 
->   init/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/init/Kconfig b/init/Kconfig
-> index d6a0b31b13dc..9dc607e3806f 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -718,7 +718,7 @@ config LOG_CPU_MAX_BUF_SHIFT
->   	  with more CPUs. Therefore this value is used only when the sum of
->   	  contributions is greater than the half of the default kernel ring
->   	  buffer as defined by LOG_BUF_SHIFT. The default values are set
-> -	  so that more than 64 CPUs are needed to trigger the allocation.
-> +	  so that more than 16 CPUs are needed to trigger the allocation.
->   
->   	  Also this option is ignored when "log_buf_len" kernel parameter is
->   	  used as it forces an exact (power of two) size of the ring buffer.
-
-Could you please apply this trivial patch from the two patches already, 
-so I do not have to resend it?
-
-
-Kind regards,
-
-Paul
