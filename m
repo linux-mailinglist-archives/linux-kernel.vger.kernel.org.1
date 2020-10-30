@@ -2,119 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5F52A0678
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4DF92A0695
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgJ3Nc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 09:32:59 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:35832 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726646AbgJ3Ncy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 09:32:54 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id 86DC04139F;
-        Fri, 30 Oct 2020 13:32:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-type:content-type:content-transfer-encoding:mime-version
-        :references:in-reply-to:x-mailer:message-id:date:date:subject
-        :subject:from:from:received:received:received; s=mta-01; t=
-        1604064771; x=1605879172; bh=jqvEA3AoaceEE2lNjSnZv77OE5smrgHBaHn
-        uj5fmqlM=; b=FVWDuFVP6QiZYITr9DtLxT3YWQlN8ljJ6Ighj3Fhh8IrVTfn5bI
-        HciRL3h/LycwKIGEq70UjeeET7DClQouBO24BguNHdBSh5V/bSjpZgZBgieDJ/E3
-        rjIENV1Kt4vi6GhOaQ4p0YAGjtY6yxdCQKZLZEZxC/vBLteBsq56/Vo4=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id POV1PvMtJLWi; Fri, 30 Oct 2020 16:32:51 +0300 (MSK)
-Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 7E9004137E;
-        Fri, 30 Oct 2020 16:32:51 +0300 (MSK)
-Received: from localhost.dev.yadro.com (10.199.0.28) by
- T-EXCH-04.corp.yadro.com (172.17.100.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.669.32; Fri, 30 Oct 2020 16:32:42 +0300
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Po-Yu Chuang <ratbert@faraday-tech.com>
-CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>
-Subject: [PATCH v3 3/3] dt-bindings: net: ftgmac100: describe phy-handle and MDIO
-Date:   Fri, 30 Oct 2020 16:37:07 +0300
-Message-ID: <20201030133707.12099-4-i.mikhaylov@yadro.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20201030133707.12099-1-i.mikhaylov@yadro.com>
-References: <20201030133707.12099-1-i.mikhaylov@yadro.com>
+        id S1726590AbgJ3NiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 09:38:11 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:45479 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgJ3NiL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 09:38:11 -0400
+Received: by mail-ot1-f66.google.com with SMTP id f37so5523540otf.12;
+        Fri, 30 Oct 2020 06:38:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+NTaR+FmsROaR0mc3AxOVyIyS9PM41eAe1X9dDcISGo=;
+        b=k5DYtFWF+frKkxt0Wv4/OKpD1/T706jdv8a7hlEIus0u5Vq+lW1sKxX6V4bMKAa0D0
+         J6FuY2f7I4M7VkcNsBJYBowDyrk5TN/AuTFKS1uq3wx6xiEZNoVsa6RHBo/9qS1Lx0JF
+         wcukCDHB7s9Eram2ytY1hS33rQkozvaiqO0XWtXQIV1OwjXVc21aQZRQr9/h19o5ifj8
+         rRoEyiNDJRHqMTkZCeq0LBoF+p3kukQQHcIu43mQKhSNDKrjnMQN6e35SnAmeUcDvwcg
+         z4coyaevBfGP0pbkufMotA0LBwTZGHIeSt/Nnlvro9w7AYZE1+UeURkYjLWv2EMpPzm5
+         op8Q==
+X-Gm-Message-State: AOAM5310c3xcatf+FaUnj9Xr8wTwKZFZLwUv07c+/SUCuQO0iZcJy4Jw
+        1sZcs2wk6OcBFxyfeo4BcA==
+X-Google-Smtp-Source: ABdhPJw2DwG/OKaEJ21EJ8MvBOaMf7vQ+RMEY20B0hdl2Y4TXBFZRVC5SVhlmh9eBGawREAWfV9uYg==
+X-Received: by 2002:a05:6830:154d:: with SMTP id l13mr1814291otp.61.1604065090197;
+        Fri, 30 Oct 2020 06:38:10 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v21sm1315274ots.29.2020.10.30.06.38.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 06:38:08 -0700 (PDT)
+Received: (nullmailer pid 3727265 invoked by uid 1000);
+        Fri, 30 Oct 2020 13:38:08 -0000
+Date:   Fri, 30 Oct 2020 08:38:08 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        jcrouse@codeaurora.org, dri-devel@freedesktop.org,
+        robdclark@gmail.com, mka@chromium.org, dianders@chromium.org
+Subject: Re: [PATCH v4 3/3] dt-bindings: drm/msm/gpu: Add cooling device
+ support
+Message-ID: <20201030133808.GA3727230@bogus>
+References: <1603958841-20233-1-git-send-email-akhilpo@codeaurora.org>
+ <1603958841-20233-3-git-send-email-akhilpo@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.199.0.28]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-04.corp.yadro.com (172.17.100.104)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603958841-20233-3-git-send-email-akhilpo@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the phy-handle and MDIO description and add the example with
-PHY and MDIO nodes.
+On Thu, 29 Oct 2020 13:37:21 +0530, Akhil P Oommen wrote:
+> Add cooling device support to gpu. A cooling device is bound to a
+> thermal zone to allow thermal mitigation.
+> 
+> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/display/msm/gpu.txt | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
 
-Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
----
- .../devicetree/bindings/net/ftgmac100.txt     | 25 +++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/net/ftgmac100.txt b/Documentation/devicetree/bindings/net/ftgmac100.txt
-index f878c1103463..accb1b1e07b3 100644
---- a/Documentation/devicetree/bindings/net/ftgmac100.txt
-+++ b/Documentation/devicetree/bindings/net/ftgmac100.txt
-@@ -15,6 +15,7 @@ Required properties:
- - interrupts: Should contain ethernet controller interrupt
- 
- Optional properties:
-+- phy-handle: See ethernet.txt file in the same directory.
- - phy-mode: See ethernet.txt file in the same directory. If the property is
-   absent, "rgmii" is assumed. Supported values are "rgmii*" and "rmii" for
-   aspeed parts. Other (unknown) parts will accept any value.
-@@ -32,6 +33,9 @@ Optional properties:
-       - "MACCLK": The MAC IP clock
-       - "RCLK": Clock gate for the RMII RCLK
- 
-+Optional subnodes:
-+- mdio: See mdio.txt file in the same directory.
-+
- Example:
- 
- 	mac0: ethernet@1e660000 {
-@@ -40,3 +44,24 @@ Example:
- 		interrupts = <2>;
- 		use-ncsi;
- 	};
-+
-+Example with phy-handle:
-+
-+	mac1: ethernet@1e680000 {
-+		compatible = "aspeed,ast2500-mac", "faraday,ftgmac100";
-+		reg = <0x1e680000 0x180>;
-+		interrupts = <2>;
-+
-+		phy-handle = <&phy>;
-+		phy-mode = "rgmii";
-+
-+		mdio {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			phy: ethernet-phy@1 {
-+				compatible = "ethernet-phy-ieee802.3-c22";
-+				reg = <1>;
-+			};
-+		};
-+	};
--- 
-2.21.1
-
+Acked-by: Rob Herring <robh@kernel.org>
