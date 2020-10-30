@@ -2,142 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C902A00B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A292A00BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgJ3JHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgJ3JHe (ORCPT
+        id S1726148AbgJ3JHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:07:41 -0400
+Received: from smtp1.de.adit-jv.com ([93.241.18.167]:56878 "EHLO
+        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgJ3JHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:07:34 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DB3C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:07:34 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 15so4640972pgd.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:07:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+B7DrabjALESSLgvrRU2SUJPeb/davPcXgiTuHjAvYs=;
-        b=FCFsB3/tIibDL4zx1fW1oF29wuAfAoJ1hS97J0MKs7E1RJUrUZ94sjGhHikaqpnYmG
-         tCr+48OEbfz6TqXrGwlOURI68Ik1O2UMqQveFp3XHKB2rF8Vo05gSrZOAdpt1USJrB/G
-         IFZ4GOiqKb0MGjsIoErdioH8lV1BXqMhbMJqPI2xpDxN3y1Q5No8seR5k6RxTPQFF9G5
-         C69+8qUCIyqkggXfZf0B4Ngn/X1Zkg/nnv3HSvReNWIZv+qogBm87gVAOmsTiiyP3ys7
-         gFu6PMZf3DMGTng4VwRUQLm0h5D6xcLXW4nr/SkDyCIUdwvWbKB2iR7kfKUw/5zE4f6d
-         TidQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+B7DrabjALESSLgvrRU2SUJPeb/davPcXgiTuHjAvYs=;
-        b=aaKgKBJFzGyGoRk9fOYnoUvg+txP0gLpSslejlYM3P/yT43ESmhhSH+t/f1fTC94HT
-         sbaef23zo1l3bUYFnEI6dGIrC94jg2ma3m1S6puJF702O9ekfvm4wJds6iP1/4Kd2T0a
-         nRV0SkP7hAdSX2UDF/2LTVf6KN1Znaw6VCcEwP2zpLwEXJRtEl6oKX4ZLKF0kZdepC66
-         RLrZXnfXf6oZYM7ivik0W5B6WkpVE0RX18z4aiNZ008gwqvkhbuMb+tG5YxQVaIYAPB9
-         wEhBbUS0yPY3t9mh/pAl4GaNSx2HfNXqVd5LkX5c+ydgrY8bYd0ULmEdDkvyyRQH03Tp
-         AqJA==
-X-Gm-Message-State: AOAM5323AgUT6AUXDQFbciVOCjxsJzKeQ/qUjnAXJqsm76tYjOUiW1HA
-        vU7AITmeQwgSn8EYQl3png7DuNMnEW2fwxPY
-X-Google-Smtp-Source: ABdhPJwQoy5lGoxWGCu+w56vGEHkheybredgq458reF1b9S+aRPHgVNaR+OoMNWdPanqXrkH9up5ng==
-X-Received: by 2002:a63:6503:: with SMTP id z3mr1313531pgb.2.1604048853824;
-        Fri, 30 Oct 2020 02:07:33 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:9004:6819:f451:9e0a:873f:ed68])
-        by smtp.gmail.com with ESMTPSA id w187sm5245878pfb.93.2020.10.30.02.07.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 02:07:32 -0700 (PDT)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com, yashsri421@gmail.com
-Subject: [PATCH] checkpatch: improve handling of email comments
-Date:   Fri, 30 Oct 2020 14:37:04 +0530
-Message-Id: <20201030090704.40533-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 30 Oct 2020 05:07:41 -0400
+Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
+        by smtp1.de.adit-jv.com (Postfix) with ESMTP id 128063C0579;
+        Fri, 30 Oct 2020 10:07:39 +0100 (CET)
+Received: from smtp1.de.adit-jv.com ([127.0.0.1])
+        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id vUlCa8jIhWC8; Fri, 30 Oct 2020 10:07:32 +0100 (CET)
+Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id D3DA73C009C;
+        Fri, 30 Oct 2020 10:07:32 +0100 (CET)
+Received: from lxhi-065.adit-jv.com (10.72.94.31) by HI2EXCH01.adit-jv.com
+ (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 30 Oct
+ 2020 10:07:32 +0100
+Date:   Fri, 30 Oct 2020 10:07:28 +0100
+From:   Eugeniu Rosca <erosca@de.adit-jv.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steffen Pengel <spengel@de.adit-jv.com>,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: renesas: r8a77961: ulcb-kf: Initial
+ device tree
+Message-ID: <20201030090728.GA19340@lxhi-065.adit-jv.com>
+References: <20201029133741.25721-1-erosca@de.adit-jv.com>
+ <20201029133741.25721-2-erosca@de.adit-jv.com>
+ <CAMuHMdX5pCtR-LMbuSJQvDNyVOwcipt7zZOF3c3J-d-Bq98NQg@mail.gmail.com>
+ <20201029163213.GA12422@lxhi-065.adit-jv.com>
+ <CAMuHMdXbwfPk5_dZEzjLuUZx6ysxdmu6hKbd54Ev6jTQUObTCA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdXbwfPk5_dZEzjLuUZx6ysxdmu6hKbd54Ev6jTQUObTCA@mail.gmail.com>
+X-Originating-IP: [10.72.94.31]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-checkpatch has limited support for parsing email comments. It only
-support single name comments or single after address comments.
-Whereas, RFC 5322 specifies that comments can be inserted in
-between any tokens of the email fields.
+Hi Geert,
 
-Improve comment parsing mechanism in checkpatch.
+On Thu, Oct 29, 2020 at 07:23:53PM +0100, Geert Uytterhoeven wrote:
+> On Thu, Oct 29, 2020 at 5:34 PM Eugeniu Rosca <erosca@de.adit-jv.com> wrote:
 
-What is handled now:
+[..]
 
-- Multiple name/address comments
-- Comments anywhere in between name/address
-- Nested comments like (John (Doe))
+> I don't think we want to add new compatible string to describe each
+> combo. Just add "renesas,r8a77961" to the last enum?
 
+I'm afraid I misinterpreted your request. I've pushed your proposal to
+https://lore.kernel.org/linux-renesas-soc/20201030083051.18752-4-erosca@de.adit-jv.com/
 
-A brief analysis of checkpatch output on v5.0..v5.7 showed that
-after these modifications, the number of BAD_SIGN_OFF warnings
-came down from 2944 to 1424, and FROM_SIGN_OFF_MISMATCH came
-down from 2366 to 2330.
+> > IMHO one thing which is certainly worth clarifying and fixing is the
+> > KF revision currently documented in renesas.yaml, i.e. M03.
+> >
+> > Shimafuji released at least M04, M05 and M06 revisions of KF (nicely
+> > compared at https://elinux.org/R-Car/Boards/Kingfisher#Change_point).
+> >
+> > The question is, does the community intend to support M03 through M06
+> > (in which case all of them might need an entry in the documentation) or
+> > anything which is earlier than M06 has to be considered deprecated (in
+> > which case renesas.yaml would need a simple s/M03/M06/ update)?
+> 
+> I'm not that familiar with KingFisher and the various revisions.
+> Do these differences have an impact on the software side?
+> The diodes and filters probably don't.
 
-So, a total of 1556 false positives were resolved in total.
+I personally no longer use KF M03, since its major limitation is not
+being able to update the contents of Hyperflash using Lauterbach if
+ULCB is stacked on the expansion board (unplugging ULCB each time
+it is flashed is absolutely not practical).
 
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
- scripts/checkpatch.pl | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+I've heard from audio engineers that recent revisions are more suitable
+for audio use-cases, but I don't know the full details.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index fab38b493cef..ae8436385fc1 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -1183,14 +1183,20 @@ sub parse_email {
- 		}
- 	}
- 
--	$comment = trim($comment);
-+	# Comments in between name like John(A nice chap) Doe
-+	while ($name =~ s/\s*($balanced_parens)\s*/ /) {
-+		$name_comment .= trim($1);
-+	}
- 	$name = trim($name);
- 	$name =~ s/^\"|\"$//g;
--	if ($name =~ s/(\s*\([^\)]+\))\s*//) {
--		$name_comment = trim($1);
-+
-+	# Comments in between address like <john(his account)@doe.com>
-+	while ($address =~ s/\s*($balanced_parens)\s*//) {
-+		$comment .= trim($1);
- 	}
- 	$address = trim($address);
- 	$address =~ s/^\<|\>$//g;
-+	$comment = trim($comment);
- 
- 	if ($name =~ /[^\w \-]/i) { ##has "must quote" chars
- 		$name =~ s/(?<!\\)"/\\"/g; ##escape quotes
-@@ -1205,8 +1211,6 @@ sub format_email {
- 
- 	my $formatted_email;
- 
--	$name_comment = trim($name_comment);
--	$comment = trim($comment);
- 	$name = trim($name);
- 	$name =~ s/^\"|\"$//g;
- 	$address = trim($address);
-@@ -1216,6 +1220,11 @@ sub format_email {
- 		$name = "\"$name\"";
- 	}
- 
-+	$name_comment = trim($name_comment);
-+	$name_comment =~ s/(.+)/ $1/;
-+	$comment = trim($comment);
-+	$comment =~ s/(.+)/ $1/;
-+
- 	if ("$name" eq "") {
- 		$formatted_email = "$address";
- 	} else {
+> The I2C repeaters are PCA9548ADB on M03, hence they use a Linux
+> driver. By what have they been replaced?
+> What's the nature of the MOST ↔ GPS Function select register change?
+
+I will try to collect more information and, if I succeed, I will come
+back with feedback. Thank you for your patience.
+
 -- 
-2.27.0
-
+Best regards,
+Eugeniu Rosca
