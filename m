@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5B02A0A86
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 076822A0A8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgJ3P5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:57:34 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:54265 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726178AbgJ3P5c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:57:32 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2AEAA5C02E3;
-        Fri, 30 Oct 2020 11:57:31 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 30 Oct 2020 11:57:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references:reply-to
-        :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
-        a+yV5AyyQgbkAmuRGp5Grqx+CnaA6i6TKDg6E8EnuoM=; b=CM6maBmxba6MD3gN
-        Qh3zw0M8Aodzykt7peGyp7k/hIrMRoSl4FyRsvoZgLc5iOjVDs05mgSwWSVB3RnU
-        FHLvhGZ8QPztxZ3oWCaeIpOZPWPEHEsTHeoYk7tHY4TDF3x0XLxMUFQ2cULSYdxz
-        on7zYvowgLYsDo6wTr3SOIKJr+0V55ya+/HxrINLLieVhkKQGEyoe3n8LemVQ3ck
-        k76+b5mmNeYjebN9Ef6Y3sbpPgmfzDS+HiARnQnY91NWj+SduiWXEHrPsUhkVowJ
-        so/Sxk7BtDDyHw4qi7yUjut9k5Ymb7QEhiAgjkTB5FJfFuprNPqOCAG2KQigidNZ
-        0qgWvw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; bh=a+yV5AyyQgbkAmuRGp5Grqx+CnaA6
-        i6TKDg6E8EnuoM=; b=XjsIw02X52kdwL2SI7AqkUZsB2TNMfkrvT1ZSucW8u4vP
-        9PKkglNpAMYJOAWnOHqUCdcHxxIYY/67DCcN3Xjpy3T35LjkN2B4z+RxS+q/C0uo
-        +6gds5HWz1ZooDha+wUdpT/VHGI+I2LeXv+blBPL10LsEnh4Dg/+PH52HPiallui
-        xg0D+IkHHQVbLjlS1NoldygtcJvt0pqRKpAUX8pcmCetyDlWmraPrdHsvizrrbLH
-        DvmXnX/Z9QZtPIqoxJ7goL93hTaTSsjYilQBwYBer0J95f1B/HSDJy0Np470chnU
-        1SLnleKf+vrEmVlYAZwJcHLRc+1CgOZ9rYaYmgsUw==
-X-ME-Sender: <xms:6jecXwNsUFY30fvsZI4ygQMm7FShfp9oQMWP-9zKuyMH6lSqWtiz8Q>
-    <xme:6jecX2_LAnZb62_TK9vIE5nXsVX941nMbatW5pivg7TwyWCZqZYZO10rLid4v3Qah
-    12ayEh1aMaWjfEDXg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleehgdejkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhhrgggtgfesthhqredtredtjeenucfhrhhomhepkghiucgj
-    rghnuceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepkefggf
-    eljeefgeejtdethfehvdfgffdvfeefkeejtefghfetvdduffekgeeltedtnecukfhppedu
-    vddrgeeirddutdeirdduieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepiihirdihrghnsehsvghnthdrtghomh
-X-ME-Proxy: <xmx:6jecX3SwqoUEgFceRqgWX9icwxS_HzhKVdCdLr97Ih-34JsAyCCdiw>
-    <xmx:6jecX4vFCMytth0AbAjmr7vBPpoGXKPgQIQtQAh2TflIM6fsm_RwTw>
-    <xmx:6jecX4fCnqP5Yx4bSWpZCNZabjZrjo9Jd6ysknmsRIQ4NxhgXmXRhg>
-    <xmx:6zecXwTYDEixWvZ6dY2LgLz6lLCSsbm5TrsvUSrpIOUEhVGHk94KRw>
-Received: from nvrsysarch6.NVidia.COM (unknown [12.46.106.164])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 45A85328005D;
-        Fri, 30 Oct 2020 11:57:30 -0400 (EDT)
-From:   Zi Yan <zi.yan@sent.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        id S1726616AbgJ3QAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:00:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:38494 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725939AbgJ3QAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:00:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C38911435;
+        Fri, 30 Oct 2020 09:00:13 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.53.28])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E2B453F719;
+        Fri, 30 Oct 2020 09:00:06 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 16:00:04 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, joern@purestorage.com,
+        Kees Cook <keescook@chromium.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Vlastimil Babka <vbabka@suse.cz>,
-        Rik van Riel <riel@surriel.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Zi Yan <ziy@nvidia.com>
-Subject: [PATCH v2 2/2] mm/compaction: stop isolation if too many pages are isolated and we have pages to migrate.
-Date:   Fri, 30 Oct 2020 11:57:16 -0400
-Message-Id: <20201030155716.3614401-2-zi.yan@sent.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201030155716.3614401-1-zi.yan@sent.com>
-References: <20201030155716.3614401-1-zi.yan@sent.com>
-Reply-To: Zi Yan <ziy@nvidia.com>
+        Will Deacon <will@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH v6 3/9] arm64, kfence: enable KFENCE for ARM64
+Message-ID: <20201030160004.GE50718@C02TD0UTHF1T.local>
+References: <20201029131649.182037-1-elver@google.com>
+ <20201029131649.182037-4-elver@google.com>
+ <CAG48ez11T4gXHkhgnM7eWc1EJQ5u7NQup4ADy75c1uUVPeWGSg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez11T4gXHkhgnM7eWc1EJQ5u7NQup4ADy75c1uUVPeWGSg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zi Yan <ziy@nvidia.com>
+On Fri, Oct 30, 2020 at 03:49:26AM +0100, Jann Horn wrote:
+> On Thu, Oct 29, 2020 at 2:17 PM Marco Elver <elver@google.com> wrote:
+> > @@ -312,6 +313,9 @@ static void __do_kernel_fault(unsigned long addr, unsigned int esr,
+> >             "Ignoring spurious kernel translation fault at virtual address %016lx\n", addr))
+> >                 return;
+> >
+> > +       if (kfence_handle_page_fault(addr))
+> > +               return;
+> 
+> As in the X86 case, we may want to ensure that this doesn't run for
+> permission faults, only for non-present pages. Maybe move this down
+> into the third branch of the "if" block below (neither permission
+> fault nor NULL deref)?
 
-In isolate_migratepages_block, if we have too many isolated pages and
-nr_migratepages is not zero, we should try to migrate what we have
-without wasting time on isolating.
+I think that'd make sense. Those cases *should* be mutually exclusive,
+but it'd be more robust to do the KFENCE checks in that last block so
+that if something goes wrong wrong within KFENCE we can't get stuck in a
+loop failing to service an instruction abort or similar.
 
-Fixes: 1da2f328fa64 (=E2=80=9Cmm,thp,compaction,cma: allow THP migration fo=
-r CMA allocations=E2=80=9D)
-Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Zi Yan <ziy@nvidia.com>
-Cc: <stable@vger.kernel.org>
----
- mm/compaction.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Either that, or factor out an is_el1_translation_fault() and only do the
+KFENCE check and is_spurious_el1_translation_fault() check under that.
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 3e834ac402f1..4d237a7c3830 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -817,6 +817,10 @@ isolate_migratepages_block(struct compact_control *cc,=
- unsigned long low_pfn,
- 	 * delay for some time until fewer pages are isolated
- 	 */
- 	while (unlikely(too_many_isolated(pgdat))) {
-+		/* stop isolation if there are still pages not migrated */
-+		if (cc->nr_migratepages)
-+			return 0;
-+
- 		/* async migration should just abort */
- 		if (cc->mode =3D=3D MIGRATE_ASYNC)
- 			return 0;
---=20
-2.28.0
-
+Thanks,
+Mark.
