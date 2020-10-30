@@ -2,161 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4D72A0E83
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A602A0E8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727649AbgJ3TW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 15:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727645AbgJ3TVy (ORCPT
+        id S1727689AbgJ3TWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 15:22:42 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:34369 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727433AbgJ3TW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:21:54 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CF9C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:21:54 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id n189so1695359vkb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:21:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8I5vCt7sQpLxqO9fFZglUpeymmnJZb+1HjzCHkxiFnI=;
-        b=SuJtxiwkoB6tT6rUkiqexK55I2Znto0HzbzoxVsqOK/P6c9gFQuP6oaZkgRXt529ZU
-         a+bJWmyqi0+flho90rhtlkwHEs/7it0kmTdVLD/LJTnan7DMQe7EUfH5HwKopELvdr6c
-         zUX1a7CTPjVwz/VH/TBiLoorR+ZXggEpvShSQ=
+        Fri, 30 Oct 2020 15:22:28 -0400
+Received: by mail-ot1-f68.google.com with SMTP id k3so6570537otp.1;
+        Fri, 30 Oct 2020 12:22:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8I5vCt7sQpLxqO9fFZglUpeymmnJZb+1HjzCHkxiFnI=;
-        b=HG/EzsZhJPRqZQzfmotnl0yCMvO/73P1cNy+rGB+DAyXBKj9ZJdccddaxPcKxavF0Y
-         zDx5art9fLhxWp+7di6XLIkHfoV+gZCk8T3SH/s61bG+oJIuA2vzf2m3709wldc4XFaw
-         egbMcgmJy/jZia2uDWIYHfB1DK/3c4ZKPcaKzJtLXaYQLzGe1lnFvWMSCWZh7ieWsWBF
-         w75tgNeitdJH8/VWtNC3Ml/r0NgIy4zZfaCYKwTkjGbtj0h9TykTRt3SFx6Ur/BRBcvi
-         KcSPPI1TYthrVRwzBxO7PRM5T8NmNfWSF6VJRjFvzEjVLt2/NOd7TmFOKQaO+rTbKCga
-         tNVg==
-X-Gm-Message-State: AOAM530vupiFQpUWN+rgp87qO/wQrr8LpDLr4Yb/7RYUDAoP27fyZX9T
-        gugFDpRJvPuonhBPzLwEBUtlw6S647//GjkavHFrkg==
-X-Google-Smtp-Source: ABdhPJxhGLBaazY1X0XxdFRD1fbdQdiuFWbQMhMjddSkpPS+9nVoe7eHxNfL0vqo7pYecWi6tpSi1Itb0ThaHuhtKN4=
-X-Received: by 2002:a1f:23d0:: with SMTP id j199mr8477163vkj.11.1604085713313;
- Fri, 30 Oct 2020 12:21:53 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9cay0TEgD0FPWbcpLZc+9yaog3ppNPwzOcm9Av+PCL8=;
+        b=HL9ut3PUK9Bfrny8Jos6B+4pS3yFCID7rkvMcBaYtwgVezY5yHooQ1pJmBKNvMUoAn
+         ojJ6H7CQ3DdLRWQb28SGoEGpARWZBnDeS0wTtOyLNNo22icI2DLHmvcfn9we2Edy7Px6
+         qg/aLh5+9AKbI54zuzYMKs/+tU6cb2auKSP4E70ypnOHmHK1MzjL34LsaUHdcw+40WwP
+         5qaoVm6xzOLNRlvaTQsgfCBlg+tFXTpcUB9UuTHF07yXcDlo6MT0PPcAotF5xJlVx4QS
+         Lz7nedNHIKZokbKR9GUXp/qoWkb410bDisk9GNpN4GGRJ2gA1WmPptg3GTRpcpN9ptuL
+         bYhA==
+X-Gm-Message-State: AOAM532S8TX4CzYf1QU3ICBbAVxp6I6Zg5CKITPuQq5XphM8WRL9/hOU
+        Tp62TJ1hWDuICHx+bEdxPQ==
+X-Google-Smtp-Source: ABdhPJzTbp18htu++RYUvv2w5ACzH/xPWOrzIBLN3DH9HWMxuIwIhFnrxipV6Ihr+WmXWpIypoE2cQ==
+X-Received: by 2002:a05:6830:1d4f:: with SMTP id p15mr2389169oth.16.1604085746757;
+        Fri, 30 Oct 2020 12:22:26 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id b92sm1515177otc.70.2020.10.30.12.22.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 12:22:26 -0700 (PDT)
+Received: (nullmailer pid 4178869 invoked by uid 1000);
+        Fri, 30 Oct 2020 19:22:25 -0000
+Date:   Fri, 30 Oct 2020 14:22:25 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     sboyd@kernel.org, mturquette@baylibre.com,
+        bjorn.andersson@linaro.org, vkoul@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: clock: Add SDX55 GCC clock bindings
+Message-ID: <20201030192225.GA4174677@bogus>
+References: <20201028074232.22922-1-manivannan.sadhasivam@linaro.org>
+ <20201028074232.22922-2-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-References: <0000000000008caae305ab9a5318@google.com> <000000000000a726a405ada4b6cf@google.com>
- <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com>
- <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com> <CACT4Y+Yyxdju4FR-E3bc5ERM6xhecnos6mkJR5==xS+RS_DUuw@mail.gmail.com>
-In-Reply-To: <CACT4Y+Yyxdju4FR-E3bc5ERM6xhecnos6mkJR5==xS+RS_DUuw@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 30 Oct 2020 20:21:42 +0100
-Message-ID: <CAJfpegsAabASuHYtoi_DoooV1vM7Evfrd8ESZDDTx2oXHiR6cw@mail.gmail.com>
-Subject: Re: general protection fault in security_inode_getattr
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        network dev <netdev@vger.kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028074232.22922-2-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 7:42 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Fri, Oct 30, 2020 at 2:02 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
-> >
-> > On Mon, Aug 24, 2020 at 11:00 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> > >
-> > > On Mon, Aug 24, 2020 at 9:37 PM syzbot
-> > > <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com> wrote:
-> > > > syzbot has found a reproducer for the following issue on:
-> > >
-> > > Looping in fsdevel and OverlayFS maintainers, as this seems to be
-> > > FS/OverlayFS related...
-> >
-> > Hmm, the oopsing code is always something like:
-> >
-> > All code
-> > ========
-> >    0: 1b fe                sbb    %esi,%edi
-> >    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
-> >    6: 48 89 d8              mov    %rbx,%rax
-> >    9: 48 c1 e8 03          shr    $0x3,%rax
-> >    d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
-> >   12: 74 08                je     0x1c
-> >   14: 48 89 df              mov    %rbx,%rdi
-> >   17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
-> >   1c: 48 8b 1b              mov    (%rbx),%rbx
-> >   1f: 48 83 c3 68          add    $0x68,%rbx
-> >   23: 48 89 d8              mov    %rbx,%rax
-> >   26: 48 c1 e8 03          shr    $0x3,%rax
-> >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
-> >   2f: 74 08                je     0x39
-> >   31: 48 89 df              mov    %rbx,%rdi
-> >   34: e8 9f b4 5b fe        callq  0xfffffffffe5bb4d8
-> >   39: 48 8b 1b              mov    (%rbx),%rbx
-> >   3c: 48 83 c3 0c          add    $0xc,%rbx
-> >
-> >
-> > And that looks (to me) like the unrolled loop in call_int_hook().  I
-> > don't see how that could be related to overlayfs, though it's
-> > definitely interesting why it only triggers from
-> > overlay->vfs_getattr()->security_inode_getattr()...
->
->
-> >   26: 48 c1 e8 03          shr    $0x3,%rax
-> >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
->
->
-> This access is part of KASAN check. But the original address kernel
-> tries to access is NULL, so it's not an issue with KASAN.
->
-> The line is this:
->
-> int security_inode_getattr(const struct path *path)
-> {
->     if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
->         return 0;
->
-> So it's either path is NULL, or something in d_backing_inode
-> dereferences NULL path->dentry.
->
-> The reproducer does involve overlayfs:
->
-> mkdir(&(0x7f0000000240)='./file1\x00', 0x0)
-> mkdir(&(0x7f0000000300)='./bus\x00', 0x0)
-> r0 = creat(&(0x7f00000000c0)='./bus/file1\x00', 0x0)
-> mkdir(&(0x7f0000000080)='./file0\x00', 0x0)
-> mount$overlay(0x400002, &(0x7f0000000000)='./bus\x00',
-> &(0x7f0000000100)='overlay\x00', 0x0,
-> &(0x7f00000003c0)=ANY=[@ANYBLOB='upperdir=./file1,lowerdir=./bus,workdir=./file0,metacopy=on'])
-> link(&(0x7f0000000200)='./bus/file1\x00', &(0x7f00000002c0)='./bus/file0\x00')
-> write$RDMA_USER_CM_CMD_RESOLVE_ADDR(r0, 0x0, 0x0)
-> acct(&(0x7f0000000040)='./bus/file0\x00')
->
-> Though, it may be overlayfs-related, or it may be a generic bug that
-> requires a tricky reproducer and the only reproducer syzbot come up
-> with happened to involve overlayfs.
-> But there are 4 reproducers on syzbot dashboard and all of them
-> involve overlayfs and they are somewhat different. So my bet would be
-> on overlayfs.
+On Wed, Oct 28, 2020 at 01:12:29PM +0530, Manivannan Sadhasivam wrote:
+> From: Vinod Koul <vkoul@kernel.org>
+> 
+> Add device tree bindings for global clock controller on SDX55 SoCs.
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-Seems there's no C reproducer, though.   Can this be reproduced
-without KASAN obfuscating the oops?
+This should carry your S-o-b too.
 
-Thanks,
-Miklos
+> ---
+>  .../bindings/clock/qcom,gcc-sdx55.yaml        |  71 +++++++++++
+>  include/dt-bindings/clock/qcom,gcc-sdx55.h    | 112 ++++++++++++++++++
+>  2 files changed, 183 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sdx55.yaml
+>  create mode 100644 include/dt-bindings/clock/qcom,gcc-sdx55.h
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-sdx55.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-sdx55.yaml
+> new file mode 100644
+> index 000000000000..c24c9d9fb7dc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/qcom,gcc-sdx55.yaml
+> @@ -0,0 +1,71 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/qcom,gcc-sdx55.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Global Clock & Reset Controller Binding for SDX55
+> +
+> +maintainers:
+> +  - Vinod Koul <vkoul@kernel.org>
+> +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> +
+> +description: |
+> +  Qualcomm global clock control module which supports the clocks, resets and
+> +  power domains on SDX55
+> +
+> +  See also:
+> +  - dt-bindings/clock/qcom,gcc-sdx55.h
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,gcc-sdx55
+> +
+> +  clocks:
+> +    items:
+> +      - description: Board XO source
+> +      - description: Sleep clock source
+> +
+> +  clock-names:
+> +    items:
+> +      - const: bi_tcxo
+> +      - const: sleep_clk
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +
+> +  '#reset-cells':
+> +    const: 1
+> +
+> +  '#power-domain-cells':
+> +    const: 1
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - clocks
+> +  - clock-names
+> +  - reg
+> +  - '#clock-cells'
+> +  - '#reset-cells'
+> +  - '#power-domain-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,rpmh.h>
+> +    clock-controller@100000 {
+> +      compatible = "qcom,gcc-sdx55";
+> +      reg = <0x00100000 0x1f0000>;
+> +      clocks = <&rpmhcc RPMH_CXO_CLK>,
+> +               <&sleep_clk>;
+> +      clock-names = "bi_tcxo", "sleep_clk";
+> +      #clock-cells = <1>;
+> +      #reset-cells = <1>;
+> +      #power-domain-cells = <1>;
+> +    };
+> +
+> +...
+> diff --git a/include/dt-bindings/clock/qcom,gcc-sdx55.h b/include/dt-bindings/clock/qcom,gcc-sdx55.h
+> new file mode 100644
+> index 000000000000..09ca45c6de73
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/qcom,gcc-sdx55.h
+> @@ -0,0 +1,112 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+
+Dual license? 
+
+> +/*
+> + * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2020, Linaro Ltd.
+> + */
+> +
+> +#ifndef _DT_BINDINGS_CLK_QCOM_GCC_SDX55_H
+> +#define _DT_BINDINGS_CLK_QCOM_GCC_SDX55_H
+> +
+> +#define GPLL0							3
+> +#define GPLL0_OUT_EVEN						4
+> +#define GPLL4							5
+> +#define GPLL4_OUT_EVEN						6
+> +#define GPLL5							7
+> +#define GCC_AHB_PCIE_LINK_CLK					8
+> +#define GCC_BLSP1_AHB_CLK					9
+> +#define GCC_BLSP1_QUP1_I2C_APPS_CLK				10
+> +#define GCC_BLSP1_QUP1_I2C_APPS_CLK_SRC				11
+> +#define GCC_BLSP1_QUP1_SPI_APPS_CLK				12
+> +#define GCC_BLSP1_QUP1_SPI_APPS_CLK_SRC				13
+> +#define GCC_BLSP1_QUP2_I2C_APPS_CLK				14
+> +#define GCC_BLSP1_QUP2_I2C_APPS_CLK_SRC				15
+> +#define GCC_BLSP1_QUP2_SPI_APPS_CLK				16
+> +#define GCC_BLSP1_QUP2_SPI_APPS_CLK_SRC				17
+> +#define GCC_BLSP1_QUP3_I2C_APPS_CLK				18
+> +#define GCC_BLSP1_QUP3_I2C_APPS_CLK_SRC				19
+> +#define GCC_BLSP1_QUP3_SPI_APPS_CLK				20
+> +#define GCC_BLSP1_QUP3_SPI_APPS_CLK_SRC				21
+> +#define GCC_BLSP1_QUP4_I2C_APPS_CLK				22
+> +#define GCC_BLSP1_QUP4_I2C_APPS_CLK_SRC				23
+> +#define GCC_BLSP1_QUP4_SPI_APPS_CLK				24
+> +#define GCC_BLSP1_QUP4_SPI_APPS_CLK_SRC				25
+> +#define GCC_BLSP1_UART1_APPS_CLK				26
+> +#define GCC_BLSP1_UART1_APPS_CLK_SRC				27
+> +#define GCC_BLSP1_UART2_APPS_CLK				28
+> +#define GCC_BLSP1_UART2_APPS_CLK_SRC				29
+> +#define GCC_BLSP1_UART3_APPS_CLK				30
+> +#define GCC_BLSP1_UART3_APPS_CLK_SRC				31
+> +#define GCC_BLSP1_UART4_APPS_CLK				32
+> +#define GCC_BLSP1_UART4_APPS_CLK_SRC				33
+> +#define GCC_BOOT_ROM_AHB_CLK					34
+> +#define GCC_CE1_AHB_CLK						35
+> +#define GCC_CE1_AXI_CLK						36
+> +#define GCC_CE1_CLK						37
+> +#define GCC_CPUSS_AHB_CLK					38
+> +#define GCC_CPUSS_AHB_CLK_SRC					39
+> +#define GCC_CPUSS_GNOC_CLK					40
+> +#define GCC_CPUSS_RBCPR_CLK					41
+> +#define GCC_CPUSS_RBCPR_CLK_SRC					42
+> +#define GCC_EMAC_CLK_SRC					43
+> +#define GCC_EMAC_PTP_CLK_SRC					44
+> +#define GCC_ETH_AXI_CLK						45
+> +#define GCC_ETH_PTP_CLK						46
+> +#define GCC_ETH_RGMII_CLK					47
+> +#define GCC_ETH_SLAVE_AHB_CLK					48
+> +#define GCC_GP1_CLK						49
+> +#define GCC_GP1_CLK_SRC						50
+> +#define GCC_GP2_CLK						51
+> +#define GCC_GP2_CLK_SRC						52
+> +#define GCC_GP3_CLK						53
+> +#define GCC_GP3_CLK_SRC						54
+> +#define GCC_PCIE_0_CLKREF_CLK					55
+> +#define GCC_PCIE_AUX_CLK					56
+> +#define GCC_PCIE_AUX_PHY_CLK_SRC				57
+> +#define GCC_PCIE_CFG_AHB_CLK					58
+> +#define GCC_PCIE_MSTR_AXI_CLK					59
+> +#define GCC_PCIE_PIPE_CLK					60
+> +#define GCC_PCIE_RCHNG_PHY_CLK					61
+> +#define GCC_PCIE_RCHNG_PHY_CLK_SRC				62
+> +#define GCC_PCIE_SLEEP_CLK					63
+> +#define GCC_PCIE_SLV_AXI_CLK					64
+> +#define GCC_PCIE_SLV_Q2A_AXI_CLK				65
+> +#define GCC_PDM2_CLK						66
+> +#define GCC_PDM2_CLK_SRC					67
+> +#define GCC_PDM_AHB_CLK						68
+> +#define GCC_PDM_XO4_CLK						69
+> +#define GCC_SDCC1_AHB_CLK					70
+> +#define GCC_SDCC1_APPS_CLK					71
+> +#define GCC_SDCC1_APPS_CLK_SRC					72
+> +#define GCC_SYS_NOC_CPUSS_AHB_CLK				73
+> +#define GCC_USB30_MASTER_CLK					74
+> +#define GCC_USB30_MASTER_CLK_SRC				75
+> +#define GCC_USB30_MOCK_UTMI_CLK					76
+> +#define GCC_USB30_MOCK_UTMI_CLK_SRC				77
+> +#define GCC_USB30_MSTR_AXI_CLK					78
+> +#define GCC_USB30_SLEEP_CLK					79
+> +#define GCC_USB30_SLV_AHB_CLK					80
+> +#define GCC_USB3_PHY_AUX_CLK					81
+> +#define GCC_USB3_PHY_AUX_CLK_SRC				82
+> +#define GCC_USB3_PHY_PIPE_CLK					83
+> +#define GCC_USB3_PRIM_CLKREF_CLK				84
+> +#define GCC_USB_PHY_CFG_AHB2PHY_CLK				85
+> +#define GCC_XO_DIV4_CLK						86
+> +#define GCC_XO_PCIE_LINK_CLK					87
+> +
+> +#define GCC_EMAC_BCR						0
+> +#define GCC_PCIE_BCR						1
+> +#define GCC_PCIE_LINK_DOWN_BCR					2
+> +#define GCC_PCIE_NOCSR_COM_PHY_BCR				3
+> +#define GCC_PCIE_PHY_BCR					4
+> +#define GCC_PCIE_PHY_CFG_AHB_BCR				5
+> +#define GCC_PCIE_PHY_COM_BCR					6
+> +#define GCC_PCIE_PHY_NOCSR_COM_PHY_BCR				7
+> +#define GCC_PDM_BCR						8
+> +#define GCC_QUSB2PHY_BCR					9
+> +#define GCC_TCSR_PCIE_BCR					10
+> +#define GCC_USB30_BCR						11
+> +#define GCC_USB3_PHY_BCR					12
+> +#define GCC_USB3PHY_PHY_BCR					13
+> +#define GCC_USB_PHY_CFG_AHB2PHY_BCR				14
+> +
+> +#endif
+> -- 
+> 2.17.1
+> 
