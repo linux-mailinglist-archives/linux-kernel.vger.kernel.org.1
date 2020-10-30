@@ -2,109 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A83F2A0E55
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3AD2A0E56
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727396AbgJ3THX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 15:07:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726225AbgJ3THX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:07:23 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B48BC0613CF;
-        Fri, 30 Oct 2020 12:07:23 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id u19so8625721ion.3;
-        Fri, 30 Oct 2020 12:07:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kRnMiBAqbQrnQNWoGObw/GN72MYVN3PVOyPP/xbkSv4=;
-        b=SpSa0e4NexLm00Kgmenuq9+x90MS+prPInmNNlAj0OlEmSIi5GYyIJzEg/BLwp0pOn
-         bCD0nJO4bx+7KsyO1p9X2YaaZrPZmvBJl60VjVWxZce/4fElgFD87VfGS42oeZ9YwCCG
-         Zj3mlct0tQags16wHsGZTCijv+dUaTOd5yR7ToFvcXHBAZgBHqJh0lAQ/2gbIsC3tii4
-         XemUJFlPUAecRWF5nZUOhFlWkfnaTMlKGruZv6q4IAiz7+H7z1ZhpBA6KANL8eMs0Hyy
-         ToFM4o52BcClrMjo0uztS67L6EI+lVqNshUPM+wC+fne1XKGHSH+uPE4EeCB4UrnG8Sk
-         gsdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kRnMiBAqbQrnQNWoGObw/GN72MYVN3PVOyPP/xbkSv4=;
-        b=IXmoclusRC7qWoUu717H/N0gyu5bFQ5kFfJNuz/AL7H/66J4ctDoWgMZ3b/6zovGvT
-         uynyn92XuxaoJH1dol+ICxOqG+qxR3883S7d8WV16VDMeBxMwR3tW4Vq0CsITxfpcGrX
-         IWvH2TLwiCYhVjPuhu4QWVG0kZxo08cdy8YLHuEWNqENdjwmaB4RGmQ7tt3bmhWmOo59
-         5baTVvnWzraUohJlc2o2Uztrx0wM1bGWX8CZdjN5O7om3pfzlpK1n7zc9Pbkfrw6aoQw
-         STeg7P0fs1NQkw4e0GMm696c2Cv8zlRNAeG47dVs5MzM8GBUx8eF/X/vL3rMWuqF/ogD
-         L0IA==
-X-Gm-Message-State: AOAM533DabECoaZcEb6im59qLM+dW2sTNgosVjnimZgR3nfAI6d2rp2I
-        D13e6frk2py4i8mwCHKQ/srWvzpEC4fASsnpPTM=
-X-Google-Smtp-Source: ABdhPJyHHJZwON07JsYGXD+WzKKqSo4WezgeeFyNNwPtTNagJNoLm+UN3ag55BdCObIQ1+1dmhE4aXc+492+h8Di5G4=
-X-Received: by 2002:a02:5b09:: with SMTP id g9mr3051607jab.89.1604084842581;
- Fri, 30 Oct 2020 12:07:22 -0700 (PDT)
+        id S1727397AbgJ3TIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 15:08:09 -0400
+Received: from mga07.intel.com ([134.134.136.100]:23979 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726163AbgJ3TIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 15:08:09 -0400
+IronPort-SDR: 8SP93TkFEbCSkQEn5aHKEZVq4V/mk9JLHnK4lzrje5x/l1na395qtZ5qPuhbZ3/cl7NvAUoIsw
+ /mt1m0WLJbYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="232831984"
+X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
+   d="scan'208";a="232831984"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 12:08:08 -0700
+IronPort-SDR: 2HVcMSo12Sm5KKBwNdvW5f+GxI+aFV0l719IoVciWyy64zbqlm5QHIeqP7aYZKiBbyzE8gSGU9
+ ph0lUpmHIMaA==
+X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
+   d="scan'208";a="537169798"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 12:08:08 -0700
+Date:   Fri, 30 Oct 2020 12:08:07 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Philippe Conde <conde.philippe@skynet.be>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/mce: Enable additional error logging on certain
+ Intel CPUs
+Message-ID: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
+References: <fcb21490-84a1-8b99-b494-3a6ac2a0e16a@skynet.be>
+ <20201029100655.GA31903@zn.tnic>
+ <20201029151518.GA23990@agluck-desk2.amr.corp.intel.com>
+ <20201029194118.GC31903@zn.tnic>
+ <87ft5wo8zn.fsf@nanos.tec.linutronix.de>
+ <20201030091056.GA6532@zn.tnic>
+ <20201030190400.GA13797@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-References: <20201030144648.397824-1-peron.clem@gmail.com> <20201030144648.397824-2-peron.clem@gmail.com>
- <20201030161131.dlzzpy3atiiddx4n@gilmour.lan>
-In-Reply-To: <20201030161131.dlzzpy3atiiddx4n@gilmour.lan>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Fri, 30 Oct 2020 20:07:11 +0100
-Message-ID: <CAJiuCceRyRie_3sp7dZsFeHWCV+CFXX8R206kmMwq4_EHvfK=w@mail.gmail.com>
-Subject: Re: [PATCH v10 01/15] ASoC: sun4i-i2s: Fix lrck_period computation
- for I2S justified mode
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030190400.GA13797@agluck-desk2.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+On Fri, Oct 30, 2020 at 12:04:03PM -0700, Luck, Tony wrote:
 
-On Fri, 30 Oct 2020 at 17:11, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> On Fri, Oct 30, 2020 at 03:46:34PM +0100, Cl=C3=A9ment P=C3=A9ron wrote:
-> > Left and Right justified mode are computed using the same formula
-> > as DSP_A and DSP_B mode.
-> > Which is wrong and the user manual explicitly says:
-> >
-> > LRCK_PERDIOD:
-> > PCM Mode: Number of BCLKs within (Left + Right) channel width.
-> > I2S/Left-Justified/Right-Justified Mode: Number of BCLKs within each
-> > individual channel width(Left or Right)
-> >
-> > Fix this by using the same formula as the I2S mode.
-> >
-> > Fixes: 7ae7834ec446 ("ASoC: sun4i-i2s: Add support for DSP formats")
-> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
->
-> Acked-by: Maxime Ripard <mripard@kernel.org>
-Thanks for the ACK
+Bah, didn't notice this conversation didn't include LKML.
 
-just noticed that the case was not properly sorted.
-
-Do you agree that sorting like this is better ?
-        case SND_SOC_DAIFMT_I2S:
-+       case SND_SOC_DAIFMT_LEFT_J:
-+       case SND_SOC_DAIFMT_RIGHT_J:
-
-If I have to push a new series I will fix it
-
-Regards,
-Clement
-
-> Thanks!
-> Maxime
+> The Xeon versions of Sandy Bridge, Ivy Bridge and Haswell support an
+> optional additional error logging mode which is enabled by an MSR.
+> 
+> Previously this mode was enabled from the mcelog(8) tool via /dev/cpu,
+> but the kernel is now very picky about which MSRs may be written. So
+> move the enabling into the kernel.
+> 
+> Suggested-by: Boris Petkov <bp@alien8.de>
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+> 
+> N.B. I don't have any of these old systems in my lab any more. So
+> this is untested :-(
+> 
+>  arch/x86/include/asm/msr-index.h |  1 +
+>  arch/x86/kernel/cpu/mce/intel.c  | 20 ++++++++++++++++++++
+>  2 files changed, 21 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> index 972a34d93505..b2dd2648c0e2 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -139,6 +139,7 @@
+>  #define MSR_IA32_MCG_CAP		0x00000179
+>  #define MSR_IA32_MCG_STATUS		0x0000017a
+>  #define MSR_IA32_MCG_CTL		0x0000017b
+> +#define MSR_ERROR_CONTROL		0x0000017f
+>  #define MSR_IA32_MCG_EXT_CTL		0x000004d0
+>  
+>  #define MSR_OFFCORE_RSP_0		0x000001a6
+> diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
+> index abe9fe0fb851..b47883e364b4 100644
+> --- a/arch/x86/kernel/cpu/mce/intel.c
+> +++ b/arch/x86/kernel/cpu/mce/intel.c
+> @@ -509,12 +509,32 @@ static void intel_ppin_init(struct cpuinfo_x86 *c)
+>  	}
+>  }
+>  
+> +/*
+> + * Enable additional error logs from the integrated
+> + * memory controller on processors that support this.
+> + */
+> +static void intel_imc_init(struct cpuinfo_x86 *c)
+> +{
+> +	u64 error_control;
+> +
+> +	switch (c->x86_model) {
+> +	case INTEL_FAM6_SANDYBRIDGE_X:
+> +	case INTEL_FAM6_IVYBRIDGE_X:
+> +	case INTEL_FAM6_HASWELL_X:
+> +		rdmsrl(MSR_ERROR_CONTROL, error_control);
+> +		error_control |= 2;
+> +		wrmsrl(MSR_ERROR_CONTROL, error_control);
+> +		break;
+> +	}
+> +}
+> +
+>  void mce_intel_feature_init(struct cpuinfo_x86 *c)
+>  {
+>  	intel_init_thermal(c);
+>  	intel_init_cmci();
+>  	intel_init_lmce();
+>  	intel_ppin_init(c);
+> +	intel_imc_init(c);
+>  }
+>  
+>  void mce_intel_feature_clear(struct cpuinfo_x86 *c)
+> -- 
+> 2.21.1
+> 
