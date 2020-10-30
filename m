@@ -2,143 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4150A2A01B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8192A0172
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgJ3JrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:47:09 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:24438 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725808AbgJ3JrI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:47:08 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09U8REbs022363;
-        Fri, 30 Oct 2020 09:31:27 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=ZgE/qCYfCapy4vRT52/Xdi9SuwmMVbC8pMtk6Z4UaLA=;
- b=gC2oe8fHnpczUU1vHr99ANa4HnBgRZP39L9jSe3h14yw9JgZi6mQ+uFXitt0UFK4Afle
- E33CDuanPYFWOxbwQ4cogBVqfyKFY1BYLpCe5vXDamHPI+zQE7ABy882kXHe5QRuH4Lj
- gFwiCGcJMDS0MlGr6Sqbv2enf6jtaOnL2quHzel6NQQCm5XtIvfFB+hUKXGIpmssvOZL
- hSlTNNiAIjVP5pZ2ylAK7I+takF6cyc9y8W6Q3QKfBUspbONslAeHLdttHCmIjsHblmQ
- CgrsIoUbs9ik1hDC+OAtRXCh0KJkb6TGCf3FqEKTG4hYQWe10rMGUAbzakbAMWsoIca5 uA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34ccj2deqd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Oct 2020 09:31:26 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4F077100034;
-        Fri, 30 Oct 2020 09:31:26 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 335AD25BD99;
-        Fri, 30 Oct 2020 09:31:26 +0100 (CET)
-Received: from [10.48.0.224] (10.75.127.51) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
- 2020 09:31:25 +0100
-Subject: Re: [PATCH] mtd: rawnand: stm32_fmc2: fix broken ECC
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <1603989492-6670-1-git-send-email-christophe.kerello@st.com>
- <20201030091905.111aa7a4@xps13>
-From:   Christophe Kerello <christophe.kerello@st.com>
-Message-ID: <d3073938-e714-6b5d-1dc9-36887b11de46@st.com>
-Date:   Fri, 30 Oct 2020 09:31:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <20201030091905.111aa7a4@xps13>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        id S1726055AbgJ3Jcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:32:54 -0400
+Received: from mail-eopbgr70047.outbound.protection.outlook.com ([40.107.7.47]:36334
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725888AbgJ3Jcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 05:32:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UpfkUjVVmpQARQQTuijOkKNbbG7QOmikvaEuxPsHPEYksGysx2ZR7OtyjhQgjN0yE7qbYouO4keSlS3kAgtco33a3QeWyDNsk3fJqS1S367mc4KupAxP8OqwfIbFPxStj7eAQ92cQ3qXJt2s8P1+fB4VHGscPzZ+7O0PpVkQGkIpW1Zz58HeryprsMIzxB1sRxALeWFGErFvK4VEAKsYwqdtdR8oQ4JY7wT5l5HgWhLeAbNZqUyfsvzYB6WAo0TXHZ/1WwbBOROd7CARpHfJMvkZGhknxIrINsKcIbGiLdkE0fdgb54daJk+KmBRYufyrk0EVLeRLuqCTKkOC8nNHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1EugcXWRaqTdQh6oDDf/9HkKnQtf3ffY8nqcXIgBHhg=;
+ b=exRq3Gqh8gH/eRLlwUo/uANrJYds9uDQc3nXvQql9mGLuAwZyYK5rZ0AjXoqsANy5WPzoP0LlelZZueYaSkMYbXJ6uj6Nd77Uia5hIBS+HtR2YrC5kX70KExkRNMuVRqt8y67cL1lgBK7mfb9yZbnlmGet2hJftEr8VTGcc7DG17zyq3FE6t41hNAv0Y0JOZaKsQpJhaMn4ZXmJYp8LDSqccQTiw2TiXF32jNx5wGBcL+ilCCsknGV+owL/n+q6rS62Eeww7Kr64Yw/rTXbyKky53oeSD+e6MAcriJpOM3gCGZ8f5lw0cozW9MV8p6ophLh2VbdPgV6Eu8XI8rQmrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1EugcXWRaqTdQh6oDDf/9HkKnQtf3ffY8nqcXIgBHhg=;
+ b=kjZCZ39jQxHCS7Z4Gi7rPK0wN5mpnWHU4gksDhjPdj6UZaQPVnw59ujn7ZlC+hhYvPOkOtB3Mpz/CGL23Ccb85FIj91h5jsfiktYCNAVyq9dnGisHwrcNmSx7a6GrNLwHC0Ihi36w8I7kDRqQ+38HONo1XtQUdHlV6V1d5HH+2U=
+Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
+ (2603:10a6:803:16::14) by VI1PR04MB7199.eurprd04.prod.outlook.com
+ (2603:10a6:800:11d::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19; Fri, 30 Oct
+ 2020 09:32:29 +0000
+Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
+ ([fe80::607d:cbc4:9191:b324]) by VI1PR0402MB3871.eurprd04.prod.outlook.com
+ ([fe80::607d:cbc4:9191:b324%5]) with mapi id 15.20.3499.029; Fri, 30 Oct 2020
+ 09:32:29 +0000
+From:   Ioana Ciornei <ioana.ciornei@nxp.com>
+To:     Shawn Guo <shawnguo@kernel.org>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/9] arm64: dts: ls1088ardb: add QSGMII PHY nodes
+Thread-Topic: [PATCH 2/9] arm64: dts: ls1088ardb: add QSGMII PHY nodes
+Thread-Index: AQHWkz9K9Yuz4h4Kq0Kl0DjjHE9FKamves0AgACd3gA=
+Date:   Fri, 30 Oct 2020 09:32:29 +0000
+Message-ID: <20201030093228.4b7tvsa2vnam5nj2@skbuf>
+References: <20200925132503.30206-1-ioana.ciornei@nxp.com>
+ <20200925132503.30206-3-ioana.ciornei@nxp.com>
+ <20201030000725.GT28755@dragon>
+In-Reply-To: <20201030000725.GT28755@dragon>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG7NODE2.st.com (10.75.127.20) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-29_12:2020-10-29,2020-10-29 signatures=0
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.25.2.177]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9a928ba8-7529-4bf1-8680-08d87cb6b898
+x-ms-traffictypediagnostic: VI1PR04MB7199:
+x-microsoft-antispam-prvs: <VI1PR04MB7199C8D2B8308CDCE9FC6DA2E0150@VI1PR04MB7199.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qtDA1fS93JltKbVEQLAu9s0DhLtzE43yLaHss/XoU8DclM4fNBXl3u8WTM1aJCaAYDw8aiP7ZAzlTF1LG3tKY/AsZPPqflyuGPPRWqW9w5ba8+w5TGCeyeXkaJuFONP7nObQqp64HzeLVDaPK96kuI6vfPd7Ci7JDqs6/YaICZFUyQkRPUYK/ZbvGZwBgHS1whlMddr704x1+b1ErEStxKQoRcUsRuKxBYfUyTcJyghs/Bs8uwNmxzOINIxozCOOP1zGvLZuiUyfbJnusvbVMGD1Ug6YKww0uAysz/66w48UyYQuddIsq1SX9tpSmhLP
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3871.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(376002)(39860400002)(346002)(136003)(396003)(366004)(66476007)(33716001)(66446008)(64756008)(54906003)(66556008)(66946007)(6506007)(186003)(2906002)(9686003)(6486002)(6512007)(26005)(71200400001)(1076003)(91956017)(316002)(76116006)(86362001)(83380400001)(8936002)(5660300002)(8676002)(478600001)(6916009)(44832011)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: rQ0XlusQ/WlD5rA4R0qDS1lzLZi4TvMgHwrATpWFGebE0KxoOEm1dyJiN/uvUf9YHgYL+fyYjk+5hO9TPXa2/heKs9bmGuJtOCaeKWJspysJUG/FSyfs4q0h9iUdUq5lQ6nIsb9AcQ73o7kj+GTBugJS7kIDVs7EzURaffc91ElNZuKnGlhNNBYyRTgj9gvpx6vc95acuhr4NUvej4gu+j0f4GLPYmbuMzkn1TSkIIG2RUWcTt5fRyJNOQB/VlLlOKM/K2T2JbP8aEVruCVx1GfZ6QIOwjcKj8ObTCQNysWxy17RXk+9GKfAyopfCwWyUJIDlvqxcYCjkfSQjhqkd9pLzOfoq9mzbndy5pxgnRcRiR5ly3lwagOo73JKxyZL33kBhrmR0xZbu02k9SKhGWn8EoLNVrGznmHuxpAVP4tiI0GTudoUb3/Xe73wGnmdJm4hjaSr1hIW51OGhRhhLsZdOxbuFFbiKj8dycGV1lXtjf6GqWPmnbgC+cE9rV4X8cDeshM8TcWEWdipXB8M/SbOfQFb/JFovRrLc2MzCXLIONnCp1cS8Lr/VJnpzWpdCRVZh0agWwA937Wshke7z6swf9PReyCSaFmqfXDl0mmkQWSlv0AZ2HiMRoidSpObsCRLG4MpwBkItxLIw8KScA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <F3435DA14E0A7D4AB02D16C720B8E99F@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3871.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a928ba8-7529-4bf1-8680-08d87cb6b898
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2020 09:32:29.5321
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eCdctMv6BKyZYIa04HrlaH5PyiSo481W1RpSFgPgVKU7xzWTGb20T6Y/JbgR7nkbiKu1ZklFKgixSO/anQQDhQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7199
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+On Fri, Oct 30, 2020 at 08:07:26AM +0800, Shawn Guo wrote:
+> On Fri, Sep 25, 2020 at 04:24:56PM +0300, Ioana Ciornei wrote:
+> > Annotate the external MDIO1 node and describe the 8 QSGMII PHYs found o=
+n
+> > the LS1088ARDB board and add phy-handles for DPMACs 3-10 to its
+> > associated PHY.  Also, add the internal PCS MDIO nodes for the internal
+> > MDIO buses found on the LS1088A SoC along with their internal PCS PHY
+> > and link the corresponding DPMAC to the PCS through the pcs-handle.
+> >=20
+> > Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+> > ---
+> >  .../boot/dts/freescale/fsl-ls1088a-rdb.dts    | 100 ++++++++++++++++++
+> >  .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi |  50 +++++++++
+> >  2 files changed, 150 insertions(+)
+> >=20
+> > diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts b/arch/a=
+rm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
+> > index 5633e59febc3..d7886b084f7f 100644
+> > --- a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
+> > +++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
+> > @@ -17,6 +17,98 @@ / {
+> >  	compatible =3D "fsl,ls1088a-rdb", "fsl,ls1088a";
+> >  };
 
-On 10/30/20 9:19 AM, Miquel Raynal wrote:
-> Hi Christophe,
-> 
-> Christophe Kerello <christophe.kerello@st.com> wrote on Thu, 29 Oct
-> 2020 17:38:12 +0100:
-> 
->> Since commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user
->> input parsing bits"), ECC are broken in FMC2 driver in case of
->> nand-ecc-step-size and nand-ecc-strength are not set in the device tree.
->> The default user configuration set in FMC2 driver is lost when
->> rawnand_dt_init function is called. To avoid to lose the default user
->> configuration, it is needed to move it in the new user_conf structure.
->>
->> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
->> Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
->> ---
->>   drivers/mtd/nand/raw/stm32_fmc2_nand.c | 8 +++++---
->>   1 file changed, 5 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
->> index b31a581..dc86ac9 100644
->> --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
->> +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
->> @@ -1846,6 +1846,7 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
->>   	struct resource *res;
->>   	struct mtd_info *mtd;
->>   	struct nand_chip *chip;
->> +	struct nand_device *nanddev;
->>   	struct resource cres;
->>   	int chip_cs, mem_region, ret, irq;
->>   	int start_region = 0;
->> @@ -1952,10 +1953,11 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
->>   	chip->options |= NAND_BUSWIDTH_AUTO | NAND_NO_SUBPAGE_WRITE |
->>   			 NAND_USES_DMA;
->>   
->> -	/* Default ECC settings */
->> +	/* Default ECC user settings */
->>   	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
->> -	chip->ecc.size = FMC2_ECC_STEP_SIZE;
->> -	chip->ecc.strength = FMC2_ECC_BCH8;
->> +	nanddev = mtd_to_nanddev(mtd);
->> +	nanddev->ecc.user_conf.step_size = FMC2_ECC_STEP_SIZE;
->> +	nanddev->ecc.user_conf.strength = FMC2_ECC_BCH8;
->>   
->>   	/* Scan to find existence of the device */
->>   	ret = nand_scan(chip, nand->ncs);
-> 
-> Sorry for breaking the driver with this change, but now I think we
-> should have all ECC related bits in ->attach() instead of ->probe().
-> The ->attach() hook is called during the nand_scan() operation and at
-> this point the chip's requirements/layout are known (not before). I
-> know that certain controllers don't really care about that, here your
-> simply hardcode these two fields and you don't need to know anything
-> about the chip's properties. But as a bid to harmonize all drivers with
-> the target of a generic ECC engine in mind, I think it's now time to
-> move these three lines (chip->ecc.* = ...) at the top of ->attach().
-> Also, these fields should have been populated by the core so perhaps
-> the best approach is to check if the user requirements are synced with
-> the controller's capabilities and error out otherwise?
-> 
-> We plan to send a fixes PR for -rc2, if the v2 arrives today I'll
-> integrate it.
+(...)
 
-Ok. Issue is that the controller is initialized when 
-stm32_fmc2_nfc_select_chip is called. This function will be called 
-before the ->attach() hook, when the first command will be sent to the 
-NAND device (reset command). So, moving the default ECC initialization
-needs probably more modifications in the driver.
-I will try to send a v2 today.
+> > +&emdio1 {
+> > +	status =3D "okay";
+> > +
+> > +	mdio1_phy1: emdio1_phy@1 {
+>=20
+> If this is an Ethernet PHY device, please use generic node name like
+> 'ethernet-phy'.  Also the unit-address in node name should match 'reg'
+> property.
 
-Regards,
-Christophe Kerello.
+Yes, it is. I'll rename them and use the reg as the unit-address.
 
-> 
-> Thanks,
-> Miquèl
-> 
+(...)
+
+> > +		pcs_mdio3: mdio@8c0f000 {
+> > +			compatible =3D "fsl,fman-memac-mdio";
+> > +			reg =3D <0x0 0x8c0f000 0x0 0x1000>;
+> > +			little-endian;
+> > +			#address-cells =3D <1>;
+> > +			#size-cells =3D <0>;
+> > +			status =3D "disabled";
+> > +
+> > +			pcs3_0: pcs-phy@0 {
+>=20
+> ethernet-phy@0?
+>=20
+
+Will change.
+
+Ioana=
