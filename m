@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326602A084F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7303B2A0863
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgJ3OsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726929AbgJ3OrV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:47:21 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6704C0613D6;
-        Fri, 30 Oct 2020 07:47:19 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id k125so2721568wmf.0;
-        Fri, 30 Oct 2020 07:47:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zUO5L8kmRzG695X/RNL/pM4ak1YR1L4D/l4ZGPiKS4s=;
-        b=MwEdcgHri63X6/zT4qETBnCFUxXPSOp0QZQDn7N6gV2mUSRWqaX2Sl86N7s73XyyX/
-         hVmmLdPeRjWMq0ECnGE9KITW3ub00SdtWXfTXXdrB5RQK12j2C6D5tSXM/uK874jB3g/
-         frrogVDPPf+Xd+5V1pU5vnZlLA/NqTc/64xwFY8XT7aOlEQbS4P8ONrT8UwzzM+vpGbO
-         0QmlFr8qAuQ18WVIGORA1ydY2RjPJxK5wrIT7a3pJXu/UEg8rJz1gujho/NxvUjq4NCa
-         GllFFVgFOae3txoe4peuW6LKIxNVy+YDh3xC2LyOE868W9DKSq6udM6KeaUH3CoRRYc0
-         v64w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=zUO5L8kmRzG695X/RNL/pM4ak1YR1L4D/l4ZGPiKS4s=;
-        b=D7rc1mzUpkXsQk62zjwRn2idCy4KUpXR/KdjPJy+7AKFJ6cpe/ondZ0Dcjlx48XVre
-         ILFC/IKautH9zT+dbFbACeLOrV6Zu1FqVD4uS8SRflB1KK5CxrDE0d2VEQ9wCZPtFyxE
-         3NmST4loSV/CdaVUayFsAUbs1mQYrnhrMVF+huEkDhzJJui+ALceP/WydPiFewlCSFEA
-         2U7ZDP2fiGnUbp4qrpwAQVrE+Oi+6O2agQSh5nivW5/bHof4+ZQPaUQW4pVEtybtCfKc
-         WkDO6a/Sx2zeitmY1vQqCo3iwWFfeM2jwdSvhsbqIYQUod0CWUo2lXwMJHqfABWEAx6o
-         vnrg==
-X-Gm-Message-State: AOAM532LQjiwRN/kQ0jZpLphZW8U5/w34xKtsDleHD7vymUlkbWjHCey
-        ZJLCiZGIOOzZw9XvheQyY0CXYfDge0k=
-X-Google-Smtp-Source: ABdhPJyzxDkBZiBsJYDrfCsgqEI1far515sbaNTQRxLUQe6vYaik0FWVX68HwfGKp4i6KXSJvOJO9Q==
-X-Received: by 2002:a1c:9e12:: with SMTP id h18mr3080430wme.11.1604069238122;
-        Fri, 30 Oct 2020 07:47:18 -0700 (PDT)
-Received: from avogadro.redhat.com ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id p21sm5058785wmc.28.2020.10.30.07.47.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 07:47:17 -0700 (PDT)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        corbet@lwn.net
-Cc:     Eduardo Habkost <ehabkost@redhat.com>
-Subject: [PATCH 2/2] kernel-doc: Handle function typedefs without asterisks
-Date:   Fri, 30 Oct 2020 15:47:13 +0100
-Message-Id: <20201030144713.201372-3-pbonzini@redhat.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201030144713.201372-1-pbonzini@redhat.com>
-References: <20201030144713.201372-1-pbonzini@redhat.com>
+        id S1726982AbgJ3OtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:49:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59112 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726596AbgJ3OtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 10:49:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604069358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jC196offWe8kZaKf5Rpbbnzmhqts/gI7NsBHR/i23IY=;
+        b=j+ISWsOZGJGLNKcv59Kl8bfKr0BHSQ3sw34cw5g0O/yq3SJfwO498lNZmdrf2z/7YCc9Vq
+        GcVXPCUTNzvomOIqAKgfQ/R3wBxU7K/vbWgugsCbQQVMsH3mth+gOOIK/gi6ACd5PyxpFZ
+        d0idin88Iu2Z+XwNiLrEwR9HbnYTRM0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0D118AF0B;
+        Fri, 30 Oct 2020 14:49:18 +0000 (UTC)
+Date:   Fri, 30 Oct 2020 15:49:17 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Rik van Riel <riel@surriel.com>,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm/compaction: count pages and stop correctly during
+ page isolation.
+Message-ID: <20201030144917.GK1478@dhcp22.suse.cz>
+References: <20201029200435.3386066-1-zi.yan@sent.com>
+ <20201030094308.GG1478@dhcp22.suse.cz>
+ <6CAAB1FC-2B41-490B-A67A-93063629C19B@nvidia.com>
+ <20201030133625.GJ1478@dhcp22.suse.cz>
+ <400B3460-65C0-4C48-A7EA-1A9F5780EC9C@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <400B3460-65C0-4C48-A7EA-1A9F5780EC9C@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eduardo Habkost <ehabkost@redhat.com>
+On Fri 30-10-20 10:35:43, Zi Yan wrote:
+> On 30 Oct 2020, at 9:36, Michal Hocko wrote:
+> 
+> > On Fri 30-10-20 08:20:50, Zi Yan wrote:
+> >> On 30 Oct 2020, at 5:43, Michal Hocko wrote:
+> >>
+> >>> [Cc Vlastimil]
+> >>>
+> >>> On Thu 29-10-20 16:04:35, Zi Yan wrote:
+> >>>> From: Zi Yan <ziy@nvidia.com>
+> >>>>
+> >>>> In isolate_migratepages_block, when cc->alloc_contig is true, we are
+> >>>> able to isolate compound pages, nr_migratepages and nr_isolated did not
+> >>>> count compound pages correctly, causing us to isolate more pages than we
+> >>>> thought. Use thp_nr_pages to count pages. Otherwise, we might be trapped
+> >>>> in too_many_isolated while loop, since the actual isolated pages can go
+> >>>> up to COMPACT_CLUSTER_MAX*512=16384, where COMPACT_CLUSTER_MAX is 32,
+> >>>> since we stop isolation after cc->nr_migratepages reaches to
+> >>>> COMPACT_CLUSTER_MAX.
+> >>>>
+> >>>> In addition, after we fix the issue above, cc->nr_migratepages could
+> >>>> never be equal to COMPACT_CLUSTER_MAX if compound pages are isolated,
+> >>>> thus page isolation could not stop as we intended. Change the isolation
+> >>>> stop condition to >=.
+> >>>>
+> >>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> >>>> ---
+> >>>>  mm/compaction.c | 8 ++++----
+> >>>>  1 file changed, 4 insertions(+), 4 deletions(-)
+> >>>>
+> >>>> diff --git a/mm/compaction.c b/mm/compaction.c
+> >>>> index ee1f8439369e..0683a4999581 100644
+> >>>> --- a/mm/compaction.c
+> >>>> +++ b/mm/compaction.c
+> >>>> @@ -1012,8 +1012,8 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+> >>>>
+> >>>>  isolate_success:
+> >>>>  		list_add(&page->lru, &cc->migratepages);
+> >>>> -		cc->nr_migratepages++;
+> >>>> -		nr_isolated++;
+> >>>> +		cc->nr_migratepages += thp_nr_pages(page);
+> >>>> +		nr_isolated += thp_nr_pages(page);
+> >>>
+> >>> Does thp_nr_pages work for __PageMovable pages?
+> >>
+> >> Yes. It is the same as compound_nr() but compiled
+> >> to 1 when THP is not enabled.
+> >
+> > I am sorry but I do not follow. First of all the implementation of the
+> > two is different and also I was asking about __PageMovable which should
+> > never be THP IIRC. Can they be compound though?
+> 
+> __PageMovable, non-lru movable pages, can be compound and thp_nr_page cannot
+> be used for it, since when THP is off, thp_nr_page will return the wrong number.
+> I got confused by its name, sorry.
 
-Example of typedef that was not parsed by kernel-doc:
+OK, this matches my understanding. Good we are on the same page.
 
-  typedef void (ObjectUnparent)(Object *obj);
+> But __PageMovable is irrelevant to this patch, since we are using
+> __isolate_lru_page to isolate pages. non-lru __PageMovable should not appear
+> after isolate_succes. thp_nr_pages can be used here.
 
-Signed-off-by: Eduardo Habkost <ehabkost@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- scripts/kernel-doc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 5b5caa7642f7..1a9c918aa653 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -1302,7 +1302,7 @@ sub dump_typedef($$) {
-     $x =~ s@/\*.*?\*/@@gos;	# strip comments.
- 
-     # Parse function prototypes
--    if ($x =~ /typedef\s+(\w+\s*\**)\s*\(\*\s*(\w\S+)\s*\)\s*\((.*)\);/ ||
-+    if ($x =~ /typedef\s+(\w+\s*\**)\s*\(\*?\s*(\w\S+)\s*\)\s*\((.*)\);/ ||
- 	$x =~ /typedef\s+(\w+\s*\**)\s*(\w\S+)\s*\s*\((.*)\);/) {
- 
- 	# Function typedefs
+But this is still not clear to me. __PageMovable pages are isolated by
+isolate_movable_page and then jump to isolate_succes. Does that somehow
+changes the nature of the page being compound or tat thp_nr_page would
+start working on those pages.
 -- 
-2.28.0
-
+Michal Hocko
+SUSE Labs
