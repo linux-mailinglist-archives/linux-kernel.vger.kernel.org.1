@@ -2,33 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10DB29FA95
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C991A29FA97
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgJ3B2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 21:28:45 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:6934 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726094AbgJ3B2o (ORCPT
+        id S1726203AbgJ3B2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 21:28:47 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6669 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgJ3B2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 21:28:44 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CMl7w4RQpz70H1;
-        Fri, 30 Oct 2020 09:28:44 +0800 (CST)
+        Thu, 29 Oct 2020 21:28:46 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CMl7v207Bz15N5L;
+        Fri, 30 Oct 2020 09:28:43 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 30 Oct 2020 09:28:33 +0800
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 30 Oct 2020 09:28:34 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH] drm/tegra: sor: fix missing clk_disable_unprepare() on error in tegra_sor_init
-Date:   Fri, 30 Oct 2020 09:34:24 +0800
-Message-ID: <20201030013424.53995-1-miaoqinglang@huawei.com>
+To:     Antti Palosaari <crope@iki.fi>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Qinglang Miao" <miaoqinglang@huawei.com>
+Subject: [PATCH] media: usb: dvb-usb-v2: zd1301: fix missing platform_device_unregister()
+Date:   Fri, 30 Oct 2020 09:34:25 +0800
+Message-ID: <20201030013425.54041-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,46 +36,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the missing clk_disable_unprepare() before return
-from tegra_sor_init() in the error handling case.
+Add the missing platform_device_unregister() before return
+from zd1301_frontend_attach in the error handling case when
+pdev->dev.driver is empty.
+
+There's an error handling route named err_platform_device_unregister
+, so just reuse it.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/gpu/drm/tegra/sor.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/media/usb/dvb-usb-v2/zd1301.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
-index e88a17c29..0103e8c16 100644
---- a/drivers/gpu/drm/tegra/sor.c
-+++ b/drivers/gpu/drm/tegra/sor.c
-@@ -3145,6 +3145,7 @@ static int tegra_sor_init(struct host1x_client *client)
- 		if (err < 0) {
- 			dev_err(sor->dev, "failed to deassert SOR reset: %d\n",
- 				err);
-+			clk_disable_unprepare(sor->clk);
- 			return err;
- 		}
- 
-@@ -3152,12 +3153,17 @@ static int tegra_sor_init(struct host1x_client *client)
+diff --git a/drivers/media/usb/dvb-usb-v2/zd1301.c b/drivers/media/usb/dvb-usb-v2/zd1301.c
+index ba2c1b0d3..72aa6a9a9 100644
+--- a/drivers/media/usb/dvb-usb-v2/zd1301.c
++++ b/drivers/media/usb/dvb-usb-v2/zd1301.c
+@@ -150,7 +150,7 @@ static int zd1301_frontend_attach(struct dvb_usb_adapter *adap)
  	}
- 
- 	err = clk_prepare_enable(sor->clk_safe);
--	if (err < 0)
-+	if (err < 0) {
-+		clk_disable_unprepare(sor->clk);
- 		return err;
-+	}
- 
- 	err = clk_prepare_enable(sor->clk_dp);
--	if (err < 0)
-+	if (err < 0) {
-+		clk_disable_unprepare(sor->clk_safe);
-+		clk_disable_unprepare(sor->clk);
- 		return err;
-+	}
- 
- 	return 0;
- }
+ 	if (!pdev->dev.driver) {
+ 		ret = -ENODEV;
+-		goto err;
++		goto err_platform_device_unregister;
+ 	}
+ 	if (!try_module_get(pdev->dev.driver->owner)) {
+ 		ret = -ENODEV;
 -- 
 2.23.0
 
