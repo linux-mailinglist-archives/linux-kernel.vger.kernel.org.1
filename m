@@ -2,158 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D3D29FDE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6DD29FDF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbgJ3GfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 02:35:17 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19307 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3GfQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 02:35:16 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9bb4290001>; Thu, 29 Oct 2020 23:35:21 -0700
-Received: from [10.25.99.37] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
- 2020 06:35:08 +0000
-Subject: Re: [PATCH v4 00/15] Audio graph card updates and usage with Tegra210
- audio
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
-        <kuninori.morimoto.gx@renesas.com>,
-        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
-        <tiwai@suse.com>, <p.zabel@pengutronix.de>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
-CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
-        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
-        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
-        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
-        <nicoleotsuka@gmail.com>
-References: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <c98d63a7-f311-a94f-abcc-1c5a87ba8025@nvidia.com>
-Date:   Fri, 30 Oct 2020 12:04:50 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604039721; bh=ycvf4n5KD1xsLuNvIWPme1ipDvYuSNjDWB6qo9gxrm0=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=OFw85CW5ZHPXwP2yMStP6E8VJZGIr7gva0pPhFEPMqhFXd/kbLi0yx6xXFBnoiCj9
-         scstZc7uTWQBYHCxC8lcqQvSxa4QZjYOsH0nCbPxZP30C1tbMIRl2cfXcQR8FDH7J7
-         c3LBaUOOEcLZICdBXB2ZWKYqIB0Vc6Hm0VA6gnyPJ0lwP430wVX1CippU+vVpVOfsj
-         ZeYmF3TXY030eMT1m/uhVd5gD3VKLp3T3YWWoKdtkHafIiVd07tdhHDA8zzT/VZcaD
-         VECCUJqlDuilUr3l2JwuUEO4h5EUdu1lBW0j4lR3DRHIf/oiYZwv1MhV/OhUJA65UR
-         CJqGl6OxIyi0g==
+        id S1725832AbgJ3GsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 02:48:10 -0400
+Received: from mga03.intel.com ([134.134.136.65]:2670 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgJ3GsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 02:48:10 -0400
+IronPort-SDR: 2rSIPl350TqppAs81TIt/1/epXiToYs0xrpx9vzRO8kAJH2Sh6yTgoayi9itBu3WJ8mwWnBfGa
+ 66M3kOupvpDQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="168663832"
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="168663832"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 23:48:09 -0700
+IronPort-SDR: IFt1+nBqLLkX+l35QIPUUmSBbUlkSuVnLhPzrmHKAVzzfSBlrjNmdZKQDx9XOzMviCj9iA3seM
+ 58xAKyTukACw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
+   d="scan'208";a="361760812"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+  by FMSMGA003.fm.intel.com with ESMTP; 29 Oct 2020 23:47:54 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Brent Lu <brent.lu@intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Rander Wang <rander.wang@intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Jason Yan <yanaijie@huawei.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Add rt1015 support to CML boards
+Date:   Fri, 30 Oct 2020 14:36:52 +0800
+Message-Id: <20201030063654.25877-1-brent.lu@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark, Morimoto-san,
+First patch adds tdm 4-slot 100fs DAI setting to avoid jitter of using
+64fs on CML boards. Second patch is a DMI quirk for HP Dooly.
 
-> Summary of changes:
->   * Support multiple instances of a component. For example there can be
->     multiple I2S devices which can use the same component driver.
->
->   * Support open platforms with empty Codec endpoint. Customers can plug
->     their own HW and can populate codec endpoint.
->
->   * In a component model there can be many components which can be
->     connected togethe. In such cases Identify no-pcm DPCM DAI links which
->     can be used in BE<->BE connections.
->
->   * Add Tegra audio graph driver which is based on generic audio graph
->     driver and specific customizations are done in Tegra driver.
->
->   * This pushes DT support for Tegra210 based platforms which uses
->     audio-graph card and above enhancements.
->
-> The series is based on following references where DPCM usgae for Tegra
-> Audio and simple-card driver proposal were discussed.
->
->   * https://lkml.org/lkml/2020/4/30/519 (DPCM for Tegra)
->   * https://lkml.org/lkml/2020/6/27/4 (simple-card driver)
->
-> Changelog
-> =========
->
-> v3 -> v4
-> --------
->   * Added new patches to convert graph.txt and audio-graph-card.txt
->     to corresponding json-schema files. Later these references
->     are used in Tegra audio graph schema.
->
->   * AHUB component binding docs are updated to reflect the usage
->     of ports/port/endpoint
->
->   * More common stuff is moved into graph_parse_of() and this is
->     used by both generic and Tegra audio graph.
->
->   * DT binding for Tegra audio graph is updated to included "ports { }"
->
->   * As per the suggestion 'void *data' member is dropped from
->     'asoc_simple_priv' and instead container method is used to
->     maintain required custom data internal to Tegra audio graph.
->
-> v2 -> v3
-> --------
->   * Dropped new compatible addition in generic graph driver
->     after reviewing it with Morimoto-san. Instead added Tegra
->     audio graph driver and new compatibles are added in the same.
->   * Added new patches to expose new members for customization
->     in audio graph driver.
->   * Added new patch for Tegra audio graph driver and related
->     documentation.
->   * Minor change in below commit where mutex version of helper is used
->     "ASoC: audio-graph: Identify 'no_pcm' DAI links for DPCM"
->   * DT binding is updated to use the newly exposed compatibles
->   * No changes in other patches
->
-> v1 -> v2
-> --------
->   * Re-organized ports/endpoints description for ADMAIF and XBAR.
->     Updated DT patches accordingly.
->   * After above change, multiple Codec endpoint support is not
->     required and hence dropped for now. This will be considered
->     separately if at all required in future.
->   * Re-ordered patches in the series.
 
->
-> Sameer Pujar (15):
->    ASoC: soc-core: Fix component name_prefix parsing
->    ASoC: soc-pcm: Get all BEs along DAPM path
->    ASoC: audio-graph: Use of_node and DAI for DPCM DAI link names
->    ASoC: audio-graph: Identify 'no_pcm' DAI links for DPCM
->    ASoC: audio-graph: Support empty Codec endpoint
->    ASoC: audio-graph: Expose new members for asoc_simple_priv
->    ASoC: audio-graph: Expose helpers from audio graph
+Brent Lu (2):
+  ASoC: intel: sof_rt5682: Add support for cml_rt1015_rt5682
+  ASoC: intel: sof_rt5682: Add quirk for Dooly
 
-Would you suggest to keep above in a separate series and thus not 
-blocked by below doc updates? If so do I need to resend above in a next 
-revision or if these are good to be picked up?
+ sound/soc/intel/boards/sof_rt5682.c           | 61 +++++++++++++++++--
+ .../intel/common/soc-acpi-intel-cml-match.c   | 13 ++++
+ 2 files changed, 69 insertions(+), 5 deletions(-)
 
->    Documentation: of: Convert graph bindings to json-schema
->    ASoC: dt-bindings: audio-graph: Convert bindings to json-schema
->    ASoC: dt-bindings: tegra: Add graph bindings
->    ASoC: dt-bindings: tegra: Add json-schema for Tegra audio graph card
+-- 
+2.17.1
 
-Documentation patches in the series have some dependency over 
-Morimoto-san's audio-graph series 
-https://patchwork.kernel.org/project/alsa-devel/list/?series=372759. I 
-will update doc related patches once dependency is merged.
-
->    ASoC: tegra: Add audio graph based card driver
->    arm64: defconfig: Enable Tegra audio graph card driver
->    arm64: tegra: Audio graph header for Tegra210
->    arm64: tegra: Audio graph sound card for Jetson Nano and TX1
