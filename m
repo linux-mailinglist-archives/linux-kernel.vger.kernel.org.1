@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28452A0624
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB882A061E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 14:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgJ3NCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 09:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726573AbgJ3NCg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 09:02:36 -0400
-Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE918C0613D7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:02:34 -0700 (PDT)
-Received: by mail-vk1-xa33.google.com with SMTP id y10so1431395vkl.5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 06:02:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hfUp6uvT0mNo9qOvWz4kadVZif4hwG0EcrIPidc71AU=;
-        b=c/0np4r5fnnReVFjWkDWXo8hF0To3ovSOoxgoL/QWs9VxL86iqjKdadij03d378/T5
-         B7rjoCbR258EwTEX+UW+6QMPF65hDWZsco0RfSUG9stFDcsd6ZZkDH+4oFGIQiro7Wrf
-         /VUafL5CtS83KydlI6lpgD86QMrk86JITh21I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hfUp6uvT0mNo9qOvWz4kadVZif4hwG0EcrIPidc71AU=;
-        b=hD1wmqIbf3/4YIkR59nUaHWtCHHpGxXGp26cWCZBCJpLf74OIQrKdRtxmnx2RQi7Bt
-         lii5rqbF4mz/VFpD1PoWMGz4QGWN7IByP8R+2B+f70zatAYwfUSrDayOmd3DSzw5eyw3
-         +Azo5nt3/WkCGj8TmFyYaecCB40RbJzZcDe2EHL8GjVhYk0jfZjdtjFiCJkOEntke3QX
-         K6W6UG+Q+KUyZ8FJxKdx90IiWfjtCobP1lNQbUaPoGzQFn55nS+wAqaov0qEZW7wKXa1
-         FIX87L6/6BZRk0lGWI+x1Kq+56QlyjHlDqccYaejATH4C4WltfaazfP3VEIWnHaPCZkl
-         aShQ==
-X-Gm-Message-State: AOAM530VdGr92zepBzXuqm0Z69f3m7NMCWyHsKp6JsmUdfuAB2Uh4zDA
-        tyZZlFuE0nCHm01iJo5TLoAUmJXCuudCagaCsxMFqg==
-X-Google-Smtp-Source: ABdhPJxPa9+zamc48OrPbKG+5+YeIbGDLouPEl6taVV7SKI2yGqJZrMzqI/DHpB0Je2VEJI3rTxbB6w6g9+fXjI8Kns=
-X-Received: by 2002:a1f:23d0:: with SMTP id j199mr6640364vkj.11.1604062953264;
- Fri, 30 Oct 2020 06:02:33 -0700 (PDT)
+        id S1726545AbgJ3NCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 09:02:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726178AbgJ3NCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 09:02:32 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66B22206FA;
+        Fri, 30 Oct 2020 13:02:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604062952;
+        bh=zD7Qg76r3Z156bimr1LI8xN1/pnNPPdLFzNeHDf/AB4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WjdYr9F6WBbAPPFOPhMidkMEAF2gAY65ZVWiOOM0NIPoNCiC20zIh/lxIeg7r3wYh
+         UqUgQ8bocnv6nxvJzldx7XTmmxBDXgyIOqa1YFPykLVVfzI/g7OGsXPsmQ2BCbLJgQ
+         hCwT3rgb0Y8iGvuG/3WJcCsLwLMlc/FTQjzXiMkI=
+Date:   Fri, 30 Oct 2020 13:02:24 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Qiang Zhao <qiang.zhao@nxp.com>
+Cc:     olteanv@gmail.com, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
+Message-ID: <20201030130224.GA8802@sirena.org.uk>
+References: <20201029084035.19604-1-qiang.zhao@nxp.com>
 MIME-Version: 1.0
-References: <0000000000008caae305ab9a5318@google.com> <000000000000a726a405ada4b6cf@google.com>
- <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com>
-In-Reply-To: <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 30 Oct 2020 14:02:22 +0100
-Message-ID: <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com>
-Subject: Re: general protection fault in security_inode_getattr
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>,
-        andriin@fb.com, Alexei Starovoitov <ast@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>, john.fastabend@gmail.com,
-        kafai@fb.com, KP Singh <kpsingh@chromium.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        network dev <netdev@vger.kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>, yhs@fb.com,
-        linux-fsdevel@vger.kernel.org,
-        overlayfs <linux-unionfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
+Content-Disposition: inline
+In-Reply-To: <20201029084035.19604-1-qiang.zhao@nxp.com>
+X-Cookie: <Omnic> another .sig addition
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 11:00 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
->
-> On Mon, Aug 24, 2020 at 9:37 PM syzbot
-> <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com> wrote:
-> > syzbot has found a reproducer for the following issue on:
->
-> Looping in fsdevel and OverlayFS maintainers, as this seems to be
-> FS/OverlayFS related...
 
-Hmm, the oopsing code is always something like:
+--SUOF0GtieIMvvwua
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All code
-========
-   0: 1b fe                sbb    %esi,%edi
-   2: 49 8d 5e 08          lea    0x8(%r14),%rbx
-   6: 48 89 d8              mov    %rbx,%rax
-   9: 48 c1 e8 03          shr    $0x3,%rax
-   d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
-  12: 74 08                je     0x1c
-  14: 48 89 df              mov    %rbx,%rdi
-  17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
-  1c: 48 8b 1b              mov    (%rbx),%rbx
-  1f: 48 83 c3 68          add    $0x68,%rbx
-  23: 48 89 d8              mov    %rbx,%rax
-  26: 48 c1 e8 03          shr    $0x3,%rax
-  2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
-  2f: 74 08                je     0x39
-  31: 48 89 df              mov    %rbx,%rdi
-  34: e8 9f b4 5b fe        callq  0xfffffffffe5bb4d8
-  39: 48 8b 1b              mov    (%rbx),%rbx
-  3c: 48 83 c3 0c          add    $0xc,%rbx
+On Thu, Oct 29, 2020 at 04:40:35PM +0800, Qiang Zhao wrote:
 
+> [   64.587431] Unable to handle kernel NULL pointer dereference at
+> virtual address 0000000000000020
+> [..]
+> [   64.756080] Call trace:
+> [   64.758526]  dspi_suspend+0x30/0x78
+> [   64.762012]  platform_pm_suspend+0x28/0x70
+> [   64.766107]  dpm_run_callback.isra.19+0x24/0x70
+> [   64.770635]  __device_suspend+0xf4/0x2f0
+> [   64.774553]  dpm_suspend+0xec/0x1e0
+> [   64.778036]  dpm_suspend_start+0x80/0xa0
+> [   64.781957]  suspend_devices_and_enter+0x118/0x4f0
+> [   64.786743]  pm_suspend+0x1e0/0x260
+> [   64.790227]  state_store+0x8c/0x118
+> [   64.793712]  kobj_attr_store+0x18/0x30
+> [   64.797459]  sysfs_kf_write+0x40/0x58
+> [   64.801118]  kernfs_fop_write+0x148/0x240
+> [   64.805126]  vfs_write+0xc0/0x230
+> [   64.808436]  ksys_write+0x6c/0x100
+> [   64.811833]  __arm64_sys_write+0x1c/0x28
+> [   64.815753]  el0_svc_common.constprop.3+0x68/0x170
+> [   64.820541]  do_el0_svc+0x24/0x90
+> [   64.823853]  el0_sync_handler+0x118/0x168
+> [   64.827858]  el0_sync+0x158/0x180
 
-And that looks (to me) like the unrolled loop in call_int_hook().  I
-don't see how that could be related to overlayfs, though it's
-definitely interesting why it only triggers from
-overlay->vfs_getattr()->security_inode_getattr()...
+Please think hard before including complete backtraces in upstream
+reports, they are very large and contain almost no useful information
+relative to their size so often obscure the relevant content in your
+message. If part of the backtrace is usefully illustrative (it often is
+for search engines if nothing else) then it's usually better to pull out
+the relevant sections.
 
-Thanks,
-Miklos
+--SUOF0GtieIMvvwua
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+cDuAACgkQJNaLcl1U
+h9C3JAf9GsF97P7cX8CwfBVS2GiJmhAmCayrZOxT1GhgmcBN9DLxCPSr5J9thdUD
+JjVGZx9jmk7ba6ol77504gSdEJ2gxl8uf5WoJuMOQKbqEKg4yMTYBS5lLh1M1Vwo
+sS1713ekVQhbLjH3WnTyAI6YXJIe1Ue5OgYbpqGt2QEnSgt76bEkyr2Cka2QcKSf
+CwIy9QxVA2i7POSeUn9XXEt6m64ZWAqQvdJg32A9EYi03XGCVcfZjBnCiiQ0pbiB
+ICtXm1+glZd0x4lKEc8zg4itMEY+7yTNkA00uzr529DcMZcSN+d/rTPPL8qg7nJ1
+UmFW7X6XHVBH4oqsrVqj04tU+L7vHg==
+=110T
+-----END PGP SIGNATURE-----
+
+--SUOF0GtieIMvvwua--
