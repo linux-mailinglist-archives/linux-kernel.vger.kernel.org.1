@@ -2,236 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0872A0781
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:10:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9542A0786
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:11:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgJ3OKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
+        id S1726766AbgJ3OLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:11:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgJ3OKo (ORCPT
+        with ESMTP id S1726178AbgJ3OLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:10:44 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82828C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:10:43 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g12so5298795pgm.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:10:43 -0700 (PDT)
+        Fri, 30 Oct 2020 10:11:33 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA1FC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:11:33 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id j24so8770418ejc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:11:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8WKgP2U9O5DxyTOBMmTBKiiE8+mUg5br1oROOIP2BpQ=;
-        b=QizDrzDHl2Y4166Y2fvVRLmGSFbU2yoTJDN4a3XTsr9eEO1RIESIQmqC+B0nbVB0DC
-         HHfCUbFbLDx3/ioLa1+Yy9aKqdZNF0P6X48WvFY8sPSrafPs1OKhixCWIH1WA5+uZ7Us
-         BX5qQN0ggRNtt6PPwm20ZXrmaL295+RkPI97CDzx9wYuPf4Qx73K4ioK0vEP8sDqehQs
-         ggYBamgihdlwsWxXMVw5+ZHPdXgXpDy5jcUGeOQuHhTa9xTQEFPq40zrSTuLIx1h1Xaa
-         vY3ne5Fpj8z7vaHd1Scw/M9a+JGefF4DM/2S+BcfGpFmzGSu1EDIXI8zsJzVp2typqF1
-         FbhQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fGLh8FE7n+kGnPiOSCfCu+B491Brb7ePqBRZY6cItBg=;
+        b=LH6iU5G+qAZ4T7sqXNGE44q/WiF+g2smHT8tK2NZZq846wCXnKZVs/i0NAbqwfc9xk
+         21Yj3MNkwi0ukryfrHB9hVgWhM+cdTTWfsDLp+g3D7Iig02N7iwYOeg6SfA5q4dylm2H
+         zlOSbk28N2b27zmw/TwjqgMUPI5sLxmAXsXzk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8WKgP2U9O5DxyTOBMmTBKiiE8+mUg5br1oROOIP2BpQ=;
-        b=VPccgGduPg60J4V76VemkL/0HXVYC0tPhSk5oXWtSliGzBnUgeNQEwBlQ2DQEgnmFR
-         EACqQBpQjNKdeRoMe1tdgmylEO13/l4gl3JMwCQdEf+Bcwa3jR2Dw6HokDauf7y5QBsp
-         heG/s8F+zdt/faLENiUhl87GSxOFExN88ZplgS0znIswvajVTlW6Dw/Dn6sONUnvxjvM
-         ZgKnRsT3rB6kzY1NhQ/NTr1F+W+hJd9LkUOeUiy2+kPE8+ach8K+WJQs8Zz2SFSxZdTA
-         G/oq2kPoEnEpkDYJgFKqA8Sjxt3VDAvRSRRfBa4vWJXhFN1dxnwBjRJgm7vbP9rvpDda
-         2srw==
-X-Gm-Message-State: AOAM533tWf8RcuASgCritT6pQUZYHtzrcQQTXzzlzDI8wvmPqDphdrey
-        ubHiYAbVC04FUtAWSoKn9NqhV6TTvK2s
-X-Google-Smtp-Source: ABdhPJxSdgcrkg0jMaghQQDsDclIa7eH2WAO2njTKaKFYcEt8mM0bPzgSJ0zPzruDnz1VEmaFv79uA==
-X-Received: by 2002:a63:3041:: with SMTP id w62mr2377061pgw.166.1604067042669;
-        Fri, 30 Oct 2020 07:10:42 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:918:28fe:10d5:aaf5:e319:ec72])
-        by smtp.gmail.com with ESMTPSA id j1sm6242042pfa.96.2020.10.30.07.10.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 30 Oct 2020 07:10:41 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 19:40:35 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 11/12] bus: mhi: core: Mark and maintain device states
- early on after power down
-Message-ID: <20201030141035.GM3818@Mani-XPS-13-9360>
-References: <1604031057-32820-1-git-send-email-bbhatt@codeaurora.org>
- <1604031057-32820-12-git-send-email-bbhatt@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fGLh8FE7n+kGnPiOSCfCu+B491Brb7ePqBRZY6cItBg=;
+        b=pYJiw8OYRAHISsNZ65S8moyhob59Nvzit5rzk16Lwpr7LcSU9Z3q9vsZsTQTMWYEzw
+         lNbAPeGdTcS/Qm8igbzzADiT6gh77CVAA0mufcG+Xsdpiuk5DK5C82lGdTEJbaRkmzyR
+         8tPs0WsWLZP9V+NMOaLry/NrwuhrMWi5AuGXssBkMRrj9bOq42jKaIlU7OrTrQr2g9pH
+         p+zYKgP2whLJHz804/8i/9P6hBIWf896vSfs4sLTuO1Xa4PuiYcmG5NRAJuYdE2k5RQE
+         IeOQd+pMYiUm2jeRjfkkVL9BaWNz/yUApPh39gSBn0AYmtAGCgYAvrgx8lAqoUHN9FGZ
+         xVWA==
+X-Gm-Message-State: AOAM533yX2mZGB2vrVdnvt0bf+lvi4/FiPudROna1pdLdhseziyfhG1P
+        rD/eQvqsH69+RADCcKdUhoLXyyaRNmF/lg==
+X-Google-Smtp-Source: ABdhPJxr2uxmD5JwebWHZivfL2h5fhFHkcZdSTHFI+IyauNCZHiiYggasm5+e2w0zLuxCiV5oWRf5g==
+X-Received: by 2002:a17:906:cec2:: with SMTP id si2mr1880928ejb.34.1604067091497;
+        Fri, 30 Oct 2020 07:11:31 -0700 (PDT)
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
+        by smtp.gmail.com with ESMTPSA id e9sm922712edn.30.2020.10.30.07.11.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 07:11:26 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id k10so5287106wrw.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:11:25 -0700 (PDT)
+X-Received: by 2002:adf:e892:: with SMTP id d18mr3615109wrm.103.1604067085454;
+ Fri, 30 Oct 2020 07:11:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604031057-32820-12-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201030100815.2269-1-daniel.vetter@ffwll.ch> <20201030100815.2269-6-daniel.vetter@ffwll.ch>
+In-Reply-To: <20201030100815.2269-6-daniel.vetter@ffwll.ch>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Fri, 30 Oct 2020 15:11:14 +0100
+X-Gmail-Original-Message-ID: <CAAFQd5ANOAzVf+tC1iYKXeY0ALahtYrG7xtKHXHmvv1xh7si3g@mail.gmail.com>
+Message-ID: <CAAFQd5ANOAzVf+tC1iYKXeY0ALahtYrG7xtKHXHmvv1xh7si3g@mail.gmail.com>
+Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 09:10:56PM -0700, Bhaumik Bhatt wrote:
-> mhi_power_down() does not ensure that the PM state is moved to an
-> inaccessible state soon enough as the system can encounter
-> scheduling delays till mhi_pm_disable_transition() gets called.
-> Additionally, if an MHI controller decides that the device is now
-> inaccessible and issues a power down, the register inaccessible
-> state is not maintained by moving from MHI_PM_LD_ERR_FATAL_DETECT
-> to MHI_PM_SHUTDOWN_PROCESS. This can result in bus errors if a
-> client driver attempted to read registers when powering down.
-> Close these gaps and avoid any race conditions to prevent such
-> activity.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
+On Fri, Oct 30, 2020 at 11:08 AM Daniel Vetter <daniel.vetter@ffwll.ch> wro=
+te:
+>
+> This is used by media/videbuf2 for persistent dma mappings, not just
+> for a single dma operation and then freed again, so needs
+> FOLL_LONGTERM.
+>
+> Unfortunately current pup_locked doesn't support FOLL_LONGTERM due to
+> locking issues. Rework the code to pull the pup path out from the
+> mmap_sem critical section as suggested by Jason.
+>
+> By relying entirely on the vma checks in pin_user_pages and follow_pfn
+> (for vm_flags and vma_is_fsdax) we can also streamline the code a lot.
+>
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Pawel Osciak <pawel@osciak.com>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> Cc: Tomasz Figa <tfiga@chromium.org>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> --
+> v2: Streamline the code and further simplify the loop checks (Jason)
+>
+> v5: Review from Tomasz:
+> - fix page counting for the follow_pfn case by resetting ret
+> - drop gup_flags paramater, now unused
 > ---
->  drivers/bus/mhi/core/pm.c | 77 ++++++++++++++++++++---------------------------
->  1 file changed, 33 insertions(+), 44 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index 347ae7d..ffbf6f5 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -37,9 +37,10 @@
->   *     M0 -> FW_DL_ERR
->   *     M0 -> M3_ENTER -> M3 -> M3_EXIT --> M0
->   * L1: SYS_ERR_DETECT -> SYS_ERR_PROCESS --> POR
-> - * L2: SHUTDOWN_PROCESS -> DISABLE
-> + * L2: SHUTDOWN_PROCESS -> LD_ERR_FATAL_DETECT
-> + *     SHUTDOWN_PROCESS -> DISABLE
->   * L3: LD_ERR_FATAL_DETECT <--> LD_ERR_FATAL_DETECT
-> - *     LD_ERR_FATAL_DETECT -> SHUTDOWN_PROCESS
-> + *     LD_ERR_FATAL_DETECT -> DISABLE
+>  .../media/common/videobuf2/videobuf2-memops.c |  3 +-
+>  include/linux/mm.h                            |  2 +-
+>  mm/frame_vector.c                             | 53 ++++++-------------
+>  3 files changed, 19 insertions(+), 39 deletions(-)
+>
+
+Thanks, looks good to me now.
+
+Acked-by: Tomasz Figa <tfiga@chromium.org>
+
+From reading the code, this is quite unlikely to introduce any
+behavior changes, but just to be safe, did you have a chance to test
+this with some V4L2 driver?
+
+Best regards,
+Tomasz
+
+> diff --git a/drivers/media/common/videobuf2/videobuf2-memops.c b/drivers/=
+media/common/videobuf2/videobuf2-memops.c
+> index 6e9e05153f4e..9dd6c27162f4 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-memops.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-memops.c
+> @@ -40,7 +40,6 @@ struct frame_vector *vb2_create_framevec(unsigned long =
+start,
+>         unsigned long first, last;
+>         unsigned long nr;
+>         struct frame_vector *vec;
+> -       unsigned int flags =3D FOLL_FORCE | FOLL_WRITE;
+>
+>         first =3D start >> PAGE_SHIFT;
+>         last =3D (start + length - 1) >> PAGE_SHIFT;
+> @@ -48,7 +47,7 @@ struct frame_vector *vb2_create_framevec(unsigned long =
+start,
+>         vec =3D frame_vector_create(nr);
+>         if (!vec)
+>                 return ERR_PTR(-ENOMEM);
+> -       ret =3D get_vaddr_frames(start & PAGE_MASK, nr, flags, vec);
+> +       ret =3D get_vaddr_frames(start & PAGE_MASK, nr, vec);
+>         if (ret < 0)
+>                 goto out_destroy;
+>         /* We accept only complete set of PFNs */
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index ef360fe70aaf..d6b8e30dce2e 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1765,7 +1765,7 @@ struct frame_vector {
+>  struct frame_vector *frame_vector_create(unsigned int nr_frames);
+>  void frame_vector_destroy(struct frame_vector *vec);
+>  int get_vaddr_frames(unsigned long start, unsigned int nr_pfns,
+> -                    unsigned int gup_flags, struct frame_vector *vec);
+> +                    struct frame_vector *vec);
+>  void put_vaddr_frames(struct frame_vector *vec);
+>  int frame_vector_to_pages(struct frame_vector *vec);
+>  void frame_vector_to_pfns(struct frame_vector *vec);
+> diff --git a/mm/frame_vector.c b/mm/frame_vector.c
+> index 10f82d5643b6..f8c34b895c76 100644
+> --- a/mm/frame_vector.c
+> +++ b/mm/frame_vector.c
+> @@ -32,13 +32,12 @@
+>   * This function takes care of grabbing mmap_lock as necessary.
 >   */
->  static struct mhi_pm_transitions const dev_state_transitions[] = {
->  	/* L0 States */
-> @@ -72,7 +73,7 @@ static struct mhi_pm_transitions const dev_state_transitions[] = {
->  	{
->  		MHI_PM_M3,
->  		MHI_PM_M3_EXIT | MHI_PM_SYS_ERR_DETECT |
-> -		MHI_PM_SHUTDOWN_PROCESS | MHI_PM_LD_ERR_FATAL_DETECT
-> +		MHI_PM_LD_ERR_FATAL_DETECT
->  	},
->  	{
->  		MHI_PM_M3_EXIT,
-> @@ -103,7 +104,7 @@ static struct mhi_pm_transitions const dev_state_transitions[] = {
->  	/* L3 States */
->  	{
->  		MHI_PM_LD_ERR_FATAL_DETECT,
-> -		MHI_PM_LD_ERR_FATAL_DETECT | MHI_PM_SHUTDOWN_PROCESS
-> +		MHI_PM_LD_ERR_FATAL_DETECT | MHI_PM_DISABLE
->  	},
->  };
->  
-> @@ -445,10 +446,9 @@ static int mhi_pm_mission_mode_transition(struct mhi_controller *mhi_cntrl)
->  }
->  
->  /* Handle shutdown transitions */
-> -static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
-> -				      enum mhi_pm_state transition_state)
-> +static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
+>  int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+> -                    unsigned int gup_flags, struct frame_vector *vec)
+> +                    struct frame_vector *vec)
 >  {
-> -	enum mhi_pm_state cur_state, prev_state;
-> +	enum mhi_pm_state cur_state;
->  	struct mhi_event *mhi_event;
->  	struct mhi_cmd_ctxt *cmd_ctxt;
->  	struct mhi_cmd *mhi_cmd;
-> @@ -456,33 +456,13 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
->  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->  	int ret, i;
->  
-> -	dev_dbg(dev, "Transitioning from PM state: %s to: %s\n",
-> -		to_mhi_pm_state_str(mhi_cntrl->pm_state),
-> -		to_mhi_pm_state_str(transition_state));
-> +	dev_dbg(dev, "Processing disable transition with PM state: %s\n",
-> +		to_mhi_pm_state_str(mhi_cntrl->pm_state));
->  
->  	mutex_lock(&mhi_cntrl->pm_mutex);
-> -	write_lock_irq(&mhi_cntrl->pm_lock);
-> -	prev_state = mhi_cntrl->pm_state;
-> -	cur_state = mhi_tryset_pm_state(mhi_cntrl, transition_state);
-> -	if (cur_state == transition_state) {
-> -		mhi_cntrl->ee = MHI_EE_DISABLE_TRANSITION;
-> -		mhi_cntrl->dev_state = MHI_STATE_RESET;
-> -	}
-> -	write_unlock_irq(&mhi_cntrl->pm_lock);
+>         struct mm_struct *mm =3D current->mm;
+>         struct vm_area_struct *vma;
+>         int ret =3D 0;
+>         int err;
+> -       int locked;
+>
+>         if (nr_frames =3D=3D 0)
+>                 return 0;
+> @@ -48,40 +47,26 @@ int get_vaddr_frames(unsigned long start, unsigned in=
+t nr_frames,
+>
+>         start =3D untagged_addr(start);
+>
+> -       mmap_read_lock(mm);
+> -       locked =3D 1;
+> -       vma =3D find_vma_intersection(mm, start, start + 1);
+> -       if (!vma) {
+> -               ret =3D -EFAULT;
+> -               goto out;
+> -       }
 > -
-> -	/* Wake up threads waiting for state transition */
-> -	wake_up_all(&mhi_cntrl->state_event);
+> -       /*
+> -        * While get_vaddr_frames() could be used for transient (kernel
+> -        * controlled lifetime) pinning of memory pages all current
+> -        * users establish long term (userspace controlled lifetime)
+> -        * page pinning. Treat get_vaddr_frames() like
+> -        * get_user_pages_longterm() and disallow it for filesystem-dax
+> -        * mappings.
+> -        */
+> -       if (vma_is_fsdax(vma)) {
+> -               ret =3D -EOPNOTSUPP;
+> -               goto out;
+> -       }
 > -
-> -	if (cur_state != transition_state) {
-> -		dev_err(dev, "Failed to transition to state: %s from: %s\n",
-> -			to_mhi_pm_state_str(transition_state),
-> -			to_mhi_pm_state_str(cur_state));
-> -		mutex_unlock(&mhi_cntrl->pm_mutex);
-> -		return;
-> -	}
->  
->  	/* Trigger MHI RESET so that the device will not access host memory */
-> -	if (MHI_REG_ACCESS_VALID(prev_state)) {
-> +	if (!MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
->  		u32 in_reset = -1;
->  		unsigned long timeout = msecs_to_jiffies(mhi_cntrl->timeout_ms);
->  
-> @@ -785,8 +765,7 @@ void mhi_pm_st_worker(struct work_struct *work)
->  			mhi_pm_sys_error_transition(mhi_cntrl);
->  			break;
->  		case DEV_ST_TRANSITION_DISABLE:
-> -			mhi_pm_disable_transition
-> -				(mhi_cntrl, MHI_PM_SHUTDOWN_PROCESS);
-> +			mhi_pm_disable_transition(mhi_cntrl);
->  			break;
->  		default:
->  			break;
-> @@ -1153,23 +1132,33 @@ EXPORT_SYMBOL_GPL(mhi_async_power_up);
->  
->  void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
->  {
-> -	enum mhi_pm_state cur_state;
-> +	enum mhi_pm_state cur_state, transition_state;
->  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->  
->  	/* If it's not a graceful shutdown, force MHI to linkdown state */
-> -	if (!graceful) {
-> -		mutex_lock(&mhi_cntrl->pm_mutex);
-> -		write_lock_irq(&mhi_cntrl->pm_lock);
-> -		cur_state = mhi_tryset_pm_state(mhi_cntrl,
-> -						MHI_PM_LD_ERR_FATAL_DETECT);
-> -		write_unlock_irq(&mhi_cntrl->pm_lock);
-> -		mutex_unlock(&mhi_cntrl->pm_mutex);
-> -		if (cur_state != MHI_PM_LD_ERR_FATAL_DETECT)
-> -			dev_dbg(dev, "Failed to move to state: %s from: %s\n",
-> -				to_mhi_pm_state_str(MHI_PM_LD_ERR_FATAL_DETECT),
-> -				to_mhi_pm_state_str(mhi_cntrl->pm_state));
-> +	transition_state = (graceful) ? MHI_PM_SHUTDOWN_PROCESS :
-> +			   MHI_PM_LD_ERR_FATAL_DETECT;
+> -       if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
+> +       ret =3D pin_user_pages_fast(start, nr_frames,
+> +                                 FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM=
+,
+> +                                 (struct page **)(vec->ptrs));
+> +       if (ret > 0) {
+>                 vec->got_ref =3D true;
+>                 vec->is_pfns =3D false;
+> -               ret =3D pin_user_pages_locked(start, nr_frames,
+> -                       gup_flags, (struct page **)(vec->ptrs), &locked);
+> -               goto out;
+> +               goto out_unlocked;
+>         }
+>
+> +       mmap_read_lock(mm);
+>         vec->got_ref =3D false;
+>         vec->is_pfns =3D true;
+> +       ret =3D 0;
+>         do {
+>                 unsigned long *nums =3D frame_vector_pfns(vec);
+>
+> +               vma =3D find_vma_intersection(mm, start, start + 1);
+> +               if (!vma)
+> +                       break;
 > +
-> +	mutex_lock(&mhi_cntrl->pm_mutex);
-> +	write_lock_irq(&mhi_cntrl->pm_lock);
-> +	cur_state = mhi_tryset_pm_state(mhi_cntrl, transition_state);
-> +	if (cur_state != transition_state) {
-> +		dev_err(dev, "Failed to move to state: %s from: %s\n",
-> +			to_mhi_pm_state_str(transition_state),
-> +			to_mhi_pm_state_str(mhi_cntrl->pm_state));
-> +		/* Force link down or error fatal detected state */
-> +		mhi_cntrl->pm_state = MHI_PM_LD_ERR_FATAL_DETECT;
->  	}
->  
-> +	/* mark device inactive to avoid any further host processing */
-> +	mhi_cntrl->ee = MHI_EE_DISABLE_TRANSITION;
-> +	mhi_cntrl->dev_state = MHI_STATE_RESET;
-> +
-> +	wake_up_all(&mhi_cntrl->state_event);
-> +
-> +	write_unlock_irq(&mhi_cntrl->pm_lock);
-> +	mutex_unlock(&mhi_cntrl->pm_mutex);
-> +
->  	mhi_queue_state_transition(mhi_cntrl, DEV_ST_TRANSITION_DISABLE);
->  
->  	/* Wait for shutdown to complete */
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+>                 while (ret < nr_frames && start + PAGE_SIZE <=3D vma->vm_=
+end) {
+>                         err =3D follow_pfn(vma, start, &nums[ret]);
+>                         if (err) {
+> @@ -92,17 +77,13 @@ int get_vaddr_frames(unsigned long start, unsigned in=
+t nr_frames,
+>                         start +=3D PAGE_SIZE;
+>                         ret++;
+>                 }
+> -               /*
+> -                * We stop if we have enough pages or if VMA doesn't comp=
+letely
+> -                * cover the tail page.
+> -                */
+> -               if (ret >=3D nr_frames || start < vma->vm_end)
+> +               /* Bail out if VMA doesn't completely cover the tail page=
+. */
+> +               if (start < vma->vm_end)
+>                         break;
+> -               vma =3D find_vma_intersection(mm, start, start + 1);
+> -       } while (vma && vma->vm_flags & (VM_IO | VM_PFNMAP));
+> +       } while (ret < nr_frames);
+>  out:
+> -       if (locked)
+> -               mmap_read_unlock(mm);
+> +       mmap_read_unlock(mm);
+> +out_unlocked:
+>         if (!ret)
+>                 ret =3D -EFAULT;
+>         if (ret > 0)
+> --
+> 2.28.0
+>
