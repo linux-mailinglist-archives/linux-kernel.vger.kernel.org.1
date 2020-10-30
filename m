@@ -2,147 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972162A01E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0982A01F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 10:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbgJ3J42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 05:56:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57169 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726171AbgJ3J41 (ORCPT
+        id S1726264AbgJ3J6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 05:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbgJ3J6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 05:56:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604051785;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RinIyWxJBbmsSNFfcXQ/y1B1X9TvLTOrZQPxs5n5iMY=;
-        b=YTvFcygVnjdgFfJief7gBgNp7MlmIYDOHkQzb3rFKqjug/vpzkCbHiFowyvax/Okfv4GVd
-        eyndwXdwuFP2C3t39nZjVWyBw6GryIFXvULnSVmMsGpfmw8cixEptlpmE/79TEmDn8tUeu
-        bOMvdkAJU0m6NUWgjtAGFOabpLCil8g=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-QZZXDwctNRSOKLYg0hEPBQ-1; Fri, 30 Oct 2020 05:56:23 -0400
-X-MC-Unique: QZZXDwctNRSOKLYg0hEPBQ-1
-Received: by mail-ed1-f70.google.com with SMTP id i9so2410226edx.10
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:56:23 -0700 (PDT)
+        Fri, 30 Oct 2020 05:58:11 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B6CC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:58:11 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id k9so4285496qki.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 02:58:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2VhHkXd4L6TEH8EUOQo0yOHDwNt/ZvIiMMXDFFgivGc=;
+        b=dBSkxXkA2gPyz4xHkYMW3NpA4hFTzAbw9YmAV+UitS7eako40TPS+9q6LQ18kdrSxQ
+         rSCS5GMzujUSyG9jBx485FCJeep30ic7zzTvaq8VPtKb7yWK9KsIxEaS1oMDjdVahvZX
+         ca5EFsO/m0QT2ip2W08Bxe4IfaMWFYfipmEYnTf4xNfexom3F7TeROyQpssF8SHTu6Pc
+         h+fy8mK062+vbw+q/GmLN6oJcLQcYqkOZtckuVRZQ1ytV6zMxUSfWIF/YV6ghFzbKfyg
+         SnF2Xu6MjnRtmQq4GdSr0zx5izYAOEtrgTKCG2EGwKTmFmqeJRAqkxqnbBbUEwLIc5Gf
+         91/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RinIyWxJBbmsSNFfcXQ/y1B1X9TvLTOrZQPxs5n5iMY=;
-        b=ggc2exXLVf/w/Rbka8Xgf/eLiIeLGpgcYWTGWI1X5FHPB5ezmfmgKZugkE6hXke9wS
-         /OWRuWN6gKUn8ow72YF9kB4qw2tjXBUUcjpv6K3IV68coZLPxgVt1o/LXF7votXMUiIf
-         DqRUeGgseldMdXETwWse8BsEui4sI1MKApsLZXv3+BjuTQFlX6Ho26fYtPpF00Mrcn0m
-         6R2NEcNOJ21zTLKdpGf9fiT/Rq6hMsmEZNVW0JZRDp8MpdQRycPOKr4bxsjCA/7kVdeC
-         byc+p1nj+Z+HknOSx3465HcSdbq7YZcErT8Q7zgxGOqqcWG/y6T9Y1LawP1GipJGcAhP
-         veWg==
-X-Gm-Message-State: AOAM533bwJkwf0NuA2plKopemMjnBz8HAU0tKs3NsQ3ajG5KY1susaYz
-        qrHexOhW1qxJxk0bVWQeg1BUI6foCzZeI5o6BcmYzk89s2J2hp5RVYzlb8ShpA1nK0S2AYRF+5i
-        dXeqy2wBc+xhNlQw0Y3uTmPQI
-X-Received: by 2002:a17:906:3689:: with SMTP id a9mr1546506ejc.403.1604051781881;
-        Fri, 30 Oct 2020 02:56:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwk85LqSiQSvbeJC5mGEyPbxaBlbSfctyRwNx4tsW6atojGhk3NEbe4WQ2HDSLwJT9DVpW2Bw==
-X-Received: by 2002:a17:906:3689:: with SMTP id a9mr1546492ejc.403.1604051781718;
-        Fri, 30 Oct 2020 02:56:21 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id p16sm2822778edu.74.2020.10.30.02.56.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 02:56:21 -0700 (PDT)
-Subject: Re: [PATCH 1/3] Input: goodix - add option to disable firmware
- loading
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Andrej Valek <andrej.valek@siemens.com>
-Cc:     nick@shmanahar.org, hadess@hadess.net, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20201029170313.25529-1-andrej.valek@siemens.com>
- <20201029170313.25529-2-andrej.valek@siemens.com>
- <20201029203608.GE2547185@dtor-ws>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <a5964429-a472-6b78-e53c-69b4cb115b94@redhat.com>
-Date:   Fri, 30 Oct 2020 10:56:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2VhHkXd4L6TEH8EUOQo0yOHDwNt/ZvIiMMXDFFgivGc=;
+        b=aJpUqDz+0S6842eG5pbB/r40f7iMQBbQpjNrzpSNPc61JyE7LeShaXsA3fCIlbVmTo
+         zVo+vo8VqtdvV9sII7FPdZWe9BnxXwNnBYNEn6BOZqJs3v/NOV4Di8P/7X21w/lM/MCM
+         RHARG9VTrpbGULby1QvMd0Iiyqm4oZAOUiJ5YieU1P/P9F/aL/tbQ1wpf2WCShEjF6xR
+         BMbQt6gj2Zeth4Y3mfbdrcuUb8rK5jysYte/A4lh2lR8i0Y7ZN3pCfpW1U6SI/u18CVn
+         XUUgsQag6panDfrVsIWu5kiC605bYziol0WlnM/i9XYr+A7Ponw66oyfuf1TpntgInIs
+         W0tA==
+X-Gm-Message-State: AOAM532e1mjtE/WPnUqLnfGha1bIqWF1eA+hCiiw/Kr2ajXqsmcok+jm
+        LBt4aF/EJaYn8xYQgjKPxxoO+YxYYPGPBo+ucl8z4w==
+X-Google-Smtp-Source: ABdhPJxchayi6KAa1rCVf7gMCfmV3MrMqnRyilY2XddjLfK/xe76BUNZltL+LqUKVjtNRe+2RNCdPHvEnkBWfhzD5pY=
+X-Received: by 2002:a37:6b07:: with SMTP id g7mr1251389qkc.265.1604051889947;
+ Fri, 30 Oct 2020 02:58:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201029203608.GE2547185@dtor-ws>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <000000000000538f3205b00bcb06@google.com> <20200924110731.9548-1-hdanton@sina.com>
+ <20200924120609.GS18329@kadam> <20200925014616.13436-1-hdanton@sina.com> <20200925033618.GD29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20200925033618.GD29330@paulmck-ThinkPad-P72>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 30 Oct 2020 10:57:58 +0100
+Message-ID: <CACT4Y+bjRQUjNT7ky89xu21LDzSquC4NUx8oZL7_qi6PVt9Cnw@mail.gmail.com>
+Subject: Re: INFO: rcu detected stall in sys_exit_group (6)
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        syzbot <syzbot+f04854e1c5c9e913cc27@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Sep 25, 2020 at 5:36 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > On Thu, Sep 24, 2020 at 07:07:31PM +0800, Hillf Danton wrote:
+> > > > >
+> > > > > Thu, 24 Sep 2020 02:26:25 -0700
+> > > > > > syzbot found the following issue on:
+> > > > > >
+> > > > > > HEAD commit:    805c6d3c Merge branch 'fixes' of git://git.kernel.org/pub/..
+> > > > > > git tree:       upstream
+> > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=11fef4e3900000
+> > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
+> > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=f04854e1c5c9e913cc27
+> > > > > > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d419c5900000
+> > > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1686b4bb900000
+> > > > > >
+> > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > Reported-by: syzbot+f04854e1c5c9e913cc27@syzkaller.appspotmail.com
+> > > > > >
+> > > > > > rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+> > > > > > rcu:  Tasks blocked on level-0 rcu_node (CPUs 0-1):
+> > > > > > ------------[ cut here ]------------
+> > > > > > WARNING: CPU: 1 PID: 27130 at kernel/sched/core.c:3013 rq_unlock kernel/sched/sched.h:1325 [inline]
+> > > > > > WARNING: CPU: 1 PID: 27130 at kernel/sched/core.c:3013 try_invoke_on_locked_down_task+0x12d/0x270 kernel/sched/core.c:3019
+> > > > > > Kernel panic - not syncing: panic_on_warn set ...
+> > > > > > CPU: 1 PID: 27130 Comm: syz-executor076 Not tainted 5.9.0-rc6-syzkaller #0
+> > > > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > > > > > Call Trace:
+> > > > > >  <IRQ>
+> > > > > >  __dump_stack lib/dump_stack.c:77 [inline]
+> > > > > >  dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+> > > > > >  panic+0x2c0/0x800 kernel/panic.c:231
+> > > > > >  __warn+0x227/0x250 kernel/panic.c:600
+> > > > > >  report_bug+0x1b1/0x2e0 lib/bug.c:198
+> > > > > >  handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
+> > > > > >  exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
+> > > > > >  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+> > > > > > RIP: 0010:try_invoke_on_locked_down_task+0x12d/0x270 kernel/sched/sched.h:1325
+> > > > > > Code: f8 48 c1 e8 03 42 8a 04 38 84 c0 0f 85 10 01 00 00 8b 74 24 18 48 89 ef e8 90 47 09 00 4c 89 ef e8 48 4c fb 06 e9 a4 00 00 00 <0f> 0b e9 2b ff ff ff 48 c7 c1 34 d6 af 89 80 e1 07 80 c1 03 38 c1
+> > > > > > RSP: 0018:ffffc90000da8c50 EFLAGS: 00010046
+> > > > > > RAX: 0000000000000000 RBX: ffff888097326380 RCX: 6195009cdd28a200
+> > > > > > RDX: ffffc90000da8d00 RSI: ffffffff8162e8d0 RDI: ffff888089c50500
+> > > > > > RBP: ffffffff8162e8d0 R08: dffffc0000000000 R09: fffffbfff12df8f9
+> > > > > > R10: fffffbfff12df8f9 R11: 0000000000000000 R12: 0000000000000000
+> > > > > > R13: ffffffff896ff600 R14: ffff888089c50500 R15: dffffc0000000000
+> > > > > >  rcu_print_task_stall kernel/rcu/tree_stall.h:267 [inline]
+> > > > > >  print_other_cpu_stall kernel/rcu/tree_stall.h:475 [inline]
+> > > > > >  check_cpu_stall kernel/rcu/tree_stall.h:634 [inline]
+> > > > > >  rcu_pending kernel/rcu/tree.c:3637 [inline]
+> > > > > >  rcu_sched_clock_irq+0x12bc/0x1eb0 kernel/rcu/tree.c:2519
+> > > > > >  update_process_times+0x130/0x1b0 kernel/time/timer.c:1710
+> > > > > >  tick_sched_handle kernel/time/tick-sched.c:176 [inline]
+> > > > > >  tick_sched_timer+0x25e/0x410 kernel/time/tick-sched.c:1328
+> > > > > >  __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
+> > > > > >  __hrtimer_run_queues+0x42d/0x930 kernel/time/hrtimer.c:1588
+> > > > > >  hrtimer_interrupt+0x373/0xd60 kernel/time/hrtimer.c:1650
+> > > > > >  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+> > > > > >  __sysvec_apic_timer_interrupt+0xf0/0x260 arch/x86/kernel/apic/apic.c:1097
+> > > > > >  asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
+> > > > > >  </IRQ>
+> > > > > >  __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+> > > > > >  run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+> > > > > >  sysvec_apic_timer_interrupt+0x94/0xf0 arch/x86/kernel/apic/apic.c:1091
+> > > > > >  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
+> > > > > > RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:770 [inline]
+> > > > > > RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+> > > > > > RIP: 0010:_raw_spin_unlock_irqrestore+0x63/0x90 kernel/locking/spinlock.c:191
+> > > > > > Code: b9 00 00 00 00 00 fc ff df 80 3c 08 00 74 0c 48 c7 c7 b8 17 6d 89 e8 cc 9b 68 f9 48 83 3d 3c d8 20 01 00 74 2a 4c 89 f7 57 9d <0f> 1f 44 00 00 bf 01 00 00 00 e8 4e a3 04 f9 65 8b 05 73 be b5 77
+> > > > > > RSP: 0018:ffffc9000ad479a0 EFLAGS: 00000282
+> > > > > > RAX: 1ffffffff12da2f7 RBX: ffffffff8bc9d3e8 RCX: dffffc0000000000
+> > > > > > RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000282
+> > > > > > RBP: 1ffff11010d98d45 R08: ffffffff817ad120 R09: fffffbfff1793a7e
+> > > > > > R10: fffffbfff1793a7e R11: 0000000000000000 R12: ffff888084aa9000
+> > > > > > R13: 0000000000000013 R14: 0000000000000282 R15: 0000000000000001
+> > > > > >  __debug_check_no_obj_freed lib/debugobjects.c:977 [inline]
+> > > > > >  debug_check_no_obj_freed+0x592/0x640 lib/debugobjects.c:998
+> > > > > >  free_pages_prepare mm/page_alloc.c:1214 [inline]
+> > > > > >  free_pcp_prepare+0x1f5/0x400 mm/page_alloc.c:1244
+> > > > > >  free_unref_page_prepare mm/page_alloc.c:3099 [inline]
+> > > > > >  free_unref_page_list+0xb0/0x550 mm/page_alloc.c:3168
+> > > > > >  release_pages+0x13aa/0x1550 mm/swap.c:913
+> > > > > >  tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
+> > > > > >  tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
+> > > > > >  tlb_flush_mmu+0x780/0x910 mm/mmu_gather.c:249
+> > > > > >  tlb_finish_mmu+0xcb/0x200 mm/mmu_gather.c:328
+> > > > > >  exit_mmap+0x296/0x550 mm/mmap.c:3185
+> > > > > >  __mmput+0x113/0x370 kernel/fork.c:1076
+> > > > > >  exit_mm+0x4cd/0x550 kernel/exit.c:483
+> > > > > >  do_exit+0x576/0x1f20 kernel/exit.c:793
+> > > > > >  do_group_exit+0x161/0x2d0 kernel/exit.c:903
+> > > > > >  __do_sys_exit_group+0x13/0x20 kernel/exit.c:914
+> > > > > >  __se_sys_exit_group+0x10/0x10 kernel/exit.c:912
+> > > > > >  __x64_sys_exit_group+0x37/0x40 kernel/exit.c:912
+> > > > > >  do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+> > > > > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > > >
+> > > > > Hard to understand what the syzbot reported because it's been there after
+> > > > > 2beaf3280e57 ("sched/core: Add function to sample state of locked-down task").
+> > > > > Why does it take a couple months to trigger if this is a routine test.
+> > > >
+> > > > I think this was already fix in linux-next commit 9e097980efe9
+> > > > ("sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled")
+> > >
+> > > That it is, but does the following alternative commit fix this problem
+> > > for you guys?
+> > >
+> > >                                                     Thanx, Paul
+> > >
+> >
+> > Thanks for your fix.
+> >
+> > > ------------------------------------------------------------------------
+> > >
+> > > commit 6ddb952343843f50d41ab42c805c1c41dfb403ed
+> > > Author: Paul E. McKenney <paulmck@kernel.org>
+> > > Date:   Thu Sep 24 15:11:55 2020 -0700
+> > >
+> > >     rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled
+> > >
+> > >     The try_invoke_on_locked_down_task() function requires that
+> > >     interrupts be enabled, but it is called with interrupts disabled from
+> > >     rcu_print_task_stall(), resulting in an "IRQs not enabled as expected"
+> > >     diagnostic.  This commit therefore updates rcu_print_task_stall()
+> >
+> > It's trying to bridge the gap between what the function in question requires
+> > and the IRQ context in which it's invoked by paying more care to IRQ than
+> > thougt.
+>
+> Exactly.
+>
+> > Is there likely OTOH a simpler way for us to go in the IRQ contexts like
+> > the one syzbot reported, I mean, without IRQ considered while pringting
+> > task stall info? That may save us two or three minutes as we will have
+> > less to do.
+>
+> I will stick with the current solution until further notice, thank you!  ;-)
+>
+>                                                         Thanx, Paul
 
-On 10/29/20 9:36 PM, Dmitry Torokhov wrote:
-> Hi Andrej,
-> 
-> On Thu, Oct 29, 2020 at 06:03:11PM +0100, Andrej Valek wrote:
->> Firmware file loadind for GT911 controller takes too much time (~60s).
->> There is no check that configuration is the same which is already present.
->> This happens always during boot, which makes touchscreen unusable.
->>
->> Add there an option to prevent firmware file loading, but keep it enabled
->> by default.
-> 
-> I thought that Goodix was losing firmware loading at poweroff. Is this
-> not the case with this model?
+Paul, was this ever merged?  Has the title changed?
+syzbot still tracks this as open bug:
+https://syzkaller.appspot.com/bug?id=344259d583eabeae7ce122fa5a79fe4e8a99f535
 
-So first of all there are 2 sorts of firmware involved with the
-Goodix touchscreen controllers, the actual firmware and a block
-of config data for that firmware which I presume adjusts it for
-the specific (model of) the digitizer which is attached.
-
-ATM the mainline Linux driver does not support models where
-the actual firmware itself needs to be loaded (because they
-only have RAM, so they come up without firmware).
-
-I do have one model tablet with a ROM-less goodix touchpad
-controller, so if I ever find the time I might add support
-for loading the actual firmware.
-
-So what we are talking about here is just loading the config
-data and I'm a bit surprised that this take so long.
-
-> Adding Hans as he was working with this driver/code.
-
-With all that said I have no objection to this change.
-
-Regards,
-
-Hans
+The fix titled "rcu: Don't invoke try_invoke_on_locked_down_task()
+with irqs disabled" seems to have appeared in linux-next at some
+point. But now I can't find it anywhere...
 
 
-
-> 
->>
->> Signed-off-by: Andrej Valek <andrej.valek@siemens.com>
->> ---
->>  drivers/input/touchscreen/goodix.c | 4 +++-
->>  1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
->> index 02c75ea385e08..44336ecd2acdf 100644
->> --- a/drivers/input/touchscreen/goodix.c
->> +++ b/drivers/input/touchscreen/goodix.c
->> @@ -941,7 +941,9 @@ static int goodix_get_gpio_config(struct goodix_ts_data *ts)
->>  	default:
->>  		if (ts->gpiod_int && ts->gpiod_rst) {
->>  			ts->reset_controller_at_probe = true;
->> -			ts->load_cfg_from_disk = true;
->> +			/* Prevent cfg loading for each start */
->> +			ts->load_cfg_from_disk = !device_property_read_bool(dev,
->> +						 "touchscreen-do-not-load-fw");
->>  			ts->irq_pin_access_method = IRQ_PIN_ACCESS_GPIO;
->>  		}
->>  	}
->> -- 
->> 2.20.1
->>
-> 
-> Thanks.
-> 
-
+> > >     to accumulate a list of the first few tasks while holding the current
+> > >     leaf rcu_node structure's ->lock, then releases that lock and only then
+> > >     uses try_invoke_on_locked_down_task() to attempt to obtain per-task
+> > >     detailed information.  Of course, as soon as ->lock is released, the
+> > >     task might exit, so the get_task_struct() function is used to prevent
+> > >     the task structure from going away in the meantime.
+> > >
+> > >     Link: https://lore.kernel.org/lkml/000000000000903d5805ab908fc4@google.com/
+> > >     Reported-by: syzbot+cb3b69ae80afd6535b0e@syzkaller.appspotmail.com
+> > >     Reported-by: syzbot+f04854e1c5c9e913cc27@syzkaller.appspotmail.com
+> > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > >
+> > > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> > > index 228c55f..70d48c5 100644
+> > > --- a/kernel/rcu/tree_stall.h
+> > > +++ b/kernel/rcu/tree_stall.h
+> > > @@ -255,13 +255,16 @@ static bool check_slow_task(struct task_struct *t, void *arg)
+> > >
+> > >  /*
+> > >   * Scan the current list of tasks blocked within RCU read-side critical
+> > > - * sections, printing out the tid of each.
+> > > + * sections, printing out the tid of each of the first few of them.
+> > >   */
+> > > -static int rcu_print_task_stall(struct rcu_node *rnp)
+> > > +static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
+> > > +   __releases(rnp->lock)
+> > >  {
+> > > +   int i = 0;
+> > >     int ndetected = 0;
+> > >     struct rcu_stall_chk_rdr rscr;
+> > >     struct task_struct *t;
+> > > +   struct task_struct *ts[8];
+> > >
+> > >     if (!rcu_preempt_blocked_readers_cgp(rnp))
+> > >             return 0;
+> > > @@ -270,6 +273,14 @@ static int rcu_print_task_stall(struct rcu_node *rnp)
+> > >     t = list_entry(rnp->gp_tasks->prev,
+> > >                    struct task_struct, rcu_node_entry);
+> > >     list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
+> > > +           get_task_struct(t);
+> > > +           ts[i++] = t;
+> > > +           if (i >= ARRAY_SIZE(ts))
+> > > +                   break;
+> > > +   }
+> > > +   raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> > > +   for (i--; i; i--) {
+> > > +           t = ts[i];
+> > >             if (!try_invoke_on_locked_down_task(t, check_slow_task, &rscr))
+> > >                     pr_cont(" P%d", t->pid);
+> > >             else
+> > > @@ -279,6 +290,7 @@ static int rcu_print_task_stall(struct rcu_node *rnp)
+> > >                             ".q"[rscr.rs.b.need_qs],
+> > >                             ".e"[rscr.rs.b.exp_hint],
+> > >                             ".l"[rscr.on_blkd_list]);
+> > > +           put_task_struct(t);
+> > >             ndetected++;
+> > >     }
+> > >     pr_cont("\n");
+> > > @@ -299,8 +311,9 @@ static void rcu_print_detail_task_stall_rnp(struct rcu_node *rnp)
+> > >   * Because preemptible RCU does not exist, we never have to check for
+> > >   * tasks blocked within RCU read-side critical sections.
+> > >   */
+> > > -static int rcu_print_task_stall(struct rcu_node *rnp)
+> > > +static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
+> > >  {
+> > > +   raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> > >     return 0;
+> > >  }
+> > >  #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
+> > > @@ -478,7 +491,6 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+> > >     pr_err("INFO: %s detected stalls on CPUs/tasks:\n", rcu_state.name);
+> > >     rcu_for_each_leaf_node(rnp) {
+> > >             raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> > > -           ndetected += rcu_print_task_stall(rnp);
+> > >             if (rnp->qsmask != 0) {
+> > >                     for_each_leaf_node_possible_cpu(rnp, cpu)
+> > >                             if (rnp->qsmask & leaf_node_cpu_bit(rnp, cpu)) {
+> > > @@ -486,7 +498,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+> > >                                     ndetected++;
+> > >                             }
+> > >             }
+> > > -           raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> > > +           ndetected += rcu_print_task_stall(rnp, flags); // Releases rnp->lock.
+> > >     }
+> > >
+> > >     for_each_possible_cpu(cpu)
+> > >
+> >
