@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E1329FE14
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F74329FE18
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 07:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbgJ3GyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 02:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48502 "EHLO
+        id S1725943AbgJ3GyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 02:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgJ3GyE (ORCPT
+        with ESMTP id S1725870AbgJ3GyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 02:54:04 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7A3C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 23:54:04 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id w21so4433219pfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 23:54:04 -0700 (PDT)
+        Fri, 30 Oct 2020 02:54:10 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75745C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 23:54:10 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 13so4443849pfy.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 23:54:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=PYWb9GKB5AURRv6HwXa7518ryPQikYOTQG6wOP36dxY=;
-        b=UlBFdLXhB0O92NG96TXYrU4DKCYxkFgJxDNd5fSkXHP8qsB/6+fsrtB+cCkal0gwwh
-         qHHqJ8jBEqI1bkPEFXiZY3BfcnvUrVsqnKv6znPUlfF4+HN/owfX14eLhY7oajGLUChw
-         QPMgXRSDTF/D0LT/yeLZ9rkP3LCzTBII/sf1c=
+        bh=b38oVoGRKMt6ATcszTp0ZTkbgsfByHo3pAsiB2rCf84=;
+        b=B7ZJtQ9oVQ1kNPpYTGM5DNVtgkEjZK4N3CGMTsYA1/t+UN5g3XTVmTvJUfBVdvarxu
+         XJgsof2nvMUQZd9RAfSBtvPAIVjRRD1YkKv7GcblO8aC/T/arRLfAA8J+ARBCPuZdFwU
+         Lz6AwgaBi6SLYKAIBOGGk7IUg0djVbueHHDrQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=PYWb9GKB5AURRv6HwXa7518ryPQikYOTQG6wOP36dxY=;
-        b=QZmZXyT/BdPnfz5BaiynoImn+u9RrBqaoQKFFE9JSu3KxdW2q8qpiAAke0PraqEtTl
-         0MA7BMJ8yVoTupJUuyYl/qgPc6d2IcxEwLG8+fnLh5WYjQE+QwjtRaAc/P9/aMLcDLGh
-         1p0hFXMPlKlwJ4xI85S9ECSdMkSH0dcwaWRhiyyA0j2rzmI7LKpELOn1M82PKnNh7hIy
-         8d38kF2L9kjM2xZri/NEn4cm8MP/xlNIif3VwyOhrwfPRjhZjzSvGE6ttfFsBzMNCX+z
-         HOIdsO8fqA3/mKKUM4Vj2yNjdQ6pmxLZwdyeb+/zW3z1drroB6MjhjNQz7Eu3oadcOcc
-         lXpA==
-X-Gm-Message-State: AOAM530ujdl5tVqEuvaDYVXfcsqvzHUU408VSUi6zr/53mbyip11Yf2K
-        JEPDbiWmS7AIi7BNG76v+Y8aWQ==
-X-Google-Smtp-Source: ABdhPJxdS9/aIeQB6jOaeDfbVW+kXRz6W/Etxf4U+vB7XrHdtQgqNyPLHBURISVDPSqz9FtqzyirNA==
-X-Received: by 2002:a17:90a:a48c:: with SMTP id z12mr1133870pjp.108.1604040843875;
-        Thu, 29 Oct 2020 23:54:03 -0700 (PDT)
+        bh=b38oVoGRKMt6ATcszTp0ZTkbgsfByHo3pAsiB2rCf84=;
+        b=XK3Dww4zBl1lAFMGZC9scy0CT/5fAOBrnDmrckhuFLXI5zJhOz3IPaxtLHXsKZ5FXa
+         yH2rzMQQGKX0ERGYrIWpftra5QrC8pJrIQuew99Q+GQOfx9WIXu+1rakJN59FdzrFk8X
+         KtRuaPMtvngmu8PlxoI3E3l5JK7TkIpOGrCcqWFOlgeGQfM0g/33Gi1MQFKh5XwgCFmG
+         gCNEjlEW1x1TVsnMwavyXnscmFhr3rdc3miwe5ZyGNwogxFiu/vmdInljKy1jUUePWaU
+         F7l7kHPR8TX3O2Asogmtms1PKYbyrhCLDHVBWxRnUCDnLiU+gvuCGFmwEROx1xfd0QaN
+         XKOg==
+X-Gm-Message-State: AOAM533HjSEk3GW00eo+3xFYkHpDV+6AT7K6P6kaPDPD6tAWLgaPheOT
+        hHVgPEmbIYhUNzFHAm0Xa1NYvg==
+X-Google-Smtp-Source: ABdhPJx9Pl0YKzvpetBQyxAqlLKMo4hM1UpQz91kf1g4mlUh9rKjlsELeCiB2D4Z2eYYm7+ge6y0WQ==
+X-Received: by 2002:a17:90a:318d:: with SMTP id j13mr1119830pjb.209.1604040849906;
+        Thu, 29 Oct 2020 23:54:09 -0700 (PDT)
 Received: from rayagonda.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id n1sm4561547pgl.31.2020.10.29.23.53.59
+        by smtp.gmail.com with ESMTPSA id n1sm4561547pgl.31.2020.10.29.23.54.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 23:54:02 -0700 (PDT)
+        Thu, 29 Oct 2020 23:54:09 -0700 (PDT)
 From:   Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
 To:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         bcm-kernel-feedback-list@broadcom.com,
@@ -56,59 +56,64 @@ To:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Cc:     Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Subject: [PATCH v2 1/6] i2c: iproc: handle Master aborted error
-Date:   Fri, 30 Oct 2020 12:23:34 +0530
-Message-Id: <20201030065339.955-2-rayagonda.kokatanur@broadcom.com>
+Subject: [PATCH v2 2/6] i2c: iproc: handle only slave interrupts which are enabled
+Date:   Fri, 30 Oct 2020 12:23:35 +0530
+Message-Id: <20201030065339.955-3-rayagonda.kokatanur@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201030065339.955-1-rayagonda.kokatanur@broadcom.com>
 References: <20201030065339.955-1-rayagonda.kokatanur@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000badf0e05b2dddc55"
+        boundary="00000000000015dddb05b2dddd60"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000badf0e05b2dddc55
+--00000000000015dddb05b2dddd60
 
-Handle Master aborted error by flushing tx and rx fifo
-and reinitializing the hw.
+Handle only slave interrupts which are enabled.
 
+The IS_OFFSET register contains the interrupt status bits which will be
+set regardless of the enabling of the corresponding interrupt condition.
+One must therefore look at both IS_OFFSET and IE_OFFSET to determine
+whether an interrupt condition is set and enabled.
+
+Fixes: c245d94ed106 ("i2c: iproc: Add multi byte read-write support for slave mode")
 Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
 ---
- drivers/i2c/busses/i2c-bcm-iproc.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/i2c/busses/i2c-bcm-iproc.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/i2c/busses/i2c-bcm-iproc.c b/drivers/i2c/busses/i2c-bcm-iproc.c
-index d8295b1c379d..834a98caeada 100644
+index 834a98caeada..b54f5130d246 100644
 --- a/drivers/i2c/busses/i2c-bcm-iproc.c
 +++ b/drivers/i2c/busses/i2c-bcm-iproc.c
-@@ -93,6 +93,7 @@
- #define S_CMD_STATUS_MASK            0x07
- #define S_CMD_STATUS_SUCCESS         0x0
- #define S_CMD_STATUS_TIMEOUT         0x5
-+#define S_CMD_STATUS_MASTER_ABORT    0x7
+@@ -507,12 +507,17 @@ static void bcm_iproc_i2c_process_m_event(struct bcm_iproc_i2c_dev *iproc_i2c,
+ static irqreturn_t bcm_iproc_i2c_isr(int irq, void *data)
+ {
+ 	struct bcm_iproc_i2c_dev *iproc_i2c = data;
+-	u32 status = iproc_i2c_rd_reg(iproc_i2c, IS_OFFSET);
++	u32 slave_status;
++	u32 status;
+ 	bool ret;
+-	u32 sl_status = status & ISR_MASK_SLAVE;
  
- #define IE_OFFSET                    0x38
- #define IE_M_RX_FIFO_FULL_SHIFT      31
-@@ -311,9 +312,10 @@ static void bcm_iproc_i2c_check_slave_status(
- 		return;
- 
- 	val = (val >> S_CMD_STATUS_SHIFT) & S_CMD_STATUS_MASK;
--	if (val == S_CMD_STATUS_TIMEOUT) {
--		dev_err(iproc_i2c->device, "slave random stretch time timeout\n");
--
-+	if (val == S_CMD_STATUS_TIMEOUT || val == S_CMD_STATUS_MASTER_ABORT) {
-+		dev_err(iproc_i2c->device, (val == S_CMD_STATUS_TIMEOUT) ?
-+			"slave random stretch time timeout\n" :
-+			"Master aborted read transaction\n");
- 		/* re-initialize i2c for recovery */
- 		bcm_iproc_i2c_enable_disable(iproc_i2c, false);
- 		bcm_iproc_i2c_slave_init(iproc_i2c, true);
+-	if (sl_status) {
+-		ret = bcm_iproc_i2c_slave_isr(iproc_i2c, sl_status);
++	status = iproc_i2c_rd_reg(iproc_i2c, IS_OFFSET);
++	/* process only slave interrupt which are enabled */
++	slave_status = status & iproc_i2c_rd_reg(iproc_i2c, IE_OFFSET) &
++		       ISR_MASK_SLAVE;
++
++	if (slave_status) {
++		ret = bcm_iproc_i2c_slave_isr(iproc_i2c, slave_status);
+ 		if (ret)
+ 			return IRQ_HANDLED;
+ 		else
 -- 
 2.17.1
 
 
---000000000000badf0e05b2dddc55
+--00000000000015dddb05b2dddd60
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -179,13 +184,13 @@ FtqJWw6DATg5ePiAAn+S0JoIL1xqKsZi2ioNqm02QMFb7RbB3yEGb/7ZLAGcPW666o5GSLsUnPPq
 YOfL/3X6tVfGeoi3IgfI+z76/lXk8vOQzQQxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkw
 FwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2ln
 biAyIENBIC0gU0hBMjU2IC0gRzMCDDw+ri+StHzo6PJZ/DANBglghkgBZQMEAgEFAKCB1DAvBgkq
-hkiG9w0BCQQxIgQgzzDwT+oQDsncrvtdPfI8zBqAOdO34q05yN2GcoaQbtAwGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMDMwMDY1NDA0WjBpBgkqhkiG9w0BCQ8x
+hkiG9w0BCQQxIgQgoL/ykBZWJDxom7teAAlDjbpZTcaIx5Ft2w6r8St6HkEwGAYJKoZIhvcNAQkD
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMDMwMDY1NDEwWjBpBgkqhkiG9w0BCQ8x
 XDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsG
-CSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBABYM
-mYstT9I0gJIFgRS2qL/kJVBtpzEcWXg2n5PJ1r2NzitDrbQVuTUUhmcGpl3AWPlHJhDqAeIpjinx
-jcRxTfAscshNBUa5ZehAGhLZ3KloPfdAGcPrH+fVB6vFSPSASn2PNFemqnGTiqf24NhcuRzwdl0J
-AiZSrvP8Jwl7RVOdcFXaBwS4sBudtIX7zuOs8CUvmWkjLk/aUtQzi1TPLAGyBGE5t8Zm8pyBoNZz
-We3uMBhwxRviCzOUPX4RY/bWt6Sa8Oz73J/HPeK5/d08Blui4z+wcGcJe0affXE7HdwWwkdq2Zmo
-T666p3LHpdP8uAKlDiC8YCznuVYGbK9tLyg=
---000000000000badf0e05b2dddc55--
+CSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAK9/
+2UdT0blDlkCp7+1OC1dzxsYIKzVCkXeOOy+9JujDMSfsUHhXIWLvO40Rpo+EPvGeuvpb/Av9YAW/
+0JZk09p4ACSYTRVUIp/xUIcRaRY1NMGrlMjK/vyrbv22uDWkd3fF2+1u+Jv/eoGLG+krADncyk5k
+MKYiFyZE4hX64zFHE8WZtCwywER4lZIPoUW2SSVis+Y1kBeR8dJyeKdhtbM8wEX6mrsLCohE3aRy
+loe8PbKEflG59jFiS8AuZO4O15tZXLLx9T/iw0ngHXu6oW8oCwfhOJIVgOaRf43c0Wr0x495HLSu
+1Z41jLGVN7LapWSpqjVRh9sgYcaIQQqjiqo=
+--00000000000015dddb05b2dddd60--
