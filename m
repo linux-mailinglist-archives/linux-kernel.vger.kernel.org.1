@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB502A0999
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FE02A098E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbgJ3PU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:20:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52968 "EHLO mail.kernel.org"
+        id S1727124AbgJ3PUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:20:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726970AbgJ3PUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:20:00 -0400
+        id S1726962AbgJ3PUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:20:01 -0400
 Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6395722249;
-        Fri, 30 Oct 2020 15:19:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1728B2224A;
+        Fri, 30 Oct 2020 15:19:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604071145;
-        bh=PhzarcZdxvr8JzCPKjAwfHGDJNezhF1oA5Gxqya2WxA=;
+        s=default; t=1604071150;
+        bh=GMWfpBFvyWmdpvD5W/p2JKxKxss2ykxW3nbwOHA5BIY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J5ed3u+GT93CiIJpo4CV6B2Kf2eTdhI6CogSdoTb8qOL4XKTcGxynAdZovmqEp9YU
-         ywATfDwGaG7cWlJO557E8AUR7xCttz8fxCfIDapJLwr4YK5B0I6YYzXEcFz1PYgNBV
-         7enPMF3AaKBrq+4c4M96Obarw9GsEHORFB3LRBrc=
+        b=xDT3Y783NYX+tG7pWdWca/zrFnSprsM6qfu8QZFMPZoEuPGBW2xHqdzEh8CAx4NeA
+         jvnONs0HFU6mJY6HBbiuXPalLPmGM9or7mYFQ3m10Zc+sH3dKkSi/LF/0fRyn0SElE
+         5MLwWycQfi0CbL1vKogBaWCzLmpov/ll3Sq9P8Hc=
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -46,9 +46,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 10/15] m68k: sun3/sun3c: use legacy_timer_tick
-Date:   Fri, 30 Oct 2020 16:17:53 +0100
-Message-Id: <20201030151758.1241164-11-arnd@kernel.org>
+Subject: [PATCH v2 11/15] m68k: m68328: use legacy_timer_tick()
+Date:   Fri, 30 Oct 2020 16:17:54 +0100
+Message-Id: <20201030151758.1241164-12-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201030151758.1241164-1-arnd@kernel.org>
 References: <20201030151758.1241164-1-arnd@kernel.org>
@@ -60,83 +60,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-These two are different from all other machines:
-
-* sun3 does not call timer_routine() but open-codes it
-  except for the profile_tick() call that appears to
-  be unintentionally missing.
-
-* sun3x has a commented-out timer irq handler but no
-  functional timer tick I could find.
-
-Change both to calling the new legacy_timer_tick here,
-which includes the call to profile_tick() but does not
-fix sun3x as that is still commented out.
+A couple of machines share the m68328 timer code that
+is based on calling timer_interrupt(). Change these
+to the new and slightly more generic legacy_timer_tick()
+helper.
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/m68k/Kconfig.machine | 2 ++
- arch/m68k/sun3/sun3ints.c | 3 +--
- arch/m68k/sun3x/time.c    | 3 +--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ arch/m68k/68000/timers.c | 5 ++---
+ arch/m68k/Kconfig.cpu    | 3 +++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index 17e8c3a292d7..e3c835440d9a 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -99,6 +99,7 @@ config HP300
- config SUN3X
- 	bool "Sun3x support"
- 	depends on MMU
-+	select LEGACY_TIMER_TICK
- 	select MMU_MOTOROLA if MMU
- 	select M68030
- 	help
-@@ -126,6 +127,7 @@ config SUN3
- 	depends on MMU
- 	depends on !MMU_MOTOROLA
- 	select MMU_SUN3 if MMU
-+	select LEGACY_TIMER_TICK
- 	select NO_DMA
- 	select M68020
- 	help
-diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
-index a5824abb4a39..41ae422119d3 100644
---- a/arch/m68k/sun3/sun3ints.c
-+++ b/arch/m68k/sun3/sun3ints.c
-@@ -73,8 +73,7 @@ static irqreturn_t sun3_int5(int irq, void *dev_id)
- #ifdef CONFIG_SUN3
- 	intersil_clear();
+diff --git a/arch/m68k/68000/timers.c b/arch/m68k/68000/timers.c
+index e8dfdd2556a5..3aa006f8e7ea 100644
+--- a/arch/m68k/68000/timers.c
++++ b/arch/m68k/68000/timers.c
+@@ -52,7 +52,6 @@
  #endif
--	xtime_update(1);
--	update_process_times(user_mode(get_irq_regs()));
-+	legacy_timer_tick(1);
- 	cnt = kstat_irqs_cpu(irq, 0);
- 	if (!(cnt % 20))
- 		sun3_leds(led_pattern[cnt % 160 / 20]);
-diff --git a/arch/m68k/sun3x/time.c b/arch/m68k/sun3x/time.c
-index 9163294b0fb6..f6e25fdc008c 100644
---- a/arch/m68k/sun3x/time.c
-+++ b/arch/m68k/sun3x/time.c
-@@ -77,14 +77,13 @@ int sun3x_hwclk(int set, struct rtc_time *t)
- #if 0
- static irqreturn_t sun3x_timer_tick(int irq, void *dev_id)
- {
--	irq_handler_t timer_routine = dev_id;
- 	unsigned long flags;
  
- 	local_irq_save(flags);
- 	/* Clear the pending interrupt - pulse the enable line low */
- 	disable_irq(5);
- 	enable_irq(5);
--	timer_routine(0, NULL);
-+	legacy_timer_tick(1);
- 	local_irq_restore(flags);
+ static u32 m68328_tick_cnt;
+-static irq_handler_t timer_interrupt;
  
- 	return IRQ_HANDLED;
+ /***************************************************************************/
+ 
+@@ -62,7 +61,8 @@ static irqreturn_t hw_tick(int irq, void *dummy)
+ 	TSTAT &= 0;
+ 
+ 	m68328_tick_cnt += TICKS_PER_JIFFY;
+-	return timer_interrupt(irq, dummy);
++	legacy_timer_tick(1);
++	return IRQ_HANDLED;
+ }
+ 
+ /***************************************************************************/
+@@ -113,7 +113,6 @@ void hw_timer_init(irq_handler_t handler)
+ 	/* Enable timer 1 */
+ 	TCTL |= TCTL_TEN;
+ 	clocksource_register_hz(&m68328_clk, TICKS_PER_JIFFY*HZ);
+-	timer_interrupt = handler;
+ }
+ 
+ /***************************************************************************/
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 322a35ef14c6..648054d4f860 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -104,6 +104,7 @@ config M68060
+ config M68328
+ 	bool "MC68328"
+ 	depends on !MMU
++	select LEGACY_TIMER_TICK
+ 	select M68000
+ 	help
+ 	  Motorola 68328 processor support.
+@@ -111,6 +112,7 @@ config M68328
+ config M68EZ328
+ 	bool "MC68EZ328"
+ 	depends on !MMU
++	select LEGACY_TIMER_TICK
+ 	select M68000
+ 	help
+ 	  Motorola 68EX328 processor support.
+@@ -118,6 +120,7 @@ config M68EZ328
+ config M68VZ328
+ 	bool "MC68VZ328"
+ 	depends on !MMU
++	select LEGACY_TIMER_TICK
+ 	select M68000
+ 	help
+ 	  Motorola 68VZ328 processor support.
 -- 
 2.27.0
 
