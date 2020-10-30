@@ -2,166 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2C72A0596
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42ABE2A059A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 13:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbgJ3MkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 08:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJ3MkJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:40:09 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC908C0613D2;
-        Fri, 30 Oct 2020 05:40:08 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id n18so6300087wrs.5;
-        Fri, 30 Oct 2020 05:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GPvMpLVa0AodG3AjX2sn8VcTkVMG11+cTzmFrWy/dSw=;
-        b=u8OXwbFiGcxEiSBCwgyRt1WdSS1Nvh7o6LQzagQiUxEatTbGJLrXsBG2tloCrmOwWG
-         aJlFWjs9wanIh+WyxQMNS4y4lQu1CmpONnBByOV/JVAnOqPlN+NckO3RQ2+Mxk4wgiOb
-         U+MRjXJ3HWHRqvjvVc/fFdePOILU/TlR9bri9j/Da4kgNGRUoBOT1MK23RHv8/7D0Fdt
-         Rttsa1TLbOgRmwPqcV1tjHdJ9O3L3LHi7cbCC3QLgNt8bhOxHX7kQ1ita6wyelxWzZqu
-         xJ1LqdXdJRkh2x1GOa3UNAkqzXWo7XpLYhZyP/31DcCnk/PbPkEyubCG7CmASqaTwNXS
-         BxxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GPvMpLVa0AodG3AjX2sn8VcTkVMG11+cTzmFrWy/dSw=;
-        b=LEbN7hCkwHeM98GkqLRuxeRjWsCI3s4qvLYTcoS8diow5uX0i0MtXws551W+mNgj6S
-         TIRKfDv7Et4IoOX5iQiDEIv+y6iCEnrIYoVjFsgn5iA5o9mzHMCQdP5IcyvmdrfoL9Ef
-         kurXBwUbu0BBoPjEmq2DbXY8XrQTyiKabJLu4LXaNYJ8J4v+bTxlQ8ALoEVhJ83e9Eda
-         UAgfzWdHB2gXq1j011u3A3vx19gBJjGDDhMDumEh5P1LAQIiToC7u9uyBKkfSCo0dNxz
-         6ISDZ8gKUhqHYE72OVJ0QDE2S/fhN/Mz8WSoWPWHb/umyGj87cHF3Zgm88+X9nCHwqlB
-         5wCQ==
-X-Gm-Message-State: AOAM530TbJm/dE2Mt9kUygHofe/LdD1doqO4nkGJNp1Hipy5mKE0wb11
-        LmMJxil9WbaQyfTI1VWILqTgf9Zbqlw=
-X-Google-Smtp-Source: ABdhPJx9XI/0TQsRJ2PMEUF1ohPIMTaPMCWXTSY0MUt9l4t5L+pgvGr38pRAw0f6k6oPkVlDR6vs3Q==
-X-Received: by 2002:adf:e70f:: with SMTP id c15mr2958776wrm.239.1604061607631;
-        Fri, 30 Oct 2020 05:40:07 -0700 (PDT)
-Received: from localhost.localdomain ([170.253.60.68])
-        by smtp.googlemail.com with ESMTPSA id p1sm10001617wrx.3.2020.10.30.05.40.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 05:40:07 -0700 (PDT)
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-To:     mtk.manpages@gmail.com
-Cc:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
-        linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] futex.2: Use appropriate types
-Date:   Fri, 30 Oct 2020 13:39:57 +0100
-Message-Id: <20201030123956.36169-2-colomar.6.4.3@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201030123956.36169-1-colomar.6.4.3@gmail.com>
-References: <20201030123956.36169-1-colomar.6.4.3@gmail.com>
+        id S1726596AbgJ3Mkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 08:40:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:33650 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726277AbgJ3Mks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 08:40:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FCFA1063;
+        Fri, 30 Oct 2020 05:40:47 -0700 (PDT)
+Received: from [10.57.13.192] (unknown [10.57.13.192])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7143C3F68F;
+        Fri, 30 Oct 2020 05:40:44 -0700 (PDT)
+Subject: Re: [PATCH 0/4] Add sustainable OPP concept
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com, rafael@kernel.org,
+        sudeep.holla@arm.com, daniel.lezcano@linaro.org,
+        Dietmar.Eggemann@arm.com
+References: <20201028140847.1018-1-lukasz.luba@arm.com>
+ <20201029074057.6ugmwyzna52x3oli@vireshk-i7>
+ <20201029075356.rruej6jlerhfa4oy@vireshk-i7>
+ <228fa1b3-bbd3-6941-fd4b-06581016d839@arm.com>
+ <20201030082937.xgjmko2ohwhkt6f5@vireshk-i7>
+ <a0a6db69-fc3e-c39f-7586-5ac3227b746e@arm.com>
+ <20201030095248.abej6h5wphud2ihb@vireshk-i7>
+ <757fe3b1-745f-2656-fe21-c7b39f123a25@arm.com>
+ <20201030111751.i7zdsi7ruzmnyxk6@vireshk-i7>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <468065c6-d604-5691-cddf-3eca20035bba@arm.com>
+Date:   Fri, 30 Oct 2020 12:40:42 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201030111751.i7zdsi7ruzmnyxk6@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Linux kernel uses the following:
 
-kernel/futex.c:3778:
-SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
-		struct __kernel_timespec __user *, utime, u32 __user *, uaddr2,
-		u32, val3)
 
-Since there is no glibc wrapper, use the same types the kernel uses.
+On 10/30/20 11:17 AM, Viresh Kumar wrote:
+> On 30-10-20, 10:56, Lukasz Luba wrote:
+>> IPA tries to do that, even dynamically when e.g. GPU is supper busy
+>> in 3D games (~2000W) or almost idle showing 2D home screen.
+>> It tries to find highest 'sustainable' frequencies for the devices,
+>> at that various workloads and temp. But it needs some coefficients to
+>> start, which have big impact on the algorithm. It could slow down IPA a
+>> lot, when those coefficients are calculated based on lowest OPPs.
+> 
+> I see. So when you say it slows down IPA, what does that really mean ?
+> IPA isn't performing that accurately during the initial period of
+> booting (any time estimate here) ? Does it work fine after a time
+> duration? Or will it suffer for ever ?
 
-Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
----
- man2/futex.2 | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+The coefficients would stay 'forever', which determine the temp rising
+slope, until someone change them via sysfs (the: k_po, k_pu, k_i,
+sustainable_power).
 
-diff --git a/man2/futex.2 b/man2/futex.2
-index 837adbd25..73de71623 100644
---- a/man2/futex.2
-+++ b/man2/futex.2
-@@ -26,12 +26,13 @@ futex \- fast user-space locking
- .nf
- .PP
- .B #include <linux/futex.h>
-+.B #include <stdint.h>
- .B #include <sys/time.h>
- .PP
--.BI "int futex(int *" uaddr ", int " futex_op ", int " val ,
-+.BI "long futex(uint32_t *" uaddr ", int " futex_op ", uint32_t " val ,
- .BI "          const struct timespec *" timeout , \
- " \fR  /* or: \fBuint32_t \fIval2\fP */"
--.BI "          int *" uaddr2 ", int " val3 );
-+.BI "          uint32_t *" uaddr2 ", uint32_t " val3 );
- .fi
- .PP
- .IR Note :
-@@ -581,8 +582,8 @@ any of the two supplied futex words:
- .IP
- .in +4n
- .EX
--int oldval = *(int *) uaddr2;
--*(int *) uaddr2 = oldval \fIop\fP \fIoparg\fP;
-+uint32_t oldval = *(uint32_t *) uaddr2;
-+*(uint32_t *) uaddr2 = oldval \fIop\fP \fIoparg\fP;
- futex(uaddr, FUTEX_WAKE, val, 0, 0, 0);
- if (oldval \fIcmp\fP \fIcmparg\fP)
-     futex(uaddr2, FUTEX_WAKE, val2, 0, 0, 0);
-@@ -1765,11 +1766,11 @@ Child  (18535) 4
- #define errExit(msg)    do { perror(msg); exit(EXIT_FAILURE); \e
-                         } while (0)
- 
--static int *futex1, *futex2, *iaddr;
-+static uint32_t *futex1, *futex2, *iaddr;
- 
- static int
--futex(int *uaddr, int futex_op, int val,
--      const struct timespec *timeout, int *uaddr2, int val3)
-+futex(uint32_t *uaddr, int futex_op, uint32_t val,
-+      const struct timespec *timeout, uint32_t *uaddr2, uint32_t val3)
- {
-     return syscall(SYS_futex, uaddr, futex_op, val,
-                    timeout, uaddr2, val3);
-@@ -1779,9 +1780,9 @@ futex(int *uaddr, int futex_op, int val,
-    become 1, and then set the value to 0. */
- 
- static void
--fwait(int *futexp)
-+fwait(uint32_t *futexp)
- {
--    int s;
-+    long s;
- 
-     /* atomic_compare_exchange_strong(ptr, oldval, newval)
-        atomically performs the equivalent of:
-@@ -1794,7 +1795,7 @@ fwait(int *futexp)
-     while (1) {
- 
-         /* Is the futex available? */
--        const int one = 1;
-+        const uint32_t one = 1;
-         if (atomic_compare_exchange_strong(futexp, &one, 0))
-             break;      /* Yes */
- 
-@@ -1811,13 +1812,13 @@ fwait(int *futexp)
-    so that if the peer is blocked in fpost(), it can proceed. */
- 
- static void
--fpost(int *futexp)
-+fpost(uint32_t *futexp)
- {
--    int s;
-+    long s;
- 
-     /* atomic_compare_exchange_strong() was described in comments above */
- 
--    const int zero = 0;
-+    const uint32_t zero = 0;
-     if (atomic_compare_exchange_strong(futexp, &zero, 1)) {
-         s = futex(futexp, FUTEX_WAKE, 1, NULL, NULL, 0);
-         if (s  == \-1)
--- 
-2.28.0
+> 
+> And maybe you shouldn't start with the lowest OPPs while you calculate
+> these coefficients dynamically ? Maybe start from the middle ? As the
+> sustainable OPP would be something there only or maybe a bit higher
+> only. But yeah, I don't have any idea about how those coefficients are
+> calculated so this idea can be simply ignored as well :)
+> 
+>> My backup plan was to add a flag into EM em_perf_state, extend SCMI perf
+>> exposing the 'sustained_freq_khz' to scmi-cpufreq, which would set that
+>> field after registering EM. IPA depends on EM, so should be OK.
+> 
+> I think at this point (considering the limited number of users (only
+> IPA) and providers (only SCMI)), it would be better that way only
+> instead of updating the OPP framework. Of course we can revisit that
+> if we ever feel that we need a better placeholder for it.
 
+OK, sounds good.
+
+> 
+>>> So only SCMI based platforms will be able to use this stuff ? That's
+>>> very limited, isn't it ? I think we should still try to make it better
+>>> for everyone by making the software smarter. It has so much data, the
+>>> OPPs, the power it will consume (based on microvolt property?), the
+>>> heat we produce from that (from thermal framework), etc. Perhaps
+>>> building this information continuously at runtime based on when and
+>>> how we hit the trip points ? So we know which is the right frequency
+>>> where we can refrain from hitting the trip points.
+>>
+>> IPA works in this way.
+> 
+> Nice, that's what I thought as well but then got a bit confused with
+> your patchset.
+> 
+>>> But may be I am asking too much :(
+>>>
+>>
+>> When you asked for user of this, I gave you instantly. This is one is
+>> more difficult. I am still not there with IPA tests in LISA. I have some
+>> out-of-tree kernel driver for testing, which also need polishing before
+>> can be used with LISA. Then proper workloads with results processing.
+>> EM for devfreq cooling devices. Then decent 'hot' board running
+>> preferably mainline kernel.
+>> What you requested is on my list, but it needs more work, which
+>> won't be ready over night.
+> 
+> I can understand what you are trying to do here. And this surely
+> requires a lot of effort.
+> 
+
+Thank you Viresh for your opinion.
+I will take the EM approach, please ignore this patch set.
+
+Regards,
+Lukasz
