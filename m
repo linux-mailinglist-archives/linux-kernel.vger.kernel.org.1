@@ -2,100 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DE22A0B49
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EE02A0B4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727245AbgJ3QfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgJ3QfI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:35:08 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18261C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:35:08 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id n16so5638740pgv.13
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 09:35:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OEG72fK9A86Aj1ReEdXuRoNmABKVsj8ImdviwWVYFfY=;
-        b=niyYm0qY8CzMDjQFR0wk09rUFovgBIJqmkwyaohlBE8Xuf8D7EO7pmDLYAO52Q4Yvf
-         82ZicSGjt6o0IgPJp09nq6DevXQ3+b0pAc6z3ZqEeQ0GHi8yBJqz7ty1e2sfPbG4sRz0
-         1cOaAbENqXkyChFeCj5oGwedqUrwkqIaA9N4iN672mYgSp7HTiftJKBg2bOrWNpBz5lk
-         +nGWSc2U2T0NPgIVEdW7PNQfTxFEhRqbbQXWLZf9txYposExkV0K1+kTiiGfuaJoxMC1
-         eIkI2PvlQzLqzG2m5l2vTTq9uk9P+OGmAemu02kGvkUJyLwA/lOZsJ8GWC0Bf3jSpdGa
-         AE5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OEG72fK9A86Aj1ReEdXuRoNmABKVsj8ImdviwWVYFfY=;
-        b=qszaFfATO7xsmITlJdKLkpTVBFtbtwVgCi4Kwe+TkR72kI7FzHsgSOLuyPPoIuC29D
-         5Ai0G8K/GTQxmrGsB3EU/QNBrDqSpXb4OiZX+ZXp2KYrHffrYm2uLTssYWAyg83/6foa
-         XDiY9Q61KXOYz6jpNj1/wAI1l+VCxpDNbxbDM2XW1lpfiAJOse136mM/PTNG+f2BXR2V
-         WFVfGy317/xec4alTQ/9+HgTZRnsl+Ue9I/z9DaWWo4UWFnpJawUI+OkOQ3YA6h5w/NU
-         jRmF+HdBq6b2gvVtmdLgVtH9uVXAah0oJ/sk0auRrGabk4pii+dGq9G65nUBS431qkvI
-         7G+Q==
-X-Gm-Message-State: AOAM533H+otFp1Vl1ov8dAPdfkiZGlvlDDYOUIsgNJ1bZFRWJKBjkNpX
-        6zQfUg8iJtgSeN2aQwgWv29qK0OxP6fVGfXMV3354g==
-X-Google-Smtp-Source: ABdhPJypb5pDbULIOedvBhhhhPVQ4Wd1RYf+aGclJw2Xgj+SjC3Hpi43QPbQ/asszFlJWnfh3RXkLp7IystdA99AI/E=
-X-Received: by 2002:a63:d456:: with SMTP id i22mr2896479pgj.440.1604075707465;
- Fri, 30 Oct 2020 09:35:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com> <6f87cb86aeeca9f4148d435ff01ad7d21af4bdfc.1603372719.git.andreyknvl@google.com>
- <CACT4Y+bJxJ+EeStyytnnRyjRwoZNPGJ9ws20GfoCBFGWvUSBPg@mail.gmail.com>
-In-Reply-To: <CACT4Y+bJxJ+EeStyytnnRyjRwoZNPGJ9ws20GfoCBFGWvUSBPg@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 30 Oct 2020 17:34:56 +0100
-Message-ID: <CAAeHK+wkjVVHy+fB2SHpqNOC3s2afKEGG-=gs=Z8nwwF7hJdmA@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 12/21] kasan: inline and rename kasan_unpoison_memory
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726973AbgJ3Qgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:36:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45496 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726348AbgJ3Qgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:36:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 791B6ACF5;
+        Fri, 30 Oct 2020 16:36:35 +0000 (UTC)
+Date:   Fri, 30 Oct 2020 17:36:35 +0100
+Message-ID: <s5hr1pfr7qk.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     "Liao, Bard" <bard.liao@intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "vinod.koul@linaro.org" <vinod.koul@linaro.org>,
+        "Lin, Mengdong" <mengdong.lin@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hui.wang@canonical.com" <hui.wang@canonical.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "jank@cadence.com" <jank@cadence.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
+Subject: Re: [PATCH v3] soundwire: SDCA: add helper macro to access controls
+In-Reply-To: <880a22a2-49f6-fa1c-46ad-6388cbd26ee4@linux.intel.com>
+References: <20201029204955.8568-1-yung-chuan.liao@linux.intel.com>
+        <20201030093651.GA2080962@kroah.com>
+        <DM6PR11MB40748AD8D57C73E4D79D4676FF150@DM6PR11MB4074.namprd11.prod.outlook.com>
+        <s5hsg9wrlhc.wl-tiwai@suse.de>
+        <880a22a2-49f6-fa1c-46ad-6388cbd26ee4@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 12:36 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+On Fri, 30 Oct 2020 16:52:24 +0100,
+Pierre-Louis Bossart wrote:
+> 
+> 
+> 
+> >>>> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |
+> >>> 		\
+> >>>> +						 (((fun) & 0x7) << 22) |	\
+> >>>> +						 (((ent) & 0x40) << 15) |	\
+> >>>> +						 (((ent) & 0x3f) << 7) |	\
+> >>>> +						 (((ctl) & 0x30) << 15) |	\
+> >>>> +						 (((ctl) & 0x0f) << 3) |	\
+> >>>> +						 (((ch) & 0x38) << 12) |	\
+> >>>> +						 ((ch) & 0x07))
+> >>>> +
+> >>>> +#define SDW_SDCA_MBQ_CTL(reg)			((reg) | BIT(13))
+> >>>> +#define SDW_SDCA_NEXT_CTL(reg)			((reg) | BIT(14))
+> >>>> +
+> >>>>   #endif /* __SDW_REGISTERS_H */
+> >>>
+> >>>
+> >>> No users of these macros?
+> >>
+> >> SDW_SDCA_CTL is used in sdca codec drivers which are not upstream yet.
+> >> SDW_SDCA_MBQ_CTL will be used in a new regmap method.
+> >> SDW_SDCA_NEXT_CTL can be used in sdca codec drivers, too.
 > >
-> > Currently kasan_unpoison_memory() is used as both an external annotation
-> > and as internal memory poisoning helper. Rename external annotation to
-> > kasan_unpoison_data() and inline the internal helper for for hardware
-> > tag-based mode to avoid undeeded function calls.
-> >
-> > There's the external annotation kasan_unpoison_slab() that is currently
-> > defined as static inline and uses kasan_unpoison_memory(). With this
-> > change it's turned into a function call. Overall, this results in the
-> > same number of calls for hardware tag-based mode as
-> > kasan_unpoison_memory() is now inlined.
->
-> Can't we leave kasan_unpoison_slab as is? Or there are other reasons
-> to uninline it?
+> > Well, the point is that it's hard to review without seeing how the
+> > code of actual users are.
+> 
+> Agree, but our job is not made easy by the three-way dependency on
+> regmap, SoundWire before we can submit ASoC codec drivers (developed
+> by Realtek and tested by Intel).
+> 
+> If you prefer us to send all patches for SDCA codec support in one
+> shot, that would be fine with us.
 
-Just to have cleaner kasan.h callbacks definitions.
+It's not necessarily mandatory to send the whole series, but if a
+relevant code is already available, mentioning a repo URL in the patch
+description (or in the comment below the delimiter) would be helpful,
+for example.
 
-> It seems that uninling it is orthogonal to the rest of this patch.
+> > BTW, the bit definitions can be simplified with GENMASK().
+> > I personally don't think GENMASK() necessarily good, but it may fit
+> > better in a case like this.
+> 
+> we use this macro in switch cases, e.g. for regmap properties to
+> define read/volatile registers:
+> 
+> case SDW_SDCA_CTL(FUN_JACK_CODEC, RT711_SDCA_ENT_GE49,
+> RT711_SDCA_CTL_SELECTED_MODE, 0):
+> 	case SDW_SDCA_CTL(FUN_JACK_CODEC, RT711_SDCA_ENT_GE49,
+> RT711_SDCA_CTL_DETECTED_MODE, 0):
+> 	case SDW_SDCA_CTL(FUN_HID, RT711_SDCA_ENT_HID01,
+> RT711_SDCA_CTL_HIDTX_CURRENT_OWNER, 0) ...
+> 		SDW_SDCA_CTL(FUN_HID, RT711_SDCA_ENT_HID01,
+> RT711_SDCA_CTL_HIDTX_MESSAGE_LENGTH, 0):
+> 	case RT711_BUF_ADDR_HID1 ... RT711_BUF_ADDR_HID2:
+> 		return true;
+> 
+> https://github.com/thesofproject/linux/blob/70fe32e776dafb4b03581d62a4569f65c2f13ada/sound/soc/codecs/rt711-sdca-sdw.c#L35
+> 
+> and unfortunately all our attempts to use FIELD_PREP, FIELD_GET,
+> u32_encode, as suggested by Vinod, failed for this case due to
+> compilation issues (can't use these macros outside of a function
+> scope). The errors were shared with Vinod.
+> 
+> That's why we went back to the initial suggestion to deal with the
+> shifts/masks by hand. For now we don't have a better solution that
+> works in all cases were the macro is used.
 
-I can split it out into a separate patch if you think this makes sense?
+Hrm, OK, in this case the value is masked then shifted, so it's not
+trivial to deal with a macro.
+
+
+thanks,
+
+Takashi
