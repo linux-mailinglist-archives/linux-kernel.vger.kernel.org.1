@@ -2,69 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2942A0BCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 943F42A0BCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727323AbgJ3Qv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:51:28 -0400
-Received: from mga04.intel.com ([192.55.52.120]:51243 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726461AbgJ3Qv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:51:26 -0400
-IronPort-SDR: ShDNe3xdIuZALRB15BsRRKxU6HaYIGGNZmtl7kqewSonxR8eKiWa7/c2NECr8sYRfPcUhfB+vn
- hrwJZfhkFA4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="166049719"
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="166049719"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 09:51:26 -0700
-IronPort-SDR: wv0X7bNvWdLe5bJkg147nXN3mkAZoJFZCPDp1E4cPBxsuXWPVbfmBPj427HfUjBsuFvjn/Re4/
- lHerylMRUBIw==
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
-   d="scan'208";a="527169387"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 09:51:25 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kYXdb-002QZ6-RP; Fri, 30 Oct 2020 18:52:27 +0200
-Date:   Fri, 30 Oct 2020 18:52:27 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     john.p.donnelly@oracle.com
-Cc:     linux-kernel@vger.kernel.org, trix@redhat.com
-Subject: Re: [PATCH 4.14 v2 ] platform/x86: Corrects warning: missing braces
- around initializer
-Message-ID: <20201030165227.GR4077@smile.fi.intel.com>
-References: <20201030155501.7491-1-john.p.donnelly@oracle.com>
+        id S1726407AbgJ3Qxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:53:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725844AbgJ3Qxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:53:45 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EC0C0613CF;
+        Fri, 30 Oct 2020 09:53:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=KEeA33OEqDGWbAtgRNQqJFf7DgtZxfBU7JaReRDm16k=; b=jX3FXm1XC8wFy0ppOFkRv0VZg
+        S/xciqwX5i4N+Lb7KH1fWrhIUHgt+d8DdDmlJ1tX5644PUSgZ+NHLdh6K0IaR4IHPTQ5eyGe/SV44
+        eEA4Sz7tvDIvBgMj6t2nocefChfW3EP3RX/x2Ch/f05gnqOtRAmPyLFjHBySJx6LZtcsJfixpP/04
+        vbftM9PvBzSxTYvr2a3H2GzWPOd6JBffM9umOGDmEgptm6jukqAoSIbCllqnhfKs8283efkI6tcMh
+        LMF2s9QxgP7W/VKypWL/4AJ3OoYBqk9ceaTWO4dukcWLCV+D5FJBA9iWz9hW5J7L9chX3TfkUM20O
+        3/N2Sf7mg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52960)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kYXem-0006Ot-8l; Fri, 30 Oct 2020 16:53:40 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kYXel-0007KL-3L; Fri, 30 Oct 2020 16:53:39 +0000
+Date:   Fri, 30 Oct 2020 16:53:39 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, viro@zeniv.linux.org.uk,
+        linus.walleij@linaro.org, arnd@arndb.de
+Subject: Re: [PATCH 4/9] ARM: syscall: always store thread_info->syscall
+Message-ID: <20201030165338.GG1551@shell.armlinux.org.uk>
+References: <20201030154519.1245983-1-arnd@kernel.org>
+ <20201030154919.1246645-1-arnd@kernel.org>
+ <20201030154919.1246645-4-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201030155501.7491-1-john.p.donnelly@oracle.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201030154919.1246645-4-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 08:55:01AM -0700, john.p.donnelly@oracle.com wrote:
-> From: John Donnelly <john.p.donnelly@oracle.com>
+On Fri, Oct 30, 2020 at 04:49:14PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> The assignment statement of a local variable "struct tp_nvram_state s[2] = {0};
-> is not valid for all versions of compilers.
-
-I don't get the subject. IS it backport of existing change to v4.14, or you are
-trying to fix v4.14? If the latter is the case, it's not correct order. Try
-latest vanilla first (v5.10-rc1 as of today) and if there is still an issue,
-submit a patch.
-
-> Fixes: 515ded02bc4b ("platform/x86: thinkpad_acpi: initialize tp_nvram_state variable")
+> The system call number is used in a a couple of places, in particular
+> ptrace, seccomp and /proc/<pid>/syscall.
 > 
-> Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
+> The last one apparently never worked reliably on ARM for tasks
+> that are not currently getting traced.
+> 
+> Storing the syscall number in the normal entry path makes it work,
+> as well as allowing us to see if the current system call is for
+> OABI compat mode, which is the next thing I want to hook into.
 
-Should not be blank line in between.
+I'm not sure this patch is correct.
+
+Tracing the existing code for OABI:
+
+asmlinkage int syscall_trace_enter(struct pt_regs *regs, int scno)
+{
+        current_thread_info()->syscall = scno;
+
+        /* Legacy ABI only. */
+USER(	ldr     scno, [saved_pc, #-4]   )       @ get SWI instruction
+	bic     scno, scno, #0xff000000         @ mask off SWI op-code
+	eor     scno, scno, #__NR_SYSCALL_BASE  @ check OS number
+	tst     r10, #_TIF_SYSCALL_WORK         @ are we tracing syscalls?
+	bne     __sys_trace
+
+__sys_trace:
+	mov     r1, scno
+	add     r0, sp, #S_OFF
+	bl      syscall_trace_enter
+
+So, thread_info->syscall does not include __NR_SYSCALL_BASE. The
+reason for this is the code that makes use of that via syscall_get_nr().
+kernel/trace/trace_syscalls.c:
+
+	syscall_nr = trace_get_syscall_nr(current, regs);
+	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
+		return;
+
+and NR_syscalls is the number of syscalls, which doesn't include the
+__NR_SYSCALL_BASE offset.
+
+So, I think this patch actually breaks OABI.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
