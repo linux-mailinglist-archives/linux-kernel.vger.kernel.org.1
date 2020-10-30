@@ -2,247 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8542C2A1103
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 937182A1104
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:44:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgJ3Wmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 18:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3Wmq (ORCPT
+        id S1725975AbgJ3WoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 18:44:18 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:55555 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgJ3WoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 18:42:46 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459E5C0613D5;
-        Fri, 30 Oct 2020 15:42:44 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id l8so4251830wmg.3;
-        Fri, 30 Oct 2020 15:42:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ldf9nHDM5+h/GHVp04n6dFe8WCel+IPrH+AkDZsKWpk=;
-        b=q8fHeQHwFpcH8+Btti7MBLlaKvAAsXw0lmlYOQA3hS/lpnsL6Svlk+zBWf22JdQFlo
-         9g7pQx81QrDaH9pImRXuFcKJJDaRntC64ziCfh89lfy6poXGojJ+QiVL/owMWTDic648
-         x2E0dlu3tMYsQr7D22gnxU5oKS/B5WkzzwW5UXSD22s5a8rvCIj72eEIAT8vv1lCvnkj
-         3qJw5KPGYP11cgOWRFz8Nvtj9beUE4bXBMWWbJ+Liu4KacLpghHhj42YmfvAF70U4Q00
-         RWug1dJtZuhVYb1o5BNMCv6WsaSnUZUCJ673dL+hIaxoeuF2SW5nA6CCRqn44HMTFNwb
-         BdmA==
+        Fri, 30 Oct 2020 18:44:17 -0400
+Received: by mail-il1-f200.google.com with SMTP id d9so5672706iln.22
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 15:44:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ldf9nHDM5+h/GHVp04n6dFe8WCel+IPrH+AkDZsKWpk=;
-        b=tB5HF5NYkWRBhDrY8XvM3ioWi4t3tvkGqh9QWcdWBTbylHja5ljEeu4hq0HYpNRcb7
-         kQ+qrBWP5G40wkKssJn1NJZJknKvqQun89rvLS78j5GDZUNaMFST2Ntw03Z/cnNfBsAF
-         Bx2TxXNhV67t/2WG0eJvI2vVseQZztEXA/FkXw8S2FQT7OLF+Bmq1WQ2fP6gfB+s4kyu
-         h6TSO+Yv14o570P0+KHe3Zm1LjjgwgZGDfTF0sZbWEWK/a6RcqO/Zn4BfM2PqLgai+gZ
-         9jKCWY3D8ojmpUuhtyIACYYacVgCMMWayz5qhncOhNS5ad7MIlE5mgHcN3ROH7Nm0yM4
-         GsYQ==
-X-Gm-Message-State: AOAM532bQjflUtQrEpqUoD9/fw4gL75QZLdazCn+DPspVb2/a8lXRrUa
-        hnC38KDZkWywxF8PBVj7Zsw=
-X-Google-Smtp-Source: ABdhPJx1x2944kgjZpsTiIgxsBur0xID9tM8JaIEMFbmoyzo2G5OoFWn5Ga6E2+HEJAIJ7GwfRXcGQ==
-X-Received: by 2002:a1c:9695:: with SMTP id y143mr4829432wmd.146.1604097762971;
-        Fri, 30 Oct 2020 15:42:42 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f23:2800:9d19:4c77:c465:2524? (p200300ea8f2328009d194c77c4652524.dip0.t-ipconnect.de. [2003:ea:8f23:2800:9d19:4c77:c465:2524])
-        by smtp.googlemail.com with ESMTPSA id u3sm10806096wro.33.2020.10.30.15.42.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 15:42:42 -0700 (PDT)
-Subject: Re: [PATCH net-next 00/19] net: phy: add support for shared
- interrupts (part 1)
-To:     Ioana Ciornei <ciorneiioana@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Andre Edich <andre.edich@microchip.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Dan Murphy <dmurphy@ti.com>,
-        Divya Koppera <Divya.Koppera@microchip.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Marek Vasut <marex@denx.de>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Mathias Kresin <dev@kresin.me>,
-        Maxim Kochetkov <fido_max@inbox.ru>,
-        Michael Walle <michael@walle.cc>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Nisar Sayed <Nisar.Sayed@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Willy Liu <willy.liu@realtek.com>,
-        Yuiko Oshino <yuiko.oshino@microchip.com>
-References: <20201029100741.462818-1-ciorneiioana@gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <d05587fc-0cec-59fb-4e84-65386d0b3d6b@gmail.com>
-Date:   Fri, 30 Oct 2020 23:42:36 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=tbbGq5aNlO9degpAN1D8DlynwJQJHs0cUXencP4MFxc=;
+        b=qLMBtWGR4jTa5/SuZSq5Ad1yS2Toe1cctDzrRxB7swaH/oElVPYd1APiKUi+2L2AIg
+         VJUjQqn6zKuw7ccPazcnT0W6tvrCyY3QWUzGCHffU7zBSM7PDNqE9MEhKD2iHs7h2Dw8
+         ZvnFT4tfgwD/rBz1Pe3i6NmI3gZbVqCex5qDlGhzWF/9b/w/OTe3C6dILdk7spmy55F2
+         I9gd7xh6R2PbDwzDQIzx4KJUvMujdAQLYYN0tiOU0Zb7JkerPoPcOYnlOFiQNFrkhFcH
+         MuVFULNiDpyeILzvmLqlDUbPgxSrcLU3ckzojbJwfTrL6aZLdT90y8xUF+af251NRWQx
+         s9VA==
+X-Gm-Message-State: AOAM5322Z88ephYeKCFvcoASyElz+iRpdVHigFombEPZD6SQRauTUT9F
+        HKc4YDU/NO0FxXN73Jq5adlyZFdzTAcS+osYaWTjcKNjv2bq
+X-Google-Smtp-Source: ABdhPJyLd3gde0CNV+gdHb3xqkQpujTtiIJVGrNoovHxAjXich8pF+WsgaMZXT0i7FgPCE11ykuuYCp12nWKtcO6EmQvaBOTxQat
 MIME-Version: 1.0
-In-Reply-To: <20201029100741.462818-1-ciorneiioana@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a6b:3f88:: with SMTP id m130mr3434557ioa.78.1604097856950;
+ Fri, 30 Oct 2020 15:44:16 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 15:44:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f2d59c05b2eb22e0@google.com>
+Subject: INFO: task hung in gfs2_gl_hash_clear
+From:   syzbot <syzbot+938b0fd3a48bf32ef1f1@syzkaller.appspotmail.com>
+To:     agruenba@redhat.com, cluster-devel@redhat.com,
+        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.10.2020 11:07, Ioana Ciornei wrote:
-> From: Ioana Ciornei <ioana.ciornei@nxp.com>
-> 
-> This patch set aims to actually add support for shared interrupts in
-> phylib and not only for multi-PHY devices. While we are at it,
-> streamline the interrupt handling in phylib.
-> 
-> For a bit of context, at the moment, there are multiple phy_driver ops
-> that deal with this subject:
-> 
-> - .config_intr() - Enable/disable the interrupt line.
-> 
-> - .ack_interrupt() - Should quiesce any interrupts that may have been
->   fired.  It's also used by phylib in conjunction with .config_intr() to
->   clear any pending interrupts after the line was disabled, and before
->   it is going to be enabled.
-> 
-> - .did_interrupt() - Intended for multi-PHY devices with a shared IRQ
->   line and used by phylib to discern which PHY from the package was the
->   one that actually fired the interrupt.
-> 
-> - .handle_interrupt() - Completely overrides the default interrupt
->   handling logic from phylib. The PHY driver is responsible for checking
->   if any interrupt was fired by the respective PHY and choose
->   accordingly if it's the one that should trigger the link state machine.
-> 
->>From my point of view, the interrupt handling in phylib has become
-> somewhat confusing with all these callbacks that actually read the same
-> PHY register - the interrupt status.  A more streamlined approach would
-> be to just move the responsibility to write an interrupt handler to the
-> driver (as any other device driver does) and make .handle_interrupt()
-> the only way to deal with interrupts.
-> 
-> Another advantage with this approach would be that phylib would gain
-> support for shared IRQs between different PHY (not just multi-PHY
-> devices), something which at the moment would require extending every
-> PHY driver anyway in order to implement their .did_interrupt() callback
-> and duplicate the same logic as in .ack_interrupt(). The disadvantage
-> of making .did_interrupt() mandatory would be that we are slightly
-> changing the semantics of the phylib API and that would increase
-> confusion instead of reducing it.
-> 
-> What I am proposing is the following:
-> 
-> - As a first step, make the .ack_interrupt() callback optional so that
->   we do not break any PHY driver amid the transition.
-> 
-> - Every PHY driver gains a .handle_interrupt() implementation that, for
->   the most part, would look like below:
-> 
-> 	irq_status = phy_read(phydev, INTR_STATUS);
-> 	if (irq_status < 0) {
-> 		phy_error(phydev);
-> 		return IRQ_NONE;
-> 	}
-> 
-> 	if (irq_status == 0)
+Hello,
 
-Here I have a concern, bits may be set even if the respective interrupt
-source isn't enabled. Therefore we may falsely blame a device to have
-triggered the interrupt. irq_status should be masked with the actually
-enabled irq source bits.
+syzbot found the following issue on:
 
-> 		return IRQ_NONE;
-> 
-> 	phy_trigger_machine(phydev);
-> 
-> 	return IRQ_HANDLED;
-> 
-> - Remove each PHY driver's implementation of the .ack_interrupt() by
->   actually taking care of quiescing any pending interrupts before
->   enabling/after disabling the interrupt line.
-> 
-> - Finally, after all drivers have been ported, remove the
->   .ack_interrupt() and .did_interrupt() callbacks from phy_driver.
-> 
-> This patch set is part 1 and it addresses the changes needed in phylib
-> and 7 PHY drivers. The rest can be found on my Github branch here:
-> https://github.com/IoanaCiornei/linux/commits/phylib-shared-irq
-> 
-> I do not have access to most of these PHY's, therefore I Cc-ed the
-> latest contributors to the individual PHY drivers in order to have
-> access, hopefully, to more regression testing.
-> 
-> Ioana Ciornei (19):
->   net: phy: export phy_error and phy_trigger_machine
->   net: phy: add a shutdown procedure
->   net: phy: make .ack_interrupt() optional
->   net: phy: at803x: implement generic .handle_interrupt() callback
->   net: phy: at803x: remove the use of .ack_interrupt()
->   net: phy: mscc: use phy_trigger_machine() to notify link change
->   net: phy: mscc: implement generic .handle_interrupt() callback
->   net: phy: mscc: remove the use of .ack_interrupt()
->   net: phy: aquantia: implement generic .handle_interrupt() callback
->   net: phy: aquantia: remove the use of .ack_interrupt()
->   net: phy: broadcom: implement generic .handle_interrupt() callback
->   net: phy: broadcom: remove use of ack_interrupt()
->   net: phy: cicada: implement the generic .handle_interrupt() callback
->   net: phy: cicada: remove the use of .ack_interrupt()
->   net: phy: davicom: implement generic .handle_interrupt() calback
->   net: phy: davicom: remove the use of .ack_interrupt()
->   net: phy: add genphy_handle_interrupt_no_ack()
->   net: phy: realtek: implement generic .handle_interrupt() callback
->   net: phy: realtek: remove the use of .ack_interrupt()
-> 
->  drivers/net/phy/aquantia_main.c  |  57 ++++++++++----
->  drivers/net/phy/at803x.c         |  42 ++++++++--
->  drivers/net/phy/bcm-cygnus.c     |   2 +-
->  drivers/net/phy/bcm-phy-lib.c    |  37 ++++++++-
->  drivers/net/phy/bcm-phy-lib.h    |   1 +
->  drivers/net/phy/bcm54140.c       |  39 +++++++---
->  drivers/net/phy/bcm63xx.c        |  20 +++--
->  drivers/net/phy/bcm87xx.c        |  50 ++++++------
->  drivers/net/phy/broadcom.c       |  70 ++++++++++++-----
->  drivers/net/phy/cicada.c         |  35 ++++++++-
->  drivers/net/phy/davicom.c        |  59 ++++++++++----
->  drivers/net/phy/mscc/mscc_main.c |  70 +++++++++--------
->  drivers/net/phy/phy.c            |   6 +-
->  drivers/net/phy/phy_device.c     |  23 +++++-
->  drivers/net/phy/realtek.c        | 128 +++++++++++++++++++++++++++----
->  include/linux/phy.h              |   3 +
->  16 files changed, 484 insertions(+), 158 deletions(-)
-> 
-> Cc: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> Cc: Andre Edich <andre.edich@microchip.com>
-> Cc: Antoine Tenart <atenart@kernel.org>
-> Cc: Baruch Siach <baruch@tkos.co.il>
-> Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-> Cc: Dan Murphy <dmurphy@ti.com>
-> Cc: Divya Koppera <Divya.Koppera@microchip.com>
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: Hauke Mehrtens <hauke@hauke-m.de>
-> Cc: Heiner Kallweit <hkallweit1@gmail.com>
-> Cc: Jerome Brunet <jbrunet@baylibre.com>
-> Cc: Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Marco Felsch <m.felsch@pengutronix.de>
-> Cc: Marek Vasut <marex@denx.de>
-> Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> Cc: Mathias Kresin <dev@kresin.me>
-> Cc: Maxim Kochetkov <fido_max@inbox.ru>
-> Cc: Michael Walle <michael@walle.cc>
-> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> Cc: Nisar Sayed <Nisar.Sayed@microchip.com>
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> Cc: Philippe Schenker <philippe.schenker@toradex.com>
-> Cc: Willy Liu <willy.liu@realtek.com>
-> Cc: Yuiko Oshino <yuiko.oshino@microchip.com>
-> 
+HEAD commit:    07e08873 Merge tag 'fallthrough-fixes-clang-5.10-rc2' of g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11483132500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cb6c2acf60eb5bfd
+dashboard link: https://syzkaller.appspot.com/bug?extid=938b0fd3a48bf32ef1f1
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+938b0fd3a48bf32ef1f1@syzkaller.appspotmail.com
+
+INFO: task syz-executor.0:12142 blocked for more than 143 seconds.
+      Not tainted 5.10.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:25896 pid:12142 ppid:  8475 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3774 [inline]
+ __schedule+0x893/0x2130 kernel/sched/core.c:4523
+ schedule+0xcf/0x270 kernel/sched/core.c:4601
+ schedule_timeout+0x148/0x250 kernel/time/timer.c:1876
+ gfs2_gl_hash_clear+0x240/0x270 fs/gfs2/glock.c:1989
+ gfs2_fill_super+0x1e81/0x23f0 fs/gfs2/ops_fstype.c:1233
+ get_tree_bdev+0x421/0x740 fs/super.c:1344
+ gfs2_get_tree+0x4a/0x270 fs/gfs2/ops_fstype.c:1256
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x13ad/0x20c0 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3403
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x46090a
+Code: Unable to access opcode bytes at RIP 0x4608e0.
+RSP: 002b:00007f9ee56a8a88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f9ee56a8b20 RCX: 000000000046090a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f9ee56a8ae0
+RBP: 00007f9ee56a8ae0 R08: 00007f9ee56a8b20 R09: 0000000020000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
+R13: 0000000020000100 R14: 0000000020000200 R15: 0000000020047a20
+
+Showing all locks held in the system:
+2 locks held by kworker/u4:1/21:
+1 lock held by khungtaskd/1643:
+ #0: ffffffff8b337060 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6259
+1 lock held by systemd-journal/4882:
+1 lock held by in:imklog/8120:
+ #0: ffff8880134e75f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+1 lock held by syz-executor.0/12142:
+ #0: ffff88805df5c0e0 (&type->s_umount_key#62/1){+.+.}-{3:3}, at: alloc_super+0x1b8/0xa80 fs/super.c:229
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 1643 Comm: khungtaskd Not tainted 5.10.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+ watchdog+0xd43/0xfa0 kernel/hung_task.c:295
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 4882 Comm: systemd-journal Not tainted 5.10.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0033:0x7f3f056c561d
+Code: f9 79 f1 ff 83 f8 06 0f 8e bd fd ff ff 48 83 ec 08 4c 8d 0d 6d a1 02 00 4c 8d 05 ae fe 03 00 53 b9 1e 03 00 00 e9 eb fe ff ff <49> 83 f8 10 75 0c 49 89 45 00 45 31 e4 e9 94 fd ff ff 31 d2 4d 89
+RSP: 002b:00007ffe73800a50 EFLAGS: 00000246
+RAX: 00007f3f02e08798 RBX: 00000000002b2798 RCX: 0000000000000040
+RDX: 0000000000000001 RSI: 00007f3f05705480 RDI: 000056506c959140
+RBP: 000056506c958ea0 R08: 0000000000000065 R09: 000056506c959140
+R10: c68c15b713e34dde R11: 836311406455d5a5 R12: 0000000000000001
+R13: 00007ffe73800ac8 R14: 0000000000000000 R15: 00007ffe73800a50
+FS:  00007f3f059d68c0 GS:  0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
