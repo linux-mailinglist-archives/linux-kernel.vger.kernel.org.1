@@ -2,107 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89752A0E15
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404032A0E23
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727669AbgJ3SyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727481AbgJ3SyL (ORCPT
+        id S1727417AbgJ3SzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:55:18 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:36607 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727211AbgJ3SzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:54:11 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C36C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:54:11 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id x20so7380363ilj.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 11:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tMf9AMfk/yExuJKM8/1UQ09FC8NZ7U74R97RQRlMSQk=;
-        b=qbs2IpGzLhkpw0uwpAmPgsR/EZMviSXvaO1JC73XPnteDt9+10kEjCiAWbXnMYREqp
-         7uGQkGHqh3ltb6ZM0IHKXJKuH9Lb6jh8SG3AaHfnGyr+t+sUt8MQB+vsxyZ1u6+8pRZb
-         aCV7u0Z0vqg824GmoM0s5cGIuSlTvCnHGJSjh29uEOeFTaaihtiVpwyfRr4eXnLusqIM
-         W49Zj4iefGDGyfzOwpgygg7JB0lFWcViwKotbdYWxg1xcfOFo40Bo7QyeAQgHZUrTfoN
-         QfybkZsiFCK3XpVZlcZNXpqrqq8xkhNkqR16NYoIjKhRTjrsQsbioytcth8C+5VWUzCL
-         dtNA==
+        Fri, 30 Oct 2020 14:55:17 -0400
+Received: by mail-ot1-f65.google.com with SMTP id 32so6496876otm.3;
+        Fri, 30 Oct 2020 11:55:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tMf9AMfk/yExuJKM8/1UQ09FC8NZ7U74R97RQRlMSQk=;
-        b=EF7AkzciYotB7ze+uDN+dALzUbvK9u4NNjtfa60mT4aHivRtckI/SL74zbwaH4/Fxf
-         X2w9Ju1RyTIA3ldcy+F/Ih0tHxh4Xduo1anP9lJ2r9Zl4862eWNHuFExwtTtqUuFgcQK
-         6sodqqM86zXfBri497LrUHarv2VRGbwHBaXr9RU1SsC34E3by8MuQgFwvEk+l2QEWz1J
-         L5Tua/DnYIFVtbbRxaSgQBHjr/xD+9NOP/+SGBOe+52nU9IDNUtvlpWJzEmGtUOgtm9a
-         v2lf4EpTYTbHl6UtIqDGbV3ZcbCCAcFP1cTKEGMaJXKgXb70fYF7xKYYTp1EVojNVtk6
-         RERw==
-X-Gm-Message-State: AOAM530RPM8diBD1IATeXDfzDlrAN7NhhbSOxF52ePBL9JVasqKMC5a+
-        +M5FhT6NAuInkP2tq+gKTao++Q==
-X-Google-Smtp-Source: ABdhPJygEwBCwgS21Sv8OA1FMW1uGttXMamKu8Op1aaIHgTyd6UjfUohmMCrzJlkyGbxChkRrYxRKg==
-X-Received: by 2002:a05:6e02:dea:: with SMTP id m10mr3058662ilj.106.1604084050607;
-        Fri, 30 Oct 2020 11:54:10 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id n15sm5598618ilt.58.2020.10.30.11.54.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 11:54:10 -0700 (PDT)
-Subject: Re: arc: kernel/entry.S:310: Error: inappropriate arguments for
- opcode 'and'
-To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>
-Cc:     Christian Brauner <christian@brauner.io>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-References: <CA+G9fYth+F1TnG6GQNKtrxvChvX9m+nGa8LKFG18WCzsqNJg5w@mail.gmail.com>
- <5273a136-ac9c-94fc-b6e1-d7a0abf2b385@synopsys.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <33ead693-0cf6-adef-c513-fd3ba0c1a6eb@kernel.dk>
-Date:   Fri, 30 Oct 2020 12:54:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VEJSrrlWi4nGgCuwCiPdo92Bvw6wzA2qRIk7ryIipEQ=;
+        b=AJh3T0unAZ+aq0lng7FbzrXsjsEePl/lmsTibS6VOGzhHXKenUc1UrXcnL5uSd3piU
+         GLr45TQiYRhaDtVARjxCECvHF+1E8HCBaXnHIDWSEi6stSsX8aI8jnhn34RM5HsJQZsD
+         mvU9YVGMViNyA62VMAJ7crcsDpsulHAZGO8DVmLY1wramcQgRb/phU+HhqspONHDLEgy
+         QkrfZ1NlQn6kwroxa85eOulAvdFMMzQ2wwL5I8deauNiWdgovBDkOBHfTmKc3KCNZEZA
+         M5MRknk8crR78m9bdxzQhPMBoLqhChdj6CpMBhhNx9gxnOOzPqFMpnXxaovYuPQx0kbu
+         i4uA==
+X-Gm-Message-State: AOAM531rD2olXaPqgHWSp5S5uSF+nD4jMa8TYBFbRCKPNuvZQYu6apTO
+        w81qhLNaAYTLtTkmPjo5nA==
+X-Google-Smtp-Source: ABdhPJzt5b9EvIvjswnpcPiateFic+Ourf33V0RDiFsTxROsokE5KAZ93O78JglWQuUFJFlYkwo0HQ==
+X-Received: by 2002:a9d:39e1:: with SMTP id y88mr2834129otb.39.1604084116226;
+        Fri, 30 Oct 2020 11:55:16 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h15sm1529750ots.31.2020.10.30.11.55.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 11:55:15 -0700 (PDT)
+Received: (nullmailer pid 4142058 invoked by uid 1000);
+        Fri, 30 Oct 2020 18:55:14 -0000
+Date:   Fri, 30 Oct 2020 13:55:14 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, sudeep.holla@arm.com,
+        lukasz.luba@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, broonie@kernel.org,
+        satyakim@qti.qualcomm.com, etienne.carriere@linaro.org,
+        f.fainelli@gmail.com, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com
+Subject: Re: [PATCH v3 4/4] dt-bindings: arm: add support for SCMI Regulators
+Message-ID: <20201030185514.GA4129214@bogus>
+References: <20201026203148.47416-1-cristian.marussi@arm.com>
+ <20201026203148.47416-5-cristian.marussi@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <5273a136-ac9c-94fc-b6e1-d7a0abf2b385@synopsys.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026203148.47416-5-cristian.marussi@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/20 12:53 PM, Vineet Gupta wrote:
-> Hi Naresh,
+On Mon, Oct 26, 2020 at 08:31:48PM +0000, Cristian Marussi wrote:
+> Add devicetree bindings to support regulators based on SCMI Voltage
+> Domain Protocol.
 > 
-> On 10/30/20 3:29 AM, Naresh Kamboju wrote:
->> arc defconfig build failed on linux next 20201030 with gcc-8 and gcc-9.
->>
->> make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=arc
->> CROSS_COMPILE=arc-elf32- HOSTCC=gcc CC="sccache arc-elf32-gcc" O=build
->> uImage
->> #
->> ../arch/arc/kernel/entry.S: Assembler messages:
->> ../arch/arc/kernel/entry.S:310: Error: inappropriate arguments for opcode 'and'
->> make[3]: *** [../scripts/Makefile.build:364:
->> arch/arc/kernel/entry-arcv2.o] Error 1
->>
->> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> ---
+> v2 --> v3
+> - avoid awkard examples based on _cpu/_gpu regulators
+> v1 --> v2
+> - removed any reference to negative voltages
+> ---
+>  .../devicetree/bindings/arm/arm,scmi.txt      | 42 +++++++++++++++++++
+>  1 file changed, 42 insertions(+)
 > 
-> Thx for reporting this.  This is due to the series Add support for 
-> TIF_NOTIFY_SIGNAL 
-> <https://lore.kernel.org/io-uring/20201026203230.386348-1-axboe@kernel.dk/#r>where 
-> ARC patch is broken and I just replied to Jens about it. He will 
-> hopefully fix it and push updated series to -next
+> diff --git a/Documentation/devicetree/bindings/arm/arm,scmi.txt b/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> index 55deb68230eb..0cef83a60f03 100644
+> --- a/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> +++ b/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> @@ -62,6 +62,28 @@ Required properties:
+>   - #power-domain-cells : Should be 1. Contains the device or the power
+>  			 domain ID value used by SCMI commands.
+>  
+> +Regulator bindings for the SCMI Regulator based on SCMI Message Protocol
+> +------------------------------------------------------------
+> +
+> +An SCMI Regulator is permanently bound to a well defined SCMI Voltage Domain,
+> +and should be always positioned as a root regulator.
+> +It does not support any current operation.
+> +
+> +This binding uses the common regulator binding[6].
+> +
+> +SCMI Regulators are grouped under a 'regulators' node which in turn is a child
+> +of the SCMI Voltage protocol node inside the desired SCMI instance node.
+> +
+> +Required properties:
+> + - reg : shall identify an existent SCMI Voltage Domain.
+> +
+> +Optional properties:
+> + - all of the other standard regulator bindings as in [6]: note that, since
+> +   the SCMI Protocol itself aims in fact to hide away many of the operational
+> +   capabilities usually exposed by the properties of a standard regulator,
+> +   most of the usual regulator bindings could have just no effect in the
+> +   context of this SCMI regulator.
 
-Done, will push it out now. Sorry about that.
+You can't have it both ways... You should list out which ones apply.
 
--- 
-Jens Axboe
+I'm a bit worried that now we're changing CPUs (at least?) from clocks 
+to 'performance domains' while at the same time here we're adding 
+low level, virtual regulators. Are we going to end up wanting something 
+more abstract here too?
 
+> +
+>  Sensor bindings for the sensors based on SCMI Message Protocol
+>  --------------------------------------------------------------
+>  SCMI provides an API to access the various sensors on the SoC.
+> @@ -105,6 +127,7 @@ Required sub-node properties:
+>  [3] Documentation/devicetree/bindings/thermal/thermal*.yaml
+>  [4] Documentation/devicetree/bindings/sram/sram.yaml
+>  [5] Documentation/devicetree/bindings/reset/reset.txt
+> +[6] Documentation/devicetree/bindings/regulator/regulator.yaml
+>  
+>  Example:
+>  
+> @@ -169,6 +192,25 @@ firmware {
+>  			reg = <0x16>;
+>  			#reset-cells = <1>;
+>  		};
+> +
+> +		scmi_voltage: protocol@17 {
+> +			reg = <0x17>;
+> +
+> +			regulators {
+> +				regulator_devX: regulator_scmi_devX@0 {
+
+Node names should be generic:
+
+regulator@0
+
+> +					reg = <0x0>;
+> +					regulator-max-microvolt = <3300000>;
+> +				};
+> +
+> +				regulator_devY: regulator_scmi_devY@9 {
+> +					reg = <0x9>;
+> +					regulator-min-microvolt = <500000>;
+> +					regulator-max-microvolt = <4200000>;
+> +				};
+> +
+> +				...
+> +			};
+> +		};
+>  	};
+>  };
+>  
+> -- 
+> 2.17.1
+> 
