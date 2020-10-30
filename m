@@ -2,87 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87A929FB26
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F33F329FB28
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbgJ3CU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 22:20:28 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:56370 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgJ3CU1 (ORCPT
+        id S1725900AbgJ3CY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 22:24:59 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7101 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgJ3CY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 22:20:27 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09U2FXQK143934;
-        Fri, 30 Oct 2020 02:20:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=8RV3DVUM4dxiFGT4hEb0ar6t+vieEVsI4rpYwnOrKds=;
- b=HX2yPDkitG1NjY2snzcZpTyrfMLqisYtaeUR2HnPxhwbXU6LVjkzPBbfgC80TvOyes2l
- rsjVB9+Xt0pfU9GgbQi0fOEa2nkmX/wdUY2ZLkst+ghVtQY1+8vhTQmHYAZgYT0+eURM
- ImNNiyaCUjKIyyKYHaRd5flzKfiN/kwkJoJInguyJe9AIx75ynNZ4qoj1pWuYKn5/kQs
- Z16ONbDLlypiVUfMMn8lDuWXRKGjPG7KGYLpmgPNHck46ENUm7smVvncFdVoza47NcJG
- 7HVlTX70Ak6zNVjzoQf08Pc1WkF+nsEZCUmncDVpw49F//8KI4cFYICInd2RUMfsouod Hg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 34c9sb7w6q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Oct 2020 02:20:22 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09U2KDDm171495;
-        Fri, 30 Oct 2020 02:20:22 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 34cx617265-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Oct 2020 02:20:22 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09U2KIUR003180;
-        Fri, 30 Oct 2020 02:20:18 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Oct 2020 19:20:18 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, Don Brace <don.brace@microsemi.com>,
-        esc.storagedev@microsemi.com, linux-kernel@vger.kernel.org,
-        takafumi@sslab.ics.keio.ac.jp
-Subject: Re: [PATCH v3] scsi: hpsa: fix memory leak in hpsa_init_one
-Date:   Thu, 29 Oct 2020 22:20:17 -0400
-Message-Id: <160402432641.14215.8278310688594247277.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201027073125.14229-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
-References: <CAEYrHjmJRmcKX+F8R_wjd146FXnSHekodauG_eNQBXArE4OBeA@mail.gmail.com> <20201027073125.14229-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
+        Thu, 29 Oct 2020 22:24:59 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CMmNp1RF9zLqQR;
+        Fri, 30 Oct 2020 10:24:58 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 30 Oct 2020 10:24:48 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] MAINTAINERS: add missing file in ext4 entry
+Date:   Fri, 30 Oct 2020 10:24:35 +0800
+Message-ID: <20201030022435.1136-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=739
- suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010300016
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
- mlxlogscore=756 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300015
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 07:31:24 +0000, Keita Suzuki wrote:
+include/trace/events/ext4.h belongs to ext4 module, add the file path into
+ext4 entry in MAINTAINERS.
 
-> When hpsa_scsi_add_host fails, h->lastlogicals is leaked since it lacks
-> free in the error handler.
-> 
-> Fix this by adding free when hpsa_scsi_add_host fails.
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-Applied to 5.10/scsi-fixes, thanks!
-
-[1/1] scsi: hpsa: Fix memory leak in hpsa_init_one()
-      https://git.kernel.org/mkp/scsi/c/af61bc1e33d2
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e73636b75f29..d1d4e49a695a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6618,6 +6618,7 @@ Q:	http://patchwork.ozlabs.org/project/linux-ext4/list/
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
+ F:	Documentation/filesystems/ext4/
+ F:	fs/ext4/
++F:	include/trace/events/ext4.h
+ 
+ Extended Verification Module (EVM)
+ M:	Mimi Zohar <zohar@linux.ibm.com>
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.26.2
+
