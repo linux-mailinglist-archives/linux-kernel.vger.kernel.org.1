@@ -2,97 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC662A0B9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E27AB2A0B55
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727230AbgJ3Qqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:46:38 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:44171 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgJ3Qqh (ORCPT
+        id S1726873AbgJ3QkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:40:01 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:38722 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726061AbgJ3QkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:46:37 -0400
-Received: by mail-ot1-f68.google.com with SMTP id m26so6076010otk.11;
-        Fri, 30 Oct 2020 09:46:37 -0700 (PDT)
+        Fri, 30 Oct 2020 12:40:01 -0400
+Received: by mail-oi1-f194.google.com with SMTP id 9so7250344oir.5;
+        Fri, 30 Oct 2020 09:39:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zdHn4Bghzba5wOelTeZ6mhUplKqje06p67vbKsYURC0=;
-        b=cFMBnFtwUKvmqXAdDDDbjD190ZucouS1+crWbSRnVgI3b/fHLOvFIW4kudTNuZ1TW+
-         zH4gB56F4bOiD3duQX0L08rd86k0PoOjL2JrJtYVtz+BYQPWbZsM33gEYUYqh70oKFn7
-         p7TkqXxq+9h/8B3w38mBNt64C7pf2++2t863VEkFa7RbEFV3w0jW4y38q/D4n5iYj9bv
-         lfH50ltOEzuactU0zTXgNuFR2Bi0KqA7hxo7b1ZdUib+UZajdFvz/CXD2wZImdaYSgYx
-         e0SMI+cmoHlg5Sgg1Ow+37TZDuwlTGdQ9rVqtya3uHBAk+P5PKq+wpvkqMzyfJMdAr/m
-         APtw==
-X-Gm-Message-State: AOAM532jN4UOomxjj8K/3WXDwcUWkFsJt+gwR0Iphposk5a0N9X1pJ8x
-        dHt7FIR/ftxTeE6sitK4vQbbEgCf0MAEAjGhFuFCXReXie4=
-X-Google-Smtp-Source: ABdhPJxQnyAvlfHtIgYhFfMOUC6BuhMQiwnFHpToclGQhxGMD4Ajfu4gnrgfD0oPO2jq5IWpmVzD470Ajv8wMlhEutc=
-X-Received: by 2002:a4a:e80b:: with SMTP id b11mr2575066oob.1.1604075920719;
- Fri, 30 Oct 2020 09:38:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XKztsWcZasal2O06qo55L0eJo2O/+Ed23onN3u66G6Y=;
+        b=Dapu6PrPHbrKvseok7FCclsfzpK9uQ8zNQ3Nd3WdgYoDa3QYaY9wLetUINyAx4Mgkn
+         KjSb3ntzWDu61Zyk+3kYzJScUyn3k3MlCEokr2xhluG5dRpoqrY1l0o6wNKS91svp8CB
+         p5MifmJ6G56npLbjR5CWkiAU/vUHWvkngv8GrMQvRKdvnl4d3DZOela0zRzS85u/Pp65
+         p/dfqyIau4zP71TpdOC8FWmOs0AT1qL3sHQwEyg9ne40FyISL66YWokVf7iCCJCqGn0v
+         usMpab8Y3wOZmdbC2B4Tw/jHyLP/PAjSWwCxfelUx2G6IBdlq1FGMpFTTYz1ytNaC/CK
+         rTgg==
+X-Gm-Message-State: AOAM532AkESChNo+Ra93AfUfILTrWRs8WmrVrj1Jp+j9DEPxd3/YSioL
+        Ye5oLUsIRDDIy6c1hSb8+Q==
+X-Google-Smtp-Source: ABdhPJyj/mHVLN92/7MH5CL/dIFYAuNvLkG5xyiLxfWbikKyWL1yAsPDt8TxCNgsD1r7UZmTrtRCWQ==
+X-Received: by 2002:aca:5047:: with SMTP id e68mr2115953oib.175.1604075958774;
+        Fri, 30 Oct 2020 09:39:18 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id g203sm1534170oib.22.2020.10.30.09.39.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 09:39:18 -0700 (PDT)
+Received: (nullmailer pid 3965405 invoked by uid 1000);
+        Fri, 30 Oct 2020 16:39:17 -0000
+Date:   Fri, 30 Oct 2020 11:39:17 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>, kevin.lhopital@hotmail.com,
+        =?iso-8859-1?Q?K=E9vin_L'h=F4pital?= <kevin.lhopital@bootlin.com>
+Subject: Re: [PATCH 1/3] dt-bindings: media: i2c: Add OV8865 bindings
+ documentation
+Message-ID: <20201030163917.GA3963319@bogus>
+References: <20201023175406.504527-1-paul.kocialkowski@bootlin.com>
+ <20201023175406.504527-2-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-References: <6543936.FbWAdBN1tG@kreacher>
-In-Reply-To: <6543936.FbWAdBN1tG@kreacher>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 30 Oct 2020 17:38:29 +0100
-Message-ID: <CAJZ5v0hRMcsdGVOHCfeK4_k81L+PJSNq80kx1BpwDBs+WtgqpA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] PM: runtime: Fixes related to device links management
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lukas Wunner <lukas@wunner.de>,
-        Saravana Kannan <saravanak@google.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201023175406.504527-2-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Fri, Oct 23, 2020 at 07:54:04PM +0200, Paul Kocialkowski wrote:
+> This introduces YAML bindings documentation for the OV8865
+> image sensor.
+> 
+> Co-developed-by: Kévin L'hôpital <kevin.lhopital@bootlin.com>
+> Signed-off-by: Kévin L'hôpital <kevin.lhopital@bootlin.com>
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> ---
+>  .../bindings/media/i2c/ovti,ov8865.yaml       | 124 ++++++++++++++++++
+>  1 file changed, 124 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
+> new file mode 100644
+> index 000000000000..807f1a94afae
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
+> @@ -0,0 +1,124 @@
+> +# SPDX-License-Identifier: GPL-2.0
 
-On Wed, Oct 21, 2020 at 9:14 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-> Hi Greg & all,
->
-> Commit d12544fb2aa9 ("PM: runtime: Remove link state checks in
-> rpm_get/put_supplier()") merged recently introduced a weakness
-> in the handling of device links in the runtime PM framework that
-> may be confusing and even harmful.
->
-> Namely, the checks removed by that commit prevented PM-runtime from
-> getting or dropping references to the supplier device whose driver
-> was going away via its links to consumers, which specifically allowed
-> the pm_runtime_clean_up_links() called from __device_release_driver()
-> to run without interfering with runtime suspend/resume of consumer
-> devices (which still might happen even though the drivers had been
-> unbound from them by that time).
->
-> After the above commit, calling pm_runtime_clean_up_links() from
-> __device_release_driver() makes a little sense and it may be interfering
-> destructively with regular PM-runtime suspend/resume control flows, so
-> it needs to be either fixed or dropped altogether.  I prefer the latter,
-> because among other things this removes an arbitrary difference in the
-> handling of managed device links with respect to the stateless ones,
-> so patch [2/3] is doing just that.
->
-> However, in some rare cases pm_runtime_clean_up_links() may help to clean
-> up leftover PM-runtime references, so if that function goes away, they
-> need to be cleaned up elsewhere.  That's why patch [1/3] modifies
-> __device_link_del() to drop them upon device link removal (which also
-> needs to be done for stateless device links and that's why I'm regarding
-> this patch as a fix).
->
-> Finally, to avoid pointless overhead related to suspending and resuming
-> the target device for multiple times in a row in __device_release_driver(),
-> it is better to resume it upfront before checking its links to consumers,
-> which is done by patch [3/3].
->
-> While this series touches the driver core, it really is mostly related to
-> runtime PM, so I can apply it if that's OK.
+Dual license please. With that,
 
-Any concerns regarding this series?
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-If not, I'd like to queue it up for -rc3, because the current behavior
-in there is quite confusing (or worse).
-
-Cheers!
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/i2c/ovti,ov8865.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: OmniVision OV8865 Image Sensor Device Tree Bindings
+> +
+> +maintainers:
+> +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: ovti,ov8865
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: EXTCLK Clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: extclk
+> +
+> +  dvdd-supply:
+> +    description: Digital Domain Power Supply
+> +
+> +  avdd-supply:
+> +    description: Analog Domain Power Supply (internal AVDD is used if missing)
+> +
+> +  dovdd-supply:
+> +    description: I/O Domain Power Supply
+> +
+> +  powerdown-gpios:
+> +    maxItems: 1
+> +    description: Power Down Pin GPIO Control (active low)
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +    description: Reset Pin GPIO Control (active low)
+> +
+> +  port:
+> +    type: object
+> +    description: Input port, connect to a MIPI CSI-2 receiver
+> +
+> +    properties:
+> +      endpoint:
+> +        type: object
+> +
+> +        properties:
+> +          remote-endpoint: true
+> +
+> +          bus-type:
+> +            const: 4
+> +
+> +          clock-lanes:
+> +            maxItems: 1
+> +
+> +          data-lanes:
+> +            minItems: 1
+> +            maxItems: 4
+> +
+> +        required:
+> +          - bus-type
+> +          - data-lanes
+> +          - remote-endpoint
+> +
+> +        additionalProperties: false
+> +
+> +    required:
+> +      - endpoint
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - dvdd-supply
+> +  - dovdd-supply
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/sun8i-a83t-ccu.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    i2c2 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        ov8865: camera@36 {
+> +            compatible = "ovti,ov8865";
+> +            reg = <0x36>;
+> +
+> +            pinctrl-names = "default";
+> +            pinctrl-0 = <&csi_mclk_pin>;
+> +
+> +            clocks = <&ccu CLK_CSI_MCLK>;
+> +            clock-names = "extclk";
+> +
+> +            avdd-supply = <&reg_ov8865_avdd>;
+> +            dovdd-supply = <&reg_ov8865_dovdd>;
+> +            dvdd-supply = <&reg_ov8865_dvdd>;
+> +
+> +            powerdown-gpios = <&pio 4 17 GPIO_ACTIVE_LOW>; /* PE17 */
+> +            reset-gpios = <&pio 4 16 GPIO_ACTIVE_LOW>; /* PE16 */
+> +
+> +            port {
+> +                ov8865_out_mipi_csi2: endpoint {
+> +                    bus-type = <4>; /* MIPI CSI-2 D-PHY */
+> +                    clock-lanes = <0>;
+> +                    data-lanes = <1 2 3 4>;
+> +
+> +                    remote-endpoint = <&mipi_csi2_in_ov8865>;
+> +                };
+> +            };
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.28.0
+> 
