@@ -2,243 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C095429F96A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 01:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7BB229F972
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 01:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgJ3AFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 20:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725775AbgJ3AFd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 20:05:33 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A485C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 17:05:33 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id e7so3708533pfn.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 17:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eLpbt9/2/VjIZLqzcsErAP0i+T3IlGBIp1RUoX8H4HA=;
-        b=qCP9pwgdQxzhiSETv8BvpHiuOJVzgJGW1mB4RTQAkBVocrtjuX5M3/Qa/zOUXGS3b8
-         cCJCe7GuPpkal2BSLaHObquYjMKyNOtRWTPVeQ2FqV1hPJoddJUJC0FIc3ipi4oMh3i2
-         Tcoi5EiLDNVLdNiOhDnXHVeE8cxSW4OAsFou0ZPoYbfMCmSRzT7od8wKqdvVydlrNLA4
-         UGdCgFLy+/DV0PIk6e1r1cjnEYbK7GibwXTS/AiKY0oLMnNcsYn0Xfy6xhaqorqnpQSS
-         7CICAKEEluSuazc1BSPdtUdFOSd5Vj/3aplo/c92HsXUYEyMlIsIP/GpmnbWlv6XbBmf
-         nc0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eLpbt9/2/VjIZLqzcsErAP0i+T3IlGBIp1RUoX8H4HA=;
-        b=PTzSDnFrsBRGBlkWnYmNYNYFlQ5VsLlind2XjOe+SbupttVQ899zqM5YbBbBBbYLXX
-         wVk9XX6MT4FoTTcwaNmWgNgQpdC0gnw6IEeq2cUCRKkoeNqdnfeK989XRqh6bKcTgWYQ
-         PGtC053NBPHdt28Ci/sQo8PLqwmasa7rAOX6meAiztl3UpEUMKEsoHILP9xTPgg/hQn+
-         s1H6XVkKK0SiIbGIQN12UgLsMVwGU658PXo3SJWxo/kJfzlgoN9jjgloHBi17Hdtf+Gf
-         TU7/e+HJXQ3osOb4hQkWw3nIWZnIUD3GlD2JOQCGpLK0LT+XpkndH/mv8RDvj7ViHYLn
-         qCCg==
-X-Gm-Message-State: AOAM531nUKQKlMic6xvEWzGA7pqSunXzSMW7C+pVV9MG7hzX0jMSZK7h
-        vsVyxIeqx9qguVmo/4B9wFY=
-X-Google-Smtp-Source: ABdhPJxq7l3s5stXJ+BOnCECIuoOwFXRk299b5QqZRtQnKJbAmFuJ+YZEEr6kAkLsrNrxr4bEEWR6Q==
-X-Received: by 2002:a17:90a:5b02:: with SMTP id o2mr814618pji.221.1604016332492;
-        Thu, 29 Oct 2020 17:05:32 -0700 (PDT)
-Received: from raspberrypi (c-73-71-109-8.hsd1.ca.comcast.net. [73.71.109.8])
-        by smtp.gmail.com with ESMTPSA id o13sm991536pjq.19.2020.10.29.17.05.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 17:05:31 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 17:05:29 -0700
-From:   Allen Martin <armartin@gmail.com>
-To:     Matthias Reichl <hias@horus.com>, phil@raspberrypi.com,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: bcm2835: Add enable/disable clock functions
-Message-ID: <20201030000528.GA23043@raspberrypi>
-References: <20201010192617.12569-1-armartin@gmail.com>
- <CABfSH=oUfY=+eDDwccxMu724YAGOAf2kskZxvibxwOhYrd0_jQ@mail.gmail.com>
- <20201028093912.GA25254@lenny.lan>
+        id S1726009AbgJ3AHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 20:07:20 -0400
+Received: from ozlabs.org ([203.11.71.1]:36261 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbgJ3AHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 20:07:20 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CMjKw75S7z9sSG;
+        Fri, 30 Oct 2020 11:07:16 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604016438;
+        bh=sGf50em3yT6dIG2fe8tv0b6NAMvmRRDR9Yq2uV+/U9s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BQjsk+aDpZQSE0lXvaOXM3EO8+m5USYvhpvEMlG+4NKbzqk9UkWqIvW2rp3ntE1Jk
+         xu13yksdOa8O1YYXKmruzljAs1RH2uM2PYcXDFIXHkSOU5U6zihp6gPGhxbzvj/Jjx
+         HdOEyRwYwrrrrhXoOFWkOtCeZAXsVhUuKoSZEDK4uyUGhT7lOHWlyB7Bk7AIbgpicp
+         LPWTg9zRTl7mFWASm7lK+Ejj1tH7+LKKNM9uJJzhjzl9C5kf/2uQoMaUCE7uon/vyF
+         e27FwRo7DTDlLKGtd3o1Ls3P7Zmp2DXnBXBSV99FaaAp0SyuU6b7FNlizSvEjimCmE
+         ppS3W4SVXSsCg==
+Date:   Fri, 30 Oct 2020 11:07:12 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20201030110712.040bc95f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201028093912.GA25254@lenny.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/.geHD3LELS7R9Z6MK345B/0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:39:12AM +0100, Matthias Reichl wrote:
->On Wed, Oct 28, 2020 at 01:18:33AM -0700, Allen Martin wrote:
->> Hi, just checking if you had a chance to review this patch.
->>
->> On Sat, Oct 10, 2020 at 12:26 PM Allen Martin <armartin@gmail.com> wrote:
->>
->> > Add functions to control enable/disable of BCLK output of bcm2835 I2S
->> > controller so that BCLK output only starts when dma starts.  This
->> > resolves issues of audio pop with DACs such as max98357 on rpi.  The
->> > LRCLK output of bcm2835 only starts when the frame size has been
->> > configured and there is data in the FIFO.  The max98357 dac makes a
->> > loud popping sound when BCLK is toggling but LRCLK is not.
->
->I'm afraid that changing the clocking in the way you proposed has a high
->potential of breaking existing setups which need bclk to be present
->after prepare(). And it complicates the already rather convoluted
->clock setup even more. So I don't think this patch should be applied.
->
->Since you mentioned max98357: have you properly connected and configured
->the sd-mode GPIO? This chip has very strict timing requirements and is
->known to "pop" without sd-mode wired up - see the datasheet and devicetree
->binding docs.
+--Sig_/.geHD3LELS7R9Z6MK345B/0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The board I'm testing on is this: https://www.adafruit.com/product/3346
-which does not have SD_MODE wired to GPIO (schematic is here:
-https://www.adafruit.com/product/3346).  I agree this should ideally
-be wired to GPIO as described in the max98357 datasheet to enable the
-click and pop suppression feature, however there are still problems
-with the clock initialization this patch addresses:
+Hi all,
 
-1) In bcm2835_i2s_hw_params() BCLK is enabled before the FIFO is
-cleared causing residual data in the FIFO to be transmitted when BCLK
-is initialized.
+After merging the drm-misc tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-2) Also in bcm2835_i2s_hw_params() BCLK is enabled before the frame
-size is configured in MODE_A or DMA is initialized.  This causes the
-i2s controller to transmit a data frame many thousands of bits long,
-violating the 0.5*BCLK < t < 0.5*LRCLK requirement of the max98357
-datasheet.
+drivers/gpu/drm/nouveau/nouveau_ttm.c: In function 'nouveau_ttm_init':
+drivers/gpu/drm/nouveau/nouveau_ttm.c:320:19: error: implicit declaration o=
+f function 'swiotlb_nr_tbl' [-Werror=3Dimplicit-function-declaration]
+  320 |  need_swiotlb =3D !!swiotlb_nr_tbl();
+      |                   ^~~~~~~~~~~~~~
 
-I think the driver should separate clock initialization from output
-enable and only start trasmitting once everything is initialized and
-there is data to transmit.
+Caused by commit
 
-Do you have more details about what setups require BCLK output after
-prepare()?  I have access to a PCM5101A DAC, but I have not tested it
-yet.
+  ee5d2a8e549e ("drm/ttm: wire up the new pool as default one v2")
 
--Allen
+I have used the drm-misc tree from next-20201029 for today.
 
+--=20
+Cheers,
+Stephen Rothwell
 
->> >
->> > Signed-off-by: Allen Martin <armartin@gmail.com>
->> > ---
->> >  sound/soc/bcm/bcm2835-i2s.c | 35 +++++++++++++++++++++++++++++++++++
->> >  1 file changed, 35 insertions(+)
->> >
->> > diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
->> > index e6a12e271b07..5c8649864c0d 100644
->> > --- a/sound/soc/bcm/bcm2835-i2s.c
->> > +++ b/sound/soc/bcm/bcm2835-i2s.c
->> > @@ -122,9 +122,27 @@ struct bcm2835_i2s_dev {
->> >         struct regmap                           *i2s_regmap;
->> >         struct clk                              *clk;
->> >         bool                                    clk_prepared;
->> > +       bool                                    clk_enabled;
->> >         int                                     clk_rate;
->> >  };
->> >
->> > +static void bcm2835_i2s_enable_clock(struct bcm2835_i2s_dev *dev)
->> > +{
->> > +       if (dev->clk_enabled)
->> > +               return;
->> > +
->> > +       regmap_update_bits(dev->i2s_regmap, BCM2835_I2S_MODE_A_REG,
->> > BCM2835_I2S_CLKDIS, 0);
->> > +       dev->clk_enabled = true;
->> > +}
->> > +
->> > +static void bcm2835_i2s_disable_clock(struct bcm2835_i2s_dev *dev)
->> > +{
->> > +       if (dev->clk_enabled)
->> > +               regmap_update_bits(dev->i2s_regmap,
->> > BCM2835_I2S_MODE_A_REG, BCM2835_I2S_CLKDIS, BCM2835_I2S_CLKDIS);
->> > +
->> > +       dev->clk_enabled = false;
->> > +}
->> > +
->> >  static void bcm2835_i2s_start_clock(struct bcm2835_i2s_dev *dev)
->> >  {
->> >         unsigned int master = dev->fmt & SND_SOC_DAIFMT_MASTER_MASK;
->> > @@ -145,6 +163,7 @@ static void bcm2835_i2s_start_clock(struct
->> > bcm2835_i2s_dev *dev)
->> >
->> >  static void bcm2835_i2s_stop_clock(struct bcm2835_i2s_dev *dev)
->> >  {
->> > +       bcm2835_i2s_disable_clock(dev);
->> >         if (dev->clk_prepared)
->> >                 clk_disable_unprepare(dev->clk);
->> >         dev->clk_prepared = false;
->> > @@ -158,6 +177,7 @@ static void bcm2835_i2s_clear_fifos(struct
->> > bcm2835_i2s_dev *dev,
->> >         uint32_t csreg;
->> >         uint32_t i2s_active_state;
->> >         bool clk_was_prepared;
->> > +       bool clk_was_enabled;
->> >         uint32_t off;
->> >         uint32_t clr;
->> >
->> > @@ -176,6 +196,11 @@ static void bcm2835_i2s_clear_fifos(struct
->> > bcm2835_i2s_dev *dev,
->> >         if (!clk_was_prepared)
->> >                 bcm2835_i2s_start_clock(dev);
->> >
->> > +       /* Enable clock if not enabled */
->> > +       clk_was_enabled = dev->clk_enabled;
->> > +       if (!clk_was_enabled)
->> > +               bcm2835_i2s_enable_clock(dev);
->> > +
->> >         /* Stop I2S module */
->> >         regmap_update_bits(dev->i2s_regmap, BCM2835_I2S_CS_A_REG, off, 0);
->> >
->> > @@ -207,6 +232,10 @@ static void bcm2835_i2s_clear_fifos(struct
->> > bcm2835_i2s_dev *dev,
->> >         if (!timeout)
->> >                 dev_err(dev->dev, "I2S SYNC error!\n");
->> >
->> > +       /* Disable clock if it was not enabled before */
->> > +       if (!clk_was_enabled)
->> > +               bcm2835_i2s_disable_clock(dev);
->> > +
->> >         /* Stop clock if it was not running before */
->> >         if (!clk_was_prepared)
->> >                 bcm2835_i2s_stop_clock(dev);
->> > @@ -414,6 +443,8 @@ static int bcm2835_i2s_hw_params(struct
->> > snd_pcm_substream *substream,
->> >         /* Clock should only be set up here if CPU is clock master */
->> >         if (bit_clock_master &&
->> >             (!dev->clk_prepared || dev->clk_rate != bclk_rate)) {
->> > +               if (dev->clk_enabled)
->> > +                       bcm2835_i2s_disable_clock(dev);
->> >                 if (dev->clk_prepared)
->> >                         bcm2835_i2s_stop_clock(dev);
->> >
->> > @@ -534,6 +565,8 @@ static int bcm2835_i2s_hw_params(struct
->> > snd_pcm_substream *substream,
->> >                 mode |= BCM2835_I2S_FTXP | BCM2835_I2S_FRXP;
->> >         }
->> >
->> > +       if (!dev->clk_enabled)
->> > +               mode |= BCM2835_I2S_CLKDIS;
->> >         mode |= BCM2835_I2S_FLEN(frame_length - 1);
->> >         mode |= BCM2835_I2S_FSLEN(framesync_length);
->> >
->> > @@ -668,6 +701,7 @@ static int bcm2835_i2s_trigger(struct
->> > snd_pcm_substream *substream, int cmd,
->> >         case SNDRV_PCM_TRIGGER_RESUME:
->> >         case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
->> >                 bcm2835_i2s_start_clock(dev);
->> > +               bcm2835_i2s_enable_clock(dev);
->> >
->> >                 if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
->> >                         mask = BCM2835_I2S_RXON;
->> > @@ -839,6 +873,7 @@ static int bcm2835_i2s_probe(struct platform_device
->> > *pdev)
->> >
->> >         /* get the clock */
->> >         dev->clk_prepared = false;
->> > +       dev->clk_enabled = false;
->> >         dev->clk = devm_clk_get(&pdev->dev, NULL);
->> >         if (IS_ERR(dev->clk)) {
->> >                 dev_err(&pdev->dev, "could not get clk: %ld\n",
->> > --
->> > 2.20.1
->> >
->> >
+--Sig_/.geHD3LELS7R9Z6MK345B/0
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+bWTAACgkQAVBC80lX
+0GzA6Af/SHTmV9HS7xi53yCbWQA1iMSH1yPzT7VYgT7UmPmZpVfnqd9sTuve84ta
+mxJvPXDbnIOB3/KDI0HxxLv61VCsBmyU+ORqeDZmvN5kGzs6RakjWpRjscor0TSJ
+Trl8xYFHKcPX9e1t9Ee9ySQ8QROJ83Y7g9XLaKwnzWWhU3bbTkOHn99xXSAwBx2U
+LnYAg54lhLkaMUvgb6tYYJWmIHl/K6j5S78IZPJjqEn4mbBB4bMPomKR8XMFoiG6
+tqUWLlo8G8UvewvH7ZEhTKWkjGfXFFkzu4kmxJZBWZMQPtsJMcCeKv8254TQPWqz
+ZZrQmKSKiKLngw7NLIM/DpN7jBD6QA==
+=qblq
+-----END PGP SIGNATURE-----
+
+--Sig_/.geHD3LELS7R9Z6MK345B/0--
