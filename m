@@ -2,152 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD6C2A10D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B23652A10BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725941AbgJ3WaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 18:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3WaE (ORCPT
+        id S1725833AbgJ3WTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 18:19:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47554 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725791AbgJ3WTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 18:30:04 -0400
-Received: from relay.felk.cvut.cz (relay.felk.cvut.cz [IPv6:2001:718:2:1611:0:1:0:70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5DD87C0613D5;
-        Fri, 30 Oct 2020 15:30:04 -0700 (PDT)
-Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
-        by relay.felk.cvut.cz (8.15.2/8.15.2) with ESMTP id 09UMSqks034526;
-        Fri, 30 Oct 2020 23:28:52 +0100 (CET)
-        (envelope-from pisa@cmp.felk.cvut.cz)
-Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
-        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 09UMSpv8019391;
-        Fri, 30 Oct 2020 23:28:51 +0100
-Received: (from pisa@localhost)
-        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 09UMSp2I019390;
-        Fri, 30 Oct 2020 23:28:51 +0100
-From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
-To:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
-        "Marc Kleine-Budde" <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        David Miller <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>, mark.rutland@arm.com,
-        Carsten Emde <c.emde@osadl.org>, armbru@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marin Jerabek <martin.jerabek01@gmail.com>,
-        Ondrej Ille <ondrej.ille@gmail.com>,
-        Jiri Novak <jnovak@fel.cvut.cz>,
-        Jaroslav Beran <jara.beran@gmail.com>,
-        Petr Porazil <porazil@pikron.com>, Pavel Machek <pavel@ucw.cz>,
-        Drew Fustini <pdp7pdp7@gmail.com>,
-        Pavel Pisa <pisa@cmp.felk.cvut.cz>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v7 2/6] dt-bindings: net: can: binding for CTU CAN FD open-source IP core.
-Date:   Fri, 30 Oct 2020 23:19:24 +0100
-Message-Id: <62f0b60ca8ffcdb123b59789575927e80fde5750.1604095004.git.pisa@cmp.felk.cvut.cz>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1604095004.git.pisa@cmp.felk.cvut.cz>
-References: <cover.1604095004.git.pisa@cmp.felk.cvut.cz>
+        Fri, 30 Oct 2020 18:19:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604096384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ezf5O993hVcI/W1aSY0g4scUTmj4FCUzbeplrh9LUEI=;
+        b=R3J2JRAPa4pBk8Kpu/OmugyktA78WZmcui/u7WgRvNHqcJaMefFmG8clLMx99XUaBwSrW4
+        hRNxyRke8J4V4N5iSUtg7fVEIRuOszLzB1Nu9DWQGDGL69AdtAP3H6WNa9NVtId4xPAAQH
+        f4u5E+RKVGxYVGoubVIdQOR6IiLF2Eg=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-570-An3JzYWSO_-L8sNupig0mA-1; Fri, 30 Oct 2020 18:19:42 -0400
+X-MC-Unique: An3JzYWSO_-L8sNupig0mA-1
+Received: by mail-qv1-f70.google.com with SMTP id d16so4663427qvy.16
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 15:19:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Ezf5O993hVcI/W1aSY0g4scUTmj4FCUzbeplrh9LUEI=;
+        b=m+lF2TzH6Z55FvFPMI2bbQSDvdNB9jTZGHCJEWFdutQgWEOWvKbrGcACjUo+lYVglK
+         +Sdk2daM+wgkrBR+Ww+46ACOehwZBXMnLK9tZ+zjsHiF261hFheTUFHqERhNnKwvXa+f
+         am7ugZwkkFyLYz8/xChqnbYbYr2B6lcqE6J8cC/MUtvIycyHKwM15bETAXLcKTAm8b/y
+         u1Xk+mYEtsT1pXz0SVUPte9ZMKWcn7B0yifLzlSZsdbKFwgue9jarDC70Y1VNL/atp9P
+         pNWqxjRlREavPpNAWrx1l0uMGMZlnVfPehm8oy5xAJ4gHo3Te+pmALR0bbFcYd6MK03i
+         2RcQ==
+X-Gm-Message-State: AOAM5331D4wgQRaZRda7M+z4M7Q8Ogx/IDPvfdD0pHOvXqf4caRnVwod
+        3IQwLdnANXW+pcz/Qh5PssfP5QfeEKs3OtmEKf1AG0+1kMitzDnwkfvok6PvJNZy4wmOct6ZfJH
+        HkrdvF9eCAKs4xuDB0FERfRSZ
+X-Received: by 2002:ac8:5ac1:: with SMTP id d1mr3978261qtd.82.1604096381287;
+        Fri, 30 Oct 2020 15:19:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzcRixONHe7hXu+lOaEciz3f9ib3g1q86eQDNF3Jz4pi/gbY+8HfD6UGdEWBhsG2aTcG2Y79Q==
+X-Received: by 2002:ac8:5ac1:: with SMTP id d1mr3978243qtd.82.1604096381064;
+        Fri, 30 Oct 2020 15:19:41 -0700 (PDT)
+Received: from [192.168.1.16] (198-84-214-74.cpe.teksavvy.com. [198.84.214.74])
+        by smtp.gmail.com with ESMTPSA id g9sm3473930qti.86.2020.10.30.15.19.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 15:19:39 -0700 (PDT)
+Subject: Re: [Y2038][time namespaces] Question regarding CLOCK_REALTIME
+ support plans in Linux time namespaces
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Zack Weinberg <zackw@panix.com>, Cyril Hrubis <chrubis@suse.cz>
+Cc:     Dmitry Safonov <dima@arista.com>, Andrei Vagin <avagin@gmail.com>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201030110229.43f0773b@jawa> <20201030135816.GA1790@yuki.lan>
+ <CAKCAbMgemuaG61seKMvhjOHdPCEQJRQBiQgzcf_eO=xm2t+KBw@mail.gmail.com>
+ <87sg9vn40t.fsf@nanos.tec.linutronix.de>
+ <72bbb207-b041-7710-98ad-b08579fe17e4@redhat.com>
+ <87h7qbmqc3.fsf@nanos.tec.linutronix.de>
+From:   Carlos O'Donell <carlos@redhat.com>
+Organization: Red Hat
+Message-ID: <7bb5837f-1ff6-2b2c-089e-e2441d31ddb2@redhat.com>
+Date:   Fri, 30 Oct 2020 18:19:38 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-FELK-MailScanner-Information: 
-X-MailScanner-ID: 09UMSqks034526
-X-FELK-MailScanner: Found to be clean
-X-FELK-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
-        score=-0.222, required 6, BAYES_00 -0.50, KHOP_HELO_FCRDNS 0.28,
-        SPF_HELO_NONE 0.00, SPF_NONE 0.00)
-X-FELK-MailScanner-From: pisa@cmp.felk.cvut.cz
-X-FELK-MailScanner-Watermark: 1604701735.12352@1Ls8FBzraJxI1XOBRJD6UQ
-X-Spam-Status: No
+In-Reply-To: <87h7qbmqc3.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device-tree bindings for open-source/open-hardware CAN FD IP core
-designed at the Czech Technical University in Prague.
+On 10/30/20 4:06 PM, Thomas Gleixner wrote:
+> On Fri, Oct 30 2020 at 12:58, Carlos O'Donell wrote:
+>> I expect that more requests for further time isolation will happen
+>> given the utility of this in containers.
+> 
+> There was a lengthy discussion about this and the only "usecase" which
+> was brought up was having different NTP servers in name spaces, i.e. the
+> leap second ones and the smearing ones.
 
-CTU CAN FD IP core and other CTU CAN bus related projects
-listing and documentation page
+In the non-"request for ponies" category:
 
-   http://canbus.pages.fel.cvut.cz/
+* Running legacy 32-bit applications in containers with CLOCK_REALTIME set
+  to some value below y2038.
 
-Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Acked-by: Pavel Machek <pavel@ucw.cz>
----
- .../bindings/net/can/ctu,ctucanfd.yaml        | 63 +++++++++++++++++++
- 1 file changed, 63 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
+* Testing kernel and userspace clock handling code without needing to
+  run on bare-metal, VM, or other.
+ 
+> Now imagine 1000 containers each running their own NTP. Guess what the
+> host does in each timer interrupt? Chasing 1000 containers and update
+> their notion of CLOCK_REALTIME. In the remaining 5% CPU time the 1000
+> containers can do their computations.
 
-diff --git a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-new file mode 100644
-index 000000000000..5113bb419ec1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-@@ -0,0 +1,63 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/ctu,ctucanfd.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: CTU CAN FD Open-source IP Core Device Tree Bindings
-+
-+description: |
-+  Open-source CAN FD IP core developed at the Czech Technical University in Prague
-+
-+  The core sources and documentation on project page
-+    [1] sources : https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core
-+    [2] datasheet : https://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/Progdokum.pdf
-+
-+  Integration in Xilinx Zynq SoC based system together with
-+  OpenCores SJA1000 compatible controllers
-+    [3] project : https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top
-+  Martin Jerabek dimploma thesis with integration and testing
-+  framework description
-+    [4] PDF : https://dspace.cvut.cz/bitstream/handle/10467/80366/F3-DP-2019-Jerabek-Martin-Jerabek-thesis-2019-canfd.pdf
-+
-+maintainers:
-+  - Pavel Pisa <pisa@cmp.felk.cvut.cz>
-+  - Ondrej Ille <ondrej.ille@gmail.com>
-+  - Martin Jerabek <martin.jerabek01@gmail.com>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - const: ctu,ctucanfd-2
-+          - const: ctu,ctucanfd
-+      - const: ctu,ctucanfd
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    description: |
-+      phandle of reference clock (100 MHz is appropriate
-+      for FPGA implementation on Zynq-7000 system).
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    ctu_can_fd_0: can@43c30000 {
-+      compatible = "ctu,ctucanfd";
-+      interrupts = <0 30 4>;
-+      clocks = <&clkc 15>;
-+      reg = <0x43c30000 0x10000>;
-+    };
+How is this different than balancing any other resource that you give
+to a container/vm on a host?
+
+Can you enable 1000 containers running smbd/nmbd and expect to get
+great IO performance?
+ 
+> But even if you restrict it to a trivial offset without NTP
+> capabilities, what's the semantics of that offset when the host time is
+> set?
+
+Now you're talking about an implementation. This thread is simply
+"Would we implement CLOCK_REALTIME?" Is the answer "Maybe, if we solve
+all these other problems?"
+
+>> If we have to use qemu today then that's where we're at, but again
+>> I expect our use case is representative of more than just glibc.
+> 
+> For testing purposes it might be. For real world use cases not so
+> much. People tend to rely on the coordinated nature of CLOCK_TAI and
+> CLOCK_REALTIME.
+
+Except we have two real world use cases, at the top of this email, 
+that could extend to a lot of software. We know legacy 32-bit 
+applications exist that will break with CLOCK_REALTIME past
+y2038. Software exists that manipulates time and needs testing
+with specific time values e.g. month crossings, day crossings,
+leap year crossings, etc.
+ 
+>> Does checkpointing work robustly when userspace APIS use 
+>> CLOCK_REALTIME (directly or indirectly) in the container?
+> 
+> AFAICT, yes. That was the conclusion over the lenghty discussion about
+> time name spaces and their requirements.
+
+If this is the case then have we established behaviours that
+happen when such processes are migrated to other systems with
+different CLOCK_REALTIME clocks? Would these behaviours serve
+as the basis of how CLOCK_REALTIME in a namespace would behave?
+
+That is to say that migrating a container to a system with a
+different CLOCK_REALTIME should behave similarly to what happens
+when CLOCK_REALTIME is changed locally and you have a container
+with a unique CLOCK_REALTIME?
+
+> Here is the Linux plumber session related to that:
+>      https://www.youtube.com/watch?v=sjRUiqJVzOA
+
+Thanks. I watched the session. Informative :-)
+
 -- 
-2.20.1
+Cheers,
+Carlos.
 
