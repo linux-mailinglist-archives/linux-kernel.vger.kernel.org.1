@@ -2,126 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6612A0943
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:09:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74E72A094E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 16:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726953AbgJ3PJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 11:09:11 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:46933 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726785AbgJ3PJK (ORCPT
+        id S1726814AbgJ3PK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 11:10:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbgJ3PK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:09:10 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id YW1YkpKAhWvjMYW1ckHxWj; Fri, 30 Oct 2020 16:09:08 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1604070548; bh=p/He+fz0zQLb8/9KCljEG98pEvD5jnUi/OkVZ8SfxDo=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=v031qkcc3Gewu84bfGaSqCKYiXjTDI3z6hJE+ML02pAqTb3cn/sRGUcqz18n3sLAS
-         vMN3u/IRMSWvZUyrnCSZ1v4VgtF4aW5kox+4EVJD2GqZQFJ2/+cwlL460YzSRtI/we
-         XPCT6nSlqD94Lpb66WLx1j9H/LEdVr4MYPImz5QQa2wVsh6gzrLX1rAvVZ9yRAJaLZ
-         B4iGYz1JoyNbtLpeCGNDtpGZkpYW11ErdiNwXzPiAG+qQWpQLld1utf4SQ5Be6HQGQ
-         /WVGeGHS8ejt6ORZdHEEwqpF7RZC/75zqLqFSGEdYGrb+8gO0s08G/h1kLUnqjto7M
-         MJiZM9GQJv8Nw==
-Subject: Re: [PATCH] media: v4l2-mem2mem: always call poll_wait() on queues
-To:     Alexandre Courbot <gnurou@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201022122421.133976-1-gnurou@gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <c6454292-935b-f14a-e743-838ccabc6590@xs4all.nl>
-Date:   Fri, 30 Oct 2020 16:09:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 30 Oct 2020 11:10:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C0AC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 08:10:28 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604070626;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9wGjxMvPHeaomJM6gSl6Q4fS9j3pKCTwNKb3PNq3yZo=;
+        b=LQFVw4VUE7tdqEBCFqu31Pz7As2+jhO0blrnSzV5nUp0hVM16cQGyQmsZSzkSCmIyZ3qFj
+        Po0pj2R3tixui1jUox7SIBiwSdzC4mxePcZwOHKRIDIb0bl4/ZrzR2HMxYZD0P31ZRiGFX
+        dR3+uInKvkT8vGEwzMrf0Judr7/X5iYcW512fa8F0e0ZArODZKUEaVsuWuhwIsMdWtgPFb
+        lRFIu1a5KB+zEKNQO7IZUU5IgvtXQTUT4O/6lrHR7nC5cE5JuRPYcxxKMwXJl4B/dU4293
+        d0rZ8ik/Hi0MJEQxrKaww9raLmyJ4VjK4Y2bxUl3Ye9O9qeKW2iHpGoiuQ68Xw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604070626;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9wGjxMvPHeaomJM6gSl6Q4fS9j3pKCTwNKb3PNq3yZo=;
+        b=b4KDRU00/mUt7SdS5Y+Dcay+FeC0fPmUHW8pIiJbNaLNqIXlR0lFb5AQsA2TzNmt6u+QdB
+        6g/5FLd2CTMbHsCw==
+To:     Zack Weinberg <zackw@panix.com>, Cyril Hrubis <chrubis@suse.cz>
+Cc:     Lukasz Majewski <lukma@denx.de>, Andrei Vagin <avagin@gmail.com>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dmitry Safonov <dima@arista.com>
+Subject: Re: [Y2038][time namespaces] Question regarding CLOCK_REALTIME support plans in Linux time namespaces
+In-Reply-To: <CAKCAbMgemuaG61seKMvhjOHdPCEQJRQBiQgzcf_eO=xm2t+KBw@mail.gmail.com>
+References: <20201030110229.43f0773b@jawa> <20201030135816.GA1790@yuki.lan> <CAKCAbMgemuaG61seKMvhjOHdPCEQJRQBiQgzcf_eO=xm2t+KBw@mail.gmail.com>
+Date:   Fri, 30 Oct 2020 16:10:26 +0100
+Message-ID: <87sg9vn40t.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201022122421.133976-1-gnurou@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfGFsfFaY0/0VfEBGvVNLj2ISLjx4frqhe7qquKzPhoieP0/FeCKNKGs6qt+DwFmmE5n5aqk2cBqsaf+kr2MC/i/6ukEM+YNS48k+ZedX2qhp+fmtS4ZK
- Twbl+znnBFFjSq0uuYwNMqL8XLfgoPYYFS/5LALw94Rg0bU+DAu18uMopshGvvwAz5pzrZl7ffRXTKPSHH6+8lKB62/sdoPSIuwj+6RcZ2+JxDNRrhieXA4y
- +4h2qHFpZJnG1l1cheGvm7RXucd3vLOigYQ3eDr59aGnOZlU4x2N1JPtpI675ZOQvwYJDBz7hBvRTFWSAWHTag==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/10/2020 14:24, Alexandre Courbot wrote:
-> do_poll()/do_select() seem to set the _qproc member of poll_table to
-> NULL the first time they are called on a given table, making subsequent
-> calls of poll_wait() on that table no-ops. This is a problem for mem2mem
-> which calls poll_wait() on the V4L2 queues' waitqueues only when a
-> queue-related event is requested, which may not necessarily be the case
-> during the first poll.
-> 
-> For instance, a stateful decoder is typically only interested in
-> EPOLLPRI events when it starts, and will switch to listening to both
-> EPOLLPRI and EPOLLIN after receiving the initial resolution change event
-> and configuring the CAPTURE queue. However by the time that switch
-> happens and v4l2_m2m_poll_for_data() is called for the first time,
-> poll_wait() has become a no-op and the V4L2 queues waitqueues thus
-> cannot be registered.
-> 
-> Fix this by moving the registration to v4l2_m2m_poll() and do it whether
-> or not one of the queue-related events are requested.
+On Fri, Oct 30 2020 at 10:02, Zack Weinberg wrote:
+> On Fri, Oct 30, 2020 at 9:57 AM Cyril Hrubis <chrubis@suse.cz> wrote:
+>> > According to patch description [1] and time_namespaces documentation
+>> > [2] the CLOCK_REALTIME is not supported (for now?) to avoid complexity
+>> > and overhead in the kernel.
+> ...
+>> > To be more specific - [if this were supported] it would be possible to modify time after time_t
+>> > 32 bit overflow (i.e. Y2038 bug) on the process running Y2038
+>> > regression tests on the host system (64 bit one). By using Linux time
+>> > namespaces the system time will not be affected in any way.
+>>
+>> And what's exactly wrong with moving the system time forward for a
+>> duration of the test?
+>
+> Interference with other processes on the same computer?  Some of us
+> *do* like to run the glibc test suite on computers not entirely
+> devoted to glibc CI.
 
-This looks good, but would it be possible to add a test for this to
-v4l2-compliance? (Look for POLL_MODE_EPOLL in v4l2-test-buffers.cpp)
-
-If I understand this right, calling EPOLL_CTL_ADD for EPOLLPRI, then
-calling EPOLL_CTL_ADD for EPOLLIN/OUT would trigger this? Or does there
-have to be an epoll_wait call in between?
-
-Another reason for adding this test is that I wonder if regular capture
-or output V4L2 devices don't have the same issue.
-
-It's a very subtle bug and so adding a test for this to v4l2-compliance
-would be very useful.
-
-Regards,
-
-	Hans
-
-> 
-> Signed-off-by: Alexandre Courbot <gnurou@gmail.com>
-> ---
-> I seem to be hitting all the polling corner cases recently! ^_^; This
-> time I was wondering why epoll_wait() never returned after I received
-> the first resolution change event from the vicodec stateful decoder.
-> This is why - please take a look!
-> 
->  drivers/media/v4l2-core/v4l2-mem2mem.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
-> index b221b4e438a1..65476ef2879f 100644
-> --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-> +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-> @@ -887,9 +887,6 @@ static __poll_t v4l2_m2m_poll_for_data(struct file *file,
->  	src_q = v4l2_m2m_get_src_vq(m2m_ctx);
->  	dst_q = v4l2_m2m_get_dst_vq(m2m_ctx);
->  
-> -	poll_wait(file, &src_q->done_wq, wait);
-> -	poll_wait(file, &dst_q->done_wq, wait);
-> -
->  	/*
->  	 * There has to be at least one buffer queued on each queued_list, which
->  	 * means either in driver already or waiting for driver to claim it
-> @@ -922,9 +919,14 @@ __poll_t v4l2_m2m_poll(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
->  		       struct poll_table_struct *wait)
->  {
->  	struct video_device *vfd = video_devdata(file);
-> +	struct vb2_queue *src_q = v4l2_m2m_get_src_vq(m2m_ctx);
-> +	struct vb2_queue *dst_q = v4l2_m2m_get_dst_vq(m2m_ctx);
->  	__poll_t req_events = poll_requested_events(wait);
->  	__poll_t rc = 0;
->  
-> +	poll_wait(file, &src_q->done_wq, wait);
-> +	poll_wait(file, &dst_q->done_wq, wait);
-> +
->  	if (req_events & (EPOLLOUT | EPOLLWRNORM | EPOLLIN | EPOLLRDNORM))
->  		rc = v4l2_m2m_poll_for_data(file, m2m_ctx, wait);
->  
-> 
-
+That's what virtual machines are for.
