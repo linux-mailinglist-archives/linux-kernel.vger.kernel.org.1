@@ -2,291 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EADD2A0769
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A7D2A077D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 15:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgJ3OHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 10:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbgJ3OHF (ORCPT
+        id S1726662AbgJ3OKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 10:10:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40199 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726101AbgJ3OKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:07:05 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94D9C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:07:05 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id j18so5403453pfa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:07:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yBqO9G7V3vPOOfA9ymAqZAROQYhKNVf/l8jgGHJborE=;
-        b=PIR+UuD6KFQls7giuUI8Afy1DlrBj8v+prQYL1xkSz7JESNlAXMcVt+N99CwbU5MWc
-         Z4CKmI6xVCNS+yl8qPIRNaJgTVJk5bufLlZXz6x6JLjor63fxzfiDFJG/M996j2P/2kF
-         sgRdo0oEO1eJ+tzgod46GXKRzrhVs6Q8JFA6l9NDr/nFaG+RfvzHKLgGrYhTsGzwGXY5
-         EZRW2Tlh1nI07YPDZV2BC7WRy6bhdLJj+JFhbkhhYLb9w8cslLa5XlMjkGCbsU+FQiKt
-         PJeF/CGz3IrixC4f09gZP1sJHfL8kMpGQqdFPbvGVgvW5aLv9HhVIFBAIRn6v0PypCZE
-         G/iQ==
+        Fri, 30 Oct 2020 10:10:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604067029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oE7zJnELOj3JSr2Ymb2+NJIOFKcpsBSnN86Rkhl8axs=;
+        b=OorXOklm+xoyx3z3G6aTPyW6vywT119EPPvga/WPSnOeEqFi/5qMYTBguD0AXXUNoUOkMf
+        0QVlGsJlTRxk8eE+uq6Y6rRa+JHH0w7Qx9Zs4wirUFNttgRm1pB90IkuTn+M1vOjQBuMvE
+        HnKSseRyyU+zDbDgXBj+wwGN5LP7u3g=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-Vc2t_TQrPPCRy2sQWCuJow-1; Fri, 30 Oct 2020 10:10:27 -0400
+X-MC-Unique: Vc2t_TQrPPCRy2sQWCuJow-1
+Received: by mail-pl1-f198.google.com with SMTP id bb2so4593428plb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 07:10:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yBqO9G7V3vPOOfA9ymAqZAROQYhKNVf/l8jgGHJborE=;
-        b=lfjdU/rdfKW4ZlVOgKeTElDwgBc+ygwsHoI8EBvtVQJAi9zWI+UrdJxsO+enc7Q2IE
-         iw4/ZO9FhiRlyJg8EFPD3UvUz7dG55YHmEIv+VArZamROoyBipr0poODXjIvjkbYfaak
-         n9r5MwfWf7SsT73S3iDssJrO3m14PVKfPvqUV5aJpMZ7e4cGakKUn2Sedazx6NWoQwCy
-         ZXKcaoyRb7XoF2cZziqVqOfLXAdhWR3IY/5RnfVzQR1z3l4NW7Skn1NrKtA3S4L82uQb
-         q3aMj3Mq+y8xPOkAQ2BjLhUgYsU016UwBwoXb+4TswbC3DCuATaf7ANmhuQNEpqieSOw
-         jm8w==
-X-Gm-Message-State: AOAM532NEeuvqV62Q/xXU7lYdtJPonZi6ar2Yp5rt3qbww63+W3mYiJ3
-        e5yqFidI71N6i4FlVvvpvzE6
-X-Google-Smtp-Source: ABdhPJwhsO+ddq5CfClGURljpys5Ze5jAphielpoLf1Jt8SqWwKNtv92a8+57x+kNa2bjaikiPbPyw==
-X-Received: by 2002:a62:3383:0:b029:160:bcd:370c with SMTP id z125-20020a6233830000b02901600bcd370cmr9630695pfz.56.1604066825064;
-        Fri, 30 Oct 2020 07:07:05 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:918:28fe:10d5:aaf5:e319:ec72])
-        by smtp.gmail.com with ESMTPSA id j6sm5827888pgt.77.2020.10.30.07.07.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 30 Oct 2020 07:07:04 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 19:36:56 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 10/12] bus: mhi: core: Separate system error and power
- down handling
-Message-ID: <20201030140656.GL3818@Mani-XPS-13-9360>
-References: <1604031057-32820-1-git-send-email-bbhatt@codeaurora.org>
- <1604031057-32820-11-git-send-email-bbhatt@codeaurora.org>
+        bh=oE7zJnELOj3JSr2Ymb2+NJIOFKcpsBSnN86Rkhl8axs=;
+        b=MV0ngNtA3UHDwh6dQ/yDLztcpa2zJZss+dD2PGQv6H0pg16T0DWDMF/xxonzkngRAR
+         Q+wtCBlJlnKUciZI6PrFeJqiiwhBbEQFxtN9Usk7Hfg7OIh3swH8evd5GN2qX0BuCnED
+         0a0Zn1wCzTAFIVbeNsvR4p2Cw5abm7z4uP/ut/lD5UpTkZ2EabdWLDSgY3IKGLYAgG2d
+         PIDQZjzyMP4x5zjPhjJuh9+e3Pvx3/bHrhY2/i8MCr/fI9hUXmIi8aMmgmUR+XHGmwcP
+         agF17qWirRsspXS+he/TS+mKH0Ph1G+ieWaixY9dSZxyKbmS+wXRlNa+ru2KF/a+OYXo
+         9sfA==
+X-Gm-Message-State: AOAM5322epxwVDbSdUTYfDkbUEupHbDFjlQuBnvOh3WzRCh2TN/SQVvJ
+        3TM/YJAhdXZ7WzhrFDatWtH8kN8uGW0AdHfy8FViu4owEvd6VtwRxDBb72qO7ReQUzdfSPHgusj
+        LRRJCpdurytr49VwrwBG7bq8z
+X-Received: by 2002:a17:902:6b84:b029:d5:ef85:1a79 with SMTP id p4-20020a1709026b84b02900d5ef851a79mr9345447plk.32.1604067026849;
+        Fri, 30 Oct 2020 07:10:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/z761PmX0cKUlUg1KK66JGCtUiz7/Ov5sHMUFfjPd16VSFCbQsCyxL7bzJDnjhvp8e02ulw==
+X-Received: by 2002:a17:902:6b84:b029:d5:ef85:1a79 with SMTP id p4-20020a1709026b84b02900d5ef851a79mr9345377plk.32.1604067025973;
+        Fri, 30 Oct 2020 07:10:25 -0700 (PDT)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id mz23sm3376896pjb.3.2020.10.30.07.10.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 07:10:25 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 22:10:15 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Vladimir Zapolskiy <vladimir@tuxera.com>
+Cc:     linux-erofs@lists.ozlabs.org, Gao Xiang <hsiangkao@aol.com>,
+        stable@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] erofs: fix setting up pcluster for temporary pages
+Message-ID: <20201030141015.GC133455@xiangao.remote.csb>
+References: <20201022145724.27284-1-hsiangkao.ref@aol.com>
+ <20201022145724.27284-1-hsiangkao@aol.com>
+ <ba952daf-c55d-c251-9dfc-3bf199a2d4ff@tuxera.com>
+ <20201030124745.GB133455@xiangao.remote.csb>
+ <02427b81-7854-1d97-662f-ab2d2b868514@tuxera.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604031057-32820-11-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <02427b81-7854-1d97-662f-ab2d2b868514@tuxera.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 09:10:55PM -0700, Bhaumik Bhatt wrote:
-> Currently, there exist a set of if...else statements in the
-> mhi_pm_disable_transition() function which make handling system
-> error and disable transitions differently complex. To make that
-> cleaner and facilitate differences in behavior, separate these
-> two transitions for MHI host.
+On Fri, Oct 30, 2020 at 03:32:55PM +0200, Vladimir Zapolskiy wrote:
+> Hi Gao Xiang,
 > 
+> On 10/30/20 2:47 PM, Gao Xiang wrote:
+> > Hi Vladimir,
+> > 
+> > On Fri, Oct 30, 2020 at 02:20:31PM +0200, Vladimir Zapolskiy wrote:
+> > > Hello Gao Xiang,
+> > > 
+> > > On 10/22/20 5:57 PM, Gao Xiang via Linux-erofs wrote:
+> > > > From: Gao Xiang <hsiangkao@redhat.com>
+> > > > 
+> > > > pcluster should be only set up for all managed pages instead of
+> > > > temporary pages. Since it currently uses page->mapping to identify,
+> > > > the impact is minor for now.
+> > > > 
+> > > > Fixes: 5ddcee1f3a1c ("erofs: get rid of __stagingpage_alloc helper")
+> > > > Cc: <stable@vger.kernel.org> # 5.5+
+> > > > Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+> > > 
+> > > I was looking exactly at this problem recently, my change is one-to-one
+> > > to your fix, thus I can provide a tag:
+> > > 
+> > > Tested-by: Vladimir Zapolskiy <vladimir@tuxera.com>
+> > 
+> > Many thanks for confirming this!
+> > I found this when I was killing magical stagingpage page->mapping,
+> > it's somewhat late :-)
+> > 
+> 
+> sure, for me it was an exciting immersion into the filesystem code :)
 
-And this results in a lot of duplicated code :/
+Thanks for your effort on this!
+
+You could also post related kernel message in advance and
+I will definitly look into that as well. :)
+
+> 
+> > > 
+> > > 
+> > > The fixed problem is minor, but the kernel log becomes polluted, if
+> > > a page allocation debug option is enabled:
+> > > 
+> > >      % md5sum ~/erofs/testfile
+> > >      BUG: Bad page state in process kworker/u9:0  pfn:687de
+> > >      page:0000000057b8bcb4 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x687de
+> > >      flags: 0x4000000000002000(private)
+> > >      raw: 4000000000002000 dead000000000100 dead000000000122 0000000000000000
+> > >      raw: 0000000000000000 ffff888066758690 00000000ffffffff 0000000000000000
+> > >      page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
+> > >      Modules linked in:
+> > >      CPU: 1 PID: 602 Comm: kworker/u9:0 Not tainted 5.9.1 #2
+> > >      Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
+> > >      Workqueue: erofs_unzipd z_erofs_decompressqueue_work
+> > >      Call Trace:
+> > >       dump_stack+0x84/0xba
+> > >       bad_page.cold+0xac/0xb1
+> > >       check_free_page_bad+0xb0/0xc0
+> > >       free_pcp_prepare+0x2c8/0x2d0
+> > >       free_unref_page+0x18/0xf0
+> > >       put_pages_list+0x11a/0x120
+> > >       z_erofs_decompressqueue_work+0xc9/0x110
+> > >       ? z_erofs_decompress_pcluster.isra.0+0xf10/0xf10
+> > >       ? read_word_at_a_time+0x12/0x20
+> > >       ? strscpy+0xc7/0x1a0
+> > >       process_one_work+0x30c/0x730
+> > >       worker_thread+0x91/0x640
+> > >       ? __kasan_check_read+0x11/0x20
+> > >       ? rescuer_thread+0x8a0/0x8a0
+> > >       kthread+0x1dd/0x200
+> > >       ? kthread_unpark+0xa0/0xa0
+> > >       ret_from_fork+0x1f/0x30
+> > >      Disabling lock debugging due to kernel taint
+> > 
+> > Yeah, I can make a pull-request to Linus if you need this to be in master
+> > now, or I can post it for v5.11-rc1 since 5.4 LTS isn't effected (and it
+> > would be only a print problem with debugging option.)
+> > 
+> 
+> As for myself I don't utterly need this fix on the master branch ASAP, however
+> it might be reasonable to get it included right into the next v5.10 release,
+> because I believe it'll be an LTS. Eventually it's up to you to make a decision,
+> from my side I won't urge you, the fixed issue is obviously a non-critical one.
+> 
+> Thank you for the original fix and taking my opinion into consideration :)
+
+Yeah, v5.10 is a LTS version, and you are right, I will try to make a
+pull-request after I get Chao's RVB.
 
 Thanks,
-Mani
+Gao Xiang
 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->  drivers/bus/mhi/core/pm.c | 159 +++++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 137 insertions(+), 22 deletions(-)
 > 
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index 1d04e401..347ae7d 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -444,7 +444,7 @@ static int mhi_pm_mission_mode_transition(struct mhi_controller *mhi_cntrl)
->  	return ret;
->  }
->  
-> -/* Handle SYS_ERR and Shutdown transitions */
-> +/* Handle shutdown transitions */
->  static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
->  				      enum mhi_pm_state transition_state)
->  {
-> @@ -460,10 +460,6 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
->  		to_mhi_pm_state_str(mhi_cntrl->pm_state),
->  		to_mhi_pm_state_str(transition_state));
->  
-> -	/* We must notify MHI control driver so it can clean up first */
-> -	if (transition_state == MHI_PM_SYS_ERR_PROCESS)
-> -		mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_SYS_ERROR);
-> -
->  	mutex_lock(&mhi_cntrl->pm_mutex);
->  	write_lock_irq(&mhi_cntrl->pm_lock);
->  	prev_state = mhi_cntrl->pm_state;
-> @@ -502,11 +498,8 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
->  							    MHICTRL_RESET_SHIFT,
->  							    &in_reset) ||
->  					!in_reset, timeout);
-> -		if ((!ret || in_reset) && cur_state == MHI_PM_SYS_ERR_PROCESS) {
-> +		if (!ret || in_reset)
->  			dev_err(dev, "Device failed to exit MHI Reset state\n");
-> -			mutex_unlock(&mhi_cntrl->pm_mutex);
-> -			return;
-> -		}
->  
->  		/*
->  		 * Device will clear BHI_INTVEC as a part of RESET processing,
-> @@ -566,19 +559,142 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
->  		er_ctxt->wp = er_ctxt->rbase;
->  	}
->  
-> -	if (cur_state == MHI_PM_SYS_ERR_PROCESS) {
-> -		mhi_ready_state_transition(mhi_cntrl);
-> -	} else {
-> -		/* Move to disable state */
-> -		write_lock_irq(&mhi_cntrl->pm_lock);
-> -		cur_state = mhi_tryset_pm_state(mhi_cntrl, MHI_PM_DISABLE);
-> -		write_unlock_irq(&mhi_cntrl->pm_lock);
-> -		if (unlikely(cur_state != MHI_PM_DISABLE))
-> -			dev_err(dev, "Error moving from PM state: %s to: %s\n",
-> -				to_mhi_pm_state_str(cur_state),
-> -				to_mhi_pm_state_str(MHI_PM_DISABLE));
-> +	/* Move to disable state */
-> +	write_lock_irq(&mhi_cntrl->pm_lock);
-> +	cur_state = mhi_tryset_pm_state(mhi_cntrl, MHI_PM_DISABLE);
-> +	write_unlock_irq(&mhi_cntrl->pm_lock);
-> +	if (unlikely(cur_state != MHI_PM_DISABLE))
-> +		dev_err(dev, "Error moving from PM state: %s to: %s\n",
-> +			to_mhi_pm_state_str(cur_state),
-> +			to_mhi_pm_state_str(MHI_PM_DISABLE));
-> +
-> +	dev_dbg(dev, "Exiting with PM state: %s, MHI state: %s\n",
-> +		to_mhi_pm_state_str(mhi_cntrl->pm_state),
-> +		TO_MHI_STATE_STR(mhi_cntrl->dev_state));
-> +
-> +	mutex_unlock(&mhi_cntrl->pm_mutex);
-> +}
-> +
-> +/* Handle system error transitions */
-> +static void mhi_pm_sys_error_transition(struct mhi_controller *mhi_cntrl)
-> +{
-> +	enum mhi_pm_state cur_state, prev_state;
-> +	struct mhi_event *mhi_event;
-> +	struct mhi_cmd_ctxt *cmd_ctxt;
-> +	struct mhi_cmd *mhi_cmd;
-> +	struct mhi_event_ctxt *er_ctxt;
-> +	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> +	int ret, i;
-> +
-> +	dev_dbg(dev, "Transitioning from PM state: %s to: %s\n",
-> +		to_mhi_pm_state_str(mhi_cntrl->pm_state),
-> +		to_mhi_pm_state_str(MHI_PM_SYS_ERR_PROCESS));
-> +
-> +	/* We must notify MHI control driver so it can clean up first */
-> +	mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_SYS_ERROR);
-> +
-> +	mutex_lock(&mhi_cntrl->pm_mutex);
-> +	write_lock_irq(&mhi_cntrl->pm_lock);
-> +	prev_state = mhi_cntrl->pm_state;
-> +	cur_state = mhi_tryset_pm_state(mhi_cntrl, MHI_PM_SYS_ERR_PROCESS);
-> +	write_unlock_irq(&mhi_cntrl->pm_lock);
-> +
-> +	if (cur_state != MHI_PM_SYS_ERR_PROCESS) {
-> +		dev_err(dev, "Failed to transition from PM state: %s to: %s\n",
-> +			to_mhi_pm_state_str(cur_state),
-> +			to_mhi_pm_state_str(MHI_PM_SYS_ERR_PROCESS));
-> +		goto exit_sys_error_transition;
-> +	}
-> +
-> +	mhi_cntrl->ee = MHI_EE_DISABLE_TRANSITION;
-> +	mhi_cntrl->dev_state = MHI_STATE_RESET;
-> +
-> +	/* Wake up threads waiting for state transition */
-> +	wake_up_all(&mhi_cntrl->state_event);
-> +
-> +	/* Trigger MHI RESET so that the device will not access host memory */
-> +	if (MHI_REG_ACCESS_VALID(prev_state)) {
-> +		u32 in_reset = -1;
-> +		unsigned long timeout = msecs_to_jiffies(mhi_cntrl->timeout_ms);
-> +
-> +		dev_dbg(dev, "Triggering MHI Reset in device\n");
-> +		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_RESET);
-> +
-> +		/* Wait for the reset bit to be cleared by the device */
-> +		ret = wait_event_timeout(mhi_cntrl->state_event,
-> +					 mhi_read_reg_field(mhi_cntrl,
-> +							    mhi_cntrl->regs,
-> +							    MHICTRL,
-> +							    MHICTRL_RESET_MASK,
-> +							    MHICTRL_RESET_SHIFT,
-> +							    &in_reset) ||
-> +					!in_reset, timeout);
-> +		if (!ret || in_reset) {
-> +			dev_err(dev, "Device failed to exit MHI Reset state\n");
-> +			goto exit_sys_error_transition;
-> +		}
-> +
-> +		/*
-> +		 * Device will clear BHI_INTVEC as a part of RESET processing,
-> +		 * hence re-program it
-> +		 */
-> +		mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
-> +	}
-> +
-> +	dev_dbg(dev,
-> +		"Waiting for all pending event ring processing to complete\n");
-> +	mhi_event = mhi_cntrl->mhi_event;
-> +	for (i = 0; i < mhi_cntrl->total_ev_rings; i++, mhi_event++) {
-> +		if (mhi_event->offload_ev)
-> +			continue;
-> +		tasklet_kill(&mhi_event->task);
->  	}
->  
-> +	/* Release lock and wait for all pending threads to complete */
-> +	mutex_unlock(&mhi_cntrl->pm_mutex);
-> +	dev_dbg(dev, "Waiting for all pending threads to complete\n");
-> +	wake_up_all(&mhi_cntrl->state_event);
-> +
-> +	dev_dbg(dev, "Reset all active channels and remove MHI devices\n");
-> +	device_for_each_child(mhi_cntrl->cntrl_dev, NULL, mhi_destroy_device);
-> +
-> +	mutex_lock(&mhi_cntrl->pm_mutex);
-> +
-> +	WARN_ON(atomic_read(&mhi_cntrl->dev_wake));
-> +	WARN_ON(atomic_read(&mhi_cntrl->pending_pkts));
-> +
-> +	/* Reset the ev rings and cmd rings */
-> +	dev_dbg(dev, "Resetting EV CTXT and CMD CTXT\n");
-> +	mhi_cmd = mhi_cntrl->mhi_cmd;
-> +	cmd_ctxt = mhi_cntrl->mhi_ctxt->cmd_ctxt;
-> +	for (i = 0; i < NR_OF_CMD_RINGS; i++, mhi_cmd++, cmd_ctxt++) {
-> +		struct mhi_ring *ring = &mhi_cmd->ring;
-> +
-> +		ring->rp = ring->base;
-> +		ring->wp = ring->base;
-> +		cmd_ctxt->rp = cmd_ctxt->rbase;
-> +		cmd_ctxt->wp = cmd_ctxt->rbase;
-> +	}
-> +
-> +	mhi_event = mhi_cntrl->mhi_event;
-> +	er_ctxt = mhi_cntrl->mhi_ctxt->er_ctxt;
-> +	for (i = 0; i < mhi_cntrl->total_ev_rings; i++, er_ctxt++,
-> +	     mhi_event++) {
-> +		struct mhi_ring *ring = &mhi_event->ring;
-> +
-> +		/* Skip offload events */
-> +		if (mhi_event->offload_ev)
-> +			continue;
-> +
-> +		ring->rp = ring->base;
-> +		ring->wp = ring->base;
-> +		er_ctxt->rp = er_ctxt->rbase;
-> +		er_ctxt->wp = er_ctxt->rbase;
-> +	}
-> +
-> +	mhi_ready_state_transition(mhi_cntrl);
-> +
-> +exit_sys_error_transition:
->  	dev_dbg(dev, "Exiting with PM state: %s, MHI state: %s\n",
->  		to_mhi_pm_state_str(mhi_cntrl->pm_state),
->  		TO_MHI_STATE_STR(mhi_cntrl->dev_state));
-> @@ -666,8 +782,7 @@ void mhi_pm_st_worker(struct work_struct *work)
->  			mhi_ready_state_transition(mhi_cntrl);
->  			break;
->  		case DEV_ST_TRANSITION_SYS_ERR:
-> -			mhi_pm_disable_transition
-> -				(mhi_cntrl, MHI_PM_SYS_ERR_PROCESS);
-> +			mhi_pm_sys_error_transition(mhi_cntrl);
->  			break;
->  		case DEV_ST_TRANSITION_DISABLE:
->  			mhi_pm_disable_transition
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> --
+> Best wishes,
+> Vladimir
 > 
+
