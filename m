@@ -2,123 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B982A1001
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8112A1005
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 22:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgJ3VMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 17:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726283AbgJ3VMb (ORCPT
+        id S1727758AbgJ3VNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 17:13:47 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22670 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726283AbgJ3VNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 17:12:31 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DFABC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 14:12:05 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id b129so4167283vsb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 14:12:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xQLa8LWKxC3lcbV7jooXmpqWy2UXhLg78ZfSY/NE6+M=;
-        b=AD04DIVv6qIel8GigG+5QDWAwqdbuOtVEEFYN2UYKFuPirirrVEL9AwF4QPd5S6DzY
-         Q08Cu5fIp6UemLRDkGiJpZteNE90JlmoEMTrYYbYtHXtwzr6K2c/tGqYEJRkdoZzfv5W
-         wNszxx4MI3QWKcMIAlh7Y4CYCLgT/FPJgnEju3bqstolw6WSTPPxUFvY0N8S5bXDUxQo
-         +wakTLT6GwgdwBA3SdxYphcl1jaiq3JL58zXbXh2u2tjfOZEXwu8YAEzHXouUhlI4Pi5
-         r2qDcXD38PE0X70ESOIZ1C6iMmg0ve2ZqXtteXfB3cx84N1Ds/TlNWJFlNor2fh3RNBl
-         5e1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xQLa8LWKxC3lcbV7jooXmpqWy2UXhLg78ZfSY/NE6+M=;
-        b=pbtAqbrX2wRuo52Xn1RCj4Bu/dn6lsnSr2OzX4A87x7buE+HGoY99rcVo5kYaxgu50
-         EwCUU1Fpth8yBjZiFDn6hLn23mB7xlcYBbMKQ1UKOKiqQN7FK+iOiHgsC/Vf9QiA4Zgs
-         d86w29XTkgRAcghLDLTFLWcB+DacIGDjr7TmxQHHhEynnZZDjGAAqYZNwGD0Ur7Kq6eM
-         Qv2xHV3bW5dJMmxxshcgLYSTkrjr0Y/GNWCEJ+CUGlCIfQF3fzyG2RoBbE0nWGvF8ZL6
-         /Q4hCt/7tZV9YJriYX/HzVyatC0EFfQ+uvuBj7Dbr4DgmYmVbc+KIF6CqGW3+P1HJQkZ
-         yhQA==
-X-Gm-Message-State: AOAM532nQko43M6opL/UGmPXJnRn/sBNXWK2jCy5JarT2EVWT5a9TZhP
-        sv1B0TAz3HJ5+dsq57qRYj5o76y8Hpg=
-X-Google-Smtp-Source: ABdhPJwVOHqGn4odJIczx3YCTCflnAKgEr0Z7MsVwD7HyHqoB8P+FqvYi0KOmv1jQR9VYqLnXQzerw==
-X-Received: by 2002:a67:f290:: with SMTP id m16mr7724663vsk.46.1604092324329;
-        Fri, 30 Oct 2020 14:12:04 -0700 (PDT)
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
-        by smtp.gmail.com with ESMTPSA id g24sm1005445vsb.32.2020.10.30.14.12.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 14:12:03 -0700 (PDT)
-Received: by mail-ua1-f49.google.com with SMTP id v27so2154024uau.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 14:12:03 -0700 (PDT)
-X-Received: by 2002:ab0:5447:: with SMTP id o7mr3339080uaa.37.1604092322543;
- Fri, 30 Oct 2020 14:12:02 -0700 (PDT)
+        Fri, 30 Oct 2020 17:13:46 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09UL33lr025916;
+        Fri, 30 Oct 2020 17:13:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=+UCoz10mIKJN5QdeiOHCdJWdGEXY+xBbtN9gX1cbOmI=;
+ b=YfPPzlSmi1aOozdN6kVWIJCVUzE/UaGvI4JOnBhPab3AKW6iwxmGueExemrdjKisqbzv
+ e7+ODhhsvVm1vdaOxG0u4CRQei13WrcpnbhkvUMLd1Mm7qgIw5yDqCqY6+KvPO7kBbPH
+ nGsUJZSW+yRkGGM66RUwv/wGWt4RuSqDMigDodFZqqAEwH0vOlqHxadp1drShSKGae4C
+ YDapftjKQW6bi564DN/3KyCnlftqMcBc9JqOlq9/3cZebSWgQp5NZueSYoCpJRqZHfdN
+ /Old1otEigyPUh48QuO0DG4odNqwWFJe8hNpT2J39W+KskJV7/pxbA8R8al0JJ5ez6Xj GQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34gtckr93x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 17:13:43 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09UL5Ot7039103;
+        Fri, 30 Oct 2020 17:13:42 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34gtckr93k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 17:13:42 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09ULDa1c005372;
+        Fri, 30 Oct 2020 21:13:41 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma04dal.us.ibm.com with ESMTP id 34g1e25f4p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Oct 2020 21:13:41 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09ULDd8r51970494
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Oct 2020 21:13:39 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C142F112063;
+        Fri, 30 Oct 2020 21:13:39 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0DC91112061;
+        Fri, 30 Oct 2020 21:13:39 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.162.174])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 30 Oct 2020 21:13:38 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Subject: Re: [PATCH v11 01/14] s390/vfio-ap: No need to disable IRQ after
+ queue reset
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
+ <20201022171209.19494-2-akrowiak@linux.ibm.com>
+ <20201027074846.30ee0ddc.pasic@linux.ibm.com>
+ <7a2c5930-9c37-8763-7e5d-c08a3638e6a1@linux.ibm.com>
+ <20201030185406.7fa13fbe.pasic@linux.ibm.com>
+ <d1aae333-3f10-bd21-257f-baf8f8df7a24@linux.ibm.com>
+Message-ID: <684234fa-03a9-71cd-14f3-ddf9b06e7e2e@linux.ibm.com>
+Date:   Fri, 30 Oct 2020 17:13:38 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20201030022839.438135-1-xie.he.0141@gmail.com>
- <20201030022839.438135-2-xie.he.0141@gmail.com> <CA+FuTSdeP7n1eQU2L2qSCEdJVc=Ezs+PvCof+YJfDjiEFZeH_w@mail.gmail.com>
- <CAJht_EMdbGQdXhYJ7xa_R-j-73fbsEjSUeavov40W52aGvQ21g@mail.gmail.com>
-In-Reply-To: <CAJht_EMdbGQdXhYJ7xa_R-j-73fbsEjSUeavov40W52aGvQ21g@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Fri, 30 Oct 2020 17:11:24 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSfD27KDkbnO=PeS0Dhn7s3+0U1N+e_Xrn7G9m0qT2Lcrg@mail.gmail.com>
-Message-ID: <CA+FuTSfD27KDkbnO=PeS0Dhn7s3+0U1N+e_Xrn7G9m0qT2Lcrg@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 1/5] net: hdlc_fr: Simpify fr_rx by using
- "goto rx_drop" to drop frames
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d1aae333-3f10-bd21-257f-baf8f8df7a24@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-30_12:2020-10-30,2020-10-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ clxscore=1015 priorityscore=1501 mlxscore=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
+ suspectscore=11 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010300157
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 4:02 PM Xie He <xie.he.0141@gmail.com> wrote:
+
+
+On 10/30/20 4:53 PM, Tony Krowiak wrote:
 >
-> On Fri, Oct 30, 2020 at 9:35 AM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > In general we try to avoid changing counter behavior like that, as
-> > existing users
-> > may depend on current behavior, e.g., in dashboards or automated monitoring.
-> >
-> > I don't know how realistic that is in this specific case, no strong
-> > objections. Use
-> > good judgment.
 >
-> Originally this function only increases stats.rx_dropped only when
-> there's a memory squeeze. I don't know the specification for the
-> meaning of stats.rx_dropped, but as I understand it indicates a frame
-> is dropped. This is why I wanted to increase it whenever we drop a
-> frame.
-
-Jakub recently made stats behavior less ambiguous, in commit
-0db0c34cfbc9 ("net: tighten the definition of interface statistics").
-
-That said, it's not entirely clear whether rx_dropped would be allowed
-to include rx_errors.
-
-My hunch is that it shouldn't. A quick scan of devices did quickly
-show at least one example where it does: macvlan. But I expect that to
-be an outlier.
-
-> Originally this function drops a frame silently if the PVC virtual
-> device that corresponds to the DLCI number and the protocol type
-> doesn't exist. I think we may at least need some way to note this.
-> Originally this function drops a frame with a kernel info message
-> printed if the protocol type is not supported. I think this is a bad
-> way because if the other end continuously sends us a lot of frames
-> with unsupported protocol types, our kernel message log will be
-> overwhelmed.
+> On 10/30/20 1:54 PM, Halil Pasic wrote:
+>> On Thu, 29 Oct 2020 19:29:35 -0400
+>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>>
+>>>>> @@ -1177,7 +1166,10 @@ static int vfio_ap_mdev_reset_queues(struct 
+>>>>> mdev_device *mdev)
+>>>>>                 */
+>>>>>                if (ret)
+>>>>>                    rc = ret;
+>>>>> -            vfio_ap_irq_disable_apqn(AP_MKQID(apid, apqi));
+>>>>> +            q = vfio_ap_get_queue(matrix_mdev,
+>>>>> +                          AP_MKQID(apid, apqi));
+>>>>> +            if (q)
+>>>>> +                vfio_ap_free_aqic_resources(q);
+>> [..]
+>>
+>>>> Under what circumstances do we expect !q? If we don't, then we need to
+>>>> complain one way or another.
+>>> In the current code (i.e., prior to introducing the subsequent hot
+>>> plug patches), an APQN can not be assigned to an mdev unless it
+>>> references a queue device bound to the vfio_ap device driver; however,
+>>> there is nothing preventing a queue device from getting unbound
+>>> while the guest is running (one of the problems mostly resolved by this
+>>> series). In that case, q would be NULL.
+>> But if the queue does not belong to us any more it does not make sense
+>> call vfio_ap_mdev_reset_queue() on it's APQN, or?
 >
-> I don't know how important it is to keep backwards compatibility. I
-> usually don't consider this too much. But I can drop this change if we
-> really want to keep the counter behavior unchanged. I think changing
-> it is better if we don't consider backwards compatibility.
+> This is precisely why we prevent a queue from being taken away
+> from vfio_ap (the in-use callback) when its APQN is assigned to an
+> mdev in this patch series. On the other hand, this is a very good
+> point.
+>
+>>
+>> I think we should have
+>>
+>> if(!q)
+>>     continue;
+>> at the very beginning of the loop body, or we want to be sure that q is
+>> not null.
+>
+> I agree, I'll go ahead and make this change.
 
-Please do always consider backward compatibility. In this case, I
-don't think that the behavioral change is needed for the core of the
-patch (changing control flow).
+After thinking about this a bit more, I don't think it makes sense to make
+this change in this patch. For the current implementation, it is incumbent
+upon the system administrator to ensure that a queue device is not unbound
+from the vfio_ap device driver if its APQN is assigned to an mdev, so the
+assumption here is that any APQN assigned to the mdev is (or was) bound to
+the vfio_ap driver. If it was erroneously unbound while in use by a guest,
+then both the guest and possibly the zcrypt driver will have simultaneous
+access (one of the things fixed by this patch series). In that case, I think
+it ought to be reset regardless of whether it is bound to vfio_ap or not.
+
+Having said that, I think it makes sense to make the change you recommend
+in patch 03/14. In that patch, the vfio_ap_queue object is retrieved 
+from the
+matrix_mdev. Since these queue objects are linked only when the queue
+device is probed and unlinked when the the queue device is removed and
+a queue device can not get bound to another driver while its APQN is 
+assigned
+to an mdev, it would make perfect sense to forego reset of a queue when
+its APQN is assigned to an mdev.
+
+>
+>
+>
+>
+>>
+>
+
