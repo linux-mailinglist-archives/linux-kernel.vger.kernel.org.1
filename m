@@ -2,160 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48E92A0353
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3AA2A034D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgJ3KxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:53:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41469 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726198AbgJ3Kwx (ORCPT
+        id S1726402AbgJ3Kww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726294AbgJ3Kwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:52:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604055127;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z1EL/9Be6tly17XVpcb5msTAyiBBVJln1M0uiO+xToM=;
-        b=SvRfyT8s8JI/G6/UFi/egFz0/UlmN/RKmcT4imbFovoWybpZlYerG81dV2dToznn+L6AXN
-        TmH86JtdUaYrr6PEiR5PuRd6wc+u9DjzUUlcBruuTq+puesYoj+Xkyf1si1RcVqMNG/K0K
-        S8aTZYHNex7d5TxzhQSgCdSkdInkCPc=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-Gvl5OqTKNR6jI6goubdRhg-1; Fri, 30 Oct 2020 06:52:05 -0400
-X-MC-Unique: Gvl5OqTKNR6jI6goubdRhg-1
-Received: by mail-pg1-f197.google.com with SMTP id y10so4351409pgq.19
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:52:05 -0700 (PDT)
+        Fri, 30 Oct 2020 06:52:51 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5247BC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:52:11 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id h21so6994505iob.10
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 03:52:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HZ3jKEDXZlqXtXgXWZosWZYuBzB1jkXYoNWcA+wZdxc=;
+        b=TnAq0JDV19kWvbxA92eLES19ttE/Y4+2XhGiV0zhyUlwcuVbhprQpPq0ZQV+p1JqHI
+         O4cvJJEB5wliVeYPxTumc9aXaH530u/UX9HqP/vNCI2+H9UjMgPnrn2PfWTkkX8aFZal
+         zuRzHXhdUZjRSOIFCg/VRtay2lIk7B1PQRFeSCDJQrwZZa5KqF3n09xpbqqx2YWe6XPn
+         YieuBV9edXHvcpbEi9BfDxyajn3f/0X5zH+EHF/Eg9a7WaoFklq5CpC36ppf/mLpYWHZ
+         EP3rncmS93asi48WYZwo415QvqRG7Z7gHz/FuXK/z6XKFsVazoUn+9wFizdM5QLF0p/0
+         sCUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Z1EL/9Be6tly17XVpcb5msTAyiBBVJln1M0uiO+xToM=;
-        b=XU5/ERlls88SoJDgX2QAoQx0k71UiCtiaxGIVqrbBKpLaXoGYIniaxspBM8I+CylOP
-         OlvTcNarUnVXoQZ4H5MuK5DnxhXHQGMjm0mBHT4gqEkfMAkP3CgKyNAycYzbUoVaCqef
-         oZvzJfdu4UO6YaC0SPAcfSjQ3kTb6amx0/r77gb9V8PKBK98ocG0sAyNhZLyHPeyxnzD
-         Er3hQrdaXqkDA0uIJjCdR65Tp+r2BFcXrBZzhA/uuMALMKebcyFoVicGDrL+eTallKUU
-         uiOwGGY1a3hxJBn4yoUlNIwJQvrOWpGo+T5yGeePci2FXMKk9WD2Vy/WRWqT/nq80ZP9
-         3png==
-X-Gm-Message-State: AOAM533ag3/d7a6pNmHlQRxLBu00XO8OkkFmT6gaY/GqX6xWNf4RVk2J
-        ymVar04TcJGmFX8J+5/WHwyyGftgNv7X+ZklE9wQStaB2IFsY+mYPdLqAaWT3BLTfgnZzPdQMv0
-        ++3eB4HyutqUKra9QEDrfpbhKT9EW+x96Mvc8wfq1
-X-Received: by 2002:a17:90a:3d0f:: with SMTP id h15mr2123540pjc.234.1604055124704;
-        Fri, 30 Oct 2020 03:52:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyZm8Jjrt7RwQSmEXD6n0EGanX49bnWzOOT4SJxESfA9P6Q0Zin/X974quyCTlaFgiQZ0aiYXBGx0kCgB58FOk=
-X-Received: by 2002:a17:90a:3d0f:: with SMTP id h15mr2123522pjc.234.1604055124441;
- Fri, 30 Oct 2020 03:52:04 -0700 (PDT)
+        bh=HZ3jKEDXZlqXtXgXWZosWZYuBzB1jkXYoNWcA+wZdxc=;
+        b=au5Y/9sybVbDHux1FFMdqqJK7m8JRRgFjSSdbs20frv8i1HGRArlH85TtKW46TJYta
+         zQmQ5h/zF5tkPwiEfNHcYwK3grU/Rs6UCHTiU0jzhQ1pmwcWhud77vCaoEzkQucswSc9
+         dW8hUjX5c4OW6XrJ4dm/XV39SP8nfpWU8NFTQslzZmZ7/ceN3+2w4B6ivbMXldPwhiOI
+         r/e8mg1HjwsdNGJZyZ5eEclBQNcDyzHzLI+sHRcIeeibWUvfZmXXePuQl71qUUc6ORr+
+         XdNe6HaJmVCba5cCLiCO8ECuNCdsvi0osulO1/w5/qyayLZC0M49jlDNkNOTf+S49ZOC
+         1GPw==
+X-Gm-Message-State: AOAM530kiB3jQbFfNB/06QQdrDBvnU3TLnW64WNeNgdYKew5sOzyZ2PT
+        fRSVYgxI1N6BVUo/PlmIdHBZdHK7Fs9GzYMJNnHa4A==
+X-Google-Smtp-Source: ABdhPJxOZMCH6oMWFYGWOJLLt7kcLu7C1LC8cEzfORXLn1CTUwczkRvHrR55P3QXjffP+L+Eq2o9yphjTp27lAvj+Oo=
+X-Received: by 2002:a05:6602:2b90:: with SMTP id r16mr1276394iov.31.1604055130752;
+ Fri, 30 Oct 2020 03:52:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
-In-Reply-To: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Fri, 30 Oct 2020 11:51:53 +0100
-Message-ID: <CAO-hwJLn5XKV+cp+fCRY395uBWuX=JrxgiGSHUnJXFpTzFWu4w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: HID: i2c-hid: Label this binding as deprecated
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        andrea@borgia.bo.it, Kai Heng Feng <kai.heng.feng@canonical.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Hans De Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <20201026133609.24262-1-brgl@bgdev.pl> <20201026133609.24262-5-brgl@bgdev.pl>
+ <20201029154118.12fd6c23@archlinux>
+In-Reply-To: <20201029154118.12fd6c23@archlinux>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 30 Oct 2020 11:52:00 +0100
+Message-ID: <CAMRc=Mfun85W+ZfJqaXohCQ8tNGDxjxmvdFuwsQ07jMhG+vU7w@mail.gmail.com>
+Subject: Re: [PATCH 4/5] iio: adc: xilinx: use devres for irq handling
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
-
-Foreword: I was about to say "yeah, whatever" to please Rob for once.
-But after re-reading this and more specifically patch 3 of the series,
-that won't do. More comments inlined.
-
-On Sat, Oct 24, 2020 at 1:23 AM Douglas Anderson <dianders@chromium.org> wrote:
+On Thu, Oct 29, 2020 at 4:41 PM Jonathan Cameron <jic23@kernel.org> wrote:
 >
-> As pointed out by Rob Herring [1], we should have a device-specific
-> compatible string.  This means people shouldn't be using the
-> "i2c-over-hid" compatible string anymore, or at least not without a
-> more specific compatible string before it.  Specifically:
+> On Mon, 26 Oct 2020 14:36:08 +0100
+> Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 >
-> 1. For newly added devices we should just have the device-specific
->    device string (no "hid-over-i2c" fallback) and infer the timings
->    and hid-descr-addr from there.
-
-And that's a big NACK from a maintainer point of view. I know in the
-device tree world these strings are important so that people can just
-say "I have a device compatible with X", and go on, but in the HID
-world that means we will have to implement one compatible struct per
-vendor/device, which is not something I want to do.
-
-You can think of it as if you are suddenly saying that because it
-would be easier for a few particular USB devices that need a quirk,
-you "just" need to add the list of *all* USB HID devices that are
-around. i2c-hid should be a driver that doesn't change unless 2 things
-happen:
-- there is a change in the spec
-- there is a specific quirk required for a device that doesn't follow the spec.
-
-So if having device tree support for these means we suddenly need to
-add every single device around in the compatible table, I would be
-tempted to just drop the support for those new devices.
-
-Again, you (or anyone else) have to understand that the descriptor
-address is just a parameter which is known at the manufacturing time,
-but that can vary with different vendors and or products. In the ACPI
-world, this parameter is provided in the DSDT, and there is no reason
-for it to not be provided in the DT.
-
-The last thing I want to see is people using device tree having to
-recompile i2c-hid to register their own device.
-
-If this part of the Device Tree binding is so important for the DT
-world, then we should split up the DT bindings from i2c-hid, and have
-some platform driver that would handle a conversion between devicetree
-and platform data. But this driver won't be maintained by me.
-
-I agree adding the various sleep parameters in the platform data is
-not good, but I prefer that over having to maintain an endless table
-of parameters for every single i2c-hid device out there.
-
-Cheers,
-Benjamin
-
-
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > Further simplify the remove() callback and error paths in probe() by
+> > using the managed variant of request_irq() as well as using a devm action
+> > for cancelling the delayed work at driver detach.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 >
-> 2. If there's a need for a device tree to be backward compatible, we
->    should list the device-specific compatible string and add the
->    "hid-over-i2c" fallback and the various timings.
+> Again, this is potentially fine but I'd rather you cleaned up the ordering first
+> rather than doing things in this order.
 >
-> [1] https://lore.kernel.org/r/20201019211036.GA3595039@bogus
+> The end result of the whole series looks like it will be correct, but that isn't
+> so obvious for the intermediate patches on their own.
 >
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+> Also, you end up with a lot of noise renaming gotos that then go away at the
+> end.
 >
-> Changes in v2:
-> - ("dt-bindings: HID: i2c-hid: Label this binding as deprecated") new in v2.
->
->  Documentation/devicetree/bindings/input/hid-over-i2c.txt | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/input/hid-over-i2c.txt b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
-> index c76bafaf98d2..733a5f053280 100644
-> --- a/Documentation/devicetree/bindings/input/hid-over-i2c.txt
-> +++ b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
-> @@ -1,5 +1,8 @@
->  * HID over I2C Device-Tree bindings
->
-> +WARNING: this binding is deprecated.  Instead of using this, create specific
-> +bindings for each hid-over-i2c device.
-> +
->  HID over I2C provides support for various Human Interface Devices over the
->  I2C bus. These devices can be for example touchpads, keyboards, touch screens
->  or sensors.
-> --
-> 2.29.0.rc1.297.gfa9743e501-goog
+> Jonathan
 >
 
+Hi Jonathan,
+
+My two priorities for the ordering of this series were: correct
+end-result and not breaking anything on the way. The latter
+unfortunately gets in the way of cleaner looking intermediate patches.
+
+I tried to not alter the ordering in which the resources are freed at
+any step. As devres release callbacks are called *after* remove() and
+in a reverse order to how they were registered, I needed to start from
+the bottom of the remove() callback and convert the last operation,
+then go upwards from there.
+
+If I tried to do it from the top - I probably could remove labels
+earlier and in a cleaner manner but it wouldn't guarantee
+bisectability.
+
+Bartosz
