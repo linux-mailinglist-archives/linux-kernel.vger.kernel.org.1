@@ -2,164 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7A12A10A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E21F2A10A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725884AbgJ3WGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 18:06:36 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:23688 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbgJ3WGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 18:06:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604095596; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=lGkiIC6aCmxVlnP+kS5/v1V4Xiy5BR0zSGoVebzuAD4=;
- b=E9guYytSgnxz+YfFRC4FZjFKfdVJlcOjC8LR5JWa5UuOByoIzCdTTfTHPmblsP3cFlxheByw
- r88fkmC8HN/a1VEza1O/Dejstv/5JlaXHnqDg78hg5W7NSwOCvKrL16Pb7BWyy/P0ORgX0xb
- IMqCOsIf2fmJkyaSpYzyI3O2aLM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f9c8e6bd306da06745d2c2d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 22:06:35
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D21C6C43382; Fri, 30 Oct 2020 22:06:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F1979C433C8;
-        Fri, 30 Oct 2020 22:06:33 +0000 (UTC)
+        id S1725912AbgJ3WGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 18:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbgJ3WGr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 18:06:47 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B17DC0613CF;
+        Fri, 30 Oct 2020 15:06:46 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l16so8246699eds.3;
+        Fri, 30 Oct 2020 15:06:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3EaeiHxHi/g6G5ROqfUs+oSpGqvS/KG2JfUQSdxi54I=;
+        b=jS4KKAUFecGNEOaIehjt4dH23+K9OgYnyWTkDWQBAl4AnOvzUjP8mIav1q4sUoonVN
+         tdgidoJkouQQgQePhOX19OxC/sn97hDaxerSTNrsV7w2llPc2aa6h9hvZV2RfmmBC5dY
+         7ALBRyLrdFrhXaCo+Xos3Cvjaxd/TMW/CYoJQGxjJkf3zAKlORPVXrZReBNLdLTWe8D7
+         1oH+QAQGyCdjwoyQRAvn5Z8EHlzJ9nDkwwT9Va4zwjFEN55QxLqSCSIVLVQ97TYU4JhS
+         AeiYEF7PXzVMPHKnbg9v3o3Wqf8/s5hwhrUd5K+8gOZLUxJsQ3vV/tU6+gLcGUgQBbvz
+         WIuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3EaeiHxHi/g6G5ROqfUs+oSpGqvS/KG2JfUQSdxi54I=;
+        b=QxjqjnLVNeVXlJBJ9wP3CIOU9z6o9cNe9kjwbDQ4BZsqgUlgQ9YgdQTSvpAPHFCABk
+         pQUKajQ/BbG3dhvIGnL7XsTmElviMTYpSnTpKokL/iQu3u+nWIIrQbc6AUhf/g+hQuG8
+         hRDRdg1Agg62Z0G8VVsWigHvxJcgtaGalGxBuW4j2nLsXj9UVfaUgooZ51WtUsO7kBC9
+         AnkbxDlUt4Gy9lN699iPLWhdKO7DUXs9kEt8Fvecyq8aTFXxWYQUGGQlmjBgmVLG0rxI
+         bS8uUdS82pZIdDyrVbiS4pjNaffXfCjOZYUlWXPowYEgUdwscRbh3QPacDM5C3IZ++gE
+         OYiA==
+X-Gm-Message-State: AOAM530sud94AkhzU7E0P3woRnu1gJvrC8gMffhyiYfsUJ/JCjqRTOMa
+        I8Q2Hn9hYUwpUFLMs57kXtusUgCK/aTWww==
+X-Google-Smtp-Source: ABdhPJx6iiK9+gLKNAIeuGTGcAdKai1w8pMO5FmSZLu+Gmv0ak537VpCQhzV6qRtUsi72b4dWsphBQ==
+X-Received: by 2002:a05:6402:187:: with SMTP id r7mr4628793edv.360.1604095605113;
+        Fri, 30 Oct 2020 15:06:45 -0700 (PDT)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id bw25sm3455667ejb.119.2020.10.30.15.06.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 15:06:44 -0700 (PDT)
+Date:   Sat, 31 Oct 2020 00:06:42 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Ioana Ciornei <ciorneiioana@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andre Edich <andre.edich@microchip.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Dan Murphy <dmurphy@ti.com>,
+        Divya Koppera <Divya.Koppera@microchip.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Mathias Kresin <dev@kresin.me>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Michael Walle <michael@walle.cc>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Willy Liu <willy.liu@realtek.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+Subject: Re: [PATCH net-next 00/19] net: phy: add support for shared
+ interrupts (part 1)
+Message-ID: <20201030220642.ctkt2pitdvri3byt@skbuf>
+References: <20201029100741.462818-1-ciorneiioana@gmail.com>
+ <43d672ae-c089-6621-5ab3-3a0f0303e51a@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 30 Oct 2020 15:06:33 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, tanmay@codeaurora.org,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dp: skip checking LINK_STATUS_UPDATED bit
-In-Reply-To: <160323215566.884498.14018580767640192186@swboyd.mtv.corp.google.com>
-References: <20201020165959.7441-1-khsieh@codeaurora.org>
- <160323215566.884498.14018580767640192186@swboyd.mtv.corp.google.com>
-Message-ID: <546018237be3f05b4eb33c916ed1d939@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <43d672ae-c089-6621-5ab3-3a0f0303e51a@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-20 15:15, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2020-10-20 09:59:59)
->> No need to check LINK_STATuS_UPDATED bit before
-> 
-> LINK_STATUS_UPDATED?
-> 
->> return 6 bytes of link status during link training.
-> 
-> Why?
-> 
->> This patch also fix phy compliance test link rate
->> conversion error.
-> 
-> How?
-> 
->> 
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> ---
-> 
-> Any Fixes: tag?
-> 
->>  drivers/gpu/drm/msm/dp/dp_ctrl.c | 20 ++++++--------------
->>  drivers/gpu/drm/msm/dp/dp_link.c | 24 +++++++++++-------------
->>  2 files changed, 17 insertions(+), 27 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
->> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> index 6bdaec778c4c..76e891c91c6e 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> @@ -1061,23 +1061,15 @@ static bool dp_ctrl_train_pattern_set(struct 
->> dp_ctrl_private *ctrl,
->>  static int dp_ctrl_read_link_status(struct dp_ctrl_private *ctrl,
->>                                     u8 *link_status)
->>  {
->> -       int len = 0;
->> -       u32 const offset = DP_LANE_ALIGN_STATUS_UPDATED - 
->> DP_LANE0_1_STATUS;
->> -       u32 link_status_read_max_retries = 100;
->> -
->> -       while (--link_status_read_max_retries) {
->> -               len = drm_dp_dpcd_read_link_status(ctrl->aux,
->> -                       link_status);
->> -               if (len != DP_LINK_STATUS_SIZE) {
->> -                       DRM_ERROR("DP link status read failed, err: 
->> %d\n", len);
->> -                       return len;
->> -               }
->> +       int ret = 0, len;
->> 
->> -               if (!(link_status[offset] & DP_LINK_STATUS_UPDATED))
->> -                       return 0;
->> +       len = drm_dp_dpcd_read_link_status(ctrl->aux, link_status);
->> +       if (len != DP_LINK_STATUS_SIZE) {
->> +               DRM_ERROR("DP link status read failed, err: %d\n", 
->> len);
->> +               ret = len;
-> 
-> Could this be positive if the len is greater than 0 but not
-> DP_LINK_STATUS_SIZE? Maybe the check should be len < 0? We certainly
-> don't want to return some smaller size from this function, right?
-> 
+On Fri, Oct 30, 2020 at 10:56:24PM +0100, Heiner Kallweit wrote:
+> I'd just like to avoid the term "shared interrupt", because it has
+> a well-defined meaning. Our major concern isn't shared interrupts
+> but support for multiple interrupt sources (in addition to
+> link change) in a PHY.
 
-no, it should be exactly the byte number requested to read.
-otherwise, it should be failed and will re read at next run.
-
->>         }
->> 
->> -       return -ETIMEDOUT;
->> +       return ret;
->>  }
->> 
->>  static int dp_ctrl_link_train_1(struct dp_ctrl_private *ctrl,
->> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c 
->> b/drivers/gpu/drm/msm/dp/dp_link.c
->> index c811da515fb3..58d65daae3b3 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_link.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
->> @@ -773,7 +773,8 @@ static int 
->> dp_link_process_link_training_request(struct dp_link_private *link)
->>                         link->request.test_lane_count);
->> 
->>         link->dp_link.link_params.num_lanes = 
->> link->request.test_lane_count;
->> -       link->dp_link.link_params.rate = link->request.test_link_rate;
->> +       link->dp_link.link_params.rate =
->> +               
->> drm_dp_bw_code_to_link_rate(link->request.test_link_rate);
-> 
-> Why are we storing bw_code in test_link_rate? This looks very 
-> confusing.
-
-Test_link_rate contains link rate from dpcd read. it need to be convert 
-to real
-rate by timing 2.7Mb before start phy compliance test.
-
-> 
->> 
->>         return 0;
->>  }
+You may be a little bit confused Heiner.
+This series adds support for exactly _that_ meaning of shared interrupts.
+Shared interrupts (aka wired-OR on the PCB) don't work today with the
+PHY library. I have a board that won't even boot to prompt when the
+interrupt lines of its 2 PHYs are enabled, that this series fixes.
+You might need to take another look through the commit messages I'm afraid.
