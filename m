@@ -2,177 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19842A0C9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A712A0C9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgJ3RkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 13:40:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52196 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725922AbgJ3RkX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 13:40:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604079621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ZF7qERUUkIeahbTOL6C12Vf0o83/16+lgKINW+6oyco=;
-        b=ggwEX2+lyBVcS+BoVBTCWcL3RV57VkUGlXEKdJX/1nX6Qivqwo53Ab/Au56uxEOH6zgHrb
-        wR29RAqnHLgjcphFg4MCaGe6+z7FUajZQF0TEJcpqc+75IuDkBYwINQpAQA5TeIpAczfpU
-        t8x6qxyM0fyhHRMythMtDGnx7mysWpg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-525-CPmwK-hqOJeHd46fAALIrg-1; Fri, 30 Oct 2020 13:40:16 -0400
-X-MC-Unique: CPmwK-hqOJeHd46fAALIrg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 957BD192AB64;
-        Fri, 30 Oct 2020 17:40:14 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 472555DA2A;
-        Fri, 30 Oct 2020 17:40:14 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [PATCH] KVM: x86: replace static const variables with macros
-Date:   Fri, 30 Oct 2020 13:40:13 -0400
-Message-Id: <20201030174013.3961199-1-pbonzini@redhat.com>
+        id S1726785AbgJ3RlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 13:41:25 -0400
+Received: from mga09.intel.com ([134.134.136.24]:4222 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725808AbgJ3RlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 13:41:24 -0400
+IronPort-SDR: 8GxfsxPCptwncNyAQlJIyjLW/LrtZY+pDZvAhG8bYnapIafCQzDuCeUd7TVR/sm7o3cZAq6rb0
+ DYym9Lmn2m1w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="168772037"
+X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
+   d="scan'208";a="168772037"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 10:41:24 -0700
+IronPort-SDR: b0Be4jzYegO/3UdojYyXUzVC1mCg86JQfLYNogtyFuZB8dxAUuctMGpHI1SUv/wHEbchSzqDv1
+ dNUceV9qqFtQ==
+X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
+   d="scan'208";a="537141281"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 10:41:23 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kYYPx-002R9t-WC; Fri, 30 Oct 2020 19:42:25 +0200
+Date:   Fri, 30 Oct 2020 19:42:25 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     John Donnelly <john.p.donnelly@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, trix@redhat.com
+Subject: Re: [PATCH 4.14 v2 ] platform/x86: Corrects warning: missing braces
+ around initializer
+Message-ID: <20201030174225.GS4077@smile.fi.intel.com>
+References: <20201030155501.7491-1-john.p.donnelly@oracle.com>
+ <20201030165227.GR4077@smile.fi.intel.com>
+ <105E5DC2-1B23-40BF-95A1-1B8443575AF6@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <105E5DC2-1B23-40BF-95A1-1B8443575AF6@oracle.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even though the compiler is able to replace static const variables with
-their value, it will warn about them being unused when Linux is built with W=1.
-Use good old macros instead, this is not C++.
+On Fri, Oct 30, 2020 at 12:18:44PM -0500, John Donnelly wrote:
+> > On Oct 30, 2020, at 11:52 AM, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > 
+> > On Fri, Oct 30, 2020 at 08:55:01AM -0700, john.p.donnelly@oracle.com wrote:
+> >> From: John Donnelly <john.p.donnelly@oracle.com>
+> >> 
+> >> The assignment statement of a local variable "struct tp_nvram_state s[2] = {0};
+> >> is not valid for all versions of compilers.
+> > 
+> > I don't get the subject. IS it backport of existing change to v4.14, or you are
+> > trying to fix v4.14? If the latter is the case, it's not correct order. Try
+> > latest vanilla first (v5.10-rc1 as of today) and if there is still an issue,
+> > submit a patch.
+> 
+> Hi,
+> 
+>  It is only intended for 4.14. Why would you back port  a commit  to a stable tree that emits warnings ?
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/mmu/mmu.c  | 10 +++++-----
- arch/x86/kvm/mmu/spte.c | 16 ++++++++--------
- arch/x86/kvm/mmu/spte.h | 16 ++++++++--------
- 3 files changed, 21 insertions(+), 21 deletions(-)
+So, if this is for stable, what is the current commit in the kernel of this?
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 17587f496ec7..1f96adff8dc4 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -225,7 +225,7 @@ static gfn_t get_mmio_spte_gfn(u64 spte)
- {
- 	u64 gpa = spte & shadow_nonpresent_or_rsvd_lower_gfn_mask;
- 
--	gpa |= (spte >> shadow_nonpresent_or_rsvd_mask_len)
-+	gpa |= (spte >> SHADOW_NONPRESENT_OR_RSVD_MASK_LEN)
- 	       & shadow_nonpresent_or_rsvd_mask;
- 
- 	return gpa >> PAGE_SHIFT;
-@@ -591,15 +591,15 @@ static u64 mmu_spte_get_lockless(u64 *sptep)
- static u64 restore_acc_track_spte(u64 spte)
- {
- 	u64 new_spte = spte;
--	u64 saved_bits = (spte >> shadow_acc_track_saved_bits_shift)
--			 & shadow_acc_track_saved_bits_mask;
-+	u64 saved_bits = (spte >> SHADOW_ACC_TRACK_SAVED_BITS_SHIFT)
-+			 & SHADOW_ACC_TRACK_SAVED_BITS_MASK;
- 
- 	WARN_ON_ONCE(spte_ad_enabled(spte));
- 	WARN_ON_ONCE(!is_access_track_spte(spte));
- 
- 	new_spte &= ~shadow_acc_track_mask;
--	new_spte &= ~(shadow_acc_track_saved_bits_mask <<
--		      shadow_acc_track_saved_bits_shift);
-+	new_spte &= ~(SHADOW_ACC_TRACK_SAVED_BITS_MASK <<
-+		      SHADOW_ACC_TRACK_SAVED_BITS_SHIFT);
- 	new_spte |= saved_bits;
- 
- 	return new_spte;
-diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index d9c5665a55e9..fcac2cac78fe 100644
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -55,7 +55,7 @@ u64 make_mmio_spte(struct kvm_vcpu *vcpu, u64 gfn, unsigned int access)
- 	mask |= shadow_mmio_value | access;
- 	mask |= gpa | shadow_nonpresent_or_rsvd_mask;
- 	mask |= (gpa & shadow_nonpresent_or_rsvd_mask)
--		<< shadow_nonpresent_or_rsvd_mask_len;
-+		<< SHADOW_NONPRESENT_OR_RSVD_MASK_LEN;
- 
- 	return mask;
- }
-@@ -231,12 +231,12 @@ u64 mark_spte_for_access_track(u64 spte)
- 		  !spte_can_locklessly_be_made_writable(spte),
- 		  "kvm: Writable SPTE is not locklessly dirty-trackable\n");
- 
--	WARN_ONCE(spte & (shadow_acc_track_saved_bits_mask <<
--			  shadow_acc_track_saved_bits_shift),
-+	WARN_ONCE(spte & (SHADOW_ACC_TRACK_SAVED_BITS_MASK <<
-+			  SHADOW_ACC_TRACK_SAVED_BITS_SHIFT),
- 		  "kvm: Access Tracking saved bit locations are not zero\n");
- 
--	spte |= (spte & shadow_acc_track_saved_bits_mask) <<
--		shadow_acc_track_saved_bits_shift;
-+	spte |= (spte & SHADOW_ACC_TRACK_SAVED_BITS_MASK) <<
-+		SHADOW_ACC_TRACK_SAVED_BITS_SHIFT;
- 	spte &= ~shadow_acc_track_mask;
- 
- 	return spte;
-@@ -245,7 +245,7 @@ u64 mark_spte_for_access_track(u64 spte)
- void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 access_mask)
- {
- 	BUG_ON((u64)(unsigned)access_mask != access_mask);
--	WARN_ON(mmio_value & (shadow_nonpresent_or_rsvd_mask << shadow_nonpresent_or_rsvd_mask_len));
-+	WARN_ON(mmio_value & (shadow_nonpresent_or_rsvd_mask << SHADOW_NONPRESENT_OR_RSVD_MASK_LEN));
- 	WARN_ON(mmio_value & shadow_nonpresent_or_rsvd_lower_gfn_mask);
- 	shadow_mmio_value = mmio_value | SPTE_MMIO_MASK;
- 	shadow_mmio_access_mask = access_mask;
-@@ -306,9 +306,9 @@ void kvm_mmu_reset_all_pte_masks(void)
- 	low_phys_bits = boot_cpu_data.x86_phys_bits;
- 	if (boot_cpu_has_bug(X86_BUG_L1TF) &&
- 	    !WARN_ON_ONCE(boot_cpu_data.x86_cache_bits >=
--			  52 - shadow_nonpresent_or_rsvd_mask_len)) {
-+			  52 - SHADOW_NONPRESENT_OR_RSVD_MASK_LEN)) {
- 		low_phys_bits = boot_cpu_data.x86_cache_bits
--			- shadow_nonpresent_or_rsvd_mask_len;
-+			- SHADOW_NONPRESENT_OR_RSVD_MASK_LEN;
- 		shadow_nonpresent_or_rsvd_mask =
- 			rsvd_bits(low_phys_bits, boot_cpu_data.x86_cache_bits - 1);
- 	}
-diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-index 4ecf40e0b8fe..5c75a451c000 100644
---- a/arch/x86/kvm/mmu/spte.h
-+++ b/arch/x86/kvm/mmu/spte.h
-@@ -104,20 +104,20 @@ extern u64 __read_mostly shadow_acc_track_mask;
-  */
- extern u64 __read_mostly shadow_nonpresent_or_rsvd_mask;
- 
-+/*
-+ * The number of high-order 1 bits to use in the mask above.
-+ */
-+#define SHADOW_NONPRESENT_OR_RSVD_MASK_LEN 5
-+
- /*
-  * The mask/shift to use for saving the original R/X bits when marking the PTE
-  * as not-present for access tracking purposes. We do not save the W bit as the
-  * PTEs being access tracked also need to be dirty tracked, so the W bit will be
-  * restored only when a write is attempted to the page.
-  */
--static const u64 shadow_acc_track_saved_bits_mask = PT64_EPT_READABLE_MASK |
--						    PT64_EPT_EXECUTABLE_MASK;
--static const u64 shadow_acc_track_saved_bits_shift = PT64_SECOND_AVAIL_BITS_SHIFT;
--
--/*
-- * The number of high-order 1 bits to use in the mask above.
-- */
--static const u64 shadow_nonpresent_or_rsvd_mask_len = 5;
-+#define SHADOW_ACC_TRACK_SAVED_BITS_MASK (PT64_EPT_READABLE_MASK | \
-+					  PT64_EPT_EXECUTABLE_MASK)
-+#define SHADOW_ACC_TRACK_SAVED_BITS_SHIFT PT64_SECOND_AVAIL_BITS_SHIFT
- 
- /*
-  * In some cases, we need to preserve the GFN of a non-present or reserved
+> >> Fixes: 515ded02bc4b ("platform/x86: thinkpad_acpi: initialize tp_nvram_state variable")
+> >> 
+> >> Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
+> > 
+> > Should not be blank line in between.
+
 -- 
-2.26.2
+With Best Regards,
+Andy Shevchenko
+
 
