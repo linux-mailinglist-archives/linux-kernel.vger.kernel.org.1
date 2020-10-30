@@ -2,255 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE9D2A0B95
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 183B72A0BA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727267AbgJ3Qpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:45:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgJ3Qpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:45:52 -0400
-Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93D67222C4;
-        Fri, 30 Oct 2020 16:45:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604076351;
-        bh=+jA2F9SMD4SmqlEYokxQXsS4s9/IZa7HKNWZZqlIi2Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YYTHWlO3JBmZiI1FE3jXZkY+bXpIDujpCSreTR6tMg1ZANqwk5dQcoGO/nbRKYq8T
-         Arjm21hegOFJph39VaM+JPy+Te5c9oFx3GCOxYuZLPZXinwSNrhkzrJUamyWSDRf2/
-         Z8EOTZy8kkny1/htBZ+ZRffEajFNK80+6RgTromU=
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
-        Anand Lodnoor <anand.lodnoor@broadcom.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        Hannes Reinecke <hare@suse.de>, megaraidlinux.pdl@broadcom.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] scsi: megaraid_sas: simplify compat_ioctl handling
-Date:   Fri, 30 Oct 2020 17:44:21 +0100
-Message-Id: <20201030164450.1253641-3-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201030164450.1253641-1-arnd@kernel.org>
-References: <20201030164450.1253641-1-arnd@kernel.org>
+        id S1726692AbgJ3Qrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 12:47:47 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:36315 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgJ3Qrq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:47:46 -0400
+Received: by mail-oi1-f193.google.com with SMTP id d9so1287379oib.3;
+        Fri, 30 Oct 2020 09:47:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qbBstdJF6lGYUkgMfbYRnDBzY8X2ICeJU7MFuE1dEQk=;
+        b=LTrfBF11vAxV9dwVMW2xJPWVxrIzBvykfBtny9VTQgZXq3qia61z1iZ5sO/cB3QQKW
+         0wW6TdivNx5eRk1TlRA9tQL/baii5emUMbS+F7eGntgpOfk0DAG1pTwQJ4UiQINCtJzY
+         pOZhQIBOUCdV/ZfRXizbQV0x4bFbfW8tTRHpR2I+H44xOyD2lxKL3xrkP84+fcEjM0EQ
+         SvwQcmlPBDCTbAFyCN/Z7bXA46SIpm+SarEofbM4l1EzbkK3ar39kk4XiLZ1M8teIBPl
+         YmR2FgtVEaUAOwWLL8RZL8E0C1CYHLU/XLMnGePvTUpe4WAHLJaqO7fLWKBlADq3QCWk
+         QOHw==
+X-Gm-Message-State: AOAM530XbUKDDEFfq1iv82tVZKgB193BwkNN/+ZMGKNLhxNFJyseTFdH
+        oVAFLakfLslHjvIE3Y3jJQ==
+X-Google-Smtp-Source: ABdhPJzdcsQqAHak2T12Li0TXyhwHSilYrAQGNK76OohNpykaBDznTKvLv+Xg1UpohlJ9Q/gE8hUlQ==
+X-Received: by 2002:aca:4cd6:: with SMTP id z205mr2190199oia.32.1604076465380;
+        Fri, 30 Oct 2020 09:47:45 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i12sm1557959oon.26.2020.10.30.09.47.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 09:47:44 -0700 (PDT)
+Received: (nullmailer pid 3974942 invoked by uid 1000);
+        Fri, 30 Oct 2020 16:47:43 -0000
+Date:   Fri, 30 Oct 2020 11:47:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     jkosina@suse.cz, benjamin.tissoires@redhat.com,
+        gregkh@linuxfoundation.org, andrea@borgia.bo.it,
+        kai.heng.feng@canonical.com, linux-input@vger.kernel.org,
+        swboyd@chromium.org, hdegoede@redhat.com,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: HID: i2c-hid: Label this binding as
+ deprecated
+Message-ID: <20201030164743.GA3967106@bogus>
+References: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Oct 23, 2020 at 04:22:52PM -0700, Douglas Anderson wrote:
+> As pointed out by Rob Herring [1], we should have a device-specific
+> compatible string.  This means people shouldn't be using the
+> "i2c-over-hid" compatible string anymore, or at least not without a
+> more specific compatible string before it.  Specifically:
+> 
+> 1. For newly added devices we should just have the device-specific
+>    device string (no "hid-over-i2c" fallback) and infer the timings
+>    and hid-descr-addr from there.
 
-There have been several attempts to fix serious problems
-in the compat handling in megasas_mgmt_compat_ioctl_fw(),
-and it also uses the compat_alloc_user_space() function.
+I wouldn't go that far. Having a fallback is perfectly acceptible. And 
+hopefully there are at least some devices where that's good enough for 
+drivers to use.
 
-Folding the compat handling into the regular ioctl
-function with in_compat_syscall() simplifies it a lot and
-avoids some of the remaining problems:
+If we have cases of only 'i2c-over-hid' being used (in DT), then the 
+solution is making this a schema so we can enforce that as not valid.
 
-- missing handling of unaligned pointers
-- overflowing the ioc->frame.raw array from
-  invalid input
-- compat_alloc_user_space()
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
----
-v3: address even more review comments from hch
-v2: address review comments from hch
----
- drivers/scsi/megaraid/megaraid_sas.h      |   2 -
- drivers/scsi/megaraid/megaraid_sas_base.c | 117 +++++++++-------------
- 2 files changed, 45 insertions(+), 74 deletions(-)
-
-diff --git a/drivers/scsi/megaraid/megaraid_sas.h b/drivers/scsi/megaraid/megaraid_sas.h
-index 5e4137f10e0e..0f808d63580e 100644
---- a/drivers/scsi/megaraid/megaraid_sas.h
-+++ b/drivers/scsi/megaraid/megaraid_sas.h
-@@ -2605,7 +2605,6 @@ struct megasas_aen {
- 	u32 class_locale_word;
- } __attribute__ ((packed));
- 
--#ifdef CONFIG_COMPAT
- struct compat_megasas_iocpacket {
- 	u16 host_no;
- 	u16 __pad1;
-@@ -2621,7 +2620,6 @@ struct compat_megasas_iocpacket {
- } __attribute__ ((packed));
- 
- #define MEGASAS_IOC_FIRMWARE32	_IOWR('M', 1, struct compat_megasas_iocpacket)
--#endif
- 
- #define MEGASAS_IOC_FIRMWARE	_IOWR('M', 1, struct megasas_iocpacket)
- #define MEGASAS_IOC_GET_AEN	_IOW('M', 3, struct megasas_aen)
-diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-index b1b9a8823c8c..88735dede051 100644
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -8318,16 +8318,19 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
- 	 * copy out the sense
- 	 */
- 	if (ioc->sense_len) {
-+		void __user *uptr;
- 		/*
- 		 * sense_ptr points to the location that has the user
- 		 * sense buffer address
- 		 */
--		sense_ptr = (unsigned long *) ((unsigned long)ioc->frame.raw +
--				ioc->sense_off);
-+		sense_ptr = (void *)ioc->frame.raw + ioc->sense_off;
-+		if (in_compat_syscall())
-+			uptr = compat_ptr(get_unaligned((compat_uptr_t *)
-+							sense_ptr));
-+		else
-+			uptr = get_unaligned((void __user **)sense_ptr);
- 
--		if (copy_to_user((void __user *)((unsigned long)
--				 get_unaligned((unsigned long *)sense_ptr)),
--				 sense, ioc->sense_len)) {
-+		if (copy_to_user(uptr, sense, ioc->sense_len)) {
- 			dev_err(&instance->pdev->dev, "Failed to copy out to user "
- 					"sense data\n");
- 			error = -EFAULT;
-@@ -8370,6 +8373,37 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
- 	return error;
- }
- 
-+static struct megasas_iocpacket *
-+megasas_compat_iocpacket_get_user(void __user *arg)
-+{
-+	struct megasas_iocpacket *ioc;
-+	struct compat_megasas_iocpacket __user *cioc = arg;
-+	size_t size;
-+	int err = -EFAULT;
-+	int i;
-+
-+	ioc = kzalloc(sizeof(*ioc), GFP_KERNEL);
-+	if (!ioc)
-+		return ERR_PTR(-ENOMEM);
-+	size = offsetof(struct megasas_iocpacket, frame) + sizeof(ioc->frame);
-+	if (copy_from_user(ioc, arg, size))
-+		goto out;
-+
-+	for (i = 0; i < MAX_IOCTL_SGE; i++) {
-+		compat_uptr_t iov_base;
-+		if (get_user(iov_base, &cioc->sgl[i].iov_base) ||
-+		    get_user(ioc->sgl[i].iov_len, &cioc->sgl[i].iov_len))
-+			goto out;
-+
-+		ioc->sgl[i].iov_base = compat_ptr(iov_base);
-+	}
-+
-+	return ioc;
-+out:
-+	kfree(ioc);
-+	return ERR_PTR(err);
-+}
-+
- static int megasas_mgmt_ioctl_fw(struct file *file, unsigned long arg)
- {
- 	struct megasas_iocpacket __user *user_ioc =
-@@ -8378,7 +8412,11 @@ static int megasas_mgmt_ioctl_fw(struct file *file, unsigned long arg)
- 	struct megasas_instance *instance;
- 	int error;
- 
--	ioc = memdup_user(user_ioc, sizeof(*ioc));
-+	if (in_compat_syscall())
-+		ioc = megasas_compat_iocpacket_get_user(user_ioc);
-+	else
-+		ioc = memdup_user(user_ioc, sizeof(struct megasas_iocpacket));
-+
- 	if (IS_ERR(ioc))
- 		return PTR_ERR(ioc);
- 
-@@ -8483,78 +8521,13 @@ megasas_mgmt_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- }
- 
- #ifdef CONFIG_COMPAT
--static int megasas_mgmt_compat_ioctl_fw(struct file *file, unsigned long arg)
--{
--	struct compat_megasas_iocpacket __user *cioc =
--	    (struct compat_megasas_iocpacket __user *)arg;
--	struct megasas_iocpacket __user *ioc =
--	    compat_alloc_user_space(sizeof(struct megasas_iocpacket));
--	int i;
--	int error = 0;
--	compat_uptr_t ptr;
--	u32 local_sense_off;
--	u32 local_sense_len;
--	u32 user_sense_off;
--
--	if (clear_user(ioc, sizeof(*ioc)))
--		return -EFAULT;
--
--	if (copy_in_user(&ioc->host_no, &cioc->host_no, sizeof(u16)) ||
--	    copy_in_user(&ioc->sgl_off, &cioc->sgl_off, sizeof(u32)) ||
--	    copy_in_user(&ioc->sense_off, &cioc->sense_off, sizeof(u32)) ||
--	    copy_in_user(&ioc->sense_len, &cioc->sense_len, sizeof(u32)) ||
--	    copy_in_user(ioc->frame.raw, cioc->frame.raw, 128) ||
--	    copy_in_user(&ioc->sge_count, &cioc->sge_count, sizeof(u32)))
--		return -EFAULT;
--
--	/*
--	 * The sense_ptr is used in megasas_mgmt_fw_ioctl only when
--	 * sense_len is not null, so prepare the 64bit value under
--	 * the same condition.
--	 */
--	if (get_user(local_sense_off, &ioc->sense_off) ||
--		get_user(local_sense_len, &ioc->sense_len) ||
--		get_user(user_sense_off, &cioc->sense_off))
--		return -EFAULT;
--
--	if (local_sense_off != user_sense_off)
--		return -EINVAL;
--
--	if (local_sense_len) {
--		void __user **sense_ioc_ptr =
--			(void __user **)((u8 *)((unsigned long)&ioc->frame.raw) + local_sense_off);
--		compat_uptr_t *sense_cioc_ptr =
--			(compat_uptr_t *)(((unsigned long)&cioc->frame.raw) + user_sense_off);
--		if (get_user(ptr, sense_cioc_ptr) ||
--		    put_user(compat_ptr(ptr), sense_ioc_ptr))
--			return -EFAULT;
--	}
--
--	for (i = 0; i < MAX_IOCTL_SGE; i++) {
--		if (get_user(ptr, &cioc->sgl[i].iov_base) ||
--		    put_user(compat_ptr(ptr), &ioc->sgl[i].iov_base) ||
--		    copy_in_user(&ioc->sgl[i].iov_len,
--				 &cioc->sgl[i].iov_len, sizeof(compat_size_t)))
--			return -EFAULT;
--	}
--
--	error = megasas_mgmt_ioctl_fw(file, (unsigned long)ioc);
--
--	if (copy_in_user(&cioc->frame.hdr.cmd_status,
--			 &ioc->frame.hdr.cmd_status, sizeof(u8))) {
--		printk(KERN_DEBUG "megasas: error copy_in_user cmd_status\n");
--		return -EFAULT;
--	}
--	return error;
--}
--
- static long
- megasas_mgmt_compat_ioctl(struct file *file, unsigned int cmd,
- 			  unsigned long arg)
- {
- 	switch (cmd) {
- 	case MEGASAS_IOC_FIRMWARE32:
--		return megasas_mgmt_compat_ioctl_fw(file, arg);
-+		return megasas_mgmt_ioctl_fw(file, arg);
- 	case MEGASAS_IOC_GET_AEN:
- 		return megasas_mgmt_ioctl_aen(file, arg);
- 	}
--- 
-2.27.0
-
+> 
+> 2. If there's a need for a device tree to be backward compatible, we
+>    should list the device-specific compatible string and add the
+>    "hid-over-i2c" fallback and the various timings.
+> 
+> [1] https://lore.kernel.org/r/20201019211036.GA3595039@bogus
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> Changes in v2:
+> - ("dt-bindings: HID: i2c-hid: Label this binding as deprecated") new in v2.
+> 
+>  Documentation/devicetree/bindings/input/hid-over-i2c.txt | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/input/hid-over-i2c.txt b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
+> index c76bafaf98d2..733a5f053280 100644
+> --- a/Documentation/devicetree/bindings/input/hid-over-i2c.txt
+> +++ b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
+> @@ -1,5 +1,8 @@
+>  * HID over I2C Device-Tree bindings
+>  
+> +WARNING: this binding is deprecated.  Instead of using this, create specific
+> +bindings for each hid-over-i2c device.
+> +
+>  HID over I2C provides support for various Human Interface Devices over the
+>  I2C bus. These devices can be for example touchpads, keyboards, touch screens
+>  or sensors.
+> -- 
+> 2.29.0.rc1.297.gfa9743e501-goog
+> 
