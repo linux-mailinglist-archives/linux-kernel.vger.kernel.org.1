@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BBD2A0F40
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A5F2A0F48
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 21:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727550AbgJ3UNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 16:13:18 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38714 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727362AbgJ3UNA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 16:13:00 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09UKCtsd105958;
-        Fri, 30 Oct 2020 15:12:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604088775;
-        bh=nWVRfmVC8p1aTgFeGwMeYBz7Vd7oRys8RCcXEhmnEG0=;
-        h=From:To:CC:Subject:Date;
-        b=ixHhZI2S2JENnML2Lsv40o0varPLvIaqC2mr+QJHx1UHVepdGsyS30n86sC8tE/3S
-         2E8v7t27RN6FK4pKxgX0D8juf5hwq5E8TK/GsaZrHOLv0dCToOsQgjwtgpaUyRWoV0
-         P53Vw69Y9kZVLGjKIw6YTHYWWzQSAuq0S07edaYQ=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09UKCtWx043603
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Oct 2020 15:12:55 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 30
- Oct 2020 15:12:55 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 30 Oct 2020 15:12:55 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09UKCsNG018741;
-        Fri, 30 Oct 2020 15:12:54 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-pwm@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH] pwm: tiehrpwm: handle deferred probe with dev_err_probe()
-Date:   Fri, 30 Oct 2020 22:12:54 +0200
-Message-ID: <20201030201254.24557-1-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727159AbgJ3UQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 16:16:53 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:55398 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725975AbgJ3UPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 16:15:23 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kYanr-004PQx-Th; Fri, 30 Oct 2020 21:15:15 +0100
+Date:   Fri, 30 Oct 2020 21:15:15 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     davem@davemloft.net, f.fainelli@gmail.com, hkallweit1@gmail.com,
+        robh@kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 4/4] net: phy: dp83td510: Add support for the
+ DP83TD510 Ethernet PHY
+Message-ID: <20201030201515.GE1042051@lunn.ch>
+References: <20201030172950.12767-1-dmurphy@ti.com>
+ <20201030172950.12767-5-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030172950.12767-5-dmurphy@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The devm_clk_get() may return -EPROBE_DEFER which is not handled properly
-by TI EHRPWM driver and causes unnecessary boot log messages.
+> +static int dp83td510_config_init(struct phy_device *phydev)
+> +{
+> +	struct dp83td510_private *dp83td510 = phydev->priv;
+> +	int mst_slave_cfg;
+> +	int ret = 0;
+> +
+> +	if (phy_interface_is_rgmii(phydev)) {
+> +		if (dp83td510->rgmii_delay) {
+> +			ret = phy_set_bits_mmd(phydev, DP83TD510_DEVADDR,
+> +					       DP83TD510_MAC_CFG_1, dp83td510->rgmii_delay);
+> +			if (ret)
+> +				return ret;
+> +		}
+> +	}
 
-Hence, add proper deferred probe handling with new dev_err_probe() API.
+Hi Dan
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/pwm/pwm-tiehrpwm.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+I'm getting a bit paranoid about RGMII delays...
 
-diff --git a/drivers/pwm/pwm-tiehrpwm.c b/drivers/pwm/pwm-tiehrpwm.c
-index 0846917ff2d2..14c8fdcfd607 100644
---- a/drivers/pwm/pwm-tiehrpwm.c
-+++ b/drivers/pwm/pwm-tiehrpwm.c
-@@ -437,10 +437,8 @@ static int ehrpwm_pwm_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	if (IS_ERR(clk)) {
--		dev_err(&pdev->dev, "failed to get clock\n");
--		return PTR_ERR(clk);
--	}
-+	if (IS_ERR(clk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(clk), "Failed to get fck\n");
- 
- 	pc->clk_rate = clk_get_rate(clk);
- 	if (!pc->clk_rate) {
-@@ -462,10 +460,8 @@ static int ehrpwm_pwm_probe(struct platform_device *pdev)
- 
- 	/* Acquire tbclk for Time Base EHRPWM submodule */
- 	pc->tbclk = devm_clk_get(&pdev->dev, "tbclk");
--	if (IS_ERR(pc->tbclk)) {
--		dev_err(&pdev->dev, "Failed to get tbclk\n");
--		return PTR_ERR(pc->tbclk);
--	}
-+	if (IS_ERR(pc->tbclk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(pc->tbclk), "Failed to get tbclk\n");
- 
- 	ret = clk_prepare(pc->tbclk);
- 	if (ret < 0) {
--- 
-2.17.1
+> +static int dp83td510_read_straps(struct phy_device *phydev)
+> +{
+> +	struct dp83td510_private *dp83td510 = phydev->priv;
+> +	int strap;
+> +
+> +	strap = phy_read_mmd(phydev, DP83TD510_DEVADDR, DP83TD510_SOR_1);
+> +	if (strap < 0)
+> +		return strap;
+> +
+> +	if (strap & DP83TD510_RGMII)
+> +		dp83td510->is_rgmii = true;
+> +
+> +	return 0;
+> +};
 
+So dp83td510->is_rgmii is the strapping configuration. So if one of
+the four RGMII modes is selected, your appear to ignore which of the
+four is selected, and program the hardware with the strapping?
+
+That seems like a bad idea.
+
+> +#if IS_ENABLED(CONFIG_OF_MDIO)
+> +static int dp83td510_of_init(struct phy_device *phydev)
+> +{
+> +	struct dp83td510_private *dp83td510 = phydev->priv;
+> +	struct device *dev = &phydev->mdio.dev;
+> +	struct device_node *of_node = dev->of_node;
+> +	s32 rx_int_delay;
+> +	s32 tx_int_delay;
+> +	int ret;
+> +
+> +	if (!of_node)
+> +		return -ENODEV;
+> +
+> +	ret = dp83td510_read_straps(phydev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	dp83td510->hi_diff_output = device_property_read_bool(&phydev->mdio.dev,
+> +							      "tx-rx-output-high");
+> +
+> +	if (device_property_read_u32(&phydev->mdio.dev, "tx-fifo-depth",
+> +				     &dp83td510->tx_fifo_depth))
+> +		dp83td510->tx_fifo_depth = DP83TD510_FIFO_DEPTH_5_B_NIB;
+
+Please don't use device_property_read_foo API, we don't want to give
+the impression it is O.K. to stuff DT properties in ACPI
+tables. Please use of_ API calls.
+
+	Andrew
