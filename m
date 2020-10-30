@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0C62A036E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B05F82A037E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 11:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgJ3K4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 06:56:07 -0400
-Received: from mga17.intel.com ([192.55.52.151]:15924 "EHLO mga17.intel.com"
+        id S1726447AbgJ3K6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 06:58:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53440 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726264AbgJ3K4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:56:06 -0400
-IronPort-SDR: LwHVUYN1C0iCbJfqPRGJxmbUQcrIpY8EZIDyKDlz5UEQ5/UAMhNzOttAfjEOwz7X3Qy2bxet8n
- hNJ5B5FOjhAA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="148445230"
-X-IronPort-AV: E=Sophos;i="5.77,432,1596524400"; 
-   d="scan'208";a="148445230"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 03:56:05 -0700
-IronPort-SDR: nS9L64s7t5R4vQpINI5Y5ZhzpletvmYNGNqKG8H66PMWwQiDlUL+FeCPDG7Iip7R0hK5QDaj14
- JULuPfzHQjyA==
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
-   d="scan'208";a="351823148"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 03:56:04 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kYS5i-001xiM-VN; Fri, 30 Oct 2020 12:57:06 +0200
-Date:   Fri, 30 Oct 2020 12:57:06 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH] devres: zero the memory in devm_krealloc() if needed
-Message-ID: <20201030105706.GK4077@smile.fi.intel.com>
-References: <20201026122728.8522-1-brgl@bgdev.pl>
- <20201026131427.GF4077@smile.fi.intel.com>
- <CAMRc=MfuejMqpcfOedPMMTR3EY6s2K+4whoWyk7RmJYPaB176w@mail.gmail.com>
+        id S1725948AbgJ3K57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:57:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7B635AB0E;
+        Fri, 30 Oct 2020 10:57:57 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 0B5C21E12D9; Fri, 30 Oct 2020 11:57:52 +0100 (CET)
+Date:   Fri, 30 Oct 2020 11:57:52 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luca BRUNO <lucab@redhat.com>
+Subject: Re: [PATCH v3] inotify: Increase default inotify.max_user_watches
+ limit to 1048576
+Message-ID: <20201030105752.GB19757@quack2.suse.cz>
+References: <20201029194256.7954-1-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMRc=MfuejMqpcfOedPMMTR3EY6s2K+4whoWyk7RmJYPaB176w@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201029194256.7954-1-longman@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 10:03:50AM +0100, Bartosz Golaszewski wrote:
-> On Thu, Oct 29, 2020 at 9:05 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Mon, Oct 26, 2020 at 01:27:28PM +0100, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > >
-> > > If we're returning the same pointer (when new size is smaller or equal
-> > > to the old size) we need to check if the user wants the memory zeroed
-> > > and memset() it manually if so.
-> >
-> > Any use case? Because to me it sounds contradictory to the whole idea of [k]realloc().
+On Thu 29-10-20 15:42:56, Waiman Long wrote:
+> The default value of inotify.max_user_watches sysctl parameter was set
+> to 8192 since the introduction of the inotify feature in 2005 by
+> commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
+> small for many modern usage. As a result, users have to explicitly set
+> it to a larger value to make it work.
 > 
-> This is kind of a gray area in original krealloc() too and I want to
-> submit a patch for mm too. Right now krealloc ignores the __GFP_ZERO
-> flag if new_size <= old_size but zeroes the memory if new_size >
-> old_size.
+> After some searching around the web, these are the
+> inotify.max_user_watches values used by some projects:
+>  - vscode:  524288
+>  - dropbox support: 100000
+>  - users on stackexchange: 12228
+>  - lsyncd user: 2000000
+>  - code42 support: 1048576
+>  - monodevelop: 16384
+>  - tectonic: 524288
+>  - openshift origin: 65536
+> 
+> Each watch point adds an inotify_inode_mark structure to an inode to
+> be watched. It also pins the watched inode.
+> 
+> Modeled after the epoll.max_user_watches behavior to adjust the default
+> value according to the amount of addressable memory available, make
+> inotify.max_user_watches behave in a similar way to make it use no more
+> than 1% of addressable memory within the range [8192, 1048576].
+> 
+> For 64-bit archs, inotify_inode_mark plus 2 vfs inode have a size that
+> is a bit over 1 kbytes (1284 bytes with my x86-64 config).  That means
+> a system with 128GB or more memory will likely have the maximum value
+> of 1048576 for inotify.max_user_watches. This default should be big
+> enough for most use cases.
+> 
+> [v3: increase inotify watch cost as suggested by Amir and Honza]
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-> This should be consistent - either ignore __GFP_ZERO or
-> don't ignore it in both cases. I think that not ignoring it is better
-> - if user passes it then it's for a reason.
+Overall this looks fine. Some remaining nits below.
 
-Sorry, but I consider in these two choices the best is the former one, i.e.
-ignoring, because non-ignoring for sizes less than current is counter the
-REalloc() by definition.
+> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+> index 186722ba3894..f8065eda3a02 100644
+> --- a/fs/notify/inotify/inotify_user.c
+> +++ b/fs/notify/inotify/inotify_user.c
+> @@ -37,6 +37,15 @@
+>  
+>  #include <asm/ioctls.h>
+>  
+> +/*
+> + * An inotify watch requires allocating an inotify_inode_mark structure as
+> + * well as pinning the watched inode. Doubling the size of a VFS inode
+> + * should be more than enough to cover the additional filesystem inode
+> + * size increase.
+> + */
+> +#define INOTIFY_WATCH_COST	(sizeof(struct inotify_inode_mark) + \
+> +				 2 * sizeof(struct inode))
+> +
+>  /* configurable via /proc/sys/fs/inotify/ */
+>  static int inotify_max_queued_events __read_mostly;
+>  
+> @@ -801,6 +810,18 @@ SYSCALL_DEFINE2(inotify_rm_watch, int, fd, __s32, wd)
+>   */
+>  static int __init inotify_user_setup(void)
+>  {
+> +	unsigned int watches_max;
+> +	struct sysinfo si;
+> +
+> +	si_meminfo(&si);
+> +	/*
+> +	 * Allow up to 1% of addressible memory to be allocated for inotify
+			     ^^^^ addressable
 
-Reading realloc(3):
+> +	 * watches (per user) limited to the range [8192, 1048576].
+> +	 */
+> +	watches_max = (((si.totalram - si.totalhigh) / 100) << PAGE_SHIFT) /
+> +			INOTIFY_WATCH_COST;
+			^^^ So for machines with > 1TB of memory
+watches_max would overflow. So you probably need to use ulong for that.
 
-"If the new size is larger than the old size, the added memory will not be
-initialized."
 
-So, supports my choice over yours.
+> +	watches_max = min(1048576U, max(watches_max, 8192U));
+			^^^ use clamp() here?
 
+								Honza
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
