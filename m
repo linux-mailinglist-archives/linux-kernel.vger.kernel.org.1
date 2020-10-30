@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B872A0D6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC1C2A0DAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 19:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727220AbgJ3Sar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 14:30:47 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:36972 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726077AbgJ3Sar (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:30:47 -0400
-Received: by mail-oi1-f193.google.com with SMTP id f7so7615980oib.4;
-        Fri, 30 Oct 2020 11:30:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QrmnJIsZek+6v0j51YfZGHsJ+9KRVg/TT4Jzj75T2uA=;
-        b=ccSQxBT1YIXCEuEMhVL5U55w7OyBjNIedRPZWXngxYp2zWDI+m65YDm4M7TO9LMRH1
-         naTFIyFzLra2ALXKFaSt52GLpmWbPkVhr/02c5bvTs6t8pOX4sukVA3C3Bod9pcOHYkw
-         wGKY9BGQdMoB/tjsONLVGspTEum6YDqz7+YMRwwxNiwWCTOKD2NUyD+iATTt3u4UBjYP
-         is7tXlt2JnCNjRB14nk/GOxqaqZdjcg7pubL26qmh4OrTEVxm01uHoc4Tl049FQd828h
-         rZA9d5PHULln266L2KKifrDnARfdrjvRhHTvMLYRLx0zon895cyDBCSJojlIi/H0lmny
-         2CGQ==
-X-Gm-Message-State: AOAM532qaBIoLlvgpLTy2xk+cf9e6OyjE7vMpk2A8qGMRWg7ibGsZO8Q
-        UjVg+R7526oXpOt/uObGJQ==
-X-Google-Smtp-Source: ABdhPJyZwJ+Fonq1rApuq37boJzzXKMkdyr4H7SFDycPxA4yKjYT/6HrwVUk1PRhyUO6NNBjY6mjLw==
-X-Received: by 2002:aca:e185:: with SMTP id y127mr2636104oig.57.1604082646098;
-        Fri, 30 Oct 2020 11:30:46 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m10sm1556836oon.27.2020.10.30.11.30.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 11:30:45 -0700 (PDT)
-Received: (nullmailer pid 4108748 invoked by uid 1000);
-        Fri, 30 Oct 2020 18:30:44 -0000
-Date:   Fri, 30 Oct 2020 13:30:44 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>, marex@denx.de,
-        devicetree@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>, abel.vesa@nxp.com,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [RFC 2/3] dt-bindings: reset: imx8mn: Add media blk_ctl reset IDs
-Message-ID: <20201030183044.GA4108700@bogus>
-References: <20201024162016.1003041-1-aford173@gmail.com>
- <20201024162016.1003041-3-aford173@gmail.com>
+        id S1727308AbgJ3SnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 14:43:24 -0400
+Received: from m12-13.163.com ([220.181.12.13]:57815 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725975AbgJ3SnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 14:43:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=r3Pis
+        AmoB8zoaScdLcnMR1LEUmjIXEEB4sONesOEdjQ=; b=lFTsSwHoYDkpwaUQk1ulL
+        /3hlEgXX0Ezg4R206hr3tq5O0LrGy1qWGYVL9M4rTR4k7tBpxNx+tahaL2zVNh73
+        /fKnMB7mZsqqztImnptKN2yl3IMrdEmGy3sH35juY8DswSiwm67zko1F37yKhmPb
+        pzZSMQQAjFYz8pGs47u6DM=
+Received: from localhost (unknown [101.86.209.82])
+        by smtp9 (Coremail) with SMTP id DcCowACnCGj4Wpxfg5sdOA--.7945S2;
+        Sat, 31 Oct 2020 02:27:05 +0800 (CST)
+Date:   Sat, 31 Oct 2020 02:27:04 +0800
+From:   Hui Su <sh_def@163.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] mm/oom_kill: change comment and rename
+ is_dump_unreclaim_slabs()
+Message-ID: <20201030182704.GA53949@rlk>
+References: <20201027144529.GA3558@rlk>
+ <20201027145814.GY20500@dhcp22.suse.cz>
+ <20201027151156.GA4336@rlk>
+ <20201027192322.GA20500@dhcp22.suse.cz>
+ <20201028153141.GB77196@rlk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201024162016.1003041-3-aford173@gmail.com>
+In-Reply-To: <20201028153141.GB77196@rlk>
+X-CM-TRANSID: DcCowACnCGj4Wpxfg5sdOA--.7945S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Ary7AF4fAFykZr15Zry7Jrb_yoW8GFW3p3
+        Z3ta4Utw4rtFZIqFZ3CF4q9F1Fv3y8KF9xGry3Kw1UCw15Jw1Duay8CryjkrnxXFyxGFsx
+        XrWakr1kZF1UZ3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jPnYwUUUUU=
+X-Originating-IP: [101.86.209.82]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbifxnNX1r6mZj43AAAsx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 24 Oct 2020 11:20:14 -0500, Adam Ford wrote:
-> These will be used by the imx8mn for blk_ctl driver.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> ---
->  include/dt-bindings/reset/imx8mn-reset.h | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
+Change the comment of is_dump_unreclaim_slabs(), it just check
+whether nr_unreclaimable slabs amount is greater than user
+memory, and explain why we dump unreclaim slabs.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Rename it to should_dump_unreclaim_slab() maybe better.
+
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ mm/oom_kill.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 8b84661a6410..04b19b7b5435 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -170,11 +170,13 @@ static bool oom_unkillable_task(struct task_struct *p)
+ 	return false;
+ }
+ 
+-/*
+- * Print out unreclaimble slabs info when unreclaimable slabs amount is greater
+- * than all user memory (LRU pages)
+- */
+-static bool is_dump_unreclaim_slabs(void)
++/**
++ * Check whether unreclaimable slab amount is greater than
++ * all user memory(LRU pages).
++ * dump_unreclaimable_slab() could help in the case that
++ * oom due to too much unreclaimable slab used by kernel.
++*/
++static bool should_dump_unreclaim_slab(void)
+ {
+ 	unsigned long nr_lru;
+ 
+@@ -463,7 +465,7 @@ static void dump_header(struct oom_control *oc, struct task_struct *p)
+ 		mem_cgroup_print_oom_meminfo(oc->memcg);
+ 	else {
+ 		show_mem(SHOW_MEM_FILTER_NODES, oc->nodemask);
+-		if (is_dump_unreclaim_slabs())
++		if (should_dump_unreclaim_slab())
+ 			dump_unreclaimable_slab();
+ 	}
+ 	if (sysctl_oom_dump_tasks)
+-- 
+2.29.0
+
+
