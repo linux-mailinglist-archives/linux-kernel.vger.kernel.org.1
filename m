@@ -2,93 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A793D2A112E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0705B2A1130
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 23:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725966AbgJ3WwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 18:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3WwV (ORCPT
+        id S1725976AbgJ3Ww4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 18:52:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55105 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725780AbgJ3Ww4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 18:52:21 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F555C0613D5;
-        Fri, 30 Oct 2020 15:52:21 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id gi3so17410pjb.3;
-        Fri, 30 Oct 2020 15:52:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=91c9EpN35NammVPGZ4fZAQ5G050YxyvJ3BZUiRrkUMs=;
-        b=CCQG+ezN81ySThA+qBB5QkNFAEhBb6/sj04wP5mk154Md4ZDuvf5jxLl4wqou5M9UZ
-         dDpnas2WuL+iILzIo4jq+hPA1YXSg1JHOnUpTmuAFUrVS0We3TUI7yrvCbPbz3YmVHXA
-         z8WeT3pfUo8jIcq8HV6FzRrhp8XDvES63C/M1PyJgGa0cVUe7XOEiBtQ1dYVj4zWGZ+Z
-         3pmKtlQjWT0A5QMt/pt/6cRMfvfH+ev/y/IYMFAB389b+HNiJZYaTSPp9zh3cjc/AYB0
-         QPvt707IYWaFN0EXaATlJnVj07f1NdvSnGtZd27mRnBvgXKI4MxGWiSk9m4FRGZyGDGZ
-         DHkg==
+        Fri, 30 Oct 2020 18:52:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604098374;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fxycBzU/SbTsOhTDMCX2G197w3tCiGFDNk6KNKI6/KA=;
+        b=ekXHKPRBTN12+5gp17UkEUncNvjlVh8GmKL4sz8lpR/z3XOVh8zKIJR5553FOx0En1AaNT
+        5yM6oEd4AtovL8rNZQGG1RmwZktOKA8FM1QXyUs19NQJqKRb2s1IgoIeEyKvcCP0/pHQLW
+        iOGPU5AYlbyhlhgBNUWyUb4/zZMetD0=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464-pAb9-WUlPzezy3gDq_JekA-1; Fri, 30 Oct 2020 18:52:53 -0400
+X-MC-Unique: pAb9-WUlPzezy3gDq_JekA-1
+Received: by mail-qv1-f69.google.com with SMTP id d41so4682939qvc.23
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 15:52:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=91c9EpN35NammVPGZ4fZAQ5G050YxyvJ3BZUiRrkUMs=;
-        b=kG76QQJ97mb7tH4HumG1ksJF1JSdxONkk0eAwyKJF1oKUZd/6vyKg2RtteVTu9FDVf
-         HoxqLImI6qZkt+ro7oOJJceUxPfN6gnht32njl2R92wWUoLMMhKtEJQNWbFtMBYtAso5
-         QtMM4lc9IfkigLCQz0BD4pi9VRxIfq2xms0YtglaZPk6Epar2tV+3u6VNdfxVJbt56s2
-         BrQacxzKkHzoR9KfU13pixjLhgGt3y9XdEFLmQZeFnBIuTzJTP7Zk7KuRFlu9V1CneDR
-         Ym56Q1J5FOk2BKK4Q839JVQe5zwEQbA5jgwqZ0HmwIK1jsLp+XU4z50p3hF3GkAj1EXI
-         FFPA==
-X-Gm-Message-State: AOAM532l+3xr7ywwPWCZ205lvSX+bY/wmK/mI1IugQob2Jt3IVtUT1pW
-        ymTU+ZWmeUStS+1AAauLBWF4gM3nzGVrMyr4QBLoh1vYNuc=
-X-Google-Smtp-Source: ABdhPJw34ayAF4nQFq7OJ5Mv48RULe+Tvk+O092gR/L7tzH8LdGtjI56M4bAjwO6ky2pSJsyeLTNt0Wqw0H3T+SbCuQ=
-X-Received: by 2002:a17:902:82c8:b029:d6:b42f:ce7a with SMTP id
- u8-20020a17090282c8b02900d6b42fce7amr999714plz.23.1604098340678; Fri, 30 Oct
- 2020 15:52:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fxycBzU/SbTsOhTDMCX2G197w3tCiGFDNk6KNKI6/KA=;
+        b=iWCJjXPLPf4dZQH9PE/LEF6ht2nEAU5IQGAmvWh6KzlTJV0NyxuLh/YGV8cSY7A1UT
+         rYzlhDwOIVOYjhyEG1zo3AERjntf6o++gp/wvJiFABiBv2GpDknsrYGyN3PG6SGHdtAq
+         ByAsweWtTrVoIsvK1bm2VzAB9iQBy7qpie9azLK8djX4qxoVIyRPJ3MkxBQwWRxEtDCx
+         h9cTCHF+9biN/LWf+swy5lCyHBlGxC6RkZpr9rCkkrZaAkte2c0/LEVPSXkPU8e0O+AO
+         7lc6oyOO3nQEnF8lO7gxSn3zUcutR0Cw4UFfmxeqB4E6AaBzktXUTd1jWXH8uzSITMJh
+         SjqA==
+X-Gm-Message-State: AOAM5322ZOI0M0+KdYXZGiJzfyFMXtB9y6ofuDMMA9w13m6EEnkDT/Ng
+        XJCdPq3FRZr5PUXGZJ2OYAYwN1Sgpo5IIMki7rud6INTqfotq+5d3fU2Ky5uz8NjUeQujcHbPcm
+        VCIO3eXC+Fw9TjYOWStT9fvnY
+X-Received: by 2002:a37:b642:: with SMTP id g63mr4450337qkf.460.1604098372618;
+        Fri, 30 Oct 2020 15:52:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzXCfrderOASI/SbrdK/WvIiHp8Bbc9kF9zYpz4/Ssr4wyebZK9kh6LojNxU3ku1jcBoJTNFw==
+X-Received: by 2002:a37:b642:: with SMTP id g63mr4450321qkf.460.1604098372371;
+        Fri, 30 Oct 2020 15:52:52 -0700 (PDT)
+Received: from xz-x1 (toroon474qw-lp140-04-174-95-215-133.dsl.bell.ca. [174.95.215.133])
+        by smtp.gmail.com with ESMTPSA id k24sm353066qtp.35.2020.10.30.15.52.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 15:52:51 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 18:52:50 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH v2 2/2] mm: prevent gup_fast from racing with COW during
+ fork
+Message-ID: <20201030225250.GB6357@xz-x1>
+References: <0-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
+ <2-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
 MIME-Version: 1.0
-References: <20201030022839.438135-1-xie.he.0141@gmail.com>
- <20201030022839.438135-5-xie.he.0141@gmail.com> <CA+FuTSczR03KGNdksH2KyAyzoR9jc6avWNrD+UWyc7sXd44J4w@mail.gmail.com>
- <CAJht_ENORPqd+GQPPzNfmCapQ6fwL_YGW8=1h20fqGe4_wDe9Q@mail.gmail.com>
- <CAF=yD-J8PvkR5xTgv8bb6MHJatWtq5Y_mPjx4+tpWvweMPFFHA@mail.gmail.com>
- <CAJht_EPscUkmcgidk5sGAO4K1iVeqDpBRDy75RQ+s0OKK3mB8Q@mail.gmail.com> <CA+FuTSefJk9xkPQU8K5Ew6ZmnSbMo0S4izAoc=h7-cDrN98jUQ@mail.gmail.com>
-In-Reply-To: <CA+FuTSefJk9xkPQU8K5Ew6ZmnSbMo0S4izAoc=h7-cDrN98jUQ@mail.gmail.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Fri, 30 Oct 2020 15:52:09 -0700
-Message-ID: <CAJht_EOMJNENgE7bvy6Nc5xqoH9aKUhufWNvwhT-m3X0OreS3g@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 4/5] net: hdlc_fr: Do skb_reset_mac_header for
- skbs received on normal PVC devices
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 3:22 PM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> It's indirect:
->
->         skb_reset_network_header(skb);
->         if (!skb_transport_header_was_set(skb))
->                 skb_reset_transport_header(skb);
->         skb_reset_mac_len(skb);
+Hi, Jason,
 
-Oh. I see. skb_reset_mac_len would set skb->mac_len. Not sure where
-skb->mac_len would be used though.
+I think majorly the patch looks good to me, but I have a few pure questions
+majorly not directly related to the patch itself, but around the contexts.
+Since I _feel_ like there'll be a new version to update the comments below,
+maybe I can still ask aloud... Please bare with me. :)
 
-> > I thought only AF_PACKET/RAW sockets would need this information
-> > because other upper layers would not care about what happened in L2.
->
-> I think that's a reasonable assumption. I don't have a good
-> counterexample ready. Specific to this case, it seems to have been
-> working with no one complaining so far ;)
+On Fri, Oct 30, 2020 at 11:46:21AM -0300, Jason Gunthorpe wrote:
+> Slow GUP is safe against this race because copy_page_range() is only
+> called while holding the exclusive side of the mmap_lock on the src
+> mm_struct.
 
-Yeah. It seems to me that a lot of drivers (without header_ops) have
-this problem. The comment in af_packet.c before my commit b79a80bd6dd8
-also indicated this problem was widespread. It seemed to not cause any
-issues.
+Pure question: I understand that this patch requires this, but... Could anyone
+remind me why read lock of mmap_sem is not enough for fork() before this one?
+
+> 
+> Fixes: f3c64eda3e50 ("mm: avoid early COW write protect games during fork()")
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Link: https://lore.kernel.org/r/CAHk-=wi=iCnYCARbPGjkVJu9eyYeZ13N64tZYLdOB8CP5Q_PLw@mail.gmail.com
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  arch/x86/kernel/tboot.c    |  1 +
+>  drivers/firmware/efi/efi.c |  1 +
+>  include/linux/mm_types.h   |  7 +++++++
+>  kernel/fork.c              |  1 +
+>  mm/gup.c                   | 19 +++++++++++++++++++
+>  mm/init-mm.c               |  1 +
+>  mm/memory.c                | 10 +++++++++-
+>  7 files changed, 39 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/tboot.c b/arch/x86/kernel/tboot.c
+> index 992fb1415c0f1f..6a2f542d9588a4 100644
+> --- a/arch/x86/kernel/tboot.c
+> +++ b/arch/x86/kernel/tboot.c
+> @@ -93,6 +93,7 @@ static struct mm_struct tboot_mm = {
+>  	.pgd            = swapper_pg_dir,
+>  	.mm_users       = ATOMIC_INIT(2),
+>  	.mm_count       = ATOMIC_INIT(1),
+> +	.write_protect_seq = SEQCNT_ZERO(tboot_mm.write_protect_seq),
+>  	MMAP_LOCK_INITIALIZER(init_mm)
+>  	.page_table_lock =  __SPIN_LOCK_UNLOCKED(init_mm.page_table_lock),
+>  	.mmlist         = LIST_HEAD_INIT(init_mm.mmlist),
+> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+> index 5e5480a0a32d7d..2520f6e05f4d44 100644
+> --- a/drivers/firmware/efi/efi.c
+> +++ b/drivers/firmware/efi/efi.c
+> @@ -57,6 +57,7 @@ struct mm_struct efi_mm = {
+>  	.mm_rb			= RB_ROOT,
+>  	.mm_users		= ATOMIC_INIT(2),
+>  	.mm_count		= ATOMIC_INIT(1),
+> +	.write_protect_seq      = SEQCNT_ZERO(efi_mm.write_protect_seq),
+>  	MMAP_LOCK_INITIALIZER(efi_mm)
+>  	.page_table_lock	= __SPIN_LOCK_UNLOCKED(efi_mm.page_table_lock),
+>  	.mmlist			= LIST_HEAD_INIT(efi_mm.mmlist),
+
+Another pure question: I'm just curious how you find all the statically
+definied mm_structs, and to make sure all of them are covered (just in case
+un-initialized seqcount could fail strangely).
+
+Actually I'm thinking whether we should have one place to keep all the init
+vars for all the statically definied mm_structs, so we don't need to find them
+everytime, but only change that one place.
+
+> diff --git a/mm/memory.c b/mm/memory.c
+> index c48f8df6e50268..294c2c3c4fe00d 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -1171,6 +1171,12 @@ copy_page_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
+>  		mmu_notifier_range_init(&range, MMU_NOTIFY_PROTECTION_PAGE,
+>  					0, src_vma, src_mm, addr, end);
+>  		mmu_notifier_invalidate_range_start(&range);
+> +		/*
+> +		 * The read side doesn't spin, it goes to the mmap_lock, so the
+> +		 * raw version is used to avoid disabling preemption here
+> +		 */
+> +		mmap_assert_write_locked(src_mm);
+> +		raw_write_seqcount_t_begin(&src_mm->write_protect_seq);
+
+Would raw_write_seqcount_begin() be better here?
+
+My understanding is that we used raw_write_seqcount_t_begin() because we're
+with spin lock so assuming we disabled preemption already.  However I'm
+thinking whether raw_write_seqcount_begin() would be even better to guarantee
+that.  I have no idea of how the rt kernel merging topic, but if rt kernel
+merged into mainline then IIUC preemption is allowed here (since pgtable spin
+lock should be rt_spin_lock, not raw spin locks).
+
+An even further pure question on __seqcount_preemptible() (feel free to ignore
+this question!): I saw that __seqcount_preemptible() seems to have been
+constantly defined as "return false".  Not sure what happened there..
+
+Thanks,
+
+-- 
+Peter Xu
+
