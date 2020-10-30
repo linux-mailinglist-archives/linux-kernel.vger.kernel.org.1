@@ -2,54 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DD22A0BE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 17:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FBA2A0BF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 18:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727350AbgJ3Q4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 12:56:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32814 "EHLO mail.kernel.org"
+        id S1727083AbgJ3RAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 13:00:00 -0400
+Received: from mga17.intel.com ([192.55.52.151]:47265 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727337AbgJ3Qz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:55:59 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A428C20791;
-        Fri, 30 Oct 2020 16:55:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604076957;
-        bh=c3kxm2crOyIhGs6VOfq3cufvcTi+w7SfUEUvU1r33rY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z/dVtz0GT9NCTXiOc18KE1Mhboa1bxEbGpKvoXfSVKJsFwObuazYrrrC3xCvXH6CV
-         Db40/4bQmyR9UKW2S2nHgfys9p/oFsDg1NL35ejqJB8Nd/cLoc1V5SeAhG0+34WkYx
-         /vrsq8CmcHZTVbePOkTzfJ8cxf1QjQlEGLOvOADU=
-Date:   Fri, 30 Oct 2020 09:55:56 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: move ioctl interface definitions to
- separated file
-Message-ID: <20201030165556.GA1097@sol.localdomain>
-References: <20201030072610.57155-1-yuchao0@huawei.com>
+        id S1726259AbgJ3Q77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:59:59 -0400
+IronPort-SDR: sSwRuL+FhCfiTtmWMrPYckR4TSM6SdJd24MfQr/EyVND8Z62uAm/9OSXwLpL8J3717zNZ8iNHE
+ p5aFoKA8ALWA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="148490946"
+X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
+   d="scan'208";a="148490946"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 09:59:23 -0700
+IronPort-SDR: 9G60NOm2eScybbNRylgFHMmG8M8ESDTATlZl8W62qYYDocRkw4Z9xG0bEAW2mGnfmbS0iL0V/w
+ 5GSUpfAEWQfQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; 
+   d="scan'208";a="537126454"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga005.jf.intel.com with ESMTP; 30 Oct 2020 09:59:21 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 9E781567; Fri, 30 Oct 2020 18:59:20 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 0/5] irqdomain: clean up, add irq_domain_create_legacy()
+Date:   Fri, 30 Oct 2020 18:59:14 +0200
+Message-Id: <20201030165919.86234-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030072610.57155-1-yuchao0@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 03:26:10PM +0800, Chao Yu wrote:
-> +
-> +struct f2fs_gc_range {
-> +	u32 sync;
-> +	u64 start;
-> +	u64 len;
-> +};
+In order to make users OF-independent provide irq_domain_create_legacy() API.
 
-Userspace headers need to use __u32, __u64, etc. instead of u32, u64, etc.
+Last patch is an example of such user. First three patches are little cleanups.
 
-Did you try installing this header, and including it in a userspace program?
+Rafael, can you have a look at this series?
 
-- Eric
+Changelog v2:
+- rebased on top of v5.10-rc1
+- dependency-free (they are in v5.10-rc1)
+- added Ack (Mark)
+
+Andy Shevchenko (5):
+  irqdomain: Remove unused of_device_id forward declaration
+  irqdomain: Add forward declaration of fwnode_handle
+  irqdomain: Replace open coded of_node_to_fwnode()
+  irqdomain: Introduce irq_domain_create_legacy() API
+  regmap: irq: Convert to use fwnode directly
+
+ Documentation/core-api/irq/irq-domain.rst |  6 ++++++
+ drivers/base/regmap/regmap-irq.c          | 11 +++++------
+ include/linux/irqdomain.h                 |  8 +++++++-
+ kernel/irq/irqdomain.c                    | 19 +++++++++++++++----
+ 4 files changed, 33 insertions(+), 11 deletions(-)
+
+-- 
+2.28.0
+
