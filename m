@@ -2,202 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18882A0E63
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C932A0E68
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 20:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727414AbgJ3TPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 15:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51402 "EHLO
+        id S1727385AbgJ3TQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 15:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726317AbgJ3TPD (ORCPT
+        with ESMTP id S1727390AbgJ3TQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:15:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E85C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:15:03 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kYZrQ-0003lR-KG; Fri, 30 Oct 2020 20:14:52 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:986b:b1c:42fa:9003] (unknown [IPv6:2a03:f580:87bc:d400:986b:b1c:42fa:9003])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id EE945585FE6;
-        Fri, 30 Oct 2020 19:14:48 +0000 (UTC)
-Subject: Re: net/can/isotp.c:1240:13: sparse: sparse: incorrect type in
- initializer (different address spaces)
-To:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-can <linux-can@vger.kernel.org>
-References: <202010290720.uQ3pTGrT-lkp@intel.com>
- <146bb489-abaf-c763-44b2-ac1200560885@pengutronix.de>
- <4d092e3f-052d-7593-131c-a9629136f07f@hartkopp.net>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <61008eb0-25f3-5986-b5f8-b9844a18dcef@pengutronix.de>
-Date:   Fri, 30 Oct 2020 20:14:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 30 Oct 2020 15:16:24 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A9EC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:16:24 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id o129so1830300ooo.11
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 12:16:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IphFE7ilzXNXur1141KXwIQedEFrpv7O0T6mxNfExvI=;
+        b=RCDhFlYvuzkhj0RbKq2lgBPQSykTVOFnWK/WcFtrtTkVR3x5GXOu2PzFzOLGUOmzJj
+         mB78wvCQ1fsVzChzlkxfqZuhpB+sUy5eafmPUGWeOXt+v/gjbzoB7Q/okyjNyzjJSmU3
+         1PasmJcynTSBoknvZQcDTfUVzO9DXaGOOxUcj4fkSyZtYxa5BdcYmYAcTI7jNHVkctHj
+         ZGx547ln5g2kzS1n66nWW0Qhw0ot8uV8tRQiKxp4ivjtCokA/pKy3E9j18NwhrMoD3b8
+         NFxNVhnauAqXsTFULPRBgYMnAD4frbaY+pkRAbGZKq/sh30IrkkXj6jxp41ah2AujTN8
+         DMDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IphFE7ilzXNXur1141KXwIQedEFrpv7O0T6mxNfExvI=;
+        b=GkbykGXJgQ/s84Pu8RtRsvkM7SJ97aBRKkXxOvCbePuMEhzH6l7zkp42o3JPbly41E
+         QNdPfOTsTp+3wRpVXDe4jdi3QKuutwLNS2G1W6KetCnZaqRMKUP1RDBKBdbT5n10QCkY
+         tGMy6urmncwknQzifGno4NHUweQYGN8rF0N+Frl0pgDs5AvV0Xw0M2gXFEc2/9ITG9x0
+         YLc7jaNSGbCC0Ye/8qhzXhkscdxfNI5zVrltqIwvwV3uFZriTMUj5aRKIhOX3KDTDo4r
+         uPMgMDXoGdBGbqiRrqPtRBWLnPehHNFExnG1ybKMg1DfcEt+df5qx+6spBZ3UuxYdmzN
+         XGcw==
+X-Gm-Message-State: AOAM5331+1GjDf+oHqmG6gjrIFQ6g+QGGGlx4KUu4FqkHUk8bK/wFcFG
+        r4OKUk0HJfxABrnbLr0nTI/5AuU6nh6YneXlQ4hiGQ==
+X-Google-Smtp-Source: ABdhPJz+Ar79arAMWb4nHKtD5m+2c2HoTc65MlGNrFoHz2E+7j17Ls4jvjkLcU+UEA7bPTumYtOoXF4YQOvbudM+bJY=
+X-Received: by 2002:a4a:b28b:: with SMTP id k11mr3076579ooo.54.1604085383351;
+ Fri, 30 Oct 2020 12:16:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4d092e3f-052d-7593-131c-a9629136f07f@hartkopp.net>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="gcQtAk3Y3wGD1qeRrIMFsP8CFUu44HdeM"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201029131649.182037-1-elver@google.com> <20201029131649.182037-2-elver@google.com>
+ <CAG48ez0TgomTec+r188t0ddYVZtivOkL1DvR3owiuDTBtgPNzA@mail.gmail.com>
+In-Reply-To: <CAG48ez0TgomTec+r188t0ddYVZtivOkL1DvR3owiuDTBtgPNzA@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 30 Oct 2020 20:16:11 +0100
+Message-ID: <CANpmjNPFXutFT6QmTej2bCDGVP+QgBngws1fOEz=s_Q_sAJbOQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/9] mm: add Kernel Electric-Fence infrastructure
+To:     Jann Horn <jannh@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        =?UTF-8?Q?J=C3=B6rn_Engel?= <joern@purestorage.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>, SeongJae Park <sjpark@amazon.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gcQtAk3Y3wGD1qeRrIMFsP8CFUu44HdeM
-Content-Type: multipart/mixed; boundary="Ey7HHqifZyWpIgaCF7F5bNFo37YKlEfKH";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>,
- kernel test robot <lkp@intel.com>
-Cc: kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
- Rich Felker <dalias@libc.org>, Yoshinori Sato <ysato@users.sourceforge.jp>,
- linux-can <linux-can@vger.kernel.org>
-Message-ID: <61008eb0-25f3-5986-b5f8-b9844a18dcef@pengutronix.de>
-Subject: Re: net/can/isotp.c:1240:13: sparse: sparse: incorrect type in
- initializer (different address spaces)
-References: <202010290720.uQ3pTGrT-lkp@intel.com>
- <146bb489-abaf-c763-44b2-ac1200560885@pengutronix.de>
- <4d092e3f-052d-7593-131c-a9629136f07f@hartkopp.net>
-In-Reply-To: <4d092e3f-052d-7593-131c-a9629136f07f@hartkopp.net>
+On Fri, 30 Oct 2020 at 03:49, Jann Horn <jannh@google.com> wrote:
+> On Thu, Oct 29, 2020 at 2:17 PM Marco Elver <elver@google.com> wrote:
+> > This adds the Kernel Electric-Fence (KFENCE) infrastructure. KFENCE is a
+> > low-overhead sampling-based memory safety error detector of heap
+> > use-after-free, invalid-free, and out-of-bounds access errors.
+> [...]
+> > diff --git a/include/linux/kfence.h b/include/linux/kfence.h
+> [...]
+> > +/**
+> > + * is_kfence_address() - check if an address belongs to KFENCE pool
+> > + * @addr: address to check
+> > + *
+> > + * Return: true or false depending on whether the address is within the KFENCE
+> > + * object range.
+> > + *
+> > + * KFENCE objects live in a separate page range and are not to be intermixed
+> > + * with regular heap objects (e.g. KFENCE objects must never be added to the
+> > + * allocator freelists). Failing to do so may and will result in heap
+> > + * corruptions, therefore is_kfence_address() must be used to check whether
+> > + * an object requires specific handling.
+> > + */
+>
+> It might be worth noting in the comment that this is one of the few
+> parts of KFENCE that are highly performance-sensitive, since that was
+> an important point during the review.
 
---Ey7HHqifZyWpIgaCF7F5bNFo37YKlEfKH
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Done, thanks.
 
-On 10/30/20 7:55 PM, Oliver Hartkopp wrote:
->>>    1229=09
->>>    1230	static int isotp_getsockopt(struct socket *sock, int level, i=
-nt optname,
->>>    1231				    char __user *optval, int __user *optlen)
->>>    1232	{
->>>    1233		struct sock *sk =3D sock->sk;
->>>    1234		struct isotp_sock *so =3D isotp_sk(sk);
->>>    1235		int len;
->>>    1236		void *val;
->>>    1237=09
->>>    1238		if (level !=3D SOL_CAN_ISOTP)
->>>    1239			return -EINVAL;
->>>> 1240		if (get_user(len, optlen))
->>>    1241			return -EFAULT;
->>>    1242		if (len < 0)
->>>    1243			return -EINVAL;
->>>    1244=09
->=20
-> Sorry but there are tons of identical items in the networking subsystem=
-=20
-> in getsockopt functions.
->=20
-> And I don't get the sparse warning with make C=3D1 for none of the=20
-> occurrences of
+> > +static __always_inline bool is_kfence_address(const void *addr)
+> > +{
+> > +       /*
+> > +        * The non-NULL check is required in case the __kfence_pool pointer was
+> > +        * never initialized; keep it in the slow-path after the range-check.
+> > +        */
+> > +       return unlikely((unsigned long)((char *)addr - __kfence_pool) < KFENCE_POOL_SIZE && addr);
+> > +}
+> [...]
+> > diff --git a/lib/Kconfig.kfence b/lib/Kconfig.kfence
+> [...]
+> > +config KFENCE_STRESS_TEST_FAULTS
+> > +       int "Stress testing of fault handling and error reporting"
+> > +       default 0
+> > +       depends on EXPERT
+> > +       help
+> > +         The inverse probability with which to randomly protect KFENCE object
+> > +         pages, resulting in spurious use-after-frees. The main purpose of
+> > +         this option is to stress test KFENCE with concurrent error reports
+> > +         and allocations/frees. A value of 0 disables stress testing logic.
+> > +
+> > +         The option is only to test KFENCE; set to 0 if you are unsure.
+> [...]
+> > diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> [...]
+> > +#ifndef CONFIG_KFENCE_STRESS_TEST_FAULTS /* Only defined with CONFIG_EXPERT. */
+> > +#define CONFIG_KFENCE_STRESS_TEST_FAULTS 0
+> > +#endif
+>
+> I think you can make this prettier by writing the Kconfig
+> appropriately. See e.g. ARCH_MMAP_RND_BITS:
+>
+> config ARCH_MMAP_RND_BITS
+>   int "Number of bits to use for ASLR of mmap base address" if EXPERT
+>   range ARCH_MMAP_RND_BITS_MIN ARCH_MMAP_RND_BITS_MAX
+>   default ARCH_MMAP_RND_BITS_DEFAULT if ARCH_MMAP_RND_BITS_DEFAULT
+>   default ARCH_MMAP_RND_BITS_MIN
+>   depends on HAVE_ARCH_MMAP_RND_BITS
+>
+> So instead of 'depends on EXPERT', I think the proper way would be to
+> append ' if EXPERT' to the line
+> 'int "Stress testing of fault handling and error reporting"', so that
+> only whether the option is user-visible depends on EXPERT, and
+> non-EXPERT configs automatically use the default value.
 
-Due to ARCH=3Dsh
+I guess the idea was to not pollute the config in non-EXPERT configs,
+but it probably doesn't matter much. Changed it to the suggested
+cleaner approach.
 
-looks like sh is missing the some __user annotations so that sparse spwes=
- these
-warnings.
+> [...]
+> > +static inline unsigned long metadata_to_pageaddr(const struct kfence_metadata *meta)
+> > +{
+> > +       unsigned long offset = (meta - kfence_metadata + 1) * PAGE_SIZE * 2;
+> > +       unsigned long pageaddr = (unsigned long)&__kfence_pool[offset];
+> > +
+> > +       /* The checks do not affect performance; only called from slow-paths. */
+> > +
+> > +       /* Only call with a pointer into kfence_metadata. */
+> > +       if (KFENCE_WARN_ON(meta < kfence_metadata ||
+> > +                          meta >= kfence_metadata + CONFIG_KFENCE_NUM_OBJECTS))
+> > +               return 0;
+> > +
+> > +       /*
+> > +        * This metadata object only ever maps to 1 page; verify the calculation
+> > +        * happens and that the stored address was not corrupted.
+>
+> nit: This reads a bit weirdly to me. Maybe "; verify that the stored
+> address is in the expected range"? But feel free to leave it as-is if
+> you prefer it that way.
 
-Marc
+Hmm, that really sounds weird... I've changed it. :-)
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+> > +        */
+> > +       if (KFENCE_WARN_ON(ALIGN_DOWN(meta->addr, PAGE_SIZE) != pageaddr))
+> > +               return 0;
+> > +
+> > +       return pageaddr;
+> > +}
+> [...]
+> > +/* __always_inline this to ensure we won't do an indirect call to fn. */
+> > +static __always_inline void for_each_canary(const struct kfence_metadata *meta, bool (*fn)(u8 *))
+> > +{
+> > +       const unsigned long pageaddr = ALIGN_DOWN(meta->addr, PAGE_SIZE);
+> > +       unsigned long addr;
+> > +
+> > +       lockdep_assert_held(&meta->lock);
+> > +
+> > +       /* Check left of object. */
+> > +       for (addr = pageaddr; addr < meta->addr; addr++) {
+> > +               if (!fn((u8 *)addr))
+> > +                       break;
+>
+> It could be argued that "return" instead of "break" would be cleaner
+> here if the API is supposed to be "invoke fn() on each canary byte,
+> but stop when fn() returns false". But I suppose it doesn't really
+> matter, so either way is fine.
 
+Hmm, perhaps if there are corruptions on either side of an object
+printing both errors (which includes indications of which bytes were
+corrupted) might give more insights into what went wrong. Printing
+errors for every canary byte on one side didn't make much sense
+though, hence the break.
 
---Ey7HHqifZyWpIgaCF7F5bNFo37YKlEfKH--
+Until we see this in the wild, let's err on the side of "more
+information might be better".
 
---gcQtAk3Y3wGD1qeRrIMFsP8CFUu44HdeM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+> > +       }
+> > +
+> > +       /* Check right of object. */
+> > +       for (addr = meta->addr + meta->size; addr < pageaddr + PAGE_SIZE; addr++) {
+> > +               if (!fn((u8 *)addr))
+> > +                       break;
+> > +       }
+> > +}
+> > +
+> > +static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t gfp)
+> > +{
+> [...]
+> > +       /* Set required struct page fields. */
+> > +       page = virt_to_page(meta->addr);
+> > +       page->slab_cache = cache;
+> > +       if (IS_ENABLED(CONFIG_SLUB))
+> > +               page->objects = 1;
+> > +       if (IS_ENABLED(CONFIG_SLAB))
+> > +               page->s_mem = addr;
+>
+> Maybe move the last 4 lines over into the "hooks for SLAB" and "hooks
+> for SLUB" patches?
 
------BEGIN PGP SIGNATURE-----
+Done.
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+cZiUACgkQqclaivrt
-76lmYQgArcoc2n2AL8i1gs+u1y4w5Zr1QPq9scACmPok1fQQACbHbgSWoKOd3tTU
-N9+oNmTOkiKH/EZiSYQmhgvVTUkWL4g3zLa3/ci6HxZUrrpgyoX/eyMe/AbYUvva
-qTUJi8dLUrSWFQYUdgPVEIMDNMZ4n2KnKs6xb9tnyXXH0p5pk1r3su8d4A1QwIvu
-WIs97qfs5+tRJy2JbB9Y+K4GMmfvcnyqPZFwSRSXopPSRj+O6O74wRywd2MSN4rg
-NIuckZBOqBMq/mo2LtFmfS7N1BZ9vb/xzt1V7XmQvSXqw7LzGLk3kWWVzi9SRuIG
-xehHiULctOM5LwcMNUsHXGZa7CrXHg==
-=0zcV
------END PGP SIGNATURE-----
+> [...]
+> > +}
+> [...]
+> > diff --git a/mm/kfence/report.c b/mm/kfence/report.c
+> [...]
+> > +/*
+> > + * Get the number of stack entries to skip get out of MM internals. @type is
+>
+> s/to skip get out/to skip to get out/ ?
 
---gcQtAk3Y3wGD1qeRrIMFsP8CFUu44HdeM--
+Done.
+
+> > + * optional, and if set to NULL, assumes an allocation or free stack.
+> > + */
+> > +static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries,
+> > +                           const enum kfence_error_type *type)
+> [...]
+> > +void kfence_report_error(unsigned long address, const struct kfence_metadata *meta,
+> > +                        enum kfence_error_type type)
+> > +{
+> [...]
+> > +       case KFENCE_ERROR_CORRUPTION: {
+> > +               size_t bytes_to_show = 16;
+> > +
+> > +               pr_err("BUG: KFENCE: memory corruption in %pS\n\n", (void *)stack_entries[skipnr]);
+> > +               pr_err("Corrupted memory at 0x" PTR_FMT " ", (void *)address);
+> > +
+> > +               if (address < meta->addr)
+> > +                       bytes_to_show = min(bytes_to_show, meta->addr - address);
+> > +               print_diff_canary((u8 *)address, bytes_to_show);
+>
+> If the object was located on the right side, but with 1 byte padding
+> to the right due to alignment, and a 1-byte OOB write had clobbered
+> the canary byte on the right side, we would later detect a
+> KFENCE_ERROR_CORRUPTION at offset 0xfff inside the page, right? In
+> that case, I think we'd end up trying to read 15 canary bytes from the
+> following guard page and take a page fault?
+>
+> You may want to do something like:
+>
+> unsigned long canary_end = (address < meta->addr) ? meta->addr :
+> address | (PAGE_SIZE-1);
+> bytes_to_show = min(bytes_to_show, canary_end);
+
+print_diff_canary() calculates max_addr using PAGE_ALIGN(), and we
+won't read from the next page. I think I'll move all this logic into
+print_diff_canary() to simplify.
+
+Thanks,
+-- Marco
