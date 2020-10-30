@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD5B2A03A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B56B72A03A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgJ3LDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgJ3LDs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:03:48 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F15C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:03:47 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id x1so6210171eds.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 04:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w7zx4TIUnsQrrXqxFtOj8pvlioHEXpeSZN5bBWlBEhQ=;
-        b=I1/ys+VaHfbBF0QvbBXReAkTl+uttfJMYRAwNaTWWJ2Xhq5RpZIQJU+dabIXeJYNEg
-         gx9e6M3AsojMu7eYT8kIT6iIbsdsS5OzdlCsyTYINdsFpETgQ52TYKJzougWeK/8/zPz
-         /WvR0po5Z1qlo1angvbFK+TSgtVTus88eT+0dnY7mbUVHXfQ3ssOm4aPMd/OIbmdAlZC
-         faQzAhyyyC8v7zrG5MMoYUoQ0LBrQw5IgONUicXEErKEdueLW6tSfpjwVxHLXK3EWSJy
-         zisyV0XPls5Hu5ziQTzFZEQ4KFaqaryOisPhL4KToHPYogCAL/LonCdQEbRw/MEwexf5
-         cloQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w7zx4TIUnsQrrXqxFtOj8pvlioHEXpeSZN5bBWlBEhQ=;
-        b=GBBoBX5DL/pXsgfTo9kSKWN0qoo1kFN6U39aMc5mkXhNwC/wAncv098FXCVp5z626U
-         rK8woTnd+k5S5cQqoUUEh1b+d2HM/QC7rUDh1307HMHmFuq+ScIo2t5G5+pruV7+jvuR
-         JPG43wDVC0UO4EcsjYdiVqKXYmNPPTInuDDgL9Egwuvi5KmzNjcWMVYOYtrEMDkVjQZf
-         6HHlEeySPFv3WBPNpv5eOSm8cSdOvQJTyigzj6qR/4wRNMsKpAUaKXmmH1Sx9uxLDXVf
-         HPuj6yW0cHwMemGkLcLcZ2bXp9ds5EwpGrY7KIMDGVsy8nBv6F9qXcIVmfvNt7kRmA+f
-         e6Ow==
-X-Gm-Message-State: AOAM533kYQQSuWineIj3p5tXG6ZFJdYZ1QOSaUe2hltBLaSUTg8rOTbA
-        RsEDP2Uz/PwWSBCpYwE9otl8gUJA0G82XGnIUg4X+g==
-X-Google-Smtp-Source: ABdhPJxXAulAfNy2sLVQ1cI9M14YeFTAZNBUx23QdF/e7fRVyPCsyJ8tC2UtBZr+WKOuySGI2pLEORx1qbFF0NjRZ8E=
-X-Received: by 2002:a50:d987:: with SMTP id w7mr1622533edj.113.1604055826484;
- Fri, 30 Oct 2020 04:03:46 -0700 (PDT)
+        id S1726461AbgJ3LFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:05:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725808AbgJ3LFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 07:05:13 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6F9420724;
+        Fri, 30 Oct 2020 11:05:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604055912;
+        bh=HkILBJuhp20eEQXOXy7z45QV74eTNliVADEHd72LFo4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iyTS4J43yvqa2fgb21t7LJsLyNU25aSYx/CPW/AQFwRxvVg3JE5tsfHGK674rcr3O
+         zYs9gjjWlOWaxOVYQpbJEcgJasWptoYKWHc/J7h1myQF7B8Neg2kGR/UQEo9+aPHJE
+         a9xZOaFXZBLfi9YUn+htxKHvf8HploekpXXe2hmw=
+Date:   Fri, 30 Oct 2020 12:06:00 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        scsi <linux-scsi@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH 02/18] block: open code kobj_map into in block/genhd.c
+Message-ID: <20201030110600.GA2406237@kroah.com>
+References: <20201029145841.144173-1-hch@lst.de>
+ <20201029145841.144173-3-hch@lst.de>
+ <20201029192236.GA991240@kroah.com>
+ <20201029193242.GA4799@lst.de>
+ <20201030104033.GA2392682@kroah.com>
+ <CAMuHMdXuzM0Z+yXXWqw8E2u-TNaC6C7NMRMH+X8oWQGaD=jckw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201026122728.8522-1-brgl@bgdev.pl> <20201026131427.GF4077@smile.fi.intel.com>
- <CAMRc=MfuejMqpcfOedPMMTR3EY6s2K+4whoWyk7RmJYPaB176w@mail.gmail.com>
- <20201030105706.GK4077@smile.fi.intel.com> <20201030105834.GL4077@smile.fi.intel.com>
-In-Reply-To: <20201030105834.GL4077@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 30 Oct 2020 12:03:35 +0100
-Message-ID: <CAMpxmJWxsNY_Eepq2fx0diDr96prBZKGtyb2j43PLe4_vGZAwA@mail.gmail.com>
-Subject: Re: [PATCH] devres: zero the memory in devm_krealloc() if needed
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdXuzM0Z+yXXWqw8E2u-TNaC6C7NMRMH+X8oWQGaD=jckw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 11:56 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-
-[snip]
-
+On Fri, Oct 30, 2020 at 11:49:11AM +0100, Geert Uytterhoeven wrote:
+> Hi Greg,
+> 
+> On Fri, Oct 30, 2020 at 11:40 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> > On Thu, Oct 29, 2020 at 08:32:42PM +0100, Christoph Hellwig wrote:
+> > > On Thu, Oct 29, 2020 at 08:22:36PM +0100, Greg Kroah-Hartman wrote:
+> > > > After this, you want me to get rid of kobj_map, right?  Or you don't
+> > > > care as block doesn't use it anymore?  :)
 > > >
-> > > Any use case? Because to me it sounds contradictory to the whole idea of [k]realloc().
+> > > I have a patch to kill it, but it causes odd regressions with the
+> > > tpm driver according to the kernel test.  As I have grand plans that
+> > > build on the block ѕide of this series for 5.11, I plan to defer the
+> > > chardev side and address it for 5.12.
 > >
-> > This is kind of a gray area in original krealloc() too and I want to
-> > submit a patch for mm too. Right now krealloc ignores the __GFP_ZERO
-> > flag if new_size <= old_size but zeroes the memory if new_size >
-> > old_size.
->
-> > This should be consistent - either ignore __GFP_ZERO or
-> > don't ignore it in both cases. I think that not ignoring it is better
-> > - if user passes it then it's for a reason.
->
-> Sorry, but I consider in these two choices the best is the former one, i.e.
-> ignoring, because non-ignoring for sizes less than current is counter the
-> REalloc() by definition.
->
-> Reading realloc(3):
->
-> "If the new size is larger than the old size, the added memory will not be
-> initialized."
->
-> So, supports my choice over yours.
+> > Ok, sounds good.
+> >
+> > Wow, I just looked at the tpm code, and it is, um, "interesting" in how
+> > it thinks device lifespans work.  Nothing like having 4 different
+> > structures with different lifespans embedded within a single structure.
+> > Good thing that no one can dynamically remove a TPM device during
+> > "normal" operation.
+> 
+> /sys/.../unbind?
 
-Kernel memory management API is not really orthogonal to the one in
-user-space. For example: kmalloc() takes the gfp parameter and if you
-pass __GFP_ZERO to it, it zeroes the memory even if user-space
-malloc() never does.
+I said "normal" operations :)
 
-On Fri, Oct 30, 2020 at 11:57 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
+Anyone who uses unbind and is suprised when things go "boom" is naive.
 
-[snip]
+thanks,
 
->
-> Two notes:
->  - perhaps kzrealloc() for what you want
-
-It could be used as a helper wrapper around krealloc() but kzalloc()
-is already a simple kmalloc() with additional __GFP_ZERO flag passed.
-This is why I think krealloc() should honor __GFP_ZERO.
-
->  - there is a library call reallocarray() which supports your idea about
->    krealloc_array() API in kernel.
->
-
-reallocarray() is a bsd extension. I'd stick to krealloc_array()
-naming in the kernel.
-
-Bartosz
+greg k-h
