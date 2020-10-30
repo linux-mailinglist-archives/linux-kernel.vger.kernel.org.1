@@ -2,88 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56B72A03A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CF52A03A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 12:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbgJ3LFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 07:05:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42766 "EHLO mail.kernel.org"
+        id S1726240AbgJ3LFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 07:05:08 -0400
+Received: from mga14.intel.com ([192.55.52.115]:15632 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725808AbgJ3LFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:05:13 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6F9420724;
-        Fri, 30 Oct 2020 11:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604055912;
-        bh=HkILBJuhp20eEQXOXy7z45QV74eTNliVADEHd72LFo4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iyTS4J43yvqa2fgb21t7LJsLyNU25aSYx/CPW/AQFwRxvVg3JE5tsfHGK674rcr3O
-         zYs9gjjWlOWaxOVYQpbJEcgJasWptoYKWHc/J7h1myQF7B8Neg2kGR/UQEo9+aPHJE
-         a9xZOaFXZBLfi9YUn+htxKHvf8HploekpXXe2hmw=
-Date:   Fri, 30 Oct 2020 12:06:00 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        scsi <linux-scsi@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH 02/18] block: open code kobj_map into in block/genhd.c
-Message-ID: <20201030110600.GA2406237@kroah.com>
-References: <20201029145841.144173-1-hch@lst.de>
- <20201029145841.144173-3-hch@lst.de>
- <20201029192236.GA991240@kroah.com>
- <20201029193242.GA4799@lst.de>
- <20201030104033.GA2392682@kroah.com>
- <CAMuHMdXuzM0Z+yXXWqw8E2u-TNaC6C7NMRMH+X8oWQGaD=jckw@mail.gmail.com>
+        id S1725876AbgJ3LFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 07:05:07 -0400
+IronPort-SDR: E5q65g1MID9CJgPICc9srQgyLrg10Ql3BFixI8SR01kzhh3cQwKFQLjpFI5ynuGF7xMwRSR7dS
+ jf+AjhM7R1LA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="167808966"
+X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
+   d="scan'208";a="167808966"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 04:05:06 -0700
+IronPort-SDR: 9HPa8KZmR9k+jNlkzOx5clj92bvp1fNLeHqq6OtAIAqs6cNlPtQOWe51CfdeVmU84JkP52BTpA
+ VuqUZJ5cB+rA==
+X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; 
+   d="scan'208";a="351825189"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 04:05:04 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kYSEQ-001y1B-BZ; Fri, 30 Oct 2020 13:06:06 +0200
+Date:   Fri, 30 Oct 2020 13:06:06 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] kernel.h: Drop unneeded <linux/kernel.h> inclusion
+ from other headers
+Message-ID: <20201030110606.GN4077@smile.fi.intel.com>
+References: <20201028172826.41635-1-andriy.shevchenko@linux.intel.com>
+ <20201030083356.GC32163@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdXuzM0Z+yXXWqw8E2u-TNaC6C7NMRMH+X8oWQGaD=jckw@mail.gmail.com>
+In-Reply-To: <20201030083356.GC32163@willie-the-truck>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 11:49:11AM +0100, Geert Uytterhoeven wrote:
-> Hi Greg,
+On Fri, Oct 30, 2020 at 08:33:56AM +0000, Will Deacon wrote:
+> On Wed, Oct 28, 2020 at 07:28:26PM +0200, Andy Shevchenko wrote:
+> > There is no evidence we need kernel.h inclusion in certain headers.
 > 
-> On Fri, Oct 30, 2020 at 11:40 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> > On Thu, Oct 29, 2020 at 08:32:42PM +0100, Christoph Hellwig wrote:
-> > > On Thu, Oct 29, 2020 at 08:22:36PM +0100, Greg Kroah-Hartman wrote:
-> > > > After this, you want me to get rid of kobj_map, right?  Or you don't
-> > > > care as block doesn't use it anymore?  :)
-> > >
-> > > I have a patch to kill it, but it causes odd regressions with the
-> > > tpm driver according to the kernel test.  As I have grand plans that
-> > > build on the block ѕide of this series for 5.11, I plan to defer the
-> > > chardev side and address it for 5.12.
-> >
-> > Ok, sounds good.
-> >
-> > Wow, I just looked at the tpm code, and it is, um, "interesting" in how
-> > it thinks device lifespans work.  Nothing like having 4 different
-> > structures with different lifespans embedded within a single structure.
-> > Good thing that no one can dynamically remove a TPM device during
-> > "normal" operation.
-> 
-> /sys/.../unbind?
+> Did you run some tools to determine this or is it just a hunch?
 
-I said "normal" operations :)
+I read files manually. So, closer to the latter.
+Also I rely on 0day and other CIs that didn't show anything for a long time.
 
-Anyone who uses unbind and is suprised when things go "boom" is naive.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-thanks,
 
-greg k-h
