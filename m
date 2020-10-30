@@ -2,135 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD54E29FAB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2291529FAB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 02:49:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbgJ3Bqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 21:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
+        id S1726071AbgJ3Btf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 21:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgJ3Bqa (ORCPT
+        with ESMTP id S1725372AbgJ3Bte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 21:46:30 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2792AC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 18:46:29 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id 141so5843305lfn.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 18:46:29 -0700 (PDT)
+        Thu, 29 Oct 2020 21:49:34 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079EAC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 18:49:34 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 133so3897780pfx.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Oct 2020 18:49:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fzIBdE11fRPXVpK/5f4gJOiYBzS/DWloWXyL0lox/F8=;
-        b=OxJq8Wye4Jib/cR24NDT8S9LhUd0FrRqhkVj7Y5sYQr+wBOY7Mkg60jKF3r/ES06gR
-         z30on/Hc3e4TIsfkf9E50y09ioQp6pfsSzUY8nsQxzS70iL4TDCIqSXQQDaabjKeig32
-         PGc5a7qrgELguAr8mGObU2IZPNkzjI1SPWdAkf0TLs/AgLEc2lzpSrXP4VJCooCu8Fhc
-         9Zbwq7ZSsyUgdl/C0sI6rd5BeiWyR52tJo0FFX0NKv2UdGYVjFMz8AHnw1DFqdATfOKp
-         b+3/VMZzBB9dLTq/Nbe9b9eQlTkR659hY2IozF/7cHUdqzGaI+sv7M2la0zn7RnhKO0o
-         2CtQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7hL4sw2f+Ivb3IounfMGG3eIBIiM36uU9xeGb4tykPg=;
+        b=THGZF/2+WvMOVeVXUUAgjrNJJh7aY0Jzs+xE+IoeMpId+D14ma7KaA2ONflJXuTGUb
+         mHBvKH7pYppLrCpWp+t14e5yOKI3lvJZp66TcuRzJ+FdemCI19HPMVPwXQxDPlXjhhxw
+         7FeoxxzHlo0C5tRhuYeXqE/b7oPSHeF5WOzceO2qgyfksuH1vy4ThVRyJrUAU3kg8oRN
+         2s+d2cCRaIpo2E9z1cNn89JP4csGbs+TocXL1wGIwm/BazEnvudTqq1hUkS31f+NNhhF
+         Od9XRQRXEiDwHv+DUskL1SWR9PS/jHorzFUgFtJFyEQ7N1pcRdZlTml4n1p2EYuGzcMV
+         vjsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fzIBdE11fRPXVpK/5f4gJOiYBzS/DWloWXyL0lox/F8=;
-        b=sA6B39x4g6wDovJLPFUqCzM7+4W9P3GbMND0IuvoS/MY5b1U/+5qqOknUxXGIWC3ow
-         q1+jg3XK6qhOyrLWSHWcIHAJGBwNhOwyGPCMJ1iUB6GR06cZBs1fiVVVG+Hkf6G+Pe+k
-         bkK2eiOnG/uO0ovpgzqY5TgL9AhFi0N7Q/lk41MYAAjYInSfjGDFFRcFMj8moK3fJduj
-         okA5pZNsFS8qy3apbGizlanhfYJqEedgQYhzl5Ic69/HBccbICahbMo5N5gs1SJQnC76
-         +N4HrIlIzxeKtN2nNlbobf67j0N7QyU1RVTya4kjacNSJQM/BtZGVsL4cfT0xCtYlWxr
-         F0og==
-X-Gm-Message-State: AOAM530yo4ZkxECKf/5umtxoewBZqIpfkWM61Zv6pqAJH1YNS9p+bAx7
-        3wcwxQPsBMg+2Mu4tG6V/ZTT/BnFOtt8cZcqjA4=
-X-Google-Smtp-Source: ABdhPJxnuRCWaAMORoO5AoECX4a4MDfVIv2Z7I16KDl5XTotB4z7o9iKC+y46fnn1yvHTbNzKSscXzwzd9j4fkoT454=
-X-Received: by 2002:a19:420b:: with SMTP id p11mr2420961lfa.326.1604022387151;
- Thu, 29 Oct 2020 18:46:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7hL4sw2f+Ivb3IounfMGG3eIBIiM36uU9xeGb4tykPg=;
+        b=Nj0wQdDFGtnD4zwECRVVcGlw210JMXvrKeopHwOckcn468JHPV43lGAdTfYi+9BHnu
+         /rOB5+S4YAtFqq+tgWLVAjsojn+nYF+zik0Cj3bKEF352Sk9GmrVNr8PMsoQjK1ZVwGx
+         4RlEfJ3/Unh3FFFoZo8qMxg/jPKKKXK7/KT3Soj4b9d+sofcUGqQWgNFzaUm2697pcaE
+         xAXlyB400KS5FR9p7zRnbapNoJx2d6NyNuz2vGpJ6usDJOE/0iilOCA1+3SZyLmmUjwW
+         XARTpDCQ55bHZPPd2+F7zXxdDYP1KuI3jTAKQjVXsxcrkIQQeYx8OIER/zR3VpLj4REz
+         sJJA==
+X-Gm-Message-State: AOAM531OxtqSd9CwD0ZwxST1SB0dWxDy6ry3lIqfSvyKwDRu+ATkELXY
+        k7ZhhBhczp4Sbu9Yos+WXXfX7A==
+X-Google-Smtp-Source: ABdhPJzRxca4tIWAeMP1wIIPAXLWARs3P9tjhDoamuXeTUxVmlzcDkDjwpb3wsN/h1zzFrY19nCeOA==
+X-Received: by 2002:a05:6a00:8ca:b029:15d:7af3:8360 with SMTP id s10-20020a056a0008cab029015d7af38360mr7079165pfu.12.1604022573470;
+        Thu, 29 Oct 2020 18:49:33 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([103.141.182.112])
+        by smtp.gmail.com with ESMTPSA id x22sm4316365pfp.181.2020.10.29.18.49.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 29 Oct 2020 18:49:32 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 09:49:23 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Al Grant <Al.Grant@arm.com>, James Clark <james.clark@arm.com>,
+        Wei Li <liwei391@huawei.com>,
+        =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v3 9/9] perf mem: Document event type 'ldst'
+Message-ID: <20201030014923.GK16862@leoy-ThinkPad-X240s>
+References: <20201028063813.8562-1-leo.yan@linaro.org>
+ <20201028063813.8562-10-leo.yan@linaro.org>
+ <CAP-5=fUi47JWsAbzPtKjpgopzDOt4FGkXW2sitnbM+sBgcodPg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201029041538.4165209-1-daeho43@gmail.com> <20201029041538.4165209-2-daeho43@gmail.com>
- <92f4da8e-27a1-7577-84f9-39038eaa88cb@huawei.com> <20201029155453.GB849@sol.localdomain>
-In-Reply-To: <20201029155453.GB849@sol.localdomain>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Fri, 30 Oct 2020 10:46:16 +0900
-Message-ID: <CACOAw_xc5KYhVgp-b8NTs8vapWxiLF3m-qUMO2qgjp4gQQb2Pw@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v5 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION ioctl
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Chao Yu <yuchao0@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fUi47JWsAbzPtKjpgopzDOt4FGkXW2sitnbM+sBgcodPg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chao, got it on f2fs_is_compress_algorithm_valid().
-I also agree on Eric's opinion on that error value.
+Hi Ian,
 
-2020=EB=85=84 10=EC=9B=94 30=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84 12:54,=
- Eric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Thu, Oct 29, 2020 at 03:29:17PM +0800, Chao Yu wrote:
-> > > +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned =
-long arg)
-> > > +{
-> > > +   struct inode *inode =3D file_inode(filp);
-> > > +   struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
-> > > +   struct f2fs_comp_option option;
-> > > +   int ret =3D 0;
-> > > +
-> > > +   if (!f2fs_sb_has_compression(sbi))
-> > > +           return -EOPNOTSUPP;
-> > > +
-> > > +   if (!(filp->f_mode & FMODE_WRITE))
-> > > +           return -EBADF;
-> > > +
-> > > +   if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg=
-,
-> > > +                           sizeof(option)))
-> > > +           return -EFAULT;
-> > > +
-> > > +   if (!f2fs_compressed_file(inode) ||
-> > > +                   option.log_cluster_size < MIN_COMPRESS_LOG_SIZE |=
-|
-> > > +                   option.log_cluster_size > MAX_COMPRESS_LOG_SIZE |=
-|
-> > > +                   option.algorithm >=3D COMPRESS_MAX)
-> > > +           return -EINVAL;
-> > > +
-> > > +   file_start_write(filp);
-> > > +   inode_lock(inode);
-> > > +
-> > > +   if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
-> > > +           ret =3D -EBUSY;
-> > > +           goto out;
-> > > +   }
-> > > +
-> > > +   if (inode->i_size !=3D 0) {
-> > > +           ret =3D -EFBIG;
-> > > +           goto out;
-> > > +   }
+On Thu, Oct 29, 2020 at 06:10:40PM -0700, Ian Rogers wrote:
+> On Tue, Oct 27, 2020 at 11:39 PM Leo Yan <leo.yan@linaro.org> wrote:
 > >
-> > Hmm...
+> > The event type 'ldst' is added for recording both load and store memory
+> > operations, this patch documents for the new event type.
 > >
-> > Shouldn't it be:
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > ---
+> >  tools/perf/Documentation/perf-mem.txt | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
 > >
-> > if (algorithm >=3D COMPRESS_MAX) {
-> >       ret =3D -ENOPKG;
-> >       goto out;
-> > }
+> > diff --git a/tools/perf/Documentation/perf-mem.txt b/tools/perf/Documentation/perf-mem.txt
+> > index 199ea0f0a6c0..c50ef37dba72 100644
+> > --- a/tools/perf/Documentation/perf-mem.txt
+> > +++ b/tools/perf/Documentation/perf-mem.txt
+> > @@ -38,7 +38,11 @@ OPTIONS
 > >
-> > if (!f2fs_cops[algorithm])
-> >       f2fs_warn(...);
->
-> Note that my intent with recommending ENOPKG was for it to be returned in=
- the
-> !f2fs_cops[algorithm] case, similar to how opening an encrypted file when=
- the
-> encryption algorithm is recognized but not supported by the kernel return=
-s
-> ENOPKG.  For a truly unrecognized algorithm (algorithm >=3D COMPRESS_MAX)=
-, EINVAL
-> would probably be more appropriate.  So if !f2fs_cops[algorithm] is now a=
-llowed,
-> then ENOPKG should no longer be among the error codes this ioctl returns.
->
-> - Eric
+> >  -t::
+> >  --type=<type>::
+> > -       Select the memory operation type: load or store (default: load,store)
+> > +       Select the memory operation type: load, store, ldst (default: load,store).
+> > +       The type 'ldst' means the single event can record both for load and store
+> > +       operations; Intel and PowerPC support the types 'load' and 'store' but
+> > +       'ldst' cannot be used; on Arm64, it uses Arm SPE as memory events and
+> > +       user needs to specify one of these three types.
+> 
+> Naive question, could the type remain load,store for mem record and
+> the tool internally change it to ldst for ARM SPE?
+
+Good point.  I understand you are suggesting to avoid complex options
+for usage, looked again at the code, my conclusion is it's feabile to
+convert 'load,store' to Arm SPE's ldst type.
+
+If find any block issue when I experiment this idea, will come back to
+update it; otherwise, I will apply the suggestion in next spin.
+
+Thanks for suggestion,
+Leo
