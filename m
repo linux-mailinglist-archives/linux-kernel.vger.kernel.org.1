@@ -2,96 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2108B29FB14
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7749929FB1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Oct 2020 03:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbgJ3CPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 22:15:51 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:49386 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgJ3CPu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 22:15:50 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09U2FXt0057285;
-        Fri, 30 Oct 2020 02:15:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=Cm/6VbzyJH4sOrtddGQ54uD1O5Uz5x5zqNdZFEq/iWk=;
- b=LtfLt7YldThlxCxbhkPHLsw4m63RD1s4XMFzSMnu1P6DeyAPuMMiUUee6j+FZC3kgf8o
- PMpIPBTMW6lzrlgMM1P9u8+Fb9lE1w551e00LpwA2yN0vdq0oEjh4VUVfFVdbvA6iKMg
- F7c4vtPq56gu9gOXN/xq2wV7lBPd3Q4/iMOZJtZwpb6G4juOTaOcLCBQGVRt04zTsYie
- unVDn+BKsR0P9r0stRIbArMf89Ssg3ZLnRa5ndWnpTFfmlHwHZasUBuc5EP1QCaiwbhs
- t2y1Nv5Z3BFAS1eaHbVMDp+cNMTly+s/fQU0pECytoS7LLr5cqtn6MxCuUrqFPtPzqxw Gg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 34cc7m7qq0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Oct 2020 02:15:33 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09U2APRv115382;
-        Fri, 30 Oct 2020 02:13:32 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 34cx1txdjm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Oct 2020 02:13:31 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09U2DOSB002716;
-        Fri, 30 Oct 2020 02:13:24 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Oct 2020 19:13:24 -0700
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH 08/18] sd: use __register_blkdev to avoid a modprobe for
- an unregistered dev_t
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1tuuczcjx.fsf@ca-mkp.ca.oracle.com>
-References: <20201029145841.144173-1-hch@lst.de>
-        <20201029145841.144173-9-hch@lst.de>
-Date:   Thu, 29 Oct 2020 22:13:21 -0400
-In-Reply-To: <20201029145841.144173-9-hch@lst.de> (Christoph Hellwig's message
-        of "Thu, 29 Oct 2020 15:58:31 +0100")
+        id S1726215AbgJ3CQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 22:16:16 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:49618 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725806AbgJ3CQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 22:16:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604024174; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=LRMgOFZbItBqfHE6rw+IhX6ADhrLY1wYvZCBR3GV4N0=; b=N4Vpw4EnkX39Wb2hgLw5Ro6EE4u2Uew22BjfqsrBnlSphZdTP9Y1OP1ph1xiQfHrmaVHcYBL
+ Ve+eQmp0qGl+iEMjt3jDCqDoHaeytADGg/LK9xlRRmdNN6EZj+g3UW8+fxNH/GrZXhYK79C2
+ X0iyu4b0AZk8FT3DN0b8kTkBUZk=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f9b776d1df7f5f83c818583 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Oct 2020 02:16:13
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4357DC433FE; Fri, 30 Oct 2020 02:16:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1AEACC433C9;
+        Fri, 30 Oct 2020 02:16:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1AEACC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v10 3/4] docs: Add documentation for userspace client
+ interface
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org
+References: <1604007647-32163-1-git-send-email-hemantk@codeaurora.org>
+ <1604007647-32163-4-git-send-email-hemantk@codeaurora.org>
+ <6f508e54-a170-8409-886c-a882b6fd5f63@infradead.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <cc3055e5-9522-aeaa-4b29-e4f811b832a8@codeaurora.org>
+Date:   Thu, 29 Oct 2020 19:16:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- suspectscore=1 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010300014
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 spamscore=0 clxscore=1011 mlxscore=0 suspectscore=1
- priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300015
+In-Reply-To: <6f508e54-a170-8409-886c-a882b6fd5f63@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Randy,
 
-Christoph,
+On 10/29/20 2:51 PM, Randy Dunlap wrote:
+> Hi,
+> 
+> On 10/29/20 2:40 PM, Hemant Kumar wrote:
+>> MHI userspace client driver is creating device file node
+>> for user application to perform file operations. File
+>> operations are handled by MHI core driver. Currently
+>> Loopback MHI channel is supported by this driver.
+>>
+>> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+>> ---
+>>   Documentation/mhi/index.rst |  1 +
+>>   Documentation/mhi/uci.rst   | 83 +++++++++++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 84 insertions(+)
+>>   create mode 100644 Documentation/mhi/uci.rst
+> 
+> 
+>> diff --git a/Documentation/mhi/uci.rst b/Documentation/mhi/uci.rst
+>> new file mode 100644
+>> index 0000000..fe901c4
+>> --- /dev/null
+>> +++ b/Documentation/mhi/uci.rst
+>> @@ -0,0 +1,83 @@
+>> +.. SPDX-License-Identifier: GPL-2.0
+>> +
+>> +=================================
+>> +Userspace Client Interface (UCI)
+>> +=================================
+>> +
+> 
+> 
+> Lots of TLAs.
+> 
+>> +
+>> +read
+>> +----
+>> +
+>> +When data transfer is completed on downlink channel, TRE buffer is copied to
+>> +pending list. Reader is unblocked and data is copied to userspace buffer. TRE
+>> +buffer is queued back to downlink channel transfer ring.
+> 
+> What is TRE?
+Transfer Ring Element
+i will add that in small bracket inline.
+> 
+>> +
+>> +Usage
+>> +=====
+>> +
+>> +Device file node is created with format:-
+>> +
+>> +/dev/mhi_<controller_name>_<mhi_device_name>
+>> +
+>> +controller_name is the name of underlying bus used to transfer data. mhi_device
+>> +name is the name of the MHI channel being used by MHI client in userspace to
+>> +send or receive data using MHI protocol.
+>> +
+>> +There is a separate character device file node created for each channel
+>> +specified in mhi device id table. MHI channels are statically defined by MHI
+> 
+>                  MHI
+> unless it is a variable name, like below: mhi_device_id
+Done.
+> 
+>> +specification. The list of supported channels is in the channel list variable
+>> +of mhi_device_id table in UCI driver.
+>> +
+> 
+>> +Other Use Cases
+>> +---------------
+>> +
+>> +Getting MHI device specific diagnostics information to userspace MHI diag client
+> 
+>                                                                          diagnostic client
+Done.
+> 
+>> +using DIAG channel 4 (Host to device) and 5 (Device to Host).
+>>
+> 
+> thanks.
+> 
 
-> Switch from using blk_register_region to the probe callback passed to
-> __register_blkdev to disable the request_module call for an unclaimed
-> dev_t in the SD majors.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Hannes Reinecke <hare@suse.de>
+Thanks for reviewing it. Let me fix it and re-upload.
 
-Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
+Thanks,
+Hemant
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
