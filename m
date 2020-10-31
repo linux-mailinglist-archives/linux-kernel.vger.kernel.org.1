@@ -2,183 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77072A193D
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 19:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D952A1990
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 19:29:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgJaSMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 14:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727120AbgJaSMN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 14:12:13 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F02C0617A6;
-        Sat, 31 Oct 2020 11:12:13 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 133so7714639pfx.11;
-        Sat, 31 Oct 2020 11:12:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Jz6x+g+xbqRpPTzzyKWaisQhdh5VoS5Zw+hJtNIjDSU=;
-        b=Wbylnzq3WLJpP9giv3tONeDQu6NBOEsxnRLPldc5hJISiPhq1CVWhCKOKptQhxCCrE
-         rEizpfuepS759FTRhxMJ0ukacbKfMX98wIE4Ot2FuvdiBOYI5rNTtXF40wdX6t4Jbj8i
-         SmZVaoJ1SbIO1uzhKAU0i+/NNyK0oQo55iiA4BjmcwBEJ6X9S20Y9ulwE4aLwZMx0BB8
-         kWqZq19WTBgXGn8QNRhy8xfX36rkkhOJJzG21H1XmKY1GKyGiVBBiPjujAA2YP/yDSh4
-         aMIL4z3fgcDBf4YyDKFb4cnxEPEut3tLKL+7Pgi0lSstV7OHgskgCdyMiDX/knbNwhpw
-         iksw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Jz6x+g+xbqRpPTzzyKWaisQhdh5VoS5Zw+hJtNIjDSU=;
-        b=NuVHDVjEMTkqz8SpEIHG4mk3d/N8yhZwO8Oq2SOw0aQGpa5b5PPQspH6MDev1K3T7P
-         7GyG8hfBl5CfkQXQhxIZdoIjaesBL1vz52PAvtpVbWURJtGw+LsALI6pOTQGUjRvZgI+
-         nsLMsqLakJuBn+7VukpLHNd70D2O3NU4DHtPd9p7CQD7nIXavISROFjtwH7PwpOY553E
-         WC5t6sPRMJy9u8oW/FtaS+FpBR/OAWkD/7iTriP06h8uAayq4ePGZrd0IOLgnZRj3axH
-         8QnWdSNwccxQeZYM8Zqw9oHze8AOKMdDy9pzxFjLk3MkiwkrNFNRs6FJFR3FrdVG1BlU
-         Tb8w==
-X-Gm-Message-State: AOAM533xPlOyofj7ApeY4BbBwf1Stc85on1oKQ328VTB6IhEX03B57bn
-        RfVlW23zRTvd3BKGbnHgK10=
-X-Google-Smtp-Source: ABdhPJxs6lTpBPQ0vGfBF254AcR8omT9nNEqrInpWYRBnFsDt2ZDWMqzrPYLBJUsWuEcri7IuYo1Fw==
-X-Received: by 2002:aa7:8815:0:b029:163:c712:81ad with SMTP id c21-20020aa788150000b0290163c71281admr14762157pfo.74.1604167932871;
-        Sat, 31 Oct 2020 11:12:12 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:32f8:16e7:6105:7fb5])
-        by smtp.gmail.com with ESMTPSA id n6sm6967137pjj.34.2020.10.31.11.12.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 11:12:12 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next v7 5/5] net: hdlc_fr: Add support for any Ethertype
-Date:   Sat, 31 Oct 2020 11:10:43 -0700
-Message-Id: <20201031181043.805329-6-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201031181043.805329-1-xie.he.0141@gmail.com>
-References: <20201031181043.805329-1-xie.he.0141@gmail.com>
+        id S1728378AbgJaS2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 14:28:55 -0400
+Received: from leonov.paulk.fr ([185.233.101.22]:55508 "EHLO leonov.paulk.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728198AbgJaS2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 14:28:48 -0400
+Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
+        by leonov.paulk.fr (Postfix) with ESMTPS id 97221C0139;
+        Sat, 31 Oct 2020 19:22:09 +0100 (CET)
+Received: by gagarine.paulk.fr (Postfix, from userid 114)
+        id F1DE6C1D7A; Sat, 31 Oct 2020 19:22:08 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=5.0 tests=RDNS_NONE autolearn=no
+        autolearn_force=no version=3.4.2
+Received: from localhost.localdomain (unknown [192.168.1.101])
+        by gagarine.paulk.fr (Postfix) with ESMTP id C6153C1D64;
+        Sat, 31 Oct 2020 19:21:52 +0100 (CET)
+From:   Paul Kocialkowski <contact@paulk.fr>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Matteo Scordino <matteo.scordino@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Paul Kocialkowski <contact@paulk.fr>
+Subject: [PATCH 0/9] Allwinner V3 SL631 Action Camera Support and Related Fixes
+Date:   Sat, 31 Oct 2020 19:21:28 +0100
+Message-Id: <20201031182137.1879521-1-contact@paulk.fr>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the fr_rx function to make this driver support any Ethertype
-when receiving skbs on normal (non-Ethernet-emulating) PVC devices.
-(This driver is already able to handle any Ethertype when sending.)
+This series adds support for the Allwinner V3-based SL631 family of
+Action Cameras, starting with the IMX179 fashion.
 
-Originally in the fr_rx function, the code that parses the long (10-byte)
-header only recognizes a few Ethertype values and drops frames with other
-Ethertype values. This patch replaces this code to make fr_rx support
-any Ethertype. This patch also creates a new function fr_snap_parse as
-part of the new code.
+A few fixes to V3 support are added along the way, most notably support
+for the NMI IRQ controller which is necessary for the AXP209 IRQ.
 
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- drivers/net/wan/hdlc_fr.c | 75 +++++++++++++++++++++++++--------------
- 1 file changed, 49 insertions(+), 26 deletions(-)
+Note that some patches in this series may have already been submitted
+(but not yet merged) by others and are included for the series to build.
 
-diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-index 98444f1d8cc3..0720f5f92caa 100644
---- a/drivers/net/wan/hdlc_fr.c
-+++ b/drivers/net/wan/hdlc_fr.c
-@@ -871,6 +871,45 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
- 	return 0;
- }
- 
-+static int fr_snap_parse(struct sk_buff *skb, struct pvc_device *pvc)
-+{
-+	/* OUI 00-00-00 indicates an Ethertype follows */
-+	if (skb->data[0] == 0x00 &&
-+	    skb->data[1] == 0x00 &&
-+	    skb->data[2] == 0x00) {
-+		if (!pvc->main)
-+			return -1;
-+		skb->dev = pvc->main;
-+		skb->protocol = *(__be16 *)(skb->data + 3); /* Ethertype */
-+		skb_pull(skb, 5);
-+		skb_reset_mac_header(skb);
-+		return 0;
-+
-+	/* OUI 00-80-C2 stands for the 802.1 organization */
-+	} else if (skb->data[0] == 0x00 &&
-+		   skb->data[1] == 0x80 &&
-+		   skb->data[2] == 0xC2) {
-+		/* PID 00-07 stands for Ethernet frames without FCS */
-+		if (skb->data[3] == 0x00 &&
-+		    skb->data[4] == 0x07) {
-+			if (!pvc->ether)
-+				return -1;
-+			skb_pull(skb, 5);
-+			if (skb->len < ETH_HLEN)
-+				return -1;
-+			skb->protocol = eth_type_trans(skb, pvc->ether);
-+			return 0;
-+
-+		/* PID unsupported */
-+		} else {
-+			return -1;
-+		}
-+
-+	/* OUI unsupported */
-+	} else {
-+		return -1;
-+	}
-+}
- 
- static int fr_rx(struct sk_buff *skb)
- {
-@@ -945,35 +984,19 @@ static int fr_rx(struct sk_buff *skb)
- 		skb->protocol = htons(ETH_P_IPV6);
- 		skb_reset_mac_header(skb);
- 
--	} else if (skb->len > 10 && data[3] == FR_PAD &&
--		   data[4] == NLPID_SNAP && data[5] == FR_PAD) {
--		u16 oui = ntohs(*(__be16*)(data + 6));
--		u16 pid = ntohs(*(__be16*)(data + 8));
--		skb_pull(skb, 10);
--
--		switch ((((u32)oui) << 16) | pid) {
--		case ETH_P_ARP: /* routed frame with SNAP */
--		case ETH_P_IPX:
--		case ETH_P_IP:	/* a long variant */
--		case ETH_P_IPV6:
--			if (!pvc->main)
--				goto rx_drop;
--			skb->dev = pvc->main;
--			skb->protocol = htons(pid);
--			skb_reset_mac_header(skb);
--			break;
--
--		case 0x80C20007: /* bridged Ethernet frame */
--			if (!pvc->ether)
-+	} else if (data[3] == FR_PAD) {
-+		if (skb->len < 5)
-+			goto rx_error;
-+		if (data[4] == NLPID_SNAP) { /* A SNAP header follows */
-+			skb_pull(skb, 5);
-+			if (skb->len < 5) /* Incomplete SNAP header */
-+				goto rx_error;
-+			if (fr_snap_parse(skb, pvc))
- 				goto rx_drop;
--			skb->protocol = eth_type_trans(skb, pvc->ether);
--			break;
--
--		default:
--			netdev_info(frad, "Unsupported protocol, OUI=%x PID=%x\n",
--				    oui, pid);
-+		} else {
- 			goto rx_drop;
- 		}
-+
- 	} else {
- 		netdev_info(frad, "Unsupported protocol, NLPID=%x length=%i\n",
- 			    data[3], skb->len);
+Happy reviewing!
+
+Paul Kocialkowski (9):
+  ARM: sunxi: Add machine match for the Allwinner V3 SoC
+  ARM: dts: sun8i-v3: Add UART1 PG pins description
+  ARM: dts: sun8i-v3s: Add I2C1 PB pins description
+  dt-bindings: irq: sun7i-nmi: Add binding for the V3s NMI
+  irqchip/sunxi-nmi: Add support for the V3s NMI
+  ARM: dts: sun8i-v3s: Add the V3s NMI IRQ controller
+  ARM: dts: sun8i: Cleanup the Pinecube AXP209 node
+  dt-bindings: arm: sunxi: Add SL631 with IMX179 bindings
+  ARM: dts: sun8i-v3: Add support for the SL631 Action Camera with
+    IMX179
+
+ .../devicetree/bindings/arm/sunxi.yaml        |   6 +
+ .../allwinner,sun7i-a20-sc-nmi.yaml           |   1 +
+ arch/arm/boot/dts/Makefile                    |   1 +
+ arch/arm/boot/dts/sun8i-s3-pinecube.dts       |   8 +-
+ arch/arm/boot/dts/sun8i-v3-sl631-imx179.dts   |  12 ++
+ arch/arm/boot/dts/sun8i-v3-sl631.dtsi         | 145 ++++++++++++++++++
+ arch/arm/boot/dts/sun8i-v3.dtsi               |   6 +
+ arch/arm/boot/dts/sun8i-v3s.dtsi              |  16 +-
+ arch/arm/mach-sunxi/sunxi.c                   |   1 +
+ drivers/irqchip/irq-sunxi-nmi.c               |  18 ++-
+ 10 files changed, 206 insertions(+), 8 deletions(-)
+ create mode 100644 arch/arm/boot/dts/sun8i-v3-sl631-imx179.dts
+ create mode 100644 arch/arm/boot/dts/sun8i-v3-sl631.dtsi
+
 -- 
-2.27.0
+2.28.0
 
