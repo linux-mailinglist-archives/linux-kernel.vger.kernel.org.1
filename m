@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238622A170A
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1672A1707
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgJaLuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:50:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728199AbgJaLt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:49:57 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 561112065D;
-        Sat, 31 Oct 2020 11:49:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144996;
-        bh=Q2e7Ko9ET+1NPh3lETNZ9+vZbIea68+XoQuQ4cdBmDA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vl/XQQF0hJ9H2fQ5zrvEnJFQDHfN51RW9AQrYjREucRXIBbgTc96lAJYj7NT9sXSX
-         HzD3fOJrGtVGReidsS4avJBBkBZtUBsCzX9SVSOANaMJfXpR5xhiQmqyUHCYbj+5y1
-         qE3YN56Tauf82jvt1SYjqyCmimteTT6NisbSUFNI=
-Date:   Sat, 31 Oct 2020 12:42:48 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        CQ Tang <cq.tang@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: Re: [PATCH 5.4 40/49] drm/i915/gem: Serialise debugfs
- i915_gem_objects with ctx->mutex
-Message-ID: <20201031114248.GA2073275@kroah.com>
-References: <20201031113455.439684970@linuxfoundation.org>
- <20201031113457.373067458@linuxfoundation.org>
+        id S1728215AbgJaLty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:49:54 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:37238 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727360AbgJaLtx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:49:53 -0400
+Received: by mail-wr1-f65.google.com with SMTP id w1so9226279wrm.4;
+        Sat, 31 Oct 2020 04:49:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jmCpYBfXj/alF1GCJp4WztkBY7re+xKGrdnAZBvCpgY=;
+        b=qpziCzPJcETYsWRxXVMoTKi/irFKbDxQDG6jZBz5fHTwhVw5P8Q78aevPJXF5qvLnt
+         bd8CqbhYi1Lvij6MGKSdI02k/HNqWDZKtgnMVFvljNWmUwsvpIM4ik5gYLne8DDa8NPB
+         e6siqbA0+GEN4QdZDw8+yJf19zwrlq0QXihg/0DZYgfIsMph5zVdNikRwok38icL6WXw
+         h6sBI6e7KRnb2+optPdT5VyQTZlO3DvfjHcgMXiqXhLsbGMDGNiY8byDf6q/J++8NDx7
+         wpwcEnnW9Gg3V8BVpVqYHmBqmErV1uDf2NuOLSA8WxkW1drB0ElcG4xuDuXBmu/a18Qm
+         sLLg==
+X-Gm-Message-State: AOAM532LEXID3/R4ggLR7KTwsbWK1g7VHe8Bc8MZcnDsKMtzHELJEjNu
+        ls+o5kW1/cQnM4DBxUnuyA7J0YfaM3wU/g==
+X-Google-Smtp-Source: ABdhPJxAD2Ex1+dgpGUJV177Yy9TLp5/bVuFc5qttwldwhp14T+XR2FuRtvRg5JjutyYXMPUS8coUQ==
+X-Received: by 2002:a05:6000:1185:: with SMTP id g5mr8968630wrx.42.1604144990803;
+        Sat, 31 Oct 2020 04:49:50 -0700 (PDT)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id b1sm8529434wmd.43.2020.10.31.04.49.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Oct 2020 04:49:49 -0700 (PDT)
+Date:   Sat, 31 Oct 2020 12:49:48 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Kukjin Kim <kgene@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, kernel@collabora.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] ARM: exynos: clear prefetch bits in default
+ l2c_aux_val
+Message-ID: <20201031114948.GA6198@kozik-lap>
+References: <267a81e550a0b5d479c82b5908e2a2caa4c9c874.1597061474.git.guillaume.tucker@collabora.com>
+ <e44b5226f3ad1551459830c678ed183762d8e458.1597061474.git.guillaume.tucker@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201031113457.373067458@linuxfoundation.org>
+In-Reply-To: <e44b5226f3ad1551459830c678ed183762d8e458.1597061474.git.guillaume.tucker@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 12:35:36PM +0100, Greg Kroah-Hartman wrote:
-> From: Chris Wilson <chris@chris-wilson.co.uk>
+On Mon, Aug 10, 2020 at 01:22:08PM +0100, Guillaume Tucker wrote:
+> Clear the L310_AUX_CTRL_DATA_PREFETCH and L310_AUX_CTRL_INSTR_PREFETCH
+> bits in the l2c_aux_val defaults for Exynos since they can now be set
+> using the standard l2c2x0 devicetree bindings.
 > 
-> commit 4fe9af8e881d946bf60790eeb37a7c4f96e28382 upstream.
-> 
-> Since the debugfs may peek into the GEM contexts as the corresponding
-> client/fd is being closed, we may try and follow a dangling pointer.
-> However, the context closure itself is serialised with the ctx->mutex,
-> so if we hold that mutex as we inspect the state coupled in the context,
-> we know the pointers within the context are stable and will remain valid
-> as we inspect their tables.
-> 
-> Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-> Cc: CQ Tang <cq.tang@intel.com>
-> Cc: Daniel Vetter <daniel.vetter@intel.com>
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-> Link: https://patchwork.freedesktop.org/patch/msgid/20200723172119.17649-3-chris@chris-wilson.co.uk
-> (cherry picked from commit 102f5aa491f262c818e607fc4fee08a724a76c69)
-> Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
+> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
 > ---
->  drivers/gpu/drm/i915/i915_debugfs.c |    2 ++
->  1 file changed, 2 insertions(+)
+> 
+> Notes:
+>     v2: split patch to only clear exynos platform register bits
+> 
+>  arch/arm/mach-exynos/exynos.c | 4 ++--
 
-Oops, nope, this breaks the build here, now dropping it...
+Thanks, applied.
 
-greg k-h
+Best regards,
+Krzysztof
+
