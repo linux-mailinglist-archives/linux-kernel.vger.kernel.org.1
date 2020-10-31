@@ -2,127 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76C12A171F
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D4F2A1721
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727143AbgJaLw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727043AbgJaLwZ (ORCPT
+        id S1727229AbgJaLwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:52:54 -0400
+Received: from smtprelay0160.hostedemail.com ([216.40.44.160]:40754 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727043AbgJaLwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:52:25 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9763DC0613D7
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 04:52:23 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a9so9192213wrg.12
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 04:52:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xZI+7zrxUit9O0OB+cBOuMZaBCXyEeMzsbomcOevAsU=;
-        b=PXwnzLKrmPa724apY5KdTLJ1lHk1YpkaszXOfU/DkGXWrvIsTtBmZ500okhl0tu8Sc
-         xRQ2C1o5jgjD0gBHNNhzcMGL2nYICMI8RMuEGYzpzLUtfIZ8SYnojUy+/iZ7lDj7lHmK
-         qNc0ULMswjCZ5JTuyLtoQdCbe8YajKNyivt/OwBVickW+xr4zhJZPleXg4asfTM8BTiU
-         Of71gB7Ov6lWX/f0ZVo9DVHFgnPHZelkrG1L91zdmZ5kjMPXBh2zJ6cYYBYoL85+zHNB
-         2Di8d3uuTTs1f4ORyipB9sQkKtfl44qNOmZA3GQRIe6bPXrn4UQOyReRme3k5kgHE4dS
-         QOiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xZI+7zrxUit9O0OB+cBOuMZaBCXyEeMzsbomcOevAsU=;
-        b=kCHEmdxowV6dJq5llvs+EGqrt4xThzz3R5lqeO20+3LxB0xC/l2oJzqK13VLBD3t3E
-         lMC9jDlyrRNpjoZBNkl3xh3ByJieTKrtu4QTeykyyFhZzwFQY0j4m2pVvV3WDDK0/X0R
-         zAY174nEWRQuRyd6Ju8oqyC4q78QZsuoouQkqeEup8fdTusmftoX4lqdiYmo/CXE9FIx
-         3ZW3Fn5h5OADKmdOs2hCIog8gthfkkmzsOvGGRELVThN+JB7gJCdZuxjDpqx02U/yuYN
-         YxltTMDFEHqgSvHm9xxCFwIJQVpWJv1dTDU/bugHaRn4jMHvys+qnHsXwKszLbPotYa+
-         jb3A==
-X-Gm-Message-State: AOAM532BTjWIm/AQdSTEjoiKavTSg+qIhTXkgLqm+DP8zQ7tj3Rct/7h
-        igajTdealnL+WZvsGxB675GV3g==
-X-Google-Smtp-Source: ABdhPJzWvqvCScz0A6d9wkUBJ3XLp0zLPLJThcngoOT6+IyCWmGSa1rl2nZHbswOJjjLaYS2/skqwQ==
-X-Received: by 2002:a5d:688c:: with SMTP id h12mr9272925wru.92.1604145142232;
-        Sat, 31 Oct 2020 04:52:22 -0700 (PDT)
-Received: from localhost.localdomain (dh207-97-136.xnet.hr. [88.207.97.136])
-        by smtp.googlemail.com with ESMTPSA id g186sm17829847wma.1.2020.10.31.04.52.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 04:52:21 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        wim@linux-watchdog.org, linux@roeck-us.net,
-        linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: [PATCH v3] watchdog: qcom_wdt: set WDOG_HW_RUNNING bit when appropriate
-Date:   Sat, 31 Oct 2020 12:52:14 +0100
-Message-Id: <20201031115214.355531-1-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.28.0
+        Sat, 31 Oct 2020 07:52:54 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 7E2E8100E7B42;
+        Sat, 31 Oct 2020 11:52:53 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2525:2553:2560:2563:2682:2685:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3000:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3870:3871:3872:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:6119:7903:7904:9025:10004:10400:10471:10848:11026:11232:11473:11658:11914:12043:12114:12219:12297:12438:12555:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21627:30054:30070:30074:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:75,LUA_SUMMARY:none
+X-HE-Tag: hate63_1d141c52729e
+X-Filterd-Recvd-Size: 2182
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 31 Oct 2020 11:52:51 +0000 (UTC)
+Message-ID: <0b818156537f354904938f437cbb9dd02e765653.camel@perches.com>
+Subject: Re: [Outreachy kernel] [PATCH] drm/amdgpu: use
+ DEFINE_DEBUGFS_ATTRIBUTE with debugfs_create_file_unsafe()
+From:   Joe Perches <joe@perches.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        melissa.srw@gmail.com, daniel.vetter@ffwll.ch
+Date:   Sat, 31 Oct 2020 04:52:50 -0700
+In-Reply-To: <20201030080316.GA1612206@kroah.com>
+References: <20201030032245.GA274478@my--box>
+         <20201030071120.GA1493629@kroah.com> <20201030075716.GA6976@my--box>
+         <20201030080316.GA1612206@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the watchdog hardware is enabled/running during boot, e.g.
-due to a boot loader configuring it, we must tell the
-watchdog framework about this fact so that it can ping the
-watchdog until userspace opens the device and takes over
-control.
+On Fri, 2020-10-30 at 09:03 +0100, Greg KH wrote:
+> On Fri, Oct 30, 2020 at 01:27:16PM +0530, Deepak R Varma wrote:
+> > On Fri, Oct 30, 2020 at 08:11:20AM +0100, Greg KH wrote:
+> > > On Fri, Oct 30, 2020 at 08:52:45AM +0530, Deepak R Varma wrote:
+> > > > Using DEFINE_DEBUGFS_ATTRIBUTE macro with debugfs_create_file_unsafe()
+> > > > function in place of the debugfs_create_file() function will make the
+> > > > file operation struct "reset" aware of the file's lifetime. Additional
+> > > > details here: https://lists.archive.carbon60.com/linux/kernel/2369498
+> > > > 
+> > > > Issue reported by Coccinelle script:
+> > > > scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
+[]
+> There is a reason we didn't just do a global search/replace for this in
+> the kernel when the new functions were added, so I don't know why
+> checkpatch is now saying it must be done.
 
-Do so using the WDOG_HW_RUNNING flag that exists for exactly
-that use-case.
-
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
----
-Changes in v3:
-* Drop call to stop as start already does it
-* Update commit message
-
-Changes in v2:
-* Correct authorship
-
- drivers/watchdog/qcom-wdt.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
-index ab7465d186fd..64f44a4b7eb8 100644
---- a/drivers/watchdog/qcom-wdt.c
-+++ b/drivers/watchdog/qcom-wdt.c
-@@ -152,6 +152,13 @@ static int qcom_wdt_restart(struct watchdog_device *wdd, unsigned long action,
- 	return 0;
- }
- 
-+static int qcom_wdt_is_running(struct watchdog_device *wdd)
-+{
-+	struct qcom_wdt *wdt = to_qcom_wdt(wdd);
-+
-+	return (readl(wdt_addr(wdt, WDT_EN)) & 1);
-+}
-+
- static const struct watchdog_ops qcom_wdt_ops = {
- 	.start		= qcom_wdt_start,
- 	.stop		= qcom_wdt_stop,
-@@ -294,6 +301,17 @@ static int qcom_wdt_probe(struct platform_device *pdev)
- 	wdt->wdd.timeout = min(wdt->wdd.max_timeout, 30U);
- 	watchdog_init_timeout(&wdt->wdd, 0, dev);
- 
-+	/*
-+	 * If WDT is already running, call WDT start which
-+	 * will stop the WDT, set timeouts as bootloader
-+	 * might use different ones and set running bit
-+	 * to inform the WDT subsystem to ping the WDT
-+	 */
-+	if (qcom_wdt_is_running(&wdt->wdd)) {
-+		qcom_wdt_start(&wdt->wdd);
-+		set_bit(WDOG_HW_RUNNING, &wdt->wdd.status);
-+	}
-+
- 	ret = devm_watchdog_register_device(dev, &wdt->wdd);
- 	if (ret)
- 		return ret;
--- 
-2.28.0
+I think it's not a checkpatch warning here.
 
