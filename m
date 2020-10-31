@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6852D2A164F
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1182A1617
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbgJaLoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:44:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44592 "EHLO mail.kernel.org"
+        id S1727724AbgJaLlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:41:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727232AbgJaLoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:44:15 -0400
+        id S1727713AbgJaLln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:41:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F39F920731;
-        Sat, 31 Oct 2020 11:44:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B4D820731;
+        Sat, 31 Oct 2020 11:41:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144655;
-        bh=HuW2HXg1CP9EpHro6UPUwT0LoxZyphjmpojJQS0/8I4=;
+        s=default; t=1604144502;
+        bh=RGwWFbdTSeMYnT/6ONWYsBZIACDMa+Zj1OA7PoJPVqU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Et/u6MH++aOnQ7OHX89rrfpJr+4/+JVSY70ijQLCtofxF5HGDoJ25mFmBtX8wr2CG
-         kaq0L5uLkcZIMFTVbo/E82Wdsni/j0jGioZUne5lsDfxH8e8LoxGQdAh+Th1waqiwg
-         NaoqYoD1k4AiOg/2aUAWw3c8IrMBeF+hzWfAam4g=
+        b=vftPKv1tn+SOok/HnrzQulc9JLWbhPxsTzN0va0f1hi8Zzba9FLJWhZoWWRAy9o38
+         8omgGlLS2Y6inLyQgIX7JUiPhwfKQjO2JTOActOLcXNBeaRau9Mmqf8lzJTO8VQ/QI
+         MVj4RwbCvxRfy3YEA99H9KKhPCx338UIIeXScs0Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 31/74] bnxt_en: Send HWRM_FUNC_RESET fw command unconditionally.
-Date:   Sat, 31 Oct 2020 12:36:13 +0100
-Message-Id: <20201031113501.536605392@linuxfoundation.org>
+        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Alex Elder <elder@linaro.org>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.8 42/70] net: ipa: command payloads already mapped
+Date:   Sat, 31 Oct 2020 12:36:14 +0100
+Message-Id: <20201031113501.512901001@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
-References: <20201031113500.031279088@linuxfoundation.org>
+In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
+References: <20201031113459.481803250@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +42,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+From: Alex Elder <elder@linaro.org>
 
-[ Upstream commit 825741b071722f1c8ad692cead562c4b5f5eaa93 ]
+[ Upstream commit df833050cced27e1b343cc8bc41f90191b289334 ]
 
-In the AER or firmware reset flow, if we are in fatal error state or
-if pci_channel_offline() is true, we don't send any commands to the
-firmware because the commands will likely not reach the firmware and
-most commands don't matter much because the firmware is likely to be
-reset imminently.
+IPA transactions describe actions to be performed by the IPA
+hardware.  Three cases use IPA transactions:  transmitting a socket
+buffer; providing a page to receive packet data; and issuing an IPA
+immediate command.  An IPA transaction contains a scatter/gather
+list (SGL) to hold the set of actions to be performed.
 
-However, the HWRM_FUNC_RESET command is different and we should always
-attempt to send it.  In the AER flow for example, the .slot_reset()
-call will trigger this fw command and we need to try to send it to
-effect the proper reset.
+We map buffers in the SGL for DMA at the time they are added to the
+transaction.  For skb TX transactions, we fill the SGL with a call
+to skb_to_sgvec().  Page RX transactions involve a single page
+pointer, and that is recorded in the SGL with sg_set_page().  In
+both of these cases we then map the SGL for DMA with a call to
+dma_map_sg().
 
-Fixes: b340dc680ed4 ("bnxt_en: Avoid sending firmware messages when AER error is detected.")
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
-Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Immediate commands are different.  The payload for an immediate
+command comes from a region of coherent DMA memory, which must
+*not* be mapped for DMA.  For that reason, gsi_trans_cmd_add()
+sort of hand-crafts each SGL entry added to a command transaction.
+
+This patch fixes a problem with the code that crafts the SGL entry
+for an immediate command.  Previously a portion of the SGL entry was
+updated using sg_set_buf().  However this is not valid because it
+includes a call to virt_to_page() on the buffer, but the command
+buffer pointer is not a linear address.
+
+Since we never actually map the SGL for command transactions, there
+are very few fields in the SGL we need to fill.  Specifically, we
+only need to record the DMA address and the length, so they can be
+used by __gsi_trans_commit() to fill a TRE.  We additionally need to
+preserve the SGL flags so for_each_sg() still works.  For that we
+can simply assign a null page pointer for command SGL entries.
+
+Fixes: 9dd441e4ed575 ("soc: qcom: ipa: GSI transactions")
+Reported-by: Stephen Boyd <swboyd@chromium.org>
+Tested-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Alex Elder <elder@linaro.org>
+Link: https://lore.kernel.org/r/20201022010029.11877-1-elder@linaro.org
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ipa/gsi_trans.c |   21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -4296,7 +4296,8 @@ static int bnxt_hwrm_do_send_msg(struct
- 	u32 bar_offset = BNXT_GRCPF_REG_CHIMP_COMM;
- 	u16 dst = BNXT_HWRM_CHNL_CHIMP;
+--- a/drivers/net/ipa/gsi_trans.c
++++ b/drivers/net/ipa/gsi_trans.c
+@@ -398,15 +398,24 @@ void gsi_trans_cmd_add(struct gsi_trans
  
--	if (BNXT_NO_FW_ACCESS(bp))
-+	if (BNXT_NO_FW_ACCESS(bp) &&
-+	    le16_to_cpu(req->req_type) != HWRM_FUNC_RESET)
- 		return -EBUSY;
+ 	/* assert(which < trans->tre_count); */
  
- 	if (msg_len > BNXT_HWRM_MAX_REQ_LEN) {
+-	/* Set the page information for the buffer.  We also need to fill in
+-	 * the DMA address and length for the buffer (something dma_map_sg()
+-	 * normally does).
++	/* Commands are quite different from data transfer requests.
++	 * Their payloads come from a pool whose memory is allocated
++	 * using dma_alloc_coherent().  We therefore do *not* map them
++	 * for DMA (unlike what we do for pages and skbs).
++	 *
++	 * When a transaction completes, the SGL is normally unmapped.
++	 * A command transaction has direction DMA_NONE, which tells
++	 * gsi_trans_complete() to skip the unmapping step.
++	 *
++	 * The only things we use directly in a command scatter/gather
++	 * entry are the DMA address and length.  We still need the SG
++	 * table flags to be maintained though, so assign a NULL page
++	 * pointer for that purpose.
+ 	 */
+ 	sg = &trans->sgl[which];
+-
+-	sg_set_buf(sg, buf, size);
++	sg_assign_page(sg, NULL);
+ 	sg_dma_address(sg) = addr;
+-	sg_dma_len(sg) = sg->length;
++	sg_dma_len(sg) = size;
+ 
+ 	info = &trans->info[which];
+ 	info->opcode = opcode;
 
 
