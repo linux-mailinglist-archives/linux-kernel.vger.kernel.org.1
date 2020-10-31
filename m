@@ -2,143 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFDA2A1560
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D85B2A1562
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:05:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgJaLD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgJaLD4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:03:56 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7304AC0613D5
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 04:03:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=qm/dQY1APPXhjSPvUnH3gO6xHjupja3A54rMyQhlKYk=; b=t410NVk9eDFxFp96VJFBgdK3o
-        5ECw1YSrWf2wveE+xJ0W2cfO+Fnjk/qYXCfQI/WjVZkUs49XnhNgHzZUIWutNvObWQ/Z7/Bx2ZRPW
-        bN3PxBjqtKEMLvbLgI+PtMGiXDkl7DrBDs1yxOZytmk8E4ml3Xtb1kK/SgwkUb7lsgKX66ftc9Nnq
-        qJVlziCdqUSuDYHYYkWYMQ/WtG5dvbc2ZhSRm08l79MS5ZXUWYuhiT2sIsHnxmr5Ce6WqdfD6CquS
-        JbEKKh/hBX115/fOL6Z9uVittAg3p75EVGe94Tnv4mC4xNLhwow8LYEa6LPQmfA/8qk+xGAL9F9W5
-        CbzqwRJ6g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53284)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kYofo-00075q-FC; Sat, 31 Oct 2020 11:03:52 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kYofn-00088r-4v; Sat, 31 Oct 2020 11:03:51 +0000
-Date:   Sat, 31 Oct 2020 11:03:51 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-xtensa@linux-xtensa.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Chris Zankel <chris@zankel.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] ARM, xtensa: highmem: avoid clobbering non-page aligned
- memory reservations
-Message-ID: <20201031110350.GJ1551@shell.armlinux.org.uk>
-References: <20201031094345.6984-1-rppt@kernel.org>
- <20201031103312.GI1551@shell.armlinux.org.uk>
- <CAMj1kXGPtXsq+26OTr49NXk5uZVt82++-8Ug_E-DYYYJ6WEbWw@mail.gmail.com>
+        id S1726855AbgJaLFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:05:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726697AbgJaLFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:05:16 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5EAD208B6;
+        Sat, 31 Oct 2020 11:05:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604142316;
+        bh=bC++FNQDGlVtlhYG/eM4NOko/C7l8F8wsOrtywcEjGw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sj5mqSitEubbsf9QLznu4zo52+Yox8mjmmhQx5YYvsw80y+m6hqjr8CBWkhyJBMCb
+         zxZw/5HvojnpM3I9cTDuDJY1G4g/wk+4fUcbcCjiz30vkg9n/grsBwhDPX02WsdxfH
+         OIJLh7YV6T6iwwWta0jIeoPr1+fbub+laZkKmhC4=
+Date:   Sat, 31 Oct 2020 11:05:11 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/15] iio: accel: remove unnecessary CONFIG_PM_SLEEP
+Message-ID: <20201031110511.515a2f0f@archlinux>
+In-Reply-To: <20201030143410.pbixjo2cllhd27zp@Rk>
+References: <20201029074910.227859-1-coiby.xu@gmail.com>
+        <20201029144007.77d967b0@archlinux>
+        <CAHp75Vc829u6XPPA+eE=_AFZSPF+yVqT7nUXxtzkwx7-xLLrCg@mail.gmail.com>
+        <20201030143410.pbixjo2cllhd27zp@Rk>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXGPtXsq+26OTr49NXk5uZVt82++-8Ug_E-DYYYJ6WEbWw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 11:47:42AM +0100, Ard Biesheuvel wrote:
-> On Sat, 31 Oct 2020 at 11:33, Russell King - ARM Linux admin
-> <linux@armlinux.org.uk> wrote:
+On Fri, 30 Oct 2020 22:34:10 +0800
+Coiby Xu <coiby.xu@gmail.com> wrote:
+
+> On Thu, Oct 29, 2020 at 07:06:40PM +0200, Andy Shevchenko wrote:
+> >On Thu, Oct 29, 2020 at 4:42 PM Jonathan Cameron <jic23@kernel.org> wrote:  
+> >> On Thu, 29 Oct 2020 15:48:56 +0800
+> >> Coiby Xu <coiby.xu@gmail.com> wrote:  
+> >  
+> >> Please put a cover letter on your next series explaining the context.
+> >> In this particular case some of the replies you have gotten are
+> >> general at it is a lot easier to find these sorts of things via
+> >> replying to the cover letter.  
 > >
-> > On Sat, Oct 31, 2020 at 11:43:45AM +0200, Mike Rapoport wrote:
-> > > From: Ard Biesheuvel <ardb@kernel.org>
-> > >
-> > > free_highpages() iterates over the free memblock regions in high
-> > > memory, and marks each page as available for the memory management
-> > > system.
-> > >
-> > > Until commit cddb5ddf2b76 ("arm, xtensa: simplify initialization of
-> > > high memory pages") it rounded beginning of each region upwards and end of
-> > > each region downwards.
-> > >
-> > > However, after that commit free_highmem() rounds the beginning and end of
-> > > each region downwards, and we may end up freeing a page that is
-> > > memblock_reserve()d, resulting in memory corruption.
-> > >
-> > > Restore the original rounding of the region boundaries to avoid freeing
-> > > reserved pages.
-> > >
-> > > Fixes: cddb5ddf2b76 ("arm, xtensa: simplify initialization of high memory pages")
-> > > Link: https://lore.kernel.org/r/20201029110334.4118-1-ardb@kernel.org/
-> > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > > Co-developed-by:  Mike Rapoport <rppt@linux.ibm.com>
-> > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > > ---
-> > >
-> > > Max, Russell,
-> > >
-> > > Please let me know how do you prefer to take it upstream.
-> > > If needed this can go via memblock tree.
-> > >
-> > > v2: fix words order in the commit message
-> >
-> > I really don't understand what is going on here; there seems to be a
-> > total disconnect of communication between yourself and Ard. Ard has
-> > already submitted a different patch for this to the patch system
-> > already, sent yesterday.
-> >
-> > https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9021/1
-> >
-> > Please discuss between yourselves how you want to solve the problem,
-> > and then submit an agreed and tested patch to those of us upstream;
-> > please don't make it for those upstream to pick one of your patches
-> > as you are at present.
-> >
+> >Looking at the number of duplicate messages I would suggest that one
+> >needs to go through documentation on how to use git format-patch and
+> >git send-email.
+> >  
 > 
-> Apologies for creating this confusion. I posted a patch and dropped it
-> into the patch system when I found the bug.
+> Thank you for the suggestion! Actually it's a tree-wide change and it
+> seems the kernel community prefer individual patches or series for
+> subsystems having the same maintainer over a huge patch set so I wrote
+> some scripts to automate the process. That's why you see ~50 emails
+> with almost the same commit message. The only difference of these
+> commit messages is the name of PM macro.
+
+When doing a bit set like this, it's worth sending out a small subset
+first to shake out issue like those seen here.
+
+Once those get merged then send out out the reset.
+
+Thanks,
+
+Jonathan
+
 > 
-> However, only when Florian asked about a 'fixes' tag, I went back to
-> the history, and realized that the issue was introduced by Mike during
-> the most recent merge window, and affects xtensa as well.
+> >--
+> >With Best Regards,
+> >Andy Shevchenko  
+> 
+> --
+> Best regards,
+> Coiby
 
-So why does Mike's patch have:
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-
-in it? It seems you haven't been directly involved in Mike's patch.
-
-There's something /really/ not right with the process behind this
-patch.
-
-> I don't have a preference which patch gets applied, though, so please
-> indicate your preference, and we will adapt accordingly.
-
-I asked for you both to come to a concensus about how you want to
-proceed, and now you're throwing it back on to me to solve your(pl)
-mis-communication issue. We haven't heard from Mike yet.
-
-Clearly, I wasn't blunt and stroppy enough to be properly understood.
-Sort it out between yourselves and tell me which patch you want me to
-apply.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
