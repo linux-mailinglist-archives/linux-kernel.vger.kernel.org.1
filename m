@@ -2,126 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5F82A1B14
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 23:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2C12A1B1E
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 00:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726021AbgJaWsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 18:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgJaWsE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 18:48:04 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779B2C0617A6;
-        Sat, 31 Oct 2020 15:48:04 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id i7so5858014pgh.6;
-        Sat, 31 Oct 2020 15:48:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xQ4xsGDDibbe+i+6RvFTkO2wJW2NaeHMDLuyBg8zZeQ=;
-        b=j4HW+c7sdTjHhTVlMcrDVKsQ8Sj375kqTb9T+0kjlPkLpsJjV6fkbSiUk0X10DpCeB
-         cNAfVH4QahdUMHaWyq5UhZH0zWswIKdobI9Hohg66KYBJXCuD1e8ua6GZDUJTIip3vLH
-         Qiur+TrCmhrmc//EumTSGTidluHj74u5J+80LbFqD19O3UmBqlgZh0K4XD36/sFjOEs+
-         dxZWne53TN87B3BmZus+6b2s00CWViylp5DyWxO6EmC2ufZVCA8t7TxWeiBbgjRxn3Wn
-         NFSiaSsCA4wOBLEyntUccwm3oXmQdMcoon369cHXxX/Lev88h0dC+EBjv2dvU6s763de
-         DV0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xQ4xsGDDibbe+i+6RvFTkO2wJW2NaeHMDLuyBg8zZeQ=;
-        b=hgZhcS6B/2uUwMQV7WYBhP9rrSEul+YnpZl7gsCDKcY4RliZ5rXfhFyj2L6d6Nos0r
-         SzrP3uaNivjdfgiQxE3F9MeXaEcVxRYRRjdWP5ufQTN4NQVdn4P9GCGdV6Y1oGgNDOV1
-         f0EJ4N8WZqj7v4Se/1Pw3zI+HVYQuFPJaUOHPjjo/5dScHrL0SmLJMok8sfrmHLCHs5Z
-         76Osn7P93wknbw1EWf7f8fgOY5RJ3awRBlX+3dxez6OMtRARaZDzJmkn0u4oRleIc1Ap
-         VBuG/RWLLIlzf/uwDIZXYnNU7LD3yyFz1Z+oVyt68U0CbBVSTEkrlUu86vXxWoAjUywE
-         JvIw==
-X-Gm-Message-State: AOAM530wH4AtZsUMmRSLITh2youBCNN2NhKNfsFbF9mbD1Uw1JO9tiZ4
-        HDeN/PmIOoIxxy+efMzJ+tTW1RyxtsjNuw==
-X-Google-Smtp-Source: ABdhPJx8zvT5t5qTPzHlzXXdCLmjsAmk0vS8llPQZplrNHKHNt/3cGRSut2Bmi/H+thxJ7QgwL44Xw==
-X-Received: by 2002:a65:44cd:: with SMTP id g13mr7532180pgs.259.1604184483898;
-        Sat, 31 Oct 2020 15:48:03 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id gq24sm6107420pjb.30.2020.10.31.15.48.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 15:48:03 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Sun, 1 Nov 2020 06:47:35 +0800
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/15] iio: accel: remove unnecessary CONFIG_PM_SLEEP
-Message-ID: <20201031224735.atjih4opb6w57r6y@Rk>
-References: <20201029074910.227859-1-coiby.xu@gmail.com>
- <20201029144007.77d967b0@archlinux>
- <CAHp75Vc829u6XPPA+eE=_AFZSPF+yVqT7nUXxtzkwx7-xLLrCg@mail.gmail.com>
- <20201030143410.pbixjo2cllhd27zp@Rk>
- <20201031110511.515a2f0f@archlinux>
+        id S1726045AbgJaXIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 19:08:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725809AbgJaXIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 19:08:39 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 122B02076D;
+        Sat, 31 Oct 2020 23:08:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604185719;
+        bh=n6RGMuw5YNmilZqWQGqyaoFrZav6Bw3QeR5XS8Ggbv4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ySLB1L7pIlJP9h6xORopwqQLcFtjZACXN13XqvWZXwXtp4pI7VgAbwIONyoA+ZfVM
+         KG3MGzLUYbOZh68dXAHuvf8EdpKmrZthZhv7euijWZkjPJWlBaxnuf03TZt8ANziTV
+         QhuhwHX6ARkzeulo91I1T6N7k3EuEVG+alE1Rn8s=
+Date:   Sat, 31 Oct 2020 16:08:38 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH net-next v2] net/usb/r8153_ecm: support ECM mode for
+ RTL8153
+Message-ID: <20201031160838.39586608@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <1394712342-15778-388-Taiwan-albertk@realtek.com>
+References: <1394712342-15778-387-Taiwan-albertk@realtek.com>
+        <1394712342-15778-388-Taiwan-albertk@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201031110511.515a2f0f@archlinux>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 11:05:11AM +0000, Jonathan Cameron wrote:
->On Fri, 30 Oct 2020 22:34:10 +0800
->Coiby Xu <coiby.xu@gmail.com> wrote:
->
->> On Thu, Oct 29, 2020 at 07:06:40PM +0200, Andy Shevchenko wrote:
->> >On Thu, Oct 29, 2020 at 4:42 PM Jonathan Cameron <jic23@kernel.org> wrote:
->> >> On Thu, 29 Oct 2020 15:48:56 +0800
->> >> Coiby Xu <coiby.xu@gmail.com> wrote:
->> >
->> >> Please put a cover letter on your next series explaining the context.
->> >> In this particular case some of the replies you have gotten are
->> >> general at it is a lot easier to find these sorts of things via
->> >> replying to the cover letter.
->> >
->> >Looking at the number of duplicate messages I would suggest that one
->> >needs to go through documentation on how to use git format-patch and
->> >git send-email.
->> >
->>
->> Thank you for the suggestion! Actually it's a tree-wide change and it
->> seems the kernel community prefer individual patches or series for
->> subsystems having the same maintainer over a huge patch set so I wrote
->> some scripts to automate the process. That's why you see ~50 emails
->> with almost the same commit message. The only difference of these
->> commit messages is the name of PM macro.
->
->When doing a bit set like this, it's worth sending out a small subset
->first to shake out issue like those seen here.
->
->Once those get merged then send out out the reset.
->
-Thank you for the suggestion! Actually I've held off another ~150
-emails and these ~200 emails were only part of work. I thought it's
-better to reach 4 or 5 subsystem to collect sufficient feedbacks
-considering some subsystems may respond slow. But I didn't realize a
-better way is to cut down the size of patch set sent to a subsystem.
->Thanks,
->
->Jonathan
->
->>
->> >--
->> >With Best Regards,
->> >Andy Shevchenko
->>
->> --
->> Best regards,
->> Coiby
->
+On Fri, 30 Oct 2020 11:23:08 +0800 Hayes Wang wrote:
+> Support ECM mode based on cdc_ether with relative mii functions,
+> when CONFIG_USB_RTL8152 is not set, or the device is not supported
+> by r8152 driver.
+> 
+> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
 
---
-Best regards,
-Coiby
+Can you describe the use case in more detail?
+
+AFAICT r8152 defines a match for the exact same device.
+Does it not mean that which driver is used will be somewhat random 
+if both are built?
+
+> +/* Define these values to match your device */
+> +#define VENDOR_ID_REALTEK		0x0bda
+> +#define VENDOR_ID_MICROSOFT		0x045e
+> +#define VENDOR_ID_SAMSUNG		0x04e8
+> +#define VENDOR_ID_LENOVO		0x17ef
+> +#define VENDOR_ID_LINKSYS		0x13b1
+> +#define VENDOR_ID_NVIDIA		0x0955
+> +#define VENDOR_ID_TPLINK		0x2357
+
+$ git grep 0x2357 | grep -i tplink
+drivers/net/usb/cdc_ether.c:#define TPLINK_VENDOR_ID	0x2357
+drivers/net/usb/r8152.c:#define VENDOR_ID_TPLINK		0x2357
+drivers/usb/serial/option.c:#define TPLINK_VENDOR_ID			0x2357
+
+$ git grep 0x17ef | grep -i lenovo
+drivers/hid/hid-ids.h:#define USB_VENDOR_ID_LENOVO		0x17ef
+drivers/hid/wacom.h:#define USB_VENDOR_ID_LENOVO	0x17ef
+drivers/net/usb/cdc_ether.c:#define LENOVO_VENDOR_ID	0x17ef
+drivers/net/usb/r8152.c:#define VENDOR_ID_LENOVO		0x17ef
+
+Time to consolidate those vendor id defines perhaps?
