@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10CAB2A159B
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A8C2A15EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727194AbgJaLg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:36:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34442 "EHLO mail.kernel.org"
+        id S1727096AbgJaLkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:40:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727168AbgJaLgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:36:20 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1726815AbgJaLkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:40:12 -0400
+Received: from localhost (unknown [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB6DC22228;
-        Sat, 31 Oct 2020 11:36:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A5E520739;
+        Sat, 31 Oct 2020 11:40:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144180;
-        bh=QGqN73TlyPV9Esx6Em0+u7wW5ISeEhOcwbfgUOltegY=;
+        s=default; t=1604144411;
+        bh=vwLM/hjIdS12HwW2rYnP7czinbZmB20K/9K7wbYoPsQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eo5dTWW3F0LSjlDtBbgmFY/ub2oPyyfWezmHaaMldfaqG365Ho0LTNUgy0ynvw2kx
-         9cRY3ToS7d0cm+IxOU6tiNIy1+2ozvcHxBD9YfmuIbXU3c1h9XRXUlaZ9uSsdT3CxX
-         GzK94NjGFVpHA2A7kofkmGcbj9hFofVp8dVGi9CY=
+        b=p7GthxX3RkbesjlWxTBvCQJAsSDwrVXFk9O25MS3Tp9qK+AGFKN8dRvGNRNFnd7IU
+         5qRO+e+T10qpSx2Xd6b3nNjM9UWtUAUePkdOiuN/bdJFipO94Jow0FjDQJylgOsQ5M
+         zO6FE8W72q670+B9+W0Q3xBfWb9xqdLLmc14ZKMA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jia-Ju Bai <baijiaju@tsinghua.edu.cn>,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.4 36/49] p54: avoid accessing the data mapped to streaming DMA
-Date:   Sat, 31 Oct 2020 12:35:32 +0100
-Message-Id: <20201031113457.183530530@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.8 01/70] netfilter: nftables_offload: KASAN slab-out-of-bounds Read in nft_flow_rule_create
+Date:   Sat, 31 Oct 2020 12:35:33 +0100
+Message-Id: <20201031113459.558378850@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113455.439684970@linuxfoundation.org>
-References: <20201031113455.439684970@linuxfoundation.org>
+In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
+References: <20201031113459.481803250@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,56 +45,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju@tsinghua.edu.cn>
+From: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
 
-commit 478762855b5ae9f68fa6ead1edf7abada70fcd5f upstream.
+commit 31cc578ae2de19c748af06d859019dced68e325d upstream.
 
-In p54p_tx(), skb->data is mapped to streaming DMA on line 337:
-  mapping = pci_map_single(..., skb->data, ...);
+This patch fixes the issue due to:
 
-Then skb->data is accessed on line 349:
-  desc->device_addr = ((struct p54_hdr *)skb->data)->req_id;
+BUG: KASAN: slab-out-of-bounds in nft_flow_rule_create+0x622/0x6a2
+net/netfilter/nf_tables_offload.c:40
+Read of size 8 at addr ffff888103910b58 by task syz-executor227/16244
 
-This access may cause data inconsistency between CPU cache and hardware.
+The error happens when expr->ops is accessed early on before performing the boundary check and after nft_expr_next() moves the expr to go out-of-bounds.
 
-To fix this problem, ((struct p54_hdr *)skb->data)->req_id is stored in
-a local variable before DMA mapping, and then the driver accesses this
-local variable instead of skb->data.
+This patch checks the boundary condition before expr->ops that fixes the slab-out-of-bounds Read issue.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Jia-Ju Bai <baijiaju@tsinghua.edu.cn>
-Acked-by: Christian Lamparter <chunkeey@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200802132949.26788-1-baijiaju@tsinghua.edu.cn
+Add nft_expr_more() and use it to fix this problem.
+
+Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/intersil/p54/p54pci.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/net/netfilter/nf_tables.h |    6 ++++++
+ net/netfilter/nf_tables_api.c     |    6 +++---
+ net/netfilter/nf_tables_offload.c |    4 ++--
+ 3 files changed, 11 insertions(+), 5 deletions(-)
 
---- a/drivers/net/wireless/intersil/p54/p54pci.c
-+++ b/drivers/net/wireless/intersil/p54/p54pci.c
-@@ -329,10 +329,12 @@ static void p54p_tx(struct ieee80211_hw
- 	struct p54p_desc *desc;
- 	dma_addr_t mapping;
- 	u32 idx, i;
-+	__le32 device_addr;
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -896,6 +896,12 @@ static inline struct nft_expr *nft_expr_
+ 	return (struct nft_expr *)&rule->data[rule->dlen];
+ }
  
- 	spin_lock_irqsave(&priv->lock, flags);
- 	idx = le32_to_cpu(ring_control->host_idx[1]);
- 	i = idx % ARRAY_SIZE(ring_control->tx_data);
-+	device_addr = ((struct p54_hdr *)skb->data)->req_id;
++static inline bool nft_expr_more(const struct nft_rule *rule,
++				 const struct nft_expr *expr)
++{
++	return expr != nft_expr_last(rule) && expr->ops;
++}
++
+ static inline struct nft_userdata *nft_userdata(const struct nft_rule *rule)
+ {
+ 	return (void *)&rule->data[rule->dlen];
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -295,7 +295,7 @@ static void nft_rule_expr_activate(const
+ 	struct nft_expr *expr;
  
- 	mapping = pci_map_single(priv->pdev, skb->data, skb->len,
- 				 PCI_DMA_TODEVICE);
-@@ -346,7 +348,7 @@ static void p54p_tx(struct ieee80211_hw
+ 	expr = nft_expr_first(rule);
+-	while (expr != nft_expr_last(rule) && expr->ops) {
++	while (nft_expr_more(rule, expr)) {
+ 		if (expr->ops->activate)
+ 			expr->ops->activate(ctx, expr);
  
- 	desc = &ring_control->tx_data[i];
- 	desc->host_addr = cpu_to_le32(mapping);
--	desc->device_addr = ((struct p54_hdr *)skb->data)->req_id;
-+	desc->device_addr = device_addr;
- 	desc->len = cpu_to_le16(skb->len);
- 	desc->flags = 0;
+@@ -310,7 +310,7 @@ static void nft_rule_expr_deactivate(con
+ 	struct nft_expr *expr;
  
+ 	expr = nft_expr_first(rule);
+-	while (expr != nft_expr_last(rule) && expr->ops) {
++	while (nft_expr_more(rule, expr)) {
+ 		if (expr->ops->deactivate)
+ 			expr->ops->deactivate(ctx, expr, phase);
+ 
+@@ -2917,7 +2917,7 @@ static void nf_tables_rule_destroy(const
+ 	 * is called on error from nf_tables_newrule().
+ 	 */
+ 	expr = nft_expr_first(rule);
+-	while (expr != nft_expr_last(rule) && expr->ops) {
++	while (nft_expr_more(rule, expr)) {
+ 		next = nft_expr_next(expr);
+ 		nf_tables_expr_destroy(ctx, expr);
+ 		expr = next;
+--- a/net/netfilter/nf_tables_offload.c
++++ b/net/netfilter/nf_tables_offload.c
+@@ -37,7 +37,7 @@ struct nft_flow_rule *nft_flow_rule_crea
+ 	struct nft_expr *expr;
+ 
+ 	expr = nft_expr_first(rule);
+-	while (expr->ops && expr != nft_expr_last(rule)) {
++	while (nft_expr_more(rule, expr)) {
+ 		if (expr->ops->offload_flags & NFT_OFFLOAD_F_ACTION)
+ 			num_actions++;
+ 
+@@ -61,7 +61,7 @@ struct nft_flow_rule *nft_flow_rule_crea
+ 	ctx->net = net;
+ 	ctx->dep.type = NFT_OFFLOAD_DEP_UNSPEC;
+ 
+-	while (expr->ops && expr != nft_expr_last(rule)) {
++	while (nft_expr_more(rule, expr)) {
+ 		if (!expr->ops->offload) {
+ 			err = -EOPNOTSUPP;
+ 			goto err_out;
 
 
