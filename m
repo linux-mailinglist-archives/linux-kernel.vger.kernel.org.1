@@ -2,56 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1570D2A1242
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 01:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5282A1252
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 02:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgJaA72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 20:59:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbgJaA71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 20:59:27 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 091CD2087E;
-        Sat, 31 Oct 2020 00:59:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604105967;
-        bh=cVlkYBQn4AVUKpo9IrkEihc7Z9GmAo1XSN3I3NkOHfU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=W/hL/Fpon9IaclV9nSVJhHw0iiobWpti0PMBQihqHSX3+X7/iD2bkD3UGNzyQ2A93
-         NFLbxqRMAW87SHo6rR1eMtEaHHvsXeUB3c0fNXpFZQh6lLeeXXOwr/zTCqBYOjOT1z
-         BWHoWIbbT5XzigepQJ2RRgCQ3dBgWVnTvqZbryV0=
-Date:   Fri, 30 Oct 2020 17:59:26 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: bridge: explicitly convert between mdb
- entry state and port group flags
-Message-ID: <20201030175926.5e30a1e6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201028234815.613226-1-vladimir.oltean@nxp.com>
-References: <20201028234815.613226-1-vladimir.oltean@nxp.com>
+        id S1726140AbgJaBPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 21:15:43 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:54547 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725446AbgJaBPn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 21:15:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0UDgCrVb_1604106938;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UDgCrVb_1604106938)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 31 Oct 2020 09:15:39 +0800
+Subject: Re: [PATCH v20 02/20] mm/memcg: bail early from swap accounting if
+ memcg disabled
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Michal Hocko <mhocko@kernel.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-3-git-send-email-alex.shi@linux.alibaba.com>
+ <20201029134648.GC599825@cmpxchg.org>
+ <96b6d122-df0e-dfb0-368c-6bd714fab116@linux.alibaba.com>
+ <20201030140420.GB666074@cmpxchg.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <8f288275-da78-335d-e83d-7e073fcd3b88@linux.alibaba.com>
+Date:   Sat, 31 Oct 2020 09:13:26 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201030140420.GB666074@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 01:48:15 +0200 Vladimir Oltean wrote:
-> When creating a new multicast port group, there is implicit conversion
-> between the __u8 state member of struct br_mdb_entry and the unsigned
-> char flags member of struct net_bridge_port_group. This implicit
-> conversion relies on the fact that MDB_PERMANENT is equal to
-> MDB_PG_FLAGS_PERMANENT.
-> 
-> Let's be more explicit and convert the state to flags manually.
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-Applied, thanks!
+
+在 2020/10/30 下午10:04, Johannes Weiner 写道:
+>>> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>>>
+>>> This should go in before the previous patch that adds the WARN for it.
+>> Right, but than the long ops may not weird. Should I remove the ops and resend the whole patchset?
+> You mean the warning in the changelog? I think that's alright. You can
+> just say that you're about to remove the !page->memcg check in the
+> next patch because the original reasons for having it are gone, and
+> memcg being disabled is the only remaining exception, so this patch
+> makes that check explicit in preparation for the next.
+> 
+> Sorry, it's all a bit of a hassle, I just wouldn't want to introduce a
+> known warning into the kernel between those two patches (could confuse
+> bisection runs, complicates partial reverts etc.)
+
+H Johannes,
+
+I see, I will exchange the 1st and 2nd patch place with above comments in commit log.
+I guess you could give more comments on other patches, so I am going to wait you for
+more comments and send v21 as a whole. :)
+
+Many thanks!
+Alex 
