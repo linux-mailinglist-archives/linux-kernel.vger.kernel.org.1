@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A082A1884
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 16:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E272B2A1887
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 16:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727997AbgJaPXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 11:23:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30675 "EHLO
+        id S1727982AbgJaPZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 11:25:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42100 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726089AbgJaPXO (ORCPT
+        by vger.kernel.org with ESMTP id S1726317AbgJaPZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 11:23:14 -0400
+        Sat, 31 Oct 2020 11:25:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604157793;
+        s=mimecast20190719; t=1604157920;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=/pSbDKA3NkOJTxeIT+wqNFcqFgPstuS5EsTG3/3jClk=;
-        b=LNB/n20ZseZqTsI63RIYDbgdkYUTpRE87lK08vH+4YBPQNMqUUbF+36tsezi5LXIVS1YWO
-        lpP2CiCXWWJKWV6Zxn+aNRWAXBzFG0vpMO+43rptZrLJiU8jjZr5YuArBEg8qAlNkxs9lX
-        7GZHvxMHqs6fj1AMCzsDwoDObQdCNkc=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-NZUGs6XRNN2Sq7SaoyjUjQ-1; Sat, 31 Oct 2020 11:23:11 -0400
-X-MC-Unique: NZUGs6XRNN2Sq7SaoyjUjQ-1
-Received: by mail-ot1-f71.google.com with SMTP id a1so3883421otb.14
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 08:23:11 -0700 (PDT)
+         to:to:cc:cc; bh=JjYat0788HUsBBtsJEIIXb/BxUZc1qYlxRZUzCe4wXY=;
+        b=PAYwJAp7VPyWPKk5ybc4P9q5mca3Ch+vAanbZrtQDCWG6zihRpJPiUfdKinzG9QkBnIJSM
+        jPjLjeQ5vhOPXTTIwBNuJpuelONA7NunCeLZlgkZaEnwsnV2K5mW8D4WfpOS3gqYvGtmeI
+        NgNI9O7LQ6TjHlKFLK3GDb4R+DlVvv8=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-566-ylsfHjMmPMqmmlnuKN-WWQ-1; Sat, 31 Oct 2020 11:25:18 -0400
+X-MC-Unique: ylsfHjMmPMqmmlnuKN-WWQ-1
+Received: by mail-oo1-f71.google.com with SMTP id d6so3927599ooi.7
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 08:25:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/pSbDKA3NkOJTxeIT+wqNFcqFgPstuS5EsTG3/3jClk=;
-        b=OUOkCKnEDqkXEcxNP+3o5JjGO2E4Cb1JzXrKqgOYaGHmSFQeNivpvMdsu7D7qUDElz
-         7dOs0hydSS57FUqeZI82IgEeM2NV+nMjeAbHfRy2xunwbH7b9ifjGc3gTGS9LFc3j7F+
-         vW3ZuZbJPZ04j7ycs3xaWiYrGcAaG5YxFKJYkDXEbjZqVwCv7mAitywuJTSDv8OdhKyi
-         T3F6OPhdKqEsmNChFo3afLfaFrsdAI/s/iMjpVMSFqlyAehM7wOEpuMwTSjpWXowHAnO
-         9o6g3YjFsfNzCth24u06HGYkcvmPpsHjcf+8NlqgAlV4S/ygBaOXzmWDek/jf6ET26rw
-         Hl8g==
-X-Gm-Message-State: AOAM531Qx+fXiL2Qcy7YAxBx5ZHR3ZHCIiO11AFNg3iPiTrKSLOSFnPW
-        cF9HQHRyjUU/L1rFxstccWVKEkg9eMf/XwUL3AMoFJV4pyW9GPv/rARh/jjEukcCFPMX9VYmhfh
-        WbcSU+s75DhsEh4k18NVQIr4D
-X-Received: by 2002:aca:cf87:: with SMTP id f129mr4958182oig.62.1604157790965;
-        Sat, 31 Oct 2020 08:23:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxpBCOrgw2CnAf1M6TaOSeEDj45EdQ4zqge2NjSarB8M4pmZ1dB1Ez2DgxHxihLB0cE62codg==
-X-Received: by 2002:aca:cf87:: with SMTP id f129mr4958178oig.62.1604157790771;
-        Sat, 31 Oct 2020 08:23:10 -0700 (PDT)
+        bh=JjYat0788HUsBBtsJEIIXb/BxUZc1qYlxRZUzCe4wXY=;
+        b=gHGD5i3yp/DLhGfVmauBcE1mMzlojIEkDRW0GzEGJpna0mGKXYLCMIV434z4LtV4Qn
+         zd0ZPK64Ufs1iUZGG2vsXLhRbgzLO4qLUZueaIs5jH53iWHseGzQDaDXnWWzu8qbYBZr
+         HNJOf0FKekw6+AW3/S0+qEycJ7/BXGdUZA0WRQDvDqsNbv3/EM+XMqoeYWdy3olNLFS2
+         2RoNSxEYsp4oUhJqPwlZb3pdtq08eTDiEQPK0+qgTfcqFVPvEQNJQX5zX0xrK7DYF9nw
+         fMnyzNcKxV/3slbu7+HBb+lXCEUkfyVeJvOyaW8q7/3mUuSRcl8+zOLIhfum8qpjFD3Q
+         VfKA==
+X-Gm-Message-State: AOAM5312a2onWL6fX1pKA1KWPW/4wpmWN3XWmL39ZVRH0qu2loSyYgqH
+        aY8mObt+S4BOp2iI1AH2YNEjyqH3eZTYtDuXUTmdQa8KGn0xzLmjIhzttImf65JdPilzwdGyOvs
+        KiGxayzg9+EYFrLfoYX6wS869
+X-Received: by 2002:a05:6830:12d9:: with SMTP id a25mr5494083otq.168.1604157918025;
+        Sat, 31 Oct 2020 08:25:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJypbwHZqL4YPPs21focFr9NNNhKYiVKkzf9sT+6fcBBEJrI02ZuHlaQBQfVLwpJ89isFonW+Q==
+X-Received: by 2002:a05:6830:12d9:: with SMTP id a25mr5494069otq.168.1604157917868;
+        Sat, 31 Oct 2020 08:25:17 -0700 (PDT)
 Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id p10sm2246842oig.37.2020.10.31.08.23.09
+        by smtp.gmail.com with ESMTPSA id m13sm2206853otn.20.2020.10.31.08.25.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 08:23:10 -0700 (PDT)
+        Sat, 31 Oct 2020 08:25:17 -0700 (PDT)
 From:   trix@redhat.com
-To:     sudeep.dutt@intel.com, ashutosh.dixit@intel.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, qiangqing.zhang@nxp.com,
-        sherry.sun@nxp.com
+To:     arnd@arndb.de, gregkh@linuxfoundation.org, lee.jones@linaro.org,
+        colin.king@canonical.com
 Cc:     linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] mic: vop: remove unneeded semicolon
-Date:   Sat, 31 Oct 2020 08:22:58 -0700
-Message-Id: <20201031152258.2145680-1-trix@redhat.com>
+Subject: [PATCH] misc: ti-st: st_core: remove unneeded semicolon
+Date:   Sat, 31 Oct 2020 08:24:56 -0700
+Message-Id: <20201031152456.2146104-1-trix@redhat.com>
 X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -66,22 +65,22 @@ A semicolon is not needed after a switch statement.
 
 Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- drivers/misc/mic/vop/vop_vringh.c | 2 +-
+ drivers/misc/ti-st/st_core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/mic/vop/vop_vringh.c b/drivers/misc/mic/vop/vop_vringh.c
-index 7014ffe88632..3ef8c63e5cc6 100644
---- a/drivers/misc/mic/vop/vop_vringh.c
-+++ b/drivers/misc/mic/vop/vop_vringh.c
-@@ -1010,7 +1010,7 @@ static long vop_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+diff --git a/drivers/misc/ti-st/st_core.c b/drivers/misc/ti-st/st_core.c
+index f4ddd1e67015..5a0a5fc3d3ab 100644
+--- a/drivers/misc/ti-st/st_core.c
++++ b/drivers/misc/ti-st/st_core.c
+@@ -380,7 +380,7 @@ void st_int_recv(void *disc_data,
+ 			st_gdata->rx_state = ST_W4_HEADER;
+ 			st_gdata->rx_count = st_gdata->list[type]->hdr_len;
+ 			pr_debug("rx_count %ld\n", st_gdata->rx_count);
+-		};
++		}
+ 		ptr++;
+ 		count--;
  	}
- 	default:
- 		return -ENOIOCTLCMD;
--	};
-+	}
- 	return 0;
- }
- 
 -- 
 2.18.1
 
