@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D554E2A1A95
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 21:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F0C2A1A98
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 21:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728570AbgJaUoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 16:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728524AbgJaUoY (ORCPT
+        id S1727230AbgJaU4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 16:56:24 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:58924 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725832AbgJaU4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 16:44:24 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0FC8C0617A6
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 13:44:23 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id b18so8215447qkc.9
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 13:44:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=muc0kVwivNXzGUfAH7TU9Xb3fqNFKltfoR7TwK0/np4=;
-        b=N3h2A4a5sqoc2YkkSvR+llcB0PmusXb1nybQ23YFBNEMv9luRBYcgDQe+Ns9yDYZyE
-         h73nk1aF8wU0CBWM329J0HO4POExnRfJEPhts49f6HRIFlbXplR0ujOJL78VdqDTUyRF
-         IEikuVcs+YVLybFhxP5avOMANN4Zw2XAoQFpJxwdtWH8HMo1kwRFYlTeXwlXowXGjawU
-         +3C781rZqg7IW5GLJgWJRXOi1oVTlPT4rarqWtoNEDoyabGSKV9ZRZd95ywNXVrDJLfH
-         KAssFMepmTLh/8+XM9QL4TxTwXUBz/ihkWhbRlhc5RDZ6oNZ5XfEr3zh5lNvqaLU9kSe
-         W5hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=muc0kVwivNXzGUfAH7TU9Xb3fqNFKltfoR7TwK0/np4=;
-        b=M62c0aV8WhaI+wLRvRZYUB0Ch+O4pQ6x1CrhnXKUhhVltdVDDv9UIkrmdoZPJ6Rluf
-         9HJkYGVcvVhEGmh91Js3k6DPYDdzUKNRlIXrj0P5MnkWSrc+TGyT7LGlOXqZH+ozI9Jj
-         gKuqLdHrZmGzJ8m6XmylbUTetWaqrTYv/O3ljfRV2UZD40zlfQ4qn5iwpF1n6r+47qhZ
-         eUfDzHRTcdaCqSr6K41RROaJmZ6IICw3vuABCAEG/tnijWYe5UeY5ajOirwgJ8WOf2Xh
-         LPcQug3T1NkUUncDazMAM02Aud1ZUKBQO7mJvV8LM5mXDGA+jaj4iQstcCYT7oSA7Vf2
-         VkHw==
-X-Gm-Message-State: AOAM533TwYP6sXianzpHBRmqPZmzK9SagZOQKbMbUMdqjfFYQCm4m5cv
-        usBSf6krCuoOWNraU1NYIAC2Z2AgkGCzS5p4dVs=
-X-Google-Smtp-Source: ABdhPJxFstStOYPuZdlbN7GmDhPQ7MzKgC0gumNK13a+9afl0w4AxcL03uU/AW1WK2pRywoYrD3u3MmM9QTcCZtW5nE=
-X-Received: by 2002:a37:7183:: with SMTP id m125mr8375331qkc.237.1604177063121;
- Sat, 31 Oct 2020 13:44:23 -0700 (PDT)
+        Sat, 31 Oct 2020 16:56:24 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id D6C2080501;
+        Sat, 31 Oct 2020 21:56:18 +0100 (CET)
+Date:   Sat, 31 Oct 2020 21:56:17 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v6 2/2] drm/bridge: hx8837: add a Himax HX8837 display
+ controller driver
+Message-ID: <20201031205617.GA1111106@ravnborg.org>
+References: <20201030030800.1036888-1-lkundrak@v3.sk>
+ <20201030030800.1036888-3-lkundrak@v3.sk>
+ <20201031080137.GB1044557@ravnborg.org>
+ <20201031201259.GA294060@demiurge.local>
 MIME-Version: 1.0
-References: <20201031085420.1316-1-kechengsong@huawei.com>
-In-Reply-To: <20201031085420.1316-1-kechengsong@huawei.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Sat, 31 Oct 2020 21:44:12 +0100
-Message-ID: <CAFLxGvxB3-ryVLPtS0XhZnu+4w-gSzzw=BV+1mKTGt3mOKbeiw@mail.gmail.com>
-Subject: Re: [PATCH v2] ubifs: Fix the printing type of c->big_lpt
-To:     Chengsong Ke <kechengsong@huawei.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
-        wangfangpeng1@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201031201259.GA294060@demiurge.local>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=yQnS-YR962e6U0jWTX0A:9 a=CjuIK1q_8ugA:10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 9:56 AM Chengsong Ke <kechengsong@huawei.com> wrote:
->
-> Ubifs uses %d to print c->big_lpt, but c->big_lpt is a variable
-> of type unsigned int and should be printed with %u.
+Hi Lubomir.
 
-Well, it is:
-unsigned int big_lpt:1;
-So, either 0 or 1.
+> > 
+> > > +	select BACKLIGHT_CLASS_DEVICE
+> > Please use a depends - using select on a symbol with a prompt is always
+> > wrong. Yeah, I know you then need to enable backlight to see this
+> > driver. Sorry, but this is the best we can do now.
+> > Many other drivers can cope with depends here.
+> 
+> This results in a dependency loop:
+> 
+>   drivers/video/fbdev/Kconfig:12:error: recursive dependency detected!
+>   drivers/video/fbdev/Kconfig:12: symbol FB is selected by DRM_KMS_FB_HELPER
+>   drivers/gpu/drm/Kconfig:80:     symbol DRM_KMS_FB_HELPER depends on DRM_KMS_HELPER
+>   drivers/gpu/drm/Kconfig:74:     symbol DRM_KMS_HELPER is selected by DRM_HIMAX_HX8837
+>   drivers/gpu/drm/bridge/Kconfig:51:      symbol DRM_HIMAX_HX8837 depends on BACKLIGHT_CLASS_DEVICE
+>   drivers/video/backlight/Kconfig:143:    symbol BACKLIGHT_CLASS_DEVICE is selected by FB_BACKLIGHT
+>   drivers/video/fbdev/Kconfig:187:        symbol FB_BACKLIGHT depends on FB
+> 
+> Unfortunately I have no idea how to resolve it at the moment.
+> 
+> I suppose I can look further into it if necessary. Or is it okay if I
+> leave it at select BACKLIGHT_CLASS_DEVICE for now?
 
-Does changing it to %u silence some static checker or is there some
-other problem I don't
-see right now? :-)
+Sigh, leave it as a select then :-(
+The "sigh" is not directed at you but the mess this
+BACKLIGHT_CLASS_DEVICE is and the limitations of Kconfig.
 
-Thanks,
-//richard
+	Sam
