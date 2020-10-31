@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCF32A1646
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7252A15F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727550AbgJaLnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:43:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43954 "EHLO mail.kernel.org"
+        id S1727416AbgJaLkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:40:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728079AbgJaLnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:43:51 -0400
+        id S1727353AbgJaLk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:40:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A282E2074F;
-        Sat, 31 Oct 2020 11:43:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA37620731;
+        Sat, 31 Oct 2020 11:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144630;
-        bh=iTrrphnkDfTH1Xx5RII1kb/JoUpbtyHN8J+B/addeWw=;
+        s=default; t=1604144426;
+        bh=Csmu/aoph/I1G8huV9ayhGWzcyNnZ3WOSLX47x3dAH8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IwSDjzSvV0VlpuJ5PPsEa/KSM5zMGTKgYfnmAXv3iTiSEYi8VVqVEwH+ebN+XOSXy
-         TPdrN16p0gEwv2rIXnnqwOxRqOQbnPYiQyU1J5Y++58kIXFmE0dWsoXKfpCnixQUit
-         nsKyGigfO3yr8Ev2hAIfFdgPWGVP+TKprz74p3Ik=
+        b=O7DuFU9eoOduceZ5+P7GT9I0SdLGR3sMbkFBPz+OR5snPULTfqZueF1aliVkKvw9Q
+         eCFVK+M5YxoczsyNz8eNs/4WSXTXrCknqg6l4GOuxp9hxFbp8QNzCf9fpjDGcy8jyw
+         Tu2XTfmtv1VH9gZ9iqPgrc51wnRbzXn1Y2bhej2Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        stable@vger.kernel.org,
+        syzbot+27c12725d8ff0bfe1a13@syzkaller.appspotmail.com,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.9 03/74] io_uring: allow timeout/poll/files killing to take task into account
-Date:   Sat, 31 Oct 2020 12:35:45 +0100
-Message-Id: <20201031113500.202920716@linuxfoundation.org>
+Subject: [PATCH 5.8 14/70] io_uring: Fix use of XArray in __io_uring_files_cancel
+Date:   Sat, 31 Oct 2020 12:35:46 +0100
+Message-Id: <20201031113500.188798721@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
-References: <20201031113500.031279088@linuxfoundation.org>
+In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
+References: <20201031113459.481803250@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,94 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-commit 07d3ca52b0056f25eef61b1c896d089f8d365468 upstream.
+commit ce765372bc443573d1d339a2bf4995de385dea3a upstream.
 
-We currently cancel these when the ring exits, and we cancel all of
-them. This is in preparation for killing only the ones associated
-with a given task.
+We have to drop the lock during each iteration, so there's no advantage
+to using the advanced API.  Convert this to a standard xa_for_each() loop.
 
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+Reported-by: syzbot+27c12725d8ff0bfe1a13@syzkaller.appspotmail.com
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/io_uring.c |   33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
+ fs/io_uring.c |   19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
 --- a/fs/io_uring.c
 +++ b/fs/io_uring.c
-@@ -1226,13 +1226,26 @@ static void io_kill_timeout(struct io_ki
- 	}
- }
- 
--static void io_kill_timeouts(struct io_ring_ctx *ctx)
-+static bool io_task_match(struct io_kiocb *req, struct task_struct *tsk)
-+{
-+	struct io_ring_ctx *ctx = req->ctx;
-+
-+	if (!tsk || req->task == tsk)
-+		return true;
-+	if ((ctx->flags & IORING_SETUP_SQPOLL) && req->task == ctx->sqo_thread)
-+		return true;
-+	return false;
-+}
-+
-+static void io_kill_timeouts(struct io_ring_ctx *ctx, struct task_struct *tsk)
+@@ -8008,28 +8008,19 @@ static void io_uring_attempt_task_drop(s
+ void __io_uring_files_cancel(struct files_struct *files)
  {
- 	struct io_kiocb *req, *tmp;
+ 	struct io_uring_task *tctx = current->io_uring;
+-	XA_STATE(xas, &tctx->xa, 0);
++	struct file *file;
++	unsigned long index;
  
- 	spin_lock_irq(&ctx->completion_lock);
--	list_for_each_entry_safe(req, tmp, &ctx->timeout_list, timeout.list)
--		io_kill_timeout(req);
-+	list_for_each_entry_safe(req, tmp, &ctx->timeout_list, timeout.list) {
-+		if (io_task_match(req, tsk))
-+			io_kill_timeout(req);
+ 	/* make sure overflow events are dropped */
+ 	tctx->in_idle = true;
+ 
+-	do {
+-		struct io_ring_ctx *ctx;
+-		struct file *file;
+-
+-		xas_lock(&xas);
+-		file = xas_next_entry(&xas, ULONG_MAX);
+-		xas_unlock(&xas);
+-
+-		if (!file)
+-			break;
+-
+-		ctx = file->private_data;
++	xa_for_each(&tctx->xa, index, file) {
++		struct io_ring_ctx *ctx = file->private_data;
+ 
+ 		io_uring_cancel_task_requests(ctx, files);
+ 		if (files)
+ 			io_uring_del_task_file(file);
+-	} while (1);
 +	}
- 	spin_unlock_irq(&ctx->completion_lock);
  }
  
-@@ -5017,7 +5030,7 @@ static bool io_poll_remove_one(struct io
- 	return do_complete;
- }
- 
--static void io_poll_remove_all(struct io_ring_ctx *ctx)
-+static void io_poll_remove_all(struct io_ring_ctx *ctx, struct task_struct *tsk)
- {
- 	struct hlist_node *tmp;
- 	struct io_kiocb *req;
-@@ -5028,8 +5041,10 @@ static void io_poll_remove_all(struct io
- 		struct hlist_head *list;
- 
- 		list = &ctx->cancel_hash[i];
--		hlist_for_each_entry_safe(req, tmp, list, hash_node)
--			posted += io_poll_remove_one(req);
-+		hlist_for_each_entry_safe(req, tmp, list, hash_node) {
-+			if (io_task_match(req, tsk))
-+				posted += io_poll_remove_one(req);
-+		}
- 	}
- 	spin_unlock_irq(&ctx->completion_lock);
- 
-@@ -7989,8 +8004,8 @@ static void io_ring_ctx_wait_and_kill(st
- 	percpu_ref_kill(&ctx->refs);
- 	mutex_unlock(&ctx->uring_lock);
- 
--	io_kill_timeouts(ctx);
--	io_poll_remove_all(ctx);
-+	io_kill_timeouts(ctx, NULL);
-+	io_poll_remove_all(ctx, NULL);
- 
- 	if (ctx->io_wq)
- 		io_wq_cancel_all(ctx->io_wq);
-@@ -8221,7 +8236,7 @@ static bool io_cancel_task_cb(struct io_
- 	struct io_kiocb *req = container_of(work, struct io_kiocb, work);
- 	struct task_struct *task = data;
- 
--	return req->task == task;
-+	return io_task_match(req, task);
- }
- 
- static int io_uring_flush(struct file *file, void *data)
+ static inline bool io_uring_task_idle(struct io_uring_task *tctx)
 
 
