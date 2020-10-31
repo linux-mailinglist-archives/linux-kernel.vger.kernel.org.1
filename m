@@ -2,80 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194582A192E
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 19:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C686E2A192B
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 19:09:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728221AbgJaSJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 14:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJaSJ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 14:09:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D67CC0617A6;
-        Sat, 31 Oct 2020 11:09:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=px5gzTDuAA6r6aEMSVnOAXp+7prn4u4PCSua36AjyrI=; b=efefLrOQX2QQSjz75MCop0tUDq
-        aRdVsfpVZlojVj7ptBWRjok41Bg71aM7sjg/y1MML1YxyXuo//NNUL5yfjw+/c+uMEo3x6AkMwZ8c
-        9cbFKRpSBKZ6VkIK4oaM8OyTdORTWLAQochwdu5JMjdIBRbjtClVCh1yjLD5bknYWn1p75vo/nb8V
-        hQpqO3Zga6PlZfFmEcV0EPNOmHSWucUPdk2bbaxv6OzyfMkVWSddc8FGJMlaG46V/2gbEw/6MG+Qf
-        dJ3tL+rC0Px/EldTofN9HJvczSlvUBOSiQI189HTuSWlVqsi0j7a8fxaDHeM6uD97WXwl0+84o249
-        Jw+e8/4Q==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYvJP-0003MF-3m; Sat, 31 Oct 2020 18:09:11 +0000
-Date:   Sat, 31 Oct 2020 18:09:11 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-block@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <dwagner@suse.de>, Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH 3/3] blk-mq: Use llist_head for blk_cpu_done
-Message-ID: <20201031180911.GA12737@infradead.org>
-References: <20201029131212.dsulzvsb6pahahbs@linutronix.de>
- <20201029140536.GA6376@infradead.org>
- <20201029145623.3zry7o6nh6ks5tjj@linutronix.de>
- <20201029145743.GA19379@infradead.org>
- <d2c15411-5b21-535b-6e07-331ebe22f8c8@grimberg.me>
- <20201029210103.ocufuvj6i4idf5hj@linutronix.de>
- <deb40e55-d228-06c8-8719-fc8657a0a19b@grimberg.me>
- <20201031104108.wjjdiklqrgyqmj54@linutronix.de>
- <3bbfb5e1-c5d7-8f3b-4b96-6dc02be0550d@kernel.dk>
- <76005875-1cfd-fb35-07f4-d35877d58b90@kernel.dk>
+        id S1728173AbgJaSJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 14:09:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725887AbgJaSJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 14:09:14 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7E162068D;
+        Sat, 31 Oct 2020 18:09:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604167754;
+        bh=OPbbtvNukDMeVieISiK9KwqFjbsYqU7+sdOqWiR7DJo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xVX0EwrR9FrHqGbWotK8h/y3EDIl7vDjzZz1Awb0lqtOx73WsU5MEJw62eq6lo2Fa
+         ab3mUA/6i/qFUDP/6AMRN/jGh+PJsMtsNWkc3gMMaDhXL2R0q03C3HJv62TVyQzSjM
+         nm88huRKr8waCWQ2wkpmqqWXr8p0rpDMWwDw0MmE=
+Date:   Sat, 31 Oct 2020 11:09:12 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hemant Kumar <hemantk@codeaurora.org>
+Cc:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v11 4/4] bus: mhi: Add userspace client interface driver
+Message-ID: <20201031110912.7fbdc8e7@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <1604025946-28288-5-git-send-email-hemantk@codeaurora.org>
+References: <1604025946-28288-1-git-send-email-hemantk@codeaurora.org>
+        <1604025946-28288-5-git-send-email-hemantk@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76005875-1cfd-fb35-07f4-d35877d58b90@kernel.dk>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 09:01:45AM -0600, Jens Axboe wrote:
-> On 10/31/20 9:00 AM, Jens Axboe wrote:
-> > On 10/31/20 4:41 AM, Sebastian Andrzej Siewior wrote:
-> >> On 2020-10-29 14:07:59 [-0700], Sagi Grimberg wrote:
-> >>>> in which context?
-> >>>
-> >>> Not sure what is the question.
-> >>
-> >> The question is in which context do you complete your requests. My guess
-> >> by now is "usually softirq/NAPI and context in rare error case".
-> > 
-> > There really aren't any rules for this, and it's perfectly legit to
-> > complete from process context. Maybe you're a kthread driven driver and
-> > that's how you handle completions. The block completion path has always
-> > been hard IRQ safe, but possible to call from anywhere.
-> 
-> A more recent example is polled IO, which will always complete from
-> process/task context and very much is fast path.
+On Thu, 29 Oct 2020 19:45:46 -0700 Hemant Kumar wrote:
+> +/* .driver_data stores max mtu */
+> +static const struct mhi_device_id mhi_uci_match_table[] = {
+> +	{ .chan = "LOOPBACK", .driver_data = 0x1000},
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(mhi, mhi_uci_match_table);
 
-But we never IPI for that anyway, so it is the easy case.
+I forgot to follow up. If you're adding a testing interface to the
+kernel there needs to be an open source test code that makes use of 
+it. If the code is not large something in
+tools/testing/selftests/drivers would be great, but link to an external
+project in the documentation is good enough.
