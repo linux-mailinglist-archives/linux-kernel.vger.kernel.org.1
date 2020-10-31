@@ -2,88 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D570D2A12CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 03:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 196802A12CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 03:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726028AbgJaCLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 22:11:19 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6674 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgJaCLT (ORCPT
+        id S1726151AbgJaCTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 22:19:24 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2484 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgJaCTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 22:11:19 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CNN2Z01vnz15MJr;
-        Sat, 31 Oct 2020 10:11:18 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 31 Oct 2020 10:11:07 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Nilesh Javali <njavali@marvell.com>,
-        <GR-QLogic-Storage-Upstream@marvell.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH] scsi: qla2xxx: add missing iounmap() on error in qlafx00_iospace_config
-Date:   Sat, 31 Oct 2020 10:16:53 +0800
-Message-ID: <20201031021653.186554-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 30 Oct 2020 22:19:23 -0400
+Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CNNCt2tKDzQjtp;
+        Sat, 31 Oct 2020 10:19:22 +0800 (CST)
+Received: from [10.140.157.68] (10.140.157.68) by
+ dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Sat, 31 Oct 2020 10:19:20 +0800
+Subject: Re: Using fixed LPI number for some Device ID
+From:   Dongjiu Geng <gengdongjiu@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Jason Cooper <jason@lakedaemon.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <linux-kernel@vger.kernel.org>
+References: <0baed5b0-6cbe-6492-b4af-fe758f461602@huawei.com>
+Message-ID: <04e31996-6eb8-3bb9-e333-bc46eebe3d7a@huawei.com>
+Date:   Sat, 31 Oct 2020 10:19:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
+In-Reply-To: <0baed5b0-6cbe-6492-b4af-fe758f461602@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.140.157.68]
+X-ClientProxiedBy: dggeme715-chm.china.huawei.com (10.1.199.111) To
+ dggeme755-chm.china.huawei.com (10.3.19.101)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing iounmap() before return from qlafx00_iospace_config
-in the error handling case when os failed to do ioremap for ha->iobase.
-
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- drivers/scsi/qla2xxx/qla_mr.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/qla2xxx/qla_mr.c b/drivers/scsi/qla2xxx/qla_mr.c
-index ca7306685..c6fcd47de 100644
---- a/drivers/scsi/qla2xxx/qla_mr.c
-+++ b/drivers/scsi/qla2xxx/qla_mr.c
-@@ -798,13 +798,13 @@ qlafx00_iospace_config(struct qla_hw_data *ha)
- 		ql_log_pci(ql_log_warn, ha->pdev, 0x0129,
- 		    "region #2 not an MMIO resource (%s), aborting\n",
- 		    pci_name(ha->pdev));
--		goto iospace_error_exit;
-+		goto ha_iobase_exit;
- 	}
- 	if (pci_resource_len(ha->pdev, 2) < BAR2_LEN_FX00) {
- 		ql_log_pci(ql_log_warn, ha->pdev, 0x012a,
- 		    "Invalid PCI mem BAR2 region size (%s), aborting\n",
- 			pci_name(ha->pdev));
--		goto iospace_error_exit;
-+		goto ha_iobase_exit;
- 	}
- 
- 	ha->iobase =
-@@ -812,7 +812,7 @@ qlafx00_iospace_config(struct qla_hw_data *ha)
- 	if (!ha->iobase) {
- 		ql_log_pci(ql_log_fatal, ha->pdev, 0x012b,
- 		    "cannot remap MMIO (%s), aborting\n", pci_name(ha->pdev));
--		goto iospace_error_exit;
-+		goto ha_iobase_exit;
- 	}
- 
- 	/* Determine queue resources */
-@@ -824,6 +824,8 @@ qlafx00_iospace_config(struct qla_hw_data *ha)
- 
- 	return 0;
- 
-+ha_iobase_exit:
-+	iounmap(ha->cregbase);
- iospace_error_exit:
- 	return -ENOMEM;
- }
--- 
-2.23.0
-
+ Hi Marc,
+    Sorry to disturb you, Currently the LPI number is not fixed for the device. The LPI number is dynamically allocated start from 8092.
+ For two OS which shares the ITS, One OS needs to configure the device interrupt required by another OS, and the other OS uses a fixed interrupt
+ ID to respond the interrupt. Therefore, the LPI IRQ number of the device needed be fixed. I want to upstream this feature that allocate fixed
+ LPI number for the device that is specified through the DTS. What is your meaning?  Thanks
