@@ -2,201 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3182A17FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 14:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9882A180B
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 15:03:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727661AbgJaNyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 09:54:46 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:43639 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727407AbgJaNyq (ORCPT
+        id S1727682AbgJaOD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 10:03:28 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:64466 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727407AbgJaOD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 09:54:46 -0400
-Received: from methusalix.internal.home.lespocky.de ([109.250.100.133]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1MTiHb-1kvZI83UCb-00U2mO; Sat, 31 Oct 2020 14:54:13 +0100
-Received: from falbala.internal.home.lespocky.de ([192.168.243.94])
-        by methusalix.internal.home.lespocky.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <post@lespocky.de>)
-        id 1kYrKc-0007w5-MQ; Sat, 31 Oct 2020 14:54:11 +0100
-Date:   Sat, 31 Oct 2020 14:54:09 +0100
-From:   Alexander Dahl <post@lespocky.de>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Alexander Dahl <ada@thorsis.com>, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [Linux-stm32] [PATCH v7 10/12] ARM: dts: stm32: Fix schema
- warnings for pwm-leds
-Message-ID: <20201031135408.lgpiy5goa7l4cg2k@falbala.internal.home.lespocky.de>
-Mail-Followup-To: Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Alexander Dahl <ada@thorsis.com>, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-References: <20201005203451.9985-1-post@lespocky.de>
- <20201005203451.9985-11-post@lespocky.de>
- <b387bda8-3643-1d27-4996-2aa4dc94d69f@pengutronix.de>
- <20201027100536.cpfizc67gwrolp2z@falbala.internal.home.lespocky.de>
- <f6ed201d-51b6-f278-7a95-3e3e49dc19ee@pengutronix.de>
+        Sat, 31 Oct 2020 10:03:28 -0400
+Received: from fsav108.sakura.ne.jp (fsav108.sakura.ne.jp [27.133.134.235])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 09VE36PJ098541;
+        Sat, 31 Oct 2020 23:03:06 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav108.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp);
+ Sat, 31 Oct 2020 23:03:06 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 09VE30bg098446
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 31 Oct 2020 23:03:06 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: Linux 4.19.154
+To:     Jari Ruusu <jariruusu@users.sourceforge.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+References: <160405368022942@kroah.com> <160405368043128@kroah.com>
+ <5F9D6341.71F2A54E@users.sourceforge.net>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <9996e46f-e493-e3b3-c23a-31415668db7d@i-love.sakura.ne.jp>
+Date:   Sat, 31 Oct 2020 23:02:56 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ddtzb2gxy77t23sv"
-Content-Disposition: inline
-In-Reply-To: <f6ed201d-51b6-f278-7a95-3e3e49dc19ee@pengutronix.de>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Scan-Signature: 398b5fa1ed41958f905023f519330efd
-X-Spam-Score: -2.9 (--)
-X-Provags-ID: V03:K1:kOJxMHpGJCYtvBKRj3a5Ly8/ilfwpNNXI1ocWX5i5fr374VhsBt
- XY+3dWYOOSBqHrm0QBckVTKaVnpenhn7Uh2IlaJx6UC+1How4h/6RmzbZPI7EeF6UhXe6pK
- eKCecDo6OoX2+9Qb9Mt3PSNf8AhYm2ZcDajM/8GaKnr1hXnqw+FHr6wP9hYLA9ldvbjZuhV
- pi62QF0PirWPfLHq9QFxw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tdONFEfhZCc=:cGmwJuBlzO3ekW8iSHTpqb
- jxAFgeN1rSd12PhXPzUSdS13qXWBFtnPArrSzrLH64aJ23ezNNhaW0E21f6bMf9KnEiveMYPJ
- kntm5B0u/IuV3f62ZgRn46eIGV76LjlbkXxG2KaJFEe8SEVcqgYJhvgHNufIMjLp02tpANaLg
- LEbI2AnxancoF0iKlLsxixftKZU8RcY7muxGTqvbiUZ6Mp0tm8MzymZZb0LiFi033FBhzpX6N
- M62vEo4VM8B0OE7IoOhpROVbfYWmQF7SnsQEOr0U83lAFDkggYBGSb0Irwhr/82NMHUM5sp/k
- t1C9n77YO/n7eqtoIKG3RXnryfv5LwmEjqVEYv8X2SXm4rL3ODpJJb3xpGCMp6NZCmp16F9Ho
- lOSAgG7pxo03Et3nlZ51Q0lxk32BoSQZVXQBJ0hjP/9fmpO9GaSoC26P7eaFP
+In-Reply-To: <5F9D6341.71F2A54E@users.sourceforge.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020/10/31 22:14, Jari Ruusu wrote:
+> Greg Kroah-Hartman wrote:
+>> --- a/block/blk-core.c
+>> +++ b/block/blk-core.c
+>> @@ -2127,11 +2127,10 @@ static void handle_bad_sector(struct bio *bio, sector_t maxsector)
+>>  {
+>>         char b[BDEVNAME_SIZE];
+>>
+>> -       printk(KERN_INFO "attempt to access beyond end of device\n");
+>> -       printk(KERN_INFO "%s: rw=%d, want=%Lu, limit=%Lu\n",
+>> -                       bio_devname(bio, b), bio->bi_opf,
+>> -                       (unsigned long long)bio_end_sector(bio),
+>> -                       (long long)maxsector);
+>> +       pr_info_ratelimited("attempt to access beyond end of device\n"
+>> +                           "%s: rw=%d, want=%llu, limit=%llu\n",
+>> +                           bio_devname(bio, b), bio->bi_opf,
+>> +                           bio_end_sector(bio), maxsector);
+>>  }
+>>
+>>  #ifdef CONFIG_FAIL_MAKE_REQUEST
+> 
+> Above change "block: ratelimit handle_bad_sector() message"
+> upstream commit f4ac712e4fe009635344b9af5d890fe25fcc8c0d
+> in 4.19.154 kernel is not completely OK.
+> 
+> Removing casts from arguments 4 and 5 produces these compile warnings:
+> 
+(...snipped...)
+> For 64 bit systems it is only compile time cosmetic warning. For 32 bit
+> system + CONFIG_LBDAF=n it introduces bugs: output formats are "%llu" and
+> passed parameters are 32 bits. That is not OK.
+> 
+> Upstream kernels have hardcoded 64 bit sector_t. In older stable trees
+> sector_t can be either 64 or 32 bit. In other words, backport of above patch
+> needs to keep those original casts.
 
---ddtzb2gxy77t23sv
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Indeed, commit f4ac712e4fe00963 ("block: ratelimit handle_bad_sector() message")
+depends on commit 72deb455b5ec619f ("block: remove CONFIG_LBDAF") which was merged
+into 5.2 kernel.
 
-Hei hei,
+-------- Forwarded Message --------
+Date: Thu, 8 Oct 2020 07:40:49 +0100
+From: Christoph Hellwig <hch@infradead.org>
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Subject: Re: [PATCH] block: ratelimit handle_bad_sector() message
+Message-ID: <20201008064049.GA29599@infradead.org>
+References: <20201008002344.6759-1-penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <20201008002344.6759-1-penguin-kernel@I-love.SAKURA.ne.jp>
 
-On Tue, Oct 27, 2020 at 11:58:10AM +0100, Ahmad Fatoum wrote:
-> Hello,
->=20
-> On 10/27/20 11:05 AM, Alexander Dahl wrote:
-> > Hello Ahmad,
-> >=20
-> > thanks for your feedback, comments below.
-> >=20
->=20
-> >>> -	led-rgb {
-> >>> +	led-controller-2 {
-> >>
-> >> Is a single RGB LED really a controller?
-> >=20
-> > I just followed the recommendations by Rob here.
->=20
-> Do you happen to know if the new multicolor LED support could be used her=
-e?
->=20
-> I find it unfortunate that the device tree loses information relevant to =
-humans
-> to adhere to a fixed nomenclature. Apparently led-controller isn't even c=
-odified
-> in the YAML binding (It's just in the examples). If you respin, please ad=
-d a
-> comment that this is a single RGB led. I'd prefer to keep the information
-> in the DTB as well though.
+On Thu, Oct 08, 2020 at 09:23:44AM +0900, Tetsuo Handa wrote:
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -803,8 +803,8 @@ static void handle_bad_sector(struct bio *bio, sector_t maxsector)
+>  {
+>  	char b[BDEVNAME_SIZE];
+>  
+> -	printk(KERN_INFO "attempt to access beyond end of device\n");
+> -	printk(KERN_INFO "%s: rw=%d, want=%Lu, limit=%Lu\n",
+> +	printk_ratelimited(KERN_INFO "attempt to access beyond end of device\n");
+> +	printk_ratelimited(KERN_INFO "%s: rw=%d, want=%Lu, limit=%Lu\n",
+>  			bio_devname(bio, b), bio->bi_opf,
+>  			(unsigned long long)bio_end_sector(bio),
+>  			(long long)maxsector);
 
-Slightly off-topic, but while I was working on the patch based on your
-feedback I tried to find some information on that Linux Automation
-MC-1 board.  However I could not find any? Is there some website, some
-datasheet or maybe a schematic online?  The vendor prefix says "Linux
-Automation GmbH", but I find only that USB-SD-Mux on their page?
-
-Greets
-Alex
-
->=20
->=20
->=20
-> >=20
-> >>>  		compatible =3D "pwm-leds";
-> >>> =20
-> >>> -		led-red {
-> >>> +		led-2 {
-> >>
-> >> Shouldn't this have been led-1 as well or is the numbering "global" ?
-> >=20
-> > Also good question. This numbering is for dts only, it usually does
-> > not correspond with LEDs on the board, so it could be numbered per
-> > led-controller as well?
->=20
-> I'd prefer that it starts by 1. That way it's aligned with PWM channel
-> ID.
->=20
-> Thanks for fixing the dtschema warnings by the way!
->=20
-> Cheers,
-> Ahmad
->=20
-> >=20
-> > Greets
-> > Alex
-> >=20
-> >>
-> >>>  			label =3D "mc1:red:rgb";
-> >>>  			pwms =3D <&leds_pwm 1 1000000 0>;
-> >>>  			max-brightness =3D <255>;
-> >>>  			active-low;
-> >>>  		};
-> >>> =20
-> >>> -		led-green {
-> >>> +		led-3 {
-> >>>  			label =3D "mc1:green:rgb";
-> >>>  			pwms =3D <&leds_pwm 2 1000000 0>;
-> >>>  			max-brightness =3D <255>;
-> >>>  			active-low;
-> >>>  		};
-> >>> =20
-> >>> -		led-blue {
-> >>> +		led-4 {
-> >>>  			label =3D "mc1:blue:rgb";
-> >>>  			pwms =3D <&leds_pwm 3 1000000 0>;
-> >>>  			max-brightness =3D <255>;
-> >>>
-> >>
-> >> --=20
-> >> Pengutronix e.K.                           |                          =
-   |
-> >> Steuerwalder Str. 21                       | http://www.pengutronix.de=
-/  |
-> >> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0 =
-   |
-> >> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-55=
-55 |
-> >=20
->=20
-> --=20
-> Pengutronix e.K.                           |                             |
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---=20
-/"\ ASCII RIBBON | =BBWith the first link, the chain is forged. The first
-\ / CAMPAIGN     | speech censured, the first thought forbidden, the
- X  AGAINST      | first freedom denied, chains us all irrevocably.=AB
-/ \ HTML MAIL    | (Jean-Luc Picard, quoting Judge Aaron Satie)
-
---ddtzb2gxy77t23sv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEwo7muQJjlc+Prwj6NK3NAHIhXMYFAl+dbHwACgkQNK3NAHIh
-XMbKlRAAvIubmqiN++XwaqH5hXCbf7EM1ob2W5t69Hrh3pjVgu/gK0SGLqeHHyNP
-7FRMW6hMn3VFCFBaLrQL9ElCJ5gx9h9ZCRIJKR+EUsj8gWFOhs5/zqUnk2dkN8HD
-845u1H7h+xQXCPI8CUVmBLGzQXlh/7vunQABDYFR5FJKAXRpZBmvHcwt6wDcmVng
-jM93vIM2ixPIvjS2qEXYOCa7fh85GooXH4MSJ9oabFUM/uTfhRDogpq6q3uk5qz4
-6STtbz6guRHBvIV4VMJeJucA4tfLJSV63GVtI3xbpUlNoiVGGQRq8MtJWQCvU1bi
-pcHHw8Ydyzzf7QWk0H5fteboW/rYngD6J7Wxk2zcJNOBU7sgMiEgTIe25nuoub+E
-X4LsGx3XBmhQGNSP7dCaeyZm2qhNASdGA3AdnSDPm4AmeXa6jJ1aH6jIl362KLS5
-qhRNxo9j0CQu8QgqSTLBpG+A3ZdaLli7ErXdVgfgSj6Z+ku03iPkkJy1+uSyv9CW
-YWQ4J2BwAmbUitBavgrYw74ES3WtssHTTicJ33zIARZ3vQT0HPR9bzjfKQ4BXwgd
-r89naMgGERE2ifQ0maRQ02aenvX0V7JACCO4UbC7Zpv0jkkFYBbn5naGxTlokwPm
-W1yNqL6VZv25zhzFFd7k7N9g3MbmNhaC8Gnj7BJBEMQ8o37HZJY=
-=Iu4R
------END PGP SIGNATURE-----
-
---ddtzb2gxy77t23sv--
+Please use pr_info_ratelimited, and also remove the casts now that
+sector_t is guranteed to be an unsigned long long.
