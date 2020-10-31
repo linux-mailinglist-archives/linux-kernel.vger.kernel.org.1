@@ -2,52 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02E72A1525
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 11:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C722A1510
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 11:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgJaKXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 06:23:17 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:19180 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726708AbgJaKXQ (ORCPT
+        id S1726638AbgJaKCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 06:02:42 -0400
+Received: from srv02.websitenoar.net ([108.61.158.97]:37450 "EHLO
+        srv02.websitenoar.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726475AbgJaKCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 06:23:16 -0400
-X-IronPort-AV: E=Sophos;i="5.77,437,1596492000"; 
-   d="scan'208";a="475156652"
-Received: from palace.lip6.fr ([132.227.105.202])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/AES256-SHA256; 31 Oct 2020 11:23:08 +0100
-From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-pm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: PM: correct path name
-Date:   Sat, 31 Oct 2020 10:39:39 +0100
-Message-Id: <1604137179-29537-1-git-send-email-Julia.Lawall@inria.fr>
-X-Mailer: git-send-email 1.9.1
+        Sat, 31 Oct 2020 06:02:41 -0400
+X-Greylist: delayed 948 seconds by postgrey-1.27 at vger.kernel.org; Sat, 31 Oct 2020 06:02:40 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=ng9brasil.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Sender:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=wEx5x5RMkzCNqqA140YCB9w4JdWszHtbnS9lTGkOoXw=; b=ENhW3S1g3KyYMT0RNfE9tL2S0c
+        LcH4SC5MYmijXv8jSEfnyUgPip7ng6+wwtDWFE98vITgiCreZGhhVL/cTqXoAR1iGj0PIFh5e0rMU
+        6Biks58bFijic1B7FHFDDjtZsrvqt7Cgt1wvYcWQB8v5lg3H0oWqyQgevgTi3HxG6GbIDX3XKYLNE
+        BN3KPc/Hvk9PHSAFAUaZqGsQKDAYpHZBlq0+jh2IKLEL+SaEpP7LRIhYFL6dDFJlhMuuhmNWF4PpO
+        3y1q6VwAbXUeKvITaTjfKNAj8Ca1wMPYuAvxQ624KawoisnXTXM42LDRljtO17tXzJ6SYhSQXY7A3
+        oRnwO+Xw==;
+Received: from [::1] (port=47002 helo=srv02.websitenoar.net)
+        by srv02.websitenoar.net with esmtpa (Exim 4.93)
+        (envelope-from <mfrancofoundation20@gmail.com>)
+        id 1kYnRL-000538-8T; Sat, 31 Oct 2020 06:44:51 -0300
+MIME-Version: 1.0
+Date:   Sat, 31 Oct 2020 06:44:51 -0300
+From:   Manuel Franco <mfrancofoundation20@gmail.com>
+To:     undisclosed-recipients:;
+Subject: 2 MILLIONEN EURO GEWINNEN
+Reply-To: mfrancofoundation20@gmail.com
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <7d7c189caa14a00900694f4d3cda72c9@gmail.com>
+X-Sender: mfrancofoundation20@gmail.com
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - srv02.websitenoar.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - gmail.com
+X-Get-Message-Sender-Via: srv02.websitenoar.net: authenticated_id: contato@ng9brasil.com
+X-Authenticated-Sender: srv02.websitenoar.net: contato@ng9brasil.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cpu/ is needed before cpu<N>/
 
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
----
- Documentation/admin-guide/pm/cpuidle.rst |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+-- 
+Hallo und Glückwunsch!
 
-diff --git a/Documentation/admin-guide/pm/cpuidle.rst b/Documentation/admin-guide/pm/cpuidle.rst
-index 37940a0584ec..26a9d648b88c 100644
---- a/Documentation/admin-guide/pm/cpuidle.rst
-+++ b/Documentation/admin-guide/pm/cpuidle.rst
-@@ -478,7 +478,7 @@ order to ask the hardware to enter that state.  Also, for each
- statistics of the given idle state.  That information is exposed by the kernel
- via ``sysfs``.
- 
--For each CPU in the system, there is a :file:`/sys/devices/system/cpu<N>/cpuidle/`
-+For each CPU in the system, there is a :file:`/sys/devices/system/cpu/cpu<N>/cpuidle/`
- directory in ``sysfs``, where the number ``<N>`` is assigned to the given
- CPU at the initialization time.  That directory contains a set of subdirectories
- called :file:`state0`, :file:`state1` and so on, up to the number of idle state
+Sie sind der glückliche Gewinner von 2 Millionen Euro. Bitte senden Sie 
+Ihre IBAN an die unten stehende E-Mail, um einen Anspruch geltend zu 
+machen.
 
+E-Mail: mfrancofoundation20@gmail.com
+
+
+
+=======================
+
+
+
+
+Hello and Congratulations!
+
+You are the lucky winner of 2 million euros. Please send your IBAN to 
+the email below to make a claim.
+
+Email: mfrancofoundation20@gmail.com
