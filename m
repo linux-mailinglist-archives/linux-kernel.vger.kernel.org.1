@@ -2,153 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5962A140C
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 08:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 610792A1413
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 08:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgJaHje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 03:39:34 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6684 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726392AbgJaHjR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 03:39:17 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CNWJz4PxRz15PPG;
-        Sat, 31 Oct 2020 15:39:15 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 31 Oct 2020 15:39:07 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <dyoung@redhat.com>,
-        <bhe@redhat.com>, <catalin.marinas@arm.com>, <will@kernel.org>,
-        <corbet@lwn.net>, <John.P.donnelly@oracle.com>,
-        <bhsharma@redhat.com>, <prabhakar.pkin@gmail.com>
-CC:     <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
-        <nsaenzjulienne@suse.de>, <james.morse@arm.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kexec@lists.infradead.org>, <linux-doc@vger.kernel.org>,
-        <chenzhou10@huawei.com>, <xiexiuqi@huawei.com>,
-        <guohanjun@huawei.com>, <huawei.libin@huawei.com>,
-        <wangkefeng.wang@huawei.com>,
-        John Donnelly <John.p.donnelly@oracle.com>
-Subject: [PATCH v13 8/8] kdump: update Documentation about crashkernel
-Date:   Sat, 31 Oct 2020 15:44:37 +0800
-Message-ID: <20201031074437.168008-9-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201031074437.168008-1-chenzhou10@huawei.com>
-References: <20201031074437.168008-1-chenzhou10@huawei.com>
+        id S1726357AbgJaHui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 03:50:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725832AbgJaHui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 03:50:38 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA69120720;
+        Sat, 31 Oct 2020 07:50:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604130637;
+        bh=FShfaONHN2MtJoKkncPAHJZcCd0fJTGqHwgM6U02FVI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pvuqzv4g5qIdf38wiDKQXNzjG3+55P5OVqtlQsfEDmU1LBj7FDQoMyAl63xTNxbq7
+         TPMSpfAECankY+ILeh5/t8hXwi+5x1v8ailgaDZSyNXe2zyCVpZwn4AfoHDUmzFU6s
+         Fb8CK+0k7WIJgSnhTYzb3gnDx96OagSNlb+FZwuY=
+Date:   Sat, 31 Oct 2020 15:50:31 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     peng.fan@nxp.com
+Cc:     s.hauer@pengutronix.de, festevam@gmail.com, robh+dt@kernel.org,
+        kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, marex@denx.de
+Subject: Re: [PATCH] ARM: dts: imx: add usb alias
+Message-ID: <20201031075030.GS28755@dragon>
+References: <1602638861-20278-1-git-send-email-peng.fan@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602638861-20278-1-git-send-email-peng.fan@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For arm64, the behavior of crashkernel=X has been changed, which
-tries low allocation in DMA zone or DMA32 zone if CONFIG_ZONE_DMA
-is disabled, and fall back to high allocation if it fails.
+On Wed, Oct 14, 2020 at 09:27:41AM +0800, peng.fan@nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Add usb alias for bootloader emulator the controller in correct order.
 
-We can also use "crashkernel=X,high" to select a high region above
-DMA zone, which also tries to allocate at least 256M low memory in
-DMA zone automatically (or the DMA32 zone if CONFIG_ZONE_DMA is disabled).
+emulator?  Not sure what that means.
 
-"crashkernel=Y,low" can be used to allocate specified size low memory.
+Shawn
 
-So update the Documentation.
-
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Tested-by: John Donnelly <John.p.donnelly@oracle.com>
----
- Documentation/admin-guide/kdump/kdump.rst     | 23 ++++++++++++++++---
- .../admin-guide/kernel-parameters.txt         | 12 ++++++++--
- 2 files changed, 30 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-index 75a9dd98e76e..bde5f994d185 100644
---- a/Documentation/admin-guide/kdump/kdump.rst
-+++ b/Documentation/admin-guide/kdump/kdump.rst
-@@ -299,7 +299,16 @@ Boot into System Kernel
-    "crashkernel=64M@16M" tells the system kernel to reserve 64 MB of memory
-    starting at physical address 0x01000000 (16MB) for the dump-capture kernel.
- 
--   On x86 and x86_64, use "crashkernel=64M@16M".
-+   On x86 use "crashkernel=64M@16M".
-+
-+   On x86_64, use "crashkernel=X" to select a region under 4G first, and
-+   fall back to reserve region above 4G. And go for high allocation
-+   directly if the required size is too large.
-+   We can also use "crashkernel=X,high" to select a region above 4G, which
-+   also tries to allocate at least 256M below 4G automatically and
-+   "crashkernel=Y,low" can be used to allocate specified size low memory.
-+   Use "crashkernel=Y@X" if you really have to reserve memory from specified
-+   start address X.
- 
-    On ppc64, use "crashkernel=128M@32M".
- 
-@@ -316,8 +325,16 @@ Boot into System Kernel
-    kernel will automatically locate the crash kernel image within the
-    first 512MB of RAM if X is not given.
- 
--   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
--   the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
-+   On arm64, use "crashkernel=X" to try low allocation in DMA zone (or
-+   DMA32 zone if CONFIG_ZONE_DMA is disabled), and fall back to high
-+   allocation if it fails.
-+   We can also use "crashkernel=X,high" to select a high region above
-+   DMA zone, which also tries to allocate at least 256M low memory in
-+   DMA zone automatically (or the DMA32 zone if CONFIG_ZONE_DMA is disabled).
-+   "crashkernel=Y,low" can be used to allocate specified size low memory.
-+   Use "crashkernel=Y@X" if you really have to reserve memory from
-+   specified start address X. Note that the start address of the kernel,
-+   X if explicitly specified, must be aligned to 2MiB (0x200000).
- 
- Load the Dump-capture Kernel
- ============================
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 526d65d8573a..b2955d9379e8 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -738,6 +738,9 @@
- 			[KNL, X86-64] Select a region under 4G first, and
- 			fall back to reserve region above 4G when '@offset'
- 			hasn't been specified.
-+			[KNL, arm64] Try low allocation in DMA zone (or DMA32 zone
-+			if CONFIG_ZONE_DMA is disabled), fall back to high allocation
-+			if it fails when '@offset' hasn't been specified.
- 			See Documentation/admin-guide/kdump/kdump.rst for further details.
- 
- 	crashkernel=range1:size1[,range2:size2,...][@offset]
-@@ -754,6 +757,8 @@
- 			Otherwise memory region will be allocated below 4G, if
- 			available.
- 			It will be ignored if crashkernel=X is specified.
-+			[KNL, arm64] range in high memory.
-+			Allow kernel to allocate physical memory region from top.
- 	crashkernel=size[KMG],low
- 			[KNL, X86-64] range under 4G. When crashkernel=X,high
- 			is passed, kernel could allocate physical memory region
-@@ -762,13 +767,16 @@
- 			requires at least 64M+32K low memory, also enough extra
- 			low memory is needed to make sure DMA buffers for 32-bit
- 			devices won't run out. Kernel would try to allocate at
--			at least 256M below 4G automatically.
-+			least 256M below 4G automatically.
- 			This one let user to specify own low range under 4G
- 			for second kernel instead.
- 			0: to disable low allocation.
- 			It will be ignored when crashkernel=X,high is not used
- 			or memory reserved is below 4G.
--
-+			[KNL, arm64] range in low memory.
-+			This one let user to specify a low range in DMA zone for
-+			crash dump kernel (or the DMA32 zone if CONFIG_ZONE_DMA
-+			is disabled).
- 	cryptomgr.notests
- 			[KNL] Disable crypto self-tests
- 
--- 
-2.20.1
-
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  arch/arm/boot/dts/imx6qdl.dtsi | 4 ++++
+>  arch/arm/boot/dts/imx6sl.dtsi  | 3 +++
+>  arch/arm/boot/dts/imx6sll.dtsi | 2 ++
+>  arch/arm/boot/dts/imx6sx.dtsi  | 3 +++
+>  arch/arm/boot/dts/imx6ul.dtsi  | 2 ++
+>  arch/arm/boot/dts/imx7d.dtsi   | 6 ++++++
+>  arch/arm/boot/dts/imx7s.dtsi   | 2 ++
+>  7 files changed, 22 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
+> index 7a8837cbe21b..947584b40b1f 100644
+> --- a/arch/arm/boot/dts/imx6qdl.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl.dtsi
+> @@ -45,6 +45,10 @@ aliases {
+>  		spi1 = &ecspi2;
+>  		spi2 = &ecspi3;
+>  		spi3 = &ecspi4;
+> +		usb0 = &usbotg;
+> +		usb1 = &usbh1;
+> +		usb2 = &usbh2;
+> +		usb3 = &usbh3;
+>  		usbphy0 = &usbphy1;
+>  		usbphy1 = &usbphy2;
+>  	};
+> diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
+> index 91a8c54d5e11..997b96c1c47b 100644
+> --- a/arch/arm/boot/dts/imx6sl.dtsi
+> +++ b/arch/arm/boot/dts/imx6sl.dtsi
+> @@ -39,6 +39,9 @@ aliases {
+>  		spi1 = &ecspi2;
+>  		spi2 = &ecspi3;
+>  		spi3 = &ecspi4;
+> +		usb0 = &usbotg1;
+> +		usb1 = &usbotg2;
+> +		usb2 = &usbh;
+>  		usbphy0 = &usbphy1;
+>  		usbphy1 = &usbphy2;
+>  	};
+> diff --git a/arch/arm/boot/dts/imx6sll.dtsi b/arch/arm/boot/dts/imx6sll.dtsi
+> index 0b622201a1f3..04f8d637a501 100644
+> --- a/arch/arm/boot/dts/imx6sll.dtsi
+> +++ b/arch/arm/boot/dts/imx6sll.dtsi
+> @@ -36,6 +36,8 @@ aliases {
+>  		spi1 = &ecspi2;
+>  		spi3 = &ecspi3;
+>  		spi4 = &ecspi4;
+> +		usb0 = &usbotg1;
+> +		usb1 = &usbotg2;
+>  		usbphy0 = &usbphy1;
+>  		usbphy1 = &usbphy2;
+>  	};
+> diff --git a/arch/arm/boot/dts/imx6sx.dtsi b/arch/arm/boot/dts/imx6sx.dtsi
+> index dfdca1804f9f..343f2a3170bb 100644
+> --- a/arch/arm/boot/dts/imx6sx.dtsi
+> +++ b/arch/arm/boot/dts/imx6sx.dtsi
+> @@ -49,6 +49,9 @@ aliases {
+>  		spi2 = &ecspi3;
+>  		spi3 = &ecspi4;
+>  		spi4 = &ecspi5;
+> +		usb0 = &usbotg1;
+> +		usb1 = &usbotg2;
+> +		usb2 = &usbh;
+>  		usbphy0 = &usbphy1;
+>  		usbphy1 = &usbphy2;
+>  	};
+> diff --git a/arch/arm/boot/dts/imx6ul.dtsi b/arch/arm/boot/dts/imx6ul.dtsi
+> index d7d9f3e46b92..09021a35c266 100644
+> --- a/arch/arm/boot/dts/imx6ul.dtsi
+> +++ b/arch/arm/boot/dts/imx6ul.dtsi
+> @@ -47,6 +47,8 @@ aliases {
+>  		spi1 = &ecspi2;
+>  		spi2 = &ecspi3;
+>  		spi3 = &ecspi4;
+> +		usb0 = &usbotg1;
+> +		usb1 = &usbotg2;
+>  		usbphy0 = &usbphy1;
+>  		usbphy1 = &usbphy2;
+>  	};
+> diff --git a/arch/arm/boot/dts/imx7d.dtsi b/arch/arm/boot/dts/imx7d.dtsi
+> index cff875b80b60..b0bcfa9094a3 100644
+> --- a/arch/arm/boot/dts/imx7d.dtsi
+> +++ b/arch/arm/boot/dts/imx7d.dtsi
+> @@ -7,6 +7,12 @@
+>  #include <dt-bindings/reset/imx7-reset.h>
+>  
+>  / {
+> +	aliases {
+> +		usb0 = &usbotg1;
+> +		usb1 = &usbotg2;
+> +		usb2 = &usbh;
+> +	};
+> +
+>  	cpus {
+>  		cpu0: cpu@0 {
+>  			clock-frequency = <996000000>;
+> diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
+> index 84d9cc13afb9..358ef453ce14 100644
+> --- a/arch/arm/boot/dts/imx7s.dtsi
+> +++ b/arch/arm/boot/dts/imx7s.dtsi
+> @@ -47,6 +47,8 @@ aliases {
+>  		spi1 = &ecspi2;
+>  		spi2 = &ecspi3;
+>  		spi3 = &ecspi4;
+> +		usb0 = &usbotg1;
+> +		usb1 = &usbh;
+>  	};
+>  
+>  	cpus {
+> -- 
+> 2.28.0
+> 
