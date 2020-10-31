@@ -2,132 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6C32A1345
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 04:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB5F2A1347
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 04:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgJaDHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 23:07:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbgJaDHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 23:07:06 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2504122249;
-        Sat, 31 Oct 2020 03:07:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604113626;
-        bh=8z+yhuEzYfQ18JMH9h3MjfzikhLM2WXKRTUD/3NPy7U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=evG3yeoYMwWiFhINgBJaGpp28qWPWvGshgn+VwGDqNOFxSsr6e557mBB/ru3OBODy
-         2xGEVNLuX5FCoPMEmwhowTtfGi7HRUA5iMI3DjMGRksFEY+i6CBp8WgWCZ4Ul+CX9D
-         3fxuMuDm2noitSLvX0zRpKFMIQaC75S3Ta0KOcoQ=
-Date:   Fri, 30 Oct 2020 20:07:05 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH net-next] net: dlci: Deprecate the DLCI driver (aka the
- Frame Relay layer)
-Message-ID: <20201030200705.6e2039c2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201028070504.362164-1-xie.he.0141@gmail.com>
-References: <20201028070504.362164-1-xie.he.0141@gmail.com>
+        id S1726120AbgJaDK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 23:10:28 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2359 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgJaDK2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 23:10:28 -0400
+Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4CNPLp5ws2z503m;
+        Sat, 31 Oct 2020 11:10:26 +0800 (CST)
+Received: from [10.140.157.68] (10.140.157.68) by
+ dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Sat, 31 Oct 2020 11:10:26 +0800
+Subject: Re: Using fixed LPI number for some Device ID
+To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
+CC:     Jason Cooper <jason@lakedaemon.net>, <linux-kernel@vger.kernel.org>
+References: <0baed5b0-6cbe-6492-b4af-fe758f461602@huawei.com>
+ <04e31996-6eb8-3bb9-e333-bc46eebe3d7a@huawei.com>
+ <87eelfksm1.fsf@nanos.tec.linutronix.de>
+From:   Dongjiu Geng <gengdongjiu@huawei.com>
+Message-ID: <7205d3e0-a03a-a06c-f3f4-9a28e58931e0@huawei.com>
+Date:   Sat, 31 Oct 2020 11:10:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <87eelfksm1.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.140.157.68]
+X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
+ dggeme755-chm.china.huawei.com (10.3.19.101)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 00:05:04 -0700 Xie He wrote:
-> I wish to deprecate the Frame Relay layer (dlci.c) in the kernel because
-> we already have a newer and better "HDLC Frame Relay" layer (hdlc_fr.c).
+On 2020/10/31 10:59, Thomas Gleixner wrote:
+> On Sat, Oct 31 2020 at 10:19, Dongjiu Geng wrote:
+>>  Hi Marc,
+>>     Sorry to disturb you, Currently the LPI number is not fixed for
+>>  the device. The LPI number is dynamically allocated start from 8092.
+>>  For two OS which shares the ITS, One OS needs to configure the device
+>>  interrupt required by another OS, and the other OS uses a fixed
+>>  interrupt ID to respond the interrupt. Therefore, the LPI IRQ number
+>>  of the device needed be fixed. I want to upstream this feature that
+>>  allocate fixed LPI number for the device that is specified through
+>>  the DTS. What is your meaning?  Thanks
 > 
-> Reasons why hdlc_fr.c is better than dlci.c include:
-> 
-> 1.
-> dlci.c is dated 1997, while hdlc_fr.c is dated 1999 - 2006, so the later
-> is newer than the former.
-> 
-> 2.
-> hdlc_fr.c is working well (tested by me). For dlci.c, I cannot even find
-> the user space problem needed to use it. The link provided in
-> Documentation/networking/framerelay.rst (in the last paragraph) is no
-> longer valid.
-> 
-> 3.
-> dlci.c supports only one hardware driver - sdla.c, while hdlc_fr.c
-> supports many hardware drivers through the generic HDLC layer (hdlc.c).
-> 
-> WAN hardware devices are usually able to support several L2 protocols
-> at the same time, so the HDLC layer is more suitable for these devices.
-> 
-> The hardware devices that sdla.c supports are also multi-protocol
-> (according to drivers/net/wan/Kconfig), so the HDLC layer is more
-> suitable for these devices, too.
-> 
-> 4.
-> hdlc_fr.c supports LMI and supports Ethernet emulation. dlci.c supports
-> neither according to its code.
-> 
-> 5.
-> include/uapi/linux/if_frad.h, which comes with dlci.c, contains two
-> structs for ioctl configs (dlci_conf and frad_conf). According to the
-> comments, these two structs are specially crafted for sdla.c (the only
-> hardware driver dlci.c supports). I think this makes dlci.c not generic
-> enough to support other hardware drivers.
-> 
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+> What's the purpose of resending the same thing within less than 24
+> hours? Do you really expect maintainers to be available 24/7 and being
+  Sorry for the noise, Because Marc rarely uses the ARM email address,
+  so I replace to use Marc's kernel.org address instead of ARM email address.
 
-This code has only seen cleanup patches since the git era begun -
-do you think that it may still have users? Or is it completely unused?
 
-The usual way of getting rid of old code is to move it to staging/
-for a few releases then delete it, like Arnd just did with wimax.
 
-> diff --git a/Documentation/networking/framerelay.rst b/Documentation/networking/framerelay.rst
-> index 6d904399ec6d..92e66fc3dffc 100644
-> --- a/Documentation/networking/framerelay.rst
-> +++ b/Documentation/networking/framerelay.rst
-> @@ -4,6 +4,9 @@
->  Frame Relay (FR)
->  ================
->  
-> +(Note that this Frame Relay layer is deprecated. New drivers should use the
-> +HDLC Frame Relay layer instead.)
-> +
->  Frame Relay (FR) support for linux is built into a two tiered system of device
->  drivers.  The upper layer implements RFC1490 FR specification, and uses the
->  Data Link Connection Identifier (DLCI) as its hardware address.  Usually these
-> diff --git a/drivers/net/wan/dlci.c b/drivers/net/wan/dlci.c
-> index 3ca4daf63389..1f0eee10c13f 100644
-> --- a/drivers/net/wan/dlci.c
-> +++ b/drivers/net/wan/dlci.c
-> @@ -514,6 +514,8 @@ static int __init init_dlci(void)
->  	register_netdevice_notifier(&dlci_notifier);
->  
->  	printk("%s.\n", version);
-> +	pr_warn("The DLCI driver (the Frame Relay layer) is deprecated.\n"
-> +		"Please move your driver to the HDLC Frame Relay layer.\n");
->  
->  	return 0;
->  }
-> diff --git a/drivers/net/wan/sdla.c b/drivers/net/wan/sdla.c
-> index bc2c1c7fb1a4..21d602f698fc 100644
-> --- a/drivers/net/wan/sdla.c
-> +++ b/drivers/net/wan/sdla.c
-> @@ -1623,6 +1623,9 @@ static int __init init_sdla(void)
->  	int err;
->  
->  	printk("%s.\n", version);
-> +	pr_warn("The SDLA driver is deprecated.\n"
-> +		"If you are still using the hardware,\n"
-> +		"please help move this driver to the HDLC Frame Relay layer.\n");
->  
->  	sdla = alloc_netdev(sizeof(struct frad_local), "sdla0",
->  			    NET_NAME_UNKNOWN, setup_sdla);
-
+> able to respond within less than a day?
+> 
+> 
+> .
+> 
