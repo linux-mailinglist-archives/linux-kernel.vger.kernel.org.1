@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB172A1647
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB142A15FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgJaLn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:43:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43986 "EHLO mail.kernel.org"
+        id S1727458AbgJaLkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:40:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728068AbgJaLnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:43:53 -0400
+        id S1727284AbgJaLka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:40:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0EF27205F4;
-        Sat, 31 Oct 2020 11:43:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 958DA2074F;
+        Sat, 31 Oct 2020 11:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144632;
-        bh=9MNo33/97XDFaVpwEXAyQQYhUGq18mgUFOsG+tV2kAk=;
+        s=default; t=1604144429;
+        bh=9o9qNHyh/1doJtI+3C8J1EGIxXlMahPlTmIobiT05HQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qR1uglB1oi3Ti8KojZ9dtysICSMB1FD2b5H2kWwSXJlJbwCTnwDPQTN51H07Ll0dg
-         9/n19fzw+D7Z5cAdZV34uRktyj1RKwJaK0sSxa6cfqrib1MOjQE/aW4kIummTi7ftX
-         SxRxknyksCS0Dnpktpv77FmAdslkkZFFexmYBDt0=
+        b=Tr9wz2il7CrH0COYMJYDl0kklaFe6Ee7ObMmz1zx4b5QVwKg2n3U3xzT3kmw+VE7g
+         /FFdMaUrSVm+Q4jMhN8e/fEr+z1bn94eGERIntVaEiioJiI98u5wqy+g1lMNMi2MYQ
+         b43F98qW/oX6TwDTfop/UqJZrN43tHB9QIcmUe1w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.9 04/74] io_uring: move dropping of files into separate helper
-Date:   Sat, 31 Oct 2020 12:35:46 +0100
-Message-Id: <20201031113500.250690107@linuxfoundation.org>
+Subject: [PATCH 5.8 15/70] io_uring: Fix XArray usage in io_uring_add_task_file
+Date:   Sat, 31 Oct 2020 12:35:47 +0100
+Message-Id: <20201031113500.235831979@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
-References: <20201031113500.031279088@linuxfoundation.org>
+In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
+References: <20201031113459.481803250@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,62 +43,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-commit 0444ce1e0b5967393447dcd5adbf2bb023a50aab upstream.
+commit 236434c3438c4da3dfbd6aeeab807577b85e951a upstream.
 
-No functional changes in this patch, prep patch for grabbing references
-to the files_struct.
+The xas_store() wasn't paired with an xas_nomem() loop, so if it couldn't
+allocate memory using GFP_NOWAIT, it would leak the reference to the file
+descriptor.  Also the node pointed to by the xas could be freed between
+the call to xas_load() under the rcu_read_lock() and the acquisition of
+the xa_lock.
 
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+It's easier to just use the normal xa_load/xa_store interface here.
+
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+[axboe: fix missing assign after alloc, cur_uring -> tctx rename]
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/io_uring.c |   27 ++++++++++++++++-----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+ fs/io_uring.c |   21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
 --- a/fs/io_uring.c
 +++ b/fs/io_uring.c
-@@ -5648,6 +5648,20 @@ static int io_req_defer(struct io_kiocb
- 	return -EIOCBQUEUED;
- }
- 
-+static void io_req_drop_files(struct io_kiocb *req)
-+{
-+	struct io_ring_ctx *ctx = req->ctx;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&ctx->inflight_lock, flags);
-+	list_del(&req->inflight_entry);
-+	if (waitqueue_active(&ctx->inflight_wait))
-+		wake_up(&ctx->inflight_wait);
-+	spin_unlock_irqrestore(&ctx->inflight_lock, flags);
-+	req->flags &= ~REQ_F_INFLIGHT;
-+	req->work.files = NULL;
-+}
-+
- static void __io_clean_op(struct io_kiocb *req)
+@@ -7929,27 +7929,24 @@ static void io_uring_cancel_task_request
+  */
+ static int io_uring_add_task_file(struct file *file)
  {
- 	struct io_async_ctx *io = req->io;
-@@ -5697,17 +5711,8 @@ static void __io_clean_op(struct io_kioc
- 		req->flags &= ~REQ_F_NEED_CLEANUP;
+-	if (unlikely(!current->io_uring)) {
++	struct io_uring_task *tctx = current->io_uring;
++
++	if (unlikely(!tctx)) {
+ 		int ret;
+ 
+ 		ret = io_uring_alloc_task_context(current);
+ 		if (unlikely(ret))
+ 			return ret;
++		tctx = current->io_uring;
+ 	}
+-	if (current->io_uring->last != file) {
+-		XA_STATE(xas, &current->io_uring->xa, (unsigned long) file);
+-		void *old;
++	if (tctx->last != file) {
++		void *old = xa_load(&tctx->xa, (unsigned long)file);
+ 
+-		rcu_read_lock();
+-		old = xas_load(&xas);
+-		if (old != file) {
++		if (!old) {
+ 			get_file(file);
+-			xas_lock(&xas);
+-			xas_store(&xas, file);
+-			xas_unlock(&xas);
++			xa_store(&tctx->xa, (unsigned long)file, file, GFP_KERNEL);
+ 		}
+-		rcu_read_unlock();
+-		current->io_uring->last = file;
++		tctx->last = file;
  	}
  
--	if (req->flags & REQ_F_INFLIGHT) {
--		struct io_ring_ctx *ctx = req->ctx;
--		unsigned long flags;
--
--		spin_lock_irqsave(&ctx->inflight_lock, flags);
--		list_del(&req->inflight_entry);
--		if (waitqueue_active(&ctx->inflight_wait))
--			wake_up(&ctx->inflight_wait);
--		spin_unlock_irqrestore(&ctx->inflight_lock, flags);
--		req->flags &= ~REQ_F_INFLIGHT;
--	}
-+	if (req->flags & REQ_F_INFLIGHT)
-+		io_req_drop_files(req);
- }
- 
- static int io_issue_sqe(struct io_kiocb *req, const struct io_uring_sqe *sqe,
+ 	return 0;
 
 
