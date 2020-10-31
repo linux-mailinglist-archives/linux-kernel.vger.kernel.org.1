@@ -2,86 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEA82A13E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 07:44:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D682A13E1
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 07:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726099AbgJaGoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 02:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
+        id S1726226AbgJaGyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 02:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgJaGoY (ORCPT
+        with ESMTP id S1725822AbgJaGyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 02:44:24 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D486C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 23:44:24 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id l2so10724280lfk.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 23:44:24 -0700 (PDT)
+        Sat, 31 Oct 2020 02:54:16 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B66C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 23:54:16 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id w11so4108570pll.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 23:54:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=xyF23DQz+tdywEjKjSIPF+aZ33+DGYbhUGjULH3r3UM=;
-        b=Vnnz5LP9razainW5wlgowWD1Wri+eqvUN0R7TqSrS1zF8em3O72tCISyQbSEB5SJWy
-         Z51MTUc9pHMsWTexU7k86k07LvbW6dHJG0ZFAZjaN7dNU6uzDeEk+ymMVwL54dHV6xX3
-         UDwXQN6waGHmBxJelpyna6WuJMXcDuJIfTDODzfutVWE2oBGKmeXF5NmkRki0dBqyNh0
-         302RSnrMRBc33Aa5BehWut2umEpmREjAMXoYh3n1siQWN96rt2e4tAqW7mJJAyGjkRua
-         qlrZNV/1csGh9bN1EPnsV89KnrtUcDR6Kp32zXsvQBzyrt8BD+CSZ1iENKDNe8Vb3WXi
-         xL+Q==
+        d=linaro.org; s=google;
+        h=date:user-agent:in-reply-to:references:mime-version
+         :content-transfer-encoding:subject:to:cc:from:message-id;
+        bh=Uz9fZJirGz5rg1PNxpm5+ozOP5Z9m1CqkLBt9ZMRBuk=;
+        b=Vn4u4rMl4ccB832WIUJa9KVV/V8iW6F/3kLc6h08AyV8g3h58rzVycgsNL5A4tgmiw
+         UazOyyv/KGdifkXAi821inqV5ct5eJdZKbpyt/R4jozLLKgbEcbBXnlpDZrU8pMifj2M
+         OSHt3vHs7VBp7UJgqavXeScesRrYkwLFFUDAdqgAeUvPiMSu7Wpm7CJQo3efgv1NE46R
+         6MFY+ZD5ZONef6u/L4uThXki3XlUh8EpINKSaE40Q+iGN1efQF6Zp7H+erJ3fkejyt93
+         wuaMb1uv+PIcQIkf1ZiH7ByxFwXIIHD7s052iSZ9a1k1Kl2hdTlxDG3tptKcK8Y2peK5
+         dzrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=xyF23DQz+tdywEjKjSIPF+aZ33+DGYbhUGjULH3r3UM=;
-        b=p35kjclpYMf4NDkqNyS8yF1kaIBpj5jIyXSDv7Km6A4IAKzK44ek7m6r/eR4UyA6IW
-         eyPFgKxwaa8A/L/KHLswgJT6UZVMeEwD/e2XS4p3/mEpmw0ldmd4QhlHUUSaU18bSWHp
-         RO2CUsmLon1Kk2Lxk6a0xzsuuR6Z1iU28OV3Iy4/6fqzZxjCPrK4geYWKwZDmZIDmQ/y
-         /t8N1+LDmeZL+0FHcGwYuSthTH8xR3xgyaZBboK9LX+NCdo1aSuR4vYkTOiOI2RKKMvE
-         oHJd/MQ8wQmleomjjAp7vspW5YlEY2IiHYuxcJSBMW3UFIhQA8WnQWQrUpYMacHdCUYj
-         rgBQ==
-X-Gm-Message-State: AOAM531juVw4ehPeJtZlS+u+24TIftrisfTP0/eWbo0cAgFBjJq0ivAp
-        XPwQHLJjpNNEd9UkWSjryS40Ggud/FM0WlQYpx/HPCM7tlMJ3r1L
-X-Google-Smtp-Source: ABdhPJxHzntJfZGkhm2SSuugVZkkAJS/WgjbopewG37WDCcye8MuInw730JaSNIDJeefxgbKYsisxZvJlW9lezYWVnQ=
-X-Received: by 2002:ac2:4847:: with SMTP id 7mr2406099lfy.463.1604126658571;
- Fri, 30 Oct 2020 23:44:18 -0700 (PDT)
+        h=x-gm-message-state:date:user-agent:in-reply-to:references
+         :mime-version:content-transfer-encoding:subject:to:cc:from
+         :message-id;
+        bh=Uz9fZJirGz5rg1PNxpm5+ozOP5Z9m1CqkLBt9ZMRBuk=;
+        b=sBWIY0lsHq/8AN9krUgJd9nlpX9oq/o+MYJKYeogo5VmAW7RrApYI+2L71VT101L6w
+         4PONIWOmgWHm3QMxflli+lvQ+Q0HHh4IjNuFunSDWksORUOyCBAmDkR3r5L2NG8sl8Vx
+         x3WdHury1XyIJpi893FIB12wHK+axJeer5z6kXPMUq1xNi5N8BpfZ7oNtWDGQHsuIWqt
+         N67hz1qFX8AmufDQtjNGhGQI3/VFO3chiioHp1abjb0FpJKfT72e02BB5DYFlINhZQ1N
+         6gBtho+rxpuIJDWAGFSj3czI3T5alrntrNQ7TEyMjwLnzurtx1GGxw39Hzhwnzr57mDc
+         cGgw==
+X-Gm-Message-State: AOAM530G/Ja0Uac3ZU9LGLoPpRBcUmwRq+9LqpC3IQHlNa45W+X4vWJq
+        NnDy7Nport94cS+vJ/lQiz6U+61bfKaC
+X-Google-Smtp-Source: ABdhPJxmYfdXh6sPKEFafNYca1Oxj1jJI0t4NQB3r78Fm+GQO9iEAWzEDcMzc0ZeuVE//4rKXF1dUw==
+X-Received: by 2002:a17:902:788f:b029:d6:4c68:f652 with SMTP id q15-20020a170902788fb02900d64c68f652mr12801442pll.1.1604127255694;
+        Fri, 30 Oct 2020 23:54:15 -0700 (PDT)
+Received: from ?IPv6:2409:4072:86:5271:fc52:2b7d:2a92:4df5? ([2409:4072:86:5271:fc52:2b7d:2a92:4df5])
+        by smtp.gmail.com with ESMTPSA id i1sm5576526pjh.52.2020.10.30.23.54.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 30 Oct 2020 23:54:15 -0700 (PDT)
+Date:   Sat, 31 Oct 2020 12:24:09 +0530
+User-Agent: K-9 Mail for Android
+In-Reply-To: <a02c31409d696075b155ef2d6ee33009@codeaurora.org>
+References: <1604031057-32820-1-git-send-email-bbhatt@codeaurora.org> <1604031057-32820-11-git-send-email-bbhatt@codeaurora.org> <20201030140656.GL3818@Mani-XPS-13-9360> <a02c31409d696075b155ef2d6ee33009@codeaurora.org>
 MIME-Version: 1.0
-From:   Hongyi Zhao <hongyi.zhao@gmail.com>
-Date:   Sat, 31 Oct 2020 14:44:07 +0800
-Message-ID: <CAGP6POKB=dbeyGSCG2qgjZGq-wKcPBOjOLLuzeWME=Pbax7uhg@mail.gmail.com>
-Subject: Has the linux-kernel already implemented the functions in apollo-kernel?
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 10/12] bus: mhi: core: Separate system error and power down handling
+To:     bbhatt@codeaurora.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+CC:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Message-ID: <716796DC-0E3E-4021-B764-228E42A3B7FD@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Bhaumik,=20
 
-The apollo-kernel (https://github.com/ApolloAuto/apollo-kernel) is a
-patched Linux Kernel based on official Linux Kernel 4.4.32 with some
-modifications on the kernel level, especially for the scenario
-necessary to run the Apollo (https://github.com/ApolloAuto/apollo)
-open autonomous driving platform software stack.
+On 31 October 2020 1:04:07 AM IST, Bhaumik Bhatt <bbhatt@codeaurora=2Eorg>=
+ wrote:
+>Hi Mani,
+>
+>On 2020-10-30 07:06, Manivannan Sadhasivam wrote:
+>> On Thu, Oct 29, 2020 at 09:10:55PM -0700, Bhaumik Bhatt wrote:
+>>> Currently, there exist a set of if=2E=2E=2Eelse statements in the
+>>> mhi_pm_disable_transition() function which make handling system
+>>> error and disable transitions differently complex=2E To make that
+>>> cleaner and facilitate differences in behavior, separate these
+>>> two transitions for MHI host=2E
+>>>=20
+>>=20
+>> And this results in a lot of duplicated code :/
+>>=20
+>> Thanks,
+>> Mani
+>>=20
+>
+>I knew this was coming=2E Mainly, we can avoid adding confusing if=2E=2E=
+=2Eelse
+>statements that plague the current mhi_pm_disable_transition() function
+>
+>and in
+>return for some duplicate code, we can make handling separate use cases
+>
+>easier
+>as they could pop-up anytime in the future=2E
+>
 
-According to the official description as shown
-<https://github.com/ApolloAuto/apollo-kernel#what-is-the-difference>,
-the major difference from the original Linux kernel is as follows:
+If that happens then do it but now, please no=2E=20
 
+Thanks,=20
+Mani
 
-- Realtime patch (https://rt.wiki.kernel.org/index.php/RT_PREEMPT_HOWTO)
-- Latest e1000e intel ethernet driver
-- Bugfix for Nvidia driver under realtime patch
-- Double free in the inet_csk_clone_lock function patch
-(https://bugzilla.redhat.com/show_bug.cgi?id=1450972)
-- Other cve security patches
+>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora=2Eorg>
+>>> ---
+>>>  drivers/bus/mhi/core/pm=2Ec | 159=20
+>>> +++++++++++++++++++++++++++++++++++++++-------
+>>>  1 file changed, 137 insertions(+), 22 deletions(-)
+>>>=20
+>>> diff --git a/drivers/bus/mhi/core/pm=2Ec b/drivers/bus/mhi/core/pm=2Ec
+>>> index 1d04e401=2E=2E347ae7d 100644
+>>> --- a/drivers/bus/mhi/core/pm=2Ec
+>>> +++ b/drivers/bus/mhi/core/pm=2Ec
+>>> @@ -444,7 +444,7 @@ static int mhi_pm_mission_mode_transition(struct
+>
+>>> mhi_controller *mhi_cntrl)
+>>>  	return ret;
+>>>  }
+>>>=20
+>>> -/* Handle SYS_ERR and Shutdown transitions */
+>>> +/* Handle shutdown transitions */
+>>>  static void mhi_pm_disable_transition(struct mhi_controller=20
+>>> *mhi_cntrl,
+>>>  				      enum mhi_pm_state transition_state)
+>>>  {
+>>> @@ -460,10 +460,6 @@ static void mhi_pm_disable_transition(struct=20
+>>> mhi_controller *mhi_cntrl,
+>>>  		to_mhi_pm_state_str(mhi_cntrl->pm_state),
+>>>  		to_mhi_pm_state_str(transition_state));
+>>>=20
+>>> -	/* We must notify MHI control driver so it can clean up first */
+>>> -	if (transition_state =3D=3D MHI_PM_SYS_ERR_PROCESS)
+>>> -		mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_SYS_ERROR);
+>>> -
+>>>  	mutex_lock(&mhi_cntrl->pm_mutex);
+>>>  	write_lock_irq(&mhi_cntrl->pm_lock);
+>>>  	prev_state =3D mhi_cntrl->pm_state;
+>>> @@ -502,11 +498,8 @@ static void mhi_pm_disable_transition(struct=20
+>>> mhi_controller *mhi_cntrl,
+>>>  							    MHICTRL_RESET_SHIFT,
+>>>  							    &in_reset) ||
+>>>  					!in_reset, timeout);
+>>> -		if ((!ret || in_reset) && cur_state =3D=3D MHI_PM_SYS_ERR_PROCESS) =
+{
+>>> +		if (!ret || in_reset)
+>>>  			dev_err(dev, "Device failed to exit MHI Reset state\n");
+>>> -			mutex_unlock(&mhi_cntrl->pm_mutex);
+>>> -			return;
+>>> -		}
+>>>=20
+>>>  		/*
+>>>  		 * Device will clear BHI_INTVEC as a part of RESET processing,
+>>> @@ -566,19 +559,142 @@ static void mhi_pm_disable_transition(struct=20
+>>> mhi_controller *mhi_cntrl,
+>>>  		er_ctxt->wp =3D er_ctxt->rbase;
+>>>  	}
+>>>=20
+>>> -	if (cur_state =3D=3D MHI_PM_SYS_ERR_PROCESS) {
+>>> -		mhi_ready_state_transition(mhi_cntrl);
+>>> -	} else {
+>>> -		/* Move to disable state */
+>>> -		write_lock_irq(&mhi_cntrl->pm_lock);
+>>> -		cur_state =3D mhi_tryset_pm_state(mhi_cntrl, MHI_PM_DISABLE);
+>>> -		write_unlock_irq(&mhi_cntrl->pm_lock);
+>>> -		if (unlikely(cur_state !=3D MHI_PM_DISABLE))
+>>> -			dev_err(dev, "Error moving from PM state: %s to: %s\n",
+>>> -				to_mhi_pm_state_str(cur_state),
+>>> -				to_mhi_pm_state_str(MHI_PM_DISABLE));
+>>> +	/* Move to disable state */
+>>> +	write_lock_irq(&mhi_cntrl->pm_lock);
+>>> +	cur_state =3D mhi_tryset_pm_state(mhi_cntrl, MHI_PM_DISABLE);
+>>> +	write_unlock_irq(&mhi_cntrl->pm_lock);
+>>> +	if (unlikely(cur_state !=3D MHI_PM_DISABLE))
+>>> +		dev_err(dev, "Error moving from PM state: %s to: %s\n",
+>>> +			to_mhi_pm_state_str(cur_state),
+>>> +			to_mhi_pm_state_str(MHI_PM_DISABLE));
+>>> +
+>>> +	dev_dbg(dev, "Exiting with PM state: %s, MHI state: %s\n",
+>>> +		to_mhi_pm_state_str(mhi_cntrl->pm_state),
+>>> +		TO_MHI_STATE_STR(mhi_cntrl->dev_state));
+>>> +
+>>> +	mutex_unlock(&mhi_cntrl->pm_mutex);
+>>> +}
+>>> +
+>>> +/* Handle system error transitions */
+>>> +static void mhi_pm_sys_error_transition(struct mhi_controller=20
+>>> *mhi_cntrl)
+>>> +{
+>>> +	enum mhi_pm_state cur_state, prev_state;
+>>> +	struct mhi_event *mhi_event;
+>>> +	struct mhi_cmd_ctxt *cmd_ctxt;
+>>> +	struct mhi_cmd *mhi_cmd;
+>>> +	struct mhi_event_ctxt *er_ctxt;
+>>> +	struct device *dev =3D &mhi_cntrl->mhi_dev->dev;
+>>> +	int ret, i;
+>>> +
+>>> +	dev_dbg(dev, "Transitioning from PM state: %s to: %s\n",
+>>> +		to_mhi_pm_state_str(mhi_cntrl->pm_state),
+>>> +		to_mhi_pm_state_str(MHI_PM_SYS_ERR_PROCESS));
+>>> +
+>>> +	/* We must notify MHI control driver so it can clean up first */
+>>> +	mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_SYS_ERROR);
+>>> +
+>>> +	mutex_lock(&mhi_cntrl->pm_mutex);
+>>> +	write_lock_irq(&mhi_cntrl->pm_lock);
+>>> +	prev_state =3D mhi_cntrl->pm_state;
+>>> +	cur_state =3D mhi_tryset_pm_state(mhi_cntrl,
+>MHI_PM_SYS_ERR_PROCESS);
+>>> +	write_unlock_irq(&mhi_cntrl->pm_lock);
+>>> +
+>>> +	if (cur_state !=3D MHI_PM_SYS_ERR_PROCESS) {
+>>> +		dev_err(dev, "Failed to transition from PM state: %s to: %s\n",
+>>> +			to_mhi_pm_state_str(cur_state),
+>>> +			to_mhi_pm_state_str(MHI_PM_SYS_ERR_PROCESS));
+>>> +		goto exit_sys_error_transition;
+>>> +	}
+>>> +
+>>> +	mhi_cntrl->ee =3D MHI_EE_DISABLE_TRANSITION;
+>>> +	mhi_cntrl->dev_state =3D MHI_STATE_RESET;
+>>> +
+>>> +	/* Wake up threads waiting for state transition */
+>>> +	wake_up_all(&mhi_cntrl->state_event);
+>>> +
+>>> +	/* Trigger MHI RESET so that the device will not access host
+>memory=20
+>>> */
+>>> +	if (MHI_REG_ACCESS_VALID(prev_state)) {
+>>> +		u32 in_reset =3D -1;
+>>> +		unsigned long timeout =3D msecs_to_jiffies(mhi_cntrl->timeout_ms);
+>>> +
+>>> +		dev_dbg(dev, "Triggering MHI Reset in device\n");
+>>> +		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_RESET);
+>>> +
+>>> +		/* Wait for the reset bit to be cleared by the device */
+>>> +		ret =3D wait_event_timeout(mhi_cntrl->state_event,
+>>> +					 mhi_read_reg_field(mhi_cntrl,
+>>> +							    mhi_cntrl->regs,
+>>> +							    MHICTRL,
+>>> +							    MHICTRL_RESET_MASK,
+>>> +							    MHICTRL_RESET_SHIFT,
+>>> +							    &in_reset) ||
+>>> +					!in_reset, timeout);
+>>> +		if (!ret || in_reset) {
+>>> +			dev_err(dev, "Device failed to exit MHI Reset state\n");
+>>> +			goto exit_sys_error_transition;
+>>> +		}
+>>> +
+>>> +		/*
+>>> +		 * Device will clear BHI_INTVEC as a part of RESET processing,
+>>> +		 * hence re-program it
+>>> +		 */
+>>> +		mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
+>>> +	}
+>>> +
+>>> +	dev_dbg(dev,
+>>> +		"Waiting for all pending event ring processing to complete\n");
+>>> +	mhi_event =3D mhi_cntrl->mhi_event;
+>>> +	for (i =3D 0; i < mhi_cntrl->total_ev_rings; i++, mhi_event++) {
+>>> +		if (mhi_event->offload_ev)
+>>> +			continue;
+>>> +		tasklet_kill(&mhi_event->task);
+>>>  	}
+>>>=20
+>>> +	/* Release lock and wait for all pending threads to complete */
+>>> +	mutex_unlock(&mhi_cntrl->pm_mutex);
+>>> +	dev_dbg(dev, "Waiting for all pending threads to complete\n");
+>>> +	wake_up_all(&mhi_cntrl->state_event);
+>>> +
+>>> +	dev_dbg(dev, "Reset all active channels and remove MHI
+>devices\n");
+>>> +	device_for_each_child(mhi_cntrl->cntrl_dev, NULL,=20
+>>> mhi_destroy_device);
+>>> +
+>>> +	mutex_lock(&mhi_cntrl->pm_mutex);
+>>> +
+>>> +	WARN_ON(atomic_read(&mhi_cntrl->dev_wake));
+>>> +	WARN_ON(atomic_read(&mhi_cntrl->pending_pkts));
+>>> +
+>>> +	/* Reset the ev rings and cmd rings */
+>>> +	dev_dbg(dev, "Resetting EV CTXT and CMD CTXT\n");
+>>> +	mhi_cmd =3D mhi_cntrl->mhi_cmd;
+>>> +	cmd_ctxt =3D mhi_cntrl->mhi_ctxt->cmd_ctxt;
+>>> +	for (i =3D 0; i < NR_OF_CMD_RINGS; i++, mhi_cmd++, cmd_ctxt++) {
+>>> +		struct mhi_ring *ring =3D &mhi_cmd->ring;
+>>> +
+>>> +		ring->rp =3D ring->base;
+>>> +		ring->wp =3D ring->base;
+>>> +		cmd_ctxt->rp =3D cmd_ctxt->rbase;
+>>> +		cmd_ctxt->wp =3D cmd_ctxt->rbase;
+>>> +	}
+>>> +
+>>> +	mhi_event =3D mhi_cntrl->mhi_event;
+>>> +	er_ctxt =3D mhi_cntrl->mhi_ctxt->er_ctxt;
+>>> +	for (i =3D 0; i < mhi_cntrl->total_ev_rings; i++, er_ctxt++,
+>>> +	     mhi_event++) {
+>>> +		struct mhi_ring *ring =3D &mhi_event->ring;
+>>> +
+>>> +		/* Skip offload events */
+>>> +		if (mhi_event->offload_ev)
+>>> +			continue;
+>>> +
+>>> +		ring->rp =3D ring->base;
+>>> +		ring->wp =3D ring->base;
+>>> +		er_ctxt->rp =3D er_ctxt->rbase;
+>>> +		er_ctxt->wp =3D er_ctxt->rbase;
+>>> +	}
+>>> +
+>>> +	mhi_ready_state_transition(mhi_cntrl);
+>>> +
+>>> +exit_sys_error_transition:
+>>>  	dev_dbg(dev, "Exiting with PM state: %s, MHI state: %s\n",
+>>>  		to_mhi_pm_state_str(mhi_cntrl->pm_state),
+>>>  		TO_MHI_STATE_STR(mhi_cntrl->dev_state));
+>>> @@ -666,8 +782,7 @@ void mhi_pm_st_worker(struct work_struct *work)
+>>>  			mhi_ready_state_transition(mhi_cntrl);
+>>>  			break;
+>>>  		case DEV_ST_TRANSITION_SYS_ERR:
+>>> -			mhi_pm_disable_transition
+>>> -				(mhi_cntrl, MHI_PM_SYS_ERR_PROCESS);
+>>> +			mhi_pm_sys_error_transition(mhi_cntrl);
+>>>  			break;
+>>>  		case DEV_ST_TRANSITION_DISABLE:
+>>>  			mhi_pm_disable_transition
+>>> --
+>>> The Qualcomm Innovation Center, Inc=2E is a member of the Code Aurora=
+=20
+>>> Forum,
+>>> a Linux Foundation Collaborative Project
+>>>=20
+>
+>Thanks,
+>Bhaumik
 
-
-However, considering that Linux Kernel 4.4.32 is a fairly old version,
-so I want to know whether the modifications/fixes applied/added have
-been already available in the current Linux kernel.
-
-Any hints will be highly appreciated.
-
-Regards,
--- 
-Assoc. Prof. Hongyi Zhao <hongyi.zhao@gmail.com>
-Theory and Simulation of Materials, Xingtai Polytechnic College
-NO. 552 North Gangtie Road, Xingtai, China
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
