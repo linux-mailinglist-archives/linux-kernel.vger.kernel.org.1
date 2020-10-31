@@ -2,58 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08932A1469
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 10:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB92A2A1483
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 10:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgJaJIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 05:08:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726424AbgJaJIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 05:08:21 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7DEC206F7;
-        Sat, 31 Oct 2020 09:08:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604135300;
-        bh=UL7zqk5Z/W3STkRW38TMQbcALkFHV5QLS2El6tDhiaA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xEso9tJmu1xPWS1bkfQQ2pHXCkwbeArYq1l9+Gt1PODErhtoBi+YdSPk5X8cEr0c1
-         7a56g+r+fnsVTO98oz6R6KqJeHPf5kVRfZ53TN0lM9CHPKFh/FJto0tf0IYLh3gF1+
-         itlYAPNr7wRctKK5VBfoeTx9wB0pMZt+n2TRnc9g=
-Date:   Sat, 31 Oct 2020 17:08:15 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 1/3] arm64: dts: imx8mm: Add support for micfil
-Message-ID: <20201031090814.GA31601@dragon>
-References: <20201019165038.274164-1-aford173@gmail.com>
+        id S1726664AbgJaJJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 05:09:58 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:56670 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgJaJJ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 05:09:57 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09V99pVb081480;
+        Sat, 31 Oct 2020 04:09:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604135391;
+        bh=WbGNAAaucwcB4k4vsrUnfDjrcr6a/clWL9fmlz8yp8o=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=xRbhbGb/sm98PE2G6aYqqKj0+W7xEhnu/N/s9ZrpXhwYAr6kTduw/BC6FYhAfQAn8
+         LcKIPq3qdZvP489XWTmSD5K2h2h7fQw0LSkU/kUFShvCm+kpiwusbvvCtqTKyvsC4v
+         OdBvsj5jeHm1RAWCkHH1YUD+Xz1Fy+GzXwEtaRT8=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09V99paq022157
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 31 Oct 2020 04:09:51 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sat, 31
+ Oct 2020 04:09:22 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sat, 31 Oct 2020 04:09:22 -0500
+Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09V99JV3016108;
+        Sat, 31 Oct 2020 04:09:20 -0500
+Subject: Re: [PATCH] pwm: tiehrpwm: handle deferred probe with dev_err_probe()
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>, <linux-pwm@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20201030201254.24557-1-grygorii.strashko@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <16e36940-1cae-a7f3-a024-7a772d0ad5f5@ti.com>
+Date:   Sat, 31 Oct 2020 14:39:19 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019165038.274164-1-aford173@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201030201254.24557-1-grygorii.strashko@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 11:50:36AM -0500, Adam Ford wrote:
-> The i.MX8M Mini has supports the MICFIL digital interface.
-> It's a 16-bit audio signal from a PDM microphone bitstream.
-> The driver is already in the kernel, but the node is missing.
-> 
-> This patch adds the micfil node.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Applied all, thanks.
+
+On 10/31/20 1:42 AM, Grygorii Strashko wrote:
+> The devm_clk_get() may return -EPROBE_DEFER which is not handled properly
+> by TI EHRPWM driver and causes unnecessary boot log messages.
+> 
+> Hence, add proper deferred probe handling with new dev_err_probe() API.
+> 
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> ---
+
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+
+>  drivers/pwm/pwm-tiehrpwm.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pwm/pwm-tiehrpwm.c b/drivers/pwm/pwm-tiehrpwm.c
+> index 0846917ff2d2..14c8fdcfd607 100644
+> --- a/drivers/pwm/pwm-tiehrpwm.c
+> +++ b/drivers/pwm/pwm-tiehrpwm.c
+> @@ -437,10 +437,8 @@ static int ehrpwm_pwm_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> -	if (IS_ERR(clk)) {
+> -		dev_err(&pdev->dev, "failed to get clock\n");
+> -		return PTR_ERR(clk);
+> -	}
+> +	if (IS_ERR(clk))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(clk), "Failed to get fck\n");
+>  
+>  	pc->clk_rate = clk_get_rate(clk);
+>  	if (!pc->clk_rate) {
+> @@ -462,10 +460,8 @@ static int ehrpwm_pwm_probe(struct platform_device *pdev)
+>  
+>  	/* Acquire tbclk for Time Base EHRPWM submodule */
+>  	pc->tbclk = devm_clk_get(&pdev->dev, "tbclk");
+> -	if (IS_ERR(pc->tbclk)) {
+> -		dev_err(&pdev->dev, "Failed to get tbclk\n");
+> -		return PTR_ERR(pc->tbclk);
+> -	}
+> +	if (IS_ERR(pc->tbclk))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(pc->tbclk), "Failed to get tbclk\n");
+>  
+>  	ret = clk_prepare(pc->tbclk);
+>  	if (ret < 0) {
+> 
