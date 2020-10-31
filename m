@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1962A175E
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 13:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 363AB2A1768
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 13:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727351AbgJaMca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 08:32:30 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7024 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727037AbgJaMca (ORCPT
+        id S1727371AbgJaMkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 08:40:43 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:53667 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgJaMkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 08:32:30 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CNdqF3r0mzhd6G;
-        Sat, 31 Oct 2020 20:32:25 +0800 (CST)
-Received: from [10.174.176.180] (10.174.176.180) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 31 Oct 2020 20:32:23 +0800
-Subject: Re: [PATCH] drm/bridge: tpd12s015: Fix irq registering in
- tpd12s015_probe
-To:     Sam Ravnborg <sam@ravnborg.org>
-References: <20201031031648.42368-1-yuehaibing@huawei.com>
- <20201031071936.GA1044557@ravnborg.org>
-CC:     <a.hajda@samsung.com>, <narmstrong@baylibre.com>,
-        <Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>,
-        <jernej.skrabec@siol.net>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <tomi.valkeinen@ti.com>, <sebastian.reichel@collabora.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <24de298a-1b0b-8b2b-41c6-f68b1f5e1637@huawei.com>
-Date:   Sat, 31 Oct 2020 20:32:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        Sat, 31 Oct 2020 08:40:42 -0400
+Received: by mail-wm1-f66.google.com with SMTP id p22so5151705wmg.3;
+        Sat, 31 Oct 2020 05:40:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XKZimNoFlTDUwIyRR0BEoVG9+GJEQQemUuLJSx/vHaI=;
+        b=biiV7pXpODDqNbVp1G+1xSDHKQlAyyMlTvQ4nLRB4e7RZR+u+Tj9I92IU4HahSrLtn
+         cu2fAU5aXBCznIQKq2pe86B/V6UKRcrb5z3Bb1toThFZ8OMolVsquwxkZtcAKTQsxNpc
+         bc6sQlLfq0SXJ7KVXYjZbcm0Sag5TjVQv74p36FMz1ikvLxwggLILHSZeB1R8n4BTpVB
+         +16LMqjBWRSNtyYB7tPW0TNivh+b/jZTTctHesEVKn1Ajvxut/Ck6O5O0WaPUvIeYoAp
+         CbZnMPTbrLoOij40V8pdYxnz1gdagh4p+5D/hVnOVSm2n0Y4snfUPsQNVWzK3pMFRUa5
+         mpBg==
+X-Gm-Message-State: AOAM5307zLk8hAW9YlvmRxHThfVb5VmulphNErvZ+uf8365Q1XMdhch8
+        +PVim+zmNcNIa00fvOsRRscMYFeRbh7TWQ==
+X-Google-Smtp-Source: ABdhPJwPMaxPU+T2aWFKKta+nNXVJhIGcFvUta4TdBBI7jlBuwAQdMEe6jnIIv22dfy379m4YkqifQ==
+X-Received: by 2002:a1c:61c2:: with SMTP id v185mr7888308wmb.152.1604148038915;
+        Sat, 31 Oct 2020 05:40:38 -0700 (PDT)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id k22sm1430211wmi.34.2020.10.31.05.40.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Oct 2020 05:40:37 -0700 (PDT)
+Date:   Sat, 31 Oct 2020 13:40:36 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     georgi.djakov@linaro.org, cw00.choi@samsung.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        a.swigon@samsung.com, myungjoo.ham@samsung.com,
+        inki.dae@samsung.com, sw0312.kim@samsung.com,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v7 3/6] PM / devfreq: exynos-bus: Add registration of
+ interconnect child device
+Message-ID: <20201031124036.GC9399@kozik-lap>
+References: <20201030125149.8227-1-s.nawrocki@samsung.com>
+ <CGME20201030125303eucas1p14a9de4111ffafc1870527abdea0994c9@eucas1p1.samsung.com>
+ <20201030125149.8227-4-s.nawrocki@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20201031071936.GA1044557@ravnborg.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.180]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201030125149.8227-4-s.nawrocki@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/31 15:19, Sam Ravnborg wrote:
-> Hi YueHaibing
+On Fri, Oct 30, 2020 at 01:51:46PM +0100, Sylwester Nawrocki wrote:
+> This patch adds registration of a child platform device for the exynos
+> interconnect driver. It is assumed that the interconnect provider will
+> only be needed when #interconnect-cells property is present in the bus
+> DT node, hence the child device will be created only when such a property
+> is present.
 > 
-> Thanks for the fix. Appreciated but please update as per comments below.
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+> Changes for v7, v6:
+>  - none.
 > 
-> On Sat, Oct 31, 2020 at 11:16:48AM +0800, YueHaibing wrote:
->> gpiod_to_irq() return negative value in case of error,
->> the existing code handle negative error codes wrongly.
->>
->> Fixes: cff5e6f7e83f ("drm/bridge: Add driver for the TI TPD12S015 HDMI level shifter")
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> ---
->>  drivers/gpu/drm/bridge/ti-tpd12s015.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/bridge/ti-tpd12s015.c b/drivers/gpu/drm/bridge/ti-tpd12s015.c
->> index 514cbf0eac75..a18d5197c16c 100644
->> --- a/drivers/gpu/drm/bridge/ti-tpd12s015.c
->> +++ b/drivers/gpu/drm/bridge/ti-tpd12s015.c
->> @@ -160,7 +160,7 @@ static int tpd12s015_probe(struct platform_device *pdev)
->>  
->>  	/* Register the IRQ if the HPD GPIO is IRQ-capable. */
->>  	tpd->hpd_irq = gpiod_to_irq(tpd->hpd_gpio);
->> -	if (tpd->hpd_irq) {
->> +	if (tpd->hpd_irq > 0) {
->>  		ret = devm_request_threaded_irq(&pdev->dev, tpd->hpd_irq, NULL,
->>  						tpd12s015_hpd_isr,
->>  						IRQF_TRIGGER_RISING |
+> Changes for v5:
+>  - new patch.
+> ---
+>  drivers/devfreq/exynos-bus.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 > 
-> The current implmentation will skip devm_request_threaded_irq() in case
-> or error - but continue with the rest of the function. So the
-> driver fails to return an error code.
-> 
-> In case of error (negative value) then return early with that error
 
-Agree, will resubmit.
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-> value. If gpiod_to_irq() returns 0 assume this is a valid irq and let
-> the code continue.
-
-gpiod_to_irq() never returns 0, so no need check this.
-
-> 
-> Please fix and re-submit - or tell me if I am mistaken.
-> 
-> 	Sam
-> .
-> 
+Best regards,
+Krzysztof
