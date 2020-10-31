@@ -2,84 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15122A1B47
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 00:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DADC2A1B4A
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 00:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbgJaXo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 19:44:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32994 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725873AbgJaXo2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 19:44:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604187866;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HVEaX24foGVerXKBE1NKNTsd3ZTUvmwtHbnXS4YnDvo=;
-        b=gjhddm+kcg2jaXd3zDO36XmB0HSIdmPaDWk6jVHoIO6ip6mC6wrjxFpWEMZT+zS7H85hY2
-        ySqvR7qnByY7w35rDeDBSmJgUegPnvOIMyfaELIkXza7eYFGfdr7JaLA2z1K1cfEbK1j6m
-        vrP5voV4/B5Q2lWOoOQt3avRiraIYPg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-ZsAqa4_9O1S35aJVlCq8cw-1; Sat, 31 Oct 2020 19:44:22 -0400
-X-MC-Unique: ZsAqa4_9O1S35aJVlCq8cw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10E3680362B;
-        Sat, 31 Oct 2020 23:44:21 +0000 (UTC)
-Received: from krava (unknown [10.40.192.83])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 048FC5D993;
-        Sat, 31 Oct 2020 23:44:18 +0000 (UTC)
-Date:   Sun, 1 Nov 2020 00:44:18 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        linux-kernel@vger.kernel.org, eranian@google.com,
-        ak@linux.intel.com
-Subject: Re: [PATCH v2 0/4] perf: Fix perf_event_attr::exclusive rotation
-Message-ID: <20201031234418.GE3380099@krava>
-References: <20201029162719.519685265@infradead.org>
+        id S1726102AbgJaXyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 19:54:03 -0400
+Received: from mga01.intel.com ([192.55.52.88]:24285 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725873AbgJaXyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 19:54:02 -0400
+IronPort-SDR: 1qD89CwGVGoy76FNv/pGyq4Z9UgxTaXa4brdXExuaQZHifgV8tl8vFEnYQL8xWnJ8BjNt9ftAt
+ VKS7Zn6FbRVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9791"; a="186582740"
+X-IronPort-AV: E=Sophos;i="5.77,439,1596524400"; 
+   d="scan'208";a="186582740"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2020 16:54:02 -0700
+IronPort-SDR: Mu8F1bs8J8RO+8ZbS2ewS7J99ydOYOdGlKJyDaXwE4UM3yHF5spmwQtZ6UrpPp8y/q4d8fuA+t
+ 2d9nj51saCtw==
+X-IronPort-AV: E=Sophos;i="5.77,439,1596524400"; 
+   d="scan'208";a="319682566"
+Received: from araj-mobl1.jf.intel.com ([10.212.149.16])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2020 16:54:01 -0700
+Date:   Sat, 31 Oct 2020 16:53:59 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
+        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
+        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
+        yi.l.liu@intel.com, baolu.lu@intel.com, kevin.tian@intel.com,
+        sanjay.k.kumar@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        dan.j.williams@intel.com, kwankhede@nvidia.com,
+        eric.auger@redhat.com, parav@mellanox.com, rafael@kernel.org,
+        netanelg@mellanox.com, shahafs@mellanox.com,
+        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
+        samuel.ortiz@intel.com, mona.hossain@intel.com,
+        Megha Dey <megha.dey@linux.intel.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, kvm@vger.kernel.org,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH v4 00/17] Add VFIO mediated device support and DEV-MSI
+ support for the idxd driver
+Message-ID: <20201031235359.GA23878@araj-mobl1.jf.intel.com>
+References: <160408357912.912050.17005584526266191420.stgit@djiang5-desk3.ch.intel.com>
+ <20201030185858.GI2620339@nvidia.com>
+ <c9303df4-3e57-6959-a89c-5fc98397ac70@intel.com>
+ <20201030191706.GK2620339@nvidia.com>
+ <20201030192325.GA105832@otc-nc-03>
+ <20201030193045.GM2620339@nvidia.com>
+ <20201030204307.GA683@otc-nc-03>
+ <87h7qbkt18.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201029162719.519685265@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <87h7qbkt18.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.9.1 (2017-09-22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 05:27:19PM +0100, Peter Zijlstra wrote:
-> Hi,
+Hi Thomas,
+
+On Sat, Oct 31, 2020 at 03:50:43AM +0100, Thomas Gleixner wrote:
+> Ashok,
 > 
-> Andi recently added exclusive event group support to tools/perf:
+> < skip a lot of non-sensical arguments>
+
+Ouch!.. Didn't mean to awaken you like this :-).. apologies.. profusely! 
+
 > 
->   https://lkml.kernel.org/r/20201014144255.22699-1-andi@firstfloor.org
+> Just because there is historical precendence which does not care about
+> the differentiation of subsystems is not an argument at all to make the
+> same mistakes which have been made years ago.
 > 
-> and promptly found that they didn't work as specified.
+> IDXD is just infrastructure which provides the base for a variety of
+> different functionalities. Very similar to what multi function devices
+> provide. In fact IDXD is pretty much a MFD facility.
+
+I'm only asking this to better understand the thought process. 
+I don't intend to be defensive,  I have my hands tied back.. so we will do
+what you say best fits per your recommendation.
+
+Not my intend to dig a deeper hole than I have already dug! :-(
+
+IDXD is just a glorified DMA engine, data mover. It also does a few other
+things. In that sense its a multi-function facility. But doesn't do  different 
+functional pieces like PCIe multi-function device in that sense. i.e
+it doesn't do other storage and network in that sense. 
+
 > 
-> (sorry for the resend, I forgot LKML the first time)
+> Sticking all of it into dmaengine is sloppy at best. The dma engine
+> related part of IDXD is only a part of the overall functionality.
 
-hm, it's too late for me to check ;-) but should I be able to do
-this with exclusive event.. running both command at the same time:
+dmaengine is the basic non-transformational data-mover. Doing other operations
+or transformations are just the glorified data-mover part. But fundamentally
+not different.
 
-	$ sudo ./perf stat -e cycles:e -I 1000
-	#           time             counts unit events
-	     1.002430650         33,946,849      cycles:e                                                    
-	     2.004920725        502,399,986      cycles:e                                                      (67.57%)
-	     3.007087631        859,745,048      cycles:e                                                      (50.00%)
-	     4.009078254        845,860,723      cycles:e                                                      (50.00%)
-	     5.011086104        838,457,275      cycles:e                                                      (50.00%)
+> 
+> I'm well aware that it is conveniant to just throw everything into
+> drivers/myturf/ but that does neither make it reviewable nor
+> maintainable.
 
-	$ sudo ./perf stat -e cycles:e  -I 1000
-	#           time             counts unit events
-	     1.001665466        848,973,404      cycles:e                                                      (50.01%)
-	     2.003658048        856,505,255      cycles:e                                                      (50.00%)
-	     3.005658022        842,737,973      cycles:e                                                      (50.00%)
-	     4.007657797        844,800,598      cycles:e                                                      (50.00%)
+That's true, when we add lot of functionality in one place. IDXD doing
+mdev support is not offering new functioanlity. SRIOV PF drivers that support
+PF/VF mailboxes are part of PF drivers today. IDXD mdev is preciely playing that
+exact role. 
 
-jirka
+If we are doing this just to improve review effectiveness, Now we would need
+some parent driver, and these sub-drivers registering seemed like a bit of
+over-engineering when these sub-drivers actually are an extension of the
+base driver and offer nothing more than extending sub-device partitions 
+of IDXD for guest drivers. These look and feel like IDXD, not another device 
+interface. In that sense if we move PF/VF mailboxes as
+separate drivers i thought it feels a bit odd.
 
+Please don't take it the wrong way. 
+
+Cheers,
+Ashok
