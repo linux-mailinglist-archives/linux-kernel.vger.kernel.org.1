@@ -2,115 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9882A180B
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 15:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D962A1813
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 15:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727682AbgJaOD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 10:03:28 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:64466 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727407AbgJaOD2 (ORCPT
+        id S1727747AbgJaOLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 10:11:06 -0400
+Received: from mxwww.masterlogin.de ([95.129.51.170]:44316 "EHLO
+        mxwww.masterlogin.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727407AbgJaOLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 10:03:28 -0400
-Received: from fsav108.sakura.ne.jp (fsav108.sakura.ne.jp [27.133.134.235])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 09VE36PJ098541;
-        Sat, 31 Oct 2020 23:03:06 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav108.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp);
- Sat, 31 Oct 2020 23:03:06 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 09VE30bg098446
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 31 Oct 2020 23:03:06 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: Linux 4.19.154
-To:     Jari Ruusu <jariruusu@users.sourceforge.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-References: <160405368022942@kroah.com> <160405368043128@kroah.com>
- <5F9D6341.71F2A54E@users.sourceforge.net>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <9996e46f-e493-e3b3-c23a-31415668db7d@i-love.sakura.ne.jp>
-Date:   Sat, 31 Oct 2020 23:02:56 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Sat, 31 Oct 2020 10:11:05 -0400
+Received: from mxout3.routing.net (unknown [192.168.10.111])
+        by backup.mxwww.masterlogin.de (Postfix) with ESMTPS id 720EE2C522;
+        Sat, 31 Oct 2020 14:03:58 +0000 (UTC)
+Received: from mxbox3.masterlogin.de (unknown [192.168.10.78])
+        by mxout3.routing.net (Postfix) with ESMTP id 7AA7D60131;
+        Sat, 31 Oct 2020 14:03:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1604153030;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=nnqpdwBRoGTj+JO7bkuaUY6oKrUxMavYYaV/d3fKDdQ=;
+        b=bVQemA238/wVSfo5rW9auRUYepbmAnKBqLrz9KJUXnluHpXQv3wtzei+B9qRorOmKRxj8B
+        C3e13ePdrdgOfaDFXlI2RPzevDEsoiN3L2pG8pCQAuiBmH1uBXPnRo2rbG8u1yHCBG5/9B
+        AMQAt6gYbCUhbPxmX1I9Uae1C1Z7/EE=
+Received: from localhost.localdomain (fttx-pool-217.61.156.230.bambit.de [217.61.156.230])
+        by mxbox3.masterlogin.de (Postfix) with ESMTPSA id E134D360085;
+        Sat, 31 Oct 2020 14:03:43 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>
+Subject: [PATCH] pci: mediatek: fix warning in msi.h
+Date:   Sat, 31 Oct 2020 15:03:30 +0100
+Message-Id: <20201031140330.83768-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <5F9D6341.71F2A54E@users.sourceforge.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/31 22:14, Jari Ruusu wrote:
-> Greg Kroah-Hartman wrote:
->> --- a/block/blk-core.c
->> +++ b/block/blk-core.c
->> @@ -2127,11 +2127,10 @@ static void handle_bad_sector(struct bio *bio, sector_t maxsector)
->>  {
->>         char b[BDEVNAME_SIZE];
->>
->> -       printk(KERN_INFO "attempt to access beyond end of device\n");
->> -       printk(KERN_INFO "%s: rw=%d, want=%Lu, limit=%Lu\n",
->> -                       bio_devname(bio, b), bio->bi_opf,
->> -                       (unsigned long long)bio_end_sector(bio),
->> -                       (long long)maxsector);
->> +       pr_info_ratelimited("attempt to access beyond end of device\n"
->> +                           "%s: rw=%d, want=%llu, limit=%llu\n",
->> +                           bio_devname(bio, b), bio->bi_opf,
->> +                           bio_end_sector(bio), maxsector);
->>  }
->>
->>  #ifdef CONFIG_FAIL_MAKE_REQUEST
-> 
-> Above change "block: ratelimit handle_bad_sector() message"
-> upstream commit f4ac712e4fe009635344b9af5d890fe25fcc8c0d
-> in 4.19.154 kernel is not completely OK.
-> 
-> Removing casts from arguments 4 and 5 produces these compile warnings:
-> 
-(...snipped...)
-> For 64 bit systems it is only compile time cosmetic warning. For 32 bit
-> system + CONFIG_LBDAF=n it introduces bugs: output formats are "%llu" and
-> passed parameters are 32 bits. That is not OK.
-> 
-> Upstream kernels have hardcoded 64 bit sector_t. In older stable trees
-> sector_t can be either 64 or 32 bit. In other words, backport of above patch
-> needs to keep those original casts.
+From: Frank Wunderlich <frank-w@public-files.de>
 
-Indeed, commit f4ac712e4fe00963 ("block: ratelimit handle_bad_sector() message")
-depends on commit 72deb455b5ec619f ("block: remove CONFIG_LBDAF") which was merged
-into 5.2 kernel.
+5.10 shows these warnings on bootup while enabling pcie
+at least on bananapi-r2:
 
--------- Forwarded Message --------
-Date: Thu, 8 Oct 2020 07:40:49 +0100
-From: Christoph Hellwig <hch@infradead.org>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
-Subject: Re: [PATCH] block: ratelimit handle_bad_sector() message
-Message-ID: <20201008064049.GA29599@infradead.org>
-References: <20201008002344.6759-1-penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <20201008002344.6759-1-penguin-kernel@I-love.SAKURA.ne.jp>
+[    6.161730] WARNING: CPU: 2 PID: 73 at include/linux/msi.h:213 pci_msi_setup_
+msi_irqs.constprop.0+0x78/0x80
+....
+[    6.724607] WARNING: CPU: 2 PID: 73 at include/linux/msi.h:219 free_msi_irqs+
 
-On Thu, Oct 08, 2020 at 09:23:44AM +0900, Tetsuo Handa wrote:
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -803,8 +803,8 @@ static void handle_bad_sector(struct bio *bio, sector_t maxsector)
->  {
->  	char b[BDEVNAME_SIZE];
->  
-> -	printk(KERN_INFO "attempt to access beyond end of device\n");
-> -	printk(KERN_INFO "%s: rw=%d, want=%Lu, limit=%Lu\n",
-> +	printk_ratelimited(KERN_INFO "attempt to access beyond end of device\n");
-> +	printk_ratelimited(KERN_INFO "%s: rw=%d, want=%Lu, limit=%Lu\n",
->  			bio_devname(bio, b), bio->bi_opf,
->  			(unsigned long long)bio_end_sector(bio),
->  			(long long)maxsector);
+fix this by selecting PCI_MSI_ARCH_FALLBACKS for MTK PCIe driver
 
-Please use pr_info_ratelimited, and also remove the casts now that
-sector_t is guranteed to be an unsigned long long.
+Fixes: 077ee78e3928 ("PCI/MSI: Make arch_.*_msi_irq[s] fallbacks selectable")
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+---
+ drivers/pci/controller/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+index 64e2f5e379aa..8345de010186 100644
+--- a/drivers/pci/controller/Kconfig
++++ b/drivers/pci/controller/Kconfig
+@@ -238,6 +238,7 @@ config PCIE_MEDIATEK
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
+ 	depends on OF
+ 	depends on PCI_MSI_IRQ_DOMAIN
++	select PCI_MSI_ARCH_FALLBACKS
+ 	help
+ 	  Say Y here if you want to enable PCIe controller support on
+ 	  MediaTek SoCs.
+-- 
+2.25.1
+
