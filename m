@@ -2,84 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C122A14D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 10:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE022A14E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 10:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgJaJaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 05:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41280 "EHLO
+        id S1726594AbgJaJkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 05:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgJaJaS (ORCPT
+        with ESMTP id S1726424AbgJaJki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 05:30:18 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D2DC0613D5
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 02:30:16 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id f6so7292535ybr.0
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 02:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GUD+MdgfTFtmtn8kuvTQUtRoa2PlNwVBxjbqphie3GU=;
-        b=gONWpHzYhR5RSgAO9zbDzwI7VDjdtUqBr3YfpOJpbndUViGhuu+04A1RdqnsYVCjli
-         2ZguMVbgmaG0kZRZVXtafjdm1m6xsXs4MQjvSXo8sG0zaf2DpmPwaRLZvucqakkqH0qI
-         4tdWUVLtMFKXkj1iwq4849vqhS2GsBj2vXtE+/QO8AVs+w/RgoU4J9YzSaMNP7Y5AyxK
-         CkWSkgo7ZIDB0Hw7L+Wxy6mjv0uJwSXgIHTTm5MAWBuhJUckE2yecCKNWEojErYeF6Q4
-         GZPXUDZzo31wEuvsMInkdTZ3nODNOj5Ez3Q/KzykQS9Q1udIIcrDmH/aADeEpzCvpo4P
-         qldw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GUD+MdgfTFtmtn8kuvTQUtRoa2PlNwVBxjbqphie3GU=;
-        b=kAycJxw2hCnCCBo7bQyn0F9kmTwd45wAHeSoiNq7OuBMiBqo6A040ZI8taQ53AOmuA
-         Xmw/CNzSgjwVapy6Nn7l+6VmtFuYDqBHNAf4r/++wUKVgHHWvLjCk92VdkQ8nkr1T9on
-         oY0NOSR2eNCkMskUSZeR9oz+KsonWmYCk69tXZ9wohgtlSLdhjhpesLjJ7FgauMZTiQO
-         NFlTFVGBW/rxh4IFcfV8PTssRP4MjiXMKSvhcAFCoPY1Rmtw7u1hsDQp5SbVWzevsDoc
-         YWHq5Z83y871chGOnneLLB4yYqpbcClnx6Yjsckrn6CIEHh2xLEV8Dc8nSFsqNVWtOFd
-         bROQ==
-X-Gm-Message-State: AOAM531bIGYzu46AWhkF83YC+aLtKxwIJYorQNv9m+oVDhDprZ/S1hBb
-        /+hi1h0GD79lxptx6+awwAPYJI/XqGu40/ytIac=
-X-Google-Smtp-Source: ABdhPJxmGQjPDBtFAEEsmhdtTHQSnTCEg6FzETII8fB4Jbi4zMENekwpr++cA34pbeNv6sI4vmv+DRp0JnMrd1WY2JI=
-X-Received: by 2002:a25:b792:: with SMTP id n18mr9631815ybh.93.1604136616253;
- Sat, 31 Oct 2020 02:30:16 -0700 (PDT)
+        Sat, 31 Oct 2020 05:40:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68054C0613D5
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 02:40:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=l/8xBspK/egJQgWp9wEyakLNsvCi5RbuiwpHLDEpSY4=; b=rydcv2zGRMIzbXFsWs84kqi7WF
+        9fiCgSfauC3vD2m3KmzfjUoMUS23MPxWccHnS7xE+tLDn2hax5YmWyzSuPkftRmLaCX8PO+90FrmD
+        7TQWBAf8Ew/+ECIzADyZjuXNymKQmWnGMR0Ndj/eh0/U6sk4Q9RGB+P49LXKhloltmOZlk6vEw6G4
+        cm4lqM+hDy5BYcEQpm3r4ZJ5DamMeSgLexfali5z7PAbqKQmLqiLMUAZj5qavBwMXXPjYOBv8K9Kv
+        Jm4ieGeRDAMT+nBZufKCZIOnP7LSaGJUuUSYQwBkgfAcLa1L0QcqO6mCFvN3EGeuf5DXglscBJQeZ
+        LEywkMfQ==;
+Received: from 089144193201.atnat0002.highway.a1.net ([89.144.193.201] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kYnNC-0000zk-Fa; Sat, 31 Oct 2020 09:40:35 +0000
+Date:   Sat, 31 Oct 2020 10:38:23 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: [GIT PULL] dma-mapping fix for 5.10
+Message-ID: <20201031093823.GA453843@infradead.org>
 MIME-Version: 1.0
-References: <20201029095231.311083-1-poeschel@lemonage.de>
-In-Reply-To: <20201029095231.311083-1-poeschel@lemonage.de>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sat, 31 Oct 2020 10:30:05 +0100
-Message-ID: <CANiq72ktdqzTByRwVBHmZ6Fpyr5438O7Mg-fbLopmjFY5qaGtA@mail.gmail.com>
-Subject: Re: [PATCH 00/25] Make charlcd device independent
-To:     Lars Poeschel <poeschel@lemonage.de>
-Cc:     Willy Tarreau <willy@haproxy.com>,
-        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lars,
+The following changes since commit ed8780e3f2ecc82645342d070c6b4e530532e680:
 
-On Thu, Oct 29, 2020 at 10:52 AM <poeschel@lemonage.de> wrote:
->
-> Changes in v5:
-> - patch 1: Fix a commit message typo: of -> on
-> - patch 2: Remove some unnecessary newlines
-> - patch 8: Fix some typos
-> - patch 14: Fix commit message typo: it's -> its
-> - patch 15: this patch is squashed together from the former individual
->   hd44780_common_ function patches
-> - patch 16: combined two cleanup patches
-> - patch 17: I did previously undo commit 3f03b6498 which was a mistake.
->   This is now corrected.
-> - patch 24: Picked up Robs Reviewed-by
-> - patch 25: use hex_to_bin like in commit 3f03b6498 but for the lcd2s.c
->   file
+  Merge tag 'x86-urgent-2020-10-27' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2020-10-27 14:39:29 -0700)
 
-Thanks a lot for all that! Please take a look at my other two messages
-for v5. We are almost there...
+are available in the Git repository at:
 
-Cheers,
-Miguel
+  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.10-2
+
+for you to fetch changes up to 48ab6d5d1f096d6fac5b59f94af0aa394115a001:
+
+  dma-mapping: fix 32-bit overflow with CONFIG_ARM_LPAE=n (2020-10-29 16:59:34 +0100)
+
+----------------------------------------------------------------
+dma-mapping fix for 5.10:
+
+ - fix an integer overflow on 32-bit platforms in the new DMA range code
+   (Geert Uytterhoeven)
+
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      dma-mapping: fix 32-bit overflow with CONFIG_ARM_LPAE=n
+
+ drivers/of/device.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
