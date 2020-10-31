@@ -2,187 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904482A14A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 10:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4FB2A14A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 10:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgJaJSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 05:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
+        id S1726630AbgJaJSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 05:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgJaJSa (ORCPT
+        with ESMTP id S1726623AbgJaJSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 05:18:30 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1BDC0613D5;
-        Sat, 31 Oct 2020 02:18:28 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id s15so11833134ejf.8;
-        Sat, 31 Oct 2020 02:18:28 -0700 (PDT)
+        Sat, 31 Oct 2020 05:18:42 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C6DC0613D5
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 02:18:41 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id z7so5376925ybg.10
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 02:18:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Mxv6t1OOCkxikxnlS/acjLw3eXE0gHOO14C0raf/cWs=;
-        b=mfDt5epUbAW5bpOoMW0zNUCqaOnNUEEIfmkVx6QyltkMNBInh9tsLV9RBS/L00jtGx
-         x0v0nRZeMblVXh8xE23KvEtfdoVpujN0/ZaMNIJEdiNFzx9I9VclWPWxgzeXbdi7doZA
-         OUiK3EOY+GZdXSwQXzKjL1lnvrrceEiwXlK8MRpCnNBK2DeynMjnl329kDY+++k3TgLb
-         NstdwuyOvw6fhGfN5QAc1BxjFl7z1CvwZtZT/2I+PaNoZPtmKmy660pDAYNBWcIJXaE0
-         dGUDskHCT9VPN5wt/ppjX/sJAyjx7OwhFzWUSH35qEf2n+z7vUnW1iRKUbLQxU5xNGb3
-         n5Iw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O98vctGJlMm54y7ZgkFRa5GNToqKQf+9E+2CGnC5b6k=;
+        b=Y3/3bCaJNeg5r7RyY83l0gNBsB6eZfAKpe8LX6g8nWg7avzzZEw3rC3bCEDDsP4nsu
+         Gyz9RkXt+fHZ5RLSbq9Sq6z8yvatN7ZKS6qWQ1Yv69t55553k7ljcErkmMI584sUr3U4
+         uLqYt1lLVJJWVlz/0SG3wLJ1JWHCYF1P80GhsUpsh7Qfpb8823zp2UyTQHydRw/jt3xi
+         TZHdhmaLoqS6bbTavQut44QMREnzbKml8keWciUDWdbXmHyHNy6dbGchfHLavbHedLGV
+         OpViPqTmfJ3uL4tQ+tpY/S8He2Wbo4dIkifAZcdOJF/tofL6ijcIVbL06W4+yqRptuxz
+         le/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Mxv6t1OOCkxikxnlS/acjLw3eXE0gHOO14C0raf/cWs=;
-        b=QUY/pZp54n18G9HTj5ECO5eJ1tFCeYe/QqasbWY/Jy6wnPysJA4BQsLKEBR9gxYfqB
-         JCJRdMYYBklVqPtxnjGwMKcVdrhcyxX/gz5OhFo4OvknE9E4HjmBpy8R7Xv14pPgJUHs
-         0pQmg1FLGAXDccQzez+/26ovugcuB3Wcsf7/7P6PjspjWRvTgUXHovoMQQ2gJnjx1X+5
-         kPZbhX0qNckWJdRgP52s7IMvWagCUjEY6oC9a0qOj6W3V+Ksn6VcPsxzrJ29lE7iDDjZ
-         9oZHIqBdOSXpiseVFUffUNMXMadqBdkEbMLMMjfY0DGmIywYUbS9/WGwrgMDZqjzKbAB
-         /OvA==
-X-Gm-Message-State: AOAM531TFIUZfiWVYHyh2mdZ4c+LjUEqFffxwd4RC65jUFfnwqICbAH1
-        /IstAyy7Od9UxV4SNpfqPuM=
-X-Google-Smtp-Source: ABdhPJxK/stNwBOlUKRQTJKcTRHO40bN58D2RTa2BNd99y1Y3CC1ytha1e54e05zZHWnXuo6Wj9q/A==
-X-Received: by 2002:a17:906:580e:: with SMTP id m14mr6186777ejq.237.1604135907524;
-        Sat, 31 Oct 2020 02:18:27 -0700 (PDT)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id q22sm4364662ejm.13.2020.10.31.02.18.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 02:18:26 -0700 (PDT)
-From:   Ioana Ciornei <ciorneiioana@gmail.com>
-X-Google-Original-From: Ioana Ciornei <ciornei.ioana@gmail.com>
-Date:   Sat, 31 Oct 2020 11:18:25 +0200
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, robh@kernel.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 4/4] net: phy: dp83td510: Add support for the
- DP83TD510 Ethernet PHY
-Message-ID: <20201031091825.uucn2ax2cjzzuy2e@skbuf>
-References: <20201030172950.12767-1-dmurphy@ti.com>
- <20201030172950.12767-5-dmurphy@ti.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O98vctGJlMm54y7ZgkFRa5GNToqKQf+9E+2CGnC5b6k=;
+        b=SrmK73qnUCb+QtYTXGkN6hKxN7cTt9/Dg9r0908PU/Y1+xdG62NT8euquyRzh4Nnhq
+         kBoXV3CgBhvuHNfAmQodk6YkRXDLVXsvwHArhAgsKhdYVoIjRzfU1jS4bHYHn0dkgfbB
+         /PslhoofSIbE9j/ibfl9Y5D0OXkxU1atvRUWCE7JsDpWzOWp7tKAuOIk+oAF5teus9sG
+         30tYlEW86RtSoiJxKnmjfbx5wwWeW4iz9TmqP05Nr7xAeO8BD1DlMIiHleL6nG5iUb5J
+         lNvLC6M/eaXBJC/ODyyNfWi/5agwFG9vcJTKIeeqpiF+g+ViDhICRBvdlxdU2wMGr4VL
+         ocHg==
+X-Gm-Message-State: AOAM531qKjOvflY4uie/g9rp0qTDwI5o2IcKEykQy/hJYoeUpOWwsuQO
+        zKSOriLe3j+ghyWmtSTmejUybCi0sXwc/RJGFy23saKt6Zw=
+X-Google-Smtp-Source: ABdhPJwnn5lyLK5BSq7j/tEOGyhmr40uU6gynLa5ItouJy8sWwN7pURl01tJK4zjYkPy8Snzhkhp+eMDs/CrvYHBRU4=
+X-Received: by 2002:a25:384c:: with SMTP id f73mr8429950yba.135.1604135920359;
+ Sat, 31 Oct 2020 02:18:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030172950.12767-5-dmurphy@ti.com>
+References: <20201029095231.311083-1-poeschel@lemonage.de> <20201029095731.311528-1-poeschel@lemonage.de>
+ <20201029095731.311528-22-poeschel@lemonage.de>
+In-Reply-To: <20201029095731.311528-22-poeschel@lemonage.de>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 31 Oct 2020 10:18:29 +0100
+Message-ID: <CANiq72=R0FBG6Zx-_u8ZjYFLovUnAmnZS6HO4Qa0OYUyncPeVw@mail.gmail.com>
+Subject: Re: [PATCH v5 23/25] auxdisplay: charlcd: Do not print chars at end
+ of line
+To:     Lars Poeschel <poeschel@lemonage.de>
+Cc:     open list <linux-kernel@vger.kernel.org>, Willy Tarreau <w@1wt.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 12:29:50PM -0500, Dan Murphy wrote:
-> The DP83TD510E is an ultra-low power Ethernet physical layer transceiver
-> that supports 10M single pair cable.
-> 
-> The device supports both 2.4-V p2p and 1-V p2p output voltage as defined
-> by IEEE 802.3cg 10Base-T1L specfications. These modes can be forced via
-> the device tree or the device is defaulted to auto negotiation to
-> determine the proper p2p voltage.
-> 
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
->  drivers/net/phy/Kconfig     |   6 +
->  drivers/net/phy/Makefile    |   1 +
->  drivers/net/phy/dp83td510.c | 681 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 688 insertions(+)
->  create mode 100644 drivers/net/phy/dp83td510.c
+Hi Lars,
+
+A few extra typos in this commit message.
+
+On Thu, Oct 29, 2020 at 10:58 AM <poeschel@lemonage.de> wrote:
 >
+> Skip printing characters at the end of a display line. This fits to the
+> behaviour we already had, that the cursor is nailed to last position of
 
-(...)
+to last -> to the last
 
-> +static int dp83td510_ack_interrupt(struct phy_device *phydev)
-> +{
-> +	int ret;
-> +
-> +	ret = phy_read(phydev, DP83TD510_INT_REG1);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = phy_read(phydev, DP83TD510_INT_REG2);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static int dp83td510_config_intr(struct phy_device *phydev)
-> +{
-> +	int int_status;
-> +	int gen_cfg_val;
-> +	int ret;
-> +
-> +	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
-> +		int_status = phy_read(phydev, DP83TD510_INT_REG1);
-> +		if (int_status < 0)
-> +			return int_status;
-> +
-> +		int_status = (DP83TD510_INT1_ESD_EN | DP83TD510_INT1_LINK_EN |
-> +			      DP83TD510_INT1_RHF_EN);
-> +
-> +		ret = phy_write(phydev, DP83TD510_INT_REG1, int_status);
-> +		if (ret)
-> +			return ret;
-> +
-> +		int_status = phy_read(phydev, DP83TD510_INT_REG2);
-> +		if (int_status < 0)
-> +			return int_status;
-> +
-> +		int_status = (DP83TD510_INT2_POR | DP83TD510_INT2_POL |
-> +				DP83TD510_INT2_PAGE);
-> +
-> +		ret = phy_write(phydev, DP83TD510_INT_REG2, int_status);
-> +		if (ret)
-> +			return ret;
-> +
-> +		gen_cfg_val = phy_read(phydev, DP83TD510_GEN_CFG);
-> +		if (gen_cfg_val < 0)
-> +			return gen_cfg_val;
-> +
-> +		gen_cfg_val |= DP83TD510_INT_OE | DP83TD510_INT_EN;
-> +
-> +	} else {
-> +		ret = phy_write(phydev, DP83TD510_INT_REG1, 0);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = phy_write(phydev, DP83TD510_INT_REG2, 0);
-> +		if (ret)
-> +			return ret;
-> +
-> +		gen_cfg_val = phy_read(phydev, DP83TD510_GEN_CFG);
-> +		if (gen_cfg_val < 0)
-> +			return gen_cfg_val;
-> +
-> +		gen_cfg_val &= ~DP83TD510_INT_EN;
-> +	}
-> +
-> +	return phy_write(phydev, DP83TD510_GEN_CFG, gen_cfg_val);
-> +}
-> +
+> a line.
+> This might slightly change behaviour.
+> On hd44780 displays with one or two lines the previous implementation
+> did still write characters to the buffer of the display even if they are
+> currently not visible. The shift_display command could be used so set
 
-I am not really sure if the shared-IRQ work in the below linked patch
-set will go through, but I think it would be cleaner just to ack any
-pending interrupts after you disable them.
+so -> to
 
-https://lore.kernel.org/netdev/20201029100741.462818-1-ciorneiioana@gmail.com/
+> the "viewing window" to a new position in the buffer and then you could
+> see the characters previously written.
+> This described behaviour does not work for hd44780 displays with more
+> than two display lines. There simply is not enough buffer.
+> So the behaviour was a bit inconsistens across different displays.
 
-I see that you are reading the INT_REG1 and INT_REG2 registers
-(basically servicing any pending interrupts) before enabling the IRQ.
-The same reads should be done after the IRQ has been disabled.
+inconsistent -> inconsistent
 
-> +static struct phy_driver dp83td510_driver[] = {
-> +	{
-> +		PHY_ID_MATCH_MODEL(DP83TD510E_PHY_ID),
-> +		.name		= "TI DP83TD510E",
-> +		.probe          = dp83td510_probe,
-> +		.config_init	= dp83td510_config_init,
-> +		.soft_reset	= dp83td510_phy_reset,
-> +
-> +		/* IRQ related */
-> +		.ack_interrupt	= dp83td510_ack_interrupt,
-> +		.config_intr	= dp83td510_config_intr,
+> The new behaviour is to stop writing character at the end of a visible
 
-I think the PHY maintainers could comment on this more, but maybe it
-would help if the driver implements the .handle_interrupt() callback
-just so that I wouldn't have to touch a driver that was just added to
-rework it for the shared-IRQ transition.
+character -> characters
 
-Ioana
+> line, even if there would be room in the buffer. This allows us to have
+> an easy implementation, that should behave equal on all supported
+> displays. This is not hd44780 hardware dependents anymore.
+
+dependents -> dependent
+
+Cheers,
+Miguel
