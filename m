@@ -2,91 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E31A2A11E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 01:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC352A11E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 01:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725911AbgJaAXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 20:23:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40564 "EHLO mail.kernel.org"
+        id S1725922AbgJaA1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 20:27:53 -0400
+Received: from mga06.intel.com ([134.134.136.31]:24067 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgJaAXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 20:23:37 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24DCA206E5;
-        Sat, 31 Oct 2020 00:23:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604103816;
-        bh=6aqhK4+VyLP+Jj9NC+5tkFP07ND2dumnrgS+UH/ZD6M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Y7G1Y9XXEwB2xQ+SExz5Jeq+xZLQ8E7hm8kkbCvEnzk7Aw1FqkSW+1ieBx4Lx/CON
-         sZ1MWuKtK8R2EVYS1iaY6ZT2MUm8L1UeXFgC5uZnvC2tkGcEYr4+R66xSbD8oX4J+q
-         jbj2YvodQ6ZUUiiATeBImSQrg6yJIUOSJpSEBTmY=
-Date:   Fri, 30 Oct 2020 17:23:35 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        sujitka@chromium.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 net 0/5] net: ipa: minor bug fixes
-Message-ID: <20201030172335.38d39b47@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <2f62dbe1-a1b3-a5f9-8cba-82cd8061ff9b@linaro.org>
-References: <20201028194148.6659-1-elder@linaro.org>
-        <20201029091137.1ea13ecb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <2f62dbe1-a1b3-a5f9-8cba-82cd8061ff9b@linaro.org>
+        id S1725446AbgJaA1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Oct 2020 20:27:53 -0400
+IronPort-SDR: m9/GxqAQraEtEekYzt+V6sb68YWpSJtzWr2qvFpQKNBALJRf8kTQ2QzNVql1WWb6TYwYJCMYFk
+ S6Mv9hl+SXCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="230318023"
+X-IronPort-AV: E=Sophos;i="5.77,435,1596524400"; 
+   d="scan'208";a="230318023"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2020 17:27:53 -0700
+IronPort-SDR: MQlrTZMYLXGOeRlKjMOe8kvXP6V7s+AUaJYIEoF0cDAgfKNVho4uRVnXjzicC8hJ+69Ow5snBy
+ j+KJTo3cZGOg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,435,1596524400"; 
+   d="scan'208";a="469683903"
+Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
+  by orsmga004.jf.intel.com with ESMTP; 30 Oct 2020 17:27:52 -0700
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Borislav Petkov" <bp@alien8.de>, "Ingo Molnar" <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Christopherson Sean J" <sean.j.christopherson@intel.com>,
+        "Ashok Raj" <ashok.raj@intel.com>,
+        "Ravi V Shankar" <ravi.v.shankar@intel.com>
+Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "x86" <x86@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>
+Subject: [PATCH RFC v3 0/4] x86/bus_lock: Enable bus lock detection
+Date:   Sat, 31 Oct 2020 00:27:10 +0000
+Message-Id: <20201031002714.3649728-1-fenghua.yu@intel.com>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 11:50:52 -0500 Alex Elder wrote:
-> On 10/29/20 11:11 AM, Jakub Kicinski wrote:
-> > On Wed, 28 Oct 2020 14:41:43 -0500 Alex Elder wrote:  
-> >> This series fixes several bugs.  They are minor, in that the code
-> >> currently works on supported platforms even without these patches
-> >> applied, but they're bugs nevertheless and should be fixed.  
-> > 
-> > By which you mean "it seems to work just fine most of the time" or "the
-> > current code does not exercise this paths/functionally these bugs don't
-> > matter for current platforms".  
-> 
-> The latter, although for patch 3 I'm not 100% sure.
-> 
-> Case by case:
-> Patch 1:
->    It works.  I inquired what the consequence of passing this
->    wrong buffer pointer was, and for the way we are using IPA
->    it seems it's fine--the memory pointer we were assigning is
->    not used, so it's OK.  But we're assigning the wrong pointer.
-> Patch 2:
->    It works.  Even though the bit field is 1 bit wide (not two)
->    we never actually write a value greater than 1, so we don't
->    cause a problem.  But the definition is incorrect.
-> Patch 3:
->    It works, but on the SDM845 we should be assigning the endpoints
->    to use resource group 1 (they are 0 by default).  The way we
->    currently use this upstream we don't have other endpoints
->    competing for resources, so I think this is fine.  SC7180 we
->    will assign endpoints to resource group 0, which is the default.
-> Patch 4:
->    It works.  This is like patch 2; we define the number of these
->    things incorrectly, but the way we currently use them we never
->    exceed the limit in a broken way.
-> Patch 5:
->    It works.  The maximum number of supported groups is even,
->    and if a (smaller) odd number are used the remainder are
->    programmed with 0, which is appropriate for undefined
->    fields.
-> 
-> If you have any concerns about back-porting these fixes I
-> think I'm comfortable posting them for net-next instead.
-> I debated that before sending them out.  Please request that
-> if it's what you think would be best.
+A bus lock [1] is acquired either through split locked access to
+writeback (WB) memory or by using locks to uncacheable (UC) memory
+(e.g. direct device assignment). This is typically >1000 cycles slower
+than an atomic operation within a cache line. It also disrupts performance
+on other cores.
 
-Looks like these patches apply cleanly to net-next, so I put them there.
+Although split lock can be detected by #AC trap, the trap is triggered
+before the instruction acquires bus lock. This makes it difficult to
+mitigate bus lock (e.g. throttle the user application).
 
-Thanks!
+Some CPUs have ability to notify the kernel by an #DB trap after a user
+instruction acquires a bus lock and is executed. This allows the kernel
+to enforce user application throttling or mitigations.
+
+#DB for bus lock detect fixes issues in #AC for split lock detect:
+1) It's architectural ... just need to look at one CPUID bit to know it
+   exists
+2) The IA32_DEBUGCTL MSR, which reports bus lock in #DB, is per-thread.
+   So each process or guest can have different behavior.
+3) It has support for VMM/guests (new VMEXIT codes, etc).
+
+Hardware only generates #DB for bus lock detect when CPL>0 to avoid
+nested #DB from multiple bus locks while the first #DB is being handled.
+
+Use the existing kernel command line option "split_lock_detect=" to handle
+#DB for bus lock:
+
+split_lock_detect=
+		#AC for split lock		#DB for bus lock
+
+off		Do nothing			Do nothing
+
+warn		Kernel OOPs			Warn once per task and
+		Warn once per task and		and continues to run.
+		disable future checking 	When both features are
+						supported, warn in #DB
+
+fatal		Kernel OOPs			Send SIGBUS to user
+		Send SIGBUS to user
+		When both features are
+		supported, fatal in #AC.
+
+ratelimit:N	Do nothing			Limit bus lock rate to
+						N per second in the
+						current non root user.
+
+Default split_lock_detect is "warn".
+
+[1] Chapter 8 https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf
+
+Change Log:
+RFC v3:
+- Remove DR6_RESERVED change (PeterZ).
+- Simplify the documentation (Randy).
+
+RFC v2:
+- Architecture changed based on feedback from Thomas and PeterZ. #DB is
+  no longer generated for bus lock in ring0.
+- Split the one single patch into four patches.
+[RFC v1 can be found at: https://lore.kernel.org/lkml/1595021700-68460-1-git-send-email-fenghua.yu@intel.com/]
+
+Fenghua Yu (4):
+  x86/cpufeatures: Enumerate #DB for bus lock detection
+  x86/bus_lock: Handle warn and fatal in #DB for bus lock
+  x86/bus_lock: Set rate limit for bus lock
+  Documentation/admin-guide: Change doc for split_lock_detect parameter
+
+ .../admin-guide/kernel-parameters.txt         |  28 +++-
+ arch/x86/include/asm/cpu.h                    |  10 +-
+ arch/x86/include/asm/cpufeatures.h            |   1 +
+ arch/x86/include/asm/msr-index.h              |   1 +
+ arch/x86/include/uapi/asm/debugreg.h          |   1 +
+ arch/x86/kernel/cpu/common.c                  |   2 +-
+ arch/x86/kernel/cpu/intel.c                   | 145 +++++++++++++++---
+ arch/x86/kernel/traps.c                       |   7 +
+ include/linux/sched/user.h                    |   4 +-
+ kernel/user.c                                 |   7 +
+ 10 files changed, 176 insertions(+), 30 deletions(-)
+
+-- 
+2.29.1
+
