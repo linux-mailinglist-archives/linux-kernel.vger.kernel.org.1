@@ -2,82 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE0F2A1B42
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 00:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A202A1B46
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 00:39:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgJaXfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 19:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725873AbgJaXfk (ORCPT
+        id S1726055AbgJaXjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 19:39:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44741 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725873AbgJaXjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 19:35:40 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6833DC0617A6;
-        Sat, 31 Oct 2020 16:35:40 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id j18so8038814pfa.0;
-        Sat, 31 Oct 2020 16:35:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+Q1P3Fsa2S6Rajkz4K2j14J+8baoBGyfgDlj09P9ZMI=;
-        b=umtw0O3IQdpfPvgMpbP3Jb1QjtxxPlalCSacUhZa8auXwaJrVXIXAl7WnJ1qNkvW+o
-         CeVr9ofEBwUyPgtgJjw+1OJc0mu3kkMbP3klBTiePL7cF/DOU3sWtiUnI6eAaEVrC9c7
-         xw5UTCtxEZSSM9BH95H2NhQToL9/PV5Ee4T7bYOdyQjJdZgliEUDpgoGCbBzcelsR4u4
-         /7ZuQgQF0hrsRKGqOFdYP0OdoHROMXMMbZVYSLKLUYrZsH0L12A2mA/58pqHRMTrOWci
-         ehGA4FbF+lQ0LsQfsrStUTjVjSMk5X54/727Ht53gblIDxDu1VGgLVA8tkj0dqlNMojl
-         v8jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Q1P3Fsa2S6Rajkz4K2j14J+8baoBGyfgDlj09P9ZMI=;
-        b=K7a4TcrlMDBaYRzc6P4CKw7DtiHU3ai1QPxOY6mN9Tp6mLZBlOIXqNqrhsiwV9JnPB
-         wJfK/h6wecbZuVsFTDr6eklGaLjz0MV54ujneT9fRFCsMRZCQNOa0+sUvo/btVcgktvB
-         2xxPMOHccQpbJ6dfBhc51p/R2afHMFJ//rXkueJiOfZlZ3m6nFWtZgE/u3QArAkRzIdw
-         0c86SDMlXUA50+T0Wtm7oUriBt7jZLr26zPXCElQTycoHNSMBHyF8IToTx349ICg71jF
-         8Vco23P1OPTynjSWYSyplkfUoFQShQQlPOyPOlygLMYSFwBoptxt3bJZB7/1EvDhaVbg
-         y9wA==
-X-Gm-Message-State: AOAM5330Ccvdcr2WR9rkfMtmWsGj8JJREJHUJT7nd6QTl91VE/Kjos0Q
-        rdSmFiJp6OguviLnGfLcolH+boz5+BoRrf6qTpY=
-X-Google-Smtp-Source: ABdhPJy4+C2TgT6q7M3fgWND9u3XqrYgi9/x7AcYU9x66u+5IBACqoMskaPdEM4I5+DNwpHKjVmrsKOwL/8VTyqvym8=
-X-Received: by 2002:a63:a5e:: with SMTP id z30mr228933pgk.233.1604187339814;
- Sat, 31 Oct 2020 16:35:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201028070504.362164-1-xie.he.0141@gmail.com>
- <20201030200705.6e2039c2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <CAJht_EOk43LdKVU4qH1MB5pLKcSONazA9XsKJUMTG=79TJ-3Rg@mail.gmail.com>
- <20201031095146.5e6945a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net> <CAK8P3a1kJT50s+BVF8-fmX6ctX2pmVtcg5rnS__EBQvseuqWNA@mail.gmail.com>
-In-Reply-To: <CAK8P3a1kJT50s+BVF8-fmX6ctX2pmVtcg5rnS__EBQvseuqWNA@mail.gmail.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Sat, 31 Oct 2020 16:35:29 -0700
-Message-ID: <CAJht_EO0Wp=TVdLZ_8XK7ShXTUAmX-wb0UssTtn51DkPE266yQ@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: dlci: Deprecate the DLCI driver (aka the
- Frame Relay layer)
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
+        Sat, 31 Oct 2020 19:39:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604187539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jfjj2i+lRTULmpt4pHrhXtceCQTpoP61j9MmBbGDZM0=;
+        b=LJ68B1Myl/bNyZs4Lz6R5XtA0Z5+LiSOi7QMojPJjrJ9SCAaScq+CMvFemFg4bZ+S04c9O
+        QsNTRvkncLhFSMHu2jwHslkJzw3ZW8WoUnwSi89tMZqPKnAqb7+ez6gxGTm3DX4FWkVLru
+        gZdoLa8Ka2OBv5MmZ3q/syAt0awaXQ4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-366-2ELeOtvoPlawpUFIiXPPRQ-1; Sat, 31 Oct 2020 19:38:54 -0400
+X-MC-Unique: 2ELeOtvoPlawpUFIiXPPRQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 832D01074647;
+        Sat, 31 Oct 2020 23:38:53 +0000 (UTC)
+Received: from ovpn-112-12.rdu2.redhat.com (ovpn-112-12.rdu2.redhat.com [10.10.112.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AB18375121;
+        Sat, 31 Oct 2020 23:38:52 +0000 (UTC)
+Message-ID: <1f0ef4b832c67dcec1bcc793407e62c58a97904e.camel@redhat.com>
+Subject: Re: [PATCH] s390/smp: Move rcu_cpu_starting() earlier
+From:   Qian Cai <cai@redhat.com>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sat, 31 Oct 2020 19:38:52 -0400
+In-Reply-To: <20201031183725.GA9529@osiris>
+References: <20201028182742.13773-1-cai@redhat.com>
+         <20201031183725.GA9529@osiris>
 Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 2:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> I think it can just go in the bin directly. I actually submitted a couple of
-> patches to clean up drivers/net/wan last year but didn't follow up
-> with a new version after we decided that x.25 is still needed, see
-> https://lore.kernel.org/netdev/20191209151256.2497534-1-arnd@arndb.de/
->
-> I can resubmit if you like.
+On Sat, 2020-10-31 at 19:37 +0100, Heiko Carstens wrote:
+> On Wed, Oct 28, 2020 at 02:27:42PM -0400, Qian Cai wrote:
+> > The call to rcu_cpu_starting() in smp_init_secondary() is not early
+> > enough in the CPU-hotplug onlining process, which results in lockdep
+> > splats as follows:
+> > 
+> >  WARNING: suspicious RCU usage
+> >  -----------------------------
+> >  kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
+> > 
+> >  other info that might help us debug this:
+> > 
+> >  RCU used illegally from offline CPU!
+> >  rcu_scheduler_active = 1, debug_locks = 1
+> >  no locks held by swapper/1/0.
+> > 
+> >  Call Trace:
+> >  show_stack+0x158/0x1f0
+> >  dump_stack+0x1f2/0x238
+> >  __lock_acquire+0x2640/0x4dd0
+> >  lock_acquire+0x3a8/0xd08
+> >  _raw_spin_lock_irqsave+0xc0/0xf0
+> >  clockevents_register_device+0xa8/0x528
+> >  init_cpu_timer+0x33e/0x468
+> >  smp_init_secondary+0x11a/0x328
+> >  smp_start_secondary+0x82/0x88
+> > 
+> > This is avoided by moving the call to rcu_cpu_starting up near the
+> > beginning of the smp_init_secondary() function. Note that the
+> > raw_smp_processor_id() is required in order to avoid calling into
+> > lockdep before RCU has declared the CPU to be watched for readers.
+> > 
+> > Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
+> > Signed-off-by: Qian Cai <cai@redhat.com>
+> > ---
+> >  arch/s390/kernel/smp.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> Could you provide the config you used? I'm wondering why I can't
+> reproduce this even though I have lot's of debug options enabled.
+https://cailca.coding.net/public/linux/mm/git/files/master/s390.config
 
-Should we also remove the two macro definitions in
-"include/uapi/linux/sockios.h" (SIOCADDDLCI / SIOCDELDLCI), too? It
-seems to be not included in your original patch.
+Essentially, I believe it requires CONFIG_PROVE_RCU_LIST=y. Also, it occurs to
+me that this only starts to happen after the commit mentioned in the above link.
+
