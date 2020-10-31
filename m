@@ -2,208 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E492A1210
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 01:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42022A1216
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 01:42:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbgJaAjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 20:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45000 "EHLO
+        id S1725913AbgJaAmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 20:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726188AbgJaAiu (ORCPT
+        with ESMTP id S1725536AbgJaAmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 20:38:50 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D79C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 17:38:50 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 13so6713835pfy.4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 17:38:50 -0700 (PDT)
+        Fri, 30 Oct 2020 20:42:25 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F920C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 17:42:25 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id g13so3647790qvu.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 17:42:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=yA2UcD5w0CT+PM1DULWZKIc164WCwUoZBWYCRPIo66o=;
-        b=cZiDpC6SgpLZbBvy/+Kw5NdQzqs+OZs5fRZm5sL3HtiOGyqOD2VsPGJxx81ZYWF6vo
-         +E03rh9hdaXNdr2nAYL/oQPXKKF+gWs53Bmaf1JDgpxh4WbDxQgNwqC5aYdc8FngwgFA
-         kpytNyjatvLNd3DcPqplt43hviGVXtxTrQZ8HrNE8aGzk2POD4bDqr1qxb4oiv5IeK/Q
-         9qcU54AYfVS8jIy2JosJIIC0YytfJQEAYMnNwIMHFREr8WqitAn8sictDjAIjTI6mI9Z
-         YulCbqmeK5VpD0pRgS9brNsvw7PafDMUeouKVimkDWdGzi8LmHJnr+1JCPhulrtZbp1R
-         dy4Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2nCYiEm+IbF/LFROQiqf37AUYYLUchursimxsEbcy9c=;
+        b=j04Cfy1cVQYx0NZi2hs72JLDjXni0m9WMZcoybEUleKw7jARFx8UbuIgC+cZWD/MP6
+         0UqBZSN7cpQmJxgM4NGymVX03rWjdvPbKqjGMA/3z7TIQXrYAwSsz5YQSR2TKDkmH/uK
+         hgaUGegY3OKVWZhzIaQEKTMi+auOMdJVKXtT0V7AlbShCurG+QsSjj57wNoQpNB+DWjX
+         ooOgs8JKzW0k7xb9AxgeuW2O9+aSRcEOIG/COlwH7UuRB1ehMdvotdCX2+JsKsFQcLZG
+         1K06gCDfme1gfX69u9S3xqY08toRxGTdHsR5rbWnzQ1dWu3X5uIOBcoH3duQIw+IHhS/
+         gl5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=yA2UcD5w0CT+PM1DULWZKIc164WCwUoZBWYCRPIo66o=;
-        b=fD6lbRI/jMK5Hin6s0C6gkv6oho2D2HrEZafSbGTyN5MisCd1RkdOSTwjTJlQz9h4e
-         TLye2RDepAISRfcKtURB3Vd5VcO6hteP4G29QjeHytyBkGo/qmffPXrwMo15MXyZXdrf
-         fSkEUP3zl13dWazfNldyCZu8R/C0QQGdPLWiaNDk9iMMEFAZ42kEhjN8mCPlWyEowGgQ
-         b2ti8mVGyQ8u/pTqQcW2FOE2xfriySWeL2z1qKN0fKk3PCyXDsxXBx4lmvA7hAdWVxQr
-         F4SwLpEPBqIDW31sc2iFVFlnikgZehfWya/nLFpIE6Pcx5CISDjHlYfQ1347UVDeDaVX
-         tyaw==
-X-Gm-Message-State: AOAM533qU5lpxc4XnWY4/EvK7tYp4h7+spZQKK6RGgk3Pq+jfrV3iF1B
-        3X93m7o1FhSgX5+6JzJh5zYpi/Fv+DrQVA==
-X-Google-Smtp-Source: ABdhPJynBoHxximDY2NwM66xUqKr1dDz0rODEMnFQ1WcCY9nNQTo3RXNrIXXcCOoX1PCwOaRSNxdBA==
-X-Received: by 2002:a62:1686:0:b029:155:3b11:b454 with SMTP id 128-20020a6216860000b02901553b11b454mr11710845pfw.47.1604104729501;
-        Fri, 30 Oct 2020 17:38:49 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id z16sm7074509pfq.33.2020.10.30.17.38.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 17:38:48 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2nCYiEm+IbF/LFROQiqf37AUYYLUchursimxsEbcy9c=;
+        b=RyBrbHcJVYBGD9YLfEUNWa98euMM4HSd8IuAof7B8ZKtfX9oE1JvpCeWjFnVr4mtA9
+         dB5XfOXq+Oxn3lp1NS+E6H3vKoXHkOF2FDpuaQyTsV2edj1jFuF4YUvE1ePod/KsDXq1
+         mFdYoNin+yw2lUeS66aSlV40M3JdxcxzBJmD1O/j1hhKiRjg6xheLDum1l4NJg5oJrUc
+         diWTrBy0kk63tMEB+2RyUawI6oSPETM9lLyWbQLk04Lurmq6ZCaVm9BjacVbraccys3D
+         n/jhyJfMQuDUSKiMBZDLT4FUaGZ0YrXag27IcIvKovA4S47+H4zJekq4C8+PyEXPXtda
+         PstA==
+X-Gm-Message-State: AOAM533+jJwc47HEIe1L0MuEKk91R66KPZRMSx5/9XtNjmTE0E1xRZXl
+        aKenhEy4CIrdAcgNboXYbsRGSAOCkm777vJ/8bbCsg==
+X-Google-Smtp-Source: ABdhPJyUatzz1tJlP9gPTZ715ieVksd+tixuLcVJe15V+uD7uLWN5QQkp6GhUyG5oOqcEQU60SezYhmrRM1WHuoziQE=
+X-Received: by 2002:a0c:f181:: with SMTP id m1mr861957qvl.43.1604104943769;
+ Fri, 30 Oct 2020 17:42:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201020014336.2076526-1-joel@joelfernandes.org> <20201020014336.2076526-20-joel@joelfernandes.org>
+In-Reply-To: <20201020014336.2076526-20-joel@joelfernandes.org>
+From:   Josh Don <joshdon@google.com>
+Date:   Fri, 30 Oct 2020 17:42:12 -0700
+Message-ID: <CABk29NsgPcpOpDzixKtdkK85H1xq2XHXHUm6B96nS-4zKzpRwg@mail.gmail.com>
+Subject: Re: [PATCH v8 -tip 19/26] sched: Add a second-level tag for nested
+ CGroup usecase
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-gpio@vger.kernel.org
-Subject: [PATCH v5 2/2] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable as a permenent module
-Date:   Sat, 31 Oct 2020 00:38:45 +0000
-Message-Id: <20201031003845.41137-2-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201031003845.41137-1-john.stultz@linaro.org>
-References: <20201031003845.41137-1-john.stultz@linaro.org>
+        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jesse Barnes <jsbarnes@google.com>, chris.hyser@oracle.com,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Benjamin Segall <bsegall@google.com>,
+        Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow the qcom_scm driver to be loadable as a permenent module.
+On Mon, Oct 19, 2020 at 6:45 PM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> +static unsigned long cpu_core_get_group_cookie(struct task_group *tg)
+> +{
+> +       unsigned long color = 0;
+> +
+> +       if (!tg)
+> +               return 0;
+> +
+> +       for (; tg; tg = tg->parent) {
+> +               if (tg->core_tag_color) {
+> +                       WARN_ON_ONCE(color);
+> +                       color = tg->core_tag_color;
+> +               }
+> +
+> +               if (tg->core_tagged) {
+> +                       unsigned long cookie = ((unsigned long)tg << 8) | color;
+> +                       cookie &= (1UL << (sizeof(unsigned long) * 4)) - 1;
+> +                       return cookie;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
 
-This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
-ensure that drivers that call into the qcom_scm driver are
-also built as modules. While not ideal in some cases its the
-only safe way I can find to avoid build errors without having
-those drivers select QCOM_SCM and have to force it on (as
-QCOM_SCM=n can be valid for those drivers).
+I'm a bit wary of how core_task_cookie and core_group_cookie are
+truncated to the lower half of their bits and combined into the
+overall core_cookie.  Now that core_group_cookie is further losing 8
+bits to color, that leaves (in the case of 32 bit unsigned long) only
+8 bits to uniquely identify the group contribution to the cookie.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Maulik Shah <mkshah@codeaurora.org>
-Cc: Lina Iyer <ilina@codeaurora.org>
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: Todd Kjos <tkjos@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-arm-msm@vger.kernel.org
-Cc: iommu@lists.linux-foundation.org
-Cc: linux-gpio@vger.kernel.org
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
-v3:
-* Fix __arm_smccc_smc build issue reported by
-  kernel test robot <lkp@intel.com>
-v4:
-* Add "depends on QCOM_SCM || !QCOM_SCM" bit to ath10k
-  config that requires it.
-v5:
-* Fix QCOM_QCM typo in Kconfig, it should be QCOM_SCM
----
- drivers/firmware/Kconfig                | 4 ++--
- drivers/firmware/Makefile               | 3 ++-
- drivers/firmware/qcom_scm.c             | 4 ++++
- drivers/iommu/Kconfig                   | 2 ++
- drivers/net/wireless/ath/ath10k/Kconfig | 1 +
- 5 files changed, 11 insertions(+), 3 deletions(-)
+Also, I agree that 256 colors is likely adequate, but it would be nice
+to avoid this restriction.
 
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index 3315e3c215864..5e369928bc567 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -235,8 +235,8 @@ config INTEL_STRATIX10_RSU
- 	  Say Y here if you want Intel RSU support.
- 
- config QCOM_SCM
--	bool
--	depends on ARM || ARM64
-+	tristate "Qcom SCM driver"
-+	depends on (ARM && HAVE_ARM_SMCCC) || ARM64
- 	select RESET_CONTROLLER
- 
- config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
-diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-index 5e013b6a3692e..523173cbff335 100644
---- a/drivers/firmware/Makefile
-+++ b/drivers/firmware/Makefile
-@@ -17,7 +17,8 @@ obj-$(CONFIG_ISCSI_IBFT)	+= iscsi_ibft.o
- obj-$(CONFIG_FIRMWARE_MEMMAP)	+= memmap.o
- obj-$(CONFIG_RASPBERRYPI_FIRMWARE) += raspberrypi.o
- obj-$(CONFIG_FW_CFG_SYSFS)	+= qemu_fw_cfg.o
--obj-$(CONFIG_QCOM_SCM)		+= qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
-+obj-$(CONFIG_QCOM_SCM)		+= qcom-scm.o
-+qcom-scm-objs += qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
- obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
- obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
- obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index 7be48c1bec96d..6f431b73e617d 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -1280,6 +1280,7 @@ static const struct of_device_id qcom_scm_dt_match[] = {
- 	{ .compatible = "qcom,scm" },
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, qcom_scm_dt_match);
- 
- static struct platform_driver qcom_scm_driver = {
- 	.driver = {
-@@ -1295,3 +1296,6 @@ static int __init qcom_scm_init(void)
- 	return platform_driver_register(&qcom_scm_driver);
- }
- subsys_initcall(qcom_scm_init);
-+
-+MODULE_DESCRIPTION("Qualcomm Technologies, Inc. SCM driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-index 04878caf6da49..c64d7a2b65134 100644
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -248,6 +248,7 @@ config SPAPR_TCE_IOMMU
- config ARM_SMMU
- 	tristate "ARM Ltd. System MMU (SMMU) Support"
- 	depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-+	depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
- 	select IOMMU_API
- 	select IOMMU_IO_PGTABLE_LPAE
- 	select ARM_DMA_USE_IOMMU if ARM
-@@ -375,6 +376,7 @@ config QCOM_IOMMU
- 	# Note: iommu drivers cannot (yet?) be built as modules
- 	bool "Qualcomm IOMMU Support"
- 	depends on ARCH_QCOM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-+	depends on QCOM_SCM=y
- 	select IOMMU_API
- 	select IOMMU_IO_PGTABLE_LPAE
- 	select ARM_DMA_USE_IOMMU
-diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
-index 40f91bc8514d8..741289e385d59 100644
---- a/drivers/net/wireless/ath/ath10k/Kconfig
-+++ b/drivers/net/wireless/ath/ath10k/Kconfig
-@@ -44,6 +44,7 @@ config ATH10K_SNOC
- 	tristate "Qualcomm ath10k SNOC support"
- 	depends on ATH10K
- 	depends on ARCH_QCOM || COMPILE_TEST
-+	depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
- 	select QCOM_QMI_HELPERS
- 	help
- 	  This module adds support for integrated WCN3990 chip connected
--- 
-2.17.1
+I'd like to propose the following alternative, which involves creating
+a new struct to represent the core cookie:
 
+struct core_cookie {
+  unsigned long task_cookie;
+  unsigned long group_cookie;
+  unsigned long color;
+  /* can be further extended with arbitrary fields */
+
+  struct rb_node node;
+  refcount_t;
+};
+
+struct rb_root core_cookies; /* (sorted), all active core_cookies */
+seqlock_t core_cookies_lock; /* protects against removal/addition to
+core_cookies */
+
+struct task_struct {
+  ...
+  unsigned long core_cookie; /* (struct core_cookie *) */
+}
+
+A given task stores the address of a core_cookie struct in its
+core_cookie field.  When we reconfigure a task's
+color/task_cookie/group_cookie, we can first look for an existing
+core_cookie that matches those settings, or create a new one.
