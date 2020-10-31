@@ -2,70 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784DC2A176C
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 13:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 265DC2A1770
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 13:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727398AbgJaMnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 08:43:06 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:45589 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727085AbgJaMnG (ORCPT
+        id S1727421AbgJaMoV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 31 Oct 2020 08:44:21 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:37741 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727041AbgJaMoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 08:43:06 -0400
-Received: by mail-il1-f199.google.com with SMTP id z18so6629144ilb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 05:43:05 -0700 (PDT)
+        Sat, 31 Oct 2020 08:44:21 -0400
+Received: by mail-wr1-f68.google.com with SMTP id w1so9328187wrm.4;
+        Sat, 31 Oct 2020 05:44:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=PLbcQV3CQNzMNiONV/iIo/BtH9u9OMn0g6YFDavSo4Y=;
-        b=ml6u9J0yK6TL4CSR4lzu7qeiYP7HZjLvhQ6NSQthHRhzU/gjYt9m0mfEs03sD8a+K4
-         Q48yEgRT2Mes81PZRDZHRl6ngPw3+j6bz9YHsvNWgCva8saRCGBU2+5v308JRnVSi8R8
-         ryA1YGTPhsN+/vTZoMhx47qtjEpdWCMk4Otl+vV7JAm5JkjT3FUqMzpqwToT9FYFiWwL
-         LyG/n7g0GuVM3hFpCUQDkznUeGXQ+GNRmf1AQKPqfeBTiXKQQ/zbIRUJBZetznCLrWRm
-         4MW1YaVLZeJK+SaJxoDhqRWVNDLJDQaItn42Q3MFi4BpEkR8iGFgsM9sj7FQXzJXQmst
-         DNCQ==
-X-Gm-Message-State: AOAM531N3m/XMU6YGFkyIitlkGJIyJTgg6jPwMj1CKGgGAZdv5G8MB1q
-        1nUPnWUnE8r4vrqhgRS4xzAQYzmIQjBmc68yiURjUuqVgTx9
-X-Google-Smtp-Source: ABdhPJwdSnQMnKqhQpqOWGJCnQ4jy4D5pDlHd07KEgNof9hw/wBkglwShyh1D3kPvEOpyeQ37a+d+sNXdO7wr2zoodVg81gSIN6U
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=IR5TWVh/PM8cmgKLWET7kM8jaE+hyDMzn6+0+c1GNUE=;
+        b=uEHRyHktTMuihdxCQx0JhBDEh5PmzgYWmpSUikTBDyHs5+SEgkEDfRkJfl0sD7Vlsg
+         flH/apOGXYURvZYRlsR5AZv6+MH4f7FueQbXqNF0nlcGYMz2lvNpBHXAqSg85berCpkR
+         HVziUmyP2tmKRuHzaH2DjaExAiio5jPXyuU4Q33d0oNRt4eX4bSfNvD1ahFiOWKMpssY
+         cSSerj24BL1I/5MGkd2Kcs8USrMOUlVSFsAeYxur4CI46FUfRUi3VoX94UQeKcxetLqp
+         uPmHrFBRFXXYLmC5K7ziIGy7wD7KDn5tbQRYlvfj/zAWMSMX9zKdGIAXjZkpr8a8VLG0
+         YjZg==
+X-Gm-Message-State: AOAM532BYvkvNTk6dDMFU6iAFvknrFwhLyc9yaIIBUbTDbAItFoErNcq
+        8G6mQNf5RuyUmaagmfUlm9I=
+X-Google-Smtp-Source: ABdhPJyNFPLhOwZHLatq0yb281uqv5It6hSSKp564zq6To39BLY7zNY0fFgwUyWFccY2+oiiolmIFw==
+X-Received: by 2002:adf:ef02:: with SMTP id e2mr8755737wro.381.1604148258750;
+        Sat, 31 Oct 2020 05:44:18 -0700 (PDT)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id g14sm14745459wrx.22.2020.10.31.05.44.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Oct 2020 05:44:16 -0700 (PDT)
+Date:   Sat, 31 Oct 2020 13:44:15 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     georgi.djakov@linaro.org, cw00.choi@samsung.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        a.swigon@samsung.com, myungjoo.ham@samsung.com,
+        inki.dae@samsung.com, sw0312.kim@samsung.com,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v7 6/6] drm: exynos: mixer: Add interconnect support
+Message-ID: <20201031124415.GD9399@kozik-lap>
+References: <20201030125149.8227-1-s.nawrocki@samsung.com>
+ <CGME20201030125308eucas1p14ae969ae1d5549d422c478aa54d3311e@eucas1p1.samsung.com>
+ <20201030125149.8227-7-s.nawrocki@samsung.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:a813:: with SMTP id f19mr5306316jaj.2.1604148185206;
- Sat, 31 Oct 2020 05:43:05 -0700 (PDT)
-Date:   Sat, 31 Oct 2020 05:43:05 -0700
-In-Reply-To: <00000000000061316205b0e750fc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bf140d05b2f6dae8@google.com>
-Subject: Re: INFO: task can't die in nbd_ioctl
-From:   syzbot <syzbot+69a90a5e8f6b59086b2a@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, hdanton@sina.com, josef@toxicpanda.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mchristi@redhat.com, nbd@other.debian.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201030125149.8227-7-s.nawrocki@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Fri, Oct 30, 2020 at 01:51:49PM +0100, Sylwester Nawrocki wrote:
+> This patch adds interconnect support to exynos-mixer. The mixer works
+> the same as before when CONFIG_INTERCONNECT is 'n'.
+> 
+> For proper operation of the video mixer block we need to ensure the
+> interconnect busses like DMC or LEFTBUS provide enough bandwidth so
+> as to avoid DMA buffer underruns in the mixer block. I.e we need to
+> prevent those busses from operating in low perfomance OPPs when
+> the mixer is running.
+> In this patch the bus bandwidth request is done through the interconnect
+> API, the bandwidth value is calculated from selected DRM mode, i.e.
+> video plane width, height, refresh rate and pixel format.
+> 
+> The bandwidth setting is synchronized with VSYNC when we are switching
+> to lower bandwidth. This is required to ensure enough bandwidth for
+> the device since new settings are normally being applied in the hardware
+> synchronously with VSYNC.
+> 
+> Co-developed-by: Artur Świgoń <a.swigon@samsung.com>
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+> Changes for v7:
+>  - fixed incorrect setting of the ICC bandwidth when the mixer is
+>    disabled, now the bandwidth is set explicitly to 0 in such case.
+> 
+> Changes for v6:
+>  - the icc_set_bw() call is now only done when calculated value for
+>    a crtc changes, this avoids unnecessary calls per each video frame
+>  - added synchronization of the interconnect bandwidth setting with
+>    the mixer VSYNC in order to avoid buffer underflow when we lower
+>    the interconnect bandwidth when the hardware still operates with
+>    previous mode settings that require higher bandwidth. This fixed
+>    IOMMU faults observed e.g. during switching from two planes to
+>    a single plane operation.
+> 
+> Changes for v5:
+>  - renamed soc_path variable to icc_path
+> ---
+>  drivers/gpu/drm/exynos/exynos_mixer.c | 146 ++++++++++++++++++++++++++++++++--
+>  1 file changed, 138 insertions(+), 8 deletions(-)
+> 
 
-commit e9e006f5fcf2bab59149cb38a48a4817c1b538b4
-Author: Mike Christie <mchristi@redhat.com>
-Date:   Sun Aug 4 19:10:06 2019 +0000
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-    nbd: fix max number of supported devs
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=154dc192500000
-start commit:   4e78c578 Add linux-next specific files for 20201030
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=174dc192500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=134dc192500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=83318758268dc331
-dashboard link: https://syzkaller.appspot.com/bug?extid=69a90a5e8f6b59086b2a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15e051a8500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bf75b8500000
-
-Reported-by: syzbot+69a90a5e8f6b59086b2a@syzkaller.appspotmail.com
-Fixes: e9e006f5fcf2 ("nbd: fix max number of supported devs")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Best regards,
+Krzysztof
