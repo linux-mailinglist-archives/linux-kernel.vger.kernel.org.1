@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A16CF2A1B11
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 23:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5F82A1B14
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 23:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726003AbgJaWi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 18:38:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725809AbgJaWi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 18:38:26 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1613D20719;
-        Sat, 31 Oct 2020 22:38:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604183905;
-        bh=22+XWVE26AhRs1ATiUQztPuiQNPVAFxkCPBkr1AvdfQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BJwKK8sOG7Kd0VHV30Ejk6H5rDljP4ijShealUmhN2FECtx5jSyZxGW5H6fj8bi+A
-         KnaMI+xlH78OW3kUW5ztbP3KbmTfCPxPbcVEjXHWA3jrZNFThl4Q+Z3j3MIvGGS8og
-         KXdV5D5QyIr7sHkbOPE+7v+g80n+lBQxpdmiQurU=
-Date:   Sat, 31 Oct 2020 15:38:24 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <linmiaohe@huawei.com>,
-        <martin.varghese@nokia.com>, <pabeni@redhat.com>,
-        <pshelar@ovn.org>, <fw@strlen.de>, <gnault@redhat.com>,
-        <steffen.klassert@secunet.com>, <kyk.segfault@gmail.com>,
-        <viro@zeniv.linux.org.uk>, <vladimir.oltean@nxp.com>,
-        <edumazet@google.com>, <saeed@kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: Re: [PATCH net-next] net: add in_softirq() debug checking in
- napi_consume_skb()
-Message-ID: <20201031153824.7ae83b90@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <1603971288-4786-1-git-send-email-linyunsheng@huawei.com>
-References: <1603971288-4786-1-git-send-email-linyunsheng@huawei.com>
+        id S1726021AbgJaWsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 18:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725809AbgJaWsE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 18:48:04 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779B2C0617A6;
+        Sat, 31 Oct 2020 15:48:04 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id i7so5858014pgh.6;
+        Sat, 31 Oct 2020 15:48:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xQ4xsGDDibbe+i+6RvFTkO2wJW2NaeHMDLuyBg8zZeQ=;
+        b=j4HW+c7sdTjHhTVlMcrDVKsQ8Sj375kqTb9T+0kjlPkLpsJjV6fkbSiUk0X10DpCeB
+         cNAfVH4QahdUMHaWyq5UhZH0zWswIKdobI9Hohg66KYBJXCuD1e8ua6GZDUJTIip3vLH
+         Qiur+TrCmhrmc//EumTSGTidluHj74u5J+80LbFqD19O3UmBqlgZh0K4XD36/sFjOEs+
+         dxZWne53TN87B3BmZus+6b2s00CWViylp5DyWxO6EmC2ufZVCA8t7TxWeiBbgjRxn3Wn
+         NFSiaSsCA4wOBLEyntUccwm3oXmQdMcoon369cHXxX/Lev88h0dC+EBjv2dvU6s763de
+         DV0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xQ4xsGDDibbe+i+6RvFTkO2wJW2NaeHMDLuyBg8zZeQ=;
+        b=hgZhcS6B/2uUwMQV7WYBhP9rrSEul+YnpZl7gsCDKcY4RliZ5rXfhFyj2L6d6Nos0r
+         SzrP3uaNivjdfgiQxE3F9MeXaEcVxRYRRjdWP5ufQTN4NQVdn4P9GCGdV6Y1oGgNDOV1
+         f0EJ4N8WZqj7v4Se/1Pw3zI+HVYQuFPJaUOHPjjo/5dScHrL0SmLJMok8sfrmHLCHs5Z
+         76Osn7P93wknbw1EWf7f8fgOY5RJ3awRBlX+3dxez6OMtRARaZDzJmkn0u4oRleIc1Ap
+         VBuG/RWLLIlzf/uwDIZXYnNU7LD3yyFz1Z+oVyt68U0CbBVSTEkrlUu86vXxWoAjUywE
+         JvIw==
+X-Gm-Message-State: AOAM530wH4AtZsUMmRSLITh2youBCNN2NhKNfsFbF9mbD1Uw1JO9tiZ4
+        HDeN/PmIOoIxxy+efMzJ+tTW1RyxtsjNuw==
+X-Google-Smtp-Source: ABdhPJx8zvT5t5qTPzHlzXXdCLmjsAmk0vS8llPQZplrNHKHNt/3cGRSut2Bmi/H+thxJ7QgwL44Xw==
+X-Received: by 2002:a65:44cd:: with SMTP id g13mr7532180pgs.259.1604184483898;
+        Sat, 31 Oct 2020 15:48:03 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id gq24sm6107420pjb.30.2020.10.31.15.48.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Oct 2020 15:48:03 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Sun, 1 Nov 2020 06:47:35 +0800
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/15] iio: accel: remove unnecessary CONFIG_PM_SLEEP
+Message-ID: <20201031224735.atjih4opb6w57r6y@Rk>
+References: <20201029074910.227859-1-coiby.xu@gmail.com>
+ <20201029144007.77d967b0@archlinux>
+ <CAHp75Vc829u6XPPA+eE=_AFZSPF+yVqT7nUXxtzkwx7-xLLrCg@mail.gmail.com>
+ <20201030143410.pbixjo2cllhd27zp@Rk>
+ <20201031110511.515a2f0f@archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201031110511.515a2f0f@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 19:34:48 +0800 Yunsheng Lin wrote:
-> The current semantic for napi_consume_skb() is that caller need
-> to provide non-zero budget when calling from NAPI context, and
-> breaking this semantic will cause hard to debug problem, because
-> _kfree_skb_defer() need to run in atomic context in order to push
-> the skb to the particular cpu' napi_alloc_cache atomically.
-> 
-> So add a in_softirq() debug checking in napi_consume_skb() to catch
-> this kind of error.
-> 
-> Suggested-by: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+On Sat, Oct 31, 2020 at 11:05:11AM +0000, Jonathan Cameron wrote:
+>On Fri, 30 Oct 2020 22:34:10 +0800
+>Coiby Xu <coiby.xu@gmail.com> wrote:
+>
+>> On Thu, Oct 29, 2020 at 07:06:40PM +0200, Andy Shevchenko wrote:
+>> >On Thu, Oct 29, 2020 at 4:42 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>> >> On Thu, 29 Oct 2020 15:48:56 +0800
+>> >> Coiby Xu <coiby.xu@gmail.com> wrote:
+>> >
+>> >> Please put a cover letter on your next series explaining the context.
+>> >> In this particular case some of the replies you have gotten are
+>> >> general at it is a lot easier to find these sorts of things via
+>> >> replying to the cover letter.
+>> >
+>> >Looking at the number of duplicate messages I would suggest that one
+>> >needs to go through documentation on how to use git format-patch and
+>> >git send-email.
+>> >
+>>
+>> Thank you for the suggestion! Actually it's a tree-wide change and it
+>> seems the kernel community prefer individual patches or series for
+>> subsystems having the same maintainer over a huge patch set so I wrote
+>> some scripts to automate the process. That's why you see ~50 emails
+>> with almost the same commit message. The only difference of these
+>> commit messages is the name of PM macro.
+>
+>When doing a bit set like this, it's worth sending out a small subset
+>first to shake out issue like those seen here.
+>
+>Once those get merged then send out out the reset.
+>
+Thank you for the suggestion! Actually I've held off another ~150
+emails and these ~200 emails were only part of work. I thought it's
+better to reach 4 or 5 subsystem to collect sufficient feedbacks
+considering some subsystems may respond slow. But I didn't realize a
+better way is to cut down the size of patch set sent to a subsystem.
+>Thanks,
+>
+>Jonathan
+>
+>>
+>> >--
+>> >With Best Regards,
+>> >Andy Shevchenko
+>>
+>> --
+>> Best regards,
+>> Coiby
+>
 
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 1ba8f01..1834007 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -897,6 +897,10 @@ void napi_consume_skb(struct sk_buff *skb, int budget)
->  		return;
->  	}
->  
-> +	DEBUG_NET_WARN(!in_softirq(),
-> +		       "%s is called with non-zero budget outside softirq context.\n",
-> +		       __func__);
-
-Can't we use lockdep instead of defining our own knobs?
-
-Like this maybe?
-
-diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-index f5594879175a..5253a167d00c 100644
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -594,6 +594,14 @@ do {                                                                       \
-                      this_cpu_read(hardirqs_enabled)));                \
- } while (0)
- 
-+#define lockdep_assert_in_softirq()                                    \
-+do {                                                                   \
-+       WARN_ON_ONCE(__lockdep_enabled                  &&              \
-+                    (softirq_count() == 0              ||              \
-+                     this_cpu_read(hardirq_context)));                 \
-+} while (0)
-
-
-
->  	if (!skb_unref(skb))
->  		return;
->  
-
+--
+Best regards,
+Coiby
