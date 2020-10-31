@@ -2,157 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B372A1872
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 16:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D3E2A187C
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 16:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgJaPGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 11:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
+        id S1727935AbgJaPPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 11:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728052AbgJaPGV (ORCPT
+        with ESMTP id S1726089AbgJaPPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 11:06:21 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC06C0617A6;
-        Sat, 31 Oct 2020 08:06:20 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id n63so746235qte.4;
-        Sat, 31 Oct 2020 08:06:20 -0700 (PDT)
+        Sat, 31 Oct 2020 11:15:30 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81E2C0617A7
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 08:15:29 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id y20so10632968iod.5
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 08:15:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QsiEQVnJgPtjofsvEVgHEaYNKMcgYG0VOfEEFck/Y0E=;
-        b=Ons3IwtlqNwytQZtrJPFI7YpsmxmFn+1eH1/8Omx15U4RqEb/fAv8Rwh7d7t4rt/ad
-         kHQbCxounm/RC56gORVH5ZFtncdzhWmizPfjRxECz2LXXtaAuYcRMCAvmvKCSCHCW8Fd
-         XRMQIcxb3bluBOsB6ebcbi40+D5PQ8w9QUj8y5cO3KiyCw8kIPpzvWBBoMKLDEcXZeH0
-         Nwy5Xtc9imzU/A8pgly6eo7JXachxTaZZq8BdGsNTKmPwyK7H0xjpmfPhAhENsOhbzff
-         +sXvgk9fe0xEuRopT3m9CE99FcSLOTzDz8tbgHNr/1X0momp52dxy4LvnZylqhwjnfDE
-         A6WQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zB7yqaNrldEgZneTIj0VJhMPYOHInXzygYCi0tQFObQ=;
+        b=fXEktLgrrzV8tvbnYEBIwNqB93RGbxX78MytAJ4EAeEnn1SyOdWnwLNw+XgpLA88ID
+         Dfoq2Rrh4qgHWjQOU38aJmHeZ9gnXSc/h/LxSps2LFS2dSKb+MSrbrdmbJcGi7VMvaSQ
+         d+uFNfT4fDlJyQ1vCNCMrtS25sCKj6hHiaQpSLmZtw+nbVsT9vM0DytVeTnWSOOzaf0O
+         gEnTgZNny40gqLHR0iHcz8vdljGlxk2+wbJI7l/CXmRV1+l9HSLBD319KRxBvsucn+KI
+         3bofJDANzsyHeU3ZKvK3JYlszy+T/uwtbPo3j+u8+WgEMk91DGZYze6XsOmmgDoW8xIv
+         hTCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QsiEQVnJgPtjofsvEVgHEaYNKMcgYG0VOfEEFck/Y0E=;
-        b=OkQ8YH80n1crc0CB89K1GzCUNOyD1gCVSuQL4M7ErZCVNps5jZqw5VXPr54VLtli/Y
-         PllrfGnAq/l5qlkiDGwRnkfu49unx2ARLY2u7ShFJ1hFDBxazzIUYAEQS2uEsWTtpDJn
-         Yr6CGoS/ZLZE8niZ1fNlWE1C0osT//VBnIEUmvPi9D7eGHMxz95lbaR7tM6DuZ7lPDpI
-         6mdvCFBoZwFTX+lhuhmQABfH3jtq4F8XA8dZj1FVZw40Bwyn7rfVun5Mqcjqg0RCxgvj
-         MQjqthx94J2iw22XTKMVg89KxhoHX+Cqs31/0T2k7Hqc3eYlo/PuQ5c+OeU2EHirV4Ob
-         IadA==
-X-Gm-Message-State: AOAM533vkPKBYcPgPt1b5/cY5szpJFXDkW4ToQwhxMFzW0tK2D1CIBiW
-        VWu7yJYjKK7FNKCq37WhMEA=
-X-Google-Smtp-Source: ABdhPJyvKzMo/EH6egGHLYSZQaM7wCaxJM3USy6Z5R1ireViCAw3ezh7IY6TjlAFQAHtlivtdy64mw==
-X-Received: by 2002:aed:3383:: with SMTP id v3mr1261185qtd.353.1604156780081;
-        Sat, 31 Oct 2020 08:06:20 -0700 (PDT)
-Received: from localhost.localdomain ([2804:14d:72b1:8920:a2ce:f815:f14d:bfac])
-        by smtp.gmail.com with ESMTPSA id z125sm2317030qke.54.2020.10.31.08.06.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zB7yqaNrldEgZneTIj0VJhMPYOHInXzygYCi0tQFObQ=;
+        b=NkZAN52QM5ONgQC+xjG21j2XtGFjs8AtBmAdOee7Le+02UmmPK4Ka3eA30BQWi3/yv
+         +fDb3x+hLCw9YBa5KsE95iJ1cvFumLtvJOltejyDxv7Qda4sZ6b3s2L97a9lqSEH1MYd
+         dYIXxdVicXtQF/OLScQ5P9NqLh4kArUR3jv9IkqAM1uYjoLeJAO6vLeNZ8r4JCYAcBoZ
+         xFJ7UHirPhvtWMSh4RxvUTcIEB78R76Ds4c30mwRhBgmkhzNU87HSFZxds84Wgn/r8Ox
+         zGpz6MpHmS5X0PqmzVhYnbziQK2eHh+XTbkkBzJUljVnPUboPbtIeH1C36192Gz1f8dZ
+         mU8A==
+X-Gm-Message-State: AOAM531+AuIsTAH/caCFMcvzRdyGWMsCXtXLagUAmcegIy6Zv+soA8k/
+        tqiAm/iP4xsnyKOCvlvlSOL5nQ==
+X-Google-Smtp-Source: ABdhPJxf1AKZMrIEfxciAqHwT+3NHE5v840lMxlKaLStFOfGMXr7SlrauDqD+OdZ7fxrj7riNdy7Nw==
+X-Received: by 2002:a02:7:: with SMTP id 7mr5848815jaa.112.1604157329229;
+        Sat, 31 Oct 2020 08:15:29 -0700 (PDT)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id e4sm6777988ils.75.2020.10.31.08.15.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 08:06:19 -0700 (PDT)
-From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-X-Google-Original-From: Daniel W. S. Almeida
-To:     mchehab+huawei@kernel.org, r.verdejo@samsung.com,
-        nicolas@ndufresne.ca
-Cc:     "Daniel W . S . Almeida" <dwlsalmeida@gmail.com>,
-        linux-media@vger.kernel.org, skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] media: vidtv: psi: fix missing assignments in while loops
-Date:   Sat, 31 Oct 2020 12:05:52 -0300
-Message-Id: <20201031150552.663598-7-dwlsalmeida@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031150552.663598-1-dwlsalmeida@gmail.com>
-References: <20201031150552.663598-1-dwlsalmeida@gmail.com>
+        Sat, 31 Oct 2020 08:15:28 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: ipa: avoid a bogus warning
+Date:   Sat, 31 Oct 2020 10:15:24 -0500
+Message-Id: <20201031151524.32132-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
+The previous commit added support for IPA having up to six source
+and destination resources.  But currently nothing uses more than
+four.  (Five of each are used in a newer version of the hardware.)
 
-Some variables were only assigned once but were used in while
-loops as if they had been updated at every iteration. Fix this.
+I find that in one of my build environments the compiler complains
+about newly-added code in two spots.  Inspection shows that the
+warnings have no merit, but this compiler does not recognize that.
 
-Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
+    ipa_main.c:457:39: warning: array index 5 is past the end of the
+        array (which contains 4 elements) [-Warray-bounds]
+    (and the same warning at line 483)
+
+We can make this warning go away by changing the number of elements
+in the source and destination resource limit arrays--now rather than
+waiting until we need it to support the newer hardware.  This change
+was coming soon anyway; make it now to get rid of the warning.
+
+Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/media/test-drivers/vidtv/vidtv_psi.c | 22 +++++++++-----------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+Sorry about this; I got no warnings on my primary build system.
 
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_psi.c b/drivers/media/test-drivers/vidtv/vidtv_psi.c
-index ad2957efa483..4dda5b0004a3 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_psi.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_psi.c
-@@ -1175,9 +1175,7 @@ u32 vidtv_psi_pmt_write_into(struct vidtv_psi_pmt_write_args args)
+ drivers/net/ipa/ipa_data.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ipa/ipa_data.h b/drivers/net/ipa/ipa_data.h
+index 0225d81d85028..83c4b78373efb 100644
+--- a/drivers/net/ipa/ipa_data.h
++++ b/drivers/net/ipa/ipa_data.h
+@@ -46,8 +46,8 @@
+  */
  
- 	struct vidtv_psi_desc *table_descriptor   = args.pmt->descriptor;
- 	struct vidtv_psi_table_pmt_stream *stream = args.pmt->stream;
--	struct vidtv_psi_desc *stream_descriptor  = (stream) ?
--						    args.pmt->stream->descriptor :
--						    NULL;
-+	struct vidtv_psi_desc *stream_descriptor;
+ /* The maximum value returned by ipa_resource_group_{src,dst}_count() */
+-#define IPA_RESOURCE_GROUP_SRC_MAX	4
+-#define IPA_RESOURCE_GROUP_DST_MAX	4
++#define IPA_RESOURCE_GROUP_SRC_MAX	5
++#define IPA_RESOURCE_GROUP_DST_MAX	5
  
- 	struct header_write_args h_args = {};
- 	struct psi_write_args psi_args  = {};
-@@ -1237,6 +1235,8 @@ u32 vidtv_psi_pmt_write_into(struct vidtv_psi_pmt_write_args args)
- 
- 		nbytes += vidtv_psi_ts_psi_write_into(psi_args);
- 
-+		stream_descriptor = stream->descriptor;
-+
- 		while (stream_descriptor) {
- 			/* write the stream descriptors, if any */
- 			d_args.dest_buf           = args.buf;
-@@ -1324,9 +1324,7 @@ u32 vidtv_psi_sdt_write_into(struct vidtv_psi_sdt_write_args args)
- 	u32 crc = INITIAL_CRC;
- 
- 	struct vidtv_psi_table_sdt_service *service = args.sdt->service;
--	struct vidtv_psi_desc *service_desc = (args.sdt->service) ?
--					      args.sdt->service->descriptor :
--					      NULL;
-+	struct vidtv_psi_desc *service_desc;
- 
- 	struct header_write_args h_args = {};
- 	struct psi_write_args psi_args  = {};
-@@ -1373,6 +1371,8 @@ u32 vidtv_psi_sdt_write_into(struct vidtv_psi_sdt_write_args args)
- 
- 		nbytes += vidtv_psi_ts_psi_write_into(psi_args);
- 
-+		service_desc = service->descriptor;
-+
- 		while (service_desc) {
- 			/* copy the service descriptors, if any */
- 			d_args.dest_buf           = args.buf;
-@@ -1616,9 +1616,7 @@ u32 vidtv_psi_nit_write_into(struct vidtv_psi_nit_write_args args)
- 
- 	struct vidtv_psi_desc *table_descriptor     = args.nit->descriptor;
- 	struct vidtv_psi_table_transport *transport = args.nit->transport;
--	struct vidtv_psi_desc *transport_descriptor = (transport) ?
--						       args.nit->transport->descriptor :
--						       NULL;
-+	struct vidtv_psi_desc *transport_descriptor;
- 
- 	struct header_write_args h_args = {};
- 	struct psi_write_args psi_args  = {};
-@@ -1686,6 +1684,8 @@ u32 vidtv_psi_nit_write_into(struct vidtv_psi_nit_write_args args)
- 
- 		nbytes += vidtv_psi_ts_psi_write_into(psi_args);
- 
-+		transport_descriptor = transport->descriptor;
-+
- 		while (transport_descriptor) {
- 			/* write the transport descriptors, if any */
- 			d_args.dest_buf           = args.buf;
-@@ -1823,9 +1823,7 @@ u32 vidtv_psi_eit_write_into(struct vidtv_psi_eit_write_args args)
- 	u32 crc = INITIAL_CRC;
- 
- 	struct vidtv_psi_table_eit_event *event = args.eit->event;
--	struct vidtv_psi_desc *event_descriptor = (args.eit->event) ?
--						   args.eit->event->descriptor :
--						   NULL;
-+	struct vidtv_psi_desc *event_descriptor;
- 
- 	struct header_write_args h_args = {};
- 	struct psi_write_args psi_args  = {};
+ /**
+  * struct gsi_channel_data - GSI channel configuration data
 -- 
-2.29.2
+2.20.1
 
