@@ -2,154 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42022A1216
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 01:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FEB2A1220
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 01:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbgJaAmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 20:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
+        id S1726020AbgJaAtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 20:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgJaAmZ (ORCPT
+        with ESMTP id S1725536AbgJaAtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 20:42:25 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F920C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 17:42:25 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id g13so3647790qvu.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 17:42:24 -0700 (PDT)
+        Fri, 30 Oct 2020 20:49:24 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AC6C0613D5;
+        Fri, 30 Oct 2020 17:49:24 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t6so3792967plq.11;
+        Fri, 30 Oct 2020 17:49:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2nCYiEm+IbF/LFROQiqf37AUYYLUchursimxsEbcy9c=;
-        b=j04Cfy1cVQYx0NZi2hs72JLDjXni0m9WMZcoybEUleKw7jARFx8UbuIgC+cZWD/MP6
-         0UqBZSN7cpQmJxgM4NGymVX03rWjdvPbKqjGMA/3z7TIQXrYAwSsz5YQSR2TKDkmH/uK
-         hgaUGegY3OKVWZhzIaQEKTMi+auOMdJVKXtT0V7AlbShCurG+QsSjj57wNoQpNB+DWjX
-         ooOgs8JKzW0k7xb9AxgeuW2O9+aSRcEOIG/COlwH7UuRB1ehMdvotdCX2+JsKsFQcLZG
-         1K06gCDfme1gfX69u9S3xqY08toRxGTdHsR5rbWnzQ1dWu3X5uIOBcoH3duQIw+IHhS/
-         gl5g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8friKqLeurKp8Qqgfoy3djOL/bPCrMJ3ZwWvjKE6BDg=;
+        b=YLCUHd/1BgHbf+elXoAw+z8rArE5XARcatBMCPpGYMUispipMw3tTp/1H8lcHLyKZI
+         nlrLh8VrnxSa+21M+Cd/IhbA3Vise3i3bCjaNuuEQnHHdJ+CB0SgX/ai3ah8MPWj4baF
+         Zhl11qZQ1Y8F55Na+pMDeddizok7hC4jakM1yFV4ROs6mGvkVYHYcJZfFPvWUwDJhv3F
+         dFKub2CGenFeFaViNpAy+CEOXQ+JaWVt3TVqYt9Ypjg1gWybltK6jHAaKDEbRulnvtAh
+         UHrqDVG9TNHrvIzB8qbPYxzskDxNkwNEreKjZLyY3llzusHsTHGPm7+nVBDd6gibl0CK
+         9SJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2nCYiEm+IbF/LFROQiqf37AUYYLUchursimxsEbcy9c=;
-        b=RyBrbHcJVYBGD9YLfEUNWa98euMM4HSd8IuAof7B8ZKtfX9oE1JvpCeWjFnVr4mtA9
-         dB5XfOXq+Oxn3lp1NS+E6H3vKoXHkOF2FDpuaQyTsV2edj1jFuF4YUvE1ePod/KsDXq1
-         mFdYoNin+yw2lUeS66aSlV40M3JdxcxzBJmD1O/j1hhKiRjg6xheLDum1l4NJg5oJrUc
-         diWTrBy0kk63tMEB+2RyUawI6oSPETM9lLyWbQLk04Lurmq6ZCaVm9BjacVbraccys3D
-         n/jhyJfMQuDUSKiMBZDLT4FUaGZ0YrXag27IcIvKovA4S47+H4zJekq4C8+PyEXPXtda
-         PstA==
-X-Gm-Message-State: AOAM533+jJwc47HEIe1L0MuEKk91R66KPZRMSx5/9XtNjmTE0E1xRZXl
-        aKenhEy4CIrdAcgNboXYbsRGSAOCkm777vJ/8bbCsg==
-X-Google-Smtp-Source: ABdhPJyUatzz1tJlP9gPTZ715ieVksd+tixuLcVJe15V+uD7uLWN5QQkp6GhUyG5oOqcEQU60SezYhmrRM1WHuoziQE=
-X-Received: by 2002:a0c:f181:: with SMTP id m1mr861957qvl.43.1604104943769;
- Fri, 30 Oct 2020 17:42:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8friKqLeurKp8Qqgfoy3djOL/bPCrMJ3ZwWvjKE6BDg=;
+        b=LPSexcuQRQpB45RIz3W75gw1xwRW8ZZ6Xkuk43qKJEX234T8duKRw37hA/vZ3+l1wC
+         dwEZEWJQohrIQcufMgVgpYN/NoJp++nQBogGeLKj0dxePwjutDdkhbYVlKris3qb0CSW
+         w0AEO1xOMlAmnpDBgaXtCXD2DQNOdkMk967iJ84M06PHTQgCKAVTG7fFXTwP01Y4g/F8
+         FOycmRtetWg8KCHa88owvMA1gnjqUNqfg0W6ubFZxrpTKSCcZ+d5MPDBAjWvA4HfkB4g
+         dV295prZUunFoTP8JPev7tpgJgtF/5uF3+hQoopYeRELiOY0OdmzJ7dQErgZRuKffP3H
+         i51w==
+X-Gm-Message-State: AOAM530lruEdalHp41RpTIRC7ouRLzY/8BHpiUPc98r4P9Wdf6AKp2WO
+        /pw9Lo39sghiTs5C4QRzSLI=
+X-Google-Smtp-Source: ABdhPJzI1oAJcuyoZOHpW1Bsr5LP/l94iHYKlt7uWdjqX9P4a0aeLKkAH5iraXDPc8bbGFqTTcDpfA==
+X-Received: by 2002:a17:90a:4bcf:: with SMTP id u15mr5550560pjl.142.1604105363717;
+        Fri, 30 Oct 2020 17:49:23 -0700 (PDT)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:48fd:1408:262f:a64b])
+        by smtp.gmail.com with ESMTPSA id w10sm4466634pjy.57.2020.10.30.17.49.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 17:49:23 -0700 (PDT)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net-next v6 0/5] net: hdlc_fr: Improve fr_rx and add support for any Ethertype
+Date:   Fri, 30 Oct 2020 17:49:13 -0700
+Message-Id: <20201031004918.463475-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201020014336.2076526-1-joel@joelfernandes.org> <20201020014336.2076526-20-joel@joelfernandes.org>
-In-Reply-To: <20201020014336.2076526-20-joel@joelfernandes.org>
-From:   Josh Don <joshdon@google.com>
-Date:   Fri, 30 Oct 2020 17:42:12 -0700
-Message-ID: <CABk29NsgPcpOpDzixKtdkK85H1xq2XHXHUm6B96nS-4zKzpRwg@mail.gmail.com>
-Subject: Re: [PATCH v8 -tip 19/26] sched: Add a second-level tag for nested
- CGroup usecase
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>, chris.hyser@oracle.com,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Benjamin Segall <bsegall@google.com>,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 6:45 PM Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> +static unsigned long cpu_core_get_group_cookie(struct task_group *tg)
-> +{
-> +       unsigned long color = 0;
-> +
-> +       if (!tg)
-> +               return 0;
-> +
-> +       for (; tg; tg = tg->parent) {
-> +               if (tg->core_tag_color) {
-> +                       WARN_ON_ONCE(color);
-> +                       color = tg->core_tag_color;
-> +               }
-> +
-> +               if (tg->core_tagged) {
-> +                       unsigned long cookie = ((unsigned long)tg << 8) | color;
-> +                       cookie &= (1UL << (sizeof(unsigned long) * 4)) - 1;
-> +                       return cookie;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
+The main purpose of this series is the last patch. The previous 4 patches
+are just code clean-ups so that the last patch will not make the code too
+messy. The patches must be applied in sequence.
 
-I'm a bit wary of how core_task_cookie and core_group_cookie are
-truncated to the lower half of their bits and combined into the
-overall core_cookie.  Now that core_group_cookie is further losing 8
-bits to color, that leaves (in the case of 32 bit unsigned long) only
-8 bits to uniquely identify the group contribution to the cookie.
+The receiving code of this driver doesn't support arbitrary Ethertype
+values. It only recognizes a few known Ethertypes when receiving and drops
+skbs with other Ethertypes.
 
-Also, I agree that 256 colors is likely adequate, but it would be nice
-to avoid this restriction.
+However, the standard document RFC 2427 allows Frame Relay to support any
+Ethertype values. This series adds support for this.
 
-I'd like to propose the following alternative, which involves creating
-a new struct to represent the core cookie:
+Change from v5:
+Small fix to the commit messages.
 
-struct core_cookie {
-  unsigned long task_cookie;
-  unsigned long group_cookie;
-  unsigned long color;
-  /* can be further extended with arbitrary fields */
+Change from v4:
+Drop the change related to stats.rx_dropped from the 1st patch.
+Switch the 3rd and 4th patch.
+Improve the commit message of the 4th patch by stating why only a 2-byte
+address field is accepted.
 
-  struct rb_node node;
-  refcount_t;
-};
+Change from v3:
+Split the last patch into 2 patches.
+Improve the commit message of the 1st patch to explicitly state that the
+stats.rx_dropped count is also increased after "goto rx_error".
 
-struct rb_root core_cookies; /* (sorted), all active core_cookies */
-seqlock_t core_cookies_lock; /* protects against removal/addition to
-core_cookies */
+Change from v2:
+Small fix to the commit messages.
 
-struct task_struct {
-  ...
-  unsigned long core_cookie; /* (struct core_cookie *) */
-}
+Change from v1:
+Small fix to the commit messages.
 
-A given task stores the address of a core_cookie struct in its
-core_cookie field.  When we reconfigure a task's
-color/task_cookie/group_cookie, we can first look for an existing
-core_cookie that matches those settings, or create a new one.
+Xie He (5):
+  net: hdlc_fr: Simpify fr_rx by using "goto rx_drop" to drop frames
+  net: hdlc_fr: Change the use of "dev" in fr_rx to make the code
+    cleaner
+  net: hdlc_fr: Do skb_reset_mac_header for skbs received on normal PVC
+    devices
+  net: hdlc_fr: Improve the initial checks when we receive an skb
+  net: hdlc_fr: Add support for any Ethertype
+
+ drivers/net/wan/hdlc_fr.c | 118 +++++++++++++++++++++++---------------
+ 1 file changed, 72 insertions(+), 46 deletions(-)
+
+-- 
+2.27.0
+
