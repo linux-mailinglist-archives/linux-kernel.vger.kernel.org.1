@@ -2,113 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1242A1569
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 914552A156E
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:22:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgJaLOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:14:39 -0400
-Received: from smtprelay0156.hostedemail.com ([216.40.44.156]:35294 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726314AbgJaLOi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:14:38 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 9ED681802912D;
-        Sat, 31 Oct 2020 11:14:37 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3873:3874:4321:4470:5007:6119:7514:7903:8531:10004:10400:10848:11232:11658:11914:12043:12297:12555:12679:12740:12760:12895:13161:13229:13439:14181:14659:14721:21080:21324:21433:21451:21627:21660:21819:21939:30003:30022:30029:30030:30054:30056:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: lake80_4c091ad2729e
-X-Filterd-Recvd-Size: 3204
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 31 Oct 2020 11:14:36 +0000 (UTC)
-Message-ID: <8b6d8af8ef3e3499f647c5895c79891e0b26ac6c.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: improve handling of email comments
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Aditya Srivastava <yashsri421@gmail.com>
-Date:   Sat, 31 Oct 2020 04:14:35 -0700
-In-Reply-To: <CABJPP5Ca8SNGmoE7GVc0OBotFhA6mLuX46QQETiVcQwTKHRosA@mail.gmail.com>
-References: <20201030090704.40533-1-dwaipayanray1@gmail.com>
-         <9d5c8699f94481ab5bf2d37348199ca1d6343c8b.camel@perches.com>
-         <alpine.DEB.2.21.2010301255460.16621@felia>
-         <8b9beccf81735f2e042447026a1043f8d21c2566.camel@perches.com>
-         <CABJPP5Ca8SNGmoE7GVc0OBotFhA6mLuX46QQETiVcQwTKHRosA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1726875AbgJaLVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:21:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726815AbgJaLVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:21:36 -0400
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1420206E3
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 11:21:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604143296;
+        bh=q6oGz/8ItAussXOlMWUFf/4IpF/OPPKENA0njIJMVH4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iieFnTDvgylmx4N916OzF6siKBOXZ4kl8Z6VmYjLra+MxojFBw6K6LtEy3UnUuFUX
+         WufN7jw2uLEhGAO6uzBeo3YbpNMftVCdkALrwGFtXxQTqwlU7RHozJU+r6grmMjHn9
+         zYMcPRv9/I3+iKZBwoSDgbNBtvoNlP+hBlONidwE=
+Received: by mail-ot1-f53.google.com with SMTP id 32so8039215otm.3
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 04:21:35 -0700 (PDT)
+X-Gm-Message-State: AOAM532hqLvXlJiyYk4AFVr+IfdA4gsRvXd+w0zjzvHqXyJuDrzIEBSC
+        wrzMvBRT2FZAel378UNBdY0tukCjao6eFT8Tal0=
+X-Google-Smtp-Source: ABdhPJwZ24xggIB2UkHRly0vVNh0PcjwQRFVCIWjPURq8x2VBQofioE1tfCUJiwsfsricrUt3vxd64vx4EyE2JGyT6Y=
+X-Received: by 2002:a05:6830:1f13:: with SMTP id u19mr4933279otg.108.1604143295351;
+ Sat, 31 Oct 2020 04:21:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201031094345.6984-1-rppt@kernel.org> <20201031103312.GI1551@shell.armlinux.org.uk>
+ <CAMj1kXGPtXsq+26OTr49NXk5uZVt82++-8Ug_E-DYYYJ6WEbWw@mail.gmail.com> <20201031110350.GJ1551@shell.armlinux.org.uk>
+In-Reply-To: <20201031110350.GJ1551@shell.armlinux.org.uk>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sat, 31 Oct 2020 12:21:24 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXED+Ry7FEtZm-5tL5ZD2c4+nbYtCWrzQmd158+jXHNqPQ@mail.gmail.com>
+Message-ID: <CAMj1kXED+Ry7FEtZm-5tL5ZD2c4+nbYtCWrzQmd158+jXHNqPQ@mail.gmail.com>
+Subject: Re: [PATCH] ARM, xtensa: highmem: avoid clobbering non-page aligned
+ memory reservations
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     linux-xtensa@linux-xtensa.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Chris Zankel <chris@zankel.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-10-31 at 11:41 +0530, Dwaipayan Ray wrote:
-> Names which have must quote characters without any comments are
-> not warned about right now:
-> 
-> D. Ray <dwaipayanray1@gmail.com> doesn't throw any warning, while
-> D. Ray (Dwai) <dwaipayanray1@gmail.com> does.
+On Sat, 31 Oct 2020 at 12:04, Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> On Sat, Oct 31, 2020 at 11:47:42AM +0100, Ard Biesheuvel wrote:
+> > On Sat, 31 Oct 2020 at 11:33, Russell King - ARM Linux admin
+> > <linux@armlinux.org.uk> wrote:
+> > >
+> > > On Sat, Oct 31, 2020 at 11:43:45AM +0200, Mike Rapoport wrote:
+> > > > From: Ard Biesheuvel <ardb@kernel.org>
+> > > >
+> > > > free_highpages() iterates over the free memblock regions in high
+> > > > memory, and marks each page as available for the memory management
+> > > > system.
+> > > >
+> > > > Until commit cddb5ddf2b76 ("arm, xtensa: simplify initialization of
+> > > > high memory pages") it rounded beginning of each region upwards and end of
+> > > > each region downwards.
+> > > >
+> > > > However, after that commit free_highmem() rounds the beginning and end of
+> > > > each region downwards, and we may end up freeing a page that is
+> > > > memblock_reserve()d, resulting in memory corruption.
+> > > >
+> > > > Restore the original rounding of the region boundaries to avoid freeing
+> > > > reserved pages.
+> > > >
+> > > > Fixes: cddb5ddf2b76 ("arm, xtensa: simplify initialization of high memory pages")
+> > > > Link: https://lore.kernel.org/r/20201029110334.4118-1-ardb@kernel.org/
+> > > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > > > Co-developed-by:  Mike Rapoport <rppt@linux.ibm.com>
+> > > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > > > ---
+> > > >
+> > > > Max, Russell,
+> > > >
+> > > > Please let me know how do you prefer to take it upstream.
+> > > > If needed this can go via memblock tree.
+> > > >
+> > > > v2: fix words order in the commit message
+> > >
+> > > I really don't understand what is going on here; there seems to be a
+> > > total disconnect of communication between yourself and Ard. Ard has
+> > > already submitted a different patch for this to the patch system
+> > > already, sent yesterday.
+> > >
+> > > https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9021/1
+> > >
+> > > Please discuss between yourselves how you want to solve the problem,
+> > > and then submit an agreed and tested patch to those of us upstream;
+> > > please don't make it for those upstream to pick one of your patches
+> > > as you are at present.
+> > >
+> >
+> > Apologies for creating this confusion. I posted a patch and dropped it
+> > into the patch system when I found the bug.
+> >
+> > However, only when Florian asked about a 'fixes' tag, I went back to
+> > the history, and realized that the issue was introduced by Mike during
+> > the most recent merge window, and affects xtensa as well.
+>
+> So why does Mike's patch have:
+>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+>
+> in it? It seems you haven't been directly involved in Mike's patch.
+>
 
-I agree that a comment in parentheses after the name and before
-the email address is an issue that should be resolved.
+Because I cc'ed him on the discussion following the patch that is now
+in your patch system. So he took that patch and modified it, but
+retained the original S-o-b and authorship.
 
-I think your proposed solution isn't great through.
+> There's something /really/ not right with the process behind this
+> patch.
+>
+> > I don't have a preference which patch gets applied, though, so please
+> > indicate your preference, and we will adapt accordingly.
+>
+> I asked for you both to come to a concensus about how you want to
+> proceed, and now you're throwing it back on to me to solve your(pl)
+> mis-communication issue. We haven't heard from Mike yet.
+>
 
-> Do you think this should be dealt separately from this patch?
+I am not throwing it back to you. I merely indicated that I have no
+preference, and since Mike is the one who introduced this issue in the
+first place, I am expecting him to drive this. And indeed, we haven't
+heard from him yet.
 
-I think the cc: stable@(?:vger\.)?kernel.org with additional
-content on the same line should be separated from other email
-addresses with additional content on the same line.
+> Clearly, I wasn't blunt and stroppy enough to be properly understood.
+> Sort it out between yourselves and tell me which patch you want me to
+> apply.
+>
 
-> Perhaps as another warning?
-
-Dunno.
-
-Try this git log grep:
-
-$ git log --format=email -100000 | \
-  grep -P '^(?:[\w\-]+-by:|cc:|CC:|Cc:)' | \
-  grep -v 'stable\@' | \
-  grep -P '\>.+'
-
-This finds any signature/cc line with content after an
-email address that end with a close angle bracket that
-doesn't go to the stable address.
-
-Think about what content after that close angle bracket
-should and shoud not be allowed.
-
-There are a few variants here:
-
-o comments (optional whitespace, followed by '#' or '[' or '(' or c89)
-o misuse of quote (around the whole name and address)
-o Odd commas after '>' likely from defective cut'n'paste use
-
-Then add this to the first grep to avoid the comments as above
-
-$ git log --format=email -100000 | \
-  grep -P '^(?:[\w\-]+-by:|cc:|CC:|Cc:)' | \
-  grep -v 'stable\@' | \
-  grep -P '\>.+' | \
-  grep -vP '\>\s*(?:\#|\(|/\*|\[)'
-
-Shouldn't all these be reported?
-Are they if your patch is applied?
-
-Then look at the addresses that do not have a close angle
-bracket and also have more content after the email address.
-
-$ git log --format=email -100000 | \
-  grep -P '^(?:[\w\-]+-by:|cc:|CC:|Cc:)' | \
-  grep -v 'stable@' | \
-  grep -vP '<[\w\.\@\+\-]+>' | \
-  grep -vP '[\w\.\@\+\-]+$'
-
-What of all of these should be reported?
-
-Happy testing...
-
+I would like you to ack this version of the patch, and disregard the
+one in the patch system, so that Mike can take this one through the
+memblock tree where the issue originated in the first place.
