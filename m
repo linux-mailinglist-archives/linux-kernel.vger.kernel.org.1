@@ -2,441 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065042A137A
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 06:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B0F2A137C
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 06:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgJaFVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 01:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
+        id S1726294AbgJaFXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 01:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbgJaFVM (ORCPT
+        with ESMTP id S1725822AbgJaFXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 01:21:12 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18582C0613D5;
-        Fri, 30 Oct 2020 22:21:12 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id f16so8375573ilr.0;
-        Fri, 30 Oct 2020 22:21:12 -0700 (PDT)
+        Sat, 31 Oct 2020 01:23:04 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98715C0613D5;
+        Fri, 30 Oct 2020 22:23:04 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id p9so11475382eji.4;
+        Fri, 30 Oct 2020 22:23:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R9jomwPRrLKH3ybpNwY5mjCIZIro4CYiIp12PMW5V5A=;
-        b=txS9UMCXclqdrxis7f3UqJx+pQjgS/YPBATEvCb2jEEVpE/GokU3UfC60aFbC6Jc1Q
-         KuwosB7MYRA70H5fIACFcdzZ+j50oDdxgz9Y3hNSbIxH3lbUr5awJ9EuNlMSzGfwHFdB
-         fJFykA0LQuwA6ZUTTov9UCiTrfyA2OTHd5tQx2GndvW9LolrUmp4U9MXdwpq+T8wEZyb
-         BBTMj8TPlAwnQT7TSb7DCpz2P8x7CkEPPwjzVq5qy1mpUgcCoSFWcehkoPfmP53cpROt
-         2LUXNX/wBubibyOduE8k46Tco2e/HGTVApfMKiDxp1ZcEBcZs06giB2TzhNpL2AARqR+
-         LVag==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1foCDvqNp97coSLrJHBgUrErmgwaD7+Kay2OQmrpnWM=;
+        b=Tesbq+uxd7lnbEn16lk3Zk+u3qNWPtupkfDYn7+ZoeaISm1WbMjw9L6CYwy+Jy2p/x
+         3DEMiIDSxAjmAgEE7FB90eslRvF2P35DhnxhPKC13YWNu+ZOtlo8NJIb5gmbBViWXZ6J
+         nfL1x8sedGwmgWCE6RUTUPmSlcvSk77ZtbJXFPUPCZnQ8FRozTHYhlYMu6rx6gqkPP5j
+         Ibundcz0XC78XVw8L5eJI7G0y7UBNK9WnFr7pIYbwfIGvfpBmFddw4/NUSUzeK8KledF
+         yiav5nfCm5ZPvtqqHH59LJArvK1AsQdWOgbZzam4+aXCAkJylaoP+qVTn4mHSu7TygBn
+         nPhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R9jomwPRrLKH3ybpNwY5mjCIZIro4CYiIp12PMW5V5A=;
-        b=QgjjPzUDjKLfa7aVwKnc5rS8cDfw0+z5gK/DeVSofuwHHEK4oDLcDrYsFvww5J3WSp
-         XgZmo/X08nWV5xWP+jCgocIcVjoB+Jk8mNBHFOE/1+4uvKreOd+NBgftIDkaFROEL98c
-         W7aCy2fm80WaEiy8zy3PeJ8UItjUcFjjN+1wOhi1HL3fjCqBBFdNb/ePq7j7hzLgJ1NJ
-         UibcVwkaeHn5qJV+5oGWsIW/nOuXICI9Z6CFmdLMkD6nztqHktI5CWwYDbVWXsIWmYa5
-         1+OrCw8f/iKcmfZRxNnNXLr+i3zMtg9jSHDX83Rha4VH25LG6yPuytlGfJWd0pPxpn2v
-         4GoQ==
-X-Gm-Message-State: AOAM5316tl5CLxjb36nd1BiVrg3UxvMewHZePGsEZ5UdVYn6+O/F8UzC
-        HaWMehZKZz3rDz90OdbhyZjVDZ0+3HBGOlbKdBs=
-X-Google-Smtp-Source: ABdhPJzAFPw8trhSg/dvPZVIX808X1MD5tJrKoytwA9aCGrMjFDaov2o1KyRQisd4gIwmCmw78mZl2EEymAHb2f437M=
-X-Received: by 2002:a92:290b:: with SMTP id l11mr4523607ilg.46.1604121670762;
- Fri, 30 Oct 2020 22:21:10 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1foCDvqNp97coSLrJHBgUrErmgwaD7+Kay2OQmrpnWM=;
+        b=fV72RQ9yjqylqt895IbeqEMelGxfF9sUEMxynuIR+q43VzhKvHgKoGxIy5+4P/236u
+         m4B3b4NYhnHMe1CnuYneE7uLlkKRosNoD7CfHs4HR5XBNZ5zUVmIHTfbMwjSG/fv+aCc
+         y0LoTU/tRtdEe6FDiFFuUamZVIJcUeHvaP1I2ow3hlVCRDOSgDpvEg9/cAP1gvgPOH1P
+         wmq3drAJHZ/aZ5klhcFF76JMHrvZXci5zH/6XsdmuX30kC2mJViHByv8ML9lCtr09WOg
+         GznAb96tfxCZptP9WhKDzBipUiWnDM4MJPYT9qzf2pAaNVw5pnotoJPWRJsL2Mxz5Q7k
+         ljxg==
+X-Gm-Message-State: AOAM533cjs9upJK4jm6hsnqCAAVEZYKc2bejfl6xg2+3JVDWF5tJQ+JY
+        DIfiabP55cDShO7SwqI2XjM=
+X-Google-Smtp-Source: ABdhPJx2r0Eed6DkEXnT1mhM3h+19x4eiwrtQAksDjbdA9oIUeKgcqIw09z3G8lC1OIzCSadUSOR8A==
+X-Received: by 2002:a17:906:7096:: with SMTP id b22mr6089563ejk.335.1604121783156;
+        Fri, 30 Oct 2020 22:23:03 -0700 (PDT)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id x2sm4087695edr.65.2020.10.30.22.23.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 22:23:02 -0700 (PDT)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+X-Google-Original-From: Ioana Ciornei <ciornei.ioana@gmail.com>
+Date:   Sat, 31 Oct 2020 07:22:59 +0200
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Ioana Ciornei <ciorneiioana@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andre Edich <andre.edich@microchip.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Dan Murphy <dmurphy@ti.com>,
+        Divya Koppera <Divya.Koppera@microchip.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Mathias Kresin <dev@kresin.me>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Michael Walle <michael@walle.cc>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Willy Liu <willy.liu@realtek.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+Subject: Re: [PATCH net-next 00/19] net: phy: add support for shared
+ interrupts (part 1)
+Message-ID: <20201031052259.pmhkmlaq5sqndtwu@skbuf>
+References: <20201029100741.462818-1-ciorneiioana@gmail.com>
+ <d05587fc-0cec-59fb-4e84-65386d0b3d6b@gmail.com>
+ <20201030233627.GA1054829@lunn.ch>
 MIME-Version: 1.0
-References: <1603740750-10385-1-git-send-email-abel.vesa@nxp.com> <1603740750-10385-12-git-send-email-abel.vesa@nxp.com>
-In-Reply-To: <1603740750-10385-12-git-send-email-abel.vesa@nxp.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Sat, 31 Oct 2020 00:21:01 -0500
-Message-ID: <CAHCN7x+9=0Nd060g9sSjUt8G4_ULcAgH9st5u8qodnRs_Cw-yQ@mail.gmail.com>
-Subject: Re: [PATCH v4 11/14] clk: imx: Add blk-ctl driver for i.MX8MP
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030233627.GA1054829@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 2:33 PM Abel Vesa <abel.vesa@nxp.com> wrote:
->
-> This driver is intended to work with the following BLK_CTL IPs found in
-> i.MX8MP:
->  - Audio
->  - Media
->  - HDMI
->
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> ---
->  drivers/clk/imx/Makefile             |   2 +-
->  drivers/clk/imx/clk-blk-ctl-imx8mp.c | 316 +++++++++++++++++++++++++++++++++++
->  2 files changed, 317 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/clk/imx/clk-blk-ctl-imx8mp.c
->
-> diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
-> index 3d6d9cb..6c9b595 100644
-> --- a/drivers/clk/imx/Makefile
-> +++ b/drivers/clk/imx/Makefile
-> @@ -23,7 +23,7 @@ obj-$(CONFIG_MXC_CLK) += mxc-clk.o
->
->  obj-$(CONFIG_CLK_IMX8MM) += clk-imx8mm.o
->  obj-$(CONFIG_CLK_IMX8MN) += clk-imx8mn.o
-> -obj-$(CONFIG_CLK_IMX8MP) += clk-imx8mp.o clk-blk-ctl.o
-> +obj-$(CONFIG_CLK_IMX8MP) += clk-imx8mp.o clk-blk-ctl.o clk-blk-ctl-imx8mp.o
->  obj-$(CONFIG_CLK_IMX8MQ) += clk-imx8mq.o
->
->  obj-$(CONFIG_MXC_CLK_SCU) += clk-imx-scu.o clk-imx-lpcg-scu.o
-> diff --git a/drivers/clk/imx/clk-blk-ctl-imx8mp.c b/drivers/clk/imx/clk-blk-ctl-imx8mp.c
-> new file mode 100644
-> index 00000000..cee146e
-> --- /dev/null
-> +++ b/drivers/clk/imx/clk-blk-ctl-imx8mp.c
-> @@ -0,0 +1,316 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright 2020 NXP.
-> + */
-> +
-> +
-> +#include <dt-bindings/clock/imx8mp-clock.h>
-> +#include <dt-bindings/reset/imx8mp-reset.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/of_address.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/types.h>
-> +
-> +#include "clk.h"
-> +#include "clk-blk-ctl.h"
-> +
-> +#define        IMX_AUDIO_BLK_CTL_CLKEN0                0x0
-> +#define        IMX_AUDIO_BLK_CTL_CLKEN1                0x4
-> +#define        IMX_AUDIO_BLK_CTL_EARC                  0x200
-> +#define        IMX_AUDIO_BLK_CTL_SAI1_MCLK_SEL         0x300
-> +#define        IMX_AUDIO_BLK_CTL_SAI2_MCLK_SEL         0x304
-> +#define        IMX_AUDIO_BLK_CTL_SAI3_MCLK_SEL         0x308
-> +#define        IMX_AUDIO_BLK_CTL_SAI5_MCLK_SEL         0x30C
-> +#define        IMX_AUDIO_BLK_CTL_SAI6_MCLK_SEL         0x310
-> +#define        IMX_AUDIO_BLK_CTL_SAI7_MCLK_SEL         0x314
-> +#define        IMX_AUDIO_BLK_CTL_PDM_CLK               0x318
-> +#define        IMX_AUDIO_BLK_CTL_SAI_PLL_GNRL_CTL      0x400
-> +#define        IMX_AUDIO_BLK_CTL_SAI_PLL_FDIVL_CTL0    0x404
-> +#define        IMX_AUDIO_BLK_CTL_SAI_PLL_FDIVL_CTL1    0x408
-> +#define        IMX_AUDIO_BLK_CTL_SAI_PLL_SSCG_CTL      0x40C
-> +#define        IMX_AUDIO_BLK_CTL_SAI_PLL_MNIT_CTL      0x410
-> +#define        IMX_AUDIO_BLK_CTL_IPG_LP_CTRL           0x504
-> +
-> +#define IMX_MEDIA_BLK_CTL_SFT_RSTN             0x0
-> +#define IMX_MEDIA_BLK_CTL_CLK_EN               0x4
-> +
-> +static int shared_count_pdm;
-> +
-> +static const struct imx_pll14xx_rate_table imx_blk_ctl_sai_pll_tbl[] = {
-> +       PLL_1443X_RATE(650000000U, 325, 3, 2, 0),
-> +};
-> +
-> +static const struct imx_pll14xx_clk imx_blk_ctl_sai_pll = {
-> +       .type = PLL_1443X,
-> +       .rate_table = imx_blk_ctl_sai_pll_tbl,
-> +};
-> +
-> +static const char * const imx_sai_mclk2_sels[] = {"sai1_root", "sai2_root", "sai3_root", "dummy",
-> +                                          "sai5_root", "sai6_root", "sai7_root", "sai1_mclk",
-> +                                          "sai2_mclk", "sai3_mclk", "dummy",
-> +                                          "sai5_mclk", "sai6_mclk", "sai7_mclk", "spdif1_ext_clk"};
-> +static const char * const imx_sai1_mclk1_sels[] = {"sai1_root", "sai1_mclk", };
-> +static const char * const imx_sai2_mclk1_sels[] = {"sai2_root", "sai2_mclk", };
-> +static const char * const imx_sai3_mclk1_sels[] = {"sai3_root", "sai3_mclk", };
-> +static const char * const imx_sai5_mclk1_sels[] = {"sai5_root", "sai5_mclk", };
-> +static const char * const imx_sai6_mclk1_sels[] = {"sai6_root", "sai6_mclk", };
-> +static const char * const imx_sai7_mclk1_sels[] = {"sai7_root", "sai7_mclk", };
-> +static const char * const imx_pdm_sels[] = {"pdm_root", "sai_pll_div2", "dummy", "dummy" };
-> +static const char * const imx_sai_pll_ref_sels[] = {"osc_24m", "dummy", "dummy", "dummy", };
-> +static const char * const imx_sai_pll_bypass_sels[] = {"sai_pll", "sai_pll_ref_sel", };
-> +
-> +static const char * const imx_hdmi_phy_clks_sels[] = {"hdmi_glb_24m", "dummy", };
-> +static const char * const imx_lcdif_clks_sels[] = {"dummy", "hdmi_glb_pix", };
-> +static const char * const imx_hdmi_pipe_clks_sels[] = {"dummy", "hdmi_glb_pix", };
-> +
-> +static struct imx_blk_ctl_hw imx8mp_hdmi_blk_ctl_hws[] = {
-> +       /* clocks */
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_glb_apb", IMX8MP_CLK_HDMI_BLK_CTL_GLOBAL_APB_CLK, 0x40, 0, "hdmi_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_glb_b", IMX8MP_CLK_HDMI_BLK_CTL_GLOBAL_B_CLK, 0x40, 1, "hdmi_axi"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_glb_ref_266m", IMX8MP_CLK_HDMI_BLK_CTL_GLOBAL_REF266M_CLK, 0x40, 2, "hdmi_ref_266m"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_glb_24m", IMX8MP_CLK_HDMI_BLK_CTL_GLOBAL_XTAL24M_CLK, 0x40, 4, "hdmi_24m"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_glb_32k", IMX8MP_CLK_HDMI_BLK_CTL_GLOBAL_XTAL32K_CLK, 0x40, 5, "osc_32k"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_glb_pix", IMX8MP_CLK_HDMI_BLK_CTL_GLOBAL_TX_PIX_CLK, 0x40, 7, "hdmi_phy"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_irq_steer", IMX8MP_CLK_HDMI_BLK_CTL_IRQS_STEER_CLK, 0x40, 9, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_noc", IMX8MP_CLK_HDMI_BLK_CTL_NOC_HDMI_CLK, 0x40, 10, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdcp_noc", IMX8MP_CLK_HDMI_BLK_CTL_NOC_HDCP_CLK, 0x40, 11,  "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("lcdif3_apb", IMX8MP_CLK_HDMI_BLK_CTL_LCDIF_APB_CLK, 0x40, 16, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("lcdif3_b", IMX8MP_CLK_HDMI_BLK_CTL_LCDIF_B_CLK, 0x40, 17, "hdmi_glb_b"),
-> +       IMX_BLK_CTL_CLK_GATE("lcdif3_pdi", IMX8MP_CLK_HDMI_BLK_CTL_LCDIF_PDI_CLK, 0x40, 18, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("lcdif3_pxl", IMX8MP_CLK_HDMI_BLK_CTL_LCDIF_PIX_CLK, 0x40, 19, "hdmi_glb_pix"),
-> +       IMX_BLK_CTL_CLK_GATE("lcdif3_spu", IMX8MP_CLK_HDMI_BLK_CTL_LCDIF_SPU_CLK, 0x40, 20, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_fdcc_ref", IMX8MP_CLK_HDMI_BLK_CTL_FDCC_REF_CLK, 0x50, 2, "hdmi_fdcc_tst"),
-> +       IMX_BLK_CTL_CLK_GATE("hrv_mwr_apb", IMX8MP_CLK_HDMI_BLK_CTL_HRV_MWR_APB_CLK, 0x50, 3, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hrv_mwr_b", IMX8MP_CLK_HDMI_BLK_CTL_HRV_MWR_B_CLK, 0x50, 4, "hdmi_glb_axi"),
-> +       IMX_BLK_CTL_CLK_GATE("hrv_mwr_cea", IMX8MP_CLK_HDMI_BLK_CTL_HRV_MWR_CEA_CLK, 0x50, 5, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("vsfd_cea", IMX8MP_CLK_HDMI_BLK_CTL_VSFD_CEA_CLK, 0x50, 6, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_tx_hpi", IMX8MP_CLK_HDMI_BLK_CTL_TX_HPI_CLK, 0x50, 13, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_tx_apb", IMX8MP_CLK_HDMI_BLK_CTL_TX_APB_CLK, 0x50, 14, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_cec", IMX8MP_CLK_HDMI_BLK_CTL_TX_CEC_CLK, 0x50, 15, "hdmi_glb_32k"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_esm", IMX8MP_CLK_HDMI_BLK_CTL_TX_ESM_CLK, 0x50, 16, "hdmi_glb_ref_266m"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_tx_gpa", IMX8MP_CLK_HDMI_BLK_CTL_TX_GPA_CLK, 0x50, 17, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_tx_pix", IMX8MP_CLK_HDMI_BLK_CTL_TX_PIXEL_CLK, 0x50, 18, "hdmi_glb_pix"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_tx_sfr", IMX8MP_CLK_HDMI_BLK_CTL_TX_SFR_CLK, 0x50, 19, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_tx_skp", IMX8MP_CLK_HDMI_BLK_CTL_TX_SKP_CLK, 0x50, 20, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_tx_prep", IMX8MP_CLK_HDMI_BLK_CTL_TX_PREP_CLK, 0x50, 21, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_phy_apb", IMX8MP_CLK_HDMI_BLK_CTL_TX_PHY_APB_CLK, 0x50, 22, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_phy_int", IMX8MP_CLK_HDMI_BLK_CTL_TX_PHY_INT_CLK, 0x50, 24, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_sec_mem", IMX8MP_CLK_HDMI_BLK_CTL_TX_SEC_MEM_CLK, 0x50, 25, "hdmi_glb_ref_266m"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_trng_skp", IMX8MP_CLK_HDMI_BLK_CTL_TX_TRNG_SKP_CLK, 0x50, 27, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_vid_pix",  IMX8MP_CLK_HDMI_BLK_CTL_TX_VID_LINK_PIX_CLK, 0x50, 28, "hdmi_glb_pix"),
-> +       IMX_BLK_CTL_CLK_GATE("hdmi_trng_apb", IMX8MP_CLK_HDMI_BLK_CTL_TX_TRNG_APB_CLK, 0x50, 30, "hdmi_glb_apb"),
-> +       IMX_BLK_CTL_CLK_MUX("hdmi_phy_sel", IMX8MP_CLK_HDMI_BLK_CTL_HTXPHY_CLK_SEL, 0x50, 10, 1, imx_hdmi_phy_clks_sels),
-> +       IMX_BLK_CTL_CLK_MUX("lcdif_clk_sel", IMX8MP_CLK_HDMI_BLK_CTL_LCDIF_CLK_SEL, 0x50, 11, 1, imx_lcdif_clks_sels),
-> +       IMX_BLK_CTL_CLK_MUX("hdmi_pipe_sel", IMX8MP_CLK_HDMI_BLK_CTL_TX_PIPE_CLK_SEL, 0x50, 12, 1, imx_hdmi_pipe_clks_sels),
-> +
-> +       /* resets */
-> +       IMX_BLK_CTL_RESET_MASK(IMX8MP_HDMI_BLK_CTL_HDMI_TX_RESET, 0x20, 6, 0x33),
-> +       IMX_BLK_CTL_RESET(IMX8MP_HDMI_BLK_CTL_HDMI_PHY_RESET, 0x20, 12),
-> +       IMX_BLK_CTL_RESET(IMX8MP_HDMI_BLK_CTL_HDMI_PAI_RESET, 0x20, 18),
-> +       IMX_BLK_CTL_RESET(IMX8MP_HDMI_BLK_CTL_HDMI_PAI_RESET, 0x20, 22),
-> +       IMX_BLK_CTL_RESET(IMX8MP_HDMI_BLK_CTL_HDMI_TRNG_RESET, 0x20, 20),
-> +       IMX_BLK_CTL_RESET(IMX8MP_HDMI_BLK_CTL_IRQ_STEER_RESET, 0x20, 16),
-> +       IMX_BLK_CTL_RESET(IMX8MP_HDMI_BLK_CTL_HDMI_HDCP_RESET, 0x20, 13),
-> +       IMX_BLK_CTL_RESET_MASK(IMX8MP_HDMI_BLK_CTL_LCDIF_RESET, 0x20, 4, 0x3),
-> +};
-> +
-> +static struct imx_blk_ctl_hw imx8mp_media_blk_ctl_hws[] = {
-> +       /* clocks */
-> +       IMX_BLK_CTL_CLK_GATE("mipi_dsi_pclk", IMX8MP_CLK_MEDIA_BLK_CTL_MIPI_DSI_PCLK, 0x4, 0, "media_apb_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("mipi_dsi_clkref", IMX8MP_CLK_MEDIA_BLK_CTL_MIPI_DSI_CLKREF, 0x4, 1, "media_mipi_phy1_ref"),
-> +       IMX_BLK_CTL_CLK_GATE("mipi_csi_pclk", IMX8MP_CLK_MEDIA_BLK_CTL_MIPI_CSI_PCLK, 0x4, 2, "media_apb_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("mipi_csi_aclk", IMX8MP_CLK_MEDIA_BLK_CTL_MIPI_CSI_ACLK, 0x4, 3, "media_cam1_pix_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("lcdif_pixel_clk", IMX8MP_CLK_MEDIA_BLK_CTL_LCDIF_PIXEL, 0x4, 4, "media_disp1_pix_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("lcdif_apb_clk", IMX8MP_CLK_MEDIA_BLK_CTL_LCDIF_APB, 0x4, 5, "media_apb_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("isi_proc_clk", IMX8MP_CLK_MEDIA_BLK_CTL_ISI_PROC, 0x4, 6, "media_axi_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("isi_apb_clk", IMX8MP_CLK_MEDIA_BLK_CTL_ISI_APB, 0x4, 7, "media_apb_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("mipi_csi2_pclk", IMX8MP_CLK_MEDIA_BLK_CTL_MIPI_CSI2_PCLK, 0x4, 9, "media_apb_root_clk"),
+On Sat, Oct 31, 2020 at 12:36:27AM +0100, Andrew Lunn wrote:
+> > > - Every PHY driver gains a .handle_interrupt() implementation that, for
+> > >   the most part, would look like below:
+> > > 
+> > > 	irq_status = phy_read(phydev, INTR_STATUS);
+> > > 	if (irq_status < 0) {
+> > > 		phy_error(phydev);
+> > > 		return IRQ_NONE;
+> > > 	}
+> > > 
+> > > 	if (irq_status == 0)
+> > 
+> > Here I have a concern, bits may be set even if the respective interrupt
+> > source isn't enabled. Therefore we may falsely blame a device to have
+> > triggered the interrupt. irq_status should be masked with the actually
+> > enabled irq source bits.
+> 
+> Hi Heiner
+> 
+> I would say that is a driver implementation detail, for each driver to
+> handle how it needs to handle it. I've seen some hardware where the
+> interrupt status is already masked with the interrupt enabled
+> bits. I've soon other hardware where it is not.
+> 
+> For example code, what is listed above is O.K. The real implementation
+> in a driver need knowledge of the hardware.
+> 
 
-Abel,
-I noticed the bus_blk_clk (bit 8) that was present in the previous
-version is missing now.  I know there have been some back and forth
-discussions on the GPC controller and the interactions with the clock
-block register.  I was going to rebase the work I did for the Nano on
-your latest revision.
+Hi,
 
-Is it safe to assume the removal of bus_blk_clk is due to the pending GPC work?
-If so, is it also safe to assume that I should remove it from the Nano
-re-work that I'm trying to do?  From what I can tell, those first 8
-bits between the 8MP and 8MN were the same, but I don't have 8MP
-documentation, so I cannot be certain.
+As Andrew said, that is just an example code that could work for some
+devices but should be extended depending on how the actual PHY is
+working.
 
-adam
-> +       IMX_BLK_CTL_CLK_GATE("mipi_csi2_aclk", IMX8MP_CLK_MEDIA_BLK_CTL_MIPI_CSI2_ACLK, 0x4, 10, "media_cam2_pix_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("lcdif2_pixel_clk", IMX8MP_CLK_MEDIA_BLK_CTL_LCDIF2_PIXEL, 0x4, 11, "media_disp2_pix_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("lcdif2_apb_clk", IMX8MP_CLK_MEDIA_BLK_CTL_LCDIF2_APB, 0x4, 12, "media_apb_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("isp1_cor_clk", IMX8MP_CLK_MEDIA_BLK_CTL_ISP1_COR, 0x4, 13, "media_isp_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("isp1_axi_clk", IMX8MP_CLK_MEDIA_BLK_CTL_ISP1_AXI, 0x4, 14, "media_axi_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("isp1_ahb_clk", IMX8MP_CLK_MEDIA_BLK_CTL_ISP1_AHB, 0x4, 15, "media_apb_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("isp0_cor_clk", IMX8MP_CLK_MEDIA_BLK_CTL_ISP0_COR, 0x4, 16, "media_isp_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("isp0_axi_clk", IMX8MP_CLK_MEDIA_BLK_CTL_ISP0_AXI, 0x4, 17, "media_axi_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("isp0_ahb_clk", IMX8MP_CLK_MEDIA_BLK_CTL_ISP0_AHB, 0x4, 18, "media_apb_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("dwe_cor_clk", IMX8MP_CLK_MEDIA_BLK_CTL_DWE_COR, 0x4, 19, "media_axi_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("dwe_axi_clk", IMX8MP_CLK_MEDIA_BLK_CTL_DWE_AXI, 0x4, 20, "media_axi_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("dwe_ahb_clk", IMX8MP_CLK_MEDIA_BLK_CTL_DWE_AHB, 0x4, 21, "media_apb_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("mipi_dsi2_clk", IMX8MP_CLK_MEDIA_BLK_CTL_MIPI_DSI2, 0x4, 22, "media_mipi_phy1_ref"),
-> +       IMX_BLK_CTL_CLK_GATE("lcdif_axi_clk", IMX8MP_CLK_MEDIA_BLK_CTL_LCDIF_AXI, 0x4, 23, "media_axi_root_clk"),
-> +       IMX_BLK_CTL_CLK_GATE("lcdif2_axi_clk", IMX8MP_CLK_MEDIA_BLK_CTL_LCDIF2_AXI, 0x4, 24, "media_axi_root_clk"),
-> +
-> +       /* resets */
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_MIPI_DSI_PCLK, 0, 0),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_MIPI_DSI_CLKREF, 0, 1),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_MIPI_CSI_PCLK, 0, 2),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_MIPI_CSI_ACLK, 0, 3),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_LCDIF_PIXEL, 0, 4),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_LCDIF_APB, 0, 5),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_ISI_PROC, 0, 6),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_ISI_APB, 0, 7),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_BUS_BLK, 0, 8),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_MIPI_CSI2_PCLK, 0, 9),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_MIPI_CSI2_ACLK, 0, 10),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_LCDIF2_PIXEL, 0, 11),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_LCDIF2_APB, 0, 12),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_ISP1_COR, 0, 13),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_ISP1_AXI, 0, 14),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_ISP1_AHB, 0, 15),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_ISP0_COR, 0, 16),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_ISP0_AXI, 0, 17),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_ISP0_AHB, 0, 18),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_DWE_COR, 0, 19),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_DWE_AXI, 0, 20),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_DWE_AHB, 0, 21),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_MIPI_DSI2, 0, 22),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_LCDIF_AXI, 0, 23),
-> +       IMX_BLK_CTL_RESET(IMX8MP_MEDIA_BLK_CTL_RESET_LCDIF2_AXI, 0, 24)
-> +};
-> +
-> +static struct imx_blk_ctl_hw imx8mp_audio_blk_ctl_hws[] = {
-> +       /* clocks */
-> +       IMX_BLK_CTL_CLK_MUX("sai_pll_ref_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI_PLL_REF_SEL, 0x400, 0, 2, imx_sai_pll_ref_sels),
-> +       IMX_BLK_CTL_CLK_PLL14XX("sai_pll", IMX8MP_CLK_AUDIO_BLK_CTL_SAI_PLL, 0x400, "sai_pll_ref_sel", &imx_blk_ctl_sai_pll),
-> +       IMX_BLK_CTL_CLK_MUX_FLAGS("sai_pll_bypass", IMX8MP_CLK_AUDIO_BLK_CTL_SAI_PLL_BYPASS, 0x400, 4, 1, imx_sai_pll_bypass_sels, CLK_SET_RATE_PARENT),
-> +       IMX_BLK_CTL_CLK_GATE("sai_pll_out", IMX8MP_CLK_AUDIO_BLK_CTL_SAI_PLL_OUT, 0x400, 13, "sai_pll_bypass"),
-> +       IMX_BLK_CTL_CLK_MUX_FLAGS("sai1_mclk1_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI1_MCLK1_SEL, 0x300, 0, 1, imx_sai1_mclk1_sels, CLK_SET_RATE_PARENT),
-> +       IMX_BLK_CTL_CLK_MUX("sai1_mclk2_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI1_MCLK2_SEL, 0x300, 1, 4, imx_sai_mclk2_sels),
-> +       IMX_BLK_CTL_CLK_MUX_FLAGS("sai2_mclk1_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI2_MCLK1_SEL, 0x304, 0, 1, imx_sai2_mclk1_sels, CLK_SET_RATE_PARENT),
-> +       IMX_BLK_CTL_CLK_MUX("sai2_mclk2_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI2_MCLK2_SEL, 0x304, 1, 4, imx_sai_mclk2_sels),
-> +       IMX_BLK_CTL_CLK_MUX_FLAGS("sai3_mclk1_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI3_MCLK1_SEL, 0x308, 0, 1, imx_sai3_mclk1_sels, CLK_SET_RATE_PARENT),
-> +       IMX_BLK_CTL_CLK_MUX("sai3_mclk2_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI3_MCLK2_SEL, 0x308, 1, 4, imx_sai_mclk2_sels),
-> +       IMX_BLK_CTL_CLK_MUX("sai5_mclk1_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI5_MCLK1_SEL, 0x30C, 0, 1, imx_sai5_mclk1_sels),
-> +       IMX_BLK_CTL_CLK_MUX("sai5_mclk2_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI5_MCLK2_SEL, 0x30C, 1, 4, imx_sai_mclk2_sels),
-> +       IMX_BLK_CTL_CLK_MUX("sai6_mclk1_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI6_MCLK1_SEL, 0x310, 0, 1, imx_sai6_mclk1_sels),
-> +       IMX_BLK_CTL_CLK_MUX("sai6_mclk2_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI6_MCLK2_SEL, 0x310, 1, 4, imx_sai_mclk2_sels),
-> +       IMX_BLK_CTL_CLK_MUX("sai7_mclk1_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI7_MCLK1_SEL, 0x314, 0, 1, imx_sai7_mclk1_sels),
-> +       IMX_BLK_CTL_CLK_MUX("sai7_mclk2_sel", IMX8MP_CLK_AUDIO_BLK_CTL_SAI7_MCLK2_SEL, 0x314, 1, 4, imx_sai_mclk2_sels),
-> +       IMX_BLK_CTL_CLK_MUX_FLAGS("pdm_sel", IMX8MP_CLK_AUDIO_BLK_CTL_PDM_SEL, 0x318, 0, 2, imx_pdm_sels, CLK_SET_RATE_PARENT),
-> +       IMX_BLK_CTL_CLK_GATE("sai1_ipg_clk",   IMX8MP_CLK_AUDIO_BLK_CTL_SAI1_IPG, 0, 0, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("sai1_mclk1_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI1_MCLK1, 0, 1, "sai1_mclk1_sel"),
-> +       IMX_BLK_CTL_CLK_GATE("sai1_mclk2_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI1_MCLK2, 0, 2, "sai1_mclk2_sel"),
-> +       IMX_BLK_CTL_CLK_GATE("sai1_mclk3_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI1_MCLK3, 0, 3, "sai_pll_out"),
-> +       IMX_BLK_CTL_CLK_GATE("sai2_ipg_clk",   IMX8MP_CLK_AUDIO_BLK_CTL_SAI2_IPG, 0, 4, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("sai2_mclk1_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI2_MCLK1, 0, 5, "sai2_mclk1_sel"),
-> +       IMX_BLK_CTL_CLK_GATE("sai2_mclk2_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI2_MCLK2, 0, 6, "sai2_mclk2_sel"),
-> +       IMX_BLK_CTL_CLK_GATE("sai2_mclk3_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI2_MCLK3, 0, 7, "sai_pll_out"),
-> +       IMX_BLK_CTL_CLK_GATE("sai3_ipg_clk",   IMX8MP_CLK_AUDIO_BLK_CTL_SAI3_IPG, 0, 8, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("sai3_mclk1_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI3_MCLK1, 0, 9, "sai3_mclk1_sel"),
-> +       IMX_BLK_CTL_CLK_GATE("sai3_mclk2_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI3_MCLK2, 0, 10, "sai3_mclk2_sel"),
-> +       IMX_BLK_CTL_CLK_GATE("sai3_mclk3_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI3_MCLK3, 0, 11, "sai_pll_out"),
-> +       IMX_BLK_CTL_CLK_GATE("sai5_ipg_clk",   IMX8MP_CLK_AUDIO_BLK_CTL_SAI5_IPG, 0, 12, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("sai5_mclk1_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI5_MCLK1, 0, 13, "sai5_mclk1_sel"),
-> +       IMX_BLK_CTL_CLK_GATE("sai5_mclk2_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI5_MCLK2, 0, 14, "sai5_mclk2_sel"),
-> +       IMX_BLK_CTL_CLK_GATE("sai5_mclk3_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI5_MCLK3, 0, 15, "sai_pll_out"),
-> +       IMX_BLK_CTL_CLK_GATE("sai6_ipg_clk",   IMX8MP_CLK_AUDIO_BLK_CTL_SAI6_IPG, 0, 16, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("sai6_mclk1_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI6_MCLK1, 0, 17, "sai6_mclk1_sel"),
-> +       IMX_BLK_CTL_CLK_GATE("sai6_mclk2_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI6_MCLK2, 0, 18, "sai6_mclk2_sel"),
-> +       IMX_BLK_CTL_CLK_GATE("sai6_mclk3_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI6_MCLK3, 0, 19, "sai_pll_out"),
-> +       IMX_BLK_CTL_CLK_GATE("sai7_ipg_clk",   IMX8MP_CLK_AUDIO_BLK_CTL_SAI7_IPG, 0, 20, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("sai7_mclk1_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI7_MCLK1, 0, 21, "sai7_mclk1_sel"),
-> +       IMX_BLK_CTL_CLK_GATE("sai7_mclk2_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI7_MCLK2, 0, 22, "sai7_mclk2_sel"),
-> +       IMX_BLK_CTL_CLK_GATE("sai7_mclk3_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SAI7_MCLK3, 0, 23, "sai_pll_out"),
-> +       IMX_BLK_CTL_CLK_GATE("asrc_ipg_clk",   IMX8MP_CLK_AUDIO_BLK_CTL_ASRC_IPG, 0, 24, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_SHARED_GATE("pdm_ipg_clk", IMX8MP_CLK_AUDIO_BLK_CTL_PDM_IPG, 0, 25, "audio_ahb_root", &shared_count_pdm),
-> +       IMX_BLK_CTL_CLK_SHARED_GATE("pdm_root_clk", IMX8MP_CLK_AUDIO_BLK_CTL_PDM_ROOT, 0, 25, "pdm_sel", &shared_count_pdm),
-> +       IMX_BLK_CTL_CLK_GATE("sdma3_root_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SDMA3_ROOT, 0, 27, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("spba2_root_clk", IMX8MP_CLK_AUDIO_BLK_CTL_SPBA2_ROOT, 0, 28, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("dsp_root_clk",   IMX8MP_CLK_AUDIO_BLK_CTL_DSP_ROOT, 0, 29, "audio_axi_root"),
-> +       IMX_BLK_CTL_CLK_GATE("dsp_dbg_clk",    IMX8MP_CLK_AUDIO_BLK_CTL_DSPDBG_ROOT, 0, 30, "audio_axi_root"),
-> +       IMX_BLK_CTL_CLK_GATE("earc_ipg_clk",   IMX8MP_CLK_AUDIO_BLK_CTL_EARC_IPG, 0, 31, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("ocram_a_ipg_clk", IMX8MP_CLK_AUDIO_BLK_CTL_OCRAMA_IPG, 4, 0, "audio_axi_root"),
-> +       IMX_BLK_CTL_CLK_GATE("aud2htx_ipg_clk", IMX8MP_CLK_AUDIO_BLK_CTL_AUD2HTX_IPG, 4, 1, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("edma_root_clk",   IMX8MP_CLK_AUDIO_BLK_CTL_EDMA_ROOT, 4, 2, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("aud_pll_clk",  IMX8MP_CLK_AUDIO_BLK_CTL_AUDPLL_ROOT, 4, 3, "osc_24m"),
-> +       IMX_BLK_CTL_CLK_GATE("mu2_root_clk", IMX8MP_CLK_AUDIO_BLK_CTL_MU2_ROOT, 4, 4, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("mu3_root_clk", IMX8MP_CLK_AUDIO_BLK_CTL_MU3_ROOT, 4, 5, "audio_ahb_root"),
-> +       IMX_BLK_CTL_CLK_GATE("earc_phy_clk", IMX8MP_CLK_AUDIO_BLK_CTL_EARC_PHY, 4, 6, "sai_pll_out"),
-> +
-> +       /* resets */
-> +       IMX_BLK_CTL_RESET(IMX8MP_AUDIO_BLK_CTL_EARC_RESET, 0x200, 0),
-> +       IMX_BLK_CTL_RESET(IMX8MP_AUDIO_BLK_CTL_EARC_PHY_RESET, 0x200, 1),
-> +};
-> +
-> +const struct imx_blk_ctl_dev_data imx8mp_hdmi_blk_ctl_dev_data __initconst = {
-> +       .hws = imx8mp_hdmi_blk_ctl_hws,
-> +       .hws_num = ARRAY_SIZE(imx8mp_hdmi_blk_ctl_hws),
-> +       .clocks_max = IMX8MP_CLK_HDMI_BLK_CTL_END,
-> +       .resets_max = IMX8MP_HDMI_BLK_CTL_RESET_NUM,
-> +       .pm_runtime_saved_regs_num = 0
-> +};
-> +
-> +const struct imx_blk_ctl_dev_data imx8mp_media_blk_ctl_dev_data __initconst = {
-> +       .hws = imx8mp_media_blk_ctl_hws,
-> +       .hws_num = ARRAY_SIZE(imx8mp_media_blk_ctl_hws),
-> +       .clocks_max = IMX8MP_CLK_MEDIA_BLK_CTL_END,
-> +       .resets_max = IMX8MP_MEDIA_BLK_CTL_RESET_NUM,
-> +       .pm_runtime_saved_regs_num = 2,
-> +       .pm_runtime_saved_regs = {
-> +               IMX_MEDIA_BLK_CTL_SFT_RSTN,
-> +               IMX_MEDIA_BLK_CTL_CLK_EN,
-> +       },
-> +};
-> +
-> +const struct imx_blk_ctl_dev_data imx8mp_audio_blk_ctl_dev_data __initconst = {
-> +       .hws = imx8mp_audio_blk_ctl_hws,
-> +       .hws_num = ARRAY_SIZE(imx8mp_audio_blk_ctl_hws),
-> +       .clocks_max = IMX8MP_CLK_AUDIO_BLK_CTL_END,
-> +       .resets_max = IMX8MP_AUDIO_BLK_CTL_RESET_NUM,
-> +       .pm_runtime_saved_regs_num = 16,
-> +       .pm_runtime_saved_regs = {
-> +               IMX_AUDIO_BLK_CTL_CLKEN0,
-> +               IMX_AUDIO_BLK_CTL_CLKEN1,
-> +               IMX_AUDIO_BLK_CTL_EARC,
-> +               IMX_AUDIO_BLK_CTL_SAI1_MCLK_SEL,
-> +               IMX_AUDIO_BLK_CTL_SAI2_MCLK_SEL,
-> +               IMX_AUDIO_BLK_CTL_SAI3_MCLK_SEL,
-> +               IMX_AUDIO_BLK_CTL_SAI5_MCLK_SEL,
-> +               IMX_AUDIO_BLK_CTL_SAI6_MCLK_SEL,
-> +               IMX_AUDIO_BLK_CTL_SAI7_MCLK_SEL,
-> +               IMX_AUDIO_BLK_CTL_PDM_CLK,
-> +               IMX_AUDIO_BLK_CTL_SAI_PLL_GNRL_CTL,
-> +               IMX_AUDIO_BLK_CTL_SAI_PLL_FDIVL_CTL0,
-> +               IMX_AUDIO_BLK_CTL_SAI_PLL_FDIVL_CTL1,
-> +               IMX_AUDIO_BLK_CTL_SAI_PLL_SSCG_CTL,
-> +               IMX_AUDIO_BLK_CTL_SAI_PLL_MNIT_CTL,
-> +               IMX_AUDIO_BLK_CTL_IPG_LP_CTRL
-> +       },
-> +};
-> +
-> +static const struct of_device_id imx8mp_blk_ctl_of_match[] = {
-> +       {
-> +               .compatible = "fsl,imx8mp-audio-blk-ctl",
-> +               .data = &imx8mp_audio_blk_ctl_dev_data
-> +       },
-> +       {
-> +               .compatible = "fsl,imx8mp-media-blk-ctl",
-> +               .data = &imx8mp_media_blk_ctl_dev_data
-> +       },
-> +       {
-> +               .compatible = "fsl,imx8mp-hdmi-blk-ctl",
-> +               .data = &imx8mp_hdmi_blk_ctl_dev_data
-> +       },
-> +       { /* Sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, imx8mp_blk_ctl_of_match);
-> +
-> +static int imx8mp_blk_ctl_probe(struct platform_device *pdev)
-> +{
-> +       return imx_blk_ctl_register(pdev);
-> +}
-> +
-> +static struct platform_driver imx8mp_blk_ctl_driver = {
-> +       .probe = imx8mp_blk_ctl_probe,
-> +       .driver = {
-> +               .name = "imx8mp-blk-ctl",
-> +               .of_match_table = of_match_ptr(imx8mp_blk_ctl_of_match),
-> +               .pm = &imx_blk_ctl_pm_ops,
-> +       },
-> +};
-> +module_platform_driver(imx8mp_blk_ctl_driver);
-> --
-> 2.7.4
->
+For example, the VSC8584 will still be trigerring the link state machine
+just on the link change interrupt, I am not changing this:
+
+static irqreturn_t vsc8584_handle_interrupt(struct phy_device *phydev)
+{
+	irqreturn_t ret;
+	int irq_status;
+
+	irq_status = phy_read(phydev, MII_VSC85XX_INT_STATUS);
+	if (irq_status < 0)
+		return IRQ_NONE;
+
+	/* Timestamping IRQ does not set a bit in the global INT_STATUS, so
+	 * irq_status would be 0.
+	 */
+	ret = vsc8584_handle_ts_interrupt(phydev);
+	if (!(irq_status & MII_VSC85XX_INT_MASK_MASK))
+		return ret;
+
+	if (irq_status & MII_VSC85XX_INT_MASK_EXT)
+		vsc8584_handle_macsec_interrupt(phydev);
+
+	if (irq_status & MII_VSC85XX_INT_MASK_LINK_CHG)
+		phy_trigger_machine(phydev);
+
+	return IRQ_HANDLED;
+}
+
+Ioana
