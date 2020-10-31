@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF3D2A1AB4
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 22:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCBA2A1AB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 22:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728541AbgJaVbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 17:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726254AbgJaVbo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 17:31:44 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6CB5C0617A6;
-        Sat, 31 Oct 2020 14:31:44 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id c20so7903758pfr.8;
-        Sat, 31 Oct 2020 14:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=RCKrBdi/cuSwF+6eSqklRGXkPD1B4n+vjLH1fafi1Qg=;
-        b=vWCONXYnUidMTCnGsyyuztaQpLNmqARfQJ2C/VrYifLJhCv0ExU4LHwl4x1PDDJW52
-         aEDwrl+chZ+M4q2Fz3jSdvjrMu6MEtHbRBnI2q+Udub9vnLkD/w//X13eeed6WFBfnWa
-         g3fpby3wVcwVlXlIBszHnmW5jLA5sfMM8uwaVj/X5SfQhh5zA+BVQgH6m5rfFn10K1Y5
-         8PeFxiyoB0u8cf9q9DE2RWOyYCAg9AWjfX1Tfa4hgGwaVH7sIqXL37/rU0ce9E/YKBEJ
-         qYSLiJ98ytk7J2BJMatoI7lwBJLuS9ZIZ9KRRiXqESTbPXkfSJa2RkBefDCMfuJ+Nup5
-         iqOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=RCKrBdi/cuSwF+6eSqklRGXkPD1B4n+vjLH1fafi1Qg=;
-        b=Z94+NNgsXdZZ23dC+jVD9UZR969QlCVy3W6LwZ7JZ7HSrr1g35Sn3fx76W/gzOptfr
-         90PZQ6WR3rcRRpZP0Q5j33xOXlW0T+Vw+7qme4bjCMlosllg2JvnJFcNTuW5GRcT9aAN
-         i+ZEwqkJIKZk1hM7iytvT9vnvvrOdaboglrO72Hk3DyvOIrmk77Qb9j3ghIKpghkD6V4
-         e4pbMgigZBifwZd9ecL/RVGPV81eh0HZMtV5wd7PzZJclKoWZ9tQw1RNpS18Cqz6Tm3o
-         IplmALlEYuA+EJ9RzXOrXas3rL2J1Gp+OaKqVj7zUkgT6QmhVGentnreqmvZMANg29O4
-         THfw==
-X-Gm-Message-State: AOAM530RdekjCwQNFqyF+tEN4rOlK5a4ps4GuuNLUf8/I1bryS0uJJtI
-        Ei7F8l94nZEpJdqANkbDRfI=
-X-Google-Smtp-Source: ABdhPJxoDqQlWCNGptgKYg0kKtOKxYD8uHOWpgQjtzMSrZJQccWOXnL0yAGVDp9mamOeM66SCupGPw==
-X-Received: by 2002:aa7:989a:0:b029:18a:8d62:e024 with SMTP id r26-20020aa7989a0000b029018a8d62e024mr6251979pfl.71.1604179904084;
-        Sat, 31 Oct 2020 14:31:44 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.221.93])
-        by smtp.gmail.com with ESMTPSA id s38sm8818573pgm.62.2020.10.31.14.31.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 31 Oct 2020 14:31:43 -0700 (PDT)
-Subject: Re: [PATCH v2] net: usb: usbnet: update __usbnet_{read|write}_cmd()
- to use new API
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Oliver Neukum <oneukum@suse.com>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20201010065623.10189-1-anant.thazhemadam@gmail.com>
- <20201029132256.11793-1-anant.thazhemadam@gmail.com>
- <20201031141143.5c8463e1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <f31767d8-cb06-f5cb-bd48-5822d12132c2@gmail.com>
-Date:   Sun, 1 Nov 2020 03:01:39 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728550AbgJaVc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 17:32:57 -0400
+Received: from mout.gmx.net ([212.227.17.20]:59917 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728420AbgJaVc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 17:32:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604179972;
+        bh=9uAnbEhyZD6TGPwVlCPtZ/QXZccE+izuatvELYWZEVc=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=UX/sMYar14tpBCMUaLzdiLm1oG9mPbNN8Abjig0/utOtqRSfH2NTcl/DIGpImDr0o
+         905UGWXDlcp5sYVZ6FIcODMpq1t/cLGN5HlZEYWU4Vei6lpURNoA7TA+8LnTaPWVK5
+         Q42jLTkHWkE7fXuWGPHbYY30G6CrFYczCPfYnRnA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M89L1-1kUptf2BSl-005FN6; Sat, 31
+ Oct 2020 22:32:52 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-media@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: dvbdev: Switch to new kerneldoc syntax for named variable macro argument
+Date:   Sat, 31 Oct 2020 22:32:30 +0100
+Message-Id: <20201031213230.2816220-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201031141143.5c8463e1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Bm+qHQLcLbD+sTByEqJyCf2ojlEVKzrG9VVu03XxvtptXwT/a+D
+ LhMfI9i5wewyECjhucICXnPQMIHlRk33jsGPLERPzKeqkAGUBHDRfAVNaqSaYo2w/C+9Bsb
+ YSGnjhIpymcAbmEw+OlzL78mTw+DlEFAzHeH14mXGv3bGQPmuydJi4lc/xINVEfVBVTXxf1
+ wFg2LhfN1Uu1gnDdjDvGg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZAFc6yJQUJQ=:YUl9IB6lKK3Cgoc5FfSyzw
+ HrT0QpuVp0AIG83v1WVmfx2t1MEgJZWkEagsu25UKgVv69TjToqMOZ140EIPDLLq8D/qoKwIn
+ QphdzN6i/29so45J9f3DR5XsIGWBEHua9pcFW4JkO2oB5/6jG0HcPx8X9f9sy/78AKBLu2lh/
+ BRj0i+kovdd1MDTAhZhG5o/9bjR06vrkaXvdoJ/KsdJrj0RwvpKlFGapmYWVjuXUn1DxqE6HV
+ Q/88mbdShYSx9+K0ILMspzdOR5JLXIK8BCvjo6dNDYRuoWoA7BaCAQWM4WBH8K3W/VHewRChk
+ mwgt8Go29lUyjCJdtShrP7S+i7v1KMxisaChhipnlmKunFxObwrghlzeGJQpw0JXa8p5LbIYY
+ glP4vhWjbG9pSAgZt3jA1BtPDBWL42fWc8FbyYH0hdI5pP/vn9VaL0rTpi2fF6Xi05mFTn3YF
+ yFRqZXkV9MDNMEeuY2WiGQfClAMSja5wEGASC3PhkI2Lz1tl9rdKfsZhlMrJscf8hLaIHJOLV
+ sRUwpTIkc2fl/wXYQVKsmJw3YTJz2WEtWiFXzrmcHBrpoEnOr2SKaNZE7FEbimrZhD2xbxx6b
+ V9myLnJwDvgcZHjZmKyYEqNqElIrp/nIiDzmNpbbeyM2aziUJwxzvwcdNb/+iZGjVqEN4+g5M
+ tqRJnqLWO8W2C0/z+8Ih7BUAjuYcwyy+i1pDJEKUm+8/r+Bswp6+Jk+LY6p10gIDDbXVQLOrj
+ fkWLM6tUNA8BTr2dVOqNvvQ0cOuHssNiCpWn3VD8SHz1NiIA3Q17UYsAwsuEGGrxb84VsaLKB
+ t2OzfHsFx11NpsByRjkojwejp+JIOXjGkad7ims3QDvpW2kJh/3Cvnm4wAlrFa7R9wDgK/qx5
+ YtzHbkrzv9KDIGNPZe0g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The syntax without dots is available since commit 43756e347f21
+("scripts/kernel-doc: Add support for named variable macro arguments").
 
-On 01/11/20 2:41 am, Jakub Kicinski wrote:
-> On Thu, 29 Oct 2020 18:52:56 +0530 Anant Thazhemadam wrote:
->> +	return usb_control_msg_recv(dev->udev, 0,
->> +			      cmd, reqtype, value, index, data, size,
->> +			      USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
-> Please align continuation lines after the opening bracket.
+The same HTML output is produced with and without this patch.
 
-I will do that, and send in a v3 right away.
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ include/media/dvbdev.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Anant
+diff --git a/include/media/dvbdev.h b/include/media/dvbdev.h
+index e547cbeee4310..cc85df91ee7c6 100644
+=2D-- a/include/media/dvbdev.h
++++ b/include/media/dvbdev.h
+@@ -421,7 +421,7 @@ void dvb_module_release(struct i2c_client *client);
+  * dvb_attach - attaches a DVB frontend into the DVB core.
+  *
+  * @FUNCTION:	function on a frontend module to be called.
+- * @ARGS...:	@FUNCTION arguments.
++ * @ARGS:	@FUNCTION arguments.
+  *
+  * This ancillary function loads a frontend module in runtime and runs
+  * the @FUNCTION function there, with @ARGS.
+=2D-
+2.28.0
 
