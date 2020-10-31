@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AA02A1671
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A21D2A170E
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgJaLph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:45:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46516 "EHLO mail.kernel.org"
+        id S1727856AbgJaLuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:50:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728237AbgJaLpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:45:30 -0400
+        id S1727279AbgJaLlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:41:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17AA120739;
-        Sat, 31 Oct 2020 11:45:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4652320719;
+        Sat, 31 Oct 2020 11:41:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144728;
-        bh=G9wyPo2WCpVtcUKEuCzoWI/djK0T9i8o0p46b8JLV44=;
+        s=default; t=1604144494;
+        bh=71/fyqCFGCStXvo4eThWyQuIuR+H/ksjOPKGbkCyXF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ToSTQ0nuogZ1T1VYz7JITquj5TSuvYcM2F0EGG4i4N/8Gu2Gd3P55i9l/23MqNBrs
-         AOkOp1+8B/+k3wpl8jtGCousrhWqhcYI02ZgPInB8lrTwmXKoG1IatiYu68gAKahwL
-         ChjPGmSZogajuMvXancQRka1wqZLHC930Ts1NHqI=
+        b=hw1UV/9nHiYYCuaSI70Dr0ARDz2m7g+YiWuIRp3gDklQgbwiN0C8N0tD5b06L6YrQ
+         uKTGFfa5t2IUO5jy/uJHtQS5YR2OHPdMWFCbYvyWn05QEbwPPKL3cg3SRsx3KApwk3
+         qpup4BReK41qKQjNDLKWpmuOFxfz9l0Jf7TB+X+8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
+        stable@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Oleksandr Shamray <oleksandrs@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 28/74] bnxt_en: Fix regression in workqueue cleanup logic in bnxt_remove_one().
-Date:   Sat, 31 Oct 2020 12:36:10 +0100
-Message-Id: <20201031113501.393896490@linuxfoundation.org>
+Subject: [PATCH 5.8 39/70] mlxsw: core: Fix memory leak on module removal
+Date:   Sat, 31 Oct 2020 12:36:11 +0100
+Message-Id: <20201031113501.370477307@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
-References: <20201031113500.031279088@linuxfoundation.org>
+In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
+References: <20201031113459.481803250@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+From: Ido Schimmel <idosch@nvidia.com>
 
-[ Upstream commit 21d6a11e2cadfb8446265a3efff0e2aad206e15e ]
+[ Upstream commit adc80b6cfedff6dad8b93d46a5ea2775fd5af9ec ]
 
-A recent patch has moved the workqueue cleanup logic before
-calling unregister_netdev() in bnxt_remove_one().  This caused a
-regression because the workqueue can be restarted if the device is
-still open.  Workqueue cleanup must be done after unregister_netdev().
-The workqueue will not restart itself after the device is closed.
+Free the devlink instance during the teardown sequence in the non-reload
+case to avoid the following memory leak.
 
-Call bnxt_cancel_sp_work() after unregister_netdev() and
-call bnxt_dl_fw_reporters_destroy() after that.  This fixes the
-regession and the original NULL ptr dereference issue.
+unreferenced object 0xffff888232895000 (size 2048):
+  comm "modprobe", pid 1073, jiffies 4295568857 (age 164.871s)
+  hex dump (first 32 bytes):
+    00 01 00 00 00 00 ad de 22 01 00 00 00 00 ad de  ........".......
+    10 50 89 32 82 88 ff ff 10 50 89 32 82 88 ff ff  .P.2.....P.2....
+  backtrace:
+    [<00000000c704e9a6>] __kmalloc+0x13a/0x2a0
+    [<00000000ee30129d>] devlink_alloc+0xff/0x760
+    [<0000000092ab3e5d>] 0xffffffffa042e5b0
+    [<000000004f3f8a31>] 0xffffffffa042f6ad
+    [<0000000092800b4b>] 0xffffffffa0491df3
+    [<00000000c4843903>] local_pci_probe+0xcb/0x170
+    [<000000006993ded7>] pci_device_probe+0x2c2/0x4e0
+    [<00000000a8e0de75>] really_probe+0x2c5/0xf90
+    [<00000000d42ba75d>] driver_probe_device+0x1eb/0x340
+    [<00000000bcc95e05>] device_driver_attach+0x294/0x300
+    [<000000000e2bc177>] __driver_attach+0x167/0x2f0
+    [<000000007d44cd6e>] bus_for_each_dev+0x148/0x1f0
+    [<000000003cd5a91e>] driver_attach+0x45/0x60
+    [<000000000041ce51>] bus_add_driver+0x3b8/0x720
+    [<00000000f5215476>] driver_register+0x230/0x4e0
+    [<00000000d79356f5>] __pci_register_driver+0x190/0x200
 
-Fixes: b16939b59cc0 ("bnxt_en: Fix NULL ptr dereference crash in bnxt_fw_reset_task()")
-Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Fixes: a22712a96291 ("mlxsw: core: Fix devlink unregister flow")
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Reported-by: Vadim Pasternak <vadimp@nvidia.com>
+Tested-by: Oleksandr Shamray <oleksandrs@nvidia.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlxsw/core.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -11790,15 +11790,16 @@ static void bnxt_remove_one(struct pci_d
- 	if (BNXT_PF(bp))
- 		bnxt_sriov_disable(bp);
+--- a/drivers/net/ethernet/mellanox/mlxsw/core.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
+@@ -1483,6 +1483,8 @@ void mlxsw_core_bus_device_unregister(st
+ 	if (!reload)
+ 		devlink_resources_unregister(devlink, NULL);
+ 	mlxsw_core->bus->fini(mlxsw_core->bus_priv);
++	if (!reload)
++		devlink_free(devlink);
  
-+	if (BNXT_PF(bp))
-+		devlink_port_type_clear(&bp->dl_port);
-+	pci_disable_pcie_error_reporting(pdev);
-+	unregister_netdev(dev);
- 	clear_bit(BNXT_STATE_IN_FW_RESET, &bp->state);
-+	/* Flush any pending tasks */
- 	bnxt_cancel_sp_work(bp);
- 	bp->sp_event = 0;
- 
- 	bnxt_dl_fw_reporters_destroy(bp, true);
--	if (BNXT_PF(bp))
--		devlink_port_type_clear(&bp->dl_port);
--	pci_disable_pcie_error_reporting(pdev);
--	unregister_netdev(dev);
- 	bnxt_dl_unregister(bp);
- 	bnxt_shutdown_tc(bp);
+ 	return;
  
 
 
