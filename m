@@ -2,82 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D562A1AD1
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 22:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C38062A1AD3
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 22:42:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgJaVls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 17:41:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgJaVlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 17:41:47 -0400
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24DD92076D;
-        Sat, 31 Oct 2020 21:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604180507;
-        bh=C1phg8mElzHBrp6jWm/P3Py/2QR/sFCWl19as/wD9cQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qIyVT/60Y18+c2u9JEdyJJso6ZZXJqO3aw2RgDG5XI1HRnV8zVT8kKrEUubQleG0E
-         l1TZdQzVPE8+xbvSyuJvRajFYDdXR7PwdF1JllbYFyjKoTGx6bcmhaeGfE9vc/WaHI
-         MEQlMW64WXnS8tq8JdbRyJBHzorKqD6pVL5iW0rs=
-Received: by mail-qk1-f176.google.com with SMTP id b18so8291178qkc.9;
-        Sat, 31 Oct 2020 14:41:47 -0700 (PDT)
-X-Gm-Message-State: AOAM531L+pCDL6b9SHKmrAVy8aX9gc7l8laQQvyH8zjUE8AacT+CPDWn
-        1wW3GmRHv+7iQIe+IJjmbJ7tYP/BrRv34tPG16c=
-X-Google-Smtp-Source: ABdhPJyVNchTwjs0Cqi50vP88wDfM8ehWQMw6xI76ZHKCLBRK78s1puoYTDv/01WehOX7mK5dhhnmnUxd81qlfxHSpw=
-X-Received: by 2002:a37:4e57:: with SMTP id c84mr8539711qkb.394.1604180506363;
- Sat, 31 Oct 2020 14:41:46 -0700 (PDT)
+        id S1726532AbgJaVmD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 31 Oct 2020 17:42:03 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:37255 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726438AbgJaVmC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 17:42:02 -0400
+Received: by mail-ot1-f68.google.com with SMTP id l36so1009603ota.4;
+        Sat, 31 Oct 2020 14:42:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Qv0PuqnNlX+3xWhLMuiHS4dzx8B7zQwMJ4Dtr5SX818=;
+        b=ga0+RGWuuT+lUfea5fjsr+aPKNmyfiej/j8PhTo22/KRSB89GwmckbnSkQSS4ZcGLb
+         4qLBWbi9hoNwk57QyrFaTELclPI92+ZaPqDD/cxLeRhJ29503LVmiAOK8/IQlxFAAS3M
+         tAVHtqCAZAzSr5/m9gQ9NCurec5Nj9AAt0t+uMUEkb4mdkfnAYbLwKhgfp1ynCI2GPr4
+         uVpNxk7DTbTeE24bNAO0/DuBh0xZ4Th7caSg+ljcx8WaB394KD9OK/sxKZddPlhrIbP5
+         OSaBwGdnWw6ynrQm1t6ZRH4v+X9Yzcs7qABccW7i/ZPkdqrOPXD/XeqI0vyj95dxfWai
+         uCGw==
+X-Gm-Message-State: AOAM530E9F3+wYqztm5SLm3IjALdD3SVx9p+S4CwggNVglqJ+5fTEcQf
+        3Th3a41qrEX3NUpm/CS3XESyNNcy5maO5fFPvTI=
+X-Google-Smtp-Source: ABdhPJyvEuE3XOAkSEz4BfQ6jIylJFYkJhCdyEukWH0QrVo3ImlxHA5VJYztGL0Sf9agDdnNlin9W1+Pcjqcn3/bROc=
+X-Received: by 2002:a05:6830:4af:: with SMTP id l15mr6504401otd.126.1604180520624;
+ Sat, 31 Oct 2020 14:42:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201028070504.362164-1-xie.he.0141@gmail.com>
- <20201030200705.6e2039c2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <CAJht_EOk43LdKVU4qH1MB5pLKcSONazA9XsKJUMTG=79TJ-3Rg@mail.gmail.com> <20201031095146.5e6945a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201031095146.5e6945a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sat, 31 Oct 2020 22:41:30 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1kJT50s+BVF8-fmX6ctX2pmVtcg5rnS__EBQvseuqWNA@mail.gmail.com>
-Message-ID: <CAK8P3a1kJT50s+BVF8-fmX6ctX2pmVtcg5rnS__EBQvseuqWNA@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: dlci: Deprecate the DLCI driver (aka the
- Frame Relay layer)
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Xie He <xie.he.0141@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
+References: <20201027183430.56772-1-colin.king@canonical.com>
+In-Reply-To: <20201027183430.56772-1-colin.king@canonical.com>
+From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
+Date:   Sat, 31 Oct 2020 22:41:49 +0100
+Message-ID: <CAAdtpL7cbAVqr4HZU37O++T=Rwyfumq8omkmPCoLKr6h0Uorzg@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Kconfig: fix a few trivial spelling mistakes
+To:     Colin King <colin.king@canonical.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiri Kosina <trivial@kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 5:53 PM Jakub Kicinski <kuba@kernel.org> wrote:
+On Wed, Oct 28, 2020 at 9:01 PM Colin King <colin.king@canonical.com> wrote:
 >
-> On Fri, 30 Oct 2020 22:10:42 -0700 Xie He wrote:
-> > > The usual way of getting rid of old code is to move it to staging/
-> > > for a few releases then delete it, like Arnd just did with wimax.
-> >
-> > Oh. OK. But I see "include/linux/if_frad.h" is included in
-> > "net/socket.c", and there's still some code in "net/socket.c" related
-> > to it. If we move all these files to "staging/", we need to change the
-> > "include" line in "net/socket.c" to point to the new location, and we
-> > still need to keep a little code in "net/socket.c". So I think if we
-> > move it to "staging/", we can't do this in a clean way.
+> From: Colin Ian King <colin.king@canonical.com>
 >
-> I'd just place that code under appropriate #ifdef CONFIG_ so we don't
-> forget to remove it later.  It's just the dlci_ioctl_hook, right?
+> There are a few spelling mistakes in the Kconfig, fix these.
 >
-> Maybe others have better ideas, Arnd?
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  arch/mips/Kconfig | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-I think it can just go in the bin directly. I actually submitted a couple of
-patches to clean up drivers/net/wan last year but didn't follow up
-with a new version after we decided that x.25 is still needed, see
-https://lore.kernel.org/netdev/20191209151256.2497534-1-arnd@arndb.de/
-
-I can resubmit if you like.
-
-      Arnd
+Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
