@@ -2,69 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3C72A1A93
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 21:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D554E2A1A95
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 21:44:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728603AbgJaUlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 16:41:06 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:49511 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728524AbgJaUlG (ORCPT
+        id S1728570AbgJaUoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 16:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728524AbgJaUoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 16:41:06 -0400
-Received: by mail-il1-f198.google.com with SMTP id v29so7216837ilk.16
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 13:41:05 -0700 (PDT)
+        Sat, 31 Oct 2020 16:44:24 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0FC8C0617A6
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 13:44:23 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id b18so8215447qkc.9
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 13:44:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=muc0kVwivNXzGUfAH7TU9Xb3fqNFKltfoR7TwK0/np4=;
+        b=N3h2A4a5sqoc2YkkSvR+llcB0PmusXb1nybQ23YFBNEMv9luRBYcgDQe+Ns9yDYZyE
+         h73nk1aF8wU0CBWM329J0HO4POExnRfJEPhts49f6HRIFlbXplR0ujOJL78VdqDTUyRF
+         IEikuVcs+YVLybFhxP5avOMANN4Zw2XAoQFpJxwdtWH8HMo1kwRFYlTeXwlXowXGjawU
+         +3C781rZqg7IW5GLJgWJRXOi1oVTlPT4rarqWtoNEDoyabGSKV9ZRZd95ywNXVrDJLfH
+         KAssFMepmTLh/8+XM9QL4TxTwXUBz/ihkWhbRlhc5RDZ6oNZ5XfEr3zh5lNvqaLU9kSe
+         W5hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=VYLP/QhHc95cphBqd95y5wUSHypbFcFLNHr2N+7vC6g=;
-        b=Y2RbswfzuuxSa7YUVU46tnUKc+t2Pkd6BLMWBM7I2M0KDulFFmZQ6ps0au4s1jWng3
-         xvJ2QW8qTt/j9kpPVIFQp/UdFjDrR+XKfTQ1x1F9FXGzsSF8FTKGb8PkbBQNkoLAeQWJ
-         5aAzxuWltjoWLeQ+Gg4GdjLYHrrUhXCJAlg0GrGdXwRA5vgjZ+tq67+L+d12ZnbCJq1Y
-         NgQhtW7rWqreGHXZceg1uRJT39nS2ax+2MKF2Pp5R8dur60VBsgKJ2xlhNlpDeXqb7HL
-         FHNHoEwrv0J0pIbwX+HcE6OyCzSQgPOPM141gmN0guQRm7olDSmFNTzIHO0jn8xNy2lX
-         Zqaw==
-X-Gm-Message-State: AOAM530SY92tOc3614nyog+XaXUvN9Jt4wyzrbf34fQK3Vam5X99Ews5
-        0It8VnQp6DjeEs4nIgOGcpBqTF0xZBY8OB1W08KTbR95qj3z
-X-Google-Smtp-Source: ABdhPJyK0IXC4aBQ3Cp5HfYblqD07EDNrsoG3k+zUlOkQFKBxsB1vIYRGxZHd/yE65xFwQ737kuB36TiaA0k2pIsWkfkUGL1bu8i
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=muc0kVwivNXzGUfAH7TU9Xb3fqNFKltfoR7TwK0/np4=;
+        b=M62c0aV8WhaI+wLRvRZYUB0Ch+O4pQ6x1CrhnXKUhhVltdVDDv9UIkrmdoZPJ6Rluf
+         9HJkYGVcvVhEGmh91Js3k6DPYDdzUKNRlIXrj0P5MnkWSrc+TGyT7LGlOXqZH+ozI9Jj
+         gKuqLdHrZmGzJ8m6XmylbUTetWaqrTYv/O3ljfRV2UZD40zlfQ4qn5iwpF1n6r+47qhZ
+         eUfDzHRTcdaCqSr6K41RROaJmZ6IICw3vuABCAEG/tnijWYe5UeY5ajOirwgJ8WOf2Xh
+         LPcQug3T1NkUUncDazMAM02Aud1ZUKBQO7mJvV8LM5mXDGA+jaj4iQstcCYT7oSA7Vf2
+         VkHw==
+X-Gm-Message-State: AOAM533TwYP6sXianzpHBRmqPZmzK9SagZOQKbMbUMdqjfFYQCm4m5cv
+        usBSf6krCuoOWNraU1NYIAC2Z2AgkGCzS5p4dVs=
+X-Google-Smtp-Source: ABdhPJxFstStOYPuZdlbN7GmDhPQ7MzKgC0gumNK13a+9afl0w4AxcL03uU/AW1WK2pRywoYrD3u3MmM9QTcCZtW5nE=
+X-Received: by 2002:a37:7183:: with SMTP id m125mr8375331qkc.237.1604177063121;
+ Sat, 31 Oct 2020 13:44:23 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:ccd6:: with SMTP id k22mr480720jaq.93.1604176865647;
- Sat, 31 Oct 2020 13:41:05 -0700 (PDT)
-Date:   Sat, 31 Oct 2020 13:41:05 -0700
-In-Reply-To: <000000000000341a4705aedd87e0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003be64605b2fd88b2@google.com>
-Subject: Re: INFO: rcu detected stall in sys_mount (5)
-From:   syzbot <syzbot+dc8c077c7091175cbdb1@syzkaller.appspotmail.com>
-To:     dhowells@redhat.com, fweisbec@gmail.com,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
+References: <20201031085420.1316-1-kechengsong@huawei.com>
+In-Reply-To: <20201031085420.1316-1-kechengsong@huawei.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Sat, 31 Oct 2020 21:44:12 +0100
+Message-ID: <CAFLxGvxB3-ryVLPtS0XhZnu+4w-gSzzw=BV+1mKTGt3mOKbeiw@mail.gmail.com>
+Subject: Re: [PATCH v2] ubifs: Fix the printing type of c->big_lpt
+To:     Chengsong Ke <kechengsong@huawei.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+        wangfangpeng1@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Sat, Oct 31, 2020 at 9:56 AM Chengsong Ke <kechengsong@huawei.com> wrote:
+>
+> Ubifs uses %d to print c->big_lpt, but c->big_lpt is a variable
+> of type unsigned int and should be printed with %u.
 
-commit 1d0e850a49a5b56f8f3cb51e74a11e2fedb96be6
-Author: David Howells <dhowells@redhat.com>
-Date:   Fri Oct 16 12:21:14 2020 +0000
+Well, it is:
+unsigned int big_lpt:1;
+So, either 0 or 1.
 
-    afs: Fix cell removal
+Does changing it to %u silence some static checker or is there some
+other problem I don't
+see right now? :-)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=132fe914500000
-start commit:   02de58b2 Merge tag 'devicetree-fixes-for-5.9-3' of git://g..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
-dashboard link: https://syzkaller.appspot.com/bug?extid=dc8c077c7091175cbdb1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13a40297900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=110b7a2f900000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: afs: Fix cell removal
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Thanks,
+//richard
