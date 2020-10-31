@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55342A16A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BAC2A16AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727014AbgJaLpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:45:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45832 "EHLO mail.kernel.org"
+        id S1728151AbgJaLru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:47:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728231AbgJaLpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:45:02 -0400
+        id S1727970AbgJaLpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:45:05 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A7ED20731;
-        Sat, 31 Oct 2020 11:45:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B23E20739;
+        Sat, 31 Oct 2020 11:45:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144701;
-        bh=owFw9jy5wvXy7h/hS8+rijyv14Ko20ItMZf4qlDxZW8=;
+        s=default; t=1604144704;
+        bh=tLe4UjHfaP1L6JDkFsgInBOXWJARSnPmbin4YN2jjzk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nb2zk5dAVsZiuk3/0P6rBMiMVuH1R4QJUpCizRXjlk9R+2A+CFKtn0+yEI06Gyhyw
-         HljAQW0o+0fk9Lgw4ryJM7M+2cjAapJ8tiR+dUCByZzFYeP3KLr+d+SG+R9BrgQH4v
-         UlosLWkaQ8GV42H5NeT2LaCalH3qKXmwZUmWXz+w=
+        b=Se5VZKePghQMys4CE9LO198UvjbYXY5dBzURSXZVtlSjgSS+c80gwGe44MPJWWT+W
+         /AMUyH5yUPBhGeAoz9I7YKW5vCcdZwKaD9Y2iV+gTTrg6vsseeXRRbIE5R0ygH4lkz
+         MJt6zMCh2+7XTR6Gqo+Fpj0I5Hi8nC8sWKxhdMEM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Thang Hoang Ngo <thang.h.ngo@dektech.com.au>,
-        Tung Nguyen <tung.q.nguyen@dektech.com.au>,
-        Xin Long <lucien.xin@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
+        stable@vger.kernel.org, Karsten Graul <kgraul@linux.ibm.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 48/74] tipc: fix memory leak caused by tipc_buf_append()
-Date:   Sat, 31 Oct 2020 12:36:30 +0100
-Message-Id: <20201031113502.341539029@linuxfoundation.org>
+Subject: [PATCH 5.9 49/74] net/smc: fix invalid return code in smcd_new_buf_create()
+Date:   Sat, 31 Oct 2020 12:36:31 +0100
+Message-Id: <20201031113502.388439261@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
 References: <20201031113500.031279088@linuxfoundation.org>
@@ -46,72 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tung Nguyen <tung.q.nguyen@dektech.com.au>
+From: Karsten Graul <kgraul@linux.ibm.com>
 
-[ Upstream commit ceb1eb2fb609c88363e06618b8d4bbf7815a4e03 ]
+[ Upstream commit 6b1bbf94ab369d97ed3bdaa561521a52c27ef619 ]
 
-Commit ed42989eab57 ("tipc: fix the skb_unshare() in tipc_buf_append()")
-replaced skb_unshare() with skb_copy() to not reduce the data reference
-counter of the original skb intentionally. This is not the correct
-way to handle the cloned skb because it causes memory leak in 2
-following cases:
- 1/ Sending multicast messages via broadcast link
-  The original skb list is cloned to the local skb list for local
-  destination. After that, the data reference counter of each skb
-  in the original list has the value of 2. This causes each skb not
-  to be freed after receiving ACK:
-  tipc_link_advance_transmq()
-  {
-   ...
-   /* release skb */
-   __skb_unlink(skb, &l->transmq);
-   kfree_skb(skb); <-- memory exists after being freed
-  }
+smc_ism_register_dmb() returns error codes set by the ISM driver which
+are not guaranteed to be negative or in the errno range. Such values
+would not be handled by ERR_PTR() and finally the return code will be
+used as a memory address.
+Fix that by using a valid negative errno value with ERR_PTR().
 
- 2/ Sending multicast messages via replicast link
-  Similar to the above case, each skb cannot be freed after purging
-  the skb list:
-  tipc_mcast_xmit()
-  {
-   ...
-   __skb_queue_purge(pkts); <-- memory exists after being freed
-  }
-
-This commit fixes this issue by using skb_unshare() instead. Besides,
-to avoid use-after-free error reported by KASAN, the pointer to the
-fragment is set to NULL before calling skb_unshare() to make sure that
-the original skb is not freed after freeing the fragment 2 times in
-case skb_unshare() returns NULL.
-
-Fixes: ed42989eab57 ("tipc: fix the skb_unshare() in tipc_buf_append()")
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Reported-by: Thang Hoang Ngo <thang.h.ngo@dektech.com.au>
-Signed-off-by: Tung Nguyen <tung.q.nguyen@dektech.com.au>
-Reviewed-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Cong Wang <xiyou.wangcong@gmail.com>
-Link: https://lore.kernel.org/r/20201027032403.1823-1-tung.q.nguyen@dektech.com.au
+Fixes: 72b7f6c48708 ("net/smc: unique reason code for exceeded max dmb count")
+Signed-off-by: Karsten Graul <kgraul@linux.ibm.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/msg.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/smc/smc_core.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/tipc/msg.c
-+++ b/net/tipc/msg.c
-@@ -150,12 +150,11 @@ int tipc_buf_append(struct sk_buff **hea
- 	if (fragid == FIRST_FRAGMENT) {
- 		if (unlikely(head))
- 			goto err;
--		if (skb_cloned(frag))
--			frag = skb_copy(frag, GFP_ATOMIC);
-+		*buf = NULL;
-+		frag = skb_unshare(frag, GFP_ATOMIC);
- 		if (unlikely(!frag))
- 			goto err;
- 		head = *headbuf = frag;
--		*buf = NULL;
- 		TIPC_SKB_CB(head)->tail = NULL;
- 		if (skb_is_nonlinear(head)) {
- 			skb_walk_frags(head, tail) {
+--- a/net/smc/smc_core.c
++++ b/net/smc/smc_core.c
+@@ -1616,7 +1616,8 @@ static struct smc_buf_desc *smcd_new_buf
+ 		rc = smc_ism_register_dmb(lgr, bufsize, buf_desc);
+ 		if (rc) {
+ 			kfree(buf_desc);
+-			return (rc == -ENOMEM) ? ERR_PTR(-EAGAIN) : ERR_PTR(rc);
++			return (rc == -ENOMEM) ? ERR_PTR(-EAGAIN) :
++						 ERR_PTR(-EIO);
+ 		}
+ 		buf_desc->pages = virt_to_page(buf_desc->cpu_addr);
+ 		/* CDC header stored in buf. So, pretend it was smaller */
 
 
