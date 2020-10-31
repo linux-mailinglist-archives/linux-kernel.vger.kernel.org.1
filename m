@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 658EB2A1651
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:44:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A6B2A1618
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728165AbgJaLoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:44:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44650 "EHLO mail.kernel.org"
+        id S1727754AbgJaLlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:41:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727232AbgJaLoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:44:18 -0400
+        id S1727720AbgJaLlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:41:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CE9620731;
-        Sat, 31 Oct 2020 11:44:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BEA8B20731;
+        Sat, 31 Oct 2020 11:41:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144658;
-        bh=BZaia0VGdkH2dsmtDYK+qDMiJcBp4k+u/wtEFlDVaGg=;
+        s=default; t=1604144505;
+        bh=Shky6g4OVk/6gYK00B9yQQdG33qHJEk0/XWJz/WoXB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vJQnAGonZsXlJMRXarEX3z6hb6VsZS9ksbEDhPldk9vwXMXSQoU+AdOdKhjtWjCqq
-         V7pqTe9Sb4TyEZaCp/XNDeiRZb541G3vZauPYdWwG6OFrVh+dMDGb4H4BfG7XE5kfk
-         EfaDIE3+pYnSdpFcxOg0REue/H40nkAwCClzHTiE=
+        b=iPzE+P/9HrIlHpX8OyZS5VUdaZD4UU7gJk5O6Fpvb62R3MagKe/lwVofYn7zpzSJ8
+         mSBABev4b0pA/Eqkt+XKQlW9ia/PSYHgDTFks9wmjhd3SeHzxgK+yHLrOxC/emK/+g
+         98DbnqU+53i8lai5gouUi6ty6HzbAmuSQLarrU0c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        stable@vger.kernel.org, Guillaume Nault <gnault@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 32/74] chelsio/chtls: fix deadlock issue
-Date:   Sat, 31 Oct 2020 12:36:14 +0100
-Message-Id: <20201031113501.582935104@linuxfoundation.org>
+Subject: [PATCH 5.8 43/70] net/sched: act_mpls: Add softdep on mpls_gso.ko
+Date:   Sat, 31 Oct 2020 12:36:15 +0100
+Message-Id: <20201031113501.559927528@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
-References: <20201031113500.031279088@linuxfoundation.org>
+In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
+References: <20201031113459.481803250@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +42,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+From: Guillaume Nault <gnault@redhat.com>
 
-[ Upstream commit 28e9dcd9172028263c8225c15c4e329e08475e89 ]
+TCA_MPLS_ACT_PUSH and TCA_MPLS_ACT_MAC_PUSH might be used on gso
+packets. Such packets will thus require mpls_gso.ko for segmentation.
 
-In chtls_pass_establish() we hold child socket lock using bh_lock_sock
-and we are again trying bh_lock_sock in add_to_reap_list, causing deadlock.
-Remove bh_lock_sock in add_to_reap_list() as lock is already held.
+v2: Drop dependency on CONFIG_NET_MPLS_GSO in Kconfig (from Jakub and
+    David).
 
-Fixes: cc35c88ae4db ("crypto : chtls - CPL handler definition")
-Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
-Link: https://lore.kernel.org/r/20201025193538.31112-1-vinay.yadav@chelsio.com
+Fixes: 2a2ea50870ba ("net: sched: add mpls manipulation actions to TC")
+Signed-off-by: Guillaume Nault <gnault@redhat.com>
+Link: https://lore.kernel.org/r/1f6cab15bbd15666795061c55563aaf6a386e90e.1603708007.git.gnault@redhat.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/crypto/chelsio/chtls/chtls_cm.c |    2 --
- 1 file changed, 2 deletions(-)
+ net/sched/act_mpls.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/crypto/chelsio/chtls/chtls_cm.c
-+++ b/drivers/crypto/chelsio/chtls/chtls_cm.c
-@@ -1514,7 +1514,6 @@ static void add_to_reap_list(struct sock
- 	struct chtls_sock *csk = sk->sk_user_data;
+--- a/net/sched/act_mpls.c
++++ b/net/sched/act_mpls.c
+@@ -408,6 +408,7 @@ static void __exit mpls_cleanup_module(v
+ module_init(mpls_init_module);
+ module_exit(mpls_cleanup_module);
  
- 	local_bh_disable();
--	bh_lock_sock(sk);
- 	release_tcp_port(sk); /* release the port immediately */
- 
- 	spin_lock(&reap_list_lock);
-@@ -1523,7 +1522,6 @@ static void add_to_reap_list(struct sock
- 	if (!csk->passive_reap_next)
- 		schedule_work(&reap_task);
- 	spin_unlock(&reap_list_lock);
--	bh_unlock_sock(sk);
- 	local_bh_enable();
- }
- 
++MODULE_SOFTDEP("post: mpls_gso");
+ MODULE_AUTHOR("Netronome Systems <oss-drivers@netronome.com>");
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("MPLS manipulation actions");
 
 
