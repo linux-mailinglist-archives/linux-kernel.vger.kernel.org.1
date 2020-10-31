@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A102A1683
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F072A168E
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgJaLq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:46:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47590 "EHLO mail.kernel.org"
+        id S1727039AbgJaLqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:46:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727320AbgJaLqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:46:20 -0400
+        id S1728374AbgJaLqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:46:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6AE2120739;
-        Sat, 31 Oct 2020 11:46:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02E19205F4;
+        Sat, 31 Oct 2020 11:46:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144779;
-        bh=I7ef5RP+nZYYyssBBSxTSJttzDcyY9c8ZJO+3R3iCgk=;
+        s=default; t=1604144781;
+        bh=Dmx4856aMDF3NR3IzuQtcn7Pcfi9Y6BrCatuOiMQszA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YMAVwQpVmka0p6Oy6zn2gO3LTdpCOv1e8aU6kWJuCUFBoOJDyDKZHm9HvXDgbnpaa
-         BflcBR6qKfPE/YSHO7n514noUG8XO77RP9PTdPLkggFHqY2QbXJ9bZewwFjmQRibtY
-         UtvqR4v39hA3Zmw2HhjGreG1uqwSGr0NzUR86Pos=
+        b=bL2VCSKQxoAa66nj39vTh3ZWywTYsW+Rsc3NWQr18bvPn6sLiNBTla902+hKgV1sr
+         wk5AvylvpBuFRMfai+uNI0aj00r0THOb3zXl1XAGpe1wm17PUMw9JStEACgcW2bN2u
+         jHd9BqMgc3c+3j/gesti5UYbpMI2qxLVk9NVOkuM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH 5.9 59/74] bpf: Fix comment for helper bpf_current_task_under_cgroup()
-Date:   Sat, 31 Oct 2020 12:36:41 +0100
-Message-Id: <20201031113502.859072000@linuxfoundation.org>
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH 5.9 60/74] evm: Check size of security.evm before using it
+Date:   Sat, 31 Oct 2020 12:36:42 +0100
+Message-Id: <20201031113502.906844030@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
 References: <20201031113500.031279088@linuxfoundation.org>
@@ -42,49 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Song Liu <songliubraving@fb.com>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-commit 1aef5b4391f0c75c0a1523706a7b0311846ee12f upstream.
+commit 455b6c9112eff8d249e32ba165742085678a80a4 upstream.
 
-This should be "current" not "skb".
+This patch checks the size for the EVM_IMA_XATTR_DIGSIG and
+EVM_XATTR_PORTABLE_DIGSIG types to ensure that the algorithm is read from
+the buffer returned by vfs_getxattr_alloc().
 
-Fixes: c6b5fb8690fa ("bpf: add documentation for eBPF helpers (42-50)")
-Signed-off-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/bpf/20200910203314.70018-1-songliubraving@fb.com
+Cc: stable@vger.kernel.org # 4.19.x
+Fixes: 5feeb61183dde ("evm: Allow non-SHA1 digital signatures")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/uapi/linux/bpf.h       |    4 ++--
- tools/include/uapi/linux/bpf.h |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ security/integrity/evm/evm_main.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1438,8 +1438,8 @@ union bpf_attr {
-  * 	Return
-  * 		The return value depends on the result of the test, and can be:
-  *
-- * 		* 0, if the *skb* task belongs to the cgroup2.
-- * 		* 1, if the *skb* task does not belong to the cgroup2.
-+ *		* 0, if current task belongs to the cgroup2.
-+ *		* 1, if current task does not belong to the cgroup2.
-  * 		* A negative error code, if an error occurred.
-  *
-  * long bpf_skb_change_tail(struct sk_buff *skb, u32 len, u64 flags)
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1438,8 +1438,8 @@ union bpf_attr {
-  * 	Return
-  * 		The return value depends on the result of the test, and can be:
-  *
-- * 		* 0, if the *skb* task belongs to the cgroup2.
-- * 		* 1, if the *skb* task does not belong to the cgroup2.
-+ *		* 0, if current task belongs to the cgroup2.
-+ *		* 1, if current task does not belong to the cgroup2.
-  * 		* A negative error code, if an error occurred.
-  *
-  * long bpf_skb_change_tail(struct sk_buff *skb, u32 len, u64 flags)
+--- a/security/integrity/evm/evm_main.c
++++ b/security/integrity/evm/evm_main.c
+@@ -181,6 +181,12 @@ static enum integrity_status evm_verify_
+ 		break;
+ 	case EVM_IMA_XATTR_DIGSIG:
+ 	case EVM_XATTR_PORTABLE_DIGSIG:
++		/* accept xattr with non-empty signature field */
++		if (xattr_len <= sizeof(struct signature_v2_hdr)) {
++			evm_status = INTEGRITY_FAIL;
++			goto out;
++		}
++
+ 		hdr = (struct signature_v2_hdr *)xattr_data;
+ 		digest.hdr.algo = hdr->hash_algo;
+ 		rc = evm_calc_hash(dentry, xattr_name, xattr_value,
 
 
