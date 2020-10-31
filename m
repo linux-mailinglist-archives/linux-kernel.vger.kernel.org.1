@@ -2,166 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6492A18C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 17:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D120B2A18C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 17:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgJaQlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 12:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726586AbgJaQlK (ORCPT
+        id S1728136AbgJaQnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 12:43:25 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:33998 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726586AbgJaQnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 12:41:10 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF413C0617A6
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 09:41:09 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id w1so9768883wrm.4
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 09:41:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=Rp+mdbEoEg8OXhfiaKlhI1HrYvr9OmPRej9gQ86QVgw=;
-        b=e38W5bJhMJEBXOZe9WcYJEbUZsQluAgzif+0AjMhH1PNRggJob2Jt6AIrsDs21tbCy
-         rmooUZHgU+L2n55JznhczEc1sHvQcX+VhvmOSpIF/BSpb1Sk2kfZxkWHGiRv21zOjJr9
-         g1sToYP0rbyviZQANy8JSnSLIPrA6OYpVJS0M1sadD8mopavbRA7HrWB2/Shjl1Wywvd
-         ZW2mJ/XqjBjXPTSPtLdtjTJp79jPqdkzc8n9c8qSjrSA3FPy9rdt06aiCyJKvlQoOCUX
-         meIEon+acIiDPeoYdugbaMnClOExs2OT/07a+QkSK5lwgMk4rPhOkSh+bcvmFKpoRxko
-         JGzA==
+        Sat, 31 Oct 2020 12:43:25 -0400
+Received: by mail-io1-f70.google.com with SMTP id y17so285472iot.1
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 09:43:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=Rp+mdbEoEg8OXhfiaKlhI1HrYvr9OmPRej9gQ86QVgw=;
-        b=DiR2M+mUVpxH3+IQJ/SZPo0pzr+v5Bsq9unN9jACwUkDbIp+qaZYE2jy8PwZYY5F97
-         TpGBjGYpAqmk4i2bVgxlebBYpNn9ZrbLNfUUMoMs2e3y2ueMyhCblaGa7U+P0m+yPpZ1
-         McEMGmEZpalX3iJaaUZk47nvMpD4bTnAnISNoNmsTtbCBtEnrfngT3Ii4OCGsiRSIu9k
-         uCujy+32gaMBuMjb2Z84dC5BkKR0TgQRGpm58sdji7PV6NypC9+dh0OymAILQxPNO4Vo
-         7gFIqrfeWkSp2H9Llf81JwoD/hAC6KU8YuVvzz1/YYYkNQXdebzD23b9RmYC+/SeWGIL
-         qF1g==
-X-Gm-Message-State: AOAM532t0IJv8ZTxO7SIpLlne2QQpgP0LSLqLAH4ED9djlTjKqOPomcs
-        DTmKSzBLrDFbMDWp9uKU+f+rV/phCSDWDg==
-X-Google-Smtp-Source: ABdhPJzaM/9CWZIh5jIgw/neoPnsUwXZHGRjEbB5YVnbtrPhCn1Uz6hYpfL6c7G0RARcOvU5Gzlmmw==
-X-Received: by 2002:adf:f3c7:: with SMTP id g7mr10915197wrp.394.1604162468439;
-        Sat, 31 Oct 2020 09:41:08 -0700 (PDT)
-Received: from tabot ([154.72.150.196])
-        by smtp.gmail.com with ESMTPSA id t199sm9199779wmt.46.2020.10.31.09.41.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 31 Oct 2020 09:41:07 -0700 (PDT)
-Date:   Sat, 31 Oct 2020 17:41:03 +0100
-From:   Tabot Kevin <tabot.kevin@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] Replaced hard coded function names in debug messages with
- __func__ macro.
-Message-ID: <20201031164059.GA5534@tabot>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=FF3ULlvXFfH0/25/zEK6CK+ewSrhdXs4qIRBIcWcMJo=;
+        b=ULeW4f8gDFrAKhKyzo1nXrPxVPD1USUEtFCnBccZ2U3o5riL/Xh4+BXAiakfsHn+Hv
+         SVWGI3lhAwMvV8gcqN7gwWpSnlVEr0GLCvpLxhsHrJ+iRd+jOlkea8rCQeO6Wi3MDLaj
+         mudnKr/r4eubG4Gl8YR9PEXYMPYJooplPzlHuIkEwBkv6ye1q5ecURmiuzqQEPEi5mfk
+         kB3SuUEdFZIvq9c6zMm6U5CI7XG/WwFpm4d+I4G8u+3zwxUKnm8G1Ho49JVuAMh73CuO
+         UdGabCkDMMXanZbTbQp6m83n4aJAPPsd0vLOhwvmSMtAJRSwwSrA+82zdgq56zI7/NXp
+         98gg==
+X-Gm-Message-State: AOAM5331Ba+AwvDrA5Fcgz+EU6siI8kowljyT9fWSEL+uQ4xNiGrAghz
+        AkNgyeZExyMV1fp+Xff1104/gJNQct+TTCJ65/4d8g99MYZT
+X-Google-Smtp-Source: ABdhPJwrOSbdAF7lZOBxNAljzQlqPH0oWRT2+m2xHd1YDYFmcYHOyVTUNRx3ZOgMwIQJCDRxb87B8ess1aQzxUFdJRAL0yqrANdW
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Received: by 2002:a05:6638:1381:: with SMTP id w1mr6241325jad.79.1604162603832;
+ Sat, 31 Oct 2020 09:43:23 -0700 (PDT)
+Date:   Sat, 31 Oct 2020 09:43:23 -0700
+In-Reply-To: <00000000000013259505a931dd26@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000029e03805b2fa362f@google.com>
+Subject: Re: KASAN: use-after-free Read in decode_session6
+From:   syzbot <syzbot+5be8aebb1b7dfa90ef31@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the following:
-- Uses __func__ macro to print function names.
-- Got rid of unnecessary braces around single line if statements.
-- End of block comments on a seperate line.
-- A spelling mistake of the word "on".
+syzbot has found a reproducer for the following issue on:
 
-Signed-off-by: Tabot Kevin <tabot.kevin@gmail.com>
----
- drivers/staging/media/atomisp/i2c/atomisp-ov2680.c | 25 +++++++++++-----------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+HEAD commit:    68bb4665 Merge branch 'l2-multicast-forwarding-for-ocelot-..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1219346c500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=eac680ae76558a0e
+dashboard link: https://syzkaller.appspot.com/bug?extid=5be8aebb1b7dfa90ef31
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11286398500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11bbf398500000
 
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-index c907305..1396a33 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-@@ -146,7 +146,7 @@ static int ov2680_g_bin_factor_x(struct v4l2_subdev *sd, s32 *val)
- 	struct ov2680_device *dev = to_ov2680_sensor(sd);
- 	struct i2c_client *client = v4l2_get_subdevdata(sd);
- 
--	dev_dbg(&client->dev,  "++++ov2680_g_bin_factor_x\n");
-+	dev_dbg(&client->dev,  "++++%s\n", __func__);
- 	*val = ov2680_res[dev->fmt_idx].bin_factor_x;
- 
- 	return 0;
-@@ -158,7 +158,7 @@ static int ov2680_g_bin_factor_y(struct v4l2_subdev *sd, s32 *val)
- 	struct i2c_client *client = v4l2_get_subdevdata(sd);
- 
- 	*val = ov2680_res[dev->fmt_idx].bin_factor_y;
--	dev_dbg(&client->dev,  "++++ov2680_g_bin_factor_y\n");
-+	dev_dbg(&client->dev,  "++++%s\n", __func__);
- 	return 0;
- }
- 
-@@ -173,7 +173,7 @@ static int ov2680_get_intg_factor(struct i2c_client *client,
- 	u16 reg_val;
- 	int ret;
- 
--	dev_dbg(&client->dev,  "++++ov2680_get_intg_factor\n");
-+	dev_dbg(&client->dev,  "++++%s\n", __func__);
- 	if (!info)
- 		return -EINVAL;
- 
-@@ -251,8 +251,8 @@ static long __ov2680_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
- 	int ret, exp_val;
- 
- 	dev_dbg(&client->dev,
--		"+++++++__ov2680_set_exposure coarse_itg %d, gain %d, digitgain %d++\n",
--		coarse_itg, gain, digitgain);
-+		"+++++++%s coarse_itg %d, gain %d, digitgain %d++\n",
-+		__func__, coarse_itg, gain, digitgain);
- 
- 	vts = ov2680_res[dev->fmt_idx].lines_per_frame;
- 
-@@ -461,11 +461,11 @@ static int ov2680_v_flip(struct v4l2_subdev *sd, s32 value)
- 	ret = ov2680_read_reg(client, 1, OV2680_FLIP_REG, &val);
- 	if (ret)
- 		return ret;
--	if (value) {
-+	if (value)
- 		val |= OV2680_FLIP_MIRROR_BIT_ENABLE;
--	} else {
-+	else
- 		val &= ~OV2680_FLIP_MIRROR_BIT_ENABLE;
--	}
-+
- 	ret = ov2680_write_reg(client, 1,
- 			       OV2680_FLIP_REG, val);
- 	if (ret)
-@@ -731,7 +731,8 @@ static int gpio_ctrl(struct v4l2_subdev *sd, bool flag)
- 	 * existing integrations often wire two (reset/power_down)
- 	 * because that is the way other sensors work.  There is no
- 	 * way to tell how it is wired internally, so existing
--	 * firmwares expose both and we drive them symmetrically. */
-+	 * firmwares expose both and we drive them symmetrically.
-+	 */
- 	if (flag) {
- 		ret = dev->platform_data->gpio0_ctrl(sd, 1);
- 		usleep_range(10000, 15000);
-@@ -1060,9 +1061,9 @@ static int ov2680_s_stream(struct v4l2_subdev *sd, int enable)
- 
- 	mutex_lock(&dev->input_lock);
- 	if (enable)
--		dev_dbg(&client->dev, "ov2680_s_stream one\n");
-+		dev_dbg(&client->dev, "%s on\n", __func__);
- 	else
--		dev_dbg(&client->dev, "ov2680_s_stream off\n");
-+		dev_dbg(&client->dev, "%s off\n", __func__);
- 
- 	ret = ov2680_write_reg(client, 1, OV2680_SW_STREAM,
- 			       enable ? OV2680_START_STREAMING :
-@@ -1226,7 +1227,7 @@ static int ov2680_remove(struct i2c_client *client)
- 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
- 	struct ov2680_device *dev = to_ov2680_sensor(sd);
- 
--	dev_dbg(&client->dev, "ov2680_remove...\n");
-+	dev_dbg(&client->dev, "%s...\n", __func__);
- 
- 	dev->platform_data->csi_cfg(sd, 0);
- 
--- 
-2.7.4
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5be8aebb1b7dfa90ef31@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in decode_session6+0xe7c/0x1580 net/xfrm/xfrm_policy.c:3393
+Read of size 1 at addr ffff88802c9d08af by task syz-executor061/8480
+
+CPU: 1 PID: 8480 Comm: syz-executor061 Not tainted 5.10.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ decode_session6+0xe7c/0x1580 net/xfrm/xfrm_policy.c:3393
+ __xfrm_decode_session net/xfrm/xfrm_policy.c:3485 [inline]
+ __xfrm_policy_check+0x2fa/0x2850 net/xfrm/xfrm_policy.c:3540
+ __xfrm_policy_check2 include/net/xfrm.h:1097 [inline]
+ xfrm_policy_check include/net/xfrm.h:1106 [inline]
+ sctp_rcv+0x12b0/0x2e30 net/sctp/input.c:202
+ sctp6_rcv+0x22/0x40 net/sctp/ipv6.c:1078
+ ip6_protocol_deliver_rcu+0x2e8/0x1680 net/ipv6/ip6_input.c:433
+ ip6_input_finish+0x7f/0x160 net/ipv6/ip6_input.c:474
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ NF_HOOK include/linux/netfilter.h:295 [inline]
+ ip6_input+0x9c/0xd0 net/ipv6/ip6_input.c:483
+ dst_input include/net/dst.h:449 [inline]
+ ip6_rcv_finish net/ipv6/ip6_input.c:76 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ NF_HOOK include/linux/netfilter.h:295 [inline]
+ ipv6_rcv+0x28e/0x3c0 net/ipv6/ip6_input.c:307
+ __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5315
+ __netif_receive_skb+0x27/0x1c0 net/core/dev.c:5429
+ process_backlog+0x232/0x6c0 net/core/dev.c:6319
+ napi_poll net/core/dev.c:6763 [inline]
+ net_rx_action+0x4dc/0x1100 net/core/dev.c:6833
+ __do_softirq+0x2a0/0x9f6 kernel/softirq.c:298
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ do_softirq kernel/softirq.c:343 [inline]
+ do_softirq+0xb5/0xe0 kernel/softirq.c:330
+ __local_bh_enable_ip+0xf0/0x110 kernel/softirq.c:195
+ local_bh_enable include/linux/bottom_half.h:32 [inline]
+ rcu_read_unlock_bh include/linux/rcupdate.h:730 [inline]
+ ip6_finish_output2+0x71f/0x16c0 net/ipv6/ip6_output.c:118
+ __ip6_finish_output net/ipv6/ip6_output.c:143 [inline]
+ __ip6_finish_output+0x447/0xab0 net/ipv6/ip6_output.c:128
+ ip6_finish_output+0x34/0x1f0 net/ipv6/ip6_output.c:153
+ NF_HOOK_COND include/linux/netfilter.h:290 [inline]
+ ip6_output+0x1db/0x520 net/ipv6/ip6_output.c:176
+ dst_output include/net/dst.h:443 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ NF_HOOK include/linux/netfilter.h:295 [inline]
+ ip6_xmit+0x1258/0x1e80 net/ipv6/ip6_output.c:280
+ sctp_v6_xmit+0xbf3/0xfe0 net/sctp/ipv6.c:223
+ sctp_packet_transmit+0x1f44/0x32f0 net/sctp/output.c:627
+ sctp_packet_singleton net/sctp/outqueue.c:773 [inline]
+ sctp_outq_flush_ctrl.constprop.0+0x6d3/0xc40 net/sctp/outqueue.c:904
+ sctp_outq_flush+0xf3/0x2580 net/sctp/outqueue.c:1186
+ sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1801 [inline]
+ sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
+ sctp_do_sm+0x74e/0x5130 net/sctp/sm_sideeffect.c:1156
+ sctp_primitive_ASSOCIATE+0x98/0xc0 net/sctp/primitive.c:73
+ sctp_sendmsg_to_asoc+0xb5b/0x2140 net/sctp/socket.c:1823
+ sctp_sendmsg+0x103b/0x1d30 net/sctp/socket.c:2013
+ inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:817
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ __sys_sendto+0x21c/0x320 net/socket.c:1992
+ __do_sys_sendto net/socket.c:2004 [inline]
+ __se_sys_sendto net/socket.c:2000 [inline]
+ __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2000
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4413c9
+Code: e8 fc ab 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff3d021208 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004413c9
+RDX: 0000000000034000 RSI: 0000000020847fff RDI: 0000000000000004
+RBP: 00000000006cb018 R08: 000000002005ffe4 R09: 000000000000001c
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402170
+R13: 0000000000402200 R14: 0000000000000000 R15: 0000000000000000
+
+Allocated by task 1:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ kmalloc include/linux/slab.h:557 [inline]
+ tomoyo_realpath_from_path+0xc3/0x620 security/tomoyo/realpath.c:254
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_perm+0x21b/0x400 security/tomoyo/file.c:822
+ security_inode_getattr+0xcf/0x140 security/security.c:1279
+ vfs_getattr fs/stat.c:121 [inline]
+ vfs_statx+0x164/0x390 fs/stat.c:189
+ vfs_fstatat fs/stat.c:207 [inline]
+ vfs_lstat include/linux/fs.h:3109 [inline]
+ __do_sys_newlstat+0x91/0x110 fs/stat.c:362
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 1:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kfree+0xdb/0x360 mm/slub.c:4124
+ tomoyo_realpath_from_path+0x191/0x620 security/tomoyo/realpath.c:291
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_perm+0x21b/0x400 security/tomoyo/file.c:822
+ security_inode_getattr+0xcf/0x140 security/security.c:1279
+ vfs_getattr fs/stat.c:121 [inline]
+ vfs_statx+0x164/0x390 fs/stat.c:189
+ vfs_fstatat fs/stat.c:207 [inline]
+ vfs_lstat include/linux/fs.h:3109 [inline]
+ __do_sys_newlstat+0x91/0x110 fs/stat.c:362
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88802c9d0000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 2223 bytes inside of
+ 4096-byte region [ffff88802c9d0000, ffff88802c9d1000)
+The buggy address belongs to the page:
+page:00000000a89e7c26 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2c9d0
+head:00000000a89e7c26 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 0000000000000000 0000000100000001 ffff888010042140
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88802c9d0780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88802c9d0800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88802c9d0880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                  ^
+ ffff88802c9d0900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88802c9d0980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
