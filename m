@@ -2,130 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295372A172F
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 13:11:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B922A1732
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 13:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgJaML2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 08:11:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726928AbgJaML1 (ORCPT
+        id S1727158AbgJaMLs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 31 Oct 2020 08:11:48 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:25077 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726928AbgJaMLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 08:11:27 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87080C0613D5
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 05:11:27 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id k10so7914933wrw.13
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 05:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lFSMOl//9O1ug5uYOCnBIrhhC0lHZ07PjA6WBVaJOMw=;
-        b=sAv+GKURU7xrzA4Wvi4nL3/ehs2+9ukBcxMq9752y9LMO+nHlb74XrM+lNvvKC8TrK
-         v+wB7B+OdYxolysBeQSatsrfdOM7iCyiV1sq5qBMSKJy37KcAgxnbgud8Imh7w+RrnTV
-         95Gh5oH1wLEDzRMCxwoKSpVLzlcQi99HevePHQSPdTAGx03PIb2sq7+X2sBxUdE4zm1D
-         jGGyOrEHOTAGAEi1O8CQ6ivjPv6T2I1BpTMJ42S7hfw5/zVZQYfMecj/TBwU82ORdalx
-         aSCkRYU1oNxSuH1hNIWAU1nLFRKC/A4AtXDHkybyO6vpv9gSpT/I9uEnfjjHiUx1c2mk
-         tQCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lFSMOl//9O1ug5uYOCnBIrhhC0lHZ07PjA6WBVaJOMw=;
-        b=opnpl0W5S6skLAcxzN+zONn2j93kyIqCvNf7zqMaHyEnLLFz2xc64BX8PpA8gi2hUe
-         L2BKmxX/BTOMCj7pX7LDQ4HQcXEsFEzWqWGcL+DX6ki+FAwS6Gmh6+DeBXj5HnlJ4Fyj
-         H0fC5AG0U3lFEbq5lK/Kbp5mbDTSkCm5SyIGKnG2Lkwxxx0S07tbIlbvFvAfzfqdv3Mq
-         S2HjkBh13GzJuKO17zxTon7vh4tp7h5wjD2x7ArR/uWpbon6aOpGaLxjThaiFHU+7Yol
-         +E9paP44xrPurU1SplLn8Ns0wrt83MJTT349bp9Qfl0hWuW1XuG0eM/aJdKLbng9Pfdp
-         8bKQ==
-X-Gm-Message-State: AOAM532/jQANururQVEz14H1u0mipLJDn1FfC6Wki6ypByYcml9GRVo4
-        9hODPe3JjQNyXabQbUJ1Z4YeAw==
-X-Google-Smtp-Source: ABdhPJyxntsDqtw1fLOzDbqIuJ2U1f6KoN7U8gp3rPg31FisI0mTcXgKaUA/ly4y+tg9H7XrTTJCiA==
-X-Received: by 2002:a5d:6591:: with SMTP id q17mr9027131wru.173.1604146284060;
-        Sat, 31 Oct 2020 05:11:24 -0700 (PDT)
-Received: from localhost.localdomain (dh207-97-136.xnet.hr. [88.207.97.136])
-        by smtp.googlemail.com with ESMTPSA id s11sm14177004wrm.56.2020.10.31.05.11.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 05:11:23 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        wim@linux-watchdog.org, linux@roeck-us.net,
-        linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: [PATCH v4] watchdog: qcom_wdt: set WDOG_HW_RUNNING bit when appropriate
-Date:   Sat, 31 Oct 2020 13:11:15 +0100
-Message-Id: <20201031121115.542752-1-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.28.0
+        Sat, 31 Oct 2020 08:11:47 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-164-9CqVg803OpalkYbq6EpqrA-1; Sat, 31 Oct 2020 12:11:43 +0000
+X-MC-Unique: 9CqVg803OpalkYbq6EpqrA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 31 Oct 2020 12:11:42 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 31 Oct 2020 12:11:42 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+CC:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "eranian@google.com" <eranian@google.com>
+Subject: RE: [PATCH 4/6] perf: Optimize get_recursion_context()
+Thread-Topic: [PATCH 4/6] perf: Optimize get_recursion_context()
+Thread-Index: AQHWrxDB+hviZpPrkUisLgNdhr09JamxnS3g
+Date:   Sat, 31 Oct 2020 12:11:42 +0000
+Message-ID: <6371740df7704217926315e97294a894@AcuMS.aculab.com>
+References: <20201030151345.540479897@infradead.org>
+ <20201030151955.187580298@infradead.org> <20201030181138.215b2b6a@carbon>
+ <20201030162248.58e388f0@oasis.local.home>
+ <20201030230152.GT2594@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201030230152.GT2594@hirez.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the watchdog hardware is enabled/running during boot, e.g.
-due to a boot loader configuring it, we must tell the
-watchdog framework about this fact so that it can ping the
-watchdog until userspace opens the device and takes over
-control.
+From: Peter Zijlstra
+> Sent: 30 October 2020 23:02
+> 
+> On Fri, Oct 30, 2020 at 04:22:48PM -0400, Steven Rostedt wrote:
+> > As this is something that ftrace recursion also does, perhaps we should
+> > move this into interrupt.h so that anyone that needs a counter can get
+> > it quickly, and not keep re-implementing it.
+> 
+> Works for me, however:
+> 
+> > /*
+> >  * Quickly find what context you are in.
+> >  * 0 - normal
+> >  * 1 - softirq
+> >  * 2 - hard interrupt
+> >  * 3 - NMI
+> >  */
+> > static inline int irq_context()
+> > {
+> > 	unsigned int pc = preempt_count();
+> > 	int rctx = 0;
+> 
+> unsigned
+> 
+> >
+> > 	if (pc & (NMI_MASK))
+> > 		rctx++;
+> > 	if (pc & (NMI_MASK | HARDIRQ_MASK))
+> > 		rctx++;
+> > 	if (pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET))
+> > 		rctx++;
+> >
+> > 	return rctx;
+> > }
+> 
+> otherwise you'll get an extra instruction to sign extend it, which is
+> daft (yes, i've been staring at GCC output far too much).
+> 
+> Also, gcc-9 does worse (like 1 byte iirc) with:
+> 
+> 	rctx += !!(pc & (NMI_MASK));
+> 	rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK));
+> 	rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET));
+> 
+> but gcc-10 doesn't seem to care.
 
-Do so using the WDOG_HW_RUNNING flag that exists for exactly
-that use-case.
+You've made be look at some gcc output (it's raining).
 
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
----
-Changes in v4:
-* Use QCOM_WDT_ENABLE macro
+The gcc 7.5.0 I have handy probably generates the best code for:
 
-Changes in v3:
-* Drop call to stop as start already does it
-* Update commit message
+unsigned char q_2(unsigned int pc)
+{
+        unsigned char rctx = 0;
 
-Changes in v2:
-* Correct authorship
+        rctx += !!(pc & (NMI_MASK));
+        rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK));
+        rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET));
 
- drivers/watchdog/qcom-wdt.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+        return rctx;
+}
 
-diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
-index ab7465d186fd..07d399c4edc4 100644
---- a/drivers/watchdog/qcom-wdt.c
-+++ b/drivers/watchdog/qcom-wdt.c
-@@ -152,6 +152,13 @@ static int qcom_wdt_restart(struct watchdog_device *wdd, unsigned long action,
- 	return 0;
- }
- 
-+static int qcom_wdt_is_running(struct watchdog_device *wdd)
-+{
-+	struct qcom_wdt *wdt = to_qcom_wdt(wdd);
-+
-+	return (readl(wdt_addr(wdt, WDT_EN)) & QCOM_WDT_ENABLE);
-+}
-+
- static const struct watchdog_ops qcom_wdt_ops = {
- 	.start		= qcom_wdt_start,
- 	.stop		= qcom_wdt_stop,
-@@ -294,6 +301,17 @@ static int qcom_wdt_probe(struct platform_device *pdev)
- 	wdt->wdd.timeout = min(wdt->wdd.max_timeout, 30U);
- 	watchdog_init_timeout(&wdt->wdd, 0, dev);
- 
-+	/*
-+	 * If WDT is already running, call WDT start which
-+	 * will stop the WDT, set timeouts as bootloader
-+	 * might use different ones and set running bit
-+	 * to inform the WDT subsystem to ping the WDT
-+	 */
-+	if (qcom_wdt_is_running(&wdt->wdd)) {
-+		qcom_wdt_start(&wdt->wdd);
-+		set_bit(WDOG_HW_RUNNING, &wdt->wdd.status);
-+	}
-+
- 	ret = devm_watchdog_register_device(dev, &wdt->wdd);
- 	if (ret)
- 		return ret;
--- 
-2.28.0
+0000000000000000 <q_2>:
+   0:   f7 c7 00 00 f0 00       test   $0xf00000,%edi     # clock 0
+   6:   0f 95 c0                setne  %al                # clock 1
+   9:   f7 c7 00 00 ff 00       test   $0xff0000,%edi     # clock 0
+   f:   0f 95 c2                setne  %dl                # clock 1
+  12:   01 c2                   add    %eax,%edx          # clock 2
+  14:   81 e7 00 01 ff 00       and    $0xff0100,%edi
+  1a:   0f 95 c0                setne  %al
+  1d:   01 d0                   add    %edx,%eax          # clock 3
+  1f:   c3                      retq
+
+I doubt that is beatable.
+
+I've annotated the register dependency chain.
+Likely to be 3 (or maybe 4) clocks.
+The other versions are a lot worse (7 or 8) without allowing
+for 'sbb' taking 2 clocks on a lot of Intel cpus.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
