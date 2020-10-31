@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82E62A1611
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007412A1710
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727695AbgJaLlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:41:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
+        id S1728225AbgJaLuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:50:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727667AbgJaLlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:41:24 -0400
+        id S1727673AbgJaLl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:41:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B3A720719;
-        Sat, 31 Oct 2020 11:41:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36E6420719;
+        Sat, 31 Oct 2020 11:41:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144484;
-        bh=xwM64GQzTCAI0uFNMIB8AGN4Z0EtKBRMvZIDNQA4AHc=;
+        s=default; t=1604144486;
+        bh=/eWSMNuw7hAI76MfM3ORRrqREp2ulmo2HGI74xNA2bA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dhyEvggF+Mp/IyXO0lypmzKb/2PtyirZIZEnBWUgE/thkrmczP2ZFkZaNC/doY+/P
-         m/0ywlqZLiZ5FccBifc+vd//sZouFsTiBuv7PnhHQ4qGOBzXdX2g75S87tprIKkFeC
-         uC896pDEme0pUxuap4lJkSuNsOpf8X+TTNAuLk34=
+        b=BZ+JSfaUO4scb5OkHNMmygMhVNZlnNZQS1eM9M1il2RmyNr7KGP58YzqUFvgSaNyf
+         dytWpGkDXHzBb4EQ6t3ZZhHz7OvzulOmtKSHDBFrAe/M9AKUyL2roa/ZCVer58oJ5V
+         r7IGCXoa38WbZA9dY8it4sIkWwOvLbDPMXIGVRF8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Masahiro Fujiwara <fujiwara.masahiro@gmail.com>,
+        stable@vger.kernel.org, Michal Suchanek <msuchanek@suse.de>,
+        Thomas Bogendoerfer <tbogendoerfer@suse.de>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.8 36/70] gtp: fix an use-before-init in gtp_newlink()
-Date:   Sat, 31 Oct 2020 12:36:08 +0100
-Message-Id: <20201031113501.227412766@linuxfoundation.org>
+Subject: [PATCH 5.8 37/70] ibmveth: Fix use of ibmveth in a bridge.
+Date:   Sat, 31 Oct 2020 12:36:09 +0100
+Message-Id: <20201031113501.274418934@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
 References: <20201031113459.481803250@linuxfoundation.org>
@@ -43,85 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
+From: Thomas Bogendoerfer <tbogendoerfer@suse.de>
 
-[ Upstream commit 51467431200b91682b89d31317e35dcbca1469ce ]
+[ Upstream commit 2ac8af0967aaa2b67cb382727e784900d2f4d0da ]
 
-*_pdp_find() from gtp_encap_recv() would trigger a crash when a peer
-sends GTP packets while creating new GTP device.
+The check for src mac address in ibmveth_is_packet_unsupported is wrong.
+Commit 6f2275433a2f wanted to shut down messages for loopback packets,
+but now suppresses bridged frames, which are accepted by the hypervisor
+otherwise bridging won't work at all.
 
-RIP: 0010:gtp1_pdp_find.isra.0+0x68/0x90 [gtp]
-<SNIP>
-Call Trace:
- <IRQ>
- gtp_encap_recv+0xc2/0x2e0 [gtp]
- ? gtp1_pdp_find.isra.0+0x90/0x90 [gtp]
- udp_queue_rcv_one_skb+0x1fe/0x530
- udp_queue_rcv_skb+0x40/0x1b0
- udp_unicast_rcv_skb.isra.0+0x78/0x90
- __udp4_lib_rcv+0x5af/0xc70
- udp_rcv+0x1a/0x20
- ip_protocol_deliver_rcu+0xc5/0x1b0
- ip_local_deliver_finish+0x48/0x50
- ip_local_deliver+0xe5/0xf0
- ? ip_protocol_deliver_rcu+0x1b0/0x1b0
-
-gtp_encap_enable() should be called after gtp_hastable_new() otherwise
-*_pdp_find() will access the uninitialized hash table.
-
-Fixes: 1e3a3abd8b28 ("gtp: make GTP sockets in gtp_newlink optional")
-Signed-off-by: Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
-Link: https://lore.kernel.org/r/20201027114846.3924-1-fujiwara.masahiro@gmail.com
+Fixes: 6f2275433a2f ("ibmveth: Detect unsupported packets before sending to the hypervisor")
+Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+Link: https://lore.kernel.org/r/20201026104221.26570-1-msuchanek@suse.de
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/gtp.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/ibm/ibmveth.c |    6 ------
+ 1 file changed, 6 deletions(-)
 
---- a/drivers/net/gtp.c
-+++ b/drivers/net/gtp.c
-@@ -663,10 +663,6 @@ static int gtp_newlink(struct net *src_n
- 
- 	gtp = netdev_priv(dev);
- 
--	err = gtp_encap_enable(gtp, data);
--	if (err < 0)
--		return err;
--
- 	if (!data[IFLA_GTP_PDP_HASHSIZE]) {
- 		hashsize = 1024;
- 	} else {
-@@ -677,12 +673,16 @@ static int gtp_newlink(struct net *src_n
- 
- 	err = gtp_hashtable_new(gtp, hashsize);
- 	if (err < 0)
--		goto out_encap;
-+		return err;
-+
-+	err = gtp_encap_enable(gtp, data);
-+	if (err < 0)
-+		goto out_hashtable;
- 
- 	err = register_netdevice(dev);
- 	if (err < 0) {
- 		netdev_dbg(dev, "failed to register new netdev %d\n", err);
--		goto out_hashtable;
-+		goto out_encap;
+--- a/drivers/net/ethernet/ibm/ibmveth.c
++++ b/drivers/net/ethernet/ibm/ibmveth.c
+@@ -1031,12 +1031,6 @@ static int ibmveth_is_packet_unsupported
+ 		ret = -EOPNOTSUPP;
  	}
  
- 	gn = net_generic(dev_net(dev), gtp_net_id);
-@@ -693,11 +693,11 @@ static int gtp_newlink(struct net *src_n
- 
- 	return 0;
- 
-+out_encap:
-+	gtp_encap_disable(gtp);
- out_hashtable:
- 	kfree(gtp->addr_hash);
- 	kfree(gtp->tid_hash);
--out_encap:
--	gtp_encap_disable(gtp);
- 	return err;
+-	if (!ether_addr_equal(ether_header->h_source, netdev->dev_addr)) {
+-		netdev_dbg(netdev, "source packet MAC address does not match veth device's, dropping packet.\n");
+-		netdev->stats.tx_dropped++;
+-		ret = -EOPNOTSUPP;
+-	}
+-
+ 	return ret;
  }
  
 
