@@ -2,149 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5714A2A1541
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 11:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C60B2A1545
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 11:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgJaKbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 06:31:40 -0400
-Received: from mail-02.mail-europe.com ([51.89.119.103]:33312 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgJaKbj (ORCPT
+        id S1726771AbgJaKdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 06:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726723AbgJaKdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 06:31:39 -0400
-Date:   Sat, 31 Oct 2020 10:31:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1604140295; bh=KUg5dDnTjqXg5KK2kOJV+0s/aEoOCToFks8cOlHesPU=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=Hpv8cEjfex1JMJVzf1pLpR7sWEObgKq3n/1K3wkblQEpt0AkOGUt3v/Ep31V55/Lq
-         +N0P9UYe+qcFdgb1lUnpmHraaDvKVRCr6aULrlGvfSEJ9ffgP+lKl9YaLh3TscTJhk
-         PgYcMHA1aMWyl6KW8w4GwB/ce4w1kfeKqsN6R36obiWyCaXUxWZcgLW8niMGd1OP5f
-         5YoAlgHdCOsYyZrk7oauxIQfSPAgn8jI5RFays3fawMUdi/SZti2hlQDC37GIEh/3+
-         HmMIh+z+z5HkI2PP+N0GCVyZM1lJyXnwJWQ4a7sjJR0U6zE0T48fBdYnaFbP9SlwSh
-         WpTqBv3O2vywA==
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH net-next] net: avoid unneeded UDP L4 and fraglist GSO resegmentation
-Message-ID: <TSRRse4RkO_XW4DtdTkz4NeZPwzHXaPOEFU9-J4VlpLbUzlBzuhW8HYfHCfFJ1Ro6FwztEO652tbnSGOE-MjfKez1NvVPM3v3ResWtbK5Rk=@pm.me>
-In-Reply-To: <CA+FuTSdiqaZJ3HQHuEEMwKioWGKvGwZ42Oi7FpRf0hqWdZ27pQ@mail.gmail.com>
-References: <Mx3BWGop6fGORN6Cpo4mHIHz2b1bb0eLxeMG8vsijnk@cp3-web-020.plabs.ch> <CA+FuTSdiqaZJ3HQHuEEMwKioWGKvGwZ42Oi7FpRf0hqWdZ27pQ@mail.gmail.com>
+        Sat, 31 Oct 2020 06:33:19 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B059C0613D5
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 03:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=fSXmY2Ss+l9g5L0iEkoM73p34L1tYPcYKQlrcN3O+uE=; b=fHvd2F1HGg7M1aKb7QJABolAl
+        VT+lC8juhxkL3YA66tx6m69hl/C5vcQAScUVAG9p6a4kaNxZxhDj1lYLPH/DmSjaOdh7aFgUmA8Hc
+        dYCRAm2CGpGzIdJ8CcuRc+j/CmR7To5GqDTuG1NdcBRwj1Wh8ELiN+ypwrf+MESTAPyD4KJbQK+ej
+        P6VArMxszoA+z3IYme+UfqmTHAnmmpDHzzX4aMQ6fOTMwxsyi2tmfIAtQMKsf+7+VqAHS138GuEgT
+        dWbL6J1UYmP1ddetBtrnn+s82OLxzBDPzGyZyaV0cx0BFU08EXHOdq3zLbvLeA7UKudjiaXUAZu67
+        iGj6JGjxQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53274)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kYoC9-00074m-HL; Sat, 31 Oct 2020 10:33:13 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kYoC8-00087d-EK; Sat, 31 Oct 2020 10:33:12 +0000
+Date:   Sat, 31 Oct 2020 10:33:12 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, Ard Biesheuvel <ardb@kernel.org>,
+        Chris Zankel <chris@zankel.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM, xtensa: highmem: avoid clobbering non-page aligned
+ memory reservations
+Message-ID: <20201031103312.GI1551@shell.armlinux.org.uk>
+References: <20201031094345.6984-1-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201031094345.6984-1-rppt@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, 31 October 2020, 2:12, Willem de Bruijn <willemdebruijn.kernel=
-@gmail.com> wrote:
+On Sat, Oct 31, 2020 at 11:43:45AM +0200, Mike Rapoport wrote:
+> From: Ard Biesheuvel <ardb@kernel.org>
+> 
+> free_highpages() iterates over the free memblock regions in high
+> memory, and marks each page as available for the memory management
+> system.
+> 
+> Until commit cddb5ddf2b76 ("arm, xtensa: simplify initialization of
+> high memory pages") it rounded beginning of each region upwards and end of
+> each region downwards.
+> 
+> However, after that commit free_highmem() rounds the beginning and end of
+> each region downwards, and we may end up freeing a page that is
+> memblock_reserve()d, resulting in memory corruption.
+> 
+> Restore the original rounding of the region boundaries to avoid freeing
+> reserved pages.
+> 
+> Fixes: cddb5ddf2b76 ("arm, xtensa: simplify initialization of high memory pages")
+> Link: https://lore.kernel.org/r/20201029110334.4118-1-ardb@kernel.org/
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> Co-developed-by:  Mike Rapoport <rppt@linux.ibm.com>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+> 
+> Max, Russell,
+> 
+> Please let me know how do you prefer to take it upstream.
+> If needed this can go via memblock tree.
+> 
+> v2: fix words order in the commit message
 
-Hi Willem,
+I really don't understand what is going on here; there seems to be a
+total disconnect of communication between yourself and Ard. Ard has
+already submitted a different patch for this to the patch system
+already, sent yesterday.
 
-> On Fri, Oct 30, 2020 at 2:33 PM Alexander Lobakin alobakin@pm.me wrote:
->
-> > Commit 9fd1ff5d2ac7 ("udp: Support UDP fraglist GRO/GSO.") added a supp=
-ort
-> > for fraglist UDP L4 and fraglist GSO not only for local traffic, but al=
-so
-> > for forwarding. This works well on simple setups, but when any logical
-> > netdev (e.g. VLAN) is present, kernel stack always performs software
-> > resegmentation which actually kills the performance.
-> > Despite the fact that no mainline drivers currently supports fraglist G=
-SO,
-> > this should and can be easily fixed by adding UDP L4 and fraglist GSO t=
-o
-> > the list of GSO types that can be passed-through the logical interfaces
-> > (NETIF_F_GSO_SOFTWARE). After this change, no resegmentation occurs (if
-> > a particular driver supports and advertises this), and the performance
-> > goes on par with e.g. 1:1 forwarding.
-> > The only logical netdevs that seem to be unaffected to this are bridge
-> > interfaces, as their code uses full NETIF_F_GSO_MASK.
-> > Tested on MIPS32 R2 router board with a WIP NIC driver in VLAN NAT:
-> > 20 Mbps baseline, 1 Gbps / link speed with this patch.
-> >
-> > Signed-off-by: Alexander Lobakin alobakin@pm.me
-> >
-> > ------------------------------------------------
-> >
-> > include/linux/netdev_features.h | 4 ++--
-> > 1 file changed, 2 insertions(+), 2 deletions(-)
-> > diff --git a/include/linux/netdev_features.h b/include/linux/netdev_fea=
-tures.h
-> > index 0b17c4322b09..934de56644e7 100644
-> > --- a/include/linux/netdev_features.h
-> > +++ b/include/linux/netdev_features.h
-> > @@ -207,8 +207,8 @@ static inline int find_next_netdev_feature(u64 feat=
-ure, unsigned long start)
-> > NETIF_F_FSO)
-> > /* List of features with software fallbacks. */
-> > -#define NETIF_F_GSO_SOFTWARE (NETIF_F_ALL_TSO | \
-> >
-> > -                                  NETIF_F_GSO_SCTP)
-> >
-> >
-> >
-> > +#define NETIF_F_GSO_SOFTWARE (NETIF_F_ALL_TSO | NETIF_F_GSO_SCTP | \
-> >
-> > -                                  NETIF_F_GSO_UDP_L4 | NETIF_F_GSO_FRA=
-GLIST)
-> >
-> >
->
-> What exactly do you mean by resegmenting?
+https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9021/1
 
-I mean pts 5-6 from the full path:
-1. Our NIC driver advertises a support for fraglists, GSO UDP L4, GSO fragl=
-ists.
-2. User enables fraglisted GRO via Ethtool.
-3. GRO subsystem receives UDP frames from driver and merges the packets int=
-o
-   fraglisted GSO skb(s).
-4. Networking stack queues it up for xmitting.
-5. Virtual device like VLAN doesn't advertise a support for GSO UDP L4 and
-   GSO fraglists, so skb_gso_check() doesn't allow to pass this skb as is t=
-o
-   the real driver.
-6. Kernel then has to form a bunch of regular UDP skbs from that one and pa=
-ss
-   it to the driver instead. This fallback is *extremely* slow for any GSO =
-types,
-   but especially for GSO fraglists.
-7. All further processing performs with a series of plain UDP skbs, and the
-   driver gets it one-by-one, despite that it supports UDP L4 and fragliste=
-d GSO.
+Please discuss between yourselves how you want to solve the problem,
+and then submit an agreed and tested patch to those of us upstream;
+please don't make it for those upstream to pick one of your patches
+as you are at present.
 
-That's not OK because:
-a) logical/virtual netdevs like VLANs, bridges etc. should pass GSO skbs as=
- is;
-b) even if the final driver doesn't support such type of GSO, this software
-   resegmenting should be performed right before it, not in the middle of
-   processing -- I think I even saw that note somewhere in kernel documenta=
-tion,
-   and it's totally reasonable in terms of performance.
+Thanks.
 
-> I think it is fine to reenable this again, now that UDP sockets will
-> segment unexpected UDP GSO packets that may have looped. We previously
-> added general software support in commit 83aa025f535f ("udp: add gso
-> support to virtual devices"). Then reduced its scope to egress only in
-> 8eea1ca82be9 ("gso: limit udp gso to egress-only virtual devices") to
-> handle that edge case.
->
-> If we can enable for all virtual devices again, we could revert those
-> device specific options.
+> 
+>  arch/arm/mm/init.c    | 4 ++--
+>  arch/xtensa/mm/init.c | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+> index d57112a276f5..c23dbf8bebee 100644
+> --- a/arch/arm/mm/init.c
+> +++ b/arch/arm/mm/init.c
+> @@ -354,8 +354,8 @@ static void __init free_highpages(void)
+>  	/* set highmem page free */
+>  	for_each_free_mem_range(i, NUMA_NO_NODE, MEMBLOCK_NONE,
+>  				&range_start, &range_end, NULL) {
+> -		unsigned long start = PHYS_PFN(range_start);
+> -		unsigned long end = PHYS_PFN(range_end);
+> +		unsigned long start = PFN_UP(range_start);
+> +		unsigned long end = PFN_DOWN(range_end);
+>  
+>  		/* Ignore complete lowmem entries */
+>  		if (end <= max_low)
+> diff --git a/arch/xtensa/mm/init.c b/arch/xtensa/mm/init.c
+> index c6fc83efee0c..8731b7ad9308 100644
+> --- a/arch/xtensa/mm/init.c
+> +++ b/arch/xtensa/mm/init.c
+> @@ -89,8 +89,8 @@ static void __init free_highpages(void)
+>  	/* set highmem page free */
+>  	for_each_free_mem_range(i, NUMA_NO_NODE, MEMBLOCK_NONE,
+>  				&range_start, &range_end, NULL) {
+> -		unsigned long start = PHYS_PFN(range_start);
+> -		unsigned long end = PHYS_PFN(range_end);
+> +		unsigned long start = PFN_UP(range_start);
+> +		unsigned long end = PFN_DOWN(range_end);
+>  
+>  		/* Ignore complete lowmem entries */
+>  		if (end <= max_low)
+> -- 
+> 2.28.0
+> 
+> 
 
-Thanks,
-Al
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
