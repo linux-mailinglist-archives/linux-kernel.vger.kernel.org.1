@@ -2,68 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB5F2A1347
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 04:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23AB32A1348
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 04:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgJaDK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 23:10:28 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2359 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgJaDK2 (ORCPT
+        id S1726286AbgJaDLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 23:11:08 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7120 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgJaDLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 23:10:28 -0400
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4CNPLp5ws2z503m;
-        Sat, 31 Oct 2020 11:10:26 +0800 (CST)
-Received: from [10.140.157.68] (10.140.157.68) by
- dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Sat, 31 Oct 2020 11:10:26 +0800
-Subject: Re: Using fixed LPI number for some Device ID
-To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
-CC:     Jason Cooper <jason@lakedaemon.net>, <linux-kernel@vger.kernel.org>
-References: <0baed5b0-6cbe-6492-b4af-fe758f461602@huawei.com>
- <04e31996-6eb8-3bb9-e333-bc46eebe3d7a@huawei.com>
- <87eelfksm1.fsf@nanos.tec.linutronix.de>
-From:   Dongjiu Geng <gengdongjiu@huawei.com>
-Message-ID: <7205d3e0-a03a-a06c-f3f4-9a28e58931e0@huawei.com>
-Date:   Sat, 31 Oct 2020 11:10:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.6.0
+        Fri, 30 Oct 2020 23:11:08 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CNPMX5YHGzLrv5;
+        Sat, 31 Oct 2020 11:11:04 +0800 (CST)
+Received: from localhost (10.174.176.180) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Sat, 31 Oct 2020
+ 11:10:58 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <linux@armlinux.org.uk>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] sfp: Fix error handing in sfp_probe()
+Date:   Sat, 31 Oct 2020 11:10:53 +0800
+Message-ID: <20201031031053.25264-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-In-Reply-To: <87eelfksm1.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.140.157.68]
-X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
+Content-Type: text/plain
+X-Originating-IP: [10.174.176.180]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/31 10:59, Thomas Gleixner wrote:
-> On Sat, Oct 31 2020 at 10:19, Dongjiu Geng wrote:
->>  Hi Marc,
->>     Sorry to disturb you, Currently the LPI number is not fixed for
->>  the device. The LPI number is dynamically allocated start from 8092.
->>  For two OS which shares the ITS, One OS needs to configure the device
->>  interrupt required by another OS, and the other OS uses a fixed
->>  interrupt ID to respond the interrupt. Therefore, the LPI IRQ number
->>  of the device needed be fixed. I want to upstream this feature that
->>  allocate fixed LPI number for the device that is specified through
->>  the DTS. What is your meaning?  Thanks
-> 
-> What's the purpose of resending the same thing within less than 24
-> hours? Do you really expect maintainers to be available 24/7 and being
-  Sorry for the noise, Because Marc rarely uses the ARM email address,
-  so I replace to use Marc's kernel.org address instead of ARM email address.
+gpiod_to_irq() never return 0, but returns negative in
+case of error, check it and set gpio_irq to 0.
 
+Fixes: 73970055450e ("sfp: add SFP module support")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/net/phy/sfp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
+index 1d18c10e8f82..34aa196b7465 100644
+--- a/drivers/net/phy/sfp.c
++++ b/drivers/net/phy/sfp.c
+@@ -2389,7 +2389,8 @@ static int sfp_probe(struct platform_device *pdev)
+ 			continue;
+ 
+ 		sfp->gpio_irq[i] = gpiod_to_irq(sfp->gpio[i]);
+-		if (!sfp->gpio_irq[i]) {
++		if (sfp->gpio_irq[i] < 0) {
++			sfp->gpio_irq[i] = 0;
+ 			sfp->need_poll = true;
+ 			continue;
+ 		}
+-- 
+2.17.1
 
-> able to respond within less than a day?
-> 
-> 
-> .
-> 
