@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF31F2A15A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8C02A163B
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:43:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727282AbgJaLgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:36:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35462 "EHLO mail.kernel.org"
+        id S1728013AbgJaLnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:43:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727269AbgJaLgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:36:51 -0400
+        id S1727186AbgJaLnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:43:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FF6E20853;
-        Sat, 31 Oct 2020 11:36:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4991820739;
+        Sat, 31 Oct 2020 11:43:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144210;
-        bh=5sYGZ8RU2vIqUVsw7t71gFMAPZQxxErK7vl1GhC8G3A=;
+        s=default; t=1604144597;
+        bh=6NOvDwna89Xg6/5ANPsNM8eoED4byYDHXq7aX+vYSLs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lRtr9oPqWQaFk43ZEJu20uJ5ToY9EYS+fsVluu6StZMdDegKRycOtwCNubPVU1TmW
-         +NSsBCLh8+mug2D3XWksYsBiUIlCbf4erkJZfBhqSCvHVi2bvm+DB2t8a775LOlS9h
-         TkLUW3ym/UMpfYeoUntWqzHCrzpW1VdKtL8284Ms=
+        b=wOpOcoJ3ZytaBZsssHGBu7bivXTPRvoGQwB+dfPtjp6cDJtS6p33PRPbM3gcz6p9+
+         mcrG3PNNsLRFhQpTZizGIgsPz8mZxSA4JXMQ+Yg8RyeNKEIr5ptlKvvgjR3XlWPNu3
+         PtbRsNJ7o0yYbHaTjMKxV4sqVSv6dPgyWSNPaApU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stafford Horne <shorne@gmail.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH 5.4 47/49] openrisc: Fix issue with get_user for 64-bit values
+        stable@vger.kernel.org, Sumit Gupta <sumitg@nvidia.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH 5.9 01/74] cpufreq: Improve code around unlisted freq check
 Date:   Sat, 31 Oct 2020 12:35:43 +0100
-Message-Id: <20201031113457.715281172@linuxfoundation.org>
+Message-Id: <20201031113500.107354186@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113455.439684970@linuxfoundation.org>
-References: <20201031113455.439684970@linuxfoundation.org>
+In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
+References: <20201031113500.031279088@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,122 +46,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stafford Horne <shorne@gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
 
-commit d877322bc1adcab9850732275670409e8bcca4c4 upstream.
+commit 97148d0ae5303bcc18fcd1c9b968a9485292f32a upstream.
 
-A build failure was raised by kbuild with the following error.
+The cpufreq core checks if the frequency programmed by the bootloaders
+is not listed in the freq table and programs one from the table in such
+a case. This is done only if the driver has set the
+CPUFREQ_NEED_INITIAL_FREQ_CHECK flag.
 
-    drivers/android/binder.c: Assembler messages:
-    drivers/android/binder.c:3861: Error: unrecognized keyword/register name `l.lwz ?ap,4(r24)'
-    drivers/android/binder.c:3866: Error: unrecognized keyword/register name `l.addi ?ap,r0,0'
+Currently we print two separate messages, with almost the same content,
+and do this with a pr_warn() which may be a bit too much as the driver
+only asked us to check this as it expected this to be the case. Lower
+down the severity of the print message by switching to pr_info() instead
+and print a single message only.
 
-The issue is with 64-bit get_user() calls on openrisc.  I traced this to
-a problem where in the internally in the get_user macros there is a cast
-to long __gu_val this causes GCC to think the get_user call is 32-bit.
-This binder code is really long and GCC allocates register r30, which
-triggers the issue. The 64-bit get_user asm tries to get the 64-bit pair
-register, which for r30 overflows the general register names and returns
-the dummy register ?ap.
-
-The fix here is to move the temporary variables into the asm macros.  We
-use a 32-bit __gu_tmp for 32-bit and smaller macro and a 64-bit tmp in
-the 64-bit macro.  The cast in the 64-bit macro has a trick of casting
-through __typeof__((x)-(x)) which avoids the below warning.  This was
-barrowed from riscv.
-
-    arch/openrisc/include/asm/uaccess.h:240:8: warning: cast to pointer from integer of different size
-
-I tested this in a small unit test to check reading between 64-bit and
-32-bit pointers to 64-bit and 32-bit values in all combinations.  Also I
-ran make C=1 to confirm no new sparse warnings came up.  It all looks
-clean to me.
-
-Link: https://lore.kernel.org/lkml/202008200453.ohnhqkjQ%25lkp@intel.com/
-Signed-off-by: Stafford Horne <shorne@gmail.com>
-Reviewed-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Reported-by: Sumit Gupta <sumitg@nvidia.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Reviewed-by: Sumit Gupta <sumitg@nvidia.com>
+Tested-by: Sumit Gupta <sumitg@nvidia.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: Jon Hunter <jonathanh@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-
 ---
- arch/openrisc/include/asm/uaccess.h |   35 ++++++++++++++++++++++-------------
- 1 file changed, 22 insertions(+), 13 deletions(-)
+ drivers/cpufreq/cpufreq.c |   15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
---- a/arch/openrisc/include/asm/uaccess.h
-+++ b/arch/openrisc/include/asm/uaccess.h
-@@ -164,19 +164,19 @@ struct __large_struct {
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -1450,14 +1450,13 @@ static int cpufreq_online(unsigned int c
+ 	 */
+ 	if ((cpufreq_driver->flags & CPUFREQ_NEED_INITIAL_FREQ_CHECK)
+ 	    && has_target()) {
++		unsigned int old_freq = policy->cur;
++
+ 		/* Are we running at unknown frequency ? */
+-		ret = cpufreq_frequency_table_get_index(policy, policy->cur);
++		ret = cpufreq_frequency_table_get_index(policy, old_freq);
+ 		if (ret == -EINVAL) {
+-			/* Warn user and fix it */
+-			pr_warn("%s: CPU%d: Running at unlisted freq: %u KHz\n",
+-				__func__, policy->cpu, policy->cur);
+-			ret = __cpufreq_driver_target(policy, policy->cur - 1,
+-				CPUFREQ_RELATION_L);
++			ret = __cpufreq_driver_target(policy, old_freq - 1,
++						      CPUFREQ_RELATION_L);
  
- #define __get_user_nocheck(x, ptr, size)			\
- ({								\
--	long __gu_err, __gu_val;				\
--	__get_user_size(__gu_val, (ptr), (size), __gu_err);	\
--	(x) = (__force __typeof__(*(ptr)))__gu_val;		\
-+	long __gu_err;						\
-+	__get_user_size((x), (ptr), (size), __gu_err);		\
- 	__gu_err;						\
- })
- 
- #define __get_user_check(x, ptr, size)					\
- ({									\
--	long __gu_err = -EFAULT, __gu_val = 0;				\
--	const __typeof__(*(ptr)) * __gu_addr = (ptr);			\
--	if (access_ok(__gu_addr, size))			\
--		__get_user_size(__gu_val, __gu_addr, (size), __gu_err);	\
--	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
-+	long __gu_err = -EFAULT;					\
-+	const __typeof__(*(ptr)) *__gu_addr = (ptr);			\
-+	if (access_ok(__gu_addr, size))					\
-+		__get_user_size((x), __gu_addr, (size), __gu_err);	\
-+	else								\
-+		(x) = (__typeof__(*(ptr))) 0;				\
- 	__gu_err;							\
- })
- 
-@@ -190,11 +190,13 @@ do {									\
- 	case 2: __get_user_asm(x, ptr, retval, "l.lhz"); break;		\
- 	case 4: __get_user_asm(x, ptr, retval, "l.lwz"); break;		\
- 	case 8: __get_user_asm2(x, ptr, retval); break;			\
--	default: (x) = __get_user_bad();				\
-+	default: (x) = (__typeof__(*(ptr)))__get_user_bad();		\
- 	}								\
- } while (0)
- 
- #define __get_user_asm(x, addr, err, op)		\
-+{							\
-+	unsigned long __gu_tmp;				\
- 	__asm__ __volatile__(				\
- 		"1:	"op" %1,0(%2)\n"		\
- 		"2:\n"					\
-@@ -208,10 +210,14 @@ do {									\
- 		"	.align 2\n"			\
- 		"	.long 1b,3b\n"			\
- 		".previous"				\
--		: "=r"(err), "=r"(x)			\
--		: "r"(addr), "i"(-EFAULT), "0"(err))
-+		: "=r"(err), "=r"(__gu_tmp)		\
-+		: "r"(addr), "i"(-EFAULT), "0"(err));	\
-+	(x) = (__typeof__(*(addr)))__gu_tmp;		\
-+}
- 
- #define __get_user_asm2(x, addr, err)			\
-+{							\
-+	unsigned long long __gu_tmp;			\
- 	__asm__ __volatile__(				\
- 		"1:	l.lwz %1,0(%2)\n"		\
- 		"2:	l.lwz %H1,4(%2)\n"		\
-@@ -228,8 +234,11 @@ do {									\
- 		"	.long 1b,4b\n"			\
- 		"	.long 2b,4b\n"			\
- 		".previous"				\
--		: "=r"(err), "=&r"(x)			\
--		: "r"(addr), "i"(-EFAULT), "0"(err))
-+		: "=r"(err), "=&r"(__gu_tmp)		\
-+		: "r"(addr), "i"(-EFAULT), "0"(err));	\
-+	(x) = (__typeof__(*(addr)))(			\
-+		(__typeof__((x)-(x)))__gu_tmp);		\
-+}
- 
- /* more complex routines */
+ 			/*
+ 			 * Reaching here after boot in a few seconds may not
+@@ -1465,8 +1464,8 @@ static int cpufreq_online(unsigned int c
+ 			 * frequency for longer duration. Hence, a BUG_ON().
+ 			 */
+ 			BUG_ON(ret);
+-			pr_warn("%s: CPU%d: Unlisted initial frequency changed to: %u KHz\n",
+-				__func__, policy->cpu, policy->cur);
++			pr_info("%s: CPU%d: Running at unlisted initial frequency: %u KHz, changing to: %u KHz\n",
++				__func__, policy->cpu, old_freq, policy->cur);
+ 		}
+ 	}
  
 
 
