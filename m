@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3F52A16FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:51:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B53162A1630
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728201AbgJaLtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:49:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42456 "EHLO mail.kernel.org"
+        id S1727914AbgJaLmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:42:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726928AbgJaLmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:42:45 -0400
+        id S1727342AbgJaLms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:42:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69925205F4;
-        Sat, 31 Oct 2020 11:42:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3062F20731;
+        Sat, 31 Oct 2020 11:42:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144564;
-        bh=EJ9LeitW/sDScSg81JqdnN0qFEWoI+F3KiLnatf3fug=;
+        s=default; t=1604144567;
+        bh=5sYGZ8RU2vIqUVsw7t71gFMAPZQxxErK7vl1GhC8G3A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HI0SCPJ6LIB0bRtfCVFUt9hRKE4PWaNvJEuQfTuGbuQ6XQmW+BQnEjckkIZ6bBthb
-         q47yaiS4tL7DxcVWII5kzl3WJnB2cBDtPfmcaJPfdURYoti5zu6+YkYc/w464hMgjX
-         znFjJEcq6sy9ebudQZNF1gXSjs1+B/svlyneESN8=
+        b=FKd95eNLZW9wPimY4jSkKIF2bd9y7PaYl0qEugY+5wmdnoGyBmst/kDoxBojiji68
+         Ya/ZceDg2oJWuxAaOTQNEF2iFLARkUL4Tv1mwNI7CMKUIGBP5KFd3GJuA3qPseRI2v
+         18ZKCDXwsBCt4CKRxNFZ8v0Y8GEfZDb+xTxTdPfU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Juergen Gross <jgross@suse.com>,
-        David Vrabel <david.vrabel@citrix.com>
-Subject: [PATCH 5.8 67/70] xen/gntdev.c: Mark pages as dirty
-Date:   Sat, 31 Oct 2020 12:36:39 +0100
-Message-Id: <20201031113502.692937855@linuxfoundation.org>
+        stable@vger.kernel.org, Stafford Horne <shorne@gmail.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: [PATCH 5.8 68/70] openrisc: Fix issue with get_user for 64-bit values
+Date:   Sat, 31 Oct 2020 12:36:40 +0100
+Message-Id: <20201031113502.741451469@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
 References: <20201031113459.481803250@linuxfoundation.org>
@@ -46,95 +42,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Souptick Joarder <jrdr.linux@gmail.com>
+From: Stafford Horne <shorne@gmail.com>
 
-commit 779055842da5b2e508f3ccf9a8153cb1f704f566 upstream.
+commit d877322bc1adcab9850732275670409e8bcca4c4 upstream.
 
-There seems to be a bug in the original code when gntdev_get_page()
-is called with writeable=true then the page needs to be marked dirty
-before being put.
+A build failure was raised by kbuild with the following error.
 
-To address this, a bool writeable is added in gnt_dev_copy_batch, set
-it in gntdev_grant_copy_seg() (and drop `writeable` argument to
-gntdev_get_page()) and then, based on batch->writeable, use
-set_page_dirty_lock().
+    drivers/android/binder.c: Assembler messages:
+    drivers/android/binder.c:3861: Error: unrecognized keyword/register name `l.lwz ?ap,4(r24)'
+    drivers/android/binder.c:3866: Error: unrecognized keyword/register name `l.addi ?ap,r0,0'
 
-Fixes: a4cdb556cae0 (xen/gntdev: add ioctl for grant copy)
-Suggested-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: David Vrabel <david.vrabel@citrix.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/1599375114-32360-1-git-send-email-jrdr.linux@gmail.com
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+The issue is with 64-bit get_user() calls on openrisc.  I traced this to
+a problem where in the internally in the get_user macros there is a cast
+to long __gu_val this causes GCC to think the get_user call is 32-bit.
+This binder code is really long and GCC allocates register r30, which
+triggers the issue. The 64-bit get_user asm tries to get the 64-bit pair
+register, which for r30 overflows the general register names and returns
+the dummy register ?ap.
+
+The fix here is to move the temporary variables into the asm macros.  We
+use a 32-bit __gu_tmp for 32-bit and smaller macro and a 64-bit tmp in
+the 64-bit macro.  The cast in the 64-bit macro has a trick of casting
+through __typeof__((x)-(x)) which avoids the below warning.  This was
+barrowed from riscv.
+
+    arch/openrisc/include/asm/uaccess.h:240:8: warning: cast to pointer from integer of different size
+
+I tested this in a small unit test to check reading between 64-bit and
+32-bit pointers to 64-bit and 32-bit values in all combinations.  Also I
+ran make C=1 to confirm no new sparse warnings came up.  It all looks
+clean to me.
+
+Link: https://lore.kernel.org/lkml/202008200453.ohnhqkjQ%25lkp@intel.com/
+Signed-off-by: Stafford Horne <shorne@gmail.com>
+Reviewed-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- drivers/xen/gntdev.c |   17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
 
---- a/drivers/xen/gntdev.c
-+++ b/drivers/xen/gntdev.c
-@@ -720,17 +720,18 @@ struct gntdev_copy_batch {
- 	s16 __user *status[GNTDEV_COPY_BATCH];
- 	unsigned int nr_ops;
- 	unsigned int nr_pages;
-+	bool writeable;
- };
+---
+ arch/openrisc/include/asm/uaccess.h |   35 ++++++++++++++++++++++-------------
+ 1 file changed, 22 insertions(+), 13 deletions(-)
+
+--- a/arch/openrisc/include/asm/uaccess.h
++++ b/arch/openrisc/include/asm/uaccess.h
+@@ -164,19 +164,19 @@ struct __large_struct {
  
- static int gntdev_get_page(struct gntdev_copy_batch *batch, void __user *virt,
--			   bool writeable, unsigned long *gfn)
-+				unsigned long *gfn)
- {
- 	unsigned long addr = (unsigned long)virt;
- 	struct page *page;
- 	unsigned long xen_pfn;
- 	int ret;
+ #define __get_user_nocheck(x, ptr, size)			\
+ ({								\
+-	long __gu_err, __gu_val;				\
+-	__get_user_size(__gu_val, (ptr), (size), __gu_err);	\
+-	(x) = (__force __typeof__(*(ptr)))__gu_val;		\
++	long __gu_err;						\
++	__get_user_size((x), (ptr), (size), __gu_err);		\
+ 	__gu_err;						\
+ })
  
--	ret = get_user_pages_fast(addr, 1, writeable ? FOLL_WRITE : 0, &page);
-+	ret = get_user_pages_fast(addr, 1, batch->writeable ? FOLL_WRITE : 0, &page);
- 	if (ret < 0)
- 		return ret;
+ #define __get_user_check(x, ptr, size)					\
+ ({									\
+-	long __gu_err = -EFAULT, __gu_val = 0;				\
+-	const __typeof__(*(ptr)) * __gu_addr = (ptr);			\
+-	if (access_ok(__gu_addr, size))			\
+-		__get_user_size(__gu_val, __gu_addr, (size), __gu_err);	\
+-	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
++	long __gu_err = -EFAULT;					\
++	const __typeof__(*(ptr)) *__gu_addr = (ptr);			\
++	if (access_ok(__gu_addr, size))					\
++		__get_user_size((x), __gu_addr, (size), __gu_err);	\
++	else								\
++		(x) = (__typeof__(*(ptr))) 0;				\
+ 	__gu_err;							\
+ })
  
-@@ -746,9 +747,13 @@ static void gntdev_put_pages(struct gntd
- {
- 	unsigned int i;
+@@ -190,11 +190,13 @@ do {									\
+ 	case 2: __get_user_asm(x, ptr, retval, "l.lhz"); break;		\
+ 	case 4: __get_user_asm(x, ptr, retval, "l.lwz"); break;		\
+ 	case 8: __get_user_asm2(x, ptr, retval); break;			\
+-	default: (x) = __get_user_bad();				\
++	default: (x) = (__typeof__(*(ptr)))__get_user_bad();		\
+ 	}								\
+ } while (0)
  
--	for (i = 0; i < batch->nr_pages; i++)
-+	for (i = 0; i < batch->nr_pages; i++) {
-+		if (batch->writeable && !PageDirty(batch->pages[i]))
-+			set_page_dirty_lock(batch->pages[i]);
- 		put_page(batch->pages[i]);
-+	}
- 	batch->nr_pages = 0;
-+	batch->writeable = false;
- }
+ #define __get_user_asm(x, addr, err, op)		\
++{							\
++	unsigned long __gu_tmp;				\
+ 	__asm__ __volatile__(				\
+ 		"1:	"op" %1,0(%2)\n"		\
+ 		"2:\n"					\
+@@ -208,10 +210,14 @@ do {									\
+ 		"	.align 2\n"			\
+ 		"	.long 1b,3b\n"			\
+ 		".previous"				\
+-		: "=r"(err), "=r"(x)			\
+-		: "r"(addr), "i"(-EFAULT), "0"(err))
++		: "=r"(err), "=r"(__gu_tmp)		\
++		: "r"(addr), "i"(-EFAULT), "0"(err));	\
++	(x) = (__typeof__(*(addr)))__gu_tmp;		\
++}
  
- static int gntdev_copy(struct gntdev_copy_batch *batch)
-@@ -837,8 +842,9 @@ static int gntdev_grant_copy_seg(struct
- 			virt = seg->source.virt + copied;
- 			off = (unsigned long)virt & ~XEN_PAGE_MASK;
- 			len = min(len, (size_t)XEN_PAGE_SIZE - off);
-+			batch->writeable = false;
+ #define __get_user_asm2(x, addr, err)			\
++{							\
++	unsigned long long __gu_tmp;			\
+ 	__asm__ __volatile__(				\
+ 		"1:	l.lwz %1,0(%2)\n"		\
+ 		"2:	l.lwz %H1,4(%2)\n"		\
+@@ -228,8 +234,11 @@ do {									\
+ 		"	.long 1b,4b\n"			\
+ 		"	.long 2b,4b\n"			\
+ 		".previous"				\
+-		: "=r"(err), "=&r"(x)			\
+-		: "r"(addr), "i"(-EFAULT), "0"(err))
++		: "=r"(err), "=&r"(__gu_tmp)		\
++		: "r"(addr), "i"(-EFAULT), "0"(err));	\
++	(x) = (__typeof__(*(addr)))(			\
++		(__typeof__((x)-(x)))__gu_tmp);		\
++}
  
--			ret = gntdev_get_page(batch, virt, false, &gfn);
-+			ret = gntdev_get_page(batch, virt, &gfn);
- 			if (ret < 0)
- 				return ret;
- 
-@@ -856,8 +862,9 @@ static int gntdev_grant_copy_seg(struct
- 			virt = seg->dest.virt + copied;
- 			off = (unsigned long)virt & ~XEN_PAGE_MASK;
- 			len = min(len, (size_t)XEN_PAGE_SIZE - off);
-+			batch->writeable = true;
- 
--			ret = gntdev_get_page(batch, virt, true, &gfn);
-+			ret = gntdev_get_page(batch, virt, &gfn);
- 			if (ret < 0)
- 				return ret;
+ /* more complex routines */
  
 
 
