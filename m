@@ -2,142 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0972A1739
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 13:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A182A173C
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 13:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbgJaMNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 08:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37884 "EHLO
+        id S1727189AbgJaMQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 08:16:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727034AbgJaMND (ORCPT
+        with ESMTP id S1726964AbgJaMQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 08:13:03 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687A3C0613D5
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 05:13:03 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id f37so8079467otf.12
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 05:13:03 -0700 (PDT)
+        Sat, 31 Oct 2020 08:16:19 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65B5C0613D5;
+        Sat, 31 Oct 2020 05:16:19 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id v123so2233977ooa.5;
+        Sat, 31 Oct 2020 05:16:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OJnBN88M+BlFSOlt8QGTKwLwqQoCIrUkzepgf9Q0TBU=;
-        b=pwNwtn8hzJqmy4ovTfgp+b9xQU0d3N7a4+9JjCBXoZyL1e+C60v6cZwIHT9Co9EktW
-         leVrLES3lNC1lA73J0lc9tPz9GOTDIjoXisVqTDbp+4W4beDzFl+md+cUWH6e65dxU/o
-         BWmL6MqkyKTDW+j+nUrz8BUFcWQtYOSiTJXt6xsiqNkwCMkxdAXvDh7C6i0F4u8nq9gM
-         R0CGYAr3pH1eGV+eYn0gF5WLQtT7C/pII4Jhilmi2zCSYBDR1YYYkyfOqWFIOHBZ6emU
-         7tJg4h43ZV4ad/jVBNelzfvvv5SOzFrFm4UUshjR0uX7duCQLDQFsYb6Js35w92LiVlW
-         uPfw==
+        bh=3IZQKufwOcxbgfNyN8LiifsxqO2FM7tzTmP6WflJFGk=;
+        b=DlYohsrLV0bjqieNe2L7OCYR77e47fm9oLAnlze0cDMrNCa4ThthSlCGvGe2i1/YRY
+         W20FMurKnp87uTiZTKvwLPu5/TojmFMtTKQQO1a1Md2p2v4atLSbMOzq3+MoOzDvw9Ns
+         2Wv65JfQ1AQvn0fk/ck0NevyDZW6Bj5PXqQ9o9R9qhV8+jIqVDlub02Z7/dc1C+zxgyv
+         kw2kl9+5htipt4ixQ3se2IB0KDJMhBgSo+ZKXumn+H1hCyUN3b0OEL1BTWlmH4oqq4pS
+         6G7FQo5Zh6+FAMoOU8Ypg4QsZQq8XNFVZ8pqlKqQlt5P1MFoyokxmWZXzLIXl0YVKIll
+         okhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OJnBN88M+BlFSOlt8QGTKwLwqQoCIrUkzepgf9Q0TBU=;
-        b=cd3wUBkxHeFHJE/bLyyqePKtbFeeSk/iWFxcpfvym4PseAMBCWm4RdKiebsakiUWny
-         TT3WpbG76olP35hO97sXhMmWoE73sS9G8AFV+/CtvYjo56FFduhmDz4VUbHqDSOTrHkV
-         Kqt9Ri/7V4mRpOG/9C1nNyehRyknGvfRIS6zKeCoDmbkA7W5PLOdU/QzaNoZ1Gs1yDoo
-         CgdA3LLhMtd6d4KTTdayartQigNG8Ofp81GSwe2JbqdjnFnckJLDM2oCzpGgUd6aIzTe
-         PuYx1MlJgErcMhBDeY3ubSNBGWwFH+fMpiI8e/CDGBeSDvEoC8Y/bl6J3cqaz7c4fU90
-         1LDA==
-X-Gm-Message-State: AOAM530Xgcs7io72IiP6pxhnkQ6b/b4us1h8+At8v5Uq3FQFQFOExp+a
-        76+gZXpuvnBQKK/i559yvzeE0/T3g/EMnVnwJVeSkA==
-X-Google-Smtp-Source: ABdhPJxdEcH+KjsMqyTGbY1i1CZ42RiVG1YOCVBbGk18uLqBbkGoU8Ym0A8YyqxteNkC5P0vB765E9ShdESnE21YH98=
-X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr5147702ots.66.1604146382129;
- Sat, 31 Oct 2020 05:13:02 -0700 (PDT)
+        bh=3IZQKufwOcxbgfNyN8LiifsxqO2FM7tzTmP6WflJFGk=;
+        b=aLPqMseSPSMtsnGO5A0/nqbCLUk37Qs9FbWrpTo1ITZJmjqyVIFkNIDojGE8Y0cL1X
+         UTBuKWPB3Tkyf7ji34dxVF6be05/iVgD3GoSDF7s40Cu2xDjZvbRL25B+y1k3liZ50V9
+         u/8VaYuANZ0lJcWYWS21amvFfGnsQx9zyL3gAeWaNzCHkfo8Y/253QvlVIywzjLkKcHr
+         9jleMzeMoTkeszY86ERAlIrwjokmYnzPo4/R4M8atQXopBSj10l6ZtIHYdJpYNd4f3GJ
+         yIocmtZctb1JV/Zk+S37q71FA1vPVazixIqVgc2FZeHUGl+loJi34HD0Cxotru1N0jpc
+         jSEQ==
+X-Gm-Message-State: AOAM533Yl4nsQutF7b8HCOG6HYnFKTWtrn/KrCbpqMaRE+ij2NcuLz+O
+        jXw3UldnojJByBjRc+zd6rTE2o7FtwP+Lnle1bM=
+X-Google-Smtp-Source: ABdhPJyOoDpUPtIiC+qPu+axZfUycYe94lvhxIoFbOqmYvuMLYWi77cRjrwCKouEB35H1iflD/4+ah9srUO46rWJTMk=
+X-Received: by 2002:a4a:d104:: with SMTP id k4mr5512975oor.0.1604146579103;
+ Sat, 31 Oct 2020 05:16:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201028114635.7570-1-robert.marko@sartura.hr> <2f0653b7d05d1ef26f6624b38d1d7b2d@codeaurora.org>
-In-Reply-To: <2f0653b7d05d1ef26f6624b38d1d7b2d@codeaurora.org>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Sat, 31 Oct 2020 13:12:51 +0100
-Message-ID: <CA+HBbNGWX7msHgurh+7yzMO7upiGnvSfT=jBy41Xu7Mp6GXE9w@mail.gmail.com>
-Subject: Re: [PATCH v2] watchdog: qcom_wdt: set WDOG_HW_RUNNING bit when appropriate
-To:     kathirav@codeaurora.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        wim@linux-watchdog.org, linux@roeck-us.net,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201022074551.11520-1-alexandru.ardelean@analog.com> <20201023224336.GF745568@lunn.ch>
+In-Reply-To: <20201023224336.GF745568@lunn.ch>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Sat, 31 Oct 2020 14:16:07 +0200
+Message-ID: <CA+U=Dsr3pbZspQu13YmZSLthgCeMNx_7guWTwLtb8vETbVsT_A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] net: phy: adin: disable diag clock & disable
+ standby mode in config_aneg
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>, linux@armlinux.org.uk,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 6:21 AM <kathirav@codeaurora.org> wrote:
+On Sat, Oct 24, 2020 at 1:43 AM Andrew Lunn <andrew@lunn.ch> wrote:
 >
-> On 2020-10-28 17:16, Robert Marko wrote:
-> > If the watchdog hardware is enabled/running during boot, e.g.
-> > due to a boot loader configuring it, we must tell the
-> > watchdog framework about this fact so that it can ping the
-> > watchdog until userspace opens the device and takes over
-> > control.
+> On Thu, Oct 22, 2020 at 10:45:50AM +0300, Alexandru Ardelean wrote:
+> > When the PHY powers up, the diagnostics clock isn't enabled (bit 2 in
+> > register PHY_CTRL_1 (0x0012)).
+> > Also, the PHY is not in standby mode, so bit 13 in PHY_CTRL_3 (0x0017) is
+> > always set at power up.
 > >
-> > Do so using the WDOG_HW_RUNNING flag that exists for exactly
-> > that use-case.
+> > The standby mode and the diagnostics clock are both meant to be for the
+> > cable diagnostics feature of the PHY (in phylib this would be equivalent to
+> > the cable-test support), and for the frame-generator feature of the PHY.
 > >
-> > Given the watchdog driver core doesn't know what timeout was
-> > originally set by whoever started the watchdog (boot loader),
-> > we make sure to update the timeout in the hardware according
-> > to what the watchdog core thinks it is.
+> > In standby mode, the PHY doesn't negotiate links or manage links.
 > >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > Cc: Luka Perkov <luka.perkov@sartura.hr>
-> > ---
-> > Changes in v2:
-> > * Correct authorship
+> > To use the cable diagnostics/test (or frame-generator), the PHY must be
+> > first set in standby mode, so that the link operation doesn't interfere.
+> > Then, the diagnostics clock must be enabled.
 > >
-> >  drivers/watchdog/qcom-wdt.c | 22 ++++++++++++++++++++++
-> >  1 file changed, 22 insertions(+)
+> > For the cable-test feature, when the operation finishes, the PHY goes into
+> > PHY_UP state, and the config_aneg hook is called.
 > >
-> > diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
-> > index ab7465d186fd..28c93a918e38 100644
-> > --- a/drivers/watchdog/qcom-wdt.c
-> > +++ b/drivers/watchdog/qcom-wdt.c
-> > @@ -152,6 +152,13 @@ static int qcom_wdt_restart(struct
-> > watchdog_device *wdd, unsigned long action,
-> >       return 0;
-> >  }
+> > For the ADIN PHY, we need to make sure that during autonegotiation
+> > configuration/setup the PHY is removed from standby mode and the
+> > diagnostics clock is disabled, so that normal operation is resumed.
 > >
-> > +static int qcom_wdt_is_running(struct watchdog_device *wdd)
-> > +{
-> > +     struct qcom_wdt *wdt = to_qcom_wdt(wdd);
-> > +
-> > +     return (readl(wdt_addr(wdt, WDT_EN)) & 1);
+> > This change does that by moving the set of the ADIN1300_LINKING_EN bit (2)
+> > in the config_aneg (to disable standby mode).
+> > Previously, this was set in the downshift setup, because the downshift
+> > retry value and the ADIN1300_LINKING_EN are in the same register.
+> >
+> > And the ADIN1300_DIAG_CLK_EN bit (13) is cleared, to disable the
+> > diagnostics clock.
+> >
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 >
-> QCOM_WDT_ENABLE macro can be used instead of 1?
-Yes, pushed this in v4(Forgot to do it in v3).
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+So, then re-send for this or just this patch ping?
+Naturally, this is for net-next.
+I don't mind doing either way.
+
 Thanks
+Alex
+
 >
-> > +}
-> > +
-> >  static const struct watchdog_ops qcom_wdt_ops = {
-> >       .start          = qcom_wdt_start,
-> >       .stop           = qcom_wdt_stop,
-> > @@ -294,6 +301,21 @@ static int qcom_wdt_probe(struct platform_device
-> > *pdev)
-> >       wdt->wdd.timeout = min(wdt->wdd.max_timeout, 30U);
-> >       watchdog_init_timeout(&wdt->wdd, 0, dev);
-> >
-> > +     if (qcom_wdt_is_running(&wdt->wdd)) {
-> > +             /*
-> > +              * Make sure to apply timeout from watchdog core, taking
-> > +              * the prescaler of this driver here into account (the
-> > +              * boot loader might be using a different prescaler).
-> > +              *
-> > +              * To avoid spurious resets because of different scaling,
-> > +              * we first disable the watchdog, set the new prescaler
-> > +              * and timeout, and then re-enable the watchdog.
-> > +              */
-> > +             qcom_wdt_stop(&wdt->wdd);
->
-> qcom_wdt_start disables the WDT, configure the timeout values and
-> enables it. Do we still need to call qcom_wdt_stop?
-No, as the start will actually stop the WDT and then set everything up.
-Pushed in v3.
->
-> > +             qcom_wdt_start(&wdt->wdd);
-> > +             set_bit(WDOG_HW_RUNNING, &wdt->wdd.status);
-> > +     }
-> > +
-> >       ret = devm_watchdog_register_device(dev, &wdt->wdd);
-> >       if (ret)
-> >               return ret;
+>     Andrew
