@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3382A164C
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F24182A1627
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgJaLoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:44:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44212 "EHLO mail.kernel.org"
+        id S1727866AbgJaLm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:42:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728092AbgJaLoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:44:00 -0400
+        id S1727332AbgJaLmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:42:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EF8C20731;
-        Sat, 31 Oct 2020 11:43:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38153205F4;
+        Sat, 31 Oct 2020 11:42:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144640;
-        bh=rEnBkTSpGPRpp+R0p+iiDUWxVjbCZ3g87SpKhyJDfbc=;
+        s=default; t=1604144543;
+        bh=lyN8fzdZVm2iK4kV+7mrPWBQYhkvGH4kdoLeQtrO2uU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zPt5fJfiUTeo0o3Mn3FzlSLB5ognnLuLJX3ujCIdju6Q9gdbPj0afr6vfL2+CDttZ
-         OYrW+xa1yexVsh8y2CZhZ0j3VNxAKS5uhDsgzEQ+fIEZj4aoZ8l2fx87WattvyJCQk
-         HT2kwnIJMgT9BOEUFCKoo4EVg2GvB3NiB8C5hO2k=
+        b=OoS1tClKWSB0hbhVO62QoubylVBgx7f7O4EY3mTP+59sIO9BIPjyx4NLzx2fbdjF1
+         ZUkM03pJ2/elm89Uj0oKv3rvweUtLP5qt68K5qZtrQ+C/MxYeYtphQd7XydOWk2CSi
+         xgP2co5LccEnXeECpSspf1UThLvfWxhfIJGD0FUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.9 07/74] io_uring: return cancelation status from poll/timeout/files handlers
-Date:   Sat, 31 Oct 2020 12:35:49 +0100
-Message-Id: <20201031113500.389730131@linuxfoundation.org>
+        stable@vger.kernel.org, Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 5.8 18/70] efi/arm64: libstub: Deal gracefully with EFI_RNG_PROTOCOL failure
+Date:   Sat, 31 Oct 2020 12:35:50 +0100
+Message-Id: <20201031113500.381102391@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
-References: <20201031113500.031279088@linuxfoundation.org>
+In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
+References: <20201031113459.481803250@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,95 +42,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 76e1b6427fd8246376a97e3227049d49188dfb9c upstream.
+commit d32de9130f6c79533508e2c7879f18997bfbe2a0 upstream.
 
-Return whether we found and canceled requests or not. This is in
-preparation for using this information, no functional changes in this
-patch.
+Currently, on arm64, we abort on any failure from efi_get_random_bytes()
+other than EFI_NOT_FOUND when it comes to setting the physical seed for
+KASLR, but ignore such failures when obtaining the seed for virtual
+KASLR or for early seeding of the kernel's entropy pool via the config
+table. This is inconsistent, and may lead to unexpected boot failures.
 
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+So let's permit any failure for the physical seed, and simply report
+the error code if it does not equal EFI_NOT_FOUND.
+
+Cc: <stable@vger.kernel.org> # v5.8+
+Reported-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/io_uring.c |   27 ++++++++++++++++++++++-----
- 1 file changed, 22 insertions(+), 5 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1229,16 +1229,23 @@ static bool io_task_match(struct io_kioc
- 	return false;
- }
+---
+ drivers/firmware/efi/libstub/arm64-stub.c |    8 +++++---
+ drivers/firmware/efi/libstub/fdt.c        |    4 +---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+--- a/drivers/firmware/efi/libstub/arm64-stub.c
++++ b/drivers/firmware/efi/libstub/arm64-stub.c
+@@ -62,10 +62,12 @@ efi_status_t handle_kernel_image(unsigne
+ 			status = efi_get_random_bytes(sizeof(phys_seed),
+ 						      (u8 *)&phys_seed);
+ 			if (status == EFI_NOT_FOUND) {
+-				efi_info("EFI_RNG_PROTOCOL unavailable, no randomness supplied\n");
++				efi_info("EFI_RNG_PROTOCOL unavailable, KASLR will be disabled\n");
++				efi_nokaslr = true;
+ 			} else if (status != EFI_SUCCESS) {
+-				efi_err("efi_get_random_bytes() failed\n");
+-				return status;
++				efi_err("efi_get_random_bytes() failed (0x%lx), KASLR will be disabled\n",
++					status);
++				efi_nokaslr = true;
+ 			}
+ 		} else {
+ 			efi_info("KASLR disabled on kernel command line\n");
+--- a/drivers/firmware/efi/libstub/fdt.c
++++ b/drivers/firmware/efi/libstub/fdt.c
+@@ -136,7 +136,7 @@ static efi_status_t update_fdt(void *ori
+ 	if (status)
+ 		goto fdt_set_fail;
  
--static void io_kill_timeouts(struct io_ring_ctx *ctx, struct task_struct *tsk)
-+/*
-+ * Returns true if we found and killed one or more timeouts
-+ */
-+static bool io_kill_timeouts(struct io_ring_ctx *ctx, struct task_struct *tsk)
- {
- 	struct io_kiocb *req, *tmp;
-+	int canceled = 0;
+-	if (IS_ENABLED(CONFIG_RANDOMIZE_BASE)) {
++	if (IS_ENABLED(CONFIG_RANDOMIZE_BASE) && !efi_nokaslr) {
+ 		efi_status_t efi_status;
  
- 	spin_lock_irq(&ctx->completion_lock);
- 	list_for_each_entry_safe(req, tmp, &ctx->timeout_list, timeout.list) {
--		if (io_task_match(req, tsk))
-+		if (io_task_match(req, tsk)) {
- 			io_kill_timeout(req);
-+			canceled++;
-+		}
+ 		efi_status = efi_get_random_bytes(sizeof(fdt_val64),
+@@ -145,8 +145,6 @@ static efi_status_t update_fdt(void *ori
+ 			status = fdt_setprop_var(fdt, node, "kaslr-seed", fdt_val64);
+ 			if (status)
+ 				goto fdt_set_fail;
+-		} else if (efi_status != EFI_NOT_FOUND) {
+-			return efi_status;
+ 		}
  	}
- 	spin_unlock_irq(&ctx->completion_lock);
-+	return canceled != 0;
- }
  
- static void __io_queue_deferred(struct io_ring_ctx *ctx)
-@@ -5013,7 +5020,10 @@ static bool io_poll_remove_one(struct io
- 	return do_complete;
- }
- 
--static void io_poll_remove_all(struct io_ring_ctx *ctx, struct task_struct *tsk)
-+/*
-+ * Returns true if we found and killed one or more poll requests
-+ */
-+static bool io_poll_remove_all(struct io_ring_ctx *ctx, struct task_struct *tsk)
- {
- 	struct hlist_node *tmp;
- 	struct io_kiocb *req;
-@@ -5033,6 +5043,8 @@ static void io_poll_remove_all(struct io
- 
- 	if (posted)
- 		io_cqring_ev_posted(ctx);
-+
-+	return posted != 0;
- }
- 
- static int io_poll_cancel(struct io_ring_ctx *ctx, __u64 sqe_addr)
-@@ -8178,11 +8190,14 @@ static void io_cancel_defer_files(struct
- 	}
- }
- 
--static void io_uring_cancel_files(struct io_ring_ctx *ctx,
-+/*
-+ * Returns true if we found and killed one or more files pinning requests
-+ */
-+static bool io_uring_cancel_files(struct io_ring_ctx *ctx,
- 				  struct files_struct *files)
- {
- 	if (list_empty_careful(&ctx->inflight_list))
--		return;
-+		return false;
- 
- 	io_cancel_defer_files(ctx, files);
- 	/* cancel all at once, should be faster than doing it one by one*/
-@@ -8218,6 +8233,8 @@ static void io_uring_cancel_files(struct
- 		schedule();
- 		finish_wait(&ctx->inflight_wait, &wait);
- 	}
-+
-+	return true;
- }
- 
- static bool io_cancel_task_cb(struct io_wq_work *work, void *data)
 
 
