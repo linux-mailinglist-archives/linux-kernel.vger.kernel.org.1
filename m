@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04FE2A124D
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 02:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91BAF2A124E
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 02:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgJaBNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 21:13:18 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:6997 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgJaBNR (ORCPT
+        id S1726061AbgJaBNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 21:13:21 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6673 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgJaBNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 21:13:17 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CNLlf00YszhdT9;
-        Sat, 31 Oct 2020 09:13:17 +0800 (CST)
+        Fri, 30 Oct 2020 21:13:20 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CNLlg59CLz15PfF;
+        Sat, 31 Oct 2020 09:13:19 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 31 Oct 2020 09:13:07 +0800
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 31 Oct 2020 09:13:09 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH] cpufreq: mediatek: add missing platform_driver_unregister() on error in mtk_cpufreq_driver_init
-Date:   Sat, 31 Oct 2020 09:18:54 +0800
-Message-ID: <20201031011854.137261-1-miaoqinglang@huawei.com>
+Subject: [PATCH] drm: panel: simple: add missing platform_driver_unregister() in panel_simple_init
+Date:   Sat, 31 Oct 2020 09:18:56 +0800
+Message-ID: <20201031011856.137307-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,27 +38,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing platform_driver_unregister() before return from
-mtk_cpufreq_driver_init in the error handling case when failed
-to register mtk-cpufreq platform device
+Add the missing platform_driver_unregister() before return
+from panel_simple_init in the error handling case when failed
+to register panel_simple_dsi_driver with CONFIG_DRM_MIPI_DSI
+enabled.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/cpufreq/mediatek-cpufreq.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/panel/panel-simple.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/cpufreq/mediatek-cpufreq.c b/drivers/cpufreq/mediatek-cpufreq.c
-index 7d1212c9b..c03c76a0c 100644
---- a/drivers/cpufreq/mediatek-cpufreq.c
-+++ b/drivers/cpufreq/mediatek-cpufreq.c
-@@ -572,6 +572,7 @@ static int __init mtk_cpufreq_driver_init(void)
- 	pdev = platform_device_register_simple("mtk-cpufreq", -1, NULL, 0);
- 	if (IS_ERR(pdev)) {
- 		pr_err("failed to register mtk-cpufreq platform device\n");
-+		platform_driver_unregister(&mtk_cpufreq_platdrv);
- 		return PTR_ERR(pdev);
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 2be358fb4..2966ac13c 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -4644,8 +4644,10 @@ static int __init panel_simple_init(void)
+ 
+ 	if (IS_ENABLED(CONFIG_DRM_MIPI_DSI)) {
+ 		err = mipi_dsi_driver_register(&panel_simple_dsi_driver);
+-		if (err < 0)
++		if (err < 0) {
++			platform_driver_unregister(&panel_simple_platform_driver);
+ 			return err;
++		}
  	}
  
+ 	return 0;
 -- 
 2.23.0
 
