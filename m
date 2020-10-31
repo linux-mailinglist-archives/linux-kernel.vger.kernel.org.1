@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CAD12A1794
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 14:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1B62A1798
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 14:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727427AbgJaNSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 09:18:37 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:26487 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727322AbgJaNSh (ORCPT
+        id S1727439AbgJaNXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 09:23:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727163AbgJaNXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 09:18:37 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-68-PoE7hCcQP9mtq2Zn8D5T9Q-1; Sat, 31 Oct 2020 13:18:28 +0000
-X-MC-Unique: PoE7hCcQP9mtq2Zn8D5T9Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 31 Oct 2020 13:18:27 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 31 Oct 2020 13:18:27 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Peter Zijlstra' <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-CC:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "eranian@google.com" <eranian@google.com>
-Subject: RE: [PATCH 4/6] perf: Optimize get_recursion_context()
-Thread-Topic: [PATCH 4/6] perf: Optimize get_recursion_context()
-Thread-Index: AQHWrxDB+hviZpPrkUisLgNdhr09JamxnS3ggAATP3A=
-Date:   Sat, 31 Oct 2020 13:18:27 +0000
-Message-ID: <383bd862e8604a3096b8fcda4358726e@AcuMS.aculab.com>
-References: <20201030151345.540479897@infradead.org>
- <20201030151955.187580298@infradead.org> <20201030181138.215b2b6a@carbon>
- <20201030162248.58e388f0@oasis.local.home>
- <20201030230152.GT2594@hirez.programming.kicks-ass.net>
- <6371740df7704217926315e97294a894@AcuMS.aculab.com>
-In-Reply-To: <6371740df7704217926315e97294a894@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 31 Oct 2020 09:23:40 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9257C0617A6;
+        Sat, 31 Oct 2020 06:23:39 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id n5so8953797ile.7;
+        Sat, 31 Oct 2020 06:23:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7C5TY9Wkz59ytckWXNebEjmACP7EGIzlB4+x6CMVE9U=;
+        b=diHccTdJcNstLlNOgFczpRf4ITQOs2IrhKYxsL67SFx04Mg7E+KOXIisoZIMWDk+6v
+         0V1kQ0boiM/2VGjIe1cKwVdTrM2dsC1BoMcnf9FsiZbNuskfrZrOdNrMbH6qR+uOqzdS
+         4u6i8nO1PnzIMfpF7LULTPt1W+Kh0eaGXqbaTUAobfVaVTSD01GOSIPTyrXnpqVd5j0o
+         7hH6aNKoIgSsf9ftouhujaHgNPhbKrsAyjbXY147ZDrdGbUiIDyKVn0AMYyBkWoQTmJu
+         5pZXXgU6wGodrIlNo+DxT3fjeOu94RHmqMwbxJyAElyDwstyGgqKuW6ljzur2i1rrJmd
+         xkmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7C5TY9Wkz59ytckWXNebEjmACP7EGIzlB4+x6CMVE9U=;
+        b=qX2wiUA//GYLqMVnOeqyaDFQhf3p30mGIe3eAFeRf2e1Fjn6w/eYsB9ZoFZSqjH+g6
+         sEoHlwntEtUZTax2uGMVcYK/uP+81No3Da1JJi8/LE3agkCjKR0/sXtVuUCfNQSJN66e
+         rMNb1OwE55vEpqlK8wTIUTyHq2CWXc04liaJh7Mn+vyiucI3qDOoLl2W+JmGc7Zgo7/u
+         llnAZ6jMCGcANwrv9EaztZwMO2eA4FjhSrDDPLfOYSFp/XnLHwEXk1MqJ+bTfzZDplh/
+         RlT5sgX/UBX3yhkzkRrIKWqXNwRYO5RHi0dpPekr91Bp367l68hjv5ZGgkL2nTYFRMyw
+         +5JA==
+X-Gm-Message-State: AOAM533NhiVY43UOBqiDy8VF6We/8+pi8MnU29tX8OBsuMit9/0RVENx
+        jipQm7f4dPLR+ATuRgTy298=
+X-Google-Smtp-Source: ABdhPJwACz3FXFq9vkpBMb/wu64FdpKHhdZ75PaRS/usZRTwDfvWL1jieazow192LaCvHG7e+tMw3A==
+X-Received: by 2002:a92:cc92:: with SMTP id x18mr4743034ilo.63.1604150619031;
+        Sat, 31 Oct 2020 06:23:39 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:c107:3b4f:7176:6aff])
+        by smtp.gmail.com with ESMTPSA id y3sm6804655ilc.49.2020.10.31.06.23.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Oct 2020 06:23:38 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, marex@denx.de,
+        Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2 0/5] Enable Audio functions on i.MX8M Nano
+Date:   Sat, 31 Oct 2020 08:23:23 -0500
+Message-Id: <20201031132328.712525-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRGF2aWQgTGFpZ2h0DQo+IFNlbnQ6IDMxIE9jdG9iZXIgMjAyMCAxMjoxMg0KPiANCi4u
-Lg0KPiBUaGUgZ2NjIDcuNS4wIEkgaGF2ZSBoYW5keSBwcm9iYWJseSBnZW5lcmF0ZXMgdGhlIGJl
-c3QgY29kZSBmb3I6DQo+IA0KPiB1bnNpZ25lZCBjaGFyIHFfMih1bnNpZ25lZCBpbnQgcGMpDQo+
-IHsNCj4gICAgICAgICB1bnNpZ25lZCBjaGFyIHJjdHggPSAwOw0KPiANCj4gICAgICAgICByY3R4
-ICs9ICEhKHBjICYgKE5NSV9NQVNLKSk7DQo+ICAgICAgICAgcmN0eCArPSAhIShwYyAmIChOTUlf
-TUFTSyB8IEhBUkRJUlFfTUFTSykpOw0KPiAgICAgICAgIHJjdHggKz0gISEocGMgJiAoTk1JX01B
-U0sgfCBIQVJESVJRX01BU0sgfCBTT0ZUSVJRX09GRlNFVCkpOw0KPiANCj4gICAgICAgICByZXR1
-cm4gcmN0eDsNCj4gfQ0KPiANCj4gMDAwMDAwMDAwMDAwMDAwMCA8cV8yPjoNCj4gICAgMDogICBm
-NyBjNyAwMCAwMCBmMCAwMCAgICAgICB0ZXN0ICAgJDB4ZjAwMDAwLCVlZGkgICAgICMgY2xvY2sg
-MA0KPiAgICA2OiAgIDBmIDk1IGMwICAgICAgICAgICAgICAgIHNldG5lICAlYWwgICAgICAgICAg
-ICAgICAgIyBjbG9jayAxDQo+ICAgIDk6ICAgZjcgYzcgMDAgMDAgZmYgMDAgICAgICAgdGVzdCAg
-ICQweGZmMDAwMCwlZWRpICAgICAjIGNsb2NrIDANCj4gICAgZjogICAwZiA5NSBjMiAgICAgICAg
-ICAgICAgICBzZXRuZSAgJWRsICAgICAgICAgICAgICAgICMgY2xvY2sgMQ0KPiAgIDEyOiAgIDAx
-IGMyICAgICAgICAgICAgICAgICAgIGFkZCAgICAlZWF4LCVlZHggICAgICAgICAgIyBjbG9jayAy
-DQo+ICAgMTQ6ICAgODEgZTcgMDAgMDEgZmYgMDAgICAgICAgYW5kICAgICQweGZmMDEwMCwlZWRp
-DQo+ICAgMWE6ICAgMGYgOTUgYzAgICAgICAgICAgICAgICAgc2V0bmUgICVhbA0KPiAgIDFkOiAg
-IDAxIGQwICAgICAgICAgICAgICAgICAgIGFkZCAgICAlZWR4LCVlYXggICAgICAgICAgIyBjbG9j
-ayAzDQo+ICAgMWY6ICAgYzMgICAgICAgICAgICAgICAgICAgICAgcmV0cQ0KPiANCj4gSSBkb3Vi
-dCB0aGF0IGlzIGJlYXRhYmxlLg0KDQpJIGxpZWQsIHlvdSBzaG91bGQgYmUgYWJsZSB0byBnZXQ6
-DQoJdGVzdCAgICQweGZmMDAwMCwlZWRpICAgICAjIGNsb2NrIDANCglzZXRuZSAgJWFsICAgICAg
-ICAgICAgICAgICMgY2xvY2sgMQ0KCXRlc3QgICAkMHhmZjAxMDAsJWVkaSAgICAgIyBjbG9jayAw
-DQoJc2V0bmUgICVkbCAgICAgICAgICAgICAgICAjIGNsb2NrIDENCglhZGQgICAgJGZmZmZmMDAw
-LCVlZGkNCglhZGMgICAgJWRsLCAlYWwgICAgICAgICAgICMgY2xvY2sgMg0KDQpCdXQgSSBzdXNw
-ZWN0IGdldHRpbmcgaXQgZnJvbSB0aGUgY29tcGlsZXIgbWlnaHQgYmUgaGFyZCENCg0KCURhdmlk
-DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
-YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
-IChXYWxlcykNCg==
+The i.MX8M Nano uses similar blocks of audio IP as the iMX8M Mini
+This series adds those functions.
+
+V2:  Mostly corrects some minor typos and rebased on Shawn Guo's 
+branch imx/dt64.  The added cover letter with stats was per request
+to show what's changed at a high level.
+
+Adam Ford (5):
+  arm64: dts: imx8mn: Enable Asynchronous Sample Rate Converter
+  arm64: defconfig: Enable ASRC and EASRC
+  arm64: dts: imx8mn: Add SAI nodes
+  arm64: dts: imx8mn: Add support for micfil
+  arm64: dts: imx8mn: Add node for SPDIF
+
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 143 ++++++++++++++++++++++
+ arch/arm64/configs/defconfig              |   2 +
+ 2 files changed, 145 insertions(+)
+
+-- 
+2.25.1
 
