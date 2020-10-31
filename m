@@ -2,60 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1EE2A1518
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 11:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC4D2A151A
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 11:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgJaKOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 06:14:06 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7002 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726562AbgJaKOG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 06:14:06 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CNZlb0twLzhdgM;
-        Sat, 31 Oct 2020 18:14:03 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 31 Oct 2020 18:13:55 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
-        <Al.Grant@arm.com>, <mike.leach@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>
-Subject: [PATCH] coresight: funnel: Remove unnecessary .owner of static funnel driver
-Date:   Sat, 31 Oct 2020 18:12:30 +0800
-Message-ID: <1604139150-18659-1-git-send-email-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1726716AbgJaKP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 06:15:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726704AbgJaKP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 06:15:29 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D7E9420719;
+        Sat, 31 Oct 2020 10:15:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604139328;
+        bh=3Cmzv6DicAII9v7mimD1qHIYZDQWfFrKWlHS+W2TAh4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ev+Tvctn7XJ48Cz/NXCEDlhIIlPIBtFjuK7GCtrPhYcbdZBZPSk+JgzF35ESAuYIh
+         tku+KIwNs2BQGNuW2QSNyz6pjyj/IGz3LHBOrWenqc43Z5lSlxa1G/00o2GUmruJMc
+         aT/VSmHJ5gRYTsyLGcxjFGgBptQjuwKIVtEXyArI=
+Date:   Sat, 31 Oct 2020 11:16:14 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Salvatore Bonaccorso <carnil@debian.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/264] 4.19.153-rc1 review
+Message-ID: <20201031101614.GA525483@kroah.com>
+References: <20201027135430.632029009@linuxfoundation.org>
+ <20201028171035.GD118534@roeck-us.net>
+ <20201028195619.GC124982@roeck-us.net>
+ <20201031094500.GA271135@eldamar.lan>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201031094500.GA271135@eldamar.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As driver.owner has been set in platform_driver_register(), it is
-unnecessary to set it in static funnel driver, so remove it from
-struct static_funnel_driver.
+On Sat, Oct 31, 2020 at 10:45:00AM +0100, Salvatore Bonaccorso wrote:
+> Hi Greg,
+> 
+> On Wed, Oct 28, 2020 at 12:56:19PM -0700, Guenter Roeck wrote:
+> > Retry.
+> > 
+> > On Wed, Oct 28, 2020 at 10:10:35AM -0700, Guenter Roeck wrote:
+> > > On Tue, Oct 27, 2020 at 02:50:58PM +0100, Greg Kroah-Hartman wrote:
+> > > > This is the start of the stable review cycle for the 4.19.153 release.
+> > > > There are 264 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > > 
+> > > > Responses should be made by Thu, 29 Oct 2020 13:53:47 +0000.
+> > > > Anything received after that time might be too late.
+> > > > 
+> > > 
+> > > Build results:
+> > > 	total: 155 pass: 152 fail: 3
+> > > Failed builds:
+> > > 	i386:tools/perf
+> > > 	powerpc:ppc6xx_defconfig
+> > > 	x86_64:tools/perf
+> > > Qemu test results:
+> > > 	total: 417 pass: 417 fail: 0
+> > > 
+> > > perf failures are as usual. powerpc:
+> 
+> Regarding the perf failures, do you plan to revert b801d568c7d8 ("perf
+> cs-etm: Move definition of 'traceid_list' global variable from header
+> file") included in 4.19.152 or is a bugfix underway?
 
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
----
- drivers/hwtracing/coresight/coresight-funnel.c | 1 -
- 1 file changed, 1 deletion(-)
+No bugfix that I know of :)
 
-diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
-index af40814..07bc203 100644
---- a/drivers/hwtracing/coresight/coresight-funnel.c
-+++ b/drivers/hwtracing/coresight/coresight-funnel.c
-@@ -356,7 +356,6 @@ static struct platform_driver static_funnel_driver = {
- 	.remove          = static_funnel_remove,
- 	.driver         = {
- 		.name   = "coresight-static-funnel",
--		.owner	= THIS_MODULE,
- 		.of_match_table = static_funnel_match,
- 		.acpi_match_table = ACPI_PTR(static_funnel_ids),
- 		.pm	= &funnel_dev_pm_ops,
---
-2.8.1
+If you can send a patch that I can apply to resolve this, I'll gladly
+take it.
 
+thanks,
+
+greg k-h
