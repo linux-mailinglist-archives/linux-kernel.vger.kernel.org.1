@@ -2,184 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AD82A1812
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 15:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4042A1817
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 15:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgJaOIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 10:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727407AbgJaOIr (ORCPT
+        id S1727768AbgJaORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 10:17:16 -0400
+Received: from mail-02.mail-europe.com ([51.89.119.103]:36552 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727407AbgJaORO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 10:08:47 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACA7C0617A6;
-        Sat, 31 Oct 2020 07:08:47 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id g43so545048otg.13;
-        Sat, 31 Oct 2020 07:08:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PUP50lDEru7fyi0Z0avojm2dKzYp2C2Xo21IUxdozrw=;
-        b=nRbMVW5eyAqR2WQUoy8VuqTMwYx+puMvoJmUyzh3hZuBJIhA4y8MNliBT71j6z4OMh
-         3680lOiJUbnmiygXh7sYcR7vhuo7GD91PtlxzU70oAz4YcaLLd+7GLllqYHgwdrYtgqb
-         0DKD8A/rc83pSkQeh4uhOZN77m1738TI629PTujV1hr99Vu/+bYYXezMF5reqCx8r+5q
-         ObquIPeX1usgupp9pyOs4ccJJ/YKK4vEYNQctJUn2GStHISUQY5kvlSOVsyeF95lfPeV
-         oz3rE3FRimlFJlz4zzyLh2KZaK/6P/gmdHzP0Pd8P8xiIlz5FCdT7XH/48sNK3DDJSlD
-         aGAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=PUP50lDEru7fyi0Z0avojm2dKzYp2C2Xo21IUxdozrw=;
-        b=a/Pjgd8z/LbsQz4RlR8CrtiluE51gY9NFvCuNB7eL7SUtTqntPzC4dzRWLyIQHa0Cz
-         saj9k9tlI+Wczo0AgbJcRQqpI48mHZgtsQp6EbSp48Lt4LIZnt1hMD48q3G0IyK6nu7h
-         Y7I2X6eec/ar6StejhAAjbC3sCun4BePkS6xy8CD4bVZBltYUXHes7wNiY0y7nBTAdoE
-         6eRIw1gzlO+nwDjgTvATyhzELs848rN9v84zGi0OrmqaGIJslzD4C74UNgQ8o7KZHwD3
-         RNUDECxGFWPmTX6nXXANCgy7oaY3VnQLHyj/ux7YoyT/C/GU9HGGP8Ob/7Ro4I121BXo
-         TraA==
-X-Gm-Message-State: AOAM532CbhQ2vMKXbaELhQCXIwDUpfgOoiQZkzJ9+WzUMN1XRbKqGK6s
-        Fz/G0yUOEzAtrTOdXLTz0wAfCNfxw8M=
-X-Google-Smtp-Source: ABdhPJy4kjylI2g6C26gCEfniFL5EQJdIsU7FMS9yBMPtmxVxUmQnFyIxi9WD7jjegFZRodp2zwY/A==
-X-Received: by 2002:a9d:65c2:: with SMTP id z2mr5327493oth.80.1604153326731;
-        Sat, 31 Oct 2020 07:08:46 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m27sm2141898otr.32.2020.10.31.07.08.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 31 Oct 2020 07:08:45 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v4] watchdog: qcom_wdt: set WDOG_HW_RUNNING bit when
- appropriate
-To:     Robert Marko <robert.marko@sartura.hr>, agross@kernel.org,
-        bjorn.andersson@linaro.org, wim@linux-watchdog.org,
-        linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Luka Perkov <luka.perkov@sartura.hr>
-References: <20201031121115.542752-1-robert.marko@sartura.hr>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <a71307f5-22b4-0d38-2880-96084bb07275@roeck-us.net>
-Date:   Sat, 31 Oct 2020 07:08:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 31 Oct 2020 10:17:14 -0400
+Date:   Sat, 31 Oct 2020 14:17:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1604153827; bh=NXlWEEClV4m+2Wq5YBkeWG1SXRGlVBbCq04Zf/Sk7C8=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=IBS5UuK0imxu2GUNPPcajRAkiXSaQIHDckCvHh0LPYWjLBC5lLLSCZKEDq4fisWqb
+         wEcR1Q2tr7n2pFC9g644ZcDSq9Dk2k/eR7C1M5awO2mAVYfDqzz/S55Bg30U/B8dPe
+         YJJLQRvcx/u9P/y1MHWYBla2dJ9bd/64G8ua/V9kjm1mzLrVTEG7BTzE/r2fvGk9c2
+         9QWUNIw2SBJ2eN87nJ8rLjRieS4PxMee8y3aOpA3UTyy73E/ouK1a66aLXEQ66Iw3o
+         9+B4JkXnfMYEJmB3QFsUCDjEfaT/I3nUoIu8IQDWFP+yFTP4kL6Kj9TXyj8aKPwoNW
+         5Ajy9nHWG407Q==
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH net-next] net: avoid unneeded UDP L4 and fraglist GSO resegmentation
+Message-ID: <MX6AwRxaXyMi3FALeN1gpN8y4XgaktZM2MHxQMOM@cp4-web-036.plabs.ch>
+In-Reply-To: <TSRRse4RkO_XW4DtdTkz4NeZPwzHXaPOEFU9-J4VlpLbUzlBzuhW8HYfHCfFJ1Ro6FwztEO652tbnSGOE-MjfKez1NvVPM3v3ResWtbK5Rk=@pm.me>
+References: <Mx3BWGop6fGORN6Cpo4mHIHz2b1bb0eLxeMG8vsijnk@cp3-web-020.plabs.ch> <CA+FuTSdiqaZJ3HQHuEEMwKioWGKvGwZ42Oi7FpRf0hqWdZ27pQ@mail.gmail.com> <TSRRse4RkO_XW4DtdTkz4NeZPwzHXaPOEFU9-J4VlpLbUzlBzuhW8HYfHCfFJ1Ro6FwztEO652tbnSGOE-MjfKez1NvVPM3v3ResWtbK5Rk=@pm.me>
 MIME-Version: 1.0
-In-Reply-To: <20201031121115.542752-1-robert.marko@sartura.hr>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/20 5:11 AM, Robert Marko wrote:
-> If the watchdog hardware is enabled/running during boot, e.g.
-> due to a boot loader configuring it, we must tell the
-> watchdog framework about this fact so that it can ping the
-> watchdog until userspace opens the device and takes over
-> control.
-> 
-> Do so using the WDOG_HW_RUNNING flag that exists for exactly
-> that use-case.
-> 
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+From: Alexander Lobakin <alobakin@pm.me>
+Date: Sat, 31 Oct 2020 10:31:31 +0000
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> On Saturday, 31 October 2020, 2:12, Willem de Bruijn <willemdebruijn.kern=
+el@gmail.com> wrote:
+>
+> Hi Willem,
+>
+>> On Fri, Oct 30, 2020 at 2:33 PM Alexander Lobakin alobakin@pm.me wrote:
+>>
+>>> Commit 9fd1ff5d2ac7 ("udp: Support UDP fraglist GRO/GSO.") added a supp=
+ort
+>>> for fraglist UDP L4 and fraglist GSO not only for local traffic, but al=
+so
+>>> for forwarding. This works well on simple setups, but when any logical
+>>> netdev (e.g. VLAN) is present, kernel stack always performs software
+>>> resegmentation which actually kills the performance.
+>>> Despite the fact that no mainline drivers currently supports fraglist G=
+SO,
+>>> this should and can be easily fixed by adding UDP L4 and fraglist GSO t=
+o
+>>> the list of GSO types that can be passed-through the logical interfaces
+>>> (NETIF_F_GSO_SOFTWARE). After this change, no resegmentation occurs (if
+>>> a particular driver supports and advertises this), and the performance
+>>> goes on par with e.g. 1:1 forwarding.
+>>> The only logical netdevs that seem to be unaffected to this are bridge
+>>> interfaces, as their code uses full NETIF_F_GSO_MASK.
+>>>
+>>> Tested on MIPS32 R2 router board with a WIP NIC driver in VLAN NAT:
+>>> 20 Mbps baseline, 1 Gbps / link speed with this patch.
+>>>
+>>> Signed-off-by: Alexander Lobakin alobakin@pm.me
+>>> ------------------------------------------------
+>>> include/linux/netdev_features.h | 4 ++--
+>>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>>> diff --git a/include/linux/netdev_features.h b/include/linux/netdev_fea=
+utres.h
+>>> index 0b17c4322b09..934de56644e7 100644
+>>> --- a/include/linux/netdev_features.h
+>>> +++ b/include/linux/netdev_features.h
+>>> @@ -207,8 +207,8 @@ static inline int find_next_netdev_feature(u64 feat=
+ure, unsigned long start)
+>>> NETIF_F_FSO)
+>>> /* List of features with software fallbacks. */
+>>> -#define NETIF_F_GSO_SOFTWARE (NETIF_F_ALL_TSO | \
+>>> -                                  NETIF_F_GSO_SCTP)
+>>> +#define NETIF_F_GSO_SOFTWARE (NETIF_F_ALL_TSO | NETIF_F_GSO_SCTP | \
+>>> -                                  NETIF_F_GSO_UDP_L4 | NETIF_F_GSO_FRA=
+GLIST)
+>>
+>> What exactly do you mean by resegmenting?
+>
+> I mean pts 5-6 from the full path:
+> 1. Our NIC driver advertises a support for fraglists, GSO UDP L4, GSO fra=
+glists.
+> 2. User enables fraglisted GRO via Ethtool.
+> 3. GRO subsystem receives UDP frames from driver and merges the packets i=
+nto
+>    fraglisted GSO skb(s).
+> 4. Networking stack queues it up for xmitting.
+> 5. Virtual device like VLAN doesn't advertise a support for GSO UDP L4 an=
+d
+>    GSO fraglists, so skb_gso_check() doesn't allow to pass this skb as is=
+ to
+>    the real driver.
+> 6. Kernel then has to form a bunch of regular UDP skbs from that one and =
+pass
+>    it to the driver instead. This fallback is *extremely* slow for any GS=
+O types,
+>    but especially for GSO fraglists.
+> 7. All further processing performs with a series of plain UDP skbs, and t=
+he
+>    driver gets it one-by-one, despite that it supports UDP L4 and fraglis=
+ted GSO.
+>
+> That's not OK because:
+> a) logical/virtual netdevs like VLANs, bridges etc. should pass GSO skbs =
+as is;
+> b) even if the final driver doesn't support such type of GSO, this softwa=
+re
+>    resegmenting should be performed right before it, not in the middle of
+>    processing -- I think I even saw that note somewhere in kernel documen=
+tation,
+>    and it's totally reasonable in terms of performance.
+>
+>> I think it is fine to reenable this again, now that UDP sockets will
+>> segment unexpected UDP GSO packets that may have looped. We previously
+>> added general software support in commit 83aa025f535f ("udp: add gso
+>> support to virtual devices"). Then reduced its scope to egress only in
+>> 8eea1ca82be9 ("gso: limit udp gso to egress-only virtual devices") to
+>> handle that edge case.
 
-> Cc: Luka Perkov <luka.perkov@sartura.hr>
-> ---
-> Changes in v4:
-> * Use QCOM_WDT_ENABLE macro
-> 
-> Changes in v3:
-> * Drop call to stop as start already does it
-> * Update commit message
-> 
-> Changes in v2:
-> * Correct authorship
-> 
->  drivers/watchdog/qcom-wdt.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
-> index ab7465d186fd..07d399c4edc4 100644
-> --- a/drivers/watchdog/qcom-wdt.c
-> +++ b/drivers/watchdog/qcom-wdt.c
-> @@ -152,6 +152,13 @@ static int qcom_wdt_restart(struct watchdog_device *wdd, unsigned long action,
->  	return 0;
->  }
->  
-> +static int qcom_wdt_is_running(struct watchdog_device *wdd)
-> +{
-> +	struct qcom_wdt *wdt = to_qcom_wdt(wdd);
-> +
-> +	return (readl(wdt_addr(wdt, WDT_EN)) & QCOM_WDT_ENABLE);
-> +}
-> +
->  static const struct watchdog_ops qcom_wdt_ops = {
->  	.start		= qcom_wdt_start,
->  	.stop		= qcom_wdt_stop,
-> @@ -294,6 +301,17 @@ static int qcom_wdt_probe(struct platform_device *pdev)
->  	wdt->wdd.timeout = min(wdt->wdd.max_timeout, 30U);
->  	watchdog_init_timeout(&wdt->wdd, 0, dev);
->  
-> +	/*
-> +	 * If WDT is already running, call WDT start which
-> +	 * will stop the WDT, set timeouts as bootloader
-> +	 * might use different ones and set running bit
-> +	 * to inform the WDT subsystem to ping the WDT
-> +	 */
-> +	if (qcom_wdt_is_running(&wdt->wdd)) {
-> +		qcom_wdt_start(&wdt->wdd);
-> +		set_bit(WDOG_HW_RUNNING, &wdt->wdd.status);
-> +	}
-> +
->  	ret = devm_watchdog_register_device(dev, &wdt->wdd);
->  	if (ret)
->  		return ret;
-> 
+Regarding bonding and teaming: I think they should also use
+NETIF_F_GSO_SOFTWARE mask, not NETIF_F_ALL_TSO, as SCTP also has
+a software fallback. This way we could also remove a separate
+advertising of NETIF_F_GSO_UDP_L4, as it will be included in the first.
+
+So, if this one:
+1. Add NETIF_F_GSO_UDP_L4 and NETIF_F_GSO_FRAGLIST to
+   NETIF_F_GSO_SOFTWARE;
+2. Change bonding and teaming features mask from NETIF_F_ALL_TSO |
+   NETIF_F_GSO_UDP_L4 to NETIF_F_GSO_SOFTWARE;
+3. Check that every virtual netdev has NETIF_F_GSO_SOFTWARE _or_
+   NETIF_F_GSO_MASK in its advertising.
+
+is fine for everyone, I'll publish more appropriate and polished v2 soon.
+
+>> If we can enable for all virtual devices again, we could revert those
+>> device specific options.
+>
+> Thanks,
+> Al
+
+Al
 
