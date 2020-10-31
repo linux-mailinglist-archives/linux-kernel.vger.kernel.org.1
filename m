@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363AB2A1768
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 13:40:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 784DC2A176C
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 13:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727371AbgJaMkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 08:40:43 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:53667 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgJaMkm (ORCPT
+        id S1727398AbgJaMnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 08:43:06 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:45589 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727085AbgJaMnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 08:40:42 -0400
-Received: by mail-wm1-f66.google.com with SMTP id p22so5151705wmg.3;
-        Sat, 31 Oct 2020 05:40:39 -0700 (PDT)
+        Sat, 31 Oct 2020 08:43:06 -0400
+Received: by mail-il1-f199.google.com with SMTP id z18so6629144ilb.12
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 05:43:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XKZimNoFlTDUwIyRR0BEoVG9+GJEQQemUuLJSx/vHaI=;
-        b=biiV7pXpODDqNbVp1G+1xSDHKQlAyyMlTvQ4nLRB4e7RZR+u+Tj9I92IU4HahSrLtn
-         cu2fAU5aXBCznIQKq2pe86B/V6UKRcrb5z3Bb1toThFZ8OMolVsquwxkZtcAKTQsxNpc
-         bc6sQlLfq0SXJ7KVXYjZbcm0Sag5TjVQv74p36FMz1ikvLxwggLILHSZeB1R8n4BTpVB
-         +16LMqjBWRSNtyYB7tPW0TNivh+b/jZTTctHesEVKn1Ajvxut/Ck6O5O0WaPUvIeYoAp
-         CbZnMPTbrLoOij40V8pdYxnz1gdagh4p+5D/hVnOVSm2n0Y4snfUPsQNVWzK3pMFRUa5
-         mpBg==
-X-Gm-Message-State: AOAM5307zLk8hAW9YlvmRxHThfVb5VmulphNErvZ+uf8365Q1XMdhch8
-        +PVim+zmNcNIa00fvOsRRscMYFeRbh7TWQ==
-X-Google-Smtp-Source: ABdhPJwPMaxPU+T2aWFKKta+nNXVJhIGcFvUta4TdBBI7jlBuwAQdMEe6jnIIv22dfy379m4YkqifQ==
-X-Received: by 2002:a1c:61c2:: with SMTP id v185mr7888308wmb.152.1604148038915;
-        Sat, 31 Oct 2020 05:40:38 -0700 (PDT)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id k22sm1430211wmi.34.2020.10.31.05.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 05:40:37 -0700 (PDT)
-Date:   Sat, 31 Oct 2020 13:40:36 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     georgi.djakov@linaro.org, cw00.choi@samsung.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        inki.dae@samsung.com, sw0312.kim@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v7 3/6] PM / devfreq: exynos-bus: Add registration of
- interconnect child device
-Message-ID: <20201031124036.GC9399@kozik-lap>
-References: <20201030125149.8227-1-s.nawrocki@samsung.com>
- <CGME20201030125303eucas1p14a9de4111ffafc1870527abdea0994c9@eucas1p1.samsung.com>
- <20201030125149.8227-4-s.nawrocki@samsung.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=PLbcQV3CQNzMNiONV/iIo/BtH9u9OMn0g6YFDavSo4Y=;
+        b=ml6u9J0yK6TL4CSR4lzu7qeiYP7HZjLvhQ6NSQthHRhzU/gjYt9m0mfEs03sD8a+K4
+         Q48yEgRT2Mes81PZRDZHRl6ngPw3+j6bz9YHsvNWgCva8saRCGBU2+5v308JRnVSi8R8
+         ryA1YGTPhsN+/vTZoMhx47qtjEpdWCMk4Otl+vV7JAm5JkjT3FUqMzpqwToT9FYFiWwL
+         LyG/n7g0GuVM3hFpCUQDkznUeGXQ+GNRmf1AQKPqfeBTiXKQQ/zbIRUJBZetznCLrWRm
+         4MW1YaVLZeJK+SaJxoDhqRWVNDLJDQaItn42Q3MFi4BpEkR8iGFgsM9sj7FQXzJXQmst
+         DNCQ==
+X-Gm-Message-State: AOAM531N3m/XMU6YGFkyIitlkGJIyJTgg6jPwMj1CKGgGAZdv5G8MB1q
+        1nUPnWUnE8r4vrqhgRS4xzAQYzmIQjBmc68yiURjUuqVgTx9
+X-Google-Smtp-Source: ABdhPJwdSnQMnKqhQpqOWGJCnQ4jy4D5pDlHd07KEgNof9hw/wBkglwShyh1D3kPvEOpyeQ37a+d+sNXdO7wr2zoodVg81gSIN6U
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201030125149.8227-4-s.nawrocki@samsung.com>
+X-Received: by 2002:a02:a813:: with SMTP id f19mr5306316jaj.2.1604148185206;
+ Sat, 31 Oct 2020 05:43:05 -0700 (PDT)
+Date:   Sat, 31 Oct 2020 05:43:05 -0700
+In-Reply-To: <00000000000061316205b0e750fc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bf140d05b2f6dae8@google.com>
+Subject: Re: INFO: task can't die in nbd_ioctl
+From:   syzbot <syzbot+69a90a5e8f6b59086b2a@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, hdanton@sina.com, josef@toxicpanda.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchristi@redhat.com, nbd@other.debian.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 01:51:46PM +0100, Sylwester Nawrocki wrote:
-> This patch adds registration of a child platform device for the exynos
-> interconnect driver. It is assumed that the interconnect provider will
-> only be needed when #interconnect-cells property is present in the bus
-> DT node, hence the child device will be created only when such a property
-> is present.
-> 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
-> Changes for v7, v6:
->  - none.
-> 
-> Changes for v5:
->  - new patch.
-> ---
->  drivers/devfreq/exynos-bus.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
+syzbot has bisected this issue to:
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+commit e9e006f5fcf2bab59149cb38a48a4817c1b538b4
+Author: Mike Christie <mchristi@redhat.com>
+Date:   Sun Aug 4 19:10:06 2019 +0000
 
-Best regards,
-Krzysztof
+    nbd: fix max number of supported devs
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=154dc192500000
+start commit:   4e78c578 Add linux-next specific files for 20201030
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=174dc192500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=134dc192500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=83318758268dc331
+dashboard link: https://syzkaller.appspot.com/bug?extid=69a90a5e8f6b59086b2a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15e051a8500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bf75b8500000
+
+Reported-by: syzbot+69a90a5e8f6b59086b2a@syzkaller.appspotmail.com
+Fixes: e9e006f5fcf2 ("nbd: fix max number of supported devs")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
