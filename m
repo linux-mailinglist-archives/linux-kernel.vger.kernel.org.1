@@ -2,67 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE022A14E4
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 10:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D2D2A14E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 10:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgJaJkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 05:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgJaJki (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 05:40:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68054C0613D5
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 02:40:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=l/8xBspK/egJQgWp9wEyakLNsvCi5RbuiwpHLDEpSY4=; b=rydcv2zGRMIzbXFsWs84kqi7WF
-        9fiCgSfauC3vD2m3KmzfjUoMUS23MPxWccHnS7xE+tLDn2hax5YmWyzSuPkftRmLaCX8PO+90FrmD
-        7TQWBAf8Ew/+ECIzADyZjuXNymKQmWnGMR0Ndj/eh0/U6sk4Q9RGB+P49LXKhloltmOZlk6vEw6G4
-        cm4lqM+hDy5BYcEQpm3r4ZJ5DamMeSgLexfali5z7PAbqKQmLqiLMUAZj5qavBwMXXPjYOBv8K9Kv
-        Jm4ieGeRDAMT+nBZufKCZIOnP7LSaGJUuUSYQwBkgfAcLa1L0QcqO6mCFvN3EGeuf5DXglscBJQeZ
-        LEywkMfQ==;
-Received: from 089144193201.atnat0002.highway.a1.net ([89.144.193.201] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYnNC-0000zk-Fa; Sat, 31 Oct 2020 09:40:35 +0000
-Date:   Sat, 31 Oct 2020 10:38:23 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Subject: [GIT PULL] dma-mapping fix for 5.10
-Message-ID: <20201031093823.GA453843@infradead.org>
+        id S1726625AbgJaJnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 05:43:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726451AbgJaJnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 05:43:52 -0400
+Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 772EA2076D;
+        Sat, 31 Oct 2020 09:43:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604137432;
+        bh=VvBOXLme6FI5EZGrCkCjihO7J3QUI6NE5sFXDTpUC3o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=n84ti3TOZIKzO0erhtdpxXSJDOhPJHvQ36pCBg85BhjJR1JcDj+PjWvqcz+dZjtY7
+         IqeuwDi21FroqQ8rU2xVO/YIKB5aHdxcKl2sPSxkSVu/OESGH51S0VQflI/TOoxrBP
+         HP+Zbr/m+KC8W7qkJjD2OheKd5ZjDzIK1Teyfn8g=
+From:   Mike Rapoport <rppt@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-xtensa@linux-xtensa.org
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Chris Zankel <chris@zankel.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM, xtensa: highmem: avoid clobbering non-page aligned memory reservations
+Date:   Sat, 31 Oct 2020 11:43:45 +0200
+Message-Id: <20201031094345.6984-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit ed8780e3f2ecc82645342d070c6b4e530532e680:
+From: Ard Biesheuvel <ardb@kernel.org>
 
-  Merge tag 'x86-urgent-2020-10-27' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2020-10-27 14:39:29 -0700)
+free_highpages() iterates over the free memblock regions in high
+memory, and marks each page as available for the memory management
+system.
 
-are available in the Git repository at:
+Until commit cddb5ddf2b76 ("arm, xtensa: simplify initialization of
+high memory pages") it rounded beginning of each region upwards and end of
+each region downwards.
 
-  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.10-2
+However, after that commit free_highmem() rounds the beginning and end of
+each region downwards, and we may end up freeing a page that is
+memblock_reserve()d, resulting in memory corruption.
 
-for you to fetch changes up to 48ab6d5d1f096d6fac5b59f94af0aa394115a001:
+Restore the original rounding of the region boundaries to avoid freeing
+reserved pages.
 
-  dma-mapping: fix 32-bit overflow with CONFIG_ARM_LPAE=n (2020-10-29 16:59:34 +0100)
+Fixes: cddb5ddf2b76 ("arm, xtensa: simplify initialization of high memory pages")
+Link: https://lore.kernel.org/r/20201029110334.4118-1-ardb@kernel.org/
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Co-developed-by:  Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
 
-----------------------------------------------------------------
-dma-mapping fix for 5.10:
+Max, Russell,
 
- - fix an integer overflow on 32-bit platforms in the new DMA range code
-   (Geert Uytterhoeven)
+Please let me know how do you prefer to take it upstream.
+If needed this can go via memblock tree.
 
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      dma-mapping: fix 32-bit overflow with CONFIG_ARM_LPAE=n
+v2: fix words order in the commit message
 
- drivers/of/device.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/mm/init.c    | 4 ++--
+ arch/xtensa/mm/init.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+index d57112a276f5..c23dbf8bebee 100644
+--- a/arch/arm/mm/init.c
++++ b/arch/arm/mm/init.c
+@@ -354,8 +354,8 @@ static void __init free_highpages(void)
+ 	/* set highmem page free */
+ 	for_each_free_mem_range(i, NUMA_NO_NODE, MEMBLOCK_NONE,
+ 				&range_start, &range_end, NULL) {
+-		unsigned long start = PHYS_PFN(range_start);
+-		unsigned long end = PHYS_PFN(range_end);
++		unsigned long start = PFN_UP(range_start);
++		unsigned long end = PFN_DOWN(range_end);
+ 
+ 		/* Ignore complete lowmem entries */
+ 		if (end <= max_low)
+diff --git a/arch/xtensa/mm/init.c b/arch/xtensa/mm/init.c
+index c6fc83efee0c..8731b7ad9308 100644
+--- a/arch/xtensa/mm/init.c
++++ b/arch/xtensa/mm/init.c
+@@ -89,8 +89,8 @@ static void __init free_highpages(void)
+ 	/* set highmem page free */
+ 	for_each_free_mem_range(i, NUMA_NO_NODE, MEMBLOCK_NONE,
+ 				&range_start, &range_end, NULL) {
+-		unsigned long start = PHYS_PFN(range_start);
+-		unsigned long end = PHYS_PFN(range_end);
++		unsigned long start = PFN_UP(range_start);
++		unsigned long end = PFN_DOWN(range_end);
+ 
+ 		/* Ignore complete lowmem entries */
+ 		if (end <= max_low)
+-- 
+2.28.0
+
