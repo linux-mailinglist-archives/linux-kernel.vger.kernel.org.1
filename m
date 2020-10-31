@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8632A1634
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57DCD2A1689
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:46:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727937AbgJaLm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:42:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42634 "EHLO mail.kernel.org"
+        id S1727263AbgJaLqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:46:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727927AbgJaLmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:42:53 -0400
+        id S1728381AbgJaLqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:46:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72FD920731;
-        Sat, 31 Oct 2020 11:42:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96A0920731;
+        Sat, 31 Oct 2020 11:46:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144572;
-        bh=lp61+OWJbjIgZGSPK/gfon+MQDZYdOwpgU2lyciFs/o=;
+        s=default; t=1604144784;
+        bh=coC2MkhbsCmTxSc28G9JNMoXJoKHXKra6v42o5z4eEc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=geRR4zI/eFws25hEsSym1om9wfmFiS5sbGQn9rux0ua8aRNkXyhP6WBPfE+PyZXi3
-         Lm1dgAbuXfChaEyA7mpbXOEoYAy208A7YCdka6DO1FSlrmLQrgsZxX9dVJkF1SwQQE
-         Mlv4hBWVz1CFEVst+tAf2/JVSqxY8ZJuB5ASi8EM=
+        b=CwRdE9eY2vKFjG4LrhGa4LR88f1Wduck9y7E230CodrhcMfugTY5hBblITDBM15Zo
+         xffocZL6FKtVRaf+pOHy/uN+T3fjNcE7OOi5bK6dj0RefjlVYIrLkWmH5gcTey0BlS
+         3fx+3Mi9d95IYnVTqbVhw0fCM5RL8jT+Hs7Oi5DI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomasz Maciej Nowak <tmn505@gmail.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 5.8 70/70] phy: marvell: comphy: Convert internal SMCC firmware return codes to errno
-Date:   Sat, 31 Oct 2020 12:36:42 +0100
-Message-Id: <20201031113502.835084619@linuxfoundation.org>
+        stable@vger.kernel.org, Jia-Ju Bai <baijiaju@tsinghua.edu.cn>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 5.9 61/74] p54: avoid accessing the data mapped to streaming DMA
+Date:   Sat, 31 Oct 2020 12:36:43 +0100
+Message-Id: <20201031113502.951130106@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
-References: <20201031113459.481803250@linuxfoundation.org>
+In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
+References: <20201031113500.031279088@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,108 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Jia-Ju Bai <baijiaju@tsinghua.edu.cn>
 
-commit ea17a0f153af2cd890e4ce517130dcccaa428c13 upstream.
+commit 478762855b5ae9f68fa6ead1edf7abada70fcd5f upstream.
 
-Driver ->power_on and ->power_off callbacks leaks internal SMCC firmware
-return codes to phy caller. This patch converts SMCC error codes to
-standard linux errno codes. Include file linux/arm-smccc.h already provides
-defines for SMCC error codes, so use them instead of custom driver defines.
-Note that return value is signed 32bit, but stored in unsigned long type
-with zero padding.
+In p54p_tx(), skb->data is mapped to streaming DMA on line 337:
+  mapping = pci_map_single(..., skb->data, ...);
 
-Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
-Link: https://lore.kernel.org/r/20200902144344.16684-2-pali@kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Then skb->data is accessed on line 349:
+  desc->device_addr = ((struct p54_hdr *)skb->data)->req_id;
+
+This access may cause data inconsistency between CPU cache and hardware.
+
+To fix this problem, ((struct p54_hdr *)skb->data)->req_id is stored in
+a local variable before DMA mapping, and then the driver accesses this
+local variable instead of skb->data.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Jia-Ju Bai <baijiaju@tsinghua.edu.cn>
+Acked-by: Christian Lamparter <chunkeey@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200802132949.26788-1-baijiaju@tsinghua.edu.cn
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/phy/marvell/phy-mvebu-a3700-comphy.c |   14 +++++++++++---
- drivers/phy/marvell/phy-mvebu-cp110-comphy.c |   14 +++++++++++---
- 2 files changed, 22 insertions(+), 6 deletions(-)
+ drivers/net/wireless/intersil/p54/p54pci.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/phy/marvell/phy-mvebu-a3700-comphy.c
-+++ b/drivers/phy/marvell/phy-mvebu-a3700-comphy.c
-@@ -26,7 +26,6 @@
- #define COMPHY_SIP_POWER_ON			0x82000001
- #define COMPHY_SIP_POWER_OFF			0x82000002
- #define COMPHY_SIP_PLL_LOCK			0x82000003
--#define COMPHY_FW_NOT_SUPPORTED			(-1)
+--- a/drivers/net/wireless/intersil/p54/p54pci.c
++++ b/drivers/net/wireless/intersil/p54/p54pci.c
+@@ -333,10 +333,12 @@ static void p54p_tx(struct ieee80211_hw
+ 	struct p54p_desc *desc;
+ 	dma_addr_t mapping;
+ 	u32 idx, i;
++	__le32 device_addr;
  
- #define COMPHY_FW_MODE_SATA			0x1
- #define COMPHY_FW_MODE_SGMII			0x2
-@@ -112,10 +111,19 @@ static int mvebu_a3700_comphy_smc(unsign
- 				  unsigned long mode)
- {
- 	struct arm_smccc_res res;
-+	s32 ret;
+ 	spin_lock_irqsave(&priv->lock, flags);
+ 	idx = le32_to_cpu(ring_control->host_idx[1]);
+ 	i = idx % ARRAY_SIZE(ring_control->tx_data);
++	device_addr = ((struct p54_hdr *)skb->data)->req_id;
  
- 	arm_smccc_smc(function, lane, mode, 0, 0, 0, 0, 0, &res);
-+	ret = res.a0;
+ 	mapping = dma_map_single(&priv->pdev->dev, skb->data, skb->len,
+ 				 DMA_TO_DEVICE);
+@@ -350,7 +352,7 @@ static void p54p_tx(struct ieee80211_hw
  
--	return res.a0;
-+	switch (ret) {
-+	case SMCCC_RET_SUCCESS:
-+		return 0;
-+	case SMCCC_RET_NOT_SUPPORTED:
-+		return -EOPNOTSUPP;
-+	default:
-+		return -EINVAL;
-+	}
- }
- 
- static int mvebu_a3700_comphy_get_fw_mode(int lane, int port,
-@@ -220,7 +228,7 @@ static int mvebu_a3700_comphy_power_on(s
- 	}
- 
- 	ret = mvebu_a3700_comphy_smc(COMPHY_SIP_POWER_ON, lane->id, fw_param);
--	if (ret == COMPHY_FW_NOT_SUPPORTED)
-+	if (ret == -EOPNOTSUPP)
- 		dev_err(lane->dev,
- 			"unsupported SMC call, try updating your firmware\n");
- 
---- a/drivers/phy/marvell/phy-mvebu-cp110-comphy.c
-+++ b/drivers/phy/marvell/phy-mvebu-cp110-comphy.c
-@@ -123,7 +123,6 @@
- 
- #define COMPHY_SIP_POWER_ON	0x82000001
- #define COMPHY_SIP_POWER_OFF	0x82000002
--#define COMPHY_FW_NOT_SUPPORTED	(-1)
- 
- /*
-  * A lane is described by the following bitfields:
-@@ -273,10 +272,19 @@ static int mvebu_comphy_smc(unsigned lon
- 			    unsigned long lane, unsigned long mode)
- {
- 	struct arm_smccc_res res;
-+	s32 ret;
- 
- 	arm_smccc_smc(function, phys, lane, mode, 0, 0, 0, 0, &res);
-+	ret = res.a0;
- 
--	return res.a0;
-+	switch (ret) {
-+	case SMCCC_RET_SUCCESS:
-+		return 0;
-+	case SMCCC_RET_NOT_SUPPORTED:
-+		return -EOPNOTSUPP;
-+	default:
-+		return -EINVAL;
-+	}
- }
- 
- static int mvebu_comphy_get_mode(bool fw_mode, int lane, int port,
-@@ -819,7 +827,7 @@ static int mvebu_comphy_power_on(struct
- 	if (!ret)
- 		return ret;
- 
--	if (ret == COMPHY_FW_NOT_SUPPORTED)
-+	if (ret == -EOPNOTSUPP)
- 		dev_err(priv->dev,
- 			"unsupported SMC call, try updating your firmware\n");
+ 	desc = &ring_control->tx_data[i];
+ 	desc->host_addr = cpu_to_le32(mapping);
+-	desc->device_addr = ((struct p54_hdr *)skb->data)->req_id;
++	desc->device_addr = device_addr;
+ 	desc->len = cpu_to_le16(skb->len);
+ 	desc->flags = 0;
  
 
 
