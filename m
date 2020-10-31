@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508AC2A1552
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 11:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314D22A1553
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 11:50:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgJaKuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 06:50:10 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6717 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgJaKuK (ORCPT
+        id S1726831AbgJaKud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 06:50:33 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7023 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726697AbgJaKud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 06:50:10 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CNbYB1KMSzkcrd;
-        Sat, 31 Oct 2020 18:50:06 +0800 (CST)
+        Sat, 31 Oct 2020 06:50:33 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CNbYh3qb1zhYxr;
+        Sat, 31 Oct 2020 18:50:32 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by DGGEMS404-HUB.china.huawei.com
  (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Sat, 31 Oct 2020
- 18:49:58 +0800
+ 18:50:21 +0800
 From:   Yu Kuai <yukuai3@huawei.com>
-To:     <krzk@kernel.org>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <mperttunen@nvidia.com>,
-        <tomeu.vizoso@collabora.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+To:     <madalin.bucur@nxp.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <florinel.iordache@nxp.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH] memory: tegra: add missing put_devcie() call in tegra_emc_probe()
-Date:   Sat, 31 Oct 2020 18:53:55 +0800
-Message-ID: <20201031105355.2303794-1-yukuai3@huawei.com>
+Subject: [PATCH] fsl/fman: add missing put_devcie() call in fman_port_probe()
+Date:   Sat, 31 Oct 2020 18:54:18 +0800
+Message-ID: <20201031105418.2304011-1-yukuai3@huawei.com>
 X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -37,75 +36,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-if of_find_device_by_node() succeed, tegra_emc_probe() doesn't have a
+if of_find_device_by_node() succeed, fman_port_probe() doesn't have a
 corresponding put_device(). Thus add jump target to fix the exception
 handling for this function implementation.
 
-Fixes: 73a7f0a90641("memory: tegra: Add EMC (external memory controller) driver")
+Fixes: 0572054617f3 ("fsl/fman: fix dereference null return value")
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/memory/tegra/tegra124-emc.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/freescale/fman/fman_port.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/memory/tegra/tegra124-emc.c b/drivers/memory/tegra/tegra124-emc.c
-index 76ace42a688a..831dfca0804c 100644
---- a/drivers/memory/tegra/tegra124-emc.c
-+++ b/drivers/memory/tegra/tegra124-emc.c
-@@ -1207,8 +1207,10 @@ static int tegra_emc_probe(struct platform_device *pdev)
- 		return -ENOENT;
- 
- 	emc->mc = platform_get_drvdata(mc);
--	if (!emc->mc)
--		return -EPROBE_DEFER;
-+	if (!emc->mc) {
-+		err = -EPROBE_DEFER;
-+		goto put_device;
-+	}
- 
- 	ram_code = tegra_read_ram_code();
- 
-@@ -1217,25 +1219,27 @@ static int tegra_emc_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev,
- 			"no memory timings for RAM code %u found in DT\n",
- 			ram_code);
--		return -ENOENT;
-+		err = -ENOENT;
+diff --git a/drivers/net/ethernet/freescale/fman/fman_port.c b/drivers/net/ethernet/freescale/fman/fman_port.c
+index d9baac0dbc7d..576ce6df3fce 100644
+--- a/drivers/net/ethernet/freescale/fman/fman_port.c
++++ b/drivers/net/ethernet/freescale/fman/fman_port.c
+@@ -1799,13 +1799,13 @@ static int fman_port_probe(struct platform_device *of_dev)
+ 	of_node_put(fm_node);
+ 	if (!fm_pdev) {
+ 		err = -EINVAL;
+-		goto return_err;
 +		goto put_device;
  	}
  
- 	err = tegra_emc_load_timings_from_dt(emc, np);
- 	of_node_put(np);
- 	if (err)
--		return err;
-+		goto put_device;
- 
- 	if (emc->num_timings == 0) {
- 		dev_err(&pdev->dev,
- 			"no memory timings for RAM code %u registered\n",
- 			ram_code);
--		return -ENOENT;
-+		err = -ENOENT;
+ 	fman = dev_get_drvdata(&fm_pdev->dev);
+ 	if (!fman) {
+ 		err = -EINVAL;
+-		goto return_err;
 +		goto put_device;
  	}
  
- 	err = emc_init(emc);
- 	if (err) {
- 		dev_err(&pdev->dev, "EMC initialization failed: %d\n", err);
--		return err;
+ 	err = of_property_read_u32(port_node, "cell-index", &val);
+@@ -1813,7 +1813,7 @@ static int fman_port_probe(struct platform_device *of_dev)
+ 		dev_err(port->dev, "%s: reading cell-index for %pOF failed\n",
+ 			__func__, port_node);
+ 		err = -EINVAL;
+-		goto return_err;
++		goto put_device;
+ 	}
+ 	port_id = (u8)val;
+ 	port->dts_params.id = port_id;
+@@ -1847,7 +1847,7 @@ static int fman_port_probe(struct platform_device *of_dev)
+ 	}  else {
+ 		dev_err(port->dev, "%s: Illegal port type\n", __func__);
+ 		err = -EINVAL;
+-		goto return_err;
 +		goto put_device;
  	}
  
- 	platform_set_drvdata(pdev, emc);
-@@ -1244,6 +1248,9 @@ static int tegra_emc_probe(struct platform_device *pdev)
- 		emc_debugfs_init(&pdev->dev, emc);
+ 	port->dts_params.type = port_type;
+@@ -1861,7 +1861,7 @@ static int fman_port_probe(struct platform_device *of_dev)
+ 			dev_err(port->dev, "%s: incorrect qman-channel-id\n",
+ 				__func__);
+ 			err = -EINVAL;
+-			goto return_err;
++			goto put_device;
+ 		}
+ 		port->dts_params.qman_channel_id = qman_channel_id;
+ 	}
+@@ -1871,7 +1871,7 @@ static int fman_port_probe(struct platform_device *of_dev)
+ 		dev_err(port->dev, "%s: of_address_to_resource() failed\n",
+ 			__func__);
+ 		err = -ENOMEM;
+-		goto return_err;
++		goto put_device;
+ 	}
  
- 	return 0;
+ 	port->dts_params.fman = fman;
+@@ -1898,6 +1898,8 @@ static int fman_port_probe(struct platform_device *of_dev)
+ 
+ return_err:
+ 	of_node_put(port_node);
 +put_device:
-+	put_device(&mc->dev);
-+	return err;
- };
- 
- static struct platform_driver tegra_emc_driver = {
++	put_device(&fm_pdev->dev);
+ free_port:
+ 	kfree(port);
+ 	return err;
 -- 
 2.25.4
 
