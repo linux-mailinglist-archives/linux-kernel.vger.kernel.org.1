@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBB92A1674
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B76162A162D
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727760AbgJaLpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:45:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46662 "EHLO mail.kernel.org"
+        id S1727903AbgJaLmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:42:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728271AbgJaLpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:45:36 -0400
+        id S1727894AbgJaLmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:42:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B093D20731;
-        Sat, 31 Oct 2020 11:45:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B9D8205F4;
+        Sat, 31 Oct 2020 11:42:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144736;
-        bh=trhU/I+jaGbe4B9RjSg/wW722Vyb82+U182jwnzq44A=;
+        s=default; t=1604144559;
+        bh=GDd1FNDPmGWQntc/1ZX400//3aW/SDH4RWa5+Bz/6/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hcXeWUDQN9ixgF/bRzqAuCRaRdXYWaYytXQaom1zi6sYPhiyv5CeC6zkG2/dUne/J
-         CTfxHzOVe6v8TgJqSmP8zaL5MzT7juuyxoyBecuyQxl/3w8j39JHeKcVQrm7yyFwda
-         7LxzJ1Pgd0Sm/hloYEE9R3khmEFoKRwlHb9C1L8M=
+        b=1NsZUoQlBkmEhB4VbxOWkr1sVbTIOO/x5J6fKxNUmDNXldOKwfzQyw/EQMPFbepfI
+         SQHf301noxJ8WorUbcK1t2+gZ9evOwu7Ls8B7/fyYrvBR9zj2e/zavF+1XxPCCUzm6
+         idsV+4l/Njv1uFoWqihglnzyTuKIVPPumYB3FCcM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.9 54/74] x86/traps: Fix #DE Oops message regression
-Date:   Sat, 31 Oct 2020 12:36:36 +0100
-Message-Id: <20201031113502.619758674@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.8 65/70] PM: runtime: Fix timer_expires data type on 32-bit arches
+Date:   Sat, 31 Oct 2020 12:36:37 +0100
+Message-Id: <20201031113502.597983483@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
-References: <20201031113500.031279088@linuxfoundation.org>
+In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
+References: <20201031113459.481803250@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-commit 5f1ec1fd32252af5130dac23b5542e8e66fe0bcb upstream.
+commit 6b61d49a55796dbbc479eeb4465e59fd656c719c upstream.
 
-The conversion of #DE to the idtentry mechanism introduced a change in the
-Ooops message which confuses tools which parse crash information in dmesg.
+Commit 8234f6734c5d ("PM-runtime: Switch autosuspend over to using
+hrtimers") switched PM runtime autosuspend to use hrtimers and all
+related time accounting in ns, but missed to update the timer_expires
+data type in struct dev_pm_info to u64.
 
-Remove the underscore from 'divide_error' to restore previous behaviour.
+This causes the timer_expires value to be truncated on 32-bit
+architectures when assignment is done from u64 values:
 
-Fixes: 9d06c4027f21 ("x86/entry: Convert Divide Error to IDTENTRY")
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/CACT4Y+bTZFkuZd7+bPArowOv-7Die+WZpfOWnEO_Wgs3U59+oA@mail.gmail.com
+rpm_suspend()
+|- dev->power.timer_expires = expires;
+
+Fix it by changing the timer_expires type to u64.
+
+Fixes: 8234f6734c5d ("PM-runtime: Switch autosuspend over to using hrtimers")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Acked-by: Pavel Machek <pavel@ucw.cz>
+Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: 5.0+ <stable@vger.kernel.org> # 5.0+
+[ rjw: Subject and changelog edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/traps.c |    2 +-
+ include/linux/pm.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -195,7 +195,7 @@ static __always_inline void __user *erro
- 
- DEFINE_IDTENTRY(exc_divide_error)
- {
--	do_error_trap(regs, 0, "divide_error", X86_TRAP_DE, SIGFPE,
-+	do_error_trap(regs, 0, "divide error", X86_TRAP_DE, SIGFPE,
- 		      FPE_INTDIV, error_get_trap_addr(regs));
- }
- 
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -584,7 +584,7 @@ struct dev_pm_info {
+ #endif
+ #ifdef CONFIG_PM
+ 	struct hrtimer		suspend_timer;
+-	unsigned long		timer_expires;
++	u64			timer_expires;
+ 	struct work_struct	work;
+ 	wait_queue_head_t	wait_queue;
+ 	struct wake_irq		*wakeirq;
 
 
