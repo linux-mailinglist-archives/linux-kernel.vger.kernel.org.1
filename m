@@ -2,160 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5182A11FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 01:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D03D2A11FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 01:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726051AbgJaAhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 20:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
+        id S1726082AbgJaAil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 20:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgJaAh2 (ORCPT
+        with ESMTP id S1725768AbgJaAik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 20:37:28 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACFDC0613D7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 17:37:28 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id x13so6537033pgp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 17:37:28 -0700 (PDT)
+        Fri, 30 Oct 2020 20:38:40 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92541C0613D5;
+        Fri, 30 Oct 2020 17:38:40 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a200so6692833pfa.10;
+        Fri, 30 Oct 2020 17:38:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=hvoWVjH5MrvJlNL+Wpvlrvtr/qdzZEjizkDpZ+3TUPw=;
-        b=bRnUkU5QJDdovKB+3Oe64UD9XdGDPdwmEL0e6homqfsQ1GrFivNaT1ceK4jr1G1+hD
-         Xbxz4vWZTuO7moh7D/gW1/RgAf7UfMkBg5sT/9tzH5t5cDLLDpZNgMsiPjipAuG9JU9a
-         /oJaZOVt49Hshtnxjyt3fN+2HhvC0sdg9XYHDTDLnfWn+9GFau6SbOzuehTkD9sXpeyz
-         QlOOZ+vBKupPhbBvtMsR2abFGbElx1JBNuqPQLrDA9LsFD3PRpg7o6cZ3fdIr5sdZqZ0
-         TkQ+0OvYEwaPH/hljQjozd5Ynr4RR/vYgr5LS3ISaJs/vgJmazLuhn6jX01hFMa3nbZm
-         s4Ew==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LH/FE3+msefZQLxAesyIHB0BqDv0Bl4jy7aavvgkNQg=;
+        b=mkQLXeNJkZd5lOyGdfhpzu0NZ3BBGnPVUJ+pzgvxJpSQL7hb5NZGevyeTbwT+Kn6ZL
+         HW+r1PApPehnQ4d+Pz52I4WhOx+tI5xNSZ1XcQki7IYGSXBoqaNx8bkh/sFDQ3qIeIlc
+         EvnPxCGZkjjyNa75fhypApmZJPi1dNib35v0bVbwvXOjWL2ZCmYt4pL83wTpLaeBPQHA
+         Ks7Sc1EXQJoe9n3OKzQdZRQQXNXusGkpl4ObStNlIs7rjIhDL46vnxX29pljFJpQUVFf
+         myCVTl2avT2vLE/x2aqFgIQkIN+hTtrA3sorqS2Xak0IzC32Bsw9idtNQW5EErY0Nmdi
+         2TjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=hvoWVjH5MrvJlNL+Wpvlrvtr/qdzZEjizkDpZ+3TUPw=;
-        b=sFW5QxNeONB+qGFIsELH+ZtUCvk+7pAmbrsuaQLJE6YM8+VXlBXSNg+n8/5Lp8bjIV
-         LDtJmAA7HBC4oHov7nssAh/gEP0ToydxL5lmF6xNnHsPot6OHc9+6fKS6Xotx9/0G30p
-         sUedix4FYYnlbhqc9wrau3rqhoNdqK1U0MpPHfb1+ePFNNt/RJxBwr4NV57XtFsBYh7h
-         toKQMrvC2URMB6zUoyufgJtjBs6+y3RVFT5oAXhlHYyyqOOABv6eaZXqqjeUA7QdN2KL
-         X+ju1d1OsMTJql4bYnNu2OXCTOFPtO2y7hLtmBCt2IDX++EnRffs2SARfa7Uoeuq9D4X
-         rtCA==
-X-Gm-Message-State: AOAM531ctORL/ooy6fCtzfXk+0bmQxi+UndESsUs3GZ6N0gl9WnzSZp1
-        +HubBlZEOTN2JXL0s3KGIpHcALhq4bxHrA==
-X-Google-Smtp-Source: ABdhPJxeqhaBAC7zYRx5xaemqM+o7fL8zXijASb2rLhquYgoiO/uJc+BWuRhrzTtrM6vCX+g3MXc8A==
-X-Received: by 2002:aa7:9095:0:b029:164:75c4:5d15 with SMTP id i21-20020aa790950000b029016475c45d15mr11561202pfa.49.1604104647290;
-        Fri, 30 Oct 2020 17:37:27 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id 3sm7011935pfv.92.2020.10.30.17.37.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LH/FE3+msefZQLxAesyIHB0BqDv0Bl4jy7aavvgkNQg=;
+        b=akfpcXgfjQwjk+iomW6q90PyJpjXhKPpHCrTU/c+te3YKO3R3+qepLxFyQA5+YXtQ3
+         SzKsuLW7dul1IDQtXskBlM95axFxGi+glogreDcx6PhL+dfxnpmB++ZupV4PZkFgv975
+         itZZ3aYy7GNY1KlORF3lfLP1T+ryMOoOeu3p3ZMEye2CB5GJLHvxAaeXMJZtVQg5MeEn
+         KLA3pbdl2QVOLQBSoHYtX9HhZCUIQec+xgArJhwdgrO87qUEhrOkL942Av6JKM+xdBtV
+         2z8XObhtuxDTBpFTzxjj2WcYtj/rw1d2JnaR7T0/W2o9EgGx1ugWi47VXSTe/gh/eDDg
+         fpYw==
+X-Gm-Message-State: AOAM531IT3J4lcos9l4brzUF15UYmllmhDZOLOPudw1mJEfSggHgoMbm
+        Pzt4Tl6yJmEhAx0mbUfRx9qfKqkF8eg=
+X-Google-Smtp-Source: ABdhPJyJ9R7rr4EEDntRhy9LYv5JodVGCZWCy1X3ePnkrHOfDacXQNtIlZxA0xPoL+9jLnvF6OgjgQ==
+X-Received: by 2002:a63:cb08:: with SMTP id p8mr4353470pgg.76.1604104720205;
+        Fri, 30 Oct 2020 17:38:40 -0700 (PDT)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:48fd:1408:262f:a64b])
+        by smtp.gmail.com with ESMTPSA id ch21sm4596888pjb.24.2020.10.30.17.38.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 17:37:26 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Subject: [RFC][PATCH 2/2] iommu: Avoid crash if iommu_group is null
-Date:   Sat, 31 Oct 2020 00:37:21 +0000
-Message-Id: <20201031003721.40973-2-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201031003721.40973-1-john.stultz@linaro.org>
-References: <20201031003721.40973-1-john.stultz@linaro.org>
+        Fri, 30 Oct 2020 17:38:39 -0700 (PDT)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net-next v5 0/5] net: hdlc_fr: Improve fr_rx and add support for any Ethertype
+Date:   Fri, 30 Oct 2020 17:37:26 -0700
+Message-Id: <20201031003731.461437-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In trying to handle a possible driver probe ordering issue
-brought up by Robin Murphy, I ran across a separate null pointer
-crash in the iommu core in iommu_group_remove_device():
-[    2.732803] dwc3-qcom a6f8800.usb: failed to get usb-ddr path: -517
-[    2.739281] Unable to handle kernel NULL pointer dereference at virtual address 00000000000000c0
-...
-[    2.775619] [00000000000000c0] user address but active_mm is swapper
-[    2.782039] Internal error: Oops: 96000005 [#1] PREEMPT SMP
-[    2.787670] Modules linked in:
-[    2.790769] CPU: 6 PID: 1 Comm: swapper/0 Tainted: G        W         5.10.0-rc1-mainline-00025-g272a618fc36-dirty #3973
-[    2.801719] Hardware name: Thundercomm Dragonboard 845c (DT)
-[    2.807431] pstate: 00c00005 (nzcv daif +PAN +UAO -TCO BTYPE=--)
-[    2.813508] pc : iommu_group_remove_device+0x30/0x1b0
-[    2.818611] lr : iommu_release_device+0x4c/0x78
-[    2.823189] sp : ffffffc01005b950
-...
-[    2.907082] Call trace:
-[    2.909566]  iommu_group_remove_device+0x30/0x1b0
-[    2.914323]  iommu_release_device+0x4c/0x78
-[    2.918559]  iommu_bus_notifier+0xe8/0x108
-[    2.922708]  blocking_notifier_call_chain+0x78/0xb8
-[    2.927641]  device_del+0x2ac/0x3d0
-[    2.931177]  platform_device_del.part.9+0x20/0x98
-[    2.935933]  platform_device_unregister+0x2c/0x40
-[    2.940694]  of_platform_device_destroy+0xd8/0xe0
-[    2.945450]  device_for_each_child_reverse+0x58/0xb0
-[    2.950471]  of_platform_depopulate+0x4c/0x78
-[    2.954886]  dwc3_qcom_probe+0x93c/0xcb8
-[    2.958858]  platform_drv_probe+0x58/0xa8
-[    2.962917]  really_probe+0xec/0x398
-[    2.966531]  driver_probe_device+0x5c/0xb8
-[    2.970677]  device_driver_attach+0x74/0x98
-[    2.974911]  __driver_attach+0x60/0xe8
-[    2.978700]  bus_for_each_dev+0x84/0xd8
-[    2.982581]  driver_attach+0x30/0x40
-[    2.986194]  bus_add_driver+0x160/0x208
-[    2.990076]  driver_register+0x64/0x110
-[    2.993957]  __platform_driver_register+0x58/0x68
-[    2.998716]  dwc3_qcom_driver_init+0x20/0x28
-[    3.003041]  do_one_initcall+0x6c/0x2d0
-[    3.006925]  kernel_init_freeable+0x214/0x268
-[    3.011339]  kernel_init+0x18/0x118
-[    3.014876]  ret_from_fork+0x10/0x18
-[    3.018495] Code: d0006a21 f9417295 91130021 910162b6 (b940c2a2)
+The main purpose of this series is the last patch. The previous 4 patches
+are just code clean-ups so that the last patch will not make the code too
+messy. The patches must be applied in sequence.
 
-In the case above, the arm-smmu driver fails to probe with
-EPROBE_DEFER, and I'm guessing I'm guessing that causes
-iommu_group_add_device() to fail and sets the
-dev->iommu_group = NULL, then somehow we hit
-iommu_group_remove_device() and trip over the null value?
-I'm not really sure...
+The receiving code of this driver doesn't support arbitrary Ethertype
+values. It only recognizes a few known Ethertypes when receiving and drops
+skbs with other Ethertypes.
 
-Anyway, adding the null check seems to avoid the issue and the
-system boots fine after the arm-smmu driver later reprobed.
+However, the standard document RFC 2427 allows Frame Relay to support any
+Ethertype values. This series adds support for this.
 
-Feedback or better ideas for a solution would be appreciated!
+Change from v4:
+Drop the change related to stats.rx_dropped from the 1st patch.
+Switch the 3rd and 4th patch.
+Improve the commit message of the 4th patch by stating why only a 2-byte
+address field is accepted.
 
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Andy Gross <agross@kernel.org>
-Cc: Maulik Shah <mkshah@codeaurora.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Lina Iyer <ilina@codeaurora.org>
-Cc: iommu@lists.linux-foundation.org
-Cc: linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- drivers/iommu/iommu.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Change from v3:
+Split the last patch into 2 patches.
+Improve the commit message of the 1st patch to explicitly state that the
+stats.rx_dropped count is also increased after "goto rx_error".
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 8c470f451a323..44639b88e77db 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -877,6 +877,10 @@ void iommu_group_remove_device(struct device *dev)
- 	struct iommu_group *group = dev->iommu_group;
- 	struct group_device *tmp_device, *device = NULL;
- 
-+	/* Avoid crash if iommu_group value is null */
-+	if (!group)
-+		return;
-+
- 	dev_info(dev, "Removing from iommu group %d\n", group->id);
- 
- 	/* Pre-notify listeners that a device is being removed. */
+Change from v2:
+Small fix to the commit messages.
+
+Change from v1:
+Small fix to the commit messages.
+
+Xie He (5):
+  net: hdlc_fr: Simpify fr_rx by using "goto rx_drop" to drop frames
+  net: hdlc_fr: Change the use of "dev" in fr_rx to make the code
+    cleaner
+  net: hdlc_fr: Do skb_reset_mac_header for skbs received on normal PVC
+    devices
+  net: hdlc_fr: Improve the initial checks when we receive an skb
+  net: hdlc_fr: Add support for any Ethertype
+
+ drivers/net/wan/hdlc_fr.c | 118 +++++++++++++++++++++++---------------
+ 1 file changed, 72 insertions(+), 46 deletions(-)
+
 -- 
-2.17.1
+2.27.0
 
