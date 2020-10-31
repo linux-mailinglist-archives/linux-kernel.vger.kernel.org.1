@@ -2,141 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6D32A14C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 10:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C122A14D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 10:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgJaJ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 05:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
+        id S1726607AbgJaJaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 05:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbgJaJ1s (ORCPT
+        with ESMTP id S1726424AbgJaJaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 05:27:48 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8C4C0613D5;
-        Sat, 31 Oct 2020 02:27:46 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id t11so9066480edj.13;
-        Sat, 31 Oct 2020 02:27:46 -0700 (PDT)
+        Sat, 31 Oct 2020 05:30:18 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D2DC0613D5
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 02:30:16 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id f6so7292535ybr.0
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 02:30:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YKoG4ZYfmAK75REzHLyFTGpVBZ47HWY/6Oq5Ja2eDV8=;
-        b=g1ggD5kGaKE0e8Gpe94g9evI2iQ15qiOIw20A5nHRKvbHw2sFurRdKgMJI92wwFuxJ
-         jf3h/Hn3ha4jsKHchoFzn0b1Bqrk1R3KcACmXx/WR9GWmL6hDp5e3fQX3hCC5ZaQAfZa
-         LwfnbVVvyBXf79XuSNYd6OPNs6x3WPycrNFbHuc7hCF9mvS2h/8PjCrGCqJJjXK7y+Cw
-         jPEFtujDyZMm5hSpHDnxIvazjspHA282xQsXm+HisbSM1EQd3hbrodwan6bRMw0FJ7iB
-         EzJqF65iKYAZqLsbTeiaTIPDNAAY2Z+73LRUWato+kqAW0QX9cxFYyJud+fX3y9fHtim
-         EJFw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GUD+MdgfTFtmtn8kuvTQUtRoa2PlNwVBxjbqphie3GU=;
+        b=gONWpHzYhR5RSgAO9zbDzwI7VDjdtUqBr3YfpOJpbndUViGhuu+04A1RdqnsYVCjli
+         2ZguMVbgmaG0kZRZVXtafjdm1m6xsXs4MQjvSXo8sG0zaf2DpmPwaRLZvucqakkqH0qI
+         4tdWUVLtMFKXkj1iwq4849vqhS2GsBj2vXtE+/QO8AVs+w/RgoU4J9YzSaMNP7Y5AyxK
+         CkWSkgo7ZIDB0Hw7L+Wxy6mjv0uJwSXgIHTTm5MAWBuhJUckE2yecCKNWEojErYeF6Q4
+         GZPXUDZzo31wEuvsMInkdTZ3nODNOj5Ez3Q/KzykQS9Q1udIIcrDmH/aADeEpzCvpo4P
+         qldw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YKoG4ZYfmAK75REzHLyFTGpVBZ47HWY/6Oq5Ja2eDV8=;
-        b=PYwtsH5IOeNP9mCCswr0limreP7uTCwHK6oWWA8eMgxX38SOKXQR+CqPEQXnmwRMX/
-         DelU1SK52mxEA0SF4NOxyi3kdqUDU3dYhk/QHHuUX0l6oa2cPHxkajwKFQcpSnrazWDk
-         EY5cQ1qWhVP0rbJ+xu32hkIFliFHPaIUzGZMcBh/NjI7TWdxgvswF6LJe9dlf4pfewiE
-         85BnwQfOJshKMgCLNaWyUdkequEkXi8ACNnOkiLlgXMVWEtOFxgEhlA7O7nUQsDuVrOm
-         Mpjhfn+r1trvbE3qjDRALBBBMWijYTveobiSphYNb25mdgKjyTOmBa3k8UGigAA/Lnii
-         yUeg==
-X-Gm-Message-State: AOAM530LajomWc5oXrSnuNXQTo+YYjn/nB+BomWt46B7tX80s/vWut8n
-        gq1cgJ6UlnZF4Gj2t+7vVL0=
-X-Google-Smtp-Source: ABdhPJxvwRB75NAjxdlPBWLeasxrNiqo6eK4j62FVrQhHtIrYEZKJ1kg9QGuFBTy9KB8Xxkuj86RIQ==
-X-Received: by 2002:a05:6402:1112:: with SMTP id u18mr6902128edv.349.1604136465305;
-        Sat, 31 Oct 2020 02:27:45 -0700 (PDT)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id z20sm4612524edq.90.2020.10.31.02.27.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 02:27:44 -0700 (PDT)
-From:   Ioana Ciornei <ciorneiioana@gmail.com>
-X-Google-Original-From: Ioana Ciornei <ciornei.ioana@gmail.com>
-Date:   Sat, 31 Oct 2020 11:27:43 +0200
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, robh@kernel.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 3/4] dt-bindings: dp83td510: Add binding for
- DP83TD510 Ethernet PHY
-Message-ID: <20201031092743.pfqzear3siw5jn3e@skbuf>
-References: <20201030172950.12767-1-dmurphy@ti.com>
- <20201030172950.12767-4-dmurphy@ti.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GUD+MdgfTFtmtn8kuvTQUtRoa2PlNwVBxjbqphie3GU=;
+        b=kAycJxw2hCnCCBo7bQyn0F9kmTwd45wAHeSoiNq7OuBMiBqo6A040ZI8taQ53AOmuA
+         Xmw/CNzSgjwVapy6Nn7l+6VmtFuYDqBHNAf4r/++wUKVgHHWvLjCk92VdkQ8nkr1T9on
+         oY0NOSR2eNCkMskUSZeR9oz+KsonWmYCk69tXZ9wohgtlSLdhjhpesLjJ7FgauMZTiQO
+         NFlTFVGBW/rxh4IFcfV8PTssRP4MjiXMKSvhcAFCoPY1Rmtw7u1hsDQp5SbVWzevsDoc
+         YWHq5Z83y871chGOnneLLB4yYqpbcClnx6Yjsckrn6CIEHh2xLEV8Dc8nSFsqNVWtOFd
+         bROQ==
+X-Gm-Message-State: AOAM531bIGYzu46AWhkF83YC+aLtKxwIJYorQNv9m+oVDhDprZ/S1hBb
+        /+hi1h0GD79lxptx6+awwAPYJI/XqGu40/ytIac=
+X-Google-Smtp-Source: ABdhPJxmGQjPDBtFAEEsmhdtTHQSnTCEg6FzETII8fB4Jbi4zMENekwpr++cA34pbeNv6sI4vmv+DRp0JnMrd1WY2JI=
+X-Received: by 2002:a25:b792:: with SMTP id n18mr9631815ybh.93.1604136616253;
+ Sat, 31 Oct 2020 02:30:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030172950.12767-4-dmurphy@ti.com>
+References: <20201029095231.311083-1-poeschel@lemonage.de>
+In-Reply-To: <20201029095231.311083-1-poeschel@lemonage.de>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 31 Oct 2020 10:30:05 +0100
+Message-ID: <CANiq72ktdqzTByRwVBHmZ6Fpyr5438O7Mg-fbLopmjFY5qaGtA@mail.gmail.com>
+Subject: Re: [PATCH 00/25] Make charlcd device independent
+To:     Lars Poeschel <poeschel@lemonage.de>
+Cc:     Willy Tarreau <willy@haproxy.com>,
+        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 12:29:49PM -0500, Dan Murphy wrote:
-> The DP83TD510 is a 10M single twisted pair Ethernet PHY
-> 
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
->  .../devicetree/bindings/net/ti,dp83td510.yaml | 62 +++++++++++++++++++
->  1 file changed, 62 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/ti,dp83td510.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/net/ti,dp83td510.yaml b/Documentation/devicetree/bindings/net/ti,dp83td510.yaml
-> new file mode 100644
-> index 000000000000..aef949c1cfdd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/ti,dp83td510.yaml
-> @@ -0,0 +1,62 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2020 Texas Instruments Incorporated
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/net/ti,dp83td510.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: TI DP83TD510 ethernet PHY
-> +
-> +allOf:
-> +  - $ref: "ethernet-controller.yaml#"
-> +  - $ref: "ethernet-phy.yaml#"
-> +
-> +maintainers:
-> +  - Dan Murphy <dmurphy@ti.com>
-> +
-> +description: |
-> +  The PHY is an twisted pair 10Mbps Ethernet PHY that support MII, RMII and
-> +  RGMII interfaces.
-> +
-> +  Specifications about the Ethernet PHY can be found at:
-> +    http://www.ti.com/lit/ds/symlink/dp83td510e.pdf
-> +
-> +properties:
-> +  reg:
-> +    maxItems: 1
-> +
-> +  tx-fifo-depth:
-> +    description: |
-> +       Transmitt FIFO depth for RMII mode.  The PHY only exposes 4 nibble
-> +       depths. The valid nibble depths are 4, 5, 6 and 8.
-> +    enum: [ 4, 5, 6, 8 ]
-> +    default: 5
-> +
-> +  rx-internal-delay-ps:
-> +    description: |
-> +       Setting this property to a non-zero number sets the RX internal delay
-> +       for the PHY.  The internal delay for the PHY is fixed to 30ns relative
-> +       to receive data.
-> +
-> +  tx-internal-delay-ps:
-> +    description: |
-> +       Setting this property to a non-zero number sets the TX internal delay
-> +       for the PHY.  The internal delay for the PHY has a range of -4 to 4ns
-> +       relative to transmit data.
-> +
-> +required:
-> +  - reg
-> +
+Hi Lars,
 
-I just got this feedback so I am passing it on.
+On Thu, Oct 29, 2020 at 10:52 AM <poeschel@lemonage.de> wrote:
+>
+> Changes in v5:
+> - patch 1: Fix a commit message typo: of -> on
+> - patch 2: Remove some unnecessary newlines
+> - patch 8: Fix some typos
+> - patch 14: Fix commit message typo: it's -> its
+> - patch 15: this patch is squashed together from the former individual
+>   hd44780_common_ function patches
+> - patch 16: combined two cleanup patches
+> - patch 17: I did previously undo commit 3f03b6498 which was a mistake.
+>   This is now corrected.
+> - patch 24: Picked up Robs Reviewed-by
+> - patch 25: use hex_to_bin like in commit 3f03b6498 but for the lcd2s.c
+>   file
 
-Every dtbinding should have the additionalProperties set to false so
-that dtbs_check can actually catch if there is a undefined property
-used.
+Thanks a lot for all that! Please take a look at my other two messages
+for v5. We are almost there...
 
-Ioana
+Cheers,
+Miguel
