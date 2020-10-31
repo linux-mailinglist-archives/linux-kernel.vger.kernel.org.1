@@ -2,205 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D120B2A18C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 17:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2672A18C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 17:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728136AbgJaQnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 12:43:25 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:33998 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726586AbgJaQnZ (ORCPT
+        id S1728148AbgJaQpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 12:45:25 -0400
+Received: from sender4-of-o51.zoho.com ([136.143.188.51]:21108 "EHLO
+        sender4-of-o51.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728073AbgJaQpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 12:43:25 -0400
-Received: by mail-io1-f70.google.com with SMTP id y17so285472iot.1
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 09:43:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=FF3ULlvXFfH0/25/zEK6CK+ewSrhdXs4qIRBIcWcMJo=;
-        b=ULeW4f8gDFrAKhKyzo1nXrPxVPD1USUEtFCnBccZ2U3o5riL/Xh4+BXAiakfsHn+Hv
-         SVWGI3lhAwMvV8gcqN7gwWpSnlVEr0GLCvpLxhsHrJ+iRd+jOlkea8rCQeO6Wi3MDLaj
-         mudnKr/r4eubG4Gl8YR9PEXYMPYJooplPzlHuIkEwBkv6ye1q5ecURmiuzqQEPEi5mfk
-         kB3SuUEdFZIvq9c6zMm6U5CI7XG/WwFpm4d+I4G8u+3zwxUKnm8G1Ho49JVuAMh73CuO
-         UdGabCkDMMXanZbTbQp6m83n4aJAPPsd0vLOhwvmSMtAJRSwwSrA+82zdgq56zI7/NXp
-         98gg==
-X-Gm-Message-State: AOAM5331Ba+AwvDrA5Fcgz+EU6siI8kowljyT9fWSEL+uQ4xNiGrAghz
-        AkNgyeZExyMV1fp+Xff1104/gJNQct+TTCJ65/4d8g99MYZT
-X-Google-Smtp-Source: ABdhPJwrOSbdAF7lZOBxNAljzQlqPH0oWRT2+m2xHd1YDYFmcYHOyVTUNRx3ZOgMwIQJCDRxb87B8ess1aQzxUFdJRAL0yqrANdW
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1381:: with SMTP id w1mr6241325jad.79.1604162603832;
- Sat, 31 Oct 2020 09:43:23 -0700 (PDT)
-Date:   Sat, 31 Oct 2020 09:43:23 -0700
-In-Reply-To: <00000000000013259505a931dd26@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000029e03805b2fa362f@google.com>
-Subject: Re: KASAN: use-after-free Read in decode_session6
-From:   syzbot <syzbot+5be8aebb1b7dfa90ef31@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 31 Oct 2020 12:45:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1604162686; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=R7nYTVeEzvQTZ5qpFyS/zj8CC/82t2bxxuqTJVkF2hC1XXOSev/Btb3Os+l0a4vP//IM53iWmewt+gvb+d5JHCnFko7EOCIiAe6t2nRGFbgEkLnAM5zqcLkfgKN8ZspvRJJ9DlFvLcDhcmrgcyjgzGab9s5NXE2zrUZZ36ET/FU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1604162686; h=Cc:Date:From:Message-ID:Subject:To; 
+        bh=VO7HKgwp5hY4uW+eur6uI4P4Oa5OD58CYj88tNXXYIY=; 
+        b=AzZ4tCq0vh5l87HCdVTEfnigs6RUO1DEQXWKbceTlXVBeBvFaqdYVT5MMi8YzIwxazWYcy610lvG5JshfMgHIg0pIEfy2laNyxpA6GaB+HqmXSWQrBR697eXsntLfYxssrNtH/r+ZrAFMztjUHSaMoLJd1O+BEje8GL++zfQuus=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=apertussolutions.com;
+        spf=pass  smtp.mailfrom=dpsmith@apertussolutions.com;
+        dmarc=pass header.from=<dpsmith@apertussolutions.com> header.from=<dpsmith@apertussolutions.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1604162686;
+        s=zoho; d=apertussolutions.com; i=dpsmith@apertussolutions.com;
+        h=From:To:Cc:Subject:Date:Message-Id;
+        bh=VO7HKgwp5hY4uW+eur6uI4P4Oa5OD58CYj88tNXXYIY=;
+        b=NLz3RP872WdHqubvb0135++jffLZGWXG/Wy93X+wp3fAgf3ym6bEq8i75cWwLECO
+        qkxRkAOW8amuSXsmh+puN0vx9BVIpN3Nu/NYRgynJ1fZht5HTl7dIqqgQRJA9vK9lf7
+        Ng+cHlk/32Fm6bFCXXPYs3mkfvUw2Is3IVeTAKv4=
+Received: from sisyou.hme. (c-73-129-147-140.hsd1.md.comcast.net [73.129.147.140]) by mx.zohomail.com
+        with SMTPS id 1604162685809562.1268729878734; Sat, 31 Oct 2020 09:44:45 -0700 (PDT)
+From:   "Daniel P. Smith" <dpsmith@apertussolutions.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-integrity@vger.kernel.org
+Cc:     ross.philipson@oracle.com, dpsmith@apertussolutions.com,
+        jarkko.sakkinen@linux.intel.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, luto@amacapital.net,
+        trenchboot-devel@googlegroups.com
+Subject: [RFC PATCH 0/4] Secure Launch early PCR extend support
+Date:   Sat, 31 Oct 2020 12:51:18 -0400
+Message-Id: <20201031165122.21539-1-dpsmith@apertussolutions.com>
+X-Mailer: git-send-email 2.11.0
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+This RFC is a break out of the prerequisite TPM functionality for the larger
+Secure Launch capability. This TPM/PCR subset is in a separate smaller patch set
+being sent as an RFC to get early feedback before the whole Secure Launch patch
+set is resubmitted. This patch RFC, if accepted, will be part of the overall
+Secure Launch patch set.
 
-HEAD commit:    68bb4665 Merge branch 'l2-multicast-forwarding-for-ocelot-..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1219346c500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=eac680ae76558a0e
-dashboard link: https://syzkaller.appspot.com/bug?extid=5be8aebb1b7dfa90ef31
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11286398500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11bbf398500000
+TPMs support numerous operations, the majority of which will never be used by
+the Secure Launch feature in the compressed kernel. Given that, this RFC does
+not seek to implement a TPM driver but merely enough logic for the PCR extend
+operation with a reasonable reuse of the mainline TPM driver.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5be8aebb1b7dfa90ef31@syzkaller.appspotmail.com
+In this RFC is the early_pcr_extend functionality that is built from shared
+headers with the mainline TPM driver for common definitions and TPM buffer
+functionality. The early_pcr_extend balances the introduction of new logic to
+communicate with the TPM without having to introduce unrelated hardware features
+not already available under the compressed kernel. The target usage of
+early_pcr_extend is to support DRTM capable hardware under Secure Launch.
+Historically the authors have not encountered any DRTM capable hardware that
+uses any other interface other than the TPM Interface Specification (TIS) FIFO
+software interface. To minimize the impact to code size and avoid unnecessary
+functionality in the compressed kernel, the early_pcr_extend provides a very
+limited implementation of the FIFO interface necessary to set locality and carry
+out the extend operation.
 
-==================================================================
-BUG: KASAN: use-after-free in decode_session6+0xe7c/0x1580 net/xfrm/xfrm_policy.c:3393
-Read of size 1 at addr ffff88802c9d08af by task syz-executor061/8480
+For the sake of completeness, a discussion on the proposed refactoring of the
+mainline driver FIFO and TPM command handling for reuse in the compressed kernel
+needs to be addressed. After reviewing the mainline TPM driver for a second
+time, we have arrived at the conclusion that the driver is too entangled with
+the mainline kernel functionality which makes refactoring highly impractical.
+The following are a few examples of this entanglement. The mainline TPM driver
+is built around the tpm_chip structure which uses definitions not available in
+the compressed kernel. It is likely that bringing these definitions into the
+compressed kernel purely to make the tpm_chip structure available, would be
+found to be unacceptable. Therefore it would be necessary to create a compressed
+kernel representation which would end up with a majority of tpm_chip structure
+being stubbed out since very little of this abstraction is required for the one
+TPM command that will be used. Another concern is that the mainline TPM driver
+FIFO interface is heavily reliant on timers implemented with mainline kernel
+jiffies for interacting with the TPM. The compressed kernel does not have access
+to jiffies. In the compressed kernel, jiffies have not been initialized and
+timers have not been started. Therefore the use of jiffies would have to be
+abstracted out of the mainline TPM driver resulting in a significant refactoring
+or borderline rewrite of the driver.
 
-CPU: 1 PID: 8480 Comm: syz-executor061 Not tainted 5.10.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- decode_session6+0xe7c/0x1580 net/xfrm/xfrm_policy.c:3393
- __xfrm_decode_session net/xfrm/xfrm_policy.c:3485 [inline]
- __xfrm_policy_check+0x2fa/0x2850 net/xfrm/xfrm_policy.c:3540
- __xfrm_policy_check2 include/net/xfrm.h:1097 [inline]
- xfrm_policy_check include/net/xfrm.h:1106 [inline]
- sctp_rcv+0x12b0/0x2e30 net/sctp/input.c:202
- sctp6_rcv+0x22/0x40 net/sctp/ipv6.c:1078
- ip6_protocol_deliver_rcu+0x2e8/0x1680 net/ipv6/ip6_input.c:433
- ip6_input_finish+0x7f/0x160 net/ipv6/ip6_input.c:474
- NF_HOOK include/linux/netfilter.h:301 [inline]
- NF_HOOK include/linux/netfilter.h:295 [inline]
- ip6_input+0x9c/0xd0 net/ipv6/ip6_input.c:483
- dst_input include/net/dst.h:449 [inline]
- ip6_rcv_finish net/ipv6/ip6_input.c:76 [inline]
- NF_HOOK include/linux/netfilter.h:301 [inline]
- NF_HOOK include/linux/netfilter.h:295 [inline]
- ipv6_rcv+0x28e/0x3c0 net/ipv6/ip6_input.c:307
- __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5315
- __netif_receive_skb+0x27/0x1c0 net/core/dev.c:5429
- process_backlog+0x232/0x6c0 net/core/dev.c:6319
- napi_poll net/core/dev.c:6763 [inline]
- net_rx_action+0x4dc/0x1100 net/core/dev.c:6833
- __do_softirq+0x2a0/0x9f6 kernel/softirq.c:298
- asm_call_irq_on_stack+0xf/0x20
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
- do_softirq kernel/softirq.c:343 [inline]
- do_softirq+0xb5/0xe0 kernel/softirq.c:330
- __local_bh_enable_ip+0xf0/0x110 kernel/softirq.c:195
- local_bh_enable include/linux/bottom_half.h:32 [inline]
- rcu_read_unlock_bh include/linux/rcupdate.h:730 [inline]
- ip6_finish_output2+0x71f/0x16c0 net/ipv6/ip6_output.c:118
- __ip6_finish_output net/ipv6/ip6_output.c:143 [inline]
- __ip6_finish_output+0x447/0xab0 net/ipv6/ip6_output.c:128
- ip6_finish_output+0x34/0x1f0 net/ipv6/ip6_output.c:153
- NF_HOOK_COND include/linux/netfilter.h:290 [inline]
- ip6_output+0x1db/0x520 net/ipv6/ip6_output.c:176
- dst_output include/net/dst.h:443 [inline]
- NF_HOOK include/linux/netfilter.h:301 [inline]
- NF_HOOK include/linux/netfilter.h:295 [inline]
- ip6_xmit+0x1258/0x1e80 net/ipv6/ip6_output.c:280
- sctp_v6_xmit+0xbf3/0xfe0 net/sctp/ipv6.c:223
- sctp_packet_transmit+0x1f44/0x32f0 net/sctp/output.c:627
- sctp_packet_singleton net/sctp/outqueue.c:773 [inline]
- sctp_outq_flush_ctrl.constprop.0+0x6d3/0xc40 net/sctp/outqueue.c:904
- sctp_outq_flush+0xf3/0x2580 net/sctp/outqueue.c:1186
- sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1801 [inline]
- sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
- sctp_do_sm+0x74e/0x5130 net/sctp/sm_sideeffect.c:1156
- sctp_primitive_ASSOCIATE+0x98/0xc0 net/sctp/primitive.c:73
- sctp_sendmsg_to_asoc+0xb5b/0x2140 net/sctp/socket.c:1823
- sctp_sendmsg+0x103b/0x1d30 net/sctp/socket.c:2013
- inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:817
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- __sys_sendto+0x21c/0x320 net/socket.c:1992
- __do_sys_sendto net/socket.c:2004 [inline]
- __se_sys_sendto net/socket.c:2000 [inline]
- __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2000
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4413c9
-Code: e8 fc ab 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fff3d021208 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004413c9
-RDX: 0000000000034000 RSI: 0000000020847fff RDI: 0000000000000004
-RBP: 00000000006cb018 R08: 000000002005ffe4 R09: 000000000000001c
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402170
-R13: 0000000000402200 R14: 0000000000000000 R15: 0000000000000000
+We believe that the approach we are presenting here should be satisfactory. We
+feel it is clear that we are not trying to create a new TPM driver. We have
+split up the TPM headers to be able to reuse almost all the needed definitions/
+structures. In addition, we switched to using the mainline TPM driver's buffer
+functions. The remaining code to do the extend is minimal and appropriate for
+the compressed kernel environment.
 
-Allocated by task 1:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
- kmalloc include/linux/slab.h:557 [inline]
- tomoyo_realpath_from_path+0xc3/0x620 security/tomoyo/realpath.c:254
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_path_perm+0x21b/0x400 security/tomoyo/file.c:822
- security_inode_getattr+0xcf/0x140 security/security.c:1279
- vfs_getattr fs/stat.c:121 [inline]
- vfs_statx+0x164/0x390 fs/stat.c:189
- vfs_fstatat fs/stat.c:207 [inline]
- vfs_lstat include/linux/fs.h:3109 [inline]
- __do_sys_newlstat+0x91/0x110 fs/stat.c:362
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Thank you,
+Daniel P. Smith and Ross Philipson
 
-Freed by task 1:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
- slab_free_hook mm/slub.c:1544 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
- slab_free mm/slub.c:3142 [inline]
- kfree+0xdb/0x360 mm/slub.c:4124
- tomoyo_realpath_from_path+0x191/0x620 security/tomoyo/realpath.c:291
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_path_perm+0x21b/0x400 security/tomoyo/file.c:822
- security_inode_getattr+0xcf/0x140 security/security.c:1279
- vfs_getattr fs/stat.c:121 [inline]
- vfs_statx+0x164/0x390 fs/stat.c:189
- vfs_fstatat fs/stat.c:207 [inline]
- vfs_lstat include/linux/fs.h:3109 [inline]
- __do_sys_newlstat+0x91/0x110 fs/stat.c:362
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Daniel P. Smith (4):
+  tpm: Move TPM TIS definitions out of TIS core header
+  tpm: Move core definitions and buffer management out of main TPM
+    header
+  tpm: Conditionally use static buffer in TPM buffer management
+  x86: Add early PCR extend support for Secure Launch
 
-The buggy address belongs to the object at ffff88802c9d0000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 2223 bytes inside of
- 4096-byte region [ffff88802c9d0000, ffff88802c9d1000)
-The buggy address belongs to the page:
-page:00000000a89e7c26 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2c9d0
-head:00000000a89e7c26 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 0000000000000000 0000000100000001 ffff888010042140
-raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
+ arch/x86/boot/compressed/Makefile           |   2 +
+ arch/x86/boot/compressed/early_pcr_extend.c | 311 ++++++++++++++++++++++++++++
+ arch/x86/boot/compressed/early_pcr_extend.h |  92 ++++++++
+ drivers/char/tpm/tpm_tis_core.h             |  60 +-----
+ drivers/char/tpm/tpm_tis_defs.h             |  81 ++++++++
+ include/linux/tpm.h                         | 269 +-----------------------
+ include/linux/tpm_buffer.h                  | 135 ++++++++++++
+ include/linux/tpm_core.h                    | 185 +++++++++++++++++
+ 8 files changed, 809 insertions(+), 326 deletions(-)
+ create mode 100644 arch/x86/boot/compressed/early_pcr_extend.c
+ create mode 100644 arch/x86/boot/compressed/early_pcr_extend.h
+ create mode 100644 drivers/char/tpm/tpm_tis_defs.h
+ create mode 100644 include/linux/tpm_buffer.h
+ create mode 100644 include/linux/tpm_core.h
 
-Memory state around the buggy address:
- ffff88802c9d0780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88802c9d0800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88802c9d0880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                  ^
- ffff88802c9d0900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88802c9d0980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+-- 
+2.11.0
 
