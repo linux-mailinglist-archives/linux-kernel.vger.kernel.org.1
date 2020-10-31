@@ -2,151 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B922A1732
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 13:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C59762A1736
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 13:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727158AbgJaMLs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 31 Oct 2020 08:11:48 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:25077 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726928AbgJaMLr (ORCPT
+        id S1727200AbgJaMMH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 31 Oct 2020 08:12:07 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:35420 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726928AbgJaMMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 08:11:47 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-164-9CqVg803OpalkYbq6EpqrA-1; Sat, 31 Oct 2020 12:11:43 +0000
-X-MC-Unique: 9CqVg803OpalkYbq6EpqrA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 31 Oct 2020 12:11:42 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 31 Oct 2020 12:11:42 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Peter Zijlstra' <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-CC:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "eranian@google.com" <eranian@google.com>
-Subject: RE: [PATCH 4/6] perf: Optimize get_recursion_context()
-Thread-Topic: [PATCH 4/6] perf: Optimize get_recursion_context()
-Thread-Index: AQHWrxDB+hviZpPrkUisLgNdhr09JamxnS3g
-Date:   Sat, 31 Oct 2020 12:11:42 +0000
-Message-ID: <6371740df7704217926315e97294a894@AcuMS.aculab.com>
-References: <20201030151345.540479897@infradead.org>
- <20201030151955.187580298@infradead.org> <20201030181138.215b2b6a@carbon>
- <20201030162248.58e388f0@oasis.local.home>
- <20201030230152.GT2594@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201030230152.GT2594@hirez.programming.kicks-ass.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 31 Oct 2020 08:12:05 -0400
+Received: by mail-wm1-f68.google.com with SMTP id h22so5193695wmb.0;
+        Sat, 31 Oct 2020 05:12:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=NA2mk2ojzZgcrMT2zOu7idEhtXsilJ2RZg5gFMOuQu0=;
+        b=npSi9acScqv3T750caVXhbrrpeBcNbaDmcCPzjn/buViDm4NOh3WSx3OedyPncQdN3
+         1jptu0k+ln1VOLKLLhUP4RrDmW/0r2bBWC6rDp+fG41f+cspvbbvRnDrcOVFopEPSey/
+         FtT3UUkQftb7wK+KyQU80ndxwHSg9FWp1LnyuPG6T5tFTot4rMPbUUB2ihFZ10H+ZcUR
+         z5xJ+bAMxE51EFal0mn5B3SSdgLmhPZUHcRzpc880YppfjHjKjK/y6YCWQWZi/aQGXDp
+         wOnGgKGUjLT34PQ2vfzPtNAng335GPToTRyjfbegX7/AYHlxT371fe092LUZHjCVYOD+
+         0Dgg==
+X-Gm-Message-State: AOAM531BHDyCVflpaw6QBEfRUZ+IxXz0wI0w/o9cqZ84WBQB6Gt/K1Uo
+        UERJ2zs712yU8+CRPyYsFEIoyPkoWeN+tQ==
+X-Google-Smtp-Source: ABdhPJzxJPowOvxVIGz2k7PdLFq9XdeI2/pqi8+tEqW8uyXw33OGR632eyR2MsZ3cnVcMWXiIVpgvg==
+X-Received: by 2002:a1c:750b:: with SMTP id o11mr8099208wmc.32.1604146322961;
+        Sat, 31 Oct 2020 05:12:02 -0700 (PDT)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id m8sm14272394wrw.17.2020.10.31.05.12.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Oct 2020 05:12:01 -0700 (PDT)
+Date:   Sat, 31 Oct 2020 13:12:00 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     georgi.djakov@linaro.org, cw00.choi@samsung.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        a.swigon@samsung.com, myungjoo.ham@samsung.com,
+        inki.dae@samsung.com, sw0312.kim@samsung.com,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v7 1/6] dt-bindings: devfreq: Add documentation for the
+ interconnect properties
+Message-ID: <20201031121200.GA9399@kozik-lap>
+References: <20201030125149.8227-1-s.nawrocki@samsung.com>
+ <CGME20201030125257eucas1p29c6b018cfcdda337b2b3d2a496f0c830@eucas1p2.samsung.com>
+ <20201030125149.8227-2-s.nawrocki@samsung.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201030125149.8227-2-s.nawrocki@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra
-> Sent: 30 October 2020 23:02
+On Fri, Oct 30, 2020 at 01:51:44PM +0100, Sylwester Nawrocki wrote:
+> Add documentation for new optional properties in the exynos bus nodes:
+> interconnects, #interconnect-cells, samsung,data-clock-ratio.
+> These properties allow to specify the SoC interconnect structure which
+> then allows the interconnect consumer devices to request specific
+> bandwidth requirements.
 > 
-> On Fri, Oct 30, 2020 at 04:22:48PM -0400, Steven Rostedt wrote:
-> > As this is something that ftrace recursion also does, perhaps we should
-> > move this into interrupt.h so that anyone that needs a counter can get
-> > it quickly, and not keep re-implementing it.
+> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+> Changes for v7:
+>  - bus-width property replaced with samsung,data-clock-ratio,
+>  - the interconnect consumer bindings used instead of vendor specific
+>    properties
 > 
-> Works for me, however:
+> Changes for v6:
+>  - added dts example of bus hierarchy definition and the interconnect
+>    consumer,
+>  - added new bus-width property.
 > 
-> > /*
-> >  * Quickly find what context you are in.
-> >  * 0 - normal
-> >  * 1 - softirq
-> >  * 2 - hard interrupt
-> >  * 3 - NMI
-> >  */
-> > static inline int irq_context()
-> > {
-> > 	unsigned int pc = preempt_count();
-> > 	int rctx = 0;
+> Changes for v5:
+>  - exynos,interconnect-parent-node renamed to samsung,interconnect-parent
+> ---
+>  .../devicetree/bindings/devfreq/exynos-bus.txt     | 68 +++++++++++++++++++++-
+>  1 file changed, 66 insertions(+), 2 deletions(-)
 > 
-> unsigned
-> 
-> >
-> > 	if (pc & (NMI_MASK))
-> > 		rctx++;
-> > 	if (pc & (NMI_MASK | HARDIRQ_MASK))
-> > 		rctx++;
-> > 	if (pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET))
-> > 		rctx++;
-> >
-> > 	return rctx;
-> > }
-> 
-> otherwise you'll get an extra instruction to sign extend it, which is
-> daft (yes, i've been staring at GCC output far too much).
-> 
-> Also, gcc-9 does worse (like 1 byte iirc) with:
-> 
-> 	rctx += !!(pc & (NMI_MASK));
-> 	rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK));
-> 	rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET));
-> 
-> but gcc-10 doesn't seem to care.
 
-You've made be look at some gcc output (it's raining).
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-The gcc 7.5.0 I have handy probably generates the best code for:
-
-unsigned char q_2(unsigned int pc)
-{
-        unsigned char rctx = 0;
-
-        rctx += !!(pc & (NMI_MASK));
-        rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK));
-        rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET));
-
-        return rctx;
-}
-
-0000000000000000 <q_2>:
-   0:   f7 c7 00 00 f0 00       test   $0xf00000,%edi     # clock 0
-   6:   0f 95 c0                setne  %al                # clock 1
-   9:   f7 c7 00 00 ff 00       test   $0xff0000,%edi     # clock 0
-   f:   0f 95 c2                setne  %dl                # clock 1
-  12:   01 c2                   add    %eax,%edx          # clock 2
-  14:   81 e7 00 01 ff 00       and    $0xff0100,%edi
-  1a:   0f 95 c0                setne  %al
-  1d:   01 d0                   add    %edx,%eax          # clock 3
-  1f:   c3                      retq
-
-I doubt that is beatable.
-
-I've annotated the register dependency chain.
-Likely to be 3 (or maybe 4) clocks.
-The other versions are a lot worse (7 or 8) without allowing
-for 'sbb' taking 2 clocks on a lot of Intel cpus.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Best regards,
+Krzysztof
