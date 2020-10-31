@@ -2,115 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DC92A133C
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 04:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE452A133F
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 04:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgJaDCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 23:02:06 -0400
-Received: from sonic317-21.consmr.mail.gq1.yahoo.com ([98.137.66.147]:36251
-        "EHLO sonic317-21.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726042AbgJaDCF (ORCPT
+        id S1726092AbgJaDEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 23:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgJaDEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 23:02:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1604113324; bh=R73TF0Zm2VExUeDVZshbWBh2g0cWxrDy5/hz+DGx2Ds=; h=From:To:Cc:Subject:Date:References:From:Subject; b=ER0TUqyMfObl3q7akR0Sw09dcaCPloAzpzTi/ue3zpDcXlvTJLH7F6jo9G4LhMvsRYOkLpR+Op7SIt/jbKc39WoJueFujW391Ny3uKH6B9ebf3wyxAJ5lU6zuj/MgSnEy3pLPODuFnBASCzV4c/O2txsbf5ShiUXfQ63e64mpKO3r2Z8LZRxuYSOJ++1vZdmvAkHcyV81H3/kICk1nkxP8O23pr2Rp/mq6sse/iYmcBeJCxKbdT4kzQxuNrUNbm3Fn/pwOHlxK2W45SfLCN8FG9/OMga4fWBFHyhf7R/KTWkTgLf+z4Yz+KbsvExNusXOTbdAPK5bxz8yM/0etAM1Q==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1604113324; bh=6pqgcg1r7dlIzsBzsIaVJ8r3FjmRz6Bu9YKUuvn9YdR=; h=From:To:Subject:Date; b=ljuWHAJhgio8zibJXuHQ7sO+X591AGU6oyILWHDC2ihJoTr/Yxn5Z/DKInbKeDlnrlZ+ScjT38rnny3Nets4HjBeg4fqCy/xmaLnkbTvSY2kS+K74jDJCrehCJsjoqnq5jmsgZ7kW7HG38fKP3xjvKfwoEjduuJPyIGwaMpt6MRpstped4NdrfLK84BDW6cCHLZRPVvyNdTd83kgE8lxmnZ0zPoCkJYWAC8ImbI75QD14rvCANucMJK/o+X/svCdadkXXBBNoNyT3KgRQugCacMzWI6QoDRv9kxWz4qFWbh5/50YvycP243oz5GAcfjfLZM/syjYpQUGkETmMCJ91g==
-X-YMail-OSG: V0frT4EVM1kp1Fx.fqP7bukaSkmqfrLHDWEAK1vtB7H7BC3jPH5u2C7rqrySysa
- xKRkgz87i0xrOfShcyQWSv2BaDca6aEPCl5q_HyFJTLQq9mk.Ay9OwzHT3e2TW4y5yxQ3mGaU7nD
- sQxfNnS_o2l4s_Vgs2uTb8v8AP1ZfbHzJ1LoE0SEZQSCXlW73FHHO50g50V5QZzhl4VFMdGatqa9
- sAF0ytnuw4sx..vn5Hs46JzG7weqwDPQ3d5rBNf.g2RxgDiZMCK7RCV7YlCsuPxbzBfSdz2gxW1c
- VVuQtd.vQCdcJ230gL5YmuIGsynvTfYMIyU34SkkD5n0dwSKmNaaW04RaFSp.tmjeSVGjZtjFXWu
- CHx.qJ8XvDTlVMAjVJpYLrINoL_obGaX73N9moDPbEDwS.vZQqGhy4uHaobaTXxWHaIHDaLtV8pS
- Zbt4sLTz3yIhUHZAgvYrRGNFX89H9TjBYOlvuv_xaw2dmt.c8WYs_w9YGOxmFpw0Z8dtdl_MQuGU
- q0cBFCXi24J_g8UMgCW1Em6ZMFhdjKKah_d7P5QPOG7paGHkkFFkwsSEQbXsuGWM6Zm6n9kPhfAC
- 1jRFq1OB_w7bHKPSIGKef3oETGwRtUEeIDZz6V3_j9HZmRxdMcLg_RWJo2vi58pc0APqwATu05PX
- agZ6iq.hYmiJHRGrVoU0Yr3DPfkBwSKaPzy9IHMAra7b8asn4MsSeIG8Wl.klI_VhYMrSU2eJWM8
- ir0ZdyP7PRvye5iG.7vlQ_C7Wve3bOehaDM.ttExGnLJZ3xqVLJeUwLNKRTPhgSprkRDwjFcO9WD
- sQhuciMAaqbBdI4Q0giLXNW35J..SSxRE7ML3_QWoPXS.VBVynzQxq35TuVQc.huJ3iY7k6L9Zwo
- Eb0anWLIMIkvOTV7MxhuaVXU4eq.nrnXgJoOfaC5gXdFte7pYEkCMKAysUrMA0a2VYKW1KixW4xC
- iYbSjd_cv2GCv9P5Bf6HRQevBoNwtq0Mb0LOYRe6kA9kQSiMK.TbJwvMtz02g8twWwzA_yQ9v0GZ
- cmvXZd1kGc0MZaWOpcKamYSdm0mXlt9iS8ku8obVAEdBtW_GqoU.Jb9nZJmz6voom.Oh4mguwmJ2
- w_noUO7_nLBd9IpK0DN9r_vMZTZxHCxBB1NXPh_iZxw8pOaorbo7EoxgidbtKZBmjFd6kNjdjyD6
- Epn.qJ9GTqnRXs5YXxAK5BKztNvJAeKebna4V7xK8DurzZZFBmCO35ihhZcPnlrB.9xm.S7I2JIa
- qS30an70AND6u60H1a.L68cDIwrOda7gKfa0SV3p1ltgDLhqc1SRI38ms62XqN2oDG6N4LNqF.1l
- edYKHrWD2mVxYZAOun4WsAsZzYtTjHc9NKMLDpefSrZxrH9JzuLebS44EC_PhshkwbAtL.fT03yy
- pw4q932hqlsQakcmCN1SJn7N5bUygG67VtnDyvdqHA07zrr57nVH_HWSSPvMTpYtpZegVASHj6Ak
- xcAdMiZaHh36Sbv0QZ16qQdGDg1gxfPoj6uoRhGqJwgQNCL0hoSRYV2j9ncBSPdcaAdm0DsqpCja
- YZq3r6U4qAlCDSuh_Dlibru6S_chgnvlM5ghxprZ6gAZtjKI2.FmJux1GRgtPDi.3xASq5sZs95n
- WgrWa6u.SgJ5OaYHDlmeR8MBgKAth1YS7407zVbCeVw3.ie3XyHGVwHQyk8uw_LLZJncBnL53T5W
- 4XGw8luaNKwhkbMmvNf.6AepGS1qdzm3rEkocTcG53CVR_0hDBoBInQQzwhCzQ.F0R18iqEWJF0u
- iYP.EwgK2JgCLAM1F7.WnXJsuMVGCZsD1FpUTE_OS92ETVxFK6akqW7pti5s1.J.29_ofcOMmdbr
- 3SWnIIakzI_9Hlm02yrlRQfq0JaXdmQtMAn1k7lzMWIE_YwbMFAhHT6mwlJ_9e6miTF4V4HlUI_w
- fc_8bSA7BhuTi0XnFmghQ1gAZ0DooHvd4szyWBDXfoK8rDNxz7j0s7rCgxXvQGqh2ioI_26JxMHQ
- yLskmSvYlSOVsJipKmyjXoIHzOgNRkIp4eAYdOUGwrQNKKd2F5n1oI2kxvBnKIAkRr79dBMylY6E
- xNeRWJkO9TLSAfhgQW7J7sWBIdnxYtDU3Xm9vgBwVA4bG6PgREhY6jkmjJw12E30n9Kpgg6qWJj4
- 9Z.3QR6YIyIXw.U400oFNlpUmzDLVENznZeZFcMKej08bhmubT3Wq.fRnMG7n631.qYAfj6QddTv
- w6qn9o_miIcU7SYl6q5jZc1CIqA5hK2siyZ2j74cqhxuQvhQ.FJGpQcAJNRYFbEA3Ka.yu9r046T
- 5HtpevTkhRRtQ5Qn67uxGD.G1gN2Oa_U97XvDQiMfpdzDUblRpl63k6lyKbdyzdso1Nu_X6yysna
- rXH9QZMys9ir0MY_O58yYSSZVK2TBGEfsISBMw1lY3JLYhQrLhwhQqcQ033OCzZkIZ3YaVpRuxS7
- mYcMqul54F6MnlBQwUsUUauq6fjrI7gk7z7tKi4vtQ7UKUOg.FmUlrbXca0qH.P__v06mXrEfTMJ
- Kr5DHuMtMEJbMsetNY3IY_Et_qMC3v1ssEVA5rERosxxc7MsZ4bmIHTvpxhzqIH9tMkdqLTQdV6E
- ka0WmVXVVHwki6OEq_GN8DAiD02dxh2cTym._hlAi6KDAJBbW741nftHsYIoXusEPHnT7SBY3Jb5
- b10hlip9OMMGuU0gXPfs.8HO6Bv687p0TtuWWQ6JGc_ODXNTZpOl56hXVBNpuqYxWDlVIhKymL9b
- 5skCFnTmEGR.YM1Nk2wlSWqf6NmOiHKvGG_hNMsh.wd3tOB7YIAq5XooWd_ZKyYGUb1BtAs3wPZv
- 1kp9OYCxMW0jqhHx5tFfdCYpVf_.IeknD0TL19iiAbsc7fTUZYy1.y.ANDS7U63ysasnhU3dDpOz
- utr_GwQwUwX3PklEFcwH_QDB.VbKz81wgMBGF_ics5C6fmMEI471sDaCGCjDUu69kJEhioeV1qEW
- McCtRhpUcip1YOHNal6Rf5PHXHFpuMBrcyl.lsNDem.gKbJXZMcUHDBguMhHfHuOTaU_dk_1KNiQ
- Cjfe3EMc10W2Chw--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.gq1.yahoo.com with HTTP; Sat, 31 Oct 2020 03:02:04 +0000
-Received: by smtp418.mail.ir2.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 6282e59a6c5c255f5e355b6bbffc1fa5;
-          Sat, 31 Oct 2020 03:02:01 +0000 (UTC)
-From:   Gao Xiang <hsiangkao@aol.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@redhat.com>,
-        Hongyu Jin <hongyu.jin@unisoc.com>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH 5.9.y] erofs: avoid duplicated permission check for "trusted." xattrs
-Date:   Sat, 31 Oct 2020 11:01:31 +0800
-Message-Id: <20201031030131.966-1-hsiangkao@aol.com>
-X-Mailer: git-send-email 2.24.0
+        Fri, 30 Oct 2020 23:04:14 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B92AC0613D7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 20:04:14 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id a3so289488pjh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 20:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dOaiRG7nzOcew4Z/xa4Y9xhaCfEOzzX+L3+jYCW8uRY=;
+        b=DMAwc6lK6ZUTOXaQLELuJb+DLulnLu/TsWegaajGm8rDAtlcvhxuJl1EYsOxRgJK4L
+         l/OVWkCKS7qxsdxQ1U+ryuVkJdqO4HLjatwwu2Mcz0AsfY1ZVaKdN61cnWnodQTsw0vW
+         C8ONCAMQ9/JH2jR8SNL5mGZpx7n1AfO7pE9/2SX4QssIgCmNzaVJSzrjTASk6EyXRrA9
+         4J9tlWmXfQfKSts8AhH+O3O76q/lMHF+9tnJy11zK11B74LYHixhLk1puRbVBgg4+sev
+         dheLcfIYTDi8yIVsP5Ir8k4a3p5MZsjQyd0z+Hhbxp9Q4Zc3T/06Xe9XR+fhlR6NDMcK
+         laVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dOaiRG7nzOcew4Z/xa4Y9xhaCfEOzzX+L3+jYCW8uRY=;
+        b=d4XEh3tKtftA/RcZx/wR8YqByHlCI2up2TEDocU+p2izayt+IQ917XS3RdAls2bTaJ
+         bv8l/wqHz4bZcy6YWruNORjazKMN8gE6Dm7QEor9nnjsUqqEfSlstugA1pjBWKmVl9RJ
+         EIL6t4Zpg0z0LvQblQ0CPpq3ubAQXwmPOu+I0OH44qwMS2sgps5ryk6wyoVQ+Ssv4eOa
+         LW3EXuFdpTkoQS6IEI8TPhH6mmciKMjaKKUreYiVSdg8JT9OPJ/UGdjt9IhGzucEoz2a
+         yaC9U8TPS4zYo79YdUoRN+G1n0MwwsX42ESAamoA6Pl7pUkeJcm4bUksy7mQwba7So8u
+         /h1g==
+X-Gm-Message-State: AOAM533oL/q8maKnQGc1SgmsjbYLg9P9boWVJZCpRIIf2mjYmRG89qUK
+        Afkn+Z2sEVTebzdjkAajy/LgPvV5Lbkf
+X-Google-Smtp-Source: ABdhPJzjVcvaGvc+ZvZMF2wQLN0gJBl5ruQ7dMt0KnAS41Bf5OA37Aed06fGLQnAGelK7iHJFRfjZw==
+X-Received: by 2002:a17:90a:8d08:: with SMTP id c8mr6308573pjo.33.1604113452797;
+        Fri, 30 Oct 2020 20:04:12 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6097:a88a:8051:aa6b:aaa2:8d63])
+        by smtp.gmail.com with ESMTPSA id i123sm7096266pfc.13.2020.10.30.20.04.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 30 Oct 2020 20:04:11 -0700 (PDT)
+Date:   Sat, 31 Oct 2020 08:34:05 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Hemant Kumar <hemantk@codeaurora.org>
+Cc:     gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jhugo@codeaurora.org,
+        bbhatt@codeaurora.org, loic.poulain@linaro.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v11 4/4] bus: mhi: Add userspace client interface driver
+Message-ID: <20201031030405.GA4664@Mani-XPS-13-9360>
+References: <1604025946-28288-1-git-send-email-hemantk@codeaurora.org>
+ <1604025946-28288-5-git-send-email-hemantk@codeaurora.org>
+ <20201030103410.GD3818@Mani-XPS-13-9360>
+ <5cfbcc14-5fd2-b1ae-8a3d-ac28d567a74d@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-References: <20201031030131.966-1-hsiangkao.ref@aol.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5cfbcc14-5fd2-b1ae-8a3d-ac28d567a74d@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@redhat.com>
+hi Hemant,
 
-commit d578b46db69d125a654f509bdc9091d84e924dc8 upstream.
+On Fri, Oct 30, 2020 at 06:26:38PM -0700, Hemant Kumar wrote:
+> Hi Mani,
+> 
+> On 10/30/20 3:34 AM, Manivannan Sadhasivam wrote:
+> > Hi Hemant,
+> > 
+> > On Thu, Oct 29, 2020 at 07:45:46PM -0700, Hemant Kumar wrote:
+> > > This MHI client driver allows userspace clients to transfer
+> > > raw data between MHI device and host using standard file operations.
+> > > Driver instantiates UCI device object which is associated to device
+> > > file node. UCI device object instantiates UCI channel object when device
+> > > file node is opened. UCI channel object is used to manage MHI channels
+> > > by calling MHI core APIs for read and write operations. MHI channels
+> > > are started as part of device open(). MHI channels remain in start
+> > > state until last release() is called on UCI device file node. Device
+> > > file node is created with format
+> > > 
+> > > /dev/mhi_<controller_name>_<mhi_device_name>
+> > > 
+> > > Currently it supports LOOPBACK channel.
+> > > 
+> > > Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+> > 
+> > Thanks for continuously updating the series based on reviews, now the locking
+> > part looks a _lot_ cleaner than it used to be. I just have one query (inline)
+> > regarding the usage of refcount for uci_chan and uci_dev. Once you fix that,
+> > I think this is good to go in.
+> Thanks for reviewing my changes.
+> 
+> [..]
+> 
+> > > +#define DEVICE_NAME "mhi"
+> > > +#define MHI_UCI_DRIVER_NAME "mhi_uci"
+> > > +#define MAX_UCI_MINORS 128
+> > 
+> > Prefix MHI for these.
+> Done.
+> 
+> > 
+> > > +
+> > > +static DEFINE_IDR(uci_idr);
+> > > +static DEFINE_MUTEX(uci_drv_mutex);
+> > > +static struct class *uci_dev_class;
+> > > +static int uci_dev_major;
+> > > +
+> > > +/**
+> > > + * struct uci_chan - MHI channel for a UCI device
+> > > + * @udev: associated UCI device object
+> > > + * @ul_wq: wait queue for writer
+> > > + * @write_lock: mutex write lock for ul channel
+> > > + * @dl_wq: wait queue for reader
+> > > + * @read_lock: mutex read lock for dl channel
+> > > + * @dl_pending_lock: spin lock for dl_pending list
+> > > + * @dl_pending: list of dl buffers userspace is waiting to read
+> > > + * @cur_buf: current buffer userspace is reading
+> > > + * @dl_size: size of the current dl buffer userspace is reading
+> > > + * @ref_count: uci_chan reference count
+> > > + */
+> > > +struct uci_chan {
+> > > +	struct uci_dev *udev;
+> > > +	wait_queue_head_t ul_wq;
+> > > +
+> > > +	/* ul channel lock to synchronize multiple writes */
+> > 
+> > I asked you to move these comments to Kdoc in previous iteration.
+> There are multiple revisions of UCI pushed after i responded on this one. On
+> V7 i responded to your comment  :)
+> 
+> "This was added because checkpatch --strict required to add a comment when
+> lock is added to struct, after adding inline comment, checkpatch error was
+> gone."
+> 
+> i was sticking to --strict option. Considering it is best to address what
+> --strict is complaining for.
 
-Don't recheck it since xattr_permission() already
-checks CAP_SYS_ADMIN capability.
+Ah okay.
 
-Just follow 5d3ce4f70172 ("f2fs: avoid duplicated permission check for "trusted." xattrs")
+> > 
+> > > +	struct mutex write_lock;
+> > > +
+> > > +	wait_queue_head_t dl_wq;
+> > > +
+> > > +	/* dl channel lock to synchronize multiple reads */
+> > > +	struct mutex read_lock;
+> > > +
+> > > +	/*
+> > > +	 * protects pending list in bh context, channel release, read and
+> > > +	 * poll
+> > > +	 */
+> > > +	spinlock_t dl_pending_lock;
+> > > +
+> > > +	struct list_head dl_pending;
+> > > +	struct uci_buf *cur_buf;
+> > > +	size_t dl_size;
+> > > +	struct kref ref_count;
+> > 
+> > I'm now thinking that instead of having two reference counts for uci_chan and
+> > uci_dev, why can't you club them together and just use uci_dev's refcount to
+> > handle the channel management also.
+> > 
+> > For instance in uci_open, you are incrementing the refcount for uci_dev before
+> > starting the channel and then doing the same for uci_chan in
+> > mhi_uci_dev_start_chan(). So why can't you just use a single refcount once the
+> > mhi_uci_dev_start_chan() succeeds? The UCI device is useless without a channel,
+> > isn't it?
+> Main idea is to have the uci driver probed (uci device object is
+> instantiated) but it is possible that device node is not opened or if it was
+> opened before and release() was called after that. So UCI channel is not
+> active but device node would continue to exist. Which can be opened again
+> and channel would move to start state. So we dont want to couple mhi driver
+> probe with starting of channels. We start channels only when it is really
+> needed. This would allow MHI device to go to lower power state when channels
+> are disabled.
+> 
 
-Reported-by: Hongyu Jin <hongyu.jin@unisoc.com>
-[ Gao Xiang: since it could cause some complex Android overlay
-  permission issue as well on android-5.4+, it'd be better to
-  backport to 5.4+ rather than pure cleanup on mainline. ]
-Cc: <stable@vger.kernel.org> # 5.4+
-Link: https://lore.kernel.org/r/20200811070020.6339-1-hsiangkao@redhat.com
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
----
- fs/erofs/xattr.c | 2 --
- 1 file changed, 2 deletions(-)
+Okay, makes sense! Please make sure you add it in Documentation.
 
-diff --git a/fs/erofs/xattr.c b/fs/erofs/xattr.c
-index c8c381eadcd6..5bde77d70852 100644
---- a/fs/erofs/xattr.c
-+++ b/fs/erofs/xattr.c
-@@ -473,8 +473,6 @@ static int erofs_xattr_generic_get(const struct xattr_handler *handler,
- 			return -EOPNOTSUPP;
- 		break;
- 	case EROFS_XATTR_INDEX_TRUSTED:
--		if (!capable(CAP_SYS_ADMIN))
--			return -EPERM;
- 		break;
- 	case EROFS_XATTR_INDEX_SECURITY:
- 		break;
--- 
-2.24.0
+> [..]
+> 
+> > > +
+> > > +static int mhi_queue_inbound(struct uci_dev *udev)
+> > > +{
+> > > +	struct mhi_device *mhi_dev = udev->mhi_dev;
+> > > +	struct device *dev = &mhi_dev->dev;
+> > > +	int nr_trbs, i, ret = -EIO;
+> > 
+> > s/nr_trbs/nr_desc
+> Done.
+> > 
+> > > +	size_t dl_buf_size;
+> > > +	void *buf;
+> > > +	struct uci_buf *ubuf;
+> > > +
+> > > +	/* dont queue if dl channel is not supported */
+> > > +	if (!udev->mhi_dev->dl_chan)
+> > > +		return 0;
+> > 
+> > Not returning an error?
+> Here we dont need to return error because when open is called it would call
+> this function and if dl_chan is not supported we still want to return
+> success for a uci device which only supports UL channel.
+> Keeping this check inside function looks clean so i am not adding this check
+> in open().
+> 
 
+Hmm, okay. Please add a comment regarding this.
+
+Thanks,
+Mani
