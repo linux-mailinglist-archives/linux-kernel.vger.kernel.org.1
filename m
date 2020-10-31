@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1474C2A1682
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A924B2A1632
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728368AbgJaLqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:46:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47554 "EHLO mail.kernel.org"
+        id S1727925AbgJaLmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:42:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728355AbgJaLqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:46:17 -0400
+        id S1727042AbgJaLmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:42:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14501205F4;
-        Sat, 31 Oct 2020 11:46:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1A13205F4;
+        Sat, 31 Oct 2020 11:42:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144776;
-        bh=hSLxWkerlkKsPDjUKT0hD7QonBWMhEzCMqL/hrYaWm0=;
+        s=default; t=1604144570;
+        bh=d+MRtzD7Pk3lm4OSWL1yHP5iUYh2DznGTlcV/iBkqFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VYFOlzmbVMlWP1jCD8YslCvxThNO5Cll5xNy8ir4+gWtvka+lWfv9NicQ9a3toRkf
-         V3Jjh8BqyZENSddU3FGQGWZ8LncVYHUQI0eTGPWNtKFybSqmMOxuXX4ckn1x6ZKFHK
-         I2boZAcBnu9NgMPFXMBLy7LrFSEIRbZWyymm2euI=
+        b=k5D+w+GZOEA3FxOtfGb0B6fRfwpeaIyZtPqv0wZx9M0Le8gM2+y72p83yVmBlO1OY
+         JBqgpEQIBlKDtSFZdQDLaMwNqSbOlRofoxkvEpxoxfFmHsliWjdWVwP6LNJr+T4ovi
+         n5KXCyZIi+edTCeMyw6w7Evc/kztUubTsz2z/YpY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pradeep P V K <ppvk@codeaurora.org>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 5.9 58/74] fuse: fix page dereference after free
-Date:   Sat, 31 Oct 2020 12:36:40 +0100
-Message-Id: <20201031113502.812234126@linuxfoundation.org>
+        stable@vger.kernel.org, Ricky Wu <ricky_wu@realtek.com>,
+        Chris Clayton <chris2553@googlemail.com>
+Subject: [PATCH 5.8 69/70] misc: rtsx: do not setting OC_POWER_DOWN reg in rtsx_pci_init_ocp()
+Date:   Sat, 31 Oct 2020 12:36:41 +0100
+Message-Id: <20201031113502.789434092@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
-References: <20201031113500.031279088@linuxfoundation.org>
+In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
+References: <20201031113459.481803250@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,111 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: Ricky Wu <ricky_wu@realtek.com>
 
-commit d78092e4937de9ce55edcb4ee4c5e3c707be0190 upstream.
+commit 551b6729578a8981c46af964c10bf7d5d9ddca83 upstream.
 
-After unlock_request() pages from the ap->pages[] array may be put (e.g. by
-aborting the connection) and the pages can be freed.
+this power saving action in rtsx_pci_init_ocp() cause INTEL-NUC6 platform
+missing card reader
 
-Prevent use after free by grabbing a reference to the page before calling
-unlock_request().
-
-The original patch was created by Pradeep P V K.
-
-Reported-by: Pradeep P V K <ppvk@codeaurora.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+Link: https://lore.kernel.org/r/20200824030006.30033-1-ricky_wu@realtek.com
+Cc: Chris Clayton <chris2553@googlemail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/fuse/dev.c |   28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ drivers/misc/cardreader/rtsx_pcr.c |    4 ----
+ 1 file changed, 4 deletions(-)
 
---- a/fs/fuse/dev.c
-+++ b/fs/fuse/dev.c
-@@ -785,15 +785,16 @@ static int fuse_try_move_page(struct fus
- 	struct page *newpage;
- 	struct pipe_buffer *buf = cs->pipebufs;
- 
-+	get_page(oldpage);
- 	err = unlock_request(cs->req);
- 	if (err)
--		return err;
-+		goto out_put_old;
- 
- 	fuse_copy_finish(cs);
- 
- 	err = pipe_buf_confirm(cs->pipe, buf);
- 	if (err)
--		return err;
-+		goto out_put_old;
- 
- 	BUG_ON(!cs->nr_segs);
- 	cs->currbuf = buf;
-@@ -833,7 +834,7 @@ static int fuse_try_move_page(struct fus
- 	err = replace_page_cache_page(oldpage, newpage, GFP_KERNEL);
- 	if (err) {
- 		unlock_page(newpage);
--		return err;
-+		goto out_put_old;
+--- a/drivers/misc/cardreader/rtsx_pcr.c
++++ b/drivers/misc/cardreader/rtsx_pcr.c
+@@ -1172,10 +1172,6 @@ void rtsx_pci_init_ocp(struct rtsx_pcr *
+ 			rtsx_pci_write_register(pcr, REG_OCPGLITCH,
+ 				SD_OCP_GLITCH_MASK, pcr->hw_param.ocp_glitch);
+ 			rtsx_pci_enable_ocp(pcr);
+-		} else {
+-			/* OC power down */
+-			rtsx_pci_write_register(pcr, FPDCTL, OC_POWER_DOWN,
+-				OC_POWER_DOWN);
+ 		}
  	}
- 
- 	get_page(newpage);
-@@ -852,14 +853,19 @@ static int fuse_try_move_page(struct fus
- 	if (err) {
- 		unlock_page(newpage);
- 		put_page(newpage);
--		return err;
-+		goto out_put_old;
- 	}
- 
- 	unlock_page(oldpage);
-+	/* Drop ref for ap->pages[] array */
- 	put_page(oldpage);
- 	cs->len = 0;
- 
--	return 0;
-+	err = 0;
-+out_put_old:
-+	/* Drop ref obtained in this function */
-+	put_page(oldpage);
-+	return err;
- 
- out_fallback_unlock:
- 	unlock_page(newpage);
-@@ -868,10 +874,10 @@ out_fallback:
- 	cs->offset = buf->offset;
- 
- 	err = lock_request(cs->req);
--	if (err)
--		return err;
-+	if (!err)
-+		err = 1;
- 
--	return 1;
-+	goto out_put_old;
  }
- 
- static int fuse_ref_page(struct fuse_copy_state *cs, struct page *page,
-@@ -883,14 +889,16 @@ static int fuse_ref_page(struct fuse_cop
- 	if (cs->nr_segs >= cs->pipe->max_usage)
- 		return -EIO;
- 
-+	get_page(page);
- 	err = unlock_request(cs->req);
--	if (err)
-+	if (err) {
-+		put_page(page);
- 		return err;
-+	}
- 
- 	fuse_copy_finish(cs);
- 
- 	buf = cs->pipebufs;
--	get_page(page);
- 	buf->page = page;
- 	buf->offset = offset;
- 	buf->len = count;
 
 
