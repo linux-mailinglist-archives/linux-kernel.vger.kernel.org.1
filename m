@@ -2,86 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72FC2A1A33
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 20:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D982A1A45
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 20:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgJaTBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 15:01:30 -0400
-Received: from mail-wr1-f46.google.com ([209.85.221.46]:44374 "EHLO
-        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbgJaTBa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 15:01:30 -0400
-Received: by mail-wr1-f46.google.com with SMTP id b3so4092138wrx.11;
-        Sat, 31 Oct 2020 12:01:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=fo1vLw7uqzM0/HVmudKwwfC5LAehVsjoosFf5UWA8y0=;
-        b=uAzRAJdvrzSFruVaBlWcp+QtmdOAo4cIHTy2W6P6A1PJTkgkizaIzzNYKnKg8+wbo7
-         Omchg07xbP/KJzAtjBmN0Kg9lLSYON0WUeqUjGBbc02Vs4im631BJlkN8IEENCKrXQzU
-         hJjH/nQimpOade3cg7wSfJQaoMxc16vImF42xcI+2hrQ5Brgw2lh0uT1PG14IHnNOAET
-         A0YTkd2YVVIma8D4pxTi0fXVggIMgUXZ/p5RUNE/GfFLrembKykis+gJI9tdTI7+OeJm
-         X/KWWJFACSECoSkznafUF8oikmUyDSnwOD5ens7yVa+wDQh2y/fuDwSCcmUuCIsaL7za
-         tCsA==
-X-Gm-Message-State: AOAM531Ypw7Xo2F+qTnvZjAk0sIuQ4xV5he17IsiZ9XbtKcUGOES1/YI
-        VsJSyHZV9wwq2IxZeidJaAp4hgqzvccs+w==
-X-Google-Smtp-Source: ABdhPJxAoD+lJVSovF6LGZWjGAOGZSs5Ew9Xk7ScBo+AW4SrynsiHyTcb0Qsb6SAn5qAndIgOwcexg==
-X-Received: by 2002:adf:fc8b:: with SMTP id g11mr10785093wrr.300.1604170887339;
-        Sat, 31 Oct 2020 12:01:27 -0700 (PDT)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id e7sm15597705wrm.6.2020.10.31.12.01.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 12:01:26 -0700 (PDT)
-Date:   Sat, 31 Oct 2020 20:01:24 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-samsung-soc@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
-Subject: dmaengine: pl330 rare NULL pointer dereference in pl330_tasklet
-Message-ID: <20201031190124.GA486187@kozik-lap>
+        id S1728425AbgJaTcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 15:32:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725786AbgJaTcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 15:32:31 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A868F206D5;
+        Sat, 31 Oct 2020 19:32:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604172750;
+        bh=lKG4qxBnXK/Jqf1CaFvvYJoxmuwssr1+n5QOZM9FPjI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BXLiEnnKgJbBMLLAtfl6hskGkeOnNxf3uHbhNj108y9ur7ifvZ1gy0DaeJTzlF7Gf
+         FmtQh/TMX+ppxNfOPyTRYVAgvgjM5PlzDgKPvTB8GqDZEgvtphKBA6f2j204xDIrAD
+         Og5z+LpzkvI62as+L8o4jmipNSG1iHiusmm+29uo=
+Date:   Sat, 31 Oct 2020 12:32:28 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: atm: fix update of position index in lec_seq_next
+Message-ID: <20201031123228.5040bd7b@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201027114925.21843-1-colin.king@canonical.com>
+References: <20201027114925.21843-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Tue, 27 Oct 2020 11:49:25 +0000 Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The position index in leq_seq_next is not updated when the next
+> entry is fetched an no more entries are available. This causes
+> seq_file to report the following error:
+> 
+> "seq_file: buggy .next function lec_seq_next [lec] did not update
+>  position index"
+> 
+> Fix this by always updating the position index.
+> 
+> [ Note: this is an ancient 2002 bug, the sha is from the
+>   tglx/history repo ]
+> 
+> Fixes 4aea2cbff417 ("[ATM]: Move lan seq_file ops to lec.c [1/3]")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-I hit quite rare issue with pl330 DMA driver, difficult to reproduce
-(actually failed to do so):
+Applied, very sneaky there with the lack of a colon on the Fixes tag :)
 
-Happened during early reboot
 
-[  OK  ] Stopped target Graphical Interface.
-[  OK  ] Stopped target Multi-User System.
-[  OK  ] Stopped target RPC Port Mapper.
-         Stopping OpenSSH Daemonti[   75.447904] 8<--- cut here ---
-[   75.449506] Unable to handle kernel NULL pointer dereference at virtual address 0000000c
-...
-[   75.690850] [<c0902f70>] (pl330_tasklet) from [<c034d460>] (tasklet_action_common+0x88/0x1f4)
-[   75.699340] [<c034d460>] (tasklet_action_common) from [<c03013f8>] (__do_softirq+0x108/0x428)
-[   75.707850] [<c03013f8>] (__do_softirq) from [<c034dadc>] (run_ksoftirqd+0x2c/0x4c)
-[   75.715486] [<c034dadc>] (run_ksoftirqd) from [<c036fbfc>] (smpboot_thread_fn+0x13c/0x24c)
-[   75.723693] [<c036fbfc>] (smpboot_thread_fn) from [<c036c18c>] (kthread+0x13c/0x16c)
-[   75.731390] [<c036c18c>] (kthread) from [<c03001a8>] (ret_from_fork+0x14/0x2c)
+BTW looking at seq_read() it seems to eat the potential error code from
+->next, doesn't it?
 
-Full log:
-https://krzk.eu/#/builders/20/builds/954/steps/22/logs/serial0
+@@ -254,9 +254,11 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
+        }
+        m->op->stop(m, p);
+        n = min(m->count, size);
+-       err = copy_to_user(buf, m->buf, n);
+-       if (err)
+-               goto Efault;
++       if (n) {
++               err = copy_to_user(buf, m->buf, n);
++               if (err)
++                       goto Efault;
++       }
+        copied += n;
+        m->count -= n;
+        m->from = n;
 
-1. Arch ARM Linux
-2. multi_v7_defconfig
-3. Odroid HC1, ARMv7, octa-core (Cortex-A7+A15), Exynos5422 SoC
-4. systemd, boot up with static IP set in kernel command line
-5. No swap
-6. Kernel, DTB and initramfs are downloaded with TFTP
-7. NFS root (NFS client) mounted from a NFSv4 server
+Maybe? Or at least:
 
-Since I was not able to reproduce it, obviously I did not run bisect. If
-anyone has ideas, please share.
-
-Best regards,
-Krzysztof
-
+@@ -239,10 +239,8 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
+                                            m->op->next);
+                        m->index++;
+                }
+-               if (!p || IS_ERR(p)) {
+-                       err = PTR_ERR(p);
++               if (!p || IS_ERR(p))
+                        break;
+-               }
+                if (m->count >= size)
+                        break;
+                err = m->op->show(m, p);
