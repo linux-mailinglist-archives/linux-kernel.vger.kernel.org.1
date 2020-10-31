@@ -2,82 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E053B2A1AC5
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 22:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4612A1AC6
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 22:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbgJaVfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 17:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
+        id S1726415AbgJaVfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 17:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgJaVfa (ORCPT
+        with ESMTP id S1725917AbgJaVfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 17:35:30 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC7AC0617A6
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 14:35:30 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id h6so12421183lfj.3
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 14:35:30 -0700 (PDT)
+        Sat, 31 Oct 2020 17:35:41 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144C6C0617A6;
+        Sat, 31 Oct 2020 14:35:41 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id p17so4739892pli.13;
+        Sat, 31 Oct 2020 14:35:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KaiHGiCKtnxQpCpgXWPUOJnW6vtzkfBDI6tUC1n/vOM=;
-        b=HrvQ4f0JsBwaGJzQrwS6yyOH4HUhrsbcf7m5AkkEsXsxS7gXBn49P0WCHKQFD84kx2
-         5MT5i4tn4GvPBq/8x/4kRvRRGtM1/g0ctERDXASQi4/Tjpa7VYux+xoUvjscyWJzlQrh
-         EL+iiepz+YVCbx9CxFqM3VQqMYPbZ2E6FyfHk=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wfCT45RfkJARqEdgNwcfbDfcbSKvbfRG89bIaFDMst0=;
+        b=JSFxhC8embsdBlmRAd/0qfuxccXL+iaUC6GWCe1N4R/3m9+Ut4QX19B5yud2sBMovS
+         CXKiz52hK30PKf7pjqduUDpiqRGkGPg9scwlsn+EsuWqq8UR0GIbMc5tTwZ7eil50Rde
+         n4ygmICjE6YSPa2l+M7x/dzxM7AsAjZc2lgBXtFt3xdBFBEXkTD4U7VCy+io8g4g0gOl
+         Rssycrx4EvS6454W6yzK7MKFZtLd3VO0jwx80xCWNbO58Om16SjzwArW62UrpL61X8Lh
+         upjFesRYL/1S1bz8ejZSz4bjK4bqreu2ZM0Hts0GgsOXO9ivdS0X/0USVzSpGrcDBAqE
+         1+Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KaiHGiCKtnxQpCpgXWPUOJnW6vtzkfBDI6tUC1n/vOM=;
-        b=j1NUa/i97QIMlJH2/XgvLvrF/QzZg5mEjrVI1nDU2HHE5mmm0vK4iOEfRaHFsmKInR
-         lY/tb3wHFPYTMQA8WZpVLg83+LPKZkgT0+a4qZ0QO7drSYzTMWI5a1B0jg9+U9rgov6/
-         pfkAIw1UtvYt2SMoFWVSXbapHI51V9ajoFXHNJu6fmXo+nwUb3amXKXKIgrJP+GFI3z8
-         GM+wd8aZ/EULgRMXjAVSlYznJkyXtPYgDtZjDbEUxL/etfk86XbL89NGBlTqODvtyO37
-         hA4tiNO/AhBLOE2Dl6r0vHXXBmPDiU6ZmqtJw5qMp90zR5NVO+gMHSbtQMiULpd53iNZ
-         uA5Q==
-X-Gm-Message-State: AOAM531N/rdgsRtTU8BNFmTsPq+KqnyqSWtEdRI5DtNYds8KNTDNHjF7
-        q4Cbndi0bRP0BKDYs4sDap/3640+iPr5dg==
-X-Google-Smtp-Source: ABdhPJzm3EefmkaXCUosgg7HKBOFeu4FnjyHHAf7XNl7KYL8Y1E3MvNfNYnLLdvlInHtW+60grgueQ==
-X-Received: by 2002:ac2:5cc2:: with SMTP id f2mr3011661lfq.593.1604180128633;
-        Sat, 31 Oct 2020 14:35:28 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id 207sm1100835lfi.149.2020.10.31.14.35.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 31 Oct 2020 14:35:27 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id x16so10850689ljh.2
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 14:35:27 -0700 (PDT)
-X-Received: by 2002:a2e:8815:: with SMTP id x21mr3915670ljh.312.1604180127311;
- Sat, 31 Oct 2020 14:35:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wfCT45RfkJARqEdgNwcfbDfcbSKvbfRG89bIaFDMst0=;
+        b=bwSD4rvfpVjMmLBHiOEA1tjfzjsVtLV6QbFSSEbznAE7/CNxIanobQQBLoXUZEI2G0
+         fzaNpwBorMQFwvGgzVRzfObfWHvHOnZMMoYRXC/XflbZ1ZnUtz3WXGQJUpHrJDV3rdq8
+         3UsjejtxxdS0OtWP8bEJpphnSQyra+cfEffRu2vBoArHTb4luImB2j2Zws6ysAgut8Cd
+         halPszOAbZmXPXftx9Vh0JUGjELcgb6qmPxYE44CHxflkBNKtDzUlI5cNkuHpNVpqTBr
+         mVTa7SquaaI18zB4CoB6K1KE1n1rmPPULaFf2vB6yZfBef0iii79jzIoIrONxXRmDvP0
+         ORNw==
+X-Gm-Message-State: AOAM533O6G3ghFqyq0QDN4XhmHmn7/0OMd7E4BNvm1gdWyDLkboMK1s+
+        nyBA+ONr6Z/0DQ5FyLAFCkQ=
+X-Google-Smtp-Source: ABdhPJzIlWkoN797x3ywygdN18Gump/LE3OvdSCnv0RMA1pQVAkHpY20FVxifomV5tADNP1kB3rwmw==
+X-Received: by 2002:a17:90b:180d:: with SMTP id lw13mr155056pjb.149.1604180140454;
+        Sat, 31 Oct 2020 14:35:40 -0700 (PDT)
+Received: from localhost.localdomain ([49.207.221.93])
+        by smtp.gmail.com with ESMTPSA id l123sm104958pfd.97.2020.10.31.14.35.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Oct 2020 14:35:39 -0700 (PDT)
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+To:     Oliver Neukum <oneukum@suse.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Subject: [PATCH v3] net: usb: usbnet: update __usbnet_{read|write}_cmd() to use new API
+Date:   Sun,  1 Nov 2020 03:05:33 +0530
+Message-Id: <20201031213533.40829-1-anant.thazhemadam@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201029132256.11793-1-anant.thazhemadam@gmail.com>
+References: <20201029132256.11793-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
-References: <20201030221342.GA6183@embeddedor>
-In-Reply-To: <20201030221342.GA6183@embeddedor>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 31 Oct 2020 14:35:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whF8-G2tHxnEo0XzmojWNKvKdH1BW5PG1P-OD=eZTFtHA@mail.gmail.com>
-Message-ID: <CAHk-=whF8-G2tHxnEo0XzmojWNKvKdH1BW5PG1P-OD=eZTFtHA@mail.gmail.com>
-Subject: Re: [GIT PULL] flexible array conversions for 5.10-rc2
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 4:14 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/flexible-array-conversions-5.10-rc2
+Currently, __usbnet_{read|write}_cmd() use usb_control_msg().
+However, this could lead to potential partial reads/writes being
+considered valid, and since most of the callers of
+usbnet_{read|write}_cmd() don't take partial reads/writes into account
+(only checking for negative error number is done), and this can lead to
+issues.
 
-So I really don't like getting these outside the merge window. These
-kinds of patches _can_ introduce bugs, and I see noi real upside to
-doing them outside the merge window once the initial "avoid lots of
-possible merge conflicts" bulk was done.
+However, the new usb_control_msg_{send|recv}() APIs don't allow partial
+reads and writes.
+Using the new APIs also relaxes the return value checking that must
+be done after usbnet_{read|write}_cmd() is called.
 
-I've taken this, but I don't want to see any more. This is very
-clearly "development" not "fixes". It goes into the merge window, not
-rc kernels.
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+---
+Changes in v3:
+	* Aligned continuation lines after the opening brackets
+Changes in v2:
+	* Fix build error
 
-                Linus
+ drivers/net/usb/usbnet.c | 52 ++++++++--------------------------------
+ 1 file changed, 10 insertions(+), 42 deletions(-)
+
+diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
+index bf6c58240bd4..b2df3417a41c 100644
+--- a/drivers/net/usb/usbnet.c
++++ b/drivers/net/usb/usbnet.c
+@@ -1982,64 +1982,32 @@ EXPORT_SYMBOL(usbnet_link_change);
+ static int __usbnet_read_cmd(struct usbnet *dev, u8 cmd, u8 reqtype,
+ 			     u16 value, u16 index, void *data, u16 size)
+ {
+-	void *buf = NULL;
+-	int err = -ENOMEM;
+ 
+ 	netdev_dbg(dev->net, "usbnet_read_cmd cmd=0x%02x reqtype=%02x"
+ 		   " value=0x%04x index=0x%04x size=%d\n",
+ 		   cmd, reqtype, value, index, size);
+ 
+-	if (size) {
+-		buf = kmalloc(size, GFP_KERNEL);
+-		if (!buf)
+-			goto out;
+-	}
+-
+-	err = usb_control_msg(dev->udev, usb_rcvctrlpipe(dev->udev, 0),
+-			      cmd, reqtype, value, index, buf, size,
+-			      USB_CTRL_GET_TIMEOUT);
+-	if (err > 0 && err <= size) {
+-        if (data)
+-            memcpy(data, buf, err);
+-        else
+-            netdev_dbg(dev->net,
+-                "Huh? Data requested but thrown away.\n");
+-    }
+-	kfree(buf);
+-out:
+-	return err;
++	return usb_control_msg_recv(dev->udev, 0,
++				    cmd, reqtype, value, index, data, size,
++				    USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
+ }
+ 
+ static int __usbnet_write_cmd(struct usbnet *dev, u8 cmd, u8 reqtype,
+ 			      u16 value, u16 index, const void *data,
+ 			      u16 size)
+ {
+-	void *buf = NULL;
+-	int err = -ENOMEM;
+-
+ 	netdev_dbg(dev->net, "usbnet_write_cmd cmd=0x%02x reqtype=%02x"
+ 		   " value=0x%04x index=0x%04x size=%d\n",
+ 		   cmd, reqtype, value, index, size);
+ 
+-	if (data) {
+-		buf = kmemdup(data, size, GFP_KERNEL);
+-		if (!buf)
+-			goto out;
+-	} else {
+-        if (size) {
+-            WARN_ON_ONCE(1);
+-            err = -EINVAL;
+-            goto out;
+-        }
+-    }
+-
+-	err = usb_control_msg(dev->udev, usb_sndctrlpipe(dev->udev, 0),
+-			      cmd, reqtype, value, index, buf, size,
+-			      USB_CTRL_SET_TIMEOUT);
+-	kfree(buf);
++	if (size && !data) {
++		WARN_ON_ONCE(1);
++		return -EINVAL;
++	}
+ 
+-out:
+-	return err;
++	return usb_control_msg_send(dev->udev, 0,
++				    cmd, reqtype, value, index, data, size,
++				    USB_CTRL_SET_TIMEOUT, GFP_KERNEL);
+ }
+ 
+ /*
+-- 
+2.25.1
+
