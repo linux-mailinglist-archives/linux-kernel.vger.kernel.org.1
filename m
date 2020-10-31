@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4372A2A1861
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 16:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8382A1867
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 16:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727962AbgJaPDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 11:03:09 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:41607 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727355AbgJaPDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 11:03:08 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CNj930Clbz9vCxd;
-        Sat, 31 Oct 2020 16:03:03 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id McRUnAiLxW8A; Sat, 31 Oct 2020 16:03:02 +0100 (CET)
-Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CNj925qDJz9vCxc;
-        Sat, 31 Oct 2020 16:03:02 +0100 (CET)
-Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
-        id 41AC91774; Sat, 31 Oct 2020 16:05:39 +0100 (CET)
-Received: from 37-170-67-121.coucou-networks.fr
- (37-170-67-121.coucou-networks.fr [37.170.67.121]) by messagerie.c-s.fr
- (Horde Framework) with HTTP; Sat, 31 Oct 2020 16:05:39 +0100
-Date:   Sat, 31 Oct 2020 16:05:39 +0100
-Message-ID: <20201031160539.Horde.n5yNbG9LoUSWqtuPQW_h3w1@messagerie.c-s.fr>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Nick Hu <nickhu@andestech.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michal Simek <monstr@monstr.eu>,
-        Chris Zankel <chris@zankel.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>, Mel Gorman <mgorman@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Christoph Hellwig <hch@lst.de>, linux-csky@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Chen <deanbo422@gmail.com>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Guo Ren <guoren@kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        Ben Segall <bsegall@google.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-xtensa@linux-xtensa.org, Juri Lelli <juri.lelli@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [patch V2 00/18] mm/highmem: Preemptible variant of kmap_atomic
- & friends
-References: <20201029221806.189523375@linutronix.de>
- <CAHk-=wiFxxGapdOyZHE-7LbFPk+jdfoqdeeJg0zWNQ86WvJGXg@mail.gmail.com>
- <87pn50ob0s.fsf@nanos.tec.linutronix.de>
- <87blgknjcw.fsf@nanos.tec.linutronix.de>
- <CAHk-=whsJv0bwWRVZHsLoSe48ykAea6T7Oi=G+r8ckLrZ0YUpg@mail.gmail.com>
- <87sg9vl59i.fsf@nanos.tec.linutronix.de>
- <CAHk-=wjjO9BtTUAsLraqZqdzaPGJ-qvubZfwUsmRUX896eHcGw@mail.gmail.com>
- <CAK8P3a3FyKTHDSAPCyP8e7UA0LN3OvAatNK_vQ3tnBsdbou4sA@mail.gmail.com>
-In-Reply-To: <CAK8P3a3FyKTHDSAPCyP8e7UA0LN3OvAatNK_vQ3tnBsdbou4sA@mail.gmail.com>
-User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
-Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
+        id S1727954AbgJaPGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 11:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgJaPGB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 11:06:01 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B217AC0617A6;
+        Sat, 31 Oct 2020 08:06:01 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id a64so4308570qkc.5;
+        Sat, 31 Oct 2020 08:06:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r3BCGj3C/4k9OjwTa/exoIeLVH3IWgVh4YgNa/s9o/w=;
+        b=DjjxHoqMs3i8d7hTv0raGxsHvfU0if+6RQHN5j61MQRdpP74wWrmy89fthESuCFEdy
+         bvDUYCZDagOerpYqIfdAY3GZqQtlvbwRA2lNSdlsPLyTgoIo+AXCWoj+1lDXt0Lf/nEq
+         KaSns5ISpVZ/tDuuvv2J+JqMhvY+HDxtLXJRGrsIPYjmK5sVt5wJk8Q1FLhyYqt8YIX8
+         D5yy77N4iXbLRbB6DttkbuvB3GYvzQNH13kdaKpBcAqKz0dPxD+Eh3DVt1lN5fLjBtnc
+         M58ccxaPYPOKUHUsXlz7r+hYiKZNXpxwS6dlU02ZmlDouiGV4dDcGGTZCesW1ccGlHU+
+         UrVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r3BCGj3C/4k9OjwTa/exoIeLVH3IWgVh4YgNa/s9o/w=;
+        b=e9wR2hjcJFwmVTAcRXve/8XeifrEKFOv6at3biQ7y12OpaWQBfln+OgkEvHsayKfN9
+         PKUSYSGBL8avJ65rMEyMybpSvRyo5GtySTINbxGG+4Uu0OBHE8LE9YRc9p1ojPMRe71h
+         23BQ++E+7ZyPjCgoacjLqTAU74P8NB0NaQfDAOiOkkAntIWzaXS5Ix4fy92QuLsZy0x0
+         KcPze0C5koXZepe2ikMaqhEfesWtlDU3Hb2buror++OyatDmVvGyc8l0Y6BBoLYeTrPE
+         jqM6P5M1eja3FbtQ3nTxl74GZhlONz/GeaGQG2c0kLDqzSOzLs51c4OHo1chqfFmhTVG
+         YJ/w==
+X-Gm-Message-State: AOAM530+4yF3l+RVD03AExjFGq1GA2MbiFYj1KXfXltrwGIxKL7BPE2D
+        mrgqPttXJFos2vaMYl0is4tN6qm5udTMNg==
+X-Google-Smtp-Source: ABdhPJyaTt9+4OWhS1aI3woLrkS9QdLAkRnDNYHBoLAw29rPafj+veutMJTHAddNZMp0U7PyLZIinw==
+X-Received: by 2002:a37:aa49:: with SMTP id t70mr7254043qke.165.1604156760736;
+        Sat, 31 Oct 2020 08:06:00 -0700 (PDT)
+Received: from localhost.localdomain ([2804:14d:72b1:8920:a2ce:f815:f14d:bfac])
+        by smtp.gmail.com with ESMTPSA id z125sm2317030qke.54.2020.10.31.08.05.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Oct 2020 08:06:00 -0700 (PDT)
+From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+X-Google-Original-From: Daniel W. S. Almeida
+To:     mchehab+huawei@kernel.org, r.verdejo@samsung.com,
+        nicolas@ndufresne.ca
+Cc:     "Daniel W . S . Almeida" <dwlsalmeida@gmail.com>,
+        linux-media@vger.kernel.org, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] media: vidtv: Add support for more MPEG PSI tables
+Date:   Sat, 31 Oct 2020 12:05:46 -0300
+Message-Id: <20201031150552.663598-1-dwlsalmeida@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
 
-> There are also some users on 10+ year old 32-bit netbooks or
-> business laptops, both x86 and Apple G4.
-> The longest-lived 32-bit embedded systems with large memory
-> (other than Arm) are probably NXP QorIQ P20xx/P40xx used in
-> military VME bus systems, and low-end embedded systems based
-> on Vortex86.
-> I'm less worried about all of these because upstream kernel
-> support for ppc32 and x86-32 is already bitrotting and they will
-> likely get stuck on the last working kernel before the
-> TI/Renesas/NXP Arm systems do.
->
+Implement support for more MPEG PSI tables (i.e. NIT & EIT).
 
-Upstream kernel support for ppc32 is bitrotting, seriously ? What do  
-you mean exactly ?
+While we're at it, fix a few minor mistakes in the PSI generator.
 
-ppc32 is actively supported, with recent addition of support of  
-hugepages, kasan, uaccess protection, VMAP stack, etc ...
+I initially sent this without a cover letter and as WIP but I have
+now tidied it up and it's spotless. I tested the driver on a kernel
+with KASAN & Kmemleak and tested the output on DVBInspector.
 
-Christophe
+Daniel W. S. Almeida (6):
+  media: vidtv: extract the initial CRC value to into a #define
+  media: vidtv: psi: add a Network Information Table (NIT)
+  media: vidtv: psi: Implement an Event Information Table (EIT)
+  media: vidtv: psi: extract descriptor chaining code into a helper
+  media: vidtv: Move s302m specific fields into encoder context
+  media: vidtv: psi: fix missing assignments in while loops
 
+ .../driver-api/media/drivers/vidtv.rst        |   8 +-
+ .../media/test-drivers/vidtv/vidtv_bridge.c   |   4 +
+ .../media/test-drivers/vidtv/vidtv_channel.c  | 130 +++-
+ .../media/test-drivers/vidtv/vidtv_channel.h  |   3 +
+ .../media/test-drivers/vidtv/vidtv_encoder.h  |   3 -
+ drivers/media/test-drivers/vidtv/vidtv_mux.c  |  29 +
+ drivers/media/test-drivers/vidtv/vidtv_mux.h  |  11 +
+ drivers/media/test-drivers/vidtv/vidtv_psi.c  | 678 +++++++++++++++++-
+ drivers/media/test-drivers/vidtv/vidtv_psi.h  | 240 ++++++-
+ .../media/test-drivers/vidtv/vidtv_s302m.c    |  25 +-
+ .../media/test-drivers/vidtv/vidtv_s302m.h    |   3 +
+ 11 files changed, 1083 insertions(+), 51 deletions(-)
+
+-- 
+2.29.2
 
