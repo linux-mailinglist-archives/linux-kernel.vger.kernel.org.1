@@ -2,110 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FF62A11C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 00:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 121BB2A11CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 01:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725849AbgJ3XzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 19:55:12 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2224 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725536AbgJ3XzL (ORCPT
+        id S1725798AbgJaABr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 20:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgJaABq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 19:55:11 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09UNt8gt001100
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 16:55:11 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=kfzmbO32XIWIQv7ky/UlidEbiXsVDoIt2XZLJ7ZnmjM=;
- b=MCn8rgXJQxIiP071XT16L81QlAWmKVNPSrG+/nm/RFY9O3Puq4DfrLohHG+usMjW3D4y
- 8grbVmsfPqijKIAPbMA6+wd4dZo4q0P9zmY9XPFRpgHE9blcqkxkOQ2Wlr0NL0sqD15R
- L7pl0rbabcRPcOPYCV0qLoX+wlw06/uL+Ac= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34gpc0j3p4-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Oct 2020 16:55:11 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 30 Oct 2020 16:54:40 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 7470162E5680; Fri, 30 Oct 2020 16:54:34 -0700 (PDT)
-From:   Song Liu <songliubraving@fb.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Song Liu <songliubraving@fb.com>, stable <stable@vger.kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [PATCH] perf: increase size of buf in perf_evsel__hists_browse()
-Date:   Fri, 30 Oct 2020 16:54:31 -0700
-Message-ID: <20201030235431.534417-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
+        Fri, 30 Oct 2020 20:01:46 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8301FC0613D5;
+        Fri, 30 Oct 2020 17:01:46 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id j18so6692398pfa.0;
+        Fri, 30 Oct 2020 17:01:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rCRjK7Akw0TOdsFtKnu+v7xP+ZfNkg9XvMoHOEpcYoo=;
+        b=mDXLccToyKLQR2Zu/xUrx5vtQ8+geb+V17+23UgOyh8JGtyPOkLXH5unON2ptL/o0T
+         //pzJgF2R7YMAXZQZhfZSZ11JllbqaphL6blgtmtD+EeZPR00fThf/mIWgsWcjsT8a/U
+         QnXkfSUv5ke1mKIaAetU8Ca9uQgA3cvVvNMTA+0vctqQFu8CLRCdXyfwKb5Btu+6zH6a
+         5M+5A2RPpmC2Lf5wVDmKB4IAlh9ZPEax9dZTLV1OQ9XYauRRy9+woBC2SyUQZTiPgXUQ
+         sWeeFwQysluaJbJd1kbBvqpEs6WxJN4GGInC+KL7yWj5tkOMVFlb4wxEeOYq6asYibjU
+         hGbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rCRjK7Akw0TOdsFtKnu+v7xP+ZfNkg9XvMoHOEpcYoo=;
+        b=AcHzFfvUfFByLfSWQPYVBA+GQ1rk7y5VZ2TQt5NHJs4nOgThTIODToZXNR2VE4R0db
+         NUPBkletnej0BiRyxicJCuDQbgwG7oYw2udiWWB/AQUZzM+qQ01Lvr15LtJkge+SwpnU
+         H6UiNOSzt0+kNkjRZVG4C6iEk0JzPU6xP1Nh6aCcP+eI6Yds01LOWyIWbeod5LdDs3uK
+         HT8PjMAHU8KqbSJ+yWySYxUu9Z2tpnPUAbeYpumqrTc78jfLNVTjMybMk5e00v0Ug70e
+         3x9cCVtLiaVDBayRDTyk6p7t93kpNlwo5eNnhJGFvwqRFe5RZc5Ww9r4hEI9FnKC2rqj
+         u3Yw==
+X-Gm-Message-State: AOAM530u0na2Z2YKvUEuQdZA1EeIAjPNlmjy3OHDFRHoT3EVG/4J1Ass
+        lf9d3rhHDWK7eoGBwa/gSqTSanO6atc=
+X-Google-Smtp-Source: ABdhPJw28wzB7V6qzBb4EwmqBrlI8vlxYK64QZkjfCmcBvKKGci/ak9nsIRth2GMU0OVXaVJHhRucg==
+X-Received: by 2002:aa7:9245:0:b029:156:552a:1275 with SMTP id 5-20020aa792450000b0290156552a1275mr11492999pfp.12.1604102505787;
+        Fri, 30 Oct 2020 17:01:45 -0700 (PDT)
+Received: from sol (106-69-160-250.dyn.iinet.net.au. [106.69.160.250])
+        by smtp.gmail.com with ESMTPSA id h10sm6397352pgj.69.2020.10.30.17.01.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 17:01:44 -0700 (PDT)
+Date:   Sat, 31 Oct 2020 08:01:39 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH v2 0/3] gpiolib: cdev: allow edge event timestamps to be
+ configured as REALTIME
+Message-ID: <20201031000139.GA7042@sol>
+References: <20201014231158.34117-1-warthog618@gmail.com>
+ <CACRpkdbTsN6p4n3f9SJrgAjdkzDu2S67rU3tLWwX0X50ekjctQ@mail.gmail.com>
+ <20201028232211.GB4384@sol>
+ <CAMpxmJX61dRE_d2Eyu2nXKx64rNrrTfScrdg=Cc-N-R_FKfUNg@mail.gmail.com>
+ <CAMpxmJXiObcKyoE264oyiZOs08=uRYno6siMzz6BH+jmT_NKgQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-30_13:2020-10-30,2020-10-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- impostorscore=0 malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0
- priorityscore=1501 clxscore=1015 adultscore=0 mlxscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300182
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMpxmJXiObcKyoE264oyiZOs08=uRYno6siMzz6BH+jmT_NKgQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Making perf with gcc-9.1.1 generates the following warning:
+On Fri, Oct 30, 2020 at 03:52:24PM +0100, Bartosz Golaszewski wrote:
+> On Fri, Oct 30, 2020 at 3:49 PM Bartosz Golaszewski
+> <bgolaszewski@baylibre.com> wrote:
+> >
+> > On Thu, Oct 29, 2020 at 12:22 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > >
+> > > On Wed, Oct 28, 2020 at 05:01:49PM +0100, Linus Walleij wrote:
+> > > > On Thu, Oct 15, 2020 at 1:12 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > > >
+> > > > > This patch set adds the option to select CLOCK_REALTIME as the source
+> > > > > clock for line events.
+> > > > >
+> > > > > The first patch is the core of the change, while the remaining two update
+> > > > > the GPIO tools to make use of the new option.
+> > > > >
+> > > > > Changes for v2:
+> > > > >  - change line_event_timestamp() return to u64 to avoid clipping to 32bits
+> > > > >    on 32bit platforms.
+> > > > >  - fix the line spacing after line_event_timestamp()
+> > > >
+> > > > Where are we standing with this patch set? Good to go so
+> > > > I should just try to merge it?
+> > > >
+> > >
+> > > I'm fine with it, especially now that I've tested it on 32bit platforms
+> > > as well as 64bit.
+> > >
+> > > Bart was ok with v1, and I doubt the changes for v2 would negatively
+> > > impact that, though I did overlook adding his review tag.
+> > >
+> > > Cheers,
+> > > Kent.
+> > >
+> > > > Yours,
+> > > > Linus Walleij
+> >
+> > I'll take it through my tree then.
+> >
+> > Bartosz
+> 
+> The series no longer applies on top of v5.10-rc1. Could you rebase and resend?
+> 
 
-  CC       ui/browsers/hists.o
-ui/browsers/hists.c: In function 'perf_evsel__hists_browse':
-ui/browsers/hists.c:3078:61: error: '%d' directive output may be \
-truncated writing between 1 and 11 bytes into a region of size \
-between 2 and 12 [-Werror=3Dformat-truncation=3D]
+Nuts, it relies on my doc tidy-up series that Linus has pulled into
+fixes, and so will likely go into v5.10-rc2??
 
- 3078 |       "Max event group index to sort is %d (index from 0 to %d)",
-      |                                                             ^~
-ui/browsers/hists.c:3078:7: note: directive argument in the range [-21474=
-83648, 8]
- 3078 |       "Max event group index to sort is %d (index from 0 to %d)",
-      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from /usr/include/stdio.h:937,
-                 from ui/browsers/hists.c:5:
+Specifically it is based over/conflicts with:
+2cc522d3931b gpio: uapi: kernel-doc formatting improvements
 
-IOW, the string in line 3078 might be too long for buf[] of 64 bytes.
+If I rebase it onto devel then you will get a conflict when those merge.
+Is that what you want?
 
-Fix this by increasing the size of buf[] to 128.
-
-Fixes: dbddf1747441  ("perf report/top TUI: Support hotkeys to let user s=
-elect any event for sorting")
-Cc: stable <stable@vger.kernel.org> # v5.7+
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- tools/perf/ui/browsers/hists.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/ui/browsers/hists.c b/tools/perf/ui/browsers/hist=
-s.c
-index a07626f072087..b0e1880cf992b 100644
---- a/tools/perf/ui/browsers/hists.c
-+++ b/tools/perf/ui/browsers/hists.c
-@@ -2963,7 +2963,7 @@ static int perf_evsel__hists_browse(struct evsel *e=
-vsel, int nr_events,
- 	struct popup_action actions[MAX_OPTIONS];
- 	int nr_options =3D 0;
- 	int key =3D -1;
--	char buf[64];
-+	char buf[128];
- 	int delay_secs =3D hbt ? hbt->refresh : 0;
-=20
- #define HIST_BROWSER_HELP_COMMON					\
---=20
-2.24.1
-
+Cheers,
+Kent.
