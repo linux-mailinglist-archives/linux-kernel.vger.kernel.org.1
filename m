@@ -2,299 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15C82A184A
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 15:46:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 864352A184E
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 15:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727842AbgJaOpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 10:45:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgJaOpz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 10:45:55 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ECFFC0617A7
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 07:45:53 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id w191so9845644oif.2
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 07:45:53 -0700 (PDT)
+        id S1727852AbgJaOuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 10:50:15 -0400
+Received: from mail-dm6nam12on2053.outbound.protection.outlook.com ([40.107.243.53]:19860
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726089AbgJaOuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 10:50:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nkMNF/kvMpIiAnrSwoE5HgBLHQabM2WA7BRJ6Y/9d8mUJit9BPjjWWI58/DMe4AitwObUqu8s8sHr/1ZPYzcZb9vgFnzJ9RuLZZ8ArijKe87RZxw1g1SxjL0ath4prZDxxP3aBDDe/woyh7OZvh51cqRYjU6b8FSrPyn5cnnAeCuOfHLFhvqY9or8XyZudP82YTqvXmxM/Ohn92e05fMCn+8p5zMX1PCD18JsOjq6H66sGhqlizhr6PfgfSF6y/PhzAO18ND/45yenajxeec3gfj+aCfzBwXpdm7o8DY4ZUC89VAECE0A82JDBzQQPg6O1tIEJD9t1s+htioR6Bgig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A1YB7JcnsuRNDzvd2y/c8/rf2FsQoDP+PbsNjE6ms4k=;
+ b=EwVHnIqmb8pVUV6tF1CbZH4t10/sNGKA5I/HQjMMBTHEsq9lFFM6tpr68JU2/YH7dwyev+UYEhr34zvW1GTZPOA7sloYgGDvdwFb2VWL09FPI16WBOgIUlGc5ymQwf+qAbXe5QxISo1JEPYdWt2LdCeyJ5kM+DrWPy1UvV6Fx7QpZ5hFs7AZ9nJsj03eiZ5MCjyAqgJmcYPsTsXzvqqk2vjsYCVYaOOEurmgQ/yhTUhLmdPs8j/NPWblzQEr8RrnZ++lYrw9i8fW8OTxyFXH9VcJNBidI4KsEZ84KOoA3KDCN3KnZGE8dLUq5lqCJoDvCcgcmFhNA84jG4YOJ28ckw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JLPsjE+MlwvsxgdGKdmSa81kAiwbx7LbyLf73CS0dDE=;
-        b=IwlsFIoKECoEUZj/Jg06paZwt/CdCeCczvaQYk8enrF7HQcd2nvT6ued/hjaBptstg
-         cHl/tkfB13X4twj9ntZBMf2jeKj5j0CTJJlaQbR7IddN6hwWOLdY0xSTZRHvRA+oN0ME
-         is9R26h/BLxrmLX/3TuHEGh3RbI98xXctp27w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JLPsjE+MlwvsxgdGKdmSa81kAiwbx7LbyLf73CS0dDE=;
-        b=j7fe6dsTnt5uXxv40yhlcbbUSxuBREK1Umq/KqahWyyUYDM+cej84MqLqH/6q+we0O
-         YZ4DGNtAbkx1p4ztyEmNi8X0XoHtmh7PtZplYx87j5Dc6xpIOJhvliY3oiFLSVBjZ6lx
-         6crZ5sqSW6xbmquMJb/6KIxfQYT8G2n47j8yZGIWW5hXxhdPFwYtIZo7czOmuV2b3LEQ
-         Aw0FsKjboPz/elFJLwa95dlE8w1h1iWYo4q9XusMbIbP/0pRyfsK+RxaKnvWMTYh29rw
-         mfH/40Cgu2nj5Cv20AQkAk/UYTeJXUVkAl853PeS9yZaO+943eelKALbPj1exrQ7YpCG
-         YUlw==
-X-Gm-Message-State: AOAM530+eyBQHWikdlZPPIKTwrDqDYJcXbpCq228ATZ1S9BuL+Ectzo8
-        gD+2OEbIhSp1S9T6WRzVfYYVEZLNbWOSy2hMaxv9ww==
-X-Google-Smtp-Source: ABdhPJy/ew0e2L6OGzHK912IFQV/SRRltGCVY26MHGICOYWrwLV9hceCTs5CTofxQaf7JxYI0Pzocj5wATlZCgl45/M=
-X-Received: by 2002:aca:39d6:: with SMTP id g205mr4975012oia.14.1604155552761;
- Sat, 31 Oct 2020 07:45:52 -0700 (PDT)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A1YB7JcnsuRNDzvd2y/c8/rf2FsQoDP+PbsNjE6ms4k=;
+ b=gXE9oFbQMRVboTxLYJPp0D5lr3zfaRYWlOuo/K62nvMduQUW7AMky+M+fcp/vbNlFBxN9lE0lw9owzmX2ZeQYPfX0ZVAmKHxrp5gFF8uX0JJ+LGGUmMJ7XZ1gnRi5w+3v1cCOoxDEM4h37blm8gU6ZSI+o4h68EqyEOLcEs0tKc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB2891.namprd12.prod.outlook.com (2603:10b6:5:188::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3499.19; Sat, 31 Oct 2020 14:50:11 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::e442:c052:8a2c:5fba]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::e442:c052:8a2c:5fba%6]) with mapi id 15.20.3499.027; Sat, 31 Oct 2020
+ 14:50:11 +0000
+Subject: Re: [PATCH 0/1] x86/speculation: Allow IBPB to be conditionally
+ enabled on CPUs with always-on STIBP
+To:     Anand K Mistry <amistry@google.com>, x86@kernel.org,
+        linux-kernel@kernel.org
+Cc:     joelaf@google.com, asteinhauser@google.com, tglx@linutronix.de,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
+References: <20201029065133.3027749-1-amistry@google.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <50f3e115-f169-db02-505a-71c42bab6fb6@amd.com>
+Date:   Sat, 31 Oct 2020 09:50:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201029065133.3027749-1-amistry@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [67.79.209.213]
+X-ClientProxiedBy: SN6PR16CA0046.namprd16.prod.outlook.com
+ (2603:10b6:805:ca::23) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
 MIME-Version: 1.0
-References: <20201030100815.2269-1-daniel.vetter@ffwll.ch> <20201030100815.2269-6-daniel.vetter@ffwll.ch>
- <446b2d5b-a1a1-a408-f884-f17a04b72c18@nvidia.com>
-In-Reply-To: <446b2d5b-a1a1-a408-f884-f17a04b72c18@nvidia.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Sat, 31 Oct 2020 15:45:41 +0100
-Message-ID: <CAKMK7uGDW2f0oOvwgryCHxQFHyh3Tsk6ENsMGmtZ-EnH57tMSA@mail.gmail.com>
-Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-linux.texastahm.com (67.79.209.213) by SN6PR16CA0046.namprd16.prod.outlook.com (2603:10b6:805:ca::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Sat, 31 Oct 2020 14:50:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: a44c1ca8-b0c7-4567-3a01-08d87dac44b5
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2891:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2891C1484C128939BE523D3AEC120@DM6PR12MB2891.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wNV7rD05u1w6n/qxiZMvmRF3Ajl5AmW4VJ1HLJxrGkxzULpD7eOEkpaC1ds0H8sRR46a7aLcywxVNRZCQruz9SUO/LbI1T1wjaP6nXj1gPn3rpB/IBAsVQhWhGYgGIL6UtYT4segFZWm3E7X6/7cIwO7M+YWUHBeoitUhxPBbPr45V6k1VLq6dAxgRx/6gajN1HrsF+lDnxzqp0kq4V74FhrvJLXMQtiNiNQlpiH7JWrBeZT81Dzysj1bmVoOOgfZHiDph4RuBQCUWJPPmA0WqVSSYdP4ySdTq2QwOw4DIGaHbyiHoSdcvmzHdyBe4z8XmRbYUHUFfEyc8eOTDp/xhgme5RpGUQx4l/NkKT11SQPSOihUP80FEGUI1cDuEGf
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(346002)(366004)(39860400002)(53546011)(6486002)(52116002)(8676002)(6506007)(31686004)(54906003)(186003)(7416002)(478600001)(31696002)(83380400001)(5660300002)(26005)(316002)(2906002)(6512007)(2616005)(8936002)(956004)(66476007)(4326008)(66946007)(66556008)(86362001)(36756003)(16526019)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: GgZLVcETX7XyDF9dRphWbJICR2APONeFdphoa2EQiQxWB0sz6iHhLfdOihNyQb/k/ztuzRQkgbRjFWX2mOsuA5ssSyzwqFA9L7p101JI7hfI2l/brjdHJJR+yOpdw7M0yEwg0nLxjHappvfxdqKfH5Wq6iVbJe+eletE+tdxg6wqq9lm3lKWKNp7guCL3YMtFwfQnQq7VSD/SKhYYzymvSzGwpvhD8zDVYMfDJq67FXMH6tIBfQaQLilmSYAfgTNrK6+yGSrPLBhohSXD8krCbBX9Xg3AIQWbTb/rDyIbe1ZJWfl1pnLLJ6RSZelxae65Xn4eqnporYbBaQtzeIhFRQgZyOaMiSBVExmVPOjCutOhJnEs0gGDoJUFt7k0ZRBMmJxC+cEMBsr6Sp42U3k8lQXcscUeXIMAZ8Hmk214CA06wBKkFp0B7lQ24DSaYnthM7qSn+NCpPYJZZEAfn/2P+D+UMWFQ72QTw2LsVFIkQeRtXoHdMyJkzyFfbUmRtSEAAZleIWEJ5DOS7Tz9NKE+115CXsNfjU4DAR5fH4Ew0AsvYb1ycjTRaH4SsnFDxOa8RFm5oINtGAnEGElyWRGZGqOdp+8UUWyUPrKBRYvVrYt8L6yn6DoPC/o6qGlHsKyezUKPGYFRln9KrT12qgKA==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a44c1ca8-b0c7-4567-3a01-08d87dac44b5
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2020 14:50:11.6898
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0S5rUMA/atch7FDugK3EU5qsBgXwBgS7c3J3pXXFTvIPxVQ2TQrxOCpUN5a2yI9p/MqwNXLqwHradAV39SOeoQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2891
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 3:55 AM John Hubbard <jhubbard@nvidia.com> wrote:
->
-> On 10/30/20 3:08 AM, Daniel Vetter wrote:
-> > This is used by media/videbuf2 for persistent dma mappings, not just
-> > for a single dma operation and then freed again, so needs
-> > FOLL_LONGTERM.
-> >
-> > Unfortunately current pup_locked doesn't support FOLL_LONGTERM due to
-> > locking issues. Rework the code to pull the pup path out from the
-> > mmap_sem critical section as suggested by Jason.
-> >
-> > By relying entirely on the vma checks in pin_user_pages and follow_pfn
->
-> There are vma checks in pin_user_pages(), but this patch changes things
-> to call pin_user_pages_fast(). And that does not have the vma checks.
-> More below about this:
->
-> > (for vm_flags and vma_is_fsdax) we can also streamline the code a lot.
-> >
-> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > Cc: Pawel Osciak <pawel@osciak.com>
-> > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> > Cc: Kyungmin Park <kyungmin.park@samsung.com>
-> > Cc: Tomasz Figa <tfiga@chromium.org>
-> > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: John Hubbard <jhubbard@nvidia.com>
-> > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> > Cc: Jan Kara <jack@suse.cz>
-> > Cc: Dan Williams <dan.j.williams@intel.com>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: linux-samsung-soc@vger.kernel.org
-> > Cc: linux-media@vger.kernel.org
-> > Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > --
-> > v2: Streamline the code and further simplify the loop checks (Jason)
-> >
-> > v5: Review from Tomasz:
-> > - fix page counting for the follow_pfn case by resetting ret
-> > - drop gup_flags paramater, now unused
-> > ---
-> >   .../media/common/videobuf2/videobuf2-memops.c |  3 +-
-> >   include/linux/mm.h                            |  2 +-
-> >   mm/frame_vector.c                             | 53 ++++++------------=
--
-> >   3 files changed, 19 insertions(+), 39 deletions(-)
-> >
-> > diff --git a/drivers/media/common/videobuf2/videobuf2-memops.c b/driver=
-s/media/common/videobuf2/videobuf2-memops.c
-> > index 6e9e05153f4e..9dd6c27162f4 100644
-> > --- a/drivers/media/common/videobuf2/videobuf2-memops.c
-> > +++ b/drivers/media/common/videobuf2/videobuf2-memops.c
-> > @@ -40,7 +40,6 @@ struct frame_vector *vb2_create_framevec(unsigned lon=
-g start,
-> >       unsigned long first, last;
-> >       unsigned long nr;
-> >       struct frame_vector *vec;
-> > -     unsigned int flags =3D FOLL_FORCE | FOLL_WRITE;
-> >
-> >       first =3D start >> PAGE_SHIFT;
-> >       last =3D (start + length - 1) >> PAGE_SHIFT;
-> > @@ -48,7 +47,7 @@ struct frame_vector *vb2_create_framevec(unsigned lon=
-g start,
-> >       vec =3D frame_vector_create(nr);
-> >       if (!vec)
-> >               return ERR_PTR(-ENOMEM);
-> > -     ret =3D get_vaddr_frames(start & PAGE_MASK, nr, flags, vec);
-> > +     ret =3D get_vaddr_frames(start & PAGE_MASK, nr, vec);
-> >       if (ret < 0)
-> >               goto out_destroy;
-> >       /* We accept only complete set of PFNs */
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index ef360fe70aaf..d6b8e30dce2e 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -1765,7 +1765,7 @@ struct frame_vector {
-> >   struct frame_vector *frame_vector_create(unsigned int nr_frames);
-> >   void frame_vector_destroy(struct frame_vector *vec);
-> >   int get_vaddr_frames(unsigned long start, unsigned int nr_pfns,
-> > -                  unsigned int gup_flags, struct frame_vector *vec);
-> > +                  struct frame_vector *vec);
-> >   void put_vaddr_frames(struct frame_vector *vec);
-> >   int frame_vector_to_pages(struct frame_vector *vec);
-> >   void frame_vector_to_pfns(struct frame_vector *vec);
-> > diff --git a/mm/frame_vector.c b/mm/frame_vector.c
-> > index 10f82d5643b6..f8c34b895c76 100644
-> > --- a/mm/frame_vector.c
-> > +++ b/mm/frame_vector.c
-> > @@ -32,13 +32,12 @@
-> >    * This function takes care of grabbing mmap_lock as necessary.
-> >    */
-> >   int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
-> > -                  unsigned int gup_flags, struct frame_vector *vec)
-> > +                  struct frame_vector *vec)
-> >   {
-> >       struct mm_struct *mm =3D current->mm;
-> >       struct vm_area_struct *vma;
-> >       int ret =3D 0;
-> >       int err;
-> > -     int locked;
-> >
-> >       if (nr_frames =3D=3D 0)
-> >               return 0;
-> > @@ -48,40 +47,26 @@ int get_vaddr_frames(unsigned long start, unsigned =
-int nr_frames,
-> >
-> >       start =3D untagged_addr(start);
-> >
-> > -     mmap_read_lock(mm);
-> > -     locked =3D 1;
-> > -     vma =3D find_vma_intersection(mm, start, start + 1);
-> > -     if (!vma) {
-> > -             ret =3D -EFAULT;
-> > -             goto out;
-> > -     }
-> > -
-> > -     /*
-> > -      * While get_vaddr_frames() could be used for transient (kernel
-> > -      * controlled lifetime) pinning of memory pages all current
-> > -      * users establish long term (userspace controlled lifetime)
-> > -      * page pinning. Treat get_vaddr_frames() like
-> > -      * get_user_pages_longterm() and disallow it for filesystem-dax
-> > -      * mappings.
-> > -      */
-> > -     if (vma_is_fsdax(vma)) {
-> > -             ret =3D -EOPNOTSUPP;
-> > -             goto out;
-> > -     }
-> > -
-> > -     if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
->
-> By removing this check from this location, and changing from
-> pin_user_pages_locked() to pin_user_pages_fast(), I *think* we end up
-> losing the check entirely. Is that intended? If so it could use a comment
-> somewhere to explain why.
+On 10/29/20 1:51 AM, Anand K Mistry wrote:
+> When attempting to do some performance testing of IBPB on and AMD
+> platform, I noticed the IBPB instruction was never being issued, even
+> though it was conditionally on and various seccomp protected processes
+> were force enabling it. Turns out, on those AMD CPUs, STIBP is set to
+> always-on and this was causing an early-out on the prctl() which turns
+> off IB speculation. Here is my attempt to fix it.
+> 
+> I'm hoping someone that understands this better than me can explain why
+> I'm wrong.
 
-Yeah this wasn't intentional. I think I needed to drop the _locked
-version to prep for FOLL_LONGTERM, and figured _fast is always better.
-But I didn't realize that _fast doesn't have the vma checks, gup.c got
-me a bit confused.
+It all looks reasonable to me (some comments in the patch to follow). The 
+thing that makes this tough is the command line option of being able to 
+force IBPB using the "prctl,ibpb" or "seccomp,ibpb" while STIBP is prctl 
+or seccomp controlled. There's an inherent quality that is assumed that if 
+STIBP is forced then IBPB must be forced and it looks like 21998a351512 
+("x86/speculation: Avoid force-disabling IBPB based on STIBP and enhanced 
+IBRS.") used that. However, with the STIBP always on support, that doesn't 
+hold true.
 
-I'll remedy this in all the patches where this applies (because a
-VM_IO | VM_PFNMAP can point at struct page backed memory, and that
-exact use-case is what we want to stop with the unsafe_follow_pfn work
-since it wreaks things like cma or security).
+Thanks,
+Tom
 
-Aside: I do wonder whether the lack for that check isn't a problem.
-VM_IO | VM_PFNMAP generally means driver managed, which means the
-driver isn't going to consult the page pin count or anything like that
-(at least not necessarily) when revoking or moving that memory, since
-we're assuming it's totally under driver control. So if pup_fast can
-get into such a mapping, we might have a problem.
--Daniel
-
-> thanks,
-> --
-> John Hubbard
-> NVIDIA
->
-> > +     ret =3D pin_user_pages_fast(start, nr_frames,
-> > +                               FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM=
-,
-> > +                               (struct page **)(vec->ptrs));
-> > +     if (ret > 0) {
-> >               vec->got_ref =3D true;
-> >               vec->is_pfns =3D false;
-> > -             ret =3D pin_user_pages_locked(start, nr_frames,
-> > -                     gup_flags, (struct page **)(vec->ptrs), &locked);
-> > -             goto out;
-> > +             goto out_unlocked;
-> >       }
-> >
-> > +     mmap_read_lock(mm);
-> >       vec->got_ref =3D false;
-> >       vec->is_pfns =3D true;
-> > +     ret =3D 0;
-> >       do {
-> >               unsigned long *nums =3D frame_vector_pfns(vec);
-> >
-> > +             vma =3D find_vma_intersection(mm, start, start + 1);
-> > +             if (!vma)
-> > +                     break;
-> > +
-> >               while (ret < nr_frames && start + PAGE_SIZE <=3D vma->vm_=
-end) {
-> >                       err =3D follow_pfn(vma, start, &nums[ret]);
-> >                       if (err) {
-> > @@ -92,17 +77,13 @@ int get_vaddr_frames(unsigned long start, unsigned =
-int nr_frames,
-> >                       start +=3D PAGE_SIZE;
-> >                       ret++;
-> >               }
-> > -             /*
-> > -              * We stop if we have enough pages or if VMA doesn't comp=
-letely
-> > -              * cover the tail page.
-> > -              */
-> > -             if (ret >=3D nr_frames || start < vma->vm_end)
-> > +             /* Bail out if VMA doesn't completely cover the tail page=
-. */
-> > +             if (start < vma->vm_end)
-> >                       break;
-> > -             vma =3D find_vma_intersection(mm, start, start + 1);
-> > -     } while (vma && vma->vm_flags & (VM_IO | VM_PFNMAP));
-> > +     } while (ret < nr_frames);
-> >   out:
-> > -     if (locked)
-> > -             mmap_read_unlock(mm);
-> > +     mmap_read_unlock(mm);
-> > +out_unlocked:
-> >       if (!ret)
-> >               ret =3D -EFAULT;
-> >       if (ret > 0)
-> >
->
->
-
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> 
+> 
+> Anand K Mistry (1):
+>    x86/speculation: Allow IBPB to be conditionally enabled on CPUs with
+>      always-on STIBP
+> 
+>   arch/x86/kernel/cpu/bugs.c | 41 +++++++++++++++++++++-----------------
+>   1 file changed, 23 insertions(+), 18 deletions(-)
+> 
