@@ -2,127 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864352A184E
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 15:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF982A1850
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 15:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbgJaOuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 10:50:15 -0400
-Received: from mail-dm6nam12on2053.outbound.protection.outlook.com ([40.107.243.53]:19860
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726089AbgJaOuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 10:50:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nkMNF/kvMpIiAnrSwoE5HgBLHQabM2WA7BRJ6Y/9d8mUJit9BPjjWWI58/DMe4AitwObUqu8s8sHr/1ZPYzcZb9vgFnzJ9RuLZZ8ArijKe87RZxw1g1SxjL0ath4prZDxxP3aBDDe/woyh7OZvh51cqRYjU6b8FSrPyn5cnnAeCuOfHLFhvqY9or8XyZudP82YTqvXmxM/Ohn92e05fMCn+8p5zMX1PCD18JsOjq6H66sGhqlizhr6PfgfSF6y/PhzAO18ND/45yenajxeec3gfj+aCfzBwXpdm7o8DY4ZUC89VAECE0A82JDBzQQPg6O1tIEJD9t1s+htioR6Bgig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A1YB7JcnsuRNDzvd2y/c8/rf2FsQoDP+PbsNjE6ms4k=;
- b=EwVHnIqmb8pVUV6tF1CbZH4t10/sNGKA5I/HQjMMBTHEsq9lFFM6tpr68JU2/YH7dwyev+UYEhr34zvW1GTZPOA7sloYgGDvdwFb2VWL09FPI16WBOgIUlGc5ymQwf+qAbXe5QxISo1JEPYdWt2LdCeyJ5kM+DrWPy1UvV6Fx7QpZ5hFs7AZ9nJsj03eiZ5MCjyAqgJmcYPsTsXzvqqk2vjsYCVYaOOEurmgQ/yhTUhLmdPs8j/NPWblzQEr8RrnZ++lYrw9i8fW8OTxyFXH9VcJNBidI4KsEZ84KOoA3KDCN3KnZGE8dLUq5lqCJoDvCcgcmFhNA84jG4YOJ28ckw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1727907AbgJaOvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 10:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgJaOvG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 10:51:06 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0DDC0617A6;
+        Sat, 31 Oct 2020 07:51:05 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id s15so12545718ejf.8;
+        Sat, 31 Oct 2020 07:51:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A1YB7JcnsuRNDzvd2y/c8/rf2FsQoDP+PbsNjE6ms4k=;
- b=gXE9oFbQMRVboTxLYJPp0D5lr3zfaRYWlOuo/K62nvMduQUW7AMky+M+fcp/vbNlFBxN9lE0lw9owzmX2ZeQYPfX0ZVAmKHxrp5gFF8uX0JJ+LGGUmMJ7XZ1gnRi5w+3v1cCOoxDEM4h37blm8gU6ZSI+o4h68EqyEOLcEs0tKc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM6PR12MB2891.namprd12.prod.outlook.com (2603:10b6:5:188::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3499.19; Sat, 31 Oct 2020 14:50:11 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::e442:c052:8a2c:5fba]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::e442:c052:8a2c:5fba%6]) with mapi id 15.20.3499.027; Sat, 31 Oct 2020
- 14:50:11 +0000
-Subject: Re: [PATCH 0/1] x86/speculation: Allow IBPB to be conditionally
- enabled on CPUs with always-on STIBP
-To:     Anand K Mistry <amistry@google.com>, x86@kernel.org,
-        linux-kernel@kernel.org
-Cc:     joelaf@google.com, asteinhauser@google.com, tglx@linutronix.de,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
-        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
-References: <20201029065133.3027749-1-amistry@google.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <50f3e115-f169-db02-505a-71c42bab6fb6@amd.com>
-Date:   Sat, 31 Oct 2020 09:50:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201029065133.3027749-1-amistry@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [67.79.209.213]
-X-ClientProxiedBy: SN6PR16CA0046.namprd16.prod.outlook.com
- (2603:10b6:805:ca::23) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xeoqSsCGy6lTHKb5i/FB3Sn7FnwCv5pc3NVImeJNRB8=;
+        b=HTqYXnVAZEYca4dwQIlJytP+mRVD8IFnsBMPMlPmYjk2ikBIo2b31cfj/1J6nkOjGA
+         eSV8BM6Q0jdjN2tTB8E8I4Pcvf4MVdLL6uZ8doy3F2jK4IxmCXL23TJpFVUYsIjTqPQn
+         g0hb/2D/hc6VwQpuXBRED1+Ufty8s/jf+QuTk3uVyYBJfFq9M+Ekn9qAzufolqLAjqxS
+         KGq8toRd8BqqSoz4ICGbS0cLnLidFCUtOYTIyjFEmaZWiTieOfQRdvoDxoS91RV7l63n
+         6lzGPuhzsTj6Gil1b2SUZPo7vFbICOMUsNoxiLOrZoXfeZpU2rkqUYveIbX4rfgaFM+x
+         iv7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xeoqSsCGy6lTHKb5i/FB3Sn7FnwCv5pc3NVImeJNRB8=;
+        b=KWg8aKfYrXJwUzsTlelc0Am27/FIgTQtjU+uno0//W0vhJfB6S9UP8sr0lLuZ9hI88
+         KWuZUKKOV0gGSgLlEtVVU3+uxMXAbreo/+Sht6VVxDVfTTHuD9NlFB2g9WjjRdIBp1QZ
+         t7tMVCNjlYo1rFF7TtyMqSt9C/sqKxwc3kJvl3oUaVscHYGK8+JLzb6uDokEBruXjrQr
+         AZeflYQGwtROm9j2hCo0FiBwBuieR/9hPZM/OHyd1phwCHxif+fo5WdTZhqHttGxvDhz
+         Dy8fpXUl8X19Q1BqqhRuweWkScWeLb5yp9yIuwDLlf+hl3GeiCRWKDxU9r39XU13Y9e+
+         f6Jw==
+X-Gm-Message-State: AOAM531HlDWVQjJZ9QG3EUzwS/Y4xidb0thikUVH8ZMCumW4c8Hzwlhz
+        FKSwU0MpCgHiJnde86nQ6yU=
+X-Google-Smtp-Source: ABdhPJxPWUswFvEeDDaxaC/HDhdifsx7MwYbM6jNwquvTyZRGPUxjhxLmDnU66RyuY+jaoldxe+Omg==
+X-Received: by 2002:a17:906:3acd:: with SMTP id z13mr7716765ejd.118.1604155864422;
+        Sat, 31 Oct 2020 07:51:04 -0700 (PDT)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id ok21sm4990707ejb.96.2020.10.31.07.51.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Oct 2020 07:51:03 -0700 (PDT)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+X-Google-Original-From: Ioana Ciornei <ciornei.ioana@gmail.com>
+Date:   Sat, 31 Oct 2020 16:51:01 +0200
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Ioana Ciornei <ciorneiioana@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andre Edich <andre.edich@microchip.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Dan Murphy <dmurphy@ti.com>,
+        Divya Koppera <Divya.Koppera@microchip.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Mathias Kresin <dev@kresin.me>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Michael Walle <michael@walle.cc>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Willy Liu <willy.liu@realtek.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+Subject: Re: [PATCH net-next 00/19] net: phy: add support for shared
+ interrupts (part 1)
+Message-ID: <20201031145101.ehxb2boekevppu3d@skbuf>
+References: <20201029100741.462818-1-ciorneiioana@gmail.com>
+ <d05587fc-0cec-59fb-4e84-65386d0b3d6b@gmail.com>
+ <20201030233627.GA1054829@lunn.ch>
+ <fee0997d-f4bc-dfc3-9423-476f04218614@gmail.com>
+ <20201031143215.GA1076434@lunn.ch>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-linux.texastahm.com (67.79.209.213) by SN6PR16CA0046.namprd16.prod.outlook.com (2603:10b6:805:ca::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Sat, 31 Oct 2020 14:50:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: a44c1ca8-b0c7-4567-3a01-08d87dac44b5
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2891:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2891C1484C128939BE523D3AEC120@DM6PR12MB2891.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wNV7rD05u1w6n/qxiZMvmRF3Ajl5AmW4VJ1HLJxrGkxzULpD7eOEkpaC1ds0H8sRR46a7aLcywxVNRZCQruz9SUO/LbI1T1wjaP6nXj1gPn3rpB/IBAsVQhWhGYgGIL6UtYT4segFZWm3E7X6/7cIwO7M+YWUHBeoitUhxPBbPr45V6k1VLq6dAxgRx/6gajN1HrsF+lDnxzqp0kq4V74FhrvJLXMQtiNiNQlpiH7JWrBeZT81Dzysj1bmVoOOgfZHiDph4RuBQCUWJPPmA0WqVSSYdP4ySdTq2QwOw4DIGaHbyiHoSdcvmzHdyBe4z8XmRbYUHUFfEyc8eOTDp/xhgme5RpGUQx4l/NkKT11SQPSOihUP80FEGUI1cDuEGf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(346002)(366004)(39860400002)(53546011)(6486002)(52116002)(8676002)(6506007)(31686004)(54906003)(186003)(7416002)(478600001)(31696002)(83380400001)(5660300002)(26005)(316002)(2906002)(6512007)(2616005)(8936002)(956004)(66476007)(4326008)(66946007)(66556008)(86362001)(36756003)(16526019)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: GgZLVcETX7XyDF9dRphWbJICR2APONeFdphoa2EQiQxWB0sz6iHhLfdOihNyQb/k/ztuzRQkgbRjFWX2mOsuA5ssSyzwqFA9L7p101JI7hfI2l/brjdHJJR+yOpdw7M0yEwg0nLxjHappvfxdqKfH5Wq6iVbJe+eletE+tdxg6wqq9lm3lKWKNp7guCL3YMtFwfQnQq7VSD/SKhYYzymvSzGwpvhD8zDVYMfDJq67FXMH6tIBfQaQLilmSYAfgTNrK6+yGSrPLBhohSXD8krCbBX9Xg3AIQWbTb/rDyIbe1ZJWfl1pnLLJ6RSZelxae65Xn4eqnporYbBaQtzeIhFRQgZyOaMiSBVExmVPOjCutOhJnEs0gGDoJUFt7k0ZRBMmJxC+cEMBsr6Sp42U3k8lQXcscUeXIMAZ8Hmk214CA06wBKkFp0B7lQ24DSaYnthM7qSn+NCpPYJZZEAfn/2P+D+UMWFQ72QTw2LsVFIkQeRtXoHdMyJkzyFfbUmRtSEAAZleIWEJ5DOS7Tz9NKE+115CXsNfjU4DAR5fH4Ew0AsvYb1ycjTRaH4SsnFDxOa8RFm5oINtGAnEGElyWRGZGqOdp+8UUWyUPrKBRYvVrYt8L6yn6DoPC/o6qGlHsKyezUKPGYFRln9KrT12qgKA==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a44c1ca8-b0c7-4567-3a01-08d87dac44b5
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2020 14:50:11.6898
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0S5rUMA/atch7FDugK3EU5qsBgXwBgS7c3J3pXXFTvIPxVQ2TQrxOCpUN5a2yI9p/MqwNXLqwHradAV39SOeoQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2891
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201031143215.GA1076434@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 1:51 AM, Anand K Mistry wrote:
-> When attempting to do some performance testing of IBPB on and AMD
-> platform, I noticed the IBPB instruction was never being issued, even
-> though it was conditionally on and various seccomp protected processes
-> were force enabling it. Turns out, on those AMD CPUs, STIBP is set to
-> always-on and this was causing an early-out on the prctl() which turns
-> off IB speculation. Here is my attempt to fix it.
+On Sat, Oct 31, 2020 at 03:32:15PM +0100, Andrew Lunn wrote:
+> > Sure, I just wanted to add the comment before others simply copy and
+> > paste this (pseudo) code. And in patch 9 (aquantia) and 18 (realtek)
+> > it is used as is. And IIRC at least the Aquantia PHY doesn't mask
+> > the interrupt status.
 > 
-> I'm hoping someone that understands this better than me can explain why
-> I'm wrong.
+> And that is were we are going to have issues with this patch set, and
+> need review by individual PHY driver maintainers, or a good look at
+> the datasheet.
+> 
 
-It all looks reasonable to me (some comments in the patch to follow). The 
-thing that makes this tough is the command line option of being able to 
-force IBPB using the "prctl,ibpb" or "seccomp,ibpb" while STIBP is prctl 
-or seccomp controlled. There's an inherent quality that is assumed that if 
-STIBP is forced then IBPB must be forced and it looks like 21998a351512 
-("x86/speculation: Avoid force-disabling IBPB based on STIBP and enhanced 
-IBRS.") used that. However, with the STIBP always on support, that doesn't 
-hold true.
+Yep, I already started to comb through all the drivers and their
+datasheets so that I can only check for the interrupts that the driver
+enables.
 
-Thanks,
-Tom
-
-> 
-> 
-> Anand K Mistry (1):
->    x86/speculation: Allow IBPB to be conditionally enabled on CPUs with
->      always-on STIBP
-> 
->   arch/x86/kernel/cpu/bugs.c | 41 +++++++++++++++++++++-----------------
->   1 file changed, 23 insertions(+), 18 deletions(-)
-> 
+Ioana
