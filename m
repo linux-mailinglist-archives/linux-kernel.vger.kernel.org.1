@@ -2,525 +2,430 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC11F2A13D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 07:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5DF2A13DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 07:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgJaGgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 02:36:14 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6680 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbgJaGgN (ORCPT
+        id S1726416AbgJaGgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 02:36:43 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15757 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgJaGgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 02:36:13 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CNTw91L1dz15Pdv;
-        Sat, 31 Oct 2020 14:36:09 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 31 Oct 2020 14:36:02 +0800
-From:   Meng Yu <yumeng18@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <yumeng18@huawei.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 5/5] crypto: hisilicon/hpre - add 'CURVE25519' algorithm
-Date:   Sat, 31 Oct 2020 14:34:28 +0800
-Message-ID: <1604126068-29195-6-git-send-email-yumeng18@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1604126068-29195-1-git-send-email-yumeng18@huawei.com>
-References: <1604126068-29195-1-git-send-email-yumeng18@huawei.com>
+        Sat, 31 Oct 2020 02:36:42 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9d05fe0000>; Fri, 30 Oct 2020 23:36:46 -0700
+Received: from [10.2.58.85] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 31 Oct
+ 2020 06:36:35 +0000
+Subject: Re: [PATCH v5 13/15] resource: Move devmem revoke code to resource
+ framework
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     <kvm@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Arnd Bergmann <arnd@arndb.de>,
+        David Hildenbrand <david@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+References: <20201030100815.2269-1-daniel.vetter@ffwll.ch>
+ <20201030100815.2269-14-daniel.vetter@ffwll.ch>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <787f2914-5777-4703-4bee-68c4c3742817@nvidia.com>
+Date:   Fri, 30 Oct 2020 23:36:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201030100815.2269-14-daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604126206; bh=L4oBpwCPTK9i7x4n5WL1+chs0FMLfmAUGEi3yv+lcuI=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=WZ7JBVVRAPxiUhUbHLrJz0ng6xWLVDFeI5F6t0NFEaUVKBf+9PQvDG50Ry3rfAkoV
+         LCvgXreq14KEkWnyFwiWU6fhUy1pBU/tx3Y4n+H12ax6Vn/AI7dMOQlVka1J5axAmQ
+         ocGvRj8CCCcnlhfxrDC76O0NA599zPER+hsSybBVQNFmPrhutABz9O+oUUocpw1Bgi
+         UeaBzWWZinoy5iSTQbDBuT1sHQxYmf6zLDEcCkcPhgiwj46WT/4vb7yV6fQbpsMxel
+         8PQPHmJpI57U3vhLB/4+Yqh4oJ5Js25Wz10SIfxnTiBGVwEwX8Pb6agDUQK411NqHd
+         rlpQsthsPHk3A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable 'CURVE25519' algorithm in 'Kunpeng 930'.
+On 10/30/20 3:08 AM, Daniel Vetter wrote:
+> We want all iomem mmaps to consistently revoke ptes when the kernel
+> takes over and CONFIG_IO_STRICT_DEVMEM is enabled. This includes the
+> pci bar mmaps available through procfs and sysfs, which currently do
+> not revoke mappings.
+>=20
+> To prepare for this, move the code from the /dev/kmem driver to
+> kernel/resource.c.
 
-Signed-off-by: Meng Yu <yumeng18@huawei.com>
-Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre.h        |   2 +
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 390 +++++++++++++++++++++++++++-
- 2 files changed, 384 insertions(+), 8 deletions(-)
+This seems like it's doing a lot more than just code movement, right?
+Should we list some of that here?
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre.h b/drivers/crypto/hisilicon/hpre/hpre.h
-index 50e6b2e..92892e3 100644
---- a/drivers/crypto/hisilicon/hpre/hpre.h
-+++ b/drivers/crypto/hisilicon/hpre/hpre.h
-@@ -84,6 +84,8 @@ enum hpre_alg_type {
- 	HPRE_ALG_DH_G2 = 0x4,
- 	HPRE_ALG_DH = 0x5,
- 	HPRE_ALG_ECC_MUL = 0xD,
-+	/* shared by x25519 and x448, but x448 is not supported now */
-+	HPRE_ALG_CURVE25519_MUL = 0x10,
- };
- 
- struct hpre_sqe {
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index b7814ce..fae99ed 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2019 HiSilicon Limited. */
- #include <crypto/akcipher.h>
-+#include <crypto/curve25519.h>
- #include <crypto/dh.h>
- #include <crypto/ecdh.h>
- #include <crypto/internal/akcipher.h>
-@@ -70,6 +71,28 @@ struct curve_param_desc {
- 	const unsigned char *n;
- };
- 
-+/* curve25519 */
-+const u8 curve25519_null_point[CURVE25519_KEY_SIZE] __aligned(32) = { 0 };
-+
-+/* curve25519 CURVE PARAMS, in big-endian order */
-+/* p = (2 ^ 255 - 19) */
-+static const unsigned char curve25519_p[] = {
-+	0x7f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-+	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-+	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xed
-+};
-+ /* a = (486662 - 2) / 4 = 121665 */
-+static const unsigned char curve25519_a[] = {
-+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xDB, 0x41
-+};
-+static const unsigned char curve25519_x[] = {
-+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x09
-+};
-+
- /* ECC CURVE PARAMS */
- /* 128 bits */
- static const unsigned char ecdh_p128_p[] = {
-@@ -417,6 +440,16 @@ struct hpre_ecdh_ctx {
- 	dma_addr_t dma_g;
- };
- 
-+struct hpre_curve25519_ctx {
-+	/* low address: p->a->k */
-+	unsigned char *p;
-+	dma_addr_t dma_p;
-+
-+	/* gx coordinate */
-+	unsigned char *g;
-+	dma_addr_t dma_g;
-+};
-+
- struct hpre_ctx {
- 	struct hisi_qp *qp;
- 	struct hpre_asym_request **req_list;
-@@ -429,6 +462,7 @@ struct hpre_ctx {
- 		struct hpre_rsa_ctx rsa;
- 		struct hpre_dh_ctx dh;
- 		struct hpre_ecdh_ctx ecdh;
-+		struct hpre_curve25519_ctx curve25519;
- 	};
- 	/* for ecc algorithms */
- 	unsigned int curve_id;
-@@ -443,6 +477,7 @@ struct hpre_asym_request {
- 		struct akcipher_request *rsa;
- 		struct kpp_request *dh;
- 		struct kpp_request *ecdh;
-+		struct kpp_request *curve25519;
- 	} areq;
- 	int err;
- 	int req_id;
-@@ -1877,6 +1912,318 @@ static void hpre_ecdh_exit_tfm(struct crypto_kpp *tfm)
- 	hpre_ecc_clear_ctx(ctx, true, true);
- }
- 
-+static void hpre_key_to_big_end(u8 *data, int len)
-+{
-+	int i, j;
-+	u8 tmp;
-+
-+	for (i = 0; i < len / 2; i++) {
-+		j = len - i - 1;
-+		tmp = data[j];
-+		data[j] = data[i];
-+		data[i] = tmp;
-+	}
-+}
-+
-+static void hpre_curve25519_fill_curve(struct hpre_ctx *ctx, const void *buf,
-+				       unsigned int len)
-+{
-+	u8 secret[CURVE25519_KEY_SIZE] = { 0 };
-+	unsigned int sz = ctx->key_sz;
-+	unsigned int shift = sz << 1;
-+	void *p;
-+
-+	/**
-+	 * The key from 'buf' is in little-endian, we should preprocess it as
-+	 * the description in rfc7748: "k[0] &= 248, k[31] &= 127, k[31] |= 64",
-+	 * then convert it to big endian. Only in this way, the result can be
-+	 * the same as the software curve-25519 that exists in crypto.
-+	 */
-+	memcpy(secret, buf, len);
-+	curve25519_clamp_secret(secret);
-+	hpre_key_to_big_end(secret, CURVE25519_KEY_SIZE);
-+
-+	p = ctx->curve25519.p + sz - len;
-+
-+	/* fill curve parameters */
-+	memcpy(p, curve25519_p, len);
-+	memcpy(p + sz, curve25519_a, len);
-+	memcpy(p + shift, secret, len);
-+	memcpy(p + shift + sz, curve25519_x, len);
-+	memzero_explicit(secret, CURVE25519_KEY_SIZE);
-+}
-+
-+static int hpre_curve25519_set_param(struct hpre_ctx *ctx, const void *buf,
-+				     unsigned int len)
-+{
-+	struct device *dev = HPRE_DEV(ctx);
-+	unsigned int sz = ctx->key_sz;
-+	unsigned int shift = sz << 1;
-+
-+	/* p->a->k->gx */
-+	if (!ctx->curve25519.p) {
-+		ctx->curve25519.p = dma_alloc_coherent(dev, sz << 2,
-+						       &ctx->curve25519.dma_p,
-+						       GFP_KERNEL);
-+		if (!ctx->curve25519.p)
-+			return -ENOMEM;
-+	}
-+
-+	ctx->curve25519.g = ctx->curve25519.p + shift + sz;
-+	ctx->curve25519.dma_g = ctx->curve25519.dma_p + shift + sz;
-+
-+	hpre_curve25519_fill_curve(ctx, buf, len);
-+
-+	return 0;
-+}
-+
-+static int hpre_curve25519_set_secret(struct crypto_kpp *tfm, const void *buf,
-+				      unsigned int len)
-+{
-+	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
-+	struct device *dev = HPRE_DEV(ctx);
-+	int ret = -EINVAL;
-+
-+	if (len != CURVE25519_KEY_SIZE ||
-+	    !crypto_memneq(buf, curve25519_null_point, CURVE25519_KEY_SIZE)) {
-+		dev_err(dev, "key is null or key len is not 32bytes!\n");
-+		return ret;
-+	}
-+
-+	/* Free old secret if any */
-+	hpre_ecc_clear_ctx(ctx, false, false);
-+
-+	ctx->key_sz = CURVE25519_KEY_SIZE;
-+	ret = hpre_curve25519_set_param(ctx, buf, CURVE25519_KEY_SIZE);
-+	if (ret) {
-+		dev_err(dev, "failed to set curve25519 param, ret = %d!\n", ret);
-+		hpre_ecc_clear_ctx(ctx, false, false);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void hpre_curve25519_hw_data_clr_all(struct hpre_ctx *ctx,
-+					    struct hpre_asym_request *req,
-+					    struct scatterlist *dst,
-+					    struct scatterlist *src)
-+{
-+	struct device *dev = HPRE_DEV(ctx);
-+	struct hpre_sqe *sqe = &req->req;
-+	dma_addr_t dma;
-+
-+	dma = le64_to_cpu(sqe->in);
-+	if (unlikely(!dma))
-+		return;
-+
-+	if (src && req->src)
-+		dma_free_coherent(dev, ctx->key_sz, req->src, dma);
-+
-+	dma = le64_to_cpu(sqe->out);
-+	if (unlikely(!dma))
-+		return;
-+
-+	if (req->dst)
-+		dma_free_coherent(dev, ctx->key_sz, req->dst, dma);
-+	if (dst)
-+		dma_unmap_single(dev, dma, ctx->key_sz, DMA_FROM_DEVICE);
-+}
-+
-+static void hpre_curve25519_cb(struct hpre_ctx *ctx, void *resp)
-+{
-+	struct hpre_dfx *dfx = ctx->hpre->debug.dfx;
-+	struct hpre_asym_request *req = NULL;
-+	struct kpp_request *areq;
-+	u64 overtime_thrhld;
-+	int ret;
-+
-+	ret = hpre_alg_res_post_hf(ctx, resp, (void **)&req);
-+	areq = req->areq.curve25519;
-+	areq->dst_len = ctx->key_sz;
-+
-+	overtime_thrhld = atomic64_read(&dfx[HPRE_OVERTIME_THRHLD].value);
-+	if (overtime_thrhld && hpre_is_bd_timeout(req, overtime_thrhld))
-+		atomic64_inc(&dfx[HPRE_OVER_THRHLD_CNT].value);
-+
-+	hpre_curve25519_hw_data_clr_all(ctx, req, areq->dst, areq->src);
-+	kpp_request_complete(areq, ret);
-+
-+	atomic64_inc(&dfx[HPRE_RECV_CNT].value);
-+}
-+
-+static int hpre_curve25519_msg_request_set(struct hpre_ctx *ctx,
-+					   struct kpp_request *req)
-+{
-+	struct hpre_asym_request *h_req;
-+	struct hpre_sqe *msg;
-+	int req_id;
-+	void *tmp;
-+
-+	if (unlikely(req->dst_len < ctx->key_sz)) {
-+		req->dst_len = ctx->key_sz;
-+		return -EINVAL;
-+	}
-+
-+	tmp = kpp_request_ctx(req);
-+	h_req = PTR_ALIGN(tmp, HPRE_ALIGN_SZ);
-+	h_req->cb = hpre_curve25519_cb;
-+	h_req->areq.curve25519 = req;
-+	msg = &h_req->req;
-+	memset(msg, 0, sizeof(*msg));
-+	msg->key = cpu_to_le64(ctx->curve25519.dma_p);
-+
-+	msg->dw0 |= (0x1U << HPRE_SQE_DONE_SHIFT);
-+	msg->task_len1 = (ctx->key_sz >> HPRE_BITS_2_BYTES_SHIFT) - 1;
-+	h_req->ctx = ctx;
-+
-+	req_id = hpre_add_req_to_ctx(h_req);
-+	if (req_id < 0)
-+		return -EBUSY;
-+
-+	msg->tag = cpu_to_le16((u16)req_id);
-+	return 0;
-+}
-+
-+static int hpre_curve25519_src_init(struct hpre_asym_request *hpre_req,
-+				    struct scatterlist *data, unsigned int len)
-+{
-+	struct hpre_sqe *msg = &hpre_req->req;
-+	struct hpre_ctx *ctx = hpre_req->ctx;
-+	struct device *dev = HPRE_DEV(ctx);
-+	dma_addr_t dma = 0;
-+	u8 *ptr;
-+
-+	if (len != CURVE25519_KEY_SIZE) {
-+		dev_err(dev, "sourc_data len is not 32bytes, len = %u!\n", len);
-+		return -EINVAL;
-+	}
-+
-+	ptr = dma_alloc_coherent(dev, ctx->key_sz, &dma, GFP_KERNEL);
-+	if (unlikely(!ptr))
-+		return -ENOMEM;
-+
-+	scatterwalk_map_and_copy(ptr, data, 0, len, 0);
-+
-+	if (!crypto_memneq(ptr, curve25519_null_point, CURVE25519_KEY_SIZE)) {
-+		dev_err(dev, "gx is null!\n");
-+		goto err;
-+	}
-+
-+	/**
-+	 * Src_data(gx) is in little-endian order, MSB in the final byte should
-+	 * be masked as discribed in RFC7748, then transform it to big-endian
-+	 * form, then hisi_hpre can use the data.
-+	 */
-+	ptr[31] &= 0x7f;
-+	hpre_key_to_big_end(ptr, CURVE25519_KEY_SIZE);
-+
-+	if (strcmp(ptr, curve25519_p) >= 0) {
-+		dev_err(dev, "gx is out of p!\n");
-+		goto err;
-+	}
-+
-+	hpre_req->src = ptr;
-+	msg->in = cpu_to_le64(dma);
-+	return 0;
-+
-+err:
-+	dma_free_coherent(dev, ctx->key_sz, ptr, dma);
-+	return -EINVAL;
-+}
-+
-+static int hpre_curve25519_dst_init(struct hpre_asym_request *hpre_req,
-+				    struct scatterlist *data, unsigned int len)
-+{
-+	struct hpre_sqe *msg = &hpre_req->req;
-+	struct hpre_ctx *ctx = hpre_req->ctx;
-+	struct device *dev = HPRE_DEV(ctx);
-+	dma_addr_t dma = 0;
-+	void *ptr;
-+
-+	if (sg_is_last(data)) {
-+		hpre_req->dst = NULL;
-+		dma = dma_map_single(dev, sg_virt(data), len, DMA_FROM_DEVICE);
-+		if (unlikely(dma_mapping_error(dev, dma))) {
-+			dev_err(dev, "dma map data err!\n");
-+			return -ENOMEM;
-+		}
-+	} else {
-+		ptr = dma_alloc_coherent(dev, ctx->key_sz, &dma, GFP_KERNEL);
-+		if (unlikely(!ptr))
-+			return -ENOMEM;
-+		hpre_req->dst = ptr;
-+	}
-+
-+	msg->out = cpu_to_le64(dma);
-+	return 0;
-+}
-+
-+static int hpre_curve25519_compute_value(struct kpp_request *req)
-+{
-+	struct crypto_kpp *tfm = crypto_kpp_reqtfm(req);
-+	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
-+	struct device *dev = HPRE_DEV(ctx);
-+	void *tmp = kpp_request_ctx(req);
-+	struct hpre_asym_request *hpre_req = PTR_ALIGN(tmp, HPRE_ALIGN_SZ);
-+	struct hpre_sqe *msg = &hpre_req->req;
-+	int ret;
-+
-+	ret = hpre_curve25519_msg_request_set(ctx, req);
-+	if (unlikely(ret)) {
-+		dev_err(dev, "failed to set curve25519 request, ret = %d!\n", ret);
-+		return ret;
-+	}
-+
-+	if (req->src) {
-+		ret = hpre_curve25519_src_init(hpre_req, req->src, req->src_len);
-+		if (unlikely(ret)) {
-+			dev_err(dev, "failed to init src data, ret = %d!\n",
-+				ret);
-+			goto clear_all;
-+		}
-+	} else {
-+		msg->in = cpu_to_le64(ctx->curve25519.dma_g);
-+	}
-+
-+	ret = hpre_curve25519_dst_init(hpre_req, req->dst, req->dst_len);
-+	if (unlikely(ret)) {
-+		dev_err(dev, "failed to init dst data, ret = %d!\n", ret);
-+		goto clear_all;
-+	}
-+
-+	msg->dw0 = cpu_to_le32(msg->dw0 | HPRE_ALG_CURVE25519_MUL);
-+	ret = hpre_send(ctx, msg);
-+	if (likely(!ret))
-+		return -EINPROGRESS;
-+
-+clear_all:
-+	hpre_rm_req_from_ctx(hpre_req);
-+	hpre_curve25519_hw_data_clr_all(ctx, hpre_req, req->dst, req->src);
-+	return ret;
-+}
-+
-+static unsigned int hpre_curve25519_max_size(struct crypto_kpp *tfm)
-+{
-+	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
-+
-+	return ctx->key_sz;
-+}
-+
-+static int hpre_curve25519_init_tfm(struct crypto_kpp *tfm)
-+{
-+	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
-+
-+	return hpre_ctx_init(ctx, HPRE_V3_ECC_ALG_TYPE);
-+}
-+
-+static void hpre_curve25519_exit_tfm(struct crypto_kpp *tfm)
-+{
-+	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
-+
-+	hpre_ecc_clear_ctx(ctx, true, false);
-+}
-+
- static struct akcipher_alg rsa = {
- 	.sign = hpre_rsa_dec,
- 	.verify = hpre_rsa_enc,
-@@ -1932,6 +2279,24 @@ static struct kpp_alg ecdh = {
- 		.cra_module = THIS_MODULE,
- 	},
- };
-+
-+static struct kpp_alg curve25519_alg = {
-+	.set_secret = hpre_curve25519_set_secret,
-+	.generate_public_key = hpre_curve25519_compute_value,
-+	.compute_shared_secret = hpre_curve25519_compute_value,
-+	.max_size = hpre_curve25519_max_size,
-+	.init = hpre_curve25519_init_tfm,
-+	.exit = hpre_curve25519_exit_tfm,
-+	.reqsize = sizeof(struct hpre_asym_request) + HPRE_ALIGN_SZ,
-+	.base = {
-+		.cra_ctxsize = sizeof(struct hpre_ctx),
-+		.cra_priority = HPRE_CRYPTO_ALG_PRI,
-+		.cra_name = "curve25519",
-+		.cra_driver_name = "hpre-curve25519",
-+		.cra_module = THIS_MODULE,
-+	},
-+};
-+
- int hpre_algs_register(struct hisi_qm *qm)
- {
- 	int ret;
-@@ -1946,26 +2311,35 @@ int hpre_algs_register(struct hisi_qm *qm)
- 		crypto_unregister_akcipher(&rsa);
- 		return ret;
- 	}
--#endif
- 
-+#endif
- 	if (qm->ver >= QM_HW_V3) {
- 		ret = crypto_register_kpp(&ecdh);
-+		if (ret)
-+			goto reg_err;
-+
-+		ret = crypto_register_kpp(&curve25519_alg);
- 		if (ret) {
--#ifdef CONFIG_CRYPTO_DH
--			crypto_unregister_kpp(&dh);
--#endif
--			crypto_unregister_akcipher(&rsa);
--			return ret;
-+			crypto_unregister_kpp(&ecdh);
-+			goto reg_err;
- 		}
- 	}
--
- 	return 0;
-+
-+reg_err:
-+#ifdef CONFIG_CRYPTO_DH
-+	crypto_unregister_kpp(&dh);
-+#endif
-+	crypto_unregister_akcipher(&rsa);
-+	return ret;
- }
- 
- void hpre_algs_unregister(struct hisi_qm *qm)
- {
--	if (qm->ver >= QM_HW_V3)
-+	if (qm->ver >= QM_HW_V3) {
-+		crypto_unregister_kpp(&curve25519_alg);
- 		crypto_unregister_kpp(&ecdh);
-+	}
- 
- #ifdef CONFIG_CRYPTO_DH
- 	crypto_unregister_kpp(&dh);
--- 
-2.8.1
+Also, I'm seeing a crash due to this commit. More below:
+
+>=20
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> --
+> v3:
+> - add barrier for consistency and document why we don't have to check
+>    for NULL (Jason)
+> v4
+> - Adjust comments to reflect the general nature of this iomem revoke
+>    code now (Dan)
+> ---
+>   drivers/char/mem.c     |  85 +---------------------------------
+>   include/linux/ioport.h |   6 +--
+>   kernel/resource.c      | 101 ++++++++++++++++++++++++++++++++++++++++-
+>   3 files changed, 102 insertions(+), 90 deletions(-)
+>=20
+> diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+> index 7dcf9e4ea79d..43c871dc7477 100644
+> --- a/drivers/char/mem.c
+> +++ b/drivers/char/mem.c
+> @@ -31,9 +31,6 @@
+>   #include <linux/uio.h>
+>   #include <linux/uaccess.h>
+>   #include <linux/security.h>
+> -#include <linux/pseudo_fs.h>
+> -#include <uapi/linux/magic.h>
+> -#include <linux/mount.h>
+>  =20
+>   #ifdef CONFIG_IA64
+>   # include <linux/efi.h>
+> @@ -836,42 +833,6 @@ static loff_t memory_lseek(struct file *file, loff_t=
+ offset, int orig)
+>   	return ret;
+>   }
+>  =20
+> -static struct inode *devmem_inode;
+> -
+> -#ifdef CONFIG_IO_STRICT_DEVMEM
+> -void revoke_devmem(struct resource *res)
+> -{
+> -	/* pairs with smp_store_release() in devmem_init_inode() */
+> -	struct inode *inode =3D smp_load_acquire(&devmem_inode);
+> -
+> -	/*
+> -	 * Check that the initialization has completed. Losing the race
+> -	 * is ok because it means drivers are claiming resources before
+> -	 * the fs_initcall level of init and prevent /dev/mem from
+> -	 * establishing mappings.
+> -	 */
+> -	if (!inode)
+> -		return;
+> -
+> -	/*
+> -	 * The expectation is that the driver has successfully marked
+> -	 * the resource busy by this point, so devmem_is_allowed()
+> -	 * should start returning false, however for performance this
+> -	 * does not iterate the entire resource range.
+> -	 */
+> -	if (devmem_is_allowed(PHYS_PFN(res->start)) &&
+> -	    devmem_is_allowed(PHYS_PFN(res->end))) {
+> -		/*
+> -		 * *cringe* iomem=3Drelaxed says "go ahead, what's the
+> -		 * worst that can happen?"
+> -		 */
+> -		return;
+> -	}
+> -
+> -	unmap_mapping_range(inode->i_mapping, res->start, resource_size(res), 1=
+);
+> -}
+> -#endif
+> -
+>   static int open_port(struct inode *inode, struct file *filp)
+>   {
+>   	int rc;
+> @@ -891,7 +852,7 @@ static int open_port(struct inode *inode, struct file=
+ *filp)
+>   	 * revocations when drivers want to take over a /dev/mem mapped
+>   	 * range.
+>   	 */
+> -	filp->f_mapping =3D inode->i_mapping;
+> +	filp->f_mapping =3D iomem_get_mapping();
+
+
+The problem is that iomem_get_mapping() returns NULL for the !CONFIG_IO_STR=
+ICT_DEVMEM
+case. And then we have pre-existing fs code that expects to go "up and over=
+", like this:
+
+
+static int do_dentry_open(struct file *f,
+			  struct inode *inode,
+			  int (*open)(struct inode *, struct file *))
+{
+...
+
+	file_ra_state_init(&f->f_ra, f->f_mapping->host->i_mapping);
+
+...and it crashes on that line fairly early in bootup.
+
+Not sure what to suggest for this patch, but wanted to get this report out =
+at least.
+
+thanks,
+--=20
+John Hubbard
+NVIDIA
+
+>  =20
+>   	return 0;
+>   }
+> @@ -1023,48 +984,6 @@ static char *mem_devnode(struct device *dev, umode_=
+t *mode)
+>  =20
+>   static struct class *mem_class;
+>  =20
+> -static int devmem_fs_init_fs_context(struct fs_context *fc)
+> -{
+> -	return init_pseudo(fc, DEVMEM_MAGIC) ? 0 : -ENOMEM;
+> -}
+> -
+> -static struct file_system_type devmem_fs_type =3D {
+> -	.name		=3D "devmem",
+> -	.owner		=3D THIS_MODULE,
+> -	.init_fs_context =3D devmem_fs_init_fs_context,
+> -	.kill_sb	=3D kill_anon_super,
+> -};
+> -
+> -static int devmem_init_inode(void)
+> -{
+> -	static struct vfsmount *devmem_vfs_mount;
+> -	static int devmem_fs_cnt;
+> -	struct inode *inode;
+> -	int rc;
+> -
+> -	rc =3D simple_pin_fs(&devmem_fs_type, &devmem_vfs_mount, &devmem_fs_cnt=
+);
+> -	if (rc < 0) {
+> -		pr_err("Cannot mount /dev/mem pseudo filesystem: %d\n", rc);
+> -		return rc;
+> -	}
+> -
+> -	inode =3D alloc_anon_inode(devmem_vfs_mount->mnt_sb);
+> -	if (IS_ERR(inode)) {
+> -		rc =3D PTR_ERR(inode);
+> -		pr_err("Cannot allocate inode for /dev/mem: %d\n", rc);
+> -		simple_release_fs(&devmem_vfs_mount, &devmem_fs_cnt);
+> -		return rc;
+> -	}
+> -
+> -	/*
+> -	 * Publish /dev/mem initialized.
+> -	 * Pairs with smp_load_acquire() in revoke_devmem().
+> -	 */
+> -	smp_store_release(&devmem_inode, inode);
+> -
+> -	return 0;
+> -}
+> -
+>   static int __init chr_dev_init(void)
+>   {
+>   	int minor;
+> @@ -1086,8 +1005,6 @@ static int __init chr_dev_init(void)
+>   		 */
+>   		if ((minor =3D=3D DEVPORT_MINOR) && !arch_has_dev_port())
+>   			continue;
+> -		if ((minor =3D=3D DEVMEM_MINOR) && devmem_init_inode() !=3D 0)
+> -			continue;
+>  =20
+>   		device_create(mem_class, NULL, MKDEV(MEM_MAJOR, minor),
+>   			      NULL, devlist[minor].name);
+> diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+> index 5135d4b86cd6..02a5466245c0 100644
+> --- a/include/linux/ioport.h
+> +++ b/include/linux/ioport.h
+> @@ -307,11 +307,7 @@ struct resource *devm_request_free_mem_region(struct=
+ device *dev,
+>   struct resource *request_free_mem_region(struct resource *base,
+>   		unsigned long size, const char *name);
+>  =20
+> -#ifdef CONFIG_IO_STRICT_DEVMEM
+> -void revoke_devmem(struct resource *res);
+> -#else
+> -static inline void revoke_devmem(struct resource *res) { };
+> -#endif
+> +extern struct address_space *iomem_get_mapping(void);
+>  =20
+>   #endif /* __ASSEMBLY__ */
+>   #endif	/* _LINUX_IOPORT_H */
+> diff --git a/kernel/resource.c b/kernel/resource.c
+> index 3ae2f56cc79d..5ecc3187fe2d 100644
+> --- a/kernel/resource.c
+> +++ b/kernel/resource.c
+> @@ -18,12 +18,15 @@
+>   #include <linux/spinlock.h>
+>   #include <linux/fs.h>
+>   #include <linux/proc_fs.h>
+> +#include <linux/pseudo_fs.h>
+>   #include <linux/sched.h>
+>   #include <linux/seq_file.h>
+>   #include <linux/device.h>
+>   #include <linux/pfn.h>
+>   #include <linux/mm.h>
+> +#include <linux/mount.h>
+>   #include <linux/resource_ext.h>
+> +#include <uapi/linux/magic.h>
+>   #include <asm/io.h>
+>  =20
+>  =20
+> @@ -1115,6 +1118,58 @@ resource_size_t resource_alignment(struct resource=
+ *res)
+>  =20
+>   static DECLARE_WAIT_QUEUE_HEAD(muxed_resource_wait);
+>  =20
+> +static struct inode *iomem_inode;
+> +
+> +#ifdef CONFIG_IO_STRICT_DEVMEM
+> +static void revoke_iomem(struct resource *res)
+> +{
+> +	/* pairs with smp_store_release() in iomem_init_inode() */
+> +	struct inode *inode =3D smp_load_acquire(&iomem_inode);
+> +
+> +	/*
+> +	 * Check that the initialization has completed. Losing the race
+> +	 * is ok because it means drivers are claiming resources before
+> +	 * the fs_initcall level of init and prevent iomem_get_mapping users
+> +	 * from establishing mappings.
+> +	 */
+> +	if (!inode)
+> +		return;
+> +
+> +	/*
+> +	 * The expectation is that the driver has successfully marked
+> +	 * the resource busy by this point, so devmem_is_allowed()
+> +	 * should start returning false, however for performance this
+> +	 * does not iterate the entire resource range.
+> +	 */
+> +	if (devmem_is_allowed(PHYS_PFN(res->start)) &&
+> +	    devmem_is_allowed(PHYS_PFN(res->end))) {
+> +		/*
+> +		 * *cringe* iomem=3Drelaxed says "go ahead, what's the
+> +		 * worst that can happen?"
+> +		 */
+> +		return;
+> +	}
+> +
+> +	unmap_mapping_range(inode->i_mapping, res->start, resource_size(res), 1=
+);
+> +}
+> +struct address_space *iomem_get_mapping(void)
+> +{
+> +	/*
+> +	 * This function is only called from file open paths, hence guaranteed
+> +	 * that fs_initcalls have completed and no need to check for NULL. But
+> +	 * since revoke_iomem can be called before the initcall we still need
+> +	 * the barrier to appease checkers.
+> +	 */
+> +	return smp_load_acquire(&iomem_inode)->i_mapping;
+> +}
+> +#else
+> +static void revoke_iomem(struct resource *res) {}
+> +struct address_space *iomem_get_mapping(void)
+> +{
+> +	return NULL;
+> +}
+> +#endif
+> +
+>   /**
+>    * __request_region - create a new busy resource region
+>    * @parent: parent resource descriptor
+> @@ -1182,7 +1237,7 @@ struct resource * __request_region(struct resource =
+*parent,
+>   	write_unlock(&resource_lock);
+>  =20
+>   	if (res && orig_parent =3D=3D &iomem_resource)
+> -		revoke_devmem(res);
+> +		revoke_iomem(res);
+>  =20
+>   	return res;
+>   }
+> @@ -1782,4 +1837,48 @@ static int __init strict_iomem(char *str)
+>   	return 1;
+>   }
+>  =20
+> +static int iomem_fs_init_fs_context(struct fs_context *fc)
+> +{
+> +	return init_pseudo(fc, DEVMEM_MAGIC) ? 0 : -ENOMEM;
+> +}
+> +
+> +static struct file_system_type iomem_fs_type =3D {
+> +	.name		=3D "iomem",
+> +	.owner		=3D THIS_MODULE,
+> +	.init_fs_context =3D iomem_fs_init_fs_context,
+> +	.kill_sb	=3D kill_anon_super,
+> +};
+> +
+> +static int __init iomem_init_inode(void)
+> +{
+> +	static struct vfsmount *iomem_vfs_mount;
+> +	static int iomem_fs_cnt;
+> +	struct inode *inode;
+> +	int rc;
+> +
+> +	rc =3D simple_pin_fs(&iomem_fs_type, &iomem_vfs_mount, &iomem_fs_cnt);
+> +	if (rc < 0) {
+> +		pr_err("Cannot mount iomem pseudo filesystem: %d\n", rc);
+> +		return rc;
+> +	}
+> +
+> +	inode =3D alloc_anon_inode(iomem_vfs_mount->mnt_sb);
+> +	if (IS_ERR(inode)) {
+> +		rc =3D PTR_ERR(inode);
+> +		pr_err("Cannot allocate inode for iomem: %d\n", rc);
+> +		simple_release_fs(&iomem_vfs_mount, &iomem_fs_cnt);
+> +		return rc;
+> +	}
+> +
+> +	/*
+> +	 * Publish iomem revocation inode initialized.
+> +	 * Pairs with smp_load_acquire() in revoke_iomem().
+> +	 */
+> +	smp_store_release(&iomem_inode, inode);
+> +
+> +	return 0;
+> +}
+> +
+> +fs_initcall(iomem_init_inode);
+> +
+>   __setup("iomem=3D", strict_iomem);
+>=20
+
 
