@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD522A1653
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A122A1619
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgJaLoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:44:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44728 "EHLO mail.kernel.org"
+        id S1727762AbgJaLlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:41:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728164AbgJaLoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:44:20 -0400
+        id S1727735AbgJaLls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:41:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3540E205F4;
-        Sat, 31 Oct 2020 11:44:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F2F420791;
+        Sat, 31 Oct 2020 11:41:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144660;
-        bh=Ze60y2mI3LTiXlkco5PSOa3oUKSgq0I/299naj4iKYI=;
+        s=default; t=1604144507;
+        bh=WOeR5q4Stn4rnNDEQqHOr44KHoF273FAr4WbkJsmNAo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1jiqvVL9vfD4Hi4ATgG2lg/VDvqNNnV6kINP1MfqugHVVws3ROGH2R4R+TklY19YB
-         jFKooZ7vAchweiRjm/mVx66L3irTFeAsMecxkiKsiWRj4UCAwRpnjM8nP6Jv2/4ynP
-         BVALCgJYYUv8SiifwowvhmuWDZJP3zu2NTvdUMXw=
+        b=PnsYs+PZsPUlEZy2PgdtWMkoKtu+EeSuf6Wwsq7sIjGBgRILv/x1S6Vo3Mi/HQ6Fv
+         ghX+8KHqF0k2jQY7ZFgywUq8LjxLyZ15XL/NGSElWW+eh4kt8uiYiIjPWWyknNO/Cp
+         Ni68XkzcjWr4KvR/iOZEC0+yMlWW9P/vO37oszgA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Serge Belyshev <belyshev@depni.sinp.msu.ru>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 33/74] chelsio/chtls: fix memory leaks in CPL handlers
-Date:   Sat, 31 Oct 2020 12:36:15 +0100
-Message-Id: <20201031113501.630753224@linuxfoundation.org>
+Subject: [PATCH 5.8 44/70] r8169: fix issue with forced threading in combination with shared interrupts
+Date:   Sat, 31 Oct 2020 12:36:16 +0100
+Message-Id: <20201031113501.608327456@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
-References: <20201031113500.031279088@linuxfoundation.org>
+In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
+References: <20201031113459.481803250@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,67 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit 6daa1da4e262b0cd52ef0acc1989ff22b5540264 ]
+[ Upstream commit 2734a24e6e5d18522fbf599135c59b82ec9b2c9e ]
 
-CPL handler functions chtls_pass_open_rpl() and
-chtls_close_listsrv_rpl() should return CPL_RET_BUF_DONE
-so that caller function will do skb free to avoid leak.
+As reported by Serge flag IRQF_NO_THREAD causes an error if the
+interrupt is actually shared and the other driver(s) don't have this
+flag set. This situation can occur if a PCI(e) legacy interrupt is
+used in combination with forced threading.
+There's no good way to deal with this properly, therefore we have to
+remove flag IRQF_NO_THREAD. For fixing the original forced threading
+issue switch to napi_schedule().
 
-Fixes: cc35c88ae4db ("crypto : chtls - CPL handler definition")
-Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
-Link: https://lore.kernel.org/r/20201025194228.31271-1-vinay.yadav@chelsio.com
+Fixes: 424a646e072a ("r8169: fix operation under forced interrupt threading")
+Link: https://www.spinics.net/lists/netdev/msg694960.html
+Reported-by: Serge Belyshev <belyshev@depni.sinp.msu.ru>
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Tested-by: Serge Belyshev <belyshev@depni.sinp.msu.ru>
+Link: https://lore.kernel.org/r/b5b53bfe-35ac-3768-85bf-74d1290cf394@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/crypto/chelsio/chtls/chtls_cm.c |   27 ++++++++++++---------------
- 1 file changed, 12 insertions(+), 15 deletions(-)
+ drivers/net/ethernet/realtek/r8169_main.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/crypto/chelsio/chtls/chtls_cm.c
-+++ b/drivers/crypto/chelsio/chtls/chtls_cm.c
-@@ -772,14 +772,13 @@ static int chtls_pass_open_rpl(struct ch
- 	if (rpl->status != CPL_ERR_NONE) {
- 		pr_info("Unexpected PASS_OPEN_RPL status %u for STID %u\n",
- 			rpl->status, stid);
--		return CPL_RET_BUF_DONE;
-+	} else {
-+		cxgb4_free_stid(cdev->tids, stid, listen_ctx->lsk->sk_family);
-+		sock_put(listen_ctx->lsk);
-+		kfree(listen_ctx);
-+		module_put(THIS_MODULE);
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -4559,7 +4559,7 @@ static irqreturn_t rtl8169_interrupt(int
  	}
--	cxgb4_free_stid(cdev->tids, stid, listen_ctx->lsk->sk_family);
--	sock_put(listen_ctx->lsk);
--	kfree(listen_ctx);
--	module_put(THIS_MODULE);
--
--	return 0;
-+	return CPL_RET_BUF_DONE;
- }
  
- static int chtls_close_listsrv_rpl(struct chtls_dev *cdev, struct sk_buff *skb)
-@@ -796,15 +795,13 @@ static int chtls_close_listsrv_rpl(struc
- 	if (rpl->status != CPL_ERR_NONE) {
- 		pr_info("Unexpected CLOSE_LISTSRV_RPL status %u for STID %u\n",
- 			rpl->status, stid);
--		return CPL_RET_BUF_DONE;
-+	} else {
-+		cxgb4_free_stid(cdev->tids, stid, listen_ctx->lsk->sk_family);
-+		sock_put(listen_ctx->lsk);
-+		kfree(listen_ctx);
-+		module_put(THIS_MODULE);
- 	}
--
--	cxgb4_free_stid(cdev->tids, stid, listen_ctx->lsk->sk_family);
--	sock_put(listen_ctx->lsk);
--	kfree(listen_ctx);
--	module_put(THIS_MODULE);
--
--	return 0;
-+	return CPL_RET_BUF_DONE;
- }
+ 	rtl_irq_disable(tp);
+-	napi_schedule_irqoff(&tp->napi);
++	napi_schedule(&tp->napi);
+ out:
+ 	rtl_ack_events(tp, status);
  
- static void chtls_purge_wr_queue(struct sock *sk)
+@@ -4727,7 +4727,7 @@ static int rtl_open(struct net_device *d
+ 	rtl_request_firmware(tp);
+ 
+ 	retval = request_irq(pci_irq_vector(pdev, 0), rtl8169_interrupt,
+-			     IRQF_NO_THREAD | IRQF_SHARED, dev->name, tp);
++			     IRQF_SHARED, dev->name, tp);
+ 	if (retval < 0)
+ 		goto err_release_fw_2;
+ 
 
 
