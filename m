@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B54F2A178F
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 14:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CAD12A1794
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 14:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727476AbgJaNJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 09:09:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727322AbgJaNJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 09:09:33 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCD6320825;
-        Sat, 31 Oct 2020 13:09:32 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1kYqdP-006Cmv-HT; Sat, 31 Oct 2020 09:09:31 -0400
-Message-ID: <20201031130931.419089346@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Sat, 31 Oct 2020 09:06:45 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        stable@vger.kernel.org
-Subject: [for-linus][PATCH 3/3] ftrace: Handle tracing when switching between context
-References: <20201031130642.971173960@goodmis.org>
+        id S1727427AbgJaNSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 09:18:37 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:26487 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727322AbgJaNSh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 09:18:37 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-68-PoE7hCcQP9mtq2Zn8D5T9Q-1; Sat, 31 Oct 2020 13:18:28 +0000
+X-MC-Unique: PoE7hCcQP9mtq2Zn8D5T9Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 31 Oct 2020 13:18:27 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 31 Oct 2020 13:18:27 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Peter Zijlstra' <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+CC:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "eranian@google.com" <eranian@google.com>
+Subject: RE: [PATCH 4/6] perf: Optimize get_recursion_context()
+Thread-Topic: [PATCH 4/6] perf: Optimize get_recursion_context()
+Thread-Index: AQHWrxDB+hviZpPrkUisLgNdhr09JamxnS3ggAATP3A=
+Date:   Sat, 31 Oct 2020 13:18:27 +0000
+Message-ID: <383bd862e8604a3096b8fcda4358726e@AcuMS.aculab.com>
+References: <20201030151345.540479897@infradead.org>
+ <20201030151955.187580298@infradead.org> <20201030181138.215b2b6a@carbon>
+ <20201030162248.58e388f0@oasis.local.home>
+ <20201030230152.GT2594@hirez.programming.kicks-ass.net>
+ <6371740df7704217926315e97294a894@AcuMS.aculab.com>
+In-Reply-To: <6371740df7704217926315e97294a894@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-
-When an interrupt or NMI comes in and switches the context, there's a delay
-from when the preempt_count() shows the update. As the preempt_count() is
-used to detect recursion having each context have its own bit get set when
-tracing starts, and if that bit is already set, it is considered a recursion
-and the function exits. But if this happens in that section where context
-has changed but preempt_count() has not been updated, this will be
-incorrectly flagged as a recursion.
-
-To handle this case, create another bit call TRANSITION and test it if the
-current context bit is already set. Flag the call as a recursion if the
-TRANSITION bit is already set, and if not, set it and continue. The
-TRANSITION bit will be cleared normally on the return of the function that
-set it, or if the current context bit is clear, set it and clear the
-TRANSITION bit to allow for another transition between the current context
-and an even higher one.
-
-Cc: stable@vger.kernel.org
-Fixes: edc15cafcbfa3 ("tracing: Avoid unnecessary multiple recursion checks")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace.h          | 23 +++++++++++++++++++++--
- kernel/trace/trace_selftest.c |  9 +++++++--
- 2 files changed, 28 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index fee535a89560..1dadef445cd1 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -637,6 +637,12 @@ enum {
- 	 * function is called to clear it.
- 	 */
- 	TRACE_GRAPH_NOTRACE_BIT,
-+
-+	/*
-+	 * When transitioning between context, the preempt_count() may
-+	 * not be correct. Allow for a single recursion to cover this case.
-+	 */
-+	TRACE_TRANSITION_BIT,
- };
- 
- #define trace_recursion_set(bit)	do { (current)->trace_recursion |= (1<<(bit)); } while (0)
-@@ -691,8 +697,21 @@ static __always_inline int trace_test_and_set_recursion(int start, int max)
- 		return 0;
- 
- 	bit = trace_get_context_bit() + start;
--	if (unlikely(val & (1 << bit)))
--		return -1;
-+	if (unlikely(val & (1 << bit))) {
-+		/*
-+		 * It could be that preempt_count has not been updated during
-+		 * a switch between contexts. Allow for a single recursion.
-+		 */
-+		bit = TRACE_TRANSITION_BIT;
-+		if (trace_recursion_test(bit))
-+			return -1;
-+		trace_recursion_set(bit);
-+		barrier();
-+		return bit + 1;
-+	}
-+
-+	/* Normal check passed, clear the transition to allow it again */
-+	trace_recursion_clear(TRACE_TRANSITION_BIT);
- 
- 	val |= 1 << bit;
- 	current->trace_recursion = val;
-diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-index b5e3496cf803..4738ad48a667 100644
---- a/kernel/trace/trace_selftest.c
-+++ b/kernel/trace/trace_selftest.c
-@@ -492,8 +492,13 @@ trace_selftest_function_recursion(void)
- 	unregister_ftrace_function(&test_rec_probe);
- 
- 	ret = -1;
--	if (trace_selftest_recursion_cnt != 1) {
--		pr_cont("*callback not called once (%d)* ",
-+	/*
-+	 * Recursion allows for transitions between context,
-+	 * and may call the callback twice.
-+	 */
-+	if (trace_selftest_recursion_cnt != 1 &&
-+	    trace_selftest_recursion_cnt != 2) {
-+		pr_cont("*callback not called once (or twice) (%d)* ",
- 			trace_selftest_recursion_cnt);
- 		goto out;
- 	}
--- 
-2.28.0
-
+RnJvbTogRGF2aWQgTGFpZ2h0DQo+IFNlbnQ6IDMxIE9jdG9iZXIgMjAyMCAxMjoxMg0KPiANCi4u
+Lg0KPiBUaGUgZ2NjIDcuNS4wIEkgaGF2ZSBoYW5keSBwcm9iYWJseSBnZW5lcmF0ZXMgdGhlIGJl
+c3QgY29kZSBmb3I6DQo+IA0KPiB1bnNpZ25lZCBjaGFyIHFfMih1bnNpZ25lZCBpbnQgcGMpDQo+
+IHsNCj4gICAgICAgICB1bnNpZ25lZCBjaGFyIHJjdHggPSAwOw0KPiANCj4gICAgICAgICByY3R4
+ICs9ICEhKHBjICYgKE5NSV9NQVNLKSk7DQo+ICAgICAgICAgcmN0eCArPSAhIShwYyAmIChOTUlf
+TUFTSyB8IEhBUkRJUlFfTUFTSykpOw0KPiAgICAgICAgIHJjdHggKz0gISEocGMgJiAoTk1JX01B
+U0sgfCBIQVJESVJRX01BU0sgfCBTT0ZUSVJRX09GRlNFVCkpOw0KPiANCj4gICAgICAgICByZXR1
+cm4gcmN0eDsNCj4gfQ0KPiANCj4gMDAwMDAwMDAwMDAwMDAwMCA8cV8yPjoNCj4gICAgMDogICBm
+NyBjNyAwMCAwMCBmMCAwMCAgICAgICB0ZXN0ICAgJDB4ZjAwMDAwLCVlZGkgICAgICMgY2xvY2sg
+MA0KPiAgICA2OiAgIDBmIDk1IGMwICAgICAgICAgICAgICAgIHNldG5lICAlYWwgICAgICAgICAg
+ICAgICAgIyBjbG9jayAxDQo+ICAgIDk6ICAgZjcgYzcgMDAgMDAgZmYgMDAgICAgICAgdGVzdCAg
+ICQweGZmMDAwMCwlZWRpICAgICAjIGNsb2NrIDANCj4gICAgZjogICAwZiA5NSBjMiAgICAgICAg
+ICAgICAgICBzZXRuZSAgJWRsICAgICAgICAgICAgICAgICMgY2xvY2sgMQ0KPiAgIDEyOiAgIDAx
+IGMyICAgICAgICAgICAgICAgICAgIGFkZCAgICAlZWF4LCVlZHggICAgICAgICAgIyBjbG9jayAy
+DQo+ICAgMTQ6ICAgODEgZTcgMDAgMDEgZmYgMDAgICAgICAgYW5kICAgICQweGZmMDEwMCwlZWRp
+DQo+ICAgMWE6ICAgMGYgOTUgYzAgICAgICAgICAgICAgICAgc2V0bmUgICVhbA0KPiAgIDFkOiAg
+IDAxIGQwICAgICAgICAgICAgICAgICAgIGFkZCAgICAlZWR4LCVlYXggICAgICAgICAgIyBjbG9j
+ayAzDQo+ICAgMWY6ICAgYzMgICAgICAgICAgICAgICAgICAgICAgcmV0cQ0KPiANCj4gSSBkb3Vi
+dCB0aGF0IGlzIGJlYXRhYmxlLg0KDQpJIGxpZWQsIHlvdSBzaG91bGQgYmUgYWJsZSB0byBnZXQ6
+DQoJdGVzdCAgICQweGZmMDAwMCwlZWRpICAgICAjIGNsb2NrIDANCglzZXRuZSAgJWFsICAgICAg
+ICAgICAgICAgICMgY2xvY2sgMQ0KCXRlc3QgICAkMHhmZjAxMDAsJWVkaSAgICAgIyBjbG9jayAw
+DQoJc2V0bmUgICVkbCAgICAgICAgICAgICAgICAjIGNsb2NrIDENCglhZGQgICAgJGZmZmZmMDAw
+LCVlZGkNCglhZGMgICAgJWRsLCAlYWwgICAgICAgICAgICMgY2xvY2sgMg0KDQpCdXQgSSBzdXNw
+ZWN0IGdldHRpbmcgaXQgZnJvbSB0aGUgY29tcGlsZXIgbWlnaHQgYmUgaGFyZCENCg0KCURhdmlk
+DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
+YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
+IChXYWxlcykNCg==
 
