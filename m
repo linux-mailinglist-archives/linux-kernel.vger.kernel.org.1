@@ -2,123 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E892A125B
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 02:20:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 886212A12A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 02:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725979AbgJaBUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Oct 2020 21:20:16 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7118 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgJaBUQ (ORCPT
+        id S1726350AbgJaB1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Oct 2020 21:27:19 -0400
+Received: from 93804.cloudwaysapps.com ([178.62.255.238]:56716 "EHLO
+        93804.cloudwaysapps.com" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726112AbgJaB1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Oct 2020 21:20:16 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CNLvd6NdRzLrrN;
-        Sat, 31 Oct 2020 09:20:13 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 31 Oct 2020 09:20:05 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <hdegoede@redhat.com>, <mgross@linux.intel.com>
-CC:     <platform-driver-x86@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, "Zou Wei" <zou_wei@huawei.com>
-Subject: [PATCH -next v3] platform/x86/dell-wmi-sysman: Make some symbols static
-Date:   Sat, 31 Oct 2020 09:32:02 +0800
-Message-ID: <1604107922-14950-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Fri, 30 Oct 2020 21:27:15 -0400
+X-Greylist: delayed 12185 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Oct 2020 21:27:03 EDT
+Received: from 127.0.0.1 (93804.cloudwaysapps.com [127.0.0.1])
+        by 93804.cloudwaysapps.com (Postfix) with SMTP id C0065220DE;
+        Fri, 30 Oct 2020 19:28:41 +0000 (UTC)
+Received: from [10.92.248.238] by 127.0.0.1 with ESMTP id <744952-75524> for <linux-acpi@vger.kernel.org>; Sat, 31 Oct 2020 02:20:53 +0600
+Message-ID: <dic5wasb-2c8kb$78@lu916y>
+From:   "JOHN PHIL" <gerradfinancialplanning@gmail.com>
+Reply-To: "JOHN PHIL" <gerradfinancialplanning@gmail.com>
+To:     linux-acpi@vger.kernel.org
+Subject: November Equity Investment 20-20 
+Date:   Sat, 31 Oct 20 02:20:53 GMT
+X-Mailer: Microsoft Outlook IMO, Build 9.0.2416 (9.0.2910.0)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/alternative;
+        boundary="07B_9ED_4_"
+X-Priority: 1
+X-MSMail-Priority: High
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warnings:
 
-./passobj-attributes.c:38:23: warning: symbol 'po_is_pass_set' was not declared. Should it be static?
-./passobj-attributes.c:70:23: warning: symbol 'po_current_password' was not declared. Should it be static?
-./passobj-attributes.c:99:23: warning: symbol 'po_new_password' was not declared. Should it be static?
-./passobj-attributes.c:103:23: warning: symbol 'po_min_pass_length' was not declared. Should it be static?
-./passobj-attributes.c:107:23: warning: symbol 'po_max_pass_length' was not declared. Should it be static?
-./passobj-attributes.c:116:23: warning: symbol 'po_mechanism' was not declared. Should it be static?
-./passobj-attributes.c:129:23: warning: symbol 'po_role' was not declared. Should it be static?
+--07B_9ED_4_
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
-v2:
-- put all of them in a way that each occupies only a single line
-v3:
-- shorten the warning paths
-- put the static codes a single line
- .../x86/dell-wmi-sysman/passobj-attributes.c        | 21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+How are you doing today I have a proposal which i think may interest you a=
+nd benefit you.I will like to give you full details of this via email:  ge=
+rradfinancialplanning@gmail.com
+Thanks.
 
-diff --git a/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c b/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
-index e6199fb..3abcd95 100644
---- a/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
-+++ b/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
-@@ -35,8 +35,7 @@ static ssize_t is_enabled_show(struct kobject *kobj, struct kobj_attribute *attr
- 	return ret;
- }
- 
--struct kobj_attribute po_is_pass_set =
--		__ATTR_RO(is_enabled);
-+static struct kobj_attribute po_is_pass_set = __ATTR_RO(is_enabled);
- 
- static ssize_t current_password_store(struct kobject *kobj,
- 				      struct kobj_attribute *attr,
-@@ -67,8 +66,7 @@ static ssize_t current_password_store(struct kobject *kobj,
- 	return count;
- }
- 
--struct kobj_attribute po_current_password =
--		__ATTR_WO(current_password);
-+static struct kobj_attribute po_current_password = __ATTR_WO(current_password);
- 
- static ssize_t new_password_store(struct kobject *kobj,
- 				  struct kobj_attribute *attr,
-@@ -96,16 +94,13 @@ static ssize_t new_password_store(struct kobject *kobj,
- 	return ret ? ret : count;
- }
- 
--struct kobj_attribute po_new_password =
--		__ATTR_WO(new_password);
-+static struct kobj_attribute po_new_password = __ATTR_WO(new_password);
- 
- attribute_n_property_show(min_password_length, po);
--struct kobj_attribute po_min_pass_length =
--		__ATTR_RO(min_password_length);
-+static struct kobj_attribute po_min_pass_length = __ATTR_RO(min_password_length);
- 
- attribute_n_property_show(max_password_length, po);
--struct kobj_attribute po_max_pass_length =
--		__ATTR_RO(max_password_length);
-+static struct kobj_attribute po_max_pass_length = __ATTR_RO(max_password_length);
- 
- static ssize_t mechanism_show(struct kobject *kobj, struct kobj_attribute *attr,
- 			 char *buf)
-@@ -113,8 +108,7 @@ static ssize_t mechanism_show(struct kobject *kobj, struct kobj_attribute *attr,
- 	return sprintf(buf, "password\n");
- }
- 
--struct kobj_attribute po_mechanism =
--	__ATTR_RO(mechanism);
-+static struct kobj_attribute po_mechanism = __ATTR_RO(mechanism);
- 
- static ssize_t role_show(struct kobject *kobj, struct kobj_attribute *attr,
- 			 char *buf)
-@@ -126,8 +120,7 @@ static ssize_t role_show(struct kobject *kobj, struct kobj_attribute *attr,
- 	return -EIO;
- }
- 
--struct kobj_attribute po_role =
--	__ATTR_RO(role);
-+static struct kobj_attribute po_role = __ATTR_RO(role);
- 
- static struct attribute *po_attrs[] = {
- 	&po_is_pass_set.attr,
--- 
-2.6.2
+John PHIL
+
+--07B_9ED_4_--
 
