@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEDB2A1AE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 23:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 695852A1B0A
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 23:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725900AbgJaWEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 18:04:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725782AbgJaWEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 18:04:00 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA77C2072C;
-        Sat, 31 Oct 2020 22:03:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604181840;
-        bh=vKrIdrKzKmTiUrHQcXrGyvaiTb/mYhEni5U1apPYqrc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bMevfpwqvpLfjFwh8YFzIlZUuC+xTTXqrqJ1Zz+MAr05a53LBKGnO4h5hMG3qvcY0
-         XuWKmRFHo4RjpgGfxOECl0JsfTZ6hbLHi5ljGYSbhgs8THDemi9i10rYCbUjnYMfV2
-         qWl3cPTzVGqp2G2sg2lJcod3+IvwHfR6cGeBgZe8=
-Date:   Sat, 31 Oct 2020 15:03:59 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Xie He <xie.he.0141@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Subject: Re: [PATCH net-next] net: dlci: Deprecate the DLCI driver (aka the
- Frame Relay layer)
-Message-ID: <20201031150359.0f944863@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <CAK8P3a1kJT50s+BVF8-fmX6ctX2pmVtcg5rnS__EBQvseuqWNA@mail.gmail.com>
-References: <20201028070504.362164-1-xie.he.0141@gmail.com>
-        <20201030200705.6e2039c2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <CAJht_EOk43LdKVU4qH1MB5pLKcSONazA9XsKJUMTG=79TJ-3Rg@mail.gmail.com>
-        <20201031095146.5e6945a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <CAK8P3a1kJT50s+BVF8-fmX6ctX2pmVtcg5rnS__EBQvseuqWNA@mail.gmail.com>
+        id S1725996AbgJaW2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 18:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725809AbgJaW2E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 18:28:04 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839E4C0617A6;
+        Sat, 31 Oct 2020 15:28:02 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a3so1237643pjh.1;
+        Sat, 31 Oct 2020 15:28:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9h1ScVWUC+i+KtoUQHyFrfgOWuvDnMNiIyhAQEjhvgM=;
+        b=WbAzPJREPzNvV5aaGs/lBng3vfW4b4rpZ0SONjztWP0PRhqIZhGJ9wNyM6WQd+hqcy
+         USQ5rm2Yw0BTvWHooEKAK30aLAvpKhSLMzuMoHEeSILbDncejGMqx8gIGJWaw5QIT6Lh
+         7rgWzdK8UBQL9hDdwteBsyqHMnGO9hkmy3yRyfodWgY+2fhhsHzfy9a6c3mZRGq6kEYo
+         f6nHjwyv2nIcYLwMZn7zly+8FhyJIUm9zpB6hUjmzXwkkksQqXDQNea2+7aYTJnCrRT+
+         WnI+oqI3ATv9qp+2ForhcUljF4RsNVEQbH3A5gqXpEMr8hVSFXVj/Ufv3G9lzmtUSAqr
+         nZfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9h1ScVWUC+i+KtoUQHyFrfgOWuvDnMNiIyhAQEjhvgM=;
+        b=g5YxQC0FcMGUuRfQjLu1zLJItFkMbwPEk/z4gXJV1vKhY+gy8tG5SZyeSapGcwrkP7
+         27+f3fHrtAcFpqy1xvQNvAuobNCMbgyzfq5oHIK4SA+pM8nYSDhv+aUwOHopsFNJDQIk
+         slgM8fdfZ6uVGWE79d6I2PngtD9w7BMqHQpRCMLB02Vw1+re84PqdFDYBAWretQqmCM0
+         q6goCN9U1K8oJcfwRzxVkZHfTVO9O+vlJMWlNuOmNsApQ2PxT3OL8QZbaUBzAAzK5b/C
+         xjRW3XdBO/HkOqfkm7N5LnoRPvhwvxc3d9UWUz94FhZgwKIYYrlxD/EP76vqQBdXA9pD
+         zwKQ==
+X-Gm-Message-State: AOAM531K6nO91p70/cYWHVrGK1J8O63Ps4JzKkC7fbaLzJNgyY3Poes/
+        7HOHK4AhjoiwbKTgWqF50GVlaogQFF1zW+XNWv4=
+X-Google-Smtp-Source: ABdhPJzp8EmB2Rpi40t5/vDOi2ikxni/i6IpuvPxUKK2T7NiUZOF4ZzvcjpvMxWul2bAEx2SiOF4ZVAh/af0hA/nBi4=
+X-Received: by 2002:a17:90a:3e02:: with SMTP id j2mr2554584pjc.210.1604183281987;
+ Sat, 31 Oct 2020 15:28:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201031004918.463475-1-xie.he.0141@gmail.com>
+ <20201031004918.463475-2-xie.he.0141@gmail.com> <CA+FuTSfKzKZ02st-enPfsgaQwTunPrmyK2x2jobZrWGb16KN0w@mail.gmail.com>
+ <CAJht_EOhnrBG3R8vJS559nugtB0rHVNBdM_ypJWiAN_kywevrg@mail.gmail.com>
+ <CAJht_EMgt4RF_Y1fV7_6VdzbMu0Fn8o+yW8C2RfnSsLjqsm_cg@mail.gmail.com> <CA+FuTSfkMBow-2xvY1SKuiQQVicbxYSD0agCdGwr_h8ceXA8Fw@mail.gmail.com>
+In-Reply-To: <CA+FuTSfkMBow-2xvY1SKuiQQVicbxYSD0agCdGwr_h8ceXA8Fw@mail.gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Sat, 31 Oct 2020 15:27:51 -0700
+Message-ID: <CAJht_EMsFNx0Vikah047Xi0LTq8r230ne3zVzqW1jeGBy-tUzw@mail.gmail.com>
+Subject: Re: [PATCH net-next v6 1/5] net: hdlc_fr: Simpify fr_rx by using
+ "goto rx_drop" to drop frames
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Oct 2020 22:41:30 +0100 Arnd Bergmann wrote:
-> On Sat, Oct 31, 2020 at 5:53 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > On Fri, 30 Oct 2020 22:10:42 -0700 Xie He wrote:  
-> > > > The usual way of getting rid of old code is to move it to staging/
-> > > > for a few releases then delete it, like Arnd just did with wimax.  
-> > >
-> > > Oh. OK. But I see "include/linux/if_frad.h" is included in
-> > > "net/socket.c", and there's still some code in "net/socket.c" related
-> > > to it. If we move all these files to "staging/", we need to change the
-> > > "include" line in "net/socket.c" to point to the new location, and we
-> > > still need to keep a little code in "net/socket.c". So I think if we
-> > > move it to "staging/", we can't do this in a clean way.  
-> >
-> > I'd just place that code under appropriate #ifdef CONFIG_ so we don't
-> > forget to remove it later.  It's just the dlci_ioctl_hook, right?
-> >
-> > Maybe others have better ideas, Arnd?  
-> 
-> I think it can just go in the bin directly.
+On Sat, Oct 31, 2020 at 12:48 PM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> Returning code in branches vs an error jump label seems more of a
+> personal preference, and to me does not pass the benefit/cost threshold.
 
-Ack, fine by me.
+This patch is necessary for the 2nd and 5th patch in this series,
+because the 2nd and 5th patch would add a lot of places where we need
+to "error out" and drop the frame. Without this patch, the 2nd and 5th
+patch would add a lot of useless code.
 
-> I actually submitted a couple of patches to clean up drivers/net/wan
-> last year but didn't follow up with a new version after we decided
-> that x.25 is still needed, see
-> https://lore.kernel.org/netdev/20191209151256.2497534-1-arnd@arndb.de/
-> 
-> I can resubmit if you like.
+The 2nd patch is also necessary for the 5th patch, because otherwise I
+would not know how to produce the 5th patch. The logic is so
+convoluted for me. And it seems to me that the simplest way for me
+would make all code to follow the logic of eth_type_trans.
 
-Let's just leave it at DLCI/SDLA for now, we can revisit once Dave 
-is back :)
+The patch series was actually a single patch previously:
+http://patchwork.ozlabs.org/project/netdev/patch/20201017051951.363514-1-xie.he.0141@gmail.com/
+I splitted it to make changes I do clearer. But really these patches
+should be as a whole. It's really hard for me to do the 5th patch
+without the 1st and 2nd patch.
