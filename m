@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1762A15C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D7E2A1604
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Oct 2020 12:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727393AbgJaLiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 07:38:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34944 "EHLO mail.kernel.org"
+        id S1727534AbgJaLk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 07:40:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727206AbgJaLgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 07:36:36 -0400
+        id S1727498AbgJaLku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 07:40:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E06A20853;
-        Sat, 31 Oct 2020 11:36:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BDB820719;
+        Sat, 31 Oct 2020 11:40:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604144196;
-        bh=VaJBdPvv6oADudM62GhWYNgpH+/EyjWa0c704nJQWw0=;
+        s=default; t=1604144448;
+        bh=JQvI5Rk/d6St9vPLXEzLK1SBRQD9N9wzQA1u74yXnlE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ajMwhNXFX/489ECKgikT4BMz3cw7WUUE0Wlk5jqTdIzRav50QKeW/Foj0KpNCASc0
-         JYzJi0k7FyaFHr5u9oB1+ekSTCmTAoGyiU7XQCooS59EuUxTwF4CsDrHXBiVC1OYwn
-         qDZ2fctMs+2Cyk1Vsw0srw17tNzsDaPnFXy9+bH0=
+        b=Mz2rnvnEXedl+W5VY6aqp3N+QXckAtUz2OwboPzme3FBVz3/Df1ya4ErprHhXxn9A
+         EybUBJIxZaZARiT1Nu7Y8Kj7OtcR01L5AaE29lX1/vn5PwrYpAP9NevJ3Yn1qYwZF5
+         OxBpyQYXVlkKEDZg0+Ymi+c9ad0veAAS/YcfwraQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.4 42/49] serial: pl011: Fix lockdep splat when handling magic-sysrq interrupt
-Date:   Sat, 31 Oct 2020 12:35:38 +0100
-Message-Id: <20201031113457.471013483@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.8 07/70] io_uring: return cancelation status from poll/timeout/files handlers
+Date:   Sat, 31 Oct 2020 12:35:39 +0100
+Message-Id: <20201031113459.847920459@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201031113455.439684970@linuxfoundation.org>
-References: <20201031113455.439684970@linuxfoundation.org>
+In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
+References: <20201031113459.481803250@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,92 +42,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Jens Axboe <axboe@kernel.dk>
 
-commit 534cf755d9df99e214ddbe26b91cd4d81d2603e2 upstream.
+commit 76e1b6427fd8246376a97e3227049d49188dfb9c upstream.
 
-Issuing a magic-sysrq via the PL011 causes the following lockdep splat,
-which is easily reproducible under QEMU:
+Return whether we found and canceled requests or not. This is in
+preparation for using this information, no functional changes in this
+patch.
 
-  | sysrq: Changing Loglevel
-  | sysrq: Loglevel set to 9
-  |
-  | ======================================================
-  | WARNING: possible circular locking dependency detected
-  | 5.9.0-rc7 #1 Not tainted
-  | ------------------------------------------------------
-  | systemd-journal/138 is trying to acquire lock:
-  | ffffab133ad950c0 (console_owner){-.-.}-{0:0}, at: console_lock_spinning_enable+0x34/0x70
-  |
-  | but task is already holding lock:
-  | ffff0001fd47b098 (&port_lock_key){-.-.}-{2:2}, at: pl011_int+0x40/0x488
-  |
-  | which lock already depends on the new lock.
-
-  [...]
-
-  |  Possible unsafe locking scenario:
-  |
-  |        CPU0                    CPU1
-  |        ----                    ----
-  |   lock(&port_lock_key);
-  |                                lock(console_owner);
-  |                                lock(&port_lock_key);
-  |   lock(console_owner);
-  |
-  |  *** DEADLOCK ***
-
-The issue being that CPU0 takes 'port_lock' on the irq path in pl011_int()
-before taking 'console_owner' on the printk() path, whereas CPU1 takes
-the two locks in the opposite order on the printk() path due to setting
-the "console_owner" prior to calling into into the actual console driver.
-
-Fix this in the same way as the msm-serial driver by dropping 'port_lock'
-before handling the sysrq.
-
-Cc: <stable@vger.kernel.org> # 4.19+
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Link: https://lore.kernel.org/r/20200811101313.GA6970@willie-the-truck
-Signed-off-by: Peter Zijlstra <peterz@infradead.org>
-Tested-by: Will Deacon <will@kernel.org>
-Signed-off-by: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20200930120432.16551-1-will@kernel.org
+Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/tty/serial/amba-pl011.c |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ fs/io_uring.c |   30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
 
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -313,8 +313,9 @@ static void pl011_write(unsigned int val
-  */
- static int pl011_fifo_to_tty(struct uart_amba_port *uap)
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1143,15 +1143,23 @@ static bool io_task_match(struct io_kioc
+ 	return false;
+ }
+ 
+-static void io_kill_timeouts(struct io_ring_ctx *ctx, struct task_struct *tsk)
++/*
++ * Returns true if we found and killed one or more timeouts
++ */
++static bool io_kill_timeouts(struct io_ring_ctx *ctx, struct task_struct *tsk)
  {
--	u16 status;
- 	unsigned int ch, flag, fifotaken;
-+	int sysrq;
-+	u16 status;
+ 	struct io_kiocb *req, *tmp;
++	int canceled = 0;
  
- 	for (fifotaken = 0; fifotaken != 256; fifotaken++) {
- 		status = pl011_read(uap, REG_FR);
-@@ -349,10 +350,12 @@ static int pl011_fifo_to_tty(struct uart
- 				flag = TTY_FRAME;
- 		}
+ 	spin_lock_irq(&ctx->completion_lock);
+-	list_for_each_entry_safe(req, tmp, &ctx->timeout_list, list)
+-		if (io_task_match(req, tsk))
++	list_for_each_entry_safe(req, tmp, &ctx->timeout_list, list) {
++		if (io_task_match(req, tsk)) {
+ 			io_kill_timeout(req);
++			canceled++;
++		}
++	}
+ 	spin_unlock_irq(&ctx->completion_lock);
++	return canceled != 0;
+ }
  
--		if (uart_handle_sysrq_char(&uap->port, ch & 255))
--			continue;
-+		spin_unlock(&uap->port.lock);
-+		sysrq = uart_handle_sysrq_char(&uap->port, ch & 255);
-+		spin_lock(&uap->port.lock);
+ static void __io_queue_deferred(struct io_ring_ctx *ctx)
+@@ -4650,7 +4658,10 @@ static bool io_poll_remove_one(struct io
+ 	return do_complete;
+ }
  
--		uart_insert_char(&uap->port, ch, UART011_DR_OE, ch, flag);
-+		if (!sysrq)
-+			uart_insert_char(&uap->port, ch, UART011_DR_OE, ch, flag);
+-static void io_poll_remove_all(struct io_ring_ctx *ctx, struct task_struct *tsk)
++/*
++ * Returns true if we found and killed one or more poll requests
++ */
++static bool io_poll_remove_all(struct io_ring_ctx *ctx, struct task_struct *tsk)
+ {
+ 	struct hlist_node *tmp;
+ 	struct io_kiocb *req;
+@@ -4670,6 +4681,8 @@ static void io_poll_remove_all(struct io
+ 
+ 	if (posted)
+ 		io_cqring_ev_posted(ctx);
++
++	return posted != 0;
+ }
+ 
+ static int io_poll_cancel(struct io_ring_ctx *ctx, __u64 sqe_addr)
+@@ -7744,11 +7757,14 @@ static void io_cancel_defer_files(struct
  	}
+ }
  
- 	return fifotaken;
+-static void io_uring_cancel_files(struct io_ring_ctx *ctx,
++/*
++ * Returns true if we found and killed one or more files pinning requests
++ */
++static bool io_uring_cancel_files(struct io_ring_ctx *ctx,
+ 				  struct files_struct *files)
+ {
+ 	if (list_empty_careful(&ctx->inflight_list))
+-		return;
++		return false;
+ 
+ 	io_cancel_defer_files(ctx, files);
+ 	/* cancel all at once, should be faster than doing it one by one*/
+@@ -7811,6 +7827,8 @@ static void io_uring_cancel_files(struct
+ 		schedule();
+ 		finish_wait(&ctx->inflight_wait, &wait);
+ 	}
++
++	return true;
+ }
+ 
+ static bool io_cancel_task_cb(struct io_wq_work *work, void *data)
 
 
