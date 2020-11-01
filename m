@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70592A2049
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2EF2A204D
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727205AbgKARVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:21:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39204 "EHLO
+        id S1727093AbgKARYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:24:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28561 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727087AbgKARVi (ORCPT
+        by vger.kernel.org with ESMTP id S1727024AbgKARYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:21:38 -0500
+        Sun, 1 Nov 2020 12:24:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604251296;
+        s=mimecast20190719; t=1604251460;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=j4Fd3vNf6QkiJ2K1fA3WX6EFw4MpOCKOi1CDGbw0lNw=;
-        b=YMrKEBCTvrZ+C5BV+u4IxfyMPRJvommXKM1edpSyZNtoDM3u2MxsBTFSe2Xf3m0uZMaWzF
-        T9TUGk99xv6Mh19mJKwn+wPpFB7Bp+u9FSTNXZGbKuKSm0jx7lJpY9nwsNRVMKRn0nKYHa
-        qatXSXu4Ta0fmoQdxaz5EDdDaC1udLc=
+         to:to:cc:cc; bh=ar42oVriuRci3B5JCt0ie/o9rZYCCxXolg155/aarmA=;
+        b=UxsJQ+MxAQM5o4IjHP8nhqiVIWywmDJyMbPmvK61v1CzSfwQbFp74W2t6dOKmtaluZVWT4
+        6c0pD2fQwDnr5sjyt8Q6UEPrnS5E78JWXieKlJ+qanD5wjw3ZGEnMhktNXsxyqQouz1eWK
+        /I6fWF1nz3m/SA0nccdGNGBV/P7RYas=
 Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
  [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-451-39HG4Y0OPla0QgvihZCvQg-1; Sun, 01 Nov 2020 12:21:34 -0500
-X-MC-Unique: 39HG4Y0OPla0QgvihZCvQg-1
-Received: by mail-ot1-f72.google.com with SMTP id b22so5274725otp.12
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 09:21:34 -0800 (PST)
+ us-mta-473-0LzFq3tAP5SOIbL1ZVBPZA-1; Sun, 01 Nov 2020 12:24:19 -0500
+X-MC-Unique: 0LzFq3tAP5SOIbL1ZVBPZA-1
+Received: by mail-ot1-f72.google.com with SMTP id g22so5270816otp.23
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 09:24:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=j4Fd3vNf6QkiJ2K1fA3WX6EFw4MpOCKOi1CDGbw0lNw=;
-        b=mhc/DzuhQUt2ttwGNOsgG6FbmDkJk1FxDICybbL87QayDaymLQuW8plzwLpoXxLb0G
-         H7xmJVZ95hQy466XxIxBARD+tZ8Hsp5Zb/efnmrajEbNDd4UwFaSrviEHVQV1iPcuXOy
-         40zejYLZIORY4l4Q3HWP52h9Rk9vbVLhMq/hrKkARr4yGvfFQQS8KM0/Dwn5EdAIkO5Q
-         boJIPxrpYbf9SEbAYaI2heo8wKfv5Pz8BAjAQrRX/x+nBJmBXrL0IcmG1RmzNYJS4sDR
-         GqmBjAMQfPOYj39e9HEg9jHmA+eM514DRuMlJTYTgytPrKX4kRPgHFBu5ugxd35Eau32
-         FKrw==
-X-Gm-Message-State: AOAM533fVW2AumAY50zkQKJ3xVI6n2N+IAeYC2uCGKKouKk3H6uV0Te9
-        RxUiOlqEVfg6zHR4d6G4uOsngHmQNPDDbQtt2bIFEaTgBoWhpC1zaD2ioI7UuwbpGi3hjn5hflH
-        qmc12xSM7i72o40aB1moL8v8t
-X-Received: by 2002:a05:6808:696:: with SMTP id k22mr8123465oig.107.1604251293922;
-        Sun, 01 Nov 2020 09:21:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwhggkrimbcrzhi+3d89K9YE9zyRIbl7xcXdDmd6ao4Lvit7XtdyjCGL1x9+BZ19J1MOGOvMA==
-X-Received: by 2002:a05:6808:696:: with SMTP id k22mr8123461oig.107.1604251293781;
-        Sun, 01 Nov 2020 09:21:33 -0800 (PST)
+        bh=ar42oVriuRci3B5JCt0ie/o9rZYCCxXolg155/aarmA=;
+        b=ZGWlbUJla83JBI7JTcT/HlrMyA75FUSWFQS1MioG5uexIzNAEQ+uyXw5eBYRCOKjlv
+         s7nQTxqEg/wVzZMeCZLl34qKHtfngFzbHznDcPotPL5nfV2AoNqAku15FVrfXg3dZoMV
+         NO4XPNKLDw1p6c6lN/cx5US3tE1QgFKTvnDZ76Jr2yVL3zZAOlNg9nBYcZGPzptmun9v
+         o7DTHFeVAJpwWlpwVfXbQRVDqwrX72ugjpmctUwbK/SaJjUcZOdzMWg91TTUGsZk1QS3
+         g1lvt+Y5EeAVI33bsuwFfkq4ciqLKF9TDNHqSAhxegnhYNtybRE2Md30W+TxDImDKIeG
+         LOQg==
+X-Gm-Message-State: AOAM53258LYkET1CMgh+aVdezKN1aUN2j7RoqcAOsAwqb7hFr0i80Avg
+        0TUb2fAHelxRcJ5LEWgutyfrlIdBy8nikE3SFBI8hIrLylhJm+28pqYhwHtoYoi2PDGHz8MHquT
+        IjssIC/hMWcNsmDqRW2PtYN3u
+X-Received: by 2002:a05:6830:1254:: with SMTP id s20mr8926216otp.314.1604251458342;
+        Sun, 01 Nov 2020 09:24:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzQkolyAC8MckoqHgNScKCXFlJJ5Cm2sr+AdV7ggKnHMboMeTp7z/vvKJ6QiYpG4hS1bmUcUw==
+X-Received: by 2002:a05:6830:1254:: with SMTP id s20mr8926198otp.314.1604251458172;
+        Sun, 01 Nov 2020 09:24:18 -0800 (PST)
 Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id x13sm2965686otg.66.2020.11.01.09.21.32
+        by smtp.gmail.com with ESMTPSA id g3sm2941188oif.26.2020.11.01.09.24.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Nov 2020 09:21:33 -0800 (PST)
+        Sun, 01 Nov 2020 09:24:17 -0800 (PST)
 From:   trix@redhat.com
 To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
-        srinivas.kandagatla@linaro.org
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] ASoC: wcd9335: remove unneeded semicolon
-Date:   Sun,  1 Nov 2020 09:21:28 -0800
-Message-Id: <20201101172128.2305539-1-trix@redhat.com>
+        tiwai@suse.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
+        spujar@nvidia.com
+Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] ASoC: tegra: remove unneeded semicolon
+Date:   Sun,  1 Nov 2020 09:24:12 -0800
+Message-Id: <20201101172412.2306144-1-trix@redhat.com>
 X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -67,14 +67,16 @@ A semicolon is not needed after a switch statement.
 
 Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- sound/soc/codecs/wcd-clsh-v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/tegra/tegra186_dspk.c | 6 +++---
+ sound/soc/tegra/tegra210_dmic.c | 6 +++---
+ sound/soc/tegra/tegra210_i2s.c  | 6 +++---
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd-clsh-v2.c b/sound/soc/codecs/wcd-clsh-v2.c
-index 817d8259758c..73258e292e7e 100644
---- a/sound/soc/codecs/wcd-clsh-v2.c
-+++ b/sound/soc/codecs/wcd-clsh-v2.c
-@@ -507,7 +507,7 @@ static bool wcd_clsh_is_state_valid(int state)
+diff --git a/sound/soc/tegra/tegra186_dspk.c b/sound/soc/tegra/tegra186_dspk.c
+index 0cbe31e2c7e9..7d9948fb2ca7 100644
+--- a/sound/soc/tegra/tegra186_dspk.c
++++ b/sound/soc/tegra/tegra186_dspk.c
+@@ -310,7 +310,7 @@ static bool tegra186_dspk_wr_reg(struct device *dev, unsigned int reg)
  		return true;
  	default:
  		return false;
@@ -82,7 +84,87 @@ index 817d8259758c..73258e292e7e 100644
 +	}
  }
  
- /*
+ static bool tegra186_dspk_rd_reg(struct device *dev, unsigned int reg)
+@@ -326,7 +326,7 @@ static bool tegra186_dspk_rd_reg(struct device *dev, unsigned int reg)
+ 		return true;
+ 	default:
+ 		return false;
+-	};
++	}
+ }
+ 
+ static bool tegra186_dspk_volatile_reg(struct device *dev, unsigned int reg)
+@@ -339,7 +339,7 @@ static bool tegra186_dspk_volatile_reg(struct device *dev, unsigned int reg)
+ 		return true;
+ 	default:
+ 		return false;
+-	};
++	}
+ }
+ 
+ static const struct regmap_config tegra186_dspk_regmap = {
+diff --git a/sound/soc/tegra/tegra210_dmic.c b/sound/soc/tegra/tegra210_dmic.c
+index a661f40bc41c..ead2c99bf72e 100644
+--- a/sound/soc/tegra/tegra210_dmic.c
++++ b/sound/soc/tegra/tegra210_dmic.c
+@@ -322,7 +322,7 @@ static bool tegra210_dmic_wr_reg(struct device *dev, unsigned int reg)
+ 		return true;
+ 	default:
+ 		return false;
+-	};
++	}
+ }
+ 
+ static bool tegra210_dmic_rd_reg(struct device *dev, unsigned int reg)
+@@ -338,7 +338,7 @@ static bool tegra210_dmic_rd_reg(struct device *dev, unsigned int reg)
+ 		return true;
+ 	default:
+ 		return false;
+-	};
++	}
+ }
+ 
+ static bool tegra210_dmic_volatile_reg(struct device *dev, unsigned int reg)
+@@ -353,7 +353,7 @@ static bool tegra210_dmic_volatile_reg(struct device *dev, unsigned int reg)
+ 		return true;
+ 	default:
+ 		return false;
+-	};
++	}
+ }
+ 
+ static const struct regmap_config tegra210_dmic_regmap_config = {
+diff --git a/sound/soc/tegra/tegra210_i2s.c b/sound/soc/tegra/tegra210_i2s.c
+index a383bd5c51cd..ca31ec92e508 100644
+--- a/sound/soc/tegra/tegra210_i2s.c
++++ b/sound/soc/tegra/tegra210_i2s.c
+@@ -662,7 +662,7 @@ static bool tegra210_i2s_wr_reg(struct device *dev, unsigned int reg)
+ 		return true;
+ 	default:
+ 		return false;
+-	};
++	}
+ }
+ 
+ static bool tegra210_i2s_rd_reg(struct device *dev, unsigned int reg)
+@@ -682,7 +682,7 @@ static bool tegra210_i2s_rd_reg(struct device *dev, unsigned int reg)
+ 		return true;
+ 	default:
+ 		return false;
+-	};
++	}
+ }
+ 
+ static bool tegra210_i2s_volatile_reg(struct device *dev, unsigned int reg)
+@@ -701,7 +701,7 @@ static bool tegra210_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ 		return true;
+ 	default:
+ 		return false;
+-	};
++	}
+ }
+ 
+ static const struct regmap_config tegra210_i2s_regmap_config = {
 -- 
 2.18.1
 
