@@ -2,187 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF422A2164
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 21:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD572A218E
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 21:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727649AbgKAUQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 15:16:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727289AbgKAUQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 15:16:24 -0500
-Received: from localhost (host-213-179-129-39.customer.m-online.net [213.179.129.39])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1A5A22253;
-        Sun,  1 Nov 2020 20:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604261783;
-        bh=Q9+DNPy01/d6QOTNLTpXmnb96hr2wRSaRSliuVZgSfw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HuM41gDsnUSP+oOKwGhvqCR8H8RP66Er0wiLHxdgacfs+Gpf9awx8liietvFpcOOk
-         MxaypMf0W+Y5cv14JFrH03yAeA87saQiAmXDqQiSlPJoXafF6nFNnXrVlxihv3dXNz
-         hGoki06zj7bh2hXPgvc/ArR1dcSypdVPpu3MfidA=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        gregkh <gregkh@linuxfoundation.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>, linux-rdma@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        Parav Pandit <parav@nvidia.com>, Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
-        shiraz.saleem@intel.com, dan.j.williams@intel.com,
-        kiran.patil@intel.com, linux-kernel@vger.kernel.org
-Subject: [PATCH mlx5-next v1 11/11] RDMA/mlx5: Remove IB representors dead code
-Date:   Sun,  1 Nov 2020 22:15:42 +0200
-Message-Id: <20201101201542.2027568-12-leon@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201101201542.2027568-1-leon@kernel.org>
-References: <20201101201542.2027568-1-leon@kernel.org>
+        id S1727149AbgKAUeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 15:34:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726848AbgKAUeb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 15:34:31 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCAEC0617A6;
+        Sun,  1 Nov 2020 12:34:31 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id f37so10715994otf.12;
+        Sun, 01 Nov 2020 12:34:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=y2KX4eXqEBFd3N13MAMD1R601G4yAEV0IrtHFCZnFDw=;
+        b=WTNRjYOvOvfJfW/uQCnnLn/hrs6xZLE9pkoQ7q/ylkdswhadxSLO1XwQTIGu50qDw3
+         AoHv1AV8CiZ3OBaX7W2wRgLPH6PVd3Kss1YRhEyKZt33vcVlQoJ6czp3By0P1HoV2GTe
+         /BKAZPwkxrJ5BV6UkEfMmNwHA78E28hCeKPfk6CyM+4OXzRi/XD3b5WUb9hhHEg8PGrg
+         3dgFLvZM9N/9GSmYwnWm/kvaThfDCu7G4gZ7b3yNPac64+h5ErWW/lL425jVMN7Tk6wD
+         w1jrp9W2BdLaHGqPIzVyaRrbGe6svIyEkt7RLgSG7RsaFr4M6CWZA524vxxaSDdfItFv
+         dwrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=y2KX4eXqEBFd3N13MAMD1R601G4yAEV0IrtHFCZnFDw=;
+        b=tUB6aT5xZDCxRajlc4bsnXcInIc6W6ytw0pSVgHUDuqPyfNNSPABNp9ucVZTQsmOxL
+         TXOOaIl0pIAe5B7QYZVJ5ncxk5WPmpj/7/3Zu8rbcVMNK90sRHgJ3yrYlDwn42HdLPjS
+         gCrFSQFYcUJRWpFVtjTr9xgk4g0md5oybZU0TFPHuWs+9m2Sr2U3ysMd4Q+Ob7raDJQN
+         m/2WiRHsweiwBQzQzhqUIl0xauiQLAe+MNV/Pr/CAmpciJN3N1ejVFphGeEWorvLzoOk
+         xRvyzZIIAA69+8wr77qh/QkmAiuc3i/HX5h91gFtIaFxq5Mmgj+CyS18Ci9mM84Yl911
+         xytw==
+X-Gm-Message-State: AOAM530lwqNKt0HkMMdqsLeATCxCDwQHo2tG+ybK52ZClqgEk5HCZ/Lp
+        HRBR5oL1P7XAc0PXPGsIEUU=
+X-Google-Smtp-Source: ABdhPJzyb2JemqyuUeg+2PxSrG0wLHyouKTEH7+fGf1hXm2RID51Ma7cSz4FXlsIk6QZJl9w/O0o/A==
+X-Received: by 2002:a9d:828:: with SMTP id 37mr8952103oty.147.1604262870362;
+        Sun, 01 Nov 2020 12:34:30 -0800 (PST)
+Received: from ?IPv6:2600:1700:4a30:eaf0::41? ([2600:1700:4a30:eaf0::41])
+        by smtp.gmail.com with ESMTPSA id h7sm2959273oop.40.2020.11.01.12.34.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Nov 2020 12:34:29 -0800 (PST)
+Subject: Re: [PATCH] Add devices for HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
+To:     Greg KH <greg@kroah.com>
+Cc:     Chris Ye <lzye@google.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, trivial@kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>
+References: <20201028235113.660272-1-lzye@google.com>
+ <20201029054147.GB3039992@kroah.com>
+ <CAFFudd+7DrJ+vYZ5wQ58mei6VMkMPGCpS1d7DwZMrzM-FVKzqQ@mail.gmail.com>
+ <20201029191413.GB986195@kroah.com>
+ <8975d128-e47f-c97c-fbd9-6045de67f34a@gmail.com>
+ <20201030104831.GD2395528@kroah.com>
+From:   Chris Ye <linzhao.ye@gmail.com>
+Message-ID: <a18b62e9-2c40-c20c-9822-13e0a9930aeb@gmail.com>
+Date:   Sun, 1 Nov 2020 12:34:28 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
+In-Reply-To: <20201030104831.GD2395528@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Thanks Greg,  I just sent out the v2 version of patches, to maintainers 
+of HID core layer.
 
-Delete dead code.
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/ib_rep.c | 31 +++++++----------------------
- drivers/infiniband/hw/mlx5/ib_rep.h | 31 -----------------------------
- 2 files changed, 7 insertions(+), 55 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/ib_rep.c b/drivers/infiniband/hw/mlx5/ib_rep.c
-index 9810bdd7f3bc..a1a9450ed92c 100644
---- a/drivers/infiniband/hw/mlx5/ib_rep.c
-+++ b/drivers/infiniband/hw/mlx5/ib_rep.c
-@@ -13,7 +13,7 @@ mlx5_ib_set_vport_rep(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
- 	struct mlx5_ib_dev *ibdev;
- 	int vport_index;
-
--	ibdev = mlx5_ib_get_uplink_ibdev(dev->priv.eswitch);
-+	ibdev = mlx5_eswitch_uplink_get_proto_dev(dev->priv.eswitch, REP_IB);
- 	vport_index = rep->vport_index;
-
- 	ibdev->port[vport_index].rep = rep;
-@@ -74,6 +74,11 @@ mlx5_ib_vport_rep_load(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
- 	return ret;
- }
-
-+static void *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
-+{
-+	return rep->rep_data[REP_IB].priv;
-+}
-+
- static void
- mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
- {
-@@ -91,40 +96,18 @@ mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
- 		__mlx5_ib_remove(dev, dev->profile, MLX5_IB_STAGE_MAX);
- }
-
--static void *mlx5_ib_vport_get_proto_dev(struct mlx5_eswitch_rep *rep)
--{
--	return mlx5_ib_rep_to_dev(rep);
--}
--
- static const struct mlx5_eswitch_rep_ops rep_ops = {
- 	.load = mlx5_ib_vport_rep_load,
- 	.unload = mlx5_ib_vport_rep_unload,
--	.get_proto_dev = mlx5_ib_vport_get_proto_dev,
-+	.get_proto_dev = mlx5_ib_rep_to_dev,
- };
-
--struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
--					  u16 vport_num)
--{
--	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_IB);
--}
--
- struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
- 					  u16 vport_num)
- {
- 	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_ETH);
- }
-
--struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
--{
--	return mlx5_eswitch_uplink_get_proto_dev(esw, REP_IB);
--}
--
--struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
--					   u16 vport_num)
--{
--	return mlx5_eswitch_vport_rep(esw, vport_num);
--}
--
- struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
- 						   struct mlx5_ib_sq *sq,
- 						   u16 port)
-diff --git a/drivers/infiniband/hw/mlx5/ib_rep.h b/drivers/infiniband/hw/mlx5/ib_rep.h
-index 93f562735e89..ce1dcb105dbd 100644
---- a/drivers/infiniband/hw/mlx5/ib_rep.h
-+++ b/drivers/infiniband/hw/mlx5/ib_rep.h
-@@ -12,11 +12,6 @@
- extern const struct mlx5_ib_profile raw_eth_profile;
-
- #ifdef CONFIG_MLX5_ESWITCH
--struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
--					  u16 vport_num);
--struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw);
--struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
--					   u16 vport_num);
- int mlx5r_rep_init(void);
- void mlx5r_rep_cleanup(void);
- struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
-@@ -25,26 +20,6 @@ struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
- struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
- 					  u16 vport_num);
- #else /* CONFIG_MLX5_ESWITCH */
--static inline
--struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
--					  u16 vport_num)
--{
--	return NULL;
--}
--
--static inline
--struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
--{
--	return NULL;
--}
--
--static inline
--struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
--					   u16 vport_num)
--{
--	return NULL;
--}
--
- static inline int mlx5r_rep_init(void) { return 0; }
- static inline void mlx5r_rep_cleanup(void) {}
- static inline
-@@ -62,10 +37,4 @@ struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
- 	return NULL;
- }
- #endif
--
--static inline
--struct mlx5_ib_dev *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
--{
--	return rep->rep_data[REP_IB].priv;
--}
- #endif /* __MLX5_IB_REP_H__ */
---
-2.28.0
-
+On 10/30/20 3:48 AM, Greg KH wrote:
+> A: http://en.wikipedia.org/wiki/Top_post
+> Q: Were do I find info about this thing called top-posting?
+> A: Because it messes up the order in which people normally read text.
+> Q: Why is top-posting such a bad thing?
+> A: Top-posting.
+> Q: What is the most annoying thing in e-mail?
+>
+> A: No.
+> Q: Should I include quotations after my reply?
+>
+> http://daringfireball.net/2007/07/on_top
+>
+> On Thu, Oct 29, 2020 at 01:04:06PM -0700, Chris Ye wrote:
+>> Hi Greg,
+>>
+>> Yes, I can see them on https://lore.kernel.org/linux-input/ now.
+>>
+>> But I didn't put [PATCH v1] in subject,  should I sent them again with
+>> version?
+> It should be v2 at the least, right?  And please read the documentation
+> for how to do that properly.
+>
+> thanks,
+>
+> greg k-h
