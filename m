@@ -2,173 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 919812A1E2C
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 14:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 873012A1E2D
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 14:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgKANBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 08:01:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40096 "EHLO
+        id S1726708AbgKANCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 08:02:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgKANBS (ORCPT
+        with ESMTP id S1726496AbgKANCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 08:01:18 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8397C061A04
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 05:01:16 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id p9so14855429eji.4
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 05:01:16 -0800 (PST)
+        Sun, 1 Nov 2020 08:02:17 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF515C0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 05:02:16 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id z2so10524155ilh.11
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 05:02:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=lMd0z90fXBCFWfGxAqTvV9qLhHTZI7s2QacRT/7mEpY=;
-        b=s5u/f0u6ytLNpJGnXy/S0S7MrM0ha4Mq49kyjK8PEHbdUiC2uq3x4U2BtjmaWHI2ml
-         /5xPzY6lwXBg/CVbQ5/OU/9iNXLSrlUSXgj08TAIDQplXNXEs5punOiJ6qXRiqCNLFR/
-         BfeVaizUfrIEA8maStH0LZ+sKyI3cg80hvxxN6sOH9QA8AZotqUIhJPYaXk0tll4ht4z
-         UfcnbQ0r8u0gesCVpnM085gpHsLejdXMbyLcgaKzs35a6YC32cN2j1kP6lpiDncnyBsa
-         KYuCkYZgypcqTlR7xNlGTl0/XVmCFv9FOhEk4pAt9NIuHCIjY5hdGqutARTuorewdj9m
-         mL4w==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ky8/funr0872b0Nzskq8ppm2c1E4LyAhE3W3WbvWHl8=;
+        b=GDsDTgzNqTbjIqPzLYNb8sFl3527lCRwwDuuqrzWqgCd7a31DpNcbozeuFhwSLYTFI
+         iB5P9OUJ1UPScl1tx6RLUFNPn6v1aqc02SOdrA7C1OJuJ3nDpV9LW9+DDBn2hN/LCcSn
+         GKQ8DUg2+aL/ur7VILUYKb32Hg3lMovohkqDLwCo9swA2Cg5APT5FCf75rY8v8wlmxBM
+         gc0Ik+n4a6dioN+9mEUNJX7DxkFCUxfoFBnLY2rma676wfhc0Bpl7WPKN0xPXRjXN4LZ
+         lSfUEuI6bXGZ1xhredcF+zWmX2oleXaVsfkN5Fy/+KYU1vgv/L0lE7NfNHykrvoMr466
+         aelQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lMd0z90fXBCFWfGxAqTvV9qLhHTZI7s2QacRT/7mEpY=;
-        b=k37SuJ00srloY3nVSrW4U9HByKU5vcdEuzze5DkiwqihKgMbcH9evE+q3ORtiU0AWd
-         kj6B+/3tgLSkNoYQth8ElvdTcyETsteR6vEsxKA+BRrQ2Z6N2tN5x7Uo+qHRlrGT4KdM
-         wIRD0yHIlioLZMOOiHlilM8vXEg5iCRDkzGG987pOmqZULFvjAuPJNrumeRgUl3/FaPj
-         brKtfy7t3173JVkWJe1TwAXcFifwbkCpJDEpHXuGL61mQrWBupB1WCIMu4n5Pl2NWOXr
-         DKFxNH6PFKQ65U/Nfau/8WpKPnx7pzg2qBTJegqGqS9wHWtZQfKNXvehtQeydh9acmOS
-         9/iA==
-X-Gm-Message-State: AOAM532io1IeiXQT+kEW1oSJ4bqch4AMGSXmSwlwhWo73g77+Rs/qhk1
-        0MU711yWceHXkh+peEcCqRe7KA==
-X-Google-Smtp-Source: ABdhPJx5IXUuRrZWjeV1Da4yplp311qE7/LjDPeernxwNW2FV4qGEqKVBwgbxdqAIwowhy64Um6+OQ==
-X-Received: by 2002:a17:906:b043:: with SMTP id bj3mr10700471ejb.543.1604235675524;
-        Sun, 01 Nov 2020 05:01:15 -0800 (PST)
-Received: from localhost.localdomain (hst-221-79.medicom.bg. [84.238.221.79])
-        by smtp.gmail.com with ESMTPSA id l17sm7315001eji.14.2020.11.01.05.01.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Nov 2020 05:01:14 -0800 (PST)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH] venus: pm_helpers: Fix kernel module reload
-Date:   Sun,  1 Nov 2020 15:00:52 +0200
-Message-Id: <20201101130052.20974-1-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ky8/funr0872b0Nzskq8ppm2c1E4LyAhE3W3WbvWHl8=;
+        b=bADpb0v9DKxm9F9H8SlHIU//mSuXvjiBm8MpGRbFmPTClQ8x5ad7d8EVnuO06IJwtz
+         T0ACHp/02U94l/AO/dJC3hw2UjHAMtb28mCcIwx+b4wceS/0N1cG9HmnS8jwTuEZqzvR
+         TS9sA0HjXHhAQMyUgmKYhL+qwX9nWZqsoiFckC8qbPMIxCnkubAsISznCrQc6ohxwgMs
+         J+ltgQF8CRX64SHlvYQ6pqdJhAB7Cg7hUwXfAnq5v3aLkbxPRCeTZNW8pLvXsLNjDWvg
+         hKpD8hEGazFV0YxhEKxSND67GRPj0zuhE6SmTMT6OHJD3owAc1SHqpjDirQkCVd7RFtf
+         L5uQ==
+X-Gm-Message-State: AOAM5334IlbwSZvJe2JodXiFsqk3ZYP9IVTakTEbkivfBwd47dfyCJib
+        wkYfPUR/PGqFcJr31I1+OFWvZCmJ0oesO/bOsVI=
+X-Google-Smtp-Source: ABdhPJxUi2Y6aIwIi7RlM8YQywTq793nM7dbwZpYRrBu3BiKBToJYSk9Jw+2I4izVTGt5q75Ry4B3zO2oIjRZ34I90w=
+X-Received: by 2002:a05:6e02:f41:: with SMTP id y1mr7864806ilj.267.1604235736238;
+ Sun, 01 Nov 2020 05:02:16 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a92:bf0d:0:0:0:0:0 with HTTP; Sun, 1 Nov 2020 05:02:15 -0800 (PST)
+Reply-To: mrs.chantala2055@gmail.com
+From:   mrs chantal <mrsmirabelasseta1@gmail.com>
+Date:   Sun, 1 Nov 2020 13:02:15 +0000
+Message-ID: <CABeyuXeK2o-RDw7Jk783JC3Ek9v-Vqk2xdvE-+xQidTgDNgdAQ@mail.gmail.com>
+Subject: Dear Friend......
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After initial kernel module load during kernel boot and removing
-the module and try to load it again an Unable to handle kernel
-paging request is observed:
+We bring greetings to you in the name of the lord. This message is
+sent to you as a notification that you have been chosen to benefit
+from our charity project aimed at touching lives and helping those
+that we can across the world as God has blessed us. I won the
+Powerball lottery of $150Million on November 2, 2019 and I have
+voluntarily decided to donate the sum of $75Million to charity, I try
+to reach people randomly from different sources and modes so as to
+touch lives from different angles, Hence you are getting a message
+here.
 
-Unable to handle kernel paging request at virtual address ffffa44f7416eae0
- Mem abort info:
-   ESR = 0x96000047
-   EC = 0x25: DABT (current EL), IL = 32 bits
-   SET = 0, FnV = 0
-   EA = 0, S1PTW = 0
- Data abort info:
-   ISV = 0, ISS = 0x00000047
-   CM = 0, WnR = 1
- swapper pgtable: 4k pages, 48-bit VAs, pgdp=000000008147c000
- [ffffa44f7416eae0] pgd=000000017df9f003, p4d=000000017df9f003,
- pud=000000017df9e003, pmd=000000017df9b003, pte=0000000000000000
- Internal error: Oops: 96000047 [#1] PREEMPT SMP
- Modules linked in: venus_core(+) snd_soc_wsa881x regmap_sdw af_alg
-  snd_soc_wcd934x soundwire_qcom gpio_wcd934x q6asm_dai q6routing
-  q6adm q6afe_dai snd_soc_hdmi_codec q6afe q6asm q6dsp_common q6cor
-  display_connector rmtfs_mem drm ip_tables x_tables ipv6
-  [last unloaded: venus_core]
- CPU: 6 PID: 889 Comm: modprobe Tainted: G        W      5.10.0-rc1+ #8
- Hardware name: Thundercomm Dragonboard 845c (DT)
- pstate: 80400085 (Nzcv daIf +PAN -UAO -TCO BTYPE=--)
- pc : queued_spin_lock_slowpath+0x1dc/0x3c8
- lr : do_raw_spin_lock+0xc0/0x118
- sp : ffff8000142cb7b0
- x29: ffff8000142cb7b0 x28: 0000000000000013
- x27: ffffa44f72de5690 x26: 0000000000000003
- x25: ffff17c2d00f8080 x24: ffff17c2c0d78010
- x23: ffff17c2c0d4f700 x22: ffff17c2d00f8080
- x21: 0000000000000000 x20: ffffa44f74148000
- x19: ffff17c2c0d4f8f8 x18: 0000000000000000
- x17: 0000000000000000 x16: ffffa44f7342f158
- x15: 0000000000000040 x14: ffffa44f746e8320
- x13: 0000000000000228 x12: 0000000000000020
- x11: 0000000000000000 x10: 00000000001c0000
- x9 : 0000000000000000 x8 : ffff17c33d746ac0
- x7 : ffff17c2c109b000 x6 : ffffa44f7416eac0
- x5 : ffff17c33d746ac0 x4 : 0000000000000000
- x3 : ffff17c2c0d4f8f8 x2 : ffffa44f7416eae0
- x1 : ffffa44f7416eae0 x0 : ffff17c33d746ac8
- Call trace:
-  queued_spin_lock_slowpath+0x1dc/0x3c8
-  do_raw_spin_lock+0xc0/0x118
-  _raw_spin_lock_irqsave+0x80/0x14c
-  __pm_runtime_resume+0x38/0xb8
-  device_link_add+0x3b8/0x5d0
-  core_get_v4+0x268/0x2d8 [venus_core]
-  venus_probe+0x108/0x458 [venus_core]
-  platform_drv_probe+0x54/0xa8
-  really_probe+0xe4/0x3b0
-  driver_probe_device+0x58/0xb8
-  device_driver_attach+0x74/0x80
-  __driver_attach+0x58/0xe8
-  bus_for_each_dev+0x70/0xc0
-  driver_attach+0x24/0x30
-  bus_add_driver+0x150/0x1f8
-  driver_register+0x64/0x120
-  __platform_driver_register+0x48/0x58
-  qcom_venus_driver_init+0x20/0x1000 [venus_core]
-  do_one_initcall+0x84/0x458
-  do_init_module+0x58/0x208
-  load_module+0x1ec0/0x26a8
-  __do_sys_finit_module+0xb8/0xf8
-  __arm64_sys_finit_module+0x20/0x30
-  el0_svc_common.constprop.0+0x7c/0x1c0
-  do_el0_svc+0x24/0x90
-  el0_sync_handler+0x180/0x188
-  el0_sync+0x174/0x180
- Code: 91002100 8b0200c2 f861d884 aa0203e1 (f8246828)
- ---[ end trace f1f687c15fd6b2ca ]---
- note: modprobe[889] exited with preempt_count 1
+You have been listed as one of the lucky recipients to receive $9.6 M
+This donation is made out to you so to enable you strengthen your
+personal issues and mostly to generously help us extend hands of
+giving to the less privileged, orphans and charity organizations
+within your locality To verify
+https://www.powerball.com/winner-story/150-million-powerball-ticket-claimed
 
-After revisit the OPP part of the code I found that OPP pmdomain
-is detached with direct call to dev_pm_domain_detach instead of
-OPP wraper for detaching pmdomains with OPP table. Correct this
-by calling the OPP dev_pm_opp_detach_genpd.
+Get back to me on how to receive the donation through our official
+email address below You can also contact us via our
+Whatsapp number +19 71  24 58 139 and email address (
+mrschantal066@gmail.com)  The earlier you contact our email the
+earlier you receieve your donation
 
-Fixes: 9a538b83612c ('media: venus: core: Add support for opp tables/perf voting')
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/pm_helpers.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks
 
-diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-index 0ebba8e3bd75..2946547a0df4 100644
---- a/drivers/media/platform/qcom/venus/pm_helpers.c
-+++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@ -804,7 +804,7 @@ static int vcodec_domains_get(struct device *dev)
- 	return 0;
- 
- opp_dl_add_err:
--	dev_pm_domain_detach(core->opp_pmdomain, true);
-+	dev_pm_opp_detach_genpd(core->opp_table);
- opp_attach_err:
- 	if (core->pd_dl_venus) {
- 		device_link_del(core->pd_dl_venus);
-@@ -842,7 +842,7 @@ static void vcodec_domains_put(struct device *dev)
- 	if (core->opp_dl_venus)
- 		device_link_del(core->opp_dl_venus);
- 
--	dev_pm_domain_detach(core->opp_pmdomain, true);
-+	dev_pm_opp_detach_genpd(core->opp_table);
- }
- 
- static int core_get_v4(struct device *dev)
--- 
-2.17.1
-
+Bill.Chantal Lawrence
