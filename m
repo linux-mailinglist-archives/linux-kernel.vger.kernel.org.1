@@ -2,111 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421EC2A2086
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E71A2A2097
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727150AbgKARhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:37:47 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:37168 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727033AbgKARhq (ORCPT
+        id S1727186AbgKARlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:41:55 -0500
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:27482 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727111AbgKARly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:37:46 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id BFF278048A;
-        Sun,  1 Nov 2020 18:37:42 +0100 (CET)
-Date:   Sun, 1 Nov 2020 18:37:41 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v2 0/4] drm/bridge: ti-sn65dsi86: Support EDID reading
-Message-ID: <20201101173741.GA1293305@ravnborg.org>
-References: <20201030011738.2028313-1-swboyd@chromium.org>
+        Sun, 1 Nov 2020 12:41:54 -0500
+Received: from pps.filterd (m0150241.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A1HY2bd003992;
+        Sun, 1 Nov 2020 17:41:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version; s=pps0720;
+ bh=yv27s7RCBX/TWQjfzBWzQfYgerna7orjR+8Y7ZUqguI=;
+ b=o9nkoHu3Vbo1NR+UYOy1rCbguRWTdbu04eIFOgF1ueAZ4CSTStFnI/dCduhbI7+FvIsE
+ mC+FLPGgseNEYTNSpaCqPIz6fd8Kw855vC+oLXHTP2qEDJ9zVyJiSqdHYcikcgoRWpGK
+ fhmmAyzZRVIIah0qCJuY7kSdwG3QZA0Gdo4ShogHZ/ApZU3RHDpDPOQdVuSJCGravD+8
+ xDjfz5n77Y5kRo00a9ZjiluMrTn7WhUjFd/2W8EHjFR7q7E/7/7OIhM5rxFbzF0wSHg3
+ SEIe9XFDTWjeRAWzP6htQ5fkRlbvTVHhWiRjrGRh7K0Kfi5/EJo8BCLOMmTdZjE5DFFH oQ== 
+Received: from g2t2352.austin.hpe.com (g2t2352.austin.hpe.com [15.233.44.25])
+        by mx0a-002e3701.pphosted.com with ESMTP id 34hhavm18c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 01 Nov 2020 17:41:40 +0000
+Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
+        by g2t2352.austin.hpe.com (Postfix) with ESMTP id 370E685;
+        Sun,  1 Nov 2020 17:41:39 +0000 (UTC)
+Received: from rfwz62.ftc.rdlabs.hpecorp.net (rfwz62.americas.hpqcorp.net [10.33.237.8])
+        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id 2FBFD36;
+        Sun,  1 Nov 2020 17:41:35 +0000 (UTC)
+From:   rwright@hpe.com
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        hdegoede@redhat.com, wambui.karugax@gmail.com,
+        chris@chris-wilson.co.uk, matthew.auld@intel.com,
+        akeem.g.abodunrin@intel.com, prathap.kumar.valsan@intel.com,
+        mika.kuoppala@linux.intel.com, rwright@hpe.com
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH v3 0/3] Reduce context clear batch size to avoid gpu hang
+Date:   Sun,  1 Nov 2020 10:41:29 -0700
+Message-Id: <20201101174132.10513-1-rwright@hpe.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030011738.2028313-1-swboyd@chromium.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8 a=cm27Pg_UAAAA:8 a=P1BnusSwAAAA:8
-        a=RwHePtW7AAAA:8 a=e5mUnYsNAAAA:8 a=umv6ho0nhVORNbC8ZGUA:9
-        a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22 a=xmb-EsYY8bH0VWELuYED:22
-        a=D0XLA9XvdZm18NrgonBM:22 a=FqraQwd7dyEg5dwJgZJs:22
-        a=Vxmtnl_E_bksehYqCbjh:22
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-01_05:2020-10-30,2020-11-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=792
+ adultscore=0 suspectscore=0 malwarescore=0 bulkscore=0 spamscore=0
+ impostorscore=0 lowpriorityscore=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011010145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen.
+From: Randy Wright <rwright@hpe.com>
 
-On Thu, Oct 29, 2020 at 06:17:34PM -0700, Stephen Boyd wrote:
-> This patch series cleans up the DDC code a little bit so that
-> it is more efficient time wise and supports grabbing the EDID
-> of the eDP panel over the aux channel. I timed this on a board
-> I have on my desk and it takes about 20ms to grab the EDID out
-> of the panel and make sure it is valid.
-> 
-> The first two patches seem less controversial so I stuck them at
-> the beginning. The third patch does the EDID reading and caches
-> it so we don't have to keep grabbing it over and over again. And
-> finally the last patch updates the reply field so that short
-> reads and nacks over the channel are reflected properly instead of
-> treating them as some sort of error that can't be discerned.
-> 
-> Stephen Boyd (4):
->   drm/bridge: ti-sn65dsi86: Combine register accesses in
->     ti_sn_aux_transfer()
->   drm/bridge: ti-sn65dsi86: Make polling a busy loop
->   drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
->   drm/bridge: ti-sn65dsi86: Update reply on aux failures
+For several months, I've been experiencing GPU hangs when  starting
+Cinnamon on an HP Pavilion Mini 300-020 if I try to run an upstream
+kernel.  I reported this recently in
+https://gitlab.freedesktop.org/drm/intel/-/issues/2413 where I have
+attached the requested evidence including the state collected from
+/sys/class/drm/card0/error and debug output from dmesg.
 
-Series looks good. You can add my a-b on the full series.
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+I ran a bisect to find the problem, which indicates this is the
+troublesome commit:
 
-I can apply after Douglas have had a look at the patches he did not r-b
-yet.
+  [47f8253d2b8947d79fd3196bf96c1959c0f25f20] drm/i915/gen7: Clear all EU/L3 residual contexts
 
-Any chance we can convince you to prepare this bridge driver for use in
-a chained bridge setup where the connector is created by the display
-driver and uses drm_bridge_funcs?
+The nature of that commit suggested to me that reducing the
+batch size used in the context clear operation might help this
+relatively low-powered system to avoid the hang.... and it did!
+I simply forced this system to take the smaller batch length that is
+already used for non-Haswell systems.
 
-First step wuld be to introduce the use of a panel_bridge.
-Then add get_edid to drm_bridge_funcs and maybe more helpers.
+The first two versions of this patch were posted as RFC
+patches to the Intel-gfx list, implementing the same
+algorithmic change in function batch_get_defaults,
+but without employing a properly constructed quirk.
 
-Then natural final step would be to move connector creation to the
-display driver - see how other uses drm_bridge_connector_init() to do so
-- it is relatively simple.
+I've now cleaned up the patch to employ a new QUIRK_RENDERCLEAR_REDUCED.
+The quirk is presently set only for the aforementioned HP Pavilion Mini
+300-020.  The patch now touches three files to define the quirk, set it,
+and then check for it in function batch_get_defaults.
 
-Should be doable - and reach out if you need some help.
+Randy Wright (3):
+  drm/i915: Introduce quirk QUIRK_RENDERCLEAR_REDUCED
+  drm/i915/display: Add function quirk_renderclear_reduced
+  drm/i915/gt: Force reduced batch size if new QUIRK_RENDERCLEAR_REDUCED
+    is set.
 
-	Sam
+ drivers/gpu/drm/i915/display/intel_quirks.c | 13 +++++++++++++
+ drivers/gpu/drm/i915/gt/gen7_renderclear.c  |  2 +-
+ drivers/gpu/drm/i915/i915_drv.h             |  1 +
+ 3 files changed, 15 insertions(+), 1 deletion(-)
 
+-- 
+2.25.1
 
-> 
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 108 ++++++++++++++++++--------
->  1 file changed, 75 insertions(+), 33 deletions(-)
-> 
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> Cc: Jonas Karlman <jonas@kwiboo.se>
-> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-> Cc: Sean Paul <seanpaul@chromium.org>
-> 
-> base-commit: 3650b228f83adda7e5ee532e2b90429c03f7b9ec
-> -- 
-> Sent by a computer, using git, on the internet
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
