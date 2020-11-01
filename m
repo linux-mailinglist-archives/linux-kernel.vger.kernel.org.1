@@ -2,55 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71862A2048
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70592A2049
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:21:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727141AbgKARVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:21:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727087AbgKARVc (ORCPT
+        id S1727205AbgKARVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:21:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39204 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727087AbgKARVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:21:32 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF7CC0617A6
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 09:21:31 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id p93so11772562edd.7
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 09:21:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=Jg0a2ra+p9pkiP45Ky5OFp05vywiRFVIdzSpstZzgNI=;
-        b=hOjv0gjorB57d6OGPACJOoZbWH/SImlm23ZzW0Xvq6msjVAZV6U4KYAMdsOEQxiHe8
-         2NGiZOLt3KkXv6xfBpE/WDVFwPcWT5nNnRu07LnDopFQuOyQphr+01W8C3x6Iy6LZqD/
-         HeLYZ3gek1qBr/5iz7Aw6g4O4xAQgPFyplr2YCjgc5qx/idtg6GybDEwWnK18bxYsiYk
-         PPndFn8DGa7DFZikH4nnqzjhlpfZYxYDaK2iRIpDPk8SISU+joGnKyDhhMw/6WhJ6aC7
-         ham68VajJXJDZRmSYjrwVxjxx29q/V3m3Vj4kgyl1L1U6amzUW/jqffqB5sTRbkw/lwu
-         tvtw==
+        Sun, 1 Nov 2020 12:21:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604251296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=j4Fd3vNf6QkiJ2K1fA3WX6EFw4MpOCKOi1CDGbw0lNw=;
+        b=YMrKEBCTvrZ+C5BV+u4IxfyMPRJvommXKM1edpSyZNtoDM3u2MxsBTFSe2Xf3m0uZMaWzF
+        T9TUGk99xv6Mh19mJKwn+wPpFB7Bp+u9FSTNXZGbKuKSm0jx7lJpY9nwsNRVMKRn0nKYHa
+        qatXSXu4Ta0fmoQdxaz5EDdDaC1udLc=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-451-39HG4Y0OPla0QgvihZCvQg-1; Sun, 01 Nov 2020 12:21:34 -0500
+X-MC-Unique: 39HG4Y0OPla0QgvihZCvQg-1
+Received: by mail-ot1-f72.google.com with SMTP id b22so5274725otp.12
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 09:21:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=Jg0a2ra+p9pkiP45Ky5OFp05vywiRFVIdzSpstZzgNI=;
-        b=VkwlOt9CTnvApIBNHkkzeMPzoie5YxQhsbi5MRAhuZKATVsIm2A1tq9ORbLJDUwntJ
-         DEtouhplNhcfdzwXgt5CNBkCjKkcojQwqQTABpYEGQfRIuSQjFBmXPxfTsM1pKeRYltf
-         NT5DaOWa8hJTeCcO9IkujjRb2GjbgAFgBTV8t+v5Ae0Y1zjXEkhhQ9F1ffn1CtNWj0N0
-         JBoxa7t7qkDwesgJGbqAmAUYu73f00RMufdi0ZKvPrqYtLnKf1c3+ztmnBKeZTIF6SGp
-         HmqyxScx8nTx0hTZhQ05QXzTpYbFMry/OfYAkpo5v+yCRKa13VNc0Xi+05fKGacz6O5d
-         6l3A==
-X-Gm-Message-State: AOAM533tu5W0LRgVZ5Y4cyhXz5a9Dtb6EJD3ZetPY05PwIhDYFTIeQSJ
-        matc/oFsUdWX+VkV7Q/XD9lPjjP985lYLdxqwZhJkDG+ZRY2zQ==
-X-Google-Smtp-Source: ABdhPJxiLfOKEo4UcEaPjMPL6yj+u1pb7wzvcFZDDnYm6MDN737bvo5S1JIxV2BLcw9jWaMmQtvJsQ0Kv9EsiTmjo0w=
-X-Received: by 2002:a05:6402:1c1b:: with SMTP id ck27mr13110966edb.218.1604251290293;
- Sun, 01 Nov 2020 09:21:30 -0800 (PST)
-MIME-Version: 1.0
-From:   NASA Jeff <tallboy258@gmail.com>
-Date:   Sun, 1 Nov 2020 17:21:17 +0000
-Message-ID: <CAN-MDmq=eCbPb=17MsRRgtJptRCvbVxhnUusHvE66r=g5MKGLg@mail.gmail.com>
-Subject: you want it
-To:     Linux Kml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=j4Fd3vNf6QkiJ2K1fA3WX6EFw4MpOCKOi1CDGbw0lNw=;
+        b=mhc/DzuhQUt2ttwGNOsgG6FbmDkJk1FxDICybbL87QayDaymLQuW8plzwLpoXxLb0G
+         H7xmJVZ95hQy466XxIxBARD+tZ8Hsp5Zb/efnmrajEbNDd4UwFaSrviEHVQV1iPcuXOy
+         40zejYLZIORY4l4Q3HWP52h9Rk9vbVLhMq/hrKkARr4yGvfFQQS8KM0/Dwn5EdAIkO5Q
+         boJIPxrpYbf9SEbAYaI2heo8wKfv5Pz8BAjAQrRX/x+nBJmBXrL0IcmG1RmzNYJS4sDR
+         GqmBjAMQfPOYj39e9HEg9jHmA+eM514DRuMlJTYTgytPrKX4kRPgHFBu5ugxd35Eau32
+         FKrw==
+X-Gm-Message-State: AOAM533fVW2AumAY50zkQKJ3xVI6n2N+IAeYC2uCGKKouKk3H6uV0Te9
+        RxUiOlqEVfg6zHR4d6G4uOsngHmQNPDDbQtt2bIFEaTgBoWhpC1zaD2ioI7UuwbpGi3hjn5hflH
+        qmc12xSM7i72o40aB1moL8v8t
+X-Received: by 2002:a05:6808:696:: with SMTP id k22mr8123465oig.107.1604251293922;
+        Sun, 01 Nov 2020 09:21:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwhggkrimbcrzhi+3d89K9YE9zyRIbl7xcXdDmd6ao4Lvit7XtdyjCGL1x9+BZ19J1MOGOvMA==
+X-Received: by 2002:a05:6808:696:: with SMTP id k22mr8123461oig.107.1604251293781;
+        Sun, 01 Nov 2020 09:21:33 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id x13sm2965686otg.66.2020.11.01.09.21.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 09:21:33 -0800 (PST)
+From:   trix@redhat.com
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
+        srinivas.kandagatla@linaro.org
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] ASoC: wcd9335: remove unneeded semicolon
+Date:   Sun,  1 Nov 2020 09:21:28 -0800
+Message-Id: <20201101172128.2305539-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-you go for it
+From: Tom Rix <trix@redhat.com>
+
+A semicolon is not needed after a switch statement.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ sound/soc/codecs/wcd-clsh-v2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wcd-clsh-v2.c b/sound/soc/codecs/wcd-clsh-v2.c
+index 817d8259758c..73258e292e7e 100644
+--- a/sound/soc/codecs/wcd-clsh-v2.c
++++ b/sound/soc/codecs/wcd-clsh-v2.c
+@@ -507,7 +507,7 @@ static bool wcd_clsh_is_state_valid(int state)
+ 		return true;
+ 	default:
+ 		return false;
+-	};
++	}
+ }
+ 
+ /*
+-- 
+2.18.1
+
