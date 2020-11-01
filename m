@@ -2,107 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CE22A1EAE
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 15:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 641D52A1EB1
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 15:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbgKAOnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 09:43:16 -0500
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:43546 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726599AbgKAOnM (ORCPT
+        id S1726775AbgKAOpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 09:45:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726458AbgKAOpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 09:43:12 -0500
-Received: from pps.filterd (m0134421.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A1Ef8OK003998;
-        Sun, 1 Nov 2020 14:42:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pps0720;
- bh=OA1AyoIUxAdKprQIlZ9yrzznCb8iuBhc83hjN12ArsA=;
- b=mBdPD89YSLvkEUDnDJsj+qaGMRsztQ2rc9voUZLErQsV/6T9+PNh8ZGa3R2TtqjVTjVT
- stMB7T7x4y5BcOrx2SZiJIBalVZRs0gdEYCd2612RlzKR07iyN4kazjz91IMH2tnX1rP
- 9uU1dF/PCEB+zcsG6w8+L3GuWx9UTLvd2/Aozg263Z42/8LxRwWV1WKxaNs8cPEnHL+Y
- aqXiXGUv8IquDpzKE1/iUStT3E7efcQ3Uzl5mSd/K7Uv2AG0rdhE9vZ6q8JxNBQudGUe
- SabI7Ige/atinoDTPARo7G5vZ8pIJPyn+0JnXdtidgr26gcCeXGawzj0PrOOu+mZBosX FA== 
-Received: from g9t5009.houston.hpe.com (g9t5009.houston.hpe.com [15.241.48.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 34hh9wb76k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 01 Nov 2020 14:42:59 +0000
-Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
-        by g9t5009.houston.hpe.com (Postfix) with ESMTP id 79C7355;
-        Sun,  1 Nov 2020 14:42:58 +0000 (UTC)
-Received: from rfwz62.ftc.rdlabs.hpecorp.net (rfwz62.americas.hpqcorp.net [10.33.237.8])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 7B31947;
-        Sun,  1 Nov 2020 14:42:57 +0000 (UTC)
-From:   rwright@hpe.com
-To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        hdegoede@redhat.com, wambui.karugax@gmail.com,
-        chris@chris-wilson.co.uk, matthew.auld@intel.com,
-        akeem.g.abodunrin@intel.com, prathap.kumar.valsan@intel.com,
-        mika.kuoppala@linux.intel.com, rwright@hpe.com
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH v3 2/3] drm/i915/display: Add function quirk_renderclear_reduced
-Date:   Sun,  1 Nov 2020 07:42:43 -0700
-Message-Id: <20201101144244.10086-3-rwright@hpe.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201101144244.10086-1-rwright@hpe.com>
-References: <20201101144244.10086-1-rwright@hpe.com>
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-01_05:2020-10-30,2020-11-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 adultscore=0
- mlxscore=0 suspectscore=2 spamscore=0 phishscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011010120
+        Sun, 1 Nov 2020 09:45:19 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A091FC0617A6;
+        Sun,  1 Nov 2020 06:45:18 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id 141so14049359lfn.5;
+        Sun, 01 Nov 2020 06:45:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=nfSTOQa1GHPu7yZflmElx1yrigDoZA+beTbfSTxADDQ=;
+        b=LNCbyfl80w5m5vmdw3f6tkQFZPsqsLTQxD7B0YQ9lQsp91AmlP1vbAFBWNx1lZpLAd
+         P38k7TmgrN7uaqeRam6cxqBfIwjYYLqYjvGGuwvZOqwRdmzY9yEqvtyWbHNwRtZNQ9vg
+         MuVynxEAfEH9OIJ0IwgQTMEP9jtxTsxGwPF6tHrg4ERcckfqZGAgvFJ6TZP9o2+cIGDi
+         fdUdmmpX5MwYo8Qy+YuyNywQgXTUSAFuARSWrtAYrm1zpbva063byVj2nxUXXovDzt8u
+         xL7T3BWrj5oXGEBJdmPgkwsMNh1Zv8hRvSh9OdWVNAO9IELnHdrPWxk2Ax3Rl6A3VLf7
+         JBkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=nfSTOQa1GHPu7yZflmElx1yrigDoZA+beTbfSTxADDQ=;
+        b=BnbSw1mVjGf3BIlk09CaRF8NJkipOUjgGbvqONvkRpwJ5lXBMLrvSZ2COpFSx68hbV
+         BaLAgRkA8x1bXiwv8ZxtK3ZCsk6ceanDB9yMEWmnQ8P8GH+kK3GOyUtgNsCDRjkPbVqh
+         HzmTl8RBQ1TtOJjFm6tpEaJTGfmoFWsKnwVeY9ag/ciB6p3VxIQRt1VeLzk9Zvj1qooA
+         QHJpLCOEFMlL5o3xfsk7j0W6NdwKS3xc9gJasYUpITRSkWoB0ecuUH/Kvy9Z32miWZH7
+         vSVpyBH/geZ8sBLEOt+S1LArLmEcXSptkECh7SFNmD4z5edsumriYKwz2fhyDpZUb0no
+         6Duw==
+X-Gm-Message-State: AOAM532WE522ywBzDyRwcu0ExRq3235J7gWCaTYdcq7nHPRpCiPywDy8
+        4GJ3Hb5uoZlHNWlWDesf2+8Y22khUF379oFIxXg=
+X-Google-Smtp-Source: ABdhPJyBkgiSrqXhZk/gcQpWF+e/o3AVHRSwjg0BQJhL/gY5tJ65y2vrH74G0ZFq651tDjCK4YjMxaHGxd8OKMjGS5w=
+X-Received: by 2002:a05:6512:322d:: with SMTP id f13mr3971359lfe.571.1604241916924;
+ Sun, 01 Nov 2020 06:45:16 -0800 (PST)
+MIME-Version: 1.0
+References: <20201025221735.3062-1-digetx@gmail.com> <20201025221735.3062-52-digetx@gmail.com>
+In-Reply-To: <20201025221735.3062-52-digetx@gmail.com>
+Reply-To: cwchoi00@gmail.com
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Date:   Sun, 1 Nov 2020 23:44:40 +0900
+Message-ID: <CAGTfZH2rBaWKox9nKM=_Wz8k65FLt1R7D8xSOUxe7xAJ1A00hA@mail.gmail.com>
+Subject: Re: [PATCH v6 51/52] PM / devfreq: tegra30: Support interconnect and
+ OPPs from device-tree
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Wright <rwright@hpe.com>
+Hi Dmitry,
 
-Added function quirk_renderclear_reduced to set QUIRK_RENDERCLEAR_REDUCED
-for designated platforms.  Applying QUIRK_RENDERCLEAR_REDUCED for
-the HP Pavilion Mini 300-020 prevents a GPU hang.
+On Mon, Oct 26, 2020 at 7:22 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> This patch moves ACTMON driver away from generating OPP table by itself,
+> transitioning it to use the table which comes from device-tree. This
+> change breaks compatibility with older device-trees in order to bring
+> support for the interconnect framework to the driver. This is a mandatory
+> change which needs to be done in order to implement interconnect-based
+> memory DVFS. Users of legacy device-trees will get a message telling that
+> theirs DT needs to be upgraded. Now ACTMON issues memory bandwidth request
+> using dev_pm_opp_set_bw(), instead of driving EMC clock rate directly.
+>
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/devfreq/tegra30-devfreq.c | 91 ++++++++++++++++---------------
+>  1 file changed, 48 insertions(+), 43 deletions(-)
+>
+> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
+> index 3f732ab53573..1b0b91a71886 100644
+> --- a/drivers/devfreq/tegra30-devfreq.c
+> +++ b/drivers/devfreq/tegra30-devfreq.c
+> @@ -19,6 +19,8 @@
+>  #include <linux/reset.h>
+>  #include <linux/workqueue.h>
+>
+> +#include <soc/tegra/fuse.h>
+> +
 
-Signed-off-by: Randy Wright <rwright@hpe.com>
----
- drivers/gpu/drm/i915/display/intel_quirks.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+This patch touches the OPP. Is it related to this change?
 
-diff --git a/drivers/gpu/drm/i915/display/intel_quirks.c b/drivers/gpu/drm/i915/display/intel_quirks.c
-index 46beb155d835..630b984ba49c 100644
---- a/drivers/gpu/drm/i915/display/intel_quirks.c
-+++ b/drivers/gpu/drm/i915/display/intel_quirks.c
-@@ -53,6 +53,16 @@ static void quirk_increase_ddi_disabled_time(struct drm_i915_private *i915)
- 	drm_info(&i915->drm, "Applying Increase DDI Disabled quirk\n");
- }
- 
-+/*
-+ * Force use of smaller batch size in gen7_renderclear.c
-+ * Needed on (at least) HP Pavilion Mini 300-020 to avoid GPU hang.
-+ */
-+static void quirk_renderclear_reduced(struct drm_i915_private *i915)
-+{
-+	i915->quirks |= QUIRK_RENDERCLEAR_REDUCED;
-+	drm_info(&i915->drm, "Applying Renderclear Reduced quirk\n");
-+}
-+
- struct intel_quirk {
- 	int device;
- 	int subsystem_vendor;
-@@ -141,6 +151,9 @@ static struct intel_quirk intel_quirks[] = {
- 	/* HP Chromebook 14 (Celeron 2955U) */
- 	{ 0x0a06, 0x103c, 0x21ed, quirk_backlight_present },
- 
-+	/* HP Mini 300-020 */
-+	{ 0x0a06, 0x103c, 0x2b38, quirk_renderclear_reduced },
-+
- 	/* Dell Chromebook 11 */
- 	{ 0x0a06, 0x1028, 0x0a35, quirk_backlight_present },
- 
--- 
-2.25.1
+>  #include "governor.h"
+>
+>  #define ACTMON_GLB_STATUS                                      0x0
+> @@ -155,6 +157,7 @@ struct tegra_devfreq_device {
+>
+>  struct tegra_devfreq {
+>         struct devfreq          *devfreq;
+> +       struct opp_table        *opp_table;
+>
+>         struct reset_control    *reset;
+>         struct clk              *clock;
+> @@ -612,34 +615,19 @@ static void tegra_actmon_stop(struct tegra_devfreq *tegra)
+>  static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
+>                                 u32 flags)
+>  {
+> -       struct tegra_devfreq *tegra = dev_get_drvdata(dev);
+> -       struct devfreq *devfreq = tegra->devfreq;
+>         struct dev_pm_opp *opp;
+> -       unsigned long rate;
+> -       int err;
+> +       int ret;
+>
+>         opp = devfreq_recommended_opp(dev, freq, flags);
+>         if (IS_ERR(opp)) {
+> -               dev_err(dev, "Failed to find opp for %lu Hz\n", *freq);
+> +               dev_err(dev, "failed to find opp for %lu Hz\n", *freq);
 
+You used the 'Failed to' format in almost every error case.
+Don't need to change it.
+(snip)
+
+Best Regards,
+Chanwoo Choi
