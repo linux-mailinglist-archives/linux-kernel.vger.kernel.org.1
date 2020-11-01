@@ -2,215 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AFB32A2267
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 00:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A93EA2A2269
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 00:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727454AbgKAXly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 18:41:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
+        id S1727502AbgKAXmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 18:42:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727062AbgKAXly (ORCPT
+        with ESMTP id S1727062AbgKAXmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 18:41:54 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A9CC0617A6;
-        Sun,  1 Nov 2020 15:41:53 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id j24so16423167ejc.11;
-        Sun, 01 Nov 2020 15:41:53 -0800 (PST)
+        Sun, 1 Nov 2020 18:42:13 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA24C0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 15:42:13 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id y184so13150956lfa.12
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 15:42:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HI3PP9QtZ/Qjyb8cABlBJfJjZ1881bFjtbOEqr8Ox1E=;
-        b=TdNmNydvS2e5El/zxmcPdjc8QJ1Z8bXlvOqzXk1PFihmDPzyZ3sLGPNsWRekq5SsLd
-         hKJXRmTfbp9QFkZIFMlvk5nr770pnysrzNUdLzt8odSp4DnKBHZYVU3ymJ/UwremQByJ
-         TH16FxjYKqxklm8iV3y+CpRdoNhvSVWJ6jLXTQ1Lf4KrxTCWr97d3D9ghoKOaQN8/XPP
-         NWaTPP81E3KFD0Vdpa0jtmPHnB+gVBUJCHIpttGfEmQSRFUk5izWXgf5mtr2u5b8QKDv
-         Ht6jGbNB2Gas3SApQT48xPzdK/sPQfgZn1KmVsKRaKVAIE1wfaDDY+AnH3gUmZWJfQIT
-         CXIw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hodiMZOr93BdBLterfeyv8enR8PxXJe7WYyAmUeOaZM=;
+        b=TWU6xNubS7vO1B6LPXr2KI8PDpAtsXz02cdYKQCyuDmMFyD48tIxVKCnGcTsYGaQRS
+         sfugwQKvjj5MK78jhpRaKfd77j4J4hgD0LNIRH7EteiUttGkUqyKN9jsXLPXqBSo8xxU
+         Pa0nlkB5mKguTjNEMxiNdLmuOsysIxaTFAkSwRstgENMGi7TNYw3qXh/vw7unHOescbp
+         DI6l1v5KLU3wkNdZ466o+z7bQ95X4td22N8oMPZxPLDIWrq20Cq++4G9CVue7IA0ENfd
+         prDCcpew6rZq6NuvmNl/yQnhMxNzQYbLFQH/VZJ7WRoQdHx3QmtlqvBujLK4qesH67JS
+         2M5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HI3PP9QtZ/Qjyb8cABlBJfJjZ1881bFjtbOEqr8Ox1E=;
-        b=BpWO/zjsf2cBNmm2sf+fpqjD1L0dos7ggrWHYYJWIm1D2cZmzMgXS44YNuh0uiZjXV
-         844XqLgpCDCRR8adWkgevW/DL2JU0GLZ7+JI1WIC3uTqFBCMPBMqBzEMkAjRdN+b5Jo7
-         zYXK47xyFLCH7caYOJiJgNtrmlTTcC+etPe0vJlvR+d+tLVL5QZlu4nrm3YIfoBCcAFj
-         i/Cpcd1Ow9N+6rWZQ2HL6vWRjRAcsK53zfDr452YaaP7Ih17IVQlIJCb4DLP0GODnWK+
-         Bo2C2uKXGhoBSjwE7nka8dLK0ahr3UylIS3CdWyR9s0RnXrrQ+7FhHMeuyCKdxUFY47A
-         WADQ==
-X-Gm-Message-State: AOAM531MUwqS35Zjb9aznveUx2I6ramQJ2HBVD3p7dYDRuokonW/cNNM
-        gmNSCmFREsmQK1EIUzZNNHYboMZv3Vk=
-X-Google-Smtp-Source: ABdhPJzykCVuMx9nPZ/dEAIrvTSyri7TStVMgSGxjSj2D7VG4NkQfh4YoDPaIeovXdlFIRTJM9Tuew==
-X-Received: by 2002:a17:906:c20f:: with SMTP id d15mr12565235ejz.341.1604274112091;
-        Sun, 01 Nov 2020 15:41:52 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id sa23sm8424267ejb.80.2020.11.01.15.41.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Nov 2020 15:41:51 -0800 (PST)
-Date:   Mon, 2 Nov 2020 01:41:49 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Richard Cochran <richardcochran@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add
- hardware time stamping support
-Message-ID: <20201101234149.rrhrjiyt7l4orkm7@skbuf>
-References: <20201019172435.4416-1-ceggers@arri.de>
- <4928494.XgmExmOR0V@n95hx1g2>
- <20201101111008.vl4lj4iqmqjdpbyg@skbuf>
- <3355013.oZEI4y40TO@n95hx1g2>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hodiMZOr93BdBLterfeyv8enR8PxXJe7WYyAmUeOaZM=;
+        b=E8l371jxmkynjOvIGnqEaIAzDrHWCex2iaqtMUCSpCQkGfQlA6LUBAVXh5R40EVMA+
+         5shw/YjTLNYC9VvfyQDOijuI/SnuKINkMvxFKLSZdBetuqW10QHE1MJ1o7yQWC4sYtKJ
+         uCXiUE0nHoILhcVEf5a9zPvZCQfGQhjUbDFbfexbLAQXc6/+hB/YplkYvux5kiEs1XOi
+         +4PWknA9Sr1U16YmUDO1TwVPCipCrycjlIfrvY3mT2kxBRe5DWE0G2CqiXSGPxUhP0Nj
+         g58ujnFTQH/Z1HuDLG8d1Z9YT0ss/nHWhwwkWoYsRpRsSeyRCcA17zBpf7WSQ/z5io8G
+         ulEQ==
+X-Gm-Message-State: AOAM532UXG5laFWgV8oc0KKDG88uTWis/SG1zS20HFaxqis/Du3HRd0e
+        AKkZZpr8Ye9sbA4r4T+vcckE1iPgR3P4A3HIzdU=
+X-Google-Smtp-Source: ABdhPJwiG/NQQuWNR9Y0SqF/BbXqlHsxrTYjHByqBwZI2gFwsHqe/jOOECHWmEcHphcpHWXMTxd3BwGPVaHtzVcMlGY=
+X-Received: by 2002:a19:4ad1:: with SMTP id x200mr1371408lfa.539.1604274131876;
+ Sun, 01 Nov 2020 15:42:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3355013.oZEI4y40TO@n95hx1g2>
+References: <20201030041035.394565-1-daeho43@gmail.com> <20201030041035.394565-2-daeho43@gmail.com>
+ <25d164b5-278a-1065-e9ab-4da3232b3b97@huawei.com>
+In-Reply-To: <25d164b5-278a-1065-e9ab-4da3232b3b97@huawei.com>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Mon, 2 Nov 2020 08:42:00 +0900
+Message-ID: <CACOAw_wMBeMjQaXCyueX4m4+Xun-k-7kg2QYqe9svMAdVoE3Pg@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v7 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION ioctl
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 11:14:24PM +0100, Christian Eggers wrote:
-> I am not sure whether I understand the question.
+Oh, even if those are patchset, then I have to send just changed ones?
+Got it.
 
-When the port is in standalone mode, there is no other destination for
-packets except for the CPU. So if the switch filters out Sync or
-Delay_Req packets depending on the operating mode, then naturally those
-packets would get dropped somewhere, and I wanted to see where.
-
-> I have run "ethtool -S" two times on the PTP master clock (E2E mode):
-> - When "ocmode" is set to master (DelayReq messages can be received)
-> - When "ocmode" is set to slave (DelayReq messages cannot be received)
-> 
-> Here is the diff output:
-> --- /home/root/ethtool1
-> +++ /home/root/ethtool2
-> @@ -1,8 +1,8 @@
->  NIC statistics:
-> -     tx_packets: 1421
-> -     tx_bytes: 133641
-> -     rx_packets: 488
-> -     rx_bytes: 35904
-> +     tx_packets: 1455
-> +     tx_bytes: 136783
-> +     rx_packets: 496
-> +     rx_bytes: 36459
->       rx_hi: 0
->       rx_undersize: 0
->       rx_fragments: 0
-> @@ -14,10 +14,10 @@
->       rx_mac_ctrl: 0
->       rx_pause: 0
->       rx_bcast: 4
-> -     rx_mcast: 667
-> +     rx_mcast: 683
->       rx_ucast: 0
->       rx_64_or_less: 0
-> -     rx_65_127: 659
-> +     rx_65_127: 675
->       rx_128_255: 11
->       rx_256_511: 1
->       rx_512_1023: 0
-> @@ -27,15 +27,15 @@
->       tx_hi: 0
->       tx_late_col: 0
->       tx_pause: 0
-> -     tx_bcast: 713
-> -     tx_mcast: 1852
-> -     tx_ucast: 324
-> +     tx_bcast: 733
-> +     tx_mcast: 1897
-> +     tx_ucast: 333
->       tx_deferred: 0
->       tx_total_col: 0
->       tx_exc_col: 0
->       tx_single_col: 0
->       tx_mult_col: 0
-> -     rx_total: 61158
-> -     tx_total: 307225
-> +     rx_total: 62577
-> +     tx_total: 313773
->       rx_discards: 20
->       tx_discards: 0
-
-These counters seem to be on the front-panel port, and the discard seems
-to not be recorded there. But nonetheless, even if you do see the drops
-in the ethtool statistics for the CPU port, it's probably going to be at
-'tx_discards' which is pretty unspecific and not useful. I was thinking
-that the drop reason would be more elaborate, which it looks like it
-isn't.
-
-> My assumption is that the KSZ9563 simply doesn't forward specific PTP
-> packages from the slave ports to the CPU port. In my imagination this
-> happens in hardware and is not visible in software.
-
-You talked about tracking the BMCA by snooping Announce messages. I
-don't think that is going to be the path forward either. Think about the
-general case, where there might not even be a BMCA (like in the
-automotive profile).
-
-It almost seems to me as if the hardware is trying to be helpful by
-dropping the PTP messages that the application layer would drop anyway.
-Too bad that nobody seems to have told them to make this helpful
-mechanism optional, because as it is, it's standing in the way more than
-helping.
-
-You know what the real problem is, with DSA you don't have the concept
-of the host port being an Ordinary Clock. DSA does not treat the host
-port as a switched endpoint (aka a plain net device attached to a dumb
-switch, and unaware of that switch), but instead is the conduit interface
-for each front-panel switch interface, which is an individually
-addressable network interface in its own right. You are not supposed to
-use a DSA master interface for networking directly, not for regular
-networking and not for PTP. In fact, DSA-enabled ports, only the PTP
-clock of the switch is usable. If you attempt to run ptp4l on the master
-interface an error will be thrown back at you.
-
-Why am I mentioning this? Because the setting that's causing trouble for
-us is 'port state of the host port OC', which in the context of what I
-said above is nonsense. There _is_ no host port OC. There are 2 switch
-ports which can act as individual OCs, or as a BC, or as a TC. But
-consider the case when the switch is a BC, with one of the front-panel
-ports being a master and the other a slave. What mode are you supposed
-to put the host port in, so that it receives both the Sync packets from
-the slave port, and the Delay_Req packets from the master port?! It just
-makes no sense to me. In principle I don't see any reason why this
-switch would not be able to operate as a one-step peer delay BC.
-
-Unless somebody from Microchip could shed some light on the design
-decisions of this switch (and there are enough Microchip people copied
-already), here's what I would do. I would cut my losses and just support
-peer delay, no E2E delay request-response mechanism (this means you'll
-need to deploy peer delay to all devices within your network, but the
-gains might be worth it). Because peer delay is symmetrical (both link
-partners are both requestors as well as responders), there's no help in
-the world that this switch could volunteer to give you in dropping
-packets on your behalf. So I expect that if you hardcode:
-- the port state for the host port OC as slave, then you'd get the Sync
-  messages from all ports, and the Delay_Req messages would be dropped
-  but you wouldn't care about those anyway, and
-- the selection of TC mode to P2P TC.
-
-Then I would negotiate with Richard whether it's ok to add these extra
-values to enum hwtstamp_rx_filters:
-	HWTSTAMP_FILTER_PTP_V2_PDELAY
-	HWTSTAMP_FILTER_PTP_V2_L4_PDELAY
-
-Given the fact that you're only limiting the timestamping to Pdelay
-because we don't fully understand the hardware, I don't really know
-whether introducing UAPI for this one situation is justifiable. If not,
-then your driver will not have a chance to reject ptp4l -E, and it will
-Simply Not Work.
+2020=EB=85=84 10=EC=9B=94 30=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 3:13, =
+Chao Yu <yuchao0@huawei.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> Daeho,
+>
+> If there is no change, we are used to not resend the patch with updated
+> version.
+>
+> Thanks,
+>
+> On 2020/10/30 12:10, Daeho Jeong wrote:
+> > From: Daeho Jeong <daehojeong@google.com>
+> >
+> > Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
+> > compression option of a file.
+> >
+> > struct f2fs_comp_option {
+> >      u8 algorithm;         =3D> compression algorithm
+> >                            =3D> 0:lzo, 1:lz4, 2:zstd, 3:lzorle
+> >      u8 log_cluster_size;  =3D> log scale cluster size
+> >                            =3D> 2 ~ 8
+> > };
+> >
+> > struct f2fs_comp_option option;
+> >
+> > option.algorithm =3D 1;
+> > option.log_cluster_size =3D 7;
+> >
+> > ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
+> >
+> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> > ---
+> >
+> > v6: changed the function name of checking compression algorithm validit=
+y.
+> > v5: allowed to set algorithm which is not currently enabled by kernel.
+> > v4: changed commit message.
+> > v3: changed the error number more specific.
+> >      folded in fix for build breakage reported by kernel test robot
+> >      <lkp@intel.com> and Dan Carpenter <dan.carpenter@oracle.com>.
+> > v2: added ioctl description.
+> > ---
+> >   fs/f2fs/compress.c |  5 +++++
+> >   fs/f2fs/f2fs.h     |  7 ++++++
+> >   fs/f2fs/file.c     | 54 +++++++++++++++++++++++++++++++++++++++++++++=
++
+> >   3 files changed, 66 insertions(+)
+> >
+> > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > index 7895186cc765..b0144670d320 100644
+> > --- a/fs/f2fs/compress.c
+> > +++ b/fs/f2fs/compress.c
+> > @@ -514,6 +514,11 @@ bool f2fs_is_compress_backend_ready(struct inode *=
+inode)
+> >       return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
+> >   }
+> >
+> > +bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
+> > +{
+> > +     return f2fs_cops[algorithm] !=3D NULL;
+> > +}
+> > +
+> >   static mempool_t *compress_page_pool;
+> >   static int num_compress_pages =3D 512;
+> >   module_param(num_compress_pages, uint, 0444);
+> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > index a33c90cf979b..70a8a2196888 100644
+> > --- a/fs/f2fs/f2fs.h
+> > +++ b/fs/f2fs/f2fs.h
+> > @@ -435,6 +435,8 @@ static inline bool __has_cursum_space(struct f2fs_j=
+ournal *journal,
+> >                                               struct f2fs_sectrim_range=
+)
+> >   #define F2FS_IOC_GET_COMPRESS_OPTION        _IOR(F2FS_IOCTL_MAGIC, 21=
+,      \
+> >                                               struct f2fs_comp_option)
+> > +#define F2FS_IOC_SET_COMPRESS_OPTION _IOW(F2FS_IOCTL_MAGIC, 22,      \
+> > +                                             struct f2fs_comp_option)
+> >
+> >   /*
+> >    * should be same as XFS_IOC_GOINGDOWN.
+> > @@ -3915,6 +3917,7 @@ bool f2fs_compress_write_end(struct inode *inode,=
+ void *fsdata,
+> >   int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool=
+ lock);
+> >   void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
+> >   bool f2fs_is_compress_backend_ready(struct inode *inode);
+> > +bool f2fs_is_compress_algorithm_valid(unsigned char algorithm);
+> >   int f2fs_init_compress_mempool(void);
+> >   void f2fs_destroy_compress_mempool(void);
+> >   void f2fs_decompress_pages(struct bio *bio, struct page *page, bool v=
+erity);
+> > @@ -3945,6 +3948,10 @@ static inline bool f2fs_is_compress_backend_read=
+y(struct inode *inode)
+> >       /* not support compression */
+> >       return false;
+> >   }
+> > +static inline bool f2fs_is_compress_algorithm_valid(unsigned char algo=
+rithm)
+> > +{
+> > +     return false;
+> > +}
+> >   static inline struct page *f2fs_compress_control_page(struct page *pa=
+ge)
+> >   {
+> >       WARN_ON_ONCE(1);
+> > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> > index bd52df84219d..be56702e4939 100644
+> > --- a/fs/f2fs/file.c
+> > +++ b/fs/f2fs/file.c
+> > @@ -3963,6 +3963,57 @@ static int f2fs_ioc_get_compress_option(struct f=
+ile *filp, unsigned long arg)
+> >       return 0;
+> >   }
+> >
+> > +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned lo=
+ng arg)
+> > +{
+> > +     struct inode *inode =3D file_inode(filp);
+> > +     struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
+> > +     struct f2fs_comp_option option;
+> > +     int ret =3D 0;
+> > +
+> > +     if (!f2fs_sb_has_compression(sbi))
+> > +             return -EOPNOTSUPP;
+> > +
+> > +     if (!(filp->f_mode & FMODE_WRITE))
+> > +             return -EBADF;
+> > +
+> > +     if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg=
+,
+> > +                             sizeof(option)))
+> > +             return -EFAULT;
+> > +
+> > +     if (!f2fs_compressed_file(inode) ||
+> > +                     option.log_cluster_size < MIN_COMPRESS_LOG_SIZE |=
+|
+> > +                     option.log_cluster_size > MAX_COMPRESS_LOG_SIZE |=
+|
+> > +                     option.algorithm >=3D COMPRESS_MAX)
+> > +             return -EINVAL;
+> > +
+> > +     file_start_write(filp);
+> > +     inode_lock(inode);
+> > +
+> > +     if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
+> > +             ret =3D -EBUSY;
+> > +             goto out;
+> > +     }
+> > +
+> > +     if (inode->i_size !=3D 0) {
+> > +             ret =3D -EFBIG;
+> > +             goto out;
+> > +     }
+> > +
+> > +     F2FS_I(inode)->i_compress_algorithm =3D option.algorithm;
+> > +     F2FS_I(inode)->i_log_cluster_size =3D option.log_cluster_size;
+> > +     F2FS_I(inode)->i_cluster_size =3D 1 << option.log_cluster_size;
+> > +     f2fs_mark_inode_dirty_sync(inode, true);
+> > +
+> > +     if (!f2fs_is_compress_algorithm_valid(option.algorithm))
+> > +             f2fs_warn(sbi, "compression algorithm is successfully set=
+, "
+> > +                     "but current kernel doesn't support this algorith=
+m.");
+> > +out:
+> > +     inode_unlock(inode);
+> > +     file_end_write(filp);
+> > +
+> > +     return ret;
+> > +}
+> > +
+> >   long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long ar=
+g)
+> >   {
+> >       if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
+> > @@ -4053,6 +4104,8 @@ long f2fs_ioctl(struct file *filp, unsigned int c=
+md, unsigned long arg)
+> >               return f2fs_sec_trim_file(filp, arg);
+> >       case F2FS_IOC_GET_COMPRESS_OPTION:
+> >               return f2fs_ioc_get_compress_option(filp, arg);
+> > +     case F2FS_IOC_SET_COMPRESS_OPTION:
+> > +             return f2fs_ioc_set_compress_option(filp, arg);
+> >       default:
+> >               return -ENOTTY;
+> >       }
+> > @@ -4224,6 +4277,7 @@ long f2fs_compat_ioctl(struct file *file, unsigne=
+d int cmd, unsigned long arg)
+> >       case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
+> >       case F2FS_IOC_SEC_TRIM_FILE:
+> >       case F2FS_IOC_GET_COMPRESS_OPTION:
+> > +     case F2FS_IOC_SET_COMPRESS_OPTION:
+> >               break;
+> >       default:
+> >               return -ENOIOCTLCMD;
+> >
