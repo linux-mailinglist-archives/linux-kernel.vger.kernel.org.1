@@ -2,159 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 836DD2A20B1
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 19:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E712A20B2
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 19:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727215AbgKASGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 13:06:53 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:58996 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727111AbgKASGw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 13:06:52 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A1HxKII032294;
-        Sun, 1 Nov 2020 10:06:43 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=aPwoS586QGVEOrLnV5weQldFEdgpI6SiU7plR0OeZcY=;
- b=qmjQhaQ+T06T9EWSys1wsiTYwELvOS4z6Sh7TUM3Jm9JqxJ2XsyxUt49U5q7b61yw5Xa
- IL8J+YaI2A80caeX8PHp3iWGjoNMnsdnVFcpuTofFYrbjEcDXxBT2INJMHvc06ytQMKf
- VvrDq88SkiW3htUgELBiKn5kPtGHAARndKo= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34h5rfcck0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 01 Nov 2020 10:06:43 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 1 Nov 2020 10:06:42 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AY+i1L3aLeJzIsr1ndtcCbhMqQ1bHcZFlzJoPqxNJm36/zSLmRk+BYF06HzhI8khJl20ra14aJpaRKBDWMeuP2uItQXtQE1ii1s8FUe7oVGtPY1LpZi+UErqh0kf3qQhuO93Ib7m5Fbwx9uUInoLbzYo3xLuQ0VV5Wc3YKq4c2pLTyzsRqF8irC4I9pJDALe0RjpW2NHSCCVWc1kwzZ88u6LJdZjXVsP0LwWTbRNnoc31vPBlOW7HFDs1iu/FP0fmXG9ZvBfKkdo/19fUIBfLykxcJRJsNXiutXUGYRpxnKcnTy0NcJLdhU7YwVfSuYu3XT6uSJiA6oN34u7vHCxfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aPwoS586QGVEOrLnV5weQldFEdgpI6SiU7plR0OeZcY=;
- b=BauzHsrDtj/tL+su566yU4+OcuqyAE20y3Sd+q6FZnEN3uX/mcjLqDiIcCLNTnDTBbAs+Cv5cC3ooVMWIOHkx2SBm+1ZQXQCz0VhHE3xl8imhDVsdati3vAS+T/NkJp98Gj5FvF923EUqAyjwgIl/q1LxJuQQOlzjPuiTl++Ev1dq3ZuP2Y6osr6fOQXBTAarNUZkoOz8DR68msvLu2HIp1TiioEXmLFDBq0yhjHYEImNT6r/b8JMXu/ttonj8m4ahuNSo9Bq9W79pygkv6x/mh4/VFm8Pdvoa+2vuJJWaXTO3dvBE1cWHI/DTST9KhPwRQzxbjE4FLH0NBqcHfOKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aPwoS586QGVEOrLnV5weQldFEdgpI6SiU7plR0OeZcY=;
- b=ZJJCllRXKMn9f3lmabAy0QjBunohoojA+of+XbVkzZdl/6PQ0Gx4Qi3bK6+YQ1JRBahu8oRhnhfXjI5vVyQJupzzw8xpjIGJBosWqx2l6Pf7YSx6kQfcDlECHJ1RxXADiryzrQjkAM1Ket1fQbtL72xs/SQkUv01V+v6M6plr1Y=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB4120.namprd15.prod.outlook.com (2603:10b6:a02:c4::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Sun, 1 Nov
- 2020 18:06:41 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::7d77:205b:bbc4:4c70]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::7d77:205b:bbc4:4c70%6]) with mapi id 15.20.3499.030; Sun, 1 Nov 2020
- 18:06:41 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>
-Subject: Re: [PATCH] perf: increase size of buf in perf_evsel__hists_browse()
-Thread-Topic: [PATCH] perf: increase size of buf in perf_evsel__hists_browse()
-Thread-Index: AQHWrxgJ8VqeSFqmzUq01sEGnLmGuqmxk16AgAIB8AA=
-Date:   Sun, 1 Nov 2020 18:06:41 +0000
-Message-ID: <2032D1DB-821B-4B6B-882C-0E77E5582D5F@fb.com>
-References: <20201030235431.534417-1-songliubraving@fb.com>
- <5334209cb6fa4a0782029ca7b44c917e@AcuMS.aculab.com>
-In-Reply-To: <5334209cb6fa4a0782029ca7b44c917e@AcuMS.aculab.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: ACULAB.COM; dkim=none (message not signed)
- header.d=none;ACULAB.COM; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:c2a2]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 97536dde-871e-49f9-622b-08d87e90e295
-x-ms-traffictypediagnostic: BYAPR15MB4120:
-x-microsoft-antispam-prvs: <BYAPR15MB4120F4E4F5D3B2B4C83A21FCB3130@BYAPR15MB4120.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: upfX8OkLDCVO6GrBEX5Xb5ylDcPySopHEqsvu/NQaIOPOFJBnn+7Jk3vAJ1KVaE+clqV0qUTIdVudY8ZyxFjI5zNObz/aIyl3AIvJ7VCSM46nXbhf/+6OIfznZpc/5i69+HbchQYKDE18ijBHj8/NiIhscW6h78rid0YAQ2G8RAZpK27bimP6jklyeHFJBx03y6srlpHYeUpUbf6+nURGyV3RD1IAYXbJtaf3vrN6AuwEDK+55IKKhSno3ljHVsprU7aFZ/iOqZqAQBkD/32t/zqtlDtmolTtLHuH4S2ZQxjPe4JUtYhlUr726NXA9xUy1l0PoDf43oaeIfAZXTXpAQRE4vidrWrQzEoMGep4BOtv2WpuGSb3kQ/01EmYsgiO6GUf2E2Zjh72j6/X3cY9vUlxrYtahglct7l4Z570uA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(396003)(376002)(39860400002)(346002)(66446008)(91956017)(66556008)(36756003)(83380400001)(5660300002)(2906002)(186003)(6512007)(86362001)(53546011)(478600001)(66476007)(76116006)(316002)(64756008)(66946007)(6506007)(2616005)(6916009)(8676002)(71200400001)(6486002)(8936002)(4326008)(54906003)(33656002)(106533001)(101420200001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: xwO1A+z02MOCSkbBTbbFFsG0jA9NoafK6t+wtDAcg+GVfiopOpsFHHXTP08LRUZdpyQVMncE8XlhvhWD6gVHQuL0tb7rGzdyXmUYlCE2dNC+p0wJBN9eNCgIhuxK6Zmf9NycWM/aCcz+uyNPzUUtt5WZygso1AvJ0GPd+8godlTsppf68sfiNhLzAA19XSy/OdsFW/G9fpzgHyJCq2roFj71fUhLOOm3XRi01Vh2U2rqDxV0phKkh2kwNThv8EgntrFxjTavCC8GOEAwniRsMTbVrJvQE860CFx8HRa3EfgDzekKnqHgk3gKnF8gg7zll84jQcRyeWKeRvuDAwbNUsSbb49eDw43ZA9EPD6pFcNvapNvdRpTM9bQxFRcIXXehg37BIBw24mI2Ut6dM3XVHDoL77nHxaNuSaqzykZMcZBmkav0LoGWdOKmyMq3CKH1BADULXSJQLVERNTurDf36OIvSjyVtVau8fa0mbuvcP5y5CbHOWwXBf0LDeBWXtbCGoACCS2IkCG34rXOT9KWRNdxW3O4oTWHjMNyLEmovrDM+ZSl/JGqIHpcXlyRiRIwXz1e0ADfD7QGfs3rykY/GxK2fOlgnoD50iD8AW8HA/SvguZMN/hF9XJ7R2MEPrF+wZujXsbIXpsQ2VJka5cGwkTzwmfSy3PW63qy/u8Mydy/MFBcAODaYeKSZ7z8/cx
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4E8852E5C0B6544D935D529BD76E5C07@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727246AbgKASID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 13:08:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727111AbgKASIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 13:08:02 -0500
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF9FA22253
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 18:08:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604254082;
+        bh=OfBjCIPtc0TxbS1/4RHTocGxkKTL3vnRTUDz7fBxN1s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ECSincphbOM5qbSu3Xdc6BUpyip/6hXudBbbPlAJm8riQGC6eQ60ewr48wfyZIStO
+         1hd8Y7QABAoZY/PQ3+O91ngG/ORXZQYzClemLRo0Jg1zvBTIU9kVlgbfzELq2lBsvH
+         UyDyOe/bxmlP0z9RKlZDIXyeOXFEmpT80xEoMkJY=
+Received: by mail-wr1-f48.google.com with SMTP id n15so12033086wrq.2
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 10:08:01 -0800 (PST)
+X-Gm-Message-State: AOAM531LealxlE3k35J2ZPSHpB3Hq4n0yD3T2CwmqaEiHWh0/OIVssQ6
+        ijHhKEBlylSTEMWoqo8GHJ8P0zqMHgmTURY7G6IZWw==
+X-Google-Smtp-Source: ABdhPJwNmxbNxAUXbrn41Qe7+wawCb/dKKHipu5/XiWdwZEDvnJGpaWgv5/MFRybgjV/Vu0tMFAI6HYHlE/q/5vUafw=
+X-Received: by 2002:adf:e682:: with SMTP id r2mr15522981wrm.184.1604254080252;
+ Sun, 01 Nov 2020 10:08:00 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97536dde-871e-49f9-622b-08d87e90e295
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Nov 2020 18:06:41.3237
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SkKRSLlflffe4tdGTWMJ6qRrPIHO9CcDngR1zEiuziJhZPCPCkJp8uwSDJoByX4R3gT9uFu1WCcAvPehGzFejw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4120
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-01_05:2020-10-30,2020-11-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- lowpriorityscore=0 adultscore=0 clxscore=1011 priorityscore=1501
- impostorscore=0 phishscore=0 malwarescore=0 suspectscore=0 bulkscore=0
- spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011010149
-X-FB-Internal: deliver
+References: <1156938F-A9A3-4EE9-B059-2294A0B9FBFE@jrtc27.com>
+ <20201012134444.1905-1-jrtc27@jrtc27.com> <CALCETrWKwFD7QhFQu9X_yQeVW1_yy-gEMNEtsWmQK=fNg9y68A@mail.gmail.com>
+ <20201101012202.GM534@brightrain.aerifal.cx> <7842A462-0ADB-4EE3-B4CB-AE6DCD70CE1C@jrtc27.com>
+ <20201101015013.GN534@brightrain.aerifal.cx>
+In-Reply-To: <20201101015013.GN534@brightrain.aerifal.cx>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sun, 1 Nov 2020 10:07:48 -0800
+X-Gmail-Original-Message-ID: <CALCETrUuBR3Pt_9NhRZTLzjZzwdsS2OPW4U2r31_1Uq-=poRDw@mail.gmail.com>
+Message-ID: <CALCETrUuBR3Pt_9NhRZTLzjZzwdsS2OPW4U2r31_1Uq-=poRDw@mail.gmail.com>
+Subject: Re: [PATCH v2] x86: Fix x32 System V message queue syscalls
+To:     Rich Felker <dalias@libc.org>
+Cc:     Jessica Clarke <jrtc27@jrtc27.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        linux-x86_64@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 31, 2020 at 6:50 PM Rich Felker <dalias@libc.org> wrote:
+>
+> On Sun, Nov 01, 2020 at 01:27:35AM +0000, Jessica Clarke wrote:
+> > On 1 Nov 2020, at 01:22, Rich Felker <dalias@libc.org> wrote:
+> > > On Sat, Oct 31, 2020 at 04:30:44PM -0700, Andy Lutomirski wrote:
+> > >> cc: some libc folks
+> > >>
+> > >> On Mon, Oct 12, 2020 at 6:45 AM Jessica Clarke <jrtc27@jrtc27.com> w=
+rote:
+> > >>>
+> > >>> POSIX specifies that the first field of the supplied msgp, namely m=
+type,
+> > >>> is a long, not a __kernel_long_t, and it's a user-defined struct du=
+e to
+> > >>> the variable-length mtext field so we can't even bend the spec and =
+make
+> > >>> it a __kernel_long_t even if we wanted to. Thus we must use the com=
+pat
+> > >>> syscalls on x32 to avoid buffer overreads and overflows in msgsnd a=
+nd
+> > >>> msgrcv respectively.
+> > >>
+> > >> This is a mess.
+> > >>
+> > >> include/uapi/linux/msg.h has:
+> > >>
+> > >> /* message buffer for msgsnd and msgrcv calls */
+> > >> struct msgbuf {
+> > >>        __kernel_long_t mtype;          /* type of message */
+> > >>        char mtext[1];                  /* message text */
+> > >> };
+> > >>
+> > >> Your test has:
+> > >>
+> > >> struct msg_long {
+> > >>    long mtype;
+> > >>    char mtext[8];
+> > >> };
+> > >>
+> > >> struct msg_long_ext {
+> > >>    struct msg_long msg_long;
+> > >>    char mext[4];
+> > >> };
+> > >>
+> > >> and I'm unclear as to exactly what you're trying to do there with th=
+e
+> > >> "mext" part.
+> > >>
+> > >> POSIX says:
+> > >>
+> > >>       The application shall ensure that the argument msgp points to =
+ a  user-
+> > >>       defined  buffer that contains first a field of type long speci=
+fying the
+> > >>       type of the message, and then a data portion that holds the da=
+ta  bytes
+> > >>       of the message. The structure below is an example of what this=
+ user-de=E2=80=90
+> > >>       fined buffer might look like:
+> > >>
+> > >>           struct mymsg {
+> > >>               long   mtype;       /* Message type. */
+> > >>               char   mtext[1];    /* Message text. */
+> > >>           }
+> > >>
+> > >> NTP has this delightful piece of code:
+> > >>
+> > >>   44 typedef union {
+> > >>   45   struct msgbuf msgp;
+> > >>   46   struct {
+> > >>   47     long mtype;
+> > >>   48     int code;
+> > >>   49     struct timeval tv;
+> > >>   50   } msgb;
+> > >>   51 } MsgBuf;
+> > >>
+> > >> bluefish has:
+> > >>
+> > >> struct small_msgbuf {
+> > >> long mtype;
+> > >> char mtext[MSQ_QUEUE_SMALL_SIZE];
+> > >> } small_msgp;
+> > >>
+> > >>
+> > >> My laptop has nothing at all in /dev/mqueue.
+> > >>
+> > >> So I don't really know what the right thing to do is.  Certainly if
+> > >> we're going to apply this patch, we should also fix the header.  I
+> > >> almost think we should *delete* struct msgbuf from the headers, sinc=
+e
+> > >> it's all kinds of busted, but that will break the NTP build.  Ideall=
+y
+> > >> we would go back in time and remove it from the headers.
+> > >>
+> > >> Libc people, any insight?  We can probably fix the bug without
+> > >> annoying anyone given how lightly x32 is used and how lightly POSIX
+> > >> message queues are used.
+> > >
+> > > If it's that outright wrong and always has been, I feel like the old
+> > > syscall numbers should just be deprecated and new ones assigned.
+> > > Otherwise, there's no way for userspace to be safe against data
+> > > corruption when run on older kernels. If there's a new syscall number=
+,
+> > > libc can just use the new one unconditionally (giving ENOSYS on
+> > > kernels where it would be broken) or have a x32-specific
+> > > implementation that makes the old syscall and performs translation if
+> > > the new one fails with ENOSYS.
+> >
+> > That doesn't really help broken code continue to work reliably, as
+> > upgrading libc will just pull in the new syscall for a binary that's
+> > expecting the broken behaviour, unless you do symbol versioning, but
+> > then it'll just break when you next recompile the code, and there's no
+> > way for that to be diagnosed given the *application* has to define the
+> > type. But given it's application-defined I really struggle to see how
+> > any code out there is actually expecting the current x32 behaviour as
+> > you'd have to go really out of your way to find out that x32 is broken
+> > and needs __kernel_long_t. I don't think there's any way around just
+> > technically breaking ABI whilst likely really fixing ABI in 99.999% of
+> > cases (maybe 100%).
+>
+> I'm not opposed to "breaking ABI" here because the current syscall
+> doesn't work unless someone wrote bogus x32-specific code to work
+> around it being wrong. I don't particularly want to preserve any of
+> the current behavior.
+>
+> What I am somewhat opposed to is making a situation where an updated
+> libc can't be safe against getting run on a kernel with a broken
+> version of the syscall and silently corrupting data. I'm flexible
+> about how avoiding tha tis achieved.
 
+If we're sufficiently confident that we won't regress anything by
+fixing the bug, I propose we do the following.  First, we commit a fix
+that's Jessica's patch plus a fix to struct msghdr, and we mark that
+for -stable.  Then we commit another patch that removes 'struct
+msghdr' from uapi entirely, but we don't mark that for -stable.  If
+people complain about the latter, we revert it.
 
-> On Oct 31, 2020, at 4:27 AM, David Laight <David.Laight@ACULAB.COM> wrote=
-:
->=20
-> From: Song Liu
->> Sent: 30 October 2020 23:55
->>=20
->> Making perf with gcc-9.1.1 generates the following warning:
->>=20
->>  CC       ui/browsers/hists.o
->> ui/browsers/hists.c: In function 'perf_evsel__hists_browse':
->> ui/browsers/hists.c:3078:61: error: '%d' directive output may be \
->> truncated writing between 1 and 11 bytes into a region of size \
->> between 2 and 12 [-Werror=3Dformat-truncation=3D]
->>=20
->> 3078 |       "Max event group index to sort is %d (index from 0 to %d)",
->>      |                                                             ^~
->> ui/browsers/hists.c:3078:7: note: directive argument in the range [-2147=
-483648, 8]
->> 3078 |       "Max event group index to sort is %d (index from 0 to %d)",
->>      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> In file included from /usr/include/stdio.h:937,
->>                 from ui/browsers/hists.c:5:
->>=20
->> IOW, the string in line 3078 might be too long for buf[] of 64 bytes.
->>=20
->> Fix this by increasing the size of buf[] to 128.
->=20
-> ISTM that something should be unsigned so that the bound check
-> that puts an upper bound of 8 implies a lower bound.
->=20
-> 	David
+After all, we could argue that the x32 bug here isn't really that
+different from any of the huge number of various syscall bugs we've
+had in the past and should just be fixed in the kernel.  If you run
+user programs on a buggy kernel, you get buggy behavior...
 
-Changing both "%d" in this line to "%u" does fix the warning. But we=20
-are printing "evsel->core.nr_members - 1" here, and nr_members is=20
-signed int. So I feel more comfortable keep the "%d"s and increase=20
-the buffer size.=20
-
-Thanks,
-Song=
+--Andy
