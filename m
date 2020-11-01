@@ -2,549 +2,428 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E0C2A1E4B
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 14:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9B12A1E53
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 14:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgKANWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 08:22:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43330 "EHLO
+        id S1726592AbgKANcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 08:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbgKANWf (ORCPT
+        with ESMTP id S1726370AbgKANcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 08:22:35 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E75BC061A04
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 05:22:35 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id a20so10579959ilk.13
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 05:22:35 -0800 (PST)
+        Sun, 1 Nov 2020 08:32:35 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39682C0617A6;
+        Sun,  1 Nov 2020 05:32:35 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id h6so13902452lfj.3;
+        Sun, 01 Nov 2020 05:32:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ShSGuvzTZ9oRwHQvKH+4qGpJUbwqqt5H/ER7WPbU3Mg=;
-        b=XUdipgFowg/ECNf45XU3c5ouaQdcS366SuUFtbO3RXVg2yKGl36MizHY+ZsaxuyMKv
-         kiSfNy8/4gna1P04uSXdLd7hU9Dmi+Lck1/St76h54HlnbpQxFfYMnSMFX2OpCvItItH
-         RfgERU55lyphXg5rJMKKKkwaJf33X7w7NWrqmCHNqRPq4/prcWeM98uRd9wbzkwK7CfH
-         k+QSEqD1L3n7n3+3VP2ux9qilILpw5MBbT5uswVlogqCchyPnHubXrnU4PjkW/MyYGTr
-         GacwsOkhbd22MeTbJ6qh4SRKkPx3ZOba+Lq8Ep7JyovU8r0Td6+XJ4VSl/L697Nz055E
-         mbUA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=vdtNEVaC1tVZIgkaHPlaYBosrBibUEfWWx69Vthh4ys=;
+        b=A7hwBCS24pDNRRTLYnfxvp8EalkXafW2+qThmejdSyOjcLm78QO91SqL85PbFtdtCq
+         Kn1FCeN2jYuHBLxuJpmPX9w7kiTbPhlHS92sx4fzD8JTS+hzKMDNnviFEYTdkTkhTjR7
+         qb0p2aX6lDHsaID4ueWOl2a/6lPIWpgh7Ix/tdXnBH0+jAQLvzGwV3v6HlmuOdfY8VeS
+         oWDXZfd33MI7HgYN6NCX3UTJ8D8iRCj/pr4XHwVd3vmGkKdDg6upO2UcQsKqTB8VcS8M
+         wUJ+W1TtprjJv1eRLno0Xbi6d+eklrVhUscFprmQ/4LdB5KVC1CKO1sE6gE7eEk7UT8B
+         U8UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ShSGuvzTZ9oRwHQvKH+4qGpJUbwqqt5H/ER7WPbU3Mg=;
-        b=GIpgldDiI7uvX3lkk7DJVB4jYpOpbUgWZS9P+n817Dw5uZltJwG0KZJb85w/Kc4Dtc
-         neTlHzfA3+uz5r+bNcRVWCFG+/8ZkfW5EYI5f+DbuNQmBq/junNSEUlmYgAso2PBfqO/
-         Plbmeg3OX9lJCzwgQRPpkSL+am7gdkY+TRZNH0TqRJG+qsMIk9vvaF+iOhMG0m9JpMy4
-         5XkrXZYvMnDaygDp8p/mpTRg+XxGsES0TmLpZcT0mAQNTAMAgug/WlOB8+ztUbhoDv4X
-         yfq4w3zvkQGEhHrgNU1nMo6xaqkty5xUC1wofB+NiJTWQBKdzkE/FSIH35V+YTw7SlPI
-         vf8g==
-X-Gm-Message-State: AOAM532c2vs3wA53S34p+xWUPfmFjuQeRMqtCR3d3TCFwe2RoNbO9XtI
-        LzT4F+cr0/Hw1pCNSkc09OzL7cAfA3rBKBekIpVi9A==
-X-Google-Smtp-Source: ABdhPJyNjdsAGxWigjWKEzVugKBc4/eIDv0hD4KSdu4anJoO0hDCDsTKKmiGl3uucYlbtQKSLe7cmf0MxJdH8HJ93wE=
-X-Received: by 2002:a05:6e02:f12:: with SMTP id x18mr3454714ilj.145.1604236954484;
- Sun, 01 Nov 2020 05:22:34 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=vdtNEVaC1tVZIgkaHPlaYBosrBibUEfWWx69Vthh4ys=;
+        b=M9zZnahdO7RsDrT9W2E98TIMeqaYZhp0r8J88wAn0jJ2Gcf45SWQ1j2pZJQM94jg+g
+         qQLGdNEUJDQrC7pCMhieTRyraDsM7CFLUzH5hom3phIUDX8MwZpotkPOe/1H5CdcI/Mx
+         cicnr8LF4117c4MQ3G27vPsDtv5Xfxr+SZGUYBit1oVEnoOKwI4rU6vJedMxuDbIPQ9O
+         23xoybNCPX2FzmJWSqwKay2aqfI/JGDEEw8zXqvmI7zhQ2VXfB+5xJRhWR3tC9D40UVm
+         sut2v5NEffkZF6z0egdV1hCUOchzcPp0JvICTeukv00J4OFnitLXFkGhOjNd3jWJ9MFR
+         Juiw==
+X-Gm-Message-State: AOAM5327OaKsxYf1MFbo+hEeGmI88HfQNOvi4TEHNy+xhryeAJ2qV+/x
+        eg2gO+jAE5rvvN4AsiKLSMIo1McseX8u3ypcJJ4=
+X-Google-Smtp-Source: ABdhPJy2WF1RNMbidZpW5H1wnGY5bUh9OI5PtmCKTwRIhpBgtNQ4f1v2HrNU4lgg5KZU5Nf1TE8vyJfHYBFru5KQcOU=
+X-Received: by 2002:a19:609:: with SMTP id 9mr3815480lfg.289.1604237553440;
+ Sun, 01 Nov 2020 05:32:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20201025005916.64747-1-luka.kovacic@sartura.hr>
- <20201025005916.64747-3-luka.kovacic@sartura.hr> <CAHp75Vd81cK+nhJ1fxgRC6cEKnBELVA9UtT8VPvq7nbHEdhecQ@mail.gmail.com>
-In-Reply-To: <CAHp75Vd81cK+nhJ1fxgRC6cEKnBELVA9UtT8VPvq7nbHEdhecQ@mail.gmail.com>
-From:   Luka Kovacic <luka.kovacic@sartura.hr>
-Date:   Sun, 1 Nov 2020 14:22:23 +0100
-Message-ID: <CADZsf3ZtQyEK6diz6W=6tZz+=Toyj_XYU33At0JiLutsuRrizA@mail.gmail.com>
-Subject: Re: [PATCH v7 2/6] drivers: mfd: Add a driver for IEI WT61P803 PUZZLE MCU
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Robert Marko <robert.marko@sartura.hr>
+References: <20201025221735.3062-1-digetx@gmail.com> <20201025221735.3062-50-digetx@gmail.com>
+In-Reply-To: <20201025221735.3062-50-digetx@gmail.com>
+Reply-To: cwchoi00@gmail.com
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Date:   Sun, 1 Nov 2020 22:31:56 +0900
+Message-ID: <CAGTfZH0KxyZYLZ_AgM7Lr+4s35kaWJp1AenpZ-o_FRLCCHC+6A@mail.gmail.com>
+Subject: Re: [PATCH v6 49/52] PM / devfreq: tegra20: Convert to EMC_STAT
+ driver, support interconnect and device-tree
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andy,
+Hi Dmitry,
 
-On Mon, Oct 26, 2020 at 11:54 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Sun, Oct 25, 2020 at 3:59 AM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
-> >
-> > Add a driver for the IEI WT61P803 PUZZLE microcontroller, used in some
-> > IEI Puzzle series devices. The microcontroller controls system power,
-> > temperature sensors, fans and LEDs.
-> >
-> > This driver implements the core functionality for device communication
-> > over the system serial (serdev bus). It handles MCU messages and the
-> > internal MCU properties. Some properties can be managed over sysfs.
->
-> ...
->
-> > +#include <asm/unaligned.h>
->
-> asm/* usually go after linux/*.
-> If you get a comment against one place in your series it implies to
-> check the other potential places to address.
+This patch contains the three features as following:
+1. Use interconnect interface for controlling the clock instead of
+controlling it direclty
+2. Use EMC_STAT instead of IMC_STAT
+3. Change polling_interval and upthreshold for more fast responsiveness
 
-Okay.
+I think you need to make the separate patches for each role.
+But, if it is difficult or not proper to split out 1,2 roles, you can
+make two patches for 1,2 and 3 roles.
 
->
-> > +#include <linux/atomic.h>
->
-> > +#include <linux/delay.h>
-> > +#include <linux/delay.h>
->
-> Delay should delay :-)
+Also, if you want to get more responsiveness, you could use delayed timer
+instead of deferrable timer by editing the devfreq_dev_profile structure.
 
-It certainly will :)
+Regards,
+Chanwoo Choi
 
->
-> > +#include <linux/export.h>
-> > +#include <linux/init.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/mfd/iei-wt61p803-puzzle.h>
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/module.h>
->
-> > +#include <linux/of_device.h>
->
-> Don't see a user of this, but of_platform.h seems to be missed.
 
-Okay, I'll add it.
-I'm still using devm_of_platform_populate() in iei_wt61p803_puzzle_probe().
 
->
-> > +#include <linux/property.h>
-> > +#include <linux/sched.h>
-> > +#include <linux/serdev.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/sysfs.h>
->
-> ...
->
-> > +#define IEI_WT61P803_PUZZLE_MAX_COMMAND_LENGTH (20 + 2)
->
-> Since it uses formula, can you add a comment explaining what is the
-> meaning of each argument?
-
-Ok.
-
->
-> ...
->
-> > +enum iei_wt61p803_puzzle_reply_state {
-> > +       FRAME_OK = 0x00,
-> > +       FRAME_PROCESSING = 0x01,
-> > +       FRAME_STRUCT_EMPTY = 0xFF,
-> > +       FRAME_TIMEOUT = 0xFE
->
-> Hmm, why not ordered?
-
-I'll order it by value.
-
->
-> > +};
->
-> ...
->
-> > +struct iei_wt61p803_puzzle_mcu_version {
-> > +       char version[IEI_WT61P803_PUZZLE_VERSION_VERSION_LENGTH + 1];
-> > +       char build_info[IEI_WT61P803_PUZZLE_VERSION_BUILD_INFO_LENGTH + 1];
-> > +       bool bootloader_mode;
-> > +       char protocol_version[IEI_WT61P803_PUZZLE_VERSION_PROTOCOL_VERSION_LENGTH + 1];
-> > +       char serial_number[IEI_WT61P803_PUZZLE_VERSION_SN_LENGTH + 1];
-> > +       char mac_address[8][IEI_WT61P803_PUZZLE_VERSION_MAC_LENGTH + 1];
->
-> Perhaps additional constant to include (presumably) NUL ?
-
-I wouldn't separate this into a constant, I can add a comment
-explaining this is NUL.
-
->
-> Also, what about 8?
-
-Okay, I can add a constant for the number of MAC addresses.
-
->
-> > +};
->
-> ...
->
-> > +struct iei_wt61p803_puzzle {
-> > +       struct serdev_device *serdev;
->
-> > +       struct kobject *kobj;
->
-> It's quite strange you need this,
-
-This is used in iei_wt61p803_puzzle_sysfs_create() and
-iei_wt61p803_puzzle_sysfs_remove() to clean up afterwards.
-
->
-> > +       struct mutex reply_lock;
-> > +       struct mutex bus_lock;
-> > +       struct iei_wt61p803_puzzle_reply *reply;
-> > +       struct iei_wt61p803_puzzle_mcu_version version;
-> > +       struct iei_wt61p803_puzzle_mcu_status status;
-> > +       unsigned char *response_buffer;
-> > +       struct mutex lock;
-> > +};
->
-> ...
->
-> > +static int iei_wt61p803_puzzle_recv_buf(struct serdev_device *serdev,
-> > +                                       const unsigned char *data, size_t size)
-> > +{
-> > +       struct iei_wt61p803_puzzle *mcu = serdev_device_get_drvdata(serdev);
-> > +       int ret;
-> > +
-> > +       ret = iei_wt61p803_puzzle_process_resp(mcu, (unsigned char *)data, size);
->
-> Dropping const, why?
-
-I copy the content, so I can remove the cast and change the parameter
-iei_wt61p803_puzzle_process_resp() accepts to const unsigned char *.
-
->
-> > +       /* Return the number of processed bytes if function returns error */
-> > +       if (ret < 0)
->
-> > +               return (int)size;
->
-> Will be interesting result, maybe you wanted other way around?
-
-That is intentional.
-A single frame is concatenated in the iei_wt61p803_puzzle_process_resp()
-function. In case we find ourselves in an unknown state, an error is
-returned there.
-
-We want to discard the remaining incoming data, since the frame this
-data belongs
-to is broken anyway.
-
->
-> > +       return ret;
-> > +}
->
-> ...
->
-> > +       dev_err(dev, "%s: Command response timed out. Retries: %d", __func__, retry_count);
->
-> Drop __func__, it should not be critical for properly formulated
-> messages (for debug Dynamic Debug may take care of this at run time).
-
-Okay.
-
->
->
-> > +       return -ETIMEDOUT;
->
-> ...
->
-> > +       struct device *dev = &mcu->serdev->dev;
-> > +       int ret;
->
-> > +       int len = (int)size;
->
-> Why len can't be size_t?
-
-I'll check how I can improve this.
-
->
-> Can it be also organized in reversed xmas tree order?
-
-Ok.
-
->
-> ...
->
-> > +       ret = serdev_device_write(mcu->serdev, cmd, len, IEI_WT61P803_PUZZLE_GENERAL_TIMEOUT);
->
-> > +
->
-> Not a competition for LOCs, please drop unneeded blank lines here and there.
-
-Ok.
-
->
-> > +       if (ret < 0) {
-> > +               mutex_unlock(&mcu->bus_lock);
-> > +               return ret;
-> > +       }
->
-> > +       if (!mcu->reply) {
-> > +               ret = -EFAULT;
->
-> Why this error code?
-
-Maybe ENOMEM is more appropriate here...
-
->
-> > +               goto exit;
-> > +       }
->
-> ...
->
-> > +exit:
->
-> Perhaps
-> exit_unlock:
-> ?
->
-> > +       mutex_unlock(&mcu->lock);
-> > +       return ret;
->
-> ...
->
-> > +       sprintf(mcu->version.version, "v%c.%c%c%c", rb[2], rb[3], rb[4], rb[5]);
->
-> Can be '%.3s' for the second part, but it's up to you.
-
-Okay, I agree, that would look better.
-
->
-> ...
->
-> > +       sprintf(mcu->version.build_info, "%c%c/%c%c/%c%c%c%c %c%c:%c%c",
-> > +               rb[8], rb[9], rb[6], rb[7], rb[2],
-> > +               rb[3], rb[4], rb[5], rb[10], rb[11],
-> > +               rb[12], rb[13]);
->
-> Ditto.
->
-> ...
->
-> > +       sprintf(mcu->version.protocol_version, "v%c.%c%c%c%c%c",
-> > +               rb[7], rb[6], rb[5], rb[4], rb[3], rb[2]);
->
-> Ditto.
->
-> ...
->
-> > +err:
->
-> err_unlock: ?
-
-I use goto only in case there is also a mutex to unlock, so I don't see why
-to change this.
-
->
-> > +       mutex_unlock(&mcu->lock);
-> > +       return ret;
->
-> ...
->
-> > +       /* Response format:
-> > +        * (IDX RESPONSE)
-> > +        * 0    @
-> > +        * 1    O
-> > +        * 2    S
-> > +        * 3    S
-> > +        * ...
-> > +        * 5    AC Recovery Status Flag
-> > +        * ...
-> > +        * 10   Power Loss Recovery
-> > +        * ...
-> > +        * 19   Power Status (system power on method)
-> > +        * 20   XOR checksum
-> > +        */
->
-> Shouldn't be rather defined data structure for response?
-
-Every response, apart from the standard headers and a checksum
-at the end is completely different and I don't see a good way to
-standardize that in some other way.
-
->
-> ...
->
-> > +       size_t reply_size = 0;
->
-> Dummy?
->
-> ...
->
-> > +       sprintf(mcu->version.serial_number, "%.*s",
-> > +               IEI_WT61P803_PUZZLE_VERSION_SN_LENGTH, resp_buf + 4);
->
-> Shouldn't you check for reply_size to be big enough?
-
-I'll add a check.
-
->
-> ...
->
-> > +               serial_number_header[2] = 0x0 + (0xC) * sn_counter;
->
-> Why capital, why in parentheses?
->
-> ...
->
-> > +               memcpy(serial_number_cmd + 4, serial_number + (0xC) * sn_counter, 0xC);
->
-> Ditto.
-
-I'll change these to lower case and remove the parentheses.
-
->
-> ...
->
-> > +               serial_number_cmd[sizeof(serial_number_cmd) - 1] = 0;
->
-> You defined X+1 to then use sizeof() -1? Hmm...
-
-This was used for the XOR checksum.
-I'll remove this statement as it is not needed anymore.
-
->
-> ...
->
-> > +               if (!(resp_buf[0] == IEI_WT61P803_PUZZLE_CMD_HEADER_START &&
-> > +                     resp_buf[1] == IEI_WT61P803_PUZZLE_CMD_RESPONSE_OK &&
-> > +                     resp_buf[2] == IEI_WT61P803_PUZZLE_CHECKSUM_RESPONSE_OK)) {
-> > +                       ret = -EPROTO;
-> > +                       goto err;
-> > +               }
->
-> I think it would be better to define data structure for replies and
-> then check would be as simple as memcmp().
-
-I'd keep this as is, because the replies are different a lot of the times.
-Especially when the reply isn't just an ACK.
-
->
-> ...
->
-> > +               if (reply_size < 22) {
->
-> Looking at the code organisation it seems to me like if (reply_size <
-> sizeof(struct_of_this_type_of_reply)).
->
-> > +                       ret = -EIO;
-> > +                       goto err;
-> > +               }
->
-> ...
->
-> > +       mac_address_header[2] = 0x24 + (0x11) * mac_address_idx;
->
-> Why in parentheses?
->
-> ...
->
-> > +       /* Concat mac_address_header, mac_address to mac_address_cmd */
-> > +       memcpy(mac_address_cmd, mac_address_header, 4);
-> > +       memcpy(mac_address_cmd + 4, mac_address, 17);
->
-> Yeah, much easier to use specific field names instead of this 4 / + 4, 17, ...
-
-Ok, I'll convert this to:
-memcpy(mac_address_cmd, mac_address_header, sizeof(mac_address_header));
-...
-
->
-> ...
->
-> > +       ret = snprintf(cmd_buf, sizeof(cmd_buf), "%d", power_loss_recovery_action);
-> > +       if (ret < 0)
-> > +               return ret;
->
-> ...
->
-> > +       power_loss_recovery_cmd[3] = cmd_buf[0];
->
-> One decimal (most significant) digit?! Isn't it a bit ambiguous?
-
-The power_loss_recovery_action can only have a value of 0 - 4.
-My understanding is that if I give snprintf a buffer of size 1, it will
-truncate the one character to make space for NUL.
-
->
-> ...
->
-> > +#define sysfs_container(dev) \
-> > +       (container_of((dev)->kobj.parent, struct device, kobj))
-> > +
-> > +static ssize_t version_show(struct device *dev, struct device_attribute *attr,
-> > +                           char *buf)
-> > +{
-> > +       struct device *dev_container = sysfs_container(dev);
-> > +       struct iei_wt61p803_puzzle *mcu = dev_get_drvdata(dev_container);
-> > +
-> > +       return sprintf(buf, "%s\n", mcu->version.version);
-> > +}
-> > +static DEVICE_ATTR_RO(version);
->
-> I believe we have better approach than this. dev_groups, for example.
-
-Ok, I'll check how I could improve it.
-
->
-> ...
->
-> > +       if ((int)count != IEI_WT61P803_PUZZLE_VERSION_SN_LENGTH + 1)
-> > +               return -EINVAL;
->
-> You need to revisit all of these strange castings here and there. It
-> should be really rear to have explicit castings in C.
->
-> ...
->
-> > +       memcpy(serial_number, (unsigned char *)buf, IEI_WT61P803_PUZZLE_VERSION_SN_LENGTH);
->
-> This casting is not need. Basically any casting from or to void * is not needed.
-
-Ok.
-
->
-> ...
->
-> > +       dev_info(dev, "Driver baud rate: %d", baud);
->
-> Why being so noisy, how does it help user? Doesn't serdev has a
-> facility to show this rather basic stuff?
->
-> ...
->
-> > +       dev_info(dev, "MCU version: %s", mcu->version.version);
-> > +       dev_info(dev, "MCU firmware build info: %s", mcu->version.build_info);
-> > +       dev_info(dev, "MCU in bootloader mode: %s",
-> > +                mcu->version.bootloader_mode ? "true" : "false");
-> > +       dev_info(dev, "MCU protocol version: %s", mcu->version.protocol_version);
->
-> How all of this can be useful for *working* case?
-
-I can reduce this, but I'd just like to log the baud rate and the
-firmware build info.
-These two could be useful in a kernel log, if something doesn't work.
-
->
-> ...
->
-> > +       ret = iei_wt61p803_puzzle_sysfs_create(dev, mcu);
->
-> No check?
-
-I'll add a check.
-
->
-> ...
->
-> Have I missed ABI documentation?
-
-The ABI documentation is in a separate patch
-(Documentation/ABI/testing/sysfs-driver-iei-wt61p803-puzzle).
-
->
+On Mon, Oct 26, 2020 at 7:21 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> External (EMC) and Internal Memory Controllers (IMC) have a nearly
+> identical statistics gathering module. This patch switches driver to use
+> EMC_STAT instead of IMC_STAT and adds device-tree support which brings ICC
+> support and makes driver to use bandwidth OPPs defined in device-tree.
+>
+> The previous tegra20-devfreq variant was depending on presence of both
+> EMC and IMC drivers simultaneously because it wasn't apparent how to use
+> EMC_STAT properly back in the day. Dependency on the IMC driver is gone
+> after this patch.
+>
+> The older variant of the devfreq driver also isn't suitable anymore
+> because EMC got support for interconnect framework and DVFS, hence
+> tegra20-devfreq shouldn't drive the EMC clock directly, but use OPP
+> API for issuing memory bandwidth requests.
+>
+> The polling interval is changed from 500ms to 30ms in order to improve
+> responsiveness of the system in general and because EMC clock is now
+> allowed to go lower than before since display driver supports ICC now
+> as well.
+>
+> The parent EMC device is an MFD device now and tegra20-devfreq its
+> sub-device. Devfreq driver uses SYSCON API for retrieving regmap of the
+> EMC registers from the parent device.
+>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/devfreq/Kconfig           |   1 +
+>  drivers/devfreq/tegra20-devfreq.c | 174 +++++++++++++-----------------
+>  2 files changed, 75 insertions(+), 100 deletions(-)
+>
+> diff --git a/drivers/devfreq/Kconfig b/drivers/devfreq/Kconfig
+> index 0ee36ae2fa79..1bd225e571df 100644
+> --- a/drivers/devfreq/Kconfig
+> +++ b/drivers/devfreq/Kconfig
+> @@ -126,6 +126,7 @@ config ARM_TEGRA20_DEVFREQ
+>         depends on ARCH_TEGRA_2x_SOC || COMPILE_TEST
+>         depends on COMMON_CLK
+>         select DEVFREQ_GOV_SIMPLE_ONDEMAND
+> +       select MFD_SYSCON
+>         help
+>           This adds the DEVFREQ driver for the Tegra20 family of SoCs.
+>           It reads Memory Controller counters and adjusts the operating
+> diff --git a/drivers/devfreq/tegra20-devfreq.c b/drivers/devfreq/tegra20-devfreq.c
+> index fd801534771d..0a36b085d32a 100644
+> --- a/drivers/devfreq/tegra20-devfreq.c
+> +++ b/drivers/devfreq/tegra20-devfreq.c
+> @@ -7,180 +7,148 @@
+>
+>  #include <linux/clk.h>
+>  #include <linux/devfreq.h>
+> -#include <linux/io.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> +#include <linux/mfd/syscon.h>
+>  #include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_opp.h>
+> +#include <linux/regmap.h>
+>  #include <linux/slab.h>
+>
+> -#include <soc/tegra/mc.h>
+> -
+>  #include "governor.h"
+>
+> -#define MC_STAT_CONTROL                                0x90
+> -#define MC_STAT_EMC_CLOCK_LIMIT                        0xa0
+> -#define MC_STAT_EMC_CLOCKS                     0xa4
+> -#define MC_STAT_EMC_CONTROL                    0xa8
+> -#define MC_STAT_EMC_COUNT                      0xb8
+> +#define EMC_STAT_CONTROL                       0x160
+> +#define EMC_STAT_LLMC_CONTROL                  0x178
+> +#define EMC_STAT_PWR_CLOCK_LIMIT               0x198
+> +#define EMC_STAT_PWR_CLOCKS                    0x19c
+> +#define EMC_STAT_PWR_COUNT                     0x1a0
+>
+> -#define EMC_GATHER_CLEAR                       (1 << 8)
+> -#define EMC_GATHER_ENABLE                      (3 << 8)
+> +#define EMC_PWR_GATHER_CLEAR                   (1 << 8)
+> +#define EMC_PWR_GATHER_DISABLE                 (2 << 8)
+> +#define EMC_PWR_GATHER_ENABLE                  (3 << 8)
+>
+>  struct tegra_devfreq {
+> +       struct devfreq_simple_ondemand_data ondemand_data;
+> +       struct opp_table *opp_table;
+>         struct devfreq *devfreq;
+>         struct clk *emc_clock;
+> -       void __iomem *regs;
+> +       struct regmap *rmap;
+>  };
+>
+>  static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
+>                                 u32 flags)
+>  {
+> -       struct tegra_devfreq *tegra = dev_get_drvdata(dev);
+> -       struct devfreq *devfreq = tegra->devfreq;
+>         struct dev_pm_opp *opp;
+> -       unsigned long rate;
+> -       int err;
+> +       int ret;
+>
+>         opp = devfreq_recommended_opp(dev, freq, flags);
+> -       if (IS_ERR(opp))
+> +       if (IS_ERR(opp)) {
+> +               dev_err(dev, "failed to find opp for %lu Hz\n", *freq);
+>                 return PTR_ERR(opp);
+> +       }
+>
+> -       rate = dev_pm_opp_get_freq(opp);
+> +       ret = dev_pm_opp_set_bw(dev, opp);
+>         dev_pm_opp_put(opp);
+>
+> -       err = clk_set_min_rate(tegra->emc_clock, rate);
+> -       if (err)
+> -               return err;
+> -
+> -       err = clk_set_rate(tegra->emc_clock, 0);
+> -       if (err)
+> -               goto restore_min_rate;
+> -
+> -       return 0;
+> -
+> -restore_min_rate:
+> -       clk_set_min_rate(tegra->emc_clock, devfreq->previous_freq);
+> -
+> -       return err;
+> +       return ret;
+>  }
+>
+>  static int tegra_devfreq_get_dev_status(struct device *dev,
+>                                         struct devfreq_dev_status *stat)
+>  {
+>         struct tegra_devfreq *tegra = dev_get_drvdata(dev);
+> +       u32 count, clocks;
+>
+> -       /*
+> -        * EMC_COUNT returns number of memory events, that number is lower
+> -        * than the number of clocks. Conversion ratio of 1/8 results in a
+> -        * bit higher bandwidth than actually needed, it is good enough for
+> -        * the time being because drivers don't support requesting minimum
+> -        * needed memory bandwidth yet.
+> -        *
+> -        * TODO: adjust the ratio value once relevant drivers will support
+> -        * memory bandwidth management.
+> -        */
+> -       stat->busy_time = readl_relaxed(tegra->regs + MC_STAT_EMC_COUNT);
+> -       stat->total_time = readl_relaxed(tegra->regs + MC_STAT_EMC_CLOCKS) / 8;
+> -       stat->current_frequency = clk_get_rate(tegra->emc_clock);
+> +       /* freeze counters */
+> +       regmap_write(tegra->rmap, EMC_STAT_CONTROL, EMC_PWR_GATHER_DISABLE);
+> +
+> +       /* number of clocks when EMC request was accepted */
+> +       regmap_read(tegra->rmap, EMC_STAT_PWR_COUNT, &count);
+> +       /* total number of clocks while PWR_GATHER control was set to ENABLE */
+> +       regmap_read(tegra->rmap, EMC_STAT_PWR_CLOCKS, &clocks);
+>
+> -       writel_relaxed(EMC_GATHER_CLEAR, tegra->regs + MC_STAT_CONTROL);
+> -       writel_relaxed(EMC_GATHER_ENABLE, tegra->regs + MC_STAT_CONTROL);
+> +       /* clear counters and restart */
+> +       regmap_write(tegra->rmap, EMC_STAT_CONTROL, EMC_PWR_GATHER_CLEAR);
+> +       regmap_write(tegra->rmap, EMC_STAT_CONTROL, EMC_PWR_GATHER_ENABLE);
+> +
+> +       stat->busy_time = count;
+> +       stat->total_time = clocks;
+> +       stat->current_frequency = clk_get_rate(tegra->emc_clock);
+>
+>         return 0;
+>  }
+>
+>  static struct devfreq_dev_profile tegra_devfreq_profile = {
+> -       .polling_ms     = 500,
+> +       .polling_ms     = 30,
+>         .target         = tegra_devfreq_target,
+>         .get_dev_status = tegra_devfreq_get_dev_status,
+>  };
+>
+> -static struct tegra_mc *tegra_get_memory_controller(void)
+> -{
+> -       struct platform_device *pdev;
+> -       struct device_node *np;
+> -       struct tegra_mc *mc;
+> -
+> -       np = of_find_compatible_node(NULL, NULL, "nvidia,tegra20-mc-gart");
+> -       if (!np)
+> -               return ERR_PTR(-ENOENT);
+> -
+> -       pdev = of_find_device_by_node(np);
+> -       of_node_put(np);
+> -       if (!pdev)
+> -               return ERR_PTR(-ENODEV);
+> -
+> -       mc = platform_get_drvdata(pdev);
+> -       if (!mc)
+> -               return ERR_PTR(-EPROBE_DEFER);
+> -
+> -       return mc;
+> -}
+> -
+>  static int tegra_devfreq_probe(struct platform_device *pdev)
+>  {
+> +       struct device_node *emc_np = pdev->dev.parent->of_node;
+>         struct tegra_devfreq *tegra;
+> -       struct tegra_mc *mc;
+> -       unsigned long max_rate;
+> -       unsigned long rate;
+>         int err;
+>
+> -       mc = tegra_get_memory_controller();
+> -       if (IS_ERR(mc)) {
+> -               err = PTR_ERR(mc);
+> -               dev_err(&pdev->dev, "failed to get memory controller: %d\n",
+> -                       err);
+> -               return err;
+> -       }
+> -
+>         tegra = devm_kzalloc(&pdev->dev, sizeof(*tegra), GFP_KERNEL);
+>         if (!tegra)
+>                 return -ENOMEM;
+>
+>         /* EMC is a system-critical clock that is always enabled */
+> -       tegra->emc_clock = devm_clk_get(&pdev->dev, "emc");
+> +       tegra->emc_clock = devm_get_clk_from_child(&pdev->dev, emc_np, NULL);
+>         if (IS_ERR(tegra->emc_clock))
+>                 return dev_err_probe(&pdev->dev, PTR_ERR(tegra->emc_clock),
+>                                      "failed to get emc clock\n");
+>
+> -       tegra->regs = mc->regs;
+> -
+> -       max_rate = clk_round_rate(tegra->emc_clock, ULONG_MAX);
+> +       tegra->rmap = device_node_to_regmap(emc_np);
+> +       if (IS_ERR(tegra->rmap))
+> +               return dev_err_probe(&pdev->dev, PTR_ERR(tegra->rmap),
+> +                                    "failed to get emc regmap\n");
+>
+> -       for (rate = 0; rate <= max_rate; rate++) {
+> -               rate = clk_round_rate(tegra->emc_clock, rate);
+> +       tegra->opp_table = dev_pm_opp_get_opp_table(&pdev->dev);
+> +       if (IS_ERR(tegra->opp_table))
+> +               return dev_err_probe(&pdev->dev, PTR_ERR(tegra->opp_table),
+> +                                    "failed to prepare opp table\n");
+>
+> -               err = dev_pm_opp_add(&pdev->dev, rate, 0);
+> -               if (err) {
+> -                       dev_err(&pdev->dev, "failed to add opp: %d\n", err);
+> -                       goto remove_opps;
+> -               }
+> +       err = dev_pm_opp_of_add_table(&pdev->dev);
+> +       if (err) {
+> +               dev_err(&pdev->dev, "failed to add opp table: %d\n", err);
+> +               goto put_table;
+>         }
+>
+> +       /*
+> +        * PWR_COUNT is 1/2 of PWR_CLOCKS at max, and thus, the up-threshold
+> +        * should be less than 50.  Secondly, multiple active memory clients
+> +        * may cause over 20 of lost clock cycles due to stalls caused by
+> +        * competing memory accesses.  This means that threshold should be
+> +        * set to a less than 30 in order to have a properly working governor.
+> +        */
+> +       tegra->ondemand_data.upthreshold = 20;
+> +
+>         /*
+>          * Reset statistic gathers state, select global bandwidth for the
+>          * statistics collection mode and set clocks counter saturation
+>          * limit to maximum.
+>          */
+> -       writel_relaxed(0x00000000, tegra->regs + MC_STAT_CONTROL);
+> -       writel_relaxed(0x00000000, tegra->regs + MC_STAT_EMC_CONTROL);
+> -       writel_relaxed(0xffffffff, tegra->regs + MC_STAT_EMC_CLOCK_LIMIT);
+> +       regmap_write(tegra->rmap, EMC_STAT_CONTROL, 0x00000000);
+> +       regmap_write(tegra->rmap, EMC_STAT_LLMC_CONTROL, 0x00000000);
+> +       regmap_write(tegra->rmap, EMC_STAT_PWR_CLOCK_LIMIT, 0xffffffff);
+>
+>         platform_set_drvdata(pdev, tegra);
+>
+>         tegra->devfreq = devfreq_add_device(&pdev->dev, &tegra_devfreq_profile,
+> -                                           DEVFREQ_GOV_SIMPLE_ONDEMAND, NULL);
+> +                                           DEVFREQ_GOV_SIMPLE_ONDEMAND,
+> +                                           &tegra->ondemand_data);
+>         if (IS_ERR(tegra->devfreq)) {
+>                 err = PTR_ERR(tegra->devfreq);
+> -               goto remove_opps;
+> +               goto put_table;
+>         }
+>
+>         return 0;
+>
+> -remove_opps:
+> -       dev_pm_opp_remove_all_dynamic(&pdev->dev);
+> +put_table:
+> +       dev_pm_opp_put_opp_table(tegra->opp_table);
+>
+>         return err;
+>  }
+> @@ -190,21 +158,27 @@ static int tegra_devfreq_remove(struct platform_device *pdev)
+>         struct tegra_devfreq *tegra = platform_get_drvdata(pdev);
+>
+>         devfreq_remove_device(tegra->devfreq);
+> -       dev_pm_opp_remove_all_dynamic(&pdev->dev);
+> +       dev_pm_opp_of_remove_table(&pdev->dev);
+> +       dev_pm_opp_put_opp_table(tegra->opp_table);
+>
+>         return 0;
+>  }
+>
+> +static const struct of_device_id tegra_devfreq_of_match[] = {
+> +       { .compatible = "nvidia,tegra20-emc-statistics" },
+> +       { },
+> +};
+> +
+>  static struct platform_driver tegra_devfreq_driver = {
+>         .probe          = tegra_devfreq_probe,
+>         .remove         = tegra_devfreq_remove,
+>         .driver         = {
+>                 .name   = "tegra20-devfreq",
+> +               .of_match_table = tegra_devfreq_of_match,
+>         },
+>  };
+>  module_platform_driver(tegra_devfreq_driver);
+>
+> -MODULE_ALIAS("platform:tegra20-devfreq");
+>  MODULE_AUTHOR("Dmitry Osipenko <digetx@gmail.com>");
+>  MODULE_DESCRIPTION("NVIDIA Tegra20 devfreq driver");
+>  MODULE_LICENSE("GPL v2");
 > --
-> With Best Regards,
-> Andy Shevchenko
-
-Kind regards,
-Luka
+> 2.27.0
+>
