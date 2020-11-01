@@ -2,120 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57DF2A1DCC
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 13:23:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC932A1DD5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 13:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgKAMWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 07:22:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726474AbgKAMWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 07:22:36 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S1726559AbgKAM0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 07:26:17 -0500
+Received: from asavdk3.altibox.net ([109.247.116.14]:48618 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726474AbgKAM0R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 07:26:17 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3257B20795;
-        Sun,  1 Nov 2020 12:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604233355;
-        bh=FMgN1LC7jmA8cluEWBqSmen4WayfoXA4+4zxJC2Mopo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=D60KdlkvZjZ1ZCMwQqErMjMTKyB9fNK8nz+D6XquWQuiB2prma9fLHoCUFyGcCDWy
-         AcdMZsDPpjoCr5pdNddgJ8LXZXbZyJlk1trBYCEuOcSUBjlmujEwPv2Evr5qPttCdm
-         Lhz7sNqXweIBX96TO2FDssvYnPQTRWHIV113dBkI=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kZCNV-006Pn8-40; Sun, 01 Nov 2020 12:22:33 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Daniel Palmer <daniel@thingy.jp>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: [GIT PULL] irqchip updates for 5.10, take #1
-Date:   Sun,  1 Nov 2020 12:22:23 +0000
-Message-Id: <20201101122223.255806-1-maz@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 85B9220022;
+        Sun,  1 Nov 2020 13:26:13 +0100 (CET)
+Date:   Sun, 1 Nov 2020 13:26:11 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Christophe Branchereau <cbranchereau@gmail.com>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] drm/panel: ABT Y030XX067A panel support
+Message-ID: <20201101122611.GA1269759@ravnborg.org>
+References: <20201101093150.8071-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, anup@brainfault.org, atish.patra@wdc.com, daniel@thingy.jp, fabrice.gasnier@st.com, geert+renesas@glider.be, greentime.hu@sifive.com, pavel@ucw.cz, peter.ujfalusi@ti.com, robh@kernel.org, linux-kernel@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201101093150.8071-1-paul@crapouillou.net>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8 a=9Q3-Gd2UY0mbpF3q5_8A:9
+        a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22 a=pHzHmUro8NiASowvMSCR:22
+        a=nt3jZW36AmriUCFCBwmW:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Hi Paul.
 
-Here's a smallish set of fixes for 5.10. Some fixes after the
-IPI-as-IRQ (I expect a couple more next week), two significant bug
-fixes for the SiFive PLIC, and a TI update to handle their "unmapped
-events". The rest is the usual set of cleanups and tidying up.
+On Sun, Nov 01, 2020 at 09:31:46AM +0000, Paul Cercueil wrote:
+> Hi,
+> 
+> This patchset is for adding support for the Asia Better Technology (aka.
+> ABT) Y030XX067A 3.0" 320x480 24-bit LCD IPS panel.
+> 
+> While being 320x480 it is actually 4:3 with non-square pixels, and
+> requires a specific bus format, as the pixel ordering changes each line
+> (RGB on odd lines, GRB on even lines).
+> 
+> Patch #1 adds the abt,* vendor prefix.
+> Patch #2 adds the abt,y030xx067a panel binding documentation.
+> Patch #3 adds the MEDIA_BUS_FMT_RGB888_3X8_DELTA media bus format.
+> Patch #4 adds the driver itself.
 
-Please pull,
+Full series looks good.
 
-	M.
+I asked google - but no hits for "Asia Better Technology". But I blame
+that the company has no public page - in english at least.
+Also the part with a DELTA media bus format looks correct, but not
+something I know much off.
 
-The following changes since commit 63ea38a402213d8c9c16e58ee4901ff51bc8fe3c:
+The driver itself utilises regmap_multi_reg_write() - very nice!
 
-  Merge branch 'irq/mstar' into irq/irqchip-next (2020-10-10 12:46:54 +0100)
+Full series is:
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
-are available in the Git repository at:
+I assume you will apply yourself - but please wait a few days after it
+have hit dri-devel to let others have the possibility to give feedback.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-5.10-1
-
-for you to fetch changes up to d95bdca75b3fb41bf185efe164e05aed820081a5:
-
-  irqchip/ti-sci-inta: Add support for unmapped event handling (2020-11-01 12:00:50 +0000)
-
-----------------------------------------------------------------
-irqchip fixes for Linux 5.10, take #1
-
-- A couple of fixes after the IPI as IRQ patches (Kconfig, bcm2836)
-- Two SiFive PLIC fixes (irq_set_affinity, hierarchy handling)
-- "unmapped events" handling for the ti-sci-inta controller
-- Tidying up for the irq-mst driver (static functions, Kconfig)
-- Small cleanup in the Renesas irqpin driver
-- STM32 exti can now handle LP timer events
-
-----------------------------------------------------------------
-Fabrice Gasnier (1):
-      irqchip/stm32-exti: Add all LP timer exti direct events support
-
-Geert Uytterhoeven (2):
-      irqchip/mst: MST_IRQ should depend on ARCH_MEDIATEK or ARCH_MSTARV7
-      irqchip/renesas-intc-irqpin: Merge irlm_bit and needs_irlm
-
-Greentime Hu (2):
-      irqchip/sifive-plic: Fix broken irq_set_affinity() callback
-      irqchip/sifive-plic: Fix chip_data access within a hierarchy
-
-Marc Zyngier (4):
-      genirq: Let GENERIC_IRQ_IPI select IRQ_DOMAIN_HIERARCHY
-      irqchip/mst: Make mst_intc_of_init static
-      irqchip/mips: Drop selection of IRQ_DOMAIN_HIERARCHY
-      irqchip/bcm2836: Fix missing __init annotation
-
-Peter Ujfalusi (2):
-      dt-bindings: irqchip: ti, sci-inta: Update for unmapped event handling
-      irqchip/ti-sci-inta: Add support for unmapped event handling
-
- .../bindings/interrupt-controller/ti,sci-inta.yaml | 10 +++
- drivers/irqchip/Kconfig                            |  3 +-
- drivers/irqchip/irq-bcm2836.c                      |  2 +-
- drivers/irqchip/irq-mst-intc.c                     |  4 +-
- drivers/irqchip/irq-renesas-intc-irqpin.c          |  8 +--
- drivers/irqchip/irq-sifive-plic.c                  | 10 +--
- drivers/irqchip/irq-stm32-exti.c                   |  4 ++
- drivers/irqchip/irq-ti-sci-inta.c                  | 83 +++++++++++++++++++++-
- kernel/irq/Kconfig                                 |  1 +
- 9 files changed, 107 insertions(+), 18 deletions(-)
+	Sam
