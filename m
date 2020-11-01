@@ -2,146 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641D52A1EB1
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 15:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4852A1ECD
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 15:52:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgKAOpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 09:45:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
+        id S1726599AbgKAOwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 09:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgKAOpT (ORCPT
+        with ESMTP id S1726458AbgKAOwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 09:45:19 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A091FC0617A6;
-        Sun,  1 Nov 2020 06:45:18 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id 141so14049359lfn.5;
-        Sun, 01 Nov 2020 06:45:18 -0800 (PST)
+        Sun, 1 Nov 2020 09:52:09 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70178C0617A6;
+        Sun,  1 Nov 2020 06:52:09 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id m17so1960967pjz.3;
+        Sun, 01 Nov 2020 06:52:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=nfSTOQa1GHPu7yZflmElx1yrigDoZA+beTbfSTxADDQ=;
-        b=LNCbyfl80w5m5vmdw3f6tkQFZPsqsLTQxD7B0YQ9lQsp91AmlP1vbAFBWNx1lZpLAd
-         P38k7TmgrN7uaqeRam6cxqBfIwjYYLqYjvGGuwvZOqwRdmzY9yEqvtyWbHNwRtZNQ9vg
-         MuVynxEAfEH9OIJ0IwgQTMEP9jtxTsxGwPF6tHrg4ERcckfqZGAgvFJ6TZP9o2+cIGDi
-         fdUdmmpX5MwYo8Qy+YuyNywQgXTUSAFuARSWrtAYrm1zpbva063byVj2nxUXXovDzt8u
-         xL7T3BWrj5oXGEBJdmPgkwsMNh1Zv8hRvSh9OdWVNAO9IELnHdrPWxk2Ax3Rl6A3VLf7
-         JBkQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WDz5iZ7ScqUpsOhTQpFWUX1eJGf0gqLfwcAH1gDLhKk=;
+        b=SGIO4h4iravRi2aPjBFdvDhvj8pQlGCnea3mZTKLfxO2XtXlRU4wWdef5CSmwlAxV7
+         fZu8o4fh61hzgzWi1+c//2pM8/mqGz/e0nrpuDz9cQHkhtXQsvFQp0TM8+zNbBpgxTel
+         q9I7JVvNxjoXmusZurWxx7m5tD1F3Mtp2SmEukDsBInadw1gllYNjZQ6HIdFFiKdP6Bl
+         XQuHaKnaTPZQyIe+d0gs7EL8UlCXDUoFlSwTAq8frpZ3yKBtVCOfbkCvKzwb2tJPt9bj
+         FS3sOU8ht8kllUYpaqtTDuOqHIsbqXcuLWxdSONGqzPLThuxKQxLJofFbvuQFGy1+dwh
+         kyLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=nfSTOQa1GHPu7yZflmElx1yrigDoZA+beTbfSTxADDQ=;
-        b=BnbSw1mVjGf3BIlk09CaRF8NJkipOUjgGbvqONvkRpwJ5lXBMLrvSZ2COpFSx68hbV
-         BaLAgRkA8x1bXiwv8ZxtK3ZCsk6ceanDB9yMEWmnQ8P8GH+kK3GOyUtgNsCDRjkPbVqh
-         HzmTl8RBQ1TtOJjFm6tpEaJTGfmoFWsKnwVeY9ag/ciB6p3VxIQRt1VeLzk9Zvj1qooA
-         QHJpLCOEFMlL5o3xfsk7j0W6NdwKS3xc9gJasYUpITRSkWoB0ecuUH/Kvy9Z32miWZH7
-         vSVpyBH/geZ8sBLEOt+S1LArLmEcXSptkECh7SFNmD4z5edsumriYKwz2fhyDpZUb0no
-         6Duw==
-X-Gm-Message-State: AOAM532WE522ywBzDyRwcu0ExRq3235J7gWCaTYdcq7nHPRpCiPywDy8
-        4GJ3Hb5uoZlHNWlWDesf2+8Y22khUF379oFIxXg=
-X-Google-Smtp-Source: ABdhPJyBkgiSrqXhZk/gcQpWF+e/o3AVHRSwjg0BQJhL/gY5tJ65y2vrH74G0ZFq651tDjCK4YjMxaHGxd8OKMjGS5w=
-X-Received: by 2002:a05:6512:322d:: with SMTP id f13mr3971359lfe.571.1604241916924;
- Sun, 01 Nov 2020 06:45:16 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WDz5iZ7ScqUpsOhTQpFWUX1eJGf0gqLfwcAH1gDLhKk=;
+        b=RHChll8LwalRGRbRJXs9u+KEELUtF4bd4MstNwAoPjB+X6qkDpspTnARGfwDApAYtw
+         OGtGYFES/+aVMChLpTLJAj88044zbKJ6CfYo9m5tcRuf1IVdNGLojvxBklt0fPJ2PlY9
+         HDdszoDdSZGcDdVka2YY/WHwy1KUsxuOpCJyc+gmVtaA+UeYi05s1Mbr/FFndfqQGnVb
+         DMpt3BN8O3SETX3s9RwyBYZkYJm/a7QLx8ZiTkFJk47KEb5I8a+DdViu4WObsbLsjpnB
+         QxE5PPhJWURDpIppPS+Dnq+7GHpaGl8R89JsaHRt1J4+epZp/y1O0UNvs9MUtfg0KLPl
+         RMAQ==
+X-Gm-Message-State: AOAM531PzuXMyX5/0wynUz7mLv99PKd6e8jvLBB3JhU8nb5XH0D92Atf
+        PgZIY8kY1kRnfN6OHgcmPA==
+X-Google-Smtp-Source: ABdhPJy9XzDVddbeWywB9pM2wgZ/snK0yVI0jjUcauuzs+uCMfyNHN9Sj4z+VX0A/0EAWRhmR/lslw==
+X-Received: by 2002:a17:90b:e8c:: with SMTP id fv12mr5987572pjb.196.1604242328948;
+        Sun, 01 Nov 2020 06:52:08 -0800 (PST)
+Received: from localhost.localdomain (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
+        by smtp.gmail.com with ESMTPSA id h10sm10370939pgj.69.2020.11.01.06.52.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 06:52:08 -0800 (PST)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH] fbcon: Replace printk() with pr_*()
+Date:   Sun,  1 Nov 2020 09:49:04 -0500
+Message-Id: <20201101144904.1522611-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201101094718.GD1166694@ravnborg.org>
+References: <20201101094718.GD1166694@ravnborg.org>
 MIME-Version: 1.0
-References: <20201025221735.3062-1-digetx@gmail.com> <20201025221735.3062-52-digetx@gmail.com>
-In-Reply-To: <20201025221735.3062-52-digetx@gmail.com>
-Reply-To: cwchoi00@gmail.com
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Date:   Sun, 1 Nov 2020 23:44:40 +0900
-Message-ID: <CAGTfZH2rBaWKox9nKM=_Wz8k65FLt1R7D8xSOUxe7xAJ1A00hA@mail.gmail.com>
-Subject: Re: [PATCH v6 51/52] PM / devfreq: tegra30: Support interconnect and
- OPPs from device-tree
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+Replace printk() with pr_err(), pr_warn() and pr_info(). Do not split long
+strings, for easier grepping. Use `__func__` whenever applicable.
 
-On Mon, Oct 26, 2020 at 7:22 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> This patch moves ACTMON driver away from generating OPP table by itself,
-> transitioning it to use the table which comes from device-tree. This
-> change breaks compatibility with older device-trees in order to bring
-> support for the interconnect framework to the driver. This is a mandatory
-> change which needs to be done in order to implement interconnect-based
-> memory DVFS. Users of legacy device-trees will get a message telling that
-> theirs DT needs to be upgraded. Now ACTMON issues memory bandwidth request
-> using dev_pm_opp_set_bw(), instead of driving EMC clock rate directly.
->
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/devfreq/tegra30-devfreq.c | 91 ++++++++++++++++---------------
->  1 file changed, 48 insertions(+), 43 deletions(-)
->
-> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
-> index 3f732ab53573..1b0b91a71886 100644
-> --- a/drivers/devfreq/tegra30-devfreq.c
-> +++ b/drivers/devfreq/tegra30-devfreq.c
-> @@ -19,6 +19,8 @@
->  #include <linux/reset.h>
->  #include <linux/workqueue.h>
->
-> +#include <soc/tegra/fuse.h>
-> +
+fbcon_prepare_logo() has more than one callers, use "fbcon_prepare_logo:"
+instead of "fbcon_init:", for less confusion.
 
-This patch touches the OPP. Is it related to this change?
+Suggested-by: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+ drivers/video/fbdev/core/fbcon.c | 42 +++++++++++++-------------------
+ 1 file changed, 17 insertions(+), 25 deletions(-)
 
->  #include "governor.h"
->
->  #define ACTMON_GLB_STATUS                                      0x0
-> @@ -155,6 +157,7 @@ struct tegra_devfreq_device {
->
->  struct tegra_devfreq {
->         struct devfreq          *devfreq;
-> +       struct opp_table        *opp_table;
->
->         struct reset_control    *reset;
->         struct clk              *clock;
-> @@ -612,34 +615,19 @@ static void tegra_actmon_stop(struct tegra_devfreq *tegra)
->  static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
->                                 u32 flags)
->  {
-> -       struct tegra_devfreq *tegra = dev_get_drvdata(dev);
-> -       struct devfreq *devfreq = tegra->devfreq;
->         struct dev_pm_opp *opp;
-> -       unsigned long rate;
-> -       int err;
-> +       int ret;
->
->         opp = devfreq_recommended_opp(dev, freq, flags);
->         if (IS_ERR(opp)) {
-> -               dev_err(dev, "Failed to find opp for %lu Hz\n", *freq);
-> +               dev_err(dev, "failed to find opp for %lu Hz\n", *freq);
+diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+index cef437817b0d..a3e87ab0e523 100644
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -659,8 +659,7 @@ static void fbcon_prepare_logo(struct vc_data *vc, struct fb_info *info,
+ 
+ 	if (logo_lines > vc->vc_bottom) {
+ 		logo_shown = FBCON_LOGO_CANSHOW;
+-		printk(KERN_INFO
+-		       "fbcon_init: disable boot-logo (boot-logo bigger than screen).\n");
++		pr_info("%s: disable boot-logo (boot-logo bigger than screen).\n", __func__);
+ 	} else {
+ 		logo_shown = FBCON_LOGO_DRAW;
+ 		vc->vc_top = logo_lines;
+@@ -785,9 +784,8 @@ static int con2fb_release_oldinfo(struct vc_data *vc, struct fb_info *oldinfo,
+ 			ret = newinfo->fbops->fb_set_par(newinfo);
+ 
+ 			if (ret)
+-				printk(KERN_ERR "con2fb_release_oldinfo: "
+-					"detected unhandled fb_set_par error, "
+-					"error code %d\n", ret);
++				pr_err("%s: detected unhandled fb_set_par error, error code %d\n",
++				       __func__, ret);
+ 		}
+ 	}
+ 
+@@ -806,9 +804,8 @@ static void con2fb_init_display(struct vc_data *vc, struct fb_info *info,
+ 		ret = info->fbops->fb_set_par(info);
+ 
+ 		if (ret)
+-			printk(KERN_ERR "con2fb_init_display: detected "
+-				"unhandled fb_set_par error, "
+-				"error code %d\n", ret);
++			pr_err("%s: detected unhandled fb_set_par error, error code %d\n",
++			       __func__, ret);
+ 	}
+ 
+ 	ops->flags |= FBCON_FLAGS_INIT;
+@@ -1137,9 +1134,8 @@ static void fbcon_init(struct vc_data *vc, int init)
+ 			ret = info->fbops->fb_set_par(info);
+ 
+ 			if (ret)
+-				printk(KERN_ERR "fbcon_init: detected "
+-					"unhandled fb_set_par error, "
+-					"error code %d\n", ret);
++				pr_err("%s: detected unhandled fb_set_par error, error code %d\n",
++				       __func__, ret);
+ 		}
+ 
+ 		ops->flags |= FBCON_FLAGS_INIT;
+@@ -2126,9 +2122,8 @@ static int fbcon_switch(struct vc_data *vc)
+ 			ret = info->fbops->fb_set_par(info);
+ 
+ 			if (ret)
+-				printk(KERN_ERR "fbcon_switch: detected "
+-					"unhandled fb_set_par error, "
+-					"error code %d\n", ret);
++				pr_err("%s: detected unhandled fb_set_par error, error code %d\n",
++				       __func__, ret);
+ 		}
+ 
+ 		if (old_info != info)
+@@ -2899,9 +2894,8 @@ void fbcon_remap_all(struct fb_info *info)
+ 		set_con2fb_map(i, idx, 0);
+ 
+ 	if (con_is_bound(&fb_con)) {
+-		printk(KERN_INFO "fbcon: Remapping primary device, "
+-		       "fb%i, to tty %i-%i\n", idx,
+-		       first_fb_vc + 1, last_fb_vc + 1);
++		pr_info("fbcon: Remapping primary device, fb%i, to tty %i-%i\n",
++			idx, first_fb_vc + 1, last_fb_vc + 1);
+ 		info_idx = idx;
+ 	}
+ 	console_unlock();
+@@ -2914,17 +2908,16 @@ static void fbcon_select_primary(struct fb_info *info)
+ 	    fb_is_primary_device(info)) {
+ 		int i;
+ 
+-		printk(KERN_INFO "fbcon: %s (fb%i) is primary device\n",
+-		       info->fix.id, info->node);
++		pr_info("fbcon: %s (fb%i) is primary device\n",
++			info->fix.id, info->node);
+ 		primary_device = info->node;
+ 
+ 		for (i = first_fb_vc; i <= last_fb_vc; i++)
+ 			con2fb_map_boot[i] = primary_device;
+ 
+ 		if (con_is_bound(&fb_con)) {
+-			printk(KERN_INFO "fbcon: Remapping primary device, "
+-			       "fb%i, to tty %i-%i\n", info->node,
+-			       first_fb_vc + 1, last_fb_vc + 1);
++			pr_info("fbcon: Remapping primary device, fb%i, to tty %i-%i\n",
++				info->node, first_fb_vc + 1, last_fb_vc + 1);
+ 			info_idx = primary_device;
+ 		}
+ 	}
+@@ -3394,9 +3387,8 @@ void __init fb_console_init(void)
+ 				     "fbcon");
+ 
+ 	if (IS_ERR(fbcon_device)) {
+-		printk(KERN_WARNING "Unable to create device "
+-		       "for fbcon; errno = %ld\n",
+-		       PTR_ERR(fbcon_device));
++		pr_warn("Unable to create device for fbcon; errno = %ld\n",
++			PTR_ERR(fbcon_device));
+ 		fbcon_device = NULL;
+ 	} else
+ 		fbcon_init_device();
+-- 
+2.25.1
 
-You used the 'Failed to' format in almost every error case.
-Don't need to change it.
-(snip)
-
-Best Regards,
-Chanwoo Choi
