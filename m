@@ -2,158 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF43B2A1C93
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 08:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9F52A1C8F
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 08:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725999AbgKAH1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 02:27:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgKAH1i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 02:27:38 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E07C0617A6
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 00:27:38 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id dg9so10892317edb.12
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 00:27:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mn2UMvfHzFagu9gNZNtWC7eB1lBP5Y4hhVyWNZxCCLE=;
-        b=HKgI8hjH9Q0HeWKUU7Xx4qwaROVk2ns6aGz8QhhrOUQ/pB63l9h9J3Ee20nOFJ5csB
-         i//9IDQRFX6QDMrRVka0dR7H0cwGd2SvDNkz6RRJOt6xjfwbUwyfrtrpUvHuHmEcF67t
-         2t5afkEr9hOh+LV4DmVhaomLfq3PX27rTiZOu5XCuGW2zq6DPyHVKP/EJdF0hNnFGtOp
-         xnWmlCBumCFa+vNPRxCQPplQXRFy71JMlN73AfnHcFFIcEirmofOnXiX4tZZ8rJp9sx7
-         kCuaw5ELBIIzKY2UEs02JvkciE57KVyYNQyHclw1hdSFLl5+MdQWQb3AuCbaKFTjtfF0
-         Uv9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mn2UMvfHzFagu9gNZNtWC7eB1lBP5Y4hhVyWNZxCCLE=;
-        b=oxvXRkR2Wn79EWyVJ5tORNLQNx/90lYX7GZC8+ApIDBceSrkX1CqbWw/EStmp4ljCJ
-         eTqNHESfW3cR3F5yPUnIjfoQGelxZPrqO83A/o8gRMYsgQIjJw8kYhGOtDizCkI4GVQ/
-         o92A1jJJsMRFCLMsihMbZIBo3KtArv44sQFuQ/y8hUUJ9djiVtCSk1iWHnsbrsWc2o8G
-         xWb3V7I2ugvl/RqTjKX+zR11xCyb1ZGnhc4s5O4qqyRFQKaxx0Wjft6iCLBNXBm+MP+V
-         oZETB1UXjwmZSWIHSf3dBtBzVpVi8X/9cVnSPndnBitA5FHLPkz9jOnvmFoY0Vv7cEnl
-         TOtg==
-X-Gm-Message-State: AOAM532oUiSb8es/VRnsLXeAfZiy99DA4Pj7Vr3bd4bfInNZD0388heI
-        ZUmPM3993G1Fezytw9nP/pXDfdBcUic4MoC7Ntolog==
-X-Google-Smtp-Source: ABdhPJw7i2pbnIEhfCKBkf0lVwl4vWsyDN8VGqLtKqEbCaR4C1S98nSUMxE1ED6FmGK2nQWI8WAnvZNxTZWnVzOnYHk=
-X-Received: by 2002:a05:6402:b35:: with SMTP id bo21mr11281755edb.52.1604215656920;
- Sun, 01 Nov 2020 00:27:36 -0700 (PDT)
+        id S1725987AbgKAHYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 02:24:10 -0500
+Received: from mailoutvs7.siol.net ([185.57.226.198]:56923 "EHLO mail.siol.net"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725930AbgKAHYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 02:24:09 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id 909F7527D65;
+        Sun,  1 Nov 2020 08:24:07 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 0qNdl4zg7BF8; Sun,  1 Nov 2020 08:24:07 +0100 (CET)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id 5097B527D68;
+        Sun,  1 Nov 2020 08:24:07 +0100 (CET)
+Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
+        (Authenticated sender: jernej.skrabec@siol.net)
+        by mail.siol.net (Postfix) with ESMTPA id DD437527D65;
+        Sun,  1 Nov 2020 08:24:06 +0100 (CET)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+To:     linux-sunxi@googlegroups.com,
+        Pablo Greco <pgreco@centosproject.org>
+Cc:     Pablo Greco <pgreco@centosproject.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: sun8i: v40: bananapi-m2-berry: Fix ethernet node
+Date:   Sun, 01 Nov 2020 08:29:41 +0100
+Message-ID: <3146564.MpAvnlqq7C@kista>
+In-Reply-To: <1604190857-3078-3-git-send-email-pgreco@centosproject.org>
+References: <1604190857-3078-1-git-send-email-pgreco@centosproject.org> <1604190857-3078-3-git-send-email-pgreco@centosproject.org>
 MIME-Version: 1.0
-References: <20201031114242.348422479@linuxfoundation.org>
-In-Reply-To: <20201031114242.348422479@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 1 Nov 2020 12:57:25 +0530
-Message-ID: <CA+G9fYtw23F_PuCjiyVXz4464PsjcTSsL1jgvPP6D9xoZWZU7A@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/48] 5.4.74-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Oct 2020 at 17:20, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.74 release.
-> There are 48 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Mon, 02 Nov 2020 11:42:20 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.74-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Dne nedelja, 01. november 2020 ob 01:34:17 CET je Pablo Greco napisal(a):
+> Ethernet PHY on BananaPi M2 Berry provides RX and TX delays. Fix ethernet
+> node to reflect that fact.
+> 
+> Fixes: 27e81e1970a8 ("ARM: dts: sun8i: v40: bananapi-m2-berry: Enable GMAC 
+ethernet controller")
+> Signed-off-by: Pablo Greco <pgreco@centosproject.org>
+
+Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
+
+Thanks!
+
+Jernej
 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-NOTE:
-LTP version upgrade to 20200930. Due to this change we have noticed few tes=
-t
-failures and fixes which are not related to kernel changes.
-
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.74-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: bf5ca41e70cb8c44990cf2b4c49b3b22e88537c6
-git describe: v5.4.73-49-gbf5ca41e70cb
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.73-49-gbf5ca41e70cb
-
-No regressions (compared to build v5.4.73)
-
-No fixes (compared to build v5.4.73)
-
-Fixes (compared to LTP 20200515)
-These fixes are coming from LTP upgrade 20200930.
-
-  ltp-commands-tests:
-    * logrotate_sh
-
-  ltp-containers-tests:
-    * netns_netlink
-
-  ltp-controllers-tests:
-    * cpuset_hotplug
-
-  ltp-crypto-tests:
-    * af_alg02
-
-  ltp-cve-tests:
-    * cve-2017-17805
-    * cve-2018-1000199
-
-  ltp-syscalls-tests:
-    * clock_gettime03
-    * clone302
-    * copy_file_range02
-    * mknod07
-    * ptrace08
-    * syslog01
-    * syslog02
-    * syslog03
-    * syslog04
-    * syslog05
-    * syslog07
-    * syslog08
-    * syslog09
-    * syslog10
-
-  ltp-open-posix-tests:
-    * clocks_invaliddates
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
