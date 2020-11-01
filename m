@@ -2,67 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257AC2A203E
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCD32A2042
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727166AbgKARSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:18:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727081AbgKARSt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:18:49 -0500
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58B9C0617A6
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 09:18:49 -0800 (PST)
-Received: from dslb-188-104-063-075.188.104.pools.vodafone-ip.de ([188.104.63.75] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1kZH0A-0000Pi-L6; Sun, 01 Nov 2020 18:18:46 +0100
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>
-Cc:     linux-i2c@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v2 3/3] i2c: exynos5: don't check for irq 0
-Date:   Sun,  1 Nov 2020 18:18:07 +0100
-Message-Id: <20201101171807.8182-3-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201101171807.8182-1-martin@kaiser.cx>
-References: <20201027214257.8099-1-martin@kaiser.cx>
- <20201101171807.8182-1-martin@kaiser.cx>
+        id S1727196AbgKARS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:18:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726866AbgKARS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 12:18:57 -0500
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D1672231B;
+        Sun,  1 Nov 2020 17:18:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604251137;
+        bh=28ZgFZ2e7I73dUakYFgA4OWNUtWnzpOj8zQaurp8opk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rSDbd6u7wOqPf6LMPHcWMSkIsx9Ac1jm4qWWQVbKN5NXm3i25wLfZV5yc5OCpz1su
+         1qK0Zg+TVeYUvbFJNPYM5QxXqGrm25PvQ65QFd7rgAOM9CN6jcdE84jzT4PPgVE14V
+         bL6p53ALPgsEQ0kJRkrfFHNGdXPuR9wu0ZUFOMz8=
+Date:   Sun, 1 Nov 2020 17:18:52 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <david@lechnology.com>
+Cc:     linux-iio@vger.kernel.org,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] counter/ti-eqep: Fix regmap max_register
+Message-ID: <20201101171852.18162aaa@archlinux>
+In-Reply-To: <20201025165122.607866-1-david@lechnology.com>
+References: <20201025165122.607866-1-david@lechnology.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-platform_get_irq never returns 0. Don't check for this. Make it clear that
-the error path always returns a negative error code.
+On Sun, 25 Oct 2020 11:51:22 -0500
+David Lechner <david@lechnology.com> wrote:
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
-changes in v2
-- split the patch in three parts
+> The values given were the offset of the register after the last
+> register instead of the actual last register in each range. Fix
+> by using the correct last register of each range.
+> 
+> Fixes: f213729f6796 ("counter: new TI eQEP driver")
+> Signed-off-by: David Lechner <david@lechnology.com>
+> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Applied to the fixes-togreg branch of iio.git and marked for stable.
 
- drivers/i2c/busses/i2c-exynos5.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
 
-diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
-index fad1c52857aa..20a9881a0d6c 100644
---- a/drivers/i2c/busses/i2c-exynos5.c
-+++ b/drivers/i2c/busses/i2c-exynos5.c
-@@ -778,7 +778,7 @@ static int exynos5_i2c_probe(struct platform_device *pdev)
- 	init_completion(&i2c->msg_complete);
- 
- 	i2c->irq = ret = platform_get_irq(pdev, 0);
--	if (ret <= 0)
-+	if (ret < 0)
- 		goto err_clk;
- 
- 	ret = devm_request_irq(&pdev->dev, i2c->irq, exynos5_i2c_irq,
--- 
-2.20.1
+Jonathan
+
+> ---
+> 
+> v2 changes:
+> * add Fixes: tag
+> * picked up Acked-by:
+> 
+>  drivers/counter/ti-eqep.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/counter/ti-eqep.c b/drivers/counter/ti-eqep.c
+> index 1ff07faef27f..5d6470968d2c 100644
+> --- a/drivers/counter/ti-eqep.c
+> +++ b/drivers/counter/ti-eqep.c
+> @@ -368,7 +368,7 @@ static const struct regmap_config ti_eqep_regmap32_config = {
+>  	.reg_bits = 32,
+>  	.val_bits = 32,
+>  	.reg_stride = 4,
+> -	.max_register = 0x24,
+> +	.max_register = QUPRD,
+>  };
+>  
+>  static const struct regmap_config ti_eqep_regmap16_config = {
+> @@ -376,7 +376,7 @@ static const struct regmap_config ti_eqep_regmap16_config = {
+>  	.reg_bits = 16,
+>  	.val_bits = 16,
+>  	.reg_stride = 2,
+> -	.max_register = 0x1e,
+> +	.max_register = QCPRDLAT,
+>  };
+>  
+>  static int ti_eqep_probe(struct platform_device *pdev)
 
