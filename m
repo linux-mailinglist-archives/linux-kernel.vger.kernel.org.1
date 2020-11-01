@@ -2,108 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D302A2234
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 23:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFA02A2239
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 23:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727391AbgKAWf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 17:35:59 -0500
-Received: from 95-31-39-132.broadband.corbina.ru ([95.31.39.132]:56408 "EHLO
-        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727081AbgKAWf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 17:35:58 -0500
-Received: from metamini.metanet (metamini.metanet [192.168.2.5])
-        by blackbox.su (Postfix) with ESMTP id 20A2882D0D;
-        Mon,  2 Nov 2020 01:35:59 +0300 (MSK)
-From:   Sergej Bauer <sbauer@blackbox.su>
-Cc:     andrew@lunn.ch, Markus.Elfring@web.de, sbauer@blackbox.su,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] lan743x: fix for potential NULL pointer dereference with bare card
-Date:   Mon,  2 Nov 2020 01:35:55 +0300
-Message-Id: <20201101223556.16116-1-sbauer@blackbox.su>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <220201101203820.GD1109407@lunn.ch>
-References: <220201101203820.GD1109407@lunn.ch>
+        id S1727434AbgKAWuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 17:50:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727368AbgKAWuv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 17:50:51 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C92C061A48
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 14:50:51 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id l62so7218380oig.1
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 14:50:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pdhVdjH4UPXfNm2B9wz97S0y5FEVQjORqgP/hjfyELk=;
+        b=N+FiI/TjB17uuMEjHbtlYgfqr67JyvQdfUvENJ6Tu9jgBnhFksgVI1B1bSh4kayrlc
+         ut6ADQ25S61GZ7vGAGY+cV2a5rpDcSxW44xIcpssZsKP1W1mHWMm/Pb2C49fCbray3L7
+         bv5W7Xj5Yp8/jFpRQKu1Kh5gGZ+2VffeRzJpQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pdhVdjH4UPXfNm2B9wz97S0y5FEVQjORqgP/hjfyELk=;
+        b=NDXpyuvP6n0POK0j2I5X2/8wndsdl6gXOQbntC+Jx19oLGgTnixtIh0N8Uyp5drhH2
+         zq7YsEoEWgscwBaml5mGCVDkIQxbkvQ9LA4Qv+ceUuGzVGg7lLJBbhUZFHxCWh+jBj1w
+         tQZRc7W88atgU8VMGOKO6ILzgU7LPjCvEg1QInpS6UN3PpW7I4DW0Vod0am0Qw42kPaV
+         73LKgLpRyDqX5RboBZFEpVJ2bK3pnPJ6BEr/iC+liUp2e4rihW3r8wEaqVLgrYX3EyEO
+         R7py6zl2v7K5gK/z4JWPDE72EcsMKfDylI757BmGhyxMzkHzRsDqtT008gSZcmdsNAYt
+         GRoQ==
+X-Gm-Message-State: AOAM532/huXfdfJVFLGPrC1A0FZCxuyLrbJEQhX7DTO1JGcAiBng9AJx
+        NquQs2f4HAeAhFNa8SOouxhOWNCuCMr/WXJpep2xjQ==
+X-Google-Smtp-Source: ABdhPJzLb78IT0nCdkmIC7PYQ65zXPZF00BPjYDjAoRd2daX4skiLxKATnZB8c9mfKicLLzXjreG8SL3MgC9cv5xaZU=
+X-Received: by 2002:aca:b141:: with SMTP id a62mr7775906oif.101.1604271050682;
+ Sun, 01 Nov 2020 14:50:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20201030100815.2269-1-daniel.vetter@ffwll.ch> <20201030100815.2269-6-daniel.vetter@ffwll.ch>
+ <446b2d5b-a1a1-a408-f884-f17a04b72c18@nvidia.com> <CAKMK7uGDW2f0oOvwgryCHxQFHyh3Tsk6ENsMGmtZ-EnH57tMSA@mail.gmail.com>
+ <1f7cf690-35e2-c56f-6d3f-94400633edd2@nvidia.com> <CAKMK7uFYDSqnNp_xpohzCEidw_iLufNSoX4v55sNZj-nwTckSg@mail.gmail.com>
+ <7f29a42a-c408-525d-90b7-ef3c12b5826c@nvidia.com>
+In-Reply-To: <7f29a42a-c408-525d-90b7-ef3c12b5826c@nvidia.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Sun, 1 Nov 2020 23:50:39 +0100
+Message-ID: <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
+Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the 3rd revision of the patch fix for potential null pointer dereference
-with lan743x card.
+On Sun, Nov 1, 2020 at 10:13 PM John Hubbard <jhubbard@nvidia.com> wrote:
+>
+> On 11/1/20 2:30 AM, Daniel Vetter wrote:
+> > On Sun, Nov 1, 2020 at 6:22 AM John Hubbard <jhubbard@nvidia.com> wrote:
+> >>
+> >> On 10/31/20 7:45 AM, Daniel Vetter wrote:
+> >>> On Sat, Oct 31, 2020 at 3:55 AM John Hubbard <jhubbard@nvidia.com> wrote:
+> >>>> On 10/30/20 3:08 AM, Daniel Vetter wrote:
+> >> ...
+> >>>> By removing this check from this location, and changing from
+> >>>> pin_user_pages_locked() to pin_user_pages_fast(), I *think* we end up
+> >>>> losing the check entirely. Is that intended? If so it could use a comment
+> >>>> somewhere to explain why.
+> >>>
+> >>> Yeah this wasn't intentional. I think I needed to drop the _locked
+> >>> version to prep for FOLL_LONGTERM, and figured _fast is always better.
+> >>> But I didn't realize that _fast doesn't have the vma checks, gup.c got
+> >>> me a bit confused.
+> >>
+> >> Actually, I thought that the change to _fast was a very nice touch, btw.
+> >>
+> >>>
+> >>> I'll remedy this in all the patches where this applies (because a
+> >>> VM_IO | VM_PFNMAP can point at struct page backed memory, and that
+> >>> exact use-case is what we want to stop with the unsafe_follow_pfn work
+> >>> since it wreaks things like cma or security).
+> >>>
+> >>> Aside: I do wonder whether the lack for that check isn't a problem.
+> >>> VM_IO | VM_PFNMAP generally means driver managed, which means the
+> >>> driver isn't going to consult the page pin count or anything like that
+> >>> (at least not necessarily) when revoking or moving that memory, since
+> >>> we're assuming it's totally under driver control. So if pup_fast can
+> >>> get into such a mapping, we might have a problem.
+> >>> -Daniel
+> >>>
+> >>
+> >> Yes. I don't know why that check is missing from the _fast path.
+> >> Probably just an oversight, seeing as how it's in the slow path. Maybe
+> >> the appropriate response here is to add a separate patch that adds the
+> >> check.
+> >>
+> >> I wonder if I'm overlooking something, but it certainly seems correct to
+> >> do that.
+> >
+> > You'll need the mmap_sem to get at the vma to be able to do this
+> > check. If you add that to _fast, you made it as fast as the slow one.
+>
+> Arggh, yes of course. Strike that, please. :)
+>
+> > Plus there's _fast_only due to locking recurion issues in fast-paths
+> > (I assume, I didn't check all the callers).
+> >
+> > I'm just wondering whether we have a bug somewhere with device
+> > drivers. For CMA regions we always check in try_grab_page, but for dax
+>
+> OK, so here you're talking about a different bug than the VM_IO | VM_PFNMAP
+> pages, I think. This is about the "FOLL_LONGTERM + CMA + gup/pup _fast"
+> combination that is not allowed, right?
 
-The simpliest way to reproduce: boot with bare lan743x and issue "ethtool ethN"
-commant where ethN is the interface with lan743x card. Example:
+Yeah sorry, I got distracted reading code and noticed we might have
+another issue.
 
-$ sudo ethtool eth7
-dmesg:
-[  103.510336] BUG: kernel NULL pointer dereference, address: 0000000000000340
-...
-[  103.510836] RIP: 0010:phy_ethtool_get_wol+0x5/0x30 [libphy]
-...
-[  103.511629] Call Trace:
-[  103.511666]  lan743x_ethtool_get_wol+0x21/0x40 [lan743x]
-[  103.511724]  dev_ethtool+0x1507/0x29d0
-[  103.511769]  ? avc_has_extended_perms+0x17f/0x440
-[  103.511820]  ? tomoyo_init_request_info+0x84/0x90
-[  103.511870]  ? tomoyo_path_number_perm+0x68/0x1e0
-[  103.511919]  ? tty_insert_flip_string_fixed_flag+0x82/0xe0
-[  103.511973]  ? inet_ioctl+0x187/0x1d0
-[  103.512016]  dev_ioctl+0xb5/0x560
-[  103.512055]  sock_do_ioctl+0xa0/0x140
-[  103.512098]  sock_ioctl+0x2cb/0x3c0
-[  103.512139]  __x64_sys_ioctl+0x84/0xc0
-[  103.512183]  do_syscall_64+0x33/0x80
-[  103.512224]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  103.512274] RIP: 0033:0x7f54a9cba427
-...
+> For that: try_grab_page() doesn't check anything, but try_grab_compound_head()
+> does, but only for pup_fast, not gup_fast. That was added by commit
+> df3a0a21b698d ("mm/gup: fix omission of check on FOLL_LONGTERM in gup fast
+> path") in April.
+>
+> I recall that the patch was just plugging a very specific hole, as opposed
+> to locking down the API against mistakes or confused callers. And it does
+> seem that there are some holes.
 
-Previous versions can be found at:
-v1:
-initial version
-    https://lkml.org/lkml/2020/10/28/921
+Yup that's the one I've found.
 
-v2:
-do not return from lan743x_ethtool_set_wol if netdev->phydev == NULL, just skip
-the call of phy_ethtool_set_wol() instead.
-    https://lkml.org/lkml/2020/10/31/380
+> > I'm not seeing where the checks in the _fast fastpaths are, and that
+> > all still leaves random device driver mappings behind which aren't
+> > backed by CMA but still point to something with a struct page behind
+> > it. I'm probably just missing something, but no idea what.
+> > -Daniel
+> >
+>
+> Certainly we've established that we can't check VMA flags by that time,
+> so I'm not sure that there is much we can check by the time we get to
+> gup/pup _fast. Seems like the device drivers have to avoid calling _fast
+> with pages that live in VM_IO | VM_PFNMAP, by design, right? Or maybe
+> you're talking about CMA checks only?
 
-v3:
-in function lan743x_ethtool_set_wol:
-use ternary operator instead of if-else sentence (review by Markus Elfring)
-return -ENETDOWN insted of -EIO (review by Andrew Lunn)
+It's not device drivers, but everyone else. At least my understanding
+is that VM_IO | VM_PFNMAP means "even if it happens to be backed by a
+struct page, do not treat it like normal memory". And gup/pup_fast
+happily break that. I tried to chase the history of that test, didn't
+turn up anything I understood much:
 
-Signed-off-by: Sergej Bauer <sbauer@blackbox.su>
----
-diff --git a/drivers/net/ethernet/microchip/lan743x_ethtool.c b/drivers/net/ethernet/microchip/lan743x_ethtool.c
-index dcde496da7fb..c5de8f46cdd3 100644
---- a/drivers/net/ethernet/microchip/lan743x_ethtool.c
-+++ b/drivers/net/ethernet/microchip/lan743x_ethtool.c
-@@ -780,7 +780,9 @@ static void lan743x_ethtool_get_wol(struct net_device *netdev,
- 
- 	wol->supported = 0;
- 	wol->wolopts = 0;
--	phy_ethtool_get_wol(netdev->phydev, wol);
-+
-+	if (netdev->phydev)
-+		phy_ethtool_get_wol(netdev->phydev, wol);
- 
- 	wol->supported |= WAKE_BCAST | WAKE_UCAST | WAKE_MCAST |
- 		WAKE_MAGIC | WAKE_PHY | WAKE_ARP;
-@@ -809,9 +811,8 @@ static int lan743x_ethtool_set_wol(struct net_device *netdev,
- 
- 	device_set_wakeup_enable(&adapter->pdev->dev, (bool)wol->wolopts);
- 
--	phy_ethtool_set_wol(netdev->phydev, wol);
--
--	return 0;
-+	return netdev->phydev ? phy_ethtool_set_wol(netdev->phydev, wol)
-+			: -ENETDOWN;
- }
- #endif /* CONFIG_PM */
- 
+commit 1ff8038988adecfde71d82c0597727fc239d4e8c
+Author: Linus Torvalds <torvalds@g5.osdl.org>
+Date:   Mon Dec 12 16:24:33 2005 -0800
+
+   get_user_pages: don't try to follow PFNMAP pages
+
+   Nick Piggin points out that a few drivers play games with VM_IO (why?
+   who knows..) and thus a pfn-remapped area may not have that bit set even
+   if remap_pfn_range() set it originally.
+
+   So make it explicit in get_user_pages() that we don't follow VM_PFNMAP
+   pages, since pretty much by definition they do not have a "struct page"
+   associated with them.
+
+   Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 47c533eaa072..d22f78c8a381 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1009,7 +1009,7 @@ int get_user_pages(struct task_struct *tsk,
+struct mm_struct *mm,
+                       continue;
+               }
+
+-               if (!vma || (vma->vm_flags & VM_IO)
++               if (!vma || (vma->vm_flags & (VM_IO | VM_PFNMAP))
+                               || !(vm_flags & vma->vm_flags))
+                       return i ? : -EFAULT;
+
+
+The VM_IO check is kinda lost in pre-history.
+
+tbh I have no idea what the various variants of pup/gup are supposed
+to be doing vs. these VMA flags in the various cases. Just smells a
+bit like potential trouble due to randomly pinning stuff without the
+owner of that memory having an idea what's going on.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
