@@ -2,180 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34EF72A1E44
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 14:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DA62A1E46
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 14:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgKANR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 08:17:26 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:54264 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbgKANRX (ORCPT
+        id S1726758AbgKANSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 08:18:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbgKANSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 08:17:23 -0500
-Date:   Sun, 01 Nov 2020 13:17:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1604236639; bh=PSBlUKp+w471ygVSGKtOZR8/NBsm90EQYMDdsaYJehU=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=ihTGOmfhDuJGrbKgQYXtnExCCrHyHea6aBpJvlELxbHejM4MoxqYcVd/bTS8++3zj
-         SgT85hVBw872aLa0eJiIwh4BLP6nx7+qHNm+YcUwRqz+oA+6+T5vATxgOGPZ5N2xrl
-         5sWAvDPFXqzIoxttiP9ZY+6QRoPq2ykdsPzA3CcCgc5lJuT5yyBmx3Ehq+YIwTDb+r
-         7scphM2yqxqss4kXxB7CESQn5nMy7v821chvcLiVYOMZCU9DGV8mLXW8DXk2vHFfsH
-         8N+qKEMSwEEugss2IIOnUMlvWticrAUKvQcVsM6DMQsQZFeN+X30I2bcR0IAFy8Oge
-         EdnE8jMdocsag==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v2 net-next 2/2] net: bonding, dummy, ifb, team: advertise NETIF_F_GSO_SOFTWARE
-Message-ID: <GtgHtyGO5jHKHT6zGMAzg3TDejXZT0HMQVoqNERZRdM@cp3-web-024.plabs.ch>
+        Sun, 1 Nov 2020 08:18:14 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFD9C0617A6;
+        Sun,  1 Nov 2020 05:18:13 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id y20so12317112iod.5;
+        Sun, 01 Nov 2020 05:18:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NYeAT6dJLfefaPNV5FnKXZ4l6XlxctIP4BfQPNcbJ74=;
+        b=ZRezXskScbgR7llhZ7otT4TiSS4M0H4bD/Xz8WSOjVlRwhiTFsdqHsGK4d+QI/RxO1
+         tSNI5vErt0Z8ITWNexK3M+BqT1eLjkAy2IYdzU96hJM5I3gxMKTByHtdf50cjBMtvvQL
+         VZ6xchl8uYEkF7RiJIQUpvyWg0k9X1T0NyNQgJY7izOGB5EJu/1hcNdvwbgAE1uNMiQW
+         7DQ+KVgSqOCPvW/O15b1a2JkG3ytu96TUPl7jqg5zGz0TLXtrMyVk2Orc5IU1GdETPyy
+         Tzz1oiZFsA7msRorG+V4KYKQuPov6Cw5ojI5KcXlxb9JWRGF5RjjbX5V4Rc5vwmSb43N
+         OimA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NYeAT6dJLfefaPNV5FnKXZ4l6XlxctIP4BfQPNcbJ74=;
+        b=qaRPGSYZhyuCkCs2O2gpGr3sq3mNsSGrqLirMGfmUUr3Da7eQ7Uxv/3XJZ2V85h1Ua
+         vy4Nd/ir4FuPXkgoevKor1Ou493Magbg8rvoIToTOOlrwUAlxui/V2G6tpmngk7oHbZH
+         GDRKzPQGN8cegJdp+p+UhGbNmYZDp6DYkWc6IBq2HvG07lgSwZfKdrTUYb8KrOUksh8o
+         LBYUID1wzr4h+hFViLwHJEqEUL7TsUvgD+ehn7nS6I/i6hnTKDvJCPLi3aBzX4aWgD1M
+         qQNc4useBQFhdkE07DZhInLsswDhy4J+PMxpeBGfDn2DVNTxVYmzvEIu6SID3oSlP/P6
+         oEhg==
+X-Gm-Message-State: AOAM531Co3/uSKCZsCudb0J5NQwHTIhT/UZlOVbqNiswEKIkJYsEZvBu
+        SGt/DsglU1hE3728tokIt6SI6jScD2tTUz3LIQw=
+X-Google-Smtp-Source: ABdhPJxoEzc66/waHQsBWxCpNHn+7XsH2lL/aCsIinyjRY5z/0mXIhKLKplO6sUjGEq1nMiI3OmcWZKrPVzIRcyzHiY=
+X-Received: by 2002:a05:6638:22bb:: with SMTP id z27mr8443320jas.47.1604236693098;
+ Sun, 01 Nov 2020 05:18:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20201019174529.289499-1-aford173@gmail.com> <20201101020308.GC31601@dragon>
+In-Reply-To: <20201101020308.GC31601@dragon>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Sun, 1 Nov 2020 07:18:01 -0600
+Message-ID: <CAHCN7xLAROzBKFi67CiGzDGofu2QTwN4mwDMHPhBJnn_0d4BNg@mail.gmail.com>
+Subject: Re: [PATCH 1/5] arm64: dts: imx8mn: Enable Asynchronous Sample Rate Converter
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Virtual netdevs should use NETIF_F_GSO_SOFTWARE to forward GSO skbs
-as-is and let the final drivers deal with them when supported.
-Also remove NETIF_F_GSO_UDP_L4 from bonding and team drivers as it's
-now included in the "software" list.
+On Sat, Oct 31, 2020 at 9:03 PM Shawn Guo <shawnguo@kernel.org> wrote:
+>
+> On Mon, Oct 19, 2020 at 12:45:24PM -0500, Adam Ford wrote:
+> > The driver exists for the Enhanced Asynchronous Sample Rate Converter
+> > (EASRC) Controller, but there isn't a device tree entry for it.
+> >
+> > On the vendor kernel, they put this on a spba-bus for SDMA support.
+> >
+> > Add the the node for the spba-bus with the easrc node inside.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> >
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> > index 746faf1cf2fb..7d34281332e1 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> > @@ -246,6 +246,34 @@ aips1: bus@30000000 {
+> >                       #size-cells = <1>;
+> >                       ranges;
+> >
+> > +                     spba-bus@30000000 {
+>
+> spba: bus@30000000
 
-Suggested-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- drivers/net/bonding/bond_main.c | 11 +++++------
- drivers/net/dummy.c             |  2 +-
- drivers/net/ifb.c               |  3 +--
- drivers/net/team/team.c         |  9 ++++-----
- 4 files changed, 11 insertions(+), 14 deletions(-)
+Go ahead and disregard my V2.  I'll submit a V3.  I sent the V2 before
+I got this feedback.
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_mai=
-n.c
-index 84ecbc6fa0ff..71c9677d135f 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -1228,14 +1228,14 @@ static netdev_features_t bond_fix_features(struct n=
-et_device *dev,
- }
-=20
- #define BOND_VLAN_FEATURES=09(NETIF_F_HW_CSUM | NETIF_F_SG | \
--=09=09=09=09 NETIF_F_FRAGLIST | NETIF_F_ALL_TSO | \
-+=09=09=09=09 NETIF_F_FRAGLIST | NETIF_F_GSO_SOFTWARE | \
- =09=09=09=09 NETIF_F_HIGHDMA | NETIF_F_LRO)
-=20
- #define BOND_ENC_FEATURES=09(NETIF_F_HW_CSUM | NETIF_F_SG | \
--=09=09=09=09 NETIF_F_RXCSUM | NETIF_F_ALL_TSO)
-+=09=09=09=09 NETIF_F_RXCSUM | NETIF_F_GSO_SOFTWARE)
-=20
- #define BOND_MPLS_FEATURES=09(NETIF_F_HW_CSUM | NETIF_F_SG | \
--=09=09=09=09 NETIF_F_ALL_TSO)
-+=09=09=09=09 NETIF_F_GSO_SOFTWARE)
-=20
-=20
- static void bond_compute_features(struct bonding *bond)
-@@ -1291,8 +1291,7 @@ static void bond_compute_features(struct bonding *bon=
-d)
- =09bond_dev->vlan_features =3D vlan_features;
- =09bond_dev->hw_enc_features =3D enc_features | NETIF_F_GSO_ENCAP_ALL |
- =09=09=09=09    NETIF_F_HW_VLAN_CTAG_TX |
--=09=09=09=09    NETIF_F_HW_VLAN_STAG_TX |
--=09=09=09=09    NETIF_F_GSO_UDP_L4;
-+=09=09=09=09    NETIF_F_HW_VLAN_STAG_TX;
- #ifdef CONFIG_XFRM_OFFLOAD
- =09bond_dev->hw_enc_features |=3D xfrm_features;
- #endif /* CONFIG_XFRM_OFFLOAD */
-@@ -4721,7 +4720,7 @@ void bond_setup(struct net_device *bond_dev)
- =09=09=09=09NETIF_F_HW_VLAN_CTAG_RX |
- =09=09=09=09NETIF_F_HW_VLAN_CTAG_FILTER;
-=20
--=09bond_dev->hw_features |=3D NETIF_F_GSO_ENCAP_ALL | NETIF_F_GSO_UDP_L4;
-+=09bond_dev->hw_features |=3D NETIF_F_GSO_ENCAP_ALL;
- #ifdef CONFIG_XFRM_OFFLOAD
- =09bond_dev->hw_features |=3D BOND_XFRM_FEATURES;
- #endif /* CONFIG_XFRM_OFFLOAD */
-diff --git a/drivers/net/dummy.c b/drivers/net/dummy.c
-index bab3a9bb5e6f..f82ad7419508 100644
---- a/drivers/net/dummy.c
-+++ b/drivers/net/dummy.c
-@@ -124,7 +124,7 @@ static void dummy_setup(struct net_device *dev)
- =09dev->flags &=3D ~IFF_MULTICAST;
- =09dev->priv_flags |=3D IFF_LIVE_ADDR_CHANGE | IFF_NO_QUEUE;
- =09dev->features=09|=3D NETIF_F_SG | NETIF_F_FRAGLIST;
--=09dev->features=09|=3D NETIF_F_ALL_TSO;
-+=09dev->features=09|=3D NETIF_F_GSO_SOFTWARE;
- =09dev->features=09|=3D NETIF_F_HW_CSUM | NETIF_F_HIGHDMA | NETIF_F_LLTX;
- =09dev->features=09|=3D NETIF_F_GSO_ENCAP_ALL;
- =09dev->hw_features |=3D dev->features;
-diff --git a/drivers/net/ifb.c b/drivers/net/ifb.c
-index 7fe306e76281..fa63d4dee0ba 100644
---- a/drivers/net/ifb.c
-+++ b/drivers/net/ifb.c
-@@ -187,8 +187,7 @@ static const struct net_device_ops ifb_netdev_ops =3D {
- };
-=20
- #define IFB_FEATURES (NETIF_F_HW_CSUM | NETIF_F_SG  | NETIF_F_FRAGLIST=09|=
- \
--=09=09      NETIF_F_TSO_ECN | NETIF_F_TSO | NETIF_F_TSO6=09| \
--=09=09      NETIF_F_GSO_ENCAP_ALL =09=09=09=09| \
-+=09=09      NETIF_F_GSO_SOFTWARE | NETIF_F_GSO_ENCAP_ALL=09| \
- =09=09      NETIF_F_HIGHDMA | NETIF_F_HW_VLAN_CTAG_TX=09=09| \
- =09=09      NETIF_F_HW_VLAN_STAG_TX)
-=20
-diff --git a/drivers/net/team/team.c b/drivers/net/team/team.c
-index 07f1f3933927..b4092127a92c 100644
---- a/drivers/net/team/team.c
-+++ b/drivers/net/team/team.c
-@@ -975,11 +975,11 @@ static void team_port_disable(struct team *team,
- }
-=20
- #define TEAM_VLAN_FEATURES (NETIF_F_HW_CSUM | NETIF_F_SG | \
--=09=09=09    NETIF_F_FRAGLIST | NETIF_F_ALL_TSO | \
-+=09=09=09    NETIF_F_FRAGLIST | NETIF_F_GSO_SOFTWARE | \
- =09=09=09    NETIF_F_HIGHDMA | NETIF_F_LRO)
-=20
- #define TEAM_ENC_FEATURES=09(NETIF_F_HW_CSUM | NETIF_F_SG | \
--=09=09=09=09 NETIF_F_RXCSUM | NETIF_F_ALL_TSO)
-+=09=09=09=09 NETIF_F_RXCSUM | NETIF_F_GSO_SOFTWARE)
-=20
- static void __team_compute_features(struct team *team)
- {
-@@ -1009,8 +1009,7 @@ static void __team_compute_features(struct team *team=
-)
- =09team->dev->vlan_features =3D vlan_features;
- =09team->dev->hw_enc_features =3D enc_features | NETIF_F_GSO_ENCAP_ALL |
- =09=09=09=09     NETIF_F_HW_VLAN_CTAG_TX |
--=09=09=09=09     NETIF_F_HW_VLAN_STAG_TX |
--=09=09=09=09     NETIF_F_GSO_UDP_L4;
-+=09=09=09=09     NETIF_F_HW_VLAN_STAG_TX;
- =09team->dev->hard_header_len =3D max_hard_header_len;
-=20
- =09team->dev->priv_flags &=3D ~IFF_XMIT_DST_RELEASE;
-@@ -2175,7 +2174,7 @@ static void team_setup(struct net_device *dev)
- =09=09=09   NETIF_F_HW_VLAN_CTAG_RX |
- =09=09=09   NETIF_F_HW_VLAN_CTAG_FILTER;
-=20
--=09dev->hw_features |=3D NETIF_F_GSO_ENCAP_ALL | NETIF_F_GSO_UDP_L4;
-+=09dev->hw_features |=3D NETIF_F_GSO_ENCAP_ALL;
- =09dev->features |=3D dev->hw_features;
- =09dev->features |=3D NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_STAG_TX;
- }
---=20
-2.29.2
+>
+> > +                             compatible = "fsl,spba-bus", "simple-bus";
+>
+> "fsl,spba-bus" is undocumented.  Document it or drop it.
 
+I just submitted a patch to document this bus.  It's used on a bunch
+of imx boards, so I think it's important to document it.
+I assigned you as the maintainer of the binding doc since you're
+listed as the maintainer of the SDMA driver which is what's using
+the compatible flag.  I hope that is the correct thing to do.
 
+>
+> > +                             #address-cells = <1>;
+> > +                             #size-cells = <1>;
+> > +                             reg = <0x30000000 0x100000>;
+> > +                             ranges;
+> > +
+> > +                             easrc: easrc@300C0000 {
+> > +                                     compatible = "fsl,imx8mn-easrc";
+> > +                                     reg = <0x300C0000 0x10000>;
+> > +                                     interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
+> > +                                     clocks = <&clk IMX8MN_CLK_ASRC_ROOT>;
+> > +                                     clock-names = "mem";
+> > +                                     dmas = <&sdma2 16 23 0> , <&sdma2 17 23 0>,
+> > +                                            <&sdma2 18 23 0> , <&sdma2 19 23 0>,
+> > +                                            <&sdma2 20 23 0> , <&sdma2 21 23 0>,
+> > +                                            <&sdma2 22 23 0> , <&sdma2 23 23 0>;
+> > +                                     dma-names = "ctx0_rx", "ctx0_tx",
+> > +                                                 "ctx1_rx", "ctx1_tx",
+> > +                                                 "ctx2_rx", "ctx2_tx",
+> > +                                                 "ctx3_rx", "ctx3_tx";
+> > +                                     fsl,easrc-ram-script-name = "imx/easrc/easrc-imx8mn.bin";
+>
+> Undocumented property?
+
+That's my fault.  I accidentally copied the device tree entry from the
+vendor kernel instead of using the naming from the device tree binding
+document.
+I fixed this in my V2, but I need to send a V3 anyway.
+
+adam
+
+>
+> Shawn
+>
+> > +                                     fsl,asrc-rate  = <8000>;
+> > +                                     fsl,asrc-width = <16>;
+> > +                                     status = "disabled";
+> > +                             };
+> > +                     };
+> > +
+> >                       gpio1: gpio@30200000 {
+> >                               compatible = "fsl,imx8mn-gpio", "fsl,imx35-gpio";
+> >                               reg = <0x30200000 0x10000>;
+> > --
+> > 2.25.1
+> >
