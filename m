@@ -2,85 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3022A1CF0
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFB82A1CF9
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgKAJgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 04:36:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726118AbgKAJgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 04:36:14 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD87720870;
-        Sun,  1 Nov 2020 09:36:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604223373;
-        bh=oVVJbpuCpdFDPmn7BbTaHQR1soNKyFAe5s0qbdFJSrg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l4P5TADe18hQahhs1sf/HEtUc3oe7X6ZnhtxpJ05cCMKio7OhXNKDgCPWIRSIoQZg
-         42/hnf1YiwUBs9+HisZKrNoCeHx2pt6EGQ5y+Oj5iKJdLX1R7mBAXulPRP6YAcd/1V
-         rtElF6VytLpdVt8t/64yxvmw+nHszvoIZY0tHeZ0=
-Date:   Sun, 1 Nov 2020 10:36:10 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lukas Wunner <lukas@wunner.de>,
-        Saravana Kannan <saravanak@google.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>
-Subject: Re: [PATCH 0/3] PM: runtime: Fixes related to device links management
-Message-ID: <20201101093610.GA9168@kroah.com>
-References: <6543936.FbWAdBN1tG@kreacher>
+        id S1726205AbgKAJpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 04:45:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726117AbgKAJpQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 04:45:16 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC08DC0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 01:45:15 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id r9so11954849ioo.7
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 01:45:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CT1iia8GuDUfamUVCy7ssmgKgChHFGwKBrm0tLv+r5Q=;
+        b=1M6PgKxp0xPikUCo/jsKZbQb7QECX5qZ3UFB+GUt748KQ0sANbynwPCYeNuJNIj9gm
+         nwPoXFN34aZ/tC5/9yGzrt0LNnOOt4VZ9wYBwH7hMNPUIzCXEVUcNSPkw1EehfncL7BX
+         5XF2nyoGXQTU3RW7B+CajcsEDYVa9fYaFmckuvyxqeQtrbrAgwCTuAV8Vm1m6MOngXG9
+         7ROQOhie2L6BTp3+/6H28NPqG8n8701qUFrM+tjcNnMYkhlD429uP4Ian/Cg6nM81rGt
+         iDbvlG98TCAvbdRbe1RqthGORQufuxzVchaPE+yx7nM/BecnFWVMmx07TGeI2AxJmTE4
+         HLWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CT1iia8GuDUfamUVCy7ssmgKgChHFGwKBrm0tLv+r5Q=;
+        b=XAS7kuFQYhJkU0I8JcQpZ8S9b1DqhZRoXwEXmLUbxt3BEI9wmhVfQv3EupN/4z4suG
+         diTYHzL51gkQKgy/3BzmZsEiBPSd2tsacqA5/NSyun84M4G3VOYNrwqc3+pGw5EkEOhG
+         IP9Q25KzyPMRy3J5hbCVVyRQb406f9NXvlmhsYY/dn6Sgw4YdwhHlPPU6eN4reGr06f6
+         f6WYVws7C2z3TevSNoVbypzxyZC7szYhs+2+NfIDHZZF7+4WCCiHCnycv6H10ZlbCFHw
+         UzCFB5/LX5Qjj++hj9JEttf9eLYdgYIKiecJSAG1KUs21semworHQqoDtGYvtCTxA7xG
+         uK5A==
+X-Gm-Message-State: AOAM532BY4cz650owd+fpwjIWMwbBvymJCjzTNJMUVlkStH8tolAeGaC
+        jpEzYR2gTyUbvZfTWMCHe6ixRJ3000U8kcdMxlfvEg==
+X-Google-Smtp-Source: ABdhPJy+Rxr8QWojYYarCNBGzjeGEHvmCE5rFqydbJQ91xAUtToreXxJeiiXFsQxsRVpXCsWiPavU1DfqGrOI6bCz6A=
+X-Received: by 2002:a02:c64f:: with SMTP id k15mr2912474jan.75.1604223915254;
+ Sun, 01 Nov 2020 01:45:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6543936.FbWAdBN1tG@kreacher>
+References: <20201025005916.64747-1-luka.kovacic@sartura.hr>
+ <20201025005916.64747-2-luka.kovacic@sartura.hr> <20201028151534.GA4034363@bogus>
+In-Reply-To: <20201028151534.GA4034363@bogus>
+From:   Luka Kovacic <luka.kovacic@sartura.hr>
+Date:   Sun, 1 Nov 2020 10:45:04 +0100
+Message-ID: <CADZsf3brnSqaxoP4+YA8bHeQMq+DvWQaxYufEn3jCzNCSC0QSQ@mail.gmail.com>
+Subject: Re: [PATCH v7 1/6] dt-bindings: Add IEI vendor prefix and IEI
+ WT61P803 PUZZLE driver bindings
+To:     Rob Herring <robh@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marek Behun <marek.behun@nic.cz>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Robert Marko <robert.marko@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 09:10:08PM +0200, Rafael J. Wysocki wrote:
-> Hi Greg & all,
-> 
-> Commit d12544fb2aa9 ("PM: runtime: Remove link state checks in
-> rpm_get/put_supplier()") merged recently introduced a weakness
-> in the handling of device links in the runtime PM framework that
-> may be confusing and even harmful.
-> 
-> Namely, the checks removed by that commit prevented PM-runtime from
-> getting or dropping references to the supplier device whose driver
-> was going away via its links to consumers, which specifically allowed
-> the pm_runtime_clean_up_links() called from __device_release_driver()
-> to run without interfering with runtime suspend/resume of consumer
-> devices (which still might happen even though the drivers had been
-> unbound from them by that time).
-> 
-> After the above commit, calling pm_runtime_clean_up_links() from
-> __device_release_driver() makes a little sense and it may be interfering
-> destructively with regular PM-runtime suspend/resume control flows, so
-> it needs to be either fixed or dropped altogether.  I prefer the latter,
-> because among other things this removes an arbitrary difference in the
-> handling of managed device links with respect to the stateless ones,
-> so patch [2/3] is doing just that.
-> 
-> However, in some rare cases pm_runtime_clean_up_links() may help to clean
-> up leftover PM-runtime references, so if that function goes away, they
-> need to be cleaned up elsewhere.  That's why patch [1/3] modifies
-> __device_link_del() to drop them upon device link removal (which also
-> needs to be done for stateless device links and that's why I'm regarding
-> this patch as a fix).
-> 
-> Finally, to avoid pointless overhead related to suspending and resuming
-> the target device for multiple times in a row in __device_release_driver(),
-> it is better to resume it upfront before checking its links to consumers,
-> which is done by patch [3/3].
-> 
-> While this series touches the driver core, it really is mostly related to
-> runtime PM, so I can apply it if that's OK.
+Hello Rob,
 
-Please do, sorry for the delay in reviewing them:
+On Wed, Oct 28, 2020 at 4:15 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Sun, Oct 25, 2020 at 02:59:11AM +0200, Luka Kovacic wrote:
+> > Add the IEI WT61P803 PUZZLE Device Tree bindings for MFD, HWMON and LED
+> > drivers. A new vendor prefix is also added accordingly for
+> > IEI Integration Corp.
+> >
+> > Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
+> > Cc: Luka Perkov <luka.perkov@sartura.hr>
+> > Cc: Robert Marko <robert.marko@sartura.hr>
+> > ---
+> >  .../hwmon/iei,wt61p803-puzzle-hwmon.yaml      | 53 ++++++++++++
+> >  .../leds/iei,wt61p803-puzzle-leds.yaml        | 45 ++++++++++
+> >  .../bindings/mfd/iei,wt61p803-puzzle.yaml     | 83 +++++++++++++++++++
+> >  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+> >  4 files changed, 183 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml b/Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
+> > new file mode 100644
+> > index 000000000000..c24a24e90495
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
+> > @@ -0,0 +1,53 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/hwmon/iei,wt61p803-puzzle-hwmon.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: IEI WT61P803 PUZZLE MCU HWMON module from IEI Integration Corp.
+> > +
+> > +maintainers:
+> > +  - Luka Kovacic <luka.kovacic@sartura.hr>
+> > +
+> > +description: |
+> > +  This module is a part of the IEI WT61P803 PUZZLE MFD device. For more details
+> > +  see Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml.
+> > +
+> > +  The HWMON module is a sub-node of the MCU node in the Device Tree.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: iei,wt61p803-puzzle-hwmon
+> > +
+> > +  "#address-cells":
+> > +    const: 1
+> > +
+> > +  "#size-cells":
+> > +    const: 0
+> > +
+> > +patternProperties:
+> > +  "^fan-group@[0-1]$":
+> > +    type: object
+> > +    properties:
+> > +      reg:
+> > +        minimum: 0
+> > +        maximum: 1
+> > +        description:
+> > +          Fan group ID
+> > +
+> > +      cooling-levels:
+> > +        minItems: 1
+> > +        maxItems: 255
+> > +        description:
+> > +          Cooling levels for the fans (PWM value mapping)
+> > +    description: |
+> > +      Properties for each fan group.
+> > +    required:
+> > +      - reg
+> > +
+> > +required:
+> > +  - compatible
+> > +  - "#address-cells"
+> > +  - "#size-cells"
+> > +
+> > +additionalProperties: false
+> > diff --git a/Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml b/Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
+> > new file mode 100644
+> > index 000000000000..bbf264c13189
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
+> > @@ -0,0 +1,45 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/leds/iei,wt61p803-puzzle-leds.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: IEI WT61P803 PUZZLE MCU LED module from IEI Integration Corp.
+> > +
+> > +maintainers:
+> > +  - Luka Kovacic <luka.kovacic@sartura.hr>
+> > +
+> > +description: |
+> > +  This module is a part of the IEI WT61P803 PUZZLE MFD device. For more details
+> > +  see Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml.
+> > +
+> > +  The LED module is a sub-node of the MCU node in the Device Tree.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: iei,wt61p803-puzzle-leds
+> > +
+> > +  "#address-cells":
+> > +    const: 1
+> > +
+> > +  "#size-cells":
+> > +    const: 0
+> > +
+> > +  "led@0":
+> > +    type: object
+> > +    $ref: common.yaml
+> > +    description: |
+> > +      Properties for a single LED.
+> > +    properties:
+> > +      reg:
+> > +        description:
+> > +          Index of the LED. Only one LED is supported at the moment.
+> > +        minimum: 0
+> > +        maximum: 0
+>
+> 'const: 0' instead.
+>
+> > +
+> > +required:
+> > +  - compatible
+> > +  - "#address-cells"
+> > +  - "#size-cells"
+> > +
+> > +additionalProperties: false
+> > diff --git a/Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml b/Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
+> > new file mode 100644
+> > index 000000000000..64264c664c48
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
+> > @@ -0,0 +1,83 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mfd/iei,wt61p803-puzzle.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: IEI WT61P803 PUZZLE MCU from IEI Integration Corp.
+> > +
+> > +maintainers:
+> > +  - Luka Kovacic <luka.kovacic@sartura.hr>
+> > +
+> > +description: |
+> > +  IEI WT61P803 PUZZLE MCU is embedded in some IEI Puzzle series boards.
+> > +  It's used for controlling system power states, fans, LEDs and temperature
+> > +  sensors.
+> > +
+> > +  For Device Tree bindings of other sub-modules (HWMON, LEDs) refer to the
+> > +  binding documents under the respective subsystem directories.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: iei,wt61p803-puzzle
+> > +
+> > +  current-speed:
+> > +    description:
+> > +      Serial bus speed in bps
+> > +    maxItems: 1
+> > +
+> > +  enable-beep: true
+>
+> Needs a vendor prefix, description, and type.
+>
+> > +
+> > +  hwmon:
+> > +    $ref: ../hwmon/iei,wt61p803-puzzle-hwmon.yaml
+> > +
+> > +  leds:
+> > +    $ref: ../leds/iei,wt61p803-puzzle-leds.yaml
+> > +
+> > +required:
+> > +  - compatible
+> > +  - current-speed
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/leds/common.h>
+> > +    serial {
+> > +        status = "okay";
+>
+> Don't show status in examples.
+>
+> > +        mcu {
+> > +            compatible = "iei,wt61p803-puzzle";
+> > +            current-speed = <115200>;
+> > +            enable-beep;
+> > +
+> > +            leds {
+> > +                compatible = "iei,wt61p803-puzzle-leds";
+> > +                #address-cells = <1>;
+> > +                #size-cells = <0>;
+> > +
+> > +                led@0 {
+> > +                    reg = <0>;
+> > +                    function = LED_FUNCTION_POWER;
+> > +                    color = <LED_COLOR_ID_BLUE>;
+> > +                };
+> > +            };
+> > +
+> > +            hwmon {
+> > +                compatible = "iei,wt61p803-puzzle-hwmon";
+> > +                #address-cells = <1>;
+> > +                #size-cells = <0>;
+> > +
+> > +                fan-group@0 {
+> > +                    #cooling-cells = <2>;
+> > +                    reg = <0x00>;
+> > +                    cooling-levels = <64 102 170 230 250>;
+> > +                };
+> > +
+> > +                fan-group@1 {
+> > +                    #cooling-cells = <2>;
+> > +                    reg = <0x01>;
+> > +                    cooling-levels = <64 102 170 230 250>;
+> > +                };
+> > +            };
+> > +        };
+> > +    };
+> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > index 63996ab03521..5f2595f0b2ad 100644
+> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > @@ -467,6 +467,8 @@ patternProperties:
+> >      description: IC Plus Corp.
+> >    "^idt,.*":
+> >      description: Integrated Device Technologies, Inc.
+> > +  "^iei,.*":
+> > +    description: IEI Integration Corp.
+> >    "^ifi,.*":
+> >      description: Ingenieurburo Fur Ic-Technologie (I/F/I)
+> >    "^ilitek,.*":
+> > --
+> > 2.26.2
+> >
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I'll fix these in a new patchset.
+
+Kind regards,
+Luka
