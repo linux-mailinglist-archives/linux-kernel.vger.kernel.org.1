@@ -2,80 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086772A1D6A
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 11:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5842A1D71
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 11:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbgKAKsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 05:48:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgKAKsT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 05:48:19 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658B6C0617A6
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 02:48:19 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id w145so5959458oie.9
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 02:48:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=RFjST6WTWl2HErgo/MFlw9oz3Ck4pyxWRgkJWzlGF00=;
-        b=OgRTSXyBoiZcTTFabijjfYV5PP1oJ9AF7ly2jRqP67OIns8jPKgOX2qgD+t+koZBCl
-         NRG+JFdu8G2ewK12KtRpHfNvnS8CuIlFTbEFfgAtqIM3vuo+2pvXcuhAu2TjzMxpGH1y
-         NmyfITsVGBlKv5eazqtgIZl4XlVR8SyVvocTTh7mqxAgJtl4Byi21sYJm9OEqApqRBN4
-         yVEL9e39l4oDNQuhiy06PRs3oiCTL8ttdWJD7Jtak+FpaW9OamGsIj3S8FKP+ZuxKa1m
-         b8C6GS3ne9pjqkLAUM6FbUdK1sRFqcnZK5dshsL0Xi9EVysCf+dtf72+oTmosXRE/WLv
-         l0aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=RFjST6WTWl2HErgo/MFlw9oz3Ck4pyxWRgkJWzlGF00=;
-        b=ryE8ZwTWeuaRYqfR6dNCJGZZ9IOtN744Z92yZpMlbYCqvxR33rERMGlIFLPN/XM/xa
-         kP0wV149Ocy4mlk6HtjmX4TbiznAJ3GZxsEWdjrZqc1uiBYSlKaZAkdzfKGreOthUerQ
-         /e4RaLcGI5poRIZkY5cMvkD71B9OF4lSKxnKn8+WRt1BLpXSNYmB1NUvNxaARF0pEdMK
-         5Z1cV7TrzIctI77Ldrb07AISjk2yZj3a0PoUk7ErScRhj0J0y1xD2FIhJbmLCt8p08Nx
-         pW8KqKs7nmcub/h6S84iFOx2cuXX2ucFi3+YbC8fIkZi+UQsbhfwrIRqnwa6TCVTmNgZ
-         J6NA==
-X-Gm-Message-State: AOAM530mfvuUWLdoJ4htxViwOeWI6lPJEKS0GAQUg4yvZ4IXDtBVekQv
-        zc7ZxU8HFLEBXLziqMwijQ9Nxi2Syxzh2C3fyjs=
-X-Google-Smtp-Source: ABdhPJxAHKVzJqHnvkm8lLJMBbJ8GuIahHkzp4gCchICU3HlyQNUqvcUYyrL97Qa8O9pl3ihPPgh9WGjQeUw5v5n7Mk=
-X-Received: by 2002:aca:3988:: with SMTP id g130mr6765089oia.78.1604227698716;
- Sun, 01 Nov 2020 02:48:18 -0800 (PST)
+        id S1726387AbgKAKyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 05:54:44 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:46494 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726145AbgKAKyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 05:54:43 -0500
+Received: from p57b773f8.dip0.t-ipconnect.de ([87.183.115.248] helo=phil.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kZB0P-00032L-1l; Sun, 01 Nov 2020 11:54:37 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     linux-media@vger.kernel.org,
+        Helen Koike <helen.koike@collabora.com>
+Cc:     devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        robh+dt@kernel.org, kernel@collabora.com, hverkuil-cisco@xs4all.nl,
+        dafna.hirschfeld@collabora.com, mark.rutland@arm.com,
+        karthik.poduval@gmail.com, eddie.cai.linux@gmail.com,
+        jbx6244@gmail.com, zhengsq@rock-chips.com, robin.murphy@arm.com
+Subject: Re: [PATCH v6 8/9] arm64: dts: rockchip: add isp0 node for rk3399
+Date:   Sun, 01 Nov 2020 11:54:36 +0100
+Message-ID: <25468331.GQUMHoxoIT@phil>
+In-Reply-To: <20201020193850.1460644-9-helen.koike@collabora.com>
+References: <20201020193850.1460644-1-helen.koike@collabora.com> <20201020193850.1460644-9-helen.koike@collabora.com>
 MIME-Version: 1.0
-Received: by 2002:ac9:3013:0:0:0:0:0 with HTTP; Sun, 1 Nov 2020 02:48:17 -0800 (PST)
-Reply-To: dunawattara96@outlook.com
-From:   Mr Duna Wattara <drhajizongod@gmail.com>
-Date:   Sun, 1 Nov 2020 02:48:17 -0800
-Message-ID: <CA+aQzqxgXV8_naEc5LYc4Kg6Vi-X-SY58zCKccteh_deECORtQ@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+Am Dienstag, 20. Oktober 2020, 21:38:49 CET schrieb Helen Koike:
+> From: Shunqian Zheng <zhengsq@rock-chips.com>
+> 
+> RK3399 has two ISPs, but only isp0 was tested.
+> Add isp0 node in rk3399 dtsi
+> 
+> Verified with:
+> make ARCH=arm64 dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+> 
+> Signed-off-by: Shunqian Zheng <zhengsq@rock-chips.com>
+> Signed-off-by: Jacob Chen <jacob2.chen@rock-chips.com>
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
 
-I know that this mail will come to you as a surprise as we have never
-met before, but need not to worry as I am contacting you independently
-of my investigation and no one is informed of this communication.
+looks good, and I'd like to apply this one after the drivers/media-patches
+of this series got applied.
 
-I need your urgent assistance in transferring the sum of $11.3million
-immediately to your private account.The money has been here in our
-Bank lying dormant for years now without anybody coming for the claim of it.
 
-I want to release the money to you as the relative to our deceased
-customer (the account owner) who died a long with his supposed NEXT OF
-KIN since 16th October 2005. The Banking laws here does not allow such
-money to stay more than 15 years, because the money will be recalled
-to the Bank treasury account as unclaimed fund.
+Thanks
+Heiko
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
 
-Please respond urgently and delete if you are not interested.
 
-Best Regards,
-Mr. Duna Wattara.
+> 
+> ---
+> 
+> Changes in v6:
+> - Add status = "disabled" in the isp0 node
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3399.dtsi | 26 ++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> index ada724b12f014..af5f8e2c5e64d 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> @@ -1723,6 +1723,32 @@ vopb_mmu: iommu@ff903f00 {
+>  		status = "disabled";
+>  	};
+>  
+> +	isp0: isp0@ff910000 {
+> +		compatible = "rockchip,rk3399-cif-isp";
+> +		reg = <0x0 0xff910000 0x0 0x4000>;
+> +		interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH 0>;
+> +		clocks = <&cru SCLK_ISP0>,
+> +			 <&cru ACLK_ISP0_WRAPPER>,
+> +			 <&cru HCLK_ISP0_WRAPPER>;
+> +		clock-names = "isp", "aclk", "hclk";
+> +		iommus = <&isp0_mmu>;
+> +		phys = <&mipi_dphy_rx0>;
+> +		phy-names = "dphy";
+> +		power-domains = <&power RK3399_PD_ISP0>;
+> +		status = "disabled";
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			port@0 {
+> +				reg = <0>;
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +			};
+> +		};
+> +	};
+> +
+>  	isp0_mmu: iommu@ff914000 {
+>  		compatible = "rockchip,iommu";
+>  		reg = <0x0 0xff914000 0x0 0x100>, <0x0 0xff915000 0x0 0x100>;
+> 
+
+
+
+
