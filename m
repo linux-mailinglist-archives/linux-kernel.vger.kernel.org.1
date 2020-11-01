@@ -2,428 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C052A2142
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 21:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D932A2147
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 21:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727332AbgKAUNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 15:13:15 -0500
-Received: from smtprelay0180.hostedemail.com ([216.40.44.180]:46628 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727298AbgKAUNI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 15:13:08 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 87447837F253;
-        Sun,  1 Nov 2020 20:13:06 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:1:41:69:355:379:541:800:960:966:973:988:989:1260:1311:1314:1345:1359:1437:1515:1605:1730:1747:1777:1792:2194:2196:2198:2199:2200:2201:2393:2553:2559:2562:2637:2731:3138:3139:3140:3141:3142:3165:3865:3866:3867:3870:3871:4385:5007:6261:7875:7904:8603:9592:10004:10848:11026:11473:11658:11914:12043:12048:12291:12296:12297:12438:12555:12683:12895:13894:14110:14394:21080:21433:21450:21451:21627:21990:30004:30025:30054:30056:30090,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: soda60_3013aa7272aa
-X-Filterd-Recvd-Size: 12623
-Received: from joe-laptop.perches.com (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Sun,  1 Nov 2020 20:13:05 +0000 (UTC)
-From:   Joe Perches <joe@perches.com>
-To:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] mm: slub: Convert sysfs sprintf family to sysfs_emit/sysfs_emit_at
-Date:   Sun,  1 Nov 2020 12:12:52 -0800
-Message-Id: <d70b1f6606c71bccb17692384e87354a67db26d9.1604261483.git.joe@perches.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <cover.1604261483.git.joe@perches.com>
-References: <cover.1604261483.git.joe@perches.com>
+        id S1727286AbgKAUPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 15:15:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726848AbgKAUPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 15:15:51 -0500
+Received: from localhost (host-213-179-129-39.customer.m-online.net [213.179.129.39])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75F4B208B6;
+        Sun,  1 Nov 2020 20:15:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604261751;
+        bh=bLA0ev2Kwh6uGquFheDvSSBq9w7KOIljOSNWPIWB5Ck=;
+        h=From:To:Cc:Subject:Date:From;
+        b=huv9rtKkUhey6AamSaXCXbtImWrQjVRiNn7errL5az2kng2obK+UpzHMgRoTggLer
+         1dBBKOeF5LUNXfpJc8oH/xshEX5x5c1wRB20IYPUR9hZXO1LgTIPCJD8CZWVC6KF0K
+         mklVx1CS0NWIH+Tn9mTb693ZRQ9UFxuyrKijadxs=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        gregkh <gregkh@linuxfoundation.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>, linux-rdma@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>, Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+        shiraz.saleem@intel.com, dan.j.williams@intel.com,
+        kiran.patil@intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH mlx5-next v1 00/11] Convert mlx5 to use auxiliary bus
+Date:   Sun,  1 Nov 2020 22:15:31 +0200
+Message-Id: <20201101201542.2027568-1-leon@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the unbounded uses of sprintf to sysfs_emit.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-A few conversions may now not end in a newline if the output buffer
-is overflowed.
+Changelog:
+v1:
+ * Renamed _mlx5_rescan_driver to be mlx5_rescan_driver_locked like in
+   other parts of the mlx5 driver.
+ * Renamed MLX5_INTERFACE_PROTOCOL_VDPA to tbe MLX5_INTERFACE_PROTOCOL_VNET as
+   a preparation to coming series from Eli C.
+ * Some small naming renames in mlx5_vdpa.
+ * Refactored adev index code to make Parav's SF series to apply more easily.
+ * Fixed devlink reload bug that caused to lost TCP connection.
+v0:
+https://lore.kernel.org/lkml/20201026111849.1035786-1-leon@kernel.org/
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- mm/slub.c | 148 ++++++++++++++++++++++++++++--------------------------
- 1 file changed, 76 insertions(+), 72 deletions(-)
+--------------------------------------------------------------
 
-diff --git a/mm/slub.c b/mm/slub.c
-index b23fa366552b..ac40dd18d68f 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4724,7 +4724,7 @@ static void process_slab(struct loc_track *t, struct kmem_cache *s,
- }
- 
- static int list_locations(struct kmem_cache *s, char *buf,
--					enum track_item alloc)
-+			  enum track_item alloc)
- {
- 	int len = 0;
- 	unsigned long i;
-@@ -4734,7 +4734,7 @@ static int list_locations(struct kmem_cache *s, char *buf,
- 
- 	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
- 			     GFP_KERNEL)) {
--		return sprintf(buf, "Out of memory\n");
-+		return sysfs_emit(buf, "Out of memory\n");
- 	}
- 	/* Push back cpu slabs */
- 	flush_all(s);
-@@ -4757,50 +4757,45 @@ static int list_locations(struct kmem_cache *s, char *buf,
- 	for (i = 0; i < t.count; i++) {
- 		struct location *l = &t.loc[i];
- 
--		if (len > PAGE_SIZE - KSYM_SYMBOL_LEN - 100)
--			break;
--		len += sprintf(buf + len, "%7ld ", l->count);
-+		len += sysfs_emit_at(buf, len, "%7ld ", l->count);
- 
- 		if (l->addr)
--			len += sprintf(buf + len, "%pS", (void *)l->addr);
-+			len += sysfs_emit_at(buf, len, "%pS", (void *)l->addr);
- 		else
--			len += sprintf(buf + len, "<not-available>");
--
--		if (l->sum_time != l->min_time) {
--			len += sprintf(buf + len, " age=%ld/%ld/%ld",
--				l->min_time,
--				(long)div_u64(l->sum_time, l->count),
--				l->max_time);
--		} else
--			len += sprintf(buf + len, " age=%ld",
--				l->min_time);
-+			len += sysfs_emit_at(buf, len, "<not-available>");
-+
-+		if (l->sum_time != l->min_time)
-+			len += sysfs_emit_at(buf, len, " age=%ld/%ld/%ld",
-+					     l->min_time,
-+					     (long)div_u64(l->sum_time,
-+							   l->count),
-+					     l->max_time);
-+		else
-+			len += sysfs_emit_at(buf, len, " age=%ld", l->min_time);
- 
- 		if (l->min_pid != l->max_pid)
--			len += sprintf(buf + len, " pid=%ld-%ld",
--				l->min_pid, l->max_pid);
-+			len += sysfs_emit_at(buf, len, " pid=%ld-%ld",
-+					     l->min_pid, l->max_pid);
- 		else
--			len += sprintf(buf + len, " pid=%ld",
--				l->min_pid);
-+			len += sysfs_emit_at(buf, len, " pid=%ld",
-+					     l->min_pid);
- 
- 		if (num_online_cpus() > 1 &&
--				!cpumask_empty(to_cpumask(l->cpus)) &&
--				len < PAGE_SIZE - 60)
--			len += scnprintf(buf + len, PAGE_SIZE - len - 50,
--					 " cpus=%*pbl",
--					 cpumask_pr_args(to_cpumask(l->cpus)));
--
--		if (nr_online_nodes > 1 && !nodes_empty(l->nodes) &&
--				len < PAGE_SIZE - 60)
--			len += scnprintf(buf + len, PAGE_SIZE - len - 50,
--					 " nodes=%*pbl",
--					 nodemask_pr_args(&l->nodes));
--
--		len += sprintf(buf + len, "\n");
-+		    !cpumask_empty(to_cpumask(l->cpus)))
-+			len += sysfs_emit_at(buf, len, " cpus=%*pbl",
-+					     cpumask_pr_args(to_cpumask(l->cpus)));
-+
-+		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
-+			len += sysfs_emit_at(buf, len, " nodes=%*pbl",
-+					     nodemask_pr_args(&l->nodes));
-+
-+		len += sysfs_emit_at(buf, len, "\n");
- 	}
- 
- 	free_loc_track(&t);
- 	if (!t.count)
--		len += sprintf(buf, "No data\n");
-+		len += sysfs_emit_at(buf, len, "No data\n");
-+
- 	return len;
- }
- #endif	/* CONFIG_SLUB_DEBUG */
-@@ -4897,12 +4892,13 @@ __setup("slub_memcg_sysfs=", setup_slub_memcg_sysfs);
- #endif
- 
- static ssize_t show_slab_objects(struct kmem_cache *s,
--			    char *buf, unsigned long flags)
-+				 char *buf, unsigned long flags)
- {
- 	unsigned long total = 0;
- 	int node;
- 	int x;
- 	unsigned long *nodes;
-+	int len = 0;
- 
- 	nodes = kcalloc(nr_node_ids, sizeof(unsigned long), GFP_KERNEL);
- 	if (!nodes)
-@@ -4991,15 +4987,19 @@ static ssize_t show_slab_objects(struct kmem_cache *s,
- 			nodes[node] += x;
- 		}
- 	}
--	x = sprintf(buf, "%lu", total);
-+
-+	len += sysfs_emit_at(buf, len, "%lu", total);
- #ifdef CONFIG_NUMA
--	for (node = 0; node < nr_node_ids; node++)
-+	for (node = 0; node < nr_node_ids; node++) {
- 		if (nodes[node])
--			x += sprintf(buf + x, " N%d=%lu",
--					node, nodes[node]);
-+			len += sysfs_emit_at(buf, len, " N%d=%lu",
-+					     node, nodes[node]);
-+	}
- #endif
-+	len += sysfs_emit_at(buf, len, "\n");
- 	kfree(nodes);
--	return x + sprintf(buf + x, "\n");
-+
-+	return len;
- }
- 
- #define to_slab_attr(n) container_of(n, struct slab_attribute, attr)
-@@ -5021,37 +5021,37 @@ struct slab_attribute {
- 
- static ssize_t slab_size_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%u\n", s->size);
-+	return sysfs_emit(buf, "%u\n", s->size);
- }
- SLAB_ATTR_RO(slab_size);
- 
- static ssize_t align_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%u\n", s->align);
-+	return sysfs_emit(buf, "%u\n", s->align);
- }
- SLAB_ATTR_RO(align);
- 
- static ssize_t object_size_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%u\n", s->object_size);
-+	return sysfs_emit(buf, "%u\n", s->object_size);
- }
- SLAB_ATTR_RO(object_size);
- 
- static ssize_t objs_per_slab_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%u\n", oo_objects(s->oo));
-+	return sysfs_emit(buf, "%u\n", oo_objects(s->oo));
- }
- SLAB_ATTR_RO(objs_per_slab);
- 
- static ssize_t order_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%u\n", oo_order(s->oo));
-+	return sysfs_emit(buf, "%u\n", oo_order(s->oo));
- }
- SLAB_ATTR_RO(order);
- 
- static ssize_t min_partial_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%lu\n", s->min_partial);
-+	return sysfs_emit(buf, "%lu\n", s->min_partial);
- }
- 
- static ssize_t min_partial_store(struct kmem_cache *s, const char *buf,
-@@ -5071,7 +5071,7 @@ SLAB_ATTR(min_partial);
- 
- static ssize_t cpu_partial_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%u\n", slub_cpu_partial(s));
-+	return sysfs_emit(buf, "%u\n", slub_cpu_partial(s));
- }
- 
- static ssize_t cpu_partial_store(struct kmem_cache *s, const char *buf,
-@@ -5096,13 +5096,13 @@ static ssize_t ctor_show(struct kmem_cache *s, char *buf)
- {
- 	if (!s->ctor)
- 		return 0;
--	return sprintf(buf, "%pS\n", s->ctor);
-+	return sysfs_emit(buf, "%pS\n", s->ctor);
- }
- SLAB_ATTR_RO(ctor);
- 
- static ssize_t aliases_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%d\n", s->refcount < 0 ? 0 : s->refcount - 1);
-+	return sysfs_emit(buf, "%d\n", s->refcount < 0 ? 0 : s->refcount - 1);
- }
- SLAB_ATTR_RO(aliases);
- 
-@@ -5135,7 +5135,7 @@ static ssize_t slabs_cpu_partial_show(struct kmem_cache *s, char *buf)
- 	int objects = 0;
- 	int pages = 0;
- 	int cpu;
--	int len;
-+	int len = 0;
- 
- 	for_each_online_cpu(cpu) {
- 		struct page *page;
-@@ -5148,7 +5148,7 @@ static ssize_t slabs_cpu_partial_show(struct kmem_cache *s, char *buf)
- 		}
- 	}
- 
--	len = sprintf(buf, "%d(%d)", objects, pages);
-+	len += sysfs_emit_at(buf, len, "%d(%d)", objects, pages);
- 
- #ifdef CONFIG_SMP
- 	for_each_online_cpu(cpu) {
-@@ -5156,44 +5156,45 @@ static ssize_t slabs_cpu_partial_show(struct kmem_cache *s, char *buf)
- 
- 		page = slub_percpu_partial(per_cpu_ptr(s->cpu_slab, cpu));
- 
--		if (page && len < PAGE_SIZE - 20)
--			len += sprintf(buf + len, " C%d=%d(%d)", cpu,
--				page->pobjects, page->pages);
-+		len += sysfs_emit_at(buf, len, " C%d=%d(%d)",
-+				     cpu, page->pobjects, page->pages);
- 	}
- #endif
--	return len + sprintf(buf + len, "\n");
-+	len += sysfs_emit_at(buf, len, "\n");
-+
-+	return len;
- }
- SLAB_ATTR_RO(slabs_cpu_partial);
- 
- static ssize_t reclaim_account_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%d\n", !!(s->flags & SLAB_RECLAIM_ACCOUNT));
-+	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_RECLAIM_ACCOUNT));
- }
- SLAB_ATTR_RO(reclaim_account);
- 
- static ssize_t hwcache_align_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%d\n", !!(s->flags & SLAB_HWCACHE_ALIGN));
-+	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_HWCACHE_ALIGN));
- }
- SLAB_ATTR_RO(hwcache_align);
- 
- #ifdef CONFIG_ZONE_DMA
- static ssize_t cache_dma_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%d\n", !!(s->flags & SLAB_CACHE_DMA));
-+	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_CACHE_DMA));
- }
- SLAB_ATTR_RO(cache_dma);
- #endif
- 
- static ssize_t usersize_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%u\n", s->usersize);
-+	return sysfs_emit(buf, "%u\n", s->usersize);
- }
- SLAB_ATTR_RO(usersize);
- 
- static ssize_t destroy_by_rcu_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%d\n", !!(s->flags & SLAB_TYPESAFE_BY_RCU));
-+	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_TYPESAFE_BY_RCU));
- }
- SLAB_ATTR_RO(destroy_by_rcu);
- 
-@@ -5212,33 +5213,33 @@ SLAB_ATTR_RO(total_objects);
- 
- static ssize_t sanity_checks_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%d\n", !!(s->flags & SLAB_CONSISTENCY_CHECKS));
-+	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_CONSISTENCY_CHECKS));
- }
- SLAB_ATTR_RO(sanity_checks);
- 
- static ssize_t trace_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%d\n", !!(s->flags & SLAB_TRACE));
-+	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_TRACE));
- }
- SLAB_ATTR_RO(trace);
- 
- static ssize_t red_zone_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%d\n", !!(s->flags & SLAB_RED_ZONE));
-+	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_RED_ZONE));
- }
- 
- SLAB_ATTR_RO(red_zone);
- 
- static ssize_t poison_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%d\n", !!(s->flags & SLAB_POISON));
-+	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_POISON));
- }
- 
- SLAB_ATTR_RO(poison);
- 
- static ssize_t store_user_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%d\n", !!(s->flags & SLAB_STORE_USER));
-+	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_STORE_USER));
- }
- 
- SLAB_ATTR_RO(store_user);
-@@ -5282,7 +5283,7 @@ SLAB_ATTR_RO(free_calls);
- #ifdef CONFIG_FAILSLAB
- static ssize_t failslab_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%d\n", !!(s->flags & SLAB_FAILSLAB));
-+	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_FAILSLAB));
- }
- SLAB_ATTR_RO(failslab);
- #endif
-@@ -5306,7 +5307,7 @@ SLAB_ATTR(shrink);
- #ifdef CONFIG_NUMA
- static ssize_t remote_node_defrag_ratio_show(struct kmem_cache *s, char *buf)
- {
--	return sprintf(buf, "%u\n", s->remote_node_defrag_ratio / 10);
-+	return sysfs_emit(buf, "%u\n", s->remote_node_defrag_ratio / 10);
- }
- 
- static ssize_t remote_node_defrag_ratio_store(struct kmem_cache *s,
-@@ -5333,7 +5334,7 @@ static int show_stat(struct kmem_cache *s, char *buf, enum stat_item si)
- {
- 	unsigned long sum  = 0;
- 	int cpu;
--	int len;
-+	int len = 0;
- 	int *data = kmalloc_array(nr_cpu_ids, sizeof(int), GFP_KERNEL);
- 
- 	if (!data)
-@@ -5346,16 +5347,19 @@ static int show_stat(struct kmem_cache *s, char *buf, enum stat_item si)
- 		sum += x;
- 	}
- 
--	len = sprintf(buf, "%lu", sum);
-+	len += sysfs_emit_at(buf, len, "%lu", sum);
- 
- #ifdef CONFIG_SMP
- 	for_each_online_cpu(cpu) {
--		if (data[cpu] && len < PAGE_SIZE - 20)
--			len += sprintf(buf + len, " C%d=%u", cpu, data[cpu]);
-+		if (data[cpu])
-+			len += sysfs_emit_at(buf, len, " C%d=%u",
-+					     cpu, data[cpu]);
- 	}
- #endif
- 	kfree(data);
--	return len + sprintf(buf + len, "\n");
-+	len += sysfs_emit_at(buf, len, "\n");
-+
-+	return len;
- }
- 
- static void clear_stat(struct kmem_cache *s, enum stat_item si)
--- 
-2.26.0
+Hi,
+
+This patch set converts mlx5 driver to use auxiliary bus [1].
+
+In this series, we are connecting three subsystems (VDPA, netdev and
+RDMA) through mlx5_core PCI driver. That driver is responsible to create
+proper devices based on supported firmware.
+
+First four patches are preparitions and fixes that were spotted during
+code development, rest is the conversion itself.
+
+Thanks
+
+[1]
+https://lore.kernel.org/lkml/20201023003338.1285642-1-david.m.ertman@intel.com
+
+Leon Romanovsky (11):
+  net/mlx5: Don't skip vport check
+  net/mlx5: Properly convey driver version to firmware
+  net/mlx5_core: Clean driver version and name
+  vdpa/mlx5: Make hardware definitions visible to all mlx5 devices
+  net/mlx5: Register mlx5 devices to auxiliary virtual bus
+  vdpa/mlx5: Connect mlx5_vdpa to auxiliary bus
+  net/mlx5e: Connect ethernet part to auxiliary bus
+  RDMA/mlx5: Convert mlx5_ib to use auxiliary bus
+  net/mlx5: Delete custom device management logic
+  net/mlx5: Simplify eswitch mode check
+  RDMA/mlx5: Remove IB representors dead code
+
+ drivers/infiniband/hw/mlx5/counters.c         |   7 -
+ drivers/infiniband/hw/mlx5/ib_rep.c           | 113 ++--
+ drivers/infiniband/hw/mlx5/ib_rep.h           |  45 +-
+ drivers/infiniband/hw/mlx5/main.c             | 148 +++--
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/Kconfig   |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/dev.c | 567 ++++++++++++------
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |   4 +-
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c | 135 ++---
+ .../net/ethernet/mellanox/mlx5/core/en_rep.c  |  42 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rep.h  |   6 +-
+ .../net/ethernet/mellanox/mlx5/core/en_tc.c   |   8 +-
+ .../mellanox/mlx5/core/esw/devlink_port.c     |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/eswitch.c |  28 +-
+ .../mellanox/mlx5/core/eswitch_offloads.c     |   6 +
+ .../mellanox/mlx5/core/ipoib/ethtool.c        |   2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/lag.c |  58 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  50 +-
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  33 +-
+ drivers/vdpa/mlx5/Makefile                    |   2 +-
+ drivers/vdpa/mlx5/net/main.c                  |  76 ---
+ drivers/vdpa/mlx5/net/mlx5_vnet.c             |  53 +-
+ drivers/vdpa/mlx5/net/mlx5_vnet.h             |  24 -
+ include/linux/mlx5/driver.h                   |  34 +-
+ include/linux/mlx5/eswitch.h                  |   8 +-
+ .../linux/mlx5/mlx5_ifc_vdpa.h                |   6 +-
+ 27 files changed, 818 insertions(+), 648 deletions(-)
+ delete mode 100644 drivers/vdpa/mlx5/net/main.c
+ delete mode 100644 drivers/vdpa/mlx5/net/mlx5_vnet.h
+ rename drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h => include/linux/mlx5/mlx5_ifc_vdpa.h (97%)
+
+--
+2.28.0
 
