@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235862A1CF3
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3022A1CF0
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgKAJgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 04:36:22 -0500
-Received: from mailout07.rmx.de ([94.199.90.95]:59121 "EHLO mailout07.rmx.de"
+        id S1726261AbgKAJgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 04:36:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726118AbgKAJgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 04:36:21 -0500
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726118AbgKAJgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 04:36:14 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mailout07.rmx.de (Postfix) with ESMTPS id 4CP9sX50P3zBvB8;
-        Sun,  1 Nov 2020 10:36:16 +0100 (CET)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4CP9sJ0FQgz2TRlS;
-        Sun,  1 Nov 2020 10:36:04 +0100 (CET)
-Received: from n95hx1g2.localnet (192.168.54.14) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Sun, 1 Nov
- 2020 10:35:02 +0100
-From:   Christian Eggers <ceggers@arri.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-CC:     Richard Cochran <richardcochran@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add hardware time stamping support
-Date:   Sun, 1 Nov 2020 10:35:01 +0100
-Message-ID: <4928494.XgmExmOR0V@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <20201030182447.2day7x3vad7xgcah@skbuf>
-References: <20201019172435.4416-1-ceggers@arri.de> <1680734.pGj3N1mgWS@n95hx1g2> <20201030182447.2day7x3vad7xgcah@skbuf>
+        by mail.kernel.org (Postfix) with ESMTPSA id DD87720870;
+        Sun,  1 Nov 2020 09:36:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604223373;
+        bh=oVVJbpuCpdFDPmn7BbTaHQR1soNKyFAe5s0qbdFJSrg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l4P5TADe18hQahhs1sf/HEtUc3oe7X6ZnhtxpJ05cCMKio7OhXNKDgCPWIRSIoQZg
+         42/hnf1YiwUBs9+HisZKrNoCeHx2pt6EGQ5y+Oj5iKJdLX1R7mBAXulPRP6YAcd/1V
+         rtElF6VytLpdVt8t/64yxvmw+nHszvoIZY0tHeZ0=
+Date:   Sun, 1 Nov 2020 10:36:10 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lukas Wunner <lukas@wunner.de>,
+        Saravana Kannan <saravanak@google.com>,
+        Xiang Chen <chenxiang66@hisilicon.com>
+Subject: Re: [PATCH 0/3] PM: runtime: Fixes related to device links management
+Message-ID: <20201101093610.GA9168@kroah.com>
+References: <6543936.FbWAdBN1tG@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.14]
-X-RMX-ID: 20201101-103604-4CP9sJ0FQgz2TRlS-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6543936.FbWAdBN1tG@kreacher>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
+On Wed, Oct 21, 2020 at 09:10:08PM +0200, Rafael J. Wysocki wrote:
+> Hi Greg & all,
+> 
+> Commit d12544fb2aa9 ("PM: runtime: Remove link state checks in
+> rpm_get/put_supplier()") merged recently introduced a weakness
+> in the handling of device links in the runtime PM framework that
+> may be confusing and even harmful.
+> 
+> Namely, the checks removed by that commit prevented PM-runtime from
+> getting or dropping references to the supplier device whose driver
+> was going away via its links to consumers, which specifically allowed
+> the pm_runtime_clean_up_links() called from __device_release_driver()
+> to run without interfering with runtime suspend/resume of consumer
+> devices (which still might happen even though the drivers had been
+> unbound from them by that time).
+> 
+> After the above commit, calling pm_runtime_clean_up_links() from
+> __device_release_driver() makes a little sense and it may be interfering
+> destructively with regular PM-runtime suspend/resume control flows, so
+> it needs to be either fixed or dropped altogether.  I prefer the latter,
+> because among other things this removes an arbitrary difference in the
+> handling of managed device links with respect to the stateless ones,
+> so patch [2/3] is doing just that.
+> 
+> However, in some rare cases pm_runtime_clean_up_links() may help to clean
+> up leftover PM-runtime references, so if that function goes away, they
+> need to be cleaned up elsewhere.  That's why patch [1/3] modifies
+> __device_link_del() to drop them upon device link removal (which also
+> needs to be done for stateless device links and that's why I'm regarding
+> this patch as a fix).
+> 
+> Finally, to avoid pointless overhead related to suspending and resuming
+> the target device for multiple times in a row in __device_release_driver(),
+> it is better to resume it upfront before checking its links to consumers,
+> which is done by patch [3/3].
+> 
+> While this series touches the driver core, it really is mostly related to
+> runtime PM, so I can apply it if that's OK.
 
-On Friday, 30 October 2020, 19:24:47 CET, Vladimir Oltean wrote:
-> On Thu, Oct 22, 2020 at 12:17:48PM +0200, Christian Eggers wrote:
-> > I tried to study the effect of setting the ocmode bit on the KSZ either to
-> > master or to slave. The main visible change is, that some PTP message
-> > types
-> > are be filtered out on RX:
-> > - in "master" mode, "Sync" messages from other nodes will not be received
-> > (but everything else like "Announce" seem to work)
-> > - in "slave" mode, "Delay_Req" messages from other nodes will not be
-> > received
-> Could you dump the contents of your REG_PTP_MSG_CONF2 register?
-runtime register value is 0x1004 (matches default value from the data sheet).
-The Linux driver doesn't touch this register. Below is a dump of all PTP
-related (global) registers.
+Please do, sorry for the delay in reviewing them:
 
-regards
-Christian
-
-    KSZ9563 (Ethernet switch)
-
-      Global
-
-        IEEE 1588 PTP
-        CLKCTRL      0002      SWFA         enabled        CLKSADJ        NOP              PTPSD        subtract
-                               CLKREAD      NOP            CLKWRITE       NOP              CLKCADJ      disabled
-                               EN           enabled        RESET          normal
-        RTCCP        0002      PHASE        16ns
-        RTCNS        17D72FF0  NANOSECONDS    399978480
-        RTCS         00000023  SECONDS               35
-        RTCSUBNS     00000000  RATEDIR      subtract       TEMPADJ        permanent
-                               SUBNS                  0
-        RTCTMPADJ    00000000  CYCLES                 0
-        MSGCFG1      007D      MODEEN       enabled        IEEE802.3      enabled          UDPv4        enabled
-                               UDPv6        enabled        TCMODE         P2P              OCMODE       slave
-        MSGCFG2      1004      UNICASTEN    both           ALTMASTER      disabled         PRIOTX       event only
-                               CHKSYNFU     disabled       CHKDLY         disabled         CHKPDLY      disabled
-                               DROP         disabled       CHKDOM         disabled         IPv4CHKSUM   calc
-        DOMVER       0200      VERSION      2              DOMAIN            0
-        UNITIDX      00000000  GPIO_IDX     GPIO_1         TS_IDX         Unit 0           TRIG_IDX     Unit 0
-
-
-
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
