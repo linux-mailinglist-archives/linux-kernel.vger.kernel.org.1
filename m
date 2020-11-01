@@ -2,51 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1222A211A
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 20:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3332A2121
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 20:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727262AbgKAT1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 14:27:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgKAT1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 14:27:03 -0500
-Subject: Re: [GIT pull] locking/urgent for v5.10-rc2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604258823;
-        bh=kLN9+SF1mOqU6smfm4/D5RTQMnJDqIsq3Ojqn4+eR9A=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=u765RxMCHpvMehF7AhaH23Wh+Bh+xFkY7pcDfel+d296F1cNFHmcLl3wyU/8jDLUQ
-         Ullkk+e7rxiyI3yXSmg777GN5vairuH9anlxtTtkx6yuYL6+ya9ODK3oQF2o8mFKR9
-         7iaJ7kH7K4vpbHJcX/m27r0Kze1EArqGwAdYA2JU=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <160423896136.5667.9743580255833470691.tglx@nanos>
-References: <160423896136.5667.9743580255833470691.tglx@nanos>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <160423896136.5667.9743580255833470691.tglx@nanos>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2020-11-01
-X-PR-Tracked-Commit-Id: 1a39340865ce505a029b37aeb47a3e4c8db5f6c6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8d99084efcc21bb4e2bc4d818f41a27768d48f6e
-Message-Id: <160425882321.14673.12199765685697650855.pr-tracker-bot@kernel.org>
-Date:   Sun, 01 Nov 2020 19:27:03 +0000
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+        id S1727412AbgKATe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 14:34:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727401AbgKATe5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 14:34:57 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C25C0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 11:34:57 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id i15so6935785qti.7
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 11:34:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=DM2UgOFHo//AreOdqVZsv1HPnyLVmD2DIdKtCbtXmYA=;
+        b=ZWlo6i8pByXuvu/W5xwIqRNrp02RjTcy6fs1WXz4lb088GeG5aAxmIF6HYpmSUeqUE
+         VYiWOgorbVJFuuUxFWSiffbM0uwP9ZlEN/7vTinE+KBZUzL43+a75+GbapbheZKLPTuV
+         aoQ0hl5v88dl8pJo4VOA16glqkFqC3jYH8K6tUnHzbpzLVa+gjIYGY43i3Vy8w+TH2Ac
+         q08snefMOKLzQBybL1/XyrzQX/T47YO6IeB3GP45N8jWmVjVJP1Is2fl+SstuyrcGYfq
+         ZvCPDXiiTvomnPHJyJTwz8WFhmeNM20Xg7p0ciVUKzW8tyGKPDR6RtC8KT4Sd0PTWh6U
+         tHLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=DM2UgOFHo//AreOdqVZsv1HPnyLVmD2DIdKtCbtXmYA=;
+        b=W86Py2R0/g9tG19sEDETVa+AsB5RduuvwI3wik/YCLwISpc3Ktfr0p6nrB2AkNfDXa
+         6NEvfOAwu/SsBstEHlFfuCqEt9C4JBqwPoqsHno2Hw42ZAug7T+XD51xDzt1cHLNHGnn
+         T3hxax+lx7Iky75MkxFxy4qONmL6wHizRyhUfC3Nhc3CwzHhXs9wcPgL4aOilLKvPrhb
+         1E1u8qILm6zcbW4R2Jj519H6NjNRFldSh4LRRNh9L41K7psiQ/1fhwz+xnl30zrqgior
+         tosTqLK1lULW8/UV7m3J58Km0O0MOzW8VyE5SkuJF+qZtPOEOd1GeLVKszNrb4LuMlzB
+         F1FQ==
+X-Gm-Message-State: AOAM531dP0RYiGqDJdW9eSrtH19dKqQleKYp3sDSgVEov1NzHEMF/FfS
+        qn34aVUWCGZLZ09Apk8+ImL3V1se
+X-Google-Smtp-Source: ABdhPJx+EM0OMqEKs/YANufilv5FfCCGwb5G5Irp+1EvX/6RxEykc8+GLVWJmxHwsxfmokGmcH+ld+QC
+Sender: "lzye via sendgmr" <lzye@chrisye.mtv.corp.google.com>
+X-Received: from chrisye.mtv.corp.google.com ([2620:15c:211:2:f693:9fff:fef4:4323])
+ (user=lzye job=sendgmr) by 2002:ad4:4142:: with SMTP id z2mr19470484qvp.20.1604259296760;
+ Sun, 01 Nov 2020 11:34:56 -0800 (PST)
+Date:   Sun,  1 Nov 2020 11:34:52 -0800
+Message-Id: <20201101193452.678628-1-lzye@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH v2] Input: Add devices for HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
+From:   Chris Ye <lzye@google.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org,
+        linux-input@vger.kernel.org, linzhao.ye@gmail.com,
+        Chris Ye <lzye@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 01 Nov 2020 13:56:01 -0000:
+Kernel 5.4 introduces HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE, devices
+need to be set explicitly with this flag.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2020-11-01
+Signed-off-by: Chris Ye <lzye@google.com>
+---
+ drivers/hid/hid-ids.h    | 4 ++++
+ drivers/hid/hid-quirks.c | 4 ++++
+ 2 files changed, 8 insertions(+)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8d99084efcc21bb4e2bc4d818f41a27768d48f6e
-
-Thank you!
-
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 74be76e848bf..cf55dca494f3 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -449,6 +449,10 @@
+ #define USB_VENDOR_ID_FRUCTEL	0x25B6
+ #define USB_DEVICE_ID_GAMETEL_MT_MODE	0x0002
+ 
++#define USB_VENDOR_ID_GAMEVICE	0x27F8
++#define USB_DEVICE_ID_GAMEVICE_GV186	0x0BBE
++#define USB_DEVICE_ID_GAMEVICE_KISHI	0x0BBF
++
+ #define USB_VENDOR_ID_GAMERON		0x0810
+ #define USB_DEVICE_ID_GAMERON_DUAL_PSX_ADAPTOR	0x0001
+ #define USB_DEVICE_ID_GAMERON_DUAL_PCS_ADAPTOR	0x0002
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index 0440e2f6e8a3..36d94e3485e3 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -84,6 +84,10 @@ static const struct hid_device_id hid_quirks[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_FREESCALE, USB_DEVICE_ID_FREESCALE_MX28), HID_QUIRK_NOGET },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTABA, USB_DEVICE_ID_LED_DISPLAY), HID_QUIRK_NO_INIT_REPORTS },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD), HID_QUIRK_MULTI_INPUT },
++	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_GV186),
++		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_KISHI),
++		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_DRIVING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FLYING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.29.1.341.ge80a0c044ae-goog
+
