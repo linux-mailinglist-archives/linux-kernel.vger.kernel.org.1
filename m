@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C872A1E70
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 15:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E742F2A1E73
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 15:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbgKAOHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 09:07:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgKAOHL (ORCPT
+        id S1726789AbgKAOHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 09:07:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40082 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726549AbgKAOHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 09:07:11 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3915C0617A6;
-        Sun,  1 Nov 2020 06:07:09 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id a15so2662432edy.1;
-        Sun, 01 Nov 2020 06:07:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Xf3D8wv1rqteE4VdQEnZxsLYc9H1mqo+m29RsmKEQs4=;
-        b=vSN179H1wTvGdNjfwlyQSo6njiUyGzjBy/UvzXxP+3/eBT8hEKmFEpQmTcVFcQC0B0
-         BMDRvMsZ/X7W5a1KgIVdVbnyVZSQz1fFZHIOf7OIe7WemX0J2dDiE9Uut7XvxWnqwu+R
-         SGBTVUBXOELJzQvbI5rQ8vCLg/gtCmOX5g+1lsm4qOFMo1wuYnRhskb7rpVS9RPFIdve
-         j90oS1UN6QXv0qZKHVfYPJx1IeQRbOvlgW2elZlvg8R0mtLoy7LDIyR2102AI7qe8vEX
-         ekFZyjQd56wdf+rEKKrB0vTleViUqsOF+om7QxDPr+c4PP9iTswsiyeNOkOjQA4vj9RJ
-         8+VA==
+        Sun, 1 Nov 2020 09:07:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604239660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=EQ7i+/lF3EujJ95sQqC9i7wHrofb94VFCyP+azCPi/I=;
+        b=hbcEqjK5PXVBbaw1nXqNgohMOKjtWoN/M/dNwCmci8N84BrlNaZ5Tl5Wp7RmbyRsmIoreD
+        UvZoyKhxgP2dV4NVWj04BBqkyN7aguSlF1GHI6eR7tQhnIA03aNQAnzLW0P9H1IouSgGFL
+        oMErBbnt7Lu/KIpx3IEd2maT/I2mkRw=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-431-G4u_IDWXN1aO_Ve97ynxQQ-1; Sun, 01 Nov 2020 09:07:39 -0500
+X-MC-Unique: G4u_IDWXN1aO_Ve97ynxQQ-1
+Received: by mail-ot1-f72.google.com with SMTP id w15so5134586oth.2
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 06:07:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Xf3D8wv1rqteE4VdQEnZxsLYc9H1mqo+m29RsmKEQs4=;
-        b=YvBj/BDY6B7yC2A/fJafrKSquKrypmQkys7wd/5sok2lDDBJxkoXOyxK+UPH+tW7gI
-         JS36SQtolneQdqgfngvjkqxoDxtBFsPQTlVPTeQafwdWsxcGC9LX0kYNEHUG8yAORIta
-         sMp1AzVLLtopbKHHGawAZoBQ71VSJJSJLAFzSB2ZVcv1OS/3Sy89w9UvXOcNt5xygl3+
-         Zfx0IcBKeq6iHWc4sBaUBmYBynKF+4+yWOOL3VwrMpj/2tUe2jPO3t5HwlAuykgSxhH9
-         FNA6+VaR49uFT4RIn5paW3EeUnhcnC7Di4kXgVtbKuxc67Jb7QjoA6EDrEr7kiLEQqwJ
-         ROCg==
-X-Gm-Message-State: AOAM5325QZ0QranSpN1xhXVa3LRCpUQpzldTnpfa/wA6P5JDnHMl4+VA
-        FaVoJSqaV+raCicV03QZZAm3kWzylorBuJW4JaU=
-X-Google-Smtp-Source: ABdhPJxfPte/UcWPSAWV9nUFL+MCnlriAEwjQ2AlUwDnRd4no/D6kw6JwybiH7ZH+HZ10I1FBxl2QF149/8NU4NtYRk=
-X-Received: by 2002:aa7:c597:: with SMTP id g23mr3184502edq.184.1604239628710;
- Sun, 01 Nov 2020 06:07:08 -0800 (PST)
-MIME-Version: 1.0
-References: <CGME20201001135310eucas1p273e3799cec0ebb29891c1b7db38685e0@eucas1p2.samsung.com>
- <20200930143151.23961-1-l.stelmach@samsung.com> <20201001135254.28178-1-l.stelmach@samsung.com>
-In-Reply-To: <20201001135254.28178-1-l.stelmach@samsung.com>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Sun, 1 Nov 2020 19:37:04 +0530
-Message-ID: <CANAwSgSvH+q21Tj9NijPa87ju+1LOJ07-is1Sucx1y5ggT6zCA@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: dts: exynos: Add a placeholder for a MAC address
-To:     =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=EQ7i+/lF3EujJ95sQqC9i7wHrofb94VFCyP+azCPi/I=;
+        b=rGHmMQiscelCUriIDFpSBPyRS6Hnr1XusovY4W72Gqz+u9VIytSmczYmjPDEHqmSzJ
+         GpCilWpEhcm2m73UW90b39svVnL/pIGaaxYNMeWNknlVIm4IrdM5cewLPT+Jb4tMbuOi
+         DRL1kI+FIir9qZwk6o/0PqrVlAsrZ7Cp78fzWDnRzQOj25Wvl8U/97IV1uSLUAjIABH6
+         M2bXDfwrvqmUBqKXGjXorTpORe6941S7G5w0WKQyjgplFcx+8qU0uzKiG4W7De94MGel
+         TZKUa7zC9f2Wrhed6/GI7T+TGsVdA5I6diNgeorO36H5UCWP1+rzx/+NKIuJvooJQ51A
+         6F2A==
+X-Gm-Message-State: AOAM5331Gk9M3CE6OC13+b0syVa9XSIgUfac/PmGXgyE0M5YkLKRTwxV
+        PILW2mJABsRn616+2E6eIrfygrqeUO3HU4lNxqMom8CU7GrIYq2KjxerhLPgcuS6sy4MlVKnJQ/
+        eFLZ7M10xONzi0VyXD82snbPJ
+X-Received: by 2002:aca:e0c3:: with SMTP id x186mr6987538oig.140.1604239658333;
+        Sun, 01 Nov 2020 06:07:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzcu+/hiKh26DPEvMTbBAZGfTPVYBsLJwAAjV5P0Oa0ZdQWckM+cGghBgyRCnt32yB+IjjJCQ==
+X-Received: by 2002:aca:e0c3:: with SMTP id x186mr6987526oig.140.1604239658186;
+        Sun, 01 Nov 2020 06:07:38 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id i18sm2881929oik.7.2020.11.01.06.07.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 06:07:37 -0800 (PST)
+From:   trix@redhat.com
+To:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, khilman@baylibre.com,
+        narmstrong@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] net: stmmac: dwmac-meson8b: remove unneeded semicolon
+Date:   Sun,  1 Nov 2020 06:07:20 -0800
+Message-Id: <20201101140720.2280013-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz,
+From: Tom Rix <trix@redhat.com>
 
-On Thu, 1 Oct 2020 at 19:25, =C5=81ukasz Stelmach <l.stelmach@samsung.com> =
-wrote:
->
-> Add a placeholder for a MAC address. A bootloader may fill it
-> to set the MAC address and override EEPROM settings.
->
-> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
-> ---
-> Changes in v2:
->  - use local-mac-address and leave mac-address to be added by a bootloade=
-r
->
->  arch/arm/boot/dts/exynos5422-odroidxu3.dts | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/d=
-ts/exynos5422-odroidxu3.dts
-> index db0bc17a667b..d0f6ac5fa79d 100644
-> --- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-> +++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-> @@ -70,3 +70,21 @@ &pwm {
->  &usbdrd_dwc3_1 {
->         dr_mode =3D "peripheral";
->  };
-> +
-> +&usbhost2 {
-> +       #address-cells =3D <1>;
-> +       #size-cells =3D <0>;
-> +
-> +       hub@1 {
-> +               compatible =3D "usb8087,0024";
-> +               reg =3D <1>;
-> +               #address-cells =3D <1>;
-> +               #size-cells =3D <0>;
-> +
-> +               ethernet: usbether@1 {
-> +                       compatible =3D "usb0c45,6310";
-> +                       reg =3D <1>;
-> +                       local-mac-address =3D [00 00 00 00 00 00]; /* Fil=
-led in by a bootloader */
-> +               };
-> +       };
-> +};
-> --
-> 2.26.2
->
+A semicolon is not needed after a switch statement.
 
-Thanks for this patch, can you share some example on how to set the
-mac address via u-boot bootargs
-also can you update this patch for exynos5422-odroidxu3-lite.dts and
-exynos4412-odroidu3.dts.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best Regards
--Anand
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+index 5afcf05bbf9c..dc0b8b6d180d 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+@@ -299,7 +299,7 @@ static int meson8b_init_prg_eth(struct meson8b_dwmac *dwmac)
+ 		dev_err(dwmac->dev, "unsupported phy-mode %s\n",
+ 			phy_modes(dwmac->phy_mode));
+ 		return -EINVAL;
+-	};
++	}
+ 
+ 	if (rx_dly_config & PRG_ETH0_ADJ_ENABLE) {
+ 		if (!dwmac->timing_adj_clk) {
+-- 
+2.18.1
+
