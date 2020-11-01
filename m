@@ -2,98 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CC22A21AE
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 22:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4E32A21C6
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 22:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727273AbgKAVEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 16:04:40 -0500
-Received: from smtprelay0117.hostedemail.com ([216.40.44.117]:52056 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727004AbgKAVEk (ORCPT
+        id S1727289AbgKAVNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 16:13:15 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13250 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727004AbgKAVNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 16:04:40 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 2B96E837F24A;
-        Sun,  1 Nov 2020 21:04:39 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3871:3872:3874:4321:5007:6119:7903:9389:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12740:12895:13069:13161:13229:13311:13357:13439:13894:14659:14721:21080:21627:30012:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: fork10_3615e0f272aa
-X-Filterd-Recvd-Size: 2699
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf01.hostedemail.com (Postfix) with ESMTPA;
-        Sun,  1 Nov 2020 21:04:37 +0000 (UTC)
-Message-ID: <616b92af9378e9f9697555074bba1e377450477f.camel@perches.com>
-Subject: Re: [PATCH 4/5] mm: shmem: Convert shmem_enabled_show to use
- sysfs_emit_at
-From:   Joe Perches <joe@perches.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 01 Nov 2020 13:04:35 -0800
-In-Reply-To: <20201101204834.GF27442@casper.infradead.org>
-References: <cover.1604261483.git.joe@perches.com>
-         <a06810c216a45e5f6f1b9f49fbe2f332ca3c8972.1604261483.git.joe@perches.com>
-         <20201101204834.GF27442@casper.infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sun, 1 Nov 2020 16:13:15 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9f24f50000>; Sun, 01 Nov 2020 13:13:25 -0800
+Received: from [10.2.57.191] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 1 Nov
+ 2020 21:13:08 +0000
+Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+CC:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "Kyungmin Park" <kyungmin.park@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20201030100815.2269-1-daniel.vetter@ffwll.ch>
+ <20201030100815.2269-6-daniel.vetter@ffwll.ch>
+ <446b2d5b-a1a1-a408-f884-f17a04b72c18@nvidia.com>
+ <CAKMK7uGDW2f0oOvwgryCHxQFHyh3Tsk6ENsMGmtZ-EnH57tMSA@mail.gmail.com>
+ <1f7cf690-35e2-c56f-6d3f-94400633edd2@nvidia.com>
+ <CAKMK7uFYDSqnNp_xpohzCEidw_iLufNSoX4v55sNZj-nwTckSg@mail.gmail.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <7f29a42a-c408-525d-90b7-ef3c12b5826c@nvidia.com>
+Date:   Sun, 1 Nov 2020 13:13:07 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKMK7uFYDSqnNp_xpohzCEidw_iLufNSoX4v55sNZj-nwTckSg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604265205; bh=GWXSjI75ejnpzeAzx+sY3ihD8k46wdcZjw6eIUm7yio=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=TG0DDiiN9wLyRJWPF4CK0bEiJecwbW6ZaU1EN3hcK+iiLqOS9MI5dU3fkfekhcLSo
+         D8Uroub9UM3IxPuTpp/mdgWWmHBWeS5eox6FXTaFdsBWTBNRSgl5Cu5ZtmfE5KMOE7
+         myLAKYSS+2WWJhxLFAZxS4gweCWLuvWhrXyo/YhKjdz4lKGmESIZ+FE4lXpbabFgXi
+         pvFXgZ524Vh7ASupM1Te+PsZY8D0x5iGctVe+fU1Nuogn5PuHPjsxVHvqUnnw+jQJn
+         V6H5EGgGWnRfNNY+MZZaEeCvQaNhrKoJRvhfG/sSJ5h2RgpbPxIN1qVGpViLA1sekZ
+         JTKyA/FR7JJwQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-11-01 at 20:48 +0000, Matthew Wilcox wrote:
-> On Sun, Nov 01, 2020 at 12:12:51PM -0800, Joe Perches wrote:
-> > @@ -4024,7 +4024,7 @@ int __init shmem_init(void)
-> >  
-> > 
-> >  #if defined(CONFIG_TRANSPARENT_HUGEPAGE) && defined(CONFIG_SYSFS)
-> >  static ssize_t shmem_enabled_show(struct kobject *kobj,
-> > -		struct kobj_attribute *attr, char *buf)
-> > +				  struct kobj_attribute *attr, char *buf)
-> >  {
-> >  	static const int values[] = {
-> >  		SHMEM_HUGE_ALWAYS,
+On 11/1/20 2:30 AM, Daniel Vetter wrote:
+> On Sun, Nov 1, 2020 at 6:22 AM John Hubbard <jhubbard@nvidia.com> wrote:
+>>
+>> On 10/31/20 7:45 AM, Daniel Vetter wrote:
+>>> On Sat, Oct 31, 2020 at 3:55 AM John Hubbard <jhubbard@nvidia.com> wrote:
+>>>> On 10/30/20 3:08 AM, Daniel Vetter wrote:
+>> ...
+>>>> By removing this check from this location, and changing from
+>>>> pin_user_pages_locked() to pin_user_pages_fast(), I *think* we end up
+>>>> losing the check entirely. Is that intended? If so it could use a comment
+>>>> somewhere to explain why.
+>>>
+>>> Yeah this wasn't intentional. I think I needed to drop the _locked
+>>> version to prep for FOLL_LONGTERM, and figured _fast is always better.
+>>> But I didn't realize that _fast doesn't have the vma checks, gup.c got
+>>> me a bit confused.
+>>
+>> Actually, I thought that the change to _fast was a very nice touch, btw.
+>>
+>>>
+>>> I'll remedy this in all the patches where this applies (because a
+>>> VM_IO | VM_PFNMAP can point at struct page backed memory, and that
+>>> exact use-case is what we want to stop with the unsafe_follow_pfn work
+>>> since it wreaks things like cma or security).
+>>>
+>>> Aside: I do wonder whether the lack for that check isn't a problem.
+>>> VM_IO | VM_PFNMAP generally means driver managed, which means the
+>>> driver isn't going to consult the page pin count or anything like that
+>>> (at least not necessarily) when revoking or moving that memory, since
+>>> we're assuming it's totally under driver control. So if pup_fast can
+>>> get into such a mapping, we might have a problem.
+>>> -Daniel
+>>>
+>>
+>> Yes. I don't know why that check is missing from the _fast path.
+>> Probably just an oversight, seeing as how it's in the slow path. Maybe
+>> the appropriate response here is to add a separate patch that adds the
+>> check.
+>>
+>> I wonder if I'm overlooking something, but it certainly seems correct to
+>> do that.
 > 
-> Why?
+> You'll need the mmap_sem to get at the vma to be able to do this
+> check. If you add that to _fast, you made it as fast as the slow one.
 
-why what?
- 
-> > @@ -4034,16 +4034,19 @@ static ssize_t shmem_enabled_show(struct kobject *kobj,
-> >  		SHMEM_HUGE_DENY,
-> >  		SHMEM_HUGE_FORCE,
-> >  	};
-> > -	int i, count;
-> > -
-> > -	for (i = 0, count = 0; i < ARRAY_SIZE(values); i++) {
-> > -		const char *fmt = shmem_huge == values[i] ? "[%s] " : "%s ";
-> > +	int len = 0;
-> > +	int i;
+Arggh, yes of course. Strike that, please. :)
+
+> Plus there's _fast_only due to locking recurion issues in fast-paths
+> (I assume, I didn't check all the callers).
 > 
-> Better:
-> 	int i, len = 0;
+> I'm just wondering whether we have a bug somewhere with device
+> drivers. For CMA regions we always check in try_grab_page, but for dax
 
-I generally disagree as I think it better to have each declaration on an
-individual line.
+OK, so here you're talking about a different bug than the VM_IO | VM_PFNMAP
+pages, I think. This is about the "FOLL_LONGTERM + CMA + gup/pup _fast"
+combination that is not allowed, right?
 
-> > -		count += sprintf(buf + count, fmt,
-> > -				shmem_format_huge(values[i]));
-> > +	for (i = 0; i < ARRAY_SIZE(values); i++) {
-> > +		len += sysfs_emit_at(buf, len,
-> > +				     shmem_huge == values[i] ? "%s[%s]" : "%s%s",
-> > +				     i ? " " : "",
-> > +				     shmem_format_huge(values[i]));
+For that: try_grab_page() doesn't check anything, but try_grab_compound_head()
+does, but only for pup_fast, not gup_fast. That was added by commit
+df3a0a21b698d ("mm/gup: fix omission of check on FOLL_LONGTERM in gup fast
+path") in April.
+
+I recall that the patch was just plugging a very specific hole, as opposed
+to locking down the API against mistakes or confused callers. And it does
+seem that there are some holes.
+
+> I'm not seeing where the checks in the _fast fastpaths are, and that
+> all still leaves random device driver mappings behind which aren't
+> backed by CMA but still point to something with a struct page behind
+> it. I'm probably just missing something, but no idea what.
+> -Daniel
 > 
-> This is ... complicated.  I thought the point of doing all the sysfs_emit
-> stuff was to simplify things.
 
-The removal of fmt allows the format and argument to be __printf verified.
-Indirected formats do not generally allow that.
-
-And using sysfs_emit is not really intended to simplify output code, it's
-used to make sure there isn't a overflow of the PAGE_SIZE output buf when
-using sprintf/snprintf.
+Certainly we've established that we can't check VMA flags by that time,
+so I'm not sure that there is much we can check by the time we get to
+gup/pup _fast. Seems like the device drivers have to avoid calling _fast
+with pages that live in VM_IO | VM_PFNMAP, by design, right? Or maybe
+you're talking about CMA checks only?
 
 
+thanks,
+-- 
+John Hubbard
+NVIDIA
