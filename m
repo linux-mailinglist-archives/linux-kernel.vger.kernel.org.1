@@ -2,157 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3391E2A212D
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 20:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CDA32A2144
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 21:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbgKATys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 14:54:48 -0500
-Received: from 95-31-39-132.broadband.corbina.ru ([95.31.39.132]:56296 "EHLO
-        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgKATyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 14:54:47 -0500
-Received: from metabook.localnet (metabook.metanet [192.168.2.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by blackbox.su (Postfix) with ESMTPSA id 43C308195C;
-        Sun,  1 Nov 2020 22:54:48 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=blackbox.su;
-        s=201811; t=1604260488;
-        bh=oNZMqbgbsDMWxKYkOfEGxb9tRrpD4bAcxYCfempUXKQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DB4Im3DydvbkO8IntZcKAQvHx1nDWsLQljNedXMBWp/7NORd8Ew3gx/2JXbTLyImg
-         4I5k7y2vdnT7yGyM4+IQwH2AH/WL7RepfAwRR19LxRBLp6vzu35a1U5uPbPVLBv69W
-         WE1j4VcfPfqtGmGfAdc1qdin2DqKqTS+aQ14hKKhQ90B8Scsv1zLtJEsgzVoFGuFV1
-         aModXSN/t6E3LUX1RQFpzNSbh5/acfA6h9H5QArIQ/6tFsSPva0EniXa2LsduDi9fF
-         Py7Q8VBIQ1JFm9jowY9Cj7lFW4dT4LRjm8sTHXKecI0shEnDZhpI4OykCbfWEb5MiZ
-         kVJeaSCtjdInQ==
-From:   Sergej Bauer <sbauer@blackbox.su>
-To:     Markus Elfring <Markus.Elfring@web.de>, netdev@vger.kernel.org
-Cc:     UNGLinuxDriver@microchip.com, linux-kernel@vger.kernel.org,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2] lan743x: Fix for potential null pointer dereference
-Date:   Sun, 01 Nov 2020 22:54:38 +0300
-Message-ID: <145853726.prPdODYtnq@metabook>
-In-Reply-To: <dabea6fc-2f2d-7864-721b-3c950265f764@web.de>
-References: <20201031143619.7086-1-sbauer@blackbox.su> <dabea6fc-2f2d-7864-721b-3c950265f764@web.de>
+        id S1727147AbgKAUP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 15:15:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57816 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726848AbgKAUP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 15:15:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 372E1AF57;
+        Sun,  1 Nov 2020 20:15:26 +0000 (UTC)
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dave@stgolabs.net, Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH] media/siano: kill pointless kmutex definitions
+Date:   Sun,  1 Nov 2020 11:54:24 -0800
+Message-Id: <20201101195424.21040-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Signed-off-by: Sergej Bauer <sbauer@blackbox.su>
->=20
-> * I miss a change description here.
-The reason for the fix is when the device is down netdev->phydev will be NU=
-LL=20
-and there is no checking for this situation. So 'ethtool ethN' leads to ker=
-nel=20
-panic.
+Use the mutex api instead of renaming the calls for this
+driver.
 
-$ sudo ethtool eth7
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+---
+This was found while auditing mutex semantics in drivers.
 
-[  103.510336] BUG: kernel NULL pointer dereference, address: 0000000000000=
-340
-[  103.510454] #PF: supervisor read access in kernel mode
-[  103.510530] #PF: error_code(0x0000) - not-present page
-[  103.510600] PGD 0 P4D 0=20
-[  103.510635] Oops: 0000 [#1] SMP PTI
-[  103.510675] CPU: 1 PID: 7182 Comm: ethtool Not tainted 5.9.0upstream+ #5
-[  103.510737] Hardware name: Gigabyte Technology Co., Ltd. H110-D3/H110-D3-
-CF, BIOS F24 04/11/2018
-[  103.510836] RIP: 0010:phy_ethtool_get_wol+0x5/0x30 [libphy]
-[  103.510892] Code: 00 48 85 c0 74 11 48 8b 80 40 01 00 00 48 85 c0 74 05 =
-e9=20
-8e 7a 6f dd b8 a1 ff ff ff c3 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 <48> 8=
-b 87=20
-40 03 00 00 48 85 c0 74 11 48 8b 80 48 01 00 00 48 85 c0
-[  103.511054] RSP: 0018:ffffb6cd85123cf0 EFLAGS: 00010286
-[  103.511106] RAX: ffffffffc03f0d00 RBX: ffffb6cd85123d90 RCX: ffffffff9e6=
-fdd20
-[  103.511171] RDX: 0000000000000001 RSI: ffffb6cd85123d90 RDI: 00000000000=
-00000
-[  103.511237] RBP: ffff946f811b4000 R08: 0000000000001000 R09: 00000000000=
-00000
-[  103.511302] R10: 0000000000000000 R11: 0000000000000089 R12:=20
-00007ffde92be040
-[  103.511367] R13: 0000000000000005 R14: ffff946f811b4000 R15: 00000000000=
-00000
-[  103.511434] FS:  00007f54a9bc7740(0000) GS:ffff9470b6c80000(0000) knlGS:
-0000000000000000
-[  103.511508] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  103.511564] CR2: 0000000000000340 CR3: 000000011d366001 CR4:=20
-00000000003706e0
-[  103.511629] Call Trace:
-[  103.511666]  lan743x_ethtool_get_wol+0x21/0x40 [lan743x]
-[  103.511724]  dev_ethtool+0x1507/0x29d0
-[  103.511769]  ? avc_has_extended_perms+0x17f/0x440
-[  103.511820]  ? tomoyo_init_request_info+0x84/0x90
-[  103.511870]  ? tomoyo_path_number_perm+0x68/0x1e0
-[  103.511919]  ? tty_insert_flip_string_fixed_flag+0x82/0xe0
-[  103.511973]  ? inet_ioctl+0x187/0x1d0
-[  103.512016]  dev_ioctl+0xb5/0x560
-[  103.512055]  sock_do_ioctl+0xa0/0x140
-[  103.512098]  sock_ioctl+0x2cb/0x3c0
-[  103.512139]  __x64_sys_ioctl+0x84/0xc0
-[  103.512183]  do_syscall_64+0x33/0x80
-[  103.512224]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  103.512274] RIP: 0033:0x7f54a9cba427
-[  103.512313] Code: 00 00 90 48 8b 05 69 aa 0c 00 64 c7 00 26 00 00 00 48 =
-c7=20
-c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3=
-d 01 f0=20
-ff ff 73 01 c3 48 8b 0d 39 aa 0c 00 f7 d8 64 89 01 48
-=2E..
-=2D--
-So changes - is just to check a pointer for NULL;
+ drivers/media/common/siano/smscoreapi.c  | 42 ++++++++++++------------
+ drivers/media/common/siano/smscoreapi.h  |  5 ---
+ drivers/media/common/siano/smsdvb-main.c | 14 ++++----
+ 3 files changed, 28 insertions(+), 33 deletions(-)
 
-> * Should a prefix be specified in the patch subject?
->=20
-as far as I understand subject should be "[PATCH v2] lan743x: fix for poten=
-tial=20
-NULL pointer dereference with bare lan743x"?
-
-ok, I've got it.
-
->=20
-> =E2=80=A6
->=20
-> > +++ b/drivers/net/ethernet/microchip/lan743x_ethtool.c
->=20
-> =E2=80=A6
->=20
-> > @@ -809,9 +812,12 @@ static int lan743x_ethtool_set_wol(struct net_devi=
-ce
-> > *netdev,>=20
-> >  	device_set_wakeup_enable(&adapter->pdev->dev, (bool)wol->wolopts);
-> >=20
-> > -	phy_ethtool_set_wol(netdev->phydev, wol);
-> > +	if (netdev->phydev)
-> > +		ret =3D phy_ethtool_set_wol(netdev->phydev, wol);
-> > +	else
-> > +		ret =3D -EIO;
-> >=20
-> > -	return 0;
-> > +	return ret;
-> >=20
-> >  }
-> >  #endif /* CONFIG_PM */
->=20
-> How do you think about to use the following code variant?
->=20
-> +	return netdev->phydev ? phy_ethtool_set_wol(netdev->phydev, wol) : -EIO;
->=20
-It will be quite shorter, thanks.
-
-> Regards,
-> Markus
-
-                Regards.
-                        Sergej.
-
-
-
+diff --git a/drivers/media/common/siano/smscoreapi.c b/drivers/media/common/siano/smscoreapi.c
+index c1511094fdc7..410cc3ac6f94 100644
+--- a/drivers/media/common/siano/smscoreapi.c
++++ b/drivers/media/common/siano/smscoreapi.c
+@@ -429,13 +429,13 @@ static struct smscore_registry_entry_t *smscore_find_registry(char *devpath)
+ 	struct smscore_registry_entry_t *entry;
+ 	struct list_head *next;
+ 
+-	kmutex_lock(&g_smscore_registrylock);
++	mutex_lock(&g_smscore_registrylock);
+ 	for (next = g_smscore_registry.next;
+ 	     next != &g_smscore_registry;
+ 	     next = next->next) {
+ 		entry = (struct smscore_registry_entry_t *) next;
+ 		if (!strncmp(entry->devpath, devpath, sizeof(entry->devpath))) {
+-			kmutex_unlock(&g_smscore_registrylock);
++			mutex_unlock(&g_smscore_registrylock);
+ 			return entry;
+ 		}
+ 	}
+@@ -446,7 +446,7 @@ static struct smscore_registry_entry_t *smscore_find_registry(char *devpath)
+ 		list_add(&entry->entry, &g_smscore_registry);
+ 	} else
+ 		pr_err("failed to create smscore_registry.\n");
+-	kmutex_unlock(&g_smscore_registrylock);
++	mutex_unlock(&g_smscore_registrylock);
+ 	return entry;
+ }
+ 
+@@ -527,7 +527,7 @@ int smscore_register_hotplug(hotplug_t hotplug)
+ 	struct list_head *next, *first;
+ 	int rc = 0;
+ 
+-	kmutex_lock(&g_smscore_deviceslock);
++	mutex_lock(&g_smscore_deviceslock);
+ 	notifyee = kmalloc(sizeof(*notifyee), GFP_KERNEL);
+ 	if (notifyee) {
+ 		/* now notify callback about existing devices */
+@@ -548,7 +548,7 @@ int smscore_register_hotplug(hotplug_t hotplug)
+ 	} else
+ 		rc = -ENOMEM;
+ 
+-	kmutex_unlock(&g_smscore_deviceslock);
++	mutex_unlock(&g_smscore_deviceslock);
+ 
+ 	return rc;
+ }
+@@ -564,7 +564,7 @@ void smscore_unregister_hotplug(hotplug_t hotplug)
+ {
+ 	struct list_head *next, *first;
+ 
+-	kmutex_lock(&g_smscore_deviceslock);
++	mutex_lock(&g_smscore_deviceslock);
+ 
+ 	first = &g_smscore_notifyees;
+ 
+@@ -579,7 +579,7 @@ void smscore_unregister_hotplug(hotplug_t hotplug)
+ 		}
+ 	}
+ 
+-	kmutex_unlock(&g_smscore_deviceslock);
++	mutex_unlock(&g_smscore_deviceslock);
+ }
+ EXPORT_SYMBOL_GPL(smscore_unregister_hotplug);
+ 
+@@ -732,9 +732,9 @@ int smscore_register_device(struct smsdevice_params_t *params,
+ 	smscore_registry_settype(dev->devpath, params->device_type);
+ 
+ 	/* add device to devices list */
+-	kmutex_lock(&g_smscore_deviceslock);
++	mutex_lock(&g_smscore_deviceslock);
+ 	list_add(&dev->entry, &g_smscore_devices);
+-	kmutex_unlock(&g_smscore_deviceslock);
++	mutex_unlock(&g_smscore_deviceslock);
+ 
+ 	*coredev = dev;
+ 
+@@ -890,14 +890,14 @@ int smscore_start_device(struct smscore_device_t *coredev)
+ 		return rc;
+ 	}
+ 
+-	kmutex_lock(&g_smscore_deviceslock);
++	mutex_lock(&g_smscore_deviceslock);
+ 
+ 	rc = smscore_notify_callbacks(coredev, coredev->device, 1);
+ 	smscore_init_ir(coredev);
+ 
+ 	pr_debug("device %p started, rc %d\n", coredev, rc);
+ 
+-	kmutex_unlock(&g_smscore_deviceslock);
++	mutex_unlock(&g_smscore_deviceslock);
+ 
+ 	return rc;
+ }
+@@ -1197,7 +1197,7 @@ void smscore_unregister_device(struct smscore_device_t *coredev)
+ 	int num_buffers = 0;
+ 	int retry = 0;
+ 
+-	kmutex_lock(&g_smscore_deviceslock);
++	mutex_lock(&g_smscore_deviceslock);
+ 
+ 	/* Release input device (IR) resources */
+ 	sms_ir_exit(coredev);
+@@ -1224,9 +1224,9 @@ void smscore_unregister_device(struct smscore_device_t *coredev)
+ 
+ 		pr_debug("waiting for %d buffer(s)\n",
+ 			 coredev->num_buffers - num_buffers);
+-		kmutex_unlock(&g_smscore_deviceslock);
++		mutex_unlock(&g_smscore_deviceslock);
+ 		msleep(100);
+-		kmutex_lock(&g_smscore_deviceslock);
++		mutex_lock(&g_smscore_deviceslock);
+ 	}
+ 
+ 	pr_debug("freed %d buffers\n", num_buffers);
+@@ -1245,7 +1245,7 @@ void smscore_unregister_device(struct smscore_device_t *coredev)
+ 	list_del(&coredev->entry);
+ 	kfree(coredev);
+ 
+-	kmutex_unlock(&g_smscore_deviceslock);
++	mutex_unlock(&g_smscore_deviceslock);
+ 
+ 	pr_debug("device %p destroyed\n", coredev);
+ }
+@@ -2123,17 +2123,17 @@ static int __init smscore_module_init(void)
+ {
+ 	INIT_LIST_HEAD(&g_smscore_notifyees);
+ 	INIT_LIST_HEAD(&g_smscore_devices);
+-	kmutex_init(&g_smscore_deviceslock);
++	mutex_init(&g_smscore_deviceslock);
+ 
+ 	INIT_LIST_HEAD(&g_smscore_registry);
+-	kmutex_init(&g_smscore_registrylock);
++	mutex_init(&g_smscore_registrylock);
+ 
+ 	return 0;
+ }
+ 
+ static void __exit smscore_module_exit(void)
+ {
+-	kmutex_lock(&g_smscore_deviceslock);
++	mutex_lock(&g_smscore_deviceslock);
+ 	while (!list_empty(&g_smscore_notifyees)) {
+ 		struct smscore_device_notifyee_t *notifyee =
+ 			(struct smscore_device_notifyee_t *)
+@@ -2142,9 +2142,9 @@ static void __exit smscore_module_exit(void)
+ 		list_del(&notifyee->entry);
+ 		kfree(notifyee);
+ 	}
+-	kmutex_unlock(&g_smscore_deviceslock);
++	mutex_unlock(&g_smscore_deviceslock);
+ 
+-	kmutex_lock(&g_smscore_registrylock);
++	mutex_lock(&g_smscore_registrylock);
+ 	while (!list_empty(&g_smscore_registry)) {
+ 		struct smscore_registry_entry_t *entry =
+ 			(struct smscore_registry_entry_t *)
+@@ -2153,7 +2153,7 @@ static void __exit smscore_module_exit(void)
+ 		list_del(&entry->entry);
+ 		kfree(entry);
+ 	}
+-	kmutex_unlock(&g_smscore_registrylock);
++	mutex_unlock(&g_smscore_registrylock);
+ 
+ 	pr_debug("\n");
+ }
+diff --git a/drivers/media/common/siano/smscoreapi.h b/drivers/media/common/siano/smscoreapi.h
+index b3b793b5caf3..4a6b9f4c44ac 100644
+--- a/drivers/media/common/siano/smscoreapi.h
++++ b/drivers/media/common/siano/smscoreapi.h
+@@ -28,11 +28,6 @@ Copyright (C) 2006-2008, Uri Shkolnik, Anatoly Greenblat
+ 
+ #include "smsir.h"
+ 
+-#define kmutex_init(_p_) mutex_init(_p_)
+-#define kmutex_lock(_p_) mutex_lock(_p_)
+-#define kmutex_trylock(_p_) mutex_trylock(_p_)
+-#define kmutex_unlock(_p_) mutex_unlock(_p_)
+-
+ /*
+  * Define the firmware names used by the driver.
+  * Those should match what's used at smscoreapi.c and sms-cards.c
+diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
+index 88f90dfd368b..633902036e30 100644
+--- a/drivers/media/common/siano/smsdvb-main.c
++++ b/drivers/media/common/siano/smsdvb-main.c
+@@ -630,11 +630,11 @@ static void smsdvb_unregister_client(struct smsdvb_client_t *client)
+ 
+ static void smsdvb_onremove(void *context)
+ {
+-	kmutex_lock(&g_smsdvb_clientslock);
++	mutex_lock(&g_smsdvb_clientslock);
+ 
+ 	smsdvb_unregister_client((struct smsdvb_client_t *) context);
+ 
+-	kmutex_unlock(&g_smsdvb_clientslock);
++	mutex_unlock(&g_smsdvb_clientslock);
+ }
+ 
+ static int smsdvb_start_feed(struct dvb_demux_feed *feed)
+@@ -1151,11 +1151,11 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
+ 	init_completion(&client->tune_done);
+ 	init_completion(&client->stats_done);
+ 
+-	kmutex_lock(&g_smsdvb_clientslock);
++	mutex_lock(&g_smsdvb_clientslock);
+ 
+ 	list_add(&client->entry, &g_smsdvb_clients);
+ 
+-	kmutex_unlock(&g_smsdvb_clientslock);
++	mutex_unlock(&g_smsdvb_clientslock);
+ 
+ 	client->event_fe_state = -1;
+ 	client->event_unc_state = -1;
+@@ -1198,7 +1198,7 @@ static int __init smsdvb_module_init(void)
+ 	int rc;
+ 
+ 	INIT_LIST_HEAD(&g_smsdvb_clients);
+-	kmutex_init(&g_smsdvb_clientslock);
++	mutex_init(&g_smsdvb_clientslock);
+ 
+ 	smsdvb_debugfs_register();
+ 
+@@ -1213,14 +1213,14 @@ static void __exit smsdvb_module_exit(void)
+ {
+ 	smscore_unregister_hotplug(smsdvb_hotplug);
+ 
+-	kmutex_lock(&g_smsdvb_clientslock);
++	mutex_lock(&g_smsdvb_clientslock);
+ 
+ 	while (!list_empty(&g_smsdvb_clients))
+ 		smsdvb_unregister_client((struct smsdvb_client_t *)g_smsdvb_clients.next);
+ 
+ 	smsdvb_debugfs_unregister();
+ 
+-	kmutex_unlock(&g_smsdvb_clientslock);
++	mutex_unlock(&g_smsdvb_clientslock);
+ }
+ 
+ module_init(smsdvb_module_init);
+-- 
+2.26.2
 
