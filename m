@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC932A1DD5
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 13:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 067392A1DDF
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 13:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgKAM0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 07:26:17 -0500
-Received: from asavdk3.altibox.net ([109.247.116.14]:48618 "EHLO
+        id S1726586AbgKAM3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 07:29:05 -0500
+Received: from asavdk3.altibox.net ([109.247.116.14]:48760 "EHLO
         asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbgKAM0R (ORCPT
+        with ESMTP id S1726496AbgKAM3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 07:26:17 -0500
+        Sun, 1 Nov 2020 07:29:05 -0500
 Received: from ravnborg.org (unknown [188.228.123.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 85B9220022;
-        Sun,  1 Nov 2020 13:26:13 +0100 (CET)
-Date:   Sun, 1 Nov 2020 13:26:11 +0100
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 39B0020022;
+        Sun,  1 Nov 2020 13:29:02 +0100 (CET)
+Date:   Sun, 1 Nov 2020 13:29:00 +0100
 From:   Sam Ravnborg <sam@ravnborg.org>
 To:     Paul Cercueil <paul@crapouillou.net>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
@@ -25,53 +25,112 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Christophe Branchereau <cbranchereau@gmail.com>, od@zcrc.me,
         dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] drm/panel: ABT Y030XX067A panel support
-Message-ID: <20201101122611.GA1269759@ravnborg.org>
+Subject: Re: [PATCH 2/4] dt-bindings: display: Add ABT Y030XX067A panel
+ bindings
+Message-ID: <20201101122900.GB1269759@ravnborg.org>
 References: <20201101093150.8071-1-paul@crapouillou.net>
+ <20201101093150.8071-3-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201101093150.8071-1-paul@crapouillou.net>
+In-Reply-To: <20201101093150.8071-3-paul@crapouillou.net>
 X-CMAE-Score: 0
 X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
         a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8 a=9Q3-Gd2UY0mbpF3q5_8A:9
-        a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22 a=pHzHmUro8NiASowvMSCR:22
-        a=nt3jZW36AmriUCFCBwmW:22
+        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=gEfo2CItAAAA:8
+        a=Lqvclo0UE7ZJoC8b96MA:9 a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22
+        a=sptkURWiP4Gy88Gu7hUp:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul.
-
-On Sun, Nov 01, 2020 at 09:31:46AM +0000, Paul Cercueil wrote:
-> Hi,
+On Sun, Nov 01, 2020 at 09:31:48AM +0000, Paul Cercueil wrote:
+> The Asia Better Technology (ABT) Y030XX067A panel is a 3.0" 320x480
+> 24-bit IPS LCD panel. Its particularity is that it has non-square pixels
+> (as it is 4:3 for a resolution of 320x480), and that it requires odd
+> lines to be sent as RGB and even lines to be sent as GRB on its 8-bit
+> bus.
 > 
-> This patchset is for adding support for the Asia Better Technology (aka.
-> ABT) Y030XX067A 3.0" 320x480 24-bit LCD IPS panel.
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  .../display/panel/abt,y030xx067a.yaml         | 54 +++++++++++++++++++
+>  1 file changed, 54 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/abt,y030xx067a.yaml
 > 
-> While being 320x480 it is actually 4:3 with non-square pixels, and
-> requires a specific bus format, as the pixel ordering changes each line
-> (RGB on odd lines, GRB on even lines).
-> 
-> Patch #1 adds the abt,* vendor prefix.
-> Patch #2 adds the abt,y030xx067a panel binding documentation.
-> Patch #3 adds the MEDIA_BUS_FMT_RGB888_3X8_DELTA media bus format.
-> Patch #4 adds the driver itself.
+> diff --git a/Documentation/devicetree/bindings/display/panel/abt,y030xx067a.yaml b/Documentation/devicetree/bindings/display/panel/abt,y030xx067a.yaml
+> new file mode 100644
+> index 000000000000..6407e8bf45fa
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/panel/abt,y030xx067a.yaml
+> @@ -0,0 +1,54 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/panel/abt,y030xx067a.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Asia Better Technology 3.0" (320x480 pixels) 24-bit IPS LCD panel
+> +
+> +description: |
+> +  The panel must obey the rules for a SPI slave device as specified in
+> +  spi/spi-controller.yaml
+> +
+> +maintainers:
+> +  - Paul Cercueil <paul@crapouillou.net>
+> +
+> +allOf:
+> +  - $ref: panel-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: abt,y030xx067a
+> +
+> +  backlight: true
+> +  port: true
+> +  power-supply: true
+> +  reg: true
+> +  reset-gpios: true
 
-Full series looks good.
+The binding is missing:
+required:
+  - compatible
+  - reg
+  - power-supply
+  - reset-gpios
+  - ...
 
-I asked google - but no hits for "Asia Better Technology". But I blame
-that the company has no public page - in english at least.
-Also the part with a DELTA media bus format looks correct, but not
-something I know much off.
+additionalProperties: false
 
-The driver itself utilises regmap_multi_reg_write() - very nice!
-
-Full series is:
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-
-I assume you will apply yourself - but please wait a few days after it
-have hit dri-devel to let others have the possibility to give feedback.
+So r-b only with these added.
 
 	Sam
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    spi {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        panel@0 {
+> +            compatible = "abt,y030xx067a";
+> +            reg = <0>;
+> +
+> +            spi-max-frequency = <3125000>;
+> +
+> +            reset-gpios = <&gpe 2 GPIO_ACTIVE_LOW>;
+> +
+> +            backlight = <&backlight>;
+> +            power-supply = <&vcc>;
+> +
+> +            port {
+> +                panel_input: endpoint {
+> +                    remote-endpoint = <&panel_output>;
+> +                };
+> +            };
+> +        };
+> +    };
+> -- 
+> 2.28.0
