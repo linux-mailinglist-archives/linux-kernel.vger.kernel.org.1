@@ -2,45 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026572A1F1B
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:33:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9552A2A1F23
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbgKAPdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 10:33:54 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:47646 "EHLO gloria.sntech.de"
+        id S1726980AbgKAPeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 10:34:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726499AbgKAPdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 10:33:53 -0500
-Received: from p57b773f8.dip0.t-ipconnect.de ([87.183.115.248] helo=phil.fritz.box)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kZFMZ-0003rS-70; Sun, 01 Nov 2020 16:33:47 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     robh+dt@kernel.org, Maciej Matuszczyk <maccraft123mc@gmail.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Fix poweroff issue on Odroid Go Advance
-Date:   Sun,  1 Nov 2020 16:33:42 +0100
-Message-Id: <160424139256.1224767.16555811022678597887.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201023181629.119727-1-maccraft123mc@gmail.com>
-References: <20201023181629.119727-1-maccraft123mc@gmail.com>
+        id S1726555AbgKAPet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 10:34:49 -0500
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C12E206D8;
+        Sun,  1 Nov 2020 15:34:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604244889;
+        bh=UQsIf8GFwl4kaVslPomFKf2DtFdFx3IH16pt4zhUhac=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=zMRKSbKUpkqBBgZVawdbTDRoeSpvmRXcBEj6F3vpER+NV2SIFjdhmcrm7tFjW54SJ
+         hiX6v0zQ7UFfkN4ScSsfHz2h+ExlqB3F5QRAtqFBIIeObISAhiG4X4eoiUV//svDqn
+         TM3blzDTiU1QFr1mq/oJp1U+LVvNpiRuE+hno1Oc=
+Date:   Sun, 1 Nov 2020 15:34:43 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     robh+dt@kernel.org, matthias.bgg@gmail.com, knaack.h@gmx.de,
+        lars@metafoo.de, pmeerw@pmeerw.net, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: Re: [PATCH v7 1/3] dt-bindings: iio: adc: add bindings doc for
+ MT6360 ADC
+Message-ID: <20201101153443.3826103e@archlinux>
+In-Reply-To: <1603181267-15610-2-git-send-email-gene.chen.richtek@gmail.com>
+References: <1603181267-15610-1-git-send-email-gene.chen.richtek@gmail.com>
+        <1603181267-15610-2-git-send-email-gene.chen.richtek@gmail.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Oct 2020 20:16:29 +0200, Maciej Matuszczyk wrote:
+On Tue, 20 Oct 2020 16:07:45 +0800
+Gene Chen <gene.chen.richtek@gmail.com> wrote:
+
+> From: Gene Chen <gene_chen@richtek.com>
 > 
+> This change adds the binding doc for the MT6360 ADC.
 
+One thing I'd previously missed below.
 
-Applied, thanks!
+Jonathan
 
-[1/1] arm64: dts: rockchip: Remove system-power-controller from pmic on Odroid Go Advance
-      commit: 01fe332800d0d2f94337b45c1973f4cf28ae6195
+> 
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> ---
+>  .../bindings/iio/adc/mediatek,mt6360-adc.yaml      | 34 ++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/mediatek,mt6360-adc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/mediatek,mt6360-adc.yaml b/Documentation/devicetree/bindings/iio/adc/mediatek,mt6360-adc.yaml
+> new file mode 100644
+> index 0000000..a7350ec
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/mediatek,mt6360-adc.yaml
+> @@ -0,0 +1,34 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/mediatek,mt6360-adc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek MT6360 and similar ADCs
+> +
+> +maintainers:
+> +  - Gene Chen <gene_chen@richtek.com>
+> +
+> +description: |
+> +  Family of simple ADCs with i2c interface and internal references.
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+That seems unlikely...
+
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt6360-adc
+> +
+> +  "#io-channel-cells":
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - "#io-channel-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    adc {
+> +      compatible = "mediatek,mt6360-adc";
+> +      #io-channel-cells = <1>;
+> +    };
+> +...
+
