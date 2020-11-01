@@ -2,54 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC1A2A1FC0
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38AE2A1FBD
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727165AbgKARA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:00:27 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:53874 "EHLO
+        id S1727144AbgKARAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:00:19 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:53884 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727094AbgKARAP (ORCPT
+        with ESMTP id S1726791AbgKARAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:00:15 -0500
-Date:   Sun, 01 Nov 2020 17:00:12 -0000
+        Sun, 1 Nov 2020 12:00:16 -0500
+Date:   Sun, 01 Nov 2020 17:00:13 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604250013;
+        s=2020; t=1604250014;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Jmdoaar37IqAXZ07GE3W64YNAZXQnEnP82/waIN0AnA=;
-        b=twKZpw7SRVVV1ZLQePRoG58xmD8NbXkp+X9DYDRU5vFvLpEv1arwJSJkpmTU0TlMhlcV+O
-        1ZD9QdSTaVT4EyqaNHa+vDS+r1wfw4i+Qp9oktXkOA5wODsaNrF/g27BmoTlH/RtczHddL
-        CKavWaOFYubaqiUhCOn23gYsNUjsyyzg90Ku3k5RN8s/kwwJ0X2EhdReZkJUUhQeeuh6N2
-        O4YpyNYZI8D6WIyYR8HelDC/C392foV20xK2H6RtQanrz7SKP2znf7smn9NBtRYfjCTZGQ
-        JEM/4r0sK1q5/AcWV13oQvu9RaehJc7b1hDSJSzxs2N0YooueJvrSgtarW9eKQ==
+        bh=7E0KMFy2POH7IwevZm/k5fQuBmRAqfG1PPDoWaGbOE8=;
+        b=OtX1JDPgwrBz+izuA/uiVKrDbgnZfcdwnEYYmYeRaNE4x9wiXHR1WXKu61Dtbvc6ImTRB4
+        IjFeiCwEq6nnRLnypbQEccfizo9Js8SJaZ4gug2yqIM5IBBXguT304fKetRmPsZi9NRJZj
+        7T5A1I5OJbsNFkxOrNONeNBbQ78b1UVNM6t00XJESSTGgyZMgPSUdWKwLiV8EAaPYK6yT2
+        JTrRJuuNhKxwIXOpn+COeRzEFR/TUlyj3iwftRteGHOyRKbLGZW9+fU05g/DV4rBfZy6Z6
+        PGxXTA+zCS53zzgA7y43w1uijtUHnzipd/rPKDYAS1dixag4++vKFJkenkc1OA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604250013;
+        s=2020e; t=1604250014;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Jmdoaar37IqAXZ07GE3W64YNAZXQnEnP82/waIN0AnA=;
-        b=jJ1eOhpw+w5MYh40hIgjxr0HS1njrHfaHUmROFQ/Yc6T7r636Vj/FCNNC84mi62PenCDVB
-        zNNidB6RtbKcnkAw==
-From:   "tip-bot2 for Geert Uytterhoeven" <tip-bot2@linutronix.de>
+        bh=7E0KMFy2POH7IwevZm/k5fQuBmRAqfG1PPDoWaGbOE8=;
+        b=uJs6OjwJ2Icb+HnxN6v45bSRybbso4Vf9Eo5sBpKleNrTR8GtW087JNz58EMcUrI1yYhXQ
+        alJLf2cDLYxIonAw==
+From:   "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] irqchip/mst: MST_IRQ should depend on ARCH_MEDIATEK
- or ARCH_MSTARV7
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marc Zyngier <maz@kernel.org>,
-        Daniel Palmer <daniel@thingy.jp>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201014131703.18021-1-geert+renesas@glider.be>
-References: <20201014131703.18021-1-geert+renesas@glider.be>
+Subject: [tip: irq/urgent] genirq: Let GENERIC_IRQ_IPI select IRQ_DOMAIN_HIERARCHY
+Cc:     Pavel Machek <pavel@ucw.cz>, Marc Zyngier <maz@kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201015101222.GA32747@amd>
+References: <20201015101222.GA32747@amd>
 MIME-Version: 1.0
-Message-ID: <160425001268.397.15085158658972395403.tip-bot2@tip-bot2>
+Message-ID: <160425001324.397.16087694985398433477.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,39 +57,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/urgent branch of tip:
 
-Commit-ID:     61b0648d569aca932eab87a67f7ca0ffd3ea2b68
-Gitweb:        https://git.kernel.org/tip/61b0648d569aca932eab87a67f7ca0ffd3ea2b68
-Author:        Geert Uytterhoeven <geert+renesas@glider.be>
-AuthorDate:    Wed, 14 Oct 2020 15:17:03 +02:00
+Commit-ID:     151a535171be6ff824a0a3875553ea38570f4c05
+Gitweb:        https://git.kernel.org/tip/151a535171be6ff824a0a3875553ea38570f4c05
+Author:        Marc Zyngier <maz@kernel.org>
+AuthorDate:    Thu, 15 Oct 2020 21:41:44 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Thu, 15 Oct 2020 22:28:35 +01:00
+CommitterDate: Thu, 15 Oct 2020 21:41:44 +01:00
 
-irqchip/mst: MST_IRQ should depend on ARCH_MEDIATEK or ARCH_MSTARV7
+genirq: Let GENERIC_IRQ_IPI select IRQ_DOMAIN_HIERARCHY
 
-The MStar interrupt controller is only found on MStar, SigmaStar, and
-Mediatek SoCs.  Hence add dependencies on ARCH_MEDIATEK and
-ARCH_MSTARV7, to prevent asking the user about the MStar interrupt
-controller driver when configuring a kernel without support for MStar,
-SigmaStar, and Mediatek SoCs.
+kernel/irq/ipi.c otherwise fails to compile if nothing else
+selects it.
 
-Fixes: ad4c938c92af9130 ("irqchip/irq-mst: Add MStar interrupt controller support")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: 379b656446a3 ("genirq: Add GENERIC_IRQ_IPI Kconfig symbol")
+Reported-by: Pavel Machek <pavel@ucw.cz>
+Tested-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Daniel Palmer <daniel@thingy.jp>
-Link: https://lore.kernel.org/r/20201014131703.18021-1-geert+renesas@glider.be
+Link: https://lore.kernel.org/r/20201015101222.GA32747@amd
 ---
- drivers/irqchip/Kconfig | 1 +
+ kernel/irq/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 570a770..cd734df 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -583,6 +583,7 @@ config LOONGSON_PCH_MSI
+diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
+index 10a5aff..164a031 100644
+--- a/kernel/irq/Kconfig
++++ b/kernel/irq/Kconfig
+@@ -82,6 +82,7 @@ config IRQ_FASTEOI_HIERARCHY_HANDLERS
+ # Generic IRQ IPI support
+ config GENERIC_IRQ_IPI
+ 	bool
++	select IRQ_DOMAIN_HIERARCHY
  
- config MST_IRQ
- 	bool "MStar Interrupt Controller"
-+	depends on ARCH_MEDIATEK || ARCH_MSTARV7 || COMPILE_TEST
- 	default ARCH_MEDIATEK
- 	select IRQ_DOMAIN
- 	select IRQ_DOMAIN_HIERARCHY
+ # Generic MSI interrupt support
+ config GENERIC_MSI_IRQ
