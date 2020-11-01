@@ -2,115 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC2A2A1CD7
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEC22A1CD8
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbgKAJYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 04:24:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21660 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726300AbgKAJYn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 04:24:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604222682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v+0PI8WS3le3Ug1l0DY5WxMog4p0RKOAd20R3Fx4bb4=;
-        b=ZtWewyej0iiHWj94NhCuORy2wraAj6HMw9Y9Haqed3J3NNzwjHSAkUZeJzs/4M+MuIgScr
-        kt4vLGkWI4wkXLTWilveA9VFvgU4Ay2rvz+61lSOCmyEs2Lh4veB96BeF6IgziqNvtdnxU
-        PL/E5nj0uqK4A62jffJjeKwLhNL7vnE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-227-YMkftHzzNd-gLmGe2S0eag-1; Sun, 01 Nov 2020 04:24:40 -0500
-X-MC-Unique: YMkftHzzNd-gLmGe2S0eag-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F0E521006C81;
-        Sun,  1 Nov 2020 09:24:38 +0000 (UTC)
-Received: from krava (unknown [10.40.192.52])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 568E45B4B2;
-        Sun,  1 Nov 2020 09:24:37 +0000 (UTC)
-Date:   Sun, 1 Nov 2020 10:24:35 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andi Kleen <andi@firstfloor.org>
-Cc:     acme@kernel.org, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH v3] perf tools: Support -x for perf stat report
-Message-ID: <20201101092435.GA3405508@krava>
-References: <20201101063133.32179-1-andi@firstfloor.org>
+        id S1726309AbgKAJZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 04:25:37 -0500
+Received: from mout.gmx.net ([212.227.17.21]:46615 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726122AbgKAJZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 04:25:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604222710;
+        bh=JIBHuKWhwwmsOaLOSFETE8/UYlSNB3NgVVXdwGZnc6M=;
+        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:Reply-to:To:
+         CC:From;
+        b=k8LTIGIckeMVV8gBX7N/5nNed+O7Q8AFXvGE5QGs37yBb423avg1qzzaB7wwsOEbq
+         ouV4Qt5rp61kNApvz8tXA+v7dRRKLchEAGc+gt6doRM0bDn34wfEKccSqb19HFhW+5
+         RMp+EgSZshMC8Gw3imwZrPSirY+db2gsbZIlwgAM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from frank-s9 ([217.61.144.204]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MYeMt-1kukuz1JXn-00ViHR; Sun, 01
+ Nov 2020 10:25:10 +0100
+Date:   Sun, 01 Nov 2020 10:25:04 +0100
+User-Agent: K-9 Mail for Android
+In-Reply-To: <878sbm9icl.fsf@nanos.tec.linutronix.de>
+References: <20201031140330.83768-1-linux@fw-web.de> <878sbm9icl.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201101063133.32179-1-andi@firstfloor.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] pci: mediatek: fix warning in msi.h
+Reply-to: frank-w@public-files.de
+To:     linux-mediatek@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frank Wunderlich <linux@fw-web.de>,
+        linux-kernel@vger.kernel.org
+CC:     Ryder Lee <ryder.lee@mediatek.com>, Marc Zyngier <maz@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+From:   Frank Wunderlich <frank-w@public-files.de>
+Message-ID: <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de>
+X-Provags-ID: V03:K1:W6EnW92w+ArEgBh+BB8a6rj90e8Gy6EqneVfb46i9qAv1hNwajV
+ lkdUk84Ms3SRyCqv2RCerc0vyi0poyoXgKgGddY79UnQ1ce9nC/d/aXtLH3ij7Ei7s25FFs
+ rkYCr8HpBS22b1rMdOt6CL/GfdAJTPlxM5P249uJEacL3h/GIk0aL6RahkjzPrUcDXj3/hg
+ qEfP5bTB0aUiSDKKn5ZjQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Qt5NkYmRQRc=:+NAP1v9GNfIFoarELyaFs2
+ UVl+6Mfw0F8+u9XxzC0fvTlmLvTdBX/c+qu7yVu9n+xCSsGDbvJrookTiAKlfVkaY5ZRCIn9Y
+ wGA7o4zf0nA5BVfGemZiyvZsLeDgMQlHtShqatsdKygSZfMMkh6hXVWUsXnE1lwKgOo3SWp8Q
+ jNBE9K6S7wbCZG2CgnZINv7rN6083A0vl3UUr/JoTkXjuujaCn9LABNem2emjgcUR/tYRb5bu
+ 05S/B5I3Whfz0nahEZ2vQUiAtCZxAp6QtxJ3QN/HiAuqan7V+cYAB3Ru4xX9bJvfp+aPb4i5z
+ F9ipAjX/yIn4OHK2fpvHWftqYtLyC6v0xRjUCGVPa7vKqFQI2xE+UUdswwMFiG5f68wkFQh+L
+ fcsMrhVnrE6EAi9dQPfE8BMknvqnFMOPGEhnD5NE2iTqqJAudNw6km3WD7UbRRbdkl8ub9+Do
+ vKP1LS00A1V3KYkxWDOv6dW/9GrboXb1/aRn3ls3kNxdR0+80Dgv4YOrNFyPTQbrAE2YpPTZY
+ RJ4FDSvyCI7i2yRR8nIhbWFrTn/7ghc1c9Uv+JiOPg3PvA9jaT4PQYBmIY9soqlWiQQvfddCi
+ FYT9QHl4eMhoLNvEoXf1RUeleq17KCAk6E/h2J983xejXNTyXgr/s+ymhcqSYC7ZM+G6zCDVZ
+ UDv2Nz5SdJOjT7oJTHW/jxXa0gtCJ4jnT2pE4XJQ2xT6p5kx8bZpQz7o3UbYFlybhcm8qD1bk
+ L6gZn6tzQQHTkBwsH+I0kjlH7PsC1JXv9vYCQlclhcEJeRE1dSiYSZtOnxa5NiZ+WxUfbN7V4
+ cBSo7S4DUzKeCBoG5SNnulA5FKHMA01zhdBc964CkIbCa7NjnRDaQ+ANz0hxAjEq5boVXosjz
+ SIRVUdII2GArg0O9zrmK6uNBcRi1o2kcSdGwXXNoE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 11:31:33PM -0700, Andi Kleen wrote:
-> Add support for the -x, option to enable CSV output with perf stat
-> report. Useful to parse the information with other programs.
-> 
-> % perf stat record --quiet -a -I 1000 sleep 5
-> % perf stat report -x,
->      1.000838672,4003.55,msec,cpu-clock,4003548736,100.00,,
->      1.000838672,11243,,context-switches,4003631885,100.00,0.003,M/sec
->      1.000838672,1682,,cpu-migrations,4003672150,100.00,0.420,K/sec
->      1.000838672,13244,,page-faults,4003697471,100.00,0.003,M/sec
->      1.000838672,2953214077,,cycles,4003715495,100.00,0.738,GHz
->      1.000838672,4380820799,,instructions,4003738270,100.00,1.48,insn per cycle
->      1.000838672,809865653,,branches,4003760616,100.00,202.287,M/sec
->      1.000838672,12439843,,branch-misses,4003780785,100.00,1.54,of all branches
-> ...
-> 
-> Signed-off-by: Andi Kleen <ak@linux.intel.com>
-> 
-> ---
-> 
-> v2: Fix default output (Jiri). Also handle \t as special value like the
-> original parser (Andi)
-> v3: Use DEFAULT_SEPARATOR
+Am 31=2E Oktober 2020 22:49:14 MEZ schrieb Thomas Gleixner <tglx@linutronix=
+=2Ede>:
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+>That's not a fix=2E It's just supressing the warning=2E
 
-thanks,
-jirka
+Ok sorry
 
-> ---
->  tools/perf/builtin-stat.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index 743fe47e7a88..9fcc7351ce43 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -1988,6 +1988,8 @@ static int __cmd_report(int argc, const char **argv)
->  		     "aggregate counts per numa node", AGGR_NODE),
->  	OPT_SET_UINT('A', "no-aggr", &perf_stat.aggr_mode,
->  		     "disable CPU count aggregation", AGGR_NONE),
-> +	OPT_STRING('x', "field-separator", &stat_config.csv_sep, "separator",
-> +		   "print counts with custom separator"),
->  	OPT_END()
->  	};
->  	struct stat st;
-> @@ -2002,6 +2004,13 @@ static int __cmd_report(int argc, const char **argv)
->  			input_name = "perf.data";
->  	}
->  
-> +	if (strcmp(stat_config.csv_sep, DEFAULT_SEPARATOR)) {
-> +		stat_config.csv_output = true;
-> +		if (!strcmp(stat_config.csv_sep, "\\t"))
-> +			stat_config.csv_sep = "\t";
-> +		stat_config.big_num = false;
-> +	}
-> +
->  	perf_stat.data.path = input_name;
->  	perf_stat.data.mode = PERF_DATA_MODE_READ;
->  
-> -- 
-> 2.28.0
-> 
+>So it needs to be figured out why the domain association is not there=2E
 
+It looks like for mt7623 there is no msi domain setup (done via mtk_pcie_s=
+etup_irq callback + mtk_pcie_init_irq_domain) in mtk pcie driver=2E
+
+https://elixir=2Ebootlin=2Ecom/linux/v5=2E10-rc1/source/drivers/pci/contro=
+ller/pcie-mediatek=2Ec#L1204
+
+regards Frank
