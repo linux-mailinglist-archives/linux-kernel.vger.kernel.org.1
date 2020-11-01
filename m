@@ -2,159 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD8A2A222F
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 23:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D302A2234
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 23:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727468AbgKAW2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 17:28:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727197AbgKAW2K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 17:28:10 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97835C061A04
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 14:28:03 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id i2so12956163ljg.4
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 14:28:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jasiak-xyz.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DMTV4qSTXxTsyRh79hlPaHDlwv+MDWJQbcfZIs8RYf0=;
-        b=gBvoLkPk3+d2TToeRJtqTKN5julOkqomoTGzRtGzRlNOENsQr7sU4EVV0o2ClIyz+w
-         Z2l+6ag18lKZMXY1whrSCc/fFubFsgQQGYqS+/elAH8IyRqUzQPzbbiJtIAaX3K9i0bN
-         GhugijmGKZ5HbgDpIh0UIaufZIdPIiN23WiI4Aop0KvS5g/JfreWUjHdkHf/cnevtQNK
-         YSqjDmJT9uFqLN5VF+lLk99TYIN/pX8c7ZEEYLiCVYYnTbDwDeUEckHN7sdJ/Af647tx
-         8Nq0T5ISO9AtmlRuSStMc0PoUETxHlX+3ZwjyMPxU7Y3+8FH/gfJhYlwgLnyz/N2rA9Q
-         UFJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DMTV4qSTXxTsyRh79hlPaHDlwv+MDWJQbcfZIs8RYf0=;
-        b=fmSVRvjfYvxDcU3l9l6Nd93SKbf/sxYyjbzvc+siTRUO5UVUjRjUm0RcWbglvIdpnr
-         DbgLyXhU8ki409i/mWzaDHXyQaxNo0+LrR87AZBg5zmpEK1ZC+TT5euAjNWWyzaoQnaU
-         390m6AJxt406jKyAxnxLlUENjj2vvwwhZQiP+GNbsbrmVbU8XqRm4PrtadVSG6Qv1hbs
-         jgHS6Rd4PTBuXnIpedWHYXHhBE5Tl2qi1/4IMpgkYNGHvbexyWtNtoIP+rSa5euOy6Cz
-         0r8/ClWSFKY5hfM52di7L8K03ElVQe9YqI8EV3hpfW2gyXLRi5qT3yTB3lq3NZ7rFb8N
-         rk1w==
-X-Gm-Message-State: AOAM530HYoH3fqTsq5WStXJ+qN0kUdASzVQdT+eVMhQRgKP4MLuXnRqI
-        ou+1tOoQNCqL6NmM3uas+r8NEd2VP/mrfW4H
-X-Google-Smtp-Source: ABdhPJwWNBJgbJ2s1C6/dTWKArKzJEVQH9+8NQfHA1q7r2ZYhapmFE7yGCkyt7EJAB3N2WlYaK5cwA==
-X-Received: by 2002:a2e:9b58:: with SMTP id o24mr4878374ljj.94.1604269682141;
-        Sun, 01 Nov 2020 14:28:02 -0800 (PST)
-Received: from gmail.com (wireless-nat-78.ip4.greenlan.pl. [185.56.211.78])
-        by smtp.gmail.com with ESMTPSA id z26sm1999353ljm.121.2020.11.01.14.28.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Nov 2020 14:28:01 -0800 (PST)
-Date:   Sun, 1 Nov 2020 23:27:59 +0100
-From:   =?utf-8?B?UGF3ZcWC?= Jasiak <pawel@jasiak.xyz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: PROBLEM: fanotify_mark EFAULT on x86
-Message-ID: <20201101222759.GA25654@gmail.com>
-References: <20201101212738.GA16924@gmail.com>
- <20201101213845.GH27442@casper.infradead.org>
+        id S1727391AbgKAWf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 17:35:59 -0500
+Received: from 95-31-39-132.broadband.corbina.ru ([95.31.39.132]:56408 "EHLO
+        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727081AbgKAWf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 17:35:58 -0500
+Received: from metamini.metanet (metamini.metanet [192.168.2.5])
+        by blackbox.su (Postfix) with ESMTP id 20A2882D0D;
+        Mon,  2 Nov 2020 01:35:59 +0300 (MSK)
+From:   Sergej Bauer <sbauer@blackbox.su>
+Cc:     andrew@lunn.ch, Markus.Elfring@web.de, sbauer@blackbox.su,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] lan743x: fix for potential NULL pointer dereference with bare card
+Date:   Mon,  2 Nov 2020 01:35:55 +0300
+Message-Id: <20201101223556.16116-1-sbauer@blackbox.su>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <220201101203820.GD1109407@lunn.ch>
+References: <220201101203820.GD1109407@lunn.ch>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BXVAT5kNtrzKuDFl"
-Content-Disposition: inline
-In-Reply-To: <20201101213845.GH27442@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is the 3rd revision of the patch fix for potential null pointer dereference
+with lan743x card.
 
---BXVAT5kNtrzKuDFl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The simpliest way to reproduce: boot with bare lan743x and issue "ethtool ethN"
+commant where ethN is the interface with lan743x card. Example:
 
-On 01/11/20, Matthew Wilcox wrote:
-> On Sun, Nov 01, 2020 at 10:27:38PM +0100, Pawe=C5=82 Jasiak wrote:
-> > I am trying to run examples from man fanotify.7 but fanotify_mark always
-> > fail with errno =3D EFAULT.
-> >=20
-> > fanotify_mark declaration is
-> >=20
-> > SYSCALL_DEFINE5(fanotify_mark, int, fanotify_fd, unsigned int, flags,
-> > 			      __u64, mask, int, dfd,
-> > 			      const char  __user *, pathname)
->=20
-> Don't worry about that.  You aren't calling the SYSCALL, you're calling
-> glibc and glibc is turning it into a syscall.
->=20
-> extern int fanotify_mark (int __fanotify_fd, unsigned int __flags,
->                           uint64_t __mask, int __dfd, const char *__pathn=
-ame)
->=20
-> > When=20
-> >=20
-> > fanotify_mark(4, FAN_MARK_ADD | FAN_MARK_ONLYDIR,
-> >               FAN_CREATE | FAN_ONDIR, AT_FDCWD, 0xdeadc0de)
->=20
-> The last argument is supposed to be a pointer to a string.  I'm guessing
-> there's no string at 0xdeadc0de.
+$ sudo ethtool eth7
+dmesg:
+[  103.510336] BUG: kernel NULL pointer dereference, address: 0000000000000340
+...
+[  103.510836] RIP: 0010:phy_ethtool_get_wol+0x5/0x30 [libphy]
+...
+[  103.511629] Call Trace:
+[  103.511666]  lan743x_ethtool_get_wol+0x21/0x40 [lan743x]
+[  103.511724]  dev_ethtool+0x1507/0x29d0
+[  103.511769]  ? avc_has_extended_perms+0x17f/0x440
+[  103.511820]  ? tomoyo_init_request_info+0x84/0x90
+[  103.511870]  ? tomoyo_path_number_perm+0x68/0x1e0
+[  103.511919]  ? tty_insert_flip_string_fixed_flag+0x82/0xe0
+[  103.511973]  ? inet_ioctl+0x187/0x1d0
+[  103.512016]  dev_ioctl+0xb5/0x560
+[  103.512055]  sock_do_ioctl+0xa0/0x140
+[  103.512098]  sock_ioctl+0x2cb/0x3c0
+[  103.512139]  __x64_sys_ioctl+0x84/0xc0
+[  103.512183]  do_syscall_64+0x33/0x80
+[  103.512224]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  103.512274] RIP: 0033:0x7f54a9cba427
+...
 
-You are right but it's not a problem. 0xdeadc0de is just a _well
-known_ address here only for debug purpose.
+Previous versions can be found at:
+v1:
+initial version
+    https://lkml.org/lkml/2020/10/28/921
 
-pathname inside kernel should be a pointer to string located in
-user space at 0xdeadc0de but it is equal to 0xffffff9c which is
-AT_FDCWD.
+v2:
+do not return from lan743x_ethtool_set_wol if netdev->phydev == NULL, just skip
+the call of phy_ethtool_set_wol() instead.
+    https://lkml.org/lkml/2020/10/31/380
 
-If you call
+v3:
+in function lan743x_ethtool_set_wol:
+use ternary operator instead of if-else sentence (review by Markus Elfring)
+return -ENETDOWN insted of -EIO (review by Andrew Lunn)
 
-fanotify_mark(fd, FAN_MARK_ADD | FAN_MARK_ONLYDIR, FAN_CREATE |
-              FAN_ONDIR, AT_FDCWD, argv[1]);
-
-=66rom example with *valid* pointer at argv[1] you still get EFAULT
-because pathname is equal to AT_FDCWD in kernel space -- last argument
-is not used.
-
-In my example in user space we have
-    fanotify_fd =3D 4
-    flags       =3D 0x9
-    mask        =3D 0x40000100
-    dfd         =3D 0xffffff9c
-    pathname    =3D 0xdeadc0de
-
-and in kernel space we have
-    fanotify_fd =3D 4
-    flags       =3D 0x9
-    mask        =3D 0x40000100
-    dfd         =3D 0
-    pathname    =3D 0xffffff9c
-
-So all arguments after __u64 mask are shifted by one.
-
-It looks similar to https://lists.linux.it/pipermail/ltp/2020-June/017436.h=
-tml
-
---=20
-
-Pawe=C5=82 Jasiak
-
---BXVAT5kNtrzKuDFl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEENIqkLxDcCMlLMdi0FzfmQudzVTgFAl+fNmwACgkQFzfmQudz
-VTjRZhAA4fB7nZEsrAZKgFmixIZd5ROhKQIcstuQhSmfyve0iAWRyOS7XzxtNG98
-u2qsUkddRorMb2RCp/Tns6zGrUsFQCv+Yy74Td/w91r/GjCHCDdVCq4bU9q1tlsj
-DGKLCYLVxzFr5h41/xn3TJ9FSMwZI4y+b08FcUKNdclA/jzT1RTzoNPo1q4iSTlI
-baF4Hx/kalIM7F7qV2zGgXnhTd45uDMJv8UAUN1Ky7h6wHCjZ/DzcBbn1WWGWmyw
-zJYSybXbAUhBj8VJUHuuubB9zDUWAcohBQ2JmwjxawIgDHmgJ3FLqNx3hkoY8WC6
-G7f4gTZbqR7vWbgSEHsM9lg6vVH4VOSaSxvtwJOlB80wc6fTBi/cC/PyUBIP/KDI
-8wl7003QMJI4UcrbojE+0QhWxFPRdH364qdGDlcb7B2/q9ckYuy/r5Oe10jVt/k+
-f6lvGbXmveehYSgD5KWmF0LjrqtGL0m1EbxaeeJcTimcGCdBHJwxPDQ5tFXk7SM2
-hkm2Xl++Jhk7gOrO4dYxrebgOkwYpyoMAPtwHZ2P4GGMdJUOM2FB8Jy2bEvMeeF4
-eGsblO2Zy6V5KHRRNq8jt03jc24XDS7OJoiA5vN3RHV58UgLFfeVz6QemuBsInwL
-9RC/ebRA8GBZXL6L8mVftY0olWjItiwgDVHwlLceUY/pIjPa1is=
-=Dvh3
------END PGP SIGNATURE-----
-
---BXVAT5kNtrzKuDFl--
+Signed-off-by: Sergej Bauer <sbauer@blackbox.su>
+---
+diff --git a/drivers/net/ethernet/microchip/lan743x_ethtool.c b/drivers/net/ethernet/microchip/lan743x_ethtool.c
+index dcde496da7fb..c5de8f46cdd3 100644
+--- a/drivers/net/ethernet/microchip/lan743x_ethtool.c
++++ b/drivers/net/ethernet/microchip/lan743x_ethtool.c
+@@ -780,7 +780,9 @@ static void lan743x_ethtool_get_wol(struct net_device *netdev,
+ 
+ 	wol->supported = 0;
+ 	wol->wolopts = 0;
+-	phy_ethtool_get_wol(netdev->phydev, wol);
++
++	if (netdev->phydev)
++		phy_ethtool_get_wol(netdev->phydev, wol);
+ 
+ 	wol->supported |= WAKE_BCAST | WAKE_UCAST | WAKE_MCAST |
+ 		WAKE_MAGIC | WAKE_PHY | WAKE_ARP;
+@@ -809,9 +811,8 @@ static int lan743x_ethtool_set_wol(struct net_device *netdev,
+ 
+ 	device_set_wakeup_enable(&adapter->pdev->dev, (bool)wol->wolopts);
+ 
+-	phy_ethtool_set_wol(netdev->phydev, wol);
+-
+-	return 0;
++	return netdev->phydev ? phy_ethtool_set_wol(netdev->phydev, wol)
++			: -ENETDOWN;
+ }
+ #endif /* CONFIG_PM */
+ 
