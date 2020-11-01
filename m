@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE09D2A21FE
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 23:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061C92A2201
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 23:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727319AbgKAWGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 17:06:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38536 "EHLO
+        id S1727362AbgKAWIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 17:08:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727081AbgKAWGJ (ORCPT
+        with ESMTP id S1727009AbgKAWIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 17:06:09 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE82C0617A6
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 14:06:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=auZJL386i9bjm2MWt5wDlaf7Q2dtUWWeL5G9LrgakYc=; b=fLt2r7cmGvPtur84cW6FZ2N+Jg
-        Nctqmd906xfHrHReBe9tl9Hiw2OHQ9UgvBdYOA8j6yc8GJpVQpURm4+cnxpexuiXHVAVWvdBu6hwV
-        aNTO2IY5gHf1orO2e2iud8ZMrVKWFVCkE+IjJ2sDrsrMBREHSI0hWERxBluh5BA+ZBbQc2tSxd652
-        i2FlVzD99bJ3wKG13SifoeBWkiOroAVPk6pZrD7h7n/wFGrbUR265tT795rYwllEaHBMDjMiBeWlo
-        wMNVlRzYkaJ1ltfQ5BcDKVz3gcwMQ+XhnslKZFCg7Yx0YVq0dZtXV1OKITKD63BzBP9I8NdbkEEFu
-        c99tzW/Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZLUC-0007bx-7K; Sun, 01 Nov 2020 22:06:04 +0000
-Date:   Sun, 1 Nov 2020 22:06:04 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Joe Perches <joe@perches.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] mm: shmem: Convert shmem_enabled_show to use
- sysfs_emit_at
-Message-ID: <20201101220604.GI27442@casper.infradead.org>
-References: <cover.1604261483.git.joe@perches.com>
- <a06810c216a45e5f6f1b9f49fbe2f332ca3c8972.1604261483.git.joe@perches.com>
- <20201101204834.GF27442@casper.infradead.org>
- <616b92af9378e9f9697555074bba1e377450477f.camel@perches.com>
- <20201101211910.GG27442@casper.infradead.org>
- <bc1a4a2a7ff69eeee131744881e1e8c72444be01.camel@perches.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bc1a4a2a7ff69eeee131744881e1e8c72444be01.camel@perches.com>
+        Sun, 1 Nov 2020 17:08:48 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAADC0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 14:08:48 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id f10so7045464qtv.6
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 14:08:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=NKp1/xBXDkl0efhdXNrgYc0O7jfhOuUU7342EXqTwg4=;
+        b=FsnpzJJWXhtPreieRoDxDeeMlTQBlq/mJJqfi2mvOuie/Fj9mmqbbp644xxA+7EH/H
+         nEu7H3reDXz2RiMRJHutBkb5adCfGBDTW5GaEN7o/p7bBO7cGBJuAeV84qQ1KVtorK1w
+         ktmk3CF+IyQtw4aGPFzI05sRg6Qq3c0gZebh6hHfG2yrCDL5qvFxab8lSGvrHUaDLubp
+         0rCHIFcEz14jVVG3XFWfzVgyNPUmnBA8T8owbq/DSh7c7hcyBL//HVd3ouaqFEz4HkmE
+         CkWnjchPAcxUN9Vxrcs/yz+cutc2vQ9rMRoYZLJQ57+V2TLBVDU+tK9OaI9e0MLW9P+H
+         rnSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc:content-transfer-encoding;
+        bh=NKp1/xBXDkl0efhdXNrgYc0O7jfhOuUU7342EXqTwg4=;
+        b=XJFDQHo0T/cQl2JNRA3etB1JUraJJgwjxrjTjG5nzZt1OD+UQdkWQe/qCW7caGSEBT
+         rV6i8E+xxaPD9b70j/zp8WFB3KsQbsDyUxO5fwllk2W63Ie5ZjbAInvbbIfB5bA6HAjm
+         +Oqi3GtQMmOX2B7q/99VwZd9n+039Ui3kJpw8MiKpDz1NSqbe78VEDQwUjedeWq45xNK
+         fJvge14tUUhW/PucSdtwN7+JDLmw578gITUxU/5C4z1oS673VFsy4jQJLQeKw/RECtia
+         SUuIzoyoY5dazMIAWc0XWK2TQjvmfw/QjICXZQVaz05x+qYR+9itlII8i6sz4PyhV230
+         he2Q==
+X-Gm-Message-State: AOAM533/GUEgj+Sm8mLGCkqtodtYn+61qhx6gxjR+wq2NZPmq0g7m/9z
+        hAcBJPS3mumNnlgKFfS4qWDczuf9DIs=
+X-Google-Smtp-Source: ABdhPJxP49gIPiKCuz6nQCcKDAcO3PZrEReCiIRv/Hl/O9yFNY5Xy2r0lt3sA3tBRNUVU6I+TBC4G7b5tu4=
+Sender: "adelva via sendgmr" <adelva@adelva.mtv.corp.google.com>
+X-Received: from adelva.mtv.corp.google.com ([2620:15c:211:200:3e52:82ff:fe5f:1593])
+ (user=adelva job=sendgmr) by 2002:a0c:eec4:: with SMTP id h4mr19229603qvs.52.1604268527352;
+ Sun, 01 Nov 2020 14:08:47 -0800 (PST)
+Date:   Sun,  1 Nov 2020 14:08:45 -0800
+Message-Id: <20201101220845.2391858-1-adelva@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH] xfrm/compat: Remove use of kmalloc_track_caller
+From:   Alistair Delva <adelva@google.com>
+To:     Dmitry Safonov <0x7f454c46@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        kernel-team@android.com,
+        "=?UTF-8?q?Maciej=20=C5=BBenczykowski?=" <maze@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 01:43:13PM -0800, Joe Perches wrote:
-> > Why did you change this?
-> 
-> Are you asking about the function argument alignment or the commit message?
+The __kmalloc_track_caller symbol is not exported if SLUB/SLOB are
+enabled instead of SLAB, which breaks the build on such configs when
+CONFIG_XFRM_USER_COMPAT=3Dm.
 
-The indentation.  Don't change the fucking indentation, Joe.
+ERROR: "__kmalloc_track_caller" [net/xfrm/xfrm_compat.ko] undefined!
 
-> > Look, this isn't performance sensitive code.  Just do something simple.
-> > 
-> > 		if (shmem_huge == values[i])
-> > 			buf += sysfs_emit(buf, "[%s]",
-> > 					shmem_format_huge(values[i]));
-> > 		else
-> > 			buf += sysfs_emit(buf, "%s",
-> > 					shmem_format_huge(values[i]));
-> > 		if (i == ARRAY_SIZE(values) - 1)
-> > 			buf += sysfs_emit(buf, "\n");
-> > 		else
-> > 			buf += sysfs_emit(buf, " ");
-> > 
-> > Shame there's no sysfs_emitc, but there you go.
-> 
-> I think what's there is simple.
+Other users of this symbol are 'bool' options, but changing this to
+bool would require XFRM_USER to be built in as well, which doesn't
+seem worth it. Go back to kmalloc().
 
-Again, you're wrong.
+Fixes: 96392ee5a13b9 ("xfrm/compat: Translate 32-bit user_policy from sockp=
+tr")
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Maciej =C5=BBenczykowski <maze@google.com>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Alistair Delva <adelva@google.com>
+---
+ net/xfrm/xfrm_compat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> And your suggested code doesn't work.
-> sysfs_emit is used for single emits.
-> sysfs_emit_at is used for multiple emits.
-
-Oh, ugh, sysfs_emit() should be able to work on a buffer that isn't
-page aligned.  Greg, how about this?
-
-+++ b/fs/sysfs/file.c
-@@ -722,13 +722,13 @@ int sysfs_emit(char *buf, const char *fmt, ...)
- {
-        va_list args;
-        int len;
-+       int start = offset_in_page(buf);
- 
--       if (WARN(!buf || offset_in_page(buf),
--                "invalid sysfs_emit: buf:%p\n", buf))
-+       if (WARN(!buf, "invalid sysfs_emit: buf:%p\n", buf))
-                return 0;
- 
-        va_start(args, fmt);
--       len = vscnprintf(buf, PAGE_SIZE, fmt, args);
-+       len = vscnprintf(buf, PAGE_SIZE - start, fmt, args);
-        va_end(args);
- 
-        return len;
+diff --git a/net/xfrm/xfrm_compat.c b/net/xfrm/xfrm_compat.c
+index e28f0c9ecd6a..c1dee0696dfb 100644
+--- a/net/xfrm/xfrm_compat.c
++++ b/net/xfrm/xfrm_compat.c
+@@ -585,7 +585,7 @@ static int xfrm_user_policy_compat(u8 **pdata32, int op=
+tlen)
+ 	if (optlen < sizeof(*p))
+ 		return -EINVAL;
+=20
+-	data64 =3D kmalloc_track_caller(optlen + 4, GFP_USER | __GFP_NOWARN);
++	data64 =3D kmalloc(optlen + 4, GFP_USER | __GFP_NOWARN);
+ 	if (!data64)
+ 		return -ENOMEM;
+=20
+--=20
+2.29.1.341.ge80a0c044ae-goog
 
