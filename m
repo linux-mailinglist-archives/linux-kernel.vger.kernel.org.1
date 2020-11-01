@@ -2,207 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858022A1D7D
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 12:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF59F2A1D83
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 12:09:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgKALCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 06:02:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726145AbgKALCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 06:02:16 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726439AbgKALJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 06:09:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgKALJx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 06:09:53 -0500
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D07C0617A6;
+        Sun,  1 Nov 2020 03:09:53 -0800 (PST)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAFDA2074F;
-        Sun,  1 Nov 2020 11:02:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604228535;
-        bh=5XNFiqjH2oN7J9GEbY/PVlCdxYv+WtUQcnEnB0t38U0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iLUHj0ReecjaVs/FH15VZkcACz93cXzUIe3yZNkNdBUr8gyqp8kffHcGoaXIjuhYV
-         N9ikhsDGmQwSl+SDDhK8JQxo5kfRSd3yYqsj6Q+fHdsp36JALoEnanuKgSS0oZ+1sL
-         XJ+lxSMYHpN9KEaTP59VrktOFwzIB9snxzHysrAc=
-Date:   Sun, 1 Nov 2020 12:02:58 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Anmol Karn <anmol.karan123@gmail.com>
-Cc:     ralf@linux-mips.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        syzbot+a1c743815982d9496393@syzkaller.appspotmail.com,
-        linux-hams@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [Linux-kernel-mentees] [PATCH] net: rose: Fix Null pointer
- dereference in rose_send_frame()
-Message-ID: <20201101110258.GA2925745@kroah.com>
-References: <20201015001712.72976-1-anmol.karan123@gmail.com>
- <20201015051225.GA404970@kroah.com>
- <20201015141012.GB77038@Thinkpad>
- <20201015155051.GB66528@kroah.com>
- <20201030105413.GA32091@Thinkpad>
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4CPCxT5LHFzQjy2;
+        Sun,  1 Nov 2020 12:09:49 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
+        with ESMTP id 0NqHY5bM4ywr; Sun,  1 Nov 2020 12:09:42 +0100 (CET)
+Date:   Sun, 1 Nov 2020 12:09:35 +0100
+From:   Hagen Paul Pfeifer <hagen@jauu.net>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v6 0/6] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+Message-ID: <20201101110935.GA4105325@laniakea>
+References: <20200924132904.1391-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201030105413.GA32091@Thinkpad>
+In-Reply-To: <20200924132904.1391-1-rppt@kernel.org>
+X-Key-Id: 98350C22
+X-Key-Fingerprint: 490F 557B 6C48 6D7E 5706 2EA2 4A22 8D45 9835 0C22
+X-GPG-Key: gpg --recv-keys --keyserver wwwkeys.eu.pgp.net 98350C22
+X-MBO-SPAM-Probability: *
+X-Rspamd-Score: 0.32 / 15.00 / 15.00
+X-Rspamd-Queue-Id: EBDB416FE
+X-Rspamd-UID: bd1d51
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 04:24:13PM +0530, Anmol Karn wrote:
-> On Thu, Oct 15, 2020 at 05:50:51PM +0200, Greg KH wrote:
-> > On Thu, Oct 15, 2020 at 07:40:12PM +0530, Anmol Karn wrote:
-> > > On Thu, Oct 15, 2020 at 07:12:25AM +0200, Greg KH wrote:
-> > > > On Thu, Oct 15, 2020 at 05:47:12AM +0530, Anmol Karn wrote:
-> > > > > In rose_send_frame(), when comparing two ax.25 addresses, it assigns rose_call to 
-> > > > > either global ROSE callsign or default port, but when the former block triggers and 
-> > > > > rose_call is assigned by (ax25_address *)neigh->dev->dev_addr, a NULL pointer is 
-> > > > > dereferenced by 'neigh' when dereferencing 'dev'.
-> > > > > 
-> > > > > - net/rose/rose_link.c
-> > > > > This bug seems to get triggered in this line:
-> > > > > 
-> > > > > rose_call = (ax25_address *)neigh->dev->dev_addr;
-> > > > > 
-> > > > > Prevent it by checking NULL condition for neigh->dev before comparing addressed for 
-> > > > > rose_call initialization.
-> > > > > 
-> > > > > Reported-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com 
-> > > > > Link: https://syzkaller.appspot.com/bug?id=9d2a7ca8c7f2e4b682c97578dfa3f236258300b3 
-> > > > > Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
-> > > > > ---
-> > > > > I am bit sceptical about the error return code, please suggest if anything else is 
-> > > > > appropriate in place of '-ENODEV'.
-> > > > > 
-> > > > >  net/rose/rose_link.c | 3 +++
-> > > > >  1 file changed, 3 insertions(+)
-> > > > > 
-> > > > > diff --git a/net/rose/rose_link.c b/net/rose/rose_link.c
-> > > > > index f6102e6f5161..92ea6a31d575 100644
-> > > > > --- a/net/rose/rose_link.c
-> > > > > +++ b/net/rose/rose_link.c
-> > > > > @@ -97,6 +97,9 @@ static int rose_send_frame(struct sk_buff *skb, struct rose_neigh *neigh)
-> > > > >  	ax25_address *rose_call;
-> > > > >  	ax25_cb *ax25s;
-> > > > >  
-> > > > > +	if (!neigh->dev)
-> > > > > +		return -ENODEV;
-> > > > 
-> > > > How can ->dev not be set at this point in time?  Shouldn't that be
-> > > > fixed, because it could change right after you check this, right?
-> > > > 
-> > > > thanks,
-> > > > 
-> > > > greg k-h
-> > > 
-> > > Hello Sir,
-> > > 
-> > > Thanks for the review,
-> > > After following the call trace i thought, if neigh->dev is NULL it should
-> > > be checked, but I will figure out what is going on with the crash reproducer,
-> > > and I think rose_loopback_timer() is the place where problem started. 
-> > > 
-> > > Also, I have created a diff for checking neigh->dev before assigning ROSE callsign
-> > > , please give your suggestions on this.
-> > > 
-> > > 
-> > > diff --git a/net/rose/rose_link.c b/net/rose/rose_link.c
-> > > index f6102e6f5161..2ddd5e559442 100644
-> > > --- a/net/rose/rose_link.c
-> > > +++ b/net/rose/rose_link.c
-> > > @@ -97,10 +97,14 @@ static int rose_send_frame(struct sk_buff *skb, struct rose_neigh *neigh)
-> > >         ax25_address *rose_call;
-> > >         ax25_cb *ax25s;
-> > >  
-> > > -       if (ax25cmp(&rose_callsign, &null_ax25_address) == 0)
-> > > -               rose_call = (ax25_address *)neigh->dev->dev_addr;
-> > > -       else
-> > > -               rose_call = &rose_callsign;
-> > > +       if (neigh->dev) {
-> > > +               if (ax25cmp(&rose_callsign, &null_ax25_address) == 0)
-> > > +                       rose_call = (ax25_address *)neigh->dev->dev_addr;
-> > > +               else
-> > > +                       rose_call = &rose_callsign;
-> > > +       } else {
-> > > +               return -ENODEV;
-> > > +       }
-> > 
-> > The point I am trying to make is that if someone else is setting ->dev
-> > to NULL in some other thread/context/whatever, while this is running,
-> > checking for it like this will not work.
-> > 
-> > What is the lifetime rules of that pointer?  Who initializes it, and who
-> > sets it to NULL.  Figure that out first please to determine how to check
-> > for this properly.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> Hello All,
-> 
-> I investigated further on this,
-> 
-> Here is some things i noticed:
-> 
-> When I followed the call trace,
-> 
-> [ 84.241331][ C3] Call Trace:
-> [ 84.241331][ C3] rose_transmit_clear_request ($SOURCE/net/rose/rose_link.c:255)
-> [ 84.241331][ C3] ? lockdep_hardirqs_on ($SOURCE/kernel/locking/lockdep.c:4161)
-> [ 84.241331][ C3] rose_rx_call_request ($SOURCE/net/rose/af_rose.c:999)
-> [ 84.241331][ C3] ? rose_release ($SOURCE/net/rose/af_rose.c:970)
-> [ 84.241331][ C3] rose_loopback_timer ($SOURCE/net/rose/rose_loopback.c:100)
-> [ 84.241331][ C3] ? rose_transmit_link ($SOURCE/net/rose/rose_loopback.c:60)
-> 
-> in the rose_send_frame() it dereferenced `neigh->dev` when called from 
-> rose_transmit_clear_request(), and the first occurance of the `neigh`
-> is in rose_loopback_timer() as `rose_loopback_neigh`, and it is initialized 
-> in rose_add_loopback_neighh() as NULL.
-> 
-> - net/rose/rose_route.c:381
-> 
-> void rose_add_loopback_neigh(void)
-> {
-> 	struct rose_neigh *sn;
-> 
-> 	rose_loopback_neigh = kmalloc(sizeof(struct rose_neigh), GFP_KERNEL);
-> 	if (!rose_loopback_neigh)
-> 		return;
-> 	sn = rose_loopback_neigh;
-> 
-> 	sn->callsign  = null_ax25_address;
-> 	sn->digipeat  = NULL;
-> 	sn->ax25      = NULL;
-> 	sn->dev       = NULL;
-> 	^^^^^^^^^^^^^^^^^^^^^
-> 
-> i.e when `rose_loopback_neigh` used in rose_loopback_timer() its `->dev` was
-> still NULL and rose_loopback_timer() was calling rose_rx_call_request() 
-> without checking for NULL.
-> 
-> 
-> I have created the following patch to check for NULL pointer.
-> 
-> diff --git a/net/rose/rose_loopback.c b/net/rose/rose_loopback.c
-> index 7b094275ea8b..cd7774cb1d07 100644
-> --- a/net/rose/rose_loopback.c
-> +++ b/net/rose/rose_loopback.c
-> @@ -96,7 +96,7 @@ static void rose_loopback_timer(struct timer_list *unused)
->                 }
->  
->                 if (frametype == ROSE_CALL_REQUEST) {
-> -                       if ((dev = rose_dev_get(dest)) != NULL) {
-> +                       if (rose_loopback_neigh->dev && (dev = rose_dev_get(dest)) != NULL) {
->                                 if (rose_rx_call_request(skb, dev, rose_loopback_neigh, lci_o) == 0)
->                                         kfree_skb(skb);
->                         } else {
-> 
-> 
-> 
-> Please, review it and give me suggestions whether i am going right or not.
+* Mike Rapoport | 2020-09-24 16:28:58 [+0300]:
 
-That seems better, does it solve the syzbot test?
+>This is an implementation of "secret" mappings backed by a file descriptor. 
+>I've dropped the boot time reservation patch for now as it is not strictly
+>required for the basic usage and can be easily added later either with or
+>without CMA.
 
-thanks,
+Isn't memfd_secret currently *unnecessarily* designed to be a "one task
+feature"? memfd_secret fulfills exactly two (generic) features:
 
-greg k-h
+- address space isolation from kernel (aka SECRET_EXCLUSIVE, not in kernel's
+  direct map) - hide from kernel, great
+- disabling processor's memory caches against speculative-execution vulnerabilities
+  (spectre and friends, aka SECRET_UNCACHED), also great
+
+But, what about the following use-case: implementing a hardened IPC mechanism
+where even the kernel is not aware of any data and optionally via SECRET_UNCACHED
+even the hardware caches are bypassed! With the patches we are so close to
+achieving this.
+
+How? Shared, SECRET_EXCLUSIVE and SECRET_UNCACHED mmaped pages for IPC
+involved tasks required to know this mapping (and memfd_secret fd). After IPC
+is done, tasks can copy sensitive data from IPC pages into memfd_secret()
+pages, un-sensitive data can be used/copied everywhere.
+
+One missing piece is still the secure zeroization of the page(s) if the
+mapping is closed by last process to guarantee a secure cleanup. This can
+probably done as an general mmap feature, not coupled to memfd_secret() and
+can be done independently ("reverse" MAP_UNINITIALIZED feature).
+
+PS: thank you Mike for your effort!
+
+See the following pseudo-code as an example:
+
+
+// simple assume file-descriptor and mapping is inherited
+// by child for simplicity, ptr is 
+int fd = memfd_secret(SECRETMEM_UNCACHED);
+ftruncate(fd, PAGE_SIZE);
+uint32_t *ptr = mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+
+pid_t pid_other;
+
+void signal_handler(int sig)
+{
+	// update IPC data on shared, uncachaed, exclusive mapped page
+	*ptr += 1;
+	// inform other
+	sleep(1);
+	kill(pid_other, SIGUSR1);
+}
+
+void ipc_loop(void)
+{
+	signal(SIGUSR1, signal_handler);
+	while (1) {
+		sleep(1);
+	}
+}
+
+int main(void)
+{
+	pid_t child_pid;
+
+	switch (child_pid = fork()) {
+	case 0:
+		pid_other = getppid();
+		break;
+	default:
+		pid_other = child_pid
+		break;
+	}
+	
+	ipc_loop();
+}
+
+
+Hagen
