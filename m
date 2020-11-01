@@ -2,62 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5407B2A1B79
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 01:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A002C2A1B83
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 01:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgKAAaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 20:30:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726138AbgKAAaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 20:30:05 -0400
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604190604;
-        bh=UEhdv3Q0+TKErpw5C66NTGav85um6DAu9uHRU7e6R3M=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=w6grmRErPARoacuU/197yOLE9l0KTVAYxfogl6Ee0uuc3WzOE6Vah7HUNEiYyvbp3
-         UpeRUv15M81/INF5SOUtjzXWbkGtOvcr/F5rEP1IrnGkRqgXRYl4fgnGgP5oeeenEi
-         j3+lvp8+sWdgaFNGn2iMlpM2qWAF/cqd6jWtBvB8=
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: bridge: mcast: fix stub definition of
- br_multicast_querier_exists
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160419060462.13806.6288188533680087053.git-patchwork-notify@kernel.org>
-Date:   Sun, 01 Nov 2020 00:30:04 +0000
-References: <20201101000845.190009-1-vladimir.oltean@nxp.com>
-In-Reply-To: <20201101000845.190009-1-vladimir.oltean@nxp.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     roopa@nvidia.com, nikolay@nvidia.com, kuba@kernel.org,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com
+        id S1726311AbgKAAlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 20:41:24 -0400
+Received: from mail2.sp2max.com.br ([138.185.4.9]:52300 "EHLO
+        mail2.sp2max.com.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726166AbgKAAlV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 20:41:21 -0400
+Received: from pgsop.sopnet.com.ar (unknown [179.40.38.12])
+        (Authenticated sender: pablo@fliagreco.com.ar)
+        by mail2.sp2max.com.br (Postfix) with ESMTPSA id 046E722A0003;
+        Sat, 31 Oct 2020 21:34:35 -0300 (-03)
+From:   Pablo Greco <pgreco@centosproject.org>
+To:     linux-sunxi@googlegroups.com
+Cc:     Pablo Greco <pgreco@centosproject.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: sun7i: bananapi: Enable RGMII RX/TX delay on Ethernet PHY
+Date:   Sat, 31 Oct 2020 21:34:15 -0300
+Message-Id: <1604190857-3078-1-git-send-email-pgreco@centosproject.org>
+X-Mailer: git-send-email 1.8.3.1
+X-SP2Max-MailScanner-Information: Please contact the ISP for more information
+X-SP2Max-MailScanner-ID: 046E722A0003.AD24E
+X-SP2Max-MailScanner: Sem Virus encontrado
+X-SP2Max-MailScanner-SpamCheck: nao spam, SpamAssassin (not cached,
+        escore=-2.9, requerido 6, autolearn=not spam, ALL_TRUSTED -1.00,
+        BAYES_00 -1.90)
+X-SP2Max-MailScanner-From: pgreco@centosproject.org
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+The Ethernet PHY on the Bananapi M1 has the RX and TX delays enabled on
+the PHY, using pull-ups on the RXDLY and TXDLY pins.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Fix the phy-mode description to correct reflect this so that the
+implementation doesn't reconfigure the delays incorrectly. This
+happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
+rx/tx delay config").
 
-On Sun,  1 Nov 2020 02:08:45 +0200 you wrote:
-> The commit cited below has changed only the functional prototype of
-> br_multicast_querier_exists, but forgot to do that for the stub
-> prototype (the one where CONFIG_BRIDGE_IGMP_SNOOPING is disabled).
-> 
-> Fixes: 955062b03fa6 ("net: bridge: mcast: add support for raw L2 multicast groups")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> 
-> [...]
+Fixes: 8a5b272fbf44 ("ARM: dts: sun7i: Add Banana Pi board")
+Signed-off-by: Pablo Greco <pgreco@centosproject.org>
+---
+ arch/arm/boot/dts/sun7i-a20-bananapi.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Here is the summary with links:
-  - [net-next] net: bridge: mcast: fix stub definition of br_multicast_querier_exists
-    https://git.kernel.org/netdev/net-next/c/c43fd36f7fec
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/arch/arm/boot/dts/sun7i-a20-bananapi.dts b/arch/arm/boot/dts/sun7i-a20-bananapi.dts
+index bb3987e101c2..0b3d9ae75650 100644
+--- a/arch/arm/boot/dts/sun7i-a20-bananapi.dts
++++ b/arch/arm/boot/dts/sun7i-a20-bananapi.dts
+@@ -132,7 +132,7 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&gmac_rgmii_pins>;
+ 	phy-handle = <&phy1>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	phy-supply = <&reg_gmac_3v3>;
+ 	status = "okay";
+ };
+-- 
+2.18.4
 
