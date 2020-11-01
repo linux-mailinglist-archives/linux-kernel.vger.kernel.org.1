@@ -2,205 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2FF2A1D9E
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 12:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E10562A1DA3
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 12:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgKALgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 06:36:01 -0500
-Received: from mail-eopbgr60087.outbound.protection.outlook.com ([40.107.6.87]:9342
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726159AbgKALgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 06:36:00 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wc1MEwQy8iKCeVs7D/WbHCa4pSdbnchHpTxk9BlGYT+mHZjlDin5tSkJYYzZPUbH+Yp24xBFnh8gU9VcT8s4nHUH/ZUpW1L00mhdhqCht8UUuEMMfizoXLlgV+KZW6Er8IzUrD4l3qq0TrhjRfaUes2rE5v8sn/OPjE6uA8XVRnF24hC/grX1jGwDZkwwxNM9LK0rDaAnT37+5clAgkjve9244wMQNpWZgBwnuD61cZmMB1oM9xPVI2/1dsHc96lNh13AK8shTPuhf3C6sg/mXTunh0X/+bKBo+f5AmgAkD6mPtidFuVRYrMl84b9S/koHF5k6hy+6XWA0uyC77X7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4VK8S/n7ugTfppXfJpBsHZIXH8IDmjzpCieihTwbCrg=;
- b=Jdx4hjkkUeJ1kfEzumKG2TwupoZUdnJAgw9xQD/pjUowNQpZS92tjfKGJH2fe9JX6pc3fEbJFt4rx6pFNR5pyvzG+bbpCSFEeDZtshjaRecrtM40XwyVk3Ou+niknpM+tLm2tcWHfs3XGGro96ZoWwb/Tb3jvtNAv3qStA6fb+SRRUn1DficNc6231neP+Rb69VFuxu9+2Xf1oGH2shkIATqvRWDqk6YpenEC0qLi+PTle/0PWqFUHkqZZxw/Lws7g/8ZrVRJLWP7iWrAzgCyLMYI3sQF1j3ia96NGQtGFZ0V+iJlBW/+PAfJEMKFcjBb4ms1/iY+rOSuKSt6sTKVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4VK8S/n7ugTfppXfJpBsHZIXH8IDmjzpCieihTwbCrg=;
- b=WUHpg1Mgl9NdPObZePJ1bVde1T1KIw6ipKYcx0bWrvxPnS1N+7viPmrktU55gXp0Hi6bU51SirvZ/s1aiTkOc2SODLLs7Tib2DJPfmXlCNB1GGBbTOv412Lo3AvwqpCIY1i5N8TRg1G1Ge9lSzQoV2un/0Tg6Ovq24FHu1Y5+00=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DBBPR04MB7948.eurprd04.prod.outlook.com (2603:10a6:10:1e6::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Sun, 1 Nov
- 2020 11:35:55 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::ec42:b6d0:7666:19ef]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::ec42:b6d0:7666:19ef%8]) with mapi id 15.20.3499.029; Sun, 1 Nov 2020
- 11:35:55 +0000
-From:   peng.fan@nxp.com
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        robh+dt@kernel.org
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, marex@denx.de,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH v2] ARM: dts: imx: add usb alias
-Date:   Sun,  1 Nov 2020 19:29:53 +0800
-Message-Id: <1604230193-25750-1-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR03CA0141.apcprd03.prod.outlook.com
- (2603:1096:4:c8::14) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
+        id S1726477AbgKALlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 06:41:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726347AbgKALlh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 06:41:37 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BF4C0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 03:41:37 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id 141so13709373lfn.5
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 03:41:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vE+kC+A2VtoW9DT/RZQzhv7ZNYaInonkNcxpMpbSM+g=;
+        b=csv/7BOjVnNPb13k2e9k7oAz/KX07fOskCrtW+1AFv2EE6rzrbVa1J44nAzt/MDSAd
+         GwKewslY+k0vYVsVCD3Tl1TnLTJxqfdl/xDvO/+zavX2IP4yPz1MyRkjn28eFzuV0MmA
+         Sol0v0ZjKU5b7rBDlgosZH2GGyX1Bm6yf5mDGCnNUvpdqnRLY7sCrdwfFJ9iQc44EmSq
+         g4r9BaEMTKNSD4MpCLmMWJPSdybG2yQJcr3mNfHy1TWYqcJEKY5308kpd4HrAyQGNjk3
+         HNs8pvkym6Z62dn7+VsZ8VDnYEdEkGVbSZj5rumVEYOnTnON3imfllHddl/7pDo4f8DH
+         x4tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vE+kC+A2VtoW9DT/RZQzhv7ZNYaInonkNcxpMpbSM+g=;
+        b=Gj4F07P9saQIO3bzhWccFR5LSnoUiRois0qpaTTkiD/FByZ62QQPaWUpEwN+uxn94D
+         W4CF+9uepWxkeZdAfk7ig0nK49gkNOvLdSANg3D6oYZ9jrsD70H+pOljN5i8C2v7hOAn
+         +d6hGF5gNfL5DdNMICI3W+ObWqtGS9FsmQyKOmNJdLmK1FwdFTOsehpbaL7nZBm8AFcU
+         cRpdcUJHIjpFWoOZEWMjYRVcFTmJ7x4Jcrtgq/tt1Y3uusvqmd7MsfDL3DWb6SnjApdr
+         qm1JSHpkK1L7thsvhcaXvOHZMo0rNN+xKs/jEQqkAeFo7NkkrJVtDwSq8ImPVY6UeIo6
+         C6gA==
+X-Gm-Message-State: AOAM533KYPMBn5Lvua7pvJlIUH6DoN/AJENmbaI7DyLxncLf/C84ZBD8
+        9PDr64QJhS6GMC2Mxe4xBd6p2JvjxnF2uw==
+X-Google-Smtp-Source: ABdhPJzTyJaOgR6sLbJ8Q3gm5CTxoJ7vmnJTMZiTqr6ItplKz8DMRI/avr3NT7zSc+HQNhvLQXOH0w==
+X-Received: by 2002:a19:f119:: with SMTP id p25mr3799303lfh.151.1604230893778;
+        Sun, 01 Nov 2020 03:41:33 -0800 (PST)
+Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
+        by smtp.gmail.com with ESMTPSA id x69sm1453725lff.54.2020.11.01.03.41.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Nov 2020 03:41:33 -0800 (PST)
+Subject: Re: [PATCH] mm: optionally disable brk()
+To:     David Hildenbrand <david@redhat.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Michal Hocko <mhocko@suse.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201002171921.3053-1-toiwoton@gmail.com>
+ <653873ef-2a57-37e0-1ac3-fba763652b35@redhat.com>
+ <2a0f5ade-d770-c36e-50bc-ff0c8e9dacbf@gmail.com>
+ <20201005061248.GN4555@dhcp22.suse.cz>
+ <888e62e0-3979-207b-c516-ddfc6b9f3345@redhat.com>
+ <4d325e3e-3139-eded-6781-435fb04fb915@gmail.com>
+ <9dc586f4-38f0-7956-0ab6-bd7921491606@redhat.com>
+ <5fb32353b1964299809fce0c7579a092@AcuMS.aculab.com>
+ <b6baf73e-35fd-fe12-bb5f-b9b4e334ae83@redhat.com>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <ced9ebac-7222-1cd5-e1e4-d05b2f175984@gmail.com>
+Date:   Sun, 1 Nov 2020 13:41:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR03CA0141.apcprd03.prod.outlook.com (2603:1096:4:c8::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3541.10 via Frontend Transport; Sun, 1 Nov 2020 11:35:52 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 411f6203-a208-4d6f-a335-08d87e5a4b98
-X-MS-TrafficTypeDiagnostic: DBBPR04MB7948:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DBBPR04MB7948D027F0DF8F84D0F089A688130@DBBPR04MB7948.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:206;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cD0uPobix4EcKMn4u5W/QJqGBcTzLNU63HGvdEfUNQu6oOA+xybCsGbskX/i2H4Aog6F8AyqMm2KZaRrcIjLnXuFnoCXMRknO/z4qa4MlOA4v3MoBPaZmiekNSmXR4cqmsHb5VmAhlFqircXL6TuM0J3RR6SAREa839qpp0qPwLQ4cdiRlbhefdUIWqZRna6jSPcaVcUZ3EptYTOGnyA7hEg6dA7GfTjUjkpewOGenFRYFJYhyTAC00h6KvAXp6hIxAZVzJfMBuoB+n4ePArJi9xYT8u13apIX7gSuPDZNjG/RkpDqvcl7vGplMY7XFfwAw+PUuztJlu2cq9X6a7SNdjtYdtR6DNoAKDwzZlFPbncmVzElRydoEcQzB1gcGf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39850400004)(366004)(136003)(396003)(316002)(52116002)(478600001)(6486002)(6506007)(66946007)(5660300002)(2616005)(956004)(16526019)(66556008)(26005)(66476007)(2906002)(6512007)(186003)(9686003)(4326008)(69590400008)(36756003)(83380400001)(8936002)(8676002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 7BnWZyRRuuAVMGrMMN1PLI2qypl0f+hiS1a62JBDK0qbXUkLQdOnBaca1/OPJ1WByKKVLI05byCq6loWT8R/c5J3c8P3G+JX4mCpgPEM5FETCC53/sDRiuNt/zzsutmJh4YgIdfNKh2Fo3aDSzh5Zit0IakKsFcY2Ek83PzmPhdHwp5PayUZAdRbFH+H3OabVwoO8+zZ9F0/93i+mbIe0ndK1fDAD+WKe0Nf+zJ95NlEcuCQiPCGWdZMh9QezIh//fMxJZTN4gRDhnoNsPTtrSli8rGZuXuaYZvPNz0ExFrL/XMQs9qsGgo8PLo+f7jBueXrh5cYwNwJhJEfBv3Qg5KVmLcQ3yxhTlU/ShyiOPDIm7AW/voMeCtBpdkv9dCGte3GaXNFErH2wY/DU2wt11u5U9bxDl03dS5QtODyOXLUusB9uVAWX1/H+AcnPUiMwkjG18bvGn1D/ov2jFtaXf+q6ix7cRx69eFnrK4IzQonvCivv2vbt6vaPk/7rz5WgOGwdPDSvE4rcmM/5+vaIVF1vRl70NY/txi37k0MGSrkzD1MJvrey35EyiVj8oakYxljN7SNduiB6SDfXmMGteD0iqCPfn3UmPtSY/b0gGQ/1/0YVRU/fSGdOmwBdnfRBTY18mA2sVOx/OIUbmUgFg==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 411f6203-a208-4d6f-a335-08d87e5a4b98
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2020 11:35:55.6624
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 704xKRpoyQ4b+wqV8WZ77dh3q0SVQnIlIbTPXpw0TKOuLlF7+u59hkemT5ti1NjmcfY/M6SbNWCI4bZYIwg4Tg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7948
+In-Reply-To: <b6baf73e-35fd-fe12-bb5f-b9b4e334ae83@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+On 5.10.2020 15.18, David Hildenbrand wrote:
+> On 05.10.20 13:21, David Laight wrote:
+>> From: David Hildenbrand
+>>> Sent: 05 October 2020 10:55
+>> ...
+>>>> If hardening and compatibility are seen as tradeoffs, perhaps there
+>>>> could be a top level config choice (CONFIG_HARDENING_TRADEOFF) for this.
+>>>> It would have options
+>>>> - "compatibility" (default) to gear questions for maximum compatibility,
+>>>> deselecting any hardening options which reduce compatibility
+>>>> - "hardening" to gear questions for maximum hardening, deselecting any
+>>>> compatibility options which reduce hardening
+>>>> - "none/manual": ask all questions like before
+>>>
+>>> I think the general direction is to avoid an exploding set of config
+>>> options. So if there isn't a *real* demand, I guess gluing this to a
+>>> single option ("CONFIG_SECURITY_HARDENING") might be good enough.
+>>
+>> Wouldn't that be better achieved by run-time clobbering
+>> of the syscall vectors?
+> 
+> You mean via something like a boot parameter? Possibly yes.
+> 
 
-Add usb alias for bootloader searching the controller in correct order.
+This may be obvious, but a global seccomp filter which doesn't affect 
+NNP can be installed in initrd with a simple program with no changes to 
+kernel:
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
+#include <errno.h>
+#include <seccomp.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-V2:
- Typo fix emulator->searching
+int main(int argc, char **argv) {
+         if (argc < 3) {
+                 fprintf(stderr, "Usage: %s syscall [syscall]... 
+program\n", argv[0]);
+                 return EXIT_FAILURE;
+         }
 
- arch/arm/boot/dts/imx6qdl.dtsi | 4 ++++
- arch/arm/boot/dts/imx6sl.dtsi  | 3 +++
- arch/arm/boot/dts/imx6sll.dtsi | 2 ++
- arch/arm/boot/dts/imx6sx.dtsi  | 3 +++
- arch/arm/boot/dts/imx6ul.dtsi  | 2 ++
- arch/arm/boot/dts/imx7d.dtsi   | 6 ++++++
- arch/arm/boot/dts/imx7s.dtsi   | 2 ++
- 7 files changed, 22 insertions(+)
+         scmp_filter_ctx ctx = seccomp_init(SCMP_ACT_ALLOW);
 
-diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
-index 7a8837cbe21b..947584b40b1f 100644
---- a/arch/arm/boot/dts/imx6qdl.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl.dtsi
-@@ -45,6 +45,10 @@ aliases {
- 		spi1 = &ecspi2;
- 		spi2 = &ecspi3;
- 		spi3 = &ecspi4;
-+		usb0 = &usbotg;
-+		usb1 = &usbh1;
-+		usb2 = &usbh2;
-+		usb3 = &usbh3;
- 		usbphy0 = &usbphy1;
- 		usbphy1 = &usbphy2;
- 	};
-diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
-index 91a8c54d5e11..997b96c1c47b 100644
---- a/arch/arm/boot/dts/imx6sl.dtsi
-+++ b/arch/arm/boot/dts/imx6sl.dtsi
-@@ -39,6 +39,9 @@ aliases {
- 		spi1 = &ecspi2;
- 		spi2 = &ecspi3;
- 		spi3 = &ecspi4;
-+		usb0 = &usbotg1;
-+		usb1 = &usbotg2;
-+		usb2 = &usbh;
- 		usbphy0 = &usbphy1;
- 		usbphy1 = &usbphy2;
- 	};
-diff --git a/arch/arm/boot/dts/imx6sll.dtsi b/arch/arm/boot/dts/imx6sll.dtsi
-index 0b622201a1f3..04f8d637a501 100644
---- a/arch/arm/boot/dts/imx6sll.dtsi
-+++ b/arch/arm/boot/dts/imx6sll.dtsi
-@@ -36,6 +36,8 @@ aliases {
- 		spi1 = &ecspi2;
- 		spi3 = &ecspi3;
- 		spi4 = &ecspi4;
-+		usb0 = &usbotg1;
-+		usb1 = &usbotg2;
- 		usbphy0 = &usbphy1;
- 		usbphy1 = &usbphy2;
- 	};
-diff --git a/arch/arm/boot/dts/imx6sx.dtsi b/arch/arm/boot/dts/imx6sx.dtsi
-index dfdca1804f9f..343f2a3170bb 100644
---- a/arch/arm/boot/dts/imx6sx.dtsi
-+++ b/arch/arm/boot/dts/imx6sx.dtsi
-@@ -49,6 +49,9 @@ aliases {
- 		spi2 = &ecspi3;
- 		spi3 = &ecspi4;
- 		spi4 = &ecspi5;
-+		usb0 = &usbotg1;
-+		usb1 = &usbotg2;
-+		usb2 = &usbh;
- 		usbphy0 = &usbphy1;
- 		usbphy1 = &usbphy2;
- 	};
-diff --git a/arch/arm/boot/dts/imx6ul.dtsi b/arch/arm/boot/dts/imx6ul.dtsi
-index d7d9f3e46b92..09021a35c266 100644
---- a/arch/arm/boot/dts/imx6ul.dtsi
-+++ b/arch/arm/boot/dts/imx6ul.dtsi
-@@ -47,6 +47,8 @@ aliases {
- 		spi1 = &ecspi2;
- 		spi2 = &ecspi3;
- 		spi3 = &ecspi4;
-+		usb0 = &usbotg1;
-+		usb1 = &usbotg2;
- 		usbphy0 = &usbphy1;
- 		usbphy1 = &usbphy2;
- 	};
-diff --git a/arch/arm/boot/dts/imx7d.dtsi b/arch/arm/boot/dts/imx7d.dtsi
-index cff875b80b60..b0bcfa9094a3 100644
---- a/arch/arm/boot/dts/imx7d.dtsi
-+++ b/arch/arm/boot/dts/imx7d.dtsi
-@@ -7,6 +7,12 @@
- #include <dt-bindings/reset/imx7-reset.h>
- 
- / {
-+	aliases {
-+		usb0 = &usbotg1;
-+		usb1 = &usbotg2;
-+		usb2 = &usbh;
-+	};
-+
- 	cpus {
- 		cpu0: cpu@0 {
- 			clock-frequency = <996000000>;
-diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
-index 84d9cc13afb9..358ef453ce14 100644
---- a/arch/arm/boot/dts/imx7s.dtsi
-+++ b/arch/arm/boot/dts/imx7s.dtsi
-@@ -47,6 +47,8 @@ aliases {
- 		spi1 = &ecspi2;
- 		spi2 = &ecspi3;
- 		spi3 = &ecspi4;
-+		usb0 = &usbotg1;
-+		usb1 = &usbh;
- 	};
- 
- 	cpus {
--- 
-2.28.0
+         if (ctx == NULL) {
+                 fprintf(stderr, "failed to init filter\n");
+                 return EXIT_FAILURE;
+         }
 
+         int r;
+         r = seccomp_attr_set(ctx, SCMP_FLTATR_CTL_NNP, 0);
+         if (r != 0) {
+                 fprintf(stderr, "failed to disable NNP\n");
+                 return EXIT_FAILURE;
+         }
+
+         fprintf(stderr, "filtering");
+         for (int i = 1; i < argc - 1; i++) {
+                 const char *syscall = argv[i];
+
+                 int syscall_nr = seccomp_syscall_resolve_name(syscall);
+
+                 if (syscall_nr == __NR_SCMP_ERROR) {
+                         //fprintf(stderr, "unknown syscall %s, 
+ignoring\n", syscall);
+                         continue;
+                 }
+                 r = seccomp_rule_add_exact(ctx, SCMP_ACT_ERRNO(ENOSYS), 
+syscall_nr, 0);
+                 if (r != 0) {
+                         //fprintf(stderr, "failed to filter syscall %s, 
+ignoring\n", syscall);
+                         continue;
+                 }
+                 fprintf(stderr, " %s", syscall);
+         }
+         fprintf(stderr, "\n");
+         r = seccomp_load(ctx);
+         if (r != 0) {
+                 fprintf(stderr, "failed to apply filter\n");
+                 return EXIT_FAILURE;
+         }
+
+         seccomp_release(ctx);
+
+         char *program = argv[argc - 1];
+         char *new_argv[] = { program, NULL };
+
+         execv(program, new_argv);
+
+         fprintf(stderr, "failed to exec %s\n", program);
+         return EXIT_FAILURE;
+}
+
+This can be inserted in initrd to disable some obsolete and old system 
+calls like this:
+#!/bin/sh
+
+exec /usr/local/sbin/seccomp-exec _sysctl afs_syscall bdflush break 
+create_module ftime get_kernel_syms getpmsg gtty idle lock mpx prof 
+profil putpmsg query_module security sgetmask ssetmask stty sysfs 
+tuxcall ulimit uselib ustat vserver epoll_ctl_old epoll_wait_old 
+old_adjtimex old_getpagesize oldfstat oldlstat oldolduname oldstat 
+oldumount olduname osf_old_creat osf_old_fstat osf_old_getpgrp 
+osf_old_killpg osf_old_lstat osf_old_open osf_old_sigaction 
+osf_old_sigblock osf_old_sigreturn osf_old_sigsetmask osf_old_sigvec 
+osf_old_stat osf_old_vadvise osf_old_vtrace osf_old_wait osf_oldquota 
+vm86old brk /init
+
+-Topi
