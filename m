@@ -2,252 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C752A202A
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4722A202B
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbgKARJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:09:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727080AbgKARJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:09:09 -0500
-Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3BF422260;
-        Sun,  1 Nov 2020 17:08:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604250548;
-        bh=CAFq9pKFvuIqBL+Z3d1/GEYg1moWGapO1Jnl9WDZzQw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=juJ2Lx4NdusSnXJrvs5fbaCQHJRePFsu4pmydiMCefA80n076mxWOkhMGLkUVIWho
-         pUr+kIOmADk4pEG+yxrWg0s1psBvaiZ5BdJzbAoQB+2IxOtcTRTzA27XuvrNWTlVNs
-         V3+xHVvnsiIN/3Dcdjnn+qKgFd66SGTozdiOZaes=
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Len Brown <len.brown@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org
-Subject: [PATCH v3 4/4] arch, mm: make kernel_page_present() always available
-Date:   Sun,  1 Nov 2020 19:08:15 +0200
-Message-Id: <20201101170815.9795-5-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201101170815.9795-1-rppt@kernel.org>
-References: <20201101170815.9795-1-rppt@kernel.org>
+        id S1727094AbgKARKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:10:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727004AbgKARKX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 12:10:23 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15279C0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 09:10:23 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 13so8990297pfy.4
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 09:10:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OAPALz9woSaOZjQ6nussWrzn6BzRYlv9w3abjOFerPc=;
+        b=Mvxk0BEtvHxc3IPI0D5AFk1Y+TVNa0x6wNc+C5fa5cejoSnIunkD95Weffgz2pmp5L
+         U1SkRulRH8c80zua72YXuWBhkFDquW8A9jqDSs0+iDthDNbjCSLGSgcWKTA1+bKqNsaM
+         lbqdAJTjb+6AN1CV64Is0qrrGUb9X+XulOBPmjNWbi3ELPNMI2wCreBj/w+2uXpUu77k
+         tJ4gfZ2hO0zr/97A9G60yLuZuvowEthguGJCQ6YJCpYS05QeTwTkmfyByeCI+1fUBRqe
+         kQotzFSR50fOnVQqA6zT5MArBROWmMmMfgRlVcWzBuCu4ZgD1JfG3B6Lv6PS883iD28U
+         EpSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OAPALz9woSaOZjQ6nussWrzn6BzRYlv9w3abjOFerPc=;
+        b=JlJFshPgh1pIwNXNVJTE195AhTMvSHJRgIjYI5N62RHF9nSRSvgvMnqa24n5K9I0Fn
+         m5qrFhtdlcdHZfIWjKRxbS/+cgqEw5O0tS+bBujDHvhw1GGj26Q1mcGRF8gOvh92VDAd
+         DYsWgrD6DRRqn/CQI4Gfy9AgunGfG2S52qi+WzQCJn0F0sWDsY87e6oB2z77HBF8w8l9
+         YSvb/7pRRHlyx86rn/hYsgJqTFZHK2Zpf8JyybHrveVQgsTJ/gn9Wg0HPw0+9aX1M3oS
+         F1/EjPKiT0BE08hZJTovkV51q3gFZe0+ZYVcA8t8dxlZyra6UNc3Ifu5EzEf5ByN8kHh
+         0KCA==
+X-Gm-Message-State: AOAM530QOtiirmPZ7d3+m4Mc9HmlVg7ig2VEFeeVhdfx1cE4vApsu48T
+        vMB8j2NNxM4Uny2M3wL+Y5k=
+X-Google-Smtp-Source: ABdhPJzQzXYrEUAadQ1UCo9dpZTj4NhRvwtX3lCPe4NOq/BPHyTsknWFT+I5+BSNHYR8TK6quEGkEg==
+X-Received: by 2002:a62:7a8f:0:b029:163:d0b3:ac18 with SMTP id v137-20020a627a8f0000b0290163d0b3ac18mr19302389pfc.9.1604250622425;
+        Sun, 01 Nov 2020 09:10:22 -0800 (PST)
+Received: from localhost.localdomain ([150.242.63.133])
+        by smtp.googlemail.com with ESMTPSA id b185sm10987048pgc.68.2020.11.01.09.10.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 09:10:21 -0800 (PST)
+From:   Harshal Chaudhari <harshalchau04@gmail.com>
+To:     gregkh@linuxfoundation.org, dragan.cvetic@xilinx.com
+Cc:     derek.kiernan@xilinx.com, arnd@arndb.de, michal.simek@xilinx.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] misc: xilinx-sdfec: remove check for ioctl cmd and argument.
+Date:   Sun,  1 Nov 2020 22:39:49 +0530
+Message-Id: <20201101170949.18616-1-harshalchau04@gmail.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+if (_IOC_TYPE(cmd) != PP_IOCTL)
+        return -ENOTTY;
 
-For architectures that enable ARCH_HAS_SET_MEMORY having the ability to
-verify that a page is mapped in the kernel direct map can be useful
-regardless of hibernation.
+Invalid ioctl command check normally performs by “default” case.
 
-Add RISC-V implementation of kernel_page_present(), update its forward
-declarations and stubs to be a part of set_memory API and remove ugly
-ifdefery in inlcude/linux/mm.h around current declarations of
-kernel_page_present().
+if (_IOC_DIR(cmd) != _IOC_NONE) {
+       argp = (void __user *)arg;
+       if (!argp)
+             return -EINVAL; }
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+And for checking ioctl arguments, copy_from_user()/copy_to_user()
+checks are enough.
+
+Signed-off-by: Harshal Chaudhari <harshalchau04@gmail.com>
 ---
- arch/arm64/include/asm/cacheflush.h |  1 +
- arch/arm64/mm/pageattr.c            |  4 +---
- arch/riscv/include/asm/set_memory.h |  1 +
- arch/riscv/mm/pageattr.c            | 29 +++++++++++++++++++++++++++++
- arch/x86/include/asm/set_memory.h   |  1 +
- arch/x86/mm/pat/set_memory.c        |  4 +---
- include/linux/mm.h                  |  7 -------
- include/linux/set_memory.h          |  5 +++++
- 8 files changed, 39 insertions(+), 13 deletions(-)
+ drivers/misc/xilinx_sdfec.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm64/include/asm/cacheflush.h b/arch/arm64/include/asm/cacheflush.h
-index 9384fd8fc13c..45217f21f1fe 100644
---- a/arch/arm64/include/asm/cacheflush.h
-+++ b/arch/arm64/include/asm/cacheflush.h
-@@ -140,6 +140,7 @@ int set_memory_valid(unsigned long addr, int numpages, int enable);
- 
- int set_direct_map_invalid_noflush(struct page *page);
- int set_direct_map_default_noflush(struct page *page);
-+bool kernel_page_present(struct page *page);
- 
- #include <asm-generic/cacheflush.h>
- 
-diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
-index 439325532be1..92eccaf595c8 100644
---- a/arch/arm64/mm/pageattr.c
-+++ b/arch/arm64/mm/pageattr.c
-@@ -186,8 +186,8 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
- 
- 	set_memory_valid((unsigned long)page_address(page), numpages, enable);
- }
-+#endif /* CONFIG_DEBUG_PAGEALLOC */
- 
--#ifdef CONFIG_HIBERNATION
- /*
-  * This function is used to determine if a linear map page has been marked as
-  * not-valid. Walk the page table and check the PTE_VALID bit. This is based
-@@ -234,5 +234,3 @@ bool kernel_page_present(struct page *page)
- 	ptep = pte_offset_kernel(pmdp, addr);
- 	return pte_valid(READ_ONCE(*ptep));
- }
--#endif /* CONFIG_HIBERNATION */
--#endif /* CONFIG_DEBUG_PAGEALLOC */
-diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-index 4c5bae7ca01c..d690b08dff2a 100644
---- a/arch/riscv/include/asm/set_memory.h
-+++ b/arch/riscv/include/asm/set_memory.h
-@@ -24,6 +24,7 @@ static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
- 
- int set_direct_map_invalid_noflush(struct page *page);
- int set_direct_map_default_noflush(struct page *page);
-+bool kernel_page_present(struct page *page);
- 
- #endif /* __ASSEMBLY__ */
- 
-diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
-index 321b09d2e2ea..87ba5a68bbb8 100644
---- a/arch/riscv/mm/pageattr.c
-+++ b/arch/riscv/mm/pageattr.c
-@@ -198,3 +198,32 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
- 			     __pgprot(0), __pgprot(_PAGE_PRESENT));
- }
- #endif
-+
-+bool kernel_page_present(struct page *page)
-+{
-+	unsigned long addr = (unsigned long)page_address(page);
-+	pgd_t *pgd;
-+	pud_t *pud;
-+	p4d_t *p4d;
-+	pmd_t *pmd;
-+	pte_t *pte;
-+
-+	pgd = pgd_offset_k(addr);
-+	if (!pgd_present(*pgd))
-+		return false;
-+
-+	p4d = p4d_offset(pgd, addr);
-+	if (!p4d_present(*p4d))
-+		return false;
-+
-+	pud = pud_offset(p4d, addr);
-+	if (!pud_present(*pud))
-+		return false;
-+
-+	pmd = pmd_offset(pud, addr);
-+	if (!pmd_present(*pmd))
-+		return false;
-+
-+	pte = pte_offset_kernel(pmd, addr);
-+	return pte_present(*pte);
-+}
-diff --git a/arch/x86/include/asm/set_memory.h b/arch/x86/include/asm/set_memory.h
-index 5948218f35c5..4352f08bfbb5 100644
---- a/arch/x86/include/asm/set_memory.h
-+++ b/arch/x86/include/asm/set_memory.h
-@@ -82,6 +82,7 @@ int set_pages_rw(struct page *page, int numpages);
- 
- int set_direct_map_invalid_noflush(struct page *page);
- int set_direct_map_default_noflush(struct page *page);
-+bool kernel_page_present(struct page *page);
- 
- extern int kernel_set_to_readonly;
- 
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index bc9be96b777f..16f878c26667 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -2226,8 +2226,8 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
- 
- 	arch_flush_lazy_mmu_mode();
- }
-+#endif /* CONFIG_DEBUG_PAGEALLOC */
- 
--#ifdef CONFIG_HIBERNATION
- bool kernel_page_present(struct page *page)
+diff --git a/drivers/misc/xilinx_sdfec.c b/drivers/misc/xilinx_sdfec.c
+index 92291292756a..ff104c894b3b 100644
+--- a/drivers/misc/xilinx_sdfec.c
++++ b/drivers/misc/xilinx_sdfec.c
+@@ -944,8 +944,8 @@ static long xsdfec_dev_ioctl(struct file *fptr, unsigned int cmd,
+ 			     unsigned long data)
  {
- 	unsigned int level;
-@@ -2239,8 +2239,6 @@ bool kernel_page_present(struct page *page)
- 	pte = lookup_address((unsigned long)page_address(page), &level);
- 	return (pte_val(*pte) & _PAGE_PRESENT);
- }
--#endif /* CONFIG_HIBERNATION */
--#endif /* CONFIG_DEBUG_PAGEALLOC */
+ 	struct xsdfec_dev *xsdfec;
+-	void __user *arg = NULL;
+-	int rval = -EINVAL;
++	void __user *arg = (void __user *)data;
++	int rval;
  
- int __init kernel_map_pages_in_pgd(pgd_t *pgd, u64 pfn, unsigned long address,
- 				   unsigned numpages, unsigned long page_flags)
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index ab0ef6bd351d..44b82f22e76a 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2937,16 +2937,9 @@ static inline void debug_pagealloc_map_pages(struct page *page,
- 	if (debug_pagealloc_enabled_static())
- 		__kernel_map_pages(page, numpages, enable);
- }
+ 	xsdfec = container_of(fptr->private_data, struct xsdfec_dev, miscdev);
+ 
+@@ -956,16 +956,6 @@ static long xsdfec_dev_ioctl(struct file *fptr, unsigned int cmd,
+ 		return -EPERM;
+ 	}
+ 
+-	if (_IOC_TYPE(cmd) != XSDFEC_MAGIC)
+-		return -ENOTTY;
 -
--#ifdef CONFIG_HIBERNATION
--extern bool kernel_page_present(struct page *page);
--#endif	/* CONFIG_HIBERNATION */
- #else	/* CONFIG_DEBUG_PAGEALLOC */
- static inline void debug_pagealloc_map_pages(struct page *page,
- 					     int numpages, int enable) {}
--#ifdef CONFIG_HIBERNATION
--static inline bool kernel_page_present(struct page *page) { return true; }
--#endif	/* CONFIG_HIBERNATION */
- #endif	/* CONFIG_DEBUG_PAGEALLOC */
- 
- #ifdef __HAVE_ARCH_GATE_AREA
-diff --git a/include/linux/set_memory.h b/include/linux/set_memory.h
-index 860e0f843c12..fe1aa4e54680 100644
---- a/include/linux/set_memory.h
-+++ b/include/linux/set_memory.h
-@@ -23,6 +23,11 @@ static inline int set_direct_map_default_noflush(struct page *page)
- {
- 	return 0;
- }
-+
-+static inline bool kernel_page_present(struct page *page)
-+{
-+	return true;
-+}
- #endif
- 
- #ifndef set_mce_nospec
+-	/* check if ioctl argument is present and valid */
+-	if (_IOC_DIR(cmd) != _IOC_NONE) {
+-		arg = (void __user *)data;
+-		if (!arg)
+-			return rval;
+-	}
+-
+ 	switch (cmd) {
+ 	case XSDFEC_START_DEV:
+ 		rval = xsdfec_start(xsdfec);
+@@ -1010,7 +1000,7 @@ static long xsdfec_dev_ioctl(struct file *fptr, unsigned int cmd,
+ 		rval = xsdfec_is_active(xsdfec, (bool __user *)arg);
+ 		break;
+ 	default:
+-		/* Should not get here */
++		rval = -ENOTTY;
+ 		break;
+ 	}
+ 	return rval;
 -- 
-2.28.0
+2.17.1
 
