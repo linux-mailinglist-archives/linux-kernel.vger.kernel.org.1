@@ -2,121 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3492A222E
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 23:27:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD8A2A222F
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 23:29:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727519AbgKAW1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 17:27:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41762 "EHLO
+        id S1727468AbgKAW2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 17:28:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727318AbgKAW1V (ORCPT
+        with ESMTP id S1727197AbgKAW2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 17:27:21 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D38C0617A6;
-        Sun,  1 Nov 2020 14:27:21 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604269638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ptxTsFp2L6efDZ+NSsWwAuqOWnuRT3+qbc/ppVuKKyc=;
-        b=zrhVLZVBFb+q3hwt5X/nvPFMdsf4VVl0ZxIm6E9eDxZYf3tEfrB4GMorHj70CBSscXfA5q
-        7tO17wbxtYzyEztnPNpp6pQuRYCAeWfhc7Il6oGoD1aiHBTVutRnmhuHxyiWTlq68VnE58
-        w27URJOE8zqC0GDeT+YmTP5UZSmKvsdovTCAcCrGw2yE4gMtVEv+1ZBI/nIQsjtImf17A9
-        Z8Ov/wMPndW4hznqwyyx8pNQ/R/xQ/YDb/BcA+2d6aeBZoGbhd5JGWBYCzq/dgNYGItFzD
-        kCo8gVDp9I4LV4+AEt6/OCNhbW9bTtWPNdhpo7NJShn3Hlhb+E+zrRbzN8RcLQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604269638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ptxTsFp2L6efDZ+NSsWwAuqOWnuRT3+qbc/ppVuKKyc=;
-        b=91YBEhR4RkDtGn4ekE0bM4GfC1r7cgSSnIrSGBCPZonjdRxEx8D8WPiVKEkZJtgtNmQJ3J
-        9Lpp8U5BuAPEbmAw==
-To:     Marc Zyngier <maz@kernel.org>,
-        Frank Wunderlich <frank-w@public-files.de>
-Cc:     Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: Aw: Re: [PATCH] pci: mediatek: fix warning in msi.h
-In-Reply-To: <87k0v4u4uq.wl-maz@kernel.org>
-References: <20201031140330.83768-1-linux@fw-web.de> <878sbm9icl.fsf@nanos.tec.linutronix.de> <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de> <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22> <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08> <87k0v4u4uq.wl-maz@kernel.org>
-Date:   Sun, 01 Nov 2020 23:27:17 +0100
-Message-ID: <87pn4w90hm.fsf@nanos.tec.linutronix.de>
+        Sun, 1 Nov 2020 17:28:10 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97835C061A04
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 14:28:03 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id i2so12956163ljg.4
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 14:28:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jasiak-xyz.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DMTV4qSTXxTsyRh79hlPaHDlwv+MDWJQbcfZIs8RYf0=;
+        b=gBvoLkPk3+d2TToeRJtqTKN5julOkqomoTGzRtGzRlNOENsQr7sU4EVV0o2ClIyz+w
+         Z2l+6ag18lKZMXY1whrSCc/fFubFsgQQGYqS+/elAH8IyRqUzQPzbbiJtIAaX3K9i0bN
+         GhugijmGKZ5HbgDpIh0UIaufZIdPIiN23WiI4Aop0KvS5g/JfreWUjHdkHf/cnevtQNK
+         YSqjDmJT9uFqLN5VF+lLk99TYIN/pX8c7ZEEYLiCVYYnTbDwDeUEckHN7sdJ/Af647tx
+         8Nq0T5ISO9AtmlRuSStMc0PoUETxHlX+3ZwjyMPxU7Y3+8FH/gfJhYlwgLnyz/N2rA9Q
+         UFJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DMTV4qSTXxTsyRh79hlPaHDlwv+MDWJQbcfZIs8RYf0=;
+        b=fmSVRvjfYvxDcU3l9l6Nd93SKbf/sxYyjbzvc+siTRUO5UVUjRjUm0RcWbglvIdpnr
+         DbgLyXhU8ki409i/mWzaDHXyQaxNo0+LrR87AZBg5zmpEK1ZC+TT5euAjNWWyzaoQnaU
+         390m6AJxt406jKyAxnxLlUENjj2vvwwhZQiP+GNbsbrmVbU8XqRm4PrtadVSG6Qv1hbs
+         jgHS6Rd4PTBuXnIpedWHYXHhBE5Tl2qi1/4IMpgkYNGHvbexyWtNtoIP+rSa5euOy6Cz
+         0r8/ClWSFKY5hfM52di7L8K03ElVQe9YqI8EV3hpfW2gyXLRi5qT3yTB3lq3NZ7rFb8N
+         rk1w==
+X-Gm-Message-State: AOAM530HYoH3fqTsq5WStXJ+qN0kUdASzVQdT+eVMhQRgKP4MLuXnRqI
+        ou+1tOoQNCqL6NmM3uas+r8NEd2VP/mrfW4H
+X-Google-Smtp-Source: ABdhPJwWNBJgbJ2s1C6/dTWKArKzJEVQH9+8NQfHA1q7r2ZYhapmFE7yGCkyt7EJAB3N2WlYaK5cwA==
+X-Received: by 2002:a2e:9b58:: with SMTP id o24mr4878374ljj.94.1604269682141;
+        Sun, 01 Nov 2020 14:28:02 -0800 (PST)
+Received: from gmail.com (wireless-nat-78.ip4.greenlan.pl. [185.56.211.78])
+        by smtp.gmail.com with ESMTPSA id z26sm1999353ljm.121.2020.11.01.14.28.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 14:28:01 -0800 (PST)
+Date:   Sun, 1 Nov 2020 23:27:59 +0100
+From:   =?utf-8?B?UGF3ZcWC?= Jasiak <pawel@jasiak.xyz>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        jack@suse.cz
+Subject: Re: PROBLEM: fanotify_mark EFAULT on x86
+Message-ID: <20201101222759.GA25654@gmail.com>
+References: <20201101212738.GA16924@gmail.com>
+ <20201101213845.GH27442@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BXVAT5kNtrzKuDFl"
+Content-Disposition: inline
+In-Reply-To: <20201101213845.GH27442@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01 2020 at 21:47, Marc Zyngier wrote:
-> On Sun, 01 Nov 2020 18:27:13 +0000,
-> Frank Wunderlich <frank-w@public-files.de> wrote:
-> Thinking of it a bit more, I think this is the wrong solution.
->
-> PCI MSIs are optional, and not a requirement. I can trivially spin a
-> VM with PCI devices and yet no MSI capability (yes, it is more
-> difficult with real HW), and this results in a bunch of warning, none
-> of which are actually indicative of anything being wrong.
 
-Well. No. 
+--BXVAT5kNtrzKuDFl
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The problem is that the device enumerates MSI capability, but the host
-bridge is not proving support for MSI. 
+On 01/11/20, Matthew Wilcox wrote:
+> On Sun, Nov 01, 2020 at 10:27:38PM +0100, Pawe=C5=82 Jasiak wrote:
+> > I am trying to run examples from man fanotify.7 but fanotify_mark always
+> > fail with errno =3D EFAULT.
+> >=20
+> > fanotify_mark declaration is
+> >=20
+> > SYSCALL_DEFINE5(fanotify_mark, int, fanotify_fd, unsigned int, flags,
+> > 			      __u64, mask, int, dfd,
+> > 			      const char  __user *, pathname)
+>=20
+> Don't worry about that.  You aren't calling the SYSCALL, you're calling
+> glibc and glibc is turning it into a syscall.
+>=20
+> extern int fanotify_mark (int __fanotify_fd, unsigned int __flags,
+>                           uint64_t __mask, int __dfd, const char *__pathn=
+ame)
+>=20
+> > When=20
+> >=20
+> > fanotify_mark(4, FAN_MARK_ADD | FAN_MARK_ONLYDIR,
+> >               FAN_CREATE | FAN_ONDIR, AT_FDCWD, 0xdeadc0de)
+>=20
+> The last argument is supposed to be a pointer to a string.  I'm guessing
+> there's no string at 0xdeadc0de.
 
-The host bridge fails to mark the bus with PCI_BUS_FLAGS_NO_MSI. That's
-the reason why this runs into this issue.
+You are right but it's not a problem. 0xdeadc0de is just a _well
+known_ address here only for debug purpose.
 
-Something like the uncompiled hack below. I haven't found a way to hand
-that down to the probe function.
+pathname inside kernel should be a pointer to string located in
+user space at 0xdeadc0de but it is equal to 0xffffff9c which is
+AT_FDCWD.
 
-Thanks,
+If you call
 
-        tglx
----
-diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-index cf4c18f0c25a..d91bdfea7329 100644
---- a/drivers/pci/controller/pcie-mediatek.c
-+++ b/drivers/pci/controller/pcie-mediatek.c
-@@ -143,6 +143,7 @@ struct mtk_pcie_port;
-  * struct mtk_pcie_soc - differentiate between host generations
-  * @need_fix_class_id: whether this host's class ID needed to be fixed or not
-  * @need_fix_device_id: whether this host's device ID needed to be fixed or not
-+ * @no_msi: Bridge has no MSI support
-  * @device_id: device ID which this host need to be fixed
-  * @ops: pointer to configuration access functions
-  * @startup: pointer to controller setting functions
-@@ -151,6 +152,7 @@ struct mtk_pcie_port;
- struct mtk_pcie_soc {
- 	bool need_fix_class_id;
- 	bool need_fix_device_id;
-+	bool no_msi;
- 	unsigned int device_id;
- 	struct pci_ops *ops;
- 	int (*startup)(struct mtk_pcie_port *port);
-@@ -1089,6 +1091,9 @@ static int mtk_pcie_probe(struct platform_device *pdev)
- 	if (err)
- 		goto put_resources;
- 
-+	if (!pcie->soc->no_msi)
-+		host->bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
-+
- 	return 0;
- 
- put_resources:
-@@ -1173,6 +1178,7 @@ static const struct dev_pm_ops mtk_pcie_pm_ops = {
- };
- 
- static const struct mtk_pcie_soc mtk_pcie_soc_v1 = {
-+	.no_msi = true,
- 	.ops = &mtk_pcie_ops,
- 	.startup = mtk_pcie_startup_port,
- };
+fanotify_mark(fd, FAN_MARK_ADD | FAN_MARK_ONLYDIR, FAN_CREATE |
+              FAN_ONDIR, AT_FDCWD, argv[1]);
 
+=66rom example with *valid* pointer at argv[1] you still get EFAULT
+because pathname is equal to AT_FDCWD in kernel space -- last argument
+is not used.
 
+In my example in user space we have
+    fanotify_fd =3D 4
+    flags       =3D 0x9
+    mask        =3D 0x40000100
+    dfd         =3D 0xffffff9c
+    pathname    =3D 0xdeadc0de
 
+and in kernel space we have
+    fanotify_fd =3D 4
+    flags       =3D 0x9
+    mask        =3D 0x40000100
+    dfd         =3D 0
+    pathname    =3D 0xffffff9c
+
+So all arguments after __u64 mask are shifted by one.
+
+It looks similar to https://lists.linux.it/pipermail/ltp/2020-June/017436.h=
+tml
+
+--=20
+
+Pawe=C5=82 Jasiak
+
+--BXVAT5kNtrzKuDFl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEENIqkLxDcCMlLMdi0FzfmQudzVTgFAl+fNmwACgkQFzfmQudz
+VTjRZhAA4fB7nZEsrAZKgFmixIZd5ROhKQIcstuQhSmfyve0iAWRyOS7XzxtNG98
+u2qsUkddRorMb2RCp/Tns6zGrUsFQCv+Yy74Td/w91r/GjCHCDdVCq4bU9q1tlsj
+DGKLCYLVxzFr5h41/xn3TJ9FSMwZI4y+b08FcUKNdclA/jzT1RTzoNPo1q4iSTlI
+baF4Hx/kalIM7F7qV2zGgXnhTd45uDMJv8UAUN1Ky7h6wHCjZ/DzcBbn1WWGWmyw
+zJYSybXbAUhBj8VJUHuuubB9zDUWAcohBQ2JmwjxawIgDHmgJ3FLqNx3hkoY8WC6
+G7f4gTZbqR7vWbgSEHsM9lg6vVH4VOSaSxvtwJOlB80wc6fTBi/cC/PyUBIP/KDI
+8wl7003QMJI4UcrbojE+0QhWxFPRdH364qdGDlcb7B2/q9ckYuy/r5Oe10jVt/k+
+f6lvGbXmveehYSgD5KWmF0LjrqtGL0m1EbxaeeJcTimcGCdBHJwxPDQ5tFXk7SM2
+hkm2Xl++Jhk7gOrO4dYxrebgOkwYpyoMAPtwHZ2P4GGMdJUOM2FB8Jy2bEvMeeF4
+eGsblO2Zy6V5KHRRNq8jt03jc24XDS7OJoiA5vN3RHV58UgLFfeVz6QemuBsInwL
+9RC/ebRA8GBZXL6L8mVftY0olWjItiwgDVHwlLceUY/pIjPa1is=
+=Dvh3
+-----END PGP SIGNATURE-----
+
+--BXVAT5kNtrzKuDFl--
