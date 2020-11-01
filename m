@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5522A1ED3
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 15:57:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA682A1ED5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 15:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgKAO5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 09:57:44 -0500
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:44004 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgKAO5n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 09:57:43 -0500
-Received: from tomoyo.flets-east.jp ([153.230.197.127])
-        by mwinf5d06 with ME
-        id n2xU230022lQRaH032xfSm; Sun, 01 Nov 2020 15:57:41 +0100
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 01 Nov 2020 15:57:41 +0100
-X-ME-IP: 153.230.197.127
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     linux-kernel@vger.kernel.org,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH] cangen: flush the CAN frame at each iteration
-Date:   Sun,  1 Nov 2020 23:57:12 +0900
-Message-Id: <20201101145712.489795-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.26.2
+        id S1726736AbgKAO7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 09:59:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726458AbgKAO7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 09:59:18 -0500
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C61C206DC;
+        Sun,  1 Nov 2020 14:59:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604242758;
+        bh=BXgwnRUohW65M9lp3X9i22MaoJ6RyKoO8qngPKKZikI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mtn/WXNgn2993SQPBqe8n0AzeJMlBeqr7MBNkOEEYmUPC79WuR6oouYNnqn3BeP2E
+         +zThX+b225JUWleSGV4R/HZam8WQxdcUBw/BgqwY1Gbk8vi4yudswgPD2Xrisel7iO
+         pb+DxLbP0xnpE72uGiz/I72RlWyEghwdzdYT8jho=
+Date:   Sun, 1 Nov 2020 14:59:14 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     trix@redhat.com
+Cc:     lars@metafoo.de, pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: pressure: bmp280: remove unneeded semicolon
+Message-ID: <20201101145914.27179152@archlinux>
+In-Reply-To: <20201031134506.2134698-1-trix@redhat.com>
+References: <20201031134506.2134698-1-trix@redhat.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable 'frame' is declared on the stack and is reused at each
-iteration of the while loop.
+On Sat, 31 Oct 2020 06:45:06 -0700
+trix@redhat.com wrote:
 
-If not flushed, garbage data from the previous iteration of the loop
-could remain causing unexpected behavior. This is the case in DLC
-random mode: the field frame.len8_dlc is not cleared when the dlc is
-exactly 8 and the len8_dlc value of the previous iteration will be
-sent again.
+> From: Tom Rix <trix@redhat.com>
+> 
+> A semicolon is not needed after a switch statement.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+Applied,
 
-This can be observed by running 'cangen -8 can0'. Once a frame of DLC
-in the range 9..15 is generated, no more frames of DLC 8 show out in
-the log.
+Thanks,
 
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
- cangen.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Jonathan
 
-diff --git a/cangen.c b/cangen.c
-index ab8122c..d7392b6 100644
---- a/cangen.c
-+++ b/cangen.c
-@@ -384,7 +384,7 @@ int main(int argc, char **argv)
- 	}
- 
- 	while (running) {
--		frame.flags = 0;
-+		memset(&frame, 0, sizeof(frame));
- 
- 		if (count && (--count == 0))
- 			running = 0;
--- 
-2.26.2
+> ---
+>  drivers/iio/pressure/bmp280-regmap.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/pressure/bmp280-regmap.c b/drivers/iio/pressure/bmp280-regmap.c
+> index 08c00ac32bda..da136dbadc8f 100644
+> --- a/drivers/iio/pressure/bmp280-regmap.c
+> +++ b/drivers/iio/pressure/bmp280-regmap.c
+> @@ -13,7 +13,7 @@ static bool bmp180_is_writeable_reg(struct device *dev, unsigned int reg)
+>  		return true;
+>  	default:
+>  		return false;
+> -	};
+> +	}
+>  }
+>  
+>  static bool bmp180_is_volatile_reg(struct device *dev, unsigned int reg)
+> @@ -51,7 +51,7 @@ static bool bmp280_is_writeable_reg(struct device *dev, unsigned int reg)
+>  		return true;
+>  	default:
+>  		return false;
+> -	};
+> +	}
+>  }
+>  
+>  static bool bmp280_is_volatile_reg(struct device *dev, unsigned int reg)
 
