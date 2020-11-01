@@ -2,163 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1E42A1C8A
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 08:20:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F6E2A1C8D
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 08:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbgKAHT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 02:19:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgKAHT6 (ORCPT
+        id S1726063AbgKAHUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 02:20:42 -0500
+Received: from mailoutvs22.siol.net ([185.57.226.213]:55588 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725930AbgKAHUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 02:19:58 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8713AC061A04
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 00:19:58 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id k9so10949163edo.5
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 00:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7fLr8n4v++BYdQVjntzFedpbhGkp/PETEizIyiQCitY=;
-        b=YDMoNsOHVDRP2g6AunP6ef+D8eMMTAQzsWrNoX2Y5gCLrETEMvKjhRMn7UostOMcW4
-         +eW6PTfe5YU4L0my2oxkzzpoBB9UPSo1EGIbYfOHalVFBGYP5W/gE9Ef1wABkTMK3OFS
-         l1RQ1wksKwsD59cLdQcX2ninBmVTdrWrNxlUtK8rSIELu4b204n/NC2PfibnSmqPQoy1
-         wHZcM/lt+UF/VXLIgJDfulpWjwagsa1yYjjg8tRjZdmMznKLP9tZvFBKTQp9mzrl0vjb
-         GLf6dnLnDwxareFB32DpXi0OAKMBVnIOnIxHzbbAxnMj/tlXPGf/aFqBYgT/65mfdnma
-         mEgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7fLr8n4v++BYdQVjntzFedpbhGkp/PETEizIyiQCitY=;
-        b=RK1nOdOvsxtD4Cyu5Xs6kj+igfh9TqKMf4/JzurJPwgbRDIXYS7lMh/DxOwMeLejsh
-         yNjLXRBk4FEbmSgnHER6gdxHCpGywjFy/OysBFjFdIIuFGye1b2UDBXEtuIqMbm1VOoY
-         iJxJMwfqVkIv0+mFUghpYwhhwsi7KL4pbk5zeV3tjcXrejATN+X4febCE3wsueOSWWmq
-         k9LIMnUK9n0LMv+yOb8ithkwOUZh5BaDjjNnGD1FbqnmhZ/fXNAWq9DL9Juk44IPGpqP
-         SQ6HG3x4UJ0DdIFi32ITd5QRUs4bgWdisjQsCSSqgJeczpflsR1O9UMpddtSIB5QOsDj
-         EP3Q==
-X-Gm-Message-State: AOAM533nkuzBe8NC3cBanwnP2IjC5ncbNpRx4qm/IY54zIfdAWU1wMaS
-        H2YuBIJ5cR1vFGPofno9T5A1yil40cvif0y/LYI13Cnjh6kI3pOB
-X-Google-Smtp-Source: ABdhPJwynBzAu84beiT1c5q4eSW8r5f/6Wr2ak1CWaS86EA5Fs2CbAcGblhcoFMBZUaMhIuupz41Uv3AbDrJ85ATVxQ=
-X-Received: by 2002:aa7:df81:: with SMTP id b1mr3514459edy.365.1604215196916;
- Sun, 01 Nov 2020 00:19:56 -0700 (PDT)
+        Sun, 1 Nov 2020 02:20:42 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id 22F3C525A75;
+        Sun,  1 Nov 2020 08:20:39 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id VznvH_Pv3pk1; Sun,  1 Nov 2020 08:20:38 +0100 (CET)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id CDB69527B3B;
+        Sun,  1 Nov 2020 08:20:38 +0100 (CET)
+Received: from kista.localdomain (cpe1-5-97.cable.triera.net [213.161.5.97])
+        (Authenticated sender: 031275009)
+        by mail.siol.net (Postfix) with ESMTPSA id 2BDA2525A75;
+        Sun,  1 Nov 2020 08:20:38 +0100 (CET)
+From:   Jernej Skrabec <jernej.skrabec@siol.net>
+To:     mripard@kernel.org, wens@csie.org
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: [PATCH] arm64: dts: allwinner: h6: orangepi-one-plus: Fix ethernet
+Date:   Sun,  1 Nov 2020 08:26:09 +0100
+Message-Id: <20201101072609.1681891-1-jernej.skrabec@siol.net>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201031113459.481803250@linuxfoundation.org>
-In-Reply-To: <20201031113459.481803250@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 1 Nov 2020 12:49:45 +0530
-Message-ID: <CA+G9fYu+iyL6d7NjsjU_4sBS82YJk90VTnuJv+w8KUj9fbdyTQ@mail.gmail.com>
-Subject: Re: [PATCH 5.8 00/70] 5.8.18-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Oct 2020 at 17:11, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> -------------------------
-> Note, this is going to be the LAST 5.8.y kernel release.  After this
-> one, this branch is now end-of-life.  Please move to the 5.9.y branch at
-> this point in time.
-> -------------------------
->
-> This is the start of the stable review cycle for the 5.8.18 release.
-> There are 70 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Mon, 02 Nov 2020 11:34:42 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.8.18-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.8.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+RX/TX delay on OrangePi One Plus board is set on PHY. Reflect that in
+ethernet node.
 
+Fixes: 7ee32a17e0d6 ("arm64: dts: allwinner: h6: orangepi-one-plus: Enabl=
+e ethernet")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-NOTE:
-LTP version upgrade to 20200930. Due to this change we have noticed few tes=
-t
-failures and fixes which are not related to kernel changes.
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.8.18-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.8.y
-git commit: 46e8244bb94fd0c961f1df918b14b2d3a3970398
-git describe: v5.8.17-71-g46e8244bb94f
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.8.=
-y/build/v5.8.17-71-g46e8244bb94f
-
-No regressions (compared to build v5.8.17)
-
-No fixes (compared to build v5.8.17)
-
-Fixes (compared to LTP 20200515)
-These fixes are coming from LTP upgrade 20200930.
-
-  ltp-commands-tests:
-    * logrotate_sh
-
-  ltp-containers-tests:
-    * netns_netlink
-
-  ltp-controllers-tests:
-    * cpuset_hotplug
-
-  ltp-crypto-tests:
-    * af_alg02
-
-  ltp-cve-tests:
-    * cve-2017-17805
-    * cve-2018-1000199
-
-  ltp-syscalls-tests:
-    * clock_gettime03
-    * clone302
-    * copy_file_range02
-    * mknod07
-    * ptrace08
-    * syslog01
-    * syslog02
-    * syslog03
-    * syslog04
-    * syslog05
-    * syslog07
-    * syslog08
-    * syslog09
-    * syslog10
-
-  ltp-open-posix-tests:
-    * clocks_invaliddates
-
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dt=
+s b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts
+index fceb298bfd53..29a081e72a9b 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts
+@@ -27,7 +27,7 @@ reg_gmac_3v3: gmac-3v3 {
+ &emac {
+ 	pinctrl-names =3D "default";
+ 	pinctrl-0 =3D <&ext_rgmii_pins>;
+-	phy-mode =3D "rgmii";
++	phy-mode =3D "rgmii-id";
+ 	phy-handle =3D <&ext_rgmii_phy>;
+ 	phy-supply =3D <&reg_gmac_3v3>;
+ 	allwinner,rx-delay-ps =3D <200>;
 --=20
-Linaro LKFT
-https://lkft.linaro.org
+2.29.2
+
