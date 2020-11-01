@@ -2,245 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022102A20C3
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 19:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F17E2A20C5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 19:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727233AbgKAS1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 13:27:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727202AbgKAS1M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 13:27:12 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F854C061A04
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 10:27:12 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id v5so7320692wmh.1
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 10:27:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrtc27.com; s=gmail.jrtc27.user;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=VtLE3rxZT53rdC1fUXGq8+afQZ1wElhCRjZZOGymewc=;
-        b=PeQGx2RMl6yCVQLWcLRY87O0353uPvFb5OftQsVzAfDFp1Q0Uo7pV7zpiVxtYHLMcs
-         u1paujjkFMty+oY+enUrBr8NhX1j8WrdfEdaRX1kYDyHamblSgHaiO3Y8ZgZ3mo0oi3T
-         HLzz6efiPYzhgnndTzrQq8rtDLiPlz38CAbRcQJgR8YLGL0s/FwQxlHB/AGjYKgfk566
-         Y+vjvPlKn2uAlYy8bq9qQMPxmE7fo/EvI+ic6duHzAvtGwM1w6+uwpkIxvpqMSwX+35+
-         Jkb8MKGbyM8TwqtxVSVW7VvuB/JFLlJGXXISpv1r4UFPlyx95fGGKjwuQDxp00JekRJu
-         oLHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=VtLE3rxZT53rdC1fUXGq8+afQZ1wElhCRjZZOGymewc=;
-        b=d+5+Lqfn8kOaJnrGD1JtCvMchw4p8zvnmp6y0eGTYefkKdy/AYUVi52uZWkwUY95uY
-         mydhKNgnsiPE6wguXGKMtKfJD4V+Pw3bausf2nZzFnZxH1gn6ZJ/7pRpqjIYzUiBz2DU
-         Vh6rcy1CU+s/HmmBkCwnAqpLhfEKnr2PGhnJey+T9iQ0b6pv8VbOtfFgyYLwrbuzYnVR
-         VHMSVziTtqiYp37tQVO20QUQLFLJvKlzcGiayujFf7fx2sIcgtOuT3Q4fm3Iq+BOhGyJ
-         9vrVQ5GBmdPzQ6nXF5LSfipAyJgxDPKf/9PgVkb4SRupwm+UKluY1W6bEF2UMtpP/YlI
-         weZA==
-X-Gm-Message-State: AOAM530EwMR0wDNwItnBBpeE/BWZWim3yT+pi9fB7FOYzUOhlfflzuDF
-        Nt59eXg9sH2W7tM1PIymgxF8JQ==
-X-Google-Smtp-Source: ABdhPJxyuGgSpOogELW0c4TimJmhkl2q1aORYnSLVOviQ420tXetOewxkXHxn76VqF6KcOzQKv+sxg==
-X-Received: by 2002:a1c:2ece:: with SMTP id u197mr13923721wmu.58.1604255231021;
-        Sun, 01 Nov 2020 10:27:11 -0800 (PST)
-Received: from [192.168.149.251] (trinity-students-nat.trin.cam.ac.uk. [131.111.193.104])
-        by smtp.gmail.com with ESMTPSA id l16sm18616017wrx.5.2020.11.01.10.27.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 01 Nov 2020 10:27:10 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v2] x86: Fix x32 System V message queue syscalls
-From:   Jessica Clarke <jrtc27@jrtc27.com>
-In-Reply-To: <04832096-ED7F-4754-993D-F578D4A90843@jrtc27.com>
-Date:   Sun, 1 Nov 2020 18:27:10 +0000
-Cc:     Rich Felker <dalias@libc.org>, Florian Weimer <fweimer@redhat.com>,
-        linux-x86_64@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>
+        id S1727274AbgKAS1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 13:27:38 -0500
+Received: from mout.gmx.net ([212.227.17.21]:50207 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727202AbgKAS1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 13:27:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604255233;
+        bh=/L+w0lrholo1kMZ1eJSk7XoUYmf7kf9uAE6zDybJJI0=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=L5KAIuUO81PNWC/Xk++LpHjA76nZTilRpxasjMgiFnoG4Su6U1tSvfMEy0KdVqud5
+         g3SZMC37zFZc0FNanqRetBNkJ/Yi0oi/9hbBXGMd5zm1tGKOoS29gQhRfA+YRuIagh
+         H3o3wGEu5Hg2FMSyc7rHn0FXASNgPygzCQTM1IBo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.144.204] ([217.61.144.204]) by web-mail.gmx.net
+ (3c-app-gmx-bap08.server.lan [172.19.172.78]) (via HTTP); Sun, 1 Nov 2020
+ 19:27:13 +0100
+MIME-Version: 1.0
+Message-ID: <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Ryder Lee <ryder.lee@mediatek.com>
+Cc:     Marc Zyngier <maz@kernel.org>, linux-mediatek@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frank Wunderlich <linux@fw-web.de>,
+        linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Aw: Re: [PATCH] pci: mediatek: fix warning in msi.h
+Content-Type: text/plain; charset=UTF-8
+Date:   Sun, 1 Nov 2020 19:27:13 +0100
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <1604253261.22363.0.camel@mtkswgap22>
+References: <20201031140330.83768-1-linux@fw-web.de>
+ <878sbm9icl.fsf@nanos.tec.linutronix.de>
+ <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de>
+ <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:A5wNCGAfPYLBaq4vJipjLleYOK2TEelZNZEUKtqbujq6fXPEHUJyM0Zu35pMgzDT25BbJ
+ kpk2ZzBEXrgUPaVYwzUFA76f/1LV5/Bs+JrDAKdYH1bawVRT0MRsFyFVZdPcyeOsXSn9L7fExOIX
+ XxEjXxz+ZWo+j9fTFqBBUgwTjiYhn0iA6S+PyNuqe9r0f1zyFVmTHe8NJl8eI2SGUnp0efee215W
+ fa+BfNjD90nPZ7fAaHBqJcyJXTp2UarxGHzesQBU3Vp/1ipKQFfGvwgXifsrRfjVbOxitOaY/ner
+ Kc=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JVV58eDgfxM=:/UUrFFmGUI3vP5RJJLYjN8
+ pNg+2F2WvIn0Ncgs6ZUNr0CrtEBo2UsgT2dn8AJiU2MnPwq0gtO7Q6ftfcUsCrPxMr64TVUBB
+ RW8cS1lQu1bt1aARV3Z60mRWOANmWMrfIoNnflSUMSBNEs5edbygyaznaCYVqXWXioE2W52je
+ oiFvBYQQEH3hVas6XS6P/airpdo3oe8QbA/T9cBktYSV4v7BzGe8GaVBrowkVc9ZtJuyYNzsf
+ mR/ZfkisM0M4H8FVNySlHBS7FCVfMllPYAJ5eb14yiU48eL6gfxHmMiTNsgU29v+VLSGOFDsK
+ mwtfnWljdb2gO3ClZ9kLDbDlmLOLpa1bJ6h6whyEpIa3ViBxsdzcvWTEJAPCSoFGsLWT8lV+P
+ AxTbYmyQl+aBr5EcoZm1ohkiMkIUC/DMU+1pEhp1LgwZR4352FeMemQpbhV1wz71kTKh46sxy
+ hQg9Ck0F/smm5ajfAs5DrxjwHrs/ftt1XSQ99Dc5qc7aHC0SD6Wm0efd0+AR5wcrhq9wTXixw
+ mPRfgdB6qN0FZhCkNzsmn1fvXGtBR7HuW7P515dAQ/O71Xe+bx7gMGu20P61hd0aJ4T3OY51V
+ X8HznK3PbfN5w=
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <EEC90B2F-E972-475F-B058-918CDE401618@jrtc27.com>
-References: <1156938F-A9A3-4EE9-B059-2294A0B9FBFE@jrtc27.com>
- <20201012134444.1905-1-jrtc27@jrtc27.com>
- <CALCETrWKwFD7QhFQu9X_yQeVW1_yy-gEMNEtsWmQK=fNg9y68A@mail.gmail.com>
- <20201101012202.GM534@brightrain.aerifal.cx>
- <7842A462-0ADB-4EE3-B4CB-AE6DCD70CE1C@jrtc27.com>
- <20201101015013.GN534@brightrain.aerifal.cx>
- <CALCETrUuBR3Pt_9NhRZTLzjZzwdsS2OPW4U2r31_1Uq-=poRDw@mail.gmail.com>
- <04832096-ED7F-4754-993D-F578D4A90843@jrtc27.com>
-To:     Andy Lutomirski <luto@kernel.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1 Nov 2020, at 18:15, Jessica Clarke <jrtc27@jrtc27.com> wrote:
->=20
-> On 1 Nov 2020, at 18:07, Andy Lutomirski <luto@kernel.org> wrote:
->>=20
->> On Sat, Oct 31, 2020 at 6:50 PM Rich Felker <dalias@libc.org> wrote:
->>>=20
->>> On Sun, Nov 01, 2020 at 01:27:35AM +0000, Jessica Clarke wrote:
->>>> On 1 Nov 2020, at 01:22, Rich Felker <dalias@libc.org> wrote:
->>>>> On Sat, Oct 31, 2020 at 04:30:44PM -0700, Andy Lutomirski wrote:
->>>>>> cc: some libc folks
->>>>>>=20
->>>>>> On Mon, Oct 12, 2020 at 6:45 AM Jessica Clarke =
-<jrtc27@jrtc27.com> wrote:
->>>>>>>=20
->>>>>>> POSIX specifies that the first field of the supplied msgp, =
-namely mtype,
->>>>>>> is a long, not a __kernel_long_t, and it's a user-defined struct =
-due to
->>>>>>> the variable-length mtext field so we can't even bend the spec =
-and make
->>>>>>> it a __kernel_long_t even if we wanted to. Thus we must use the =
-compat
->>>>>>> syscalls on x32 to avoid buffer overreads and overflows in =
-msgsnd and
->>>>>>> msgrcv respectively.
->>>>>>=20
->>>>>> This is a mess.
->>>>>>=20
->>>>>> include/uapi/linux/msg.h has:
->>>>>>=20
->>>>>> /* message buffer for msgsnd and msgrcv calls */
->>>>>> struct msgbuf {
->>>>>>      __kernel_long_t mtype;          /* type of message */
->>>>>>      char mtext[1];                  /* message text */
->>>>>> };
->>>>>>=20
->>>>>> Your test has:
->>>>>>=20
->>>>>> struct msg_long {
->>>>>>  long mtype;
->>>>>>  char mtext[8];
->>>>>> };
->>>>>>=20
->>>>>> struct msg_long_ext {
->>>>>>  struct msg_long msg_long;
->>>>>>  char mext[4];
->>>>>> };
->>>>>>=20
->>>>>> and I'm unclear as to exactly what you're trying to do there with =
-the
->>>>>> "mext" part.
->>>>>>=20
->>>>>> POSIX says:
->>>>>>=20
->>>>>>     The application shall ensure that the argument msgp points to =
- a  user-
->>>>>>     defined  buffer that contains first a field of type long =
-specifying the
->>>>>>     type of the message, and then a data portion that holds the =
-data  bytes
->>>>>>     of the message. The structure below is an example of what =
-this user-de=E2=80=90
->>>>>>     fined buffer might look like:
->>>>>>=20
->>>>>>         struct mymsg {
->>>>>>             long   mtype;       /* Message type. */
->>>>>>             char   mtext[1];    /* Message text. */
->>>>>>         }
->>>>>>=20
->>>>>> NTP has this delightful piece of code:
->>>>>>=20
->>>>>> 44 typedef union {
->>>>>> 45   struct msgbuf msgp;
->>>>>> 46   struct {
->>>>>> 47     long mtype;
->>>>>> 48     int code;
->>>>>> 49     struct timeval tv;
->>>>>> 50   } msgb;
->>>>>> 51 } MsgBuf;
->>>>>>=20
->>>>>> bluefish has:
->>>>>>=20
->>>>>> struct small_msgbuf {
->>>>>> long mtype;
->>>>>> char mtext[MSQ_QUEUE_SMALL_SIZE];
->>>>>> } small_msgp;
->>>>>>=20
->>>>>>=20
->>>>>> My laptop has nothing at all in /dev/mqueue.
->>>>>>=20
->>>>>> So I don't really know what the right thing to do is.  Certainly =
-if
->>>>>> we're going to apply this patch, we should also fix the header.  =
-I
->>>>>> almost think we should *delete* struct msgbuf from the headers, =
-since
->>>>>> it's all kinds of busted, but that will break the NTP build.  =
-Ideally
->>>>>> we would go back in time and remove it from the headers.
->>>>>>=20
->>>>>> Libc people, any insight?  We can probably fix the bug without
->>>>>> annoying anyone given how lightly x32 is used and how lightly =
-POSIX
->>>>>> message queues are used.
->>>>>=20
->>>>> If it's that outright wrong and always has been, I feel like the =
-old
->>>>> syscall numbers should just be deprecated and new ones assigned.
->>>>> Otherwise, there's no way for userspace to be safe against data
->>>>> corruption when run on older kernels. If there's a new syscall =
-number,
->>>>> libc can just use the new one unconditionally (giving ENOSYS on
->>>>> kernels where it would be broken) or have a x32-specific
->>>>> implementation that makes the old syscall and performs translation =
-if
->>>>> the new one fails with ENOSYS.
->>>>=20
->>>> That doesn't really help broken code continue to work reliably, as
->>>> upgrading libc will just pull in the new syscall for a binary =
-that's
->>>> expecting the broken behaviour, unless you do symbol versioning, =
-but
->>>> then it'll just break when you next recompile the code, and there's =
-no
->>>> way for that to be diagnosed given the *application* has to define =
-the
->>>> type. But given it's application-defined I really struggle to see =
-how
->>>> any code out there is actually expecting the current x32 behaviour =
-as
->>>> you'd have to go really out of your way to find out that x32 is =
-broken
->>>> and needs __kernel_long_t. I don't think there's any way around =
-just
->>>> technically breaking ABI whilst likely really fixing ABI in 99.999% =
-of
->>>> cases (maybe 100%).
->>>=20
->>> I'm not opposed to "breaking ABI" here because the current syscall
->>> doesn't work unless someone wrote bogus x32-specific code to work
->>> around it being wrong. I don't particularly want to preserve any of
->>> the current behavior.
->>>=20
->>> What I am somewhat opposed to is making a situation where an updated
->>> libc can't be safe against getting run on a kernel with a broken
->>> version of the syscall and silently corrupting data. I'm flexible
->>> about how avoiding tha tis achieved.
->>=20
->> If we're sufficiently confident that we won't regress anything by
->> fixing the bug, I propose we do the following.  First, we commit a =
-fix
->> that's Jessica's patch plus a fix to struct msghdr, and we mark that
->> for -stable.  Then we commit another patch that removes 'struct
->> msghdr' from uapi entirely, but we don't mark that for -stable.  If
->> people complain about the latter, we revert it.
->=20
-> Thinking about this more, MIPS n32 is also affected by that header. In
-> fact the n32 syscalls currently do the right thing and use the compat
-> implementations, so the header is currently out-of-sync with the =
-kernel
-> there*. This should be noted when committing the change to msg.h.
+> Gesendet: Sonntag, 01. November 2020 um 18:54 Uhr
+> Von: "Ryder Lee" <ryder.lee@mediatek.com>
 
-Never mind, it seems MIPS n32 is weird and leaves __kernel_long_t as a
-normal long despite being an ILP32-on-64-bit ABI, I guess because it's
-inherited from IRIX rather than being invented by the GNU world.
+> Yea, mt7623 (mtk_pcie_soc_v1) does not support MSI, so that's a way to
+> handle it.
+>
+> @Frank, could you help to test it?
+>
+> Ryder
 
-Jess
+compiles clean for mt7623/armhf and mt7622/aarch64 so far
+
+at least bananapi-r2/mt7623 booting is clean now - no warning
+pcie and sata/ahci seems still working as expected. I have a mt7615 card i=
+n pcie-slot (firmware-load and init without errors) and hdd connected to o=
+uter sata port (can access partitions witout errors)
+
+booted r64 too, still see no warning, but have not yet connected hdd/pcie-=
+device, but i guess this should not break anything here
+
+so Marc, if you post the patch separately, you can add my tested-by ;) tha=
+nk you for this
+
+regards Frank
 
