@@ -2,188 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF692A21A8
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 22:01:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CC22A21AE
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 22:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgKAVBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 16:01:04 -0500
-Received: from brightrain.aerifal.cx ([216.12.86.13]:40428 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727016AbgKAVBE (ORCPT
+        id S1727273AbgKAVEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 16:04:40 -0500
+Received: from smtprelay0117.hostedemail.com ([216.40.44.117]:52056 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727004AbgKAVEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 16:01:04 -0500
-Date:   Sun, 1 Nov 2020 16:01:03 -0500
-From:   Rich Felker <dalias@libc.org>
-To:     Jessica Clarke <jrtc27@jrtc27.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        linux-x86_64@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] x86: Fix x32 System V message queue syscalls
-Message-ID: <20201101210102.GO534@brightrain.aerifal.cx>
-References: <1156938F-A9A3-4EE9-B059-2294A0B9FBFE@jrtc27.com>
- <20201012134444.1905-1-jrtc27@jrtc27.com>
- <CALCETrWKwFD7QhFQu9X_yQeVW1_yy-gEMNEtsWmQK=fNg9y68A@mail.gmail.com>
- <20201101012202.GM534@brightrain.aerifal.cx>
- <7842A462-0ADB-4EE3-B4CB-AE6DCD70CE1C@jrtc27.com>
- <20201101015013.GN534@brightrain.aerifal.cx>
- <CALCETrUuBR3Pt_9NhRZTLzjZzwdsS2OPW4U2r31_1Uq-=poRDw@mail.gmail.com>
- <04832096-ED7F-4754-993D-F578D4A90843@jrtc27.com>
- <EEC90B2F-E972-475F-B058-918CDE401618@jrtc27.com>
+        Sun, 1 Nov 2020 16:04:40 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 2B96E837F24A;
+        Sun,  1 Nov 2020 21:04:39 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3871:3872:3874:4321:5007:6119:7903:9389:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12740:12895:13069:13161:13229:13311:13357:13439:13894:14659:14721:21080:21627:30012:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: fork10_3615e0f272aa
+X-Filterd-Recvd-Size: 2699
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Sun,  1 Nov 2020 21:04:37 +0000 (UTC)
+Message-ID: <616b92af9378e9f9697555074bba1e377450477f.camel@perches.com>
+Subject: Re: [PATCH 4/5] mm: shmem: Convert shmem_enabled_show to use
+ sysfs_emit_at
+From:   Joe Perches <joe@perches.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 01 Nov 2020 13:04:35 -0800
+In-Reply-To: <20201101204834.GF27442@casper.infradead.org>
+References: <cover.1604261483.git.joe@perches.com>
+         <a06810c216a45e5f6f1b9f49fbe2f332ca3c8972.1604261483.git.joe@perches.com>
+         <20201101204834.GF27442@casper.infradead.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <EEC90B2F-E972-475F-B058-918CDE401618@jrtc27.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 06:27:10PM +0000, Jessica Clarke wrote:
-> On 1 Nov 2020, at 18:15, Jessica Clarke <jrtc27@jrtc27.com> wrote:
+On Sun, 2020-11-01 at 20:48 +0000, Matthew Wilcox wrote:
+> On Sun, Nov 01, 2020 at 12:12:51PM -0800, Joe Perches wrote:
+> > @@ -4024,7 +4024,7 @@ int __init shmem_init(void)
+> >  
 > > 
-> > On 1 Nov 2020, at 18:07, Andy Lutomirski <luto@kernel.org> wrote:
-> >> 
-> >> On Sat, Oct 31, 2020 at 6:50 PM Rich Felker <dalias@libc.org> wrote:
-> >>> 
-> >>> On Sun, Nov 01, 2020 at 01:27:35AM +0000, Jessica Clarke wrote:
-> >>>> On 1 Nov 2020, at 01:22, Rich Felker <dalias@libc.org> wrote:
-> >>>>> On Sat, Oct 31, 2020 at 04:30:44PM -0700, Andy Lutomirski wrote:
-> >>>>>> cc: some libc folks
-> >>>>>> 
-> >>>>>> On Mon, Oct 12, 2020 at 6:45 AM Jessica Clarke <jrtc27@jrtc27.com> wrote:
-> >>>>>>> 
-> >>>>>>> POSIX specifies that the first field of the supplied msgp, namely mtype,
-> >>>>>>> is a long, not a __kernel_long_t, and it's a user-defined struct due to
-> >>>>>>> the variable-length mtext field so we can't even bend the spec and make
-> >>>>>>> it a __kernel_long_t even if we wanted to. Thus we must use the compat
-> >>>>>>> syscalls on x32 to avoid buffer overreads and overflows in msgsnd and
-> >>>>>>> msgrcv respectively.
-> >>>>>> 
-> >>>>>> This is a mess.
-> >>>>>> 
-> >>>>>> include/uapi/linux/msg.h has:
-> >>>>>> 
-> >>>>>> /* message buffer for msgsnd and msgrcv calls */
-> >>>>>> struct msgbuf {
-> >>>>>>      __kernel_long_t mtype;          /* type of message */
-> >>>>>>      char mtext[1];                  /* message text */
-> >>>>>> };
-> >>>>>> 
-> >>>>>> Your test has:
-> >>>>>> 
-> >>>>>> struct msg_long {
-> >>>>>>  long mtype;
-> >>>>>>  char mtext[8];
-> >>>>>> };
-> >>>>>> 
-> >>>>>> struct msg_long_ext {
-> >>>>>>  struct msg_long msg_long;
-> >>>>>>  char mext[4];
-> >>>>>> };
-> >>>>>> 
-> >>>>>> and I'm unclear as to exactly what you're trying to do there with the
-> >>>>>> "mext" part.
-> >>>>>> 
-> >>>>>> POSIX says:
-> >>>>>> 
-> >>>>>>     The application shall ensure that the argument msgp points to  a  user-
-> >>>>>>     defined  buffer that contains first a field of type long specifying the
-> >>>>>>     type of the message, and then a data portion that holds the data  bytes
-> >>>>>>     of the message. The structure below is an example of what this user-deâ€
-> >>>>>>     fined buffer might look like:
-> >>>>>> 
-> >>>>>>         struct mymsg {
-> >>>>>>             long   mtype;       /* Message type. */
-> >>>>>>             char   mtext[1];    /* Message text. */
-> >>>>>>         }
-> >>>>>> 
-> >>>>>> NTP has this delightful piece of code:
-> >>>>>> 
-> >>>>>> 44 typedef union {
-> >>>>>> 45   struct msgbuf msgp;
-> >>>>>> 46   struct {
-> >>>>>> 47     long mtype;
-> >>>>>> 48     int code;
-> >>>>>> 49     struct timeval tv;
-> >>>>>> 50   } msgb;
-> >>>>>> 51 } MsgBuf;
-> >>>>>> 
-> >>>>>> bluefish has:
-> >>>>>> 
-> >>>>>> struct small_msgbuf {
-> >>>>>> long mtype;
-> >>>>>> char mtext[MSQ_QUEUE_SMALL_SIZE];
-> >>>>>> } small_msgp;
-> >>>>>> 
-> >>>>>> 
-> >>>>>> My laptop has nothing at all in /dev/mqueue.
-> >>>>>> 
-> >>>>>> So I don't really know what the right thing to do is.  Certainly if
-> >>>>>> we're going to apply this patch, we should also fix the header.  I
-> >>>>>> almost think we should *delete* struct msgbuf from the headers, since
-> >>>>>> it's all kinds of busted, but that will break the NTP build.  Ideally
-> >>>>>> we would go back in time and remove it from the headers.
-> >>>>>> 
-> >>>>>> Libc people, any insight?  We can probably fix the bug without
-> >>>>>> annoying anyone given how lightly x32 is used and how lightly POSIX
-> >>>>>> message queues are used.
-> >>>>> 
-> >>>>> If it's that outright wrong and always has been, I feel like the old
-> >>>>> syscall numbers should just be deprecated and new ones assigned.
-> >>>>> Otherwise, there's no way for userspace to be safe against data
-> >>>>> corruption when run on older kernels. If there's a new syscall number,
-> >>>>> libc can just use the new one unconditionally (giving ENOSYS on
-> >>>>> kernels where it would be broken) or have a x32-specific
-> >>>>> implementation that makes the old syscall and performs translation if
-> >>>>> the new one fails with ENOSYS.
-> >>>> 
-> >>>> That doesn't really help broken code continue to work reliably, as
-> >>>> upgrading libc will just pull in the new syscall for a binary that's
-> >>>> expecting the broken behaviour, unless you do symbol versioning, but
-> >>>> then it'll just break when you next recompile the code, and there's no
-> >>>> way for that to be diagnosed given the *application* has to define the
-> >>>> type. But given it's application-defined I really struggle to see how
-> >>>> any code out there is actually expecting the current x32 behaviour as
-> >>>> you'd have to go really out of your way to find out that x32 is broken
-> >>>> and needs __kernel_long_t. I don't think there's any way around just
-> >>>> technically breaking ABI whilst likely really fixing ABI in 99.999% of
-> >>>> cases (maybe 100%).
-> >>> 
-> >>> I'm not opposed to "breaking ABI" here because the current syscall
-> >>> doesn't work unless someone wrote bogus x32-specific code to work
-> >>> around it being wrong. I don't particularly want to preserve any of
-> >>> the current behavior.
-> >>> 
-> >>> What I am somewhat opposed to is making a situation where an updated
-> >>> libc can't be safe against getting run on a kernel with a broken
-> >>> version of the syscall and silently corrupting data. I'm flexible
-> >>> about how avoiding tha tis achieved.
-> >> 
-> >> If we're sufficiently confident that we won't regress anything by
-> >> fixing the bug, I propose we do the following.  First, we commit a fix
-> >> that's Jessica's patch plus a fix to struct msghdr, and we mark that
-> >> for -stable.  Then we commit another patch that removes 'struct
-> >> msghdr' from uapi entirely, but we don't mark that for -stable.  If
-> >> people complain about the latter, we revert it.
-> > 
-> > Thinking about this more, MIPS n32 is also affected by that header. In
-> > fact the n32 syscalls currently do the right thing and use the compat
-> > implementations, so the header is currently out-of-sync with the kernel
-> > there*. This should be noted when committing the change to msg.h.
+> >  #if defined(CONFIG_TRANSPARENT_HUGEPAGE) && defined(CONFIG_SYSFS)
+> >  static ssize_t shmem_enabled_show(struct kobject *kobj,
+> > -		struct kobj_attribute *attr, char *buf)
+> > +				  struct kobj_attribute *attr, char *buf)
+> >  {
+> >  	static const int values[] = {
+> >  		SHMEM_HUGE_ALWAYS,
 > 
-> Never mind, it seems MIPS n32 is weird and leaves __kernel_long_t as a
-> normal long despite being an ILP32-on-64-bit ABI, I guess because it's
-> inherited from IRIX rather than being invented by the GNU world.
+> Why?
 
-Yes, the whole __kernel_long_t invention is largely x32-only (maybe
-theoretically on aarch64-ilp32 too? if that even really exists?) and
-is pretty much entirely a mistake from lacking the proper
-infrastructure to do time64 when x32 was introduced (note that n32 has
-32-bit old-time_t). I hope effort will be made to keep the same
-mistake from creeping into future ilp32-on-64 ABIs if there are any.
+why what?
+ 
+> > @@ -4034,16 +4034,19 @@ static ssize_t shmem_enabled_show(struct kobject *kobj,
+> >  		SHMEM_HUGE_DENY,
+> >  		SHMEM_HUGE_FORCE,
+> >  	};
+> > -	int i, count;
+> > -
+> > -	for (i = 0, count = 0; i < ARRAY_SIZE(values); i++) {
+> > -		const char *fmt = shmem_huge == values[i] ? "[%s] " : "%s ";
+> > +	int len = 0;
+> > +	int i;
+> 
+> Better:
+> 	int i, len = 0;
 
-Rich
+I generally disagree as I think it better to have each declaration on an
+individual line.
+
+> > -		count += sprintf(buf + count, fmt,
+> > -				shmem_format_huge(values[i]));
+> > +	for (i = 0; i < ARRAY_SIZE(values); i++) {
+> > +		len += sysfs_emit_at(buf, len,
+> > +				     shmem_huge == values[i] ? "%s[%s]" : "%s%s",
+> > +				     i ? " " : "",
+> > +				     shmem_format_huge(values[i]));
+> 
+> This is ... complicated.  I thought the point of doing all the sysfs_emit
+> stuff was to simplify things.
+
+The removal of fmt allows the format and argument to be __printf verified.
+Indirected formats do not generally allow that.
+
+And using sysfs_emit is not really intended to simplify output code, it's
+used to make sure there isn't a overflow of the PAGE_SIZE output buf when
+using sprintf/snprintf.
+
+
