@@ -2,448 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3ABD2A1CEB
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC1A2A1CED
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgKAJcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 04:32:47 -0500
-Received: from aposti.net ([89.234.176.197]:38642 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgKAJcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 04:32:46 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Christophe Branchereau <cbranchereau@gmail.com>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 4/4] drm/panel: Add ABT Y030XX067A 3.0" 320x480 panel
-Date:   Sun,  1 Nov 2020 09:31:50 +0000
-Message-Id: <20201101093150.8071-5-paul@crapouillou.net>
-In-Reply-To: <20201101093150.8071-1-paul@crapouillou.net>
-References: <20201101093150.8071-1-paul@crapouillou.net>
+        id S1726263AbgKAJe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 04:34:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726117AbgKAJe0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 04:34:26 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67EDC061A47
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 01:34:26 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id k1so10307485ilc.10
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 01:34:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=feEafZUghxfj0r5ehU1s8Cn33RCu4DgdtZG8O8W28q4=;
+        b=WkVwm8W6d5z3BiH3mqEaxtpzm5JHDkQ2qO+Lm7pDbVmbp4zj2nxf5i3YTWPnO8jFUE
+         UaLi3KvxE4JXDgbwd9TxjEIpaoXKQ5Y3PAoS6m7ujQGjV58sjQLZtY20FC7zvgpRgOhx
+         SSPXrD4BXYmE5dYsTpMA8FooZLxH8Ol6J8cULSZZWS3gACsscDhPDgwQqnVoKvEy7cbx
+         weUNM5mPzt/HtVXfTJLtP+p2jrG9tB4CYrzISin0mh+26T3hQqP8ZEg4PD5OUvDswKzV
+         vufbtim0LI+4BsW685/COWuwMetSI0DFYlM/cPQSAGBZj6HMTKL7W/LQw0FcjdTP7nmE
+         tVRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=feEafZUghxfj0r5ehU1s8Cn33RCu4DgdtZG8O8W28q4=;
+        b=lnw7BUaxGpNZGqW7SMOEU0+Hgyymgq1u0/Y7BpIRTxA7FjwZ3eVIapl6gwa8q62/pZ
+         hA3tIWfOiLYA8fyYOWASODCcOCQlM3pKU+IMmUDj7hYPG7YlBEOxjBH7FHn1w3eV5/GP
+         oTVRGD2n0WdjoheOMDggBDdT0RKZLXJhu2EK/HBJ5JQyPJU7SjLXPcguBFll8LDpxRBb
+         s3mZmBiN3U/A8LuMpfCJfl8kDMlvVUgo00gmiOIkTrD7fzOATmAKhC5v4IsZLYhnwWT+
+         7WHjUae9nD/OPxlPoCQFWe7RODmp+N4IVPWw9vhlHkwsgj2TG06rTg8NMMX1PvnQf1bp
+         acMw==
+X-Gm-Message-State: AOAM531YeD4FTfBcjpbsxCZSoDKYzomeKrcDjIkIEl1nIEKwrOVyRAjC
+        GYrTRtayl0W1Bc7eT4Lg9UaqqQo1iSwpL41aEU3ldkfudoVGAg==
+X-Google-Smtp-Source: ABdhPJxhywKjvwLEbVG0Q4jm4ZwrctHRgWmYcvrw1ePGWRxW/2fhcJJeQK6WrcJ3rj3fCkBmAxMMU2qWmxihLX0/D8E=
+X-Received: by 2002:a92:41cf:: with SMTP id o198mr7403679ila.262.1604223265873;
+ Sun, 01 Nov 2020 01:34:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201025005916.64747-1-luka.kovacic@sartura.hr>
+ <20201025005916.64747-5-luka.kovacic@sartura.hr> <20201029175823.GC26053@duo.ucw.cz>
+In-Reply-To: <20201029175823.GC26053@duo.ucw.cz>
+From:   Luka Kovacic <luka.kovacic@sartura.hr>
+Date:   Sun, 1 Nov 2020 10:34:14 +0100
+Message-ID: <CADZsf3bChWDv02v=LR-abC5rNmh09JsdabWVLcuuWaOhejBBjg@mail.gmail.com>
+Subject: Re: [PATCH v7 4/6] drivers: leds: Add the IEI WT61P803 PUZZLE LED driver
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marek Behun <marek.behun@nic.cz>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Robert Marko <robert.marko@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the ShenZhen Asia Better Technology Ltd. Y030XX067A 3.0"
-320x480 IPS panel.
+Hello Pavel,
 
-This panel can be found in the YLM RG-280M, RG-300 and RG-99 handheld
-gaming consoles. While being 320x480, it is actually a horizontal 4:3
-panel with non-square pixels.
+On Thu, Oct 29, 2020 at 6:58 PM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Hi!
+>
+> > Add support for the IEI WT61P803 PUZZLE LED driver.
+> > Currently only the front panel power LED is supported,
+> > since it is the only LED on this board wired through the
+> > MCU.
+> >
+> > The LED is wired directly to the on-board MCU controller
+> > and is toggled using an MCU command.
+> >
+> > Support for more LEDs is going to be added in case more
+> > boards implement this microcontroller, as LEDs use many
+> > different GPIOs.
+>
+> Not too bad.
+>
+> > This driver depends on the IEI WT61P803 PUZZLE MFD driver.
+> >
+> > Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
+> > Cc: Luka Perkov <luka.perkov@sartura.hr>
+> > Cc: Robert Marko <robert.marko@sartura.hr>
+> > ---
+> >  drivers/leds/Kconfig                    |   8 ++
+> >  drivers/leds/Makefile                   |   1 +
+> >  drivers/leds/leds-iei-wt61p803-puzzle.c | 161 ++++++++++++++++++++++++
+> >  3 files changed, 170 insertions(+)
+>
+> Can you put it into drivers/leds/simple? You'll have to create it.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
----
- drivers/gpu/drm/panel/Kconfig                |   9 +
- drivers/gpu/drm/panel/Makefile               |   1 +
- drivers/gpu/drm/panel/panel-abt-y030xx067a.c | 363 +++++++++++++++++++
- 3 files changed, 373 insertions(+)
- create mode 100644 drivers/gpu/drm/panel/panel-abt-y030xx067a.c
+Sure, I'll move the driver there.
 
-diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index e386524b2d77..7fe22b4c8aa2 100644
---- a/drivers/gpu/drm/panel/Kconfig
-+++ b/drivers/gpu/drm/panel/Kconfig
-@@ -8,6 +8,15 @@ config DRM_PANEL
- menu "Display Panels"
- 	depends on DRM && DRM_PANEL
- 
-+config DRM_PANEL_ABT_Y030XX067A
-+	tristate "ABT Y030XX067A 320x480 LCD panel"
-+	depends on OF && SPI
-+	select REGMAP_SPI
-+	help
-+	  Say Y here to enable support for the Asia Better Technology Ltd.
-+	  Y030XX067A 320x480 3.0" panel as found in the YLM RG-280M, RG-300
-+	  and RG-99 handheld gaming consoles.
-+
- config DRM_PANEL_ARM_VERSATILE
- 	tristate "ARM Versatile panel driver"
- 	depends on OF
-diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-index d1f8cc572f37..78b77ba4d458 100644
---- a/drivers/gpu/drm/panel/Makefile
-+++ b/drivers/gpu/drm/panel/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_DRM_PANEL_ABT_Y030XX067A) += panel-abt-y030xx067a.o
- obj-$(CONFIG_DRM_PANEL_ARM_VERSATILE) += panel-arm-versatile.o
- obj-$(CONFIG_DRM_PANEL_ASUS_Z00T_TM5P5_NT35596) += panel-asus-z00t-tm5p5-n35596.o
- obj-$(CONFIG_DRM_PANEL_BOE_HIMAX8279D) += panel-boe-himax8279d.o
-diff --git a/drivers/gpu/drm/panel/panel-abt-y030xx067a.c b/drivers/gpu/drm/panel/panel-abt-y030xx067a.c
-new file mode 100644
-index 000000000000..2d8794d495d0
---- /dev/null
-+++ b/drivers/gpu/drm/panel/panel-abt-y030xx067a.c
-@@ -0,0 +1,363 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Asia Better Technology Ltd. Y030XX067A IPS LCD panel driver
-+ *
-+ * Copyright (C) 2020, Paul Cercueil <paul@crapouillou.net>
-+ * Copyright (C) 2020, Christophe Branchereau <cbranchereau@gmail.com>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/media-bus-format.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/spi/spi.h>
-+
-+#include <drm/drm_modes.h>
-+#include <drm/drm_panel.h>
-+
-+#define REG00_VBRT_CTRL(val)		(val)
-+
-+#define REG01_COM_DC(val)		(val)
-+
-+#define REG02_DA_CONTRAST(val)		(val)
-+#define REG02_VESA_SEL(val)		((val) << 5)
-+#define REG02_COMDC_SW			BIT(7)
-+
-+#define REG03_VPOSITION(val)		(val)
-+#define REG03_BSMOUNT			BIT(5)
-+#define REG03_COMTST			BIT(6)
-+#define REG03_HPOSITION1		BIT(7)
-+
-+#define REG04_HPOSITION1(val)		(val)
-+
-+#define REG05_CLIP			BIT(0)
-+#define REG05_NVM_VREFRESH		BIT(1)
-+#define REG05_SLFR			BIT(2)
-+#define REG05_SLBRCHARGE(val)		((val) << 3)
-+#define REG05_PRECHARGE_LEVEL(val)	((val) << 6)
-+
-+#define REG06_TEST5			BIT(0)
-+#define REG06_SLDWN			BIT(1)
-+#define REG06_SLRGT			BIT(2)
-+#define REG06_TEST2			BIT(3)
-+#define REG06_XPSAVE			BIT(4)
-+#define REG06_GAMMA_SEL(val)		((val) << 5)
-+#define REG06_NT			BIT(7)
-+
-+#define REG07_TEST1			BIT(0)
-+#define REG07_HDVD_POL			BIT(1)
-+#define REG07_CK_POL			BIT(2)
-+#define REG07_TEST3			BIT(3)
-+#define REG07_TEST4			BIT(4)
-+#define REG07_480_LINEMASK		BIT(5)
-+#define REG07_AMPTST(val)		((val) << 6)
-+
-+#define REG08_SLHRC(val)		(val)
-+#define REG08_CLOCK_DIV(val)		((val) << 2)
-+#define REG08_PANEL(val)		((val) << 5)
-+
-+#define REG09_SUB_BRIGHT_R(val)		(val)
-+#define REG09_NW_NB			BIT(6)
-+#define REG09_IPCON			BIT(7)
-+
-+#define REG0A_SUB_BRIGHT_B(val)		(val)
-+#define REG0A_PAIR			BIT(6)
-+#define REG0A_DE_SEL			BIT(7)
-+
-+#define REG0B_MBK_POSITION(val)		(val)
-+#define REG0B_HD_FREERUN		BIT(4)
-+#define REG0B_VD_FREERUN		BIT(5)
-+#define REG0B_YUV2BIN(val)		((val) << 6)
-+
-+#define REG0C_CONTRAST_R(val)		(val)
-+#define REG0C_DOUBLEREAD		BIT(7)
-+
-+#define REG0D_CONTRAST_G(val)		(val)
-+#define REG0D_RGB_YUV			BIT(7)
-+
-+#define REG0E_CONTRAST_B(val)		(val)
-+#define REG0E_PIXELCOLORDRIVE		BIT(7)
-+
-+#define REG0F_ASPECT			BIT(0)
-+#define REG0F_OVERSCAN(val)		((val) << 1)
-+#define REG0F_FRAMEWIDTH(val)		((val) << 3)
-+
-+#define REG10_BRIGHT(val)		(val)
-+
-+#define REG11_SIG_GAIN(val)		(val)
-+#define REG11_SIGC_CNTL			BIT(6)
-+#define REG11_SIGC_POL			BIT(7)
-+
-+#define REG12_COLOR(val)		(val)
-+#define REG12_PWCKSEL(val)		((val) << 6)
-+
-+#define REG13_4096LEVEL_CNTL(val)	(val)
-+#define REG13_SL4096(val)		((val) << 4)
-+#define REG13_LIMITER_CONTROL		BIT(7)
-+
-+#define REG14_PANEL_TEST(val)		(val)
-+
-+#define REG15_NVM_LINK0			BIT(0)
-+#define REG15_NVM_LINK1			BIT(1)
-+#define REG15_NVM_LINK2			BIT(2)
-+#define REG15_NVM_LINK3			BIT(3)
-+#define REG15_NVM_LINK4			BIT(4)
-+#define REG15_NVM_LINK5			BIT(5)
-+#define REG15_NVM_LINK6			BIT(6)
-+#define REG15_NVM_LINK7			BIT(7)
-+
-+struct y030xx067a_info {
-+	const struct drm_display_mode *display_modes;
-+	unsigned int num_modes;
-+	u16 width_mm, height_mm;
-+	u32 bus_format, bus_flags;
-+};
-+
-+struct y030xx067a {
-+	struct drm_panel panel;
-+	struct spi_device *spi;
-+	struct regmap *map;
-+
-+	const struct y030xx067a_info *panel_info;
-+
-+	struct regulator *supply;
-+	struct gpio_desc *reset_gpio;
-+};
-+
-+static inline struct y030xx067a *to_y030xx067a(struct drm_panel *panel)
-+{
-+	return container_of(panel, struct y030xx067a, panel);
-+}
-+
-+static const struct reg_sequence y030xx067a_init_sequence[] = {
-+	{ 0x00, REG00_VBRT_CTRL(0x7f) },
-+	{ 0x01, REG01_COM_DC(0x3c) },
-+	{ 0x02, REG02_VESA_SEL(0x3) | REG02_DA_CONTRAST(0x1f) },
-+	{ 0x03, REG03_VPOSITION(0x0a) },
-+	{ 0x04, REG04_HPOSITION1(0xd2) },
-+	{ 0x05, REG05_CLIP | REG05_NVM_VREFRESH | REG05_SLBRCHARGE(0x2) },
-+	{ 0x06, REG06_XPSAVE | REG06_NT },
-+	{ 0x07, 0 },
-+	{ 0x08, REG08_PANEL(0x1) | REG08_CLOCK_DIV(0x2) },
-+	{ 0x09, REG09_SUB_BRIGHT_R(0x20) },
-+	{ 0x0a, REG0A_SUB_BRIGHT_B(0x20) },
-+	{ 0x0b, REG0B_HD_FREERUN | REG0B_VD_FREERUN },
-+	{ 0x0c, REG0C_CONTRAST_R(0x10) },
-+	{ 0x0d, REG0D_CONTRAST_G(0x10) },
-+	{ 0x0e, REG0E_CONTRAST_B(0x10) },
-+	{ 0x0f, 0 },
-+	{ 0x10, REG10_BRIGHT(0x7f) },
-+	{ 0x11, REG11_SIGC_CNTL | REG11_SIG_GAIN(0x3f) },
-+	{ 0x12, REG12_COLOR(0x20) | REG12_PWCKSEL(0x1) },
-+	{ 0x13, REG13_4096LEVEL_CNTL(0x8) },
-+	{ 0x14, 0 },
-+	{ 0x15, 0 },
-+};
-+
-+static int y030xx067a_prepare(struct drm_panel *panel)
-+{
-+	struct y030xx067a *priv = to_y030xx067a(panel);
-+	struct device *dev = &priv->spi->dev;
-+	int err;
-+
-+	err = regulator_enable(priv->supply);
-+	if (err) {
-+		dev_err(dev, "Failed to enable power supply: %d\n", err);
-+		return err;
-+	}
-+
-+	/* Reset the chip */
-+	gpiod_set_value_cansleep(priv->reset_gpio, 1);
-+	usleep_range(1000, 20000);
-+	gpiod_set_value_cansleep(priv->reset_gpio, 0);
-+	usleep_range(1000, 20000);
-+
-+	err = regmap_multi_reg_write(priv->map, y030xx067a_init_sequence,
-+				     ARRAY_SIZE(y030xx067a_init_sequence));
-+	if (err) {
-+		dev_err(dev, "Failed to init registers: %d\n", err);
-+		goto err_disable_regulator;
-+	}
-+
-+	msleep(120);
-+
-+	return 0;
-+
-+err_disable_regulator:
-+	regulator_disable(priv->supply);
-+	return err;
-+}
-+
-+static int y030xx067a_unprepare(struct drm_panel *panel)
-+{
-+	struct y030xx067a *priv = to_y030xx067a(panel);
-+
-+	gpiod_set_value_cansleep(priv->reset_gpio, 1);
-+	regulator_disable(priv->supply);
-+
-+	return 0;
-+}
-+
-+static int y030xx067a_get_modes(struct drm_panel *panel,
-+				struct drm_connector *connector)
-+{
-+	struct y030xx067a *priv = to_y030xx067a(panel);
-+	const struct y030xx067a_info *panel_info = priv->panel_info;
-+	struct drm_display_mode *mode;
-+	unsigned int i;
-+
-+	for (i = 0; i < panel_info->num_modes; i++) {
-+		mode = drm_mode_duplicate(connector->dev,
-+					  &panel_info->display_modes[i]);
-+		if (!mode)
-+			return -ENOMEM;
-+
-+		drm_mode_set_name(mode);
-+
-+		mode->type = DRM_MODE_TYPE_DRIVER;
-+		if (panel_info->num_modes == 1)
-+			mode->type |= DRM_MODE_TYPE_PREFERRED;
-+
-+		drm_mode_probed_add(connector, mode);
-+	}
-+
-+	connector->display_info.bpc = 8;
-+	connector->display_info.width_mm = panel_info->width_mm;
-+	connector->display_info.height_mm = panel_info->height_mm;
-+
-+	drm_display_info_set_bus_formats(&connector->display_info,
-+					 &panel_info->bus_format, 1);
-+	connector->display_info.bus_flags = panel_info->bus_flags;
-+
-+	return panel_info->num_modes;
-+}
-+
-+static const struct drm_panel_funcs y030xx067a_funcs = {
-+	.prepare	= y030xx067a_prepare,
-+	.unprepare	= y030xx067a_unprepare,
-+	.get_modes	= y030xx067a_get_modes,
-+};
-+
-+static const struct regmap_config y030xx067a_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.max_register = 0x15,
-+};
-+
-+static int y030xx067a_probe(struct spi_device *spi)
-+{
-+	struct device *dev = &spi->dev;
-+	struct y030xx067a *priv;
-+	int err;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->spi = spi;
-+	spi_set_drvdata(spi, priv);
-+
-+	priv->map = devm_regmap_init_spi(spi, &y030xx067a_regmap_config);
-+	if (IS_ERR(priv->map)) {
-+		dev_err(dev, "Unable to init regmap\n");
-+		return PTR_ERR(priv->map);
-+	}
-+
-+	priv->panel_info = of_device_get_match_data(dev);
-+	if (!priv->panel_info)
-+		return -EINVAL;
-+
-+	priv->supply = devm_regulator_get(dev, "power");
-+	if (IS_ERR(priv->supply)) {
-+		dev_err(dev, "Failed to get power supply\n");
-+		return PTR_ERR(priv->supply);
-+	}
-+
-+	priv->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(priv->reset_gpio)) {
-+		dev_err(dev, "Failed to get reset GPIO\n");
-+		return PTR_ERR(priv->reset_gpio);
-+	}
-+
-+	drm_panel_init(&priv->panel, dev, &y030xx067a_funcs,
-+		       DRM_MODE_CONNECTOR_DPI);
-+
-+	err = drm_panel_of_backlight(&priv->panel);
-+	if (err)
-+		return err;
-+
-+	drm_panel_add(&priv->panel);
-+
-+	return 0;
-+}
-+
-+static int y030xx067a_remove(struct spi_device *spi)
-+{
-+	struct y030xx067a *priv = spi_get_drvdata(spi);
-+
-+	drm_panel_remove(&priv->panel);
-+	drm_panel_disable(&priv->panel);
-+	drm_panel_unprepare(&priv->panel);
-+
-+	return 0;
-+}
-+
-+static const struct drm_display_mode y030xx067a_modes[] = {
-+	{ /* 60 Hz */
-+		.clock = 14400,
-+		.hdisplay = 320,
-+		.hsync_start = 320 + 10,
-+		.hsync_end = 320 + 10 + 37,
-+		.htotal = 320 + 10 + 37 + 33,
-+		.vdisplay = 480,
-+		.vsync_start = 480 + 84,
-+		.vsync_end = 480 + 84 + 20,
-+		.vtotal = 480 + 84 + 20 + 16,
-+		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+	},
-+	{ /* 50 Hz */
-+		.clock = 12000,
-+		.hdisplay = 320,
-+		.hsync_start = 320 + 10,
-+		.hsync_end = 320 + 10 + 37,
-+		.htotal = 320 + 10 + 37 + 33,
-+		.vdisplay = 480,
-+		.vsync_start = 480 + 84,
-+		.vsync_end = 480 + 84 + 20,
-+		.vtotal = 480 + 84 + 20 + 16,
-+		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+	},
-+};
-+
-+static const struct y030xx067a_info y030xx067a_info = {
-+	.display_modes = y030xx067a_modes,
-+	.num_modes = ARRAY_SIZE(y030xx067a_modes),
-+	.width_mm = 69,
-+	.height_mm = 51,
-+	.bus_format = MEDIA_BUS_FMT_RGB888_3X8_DELTA,
-+	.bus_flags = DRM_BUS_FLAG_PIXDATA_SAMPLE_POSEDGE | DRM_BUS_FLAG_DE_LOW,
-+};
-+
-+static const struct of_device_id y030xx067a_of_match[] = {
-+	{ .compatible = "abt,y030xx067a", .data = &y030xx067a_info },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, y030xx067a_of_match);
-+
-+static struct spi_driver y030xx067a_driver = {
-+	.driver = {
-+		.name = "abt-y030xx067a",
-+		.of_match_table = y030xx067a_of_match,
-+	},
-+	.probe = y030xx067a_probe,
-+	.remove = y030xx067a_remove,
-+};
-+module_spi_driver(y030xx067a_driver);
-+
-+MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
-+MODULE_AUTHOR("Christophe Branchereau <cbranchereau@gmail.com>");
-+MODULE_LICENSE("GPL v2");
--- 
-2.28.0
+>
+> > +++ b/drivers/leds/leds-iei-wt61p803-puzzle.c
+> > @@ -0,0 +1,161 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+>
+> Make sure this is consistent with MODULE_LICENSE("GPL");. GPLv2+ would
+> be nicer if you can.
 
+Okay, I'll see what I can do...
+Although isn't it okay to use either GPL-2.0-only or GPL-2.0+ with
+MODULE_LICENSE("GPL") as described in Documentation/process/license-rules.rst
+on line 441?
+
+>
+> > +     struct mutex lock;
+>
+> Mutex is _way_ overkill for this. Please check that locking provided
+> by LED core is not sufficient. If not, please use atomic_t or
+> something.
+
+Ok.
+
+>
+> Best regards,
+>                                                                 Pavel
+> --
+> http://www.livejournal.com/~pavelmachek
+
+Kind regards,
+Luka
