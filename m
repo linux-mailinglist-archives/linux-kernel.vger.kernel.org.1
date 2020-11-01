@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6242A1E78
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 15:09:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 885242A1E7A
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 15:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgKAOJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 09:09:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726637AbgKAOJV (ORCPT
+        id S1726705AbgKAOLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 09:11:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35050 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726496AbgKAOLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 09:09:21 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416AFC0617A6;
-        Sun,  1 Nov 2020 06:09:21 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id a3so1977000pjh.1;
-        Sun, 01 Nov 2020 06:09:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/9og09u1zo9NX9D44RRZapG5HLQMVJBUImJCPrX7E10=;
-        b=XBh/ZQG09VwZL2EiUVzXO6QoYMWPFNyQYMfhzBF87zIMxDKw/abftzYZmS6wvWLkbS
-         g7P2btAbHk+L2gY3o938IL/n3CQPr3ao8xbur4ni1agGW4PpkVC/AtOHgUgTvn13Q57A
-         OEdeSwKAUBJVOZ6jggwWuREPbU+2R8JCK4v4wHDtQtOr1aX1rSx+CHw00EY4KWF7gWJx
-         s9JrWfTd9NRMreR8tY6zF23u/nzMQFTcIGAdb+cbQOeswmQjsYiYr513w8dx7skmOWKx
-         V6yjWK6ab2pFmq1MkJG9VLBexCPbmSk+maswIuLhitqmUXIN2oBm7+0cZbYfOIF5bLN7
-         ZHDw==
+        Sun, 1 Nov 2020 09:11:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604239897;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=sIyk7Z/4NPATT4L/LX2Y5gpqyse3pPUcPApM/XM/zvo=;
+        b=h3jmcxSxFmakJKg+wCd+r2TcKiBKcDO5yvrul37slq0ZW5R4i1uohHq9jhK5CBJpOhooEB
+        m6EV/foSLZDs21G+vMuF8XyGLMm/T1GnKUXDsp5ax6I8qsQ0K61peacrCYdGE1gSNNkgO3
+        R8JuhxqgmW6Bx6h9X2cXSoFaMTWEM30=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-IgwWj_6cOVmxOiP3Xf0phA-1; Sun, 01 Nov 2020 09:11:35 -0500
+X-MC-Unique: IgwWj_6cOVmxOiP3Xf0phA-1
+Received: by mail-oi1-f198.google.com with SMTP id g187so4582503oib.11
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 06:11:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/9og09u1zo9NX9D44RRZapG5HLQMVJBUImJCPrX7E10=;
-        b=D1k5PJZTJArIpxHiPTOAc5krXOM/lzsgaY67IzaZMfXC7Phq89AiiiFpODSvgtYyFZ
-         gFvPPAET7o+PNT7c3FGaqxelYLPu492eLG+XFofIQWZuQMiT2uXSrR9/NUwqZ/uSehF9
-         +lPKCW9s9CdERdDynWKuifrqWsxhKJtqC1DE+kK7fhgP/ly1vSryFP8miP7IiOkBge6E
-         uhTHlwTLZCosdUJxBTQJl5X0OR5YJouAdH1CImQG+BNKQli6qI6iC/ezBVwuMHdeCoYv
-         avBYBmVv8wUtmeMgdrmBq2XhLxM3/fW4CJDhbkAFn7oF2DZ8y1dCFtqG0qTJMAoHHUqP
-         Nx8w==
-X-Gm-Message-State: AOAM531jqcmjozKNynejZml0Lx5X8UaI5gixQY9P5NN87vsvBwckwFym
-        RT2Xt05DiF/rkePwOo60FCc=
-X-Google-Smtp-Source: ABdhPJxkoFz6bUWB/ur3u/570e3y4K4Q9+N1PjghCEI9WOLjGv3JghpAo05q6HUhDbI8h1O39hYbqA==
-X-Received: by 2002:a17:90a:d818:: with SMTP id a24mr5215285pjv.169.1604239760740;
-        Sun, 01 Nov 2020 06:09:20 -0800 (PST)
-Received: from localhost.localdomain (104.36.148.139.aurocloud.com. [104.36.148.139])
-        by smtp.gmail.com with ESMTPSA id i123sm11236442pfc.13.2020.11.01.06.09.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=sIyk7Z/4NPATT4L/LX2Y5gpqyse3pPUcPApM/XM/zvo=;
+        b=PblwcP1jx3P8No5Ll3W8nDA687pmTb4El9xK+TGIujucgYSr2GhdubgGKrk+zAABpr
+         phwyFGPoiGaDSiMkfQX7bOILDKGxblzWvfAtRt6rZwCh0jiMfBcSRRzD2rCKqxpjzbdF
+         ly9p92HUCI/AE7qN9kxv4RGEVNWkr9e3YWdg5mEuHgAMzrmStBd5zpu9eC8jMGQsZzwa
+         IFEoO00kCmTC7sGEtBzBheQJBKkCgy5yqVFVIQomiPRtki1Xw4x6qVzakR3p+z8hAEPO
+         RNO5wl45U4QXfGXRASA1+NFUjinrC84d2ZIvgXotx6GLXBvHGedf2Ge5m4TSZdSVhS0O
+         ZawA==
+X-Gm-Message-State: AOAM532+A7Xo1DCOUHeLk6JuHiNdr8yqU9q/zTlVU11dABLiVlB+rThU
+        X3rzR8GnQcGzZmIy0ykZUWqvZZRCUACXH5XymAwNLJG6qlmJoIoe9yNrmc+UA4sOt7bNiWBmHAt
+        qYsbLQrQzaCpGEwqvqpH1FWwl
+X-Received: by 2002:a9d:7505:: with SMTP id r5mr2592996otk.64.1604239894541;
+        Sun, 01 Nov 2020 06:11:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzUSjuZ0Qnvh2QaYVQYJ/+PNtONAzdv5wxwEbdXjZqg59Rvus/EwGHHO9o2uBHFGMtvGnwmEw==
+X-Received: by 2002:a9d:7505:: with SMTP id r5mr2592986otk.64.1604239894382;
+        Sun, 01 Nov 2020 06:11:34 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id s20sm2844146oof.39.2020.11.01.06.11.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Nov 2020 06:09:20 -0800 (PST)
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     alex.shi@linux.alibaba.com, jack@suse.cz,
-        akpm@linux-foundation.org, yeyunfeng@huawei.com
-Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Rustam Kovhaev <rkovhaev@gmail.com>
-Subject: [PATCH] reiserfs: add check for an invalid ih_entry_count
-Date:   Sun,  1 Nov 2020 06:09:58 -0800
-Message-Id: <20201101140958.3650143-1-rkovhaev@gmail.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 01 Nov 2020 06:11:33 -0800 (PST)
+From:   trix@redhat.com
+To:     rjw@rjwysocki.net
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] powercap/intel_rapl: remove unneeded semicolon
+Date:   Sun,  1 Nov 2020 06:11:29 -0800
+Message-Id: <20201101141129.2280794-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-when directory item has an invalid value set for ih_entry_count it might
-trigger use-after-free or out-of-bounds read in bin_search_in_dir_item()
+From: Tom Rix <trix@redhat.com>
 
-ih_entry_count * IH_SIZE for directory item should not be larger than
-ih_item_len
+A semicolon is not needed after a switch statement.
 
-Reported-and-tested-by: syzbot+83b6f7cf9922cae5c4d7@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=83b6f7cf9922cae5c4d7
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- fs/reiserfs/stree.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/powercap/intel_rapl_common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/reiserfs/stree.c b/fs/reiserfs/stree.c
-index 8bf88d690729..476a7ff49482 100644
---- a/fs/reiserfs/stree.c
-+++ b/fs/reiserfs/stree.c
-@@ -454,6 +454,12 @@ static int is_leaf(char *buf, int blocksize, struct buffer_head *bh)
- 					 "(second one): %h", ih);
- 			return 0;
- 		}
-+		if (is_direntry_le_ih(ih) && (ih_item_len(ih) < (ih_entry_count(ih) * IH_SIZE))) {
-+			reiserfs_warning(NULL, "reiserfs-5093",
-+					 "item entry count seems wrong %h",
-+					 ih);
-+			return 0;
-+		}
- 		prev_location = ih_location(ih);
- 	}
+diff --git a/drivers/powercap/intel_rapl_common.c b/drivers/powercap/intel_rapl_common.c
+index 983d75bd5bd1..020373d6d3f1 100644
+--- a/drivers/powercap/intel_rapl_common.c
++++ b/drivers/powercap/intel_rapl_common.c
+@@ -613,7 +613,7 @@ static u64 rapl_unit_xlate(struct rapl_domain *rd, enum unit_type type,
+ 	case ARBITRARY_UNIT:
+ 	default:
+ 		return value;
+-	};
++	}
  
+ 	if (to_raw)
+ 		return div64_u64(value, units) * scale;
 -- 
-2.28.0
+2.18.1
 
