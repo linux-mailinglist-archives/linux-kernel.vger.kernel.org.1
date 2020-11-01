@@ -2,125 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576062A1D06
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:56:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF3F2A1D12
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 11:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726231AbgKAJ4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 04:56:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726122AbgKAJ4c (ORCPT
+        id S1726285AbgKAKLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 05:11:10 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:49546 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726122AbgKAKLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 04:56:32 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9ADC061A48
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 01:56:32 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id v18so10393434ilg.1
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 01:56:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rWF0jUBfgM4gE1L1ibjwFfJ7/wL24CjLQAYD2m6zhIc=;
-        b=yaBZ2eEGHm2PmstDlb04y0oHeTp/sSkpYGAHF5ronXi276gjl/BD/5XQsksXfmhZXS
-         tq8bl4x+YB6y7KJL2Z2qu1lv5nSAxB8CA5diL0S9XsBYcV/KaeecPGgdmdYOttzew3Z9
-         xRbS+T/mHCWUtLrY5PStEtHvmrlph4KFnjJJm4TZOPV2SmrBAyFbhSkctBAQbXw+RvL3
-         Ej+DqDGhA693Eq5Lyoi+Bwl0UiAzJ1/Hqrqo3OPE4GkQJujm1Hxz2D4kEK2PVCay25lN
-         Rj3M7FNrNcis3CQ7IwwPQi32FmBteR1nWasN8PP35GSuK3yq/90Igg9RPUaQO3iWvhkx
-         3UDw==
+        Sun, 1 Nov 2020 05:11:09 -0500
+Received: by mail-il1-f200.google.com with SMTP id v29so8176830ilk.16
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 02:11:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rWF0jUBfgM4gE1L1ibjwFfJ7/wL24CjLQAYD2m6zhIc=;
-        b=lW2nDIDJZlQj4hPkc4egRqQ3yH8eAqA0r90N74WP58NGLphyguo+mU2YvRr1hsX7uk
-         UkS4ALDrZSMEJYD0hOq3DTEU/RvXg8J87GSCSpCkp//aSDB5tx4VPYXzCcOAVF4YQupO
-         v9RA7gxDP71uLPRQ8g0GAJ5bVmqKt4dt656cBfCwVxUqgbUcty38TaFvce0YEiOIQjZH
-         wblVFexCl8biA8xjCApsXz7G3CmqkMms0tRodRXpVD/6rfx39CNoZeVPuphz22g90ztw
-         0XSci4Hm8MUYoZqIxccCCoWt7Mm0junK6fgPsSQcGX5nWopdXZiWeKj/1HeAu6hLG/k3
-         qVyg==
-X-Gm-Message-State: AOAM530oh5501Lbf1aTrRDNfd1PhOERKKPOi2vxOOuZCMC09cRWMbBUF
-        jACBhnom4w6kHttIjun6mDe+t7gDOSH3St2MZpuVfA==
-X-Google-Smtp-Source: ABdhPJwv/+/UUcQWrqznnqne/tb+9I2DT9gLQL5cGzcLb8pERNY+4rhcYnzgXbfpzMjl/etubEYGqHrZ6HtLcs91sO4=
-X-Received: by 2002:a92:41cf:: with SMTP id o198mr7442692ila.262.1604224591586;
- Sun, 01 Nov 2020 01:56:31 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=DNT5DJaDDfNyecwyRLYDgxpqveMo4JQlWpmg6tKju2w=;
+        b=K8d83caRgYUKzrPg7RYWXuCvQRmr6Z65etgBRWtOveScKsnrs9c0xi6+i4d7izPPP3
+         vaexmK+Jy0GlKDfkAj577nN3HWFiqP0G7DqqCONxhohehme75JkzsFKeBhRb9Isx55IE
+         l3pbocXUv2GVxJzHsWW/XdxJkZZVAfwwafkOnzRKXSZO9cZDjaxvKlTAyj3qp/neIBcW
+         /X0dQkJPQJlz3OkxOhyJZxrTfK6JyH9S3icYaoK1hJSrp6JLYp1m0ZbQnwTlsYs+4sJ8
+         ia+k9OrETd/o4yfUPNsgOehaBtWkRc4EDkvVz6dqZ1NlYyKNlNI7mUS+nt8Bgd+y32uD
+         zWgg==
+X-Gm-Message-State: AOAM530qptAQogs1DYQ3jT/g0OYfJO8cFsgYl8Bn2xUM0wbgPYhyuFIZ
+        A/o70cErhbq4OU+1xnZ/r+3fhxioWIH/bWr0NWudGrkkFyr6
+X-Google-Smtp-Source: ABdhPJxctS2I+L3olPckb3hh9hZfKdD6yTrHGSqPX4hCaO2tFQcVdPn7k0R/QGO6z2nDrR9NItqN/DEwl64WRNQKAKC4+6c8m+GR
 MIME-Version: 1.0
-References: <20201025005916.64747-7-luka.kovacic@sartura.hr>
- <20201025005916.64747-6-luka.kovacic@sartura.hr> <20201025005916.64747-5-luka.kovacic@sartura.hr>
- <20201025005916.64747-4-luka.kovacic@sartura.hr> <20201025005916.64747-3-luka.kovacic@sartura.hr>
- <20201025005916.64747-2-luka.kovacic@sartura.hr> <20201025005916.64747-1-luka.kovacic@sartura.hr>
- <20201029180105.GD26053@duo.ucw.cz>
-In-Reply-To: <20201029180105.GD26053@duo.ucw.cz>
-From:   Luka Kovacic <luka.kovacic@sartura.hr>
-Date:   Sun, 1 Nov 2020 10:56:20 +0100
-Message-ID: <CADZsf3YE3d=dtMVVYHL91Z1WFcpNN4vyJJ6RG7VnJ2V-DqE+wQ@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] Add support for the IEI WT61P803 PUZZLE MCU
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Marek Behun <marek.behun@nic.cz>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Robert Marko <robert.marko@sartura.hr>
+X-Received: by 2002:a05:6638:3f1:: with SMTP id s17mr7616578jaq.102.1604225467601;
+ Sun, 01 Nov 2020 02:11:07 -0800 (PST)
+Date:   Sun, 01 Nov 2020 02:11:07 -0800
+In-Reply-To: <00000000000052792305af1c7614@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000022d95405b308d905@google.com>
+Subject: Re: BUG: unable to handle kernel paging request in pvclock_gtod_notify
+From:   syzbot <syzbot+815c663e220da75b02b6@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, bp@alien8.de, dan.carpenter@oracle.com,
+        george.kennedy@oracle.com, hpa@zytor.com, jmattson@google.com,
+        joro@8bytes.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Pavel,
+syzbot suspects this issue was fixed by commit:
 
-On Thu, Oct 29, 2020 at 7:01 PM Pavel Machek <pavel@ucw.cz> wrote:
->
-> Hi!
->
-> > +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/power_status
-> > +Date:                September 2020
-> > +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
-> > +Description: (RO) Power status indicates the host platform power on method.
-> > +             Value mapping (bitwise list):
-> > +             0x80 - Null
-> > +             0x40 - Firmware flag
-> > +             0x20 - Power loss detection flag (powered off)
-> > +             0x10 - Power loss detection flag (AC mode)
-> > +             0x08 - Button power on
-> > +             0x04 - WOL power on
-> > +             0x02 - RTC alarm power on
-> > +             0x01 - AC recover power on
->
-> It would be nice to put this into standard place somewhere. Many
-> machines will want to expose this information.
+commit a49145acfb975d921464b84fe00279f99827d816
+Author: George Kennedy <george.kennedy@oracle.com>
+Date:   Tue Jul 7 19:26:03 2020 +0000
 
-As this is specific to this microcontroller and to how it encodes
-these values, I don't see a need to change this.
-This isn't used anywhere else.
+    fbmem: add margin check to fb_check_caps()
 
->
-> If not, at least spell out WoL, as it is not that common of acronym.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17499724500000
+start commit:   60e72093 Merge tag 'clk-fixes-for-linus' of git://git.kern..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
+dashboard link: https://syzkaller.appspot.com/bug?extid=815c663e220da75b02b6
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1162b04d900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=135e7383900000
 
-Okay.
+If the result looks correct, please mark the issue as fixed by replying with:
 
->
-> > +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/ac_recovery_status
-> > +Date:                September 2020
-> > +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
-> > +Description: (RO) Host platform AC recovery status value
->
-> I can not tell what this is from documentation...
+#syz fix: fbmem: add margin check to fb_check_caps()
 
-I'll expand the description.
-
->
-> Best regards,
->                                                                 Pavel
->
-> --
-> http://www.livejournal.com/~pavelmachek
-
-Kind regards,
-Luka
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
