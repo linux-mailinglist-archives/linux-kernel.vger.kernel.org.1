@@ -2,115 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DB62A2046
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D71862A2048
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgKARU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:20:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgKARUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:20:55 -0500
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D4EF2231B;
-        Sun,  1 Nov 2020 17:20:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604251254;
-        bh=I93y1z49Kk0Fd9T4szvukYN9LyWR1JVfBJJppslZeSI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=veFbtSCJWH/yhIgPP3Mh+p6x/fX+IO09v0DA14w+51aQqv3oCEwNrbG7lSXRqh/zr
-         n5JygDA71iEK8PmJqQdRNjI0OE/FjpIC1o8oBkeXzWp2B0w8r9Y9L+OEABGhaZd0Ko
-         uOPGrYCrtPyKK54qDPvJDcEhCVG6DJYNERnE0a8E=
-Date:   Sun, 1 Nov 2020 17:20:49 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/15] iio: accel: remove unnecessary CONFIG_PM_SLEEP
-Message-ID: <20201101172049.04bea85b@archlinux>
-In-Reply-To: <20201031224735.atjih4opb6w57r6y@Rk>
-References: <20201029074910.227859-1-coiby.xu@gmail.com>
-        <20201029144007.77d967b0@archlinux>
-        <CAHp75Vc829u6XPPA+eE=_AFZSPF+yVqT7nUXxtzkwx7-xLLrCg@mail.gmail.com>
-        <20201030143410.pbixjo2cllhd27zp@Rk>
-        <20201031110511.515a2f0f@archlinux>
-        <20201031224735.atjih4opb6w57r6y@Rk>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727141AbgKARVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:21:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727087AbgKARVc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 12:21:32 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF7CC0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 09:21:31 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id p93so11772562edd.7
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 09:21:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Jg0a2ra+p9pkiP45Ky5OFp05vywiRFVIdzSpstZzgNI=;
+        b=hOjv0gjorB57d6OGPACJOoZbWH/SImlm23ZzW0Xvq6msjVAZV6U4KYAMdsOEQxiHe8
+         2NGiZOLt3KkXv6xfBpE/WDVFwPcWT5nNnRu07LnDopFQuOyQphr+01W8C3x6Iy6LZqD/
+         HeLYZ3gek1qBr/5iz7Aw6g4O4xAQgPFyplr2YCjgc5qx/idtg6GybDEwWnK18bxYsiYk
+         PPndFn8DGa7DFZikH4nnqzjhlpfZYxYDaK2iRIpDPk8SISU+joGnKyDhhMw/6WhJ6aC7
+         ham68VajJXJDZRmSYjrwVxjxx29q/V3m3Vj4kgyl1L1U6amzUW/jqffqB5sTRbkw/lwu
+         tvtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Jg0a2ra+p9pkiP45Ky5OFp05vywiRFVIdzSpstZzgNI=;
+        b=VkwlOt9CTnvApIBNHkkzeMPzoie5YxQhsbi5MRAhuZKATVsIm2A1tq9ORbLJDUwntJ
+         DEtouhplNhcfdzwXgt5CNBkCjKkcojQwqQTABpYEGQfRIuSQjFBmXPxfTsM1pKeRYltf
+         NT5DaOWa8hJTeCcO9IkujjRb2GjbgAFgBTV8t+v5Ae0Y1zjXEkhhQ9F1ffn1CtNWj0N0
+         JBoxa7t7qkDwesgJGbqAmAUYu73f00RMufdi0ZKvPrqYtLnKf1c3+ztmnBKeZTIF6SGp
+         HmqyxScx8nTx0hTZhQ05QXzTpYbFMry/OfYAkpo5v+yCRKa13VNc0Xi+05fKGacz6O5d
+         6l3A==
+X-Gm-Message-State: AOAM533tu5W0LRgVZ5Y4cyhXz5a9Dtb6EJD3ZetPY05PwIhDYFTIeQSJ
+        matc/oFsUdWX+VkV7Q/XD9lPjjP985lYLdxqwZhJkDG+ZRY2zQ==
+X-Google-Smtp-Source: ABdhPJxiLfOKEo4UcEaPjMPL6yj+u1pb7wzvcFZDDnYm6MDN737bvo5S1JIxV2BLcw9jWaMmQtvJsQ0Kv9EsiTmjo0w=
+X-Received: by 2002:a05:6402:1c1b:: with SMTP id ck27mr13110966edb.218.1604251290293;
+ Sun, 01 Nov 2020 09:21:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   NASA Jeff <tallboy258@gmail.com>
+Date:   Sun, 1 Nov 2020 17:21:17 +0000
+Message-ID: <CAN-MDmq=eCbPb=17MsRRgtJptRCvbVxhnUusHvE66r=g5MKGLg@mail.gmail.com>
+Subject: you want it
+To:     Linux Kml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 1 Nov 2020 06:47:35 +0800
-Coiby Xu <coiby.xu@gmail.com> wrote:
-
-> On Sat, Oct 31, 2020 at 11:05:11AM +0000, Jonathan Cameron wrote:
-> >On Fri, 30 Oct 2020 22:34:10 +0800
-> >Coiby Xu <coiby.xu@gmail.com> wrote:
-> >  
-> >> On Thu, Oct 29, 2020 at 07:06:40PM +0200, Andy Shevchenko wrote:  
-> >> >On Thu, Oct 29, 2020 at 4:42 PM Jonathan Cameron <jic23@kernel.org> wrote:  
-> >> >> On Thu, 29 Oct 2020 15:48:56 +0800
-> >> >> Coiby Xu <coiby.xu@gmail.com> wrote:  
-> >> >  
-> >> >> Please put a cover letter on your next series explaining the context.
-> >> >> In this particular case some of the replies you have gotten are
-> >> >> general at it is a lot easier to find these sorts of things via
-> >> >> replying to the cover letter.  
-> >> >
-> >> >Looking at the number of duplicate messages I would suggest that one
-> >> >needs to go through documentation on how to use git format-patch and
-> >> >git send-email.
-> >> >  
-> >>
-> >> Thank you for the suggestion! Actually it's a tree-wide change and it
-> >> seems the kernel community prefer individual patches or series for
-> >> subsystems having the same maintainer over a huge patch set so I wrote
-> >> some scripts to automate the process. That's why you see ~50 emails
-> >> with almost the same commit message. The only difference of these
-> >> commit messages is the name of PM macro.  
-> >
-> >When doing a bit set like this, it's worth sending out a small subset
-> >first to shake out issue like those seen here.
-> >
-> >Once those get merged then send out out the reset.
-> >  
-> Thank you for the suggestion! Actually I've held off another ~150
-> emails and these ~200 emails were only part of work. I thought it's
-> better to reach 4 or 5 subsystem to collect sufficient feedbacks
-> considering some subsystems may respond slow. But I didn't realize a
-> better way is to cut down the size of patch set sent to a subsystem.
-
-Keep it sub 20 per subsystem and it shouldn't matter too much, but perhaps
-always send to just one subsystem first as you may get very fast responses!
-
-Then if it looks good after a few days, your approach of targeting a few
-more subsystems would make sense.
-
-Jonathan
-
-> >Thanks,
-> >
-> >Jonathan
-> >  
-> >>  
-> >> >--
-> >> >With Best Regards,
-> >> >Andy Shevchenko  
-> >>
-> >> --
-> >> Best regards,
-> >> Coiby  
-> >  
-> 
-> --
-> Best regards,
-> Coiby
-
+you go for it
