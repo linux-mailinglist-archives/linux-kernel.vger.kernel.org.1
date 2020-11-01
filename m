@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1446D2A1F49
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE29F2A1F51
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgKAPtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 10:49:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726791AbgKAPtT (ORCPT
+        id S1726913AbgKAP4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 10:56:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51586 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726791AbgKAP4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 10:49:19 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52950C0617A6;
-        Sun,  1 Nov 2020 07:49:19 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id l28so14139514lfp.10;
-        Sun, 01 Nov 2020 07:49:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+IMMWwTBpIuU34muTgua4oEKfGJdORV+B0XtK66fJrc=;
-        b=CH53aYEYM+ZxNJAYZtHdmiWk27hMZvw57vtMxIUKweWLPnQ1zL8KTxXSLLaQP6pJ6H
-         CUeC1l9MqRH+Nno4rcVnD6fZ9Tr/yDkBUk4cu2wdh8Dji0FhT7jXrEc+4pL9X/ptuPD3
-         Hb3Sys5CXMsgTzKwZGJouWzFlc41nQfJ6NftUYNSEAqjIPus7ZcGWGTmt0HXysGzbVp6
-         aQ+4zxSgXSuvGkWWcGlJhJMNyo1BiZxfp+Ku9L/APZSBgeE61Xkp9p4kL6htxBH2WzZ6
-         4R90X1KyAl1/KNdI99Z0ZX1Le9FoJabWU2LXGilSKg8cj1/R8jCESOeHWYofOZLaWOAB
-         o3tQ==
+        Sun, 1 Nov 2020 10:56:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604246168;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=ZXci3YM/F8Wd+u3JPKVFSvYgy6OEpsVzxJrs9tBW4zM=;
+        b=Q9THev5+KlWYCyl6hrqBYC/bZ4n7gmR6ZBUBBew4lZLsliqAxEP73o4vOxpI3kM0wdL11y
+        MtLRuJHRkR0NhJSuJUffWqI86prgu8CYJfOYs9rxLTua0U6aEudY4mVZzNbiqWPLA5QeS5
+        lUOq9gMAbP2ommG/AMIScNp29/dytp4=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-366-DOi9nz8zMc-BdgeCYgrg1w-1; Sun, 01 Nov 2020 10:56:06 -0500
+X-MC-Unique: DOi9nz8zMc-BdgeCYgrg1w-1
+Received: by mail-oo1-f70.google.com with SMTP id p6so4607859ooo.12
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 07:56:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+IMMWwTBpIuU34muTgua4oEKfGJdORV+B0XtK66fJrc=;
-        b=ILvtkWct2W3TQRDNEglI8IoiRWB5V/aaiQ1y2Qj7cHNtYaophPM871Z4s6dfHVwtr8
-         GsNS5FxC7NiMblEUG00YdADrRmW5nz6UxiQT6S9UxOFYNtU0pLd2p0mVrxSWv08tFNxm
-         /ypJ35NolU/fNn/npnG67P8BK6DzK10TnL7rAJfNtdPXvy1udFlPl1ocvdZWoI88VODS
-         SmsEfgH5QWAvOsAwqvxd4ueBch/q1MRP94dsQQeLFzmoOWGZxJd/7GC2AE+Ta1WKh0rc
-         XRTuqXknyr2k+6tuHdZtajwv7JBn2Kw417ms2Y39nyZvLbdfjjsDrGZ07ZiikKsDxWYR
-         0wKA==
-X-Gm-Message-State: AOAM530LzpQw8vICdCo8z4NNWW2ZglgVAY/BX2S8EK52wilw/Pcprfbx
-        Xk1+Ek3E1n3k4XFT0XyFQA04aKCq27k=
-X-Google-Smtp-Source: ABdhPJyfbmcSEmTMH443D7OLJRec3W7yiy/1SR2NX2guVnd/pVsXQbN96ATE9WOlpP88kx03VxbOzQ==
-X-Received: by 2002:a19:414b:: with SMTP id o72mr4634104lfa.23.1604245757706;
-        Sun, 01 Nov 2020 07:49:17 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-177.dynamic.spd-mgts.ru. [109.252.193.177])
-        by smtp.googlemail.com with ESMTPSA id 196sm1571873lfg.209.2020.11.01.07.49.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Nov 2020 07:49:17 -0800 (PST)
-Subject: Re: [PATCH v6 51/52] PM / devfreq: tegra30: Support interconnect and
- OPPs from device-tree
-To:     cwchoi00@gmail.com
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree <devicetree@vger.kernel.org>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-52-digetx@gmail.com>
- <CAGTfZH1PV4r-pD=zTKD71nQb5+UobJKa5mBv-Nb2ZgSubkscjA@mail.gmail.com>
- <2ebd184c-60e8-19e2-9965-19481ced1c70@gmail.com>
- <CAGTfZH0=6R02euOR3JHgA0iLq5++Yvp3Z_wBCEs7bzkfuorEFQ@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <5f5a22b1-4d01-5698-1bca-6bcc66c55e6f@gmail.com>
-Date:   Sun, 1 Nov 2020 18:49:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAGTfZH0=6R02euOR3JHgA0iLq5++Yvp3Z_wBCEs7bzkfuorEFQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZXci3YM/F8Wd+u3JPKVFSvYgy6OEpsVzxJrs9tBW4zM=;
+        b=Eo1o5USlCI9jGSNzzeRPm8sB3lL1PKiYWHsPEx5lEXC0SpOunhAmAyux8dBMtbnYuN
+         ESQHFP3gUiHF3bVaTW4SchU55P0s+F6WljW42t+rIzOslUh9kK198ZtwxpX6aCLgYzLZ
+         U4eNY2sDpea+88oMOm9sdTHqmPR0XR5xXSNa0MQCIDgDTRYpcdcI59JFhHs4DYcPxJNw
+         yw0pLTEANjEKfjR8jsz7BUBsWm1UwI1no73vsJhNtDJ55zHQMXtTefllsykuc8DjZN7P
+         VAJOu+qE+NOl1qxqg8F08+b0zuTpd5ATub40m5DmKUvRsF7aaohvud1oWV9UrkowaWdg
+         fMCg==
+X-Gm-Message-State: AOAM533ZjPECNmFXnZaG9cVti0A8Jnl1ivkw2vFg0ca82Ax6iyD17Kbi
+        pPZkuWOAqtF83+iXxqizNj5M1Kla7c5vbb1EMIAXi6vMzNuIgNRaYKGPYE4NynfZdf2pWFqqhRF
+        z74GX7JFbg9h9/ZVDSE2yabVJ
+X-Received: by 2002:a4a:d0a4:: with SMTP id t4mr9050761oor.21.1604246166185;
+        Sun, 01 Nov 2020 07:56:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzqTyouyXFh9eMtC2RS9ihzYL2T2XikVGqev7YH/kWoRhgAsIdVJn1Ec7TvrZOLF+bRwRfVEA==
+X-Received: by 2002:a4a:d0a4:: with SMTP id t4mr9050752oor.21.1604246166023;
+        Sun, 01 Nov 2020 07:56:06 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id e47sm1044928ote.50.2020.11.01.07.56.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 07:56:05 -0800 (PST)
+From:   trix@redhat.com
+To:     davem@davemloft.net, kuba@kernel.org, mkubecek@suse.cz,
+        f.fainelli@gmail.com, andrew@lunn.ch, magnus.karlsson@intel.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] ethtool: remove unneeded semicolon
+Date:   Sun,  1 Nov 2020 07:56:01 -0800
+Message-Id: <20201101155601.2294374-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.11.2020 18:44, Chanwoo Choi пишет:
->> OPP core will try to grab the clock reference for the table and it may
->> cause EPROBE_DEFER. Although, it shouldn't happen here because we have
->> devm_clk_get() before the get_opp_table(), hence seems the deferred
->> probe indeed shouldn't happen in this case.
-> It is my missing point. If there, you're right.
-> Could you provide the code point to check the clock reference on the OPP core?
+From: Tom Rix <trix@redhat.com>
 
-Please see it here:
+A semicolon is not needed after a switch statement.
 
-https://elixir.bootlin.com/linux/v5.10-rc1/source/drivers/opp/core.c#L1101
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ net/ethtool/ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
+index ec2cd7aab5ad..771688e1b0da 100644
+--- a/net/ethtool/ioctl.c
++++ b/net/ethtool/ioctl.c
+@@ -2433,7 +2433,7 @@ static int noinline_for_stack ethtool_set_per_queue(struct net_device *dev,
+ 		return ethtool_set_per_queue_coalesce(dev, useraddr, &per_queue_opt);
+ 	default:
+ 		return -EOPNOTSUPP;
+-	};
++	}
+ }
+ 
+ static int ethtool_phy_tunable_valid(const struct ethtool_tunable *tuna)
+-- 
+2.18.1
+
