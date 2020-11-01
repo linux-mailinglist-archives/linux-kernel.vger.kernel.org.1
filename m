@@ -2,108 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519A32A1E96
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 15:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD0D2A1EA9
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 15:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgKAOk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 09:40:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49490 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726788AbgKAOkZ (ORCPT
+        id S1726781AbgKAOnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 09:43:08 -0500
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:50502 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726499AbgKAOnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 09:40:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604241624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=WUL64u8dGf0LoKnUz7lF+D+J0ocjCbe9Ay8eU/rDBJ4=;
-        b=MUYiCNWVPtAryyGmrLctOHyTrWEyRdr8tRX7qtaMRkiEEVjf5CIwdCXI3Va+eWVyVIC2YA
-        joiyIiVEjGxukAPboFAT1YH2J4MKf96KtBlHQpN31l+33Sh05HYWJMoMiEnSzPspUmh99v
-        XiL43rOFUlHOHdN99GoKKRnczhNu4Ec=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-267-gbBN15EzODOLgGOR5zAjHw-1; Sun, 01 Nov 2020 09:40:22 -0500
-X-MC-Unique: gbBN15EzODOLgGOR5zAjHw-1
-Received: by mail-ot1-f69.google.com with SMTP id e31so26664ote.0
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 06:40:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=WUL64u8dGf0LoKnUz7lF+D+J0ocjCbe9Ay8eU/rDBJ4=;
-        b=fR/IWipwNc33CtCIIUbrI2YdwWIi5I6BC4+MO53GOuJqiQCmpZgnVximpWFugLUFFJ
-         wqZq8hHCnhM1fUpCmouJ9pSainDmb6+GJ+CBsaxLEpnJFq0J7uuQhLmBtolPi2x9A4UI
-         ub7wsA+P1yGe4ym2weq6ep6BuSVPGW18G+AOZhNv6kD1Rx5N8Up4TGzCaBw611LK+tcF
-         kheYtRgSUXhTjvmN0jDqKr/aSEf9p5IwEFdd7OAM5FVKrfz96hxK9x9k1DXuEKOnllKo
-         QayCBTKMJGc5SHVlGNHPK8TQc82MM1gkQFeBX2mGRVdtFg7OtV5e/yeNvsGf/RNEiENZ
-         l3Gg==
-X-Gm-Message-State: AOAM530ug/MgiET2WdyIU2ktrEHwGc7ZyNaD3Op5CTO7NaeWloHd91Tx
-        FhpYezcWJzbIZEMdwDXZwbeQFTtP14acHfN17+xRwalvZd1tnW/ByGtFsbOa0f/fk/5Bk+42APw
-        v36soCgrq7648+LWiCZQPcmFt
-X-Received: by 2002:aca:ab50:: with SMTP id u77mr3838866oie.111.1604241621988;
-        Sun, 01 Nov 2020 06:40:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwCMM4TlP5Yz7zso7HiOmxshFFIZRjvHbAQQc7PaS/R66+AJ3PeA5xHwhc2C7I73PxclekXbQ==
-X-Received: by 2002:aca:ab50:: with SMTP id u77mr3838855oie.111.1604241621808;
-        Sun, 01 Nov 2020 06:40:21 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id f18sm2931296otp.10.2020.11.01.06.40.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Nov 2020 06:40:21 -0800 (PST)
-From:   trix@redhat.com
-To:     hare@suse.de, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] scsi: fcoe: remove unneeded semicolon
-Date:   Sun,  1 Nov 2020 06:40:17 -0800
-Message-Id: <20201101144017.2284047-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Sun, 1 Nov 2020 09:43:07 -0500
+Received: from pps.filterd (m0134422.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A1EgrGU020387;
+        Sun, 1 Nov 2020 14:42:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version; s=pps0720;
+ bh=yv27s7RCBX/TWQjfzBWzQfYgerna7orjR+8Y7ZUqguI=;
+ b=bjNLOQV5RV9jjfxMpG3nFxY0LXe/XIeyukJ+GfkwB++Mcbo1UX3z7ZhUTsw8rEAb+z/n
+ QeqD43pRxexMm5y5S/CTyqg8fIDJPlqftnQWT6sq6nq6U4uwNDREYx9Rb9OYfSf7Ej4J
+ VS7msfjhWcdH5yDIJsX+I8Sbe+9c8/nz8Xmk6NWLLqXrfYY0fgtHPHhtmv/1esPy4ef3
+ MhfAZkOfYNmvvZsx58PtA33zB5m4WQhy7onvx7IEN5G84AXE42/9VyzVjuBX09/i5OcE
+ ExeNu9jRcEs60zXVFzqtuepUWGcYC7ecslfNa1MSHzwbH5HRMnGKE00cgsGu+T055F8p gw== 
+Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
+        by mx0b-002e3701.pphosted.com with ESMTP id 34hhn5b68e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 01 Nov 2020 14:42:53 +0000
+Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
+        by g9t5008.houston.hpe.com (Postfix) with ESMTP id F3C7A53;
+        Sun,  1 Nov 2020 14:42:50 +0000 (UTC)
+Received: from rfwz62.ftc.rdlabs.hpecorp.net (rfwz62.americas.hpqcorp.net [10.33.237.8])
+        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 74F1949;
+        Sun,  1 Nov 2020 14:42:49 +0000 (UTC)
+From:   rwright@hpe.com
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        hdegoede@redhat.com, wambui.karugax@gmail.com,
+        chris@chris-wilson.co.uk, matthew.auld@intel.com,
+        akeem.g.abodunrin@intel.com, prathap.kumar.valsan@intel.com,
+        mika.kuoppala@linux.intel.com, rwright@hpe.com
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH v3 0/3] Reduce context clear batch size to avoid gpu hang
+Date:   Sun,  1 Nov 2020 07:42:41 -0700
+Message-Id: <20201101144244.10086-1-rwright@hpe.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-01_05:2020-10-30,2020-11-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=915
+ suspectscore=0 clxscore=1011 lowpriorityscore=0 impostorscore=0
+ priorityscore=1501 mlxscore=0 bulkscore=0 phishscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011010120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Randy Wright <rwright@hpe.com>
 
-A semicolon is not needed after a switch statement.
+For several months, I've been experiencing GPU hangs when  starting
+Cinnamon on an HP Pavilion Mini 300-020 if I try to run an upstream
+kernel.  I reported this recently in
+https://gitlab.freedesktop.org/drm/intel/-/issues/2413 where I have
+attached the requested evidence including the state collected from
+/sys/class/drm/card0/error and debug output from dmesg.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/scsi/fcoe/fcoe.c       | 2 +-
- drivers/scsi/fcoe/fcoe_sysfs.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+I ran a bisect to find the problem, which indicates this is the
+troublesome commit:
 
-diff --git a/drivers/scsi/fcoe/fcoe.c b/drivers/scsi/fcoe/fcoe.c
-index a4be6f439c47..03bf49adaafe 100644
---- a/drivers/scsi/fcoe/fcoe.c
-+++ b/drivers/scsi/fcoe/fcoe.c
-@@ -2023,7 +2023,7 @@ static int fcoe_ctlr_enabled(struct fcoe_ctlr_device *cdev)
- 	case FCOE_CTLR_UNUSED:
- 	default:
- 		return -ENOTSUPP;
--	};
-+	}
- }
- 
- /**
-diff --git a/drivers/scsi/fcoe/fcoe_sysfs.c b/drivers/scsi/fcoe/fcoe_sysfs.c
-index ffef2c8eddc6..af658aa38fed 100644
---- a/drivers/scsi/fcoe/fcoe_sysfs.c
-+++ b/drivers/scsi/fcoe/fcoe_sysfs.c
-@@ -312,7 +312,7 @@ static ssize_t store_ctlr_mode(struct device *dev,
- 	default:
- 		LIBFCOE_SYSFS_DBG(ctlr, "Mode change not supported.\n");
- 		return -ENOTSUPP;
--	};
-+	}
- }
- 
- static FCOE_DEVICE_ATTR(ctlr, mode, S_IRUGO | S_IWUSR,
-@@ -346,7 +346,7 @@ static ssize_t store_ctlr_enabled(struct device *dev,
- 		break;
- 	case FCOE_CTLR_UNUSED:
- 		return -ENOTSUPP;
--	};
-+	}
- 
- 	rc = ctlr->f->set_fcoe_ctlr_enabled(ctlr);
- 	if (rc)
+  [47f8253d2b8947d79fd3196bf96c1959c0f25f20] drm/i915/gen7: Clear all EU/L3 residual contexts
+
+The nature of that commit suggested to me that reducing the
+batch size used in the context clear operation might help this
+relatively low-powered system to avoid the hang.... and it did!
+I simply forced this system to take the smaller batch length that is
+already used for non-Haswell systems.
+
+The first two versions of this patch were posted as RFC
+patches to the Intel-gfx list, implementing the same
+algorithmic change in function batch_get_defaults,
+but without employing a properly constructed quirk.
+
+I've now cleaned up the patch to employ a new QUIRK_RENDERCLEAR_REDUCED.
+The quirk is presently set only for the aforementioned HP Pavilion Mini
+300-020.  The patch now touches three files to define the quirk, set it,
+and then check for it in function batch_get_defaults.
+
+Randy Wright (3):
+  drm/i915: Introduce quirk QUIRK_RENDERCLEAR_REDUCED
+  drm/i915/display: Add function quirk_renderclear_reduced
+  drm/i915/gt: Force reduced batch size if new QUIRK_RENDERCLEAR_REDUCED
+    is set.
+
+ drivers/gpu/drm/i915/display/intel_quirks.c | 13 +++++++++++++
+ drivers/gpu/drm/i915/gt/gen7_renderclear.c  |  2 +-
+ drivers/gpu/drm/i915/i915_drv.h             |  1 +
+ 3 files changed, 15 insertions(+), 1 deletion(-)
+
 -- 
-2.18.1
+2.25.1
 
