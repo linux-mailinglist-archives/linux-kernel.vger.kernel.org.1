@@ -2,165 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CE22A1D76
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 11:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 858022A1D7D
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 12:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbgKAKzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 05:55:20 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:46566 "EHLO gloria.sntech.de"
+        id S1726397AbgKALCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 06:02:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726145AbgKAKzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 05:55:19 -0500
-Received: from p57b773f8.dip0.t-ipconnect.de ([87.183.115.248] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kZB13-00032r-5V; Sun, 01 Nov 2020 11:55:17 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     linux-media@vger.kernel.org,
-        Helen Koike <helen.koike@collabora.com>
-Cc:     devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        robh+dt@kernel.org, kernel@collabora.com, hverkuil-cisco@xs4all.nl,
-        dafna.hirschfeld@collabora.com, mark.rutland@arm.com,
-        karthik.poduval@gmail.com, eddie.cai.linux@gmail.com,
-        jbx6244@gmail.com, zhengsq@rock-chips.com, robin.murphy@arm.com
-Subject: Re: [PATCH v6 9/9] arm64: dts: rockchip: add isp and sensors for Scarlet
-Date:   Sun, 01 Nov 2020 11:55:16 +0100
-Message-ID: <14722083.QWuEjnDerj@phil>
-In-Reply-To: <20201020193850.1460644-10-helen.koike@collabora.com>
-References: <20201020193850.1460644-1-helen.koike@collabora.com> <20201020193850.1460644-10-helen.koike@collabora.com>
+        id S1726145AbgKALCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 06:02:16 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EAFDA2074F;
+        Sun,  1 Nov 2020 11:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604228535;
+        bh=5XNFiqjH2oN7J9GEbY/PVlCdxYv+WtUQcnEnB0t38U0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iLUHj0ReecjaVs/FH15VZkcACz93cXzUIe3yZNkNdBUr8gyqp8kffHcGoaXIjuhYV
+         N9ikhsDGmQwSl+SDDhK8JQxo5kfRSd3yYqsj6Q+fHdsp36JALoEnanuKgSS0oZ+1sL
+         XJ+lxSMYHpN9KEaTP59VrktOFwzIB9snxzHysrAc=
+Date:   Sun, 1 Nov 2020 12:02:58 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Anmol Karn <anmol.karan123@gmail.com>
+Cc:     ralf@linux-mips.org, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        syzbot+a1c743815982d9496393@syzkaller.appspotmail.com,
+        linux-hams@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [Linux-kernel-mentees] [PATCH] net: rose: Fix Null pointer
+ dereference in rose_send_frame()
+Message-ID: <20201101110258.GA2925745@kroah.com>
+References: <20201015001712.72976-1-anmol.karan123@gmail.com>
+ <20201015051225.GA404970@kroah.com>
+ <20201015141012.GB77038@Thinkpad>
+ <20201015155051.GB66528@kroah.com>
+ <20201030105413.GA32091@Thinkpad>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030105413.GA32091@Thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, 20. Oktober 2020, 21:38:50 CET schrieb Helen Koike:
-> From: Eddie Cai <eddie.cai.linux@gmail.com>
+On Fri, Oct 30, 2020 at 04:24:13PM +0530, Anmol Karn wrote:
+> On Thu, Oct 15, 2020 at 05:50:51PM +0200, Greg KH wrote:
+> > On Thu, Oct 15, 2020 at 07:40:12PM +0530, Anmol Karn wrote:
+> > > On Thu, Oct 15, 2020 at 07:12:25AM +0200, Greg KH wrote:
+> > > > On Thu, Oct 15, 2020 at 05:47:12AM +0530, Anmol Karn wrote:
+> > > > > In rose_send_frame(), when comparing two ax.25 addresses, it assigns rose_call to 
+> > > > > either global ROSE callsign or default port, but when the former block triggers and 
+> > > > > rose_call is assigned by (ax25_address *)neigh->dev->dev_addr, a NULL pointer is 
+> > > > > dereferenced by 'neigh' when dereferencing 'dev'.
+> > > > > 
+> > > > > - net/rose/rose_link.c
+> > > > > This bug seems to get triggered in this line:
+> > > > > 
+> > > > > rose_call = (ax25_address *)neigh->dev->dev_addr;
+> > > > > 
+> > > > > Prevent it by checking NULL condition for neigh->dev before comparing addressed for 
+> > > > > rose_call initialization.
+> > > > > 
+> > > > > Reported-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com 
+> > > > > Link: https://syzkaller.appspot.com/bug?id=9d2a7ca8c7f2e4b682c97578dfa3f236258300b3 
+> > > > > Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+> > > > > ---
+> > > > > I am bit sceptical about the error return code, please suggest if anything else is 
+> > > > > appropriate in place of '-ENODEV'.
+> > > > > 
+> > > > >  net/rose/rose_link.c | 3 +++
+> > > > >  1 file changed, 3 insertions(+)
+> > > > > 
+> > > > > diff --git a/net/rose/rose_link.c b/net/rose/rose_link.c
+> > > > > index f6102e6f5161..92ea6a31d575 100644
+> > > > > --- a/net/rose/rose_link.c
+> > > > > +++ b/net/rose/rose_link.c
+> > > > > @@ -97,6 +97,9 @@ static int rose_send_frame(struct sk_buff *skb, struct rose_neigh *neigh)
+> > > > >  	ax25_address *rose_call;
+> > > > >  	ax25_cb *ax25s;
+> > > > >  
+> > > > > +	if (!neigh->dev)
+> > > > > +		return -ENODEV;
+> > > > 
+> > > > How can ->dev not be set at this point in time?  Shouldn't that be
+> > > > fixed, because it could change right after you check this, right?
+> > > > 
+> > > > thanks,
+> > > > 
+> > > > greg k-h
+> > > 
+> > > Hello Sir,
+> > > 
+> > > Thanks for the review,
+> > > After following the call trace i thought, if neigh->dev is NULL it should
+> > > be checked, but I will figure out what is going on with the crash reproducer,
+> > > and I think rose_loopback_timer() is the place where problem started. 
+> > > 
+> > > Also, I have created a diff for checking neigh->dev before assigning ROSE callsign
+> > > , please give your suggestions on this.
+> > > 
+> > > 
+> > > diff --git a/net/rose/rose_link.c b/net/rose/rose_link.c
+> > > index f6102e6f5161..2ddd5e559442 100644
+> > > --- a/net/rose/rose_link.c
+> > > +++ b/net/rose/rose_link.c
+> > > @@ -97,10 +97,14 @@ static int rose_send_frame(struct sk_buff *skb, struct rose_neigh *neigh)
+> > >         ax25_address *rose_call;
+> > >         ax25_cb *ax25s;
+> > >  
+> > > -       if (ax25cmp(&rose_callsign, &null_ax25_address) == 0)
+> > > -               rose_call = (ax25_address *)neigh->dev->dev_addr;
+> > > -       else
+> > > -               rose_call = &rose_callsign;
+> > > +       if (neigh->dev) {
+> > > +               if (ax25cmp(&rose_callsign, &null_ax25_address) == 0)
+> > > +                       rose_call = (ax25_address *)neigh->dev->dev_addr;
+> > > +               else
+> > > +                       rose_call = &rose_callsign;
+> > > +       } else {
+> > > +               return -ENODEV;
+> > > +       }
+> > 
+> > The point I am trying to make is that if someone else is setting ->dev
+> > to NULL in some other thread/context/whatever, while this is running,
+> > checking for it like this will not work.
+> > 
+> > What is the lifetime rules of that pointer?  Who initializes it, and who
+> > sets it to NULL.  Figure that out first please to determine how to check
+> > for this properly.
+> > 
+> > thanks,
+> > 
+> > greg k-h
 > 
-> Enable ISP and camera sensor ov2685 and ov5695 for Scarlet Chromebook
+> Hello All,
 > 
-> Verified with:
->     make ARCH=arm64 dtbs_check
+> I investigated further on this,
 > 
-> Signed-off-by: Shunqian Zheng <zhengsq@rock-chips.com>
-> Signed-off-by: Eddie Cai <eddie.cai.linux@gmail.com>
-> Signed-off-by: Tomasz Figa <tfiga@chromium.org>
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-
-
-looks good, and I'd like to apply this one after the drivers/media-patches
-of this series got applied.
-
-
-Thanks
-Heiko
-
-> ---
->  .../boot/dts/rockchip/rk3399-gru-scarlet.dtsi | 74 +++++++++++++++++++
->  1 file changed, 74 insertions(+)
+> Here is some things i noticed:
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet.dtsi
-> index 60cd1c18cd4e0..beee5fbb34437 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet.dtsi
-> @@ -296,6 +296,52 @@ camera: &i2c7 {
+> When I followed the call trace,
+> 
+> [ 84.241331][ C3] Call Trace:
+> [ 84.241331][ C3] rose_transmit_clear_request ($SOURCE/net/rose/rose_link.c:255)
+> [ 84.241331][ C3] ? lockdep_hardirqs_on ($SOURCE/kernel/locking/lockdep.c:4161)
+> [ 84.241331][ C3] rose_rx_call_request ($SOURCE/net/rose/af_rose.c:999)
+> [ 84.241331][ C3] ? rose_release ($SOURCE/net/rose/af_rose.c:970)
+> [ 84.241331][ C3] rose_loopback_timer ($SOURCE/net/rose/rose_loopback.c:100)
+> [ 84.241331][ C3] ? rose_transmit_link ($SOURCE/net/rose/rose_loopback.c:60)
+> 
+> in the rose_send_frame() it dereferenced `neigh->dev` when called from 
+> rose_transmit_clear_request(), and the first occurance of the `neigh`
+> is in rose_loopback_timer() as `rose_loopback_neigh`, and it is initialized 
+> in rose_add_loopback_neighh() as NULL.
+> 
+> - net/rose/rose_route.c:381
+> 
+> void rose_add_loopback_neigh(void)
+> {
+> 	struct rose_neigh *sn;
+> 
+> 	rose_loopback_neigh = kmalloc(sizeof(struct rose_neigh), GFP_KERNEL);
+> 	if (!rose_loopback_neigh)
+> 		return;
+> 	sn = rose_loopback_neigh;
+> 
+> 	sn->callsign  = null_ax25_address;
+> 	sn->digipeat  = NULL;
+> 	sn->ax25      = NULL;
+> 	sn->dev       = NULL;
+> 	^^^^^^^^^^^^^^^^^^^^^
+> 
+> i.e when `rose_loopback_neigh` used in rose_loopback_timer() its `->dev` was
+> still NULL and rose_loopback_timer() was calling rose_rx_call_request() 
+> without checking for NULL.
+> 
+> 
+> I have created the following patch to check for NULL pointer.
+> 
+> diff --git a/net/rose/rose_loopback.c b/net/rose/rose_loopback.c
+> index 7b094275ea8b..cd7774cb1d07 100644
+> --- a/net/rose/rose_loopback.c
+> +++ b/net/rose/rose_loopback.c
+> @@ -96,7 +96,7 @@ static void rose_loopback_timer(struct timer_list *unused)
+>                 }
 >  
->  	/* 24M mclk is shared between world and user cameras */
->  	pinctrl-0 = <&i2c7_xfer &test_clkout1>;
-> +
-> +	/* Rear-facing camera */
-> +	wcam: camera@36 {
-> +		compatible = "ovti,ov5695";
-> +		reg = <0x36>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&wcam_rst>;
-> +
-> +		clocks = <&cru SCLK_TESTCLKOUT1>;
-> +		clock-names = "xvclk";
-> +
-> +		avdd-supply = <&pp2800_cam>;
-> +		dvdd-supply = <&pp1250_cam>;
-> +		dovdd-supply = <&pp1800_s0>;
-> +		reset-gpios = <&gpio2 5 GPIO_ACTIVE_LOW>;
-> +
-> +		port {
-> +			wcam_out: endpoint {
-> +				remote-endpoint = <&mipi_in_wcam>;
-> +				data-lanes = <1 2>;
-> +			};
-> +		};
-> +	};
-> +
-> +	/* Front-facing camera */
-> +	ucam: camera@3c {
-> +		compatible = "ovti,ov2685";
-> +		reg = <0x3c>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&ucam_rst>;
-> +
-> +		clocks = <&cru SCLK_TESTCLKOUT1>;
-> +		clock-names = "xvclk";
-> +
-> +		avdd-supply = <&pp2800_cam>;
-> +		dovdd-supply = <&pp1800_s0>;
-> +		dvdd-supply = <&pp1800_s0>;
-> +		reset-gpios = <&gpio2 3 GPIO_ACTIVE_LOW>;
-> +
-> +		port {
-> +			ucam_out: endpoint {
-> +				remote-endpoint = <&mipi_in_ucam>;
-> +				data-lanes = <1>;
-> +			};
-> +		};
-> +	};
->  };
->  
->  &cdn_dp {
-> @@ -353,10 +399,38 @@ &io_domains {
->  	gpio1830-supply = <&pp1800_s0>;		/* APIO4_VDD;  4c 4d */
->  };
->  
-> +&isp0 {
-> +	status = "okay";
-> +
-> +	ports {
-> +		port@0 {
-> +			mipi_in_wcam: endpoint@0 {
-> +				reg = <0>;
-> +				remote-endpoint = <&wcam_out>;
-> +				data-lanes = <1 2>;
-> +			};
-> +
-> +			mipi_in_ucam: endpoint@1 {
-> +				reg = <1>;
-> +				remote-endpoint = <&ucam_out>;
-> +				data-lanes = <1>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&isp0_mmu {
-> +	status = "okay";
-> +};
-> +
->  &max98357a {
->  	sdmode-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
->  };
->  
-> +&mipi_dphy_rx0 {
-> +	status = "okay";
-> +};
-> +
->  &mipi_dsi {
->  	status = "okay";
->  	clock-master;
+>                 if (frametype == ROSE_CALL_REQUEST) {
+> -                       if ((dev = rose_dev_get(dest)) != NULL) {
+> +                       if (rose_loopback_neigh->dev && (dev = rose_dev_get(dest)) != NULL) {
+>                                 if (rose_rx_call_request(skb, dev, rose_loopback_neigh, lci_o) == 0)
+>                                         kfree_skb(skb);
+>                         } else {
 > 
+> 
+> 
+> Please, review it and give me suggestions whether i am going right or not.
 
+That seems better, does it solve the syzbot test?
 
+thanks,
 
-
+greg k-h
