@@ -2,154 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A9D2A1BA1
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 02:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6A32A1BA3
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 03:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgKABuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 21:50:17 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:39112 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgKABuR (ORCPT
+        id S1726445AbgKAB6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 21:58:20 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:35346 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726335AbgKAB6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 21:50:17 -0400
-Date:   Sat, 31 Oct 2020 21:50:14 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     Jessica Clarke <jrtc27@jrtc27.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        linux-x86_64@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] x86: Fix x32 System V message queue syscalls
-Message-ID: <20201101015013.GN534@brightrain.aerifal.cx>
-References: <1156938F-A9A3-4EE9-B059-2294A0B9FBFE@jrtc27.com>
- <20201012134444.1905-1-jrtc27@jrtc27.com>
- <CALCETrWKwFD7QhFQu9X_yQeVW1_yy-gEMNEtsWmQK=fNg9y68A@mail.gmail.com>
- <20201101012202.GM534@brightrain.aerifal.cx>
- <7842A462-0ADB-4EE3-B4CB-AE6DCD70CE1C@jrtc27.com>
+        Sat, 31 Oct 2020 21:58:19 -0400
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E6F7920C1713
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 18:58:17 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E6F7920C1713
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1604195898;
+        bh=IU8B0aFLd/KWfH3aKTl6Ct/JdgFqy8SYYsQYannDfCQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lx+bEO0P6WYrbeaW+B9iduaSFxZOI8mrv9JWePxCwef1QQAt7jE40FoxWf3fOFHXA
+         yencoLf9RMrxO7+p3pHlQiomJk5FPTCkREBYgIjx6xC5SLSxAQHy8K7oZBXdmkLBz0
+         V8IYhqdcRe5N8j/6TJyTEWFmCr9/0GAXjzY0BlHE=
+Received: by mail-qv1-f53.google.com with SMTP id t20so4624775qvv.8
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Oct 2020 18:58:17 -0700 (PDT)
+X-Gm-Message-State: AOAM532bE0FJkFwO+WOE8Okow2cvbgK2gqm8VyHS4x3WISH8qCkJ5FvK
+        Qur4lf7h96yz+sDyCK/MBj74b/8eCr5VM30fzhQ=
+X-Google-Smtp-Source: ABdhPJw+POfdSqE+WEnEFgAVff6SXCEGFJ9CqXhf6t/MCYagNmCqss9zOTaNpoMeDISlvDglf8Ne8A1QbHpfuLPIFYo=
+X-Received: by 2002:a0c:e250:: with SMTP id x16mr16192637qvl.1.1604195896528;
+ Sat, 31 Oct 2020 18:58:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7842A462-0ADB-4EE3-B4CB-AE6DCD70CE1C@jrtc27.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20201027133545.58625-1-mcroce@linux.microsoft.com>
+ <20201027133545.58625-3-mcroce@linux.microsoft.com> <20201030143049.GE1602@alley>
+In-Reply-To: <20201030143049.GE1602@alley>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Sun, 1 Nov 2020 02:57:40 +0100
+X-Gmail-Original-Message-ID: <CAFnufp2zSsESBK-ZfCJD5dFzMGc9pU4R-VT1j8eu1f4xPde19w@mail.gmail.com>
+Message-ID: <CAFnufp2zSsESBK-ZfCJD5dFzMGc9pU4R-VT1j8eu1f4xPde19w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] reboot: fix parsing of reboot cpu number
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Robin Holt <robinmholt@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 01:27:35AM +0000, Jessica Clarke wrote:
-> On 1 Nov 2020, at 01:22, Rich Felker <dalias@libc.org> wrote:
-> > On Sat, Oct 31, 2020 at 04:30:44PM -0700, Andy Lutomirski wrote:
-> >> cc: some libc folks
-> >> 
-> >> On Mon, Oct 12, 2020 at 6:45 AM Jessica Clarke <jrtc27@jrtc27.com> wrote:
-> >>> 
-> >>> POSIX specifies that the first field of the supplied msgp, namely mtype,
-> >>> is a long, not a __kernel_long_t, and it's a user-defined struct due to
-> >>> the variable-length mtext field so we can't even bend the spec and make
-> >>> it a __kernel_long_t even if we wanted to. Thus we must use the compat
-> >>> syscalls on x32 to avoid buffer overreads and overflows in msgsnd and
-> >>> msgrcv respectively.
-> >> 
-> >> This is a mess.
-> >> 
-> >> include/uapi/linux/msg.h has:
-> >> 
-> >> /* message buffer for msgsnd and msgrcv calls */
-> >> struct msgbuf {
-> >>        __kernel_long_t mtype;          /* type of message */
-> >>        char mtext[1];                  /* message text */
-> >> };
-> >> 
-> >> Your test has:
-> >> 
-> >> struct msg_long {
-> >>    long mtype;
-> >>    char mtext[8];
-> >> };
-> >> 
-> >> struct msg_long_ext {
-> >>    struct msg_long msg_long;
-> >>    char mext[4];
-> >> };
-> >> 
-> >> and I'm unclear as to exactly what you're trying to do there with the
-> >> "mext" part.
-> >> 
-> >> POSIX says:
-> >> 
-> >>       The application shall ensure that the argument msgp points to  a  user-
-> >>       defined  buffer that contains first a field of type long specifying the
-> >>       type of the message, and then a data portion that holds the data  bytes
-> >>       of the message. The structure below is an example of what this user-de‐
-> >>       fined buffer might look like:
-> >> 
-> >>           struct mymsg {
-> >>               long   mtype;       /* Message type. */
-> >>               char   mtext[1];    /* Message text. */
-> >>           }
-> >> 
-> >> NTP has this delightful piece of code:
-> >> 
-> >>   44 typedef union {
-> >>   45   struct msgbuf msgp;
-> >>   46   struct {
-> >>   47     long mtype;
-> >>   48     int code;
-> >>   49     struct timeval tv;
-> >>   50   } msgb;
-> >>   51 } MsgBuf;
-> >> 
-> >> bluefish has:
-> >> 
-> >> struct small_msgbuf {
-> >> long mtype;
-> >> char mtext[MSQ_QUEUE_SMALL_SIZE];
-> >> } small_msgp;
-> >> 
-> >> 
-> >> My laptop has nothing at all in /dev/mqueue.
-> >> 
-> >> So I don't really know what the right thing to do is.  Certainly if
-> >> we're going to apply this patch, we should also fix the header.  I
-> >> almost think we should *delete* struct msgbuf from the headers, since
-> >> it's all kinds of busted, but that will break the NTP build.  Ideally
-> >> we would go back in time and remove it from the headers.
-> >> 
-> >> Libc people, any insight?  We can probably fix the bug without
-> >> annoying anyone given how lightly x32 is used and how lightly POSIX
-> >> message queues are used.
-> > 
-> > If it's that outright wrong and always has been, I feel like the old
-> > syscall numbers should just be deprecated and new ones assigned.
-> > Otherwise, there's no way for userspace to be safe against data
-> > corruption when run on older kernels. If there's a new syscall number,
-> > libc can just use the new one unconditionally (giving ENOSYS on
-> > kernels where it would be broken) or have a x32-specific
-> > implementation that makes the old syscall and performs translation if
-> > the new one fails with ENOSYS.
-> 
-> That doesn't really help broken code continue to work reliably, as
-> upgrading libc will just pull in the new syscall for a binary that's
-> expecting the broken behaviour, unless you do symbol versioning, but
-> then it'll just break when you next recompile the code, and there's no
-> way for that to be diagnosed given the *application* has to define the
-> type. But given it's application-defined I really struggle to see how
-> any code out there is actually expecting the current x32 behaviour as
-> you'd have to go really out of your way to find out that x32 is broken
-> and needs __kernel_long_t. I don't think there's any way around just
-> technically breaking ABI whilst likely really fixing ABI in 99.999% of
-> cases (maybe 100%).
+On Fri, Oct 30, 2020 at 3:30 PM Petr Mladek <pmladek@suse.com> wrote:
+>
+> On Tue 2020-10-27 14:35:45, Matteo Croce wrote:
+> > From: Matteo Croce <mcroce@microsoft.com>
+> >
+> > The kernel cmdline reboot= argument allows to specify the CPU used
+> > for rebooting, with the syntax `s####` among the other flags, e.g.
+> >
+> >   reboot=soft,s4
+> >   reboot=warm,s31,force
+> >
+> > In the early days the parsing was done with simple_strtoul(), later
+> > deprecated in favor of the safer kstrtoint() which handles overflow.
+> >
+> > But kstrtoint() returns -EINVAL if there are non-digit characters
+> > in a string, so if this flag is not the last given, it's silently
+> > ignored as well as the subsequent ones.
+> >
+> > To fix it, revert the usage of simple_strtoul(), which is no longer
+> > deprecated, and restore the old behaviour.
+> >
+> > While at it, merge two identical code blocks into one.
+>
+> > --- a/kernel/reboot.c
+> > +++ b/kernel/reboot.c
+> > @@ -552,25 +552,19 @@ static int __init reboot_setup(char *str)
+> >
+> >               case 's':
+> >               {
+> > -                     int rc;
+> > -
+> > -                     if (isdigit(*(str+1))) {
+> > -                             rc = kstrtoint(str+1, 0, &reboot_cpu);
+> > -                             if (rc)
+> > -                                     return rc;
+> > -                             if (reboot_cpu >= num_possible_cpus()) {
+> > -                                     reboot_cpu = 0;
+> > -                                     return -ERANGE;
+> > -                             }
+> > -                     } else if (str[1] == 'm' && str[2] == 'p' &&
+> > -                                isdigit(*(str+3))) {
+> > -                             rc = kstrtoint(str+3, 0, &reboot_cpu);
+> > -                             if (rc)
+> > -                                     return rc;
+> > -                             if (reboot_cpu >= num_possible_cpus()) {
+> > -                                     reboot_cpu = 0;
+>
+>                                                      ^^^^^^
+>
+> > +                     int cpu;
+> > +
+> > +                     /*
+> > +                      * reboot_cpu is s[mp]#### with #### being the processor
+> > +                      * to be used for rebooting. Skip 's' or 'smp' prefix.
+> > +                      */
+> > +                     str += str[1] == 'm' && str[2] == 'p' ? 3 : 1;
+> > +
+> > +                     if (isdigit(str[0])) {
+> > +                             cpu = simple_strtoul(str, NULL, 0);
+> > +                             if (cpu >= num_possible_cpus())
+> >                                       return -ERANGE;
+> > -                             }
+> > +                             reboot_cpu = cpu;
+>
+> The original value stays when the new one is out of range. It is
+> small functional change that should get mentioned in the commit
+> message or better fixed separately.
+>
 
-I'm not opposed to "breaking ABI" here because the current syscall
-doesn't work unless someone wrote bogus x32-specific code to work
-around it being wrong. I don't particularly want to preserve any of
-the current behavior.
+Hi,
 
-What I am somewhat opposed to is making a situation where an updated
-libc can't be safe against getting run on a kernel with a broken
-version of the syscall and silently corrupting data. I'm flexible
-about how avoiding tha tis achieved.
+I didn't understand, the original value is 0 since reboot_cpu is global.
+reboot_setup() is only called once at boot to parse the cmdline,
+indeed it's __init.
+I don't know any way to call it more than once (exept passing multiple
+reboot= arguments)
 
-Rich
+> Hmm, I suggest to split this into 3 patches and switch the order:
+>
+>   + 1st patch should simply revert the commit 616feab75397
+>    ("kernel/reboot.c: convert simple_strtoul to kstrtoint").
+>
+>   + 2nd patch should merge the two branches without any
+>     functional change.
+>
+>   + 3rd patch should add the check for num_possible_cpus()
+>     and update the value only when it is valid.
+>
+> I am sorry that I did not suggested this when reviewed v1.
+> I have missed this functional change at that time.
+>
+
+Np :)
+
+Bye,
+
+--
+per aspera ad upstream
