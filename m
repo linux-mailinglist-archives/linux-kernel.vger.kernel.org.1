@@ -2,133 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4112A1FAD
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 17:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3672A1FC6
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbgKAQzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 11:55:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgKAQzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 11:55:45 -0500
-Received: from kernel.org (unknown [87.71.17.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 673912071E;
-        Sun,  1 Nov 2020 16:55:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604249745;
-        bh=me4MsVHOGb1kHLMx0QFDtSp3fp/hBgcTORNpqfrV948=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A3apdqu37Rlq64w8q2pkI+YeBpa8D4B/wsympS+rsBaw49qC+5sxiByYpHZldiFQb
-         XIKhz4x43dHQ39bkFfr913JJpTMF43YXNFYvw5EnO/1Go+qWIcy+xQO2Q9PVRii51P
-         xaN5ZCMTifLvBqcqx2m9x99vE77vBNkZFEXSON90=
-Date:   Sun, 1 Nov 2020 18:55:34 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux MM <linux-mm@kvack.org>,
-        arcml <linux-snps-arc@lists.infradead.org>
-Subject: Re: [PATCH 11/13] m68k/mm: make node data and node setup depend on
- CONFIG_DISCONTIGMEM
-Message-ID: <20201101165534.GC14628@kernel.org>
-References: <20201027112955.14157-1-rppt@kernel.org>
- <20201027112955.14157-12-rppt@kernel.org>
- <CAMuHMdU4r4CJ1kBu7gx1jkputjDn2S8Lqkj7RPfa3XUnM1QOFg@mail.gmail.com>
- <20201028111631.GF1428094@kernel.org>
+        id S1727061AbgKARAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:00:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726902AbgKARAL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 12:00:11 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4447C0617A6;
+        Sun,  1 Nov 2020 09:00:10 -0800 (PST)
+Date:   Sun, 01 Nov 2020 17:00:07 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604250008;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E8jfzPWdxTRyujAc/doJcKSRBBcG5+8RN8kATuzL5us=;
+        b=aD4TpEgyrHIsep/Q2SHjH9xMmGCtrQ5QcQsMYiZT1okBVBbWAJ6Jp0ZceUc37q7Cl3+BM8
+        5wxoYrpNxyZYqcSTqWqeBAeWa8ZCeXpNHBCDsrzZTyGz0MZh0fnR4BzmPLeHMBuS2vOdTA
+        xsDU+ZsJ5cWfwzFnCAOx73AmXQ0cj9fU1jIA3fl//a7w2TH94HU850dmZ7MSMv6a9ri9Xu
+        PD74ocD4QEVUmV6Fbo7BvQyz/7hPOyZd9V28rN6/WVNQiSOwHzJ/oEcStSVsCg+3d3Dwxf
+        yQrdCL5aIEc0ACnPTSQZeKgxbm9r06+8dPNQ2n7R77/9n1hU76PoT/noR/wNTg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604250008;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E8jfzPWdxTRyujAc/doJcKSRBBcG5+8RN8kATuzL5us=;
+        b=u5DAO4pAOsLZUE4wc976ZMmTDIW5TCp6dBKEoNgrEKcyHWWuJC7jT1MR1oOA5evod0D93F
+        VFqCb1RgvZz/+ECA==
+From:   "tip-bot2 for Peter Ujfalusi" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] irqchip/ti-sci-inta: Add support for unmapped event
+ handling
+Cc:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Marc Zyngier <maz@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201020073243.19255-3-peter.ujfalusi@ti.com>
+References: <20201020073243.19255-3-peter.ujfalusi@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028111631.GF1428094@kernel.org>
+Message-ID: <160425000726.397.10310072721034610132.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 01:16:41PM +0200, Mike Rapoport wrote:
-> Hi Geert,
-> 
-> On Wed, Oct 28, 2020 at 10:25:49AM +0100, Geert Uytterhoeven wrote:
-> > Hi Mike,
-> > 
-> > On Tue, Oct 27, 2020 at 12:31 PM Mike Rapoport <rppt@kernel.org> wrote:
-> > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > >
-> > > The pg_data_t node structures and their initialization currently depends on
-> > > !CONFIG_SINGLE_MEMORY_CHUNK. Since they are required only for DISCONTIGMEM
-> > > make this dependency explicit and replace usage of
-> > > CONFIG_SINGLE_MEMORY_CHUNK with CONFIG_DISCONTIGMEM where appropriate.
-> > >
-> > > The CONFIG_SINGLE_MEMORY_CHUNK was implicitly disabled on the ColdFire MMU
-> > > variant, although it always presumed a single memory bank. As there is no
-> > > actual need for DISCONTIGMEM in this case, make sure that ColdFire MMU
-> > > systems set CONFIG_SINGLE_MEMORY_CHUNK to 'y'.
-> > >
-> > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > Thanks for your patch!
-> > 
-> > > ---
-> > >  arch/m68k/Kconfig.cpu           | 6 +++---
-> > >  arch/m68k/include/asm/page_mm.h | 2 +-
-> > >  arch/m68k/mm/init.c             | 4 ++--
-> > >  3 files changed, 6 insertions(+), 6 deletions(-)
-> > 
-> > Is there any specific reason you didn't convert the checks for
-> > CONFIG_SINGLE_MEMORY_CHUNK in arch/m68k/kernel/setup_mm.c
-> 
-> In arch/m68k/kernel/setup_mm.c the CONFIG_SINGLE_MEMORY_CHUNK is needed
-> for the case when a system has two banks, the kernel is loaded into the
-> second bank and so the first bank cannot be used as normal memory. It
-> does not matter what memory model will be used in this case. 
-> 
-> > and arch/m68k/include/asm/virtconvert.h?
->  
-> I remember I had build errors and troubles with include file
-> dependencies if I changed it there, but I might be mistaken. I'll
-> recheck again.
+The following commit has been merged into the irq/urgent branch of tip:
 
-There indeed was an issue with SINGLE_MEMORY_CHUNK that selected
-NEED_MULTIPLE_NODES for some reason.
-With that fixed and removed CONFIG_SINGLE_MEMORY_CHUNK in
-arch/m68k/include/asm/virtconvert.h I'm going to send v2 soon.
+Commit-ID:     d95bdca75b3fb41bf185efe164e05aed820081a5
+Gitweb:        https://git.kernel.org/tip/d95bdca75b3fb41bf185efe164e05aed820081a5
+Author:        Peter Ujfalusi <peter.ujfalusi@ti.com>
+AuthorDate:    Tue, 20 Oct 2020 10:32:43 +03:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Sun, 01 Nov 2020 12:00:50 
 
-I've kept CONFIG_SINGLE_MEMORY_CHUNK for now for backwards compatibility
-with the plan to remove it along with DISCONTIGMEM.
+irqchip/ti-sci-inta: Add support for unmapped event handling
 
-> > Gr{oetje,eeting}s,
-> > 
-> >                         Geert
-> > 
-> > -- 
-> > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> > 
-> > In personal conversations with technical people, I call myself a hacker. But
-> > when I'm talking to journalists I just say "programmer" or something like that.
-> >                                 -- Linus Torvalds
-> 
-> -- 
-> Sincerely yours,
-> Mike.
+The DMA (BCDMA/PKTDMA and their rings/flows) events are under the INTA's
+supervision as unmapped events in AM64.
 
--- 
-Sincerely yours,
-Mike.
+In order to keep the current SW stack working, the INTA driver must replace
+the dev_id with it's own when a request comes for BCDMA or PKTDMA
+resources.
+
+Implement parsing of the optional "ti,unmapped-event-sources" phandle array
+to get the sci-dev-ids of the devices where the unmapped events originate.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20201020073243.19255-3-peter.ujfalusi@ti.com
+---
+ drivers/irqchip/irq-ti-sci-inta.c | 83 ++++++++++++++++++++++++++++--
+ 1 file changed, 80 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/irqchip/irq-ti-sci-inta.c b/drivers/irqchip/irq-ti-sci-inta.c
+index e0cceb8..b2ab8db 100644
+--- a/drivers/irqchip/irq-ti-sci-inta.c
++++ b/drivers/irqchip/irq-ti-sci-inta.c
+@@ -85,6 +85,17 @@ struct ti_sci_inta_vint_desc {
+  * @base:		Base address of the memory mapped IO registers
+  * @pdev:		Pointer to platform device.
+  * @ti_sci_id:		TI-SCI device identifier
++ * @unmapped_cnt:	Number of @unmapped_dev_ids entries
++ * @unmapped_dev_ids:	Pointer to an array of TI-SCI device identifiers of
++ *			unmapped event sources.
++ *			Unmapped Events are not part of the Global Event Map and
++ *			they are converted to Global event within INTA to be
++ *			received by the same INTA to generate an interrupt.
++ *			In case an interrupt request comes for a device which is
++ *			generating Unmapped Event, we must use the INTA's TI-SCI
++ *			device identifier in place of the source device
++ *			identifier to let sysfw know where it has to program the
++ *			Global Event number.
+  */
+ struct ti_sci_inta_irq_domain {
+ 	const struct ti_sci_handle *sci;
+@@ -96,11 +107,37 @@ struct ti_sci_inta_irq_domain {
+ 	void __iomem *base;
+ 	struct platform_device *pdev;
+ 	u32 ti_sci_id;
++
++	int unmapped_cnt;
++	u16 *unmapped_dev_ids;
+ };
+ 
+ #define to_vint_desc(e, i) container_of(e, struct ti_sci_inta_vint_desc, \
+ 					events[i])
+ 
++static u16 ti_sci_inta_get_dev_id(struct ti_sci_inta_irq_domain *inta, u32 hwirq)
++{
++	u16 dev_id = HWIRQ_TO_DEVID(hwirq);
++	int i;
++
++	if (inta->unmapped_cnt == 0)
++		return dev_id;
++
++	/*
++	 * For devices sending Unmapped Events we must use the INTA's TI-SCI
++	 * device identifier number to be able to convert it to a Global Event
++	 * and map it to an interrupt.
++	 */
++	for (i = 0; i < inta->unmapped_cnt; i++) {
++		if (dev_id == inta->unmapped_dev_ids[i]) {
++			dev_id = inta->ti_sci_id;
++			break;
++		}
++	}
++
++	return dev_id;
++}
++
+ /**
+  * ti_sci_inta_irq_handler() - Chained IRQ handler for the vint irqs
+  * @desc:	Pointer to irq_desc corresponding to the irq
+@@ -251,7 +288,7 @@ static struct ti_sci_inta_event_desc *ti_sci_inta_alloc_event(struct ti_sci_inta
+ 	u16 dev_id, dev_index;
+ 	int err;
+ 
+-	dev_id = HWIRQ_TO_DEVID(hwirq);
++	dev_id = ti_sci_inta_get_dev_id(inta, hwirq);
+ 	dev_index = HWIRQ_TO_IRQID(hwirq);
+ 
+ 	event_desc = &vint_desc->events[free_bit];
+@@ -352,14 +389,15 @@ static void ti_sci_inta_free_irq(struct ti_sci_inta_event_desc *event_desc,
+ {
+ 	struct ti_sci_inta_vint_desc *vint_desc;
+ 	struct ti_sci_inta_irq_domain *inta;
++	u16 dev_id;
+ 
+ 	vint_desc = to_vint_desc(event_desc, event_desc->vint_bit);
+ 	inta = vint_desc->domain->host_data;
++	dev_id = ti_sci_inta_get_dev_id(inta, hwirq);
+ 	/* free event irq */
+ 	mutex_lock(&inta->vint_mutex);
+ 	inta->sci->ops.rm_irq_ops.free_event_map(inta->sci,
+-						 HWIRQ_TO_DEVID(hwirq),
+-						 HWIRQ_TO_IRQID(hwirq),
++						 dev_id, HWIRQ_TO_IRQID(hwirq),
+ 						 inta->ti_sci_id,
+ 						 vint_desc->vint_id,
+ 						 event_desc->global_event,
+@@ -574,6 +612,41 @@ static struct msi_domain_info ti_sci_inta_msi_domain_info = {
+ 	.chip	= &ti_sci_inta_msi_irq_chip,
+ };
+ 
++static int ti_sci_inta_get_unmapped_sources(struct ti_sci_inta_irq_domain *inta)
++{
++	struct device *dev = &inta->pdev->dev;
++	struct device_node *node = dev_of_node(dev);
++	struct of_phandle_iterator it;
++	int count, err, ret, i;
++
++	count = of_count_phandle_with_args(node, "ti,unmapped-event-sources", NULL);
++	if (count <= 0)
++		return 0;
++
++	inta->unmapped_dev_ids = devm_kcalloc(dev, count,
++					      sizeof(*inta->unmapped_dev_ids),
++					      GFP_KERNEL);
++	if (!inta->unmapped_dev_ids)
++		return -ENOMEM;
++
++	i = 0;
++	of_for_each_phandle(&it, err, node, "ti,unmapped-event-sources", NULL, 0) {
++		u32 dev_id;
++
++		ret = of_property_read_u32(it.node, "ti,sci-dev-id", &dev_id);
++		if (ret) {
++			dev_err(dev, "ti,sci-dev-id read failure for %pOFf\n", it.node);
++			of_node_put(it.node);
++			return ret;
++		}
++		inta->unmapped_dev_ids[i++] = dev_id;
++	}
++
++	inta->unmapped_cnt = count;
++
++	return 0;
++}
++
+ static int ti_sci_inta_irq_domain_probe(struct platform_device *pdev)
+ {
+ 	struct irq_domain *parent_domain, *domain, *msi_domain;
+@@ -629,6 +702,10 @@ static int ti_sci_inta_irq_domain_probe(struct platform_device *pdev)
+ 	if (IS_ERR(inta->base))
+ 		return PTR_ERR(inta->base);
+ 
++	ret = ti_sci_inta_get_unmapped_sources(inta);
++	if (ret)
++		return ret;
++
+ 	domain = irq_domain_add_linear(dev_of_node(dev),
+ 				       ti_sci_get_num_resources(inta->vint),
+ 				       &ti_sci_inta_irq_domain_ops, inta);
