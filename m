@@ -2,78 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142FE2A1CBE
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:01:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA2C2A1CCA
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgKAJBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 04:01:37 -0500
-Received: from aposti.net ([89.234.176.197]:35504 "EHLO aposti.net"
+        id S1726190AbgKAJQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 04:16:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726118AbgKAJBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 04:01:36 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Zhou Yanjie <zhouyanjie@wanyeetech.com>, od@zcrc.me,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 2/2] pinctrl: ingenic: Add lcd-8bit group for JZ4770
-Date:   Sun,  1 Nov 2020 09:01:04 +0000
-Message-Id: <20201101090104.5088-3-paul@crapouillou.net>
-In-Reply-To: <20201101090104.5088-1-paul@crapouillou.net>
-References: <20201101090104.5088-1-paul@crapouillou.net>
+        id S1726117AbgKAJQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 04:16:33 -0500
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FEA321D40;
+        Sun,  1 Nov 2020 09:16:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604222192;
+        bh=JIuhINLCifrVA/vA+ij5+ON0MKl2JIOZ/y8TBt/teRQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zX+bdx7p4ZR8/GaB7MFDU7+ujpUbA2N+6ZNqqdKSdQY1UO8303OvVIiOrgvXKAVAT
+         aPBH0bmyPk9oDVE6IJSPt+OZiR/0DsgLZOE1f6UsvuE0nIzAyyC6znjOb8YcS3IuDs
+         /8iU5P1SZgLL2g+upiwVZ37zJHnXlwf/9lYZxdgY=
+Date:   Sun, 1 Nov 2020 17:16:25 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     s.hauer@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, mkl@pengutronix.de
+Subject: Re: [PATCH] arm64: dts: imx8mp-evk: add CAN support
+Message-ID: <20201101091625.GL31601@dragon>
+References: <1603693376-17206-1-git-send-email-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603693376-17206-1-git-send-email-qiangqing.zhang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the "lcd-8bit" group to the "lcd" function.
+On Mon, Oct 26, 2020 at 02:22:56PM +0800, Joakim Zhang wrote:
+> Add CAN device node and pinctrl on i.MX8MP evk board.
+> 
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mp-evk.dts | 62 ++++++++++++++++++++
+>  arch/arm64/boot/dts/freescale/imx8mp.dtsi    | 30 ++++++++++
+>  2 files changed, 92 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+> index ad66f1286d95..85aaed7dc4bc 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+> @@ -33,6 +33,28 @@
+>  		      <0x1 0x00000000 0 0xc0000000>;
+>  	};
+>  
+> +	reg_can1_stby: regulator-can1-stby {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "can1-stby";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_flexcan1_reg>;
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&gpio5 5 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +
+> +	reg_can2_stby: regulator-can2-stby {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "can2-stby";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_flexcan2_reg>;
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&gpio4 27 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +
+>  	reg_usdhc2_vmmc: regulator-usdhc2 {
+>  		compatible = "regulator-fixed";
+>  		pinctrl-names = "default";
+> @@ -45,6 +67,20 @@
+>  	};
+>  };
+>  
+> +&flexcan1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_flexcan1>;
+> +	xceiver-supply = <&reg_can1_stby>;
+> +	status = "okay";
+> +};
+> +
+> +&flexcan2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_flexcan2>;
+> +	xceiver-supply = <&reg_can2_stby>;
+> +	status = "disabled";/* can2 pin conflict with pdm */
+> +};
+> +
+>  &fec {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_fec>;
+> @@ -144,6 +180,32 @@
+>  		>;
+>  	};
+>  
+> +	pinctrl_flexcan1: flexcan1grp {
+> +		fsl,pins = <
+> +			MX8MP_IOMUXC_SPDIF_RX__CAN1_RX          0x154
+> +			MX8MP_IOMUXC_SPDIF_TX__CAN1_TX          0x154
+> +		>;
+> +	};
+> +
+> +	pinctrl_flexcan2: flexcan2grp {
+> +		fsl,pins = <
+> +			MX8MP_IOMUXC_SAI5_MCLK__CAN2_RX         0x154
+> +			MX8MP_IOMUXC_SAI5_RXD3__CAN2_TX         0x154
+> +		>;
+> +	};
+> +
+> +	pinctrl_flexcan1_reg: flexcan1reggrp {
+> +		fsl,pins = <
+> +			MX8MP_IOMUXC_SPDIF_EXT_CLK__GPIO5_IO05  0x154   /* CAN1_STBY */
+> +		>;
+> +	};
+> +
+> +	pinctrl_flexcan2_reg: flexcan2reggrp {
+> +		fsl,pins = <
+> +			MX8MP_IOMUXC_SAI2_MCLK__GPIO4_IO27      0x154   /* CAN2_STBY */
+> +		>;
+> +	};
+> +
+>  	pinctrl_gpio_led: gpioledgrp {
+>  		fsl,pins = <
+>  			MX8MP_IOMUXC_NAND_READY_B__GPIO3_IO16	0x19
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> index 6038f66aefc1..cc123a5e3f7e 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> @@ -545,6 +545,36 @@
+>  				status = "disabled";
+>  			};
+>  
+> +			flexcan1: can@308c0000 {
+> +				compatible = "fsl,imx8mp-flexcan", "fsl,imx6q-flexcan";
+> +				reg = <0x308c0000 0x10000>;
+> +				interrupts = <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&clk IMX8MP_CLK_IPG_ROOT>,
+> +					 <&clk IMX8MP_CLK_CAN1_ROOT>;
+> +				clock-names = "ipg", "per";
+> +				assigned-clocks = <&clk IMX8MP_CLK_CAN1>;
+> +				assigned-clock-parents = <&clk IMX8MP_SYS_PLL1_40M>;
+> +				assigned-clock-rates = <40000000>;
+> +				fsl,clk-source= /bits/ 8 <0>;
 
-As "lcd-24bit" is a superset of "lcd-8bit", in theory the former could
-be modified to only contain the pins not already included in "lcd-8bit",
-just like how it's done for the JZ4740 and JZ4725B platforms. However,
-we can't do that without breaking Device Tree ABI, so in that case we
-have no choice but to have two groups containing the same pins.
+Missing space before '='.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/pinctrl/pinctrl-ingenic.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+> +				fsl,stop-mode = <&gpr 0x10 4>;
+> +				status = "disabled";
+> +			};
+> +
+> +			flexcan2: can@308d0000 {
+> +				compatible = "fsl,imx8mp-flexcan", "fsl,imx6q-flexcan";
+> +				reg = <0x308d0000 0x10000>;
+> +				interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&clk IMX8MP_CLK_IPG_ROOT>,
+> +					 <&clk IMX8MP_CLK_CAN2_ROOT>;
+> +				clock-names = "ipg", "per";
+> +				assigned-clocks = <&clk IMX8MP_CLK_CAN2>;
+> +				assigned-clock-parents = <&clk IMX8MP_SYS_PLL1_40M>;
+> +				assigned-clock-rates = <40000000>;
+> +				fsl,clk-source= /bits/ 8 <0>;
 
-diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
-index ed63dfb68241..53a6a24bd052 100644
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -626,6 +626,10 @@ static int jz4770_cim_8bit_pins[] = {
- static int jz4770_cim_12bit_pins[] = {
- 	0x32, 0x33, 0xb0, 0xb1,
- };
-+static int jz4770_lcd_8bit_pins[] = {
-+	0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x4c, 0x4d,
-+	0x48, 0x49, 0x52, 0x53,
-+};
- static int jz4770_lcd_24bit_pins[] = {
- 	0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47,
- 	0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f,
-@@ -730,6 +734,7 @@ static const struct group_desc jz4770_groups[] = {
- 	INGENIC_PIN_GROUP("i2c2-data", jz4770_i2c2, 2),
- 	INGENIC_PIN_GROUP("cim-data-8bit", jz4770_cim_8bit, 0),
- 	INGENIC_PIN_GROUP("cim-data-12bit", jz4770_cim_12bit, 0),
-+	INGENIC_PIN_GROUP("lcd-8bit", jz4770_lcd_8bit, 0),
- 	INGENIC_PIN_GROUP("lcd-24bit", jz4770_lcd_24bit, 0),
- 	{ "lcd-no-pins", },
- 	INGENIC_PIN_GROUP("pwm0", jz4770_pwm_pwm0, 0),
-@@ -791,7 +796,9 @@ static const char *jz4770_i2c0_groups[] = { "i2c0-data", };
- static const char *jz4770_i2c1_groups[] = { "i2c1-data", };
- static const char *jz4770_i2c2_groups[] = { "i2c2-data", };
- static const char *jz4770_cim_groups[] = { "cim-data-8bit", "cim-data-12bit", };
--static const char *jz4770_lcd_groups[] = { "lcd-24bit", "lcd-no-pins", };
-+static const char *jz4770_lcd_groups[] = {
-+	"lcd-8bit", "lcd-24bit", "lcd-no-pins",
-+};
- static const char *jz4770_pwm0_groups[] = { "pwm0", };
- static const char *jz4770_pwm1_groups[] = { "pwm1", };
- static const char *jz4770_pwm2_groups[] = { "pwm2", };
--- 
-2.28.0
+Ditto
 
+Shawn
+
+> +				fsl,stop-mode = <&gpr 0x10 5>;
+> +				status = "disabled";
+> +			};
+> +
+>  			crypto: crypto@30900000 {
+>  				compatible = "fsl,sec-v4.0";
+>  				#address-cells = <1>;
+> -- 
+> 2.17.1
+> 
