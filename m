@@ -2,53 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC062A1CE1
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5570B2A1CE3
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 10:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgKAJaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 04:30:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60922 "EHLO mail.kernel.org"
+        id S1726246AbgKAJcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 04:32:16 -0500
+Received: from aposti.net ([89.234.176.197]:38572 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725951AbgKAJaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 04:30:11 -0500
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 363BF20870;
-        Sun,  1 Nov 2020 09:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604223010;
-        bh=DRp7JFM4g9rdPQxJu7Q0QedJyADW31/v6h+dHd1Vw9Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WqNl7aClMmyAJ0uEBnYR9c2u4yTwl+CijI2q1A+lA5xo3ltCXoFYrYkVO8HLZGz8J
-         jBeLLZ1IMn0e/ktMR3TYOffqu/5BiFVbiMTtbTCOp1mbgQe3G6CJKDYSxcbh5sS1Pc
-         7bi9xtWXmwrat2UabNKqFr0crVNjBHy9Qo2/35m4=
-Date:   Sun, 1 Nov 2020 17:30:06 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] arm64: dts: imx8mm-beacon-som: Fix whitespace issue
-Message-ID: <20201101093005.GQ31601@dragon>
-References: <20201031123114.708158-1-aford173@gmail.com>
+        id S1725951AbgKAJcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 04:32:15 -0500
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Christophe Branchereau <cbranchereau@gmail.com>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 0/3] drm/panel: ABT Y030XX067A panel support
+Date:   Sun,  1 Nov 2020 09:31:46 +0000
+Message-Id: <20201101093150.8071-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201031123114.708158-1-aford173@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 07:31:14AM -0500, Adam Ford wrote:
-> The pinmux subnodes are indented too much.  This patch does nothing
-> more than remove an extra tab.  There are no functional changes.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+Hi,
 
-Applied, thanks.
+This patchset is for adding support for the Asia Better Technology (aka.
+ABT) Y030XX067A 3.0" 320x480 24-bit LCD IPS panel.
+
+While being 320x480 it is actually 4:3 with non-square pixels, and
+requires a specific bus format, as the pixel ordering changes each line
+(RGB on odd lines, GRB on even lines).
+
+Patch #1 adds the abt,* vendor prefix.
+Patch #2 adds the abt,y030xx067a panel binding documentation.
+Patch #3 adds the MEDIA_BUS_FMT_RGB888_3X8_DELTA media bus format.
+Patch #4 adds the driver itself.
+
+Cheers,
+-Paul
+
+Paul Cercueil (4):
+  dt-bindings: vendor-prefixes: Add abt vendor prefix
+  dt-bindings: display: Add ABT Y030XX067A panel bindings
+  media: uapi: Add MEDIA_BUS_FMT_RGB888_3X8_DELTA media bus format
+  drm/panel: Add ABT Y030XX067A 3.0" 320x480 panel
+
+ .../display/panel/abt,y030xx067a.yaml         |  54 +++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ drivers/gpu/drm/panel/Kconfig                 |   9 +
+ drivers/gpu/drm/panel/Makefile                |   1 +
+ drivers/gpu/drm/panel/panel-abt-y030xx067a.c  | 363 ++++++++++++++++++
+ include/uapi/linux/media-bus-format.h         |   3 +-
+ 6 files changed, 431 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/abt,y030xx067a.yaml
+ create mode 100644 drivers/gpu/drm/panel/panel-abt-y030xx067a.c
+
+-- 
+2.28.0
+
