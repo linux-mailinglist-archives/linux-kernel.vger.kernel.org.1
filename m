@@ -2,169 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2EF2A204D
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25DD2A204F
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgKARYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:24:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28561 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727024AbgKARYW (ORCPT
+        id S1727135AbgKARZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:25:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727024AbgKARZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:24:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604251460;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=ar42oVriuRci3B5JCt0ie/o9rZYCCxXolg155/aarmA=;
-        b=UxsJQ+MxAQM5o4IjHP8nhqiVIWywmDJyMbPmvK61v1CzSfwQbFp74W2t6dOKmtaluZVWT4
-        6c0pD2fQwDnr5sjyt8Q6UEPrnS5E78JWXieKlJ+qanD5wjw3ZGEnMhktNXsxyqQouz1eWK
-        /I6fWF1nz3m/SA0nccdGNGBV/P7RYas=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-0LzFq3tAP5SOIbL1ZVBPZA-1; Sun, 01 Nov 2020 12:24:19 -0500
-X-MC-Unique: 0LzFq3tAP5SOIbL1ZVBPZA-1
-Received: by mail-ot1-f72.google.com with SMTP id g22so5270816otp.23
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 09:24:18 -0800 (PST)
+        Sun, 1 Nov 2020 12:25:38 -0500
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DDBC0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 09:25:37 -0800 (PST)
+Received: by mail-qv1-xf43.google.com with SMTP id dj6so1161253qvb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 09:25:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GoREefk9aMvT7KBl/285APZiVNf5wtxBUMwiwvWBv4I=;
+        b=DoHV+5VeDMpmDkK6SRxdhRQh7hRXgMSov0Pj+5it7JG7FBsYb+q1eNcaRgWUUtdp/S
+         /IbqS1XVNGSMwX1N5TyxVi71K1uaTme4om7CTwBBRfs3XbEj88/knrnOrgzdR2UDu40l
+         2pY3C53HGvV0X3pFrzgA8d3FRt/Is8xeFIirNQ0Jd0cpqi1EIVJ8OldikTtSIxnZ5fb6
+         s8pCu3L0pDLKxtJkfFKjtmIzUSrkL8F6FXZIBqY3vKheIfM2qEChgXyLHf8y4fmG9/vY
+         LGefnFN0zEdTDSKkCqMSI0PF4WuD7Dq9Todp7Wzn5ZRyT14gA7149lRFD4UCoNUiPOCa
+         Kqcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ar42oVriuRci3B5JCt0ie/o9rZYCCxXolg155/aarmA=;
-        b=ZGWlbUJla83JBI7JTcT/HlrMyA75FUSWFQS1MioG5uexIzNAEQ+uyXw5eBYRCOKjlv
-         s7nQTxqEg/wVzZMeCZLl34qKHtfngFzbHznDcPotPL5nfV2AoNqAku15FVrfXg3dZoMV
-         NO4XPNKLDw1p6c6lN/cx5US3tE1QgFKTvnDZ76Jr2yVL3zZAOlNg9nBYcZGPzptmun9v
-         o7DTHFeVAJpwWlpwVfXbQRVDqwrX72ugjpmctUwbK/SaJjUcZOdzMWg91TTUGsZk1QS3
-         g1lvt+Y5EeAVI33bsuwFfkq4ciqLKF9TDNHqSAhxegnhYNtybRE2Md30W+TxDImDKIeG
-         LOQg==
-X-Gm-Message-State: AOAM53258LYkET1CMgh+aVdezKN1aUN2j7RoqcAOsAwqb7hFr0i80Avg
-        0TUb2fAHelxRcJ5LEWgutyfrlIdBy8nikE3SFBI8hIrLylhJm+28pqYhwHtoYoi2PDGHz8MHquT
-        IjssIC/hMWcNsmDqRW2PtYN3u
-X-Received: by 2002:a05:6830:1254:: with SMTP id s20mr8926216otp.314.1604251458342;
-        Sun, 01 Nov 2020 09:24:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzQkolyAC8MckoqHgNScKCXFlJJ5Cm2sr+AdV7ggKnHMboMeTp7z/vvKJ6QiYpG4hS1bmUcUw==
-X-Received: by 2002:a05:6830:1254:: with SMTP id s20mr8926198otp.314.1604251458172;
-        Sun, 01 Nov 2020 09:24:18 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id g3sm2941188oif.26.2020.11.01.09.24.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Nov 2020 09:24:17 -0800 (PST)
-From:   trix@redhat.com
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
-        spujar@nvidia.com
-Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] ASoC: tegra: remove unneeded semicolon
-Date:   Sun,  1 Nov 2020 09:24:12 -0800
-Message-Id: <20201101172412.2306144-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GoREefk9aMvT7KBl/285APZiVNf5wtxBUMwiwvWBv4I=;
+        b=UmUrybMAlwMxjw36TMff6qL2MVmiJZdBxhbk1PgfZQMTy3hsxqK/nKwaU6lj2FQdgf
+         z7YI5JSogJgoNBHfwCFJu84+cW4/OqaJMeicWb06F0Cr4LlOikvOQ1IYw92a7ClN84Ca
+         88UjYPDbA437qfSbcL/Rh16bRvtUzekHxqCTOK3mV/Bv4bhmK740doJLPQMgEgILEOHF
+         Zdv5u+ADkVXU4KWKsr9dBkErZPHILiyZPAP6BiV+uRjS0J1IPj7wXhSOoJPcwOkIpZPG
+         CkxRdkFMwy+KSnKzE52yJmBrOWjPhhLkF6KYcF9bpKaLBPJpymAEhQ/ZnW4IWdlL2Z/c
+         t12g==
+X-Gm-Message-State: AOAM530SZFOHBVLDcobelQX8Y7lpjoggZARCCDZywMMej0wGwpqGuZuD
+        njBJlaIDaMM7Lu+Z9k22TBA2uOEvtPSpwHwYhZ0=
+X-Google-Smtp-Source: ABdhPJx9nwGJIHbLlJsTX9D3Ssa4rTU8fhrQ5Zxm3aMBbkWFEp8rxMpwxn0Dt6AswIQeqptGZ+2UcpxiC6o/X9usf5k=
+X-Received: by 2002:a05:6214:12c4:: with SMTP id s4mr19051183qvv.33.1604251536935;
+ Sun, 01 Nov 2020 09:25:36 -0800 (PST)
+MIME-Version: 1.0
+References: <20201026155801.16053-1-harshalchau04@gmail.com> <SN4PR0201MB34725868C7009E7290B396FBCB150@SN4PR0201MB3472.namprd02.prod.outlook.com>
+In-Reply-To: <SN4PR0201MB34725868C7009E7290B396FBCB150@SN4PR0201MB3472.namprd02.prod.outlook.com>
+From:   harshal chaudhari <harshalchau04@gmail.com>
+Date:   Sun, 1 Nov 2020 22:55:25 +0530
+Message-ID: <CAFEvwunx-pXaSHfdRXig+b7B4sPzKWbbZd7a6kFubzhf9DguBA@mail.gmail.com>
+Subject: Re: [PATCH] misc: xilinx_sdfec: add compat_ptr_ioctl()
+To:     Dragan Cvetic <draganc@xilinx.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Derek Kiernan <dkiernan@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, Michal Simek <michals@xilinx.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Fri, Oct 30, 2020 at 3:47 PM Dragan Cvetic <draganc@xilinx.com> wrote:
+>
+> Hi Harshal,
+>
+> The code change is fine, no comment,
+> but testing will be done at the beginning of the next week.
+> Sorry for the late reply,
 
-A semicolon is not needed after a switch statement.
+Thanks for your attention Dragan. i have send the another patch for
+ to remove argument and command checks, so i request you to please
+look into this patch and kindly confirm if anything needs to change
+or any possibility.
+Thanks once again.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- sound/soc/tegra/tegra186_dspk.c | 6 +++---
- sound/soc/tegra/tegra210_dmic.c | 6 +++---
- sound/soc/tegra/tegra210_i2s.c  | 6 +++---
- 3 files changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/tegra/tegra186_dspk.c b/sound/soc/tegra/tegra186_dspk.c
-index 0cbe31e2c7e9..7d9948fb2ca7 100644
---- a/sound/soc/tegra/tegra186_dspk.c
-+++ b/sound/soc/tegra/tegra186_dspk.c
-@@ -310,7 +310,7 @@ static bool tegra186_dspk_wr_reg(struct device *dev, unsigned int reg)
- 		return true;
- 	default:
- 		return false;
--	};
-+	}
- }
- 
- static bool tegra186_dspk_rd_reg(struct device *dev, unsigned int reg)
-@@ -326,7 +326,7 @@ static bool tegra186_dspk_rd_reg(struct device *dev, unsigned int reg)
- 		return true;
- 	default:
- 		return false;
--	};
-+	}
- }
- 
- static bool tegra186_dspk_volatile_reg(struct device *dev, unsigned int reg)
-@@ -339,7 +339,7 @@ static bool tegra186_dspk_volatile_reg(struct device *dev, unsigned int reg)
- 		return true;
- 	default:
- 		return false;
--	};
-+	}
- }
- 
- static const struct regmap_config tegra186_dspk_regmap = {
-diff --git a/sound/soc/tegra/tegra210_dmic.c b/sound/soc/tegra/tegra210_dmic.c
-index a661f40bc41c..ead2c99bf72e 100644
---- a/sound/soc/tegra/tegra210_dmic.c
-+++ b/sound/soc/tegra/tegra210_dmic.c
-@@ -322,7 +322,7 @@ static bool tegra210_dmic_wr_reg(struct device *dev, unsigned int reg)
- 		return true;
- 	default:
- 		return false;
--	};
-+	}
- }
- 
- static bool tegra210_dmic_rd_reg(struct device *dev, unsigned int reg)
-@@ -338,7 +338,7 @@ static bool tegra210_dmic_rd_reg(struct device *dev, unsigned int reg)
- 		return true;
- 	default:
- 		return false;
--	};
-+	}
- }
- 
- static bool tegra210_dmic_volatile_reg(struct device *dev, unsigned int reg)
-@@ -353,7 +353,7 @@ static bool tegra210_dmic_volatile_reg(struct device *dev, unsigned int reg)
- 		return true;
- 	default:
- 		return false;
--	};
-+	}
- }
- 
- static const struct regmap_config tegra210_dmic_regmap_config = {
-diff --git a/sound/soc/tegra/tegra210_i2s.c b/sound/soc/tegra/tegra210_i2s.c
-index a383bd5c51cd..ca31ec92e508 100644
---- a/sound/soc/tegra/tegra210_i2s.c
-+++ b/sound/soc/tegra/tegra210_i2s.c
-@@ -662,7 +662,7 @@ static bool tegra210_i2s_wr_reg(struct device *dev, unsigned int reg)
- 		return true;
- 	default:
- 		return false;
--	};
-+	}
- }
- 
- static bool tegra210_i2s_rd_reg(struct device *dev, unsigned int reg)
-@@ -682,7 +682,7 @@ static bool tegra210_i2s_rd_reg(struct device *dev, unsigned int reg)
- 		return true;
- 	default:
- 		return false;
--	};
-+	}
- }
- 
- static bool tegra210_i2s_volatile_reg(struct device *dev, unsigned int reg)
-@@ -701,7 +701,7 @@ static bool tegra210_i2s_volatile_reg(struct device *dev, unsigned int reg)
- 		return true;
- 	default:
- 		return false;
--	};
-+	}
- }
- 
- static const struct regmap_config tegra210_i2s_regmap_config = {
--- 
-2.18.1
-
+> Regards
+> Dragan
+>
+>
+> > -----Original Message-----
+> > From: Harshal Chaudhari <harshalchau04@gmail.com>
+> > Sent: Monday 26 October 2020 15:58
+> > To: gregkh@linuxfoundation.org
+> > Cc: Derek Kiernan <dkiernan@xilinx.com>; Dragan Cvetic <draganc@xilinx.com>; arnd@arndb.de; Michal Simek
+> > <michals@xilinx.com>; linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org
+> > Subject: [PATCH] misc: xilinx_sdfec: add compat_ptr_ioctl()
+> >
+> > Driver has a trivial helper function to convert
+> > the pointer argument and then call the native ioctl handler.
+> > But now we have a generic implementation for that, so we can use it.
+> >
+> > Signed-off-by: Harshal Chaudhari <harshalchau04@gmail.com>
+> > ---
+> >  drivers/misc/xilinx_sdfec.c | 12 +-----------
+> >  1 file changed, 1 insertion(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/misc/xilinx_sdfec.c b/drivers/misc/xilinx_sdfec.c
+> > index 92291292756a..6f252793dceb 100644
+> > --- a/drivers/misc/xilinx_sdfec.c
+> > +++ b/drivers/misc/xilinx_sdfec.c
+> > @@ -1016,14 +1016,6 @@ static long xsdfec_dev_ioctl(struct file *fptr, unsigned int cmd,
+> >       return rval;
+> >  }
+> >
+> > -#ifdef CONFIG_COMPAT
+> > -static long xsdfec_dev_compat_ioctl(struct file *file, unsigned int cmd,
+> > -                                 unsigned long data)
+> > -{
+> > -     return xsdfec_dev_ioctl(file, cmd, (unsigned long)compat_ptr(data));
+> > -}
+> > -#endif
+> > -
+> >  static __poll_t xsdfec_poll(struct file *file, poll_table *wait)
+> >  {
+> >       __poll_t mask = 0;
+> > @@ -1054,9 +1046,7 @@ static const struct file_operations xsdfec_fops = {
+> >       .release = xsdfec_dev_release,
+> >       .unlocked_ioctl = xsdfec_dev_ioctl,
+> >       .poll = xsdfec_poll,
+> > -#ifdef CONFIG_COMPAT
+> > -     .compat_ioctl = xsdfec_dev_compat_ioctl,
+> > -#endif
+> > +     .compat_ioctl = compat_ptr_ioctl,
+> >  };
+> >
+> >  static int xsdfec_parse_of(struct xsdfec_dev *xsdfec)
+> > --
+> > 2.17.1
+>
