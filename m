@@ -2,83 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0302A1D43
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 11:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52AD92A1D4B
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 11:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgKAKaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 05:30:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726138AbgKAKaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 05:30:14 -0500
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49B0320719;
-        Sun,  1 Nov 2020 10:30:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604226613;
-        bh=94+nsV21TCqPoQNytCQG0IKS8G6JKXA1BQCEGgBvOmg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jpl4s+CKL4r7Jo/ROrTKbk7WH77giR+DXA9ycpn/YZUtQEXnLLm2KgPmIssT6S/1l
-         5BjCDWlhWRZceVpWT9effRu4xVM0PeSLqsE+83M8aAdhpsMS7vAKLmDqbrE1f28ZmD
-         aoOAqclViZSIqB+0+QbNQtknNj/EczDOR13YEOGk=
-Received: by mail-qk1-f179.google.com with SMTP id r7so9066382qkf.3;
-        Sun, 01 Nov 2020 02:30:13 -0800 (PST)
-X-Gm-Message-State: AOAM532O3ZWU310DC6kXc3TctrQw7YEsN8fEpAPgU/FjcvpV+DDLeHvN
-        2CKNFBFTOz2sgcvneOYP8tnb28zboodThusx44o=
-X-Google-Smtp-Source: ABdhPJxrDcnNF+ZfUz7cZqBpqxU984u3Rvdm9pSv7LtkG0JvPMTpve03xqgR9kGYa+LCzYjLy+h4BNbmfcixsRWJG1E=
-X-Received: by 2002:a37:4e57:: with SMTP id c84mr10050470qkb.394.1604226612532;
- Sun, 01 Nov 2020 02:30:12 -0800 (PST)
+        id S1726424AbgKAKbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 05:31:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726335AbgKAKbC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 05:31:02 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B9BC0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 02:31:01 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id a6so9835068otp.10
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 02:31:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cMohUdqA3mHu1aHkJyF+q3c+LPomnH+bJbyOS5Pjj34=;
+        b=PXdr311jw4o1TK1cA/6mrlvkDVtMBlyy1XYbMpIt3vJC7ClXj7DZJYo+vKllfO49H/
+         YgcjzcGc1VpCnfRMFbloI4quCQ5ndPF+idmxEJoWrUJWkpgS76TUc1DHlMSxRDqofJvd
+         l2sKUL2WW0wKA2NYOf2SZx1Y6sFEl/LXBFDeg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cMohUdqA3mHu1aHkJyF+q3c+LPomnH+bJbyOS5Pjj34=;
+        b=SotKZMwAHHcvdYEom3L2DTeS8cD/PQVzuaJeAQ8Ti2DjVERevDtYddZa6WbipXDvvv
+         RorsAZEKqcF9tlznBIkU93AepfQ7FWLf4fjVXw5IheAF5n/WjN3aFJOWuZU093WxbwAd
+         Ylr6yVdgmDX8Mps/+djjCbDcfJzNlADIofi48M7rVmZgZv8U69a2aT+4nqXkk4Dor8nA
+         fw+UjciYrkqBOA1YptkctmXRTZwefOvxKr8a65HFyn4rWNXnKE4l807BaMYBxRIEYSu6
+         1uwRla9bTu+P364pGssLW47OxVfHHJmU4ArEDXpNSBhByI9d2yoz3wNNB8WByCz8GPJQ
+         vV7g==
+X-Gm-Message-State: AOAM532ehBCspBkRRbbu+WKibx/6sFRKs9nAm/J7/Y/vbGqFWiiympYe
+        4FtvGn759yJ+CWh6ZoWqitnlvna2cfKSnI1lXG54Zw==
+X-Google-Smtp-Source: ABdhPJxxfl/j7Y56O7SvvjDInbgd1Huz0SnDjNzTDNqX3oHxJ8qJKEvsr7nAV6GfCrUUP0r8bqY++IYBOL0aDpBKvjo=
+X-Received: by 2002:a05:6830:1647:: with SMTP id h7mr8739299otr.281.1604226660644;
+ Sun, 01 Nov 2020 02:31:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20201028070504.362164-1-xie.he.0141@gmail.com>
- <20201030200705.6e2039c2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <CAJht_EOk43LdKVU4qH1MB5pLKcSONazA9XsKJUMTG=79TJ-3Rg@mail.gmail.com>
- <20201031095146.5e6945a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <CAK8P3a1kJT50s+BVF8-fmX6ctX2pmVtcg5rnS__EBQvseuqWNA@mail.gmail.com> <CAJht_EO0Wp=TVdLZ_8XK7ShXTUAmX-wb0UssTtn51DkPE266yQ@mail.gmail.com>
-In-Reply-To: <CAJht_EO0Wp=TVdLZ_8XK7ShXTUAmX-wb0UssTtn51DkPE266yQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 1 Nov 2020 11:29:56 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1s58-u-T5cax+eW7_Q0=Yj7T3mfnBZSw24RErV5vCBJw@mail.gmail.com>
-Message-ID: <CAK8P3a1s58-u-T5cax+eW7_Q0=Yj7T3mfnBZSw24RErV5vCBJw@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: dlci: Deprecate the DLCI driver (aka the
- Frame Relay layer)
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+References: <20201030100815.2269-1-daniel.vetter@ffwll.ch> <20201030100815.2269-6-daniel.vetter@ffwll.ch>
+ <446b2d5b-a1a1-a408-f884-f17a04b72c18@nvidia.com> <CAKMK7uGDW2f0oOvwgryCHxQFHyh3Tsk6ENsMGmtZ-EnH57tMSA@mail.gmail.com>
+ <1f7cf690-35e2-c56f-6d3f-94400633edd2@nvidia.com>
+In-Reply-To: <1f7cf690-35e2-c56f-6d3f-94400633edd2@nvidia.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Sun, 1 Nov 2020 11:30:49 +0100
+Message-ID: <CAKMK7uFYDSqnNp_xpohzCEidw_iLufNSoX4v55sNZj-nwTckSg@mail.gmail.com>
+Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 1, 2020 at 12:37 AM Xie He <xie.he.0141@gmail.com> wrote:
+On Sun, Nov 1, 2020 at 6:22 AM John Hubbard <jhubbard@nvidia.com> wrote:
 >
-> On Sat, Oct 31, 2020 at 2:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> On 10/31/20 7:45 AM, Daniel Vetter wrote:
+> > On Sat, Oct 31, 2020 at 3:55 AM John Hubbard <jhubbard@nvidia.com> wrote:
+> >> On 10/30/20 3:08 AM, Daniel Vetter wrote:
+> ...
+> >> By removing this check from this location, and changing from
+> >> pin_user_pages_locked() to pin_user_pages_fast(), I *think* we end up
+> >> losing the check entirely. Is that intended? If so it could use a comment
+> >> somewhere to explain why.
 > >
-> > I think it can just go in the bin directly. I actually submitted a couple of
-> > patches to clean up drivers/net/wan last year but didn't follow up
-> > with a new version after we decided that x.25 is still needed, see
-> > https://lore.kernel.org/netdev/20191209151256.2497534-1-arnd@arndb.de/
-> >
-> > I can resubmit if you like.
+> > Yeah this wasn't intentional. I think I needed to drop the _locked
+> > version to prep for FOLL_LONGTERM, and figured _fast is always better.
+> > But I didn't realize that _fast doesn't have the vma checks, gup.c got
+> > me a bit confused.
 >
-> Should we also remove the two macro definitions in
-> "include/uapi/linux/sockios.h" (SIOCADDDLCI / SIOCDELDLCI), too? It
-> seems to be not included in your original patch.
+> Actually, I thought that the change to _fast was a very nice touch, btw.
+>
+> >
+> > I'll remedy this in all the patches where this applies (because a
+> > VM_IO | VM_PFNMAP can point at struct page backed memory, and that
+> > exact use-case is what we want to stop with the unsafe_follow_pfn work
+> > since it wreaks things like cma or security).
+> >
+> > Aside: I do wonder whether the lack for that check isn't a problem.
+> > VM_IO | VM_PFNMAP generally means driver managed, which means the
+> > driver isn't going to consult the page pin count or anything like that
+> > (at least not necessarily) when revoking or moving that memory, since
+> > we're assuming it's totally under driver control. So if pup_fast can
+> > get into such a mapping, we might have a problem.
+> > -Daniel
+> >
+>
+> Yes. I don't know why that check is missing from the _fast path.
+> Probably just an oversight, seeing as how it's in the slow path. Maybe
+> the appropriate response here is to add a separate patch that adds the
+> check.
+>
+> I wonder if I'm overlooking something, but it certainly seems correct to
+> do that.
 
-Not sure, it should probably at least be marked as 'obsolete' in the header
-like SIOCGIFDIVERT, but removing the definitions might risk that someone
-later reuses the numbers for a new command. I don't know if there is an
-official policy for this. I see a couple of other definitions in the same file
-that have no apparent implementation:
-SIOCGIFCOUNT, SIOCDRARP, SIOCGRARP and SIOCSRARP. These
-were still referenced in 2.6.12, but only in dead code that has since
-been removed.
+You'll need the mmap_sem to get at the vma to be able to do this
+check. If you add that to _fast, you made it as fast as the slow one.
+Plus there's _fast_only due to locking recurion issues in fast-paths
+(I assume, I didn't check all the callers).
 
-      arnd
+I'm just wondering whether we have a bug somewhere with device
+drivers. For CMA regions we always check in try_grab_page, but for dax
+I'm not seeing where the checks in the _fast fastpaths are, and that
+all still leaves random device driver mappings behind which aren't
+backed by CMA but still point to something with a struct page behind
+it. I'm probably just missing something, but no idea what.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
