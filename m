@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A061D2A1F54
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C842A1F5C
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgKAP6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 10:58:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26600 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726730AbgKAP6a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 10:58:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604246309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=uGnDR6G7/vPpNC+qZpU8vljrteTG7L+Sb38lV82f6o8=;
-        b=H7/1gSeSfJksKesnpUxIwoVWoWLHVqzllOxYHyGiD1042KDI/9C94N/bF1r9iGlJoTVIo4
-        8Vv44I8Uia2Nw9exckqx+I/YCtYh8RnW71lLGStNNq9+i30fMf3YNbruqnyp5oa/kTiG+X
-        hnu3rKJs3fQStyEL2JHkpUASYX5XH4A=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-TkCn8yv3POutrcmopCbbKg-1; Sun, 01 Nov 2020 10:58:27 -0500
-X-MC-Unique: TkCn8yv3POutrcmopCbbKg-1
-Received: by mail-ot1-f72.google.com with SMTP id g22so5196634otp.23
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 07:58:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=uGnDR6G7/vPpNC+qZpU8vljrteTG7L+Sb38lV82f6o8=;
-        b=o+2rTbi1IbOzGhOpa4I24On4G+3+nvmFqDkzVIDErF7T7huHGhi4ixK505CWAkR/+j
-         R+svn+l6/YteAGXKvNMfRYDQh+JrJJb0OT+8R596Nh+8gcxNiCaXhm0NCHCKNWEGtFnh
-         3KrNq88m9wf/gjw8j2A+xspGujNmmct9riEUTqmMc9xcIK/t128Ay/oC0DaoGu101JiY
-         MigjylzVjHTA65JGvHalXdgtBIwd3rf/BhBfNsTLA7kVQhDee2kaexta5CJrdeXg5va3
-         4FQ4UyfedC77pzOAfWyTgZEOQpVax8p0LQ1cZuvlVD2xmEU8kMF9ywXxSF1BaS86WvhE
-         //kg==
-X-Gm-Message-State: AOAM533W3fOLwyM9myQsfgMXBK0RE/t5THgt2G6nIx4Uf2SGFzRTY0Bs
-        ELd6vlh9IzqAutBm5yE0HUmc2ub/uPF4bEikIz6jLVj2Z2ie8qQUGCNI/JcjvONHu4DnBPIMue8
-        WQQ2dz8pWr+XSbyofAPV6lCT3
-X-Received: by 2002:aca:5285:: with SMTP id g127mr7816633oib.88.1604246307073;
-        Sun, 01 Nov 2020 07:58:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx0OCbtyASaS0yijWJrsajMPLt1AD4+e8hVYb2K8mGI3EvQYc9N7aiAjDy5zRjHAF0JoHA9vg==
-X-Received: by 2002:aca:5285:: with SMTP id g127mr7816623oib.88.1604246306930;
-        Sun, 01 Nov 2020 07:58:26 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id y8sm2821515oon.16.2020.11.01.07.58.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Nov 2020 07:58:26 -0800 (PST)
-From:   trix@redhat.com
-To:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] tipc: remove unneeded semicolon
-Date:   Sun,  1 Nov 2020 07:58:22 -0800
-Message-Id: <20201101155822.2294856-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1727010AbgKAP7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 10:59:00 -0500
+Received: from mout.gmx.net ([212.227.17.22]:46897 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726730AbgKAP7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 10:59:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604246306;
+        bh=qb6DRVxYaxT7D4MmCdO0NYQmm6IC0TrMSMy8foIKKz0=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=Uc2TWbp6pOWSJGk3I47l6u4tZf8IVzf6v74UF3D3SpaLZ+bkcUPdCtcESIFs5bcB2
+         CKTR6loty4pdA16Wb2uAhDEXisqK4tHsP2Px/oNB2qQToH/Z9oKf478YGzznJPvjkQ
+         OvXeHCikZw2P2Btm7BElVTtJxSkHTtncCeqRrtxg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.144.204] ([217.61.144.204]) by web-mail.gmx.net
+ (3c-app-gmx-bap08.server.lan [172.19.172.78]) (via HTTP); Sun, 1 Nov 2020
+ 16:58:26 +0100
+MIME-Version: 1.0
+Message-ID: <trinity-65ad7212-0f00-45e4-b6ba-2ebf0d6ce496-1604246306570@3c-app-gmx-bap08>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-mediatek@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frank Wunderlich <linux@fw-web.de>,
+        linux-kernel@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        chuanjia.liu@mediatek.com
+Subject: Aw: Re: [PATCH] pci: mediatek: fix warning in msi.h
+Content-Type: text/plain; charset=UTF-8
+Date:   Sun, 1 Nov 2020 16:58:26 +0100
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <87lfflti8q.wl-maz@kernel.org>
+References: <20201031140330.83768-1-linux@fw-web.de>
+ <878sbm9icl.fsf@nanos.tec.linutronix.de>
+ <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de>
+ <87lfflti8q.wl-maz@kernel.org>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:fbRV6bMiFGC9Eh/64YsgpkDbiklowxEALlWU9GGzW2SwZpZ8kneSa0Kl2hTJSv1SAQvXa
+ FR4pnUQiPjlnGGbQB1tbYrWkap2Cqje5PN0OmAPG4gjW3odE8PlRx85wGk1QLpPCSu/j/7+3AbLG
+ 4hRfQgicKbwHEheG+Bu6lnrCjVbqc6RwfJBVY3PutnyOtdobHcbzQsPBggrZUoCF7oiEOZUbsAsR
+ 6Yp16ARMbyWVrQNoE63B+n494PzUhCHnLJ34R3tm77xDb1M5avjXApZvPwvnNfnUg9JPfOPc1Zkw
+ +U=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wywrOI65TLA=:OFTVISoufMGo1LNb6XlInw
+ ErkrM60zMQQXwQcdNqWqUQJp1Z3DgDZHs1AtV6g7Gv91akpmHUNJuib3RqOF4lMV4RYD81uY6
+ yYL0Q854EqDT4z74JFxbDkx7/X6MWAuUNfsoPqFUGPRoc2DmV8uj5mmKCKD/vw+fev2tBHvKP
+ 8aOf9Y04uLTn23Az4RP112HtpqAtyRm74ViZd2w4fFYJ9EGT4ex4fqxuEcZxE32G5RtWYTPwX
+ N71M4CgP47D/+ChshFjAuT/b67b02TzzK1tOdF0WyeIXBmQ+6MuX1u0WzpIKm2wDyFTLsUtER
+ dofNY613JQ23d/Jp4LBN4T1/2O++whlbnrR+18V7EI/uZUWj83TVkyrx3fmd8kjR6AMAwhTWJ
+ RuRjjAEJXhIXzf6VJSeQGzht1OLsbfv9XYcIADMHU6d2mvwJb1YuN7e3KlGOyMy3LBdCK5URs
+ P9NVNhBRzBfMNoZoFMu+OnubyHNeZOmqoPsDiy3NFc60lVJraa5InIiYATj7r0Fe2/gPzWfvi
+ WUq0QvVLv7xZG0WEUktvidhJogX5ozxv0axHo9lo5Dnv2wXU0NHwr7gWfL8PiI7+VgGniYi4n
+ 3hR3Tm4Zm2ukM=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
 
-A semicolon is not needed after a switch statement.
+> Gesendet: Sonntag, 01. November 2020 um 12:43 Uhr
+> Von: "Marc Zyngier" <maz@kernel.org>
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- net/tipc/link.c | 2 +-
- net/tipc/node.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> On Sun, 01 Nov 2020 09:25:04 +0000,
+> Frank Wunderlich <frank-w@public-files.de> wrote:
 
-diff --git a/net/tipc/link.c b/net/tipc/link.c
-index 06b880da2a8e..97b1c6bd45dc 100644
---- a/net/tipc/link.c
-+++ b/net/tipc/link.c
-@@ -1260,7 +1260,7 @@ static bool tipc_data_input(struct tipc_link *l, struct sk_buff *skb,
- 		pr_warn("Dropping received illegal msg type\n");
- 		kfree_skb(skb);
- 		return true;
--	};
-+	}
- }
- 
- /* tipc_link_input - process packet that has passed link protocol check
-diff --git a/net/tipc/node.c b/net/tipc/node.c
-index d269ebe382e1..cd67b7d5169f 100644
---- a/net/tipc/node.c
-+++ b/net/tipc/node.c
-@@ -1638,7 +1638,7 @@ static void tipc_lxc_xmit(struct net *peer_net, struct sk_buff_head *list)
- 		return;
- 	default:
- 		return;
--	};
-+	}
- }
- 
- /**
--- 
-2.18.1
+> > It looks like for mt7623 there is no msi domain setup (done via
+> > mtk_pcie_setup_irq callback + mtk_pcie_init_irq_domain) in mtk pcie
+> > driver.
+>
+> Does this mean that this SoC never handled MSIs the first place? Which
+> would explain the warning, as there is no MSI domain registered for
+> the device, and we end-up falling back to arch_setup_msi_irqs().
 
+i tried 5.10-rc1 (without my patch of course) on bananapi-r64 to check if =
+driver
+on mt7622 works better (this does setup a msi-domain in pcie-driver)....an=
+d i got no warning.
+so mt7623 needs to create an msi-domain or handle it in the correct way e.=
+g.
+by returning -ENOSPC like in your code.
+
+> If this system truly is unable to handle MSIs, one potential
+> workaround would be to register a PCI-MSI domain that would always
+> fail its allocation with -ENOSPC. It is really ugly, but would keep
+> the horror localised. See the patchlet below, which I can't test.
+>
+> If this situation is more common than we expect, we may need something
+> in core code instead.
+
+thanks for your code-example, here we need a response from MTK (CC'd Chuan=
+jia Liu)
+
+regards Frank
