@@ -2,135 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067392A1DDF
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 13:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 574AA2A1DE3
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 13:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgKAM3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 07:29:05 -0500
-Received: from asavdk3.altibox.net ([109.247.116.14]:48760 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgKAM3F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 07:29:05 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
+        id S1726566AbgKAMcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 07:32:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726490AbgKAMcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 07:32:02 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 39B0020022;
-        Sun,  1 Nov 2020 13:29:02 +0100 (CET)
-Date:   Sun, 1 Nov 2020 13:29:00 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Christophe Branchereau <cbranchereau@gmail.com>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] dt-bindings: display: Add ABT Y030XX067A panel
- bindings
-Message-ID: <20201101122900.GB1269759@ravnborg.org>
-References: <20201101093150.8071-1-paul@crapouillou.net>
- <20201101093150.8071-3-paul@crapouillou.net>
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E0AF2085B;
+        Sun,  1 Nov 2020 12:32:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604233921;
+        bh=tArR033wAfASwR6BO16OJhrwoIFFoA1aiiYA1GfynFE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hVZCHEeToZYjZL2lt97cnPFutJoBwMHfMr3IYqfnHAetZgqvcp7Emi53Hf9ZK9qUb
+         SemHjboV1+gKlTes8gYtbOqcO6S5AMRBFqX1pmMJPJo6olBb1/Pr1FY2idqZbbuVDh
+         JcmUe9Y8Sm3+fwDWUj1D0KSWsEb+SG5aCIdLM6xQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.9.3
+Date:   Sun,  1 Nov 2020 13:32:43 +0100
+Message-Id: <160423396310133@kroah.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201101093150.8071-3-paul@crapouillou.net>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=gEfo2CItAAAA:8
-        a=Lqvclo0UE7ZJoC8b96MA:9 a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22
-        a=sptkURWiP4Gy88Gu7hUp:22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 09:31:48AM +0000, Paul Cercueil wrote:
-> The Asia Better Technology (ABT) Y030XX067A panel is a 3.0" 320x480
-> 24-bit IPS LCD panel. Its particularity is that it has non-square pixels
-> (as it is 4:3 for a resolution of 320x480), and that it requires odd
-> lines to be sent as RGB and even lines to be sent as GRB on its 8-bit
-> bus.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  .../display/panel/abt,y030xx067a.yaml         | 54 +++++++++++++++++++
->  1 file changed, 54 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/panel/abt,y030xx067a.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/panel/abt,y030xx067a.yaml b/Documentation/devicetree/bindings/display/panel/abt,y030xx067a.yaml
-> new file mode 100644
-> index 000000000000..6407e8bf45fa
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/panel/abt,y030xx067a.yaml
-> @@ -0,0 +1,54 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/panel/abt,y030xx067a.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Asia Better Technology 3.0" (320x480 pixels) 24-bit IPS LCD panel
-> +
-> +description: |
-> +  The panel must obey the rules for a SPI slave device as specified in
-> +  spi/spi-controller.yaml
-> +
-> +maintainers:
-> +  - Paul Cercueil <paul@crapouillou.net>
-> +
-> +allOf:
-> +  - $ref: panel-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: abt,y030xx067a
-> +
-> +  backlight: true
-> +  port: true
-> +  power-supply: true
-> +  reg: true
-> +  reset-gpios: true
+I'm announcing the release of the 5.9.3 kernel.
 
-The binding is missing:
-required:
-  - compatible
-  - reg
-  - power-supply
-  - reset-gpios
-  - ...
+All users of the 5.9 kernel series must upgrade.
 
-additionalProperties: false
+The updated 5.9.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.9.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-So r-b only with these added.
+thanks,
 
-	Sam
+greg k-h
 
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    spi {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        panel@0 {
-> +            compatible = "abt,y030xx067a";
-> +            reg = <0>;
-> +
-> +            spi-max-frequency = <3125000>;
-> +
-> +            reset-gpios = <&gpe 2 GPIO_ACTIVE_LOW>;
-> +
-> +            backlight = <&backlight>;
-> +            power-supply = <&vcc>;
-> +
-> +            port {
-> +                panel_input: endpoint {
-> +                    remote-endpoint = <&panel_output>;
-> +                };
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.28.0
+------------
+
+ Makefile                                                  |    2 
+ arch/arm64/Makefile                                       |    4 
+ arch/arm64/kernel/cpu_errata.c                            |   15 
+ arch/powerpc/Kconfig                                      |    2 
+ arch/powerpc/include/asm/string.h                         |    2 
+ arch/powerpc/include/asm/uaccess.h                        |   40 -
+ arch/powerpc/lib/Makefile                                 |    2 
+ arch/powerpc/lib/copy_mc_64.S                             |  242 ++++++
+ arch/powerpc/lib/memcpy_mcsafe_64.S                       |  242 ------
+ arch/x86/Kconfig                                          |    2 
+ arch/x86/Kconfig.debug                                    |    2 
+ arch/x86/events/amd/ibs.c                                 |   15 
+ arch/x86/include/asm/copy_mc_test.h                       |   75 ++
+ arch/x86/include/asm/mce.h                                |    9 
+ arch/x86/include/asm/mcsafe_test.h                        |   75 --
+ arch/x86/include/asm/string_64.h                          |   32 
+ arch/x86/include/asm/uaccess.h                            |    9 
+ arch/x86/include/asm/uaccess_64.h                         |   20 
+ arch/x86/kernel/cpu/mce/core.c                            |    8 
+ arch/x86/kernel/quirks.c                                  |   10 
+ arch/x86/kernel/traps.c                                   |    2 
+ arch/x86/lib/Makefile                                     |    1 
+ arch/x86/lib/copy_mc.c                                    |   96 ++
+ arch/x86/lib/copy_mc_64.S                                 |  163 ++++
+ arch/x86/lib/memcpy_64.S                                  |  115 ---
+ arch/x86/lib/usercopy_64.c                                |   21 
+ arch/x86/pci/intel_mid_pci.c                              |    1 
+ arch/x86/xen/enlighten_pv.c                               |    9 
+ drivers/ata/ahci.h                                        |    2 
+ drivers/ata/ahci_mvebu.c                                  |    2 
+ drivers/ata/libahci_platform.c                            |    2 
+ drivers/ata/sata_rcar.c                                   |    2 
+ drivers/base/firmware_loader/fallback_platform.c          |    2 
+ drivers/cpufreq/cpufreq.c                                 |   15 
+ drivers/crypto/chelsio/chtls/chtls_cm.c                   |   29 
+ drivers/crypto/chelsio/chtls/chtls_io.c                   |    7 
+ drivers/firmware/efi/libstub/arm64-stub.c                 |    8 
+ drivers/firmware/efi/libstub/fdt.c                        |    4 
+ drivers/gpu/drm/i915/i915_debugfs.c                       |    2 
+ drivers/infiniband/core/addr.c                            |   11 
+ drivers/md/dm-writecache.c                                |   15 
+ drivers/misc/cardreader/rtsx_pcr.c                        |    4 
+ drivers/misc/cxl/pci.c                                    |    4 
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c                 |   49 -
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h                 |    1 
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c         |   56 -
+ drivers/net/ethernet/chelsio/cxgb4/t4_tcb.h               |    4 
+ drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c |    2 
+ drivers/net/ethernet/ibm/ibmveth.c                        |    6 
+ drivers/net/ethernet/ibm/ibmvnic.c                        |    8 
+ drivers/net/ethernet/mellanox/mlxsw/core.c                |    2 
+ drivers/net/ethernet/mellanox/mlxsw/spectrum.c            |    9 
+ drivers/net/ethernet/mellanox/mlxsw/spectrum.h            |    1 
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c    |   30 
+ drivers/net/ethernet/realtek/r8169_main.c                 |    4 
+ drivers/net/ethernet/renesas/ravb_main.c                  |   10 
+ drivers/net/gtp.c                                         |   16 
+ drivers/net/ipa/gsi_trans.c                               |   21 
+ drivers/net/wireless/intersil/p54/p54pci.c                |    4 
+ drivers/nvdimm/claim.c                                    |    2 
+ drivers/nvdimm/pmem.c                                     |    6 
+ drivers/pci/controller/pci-aardvark.c                     |    4 
+ drivers/phy/marvell/phy-mvebu-a3700-comphy.c              |   14 
+ drivers/phy/marvell/phy-mvebu-cp110-comphy.c              |   14 
+ drivers/tty/serial/amba-pl011.c                           |   11 
+ drivers/tty/serial/qcom_geni_serial.c                     |    2 
+ drivers/xen/gntdev.c                                      |   17 
+ fs/efivarfs/super.c                                       |    3 
+ fs/erofs/xattr.c                                          |    2 
+ fs/exec.c                                                 |    6 
+ fs/file.c                                                 |    2 
+ fs/fuse/dev.c                                             |   28 
+ fs/io-wq.c                                                |  172 ++--
+ fs/io-wq.h                                                |    1 
+ fs/io_uring.c                                             |  502 ++++++++++----
+ include/linux/fs.h                                        |    1 
+ include/linux/io_uring.h                                  |   53 +
+ include/linux/mtd/pfow.h                                  |    2 
+ include/linux/pm.h                                        |    2 
+ include/linux/qcom-geni-se.h                              |    3 
+ include/linux/sched.h                                     |    5 
+ include/linux/string.h                                    |    9 
+ include/linux/uaccess.h                                   |   13 
+ include/linux/uio.h                                       |   10 
+ include/net/netfilter/nf_tables.h                         |    6 
+ include/uapi/linux/bpf.h                                  |    4 
+ init/init_task.c                                          |    3 
+ kernel/fork.c                                             |    6 
+ lib/Kconfig                                               |    7 
+ lib/iov_iter.c                                            |   48 -
+ mm/filemap.c                                              |    8 
+ net/ipv4/tcp.c                                            |    2 
+ net/ipv4/tcp_input.c                                      |    3 
+ net/netfilter/nf_tables_api.c                             |    6 
+ net/netfilter/nf_tables_offload.c                         |    4 
+ net/sched/act_mpls.c                                      |    1 
+ net/sched/cls_api.c                                       |    4 
+ net/sched/sch_netem.c                                     |    9 
+ net/smc/smc_core.c                                        |    6 
+ net/tipc/msg.c                                            |    5 
+ scripts/setlocalversion                                   |   21 
+ security/integrity/evm/evm_main.c                         |    6 
+ tools/arch/x86/include/asm/mcsafe_test.h                  |   13 
+ tools/arch/x86/lib/memcpy_64.S                            |  115 ---
+ tools/include/uapi/linux/bpf.h                            |    4 
+ tools/objtool/check.c                                     |    5 
+ tools/perf/bench/Build                                    |    1 
+ tools/perf/bench/mem-memcpy-x86-64-lib.c                  |   24 
+ tools/testing/nvdimm/test/nfit.c                          |   49 -
+ tools/testing/selftests/powerpc/copyloops/.gitignore      |    2 
+ tools/testing/selftests/powerpc/copyloops/Makefile        |    6 
+ tools/testing/selftests/powerpc/copyloops/copy_mc_64.S    |  242 ++++++
+ 112 files changed, 1877 insertions(+), 1165 deletions(-)
+
+Aleksandr Nogikh (1):
+      netem: fix zero division in tabledist
+
+Alex Elder (1):
+      net: ipa: command payloads already mapped
+
+Amit Cohen (1):
+      mlxsw: Only advertise link modes supported by both driver and device
+
+Andrew Gabbasov (1):
+      ravb: Fix bit fields checking in ravb_hwtstamp_get()
+
+Ard Biesheuvel (1):
+      efi/arm64: libstub: Deal gracefully with EFI_RNG_PROTOCOL failure
+
+Arjun Roy (1):
+      tcp: Prevent low rmem stalls with SO_RCVLOWAT.
+
+Chris Wilson (1):
+      drm/i915/gem: Serialise debugfs i915_gem_objects with ctx->mutex
+
+Dan Williams (2):
+      x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user, kernel}()
+      x86/copy_mc: Introduce copy_mc_enhanced_fast_string()
+
+Frederic Barrat (1):
+      cxl: Rework error message for incompatible slots
+
+Gao Xiang (1):
+      erofs: avoid duplicated permission check for "trusted." xattrs
+
+Geert Uytterhoeven (1):
+      ata: sata_rcar: Fix DMA boundary mask
+
+Greg Kroah-Hartman (1):
+      Linux 5.9.3
+
+Grygorii Strashko (1):
+      PM: runtime: Fix timer_expires data type on 32-bit arches
+
+Guillaume Nault (1):
+      net/sched: act_mpls: Add softdep on mpls_gso.ko
+
+Gustavo A. R. Silva (1):
+      mtd: lpddr: Fix bad logic in print_drs_error
+
+Heiner Kallweit (1):
+      r8169: fix issue with forced threading in combination with shared interrupts
+
+Hillf Danton (1):
+      io-wq: fix use-after-free in io_wq_worker_running
+
+Ido Schimmel (1):
+      mlxsw: core: Fix memory leak on module removal
+
+Jason Gunthorpe (1):
+      RDMA/addr: Fix race with netevent_callback()/rdma_addr_cancel()
+
+Jens Axboe (10):
+      io_uring: allow timeout/poll/files killing to take task into account
+      io_uring: move dropping of files into separate helper
+      io_uring: stash ctx task reference for SQPOLL
+      io_uring: unconditionally grab req->task
+      io_uring: return cancelation status from poll/timeout/files handlers
+      io_uring: enable task/files specific overflow flushing
+      io_uring: don't rely on weak ->files references
+      io_uring: reference ->nsproxy for file table commands
+      io_uring: no need to call xa_destroy() on empty xarray
+      mm: mark async iocb read as NOWAIT once some data has been copied
+
+Jia-Ju Bai (1):
+      p54: avoid accessing the data mapped to streaming DMA
+
+Juergen Gross (1):
+      x86/xen: disable Firmware First mode for correctable memory errors
+
+Karsten Graul (2):
+      net/smc: fix invalid return code in smcd_new_buf_create()
+      net/smc: fix suppressed return code
+
+Kees Cook (1):
+      fs/kernel_read_file: Remove FIRMWARE_EFI_EMBEDDED enum
+
+Kim Phillips (1):
+      arch/x86/amd/ibs: Fix re-arming IBS Fetch
+
+Leon Romanovsky (1):
+      net: protect tcf_block_unbind with block lock
+
+Lijun Pan (1):
+      ibmvnic: fix ibmvnic_set_mac
+
+Marc Zyngier (2):
+      arm64: Run ARCH_WORKAROUND_1 enabling code on all CPUs
+      arm64: Run ARCH_WORKAROUND_2 enabling code on all CPUs
+
+Masahiro Fujiwara (1):
+      gtp: fix an use-before-init in gtp_newlink()
+
+Matthew Wilcox (Oracle) (3):
+      io_uring: Fix use of XArray in __io_uring_files_cancel
+      io_uring: Fix XArray usage in io_uring_add_task_file
+      io_uring: Convert advanced XArray uses to the normal API
+
+Michael Chan (1):
+      bnxt_en: Check abort error state in bnxt_open_nic().
+
+Michael Schaller (1):
+      efivarfs: Replace invalid slashes with exclamation marks in dentries.
+
+Miklos Szeredi (1):
+      fuse: fix page dereference after free
+
+Nick Desaulniers (1):
+      arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
+
+Pali Rohár (3):
+      PCI: aardvark: Fix initialization with old Marvell's Arm Trusted Firmware
+      ata: ahci: mvebu: Make SATA PHY optional for Armada 3720
+      phy: marvell: comphy: Convert internal SMCC firmware return codes to errno
+
+Paras Sharma (1):
+      serial: qcom_geni_serial: To correct QUP Version detection logic
+
+Pavel Begunkov (1):
+      io_uring: don't reuse linked_timeout
+
+Peter Zijlstra (1):
+      serial: pl011: Fix lockdep splat when handling magic-sysrq interrupt
+
+Raju Rangoju (1):
+      cxgb4: set up filter action after rewrites
+
+Randy Dunlap (1):
+      x86/PCI: Fix intel_mid_pci.c build error when ACPI is not enabled
+
+Rasmus Villemoes (1):
+      scripts/setlocalversion: make git describe output more reliable
+
+Ricky Wu (1):
+      misc: rtsx: do not setting OC_POWER_DOWN reg in rtsx_pci_init_ocp()
+
+Roberto Sassu (1):
+      evm: Check size of security.evm before using it
+
+Saeed Mirzamohammadi (1):
+      netfilter: nftables_offload: KASAN slab-out-of-bounds Read in nft_flow_rule_create
+
+Sebastian Andrzej Siewior (1):
+      io_wq: Make io_wqe::lock a raw_spinlock_t
+
+Song Liu (1):
+      bpf: Fix comment for helper bpf_current_task_under_cgroup()
+
+Souptick Joarder (1):
+      xen/gntdev.c: Mark pages as dirty
+
+Thomas Bogendoerfer (1):
+      ibmveth: Fix use of ibmveth in a bridge.
+
+Thomas Gleixner (1):
+      x86/traps: Fix #DE Oops message regression
+
+Tung Nguyen (1):
+      tipc: fix memory leak caused by tipc_buf_append()
+
+Vasundhara Volam (4):
+      bnxt_en: Fix regression in workqueue cleanup logic in bnxt_remove_one().
+      bnxt_en: Invoke cancel_delayed_work_sync() for PFs also.
+      bnxt_en: Re-write PCI BARs after PCI fatal error.
+      bnxt_en: Send HWRM_FUNC_RESET fw command unconditionally.
+
+Vinay Kumar Yadav (3):
+      chelsio/chtls: fix deadlock issue
+      chelsio/chtls: fix memory leaks in CPL handlers
+      chelsio/chtls: fix tls record info to user
+
+Viresh Kumar (1):
+      cpufreq: Improve code around unlisted freq check
+
+Zenghui Yu (1):
+      net: hns3: Clear the CMDQ registers before unmapping BAR region
+
