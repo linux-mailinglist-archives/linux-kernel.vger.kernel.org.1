@@ -2,121 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BD82A1F38
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 822BF2A1F3B
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726954AbgKAPnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 10:43:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
+        id S1726964AbgKAPpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 10:45:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726499AbgKAPnb (ORCPT
+        with ESMTP id S1726499AbgKAPpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 10:43:31 -0500
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D393C0617A6
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 07:43:31 -0800 (PST)
-Received: from dslb-188-104-063-075.188.104.pools.vodafone-ip.de ([188.104.63.75] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1kZFVu-00073G-Iu; Sun, 01 Nov 2020 16:43:26 +0100
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Fabien Dessenne <fabien.dessenne@st.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2 3/3] mailbox: stm32-ipcc: cast void pointers to unsigned long
-Date:   Sun,  1 Nov 2020 16:42:31 +0100
-Message-Id: <20201101154231.14250-3-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201101154231.14250-1-martin@kaiser.cx>
-References: <20201024133154.22767-1-martin@kaiser.cx>
- <20201101154231.14250-1-martin@kaiser.cx>
+        Sun, 1 Nov 2020 10:45:05 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA42C0617A6;
+        Sun,  1 Nov 2020 07:45:04 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id m8so6216555ljj.0;
+        Sun, 01 Nov 2020 07:45:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=BF6aA5CIfaBcjhWZUFgNy7TEYYJ3FC7M7UBxQrI1c2M=;
+        b=PMe0bwOlnUxyD3/4NXV4dHSLJp+kB6g8F0K4enKTClEXWbQqNWg66XVNbUaJupxYep
+         /0uh9Cu3aghYoOt4VMuvNLpxBZKqEJzthOGTDlRRT+6/L3//bq2oPwO3861J9dGJgvxQ
+         GZYca37o9/20gTP9N/ySBekCgb/r+kkfdSICywZorBblSBhSdBqjJggwMpqTRV2xS4t+
+         fJGh3Jas6TqpCHepa5itTTS9G8PzJNRYVyWxAitZ5CPXihW0n4RUU2qtdB/H0+8+0uG4
+         GQ1SZayNLeQSxkG6V4F8lxkMPMgUFCvCb8Gh1N90zdEyxB8uOVEnDbE4S5IlWfTbDdML
+         WZAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=BF6aA5CIfaBcjhWZUFgNy7TEYYJ3FC7M7UBxQrI1c2M=;
+        b=mA20EPcIRQA604vhyXzeP8T93/szmCK7ek/PplgGswLAo59MnSlvJvrdPjdmNiN0Pu
+         vOAGEhks2/fA5b76Ax4mVpN/ayRfnaOFa4jHr32U6oEKsisE6yuZlKVf8cFdJkgmpOPB
+         7Xzib4nLMkYbu51GO8F8RQSc98ZjIWZ27426lvWM3gAYJWNxsOIEtee7wCKRX5Z8t7D/
+         1bApLEve7AhqBQPuP+T39W9GUwcAlfIdF4+6doZKs2QDSpDNtdZaWUEBfYPlb9XD2Qm4
+         q1FFoOPbv6ImqGT7tNtacgXxdCKYhNzgyyxYeTznuYdXFby41krgnSCdw/eYPPDdFHr7
+         Kj+g==
+X-Gm-Message-State: AOAM5309XFNcyRCp85PbI7EJLhEpTVYGtM/sVzduHbBr47BtWeMNxXn3
+        Ef7hZDy0u5NVpFbx4kfvUQsedGYqpa1VKarvcUY=
+X-Google-Smtp-Source: ABdhPJwUv35pXb2B/fbHSYe/6UQxWAyeoft5VglqYDISVC9YYpFQBagRZ95bYPoGxVl6T7ANZzL62Do8nBGrFGjXR8U=
+X-Received: by 2002:a2e:681a:: with SMTP id c26mr5152150lja.56.1604245503006;
+ Sun, 01 Nov 2020 07:45:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201025221735.3062-1-digetx@gmail.com> <20201025221735.3062-52-digetx@gmail.com>
+ <CAGTfZH1PV4r-pD=zTKD71nQb5+UobJKa5mBv-Nb2ZgSubkscjA@mail.gmail.com> <2ebd184c-60e8-19e2-9965-19481ced1c70@gmail.com>
+In-Reply-To: <2ebd184c-60e8-19e2-9965-19481ced1c70@gmail.com>
+Reply-To: cwchoi00@gmail.com
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Date:   Mon, 2 Nov 2020 00:44:26 +0900
+Message-ID: <CAGTfZH0=6R02euOR3JHgA0iLq5++Yvp3Z_wBCEs7bzkfuorEFQ@mail.gmail.com>
+Subject: Re: [PATCH v6 51/52] PM / devfreq: tegra30: Support interconnect and
+ OPPs from device-tree
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the driver can be enabled by COMPILE_TEST, we see warnings on
-64bit platforms when void pointers are cast to unsigned int (and
-vice versa).
+Hi Dmitry,
 
-warning: cast to smaller integer type 'unsigned int' from 'void *'
-           unsigned int chan = (unsigned int)link->con_priv;
-...
-warning: cast to 'void *' from smaller integer type 'unsigned int'
-           ipcc->controller.chans[i].con_priv = (void *)i;
+On Mon, Nov 2, 2020 at 12:23 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 01.11.2020 17:39, Chanwoo Choi =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > Hi Dmitry,
+> >
+> > On Mon, Oct 26, 2020 at 7:22 AM Dmitry Osipenko <digetx@gmail.com> wrot=
+e:
+> >>
+> >> This patch moves ACTMON driver away from generating OPP table by itsel=
+f,
+> >> transitioning it to use the table which comes from device-tree. This
+> >> change breaks compatibility with older device-trees in order to bring
+> >> support for the interconnect framework to the driver. This is a mandat=
+ory
+> >> change which needs to be done in order to implement interconnect-based
+> >> memory DVFS. Users of legacy device-trees will get a message telling t=
+hat
+> >> theirs DT needs to be upgraded. Now ACTMON issues memory bandwidth req=
+uest
+> >> using dev_pm_opp_set_bw(), instead of driving EMC clock rate directly.
+> >>
+> >> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> >> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> ...
+> >>  static int tegra_devfreq_get_dev_status(struct device *dev,
+> >> @@ -655,7 +643,7 @@ static int tegra_devfreq_get_dev_status(struct dev=
+ice *dev,
+> >>         stat->private_data =3D tegra;
+> >>
+> >>         /* The below are to be used by the other governors */
+> >> -       stat->current_frequency =3D cur_freq;
+> >> +       stat->current_frequency =3D cur_freq * KHZ;
+> >
+> > I can't find any change related to the frequency unit on this patch.
+> > Do you fix the previous bug of the frequency unit?
+>
+> Previously, OPP entries that were generated by the driver used KHz
+> units. Now, OPP entries are coming from a device-tree and they have Hz
+> units. This driver operates with KHz internally, hence we need to
+> convert the units now.
 
-Update these casts to use unsigned long variables, which are the same
-size as pointers on all platforms.
+OK. Thanks.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
-changes in v2
-- added this patch to fix COMPILE_TEST warnings
+>
+> >>
+> >>         actmon_dev =3D &tegra->devices[MCALL];
+> >>
+> >> @@ -705,7 +693,7 @@ static int tegra_governor_get_target(struct devfre=
+q *devfreq,
+> >>                 target_freq =3D max(target_freq, dev->target_freq);
+> >>         }
+> >>
+> >> -       *freq =3D target_freq;
+> >> +       *freq =3D target_freq * KHZ;
+> >
+> > ditto.
+> >
+> >>
+> >>         return 0;
+> >>  }
+> >> @@ -773,13 +761,22 @@ static struct devfreq_governor tegra_devfreq_gov=
+ernor =3D {
+> >>
+> >>  static int tegra_devfreq_probe(struct platform_device *pdev)
+> >>  {
+> >> +       u32 hw_version =3D BIT(tegra_sku_info.soc_speedo_id);
+> >>         struct tegra_devfreq_device *dev;
+> >>         struct tegra_devfreq *tegra;
+> >> +       struct opp_table *opp_table;
+> >>         struct devfreq *devfreq;
+> >>         unsigned int i;
+> >>         long rate;
+> >>         int err;
+> >>
+> >> +       /* legacy device-trees don't have OPP table and must be update=
+d */
+> >> +       if (!device_property_present(&pdev->dev, "operating-points-v2"=
+)) {
+> >> +               dev_err(&pdev->dev, "OPP table not found, cannot conti=
+nue\n");
+> >> +               dev_err(&pdev->dev, "please update your device tree\n"=
+);
+> >> +               return -ENODEV;
+> >> +       }
+> >
+> > As you mentioned, it breaks the old dtb. I have no objection to improvi=
+ng
+> > the driver. Instead, you need confirmation from the Devicetree maintain=
+er.
+>
+> Older DTBs will continue to work, but devfreq driver won't. We already
+> did this for other Tegra drivers before (CPUFREQ driver for example) and
+> Rob Herring confirmed that there is no problem here.
 
- drivers/mailbox/stm32-ipcc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+OK.
 
-diff --git a/drivers/mailbox/stm32-ipcc.c b/drivers/mailbox/stm32-ipcc.c
-index ab8fe56af948..b84e0587937c 100644
---- a/drivers/mailbox/stm32-ipcc.c
-+++ b/drivers/mailbox/stm32-ipcc.c
-@@ -144,11 +144,11 @@ static irqreturn_t stm32_ipcc_tx_irq(int irq, void *data)
- 
- static int stm32_ipcc_send_data(struct mbox_chan *link, void *data)
- {
--	unsigned int chan = (unsigned int)link->con_priv;
-+	unsigned long chan = (unsigned long)link->con_priv;
- 	struct stm32_ipcc *ipcc = container_of(link->mbox, struct stm32_ipcc,
- 					       controller);
- 
--	dev_dbg(ipcc->controller.dev, "%s: chan:%d\n", __func__, chan);
-+	dev_dbg(ipcc->controller.dev, "%s: chan:%lu\n", __func__, chan);
- 
- 	/* set channel n occupied */
- 	stm32_ipcc_set_bits(&ipcc->lock, ipcc->reg_proc + IPCC_XSCR,
-@@ -163,7 +163,7 @@ static int stm32_ipcc_send_data(struct mbox_chan *link, void *data)
- 
- static int stm32_ipcc_startup(struct mbox_chan *link)
- {
--	unsigned int chan = (unsigned int)link->con_priv;
-+	unsigned long chan = (unsigned long)link->con_priv;
- 	struct stm32_ipcc *ipcc = container_of(link->mbox, struct stm32_ipcc,
- 					       controller);
- 	int ret;
-@@ -183,7 +183,7 @@ static int stm32_ipcc_startup(struct mbox_chan *link)
- 
- static void stm32_ipcc_shutdown(struct mbox_chan *link)
- {
--	unsigned int chan = (unsigned int)link->con_priv;
-+	unsigned long chan = (unsigned long)link->con_priv;
- 	struct stm32_ipcc *ipcc = container_of(link->mbox, struct stm32_ipcc,
- 					       controller);
- 
-@@ -206,7 +206,7 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
- 	struct device_node *np = dev->of_node;
- 	struct stm32_ipcc *ipcc;
- 	struct resource *res;
--	unsigned int i;
-+	unsigned long i;
- 	int ret;
- 	u32 ip_ver;
- 	static const char * const irq_name[] = {"rx", "tx"};
-@@ -265,7 +265,7 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
- 						irq_thread[i], IRQF_ONESHOT,
- 						dev_name(dev), ipcc);
- 		if (ret) {
--			dev_err(dev, "failed to request irq %d (%d)\n", i, ret);
-+			dev_err(dev, "failed to request irq %lu (%d)\n", i, ret);
- 			goto err_clk;
- 		}
- 	}
--- 
-2.20.1
+>
+> > And,
+> > I recommend that you use dev_pm_opp_of_get_opp_desc_node(&pdev->dev)
+> > to check whether a device contains opp-table or not.
+>
+> I'm not sure what are the benefits, this will make code less
+> expressive/readable and we will need to add extra of_node_put(), which
+> device_property_present() handles for us.
+>
+> Could you please give the rationale?
 
+IMO, 'operating-points-v2' word was defined on OPP core. I think that
+the external user
+of OPP better to use the public helper function instead of using the
+interval definition
+or value of OPP core directly. Basically, I prefer the provided helper
+function if there.
+But, it is not critical and doesn't affect the operation. If you want
+to keep, it is ok.
+
+>
+> >> +
+> >>         tegra =3D devm_kzalloc(&pdev->dev, sizeof(*tegra), GFP_KERNEL)=
+;
+> >>         if (!tegra)
+> >>                 return -ENOMEM;
+> >> @@ -821,11 +818,29 @@ static int tegra_devfreq_probe(struct platform_d=
+evice *pdev)
+> >>                 return err;
+> >>         }
+> >>
+> >> +       tegra->opp_table =3D dev_pm_opp_get_opp_table(&pdev->dev);
+> >> +       if (IS_ERR(tegra->opp_table))
+> >> +               return dev_err_probe(&pdev->dev, PTR_ERR(tegra->opp_ta=
+ble),
+> >> +                                    "Failed to prepare OPP table\n");
+> >
+> > As I knew, each device can contain the opp_table on devicetree.
+> > It means that opp_table has not depended to another device driver.
+> > Did you see this exception case with EPROBE_DEFER error?
+>
+> OPP core will try to grab the clock reference for the table and it may
+> cause EPROBE_DEFER. Although, it shouldn't happen here because we have
+> devm_clk_get() before the get_opp_table(), hence seems the deferred
+> probe indeed shouldn't happen in this case.
+
+It is my missing point. If there, you're right.
+Could you provide the code point to check the clock reference on the OPP co=
+re?
+
+--=20
+Best Regards,
+Chanwoo Choi
