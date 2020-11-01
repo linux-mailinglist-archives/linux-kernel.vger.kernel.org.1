@@ -2,78 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FDF2A1DC6
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 13:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766AE2A1DCB
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 13:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgKAMKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 07:10:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726490AbgKAMKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 07:10:36 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A637C208B6;
-        Sun,  1 Nov 2020 12:10:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604232635;
-        bh=69DURQxAJm5IPPyz0iqmP+j1BJ4QqpEDaUqp2moQ6yU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aikYv4TOLT1V5MPBqLWRoSG6JAjabmjO5d3kbnVtvissH43d+iRamPPfud9pKStJ6
-         DAo9YvGSFOKlBaUe+JrnU1kQYBTo9h+SqcfrRaOwCF20R5BKE9Zdk7iQi0ZOCcYlGL
-         1YwAkJ9ZS85myQkRX7TuDKWLuB/6Ln8egkblecvs=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kZCBt-006PeF-Vd; Sun, 01 Nov 2020 12:10:34 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>, nm@ti.com,
-        t-kristo@ti.com, lokeshvutla@ti.com, ssantosh@kernel.org,
-        robh+dt@kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     Ulrich Hecht <uli+renesas@fpond.eu>, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 0/2] irqchip/ti-sci-inta: Support for unmapped events
-Date:   Sun,  1 Nov 2020 12:10:28 +0000
-Message-Id: <160423261832.76459.5898965255364818721.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201020073243.19255-1-peter.ujfalusi@ti.com>
-References: <20201020073243.19255-1-peter.ujfalusi@ti.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, jason@lakedaemon.net, geert+renesas@glider.be, nm@ti.com, t-kristo@ti.com, lokeshvutla@ti.com, ssantosh@kernel.org, robh+dt@kernel.org, peter.ujfalusi@ti.com, uli+renesas@fpond.eu, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1726534AbgKAMVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 07:21:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726454AbgKAMVK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 07:21:10 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72028C0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 04:21:10 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id x13so8472989pgp.7
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 04:21:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=xAMlcu5HyOJWhMCGe7WlqSeGRHe2WFF/uiSbdM0G/7c=;
+        b=lTJd9wcKx1PnyEPaLnRQFqN4EofDlHp+TGW46gz0n44oTcyPQP4UcjFsX0OOb4u3Pt
+         L+zsZ67ilwFkpLHa9W6q4U9/RmuuUATjVmD6aw4pUmEHLx4OZYbrBmYIk2ChlXmf3+nA
+         X/vn8IvCsgzHwcGvrT1XqjOmeajRUTKLbrtxFbRtyRabPAZWbRKKfmDx09QaW/NSnIms
+         1uHUEijFURwvIbD2C9LDp7bsTGDY2HxSr07pd4IDgt6aUgUxB+0ngoliGUoC4fCjfLPY
+         FS9y2Gz5TydGrPgnfxP5RaEZ32VSzM4RCy3imP4+r/ndQkvSG8W1DkQarG4eDbzahCou
+         GM9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xAMlcu5HyOJWhMCGe7WlqSeGRHe2WFF/uiSbdM0G/7c=;
+        b=GIhQzCexvPY4itdCSyETA9tdAZ4ldaj7Jrlk3B3R497no66+P2rUUt8+PgY5VfFBVH
+         BW2PTZvdrnfsLv5JH7NlmMglDA/AxIVhrYHEUJGzL47z6KUUvYiFVvd+jEpKdLg/Qg+W
+         S7xLqcC+QCuNeHO5+qiW8I96FoXiJ4AgiF9vqNIeu4fPtIkdEgKqziZvWGszTTISQl2p
+         JZTVEplUDj8e51dbKptkcWESWrCH150bHf+4E31XD2L5GwXJg+tDJb6B2f+P+YMK7W84
+         DMQMk4qyx3C6suIA4ro9oC+i4XWEi6JHSiWk8E22Dfaq6TXw5uJ00zCmrXYWlQ+abrLL
+         HFgQ==
+X-Gm-Message-State: AOAM533Kd/macTN4edlmTsdBNvtPldOgPU6EXOKIkmeqcudJJnve5cc8
+        xU37BCS6E7wB8Ne4v+rVfbobyE09o5pEWg==
+X-Google-Smtp-Source: ABdhPJwfFYCVE8qKovC88wVntJBDNAUKHGRJjca7IsilaP3HluWiMtd1GOp2sp2TvfiU+HfdSX1/rQ==
+X-Received: by 2002:a63:e54a:: with SMTP id z10mr8992651pgj.297.1604233269795;
+        Sun, 01 Nov 2020 04:21:09 -0800 (PST)
+Received: from AHUANG12-1LT7M0.lenovo.com (220-142-209-44.dynamic-ip.hinet.net. [220.142.209.44])
+        by smtp.googlemail.com with ESMTPSA id w6sm10164827pgr.71.2020.11.01.04.21.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 04:21:09 -0800 (PST)
+From:   Adrian Huang <adrianhuang0701@gmail.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Adrian Huang <adrianhuang0701@gmail.com>,
+        Adrian Huang <ahuang12@lenovo.com>
+Subject: [PATCH 1/1] workqueue: Remove redundant assignment
+Date:   Sun,  1 Nov 2020 20:21:24 +0800
+Message-Id: <20201101122124.1185-1-adrianhuang0701@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Oct 2020 10:32:41 +0300, Peter Ujfalusi wrote:
-> Changes since v2:
-> - Extended the block diagram of INTA in the DT documentation
-> - Use less creative variable names for unmapped events in the driver
-> - Short comment section to describe the unmapped event handling in driver
-> - Use u16 array to store the TI-SCI device identifiers instead of u32
-> - Use printk format specifier instead of_node_full_name
-> 
-> [...]
+From: Adrian Huang <ahuang12@lenovo.com>
 
-Applied to irq/irqchip-next, thanks!
+The member 'node' of worker_pool struct (per_cpu worker_pool) is
+assigned in workqueue_init_early() and workqueue_init().
+Commit 2186d9f940b6 ("workqueue: move wq_numa_init() to workqueue_init()")
+fixes an issue by moving wq_numa_init() to workqueue_init() in order
+to get the valid 'cpu to node' mapping. So, remove the redundant
+assignment in workqueue_init_early().
 
-[1/2] dt-bindings: irqchip: ti, sci-inta: Update for unmapped event handling
-      commit: bb2bd7c7f3d0946acc2104db31df228d10f7b598
-[2/2] irqchip/ti-sci-inta: Add support for unmapped event handling
-      commit: d95bdca75b3fb41bf185efe164e05aed820081a5
+Signed-off-by: Adrian Huang <ahuang12@lenovo.com>
+---
+ kernel/workqueue.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Cheers,
-
-	M.
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 437935e7a199..cf8c0df2410e 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -5937,7 +5937,6 @@ void __init workqueue_init_early(void)
+ 			pool->cpu = cpu;
+ 			cpumask_copy(pool->attrs->cpumask, cpumask_of(cpu));
+ 			pool->attrs->nice = std_nice[i++];
+-			pool->node = cpu_to_node(cpu);
+ 
+ 			/* alloc pool ID */
+ 			mutex_lock(&wq_pool_mutex);
 -- 
-Without deviation from the norm, progress is not possible.
-
+2.17.1
 
