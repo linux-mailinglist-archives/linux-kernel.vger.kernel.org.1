@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974E82A1BA8
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 03:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF09A2A1BAC
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 03:03:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgKACCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Oct 2020 22:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726438AbgKACCc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Oct 2020 22:02:32 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992AAC0617A6;
-        Sat, 31 Oct 2020 19:02:30 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id r3so4982490plo.1;
-        Sat, 31 Oct 2020 19:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Dbp4d9VwR1A0nOp60T+uohgWaLBk9nOmKzpDG8Qbx/8=;
-        b=ZLbgrhc+7nOSB8eh8mP31c2+KarmkUSuGXGAqbqJfB9ZvXOafCv1aGdwAd2Z6NP6G0
-         dNW+T1uCn+qM8+XXrR5yhHLMAQ5XVPJGmOmDIT01hwyv6kCmgoJLWhntJOMwLJayQPuS
-         vIsDH+r16BemiYtyCKrW3avwyqImz4svzyVsQo2AMKUGl8sLfscwU9triryPsJBKZ8Rj
-         gxDF/h2j4bal60JLhR0xG7hDShl+Fh13S+YDNylh2m3GL9GTflkSOlpO1wWaTXD1uipl
-         TBYKRLgdFWn6AzBd26cPRYU0Ka4YXmgz+0Rh2Wobh69Js55bBYxkIAXQy+7Kwffi2MiX
-         CKZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Dbp4d9VwR1A0nOp60T+uohgWaLBk9nOmKzpDG8Qbx/8=;
-        b=bmyiQCg2h+4rb6+enr3LgcLERQzE9W+DfVFLFyiZu/lewABnq0hIBN9l+nOLEmRECZ
-         l+rcWZuBgG6f7vb6vuN5y4eY5klLX4SH/PmXoeX/23g9l+TXGISaSWcek4XUFjcquiSf
-         PNFop+YFqqsDnVswKgrFTUvyz0lT1DgLpqccwDoJfjbJcp69hjfu0db9j3oY1AU/fjtm
-         /JqI9+/d/FeUVMQxFE4sIfxy7xNhI75fShGj5j4JUGbNXNprqJ6Z5CtSP7FNMflGR/TR
-         JlFRGz1oxZb8v01l1g4TKMcv5S/XC8ETsHsnu+bh6o6mx0dgRvB+rVM14paJIxezEKA0
-         X6Ww==
-X-Gm-Message-State: AOAM5304qlCXHrJxRhJUW+BX0lxGNsy1/dugOjcE20YnjrTvVMQZEELI
-        h7K+PQBJfIXF81Thu8/KWa9MLYrHQCU=
-X-Google-Smtp-Source: ABdhPJwHPjvIgQsUSXdGSRnIvPhUIFAs56oi/mTngVauv94fJGqREA2H1wsoJYVwm7tZXDG53t1SsA==
-X-Received: by 2002:a17:90b:a4e:: with SMTP id gw14mr510551pjb.48.1604196150196;
-        Sat, 31 Oct 2020 19:02:30 -0700 (PDT)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id u5sm3008933pgk.80.2020.10.31.19.02.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 19:02:29 -0700 (PDT)
-Date:   Sat, 31 Oct 2020 19:02:27 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: Re: [PATCH] net: ethernet: ti: cpsw: disable PTPv1 hw timestamping
- advertisement
-Message-ID: <20201101020227.GB2683@hoboy.vegasvil.org>
-References: <20201029190910.30789-1-grygorii.strashko@ti.com>
- <20201031114042.7ccdf507@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        id S1726643AbgKACDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Oct 2020 22:03:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726395AbgKACDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Oct 2020 22:03:19 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 089A822254;
+        Sun,  1 Nov 2020 02:03:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604196199;
+        bh=BEBcBlNDVhWIWQJqnvkgZFa8uAtL4iZ7Q2tdbA7H+/c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NbTiqT2f20acDczxbs3/mLYG/CwBvIsdUNES9JEjPqWbP4dTZ/uqC5KTE4BJeQ3SE
+         nfzaH+u6/lyWdw1ib1JmhUvRUpFR11c/0hx/FEa5sHn7Pjgr1CLMceSCg1pcK0qa6+
+         9soNK+24HUDdyjfjCEvloG5n0ZnBH5vCcmNL/4JU=
+Date:   Sun, 1 Nov 2020 10:03:09 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] arm64: dts: imx8mn: Enable Asynchronous Sample Rate
+ Converter
+Message-ID: <20201101020308.GC31601@dragon>
+References: <20201019174529.289499-1-aford173@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201031114042.7ccdf507@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201019174529.289499-1-aford173@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 11:40:42AM -0700, Jakub Kicinski wrote:
-> On Thu, 29 Oct 2020 21:09:10 +0200 Grygorii Strashko wrote:
-> > The TI CPTS does not natively support PTPv1, only PTPv2. But, as it
-> > happens, the CPTS can provide HW timestamp for PTPv1 Sync messages, because
-> > CPTS HW parser looks for PTP messageType id in PTP message octet 0 which
-> > value is 0 for PTPv1. As result, CPTS HW can detect Sync messages for PTPv1
-> > and PTPv2 (Sync messageType = 0 for both), but it fails for any other PTPv1
-> > messages (Delay_req/resp) and will return PTP messageType id 0 for them.
-> > 
-> > The commit e9523a5a32a1 ("net: ethernet: ti: cpsw: enable
-> > HWTSTAMP_FILTER_PTP_V1_L4_EVENT filter") added PTPv1 hw timestamping
-> > advertisement by mistake, only to make Linux Kernel "timestamping" utility
-> > work, and this causes issues with only PTPv1 compatible HW/SW - Sync HW
-> > timestamped, but Delay_req/resp are not.
-> > 
-> > Hence, fix it disabling PTPv1 hw timestamping advertisement, so only PTPv1
-> > compatible HW/SW can properly roll back to SW timestamping.
-> > 
-> > Fixes: e9523a5a32a1 ("net: ethernet: ti: cpsw: enable HWTSTAMP_FILTER_PTP_V1_L4_EVENT filter")
-> > Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+On Mon, Oct 19, 2020 at 12:45:24PM -0500, Adam Ford wrote:
+> The driver exists for the Enhanced Asynchronous Sample Rate Converter
+> (EASRC) Controller, but there isn't a device tree entry for it.
 > 
-> CC: Richard
+> On the vendor kernel, they put this on a spba-bus for SDMA support.
+> 
+> Add the the node for the spba-bus with the easrc node inside.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> index 746faf1cf2fb..7d34281332e1 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> @@ -246,6 +246,34 @@ aips1: bus@30000000 {
+>  			#size-cells = <1>;
+>  			ranges;
+>  
+> +			spba-bus@30000000 {
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+spba: bus@30000000
+
+> +				compatible = "fsl,spba-bus", "simple-bus";
+
+"fsl,spba-bus" is undocumented.  Document it or drop it.
+
+> +				#address-cells = <1>;
+> +				#size-cells = <1>;
+> +				reg = <0x30000000 0x100000>;
+> +				ranges;
+> +
+> +				easrc: easrc@300C0000 {
+> +					compatible = "fsl,imx8mn-easrc";
+> +					reg = <0x300C0000 0x10000>;
+> +					interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
+> +					clocks = <&clk IMX8MN_CLK_ASRC_ROOT>;
+> +					clock-names = "mem";
+> +					dmas = <&sdma2 16 23 0> , <&sdma2 17 23 0>,
+> +					       <&sdma2 18 23 0> , <&sdma2 19 23 0>,
+> +					       <&sdma2 20 23 0> , <&sdma2 21 23 0>,
+> +					       <&sdma2 22 23 0> , <&sdma2 23 23 0>;
+> +					dma-names = "ctx0_rx", "ctx0_tx",
+> +						    "ctx1_rx", "ctx1_tx",
+> +						    "ctx2_rx", "ctx2_tx",
+> +						    "ctx3_rx", "ctx3_tx";
+> +					fsl,easrc-ram-script-name = "imx/easrc/easrc-imx8mn.bin";
+
+Undocumented property?
+
+Shawn
+
+> +					fsl,asrc-rate  = <8000>;
+> +					fsl,asrc-width = <16>;
+> +					status = "disabled";
+> +				};
+> +			};
+> +
+>  			gpio1: gpio@30200000 {
+>  				compatible = "fsl,imx8mn-gpio", "fsl,imx35-gpio";
+>  				reg = <0x30200000 0x10000>;
+> -- 
+> 2.25.1
+> 
