@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2F92A1FB8
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC792A1FC5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgKARAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:00:14 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:53834 "EHLO
+        id S1727198AbgKARAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:00:35 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:53852 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726791AbgKARAM (ORCPT
+        with ESMTP id S1727056AbgKARAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:00:12 -0500
-Date:   Sun, 01 Nov 2020 17:00:09 -0000
+        Sun, 1 Nov 2020 12:00:13 -0500
+Date:   Sun, 01 Nov 2020 17:00:10 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604250010;
+        s=2020; t=1604250011;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aCnuJ3lVmHHG4SSasG7csbDqsih9xX8WfJDoPw/c1LM=;
-        b=ykIuZj0s4zoDLvY5BUcYHH6Eyos4NlR7+fWNuwKs1hLQOBjS3BXOxBfH+HjFATVfuKiVzp
-        guKTmbVHksblERjPFzGqk6aFYWc4m9JWs82dTwZSGBvEK0+98j+U668oJMmZDhK8ZEf8PR
-        pwWEfwcWsQP9tk4B/w+dKlqdb6+xwRx8w6Z32YwabMALPHyYA7Bb07WuR+jEQb+4JgpYLZ
-        9Lq477hN0mjewaIOwlJPa53vwHGZpyO5JhTA6ZJFNCtyPWwy/qyCLwoZ2aOJD9YVUCrn+O
-        BAIiKhbhbcMeaT6EQoHMQAuOPAueTPA9fYQOxF+coIweBPmBfvyiHM9hw/0Sqw==
+        bh=eOXTsO5fj7oXT6arEKGa5RsDMjRtxSJNRbHhNMzllu0=;
+        b=0VKzhCA8yIBnh02c9XAE23gsk8jeSnfyjCjBGzo3bk8LZZCi70ySap6FusQ1JirTYyp8kj
+        h2oWLi+V1HyjSHv5XjMxgIvljAyoz2QIFcyNrMSYA39TVj0y4zkUHLTpKcizk1kwj3Z+N+
+        T1Lyi62dvD/UWZYLQMM6QBIg0WBP2ot39l4Wog9xc4bt1AXDv4N4+SNV+If0GEgNINPpef
+        Ut/AKpPXa9XXqEHbNiWc4Ustx+zlR8WdidbFRbSSFdxjSMHs6vlwtLJvwZTSw54smIf7DM
+        YMXke9G+G4O4zGXP633HpBFS3JC4I5oZ57LHuCFEOMMv3C6asJcVJFxcA3r/1Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604250010;
+        s=2020e; t=1604250011;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aCnuJ3lVmHHG4SSasG7csbDqsih9xX8WfJDoPw/c1LM=;
-        b=BpkO4QJZ4/j/YcOPOwrXBf/x7wH1VjQb+MzHbUQ/XzM4v8brwvhYmvYXr+vzbtURgqODKu
-        zsHqXryZhQDJx/DA==
-From:   "tip-bot2 for Greentime Hu" <tip-bot2@linutronix.de>
+        bh=eOXTsO5fj7oXT6arEKGa5RsDMjRtxSJNRbHhNMzllu0=;
+        b=Ez0z//wcpMEggOU+r1WneqFLNfUYKB53GGstZ1DCQM+38odnvMSrtnDSp+oWuvBNZzBlAl
+        pbK4lXaC0xHcbzBQ==
+From:   "tip-bot2 for Fabrice Gasnier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] irqchip/sifive-plic: Fix chip_data access within a
- hierarchy
-Cc:     Greentime Hu <greentime.hu@sifive.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>, x86 <x86@kernel.org>,
+Subject: [tip: irq/urgent] irqchip/stm32-exti: Add all LP timer exti direct
+ events support
+Cc:     Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Marc Zyngier <maz@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201029023738.127472-1-greentime.hu@sifive.com>
-References: <20201029023738.127472-1-greentime.hu@sifive.com>
+In-Reply-To: <1602859219-15684-2-git-send-email-fabrice.gasnier@st.com>
+References: <1602859219-15684-2-git-send-email-fabrice.gasnier@st.com>
 MIME-Version: 1.0
-Message-ID: <160425000919.397.3903804075850306877.tip-bot2@tip-bot2>
+Message-ID: <160425001041.397.1365831489049144753.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,69 +59,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/urgent branch of tip:
 
-Commit-ID:     f9ac7bbd6e4540dcc6df621b9c9b6eb2e26ded1d
-Gitweb:        https://git.kernel.org/tip/f9ac7bbd6e4540dcc6df621b9c9b6eb2e26ded1d
-Author:        Greentime Hu <greentime.hu@sifive.com>
-AuthorDate:    Thu, 29 Oct 2020 10:37:38 +08:00
+Commit-ID:     a00e85b581fd5ee47e770b6b8d2038dbebbe81f9
+Gitweb:        https://git.kernel.org/tip/a00e85b581fd5ee47e770b6b8d2038dbebbe81f9
+Author:        Fabrice Gasnier <fabrice.gasnier@st.com>
+AuthorDate:    Fri, 16 Oct 2020 16:40:17 +02:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Sun, 01 Nov 2020 11:52:27 
+CommitterDate: Sun, 25 Oct 2020 12:04:13 
 
-irqchip/sifive-plic: Fix chip_data access within a hierarchy
+irqchip/stm32-exti: Add all LP timer exti direct events support
 
-The plic driver crashes in plic_irq_unmask() when the interrupt is within a
-hierarchy, as it picks the top-level chip_data instead of its local one.
+Add all remaining LP timer exti direct events, e.g. for LP Timer 2 to 5.
+LP timer 1 is already listed (e.g. exti 47).
 
-Using irq_data_get_irq_chip_data() instead of irq_get_chip_data() solves
-the issue for good.
-
-Fixes: f1ad1133b18f ("irqchip/sifive-plic: Add support for multiple PLICs")
-Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-[maz: rewrote commit message]
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Anup Patel <anup@brainfault.org>
-Reviewed-by: Atish Patra <atish.patra@wdc.com>
-Link: https://lore.kernel.org/r/20201029023738.127472-1-greentime.hu@sifive.com
+Link: https://lore.kernel.org/r/1602859219-15684-2-git-send-email-fabrice.gasnier@st.com
 ---
- drivers/irqchip/irq-sifive-plic.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/irqchip/irq-stm32-exti.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index 4048657..6f432d2 100644
---- a/drivers/irqchip/irq-sifive-plic.c
-+++ b/drivers/irqchip/irq-sifive-plic.c
-@@ -99,7 +99,7 @@ static inline void plic_irq_toggle(const struct cpumask *mask,
- 				   struct irq_data *d, int enable)
- {
- 	int cpu;
--	struct plic_priv *priv = irq_get_chip_data(d->irq);
-+	struct plic_priv *priv = irq_data_get_irq_chip_data(d);
- 
- 	writel(enable, priv->regs + PRIORITY_BASE + d->hwirq * PRIORITY_PER_ID);
- 	for_each_cpu(cpu, mask) {
-@@ -115,7 +115,7 @@ static void plic_irq_unmask(struct irq_data *d)
- {
- 	struct cpumask amask;
- 	unsigned int cpu;
--	struct plic_priv *priv = irq_get_chip_data(d->irq);
-+	struct plic_priv *priv = irq_data_get_irq_chip_data(d);
- 
- 	cpumask_and(&amask, &priv->lmask, cpu_online_mask);
- 	cpu = cpumask_any_and(irq_data_get_affinity_mask(d),
-@@ -127,7 +127,7 @@ static void plic_irq_unmask(struct irq_data *d)
- 
- static void plic_irq_mask(struct irq_data *d)
- {
--	struct plic_priv *priv = irq_get_chip_data(d->irq);
-+	struct plic_priv *priv = irq_data_get_irq_chip_data(d);
- 
- 	plic_irq_toggle(&priv->lmask, d, 0);
- }
-@@ -138,7 +138,7 @@ static int plic_set_affinity(struct irq_data *d,
- {
- 	unsigned int cpu;
- 	struct cpumask amask;
--	struct plic_priv *priv = irq_get_chip_data(d->irq);
-+	struct plic_priv *priv = irq_data_get_irq_chip_data(d);
- 
- 	cpumask_and(&amask, &priv->lmask, mask_val);
- 
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index 0c2c61d..8662d7b 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -195,6 +195,10 @@ static const struct stm32_desc_irq stm32mp1_desc_irq[] = {
+ 	{ .exti = 25, .irq_parent = 107, .chip = &stm32_exti_h_chip_direct },
+ 	{ .exti = 30, .irq_parent = 52, .chip = &stm32_exti_h_chip_direct },
+ 	{ .exti = 47, .irq_parent = 93, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 48, .irq_parent = 138, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 50, .irq_parent = 139, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 52, .irq_parent = 140, .chip = &stm32_exti_h_chip_direct },
++	{ .exti = 53, .irq_parent = 141, .chip = &stm32_exti_h_chip_direct },
+ 	{ .exti = 54, .irq_parent = 135, .chip = &stm32_exti_h_chip_direct },
+ 	{ .exti = 61, .irq_parent = 100, .chip = &stm32_exti_h_chip_direct },
+ 	{ .exti = 65, .irq_parent = 144, .chip = &stm32_exti_h_chip },
