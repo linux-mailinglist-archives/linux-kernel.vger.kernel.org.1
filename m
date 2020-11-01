@@ -2,278 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E852C2A1E36
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 14:11:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8207F2A1E3A
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 14:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgKANLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 08:11:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726252AbgKANLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 08:11:12 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DF6B2223F;
-        Sun,  1 Nov 2020 13:11:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604236270;
-        bh=FREsYtUy2vZibm7LZOzOV4Q3JWNgx9oDWfTbFS0qFVg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CGQtz7MoQauJ6Z/4uTJF/i0sLMNF3xqQSDAAaxpDw5r6QQMU2ysQFJN3Ub5Q2izv/
-         FgAitm26YZ8b0TCpryx67iFfkpui75FvPVN56OwfYfasBHs4Gao97TARwDoinF7Udb
-         cWiQb27GDRj9JdtrDcE03YZhooX9h6sJNBzhKSow=
-Date:   Sun, 1 Nov 2020 14:11:53 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Char/Misc driver fixes/removals for 5.10-rc2
-Message-ID: <20201101131153.GA31235@kroah.com>
+        id S1726569AbgKANNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 08:13:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbgKANNU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 08:13:20 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC844C0617A6;
+        Sun,  1 Nov 2020 05:13:19 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id c11so10590838iln.9;
+        Sun, 01 Nov 2020 05:13:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WmRnGB7IbCX0cBw66kbT+LMbVje+Vny1+S8fRWaedwg=;
+        b=GqcsJEIMGrq/QN1XyF5sHRsmBNe54su4GmimLOVSMosXdTAOQlz7dSnsw3yKimS1/c
+         dSYrBYiz1PntM5N64U8+OrlFoIi8R9IFmRa4YIiQEQ20MvI3o3JF2/YY/LBGRQ4fZWaN
+         39K79Qm5uzxXL2jMz+1Tu356TETWsQsUmuCm/UYhwPEL17reK2WFEWWa/QE2vuuO7mlm
+         FSecwDIFKl04C4glA3CEeEF1UL3GjHJ6nOjXQB8nkx5if2LquZK3y8/xKJ1U/G/LDt2u
+         ciNhz4mg7TaQSxZ6DrF9XkMtvT0eFTJoiwBYnGIgCSlphZf0WqMd68hr9evVmtSb/Jab
+         m5SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WmRnGB7IbCX0cBw66kbT+LMbVje+Vny1+S8fRWaedwg=;
+        b=bqjgESTfr+P+FcttkI3d/DWmnONx7Spybqg4MK+mlgwdH5bVl9+FgR1rTyR8UIzLCn
+         GhG/52Ppgyr9QtLXbVn7FzbY8+pFj944EGiACswUtiJybY8vQG8sWkR/rvFbQg23kB0s
+         MAfBZ0EG53Kn3/lIL8CDS9hRPgntExKWelEv5HsfEce2ahKtQPPqetOELoUUszt5apxp
+         xzvKS/IZIdz1nqmeOrzTQe5wmPOe0qVFBA6+Cnre4tOXQZURNVD6yqp5ZG8WaT9C76Sh
+         5Zj0hsn/3Znvs1LtUxFWlXat9KDIr4AjEbiR9V3syc/eOhGY80VDEd4t91+jVMxmzXQ5
+         fFOA==
+X-Gm-Message-State: AOAM532SZ9sgfrdTkPNybIjcoGN00E2VhTijpsvzwOdRwt6kyJxXmEbj
+        V7XFRTzdDXujoTEv4590slvjghlWXlfFcQ==
+X-Google-Smtp-Source: ABdhPJyfM2UAQHbFDikWtef5A1D3tXsCiJFoLvmOzV50b5KTRYAF5kyYHYN/CEIv5EofEA6lTzkYQQ==
+X-Received: by 2002:a92:6b08:: with SMTP id g8mr2230767ilc.32.1604236398740;
+        Sun, 01 Nov 2020 05:13:18 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:c107:3b4f:7176:6aff])
+        by smtp.gmail.com with ESMTPSA id x5sm9017991ilc.15.2020.11.01.05.13.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 05:13:17 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     devicetree@vger.kernel.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: soc: imx: Add binding doc for spba bus
+Date:   Sun,  1 Nov 2020 07:12:56 -0600
+Message-Id: <20201101131257.782279-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+Add binding doc for fsl,spba-bus.
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-are available in the Git repository at:
+diff --git a/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+new file mode 100644
+index 000000000000..acb3944168ed
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+@@ -0,0 +1,57 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/simple-pm-bus.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Shared Peripherals Bus Interface
++
++maintainers:
++  - Shawn Guo <shawnguo@kernel.org>
++
++description: |
++  A simple bus enabling access to shared peripherals.
++
++  The "spba-bus" follows the "simple-bus" set of properties, as
++  specified in the Devicetree Specification.  It is an extension of
++  "simple-bus" because the SDMA controller uses this compatible flag to
++  determine which peripherals are available to it and the range over which
++  the SDMA can access.  There are no special clocks for the bus, because
++  the SDMA controller itself has its interrupt, and clock assignments.
++
++properties:
++  $nodename:
++    pattern: "^bus(@[0-9a-f]+)?$"
++
++  compatible:
++    contains:
++      const: fsl,spba-bus
++    description:
++      Shall contain "fsl,spba-bus" in addition to "simple-bus"
++      compatible strings.
++
++  '#address-cells':
++    enum: [ 1, 2 ]
++
++  '#size-cells':
++    enum: [ 1, 2 ]
++
++  ranges: true
++
++required:
++  - compatible
++  - '#address-cells'
++  - '#size-cells'
++  - ranges
++
++additionalProperties: true
++
++examples:
++  - |
++
++    bus {
++        compatible = "fsl,spba-bus", "simple-bus";
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges;
++    };
+-- 
+2.25.1
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.10-rc2
-
-for you to fetch changes up to d1b35d66f48f926062dc81134ebd8ab93d71e61d:
-
-  Merge tag 'icc-5.10-rc2' of https://git.linaro.org/people/georgi.djakov/linux into char-misc-linus (2020-10-30 13:25:58 +0100)
-
-----------------------------------------------------------------
-Char/Misc fixes/removals for 5.10-rc2
-
-Here's some small fixes for 5.10-rc2 and a big driver removal.
-
-The fixes are for some reported issues in the interconnect and coresight
-drivers, nothing major.
-
-The "big" driver removal is the MIC drivers have been asked to be
-removed as the hardware never shipped and Intel no longer wants to
-maintain something that no one can use.  This is welcomed by many as the
-DMA usage of these drivers was "interesting" and the security people
-were starting to question some issues that were starting to be found in
-the codebase.
-
-Note, one of the subsystems for this driver, the "VOP" code, will
-probably come back in future kernel versions as it was looking to
-potentially solve some PCIe virtualization issues that a number of other
-vendors were wanting to solve.  But as-is, this codebase didn't work for
-anyone else so no actual functionality is being removed.
-
-All of these have been in linux-next with no reported issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      coresight: add module license
-
-Dmitry Baryshkov (1):
-      interconnect: qcom: use icc_sync state for sm8[12]50
-
-Georgi Djakov (5):
-      interconnect: qcom: sdm845: Enable keepalive for the MM1 BCM
-      interconnect: Aggregate before setting initial bandwidth
-      interconnect: qcom: sdm845: Init BCMs before creating the nodes
-      interconnect: qcom: sc7180: Init BCMs before creating the nodes
-      interconnect: qcom: Ensure that the floor bandwidth value is enforced
-
-Greg Kroah-Hartman (1):
-      Merge tag 'icc-5.10-rc2' of https://git.linaro.org/people/georgi.djakov/linux into char-misc-linus
-
-Mike Leach (1):
-      coresight: Fix uninitialised pointer bug in etm_setup_aux()
-
-Sudeep Dutt (1):
-      misc: mic: remove the MIC drivers
-
-Suzuki K Poulose (1):
-      coresight: cti: Initialize dynamic sysfs attributes
-
- Documentation/misc-devices/mic/index.rst          |   16 -
- Documentation/misc-devices/mic/mic_overview.rst   |   85 -
- Documentation/misc-devices/mic/scif_overview.rst  |  108 --
- MAINTAINERS                                       |   16 -
- drivers/dma/Kconfig                               |   18 -
- drivers/dma/Makefile                              |    1 -
- drivers/dma/mic_x100_dma.c                        |  770 --------
- drivers/dma/mic_x100_dma.h                        |  275 ---
- drivers/hwtracing/coresight/coresight-core.c      |    1 +
- drivers/hwtracing/coresight/coresight-cti-sysfs.c |    7 +
- drivers/hwtracing/coresight/coresight-etm-perf.c  |    2 +-
- drivers/interconnect/core.c                       |    3 +
- drivers/interconnect/qcom/icc-rpmh.c              |    7 +
- drivers/interconnect/qcom/sc7180.c                |    6 +-
- drivers/interconnect/qcom/sdm845.c                |    8 +-
- drivers/interconnect/qcom/sm8150.c                |    7 +-
- drivers/interconnect/qcom/sm8250.c                |    7 +-
- drivers/misc/Kconfig                              |    1 -
- drivers/misc/Makefile                             |    1 -
- drivers/misc/mic/Kconfig                          |  141 --
- drivers/misc/mic/Makefile                         |   12 -
- drivers/misc/mic/bus/Makefile                     |    9 -
- drivers/misc/mic/bus/cosm_bus.c                   |  130 --
- drivers/misc/mic/bus/cosm_bus.h                   |  125 --
- drivers/misc/mic/bus/mic_bus.c                    |  194 ---
- drivers/misc/mic/bus/scif_bus.c                   |  201 ---
- drivers/misc/mic/bus/scif_bus.h                   |  125 --
- drivers/misc/mic/bus/vop_bus.c                    |  194 ---
- drivers/misc/mic/bus/vop_bus.h                    |  129 --
- drivers/misc/mic/card/Makefile                    |   11 -
- drivers/misc/mic/card/mic_debugfs.c               |   85 -
- drivers/misc/mic/card/mic_device.c                |  417 -----
- drivers/misc/mic/card/mic_device.h                |  137 --
- drivers/misc/mic/card/mic_x100.c                  |  347 ----
- drivers/misc/mic/card/mic_x100.h                  |   37 -
- drivers/misc/mic/common/mic_dev.h                 |   55 -
- drivers/misc/mic/cosm/Makefile                    |   11 -
- drivers/misc/mic/cosm/cosm_debugfs.c              |  116 --
- drivers/misc/mic/cosm/cosm_main.c                 |  382 ----
- drivers/misc/mic/cosm/cosm_main.h                 |   61 -
- drivers/misc/mic/cosm/cosm_scif_server.c          |  399 -----
- drivers/misc/mic/cosm/cosm_sysfs.c                |  449 -----
- drivers/misc/mic/cosm_client/Makefile             |    8 -
- drivers/misc/mic/cosm_client/cosm_scif_client.c   |  269 ---
- drivers/misc/mic/host/Makefile                    |   12 -
- drivers/misc/mic/host/mic_boot.c                  |  588 -------
- drivers/misc/mic/host/mic_debugfs.c               |  149 --
- drivers/misc/mic/host/mic_device.h                |  157 --
- drivers/misc/mic/host/mic_intr.c                  |  635 -------
- drivers/misc/mic/host/mic_intr.h                  |  137 --
- drivers/misc/mic/host/mic_main.c                  |  335 ----
- drivers/misc/mic/host/mic_smpt.c                  |  427 -----
- drivers/misc/mic/host/mic_smpt.h                  |   87 -
- drivers/misc/mic/host/mic_x100.c                  |  585 -------
- drivers/misc/mic/host/mic_x100.h                  |   77 -
- drivers/misc/mic/scif/Makefile                    |   21 -
- drivers/misc/mic/scif/scif_api.c                  | 1485 ----------------
- drivers/misc/mic/scif/scif_debugfs.c              |  116 --
- drivers/misc/mic/scif/scif_dma.c                  | 1940 ---------------------
- drivers/misc/mic/scif/scif_epd.c                  |  357 ----
- drivers/misc/mic/scif/scif_epd.h                  |  200 ---
- drivers/misc/mic/scif/scif_fd.c                   |  462 -----
- drivers/misc/mic/scif/scif_fence.c                |  783 ---------
- drivers/misc/mic/scif/scif_main.c                 |  351 ----
- drivers/misc/mic/scif/scif_main.h                 |  274 ---
- drivers/misc/mic/scif/scif_map.h                  |  127 --
- drivers/misc/mic/scif/scif_mmap.c                 |  690 --------
- drivers/misc/mic/scif/scif_nm.c                   |  229 ---
- drivers/misc/mic/scif/scif_nodeqp.c               | 1349 --------------
- drivers/misc/mic/scif/scif_nodeqp.h               |  221 ---
- drivers/misc/mic/scif/scif_peer_bus.c             |  175 --
- drivers/misc/mic/scif/scif_peer_bus.h             |   23 -
- drivers/misc/mic/scif/scif_ports.c                |  116 --
- drivers/misc/mic/scif/scif_rb.c                   |  240 ---
- drivers/misc/mic/scif/scif_rb.h                   |  100 --
- drivers/misc/mic/scif/scif_rma.c                  | 1760 -------------------
- drivers/misc/mic/scif/scif_rma.h                  |  477 -----
- drivers/misc/mic/scif/scif_rma_list.c             |  282 ---
- drivers/misc/mic/scif/scif_rma_list.h             |   48 -
- drivers/misc/mic/vop/Makefile                     |   10 -
- drivers/misc/mic/vop/vop_debugfs.c                |  184 --
- drivers/misc/mic/vop/vop_main.c                   |  784 ---------
- drivers/misc/mic/vop/vop_main.h                   |  158 --
- drivers/misc/mic/vop/vop_vringh.c                 | 1166 -------------
- include/linux/mic_bus.h                           |  100 --
- include/linux/scif.h                              | 1339 --------------
- include/uapi/linux/mic_common.h                   |  235 ---
- include/uapi/linux/mic_ioctl.h                    |   77 -
- samples/mic/mpssd/.gitignore                      |    2 -
- samples/mic/mpssd/Makefile                        |   28 -
- samples/mic/mpssd/micctrl                         |  162 --
- samples/mic/mpssd/mpss                            |  189 --
- samples/mic/mpssd/mpssd.c                         | 1815 -------------------
- samples/mic/mpssd/mpssd.h                         |   89 -
- samples/mic/mpssd/sysfs.c                         |   91 -
- 95 files changed, 34 insertions(+), 26793 deletions(-)
- delete mode 100644 Documentation/misc-devices/mic/index.rst
- delete mode 100644 Documentation/misc-devices/mic/mic_overview.rst
- delete mode 100644 Documentation/misc-devices/mic/scif_overview.rst
- delete mode 100644 drivers/dma/mic_x100_dma.c
- delete mode 100644 drivers/dma/mic_x100_dma.h
- delete mode 100644 drivers/misc/mic/Kconfig
- delete mode 100644 drivers/misc/mic/Makefile
- delete mode 100644 drivers/misc/mic/bus/Makefile
- delete mode 100644 drivers/misc/mic/bus/cosm_bus.c
- delete mode 100644 drivers/misc/mic/bus/cosm_bus.h
- delete mode 100644 drivers/misc/mic/bus/mic_bus.c
- delete mode 100644 drivers/misc/mic/bus/scif_bus.c
- delete mode 100644 drivers/misc/mic/bus/scif_bus.h
- delete mode 100644 drivers/misc/mic/bus/vop_bus.c
- delete mode 100644 drivers/misc/mic/bus/vop_bus.h
- delete mode 100644 drivers/misc/mic/card/Makefile
- delete mode 100644 drivers/misc/mic/card/mic_debugfs.c
- delete mode 100644 drivers/misc/mic/card/mic_device.c
- delete mode 100644 drivers/misc/mic/card/mic_device.h
- delete mode 100644 drivers/misc/mic/card/mic_x100.c
- delete mode 100644 drivers/misc/mic/card/mic_x100.h
- delete mode 100644 drivers/misc/mic/common/mic_dev.h
- delete mode 100644 drivers/misc/mic/cosm/Makefile
- delete mode 100644 drivers/misc/mic/cosm/cosm_debugfs.c
- delete mode 100644 drivers/misc/mic/cosm/cosm_main.c
- delete mode 100644 drivers/misc/mic/cosm/cosm_main.h
- delete mode 100644 drivers/misc/mic/cosm/cosm_scif_server.c
- delete mode 100644 drivers/misc/mic/cosm/cosm_sysfs.c
- delete mode 100644 drivers/misc/mic/cosm_client/Makefile
- delete mode 100644 drivers/misc/mic/cosm_client/cosm_scif_client.c
- delete mode 100644 drivers/misc/mic/host/Makefile
- delete mode 100644 drivers/misc/mic/host/mic_boot.c
- delete mode 100644 drivers/misc/mic/host/mic_debugfs.c
- delete mode 100644 drivers/misc/mic/host/mic_device.h
- delete mode 100644 drivers/misc/mic/host/mic_intr.c
- delete mode 100644 drivers/misc/mic/host/mic_intr.h
- delete mode 100644 drivers/misc/mic/host/mic_main.c
- delete mode 100644 drivers/misc/mic/host/mic_smpt.c
- delete mode 100644 drivers/misc/mic/host/mic_smpt.h
- delete mode 100644 drivers/misc/mic/host/mic_x100.c
- delete mode 100644 drivers/misc/mic/host/mic_x100.h
- delete mode 100644 drivers/misc/mic/scif/Makefile
- delete mode 100644 drivers/misc/mic/scif/scif_api.c
- delete mode 100644 drivers/misc/mic/scif/scif_debugfs.c
- delete mode 100644 drivers/misc/mic/scif/scif_dma.c
- delete mode 100644 drivers/misc/mic/scif/scif_epd.c
- delete mode 100644 drivers/misc/mic/scif/scif_epd.h
- delete mode 100644 drivers/misc/mic/scif/scif_fd.c
- delete mode 100644 drivers/misc/mic/scif/scif_fence.c
- delete mode 100644 drivers/misc/mic/scif/scif_main.c
- delete mode 100644 drivers/misc/mic/scif/scif_main.h
- delete mode 100644 drivers/misc/mic/scif/scif_map.h
- delete mode 100644 drivers/misc/mic/scif/scif_mmap.c
- delete mode 100644 drivers/misc/mic/scif/scif_nm.c
- delete mode 100644 drivers/misc/mic/scif/scif_nodeqp.c
- delete mode 100644 drivers/misc/mic/scif/scif_nodeqp.h
- delete mode 100644 drivers/misc/mic/scif/scif_peer_bus.c
- delete mode 100644 drivers/misc/mic/scif/scif_peer_bus.h
- delete mode 100644 drivers/misc/mic/scif/scif_ports.c
- delete mode 100644 drivers/misc/mic/scif/scif_rb.c
- delete mode 100644 drivers/misc/mic/scif/scif_rb.h
- delete mode 100644 drivers/misc/mic/scif/scif_rma.c
- delete mode 100644 drivers/misc/mic/scif/scif_rma.h
- delete mode 100644 drivers/misc/mic/scif/scif_rma_list.c
- delete mode 100644 drivers/misc/mic/scif/scif_rma_list.h
- delete mode 100644 drivers/misc/mic/vop/Makefile
- delete mode 100644 drivers/misc/mic/vop/vop_debugfs.c
- delete mode 100644 drivers/misc/mic/vop/vop_main.c
- delete mode 100644 drivers/misc/mic/vop/vop_main.h
- delete mode 100644 drivers/misc/mic/vop/vop_vringh.c
- delete mode 100644 include/linux/mic_bus.h
- delete mode 100644 include/linux/scif.h
- delete mode 100644 include/uapi/linux/mic_common.h
- delete mode 100644 include/uapi/linux/mic_ioctl.h
- delete mode 100644 samples/mic/mpssd/.gitignore
- delete mode 100644 samples/mic/mpssd/Makefile
- delete mode 100755 samples/mic/mpssd/micctrl
- delete mode 100755 samples/mic/mpssd/mpss
- delete mode 100644 samples/mic/mpssd/mpssd.c
- delete mode 100644 samples/mic/mpssd/mpssd.h
- delete mode 100644 samples/mic/mpssd/sysfs.c
