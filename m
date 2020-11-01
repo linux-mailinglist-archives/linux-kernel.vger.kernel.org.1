@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3332A2121
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 20:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4AD22A2124
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 20:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727412AbgKATe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 14:34:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43784 "EHLO
+        id S1727435AbgKATfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 14:35:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727401AbgKATe5 (ORCPT
+        with ESMTP id S1727401AbgKATfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 14:34:57 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C25C0617A6
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 11:34:57 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id i15so6935785qti.7
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 11:34:57 -0800 (PST)
+        Sun, 1 Nov 2020 14:35:08 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC24C0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 11:35:08 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id w8so12175058ybj.14
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 11:35:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=DM2UgOFHo//AreOdqVZsv1HPnyLVmD2DIdKtCbtXmYA=;
-        b=ZWlo6i8pByXuvu/W5xwIqRNrp02RjTcy6fs1WXz4lb088GeG5aAxmIF6HYpmSUeqUE
-         VYiWOgorbVJFuuUxFWSiffbM0uwP9ZlEN/7vTinE+KBZUzL43+a75+GbapbheZKLPTuV
-         aoQ0hl5v88dl8pJo4VOA16glqkFqC3jYH8K6tUnHzbpzLVa+gjIYGY43i3Vy8w+TH2Ac
-         q08snefMOKLzQBybL1/XyrzQX/T47YO6IeB3GP45N8jWmVjVJP1Is2fl+SstuyrcGYfq
-         ZvCPDXiiTvomnPHJyJTwz8WFhmeNM20Xg7p0ciVUKzW8tyGKPDR6RtC8KT4Sd0PTWh6U
-         tHLg==
+        bh=OuJr16cGdSeTRRY2e3lrFCZY64j7gnlLJ3xITCQ65aI=;
+        b=YFpwJ3UOF81+JP7iceQKy3Qh1y5MnNdGDMMPvsERA2XcBJAHQLwLlZCt63RIFO+cj4
+         J8QWp8xeCkdGtmPZYcOK36pGJDpAAf2j37sYFEKmdgFDDKXwvT9PSLU7bRrFSe2VB8Po
+         GdukDKIo1ArMr5QolU5IcnDN37qMA/ajcWNqzhsOdk+4POC1WGuH3at1IHVceV//9vL/
+         Z29hMH0JgLj8G+wAUgZDCDt3ms7qCnxSIqdU2S/mQ1mg9Cq9mAsUDKEVH+vJa9pMU5v4
+         wFTzkOrpkZa1WN/5BU3YnWv+sBmM+LTlpog04lfIplKZ4gq9EQEWO8oY84wqxXCCuP0R
+         ArHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
          :to:cc;
-        bh=DM2UgOFHo//AreOdqVZsv1HPnyLVmD2DIdKtCbtXmYA=;
-        b=W86Py2R0/g9tG19sEDETVa+AsB5RduuvwI3wik/YCLwISpc3Ktfr0p6nrB2AkNfDXa
-         6NEvfOAwu/SsBstEHlFfuCqEt9C4JBqwPoqsHno2Hw42ZAug7T+XD51xDzt1cHLNHGnn
-         T3hxax+lx7Iky75MkxFxy4qONmL6wHizRyhUfC3Nhc3CwzHhXs9wcPgL4aOilLKvPrhb
-         1E1u8qILm6zcbW4R2Jj519H6NjNRFldSh4LRRNh9L41K7psiQ/1fhwz+xnl30zrqgior
-         tosTqLK1lULW8/UV7m3J58Km0O0MOzW8VyE5SkuJF+qZtPOEOd1GeLVKszNrb4LuMlzB
-         F1FQ==
-X-Gm-Message-State: AOAM531dP0RYiGqDJdW9eSrtH19dKqQleKYp3sDSgVEov1NzHEMF/FfS
-        qn34aVUWCGZLZ09Apk8+ImL3V1se
-X-Google-Smtp-Source: ABdhPJx+EM0OMqEKs/YANufilv5FfCCGwb5G5Irp+1EvX/6RxEykc8+GLVWJmxHwsxfmokGmcH+ld+QC
+        bh=OuJr16cGdSeTRRY2e3lrFCZY64j7gnlLJ3xITCQ65aI=;
+        b=AyiiWxsAyXfIoSPLuIm6q+o89vhsvEbyHc7qsIMrpRGdg/WOIjTdzWuLmlxjgeG6hU
+         V/E1H9o9RPDoy+eG6eLD47OephJ+aDxyFKHrc1+IL4Jzjo9vcXuFOWYxe6eduztOXIKx
+         zCvKEiPHBzNV+zSg8OmKKQTrnoyphNkFIg9lmpOwYLPkuCK163fgXKdfQmh3J9gut43j
+         F4YSroNIChkJT/9iHnMdu+67NSr5i/HVBHcXRc/vDukPdvrcqy+6M/fR4Pg9cDlVOrCf
+         Js0nExr4TI0js4CWmJM/6qGkbwQc1ZqOCeSoD2HawLlK+hfjo+YClcHw7j3SexJkfw1z
+         T/Wg==
+X-Gm-Message-State: AOAM531YIy+d9J71ilJGFek1RVqu0eA918yAlFZbol6FuoTI9krq5HdK
+        gayXiE9T7h8lKNpdkq74yiLejcO8
+X-Google-Smtp-Source: ABdhPJyPXgtzkyOAwc9QnZonlkTWmEoFWPrjc3RdR5rN2DB7pAs27dj2y2XPFQBvm5wsmEt1GbCdCJu5
 Sender: "lzye via sendgmr" <lzye@chrisye.mtv.corp.google.com>
 X-Received: from chrisye.mtv.corp.google.com ([2620:15c:211:2:f693:9fff:fef4:4323])
- (user=lzye job=sendgmr) by 2002:ad4:4142:: with SMTP id z2mr19470484qvp.20.1604259296760;
- Sun, 01 Nov 2020 11:34:56 -0800 (PST)
-Date:   Sun,  1 Nov 2020 11:34:52 -0800
-Message-Id: <20201101193452.678628-1-lzye@google.com>
+ (user=lzye job=sendgmr) by 2002:a25:4113:: with SMTP id o19mr16612588yba.314.1604259307824;
+ Sun, 01 Nov 2020 11:35:07 -0800 (PST)
+Date:   Sun,  1 Nov 2020 11:35:04 -0800
+Message-Id: <20201101193504.679934-1-lzye@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v2] Input: Add devices for HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
+Subject: [PATCH v2] Input: Fix the HID usage of DPAD input event generation.
 From:   Chris Ye <lzye@google.com>
 To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Jiri Kosina <jikos@kernel.org>,
@@ -62,45 +62,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel 5.4 introduces HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE, devices
-need to be set explicitly with this flag.
+Generic Desktop DPAD usage is mapped by hid-input, that only the first
+DPAD usage maps to usage type EV_ABS and code of an axis. If HID
+descriptor has DPAD UP/DOWN/LEFT/RIGHT HID usages and each of usage size
+is 1 bit, then only the first one will generate input event, the rest of
+the HID usages will be assigned to hat direction only.
+The hid input event should check the HID report value and generate
+HID event for its hat direction.
+
+Test: Connect HID device with Generic Desktop DPAD usage and press the
+DPAD to generate input events.
 
 Signed-off-by: Chris Ye <lzye@google.com>
 ---
- drivers/hid/hid-ids.h    | 4 ++++
- drivers/hid/hid-quirks.c | 4 ++++
- 2 files changed, 8 insertions(+)
+ drivers/hid/hid-input.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 74be76e848bf..cf55dca494f3 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -449,6 +449,10 @@
- #define USB_VENDOR_ID_FRUCTEL	0x25B6
- #define USB_DEVICE_ID_GAMETEL_MT_MODE	0x0002
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index 9770db624bfa..6c1007de3409 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -1269,7 +1269,7 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
+ 	struct input_dev *input;
+ 	unsigned *quirks = &hid->quirks;
  
-+#define USB_VENDOR_ID_GAMEVICE	0x27F8
-+#define USB_DEVICE_ID_GAMEVICE_GV186	0x0BBE
-+#define USB_DEVICE_ID_GAMEVICE_KISHI	0x0BBF
-+
- #define USB_VENDOR_ID_GAMERON		0x0810
- #define USB_DEVICE_ID_GAMERON_DUAL_PSX_ADAPTOR	0x0001
- #define USB_DEVICE_ID_GAMERON_DUAL_PCS_ADAPTOR	0x0002
-diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-index 0440e2f6e8a3..36d94e3485e3 100644
---- a/drivers/hid/hid-quirks.c
-+++ b/drivers/hid/hid-quirks.c
-@@ -84,6 +84,10 @@ static const struct hid_device_id hid_quirks[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_FREESCALE, USB_DEVICE_ID_FREESCALE_MX28), HID_QUIRK_NOGET },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTABA, USB_DEVICE_ID_LED_DISPLAY), HID_QUIRK_NO_INIT_REPORTS },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD), HID_QUIRK_MULTI_INPUT },
-+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_GV186),
-+		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_KISHI),
-+		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_DRIVING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FLYING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+-	if (!usage->type)
++	if (!usage->type && !field->dpad)
+ 		return;
+ 
+ 	if (usage->type == EV_PWR) {
+@@ -1286,9 +1286,17 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
+ 		int hat_dir = usage->hat_dir;
+ 		if (!hat_dir)
+ 			hat_dir = (value - usage->hat_min) * 8 / (usage->hat_max - usage->hat_min + 1) + 1;
+-		if (hat_dir < 0 || hat_dir > 8) hat_dir = 0;
+-		input_event(input, usage->type, usage->code    , hid_hat_to_axis[hat_dir].x);
+-		input_event(input, usage->type, usage->code + 1, hid_hat_to_axis[hat_dir].y);
++		if (hat_dir < 0 || hat_dir > 8 || value == 0)
++			hat_dir = 0;
++		if (field->dpad) {
++			input_event(input, EV_ABS, field->dpad, hid_hat_to_axis[hat_dir].x);
++			input_event(input, EV_ABS, field->dpad + 1, hid_hat_to_axis[hat_dir].y);
++		} else {
++			input_event(input, usage->type, usage->code,
++				hid_hat_to_axis[hat_dir].x);
++			input_event(input, usage->type, usage->code + 1,
++				hid_hat_to_axis[hat_dir].y);
++		}
+ 		return;
+ 	}
+ 
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
