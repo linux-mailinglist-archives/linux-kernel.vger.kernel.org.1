@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10FD2A219C
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 21:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C02C2A21A2
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 21:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgKAUsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 15:48:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726873AbgKAUsm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 15:48:42 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9FDC0617A6
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 12:48:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HK4WJIQcNc1wsi9NV2soETQrxP57kXJKoEvFH6iI7xo=; b=RdFWirAaAzJbvECzZLuajNCNf3
-        +A89JNuVRkXwrDW22v1vju3Be479QAkuaO88OqZbqFfnp41ubc55jK7LrLI+kmT5wBzIEaeyaAnWW
-        ePS7ZxysA7YlnnS360EEQAFqtzsH6UiUdXJPjSu0bRoQhhzq6M5SkDjudbfRRfO9xTvGIpT9T+pfw
-        +74ZJGTaL598+hUQg47fdgavCiLfYk0gIZ3bcxZanzS7AB3E3rcl5riNGzaql8255sM1/a+t39V5t
-        uQFJZkfzOapdqT+6RKHHGqMBoJ/waTyhLl+DPUWtdjqOLzvETO4tnSmnV3k2LRK3UwZS1zh1mYi3E
-        rbAjQ+7Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZKHC-0003Fp-9Q; Sun, 01 Nov 2020 20:48:34 +0000
-Date:   Sun, 1 Nov 2020 20:48:34 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] mm: shmem: Convert shmem_enabled_show to use
- sysfs_emit_at
-Message-ID: <20201101204834.GF27442@casper.infradead.org>
-References: <cover.1604261483.git.joe@perches.com>
- <a06810c216a45e5f6f1b9f49fbe2f332ca3c8972.1604261483.git.joe@perches.com>
+        id S1727228AbgKAUyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 15:54:13 -0500
+Received: from 95-31-39-132.broadband.corbina.ru ([95.31.39.132]:56318 "EHLO
+        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726848AbgKAUyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 15:54:13 -0500
+Received: from metabook.localnet (metabook.metanet [192.168.2.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by blackbox.su (Postfix) with ESMTPSA id DD28982D0B;
+        Sun,  1 Nov 2020 23:54:14 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=blackbox.su;
+        s=201811; t=1604264054;
+        bh=NM/b9PAL2Tkb6vXEKVIO7dSi39/y1uyXlRgLXij/Xk0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XuGb8lBSZyASAF9XxE/ie6Y/YbZ4gNX5FFLEi9YJwXFPOlo/6LYvaqr8i2NkuLyVX
+         khGlxnRvJPuVgd+wa86zaoSS7bDEQPq9RipqLvQobeuu0MLo+e1s+H17Mmay3BMeCu
+         J27zRmCKn6Omi5fCyr0VOA1GFxmesqoMw9KxX74q5JIKf82lDH52v2pqatymJsy9LO
+         9tiyoIjnJnp2BQKpN5NuCxzwOqipklRi58EgbrgNXoZvpjIsmJOvBypkFuqKiRm1MN
+         f8XY3X0+QWNjFoDuv4kamUtSYFM8QwWOB3MOjwn31RiexgvrVIhlIsnNZnZrpkR9CY
+         C/vB1sRfzp0Gg==
+From:   Sergej Bauer <sbauer@blackbox.su>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Markus Elfring <Markus.Elfring@web.de>, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com, linux-kernel@vger.kernel.org,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v2] lan743x: Fix for potential null pointer dereference
+Date:   Sun, 01 Nov 2020 23:54:04 +0300
+Message-ID: <2534292.OMWdIsrgY9@metabook>
+In-Reply-To: <20201101203820.GD1109407@lunn.ch>
+References: <20201031143619.7086-1-sbauer@blackbox.su> <145853726.prPdODYtnq@metabook> <20201101203820.GD1109407@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a06810c216a45e5f6f1b9f49fbe2f332ca3c8972.1604261483.git.joe@perches.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 12:12:51PM -0800, Joe Perches wrote:
-> @@ -4024,7 +4024,7 @@ int __init shmem_init(void)
->  
->  #if defined(CONFIG_TRANSPARENT_HUGEPAGE) && defined(CONFIG_SYSFS)
->  static ssize_t shmem_enabled_show(struct kobject *kobj,
-> -		struct kobj_attribute *attr, char *buf)
-> +				  struct kobj_attribute *attr, char *buf)
->  {
->  	static const int values[] = {
->  		SHMEM_HUGE_ALWAYS,
+On Sunday, November 1, 2020 11:38:20 PM MSK Andrew Lunn wrote:
+> On Sun, Nov 01, 2020 at 10:54:38PM +0300, Sergej Bauer wrote:
+> > > > Signed-off-by: Sergej Bauer <sbauer@blackbox.su>
+> > > 
+> > > * I miss a change description here.
+> > 
+> > The reason for the fix is when the device is down netdev->phydev will be
+> > NULL and there is no checking for this situation. So 'ethtool ethN' leads
+> > to kernel panic.
+> > 
+> > > > @@ -809,9 +812,12 @@ static int lan743x_ethtool_set_wol(struct
+> > > > net_device
+> > > > *netdev,>
+> > > > 
+> > > >  	device_set_wakeup_enable(&adapter->pdev->dev, (bool)wol->wolopts);
+> > > > 
+> > > > -	phy_ethtool_set_wol(netdev->phydev, wol);
+> > > > +	if (netdev->phydev)
+> > > > +		ret = phy_ethtool_set_wol(netdev->phydev, wol);
+> > > > +	else
+> > > > +		ret = -EIO;
+> 
+> -ENETDOWN would be better, it gives a hit that WoL can be configured
+> when the interface is configured up.
+> 
+>  Andrew
 
-Why?
+Ok, thank you, Andrew! I was doubted in the correctness of returning -EIO.
 
-> @@ -4034,16 +4034,19 @@ static ssize_t shmem_enabled_show(struct kobject *kobj,
->  		SHMEM_HUGE_DENY,
->  		SHMEM_HUGE_FORCE,
->  	};
-> -	int i, count;
-> -
-> -	for (i = 0, count = 0; i < ARRAY_SIZE(values); i++) {
-> -		const char *fmt = shmem_huge == values[i] ? "[%s] " : "%s ";
-> +	int len = 0;
-> +	int i;
+                Regards,
+                        Sergej.
 
-Better:
-	int i, len = 0;
 
-> -		count += sprintf(buf + count, fmt,
-> -				shmem_format_huge(values[i]));
-> +	for (i = 0; i < ARRAY_SIZE(values); i++) {
-> +		len += sysfs_emit_at(buf, len,
-> +				     shmem_huge == values[i] ? "%s[%s]" : "%s%s",
-> +				     i ? " " : "",
-> +				     shmem_format_huge(values[i]));
-
-This is ... complicated.  I thought the point of doing all the sysfs_emit
-stuff was to simplify things.
 
