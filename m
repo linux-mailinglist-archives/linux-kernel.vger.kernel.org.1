@@ -2,91 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38AE2A1FBD
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 423B52A1FCB
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727144AbgKARAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:00:19 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:53884 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726791AbgKARAQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:00:16 -0500
-Date:   Sun, 01 Nov 2020 17:00:13 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604250014;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7E0KMFy2POH7IwevZm/k5fQuBmRAqfG1PPDoWaGbOE8=;
-        b=OtX1JDPgwrBz+izuA/uiVKrDbgnZfcdwnEYYmYeRaNE4x9wiXHR1WXKu61Dtbvc6ImTRB4
-        IjFeiCwEq6nnRLnypbQEccfizo9Js8SJaZ4gug2yqIM5IBBXguT304fKetRmPsZi9NRJZj
-        7T5A1I5OJbsNFkxOrNONeNBbQ78b1UVNM6t00XJESSTGgyZMgPSUdWKwLiV8EAaPYK6yT2
-        JTrRJuuNhKxwIXOpn+COeRzEFR/TUlyj3iwftRteGHOyRKbLGZW9+fU05g/DV4rBfZy6Z6
-        PGxXTA+zCS53zzgA7y43w1uijtUHnzipd/rPKDYAS1dixag4++vKFJkenkc1OA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604250014;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7E0KMFy2POH7IwevZm/k5fQuBmRAqfG1PPDoWaGbOE8=;
-        b=uJs6OjwJ2Icb+HnxN6v45bSRybbso4Vf9Eo5sBpKleNrTR8GtW087JNz58EMcUrI1yYhXQ
-        alJLf2cDLYxIonAw==
-From:   "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] genirq: Let GENERIC_IRQ_IPI select IRQ_DOMAIN_HIERARCHY
-Cc:     Pavel Machek <pavel@ucw.cz>, Marc Zyngier <maz@kernel.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201015101222.GA32747@amd>
-References: <20201015101222.GA32747@amd>
+        id S1727051AbgKARCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:02:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726790AbgKARCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 12:02:31 -0500
+Received: from kernel.org (unknown [87.71.17.26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 420992074F;
+        Sun,  1 Nov 2020 17:02:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604250150;
+        bh=HP+ZQ6Ps8oAsoYLOvWAk4ExSXyhayG0jX2yWoBMUttE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bxsex5hsLdBiTg92b0MNJxCbBPD+lO6NtdRjasPNMfUBXD6k5B0KcdxvFVYiQIEmX
+         Bjfz+dfRQJnD6lyaCaBO97eSNhn6o7BX84zyBBhpcPltXScqdjcB1tCqstPvndRKPK
+         MacevoYxMeN6oYR+VtqyVfF6MF53cPKygLmGPOBs=
+Date:   Sun, 1 Nov 2020 19:02:17 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "david@redhat.com" <david@redhat.com>,
+        "cl@linux.com" <cl@linux.com>,
+        "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "kirill@shutemov.name" <kirill@shutemov.name>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "hca@linux.ibm.com" <hca@linux.ibm.com>,
+        "bp@alien8.de" <bp@alien8.de>, "pavel@ucw.cz" <pavel@ucw.cz>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "Brown, Len" <len.brown@intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
+Subject: Re: [PATCH 2/4] PM: hibernate: improve robustness of mapping pages
+ in the direct map
+Message-ID: <20201101170217.GD14628@kernel.org>
+References: <20201025101555.3057-1-rppt@kernel.org>
+ <20201025101555.3057-3-rppt@kernel.org>
+ <3b4b2b3559bd3dc68adcddf99415bae57152cb6b.camel@intel.com>
+ <20201029075416.GJ1428094@kernel.org>
+ <604554805defb03d158c09aba4b5cced3416a7fb.camel@intel.com>
 MIME-Version: 1.0
-Message-ID: <160425001324.397.16087694985398433477.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <604554805defb03d158c09aba4b5cced3416a7fb.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+On Thu, Oct 29, 2020 at 11:19:18PM +0000, Edgecombe, Rick P wrote:
+> On Thu, 2020-10-29 at 09:54 +0200, Mike Rapoport wrote:
+> > __kernel_map_pages() on arm64 will also bail out if rodata_full is
+> > false:
+> > void __kernel_map_pages(struct page *page, int numpages, int enable)
+> > {
+> >         if (!debug_pagealloc_enabled() && !rodata_full)
+> >                 return;
+> > 
+> >         set_memory_valid((unsigned long)page_address(page), numpages,
+> > enable);
+> > }
+> > 
+> > So using set_direct_map() to map back pages removed from the direct
+> > map
+> > with __kernel_map_pages() seems safe to me.
+> 
+> Heh, one of us must have some simple boolean error in our head. I hope
+> its not me! :) I'll try on more time.
 
-Commit-ID:     151a535171be6ff824a0a3875553ea38570f4c05
-Gitweb:        https://git.kernel.org/tip/151a535171be6ff824a0a3875553ea38570f4c05
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Thu, 15 Oct 2020 21:41:44 +01:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Thu, 15 Oct 2020 21:41:44 +01:00
+Well, then it's me :)
+You are right, I misread this and I could not understand why
+!rodata_full bothers you.
 
-genirq: Let GENERIC_IRQ_IPI select IRQ_DOMAIN_HIERARCHY
+> __kernel_map_pages() will bail out if rodata_full is false **AND**
+> debug page alloc is off. So it will only bail under conditions where
+> there could be nothing unmapped on the direct map.
+> 
+> Equivalent logic would be:
+> 	if (!(debug_pagealloc_enabled() || rodata_full))
+> 		return;
+> 
+> Or:
+> 	if (debug_pagealloc_enabled() || rodata_full)
+> 		set_memory_valid(blah)
+> 
+> So if either is on, the existing code will try to re-map. But the
+> set_direct_map_()'s will only work if rodata_full is on. So switching
+> hibernate to set_direct_map() will cause the remap to be missed for the
+> debug page alloc case, with !rodata_full.
+> 
+> It also breaks normal debug page alloc usage with !rodata_full for
+> similar reasons after patch 3. The pages would never get unmapped.
 
-kernel/irq/ipi.c otherwise fails to compile if nothing else
-selects it.
+I've updated the patches, there should be no regression now.
 
-Fixes: 379b656446a3 ("genirq: Add GENERIC_IRQ_IPI Kconfig symbol")
-Reported-by: Pavel Machek <pavel@ucw.cz>
-Tested-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20201015101222.GA32747@amd
----
- kernel/irq/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
-index 10a5aff..164a031 100644
---- a/kernel/irq/Kconfig
-+++ b/kernel/irq/Kconfig
-@@ -82,6 +82,7 @@ config IRQ_FASTEOI_HIERARCHY_HANDLERS
- # Generic IRQ IPI support
- config GENERIC_IRQ_IPI
- 	bool
-+	select IRQ_DOMAIN_HIERARCHY
- 
- # Generic MSI interrupt support
- config GENERIC_MSI_IRQ
+-- 
+Sincerely yours,
+Mike.
