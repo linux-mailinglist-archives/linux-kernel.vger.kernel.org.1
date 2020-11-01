@@ -2,56 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317062A1FC8
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2CB2A1FB9
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgKARAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:00:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726866AbgKARAL (ORCPT
+        id S1727115AbgKARAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:00:16 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:53826 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726790AbgKARAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:00:11 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE57C061A04;
-        Sun,  1 Nov 2020 09:00:10 -0800 (PST)
-Date:   Sun, 01 Nov 2020 17:00:07 -0000
+        Sun, 1 Nov 2020 12:00:12 -0500
+Date:   Sun, 01 Nov 2020 17:00:08 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604250008;
+        s=2020; t=1604250009;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=z24KCw26SI/i8tvtphq2lnupjg7U+HCKvoU06qTriQg=;
-        b=3QmrRb7+R7F67tnDnaIR+maUjAd4vEZu3wlv7OJAEA8yLpUFxE35OWouM55z+Of69h45eQ
-        NDE6aNqjhGqPDh6mLzm5wyrehT801I1p34CKtfjQwz/nPjzsl8jhgP6/Sd6JmCX+WixfzV
-        wqilVs83V+Xa+YajWjWHK6EB/repxFwGX/GV5TzmeUoGc4C2kKb4d9TIKPk2tlfgDlruLA
-        3Yi3kYBb4G71km8XRRPNKDaVoy5jHIjkesA7Ocl3PFvLJEHnCDfpNYiqERNO+73OKgjCuK
-        gNwxqjU8A0+o+HenUxEn9f1k/T7pMc/tT/+Y3fJWgd+9hPxnapf3tj/qW85tzw==
+        bh=eMqVqtc2C4auwzMu8GaTt+B0rSb97C4C/gdI6Z46Klw=;
+        b=xMQeAGEzydEt9enP/Evk6F/hDUj3C4gkgwoNLAwxU9ilta6mZ1x+SN0syeVuUgbi1aHCgz
+        hm1HME3rfLdCROxUsZiufrV2eLTYKAU8xzAf6pxah/gF3yQ8RF6hI+rs7pAXxqrLs0uOme
+        D00gtTQK3AHTKQEqiJR8MjRZBylP3uqKLR7COytFIsdkCDzCf+AqXbkdExwGq5eCLwI0YH
+        D1wsHS234ECA2iPcBpfwIDXRzdrUv7SV8CuoKxMRm1WpS0/5OP13lGTNpvbE1R60rCuv7J
+        6NeFF63OLO1qnAIswn51d4HgH2xUsG4zAvpw8B8PJt6Yjer9Mf+LFV93ywWfhA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604250008;
+        s=2020e; t=1604250009;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=z24KCw26SI/i8tvtphq2lnupjg7U+HCKvoU06qTriQg=;
-        b=24o1yqgBqrBFz/ZnU1HDKpkVP61H9a6JHJekICkzKaUkIWw6E8F3/Xx2IeTwlpKZ1qOkyo
-        tv/IVyRmXNs4OvBA==
-From:   "tip-bot2 for Peter Ujfalusi" <tip-bot2@linutronix.de>
+        bh=eMqVqtc2C4auwzMu8GaTt+B0rSb97C4C/gdI6Z46Klw=;
+        b=CspyW5yjv3je8vQlirOZSjZ2JtdjITsPlFWxCIzpYv/Xj7RwVmIaNR4VET7iz9uAJneBtz
+        oLqWkLdTiSZqNMDg==
+From:   "tip-bot2 for Geert Uytterhoeven" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] dt-bindings: irqchip: ti, sci-inta: Update for
- unmapped event handling
-Cc:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201020073243.19255-2-peter.ujfalusi@ti.com>
-References: <20201020073243.19255-2-peter.ujfalusi@ti.com>
+Subject: [tip: irq/urgent] irqchip/renesas-intc-irqpin: Merge irlm_bit and needs_irlm
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Marc Zyngier <maz@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201028153955.1736767-1-geert+renesas@glider.be>
+References: <20201028153955.1736767-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Message-ID: <160425000793.397.16218233475336649509.tip-bot2@tip-bot2>
+Message-ID: <160425000858.397.1155944274384830993.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,58 +58,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/urgent branch of tip:
 
-Commit-ID:     bb2bd7c7f3d0946acc2104db31df228d10f7b598
-Gitweb:        https://git.kernel.org/tip/bb2bd7c7f3d0946acc2104db31df228d10f7b598
-Author:        Peter Ujfalusi <peter.ujfalusi@ti.com>
-AuthorDate:    Tue, 20 Oct 2020 10:32:42 +03:00
+Commit-ID:     b388bdf2bac7aedac9bde5ab63eaf7646f29fc00
+Gitweb:        https://git.kernel.org/tip/b388bdf2bac7aedac9bde5ab63eaf7646f29fc00
+Author:        Geert Uytterhoeven <geert+renesas@glider.be>
+AuthorDate:    Wed, 28 Oct 2020 16:39:55 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Sun, 01 Nov 2020 12:00:50 
+CommitterDate: Sun, 01 Nov 2020 11:59:22 
 
-dt-bindings: irqchip: ti, sci-inta: Update for unmapped event handling
+irqchip/renesas-intc-irqpin: Merge irlm_bit and needs_irlm
 
-The new DMA architecture introduced with AM64 introduced new event types:
-unampped events.
+Get rid of the separate flag to indicate if the IRLM bit is present in
+the INTC/Interrupt Control Register 0, by considering -1 an invalid
+irlm_bit value.
 
-These events are mapped within INTA in contrast to other K3 devices where
-the events with similar function was originating from the UDMAP or ringacc.
-
-The ti,unmapped-event-sources should contain phandle array to the devices
-in the system (typically DMA controllers) from where the unmapped events
-originate.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20201020073243.19255-2-peter.ujfalusi@ti.com
+Link: https://lore.kernel.org/r/20201028153955.1736767-1-geert+renesas@glider.be
 ---
- Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/irqchip/irq-renesas-intc-irqpin.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml b/Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml
-index c7cd056..cc79549 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml
-@@ -32,6 +32,11 @@ description: |
-                        | | vint  | bit  |  | 0 |.....|63| vintx  |
-                        | +--------------+  +------------+        |
-                        |                                         |
-+                       |      Unmap                              |
-+                       | +--------------+                        |
-+ Unmapped events ----->| |   umapidx    |-------------------------> Globalevents
-+                       | +--------------+                        |
-+                       |                                         |
-                        +-----------------------------------------+
+diff --git a/drivers/irqchip/irq-renesas-intc-irqpin.c b/drivers/irqchip/irq-renesas-intc-irqpin.c
+index 3819185..cb7f60b 100644
+--- a/drivers/irqchip/irq-renesas-intc-irqpin.c
++++ b/drivers/irqchip/irq-renesas-intc-irqpin.c
+@@ -71,8 +71,7 @@ struct intc_irqpin_priv {
+ };
  
-   Configuration of these Intmap registers that maps global events to vint is
-@@ -70,6 +75,11 @@ properties:
-         - description: |
-             "limit" specifies the limit for translation
+ struct intc_irqpin_config {
+-	unsigned int irlm_bit;
+-	unsigned needs_irlm:1;
++	int irlm_bit;		/* -1 if non-existent */
+ };
  
-+  ti,unmapped-event-sources:
-+    $ref: /schemas/types.yaml#definitions/phandle-array
-+    description:
-+      Array of phandles to DMA controllers where the unmapped events originate.
-+
- required:
-   - compatible
-   - reg
+ static unsigned long intc_irqpin_read32(void __iomem *iomem)
+@@ -349,11 +348,10 @@ static const struct irq_domain_ops intc_irqpin_irq_domain_ops = {
+ 
+ static const struct intc_irqpin_config intc_irqpin_irlm_r8a777x = {
+ 	.irlm_bit = 23, /* ICR0.IRLM0 */
+-	.needs_irlm = 1,
+ };
+ 
+ static const struct intc_irqpin_config intc_irqpin_rmobile = {
+-	.needs_irlm = 0,
++	.irlm_bit = -1,
+ };
+ 
+ static const struct of_device_id intc_irqpin_dt_ids[] = {
+@@ -470,7 +468,7 @@ static int intc_irqpin_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* configure "individual IRQ mode" where needed */
+-	if (config && config->needs_irlm) {
++	if (config && config->irlm_bit >= 0) {
+ 		if (io[INTC_IRQPIN_REG_IRLM])
+ 			intc_irqpin_read_modify_write(p, INTC_IRQPIN_REG_IRLM,
+ 						      config->irlm_bit, 1, 1);
