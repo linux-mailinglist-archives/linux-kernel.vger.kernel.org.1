@@ -2,131 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423B52A1FCB
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D772F2A1FD1
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgKARCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:02:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37840 "EHLO mail.kernel.org"
+        id S1727060AbgKARFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:05:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgKARCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:02:31 -0500
-Received: from kernel.org (unknown [87.71.17.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726790AbgKARFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 12:05:06 -0500
+Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 420992074F;
-        Sun,  1 Nov 2020 17:02:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FAFA2074F;
+        Sun,  1 Nov 2020 17:04:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604250150;
-        bh=HP+ZQ6Ps8oAsoYLOvWAk4ExSXyhayG0jX2yWoBMUttE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bxsex5hsLdBiTg92b0MNJxCbBPD+lO6NtdRjasPNMfUBXD6k5B0KcdxvFVYiQIEmX
-         Bjfz+dfRQJnD6lyaCaBO97eSNhn6o7BX84zyBBhpcPltXScqdjcB1tCqstPvndRKPK
-         MacevoYxMeN6oYR+VtqyVfF6MF53cPKygLmGPOBs=
-Date:   Sun, 1 Nov 2020 19:02:17 +0200
+        s=default; t=1604250305;
+        bh=oXw4Lx1NYuJ69gGGqNamHUkXUylmi9VRKQWFyQVI+YU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FrkPQS2E0ZQ+PuuS3oma+ZwGGofySdv39YC9LrWPhRCR56yt5T8bw9DGG1PbkpkMk
+         JhiXZHBdj2Tg0cHvoX7pwd236w1hfXnFzVx3jCaOzF19IyG09GNFF8EpLuY+OEnvCz
+         dphHcTa0Kq2BUBQMWmfn5dXwTbV+wTs002IDs+Qs=
 From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "david@redhat.com" <david@redhat.com>,
-        "cl@linux.com" <cl@linux.com>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "bp@alien8.de" <bp@alien8.de>, "pavel@ucw.cz" <pavel@ucw.cz>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
-Subject: Re: [PATCH 2/4] PM: hibernate: improve robustness of mapping pages
- in the direct map
-Message-ID: <20201101170217.GD14628@kernel.org>
-References: <20201025101555.3057-1-rppt@kernel.org>
- <20201025101555.3057-3-rppt@kernel.org>
- <3b4b2b3559bd3dc68adcddf99415bae57152cb6b.camel@intel.com>
- <20201029075416.GJ1428094@kernel.org>
- <604554805defb03d158c09aba4b5cced3416a7fb.camel@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
+Subject: [PATCH v2 00/13]  arch, mm: deprecate DISCONTIGMEM
+Date:   Sun,  1 Nov 2020 19:04:41 +0200
+Message-Id: <20201101170454.9567-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <604554805defb03d158c09aba4b5cced3416a7fb.camel@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 11:19:18PM +0000, Edgecombe, Rick P wrote:
-> On Thu, 2020-10-29 at 09:54 +0200, Mike Rapoport wrote:
-> > __kernel_map_pages() on arm64 will also bail out if rodata_full is
-> > false:
-> > void __kernel_map_pages(struct page *page, int numpages, int enable)
-> > {
-> >         if (!debug_pagealloc_enabled() && !rodata_full)
-> >                 return;
-> > 
-> >         set_memory_valid((unsigned long)page_address(page), numpages,
-> > enable);
-> > }
-> > 
-> > So using set_direct_map() to map back pages removed from the direct
-> > map
-> > with __kernel_map_pages() seems safe to me.
-> 
-> Heh, one of us must have some simple boolean error in our head. I hope
-> its not me! :) I'll try on more time.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Well, then it's me :)
-You are right, I misread this and I could not understand why
-!rodata_full bothers you.
+Hi,
 
-> __kernel_map_pages() will bail out if rodata_full is false **AND**
-> debug page alloc is off. So it will only bail under conditions where
-> there could be nothing unmapped on the direct map.
-> 
-> Equivalent logic would be:
-> 	if (!(debug_pagealloc_enabled() || rodata_full))
-> 		return;
-> 
-> Or:
-> 	if (debug_pagealloc_enabled() || rodata_full)
-> 		set_memory_valid(blah)
-> 
-> So if either is on, the existing code will try to re-map. But the
-> set_direct_map_()'s will only work if rodata_full is on. So switching
-> hibernate to set_direct_map() will cause the remap to be missed for the
-> debug page alloc case, with !rodata_full.
-> 
-> It also breaks normal debug page alloc usage with !rodata_full for
-> similar reasons after patch 3. The pages would never get unmapped.
+It's been a while since DISCONTIGMEM is generally considered deprecated,
+but it is still used by four architectures. This set replaces DISCONTIGMEM
+with a different way to handle holes in the memory map and marks
+DISCONTIGMEM configuration as BROKEN in Kconfigs of these architectures with
+the intention to completely remove it in several releases.
 
-I've updated the patches, there should be no regression now.
+While for 64-bit alpha and ia64 the switch to SPARSEMEM is quite obvious
+and was a matter of moving some bits around, for smaller 32-bit arc and
+m68k SPARSEMEM is not necessarily the best thing to do.
 
+On 32-bit machines SPARSEMEM would require large sections to make section
+index fit in the page flags, but larger sections mean that more memory is
+wasted for unused memory map.
+
+Besides, pfn_to_page() and page_to_pfn() become less efficient, at least on
+arc.
+
+So I've decided to generalize arm's approach for freeing of unused parts of
+the memory map with FLATMEM and enable it for both arc and m68k. The
+details are in the description of patches 10 (arc) and 13 (m68k).
+
+v2 changes:
+- remove additional stale '#ifdef CONFIG_SINGLE_MEMORY_CHUNK' on m68k
+- fix bisectability on m68k
+
+v1:
+https://lore.kernel.org/lkml/20201027112955.14157-1-rppt@kernel.org
+
+Mike Rapoport (13):
+  alpha: switch from DISCONTIGMEM to SPARSEMEM
+  ia64: remove custom __early_pfn_to_nid()
+  ia64: remove 'ifdef CONFIG_ZONE_DMA32' statements
+  ia64: discontig: paging_init(): remove local max_pfn calculation
+  ia64: split virtual map initialization out of paging_init()
+  ia64: forbid using VIRTUAL_MEM_MAP with FLATMEM
+  ia64: make SPARSEMEM default and disable DISCONTIGMEM
+  arm: remove CONFIG_ARCH_HAS_HOLES_MEMORYMODEL
+  arm, arm64: move free_unused_memmap() to generic mm
+  arc: use FLATMEM with freeing of unused memory map instead of
+    DISCONTIGMEM
+  m68k/mm: make node data and node setup depend on CONFIG_DISCONTIGMEM
+  m68k/mm: enable use of generic memory_model.h for !DISCONTIGMEM
+  m68k: deprecate DISCONTIGMEM
+
+ Documentation/vm/memory-model.rst   |  3 +-
+ arch/Kconfig                        |  3 ++
+ arch/alpha/Kconfig                  |  8 +++
+ arch/alpha/include/asm/mmzone.h     | 14 +----
+ arch/alpha/include/asm/page.h       |  7 +--
+ arch/alpha/include/asm/pgtable.h    | 12 ++---
+ arch/alpha/include/asm/sparsemem.h  | 18 +++++++
+ arch/alpha/kernel/setup.c           |  1 +
+ arch/arc/Kconfig                    |  3 +-
+ arch/arc/include/asm/page.h         | 20 ++++++--
+ arch/arc/mm/init.c                  | 29 ++++++++---
+ arch/arm/Kconfig                    | 10 +---
+ arch/arm/mach-bcm/Kconfig           |  1 -
+ arch/arm/mach-davinci/Kconfig       |  1 -
+ arch/arm/mach-exynos/Kconfig        |  1 -
+ arch/arm/mach-highbank/Kconfig      |  1 -
+ arch/arm/mach-omap2/Kconfig         |  1 -
+ arch/arm/mach-s5pv210/Kconfig       |  1 -
+ arch/arm/mach-tango/Kconfig         |  1 -
+ arch/arm/mm/init.c                  | 78 ----------------------------
+ arch/arm64/Kconfig                  |  4 +-
+ arch/arm64/mm/init.c                | 68 ------------------------
+ arch/ia64/Kconfig                   | 11 ++--
+ arch/ia64/include/asm/meminit.h     |  2 -
+ arch/ia64/mm/contig.c               | 58 ++++++++++-----------
+ arch/ia64/mm/discontig.c            | 44 ++++++++--------
+ arch/ia64/mm/init.c                 | 14 -----
+ arch/ia64/mm/numa.c                 | 30 -----------
+ arch/m68k/Kconfig.cpu               | 31 +++++++++--
+ arch/m68k/include/asm/page.h        |  2 +
+ arch/m68k/include/asm/page_mm.h     |  7 ++-
+ arch/m68k/include/asm/virtconvert.h |  5 --
+ arch/m68k/mm/init.c                 |  8 +--
+ fs/proc/kcore.c                     |  2 -
+ include/linux/mm.h                  |  3 --
+ include/linux/mmzone.h              | 42 ---------------
+ mm/memblock.c                       | 80 +++++++++++++++++++++++++++++
+ mm/mmzone.c                         | 14 -----
+ mm/page_alloc.c                     | 16 ++++--
+ mm/vmstat.c                         |  4 --
+ 40 files changed, 270 insertions(+), 388 deletions(-)
+ create mode 100644 arch/alpha/include/asm/sparsemem.h
+
+base-commit: 3650b228f83adda7e5ee532e2b90429c03f7b9ec
 -- 
-Sincerely yours,
-Mike.
+2.28.0
+
