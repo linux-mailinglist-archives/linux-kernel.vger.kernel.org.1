@@ -2,66 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490982A1F16
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0882A1F17
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgKAPcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 10:32:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726549AbgKAPca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 10:32:30 -0500
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07331206D8;
-        Sun,  1 Nov 2020 15:32:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604244750;
-        bh=zaRSNwY1ZAh179FupbjBNapW+0OGmxmNUA2NqRQM7DA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=wB+1iKH/vDi/y6iMdpvBhXq5ykVyK6NFK3Qbre4RK8xVpLewqtmHU5OiDVTVbcao7
-         5JfCP/wyiVXtk/jpUyC+/J5OqGKpRL1oAZ9j4zUrqNVfuIjcui33sgK0OmNFTmrRNi
-         CXOe6tW3hVJLsBmEcSrtBGvyD4cFwlIQWwxejtS8=
-Date:   Sun, 1 Nov 2020 15:32:25 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     trix@redhat.com, lars@metafoo.de, pmeerw@pmeerw.net,
-        khilman@baylibre.com, Neil Armstrong <narmstrong@baylibre.com>,
-        jbrunet@baylibre.com, andy.shevchenko@gmail.com, krzk@kernel.org,
-        alexandru.ardelean@analog.com, jonathan.albrieux@gmail.com,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: remove unneeded break
-Message-ID: <20201101153225.0abf45c2@archlinux>
-In-Reply-To: <CAFBinCDKf_TJb9ONfz+383NB0yKDb2a_zxXktAoBHKg_03L2+Q@mail.gmail.com>
-References: <20201019172824.32166-1-trix@redhat.com>
-        <CAFBinCDKf_TJb9ONfz+383NB0yKDb2a_zxXktAoBHKg_03L2+Q@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726923AbgKAPcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 10:32:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48912 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726549AbgKAPcm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 10:32:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604244760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=0Wj7ZfVzgf7VEzrGzNTq9aHl9BBDX910MMyPyWdtJRA=;
+        b=SM0aJkHklkDuZYcNe2MgK5OMusdUbSSLg2IZsf5JsFnK7QLEEO07llr1hR9ACrUm6pOu+9
+        PAyn+Ae88PRtWqclEufNlhlp68jODS0A9fPDAi+5qY4pO6IETc4XzNvwMkBptMF68JRvXJ
+        hVxyPdeUjQUOZlysjS2CbHuuDIS9p68=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-528-yfYF8U4-NzKa079UWITQnA-1; Sun, 01 Nov 2020 10:32:39 -0500
+X-MC-Unique: yfYF8U4-NzKa079UWITQnA-1
+Received: by mail-ot1-f70.google.com with SMTP id k26so4624642otb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 07:32:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=0Wj7ZfVzgf7VEzrGzNTq9aHl9BBDX910MMyPyWdtJRA=;
+        b=oF5SNP7CkNGKXCYBHK41/dfMxk+OoWftqqlhWE8KDnRPR6rmoZVLALck4ef/DoFlTj
+         knoqn1AzZMNjXQWSUOSFpvnY2ShXYH4MXN967G7165bQhb1d+CuevktGp9yVM1rAGtMI
+         q0RH7cioGq7n9seNoX73DA52oVDyr50jWhYr+7etjBNQQnF2Ka3n5noANCGWCVqqoWEo
+         Kf+45mPHiu8A2kneW53A30bR57/HLr5YgYTNgvQ2VSqW6dM4srNATEIPFKP+dsStsb7Z
+         uiXon79vJJm2x6WlD08s9xCUPnbetElE6jxkAIQkP8gAZytYABbvuZIsxmtSK0oLfjux
+         QddA==
+X-Gm-Message-State: AOAM533r7kwZGsvjk3oLLjtg5gLTDSQL5wBJA9weY1OIK3ExpikBqmhM
+        889O6YbeBnZe8YJekXTxGtjpuMl8ou4pNIJ374xI9NOGerS5U4fyNDj6wocmcTwf6o2vGhvvowU
+        tSthWAzYeqmoc6ttOvgD3iTCL
+X-Received: by 2002:aca:ddc6:: with SMTP id u189mr7588023oig.59.1604244758892;
+        Sun, 01 Nov 2020 07:32:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw+yaDR+vmXW5TAdApQPiTp1L9iVD3d3dVF5lgdSEQY1at+uccJHMDpFE73E8hFXGFGVz0ZHw==
+X-Received: by 2002:aca:ddc6:: with SMTP id u189mr7588015oig.59.1604244758770;
+        Sun, 01 Nov 2020 07:32:38 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id x25sm2943778oie.17.2020.11.01.07.32.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 07:32:38 -0800 (PST)
+From:   trix@redhat.com
+To:     bfields@fieldses.org, chuck.lever@oracle.com
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] nfsd: remove unneeded semicolon
+Date:   Sun,  1 Nov 2020 07:32:34 -0800
+Message-Id: <20201101153234.2291612-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Oct 2020 21:39:17 +0200
-Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+From: Tom Rix <trix@redhat.com>
 
-> On Mon, Oct 19, 2020 at 7:28 PM <trix@redhat.com> wrote:
-> >
-> > From: Tom Rix <trix@redhat.com>
-> >
-> > A break is not needed if it is preceded by a return
-> >
-> > Signed-off-by: Tom Rix <trix@redhat.com>
-> > ---
-> >  drivers/iio/adc/meson_saradc.c       | 2 --  
-> for meson_saradc.c:
-> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Applied,
+A semicolon is not needed after a switch statement.
 
-Thanks,
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ fs/nfsd/nfs4xdr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Jonathan
+diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
+index 259d5ad0e3f4..6020f0ff6795 100644
+--- a/fs/nfsd/nfs4xdr.c
++++ b/fs/nfsd/nfs4xdr.c
+@@ -2558,7 +2558,7 @@ static u32 nfs4_file_type(umode_t mode)
+ 	case S_IFREG:	return NF4REG;
+ 	case S_IFSOCK:	return NF4SOCK;
+ 	default:	return NF4BAD;
+-	};
++	}
+ }
+ 
+ static inline __be32
+-- 
+2.18.1
 
