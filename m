@@ -2,113 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02B22A1BEB
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 06:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 712D52A1C1E
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 06:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgKAFWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 01:22:20 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8613 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726117AbgKAFWS (ORCPT
+        id S1725842AbgKAFiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 01:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725681AbgKAFiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 01:22:18 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9e460b0000>; Sat, 31 Oct 2020 22:22:19 -0800
-Received: from [10.2.59.55] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 1 Nov
- 2020 05:22:12 +0000
-Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-CC:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "Kyungmin Park" <kyungmin.park@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>
-References: <20201030100815.2269-1-daniel.vetter@ffwll.ch>
- <20201030100815.2269-6-daniel.vetter@ffwll.ch>
- <446b2d5b-a1a1-a408-f884-f17a04b72c18@nvidia.com>
- <CAKMK7uGDW2f0oOvwgryCHxQFHyh3Tsk6ENsMGmtZ-EnH57tMSA@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <1f7cf690-35e2-c56f-6d3f-94400633edd2@nvidia.com>
-Date:   Sat, 31 Oct 2020 22:22:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sun, 1 Nov 2020 01:38:14 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C8CC0617A6;
+        Sat, 31 Oct 2020 22:38:14 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id f38so8185174pgm.2;
+        Sat, 31 Oct 2020 22:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=h0UPMaHl9sQ1QYtD72P2Gtya64wSdEwNqN6m40oRNsA=;
+        b=WhG+3QfgIcd8FEd+xMfq2+PFDMbU3yKbbZSIlonfA1ApWGA4gU1bW0orKx/iLuiuD1
+         Z+kjTIvH09Gw9KTvvDBtEec3691SQzjLUZBGw/M87/jtqzjNrPdDEfygAnZqXqa+v8Fm
+         L7pfJ7kdI04aA4mKAmUbHrzVV86KOwkiAlsUM6WlcfNYb5IRDkdaLEJjiiOcLbwQMT2C
+         DLiMRmRu9mGbcexKK2oVWj8TCW3xfQPpDQpKqu0niH8PeGQLJV/jz2M9KyX7rx6jSk7d
+         K1cCNXqPI4WtOBwKxTBf5wFldIH2LoDdnC7I2C7CC7thtXwRrIXcPiBFAmC9+lxcXOht
+         uUtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=h0UPMaHl9sQ1QYtD72P2Gtya64wSdEwNqN6m40oRNsA=;
+        b=hlrW1K9Kd0aj2LUPyywIp54wQJQLCEIqy6NC0LOEQK231TSTDEiOFMiZXhqSUbcidL
+         F79g8RyQ1Yj/icH5XnY1VYEAJvRPr3t+5PeAKwKjw8Oo2sObpYM3rEr+VcmyEmUQbcqe
+         /nCt6YlxQEDiDGvlzUiHEUQgkoom8hEW0nzkBR1nrLR1k4rCRoC8cMbXwGiE9H2hqMF8
+         TQbWMFCwZjLziDq72UrF9ya/LCcNAJxRyNAetG3ieMRe0W0XR6wafXoX7uAUHLO1vbqe
+         5xp/2AmnIISEpMhKmGK0/56K47x665lMzL90wbHNujkEUHzwnBMxsa6zDiCnllx1TKhB
+         2rrA==
+X-Gm-Message-State: AOAM530SYuvy5RxSuv6Yvsp8gItvjC0IRHOnJ/qPSrErsYTfPeFZ6akk
+        8nAMVL413/Z5wN3FBrsf08w=
+X-Google-Smtp-Source: ABdhPJz8JY5kc/jUUwoCuti7DG3VKLSeM35nguxL7NxmueK5tY+OX9jYzu40IOaFEDMs65Fuk77CtQ==
+X-Received: by 2002:a62:aa0f:0:b029:162:ecc2:4d44 with SMTP id e15-20020a62aa0f0000b0290162ecc24d44mr16564428pff.52.1604209093832;
+        Sat, 31 Oct 2020 22:38:13 -0700 (PDT)
+Received: from clanlab.dyndns.org ([140.119.175.157])
+        by smtp.gmail.com with ESMTPSA id e5sm8486972pjd.0.2020.10.31.22.38.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Oct 2020 22:38:13 -0700 (PDT)
+From:   Macpaul Lin <macpaul@gmail.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>
+Cc:     Eddie Hung <eddie.hung@mediatek.com>,
+        Peter Chen <peter.chen@nxp.com>, stable@vger.kernel.org
+Subject: [RESEND PATCH v2] usb: gadget: configfs: Fix use-after-free issue with udc_name
+Date:   Sun,  1 Nov 2020 13:37:28 +0800
+Message-Id: <20201101053728.2387434-1-macpaul@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <1595040303-23046-1-git-send-email-macpaul.lin@mediatek.com>
+References: <1595040303-23046-1-git-send-email-macpaul.lin@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKMK7uGDW2f0oOvwgryCHxQFHyh3Tsk6ENsMGmtZ-EnH57tMSA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604208139; bh=BviMObXYl4DBSbzSpkoK8hvibl+1Fsc4El3qoj9SER4=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=GDRHpOkpxs1Ufq2SOGdgYR/E9XR+fbuJ8LSdEQnzZVakY5/3RHLrlV0EUPacqB1hx
-         sgcaxSS6kL92YgOCYxV61/vKgMeyJzWv3pbsiGOiPG2yzztyrS+M509X+WJsspP0iX
-         eGYfmD7CUw9Sc7vfW/dXMJFEk0m7LtD6SNXFGO5vEh2idfKwEVzJ6ZAWx2tcCRv74B
-         z9sCh7r8+3axv5dd8sfK1ThmV84FPNw8fCBM1IYOZ3eSLI6P+VCNYX5tGFWyGGRpnN
-         ra2SHoMsB7AY6QbBfc+xZFCAcf9OI3Wzgrvev7r6iT4kkq15E1JGpS1HdFytcI+8SG
-         6LGq3w3+17JOQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/20 7:45 AM, Daniel Vetter wrote:
-> On Sat, Oct 31, 2020 at 3:55 AM John Hubbard <jhubbard@nvidia.com> wrote:
->> On 10/30/20 3:08 AM, Daniel Vetter wrote:
-...
->> By removing this check from this location, and changing from
->> pin_user_pages_locked() to pin_user_pages_fast(), I *think* we end up
->> losing the check entirely. Is that intended? If so it could use a comment
->> somewhere to explain why.
-> 
-> Yeah this wasn't intentional. I think I needed to drop the _locked
-> version to prep for FOLL_LONGTERM, and figured _fast is always better.
-> But I didn't realize that _fast doesn't have the vma checks, gup.c got
-> me a bit confused.
+From: Eddie Hung <eddie.hung@mediatek.com>
 
-Actually, I thought that the change to _fast was a very nice touch, btw.
+There is a use-after-free issue, if access udc_name
+in function gadget_dev_desc_UDC_store after another context
+free udc_name in function unregister_gadget.
 
-> 
-> I'll remedy this in all the patches where this applies (because a
-> VM_IO | VM_PFNMAP can point at struct page backed memory, and that
-> exact use-case is what we want to stop with the unsafe_follow_pfn work
-> since it wreaks things like cma or security).
-> 
-> Aside: I do wonder whether the lack for that check isn't a problem.
-> VM_IO | VM_PFNMAP generally means driver managed, which means the
-> driver isn't going to consult the page pin count or anything like that
-> (at least not necessarily) when revoking or moving that memory, since
-> we're assuming it's totally under driver control. So if pup_fast can
-> get into such a mapping, we might have a problem.
-> -Daniel
->
+Context 1:
+gadget_dev_desc_UDC_store()->unregister_gadget()->
+free udc_name->set udc_name to NULL
 
-Yes. I don't know why that check is missing from the _fast path.
-Probably just an oversight, seeing as how it's in the slow path. Maybe
-the appropriate response here is to add a separate patch that adds the
-check.
+Context 2:
+gadget_dev_desc_UDC_show()-> access udc_name
 
-I wonder if I'm overlooking something, but it certainly seems correct to
-do that.
+Call trace:
+dump_backtrace+0x0/0x340
+show_stack+0x14/0x1c
+dump_stack+0xe4/0x134
+print_address_description+0x78/0x478
+__kasan_report+0x270/0x2ec
+kasan_report+0x10/0x18
+__asan_report_load1_noabort+0x18/0x20
+string+0xf4/0x138
+vsnprintf+0x428/0x14d0
+sprintf+0xe4/0x12c
+gadget_dev_desc_UDC_show+0x54/0x64
+configfs_read_file+0x210/0x3a0
+__vfs_read+0xf0/0x49c
+vfs_read+0x130/0x2b4
+SyS_read+0x114/0x208
+el0_svc_naked+0x34/0x38
 
-  thanks,
+Add mutex_lock to protect this kind of scenario.
+
+Signed-off-by: Eddie Hung <eddie.hung@mediatek.com>
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Cc: stable@vger.kernel.org
+---
+Changes for v2:
+  - Fix typo %s/contex/context, Thanks Peter.
+
+ drivers/usb/gadget/configfs.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/gadget/configfs.c b/drivers/usb/gadget/configfs.c
+index cbff3b02840d..8501b27f3c95 100644
+--- a/drivers/usb/gadget/configfs.c
++++ b/drivers/usb/gadget/configfs.c
+@@ -230,9 +230,16 @@ static ssize_t gadget_dev_desc_bcdUSB_store(struct config_item *item,
+ 
+ static ssize_t gadget_dev_desc_UDC_show(struct config_item *item, char *page)
+ {
+-	char *udc_name = to_gadget_info(item)->composite.gadget_driver.udc_name;
++	struct gadget_info *gi = to_gadget_info(item);
++	char *udc_name;
++	int ret;
++
++	mutex_lock(&gi->lock);
++	udc_name = gi->composite.gadget_driver.udc_name;
++	ret = sprintf(page, "%s\n", udc_name ?: "");
++	mutex_unlock(&gi->lock);
+ 
+-	return sprintf(page, "%s\n", udc_name ?: "");
++	return ret;
+ }
+ 
+ static int unregister_gadget(struct gadget_info *gi)
 -- 
-John Hubbard
-NVIDIA
+2.26.2
+
