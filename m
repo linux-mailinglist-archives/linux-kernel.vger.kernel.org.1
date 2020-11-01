@@ -2,214 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33FD2A1F92
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 17:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 247C32A1FA3
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 17:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbgKAQkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 11:40:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
+        id S1727042AbgKAQrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 11:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726549AbgKAQkP (ORCPT
+        with ESMTP id S1727030AbgKAQrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 11:40:15 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A2BC0617A6;
-        Sun,  1 Nov 2020 08:40:15 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 27F1680E;
-        Sun,  1 Nov 2020 17:40:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1604248812;
-        bh=YZpOjafDiwYLclaE2bL0ACE0n5RjBNAzajhphFUjsOI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G7eQT5dUdGrCHpbOgpkx+JPOQsGqmg6wunYCS705Er/JWK/pXEwt7v670HBdFdiUI
-         cyuYAfZ8Hvz7TW01tUx04LCbYIt8v78qrbREk+SVklIaX2m9BnRyaZB9jxO4lke76P
-         VYGgj45gKTLs/TcCR0d+SbbLbsR9WnDcXiGTCaWM=
-Date:   Sun, 1 Nov 2020 18:39:22 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH v6 1/2] dt-bindings: display: himax,hx8837: Add Himax
- HX8837 bindings
-Message-ID: <20201101163922.GA3971@pendragon.ideasonboard.com>
-References: <20201030030800.1036888-1-lkundrak@v3.sk>
- <20201030030800.1036888-2-lkundrak@v3.sk>
+        Sun, 1 Nov 2020 11:47:12 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695DDC0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 08:47:12 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id w13so1832203eju.13
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 08:47:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=bJcbBpvhkooGVSa9uKVCzDUvc8XJYTQfbEGfDOmpH+0=;
+        b=bQp75wUL5280tVqfadV9BdtzvQdKGQlBW1VZZAYRyVzaeWYRXGcxCP/iCl+ZH+6Vqr
+         9IOpquW4sSWx8La40Bm74S06CrB4wl4s5cWw2PIMtZU356ypSHISF+L/zrlLP+ujVEJL
+         GN0ZxuSwg3h/kEJpHEUV5lZo5dmrt6MFVwbrOXFsXS2RGE+2cSiB9qab3dl4jl9S1pD3
+         8FTch+3P5JSYEUECsJx+w2bcMtRHq9kx0d/z4OmmQf3BDsSL+dHyZ400K3bmXoVZUZ8h
+         SvKMX1FElumJZ7N9qe887gx2rxelNc58TvPqrswdDmzzW2kGitiVQ7iyEzyy0p5/tdzf
+         N2KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=bJcbBpvhkooGVSa9uKVCzDUvc8XJYTQfbEGfDOmpH+0=;
+        b=d5sx9yuP/5wAIlWkFlCtiZAcWy3+RSXvlDcpFxDkb4zih+KLnP/wGwCmuxRiz7vfro
+         2f1VW8tgriec1w2XhchkYdr6kJaV5nJdNBYhLrh0GjH8AwWV0wDK2dDJTZDli526oSs/
+         6XEgL7MxEomhVPsHfPquz6DS41DWqeCvJzSzwVMz+eIso+MU/o/pBVasUZuP5ykXbcsC
+         uIqDUzjarVG0MP9fvA8rOkIHWg9L14qFZNLpGdI8bqEsztOAw6WMHuojqj+cz/ciygNu
+         C8p60AlYtGNpE8twQ+a1G1LZ90zsJNqEgsAZQZ2pTKzooS3a+6C3wsrpzabzmz1p9JHY
+         CD4w==
+X-Gm-Message-State: AOAM533sRcWtI5T3xSkI5phjv7jLKPBacu/GAXvoC9EJd97pzkWPeQeD
+        ALLRx2K5d0SPaqaH1+qvQ3E6lNr4Dy+uUDJxjVc5ePrOYP8yd7d5
+X-Google-Smtp-Source: ABdhPJysHvCvTIDZJkoEkZMk9Rbwba3/BnCVz7jot0R5SCBIc0ckWqB8Ud/ckwGJsxjMZE6Zuqr/hGUc1weugV3HeZ8=
+X-Received: by 2002:a17:906:2f10:: with SMTP id v16mr11545879eji.320.1604249230906;
+ Sun, 01 Nov 2020 08:47:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201030030800.1036888-2-lkundrak@v3.sk>
+From:   NASA Jeff <tallboy258@gmail.com>
+Date:   Sun, 1 Nov 2020 16:46:58 +0000
+Message-ID: <CAN-MDmparVyT2ZRp4x2=cBxm_k+iuyAJ4_xTELT07w+f0hu2bg@mail.gmail.com>
+Subject: Freezing between .48 and .51 when hitting swap.
+To:     Linux Kml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lubomir,
+I have an issue on my laptop which is old but with 2.5gb of ram an ssd
+hdd and using zram compression I believe.
+When ever it hits swap the system completely locks up and I have to reboot.
+This only started occurring in .51
+I only have access to my phone at the moment though I=E2=80=99ve looked at =
+the
+code and have what I believe is a workable solution that should
+mitigate against and future issues. The code base looked a little old
+so was probably quite stable but it really could do with some
+modernisation.
+The issue was with the active app in user space.
+What needs to be done is to swap out inactive pages in background user
+apps prior to the active apps hitting the memory threshold which was
+causing the lockup to occure.
 
-Thank you for the patch.
+An improvement on the existing code would be to swap in and out
+inactive pages gradually so as to avoid any heavy system load.
 
-On Fri, Oct 30, 2020 at 04:07:59AM +0100, Lubomir Rintel wrote:
-> Himax HX8837 is a secondary display controller used to drive the panel
-> on OLPC platforms.
-> 
-> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> 
-> ---
-> Changes since v4:
-> - Rob's Reviewed-by
-> 
-> Changes since v3:
-> - Moved to bindings/display/
-> - Added the ports
-> - Converted to YAML
-> - Removed Pavel's Ack, because the changes are substantial
-> 
-> Changes since v2:
-> - s/betweend/between/
-> 
-> Changes since v1:
-> - s/load-gpio/load-gpios/
-> - Use interrupt bindings instead of gpio for the IRQ
-> 
->  .../bindings/display/bridge/himax,hx8837.yaml | 96 +++++++++++++++++++
->  1 file changed, 96 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/himax,hx8837.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/himax,hx8837.yaml b/Documentation/devicetree/bindings/display/bridge/himax,hx8837.yaml
-> new file mode 100644
-> index 0000000000000..f5b0a00f5089d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/bridge/himax,hx8837.yaml
-> @@ -0,0 +1,96 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2018,2019,2020 Lubomir Rintel <lkundrak@v3.sk>
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/bridge/himax,hx8837.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: HX8837 Display Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Lubomir Rintel <lkundrak@v3.sk>
-> +
-> +properties:
-> +  compatible:
-> +    const: himax,hx8837
-> +
-> +  reg:
-> +    const: 0xd
-> +
-> +  load-gpios:
-> +    maxItems: 1
-> +    description: GPIO specifier of DCON_LOAD pin (active high)
-> +
-> +  stat-gpios:
-> +    minItems: 2
-> +    description: GPIO specifier of DCON_STAT0 and DCON_STAT1 pins (active high)
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description: Interrupt specifier of DCON_IRQ pin (edge falling)
-> +
-> +  ports:
-> +    type: object
-> +
-> +    properties:
-> +      port@0:
-> +        type: object
-> +        description: |
-> +          Video port for RGB input.
-> +
-> +      port@1:
-> +        type: object
-> +        description: |
-> +          Video port connected to the panel.
-> +
-> +    required:
-> +      - port@0
-> +      - port@1
+It may also be an idea to set the up priority to near idel for such
+heavy io background processes so that the overlapping io doesn=E2=80=99t ca=
+use
+issues with user space io.
 
-No regulators ?
+I believe this is similar to the main Linux scheduler since bfs
+because implementing a script to renice processes that started hitting
+higish cpu and then again when their cpu dipped didn=E2=80=99t seem to make
+much difference. It was unclear if this was also implemented for
+cocurent io as the window managers now seem to queue io tasks instead
+of executing them concurrently. Concurrent io was at least a historic
+issue.
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - load-gpios
-> +  - stat-gpios
-
-Do stat-gpios need to be mandatory ? The driver in patch 2/2 doesn't
-seem to use them, could we have boards where those signals are not
-connected to GPIOs ?
-
-> +  - interrupts
-> +  - ports
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        
-
-Could you please avoid spaces or tabs at end of lines ? There are three
-other occurrences below.
-
-> +        lcd-controller@d {
-> +            compatible = "himax,hx8837";
-> +            reg = <0x0d>;
-> +            stat-gpios = <&gpio 100 GPIO_ACTIVE_HIGH>,
-> +                         <&gpio 101 GPIO_ACTIVE_HIGH>;
-> +            load-gpios = <&gpio 142 GPIO_ACTIVE_HIGH>;
-> +            interrupts = <&gpio 124 IRQ_TYPE_EDGE_FALLING>;
-> +    
-> +            ports {
-> +                #address-cells = <0x01>;
-> +                #size-cells = <0x00>;
-> +    
-> +                port@0 {
-> +                    reg = <0x00>;
-
-reg = <0> should be fine. Same below.
-
-With thse small issues addressed,
-
-> +                    dcon_rgb_in: endpoint {
-> +                        remote-endpoint = <&lcd0_rgb_out>;
-> +                    };
-> +                };
-> +    
-> +                port@1 {
-> +                    reg = <0x01>;
-> +                    dcon_gettl_out: endpoint {
-> +                        remote-endpoint = <&panel_dettl_in>;
-> +                    };
-> +                };
-> +            };
-> +        };
-> +    };
-
-It's customary to end bindings with
-
-...
-
-(not sure why though, given that it seems to work find without)
-
--- 
-Regards,
-
-Laurent Pinchart
+Kind regards,
+Oliverthered
