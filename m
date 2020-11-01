@@ -2,121 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E4F2A21D7
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 22:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFEE2A21E0
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 22:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727346AbgKAVTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 16:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727056AbgKAVTR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 16:19:17 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE7EC0617A6
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 13:19:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=mHXvI0jUyLtPqLG2ZOT9kseyc1b7gzS+qOQUvgHUGC8=; b=ZK2GisT1dGB0fQt/foU9qw5DOv
-        j9xH2R9iQ8B0KN34XuStdIFPZ/oH8BcDRESWdTrRvNJ8Yvt0v0mJKjiH94xGoqQ/a2BIZlRZ78hE6
-        IBt6kA8+sh+kouR1qfeDyPz8xIQw4iNet/Xhm4nVW6g+rrMg9Sh4kRv/pd9aG36hjeA4Ty4uGD9Eg
-        SPgdXysioMhcKV/XugpyNK4c6pvQl8ZANhXv/hddw769jH3OvgkncnEveWCsgjplZe3kihQkTbALi
-        dOJFXSfORXcf7xWw2pkJPxHIwUeEFwG7Rf5qC5sX3OWOFvWS3fiPJuVCa8u8CO5O5DIu577SyqBu9
-        jAWLMNkg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZKko-0004ya-BA; Sun, 01 Nov 2020 21:19:10 +0000
-Date:   Sun, 1 Nov 2020 21:19:10 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] mm: shmem: Convert shmem_enabled_show to use
- sysfs_emit_at
-Message-ID: <20201101211910.GG27442@casper.infradead.org>
-References: <cover.1604261483.git.joe@perches.com>
- <a06810c216a45e5f6f1b9f49fbe2f332ca3c8972.1604261483.git.joe@perches.com>
- <20201101204834.GF27442@casper.infradead.org>
- <616b92af9378e9f9697555074bba1e377450477f.camel@perches.com>
+        id S1727279AbgKAVYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 16:24:22 -0500
+Received: from ozlabs.org ([203.11.71.1]:54263 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727016AbgKAVYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 16:24:22 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CPTZV5nZVz9sVH;
+        Mon,  2 Nov 2020 08:24:18 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604265860;
+        bh=xOnVOpZk/z3UruF0MWGzkNThIDOcfMIJNe1idDp//80=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LAznYQ4CMfMv0CGZek9E0lNg1E5g2p40HXK/EFleiyknWmhoLdHWao5d7EU9ElgKV
+         qFydObdhs1lkYwaRGeNWz3t9GiGP0Uh6Dx5K2GRkXVrPKfxEn7E+jrbZblziCinoNE
+         dplMHM+VVhfTAQ2PXNzkCIUp8RigkxJYojILSn2FHBYLbgxAbVco89KJn+TjpXQ8sd
+         J1N1byCOOT/yQc4u9taT7+v4HwSKGTST1bg1RBr3VEOGrbEKDDmkgD2tprWwxDDnC8
+         q+l+va6hJ+zz2/fpV7muwencdx3E9TasTPjBSYNuDsKGGhV5WIbmG4otXBuGwX4UcK
+         x47ZfOMpjQ9Yg==
+Date:   Mon, 2 Nov 2020 08:24:13 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the imx-mxs tree
+Message-ID: <20201102082413.0087d34b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <616b92af9378e9f9697555074bba1e377450477f.camel@perches.com>
+Content-Type: multipart/signed; boundary="Sig_/o390T4FjXu.DOFbkVcXwtKs";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 01:04:35PM -0800, Joe Perches wrote:
-> On Sun, 2020-11-01 at 20:48 +0000, Matthew Wilcox wrote:
-> > On Sun, Nov 01, 2020 at 12:12:51PM -0800, Joe Perches wrote:
-> > > @@ -4024,7 +4024,7 @@ int __init shmem_init(void)
-> > >  
-> > > 
-> > >  #if defined(CONFIG_TRANSPARENT_HUGEPAGE) && defined(CONFIG_SYSFS)
-> > >  static ssize_t shmem_enabled_show(struct kobject *kobj,
-> > > -		struct kobj_attribute *attr, char *buf)
-> > > +				  struct kobj_attribute *attr, char *buf)
-> > >  {
-> > >  	static const int values[] = {
-> > >  		SHMEM_HUGE_ALWAYS,
-> > 
-> > Why?
-> 
-> why what?
+--Sig_/o390T4FjXu.DOFbkVcXwtKs
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Why did you change this?
+Hi all,
 
-> > > @@ -4034,16 +4034,19 @@ static ssize_t shmem_enabled_show(struct kobject *kobj,
-> > >  		SHMEM_HUGE_DENY,
-> > >  		SHMEM_HUGE_FORCE,
-> > >  	};
-> > > -	int i, count;
-> > > -
-> > > -	for (i = 0, count = 0; i < ARRAY_SIZE(values); i++) {
-> > > -		const char *fmt = shmem_huge == values[i] ? "[%s] " : "%s ";
-> > > +	int len = 0;
-> > > +	int i;
-> > 
-> > Better:
-> > 	int i, len = 0;
-> 
-> I generally disagree as I think it better to have each declaration on an
-> individual line.
+In commit
 
-You're wrong.
+  d969e9c05f83 ("ARM: dts: imx6q-prti6q: fix PHY address")
 
-> > > -		count += sprintf(buf + count, fmt,
-> > > -				shmem_format_huge(values[i]));
-> > > +	for (i = 0; i < ARRAY_SIZE(values); i++) {
-> > > +		len += sysfs_emit_at(buf, len,
-> > > +				     shmem_huge == values[i] ? "%s[%s]" : "%s%s",
-> > > +				     i ? " " : "",
-> > > +				     shmem_format_huge(values[i]));
-> > 
-> > This is ... complicated.  I thought the point of doing all the sysfs_emit
-> > stuff was to simplify things.
-> 
-> The removal of fmt allows the format and argument to be __printf verified.
-> Indirected formats do not generally allow that.
-> 
-> And using sysfs_emit is not really intended to simplify output code, it's
-> used to make sure there isn't a overflow of the PAGE_SIZE output buf when
-> using sprintf/snprintf.
+Fixes tag
 
-Look, this isn't performance sensitive code.  Just do something simple.
+  Fixes: 0d446a50559 ("ARM: dts: add Protonic PRTI6Q board")
 
-		if (shmem_huge == values[i])
-			buf += sysfs_emit(buf, "[%s]",
-					shmem_format_huge(values[i]));
-		else
-			buf += sysfs_emit(buf, "%s",
-					shmem_format_huge(values[i]));
-		if (i == ARRAY_SIZE(values) - 1)
-			buf += sysfs_emit(buf, "\n");
-		else
-			buf += sysfs_emit(buf, " ");
+has these problem(s):
 
-Shame there's no sysfs_emitc, but there you go.
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/o390T4FjXu.DOFbkVcXwtKs
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+fJ30ACgkQAVBC80lX
+0GysuQf9GLFkAKjvycaB+GkgUWEreXfb6lLEoF+L/TKRwLevr1UQ6KZfyW5L+iqF
+A9YvwH7hpDhaqq9OW2d6aMpXGREiDh/bpmqUcfggoHg0GGyJ8ooUpXNlZ0hu3qD8
+cTM8NtvDRgm2f5qMY8CgqvLbFDsQRu8IqitDQ0jklPMavlFRwVxjVDd+TK9lqFXV
+1H/YsTTdzbc7bXeiivA9oZBnhilUfk4SDZvS+6ieg17QTZ/G9+zDLmDNhxl2CC7S
+ysRRAk+x4stXaf0roZmJqBOJDLYA/kftNDoPFR/lsf2d9EnIdK0FYChUBa8wrsJs
+U49gaMa/wJhI31f3/F1ng6NajKrstA==
+=kF7V
+-----END PGP SIGNATURE-----
+
+--Sig_/o390T4FjXu.DOFbkVcXwtKs--
