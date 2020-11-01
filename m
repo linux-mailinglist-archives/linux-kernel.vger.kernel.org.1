@@ -2,140 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4809B2A1EE8
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031132A1EEB
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgKAPNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 10:13:16 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:32051 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726499AbgKAPNP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 10:13:15 -0500
-X-Greylist: delayed 85484 seconds by postgrey-1.27 at vger.kernel.org; Sun, 01 Nov 2020 10:13:13 EST
-Date:   Sun, 01 Nov 2020 15:13:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1604243592; bh=r7VPPdvNAzF9CgvJDErC+SkdSrKz+wzaXEr5lvipxXw=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=HxW/l+vCx48Rpye0VEwu1kFCS0fXtlN4zd26a8p9ojYYWJ0XT/I7ePjFZtxf/3q9w
-         WF/OmyDydikGFWNvg37+Y1WgH5iDz3ZlquLqwSr0tOKr119y2rV+TkicRpC6irqZjf
-         NemLvsKH0UujBx3H0pZi7zjHvl83TudfM31siRu/8pRkZzTml9IQmu+TdeipsnQddP
-         ZZJyZksxlzBMOeQo6NRcrjPCFma6337M8/+sL5U/B86MY2gJyls2YGQHE8XvChJ3B/
-         gAaCJ7KXUkgyOHTwPYYDX28xTRLoX+TrTjWaKckpxvCmlDf4enrt3qLEbbztOE3MlF
-         dF/PTEk3/Bfzw==
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH mips-next 2/2] mips: boot: add support for self-extracting FIT images (vmlinuz.itb)
-Message-ID: <WGqR3V4gpnacbqUy0YPJaQlGbYRov7NmnVOr8w4wMVk@cp4-web-036.plabs.ch>
+        id S1726878AbgKAPNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 10:13:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726541AbgKAPNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 10:13:25 -0500
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1EBE2223F;
+        Sun,  1 Nov 2020 15:13:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604243604;
+        bh=1WOrV1jjtHcG7addgh8YJpo8rrwOUU24MJKpjdERXRE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ec+X8YBt7oP1F3vLOxylHK9Ei/R7rhJqbRKWffexjKA4K0qzs03KxfUKe4UVaRlef
+         mSgIzJDEYz/zpcLh7fDzUl21l8n2OlHH00lNG1VGW/ynJeXu6hIdF18OHEA3AISzv4
+         1fcdhrX8RXoLyROvANs1aksll0pv4qc89vhlFImY=
+Date:   Sun, 1 Nov 2020 15:13:18 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        matthias.bgg@gmail.com, chun-hung.wu@mediatek.com,
+        alexandru.ardelean@analog.com, pmeerw@pmeerw.net, lars@metafoo.de
+Subject: Re: [PATCH v3] iio: adc: mediatek: fix unset field
+Message-ID: <20201101151318.052a9d19@archlinux>
+In-Reply-To: <20201018194644.3366846-1-fparent@baylibre.com>
+References: <20201018194644.3366846-1-fparent@baylibre.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c3e2ee657418 ("MIPS: generic: Add support for zboot") added
-support for self-extracting images to Generic MIPS. However, the
-intended way to boot Generic MIPS kernels is using FIT Images and
-UHI boot protocol, but currently there's no way to make self-extracting
-FIT Image (only legacy uzImages).
-Add a target for this named "vmlinuz.itb", which will consist of
-vmlinuz.bin and selected DT blobs. It will allow to have the advantages
-of both UHI and self-extracting images.
+On Sun, 18 Oct 2020 21:46:44 +0200
+Fabien Parent <fparent@baylibre.com> wrote:
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- arch/mips/Makefile                 |  1 +
- arch/mips/boot/compressed/Makefile | 48 ++++++++++++++++++++++++++++++
- 2 files changed, 49 insertions(+)
+> dev_comp field is used in a couple of places but it is never set. This
+> results in kernel oops when dereferencing a NULL pointer. Set the
+> `dev_comp` field correctly in the probe function.
+> 
+> Fixes: 6d97024dce23 ("iio: adc: mediatek: mt6577-auxadc, add mt6765 support")
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+Applied to the fixes-togreg branch of iio.git and marked for stable.
 
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index 622ee83dbb9b..cd4343edeb11 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -347,6 +347,7 @@ bootz-y=09=09=09+=3D vmlinuz.srec
- ifeq ($(shell expr $(zload-y) \< 0xffffffff80000000 2> /dev/null), 0)
- bootz-y=09=09=09+=3D uzImage.bin
- endif
-+bootz-y=09=09=09+=3D vmlinuz.itb
-=20
- #
- # Some machines like the Indy need 32-bit ELF binaries for booting purpose=
-s.
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed=
-/Makefile
-index fa2c1e1b303f..4c3bc7e3d56d 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -172,3 +172,51 @@ targets +=3D ../uzImage.bin
-=20
- $(objboot)/uzImage.bin: $(objboot)/vmlinuz.bin FORCE
- =09$(call if_changed,uimage,none)
-+
-+#
-+# Flattened Image Tree (.itb) image
-+#
-+
-+ifeq ($(ADDR_BITS),32)
-+itb_addr_cells =3D 1
-+endif
-+ifeq ($(ADDR_BITS),64)
-+itb_addr_cells =3D 2
-+endif
-+
-+targets +=3D ../vmlinuz.its.S
-+
-+quiet_cmd_its_cat =3D CAT     $@
-+      cmd_its_cat =3D cat $(real-prereqs) >$@
-+
-+$(objboot)/vmlinuz.its.S: $(addprefix $(srctree)/arch/mips/$(PLATFORM)/,$(=
-ITS_INPUTS)) FORCE
-+=09$(call if_changed,its_cat)
-+
-+targets +=3D ../vmlinuz.its
-+
-+quiet_cmd_cpp_its_S =3D ITS     $@
-+      cmd_cpp_its_S =3D $(CPP) -P -C -o $@ $< \
-+=09=09        -DKERNEL_NAME=3D"\"Linux $(KERNELRELEASE)\"" \
-+=09=09=09-DVMLINUX_BINARY=3D"\"$(2)\"" \
-+=09=09=09-DVMLINUX_COMPRESSION=3D"\"none\"" \
-+=09=09=09-DVMLINUX_LOAD_ADDRESS=3D$(VMLINUZ_LOAD_ADDRESS) \
-+=09=09=09-DVMLINUX_ENTRY_ADDRESS=3D$(VMLINUZ_LOAD_ADDRESS) \
-+=09=09=09-DADDR_BITS=3D$(ADDR_BITS) \
-+=09=09=09-DADDR_CELLS=3D$(itb_addr_cells)
-+
-+$(objboot)/vmlinuz.its: $(objboot)/vmlinuz.its.S FORCE
-+=09$(call if_changed,cpp_its_S,vmlinuz.bin)
-+
-+targets +=3D ../vmlinuz.itb
-+
-+quiet_cmd_itb-image =3D ITB     $@
-+      cmd_itb-image =3D \
-+=09=09env PATH=3D"$(objtree)/scripts/dtc:$(PATH)" \
-+=09=09$(BASH) $(MKIMAGE) \
-+=09=09-D "-I dts -O dtb -p 500 \
-+=09=09=09--include $(objtree)/arch/mips \
-+=09=09=09--warning no-unit_address_vs_reg" \
-+=09=09-f $(2) $@
-+
-+$(objboot)/vmlinuz.itb: $(objboot)/vmlinuz.its $(objboot)/vmlinuz.bin FORC=
-E
-+=09$(call if_changed,itb-image,$<)
---=20
-2.29.2
+Thanks,
 
+Jonathan
+> ---
+> 
+> Changelog:
+> V2:
+> 	* s/of_device_get_match_data/device_get_match_data
+> 	* include mod_devicetable.h and property.h instead of of_*.h headers
+> V3:
+> 	* Remove extra space between Fixes tag and Signed-off-by tag
+> 	* Add missing Reviewed-by tag from Matthias Brugger
+> 
+>  drivers/iio/adc/mt6577_auxadc.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/mt6577_auxadc.c b/drivers/iio/adc/mt6577_auxadc.c
+> index ac415cb089cd..79c1dd68b909 100644
+> --- a/drivers/iio/adc/mt6577_auxadc.c
+> +++ b/drivers/iio/adc/mt6577_auxadc.c
+> @@ -9,9 +9,9 @@
+>  #include <linux/err.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> -#include <linux/of.h>
+> -#include <linux/of_device.h>
+> +#include <linux/mod_devicetable.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/property.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/io.h>
+>  #include <linux/iio/iio.h>
+> @@ -276,6 +276,8 @@ static int mt6577_auxadc_probe(struct platform_device *pdev)
+>  		goto err_disable_clk;
+>  	}
+>  
+> +	adc_dev->dev_comp = device_get_match_data(&pdev->dev);
+> +
+>  	mutex_init(&adc_dev->lock);
+>  
+>  	mt6577_auxadc_mod_reg(adc_dev->reg_base + MT6577_AUXADC_MISC,
 
