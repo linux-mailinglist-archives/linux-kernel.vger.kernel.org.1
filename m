@@ -2,285 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CDA32A2144
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 21:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 347F02A2136
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 21:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727147AbgKAUP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 15:15:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57816 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726848AbgKAUP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 15:15:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 372E1AF57;
-        Sun,  1 Nov 2020 20:15:26 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dave@stgolabs.net, Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH] media/siano: kill pointless kmutex definitions
-Date:   Sun,  1 Nov 2020 11:54:24 -0800
-Message-Id: <20201101195424.21040-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
+        id S1727043AbgKAUGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 15:06:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726848AbgKAUGJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 15:06:09 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9179DC0617A6;
+        Sun,  1 Nov 2020 12:06:09 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id x7so12216059wrl.3;
+        Sun, 01 Nov 2020 12:06:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5ZOiDKXL6jldzyL1bHkfDSBXHlD1iBh+VDUQzVbWtJc=;
+        b=l0n3oYFA53p53qi00TR/ViGi5f6v3Ian4juKWkj9Hk+2rRAeI3tqeqKJfroWdgHy97
+         fYJaGGoEOBI5dQMmTyKkbEuJ+DbqzyOn9oC6T/mW5mA84xqsNPT1HBfoysqHucjGkWLB
+         4RMuU7f5Gzz7U6sDg1r1yBOaVMapNuFlttLNIA6rlUlyP2cMdk/Ry9oTD08UYiy7vNkx
+         GEzyImn4zr/R26J2Xyj0EX+JwruwH3b1+cUDTHw+hHizwlZmUX9Q4k+t5Hjjc1adgk1P
+         QQA/txnzDGqh4dmKJx1/7yJchzL9xMOmGcaoY35QI1BAmTxKB5Jv5cyKKc8fpIcOkbSL
+         LyUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5ZOiDKXL6jldzyL1bHkfDSBXHlD1iBh+VDUQzVbWtJc=;
+        b=NemYeEYu3ey5YCAPTtJe5fvpUd8fgDhmZ2vUySJ0hv9ANoZUiI4AzYyvCNb91uxYY8
+         IocPwOzMFWqWV0Q7hNJR1Tz1oXwJUsQBr/TUAb3I9HWxzF4AeRwFcLWAglQMOLf6rX6e
+         5Ps6VhBYNloaDM7oNEb4jYZIfkHuBI09mAgBcIng8NDhKzCLOIZUJPMKMbUM9eqJ7lAD
+         Abcy4PlEZWa8jJYpgNeJ89WjciLFuB5MD4Uaxxyg7nJX3Uu67cwif1RBD60frv75ZPRY
+         xJzLGcIQ6N6RScon+wfQhoViLQTL09IdvBlrVLkkqaDTdFQu1j3Pga9nLE4yVqDZnzJl
+         cgqw==
+X-Gm-Message-State: AOAM532NGvL/tQFCmINHO5t9uH+IEc7PwZpt6Tpc4pWE2BDiCzr5cVlV
+        +mHzoJlUYzCg4W7jLMVWt+s=
+X-Google-Smtp-Source: ABdhPJzKFsfaSfDq0u0DHE7gkZsPsyBclZS4+HnNwbRDwlrQfzrMknXrBQudvjNgIZ9yLllxab68OA==
+X-Received: by 2002:adf:fc8b:: with SMTP id g11mr16125943wrr.300.1604261168200;
+        Sun, 01 Nov 2020 12:06:08 -0800 (PST)
+Received: from localhost.localdomain ([170.253.49.0])
+        by smtp.googlemail.com with ESMTPSA id v6sm12254933wmj.6.2020.11.01.12.06.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 12:06:07 -0800 (PST)
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+To:     mtk.manpages@gmail.com
+Cc:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
+        linux-man@vger.kernel.org, posk@google.com, peterz@infradead.org,
+        mathieu.desnoyers@efficios.com, paulmck@kernel.org,
+        boqun.feng@gmail.com, linux-kernel@vger.kernel.org, pjt@google.com,
+        ckennelly@google.com, shuah@kernel.org, posk@posk.io
+Subject: [PATCH] membarrier.2: Update prototype
+Date:   Sun,  1 Nov 2020 21:04:41 +0100
+Message-Id: <20201101200440.17328-1-colomar.6.4.3@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the mutex api instead of renaming the calls for this
-driver.
+The Linux kernel now uses 'flags' and added a new argument: 'cpu_id'.
+These changes were introduced to the kernel
+in commit 2a36ab717e8fe678d98f81c14a0b124712719840.
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
 ---
-This was found while auditing mutex semantics in drivers.
+ man2/membarrier.2 | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
- drivers/media/common/siano/smscoreapi.c  | 42 ++++++++++++------------
- drivers/media/common/siano/smscoreapi.h  |  5 ---
- drivers/media/common/siano/smsdvb-main.c | 14 ++++----
- 3 files changed, 28 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/media/common/siano/smscoreapi.c b/drivers/media/common/siano/smscoreapi.c
-index c1511094fdc7..410cc3ac6f94 100644
---- a/drivers/media/common/siano/smscoreapi.c
-+++ b/drivers/media/common/siano/smscoreapi.c
-@@ -429,13 +429,13 @@ static struct smscore_registry_entry_t *smscore_find_registry(char *devpath)
- 	struct smscore_registry_entry_t *entry;
- 	struct list_head *next;
- 
--	kmutex_lock(&g_smscore_registrylock);
-+	mutex_lock(&g_smscore_registrylock);
- 	for (next = g_smscore_registry.next;
- 	     next != &g_smscore_registry;
- 	     next = next->next) {
- 		entry = (struct smscore_registry_entry_t *) next;
- 		if (!strncmp(entry->devpath, devpath, sizeof(entry->devpath))) {
--			kmutex_unlock(&g_smscore_registrylock);
-+			mutex_unlock(&g_smscore_registrylock);
- 			return entry;
- 		}
- 	}
-@@ -446,7 +446,7 @@ static struct smscore_registry_entry_t *smscore_find_registry(char *devpath)
- 		list_add(&entry->entry, &g_smscore_registry);
- 	} else
- 		pr_err("failed to create smscore_registry.\n");
--	kmutex_unlock(&g_smscore_registrylock);
-+	mutex_unlock(&g_smscore_registrylock);
- 	return entry;
- }
- 
-@@ -527,7 +527,7 @@ int smscore_register_hotplug(hotplug_t hotplug)
- 	struct list_head *next, *first;
- 	int rc = 0;
- 
--	kmutex_lock(&g_smscore_deviceslock);
-+	mutex_lock(&g_smscore_deviceslock);
- 	notifyee = kmalloc(sizeof(*notifyee), GFP_KERNEL);
- 	if (notifyee) {
- 		/* now notify callback about existing devices */
-@@ -548,7 +548,7 @@ int smscore_register_hotplug(hotplug_t hotplug)
- 	} else
- 		rc = -ENOMEM;
- 
--	kmutex_unlock(&g_smscore_deviceslock);
-+	mutex_unlock(&g_smscore_deviceslock);
- 
- 	return rc;
- }
-@@ -564,7 +564,7 @@ void smscore_unregister_hotplug(hotplug_t hotplug)
- {
- 	struct list_head *next, *first;
- 
--	kmutex_lock(&g_smscore_deviceslock);
-+	mutex_lock(&g_smscore_deviceslock);
- 
- 	first = &g_smscore_notifyees;
- 
-@@ -579,7 +579,7 @@ void smscore_unregister_hotplug(hotplug_t hotplug)
- 		}
- 	}
- 
--	kmutex_unlock(&g_smscore_deviceslock);
-+	mutex_unlock(&g_smscore_deviceslock);
- }
- EXPORT_SYMBOL_GPL(smscore_unregister_hotplug);
- 
-@@ -732,9 +732,9 @@ int smscore_register_device(struct smsdevice_params_t *params,
- 	smscore_registry_settype(dev->devpath, params->device_type);
- 
- 	/* add device to devices list */
--	kmutex_lock(&g_smscore_deviceslock);
-+	mutex_lock(&g_smscore_deviceslock);
- 	list_add(&dev->entry, &g_smscore_devices);
--	kmutex_unlock(&g_smscore_deviceslock);
-+	mutex_unlock(&g_smscore_deviceslock);
- 
- 	*coredev = dev;
- 
-@@ -890,14 +890,14 @@ int smscore_start_device(struct smscore_device_t *coredev)
- 		return rc;
- 	}
- 
--	kmutex_lock(&g_smscore_deviceslock);
-+	mutex_lock(&g_smscore_deviceslock);
- 
- 	rc = smscore_notify_callbacks(coredev, coredev->device, 1);
- 	smscore_init_ir(coredev);
- 
- 	pr_debug("device %p started, rc %d\n", coredev, rc);
- 
--	kmutex_unlock(&g_smscore_deviceslock);
-+	mutex_unlock(&g_smscore_deviceslock);
- 
- 	return rc;
- }
-@@ -1197,7 +1197,7 @@ void smscore_unregister_device(struct smscore_device_t *coredev)
- 	int num_buffers = 0;
- 	int retry = 0;
- 
--	kmutex_lock(&g_smscore_deviceslock);
-+	mutex_lock(&g_smscore_deviceslock);
- 
- 	/* Release input device (IR) resources */
- 	sms_ir_exit(coredev);
-@@ -1224,9 +1224,9 @@ void smscore_unregister_device(struct smscore_device_t *coredev)
- 
- 		pr_debug("waiting for %d buffer(s)\n",
- 			 coredev->num_buffers - num_buffers);
--		kmutex_unlock(&g_smscore_deviceslock);
-+		mutex_unlock(&g_smscore_deviceslock);
- 		msleep(100);
--		kmutex_lock(&g_smscore_deviceslock);
-+		mutex_lock(&g_smscore_deviceslock);
- 	}
- 
- 	pr_debug("freed %d buffers\n", num_buffers);
-@@ -1245,7 +1245,7 @@ void smscore_unregister_device(struct smscore_device_t *coredev)
- 	list_del(&coredev->entry);
- 	kfree(coredev);
- 
--	kmutex_unlock(&g_smscore_deviceslock);
-+	mutex_unlock(&g_smscore_deviceslock);
- 
- 	pr_debug("device %p destroyed\n", coredev);
- }
-@@ -2123,17 +2123,17 @@ static int __init smscore_module_init(void)
- {
- 	INIT_LIST_HEAD(&g_smscore_notifyees);
- 	INIT_LIST_HEAD(&g_smscore_devices);
--	kmutex_init(&g_smscore_deviceslock);
-+	mutex_init(&g_smscore_deviceslock);
- 
- 	INIT_LIST_HEAD(&g_smscore_registry);
--	kmutex_init(&g_smscore_registrylock);
-+	mutex_init(&g_smscore_registrylock);
- 
- 	return 0;
- }
- 
- static void __exit smscore_module_exit(void)
- {
--	kmutex_lock(&g_smscore_deviceslock);
-+	mutex_lock(&g_smscore_deviceslock);
- 	while (!list_empty(&g_smscore_notifyees)) {
- 		struct smscore_device_notifyee_t *notifyee =
- 			(struct smscore_device_notifyee_t *)
-@@ -2142,9 +2142,9 @@ static void __exit smscore_module_exit(void)
- 		list_del(&notifyee->entry);
- 		kfree(notifyee);
- 	}
--	kmutex_unlock(&g_smscore_deviceslock);
-+	mutex_unlock(&g_smscore_deviceslock);
- 
--	kmutex_lock(&g_smscore_registrylock);
-+	mutex_lock(&g_smscore_registrylock);
- 	while (!list_empty(&g_smscore_registry)) {
- 		struct smscore_registry_entry_t *entry =
- 			(struct smscore_registry_entry_t *)
-@@ -2153,7 +2153,7 @@ static void __exit smscore_module_exit(void)
- 		list_del(&entry->entry);
- 		kfree(entry);
- 	}
--	kmutex_unlock(&g_smscore_registrylock);
-+	mutex_unlock(&g_smscore_registrylock);
- 
- 	pr_debug("\n");
- }
-diff --git a/drivers/media/common/siano/smscoreapi.h b/drivers/media/common/siano/smscoreapi.h
-index b3b793b5caf3..4a6b9f4c44ac 100644
---- a/drivers/media/common/siano/smscoreapi.h
-+++ b/drivers/media/common/siano/smscoreapi.h
-@@ -28,11 +28,6 @@ Copyright (C) 2006-2008, Uri Shkolnik, Anatoly Greenblat
- 
- #include "smsir.h"
- 
--#define kmutex_init(_p_) mutex_init(_p_)
--#define kmutex_lock(_p_) mutex_lock(_p_)
--#define kmutex_trylock(_p_) mutex_trylock(_p_)
--#define kmutex_unlock(_p_) mutex_unlock(_p_)
--
- /*
-  * Define the firmware names used by the driver.
-  * Those should match what's used at smscoreapi.c and sms-cards.c
-diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
-index 88f90dfd368b..633902036e30 100644
---- a/drivers/media/common/siano/smsdvb-main.c
-+++ b/drivers/media/common/siano/smsdvb-main.c
-@@ -630,11 +630,11 @@ static void smsdvb_unregister_client(struct smsdvb_client_t *client)
- 
- static void smsdvb_onremove(void *context)
- {
--	kmutex_lock(&g_smsdvb_clientslock);
-+	mutex_lock(&g_smsdvb_clientslock);
- 
- 	smsdvb_unregister_client((struct smsdvb_client_t *) context);
- 
--	kmutex_unlock(&g_smsdvb_clientslock);
-+	mutex_unlock(&g_smsdvb_clientslock);
- }
- 
- static int smsdvb_start_feed(struct dvb_demux_feed *feed)
-@@ -1151,11 +1151,11 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
- 	init_completion(&client->tune_done);
- 	init_completion(&client->stats_done);
- 
--	kmutex_lock(&g_smsdvb_clientslock);
-+	mutex_lock(&g_smsdvb_clientslock);
- 
- 	list_add(&client->entry, &g_smsdvb_clients);
- 
--	kmutex_unlock(&g_smsdvb_clientslock);
-+	mutex_unlock(&g_smsdvb_clientslock);
- 
- 	client->event_fe_state = -1;
- 	client->event_unc_state = -1;
-@@ -1198,7 +1198,7 @@ static int __init smsdvb_module_init(void)
- 	int rc;
- 
- 	INIT_LIST_HEAD(&g_smsdvb_clients);
--	kmutex_init(&g_smsdvb_clientslock);
-+	mutex_init(&g_smsdvb_clientslock);
- 
- 	smsdvb_debugfs_register();
- 
-@@ -1213,14 +1213,14 @@ static void __exit smsdvb_module_exit(void)
- {
- 	smscore_unregister_hotplug(smsdvb_hotplug);
- 
--	kmutex_lock(&g_smsdvb_clientslock);
-+	mutex_lock(&g_smsdvb_clientslock);
- 
- 	while (!list_empty(&g_smsdvb_clients))
- 		smsdvb_unregister_client((struct smsdvb_client_t *)g_smsdvb_clients.next);
- 
- 	smsdvb_debugfs_unregister();
- 
--	kmutex_unlock(&g_smsdvb_clientslock);
-+	mutex_unlock(&g_smsdvb_clientslock);
- }
- 
- module_init(smsdvb_module_init);
+diff --git a/man2/membarrier.2 b/man2/membarrier.2
+index 24a24ba86..42b7e2acc 100644
+--- a/man2/membarrier.2
++++ b/man2/membarrier.2
+@@ -23,6 +23,13 @@
+ .\" %%%LICENSE_END
+ .\"
+ .TH MEMBARRIER 2 2020-06-09 "Linux" "Linux Programmer's Manual"
++.\" FIXME:
++.\" The Linux kernel now uses 'flags' and added a new argument: 'cpu_id'.
++.\" These changes were introduced to the kernel
++.\" in commit 2a36ab717e8fe678d98f81c14a0b124712719840.
++.\" The prototype has been updated,
++.\" but the new features have not yet been documented.
++.\" TODO: Document those new features.
+ .SH NAME
+ membarrier \- issue memory barriers on a set of threads
+ .SH SYNOPSIS
+@@ -30,7 +37,7 @@ membarrier \- issue memory barriers on a set of threads
+ .PP
+ .B #include <linux/membarrier.h>
+ .PP
+-.BI "int membarrier(int " cmd ", int " flags ");"
++.BI "int membarrier(int " cmd ", unsigned int " flags ", int " cpu_id );
+ .fi
+ .PP
+ .IR Note :
 -- 
-2.26.2
+2.28.0
 
