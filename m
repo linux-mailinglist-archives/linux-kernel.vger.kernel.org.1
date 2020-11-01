@@ -2,100 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6712A210D
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 20:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 682D12A2118
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 20:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbgKATVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 14:21:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726848AbgKATVE (ORCPT
+        id S1727072AbgKAT0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 14:26:09 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:55275 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726845AbgKAT0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 14:21:04 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D287C0617A6;
-        Sun,  1 Nov 2020 11:21:04 -0800 (PST)
-Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Sun, 1 Nov 2020 14:26:09 -0500
+X-Greylist: delayed 306 seconds by postgrey-1.27 at vger.kernel.org; Sun, 01 Nov 2020 14:26:08 EST
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 8A21F23E3E;
-        Sun,  1 Nov 2020 20:21:02 +0100 (CET)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 4445622EDE;
+        Sun,  1 Nov 2020 20:26:07 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1604258462;
+        t=1604258767;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=64lVNKHssZoJ1J0FYupbo/HAOrlGup9JSuGaswSaaAY=;
-        b=Pia5EHcDbx+CtEDEFbhkq/Be3ruN0fE8iHrE8w/uStMLax13zocSlUOG7Ft630GZw30tJH
-        x3IhPDTxk2EnrPIg/bs/YQld3uMQtMEuF3knkJn1CohHcF6Ues99tB9tYlX8DiWZnN+Zkk
-        G5D//4VeJsFsOM0stCevKkzW6B7o++o=
+        bh=IwOicBjV46xtXtMgV/IJzP18ENIIoNPVjVzUDZtDg4Q=;
+        b=m8yASFD3CWKKJk20mKVBVfBtgpKdycVQaCpsbNGWoHIyKD35XV0UYz6ymHuYZSK03QN9Bv
+        2AXY3KHblomexAZ5ETutFR21fuk8hdYleeivMCT4Sud5oM+s9JPo6eoRlPrMz8EfBux0To
+        BDukJpIuZ5SDJRUSgZ9+Kr69RmGiaPE=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sun, 01 Nov 2020 20:26:07 +0100
 From:   Michael Walle <michael@walle.cc>
 To:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH 4/4] arm64: dts: lx2160a: fix FlexSPI clock
-Date:   Sun,  1 Nov 2020 20:20:53 +0100
-Message-Id: <20201101192053.18644-4-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>
+Subject: Re: [PATCH 1/4] dt-bindings: clock: document the fsl-flexspi-clk
+ driver
 In-Reply-To: <20201101192053.18644-1-michael@walle.cc>
 References: <20201101192053.18644-1-michael@walle.cc>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <4011caa68fe04fcd41f44038bf6b6e5c@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have a proper driver for the FlexSPI interface use it. This
-will fix SCK frequency switching on Layerscape SoCs.
+Hi,
 
-This was only compile time tested.
+Sorry, I've forgot the cover letter. Next version will have one.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+On Layerscape SoCs which feature the FlexSPI controller there is
+a single register which can control the divider value. The base
+frequency is the platform PLL.
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-index 83072da6f6c6..6e375e80bd35 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-@@ -659,9 +659,20 @@
- 		};
- 
- 		dcfg: syscon@1e00000 {
--			compatible = "fsl,lx2160a-dcfg", "syscon";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			compatible = "fsl,lx2160a-dcfg", "syscon", "simple-mfd";
- 			reg = <0x0 0x1e00000 0x0 0x10000>;
-+			ranges = <0x0 0x0 0x1e00000 0x10000>;
- 			little-endian;
-+
-+			fspi_clk: clock-controller@900 {
-+				compatible = "fsl,lx2160a-flexspi-clk";
-+				reg = <0x900 0x4>;
-+				#clock-cells = <0>;
-+				clocks = <&clockgen 4 0>;
-+				clock-output-names = "fspi_clk";
-+			};
- 		};
- 
- 		tmu: tmu@1f80000 {
-@@ -776,7 +787,7 @@
- 			      <0x0 0x20000000 0x0 0x10000000>;
- 			reg-names = "fspi_base", "fspi_mmap";
- 			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-+			clocks = <&clockgen 4 3>, <&fspi_clk>;
- 			clock-names = "fspi_en", "fspi";
- 			status = "disabled";
- 		};
--- 
-2.20.1
+Right now the LS1028A and the LX2160A aren't able to switch the
+SCK frequency on the FlexSPI interface. Add a new clock driver
+which operate on said register.
 
+-michael
