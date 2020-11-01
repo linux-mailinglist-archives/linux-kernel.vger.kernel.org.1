@@ -2,75 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD572A218E
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 21:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA5F2A2190
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 21:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbgKAUeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 15:34:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
+        id S1727211AbgKAUfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 15:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726848AbgKAUeb (ORCPT
+        with ESMTP id S1726848AbgKAUfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 15:34:31 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCAEC0617A6;
-        Sun,  1 Nov 2020 12:34:31 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id f37so10715994otf.12;
-        Sun, 01 Nov 2020 12:34:31 -0800 (PST)
+        Sun, 1 Nov 2020 15:35:20 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD32FC0617A6;
+        Sun,  1 Nov 2020 12:35:20 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id m13so3559539oih.8;
+        Sun, 01 Nov 2020 12:35:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=y2KX4eXqEBFd3N13MAMD1R601G4yAEV0IrtHFCZnFDw=;
-        b=WTNRjYOvOvfJfW/uQCnnLn/hrs6xZLE9pkoQ7q/ylkdswhadxSLO1XwQTIGu50qDw3
-         AoHv1AV8CiZ3OBaX7W2wRgLPH6PVd3Kss1YRhEyKZt33vcVlQoJ6czp3By0P1HoV2GTe
-         /BKAZPwkxrJ5BV6UkEfMmNwHA78E28hCeKPfk6CyM+4OXzRi/XD3b5WUb9hhHEg8PGrg
-         3dgFLvZM9N/9GSmYwnWm/kvaThfDCu7G4gZ7b3yNPac64+h5ErWW/lL425jVMN7Tk6wD
-         w1jrp9W2BdLaHGqPIzVyaRrbGe6svIyEkt7RLgSG7RsaFr4M6CWZA524vxxaSDdfItFv
-         dwrg==
+        bh=k/JgIluGw9/vnp3nF6qz9z+aAuXI1wiQifL465zBsr8=;
+        b=mkhc4yXnnoV1Cuyi+9uy40ld+eDSqzbQnDXFVs6WDGkgOXhNsLFJzsnU/BpXzMsHtU
+         m0d7v75JO7wYZVzx588DjcxIqa38U6dVzQMpgSHv1z3Uj4bvdyEiJv2CwfHpkGjyCWxV
+         hBgDbyrgQlPOGFcD6abMPp+ijgDZ7AuyaoThgVfy7KXB+jk7aJaP3VvsdM8driydprAe
+         aw9OgERGQpZTN4r1QyLUtaI72VAxz/wgFGL8wLVsfwQwPPOqaj/4mEquzSCUsHB7kIGS
+         oSMItUdXv4HQtcdRRcbSz0Grr7GiR5g/GOC+iksiqd5ou3y/Fh2gt8Miz8bGpf7QvDhz
+         6+aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=y2KX4eXqEBFd3N13MAMD1R601G4yAEV0IrtHFCZnFDw=;
-        b=tUB6aT5xZDCxRajlc4bsnXcInIc6W6ytw0pSVgHUDuqPyfNNSPABNp9ucVZTQsmOxL
-         TXOOaIl0pIAe5B7QYZVJ5ncxk5WPmpj/7/3Zu8rbcVMNK90sRHgJ3yrYlDwn42HdLPjS
-         gCrFSQFYcUJRWpFVtjTr9xgk4g0md5oybZU0TFPHuWs+9m2Sr2U3ysMd4Q+Ob7raDJQN
-         m/2WiRHsweiwBQzQzhqUIl0xauiQLAe+MNV/Pr/CAmpciJN3N1ejVFphGeEWorvLzoOk
-         xRvyzZIIAA69+8wr77qh/QkmAiuc3i/HX5h91gFtIaFxq5Mmgj+CyS18Ci9mM84Yl911
-         xytw==
-X-Gm-Message-State: AOAM530lwqNKt0HkMMdqsLeATCxCDwQHo2tG+ybK52ZClqgEk5HCZ/Lp
-        HRBR5oL1P7XAc0PXPGsIEUU=
-X-Google-Smtp-Source: ABdhPJzyb2JemqyuUeg+2PxSrG0wLHyouKTEH7+fGf1hXm2RID51Ma7cSz4FXlsIk6QZJl9w/O0o/A==
-X-Received: by 2002:a9d:828:: with SMTP id 37mr8952103oty.147.1604262870362;
-        Sun, 01 Nov 2020 12:34:30 -0800 (PST)
+        bh=k/JgIluGw9/vnp3nF6qz9z+aAuXI1wiQifL465zBsr8=;
+        b=NZGHcrSOW9CUpeN83kq+9HaTVgAsPHnEfTeCRdPaLFcqNR6U7oFj63i5FJ0lAy6/N+
+         1bPmMc7GE8uG90yKwJPhEZ5EepRxfWsp+fWM4oW4ucjcyoF4pMs0PrN5tj/uMxyF/M8n
+         qeHR7CRTY28RlJnToACu+MEAZaJrw+PCP5kVAIlh/45R2uiTUQmM+SVm+oJFK1oOnn3p
+         h99ZzMdEY42QP/xOlQ53yIWhM4LtzkceY/3/0Jx9nNIXSxrzS35KPJVNnszt/pJRJHx7
+         hnfZNdzMf7L9Xh9lAZY/4ZDTGBshSrEX580D8E8MQ5GZoMqMLI/uwgWGcRF0ZHrdptp3
+         o1eg==
+X-Gm-Message-State: AOAM53376rOWdDqW8/X2lrXQ3hdhC9yrHZ5yDbIPrmPg6ZYNtcE0RbUU
+        OeRTUf/vEjmfRbNnkJ1nCB3vD9UZkR6k94df
+X-Google-Smtp-Source: ABdhPJxbAFq34ZR7gkTPTums+zhenLBeu9eSEayc97DN8dVNrASgRXy3UQsO9Pra0r+8GrXoKyo1Xg==
+X-Received: by 2002:aca:2111:: with SMTP id 17mr7865543oiz.139.1604262919903;
+        Sun, 01 Nov 2020 12:35:19 -0800 (PST)
 Received: from ?IPv6:2600:1700:4a30:eaf0::41? ([2600:1700:4a30:eaf0::41])
-        by smtp.gmail.com with ESMTPSA id h7sm2959273oop.40.2020.11.01.12.34.29
+        by smtp.gmail.com with ESMTPSA id g25sm3107500otr.35.2020.11.01.12.35.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Nov 2020 12:34:29 -0800 (PST)
+        Sun, 01 Nov 2020 12:35:19 -0800 (PST)
 Subject: Re: [PATCH] Add devices for HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE
-To:     Greg KH <greg@kroah.com>
-Cc:     Chris Ye <lzye@google.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Chris Ye <lzye@google.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
         Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, trivial@kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>
-References: <20201028235113.660272-1-lzye@google.com>
- <20201029054147.GB3039992@kroah.com>
- <CAFFudd+7DrJ+vYZ5wQ58mei6VMkMPGCpS1d7DwZMrzM-FVKzqQ@mail.gmail.com>
- <20201029191413.GB986195@kroah.com>
- <8975d128-e47f-c97c-fbd9-6045de67f34a@gmail.com>
- <20201030104831.GD2395528@kroah.com>
+        trivial@kernel.org, linux-input@vger.kernel.org
+References: <20201029194714.1613308-1-lzye@google.com>
+ <20201029203954.GF2547185@dtor-ws>
 From:   Chris Ye <linzhao.ye@gmail.com>
-Message-ID: <a18b62e9-2c40-c20c-9822-13e0a9930aeb@gmail.com>
-Date:   Sun, 1 Nov 2020 12:34:28 -0800
+Message-ID: <1a7a70c1-cd8e-4ce4-78d2-2096ace34501@gmail.com>
+Date:   Sun, 1 Nov 2020 12:35:18 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201030104831.GD2395528@kroah.com>
+In-Reply-To: <20201029203954.GF2547185@dtor-ws>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -78,33 +71,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Greg,  I just sent out the v2 version of patches, to maintainers 
-of HID core layer.
+Thanks Dmitry,  I just sent out the v2 version of patches, to 
+maintainers of HID core layer, Benjamin and Jiri.
 
 
-On 10/30/20 3:48 AM, Greg KH wrote:
-> A: http://en.wikipedia.org/wiki/Top_post
-> Q: Were do I find info about this thing called top-posting?
-> A: Because it messes up the order in which people normally read text.
-> Q: Why is top-posting such a bad thing?
-> A: Top-posting.
-> Q: What is the most annoying thing in e-mail?
->
-> A: No.
-> Q: Should I include quotations after my reply?
->
-> http://daringfireball.net/2007/07/on_top
->
-> On Thu, Oct 29, 2020 at 01:04:06PM -0700, Chris Ye wrote:
->> Hi Greg,
->>
->> Yes, I can see them on https://lore.kernel.org/linux-input/ now.
->>
->> But I didn't put [PATCH v1] in subject,  should I sent them again with
->> version?
-> It should be v2 at the least, right?  And please read the documentation
-> for how to do that properly.
->
-> thanks,
->
-> greg k-h
+On 10/29/20 1:39 PM, Dmitry Torokhov wrote:
+> Jiri Kosina<jikos@kernel.org>
