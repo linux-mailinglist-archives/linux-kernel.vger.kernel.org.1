@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E272A1C91
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 08:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC392A1C95
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 08:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726097AbgKAHZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 02:25:48 -0500
-Received: from mailoutvs41.siol.net ([185.57.226.232]:60692 "EHLO
+        id S1726111AbgKAH3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 02:29:10 -0500
+Received: from mailoutvs16.siol.net ([185.57.226.207]:43182 "EHLO
         mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725930AbgKAHZs (ORCPT
+        with ESMTP id S1725930AbgKAH3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 02:25:48 -0500
+        Sun, 1 Nov 2020 02:29:10 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Zimbra) with ESMTP id 12A9B525F62;
-        Sun,  1 Nov 2020 08:25:46 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta12.zcs-production.pri
+        by mail.siol.net (Postfix) with ESMTP id 3A616527D5B;
+        Sun,  1 Nov 2020 08:29:08 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
 Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta12.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id sXJFsGxcfjXn; Sun,  1 Nov 2020 08:25:45 +0100 (CET)
+        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id K5hw_EhnKM7t; Sun,  1 Nov 2020 08:29:08 +0100 (CET)
 Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Zimbra) with ESMTPS id AC482526032;
-        Sun,  1 Nov 2020 08:25:45 +0100 (CET)
+        by mail.siol.net (Postfix) with ESMTPS id E885B527DC1;
+        Sun,  1 Nov 2020 08:29:07 +0100 (CET)
 Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
         (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Zimbra) with ESMTPA id 470F5525F62;
-        Sun,  1 Nov 2020 08:25:45 +0100 (CET)
+        by mail.siol.net (Postfix) with ESMTPA id 8A264527D5B;
+        Sun,  1 Nov 2020 08:29:07 +0100 (CET)
 From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
 To:     linux-sunxi@googlegroups.com,
         Pablo Greco <pgreco@centosproject.org>
@@ -36,11 +36,11 @@ Cc:     Pablo Greco <pgreco@centosproject.org>,
         Hans de Goede <hdegoede@redhat.com>,
         Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: sun8i: r40: bananapi-m2-berry: Fix dcdc1 regulator
-Date:   Sun, 01 Nov 2020 08:31:19 +0100
-Message-ID: <5571237.0xROHNpPic@kista>
-In-Reply-To: <1604190857-3078-2-git-send-email-pgreco@centosproject.org>
-References: <1604190857-3078-1-git-send-email-pgreco@centosproject.org> <1604190857-3078-2-git-send-email-pgreco@centosproject.org>
+Subject: Re: [PATCH] ARM: dts: sun7i: bananapi: Enable RGMII RX/TX delay on Ethernet PHY
+Date:   Sun, 01 Nov 2020 08:34:41 +0100
+Message-ID: <2511553.tmk64t66L6@kista>
+In-Reply-To: <1604190857-3078-1-git-send-email-pgreco@centosproject.org>
+References: <1604190857-3078-1-git-send-email-pgreco@centosproject.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -48,18 +48,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne nedelja, 01. november 2020 ob 01:34:16 CET je Pablo Greco napisal(a):
-> DCDC1 regulator powers many different subsystems. While some of them can
-> work at 3.0 V, some of them can not. For example, VCC-HDMI can only work
-> between 3.24 V and 3.36 V. According to OS images provided by the board
-> manufacturer this regulator should be set to 3.3 V.
+Dne nedelja, 01. november 2020 ob 01:34:15 CET je Pablo Greco napisal(a):
+> The Ethernet PHY on the Bananapi M1 has the RX and TX delays enabled on
+> the PHY, using pull-ups on the RXDLY and TXDLY pins.
 > 
-> Set DCDC1 and DCDC1SW to 3.3 V in order to fix this.
+> Fix the phy-mode description to correct reflect this so that the
+> implementation doesn't reconfigure the delays incorrectly. This
+> happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
+> rx/tx delay config").
 > 
-> Fixes: 23edc168bd98 ("ARM: dts: sun8i: Add board dts file for Banana Pi M2 
-Berry")
-> Fixes: 27e81e1970a8 ("ARM: dts: sun8i: v40: bananapi-m2-berry: Enable GMAC 
-ethernet controller")
+> Fixes: 8a5b272fbf44 ("ARM: dts: sun7i: Add Banana Pi board")
 > Signed-off-by: Pablo Greco <pgreco@centosproject.org>
 
 Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
