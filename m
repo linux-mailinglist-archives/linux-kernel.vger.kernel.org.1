@@ -2,301 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37C62A2032
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C1F2A2037
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 18:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727034AbgKARPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 12:15:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgKARPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 12:15:24 -0500
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 063AE2231B;
-        Sun,  1 Nov 2020 17:15:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604250923;
-        bh=6VFErZqR8uFX57JRdQ80KB99XPR2HuNJX6M+lGgnBGM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=S4kTC88Bup+v8fkfc2ZRFuQ0gOM3McEeNJ+EHNRahZEfT1U1Sw21+WLf3xZcagapJ
-         AUUs2IPZZ2HkqFlgJa14Q6uiGMDqX2VL0H1WhcBiBM3RDSzMlJ0PlfDxrfhYFgV9Y+
-         67gHCKX8irC/gwe8hC9WoJ71DbTvWIqsITaMAC9s=
-Date:   Sun, 1 Nov 2020 17:15:18 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Olivier Moysan <olivier.moysan@st.com>
-Cc:     <knaack.h@gmx.de>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <alexandre.torgue@st.com>, <fabrice.gasnier@st.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] iio: adc: stm32-adc: fix a regression when using
- dma and irq
-Message-ID: <20201101171518.07d2b3df@archlinux>
-In-Reply-To: <20201021085313.5335-1-olivier.moysan@st.com>
-References: <20201021085313.5335-1-olivier.moysan@st.com>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727080AbgKARR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 12:17:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41422 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727024AbgKARR5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 12:17:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604251076;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=uuly4wAr/fzdpk263kpsg6J+QT6BwsiMCrn9kjrT59M=;
+        b=KsiHa0hc4JMInEqbHBZyXFZwiyPzGFJ0WmObZr0EcmnCsDLbpZnGf0noZTTBKwUlexyMjZ
+        tVR3ragnMxowor8Z6YEu/lnemYAmEfbelgr5z7nNhVQM4h4Em3cgRK8n9L9FO+TQUDbo9L
+        01nGNpmpVQ8xK3Vtmv+h60p9uao0m3Y=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-KCjHjxOLNX-SXa3KAmJ-0Q-1; Sun, 01 Nov 2020 12:17:54 -0500
+X-MC-Unique: KCjHjxOLNX-SXa3KAmJ-0Q-1
+Received: by mail-ot1-f71.google.com with SMTP id n13so406659otk.22
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 09:17:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=uuly4wAr/fzdpk263kpsg6J+QT6BwsiMCrn9kjrT59M=;
+        b=biVtKIWUNeal20xydP3dDHCAL0r6vu73qHr2rd97XkHSzha8NY22JoOf9SrrGbyD55
+         TYONd0+muhh49w+vbCQnfnptL4q4ZC0f2r45maTbCvsWwFv++QRN/4+Nw1+otO6ihRww
+         +fzgAdNMZxbZ0k05mYQ4SHBxMtJqTrPgr+SpESIVpm11jrnF5usSqeuDwdJXc5N3/YDi
+         tip/GuGiBwbdGMS6cyySDwd/zr9Qvyrqil0PBp49YrxcutCz5u6J4UW18pAKWUEC8swx
+         p1p0DtPn/AXc7p9OC1Y8EE9zF7noN2PH+w7r/45cHqOC0ixx146x36mgRLJwVempF843
+         2r1A==
+X-Gm-Message-State: AOAM531dudQD/U1/uz5AFN+ZiO7cKz/3/yWGVxt+7QQ3pjK5mGn5kUK+
+        CJn25ThP/sQtfbU+R9GLbhA7mZvf5HtmWmwuz4Df6cUFt5m/0PRzYRD7/k+cMKK7otzov7vNibR
+        cTHGGD4rGlcpC2NByV374dIjT
+X-Received: by 2002:a9d:3b84:: with SMTP id k4mr9883705otc.4.1604251073398;
+        Sun, 01 Nov 2020 09:17:53 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwQAVwtMBSipzPXHNXt3pGMhJq+m1IeDnexyQWxCJE3lz4owlX6fp7o5zeMAYeycBXI6n1i4A==
+X-Received: by 2002:a9d:3b84:: with SMTP id k4mr9883697otc.4.1604251073213;
+        Sun, 01 Nov 2020 09:17:53 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id t83sm2883674oie.58.2020.11.01.09.17.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 09:17:52 -0800 (PST)
+From:   trix@redhat.com
+To:     steven.eckhoff.opensource@gmail.com, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] ASoC: TSCS454: remove unneeded semicolon
+Date:   Sun,  1 Nov 2020 09:17:42 -0800
+Message-Id: <20201101171742.2304458-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 10:53:13 +0200
-Olivier Moysan <olivier.moysan@st.com> wrote:
+From: Tom Rix <trix@redhat.com>
 
-> Since overrun interrupt support has been added, there's a regression when
-> two ADCs are used at the same time, with:
-> - an ADC configured to use IRQs. EOCIE bit is set. The handler is normally
->   called in this case.
-> - an ADC configured to use DMA. EOCIE bit isn't set. EOC triggers the DMA
->   request. It's then automatically cleared by DMA read. But the handler
->   gets called due to status bit is temporarily set (IRQ triggered by the
->   other ADC).
-> 
-> This is a regression as similar issue had been fixed earlier by
-> commit dcb10920179a ("iio: adc: stm32-adc:
-> fix a race when using several adcs with dma and irq").
-> Issue is that stm32_adc_eoc_enabled() returns non-zero value (always)
-> since OVR bit has been added and enabled for both DMA and IRQ case.
-> 
-> Remove OVR mask in IER register, and rely only on CSR status for overrun.
-> To avoid subsequent calls to interrupt routine on overrun, CSR OVR bit has
-> to be cleared. CSR OVR bit cannot be cleared directly by software.
-> To do this ADC must be stopped first, and OVR bit in ADC ISR has
-> to be cleared.
-> Also add a check in ADC IRQ handler to report spurious IRQs.
-> 
-> Fixes: cc06e67d8fa5 ("iio: adc: stm32-adc: Add check on overrun interrupt")
-> 
-> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+A semicolon is not needed after a switch statement.
 
-Applied to the fixes-togreg branch of iio.git and marked for stable.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ sound/soc/codecs/tscs454.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thanks,
-
-Jonathan
-
-> ---
->  drivers/iio/adc/stm32-adc-core.c | 41 +++++++++++---------------
->  drivers/iio/adc/stm32-adc.c      | 50 ++++++++++++++++++++++++++++++--
->  2 files changed, 65 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
-> index cd870c089182..a83199b212a4 100644
-> --- a/drivers/iio/adc/stm32-adc-core.c
-> +++ b/drivers/iio/adc/stm32-adc-core.c
-> @@ -41,18 +41,16 @@
->   * struct stm32_adc_common_regs - stm32 common registers
->   * @csr:	common status register offset
->   * @ccr:	common control register offset
-> - * @eoc1_msk:	adc1 end of conversion flag in @csr
-> - * @eoc2_msk:	adc2 end of conversion flag in @csr
-> - * @eoc3_msk:	adc3 end of conversion flag in @csr
-> + * @eoc_msk:    array of eoc (end of conversion flag) masks in csr for adc1..n
-> + * @ovr_msk:    array of ovr (overrun flag) masks in csr for adc1..n
->   * @ier:	interrupt enable register offset for each adc
->   * @eocie_msk:	end of conversion interrupt enable mask in @ier
->   */
->  struct stm32_adc_common_regs {
->  	u32 csr;
->  	u32 ccr;
-> -	u32 eoc1_msk;
-> -	u32 eoc2_msk;
-> -	u32 eoc3_msk;
-> +	u32 eoc_msk[STM32_ADC_MAX_ADCS];
-> +	u32 ovr_msk[STM32_ADC_MAX_ADCS];
->  	u32 ier;
->  	u32 eocie_msk;
->  };
-> @@ -282,21 +280,20 @@ static int stm32h7_adc_clk_sel(struct platform_device *pdev,
->  static const struct stm32_adc_common_regs stm32f4_adc_common_regs = {
->  	.csr = STM32F4_ADC_CSR,
->  	.ccr = STM32F4_ADC_CCR,
-> -	.eoc1_msk = STM32F4_EOC1 | STM32F4_OVR1,
-> -	.eoc2_msk = STM32F4_EOC2 | STM32F4_OVR2,
-> -	.eoc3_msk = STM32F4_EOC3 | STM32F4_OVR3,
-> +	.eoc_msk = { STM32F4_EOC1, STM32F4_EOC2, STM32F4_EOC3},
-> +	.ovr_msk = { STM32F4_OVR1, STM32F4_OVR2, STM32F4_OVR3},
->  	.ier = STM32F4_ADC_CR1,
-> -	.eocie_msk = STM32F4_EOCIE | STM32F4_OVRIE,
-> +	.eocie_msk = STM32F4_EOCIE,
->  };
->  
->  /* STM32H7 common registers definitions */
->  static const struct stm32_adc_common_regs stm32h7_adc_common_regs = {
->  	.csr = STM32H7_ADC_CSR,
->  	.ccr = STM32H7_ADC_CCR,
-> -	.eoc1_msk = STM32H7_EOC_MST | STM32H7_OVR_MST,
-> -	.eoc2_msk = STM32H7_EOC_SLV | STM32H7_OVR_SLV,
-> +	.eoc_msk = { STM32H7_EOC_MST, STM32H7_EOC_SLV},
-> +	.ovr_msk = { STM32H7_OVR_MST, STM32H7_OVR_SLV},
->  	.ier = STM32H7_ADC_IER,
-> -	.eocie_msk = STM32H7_EOCIE | STM32H7_OVRIE,
-> +	.eocie_msk = STM32H7_EOCIE,
->  };
->  
->  static const unsigned int stm32_adc_offset[STM32_ADC_MAX_ADCS] = {
-> @@ -318,6 +315,7 @@ static void stm32_adc_irq_handler(struct irq_desc *desc)
->  {
->  	struct stm32_adc_priv *priv = irq_desc_get_handler_data(desc);
->  	struct irq_chip *chip = irq_desc_get_chip(desc);
-> +	int i;
->  	u32 status;
->  
->  	chained_irq_enter(chip, desc);
-> @@ -335,17 +333,12 @@ static void stm32_adc_irq_handler(struct irq_desc *desc)
->  	 * before invoking the interrupt handler (e.g. call ISR only for
->  	 * IRQ-enabled ADCs).
->  	 */
-> -	if (status & priv->cfg->regs->eoc1_msk &&
-> -	    stm32_adc_eoc_enabled(priv, 0))
-> -		generic_handle_irq(irq_find_mapping(priv->domain, 0));
-> -
-> -	if (status & priv->cfg->regs->eoc2_msk &&
-> -	    stm32_adc_eoc_enabled(priv, 1))
-> -		generic_handle_irq(irq_find_mapping(priv->domain, 1));
-> -
-> -	if (status & priv->cfg->regs->eoc3_msk &&
-> -	    stm32_adc_eoc_enabled(priv, 2))
-> -		generic_handle_irq(irq_find_mapping(priv->domain, 2));
-> +	for (i = 0; i < priv->cfg->num_irqs; i++) {
-> +		if ((status & priv->cfg->regs->eoc_msk[i] &&
-> +		     stm32_adc_eoc_enabled(priv, i)) ||
-> +		     (status & priv->cfg->regs->ovr_msk[i]))
-> +			generic_handle_irq(irq_find_mapping(priv->domain, i));
-> +	}
->  
->  	chained_irq_exit(chip, desc);
->  };
-> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-> index b3f31f147347..16c02c30dec7 100644
-> --- a/drivers/iio/adc/stm32-adc.c
-> +++ b/drivers/iio/adc/stm32-adc.c
-> @@ -154,6 +154,7 @@ struct stm32_adc;
->   * @start_conv:		routine to start conversions
->   * @stop_conv:		routine to stop conversions
->   * @unprepare:		optional unprepare routine (disable, power-down)
-> + * @irq_clear:		routine to clear irqs
->   * @smp_cycles:		programmable sampling time (ADC clock cycles)
->   */
->  struct stm32_adc_cfg {
-> @@ -166,6 +167,7 @@ struct stm32_adc_cfg {
->  	void (*start_conv)(struct iio_dev *, bool dma);
->  	void (*stop_conv)(struct iio_dev *);
->  	void (*unprepare)(struct iio_dev *);
-> +	void (*irq_clear)(struct iio_dev *indio_dev, u32 msk);
->  	const unsigned int *smp_cycles;
->  };
->  
-> @@ -621,6 +623,13 @@ static void stm32f4_adc_stop_conv(struct iio_dev *indio_dev)
->  			   STM32F4_ADON | STM32F4_DMA | STM32F4_DDS);
->  }
->  
-> +static void stm32f4_adc_irq_clear(struct iio_dev *indio_dev, u32 msk)
-> +{
-> +	struct stm32_adc *adc = iio_priv(indio_dev);
-> +
-> +	stm32_adc_clr_bits(adc, adc->cfg->regs->isr_eoc.reg, msk);
-> +}
-> +
->  static void stm32h7_adc_start_conv(struct iio_dev *indio_dev, bool dma)
->  {
->  	struct stm32_adc *adc = iio_priv(indio_dev);
-> @@ -659,6 +668,13 @@ static void stm32h7_adc_stop_conv(struct iio_dev *indio_dev)
->  	stm32_adc_clr_bits(adc, STM32H7_ADC_CFGR, STM32H7_DMNGT_MASK);
->  }
->  
-> +static void stm32h7_adc_irq_clear(struct iio_dev *indio_dev, u32 msk)
-> +{
-> +	struct stm32_adc *adc = iio_priv(indio_dev);
-> +	/* On STM32H7 IRQs are cleared by writing 1 into ISR register */
-> +	stm32_adc_set_bits(adc, adc->cfg->regs->isr_eoc.reg, msk);
-> +}
-> +
->  static int stm32h7_adc_exit_pwr_down(struct iio_dev *indio_dev)
->  {
->  	struct stm32_adc *adc = iio_priv(indio_dev);
-> @@ -1235,17 +1251,40 @@ static int stm32_adc_read_raw(struct iio_dev *indio_dev,
->  	}
->  }
->  
-> +static void stm32_adc_irq_clear(struct iio_dev *indio_dev, u32 msk)
-> +{
-> +	struct stm32_adc *adc = iio_priv(indio_dev);
-> +
-> +	adc->cfg->irq_clear(indio_dev, msk);
-> +}
-> +
->  static irqreturn_t stm32_adc_threaded_isr(int irq, void *data)
->  {
->  	struct iio_dev *indio_dev = data;
->  	struct stm32_adc *adc = iio_priv(indio_dev);
->  	const struct stm32_adc_regspec *regs = adc->cfg->regs;
->  	u32 status = stm32_adc_readl(adc, regs->isr_eoc.reg);
-> +	u32 mask = stm32_adc_readl(adc, regs->ier_eoc.reg);
->  
-> -	if (status & regs->isr_ovr.mask)
-> +	/* Check ovr status right now, as ovr mask should be already disabled */
-> +	if (status & regs->isr_ovr.mask) {
-> +		/*
-> +		 * Clear ovr bit to avoid subsequent calls to IRQ handler.
-> +		 * This requires to stop ADC first. OVR bit state in ISR,
-> +		 * is propaged to CSR register by hardware.
-> +		 */
-> +		adc->cfg->stop_conv(indio_dev);
-> +		stm32_adc_irq_clear(indio_dev, regs->isr_ovr.mask);
->  		dev_err(&indio_dev->dev, "Overrun, stopping: restart needed\n");
-> +		return IRQ_HANDLED;
-> +	}
->  
-> -	return IRQ_HANDLED;
-> +	if (!(status & mask))
-> +		dev_err_ratelimited(&indio_dev->dev,
-> +				    "Unexpected IRQ: IER=0x%08x, ISR=0x%08x\n",
-> +				    mask, status);
-> +
-> +	return IRQ_NONE;
->  }
->  
->  static irqreturn_t stm32_adc_isr(int irq, void *data)
-> @@ -1254,6 +1293,10 @@ static irqreturn_t stm32_adc_isr(int irq, void *data)
->  	struct stm32_adc *adc = iio_priv(indio_dev);
->  	const struct stm32_adc_regspec *regs = adc->cfg->regs;
->  	u32 status = stm32_adc_readl(adc, regs->isr_eoc.reg);
-> +	u32 mask = stm32_adc_readl(adc, regs->ier_eoc.reg);
-> +
-> +	if (!(status & mask))
-> +		return IRQ_WAKE_THREAD;
->  
->  	if (status & regs->isr_ovr.mask) {
->  		/*
-> @@ -2046,6 +2089,7 @@ static const struct stm32_adc_cfg stm32f4_adc_cfg = {
->  	.start_conv = stm32f4_adc_start_conv,
->  	.stop_conv = stm32f4_adc_stop_conv,
->  	.smp_cycles = stm32f4_adc_smp_cycles,
-> +	.irq_clear = stm32f4_adc_irq_clear,
->  };
->  
->  static const struct stm32_adc_cfg stm32h7_adc_cfg = {
-> @@ -2057,6 +2101,7 @@ static const struct stm32_adc_cfg stm32h7_adc_cfg = {
->  	.prepare = stm32h7_adc_prepare,
->  	.unprepare = stm32h7_adc_unprepare,
->  	.smp_cycles = stm32h7_adc_smp_cycles,
-> +	.irq_clear = stm32h7_adc_irq_clear,
->  };
->  
->  static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
-> @@ -2069,6 +2114,7 @@ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
->  	.prepare = stm32h7_adc_prepare,
->  	.unprepare = stm32h7_adc_unprepare,
->  	.smp_cycles = stm32h7_adc_smp_cycles,
-> +	.irq_clear = stm32h7_adc_irq_clear,
->  };
->  
->  static const struct of_device_id stm32_adc_of_match[] = {
+diff --git a/sound/soc/codecs/tscs454.c b/sound/soc/codecs/tscs454.c
+index d0af16b4db2f..cd1f1a592386 100644
+--- a/sound/soc/codecs/tscs454.c
++++ b/sound/soc/codecs/tscs454.c
+@@ -177,7 +177,7 @@ static bool tscs454_volatile(struct device *dev, unsigned int reg)
+ 		return true;
+ 	default:
+ 		return false;
+-	};
++	}
+ }
+ 
+ static bool tscs454_writable(struct device *dev, unsigned int reg)
+@@ -197,7 +197,7 @@ static bool tscs454_writable(struct device *dev, unsigned int reg)
+ 		return false;
+ 	default:
+ 		return true;
+-	};
++	}
+ }
+ 
+ static bool tscs454_readable(struct device *dev, unsigned int reg)
+@@ -217,7 +217,7 @@ static bool tscs454_readable(struct device *dev, unsigned int reg)
+ 		return false;
+ 	default:
+ 		return true;
+-	};
++	}
+ }
+ 
+ static bool tscs454_precious(struct device *dev, unsigned int reg)
+@@ -246,7 +246,7 @@ static bool tscs454_precious(struct device *dev, unsigned int reg)
+ 		return true;
+ 	default:
+ 		return false;
+-	};
++	}
+ }
+ 
+ static const struct regmap_range_cfg tscs454_regmap_range_cfg = {
+-- 
+2.18.1
 
