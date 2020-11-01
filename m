@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF3F2A1D12
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 11:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0302A1D43
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 11:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgKAKLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 05:11:10 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:49546 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726122AbgKAKLJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 05:11:09 -0500
-Received: by mail-il1-f200.google.com with SMTP id v29so8176830ilk.16
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 02:11:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=DNT5DJaDDfNyecwyRLYDgxpqveMo4JQlWpmg6tKju2w=;
-        b=K8d83caRgYUKzrPg7RYWXuCvQRmr6Z65etgBRWtOveScKsnrs9c0xi6+i4d7izPPP3
-         vaexmK+Jy0GlKDfkAj577nN3HWFiqP0G7DqqCONxhohehme75JkzsFKeBhRb9Isx55IE
-         l3pbocXUv2GVxJzHsWW/XdxJkZZVAfwwafkOnzRKXSZO9cZDjaxvKlTAyj3qp/neIBcW
-         /X0dQkJPQJlz3OkxOhyJZxrTfK6JyH9S3icYaoK1hJSrp6JLYp1m0ZbQnwTlsYs+4sJ8
-         ia+k9OrETd/o4yfUPNsgOehaBtWkRc4EDkvVz6dqZ1NlYyKNlNI7mUS+nt8Bgd+y32uD
-         zWgg==
-X-Gm-Message-State: AOAM530qptAQogs1DYQ3jT/g0OYfJO8cFsgYl8Bn2xUM0wbgPYhyuFIZ
-        A/o70cErhbq4OU+1xnZ/r+3fhxioWIH/bWr0NWudGrkkFyr6
-X-Google-Smtp-Source: ABdhPJxctS2I+L3olPckb3hh9hZfKdD6yTrHGSqPX4hCaO2tFQcVdPn7k0R/QGO6z2nDrR9NItqN/DEwl64WRNQKAKC4+6c8m+GR
+        id S1726384AbgKAKaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 05:30:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726138AbgKAKaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 05:30:14 -0500
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49B0320719;
+        Sun,  1 Nov 2020 10:30:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604226613;
+        bh=94+nsV21TCqPoQNytCQG0IKS8G6JKXA1BQCEGgBvOmg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jpl4s+CKL4r7Jo/ROrTKbk7WH77giR+DXA9ycpn/YZUtQEXnLLm2KgPmIssT6S/1l
+         5BjCDWlhWRZceVpWT9effRu4xVM0PeSLqsE+83M8aAdhpsMS7vAKLmDqbrE1f28ZmD
+         aoOAqclViZSIqB+0+QbNQtknNj/EczDOR13YEOGk=
+Received: by mail-qk1-f179.google.com with SMTP id r7so9066382qkf.3;
+        Sun, 01 Nov 2020 02:30:13 -0800 (PST)
+X-Gm-Message-State: AOAM532O3ZWU310DC6kXc3TctrQw7YEsN8fEpAPgU/FjcvpV+DDLeHvN
+        2CKNFBFTOz2sgcvneOYP8tnb28zboodThusx44o=
+X-Google-Smtp-Source: ABdhPJxrDcnNF+ZfUz7cZqBpqxU984u3Rvdm9pSv7LtkG0JvPMTpve03xqgR9kGYa+LCzYjLy+h4BNbmfcixsRWJG1E=
+X-Received: by 2002:a37:4e57:: with SMTP id c84mr10050470qkb.394.1604226612532;
+ Sun, 01 Nov 2020 02:30:12 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3f1:: with SMTP id s17mr7616578jaq.102.1604225467601;
- Sun, 01 Nov 2020 02:11:07 -0800 (PST)
-Date:   Sun, 01 Nov 2020 02:11:07 -0800
-In-Reply-To: <00000000000052792305af1c7614@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000022d95405b308d905@google.com>
-Subject: Re: BUG: unable to handle kernel paging request in pvclock_gtod_notify
-From:   syzbot <syzbot+815c663e220da75b02b6@syzkaller.appspotmail.com>
-To:     b.zolnierkie@samsung.com, bp@alien8.de, dan.carpenter@oracle.com,
-        george.kennedy@oracle.com, hpa@zytor.com, jmattson@google.com,
-        joro@8bytes.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
+References: <20201028070504.362164-1-xie.he.0141@gmail.com>
+ <20201030200705.6e2039c2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAJht_EOk43LdKVU4qH1MB5pLKcSONazA9XsKJUMTG=79TJ-3Rg@mail.gmail.com>
+ <20201031095146.5e6945a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAK8P3a1kJT50s+BVF8-fmX6ctX2pmVtcg5rnS__EBQvseuqWNA@mail.gmail.com> <CAJht_EO0Wp=TVdLZ_8XK7ShXTUAmX-wb0UssTtn51DkPE266yQ@mail.gmail.com>
+In-Reply-To: <CAJht_EO0Wp=TVdLZ_8XK7ShXTUAmX-wb0UssTtn51DkPE266yQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sun, 1 Nov 2020 11:29:56 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1s58-u-T5cax+eW7_Q0=Yj7T3mfnBZSw24RErV5vCBJw@mail.gmail.com>
+Message-ID: <CAK8P3a1s58-u-T5cax+eW7_Q0=Yj7T3mfnBZSw24RErV5vCBJw@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: dlci: Deprecate the DLCI driver (aka the
+ Frame Relay layer)
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Sun, Nov 1, 2020 at 12:37 AM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> On Sat, Oct 31, 2020 at 2:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > I think it can just go in the bin directly. I actually submitted a couple of
+> > patches to clean up drivers/net/wan last year but didn't follow up
+> > with a new version after we decided that x.25 is still needed, see
+> > https://lore.kernel.org/netdev/20191209151256.2497534-1-arnd@arndb.de/
+> >
+> > I can resubmit if you like.
+>
+> Should we also remove the two macro definitions in
+> "include/uapi/linux/sockios.h" (SIOCADDDLCI / SIOCDELDLCI), too? It
+> seems to be not included in your original patch.
 
-commit a49145acfb975d921464b84fe00279f99827d816
-Author: George Kennedy <george.kennedy@oracle.com>
-Date:   Tue Jul 7 19:26:03 2020 +0000
+Not sure, it should probably at least be marked as 'obsolete' in the header
+like SIOCGIFDIVERT, but removing the definitions might risk that someone
+later reuses the numbers for a new command. I don't know if there is an
+official policy for this. I see a couple of other definitions in the same file
+that have no apparent implementation:
+SIOCGIFCOUNT, SIOCDRARP, SIOCGRARP and SIOCSRARP. These
+were still referenced in 2.6.12, but only in dead code that has since
+been removed.
 
-    fbmem: add margin check to fb_check_caps()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17499724500000
-start commit:   60e72093 Merge tag 'clk-fixes-for-linus' of git://git.kern..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
-dashboard link: https://syzkaller.appspot.com/bug?extid=815c663e220da75b02b6
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1162b04d900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=135e7383900000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fbmem: add margin check to fb_check_caps()
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+      arnd
