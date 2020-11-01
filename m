@@ -2,87 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 331E82A1F26
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CDD2A1F29
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Nov 2020 16:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgKAPg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 10:36:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43945 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726499AbgKAPgz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 10:36:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604245014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=hwjkYy0oMIlzhgFEst/3xJBrxsRxNCTNm6w0ht7u03Q=;
-        b=BxtOel+WpVE7OEAUURXMmvOZ79ir6QXSGcYgFmmuFjtvW1sjE/FC14qlNOCUETeBUlR1vr
-        RtPyt9o33sO5KtKR8rtRQ89dLEGm2w+BPBs1LzYlba2k75/I9A7nbUYkrkAX0iy4sY3xa3
-        OkacdI9Bq54XeJbf3kMTCI1Tt0MA1qY=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-l-JDoUIlNKiGGIkrT8z9NA-1; Sun, 01 Nov 2020 10:36:53 -0500
-X-MC-Unique: l-JDoUIlNKiGGIkrT8z9NA-1
-Received: by mail-oo1-f72.google.com with SMTP id t19so4590157ook.18
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 07:36:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=hwjkYy0oMIlzhgFEst/3xJBrxsRxNCTNm6w0ht7u03Q=;
-        b=U8C8qc3yT3ypLtznP/Ht4/6tArn+CQxif7R3VStdllVST2SO4aaXRhy+EMiUBgKHwK
-         3NCcQMNJu8l1leh6i5o96MC1Gs93V7qKdfAQm/k5wTuOewa9u7cUMuQi3jMLTyaUATGs
-         h16XpT5R1gT2VBPLqy55wp9XEDYWjyEAJhAeMPIU3hDreNs+oQ+JUqctAIvu8V3fNn4V
-         fxbAVxgKkrDQ758JS0kN9Sh96HYpCLREAVEw3W2qYtUT0HqynzjaT5Nbo1GyunP04bvF
-         YV+XpzOcvGapD/LhjmNdkxB7Yk2Le8qykjzyINiXpf6LIjYb3nEDD62UvEgTYgTCXm9a
-         LyyQ==
-X-Gm-Message-State: AOAM532YMJ5+HU0dxBu0dnaIBaZmMx7nt/b30/sOCDWv70FDKARy284q
-        /0ClC7y29kNJiDeBiCGTxYCBEmbECIqVpJEFBx9+9MpsamTtwF3nnPFQibXacfxUSxiSKJ2vSyB
-        mvpnV2BW0Bc+ZAlv/5gxHeE3H
-X-Received: by 2002:a4a:b40a:: with SMTP id y10mr8958306oon.71.1604245012757;
-        Sun, 01 Nov 2020 07:36:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzDmgVMwQdGVfOkJr+SFXDfJRq7GUTFZALzFI65I0ihDwrRqBXQudZ/NYikp8OBelhe3WAlSw==
-X-Received: by 2002:a4a:b40a:: with SMTP id y10mr8958295oon.71.1604245012597;
-        Sun, 01 Nov 2020 07:36:52 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id w25sm2902114otq.58.2020.11.01.07.36.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Nov 2020 07:36:52 -0800 (PST)
-From:   trix@redhat.com
-To:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        andriin@fb.com, edumazet@google.com, ap420073@gmail.com,
-        xiyou.wangcong@gmail.com, jiri@mellanox.com, maximmi@mellanox.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] net: core: remove unneeded semicolon
-Date:   Sun,  1 Nov 2020 07:36:47 -0800
-Message-Id: <20201101153647.2292322-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1726908AbgKAPiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 10:38:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726791AbgKAPiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 10:38:08 -0500
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA89520870;
+        Sun,  1 Nov 2020 15:38:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604245087;
+        bh=8BI6hG3LMiwJ3PyrABZJp+hrFQTYBJwjnj4k1x2xJU8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oxaS+SI5bzcOgHlrjLSVKtEGNFloTGoaylbsuDx8MNGefrK7DfKt+OAWG9hvh2Vsk
+         /pB6Y08O8LQwj9LR2f18Pj/SYYFwMVM8Kk4Bxm+9Rmm4ECF55K8ffkEiIZxbNOOoxJ
+         b/8zqayHsX+nGmPy84hfitqt7RuChyIPBJe9ahv4=
+Date:   Sun, 1 Nov 2020 15:38:03 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cristian Pop <cristian.pop@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 1/5] iio: core: Add optional symbolic label to a
+ device channel
+Message-ID: <20201101153803.471eafa8@archlinux>
+In-Reply-To: <20200928090959.88842-1-cristian.pop@analog.com>
+References: <20200928090959.88842-1-cristian.pop@analog.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Mon, 28 Sep 2020 12:09:55 +0300
+Cristian Pop <cristian.pop@analog.com> wrote:
 
-A semicolon is not needed after a switch statement.
+> If a label is defined in the device tree for this channel add that
+> to the channel specific attributes. This is useful for userspace to
+> be able to identify an individual channel.
+> 
+> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- net/core/dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Cristian,
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 751e5264fd49..10f5d0c3d0d7 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -8898,7 +8898,7 @@ static bpf_op_t dev_xdp_bpf_op(struct net_device *dev, enum bpf_xdp_mode mode)
- 		return dev->netdev_ops->ndo_bpf;
- 	default:
- 		return NULL;
--	};
-+	}
- }
- 
- static struct bpf_xdp_link *dev_xdp_link(struct net_device *dev,
--- 
-2.18.1
+I think the DT binding part of this has gotten lost now, so please
+repost the whole series making sure to include Rob H and DT list.
+
+I have proposed a conversion of the adc.txt file now.  I'll deal
+with merging your changes into there if necessary though.
+May be worth mentioning that in the cover letter for the resend.
+
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/industrialio-core.c | 40 +++++++++++++++++++++++++++++++++
+>  include/linux/iio/iio.h         |  6 +++++
+>  2 files changed, 46 insertions(+)
+> 
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index 6e388293c828..b577fff35641 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -669,6 +669,19 @@ ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals)
+>  }
+>  EXPORT_SYMBOL_GPL(iio_format_value);
+>  
+> +static ssize_t iio_read_channel_label(struct device *dev,
+> +				      struct device_attribute *attr,
+> +				      char *buf)
+> +{
+> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> +	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+> +
+> +	if (!indio_dev->info->read_label)
+> +		return -EINVAL;
+> +
+> +	return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
+> +}
+> +
+>  static ssize_t iio_read_channel_info(struct device *dev,
+>  				     struct device_attribute *attr,
+>  				     char *buf)
+> @@ -1137,6 +1150,28 @@ int __iio_add_chan_devattr(const char *postfix,
+>  	return ret;
+>  }
+>  
+> +static int iio_device_add_channel_label(struct iio_dev *indio_dev,
+> +					 struct iio_chan_spec const *chan)
+> +{
+> +	int ret;
+> +
+> +	if (!indio_dev->info->read_label)
+> +		return 0;
+> +
+> +	ret = __iio_add_chan_devattr("label",
+> +				     chan,
+> +				     &iio_read_channel_label,
+> +				     NULL,
+> +				     0,
+> +				     IIO_SEPARATE,
+> +				     &indio_dev->dev,
+> +				     &indio_dev->channel_attr_list);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 1;
+> +}
+> +
+>  static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
+>  					 struct iio_chan_spec const *chan,
+>  					 enum iio_shared_by shared_by,
+> @@ -1270,6 +1305,11 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
+>  		return ret;
+>  	attrcount += ret;
+>  
+> +	ret = iio_device_add_channel_label(indio_dev, chan);
+> +	if (ret < 0)
+> +		return ret;
+> +	attrcount += ret;
+> +
+>  	if (chan->ext_info) {
+>  		unsigned int i = 0;
+>  		for (ext_info = chan->ext_info; ext_info->name; ext_info++) {
+> diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+> index 2e45b3ceafa7..9a3cf4815148 100644
+> --- a/include/linux/iio/iio.h
+> +++ b/include/linux/iio/iio.h
+> @@ -362,6 +362,8 @@ struct iio_trigger; /* forward declaration */
+>   *			and max. For lists, all possible values are enumerated.
+>   * @write_raw:		function to write a value to the device.
+>   *			Parameters are the same as for read_raw.
+> + * @read_label:		function to request label name for a specified label,
+> + *			for better channel identification.
+>   * @write_raw_get_fmt:	callback function to query the expected
+>   *			format/precision. If not set by the driver, write_raw
+>   *			returns IIO_VAL_INT_PLUS_MICRO.
+> @@ -420,6 +422,10 @@ struct iio_info {
+>  			 int val2,
+>  			 long mask);
+>  
+> +	int (*read_label)(struct iio_dev *indio_dev,
+> +			 struct iio_chan_spec const *chan,
+> +			 char *label);
+> +
+>  	int (*write_raw_get_fmt)(struct iio_dev *indio_dev,
+>  			 struct iio_chan_spec const *chan,
+>  			 long mask);
 
