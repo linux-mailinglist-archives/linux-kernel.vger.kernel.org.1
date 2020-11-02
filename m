@@ -2,257 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC8A2A2DC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F372A2DC9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgKBPLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:11:51 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:7459 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgKBPLs (ORCPT
+        id S1726518AbgKBPMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:12:06 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:57444 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726357AbgKBPMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:11:48 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa021b70002>; Mon, 02 Nov 2020 07:11:51 -0800
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 2 Nov
- 2020 15:11:44 +0000
-Received: from audio.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Mon, 2 Nov 2020 15:11:40 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>,
-        <kuninori.morimoto.gx@renesas.com>,
-        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
-        <tiwai@suse.com>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
-        Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH v5 7/7] ASoC: audio-graph: Expose helpers from audio graph
-Date:   Mon, 2 Nov 2020 20:40:14 +0530
-Message-ID: <1604329814-24779-8-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
-References: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
+        Mon, 2 Nov 2020 10:12:00 -0500
+Received: from mailhost.synopsys.com (sv1-mailhost2.synopsys.com [10.205.2.132])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 69052C0344;
+        Mon,  2 Nov 2020 15:11:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1604329919; bh=7m4TzV+FWYpM2Q//OOneVvGCYowRTcrNNLUIm+eqZsM=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=dtfY80RlxPd7s5aPZNTzuRz5FaLcZXI9tEfP1dbhIeSaAg8Rp7MfyMW8cmOvCPJqX
+         8WzZUqqV9nhy8fKB+7VDHdtym6z+CV085Mdwai0zJDtN3R0Jmw2waOHWu80bFJi2eE
+         MHTa0zQn6UItc0K2vIJ6E0Ocd12IEbVpuu7TSkKbxVqhTlXSnkUKx2iUaiLLaT8VA2
+         n2FXm6XWaJbx9xkJuAuonCkrCZv8Ly9MAW4LE7cDe1Ql3/aHPX4YYBK9slnZ3v9eVj
+         7J8jccj8C0iBioGLjOfcKrHadXkDdRFaO8zdZDkyyqTNQpNcD7kJ3KZ1PeIPQSZ/ml
+         X0bDpOVGO/Z1A==
+Received: from o365relay-in.synopsys.com (sv2-o365relay3.synopsys.com [10.202.1.139])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 8EDA9A0072;
+        Mon,  2 Nov 2020 15:11:57 +0000 (UTC)
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2170.outbound.protection.outlook.com [104.47.58.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 48D2940146;
+        Mon,  2 Nov 2020 15:11:56 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=gustavo@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="jTeWNvah";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y8+Qb+gzl0+5XxzFftE6i33K3H4HFwdnKkok/DERIn9sZryo2zijhS7Sl5tsUcPcGvyxrAXFlao6DZIl6cKmlLkyVDVeRAgjLrOHpZlfTfkV3adZ074FySepr4InRZftIT1LIlvdTtcoZs3rbRBJeVK5+MYdS/vzpWILwB6MF3tilgLtpGQFT7fYyvz802ix/U2egsutZjMzx+p/d1qEhW2zaTwot34+u+CNSwfyO8H6dtGWyX++Bdgye2n6V6VCPYJeC1usMpYU6HGt6falz3c/3dFeLw5/76TlGFeFL9W2b4uvqmCZy4oLy5GIjvR4BJ2P/gCMHB4jE4rHbgW5nA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7m4TzV+FWYpM2Q//OOneVvGCYowRTcrNNLUIm+eqZsM=;
+ b=VXgtFH6XHmW0Su2a3+cCpwJ/XBIoG6gG8fkzuuQuzP+9bEga17wVMAsATK3ZCRxTGMUsBf9bUiWSbRQRVwaS1hwpGVE4vGa31yUaC7FXRLROGmA8xekJiRFmbhg0XdeqqvK++av6D+NX/4uc3jIvpWXIUmxk/M7lNHe8ZJRgxlAT52K8uFvmY/k6BfPGwgs/riSSFS2rMvMtTYdg4b6r0uLRmZC/2XHjLjFvk8RBjrR3w6YRohbk71XcD2fxuEECcgwRN8hBHWFWZ58VT8TV4cDMU2JlnjBVqJVb5QfM1ART8FIyBk2NuGvtWvfjgECj8cXrY/Wj57AfahjNu+xs0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7m4TzV+FWYpM2Q//OOneVvGCYowRTcrNNLUIm+eqZsM=;
+ b=jTeWNvahFvPh5JfhukyfdEV/Nt9qW/6MqLyXgEcKrskrK5uMqE9U2HWD8koCwWVZYTKgNWMitygvAtND2/sydsA9biOx1N6hfM54Mibs608XvIOq8PJB3ltT4nQjkxlSOpWELx0Q9UI+FWJF98TlwECnFeJ2IY8BIo0dOagADl0=
+Received: from DM5PR12MB1835.namprd12.prod.outlook.com (2603:10b6:3:10c::9) by
+ DM5PR1201MB0219.namprd12.prod.outlook.com (2603:10b6:4:56::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3499.29; Mon, 2 Nov 2020 15:11:54 +0000
+Received: from DM5PR12MB1835.namprd12.prod.outlook.com
+ ([fe80::48e2:11e1:d2f:d12f]) by DM5PR12MB1835.namprd12.prod.outlook.com
+ ([fe80::48e2:11e1:d2f:d12f%8]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 15:11:54 +0000
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     Vidya Sagar <vidyas@nvidia.com>, Rob Herring <robh@kernel.org>
+CC:     Jingoo Han <jingoohan1@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Thierry Reding <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kthota@nvidia.com" <kthota@nvidia.com>,
+        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
+Subject: RE: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
+Thread-Topic: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
+Thread-Index: AQHWrbX/k+XWRE5HlkCJXk3ApXY9lam06eWAgAADLYCAAAuOoA==
+Date:   Mon, 2 Nov 2020 15:11:53 +0000
+Message-ID: <DM5PR12MB18357E6BF282C9C65278460EDA100@DM5PR12MB1835.namprd12.prod.outlook.com>
+References: <20201029053959.31361-1-vidyas@nvidia.com>
+ <20201029053959.31361-3-vidyas@nvidia.com>
+ <CAL_Jsq+3Ek9SRbsTqEmjiZtszvi7Er=TNgOt8t=0OESva2=sTg@mail.gmail.com>
+ <902c0445-9fed-8e61-3aba-0e87988eb8df@nvidia.com>
+In-Reply-To: <902c0445-9fed-8e61-3aba-0e87988eb8df@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
+ =?utf-8?B?bk5jWjNWemRHRjJiMXhoY0hCa1lYUmhYSEp2WVcxcGJtZGNNRGxrT0RRNVlq?=
+ =?utf-8?B?WXRNekprTXkwMFlUUXdMVGcxWldVdE5tSTROR0poTWpsbE16VmlYRzF6WjNO?=
+ =?utf-8?B?Y2JYTm5MV0ppWkRCak1qUTVMVEZrTVdRdE1URmxZaTA1T0dRMUxXWTRPVFJq?=
+ =?utf-8?B?TWpjek9EQTBNbHhoYldVdGRHVnpkRnhpWW1Rd1l6STBZUzB4WkRGa0xURXha?=
+ =?utf-8?B?V0l0T1Roa05TMW1PRGswWXpJM016Z3dOREppYjJSNUxuUjRkQ0lnYzNvOUlq?=
+ =?utf-8?B?TXhPREVpSUhROUlqRXpNalE0T0RBek5URXlNVGczT0RNME5TSWdhRDBpUm13?=
+ =?utf-8?B?eFNWVnhlbWgxVVhjNU0xSkRXRGxvU2tWblNuVlBOMmQzUFNJZ2FXUTlJaUln?=
+ =?utf-8?B?WW13OUlqQWlJR0p2UFNJeElpQmphVDBpWTBGQlFVRkZVa2hWTVZKVFVsVkdU?=
+ =?utf-8?B?a05uVlVGQlFsRktRVUZDU2pGWE1TdExja2hYUVZSV2NqZEVSMkl4TlVaRlRs?=
+ =?utf-8?B?ZDJjMDFhZGxoclZWRlBRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVaEJRVUZCUTJ0RFFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVWQlFWRkJRa0ZCUVVGT2NsTldNMmRCUVVGQlFVRkJRVUZCUVVGQlFVRktO?=
+ =?utf-8?B?RUZCUVVKdFFVZHJRV0puUW1oQlJ6UkJXWGRDYkVGR09FRmpRVUp6UVVkRlFX?=
+ =?utf-8?B?Sm5RblZCUjJ0QlltZENia0ZHT0VGa2QwSm9RVWhSUVZwUlFubEJSekJCV1ZG?=
+ =?utf-8?B?Q2VVRkhjMEZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUlVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?blFVRkJRVUZCYm1kQlFVRkhXVUZpZDBJeFFVYzBRVnBCUW5sQlNHdEJXSGRD?=
+ =?utf-8?B?ZDBGSFJVRmpaMEl3UVVjMFFWcFJRbmxCU0UxQldIZENia0ZIV1VGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFWRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkRRVUZCUVVGQlEyVkJRVUZCV21kQ2RrRklWVUZpWjBKclFV?=
+ =?utf-8?B?aEpRV1ZSUW1aQlNFRkJXVkZDZVVGSVVVRmlaMEpzUVVoSlFXTjNRbVpCU0Ux?=
+ =?utf-8?B?QldWRkNkRUZJVFVGa1VVSjFRVWRqUVZoM1FtcEJSemhCWW1kQ2JVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUpCUVVGQlFVRkJRVUZCU1VGQlFVRkJRVW8wUVVGQlFtMUJSemhC?=
+ =?utf-8?B?WkZGQ2RVRkhVVUZqWjBJMVFVWTRRV05CUW1oQlNFbEJaRUZDZFVGSFZVRmpa?=
+ =?utf-8?B?MEo2UVVZNFFXTjNRbWhCUnpCQlkzZENNVUZITkVGYWQwSm1RVWhKUVZwUlFu?=
+ =?utf-8?B?cEJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGRlFVRkJRVUZCUVVGQlFXZEJRVUZCUVVGdVow?=
+ =?utf-8?B?RkJRVWRaUVdKM1FqRkJSelJCV2tGQ2VVRklhMEZZZDBKM1FVZEZRV05uUWpC?=
+ =?utf-8?B?QlJ6UkJXbEZDZVVGSVRVRllkMEo2UVVjd1FXRlJRbXBCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJVVUZCUVVGQlFVRkJRVU5C?=
+ =?utf-8?B?UVVGQlFVRkRaVUZCUVVGYVowSjJRVWhWUVdKblFtdEJTRWxCWlZGQ1prRklR?=
+ =?utf-8?B?VUZaVVVKNVFVaFJRV0puUW14QlNFbEJZM2RDWmtGSVRVRmtRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUWtGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGSlFVRkJRVUZCU2pSQlFVRkNiVUZIT0VGa1VVSjFRVWRSUVdO?=
+ =?utf-8?B?blFqVkJSamhCWTBGQ2FFRklTVUZrUVVKMVFVZFZRV05uUW5wQlJqaEJaRUZD?=
+ =?utf-8?B?ZWtGSE1FRlpkMEZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVVkJRVUZCUVVGQlFVRkJaMEZCUVVGQlFXNW5RVUZCUjFsQlluZENN?=
+ =?utf-8?B?VUZITkVGYVFVSjVRVWhyUVZoM1FuZEJSMFZCWTJkQ01FRkhORUZhVVVKNVFV?=
+ =?utf-8?B?aE5RVmgzUWpGQlJ6QkJXWGRCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZSUVVGQlFVRkJRVUZCUTBGQlFVRkJRVU5sUVVG?=
+ =?utf-8?B?QlFWcDNRakJCU0UxQldIZENkMEZJU1VGaWQwSnJRVWhWUVZsM1FqQkJSamhC?=
+ =?utf-8?B?WkVGQ2VVRkhSVUZoVVVKMVFVZHJRV0puUW01QlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQ1FVRkJRVUZCUVVGQlFVbEJR?=
+ =?utf-8?B?VUZCUVVGS05FRkJRVUo2UVVkRlFXSkJRbXhCU0UxQldIZENhRUZIVFVGWmQw?=
+ =?utf-8?B?SjJRVWhWUVdKblFqQkJSamhCWTBGQ2MwRkhSVUZpWjBGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJSVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZuUVVGQlFVRkJibWRCUVVGSVRVRlpVVUp6UVVkVlFXTjNRbVpC?=
+ =?utf-8?B?U0VWQlpGRkNka0ZJVVVGYVVVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVZGQlFVRkJRVUZCUVVGRFFVRkJRVUZCUTJWQlFVRkJZM2RDZFVGSVFV?=
+ =?utf-8?B?RmpkMEptUVVkM1FXRlJRbXBCUjFWQlltZENla0ZIVlVGWWQwSXdRVWRWUVdO?=
+ =?utf-8?B?blFuUkJSamhCVFZGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVSkJRVUZCUVVGQlFVRkJTVUZCUVVGQlFVbzBRVUZC?=
+ =?utf-8?B?UW5wQlJ6UkJZMEZDZWtGR09FRmlRVUp3UVVkTlFWcFJRblZCU0UxQldsRkNa?=
+ =?utf-8?B?a0ZJVVVGYVVVSjVRVWN3UVZoM1FucEJTRkZCWkZGQ2EwRkhWVUZpWjBJd1FV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZGUVVGQlFVRkJRVUZCUVdkQlFV?=
+ =?utf-8?B?RkJRVUZ1WjBGQlFVaFpRVnAzUW1aQlIzTkJXbEZDTlVGSVkwRmlkMEo1UVVk?=
+ =?utf-8?B?UlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlVVRkJRVUZC?=
+ =?utf-8?Q?QUFBQUNBQUFBQUFBPSIvPjwvbWV0YT4=3D?=
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=synopsys.com;
+x-originating-ip: [89.155.14.32]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a1aa00a3-e642-4387-679c-08d87f41a21d
+x-ms-traffictypediagnostic: DM5PR1201MB0219:
+x-microsoft-antispam-prvs: <DM5PR1201MB02197F061AACF13379042515DA100@DM5PR1201MB0219.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xl/hMOGkaKXnG3BFAn5wjiJDESikBm05mcgbbeF5B6z529pIxsM7UT65SuWY5clcoib8r3hptJC3GK/2p9GBNep6ykL7G3UGxJwxmKzI+Dd4UEaF6XLhO+Cor/VYrwYf/MrxWpbZRHDHUVscbYteR3hJjAkpYF3q3QoCGE3LY+DF5VTQskGC4IKWyUyVYCRmzyQjt4nTOCrRfq7oz1boH0is03lx8ieu6LaPqbsJiULkw0NpAT6OCWC/uEhyDjagbxM14yYsRjwYdruMxu3gWAXpNsPe9dDOQbhVc3jqWCMUwU8bltaY090Hzp7dFh2N36Im+79d+EaPW2gsD3sQuA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1835.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(39860400002)(396003)(64756008)(54906003)(66556008)(6506007)(53546011)(66946007)(76116006)(66476007)(52536014)(2906002)(71200400001)(66446008)(5660300002)(7416002)(478600001)(4326008)(55016002)(9686003)(8936002)(110136005)(26005)(186003)(316002)(8676002)(86362001)(83380400001)(33656002)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 4LGigh8MQDAQ7b5VmaHF+43gW4c/bR3zxWOE1/cjbB0e5alJ2R4eBhsBTtHm4ZU9/YTFM9OPTZnHo608hTZ1jbU1QvQXxeEzpbWHNWPKyYexwbLoXS2m2+YOkW36adjbMymN/8gJKg34idKKp1iACyrJHnRokqLUaqpLKZN+6E8z0lLhVQPbraV5KzxjJTU/xlOtyebTeUssTejeJq+9AWb4C9c/bCkeTHv1oM7td87OgDkqyMwyZ8OAHzRGmNpHxoduQB26tu0dZvjFXYFLnbD/AD30nRPRHhOYPTbMaMO7hA8oSB6uSmphbP7BndAJ40wyY/YEZLK3SBX/aK+pZHqQapawUo2wIj4YJ/KTwMEOkHP07pZMoIyIF0cARRief9e4SrxwWlZHPeihKF9riArPlFwuusp1BO1aRFceQJvDsprJ4XXLHg2B70KfeX8Jb/WmWPcy/bzgUAI4Mv/uan950axK1OqRYDG0YCGw3aDYg1I0IKiemfp2kNHwLOZquz6J9Te1SS3vgZfSTI8WLzm4Zlzb3nqR+YIIQosDIpHpg3EE0BodJTx9ac5Vw4xUV3bYAyxx/T3eERaHyA1G4XYQEVQ5gGj5p76tvMTc1W6oVj8C+g+/6sqrQZP0rh3lNmTi8qkZTSYtbQJGrzFIkA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604329911; bh=SoMKeCoV8TVlaACU5ff5aKWUGkjMo9+dcXMh6rCSWI8=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Type;
-        b=o+8PbK7PneJXHkglm7NP4Bs0D4x/RVhi6fYvGpA8NXj0LiRAUao+0rC4Ge3jitMLr
-         Txs+ObejYM7dM3Si1BYQZNIg3U9S5MaFWJfommKvZJ+fCsJX4Erru+PQWQvuBv9Qek
-         XQ3BjuSjwA+bnJa/gS/C/MDCg4ULvpo/fynd5kYhSXXXMwcUb0BCeIK/LTF+iISndY
-         6Vhe3JXEm64AdNo2YycPO1q0kUogNAT43sK1j5HwBZ3KxBsY4iMi9VIQEJK95sPwdQ
-         2LTiSJZE2Z5WyO+ZUDeFKjbArijGbNwxlHRLXSc921k9zKjZVFOyab42NqxT3dalkA
-         PRDbV8cbrcYEw==
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1835.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1aa00a3-e642-4387-679c-08d87f41a21d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 15:11:54.0054
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ewTfsXmF5cF0dJ29jeskp9QdzEnVB2DU3Ng4XPvX39vdNdDGs8KlEJ4oBgWGV5y9P0y3yvnPd5KmVA1qHgU8TQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0219
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit exposes following functions which can be used by a sound
-card driver based on generic audio graph driver. Idea is vendors can
-have a thin driver and re-use common stuff from audio graph driver.
-
- - graph_card_probe()
- - graph_parse_of()
-
-In doing so a new header file is added for above. The graph_probe()
-function is simplified by moving more common stuff to graph_parse_of().
-
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- include/sound/graph_card.h           | 16 ++++++
- sound/soc/generic/audio-graph-card.c | 95 +++++++++++++++++++-----------------
- 2 files changed, 66 insertions(+), 45 deletions(-)
- create mode 100644 include/sound/graph_card.h
-
-diff --git a/include/sound/graph_card.h b/include/sound/graph_card.h
-new file mode 100644
-index 0000000..bbb5a13
---- /dev/null
-+++ b/include/sound/graph_card.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * ASoC audio graph card support
-+ *
-+ */
-+
-+#ifndef __GRAPH_CARD_H
-+#define __GRAPH_CARD_H
-+
-+#include <sound/simple_card_utils.h>
-+
-+int graph_card_probe(struct snd_soc_card *card);
-+
-+int graph_parse_of(struct asoc_simple_priv *priv, struct device *dev);
-+
-+#endif /* __GRAPH_CARD_H */
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 4db9c0e..16a04a6 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -18,7 +18,7 @@
- #include <linux/of_graph.h>
- #include <linux/platform_device.h>
- #include <linux/string.h>
--#include <sound/simple_card_utils.h>
-+#include <sound/graph_card.h>
- 
- #define DPCM_SELECTABLE 1
- 
-@@ -529,12 +529,34 @@ static int graph_for_each_link(struct asoc_simple_priv *priv,
- 	return 0;
- }
- 
--static int graph_parse_of(struct asoc_simple_priv *priv)
-+static void graph_get_dais_count(struct asoc_simple_priv *priv,
-+				 struct link_info *li);
-+
-+int graph_parse_of(struct asoc_simple_priv *priv, struct device *dev)
- {
- 	struct snd_soc_card *card = simple_priv_to_card(priv);
- 	struct link_info li;
- 	int ret;
- 
-+	card->owner = THIS_MODULE;
-+	card->dev = dev;
-+
-+	memset(&li, 0, sizeof(li));
-+	graph_get_dais_count(priv, &li);
-+	if (!li.link || !li.dais)
-+		return -EINVAL;
-+
-+	ret = asoc_simple_init_priv(priv, &li);
-+	if (ret < 0)
-+		return ret;
-+
-+	priv->pa_gpio = devm_gpiod_get_optional(dev, "pa", GPIOD_OUT_LOW);
-+	if (IS_ERR(priv->pa_gpio)) {
-+		ret = PTR_ERR(priv->pa_gpio);
-+		dev_err(dev, "failed to get amplifier gpio: %d\n", ret);
-+		return ret;
-+	}
-+
- 	ret = asoc_simple_parse_widgets(card, NULL);
- 	if (ret < 0)
- 		return ret;
-@@ -561,11 +583,32 @@ static int graph_parse_of(struct asoc_simple_priv *priv)
- 					  graph_dai_link_of,
- 					  graph_dai_link_of_dpcm);
- 		if (ret < 0)
--			return ret;
-+			goto err;
- 	}
- 
--	return asoc_simple_parse_card_name(card, NULL);
-+	ret = asoc_simple_parse_card_name(card, NULL);
-+	if (ret < 0)
-+		goto err;
-+
-+	snd_soc_card_set_drvdata(card, priv);
-+
-+	asoc_simple_debug_info(priv);
-+
-+	ret = devm_snd_soc_register_card(dev, card);
-+	if (ret < 0)
-+		goto err;
-+
-+	return 0;
-+
-+err:
-+	asoc_simple_clean_reference(card);
-+
-+	if (ret != -EPROBE_DEFER)
-+		dev_err(dev, "parse error %d\n", ret);
-+
-+	return ret;
- }
-+EXPORT_SYMBOL_GPL(graph_parse_of);
- 
- static int graph_count_noml(struct asoc_simple_priv *priv,
- 			    struct device_node *cpu_ep,
-@@ -662,7 +705,7 @@ static void graph_get_dais_count(struct asoc_simple_priv *priv,
- 		li->link, li->dais, li->conf);
- }
- 
--static int graph_card_probe(struct snd_soc_card *card)
-+int graph_card_probe(struct snd_soc_card *card)
- {
- 	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
- 	int ret;
-@@ -677,14 +720,13 @@ static int graph_card_probe(struct snd_soc_card *card)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(graph_card_probe);
- 
- static int graph_probe(struct platform_device *pdev)
- {
- 	struct asoc_simple_priv *priv;
- 	struct device *dev = &pdev->dev;
- 	struct snd_soc_card *card;
--	struct link_info li;
--	int ret;
- 
- 	/* Allocate the private data and the DAI link array */
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -692,8 +734,6 @@ static int graph_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	card = simple_priv_to_card(priv);
--	card->owner		= THIS_MODULE;
--	card->dev		= dev;
- 	card->dapm_widgets	= graph_dapm_widgets;
- 	card->num_dapm_widgets	= ARRAY_SIZE(graph_dapm_widgets);
- 	card->probe		= graph_card_probe;
-@@ -701,42 +741,7 @@ static int graph_probe(struct platform_device *pdev)
- 	if (of_device_get_match_data(dev))
- 		priv->dpcm_selectable = 1;
- 
--	memset(&li, 0, sizeof(li));
--	graph_get_dais_count(priv, &li);
--	if (!li.link || !li.dais)
--		return -EINVAL;
--
--	ret = asoc_simple_init_priv(priv, &li);
--	if (ret < 0)
--		return ret;
--
--	priv->pa_gpio = devm_gpiod_get_optional(dev, "pa", GPIOD_OUT_LOW);
--	if (IS_ERR(priv->pa_gpio)) {
--		ret = PTR_ERR(priv->pa_gpio);
--		dev_err(dev, "failed to get amplifier gpio: %d\n", ret);
--		return ret;
--	}
--
--	ret = graph_parse_of(priv);
--	if (ret < 0) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "parse error %d\n", ret);
--		goto err;
--	}
--
--	snd_soc_card_set_drvdata(card, priv);
--
--	asoc_simple_debug_info(priv);
--
--	ret = devm_snd_soc_register_card(dev, card);
--	if (ret < 0)
--		goto err;
--
--	return 0;
--err:
--	asoc_simple_clean_reference(card);
--
--	return ret;
-+	return graph_parse_of(priv, dev);
- }
- 
- static int graph_remove(struct platform_device *pdev)
--- 
-2.7.4
-
+T24gTW9uLCBOb3YgMiwgMjAyMCBhdCAxNDoyNzo5LCBWaWR5YSBTYWdhciA8dmlkeWFzQG52aWRp
+YS5jb20+IHdyb3RlOg0KDQo+IA0KPiANCj4gT24gMTEvMi8yMDIwIDc6NDUgUE0sIFJvYiBIZXJy
+aW5nIHdyb3RlOg0KPiA+IEV4dGVybmFsIGVtYWlsOiBVc2UgY2F1dGlvbiBvcGVuaW5nIGxpbmtz
+IG9yIGF0dGFjaG1lbnRzDQo+ID4gDQo+ID4gDQo+ID4gT24gVGh1LCBPY3QgMjksIDIwMjAgYXQg
+MTI6NDAgQU0gVmlkeWEgU2FnYXIgPHZpZHlhc0BudmlkaWEuY29tPiB3cm90ZToNCj4gPj4NCj4g
+Pj4gRGVzaWduV2FyZSBjb3JlIGhhcyBhIFRMUCBkaWdlc3QgKFREKSBvdmVycmlkZSBiaXQgaW4g
+b25lIG9mIHRoZSBjb250cm9sDQo+ID4+IHJlZ2lzdGVycyBvZiBBVFUuIFRoaXMgYml0IGFsc28g
+bmVlZHMgdG8gYmUgcHJvZ3JhbW1lZCBmb3IgcHJvcGVyIEVDUkMNCj4gPj4gZnVuY3Rpb25hbGl0
+eS4gVGhpcyBpcyBjdXJyZW50bHkgaWRlbnRpZmllZCBhcyBhbiBpc3N1ZSB3aXRoIERlc2lnbldh
+cmUNCj4gPj4gSVAgdmVyc2lvbiA0LjkwYS4gVGhpcyBwYXRjaCBkb2VzIHRoZSByZXF1aXJlZCBw
+cm9ncmFtbWluZyBpbiBBVFUgdXBvbg0KPiA+PiBxdWVyeWluZyB0aGUgc3lzdGVtIHBvbGljeSBm
+b3IgRUNSQy4NCj4gPj4NCj4gPj4gU2lnbmVkLW9mZi1ieTogVmlkeWEgU2FnYXIgPHZpZHlhc0Bu
+dmlkaWEuY29tPg0KPiA+PiBSZXZpZXdlZC1ieTogSmluZ29vIEhhbiA8amluZ29vaGFuMUBnbWFp
+bC5jb20+DQo+ID4+IC0tLQ0KPiA+PiBWMzoNCj4gPj4gKiBBZGRlZCAnUmV2aWV3ZWQtYnk6IEpp
+bmdvbyBIYW4gPGppbmdvb2hhbjFAZ21haWwuY29tPicNCj4gPj4NCj4gPj4gVjI6DQo+ID4+ICog
+QWRkcmVzc2VkIEppbmdvbydzIHJldmlldyBjb21tZW50DQo+ID4+ICogUmVtb3ZlZCBzYXZpbmcg
+J3RkJyBiaXQgaW5mb3JtYXRpb24gaW4gJ2R3X3BjaWUnIHN0cnVjdHVyZQ0KPiA+Pg0KPiA+PiAg
+IGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvZHdjL3BjaWUtZGVzaWdud2FyZS5jIHwgOCArKysrKyst
+LQ0KPiA+PiAgIGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvZHdjL3BjaWUtZGVzaWdud2FyZS5oIHwg
+MSArDQo+ID4+ICAgMiBmaWxlcyBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25z
+KC0pDQo+ID4+DQo+ID4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9jb250cm9sbGVyL2R3Yy9w
+Y2llLWRlc2lnbndhcmUuYyBiL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvZHdjL3BjaWUtZGVzaWdu
+d2FyZS5jDQo+ID4+IGluZGV4IGI1ZTQzOGI3MGNkNS4uY2JkNjUxYjIxOWQyIDEwMDY0NA0KPiA+
+PiAtLS0gYS9kcml2ZXJzL3BjaS9jb250cm9sbGVyL2R3Yy9wY2llLWRlc2lnbndhcmUuYw0KPiA+
+PiArKysgYi9kcml2ZXJzL3BjaS9jb250cm9sbGVyL2R3Yy9wY2llLWRlc2lnbndhcmUuYw0KPiA+
+PiBAQCAtMjQ2LDYgKzI0Niw4IEBAIHN0YXRpYyB2b2lkIGR3X3BjaWVfcHJvZ19vdXRib3VuZF9h
+dHVfdW5yb2xsKHN0cnVjdCBkd19wY2llICpwY2ksIHU4IGZ1bmNfbm8sDQo+ID4+ICAgICAgICAg
+IGR3X3BjaWVfd3JpdGVsX29iX3Vucm9sbChwY2ksIGluZGV4LCBQQ0lFX0FUVV9VTlJfVVBQRVJf
+VEFSR0VULA0KPiA+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdXBwZXJfMzJf
+Yml0cyhwY2lfYWRkcikpOw0KPiA+PiAgICAgICAgICB2YWwgPSB0eXBlIHwgUENJRV9BVFVfRlVO
+Q19OVU0oZnVuY19ubyk7DQo+ID4+ICsgICAgICAgaWYgKHBjaS0+dmVyc2lvbiA9PSAweDQ5MEEp
+DQo+ID4+ICsgICAgICAgICAgICAgICB2YWwgPSB2YWwgfCBwY2llX2lzX2VjcmNfZW5hYmxlZCgp
+IDw8IFBDSUVfQVRVX1REX1NISUZUOw0KPiA+PiAgICAgICAgICB2YWwgPSB1cHBlcl8zMl9iaXRz
+KHNpemUgLSAxKSA/DQo+ID4+ICAgICAgICAgICAgICAgICAgdmFsIHwgUENJRV9BVFVfSU5DUkVB
+U0VfUkVHSU9OX1NJWkUgOiB2YWw7DQo+ID4+ICAgICAgICAgIGR3X3BjaWVfd3JpdGVsX29iX3Vu
+cm9sbChwY2ksIGluZGV4LCBQQ0lFX0FUVV9VTlJfUkVHSU9OX0NUUkwxLCB2YWwpOw0KPiA+PiBA
+QCAtMjk0LDggKzI5NiwxMCBAQCBzdGF0aWMgdm9pZCBfX2R3X3BjaWVfcHJvZ19vdXRib3VuZF9h
+dHUoc3RydWN0IGR3X3BjaWUgKnBjaSwgdTggZnVuY19ubywNCj4gPj4gICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIGxvd2VyXzMyX2JpdHMocGNpX2FkZHIpKTsNCj4gPj4gICAgICAgICAgZHdf
+cGNpZV93cml0ZWxfZGJpKHBjaSwgUENJRV9BVFVfVVBQRVJfVEFSR0VULA0KPiA+PiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgdXBwZXJfMzJfYml0cyhwY2lfYWRkcikpOw0KPiA+PiAtICAg
+ICAgIGR3X3BjaWVfd3JpdGVsX2RiaShwY2ksIFBDSUVfQVRVX0NSMSwgdHlwZSB8DQo+ID4+IC0g
+ICAgICAgICAgICAgICAgICAgICAgICAgIFBDSUVfQVRVX0ZVTkNfTlVNKGZ1bmNfbm8pKTsNCj4g
+Pj4gKyAgICAgICB2YWwgPSB0eXBlIHwgUENJRV9BVFVfRlVOQ19OVU0oZnVuY19ubyk7DQo+ID4+
+ICsgICAgICAgaWYgKHBjaS0+dmVyc2lvbiA9PSAweDQ5MEEpDQo+ID4gDQo+ID4gSXMgdGhpcyBl
+dmVuIHBvc3NpYmxlPyBBcmUgdGhlIG5vbi11bnJvbGwgQVRVIHJlZ2lzdGVycyBhdmFpbGFibGUg
+cG9zdCA0LjgwPw0KPiBJJ20gbm90IHN1cmUuIEd1c3Rhdm8gbWlnaHQgaGF2ZSBpbmZvcm1hdGlv
+biBhYm91dCB0aGlzLiBJIG1hZGUgdGhpcyANCj4gY2hhbmdlIHNvIHRoYXQgaXQgaXMgdGFrZW4g
+Y2FyZSBvZmYgZXZlbiBpZiB0aGV5IGF2YWlsYWJsZS4NCg0KVGhlIFN5bm9wc3lzIERlc2lnbldh
+cmUgUENJZSBJUCBpcyBoaWdobHkgY29uZmlndXJhYmxlLCB0aGVyZWZvcmUgaXMgDQpkZXBlbmRh
+YmxlIG9uIHdoYXQgdGhlIGRlc2lnbiB0ZWFtIGhhcyBjb25maWd1cmVkIGZvciB0aGVpciBzb2x1
+dGlvbi4NCkFsdGhvdWdoIFN5bm9wc3lzIGRvZXNuJ3QgcmVjb21tZW5kIHRoZSB1c2Ugb2Ygbm9u
+LXVucm9sbCBBVFUsIHRoZSANCmN1c3RvbWVycyBhcmUgZnJlZSB0byBzZWxlY3Qgd2hhdCB0aGV5
+IHdhbnQgZm9yIHRoZWlyIGRlc2lnbi4NCg0KLUd1c3Rhdm8NCg0KPiANCj4gPiANCj4gPiBSb2IN
+Cj4gPiANCg0KDQo=
