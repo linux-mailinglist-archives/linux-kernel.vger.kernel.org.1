@@ -2,234 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B971C2A24EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 07:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C47652A24EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgKBG7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 01:59:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35364 "EHLO
+        id S1727977AbgKBHAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 02:00:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727743AbgKBG7t (ORCPT
+        with ESMTP id S1727743AbgKBHAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 01:59:49 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6512C0617A6;
-        Sun,  1 Nov 2020 22:59:47 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id d24so13792298ljg.10;
-        Sun, 01 Nov 2020 22:59:47 -0800 (PST)
+        Mon, 2 Nov 2020 02:00:01 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808D6C0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 23:00:01 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id f9so16034849lfq.2
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 23:00:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=680jJYtj0dinYltk97SujQf+zsOPEEe3d/I6WUB2CxU=;
-        b=tR3CjwwUyLuJDBD9Fv8+rDJR1VDLKhy6gy+RkLEosXGXYnYPAYg4jqN8pdukj9UC01
-         /lKvQiOa2KjxuEva4vfmOemUQQ0sAaC1WaAuLw+v7cefkMNQTDIoARjrS4eIZ9tMSQC+
-         /cvCDs51anO/K+fKGSjHRkP6iWeEQVNs5WWfhyIy8YWMPxcJMLUj3GWZ7imzyOHWqwtu
-         Y9XVKzOE4exUr6nHNItzcpSyl1R9qaGRn6RIPbH0/tV/1/eIkE3joda2i5d4sWcY9o2T
-         asNwGDZgqbvbZEOIM5wksjzz9TiOfIYQ4IMThWcZiOzOJzEEhBnZMLiBOq3DLna5EOHw
-         SVPw==
+        bh=c+XrbFe95lhlmoO1jxJAYeqcLTSX+HLUCIq1p8ctluo=;
+        b=LZ71Tgk9nMGd2ZWC7FJqsuBzrWWF68BI6ujrE0QLNc5AlU/uOQYLsyV3xMPMhHACtA
+         gMW5w1tQR0MmzGdBljnfcV9ipagBmR/40NFY56dyjOwpp5YR5fChicwVZT9xLvZFd4oL
+         uDMgHEPtBvlYN0AHy8k2FBa9pWhtTLW+bbqWvrctqAWyGdHtIBAq6bNrmZiUP0VmSgdu
+         WCuNzcVlSUVHcQ9haZN7k8ffHSzCTdO/aWhYmobrso1nKPX59Nhtmr1DoxwXU5OjBk+P
+         EiLupArqfmt6Q3M+OVgNbv9I1xPaBP3rjVxRJVsGNddaVD75h+YS/ZVCZZm/ORaeD6Lo
+         rD7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=680jJYtj0dinYltk97SujQf+zsOPEEe3d/I6WUB2CxU=;
-        b=poxiAidZBsw3G/z0IZ31G+ntRj1qaEzoH1++Y1wuV34b+KVX1K51L93v62Rhf6MTjC
-         LIHXz0kxfsm3AVkvZRquMwfepRQAcGdmy9uR+okpTa/W0M5/svUxIxraItShWCqXTHbj
-         vGAl7QQ/Tbvg0YyqpOefSOBs8tWqC55i+4YGCk6iDNYLXlCxd0BFvICIK4ZgEdytwfuv
-         HvAEzIv2ieLt77izfcX4k/OabvAXeqr1nVjc54MGcoHBkCjoqho0JF6zxcujqIAQBoWi
-         qj6wVTFVWtFGNLJOXsXbn3dNaf21BEPDhzlPKCd6xFa5sHoZRYyUMJTp15GPmjjuAwTB
-         q2/g==
-X-Gm-Message-State: AOAM533kNgBz84KZ18Id4l9TYSaexXhS6EaluP4S50M97nweSvWqseE9
-        9H7Gq/n131j2cb5XskE+HP7cJFoa/lHt+qB942s1t6y9Mhg=
-X-Google-Smtp-Source: ABdhPJxQyhrSSxeyiYlN1kushSJnVK+JFw8djKCb/40Fg6Z2aWaEMRyvAJ/xlqXclweFvCobk9k+CsifvTcCuSYRMhY=
-X-Received: by 2002:a2e:7a0a:: with SMTP id v10mr6454589ljc.13.1604300386422;
- Sun, 01 Nov 2020 22:59:46 -0800 (PST)
+        bh=c+XrbFe95lhlmoO1jxJAYeqcLTSX+HLUCIq1p8ctluo=;
+        b=G2hQf2/5S4pXlQXJWiYmCnmiA49a1RmCL8dicxUAbDDKCXAFmhXKGtIp0wKm2dW0Rk
+         /kgAvuUY/MqEZinnqMD1AeNLi7aPtm+KK3LIe/F7Bd1qefNQBIHl3Y3asMv1jpLkKNyF
+         l40Gw13OiRYPp1im4zICza6QScO8YinMLBG7e/1TUtDKekrs0mQHLouiMVLDCg11sgu+
+         k75v+gc0lC01p7wSUGUmphZf963elwGpFcJ5uRee9sIafKqyYzEowbF8LqHnVeyznaWA
+         Gos08qo7OGU8O/p1BoulDUJqJgOp2NF4oz3996YMeU1LeXHcPDQRlBjTjz5Is7qAliOs
+         HOZw==
+X-Gm-Message-State: AOAM533Z4bDgeyexGF+WEYuEVbhDppxOetnaP/r6Vbpsmf2xh63u86FS
+        0vibS9eBPtBkvnrnWyqORoJA0zyO8Ck7KkjTJEawiZCLSg2/sg==
+X-Google-Smtp-Source: ABdhPJyi9O1vrGK1LsMrHwA72XdsBK2WzU4SSnDVEBWijqQ/tCFtG5WKvsVEWkRzjPNCj3tJCwMX2YvWYeLrchESkQ0=
+X-Received: by 2002:ac2:46cc:: with SMTP id p12mr4949695lfo.283.1604300399964;
+ Sun, 01 Nov 2020 22:59:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20201026234905.1022767-1-sashal@kernel.org> <20201026234905.1022767-75-sashal@kernel.org>
-In-Reply-To: <20201026234905.1022767-75-sashal@kernel.org>
-From:   Linu Cherian <linuc.decode@gmail.com>
-Date:   Mon, 2 Nov 2020 12:29:34 +0530
-Message-ID: <CAAHhmWjcP-3oAdhr2Nh_+QGbOi59PVDg763_avKgxFqjiYqMzQ@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.9 075/147] coresight: Make sysfs functional on
- topologies with per core sink
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Coresight ML <coresight@lists.linaro.org>,
+References: <1603983387-8738-1-git-send-email-sumit.garg@linaro.org>
+ <1603983387-8738-8-git-send-email-sumit.garg@linaro.org> <20201029162234.a5czyjy4eyto6aa4@holly.lan>
+ <20201029163921.dibail374cwwonvo@holly.lan>
+In-Reply-To: <20201029163921.dibail374cwwonvo@holly.lan>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 2 Nov 2020 12:29:48 +0530
+Message-ID: <CAFA6WYP1VOgNFuh+E0BOB3T5v+Brf3jCQsKf8iVTTMje6Mte9g@mail.gmail.com>
+Subject: Re: [PATCH v6 7/7] arm64: kgdb: Roundup cpus using IPI as NMI
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linu Cherian <lcherian@marvell.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        tsbogend@alpha.franken.de, mpe@ellerman.id.au,
+        "David S. Miller" <davem@davemloft.net>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        julien.thierry.kdev@gmail.com,
+        Douglas Anderson <dianders@chromium.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 29 Oct 2020 at 22:09, Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Thu, Oct 29, 2020 at 04:22:34PM +0000, Daniel Thompson wrote:
+> > On Thu, Oct 29, 2020 at 08:26:27PM +0530, Sumit Garg wrote:
+> > > arm64 platforms with GICv3 or later supports pseudo NMIs which can be
+> > > leveraged to roundup CPUs which are stuck in hard lockup state with
+> > > interrupts disabled that wouldn't be possible with a normal IPI.
+> > >
+> > > So instead switch to roundup CPUs using IPI turned as NMI. And in
+> > > case a particular arm64 platform doesn't supports pseudo NMIs,
+> > > it will switch back to default kgdb CPUs roundup mechanism.
+> > >
+> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > ---
+> > >  arch/arm64/include/asm/kgdb.h |  9 +++++++++
+> > >  arch/arm64/kernel/ipi_nmi.c   |  5 +++++
+> > >  arch/arm64/kernel/kgdb.c      | 35 +++++++++++++++++++++++++++++++++++
+> > >  3 files changed, 49 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/include/asm/kgdb.h b/arch/arm64/include/asm/kgdb.h
+> > > index 21fc85e..c3d2425 100644
+> > > --- a/arch/arm64/include/asm/kgdb.h
+> > > +++ b/arch/arm64/include/asm/kgdb.h
+> > > @@ -24,6 +24,15 @@ static inline void arch_kgdb_breakpoint(void)
+> > >  extern void kgdb_handle_bus_error(void);
+> > >  extern int kgdb_fault_expected;
+> > >
+> > > +#ifdef CONFIG_KGDB
+> > > +extern bool kgdb_ipi_nmicallback(int cpu, void *regs);
+> > > +#else
+> > > +static inline bool kgdb_ipi_nmicallback(int cpu, void *regs)
+> > > +{
+> > > +   return false;
+> > > +}
+> > > +#endif
+> > > +
+> > >  #endif /* !__ASSEMBLY__ */
+> > >
+> > >  /*
+> > > diff --git a/arch/arm64/kernel/ipi_nmi.c b/arch/arm64/kernel/ipi_nmi.c
+> > > index 597dcf7..6ace182 100644
+> > > --- a/arch/arm64/kernel/ipi_nmi.c
+> > > +++ b/arch/arm64/kernel/ipi_nmi.c
+> > > @@ -8,6 +8,7 @@
+> > >
+> > >  #include <linux/interrupt.h>
+> > >  #include <linux/irq.h>
+> > > +#include <linux/kgdb.h>
+> > >  #include <linux/nmi.h>
+> > >  #include <linux/smp.h>
+> > >
+> > > @@ -45,10 +46,14 @@ bool arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
+> > >  static irqreturn_t ipi_nmi_handler(int irq, void *data)
+> > >  {
+> > >     irqreturn_t ret = IRQ_NONE;
+> > > +   unsigned int cpu = smp_processor_id();
+> > >
+> > >     if (nmi_cpu_backtrace(get_irq_regs()))
+> > >             ret = IRQ_HANDLED;
+> > >
+> > > +   if (kgdb_ipi_nmicallback(cpu, get_irq_regs()))
+> > > +           ret = IRQ_HANDLED;
+> > > +
+> > >     return ret;
+> >
+> > It would be better to declare existing return value for
+> > kgdb_nmicallback() to be dangerously stupid and fix it so it returns an
+> > irqreturn_t (that's easy since most callers do not need to check the
+> > return value).
+> >
+> > Then this code simply becomes:
+> >
+> >       return kgdb_nmicallback(cpu, get_irq_regs());
+>
+> Actually, reflecting on this maybe it is better to keep kgdb_nmicallin()
+> and kgdb_nmicallback() aligned w.r.t. return codes (even if they are a
+> little unusual).
+>
+> I'm still not sure why we'd keep kgdb_ipi_nmicallback() though.
+> kgdb_nmicallback() is intended to be called from arch code...
+>
 
-Upstream commit,
+I added kgdb_ipi_nmicallback() just to add a check for "kgdb_active"
+prior to entry into kgdb as here we are sharing NMI among backtrace
+and kgdb.
 
-commit bb1860efc817c18fce4112f25f51043e44346d1b
-Author: Linu Cherian <lcherian@marvell.com>
-Date:   Wed Sep 16 13:17:34 2020 -0600
+But after your comments, I looked carefully into kgdb_nmicallback()
+and I see the "raw_spin_is_locked(&dbg_master_lock)" check as well. So
+it looked sufficient to me for calling kgdb_nmicallback() directly
+from the arch code and hence I will remove kgdb_ipi_nmicallback() in
+the next version.
 
+>
+> Daniel.
+>
+>
+> >
+> >
+> > >  }
+> > >
+> > > diff --git a/arch/arm64/kernel/kgdb.c b/arch/arm64/kernel/kgdb.c
+> > > index 1a157ca3..c26e710 100644
+> > > --- a/arch/arm64/kernel/kgdb.c
+> > > +++ b/arch/arm64/kernel/kgdb.c
+> > > @@ -17,6 +17,7 @@
+> > >
+> > >  #include <asm/debug-monitors.h>
+> > >  #include <asm/insn.h>
+> > > +#include <asm/nmi.h>
+> > >  #include <asm/traps.h>
+> > >
+> > >  struct dbg_reg_def_t dbg_reg_def[DBG_MAX_REG_NUM] = {
+> > > @@ -353,3 +354,37 @@ int kgdb_arch_remove_breakpoint(struct kgdb_bkpt *bpt)
+> > >     return aarch64_insn_write((void *)bpt->bpt_addr,
+> > >                     *(u32 *)bpt->saved_instr);
+> > >  }
+> > > +
+> > > +bool kgdb_ipi_nmicallback(int cpu, void *regs)
+> > > +{
+> > > +   if (atomic_read(&kgdb_active) != -1) {
+> > > +           kgdb_nmicallback(cpu, regs);
+> > > +           return true;
+> > > +   }
+> > > +
+> > > +   return false;
+> > > +}
+> >
+> > I *really* don't like this function.
+> >
+> > If the return code of kgdb_nmicallback() is broken then fix it, don't
+> > just wrap it and invent a new criteria for the return code.
+> >
+> > To be honest I don't actually think the logic in kgdb_nmicallback() is
+> > broken. As mentioned above the return value has a weird definition (0
+> > for "handled it OK" and 1 for "nothing for me to do") but the logic to
+> > calculate the return code looks OK.
+> >
 
+Makes sense, will remove it instead.
 
+> >
+> > > +
+> > > +static void kgdb_smp_callback(void *data)
+> > > +{
+> > > +   unsigned int cpu = smp_processor_id();
+> > > +
+> > > +   if (atomic_read(&kgdb_active) != -1)
+> > > +           kgdb_nmicallback(cpu, get_irq_regs());
+> > > +}
+> >
+> > This is Unused. I presume it is litter from a previous revision of the
+> > code and can be deleted?
+> >
 
-coresight: etm: perf: Sink selection using sysfs is deprecated
+Yeah.
 
+> >
+> > > +
+> > > +bool kgdb_arch_roundup_cpus(void)
+> > > +{
+> > > +   struct cpumask mask;
+> > > +
+> > > +   if (!arm64_supports_nmi())
+> > > +           return false;
+> > > +
+> > > +   cpumask_copy(&mask, cpu_online_mask);
+> > > +   cpumask_clear_cpu(raw_smp_processor_id(), &mask);
+> > > +   if (cpumask_empty(&mask))
+> > > +           return false;
+> >
+> > Why do we need to fallback if there is no work to do? There will still
+> > be no work to do when we call the fallback.
 
-need to go along with this, else there will be build breakage.
-This applies for 5.4, 5.8 and 5.9
+Okay, won't switch back to fallback mode here.
 
-Mathieu, could you please ACK ?
+-Sumit
 
-Please let me know if i need to send the patch to
-stable@vger.kernel.org separately.
-Thanks.
-
-
-
-
-On Tue, Oct 27, 2020 at 5:20 AM Sasha Levin <sashal@kernel.org> wrote:
->
-> From: Linu Cherian <lcherian@marvell.com>
->
-> [ Upstream commit 6d578258b955fc8888e1bbd9a8fefe7b10065a84 ]
->
-> Coresight driver assumes sink is common across all the ETMs,
-> and tries to build a path between ETM and the first enabled
-> sink found using bus based search. This breaks sysFS usage
-> on implementations that has multiple per core sinks in
-> enabled state.
->
-> To fix this, coresight_get_enabled_sink API is updated to
-> do a connection based search starting from the given source,
-> instead of bus based search.
-> With sink selection using sysfs depecrated for perf interface,
-> provision for reset is removed as well in this API.
->
-> Signed-off-by: Linu Cherian <lcherian@marvell.com>
-> [Fixed indentation problem and removed obsolete comment]
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Link: https://lore.kernel.org/r/20200916191737.4001561-15-mathieu.poirier@linaro.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/hwtracing/coresight/coresight-priv.h |  3 +-
->  drivers/hwtracing/coresight/coresight.c      | 62 +++++++++-----------
->  2 files changed, 29 insertions(+), 36 deletions(-)
->
-> diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
-> index f2dc625ea5856..5fe773c4d6cc5 100644
-> --- a/drivers/hwtracing/coresight/coresight-priv.h
-> +++ b/drivers/hwtracing/coresight/coresight-priv.h
-> @@ -148,7 +148,8 @@ static inline void coresight_write_reg_pair(void __iomem *addr, u64 val,
->  void coresight_disable_path(struct list_head *path);
->  int coresight_enable_path(struct list_head *path, u32 mode, void *sink_data);
->  struct coresight_device *coresight_get_sink(struct list_head *path);
-> -struct coresight_device *coresight_get_enabled_sink(bool reset);
-> +struct coresight_device *
-> +coresight_get_enabled_sink(struct coresight_device *source);
->  struct coresight_device *coresight_get_sink_by_id(u32 id);
->  struct coresight_device *
->  coresight_find_default_sink(struct coresight_device *csdev);
-> diff --git a/drivers/hwtracing/coresight/coresight.c b/drivers/hwtracing/coresight/coresight.c
-> index e9c90f2de34ac..bb4f9e0a5438d 100644
-> --- a/drivers/hwtracing/coresight/coresight.c
-> +++ b/drivers/hwtracing/coresight/coresight.c
-> @@ -540,50 +540,46 @@ struct coresight_device *coresight_get_sink(struct list_head *path)
->         return csdev;
->  }
->
-> -static int coresight_enabled_sink(struct device *dev, const void *data)
-> +static struct coresight_device *
-> +coresight_find_enabled_sink(struct coresight_device *csdev)
->  {
-> -       const bool *reset = data;
-> -       struct coresight_device *csdev = to_coresight_device(dev);
-> +       int i;
-> +       struct coresight_device *sink;
->
->         if ((csdev->type == CORESIGHT_DEV_TYPE_SINK ||
->              csdev->type == CORESIGHT_DEV_TYPE_LINKSINK) &&
-> -            csdev->activated) {
-> -               /*
-> -                * Now that we have a handle on the sink for this session,
-> -                * disable the sysFS "enable_sink" flag so that possible
-> -                * concurrent perf session that wish to use another sink don't
-> -                * trip on it.  Doing so has no ramification for the current
-> -                * session.
-> -                */
-> -               if (*reset)
-> -                       csdev->activated = false;
-> +            csdev->activated)
-> +               return csdev;
->
-> -               return 1;
-> +       /*
-> +        * Recursively explore each port found on this element.
-> +        */
-> +       for (i = 0; i < csdev->pdata->nr_outport; i++) {
-> +               struct coresight_device *child_dev;
-> +
-> +               child_dev = csdev->pdata->conns[i].child_dev;
-> +               if (child_dev)
-> +                       sink = coresight_find_enabled_sink(child_dev);
-> +               if (sink)
-> +                       return sink;
->         }
->
-> -       return 0;
-> +       return NULL;
->  }
->
->  /**
-> - * coresight_get_enabled_sink - returns the first enabled sink found on the bus
-> - * @deactivate:        Whether the 'enable_sink' flag should be reset
-> - *
-> - * When operated from perf the deactivate parameter should be set to 'true'.
-> - * That way the "enabled_sink" flag of the sink that was selected can be reset,
-> - * allowing for other concurrent perf sessions to choose a different sink.
-> + * coresight_get_enabled_sink - returns the first enabled sink using
-> + * connection based search starting from the source reference
->   *
-> - * When operated from sysFS users have full control and as such the deactivate
-> - * parameter should be set to 'false', hence mandating users to explicitly
-> - * clear the flag.
-> + * @source: Coresight source device reference
->   */
-> -struct coresight_device *coresight_get_enabled_sink(bool deactivate)
-> +struct coresight_device *
-> +coresight_get_enabled_sink(struct coresight_device *source)
->  {
-> -       struct device *dev = NULL;
-> -
-> -       dev = bus_find_device(&coresight_bustype, NULL, &deactivate,
-> -                             coresight_enabled_sink);
-> +       if (!source)
-> +               return NULL;
->
-> -       return dev ? to_coresight_device(dev) : NULL;
-> +       return coresight_find_enabled_sink(source);
->  }
->
->  static int coresight_sink_by_id(struct device *dev, const void *data)
-> @@ -988,11 +984,7 @@ int coresight_enable(struct coresight_device *csdev)
->                 goto out;
->         }
->
-> -       /*
-> -        * Search for a valid sink for this session but don't reset the
-> -        * "enable_sink" flag in sysFS.  Users get to do that explicitly.
-> -        */
-> -       sink = coresight_get_enabled_sink(false);
-> +       sink = coresight_get_enabled_sink(csdev);
->         if (!sink) {
->                 ret = -EINVAL;
->                 goto out;
-> --
-> 2.25.1
->
-> _______________________________________________
-> CoreSight mailing list
-> CoreSight@lists.linaro.org
-> https://lists.linaro.org/mailman/listinfo/coresight
+> >
+> >
+> > Daniel.
