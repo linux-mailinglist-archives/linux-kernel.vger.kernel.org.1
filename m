@@ -2,66 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30382A2A26
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3AE2A29D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728602AbgKBL5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:57:02 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7573 "EHLO
+        id S1728799AbgKBLsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:48:00 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7031 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728297AbgKBL5C (ORCPT
+        with ESMTP id S1728638AbgKBLpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:57:02 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CPrxP73n0zLrF6;
-        Mon,  2 Nov 2020 19:56:57 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 2 Nov 2020 19:56:53 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
-        <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <Xiaojian.Du@amd.com>, <amd-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] drm/amd/pm: remove unused variable
-Date:   Mon, 2 Nov 2020 20:08:47 +0800
-Message-ID: <1604318927-11896-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Mon, 2 Nov 2020 06:45:53 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CPrhW4vdwzhf2W;
+        Mon,  2 Nov 2020 19:45:47 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Mon, 2 Nov 2020
+ 19:45:39 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Khalil Blaiech <kblaiech@mellanox.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Vadim Pasternak <vadimp@mellanox.com>
+CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH] i2c: mlxbf: Fix build error with CONFIG_ACPI disabled
+Date:   Mon, 2 Nov 2020 20:12:34 +0800
+Message-ID: <20201102121234.1343672-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.103.112]
+X-Originating-IP: [10.175.113.32]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix variable set but not used compilation warning:
+drivers/i2c/busses/i2c-mlxbf.c: In function ‘mlxbf_i2c_acpi_probe’:
+drivers/i2c/busses/i2c-mlxbf.c:2296:8: error: implicit declaration of function ‘acpi_device_uid’; did you mean ‘cpu_device_up’? [-Werror=implicit-function-declaration]
+  uid = acpi_device_uid(adev);
+        ^~~~~~~~~~~~~~~
+        cpu_device_up
 
-./vangogh_ppt.c:397:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
-  int ret = 0;
-      ^~~
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/i2c/busses/i2c-mlxbf.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-index 6e26025..355ade5 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-@@ -394,8 +394,6 @@ static int vangogh_get_current_activity_percent(struct smu_context *smu,
- 					       enum amd_pp_sensors sensor,
- 					       uint32_t *value)
- {
--	int ret = 0;
--
- 	if (!value)
- 		return -EINVAL;
+diff --git a/drivers/i2c/busses/i2c-mlxbf.c b/drivers/i2c/busses/i2c-mlxbf.c
+index ee59e0da082d..cd8a909431a9 100644
+--- a/drivers/i2c/busses/i2c-mlxbf.c
++++ b/drivers/i2c/busses/i2c-mlxbf.c
+@@ -2272,6 +2272,7 @@ static const struct acpi_device_id mlxbf_i2c_acpi_ids[] = {
  
+ MODULE_DEVICE_TABLE(acpi, mlxbf_i2c_acpi_ids);
+ 
++#ifdef CONFIG_ACPI
+ static int mlxbf_i2c_acpi_probe(struct device *dev, struct mlxbf_i2c_priv *priv)
+ {
+ 	const struct acpi_device_id *aid;
+@@ -2305,6 +2306,12 @@ static int mlxbf_i2c_acpi_probe(struct device *dev, struct mlxbf_i2c_priv *priv)
+ 
+ 	return ret;
+ }
++#else
++static int mlxbf_i2c_acpi_probe(struct device *dev, struct mlxbf_i2c_priv *priv)
++{
++	return -ENODEV;
++}
++#endif
+ 
+ static int mlxbf_i2c_of_probe(struct device *dev, struct mlxbf_i2c_priv *priv)
+ {
 -- 
-2.6.2
+2.25.1
 
