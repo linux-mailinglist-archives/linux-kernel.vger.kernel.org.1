@@ -2,77 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2472A31AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 049E32A3196
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727836AbgKBRgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:36:01 -0500
-Received: from lhrrgout.huawei.com ([185.176.76.210]:3018 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727395AbgKBRgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:36:01 -0500
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 6EE6C5105EEFC14C7BD3;
-        Mon,  2 Nov 2020 17:35:59 +0000 (GMT)
-Received: from [10.210.168.82] (10.210.168.82) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 2 Nov 2020 17:35:58 +0000
-From:   John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
-To:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
-        <rafael@kernel.org>, <martin.petersen@oracle.com>,
-        <jejb@linux.ibm.com>
-CC:     <linuxarm@huawei.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <maz@kernel.org>
-References: <1603888387-52499-1-git-send-email-john.garry@huawei.com>
- <1603888387-52499-2-git-send-email-john.garry@huawei.com>
- <87eelifbx6.fsf@nanos.tec.linutronix.de>
-Message-ID: <ce13a36e-967c-c7ec-fd34-d53262313a5d@huawei.com>
-Date:   Mon, 2 Nov 2020 17:32:32 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
-MIME-Version: 1.0
-In-Reply-To: <87eelifbx6.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.168.82]
-X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+        id S1727831AbgKBRdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:33:11 -0500
+Received: from foss.arm.com ([217.140.110.172]:35102 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727449AbgKBRdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:33:11 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F34D12FC;
+        Mon,  2 Nov 2020 09:33:10 -0800 (PST)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 517A73F719;
+        Mon,  2 Nov 2020 09:33:08 -0800 (PST)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        broonie@kernel.org, robh@kernel.org, satyakim@qti.qualcomm.com,
+        etienne.carriere@linaro.org, f.fainelli@gmail.com,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
+        cristian.marussi@arm.com
+Subject: [PATCH v4 0/5] Add support for SCMIv3.0 Voltage Domain Protocol and SCMI-Regulator
+Date:   Mon,  2 Nov 2020 17:32:33 +0000
+Message-Id: <20201102173238.4515-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2020 18:22, Thomas Gleixner wrote:
-> On Wed, Oct 28 2020 at 20:33, John Garry wrote:
+Hi,
 
-Hi Thomas,
+this series introduces the support for the new SCMI Voltage Domain Protocol
+defined by the upcoming SCMIv3.0 specification, whose BETA release is
+available at [1].
 
->>   
->> +int irq_update_affinity_desc(unsigned int irq,
->> +			     struct irq_affinity_desc *affinity)
->> +{
->> +	unsigned long flags;
->> +	struct irq_desc *desc = irq_get_desc_lock(irq, &flags, 0);
->> +
->> +	if (!desc)
->> +		return -EINVAL;
-> Just looking at it some more. This needs a check whether the interrupt
-> is actually shut down. Otherwise the update will corrupt
-> state. Something like this:
-> 
->          if (irqd_is_started(&desc->irq_data))
->          	return -EBUSY;
-> 
-> But all of this can't work on x86 due to the way how vector allocation
-> works. Let me think about that.
-> 
+Afterwards, a new generic SCMI Regulator driver is developed on top of the
+new SCMI VD Protocol.
 
-Is the problem that we reserve per-cpu managed interrupt space when 
-allocated irq vectors on x86, and so later changing managed vs 
-non-managed setting for irqs messes up this accounting somehow?
+Patch 3/5 introduces a needed fix in Regulator framework to cope with
+generic named nodes.
 
-Cheers,
-John
+The series is currently based on for-next/scmi [2] on top of:
+
+commit b9ceca6be432 ("firmware: arm_scmi: Fix duplicate workqueue name")
+
+Any feedback welcome,
+
+Thanks,
+
+Cristian
+
+---
+
+v3 --> v4
+- DT bindings
+ - using generic node names
+ - listing explicitly subset of supported regulators bindings
+- SCMI Regulator
+ - using of_match_full_name core regulator flag
+ - avoid coccinelle false flag complaints
+- VD Protocol
+ - avoid coccinelle false flag complaints
+ - avoiding fixed size typing
+
+v2 --> v3
+- DT bindings
+  - avoid awkard examples based on _cpu/_gpu regulators
+- SCMI Regulator
+  - remove multiple linear mappings support
+  - removed duplicated voltage name printout
+  - added a few comments
+  - simplified return path in scmi_reg_set_voltage_sel()
+- VD Protocol
+  - restrict segmented voltage domain descriptors to one triplet
+  - removed unneeded inline
+  - free allocated resources for invalid voltage domain
+  - added __must_check to info_get voltage operations
+  - added a few comments
+  - removed fixed size typing from struct voltage_info
+    
+v1 --> v2
+- rebased on for-next/scmi v5.10
+- DT bindings
+  - removed any reference to negative voltages
+- SCMI Regulator
+  - removed duplicate regulator naming
+  - removed redundant .get/set_voltage ops: only _sel variants implemented
+  - removed condexpr on fail path to increase readability
+- VD Protocol
+  - fix voltage levels query loop to reload full cmd description
+    between iterations as reported by Etienne Carriere
+  - ensure transport rx buffer is properly sized calli scmi_reset_rx_to_maxsz
+    between transfers
+
+[1]:https://developer.arm.com/documentation/den0056/c/
+[2]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
+
+
+Cristian Marussi (5):
+  firmware: arm_scmi: Add Voltage Domain Support
+  firmware: arm_scmi: add SCMI Voltage Domain devname
+  regulator: core: add of_match_full_name boolean flag
+  regulator: add SCMI driver
+  dt-bindings: arm: add support for SCMI Regulators
+
+ .../devicetree/bindings/arm/arm,scmi.txt      |  43 ++
+ drivers/firmware/arm_scmi/Makefile            |   2 +-
+ drivers/firmware/arm_scmi/common.h            |   1 +
+ drivers/firmware/arm_scmi/driver.c            |   3 +
+ drivers/firmware/arm_scmi/voltage.c           | 397 +++++++++++++++++
+ drivers/regulator/Kconfig                     |   9 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/of_regulator.c              |   8 +-
+ drivers/regulator/scmi-regulator.c            | 409 ++++++++++++++++++
+ include/linux/regulator/driver.h              |   3 +
+ include/linux/scmi_protocol.h                 |  64 +++
+ 11 files changed, 937 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/firmware/arm_scmi/voltage.c
+ create mode 100644 drivers/regulator/scmi-regulator.c
+
+-- 
+2.17.1
+
