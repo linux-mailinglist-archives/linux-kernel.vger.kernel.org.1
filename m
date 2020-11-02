@@ -2,292 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A69C2A3016
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:42:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4C62A301C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727276AbgKBQlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:41:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59286 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727139AbgKBQlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:41:52 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604335310;
+        id S1727308AbgKBQmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:42:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45425 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726865AbgKBQmY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:42:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604335343;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZZ1+8t7uf1F7l3ZBHb45iCoO7eWd2o1ycVfihIUusH8=;
-        b=Ujz9LMjaN8SJhVxn50rnawrrA86tblFVcms0tvPZ6z30qdXkdWdaV8CVc/AUzHzdbFv1V2
-        IhoFIoAHPiRb7IWyVB1j/sUcCmK6cyUWjPXJIQKp023Mx82tNgLktFrqUxCnDxWjn5Juhp
-        fYdZ2HuY/J5qgBTErdjQxOEKWWeOSL4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 13AC8AC65;
-        Mon,  2 Nov 2020 16:41:50 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 17:41:47 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        bh=5EySfE5/KX52CRxGXz90zdeGjq93k6VPREHvKcPrTq0=;
+        b=UbSIKheDJLC/Z8gWhbnIeA7EAuK3vFtxjVNMrpjF5kL9FY/AZQ2Z03ZFk8C+y82f7usY3V
+        VySuGvmt3Wu+Rrk1dbQg3BRrZ6HEXjUH4DhCKjEHUIQK3xGrtbN9FMTT52G/fXdKZqzJ5N
+        0oJelQKHHZOOCycWNxD/wGrisPM7ADI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-143-yT3E2-5-MgWLRrydahSFWg-1; Mon, 02 Nov 2020 11:42:19 -0500
+X-MC-Unique: yT3E2-5-MgWLRrydahSFWg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90ABD1084C8B;
+        Mon,  2 Nov 2020 16:42:17 +0000 (UTC)
+Received: from krava (unknown [10.40.192.162])
+        by smtp.corp.redhat.com (Postfix) with SMTP id DB95019C78;
+        Mon,  2 Nov 2020 16:42:14 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 17:42:13 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
-Subject: Re: [PATCH 11/11 v2] ftrace: Add recording of functions that caused
- recursion
-Message-ID: <20201102164147.GJ20201@alley>
-References: <20201030213142.096102821@goodmis.org>
- <20201030214014.801706340@goodmis.org>
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Hitoshi Mitake <mitake@dcl.info.waseda.ac.jp>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] perf lock: Correct field name "flags"
+Message-ID: <20201102164213.GC3405508@krava>
+References: <20201021003948.28817-1-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201030214014.801706340@goodmis.org>
+In-Reply-To: <20201021003948.28817-1-leo.yan@linaro.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-10-30 17:31:53, Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Wed, Oct 21, 2020 at 08:39:47AM +0800, Leo Yan wrote:
+> The tracepoint "lock:lock_acquire" contains field "flags" but not
+> "flag".  Current code wrongly retrieves value from field "flag" and it
+> always gets zero for the value, thus "perf lock" doesn't report the
+> correct result.
 > 
-> This adds CONFIG_FTRACE_RECORD_RECURSION that will record to a file
-> "recursed_functions" all the functions that caused recursion while a
-> callback to the function tracer was running.
+> This patch replaces the field name "flag" with "flags", so can read out
+> the correct flags for locking.
+> 
+> Fixes: 746f16ec6ae3 ("perf lock: Use perf_evsel__intval and perf_session__set_tracepoints_handlers")
+
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+btw it seems the issue was there event before that commit:
+  acquire_event.flag = (int)raw_field_value(event, "flag", data);
+
+thanks,
+jirka
+
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/builtin-lock.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> index f0a1dbacb46c..5cecc1ad78e1 100644
+> --- a/tools/perf/builtin-lock.c
+> +++ b/tools/perf/builtin-lock.c
+> @@ -406,7 +406,7 @@ static int report_lock_acquire_event(struct evsel *evsel,
+>  	struct lock_seq_stat *seq;
+>  	const char *name = evsel__strval(evsel, sample, "name");
+>  	u64 tmp	 = evsel__intval(evsel, sample, "lockdep_addr");
+> -	int flag = evsel__intval(evsel, sample, "flag");
+> +	int flag = evsel__intval(evsel, sample, "flags");
+>  
+>  	memcpy(&addr, &tmp, sizeof(void *));
+>  
+> -- 
+> 2.17.1
 > 
 
-> --- /dev/null
-> +++ b/kernel/trace/trace_recursion_record.c
-> @@ -0,0 +1,220 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/seq_file.h>
-> +#include <linux/kallsyms.h>
-> +#include <linux/module.h>
-> +#include <linux/ftrace.h>
-> +#include <linux/fs.h>
-> +
-> +#include "trace_output.h"
-> +
-> +struct recursed_functions {
-> +	unsigned long		ip;
-> +	unsigned long		parent_ip;
-> +};
-> +
-> +static struct recursed_functions recursed_functions[CONFIG_FTRACE_RECORD_RECURSION_SIZE];
-
-The code tries to be lockless safe as much as possible. It would make
-sense to allign the array.
-
-
-> +static atomic_t nr_records;
-> +
-> +/*
-> + * Cache the last found function. Yes, updates to this is racey, but
-> + * so is memory cache ;-)
-> + */
-> +static unsigned long cached_function;
-> +
-> +void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip)
-> +{
-> +	int index;
-> +	int i = 0;
-> +	unsigned long old;
-> +
-> + again:
-> +	/* First check the last one recorded */
-> +	if (ip == cached_function)
-> +		return;
-> +
-> +	index = atomic_read(&nr_records);
-> +	/* nr_records is -1 when clearing records */
-> +	smp_mb__after_atomic();
-> +	if (index < 0)
-> +		return;
-> +
-> +	/* See below */
-> +	if (i > index)
-> +		index = i;
-
-This looks like a complicated way to do index++ via "i" variable.
-I guess that it was needed only in some older variant of the code.
-See below.
-
-> +	if (index >= CONFIG_FTRACE_RECORD_RECURSION_SIZE)
-> +		return;
-> +
-> +	for (i = index - 1; i >= 0; i--) {
-> +		if (recursed_functions[i].ip == ip) {
-> +			cached_function = ip;
-> +			return;
-> +		}
-> +	}
-> +
-> +	cached_function = ip;
-> +
-> +	/*
-> +	 * We only want to add a function if it hasn't been added before.
-> +	 * Add to the current location before incrementing the count.
-> +	 * If it fails to add, then increment the index (save in i)
-> +	 * and try again.
-> +	 */
-> +	old = cmpxchg(&recursed_functions[index].ip, 0, ip);
-> +	if (old != 0) {
-> +		/* Did something else already added this for us? */
-> +		if (old == ip)
-> +			return;
-> +		/* Try the next location (use i for the next index) */
-> +		i = index + 1;
-
-What about
-
-		index++;
-
-We basically want to run the code again with index + 1 limit.
-
-Maybe, it even does not make sense to check the array again
-and we should just try to store the value into the next slot.
-
-> +		goto again;
-> +	}
-> +
-> +	recursed_functions[index].parent_ip = parent_ip;
-
-WRITE_ONCE() ?
-
-> +
-> +	/*
-> +	 * It's still possible that we could race with the clearing
-> +	 *    CPU0                                    CPU1
-> +	 *    ----                                    ----
-> +	 *                                       ip = func
-> +	 *  nr_records = -1;
-> +	 *  recursed_functions[0] = 0;
-> +	 *                                       i = -1
-> +	 *                                       if (i < 0)
-> +	 *  nr_records = 0;
-> +	 *  (new recursion detected)
-> +	 *      recursed_functions[0] = func
-> +	 *                                            cmpxchg(recursed_functions[0],
-> +	 *                                                    func, 0)
-> +	 *
-> +	 * But the worse that could happen is that we get a zero in
-> +	 * the recursed_functions array, and it's likely that "func" will
-> +	 * be recorded again.
-> +	 */
-> +	i = atomic_read(&nr_records);
-> +	smp_mb__after_atomic();
-> +	if (i < 0)
-> +		cmpxchg(&recursed_functions[index].ip, ip, 0);
-> +	else if (i <= index)
-> +		atomic_cmpxchg(&nr_records, i, index + 1);
-
-This looks weird. It would shift nr_records past the record added
-in this call. It might skip many slots that were zeroed when clearing.
-Also we do not know if our entry was not zeroed as well.
-
-I would suggest to do it some other way (not even compile tested):
-
-void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip)
-{
-	int index, old_index;
-	int i = 0;
-	unsigned long old_ip;
-
- again:
-	/* First check the last one recorded. */
-	if (ip == READ_ONCE(cached_function))
-		return;
-
-	index = atomic_read(&nr_records);
-	/* nr_records is -1 when clearing records. */
-	smp_mb__after_atomic();
-	if (index < 0)
-		return;
-
-	/* Already cached? */
-	for (i = index - 1; i >= 0; i--) {
-		if (recursed_functions[i].ip == ip) {
-			WRITE_ONCE(cached_function, ip);
-			return;
-		}
-	}
-
-	if (index >= CONFIG_FTRACE_RECORD_RECURSION_SIZE)
-		return;
-
-	/*
-	 * Try to reserve the slot. It might be already taken
-	 * or the entire cache cleared.
-	 */
-	old_index = atomic_cmpxchg(&nr_records, index, index + 1);
-	if (old_index != index)
-		goto again;
-
-	/*
-	 * Be careful. The entire cache might have been cleared and reused in
-	 * the meantime. Replace only empty slot.
-	 */
-	old_ip = cmpxchg(&recursed_functions[index].ip, 0, ip);
-	if (old_ip != 0)
-		goto again;
-
-	old_ip = cmpxchg(&recursed_functions[index].parent_ip, 0, parrent_ip);
-	if (old_ip != 0)
-		goto again;
-
-	/*
-	 * No ip is better than non-consistent one. The race with
-	 * clearing should be rare and not worth a perfect solution.
-	 */
-	if (READ_ONCE(recursed_functions[index].ip) != ip) {
-		cmpxchg(&recursed_functions[index].ip, ip, 0UL)
-		goto again;
-	}
-}
-
-The last check probably is not needed. Inconsistent entries
-should be prevented by the way how this func is called:
-
-		static atomic_t paranoid_test;				\
-		if (!atomic_read(&paranoid_test)) {			\
-			atomic_inc(&paranoid_test);			\
-			ftrace_record_recursion(ip, pip);		\
-			atomic_dec(&paranoid_test);			\
-		}							\
-
-
-
-
-The rest of the patchset looks fine. I do not feel comfortable to give
-it Reviewed-by because I did not review it in depth.
-
-I spent more time with the above lockless code. I took it is a
-training. I need to improve this skill to feel more comfortable with
-the lockless printk ring buffer ;-)
-
-Best Regards,
-Petr
