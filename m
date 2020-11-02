@@ -2,145 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E4D2A2A06
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB94A2A2A11
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:55:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728710AbgKBLyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:54:22 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:52606 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728720AbgKBLyU (ORCPT
+        id S1728949AbgKBLyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:54:53 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2055 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728932AbgKBLyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:54:20 -0500
-Received: by mail-io1-f69.google.com with SMTP id i19so8173824ioa.19
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:54:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Jif07879xIdqk8preXUlJynIzSJslPiVsHNblnvjy0g=;
-        b=TdrZPjsMhGYx0XRtYFxfwl5uygafamsUNKRyMAM2WtfIoCtEOYTQdIvZae2PGcVMAY
-         8By45ZDUbSNGaumfnvU61rWGLTyc5+gXhete4k6ZQVKRy89MHMdUDjchO79DhR2BQiMS
-         wrGIlghV9QluBPDujkgmCVbUdlp0csA0CAJ9eRKvapYHzIIOK1FfMJIPeXhf3g+EGsti
-         MUUIMftfnzN705bcN8CSKezy7PDJWaNTjpXHAS9H7QzZhLVW7jIWASp90sBaYab2xAUh
-         tf6+GtAH+7yKV2vjU9hep0kYz4RBk6e91wddVc4IASqRKH+z6cegdTmBoN7v8svYfXRS
-         zUGA==
-X-Gm-Message-State: AOAM5338Ao2jO0p19q0IBsxlsxHEaERy16snyoLu46xtpbmNSVjRk8lJ
-        JwevTI7PyyX+h22i37SNJvn9z0aStsCgNVVsZNrioy0fI7Kl
-X-Google-Smtp-Source: ABdhPJxXCVhnlFwd644zkajZIE1B8kF0ijJjuc8EwzFzxiIWmswVFPBj5V4F9nulsIbuz9bZq6taBWf2a8o6jZr87DJCBiLlRtRB
+        Mon, 2 Nov 2020 06:54:46 -0500
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CPrtk5JtmzVfkm;
+        Mon,  2 Nov 2020 19:54:38 +0800 (CST)
+Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Mon, 2 Nov 2020 19:54:43 +0800
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 2 Nov 2020 19:54:43 +0800
+Received: from dggemi762-chm.china.huawei.com ([10.1.198.148]) by
+ dggemi762-chm.china.huawei.com ([10.1.198.148]) with mapi id 15.01.1913.007;
+ Mon, 2 Nov 2020 19:54:43 +0800
+From:   "Zouwei (Samuel)" <zou_wei@huawei.com>
+To:     Steven Price <steven.price@arm.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "tomeu.vizoso@collabora.com" <tomeu.vizoso@collabora.com>,
+        "alyssa.rosenzweig@collabora.com" <alyssa.rosenzweig@collabora.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggLW5leHRdIGRybS9wYW5mcm9zdDogRml4IHVudXNl?=
+ =?utf-8?Q?d_variable_warning?=
+Thread-Topic: [PATCH -next] drm/panfrost: Fix unused variable warning
+Thread-Index: AQHWsPmNZ8kkF0YqIE+m1gaHAdZuLKm0DSsAgACuKhA=
+Date:   Mon, 2 Nov 2020 11:54:43 +0000
+Message-ID: <b6c8a27c8ce9443cac816affcc6ce4f6@huawei.com>
+References: <1604309599-10078-1-git-send-email-zou_wei@huawei.com>
+ <8729ad8d-31db-c7cd-e962-a0f7db6891b3@arm.com>
+In-Reply-To: <8729ad8d-31db-c7cd-e962-a0f7db6891b3@arm.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.178.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Received: by 2002:a02:3b57:: with SMTP id i23mr11915552jaf.110.1604318059322;
- Mon, 02 Nov 2020 03:54:19 -0800 (PST)
-Date:   Mon, 02 Nov 2020 03:54:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000008604f05b31e6867@google.com>
-Subject: KASAN: null-ptr-deref Write in kthread_use_mm
-From:   syzbot <syzbot+b57abf7ee60829090495@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    4e78c578 Add linux-next specific files for 20201030
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=148969d4500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=83318758268dc331
-dashboard link: https://syzkaller.appspot.com/bug?extid=b57abf7ee60829090495
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e1346c500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1388fbca500000
-
-The issue was bisected to:
-
-commit 4d004099a668c41522242aa146a38cc4eb59cb1e
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Fri Oct 2 09:04:21 2020 +0000
-
-    lockdep: Fix lockdep recursion
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1354e614500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10d4e614500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1754e614500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b57abf7ee60829090495@syzkaller.appspotmail.com
-Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
-
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
-BUG: KASAN: null-ptr-deref in atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
-BUG: KASAN: null-ptr-deref in mmgrab include/linux/sched/mm.h:36 [inline]
-BUG: KASAN: null-ptr-deref in kthread_use_mm+0x11c/0x2a0 kernel/kthread.c:1257
-Write of size 4 at addr 0000000000000060 by task io_uring-sq/26191
-
-CPU: 1 PID: 26191 Comm: io_uring-sq Not tainted 5.10.0-rc1-next-20201030-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- __kasan_report mm/kasan/report.c:549 [inline]
- kasan_report.cold+0x5/0x37 mm/kasan/report.c:562
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
- atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
- mmgrab include/linux/sched/mm.h:36 [inline]
- kthread_use_mm+0x11c/0x2a0 kernel/kthread.c:1257
- __io_sq_thread_acquire_mm fs/io_uring.c:1092 [inline]
- __io_sq_thread_acquire_mm+0x1c4/0x220 fs/io_uring.c:1085
- io_sq_thread_acquire_mm_files.isra.0+0x125/0x180 fs/io_uring.c:1104
- io_init_req fs/io_uring.c:6661 [inline]
- io_submit_sqes+0x89d/0x25f0 fs/io_uring.c:6757
- __io_sq_thread fs/io_uring.c:6904 [inline]
- io_sq_thread+0x462/0x1630 fs/io_uring.c:6971
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 26191 Comm: io_uring-sq Tainted: G    B             5.10.0-rc1-next-20201030-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- panic+0x306/0x73d kernel/panic.c:231
- end_report+0x58/0x5e mm/kasan/report.c:106
- __kasan_report mm/kasan/report.c:552 [inline]
- kasan_report.cold+0xd/0x37 mm/kasan/report.c:562
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
- atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
- mmgrab include/linux/sched/mm.h:36 [inline]
- kthread_use_mm+0x11c/0x2a0 kernel/kthread.c:1257
- __io_sq_thread_acquire_mm fs/io_uring.c:1092 [inline]
- __io_sq_thread_acquire_mm+0x1c4/0x220 fs/io_uring.c:1085
- io_sq_thread_acquire_mm_files.isra.0+0x125/0x180 fs/io_uring.c:1104
- io_init_req fs/io_uring.c:6661 [inline]
- io_submit_sqes+0x89d/0x25f0 fs/io_uring.c:6757
- __io_sq_thread fs/io_uring.c:6904 [inline]
- io_sq_thread+0x462/0x1630 fs/io_uring.c:6971
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+SGkgU3RldmUsDQpTb3JyeSwgSSBkaWRuJ3Qgbm90aWNlIHRoZSBwYXRjaCBlYXJsaWVyLg0KUGxl
+YXNlIGlnbm9yZSBteSBwYXRjaC4NCg0KLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu25Lq6
+OiBTdGV2ZW4gUHJpY2UgW21haWx0bzpzdGV2ZW4ucHJpY2VAYXJtLmNvbV0gDQrlj5HpgIHml7bp
+l7Q6IDIwMjDlubQxMeaciDLml6UgMTc6MjkNCuaUtuS7tuS6ujogWm91d2VpIChTYW11ZWwpIDx6
+b3Vfd2VpQGh1YXdlaS5jb20+OyByb2JoQGtlcm5lbC5vcmc7IHRvbWV1LnZpem9zb0Bjb2xsYWJv
+cmEuY29tOyBhbHlzc2Eucm9zZW56d2VpZ0Bjb2xsYWJvcmEuY29tOyBhaXJsaWVkQGxpbnV4Lmll
+OyBkYW5pZWxAZmZ3bGwuY2gNCuaKhOmAgTogZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9y
+ZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0K5Li76aKYOiBSZTogW1BBVENIIC1uZXh0
+XSBkcm0vcGFuZnJvc3Q6IEZpeCB1bnVzZWQgdmFyaWFibGUgd2FybmluZw0KDQpPbiAwMi8xMS8y
+MDIwIDA5OjMzLCBab3UgV2VpIHdyb3RlOg0KPiBGaXhlcyB0aGUgZm9sbG93aW5nIFc9MSBrZXJu
+ZWwgYnVpbGQgd2FybmluZzoNCj4gDQo+IC4vcGFuZnJvc3Rfam9iLmM6NjE3OjI4OiB3YXJuaW5n
+OiB1bnVzZWQgdmFyaWFibGUg4oCYanPigJkgWy1XdW51c2VkLXZhcmlhYmxlXQ0KPiAgICBzdHJ1
+Y3QgcGFuZnJvc3Rfam9iX3Nsb3QgKmpzID0gcGZkZXYtPmpzOw0KPiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIF5+DQo+IA0KPiBSZXBvcnRlZC1ieTogSHVsayBSb2JvdCA8aHVsa2NpQGh1
+YXdlaS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IFpvdSBXZWkgPHpvdV93ZWlAaHVhd2VpLmNvbT4N
+Cg0KQm9yaXMgcG9zdGVkIGFuIGlkZW50aWNhbCBwYXRjaCBlYXJsaWVyOg0KDQpodHRwczovL2xv
+cmUua2VybmVsLm9yZy9yLzIwMjAxMTAxMTczODE3LjgzMTc2OS0xLWJvcmlzLmJyZXppbGxvbiU0
+MGNvbGxhYm9yYS5jb20NCg0KU3RldmUNCg0KPiAtLS0NCj4gICBkcml2ZXJzL2dwdS9kcm0vcGFu
+ZnJvc3QvcGFuZnJvc3Rfam9iLmMgfCAyIC0tDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDIgZGVsZXRp
+b25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL3BhbmZyb3N0L3BhbmZy
+b3N0X2pvYi5jIGIvZHJpdmVycy9ncHUvZHJtL3BhbmZyb3N0L3BhbmZyb3N0X2pvYi5jDQo+IGlu
+ZGV4IDQ5MDJiYzYuLmU3NWI3ZDIgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9wYW5m
+cm9zdC9wYW5mcm9zdF9qb2IuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vcGFuZnJvc3QvcGFu
+ZnJvc3Rfam9iLmMNCj4gQEAgLTYxMyw4ICs2MTMsNiBAQCBpbnQgcGFuZnJvc3Rfam9iX29wZW4o
+c3RydWN0IHBhbmZyb3N0X2ZpbGVfcHJpdiAqcGFuZnJvc3RfcHJpdikNCj4gICANCj4gICB2b2lk
+IHBhbmZyb3N0X2pvYl9jbG9zZShzdHJ1Y3QgcGFuZnJvc3RfZmlsZV9wcml2ICpwYW5mcm9zdF9w
+cml2KQ0KPiAgIHsNCj4gLQlzdHJ1Y3QgcGFuZnJvc3RfZGV2aWNlICpwZmRldiA9IHBhbmZyb3N0
+X3ByaXYtPnBmZGV2Ow0KPiAtCXN0cnVjdCBwYW5mcm9zdF9qb2Jfc2xvdCAqanMgPSBwZmRldi0+
+anM7DQo+ICAgCWludCBpOw0KPiAgIA0KPiAgIAlmb3IgKGkgPSAwOyBpIDwgTlVNX0pPQl9TTE9U
+UzsgaSsrKQ0KPiANCg0K
