@@ -2,144 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BDE2A2CF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE982A2CF1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgKBO1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:27:54 -0500
-Received: from mout.gmx.net ([212.227.17.20]:56981 "EHLO mout.gmx.net"
+        id S1726227AbgKBO1b convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 09:27:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbgKBO1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:27:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604327244;
-        bh=AcU6jbrx1riv+Wdlt3eWYyaQWzNIBJIHnijeALTKPwg=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=TA22Kf8Su+5fPlV+NmRLldPyD0XDaR8d0CkbARd/ntxyoKf+nuM8PhCBWVQccUFL6
-         ytCU01NVMarR30I5FrpzMc0YIxAkFGuL/I9l+QeK45S2vcpaIUx49mFQ1PaStwiUfU
-         bfJOy3XeyFqyiaw64i0/bCI9XhEBt3GMphYRu5Dc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [185.76.97.212] ([185.76.97.212]) by web-mail.gmx.net
- (3c-app-gmx-bap57.server.lan [172.19.172.127]) (via HTTP); Mon, 2 Nov 2020
- 15:27:23 +0100
+        id S1725933AbgKBO1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 09:27:31 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF9EB206D5;
+        Mon,  2 Nov 2020 14:27:28 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 09:27:26 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, Eddy_Wu@trendmicro.com,
+        x86@kernel.org, davem@davemloft.net, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
+        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
+        paulmck@kernel.org
+Subject: Re: [PATCH v5 14/21] kprobes: Remove NMI context check
+Message-ID: <20201102092726.57cb643f@gandalf.local.home>
+In-Reply-To: <20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org>
+References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
+        <159870615628.1229682.6087311596892125907.stgit@devnote2>
+        <20201030213831.04e81962@oasis.local.home>
+        <20201102141138.1fa825113742f3bea23bc383@kernel.org>
+        <20201102145334.23d4ba691c13e0b6ca87f36d@kernel.org>
+        <20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Message-ID: <trinity-769ccf2c-6962-4e27-8a78-619cd16fab25-1604327243865@3c-app-gmx-bap57>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Aw: Re:  Re:  Re: [PATCH] pci: mediatek: fix warning in msi.h
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 2 Nov 2020 15:27:23 +0100
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <336d6588567949029c52ecfbb87660c1@kernel.org>
-References: <20201031140330.83768-1-linux@fw-web.de>
- <878sbm9icl.fsf@nanos.tec.linutronix.de>
- <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de>
- <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22>
- <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08>
- <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de>
- <df5565a2f1e821041c7c531ad52a3344@kernel.org>
- <trinity-4313623b-1adf-4cc3-8b50-2d0593669995-1604318207058@3c-app-gmx-bap57>
- <336d6588567949029c52ecfbb87660c1@kernel.org>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:yby5m6QFQy2Reuk7SqSaUU1Eu/PTwr1ZUMBtAMxlDwxvkbPolpmCM+cXzUiu8lzFk6TcY
- VFSSJGXqKyPUGl8Dvr519WpTTtnT+x96enLFcyvMgi1yDXqTcnXnE9e/O8p2NKZA475lS7P/wkGP
- IktsqpRoisIw2h8RIbfCWBceIKpt0QwpHqRiiiA0qld/PxLkY7YnD2Xobm6rhK3BBzCNhpbV9s75
- Y8emVf2EmfxQimQmXLVM7a/v+NH0z4LChYnLtqkSEVfOkbnzCAHlJLtIu8/+JxryRkHG7VUX3VzJ
- q0=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jzhFKPbKFHY=:BO8Lhdoqk5kdjdCQ+5k5o4
- Pl0A+jnhBAluOiuqmz4W9n0Er09cRvKrCbWqZESIOeZ9YuogllZ4uEfvtwSw5b8GWubmTBSNk
- 9VGsRgIx1uZKcVI3veiiDCjrO+azUfx3gbHZ22lzYeWqVZ6efJoFxhtrJMECSfaYJ4JBg8cR+
- agwFjakbG6pSoYOswIiXuk82rMcvzUWy0f9Z28RFOdn/+Tm3tvccgOG32Lkaf+inGrQer2Tmf
- JQ1dkfnMUADKc1pWIZyj7HooqeHorxG48kZ7VjGrMuEzrdChSyo8eEQZkJywASNJZsxw/No8U
- I8isKlNAi4wiEJzsbyRrvHZMlYnPz6Gr4bxsyqXI9B8BTISQMW1odi3ZitfX6rW0xKVHkLm58
- zjhAkJy9RK35E16eKXHsobRLzextP1MBU07v+nqknHQvSMkvmJls0ya2rrlo5H+ZhH3MIxZGC
- VL/tp7IVd6dXiIPKQge8UIUdiIvLUOj74p2+fvpyKkSAEPDbKg8nGWlr/eEAp8eKDBw35q5sS
- 8wo7AvD0BNarVAMnv0BF/G0jI4ho7BEWcklvK5eT+WEkQVWZ9Y2AgNJy1utLUexaRUOKWBPfZ
- vj8g8anfj3C00=
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Gesendet: Montag, 02. November 2020 um 14:58 Uhr
-> Von: "Marc Zyngier" <maz@kernel.org>
 
-> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> index d15c881e2e7e..5bb1306162c7 100644
-> --- a/drivers/pci/pci-sysfs.c
-> +++ b/drivers/pci/pci-sysfs.c
-> @@ -387,10 +387,20 @@ static ssize_t msi_bus_store(struct device *dev,
-> struct device_attribute *attr,
->   		return count;
->   	}
->
-> -	if (val)
-> +	if (val) {
-> +		/*
-> +		 * If there is no possibility for this bus to deal with
-> +		 * MSIs, then allowing them to be requested would lead to
-> +		 * the kernel complaining loudly. In this situation, don't
-> +		 * let userspace mess things up.
-> +		 */
-> +		if (!pci_bus_is_msi_capable(subordinate))
-> +			return -EINVAL;
-> +
->   		subordinate->bus_flags &=3D ~PCI_BUS_FLAGS_NO_MSI;
-> -	else
-> +	} else {
->   		subordinate->bus_flags |=3D PCI_BUS_FLAGS_NO_MSI;
-> +	}
->
->   	dev_info(&subordinate->dev, "MSI/MSI-X %s for future drivers of
-> devices on this bus\n",
->   		 val ? "allowed" : "disallowed");
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 4289030b0fff..28861cc6435a 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -871,6 +871,8 @@ static void pci_set_bus_msi_domain(struct pci_bus
-> *bus)
->   		d =3D pci_host_bridge_msi_domain(b);
->
->   	dev_set_msi_domain(&bus->dev, d);
-> +	if (!pci_bus_is_msi_capable(bus))
-> +		bus->bus_flags |=3D PCI_BUS_FLAGS_NO_MSI;
->   }
->
->   static int pci_register_host_bridge(struct pci_host_bridge *bridge)
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 22207a79762c..6aadb863dff4 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -2333,6 +2333,12 @@ pci_host_bridge_acpi_msi_domain(struct pci_bus
-> *bus) { return NULL; }
->   static inline bool pci_pr3_present(struct pci_dev *pdev) { return
-> false; }
->   #endif
->
-> +static inline bool pci_bus_is_msi_capable(struct pci_bus *bus)
-> +{
-> +	return (IS_ENABLED(CONFIG_PCI_MSI_ARCH_FALLBACKS) ||
-> +		dev_get_msi_domain(&bus->dev));
-> +}
-> +
->   #ifdef CONFIG_EEH
->   static inline struct eeh_dev *pci_dev_to_eeh_dev(struct pci_dev *pdev)
->   {
+[ Peter Z, please take a look a this ]
 
-Hi,
+On Mon, 2 Nov 2020 16:02:34 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-this Patch seems to work well too...no warning, pcie-card and hdd recogniz=
-ed
+> >From 509b27efef8c7dbf56cab2e812916d6cd778c745 Mon Sep 17 00:00:00 2001  
+> From: Masami Hiramatsu <mhiramat@kernel.org>
+> Date: Mon, 2 Nov 2020 15:37:28 +0900
+> Subject: [PATCH] kprobes: Disable lockdep for kprobe busy area
+> 
+> Since the code area in between kprobe_busy_begin()/end() prohibits
+> other kprobs to call probe handlers, we can avoid inconsitent
+> locks there. But lockdep doesn't know that, so it warns rp->lock
+> or kretprobe_table_lock.
+> 
+> To supress those false-positive errors, disable lockdep while
+> kprobe_busy is set.
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  kernel/kprobes.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 8a12a25fa40d..c7196e583600 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1295,10 +1295,12 @@ void kprobe_busy_begin(void)
+>  	__this_cpu_write(current_kprobe, &kprobe_busy);
+>  	kcb = get_kprobe_ctlblk();
+>  	kcb->kprobe_status = KPROBE_HIT_ACTIVE;
+> +	lockdep_off();
+>  }
+>  
+>  void kprobe_busy_end(void)
+>  {
+> +	lockdep_on();
+>  	__this_cpu_write(current_kprobe, NULL);
+>  	preempt_enable();
+>  }
+> -- 
 
-regards Frank
+No, this is not the correct workaround (too big of a hammer). You could do
+the following:
+
+From 4139d9c8437b0bd2262e989ca4eb0a83b7e7bb72 Mon Sep 17 00:00:00 2001
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Date: Mon, 2 Nov 2020 09:17:49 -0500
+Subject: [PATCH] kprobes: Tell lockdep about kprobe nesting
+
+Since the kprobe handlers have protection that prohibits other handlers from
+executing in other contexts (like if an NMI comes in while processing a
+kprobe, and executes the same kprobe, it will get fail with a "busy"
+return). Lockdep is unaware of this protection. Use lockdep's nesting api to
+differentiate between locks taken in NMI context and other context to
+supress the false warnings.
+
+Link: https://lore.kernel.org/r/20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org
+
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/kprobes.c | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 8a12a25fa40d..ccb285867059 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1249,7 +1249,12 @@ __acquires(hlist_lock)
+ 
+ 	*head = &kretprobe_inst_table[hash];
+ 	hlist_lock = kretprobe_table_lock_ptr(hash);
+-	raw_spin_lock_irqsave(hlist_lock, *flags);
++	/*
++	 * Nested is a workaround that will soon not be needed.
++	 * There's other protections that make sure the same lock
++	 * is not taken on the same CPU that lockdep is unaware of.
++	 */
++	raw_spin_lock_irqsave_nested(hlist_lock, *flags, !!in_nmi());
+ }
+ NOKPROBE_SYMBOL(kretprobe_hash_lock);
+ 
+@@ -1258,7 +1263,12 @@ static void kretprobe_table_lock(unsigned long hash,
+ __acquires(hlist_lock)
+ {
+ 	raw_spinlock_t *hlist_lock = kretprobe_table_lock_ptr(hash);
+-	raw_spin_lock_irqsave(hlist_lock, *flags);
++	/*
++	 * Nested is a workaround that will soon not be needed.
++	 * There's other protections that make sure the same lock
++	 * is not taken on the same CPU that lockdep is unaware of.
++	 */
++	raw_spin_lock_irqsave_nested(hlist_lock, *flags, !!in_nmi());
+ }
+ NOKPROBE_SYMBOL(kretprobe_table_lock);
+ 
+@@ -2025,10 +2035,16 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+ 	struct kretprobe *rp = container_of(p, struct kretprobe, kp);
+ 	unsigned long hash, flags = 0;
+ 	struct kretprobe_instance *ri;
++	int nmi = !!in_nmi();
+ 
+ 	/* TODO: consider to only swap the RA after the last pre_handler fired */
+ 	hash = hash_ptr(current, KPROBE_HASH_BITS);
+-	raw_spin_lock_irqsave(&rp->lock, flags);
++	/*
++	 * Nested is a workaround that will soon not be needed.
++	 * There's other protections that make sure the same lock
++	 * is not taken on the same CPU that lockdep is unaware of.
++	 */
++	raw_spin_lock_irqsave_nested(&rp->lock, flags, nmi);
+ 	if (!hlist_empty(&rp->free_instances)) {
+ 		ri = hlist_entry(rp->free_instances.first,
+ 				struct kretprobe_instance, hlist);
+@@ -2039,7 +2055,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+ 		ri->task = current;
+ 
+ 		if (rp->entry_handler && rp->entry_handler(ri, regs)) {
+-			raw_spin_lock_irqsave(&rp->lock, flags);
++			raw_spin_lock_irqsave_nested(&rp->lock, flags, nmi);
+ 			hlist_add_head(&ri->hlist, &rp->free_instances);
+ 			raw_spin_unlock_irqrestore(&rp->lock, flags);
+ 			return 0;
+-- 
+2.25.4
+
